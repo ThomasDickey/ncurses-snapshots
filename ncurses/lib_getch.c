@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.20 1996/12/29 21:41:17 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.21 1997/02/02 01:38:08 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -185,7 +185,7 @@ wgetch(WINDOW *win)
 {
 int	ch;
 
-	T(("wgetch(%p) called", win));
+	T((T_CALLED("wgetch(%p)"), win));
 
 	/*
 	 * Handle cooked mode.  Grab a string from the screen,
@@ -214,7 +214,7 @@ int	ch;
 	 &&  (win->_flags & _FULLWIN)
 	 &&  win->_curx == win->_maxx
 	 &&  win->_cury == win->_maxy)
-		return(ERR);
+		returnCode(ERR);
 
 	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && !(win->_flags & _ISPAD))
 		wrefresh(win);
@@ -232,7 +232,7 @@ int	ch;
 
 		if (head == -1)	/* fifo is empty */
 			if (!_nc_timed_wait(3, delay, (int *)0))
-				return ERR;
+				returnCode(ERR);
 		/* else go on to read data available */
 	}
 
@@ -277,7 +277,7 @@ int	ch;
 	if (ch == ERR)
 	{
 	    T(("wgetch returning ERR"));
-	    return(ERR);
+	    returnCode(ERR);
 	}
 
 	/*
@@ -314,7 +314,7 @@ int	ch;
 	   ch,
 	   (ch > KEY_MIN) ? keyname(ch) : unctrl(ch)));
 
-	return(ch);
+	returnCode(ch);
 }
 
 

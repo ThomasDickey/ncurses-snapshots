@@ -30,12 +30,12 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.9 1996/09/26 09:39:11 esr Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.10 1997/02/02 00:36:41 tom Exp $")
 
 int
 endwin(void)
 {
-	T(("endwin() called"));
+	T((T_CALLED("endwin()")));
 
 	SP->_endwin = TRUE;
 
@@ -64,5 +64,5 @@ endwin(void)
 	 */
 	_nc_outch('\r');
 
-	return(reset_shell_mode());
+	returnCode(reset_shell_mode());
 }

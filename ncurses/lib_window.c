@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.7 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.8 1997/02/02 01:14:43 tom Exp $")
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */
@@ -42,34 +42,38 @@ int mvderwin(WINDOW *win, int y, int x)
    WINDOW *orig = win->_parent;
    int i;
 
+   T((T_CALLED("mvderwin(%p,%d,%d)"), win, y, x));
+
    if (orig)
    {
       if (win->_parx==x && win->_pary==y)
-	return OK;
+	returnCode(OK);
       if (x<0 || y<0)
-	return ERR;
+	returnCode(ERR);
       if ( (x+getmaxx(win) > getmaxx(orig)) ||
            (y+getmaxy(win) > getmaxy(orig)) )
-        return ERR;
+        returnCode(ERR);
    }
    else
-      return ERR;
+      returnCode(ERR);
    wsyncup(win);
    win->_parx = x;
    win->_pary = y;
    for(i=0;i<getmaxy(win);i++)
      win->_line[i].text = &(orig->_line[y++].text[x]);
-   return OK;
+   returnCode(OK);
 }
 
 int syncok(WINDOW *win, bool bf)
 /* enable/disable automatic wsyncup() on each change to window */
 {
+	T((T_CALLED("syncok(%p,%d)"), win, bf));
+
 	if (win) {
 		win->_sync = bf;
-		return(OK);
+		returnCode(OK);
 	} else
-		return(ERR);
+		returnCode(ERR);
 }
 
 void wsyncup(WINDOW *win)
@@ -176,10 +180,10 @@ WINDOW *nwin;
 size_t linesize;
 int i;
 
-	T(("dupwin(%p) called", win));
+	T((T_CALLED("dupwin(%p)"), win));
 
 	if ((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy, win->_begx)) == NULL)
-		return NULL;
+		returnWin(0);
 
 	nwin->_curx        = win->_curx;
 	nwin->_cury        = win->_cury;
@@ -214,6 +218,5 @@ int i;
 		nwin->_line[i].lastchar = win->_line[i].lastchar;
 	}
 
-	return nwin;
+	returnWin(nwin);
 }
-

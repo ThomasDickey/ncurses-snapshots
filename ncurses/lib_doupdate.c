@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.51 1997/01/19 02:18:12 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.52 1997/02/02 02:08:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -471,7 +471,7 @@ int	nonempty;
 struct tms before, after;
 #endif /* USE_TRACE_TIMES */
 
-	T(("doupdate() called"));
+	T((T_CALLED("doupdate()")));
 
 #ifdef TRACE
 	if (_nc_tracing & TRACE_UPDATE)
@@ -737,7 +737,7 @@ struct tms before, after;
 
 	_nc_signal_handler(TRUE);
 
-	return OK;
+	returnCode(OK);
 }
 
 /*

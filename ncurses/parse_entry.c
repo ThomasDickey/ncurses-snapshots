@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.17 1996/12/30 01:05:43 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.18 1997/02/02 01:50:15 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -568,7 +568,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
         else
 	{
 	    if (tab && _nc_capcmp(tab, C_HT))
-		_nc_warning("hardware tabs with a non-^I tab string `%s'",
+		_nc_warning("hardware tabs with a non-^I tab string %s",
 			    _nc_visbuf(tab));
 	    else
 	    {
@@ -630,7 +630,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 		if (strcmp(
 			tp->Strings[from_ptr->nte_index],
 			tp->Strings[to_ptr->nte_index]) != 0)
-		    _nc_warning("%s (%s) already has an explicit value (%s), ignoring ko",
+		    _nc_warning("%s (%s) already has an explicit value %s, ignoring ko",
 			    ap->to, ap->from,
 			    _nc_visbuf(tp->Strings[to_ptr->nte_index]) );
 		continue;

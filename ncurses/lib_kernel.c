@@ -41,31 +41,31 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.12 1996/09/07 17:08:05 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.13 1997/02/02 00:33:14 tom Exp $")
 
 int napms(int ms)
 {
-	T(("napms(%d) called", ms));
+	T((T_CALLED("napms(%d)"), ms));
 
 	usleep(1000*(unsigned)ms);
-	return OK;
+	returnCode(OK);
 }
 
 int reset_prog_mode(void)
 {
-	T(("reset_prog_mode() called"));
+	T((T_CALLED("reset_prog_mode()")));
 
 	SET_TTY(cur_term->Filedes, &cur_term->Nttyb);
 	if (SP && stdscr && stdscr->_use_keypad)
 		_nc_keypad(TRUE);
 
-	return OK;
+	returnCode(OK);
 }
 
 
 int reset_shell_mode(void)
 {
-	T(("reset_shell_mode() called"));
+	T((T_CALLED("reset_shell_mode()")));
 
 	if (SP)
 	{
@@ -74,7 +74,7 @@ int reset_shell_mode(void)
 	}
 
 	SET_TTY(cur_term->Filedes, &cur_term->Ottyb);
-	return OK;
+	returnCode(OK);
 }
 
 /*
@@ -87,12 +87,12 @@ int reset_shell_mode(void)
 char
 erasechar(void)
 {
-	T(("erasechar() called"));
+	T((T_CALLED("erasechar()")));
 
 #ifdef TERMIOS
-	return(cur_term->Ottyb.c_cc[VERASE]);
+	returnCode(cur_term->Ottyb.c_cc[VERASE]);
 #else
-	return(cur_term->Ottyb.sg_erase);
+	returnCode(cur_term->Ottyb.sg_erase);
 #endif
 
 }
@@ -109,12 +109,12 @@ erasechar(void)
 char
 killchar(void)
 {
-	T(("killchar() called"));
+	T((T_CALLED("killchar()")));
 
 #ifdef TERMIOS
-	return(cur_term->Ottyb.c_cc[VKILL]);
+	returnCode(cur_term->Ottyb.c_cc[VKILL]);
 #else
-	return(cur_term->Ottyb.sg_kill);
+	returnCode(cur_term->Ottyb.sg_kill);
 #endif
 }
 
@@ -129,7 +129,7 @@ killchar(void)
 
 int flushinp(void)
 {
-	T(("flushinp() called"));
+	T((T_CALLED("flushinp()")));
 
 #ifdef TERMIOS
 	tcflush(cur_term->Filedes, TCIFLUSH);
@@ -145,7 +145,7 @@ int flushinp(void)
 		SP->_fifotail = 0;
 		SP->_fifopeek = 0;
 	}
-	return OK;
+	returnCode(OK);
 
 }
 
@@ -158,16 +158,16 @@ static TTY   buf;
 
 int savetty(void)
 {
-	T(("savetty() called"));
+	T((T_CALLED("savetty()")));
 
 	GET_TTY(cur_term->Filedes, &buf);
-	return OK;
+	returnCode(OK);
 }
 
 int resetty(void)
 {
-	T(("resetty() called"));
+	T((T_CALLED("resetty()")));
 
 	SET_TTY(cur_term->Filedes, &buf);
-	return OK;
+	returnCode(OK);
 }

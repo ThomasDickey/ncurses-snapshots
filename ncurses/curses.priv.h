@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.48 1997/01/26 01:20:10 tom Exp $
+ * $Id: curses.priv.h,v 1.50 1997/02/02 00:53:28 tom Exp $
  *
  *	curses.priv.h
  *
@@ -300,18 +300,35 @@ typedef	struct {
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0
 
+/*
+ * Prefixes for call/return points of library function traces.  We use these to
+ * instrument the public functions so that the traces can be easily transformed
+ * into regression scripts.
+ */
+#define T_CALLED(fmt) "called " fmt
+#define T_RETURN(fmt) "return " fmt
+
 #ifdef TRACE
-#define T(a)	if (_nc_tracing & TRACE_CALLS) _tracef a
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a
+#define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
+#define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
+#define returnWin(code)  TRACE_RETURN(code,win)
+#define returnCode(code) TRACE_RETURN(code,int)
+#define returnVoid       T((T_RETURN(""))); return
 extern unsigned _nc_tracing;
+extern WINDOW * _nc_retrace_win(WINDOW *);
 extern const char *_nc_tputs_trace;
 extern const char *_nc_visbuf(const char *);
+extern int _nc_retrace_int(int);
 extern long _nc_outchars;
 #else
 #define T(a)
 #define TR(n, a)
 #define TPUTS_TRACE(s)
+#define returnWin(code)  return code
+#define returnCode(code) return code
+#define returnVoid       return
 #endif
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))

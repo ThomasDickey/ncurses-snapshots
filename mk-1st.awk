@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.14 1996/12/21 12:48:00 tom Exp $
+# $Id: mk-1st.awk,v 1.17 1997/02/01 22:13:56 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -102,12 +102,24 @@ END	{
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
 				sharedlinks("../lib")
 				print  ""
+				if ( end_name != lib_name ) {
+					printf "../lib/%s : ../lib/%s\n", end_name, lib_name
+				}
+				print  ""
 				print  "install \\"
 				print  "install.libs \\"
 				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
 				printf "\t$(INSTALL) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(INSTALL_PREFIX)$(libdir)")
+				if ( overwrite == "yes" && name == "ncurses" )
+				{
+					ovr_name = sprintf("libcurses%s", suffix)
+					printf "\t@echo linking %s to %s\n", ovr_name, lib_name
+					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
+					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) %s %s)\n", lib_name, ovr_name
+				}
+				printf "\t- ldconfig\n"
 				if ( rmSoLocs == "yes" ) {
 					print  ""
 					print  "clean ::"
@@ -130,7 +142,7 @@ END	{
 				{
 					printf "\t@echo linking libcurses.a to libncurses.a \n"
 					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
-					printf "\t(cd $(INSTALL_PREFIX)$(libdir) $(LN_S) libncurses.a libcurses.a)\n"
+					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
 				}
 				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
 			}

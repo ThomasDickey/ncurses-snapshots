@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.11 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.12 1997/02/01 22:59:47 tom Exp $")
 
 #define MAX_STRTAB	4096	/* documented maximum entry size */
 
@@ -69,7 +69,7 @@ size_t	len = strlen(string) + 1;
 	if (next_free + len < MAX_STRTAB)
 	{
 		strcpy(&stringbuf[next_free], string);
-		DEBUG(7, ("Saved string '%s' ", _nc_visbuf(string)));
+		DEBUG(7, ("Saved string %s", _nc_visbuf(string)));
 		DEBUG(7, ("at location %d", (int) next_free));
 		next_free += len;
 	}

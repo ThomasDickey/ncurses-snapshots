@@ -33,14 +33,14 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.17 1997/01/02 01:10:46 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.18 1997/02/02 01:52:39 tom Exp $")
 
 int delay_output(int ms)
 {
-	T(("delay_output(%d) called", ms));
+	T((T_CALLED("delay_output(%d)"), ms));
 
 	if (SP == 0 || SP->_baudrate <= 0)
-		return(ERR);
+		returnCode(ERR);
 #ifdef no_pad_char
 	else if (no_pad_char)
 		napms(ms);
@@ -59,7 +59,7 @@ int delay_output(int ms)
 		(void) fflush(SP->_ofp);
 	}
 
-	return OK;
+	returnCode(OK);
 }
 
 int _nc_outch(int ch)
@@ -97,9 +97,9 @@ char	addrbuf[17];
 		else
 			(void) sprintf(addrbuf, "%p", outc);
 		if (_nc_tputs_trace)
-			TR(TRACE_MAXIMUM, ("tputs(%s = \"%s\", %d, %s) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, addrbuf));
+			TR(TRACE_MAXIMUM, ("tputs(%s = %s, %d, %s) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, addrbuf));
 		else
-			TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %s) called", _nc_visbuf(string), affcnt, addrbuf));
+			TR(TRACE_MAXIMUM, ("tputs(%s, %d, %s) called", _nc_visbuf(string), affcnt, addrbuf));
 		_nc_tputs_trace = (char *)NULL;
 	}
 #endif /* TRACE */
@@ -211,4 +211,3 @@ char	addrbuf[17];
 
 	return OK;
 }
-

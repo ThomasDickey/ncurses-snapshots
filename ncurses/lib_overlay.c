@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_overlay.c,v 1.6 1996/09/18 18:47:05 esr Exp $")
+MODULE_ID("$Id: lib_overlay.c,v 1.7 1997/02/02 00:35:27 tom Exp $")
 
 static int overlap(const WINDOW *const s, WINDOW *const d, int const flag)
 {
@@ -45,7 +45,7 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 	dmaxrow = min(s->_maxy+s->_begy, d->_maxy+d->_begy) - d->_begy;
 	dmaxcol = min(s->_maxx+s->_begx, d->_maxx+d->_begx) - d->_begx;
 
-	return(copywin(s, d, 
+	return(copywin(s, d,
 		       sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol,
 		       flag));
 }
@@ -62,7 +62,8 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
 int overlay(const WINDOW *win1, WINDOW *win2)
 {
-	return(overlap(win1, win2, TRUE));
+	T((T_CALLED("overlay(%p,%p)"), win1, win2));
+	returnCode(overlap(win1, win2, TRUE));
 }
 
 /*
@@ -77,7 +78,8 @@ int overlay(const WINDOW *win1, WINDOW *win2)
 
 int overwrite(const WINDOW *win1, WINDOW *win2)
 {
-	return(overlap(win1, win2, FALSE));
+	T((T_CALLED("overwrite(%p,%p)"), win1, win2));
+	returnCode(overlap(win1, win2, FALSE));
 }
 
 int copywin(const WINDOW *src, WINDOW *dst,
@@ -88,20 +90,20 @@ int copywin(const WINDOW *src, WINDOW *dst,
 int sx, sy, dx, dy;
 int touched;
 
-	T(("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)",
+	T((T_CALLED("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)"),
 		src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
 
 	/* make sure rectangle exists in source */
 	if ((sminrow + dmaxrow - dminrow) > (src->_maxy + 1) ||
 	    (smincol + dmaxcol - dmincol) > (src->_maxx + 1)) {
-		return ERR;
+		returnCode(ERR);
 	}
 
 	T(("rectangle exists in source"));
 
 	/* make sure rectangle fits in destination */
 	if (dmaxrow > dst->_maxy || dmaxcol > dst->_maxx) {
-		return ERR;
+		returnCode(ERR);
 	}
 
 	T(("rectangle fits in destination"));
@@ -133,5 +135,5 @@ int touched;
 	   }
 	}
 	T(("finished copywin"));
-	return OK;
+	returnCode(OK);
 }

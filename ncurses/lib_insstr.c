@@ -31,7 +31,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.7 1996/07/31 00:23:26 tom Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.8 1997/02/02 00:32:17 tom Exp $")
 
 int winsnstr(WINDOW *win, const char *str, int n)
 {
@@ -39,7 +39,7 @@ short	oy = win->_cury;
 short	ox = win->_curx;
 char	*cp;
 
-	T(("winsstr(%p,'%s',%d) called", win, str, n));
+	T((T_CALLED("winsstr(%p,%s,%d)"), win, _nc_visbuf(str), n));
 
 	for (cp = (char *)str; *cp && (n <= 0 || (cp - str) < n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
@@ -59,5 +59,5 @@ char	*cp;
 	win->_curx = ox;
 	win->_cury = oy;
 	_nc_synchook(win);
-	return OK;
+	returnCode(OK);
 }

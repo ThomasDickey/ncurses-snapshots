@@ -28,7 +28,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term, pad_char */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.5 1996/07/31 00:16:37 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.6 1997/02/02 00:30:17 tom Exp $")
 
 /*
  *	int
@@ -97,7 +97,7 @@ baudrate(void)
 size_t i;
 int ret;
 
-	T(("baudrate() called"));
+	T((T_CALLED("baudrate()")));
 
 #ifdef TERMIOS
 	ret = cfgetospeed(&cur_term->Nttyb);
@@ -105,7 +105,7 @@ int ret;
 	ret = cur_term->Nttyb.sg_ospeed;
 #endif
 	if(ret < 0 || ret > MAX_BAUD)
-		return ERR;
+		returnCode(ERR);
 	SP->_baudrate = ERR;
 	for (i = 0; i < (sizeof(speeds) / sizeof(struct speed)); i++)
 		if (speeds[i].s == (speed_t)ret)
@@ -113,7 +113,5 @@ int ret;
 			SP->_baudrate = speeds[i].sp;
 			break;
 		}
-	return(SP->_baudrate);
+	returnCode(SP->_baudrate);
 }
-
-

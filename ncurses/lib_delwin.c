@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.7 1996/12/19 15:38:21 tom Exp $")
+MODULE_ID("$Id: lib_delwin.c,v 1.8 1997/02/01 23:22:54 tom Exp $")
 
 static bool have_children(WINDOW *win)
 {
@@ -43,11 +43,11 @@ static bool have_children(WINDOW *win)
 
 int delwin(WINDOW *win)
 {
-	T(("delwin(%p) called", win));
+	T((T_CALLED("delwin(%p)"), win));
 
 	if (win == 0
 	 || have_children(win))
-		return(ERR);
+		returnCode(ERR);
 
 	if (win->_flags & _SUBWIN)
 		touchwin(win->_parent);
@@ -56,5 +56,5 @@ int delwin(WINDOW *win)
 
 	_nc_freewin(win);
 
-	return(OK);
+	returnCode(OK);
 }

@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.13 1996/12/21 19:01:11 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.14 1997/02/02 01:33:28 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -100,7 +100,7 @@ SCREEN * set_term(SCREEN *screen)
 {
 SCREEN	*oldSP;
 
-	T(("set_term(%p) called", screen));
+	T((T_CALLED("set_term(%p)"), screen));
 
 	oldSP = SP;
 	_nc_set_screen(screen);
@@ -112,6 +112,7 @@ SCREEN	*oldSP;
 	COLORS      = SP->_color_count;
 	COLOR_PAIRS = SP->_pair_count;
 
+	T((T_RETURN("%p"), oldSP));
 	return(oldSP);
 }
 
@@ -129,6 +130,8 @@ static void _nc_free_keytry(struct try *kt)
  */
 void delscreen(SCREEN *sp)
 {
+	T((T_CALLED("delscreen(%p)"), sp));
+
 	_nc_freewin(sp->_curscr);
 	_nc_freewin(sp->_newscr);
 	_nc_freewin(sp->_stdscr);
@@ -152,6 +155,7 @@ void delscreen(SCREEN *sp)
 		COLOR_PAIRS = 0;
 		_nc_set_screen(0);
 	}
+	returnVoid;
 }
 
 ripoff_t rippedoff[5], *rsp = rippedoff;
@@ -267,8 +271,10 @@ _nc_ripoffline(int line, int (*init)(WINDOW *,int))
 int
 ripoffline(int line, int (*init)(WINDOW *, int))
 {
-    if (line == 0)
-	return(OK);
+    T((T_CALLED("ripoffline(%d,%p)"), line, init));
 
-    return _nc_ripoffline ((line<0) ? -1 : 1, init);
+    if (line == 0)
+	returnCode(OK);
+
+    returnCode(_nc_ripoffline ((line<0) ? -1 : 1, init));
 }

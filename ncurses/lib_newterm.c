@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.21 1996/12/21 18:27:19 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.22 1997/02/02 01:34:38 tom Exp $")
 
 /* This should moved to TERMINAL */
 static filter_mode = FALSE;
@@ -56,7 +56,7 @@ char *t = getenv("NCURSES_TRACE");
                trace((unsigned) strtol(t, 0, 0));
 #endif
 
-	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));
+	T((T_CALLED("newterm(\"%s\",%p,%p)"), term, ofp, ifp));
 
 	/* this loads the capability entry, then sets LINES and COLS */
 	if (setupterm(term, fileno(ofp), &errret) == ERR)
@@ -150,7 +150,6 @@ char *t = getenv("NCURSES_TRACE");
 	/* Initialize the terminal line settings. */
 	_nc_initscr();
 
-	T(("newterm returns %p", SP));
-
+	T((T_RETURN("%p"), SP));
 	return(SP);
 }

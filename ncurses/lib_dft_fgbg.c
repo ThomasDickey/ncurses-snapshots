@@ -20,7 +20,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.1 1997/01/19 00:43:34 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.2 1997/02/02 01:45:36 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -31,16 +31,18 @@ MODULE_ID("$Id: lib_dft_fgbg.c,v 1.1 1997/01/19 00:43:34 tom Exp $")
 int
 use_default_colors(void)
 {
+	T((T_CALLED("use_default_colors()")));
+
 	if (!SP->_coloron)
-		return ERR;
+		returnCode(ERR);
 
 	if (!orig_pair && !orig_colors)
-		return ERR;
+		returnCode(ERR);
 
 	if (initialize_pair)	/* don't know how to handle this */
-		return ERR;
+		returnCode(ERR);
 
 	SP->_default_color = TRUE;
 	SP->_color_pairs[0] = PAIR_OF(C_MASK, C_MASK);
-	return OK;
+	returnCode(OK);
 }

@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.19 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.20 1997/02/01 22:58:39 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -384,7 +384,7 @@ end_of_token:
 		    break;
 
 		case STRING:
-		    fprintf(stderr, "String;  name='%s', value='%s'\n",
+		    fprintf(stderr, "String;  name='%s', value=%s\n",
 			    _nc_curr_token.tk_name,
 			    _nc_visbuf(_nc_curr_token.tk_valstring));
 		    break;

@@ -30,21 +30,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.13 1996/12/15 23:52:19 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.14 1997/02/02 01:05:26 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
-	T(("wredrawln(%p,%d,%d) called", win, beg, num));
+	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
 	touchline(win, beg, num);
 	wrefresh(win);
-	return OK;
+	returnCode(OK);
 }
 
 int wrefresh(WINDOW *win)
 {
 int code;
 
-	T(("wrefresh(%p) called", win));
+	T((T_CALLED("wrefresh(%p)"), win));
 
 	if (win == curscr) {
 		curscr->_clear = TRUE;
@@ -61,7 +61,7 @@ int code;
 		 */
 		win->_clear = FALSE;
 	}
-	return(code);
+	returnCode(code);
 }
 
 int wnoutrefresh(WINDOW *win)
@@ -72,7 +72,7 @@ short	begy = win->_begy;
 short	m, n;
 bool	wide;
 
-	T(("wnoutrefresh(%p) called", win));
+	T((T_CALLED("wnoutrefresh(%p)"), win));
 #ifdef TRACE
 	if (_nc_tracing & TRACE_UPDATE)
 	    _tracedump("...win", win);
@@ -83,7 +83,7 @@ bool	wide;
 	 */
 	if ((win == 0)
 	 || (win->_flags & _ISPAD))
-		return ERR;
+		returnCode(ERR);
 
 	/*
 	 * If 'newscr' has a different background than the window that we're
@@ -176,5 +176,5 @@ bool	wide;
 	if (_nc_tracing & TRACE_UPDATE)
 	    _tracedump("newscr", newscr);
 #endif /* TRACE */
-	return(OK);
+	returnCode(OK);
 }

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.42 1997/01/26 01:02:22 tom Exp $
+dnl $Id: aclocal.m4,v 1.43 1997/02/01 21:09:03 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -402,7 +402,6 @@ do
 			elif test -f $srcdir/$nc_dir/curses.priv.h; then
 				nc_depend="$nc_depend $nc_reldir/curses.priv.h"
 			fi
-
 			$AWK -f $srcdir/mk-1st.awk \
 				name=$nc_dir \
 				MODEL=$NC_ITEM \
@@ -413,6 +412,7 @@ do
 				overwrite=$WITH_OVERWRITE \
 				depend="$nc_depend" \
 				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			test $nc_dir = ncurses && WITH_OVERWRITE=no
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$nc_dir \
 				MODEL=$NC_ITEM \

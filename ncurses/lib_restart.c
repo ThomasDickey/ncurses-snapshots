@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.11 1997/02/02 01:10:25 tom Exp $")
 
 #undef tabs
 
@@ -55,18 +55,18 @@ MODULE_ID("$Id: lib_restart.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 int def_shell_mode(void)
 {
+	T((T_CALLED("def_shell_mode()")));
+
 	if (cur_term == 0)
-		return ERR;
+		returnCode(ERR);
 
 	/*
 	 * Turn off the XTABS bit in the tty structure if it was on.  If XTABS
 	 * was on, remove the tab and backtab capabilities.
 	 */
 
-	T(("def_shell_mode() called"));
-
 	if (GET_TTY(cur_term->Filedes, &cur_term->Ottyb) == -1)
-		return ERR;
+		returnCode(ERR);
 #ifdef TERMIOS
 	if (cur_term->Ottyb.c_oflag & tabs)
 		tab = back_tab = NULL;
@@ -74,24 +74,24 @@ int def_shell_mode(void)
 	if (cur_term->Ottyb.sg_flags & XTABS)
 		tab = back_tab = NULL;
 #endif
-	return OK;
+	returnCode(OK);
 }
 
 int def_prog_mode(void)
 {
-	T(("def_prog_mode() called"));
+	T((T_CALLED("def_prog_mode()")));
 
 	if (cur_term == 0)
-		return ERR;
+		returnCode(ERR);
 
 	if (GET_TTY(cur_term->Filedes, &cur_term->Nttyb) == -1)
-		return ERR;
+		returnCode(ERR);
 #ifdef TERMIOS
 	cur_term->Nttyb.c_oflag &= ~tabs;
 #else
 	cur_term->Nttyb.sg_flags &= ~XTABS;
 #endif
-	return OK;
+	returnCode(OK);
 }
 
 int restartterm(const char *term, int filenum, int *errret)
@@ -100,6 +100,8 @@ int saveecho = SP->_echo;
 int savecbreak = SP->_cbreak;
 int saveraw = SP->_raw;
 int savenl = SP->_nl;
+
+	T((T_CALLED("restartterm(%s,%d,%p)"), term, filenum, errret));
 
 	setupterm(term, filenum, errret);
 
@@ -127,7 +129,7 @@ int savenl = SP->_nl;
 
 	_nc_get_screensize();
 
-	return(OK);
+	returnCode(OK);
 }
 
 TERMINAL *set_curterm(TERMINAL *term)
@@ -140,11 +142,13 @@ TERMINAL *set_curterm(TERMINAL *term)
 
 int del_curterm(TERMINAL *term)
 {
+	T((T_CALLED("del_curterm(%p)"), term));
+
 	if (term != NULL) {
 		FreeIfNeeded(term->type.str_table);
 		FreeIfNeeded(term->type.term_names);
 		free(term);
-		return OK;
+		returnCode(OK);
 	}
-	return ERR;
+	returnCode(ERR);
 }
