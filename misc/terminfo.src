@@ -1,7 +1,12 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.21
+#	Version 10.1.22
 #	terminfo syntax
+#
+# This version of terminfo.src is distributed with ncurses.  It is based mainly
+# on the terminfo maintained by Eric Raymond.  However, it contains many
+# corrections which are not in that source, including some which are necessary
+# for proper functioning of ncurses 4.1 and above.
 #
 #	Eric S. Raymond		(current maintainer)
 #	John Kunze, Berkeley
@@ -613,7 +618,7 @@ linux-c-nc|linux console 1.3.x hack for ncurses only,
 	oc=\E]R, 
 	use=linux, 
 # From: Dennis Henriksen <opus@osrl.dk>, 9 July 1996
-linux-c|linux console 1.3.6+, with private palette for each virtual console, 
+linux-c|linux console 1.3.6+ with private palette for each virtual console, 
 	ccc, 
 	colors#8, pairs#64, 
 	initc=\E]P%?%p1%{9}%>%t%p1%{10}%-%p'a'%+%c%e%p1%d%p2%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%p3%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%p4%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;, 
@@ -2049,7 +2054,7 @@ xterm-16color|xterm with 16 colors like aixterm,
 #	SS3	\E O	\217
 #	CSI	\E [	\233
 #
-xterm-8bit|xterm terminal emulator, 8-bit controls (X Window System), 
+xterm-8bit|xterm terminal emulator 8-bit controls (X Window System), 
 	am, bce, km, mc5i, mir, msgr, xenl, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
@@ -6172,13 +6177,13 @@ rbcomm|IBM PC with RBcomm and EMACS keybindings,
 	rmir=^], rmkx=\E>, rmso=^U, rmul=^U, 
 	rs1=\017\E(B\E)0\025\E[?3l\E[>8g, sc=\E7, sgr0=\E[m, 
 	smcup=, smdc=, smir=^\, smkx=\E=, smso=^R, smul=^T, 
-rbcomm-nam|IBM PC with RBcomm, no autowrap, 
+rbcomm-nam|IBM PC with RBcomm without autowrap, 
 	am@, 
 	bel=^G, cr=^M, cud1=^J, ht=^I, ind=^J, 
 	is2=\017\035\E(B\E)0\E[?7l\E[?3l\E[>8g, kbs=^H, 
 	kcub1=^H, kcud1=^J, nel=^M^J, 
 	use=rbcomm, 
-rbcomm-w|IBM PC with RBcomm, 132 column mode, 
+rbcomm-w|IBM PC with RBcomm in 132 column mode, 
 	cols#132, 
 	bel=^G, cr=^M, cud1=^J, ht=^I, ind=^J, 
 	is2=\017\035\E(B\E)0\E[?7h\E[?3h\E[>8g, kbs=^H, 
@@ -7907,10 +7912,10 @@ cit101e|C. Itoh CIT-101e,
 cit101e-n|CIT-101e w/o am, 
 	am@, 
 	cvvis=\E[?1l\E[?4l\E[?7l, kbs=^H, kcub1=^H, kcud1=^J, use=cit101e, 
-cit101e-132|CIT-101e, 132 cols, 
+cit101e-132|CIT-101e with 132 cols, 
 	cols#132, 
 	kbs=^H, kcub1=^H, kcud1=^J, use=cit101e, 
-cit101e-n132|CIT-101e, 132 cols w/o am, 
+cit101e-n132|CIT-101e with 132 cols w/o am, 
 	am@, 
 	cols#132, 
 	cvvis=\E[?1l\E[?4l\E[?7l, kbs=^H, kcub1=^H, kcud1=^J, use=cit101e, 
@@ -10683,7 +10688,7 @@ tek4105a|Tektronix 4105,
 # and factory color maps.  After setting these modes, save them with NVSAVE.  No
 # delays are specified; use "stty ixon -ixany" to enable DC3/DC1 flow control!
 # "IC" cannot be used in combination with "im" & "ei".
-tek4106brl|tek4107brl|tek4109brl|Tektronix 4106, 4107, or 4109, 
+tek4106brl|tek4107brl|tek4109brl|Tektronix 4106 4107 or 4109, 
 	msgr, xon, 
 	cols#80, it#8, lines#32, vt#3, 
 	acsc=, bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, 
@@ -12512,7 +12517,7 @@ omron|Omron 8025AG,
 # "reset", "tset", or "tabs" utilities (use rt6221-w, 160 columns, for this).
 # Note that the Control-E key is useless on this brain-damaged terminal.  No
 # delays are specified; use "stty ixon -ixany" to enable DC3/DC1 flow control!
-rt6221|Ramtek 6221, 80x24, 
+rt6221|Ramtek 6221 80x24, 
 	msgr, xon, 
 	cols#80, it#8, lines#24, vt#3, 
 	acsc=, bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[>5l, 
@@ -12530,7 +12535,7 @@ rt6221|Ramtek 6221, 80x24,
 	sc=\E7, sgr0=\E[m, smacs=^N, smkx=\E=, smso=\E[7m, 
 	smul=\E[4m, tbc=\E[3g, 
 # [TO DO: Check out: short forms of ho/cl and ll; reset (\Ec)].
-rt6221-w|Ramtek 6221, 160x48, 
+rt6221-w|Ramtek 6221 160x48, 
 	cols#160, lines#48, 
 	ll=\E[48;1H, use=rt6221, 
 
@@ -13018,7 +13023,7 @@ apollo_color|apollo color display,
 
 # Convergent AWS workstation from Gould/SEL UTX/32 via BRL
 # (aws: removed unknown :dn=^K: -- esr)
-aws|Convergent Technologies AWS workstation under UTX,Xenix, 
+aws|Convergent Technologies AWS workstation under UTX and Xenix, 
 	am, 
 	cols#80, lines#28, xmc#0, 
 	acsc=, clear=^L, cud1=^K, cuf1=^R, cup=\EC%p2%c%p1%c, 
@@ -14730,6 +14735,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 10.1.21 (Sat Jan 31 17:39:16 EST 1998)
 #	* set ncv for FreeBSD console (treat colors with reverse specially).
 #	* remove sgr string from qnx based on report by Xiaodan Tang
+# 10.1.22 (Wed Feb 11 18:40:12 EST 1998)
+#	* remove spurious commas from descriptions
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

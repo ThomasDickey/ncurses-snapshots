@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!--
-  $Id: announce.html.in,v 1.18 1997/05/17 23:49:11 tom Exp $
+  $Id: announce.html.in,v 1.19 1998/02/12 00:20:11 tom Exp $
 -->
 <HTML>
 <HEAD>
 <TITLE>Announcing ncurses @VERSION@</TITLE>
-<link rev=made href="mailto:dickey@clark.net">
+<link rev=made href="mailto:ncurses@bsdi.com">
 </HEAD>
 <BODY>
 
@@ -29,11 +29,11 @@ terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), tset(1),
 and a termcap conversion tool captoinfo(1).  Full manual pages are provided for
 the library and tools.<P>
 
-The ncurses distribution is available via anonymous FTP at:
+The ncurses distribution is available via anonymous FTP at
+the GNU distribution site
+<A HREF="ftp://prep.ai.mit.edu/pub/gnu">ftp://prep.ai.mit.edu/pub/gnu</A>.
+It is also available at
 <A HREF="ftp://ftp.clark.net/pub/dickey/ncurses">ftp://ftp.clark.net/pub/dickey/ncurses</A>.
-and
-<A HREF="ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses">ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses</A>.
-It is also carried on the GNU distribution site at <A HREF="ftp://prep.ai.mit.edu/pub/gnu">ftp://prep.ai.mit.edu/pub/gnu</A>.
 
 <H1>Features of ncurses</H1>
 
@@ -69,6 +69,7 @@ calls is documented so you can use the SVr4 subset only).
 of the screen if your terminal has an insert-character capability.
 <LI>(PC-clone boxes only) Support for access to the IBM PC ROM characters
 0-32 through the highlight A_ALTCHARSET.
+<LI>Ada95 and C++ bindings.
 <LI>Support for mouse event reporting under xterm.
 <LI>Extended mouse support via Alessandro Rubini's gpm package.
 <LI>The function <CODE>wresize()</CODE> allows you to resize windows, preserving
@@ -76,6 +77,12 @@ their data.
 <LI>The function <CODE>use_default_colors()</CODE> allows you to
 use the terminal's default colors for the default color pair,
 achieving the effect of transparent colors.
+<LI>The functions <CODE>keyok()</CODE>
+and <CODE>define_key()</CODE> allow
+you to better control the use of function keys,
+e.g., disabling the ncurses KEY_MOUSE,
+or by defining more than one control sequence to map to a given key code.
+<LI>Support for 16-color terminals, such as aixterm and XFree86 xterm.
 <LI>Better cursor-movement optimization.  The package now features a
 cursor-local-movement computation more efficient than either BSD's
 or System V's.
@@ -148,6 +155,10 @@ including:<P>
 for similar applications on Linux.
 <DT> lynx-2.7 
 <DD> the character-screen WWW browser
+<DT> Midnight Commander 4.1
+<DD> file manager
+<DT> mutt 0.88
+<DD> mail utility
 <DT> ncftp 2.0
 <DD> file-transfer utility
 <DT> nvi
@@ -162,7 +173,7 @@ as well as some that use ncurses for the terminfo support alone:
 <DT> minicom-1.75
 <DD> terminal emulator
 <DT> tin-unoff
-<DD> tin (unofficial) newsreader, supporting color, MIME
+<DD> tin 1.4 newsreader, supporting color, MIME
 <A HREF="ftp://ftp.akk.uni-karlsruhe.de/pub/news/clients/tin-unoff">ftp://ftp.akk.uni-karlsruhe.de/pub/news/clients/tin-unoff</A>.
 <DT> vile
 <DD> vi-like-emacs
@@ -175,15 +186,15 @@ a few games).
 
 <H2>Who's Who and What's What</H2>
 
-The original maintainer of ncurses is <A
-HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A>.  Unfortunately,
-he can only work on the package part time.  As a result, since 1.8.1,
-much of the enhancement work and documentation has been done
-by <A HREF="http://www.ccil.org/~esr/home.html">Eric S. Raymond</A>.
-The current primary maintainers are
+The original developers of ncurses are <A
+HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A> and
+<A HREF="http://www.ccil.org/~esr/home.html">Eric S. Raymond</A>.
+Ongoing work is being done by
 <A HREF="mailto:dickey@clark.net">Thomas Dickey</A>
 and
 <A HREF="mailto:Juergen.Pfeifer@T-Online.de">J&uuml;rgen Pfeifer</A>.
+Contact the current maintainers at
+<A HREF="mailto:ncurses@bsdi.com">ncurses@bsdi.com</A>.
 <P>
 
 There is an ncurses mailing list.  It is a majordomo list; to join, write
@@ -206,20 +217,11 @@ Beta versions of ncurses and patches to the current release are made available a
 We need people to help with these projects.  If you are interested in working 
 on them, please join the ncurses list.
 
-<H2>The terminfo/termcap Database</H2>
-
-The distribution includes and uses a copy of the terminfo-format
-terminal description file maintained by Eric Raymond.
-
-You can download either the
-<A HREF="http://www.ccil.org/~esr/terminfo/termtypes.tc.gz">termcap</A>
-or
-<A HREF="http://www.ccil.org/~esr/terminfo/termtypes.ti.gz">terminfo</A>
-versions of the terminal-type
-database from Eric's ncurses page, 
-<A HREF="http://www.ccil.org/~esr/ncurses.html">http://www.ccil.org/~esr/ncurses.html</A>.<P>
-
 <H2>Other Related Resources</H2>
+
+The distribution includes and uses a version of the terminfo-format
+terminal description file maintained by Eric Raymond.
+<A HREF="http://www.ccil.org/~esr/ncurses.html">http://www.ccil.org/~esr/ncurses.html</A>.<P>
 
 You can find lots of information on terminal-related topics
 not covered in the terminfo file at
