@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/03/05 03:53:58 $
+#	$Date: 2000/03/05 03:43:47 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1439,8 +1439,6 @@ bsdos-sparc|Sun SPARC BSD/OS Console,
 # BSD/OS on the PowerPC 
 bsdos-ppc|PowerPC BSD/OS Console, 
 	use=bsdos-pc, 
-
-#### DEC VT52
 # (<acsc>/<rmacs>/<smacs> capabilities aren't in DEC's official entry -- esr)
 vt52|dec vt52, 
 	OTbs, 

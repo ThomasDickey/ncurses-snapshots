@@ -52,7 +52,7 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.51 2000/02/13 01:01:26 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.52 2000/03/11 12:23:42 tom Exp $")
 
 static int total_written;
 
@@ -425,7 +425,7 @@ write_object(FILE * fp, TERMTYPE * tp)
 
     boolmax = 0;
     for (i = 0; i < last_bool; i++) {
-	if (tp->Booleans[i])
+	if (tp->Booleans[i] == TRUE)
 	    boolmax = i + 1;
     }
 
@@ -454,8 +454,15 @@ write_object(FILE * fp, TERMTYPE * tp)
     /* write out the header */
     TRACE_OUT(("Header of %s @%ld", namelist, ftell(fp)));
     if (fwrite(buf, 12, 1, fp) != 1
-	|| fwrite(namelist, sizeof(char), namelen, fp) != namelen
-	|| fwrite(tp->Booleans, sizeof(char), boolmax, fp) != boolmax)
+	|| fwrite(namelist, sizeof(char), namelen, fp) != namelen)
+	  return (ERR);
+
+    for (i = 0; i < boolmax; i++)
+	if (tp->Booleans[i] == TRUE)
+	    buf[i] = TRUE;
+	else
+	    buf[i] = FALSE;
+    if (fwrite(buf, sizeof(char), boolmax, fp) != boolmax)
 	  return (ERR);
 
     if (even_boundary(namelen + boolmax))

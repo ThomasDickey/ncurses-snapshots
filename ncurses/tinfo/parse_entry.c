@@ -47,7 +47,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.42 2000/02/13 01:01:26 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.43 2000/03/12 00:09:06 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -256,7 +256,7 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 	token_type = _nc_get_token()) {
 	if (strcmp(_nc_curr_token.tk_name, "use") == 0
 	    || strcmp(_nc_curr_token.tk_name, "tc") == 0) {
-	    entryp->uses[entryp->nuses].parent = (void *) _nc_save_str(_nc_curr_token.tk_valstring);
+	    entryp->uses[entryp->nuses].name = _nc_save_str(_nc_curr_token.tk_valstring);
 	    entryp->uses[entryp->nuses].line = _nc_curr_line;
 	    entryp->nuses++;
 	} else {
@@ -457,7 +457,7 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		 * have picked up defaults via translation.
 		 */
 		for (i = 0; i < entryp->nuses; i++)
-		    if (!strchr((char *) entryp->uses[i].parent, '+'))
+		    if (!strchr((char *) entryp->uses[i].name, '+'))
 			has_base_entry = TRUE;
 
 	    postprocess_termcap(&entryp->tterm, has_base_entry);

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.190 2000/02/06 01:17:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.191 2000/03/05 18:17:52 juergen Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -646,10 +646,10 @@ changequote(<<, >>)dnl
 cf_cv_gnat_version=`$cf_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
   sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
 case $cf_cv_gnat_version in
-  3.[1-9]*|[4-9].*)
+  3.1[1-9]*|3.[2-9]*|[4-9].*)
     cf_cv_prog_gnat_correct=yes
     ;;
-  *) echo Unsupported GNAT version $cf_cv_gnat_version. Required is 3.10 or better. Disabling Ada95 binding.
+  *) echo Unsupported GNAT version $cf_cv_gnat_version. Required is 3.11 or better. Disabling Ada95 binding.
      cf_cv_prog_gnat_correct=no
      ;;
 esac
