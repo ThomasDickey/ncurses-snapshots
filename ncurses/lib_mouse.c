@@ -60,7 +60,7 @@
 
 int _nc_max_click_interval = 166;	/* max press/release separation */
 
-static bool		mousetype;
+static int		mousetype;
 #define M_XTERM		-1	/* use xterm's mouse tracking? */
 #define M_NONE		0	/* no mouse device */
 #define M_GPM		1	/* use GPM (not yet implemented) */
@@ -85,7 +85,7 @@ void _nc_mouse_init(SCREEN *sp)
 	events[i].id = INVALID_EVENT;
 
     /* we know how to recognize mouse events under xterm */
-    if (!strncmp(cur_term->type.term_names, "xterm", 5))
+    if (!strncmp(cur_term->type.term_names, "xterm", 5) && key_mouse)
 	mousetype = M_XTERM;
 
     /* GPM: initialize connection to gpm server */
@@ -193,8 +193,8 @@ bool _nc_mouse_inline(SCREEN *sp)
 	if (kbuf[0] & 16)
 	    eventp->bstate |= BUTTON_CTRL;
 
-	eventp->x = (kbuf[1] - '#') - 1; 
-	eventp->y = (kbuf[2] - '#') - 1; 
+	eventp->x = (kbuf[1] - ' ') - 1; 
+	eventp->y = (kbuf[2] - ' ') - 1; 
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
@@ -277,26 +277,29 @@ bool _nc_mouse_parse(int runcount)
 		    == !(next->bstate & BUTTON3_RELEASED))
 		)
 	    {
-		if (ep->bstate & BUTTON1_PRESSED)
+		if ((eventmask & BUTTON1_CLICKED)
+			&& (ep->bstate & BUTTON1_PRESSED))
 		{
 		    ep->bstate &=~ BUTTON1_PRESSED;
 		    ep->bstate |= BUTTON1_CLICKED;
+		    merge = TRUE;
 		}
-		if (ep->bstate & BUTTON2_PRESSED)
+		if ((eventmask & BUTTON2_CLICKED)
+			&& (ep->bstate & BUTTON2_PRESSED))
 		{
 		    ep->bstate &=~ BUTTON2_PRESSED;
 		    ep->bstate |= BUTTON2_CLICKED;
+		    merge = TRUE;
 		}
-		if (ep->bstate & BUTTON3_PRESSED)
+		if ((eventmask & BUTTON3_CLICKED)
+			&& (ep->bstate & BUTTON3_PRESSED))
 		{
 		    ep->bstate &=~ BUTTON3_PRESSED;
 		    ep->bstate |= BUTTON3_CLICKED;
+		    merge = TRUE;
 		}
-
-		/* throw away the second event */
-		next->id = INVALID_EVENT;
-
-		merge = TRUE;
+		if (merge)
+		    next->id = INVALID_EVENT;
 	    }
 	}
     } while
@@ -326,23 +329,29 @@ bool _nc_mouse_parse(int runcount)
 		    && (follower->bstate &
 		    	(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
 		{
-		    if (follower->bstate & BUTTON1_CLICKED)
+		    if ((eventmask & BUTTON1_DOUBLE_CLICKED)
+			&& (follower->bstate & BUTTON1_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON1_CLICKED;
 			follower->bstate |= BUTTON1_DOUBLE_CLICKED;
+			merge = TRUE;
 		    }
-		    if (follower->bstate & BUTTON2_CLICKED)
+		    if ((eventmask & BUTTON2_DOUBLE_CLICKED)
+			&& (follower->bstate & BUTTON2_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON2_CLICKED;
 			follower->bstate |= BUTTON2_DOUBLE_CLICKED;
+			merge = TRUE;
 		    }
-		    if (follower->bstate & BUTTON3_CLICKED)
+		    if ((eventmask & BUTTON3_DOUBLE_CLICKED)
+			&& (follower->bstate & BUTTON3_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON3_CLICKED;
 			follower->bstate |= BUTTON3_DOUBLE_CLICKED;
+			merge = TRUE;
 		    }
-		    ep->id = INVALID_EVENT;
-		    merge = TRUE;
+		    if (merge)
+			ep->id = INVALID_EVENT;
 		}
 
 		/* merge double-click events forward */
@@ -353,23 +362,29 @@ bool _nc_mouse_parse(int runcount)
 		    && (follower->bstate &
 		    	(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
 		{
-		    if (follower->bstate & BUTTON1_CLICKED)
+		    if ((eventmask & BUTTON1_TRIPLE_CLICKED)
+			&& (follower->bstate & BUTTON1_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON1_CLICKED;
 			follower->bstate |= BUTTON1_TRIPLE_CLICKED;
+			merge = TRUE;
 		    }
-		    if (follower->bstate & BUTTON2_CLICKED)
+		    if ((eventmask & BUTTON2_TRIPLE_CLICKED)
+			&& (follower->bstate & BUTTON2_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON2_CLICKED;
 			follower->bstate |= BUTTON2_TRIPLE_CLICKED;
+			merge = TRUE;
 		    }
-		    if (follower->bstate & BUTTON3_CLICKED)
+		    if ((eventmask & BUTTON3_TRIPLE_CLICKED)
+			&& (follower->bstate & BUTTON3_CLICKED))
 		    {
 			follower->bstate &=~ BUTTON3_CLICKED;
 			follower->bstate |= BUTTON3_TRIPLE_CLICKED;
+			merge = TRUE;
 		    }
-		    ep->id = INVALID_EVENT;
-		    merge = TRUE;
+		    if (merge)
+			ep->id = INVALID_EVENT;
 		}
 	    }
     } while

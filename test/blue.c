@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
     if (argc == 2)
 	srand((unsigned)atoi(argv[1]));
     else
-	srand((unsigned)time((long *)0));
+	srand((unsigned)time((time_t *)0));
 
     init_vars();
 

@@ -42,4 +42,6 @@ char *strerror(int err)
 		return NULL;
 	return sys_errlist[err];
 }
+#else
+void _nc_strerror() { }	/* nonempty for strict ANSI compilers */
 #endif

@@ -26,6 +26,7 @@ install install.man :
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man1/$$i; \
 	done
+	-ln -s $(mandir)/man1/tset.1 $(mandir)/man1/reset.1
 	@cd $(srcdir); for i in *.5; do \
 		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\

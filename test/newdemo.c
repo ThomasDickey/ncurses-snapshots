@@ -1,4 +1,4 @@
-/* @Header: /src/usr.local/lib/ncurses-1.9.0/test/RCS/newdemo.c,v 1.1 1995/04/21 16:39:03 djm Exp djm @
+/* $Header: /users/source/archives/ncurses.vcs/test/RCS/newdemo.c,v 1.3.1.1 1995/09/22 01:45:50 tom Exp $
  *
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
@@ -61,10 +61,11 @@ int
 main(int argc, char **argv)
 {
 WINDOW  *win;
-int     w, x, y, i, j, c, len;
+int     w, x, y, i, j, len;
 char    buffer[80], *message;
 int     width, height;
 chtype  save[80];
+chtype  c;
 
     initscr();
     start_color();
@@ -93,7 +94,7 @@ chtype  save[80];
         for(i=0; i < 5000; ++i)
         {   x = rand() % (width-2)  + 1;
             y = rand() % (height-2) + 1;
-            mvwaddch(win, y, x, (chtype)c);
+            mvwaddch(win, y, x, c);
             wrefresh(win);
             nodelay(win,TRUE);
             if (wgetch(win) != ERR)
@@ -174,8 +175,8 @@ chtype  save[80];
 	for(i=2; i < width - 4; ++i)
         {   c = mvwinch(win, 4, i);
             save[j++] = c;
-            c = c & 0x7f;
-	    mvwaddch(win, 4, i, (chtype)c);
+            c = c & A_CHARTEXT;
+	    mvwaddch(win, 4, i, c);
         }
         wrefresh(win);
 
@@ -326,7 +327,7 @@ int WaitForUser(void)
  t = time((time_t *)0);
  while(1)
    {
-    if ((key = getch()) != ERR)
+    if ((int)(key = getch()) != ERR)
       {
        if (key  == 'q' || key == 'Q')
           return  1;

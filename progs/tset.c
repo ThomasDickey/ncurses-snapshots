@@ -77,6 +77,15 @@
 #include <term.h>
 #include <dump_entry.h>
 
+#if HAVE_GETOPT_H
+#include <getopt.h>
+#else
+extern char *optarg;
+extern int optind;
+#endif
+
+extern char **environ;
+
 #ifndef CTRL
 #define CTRL(x)	((x) & 0x1f)
 #endif /* CTRL */
@@ -170,7 +179,7 @@ askuser(char *dflt)
 			return (dflt);
 		}
 
-		if ((p = index(answer, '\n')) != 0)
+		if ((p = strchr(answer, '\n')) != 0)
 			*p = '\0';
 		if (answer[0])
 			return (answer);
@@ -319,7 +328,7 @@ next:	if (*arg == ':') {
 			goto badmopt;
 		++arg;
 	} else {				/* Optional baudrate. */
-		arg = index(p = arg, ':');
+		arg = strchr(p = arg, ':');
 		if (arg == NULL)
 			goto badmopt;
 		*arg++ = '\0';
@@ -443,7 +452,7 @@ get_termcap_entry(char *userarg)
 	 * Try ttyname(3); check for dialup or other mapping.
 	 */
 	if (ttypath = ttyname(STDERR_FILENO)) {
-		if (p = rindex(ttypath, '/'))
+		if (p = strrchr(ttypath, '/'))
 			++p;
 		else
 			p = ttypath;
@@ -464,8 +473,20 @@ map:	ttype = mapped(ttype);
 	 * real entry from /etc/termcap.  This prevents us from being fooled
 	 * by out of date stuff in the environment.
 	 */
-found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/')
-		unsetenv("TERMCAP");
+found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
+		/* 'unsetenv("TERMCAP")' is not portable.
+		 * The 'environ' array is better.
+		 */
+		int n;
+		for (n = 0; environ[n] != 0; n++) {
+			if (!strncmp("TERMCAP=", environ[n], 8)) {
+				while ((environ[n] = environ[n+1]) != 0) {
+					n++;
+				}
+				break;
+			}
+		}
+	}
 
 	/*
 	 * ttype now contains a pointer to the type of the terminal.
@@ -493,6 +514,15 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/')
  *
  **************************************************************************/
 
+#undef CEOF
+#undef CERASE
+#undef CINTR
+#undef CKILL
+#undef CQUIT
+#undef CSTART
+#undef CSTOP
+#undef CSUSP
+
 /* control-character defaults */
 #define CEOF	CTRL('D')
 #define CERASE	CTRL('H')
@@ -505,7 +535,7 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/')
 
 #define	CHK(val, dft)	(val <= 0 ? dft : val)
 
-static int	set_tabs __P((void));
+static int	set_tabs (void);
 
 /*
  * Reset the terminal mode bits to a sensible state.  Very useful after
@@ -643,8 +673,14 @@ set_control_chars(void)
 	if (terasechar < 0)
 		terasechar = (bs_char != 0) ? bs_char : CTRL('h');
 #else
+  	/* the real erasechar logic used now */
+ 	char bs_char = 0;
+
 	if (key_backspace != (char *)NULL)
-		terasechar = key_backspace[0];
+		bs_char = key_backspace[0];
+
+	if (terasechar <= 0)
+	    terasechar = (bs_char != 0) ? bs_char : CTRL('h');
 #endif /* __OBSOLETE__ */
 
 	if (mode.c_cc[VERASE] == 0 || terasechar != 0)
@@ -866,10 +902,10 @@ obsolete(char **argv)
 }
 
 static void
-usage(void)
+usage(const char* pname)
 {
 	(void)fprintf(stderr,
-"usage: tset [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n");
+"usage: %s [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);
 	exit(1);
 }
 
@@ -899,7 +935,17 @@ main(int argc, char **argv)
 
 	obsolete(argv);
 	noinit = noset = quiet = Sflag = sflag = showterm = 0;
+#ifdef linux
+	/*
+	 * Some older Linuxes seem to give back an incorrect return value.
+	 * Yves Arrouye reports: "It looks like getopt is broken on my linux
+	 * system (gcc 2.6.2, libc 4.6.27): it returns 1 instead of -1 when
+	 * the options are ended, and optind is badly positioned."
+	 */
+	while ((ch = getopt(argc, argv, "-a:d:e:Ii:k:m:np:QSrs")) > 1) {
+#else
 	while ((ch = getopt(argc, argv, "-a:d:e:Ii:k:m:np:QSrs")) != EOF) {
+#endif
 		switch (ch) {
 		case '-':		/* display term only */
 			noset = 1;
@@ -950,14 +996,18 @@ main(int argc, char **argv)
 			break;
 		case '?':
 		default:
-			usage();
+			usage(*argv);
 		}
 	}
 	argc -= optind;
 	argv += optind;
 
+#ifdef linux
+	if (ch == 1) --argv;
+#endif
+
 	if (argc > 1)
-		usage();
+		usage(*argv);
 
 	ttype = get_termcap_entry(*argv);
 

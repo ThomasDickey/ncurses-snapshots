@@ -9,6 +9,19 @@ Bugs:
   NetBSD, or BSDI.  You may see it under System Vs.  For details, see the
   analysis in ncurses/lib_tstp.c.
 
+* It doesn't work on a DEC Alpha in 64-bit mode.  Brooks Smith
+  <brooks@csd.uwm.edu> reports:
+
+  >                                It almost works. :-)  The tests run
+  > but after every character ncurses libraries write to the screen the
+  > string of letters 'lqkxjmwuvtn' follows on the same line on the screen.
+  > 
+  > The DEC alpha has a 64bit pointer size and a 32 bit int size.  The only
+  > place I found a union that might be a problem is in lib_tparm.c.  But
+  > that possibilty is only for obscure term types, I think.
+
+  We have no idea what's going on here yet...
+
 Tweaks:
 
 * Ian Jackson reported on the Debian list that the update code seems to be

@@ -126,13 +126,14 @@ void dump_init(int mode, int sort, int twidth, int traceval)
 }
 
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
-#define REALCTL(c) ((c) < 127 && iscntrl(c))
+#define CHAR_OF(s) (*(unsigned char *)s)
+#define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
 
-char *expand(unsigned char *srcp)
+char *expand(char *srcp)
 {
 static char	buffer[1024];
 int		bufp;
-unsigned char	*ptr, *str = srcp;
+char		*ptr, *str = srcp;
 bool		islong = (strlen(srcp) > 3);
 
     	bufp = 0;
@@ -161,7 +162,7 @@ bool		islong = (strlen(srcp) > 3);
 	    		buffer[bufp++] = '\\';
 	    		buffer[bufp++] = 'n';
 		}
-		else if (REALCTL(*str) && *str != '\\' && (!islong || isdigit(str[1])))
+		else if (REALCTL(str) && *str != '\\' && (!islong || isdigit(str[1])))
 		{
 			(void) sprintf(&buffer[bufp], "^%c", *str + '@');
 			bufp += 2;

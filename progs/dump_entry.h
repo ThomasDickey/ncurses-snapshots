@@ -44,6 +44,6 @@ extern void dump_init(int, int, int, int);
 extern int fmt_entry(TERMTYPE *, int (*)(int, int), char *, bool, bool);
 extern void dump_entry(TERMTYPE *, int (*)(int, int));
 extern void compare_entry(void (*)(int, int, char *));
-extern char *expand(unsigned char *);
+extern char *expand(char *);
 
 #define FAIL	-1

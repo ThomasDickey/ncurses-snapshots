@@ -787,6 +787,7 @@ extern int wresize (WINDOW *, int, int);
 #define KEY_MAX		0777		/* Maximum key value */
 
 /* mouse interface */
+#define NCURSES_MOUSE_VERSION	1
 
 /* event masks */
 #define	BUTTON1_RELEASED	000000000001L

@@ -26,7 +26,8 @@ You will need the following in order to build and install ncurses under UNIX:
 
 INSTALLATION PROCEDURE:
 
-1.  Decide where you want to put the object files of terminal descriptions. 
+1.  IF YOU HAVE ROOT: First, decide where you want to put the object files of
+    terminal descriptions. (If you don't have root, you may skip this step.)
     The default is /usr/lib/terminfo.  If your system already has a
     terminfo database, you can put it somewhere else.  Keep in mind that 
     this directory should probably be in your root filesystem so that 
@@ -94,10 +95,10 @@ INSTALLATION PROCEDURE:
     do), some test programs, and the panels and menus libraries.
     Read the file test/README for details on the test programs.
 
-4.  Type 'make install' to install the libraries, the programs, the terminfo
-    database and the man pages.  Alternately, you can type 'make install' in
-    each directory you want to install.  In the top-level directory, you can do
-    a partial install using these commands:
+4.  IF YOU HAVE ROOT: You can type 'make install' to install the libraries,
+    the programs, the terminfo database and the man pages.  Alternately, you
+    can type 'make install' in each directory you want to install.  In the
+    top-level directory, you can do a partial install using these commands:
  
 	'make install.progs'    installs tic, infocmp, clear and tput.
   	'make install.includes' installs the headers.
@@ -107,11 +108,8 @@ INSTALLATION PROCEDURE:
 			        compiled).
 	'make install.man'      installs the man pages.
 
-5.  Type 'make install.data' installs the terminfo database. You can skip this
-    part if your system already has such a database.
-
   ############################################################################
-  #           CAVEAT EMPTOR: 'install.data' will NUKE any existing           #
+  #     CAVEAT EMPTOR: 'install.data' run as root will NUKE any existing     #
   #  terminfo database. If you have any custom or unusual entries SAVE them  #
   #  before you install ncurses.  I have a file called terminfo.custom for   #
   #  this purpose.  Don't forget to run tic on the file once you're done.    #
@@ -125,6 +123,15 @@ INSTALLATION PROCEDURE:
     We have attacked this problem by breaking the file in half, cutting 
     each section's core requirements drastically (the cut point was chosen
     so there are no `use' references that cross the cut going forward).  
+
+    IF YOU DO NOT HAVE ROOT: Change directory to the `progs' subdirectory
+    and run the `capconvert' script.  This script will deduce various things
+    about your environment and use them to build you a private terminfo tree,
+    so you can use ncurses applications.
+
+    If more than one user at your site does this, the space for the duplicate
+    trees is wasted.  Try to get your site administrators to install a system-
+    wide terminfo tree instead.
 
 7.  The c++ directory has C++ classes that are built on top of ncurses and
     panels.  You need to have c++ (and its libraries) installed before you can
@@ -182,10 +189,10 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 
 	Please configure the ncurses library in a pure-terminfo mode; that
 	is, with the --disable-termcap option.   This will make the curses 
-	library smaller and faster. The ncurses library include a termcap 
+	library smaller and faster. The ncurses library includes a termcap 
 	emulation that queries the terminfo database, so even applications 
 	that use raw termcap to query terminal characteristics will win 
-	(providing you relink them!).
+	(providing you recompile and relink them!).
 
 	In various Linuxes (and possibly elsewhere) there has been a practice
 	of designating the system console driver type as `console'.  Please
