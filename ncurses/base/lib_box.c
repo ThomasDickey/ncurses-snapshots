@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,14 +40,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.17 2002/02/16 23:41:01 tom Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.18 2002/02/23 20:40:06 tom Exp $")
 
 NCURSES_EXPORT(int)
 wborder(WINDOW *win,
-	const chtype ls, const chtype rs,
-	const chtype ts, const chtype bs,
-	const chtype tl, const chtype tr,
-	const chtype bl, const chtype br)
+	chtype ls, chtype rs,
+	chtype ts, chtype bs,
+	chtype tl, chtype tr,
+	chtype bl, chtype br)
 {
     NCURSES_SIZE_T i;
     NCURSES_SIZE_T endx, endy;

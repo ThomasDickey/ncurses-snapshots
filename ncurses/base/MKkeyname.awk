@@ -1,6 +1,6 @@
-# $Id: MKkeyname.awk,v 1.20 2001/09/22 20:32:55 tom Exp $
+# $Id: MKkeyname.awk,v 1.21 2002/02/23 22:36:33 tom Exp $
 ##############################################################################
-# Copyright (c) 1999,2000,2001 Free Software Foundation, Inc.                #
+# Copyright (c) 1999-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -78,4 +78,13 @@ END {
 	print "\t}"
 	print "\treturn (NCURSES_CONST char *)table[c];"
 	print "}"
+	print ""
+	print "#if USE_WIDEC_SUPPORT"
+	print "NCURSES_EXPORT(NCURSES_CONST char *) key_name (wchar_t c)"
+	print "{"
+	print "\tchar *result = keyname((int)c);"
+	print "\tif (!strncmp(result, \"M-\", 2)) result = \"UNKNOWN KEY\";"
+	print "\treturn result;"
+	print "}"
+	print "#endif"
 }

@@ -1,4 +1,4 @@
-# $Id: mk-0th.awk,v 1.12 2001/12/08 18:57:26 tom Exp $
+# $Id: mk-0th.awk,v 1.13 2002/02/23 20:38:11 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -53,6 +53,10 @@ BEGIN	{
 		{
 			if ( found == 0 )
 			{
+				if ( subsets ~ /widechar/ )
+					widechar = 1;
+				else
+					widechar = 0;
 				printf "C_SRC ="
 				if ( $2 == "lib" )
 					found = 1
@@ -61,7 +65,7 @@ BEGIN	{
 			}
 			if ( libname == "c++" || libname == "c++w" ) {
 				printf " \\\n\t%s/%s.cc", $3, $1
-			} else {
+			} else if ( widechar == 1 || $3 != "$(wide)" ) {
 				printf " \\\n\t%s/%s.c", $3, $1
 			}
 		}
