@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.36 1998/10/11 00:28:53 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.37 1999/01/02 22:38:25 tom Exp $")
 
 /*
  *	char *
@@ -583,21 +583,3 @@ char *result;
 	va_end(ap);
 	return result;
 }
-
-#ifdef __UNUSED__	/* we never documented this, and it confuses Emacs */
-char *tparam(const char *string, char *buffer, int bufsiz, ...)
-{
-va_list	ap;
-char *result = 0;
-
-	va_start(ap, bufsiz);
-#ifdef TRACE
-	tname = "tparam";
-#endif /* TRACE */
-	if (tparam_internal(string, ap) != 0
-	 && (int)out_used < bufsiz)
-		result = strcpy(buffer, out_buff);
-	va_end(ap);
-	return result;
-}
-#endif /* __UNUSED__ */

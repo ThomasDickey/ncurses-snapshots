@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.125 1998/12/27 03:48:18 tom Exp $
+ * $Id: curses.priv.h,v 1.126 1999/01/03 01:00:41 tom Exp $
  *
  *	curses.priv.h
  *
@@ -673,8 +673,10 @@ extern char *_nc_trace_buf(int, size_t);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
 extern int _nc_access(const char *, int);
+extern int _nc_baudrate(int);
 extern int _nc_getenv_num(const char *);
 extern int _nc_keypad(bool);
+extern int _nc_ospeed(int);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);

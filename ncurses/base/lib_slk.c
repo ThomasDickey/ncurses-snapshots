@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>	/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.14 1998/02/11 12:13:56 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.15 1999/01/02 22:56:30 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -103,14 +103,9 @@ char *p;
 	SP->_slk->buffer = NULL;
 	SP->_slk->attr   = A_STANDOUT;
 
-#ifdef num_labels
 	SP->_slk->maxlab = (num_labels > 0) ? num_labels : MAX_SKEY;
 	SP->_slk->maxlen = (num_labels > 0) ? label_width * label_height : MAX_SKEY_LEN;
 	SP->_slk->labcnt = (SP->_slk->maxlab < MAX_SKEY) ? MAX_SKEY : SP->_slk->maxlab;
-#else
-	SP->_slk->labcnt = SP->_slk->maxlab = MAX_SKEY;
-	SP->_slk->maxlen = MAX_SKEY_LEN;
-#endif /* num_labels */
 
 	SP->_slk->ent = typeCalloc(slk_ent, SP->_slk->labcnt);
 	if (SP->_slk->ent == NULL)

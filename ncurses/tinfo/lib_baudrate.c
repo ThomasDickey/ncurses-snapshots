@@ -39,8 +39,9 @@
 
 #include <curses.priv.h>
 #include <term.h>	/* cur_term, pad_char */
+#include <termcap.h>	/* ospeed */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.13 1998/09/19 21:34:26 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.14 1999/01/03 01:31:45 tom Exp $")
 
 /*
  *	int
@@ -98,11 +99,43 @@ static struct speed const speeds[] = {
 #endif
 };
 
+int _nc_baudrate(int OSpeed)
+{
+	int result = ERR;
+	unsigned i;
+
+	if (OSpeed >= 0) {
+		for (i = 0; i < SIZEOF(speeds); i++) {
+			if (speeds[i].s == (speed_t)OSpeed) {
+				result = speeds[i].sp;
+				break;
+			}
+		}
+	}
+	return (result);
+}
+
+
+int _nc_ospeed(int BaudRate)
+{
+	speed_t result = 1;
+	unsigned i;
+
+	if (BaudRate >= 0) {
+		for (i = 0; i < SIZEOF(speeds); i++) {
+			if (speeds[i].sp == BaudRate) {
+				result = speeds[i].s;
+				break;
+			}
+		}
+	}
+	return (result);
+}
+
 int
 baudrate(void)
 {
-size_t i;
-int ret;
+int result;
 
 	T((T_CALLED("baudrate()")));
 
@@ -114,26 +147,23 @@ int ret;
 #ifdef TRACE
 	if (SP && !isatty(fileno(SP->_ofp))
 	 && getenv("BAUDRATE") != 0) {
+		int ret;
 		if ((ret = _nc_getenv_num("BAUDRATE")) <= 0)
 			ret = 9600;
+		ospeed = _nc_ospeed(ret);
 		returnCode(ret);
 	}
 	else
 #endif
 
 #ifdef TERMIOS
-	ret = cfgetospeed(&cur_term->Nttyb);
+	ospeed = cfgetospeed(&cur_term->Nttyb);
 #else
-	ret = cur_term->Nttyb.sg_ospeed;
+	ospeed = cur_term->Nttyb.sg_ospeed;
 #endif
-	if(ret < 0 || (speed_t)ret > speeds[SIZEOF(speeds)-1].s)
-		returnCode(ERR);
-	cur_term->_baudrate = ERR;
-	for (i = 0; i < SIZEOF(speeds); i++)
-		if (speeds[i].s == (speed_t)ret)
-		{
-			cur_term->_baudrate = speeds[i].sp;
-			break;
-		}
-	returnCode(cur_term->_baudrate);
+	result = _nc_baudrate(ospeed);
+	if (cur_term != 0)
+		cur_term->_baudrate = result;
+
+	returnCode(result);
 }

@@ -38,8 +38,9 @@
 
 #include <curses.priv.h>
 #include <term.h>	/* TTY, cur_term */
+#include <termcap.h>	/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.4 1998/12/20 00:16:40 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.5 1999/01/03 01:38:34 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -47,7 +48,9 @@ TERMINAL *set_curterm(TERMINAL *term)
 {
 	TERMINAL *oldterm = cur_term;
 
-	cur_term = term;
+	if ((cur_term = term) != 0) {
+		ospeed = _nc_ospeed(cur_term->_baudrate);
+	}
 	return oldterm;
 }
 

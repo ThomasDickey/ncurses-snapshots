@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.34 1998/09/05 22:02:19 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.35 1999/01/02 19:57:24 tom Exp $")
 
 extern char **environ;
 
@@ -592,7 +592,7 @@ found:	if ((p = getenv("TERMCAP")) != 0 && *p != '/') {
 			ttype = askuser(0);
 	}
 	/* Find the terminfo entry.  If it doesn't exist, ask the user. */
-	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) != OK) {
+	while ((rval = setupterm((NCURSES_CONST char *)ttype, STDOUT_FILENO, &errret)) != OK) {
 		if (errret == 0) {
 			(void)fprintf(stderr, "tset: unknown terminal type %s\n",
 			    ttype);

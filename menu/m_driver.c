@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.13 1998/12/06 04:30:32 juergen Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.14 1999/01/02 20:31:56 tom Exp $")
 
 /* Macros */
 
@@ -429,92 +429,92 @@ int menu_driver(MENU * menu, int   c)
 	if ( !(c & ~((int)MAX_REGULAR_CHARACTER)) && isprint(c) )
 	  result = _nc_Match_Next_Character_In_Item_Name( menu, c, &item );
 #ifdef NCURSES_MOUSE_VERSION
-      else if (KEY_MOUSE == c)
+        else if (KEY_MOUSE == c)
 	  {
-	   MEVENT	event;
-	  WINDOW* uwin = Get_Menu_UserWin(menu);
+	    MEVENT	event;
+	    WINDOW* uwin = Get_Menu_UserWin(menu);
 
 	    getmouse(&event);
-	  if ((event.bstate & (BUTTON1_CLICKED         |
-			       BUTTON1_DOUBLE_CLICKED  |
-			       BUTTON1_TRIPLE_CLICKED   ))
-	      && wenclose(uwin,event.y, event.x))
-	    { /* we react only if the click was in the userwin, that means
-	       * inside the menu display area or at the decoration window.
-	       */
-	      WINDOW* sub = Get_Menu_Window(menu);
-	      int ry = event.y, rx = event.x; /* screen coordinates */
+	    if ((event.bstate & (BUTTON1_CLICKED         |
+				 BUTTON1_DOUBLE_CLICKED  |
+				 BUTTON1_TRIPLE_CLICKED   ))
+	     && wenclose(uwin,event.y, event.x))
+	      { /* we react only if the click was in the userwin, that means
+		 * inside the menu display area or at the decoration window.
+		 */
+		WINDOW* sub = Get_Menu_Window(menu);
+		int ry = event.y, rx = event.x; /* screen coordinates */
 
-	      result = E_NOT_SELECTABLE;
-	      if (mouse_trafo(&ry,&rx,FALSE))
-		{ /* rx, ry are now "curses" coordinates */
-		  if (ry < sub->_begy)
-		    { /* we clicked above the display region; this is 
-		       * interpreted as "scroll up" request
-		       */
-		      if (event.bstate & BUTTON1_CLICKED)
-			result = menu_driver(menu,REQ_SCR_ULINE);
+		result = E_NOT_SELECTABLE;
+		if (mouse_trafo(&ry,&rx,FALSE))
+		  { /* rx, ry are now "curses" coordinates */
+		    if (ry < sub->_begy)
+		      { /* we clicked above the display region; this is
+			 * interpreted as "scroll up" request
+			 */
+			if (event.bstate & BUTTON1_CLICKED)
+			  result = menu_driver(menu,REQ_SCR_ULINE);
 			else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
-			result = menu_driver(menu,REQ_SCR_UPAGE);
-		      else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
-			result = menu_driver(menu,REQ_FIRST_ITEM);
-		      RETURN(result);
-		    }
-		  else if (ry >= sub->_begy + sub->_maxy)
-		    { /* we clicked below the display region; this is 
-		       * interpreted as "scroll down" request
-		       */
-		      if (event.bstate & BUTTON1_CLICKED)
-			result = menu_driver(menu,REQ_SCR_DLINE);
-		      else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
-			result = menu_driver(menu,REQ_SCR_DPAGE);
-		      else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
-			result = menu_driver(menu,REQ_LAST_ITEM);
-		      RETURN(result);
-		  }
-		  else if (wenclose(sub,event.y,event.x))
-		    { /* Inside the area we try to find the hit item */
-		      int i,x,y,err;
-		      ry = event.y; rx = event.x;
-		      if (wmouse_trafo(sub,&ry,&rx,FALSE))
-		  {
-			  for(i=0;i<menu->nitems;i++)
-		      {
-			      err = _nc_menu_cursor_pos(menu,menu->items[i],
-							&y, &x);
-			      if (E_OK==err)
-				{
-				  if ((ry==y)       &&
-				      (rx>=x)       &&
-				      (rx < x + menu->itemlen))
-				    {
-				      item = menu->items[i];
-				      result = E_OK;
-				      break;
-				    }
-				}
-			    }
-			  if (E_OK==result)
-			    { /* We found an item, now we can handle the click.
-			       * A single click just positions the menu cursor
-			       * to the clicked item. A double click toggles
-			       * the item.
-			       */
-			      if (event.bstate & BUTTON1_DOUBLE_CLICKED)
-				{
-				  _nc_New_TopRow_and_CurrentItem(menu,
-								 my_top_row,
-								 item);
-				  menu_driver(menu,REQ_TOGGLE_ITEM);
-				  result = E_UNKNOWN_COMMAND;
-				}
+			  result = menu_driver(menu,REQ_SCR_UPAGE);
+			else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
+			  result = menu_driver(menu,REQ_FIRST_ITEM);
+			RETURN(result);
 		      }
-		  }
-		  }
+		    else if (ry >= sub->_begy + sub->_maxy)
+		      { /* we clicked below the display region; this is
+			 * interpreted as "scroll down" request
+			 */
+			if (event.bstate & BUTTON1_CLICKED)
+			  result = menu_driver(menu,REQ_SCR_DLINE);
+			else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
+			  result = menu_driver(menu,REQ_SCR_DPAGE);
+			else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
+			  result = menu_driver(menu,REQ_LAST_ITEM);
+			RETURN(result);
+		      }
+		    else if (wenclose(sub,event.y,event.x))
+		      { /* Inside the area we try to find the hit item */
+			int i,x,y,err;
+			ry = event.y; rx = event.x;
+			if (wmouse_trafo(sub,&ry,&rx,FALSE))
+			  {
+			    for(i=0;i<menu->nitems;i++)
+			      {
+				err = _nc_menu_cursor_pos(menu,menu->items[i],
+							  &y, &x);
+				if (E_OK==err)
+				  {
+				    if ((ry==y)       &&
+					(rx>=x)       &&
+					(rx < x + menu->itemlen))
+				      {
+					item = menu->items[i];
+					result = E_OK;
+					break;
+				      }
+				  }
+			      }
+			    if (E_OK==result)
+			      { /* We found an item, now we can handle the click.
+				 * A single click just positions the menu cursor
+				 * to the clicked item. A double click toggles
+				 * the item.
+				 */
+				if (event.bstate & BUTTON1_DOUBLE_CLICKED)
+				  {
+				    _nc_New_TopRow_and_CurrentItem(menu,
+								   my_top_row,
+								   item);
+				    menu_driver(menu,REQ_TOGGLE_ITEM);
+				    result = E_UNKNOWN_COMMAND;
+				  }
+			      }
+			  }
+		      }
 		  }
 	      }
 	    else
-	    result = E_NOT_SELECTABLE;
+	        result = E_NOT_SELECTABLE;
 	  }
 #endif /* NCURSES_MOUSE_VERSION */
 	else

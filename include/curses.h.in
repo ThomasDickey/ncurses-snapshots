@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.75 1998/12/27 03:38:04 tom Exp $ */
+/* $Id: curses.h.in,v 1.76 1998/12/27 13:46:13 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -757,7 +757,7 @@ extern int wbkgrnd(WINDOW *,const cchar_t *);		/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);	/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern int wborder_set(WINDOW *,cchar_t*,cchar_t*,cchar_t*,cchar_t*,cchar_t*,cchar_t*,cchar_t*,cchar_t*);	/* missing */
+extern int wborder_set(WINDOW *,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wchgat(WINDOW *, int, attr_t, short, const void *);/* implemented */
 extern int wclear(WINDOW *);				/* implemented */
