@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.11 2003/05/24 18:57:33 tom Exp $
+# $Id: manlinks.sed,v 1.12 2003/12/20 13:17:56 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -53,12 +53,12 @@ s/\.SH[ 	][ 	]*/.SH_(/
 /^\.SH_(NAME/,/^\.SH_(SYNOPSIS/{
 s/\\-.*/ -/
 / -/{
-	s/ -.*//
-	s/ /\
+s/ -.*//
+s/ /\
 /g
 }
 /^-/{
-	d
+d
 }
 s/ /\
 /g
@@ -69,32 +69,32 @@ s/ /\
 # then strip off return-type of each function.
 # finally, remove the parameter list, which begins with a '('.
 /^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
-	/^[^(]*$/d
-	# reduce
-	#	.B "int add_wch( const cchar_t *\fIwch\fB );"
-	# to
-	#	add_wch( const cchar_t *\fIwch\fB );"
-	s/^\([^ (]* [^ (]* [*]*\)//g
-	s/^\([^ (]* [*]*\)//g
-	# trim blanks in case we have
-	#	void (*) (FORM *) field_init(const FORM *form);
-	s/) (/)(/g
-	# reduce stuff like
-	#	void (*)(FORM *) field_init(const FORM *form);
-	# to
-	#	field_init(const FORM *form);
-	s/^\(([^)]*)\)\(([^)]*)\)*[ ]*//g
-	# rename marker temporarily
-	s/\.SH_(/.SH_/
-	# kill lines with ");", and trim off beginning of argument list.
-	s/[()].*//
-	# rename marker back
-	s/\.SH_/.SH_(/
+/^[^(]*$/d
+# reduce
+#	.B "int add_wch( const cchar_t *\fIwch\fB );"
+# to
+#	add_wch( const cchar_t *\fIwch\fB );"
+s/^\([^ (]* [^ (]* [*]*\)//g
+s/^\([^ (]* [*]*\)//g
+# trim blanks in case we have
+#	void (*) (FORM *) field_init(const FORM *form);
+s/) (/)(/g
+# reduce stuff like
+#	void (*)(FORM *) field_init(const FORM *form);
+# to
+#	field_init(const FORM *form);
+s/^\(([^)]*)\)\(([^)]*)\)*[ ]*//g
+# rename marker temporarily
+s/\.SH_(/.SH_/
+# kill lines with ");", and trim off beginning of argument list.
+s/[()].*//
+# rename marker back
+s/\.SH_/.SH_(/
 }
 #
 # delete ".SH DESCRIPTION" and following lines
 /^\.SH_(DESCRIPTION/,${
-	d
+d
 }
 #
 # delete any remaining directives

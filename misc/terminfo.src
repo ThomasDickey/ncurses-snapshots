@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.222 $
-#	$Date: 2003/11/23 01:29:10 $
+#	$Revision: 1.223 $
+#	$Date: 2003/12/21 01:57:42 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
@@ -3672,6 +3672,10 @@ screen.teraterm|disable ncv in teraterm,
 	ncv#127, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
 	use=screen, 
+# fix the backspace key
+screen.linux|screen in linux console, 
+	bw, 
+	kbs=\177, kcbt@, use=screen, 
 
 screen-w|VT 100/ANSI X3.64 virtual terminal with 132 cols, 
 	cols#132, use=screen, 
@@ -19997,6 +20001,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2003-11-22
 #	* add linux-vt (Andrey V Lukyanov)
+#
+# 2003-12-20
+#	* add screen.linux -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
