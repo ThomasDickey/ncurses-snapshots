@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ungetch.c,v 1.6 2001/12/16 00:50:23 tom Exp $")
+MODULE_ID("$Id: lib_ungetch.c,v 1.7 2001/12/29 23:01:09 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -58,8 +58,10 @@ _nc_fifo_dump(void)
 NCURSES_EXPORT(int)
 ungetch(int ch)
 {
+    T((T_CALLED("ungetch(%d)"), ch));
+
     if (tail == -1)
-	return ERR;
+	returnCode(ERR);
     if (head == -1) {
 	head = 0;
 	t_inc()
@@ -73,5 +75,5 @@ ungetch(int ch)
     if (_nc_tracing & TRACE_IEVENT)
 	_nc_fifo_dump();
 #endif
-    return OK;
+    returnCode(OK);
 }

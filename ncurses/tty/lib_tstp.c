@@ -48,7 +48,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.27 2001/10/01 22:49:01 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.28 2001/12/30 00:02:12 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -302,12 +302,14 @@ CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
     memset(&new_act, 0, sizeof(new_act));
     sigemptyset(&new_act.sa_mask);
 #ifdef SA_RESTART
-    new_act.sa_flags |= SA_RESTART;
+    if (sig != SIGWINCH)
+	new_act.sa_flags |= SA_RESTART;
 #endif /* SA_RESTART */
     new_act.sa_handler = handler;
 
     if (sigaction(sig, NULL, &old_act) == 0
 	&& (old_act.sa_handler == SIG_DFL
+	    || old_act.sa_handler == handler
 #if USE_SIGWINCH
 	    || (sig == SIGWINCH && old_act.sa_handler == SIG_IGN)
 #endif
@@ -322,6 +324,7 @@ CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
 
     ohandler = signal(sig, SIG_IGN);
     if (ohandler == SIG_DFL
+	|| ohandler == handler
 #if USE_SIGWINCH
 	|| (sig == SIGWINCH && ohandler == SIG_IGN)
 #endif
@@ -352,27 +355,30 @@ CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
 NCURSES_EXPORT(void)
 _nc_signal_handler(bool enable)
 {
+    T((T_CALLED("_nc_signal_handler(%d)"), enable));
 #if USE_SIGTSTP			/* Xenix 2.x doesn't have SIGTSTP, for example */
-    static bool ignore_tstp = FALSE;
+    {
+	static bool ignore_tstp = FALSE;
 
-    if (!ignore_tstp) {
-	static sigaction_t act, oact;
+	if (!ignore_tstp) {
+	    static sigaction_t act, oact;
 
-	if (!enable) {
-	    act.sa_handler = SIG_IGN;
-	    sigaction(SIGTSTP, &act, &oact);
-	} else if (act.sa_handler != SIG_DFL) {
-	    sigaction(SIGTSTP, &oact, NULL);
-	} else if (sigaction(SIGTSTP, NULL, &oact) == 0
-		   && (oact.sa_handler == SIG_DFL)) {
-	    sigemptyset(&act.sa_mask);
+	    if (!enable) {
+		act.sa_handler = SIG_IGN;
+		sigaction(SIGTSTP, &act, &oact);
+	    } else if (act.sa_handler != SIG_DFL) {
+		sigaction(SIGTSTP, &oact, NULL);
+	    } else if (sigaction(SIGTSTP, NULL, &oact) == 0
+		       && (oact.sa_handler == SIG_DFL)) {
+		sigemptyset(&act.sa_mask);
 #ifdef SA_RESTART
-	    act.sa_flags |= SA_RESTART;
+		act.sa_flags |= SA_RESTART;
 #endif /* SA_RESTART */
-	    act.sa_handler = tstp;
-	    (void) sigaction(SIGTSTP, &act, NULL);
-	} else {
-	    ignore_tstp = TRUE;
+		act.sa_handler = tstp;
+		(void) sigaction(SIGTSTP, &act, NULL);
+	    } else {
+		ignore_tstp = TRUE;
+	    }
 	}
     }
 #endif /* !USE_SIGTSTP */
@@ -384,4 +390,5 @@ _nc_signal_handler(bool enable)
 	CatchIfDefault(SIGWINCH, sigwinch);
 #endif
     }
+    returnVoid;
 }
