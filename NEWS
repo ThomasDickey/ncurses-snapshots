@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.678 2002/04/06 23:01:45 tom Exp $
+-- $Id: NEWS,v 1.679 2002/04/13 22:27:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020413
+	+ add manpages: curs_get_wstr.3x, curs_in_wchstr.3x    
+	+ implement wgetn_wstr().
+	+ implement win_wchnstr().
+	+ remove redefinition of unget_wch() in lib_gen.c (reported by
+	  Jungshik Shin <jshin@jtan.com>).
 
 20020406
 	+ modified several of the test programs to allow them to compile with

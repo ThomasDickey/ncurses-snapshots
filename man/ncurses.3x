@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.58 2002/03/17 14:58:29 tom Exp $
+.\" $Id: ncurses.3x,v 1.60 2002/04/13 22:26:48 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -271,6 +271,7 @@ filter/\fBcurs_util\fR(3X)
 flash/\fBcurs_beep\fR(3X)
 flushinp/\fBcurs_util\fR(3X)
 get_wch/\fBcurs_get_wch\fR(3X)
+get_wstr/\fBcurs_get_wstr\fR(3X)
 getbegyx/\fBcurs_getyx\fR(3X)
 getbkgd/\fBcurs_bkgd\fR(3X)
 getbkgrnd/\fBcurs_bkgrnd\fR(3X)
@@ -278,6 +279,7 @@ getcchar/\fBcurs_getcchar\fR(3X)
 getch/\fBcurs_getch\fR(3X)
 getmaxyx/\fBcurs_getyx\fR(3X)
 getmouse/\fBcurs_mouse\fR(3X)*
+getn_wstr/\fBcurs_get_wstr\fR(3X)
 getnstr/\fBcurs_getstr\fR(3X)
 getparyx/\fBcurs_getyx\fR(3X)
 getstr/\fBcurs_getstr\fR(3X)
@@ -295,6 +297,8 @@ idcok/\fBcurs_outopts\fR(3X)
 idlok/\fBcurs_outopts\fR(3X)
 immedok/\fBcurs_outopts\fR(3X)
 in_wch/\fBcurs_in_wch\fR(3X)
+in_wchnstr/\fBcurs_in_wchstr\fR(3X)
+in_wchstr/\fBcurs_in_wchstr\fR(3X)
 inch/\fBcurs_inch\fR(3X)
 inchnstr/\fBcurs_inchstr\fR(3X)
 inchstr/\fBcurs_inchstr\fR(3X)
@@ -346,12 +350,16 @@ mvcur/\fBcurs_terminfo\fR(3X)
 mvdelch/\fBcurs_delch\fR(3X)
 mvderwin/\fBcurs_window\fR(3X)
 mvget_wch/\fBcurs_get_wch\fR(3X)
+mvget_wstr/\fBcurs_get_wstr\fR(3X)
 mvgetch/\fBcurs_getch\fR(3X)
+mvgetn_wstr/\fBcurs_get_wstr\fR(3X)
 mvgetnstr/\fBcurs_getstr\fR(3X)
 mvgetstr/\fBcurs_getstr\fR(3X)
 mvhline/\fBcurs_border\fR(3X)
 mvhline_set/\fBcurs_border_set\fR(3X)
 mvin_wch/\fBcurs_in_wch\fR(3X)
+mvin_wchnstr/\fBcurs_in_wchstr\fR(3X)
+mvin_wchstr/\fBcurs_in_wchstr\fR(3X)
 mvinch/\fBcurs_inch\fR(3X)
 mvinchnstr/\fBcurs_inchstr\fR(3X)
 mvinchstr/\fBcurs_inchstr\fR(3X)
@@ -382,13 +390,17 @@ mvwaddwstr/\fBcurs_addwstr\fR(3X)
 mvwchgat/\fBcurs_attr\fR(3X)
 mvwdelch/\fBcurs_delch\fR(3X)
 mvwget_wch/\fBcurs_get_wch\fR(3X)
+mvwget_wstr/\fBcurs_get_wstr\fR(3X)
 mvwgetch/\fBcurs_getch\fR(3X)
+mvwgetn_wstr/\fBcurs_get_wstr\fR(3X)
 mvwgetnstr/\fBcurs_getstr\fR(3X)
 mvwgetstr/\fBcurs_getstr\fR(3X)
 mvwhline/\fBcurs_border\fR(3X)
 mvwhline_set/\fBcurs_border_set\fR(3X)
 mvwin/\fBcurs_window\fR(3X)
 mvwin_wch/\fBcurs_in_wch\fR(3X)
+mvwin_wchnstr/\fBcurs_in_wchstr\fR(3X)
+mvwin_wchstr/\fBcurs_in_wchstr\fR(3X)
 mvwinch/\fBcurs_inch\fR(3X)
 mvwinchnstr/\fBcurs_inchstr\fR(3X)
 mvwinchstr/\fBcurs_inchstr\fR(3X)
@@ -545,13 +557,17 @@ wechochar/\fBcurs_addch\fR(3X)
 wenclose/\fBcurs_mouse\fR(3X)*
 werase/\fBcurs_clear\fR(3X)
 wget_wch/\fBcurs_get_wch\fR(3X)
+wget_wstr/\fBcurs_get_wstr\fR(3X)
 wgetbkgrnd/\fBcurs_bkgrnd\fR(3X)
 wgetch/\fBcurs_getch\fR(3X)
+wgetn_wstr/\fBcurs_get_wstr\fR(3X)
 wgetnstr/\fBcurs_getstr\fR(3X)
 wgetstr/\fBcurs_getstr\fR(3X)
 whline/\fBcurs_border\fR(3X)
 whline_set/\fBcurs_border_set\fR(3X)
 win_wch/\fBcurs_in_wch\fR(3X)
+win_wchnstr/\fBcurs_in_wchstr\fR(3X)
+win_wchstr/\fBcurs_in_wchstr\fR(3X)
 winch/\fBcurs_inch\fR(3X)
 winchnstr/\fBcurs_inchstr\fR(3X)
 winchstr/\fBcurs_inchstr\fR(3X)
@@ -835,27 +851,11 @@ Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
 (including color support) are supported.  The following EXTENDED XSI Curses
 calls in support of wide (multibyte) characters are not yet implemented:
 \fBerasewchar\fP,
-\fBget_wstr\fP,
-\fBgetn_wstr\fP,
-\fBin_wchnstr\fP,
-\fBin_wchstr\fP,
 \fBkillwchar\fP,
-\fBmvget_wstr\fP,
-\fBmvgetn_wstr\fP,
-\fBmvin_wchnstr\fP,
-\fBmvin_wchstr\fP,
-\fBmvwget_wstr\fP,
-\fBmvwgetn_wstr\fP,
-\fBmvwin_wchnstr\fP,
-\fBmvwin_wchstr\fP,
 \fBpecho_wchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
-\fBvid_puts\fP,
-\fBwget_wstr\fP,
-\fBwgetn_wstr\fP,
-\fBwin_wchnstr\fP,
-\fBwin_wchstr\fP,
+\fBvid_puts\fP.
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR

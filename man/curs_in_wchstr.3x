@@ -26,67 +26,89 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.2 2002/04/13 20:25:35 tom Exp $
-.TH curs_inwstr 3 ""
+.\" $Id: curs_in_wchstr.3x,v 1.1 2002/04/13 21:56:10 tom Exp $
+.TH curs_in_wchstr 3X
 .SH NAME
-.PP
-\fBinwstr\fR,
-\fBinnwstr\fR,
-\fBwinwstr\fR,
-\fBwinnwstr\fR,
-\fBmvinwstr\fR,
-\fBmvinnwstr\fR,
-\fBmvwinwstr\fR,
-\fBmvwinnwstr\fR \- get a string of \fBwchar_t\fR characters from a curses window
+\fBin_wchstr\fR,
+\fBin_wchnstr\fR,
+\fBwin_wchstr\fR,
+\fBwin_wchnstr\fR,
+\fBmvin_wchstr\fR,
+\fBmvin_wchnstr\fR,
+\fBmvwin_wchstr\fR,
+\fBmvwin_wchnstr\fR \- get an array of complex characters and renditions from a curses window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h> \fR
+\fB#include <curses.h>\fR
 
-\fBint inwstr(\fR\fBwchar_t *\fR\fIstr\fR\fB);\fR
+\fBint in_wchstr(cchar_t *\fR\fIwchstr\fR\fB);\fR
 .br
-\fBint innwstr(\fR\fBwchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint in_wchnstr(cchar_t *\fR\fIwchstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint winwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
+\fBint win_wchstr(WINDOW *\fR\fIwin\fR\fB, cchar_t *\fR\fIwchstr\fR\fB);\fR
 .br
-\fBint winnwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint win_wchnstr(WINDOW *\fR\fIwin\fR\fB, cchar_t *\fR\fIwchstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvinwstr(\fR\fBint \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
+\fBint mvin_wchstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, cchar_t *\fR\fIwchstr\fR\fB);\fR
 .br
-\fBint mvinnwstr(\fR\fBint \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint mvin_wchnstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, cchar_t *\fR\fIwchstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvwinwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
+\fBint mvwin_wchstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, cchar_t *\fR\fIwchstr\fR\fB);\fR
 .br
-\fBint mvwinnwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint mvwin_wchnstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, cchar_t *\fR\fIwchstr\fR, int \fIn\fR\fB);\fR
 .fi
 .SH DESCRIPTION
-These routines return a string of \fBwchar_t\fR characters in \fIwstr\fR,
-extracted starting at the current cursor position in the named window.
-Attributes are stripped from the characters.
-The four functions with \fIn\fR as the last argument return a leading substring at most
-\fIn\fR bytes long (exclusive of the trailing NUL).
-Transfer stops at the end of the current line, or when \fIn\fR bytes have
-been stored at the location referenced by \fIwstr\fR.
+These functions return an array of complex characters in \fIwchstr\fR,
+starting at the current cursor position in the named window.
+Attributes (rendition) are stored with the characters.
 .PP
-If the size \fIn\fR is not large enough to store a complete character,
-an error is generated.
+The
+\fBin_wchnstr\fR,
+\fBmvin_wchnstr\fR,
+\fBmvwin_wchnstr\fR
+and
+\fBwin_wchnstr\fR
+fill the array
+with at most
+\fIn\fR
+\fBcchar_t\fR
+elements.
+.br
 .SH NOTES
 Note that all routines except
-\fBwinnwstr\fR
-may be macros.
+\fBwin_wchnstr\fR
+may be
+macros.
+.PP
+Reading a line that overflows the array pointed to by
+\fIwchstr\fR
+with
+\fBin_wchstr\fR,
+\fBmvin_wchstr\fR,
+\fBmvwin_wchstr\fR
+or
+\fBwin_wchstr\fR
+causes undefined results. Therefore, the use of
+\fBin_wchnstr\fR,
+\fBmvin_wchnstr\fR,
+\fBmvwin_wchnstr\fR, or
+\fBwin_wchnstr\fR
+is recommended.
 .SH RETURN VALUES
-All routines return
-\fBERR\fR
-upon failure. Upon
-successful completion, the *\fBinwstr\fR
-routines return
-\fBOK\fR, and the *\fBinnwstr\fR
-routines return the
-number of characters read into the string.
+Upon successful completion, these functions return
+\fBOK\fR.
+Otherwise, they return
+\fBERR\fR.
+.SH PORTABILITY
+The XSI Curses defines no error conditions.
+This implementation checks for null pointers,
+returning ERR in that case.
 .SH SEE ALSO
 Functions:
 \fBcurses\fR(3X),
+\fBcurs_in_wch\fR(3X)
 \fBcurs_instr\fR(3X),
-\fBcurs_in_wchstr\fR(3X)
+\fBcurs_inwstr\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:
