@@ -61,7 +61,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.48 2003/09/27 21:41:56 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.49 2003/11/30 00:34:36 Philippe.Blain Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -75,9 +75,16 @@ _nc_gettime(bool first)
     gettimeofday(&t1, (struct timezone *) 0);
     if (first) {
 	t0 = t1;
+	res = 0;
+    } else {
+	/* .tv_sec and .tv_usec are unsigned, be careful when subtracting */
+	if (t0.tv_usec > t1.tv_usec) {	/* Convert 1s in 1e6 microsecs */
+	    t1.tv_usec += 1000000;
+	    t1.tv_sec--;
+	}
+	res = (t1.tv_sec - t0.tv_sec) * 1000
+	    + (t1.tv_usec - t0.tv_usec) / 1000;
     }
-    res = (t1.tv_sec - t0.tv_sec) * 1000
-	+ (t1.tv_usec - t0.tv_usec) / 1000;
 #else
 # define PRECISE_GETTIME 0
     static time_t t0;
@@ -388,7 +395,7 @@ _nc_timed_wait(int mode,
      * then come back for more.
      */
     if (result == 0 && milliseconds > 100) {
-	napms(100);	/* FIXME: this won't be right if I recur! */
+	napms(100);		/* FIXME: this won't be right if I recur! */
 	milliseconds -= 100;
 	goto retry;
     }
