@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.258 2004/04/24 20:18:07 tom Exp $
+ * $Id: curses.priv.h,v 1.259 2004/05/08 18:54:16 tom Exp $
  *
  *	curses.priv.h
  *
@@ -635,7 +635,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 			    TRACE_OUTCHARS(PUTC_i);				    \
 			} } } while (0)
 
-#define BLANK		{ WA_NORMAL, ' ' }
+#define BLANK		{ WA_NORMAL, {' '} }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')
 
 #define WA_NAC		1

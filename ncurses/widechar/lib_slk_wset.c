@@ -36,11 +36,11 @@
  */
 #include <curses.priv.h>
 
-#ifdef HAVE_WCTYPE_H
+#if HAVE_WCTYPE_H
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_slk_wset.c,v 1.6 2004/01/03 21:14:03 tom Exp $")
+MODULE_ID("$Id: lib_slk_wset.c,v 1.7 2004/05/08 16:52:10 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_wset(int i, const wchar_t * astr, int format)

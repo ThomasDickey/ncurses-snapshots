@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.17 2004/05/02 00:13:22 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.18 2004/05/08 17:05:58 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -55,7 +55,7 @@ Is_Printable_String(const char *s)
 {
   int result = TRUE;
 
-#ifdef USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
   int count = mbstowcs(0, s, 0);
   wchar_t *temp = 0;
 

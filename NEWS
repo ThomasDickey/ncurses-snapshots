@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.811 2004/05/02 00:31:22 tom Exp $
+-- $Id: NEWS,v 1.812 2004/05/08 21:00:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040508
+	+ replace memset/memcpy usage in form library with for-loops to
+	  simplify changing the datatype of FIELD.buf, part of wide-character
+	  changes.
+	+ fix some inconsistent use of #if/#ifdef (report by Alain Guibert).
 
 20040501
 	+ modify menu library to account for actual number of columns used by
