@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.12 1997/02/13 00:35:52 tom Exp $
+ * $Id: hanoi.c,v 1.13 1997/03/02 01:22:01 tom Exp $
  */
 
 #include <test.priv.h>
@@ -188,7 +188,7 @@ InitTiles(int NTiles)
 }
 
 static void
-DisplayTiles()
+DisplayTiles(void)
 {
 	int Line, Peg, SlotNo;
 	char TileBuf[BUFSIZ];
@@ -240,9 +240,13 @@ GetMove(int *From, int *To)
 	addstr(" to ");
 	clrtoeol();
 	refresh();
+
 	if((*To = getch()) == 'q')
 		return TRUE;
 	*To -= ('0'+1);
+	refresh();
+	napms(500);
+
 	move(STATUSLINE, 0);
 	clrtoeol();
 	refresh();

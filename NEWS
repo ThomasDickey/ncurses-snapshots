@@ -1,6 +1,16 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970301
+	+ use new configure macro NC_SUBST to replace AC_PATH_PROG, better
+	  addressing request by Ward Horner.
+	+ check for cross-compiling before trying to invoke the autoconf
+	  AC_FUNC_SETVBUF_REVERSED macro (reported by Ward Horner)
+	+ correct/simplify loop in _nc_visbuf(), 970201 changes omitted
+	  a pointer-increment.
+	+ eliminate obsolete symbol SHARED_ABI from dist.mk (noted by
+	  Florian La Roche).
+
 970215
 	+ add configure option --enable-expanded, together with code that
 	  implements an expanded form of certain complex macros, for testing

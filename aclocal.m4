@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.49 1997/02/15 23:17:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.50 1997/03/01 23:13:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -584,7 +584,7 @@ EOF
 	changequote([,])dnl
 	if AC_TRY_EVAL(ac_compile) ; then
 		mv conftest.o data.o && \
-		( $AR $AR_OPTS conftest.a data.o 2>&1 >/dev/null )
+		( $AR $AR_OPTS conftest.a data.o ) 2>&5 1>/dev/null
 	fi
 	rm -f conftest.$ac_ext data.o
 	changequote(,)dnl
@@ -605,10 +605,10 @@ EOF
 	changequote([,])dnl
 	if AC_TRY_EVAL(ac_compile); then
 		mv conftest.o func.o && \
-		( $AR $AR_OPTS conftest.a func.o 2>&1 >/dev/null )
+		( $AR $AR_OPTS conftest.a func.o ) 2>&5 1>/dev/null
 	fi
 	rm -f conftest.$ac_ext func.o
-	eval $ac_cv_prog_RANLIB conftest.a 2>&1 >/dev/null
+	( eval $ac_cv_prog_RANLIB conftest.a ) 2>&5 >/dev/null
 	nc_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
 	AC_TRY_RUN([
@@ -1049,6 +1049,21 @@ dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options
 AC_DEFUN([NC_STRIP_G_OPT],
 [$1=`echo ${$1} | sed -e 's/-g //' -e 's/-g$//'`])dnl
+dnl ---------------------------------------------------------------------------
+dnl	Shorthand macro for substituting things that the user may override
+dnl	with an environment variable.
+dnl
+dnl	$1 = long/descriptive name
+dnl	$2 = environment variable
+dnl	$3 = default value
+AC_DEFUN([NC_SUBST],
+[AC_CACHE_VAL(nc_cv_subst_$2,[
+AC_MSG_CHECKING(for $1 (symbol $2))
+test -z "[$]$2" && $2=$3
+AC_MSG_RESULT([$]$2)
+AC_SUBST($2)
+nc_cv_subst_$2=[$]$2])
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Check for declarion of sys_errlist in one of stdio.h and errno.h.  
 dnl	Declaration of sys_errlist on BSD4.4 interferes with our declaration.
