@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,17 +29,12 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996 on                                        *
  ****************************************************************************/
 
 #include <curses.priv.h>
 
-#include <sys/stat.h>
-#include <time.h>
-#include <term.h>		/* exit_ca_mode, non_rev_rmcup */
-
-MODULE_ID("$Id: lib_screen.c,v 1.19 2001/12/19 00:55:28 tom Exp $")
-
-static time_t dumptime;
+MODULE_ID("$Id: lib_screen.c,v 1.20 2002/07/13 17:46:35 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -129,9 +124,9 @@ scr_restore(const char *file)
     T((T_CALLED("scr_restore(%s)"), _nc_visbuf(file)));
 
     if (_nc_access(file, R_OK) < 0
-	|| (fp = fopen(file, "rb")) == 0)
+	|| (fp = fopen(file, "rb")) == 0) {
 	returnCode(ERR);
-    else {
+    } else {
 	delwin(newscr);
 	newscr = getwin(fp);
 	(void) fclose(fp);
@@ -147,12 +142,11 @@ scr_dump(const char *file)
     T((T_CALLED("scr_dump(%s)"), _nc_visbuf(file)));
 
     if (_nc_access(file, W_OK) < 0
-	|| (fp = fopen(file, "wb")) == 0)
+	|| (fp = fopen(file, "wb")) == 0) {
 	returnCode(ERR);
-    else {
+    } else {
 	(void) putwin(newscr, fp);
 	(void) fclose(fp);
-	dumptime = time((time_t *) 0);
 	returnCode(OK);
     }
 }
@@ -169,11 +163,11 @@ scr_init(const char *file)
 	returnCode(ERR);
 
     if (_nc_access(file, R_OK) < 0
-	|| (fp = fopen(file, "rb")) == 0)
+	|| (fp = fopen(file, "rb")) == 0) {
 	returnCode(ERR);
-    else if (fstat(STDOUT_FILENO, &stb) || stb.st_mtime > dumptime)
+    } else if (fstat(STDOUT_FILENO, &stb)) {
 	returnCode(ERR);
-    else {
+    } else {
 	delwin(curscr);
 	curscr = getwin(fp);
 	(void) fclose(fp);
@@ -186,9 +180,9 @@ scr_set(const char *file)
 {
     T((T_CALLED("scr_set(%s)"), _nc_visbuf(file)));
 
-    if (scr_init(file) == ERR)
+    if (scr_init(file) == ERR) {
 	returnCode(ERR);
-    else {
+    } else {
 	delwin(newscr);
 	newscr = dupwin(curscr);
 	returnCode(OK);

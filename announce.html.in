@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.41 2000/10/28 21:43:25 tom Exp $
+  $Id: announce.html.in,v 1.42 2002/07/13 11:35:08 juergen Exp $
 -->
 <HTML>
 <HEAD>
@@ -546,7 +546,7 @@ HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A> and
 Ongoing work is being done by
 <A HREF="mailto:dickey@herndon4.his.com">Thomas Dickey</A>
 and
-<A HREF="mailto:juergen.pfeifer@gmx.net">J&uuml;rgen Pfeifer</A>.
+<A HREF="http://www.familiepfeifer.de/Contact.aspx?Lang=en">J&uuml;rgen Pfeifer</A>.
 <A HREF="mailto:dickey@herndon4.his.com">Thomas Dickey</A>
 acts as the maintainer for the Free Software Foundation, which holds the
 copyright on ncurses.

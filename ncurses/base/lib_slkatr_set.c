@@ -27,7 +27,8 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1998                  *
+ *  Author:  Juergen Pfeifer, 1998                                          *
+ *  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en              *
  ****************************************************************************/
 
 /*
@@ -37,7 +38,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatr_set.c,v 1.5 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_slkatr_set.c,v 1.6 2002/07/06 22:47:23 juergen Exp $")
 
 NCURSES_EXPORT(int)
 slk_attr_set

@@ -480,6 +480,7 @@
 ./form/modules
 ./include/Caps
 ./include/Caps.aix4
+./include/Caps.hpux11
 ./include/Caps.keys
 ./include/Caps.osf1r5
 ./include/Caps.uwin

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.61 2002/06/16 00:31:57 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.62 2002/07/13 18:01:18 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -157,7 +157,7 @@ _nc_wgetch(WINDOW *win, unsigned long *result, int use_meta)
 {
     int ch;
 
-    T((T_CALLED("wgetch(%p)"), win));
+    T((T_CALLED("_nc_wgetch(%p)"), win));
 
     *result = 0;
     if (!win)

@@ -28,10 +28,11 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
+ *   Author: Juergen Pfeifer, 1997                                          *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
-// $Id: cursslk.h,v 1.7 2001/03/24 21:41:47 tom Exp $
+// $Id: cursslk.h,v 1.8 2002/07/06 15:47:52 juergen Exp $
 
 #ifndef NCURSES_CURSSLK_H_incl
 #define NCURSES_CURSSLK_H_incl

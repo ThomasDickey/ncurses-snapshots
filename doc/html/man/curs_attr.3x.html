@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.24 2002/02/16 22:38:32 tom Exp @
+  * @Id: curs_attr.3x,v 1.25 2002/06/29 21:56:31 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -132,7 +132,11 @@
        color argument is a color-pair  index  (as  in  the  first
        argument  of  <EM>init</EM><STRONG>_</STRONG><EM>pair</EM>,  see  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>).   The <STRONG>opts</STRONG>
        argument is not presently used, but is  reserved  for  the
-       future (leave it <STRONG>NULL</STRONG>).
+       future (leave it <STRONG>NULL</STRONG>).  Note that changing the attributes
+       does not imply that a subsequent <STRONG>refresh</STRONG> will  update  the
+       screen  to match, since the character values are not modi-
+       fied.  Use <STRONG>touchwin</STRONG> to  force  the  screen  to  match  the
+       updated attributes.
 
    <STRONG>Attributes</STRONG>
        The following video attributes, defined in <STRONG>&lt;curses.h&gt;</STRONG>, can
@@ -150,6 +154,7 @@
         <STRONG>A_INVIS</STRONG>         Invisible or blank mode
         <STRONG>A_ALTCHARSET</STRONG>    Alternate character set
         <STRONG>A_CHARTEXT</STRONG>      Bit-mask to extract a character
+
         <STRONG>COLOR_PAIR(</STRONG><EM>n</EM><STRONG>)</STRONG>   Color-pair number <EM>n</EM>
 
        The following macro is the reverse of <STRONG>COLOR_PAIR(</STRONG><EM>n</EM><STRONG>)</STRONG>:
@@ -214,6 +219,56 @@
 <H2>SEE ALSO</H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,        <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,        <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>,
        <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </PRE>
 <HR>

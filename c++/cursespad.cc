@@ -28,14 +28,15 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1999                 *
+ *   Author: Juergen Pfeifer, 1999                                          *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
 #include "etip.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursespad.cc,v 1.4 2001/03/24 21:25:57 tom Exp $")
+MODULE_ID("$Id: cursespad.cc,v 1.5 2002/07/06 15:47:52 juergen Exp $")
 
 NCursesPad::NCursesPad(int lines, int cols)
   : NCursesWindow(),

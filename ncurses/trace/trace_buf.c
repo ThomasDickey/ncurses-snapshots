@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_buf.c,v 1.10 2001/04/21 21:19:18 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.11 2002/07/14 00:08:08 tom Exp $")
 
 typedef struct {
     char *text;
@@ -45,11 +45,32 @@ typedef struct {
 NCURSES_EXPORT(char *)
 _nc_trace_buf(int bufnum, size_t want)
 {
+    char *result = 0;
     static LIST *list;
     static size_t have;
 
+    if (bufnum >= 0) {
+	if ((size_t) (bufnum + 1) > have) {
+	    size_t need = (bufnum + 1) * 2;
+	    if ((list = typeRealloc(LIST, need, list)) == 0)
+		return (0);
+	    while (need > have)
+		list[have++].text = 0;
+	}
+
+	if (list[bufnum].text == 0
+	    || want > list[bufnum].size) {
+	    if ((list[bufnum].text = typeRealloc(char, want, list[bufnum].text))
+		!= 0)
+		  list[bufnum].size = want;
+	}
+
+	if (list[bufnum].text != 0)
+	    *(list[bufnum].text) = '\0';
+	result = list[bufnum].text;
+    }
 #if NO_LEAKS
-    if (bufnum < 0) {
+    else {
 	if (have) {
 	    while (have--) {
 		if (list[have].text != 0)
@@ -57,26 +78,7 @@ _nc_trace_buf(int bufnum, size_t want)
 	    }
 	    free(list);
 	}
-	return 0;
     }
 #endif
-
-    if ((size_t) (bufnum + 1) > have) {
-	size_t need = (bufnum + 1) * 2;
-	if ((list = typeRealloc(LIST, need, list)) == 0)
-	    return (0);
-	while (need > have)
-	    list[have++].text = 0;
-    }
-
-    if (list[bufnum].text == 0
-	|| want > list[bufnum].size) {
-	if ((list[bufnum].text = typeRealloc(char, want, list[bufnum].text))
-	    != 0)
-	      list[bufnum].size = want;
-    }
-
-    if (list[bufnum].text != 0)
-	*(list[bufnum].text) = '\0';
-    return list[bufnum].text;
+    return result;
 }

@@ -28,13 +28,14 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
+ *   Author: Juergen Pfeifer, 1997                                          *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesmain.cc,v 1.8 2001/07/14 20:54:43 juergen Exp $")
+MODULE_ID("$Id: cursesmain.cc,v 1.9 2002/07/06 15:47:52 juergen Exp $")
 
 /* This is the default implementation of main() for a NCursesApplication.
  * You only have to instantiate a static NCursesApplication object in your

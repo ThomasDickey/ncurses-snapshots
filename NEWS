@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.695 2002/07/07 00:24:55 tom Exp $
+-- $Id: NEWS,v 1.696 2002/07/13 21:47:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020713
+	+ add resize-handling to cardfile.c test program.
+	+ altered resizeterm() to avoid having it fail when a child window
+	  cannot be resized because it would be larger than its parent.  (More
+	  work must be done on this, but it works well enough to integrate).
+	+ improve a limit-check in lib_refresh.c
+	+ remove check in lib_screen.c relating dumptime to file's modification
+	  times, since that would not necessarily work for remotely mounted
+	  filesystems.
+	+ modify lrtest to simplify debugging changes to resizeterm, e.g.,
+	  t/T commands to enable/disable tracing.
+	+ updated status of multibyte support in TO-DO.
+	+ update contact info in source-files (patch by Juergen Pfeifer).
 
 20020706
 	+ add Caps.hpux11, as an example.
