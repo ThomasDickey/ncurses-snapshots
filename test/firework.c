@@ -1,5 +1,5 @@
 /*
- * $Id: firework.c,v 1.18 2001/07/01 01:25:14 tom Exp $
+ * $Id: firework.c,v 1.19 2001/09/15 21:46:35 tom Exp $
  */
 #include <signal.h>
 #include <time.h>
@@ -19,7 +19,7 @@ static RETSIGTYPE
 onsig(int n GCC_UNUSED)
 {
     cleanup();
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static void
@@ -35,7 +35,7 @@ showit(void)
 #endif
 	if (ch == 'q') {
 	    cleanup();
-	    exit(EXIT_SUCCESS);
+	    ExitProgram(EXIT_SUCCESS);
 	} else if (ch == 's') {
 	    nodelay(stdscr, FALSE);
 	} else if (ch == ' ') {
@@ -114,8 +114,8 @@ explode(int row, int col)
 
 int
 main(
-    int argc GCC_UNUSED,
-    char *argv[]GCC_UNUSED)
+	int argc GCC_UNUSED,
+	char *argv[]GCC_UNUSED)
 {
     int j;
     int start, end, row, diff, flag = 0, direction;
@@ -154,7 +154,7 @@ main(
 	attrset(A_NORMAL);
 	for (row = 0; row < diff; row++) {
 	    mvprintw(LINES - row, start + (row * direction),
-		(direction < 0) ? "\\" : "/");
+		     (direction < 0) ? "\\" : "/");
 	    if (flag++) {
 		showit();
 		erase();

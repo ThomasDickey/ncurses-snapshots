@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.17 2001/07/01 01:25:26 tom Exp $
+ * $Id: gdc.c,v 1.19 2001/09/15 22:38:34 tom Exp $
  */
 
 #include <time.h>
@@ -38,7 +38,7 @@ sighndl(int signo)
     sigtermed = signo;
     if (redirected) {
 	endwin();
-	exit(EXIT_FAILURE);
+	ExitProgram(EXIT_FAILURE);
     }
 }
 
@@ -120,7 +120,7 @@ usage(void)
     unsigned j;
     for (j = 0; j < SIZEOF(msg); j++)
 	fprintf(stderr, "%s\n", msg[j]);
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 int
@@ -163,7 +163,7 @@ main(int argc, char *argv[])
 	if (name == 0
 	    || newterm(name, ofp, ifp) == 0) {
 	    fprintf(stderr, "cannot open terminal\n");
-	    exit(EXIT_FAILURE);
+	    ExitProgram(EXIT_FAILURE);
 	}
 
     } else {
@@ -304,7 +304,7 @@ main(int argc, char *argv[])
 		standend();
 		endwin();
 		fprintf(stderr, "gdc terminated by signal %d\n", sigtermed);
-		return EXIT_FAILURE;
+		ExitProgram(EXIT_FAILURE);
 	    }
 	    /* FALLTHRU */
 	default:
@@ -313,5 +313,5 @@ main(int argc, char *argv[])
     } while (--count);
     standend();
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }

@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.24 2001/07/01 01:25:48 tom Exp $ */
+/* $Id: test.priv.h,v 1.25 2001/09/15 21:25:18 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -99,7 +99,7 @@ extern int optind;
 #endif
 
 #ifndef ExitProgram
-#define ExitProgram(code) return code
+#define ExitProgram(code) exit(code)
 #endif
 
 #ifndef EXIT_SUCCESS

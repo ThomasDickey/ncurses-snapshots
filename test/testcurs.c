@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.24 2001/02/24 22:13:23 tom Exp $
+ * $Id: testcurs.c,v 1.26 2001/09/15 22:36:45 tom Exp $
  */
 
 #include <test.priv.h>
@@ -51,8 +51,8 @@ int width, height;
 
 int
 main(
-    int argc GCC_UNUSED,
-    char *argv[]GCC_UNUSED)
+	int argc GCC_UNUSED,
+	char *argv[]GCC_UNUSED)
 {
     WINDOW *win;
     int key, old_option = (-1), new_option = 0;
@@ -62,7 +62,7 @@ main(
     PDC_debug("testcurs started\n");
 #endif
     if (!initTest(&win))
-	return EXIT_FAILURE;
+	ExitProgram(EXIT_FAILURE);
 
     erase();
     display_menu(old_option, new_option);
@@ -118,7 +118,7 @@ main(
 #ifdef XCURSES
     XCursesExit();
 #endif
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 
 static void
@@ -186,7 +186,7 @@ introTest(WINDOW *win)
     wrefresh(win);
     cbreak();
     mvwaddstr(win, 1, 1,
-	"You should have rectangle in the middle of the screen");
+	      "You should have rectangle in the middle of the screen");
     mvwaddstr(win, 2, 1, "You should have heard a beep");
     Continue(win);
     return;
@@ -368,7 +368,7 @@ inputTest(WINDOW *win)
     wclear(win);
     mvwaddstr(win, 3, 2, "The window should have moved");
     mvwaddstr(win, 4, 2,
-	"This text should have appeared without you pressing a key");
+	      "This text should have appeared without you pressing a key");
     mvwaddstr(win, 6, 2, "Enter a number then a string separated by space");
     mvwin(win, 2, 1);
     wrefresh(win);
@@ -392,7 +392,7 @@ outputTest(WINDOW *win)
     nl();
     wclear(win);
     mvwaddstr(win, 1, 1,
-	"You should now have a screen in the upper left corner, and this text should have wrapped");
+	      "You should now have a screen in the upper left corner, and this text should have wrapped");
     mvwin(win, 2, 1);
     waddstr(win, "\nThis text should be down\n");
     waddstr(win, "and broken into two here ^");
@@ -409,7 +409,7 @@ outputTest(WINDOW *win)
 
     if (LINES < 24 || COLS < 75) {
 	mvwaddstr(win, 5, 1,
-	    "Some tests have been skipped as they require a");
+		  "Some tests have been skipped as they require a");
 	mvwaddstr(win, 6, 1, "display of at least 24 LINES by 75 COLUMNS");
 	Continue(win);
     } else {
@@ -429,7 +429,7 @@ outputTest(WINDOW *win)
 #endif
 	wclear(win1);
 	mvwaddstr(win1, 5, 1,
-	    "This text should appear; using overlay option");
+		  "This text should appear; using overlay option");
 	copywin(win, win1, 0, 0, 0, 0, 9, 49, TRUE);
 
 #if defined(PDCURSES) && !defined(XCURSES)
@@ -444,7 +444,7 @@ outputTest(WINDOW *win)
 	wclear(win1);
 	wattron(win1, A_BLINK);
 	mvwaddstr(win1, 4, 1,
-	    "This blinking text should appear in only the second window");
+		  "This blinking text should appear in only the second window");
 	wattroff(win1, A_BLINK);
 	mvwin(win1, by, bx);
 	overlay(win, win1);
@@ -490,7 +490,7 @@ outputTest(WINDOW *win)
     wclear(win);
     wmove(win, 2, 2);
     wprintw(win, "This is a formatted string in a window: %d %s\n", 42,
-	"is it");
+	    "is it");
     mvwaddstr(win, 10, 1, "Enter a string: ");
     wrefresh(win);
     noraw();
@@ -514,7 +514,7 @@ outputTest(WINDOW *win)
 	wclear(win);
 	curs_set(0);
 	mvwaddstr(win, 1, 1,
-	    "The cursor should have disappeared (invisible)");
+		  "The cursor should have disappeared (invisible)");
 	Continue(win);
     }
 
@@ -608,7 +608,7 @@ padTest(WINDOW *dummy GCC_UNUSED)
     mvwaddstr(pad, 5, 2, "This is a new pad");
     wattrset(pad, A_NORMAL);
     mvwaddstr(pad, 8, 0,
-	"The end of this line should be truncated here:except  now");
+	      "The end of this line should be truncated here:except  now");
     mvwaddstr(pad, 11, 1, "This line should not appear.It will now");
     wmove(pad, 10, 1);
     wclrtoeol(pad);
@@ -652,6 +652,6 @@ display_menu(int old_option, int new_option)
     mvaddstr(5 + new_option, 25, command[new_option].text);
     attrset(A_NORMAL);
     mvaddstr(13, 3,
-	"Use Up and Down Arrows to select - Enter to run - Q to quit");
+	     "Use Up and Down Arrows to select - Enter to run - Q to quit");
     refresh();
 }

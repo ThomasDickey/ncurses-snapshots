@@ -6,7 +6,7 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.21 2001/07/01 01:26:18 tom Exp $
+ * $Id: knight.c,v 1.22 2001/09/15 21:42:00 tom Exp $
  */
 
 #include <ctype.h>
@@ -696,7 +696,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     play();
 
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 
 /* knight.c ends here */

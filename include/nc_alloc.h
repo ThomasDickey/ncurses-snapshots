@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.8 2000/04/08 23:42:57 tom Exp $ */
+/* $Id: nc_alloc.h,v 1.9 2001/09/15 23:23:28 tom Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
@@ -66,7 +66,7 @@ extern void _nc_leaks_dump_entry(void);
 #endif
 
 #ifndef ExitProgram
-#define ExitProgram(code) return code
+#define ExitProgram(code) exit(code)
 #endif
 
 /* doalloc.c */

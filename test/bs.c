@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.31 2001/07/01 01:24:37 tom Exp $
+ * $Id: bs.c,v 1.32 2001/09/15 21:57:30 tom Exp $
  */
 
 #include <signal.h>
@@ -160,10 +160,9 @@ static int salvo, blitz, closepack;
 
 #define	PR	(void)addstr
 
-static RETSIGTYPE
-uninitgame(int sig) GCC_NORETURN;
+static RETSIGTYPE uninitgame(int sig) GCC_NORETURN;
 
-     static RETSIGTYPE uninitgame(int sig GCC_UNUSED)
+static RETSIGTYPE uninitgame(int sig GCC_UNUSED)
 /* end the game, either normally or due to signal */
 {
     clear();
@@ -171,7 +170,7 @@ uninitgame(int sig) GCC_NORETURN;
     (void) resetterm();
     (void) echo();
     (void) endwin();
-    exit(EXIT_FAILURE);
+    ExitProgram(sig ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
 static void
@@ -943,7 +942,7 @@ randomfire(int *px, int *py)
 	    --srchstep;
     } else {
 	error("No moves possible?? Help!");
-	exit(EXIT_FAILURE);
+	ExitProgram(EXIT_FAILURE);
 	/*NOTREACHED */
     }
 }
@@ -1159,7 +1158,7 @@ do_options(int c, char *op[])
 		(void) fprintf(stderr, "\t-s : play a salvo game\n");
 		(void) fprintf(stderr, "\t-b : play a blitz game\n");
 		(void) fprintf(stderr, "\t-c : ships may be adjacent\n");
-		exit(EXIT_FAILURE);
+		ExitProgram(EXIT_FAILURE);
 		break;
 	    case '-':
 		switch (op[i][1]) {
@@ -1168,7 +1167,7 @@ do_options(int c, char *op[])
 		    if (salvo == 1) {
 			(void) fprintf(stderr,
 				       "Bad Arg: -b and -s are mutually exclusive\n");
-			exit(EXIT_FAILURE);
+			ExitProgram(EXIT_FAILURE);
 		    }
 		    break;
 		case 's':
@@ -1176,7 +1175,7 @@ do_options(int c, char *op[])
 		    if (blitz == 1) {
 			(void) fprintf(stderr,
 				       "Bad Arg: -s and -b are mutually exclusive\n");
-			exit(EXIT_FAILURE);
+			ExitProgram(EXIT_FAILURE);
 		    }
 		    break;
 		case 'c':
@@ -1186,7 +1185,7 @@ do_options(int c, char *op[])
 		    (void) fprintf(stderr,
 				   "Bad arg: type \"%s ?\" for usage message\n",
 				   op[0]);
-		    exit(EXIT_FAILURE);
+		    ExitProgram(EXIT_FAILURE);
 		}
 	    }
 	}

@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.16 2001/07/01 01:28:09 tom Exp $
+ * $Id: xmas.c,v 1.17 2001/09/15 22:02:05 tom Exp $
  */
 #include <signal.h>
 
@@ -149,11 +149,10 @@ static int strng5(void);
 static int reindeer(void);
 static int blinkit(void);
 
-static RETSIGTYPE
-done(int sig) GCC_NORETURN;
+static RETSIGTYPE done(int sig) GCC_NORETURN;
 
-     static void
-       set_color(WINDOW *win, chtype color)
+static void
+set_color(WINDOW *win, chtype color)
 {
     if (has_colors()) {
 	static bool *pairs;
@@ -1156,5 +1155,5 @@ done(int sig GCC_UNUSED)
     refresh();
     endwin();
     curs_set(1);
-    exit(EXIT_SUCCESS);
+    ExitProgram(EXIT_SUCCESS);
 }

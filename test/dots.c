@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.5 2001/07/01 01:24:58 tom Exp $
+ * $Id: dots.c,v 1.6 2001/09/15 21:50:38 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -81,7 +81,7 @@ onsig(int n GCC_UNUSED)
 {
     interrupted = TRUE;
     cleanup();
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static float
@@ -93,8 +93,8 @@ ranf(void)
 
 int
 main(
-    int argc GCC_UNUSED,
-    char *argv[]GCC_UNUSED)
+	int argc GCC_UNUSED,
+	char *argv[]GCC_UNUSED)
 {
     int x, y, z, j, p;
     float r;
@@ -125,17 +125,17 @@ main(
 
 	tputs(tparm(cursor_address, y, x), 1, outc);
 	if (max_colors > 0) {
-	    z = (int)(ranf() * max_colors);
+	    z = (int) (ranf() * max_colors);
 	    if (ranf() > 0.01) {
 		tputs(tparm(set_a_foreground, z), 1, outc);
 	    } else {
 		tputs(tparm(set_a_background, z), 1, outc);
 	    }
 	} else if (valid(exit_attribute_mode)
-	    && valid(enter_reverse_mode)) {
+		   && valid(enter_reverse_mode)) {
 	    if (ranf() <= 0.01)
 		outs((ranf() > 0.6) ? enter_reverse_mode :
-		    exit_attribute_mode);
+		     exit_attribute_mode);
 	}
 	outc(p);
 	fflush(stdout);
