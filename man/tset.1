@@ -2,9 +2,9 @@
 .SH NAME
 \fBtset\fR - terminal initialization
 .SH SYNOPSIS
-tset [-IQrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapping\fR] [\fIterminal\fR]
+tset [-IQqrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapping\fR] [\fIterminal\fR]
 .br
-reset [-IQrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapping\fR] [\fIterminal\fR]
+reset [-IQqrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapping\fR] [\fIterminal\fR]
 .SH DESCRIPTION
 \&\fBTset\fR initializes terminals.
 \fBTset\fR first determines the type of terminal that you are using.
@@ -52,9 +52,10 @@ Also, the terminal will often not echo the command.
 .PP
 The options are as follows:
 .TP 5
--
+-q
 The terminal type is displayed to the standard output, and the terminal is
-not initialized in any way.
+not initialized in any way.  The option `-' by itself is equivalent but
+archaic.
 .TP 5
 -e
 Set the erase character to \fIch\fR.

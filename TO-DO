@@ -41,7 +41,8 @@ Known Problems:
         (With System V curses it exits when the time limit is up even if
         interrupted by a signal).
  
-  These things need to be fixed.
+  These things are basically due to the difference between Systen V and
+  BSD-style signals.
 
 * On bce terminals (including the Linux console, the Xfree86 3.1.2D xterm,
   and rxvt), ncurses does more work than it needs to when erasing colored
@@ -56,6 +57,13 @@ Portability (or lack thereof):
   this problem if you are running Linux or one of the 4.4BSD derivatives
   like FreeBSD, NetBSD, or BSDI.  For details, see the analysis in the
   header comment of ncurses/lib_tstp.c.
+
+* In theory, vwprintw and vwscanf are supposed to use the older varargs.h
+  interface for handling variadic argument lists.  Linux doesn't have
+  varargs.h, it has the newer X/Open-standard stdargs.h equivalent. So
+  these functions use stdargs instead.  This is unlikely to be a problem 
+  unless you're building ncurses on a System V old enough to only have
+  varargs.h.
 
 * If you're using a BSD earlier than 4.4BSD, or a Linux old enough not to
   have a native vsscanf(3) in its library, vwscanw() will not work.  You lose.

@@ -2,32 +2,16 @@ For discussion of the package internals, see hackguide.html in the misc
 directory.
 
 Here are some -D options you might need to compile with.
-The 'configure' script usually gets them right automatically.
+The 'configure' script gets most other definitions right automatically.
   
--DHAVE_UNISTD_H		if <unistd.h> is present
-
 -DHAVE_SIGACTION	if the sigaction function is present
 
 -DHAVE_USLEEP		if the usleep function is present
 
--DSTRICTPOSIX		if _POSIX_SOURCE turns off non-POSIX features.
-
 -DSVR4_ACTION		if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
-
--DHAVE_TERMIOS_H	if you have <termios.h>; otherwise it uses <sgtty.h>
 
 -DOPT_MVCUR		if you want mvcur() to cost its actions or you have a
 			terminal that doesn't have direct cursor addressing.
 
--D_HPUX_SOURCE		so that we get POSIX and XOPEN features.
-
--DBROKEN_TIOCGETWINSZ	on SVR4 and HPUX
-
--DHAVE_SYS_SELECT_H	if (e.g., AIX) you have <sys/select.h>
-
 There are several problems with strict POSIX systems so extra flags
 or #define's may be needed.
-
-	HP-UX:	-D_HPUX_SOURCE so that we get POSIX and XOPEN features.
-	SVR4:	-DBROKEN_TIOCGETWINSZ guess what?
-

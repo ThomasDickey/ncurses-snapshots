@@ -53,7 +53,7 @@ char *t = getenv("NCURSES_TRACE");
 	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));
 
 	/* this loads the capability entry, then sets LINES and COLS */
-	if (setupterm(term, fileno(ofp), &errret) != 1)
+	if (setupterm(term, fileno(ofp), &errret) == ERR)
 	    	return NULL;
 
 	/* optional optimization hack -- do before any output to ofp */

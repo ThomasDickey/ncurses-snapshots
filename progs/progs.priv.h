@@ -31,6 +31,10 @@
 # endif
 #endif
 
+#if HAVE_SYS_BSDTYPES_H
+#include <sys/bsdtypes.h>	/* needed for ISC */
+#endif
+
 #if HAVE_LIMITS_H
 # include <limits.h>
 #elif HAVE_SYS_PARAM_H

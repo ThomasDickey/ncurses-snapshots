@@ -1037,7 +1037,7 @@ int main(int argc, char *argv[])
 				   tname[0]);
 		(void) printf("#\tReconstructed via infocmp from file: %s\n",
 			      tfile[0]);
-		dump_entry(&term[0], NULL);
+		(void) dump_entry(&term[0], NULL);
 		putchar('\n');
 		break;
 
@@ -1069,10 +1069,7 @@ int main(int argc, char *argv[])
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
 		dump_entry(&term[0], use_predicate);
 		for (i = 1; i < termcount; i++)
-		    if (outform==F_TERMCAP || outform==F_TCONVERR)
-			(void) printf("tc=%s:", tname[i]);
-		    else
-			(void) printf("use=%s, ", tname[i]);
+		    dump_uses(tname[i], !(outform==F_TERMCAP || outform==F_TCONVERR));
 		putchar('\n');
 		break;
 	    }

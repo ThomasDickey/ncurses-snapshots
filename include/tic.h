@@ -174,8 +174,8 @@ extern long _nc_start_line;
 extern void _nc_set_source(const char *const name);
 extern void _nc_get_type(char *name);
 extern void _nc_set_type(const char *const name);
-extern void _nc_syserr_abort(const char *const,...);
-extern void _nc_err_abort(const char *const,...);
+extern void _nc_syserr_abort(const char *const,...) __attribute__((noreturn));
+extern void _nc_err_abort(const char *const,...) __attribute__((noreturn));
 extern void _nc_warning(const char *const,...);
 extern bool _nc_suppress_warnings;
 

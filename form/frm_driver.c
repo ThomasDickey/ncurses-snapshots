@@ -693,6 +693,7 @@ static int Refresh_Current_Field(FORM * form)
 	{ /* if the field-window is simply a derived window, i.e. contains
 	     no invisible parts, the whole thing is trivial 
 	  */
+	  touchwin(form->w);
 	  wsyncup(form->w);
 	}
     }

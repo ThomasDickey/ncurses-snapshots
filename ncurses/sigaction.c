@@ -79,5 +79,6 @@ sigaddset (sigset_t * mask, int sig)
   return 0;
 }
 #else
+extern void _nc_sigaction(void);	/* quiet's gcc warning */
 void _nc_sigaction(void) { } /* nonempty for strict ANSI compilers */
 #endif

@@ -42,6 +42,7 @@ extern char *nametrans(const char *);
 extern void dump_init(char *, int, int, int, int);
 extern int fmt_entry(TERMTYPE *, int (*)(int, int), char *, bool, bool);
 extern void dump_entry(TERMTYPE *, int (*)(int, int));
+extern void dump_uses(const char *, bool);
 extern void compare_entry(void (*)(int, int, const char *));
 extern char *expand(char *);
 

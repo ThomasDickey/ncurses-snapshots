@@ -301,11 +301,17 @@ start_token:
 			_nc_curr_token.tk_name = buffer;
 			type = NAMES;
 	    } else {
-			ch = next_char();
-			/* we must allow ';' to catch k; */
-			while (isalnum(ch) || ch == ';') {
+			while ((ch = next_char()) != EOF) {
+				if (!isalnum(ch)) {
+					if (_nc_syntax == SYN_TERMINFO) {
+						if (ch != '_')
+							break;
+					} else { /* allow ';' for "k;" */
+						if (ch != ';')
+							break;
+					}
+				}
 			    	*(ptr++) = ch;
-			    	ch = next_char();
 			}
 
 			*ptr++ = '\0';

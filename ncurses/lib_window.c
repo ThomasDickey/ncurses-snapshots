@@ -73,45 +73,89 @@ int syncok(WINDOW *win, bool bf)
 
 void wsyncup(WINDOW *win)
 /* mark changed every cell in win's ancestors that is changed in win */
+/* Rewritten by J. Pfeifer, 1-Apr-96 (don't even think that...)      */
 {
   WINDOW	*wp;
-
-  if (win->_parent)
+  
+  if (win && win->_parent)
     for (wp = win; wp->_parent; wp = wp->_parent)
-    {
-      int i;
-      WINDOW *pp = wp->_parent;
-
-      for (i = 0; i <= wp->_maxy; i++)
       {
-	if (pp->_line[wp->_pary + i].firstchar >= 0
-		&& pp->_line[wp->_pary + i].firstchar < wp->_line[i].firstchar)
-	  wp->_line[i].firstchar = pp->_line[wp->_pary + i].firstchar;
-	if (pp->_line[wp->_pary + i].lastchar > wp->_line[i].lastchar)
-	  wp->_line[i].lastchar = pp->_line[wp->_pary + i].lastchar;
+	int y;
+	WINDOW *pp = wp->_parent;
+	
+	assert((wp->_pary <= pp->_maxy) && 
+	       ((wp->_pary+wp->_maxy) <= pp->_maxy));
+
+	for (y = 0; y <= wp->_maxy; y++)
+	  {
+	    int left = wp->_line[y].firstchar;
+	    if (left >= 0) /* line is touched */
+	      {
+		/* left & right character in parent window coordinates */
+		int right = wp->_line[y].lastchar + wp->_parx;
+		left += wp->_parx; 
+		
+		if (pp->_line[wp->_pary + y].firstchar == _NOCHANGE)
+		  {
+		    pp->_line[wp->_pary + y].firstchar = left;
+		    pp->_line[wp->_pary + y].lastchar  = right;
+		  }
+		else
+		  {
+		    if (left < pp->_line[wp->_pary + y].firstchar)
+		      pp->_line[wp->_pary + y].firstchar = left;
+		    if (pp->_line[wp->_pary + y].lastchar < right)
+		      pp->_line[wp->_pary + y].lastchar = right;
+		  }
+	      }
+	  }
       }
-    }
 }
 
 void wsyncdown(WINDOW *win)
 /* mark changed every cell in win that is changed in any of its ancestors */ 
+/* Rewritten by J. Pfeifer, 1-Apr-96 (don't even think that...)           */
 {
-  WINDOW *wp;
-
-  if (win->_parent)
-    for (wp = win; wp->_parent; wp = wp->_parent)
+  if (win && win->_parent)
     {
-      int i;
-      WINDOW *pp = wp->_parent;
+      WINDOW *pp = win->_parent;
+      int y;
 
-      for (i = 0; i <= wp->_maxy; i++)
-      {
-	if (wp->_line[i].firstchar >= 0
-		&& wp->_line[i].firstchar < pp->_line[wp->_pary + i].firstchar)
-	  pp->_line[wp->_pary + i].firstchar = wp->_line[i].firstchar;
-	if (wp->_line[i].lastchar > pp->_line[wp->_pary + i].lastchar)
-	  pp->_line[wp->_pary + i].lastchar = wp->_line[i].lastchar;
-      }
+      /* This recursion guarantees, that the changes are propagated down-
+	 wards from the root to our direct parent. */
+      wsyncdown(pp);
+      
+      /* and now we only have to propagate the changes from our direct
+	 parent, if there are any. */
+      assert((win->_pary <= pp->_maxy) &&
+	     ((win->_pary + win->_maxy) <= pp->_maxy));
+
+      for (y = 0; y <= win->_maxy; y++)
+	{
+	  if (pp->_line[win->_pary + y].firstchar >= 0) /* parent changed */
+	    {
+	      /* left and right character in child coordinates */
+	      int left  = pp->_line[win->_pary + y].firstchar - win->_parx;
+	      int right = pp->_line[win->_pary + y].lastchar  - win->_parx;
+	      /* The change maybe outside the childs range */
+	      if (left<0)
+		left = 0;
+	      if (right > win->_maxx)
+		right = win->_maxx;
+	      if (win->_line[y].firstchar == _NOCHANGE)
+		{
+		  win->_line[y].firstchar = left;
+		  win->_line[y].lastchar  = right;
+		}
+	      else
+		{
+		  if (left < win->_line[y].firstchar)
+		    win->_line[y].firstchar = left;
+		  if (win->_line[y].lastchar < right)
+		    win->_line[y].lastchar = right;
+		}
+	    }
+	}
     }
 }
 

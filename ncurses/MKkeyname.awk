@@ -1,6 +1,7 @@
 
 BEGIN {
 	print ""
+	print "#include <config.h>"
 	print "#include <stdlib.h>"
 	print "#include \"term.h\""
 	print "#include \"curses.h\""

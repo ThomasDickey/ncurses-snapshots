@@ -468,10 +468,7 @@ void _nc_mouse_wrap(SCREEN *sp)
 
     /* xterm: turn off reporting */
     if (mousetype == M_XTERM && eventmask)
-    {
 	mouse_activate(FALSE);
-	eventmask = 0;
-    }
 
     /* GPM: pass all mouse events to next client */
 }

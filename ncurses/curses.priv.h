@@ -34,6 +34,10 @@
 #include <unistd.h>
 #endif
 
+#if HAVE_SYS_BSDTYPES_H
+#include <sys/bsdtypes.h>	/* needed for ISC */
+#endif
+
 #if HAVE_LIMITS_H
 # include <limits.h>
 #elif HAVE_SYS_PARAM_H
@@ -173,7 +177,9 @@ typedef struct {
 	} ent[8];
 } SLK;
 
-#define FIFO_SIZE	32
+#define MAXCOLUMNS    135
+#define MAXLINES      66
+#define FIFO_SIZE	MAXLINES
 
 struct screen {
        	int		_ifd;	    	/* input file ptr for screen        */
@@ -258,6 +264,4 @@ extern SCREEN *SP;
 extern int _slk_init;			/* TRUE if slk_init() called */
 extern int slk_initialize(WINDOW *, int);
 
-#define MAXCOLUMNS    135
-#define MAXLINES      66
 #define UNINITIALISED ((struct try * ) -1)

@@ -12,6 +12,7 @@ AC_PREFIX_DEFAULT(/usr/local)
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
+AC_ISC_POSIX
 dnl PROBLEM ON NEXT MACHINES:  g++ exists but is called cc++.  AC_PROG_CXX doesn't check
 dnl                            for that name,
 AC_PROG_CXX
@@ -193,19 +194,14 @@ AC_CHECK_LIB(bsd, gettimeofday)dnl CLIX: bzero, select, gettimeofday
 ###	Checks for header files.
 AC_STDC_HEADERS
 AC_HEADER_DIRENT
+NC_REGEX
 
 dnl These are some other potentially nonportable headers.
-dnl PROBLEMS ON RECENT NS3.2+ MACHINES:  regex.h and termios.h exist but don't define posix
-dnl                                      functions.  For now user will have to remove those
-dnl                                      defines in config.status or config.h
-
 AC_CHECK_HEADERS( \
 fcntl.h \
 getopt.h \
 libc.h \
 limits.h \
-regex.h \
-regexp.h \
 sys/ioctl.h \
 sys/param.h \
 sys/select.h \
@@ -215,6 +211,28 @@ ttyent.h \
 unistd.h \
 values.h \
 )
+
+# check for HPUX's ANSI compiler
+if test $nc_cv_systype = HP_UX; then
+if test -z "$GCC"; then
+	AC_MSG_CHECKING([for HP/UX ANSI compiler])
+	nc_save_CFLAGS="$CFLAGS"
+	CFLAGS="$CFLAGS -Aa"
+	AC_TRY_COMPILE([],[void (*f)(void)=0],[nc_hpux_cc=yes],[nc_hpux_cc=no])
+	AC_MSG_RESULT($nc_hpux_cc)
+	if test $nc_hpux_cc = yes; then
+		AC_DEFINE(_HPUX_SOURCE)
+	else
+		CFLAGS="$nc_save_CFLAGS"
+	fi
+fi;fi
+
+# check for ISC (this may also define _POSIX_SOURCE)
+if test "$ISC" = yes ; then
+	AC_CHECK_LIB(main,cposix)
+	AC_CHECK_LIB(main,inet,,,"$LIBS")
+	AC_CHECK_HEADERS( sys/bsdtypes.h sys/termio.h )
+fi
 
 # check for SCO.  this is a hack, and should be split into individual
 # features -- the sys/time.h and select.h conflict, and the need for
@@ -247,6 +265,7 @@ setbuffer \
 setvbuf \
 sigaction \
 strdup \
+tcgetattr \
 usleep \
 vsscanf \
 )

@@ -1,7 +1,16 @@
 This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
-### ncurses-1.9.8a -> 1.9.9
+### ncurses-1.9.9e -> 1.9.9?
+* fixes for NeXT, ISC and HPUX auto-configure
+* autogenerate development header-dependencies (config.h, *.priv.h)
+* corrected single-column formatting of "use=" (e.g., in tic)
+* modify tic to read full terminfo-names
+* corrected divide-by-zero that caused hang (or worse) when redirecting output
+* modify tic to generate directories only as-needed (and corrected instance
+  of use of data from function that had already returned).
+
+### ncurses-1.9.8a -> 1.9.9e
 
 * fixed broken wsyncup()/wysncdown(), as a result wnoutrefresh() now has
   copy-changed-lines behavior.
@@ -9,7 +18,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 * more fixes to LOWER-RIGHT corner handling.
 * changed the line-breakout optimization code to allow some lines to be
   emitted before the first check.
-# added option for tic to use symbolic instead of hard links (for AFS)
+* added option for tic to use symbolic instead of hard links (for AFS)
 * fix to restore auto-wrap mode.
 * trace level can be controlled by environment variable.
 * better handling of NULs in terminal descriptions.
@@ -36,7 +45,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
   catastrophies or acts of God.
 * The C++ has been cleaned up in reaction to the changes to satisfy XSI's
   requirements.
-* libncurses now gets linked to libcurses to help seemless emulation 
+* libncurses now gets linked to libcurses to help seamless emulation 
   (replacement) of a vendor's curses. --disable-overwrite turns this behavior
   off.
 

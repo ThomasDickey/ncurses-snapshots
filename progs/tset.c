@@ -254,7 +254,7 @@ typedef struct speeds {
 	int	speed;
 } SPEEDS;
 
-static SPEEDS speeds[] = {
+static const SPEEDS speeds[] = {
 	{ "0",		B0 },
 	{ "50",		B50 },
 	{ "75",		B75 },
@@ -280,7 +280,7 @@ static SPEEDS speeds[] = {
 static int
 tbaudrate(char *rate)
 {
-	SPEEDS *sp;
+	const SPEEDS *sp;
 	int found = FALSE;
 
 	/* The baudrate number can be preceded by a 'B', which is ignored. */
@@ -547,8 +547,11 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 			    type %s (error %d)\n", ttype, errret);
 			ttype = NULL;
 		}
-		askuser(ttype);
+		ttype = askuser(ttype);
 	}
+#ifdef BROKEN_LINKER
+	tgetflag("am");	/* force lib_termcap.o to be linked for 'ospeed' */
+#endif
 	return (ttype);
 }
 
@@ -943,7 +946,7 @@ report(char *name, int which, u_int def)
 }
 
 /*
- * Convert the obsolete argument form into something that getopt can handle.
+ * Convert the obsolete argument forms into something that getopt can handle.
  * This means that -e, -i and -k get default arguments supplied for them.
  */
 static void
@@ -951,6 +954,13 @@ obsolete(char **argv)
 {
 	for (; *argv; ++argv) {
 		char *parm = argv[0];
+
+		if (parm[0] == '-' && parm[1] == '\0')
+	        {
+		    argv[0] = "-q";
+		    continue;
+		}
+
 		if ((parm[0] != '-')
 		 || (argv[1] && argv[1][0] != '-')
 		 || (parm[1] != 'e' && parm[1] != 'i' && parm[1] != 'k')
@@ -1012,19 +1022,9 @@ main(int argc, char **argv)
 
 	obsolete(argv);
 	noinit = noset = quiet = Sflag = sflag = showterm = 0;
-#ifdef linux
-	/*
-	 * Some older Linuxes seem to give back an incorrect return value.
-	 * Yves Arrouye reports: "It looks like getopt is broken on my linux
-	 * system (gcc 2.6.2, libc 4.6.27): it returns 1 instead of -1 when
-	 * the options are ended, and optind is badly positioned."
-	 */
-	while ((ch = getopt(argc, argv, "-a:d:e:Ii:k:m:np:QSrs")) > 1) {
-#else
-	while ((ch = getopt(argc, argv, "-a:d:e:Ii:k:m:np:QSrs")) != EOF) {
-#endif
+	while ((ch = getopt(argc, argv, "a:d:e:Ii:k:m:np:qQSrs")) != EOF) {
 		switch (ch) {
-		case '-':		/* display term only */
+		case 'q':		/* display term only */
 			noset = 1;
 			break;
 		case 'a':		/* OBSOLETE: map identifier to type */
@@ -1078,10 +1078,6 @@ main(int argc, char **argv)
 	}
 	argc -= optind;
 	argv += optind;
-
-#ifdef linux
-	if (ch == 1) --argv;
-#endif
 
 	if (argc > 1)
 		usage(*argv);

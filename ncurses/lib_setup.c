@@ -179,12 +179,7 @@ int def_shell_mode(void)
 
 #ifdef TERMIOS
  	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
-#if 0
- 		perror("def_shell_mode() tcgetattr() failed:");
- 		exit(1);
-#else
 		return ERR;
-#endif
  	}
  	if (cur_term->Ottyb.c_oflag & tabs)
 		tab = back_tab = NULL;
@@ -203,12 +198,7 @@ int def_prog_mode(void)
 
 #ifdef TERMIOS
  	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
-#if 0
- 		perror("def_prog_mode() tcgetattr() failed:");
- 		exit(1);
-#else
 		return ERR;
-#endif
  	}
  	cur_term->Nttyb.c_oflag &= ~tabs;
 #else
@@ -227,7 +217,7 @@ int def_prog_mode(void)
 
 #define ret_error(code, fmt, arg)	if (errret) {\
 					    *errret = code;\
-					    return(code);\
+					    return(ERR);\
 					} else {\
 					    fprintf(stderr, fmt, arg);\
 					    exit(1);\
@@ -235,7 +225,7 @@ int def_prog_mode(void)
 
 #define ret_error0(code, msg)		if (errret) {\
 					    *errret = code;\
-					    return(code);\
+					    return(ERR);\
 					} else {\
 					    fprintf(stderr, msg);\
 					    exit(1);\
@@ -348,7 +338,7 @@ struct term	*term_ptr;
 
 	if (errret)
 		*errret = 1;
-	return(1);
+	return(OK);
 
 }
 

@@ -103,14 +103,20 @@ test $nc_cv_extern_errno = yes && AC_DEFINE(HAVE_EXTERN_ERRNO)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
-dnl in the source directory or using '--srcdir=DIR' option.
+dnl in the source directory or using '--srcdir=DIR' option.  If we're building
+dnl with gcc, don't append the includedir if it happens to be /usr/include,
+dnl since that usually breaks gcc's shadow-includes.
 AC_DEFUN([NC_INCLUDE_DIRS],
 [
 CPPFLAGS="$CPPFLAGS -I. -I../include"
 if test "$srcdir" != "."; then
 	CPPFLAGS="$CPPFLAGS -I\$(srcdir)/../include"
 fi
-CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+if test -z "$GCC"; then
+	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+elif test "$includedir" = "/usr/include"; then
+	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+fi
 AC_SUBST(CPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -150,6 +156,21 @@ do
 			NC_UPPERCASE($nc_item,NC_ITEM)
 			NC_LIB_SUFFIX($nc_item,nc_suffix)
 			NC_OBJ_SUBDIR($nc_item,nc_subdir)
+
+			# These dependencies really are for development, not
+			# builds, but they are useful in porting, too.
+			nc_depend="../include/config.h"
+			if test "$srcdir" = "."; then
+				nc_reldir="."
+			else
+				nc_reldir="\$(srcdir)"
+			fi
+			if test -f $srcdir/$nc_dir/$nc_dir.priv.h; then
+				nc_depend="$nc_depend $nc_reldir/$nc_dir.priv.h"
+			elif test -f $srcdir/$nc_dir/curses.priv.h; then
+				nc_depend="$nc_depend $nc_reldir/curses.priv.h"
+			fi
+
 			$AWK -f $srcdir/mk-1st.awk \
 				name=$nc_dir \
 				MODEL=$NC_ITEM \
@@ -158,6 +179,7 @@ do
 				DoLinks=$nc_cv_do_symlinks \
 				rmSoLocs=$nc_cv_rm_so_locs \
 				overwrite=$WITH_OVERWRITE \
+				depend="$nc_depend" \
 				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$nc_dir \
@@ -326,6 +348,31 @@ AC_DEFUN([NC_OBJ_SUBDIR],
 	profile) $2='obj_p' ;;
 	shared)  $2='obj_s' ;;
 	esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Attempt to determine if we've got one of the flavors of regular-expression
+dnl code that we can support.
+AC_DEFUN([NC_REGEX],
+[
+AC_MSG_CHECKING([for regular-expression headers])
+AC_CACHE_VAL(nc_cv_regex,[
+AC_TRY_LINK([#include <regex.h>],[
+	regex_t *p;
+	int x = regcomp(p, "", 0);
+	int y = regexec(p, "", 0, 0, 0);
+	regfree(p);
+	],[nc_cv_regex="regex.h"],[
+	AC_TRY_LINK([#include <regexp.h>],[
+		char *p = compile("", "", "", 0);
+		int x = step("", "");
+	],[nc_cv_regex="regexp.h"])
+	])
+])
+AC_MSG_RESULT($nc_cv_regex)
+case $nc_cv_regex in
+	regex.h)  AC_DEFINE(HAVE_REGEX_H) ;;
+	regexp.h) AC_DEFINE(HAVE_REGEXP_H) ;;
+esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared

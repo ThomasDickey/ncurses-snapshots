@@ -28,6 +28,8 @@
  *	from the input stream.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -42,6 +44,7 @@ struct token	_nc_curr_token;
 
 static	void postprocess_termcap(TERMTYPE *);
 static	void postprocess_terminfo(TERMTYPE *);
+static	struct name_table_entry	const * lookup_fullname(const char *name);
 
 /*
  *	int
@@ -174,6 +177,11 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 				_nc_warning("%s (%s terminfo extension) aliased to %s", ap->from, ap->source, ap->to);
 			    break;
 			}
+
+		    /* last chance: a full-name */
+		    if (entry_ptr == NOTFOUND) {
+			entry_ptr = lookup_fullname(_nc_curr_token.tk_name);
+		    }
 		}
 	    }
 
@@ -379,10 +387,10 @@ static assoc const ko_xlate[] =
  * It was lifted from Ross Ridge's mytinfo package.
  */
 
-static const char *C_CR = "\r";
-static const char *C_LF = "\n";
-static const char *C_BS = "\b";
-static const char *C_HT = "\t";
+static const char C_CR[] = "\r";
+static const char C_LF[] = "\n";
+static const char C_BS[] = "\b";
+static const char C_HT[] = "\t";
 
 /*
  * Note that WANTED and PRESENT are not simple inverses!  If a capability
@@ -808,4 +816,46 @@ void postprocess_terminfo(TERMTYPE *tp)
      */
 }
 
+/*
+ * Do a linear search through the terminfo tables to find a given full-name. 
+ * We don't expect to do this often, so there's no hashing function.
+ *
+ * In effect, this scans through the 3 lists of full-names, and looks them
+ * up in _nc_info_table, which is organized so that the nte_index fields are
+ * sorted, but the nte_type fields are not necessarily grouped together.
+ */
+static
+struct name_table_entry	const * lookup_fullname(const char *find)
+{
+    int state = -1;
+
+    for (;;) {
+	int count = 0;
+	char **names;
+
+	switch (++state) {
+	case BOOLEAN:
+	    names = boolfnames;
+	    break;
+	case STRING:
+	    names = strfnames;
+	    break;
+	case NUMBER:
+	    names = numfnames;
+	    break;
+	default:
+	    return NOTFOUND;
+	}
+
+	for (count = 0; names[count] != 0; count++) {
+	    if (!strcmp(names[count], find)) {
+		struct name_table_entry	const *entry_ptr = _nc_get_table(FALSE);
+		while (entry_ptr->nte_type  != state
+ 		    || entry_ptr->nte_index != count)
+			entry_ptr++;
+		return entry_ptr;
+	    }
+	}
+    }
+}
 /* parse_entry.c ends here */
