@@ -1,7 +1,7 @@
 ################################################################################
 # Wrapper Makefile for ncurses library under OS/2.
 ################################################################################
-# $Id: Makefile.os2,v 1.7 1998/11/21 23:36:00 tom Exp $
+# $Id: Makefile.os2,v 1.8 1998/12/13 02:23:13 tom Exp $
 #
 # Author:  Juan Jose Garcia Ripoll <worm@arrakis.es>.
 # Webpage: http://www.arrakis.es/~worm/
@@ -162,6 +162,8 @@ make.defs :
 	for i in $(LIBRARIES); do \
 	echo LIBRARY $${i}$(DLL_TAG) INITINSTANCE TERMINSTANCE > ./misc/$$i.def; \
 	echo DESCRIPTION \"$(DLL_SIGNATURE), module $$i\" >> ./misc/$$i.def; \
+	echo CODE LOADONCALL >> ./misc/$$i.def; \
+	echo DATA LOADONCALL NONSHARED MULTIPLE >> ./misc/$$i.def; \
 	echo EXPORTS >> ./misc/$$i.def; \
 	echo Creating $$i.def; \
 	(cmd /C ".\\misc\\makedef.cmd ./lib/$$i.a ./misc/$$i.ref >> ./misc/$$i.def" \

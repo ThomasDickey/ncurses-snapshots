@@ -198,7 +198,6 @@ libncurses-routines	= \
 			tinfo/lib_tparm \
 			tinfo/lib_tputs \
 			tinfo/lib_twait \
-			tinfo/make_keys \
 			tinfo/name_match \
 			tinfo/parse_entry \
 			tinfo/read_entry \

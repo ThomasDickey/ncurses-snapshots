@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.393 1998/12/06 04:37:30 tom Exp $
+-- $Id: NEWS,v 1.396 1998/12/13 03:50:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981212
+	+ add environment variable NCURSES_NO_SETBUF to allow disabling the
+	  setbuf feature, for testing purposes.
+	+ correct ifdef's for termcap.h versus term.h that suppress redundant
+	  declarations of prototypes (reported by H.J.Lu).
+	+ modify Makefile.os2 to add linker flags which allow multiple copies
+	  of an application to coexist (reported by Ilya Zakharevich).
+	+ update Makefile.glibc and associated configure script so that ncurses
+	  builds as a glibc add-on with the new directory configuration
+	  (reported by H.J.Lu).
 
 981205
 	+ modify gen_reps() function in gen.c to work properly on SunOS
