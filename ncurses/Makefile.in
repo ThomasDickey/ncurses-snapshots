@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.30 1997/06/15 18:50:38 tom Exp $
+# $Id: Makefile.in,v 1.31 1997/06/21 22:45:03 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -129,7 +129,7 @@ keys.tries: make_keys
 
 make_keys : \
 		$(srcdir)/make_keys.c \
-		names.c
+		./names.c
 	$(CC) -o $@ $(CCFLAGS) $(srcdir)/make_keys.c $(LDFLAGS)
 
 make_hash : \

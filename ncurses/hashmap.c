@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.13 1997/05/27 14:57:24 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.14 1997/06/16 20:33:27 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -246,7 +246,7 @@ void _nc_hash_map(void)
 		}
 	    }
 
-	for (i = 0; i < LINES-1; i++)
+	for (i = 1; i < LINES; i++)
 	    if (OLDNUM(i) != _NEWINDEX && OLDNUM(i-1) == _NEWINDEX)
 	    {
 		if (OLDNUM(i) - 1 >= 0

@@ -1,7 +1,16 @@
--- $Id: NEWS,v 1.215 1997/06/16 01:23:36 tom Exp $
+-- $Id: NEWS,v 1.216 1997/06/22 00:45:20 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970621
+	+ correct sign-extension problem with "infocmp -e", which corrupted
+	  acsc values computed for linux fallback data.
+	+ correct dependency on ncurses/names.c (a missing "./").
+	+ modify configure script to use '&&' even for cd'ing to existing
+	  directories to work around broken shell interpreters.
+	+ correct a loop-limit in _nc_hash_map() (patch by Alexander V.
+	  Lukyanov).
 
 970615
 	+ restore logic in _nc_scroll_optimize() which marks as touched the
