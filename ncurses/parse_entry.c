@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.20 1997/11/08 18:20:27 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.21 1997/12/07 02:17:19 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -549,7 +549,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	    } else
 		tab = _nc_save_str(C_HT);
 	}
-	if (init_tabs == -1 && has_hardware_tabs == TRUE)
+	if (init_tabs == ABSENT_NUMERIC && has_hardware_tabs == TRUE)
 	    init_tabs = 8;
 
 	/*
@@ -563,7 +563,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
      * Translate the old termcap :pt: capability to it#8 + ht=\t
      */
     if (has_hardware_tabs == TRUE)
-	if (init_tabs != 8)
+	if (init_tabs != 8 && init_tabs != ABSENT_NUMERIC)
 	    _nc_warning("hardware tabs with a width other than 8: %d", init_tabs);
         else
 	{

@@ -412,6 +412,7 @@
 ./man/form_win.3x
 ./man/infocmp.1m
 ./man/keyok.3x
+./man/make_sed.sh
 ./man/man_db.renames
 ./man/menu.3x
 ./man/menu_attribs.3x
@@ -668,6 +669,8 @@
 ./sysdeps/unix/sysv/linux/edit_man.sed
 ./sysdeps/unix/sysv/linux/edit_man.sh
 ./sysdeps/unix/sysv/linux/run_tic.sh
+./tack/Makefile.in
+./tack/modules
 ./tar-copy.sh
 ./test/Makefile.in
 ./test/README

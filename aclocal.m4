@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.104 1997/11/27 13:09:07 juergen Exp $
+dnl $Id: aclocal.m4,v 1.107 1997/12/07 01:31:11 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -819,12 +819,7 @@ changequote([,])dnl
 
   # Construct a sed-script to perform renaming within man-pages
   if test -n "$cf_rename" ; then
-    fgrep -v \# $cf_rename | \
-    sed -e 's/^/s\//' \
-        -e 's/\./\\./' \
-        -e 's/	/ /g' \
-        -e 's/[ ]\+/\//' \
-        -e s/\$/\\\/g/ >man/edit_man.sed
+    $srcdir/man/make_sed.sh $cf_rename >man/edit_man.sed
   fi
   if test $cf_format = yes ; then
     cf_subdir='$mandir/cat'
@@ -875,7 +870,7 @@ cat >>man/edit_man.sh <<CF_EOF
 		target="\$source"
 	fi
 	target="$cf_subdir\$section/\$target"
-	sed -e 's,@DATADIR@,\$datadir,' < \$i | sed -f edit_man.sed >\$TMP
+	sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
 CF_EOF
 fi
 if test \$verb = installing ; then
@@ -1077,6 +1072,7 @@ AC_DEFUN([CF_SHARED_OPTS],
  	LOCAL_LDFLAGS=
  	LOCAL_LDFLAGS2=
 	LD_SHARED_OPTS=
+	INSTALL_LIB="-m 644"
 
 	cf_cv_do_symlinks=no
 	cf_cv_rm_so_locs=no
@@ -1092,6 +1088,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LD_SHARED_OPTS='+b $(libdir)'
 		fi
 		MK_SHARED_LIB='$(LD) -b -o $[@]'
+		# HP-UX shared libraries must be executable, and should be
+		# readonly to exploit a quirk in the memory manager.
+		INSTALL_LIB="-m 555"
 		;;
 	irix*)
 		# tested with IRIX 5.2 and 'cc'.
@@ -1189,6 +1188,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	AC_SUBST(EXTRA_LDFLAGS)
 	AC_SUBST(LOCAL_LDFLAGS)
 	AC_SUBST(LOCAL_LDFLAGS2)
+	AC_SUBST(INSTALL_LIB)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Check for definitions & structures needed for window size-changing
@@ -1283,16 +1283,28 @@ cf_cv_src_modules=
 for cf_dir in $1
 do
 	if test -f $srcdir/$cf_dir/modules; then
+
+		# We may/may not have tack in the distribution, though the
+		# makefile is.
+		if test $cf_dir = tack ; then
+			if test ! -f $srcdir/${cf_dir}/${cf_dir}.h; then
+				continue
+			fi
+		fi
+
 		if test -z "$cf_cv_src_modules"; then
 			cf_cv_src_modules=$cf_dir
 		else
 			cf_cv_src_modules="$cf_cv_src_modules $cf_dir"
 		fi
+
 		# Make the ncurses_cfg.h file record the library interface files as
 		# well.  These are header files that are the same name as their
 		# directory.  Ncurses is the only library that does not follow
 		# that pattern.
-		if test -f $srcdir/${cf_dir}/${cf_dir}.h; then
+		if test $cf_dir = tack ; then
+			continue
+		elif test -f $srcdir/${cf_dir}/${cf_dir}.h; then
 			CF_UPPER(cf_have_include,$cf_dir)
 			AC_DEFINE_UNQUOTED(HAVE_${cf_have_include}_H)
 			AC_DEFINE_UNQUOTED(HAVE_LIB${cf_have_include})

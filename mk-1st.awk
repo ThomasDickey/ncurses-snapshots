@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.25 1997/10/04 17:08:16 tom Exp $
+# $Id: mk-1st.awk,v 1.27 1997/12/07 00:07:43 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -74,7 +74,7 @@ BEGIN	{
 		found = 0;
 	}
 	!/^#/ {
-		if ( $2 == "lib" || $2 == "progs" )
+		if ( $2 == "lib" || $2 == "progs" || $2 == "tack" )
 		{
 			if ( found == 0 )
 			{
@@ -118,7 +118,7 @@ END	{
 				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
 				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
-				printf "\t$(INSTALL) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
+				printf "\t$(INSTALL_LIB) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 1)
 				if ( overwrite == "yes" && name == "ncurses" )
 				{
