@@ -39,10 +39,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_in_wchnstr.c,v 1.1 2002/04/13 19:33:57 tom Exp $")
+MODULE_ID("$Id: lib_in_wchnstr.c,v 1.2 2002/08/03 20:38:45 tom Exp $")
 
 NCURSES_EXPORT(int)
-win_wchnstr(WINDOW *win, NCURSES_CONST cchar_t * wchstr, int n)
+win_wchnstr(WINDOW *win, cchar_t * wchstr, int n)
 {
     int code = OK;
 

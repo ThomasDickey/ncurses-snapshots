@@ -61,7 +61,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.44 2002/04/21 21:06:29 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.45 2002/08/04 00:00:47 tom Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -121,8 +121,6 @@ _nc_timed_wait(int mode, int milliseconds, int *timeleft)
 
     long starttime, returntime;
 
-    if (milliseconds < 0)
-	milliseconds = 0;
     TR(TRACE_IEVENT, ("start twait: %d milliseconds, mode: %d",
 		      milliseconds, mode));
 
@@ -157,26 +155,34 @@ _nc_timed_wait(int mode, int milliseconds, int *timeleft)
      *
      * FIXME: the return values from the ioctl aren't very clear if we get
      * interrupted.
+     *
+     * FIXME: this assumes mode&1 if milliseconds < 0 (see lib_getch.c).
      */
     result = 0;
     if (mode & 1) {
+	int step = (milliseconds < 0) ? 0 : 5000;
 	bigtime_t d;
 	bigtime_t useconds = milliseconds * 1000;
 	int n, howmany;
 
-	if (useconds == 0)	/* we're here to go _through_ the loop */
+	if (useconds <= 0)	/* we're here to go _through_ the loop */
 	    useconds = 1;
 
-	for (d = 0; d < useconds; d += 5000) {
+	for (d = 0; d < useconds; d += step) {
 	    n = 0;
 	    howmany = ioctl(0, 'ichr', &n);
 	    if (howmany >= 0 && n > 0) {
 		result = 1;
 		break;
 	    }
-	    if (useconds > 1)
-		snooze(5000);
-	    milliseconds -= 5;
+	    if (useconds > 1 && step > 0) {
+		snooze(step);
+		milliseconds -= (step / 1000);
+		if (milliseconds <= 0) {
+		    milliseconds = 0;
+		    break;
+		}
+	    }
 	}
     } else if (milliseconds > 0) {
 	snooze(milliseconds * 1000);
