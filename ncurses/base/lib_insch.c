@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.20 2004/04/03 21:33:00 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.21 2004/06/19 22:52:59 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -128,32 +128,6 @@ winsch(WINDOW *win, chtype c)
 
 	_nc_insert_ch(win, c);
 
-	win->_curx = ox;
-	win->_cury = oy;
-	_nc_synchook(win);
-	code = OK;
-    }
-    returnCode(code);
-}
-
-NCURSES_EXPORT(int)
-winsstr(WINDOW *win, const char *s)
-{
-    int n = strlen(s);
-    int code = ERR;
-    NCURSES_SIZE_T oy;
-    NCURSES_SIZE_T ox;
-    const unsigned char *str = (const unsigned char *) s;
-    const unsigned char *cp;
-
-    T((T_CALLED("winsstr(%p,%s,%d)"), win, _nc_visbufn(s, n), n));
-
-    if (win != 0 && str != 0) {
-	oy = win->_cury;
-	ox = win->_curx;
-	for (cp = str; *cp && (n <= 0 || (cp - str) < n); cp++) {
-	    _nc_insert_ch(win, (chtype) UChar(*cp));
-	}
 	win->_curx = ox;
 	win->_cury = oy;
 	_nc_synchook(win);
