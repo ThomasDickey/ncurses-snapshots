@@ -29,15 +29,15 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 2000
  *
- * $Id: railroad.c,v 1.5 2001/03/24 22:01:42 tom Exp $
+ * $Id: railroad.c,v 1.6 2001/07/01 01:27:26 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
-#include <test.priv.h>
-
 #include <termcap.h>
 #include <ctype.h>
 #include <signal.h>
+
+#include <test.priv.h>
 
 static char *wipeit;
 static char *moveit;

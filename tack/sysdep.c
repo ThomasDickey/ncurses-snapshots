@@ -28,9 +28,10 @@
 #include <OS.h>
 #endif
 
+#include <signal.h>
+
 #include <tack.h>
 
-#include <signal.h>
 #include <term.h>
 #include <errno.h>
 
@@ -43,7 +44,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.9 2000/09/02 19:17:39 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.10 2001/07/01 01:23:26 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;

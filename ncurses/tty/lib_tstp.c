@@ -37,17 +37,17 @@
 **	The routine _nc_signal_handler().
 **
 */
+#include <signal.h>
 
 #include <curses.priv.h>
 
-#include <signal.h>
 #include <SigAction.h>
 
 #if SVR4_ACTION && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.24 2000/12/10 03:04:30 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.25 2001/07/01 01:21:50 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1

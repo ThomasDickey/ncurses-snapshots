@@ -39,17 +39,17 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.144 2001/06/18 18:45:05 tom Exp $
+$Id: ncurses.c,v 1.145 2001/07/01 01:26:41 tom Exp $
 
 ***************************************************************************/
-
-#include <test.priv.h>
 
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
 #include <signal.h>
+
+#include <test.priv.h>
 
 #if HAVE_LOCALE_H
 #include <locale.h>

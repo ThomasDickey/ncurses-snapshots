@@ -29,16 +29,16 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.4 2000/02/13 01:05:13 tom Exp $
+ * $Id: dots.c,v 1.5 2001/07/01 01:24:58 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
+#include <time.h>
+#include <signal.h>
+
 #include <test.priv.h>
 
 #include <term.h>		/* for tparm() */
-
-#include <time.h>
-#include <signal.h>
 
 #define valid(s) ((s != 0) && s != (char *)-1)
 

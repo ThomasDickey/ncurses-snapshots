@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.23 2001/06/18 18:45:10 tom Exp $ */
+/* $Id: test.priv.h,v 1.24 2001/07/01 01:25:48 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -64,10 +64,6 @@
 #include <unistd.h>
 #endif
 
-#if USE_WIDEC_SUPPORT
-#define _XOPEN_SOURCE_EXTENDED
-#include <wchar.h>	/* we want mbstate_t */
-#endif
 #include <curses.h>
 
 #if NCURSES_NOMACROS
