@@ -30,13 +30,16 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "term.h"
-#include "tic.h"
-#include "dump_entry.h"
-#include "term_entry.h"
+#include <term.h>
+#include <tic.h>
+#include <dump_entry.h>
+#include <term_entry.h>
+
+MODULE_ID("$Id: tic.c,v 1.16 1996/08/31 20:43:20 tom Exp $")
 
 char	*_nc_progname = "tic";
 
+static	FILE	*log_fp;
 static	bool	showsummary = FALSE;
 
 static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-CILNRTrsw1] source-file\n";
@@ -218,9 +221,11 @@ static const char **make_namelist(char *src)
 		for (pass = 1; pass <= 2; pass++) {
 			nn = 0;
 			while (fgets(buffer, sizeof(buffer), fp) != 0) {
-				if (dst != 0 && (s = stripped(buffer)) != 0)
-					dst[nn] = s;
-				nn++;
+				if ((s = stripped(buffer)) != 0) {
+					if (dst != 0)
+						dst[nn] = s;
+					nn++;
+				}
 			}
 			if (pass == 1) {
 				dst = (const char **)calloc(nn+1, sizeof(*dst));
@@ -248,6 +253,11 @@ static const char **make_namelist(char *src)
 			if (pass == 1)
 				dst = (const char **)calloc(nn+1, sizeof(*dst));
 		}
+	}
+	if (showsummary) {
+		fprintf(log_fp, "Entries that will be compiled:\n");
+		for (n = 0; dst[n] != 0; n++)
+			fprintf(log_fp, "%d:%s\n", n+1, dst[n]);
 	}
 	return dst;
 }
@@ -296,6 +306,8 @@ char	*source_file = "terminfo";
 const	char	**namelst = 0;
 char	*outdir = (char *)NULL;
 bool	check_only = FALSE;
+
+	log_fp = stderr;
 
 	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
 		_nc_progname = argv[0];
@@ -541,14 +553,15 @@ bool	check_only = FALSE;
 	/* Show the directory into which entries were written, and the total
 	 * number of entries
 	 */
-	if (showsummary) {
+	if (showsummary
+	 && (!(check_only || infodump || capdump))) {
 		int total = _nc_tic_written();
 		if (total != 0)
-			printf("%d entries written to %s\n",
+			fprintf(log_fp, "%d entries written to %s\n",
 				total,
 				_nc_tic_dir((char *)0));
 		else
-			printf("No entries written\n");
+			fprintf(log_fp, "No entries written\n");
 	}
 	return(EXIT_SUCCESS);
 }

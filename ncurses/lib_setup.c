@@ -37,7 +37,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.17 1996/07/31 00:04:14 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.18 1996/09/01 01:35:05 tom Exp $")
 
 /****************************************************************************
  *
@@ -221,7 +221,7 @@ struct term	*term_ptr;
 			del_curterm(cur_term);
 		}
 
-		term_ptr = (struct term *) calloc(1, sizeof(struct term));
+		term_ptr = (TERMINAL *) calloc(1, sizeof(TERMINAL));
 
 		if (term_ptr == NULL)
 			ret_error0(-1, "Not enough memory to create terminal structure.\n") ;

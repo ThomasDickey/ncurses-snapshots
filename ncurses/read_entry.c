@@ -37,7 +37,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.22 1996/08/25 00:20:46 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.23 1996/08/27 19:48:30 Philippe.De.Muyter Exp $")
 
 TERMINAL *cur_term;
 
@@ -115,12 +115,15 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     str_count  = LOW_MSB(buf + 8);
     str_size   = LOW_MSB(buf + 10);
 
-    /* try to allocate space for the string table */
-    ptr->str_table = malloc((unsigned)str_size);
-    if (ptr->str_table == 0)
+    if (str_size)
     {
-	close(fd);
-	return(0);
+	/* try to allocate space for the string table */
+	ptr->str_table = malloc((unsigned)str_size);
+	if (ptr->str_table == 0)
+	{
+	    close(fd);
+	    return(0);
+	}
     }
 
     /* grab the name */
@@ -165,34 +168,44 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	for (i=num_count; i < NUMCOUNT; i++)
 	    ptr->Numbers[i] = ABSENT_NUMERIC;
 
-    /* grab the string offsets */
-    numread = read(fd, buf, (unsigned)(str_count*2));
-    if (numread < str_count*2)
+    if (str_count)
     {
-	close(fd);
-	return(0);
+	/* grab the string offsets */
+	numread = read(fd, buf, (unsigned)(str_count*2));
+	if (numread < str_count*2)
+	{
+	    close(fd);
+	    return(0);
+	}
+	for (i = 0; i < numread/2; i++)
+	{
+	    if (IS_NEG1(buf + 2*i))
+		ptr->Strings[i] = ABSENT_STRING;
+	    else if (IS_NEG2(buf + 2*i))
+		ptr->Strings[i] = CANCELLED_STRING;
+	    else
+		ptr->Strings[i] = (LOW_MSB(buf+2*i) + ptr->str_table);
+	}
     }
-    for (i = 0; i < numread/2; i++)
-    {
-	if (IS_NEG1(buf + 2*i))
-	    ptr->Strings[i] = ABSENT_STRING;
-	else if (IS_NEG2(buf + 2*i))
-	    ptr->Strings[i] = CANCELLED_STRING;
-	else
-	    ptr->Strings[i] = (LOW_MSB(buf+2*i) + ptr->str_table);
-    }
+
     if (str_count > STRCOUNT)
 	lseek(fd, (off_t) (2 * (str_count - STRCOUNT)), 1);
     else
 	for (i = str_count; i < STRCOUNT; i++)
 	    ptr->Strings[i] = ABSENT_STRING;
 
-    /* finally, grab the string table itself */
-    numread = read(fd, ptr->str_table, (unsigned)str_size);
-    close(fd);
-    if (numread != str_size)
-	return(0);
+    if (str_size)
+    {
+	/* finally, grab the string table itself */
+	numread = read(fd, ptr->str_table, (unsigned)str_size);
+	if (numread != str_size)
+	{
+	    close(fd);
+	    return(0);
+	}
+    }
 
+    close(fd);
     return(1);
 }
 

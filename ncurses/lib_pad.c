@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.11 1996/08/18 01:37:38 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.12 1996/09/01 01:12:24 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -111,19 +111,28 @@ bool	wide;
 	if (sminrow < 0) sminrow = 0;
 	if (smincol < 0) smincol = 0;
 
-	if (smaxrow > screen_lines
-	 || smaxcol > screen_columns
-	 || sminrow > smaxrow
-	 || smincol > smaxcol)
-		return ERR;
-
 	pmaxrow = pminrow + smaxrow - sminrow;
 	pmaxcol = pmincol + smaxcol - smincol;
 
 	T((" pminrow + smaxrow - sminrow %d, win->_maxy %d", pmaxrow, win->_maxy));
 	T((" pmincol + smaxcol - smincol %d, win->_maxx %d", pmaxcol, win->_maxx));
-	if ((pmaxrow > win->_maxy)
-	 || (pmaxcol > win->_maxx))
+
+	/*
+	 * Trim the caller's screen size back to the actual limits.
+	 */
+	if (pmaxrow > win->_maxy) {
+		smaxrow -= (pmaxrow - win->_maxy);
+		pmaxrow = pminrow + smaxrow - sminrow;
+	}
+	if (pmaxcol > win->_maxx) {
+		smaxcol -= (pmaxcol - win->_maxx);
+		pmaxcol = pmincol + smaxcol - smincol;
+	}
+
+	if (smaxrow > screen_lines
+	 || smaxcol > screen_columns
+	 || sminrow > smaxrow
+	 || smincol > smaxcol)
 		return ERR;
 
 	T(("pad being refreshed"));
@@ -151,7 +160,9 @@ bool	wide;
 	 */
 	wide = (sminrow <= 1 && win->_maxx >= (newscr->_maxx - 1));
 
-	for (i = pminrow, m = sminrow + win->_yoffset; i <= pmaxrow; i++, m++) {
+	for (i = pminrow, m = sminrow + win->_yoffset;
+		i <= pmaxrow && m <= newscr->_maxy;
+			i++, m++) {
 		register struct ldat	*nline = &newscr->_line[m];
 		register struct ldat	*oline = &win->_line[i];
 
