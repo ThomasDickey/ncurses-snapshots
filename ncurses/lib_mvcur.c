@@ -223,7 +223,7 @@ void _nc_mvcur_init(SCREEN *sp)
     /*
      * 9 = 7 bits + 1 parity + 1 stop.
      */
-    if (BAUDRATE != 0)
+    if (BAUDRATE > 0)
     	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
     else
     	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */

@@ -43,12 +43,16 @@
 extern int errno;
 #endif
 
+#ifndef S_ISDIR
+#define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
+#endif
+
 static int write_object(FILE *, TERMTYPE *);
 
 static char	*destination = TERMINFO;
 
 /*
- *	check_writeable(void)
+ *	check_writeable(char code)
  *
  *	Miscellaneous initialisations
  *
@@ -57,58 +61,66 @@ static char	*destination = TERMINFO;
  *
  */
 
-static void check_writeable(void)
+static void check_writeable(int code)
 {
+static const char dirnames[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+static bool verified[sizeof(dirnames)];
+static bool initialized;
+
 struct stat	statbuf;
-char		*dirnames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-char		envhome[PATH_MAX], homedir[PATH_MAX], dir[2];
+char		dir[2];
+char		*s;
 
-	if (getenv("TERMINFO") != NULL)
-	    destination = getenv("TERMINFO");
+	if (code == 0 || (s = strchr(dirnames, code)) == 0)
+	    _nc_err_abort("Illegal terminfo subdirectory \"%c\"", code);
 
-	if (access(destination, W_OK) < 0) {
-	    char	*home;
+	if (verified[s-dirnames])
+	    return;
 
-	    /* ncurses extension...fall back on user's private directory */
-	    if ((home = getenv("HOME")) != (char *)NULL)
-	    {
-		/* total paranoia -- avoid potential buffer spamming */
-		(void) strncpy(envhome, home, PATH_MAX-sizeof(PRIVATE_INFO)-1);
-		envhome[PATH_MAX-sizeof(PRIVATE_INFO)-1] = '\0';
-		(void) sprintf(homedir, PRIVATE_INFO, envhome);
+	if (!initialized) {
+	    initialized = TRUE;
 
-		if (access(homedir, X_OK) < 0)
-		    mkdir(homedir, 0777);
-		destination = homedir;
+	    if (getenv("TERMINFO") != NULL)
+		destination = getenv("TERMINFO");
+
+	    if (access(destination, W_OK) < 0) {
+		char	*home;
+
+		/* ncurses extension...fall back on user's private directory */
+		if ((home = getenv("HOME")) != (char *)NULL)
+		{
+		    char *homedir = malloc(sizeof(PRIVATE_INFO) + strlen(home));
+		    (void) sprintf(homedir, PRIVATE_INFO, home);
+
+		    if (access(homedir, X_OK) < 0)
+			mkdir(homedir, 0777);
+		    destination = homedir;
+		}
 	    }
+
+	    if (access(destination, X_OK) < 0)
+		_nc_err_abort("%s: non-existant or permission denied (errno %d)",
+			destination, errno);
+
+	    /*
+	     * Note: because of this code, this logic should be exercised
+	     * *once only* per run.
+	     */
+	    if (chdir(destination) < 0)
+		_nc_err_abort("%s: not a directory", destination);
 	}
 
-	if (access(destination, W_OK) < 0)
-	    _nc_err_abort("%s: non-existant or permission denied (errno %d)",
-			  destination, errno);
-
-	/*
-	 * Note: because of this code, this function should be called
-	 * *once only* per run.
-	 */
-	if (chdir(destination) < 0) {
-	    _nc_err_abort("%s: not a directory", destination);
-	}
-	
+	dir[0] = code;
 	dir[1] = '\0';
-	for (dir[0] = *dirnames; *dirnames != '\0'; dir[0] = *(++dirnames)) {
-	    	if (stat(dir, &statbuf) < 0) {
-			mkdir(dir, 0755);
-	    	} else if (access(dir, 7) < 0) {
-			_nc_err_abort("%s/%s: permission denied",destination, dir);
-	    	}
-#ifdef _POSIX_SOURCE
-	    	else if (!(S_ISDIR(statbuf.st_mode)))
-#else
-	    	else if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
-#endif	    
-			_nc_err_abort("%s/%s: not a directory", destination,dir);
+	if (stat(dir, &statbuf) < 0) {
+	    mkdir(dir, 0777);
+	} else if (access(dir, R_OK|W_OK|X_OK) < 0) {
+	    _nc_err_abort("%s/%s: permission denied", destination, dir);
+	} else if (!(S_ISDIR(statbuf.st_mode))) {
+	    _nc_err_abort("%s/%s: not a directory", destination, dir);
 	}
+
+	verified[s-dirnames] = TRUE;
 }
 
 /*
@@ -149,7 +161,6 @@ static int	call_count;
 static time_t	start_time;		/* time at start of writes */
 
 	if (call_count++ == 0) {
-		check_writeable();
 		start_time = 0;
 	}
 
@@ -200,6 +211,7 @@ static time_t	start_time;		/* time at start of writes */
 		_nc_warning("name multiply defined.");
 	}
 
+	check_writeable(first_name[0]);
 	fp = fopen(filename, "w");
 	if (fp == NULL) {
 	    	perror(filename);
@@ -232,6 +244,7 @@ static time_t	start_time;		/* time at start of writes */
 			continue;
 	    	}
 
+		check_writeable(ptr[0]);
 	    	sprintf(linkname, "%c/%s", ptr[0], ptr);
 
 	    	if (strcmp(filename, linkname) == 0) {

@@ -22,7 +22,6 @@ this one.
 <LI> <A HREF="#extensions">How to Design Extensions</A>
 </UL>
 <LI> <A HREF="#portability">Portability and Configuration</A><UL>
-<LI> 
 <LI> <A HREF="#fooup">If autoconf Fails</A>
 </UL>
 <LI> <A HREF="#documentation">Documentation Conventions</A>
@@ -145,8 +144,6 @@ The 'configure' script usually gets your system environment right
 automatically.  Here are some -D options you might need to compile
 with if it fails: <P>
 <DL>
-<DT>-DHAVE_UNISTD_H
-<DD>if <unistd.h> is present
 <DT>-DHAVE_SIGACTION
 <DD>if the sigaction function is present 
 <DT>-DHAVE_USLEEP
@@ -157,8 +154,6 @@ with if it fails: <P>
 <DD>if you have <termios.h>; otherwise it uses <sgtty.h>
 <DT>-DBROKEN_TIOCGETWINSZ
 <DD>on SVR4 and HPUX, the get window size ioctl is broken.
-<DT>-DHAVE_SYS_SELECT_H
-<DD>if (e.g., AIX) you have <sys/select.h>
 </DL>
 
 <H1><A NAME="documentation">Documentation Conventions</A></H1>
@@ -195,6 +190,14 @@ version from it.  Also, of course, it make exporting things like the
 announcement document to WWW pretty trivial.<P>
 
 <H1><A NAME="bugtrack">How to Report Bugs</A></H1>
+
+The <A NAME="bugreport">reporting address for bugs</A> is
+<A HREF="mailto:ncurses-list@netcom.com">ncurses-list@netcom.com</A>.
+This is a majordomo list;  to join, write
+to <TT>listserv@netcom.com</TT> with a message containing the line:
+<LISTING>
+             subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
+</LISTING> <P>
 
 The <TT>ncurses</TT> code is maintained by a small group of
 volunteers.  While we try our best to fix bugs promptly, we simply
@@ -818,5 +821,7 @@ lib_twait.c	-- gettimeofday(), select().
 The package kernel could be made smaller. <P>
 
 <HR>
-<ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>
+<ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS>
+(Note: This is <EM>not</EM> the <A HREF="#bugreports">bug address</A>!)
+</BODY>
 </HTML>

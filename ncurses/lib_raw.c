@@ -40,10 +40,19 @@
 
 #include "curses.priv.h"
 #include "term.h"	/* cur_term */
+#include <string.h>
 
-/* 
+#ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
+#define ONLCR 0
+#endif
+
+#if HAVE_SYS_TERMIO_H
+#include <sys/termio.h>	/* needed for ISC */
+#endif
+
+/*
  * COOKED_INPUT defines the collection of input mode bits to be
- * cleared when entering raw mode, then re-set by noraw().  
+ * cleared when entering raw mode, then re-set by noraw().
  *
  * We used to clear ISTRIP and INPCK when going to raw mode.  Keith
  * Bostic says that's wrong, because those are hardware bits that the
@@ -77,6 +86,129 @@
  */
 #define COOKED_INPUT	(IXON|IGNBRK|BRKINT|PARMRK)
 
+#ifdef TRACE
+char *_tracebits(void)
+/* describe the state of the terminal control bits exactly */
+{
+static char	buf[BUFSIZ];
+static const	struct {unsigned int val; char *name;}
+
+iflags[] =
+    {
+	{BRKINT,	"BRKINT"},
+	{IGNBRK,	"IGNBRK"},
+	{IGNPAR,	"IGNPAR"},
+	{PARMRK,	"PARMRK"},
+	{INPCK, 	"INPCK"},
+	{ISTRIP,	"ISTRIP"},
+	{INLCR, 	"INLCR"},
+	{IGNCR, 	"IGNC"},
+	{ICRNL, 	"ICRNL"},
+	{IXON,  	"IXON"},
+	{IXOFF, 	"IXOFF"},
+	{0,		NULL}
+#define ALLIN	(BRKINT|IGNBRK|IGNPAR|PARMRK|INPCK|ISTRIP|INLCR|IGNCR|ICRNL|IXON|IXOFF)
+    },
+oflags[] =
+    {
+	{OPOST, 	"OPOST"},
+	{0,		NULL}
+#define ALLOUT	(OPOST)
+    },
+cflags[] =
+    {
+	{CLOCAL,	"CLOCAL"},
+	{CREAD, 	"CREAD"},
+	{CSIZE, 	"CSIZE"},
+	{CSTOPB,	"CSTOPB"},
+	{HUPCL, 	"HUPCL"},
+	{PARENB,	"PARENB"},
+	{PARODD|PARENB,	"PARODD"},	/* concession to readability */
+	{0,		NULL}
+#define ALLCTRL	(CLOCAL|CREAD|CSIZE|CSTOPB|HUPCL|PARENB|PARODD)
+    },
+lflags[] =
+    {
+	{ECHO,  	"ECHO"},
+	{ECHOE|ECHO, 	"ECHOE"},	/* concession to readability */
+	{ECHOK|ECHO, 	"ECHOK"},	/* concession to readability */
+	{ECHONL,	"ECHONL"},
+	{ICANON,	"ICANON"},
+	{ISIG,  	"ISIG"},
+	{NOFLSH,	"NOFLSH"},
+	{TOSTOP,	"TOSTOP"},
+	{IEXTEN,	"IEXTEN"},
+	{0,		NULL}
+#define ALLLOCAL	(ECHO|ECHONL|ICANON|ISIG|NOFLSH|TOSTOP|IEXTEN)
+    },
+    *sp;
+
+    if (cur_term->Nttyb.c_iflag & ALLIN)
+    {
+	(void) strcpy(buf, "iflags: {");
+	for (sp = iflags; sp->val; sp++)
+	    if ((cur_term->Nttyb.c_iflag & sp->val) == sp->val)
+	    {
+	        (void) strcat(buf, sp->name);
+		(void) strcat(buf, ", ");
+	    }
+	if (buf[strlen(buf) - 2] == ',')
+	    buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+    }
+
+    if (cur_term->Nttyb.c_oflag & ALLOUT)
+    {
+	(void) strcat(buf, "oflags: {");
+	for (sp = oflags; sp->val; sp++)
+	    if ((cur_term->Nttyb.c_oflag & sp->val) == sp->val)
+	    {
+		(void) strcat(buf, sp->name);
+		(void) strcat(buf, ", ");
+	    }
+	if (buf[strlen(buf) - 2] == ',')
+	    buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+    }
+
+    if (cur_term->Nttyb.c_cflag & ALLCTRL)
+    {
+	(void) strcat(buf, "cflags: {");
+	for (sp = cflags; sp->val; sp++)
+	    if ((cur_term->Nttyb.c_cflag & sp->val) == sp->val)
+	    {
+		(void) strcat(buf, sp->name);
+		(void) strcat(buf, ", ");
+	    }
+	if (buf[strlen(buf) - 2] == ',')
+	    buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+    }
+
+    if (cur_term->Nttyb.c_lflag & ALLLOCAL)
+    {
+	(void) strcat(buf, "lflags: {");
+	for (sp = lflags; sp->val; sp++)
+	    if ((cur_term->Nttyb.c_lflag & sp->val) == sp->val)
+	    {
+		(void) strcat(buf, sp->name);
+		(void) strcat(buf, ", ");
+	    }
+	if (buf[strlen(buf) - 2] == ',')
+	    buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+    }
+
+    return(buf);
+}
+
+#define BEFORE(s)	if (_nc_tracing&TRACE_BITS) _tracef("%s before bits: %s", s, _tracebits())
+#define AFTER(s)	if (_nc_tracing&TRACE_BITS) _tracef("%s after bits: %s", s, _tracebits())
+#else
+#define BEFORE(s)
+#define AFTER(s)
+#endif /* TRACE */
+
 int raw(void)
 {
 	T(("raw() called"));
@@ -85,11 +217,13 @@ int raw(void)
 	SP->_cbreak = TRUE;
 
 #ifdef TERMIOS
+	BEFORE("raw");
 	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG|IEXTEN);
 	cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT|ICRNL|INLCR|IGNCR);
 	cur_term->Nttyb.c_oflag &= ~(OPOST);
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
+	AFTER("raw");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -108,10 +242,12 @@ int cbreak(void)
 	SP->_cbreak = TRUE;
 
 #ifdef TERMIOS
-	cur_term->Nttyb.c_lflag &= ~ICANON; 
+	BEFORE("cbreak");
+	cur_term->Nttyb.c_lflag &= ~ICANON;
 	cur_term->Nttyb.c_lflag |= ISIG;
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
+	AFTER("cbreak");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -128,9 +264,11 @@ int echo(void)
 	T(("echo() called"));
 
 	SP->_echo = TRUE;
-    
+
 #ifdef TERMIOS
+	BEFORE("echo");
 	cur_term->Nttyb.c_lflag |= ECHO;
+	AFTER("echo");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -150,9 +288,11 @@ int nl(void)
 	SP->_nl = TRUE;
 
 #ifdef TERMIOS
+	BEFORE("nl");
 	/* the code used to set IXON|IXOFF here, Ghod knows why... */
 	cur_term->Nttyb.c_iflag |= ICRNL;
 	cur_term->Nttyb.c_oflag |= OPOST|ONLCR;
+	AFTER("nl");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -175,7 +315,9 @@ int qiflush(void)
 	 */
 
 #ifdef TERMIOS
+	BEFORE("qiflush");
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
+	AFTER("qiflush");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -194,9 +336,11 @@ int noraw(void)
 	SP->_cbreak = FALSE;
 
 #ifdef TERMIOS
+	BEFORE("noraw");
 	cur_term->Nttyb.c_lflag |= ISIG|ICANON|IEXTEN;
 	cur_term->Nttyb.c_iflag |= COOKED_INPUT;
 	cur_term->Nttyb.c_oflag |= OPOST;
+	AFTER("noraw");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -215,14 +359,16 @@ int nocbreak(void)
 	T(("nocbreak() called"));
 
 	SP->_cbreak = 0;
-	
+
 #ifdef TERMIOS
+	BEFORE("nocbreak");
 	cur_term->Nttyb.c_lflag |= ICANON;
+	AFTER("nocbreak");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
 		return OK;
-#else 
+#else
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
 	stty(cur_term->Filedes, &cur_term->Nttyb);
 	return OK;
@@ -234,13 +380,15 @@ int noecho(void)
 	T(("noecho() called"));
 
 	SP->_echo = FALSE;
-	
+
 #ifdef TERMIOS
-	/* 
+	/*
 	 * Turn off ECHONL to avoid having \n still be echoed when
 	 * cooked mode is in effect (that is, ICANON is on).
 	 */
+	BEFORE("noecho");
 	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
+	AFTER("noecho");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -258,10 +406,12 @@ int nonl(void)
 	T(("nonl() called"));
 
 	SP->_nl = FALSE;
-	
+
 #ifdef TERMIOS
+	BEFORE("nonl");
 	cur_term->Nttyb.c_iflag &= ~ICRNL;
 	cur_term->Nttyb.c_oflag &= ~ONLCR;
+	AFTER("nonl");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -283,7 +433,9 @@ int noqiflush(void)
 	 */
 
 #ifdef TERMIOS
+	BEFORE("noqiflush");
 	cur_term->Nttyb.c_lflag |= NOFLSH;
+	AFTER("noqiflush");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
@@ -295,7 +447,7 @@ int noqiflush(void)
 
 int intrflush(WINDOW *win, bool flag)
 {
-	T(("intrflush() called"));
+	T(("intrflush(%d) called", flag));
 
 	/*
 	 * This call does the same thing as the qiflush()/noqiflush()
@@ -307,10 +459,12 @@ int intrflush(WINDOW *win, bool flag)
 	 */
 
 #ifdef TERMIOS
+	BEFORE("intrflush");
 	if (flag)
 		cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	else
 		cur_term->Nttyb.c_lflag |= (NOFLSH);
+	AFTER("intrflush");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else

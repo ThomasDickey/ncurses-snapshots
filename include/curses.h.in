@@ -1180,19 +1180,22 @@ int mouseinterval(int);
 extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t mode);
+extern char *_tracebits(void);
 extern char *_tracechar(const unsigned char);
 extern char *_tracemouse(const MEVENT *);
 extern void trace(const unsigned int tracelevel);
 
 /* trace masks */
 #define TRACE_DISABLE	0x00	/* turn off tracing */
-#define TRACE_UPDATE	0x01	/* trace update actions, old & new screens */
-#define TRACE_MOVE	0x02	/* trace cursor moves and scrolls */
-#define TRACE_CHARPUT	0x04	/* trace all character outputs */
-#define TRACE_ORDINARY	0x07	/* trace all update actions */
-#define TRACE_CALLS	0x08	/* trace all curses calls */
-#define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
-#define TRACE_FIFO	0x20	/* also fifo actions by getch() */
+#define TRACE_TPUTS	0x01	/* trace tputs calls */
+#define TRACE_UPDATE	0x02	/* trace update actions, old & new screens */
+#define TRACE_MOVE	0x04	/* trace cursor moves and scrolls */
+#define TRACE_CHARPUT	0x08	/* trace all character outputs */
+#define TRACE_ORDINARY	0x0F	/* trace all update actions */
+#define TRACE_CALLS	0x10	/* trace all curses calls */
+#define TRACE_VIRTPUT	0x20	/* trace virtual character puts */
+#define TRACE_FIFO	0x40	/* also fifo actions by getch() */
+#define TRACE_BITS	0x80	/* trace state of TTY control bits */
 #define TRACE_MAXIMUM	0xff	/* maximum trace level */
 
 #ifdef TRACE

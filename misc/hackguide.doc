@@ -122,9 +122,6 @@ If autoconf Fails
    automatically. Here are some -D options you might need to compile with
    if it fails:
    
-   -DHAVE_UNISTD_H
-          if is present
-          
    -DHAVE_SIGACTION
           if the sigaction function is present
           
@@ -139,9 +136,6 @@ If autoconf Fails
           
    -DBROKEN_TIOCGETWINSZ
           on SVR4 and HPUX, the get window size ioctl is broken.
-          
-   -DHAVE_SYS_SELECT_H
-          if (e.g., AIX) you have
           
                            DOCUMENTATION CONVENTIONS
                                        

@@ -6,6 +6,7 @@
 #	$2 = term.h
 #
 for name in \
+	HAVE_TCGETATTR \
 	HAVE_TERMIOS_H \
 	BROKEN_LINKER
 do

@@ -60,6 +60,10 @@ BEGIN	{
 	}
 END	{
 		print  ""
+		if ( found != 0 )
+		{
+			printf "\n$(%s_OBJS) : %s\n", MODEL, depend
+		}
 		if ( found == 1 )
 		{
 			print  ""

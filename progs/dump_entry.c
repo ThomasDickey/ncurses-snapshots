@@ -36,6 +36,8 @@ static int tversion;		/* terminfo version */
 static int outform;		/* output format to use */
 static int sortmode;		/* sort mode to use */
 static int width = 60;		/* max line width for listings */
+static int column;		/* current column, limited by 'width' */
+static int oldcol;		/* last value of column before wrap */
 static int tracelevel;		/* level of debug output */
 
 /* indirection pointers for implementing sort and display modes */
@@ -109,7 +111,7 @@ void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 	bool_names = boolnames;
 	num_names = numnames;
 	str_names = strnames;
-	separator = ", ";
+	separator = twidth ? ", " : ",";
 	trailer = "\n\t";
 	break;
 
@@ -117,7 +119,7 @@ void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 	bool_names = boolfnames;
 	num_names = numfnames;
 	str_names = strfnames;
-	separator = ", ";
+	separator = twidth ? ", " : ",";
 	trailer = "\n\t";
 	break;
 
@@ -329,26 +331,42 @@ static bool version_filter(int type, int idx)
     return(FALSE);	/* pacify the compiler */
 }
 
+static
+void force_wrap(char *dst)
+{
+	oldcol = column;
+	(void) strcat(dst, trailer);
+	column = INDENT;
+}
+
+static
+void wrap_concat(char *dst, const char *src)
+{
+	int need = strlen(src);
+	int want = strlen(separator) + need;
+
+	if (column > INDENT
+	 && column + want > width) {
+		force_wrap(dst);
+	}
+	(void) strcat(dst, src);
+	(void) strcat(dst, separator);
+	column += need;
+}
+
 int fmt_entry(TERMTYPE *tterm,
 			   int (*pred)(int type, int idx),
 			   char *outbuf, bool suppress_untranslatable,
 			   bool infodump)
 {
 int	i, j;
-int	column;
 char    buffer[MAX_TERMINFO_LENGTH];
 int	predval, len = 0;
 bool	outcount = 0;
 
 #define WRAP_CONCAT	\
-	    (void) strcat(buffer, separator); \
-	    if (column > INDENT &&  column + (int) strlen(buffer) > width) { \
-		(void) strcat(outbuf, trailer); \
-		column = INDENT; \
-	    } \
-	    outcount++; \
-	    (void) strcat(outbuf, buffer); \
-	    column += strlen(buffer)
+	wrap_concat(outbuf, buffer); \
+	outcount = TRUE
 
     if (pred == NULL) {
 	cur_type = tterm;
@@ -357,8 +375,8 @@ bool	outcount = 0;
 
     (void) strcpy(outbuf, tterm->term_names);
     (void) strcat(outbuf, separator);
-    (void) strcat(outbuf, trailer);
-    column = INDENT;
+    column = strlen(outbuf);
+    force_wrap(outbuf);
 
     for (j=0; j < BOOLCOUNT; j++) {
 	if (sortmode == S_NOSORT)
@@ -382,10 +400,7 @@ bool	outcount = 0;
     }
 
     if (column != INDENT)
-    {
-	(void) strcat(outbuf, trailer);
-	column = INDENT;
-    }
+	force_wrap(outbuf);
 
     for (j=0; j < NUMCOUNT; j++) {
 	if (sortmode == S_NOSORT)
@@ -408,11 +423,9 @@ bool	outcount = 0;
 	    WRAP_CONCAT;
 	}
     }
+
     if (column != INDENT)
-    {
-	(void) strcat(outbuf, trailer);
-	column = INDENT;
-    }
+	force_wrap(outbuf);
 
     len = strlen(tterm->term_names) + 1;
     for (j=0; j < STRCOUNT; j++) {
@@ -491,7 +504,7 @@ bool	outcount = 0;
     /*
      * This piece of code should be an effective inverse of the functions
      * postprocess_terminfo and postprocess_terminfo in parse_entry.c.
-     * Much more work chould be done on this to support dumping termcaps.
+     * Much more work should be done on this to support dumping termcaps.
      */
     if (tversion == V_HPUX)
     {
@@ -539,7 +552,7 @@ bool	outcount = 0;
     }
 
     /*
-     * kluge: trim off trailer to avoid an extra blank line
+     * kludge: trim off trailer to avoid an extra blank line
      * in infocmp -u output when there are no string differences
      */
     if (outcount)
@@ -550,6 +563,7 @@ bool	outcount = 0;
 	if (outbuf[j-1] == ':' && outbuf[j-2] == '\t'
 	    		&& outbuf[j-3] == '\n' && outbuf[j-4] == '\\')
 	    outbuf[j-4] = '\0';
+	column = oldcol;
     }
 
 #if 0
@@ -626,6 +640,19 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 	}
     }
 
+    (void) fputs(outbuf, stdout);
+}
+
+void dump_uses(const char *name, bool infodump)
+/* dump "use=" clauses in the appropriate format */
+{
+    char buffer[MAX_TERMINFO_LENGTH];
+    char outbuf[MAX_TERMINFO_LENGTH];
+
+    *outbuf = '\0';
+    (void)strcpy(buffer, infodump ? "use=" : "tc=");
+    (void)strcat(buffer, name);
+    wrap_concat(outbuf, buffer);
     (void) fputs(outbuf, stdout);
 }
 

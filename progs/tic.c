@@ -152,7 +152,7 @@ static void put_translate(int c)
 
 int main (int argc, char *argv[])
 {
-static	const	char	*usage_string = "[-c] [-v[n]] [-ICNRrw1] source-file\n";
+static	const	char usage_string[] = "[-c] [-v[n]] [-ICNRrw1] source-file\n";
 
 int	i, debug_level = 0;
 int	argflag = FALSE, smart_defaults = TRUE;
@@ -318,10 +318,7 @@ bool	check_only = FALSE;
 
 		    dump_entry(&qp->tterm, NULL);
 		    for (j = 0; j < qp->nuses; j++)
-			if (infodump)
-			    (void) printf("use=%s,", (char *)(qp->uses[j]));
-			else
-			    (void) printf("tc=%s:", (char *)(qp->uses[j]));
+			dump_uses((char *)(qp->uses[j]), infodump);
 		    (void) putchar('\n');
 		}
 		(void) fseek(stdin, _nc_tail->cend, SEEK_SET);

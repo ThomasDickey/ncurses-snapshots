@@ -103,6 +103,11 @@ again:
 	n = read(SP->_ifd, &ch, 1);
 	if (n == -1 && errno == EINTR)
 		goto again;
+	if ((n == -1) || (n == 0))
+	{
+	    T(("read(%d,&ch,1)=%d", SP->_ifd, n));
+	    return ERR;
+	}
 	T(("read %d characters", n));
 
 	SP->_fifo[tail] = ch;
@@ -152,10 +157,29 @@ void _nc_backspace(WINDOW *win)
 int
 wgetch(WINDOW *win)
 {
-bool	setHere = FALSE;	/* cbreak mode was set here */
 int	ch; 
 
 	T(("wgetch(%p) called", win));
+
+	/*
+	 * Handle cooked mode.  Grab a string from the screen, 
+	 * stuff its contents in the FIFO queue, and pop off
+	 * the first character to return it.
+	 */
+	if (head == -1 && !SP->_raw && !SP->_cbreak)
+	{
+		char	buf[MAXCOLUMNS], *sp;
+
+		T(("filling queue in cooked mode"));
+
+		wgetnstr(win, buf, MAXCOLUMNS);
+
+		for (sp = buf; *sp; sp++)
+			ungetch(*sp);
+		ungetch('\n');
+
+		return(fifo_pull());
+	}
 
 	/* this should be eliminated */
 	if (! win->_scroll  &&  (SP->_echo) &&  (win->_flags & _FULLWIN)
@@ -164,11 +188,6 @@ int	ch;
 
 	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && !(win->_flags & _ISPAD))
 		wrefresh(win);
-
-	if (SP->_echo  &&  ! (SP->_raw  ||  SP->_cbreak)) {
-		cbreak();
-		setHere = TRUE;
-	}
 
 	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 1)) {
 	int delay;
@@ -231,6 +250,12 @@ int	ch;
 		ch = fifo_pull();
 	}
 
+	if (ch == ERR)
+	{
+	    T(("wgetch returning ERR"));
+	    return(ERR);
+	}
+
 	/* Strip 8th-bit if so desired.  We do this only for characters that
 	 * are in the range 128-255, to provide compatibility with terminals
 	 * that display only 7-bit characters.  Note that 'ch' may be a
@@ -254,8 +279,6 @@ int	ch;
 	    else
 		beep();
 	}
-	if (setHere)
-	    nocbreak();
 
 	T(("wgetch returning : 0x%x = %s",
 	   ch,
@@ -289,7 +312,8 @@ int timeleft = ESCDELAY;
     	ptr = SP->_keytry;
 
 	if (head == -1)  {
-		ch = fifo_push();
+		if ((ch = fifo_push()) == ERR)
+		    return ERR;
 		peek = 0;
     		while (ptr != NULL) {
 			TR(TRACE_FIFO, ("ch: %s", _tracechar((unsigned char)ch)));
