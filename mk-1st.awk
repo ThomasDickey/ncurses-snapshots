@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.32 1997/12/21 00:08:59 tom Exp $
+# $Id: mk-1st.awk,v 1.33 1997/12/27 20:52:20 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -22,6 +22,7 @@
 # Variables:
 #	name (library name, e.g., "ncurses", "panel", "forms", "menus")
 #	model (directory into which we compile, e.g., "obj")
+#	prefix (e.g., "lib", for Unix-style libraries)
 #	suffix (e.g., "_g.a", for debug libraries)
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
 #	depend (optional dependencies for all objects, e.g, ncurses_cfg.h)
@@ -120,7 +121,7 @@ END	{
 		if ( found == 1 )
 		{
 			print  ""
-			lib_name = sprintf("lib%s%s", name, suffix)
+			lib_name = sprintf("%s%s%s", prefix, name, suffix)
 			if ( MODEL == "SHARED" )
 			{
 				if ( DoLinks == "yes" ) {

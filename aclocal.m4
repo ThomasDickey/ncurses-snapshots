@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.114 1997/12/21 00:35:37 tom Exp $
+dnl $Id: aclocal.m4,v 1.115 1997/12/27 20:12:26 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -450,6 +450,7 @@ dnl	lib<name>.so.<major>	->
 dnl	lib<name>.so.<maj>.<minor>
 AC_DEFUN([CF_LIB_RULES],
 [
+CF_LIB_PREFIX(cf_prefix)
 AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
 for cf_dir in $SRC_SUBDIRS
 do
@@ -459,7 +460,7 @@ do
 		for cf_item in $CF_LIST_MODELS
 		do
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
-			cf_libs_to_make="$cf_libs_to_make ../lib/lib${cf_dir}${cf_suffix}"
+			cf_libs_to_make="$cf_libs_to_make ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
 		done
 
 		if test $cf_dir = ncurses ; then
@@ -509,6 +510,7 @@ do
 				name=$cf_dir \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
+				prefix=$cf_prefix \
 				suffix=$cf_suffix \
 				subset=$cf_subset \
 				DoLinks=$cf_cv_do_symlinks \
@@ -669,6 +671,16 @@ CF_EOF
 	fi
 done
 
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Compute the library-prefix for the given host system
+dnl $1 = variable to set
+AC_DEFUN([CF_LIB_PREFIX],
+[
+	case $cf_cv_system_name in
+	os2)	$1=''     ;;
+	*)	$1='lib'  ;;
+	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the library-suffix from the given model name

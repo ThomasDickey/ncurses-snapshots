@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.38 1997/12/20 21:12:53 tom Exp $
+# $Id: Makefile.in,v 1.39 1997/12/27 18:49:51 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -38,6 +38,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 AR		= @AR@
 AR_OPTS		= @AR_OPTS@
+RANLIB		= @RANLIB@
 
 CXX		= @CXX@
 CXXFLAGS	= @CXXFLAGS@
@@ -95,6 +96,7 @@ LIB_OBJS = \
 
 $(LIBNAME) : $(LIB_OBJS)
 	$(AR) $(AR_OPTS) $@ $?
+	$(RANLIB) $@
 
 OBJS_DEMO = $(MODEL)/demo.o
 

@@ -37,11 +37,26 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.17 1997/11/01 21:58:19 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.20 1997/12/28 00:21:03 tom Exp $")
 
 static int total_written;
 
 static int write_object(FILE *, TERMTYPE *);
+
+static void write_file(char *filename, TERMTYPE *tp)
+{
+	FILE *fp = fopen(filename, "wb");
+	if (fp == 0) {
+		perror(filename);
+		_nc_syserr_abort("can't open %s/%s", _nc_tic_dir(0), filename);
+	}
+	DEBUG(1, ("Created %s", filename));
+
+	if (write_object(fp, tp) == ERR) {
+		_nc_syserr_abort("error writing %s/%s", _nc_tic_dir(0), filename);
+	}
+	fclose(fp);
+}
 
 /*
  *	make_directory(char *path)
@@ -168,7 +183,6 @@ char		*s;
 void _nc_write_entry(TERMTYPE *const tp)
 {
 struct stat	statbuf;
-FILE		*fp;
 char		name_list[MAX_TERMINFO_LENGTH];
 char		*first_name, *other_names;
 char		*ptr;
@@ -232,17 +246,7 @@ static time_t	start_time;		/* time at start of writes */
 	}
 
 	check_writeable(first_name[0]);
-	fp = fopen(filename, "w");
-	if (fp == NULL) {
-		perror(filename);
-		_nc_syserr_abort("can't open %s/%s", _nc_tic_dir(0), filename);
-	}
-	DEBUG(1, ("Created %s", filename));
-
-	if (write_object(fp, tp) == ERR) {
-		_nc_syserr_abort("error writing %s/%s", _nc_tic_dir(0), filename);
-	}
-	fclose(fp);
+	write_file(filename, tp);
 
 	if (start_time == 0) {
 		if (stat(filename, &statbuf) < 0
@@ -276,12 +280,13 @@ static time_t	start_time;		/* time at start of writes */
 			_nc_warning("alias %s multiply defined.", ptr);
 		}
 		else
+#if HAVE_LINK
 		{
 #if USE_SYMLINKS
 			strcpy(symlinkname, "../");
 			strcat(symlinkname, filename);
 #endif /* USE_SYMLINKS */
-			unlink(linkname);
+			remove(linkname);
 #if USE_SYMLINKS
 			if (symlink(symlinkname, linkname) < 0)
 #else
@@ -290,6 +295,9 @@ static time_t	start_time;		/* time at start of writes */
 			    _nc_syserr_abort("can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));
 		}
+#else /* just make copies */
+		write_file(linkname, tp);
+#endif /* HAVE_LINK */
 	}
 }
 
