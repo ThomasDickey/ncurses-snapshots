@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.6 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.7 1998/09/19 19:27:43 Alexander.V.Lukyanov Exp $")
 
 /*
  * This function reallocates NCURSES window structures.  It is invoked in
@@ -69,7 +69,7 @@ resizeterm(int ToLines, int ToCols)
 
 #if USE_SIGWINCH
 		ungetch(KEY_RESIZE);	/* so application can know this */
-		clearok(curscr, TRUE);	/* screen contents is unknown */
+		clearok(curscr, TRUE);	/* screen contents are unknown */
 #endif
 
 		for (wp = _nc_windows; wp != 0; wp = wp->next) {
@@ -105,6 +105,9 @@ resizeterm(int ToLines, int ToCols)
 		screen_columns = columns  = ToCols;
 
 		SP->_lines_avail = lines - stolen;
+
+		if (SP->oldhash) { FreeAndNull(SP->oldhash); }
+		if (SP->newhash) { FreeAndNull(SP->newhash); }
 	}
 
 	/*

@@ -203,7 +203,6 @@ libncurses-routines	= \
 			read_termcap \
 			resizeterm \
 			safe_sprintf \
-			softscroll \
 			trace_buf \
 			tries \
 			unctrl \

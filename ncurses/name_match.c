@@ -35,7 +35,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.6 1998/05/31 01:10:13 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.7 1998/09/19 20:27:49 Todd.Miller Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -46,7 +46,7 @@ MODULE_ID("$Id: name_match.c,v 1.6 1998/05/31 01:10:13 tom Exp $")
 char *_nc_first_name(const char *const sp)
 /* get the first name from the given name list */
 {
-    static char	buf[MAX_NAME_SIZE];
+    static char	buf[MAX_NAME_SIZE+1];
     register char *cp;
 
     (void) strncpy(buf, sp, sizeof(buf) - 1);

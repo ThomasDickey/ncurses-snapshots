@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.110 1998/09/12 22:50:21 tom Exp $
+ * $Id: curses.priv.h,v 1.118 1998/09/20 04:05:51 tom Exp $
  *
  *	curses.priv.h
  *
@@ -135,10 +135,10 @@ extern int errno;
 #endif
 
 /*
- * As currently coded, hashmap relies on the scroll-hints logic.
+ * Scroll hints are useless when hashmap is used
  */
 #if !USE_SCROLL_HINTS
-#if USE_HASHMAP
+#if !USE_HASHMAP
 #define USE_SCROLL_HINTS 1
 #else
 #define USE_SCROLL_HINTS 0
@@ -223,6 +223,7 @@ struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
 	char            *_setbuf;       /* buffered I/O for output          */
+	int		_buffered;      /* setvbuf uses _setbuf data        */
 	int             _checkfd;       /* filedesc for typeahead check     */
 	struct term     *_term;         /* terminal type information        */
 	short           _lines;         /* screen lines                     */
@@ -290,6 +291,9 @@ struct screen {
 	int             _rep_cost;      /* cost of (repeat_char)            */
 	int             _hpa_ch_cost;   /* cost of (column_address)         */
 	int             _cup_ch_cost;   /* cost of (cursor_address)         */
+	int             _smir_cost;	/* cost of (enter_insert_mode)      */
+	int             _rmir_cost;	/* cost of (exit_insert_mode)       */
+	int             _ip_cost;       /* cost of (insert_padding)         */
 	/* used in lib_mvcur.c */
 	char *          _address_cursor;
 	int             _carriage_return_length;
@@ -351,6 +355,9 @@ struct screen {
 
 	bool            _sig_winch;
 	SCREEN          *_next_screen;
+
+	/* hashes for old and new lines */
+	unsigned long	*oldhash, *newhash;
 };
 
 extern SCREEN *_nc_screen_chain;
@@ -527,9 +534,11 @@ extern const char *_nc_visbuf2(int, const char *);
 #define InsCharCost(count) \
 		((parm_ich != 0) \
 		? SP->_ich_cost \
-		: ((insert_character != 0) \
-			? (SP->_ich1_cost * count) \
-			: INFINITY))
+		: ((enter_insert_mode && exit_insert_mode) \
+		  ? SP->_smir_cost + SP->_rmir_cost + (SP->_ip_cost * count) \
+		  : ((insert_character != 0) \
+		    ? (SP->_ich1_cost * count) \
+		    : INFINITY)))
 
 #if USE_XMC_SUPPORT
 #define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) { \
@@ -599,7 +608,7 @@ extern void _nc_do_xmc_glitch(attr_t);
 #endif
 
 /* hardscroll.c */
-#if defined(TRACE) || defined(SCROLLDEBUG)
+#if defined(TRACE) || defined(SCROLLDEBUG) || defined(HASHDEBUG)
 extern void _nc_linedump(void);
 #endif
 
@@ -626,10 +635,6 @@ extern int _nc_has_mouse(void);
 /* safe_sprintf.c */
 extern char * _nc_printf_string(const char *fmt, va_list ap);
 
-/* softscroll.c */
-extern void _nc_setup_scroll(void);
-extern void _nc_perform_scroll(void);
-
 /* tries.c */
 extern void _nc_add_to_try(struct tries **tree, char *str, unsigned short code);
 extern char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len);
@@ -637,10 +642,12 @@ extern int _nc_remove_key(struct tries **tree, unsigned short code);
 
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int, int);
+extern char *_nc_home_terminfo(void);
 extern char *_nc_trace_buf(int, size_t);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
 extern int _nc_access(const char *, int);
+extern int _nc_getenv_num(const char *);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
@@ -650,7 +657,9 @@ extern void _nc_do_color(int, bool, int (*)(int));
 extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_hash_map(void);
+extern void _nc_make_oldhash(int i);
 extern void _nc_outstr(const char *str);
+extern void _nc_scroll_oldhash(int n, int top, int bot);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int const, short const, short const, chtype);
 extern void _nc_set_buffer(FILE *ofp, bool buffered);
@@ -661,8 +670,11 @@ extern void _nc_synchook(WINDOW *win);
 extern void _nc_update_screensize(void);
 #endif
 
+/* scroll indices */
+extern int *_nc_oldnums;
+
 #define NC_BUFFERED(flag) \
-	if ((SP->_setbuf == 0) != flag) \
+	if ((SP->_buffered != 0) != flag) \
 		_nc_set_buffer(SP->_ofp, flag)
 
 /*
@@ -697,8 +709,8 @@ extern SCREEN *SP;
 extern int _nc_slk_format;  /* != 0 if slk_init() called */
 extern int _nc_slk_initialize(WINDOW *, int);
 
-/* 
- * Some constants related to SLK's 
+/*
+ * Some constants related to SLK's
  */
 #define MAX_SKEY_OLD	   8	/* count of soft keys */
 #define MAX_SKEY_LEN_OLD   8	/* max length of soft key text */

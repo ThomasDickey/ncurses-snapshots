@@ -535,8 +535,10 @@
 ./ncurses/define_key.c
 ./ncurses/doalloc.c
 ./ncurses/fifo_defs.h
+./ncurses/getenv_num.c
 ./ncurses/hardscroll.c
 ./ncurses/hashmap.c
+./ncurses/home_terminfo.c
 ./ncurses/keyok.c
 ./ncurses/keys.list
 ./ncurses/lib_acs.c
@@ -645,7 +647,6 @@
 ./ncurses/resizeterm.c
 ./ncurses/safe_sprintf.c
 ./ncurses/sigaction.c
-./ncurses/softscroll.c
 ./ncurses/trace_buf.c
 ./ncurses/tries.c
 ./ncurses/vsscanf.c

@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.31 1998/08/01 22:21:29 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.33 1998/09/20 00:51:51 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -255,12 +255,16 @@ int init_pair(short pair, short f, short b)
 
 	    for (y = 0; y <= curscr->_maxy; y++) {
 		struct ldat *ptr = &(curscr->_line[y]);
+		bool changed = FALSE;
 		for (x = 0; x <= curscr->_maxx; x++) {
 		    if ((ptr->text[x] & A_COLOR) == z) {
 			ptr->text[x] &= ~A_COLOR;
 			CHANGED_CELL(ptr,x);
+			changed = TRUE;
 		    }
 		}
+		if (changed)
+			_nc_make_oldhash(y);
 	    }
 	}
 	SP->_color_pairs[pair] = result;

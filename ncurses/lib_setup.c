@@ -40,6 +40,7 @@
  */
 
 #include <curses.priv.h>
+#include <tic.h>	/* for MAX_NAME_SIZE */
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -47,7 +48,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.42 1998/09/05 22:15:14 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.44 1998/09/19 21:39:39 tom Exp $")
 
 /****************************************************************************
  *
@@ -103,8 +104,6 @@ int LINES, COLS, TABSIZE;
 static void _nc_get_screensize(int *linep, int *colp)
 /* Obtain lines/columns values from the environment and/or terminfo entry */
 {
-char	*rows, *cols;
-
 	/* figure out the size of the screen */
 	T(("screen size: terminfo lines = %d columns = %d", lines, columns));
 
@@ -115,15 +114,17 @@ char	*rows, *cols;
 	}
 	else	/* usually want to query LINES and COLUMNS from environment */
 	{
+	    int value;
+
 	    *linep = *colp = 0;
 
 	    /* first, look for environment variables */
-	    rows = getenv("LINES");
-	    if (rows != 0)
-		*linep = atoi(rows);
-	    cols = getenv("COLUMNS");
-	    if (cols != 0)
-		*colp = atoi(cols);
+	    if ((value = _nc_getenv_num("LINES")) > 0) {
+		    *linep = value;
+	    }
+	    if ((value = _nc_getenv_num("COLUMNS")) > 0) {
+		    *colp = value;
+	    }
 	    T(("screen size: environment LINES = %d COLUMNS = %d",*linep,*colp));
 
 #ifdef __EMX__
@@ -279,6 +280,10 @@ int status;
 		if (tname == 0 || *tname == '\0') {
 			ret_error0(-1, "TERM environment variable not set.\n");
                 }
+	}
+	if (strlen(tname) > MAX_NAME_SIZE) {
+		ret_error(-1, "TERM environment must be <= %d characters.\n",
+		    MAX_NAME_SIZE);
 	}
 
 	T(("your terminal name is %s", tname));

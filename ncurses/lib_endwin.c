@@ -42,7 +42,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.15 1998/09/12 22:50:25 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.16 1998/09/20 03:29:17 tom Exp $")
 
 int
 endwin(void)
@@ -54,7 +54,6 @@ endwin(void)
 		SP->_mouse_wrap(SP);
 		_nc_screen_wrap();
 		_nc_mvcur_wrap();	/* wrap up cursor addressing */
-		NC_BUFFERED(FALSE);
 	}
 
 	returnCode(reset_shell_mode());

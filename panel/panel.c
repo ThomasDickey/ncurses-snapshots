@@ -34,13 +34,13 @@
 /* panel.c -- implementation of panels library, some core routines */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.15 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: panel.c,v 1.16 1998/09/19 21:26:31 Todd.Miller Exp $")
 
 #ifdef TRACE
 #ifndef TRACE_TXT
 const char *_nc_my_visbuf(const void *ptr)
 {
-	char temp[20];
+	char temp[32];
 	if (ptr != 0)
 		sprintf(temp, "ptr:%p", ptr);
 	else

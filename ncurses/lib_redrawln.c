@@ -39,28 +39,31 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_redrawln.c,v 1.6 1998/03/22 01:40:42 tom Exp $")
+MODULE_ID("$Id: lib_redrawln.c,v 1.7 1998/09/19 20:09:50 Alexander.V.Lukyanov Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
-{ 
-	int i; 
-	int end; 
-	size_t len = (win->_maxx + 1) * sizeof(chtype); 
- 
-	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num)); 
- 
-	if (beg < 0) 
-		beg = 0; 
- 
-	if (touchline (win, beg, num) == ERR) 
-		returnCode(ERR); 
- 
+{
+	int i;
+	int end;
+	size_t len = (win->_maxx + 1) * sizeof(chtype);
+
+	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
+
+	if (beg < 0)
+		beg = 0;
+
+	if (touchline (win, beg, num) == ERR)
+		returnCode(ERR);
+
 	end = beg + num;
-	if (end > win->_maxy + 1) 
-		end = win->_maxy + 1; 
- 
-	for (i = beg; i < end; i++) 
-		memset (curscr->_line[i+win->_begy].text+win->_begx, 0, len); 
- 
-	returnCode(OK); 
+	if (end > win->_maxy + 1)
+		end = win->_maxy + 1;
+
+	for (i = beg; i < end; i++)
+	{
+		memset (curscr->_line[i+win->_begy].text+win->_begx, 0, len);
+		_nc_make_oldhash(i+win->_begy);
+	}
+
+	returnCode(OK);
 }

@@ -61,7 +61,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.35 1998/08/18 01:37:53 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.37 1998/09/19 21:42:14 tom Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -402,9 +402,9 @@ _nc_getent(
 							newsize = r_end - record + BFRAG;
 							record = DOALLOC(newsize);
 							if (record == 0) {
-								errno = ENOMEM;
 								if (myfd)
 									(void)close(fd);
+								errno = ENOMEM;
 								return (TC_SYS_ERR);
 							}
 							r_end = record + newsize;
@@ -537,10 +537,10 @@ _nc_getent(
 				tcposend = tcend - record;
 				record = DOALLOC(newsize);
 				if (record == 0) {
-					errno = ENOMEM;
 					if (myfd)
 						(void)close(fd);
 					free(icap);
+					errno = ENOMEM;
 					return (TC_SYS_ERR);
 				}
 				r_end = record + newsize;
@@ -1011,11 +1011,14 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 		else
 			ADD_TC("/usr/share/misc/termcap", filecount);
 
-		if ((h = getenv("HOME")) != NULL && strlen(h) + 9 < PATH_MAX)
+#define PRIVATE_CAP "%s/.termcap"
+
+		if ((h = getenv("HOME")) != NULL
+		 && (strlen(h) + sizeof(PRIVATE_CAP)) < PATH_MAX)
 		{
 		    /* user's .termcap, if any, should override it */
 		    (void) strcpy(envhome, h);
-		    (void) sprintf(pathbuf, "%s/.termcap", envhome);
+		    (void) sprintf(pathbuf, PRIVATE_CAP, envhome);
 		    ADD_TC(pathbuf, filecount);
 		}
 	}
