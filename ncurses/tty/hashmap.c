@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h> /* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.29 1999/02/27 20:02:24 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.32 1999/03/16 11:40:53 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 
@@ -120,7 +120,7 @@ static int update_cost(chtype *from,chtype *to)
     int i;
 
     for (i=TEXTWIDTH; i>0; i--)
-        if (*from++ != *to++)
+	if (*from++ != *to++)
 	    cost++;
 
     return cost;
@@ -135,7 +135,7 @@ static int update_cost_from_blank(chtype *to)
 	blank |= (stdscr->_bkgd & A_COLOR);
 
     for (i=TEXTWIDTH; i>0; i--)
-        if (blank != *to++)
+	if (blank != *to++)
 	    cost++;
 
     return cost;
@@ -394,7 +394,7 @@ void _nc_hash_map(void)
 	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	size = i - start;
-	if (size <= abs(shift))
+	if (size < 3 || size+size/8 < abs(shift))
 	{
 	    while (start < i)
 	    {
@@ -460,7 +460,7 @@ usage(void)
     };
     size_t n;
     for (n = 0; n < sizeof(table)/sizeof(table[0]); n++)
-    	fprintf(stderr, "%s\n", table[n]);
+	fprintf(stderr, "%s\n", table[n]);
 }
 
 int
@@ -478,7 +478,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
     }
 
     if (isatty(fileno(stdin)))
-    	usage();
+	usage();
 
 #ifdef TRACE
     _nc_tracing = TRACE_MOVE;

@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.440 1999/03/15 01:52:18 tom Exp $
+-- $Id: NEWS,v 1.442 1999/03/16 11:48:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990316	pre-release
+	+ add fallback definition for getcwd, to link on NeXT.
+	+ add a copy of cur_term to tic.c to make it link properly on NeXT
+	  (reported by Francisco A. Tomei Torres).
+	+ change inequality in hashmap.c which checks the distance traveled by
+	  a chunk so that ^D command in nvi (scrolls 1/2 screen) will use
+	  scrolling logic (patch by Alexander Lukyanov, reported by Jeffrey
+	  Honig).
 
 990314	pre-release
 	+ modify lib_color.c to handle a special case where the curscr

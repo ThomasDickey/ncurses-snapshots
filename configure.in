@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.163 1999/02/23 02:07:46 tom Exp $
+dnl $Id: configure.in,v 1.164 1999/03/16 01:46:15 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.163 $)
+AC_REVISION($Revision: 1.164 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -734,7 +734,7 @@ CF_LINK_DATAONLY
 CF_SPEED_TYPE
 
 ###	Checks for library functions.
-AC_CHECK_FUNCS( \
+AC_CHECK_FUNCS( getcwd \
 getttynam \
 memccpy \
 nanosleep \
