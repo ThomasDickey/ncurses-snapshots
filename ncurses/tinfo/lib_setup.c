@@ -49,7 +49,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.51 1999/02/27 22:13:00 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.53 1999/06/12 23:12:12 tom Exp $")
 
 /****************************************************************************
  *
@@ -289,7 +289,7 @@ int setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 struct term	*term_ptr;
 int status;
 
-	T((T_CALLED("setupterm(\"%s\",%d,%p)"), tname, Filedes, errret));
+	T((T_CALLED("setupterm(%s,%d,%p)"), _nc_visbuf(tname), Filedes, errret));
 
 	if (tname == 0) {
 		tname = getenv("TERM");

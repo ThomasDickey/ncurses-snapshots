@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.454 1999/06/06 00:46:34 tom Exp $
+-- $Id: NEWS,v 1.457 1999/06/12 23:08:25 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990612	pre-release
+	+ modify lib_endwin.c to avoid calling reset_shell_mode(), return ERR
+	  if it appears that curses was never initialized, e.g., by initscr(). 
+	  For instance, this guards against setting the terminal modes to
+	  strange values if endwin() is called after setupterm().  In the same
+	  context, Solaris curses will dump core.
+	+ modify logic that avoids a conflict in lib_vidattr.c between sgr0 and
+	  equivalent values in rmso or rmul by ensuring we do not modify the
+	  data which would be returned by the terminfo or termcap interfaces
+	  (reported by Brad Pepers <brad@linuxcanada.com>, cf:  960706).
+	+ add a null-pointer check for SP in lib_vidattr.c to logic that checks
+	  for magic cookies.
+	+ improve fallback declaration of 'bool' when the --without-cxx option
+	  is given, by using a 'char' on i386 and related hosts (from discussion
+	  with Alexander Lukyanov).
 
 990605	pre-release
 	+ include time.h in lib_napms.c if nanosleep is used (patch by
