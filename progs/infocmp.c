@@ -30,7 +30,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.29 1997/06/15 01:08:04 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.30 1997/06/21 23:36:49 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1067,13 +1067,15 @@ int main(int argc, char *argv[])
 			tp = buf;
 			*tp++ = '"';
 			for (sp = term->Strings[n]; *sp; sp++)
+			{
 			    if (isascii(*sp) && isprint(*sp) && *sp !='\\' && *sp != '"')
 				*tp++ = *sp;
 			    else
 			    {
-				(void) sprintf(tp, "\\%03o", *sp);
+				(void) sprintf(tp, "\\%03o", *sp & 0xff);
 				tp += 4;
 			    }
+			}
 			*tp++ = '"';
 			*tp = '\0';
 			size += (strlen(term->Strings[n]) + 1);

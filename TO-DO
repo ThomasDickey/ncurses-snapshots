@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.32 1997/06/14 21:10:05 tom Exp $
+-- $Id: TO-DO,v 1.33 1997/06/22 00:29:46 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -17,10 +17,8 @@ Known Problems:
 * Ncurses cursor movement does not make effective use of hard tabs, as SVr4
   does.
 
-* Scrolling optimization has holes: for example, a single-line scrolling
-  region should be repainted, but is not.  Also, running other tests shows that
-  scrolling optimization forces repaints of the screen between calls to
-  refresh().
+* Scrolling optimization has holes: for example, it forces repaints of the
+  screen between calls to refresh().
 
 * The stacking order of windows on the screen does not match that implemented
   in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
