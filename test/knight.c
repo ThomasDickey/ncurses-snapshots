@@ -6,7 +6,7 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.24 2002/03/23 22:17:24 tom Exp $
+ * $Id: knight.c,v 1.25 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <ctype.h>
@@ -73,6 +73,8 @@ static const struct {
 static void
 init_program(void)
 {
+    setlocale(LC_ALL, "");
+
     srand((unsigned) getpid());
     initscr();
     cbreak();			/* immediate char return */

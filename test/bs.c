@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.35 2002/04/06 23:10:12 tom Exp $
+ * $Id: bs.c,v 1.36 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <ctype.h>
@@ -1186,6 +1186,8 @@ scount(int who)
 int
 main(int argc, char *argv[])
 {
+    setlocale(LC_ALL, "");
+
     do_options(argc, argv);
 
     intro();

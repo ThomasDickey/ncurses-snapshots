@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.36 2002/03/23 21:46:54 tom Exp $
+  $Id: worm.c,v 1.37 2002/06/29 23:32:18 tom Exp $
 */
 
 #include <test.priv.h>
@@ -184,6 +184,8 @@ main(int argc, char *argv[])
     int h;
     short *ip;
     int last, bottom;
+
+    setlocale(LC_ALL, "");
 
     for (x = 1; x < argc; x++) {
 	char *p;

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_unget_wch.c,v 1.2 2002/03/17 00:01:38 tom Exp $")
+MODULE_ID("$Id: lib_unget_wch.c,v 1.3 2002/06/29 21:11:02 tom Exp $")
 
 NCURSES_EXPORT(int)
 unget_wch(const wchar_t wch)
@@ -49,7 +49,7 @@ unget_wch(const wchar_t wch)
     size_t length;
     int n;
 
-    T((T_CALLED("unget_wch(%d)"), wch));
+    T((T_CALLED("unget_wch(%#lx)"), wch));
 
     memset(&state, 0, sizeof(state));
     length = wcrtomb(0, wch, &state);

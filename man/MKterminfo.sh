@@ -1,4 +1,8 @@
 #!/bin/sh
+# $Id: MKterminfo.sh,v 1.10 2002/06/29 20:04:28 tom Exp $
+#
+# MKterminfo.sh -- generate terminfo.5 from Caps tabular data
+#
 #***************************************************************************
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
 #                                                                          *
@@ -27,10 +31,6 @@
 # authorization.                                                           *
 #***************************************************************************
 #
-# $Id: MKterminfo.sh,v 1.9 2001/09/01 23:06:18 tom Exp $
-#
-# MKterminfo.sh -- generate terminfo.5 from Caps tabular data
-#
 # This script takes terminfo.head and terminfo.tail and splices in between
 # them a table derived from the Caps data file.  Besides avoiding having
 # the docs fall out of sync with the table, this also lets us set up tbl
@@ -41,10 +41,13 @@
 # had better be no s in the table source text.
 #
 # keep the order independent of locale:
-LANGUAGE=C
-LC_ALL=C
-export LANGUAGE
-export LC_ALL
+if test "${LANGUAGE+set}"    = set; then LANGUAGE=C;    export LANGUAGE;    fi
+if test "${LANG+set}"        = set; then LANG=C;        export LANG;        fi
+if test "${LC_ALL+set}"      = set; then LC_ALL=C;      export LC_ALL;      fi
+if test "${LC_MESSAGES+set}" = set; then LC_MESSAGES=C; export LC_MESSAGES; fi
+if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
+if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
+
 #
 head=$1
 caps=$2

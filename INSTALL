@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.53 2002/06/23 00:05:31 tom Exp $
+-- $Id: INSTALL,v 1.54 2002/06/29 22:29:42 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -488,6 +488,11 @@ SUMMARY OF CONFIGURE OPTIONS:
 	If cross-compiling, specify the host C compiler-flags.  You might need
 	to do this if the target compiler has unusual flags which confuse the
 	host compiler.
+
+    --with-build-cppflags=XXX
+	If cross-compiling, specify the host C preprocesor-flags.  You might
+	need to do this if the target compiler has unusual flags which confuse
+	the host compiler.
 
     --with-build-ldflags=XXX
 	If cross-compiling, specify the host linker-flags.  You might need to

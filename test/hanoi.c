@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.23 2002/03/24 00:40:01 tom Exp $
+ * $Id: hanoi.c,v 1.24 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <test.priv.h>
@@ -69,6 +69,8 @@ main(int argc, char **argv)
 {
     int NTiles, FromCol, ToCol;
     bool AutoFlag = 0;
+
+    setlocale(LC_ALL, "");
 
     switch (argc) {
     case 1:

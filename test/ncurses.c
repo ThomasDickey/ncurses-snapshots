@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.173 2002/06/16 00:29:27 tom Exp $
+$Id: ncurses.c,v 1.177 2002/06/30 00:36:02 tom Exp $
 
 ***************************************************************************/
 
@@ -49,10 +49,6 @@ $Id: ncurses.c,v 1.173 2002/06/16 00:29:27 tom Exp $
 #include <assert.h>
 
 #include <test.priv.h>
-
-#if HAVE_LOCALE_H
-#include <locale.h>
-#endif
 
 #if HAVE_GETTIMEOFDAY
 #if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
@@ -1523,11 +1519,15 @@ show_upper_widechars(int first)
     for (code = first; code <= last; code++) {
 	int row = 4 + ((code - first) % 16);
 	int col = ((code - first) / 16) * COLS / 2;
+	wchar_t codes[10];
 	attr_t attrs = A_NORMAL;
 	char tmp[80];
-	sprintf(tmp, "%3d (0x%x)", code, code);
+
+	memset(&codes, 0, sizeof(codes));
+	codes[0] = code;
+	sprintf(tmp, "%3ld (0x%lx)", code, code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
-	setcchar(&temp, &code, attrs, 0, 0);
+	setcchar(&temp, codes, attrs, 0, 0);
 	echo_wchar(&temp);
     }
 }
@@ -1662,8 +1662,6 @@ show_utf8_chars(void)
     n = show_2_wacs(n, "WACS_UARROW",	"\342\206\221");
     n = show_2_wacs(n, "WACS_DARROW",	"\342\206\223");
 
-    n = show_2_wacs(n, "WACS_STERLING",	"\302\243");
-
     n = show_2_wacs(n, "WACS_BLOCK",	"\342\226\256");
     n = show_2_wacs(n, "WACS_BOARD",	"\342\226\222");
     n = show_2_wacs(n, "WACS_LANTERN",	"\342\230\203");
@@ -1671,11 +1669,13 @@ show_utf8_chars(void)
     n = show_2_wacs(n, "WACS_CKBOARD",	"\342\226\222");
     n = show_2_wacs(n, "WACS_DEGREE",	"\302\260");
     n = show_2_wacs(n, "WACS_DIAMOND",	"\342\227\206");
+    n = show_2_wacs(n, "WACS_PLMINUS",	"\302\261");
+    n = show_2_wacs(n, "WACS_PLUS",	"\342\224\274");
     n = show_2_wacs(n, "WACS_GEQUAL",	"\342\211\245");
     n = show_2_wacs(n, "WACS_NEQUAL",	"\342\211\240");
     n = show_2_wacs(n, "WACS_LEQUAL",	"\342\211\244");
-    n = show_2_wacs(n, "WACS_PLMINUS",	"\302\261");
-    n = show_2_wacs(n, "WACS_PLUS",	"\342\224\274");
+
+    n = show_2_wacs(n, "WACS_STERLING",	"\302\243");
     n = show_2_wacs(n, "WACS_PI",	"\317\200");
     n = show_2_wacs(n, "WACS_S1",	"\342\216\272");
     n = show_2_wacs(n, "WACS_S3",	"\342\216\273");
@@ -4128,9 +4128,7 @@ main(int argc, char *argv[])
     bool default_colors = FALSE;
 #endif
 
-#if HAVE_LOCALE_H
-    setlocale(LC_CTYPE, "");
-#endif
+    setlocale(LC_ALL, "");
 
     while ((c = getopt(argc, argv, "a:de:fhs:t:")) != EOF) {
 	switch (c) {

@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.18 2002/04/30 00:37:55 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.19 2002/06/29 19:45:13 tom Exp $)
 #
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
@@ -53,6 +53,14 @@
 # 6. awk: strip the expansion junk off the front and add the new header
 # 7. sed: squeeze spaces, strip off gen_ prefix, create needed #undef
 #
+
+# keep the editing independent of locale:
+if test "${LANGUAGE+set}"    = set; then LANGUAGE=C;    export LANGUAGE;    fi
+if test "${LANG+set}"        = set; then LANG=C;        export LANG;        fi
+if test "${LC_ALL+set}"      = set; then LC_ALL=C;      export LC_ALL;      fi
+if test "${LC_MESSAGES+set}" = set; then LC_MESSAGES=C; export LC_MESSAGES; fi
+if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
+if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
 
 preprocessor="$1 -I../include"
 AWK="$2"

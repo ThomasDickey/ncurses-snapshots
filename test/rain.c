@@ -1,5 +1,5 @@
 /*
- * $Id: rain.c,v 1.19 2002/04/06 20:45:22 tom Exp $
+ * $Id: rain.c,v 1.20 2002/06/29 23:32:18 tom Exp $
  */
 #include <test.priv.h>
 
@@ -34,6 +34,8 @@ main(
     static int xpos[5], ypos[5];
     float r;
     float c;
+
+    setlocale(LC_ALL, "");
 
     for (j = SIGHUP; j <= SIGTERM; j++)
 	if (signal(j, SIG_IGN) != SIG_IGN)

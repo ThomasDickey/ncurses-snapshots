@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.3 2002/03/17 16:14:45 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.4 2002/06/29 21:10:36 tom Exp $")
 
 NCURSES_EXPORT(int)
 wget_wch(WINDOW *win, wint_t * result)
@@ -94,6 +94,6 @@ wget_wch(WINDOW *win, wint_t * result)
 	}
     }
     *result = value;
-    T(("result %#o", value));
+    T(("result %#lo", value));
     returnCode(code);
 }

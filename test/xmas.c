@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.18 2002/03/23 21:46:58 tom Exp $
+ * $Id: xmas.c,v 1.19 2002/06/29 23:32:18 tom Exp $
  */
 #include <test.priv.h>
 
@@ -187,6 +187,8 @@ int
 main(int argc GCC_UNUSED, char **argv GCC_UNUSED)
 {
     int loopy;
+
+    setlocale(LC_ALL, "");
 
     initscr();
     noecho();

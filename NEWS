@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.691 2002/06/22 22:53:51 tom Exp $
+-- $Id: NEWS,v 1.693 2002/06/30 00:38:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020629
+	+ correct parameters to setcchar() in ncurses.c (cf: 20020406).
+	+ set locale in most test programs (view.c and ncurses.c were the
+	  only ones).
+	+ add configure option --with-build-cppflags (report by Maksim A
+	  Nikulin <M.A.Nikulin@inp.nsk.su>).
+	+ correct a typo in wide-character logic for lib_bkgnd.c (Philippe
+	  Blain).
+	+ modify lib_wacs.c to not cancel the acsc, smacs, rmacs strings when
+	  in UTF-8 locale.  Wide-character functions use Unicode values, while
+	  narrow-character functions use the terminfo data.
+	+ fix a couple of places in Ada95/samples which did not compile with
+	  gnat 3.14
+	+ modify mkinstalldirs so the DOS-pathname case is locale-independent.
+	+ fix locale problem in MKlib_gen.sh by forcing related variables to
+	  POSIX (C), using same approach as autoconf (set variables only if
+	  they were set before).  Update MKterminfo.sh and MKtermsort.sh to
+	  match.
 
 20020622
 	+ add charset to generated html.

@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.11 2002/04/06 23:12:50 tom Exp $
+ * $Id: cardfile.c,v 1.12 2002/06/29 23:32:18 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -402,6 +402,8 @@ int
 main(int argc, char *argv[])
 {
     int n;
+
+    setlocale(LC_ALL, "");
 
     initscr();
     cbreak();

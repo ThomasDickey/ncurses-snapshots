@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.34 2002/04/06 23:32:15 tom Exp $ */
+/* $Id: test.priv.h,v 1.35 2002/06/29 23:36:12 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -118,6 +118,12 @@
 extern char *optarg;
 extern int optind;
 #endif /* HAVE_GETOPT_H */
+
+#if HAVE_LOCALE_H
+#include <locale.h>
+#else
+#define setlocale(name,string) /* nothing */
+#endif
 
 #ifndef GCC_NORETURN
 #define GCC_NORETURN /* nothing */
