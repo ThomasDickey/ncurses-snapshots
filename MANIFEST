@@ -867,7 +867,6 @@
 ./ncurses/widechar/lib_hline_set.c
 ./ncurses/widechar/lib_in_wch.c
 ./ncurses/widechar/lib_in_wchnstr.c
-./ncurses/widechar/lib_ins_nwstr.c
 ./ncurses/widechar/lib_ins_wch.c
 ./ncurses/widechar/lib_inwstr.c
 ./ncurses/widechar/lib_unget_wch.c
@@ -944,6 +943,7 @@
 ./test/cardfile.dat
 ./test/configure
 ./test/configure.in
+./test/define_key.c
 ./test/ditto.c
 ./test/dots.c
 ./test/filter.c
@@ -953,8 +953,10 @@
 ./test/gdc.c
 ./test/hanoi.c
 ./test/hashtest.c
+./test/ins_wide.c
 ./test/inserts.c
 ./test/keynames.c
+./test/keyok.c
 ./test/knight.c
 ./test/lrtest.c
 ./test/modules

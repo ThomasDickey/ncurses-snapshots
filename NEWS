@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.719 2002/11/17 00:04:24 tom Exp $
+-- $Id: NEWS,v 1.720 2002/11/24 00:51:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021123
+	+ add example program test/define_key.c for define_key().
+	+ add example program test/keyok.c for keyok().
+	+ add example program test/ins_wide.c for wins_wch() and wins_wstr().
+	+ modify wins_wch() and wins_wstr() to interpret tabs by using the
+	  winsch() internal function.
+	+ modify setcchar() to allow for wchar_t input strings that have
+	  more than one spacing character.
 
 20021116
 	+ fix a boundary check in lib_insch.c (patch by Philippe Blain).

@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.6 2002/08/10 22:27:37 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.7 2002/11/23 22:47:50 tom Exp $")
 
 /* 
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -59,22 +59,24 @@ setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
 	code = ERR;
     } else {
 
+	/*
+	 * If we have a following spacing-character, stop at that point.  We
+	 * are only interested in adding non-spacing characters.
+	 */
 	for (i = 1; i < len; ++i) {
 	    if (wcwidth(wch[i]) != 0) {
-		code = ERR;
+		len = i;
 		break;
 	    }
 	}
 
-	if (code != ERR) {
-	    memset(wcval, 0, sizeof(*wcval));
+	memset(wcval, 0, sizeof(*wcval));
 
-	    if (len != 0) {
-		SetAttr(*wcval, attrs | color_pair);
-		memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
-		TR(TRACE_CCALLS, ("copy %d wchars, first is %s", len,
-				  _tracecchar_t(wcval)));
-	    }
+	if (len != 0) {
+	    SetAttr(*wcval, attrs | color_pair);
+	    memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
+	    TR(TRACE_CCALLS, ("copy %d wchars, first is %s", len,
+			      _tracecchar_t(wcval)));
 	}
     }
 
