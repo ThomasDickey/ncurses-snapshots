@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.73 2004/02/15 01:26:09 tom Exp $
+-- $Id: INSTALL,v 1.75 2004/07/04 00:49:07 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -18,9 +18,6 @@ below.
 
 If you are converting from BSD curses and do not have root access, be sure
 to read the BSD CONVERSION NOTES section below.
-
-If you are using a version of XFree86 xterm older than 3.1.2F, see the section
-on RECENT XTERM VERSIONS below.
 
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
@@ -1086,17 +1083,9 @@ RECENT XTERM VERSIONS:
 ---------------------
 
 	The terminfo database file included with this distribution assumes you
-	are running an XFree86 xterm based on X11R6 (i.e., xterm-r6).  The
-	earlier X11R5 entry (xterm-r5) is provided as well.
-
-	If you are running XFree86 version 3.2 (actually 3.1.2F and up), you
-	should consider using the xterm-xf86-v32 (or later, the most recent
-	version is always named "xterm-xfree86") entry, which adds ANSI color
-	and the VT220 capabilities which have been added in XFree86.  If you
-	are running a mixed network, however, where this terminal description
-	may be used on an older xterm, you may have problems, since
-	applications that assume these capabilities will produce incorrect
-	output on the older xterm (e.g., highlighting is not cleared).
+	are running a modern xterm based on XFree86 (i.e., xterm-new).  The
+	earlier X11R6 entry (xterm-r6) and X11R5 entry (xterm-r5) is provided
+	as well.
 
 
 CONFIGURING FALLBACK ENTRIES:

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,14 +37,14 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_format.c,v 1.12 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_format.c,v 1.13 2004/07/03 20:05:35 Tony.Li Exp $")
 
 #define minimum(a,b) ((a)<(b) ? (a): (b))
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
+|   Facility      :  libnmenu
 |   Function      :  int set_menu_format(MENU *menu, int rows, int cols)
-|   
+|
 |   Description   :  Sets the maximum number of rows and columns of items
 |                    that may be displayed at one time on a menu. If the
 |                    menu contains more items than can be displayed at
@@ -59,39 +59,39 @@ NCURSES_EXPORT(int)
 set_menu_format (MENU *menu, int rows, int cols)
 {
   int total_rows, total_cols;
-  
-  if (rows<0 || cols<0) 
+
+  if (rows<0 || cols<0)
     RETURN(E_BAD_ARGUMENT);
-  
+
   if (menu)
     {
       if ( menu->status & _POSTED )
 	RETURN(E_POSTED);
-      
+
       if (!(menu->items))
 	RETURN(E_NOT_CONNECTED);
-      
-      if (rows==0) 
+
+      if (rows==0)
 	rows = menu->frows;
-      if (cols==0) 
+      if (cols==0)
 	cols = menu->fcols;
-      
+
       if (menu->pattern)
 	Reset_Pattern(menu);
-      
+
       menu->frows = rows;
       menu->fcols = cols;
-      
+
       assert(rows>0 && cols>0);
       total_rows = (menu->nitems - 1)/cols + 1;
-      total_cols = (menu->status & O_ROWMAJOR) ? 
+      total_cols = (menu->opt & O_ROWMAJOR) ?
 	minimum(menu->nitems,cols) :
 	  (menu->nitems-1)/total_rows + 1;
-      
+
       menu->rows    = total_rows;
       menu->cols    = total_cols;
-      menu->arows   = minimum(total_rows,rows); 
-      menu->toprow  = 0;	
+      menu->arows   = minimum(total_rows,rows);
+      menu->toprow  = 0;
       menu->curitem = *(menu->items);
       assert(menu->curitem);
       menu->status |= _LINK_NEEDED;
@@ -102,14 +102,14 @@ set_menu_format (MENU *menu, int rows, int cols)
       if (rows>0) _nc_Default_Menu.frows = rows;
       if (cols>0) _nc_Default_Menu.fcols = cols;
     }
-  
+
   RETURN(E_OK);
 }
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
+|   Facility      :  libnmenu
 |   Function      :  void menu_format(const MENU *menu, int *rows, int *cols)
-|   
+|
 |   Description   :  Returns the maximum number of rows and columns that may
 |                    be displayed at one time on menu.
 |

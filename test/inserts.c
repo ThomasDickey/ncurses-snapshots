@@ -1,5 +1,5 @@
 /*
- * $Id: inserts.c,v 1.8 2004/06/19 21:50:29 tom Exp $
+ * $Id: inserts.c,v 1.9 2004/07/03 20:15:16 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -156,6 +156,10 @@ test_inserts(int level)
     }
 
     while ((ch = wgetch(work)) != 'q') {
+	if (ch == ERR) {
+	    beep();
+	    break;
+	}
 	wmove(work, row, margin + 1);
 	switch (ch) {
 	case 'w':

@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.820 2004/06/27 00:31:14 tom Exp $
+-- $Id: NEWS,v 1.822 2004/07/04 00:36:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040703
+	+ use tic -x to install terminfo database -TD
+	+ add -x to infocmp's usage message.
+	+ correct field used for comparing O_ROWMAJOR in set_menu_format()
+	  (report/patch by Tony Li).
+	+ fix a missing nul check in set_field_buffer() from 20040508 changes.
+	> terminfo updates -TD
+	  + make xterm-xf86-v43 derived from xterm-xf86-v40 rather than
+	    xterm-basic -TD
+	  + align with xterm patch #192's use of xterm-new -TD
+	  + update xterm-new and xterm-8bit for cvvis/cnorm strings -TD
+	  + make xterm-new the default "xterm" entry -TD
 
 20040626
 	+ correct BUILD_CPPFLAGS substitution in ncurses/Makefile.in, to allow
