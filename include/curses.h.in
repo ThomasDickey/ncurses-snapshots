@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.148 2004/01/14 23:50:12 tom Exp $ */
+/* $Id: curses.h.in,v 1.149 2004/02/22 01:32:01 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -56,6 +56,13 @@
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
 
 #include <ncurses_dll.h>
+
+/*
+ * User-definable tweak to disable the include of <stdbool.h>.
+ */
+#ifndef NCURSES_ENABLE_STDBOOL_H
+#define NCURSES_ENABLE_STDBOOL_H @cf_cv_header_stdbool_h@
+#endif
 
 /*
  * NCURSES_ATTR_T is used to quiet compiler warnings when building ncurses
@@ -132,7 +139,7 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 
 #else			/* c89, c99, etc. */
 
-#if @cf_cv_header_stdbool_h@
+#if NCURSES_ENABLE_STDBOOL_H
 #include <stdbool.h>
 /* use whatever the C compiler decides bool really is */
 #define NCURSES_BOOL bool

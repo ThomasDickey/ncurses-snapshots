@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.798 2004/02/15 01:29:21 tom Exp $
+-- $Id: NEWS,v 1.799 2004/02/22 01:28:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040221
+	+ some changes to adapt the form library to wide characters, incomplete
+	  (request by Mike Aubury).
+	+ add symbol to curses.h which can be used to suppress include of
+	  stdbool.h, e.g.,
+	  	#define NCURSES_ENABLE_STDBOOL_H 0
+		#include <curses.h>
+	  (discussion on XFree86 mailing list).
 
 20040214
 	+ modify configure --with-termlib option to accept a value which sets
