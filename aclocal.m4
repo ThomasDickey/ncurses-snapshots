@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.248 2001/04/21 19:40:04 tom Exp $
+dnl $Id: aclocal.m4,v 1.250 2001/05/20 00:19:36 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -980,7 +980,6 @@ do
 				depend="$cf_depend" \
 				target="$target" \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
-			test $cf_dir = ncurses && WITH_OVERWRITE=no
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$cf_dir \
 				traces=$LIB_TRACING \
@@ -1190,6 +1189,17 @@ CF_EOF
 			echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f $i)" >>$cf_dir/Makefile
 			test $i = curses.h && echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h)" >>$cf_dir/Makefile
 		done
+	fi
+
+	if test -f $srcdir/$cf_dir/modules; then
+		if test "$cf_dir" != "c++" ; then
+			cat >>$cf_dir/Makefile <<"CF_EOF"
+depend : $(AUTO_SRC)
+	makedepend -- $(CPPFLAGS) -- $(C_SRC)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+CF_EOF
+		fi
 	fi
 done
 

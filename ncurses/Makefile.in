@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.72 2001/03/24 19:53:31 tom Exp $
+# $Id: Makefile.in,v 1.73 2001/05/19 23:24:05 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -209,7 +209,7 @@ tags:
 @MAKE_UPPER_TAGS@	etags *.[ch]
 
 mostlyclean ::
-	-rm -f core tags TAGS *~ *.i *.ln *.atac trace
+	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
 	-rm -f $(TEST_PROGS)
 
 clean :: mostlyclean

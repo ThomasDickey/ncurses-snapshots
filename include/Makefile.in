@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 2001/03/24 19:53:31 tom Exp $
+# $Id: Makefile.in,v 1.29 2001/05/19 23:23:55 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -73,6 +73,7 @@ AUTO_SRC = \
 ################################################################################
 all \
 libs \
+depend \
 sources \
 install ::	$(AUTO_SRC)
 
@@ -96,7 +97,7 @@ tags:
 @MAKE_UPPER_TAGS@	etags *.[ch]
 
 mostlyclean ::
-	-rm -f core tags TAGS *~ *.i *.ln *.atac trace
+	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)

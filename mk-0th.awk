@@ -1,6 +1,6 @@
-# $Id: mk-0th.awk,v 1.9 2001/03/24 19:31:22 tom Exp $
+# $Id: mk-0th.awk,v 1.10 2001/05/19 23:12:28 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
+# Copyright (c) 1998-2001 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -59,7 +59,11 @@ BEGIN	{
 				else
 					found = 2
 			}
-			printf " \\\n\t%s/%s.c", $3, $1
+			if ( name == "c++" ) {
+				printf " \\\n\t%s/%s.cc", $3, $1
+			} else {
+				printf " \\\n\t%s/%s.c", $3, $1
+			}
 		}
 	}
 END	{

@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/05/05 23:09:00 $
+#	$Date: 2001/05/19 20:56:45 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2967,7 +2967,6 @@ rxvt|rxvt terminal emulator (X Window System),
 # From: Michael Jennings <mej@valinux.com>
 # removed kf0 which conflicts with kf10 -TD
 # remove cvvis which conflicts with cnorm -TD
-# There's no u6 because Eterm appears to lack CPR (cursor position report).
 Eterm|Eterm-color|Eterm with xterm-style color support (X Window System), 
 	am, bce, bw, eo, km, mc5i, mir, msgr, xenl, xon, 
 	btns#5, cols#80, it#8, lines#24, lm#0, ncv@, 
@@ -3003,8 +3002,8 @@ Eterm|Eterm-color|Eterm with xterm-style color support (X Window System),
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
-	use=ecma+color, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	vpa=\E[%i%p1%dd, use=ecma+color, 
 
 # These (xtermc and xtermm) are distributed with Solaris.  They refer to a
 # variant of xterm which is apparently no longer supported, but are interesting
@@ -3398,6 +3397,45 @@ pilot|tgtelnet|Top Gun Telnet on the Palm Pilot Professional,
 	cup=\Em%p1%{32}%+%c%p2%{32}%+%c, home=\Em\s\s, ht=^I, 
 	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, knp=^L, kpp=^K, nel=\Em~\s, 
 	rmso=\EB, smso=\Eb, 
+
+# From: Federico Bianchi <bianchi@www.arte.unipi.it>
+# These entries are for the Embeddable Linux Kernel System (ELKS)
+# project - an heavily stripped down Linux to be run on 16 bit
+# boxes or, eventually, to be used in embedded systems - and have been
+# adapted from the stock ELKS termcap. The project itself looks stalled,
+# and the latest improvements I know of date back to March 2000.
+#
+# To cope with the ELKS dumb console I added an "elks-glasstty" entry;
+# as an added bonus, this deals with all the capabilities common to
+# both VT52 and ANSI (or, eventually, "special") modes.
+
+elks-glasstty|ELKS glass-TTY capabilities, 
+	OTbs, am, 
+	cols#80, it#8, lines#25, 
+	bel=^G, cr=^M, ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, 
+	nel=^M^J, 
+
+elks-vt52|ELKS vt52 console, 
+	clear=\EH\EJ, cub1=\ED, cud1=\EB, cuf1=\EC, 
+	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, el=\EK, 
+	home=\EH, use=elks-glasstty, 
+
+elks-ansi|ELKS ANSI console, 
+	clear=\E[H\E[2J, cub1=\E[D, cud1=\E[B, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, el=\E[K, home=\E[H, 
+	rmso=\E[m, smso=\E[7m, use=elks-glasstty, 
+
+# As a matter of fact, ELKS 0.0.83 on PCs defaults to ANSI emulation
+# instead of VT52, but the "elks" entry still refers to the latter.
+
+elks|default ELKS console, 
+	use=elks-vt52, 
+
+# Project SIBO (for Psion 3 palmtops) console is identical to the ELKS
+# one but in screen size
+
+sibo|ELKS SIBO console, 
+	cols#61, it#8, lines#20, use=elks-vt52, 
 
 ######## COMMERCIAL WORKSTATION CONSOLES
 #
@@ -18779,6 +18817,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2001-05-05
 #	* corrected/updated screen.xterm-xfree86
+#
+# 2001-05-19
+#	* ELKS descriptions, from Federico Bianchi
+#	* add u6 (CSR) to Eterm (Michael Jennings).
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
