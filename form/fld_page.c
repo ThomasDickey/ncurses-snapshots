@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_page.c,v 1.8 2004/05/29 20:46:30 tom Exp $")
+MODULE_ID("$Id: fld_page.c,v 1.9 2004/12/11 21:58:19 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -47,6 +47,8 @@ MODULE_ID("$Id: fld_page.c,v 1.8 2004/05/29 20:46:30 tom Exp $")
 NCURSES_EXPORT(int)
 set_new_page(FIELD *field, bool new_page_flag)
 {
+  T((T_CALLED("set_new_page(%p,%d)"), field, new_page_flag));
+
   Normalize_Field(field);
   if (field->form)
     RETURN(E_CONNECTED);
@@ -72,7 +74,9 @@ set_new_page(FIELD *field, bool new_page_flag)
 NCURSES_EXPORT(bool)
 new_page(const FIELD *field)
 {
-  return (Normalize_Field(field)->status & _NEWPAGE) ? TRUE : FALSE;
+  T((T_CALLED("new_page(%p)"), field));
+
+  returnBool((Normalize_Field(field)->status & _NEWPAGE) ? TRUE : FALSE);
 }
 
 /* fld_page.c ends here */

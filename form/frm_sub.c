@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_sub.c,v 1.8 2004/05/29 19:21:04 tom Exp $")
+MODULE_ID("$Id: frm_sub.c,v 1.9 2004/12/11 22:13:39 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -46,6 +46,8 @@ MODULE_ID("$Id: frm_sub.c,v 1.8 2004/05/29 19:21:04 tom Exp $")
 NCURSES_EXPORT(int)
 set_form_sub(FORM *form, WINDOW *win)
 {
+  T((T_CALLED("set_form_sub(%p,%p)"), form, win));
+
   if (form && (form->status & _POSTED))
     RETURN(E_POSTED);
 
@@ -64,9 +66,12 @@ set_form_sub(FORM *form, WINDOW *win)
 NCURSES_EXPORT(WINDOW *)
 form_sub(const FORM *form)
 {
-  const FORM *f = Normalize_Form(form);
+  const FORM *f;
 
-  return Get_Form_Window(f);
+  T((T_CALLED("form_sub(%p)"), form));
+
+  f = Normalize_Form(form);
+  returnWin(Get_Form_Window(f));
 }
 
 /* frm_sub.c ends here */

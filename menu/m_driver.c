@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.22 2004/04/03 23:09:47 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.23 2004/12/11 23:10:49 tom Exp $")
 
 /* Macros */
 
@@ -120,6 +120,8 @@ _nc_Match_Next_Character_In_Item_Name
 {
   bool found = FALSE, passed = FALSE;
   int idx, last;
+
+  T((T_CALLED("_nc_Match_Next_Character(%p,%d,%p)"), menu, ch, item));
 
   assert(menu && item && *item);
   idx = (*item)->index;
@@ -217,6 +219,8 @@ menu_driver(MENU * menu, int c)
   int result = E_OK;
   ITEM *item;
   int my_top_row, rdiff;
+
+  T((T_CALLED("menu_driver(%p,%d)"), menu, c));
 
   if (!menu)
     RETURN(E_BAD_ARGUMENT);

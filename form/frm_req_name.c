@@ -37,7 +37,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_req_name.c,v 1.11 2004/05/29 19:21:12 tom Exp $")
+MODULE_ID("$Id: frm_req_name.c,v 1.14 2004/12/11 23:49:32 tom Exp $")
 
 static const char *request_names[MAX_FORM_COMMAND - MIN_FORM_COMMAND + 1] =
 {
@@ -118,13 +118,15 @@ static const char *request_names[MAX_FORM_COMMAND - MIN_FORM_COMMAND + 1] =
 NCURSES_EXPORT(const char *)
 form_request_name(int request)
 {
+  T((T_CALLED("form_request_name(%d)"), request));
+
   if ((request < MIN_FORM_COMMAND) || (request > MAX_FORM_COMMAND))
     {
       SET_ERROR(E_BAD_ARGUMENT);
-      return (const char *)0;
+      returnCPtr((const char *)0);
     }
   else
-    return request_names[request - MIN_FORM_COMMAND];
+    returnCPtr(request_names[request - MIN_FORM_COMMAND]);
 }
 
 /*---------------------------------------------------------------------------
@@ -145,6 +147,8 @@ form_request_by_name(const char *str)
   unsigned int i = 0;
   char buf[16];
 
+  T((T_CALLED("form_request_by_name(%s)"), _nc_visbuf(str)));
+
   if (str)
     {
       strncpy(buf, str, sizeof(buf));
@@ -157,7 +161,7 @@ form_request_by_name(const char *str)
       for (i = 0; i < A_SIZE; i++)
 	{
 	  if (strncmp(request_names[i], buf, sizeof(buf)) == 0)
-	    return MIN_FORM_COMMAND + i;
+	    returnCode(MIN_FORM_COMMAND + i);
 	}
     }
   RETURN(E_NO_MATCH);

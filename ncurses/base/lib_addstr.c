@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.42 2004/11/20 22:35:58 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.43 2004/12/12 00:15:31 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -164,8 +164,9 @@ wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
 	    if (!isWidecExt(line->text[x - i])) {
 		/* must be isWidecBase() */
 		start -= i;
-		while (i > 0)
+		while (i > 0) {
 		    line->text[x - i--] = _nc_render(win, blank);
+		}
 		break;
 	    }
 	}
@@ -180,7 +181,7 @@ wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
 
 	len = wcwidth(CharOf(astr[i]));
 
-	if (x + len <= win->_maxx) {
+	if (x + len - 1 <= win->_maxx) {
 	    line->text[x] = _nc_render(win, astr[i]);
 	    if (len > 1) {
 		for (j = 0; j < len; ++j) {

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_cursor.c,v 1.8 2004/05/29 19:21:36 tom Exp $")
+MODULE_ID("$Id: frm_cursor.c,v 1.9 2004/12/11 22:01:03 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -52,6 +52,8 @@ NCURSES_EXPORT(int)
 pos_form_cursor(FORM *form)
 {
   int res;
+
+  T((T_CALLED("pos_form_cursor(%p)"), form));
 
   if (!form)
     res = E_BAD_ARGUMENT;

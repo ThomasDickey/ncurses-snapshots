@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.23 2004/05/08 17:05:58 tom Exp $")
+MODULE_ID("$Id: m_post.c,v 1.25 2004/12/11 23:29:33 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 static int
@@ -301,6 +301,8 @@ _nc_Draw_Menu(const MENU * menu)
 NCURSES_EXPORT(int)
 post_menu(MENU * menu)
 {
+  T((T_CALLED("post_menu(%p)"), menu));
+
   if (!menu)
     RETURN(E_BAD_ARGUMENT);
 
@@ -373,6 +375,8 @@ unpost_menu(MENU * menu)
 {
   WINDOW *win;
 
+  T((T_CALLED("unpost_menu(%p)"), menu));
+
   if (!menu)
     RETURN(E_BAD_ARGUMENT);
 
@@ -391,11 +395,11 @@ unpost_menu(MENU * menu)
 
   assert(menu->sub);
   delwin(menu->sub);
-  menu->sub = (WINDOW *) 0;
+  menu->sub = (WINDOW *)0;
 
   assert(menu->win);
   delwin(menu->win);
-  menu->win = (WINDOW *) 0;
+  menu->win = (WINDOW *)0;
 
   menu->status &= ~_POSTED;
 

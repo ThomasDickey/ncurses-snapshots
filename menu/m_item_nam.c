@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_nam.c,v 1.12 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_item_nam.c,v 1.13 2004/12/11 23:06:56 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -48,11 +48,11 @@ MODULE_ID("$Id: m_item_nam.c,v 1.12 2003/10/25 14:54:48 tom Exp $")
 |   Return Values :  See above; returns NULL if item is invalid
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(const char *)
-item_name (const ITEM * item) 
+item_name(const ITEM * item)
 {
   return ((item) ? item->name.str : (char *)0);
 }
-		
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  char *item_description(const ITEM *item)
@@ -62,7 +62,7 @@ item_name (const ITEM * item)
 |   Return Values :  See above; Returns NULL if item is invalid
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(const char *)
-item_description (const ITEM * item)
+item_description(const ITEM * item)
 {
   return ((item) ? item->description.str : (char *)0);
 }

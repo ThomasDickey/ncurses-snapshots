@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.11 2004/05/29 19:19:09 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.12 2004/12/11 21:45:07 tom Exp $")
 
 static FIELDTYPE const default_fieldtype =
 {
@@ -108,6 +108,8 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
 NCURSES_EXPORT(int)
 free_fieldtype(FIELDTYPE *typ)
 {
+  T((T_CALLED("free_fieldtype(%p)"), typ));
+
   if (!typ)
     RETURN(E_BAD_ARGUMENT);
 

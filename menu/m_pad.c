@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pad.c,v 1.8 2004/04/03 23:08:49 tom Exp $")
+MODULE_ID("$Id: m_pad.c,v 1.9 2004/12/11 23:29:33 tom Exp $")
 
 /* Macro to redraw menu if it is posted and changed */
 #define Refresh_Menu(menu) \
@@ -62,6 +62,8 @@ NCURSES_EXPORT(int)
 set_menu_pad(MENU * menu, int pad)
 {
   bool do_refresh = (menu != (MENU *) 0);
+
+  T((T_CALLED("set_menu_pad(%p,%d)"), menu, pad));
 
   if (!isprint(UChar(pad)))
     RETURN(E_BAD_ARGUMENT);

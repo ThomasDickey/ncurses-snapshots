@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.848 2004/12/05 01:18:45 tom Exp $
+-- $Id: NEWS,v 1.849 2004/12/12 00:16:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041211
+	+ fix an limit-check in wadd_wchnstr() which caused labels in the
+	  forms-demo to be one character short.
+	+ fix typo in curs_addchstr.3x (Jared Yanovich).
+	+ add trace calls to most functions in form and menu libraries.
+	+ update working-position for adding wide-characters when window is
+	  scrolled (prompted by related report by Eungkyu Song).
 
 20041204
 	+ replace some references on Linux to wcrtomb() which use it to obtain

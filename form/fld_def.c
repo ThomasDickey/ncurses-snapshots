@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.29 2004/12/05 01:33:49 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.30 2004/12/11 21:38:48 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -353,6 +353,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 NCURSES_EXPORT(int)
 free_field(FIELD *field)
 {
+  T((T_CALLED("free_field(%p)"), field));
   if (!field)
     {
       RETURN(E_BAD_ARGUMENT);
@@ -364,9 +365,7 @@ free_field(FIELD *field)
   else if (field == field->link)
     {
       if (field->buf != 0)
-	{
-	  free(field->buf);
-	}
+	free(field->buf);
     }
   else
     {

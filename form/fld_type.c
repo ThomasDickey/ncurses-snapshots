@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_type.c,v 1.13 2004/05/29 19:22:01 tom Exp $")
+MODULE_ID("$Id: fld_type.c,v 1.14 2004/12/11 22:17:49 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -51,6 +51,8 @@ set_field_type(FIELD *field, FIELDTYPE *type,...)
   va_list ap;
   int res = E_SYSTEM_ERROR;
   int err = 0;
+
+  T((T_CALLED("set_field_type(%p,%p)"), field, type));
 
   va_start(ap, type);
 

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_post.c,v 1.8 2004/05/29 19:21:17 tom Exp $")
+MODULE_ID("$Id: frm_post.c,v 1.9 2004/12/11 22:19:06 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -53,6 +53,8 @@ post_form(FORM *form)
   WINDOW *formwin;
   int err;
   int page;
+
+  T((T_CALLED("post_form(%p)"), form));
 
   if (!form)
     RETURN(E_BAD_ARGUMENT);
@@ -98,6 +100,8 @@ post_form(FORM *form)
 NCURSES_EXPORT(int)
 unpost_form(FORM *form)
 {
+  T((T_CALLED("unpost_form(%p)"), form));
+
   if (!form)
     RETURN(E_BAD_ARGUMENT);
 

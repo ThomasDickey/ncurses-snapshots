@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_opts.c,v 1.10 2004/05/29 20:46:33 tom Exp $")
+MODULE_ID("$Id: fld_opts.c,v 1.11 2004/12/11 21:55:46 tom Exp $")
 
 /*----------------------------------------------------------------------------
   Field-Options manipulation routines
@@ -55,6 +55,8 @@ set_field_opts(FIELD *field, Field_Options opts)
 {
   int res = E_BAD_ARGUMENT;
 
+  T((T_CALLED("set_field_opts(%p,%d)"), field, opts));
+
   opts &= ALL_FIELD_OPTS;
   if (!(opts & ~ALL_FIELD_OPTS))
     res = _nc_Synchronize_Options(Normalize_Field(field), opts);
@@ -72,7 +74,9 @@ set_field_opts(FIELD *field, Field_Options opts)
 NCURSES_EXPORT(Field_Options)
 field_opts(const FIELD *field)
 {
-  return ALL_FIELD_OPTS & Normalize_Field(field)->opts;
+  T((T_CALLED("field_opts(%p)"), field));
+
+  returnCode(ALL_FIELD_OPTS & Normalize_Field(field)->opts);
 }
 
 /*---------------------------------------------------------------------------
@@ -91,6 +95,8 @@ NCURSES_EXPORT(int)
 field_opts_on(FIELD *field, Field_Options opts)
 {
   int res = E_BAD_ARGUMENT;
+
+  T((T_CALLED("field_opts_on(%p,%d)"), field, opts));
 
   opts &= ALL_FIELD_OPTS;
   if (!(opts & ~ALL_FIELD_OPTS))
@@ -117,6 +123,8 @@ NCURSES_EXPORT(int)
 field_opts_off(FIELD *field, Field_Options opts)
 {
   int res = E_BAD_ARGUMENT;
+
+  T((T_CALLED("field_opts_off(%p,%d)"), field, opts));
 
   opts &= ALL_FIELD_OPTS;
   if (!(opts & ~ALL_FIELD_OPTS))

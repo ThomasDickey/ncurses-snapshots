@@ -32,12 +32,12 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_current.c,v 1.9 2004/12/04 23:12:49 tom Exp $")
+MODULE_ID("$Id: fld_current.c,v 1.10 2004/12/11 21:36:09 tom Exp $")
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  int set_current_field(FORM  * form,FIELD * field)
-|   
+|
 |   Description   :  Set the current field of the form to the specified one.
 |
 |   Return Values :  E_OK              - success
@@ -52,6 +52,7 @@ set_current_field(FORM *form, FIELD *field)
 {
   int err = E_OK;
 
+  T((T_CALLED("set_current_field(%p,%p)"), form, field));
   if (form == 0 || field == 0)
     {
       RETURN(E_BAD_ARGUMENT);
@@ -102,9 +103,9 @@ set_current_field(FORM *form, FIELD *field)
 }
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  FIELD *current_field(const FORM * form)
-|   
+|
 |   Description   :  Return the current field.
 |
 |   Return Values :  Pointer to the current field.
@@ -116,9 +117,9 @@ current_field(const FORM *form)
 }
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  int field_index(const FIELD * field)
-|   
+|
 |   Description   :  Return the index of the field in the field-array of
 |                    the form.
 |

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_info.c,v 1.8 2004/05/29 20:47:04 tom Exp $")
+MODULE_ID("$Id: fld_info.c,v 1.10 2004/12/11 22:24:57 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -52,6 +52,12 @@ field_info(const FIELD *field,
 	   int *frow, int *fcol,
 	   int *nrow, int *nbuf)
 {
+  T((T_CALLED("field_info(%p,%p,%p,%p,%p,%p,%p)"),
+     field,
+     rows, cols,
+     frow, fcol,
+     nrow, nbuf));
+
   if (!field)
     RETURN(E_BAD_ARGUMENT);
 
@@ -85,6 +91,8 @@ field_info(const FIELD *field,
 NCURSES_EXPORT(int)
 dynamic_field_info(const FIELD *field, int *drows, int *dcols, int *maxgrow)
 {
+  T((T_CALLED("dynamic_field_info(%p,%p,%p,%p)"), field, drows, dcols, maxgrow));
+
   if (!field)
     RETURN(E_BAD_ARGUMENT);
 
