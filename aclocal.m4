@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.204 2000/06/24 18:25:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.206 2000/07/01 20:37:36 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1382,7 +1382,7 @@ case \$i in #(vi
 CF_EOF
 if test "$cf_manpage_symlinks" = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
-	aliases=\`sed -f \$srcdir/manlinks.sed \$source\`
+	aliases=\`sed -f \$srcdir/manlinks.sed \$source | sort -u\`
 CF_EOF
 fi
 if test "$cf_manpage_renames" = no ; then
@@ -1810,7 +1810,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -d y -G -o $@'
+		MK_SHARED_LIB='$(LD) -d y -G -o [$]@'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'

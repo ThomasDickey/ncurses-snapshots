@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.5 2000/04/15 17:01:45 tom Exp $
+# $Id: manlinks.sed,v 1.7 2000/07/01 19:50:06 tom Exp $
 ##############################################################################
 # Copyright (c) 2000 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -29,23 +29,40 @@
 # Given a manpage (nroff) as input, writes a list of the names that are
 # listed in the "NAME" section, i.e., the names that we would like to use
 # as aliases for the manpage -T.Dickey
-1,/^\.SH[ 	][ 	]*NAME/d
+/^'\\"/d
+/\.\\"/d
+/^\.br/d
+/^\.sp/d
 s/\\f.//g
-s/,/ /g
-s/\\-.*/ -/
-s/[ 	][ 	]*$//
+s/[:,]/ /g
 s/^[ 	][ 	]*//
+s/[ 	][ 	]*$//
 s/[ 	][ 	]*/ /g
+s/\.SH[ 	][ 	]*/.SH_(/
+#
+/^\.SH_(NAME/,/^\.SH_(SYNOPSIS/{
+s/\\-.*/ -/
 / -/{
 	s/ -.*//
 	s/ /\
 /g
-	q
 }
 /^-/{
 	d
-	q
 }
 s/ /\
 /g
-/^\./,$d
+}
+:syn
+/^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
+	/^#/d
+	/^[^(]*$/d
+	s/^\([^ (]\+ [*]*\)\+//g
+	s/\.SH_(/.SH_/
+	s/(.*//
+	s/\.SH_/.SH_(/
+}
+/^\.SH_(DESCRIPTION/,${
+	d
+}
+/^\./d
