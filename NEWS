@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.773 2003/11/01 23:10:40 tom Exp $
+-- $Id: NEWS,v 1.774 2003/11/08 22:03:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031108
+	+ add DJGPP to special case of DOS-style drive letters potentially
+	  appearing in TERMCAP environment variable.
+	+ fix some spelling in comments (reports by jmc, Jonathon Gray).
+	+ update config.guess, config.sub
 
 20031101
 	+ fix a memory leak in error-return from setupterm() (report by
@@ -42,13 +48,13 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  and parameterless strings inconsistently, i.e., in pad_rin(),
 	  pad_il(), pad_indn() and pad_dl() (Debian #215805).
 	+ minor fixes for configure script and makefiles to cleanup executables
-	  generated when cross-compiling for djgpp.
+	  generated when cross-compiling for DJGPP.
 	+ modify infocmp to omit check for $TERM for operations that do not
 	  require it, e.g., "infocmp -e" used to build fallback list (report by
 	  Koblinger Egmont).
 
 20031004
-	+ add terminfo entries for djgpp.
+	+ add terminfo entries for DJGPP.
 	+ updated note about maintainer in ncurses-intro.html
 
 20030927

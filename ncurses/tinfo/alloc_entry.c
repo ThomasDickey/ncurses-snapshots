@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-2003               *
  ****************************************************************************/
 
 /*
@@ -47,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.39 2003/10/25 21:54:04 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.40 2003/11/08 21:29:54 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.15 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.17 2003/11/08 21:15:02 Jonathon.Gray Exp $")
 
 /* this can't be readonly */
 static FIELD default_field = {
@@ -73,11 +73,11 @@ NCURSES_EXPORT_VAR(FIELD *) _nc_Default_Field = &default_field;
 |                              int *err )
 |   
 |   Description   :  Create an argument structure for the specified type.
-|                    Use the type-dependant argument list to construct
+|                    Use the type-dependent argument list to construct
 |                    it.
 |
 |   Return Values :  Pointer to argument structure. Maybe NULL.
-|                    In case of an error in *err an errorcounter is increased. 
+|                    In case of an error in *err an error counter is increased. 
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(TypeArgument*)
 _nc_Make_Argument
@@ -120,7 +120,7 @@ _nc_Make_Argument
 |                    type.
 |
 |   Return Values :  Pointer to argument structure. Maybe NULL.
-|                    In case of an error in *err an errorcounter is increased. 
+|                    In case of an error in *err an error counter is increased. 
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(TypeArgument*)
 _nc_Copy_Argument
@@ -196,7 +196,7 @@ _nc_Free_Argument
 |   Description   :  Copy argument structure of field src to field dst
 |
 |   Return Values :  TRUE       - copy worked
-|                    FALSE      - error occured
+|                    FALSE      - error occurred
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(bool)
 _nc_Copy_Type

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.197 2003/07/06 00:06:06 tom Exp $
+$Id: ncurses.c,v 1.198 2003/11/08 23:12:43 tom Exp $
 
 ***************************************************************************/
 
@@ -1898,7 +1898,7 @@ show_upper_widechars(int first)
 
 	memset(&codes, 0, sizeof(codes));
 	codes[0] = code;
-	sprintf(tmp, "%3ld (0x%lx)", code, code);
+	sprintf(tmp, "%3ld (0x%lx)", (long) code, (long) code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
 	setcchar(&temp, codes, attrs, 0, 0);
 	echo_wchar(&temp);

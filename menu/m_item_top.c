@@ -37,13 +37,13 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_top.c,v 1.7 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_item_top.c,v 1.8 2003/11/08 20:51:53 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  int set_top_row(MENU *menu, int row)
 |   
-|   Description   :  Makes the speified row the top row in the menu
+|   Description   :  Makes the specified row the top row in the menu
 |
 |   Return Values :  E_OK             - success
 |                    E_BAD_ARGUMENT   - not a menu pointer or invalid row

@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-2003               *
  ****************************************************************************/
 
 /*
@@ -43,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.79 2003/09/13 23:21:25 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.80 2003/11/08 21:58:03 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -420,7 +421,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     def_shell_mode();
     def_prog_mode();
 
-    for (i = 0, rsp = rippedoff; rsp->line && (i < (int)N_RIPS); rsp++, i++) {
+    for (i = 0, rsp = rippedoff; rsp->line && (i < (int) N_RIPS); rsp++, i++) {
 	T(("ripping off line %d at %s", i, rsp->line < 0 ? "bottom" : "top"));
 	SP->_rippedoff[i] = rippedoff[i];
 	if (rsp->hook) {

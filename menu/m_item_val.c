@@ -37,13 +37,13 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_val.c,v 1.11 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_item_val.c,v 1.12 2003/11/08 20:51:29 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  int set_item_value(ITEM *item, int value)
 |   
-|   Description   :  Programmatically set the items selection value. This is
+|   Description   :  Programmatically set the item's selection value. This is
 |                    only allowed if the item is selectable at all and if
 |                    it is not connected to a single-valued menu.
 |                    If the item is connected to a posted menu, the menu

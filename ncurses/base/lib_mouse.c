@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.67 2003/05/31 22:18:18 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.68 2003/11/08 21:50:50 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -836,7 +836,7 @@ _nc_mouse_parse(int runcount)
      * When we enter this routine, the event list next-free pointer
      * points just past a run of mouse events that we know were separated
      * in time by less than the critical click interval. The job of this
-     * routine is to collaps this run into a single higher-level event
+     * routine is to collapse this run into a single higher-level event
      * or gesture.
      *
      * We accomplish this in two passes.  The first pass merges press/release

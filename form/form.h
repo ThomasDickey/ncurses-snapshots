@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.h,v 0.16 2003/10/25 15:17:08 tom Exp $ */
+/* $Id: form.h,v 0.17 2003/11/08 20:39:08 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H
@@ -69,7 +69,7 @@ typedef struct fieldnode {
   int                   drows;    /* dynamic rows               */
   int                   dcols;    /* dynamic cols               */
   int                   maxgrow;  /* maximum field growth       */
-  int			nrow;	  /* offscreen rows	        */
+  int			nrow;	  /* off-screen rows	        */
   short			nbuf;	  /* additional buffers	        */
   short			just;	  /* justification	        */
   short			page;	  /* page on form		*/

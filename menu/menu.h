@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: menu.h,v 1.17 2003/10/25 15:24:29 tom Exp $ */
+/* $Id: menu.h,v 1.18 2003/11/08 20:48:24 tom Exp $ */
 
 #ifndef ETI_MENU
 #define ETI_MENU
@@ -78,7 +78,7 @@ typedef struct tagITEM
   short          x;
   bool           value;       /* Selection value                           */
                              
-  struct tagITEM *left;       /* neighbour items                           */
+  struct tagITEM *left;       /* neighbor items                            */
   struct tagITEM *right;
   struct tagITEM *up;
   struct tagITEM *down;

@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_attribs.c,v 1.11 2003/10/25 15:23:42 tom Exp $")
+MODULE_ID("$Id: m_attribs.c,v 1.12 2003/11/08 20:54:20 tom Exp $")
 
 /* Macro to redraw menu if it is posted and changed */
 #define Refresh_Menu(menu) \
@@ -62,7 +62,7 @@ NCURSES_IMPEXP int NCURSES_API set_menu_ ## name (MENU * menu, chtype attr)\
    RETURN(E_OK);\
 }
 
-/* "Template" macro to generate a function to get a menus attribute */
+/* "Template" macro to generate a function to get a menu's attribute */
 #define GEN_MENU_ATTR_GET_FCT( name ) \
 NCURSES_IMPEXP chtype NCURSES_API menu_ ## name (const MENU * menu)\
 {\
@@ -74,7 +74,7 @@ NCURSES_IMPEXP chtype NCURSES_API menu_ ## name (const MENU * menu)\
 |   Function      :  int set_menu_fore(MENU *menu, chtype attr)
 |   
 |   Description   :  Set the attribute for selectable items. In single-
-|                    valued menus thiis is used to highlight the current
+|                    valued menus this is used to highlight the current
 |                    item ((i.e. where the cursor is), in multi-valued
 |                    menus this is used to highlight the selected items.
 |

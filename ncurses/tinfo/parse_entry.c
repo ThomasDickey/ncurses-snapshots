@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-2003               *
  ****************************************************************************/
 
 /*
@@ -47,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.59 2003/10/25 22:45:44 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.60 2003/11/08 21:57:09 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -188,7 +189,7 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
  *	if the token was not a name in column 1, complain and die
  *	save names in entry's string table
  *	while (get_token() is not EOF and not NAMES)
- *	        check for existance and type-correctness
+ *	        check for existence and type-correctness
  *	        enter cap into structure
  *	        if STRING
  *	            save string in entry's string table
