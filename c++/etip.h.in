@@ -32,7 +32,7 @@
  *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.23 2002/07/06 15:47:52 juergen Exp $
+// $Id: etip.h.in,v 1.24 2002/10/12 22:33:07 Dimitar.Zhekov Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -262,13 +262,13 @@ public:
 
 };
 
-#if !(defined(__GNUG__)||defined(__SUNPRO_CC))
+#if !((defined(__GNUG__) && defined(__EXCEPTIONS)) || defined(__SUNPRO_CC))
 #  include <iostream.h>
    extern "C" void exit(int);
 #endif
 
 inline void THROW(const NCursesException *e) {
-#if defined(__GNUG__)
+#if defined(__GNUG__) && defined(__EXCEPTIONS)
 #  if ((__GNUG__ <= 2) && (__GNUC_MINOR__ < 8))
       (*lib_error_handler)(e?e->classname():"",e?e->message:"");
 #else

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,18 +40,15 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.49 2002/09/28 12:48:35 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.50 2002/10/12 15:20:15 tom Exp $")
 
-NCURSES_EXPORT_VAR(unsigned)
-_nc_tracing = 0;		/* always define this */
+NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0;	/* always define this */
 
 #ifdef TRACE
-NCURSES_EXPORT_VAR(const char *)
-_nc_tputs_trace = "";
-NCURSES_EXPORT_VAR(long)
-_nc_outchars = 0;
+NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace = "";
+NCURSES_EXPORT_VAR(long) _nc_outchars = 0;
 
-     static FILE *tracefp;	/* default to writing to stderr */
+static FILE *tracefp;		/* default to writing to stderr */
 
 NCURSES_EXPORT(void)
 trace(const unsigned int tracelevel GCC_UNUSED)

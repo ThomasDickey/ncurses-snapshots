@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!-- 
   ****************************************************************************
-  * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+  * Copyright (c) 1998,2002 Free Software Foundation, Inc.                   *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getyx.3x,v 1.6 1998/03/11 21:12:53 juergen Exp @
+  * @Id: curs_getyx.3x,v 1.8 2002/09/21 19:00:38 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -81,23 +81,23 @@
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       All of these interfaces are macros and  that  "<STRONG>&amp;</STRONG>"  is  not
-       necessary before the variables <EM>y</EM> and <EM>x</EM>.
+       All of these interfaces are macros.  A "<STRONG>&amp;</STRONG>" is  not  neces-
+       sary before the variables <EM>y</EM> and <EM>x</EM>.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       These  functions are described in the XSI Curses standard,
-       Issue 4.
+       The  <STRONG>getyx</STRONG>,  <STRONG>getparyx</STRONG>, <STRONG>getbegyx</STRONG> and <STRONG>getmaxyx</STRONG> functions are
+       described in the XSI Curses standard, Issue 4.
+
+       This  implementation  also  provides   <STRONG>getbegx</STRONG>,   <STRONG>getbegy</STRONG>,
+       <STRONG>getcurx</STRONG>,  <STRONG>getcury</STRONG>,  <STRONG>getmaxx</STRONG>,  <STRONG>getmaxy</STRONG>, <STRONG>getparx</STRONG> and <STRONG>getpary</STRONG>
+       for compatibility with older versions of curses.
 
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>
-
-
-
-
 
 
 

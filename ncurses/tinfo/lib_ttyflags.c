@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.8 2002/07/20 19:27:20 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.9 2002/10/12 21:28:16 tom Exp $")
 
 #undef tabs
 
@@ -62,7 +62,8 @@ _nc_get_tty_mode(TTY * buf)
     if (cur_term == 0
 	|| GET_TTY(cur_term->Filedes, buf) != 0)
 	return (ERR);
-    TR(TRACE_BITS, ("_nc_get_tty_mode: %s", _nc_trace_ttymode(buf)));
+    TR(TRACE_BITS, ("_nc_get_tty_mode(%d): %s",
+		    cur_term->Filedes, _nc_trace_ttymode(buf)));
     return (OK);
 }
 
@@ -72,7 +73,8 @@ _nc_set_tty_mode(TTY * buf)
     if (cur_term == 0
 	|| SET_TTY(cur_term->Filedes, buf) != 0)
 	return (ERR);
-    TR(TRACE_BITS, ("_nc_set_tty_mode: %s", _nc_trace_ttymode(buf)));
+    TR(TRACE_BITS, ("_nc_set_tty_mode(%d): %s",
+		    cur_term->Filedes, _nc_trace_ttymode(buf)));
     return (OK);
 }
 

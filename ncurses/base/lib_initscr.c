@@ -45,7 +45,7 @@
 #include <sys/termio.h>		/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.31 2002/09/21 19:26:23 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.32 2002/10/12 15:24:34 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 initscr(void)
@@ -53,13 +53,8 @@ initscr(void)
     static bool initialized = FALSE;
     NCURSES_CONST char *name;
     int value;
-#ifdef TRACE
-    int t = _nc_getenv_num("NCURSES_TRACE");
 
-    if (t >= 0)
-	trace((unsigned) t);
-#endif
-
+    START_TRACE();
     T((T_CALLED("initscr()")));
     /* Portable applications must not call initscr() more than once */
     if (!initialized) {

@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.8 2002/02/23 22:55:47 tom Exp @
+  * @Id: curs_util.3x,v 1.9 2002/09/01 19:44:37 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -77,11 +77,11 @@
        ing to the key <EM>c</EM>.  Control characters are displayed in the
        <STRONG>^</STRONG><EM>X</EM> notation.  Values above 128 are either meta characters,
        shown  in the <STRONG>M-</STRONG><EM>X</EM> notation, or the names of function keys,
-       or "UNKNOWN STRING".  The corresponding <STRONG>key_name</STRONG> returns a
-       character string corresponding to the wide-character value
-       <EM>w</EM>.  The two functions  do  not  return  the  same  set  of
-       strings;  the  latter  returns  "UNKNOWN STRING" where the
-       former would display a meta character.
+       or null.  The corresponding <STRONG>key_name</STRONG> returns  a  character
+       string  corresponding  to the wide-character value <EM>w</EM>.  The
+       two functions do not return the same set of  strings;  the
+       latter  returns null where the former would display a meta
+       character.
 
        The <STRONG>filter</STRONG> routine, if used, must be called before <STRONG>initscr</STRONG>
        or  <STRONG>newterm</STRONG>  are called.  The effect is that, during those

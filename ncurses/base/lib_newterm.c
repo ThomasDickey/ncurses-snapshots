@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.55 2002/09/07 18:11:03 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.56 2002/10/12 15:24:08 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -107,13 +107,8 @@ newterm(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
     int errret;
     int slk_format = _nc_slk_format;
     SCREEN *current;
-#ifdef TRACE
-    int t = _nc_getenv_num("NCURSES_TRACE");
 
-    if (t >= 0)
-	trace((unsigned) t);
-#endif
-
+    START_TRACE();
     T((T_CALLED("newterm(\"%s\",%p,%p)"), name, ofp, ifp));
 
     /* this loads the capability entry, then sets LINES and COLS */
