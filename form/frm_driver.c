@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.53 2004/05/16 15:35:31 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.56 2004/05/30 00:34:26 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -442,6 +442,9 @@ Window_To_Buffer(WINDOW *win, FIELD *field)
       for (i = 0; i < len; i++, p++)
 	{
 	  if ((unsigned long)CharOf(*p) == ChCharOf(pad)
+#if USE_WIDEC_SUPPORT
+	      && p->chars[1] == 0
+#endif
 	      && AttrOf(*p) == ChAttrOf(pad))
 	    *p = myBLANK;
 	}
@@ -563,7 +566,7 @@ Field_Grown(FIELD *field, int amount)
 	    }
 
 #if USE_WIDEC_SUPPORT
-	  if (wresize(field->working, field->drows, field->dcols) == ERR)
+	  if (wresize(field->working, 1, Buffer_Length(field)) == ERR)
 	    result = FALSE;
 #endif
 
@@ -4035,13 +4038,13 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
   wclear(field->working);
   mvwaddstr(field->working, 0, 0, value);
 
-  if ((widevalue = (FIELD_CELL *)calloc(field->cols, sizeof(FIELD_CELL))) == 0)
+  if ((widevalue = (FIELD_CELL *)calloc(len, sizeof(FIELD_CELL))) == 0)
     {
       RETURN(E_SYSTEM_ERROR);
     }
   else
     {
-      mvwin_wchnstr(field->working, 0, 0, widevalue, field->cols);
+      mvwin_wchnstr(field->working, 0, 0, widevalue, len);
       for (i = 0; i < len; ++i)
 	{
 	  if (CharEq(myZEROS, widevalue[i]))
@@ -4099,10 +4102,11 @@ field_buffer(const FIELD *field, int buffer)
 #if USE_WIDEC_SUPPORT
       FIELD_CELL *data = Address_Of_Nth_Buffer(field, buffer);
       unsigned need = 0;
+      int size = Buffer_Length(field);
       int n;
 
       /* determine the number of bytes needed to store the expanded string */
-      for (n = 0; n < field->cols; ++n)
+      for (n = 0; n < size; ++n)
 	{
 	  need += getcchar(&data[n], (wchar_t *)0, 0, 0, 0);
 	}
@@ -4116,8 +4120,8 @@ field_buffer(const FIELD *field, int buffer)
       if ((result = field->expanded[buffer]) != 0)
 	{
 	  wclear(field->working);
-	  mvwadd_wchnstr(field->working, 0, 0, data, field->cols);
-	  mvwinnstr(field->working, 0, 0, result, field->cols);
+	  mvwadd_wchnstr(field->working, 0, 0, data, size);
+	  mvwinnstr(field->working, 0, 0, result, size);
 	}
 #else
       result = Address_Of_Nth_Buffer(field, buffer);
@@ -4135,6 +4139,7 @@ field_buffer(const FIELD *field, int buffer)
 #define trans_mbytes(wch,buffer,length,state) \
 	(int) mbtowc(&wch, buffer, length)
 #elif HAVE_MBRTOWC && HAVE_MBRLEN
+#define NEED_STATE
 #define reset_mbytes(state) memset(&state, 0, sizeof(state))
 #define count_mbytes(buffer,length,state) mbrlen(buffer,length,&state)
 #define trans_mbytes(wch,buffer,length,state) \
@@ -4152,11 +4157,14 @@ _nc_Widen_String(char *source, int *lengthp)
 {
   wchar_t *result = 0;
   wchar_t wch;
-  mbstate_t state;
   size_t given = strlen(source);
   size_t try;
   int pass;
   int status;
+
+#ifdef NEED_STATE
+  mbstate_t state;
+#endif
 
   for (pass = 0; pass < 2; ++pass)
     {

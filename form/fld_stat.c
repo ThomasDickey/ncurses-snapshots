@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_stat.c,v 1.9 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_stat.c,v 1.10 2004/05/29 19:22:20 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -44,16 +44,16 @@ MODULE_ID("$Id: fld_stat.c,v 1.9 2003/10/25 15:17:08 tom Exp $")
 |   Return Values :  E_OK            - success
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_field_status (FIELD * field, bool status)
+set_field_status(FIELD *field, bool status)
 {
-  Normalize_Field( field );
+  Normalize_Field(field);
 
   if (status)
     field->status |= _CHANGED;
   else
     field->status &= ~_CHANGED;
 
-  return(E_OK);
+  return (E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ set_field_status (FIELD * field, bool status)
 |                    FALSE - buffer has not been changed
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(bool)
-field_status (const FIELD * field)
+field_status(const FIELD *field)
 {
   return ((Normalize_Field(field)->status & _CHANGED) ? TRUE : FALSE);
 }

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_dup.c,v 1.8 2004/05/08 20:53:24 tom Exp $")
+MODULE_ID("$Id: fld_dup.c,v 1.9 2004/05/29 19:16:58 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -57,30 +57,30 @@ dup_field(FIELD *field, int frow, int fcol)
       ((err = E_SYSTEM_ERROR) != 0) &&	/* trick : this resets the default error */
       (New_Field = (FIELD *)malloc(sizeof(FIELD))))
     {
-      *New_Field         = *_nc_Default_Field;
-      New_Field->frow    = frow;
-      New_Field->fcol    = fcol;
-      New_Field->link    = New_Field;
-      New_Field->rows    = field->rows;
-      New_Field->cols    = field->cols;
-      New_Field->nrow    = field->nrow;
-      New_Field->drows   = field->drows;
-      New_Field->dcols   = field->dcols;
+      *New_Field = *_nc_Default_Field;
+      New_Field->frow = frow;
+      New_Field->fcol = fcol;
+      New_Field->link = New_Field;
+      New_Field->rows = field->rows;
+      New_Field->cols = field->cols;
+      New_Field->nrow = field->nrow;
+      New_Field->drows = field->drows;
+      New_Field->dcols = field->dcols;
       New_Field->maxgrow = field->maxgrow;
-      New_Field->nbuf    = field->nbuf;
-      New_Field->just    = field->just;
-      New_Field->fore    = field->fore;
-      New_Field->back    = field->back;
-      New_Field->pad     = field->pad;
-      New_Field->opts    = field->opts;
-      New_Field->usrptr  = field->usrptr;
+      New_Field->nbuf = field->nbuf;
+      New_Field->just = field->just;
+      New_Field->fore = field->fore;
+      New_Field->back = field->back;
+      New_Field->pad = field->pad;
+      New_Field->opts = field->opts;
+      New_Field->usrptr = field->usrptr;
 
       if (_nc_Copy_Type(New_Field, field))
 	{
 	  size_t i, len;
 
 	  len = Total_Buffer_Size(New_Field);
-	  if ((New_Field->buf = (FIELD_CELL *) malloc(len)))
+	  if ((New_Field->buf = (FIELD_CELL *)malloc(len)))
 	    {
 	      for (i = 0; i < len; ++i)
 		New_Field->buf[i] = field->buf[i];

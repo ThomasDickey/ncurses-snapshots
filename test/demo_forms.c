@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.4 2004/04/17 21:18:40 tom Exp $
+ * $Id: demo_forms.c,v 1.6 2004/05/30 00:53:30 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -11,10 +11,7 @@ TYPE_INTEGER			-
 TYPE_IPV4			-
 TYPE_NUMERIC			-
 TYPE_REGEXP			-
-data_ahead			-
-data_behind			-
 dup_field			-
-dynamic_field_info		-
 field_arg			-
 field_back			-
 field_count			-
@@ -63,6 +60,10 @@ set_max_field			-
 
 #include <edit_field.h>
 
+static int d_option = 0;
+static int m_value = 0;
+static int o_value = 0;
+
 static FIELD *
 make_label(int frow, int fcol, NCURSES_CONST char *label)
 {
@@ -81,11 +82,15 @@ make_label(int frow, int fcol, NCURSES_CONST char *label)
 static FIELD *
 make_field(int frow, int fcol, int rows, int cols)
 {
-    FIELD *f = new_field(rows, cols, frow, fcol, 0, 1);
+    FIELD *f = new_field(rows, cols, frow, fcol, o_value, 1);
 
     if (f) {
 	set_field_back(f, A_UNDERLINE);
 	set_field_userptr(f, (void *) 0);
+	if (d_option) {
+	    field_opts_off(f, O_STATIC);
+	    set_max_field(f, m_value);
+	}
     }
     return (f);
 }
@@ -151,12 +156,18 @@ show_current_field(WINDOW *win, FORM * form)
     FIELDTYPE *type;
     char *buffer;
     int nbuf;
+    int field_rows, field_cols, field_max;
 
     if (has_colors()) {
 	wbkgd(win, COLOR_PAIR(1));
     }
     werase(win);
-    wprintw(win, "Cursor: %d,%d\n", form->currow, form->curcol);
+    wprintw(win, "Cursor: %d,%d", form->currow, form->curcol);
+    if (data_ahead(form))
+	waddstr(win, " ahead");
+    if (data_behind(form))
+	waddstr(win, " behind");
+    waddch(win, '\n');
     if ((field = current_field(form)) != 0) {
 	wprintw(win, "Field %d:", field_index(field));
 	if ((type = field_type(field)) != 0) {
@@ -174,6 +185,11 @@ show_current_field(WINDOW *win, FORM * form)
 		waddstr(win, "REGEXP");
 	    else
 		waddstr(win, "other");
+	}
+	if (dynamic_field_info(field, &field_rows, &field_cols, &field_max)
+	    != ERR) {
+	    wprintw(win, " size %dx%d (max %d)",
+		    field_rows, field_cols, field_max);
 	}
 	waddstr(win, "\n");
 	for (nbuf = 0; nbuf <= 2; ++nbuf) {
@@ -262,9 +278,45 @@ demo_forms(void)
     nl();
 }
 
-int
-main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
+static void
+usage(void)
 {
+    static const char *tbl[] =
+    {
+	"Usage: demo_forms [options]"
+	,""
+	," -d        make fields dynamic"
+	," -m value  set maximum size of dynamic fields"
+	," -o value  specify number of offscreen rows in new_field()"
+    };
+    unsigned int j;
+    for (j = 0; j < sizeof(tbl) / sizeof(tbl[0]); ++j)
+	fprintf(stderr, "%s\n", tbl[j]);
+    exit(EXIT_FAILURE);
+}
+
+int
+main(int argc, char *argv[])
+{
+    int ch;
+
+    while ((ch = getopt(argc, argv, "dm:o:")) != EOF) {
+	switch (ch) {
+	case 'd':
+	    d_option = TRUE;
+	    break;
+	case 'm':
+	    m_value = atoi(optarg);
+	    break;
+	case 'o':
+	    o_value = atoi(optarg);
+	    break;
+	default:
+	    usage();
+
+	}
+    }
+
     initscr();
     cbreak();
     noecho();

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_attr.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_attr.c,v 1.8 2004/05/29 19:22:20 tom Exp $")
 
 /*----------------------------------------------------------------------------
   Field-Attribute manipulation routines
@@ -74,7 +74,7 @@ NCURSES_IMPEXP chtype NCURSES_API field_ ## name (const FIELD * field)\
 |                    E_BAD_ARGUMENT   - invalid attributes
 |                    E_SYSTEM_ERROR   - system error
 +--------------------------------------------------------------------------*/
-GEN_FIELD_ATTR_SET_FCT( fore )
+GEN_FIELD_ATTR_SET_FCT(fore)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -84,7 +84,7 @@ GEN_FIELD_ATTR_SET_FCT( fore )
 |
 |   Return Values :  The foreground attribute
 +--------------------------------------------------------------------------*/
-GEN_FIELD_ATTR_GET_FCT( fore )
+GEN_FIELD_ATTR_GET_FCT(fore)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -97,7 +97,7 @@ GEN_FIELD_ATTR_GET_FCT( fore )
 |                    E_BAD_ARGUMENT   - invalid attributes
 |                    E_SYSTEM_ERROR   - system error
 +--------------------------------------------------------------------------*/
-GEN_FIELD_ATTR_SET_FCT( back )
+GEN_FIELD_ATTR_SET_FCT(back)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -107,6 +107,6 @@ GEN_FIELD_ATTR_SET_FCT( back )
 |
 |   Return Values :  The background attribute
 +--------------------------------------------------------------------------*/
-GEN_FIELD_ATTR_GET_FCT( back )
+GEN_FIELD_ATTR_GET_FCT(back)
 
 /* fld_attr.c ends here */

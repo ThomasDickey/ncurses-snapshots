@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_page.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_page.c,v 1.8 2004/05/29 20:46:30 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -45,13 +45,13 @@ MODULE_ID("$Id: fld_page.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
 |                    E_CONNECTED  - field is connected
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_new_page (FIELD * field, bool new_page_flag)
+set_new_page(FIELD *field, bool new_page_flag)
 {
   Normalize_Field(field);
-  if (field->form) 
+  if (field->form)
     RETURN(E_CONNECTED);
 
-  if (new_page_flag) 
+  if (new_page_flag)
     field->status |= _NEWPAGE;
   else
     field->status &= ~_NEWPAGE;
@@ -70,9 +70,9 @@ set_new_page (FIELD * field, bool new_page_flag)
 |                    FALSE - field doesn't start a new page
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(bool)
-new_page (const FIELD * field)
+new_page(const FIELD *field)
 {
-  return (Normalize_Field(field)->status & _NEWPAGE)  ? TRUE : FALSE;
+  return (Normalize_Field(field)->status & _NEWPAGE) ? TRUE : FALSE;
 }
 
 /* fld_page.c ends here */
