@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,12 +18,14 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.37 1996/12/30 01:00:35 tom Exp $ */
+/* $Id: curses.h.in,v 1.38 1997/01/11 19:55:44 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
 #define CURSES 1
 #define CURSES_H 1
+
+#undef  NCURSES_VERSION
 #define NCURSES_VERSION "@VERSION@"
 
 #ifndef _UNCTRL_H
@@ -280,7 +281,7 @@ extern int ESCDELAY;	/* ESC expire time in milliseconds */
 
 /* non-XSI extensions (dickey@clark.net) */
 extern int resizeterm (int, int);
-extern int wresize (WINDOW *, int, int); 
+extern int wresize (WINDOW *, int, int);
 
 extern char ttytype[];		/* needed for backward compatibility */
 

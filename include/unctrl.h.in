@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -33,6 +32,8 @@
  */
 #ifndef _UNCTRL_H
 #define _UNCTRL_H	1
+
+#undef  NCURSES_VERSION
 #define NCURSES_VERSION "@VERSION@"
 
 #ifndef __NCURSES_H

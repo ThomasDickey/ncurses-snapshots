@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.76 1996/12/30 02:10:28 tom Exp $
+$Id: ncurses.c,v 1.77 1997/01/11 22:12:28 jbuhler Exp $
 
 ***************************************************************************/
 
@@ -1256,6 +1256,7 @@ static void acs_and_scroll(void)
     while (current != 0)
     	current = delete_framed(current, FALSE);
     scrollok(stdscr, TRUE);	/* reset to driver's default */
+    noraw();
     erase();
     endwin();
 }
@@ -2746,6 +2747,7 @@ usage(void)
 static void
 set_terminal_modes(void)
 {
+    noraw();
     cbreak();
     noecho();
     scrollok(stdscr, TRUE);

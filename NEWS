@@ -1,6 +1,27 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970111
+	+ added headers to make view.c compile on SCO with the resizeterm()
+	  code (i.e., struct winsize) - though this compiles, I don't have a
+	  suitable test configuration since SIGWINCH doesn't pass my network to
+	  that machine - T.Dickey.
+	+ update test/configure.in to supply some default substitutions.
+	+ modify configure script to add -lncurses after -lgpm to fix problem
+	  linking against static libraries.
+	+ add a missing noraw() to test/ncurses.c (places noted by Jeremy
+	  Buhler)
+	+ add a missing wclear() to test/testcurs.c (patch by Jeremy Buhler
+	  <jbuhler@cs.washington.edu>)
+	+ modify headers to accommodate compilers that don't allow duplicate
+	  "#define" lines for NCURSES_VERSION (reported by Larry W.  Virden
+	  <lvirden@cas.org>)
+	+ fix formatting glitch in curs_getch.3x (patch by Jesse Thilo).
+	+ modify lib_doupdate to make el, el1 and ed optimization use the
+	  can_clear_with macro, and change EmitRange to allow leaving cursor at
+	  the middle of interval, rather than always at the end (patch by
+	  Alexander Lukyanov originally 960929, resync 970106).
+
 970104
 	+ workaround defect in autoconf 2.12 (which terminates configuration
 	  if no C++ compiler is found) by adding an option --without-cxx.

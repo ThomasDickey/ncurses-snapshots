@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.49 1997/01/01 23:04:31 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.50 1997/01/06 14:49:09 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -329,7 +329,7 @@ static inline void PutChar(chtype const ch)
  * Check whether the given character can be output by clearing commands.  This
  * includes test for being a space and not including any 'bad' attributes, such
  * as A_REVERSE.  All attribute flags which don't affect appearance of a space
- * can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
+ * or can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
  */
 #define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
 #define can_clear_with(ch) \
@@ -340,12 +340,14 @@ static inline void PutChar(chtype const ch)
  * Must be functionally equivalent to:
  *	for (i = 0; i < num; i++)
  *	    PutChar(ntext[i]);
- * including leaving the cursor positioned just after the last character
- * in the run.
+ * but can leave the cursor positioned at the middle of the interval.
+ *
+ * Returns: 0 - cursor is at the end of interval
+ *	    1 - cursor is somewhere in the middle
  *
  * This code is optimized using ech and rep.
  */
-static inline void EmitRange(const chtype *ntext, int num)
+static inline int EmitRange(const chtype *ntext, int num)
 {
     int	i;
 
@@ -353,8 +355,22 @@ static inline void EmitRange(const chtype *ntext, int num)
     {
 	while (num)
 	{
-	    int	runcount = 1;
-	    chtype ntext0 = ntext[0];
+	    int	runcount;
+	    chtype ntext0;
+
+	    while (num>1 && ntext[0]!=ntext[1])
+	    {
+		PutChar(ntext[0]);
+		ntext++;
+		num--;
+	    }
+	    ntext0 = ntext[0];
+	    if (num==1)
+	    {
+		PutChar(ntext0);
+		return 0;
+	    }
+	    runcount = 2;
 
 	    while (runcount < num && ntext[runcount] == ntext0)
 		runcount++;
@@ -374,8 +390,15 @@ static inline void EmitRange(const chtype *ntext, int num)
 		UpdateAttrs(ntext0);
 		putp(tparm(erase_chars, runcount));
 
+		/*
+		 * If this is the last part of the given interval,
+		 * don't bother moving cursor, since it can be the
+		 * last update on the line.
+		 */
 		if (runcount < num)
 		    GoTo(SP->_cursrow, SP->_curscol + runcount);
+		else
+		    return 1;	/* cursor stays in the middle */
 	    }
 	    else if (repeat_char && runcount > SP->_rep_cost)
 	    {
@@ -386,7 +409,7 @@ static inline void EmitRange(const chtype *ntext, int num)
 		    rep_count--;
 
 		UpdateAttrs(ntext0);
-		putp(tparm(repeat_char, ntext0, rep_count));
+		putp(tparm(repeat_char, ntext0 & A_CHARTEXT, rep_count));
 		SP->_curscol += rep_count;
 
 		if (wrap_possible)
@@ -400,11 +423,12 @@ static inline void EmitRange(const chtype *ntext, int num)
 	    ntext += runcount;
 	    num -= runcount;
 	}
-	return;
+	return 0;
     }
 
     for (i = 0; i < num; i++)
 	PutChar(ntext[i]);
+    return 0;
 }
 
 /*
@@ -412,8 +436,10 @@ static inline void EmitRange(const chtype *ntext, int num)
  *
  * If there's a run of identical characters that's long enough to justify
  * cursor movement, use that also.
+ *
+ * Returns: same as EmitRange
  */
-static void PutRange(
+static int PutRange(
 	const chtype *otext,
 	const chtype *ntext,
 	int row,
@@ -440,7 +466,7 @@ static void PutRange(
 			}
 		}
 	}
-	EmitRange(ntext + first, last-first+1);
+	return EmitRange(ntext + first, last-first+1);
 }
 
 #if CC_HAS_INLINE_FUNCS
@@ -819,15 +845,14 @@ chtype	blank = ClrSetup(scr);
 }
 
 /*
-**	ClrToEOL()
+**	ClrToEOL(blank)
 **
 **	Clear to end of current line, starting at the cursor position
 */
 
-static void ClrToEOL(void)
+static void ClrToEOL(chtype blank)
 {
 int	j;
-chtype	blank = ClrSetup(curscr);
 bool	needclear = FALSE;
 
 	for (j = SP->_curscol; j < screen_columns; j++)
@@ -843,6 +868,7 @@ bool	needclear = FALSE;
 
 	if (needclear)
 	{
+	    UpdateAttrs(blank);
 	    TPUTS_TRACE("clr_eol");
 	    if (SP->_el_cost > (screen_columns - SP->_curscol))
 	    {
@@ -852,36 +878,6 @@ bool	needclear = FALSE;
 	    }
 	    else
 		putp(clr_eol);
-	}
-}
-
-/*
-**	ClrToBOL()
-**
-**	Clear to beginning of current line, counting the cursor position
-*/
-
-static void ClrToBOL(void)
-{
-int	j;
-chtype	blank = ClrSetup(curscr);
-bool	needclear = FALSE;
-
-	for (j = 0; j <= SP->_curscol; j++)
-	{
-	    chtype *cp = &(curscr->_line[SP->_cursrow].text[j]);
-
-	    if (*cp != blank)
-	    {
-		*cp = blank;
-		needclear = TRUE;
-	    }
-	}
-
-	if (needclear)
-	{
-	    TPUTS_TRACE("clr_bol");
-	    putp(clr_bol);
 	}
 }
 
@@ -899,9 +895,12 @@ static	size_t	lenLine;
 
 int	row, col;
 int	top    = total;
-chtype	blank  = ClrBlank(curscr);
 int	last   = min(screen_columns, newscr->_maxx+1);
 size_t	length = sizeof(chtype) * last;
+chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
+
+	if(!can_clear_with(blank))
+		return total;
 
 	if (tstLine == 0)
 		tstLine = (chtype *)malloc(length);
@@ -921,8 +920,8 @@ size_t	length = sizeof(chtype) * last;
 		}
 
 		if (top < total) {
-			(void) ClrSetup (curscr);
 			GoTo(top,0);
+			UpdateAttrs(blank);
 			TPUTS_TRACE("clr_eos");
 			putp(clr_eos);
 			while (total-- > top) {
@@ -998,7 +997,7 @@ bool	attrchanged = FALSE;
 		lastChar = screen_columns - 1;
 		GoTo(lineno, firstChar);
 		if(clr_eol)
-			ClrToEOL();
+			ClrToEOL(ClrBlank(curscr));
 	} else {
 		lastChar = screen_columns - 1;
 		while (lastChar > firstChar  &&  newLine[lastChar] == oldLine[lastChar])
@@ -1057,10 +1056,10 @@ bool	attrchanged = FALSE;
 
 	if (attrchanged) {	/* we may have to disregard the whole line */
 		GoTo(lineno, firstChar);
-		ClrToEOL();
+		ClrToEOL(ClrBlank(curscr));
 		PutRange(oldLine, newLine, lineno, 0, (screen_columns-1));
 	} else {
-		chtype blank = ClrBlank(curscr);
+		chtype blank;
 
 		/* find the first differing character */
 		while (firstChar < screen_columns  &&
@@ -1072,7 +1071,7 @@ bool	attrchanged = FALSE;
 			return;
 
 		/* it may be cheap to clear leading whitespace with clr_bol */
-		if (clr_bol)
+		if (clr_bol && can_clear_with(blank=newLine[0]))
 		{
 			int oFirstChar, nFirstChar;
 
@@ -1086,14 +1085,35 @@ bool	attrchanged = FALSE;
 			if (nFirstChar > oFirstChar + SP->_el1_cost)
 			{
 			    GoTo(lineno, nFirstChar - 1);
-			    ClrToBOL();
+			    UpdateAttrs(blank);
+			    TPUTS_TRACE("clr_bol");
+			    putp(clr_bol);
 
-			    if(nFirstChar == screen_columns)
+			    while (firstChar < nFirstChar)
+				oldLine[firstChar++] = blank;
+
+			    if (firstChar >= screen_columns)
 				return;
-
-			    if (nFirstChar > firstChar)
-				firstChar = nFirstChar;
 			}
+		}
+
+		blank = newLine[screen_columns-1];
+
+		if(!can_clear_with(blank))
+		{
+			/* find the last differing character */
+			nLastChar = screen_columns - 1;
+			
+			/* we don't check ranges since there must be
+			 * different characters */
+			while (newLine[nLastChar] == oldLine[nLastChar])
+				nLastChar--;
+			GoTo(lineno, firstChar);
+			PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
+			memcpy( oldLine + firstChar,
+				newLine + firstChar,
+				(nLastChar - firstChar + 1) * sizeof(chtype));
+			return;
 		}
 
 		/* find last non-blank character on old line */
@@ -1107,18 +1127,17 @@ bool	attrchanged = FALSE;
 			nLastChar--;
 
 		if((nLastChar == firstChar)
-		 && (SP->_el_cost < (screen_columns - nLastChar))
-		 && ((SP->_current_attr | BLANK) == blank)) {
+		 && (SP->_el_cost < (screen_columns - nLastChar))) {
 			GoTo(lineno, firstChar);
-			ClrToEOL();
+			ClrToEOL(blank);
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
 			GoTo(lineno, firstChar);
 			if ((oLastChar - nLastChar) > SP->_el_cost) {
-				PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
-				ForceGoTo(lineno, nLastChar+1);
-				ClrToEOL();
+				if(PutRange(oldLine, newLine, lineno, firstChar, nLastChar))
+				    GoTo(lineno, nLastChar+1);
+				ClrToEOL(blank);
 			} else {
 				n = max( nLastChar , oLastChar );
 				PutRange(oldLine, newLine, lineno, firstChar, n);
@@ -1155,12 +1174,11 @@ bool	attrchanged = FALSE;
 				}
 			} else if (oLastChar > nLastChar ) {
 				if (DelCharCost(oLastChar - nLastChar)
-				 > SP->_el_cost
-				 + nLastNonblank - (n+1)) {
-					PutRange(oldLine, newLine, lineno,
-						n+1, nLastNonblank);
-					ForceGoTo(lineno, nLastNonblank+1);
-					ClrToEOL();
+				    > SP->_el_cost + nLastNonblank - (n+1)) {
+					if(PutRange(oldLine, newLine, lineno,
+							n+1, nLastNonblank))
+						GoTo(lineno, nLastNonblank+1);
+					ClrToEOL(blank);
 				} else {
 					/*
 					 * The delete-char sequence will
@@ -1170,7 +1188,7 @@ bool	attrchanged = FALSE;
 					 * setting the video attributes from
 					 * the last character on the row.
 					 */
-					UpdateAttrs(newLine[screen_columns-1]);
+					UpdateAttrs(blank);
 					DelChar(oLastChar - nLastChar);
 				}
 			}

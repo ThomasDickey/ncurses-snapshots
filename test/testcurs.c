@@ -5,7 +5,7 @@
  * This program was written by John Burnell (johnb@kea.am.dsir.govt.nz)
  * esr changed the usleep calls to napms calls, 7 Nov 1995
  *
- * $Id: testcurs.c,v 1.11 1996/12/30 02:12:39 tom Exp $
+ * $Id: testcurs.c,v 1.12 1997/01/11 22:17:10 jbuhler Exp $
  */
 
 #include <test.priv.h>
@@ -172,6 +172,7 @@ scrollTest (WINDOW *win)
     int OldX, OldY;
     const char *Message = "The window will now scroll slowly";
 
+    wclear(win);
     mvwprintw (win, height - 2, 1, Message);
     wrefresh (win);
     scrollok(win, TRUE);

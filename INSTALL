@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.20 1997/01/04 23:48:59 tom Exp $
+-- $Id: INSTALL,v 1.21 1997/01/11 23:09:46 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -223,9 +223,9 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 
     Keyboard Mapping:
 
-	The terminfo master file assumes that Shift-Tab generates \E[Z
-        (the ECMA-48 reverse-tabulation sequence) rather than ^I.  Here are
-	the loadkeys -d	mappings that will set this up:
+	The terminfo file assumes that Shift-Tab generates \E[Z (the ECMA-48
+	reverse-tabulation sequence) rather than ^I.  Here are the loadkeys -d
+	mappings that will set this up:
 
 		keycode  15 = Tab             Tab
 			alt     keycode  15 = Meta_Tab
@@ -243,7 +243,7 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	Please pick a name unique to your console driver and set that up
 	in the /etc/inittab table or local equivalent.  Send the entry to the
 	terminfo maintainer (listed in the misc/terminfo file) to be included
-	in the terminfo master, if it's not already there.  See the
+	in the terminfo file, if it's not already there.  See the
 	term(7) manual page included with this distribution for more on
 	conventions for choosing type names.
 
@@ -261,15 +261,17 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	that will make users' lives easier rather than harder.
 
 RECENT XTERM VERSIONS
-	The terminfo database file included with this distribution assumes
-	you are running an Xfree86 xterm version 3.1.2E or more recent.
+	The terminfo database file included with this distribution assumes you
+	are running an XFree86 xterm based on X11R6 (i.e., xterm-r6).  The
+	earlier X11R5 entry (xterm-r5) is provided as well.
 
-	If you are running XFree version 3.1.2D or earlier, or a stock X11R6
-	xterm, you will need to modify the termtypes.src file to make xterm
-	an alias of xterm-x11r6 (rather than xterm-color), and then re-install.
-	Otherwise, your	xterm screen displays may be incorrect (because
-	ncurses will be assuming the presence of hpa/vpa capabilities that
-	don't actually work correctly.)
+	If you are running XFree86 version 3.2 (actually 3.1.2F and up), you
+	should consider using the xterm-xf86-v32 entry, which adds ANSI color
+	and the VT220 capabilities which have been added in XFree86.  If you
+	are running a mixed network, however, where this terminal description
+	may be used on an older xterm, you may have problems, since
+	applications that assume these capabilities will produce incorrect
+	output on the older xterm (e.g., highlighting is not cleared).
 
 CONFIGURING FALLBACK ENTRIES
 	In order to support operation of ncurses programs before the terminfo
