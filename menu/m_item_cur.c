@@ -83,11 +83,11 @@ ITEM *current_item(const MENU * menu)
 |   
 |   Description   :  Return the logical index of this item.
 |
-|   Return Values :  The index or -1 if this is an invalid item pointer
+|   Return Values :  The index or ERR if this is an invalid item pointer
 +--------------------------------------------------------------------------*/
 int item_index(const ITEM *item)
 {
-  return (item && item->imenu) ? item->index : -1;
+  return (item && item->imenu) ? item->index : ERR;
 }
 
 /*---------------------------------------------------------------------------
@@ -111,7 +111,7 @@ int set_top_row(MENU * menu, int row)
       if (menu->items == (ITEM **)0)
 	RETURN(E_NOT_CONNECTED);
       
-      if ((row<0) || (row>=(menu->rows - menu->height)))
+      if ((row<0) || (row>=(menu->rows - menu->arows)))
 	RETURN(E_BAD_ARGUMENT);
     }
   else
@@ -137,7 +137,7 @@ int set_top_row(MENU * menu, int row)
 |   
 |   Description   :  Return the top row of the menu
 |
-|   Return Values :  The row number or -1 if there is no row
+|   Return Values :  The row number or ERR if there is no row
 +--------------------------------------------------------------------------*/
 int top_row(const MENU * menu)
 {
@@ -147,7 +147,7 @@ int top_row(const MENU * menu)
       return menu->toprow;
     }
   else
-    return(-1);
+    return(ERR);
 }
 
 /* m_item_cur.c ends here */

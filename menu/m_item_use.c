@@ -28,14 +28,14 @@
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_item_userptr(ITEM *item, char *userptr)
+|   Function      :  int set_item_userptr(ITEM *item, const void *userptr)
 |   
 |   Description   :  Set the pointer that is reserved in any item to store
 |                    application relevant informations.  
 |
 |   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
-int set_item_userptr(ITEM * item, char * userptr)
+int set_item_userptr(ITEM * item, const void * userptr)
 {
   Normalize_Item(item)->userptr = userptr;
   RETURN( E_OK );
@@ -43,7 +43,7 @@ int set_item_userptr(ITEM * item, char * userptr)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  char *item_userptr(const ITEM *item)
+|   Function      :  const void *item_userptr(const ITEM *item)
 |   
 |   Description   :  Return the pointer that is reserved in any item to store
 |                    application relevant informations.
@@ -51,7 +51,7 @@ int set_item_userptr(ITEM * item, char * userptr)
 |   Return Values :  Value of the pointer. If no such pointer has been set,
 |                    NULL is returned.
 +--------------------------------------------------------------------------*/
-char *item_userptr(const ITEM * item)
+const void *item_userptr(const ITEM * item)
 {
   return Normalize_Item(item)->userptr;
 }

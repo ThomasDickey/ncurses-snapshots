@@ -33,18 +33,31 @@
 
 void _tracedump(char *name, WINDOW *win)
 {
-    int	i, n;
+    int	i, j, n, width;
+
+    /* compute narrowest possible display width */
+    for (width = i = 0; i <= win->_maxy; i++)
+    {
+	n = 0;
+	for (j = 0; j <= win->_maxx; j++)
+	  if (win->_line[i].text[j] != ' ')
+	    n = j;
+
+	if (n > width)
+	  width = n;
+    }
+    if (width < win->_maxx)
+      ++width;
 
     for (n = 0; n <= win->_maxy; n++)
     {
 	char	buf[BUFSIZ], *ep;
-	int j;
 	bool haveattrs, havecolors;
 
 	/* dump A_CHARTEXT part */
 	(void) sprintf(buf, "%s[%2d]='", name, n);
 	ep = buf + strlen(buf);
-	for (j = 0; j <= win->_maxx; j++)
+	for (j = 0; j <= width; j++)
 	    ep[j] = win->_line[n].text[j] & A_CHARTEXT;
 	ep[j] = '\'';
 	ep[j+1] = '\0';
@@ -52,7 +65,7 @@ void _tracedump(char *name, WINDOW *win)
 
 	/* dump A_COLOR part, will screw up if there are more than 96 */
 	havecolors = FALSE;
-	for (j = 0; j <= win->_maxx; j++)
+	for (j = 0; j <= width; j++)
 	    if (win->_line[n].text[j] & A_COLOR)
 	    {
 		havecolors = TRUE;
@@ -62,7 +75,7 @@ void _tracedump(char *name, WINDOW *win)
 	{
 	    (void) sprintf(buf, "%*s[%2d]='", (int)strlen(name), "colors", n);
 	    ep = buf + strlen(buf);
-	    for (j = 0; j <= win->_maxx; j++)
+	    for (j = 0; j <= width; j++)
 		ep[j] = ((win->_line[n].text[j] >> 8) & 0xff) + ' ';
 	    ep[j] = '\'';
 	    ep[j+1] = '\0';
@@ -75,7 +88,7 @@ void _tracedump(char *name, WINDOW *win)
 	    chtype	mask = (0xf << ((i + 4) * 4));
 
 	    haveattrs = FALSE;
-	    for (j = 0; j <= win->_maxx; j++)
+	    for (j = 0; j <= width; j++)
 		if (win->_line[n].text[j] & mask)
 		{
 		    haveattrs = TRUE;
@@ -85,7 +98,7 @@ void _tracedump(char *name, WINDOW *win)
 	    {
 		(void) sprintf(buf, "%*s%d[%2d]='", (int)strlen(name)-1, "attrs", i, n);
 		ep = buf + strlen(buf);
-		for (j = 0; j <= win->_maxx; j++)
+		for (j = 0; j <= width; j++)
 		    ep[j] = hex[(win->_line[n].text[j] & mask) >> ((i + 4) * 4)];
 		ep[j] = '\'';
 		ep[j+1] = '\0';

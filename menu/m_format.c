@@ -76,7 +76,7 @@ int set_menu_format(MENU *menu, int rows, int cols)
       
       menu->rows    = total_rows;
       menu->cols    = total_cols;
-      menu->height  = minimum(total_rows,rows); 
+      menu->arows   = minimum(total_rows,rows); 
       menu->toprow  = 0;	
       menu->curitem = *(menu->items);
       assert(menu->curitem);

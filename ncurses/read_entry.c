@@ -26,9 +26,7 @@
  *
  */
 
-#include "curses.priv.h"
-
-#include <stdlib.h>
+#include <curses.priv.h>
 
 #if HAVE_FCNTL_H
 #include <fcntl.h>

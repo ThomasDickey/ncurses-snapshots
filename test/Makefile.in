@@ -5,12 +5,12 @@ SHELL		= /bin/sh
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-libdir		= $(exec_prefix)/lib
+libdir		= @libdir@
 includedir	= @includedir@
 
 CC		= @CC@
 
-CFLAGS		= @CFLAGS@
+CFLAGS		= @CFLAGS@	# $(CFLAGS_DEBUG)
 
 CFLAGS_NORMAL	=
 CFLAGS_DEBUG	= @CC_G_OPT@ -DTRACE
@@ -48,35 +48,35 @@ TESTS = \
 
 all: $(TESTS) 
 
-blue: $(srcdir)/blue.c
+blue: $(srcdir)/blue.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-bs: $(srcdir)/bs.c
+bs: $(srcdir)/bs.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-firework: $(srcdir)/firework.c
+firework: $(srcdir)/firework.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-gdc: $(srcdir)/gdc.c
+gdc: $(srcdir)/gdc.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-hanoi: $(srcdir)/hanoi.c
+hanoi: $(srcdir)/hanoi.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-knight: $(srcdir)/knight.c
+knight: $(srcdir)/knight.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-lrtest: $(srcdir)/lrtest.c
+lrtest: $(srcdir)/lrtest.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-ncurses: $(srcdir)/ncurses.c
+ncurses: $(srcdir)/ncurses.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-newdemo: $(srcdir)/newdemo.c
+newdemo: $(srcdir)/newdemo.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-rain: $(srcdir)/rain.c
+rain: $(srcdir)/rain.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-tclock: $(srcdir)/tclock.c
+tclock: $(srcdir)/tclock.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -lm -o $@
-testcurs: $(srcdir)/testcurs.c
+testcurs: $(srcdir)/testcurs.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-view: $(srcdir)/view.c
+view: $(srcdir)/view.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-worm: $(srcdir)/worm.c
+worm: $(srcdir)/worm.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-xmas: $(srcdir)/xmas.c
+xmas: $(srcdir)/xmas.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
 
 install:

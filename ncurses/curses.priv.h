@@ -30,6 +30,9 @@
 
 #include <config.h>
 
+#include <stdlib.h>
+#include <sys/types.h>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -148,10 +151,11 @@ extern int _nc_max_click_interval;
 /* elsewhere ... */
 extern void _nc_get_screensize(void);
 extern int _nc_keypad(bool flag);
-extern WINDOW *_nc_makenew(int, int, int, int);
+extern WINDOW *_nc_makenew(int, int, int, int, int);
 extern int _nc_outch(int);
 extern chtype _nc_render(WINDOW *, chtype, chtype);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
+extern void _nc_hash_map(void);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int const, short const, short const);
 extern int _nc_setupscreen(short, short const);

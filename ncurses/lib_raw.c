@@ -54,6 +54,14 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
+/* may be undefined if we're using termio.h */
+#ifndef TOSTOP
+#define TOSTOP 0
+#endif
+#ifndef IEXTEN
+#define IEXTEN 0
+#endif
+
 /*
  * COOKED_INPUT defines the collection of input mode bits to be
  * cleared when entering raw mode, then re-set by noraw().
@@ -141,8 +149,12 @@ lflags[] =
 	{ICANON,	"ICANON"},
 	{ISIG,  	"ISIG"},
 	{NOFLSH,	"NOFLSH"},
+#if TOSTOP != 0
 	{TOSTOP,	"TOSTOP"},
+#endif
+#if IEXTEN != 0
 	{IEXTEN,	"IEXTEN"},
+#endif
 	{0,		NULL}
 #define ALLLOCAL	(ECHO|ECHONL|ICANON|ISIG|NOFLSH|TOSTOP|IEXTEN)
     },

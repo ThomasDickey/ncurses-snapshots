@@ -615,7 +615,7 @@ panel_hidden(PANEL *pan)
 {
 	if(!pan)
 		return(ERR);
-	return(__panel_is_linked(pan) ? ERR : OK);
+	return(__panel_is_linked(pan) ? TRUE : FALSE);
 }	/* end of panel_hidden */
 
 /* end of panel.c */

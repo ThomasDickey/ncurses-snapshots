@@ -144,6 +144,8 @@ The 'configure' script usually gets your system environment right
 automatically.  Here are some -D options you might need to compile
 with if it fails: <P>
 <DL>
+<DT>-DHAVE_UNISTD_H
+<DD>if &lt;unistd.h&gt; is present
 <DT>-DHAVE_SIGACTION
 <DD>if the sigaction function is present 
 <DT>-DHAVE_USLEEP
@@ -151,7 +153,9 @@ with if it fails: <P>
 <DT>-DSVR4_ACTION
 <DD>if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
 <DT>-DHAVE_TERMIOS_H
-<DD>if you have <termios.h>; otherwise it uses <sgtty.h>
+<DD>if you have &lt;termios.h&gt;
+<DT>-DHAVE_TERMIO_H
+<DD>if you have &lt;termio.h&gt;; otherwise it uses &lt;sgtty.h&gt;
 <DT>-DBROKEN_TIOCGETWINSZ
 <DD>on SVR4 and HPUX, the get window size ioctl is broken.
 </DL>
@@ -308,8 +312,10 @@ a bad capability identified, you can disable it and test again. The
 program is command-driven and has on-line help. <P>
 
 If you think the vertical-scroll optimization is broken, or just want to
-understand how it works better, build <TT>hardscroll</TT> and read the
-header comment of <TT>hardscroll.c</TT>; then try it out. <P>
+understand how it works better, build <TT>hashmap</TT> and read the
+header comments of <TT>hardscroll.c</TT> and <TT>hashmap.c</TT>; then try
+it out. You can also test the hardware-scrolling optimization separately
+with <TT>hardscroll</TT>. <P>
 
 There's one other interactive tester, <TT>tctest</TT>, that exercises
 translation between termcap and terminfo formats.  If you have a serious
@@ -362,7 +368,8 @@ moving the package to another UNIX, the problem is likely to be in one
 of these files.  The file <TT>lib_print.c</TT> uses sleep(2) and also
 falls in this category.<P>
 
-Almost all of the real work is done in the files <TT>hardscroll.c</TT>,
+Almost all of the real work is done in the files 
+<TT>hashmap.c</TT>, <TT>hardscroll.c</TT>,
 <TT>lib_addch.c</TT>, <TT>lib_doupdate.c</TT>, <TT>lib_mvcur.c</TT>,
 <TT>lib_getch.c</TT>, <TT>lib_mouse.c</TT>, <TT>lib_refresh.c</TT>,
 and <TT>lib_setup.c</TT>.  Most of the algorithmic complexity in the
@@ -454,18 +461,20 @@ in the <TT>curscr</TT> window structure) to the desired new state (as
 represented in the <TT>newscr</TT> window structure), while doing as
 little I/O as possible. <P>
 
-The brains of this operation are the modules <TT>hardscroll.c</TT> and
-<TT>lib_doupdate.c</TT>; both use <TT>lib_mvcur.c</TT>.  Essentially,
-what happens looks like this: <P>
+The brains of this operation are the modules <TT>hashmap.c</TT>,
+<TT>hardscroll.c</TT> and <TT>lib_doupdate.c</TT>; the latter two use
+<TT>lib_mvcur.c</TT>.  Essentially, what happens looks like this: <P>
 
-The <TT>hardscroll.c</TT> module tries to detect vertical motion
-changes between the real and virtual screens.  It does so by comparing
-line number vectors between <TT>curscr</TT> and <TT>newscr</TT>; both
-are modified by vertical-motion and clear operations, and both are
-re-initialized after each update. <P>
+The <TT>hashmap.c</TT> module tries to detect vertical motion
+changes between the real and virtual screens.  This information
+is represented by the oldindex members in the newscr structure.
+These are modified by vertical-motion and clear operations, and both are
+re-initialized after each update. To this change-journalling
+information, the hashmap code adds deductions made using a modified Heckel
+algorithm on hash values generated from the line contents. <P>
 
 The <TT>hardscroll.c</TT> module computes an optimum set of scroll,
-insertion, and deletion operations to make the vectors match.  It calls
+insertion, and deletion operations to make the indices match.  It calls
 <TT>_nc_mvcur_scrolln()</TT> in <TT>lib_mvcur.c</TT> to do those motions. <P>
 
 Then <TT>lib_doupdate.c</TT> goes to work.  Its job is to do line-by-line

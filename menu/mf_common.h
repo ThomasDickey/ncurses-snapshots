@@ -26,6 +26,7 @@
 #endif
 
 #include <stdlib.h>
+#include <sys/types.h>
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>

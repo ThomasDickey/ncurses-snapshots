@@ -34,7 +34,7 @@
 |
 |   Return Values :  See above; returns NULL if item is invalid
 +--------------------------------------------------------------------------*/
-char *item_name(const ITEM * item) 
+const char *item_name(const ITEM * item) 
 {
   return ((item) ? item->name.str : (char *)0);
 }
@@ -47,7 +47,7 @@ char *item_name(const ITEM * item)
 |
 |   Return Values :  See above; Returns NULL if item is invalid
 +--------------------------------------------------------------------------*/
-char *item_description(const ITEM * item)
+const char *item_description(const ITEM * item)
 {
   return ((item) ? item->description.str : (char *)0);
 }

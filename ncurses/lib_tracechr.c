@@ -29,9 +29,8 @@
 #define TRACE			/* turn on internal defs for this module */
 #endif
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <stdlib.h>
 #include <ctype.h>
 
 char *_tracechar(const unsigned char ch)

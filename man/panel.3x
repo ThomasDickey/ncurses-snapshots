@@ -1,6 +1,6 @@
 .TH panel 3X ""
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 panel - panel stack extension for curses
 .SH SYNOPSIS
@@ -56,7 +56,7 @@ high-level curses calls, and work anywhere terminfo curses does.
 .SH FUNCTIONS
 .TP
 \fBnew_panel(win)\fR
-allocates  a  \fBPANEL\fR structure, assovciates it with
+allocates  a  \fBPANEL\fR structure, associates it with
 \fBwin\fR, places the panel on the top of the stack  (causes  it
 to  be  displayed above any other panel) and returns a
 pointer to the new panel.

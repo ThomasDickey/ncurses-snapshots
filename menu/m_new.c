@@ -84,6 +84,9 @@ int free_menu(MENU * menu)
   if (menu->items) 
     _nc_Disconnect_Items(menu);
   
+  if ((menu->status & _MARK_ALLOCATED) && menu->mark)
+    free(menu->mark);
+
   free(menu);
   RETURN(E_OK);
 }

@@ -27,8 +27,8 @@
  *		setupterm(char *, int, int *)
  */
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include <string.h>
 #include <errno.h>
 #if !HAVE_EXTERN_ERRNO

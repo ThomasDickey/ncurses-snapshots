@@ -1,6 +1,6 @@
 .TH TERM 5
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 term \- format of compiled term file.
 .SH SYNOPSIS
@@ -75,7 +75,7 @@ The capabilities are in the same order as the file <term.h>.
 Between the boolean section and the number section,
 a null byte will be inserted, if necessary,
 to ensure that the number section begins on an even byte (this is a
-relic of the PDP-11's word-addessed architecture, originally
+relic of the PDP-11's word-addressed architecture, originally
 designed in to avoid IOT traps induced by addressing a word on an
 odd byte boundary).
 All short integers are aligned on a short word boundary.

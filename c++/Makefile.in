@@ -9,7 +9,7 @@ MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-libdir		= $(exec_prefix)/lib
+libdir		= @libdir@
 includedir	= @includedir@
 
 CXX		= @CXX@

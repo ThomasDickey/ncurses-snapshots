@@ -40,12 +40,9 @@
  * parser.
  */
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include <string.h>
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif

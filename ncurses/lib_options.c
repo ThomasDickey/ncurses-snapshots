@@ -27,8 +27,8 @@
 **
 */
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include "term.h"	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 

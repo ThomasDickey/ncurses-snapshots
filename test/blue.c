@@ -20,10 +20,6 @@
 #include <signal.h>
 #include <time.h>
 
-#if HAVE_TERMIOS_H
-#include <sys/termios.h>
-#endif
-
 #include <term.h>
 
 #define NOCARD		(-1)
@@ -45,7 +41,7 @@
 #define BASEROW		1
 #define PROMPTROW	11
 
-static void die(int onsig) __attribute__((noreturn));
+static void die(int onsig) GCC_NORETURN;
 
 static int deck_size = PACK_SIZE;	/* initial deck */
 static int deck[PACK_SIZE];

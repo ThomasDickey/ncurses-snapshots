@@ -1,6 +1,6 @@
 .TH tic 1M ""
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 \fBtic\fR - the \fIterminfo\fR entry-description compiler
 .SH SYNOPSIS
@@ -62,6 +62,10 @@ descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 \fB-I\fR
 Force source translation to terminfo format.
 .TP
+\fB-L\fR
+Force source translation to terminfo format
+using the long C variable names listed in <\fBterm.h\fR>
+.TP
 \fB-C\fR
 Force source translation to termcap format.  Note: this differs from the -C
 option of \fIinfocmp\fR(1m) in that it does not merely translate capability
@@ -97,10 +101,13 @@ tc capabilities per entry.
 .TP
 \fI-e\fR
 Limit writes and translations to the following comma-separated list of
-terminals. If any name or alias of a terminal matches one of the names in
-the list, the entry will be written or translated as normal.  Otherwise
-no output will be generated for it.  (Note: depending on how tic was compiled,
-this option may require -I or -C.)
+terminals.
+If any name or alias of a terminal matches one of the names in
+the list, the entry will be written or translated as normal.
+Otherwise no output will be generated for it.
+The option value is interpreted as a file containing the list if it
+contains a '/'.
+(Note: depending on how tic was compiled, this option may require -I or -C.)
 .TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source
@@ -159,7 +166,7 @@ truncated to 14 characters and a warning message will be printed.
 .SH COMPATIBILITY
 There is some evidence that historic \fBtic\fR implementations treated
 description fields with no whitespace in them as additional aliases or
-shortnames.  This \fBtic\fR does not do that, but it does warn when
+short names.  This \fBtic\fR does not do that, but it does warn when
 description fields may be treated that way and check them for dangerous
 characters.
 .SH EXTENSIONS

@@ -32,7 +32,7 @@ typedef unsigned long  chtype;
 
 #include <stdio.h>   
 #include <unctrl.h>
-#include <stdarg.h>
+#include <stdarg.h>	/* we need va_list */
 #ifdef _XOPEN_SOURCE_EXTENDED
 #include <stddef.h>	/* we want wchar_t */
 #endif /* _XOPEN_SOURCE_EXTENDED */
@@ -676,6 +676,7 @@ extern int wattr_off(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_set(WINDOW *, attr_t);			/* implemented */
 extern int wbkgd(WINDOW *,const chtype);		/* implemented */
 extern void wbkgdset(WINDOW *,chtype);			/* generated */
+extern chtype wgetbkgd(WINDOW *);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int wbkgrndset(WINDOW *,const cchar_t *);	/* missing */
 extern int wbkgrnd(WINDOW *,const cchar_t *);		/* missing */
@@ -1182,6 +1183,7 @@ extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t);
 extern char *_tracebits(void);
 extern char *_tracechar(const unsigned char);
+extern char *_tracechtype(chtype);
 extern char *_tracemouse(const MEVENT *);
 extern void trace(const unsigned int);
 

@@ -40,7 +40,7 @@ EOF
 fi
 
 cat <<EOF
-const TERMTYPE *_nc_fallback(const char *name __attribute__((unused)))
+const TERMTYPE *_nc_fallback(const char *name GCC_UNUSED)
 {
 EOF
 

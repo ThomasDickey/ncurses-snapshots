@@ -7,17 +7,15 @@
 #endif
 
 #if !HAVE_VSSCANF
+#include <stdio.h>
 #include <stdarg.h>
 
 #if defined(_IOREAD) && defined(_NFILE)
 int vsscanf(const char *str, const char *format, va_list ap)
 {
-	va_list ap;
-
 	/*
 	 * This code should work on anything descended from AT&T SVr1.
 	 */
-	va_start(ap);
 	FILE	strbuf;
 
 	strbuf._flag = _IOREAD;
@@ -25,7 +23,11 @@ int vsscanf(const char *str, const char *format, va_list ap)
 	strbuf._cnt = strlen(str);
 	strbuf._file = _NFILE;
 
+#if HAVE_VFSCANF
 	return(vfscanf(&strbuf, format, ap));
+#else
+	return(_doscan(&strbuf, format, ap));
+#endif
 }
 #else
 int vsscanf(const char *str, const char *format, va_list ap)

@@ -26,8 +26,8 @@
 **
 */
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include <string.h>
 
 WINDOW *initscr(void)
@@ -46,9 +46,6 @@ char	*name = getenv("TERM");
 	    ESCDELAY = atoi(getenv("ESCDELAY"));
 
 	def_shell_mode();
-
-	/* follow the XPG4 requirement to turn echo off at this point */
-	noecho();
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 	/* for extended XPG4 conformance requires cbreak() at this point */

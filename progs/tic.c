@@ -27,6 +27,7 @@
 
 #include <progs.priv.h>
 
+#include <ctype.h>
 #include <string.h>
 
 #include "term.h"
@@ -36,29 +37,35 @@
 
 char	*_nc_progname = "tic";
 
-static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-ICNRrw1] source-file\n";
+static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-CILNRTrw1] source-file\n";
 
-static void help(void)
+static void usage(void)
 {
-#define P	printf
-  P("Usage is: %s %s\n", _nc_progname, usage_string);
-  P("-h         display this help message\n");
-  P("-c         check only, validate input without compiling or translating\n");
-  P("-v[n]      set verbosity level\n");
-  P("-e<names>  translate/compile only entries named by comma-separated list\n");
-  P("-o         set output directory for compiled entry writes\n");
-  P("-I         translate entries to terminfo source form\n");
-  P("-C         translate entries to termcap source form\n");
-  P("-N         disable smart defaults for source translation\n");
-  P("-R         restrict translation to given terminfo/termcap version\n");
-  P("-r         force resolution of all use entries in source translation\n");
-  P("-w[n]      set format width for translation output\n");
-  P("-1         format translation output one capability per line\n");
-  P("-T         remove size-restrictions on compiled description\n");
+	static const char *const tbl[] = {
+	"Options:",
+	"  -1         format translation output one capability per line",
+	"  -C         translate entries to termcap source form",
+	"  -I         translate entries to terminfo source form",
+	"  -L         translate entries to full terminfo source form",
+	"  -N         disable smart defaults for source translation",
+	"  -R         restrict translation to given terminfo/termcap version",
+	"  -T         remove size-restrictions on compiled description",
+	"  -c         check only, validate input without compiling or translating",
+	"  -e<names>  translate/compile only entries named by comma-separated list",
+	"  -o<dir>    set output directory for compiled entry writes",
+	"  -r         force resolution of all use entries in source translation",
+	"  -v[n]      set verbosity level",
+	"  -w[n]      set format width for translation output",
+	"",
+	"Parameters:",
+	"  <file>     file to translate or compile"
+	};
+	size_t j;
 
-  P("\n<file>     file to translate or compile\n");
-#undef P
-  exit(EXIT_SUCCESS);
+	printf("Usage: %s %s\n", _nc_progname, usage_string);
+  	for (j = 0; j < sizeof(tbl)/sizeof(tbl[0]); j++)
+		puts(tbl[j]);
+	exit(EXIT_FAILURE);
 }
 
 static bool immedhook(ENTRY *ep)
@@ -175,27 +182,89 @@ static void put_translate(int c)
     }
 }
 
-static bool matches(const char *needle, const char *haystack)
-/* does comma-separated field in needle match |-separated field in haystack? */
+/* Returns a string, stripped of leading/trailing whitespace */
+static char *stripped(char *src)
+{
+	while (isspace(*src))
+		src++;
+	if (*src != '\0') {
+		char *dst = strcpy(malloc(strlen(src)+1), src);
+		size_t len = strlen(dst);
+		while (--len != 0 && isspace(dst[len]))
+			dst[len] = '\0';
+		return dst;
+	}
+	return 0;
+}
+
+/* Parse the "-e" option-value into a list of names */
+static const char **make_namelist(char *src)
+{
+	const char **dst = 0;
+
+	char *s, *base;
+	size_t pass, n, nn;
+	char buffer[BUFSIZ];
+
+	if (strchr(src, '/') != 0) {	/* a filename */
+		FILE *fp = fopen(src, "r");
+		if (fp == 0) {
+			perror(src);
+			exit(EXIT_FAILURE);
+		}
+		for (pass = 1; pass <= 2; pass++) {
+			nn = 0;
+			while (fgets(buffer, sizeof(buffer), fp) != 0) {
+				if (dst != 0 && (s = stripped(buffer)) != 0)
+					dst[nn] = s;
+				nn++;
+			}
+			if (pass == 1) {
+				dst = (const char **)calloc(nn+1, sizeof(*dst));
+				rewind(fp);
+			}
+		}
+		fclose(fp);
+	} else {			/* literal list of names */
+		for (pass = 1; pass <= 2; pass++) {
+			for (n = nn = 0, base = src; ; n++) {
+				int mark = src[n];
+				if (mark == ',' || mark == '\0') {
+					if (pass == 1) {
+						nn++;
+					} else {
+						src[n] = '\0';
+						if ((s = stripped(base)) != 0)
+							dst[nn++] = s;
+						base = &src[n+1];
+					}
+				}
+				if (mark == '\0')
+					break;
+			}
+			if (pass == 1)
+				dst = (const char **)calloc(nn+1, sizeof(*dst));
+		}
+	}
+	return dst;
+}
+
+static bool matches(const char **needle, const char *haystack)
+/* does entry in needle list match |-separated field in haystack? */
 {
 	int code = FALSE;
-	char *cp, *s, *np;
+	size_t n;
 
 	if (needle != 0)
 	{
-		s = malloc(strlen(needle) + 1);
-		(void) strcpy(s, needle);
-		(void) strcat(s, ",");
-		for (cp = s; (np = strchr(cp, ',')) != 0; cp = np + 1)
+		for (n = 0; needle[n] != 0; n++)
 		{
-			*np = '\0';
-			if (_nc_name_match(haystack, cp, "|"))
+			if (_nc_name_match(haystack, needle[n], "|"))
 			{
 				code = TRUE;
 				break;
 			}
 		}
-		free(s);
 	}
 	else
 		code = TRUE;
@@ -204,10 +273,15 @@ static bool matches(const char *needle, const char *haystack)
 
 int main (int argc, char *argv[])
 {
-int	i, debug_level = 0;
-int	argflag = FALSE, smart_defaults = TRUE;
+int	v_opt = -1, debug_level;
+int	smart_defaults = TRUE;
 char    *termcap;
 ENTRY	*qp;
+
+int	this_opt, last_opt = '?';
+
+int	outform = F_TERMINFO;	/* output format */
+int	sortmode = S_TERMINFO;	/* sort_mode */
 
 int	width = 60;
 bool	infodump = FALSE;	/* running as captoinfo? */
@@ -216,7 +290,7 @@ bool	forceresolve = FALSE;	/* force resolution */
 bool	limited = TRUE;
 char	*tversion = (char *)NULL;
 char	*source_file = "terminfo";
-char	*namelst = (char *)NULL;
+const	char	**namelst = 0;
 char	*outdir = (char *)NULL;
 bool	check_only = FALSE;
 
@@ -228,84 +302,94 @@ bool	check_only = FALSE;
 	infodump = (strcmp(_nc_progname, "captoinfo") == 0);
 	capdump = (strcmp(_nc_progname, "infotocap") == 0);
 
-	for (i = 1; i < argc; i++) {
-	    	if (argv[i][0] == '-') {
-			switch (argv[i][1]) {
-			case '?':
-			case 'h':
-				help();
+	/*
+	 * Processing arguments is a little complicated, since someone made a
+	 * design decision to allow the numeric values for -w, -v options to
+	 * be optional.
+	 */
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:orvw")) != EOF) {
+		if (isdigit(this_opt)) {
+			switch (last_opt) {
+			case 'v':
+				v_opt = (v_opt * 10) + (this_opt - '0');
 				break;
-		    	case 'c':
-				check_only = TRUE;
+			case 'w':
+				width = (width * 10) + (this_opt - '0');
 				break;
-		    	case 'v':
-				debug_level = argv[i][2] ? atoi(&argv[i][2]):1;
-				_nc_tracing = (1 << debug_level) - 1;
-				break;
-			case 'o':
-			        if (argv[i][2])
-				    outdir = &argv[i][2];
-				else
-				    outdir = argv[++i];
-				break;
-		    	case 'I':
-				infodump = TRUE;
-				break;
-		    	case 'C':
-				capdump = TRUE;
-				break;
-			case 'N':
-				smart_defaults = FALSE;
-				break;
-			case 'R':
-			        if (argv[i][2])
-				    tversion = &argv[i][2];
-				else
-				    tversion = argv[++i];
-				break;
-			case 'e':
-			        if (argv[i][2])
-				    namelst = &argv[i][2];
-				else
-				    namelst = argv[++i];
-				break;
-			case 'r':
-				forceresolve = TRUE;
-				break;
-	    	    	case 'w':
-				width = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
-				break;
-		    	case 'V':
-				(void) fputs(NCURSES_VERSION, stdout);
-				putchar('\n');
-				exit(EXIT_SUCCESS);
-		    	case '1':
-		    		width = 0;
-		    		break;
-			case 'T':
-				limited = FALSE;
-				break;
-		    	default:
-				fprintf (stderr, 
-					"%s: Unknown option. Usage is:\n\t%s",
-					_nc_progname,
-				        usage_string);
-				exit(EXIT_FAILURE);
+			default:
+				if (this_opt != '1')
+					usage();
+				last_opt = this_opt;
+				width = 0;
 			}
-	    	} else if (argflag) {
+			continue;
+		}
+		switch (this_opt) {
+		case 'C':
+			capdump  = TRUE;
+			outform  = F_TERMCAP;
+			sortmode = S_TERMCAP;
+			break;
+		case 'I':
+			infodump = TRUE;
+			outform  = F_TERMINFO;
+			sortmode = S_TERMINFO;
+			break;
+		case 'L':
+			infodump = TRUE;
+			outform  = F_VARIABLE;
+			sortmode = S_VARIABLE;
+			break;
+		case 'N':
+			smart_defaults = FALSE;
+			break;
+		case 'R':
+			tversion = optarg;
+			break;
+		case 'T':
+			limited = FALSE;
+			break;
+		case 'V':
+			puts(NCURSES_VERSION);
+			exit(EXIT_SUCCESS);
+		case 'c':
+			check_only = TRUE;
+			break;
+		case 'e':
+			namelst = make_namelist(optarg);
+			break;
+		case 'o':
+			outdir = optarg;
+			break;
+		case 'r':
+			forceresolve = TRUE;
+			break;
+		case 'v':
+			v_opt = 0;
+			break;
+		case 'w':
+			width = 0;
+			break;
+		default:
+			usage();
+		}
+		last_opt = this_opt;
+	}
+
+	debug_level = (v_opt > 0) ? v_opt : (v_opt == 0);
+	_nc_tracing = (1 << debug_level) - 1;
+
+	if (optind < argc) {
+		source_file = argv[optind++];
+		if (optind < argc) {
 			fprintf (stderr, 
-				"%s: Too many file names.  Usage is:\n\t%s %s",
+				"%s: Too many file names.  Usage:\n\t%s %s",
 				_nc_progname,
 				_nc_progname,
 				usage_string);
 			exit(EXIT_FAILURE);
-		} else {
-			argflag = TRUE;
-			source_file = argv[i];
-	    	}
-	}
-
-	if (argflag == FALSE) {
+		}
+	} else {
 		if (infodump == TRUE) {
 			/* captoinfo's no-argument case */
 			source_file = "/etc/termcap";
@@ -318,7 +402,7 @@ bool	check_only = FALSE;
 		} else {
 		/* tic */
 			fprintf (stderr, 
-				"%s: File name needed.  Usage is:\n\t%s %s",
+				"%s: File name needed.  Usage:\n\t%s %s",
 				_nc_progname,
 				_nc_progname,
 				usage_string);
@@ -333,11 +417,14 @@ bool	check_only = FALSE;
 
 	if (infodump)
 		dump_init(tversion,
-			  smart_defaults ? F_TERMINFO : F_LITERAL,
-			  S_TERMINFO, width, debug_level);
+			  smart_defaults
+			  	? outform
+				: F_LITERAL,
+			  sortmode, width, debug_level);
 	else if (capdump)
 		dump_init(tversion,
-			  F_TERMCAP, S_TERMCAP, width, debug_level);
+			  outform,
+			  sortmode, width, debug_level);
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);
@@ -375,7 +462,9 @@ bool	check_only = FALSE;
 
 	/* length check */
 	if (check_only && (capdump || infodump))
+	{
 	    for_entry_list(qp)
+	    {
 		if (matches(namelst, qp->tterm.term_names))
 		{
 		    int	len = fmt_entry(&qp->tterm, NULL, TRUE, infodump);
@@ -386,9 +475,12 @@ bool	check_only = FALSE;
 			   _nc_first_name(qp->tterm.term_names),
 			   len);
 		}
+	    }
+	}
 
 	/* write or dump all entries */
 	if (!check_only)
+	{
 	    if (!infodump && !capdump)
 	    {
 		_nc_set_writedir(outdir);
@@ -438,7 +530,7 @@ bool	check_only = FALSE;
 		    }
 		}
 	    }
+	}
 	
-	return(0);
+	return(EXIT_SUCCESS);
 }
-

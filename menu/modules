@@ -16,5 +16,7 @@ m_items		lib		$(srcdir)	../include/menu.h
 m_new		lib		$(srcdir)	../include/menu.h
 m_opts		lib		$(srcdir)	../include/menu.h
 m_post		lib		$(srcdir)	../include/menu.h
+m_req_name	lib		$(srcdir)	../include/menu.h
+m_spacing	lib		$(srcdir)	../include/menu.h
 m_userptr	lib		$(srcdir)	../include/menu.h
 m_win		lib		$(srcdir)	../include/menu.h

@@ -21,7 +21,6 @@
 
 #include <curses.priv.h>
 
-#include <stdlib.h>
 #include <string.h>
 #include "termcap.h"
 
@@ -53,7 +52,7 @@ short ospeed;
  *
  ***************************************************************************/
 
-int tgetent(char *bufp __attribute__((unused)), const char *name)
+int tgetent(char *bufp GCC_UNUSED, const char *name)
 {
 int errcode;
 
@@ -188,7 +187,7 @@ int i;
  *
  ***************************************************************************/
 
-char *tgetstr(const char *id, char **area __attribute__((unused)))
+char *tgetstr(const char *id, char **area GCC_UNUSED)
 {
 int i;
 

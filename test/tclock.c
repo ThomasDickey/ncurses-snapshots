@@ -102,8 +102,8 @@ dline(int from_x, int from_y, int x2, int y2, char ch)
 
 int
 main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 	int i,cx,cy;
 	double mradius, hradius, mangle, hangle;

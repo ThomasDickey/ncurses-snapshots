@@ -1,7 +1,7 @@
 '\" t
 .TH infocmp 1M ""
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 \fBinfocmp\fR - compare or print out \fIterminfo\fR descriptions
 .SH SYNOPSIS
@@ -98,7 +98,7 @@ l l l.
 .TE
 .SS Use= Option [-u]
 The \fB-u\fR option produces a \fBterminfo\fR source description of the first
-terminal f\Itermname\fR which is relative to the sum of the descriptions given
+terminal \fItermname\fR which is relative to the sum of the descriptions given
 by the entries for the other terminals \fItermnames\fR.  It does this by
 analyzing the differences between the first \fItermname\fR and the other
 \fItermnames\fR and producing a description with \fBuse=\fR fields for the
@@ -206,7 +206,7 @@ for a given terminal type.
 The location of the compiled \fBterminfo\fR database is taken from the
 environment variable \fBTERMINFO\fR .  If the variable is not defined, or the
 terminal is not found in that location, the system \fBterminfo\fR database,
-usually in \fB/usr/share/lib/terminfo\fR, will be used.  The options \fB-A\fR
+in \fB@DATADIR@/terminfo\fR, will be used.  The options \fB-A\fR
 and \fB-B\fR may be used to override this location.  The \fB-A\fR option will
 set \fBTERMINFO\fR for the first \fItermname\fR and the \fB-B\fR option will
 set \fBTERMINFO\fR for the other \fItermnames\fR.  With this, it is possible to
@@ -284,7 +284,7 @@ The -F option of \fBinfocmp\fR(1m) should be a \fBtoe\fR(1m) mode.
 \fBtic\fR(1m), \fBtoe\fR(1m),
 \fBcurses\fR(3X), \fBterminfo\fR(\*n).
 .SH AUTHOR
-Eric S. Raymond <esr@nark.thyrsus.com>
+Eric S. Raymond <esr@snark.thyrsus.com>
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

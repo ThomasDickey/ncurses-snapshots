@@ -124,11 +124,11 @@ int strng4(void);
 int strng5(void);
 int reindeer(void);
 int blinkit(void);
-void done(int sig) __attribute__((noreturn)) ;
+void done(int sig) GCC_NORETURN ;
 
 int main(
-	int argc __attribute__((unused)),
-	char **argv __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char **argv GCC_UNUSED)
 {
 int loopy;
 
@@ -1053,7 +1053,7 @@ int reindeer(void)
 	return( 0 );
 }
 
-void done(int sig __attribute__((unused)))
+void done(int sig GCC_UNUSED)
 {
 	signal(SIGINT,done);
 	signal(SIGTERM,done);

@@ -5,14 +5,13 @@
 .SH SYNOPSIS
 \fB#include <menu.h>\fR
 .br
-ITEM *new_item(char *name, char *description);
+ITEM *new_item(const char *name, const char *description);
 .br
 int free_item(ITEM *item);
 .br
 .SH DESCRIPTION
 The function \fBnew_item\fR allocates a new item and initializes it from the
-\fBIname\fR and \fBdescription\fR pointers.  It does not make its own copy
-of these items.
+\fBname\fR and \fBdescription\fR pointers.
 .br
 The function \fBfree_item\fR de-allocates an item.
 .SH RETURN VALUE
@@ -29,8 +28,8 @@ System error occurred (see \fBerrno\fR).
 \fBE_BAD_ARGUMENT\fR
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_NOT_CONNECTED\fR
-No items are connected to the menu.
+\fBE_CONNECTED\fR
+Item is connected to a menu.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBmenu\fR(3X).
 .SH NOTES

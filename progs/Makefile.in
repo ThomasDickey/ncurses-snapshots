@@ -21,11 +21,11 @@ MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-bindir		= $(exec_prefix)/bin
+bindir		= @bindir@
 includedir	= @includedir@
+datadir		= @datadir@
 
-# We'd put terminfo in /usr/share/terminfo, but that's not the convention...
-ticdir		= @datadir@
+ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
@@ -56,7 +56,7 @@ AUTO_SRC = \
 
 PROGS = tic toe infocmp clear tput tset
 
-TESTPROGS = mvcur tctest hardscroll
+TESTPROGS = mvcur tctest hardscroll hashmap
 
 # Default library, for linking applications
 LIB_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
@@ -159,7 +159,15 @@ DEPS_HARDSCROLL = \
 	$(srcdir)/../ncurses/hardscroll.c \
 	$(MODEL)/lib_trace.o	
 hardscroll: 
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAINDEBUG $(DEPS_HARDSCROLL) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE -DSCROLLDEBUG $(DEPS_HARDSCROLL) $(LDFLAGS) -o $@
+
+# Demonstrator-tester for enhanced hardware-scrolling code with hash mapping
+DEPS_HASHMAP = \
+	$(srcdir)/../ncurses/hashmap.c \
+	$(srcdir)/../ncurses/hardscroll.c \
+	$(MODEL)/lib_trace.o	
+hashmap: $(DEPS_HASHMAP)
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE  -DHASHDEBUG $(DEPS_HASHMAP) -o $@
 
 #
 # Utility productions start here

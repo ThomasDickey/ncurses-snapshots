@@ -7,7 +7,9 @@
  */
 
 #include "form.priv.h"
+#ifdef HAVE_LOCALE_H
 #include <locale.h>
+#endif
 
 typedef struct {
   int    precision;
@@ -33,7 +35,11 @@ static void *Make_Numeric_Type(va_list * ap)
       argn->precision = va_arg(*ap,int);
       argn->low       = va_arg(*ap,double);
       argn->high      = va_arg(*ap,double);
+#ifdef HAVE_LOCALE_H
       argn->L         = localeconv();
+#else
+      argn->L         = NULL;
+#endif
     }
   return (void *)argn;
 }
@@ -106,7 +112,11 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 	  if (!isdigit(*bp)) break;
 	  bp++;
 	}
-      if (*bp==((L && L->decimal_point) ? *(L->decimal_point) : '.'))
+      if (*bp==(
+#ifdef HAVE_LOCALE_H
+		(L && L->decimal_point) ? *(L->decimal_point) :
+#endif
+		'.'))
 	{
 	  bp++;
 	  while(*bp)
@@ -150,8 +160,12 @@ static bool Check_Numeric_Character(int c, const void * argp)
   return (isdigit(c)  || 
 	  c == '+'    || 
 	  c == '-'    || 
-	  c == ((L && L->decimal_point) ? *(L->decimal_point) : '.')
-	 ) ? TRUE : FALSE;
+	  c == (
+#ifdef HAVE_LOCALE_H
+		(L && L->decimal_point) ? *(L->decimal_point) :
+#endif
+		'.')
+	  ) ? TRUE : FALSE;
 }
 
 static FIELDTYPE typeNUMERIC = {

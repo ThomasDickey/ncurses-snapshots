@@ -39,8 +39,8 @@ int     width, height;
 
 int
 main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 WINDOW  *win;
 int key,old_option=(-1),new_option=0;
@@ -400,7 +400,7 @@ outputTest (WINDOW *win)
 }
 
 static void
-resizeTest(WINDOW *dummy __attribute__((unused)))
+resizeTest(WINDOW *dummy GCC_UNUSED)
 {
     WINDOW *win1;
 
@@ -444,7 +444,7 @@ resizeTest(WINDOW *dummy __attribute__((unused)))
 }
 
 static void
-padTest(WINDOW *dummy __attribute__((unused)))
+padTest(WINDOW *dummy GCC_UNUSED)
 {
 WINDOW *pad;
 

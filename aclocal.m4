@@ -102,6 +102,93 @@ AC_MSG_RESULT($nc_cv_extern_errno)
 test $nc_cv_extern_errno = yes && AC_DEFINE(HAVE_EXTERN_ERRNO)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Test for availability of useful gcc __attribute__ directives to quiet
+dnl compiler warnings.  Though useful, not all are supported -- and contrary
+dnl to documentation, unrecognized directives cause older compilers to barf.
+AC_DEFUN([NC_GCC_ATTRIBUTES],
+[cat > conftest.i <<EOF
+#ifndef GCC_NORETURN
+#define GCC_NORETURN /* nothing */
+#endif
+#ifndef GCC_UNUSED
+#define GCC_UNUSED /* nothing */
+#endif
+EOF
+if test -n "$GCC"
+then
+	AC_CHECKING([for gcc __attribute__ directives])
+	changequote(,)dnl
+cat > conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+#include "confdefs.h"
+#include "conftest.h"
+#include "conftest.i"
+extern void foo(void) GCC_NORETURN;
+int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED) { return 0; }
+EOF
+	changequote([,])dnl
+	for nc_attribute in unused noreturn
+	do
+		NC_UPPERCASE($nc_attribute,NC_ATTRIBUTE)
+		nc_directive="__attribute__(($nc_attribute))"
+		echo "checking for gcc $nc_directive" 1>&AC_FD_CC
+		cat >conftest.h <<EOF
+#define GCC_$NC_ATTRIBUTE $nc_directive
+EOF
+		if AC_TRY_EVAL(ac_compile); then
+			test -n "$verbose" && AC_MSG_RESULT(... $nc_attribute)
+			cat conftest.h >>confdefs.h
+		else
+			sed -e 's/__attr.*/\/*nothing*\//' conftest.h >>confdefs.h
+		fi
+	done
+else
+	fgrep define conftest.i >>confdefs.h
+fi
+rm -rf conftest*
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check if the compiler supports useful warning options.  There's a few that
+dnl we don't use, simply because they're too noisy:
+dnl
+dnl	-Wcast-qual (a little too noisy -- later)
+dnl	-Wconversion (useful in older versions of gcc, but not in gcc 2.7.x)
+dnl	-Wredundant-decls (system headers make this too noisy)
+dnl	-Wtraditional (combines too many unrelated messages, only a few useful)
+dnl	-Wwrite-strings (same as -Wcast-qual)
+dnl
+AC_DEFUN([NC_GCC_WARNINGS],
+[if test -n "$GCC"
+then
+	changequote(,)dnl
+	cat > conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+int main(int argc, char *argv[]) { return argv[argc-1] == 0; }
+EOF
+	changequote([,])dnl
+	AC_CHECKING([for gcc warning options])
+	nc_CFLAGS="$CFLAGS -W -Wall"
+	for nc_opt in \
+		Wbad-function-cast \
+		Wcast-align \
+		Winline \
+		Wmissing-declarations \
+		Wmissing-prototypes \
+		Wnested-externs \
+		Wpointer-arith \
+		Wshadow \
+		Wstrict-prototypes
+	do
+		CFLAGS="$nc_CFLAGS -$nc_opt"
+		if AC_TRY_EVAL(ac_compile); then
+			test -n "$verbose" && AC_MSG_RESULT(... -$nc_opt)
+			nc_CFLAGS="$CFLAGS"
+		fi
+	done
+	rm -f conftest*
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
 dnl in the source directory or using '--srcdir=DIR' option.  If we're building
 dnl with gcc, don't append the includedir if it happens to be /usr/include,

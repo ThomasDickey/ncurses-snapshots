@@ -37,7 +37,7 @@ char *_tracemouse(MEVENT const *ep)
 {
 	static char buf[80];
 
-	(void) sprintf(buf, "id %d  at (%d, %d, %d) state %4lx = {",
+	(void) sprintf(buf, "id %2d  at (%2d, %2d, %2d) state %4lx = {",
 		       ep->id, ep->x, ep->y, ep->z, ep->bstate);
 
 #define SHOW(m, s) if ((ep->bstate & m)==m) {strcat(buf,s); strcat(buf, ", ");}

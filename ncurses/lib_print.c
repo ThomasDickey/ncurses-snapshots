@@ -20,8 +20,8 @@
 ***************************************************************************/
 
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include "term.h"
 #include <errno.h>
 

@@ -1,6 +1,6 @@
 .TH TERMINFO 5 "" "" "File Formats"
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 terminfo \- terminal capability data base
 .SH SYNOPSIS

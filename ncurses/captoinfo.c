@@ -77,9 +77,8 @@
  *	is translated.
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <unctrl.h>
@@ -542,7 +541,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
 char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
-register char *const cap __attribute__((unused)), /* relevant termcap capability index */
+register char *const cap GCC_UNUSED, /* relevant termcap capability index */
 register char *str,		/* string value of the capability */
 int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
@@ -746,11 +745,6 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 }
 
 #ifdef MAIN
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <stdio.h>
-#include <stdlib.h>
 
 int curr_line;
 

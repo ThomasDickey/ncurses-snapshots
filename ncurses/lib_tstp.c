@@ -27,17 +27,18 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
 #include <signal.h>
-#include <stdlib.h>
 
 #if HAVE_SIGACTION
 #if !HAVE_TYPE_SIGACTION
 typedef struct sigaction sigaction_t;
 #endif
-#else
+#else	/* !HAVE_SIGACTION */
+#if HAVE_SIGVEC
 #include "SigAction.h"
+#endif
 #endif
 
 #ifdef SVR4_ACTION
@@ -88,7 +89,7 @@ typedef struct sigaction sigaction_t;
  */
 
 #ifdef SIGTSTP
-static void tstp(int dummy __attribute__((unused)))
+static void tstp(int dummy GCC_UNUSED)
 {
 	sigset_t mask, omask;
 	sigaction_t act, oact;
@@ -165,6 +166,7 @@ static void cleanup(int sig)
 	 */
 	if (sig == SIGINT
 	 || sig == SIGQUIT) {
+#if HAVE_SIGACTION || HAVE_SIGVEC
 		sigaction_t act;
 		sigemptyset(&act.sa_mask);
 		act.sa_flags = 0;
@@ -172,6 +174,11 @@ static void cleanup(int sig)
 		if (sigaction(sig, &act, (sigaction_t *)0) == 0) {
 			endwin();
 		}
+#else
+		if (signal(sig, SIG_IGN) != SIG_ERR) {
+			endwin();
+		}
+#endif
 	}
 	exit(EXIT_FAILURE);
 }
@@ -180,6 +187,7 @@ static void cleanup(int sig)
  * If the given signal is still in its default state, set it to the given
  * handler.
  */
+#if HAVE_SIGACTION || HAVE_SIGVEC
 static int CatchIfDefault(int sig, sigaction_t *act)
 {
 	sigaction_t old_act;
@@ -194,6 +202,21 @@ static int CatchIfDefault(int sig, sigaction_t *act)
 	}
 	return FALSE;
 }
+#else
+static int CatchIfDefault(int sig, void (*handler)())
+{
+	void	(*ohandler)();
+
+	ohandler = signal(sig, SIG_IGN);
+	if (ohandler == SIG_DFL) {
+		signal(sig, handler);
+		return TRUE;
+	} else {
+		signal(sig, ohandler);
+		return FALSE;
+	}
+}
+#endif
 
 /*
  * This is invoked once at the beginning (e.g., from 'initscr()'), to
@@ -243,10 +266,15 @@ static int ignore;
 #else
 	if (enable)
 	{
+#if HAVE_SIGACTION || HAVE_SIGVEC
 		static sigaction_t act;
 		act.sa_handler = cleanup;
 		CatchIfDefault(SIGINT,  &act);
 		CatchIfDefault(SIGTERM, &act);
+#else
+		CatchIfDefault(SIGINT,  cleanup);
+		CatchIfDefault(SIGTERM, cleanup);
+#endif
 	}
 #endif
 }

@@ -30,7 +30,7 @@
 |
 |   Return Values :  E_OK         - on success
 +--------------------------------------------------------------------------*/
-int set_form_userptr(FORM * form, void *usrptr)
+int set_form_userptr(FORM * form, const void *usrptr)
 {
   Normalize_Form(form)->usrptr = usrptr;
   RETURN(E_OK);
@@ -46,7 +46,7 @@ int set_form_userptr(FORM * form, void *usrptr)
 |   Return Values :  Value of pointer. If no such pointer has been set,
 |                    NULL is returned
 +--------------------------------------------------------------------------*/
-void *form_userptr(const FORM * form)
+const void *form_userptr(const FORM * form)
 {
   return Normalize_Form(form)->usrptr;
 }

@@ -9,7 +9,9 @@ srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 datadir		= @datadir@
-mandir		= $(prefix)/man
+mandir		= @mandir@
+
+ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -25,7 +27,7 @@ install install.std : terminfo.5
 	@cd $(srcdir); for i in *.[0-9]*; do \
 		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
 		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section; fi; \
-		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
+		sed -e 's,@DATADIR@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$i; \
 	done 
@@ -39,7 +41,7 @@ install.man_db : terminfo.5
 	@for i in terminfo $(srcdir)/man/*.[0-9]*; do \
 		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
 		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$${section}; fi; \
-		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
+		sed -e 's,@DATADIR@,$(datadir),' < $$i >/tmp/man.tmp; \
 		target=`grep "$$i" man_db.renames | awk '{print $$2}'`; \
 		echo "installing man page $$target from $$i"; \
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$target; \
@@ -51,7 +53,7 @@ CAPLIST=$(srcdir)/../include/Caps
 terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 	@if [ ! -d $(mandir)/man5 ]; then $(srcdir)/../mkinstalldirs $(mandir)/man5; fi
-	@sed -e 's,@TERMINFO@,$(datadir),' < terminfo.5 >/tmp/man.tmp
+	@sed -e 's,@DATADIR@,$(datadir),' < terminfo.5 >/tmp/man.tmp
 	@echo "installing terminfo.5 man page"
 	@$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man5/terminfo.5
 	@rm -f /tmp/man.tmp

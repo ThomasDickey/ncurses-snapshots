@@ -41,7 +41,7 @@ Known Problems:
         (With System V curses it exits when the time limit is up even if
         interrupted by a signal).
  
-  These things are basically due to the difference between Systen V and
+  These things are basically due to the difference between System V and
   BSD-style signals.
 
 * Mark McKenzie also says:
@@ -57,9 +57,6 @@ Known Problems:
   We're working on this.
 
 Portability (or lack thereof):
-
-* There have been reports of mouse clicks getting lost in the lib_mouse.c code
-  under SunOS and IRIX (no evidence this on Linux, however).
 
 * Users of older System V UNIXes (but not Solaris, and probably not SVr4)
   may trip over a known problem with the signal-handling code which causes

@@ -26,7 +26,7 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <ctype.h>
 #include "unctrl.h"
 
@@ -164,10 +164,7 @@ register int x, y;
 	}
 
 	win->_line[y].text[x++] = ch;
-	TR(TRACE_VIRTPUT, ("(%d, %d) = %s | %s", 
-			   y, x,
-			   _tracechar((unsigned char)(ch & A_CHARTEXT)),
-			   _traceattr((ch & (chtype)A_ATTRIBUTES))));
+	TR(TRACE_VIRTPUT, ("(%d, %d) = %s", y, x, _tracechtype(ch)));
 	if (x > win->_maxx) {
 		TR(TRACE_MOVE, ("NEED_WRAP set at %d,%d",y,x));
 		win->_flags |= _NEED_WRAP;
@@ -256,9 +253,7 @@ int _nc_waddch_nosync(WINDOW *win, const chtype c)
 
 int waddch(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("waddch(%p, %s | %s) called", win,
-			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
-			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
+	TR(TRACE_VIRTPUT, ("waddch(%p, %s) called", win, _tracechtype(ch)));
 
 	if (waddch_nosync(win, ch) == ERR)
 		return(ERR);
@@ -272,9 +267,7 @@ int waddch(WINDOW *win, const chtype ch)
 
 int wechochar(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("wechochar(%p,%s (%s)) called", win,
-			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
-			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
+	TR(TRACE_VIRTPUT, ("wechochar(%p, %s) called", win, _tracechtype(ch)));
 
 	if (waddch_literal(win, ch) == ERR)
 		return(ERR);

@@ -135,7 +135,7 @@
  * have parm_right_cursor, tab motions don't win you a lot anyhow.
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include "term.h"
 
 #define NLMAPPING	SP->_nl			/* nl() on? */
@@ -149,7 +149,6 @@
 
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
 
 #ifdef TRACE
 bool no_optimize;	/* suppress optimization */
@@ -1073,11 +1072,6 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
  *
  ****************************************************************************/
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <string.h>
-#include <stdlib.h>
 #include "tic.h"
 #include "dump_entry.h"
 
