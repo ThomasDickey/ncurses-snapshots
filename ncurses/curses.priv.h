@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.245 2003/06/07 22:34:18 tom Exp $
+ * $Id: curses.priv.h,v 1.246 2003/06/14 19:22:41 tom Exp $
  *
  *	curses.priv.h
  *
@@ -572,6 +572,12 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define O_BINARY 0
 #endif
 
+#ifdef TRACE
+#define TRACE_OUTCHARS(n) _nc_outchars += (n);
+#else
+#define TRACE_OUTCHARS(n) /* nothing */
+#endif
+
 #define UChar(c)	((unsigned char)(c))
 #define ChCharOf(c)	((c) & (chtype)A_CHARTEXT)
 #define ChAttrOf(c)     ((c) & (chtype)A_ATTRIBUTES)
@@ -603,6 +609,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define PUTC(ch,b)	do { if(!isnac(ch)) { 					    \
 			if (Charable(ch)) {					    \
 			    fputc(CharOf(ch), b);				    \
+			    TRACE_OUTCHARS(1);					    \
 			} else {						    \
 			    memset (&PUT_st, '\0', sizeof (PUT_st));		    \
 			    PUTC_i = 0;						    \
@@ -618,6 +625,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 				fwrite(PUTC_buf, (unsigned) PUTC_n, 1, b);	    \
 				++PUTC_i;					    \
 			    } while (PUTC_ch != L'\0');				    \
+			    TRACE_OUTCHARS(PUTC_i);				    \
 			} } } while (0)
 
 #define BLANK		{ WA_NORMAL, ' ' }

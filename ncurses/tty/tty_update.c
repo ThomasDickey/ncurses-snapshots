@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.195 2003/04/19 21:49:00 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.196 2003/06/14 20:00:14 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -180,6 +180,7 @@ GoTo(int const row, int const col)
 static inline void
 PutAttrChar(CARG_CH_T ch)
 {
+    int chlen = 1;
     NCURSES_CH_T my_ch;
     PUTC_DATA;
     NCURSES_CH_T tilde;
@@ -188,6 +189,19 @@ PutAttrChar(CARG_CH_T ch)
     TR(TRACE_CHARPUT, ("PutAttrChar(%s) at (%d, %d)",
 		       _tracech_t(ch),
 		       SP->_cursrow, SP->_curscol));
+#if USE_WIDEC_SUPPORT
+    /*
+     * Determine the number of character cells which the 'ch' value will use
+     * on the screen.  It should be at least one.
+     */
+    if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0) {
+	static NCURSES_CH_T blank = NewChar(BLANK_TEXT);
+
+	ch = CHREF(blank);
+	chlen = 1;
+	TR(TRACE_CHARPUT, ("forced to blank"));
+    }
+#endif
 
     if ((attr & A_ALTCHARSET)
 	&& SP->_acs_map != 0
@@ -230,11 +244,9 @@ PutAttrChar(CARG_CH_T ch)
 #endif
     {
 	PUTC(CHDEREF(ch), SP->_ofp);	/* macro's fastest... */
-#ifdef TRACE
-	_nc_outchars++;
-#endif /* TRACE */
+	TRACE_OUTCHARS(1);
     }
-    SP->_curscol++;
+    SP->_curscol += chlen;
     if (char_padding) {
 	TPUTS_TRACE("char_padding");
 	putp(char_padding);
