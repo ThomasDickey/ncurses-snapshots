@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.610 2000/12/17 02:26:00 tom Exp $
+-- $Id: NEWS,v 1.611 2000/12/31 02:11:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001230
+	+ correct marker positions in lrtest.c after receiving a sigwinch.
+	+ fix ifdef's in ncurses.c to build against pre-5.2 for testing.
+	+ fixes to tclock for resizing behavior, redundant computation (report
+	  and patch by A M Kuchling <akuchlin@mems-exchange.org>).
 
 20001216
 	+ improved scoansi terminfo entry -TD
@@ -21,7 +27,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ correct prototypes for some functions in curs_termcap.3x, matching
 	  termcap.h, which matches X/Open.
 	> patch by Juergen Pfeifer:
-	+ a revised version of the Ada enhancements sent in by "H. 
+	+ a revised version of the Ada enhancements sent in by "H.
 	  Nanosecond", aka Eugene V.  Melaragno <aldomel@ix.netcom.com>.  This
 	  patch includes
 	  - small fixes to the existing ncurses binding
@@ -81,7 +87,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  use $CPPFLAGS in both the compile and preprocessor checks).
 	+ add a check in relative_move() to guard against buffer overflow in
 	  the overwrite logic.
-	  
+
 20001028
 	+ add message to configure script showing g++ version.
 	+ resync config.guess, config.sub
@@ -170,7 +176,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  (see assume_default_colors()).
 	+ rename configure option --enable-hashmap --disable-hashmap, and
 	  reorder the configure options, splitting the experimental and
-	  development 
+	  development
 	+ add configure option --disable-root-environ, which tells ncurses to
 	  disregard $TERMINFO and similar environment variables if the current
 	  user is root, or running setuid/setgid (based on discussion with
@@ -206,7 +212,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 20000923
 	+ modify rs2 capability in xterm-r6 and similar where cursor
-	  save/restore bracketed the sequence for resetting video attributes. 
+	  save/restore bracketed the sequence for resetting video attributes.
 	  The cursor restore would undo that (from a NetBSD bug report by John
 	  Hawkinson <jhawk@MIT.EDU>).
 	+ using parameter check added to tic, corrected 27 typos in
@@ -249,7 +255,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  which had the effect of ignoring p9 in set_attributes (sgr), breaking
 	  alternate character set (reported by Piotr Majka <charvel@link.pl>).
 	+ correct ifdef'ing for GCC_PRINTF, GCC_SCANF which would not compile
-	  with Sun WorkShop compilers since these tokens were empty (cf: 
+	  with Sun WorkShop compilers since these tokens were empty (cf:
 	  20000902, reported by Albert Chin-A-Young).
 
 20000909
@@ -549,7 +555,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20000513
 	+ the tack program knows how to use smcup and rmcup but the "show caps
 	  that can be tested" feature did not reflect this knowledge.  Correct
-	  the display in the menu tack/test/edit/c (patch by Daniel Weaver). 
+	  the display in the menu tack/test/edit/c (patch by Daniel Weaver).
 	+ xterm-16color does allow bold+colors, removed ncv#32 from that
 	  terminfo entry.
 
