@@ -42,14 +42,14 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.28 1998/02/11 12:14:02 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.30 1998/03/28 20:04:11 tom Exp $")
 
 const char *_nc_progname = "tic";
 
 static	FILE	*log_fp;
 static	bool	showsummary = FALSE;
 
-static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-CILNRTrsw1] source-file\n";
+static	const	char usage_string[] = "[-h] [-v[n]] [-e names] [-CILNRTcfrsw1] source-file\n";
 
 static void usage(void)
 {
@@ -63,6 +63,7 @@ static void usage(void)
 	"  -R         restrict translation to given terminfo/termcap version",
 	"  -T         remove size-restrictions on compiled description",
 	"  -c         check only, validate input without compiling or translating",
+	"  -f         format complex strings for readability",
 	"  -e<names>  translate/compile only entries named by comma-separated list",
 	"  -o<dir>    set output directory for compiled entry writes",
 	"  -r         force resolution of all use entries in source translation",
@@ -305,6 +306,7 @@ int	outform = F_TERMINFO;	/* output format */
 int	sortmode = S_TERMINFO;	/* sort_mode */
 
 int	width = 60;
+bool	formatted = FALSE;	/* reformat complex strings? */
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
 bool	forceresolve = FALSE;	/* force resolution */
@@ -330,7 +332,7 @@ bool	check_only = FALSE;
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:o:rsvw")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fo:rsvw")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':
@@ -380,6 +382,9 @@ bool	check_only = FALSE;
 			break;
 		case 'e':
 			namelst = make_namelist(optarg);
+			break;
+		case 'f':
+			formatted = TRUE;
 			break;
 		case 'o':
 			outdir = optarg;
@@ -446,11 +451,11 @@ bool	check_only = FALSE;
 			  smart_defaults
 				? outform
 				: F_LITERAL,
-			  sortmode, width, debug_level);
+			  sortmode, width, debug_level, formatted);
 	else if (capdump)
 		dump_init(tversion,
 			  outform,
-			  sortmode, width, debug_level);
+			  sortmode, width, debug_level, FALSE);
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);
