@@ -175,9 +175,11 @@ Scope of This Document
    The ncurses package was originated by Pavel Curtis. The original
    maintainer of the package is Zeyd Ben-Halim <zmbenhal@netcom.com>.
    Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
-   in versions after 1.8.1 and wrote most of this introduction. The
-   current primary maintainers are Thomas Dickey <dickey@clark.net> and
-   Jürgen Pfeifer. <Juergen.Pfeifer@T-Online.de>
+   in versions after 1.8.1 and wrote most of this introduction. Ongoing
+   work is being done by Thomas Dickey and Jürgen Pfeifer. Florian La
+   Roche acts as the maintainer for the Free Software Foundation, which
+   holds the copyright on ncurses. Contact the current maintainers at
+   bug-ncurses@gnu.org.
    
    This document also describes the panels extension library, similarly
    modeled on the SVr4 panels facility. This library allows you to

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.41 1998/02/11 12:13:41 tom Exp $
+# $Id: Makefile.in,v 1.42 1998/02/19 16:54:54 florian Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -67,6 +67,7 @@ CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
+REL_VERSION     = @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
 
 LINK		= $(CXX)

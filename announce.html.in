@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!--
-  $Id: announce.html.in,v 1.22 1998/02/15 01:28:38 tom Exp $
+  $Id: announce.html.in,v 1.23 1998/02/15 22:13:39 florian Exp $
 -->
 <HTML>
 <HEAD>
@@ -193,15 +193,15 @@ Ongoing work is being done by
 <A HREF="mailto:dickey@clark.net">Thomas Dickey</A>
 and
 <A HREF="mailto:Juergen.Pfeifer@T-Online.de">J&uuml;rgen Pfeifer</A>.
-<A HREF="mailto:florian@knorke.saar.de">Florian La Roche</A>
+<A HREF="mailto:florian@gnu.org">Florian La Roche</A>
 acts as the maintainer for the Free Software Foundation, which holds the
 copyright on ncurses.
 Contact the current maintainers at
 <A HREF="mailto:bug-ncurses@gnu.org">bug-ncurses@gnu.org</A>.
 <P>
 
-There is an ncurses mailing list.  It is a majordomo list; to join, write
-to <CODE>ncurses-request@gnu.org</CODE> with a message containing the line:
+To join the ncurses mailing list, please write email to
+<CODE>bug-ncurses-request@gnu.org</CODE> containing the line:
 <PRE>
              subscribe &lt;name&gt;@&lt;host.domain&gt;
 </PRE>

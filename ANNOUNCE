@@ -193,8 +193,9 @@ Who's Who and What's What
    Free Software Foundation, which holds the copyright on ncurses.
    Contact the current maintainers at [11]bug-ncurses@gnu.org.
    
-   There is an ncurses mailing list. It is a majordomo list; to join,
-   write to ncurses-request@gnu.org with a message containing the line:
+   To join the ncurses mailing list, please write email to
+   bug-ncurses-request@gnu.org containing the line:
+
              subscribe <name>@<host.domain>
 
    This list is open to anyone interested in helping with the development
@@ -232,7 +233,7 @@ References
    7. http://www.ccil.org/~esr/home.html
    8. mailto:dickey@clark.net
    9. mailto:Juergen.Pfeifer@T-Online.de
-  10. mailto:florian@knorke.saar.de
+  10. mailto:florian@gnu.org
   11. mailto:bug-ncurses@gnu.org
   12. ftp://ftp.clark.net/pub/dickey/ncurses
   13. http://www.ccil.org/~esr/ncurses.html

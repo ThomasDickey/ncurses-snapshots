@@ -34,7 +34,9 @@
 #include "cursesp.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesp.cc,v 1.10 1998/02/11 12:13:40 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.11 1998/02/17 09:04:12 juergen Exp $")
+
+NCursesPanel* NCursesPanel::dummy = (NCursesPanel*)0;
 
 void NCursesPanel::init() {
   p = ::new_panel(w);

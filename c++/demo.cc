@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>
  *
- * $Id: demo.cc,v 1.12 1997/09/21 15:51:37 juergen Exp $
+ * $Id: demo.cc,v 1.13 1998/02/19 16:54:54 florian Exp $
  */
 
 #include "cursesapp.h"
@@ -246,7 +246,7 @@ public:
 
 char* TestForm::weekdays[] = {
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-    "Friday", "Saturday"};
+    "Friday", "Saturday", (char *)0 };
 //
 // -------------------------------------------------------------------------
 //

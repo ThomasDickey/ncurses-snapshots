@@ -38,7 +38,8 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.13 $
+--  $Revision: 1.14 $
+--  Binding Version 00.93
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
 with System;
