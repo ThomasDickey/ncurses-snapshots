@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.    *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.45 2001/12/16 01:08:13 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.46 2002/02/02 19:40:54 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -125,7 +125,7 @@ keypad(WINDOW *win, bool flag)
 
     if (win) {
 	win->_use_keypad = flag;
-	returnCode(OK);
+	returnCode(_nc_keypad(flag));
     } else
 	returnCode(ERR);
 }
