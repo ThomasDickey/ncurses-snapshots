@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.78 1997/09/07 00:15:32 tom Exp $
+ * $Id: curses.priv.h,v 1.80 1997/09/13 23:17:38 tom Exp $
  *
  *	curses.priv.h
  *
@@ -115,11 +115,6 @@ extern int errno;
  * this, re-enable USE_HARD_TABS and run worm for a while.  Other systems
  * probably don't want to define this either due to uncertainties about tab
  * delays and expansion in raw mode.
- */
-
-/*
- * The internal types (e.g., struct screen) must precede <curses.h>, otherwise
- * we cannot construct lint-libraries (structures must be fully-defined).
  */
 
 struct tries {
@@ -536,6 +531,7 @@ extern void _nc_mouse_wrap(SCREEN *);
 extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
 extern int _nc_mouse_fd(void);
+extern int _nc_has_mouse(void);
 
 /* safe_sprintf.c */
 extern char * _nc_printf_string(const char *fmt, va_list ap);

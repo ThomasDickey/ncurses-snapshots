@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.25 1997/08/22 18:22:28 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.26 1997/09/09 00:14:40 juergen Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -670,4 +670,15 @@ int mouseinterval(int maxclick)
     return(oldval);
 }
 
+/* This may be used by other routines to ask for the existence of mouse
+   support */
+int _nc_has_mouse(void) {
+  return (mousetype==M_NONE ? 0:1);
+}
+
 /* lib_mouse.c ends here */
+
+
+
+
+

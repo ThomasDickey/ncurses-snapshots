@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.22 1997/09/06 21:08:13 tom Exp $
+ * $Id: view.c,v 1.23 1997/09/09 00:14:00 Alexander.V.Lukyanov Exp $
  */
 
 #include <test.priv.h>
@@ -222,11 +222,6 @@ bool        use_resize = TRUE;
 		n = 10 * n + (c - '0');
 		explicit = TRUE;
 	    }
-#ifdef KEY_RESIZE
-	    else if (c == KEY_RESIZE) {
-		/*EMPTY*/;	/* the refresh in getch() should fixup */
-	    }
-#endif
 	    else
 		break;
 	}

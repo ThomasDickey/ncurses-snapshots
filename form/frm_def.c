@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.4 1997/05/01 16:47:54 juergen Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.5 1997/08/26 12:54:38 juergen Exp $")
 
 /* this can't be readonly */
 static FORM default_form = {
@@ -109,23 +109,24 @@ static FIELD *Insert_Field_By_Position(FIELD *newfield, FIELD *head)
 +--------------------------------------------------------------------------*/
 static void Disconnect_Fields( FORM * form )
 {
-  FIELD **fields;
-  
-  assert(form && form->field);
-
-  for(fields=form->field;*fields;fields++)
+  if (form->field)
     {
-      if (form == (*fields)->form) 
-	(*fields)->form = (FORM *)0;
-    }
-  
-  form->rows = form->cols = 0;
-  form->maxfield = form->maxpage = -1;
-  form->field = (FIELD **)0;
-  if (form->page) 
-    free(form->page);
-  form->page = (_PAGE *)0;
-}	
+      FIELD **fields;
+
+      for(fields=form->field;*fields;fields++)
+	{
+	  if (form == (*fields)->form) 
+	    (*fields)->form = (FORM *)0;
+	}
+      
+      form->rows = form->cols = 0;
+      form->maxfield = form->maxpage = -1;
+      form->field = (FIELD **)0;
+      if (form->page) 
+	free(form->page);
+      form->page = (_PAGE *)0;
+    }	
+}
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  

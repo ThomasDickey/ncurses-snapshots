@@ -6,33 +6,22 @@
   Modified by Juergen Pfeifer, April 1997
 */
 
+#include "cursesp.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesp.cc,v 1.8 1997/07/13 20:33:05 juergen Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.9 1997/09/07 22:22:56 juergen Exp $")
 
-#ifdef __GNUG__
-#  pragma  implementation
-#endif
-
-#include "cursesp.h"
-
-NCursesPanel::NCursesPanel(int lines,
-			   int cols,
-			   int begin_y,
-			   int begin_x)
-  : NCursesWindow(lines, cols, begin_y, begin_x) {
-    
-    p = ::new_panel(w);
-    if (!p)
-      OnError(ERR);
-    
-    UserHook* hook = new UserHook;
-    hook->m_user  = NULL;
-    hook->m_back  = this;
-    hook->m_owner = p;
-    ::set_panel_userptr(p, (void *)hook);
-}
-
+void NCursesPanel::init() {
+  p = ::new_panel(w);
+  if (!p)
+    OnError(ERR);
+  
+  UserHook* hook = new UserHook;
+  hook->m_user  = NULL;
+  hook->m_back  = this;
+  hook->m_owner = p;
+  ::set_panel_userptr(p, (void *)hook);
+}  
 
 NCursesPanel::~NCursesPanel() {
   UserHook* hook = (UserHook*)::panel_userptr(p);
@@ -56,10 +45,16 @@ NCursesPanel::redraw() {
   ::doupdate();
 }
 
-void
+int
 NCursesPanel::refresh() {
   ::update_panels();
-  ::doupdate();
+  return doupdate();
+}
+
+int
+NCursesPanel::noutrefresh() {
+  ::update_panels();
+  return OK;
 }
 
 void
@@ -93,6 +88,10 @@ NCursesPanel::label(const char *tLabel, const char *bLabel) {
 
 void
 NCursesPanel::centertext(int row,const char *label) {
-  if (label) 
-    OnError(addstr(row,(maxx() - strlen(label)) / 2, label));
+  if (label) {
+    int x = (maxx() - strlen(label)) / 2;
+    if (x<0)
+      x=0;
+    OnError(addstr(row, x, label, width()));
+  }
 }

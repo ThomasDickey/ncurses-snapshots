@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.8 1997/02/02 01:14:43 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.9 1997/09/04 08:02:01 juergen Exp $")
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */
@@ -193,7 +193,11 @@ int i;
 	nwin->_begx        = win->_begx;
 	nwin->_yoffset     = win->_yoffset;
 
-	nwin->_flags       = win->_flags;
+	nwin->_flags       = win->_flags & ~_SUBWIN;
+	/* Due to the use of newwin(), the clone is not a subwindow.
+	 * The text is really copied into the clone.
+	 */
+
 	nwin->_attrs       = win->_attrs;
 	nwin->_bkgd        = win->_bkgd;
 
@@ -204,9 +208,11 @@ int i;
 	nwin->_delay       = win->_delay;
 	nwin->_immed       = win->_immed;
 	nwin->_sync        = win->_sync;
-	nwin->_parx        = win->_parx;
-	nwin->_pary        = win->_pary;
-	nwin->_parent      = win->_parent;
+
+	nwin->_parx        = 0;
+	nwin->_pary        = 0;
+	nwin->_parent      = (WINDOW*)0; 
+	/* See above: the clone isn't a subwindow! */
 
 	nwin->_regtop      = win->_regtop;
 	nwin->_regbottom   = win->_regbottom;

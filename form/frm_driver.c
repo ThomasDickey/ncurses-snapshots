@@ -65,7 +65,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.24 1997/08/20 16:22:38 hjl Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.26 1997/09/14 00:05:21 Tony.Hoffmann Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -85,6 +85,8 @@ Perhaps at some time we will make this configurable at runtime.
 #define FRIENDLY_PREV_NEXT_WORD (1)
 /* Fix the wrong behaviour for forms with all fields inactive */
 #define FIX_FORM_INACTIVE_BUG (1)
+/* Allow dynamic field growth also when navigating past the end */
+#define GROW_IF_NAVIGATE (1)
 
 /*----------------------------------------------------------------------------
   Forward references to some internally used static functions
@@ -1036,9 +1038,9 @@ static int Synchronize_Options(FIELD *field, Field_Options newopts)
 	      if (changed_opts & O_VISIBLE)
 		{
 		  if (newopts & O_VISIBLE)
-		    res = Erase_Field(field);
-		  else
 		    res = Display_Field(field);
+		  else
+		    res = Erase_Field(field);
 		}
 	      else
 		{
@@ -1198,7 +1200,7 @@ static int Set_Current_Field(FORM  *form, FIELD *newfield)
 |   Function      :  static int IFN_Next_Character(FORM * form)
 |   
 |   Description   :  Move to the next character in the field. In a multiline
-|                    field this wraps and the end of the line.
+|                    field this wraps at the end of the line.
 |
 |   Return Values :  E_OK                - success
 |                    E_REQUEST_DENIED    - at the rightmost position
@@ -1211,7 +1213,17 @@ static int IFN_Next_Character(FORM * form)
     {
       if ((++(form->currow))==field->drows)
 	{
+#if GROW_IF_NAVIGATE
+	  if (!Single_Line_Field(field) && Field_Grown(field,1)) {
+	    form->curcol = 0;
+	    return(E_OK);
+	  }
+#endif
 	  form->currow--;
+#if GROW_IF_NAVIGATE
+	  if (Single_Line_Field(field) && Field_Grown(field,1))
+	    return(E_OK);
+#endif
 	  form->curcol--;
 	  return(E_REQUEST_DENIED);
 	}
@@ -1261,6 +1273,10 @@ static int IFN_Next_Line(FORM * form)
 
   if ((++(form->currow))==field->drows)
     {
+#if GROW_IF_NAVIGATE
+      if (!Single_Line_Field(field) && Field_Grown(field,1))
+	return(E_OK);
+#endif
       form->currow--;
       return(E_REQUEST_DENIED);
     }
@@ -1500,6 +1516,11 @@ static int IFN_Right_Character(FORM * form)
 {
   if ( (++(form->curcol)) == form->current->dcols )
     {
+#if GROW_IF_NAVIGATE
+      FIELD *field = form->current;
+      if (Single_Line_Field(field) && Field_Grown(field,1))
+	return(E_OK);
+#endif
       --(form->curcol);
       return(E_REQUEST_DENIED);
     }
@@ -1542,6 +1563,10 @@ static int IFN_Down_Character(FORM * form)
 
   if ( (++(form->currow)) == field->drows )
     {
+#if GROW_IF_NAVIGATE
+      if (!Single_Line_Field(field) && Field_Grown(field,1))
+	return(E_OK);
+#endif
       --(form->currow);
       return(E_REQUEST_DENIED);
     }

@@ -28,12 +28,12 @@
 ***************************************************************************/
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_adabind.c,v 1.4 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_adabind.c,v 1.5 1997/09/05 23:01:32 juergen Exp $")
 
 /* Prototypes for the functions in this module */
-void _nc_ada_normalize_menu_opts (int *opt);
-void _nc_ada_normalize_item_opts (int *opt);
-
+void  _nc_ada_normalize_menu_opts (int *opt);
+void  _nc_ada_normalize_item_opts (int *opt);
+ITEM* _nc_get_item(const MENU*, int);
 
 void _nc_ada_normalize_menu_opts (int *opt)
 {
@@ -43,4 +43,13 @@ void _nc_ada_normalize_menu_opts (int *opt)
 void _nc_ada_normalize_item_opts (int *opt)
 {
   *opt = ALL_ITEM_OPTS & (*opt);
+}
+
+ITEM* _nc_get_item(const MENU* menu, int idx) {
+  if (menu && menu->items && idx>=0 && (idx<menu->nitems))
+    {
+      return menu->items[idx];
+    }
+  else
+    return (ITEM*)0;
 }

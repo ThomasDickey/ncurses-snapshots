@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.6 1997/05/01 16:47:54 juergen Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.7 1997/08/27 22:04:45 juergen Exp $")
 
 /* this can't be readonly */
 static FIELD default_field = {
@@ -90,6 +90,7 @@ static TypeArgument* Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 	    *err += 1;
       } else 
 	{
+	  assert(typ->makearg);
 	  if ( !(res=(TypeArgument *)typ->makearg(ap)) ) 
 	    *err += 1;
 	}
@@ -132,8 +133,13 @@ static TypeArgument *Copy_Argument(const FIELDTYPE *typ,
       } 
       else 
 	{
-	  if (!(res = (TypeArgument *)(typ->copyarg((const void *)argp)))) 
-	    *err += 1;
+	  if (typ->copyarg)
+	    {
+	      if (!(res = (TypeArgument *)(typ->copyarg((const void *)argp)))) 
+		*err += 1;
+	    }
+	  else
+	    res = (TypeArgument *)argp;
 	}
     }
   return res;
@@ -164,7 +170,8 @@ static void Free_Argument(const FIELDTYPE * typ, TypeArgument * argp)
     } 
   else 
     {
-      typ->freearg((void *)argp);
+      if (typ->freearg)
+	typ->freearg((void *)argp);
     }
 }
 

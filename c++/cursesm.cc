@@ -7,8 +7,7 @@
 | Permission to use, copy, modify, and distribute this software and its       |
 | documentation for any purpose and without fee is hereby granted, provided   |
 | that the above copyright notice appear in all copies and that both that     |
-| copyright notice and this permission notice appear in supporting            |
-| documentation, and that the name of the above listed copyright holder(s)    |
+| copyright notice and this permission notice appear in supporting            || documentation, and that the name of the above listed copyright holder(s)    |
 | not be used in advertising or publicity pertaining to distribution of the   |
 | software without specific, written prior permission.                        |
 |                                                                             |
@@ -21,20 +20,15 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
+#include "cursesm.h"
+#include "cursesapp.h"
 #include "internal.h"
 
-#ifdef __GNUG__
-#  pragma implementation
-#endif
-
-MODULE_ID("$Id: cursesm.cc,v 1.6 1997/07/13 20:33:05 juergen Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.7 1997/09/07 22:22:56 juergen Exp $")
   
-#include "cursesm.h"
-
-const int CMD_QUIT   = MAX_COMMAND + 1;
-const int CMD_ACTION = MAX_COMMAND + 2;
-
 NCursesMenuItem::~NCursesMenuItem() {
+  if (item)
+    OnError(::free_item(item));
 }
 
 bool 
@@ -52,8 +46,6 @@ NCursesMenuCallbackItem::action() {
   else
     return FALSE;
 }
-
-unsigned long NCursesMenu::total_count = 0;
 
 /* Internal hook functions. They will route the hook
  * calls to virtual methods of the NCursesMenu class,
@@ -73,13 +65,13 @@ NCursesMenu::mnu_term(MENU *m) {
 void
 NCursesMenu::itm_init(MENU *m) {
   NCursesMenu* M = getHook(m);
-  M->On_Item_Init (M->current_item ());
+  M->On_Item_Init (*(M->current_item ()));
 }
 
 void
 NCursesMenu::itm_term(MENU *m) {
   NCursesMenu* M = getHook(m);
-  M->On_Item_Termination (M->current_item ());
+  M->On_Item_Termination (*(M->current_item ()));
 }
 
 /* Construct an ITEM* array from an array of NCursesMenuItem
@@ -108,15 +100,15 @@ NCursesMenu::mapItems(NCursesMenuItem* nitems[]) {
 
 void
 NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
-		      bool with_frame) {
+		      bool with_frame,
+		      bool autoDelete_Items) {
   int mrows, mcols;
   
-  if (total_count++==0) {
-    raw();
-    keypad(TRUE);
-  }
-  
+  keypad(TRUE);
+  meta(TRUE);
+
   b_framed = with_frame;
+  b_autoDelete = autoDelete_Items;
 
   menu = (MENU*)0;
   menu = ::new_menu(mapItems(nitems));
@@ -153,21 +145,11 @@ NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
 
 void
 NCursesMenu::setDefaultAttributes() {
-  if (NumberOfColors() > 1) {
-    setcolor(1);
-    setpalette(COLOR_YELLOW,COLOR_BLUE);
-    setcolor(2);
-    setpalette(COLOR_CYAN,COLOR_BLUE);
-    setcolor(3);
-    setpalette(COLOR_WHITE,COLOR_CYAN);
-    ::set_menu_fore(menu, COLOR_PAIR(1));
-    ::set_menu_back(menu, COLOR_PAIR(2));
-    ::set_menu_grey(menu, COLOR_PAIR(3));
-  }
-  else {
-    ::set_menu_fore(menu, A_BOLD);
-    ::set_menu_back(menu, A_NORMAL);
-    ::set_menu_grey(menu, A_DIM);
+  NCursesApplication* S = NCursesApplication::getApplication();
+  if (S) {
+    ::set_menu_fore(menu, S->foregrounds());
+    ::set_menu_back(menu, S->backgrounds());
+    ::set_menu_grey(menu, S->inactives());
   }
 }
 
@@ -180,11 +162,22 @@ NCursesMenu::~NCursesMenu() {
   }
   if (menu) {
     ITEM** itms = ::menu_items(menu);
+    int cnt = count();
+
+    OnError(::set_menu_items(menu,(ITEM**)0));
+
+    if (b_autoDelete) {
+      if (cnt>0) {
+	for (int i=0; i <= cnt; i++)
+	  delete my_items[i];	 
+      }
+      delete[] my_items;
+    }
+
     ::free_menu(menu);
     // It's essential to do this after free_menu()
     delete[] itms;  
   }
-  --total_count;
 }
 
 void
@@ -197,6 +190,20 @@ NCursesMenu::setSubWindow(NCursesWindow& nsub) {
     sub = &nsub;
     ::set_menu_sub(menu,sub->w);
   }
+}
+
+bool
+NCursesMenu::set_pattern (const char *pat) {
+  int res = ::set_menu_pattern (menu, pat);
+  switch(res) {
+  case E_OK:
+    break;
+  case E_NO_MATCH:
+    return FALSE;
+  default:
+    OnError (res);
+  }
+  return TRUE;
 }
 
 // call the menu driver and do basic error checking.
@@ -216,43 +223,39 @@ NCursesMenu::driver (int c) {
   return (res);
 }
 
-bool
-NCursesMenu::set_pattern (const char *pat) {
-  int res = ::set_menu_pattern (menu, pat);
-  switch(res) {
-  case E_OK:
-    break;
-  case E_NO_MATCH:
-    return FALSE;
-  default:
-    OnError (res);
-  }
-  return TRUE;
-}
-
+static const int CMD_QUIT   = MAX_COMMAND + 1;
+static const int CMD_ACTION = MAX_COMMAND + 2;
+//
+// -------------------------------------------------------------------------
 // Provide a default key virtualization. Translate the keyboard
 // code c into a menu request code.
 // The default implementation provides a hopefully straightforward
 // mapping for the most common keystrokes and menu requests.
+// -------------------------------------------------------------------------
 int 
 NCursesMenu::virtualize(int c) {
   switch(c) {
-  case CTRL('Q')     : return(CMD_QUIT);
-  case KEY_DOWN      :
-  case CTRL('N')     : return(REQ_NEXT_ITEM);
-  case KEY_UP        :
-  case CTRL('P')     : return(REQ_PREV_ITEM);
-  case CTRL('U')     : return(REQ_SCR_ULINE);
-  case CTRL('D')     : return(REQ_SCR_DLINE);
-  case CTRL('F')     : return(REQ_SCR_DPAGE);
-  case CTRL('B')     : return(REQ_SCR_UPAGE);
-  case CTRL('X')     : return(REQ_CLEAR_PATTERN);
+  case CTRL('X')     : return(CMD_QUIT);              // eXit
+
+  case KEY_DOWN      : return(REQ_DOWN_ITEM);
+  case CTRL('N')     : return(REQ_NEXT_ITEM);         // Next
+  case KEY_UP        : return(REQ_UP_ITEM);
+  case CTRL('P')     : return(REQ_PREV_ITEM);         // Previous
+
+  case CTRL('U')     : return(REQ_SCR_ULINE);         // Up
+  case CTRL('D')     : return(REQ_SCR_DLINE);         // Down
+  case CTRL('F')     : return(REQ_SCR_DPAGE);         // Forward
+  case CTRL('B')     : return(REQ_SCR_UPAGE);         // Backward
+
+  case CTRL('Y')     : return(REQ_CLEAR_PATTERN);
   case CTRL('H')     : return(REQ_BACK_PATTERN);
   case CTRL('A')     : return(REQ_NEXT_MATCH);
-  case CTRL('Z')     : return(REQ_PREV_MATCH);
+  case CTRL('E')     : return(REQ_PREV_MATCH);
   case CTRL('T')     : return(REQ_TOGGLE_ITEM);
+
   case CTRL('J')     :
   case CTRL('M')     : return(CMD_ACTION);
+
   case KEY_HOME      : return(REQ_FIRST_ITEM);
   case KEY_LEFT      : return(REQ_LEFT_ITEM);
   case KEY_RIGHT     : return(REQ_RIGHT_ITEM);
@@ -266,7 +269,7 @@ NCursesMenu::virtualize(int c) {
   }
 }
 
-NCursesMenuItem&
+NCursesMenuItem*
 NCursesMenu::operator()(void) {
   int drvCmnd;
   int err;
@@ -278,6 +281,7 @@ NCursesMenu::operator()(void) {
   refresh();
   
   while (!b_action && ((drvCmnd = virtualize((c=getch()))) != CMD_QUIT)) {
+
     switch((err=driver(drvCmnd))) {
     case E_REQUEST_DENIED:
       On_Request_Denied(c);
@@ -287,8 +291,23 @@ NCursesMenu::operator()(void) {
       break;
     case E_UNKNOWN_COMMAND:
       if (drvCmnd == CMD_ACTION) {
-	NCursesMenuItem& itm = current_item();
-	b_action = itm.action();
+	if (options() & O_ONEVALUE) {
+	  NCursesMenuItem* itm = current_item();
+	  assert(itm);
+	  if (itm->options() & O_SELECTABLE)
+	    b_action = itm->action();
+	  else
+	    On_Not_Selectable(c);
+	}
+	else {
+	  int n = count();
+	  for(int i=0; i<n; i++) {
+	    NCursesMenuItem* itm = my_items[i];
+	    if (itm->value()) {
+	      b_action |= itm->action();
+	    }
+	  }
+	}
       } else
 	On_Unknown_Command(c);
       break;
@@ -305,7 +324,10 @@ NCursesMenu::operator()(void) {
   unpost();
   hide();
   refresh();
-  return *(my_items[::item_index (::current_item (menu))]);
+  if (options() & O_ONEVALUE)
+    return my_items[::item_index (::current_item (menu))];
+  else
+    return NULL;
 }
 
 void

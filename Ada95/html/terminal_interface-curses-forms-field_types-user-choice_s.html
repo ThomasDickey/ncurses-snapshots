@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#99ccbb" TEXT="#000000" LINK="#4060b0" VLINK="#000080" ALINK="#ff4040">
+<PRE>
+<I>------------------------------------------------------------------------------</I>
+<I>--                                                                          --</I>
+<I>--                           <A HREF="http://www.gnat.com">GNAT</A> ncurses Binding                           --</I>
+<I>--                                                                          --</I>
+<I>--           Terminal_Interface.Curses.Forms.Field_Types.User.Choice        --</I>
+<I>--                                                                          --</I>
+<I>--                                 S P E C                                  --</I>
+<I>--                                                                          --</I>
+<I>--  Version 00.93                                                           --</I>
+<I>--                                                                          --</I>
+<I>--  The ncurses Ada95 binding is copyrighted 1996 by                        --</I>
+<I>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A>, Email: <A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen.Pfeifer@T-Online.de</A>                      --</I>
+<I>--                                                                          --</I>
+<I>--  Permission is hereby granted to reproduce and distribute this           --</I>
+<I>--  binding by any means and for any fee, whether alone or as part          --</I>
+<I>--  of a larger distribution, in source or in binary form, PROVIDED         --</I>
+<I>--  this notice is included with any such distribution, and is not          --</I>
+<I>--  removed from any of its header files. Mention of ncurses and the        --</I>
+<I>--  author of this binding in any applications linked with it is            --</I>
+<I>--  highly appreciated.                                                     --</I>
+<I>--                                                                          --</I>
+<I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
+<I>------------------------------------------------------------------------------</I>
+<I>--  Version Control:</I>
+<I>--  @Revision: 1.1 @</I>
+<I>------------------------------------------------------------------------------</I>
+<B>with</B> Ada.Unchecked_Deallocation;
+<B>with</B> Terminal_Interface.Curses.<A HREF="terminal_interface-curses-aux_s.html#32:35">Aux</A>;
+
+<B>package</B> Terminal_Interface.Curses.Forms.Field_Types.User.Choice <B>is</B>
+
+   type User_Defined_Field_Type_With_Choice <B>is</B> <B>abstract</B> <B>new</B>
+     User_Defined_Field_Type <B>with</B> <B>null</B> <B>record</B>;
+   <I>--  This is the root of the mechanism we use to create field types in</I>
+   <I>--  Ada95 that allow the prev/next mechanism. You should your own type</I>
+   <I>--  derive from this one and implement the Field_Check, Character_Check</I>
+   <I>--  Next and Previous functions for your own type.</I>
+
+   type User_Defined_Field_Type_With_Choice_Access <B>is</B> <B>access</B> <B>all</B>
+     User_Defined_Field_Type_With_Choice'Class;
+
+   <B>function</B> Next
+     (Fld : Field;
+      Typ : User_Defined_Field_Type_With_Choice) <B>return</B> Boolean
+      <B>is</B> <B>abstract</B>;
+   <I>--  If True is returned, the function successfully generated a next</I>
+   <I>--  value into the fields buffer.</I>
+
+   <B>function</B> Previous
+     (Fld : Field;
+      Typ : User_Defined_Field_Type_With_Choice) <B>return</B> Boolean
+      <B>is</B> <B>abstract</B>;
+   <I>--  If True is returned, the function successfully generated a previous</I>
+   <I>--  value into the fields buffer.</I>
+
+   <I>--  +----------------------------------------------------------------------</I>
+   <I>--  | Private Part.</I>
+   <I>--  |</I>
+<B>private</B>
+   <B>use</B> type Interfaces.C.Int;
+
+   <B>function</B> Generic_Next (Fld : Field;
+                          Usr : System.Address) <B>return</B> <A HREF="terminal_interface-curses-aux_s.html#36:12">C_Int</A>;
+   <B>pragma</B> Convention (C, Generic_Next);
+   <I>--  This is the generic next Choice_Function for the low-level fieldtype</I>
+   <I>--  representing all the User_Defined_Field_Type derivates. It routes</I>
+   <I>--  the call to the Next implementation for the type.</I>
+
+   <B>function</B> Generic_Prev (Fld : Field;
+                          Usr : System.Address) <B>return</B> <A HREF="terminal_interface-curses-aux_s.html#36:12">C_Int</A>;
+   <B>pragma</B> Convention (C, Generic_Prev);
+   <I>--  This is the generic prev Choice_Function for the low-level fieldtype</I>
+   <I>--  representing all the User_Defined_Field_Type derivates. It routes</I>
+   <I>--  the call to the Previous implementation for the type.</I>
+
+<B>end</B> Terminal_Interface.Curses.Forms.Field_Types.User.Choice;
+
+</PRE>
+
+<P><HR><P>
+<P>
+This is BETA software. The interface is subject to change without notice.<P>
+<!-- Do NOT delete my name or the tool name from below; -->
+<!-- giving me credit is a condition of use of ada2html -->
+<P><I>This hypertext format was generated by <A HREF="http://www.adahome.com/Tutorials/Lovelace/dwheeler.htm">David A. Wheeler</A>'s <A HREF="http://www.adahome.com/Resources/Tools/ada2html/ada2html.htm">ada2html</A></I>
+</BODY>
+</HTML>
+

@@ -1,4 +1,5 @@
 # Program modules
+# $Id: modules,v 1.2 1997/09/07 22:25:27 juergen Exp $
 ################################################################################
 # Copyright 1995 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -18,7 +19,11 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
-cursesm		c++		$(srcdir)	$(srcdir)/cursesm.h $(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/etip.h
+cursesf		c++		$(srcdir)	$(srcdir)/cursesf.h $(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/cursesapp.h $(srcdir)/cursslk.h $(srcdir)/etip.h
+cursesm		c++		$(srcdir)	$(srcdir)/cursesm.h $(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/cursesapp.h $(srcdir)/cursslk.h $(srcdir)/etip.h
 cursesp		c++		$(srcdir)	$(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/etip.h
 cursesw		c++		$(srcdir)	$(srcdir)/cursesw.h $(srcdir)/etip.h
-demo		c++		$(srcdir)	$(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/etip.h
+cursslk		c++		$(srcdir)	$(srcdir)/cursesw.h $(srcdir)/etip.h $(srcdir)/cursslk.h
+cursesapp	c++		$(srcdir)	$(srcdir)/cursesapp.h $(srcdir)/etip.h $(srcdir)/cursslk.h
+cursesmain	c++		$(srcdir)	$(srcdir)/cursesapp.h
+demo		c++		$(srcdir)	$(srcdir)/cursesf.h $(srcdir)/cursesm.h $(srcdir)/cursesp.h $(srcdir)/cursesw.h $(srcdir)/cursesapp.h $(srcdir)/cursslk.h $(srcdir)/etip.h

@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.13 1997/08/09 17:21:49 tom Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.14 1997/09/06 23:45:38 Alexander.V.Lukyanov Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom, chtype blank)
 {
@@ -64,8 +64,6 @@ size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			if_USE_SCROLL_HINTS(win->_line[line].oldindex = _NEWINDEX);
-			win->_line[line].firstchar = 0;
-			win->_line[line].lastchar = win->_maxx;
 		}
     	}
 
@@ -81,10 +79,9 @@ size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			if_USE_SCROLL_HINTS(win->_line[line].oldindex = _NEWINDEX);
-			win->_line[line].firstchar = 0;
-			win->_line[line].lastchar = win->_maxx;
 		}
 	}
+	touchline(win, top, bottom-top+1);
 }
 
 int
@@ -103,7 +100,6 @@ wscrl(WINDOW *win, int n)
 	    returnCode(ERR);
 
 	_nc_scroll_window(win, n, win->_regtop, win->_regbottom, _nc_background(win));
-	touchline(win, win->_regtop, (int)(win->_regbottom - win->_regtop + 1));
 
 	_nc_synchook(win);
     	returnCode(OK);

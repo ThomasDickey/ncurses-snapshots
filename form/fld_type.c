@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_type.c,v 1.4 1997/05/01 16:47:54 juergen Exp $")
+MODULE_ID("$Id: fld_type.c,v 1.5 1997/08/27 22:05:21 juergen Exp $")
 
 static FIELDTYPE const default_fieldtype = {
   0,                   /* status                                      */
@@ -174,7 +174,10 @@ int free_fieldtype(FIELDTYPE *typ)
 |                       free_arg : Release the memory allocated by make_arg
 |                                  or copy_arg
 |
-|                    At least one of those functions must be non-NULL.
+|                    At least make_arg must be non-NULL.
+|                    You may pass NULL for copy_arg and free_arg if your
+|                    make_arg function doesn't allocate memory and your
+|                    arg fits into the storage for a (void*).
 |
 |   Return Values :  E_OK           - success
 |                    E_BAD_ARGUMENT - invalid argument
@@ -184,7 +187,7 @@ int set_fieldtype_arg(FIELDTYPE * typ,
 		      void * (* const copy_arg)(const void *),
 		      void   (* const free_arg)(void *))
 {
-  if ( !typ || !make_arg || !copy_arg || !free_arg )
+  if ( !typ || !make_arg )
     RETURN(E_BAD_ARGUMENT);
 
   typ->status |= _HAS_ARGS;
