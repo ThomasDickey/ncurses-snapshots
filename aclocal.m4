@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.166 1999/09/05 01:31:41 tom Exp $
+dnl $Id: aclocal.m4,v 1.172 1999/09/12 02:50:36 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -154,7 +154,11 @@ AC_CACHE_VAL(cf_cv_type_of_bool,[
 	AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
-#if HAVE_BUILTIN_H
+#if HAVE_GXX_BUILTIN_H
+#include <g++/builtin.h>
+#elif HAVE_GPP_BUILTIN_H
+#include <gpp/builtin.h>
+#elif HAVE_BUILTIN_H
 #include <builtin.h>
 #endif
 main()
@@ -350,6 +354,37 @@ fi
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check if the C++ compiler accepts duplicate parameter initialization.  This
+dnl is a late feature for the standard and is not in some recent compilers
+dnl (1999/9/11).
+AC_DEFUN([CF_CPP_PARAM_INIT],
+[
+if test -n "$CXX" ; then
+AC_CACHE_CHECK(if $CXX accepts parameter initialization,cf_cv_cpp_param_init,[
+	AC_LANG_CPLUSPLUS
+	AC_TRY_RUN([
+class TEST {
+private:
+	int value;
+public:
+	TEST(int x = 1);
+	~TEST();
+};
+
+TEST::TEST(int x = 1)	// some compilers do not like second initializer
+{
+	value = x;
+}
+void main() { }
+],
+	[cf_cv_cpp_param_init=yes],
+	[cf_cv_cpp_param_init=no],
+	[cf_cv_cpp_param_init=unknown])
+])
+fi
+test "$cf_cv_cpp_param_init" = yes && AC_DEFINE(CPP_HAS_PARAM_INIT)
+])dnl
+dnl ---------------------------------------------------------------------------
 AC_DEFUN([CF_DIRS_TO_MAKE],
 [
 DIRS_TO_MAKE="lib"
@@ -388,8 +423,8 @@ do
 AC_TRY_COMPILE([
 #include <etip.h.in>
 ],[],[
-	test -n "$cf_math" && AC_DEFINE(ETIP_NEEDS_${cf_math})
-	test -n "$cf_excp" && AC_DEFINE(ETIP_NEEDS_${cf_excp})
+	test -n "$cf_math" && AC_DEFINE_UNQUOTED(ETIP_NEEDS_${cf_math})
+	test -n "$cf_excp" && AC_DEFINE_UNQUOTED(ETIP_NEEDS_${cf_excp})
 	cf_result="$cf_math $cf_excp"
 	break
 ],[])
@@ -622,13 +657,26 @@ if test $ac_cv_prog_gxx = yes; then
 	cf_save="$LIBS"
 	LIBS="$LIBS -l$cf_gpp_libname -lm"
 	AC_TRY_LINK([
+#include <$cf_gpp_libname/builtin.h>
+	],
+	[float foo=abs(1.0);
+	 two_arg_error_handler_t foo2 = lib_error_handler],
+	[cf_cxx_library=yes
+	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
+	 if test "$cf_gpp_libname" = cpp ; then
+	    AC_DEFINE(HAVE_GPP_BUILTIN_H)
+	 else
+	    AC_DEFINE(HAVE_GXX_BUILTIN_H)
+	 fi],
+	[AC_TRY_LINK([
 #include <builtin.h>
 	],
-	[float foo=abs(1.0)],
+	[float foo=abs(1.0);
+	 two_arg_error_handler_t foo2 = lib_error_handler],
 	[cf_cxx_library=yes
-	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"],
-	 AC_DEFINE(HAVE_BUILTIN_H)
-	[cf_cxx_library=no])
+	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
+	 AC_DEFINE(HAVE_BUILTIN_H)],
+	[cf_cxx_library=no])])
 	LIBS="$cf_save"
 	AC_MSG_RESULT($cf_cxx_library)
 fi
@@ -684,7 +732,7 @@ AC_DEFUN([CF_LIB_PREFIX],
 	os2)	$1=''     ;;
 	*)	$1='lib'  ;;
 	esac
-	LIB_PREFIX=$1
+	LIB_PREFIX=[$]$1
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -1087,7 +1135,7 @@ AC_DEFUN([CF_MAKEFLAGS],
 AC_MSG_CHECKING([for makeflags variable])
 AC_CACHE_VAL(cf_cv_makeflags,[
 	cf_cv_makeflags=''
-	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)' 
+	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)'
 	do
 		cat >cf_makeflags.tmp <<CF_EOF
 all :

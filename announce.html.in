@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.30 1999/05/16 17:01:39 juergen Exp $
+  $Id: announce.html.in,v 1.31 1999/09/11 17:54:18 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -85,8 +85,8 @@ Interface changes:
 	<li>We made additional changes to reduce impact by future interface
 	  changes:
 <ul>
-	  <li>change key_names[] array to static since it is not part of the curses
-	    interface.
+	  <li>rename key_names[] array to _nc_key_names since it is not part of
+	    the curses interface.
 
 	  <li>move macro winch to a function, to hide details of struct ldat
 </ul>

@@ -25,7 +25,7 @@
 #include "cursesw.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.14 1999/09/01 22:36:47 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.15 1999/09/11 23:26:29 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -205,7 +205,8 @@ NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
     count++;
 }
 
-NCursesWindow::NCursesWindow(NCursesWindow& win, bool do_box = TRUE)
+NCursesWindow::NCursesWindow(NCursesWindow& win,
+				bool do_box NCURSES_PARAM_INIT(TRUE))
 {
   w = :: derwin(win.w,win.height()-2,win.width()-2,1,1);
   if (w == 0) {
@@ -363,7 +364,7 @@ NCursesWindow::getcolor(int getback) const
     short fore, back;
 
     if (colorInitialized==COLORS_ARE_REALLY_THERE) {
-      if (pair_content(PAIR_NUMBER(w->_attrs), &fore, &back))
+      if (pair_content((short)PAIR_NUMBER(w->_attrs), &fore, &back))
 	err_handler("Can't get color pair");
     }
     else {
@@ -404,7 +405,7 @@ int
 NCursesWindow::setpalette(short fore, short back)
 {
   if (colorInitialized==COLORS_ARE_REALLY_THERE)
-    return setpalette(fore, back, PAIR_NUMBER(w->_attrs));
+    return setpalette(fore, back, (short)PAIR_NUMBER(w->_attrs));
   else
     return OK;
 }
