@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.67 1998/07/11 20:17:07 dnelson Exp $ */
+/* $Id: curses.h.in,v 1.68 1998/09/05 22:03:59 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -712,6 +712,7 @@ extern int tigetflag(NCURSES_CONST char *);		/* implemented */
 extern int tigetnum(NCURSES_CONST char *);		/* implemented */
 extern char *tigetstr(NCURSES_CONST char *);		/* implemented */
 extern void timeout(int);				/* generated */
+extern char *tparm(NCURSES_CONST char *, ...);		/* implemented */
 extern int typeahead(int);				/* implemented */
 extern int ungetch(int);				/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED

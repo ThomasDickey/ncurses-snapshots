@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.33 1998/04/04 19:09:17 juergen Exp $")
+MODULE_ID("$Id: tset.c,v 0.34 1998/09/05 22:02:19 tom Exp $")
 
 extern char **environ;
 
@@ -340,7 +340,7 @@ add_mapping(const char *port, char *arg)
 	char *base = 0;
 
 	copy = strdup(arg);
-	mapp = malloc((u_int)sizeof(MAP));
+	mapp = malloc(sizeof(MAP));
 	if (copy == 0 || mapp == 0)
 		failed("malloc");
 	mapp->next = 0;
@@ -965,10 +965,10 @@ set_tabs()
  * Tell the user if a control key has been changed from the default value.
  */
 static void
-report(const char *name, int which, u_int def)
+report(const char *name, int which, unsigned def)
 {
 #ifdef TERMIOS
-	u_int older, newer;
+	unsigned older, newer;
 	char *p;
 
 	newer = mode.c_cc[which];
@@ -986,7 +986,7 @@ report(const char *name, int which, u_int def)
 	if (newer == 0177)
 		(void)fprintf(stderr, "delete.\n");
 	else if ((p = key_backspace) != 0
-	 && newer == (u_int)p[0]
+	 && newer == (unsigned char)p[0]
 	 && p[1] == '\0')
 		(void)fprintf(stderr, "backspace.\n");
 	else if (newer < 040) {
