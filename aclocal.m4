@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.172 1999/09/12 02:50:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.173 1999/09/18 23:22:27 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -880,10 +880,12 @@ done
 
 cat >> Makefile <<CF_EOF
 
-install.data ::
+install.data \
+uninstall.data ::
 	cd misc && \$(MAKE) \$(CF_MFLAGS) \[$]@
 
-install.man ::
+install.man \
+uninstall.man ::
 	cd man && \$(MAKE) \$(CF_MFLAGS) \[$]@
 
 distclean ::
@@ -1117,7 +1119,9 @@ int main()
 }
 			],[
 			cf_cv_link_funcs="$cf_cv_link_funcs $cf_func"
-			eval 'ac_cv_func_'$cf_func'=yes'],[
+			eval 'ac_cv_func_'$cf_func'=yes'
+			CF_UPPER(cf_FUNC,$cf_func)
+			AC_DEFINE_UNQUOTED(HAVE_$cf_FUNC)],[
 			eval 'ac_cv_func_'$cf_func'=no'],[
 			eval 'ac_cv_func_'$cf_func'=error'])
 		done

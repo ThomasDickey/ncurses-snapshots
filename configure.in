@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.173 1999/09/11 22:57:29 tom Exp $
+dnl $Id: configure.in,v 1.174 1999/09/18 22:08:37 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.173 $)
+AC_REVISION($Revision: 1.174 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -807,7 +807,7 @@ if test -n "$CXX" ; then
 	CF_CPP_PARAM_INIT
 else
 	cf_cxx_library=no
-	cf_cv_builtin_bool=0
+	cf_cv_builtin_bool=1
 
 	# Just because we are not configuring against C++ right now does not
 	# mean that a user will not want to use C++.  Some distributors disable
