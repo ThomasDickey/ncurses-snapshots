@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.21 2004/12/25 22:52:17 tom Exp $ */
+/* $Id: form.priv.h,v 0.25 2005/03/05 23:47:26 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -187,5 +187,63 @@ extern NCURSES_EXPORT(Form_Hook)  _nc_retrace_form_hook (Form_Hook);
 #define returnFormHook(code)	return code
 
 #endif /* TRACE/!TRACE */
+
+/*
+ * Use Check_CTYPE_Field() to simplify FIELDTYPE's that use only the ccheck()
+ * function.
+ */
+#if USE_WIDEC_SUPPORT
+#define Check_CTYPE_Field(result, buffer, width, ccheck) \
+  while (*buffer && *buffer == ' ') \
+    buffer++; \
+  if (*buffer) \
+    { \
+      bool blank = FALSE; \
+      int len; \
+      int n; \
+      wchar_t *list = _nc_Widen_String((char *)buffer, &len); \
+      if (list != 0) \
+	{ \
+	  result = TRUE; \
+	  for (n = 0; n < len; ++n) \
+	    { \
+	      if (blank) \
+		{ \
+		  if (list[n] != ' ') \
+		    { \
+		      result = FALSE; \
+		      break; \
+		    } \
+		} \
+	      else if (list[n] == ' ') \
+		{ \
+		  blank = TRUE; \
+		  result = (n + 1 >= width); \
+		} \
+	      else if (!ccheck(list[n], NULL)) \
+		{ \
+		  result = FALSE; \
+		  break; \
+		} \
+	    } \
+	  free(list); \
+	} \
+    }
+#else
+#define Check_CTYPE_Field(result, buffer, width, ccheck) \
+  while (*buffer && *buffer == ' ') \
+    buffer++; \
+  if (*buffer) \
+    { \
+      unsigned char *s = buffer; \
+      int l = -1; \
+      while (*buffer && ccheck(*buffer, NULL)) \
+	buffer++; \
+      l = (int)(buffer - s); \
+      while (*buffer && *buffer == ' ') \
+	buffer++; \
+      result = ((*buffer || (l < width)) ? FALSE : TRUE); \
+    }
+#endif
 
 #endif /* FORM_PRIV_H */

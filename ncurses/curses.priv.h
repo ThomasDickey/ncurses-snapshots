@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.280 2005/02/26 19:26:49 tom Exp $
+ * $Id: curses.priv.h,v 1.281 2005/03/05 20:18:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -979,7 +979,7 @@ extern NCURSES_EXPORT(int) _nc_InsCharCost (int);
 
 #undef  UpdateAttrs
 #define UpdateAttrs(c) _nc_UpdateAttrs(c)
-extern NCURSES_EXPORT(void) _nc_UpdateAttrs (chtype);
+extern NCURSES_EXPORT(void) _nc_UpdateAttrs (NCURSES_CH_T);
 
 #else
 

@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.8 2004/08/07 18:31:00 tom Exp $
+ * $Id: demo_forms.c,v 1.10 2005/03/06 00:27:27 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -7,9 +7,6 @@
 /*
 TYPE_ALNUM			-
 TYPE_ENUM			-
-TYPE_INTEGER			-
-TYPE_IPV4			-
-TYPE_NUMERIC			-
 TYPE_REGEXP			-
 dup_field			-
 field_arg			-
@@ -179,6 +176,8 @@ show_current_field(WINDOW *win, FORM * form)
 		waddstr(win, "ENUM");
 	    else if (type == TYPE_INTEGER)
 		waddstr(win, "INTEGER");
+	    else if (type == TYPE_IPV4)
+		waddstr(win, "IPV4");
 	    else if (type == TYPE_NUMERIC)
 		waddstr(win, "NUMERIC");
 	    else if (type == TYPE_REGEXP)
@@ -223,23 +222,48 @@ demo_forms(void)
     refresh();
 
     /* describe the form */
-    for (pg = 0; pg < 3; ++pg) {
+    for (pg = 0; pg < 4; ++pg) {
 	char label[80];
 	sprintf(label, "Sample Form Page %d", pg + 1);
 	f[n++] = make_label(0, 15, label);
 	set_new_page(f[n - 1], TRUE);
 
-	f[n++] = make_label(2, 0, "Last Name");
-	f[n++] = make_field(3, 0, 1, 18);
-	set_field_type(f[n - 1], TYPE_ALPHA, 1);
+	switch (pg) {
+	default:
+	    f[n++] = make_label(2, 0, "Last Name");
+	    f[n++] = make_field(3, 0, 1, 18);
+	    set_field_type(f[n - 1], TYPE_ALPHA, 1);
 
-	f[n++] = make_label(2, 20, "First Name");
-	f[n++] = make_field(3, 20, 1, 12);
-	set_field_type(f[n - 1], TYPE_ALPHA, 1);
+	    f[n++] = make_label(2, 20, "First Name");
+	    f[n++] = make_field(3, 20, 1, 12);
+	    set_field_type(f[n - 1], TYPE_ALPHA, 1);
 
-	f[n++] = make_label(2, 34, "Middle Name");
-	f[n++] = make_field(3, 34, 1, 12);
-	set_field_type(f[n - 1], TYPE_ALPHA, 1);
+	    f[n++] = make_label(2, 34, "Middle Name");
+	    f[n++] = make_field(3, 34, 1, 12);
+	    set_field_type(f[n - 1], TYPE_ALPHA, 1);
+	    break;
+	case 2:
+	    f[n++] = make_label(2, 0, "Host Name");
+	    f[n++] = make_field(3, 0, 1, 18);
+	    set_field_type(f[n - 1], TYPE_ALPHA, 1);
+
+	    f[n++] = make_label(2, 20, "IP Address");
+	    f[n++] = make_field(3, 20, 1, 12);
+	    set_field_type(f[n - 1], TYPE_IPV4, 1);
+
+	    break;
+
+	case 3:
+	    f[n++] = make_label(2, 0, "Four digits");
+	    f[n++] = make_field(3, 0, 1, 18);
+	    set_field_type(f[n - 1], TYPE_INTEGER, 4, 0, 0);
+
+	    f[n++] = make_label(2, 20, "Numeric");
+	    f[n++] = make_field(3, 20, 1, 12);
+	    set_field_type(f[n - 1], TYPE_NUMERIC, 3, -10000.0, 100000000.0);
+
+	    break;
+	}
 
 	f[n++] = make_label(5, 0, "Comments");
 	f[n++] = make_field(6, 0, 4, 46);
