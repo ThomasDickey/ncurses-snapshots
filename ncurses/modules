@@ -1,4 +1,4 @@
-# $Id: modules,v 1.67 1999/03/01 01:06:24 tom Exp $
+# $Id: modules,v 1.68 1999/03/08 02:47:11 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -128,7 +128,6 @@ lib_dft_fgbg	lib		$(base)
 lib_freeall	lib		$(base)
 lib_print	lib		$(tinfo)	../include/term.h
 resizeterm	lib		$(base)		../include/term.h
-trace_tries	lib		$(trace)
 trace_xnames	lib		$(trace)	../include/term.h $(INCDIR)/term_entry.h
 tries		lib		$(base)
 wresize		lib		$(base)		../include/term.h
@@ -136,6 +135,7 @@ wresize		lib		$(base)		../include/term.h
 # Support for termcap (and tic, etc.), which can be a separate library
 @ termlib
 access		lib		$(tinfo)
+add_tries	lib		$(tinfo)
 alloc_entry	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 alloc_ttype	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 captoinfo	lib		$(tinfo)	$(INCDIR)/tic.h
@@ -181,6 +181,6 @@ read_entry	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.
 read_termcap	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 setbuf		lib		$(tinfo)
 trace_buf	lib		$(trace)
-add_tries	lib		$(tinfo)
+trace_tries	lib		$(trace)
 unctrl		lib		.
 write_entry	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
