@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.95 1997/12/27 23:43:53 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.96 1998/01/11 23:49:03 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -682,8 +682,8 @@ struct tms before, after;
 
 		nonempty = min(screen_lines, newscr->_maxy+1);
 
-		if (!SP->_scrolling) {
-#if USE_HASHMAP		/* still 5% slower 960928 */
+		if (SP->_scrolling) {
+#if USE_HASHMAP
 #if defined(TRACE) || defined(NCURSES_TEST)
 		if (_nc_optimize_enable & OPTIMIZE_HASHMAP)
 #endif /*TRACE */

@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.9 1997/01/15 00:39:27 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.10 1998/01/17 14:53:58 tom Exp $")
 
 void _tracedump(const char *name, WINDOW *win)
 {
@@ -67,7 +67,7 @@ void _tracedump(const char *name, WINDOW *win)
 	}
 	ep[j] = '\'';
 	ep[j+1] = '\0';
-	_tracef(buf);
+	_tracef("%s", buf);
 
 	/* dump A_COLOR part, will screw up if there are more than 96 */
 	havecolors = FALSE;
@@ -85,7 +85,7 @@ void _tracedump(const char *name, WINDOW *win)
 		ep[j] = ((win->_line[n].text[j] >> 8) & 0xff) + ' ';
 	    ep[j] = '\'';
 	    ep[j+1] = '\0';
-	    _tracef(buf);
+	    _tracef("%s", buf);
 	}
 
 	for (i = 0; i < 4; i++)
@@ -108,7 +108,7 @@ void _tracedump(const char *name, WINDOW *win)
 		    ep[j] = hex[(win->_line[n].text[j] & mask) >> ((i + 4) * 4)];
 		ep[j] = '\'';
 		ep[j+1] = '\0';
-		_tracef(buf);
+		_tracef("%s", buf);
 	    }
 	}
     }

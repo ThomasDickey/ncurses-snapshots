@@ -30,7 +30,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.26 1997/11/30 01:40:54 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.27 1998/01/17 21:09:28 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -318,7 +318,7 @@ bool	check_only = FALSE;
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:orsvw")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:o:rsvw")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':

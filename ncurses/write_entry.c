@@ -37,7 +37,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.20 1997/12/28 00:21:03 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.21 1998/01/11 12:01:01 Philippe.De.Muyter Exp $")
 
 static int total_written;
 
@@ -286,7 +286,11 @@ static time_t	start_time;		/* time at start of writes */
 			strcpy(symlinkname, "../");
 			strcat(symlinkname, filename);
 #endif /* USE_SYMLINKS */
+#if HAVE_REMOVE
 			remove(linkname);
+#else
+			unlink(linkname);
+#endif
 #if USE_SYMLINKS
 			if (symlink(symlinkname, linkname) < 0)
 #else

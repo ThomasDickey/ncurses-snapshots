@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.24 1997/12/20 14:46:11 tom Exp $
+# $Id: Makefile.in,v 1.25 1998/01/11 23:49:03 Alexander.V.Lukyanov Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -35,7 +35,7 @@ SHELL		= /bin/sh
 THIS		= Makefile
 
 MODEL		= @DFT_LWR_MODEL@
-INSTALL_PREFIX	= @INSTALL_PREFIX
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
