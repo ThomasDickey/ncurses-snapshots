@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.43 2000/04/30 00:17:40 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.44 2000/06/10 21:59:21 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -475,6 +475,8 @@ _nc_trans_string(char *ptr, char *last)
 	    }
 	    if (ch == '?') {
 		*(ptr++) = '\177';
+		if (_nc_tracing)
+		    _nc_warning("Allow ^? as synonym for \\177");
 	    } else {
 		if ((ch &= 037) == 0)
 		    ch = 128;

@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.560 2000/05/28 01:11:04 tom Exp $
+-- $Id: NEWS,v 1.562 2000/06/11 03:00:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000610
+	+ regenerated the html files under doc/html/ada/files and
+	  doc/html/ada/funcs with a slightly-improved gnathtml.
+	+ add kmous capability to linux terminfo entry to allow it to use
+	  xterm-style events provided by gpm patch by Joerg Schoen.
+	+ make the configure macro CF_SHARED_OPTS a little smarter by testing
+	  if -fPIC is supported by gcc rather than -fpic.  The former option
+	  allows larger symbol tables.
+	+ update config.guess and config.sub (patches by
+	  Kevin Buettner <kev@primenet.com> for elf64_ia64
+	  Bernd Kuemmerlen <bkuemmer@mevis.de> and MacOS X).
+	+ add warning for 'tic -cv' about use of '^?' in terminfo source, which
+	  is an extension.
 
 20000527
 	+ modify echo() behavior of getch() to match Solaris curses for

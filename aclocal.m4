@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.201 2000/05/28 01:39:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.202 2000/06/10 23:03:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1664,15 +1664,28 @@ AC_DEFUN([CF_SHARED_OPTS],
 
 	cf_cv_rm_so_locs=no
 
+	# Some less-capable ports of gcc support only -fpic
+	CC_SHARED_OPTS=
+	if test -n "$GCC"
+	then
+		AC_MSG_CHECKING(which $CC option to use)
+		cf_save_CFLAGS="$CFLAGS"
+		for CC_SHARED_OPTS in -fPIC -fpic ''
+		do
+			CFLAGS="$cf_save_CFLAGS $CC_SHARED_OPTS"
+			AC_TRY_COMPILE([#include <stdio.h>],[int x = 1],[break],[])
+		done
+		AC_MSG_RESULT($CC_SHARED_OPTS)
+		CFLAGS="$cf_save_CFLAGS"
+	fi
+
 	case $cf_cv_system_name in
 	beos*)
-		CC_SHARED_OPTS='-fPIC'
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
 		;;
 	hpux10.*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test -n "$GCC"; then
-			CC_SHARED_OPTS='-fPIC'
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
@@ -1687,7 +1700,6 @@ AC_DEFUN([CF_SHARED_OPTS],
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test -n "$GCC"; then
-			CC_SHARED_OPTS='-fPIC'
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
@@ -1700,9 +1712,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	irix*)
 		# tested with IRIX 5.2 and 'cc'.
-		if test -n "$GCC"; then
-			CC_SHARED_OPTS='-fPIC'
-		else
+		if test -z "$GCC"; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
@@ -1710,7 +1720,6 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	linux*|gnu*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
-		CC_SHARED_OPTS='-fPIC'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
@@ -1724,16 +1733,16 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		;;
 	openbsd2*)
-		CC_SHARED_OPTS='-fpic -DPIC'
+		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
 	openbsd*|freebsd*)
-		CC_SHARED_OPTS='-fpic -DPIC'
+		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
 	netbsd*)
-		CC_SHARED_OPTS='-fpic -DPIC'
+		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" && test $cf_cv_ld_rpath = yes ; then
 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
@@ -1749,7 +1758,6 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
-		CC_SHARED_OPTS=''
  		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-rpath"
 		case $host_os in
@@ -1766,9 +1774,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sco3.2v5*)  # (also uw2* and UW7) hops 13-Apr-98
 		# tested with osr5.0.5
-		if test $ac_cv_prog_gcc = yes; then
-			CC_SHARED_OPTS='-fpic'
-		else
+		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-belf -KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename [$]@.$(ABI_VERSION)` -o [$]@'
@@ -1782,9 +1788,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sunos4*)
 		# tested with SunOS 4.1.1 and gcc 2.7.0
-		if test $ac_cv_prog_gcc = yes; then
-			CC_SHARED_OPTS='-fpic'
-		else
+		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@]'
@@ -1792,9 +1796,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	solaris2*)
 		# tested with SunOS 5.5.1 (solaris 2.5.1) and gcc 2.7.2
-		if test $ac_cv_prog_gcc = yes; then
-			CC_SHARED_OPTS='-fpic'
-		else
+		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@]'
@@ -1806,9 +1808,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sysv5uw7*|unix_sv*)
 		# tested with UnixWare 7.1.0 (gcc 2.95.2 and cc)
-		if test $ac_cv_prog_gcc = yes; then
-			CC_SHARED_OPTS='-fpic'
-		else
+		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -d y -G -o $@'
