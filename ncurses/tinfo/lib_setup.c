@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.86 2004/10/09 19:16:33 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.87 2004/11/28 01:17:18 tom Exp $")
 
 /****************************************************************************
  *
@@ -414,15 +414,11 @@ _nc_locale_breaks_acs(void)
 }
 
 /*
- *	setupterm(termname, Filedes, errret)
- *
- *	Find and read the appropriate object file for the terminal
- *	Make cur_term point to the structure.
- *
+ * This entrypoint is called from tgetent() to allow special a case of reusing
+ * the same TERMINAL data (see comment).
  */
-
 NCURSES_EXPORT(int)
-setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
+_nc_setupterm(NCURSES_CONST char *tname, int Filedes, int *errret, bool reuse)
 {
     int status;
 
@@ -465,7 +461,8 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
      * however applications that are working around the problem will still work
      * properly with this feature).
      */
-    if (cur_term != 0
+    if (reuse
+	&& cur_term != 0
 	&& cur_term->Filedes == Filedes
 	&& cur_term->_termname != 0
 	&& !strcmp(cur_term->_termname, tname)
@@ -545,4 +542,18 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 	ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
     }
     returnCode(OK);
+}
+
+/*
+ *	setupterm(termname, Filedes, errret)
+ *
+ *	Find and read the appropriate object file for the terminal
+ *	Make cur_term point to the structure.
+ *
+ */
+
+NCURSES_EXPORT(int)
+setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
+{
+    return _nc_setupterm(tname, Filedes, errret, FALSE);
 }

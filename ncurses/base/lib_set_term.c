@@ -44,10 +44,10 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.82 2004/04/24 20:17:39 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.83 2004/11/28 01:16:01 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
-set_term(SCREEN * screenp)
+set_term(SCREEN *screenp)
 {
     SCREEN *oldSP;
 
@@ -81,7 +81,7 @@ _nc_free_keytry(struct tries *kt)
  * Free the storage associated with the given SCREEN sp.
  */
 NCURSES_EXPORT(void)
-delscreen(SCREEN * sp)
+delscreen(SCREEN *sp)
 {
     SCREEN **scan = &_nc_screen_chain;
     int i;
@@ -162,13 +162,13 @@ static ripoff_t *rsp = rippedoff;
 #define N_RIPS SIZEOF(SP->_rippedoff)
 
 static bool
-no_mouse_event(SCREEN * sp GCC_UNUSED)
+no_mouse_event(SCREEN *sp GCC_UNUSED)
 {
     return FALSE;
 }
 
 static bool
-no_mouse_inline(SCREEN * sp GCC_UNUSED)
+no_mouse_inline(SCREEN *sp GCC_UNUSED)
 {
     return FALSE;
 }
@@ -180,12 +180,12 @@ no_mouse_parse(int code GCC_UNUSED)
 }
 
 static void
-no_mouse_resume(SCREEN * sp GCC_UNUSED)
+no_mouse_resume(SCREEN *sp GCC_UNUSED)
 {
 }
 
 static void
-no_mouse_wrap(SCREEN * sp GCC_UNUSED)
+no_mouse_wrap(SCREEN *sp GCC_UNUSED)
 {
 }
 
@@ -221,6 +221,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     if (!_nc_alloc_screen())
 	returnCode(ERR);
 
+    T(("created SP %p", SP));
     SP->_next_screen = _nc_screen_chain;
     _nc_screen_chain = SP;
 
@@ -393,8 +394,8 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     {
 	char *env = _nc_get_locale();
 	SP->_legacy_coding = ((env == 0)
-			     || !strcmp(env, "C")
-			     || !strcmp(env, "POSIX"));
+			      || !strcmp(env, "C")
+			      || !strcmp(env, "POSIX"));
     }
 #endif
 

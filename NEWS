@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.846 2004/11/21 01:19:12 tom Exp $
+-- $Id: NEWS,v 1.847 2004/11/28 01:11:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041127
+	+ amend change to setupterm() in 20030405 which would reuse the value
+	  of cur_term if the same output was selected.  This now reuses it only
+	  when setupterm() is called from tgetent(), which has no notion of
+	  separate SCREENs.  Note that tgetent() must be called after initscr()
+	  or newterm() to use this feature (Redhat Bugzilla #140326).
+	+ add a check in CF_BUILD_CC macro to ensure that developer has given
+	  the --with-build-cc option when cross-compiling (report by Alexandre
+	  Campo).
+	+ improved configure script checks for _XOPEN_SOURCE and
+	  _POSIX_C_SOURCE (fix for IRIX 5.3 from Georg Schwarz, _POSIX_C_SOURCE
+	  updates from lynx).
+	+ cosmetic fix to test/gdc.c to recolor the bottom edge of the box
+	  for consistency (comment by Dan Nelson).
 
 20041120
 	+ update wsvt25 terminfo entry -TD
