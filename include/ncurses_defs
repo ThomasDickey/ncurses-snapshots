@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.9 2001/06/23 23:30:22 tom Exp $
+# $Id: ncurses_defs,v 1.10 2001/10/27 20:06:20 tom Exp $
 ##############################################################################
 # Copyright (c) 2000,2001 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -134,6 +134,7 @@ SVR4_ACTION
 SVR4_TERMIO
 SYSTEM_NAME	"unknown"
 TERMINFO	"none"
+TERMPATH	"none"
 TYPEOF_CHTYPE
 USE_COLORFGBG
 USE_DATABASE
@@ -152,5 +153,6 @@ USE_STDIO_VSCAN
 USE_STRSTREAM_VSCAN
 USE_STRSTREAM_VSCAN_CAST
 USE_SYMLINKS
+USE_TERMCAP
 USE_WIDEC_SUPPORT
 USE_XMC_SUPPORT

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.257 2001/09/29 22:39:03 Rob.Braun Exp $
+dnl $Id: aclocal.m4,v 1.258 2001/10/27 18:23:58 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1077,11 +1077,11 @@ done
 
 cat >> Makefile <<CF_EOF
 
-install.data \
+install.data \\
 uninstall.data ::
-	cd misc && \$(MAKE) \$(CF_MFLAGS) \[$]@
+$MAKE_TERMINFO	cd misc && \$(MAKE) \$(CF_MFLAGS) \[$]@
 
-install.man \
+install.man \\
 uninstall.man ::
 	cd man && \$(MAKE) \$(CF_MFLAGS) \[$]@
 
@@ -1096,7 +1096,7 @@ if test -d tack ; then
 if test -f $srcdir/$tack.h; then
 cat >> Makefile <<CF_EOF
 
-install.man \
+install.man \\
 uninstall.man ::
 	cd tack && \$(MAKE) \$(CF_MFLAGS) \[$]@
 CF_EOF
@@ -2344,7 +2344,8 @@ for cf_dir in $cf_cv_src_modules
 do
 	SRC_SUBDIRS="$SRC_SUBDIRS $cf_dir"
 done
-SRC_SUBDIRS="$SRC_SUBDIRS misc test"
+SRC_SUBDIRS="$SRC_SUBDIRS test"
+test -z "$MAKE_TERMINFO" && SRC_SUBDIRS="$SRC_SUBDIRS misc"
 test "$cf_with_cxx_binding" != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
 
 ADA_SUBDIRS=
