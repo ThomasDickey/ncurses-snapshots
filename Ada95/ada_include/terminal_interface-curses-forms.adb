@@ -35,7 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.12 $
+--  $Revision: 1.13 $
+--  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Unchecked_Conversion;

@@ -38,7 +38,8 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.7 $
+--  $Revision: 1.8 $
+--  Binding Version 00.93
 ------------------------------------------------------------------------------
 
 generic

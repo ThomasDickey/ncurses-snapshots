@@ -35,7 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
+--  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 

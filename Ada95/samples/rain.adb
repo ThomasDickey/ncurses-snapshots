@@ -33,11 +33,11 @@
 -- sale, use or other dealings in this Software without prior written       --
 -- authorization.                                                           --
 ------------------------------------------------------------------------------
---  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
+--  Author: Laurent Pautet <pautet@gnat.com> 1997 (modified by J.Pfeifer)
 --  Version Control
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
+--  Binding Version 00.93
 ------------------------------------------------------------------------------
---  This package has been contributed by Laurent Pautet <pautet@gnat.com>   --
 --                                                                          --
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Status; use Status;

@@ -2,7 +2,7 @@
 #ifndef _CURSESP_H
 #define _CURSESP_H
 
-// $Id: cursesp.h,v 1.9 1997/10/13 22:56:21 tom Exp $
+// $Id: cursesp.h,v 1.10 1998/02/17 09:01:28 juergen Exp $
 
 #include <cursesw.h>
 
@@ -13,6 +13,7 @@ extern "C" {
 class NCursesPanel : public NCursesWindow {
 protected:
   PANEL *p;
+  static NCursesPanel *dummy;
 
 private:
   // This structure is used for the panel's user data field to link the
@@ -103,15 +104,13 @@ public:
    redesign of the low level stuff. At the moment, we define them in the
    interface but they will always produce an error. */
   inline NCursesPanel& above() const {
-    static NCursesPanel dummy;
     OnError(ERR);
-    return dummy;
+    return *dummy;
   }
 
   inline NCursesPanel& below() const {
-    static NCursesPanel dummy;
     OnError(ERR);
-    return dummy;
+    return *dummy;
   }
 
   // Those two are rewrites of the corresponding virtual members of

@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.313 1998/02/15 00:57:39 tom Exp $
+-- $Id: NEWS,v 1.314 1998/02/21 23:49:17 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980221	pre-release
+	+ regenerated some documentation overlooked in 980214 patch
+	  (ncurses-intro.doc, curs_outopts.3x.html)
+	+ minor ifdef change to C++ binding to work with gcc 2.8.0 (patch by
+	  Juergen Pfeifer).
+	+ change maintainer's mailing address to florian@gnu.org, change
+	  tentative mailing list address to bug-ncurses-request@gnu.org (patch
+	  by Florian La Roche).
+	+ add definition of $(REL_VERSION) to c++/Makefile.in (reported by Gran
+	  Hasse <gh@raditex.se>).
+	+ restore version numbers to Ada95 binding, accidentally deleted by
+	  copyright patch (patch by Juergen Pfeifer).
 
 980214	pre-release
 	+ remove ncurses.lsm from MANIFEST so that it won't be used in FSF
