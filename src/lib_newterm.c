@@ -49,7 +49,7 @@ int	errret;
 #endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
-	if (setupterm(term, fileno(ifp), &errret) != 1)
+	if (setupterm(term, fileno(ofp), &errret) != 1)
 	    	return NULL;
 
 	/* implement filter mode */

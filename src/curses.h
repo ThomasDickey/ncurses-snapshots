@@ -28,6 +28,9 @@
 #include <stdio.h>   
 #include <unctrl.h>
 #include <stdarg.h>
+#ifdef XPG4_EXTENDED
+#include <stddef.h>	/* we want wchar_t */
+#endif /* XPG4_EXTENDED */
 
 /* XSI and SVr4 specify that curses implements 'bool'.  However, C++ may also
  * implement it.  If so, we must use the C++ compiler's type to avoid conflict
@@ -176,6 +179,23 @@ typedef struct screen  SCREEN;
 typedef struct _win_st WINDOW;
 
 typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
+
+#ifdef XPG4_EXTENDED
+#ifndef _WCHAR_T
+typedef wchar_t	unsigned long;
+#endif /* _WCHAR_T */
+#ifndef _WINT_T
+typedef wint_t	long int;
+#endif /* _WINT_T */
+
+#define CCHARW_MAX	5
+typedef 
+{
+    attr_t	attr;
+    wchar_t	chars[CCHARW_MAX];
+}
+cchar_t;
+#endif /* XPG4_EXTENDED */
 
 struct _win_st {
 	short   _cury, _curx;	/* current cursor position */
@@ -368,7 +388,7 @@ extern int wattron(WINDOW *,const attr_t);
 extern int wattroff(WINDOW *,const attr_t);
 extern int wbkgd(WINDOW *,const chtype);
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);
-extern int wchget(WINDOW *,int,attr_t,short,void *const);
+extern int wchgat(WINDOW *, int, attr_t, short, void *const);
 extern int wclear(WINDOW *);
 extern int wclrtobot(WINDOW *);
 extern int wclrtoeol(WINDOW *);
@@ -647,19 +667,22 @@ extern int slk_attroff(attr_t);
 #define vw_printw		vwprintw
 #define vw_scanw		vwscanw
 
-/* Funny "characters" enabled for various special function keys for input */
-/* Whether such a key exists depend if its definition is in the terminfo entry */
-
+/*
+ * Pseudo-character tokens outside ASCII range.  The curses wgetch() function
+ * will return any given one of these only if the corresponding k- capability
+ * is defined in your terminal's terminfo entry.
+ */
+#define KEY_CODE_YES	0400		/* A wchar_t contains a key code */
 #define KEY_MIN		0401		/* Minimum curses key */
-#define KEY_BREAK       0401            /* break key (unreliable) */
-#define KEY_DOWN        0402            /* The four arrow keys ... */
-#define KEY_UP          0403
-#define KEY_LEFT        0404
-#define KEY_RIGHT       0405            /* ... */
+#define KEY_BREAK       0401            /* Break key (unreliable) */
+#define KEY_DOWN        0402            /* Down-arrow */
+#define KEY_UP          0403		/* Up-arrow */
+#define KEY_LEFT        0404		/* Left-arrow */
+#define KEY_RIGHT       0405            /* Right-arrow */
 #define KEY_HOME        0406            /* Home key (upward+left arrow) */
-#define KEY_BACKSPACE   0407            /* backspace (unreliable) */
+#define KEY_BACKSPACE   0407            /* Backspace (unreliable) */
 #define KEY_F0          0410            /* Function keys.  Space for 64 */
-#define KEY_F(n)        (KEY_F0+(n))    /* keys is reserved. */
+#define KEY_F(n)        (KEY_F0+(n))    /* Value of function key n */
 #define KEY_DL          0510            /* Delete line */
 #define KEY_IL          0511            /* Insert line */
 #define KEY_DC          0512            /* Delete character */
@@ -669,84 +692,84 @@ extern int slk_attroff(attr_t);
 #define KEY_EOS         0516            /* Clear to end of screen */
 #define KEY_EOL         0517            /* Clear to end of line */
 #define KEY_SF          0520            /* Scroll 1 line forward */
-#define KEY_SR          0521            /* Scroll 1 line backwards (reverse) */
+#define KEY_SR          0521            /* Scroll 1 line backward (reverse) */
 #define KEY_NPAGE       0522            /* Next page */
 #define KEY_PPAGE       0523            /* Previous page */
 #define KEY_STAB        0524            /* Set tab */
 #define KEY_CTAB        0525            /* Clear tab */
 #define KEY_CATAB       0526            /* Clear all tabs */
 #define KEY_ENTER       0527            /* Enter or send (unreliable) */
-#define KEY_SRESET      0530            /* soft (partial) reset (unreliable) */
-#define KEY_RESET       0531            /* reset or hard reset (unreliable) */
-#define KEY_PRINT       0532            /* print or copy */
-#define KEY_LL          0533            /* home down or bottom (lower left) */
+#define KEY_SRESET      0530            /* Soft (partial) reset (unreliable) */
+#define KEY_RESET       0531            /* Reset or hard reset (unreliable) */
+#define KEY_PRINT       0532            /* Print */
+#define KEY_LL          0533            /* Home down or bottom (lower left) */
 
 /* The keypad is arranged like this: */
 /* a1    up    a3   */
 /* left   b2  right  */
 /* c1   down   c3   */
 
-#define KEY_A1		0534	/* Upper left of keypad */
-#define KEY_A3		0535	/* Upper right of keypad */
-#define KEY_B2		0536	/* Center of keypad */
-#define KEY_C1		0537	/* Lower left of keypad */
-#define KEY_C3		0540	/* Lower right of keypad */
-#define KEY_BTAB	0541	/* Back tab key */
-#define KEY_BEG		0542	/* beg(inning) key */
-#define KEY_CANCEL	0543	/* cancel key */
-#define KEY_CLOSE	0544	/* close key */
-#define KEY_COMMAND	0545	/* cmd (command) key */
-#define KEY_COPY	0546	/* copy key */
-#define KEY_CREATE	0547	/* create key */
-#define KEY_END		0550	/* end key */
-#define KEY_EXIT	0551	/* exit key */
-#define KEY_FIND	0552	/* find key */
-#define KEY_HELP	0553	/* help key */
-#define KEY_MARK	0554	/* mark key */
-#define KEY_MESSAGE	0555	/* message key */
-#define KEY_MOVE	0556	/* move key */
-#define KEY_NEXT	0557	/* next object key */
-#define KEY_OPEN	0560	/* open key */
-#define KEY_OPTIONS	0561	/* options key */
-#define KEY_PREVIOUS	0562	/* previous object key */
-#define KEY_REDO	0563	/* redo key */
-#define KEY_REFERENCE	0564	/* ref(erence) key */
-#define KEY_REFRESH	0565	/* refresh key */
-#define KEY_REPLACE	0566	/* replace key */
-#define KEY_RESTART	0567	/* restart key */
-#define KEY_RESUME	0570	/* resume key */
-#define KEY_SAVE	0571	/* save key */
-#define KEY_SBEG	0572	/* shifted beginning key */
-#define KEY_SCANCEL	0573	/* shifted cancel key */
-#define KEY_SCOMMAND	0574	/* shifted command key */
-#define KEY_SCOPY	0575	/* shifted copy key */
-#define KEY_SCREATE	0576	/* shifted create key */
-#define KEY_SDC		0577	/* shifted delete char key */
-#define KEY_SDL		0600	/* shifted delete line key */
-#define KEY_SELECT	0601	/* select key */
-#define KEY_SEND	0602	/* shifted end key */
-#define KEY_SEOL	0603	/* shifted clear line key */
-#define KEY_SEXIT	0604	/* shifted exit key */
-#define KEY_SFIND	0605	/* shifted find key */
-#define KEY_SHELP	0606	/* shifted help key */
-#define KEY_SHOME	0607	/* shifted home key */
-#define KEY_SIC		0610	/* shifted input key */
-#define KEY_SLEFT	0611	/* shifted left arrow key */
-#define KEY_SMESSAGE	0612	/* shifted message key */
-#define KEY_SMOVE	0613	/* shifted move key */
-#define KEY_SNEXT	0614	/* shifted next key */
-#define KEY_SOPTIONS	0615	/* shifted options key */
-#define KEY_SPREVIOUS	0616	/* shifted prev key */
-#define KEY_SPRINT	0617	/* shifted print key */
-#define KEY_SREDO	0620	/* shifted redo key */
-#define KEY_SREPLACE	0621	/* shifted replace key */
-#define KEY_SRIGHT	0622	/* shifted right arrow */
-#define KEY_SRSUME	0623	/* shifted resume key */
-#define KEY_SSAVE	0624	/* shifted save key */
-#define KEY_SSUSPEND	0625	/* shifted suspend key */
-#define KEY_SUNDO	0626	/* shifted undo key */
-#define KEY_SUSPEND	0627	/* suspend key */
-#define KEY_UNDO	0630	/* undo key */
-#define KEY_MAX		0777	/* Maximum curses key */
+#define KEY_A1		0534		/* Upper left of keypad */
+#define KEY_A3		0535		/* Upper right of keypad */
+#define KEY_B2		0536		/* Center of keypad */
+#define KEY_C1		0537		/* Lower left of keypad */
+#define KEY_C3		0540		/* Lower right of keypad */
+#define KEY_BTAB	0541		/* Back tab */
+#define KEY_BEG		0542		/* Beg (beginning) */
+#define KEY_CANCEL	0543		/* Cancel */
+#define KEY_CLOSE	0544		/* Close */
+#define KEY_COMMAND	0545		/* Cmd (command) */
+#define KEY_COPY	0546		/* Copy */
+#define KEY_CREATE	0547		/* Create */
+#define KEY_END		0550		/* End */
+#define KEY_EXIT	0551		/* Exit */
+#define KEY_FIND	0552		/* Find */
+#define KEY_HELP	0553		/* Help */
+#define KEY_MARK	0554		/* Mark */
+#define KEY_MESSAGE	0555		/* Message */
+#define KEY_MOVE	0556		/* Move */
+#define KEY_NEXT	0557		/* Next */
+#define KEY_OPEN	0560		/* Open */
+#define KEY_OPTIONS	0561		/* Options */
+#define KEY_PREVIOUS	0562		/* Prev (previous) */
+#define KEY_REDO	0563		/* Redo */
+#define KEY_REFERENCE	0564		/* Ref (reference) */
+#define KEY_REFRESH	0565		/* Refresh */
+#define KEY_REPLACE	0566		/* Replace */
+#define KEY_RESTART	0567		/* Restart */
+#define KEY_RESUME	0570		/* Resume */
+#define KEY_SAVE	0571		/* Save */
+#define KEY_SBEG	0572		/* Shifted Beg (beginning) */
+#define KEY_SCANCEL	0573		/* Shifted Cancel */
+#define KEY_SCOMMAND	0574		/* Shifted Command */
+#define KEY_SCOPY	0575		/* Shifted Copy */
+#define KEY_SCREATE	0576		/* Shifted Create */
+#define KEY_SDC		0577		/* Shifted Delete char */
+#define KEY_SDL		0600		/* Shifted Delete line */
+#define KEY_SELECT	0601		/* Select */
+#define KEY_SEND	0602		/* Shifted End */
+#define KEY_SEOL	0603		/* Shifted Clear line */
+#define KEY_SEXIT	0604		/* Shifted Dxit */
+#define KEY_SFIND	0605		/* Shifted Find */
+#define KEY_SHELP	0606		/* Shifted Help */
+#define KEY_SHOME	0607		/* Shifted Home */
+#define KEY_SIC		0610		/* Shifted Input */
+#define KEY_SLEFT	0611		/* Shifted Left arrow */
+#define KEY_SMESSAGE	0612		/* Shifted Message */
+#define KEY_SMOVE	0613		/* Shifted Move */
+#define KEY_SNEXT	0614		/* Shifted Next */
+#define KEY_SOPTIONS	0615		/* Shifted Options */
+#define KEY_SPREVIOUS	0616		/* Shifted Prev */
+#define KEY_SPRINT	0617		/* Shifted Print */
+#define KEY_SREDO	0620		/* Shifted Redo */
+#define KEY_SREPLACE	0621		/* Shifted Replace */
+#define KEY_SRIGHT	0622		/* Shifted Right arrow */
+#define KEY_SRSUME	0623		/* Shifted Resume */
+#define KEY_SSAVE	0624		/* Shifted Save */
+#define KEY_SSUSPEND	0625		/* Shifted Suspend */
+#define KEY_SUNDO	0626		/* Shifted Undo */
+#define KEY_SUSPEND	0627		/* Suspend */
+#define KEY_UNDO	0630		/* Undo */
+#define KEY_MAX		0777		/* Maximum key value */
 
 #endif /* __NCURSES_H */

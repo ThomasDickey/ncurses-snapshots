@@ -27,7 +27,7 @@
  * Ross Ridge's mytinfo package.
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -49,8 +49,6 @@ extern int errno;
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
 #define FLUSH		fflush(stdout)
-
-static void (*cleanup)();
 
 static char *prg_name;
 
@@ -219,9 +217,7 @@ FILE *f;
 	return(0);
 }
 
-int main(argc, argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
 char *s, *term;
 int errret, cmdline = 1;
@@ -232,8 +228,6 @@ int errret, cmdline = 1;
 	prg_name = s;
 
 	term = getenv("TERM");
-
-	cleanup = usage;
 
 	if (argc > 2 && argv[1][0] == '-' && argv[1][1] == 'S') {
 	cmdline = 0;
@@ -256,8 +250,6 @@ int errret, cmdline = 1;
 	if (argc < 2) {
 	quit(2, "usage error");
 	}
-
-	cleanup = clean;
 
 	setupterm(term, STDOUT_FILENO, &errret);
 	if (errret == ERR)

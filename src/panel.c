@@ -53,10 +53,8 @@ STATIC PANEL __stdscr_pseudo_panel = { (WINDOW *)0 };
 	dPanel(text,pan)
 --------------------------------------------------------------------------*/
 #ifdef PANEL_DEBUG
-void
-dPanel(text,pan)
-char *text;
-PANEL *pan;
+STATIC void
+dPanel(char *text, PANEL *pan)
 {
 	_tracef("%s id=%s b=%s a=%s y=%d x=%d",
 		text,pan->user,
@@ -72,11 +70,8 @@ PANEL *pan;
 	dStack(fmt,num,pan)
 --------------------------------------------------------------------------*/
 #ifdef PANEL_DEBUG
-void
-dStack(fmt,num,pan)
-char *fmt;
-int num;
-PANEL *pan;
+STATIC void
+dStack(char *fmt, int num, PANEL *pan)
 {
 char s80[80];
 
@@ -102,8 +97,7 @@ char s80[80];
 --------------------------------------------------------------------------*/
 #ifdef PANEL_DEBUG
 STATIC void
-Wnoutrefresh(pan)
-PANEL *pan;
+Wnoutrefresh(PANEL *pan)
 {
 	dPanel("wnoutrefresh",pan);
 	wnoutrefresh(pan->win);
@@ -117,8 +111,7 @@ PANEL *pan;
 --------------------------------------------------------------------------*/
 #ifdef PANEL_DEBUG
 STATIC void
-Touchpan(pan)
-PANEL *pan;
+Touchpan(PANEL *pan)
 {
 	dPanel("Touchpan",pan);
 	touchwin(pan->win);
@@ -132,10 +125,7 @@ PANEL *pan;
 --------------------------------------------------------------------------*/
 #ifdef PANEL_DEBUG
 STATIC void
-Touchline(pan,start,count)
-PANEL *pan;
-int start;
-int count;
+Touchline(PANEL *pan, int start, int count)
 {
 char s80[80];
 	sprintf(s80,"Touchline s=%d c=%d",start,count);
@@ -150,9 +140,7 @@ char s80[80];
 	__panels_overlapped(pan1,pan2) - check panel overlapped
 --------------------------------------------------------------------------*/
 STATIC int
-__panels_overlapped(pan1,pan2)
-register PANEL *pan1;
-register PANEL *pan2;
+__panels_overlapped(register PANEL *pan1, register PANEL *pan2)
 {
 	if(!pan1 || !pan2)
 		return(0);
@@ -171,8 +159,7 @@ register PANEL *pan2;
 	__free_obscure(pan)
 --------------------------------------------------------------------------*/
 STATIC void
-__free_obscure(pan)
-PANEL *pan;
+__free_obscure(PANEL *pan)
 {
 PANELCONS *tobs = pan->obscure;				/* "this" one */
 PANELCONS *nobs;					/* "next" one */
@@ -189,9 +176,7 @@ PANELCONS *nobs;					/* "next" one */
 	__override(pan,show)
 --------------------------------------------------------------------------*/
 STATIC void
-__override(pan,show)
-PANEL *pan;
-int show;
+__override(PANEL *pan, int show)
 {
 register y;
 register PANEL *pan2;
@@ -232,7 +217,7 @@ PANELCONS *tobs = pan->obscure;				/* "this" one */
 	__calculate_obscure()
 --------------------------------------------------------------------------*/
 STATIC void
-__calculate_obscure()
+__calculate_obscure(void)
 {
 PANEL *pan;
 register PANEL *pan2;
@@ -271,8 +256,7 @@ PANELCONS *lobs = (PANELCONS *)0;		/* last one */
 	__panel_is_linked(pan) - check to see if panel is in the stack
 --------------------------------------------------------------------------*/
 STATIC int
-__panel_is_linked(pan)
-PANEL *pan;
+__panel_is_linked(PANEL *pan)
 {
 register PANEL *pan2 = __bottom_panel;
 
@@ -288,8 +272,7 @@ register PANEL *pan2 = __bottom_panel;
 	__panel_link_top(pan) - link panel into stack at top
 --------------------------------------------------------------------------*/
 STATIC void
-__panel_link_top(pan)
-PANEL *pan;
+__panel_link_top(PANEL *pan)
 {
 
 #ifdef PANEL_DEBUG
@@ -316,8 +299,7 @@ PANEL *pan;
 	__panel_link_bottom(pan) - link panel into stack at bottom
 --------------------------------------------------------------------------*/
 STATIC void
-__panel_link_bottom(pan)
-PANEL *pan;
+__panel_link_bottom(PANEL *pan)
 {
 
 #ifdef PANEL_DEBUG
@@ -344,8 +326,7 @@ PANEL *pan;
 	__panel_unlink(pan) - unlink panel from stack
 --------------------------------------------------------------------------*/
 STATIC void
-__panel_unlink(pan)
-PANEL *pan;
+__panel_unlink(PANEL *pan)
 {
 register PANEL *prev;
 register PANEL *next;
@@ -386,8 +367,7 @@ register PANEL *next;
 	panel_window(pan) - get window associated with panel
 --------------------------------------------------------------------------*/
 WINDOW *
-panel_window(pan)
-PANEL *pan;
+panel_window(PANEL *pan)
 {
 	return(pan->win);
 }	/* end of panel_window */
@@ -396,7 +376,7 @@ PANEL *pan;
 	update_panels() - wnoutrefresh windows in an orderly fashion
 --------------------------------------------------------------------------*/
 void
-update_panels()
+update_panels(void)
 {
 PANEL *pan;
 
@@ -422,8 +402,7 @@ PANEL *pan;
 	hide_panel(pan) - remove a panel from stack
 --------------------------------------------------------------------------*/
 int
-hide_panel(pan)
-register PANEL *pan;
+hide_panel(register PANEL *pan)
 {
 
 	if(!pan)
@@ -447,8 +426,7 @@ register PANEL *pan;
 may already be in stack
 --------------------------------------------------------------------------*/
 int
-show_panel(pan)
-register PANEL *pan;
+show_panel(register PANEL *pan)
 {
 
 	if(!pan)
@@ -466,8 +444,7 @@ register PANEL *pan;
 	top_panel(pan) - place a panel on top of stack
 --------------------------------------------------------------------------*/
 int
-top_panel(pan)
-register PANEL *pan;
+top_panel(register PANEL *pan)
 {
 	return(show_panel(pan));
 }	/* end of top_panel */
@@ -476,8 +453,7 @@ register PANEL *pan;
 	del_panel(pan) - remove a panel from stack, if in it, and free struct
 --------------------------------------------------------------------------*/
 int
-del_panel(pan)
-register PANEL *pan;
+del_panel(register PANEL *pan)
 {
 	if(pan)
 	{
@@ -495,8 +471,7 @@ register PANEL *pan;
 may already be in stack
 --------------------------------------------------------------------------*/
 int
-bottom_panel(pan)
-register PANEL *pan;
+bottom_panel(register PANEL *pan)
 {
 	if(!pan)
 		return(ERR);
@@ -513,8 +488,7 @@ register PANEL *pan;
 	new_panel(win) - create a panel and place on top of stack
 --------------------------------------------------------------------------*/
 PANEL *
-new_panel(win)
-WINDOW *win;
+new_panel(WINDOW *win)
 {
 PANEL *pan = (PANEL *)malloc(sizeof(PANEL));
 
@@ -551,8 +525,7 @@ PANEL *pan = (PANEL *)malloc(sizeof(PANEL));
 	panel_above(pan)
 --------------------------------------------------------------------------*/
 PANEL *
-panel_above(pan)
-PANEL *pan;
+panel_above(PANEL *pan)
 {
 	if(!pan)
 		return(__bottom_panel);
@@ -564,8 +537,7 @@ PANEL *pan;
 	panel_below(pan)
 --------------------------------------------------------------------------*/
 PANEL *
-panel_below(pan)
-PANEL *pan;
+panel_below(PANEL *pan)
 {
 	if(!pan)
 		return(__top_panel);
@@ -577,9 +549,7 @@ PANEL *pan;
 	set_panel_userptr(pan,uptr)
 --------------------------------------------------------------------------*/
 int
-set_panel_userptr(pan,uptr)
-PANEL *pan;
-char *uptr;
+set_panel_userptr(PANEL *pan, char *uptr)
 {
 	if(!pan)
 		return(ERR);
@@ -591,8 +561,7 @@ char *uptr;
 	panel_userptr(pan)
 --------------------------------------------------------------------------*/
 char *
-panel_userptr(pan)
-PANEL *pan;
+panel_userptr(PANEL *pan)
 {
 	if(!pan)
 		return((char *)0);
@@ -603,10 +572,7 @@ PANEL *pan;
 	move_panel(pan,starty,startx)
 --------------------------------------------------------------------------*/
 int
-move_panel(pan,starty,startx)
-PANEL *pan;
-int starty;
-int startx;
+move_panel(PANEL *pan, int starty, int startx)
 {
 WINDOW *win;
 
@@ -629,9 +595,7 @@ WINDOW *win;
 	replace_panel(pan,win)
 --------------------------------------------------------------------------*/
 int
-replace_panel(pan,win)
-PANEL *pan;
-WINDOW *win;
+replace_panel(PANEL *pan, WINDOW *win)
 {
 	if(!pan)
 		return(ERR);
@@ -647,8 +611,7 @@ WINDOW *win;
 	panel_hidden(pan)
 --------------------------------------------------------------------------*/
 int
-panel_hidden(pan)
-PANEL *pan;
+panel_hidden(PANEL *pan)
 {
 	if(!pan)
 		return(ERR);

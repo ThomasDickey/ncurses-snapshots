@@ -42,6 +42,10 @@ typedef struct panel
 }
 PANEL;
 
+#if	defined(__cplusplus)
+extern "C" {
+#endif
+
 extern  WINDOW *panel_window(PANEL *pan);
 extern  void update_panels(void );
 extern  int hide_panel(PANEL *pan);
@@ -56,6 +60,11 @@ extern  int set_panel_userptr(PANEL *pan,char *uptr);
 extern  char *panel_userptr(PANEL *pan);
 extern  int move_panel(PANEL *pan,int starty,int startx);
 extern  int replace_panel(PANEL *pan,WINDOW *win);
+extern	int panel_hidden(PANEL *pan);
+
+#if	defined(__cplusplus)
+}
+#endif
 
 #endif /* _PANEL_H */
 

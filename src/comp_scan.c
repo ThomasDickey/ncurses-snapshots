@@ -142,8 +142,10 @@ long		token_start;
 			    continue;
 	    }
 
-	    if (ch == EOF)
+	    if (ch == EOF) {
+		type = EOF;
 		goto end_of_token;
+	    }
 
 	    /* have to make some punctuation chars legal for terminfo */
 	    if (!isalnum(ch) && !strchr("@%&*!#", ch)) {
@@ -273,6 +275,7 @@ long		token_start;
 				break;
 
 			case EOF:
+				type = EOF;
 				break;
 			default:
 				/* just to get rid of the compiler warning */

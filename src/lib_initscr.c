@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+WINDOW *stdscr, *curscr, *newscr;
 SCREEN *SP;
 
 WINDOW *initscr(void)

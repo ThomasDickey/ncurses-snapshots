@@ -20,10 +20,9 @@
 ***************************************************************************/
 
 
-/* This file exist to handle non-POSIX systems which don't
-   have <unistd.h>, and usually no sigaction() nor
-   <termios.h>
-*/
+/* This file exists to handle non-POSIX systems which don't have <unistd.h>,
+ * and usually no sigaction() nor <termios.h>
+ */
 
 #ifndef _SIGACTION_H
 #define _SIGACTION_H
@@ -36,12 +35,12 @@ typedef struct sigvec sigaction_t;
 #define sa_handler sv_handler
 #define sa_flags sv_flags
 
-extern void sigaction (int sig, sigaction_t * sigact, sigaction_t *  osigact);
-extern void sigprocmask (int mode, int *mask, int *omask);
-extern void sigemptyset (int *mask);
+extern int sigaction (int sig, sigaction_t * sigact, sigaction_t *  osigact);
+extern int sigprocmask (int mode, int *mask, int *omask);
+extern int sigemptyset (int *mask);
 extern int sigsuspend (int *mask);
-extern void sigdelset (int *mask, int sig);
-extern void sigaddset (int *mask, int sig);
+extern int sigdelset (int *mask, int sig);
+extern int sigaddset (int *mask, int sig);
 
 #endif
 

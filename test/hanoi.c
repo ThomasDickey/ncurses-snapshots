@@ -35,7 +35,7 @@
 #define OTHER(a,b)		(3-((a)+(b)))
 
 struct Peg {
-	int Length[MAXTILES];
+	size_t Length[MAXTILES];
 	int Count;
 };
 
@@ -54,7 +54,11 @@ int TileColour[] = {
 };
 int NMoves = 0;
 
-void InitTiles(), DisplayTiles(), MakeMove(), AutoMove(), Usage();
+void InitTiles(int NTiles);
+void DisplayTiles(void);
+void MakeMove(int From, int To);
+void AutoMove(int From, int To, int Num);
+void Usage(void);
 int Solved(int NumTiles);
 int GetMove(int *From, int *To);
 int InvalidMove(int From, int To);
@@ -203,7 +207,8 @@ DisplayTiles()
 			TileBuf[Pegs[Peg].Length[SlotNo]] = '\0';
 			attrset(COLOR_PAIR(LENTOIND(Pegs[Peg].Length[SlotNo])));
 			mvaddstr(BASELINE-(SlotNo+1),
-					PegPos[Peg]-Pegs[Peg].Length[SlotNo]/2, TileBuf);
+				(int)(PegPos[Peg] - Pegs[Peg].Length[SlotNo]/2),
+				TileBuf);
 		}
 	}
 	attrset(A_NORMAL);

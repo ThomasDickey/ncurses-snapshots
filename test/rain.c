@@ -6,13 +6,11 @@
 
 #define cursor(col,row) move(row,col)
 
-float ranf();
-void onsig();
+float ranf(void);
+void onsig(int sig);
 
-void
-main(argc,argv)
-int argc;
-char *argv[];
+int
+main(int argc, char *argv[])
 {
 int x, y, j;
 static int xpos[5], ypos[5];
@@ -75,19 +73,19 @@ float c;
 		addch(' ');
 		xpos[j]=x; ypos[j]=y;
 		refresh();
+		napms(50);
     }
 }
 
 void
-onsig(n)
-int n;
+onsig(int n)
 {
     endwin();
-    exit(0);
+    exit(n);
 }
 
 float
-ranf()
+ranf(void)
 {
     float rv;
     long r = rand();

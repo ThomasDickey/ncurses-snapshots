@@ -4,10 +4,14 @@
 
 #pragma interface
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <builtin.h>
+#ifndef BSD_NET2
 #include <values.h>
+#endif
 #include <strstream.h>
 extern "C" {
 #include   <curses.h>

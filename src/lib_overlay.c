@@ -84,6 +84,7 @@ int copywin(WINDOW *src, WINDOW *dst,
 	int over)
 {
 int sx, sy, dx, dy;
+int touched;
 
 	T(("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)",
 	    	src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
@@ -104,23 +105,30 @@ int sx, sy, dx, dy;
 	T(("rectangle fits in destination"));
 
 	for (dy = dminrow, sy = sminrow; dy <= dmaxrow; sy++, dy++) {
-		dst->_line[dy].firstchar = dmincol;
-		dst->_line[dy].lastchar = dmincol;
-		for (dx = dmincol, sx = smincol; dx <= dmaxcol; sx++, dx++) {
-			if (over == TRUE ) {
-				if (((src->_line[sy].text[sx] & A_CHARTEXT) != ' ') && (dst->_line[dy].text[dx] != src->_line[sy].text[sx]))  {	
-					dst->_line[dy].text[dx] = src->_line[sy].text[sx];
-					dst->_line[dy].lastchar = dx;
-				} else
-					dst->_line[dy].firstchar++;
-			} else {
-				if (dst->_line[dy].text[dx] != src->_line[sy].text[sx]) {  	
-					dst->_line[dy].text[dx] = src->_line[sy].text[sx];
-					dst->_line[dy].lastchar = dx;
-				} else
-					dst->_line[dy].firstchar++;
-			}
-		}
+	   touched=0;
+	   for(dx=dmincol, sx=smincol; dx <= dmaxcol; sx++, dx++)
+	   {
+		if (over)
+		{
+		   if (((src->_line[sy].text[sx] & A_CHARTEXT)!=' ') &&
+                       (dst->_line[dy].text[dx]!=src->_line[sy].text[sx]))
+		   {
+			dst->_line[dy].text[dx] = src->_line[sy].text[sx];
+			touched=1;
+		   }
+	        }
+		else {
+		   if (dst->_line[dy].text[dx] != src->_line[sy].text[sx])
+		   {
+			dst->_line[dy].text[dx] = src->_line[sy].text[sx];
+			touched=1;
+                   }
+                }
+           }
+	   if (touched)
+	   {
+	      touchline(dst,0,getmaxy(dst));
+	   }
 	}
 	T(("finished copywin"));
 	return OK;

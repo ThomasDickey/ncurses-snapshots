@@ -221,7 +221,7 @@ static inline void PutChar(chtype ch)
 
 int _nc_outch(int ch)
 {
-	T(("outputting %d", ch));
+	TR(TRACE_MAXIMUM, ("outputting %d", ch));
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
 	else
@@ -297,7 +297,14 @@ int	i;
 
 			T(("Transforming lines"));
 			for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++) {
-				if(newscr->_line[i].firstchar != _NOCHANGE)
+				/*
+				 * newscr->line[i].firstchar is normally set
+				 * by wnoutrefresh.  curscr->line[i].firstchar
+				 * is normally set by _nc_scroll_window in the
+				 * vertical-movement optimization code,
+				 */
+				if (newscr->_line[i].firstchar != _NOCHANGE
+				    || curscr->_line[i].firstchar != _NOCHANGE)
 					TransformLine(i);
 			}
 		}
@@ -309,6 +316,8 @@ int	i;
 		newscr->_line[i].oldindex = i;
 	}
 	for (i = 0; i <= curscr->_maxy; i++) {
+		curscr->_line[i].firstchar = _NOCHANGE;
+		curscr->_line[i].lastchar = _NOCHANGE;
 		curscr->_line[i].oldindex = i;
 	}
 

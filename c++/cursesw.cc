@@ -21,7 +21,7 @@
 */
 
 #if !defined(lint)
-static char vcid[] = "$Id: cursesw.cc,v 0.4.1.1 1995/05/15 19:46:06 tom Exp $";
+static char vcid[] = "@Id: cursesw.cc,v 1.3 1994/02/04 22:05:45 anatoly Exp @";
 #endif // !lint
 
 

@@ -11,13 +11,12 @@ includedir	= @includedir@
 
 CC		= @CC@
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= -I. -I$(srcdir)/../src -I$(srcdir)/../include -I$(includedir) -DHAVE_CONFIG_H
+CPPFLAGS	= @APP_INCLUDES@ -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CFLAGS) $(CPPFLAGS)
 
 LINK		= $(CC)
-LDFLAGS		= -L../src -L$(libdir) -lpanel -lncurses @LDFLAGS@ @LIBS@
-# change to -lpanelg -ldcurses if you want to do any debugging
+LDFLAGS		= -L../src -L$(libdir) @LD_MODEL@ -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LIBS@
 
 TESTS = \
 	blue \

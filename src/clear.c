@@ -24,7 +24,7 @@
  * clear.c --  clears the terminal's screen
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <curses.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-/* $header: /src/usr.local/lib/ncurses-1.9.0/test/RCS/newdemo.c,v 1.1 1995/04/21 16:39:03 djm Exp djm $
+/* @Header: /src/usr.local/lib/ncurses-1.9.0/test/RCS/newdemo.c,v 1.1 1995/04/21 16:39:03 djm Exp djm @
  *
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
@@ -13,10 +13,11 @@
 #include <curses.h>
 
 int SubWinTest(WINDOW *win);
-int WaitForUser();
+int WaitForUser(void);
 int BouncingBalls(WINDOW *win);
+void trap(int);
 
-#define delay_output(x) 
+#define delay_output(x) napms(x)
 
 /*
  *  The Australian map
@@ -57,14 +58,13 @@ char    *messages[] =
  *  Main driver
  */
 int
-main()
+main(int argc, char **argv)
 {
 WINDOW  *win;
 int     w, x, y, i, j, c, len;
 char    buffer[80], *message;
 int     width, height;
 chtype  save[80];
-void    trap();
 
     initscr();
     start_color();
@@ -93,7 +93,7 @@ void    trap();
         for(i=0; i < 5000; ++i)
         {   x = rand() % (width-2)  + 1;
             y = rand() % (height-2) + 1;
-            mvwaddch(win, y, x, c);
+            mvwaddch(win, y, x, (chtype)c);
             wrefresh(win);
             nodelay(win,TRUE);
             if (wgetch(win) != ERR)
@@ -121,7 +121,7 @@ void    trap();
         while(*AusMap[i])
 	{   mvwaddstr(win, i+1, 8, AusMap[i]);
             wrefresh(win);
-            delay_output(100);
+            delay_output(50);
             ++i;
         }
 
@@ -139,11 +139,11 @@ void    trap();
 	i = 2;
 	w = width-2;
         while(j < NMESSAGES)
-        {   strncpy(buffer, message, w - i);
+        {   strncpy(buffer, message, (size_t)(w - i));
             buffer[w-i] = 0;
 	    mvwaddstr(win, height/2, i, buffer);
             if(w - i < len)
-            {   memset(buffer, ' ', i);
+            {   memset(buffer, ' ', (size_t)i);
                 strcpy(buffer, message + (w - i));
                 buffer[strlen(buffer)]   = ' ';
                 buffer[i-2] = '\0';
@@ -159,12 +159,12 @@ void    trap();
             i = ++i % w;
             if(i < 2)
             {   message = messages[++j%NMESSAGES];
-                memset(buffer, ' ', w-2);
+                memset(buffer, ' ', (size_t)(w-2));
 		buffer[w-2] = 0;
                 mvwaddstr(win, height/2, 2, buffer);
                 i = 2;
             }
-	    delay_output(300);
+	    delay_output(100);
         }
 
         j = 0;
@@ -175,7 +175,7 @@ void    trap();
         {   c = mvwinch(win, 4, i);
             save[j++] = c;
             c = c & 0x7f;
-	    mvwaddch(win, 4, i, c);
+	    mvwaddch(win, 4, i, (chtype)c);
         }
         wrefresh(win);
 
@@ -259,7 +259,6 @@ WINDOW  *swin1, *swin2, *swin3;
 int
 BouncingBalls(WINDOW *win)
 {
-chtype     c1, c2, c3;
 int	w, h;
 int     x1, y1, xd1, yd1;
 int     x2, y2, xd2, yd2;
@@ -299,10 +298,6 @@ int     x3, y3, xd3, yd3;
         if(y3 <= 1 || y3 >= h - 2)
             yd3 = yd3 ? 0 : 1;
 
-        c1 = mvwinch(win, y1, x1);
-        c2 = mvwinch(win, y2, x2);
-        c3 = mvwinch(win, y3, x3);
-
         init_pair(8,COLOR_RED,COLOR_BLUE);
         wattrset(win, COLOR_PAIR(8));
 	mvwaddch(win, y1, x1, 'O');
@@ -314,10 +309,7 @@ int     x3, y3, xd3, yd3;
         mvwaddch(win, y3, x3, '@');
         wmove(win, 0, 0);
         wrefresh(win);
-	mvwaddch(win, y1, x1, c1);
-	mvwaddch(win, y2, x2, c2);
-	mvwaddch(win, y3, x3, c3);
-	delay_output(150);
+	delay_output(100);
     }
     return 0;
 }
@@ -325,7 +317,7 @@ int     x3, y3, xd3, yd3;
 /*
  *  Wait for user
  */
-int WaitForUser()
+int WaitForUser(void)
 {
  time_t  t;
  chtype key;
@@ -349,10 +341,10 @@ int WaitForUser()
 /*
  *  Trap interrupt
  */
-void trap()
+void trap(int sig)
 {
     endwin();
-    exit(0);
+    exit(sig);
 }
 
 /*  End of DEMO.C */

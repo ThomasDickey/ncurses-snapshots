@@ -13,11 +13,10 @@
 #endif
 
 short   board [64];     /* the squares */
-char    row, column;    /* input characters */
+chtype  row, column;    /* input characters */
 int     rw,col;         /* numeric equivalent of row and column */
 int     curow,curcol;   /* current row and column integers */
 int     rdif, cdif;     /* difference between input and current */
-int     j;              /* index into board */
 
 char	script[]={"'_)//,/(-)/__/__(_<_(__),|/|/_///_/_<//_/_)__o__o'______///_(--_(_)___,(_/,_/__(_\0"};
 
@@ -62,9 +61,9 @@ int play(void);
 void drawboard(void);
 void dosquares(void);
 void getfirst(void); 
-void getrc(void);
-void putstars(void);
-int evalmove(void);
+int  getrc(void);
+void putstars(int);
+int evalmove(int);
 int chkmoves(void);
 int endgame(void);
 int chksqr(int, int);
@@ -83,9 +82,8 @@ main ()
 }
 
 void
-init ()
+init (void)
 {
-
 	srand48 (getpid());
 	initscr ();
 	cbreak ();              /* immediate char return */
@@ -99,15 +97,18 @@ init ()
 }
 
 int 
-play ()
+play (void)
 {
+int j;
+
 	drawboard ();           /* clear screen and drawboard */
-	for (j = 0; j < 64; j++) board[j]=0;
+	for (j = 0; j < 64; j++)
+		board[j] = 0;
 	getfirst ();            /* get the starting square */
 	for (;;) {
-		getrc();
-		if (evalmove()) {
-			putstars ();
+		j = getrc();
+		if (evalmove(j)) {
+			putstars (j);
 			if (!chkmoves()) 
 				return (endgame ());
 		}
@@ -116,13 +117,16 @@ play ()
 }
 
 void
-drawboard ()
+drawboard (void)
 {
+	int	j;
+
 	erase ();
 	dosquares ();
 	refresh ();
 	mvaddstr (0, 7, "1   2   3   4   5   6   7   8");
-	for (j = 0; j < 8; j++) mvaddch (2*j+2, 3, j + 'A');
+	for (j = 0; j < 8; j++)
+		mvaddch (2*j+2, 3, (chtype)(j + 'A'));
 	refresh ();
 	mvaddstr (20,  5, "ROW:");
 	mvaddstr (20, 27, "COLUMN:");
@@ -135,18 +139,22 @@ drawboard ()
 }
 
 void
-dosquares ()
+dosquares (void)
 {
+int j;
+
 	mvaddstr (1, 6, "-------------------------------");
-	for (j = 1; j < 9; j++){
+	for (j = 1; j < 9; j++) {
 		mvaddstr (2*j, 5,  "|   |   |   |   |   |   |   |   |");
 		mvaddstr (2*j+1, 6, "-------------------------------");
 	}
 }
 
 void
-getfirst ()                             /* get first square */
+getfirst (void)                         /* get first square */
 {
+int j;
+
 	mvaddstr (23, 25, "(S)elect or (R)andom "); refresh ();
 	do {
 		row = toupper(getch());
@@ -161,15 +169,15 @@ getfirst ()                             /* get first square */
 	else {
 		mvaddstr (23, 25, "Enter starting row and column");
 		refresh ();
-		getrc();                        /* get row and column */
+		j = getrc();            /* get row and column */
 	}
-	putstars ();
+	putstars (j);
 	move (23, 0);
 	clrtobot();
 }       
 
-void
-getrc ()                                /* get row and column */
+int
+getrc (void)                            /* get row and column */
 {
 	noecho ();
 	do {
@@ -197,11 +205,11 @@ getrc ()                                /* get row and column */
 	refresh();
 	rw = row - 'A';
 	col= column - '1';
-	j = 8 * rw + col;
+	return (8 * rw) + col;
 }
 
 void
-putstars ()                     /* place the stars, update board & currents */
+putstars (int j)          /* place the stars, update board & currents */
 {
 	mvaddch (2*curow+2, 38, ' ');
 	mvaddch (2*rw+2, 38, '<');
@@ -217,7 +225,7 @@ putstars ()                     /* place the stars, update board & currents */
 }
 
 int
-evalmove()                      /* convert row and column to integers */
+evalmove(int j)                 /* convert row and column to integers */
 		                /* and evaluate move */
 {
 	rdif = rw - curow;
@@ -225,13 +233,15 @@ evalmove()                      /* convert row and column to integers */
 	rdif = abs(rw  - curow);
 	cdif = abs(col - curcol);
 	refresh ();
-	if ((rdif == 1) && (cdif == 2)) if (board [j] == 0) return (1);
-	if ((rdif == 2) && (cdif == 1)) if (board [j] == 0) return (1);
+	if (((rdif == 1) && (cdif == 2))
+	 || ((rdif == 2) && (cdif == 1)))
+		if (board [j] == 0)
+			return (1);
 	return (0);
 }
 
 int
-chkmoves ()                     /* check to see if valid moves are available */
+chkmoves (void)                 /* check to see if valid moves are available */
 {
 	if (chksqr(2,1))   return (1);
 	if (chksqr(2,-1))  return (1);
@@ -245,22 +255,29 @@ chkmoves ()                     /* check to see if valid moves are available */
 }
 
 int
-endgame ()                      /* check for filled board or not */
+endgame (void)                  /* check for filled board or not */
 {
+int j;
+
 	rw = 0;
-	for (j = 0; j < 64; j++) if (board[j] != 0) rw+=1;
-	if (rw == 64) mvaddstr (20, 20, "Congratulations !! You got 'em all");
-		else mvprintw (20, 20, "You have ended up with %2d squares",rw);
+	for (j = 0; j < 64; j++)
+		if (board[j] != 0)
+			rw += 1;
+	if (rw == 64)
+		mvaddstr (20, 20, "Congratulations !! You got 'em all");
+	else
+		mvprintw (20, 20, "You have ended up with %2d squares",rw);
 	mvaddstr (21, 25, "Play again ? (y/n) ");
 	refresh ();
-	if ((row=tolower(getch())) == 'y') return (1);
-		else return (0);
+	if ((row=tolower(getch())) == 'y')
+		return (1);
+	else
+		return (0);
 }
 
 #ifndef abs
 int
-abs(num)
-int	num;
+abs(int num)
 {
 	if (num < 0) return (-num);
 		else return (num);
@@ -281,7 +298,7 @@ int	r1, c1;
 }
 
 void
-instruct()
+instruct(void)
 {
 int i;
 
@@ -305,12 +322,11 @@ int i;
 }
 
 void
-title (y,x)
-int	y,x;
+title (int y, int x)
 {
-char c;
+chtype c;
+int j = 0;
 
-	j = 0;
 	do {
 		c = script[j];
 		if (c == 0) break ;
@@ -319,5 +335,3 @@ char c;
 	} while (c != 0);
 	refresh ();
 }
-
-

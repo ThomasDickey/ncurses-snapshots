@@ -5,16 +5,16 @@
 <link rev=made href=mailto:esr@snark.thyrsus.com>
 </HEAD>
 <BODY>
-<TITLE>Announcing ncurses 1.9.2d</TITLE>
-<H1>Announcing ncurses 1.9.2d</H1>
+<TITLE>Announcing ncurses @VERSION@</TITLE>
+<H1>Announcing ncurses @VERSION@</H1>
 
-<H2>New in 1.9.2d:</H2>
+<H2>New in @VERSION@:</H2>
 <UL>
 <LI> Integrated panels support.
 <LI> ncurses output can now be redirected.
 </UL>
 
-<H2>Overview of ncurses 1.9.2d</H2>
+<H2>Overview of ncurses @VERSION@</H2>
 
 The ncurses library is a freeware emulation of System V Release 4.0 curses.
 It uses terminfo format, supports color and multiple highlights and forms

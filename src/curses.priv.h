@@ -28,14 +28,14 @@
  *
  */
 
-#include "version.h"
-#include "config.h"
+#include <version.h>
+#include <config.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include "curses.h"
+#include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
 #if HAVE_TERMIOS_H
 # include <termios.h>

@@ -55,7 +55,7 @@ int ch;
 	erasec = erasechar();
 	killc = killchar();
 
-	oldstr = (char *)str;
+	oldstr = str;
 
 	if (is_wintouched(win) || (win->_flags & _HASMOVED))
 		wrefresh(win);

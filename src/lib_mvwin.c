@@ -43,12 +43,24 @@ int mvwin(WINDOW *win, int by, int bx)
 	||  bx < 0)
 	    return(ERR);
 
-	wtouchln(newscr, by, win->_maxy, 1);	/* touch window's old location */
+	/*
+	 * If the window is moved, touch the data in 'newscr' which overlaps
+	 * the new/old positions, and also touch the window's contents so that
+	 * a following call to 'wrefresh()' will paint the window at the new
+	 * location.
+	 *
+	 * (If it's not moved, it doesn't make sense to do that).
+	 */
+	if (win->_begy != by
+	 || win->_begx != bx) {
+		wtouchln(newscr, by, win->_maxy, 1);	/* touch window's old location */
 
-	win->_begy = by;
-	win->_begx = bx;
+		win->_begy = by;
+		win->_begx = bx;
+		touchwin(win);
 
-	wtouchln(newscr, by, win->_maxy, 1);	/* touch window's new location */
+		wtouchln(newscr, by, win->_maxy, 1);	/* touch window's new location */
+	}
 
 	return(OK);
 }

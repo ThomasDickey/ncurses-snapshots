@@ -35,16 +35,16 @@
 #define sign(_x) (_x<0?-1:1)
 
 /* Plot a point */
-void
+static void
 plot(int x,int y,char col)
 {
-  mvaddch(y,x,col);
+  mvaddch(y,x,(chtype)col);
 }
  
 
 /* Draw a diagonal(arbitrary) line using Bresenham's alogrithm. */
-void
-dline(int x1,int y1,int x2,int y2,char ch)
+static void
+dline(int from_x, int from_y, int x2, int y2, char ch)
 {
 	int dx,dy;
 	int ax,ay;
@@ -52,8 +52,8 @@ dline(int x1,int y1,int x2,int y2,char ch)
 	int x,y;
 	int d;
 	
-	dx=x2-x1;
-	dy=y2-y1;
+	dx=x2-from_x;
+	dy=y2-from_y;
 	
 	ax=abs(dx*2);
 	ay=abs(dy*2);
@@ -61,8 +61,8 @@ dline(int x1,int y1,int x2,int y2,char ch)
 	sx=sign(dx);
 	sy=sign(dy);
 
-	x=x1;
-	y=y1;
+	x=from_x;
+	y=from_y;
 		
 	if(ax>ay)
 	{
@@ -103,11 +103,14 @@ dline(int x1,int y1,int x2,int y2,char ch)
 }
 
 int
-main()
+main(int argc, char **argv)
 {
 	int i,cx,cy;
-	double mdx,mdy,hdx,hdy,mradius,hradius,mangle,hangle;
-	double sdx,sdy,sangle,sradius,hours;
+	double mradius, hradius, mangle, hangle;
+	double sangle, sradius, hours;
+	int hdx, hdy;
+	int mdx, mdy;
+	int sdx, sdy;
 	time_t tim;
 	struct tm *t;
 	char szChar[10];

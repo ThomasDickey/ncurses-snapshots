@@ -11,34 +11,19 @@
 #include <unistd.h>
 #include <curses.h>
 
-#ifdef __STDC__
-void inputTest (WINDOW *);
-void scrollTest (WINDOW *);
-void introTest (WINDOW *);
-int initTest (WINDOW **);
-void outputTest (WINDOW *);
-void padTest (WINDOW *);
-void resizeTest (WINDOW *);
-void display_menu(int,int);
-#else
-void inputTest ();
-void scrollTest ();
-void introTest ();
-int initTest ();
-void outputTest ();
-void padTest ();
-void resizeTest ();
-void display_menu();
-#endif
+static void display_menu (int,int);
+static int  initTest (WINDOW **);
+static void inputTest (WINDOW *);
+static void introTest (WINDOW *);
+static void outputTest (WINDOW *);
+static void padTest (WINDOW *);
+static void resizeTest (WINDOW *);
+static void scrollTest (WINDOW *);
 
 struct commands
 {
  char *text;
-#ifdef __STDC__
  void (*function)(WINDOW *);
-#else
- void (*function)();
-#endif
 };
 typedef struct commands COMMAND;
 #define MAX_OPTIONS 6
@@ -55,7 +40,7 @@ COMMAND command[MAX_OPTIONS] =
 int     width, height;
 
 int
-main()
+main(int argc, char **argv)
 {
 WINDOW  *win;
 int key,old_option=(-1),new_option=0;
@@ -121,12 +106,8 @@ bool quit=FALSE;
     return 0;
 }
 
-#ifdef __STDC__
+static
 void Continue (WINDOW *win)
-#else
-void Continue (win)
-WINDOW *win;
-#endif
 {
     wmove(win, 10, 1);
 /*    wclrtoeol(win);
@@ -135,16 +116,14 @@ WINDOW *win;
     raw();
     wgetch(win);
 }
-#ifdef __STDC_
+
+static
 int initTest (WINDOW **win)
-#else
-int initTest (win)
-WINDOW **win;
-#endif
 {
 #ifdef PDCDEBUG
 	PDC_debug("initTest called\n");
 #endif
+	trace(TRACE_MAXIMUM);
     initscr();
 #ifdef PDCDEBUG
 	PDC_debug("after initscr()\n");
@@ -162,12 +141,9 @@ WINDOW **win;
     }
     return 0;
 }
-#ifdef __STDC__
-void introTest (WINDOW *win)
-#else
-void introTest (win)
-WINDOW *win;
-#endif
+
+static void
+introTest (WINDOW *win)
 {
     beep ();
     werase(win);
@@ -180,12 +156,9 @@ WINDOW *win;
     Continue(win);
     return;
 }
-#ifdef __STDC__
-void scrollTest (WINDOW *win)
-#else
-void scrollTest (win)
-WINDOW *win;
-#endif
+
+static void
+scrollTest (WINDOW *win)
 {
     int i;
     int OldX, OldY;
@@ -214,12 +187,9 @@ WINDOW *win;
     wsetscrreg (win, 0, --OldY);
 
 }
-#ifdef __STDC__
-void inputTest (WINDOW *win)
-#else
-void inputTest (win)
-WINDOW *win;
-#endif
+
+static void
+inputTest (WINDOW *win)
 {
     int w, h, bx, by, sw, sh, i, c,num;
     char buffer [80];
@@ -305,12 +275,9 @@ WINDOW *win;
     mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
     Continue(win);
 }
-#ifdef __STDC__
-void outputTest (WINDOW *win)
-#else
-void outputTest (win)
-WINDOW *win;
-#endif
+
+static void
+outputTest (WINDOW *win)
 {
     WINDOW *win1;
     char Buffer [80];
@@ -430,12 +397,8 @@ WINDOW *win;
     Continue(win);
 }
 
-#ifdef __STDC__
-void resizeTest(WINDOW *dummy)
-#else
-void resizeTest(dummy)
-WINDOW *dummy;
-#endif
+static void
+resizeTest(WINDOW *dummy)
 {
     WINDOW *win1;
 
@@ -477,12 +440,9 @@ WINDOW *dummy;
     refresh();
 
 }
-#ifdef __STDC__
-void padTest(WINDOW *dummy)
-#else
-void padTest(dummy)
-WINDOW *dummy;
-#endif
+
+static void
+padTest(WINDOW *dummy)
 {
 WINDOW *pad;
 
@@ -508,12 +468,8 @@ WINDOW *pad;
  delwin(pad);
 }
 
-#ifdef __STDC__
-void display_menu(int old_option,int new_option)
-#else
-void display_menu(old_option,new_option)
-int old_option,new_option;
-#endif
+static void
+display_menu(int old_option,int new_option)
 {
  register int i;
 

@@ -38,12 +38,27 @@ void _nc_synchook(WINDOW *win)
 int mvderwin(WINDOW *win, int y, int x)
 /* move a derived window */
 {
-	if (win->_parent) {
-		win->_pary = y;
-		win->_parx = x;
-		return(OK);
-	} else
-		return(ERR);
+   WINDOW *orig = win->_parent;
+   int i;
+
+   if (orig)
+   {
+      if (win->_parx==x && win->_pary==y)
+	return OK;
+      if (x<0 || y<0)
+	return ERR;
+      if ( (x+getmaxx(win) > getmaxx(orig)) ||
+           (y+getmaxy(win) > getmaxy(orig)) )
+        return ERR;
+   }
+   else
+      return ERR;
+   wsyncup(win);
+   win->_parx = x;
+   win->_pary = y;
+   for(i=0;i<getmaxy(win);i++)
+     win->_line[i].text = &(orig->_line[y++].text[x]);
+   return OK;	
 }
 
 int syncok(WINDOW *win, bool bf)
@@ -82,12 +97,10 @@ WINDOW *wp;
 void wcursyncup(WINDOW *win)
 /* sync the cursor in all derived windows to its value in the base window */
 {
-	WINDOW	*wp;
-
-	for (wp = win; wp; wp = wp->_parent) {
-		wp->_curx = win->_curx;
-		wp->_cury = win->_cury;
-	}
+   WINDOW *wp;
+   for( wp = win; wp && wp->_parent; wp = wp->_parent ) {
+      wmove( wp->_parent, wp->_pary + wp->_cury, wp->_parx + wp->_curx );
+   }	
 }
 
 WINDOW *dupwin(WINDOW *win)

@@ -6,12 +6,14 @@
 #include <ctype.h>
 #include <time.h>
 
-int get_colour();
-void explode();
+static int get_colour(void);
+static void explode(int row, int col);
+static void showit(void);
 
 int main()
 {
-int start,end,row,diff,flag = 0,direction,seed;
+int start,end,row,diff,flag = 0,direction;
+unsigned seed;
 
        initscr();
        if (has_colors())
@@ -33,37 +35,38 @@ int start,end,row,diff,flag = 0,direction,seed;
                 mvprintw(LINES - row,start + (row * direction),
                     (direction < 0) ? "\\" : "/");
                 if (flag++) {
-                    refresh();
+                    showit();
                     erase();
                     flag = 0;
                 }
             }
             if (flag++) {
-                refresh();
+                showit();
                 flag = 0;
             }
             seed = time((time_t *)0);
             srand(seed);
             explode(LINES-row,start+(diff*direction));
             erase();
-            refresh();
+            showit();
        }
        endwin();
        exit(0);
 }
 
+static
 void explode(int row, int col)
 {
        erase();
        mvprintw(row,col,"-");
-       refresh();
+       showit();
 
        init_pair(1,get_colour(),COLOR_BLACK);
        attrset(COLOR_PAIR(1));
        mvprintw(row-1,col-1," - ");
        mvprintw(row,col-1,"-+-");
        mvprintw(row+1,col-1," - ");
-       refresh();
+       showit();
 
        init_pair(1,get_colour(),COLOR_BLACK);
        attrset(COLOR_PAIR(1));
@@ -72,7 +75,7 @@ void explode(int row, int col)
        mvprintw(row,  col-2,"-+#+-");
        mvprintw(row+1,col-2,"-+++-");
        mvprintw(row+2,col-2," --- ");
-       refresh();
+       showit();
 
        init_pair(1,get_colour(),COLOR_BLACK);
        attrset(COLOR_PAIR(1));
@@ -81,7 +84,7 @@ void explode(int row, int col)
        mvprintw(row,  col-2,"+# #+");
        mvprintw(row+1,col-2,"++#++");
        mvprintw(row+2,col-2," +++ ");
-       refresh();
+       showit();
 
        init_pair(1,get_colour(),COLOR_BLACK);
        attrset(COLOR_PAIR(1));
@@ -90,7 +93,7 @@ void explode(int row, int col)
        mvprintw(row,  col-2,"#   #");
        mvprintw(row+1,col-2,"## ##");
        mvprintw(row+2,col-2,"  #  ");
-       refresh();
+       showit();
 
        init_pair(1,get_colour(),COLOR_BLACK);
        attrset(COLOR_PAIR(1));
@@ -99,11 +102,11 @@ void explode(int row, int col)
        mvprintw(row,  col-2,"     ");
        mvprintw(row+1,col-2,"#   #");
        mvprintw(row+2,col-2," # # ");
-       refresh();
-       return;
+       showit();
 }
 
-int get_colour()
+static
+int get_colour(void)
 {
  int attr;
        attr = (rand() % 16)+1;
@@ -112,4 +115,11 @@ int get_colour()
        if (attr > 8)
           attr |= A_BOLD;
        return(attr);
+}
+
+static void
+showit(void)
+{
+	refresh();
+	napms(120);
 }

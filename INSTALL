@@ -65,20 +65,22 @@ INSTALLATION PROCEDURE:
 	'make install.progs' installs tic, infocmp, clear and tput.
   	'make install.libs' installs the headers and libraries.
 	'make install.man' installs the man pages.
-  	'make install.data' installs the terminfo database. You can skip this
+
+5.  Type 'make install.data' installs the terminfo database. You can skip this
   		part if your system already has such a database.
   
-	CAVEAT EMPTOR: 'install.data' or 'install' will NUKE any existing
-	terminfo database. If you have any custom or unusual entries SAVE them
-	before you install ncurses.
+  ##############################################################################
+  #             CAVEAT EMPTOR: 'install.data' will NUKE any existing           #
+  #     terminfo database. If you have any custom or unusual entries SAVE them #
+  #     before you install ncurses. I have a file called terminfo.custom for   #
+  #     this purpose. Don't forget to run tic on the file once your done.      #
+  ##############################################################################
 
-	'make install' will do all the above.
-
-5.  The c++ directory has C++ classes that are built on top of ncurses and
+7.  The c++ directory has C++ classes that are built on top of ncurses and
     panels.  You need to have panels installed before you can compile and 
     run the demo.
 
-5a. If you're running under Linux, you must either (a) tell Linux that the
+8. If you're running under Linux, you must either (a) tell Linux that the
     console terminal type is `linux', or (b) make a link to or copy of the 
     linux entry in the appropriate place under your terminfo directory,
     named `console'.
@@ -92,15 +94,7 @@ INSTALLATION PROCEDURE:
     directory.  Note: this will go away next time you do `make install.data'
     and you'll have to redo it. 
 
-TESTING:
-
-6.  Change to the subdirectory test and type 'make all'.
-
-    This should compile all of the test programs in the release.  Once again,
-    there should be no errors. You'll get lots of warnings, just ignore them.
-    Read the file test/README for details on what to expect.
-
-7.  Run ncurses and several other test programs.
+9.  Run ncurses and several other test programs.
 
     The ncurses program is designed specifically to test the ncurses library.
     You can use it to verify that the screen highlights work correctly, that
