@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.80 2004/02/07 18:20:46 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.81 2004/02/29 01:05:17 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -150,6 +150,10 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		 WINDOW_EXT(win, addch_y) != y)) {
 		/* discard the incomplete multibyte character */
 		WINDOW_EXT(win, addch_used) = 0;
+		TR(TRACE_VIRTPUT,
+		   ("Alert discarded multibyte on move (%d,%d) -> (%d,%d)",
+		    WINDOW_EXT(win, addch_y), WINDOW_EXT(win, addch_x),
+		    y, x));
 	    }
 	    WINDOW_EXT(win, addch_x) = x;
 	    WINDOW_EXT(win, addch_y) = y;
@@ -269,12 +273,12 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
      */
     if ((AttrOf(ch) & A_ALTCHARSET)
 	|| ((s = unctrl(t))[1] == 0 ||
-		(
+	    (
 		isprint(t)
 #if USE_WIDEC_SUPPORT
 		|| WINDOW_EXT(win, addch_used)
 #endif
-		)))
+	    )))
 	return waddch_literal(win, ch);
 
     /*

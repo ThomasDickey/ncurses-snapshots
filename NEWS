@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.799 2004/02/22 01:28:46 tom Exp $
+-- $Id: NEWS,v 1.800 2004/02/29 01:10:57 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040228
+	+ modify _nc_insert_ch() to allow for its input to be part of a
+	  multibyte string.
+	+ split out lib_insnstr.c, to prepare to rewrite it.  X/Open states
+	  that this function performs wrapping, unlike all of the other
+	  insert-functions.  Currently it does not wrap.
+	+ check for nl_langinfo(CODESET), use it if available (report by
+	  Stanislav Ievlev).
+	+ split-out CF_BUILD_CC macro, actually did this for lynx first.
+	+ fixes for configure script CF_WITH_DBMALLOC and CF_WITH_DMALLOC,
+	  which happened to work with bash, but not with Bourne shell (report
+	  by Marco d'Itri via tin-dev).
 
 20040221
 	+ some changes to adapt the form library to wide characters, incomplete
