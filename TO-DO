@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.37 1997/09/18 19:55:52 tom Exp $
+-- $Id: TO-DO,v 1.38 1997/10/11 14:47:42 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -20,10 +20,6 @@ Known Problems:
 
 * Scrolling optimization has holes: for example, it forces repaints of the
   screen between calls to refresh().
-
-* The stacking order of windows on the screen does not match that implemented
-  in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
-  full compatibility for this behavior must be achieved by testing/analysis.
 
 * SVr4 uses slightly different rules for determining when softkeys are shown.
   For example, they are initially displayed (before the ncurses 'e' test
@@ -79,8 +75,6 @@ Portability (or lack thereof):
   package.
 
 Untested features:
-
-* The rep optimization in lib_doupdate.c is not yet thoroughly tested.
 
 * The code for the HP color model using set_color_pair is untested.
 

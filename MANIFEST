@@ -265,6 +265,7 @@
 ./c++/demo.cc
 ./c++/edit_cfg.sh
 ./c++/etip.h.in
+./c++/headers
 ./c++/internal.h
 ./c++/modules
 ./configure
@@ -512,9 +513,11 @@
 ./ncurses/lib_doupdate.c
 ./ncurses/lib_endwin.c
 ./ncurses/lib_erase.c
+./ncurses/lib_flash.c
 ./ncurses/lib_freeall.c
 ./ncurses/lib_getch.c
 ./ncurses/lib_getstr.c
+./ncurses/lib_hline.c
 ./ncurses/lib_inchstr.c
 ./ncurses/lib_initscr.c
 ./ncurses/lib_insch.c
@@ -558,6 +561,9 @@
 ./ncurses/lib_tstp.c
 ./ncurses/lib_twait.c
 ./ncurses/lib_vidattr.c
+./ncurses/lib_vline.c
+./ncurses/lib_wattroff.c
+./ncurses/lib_wattron.c
 ./ncurses/lib_window.c
 ./ncurses/llib-lncurses
 ./ncurses/make_keys.c

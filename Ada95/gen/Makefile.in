@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.10 $
+#  $Revision: 1.12 $
 #
 .SUFFIXES:
 
@@ -33,6 +33,7 @@ libdir		= @libdir@
 includedir	= @includedir@
 datadir		= @datadir@
 ticdir		= $(datadir)/terminfo
+ADA_OBJECTS	= @ADA_OBJECTS@
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -125,11 +126,11 @@ GEN_SRC		= $(srcdir)/$(ABASE).ads.m4				\
 	          $(srcdir)/$(ABASE)-panels-user_data.ads.m4
 
 
-all:	$(GEN_TARGETS) dirs
+all:	$(OBJDIR) $(ADA_OBJDIR) $(GEN_TARGETS)
 	@
 
-dirs:
-	@-mkdir $(OBJDIR) $(ADA_OBJDIR)
+install ::
+uninstall ::
 
 gen:	gen.o
 	@ECHO_LINK@ $(LINK) $(CFLAGS_NORMAL) gen.o $(LD_FLAGS) -o $@ $(LIB_CURSES)

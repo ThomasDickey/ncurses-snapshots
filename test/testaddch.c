@@ -2,14 +2,14 @@
  * This is an example written by Alexander V. Lukyanov <lav@yars.free.net>,
  * to demonstrate an inconsistency between ncurses and SVr4 curses.
  *
- * $Id: testaddch.c,v 1.1 1997/08/09 17:04:15 Alexander.V.Lukyanov Exp $
+ * $Id: testaddch.c,v 1.2 1997/10/11 19:52:58 tom Exp $
  */
 #include <test.priv.h>
 
-static void attr_addstr(unsigned char *s,chtype a)
+static void attr_addstr(char *s,chtype a)
 {
 	while(*s)
-		addch(*s++|a);
+		addch(((unsigned char)(*s++))|a);
 }
 
 int

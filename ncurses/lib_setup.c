@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.29 1997/09/20 19:09:36 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.30 1997/10/11 16:40:48 tom Exp $")
 
 /****************************************************************************
  *
@@ -262,10 +262,6 @@ int status;
 	}
 
 	set_curterm(term_ptr);
-	if (generic_type)
-		ret_error(0, "'%s': I need something more specific.\n", tname);
-	if (hard_copy)
-		ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
 
 	if (command_character  &&  getenv("CC"))
 		do_prototype();
@@ -288,6 +284,11 @@ int status;
 		*errret = 1;
 
 	T((T_CREATE("screen %s %dx%d"), tname, LINES, COLS));
+
+	if (generic_type)
+		ret_error(0, "'%s': I need something more specific.\n", tname);
+	if (hard_copy)
+		ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
 
 	returnCode(OK);
 }

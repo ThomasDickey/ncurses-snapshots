@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.28 1997/09/28 00:21:36 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.29 1997/10/11 22:17:43 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -175,6 +175,12 @@ void delscreen(SCREEN *sp)
 ripoff_t rippedoff[5], *rsp = rippedoff;
 #define N_RIPS SIZEOF(rippedoff)
 
+static bool no_mouse_event (SCREEN *sp GCC_UNUSED) { return FALSE; }
+static bool no_mouse_inline(SCREEN *sp GCC_UNUSED) { return FALSE; }
+static bool no_mouse_parse (int code   GCC_UNUSED) { return TRUE; }
+static void no_mouse_resume(SCREEN *sp GCC_UNUSED) { }
+static void no_mouse_wrap  (SCREEN *sp GCC_UNUSED) { }
+
 int _nc_setupscreen(short slines, short const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
@@ -202,6 +208,14 @@ size_t	i;
 	SP->_endwin      = TRUE;
 	SP->_ofp         = output;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
+
+	SP->_maxclick     = DEFAULT_MAXCLICK;
+	SP->_mouse_event  = no_mouse_event;
+	SP->_mouse_inline = no_mouse_inline;
+	SP->_mouse_parse  = no_mouse_parse;
+	SP->_mouse_resume = no_mouse_resume;
+	SP->_mouse_wrap   = no_mouse_wrap;
+	SP->_mouse_fd     = -1;
 
 	/*
 	 * If we've no magic cookie support, we suppress attributes that xmc

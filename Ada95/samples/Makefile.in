@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.8 $
+#  $Revision: 1.9 $
 #
 .SUFFIXES:
 
@@ -90,6 +90,9 @@ TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
 
 all ::  demo1
 	@
+
+install ::
+uninstall ::
 
 demo1:	explain.msg
 	$(ADAMAKE) $(ADAMAKEFLAGS) tour $(CARGS) $(LARGS)

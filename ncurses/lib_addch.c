@@ -22,36 +22,14 @@
 /*
 **	lib_addch.c
 **
-**	The routines waddch(), wattr_on(), wattr_off(), wchgat().
+**	The routines waddch(), wchgat().
 **
 */
 
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.35 1997/09/20 15:02:34 juergen Exp $")
-
-int wattr_on(WINDOW *win, const attr_t at)
-{
-	T((T_CALLED("wattr_on(%p,%s)"), win, _traceattr(at)));
-	if (win) {
-	  T(("... current %s", _traceattr(win->_attrs)));
-	  toggle_attr_on(win->_attrs,at);
-	  returnCode(OK);
-	} else
-	  returnCode(ERR);
-}
-
-int wattr_off(WINDOW *win, const attr_t at)
-{
-	T((T_CALLED("wattr_off(%p,%s)"), win, _traceattr(at)));
-	if (win) {
-	  T(("... current %s", _traceattr(win->_attrs)));
-	  toggle_attr_off(win->_attrs,at);
-	  returnCode(OK);
-	} else
-	  returnCode(ERR);
-}
+MODULE_ID("$Id: lib_addch.c,v 1.36 1997/10/08 09:38:17 jtc Exp $")
 
 int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UNUSED)
 {

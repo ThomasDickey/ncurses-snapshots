@@ -141,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.45 1997/10/01 19:18:30 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.46 1997/10/11 16:35:20 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -161,7 +161,6 @@ static float diff;
 
 #define OPT_SIZE 512
 
-static int cost_of(const char *const cap, int affcnt);
 static int normalized_cost(const char *const cap, int affcnt);
 
 /****************************************************************************
@@ -174,7 +173,7 @@ static int normalized_cost(const char *const cap, int affcnt);
 static int
 trace_cost_of(const char *capname, const char *cap, int affcnt)
 {
-	int result = cost_of(cap,affcnt);
+	int result = _nc_msec_cost(cap,affcnt);
 	TR(TRACE_CHARPUT|TRACE_MOVE, ("CostOf %s %d", capname, result));
 	return result;
 }
@@ -191,12 +190,12 @@ trace_normalized_cost(const char *capname, const char *cap, int affcnt)
 
 #else
 
-#define CostOf(cap,affcnt) cost_of(cap,affcnt);
+#define CostOf(cap,affcnt) _nc_msec_cost(cap,affcnt);
 #define NormalizedCost(cap,affcnt) normalized_cost(cap,affcnt);
 
 #endif
 
-static int cost_of(const char *const cap, int affcnt)
+int _nc_msec_cost(const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
     if (cap == 0)
@@ -236,7 +235,7 @@ static int cost_of(const char *const cap, int affcnt)
 static int normalized_cost(const char *const cap, int affcnt)
 /* compute the effective character-count for an operation (round up) */
 {
-	int cost = cost_of(cap, affcnt);
+	int cost = _nc_msec_cost(cap, affcnt);
 	if (cost != INFINITY)
 		cost = (cost + SP->_char_padding - 1) / SP->_char_padding;
 	return cost;

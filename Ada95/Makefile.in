@@ -19,39 +19,29 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.6 $
+#  $Revision: 1.7 $
 #
 SHELL		= /bin/sh
 THIS		= Makefile
 
 SUBDIRS         = @ADA_SUBDIRS@
 
-all ::
+all \
+install \
+uninstall ::
 	for d in $(SUBDIRS); do \
 		(cd $$d ; $(MAKE) $@) ;\
 	done
 
-clean ::
-	for d in $(SUBDIRS); do \
-		(cd $$d ; $(MAKE) $@) ;\
-	done
-
-distclean ::
-	for d in $(SUBDIRS); do \
-		(cd $$d ; $(MAKE) $@) ;\
-	done
-	rm -f Makefile
-
-realclean ::
-	for d in $(SUBDIRS); do \
-		(cd $$d ; $(MAKE) $@) ;\
-	done
-	rm -f Makefile
-
+clean \
 mostlyclean ::
 	for d in $(SUBDIRS); do \
 		(cd $$d ; $(MAKE) $@) ;\
 	done
 
-install ::
-uninstall ::
+distclean \
+realclean ::
+	for d in $(SUBDIRS); do \
+		(cd $$d ; $(MAKE) $@) ;\
+	done
+	rm -f Makefile

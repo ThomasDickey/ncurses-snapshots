@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.9 $
+#  $Revision: 1.10 $
 #
 .SUFFIXES:
 
@@ -34,6 +34,7 @@ libdir		= @libdir@
 includedir	= @includedir@
 datadir		= @datadir@
 ticdir		= $(datadir)/terminfo
+ADA_INCLUDE	= @ADA_INCLUDE@
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -151,6 +152,9 @@ GENOBJS=$(ADA_OBJDIR)/$(ABASE)-menus-menu_user_data.o			\
 
 all :: $(LIBALIS) @cf_compile_generics@
 	@echo done
+
+install ::
+uninstall ::
 
 generics: $(GENALIS)
 	@

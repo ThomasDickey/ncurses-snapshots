@@ -19,39 +19,25 @@
 *                                                                          *
 ***************************************************************************/
 
-
 /*
- *	beep.c
- *
- *	The routine beep().
- *
- */
+**	lib_wattron.c
+**
+**	The routines wattr_on().
+**
+*/
 
 #include <curses.priv.h>
-#include <term.h>	/* beep, flash */
+#include <ctype.h>
 
-MODULE_ID("$Id: lib_beep.c,v 1.4 1997/10/08 09:38:17 jtc Exp $")
+MODULE_ID("$Id: lib_wattron.c,v 1.1 1997/10/08 05:59:51 jtc Exp $")
 
-/*
- *	beep()
- *
- *	Sound the current terminal's audible bell if it has one.   If not,
- *	flash the screen if possible.
- *
- */
-
-int beep(void)
+int wattr_on(WINDOW *win, const attr_t at)
 {
-	T((T_CALLED("beep()")));
-
-	/* FIXME: should make sure that we are not in altchar mode */
-	if (bell) {
-		TPUTS_TRACE("bell");
-		return(putp(bell));
-	} else if (flash_screen) {
-		TPUTS_TRACE("flash_screen");
-		return(putp(flash_screen));
-	}
-	else
+	T((T_CALLED("wattr_on(%p,%s)"), win, _traceattr(at)));
+	if (win) {
+		T(("... current %s", _traceattr(win->_attrs)));
+		toggle_attr_on(win->_attrs,at);
+		returnCode(OK);
+	} else
 		returnCode(ERR);
 }

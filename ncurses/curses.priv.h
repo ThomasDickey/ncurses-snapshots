@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.82 1997/09/28 00:24:30 tom Exp $
+ * $Id: curses.priv.h,v 1.84 1997/10/11 22:12:42 tom Exp $
  *
  *	curses.priv.h
  *
@@ -91,6 +91,8 @@ extern int errno;
 #else
 #define USE_GPM_SUPPORT 0
 #endif
+
+#define DEFAULT_MAXCLICK 166
 
 /*
  * As currently coded, hashmap relies on the scroll-hints logic.
@@ -275,6 +277,17 @@ struct screen {
 	bool            _nc_sp_idcok;
 #define _nc_idlok SP->_nc_sp_idlok
 #define _nc_idcok SP->_nc_sp_idcok
+
+	/*
+	 * These are the data that support the mouse interface.
+	 */
+	int             _maxclick;
+	bool            (*_mouse_event) (SCREEN *);
+	bool            (*_mouse_inline)(SCREEN *);
+	bool            (*_mouse_parse) (int);
+	void            (*_mouse_resume)(SCREEN *);
+	void            (*_mouse_wrap)  (SCREEN *);
+	int             _mouse_fd;      /* file-descriptor, if any */
 
 	/*
 	 * Linked-list of all windows, to support '_nc_resizeall()' and
@@ -497,6 +510,9 @@ extern void _nc_expanded(void);
 
 #endif
 
+/* comp_scan.c */
+extern char _nc_trans_string(char *); /* used by 'tack' program */
+
 /* doupdate.c */
 #if USE_XMC_SUPPORT
 extern void _nc_do_xmc_glitch(attr_t);
@@ -514,6 +530,7 @@ extern void _nc_linedump(void);
 
 /* lib_acs.c */
 extern void init_acs(void);	/* no prefix, this name is traditional */
+extern int _nc_msec_cost(const char *const, int);  /* used by 'tack' program */
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
@@ -529,14 +546,6 @@ extern void _nc_screen_resume(void);
 extern void _nc_screen_wrap(void);
 
 /* lib_mouse.c */
-extern void _nc_mouse_init(SCREEN *);
-extern bool _nc_mouse_event(SCREEN *);
-extern bool _nc_mouse_inline(SCREEN *);
-extern bool _nc_mouse_parse(int);
-extern void _nc_mouse_wrap(SCREEN *);
-extern void _nc_mouse_resume(SCREEN *);
-extern int _nc_max_click_interval;
-extern int _nc_mouse_fd(void);
 extern int _nc_has_mouse(void);
 
 /* safe_sprintf.c */

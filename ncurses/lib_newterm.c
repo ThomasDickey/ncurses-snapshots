@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.26 1997/09/02 22:41:59 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.27 1997/10/11 21:52:47 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -179,9 +179,6 @@ char *t = getenv("NCURSES_TRACE");
 
 	/* initialize terminal to a sane state */
 	_nc_screen_init();
-
-	/* open a connection to the screen's associated mouse, if any */
-	_nc_mouse_init(SP);
 
 	/* Initialize the terminal line settings. */
 	_nc_initscr();

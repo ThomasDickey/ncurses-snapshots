@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.33 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.34 1997/10/11 22:02:03 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -119,10 +119,10 @@ again:
 #endif
 
 #if USE_GPM_SUPPORT	
-	if ((_nc_mouse_fd() >= 0) 
+	if ((SP->_mouse_fd >= 0) 
 	 && (_nc_timed_wait(3, -1, (int *)0) & 2))
 	{
-		_nc_mouse_event(SP);
+		SP->_mouse_event(SP);
 		ch = KEY_MOUSE;
 		n = 1;
 	} else
@@ -251,7 +251,7 @@ int	ch;
 		 *
 		 * Note: if the mouse code starts failing to compose
 		 * press/release events into clicks, you should probably
-		 * increase _nc_max_click_interval.
+		 * increase the wait with mouseinterval().
 		 */
 		int runcount = 0;
 
@@ -260,13 +260,13 @@ int	ch;
 			if (ch == KEY_MOUSE)
 			{
 				++runcount;
-				if (_nc_mouse_inline(SP))
+				if (SP->_mouse_inline(SP))
 				    break;
 			}
 		} while
 		    (ch == KEY_MOUSE
-		     && (_nc_timed_wait(3, _nc_max_click_interval, (int *)0)
-			 || !_nc_mouse_parse(runcount)));
+		     && (_nc_timed_wait(3, SP->_maxclick, (int *)0)
+			 || !SP->_mouse_parse(runcount)));
 		if (runcount > 0 && ch != KEY_MOUSE)
 		{
 		    /* mouse event sequence ended by keystroke, push it */

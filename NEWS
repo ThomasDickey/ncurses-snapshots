@@ -1,7 +1,43 @@
--- $Id: NEWS,v 1.258 1997/10/05 01:25:43 tom Exp $
+-- $Id: NEWS,v 1.263 1997/10/11 23:41:08 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971011
+	+ move _nc_max_click_interval and other mouse interface items to SCREEN
+	  struct so that they are associated with a single terminal, and also
+	  save memory when the application does not need a mouse (roughly 3k vs
+	  0.5k on Linux).
+	+ modify mouseinterval() so that a negative parameter queries the
+	  click-interval without modifying it.
+	+ modify ncurses 'i' test to work with ncurses' apparent extension from
+	  SVr4, i.e., allows nocbreak+noecho (analysis by Alexander V. 
+	  Lukyanov).
+	+ add configure options --with-ada-includes and --with-ada-objects,
+	  to drive Ada95 binding install (not yet implemented).
+	+ install C++ binding as -lncurses++ and associated headers with the
+	  other ncurses headers.
+	+ fix header uninstall if configure --srcdir is used.
+	> minor interface changes (request by Daniel Weaver <danw@znyx.com>,
+	  to support 'tack' program):
+	+ export functions _nc_trans_string() and _nc_msec_cost().
+	+ add variable _nc_nulls_sent, to record the number of padding
+	  characters output in delay_output().
+	+ move tests for generic_type and hard_copy terminals in setupterm()
+	  to the end of that function so that the library will still be
+	  initialized, though not generally useful for curses programs.
+	> patches by Alexander V. Lukyanov:
+	+ modify ClrBottom() to avoid using clr_eos if there is only one line
+	  to erase.
+	+ typo in configure --help.
+	> patch by J.T.Conklin (with minor resync against Juergen's changes)
+	+ split-out lib_flash.c from lib_beep.c
+	+ split-out lib_hline.c and lib_vline.c from lib_box.c
+	+ split-out lib_wattron.c, lib_wattroff.c from lib_addch.c
+
+971005
+	> patch by Juergen Pfeifer:
+	+ correct source/target of c++/edit_cfg.sh
 
 971004
 	+ add color, mouse support to kterm terminfo entry.

@@ -33,7 +33,9 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.18 1997/02/02 01:52:39 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.19 1997/10/11 16:38:15 tom Exp $")
+
+int _nc_nulls_sent;	/* used by 'tack' program */
 
 int delay_output(int ms)
 {
@@ -54,7 +56,8 @@ int delay_output(int ms)
 			null = pad_char[0];
 #endif /* pad_char */
 
-		for (nullcount = ms * 1000 / SP->_baudrate; nullcount > 0; nullcount--)
+		nullcount = ms * 1000 / SP->_baudrate;
+		for (_nc_nulls_sent = nullcount; nullcount > 0; nullcount--)
 			putc(null, SP->_ofp);
 		(void) fflush(SP->_ofp);
 	}
