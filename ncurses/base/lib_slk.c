@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.26 2003/04/12 21:07:44 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.27 2003/04/13 14:13:57 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -102,7 +102,16 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 	returnCode(ERR);
 
     SP->_slk->ent = NULL;
-    SP->_slk->attr = A_STANDOUT;
+
+    /*
+     * If we use colors, vidputs() will suppress video attributes that conflict
+     * with colors.  In that case, we're still guaranteed that "reverse" would
+     * work.
+     */
+    if ((no_color_video & 1) == 0)
+	SP->_slk->attr = A_STANDOUT;
+    else
+	SP->_slk->attr = A_REVERSE;
 
     SP->_slk->maxlab = ((num_labels > 0)
 			? num_labels

@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.69 2002/12/01 00:11:14 tom Exp $
+# $Id: Makefile.in,v 1.71 2003/04/19 22:41:48 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -73,11 +73,11 @@ LINK		= @LINK_TESTS@ $(LIBTOOL) $(CC) $(CFLAGS)
 
 LDFLAGS		= @LD_MODEL@ @TEST_ARGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 
-LDFLAGS_LIBTOOL	= $(LDFLAGS)
-LDFLAGS_NORMAL	= $(LDFLAGS)
-LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
-LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @LD_SHARED_OPTS@
+LDFLAGS_LIBTOOL	= $(LDFLAGS) $(CFLAGS_LIBTOOL)
+LDFLAGS_NORMAL	= $(LDFLAGS) $(CFLAGS_NORMAL)
+LDFLAGS_DEBUG	= $(LDFLAGS) $(CFLAGS_DEBUG)
+LDFLAGS_PROFILE	= $(LDFLAGS) $(CFLAGS_PROFILE)
+LDFLAGS_SHARED	= $(LDFLAGS) $(CFLAGS_SHARED) @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.189 2003/04/12 22:07:22 tom Exp $
+$Id: ncurses.c,v 1.192 2003/04/19 21:49:50 tom Exp $
 
 ***************************************************************************/
 
@@ -761,6 +761,7 @@ getch_test(void)
  * For wgetch_test(), we create pairs of windows - one for a box, one for text.
  * Resize both and paint the box in the parent.
  */
+#ifdef KEY_RESIZE
 static void
 resize_wide_boxes(int level, WINDOW *win)
 {
@@ -795,6 +796,7 @@ resize_wide_boxes(int level, WINDOW *win)
     }
     doupdate();
 }
+#endif /* KEY_RESIZE */
 
 static void
 wget_wch_test(int level, WINDOW *win, int delay)
@@ -937,11 +939,40 @@ get_wch_test(void)
  *
  ****************************************************************************/
 
+#define MAX_ATTRSTRING 31
+#define LEN_ATTRSTRING 26
+
+static char attr_test_string[] = "abcde fghij klmno pqrst uvwxy z";
+
+static void
+adjust_attr_string(int adjust)
+{
+    int first = ((int) UChar(attr_test_string[0])) + adjust;
+    int last = first + LEN_ATTRSTRING;
+
+    if (first >= ' ' && last <= '~') {	/* 32..126 */
+	int j, k;
+	for (j = 0, k = first; k <= last; ++j, ++k) {
+	    attr_test_string[j] = k;
+	    if (((k + 1 - first) % 5) == 0) {
+		++j;
+		if (j < MAX_ATTRSTRING)
+		    attr_test_string[j] = ' ';
+	    }
+	}
+	while (j < MAX_ATTRSTRING)
+	    attr_test_string[j++] = ' ';
+	attr_test_string[j] = '\0';
+    } else {
+	beep();
+    }
+}
+
 static int
 show_attr(int row, int skip, chtype attr, const char *name)
 {
-    static const char *string = "abcde fghij klmno pqrst uvwxy z";
     int ncv = tigetnum("ncv");
+    chtype test = attr & ~A_ALTCHARSET;
 
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
@@ -959,29 +990,24 @@ show_attr(int row, int skip, chtype attr, const char *name)
      * is possible to turn off the A_ALTCHARSET flag for the characters which
      * are added, and it would be an unexpected result to have the mapped
      * characters visible on the screen.
-     *
-     * This example works because the indices into acs_map[] are mostly from
-     * the lowercase characters.
      */
     if (attr & A_ALTCHARSET) {
-	const char *s = string;
-	while (*s) {
-	    int ch = *s++;
-#ifdef CURSES_ACS_ARRAY
-	    if ((ch = CURSES_ACS_ARRAY[ch]) == 0)
-		ch = ' ';
-#endif
+	const char *s;
+	int ch;
+
+	for (s = attr_test_string; *s != '\0'; ++s) {
+	    ch = UChar(*s);
 	    addch(ch);
 	}
     } else {
-	addstr(string);
+	addstr(attr_test_string);
     }
     attroff(attr);
     if (skip)
 	printw("%*s", skip, " ");
     printw("|");
-    if (attr != A_NORMAL) {
-	if (!(termattrs() & attr)) {
+    if (test != A_NORMAL) {
+	if (!(termattrs() & test)) {
 	    printw(" (N/A)");
 	} else if (ncv > 0 && (getbkgd(stdscr) & A_COLOR)) {
 	    static const chtype table[] =
@@ -1022,37 +1048,7 @@ attr_getc(int *skip, int *fg, int *bg, int *ac)
     } else if (ch == CTRL('L')) {
 	touchwin(stdscr);
 	touchwin(curscr);
-    } else if (has_colors()) {
-	switch (ch) {
-	case 'a':
-	    *ac = 0;
-	    break;
-	case 'A':
-	    *ac = A_ALTCHARSET;
-	    break;
-	case 'f':
-	    *fg = (*fg + 1);
-	    break;
-	case 'F':
-	    *fg = (*fg - 1);
-	    break;
-	case 'b':
-	    *bg = (*bg + 1);
-	    break;
-	case 'B':
-	    *bg = (*bg - 1);
-	    break;
-	default:
-	    return FALSE;
-	}
-	if (*fg >= max_colors)
-	    *fg = 0;
-	if (*fg < 0)
-	    *fg = max_colors - 1;
-	if (*bg >= max_colors)
-	    *bg = 0;
-	if (*bg < 0)
-	    *bg = max_colors - 1;
+	wrefresh(curscr);
     } else {
 	switch (ch) {
 	case 'a':
@@ -1061,8 +1057,40 @@ attr_getc(int *skip, int *fg, int *bg, int *ac)
 	case 'A':
 	    *ac = A_ALTCHARSET;
 	    break;
+	case '<':
+	    adjust_attr_string(-1);
+	    break;
+	case '>':
+	    adjust_attr_string(1);
+	    break;
 	default:
-	    return FALSE;
+	    if (has_colors()) {
+		switch (ch) {
+		case 'f':
+		    *fg = (*fg + 1);
+		    break;
+		case 'F':
+		    *fg = (*fg - 1);
+		    break;
+		case 'b':
+		    *bg = (*bg + 1);
+		    break;
+		case 'B':
+		    *bg = (*bg - 1);
+		    break;
+		default:
+		    return FALSE;
+		}
+		if (*fg >= max_colors)
+		    *fg = 0;
+		if (*fg < 0)
+		    *fg = max_colors - 1;
+		if (*bg >= max_colors)
+		    *bg = 0;
+		if (*bg < 0)
+		    *bg = max_colors - 1;
+	    }
+	    break;
 	}
     }
     return TRUE;
@@ -1120,12 +1148,12 @@ attr_test(void)
 	mvprintw(row + 1, 8,
 		 "Enter a digit to set gaps on each side of displayed attributes");
 	mvprintw(row + 2, 8,
-		 "^L = repaint");
+		 "^L repaints, </> shifts, ");
 	if (has_colors())
-	    printw(".  f/F/b/F toggle colors (now %d/%d), a/A altcharset (%d)",
+	    printw("f/F/b/F toggle color (now %d/%d), a/A ACS (%d)",
 		   fg, bg, ac != 0);
 	else
-	    printw(".  a/A altcharset (%d)", ac != 0);
+	    printw("a/A ACS (%d)", ac != 0);
 
 	refresh();
     } while (attr_getc(&n, &fg, &bg, &ac));
@@ -1414,7 +1442,9 @@ slk_help(void)
 	,"[12345678] -- set label; labels are numbered 1 through 8"
 	,"e          -- erase stdscr (should not erase labels)"
 	,"s          -- test scrolling of shortened screen"
+#if HAVE_SLK_COLOR
 	,"F/B        -- cycle through foreground/background colors"
+#endif
 	,"x, q       -- return to main menu"
 	,""
 	,"Note: if activating the soft keys causes your terminal to scroll up"
@@ -1438,15 +1468,21 @@ slk_test(void)
     int c, fmt = 1;
     char buf[9];
     char *s;
+#if HAVE_SLK_COLOR
     short fg = COLOR_BLACK;
     short bg = COLOR_WHITE;
     bool new_color = FALSE;
+#endif
 
     c = CTRL('l');
+#if HAVE_SLK_COLOR
     if (has_colors()) {
 	new_color = TRUE;
     }
+#endif
+
     do {
+#if HAVE_SLK_COLOR
 	if (new_color) {
 	    init_pair(1, bg, fg);
 	    slk_color(1);
@@ -1454,6 +1490,7 @@ slk_test(void)
 	    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
 	    refresh();
 	}
+#endif
 	move(0, 0);
 	switch (c) {
 	case CTRL('l'):
@@ -1519,6 +1556,7 @@ slk_test(void)
 	case 'q':
 	    goto done;
 
+#if HAVE_SLK_COLOR
 	case 'F':
 	    if (has_colors()) {
 		fg = (fg + 1) % max_colors;
@@ -1531,6 +1569,7 @@ slk_test(void)
 		new_color = TRUE;
 	    }
 	    break;
+#endif
 
 	default:
 	    beep();

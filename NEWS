@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.743 2003/04/12 22:10:02 tom Exp $
+-- $Id: NEWS,v 1.745 2003/04/19 22:01:15 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030419
+	+ modify logic of acsc to use the original character if no mapping is
+	  defined, noting that Solaris does this.
+	+ modify ncurses 'b' test to avoid using the acs_map[] array since
+	  20021231 changes it to no longer contain information from the acsc
+	  string.
+	+ modify makefile rules in c++, progs, tack and test to ensure that
+	  the compiler flags (e.g., $CFLAGS or $CCFLAGS) are used in the link
+	  command (report by Jose Luis Rico Botella <informatica@serpis.com>).
+	+ modify soft-key initialization to use A_REVERSE if A_STANDOUT would
+	  not be shown when colors are used, i.e., if ncv#1 is set in the
+	  terminfo as is done in "screen".
 
 20030412
 	+ add a test for slk_color(), in ncurses.c
