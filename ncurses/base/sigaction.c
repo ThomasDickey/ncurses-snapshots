@@ -31,9 +31,10 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
+#include <signal.h>
+
 #include <curses.priv.h>
 
-#include <signal.h>
 #include <SigAction.h>
 
 /* This file provides sigaction() emulation using sigvec() */
@@ -41,7 +42,7 @@
 
 #if !HAVE_SIGACTION && HAVE_SIGVEC
 
-MODULE_ID("$Id: sigaction.c,v 1.11 2000/12/10 02:43:28 tom Exp $")
+MODULE_ID("$Id: sigaction.c,v 1.12 2001/07/01 01:22:10 tom Exp $")
 
 NCURSES_EXPORT(int)
 sigaction

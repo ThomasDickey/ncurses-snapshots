@@ -7,16 +7,16 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.30 2001/06/18 18:44:53 tom Exp $
+ * $Id: bs.c,v 1.31 2001/07/01 01:24:37 tom Exp $
  */
-
-#include <test.priv.h>
 
 #include <signal.h>
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
 #include <time.h>
+
+#include <test.priv.h>
 
 #ifndef SIGIOT
 #define SIGIOT SIGABRT

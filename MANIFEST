@@ -477,6 +477,7 @@
 ./include/capdefaults.c
 ./include/curses.h.in
 ./include/curses.tail
+./include/curses.wide
 ./include/edit_cfg.sh
 ./include/headers
 ./include/nc_alloc.h

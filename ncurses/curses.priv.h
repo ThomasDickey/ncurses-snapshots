@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.196 2001/06/18 18:15:31 skimo Exp $
+ * $Id: curses.priv.h,v 1.197 2001/07/01 01:33:34 tom Exp $
  *
  *	curses.priv.h
  *
@@ -233,10 +233,8 @@ color_t;
 
 #define WINDOWLIST struct _win_list
 
-#if USE_WIDEC_SUPPORT
-#define _XOPEN_SOURCE_EXTENDED
-#include <wchar.h>	/* we want mbstate_t */
-#else
+#if !USE_WIDEC_SUPPORT
+#undef _XOPEN_SOURCE_EXTENDED
 #define _bkgrnd	    _bkgd
 #define wgetbkgrnd(win, wch)	*wch = win->_bkgd
 #define wbkgrnd	    wbkgd
@@ -863,6 +861,17 @@ extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *tree);
 
 #if USE_SIZECHANGE
 extern NCURSES_EXPORT(void) _nc_update_screensize (void);
+#endif
+
+/*
+ * Not everyone has vsscanf(), but we'd like to use it for scanw().
+ */
+#if !HAVE_VSSCANF
+#if defined(__QNX__)
+extern int vsscanf(const char *str, const char *format, __va_list __arg);
+#else
+extern int vsscanf(const char *str, const char *format, va_list __arg);
+#endif
 #endif
 
 /* scroll indices */

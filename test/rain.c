@@ -1,11 +1,11 @@
 /*
- * $Id: rain.c,v 1.15 2000/09/02 18:41:22 tom Exp $
+ * $Id: rain.c,v 1.16 2001/07/01 01:27:08 tom Exp $
  */
+#include <signal.h>
+
 #include <test.priv.h>
 
 #include <term.h>	/* for tparm() */
-
-#include <signal.h>
 
 /* rain 11/3/1980 EPS/CITHEP */
 

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.242 2001/06/18 18:39:45 tom Exp $
+dnl $Id: configure.in,v 1.243 2001/07/01 01:41:25 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.242 $)
+AC_REVISION($Revision: 1.243 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -854,6 +854,7 @@ CF_MATH_LIB(MATH_LIB,sin(x))
 AC_SUBST(MATH_LIB)
 
 ###	Checks for header files.
+CF_GNU_SOURCE
 AC_STDC_HEADERS
 AC_HEADER_DIRENT
 CF_REGEX

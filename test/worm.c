@@ -34,12 +34,12 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.32 2000/12/31 01:54:07 tom Exp $
+  $Id: worm.c,v 1.33 2001/07/01 01:27:55 tom Exp $
 */
 
-#include <test.priv.h>
-
 #include <signal.h>
+
+#include <test.priv.h>
 
 static chtype flavor[] =
 {

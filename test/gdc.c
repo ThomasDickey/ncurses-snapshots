@@ -6,14 +6,14 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.16 2001/02/24 23:27:22 tom Exp $
+ * $Id: gdc.c,v 1.17 2001/07/01 01:25:26 tom Exp $
  */
-
-#include <test.priv.h>
 
 #include <time.h>
 #include <signal.h>
 #include <string.h>
+
+#include <test.priv.h>
 
 #define YBASE	10
 #define XBASE	10

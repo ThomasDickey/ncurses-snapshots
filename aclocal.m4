@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.252 2001/06/16 11:22:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.253 2001/07/01 00:06:03 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -798,6 +798,34 @@ case $cf_cv_gnat_version in
       ;;
 esac
 ])
+dnl ---------------------------------------------------------------------------
+dnl Check if we must define _GNU_SOURCE to get a reasonable value for
+dnl _XOPEN_SOURCE, upon which many POSIX definitions depend.  This is a defect
+dnl (or misfeature) of glibc2, which breaks portability of many applications,
+dnl since it is interwoven with GNU extensions.
+dnl
+dnl Well, yes we could work around it...
+AC_DEFUN([CF_GNU_SOURCE],
+[
+AC_CACHE_CHECK(if we must define _GNU_SOURCE,cf_cv_gnu_source,[
+AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifndef _XOPEN_SOURCE
+make an error
+#endif],
+	[cf_cv_gnu_source=no],
+	[cf_save="$CPPFLAGS"
+	 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+	 AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifdef _XOPEN_SOURCE
+make an error
+#endif],
+	[cf_cv_gnu_source=no],
+	[cf_cv_gnu_source=yes])
+	CPPFLAGS="$cf_save"
+	])
+])
+test "$cf_cv_gnu_source" = yes && CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
 dnl problem :-).  If we have the compiler but no library, we'll be able to

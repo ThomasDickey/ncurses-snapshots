@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.634 2001/06/23 23:26:37 tom Exp $
+-- $Id: NEWS,v 1.635 2001/07/01 01:46:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010630
+	+ add configure check to define _GNU_SOURCE, needed to prop up glibc
+	  header files.
+	+ split-out include/curses.wide to solve spurious redefinitions caused
+	  by defining _GNU_SOURCE, and move includes for <signal.h> before
+	  <curses.h> to work around misdefinition of ERR in glibc 2.1.3 header
+	  file.
+	+ extended ospeed change to NetBSD and OpenBSD -TD
+	+ modify logic in lib_baudrate.c for ospeed, for FreeBSD to make it
+	  work properly for termcap applications (patch by Andrey A Chernov).
 
 20010623
 	+ correct an overlooked CharOf/UChar instance (reports by Eugene Lee
