@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/08/22 00:05:28 $
+#	$Date: 1999/08/29 01:18:28 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -3211,6 +3211,19 @@ mono-emx|stupid monochrome ansi terminal with only one kind of emphasis,
 	kf5=\0?, kf6=\0@, kf7=\0A, kf8=\0B, kf9=\0C, khome=\0G, 
 	kich1=\0R, kll=\0O, knp=\0Q, kpp=\0I, nel=^M^J, rev=\E[7m, 
 	sgr0=\E[0m, 
+
+# Use this for cygwin32 (tested with beta 19.1)
+# underline is colored bright magenta
+# shifted kf1-kf12 are kf11-kf22
+cygwin|ansi emulation for cygwin32, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
+	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	use=ansi.sys, 
 
 # This entry fits the Windows NT console when the _POSIX_TERM environment
 # variable is set to 'on'.  While the Windows NT POSIX console is seldom used,
@@ -17244,6 +17257,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/8/21
 #	* corrections to beterm entry -TD
+#
+# 1999/8/28
+#	* add cygwin entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
