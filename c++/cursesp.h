@@ -34,7 +34,7 @@
 #ifndef NCURSES_CURSESP_H_incl
 #define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.21 2005/04/02 21:58:28 tom Exp $
+// $Id: cursesp.h,v 1.22 2005/04/09 14:11:49 tom Exp $
 
 #include <cursesw.h>
 
@@ -58,12 +58,19 @@ private:
     const PANEL*        m_owner;     // the panel itself
   } UserHook;
 
+  inline UserHook *UserPointer()
+  {
+    UserHook* uptr = reinterpret_cast<UserHook*>(
+                           const_cast<void *>(::panel_userptr (p)));
+    return 0;
+  }
+
   void init();                       // Initialize the panel object
 
 protected:
   void set_user(void *user)
   {
-    UserHook* uptr = reinterpret_cast<UserHook*>(::panel_userptr (p));
+    UserHook* uptr = UserPointer();
     assert (uptr != 0 && uptr->m_back==this && uptr->m_owner==p);
     uptr->m_user = user;
   }
@@ -71,7 +78,7 @@ protected:
 
   void *get_user()
   {
-    UserHook* uptr = reinterpret_cast<UserHook*>(::panel_userptr (p));
+    UserHook* uptr = UserPointer();
     assert (uptr != 0 && uptr->m_back==this && uptr->m_owner==p);
     return uptr->m_user;
   }

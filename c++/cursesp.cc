@@ -35,7 +35,7 @@
 #include "cursesp.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursesp.cc,v 1.23 2005/04/02 20:24:39 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.24 2005/04/09 14:12:23 tom Exp $")
 
 NCursesPanel* NCursesPanel::dummy = static_cast<NCursesPanel*>(0);
 
@@ -54,7 +54,7 @@ void NCursesPanel::init()
 
 NCursesPanel::~NCursesPanel()
 {
-  UserHook* hook = reinterpret_cast<UserHook*>(::panel_userptr(p));
+  UserHook* hook = UserPointer();
   assert(hook != 0 && hook->m_back==this && hook->m_owner==p);
   delete hook;
   ::del_panel(p);
