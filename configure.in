@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.333 2005/04/02 17:58:24 tom Exp $
+dnl $Id: configure.in,v 1.334 2005/04/09 13:47:49 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.333 $)
+AC_REVISION($Revision: 1.334 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -917,7 +917,7 @@ if test -n "$with_warnings"; then
  	ADAFLAGS="$ADAFLAGS -gnatg"
 	CF_GCC_WARNINGS
 	if test "$cf_with_cxx" = yes ; then
-		CF_GXX_WARNINGS
+		CF_GXX_WARNINGS(Wno-unused)
 	fi
 fi
 CF_GCC_ATTRIBUTES

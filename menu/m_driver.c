@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.23 2004/12/11 23:10:49 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.24 2005/04/09 20:40:25 tom Exp $")
 
 /* Macros */
 
@@ -473,7 +473,7 @@ menu_driver(MENU * menu, int c)
 			result = menu_driver(menu, REQ_FIRST_ITEM);
 		      RETURN(result);
 		    }
-		  else if (ry >= sub->_begy + sub->_maxy)
+		  else if (ry > sub->_begy + sub->_maxy)
 		    {		/* we clicked below the display region; this is
 				 * interpreted as "scroll down" request
 				 */

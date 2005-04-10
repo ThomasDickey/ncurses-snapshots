@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -40,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.35 2004/04/10 23:42:00 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.36 2005/04/09 15:23:04 tom Exp $")
 
 static WINDOW *
 remove_window_from_screen(WINDOW *win)
@@ -208,6 +209,9 @@ _nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
     bool is_pad = (flags & _ISPAD);
 
     T(("_nc_makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
+
+    if (SP == 0)
+	return 0;
 
     if (!dimension_limit(num_lines) || !dimension_limit(num_columns))
 	return 0;

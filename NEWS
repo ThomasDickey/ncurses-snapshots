@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.884 2005/04/03 14:01:35 tom Exp $
+-- $Id: NEWS,v 1.886 2005/04/09 20:43:45 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050409
+	+ correct an off-by-one error in m_driver() for mouse-clicks used to
+	  position the mouse to a particular item.
+	+ implement test/demo_menus.c
+	+ add some checks in lib_mouse to ensure SP is set.
+	+ modify C++ binding to make 20050403 changes work with the configure
+	  --enable-const option.
 
 20050403
 	+ modify start_color() to return ERR if it cannot allocate memory.

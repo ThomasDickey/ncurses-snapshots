@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.72 2005/02/12 20:43:24 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.73 2005/04/09 20:59:25 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -578,13 +578,13 @@ initialize_mousetype(void)
     }
 }
 
-static void
+static bool
 _nc_mouse_init(void)
 /* initialize the mouse */
 {
     int i;
 
-    if (!initialized) {
+    if (!initialized && (SP != 0)) {
 	initialized = TRUE;
 
 	TR(MY_TRACE, ("_nc_mouse_init() called"));
@@ -596,6 +596,7 @@ _nc_mouse_init(void)
 
 	T(("_nc_mouse_init() set mousetype to %d", SP->_mouse_type));
     }
+    return initialized;
 }
 
 /*
@@ -863,7 +864,8 @@ mouse_activate(bool on)
     if (!on && !initialized)
 	return;
 
-    _nc_mouse_init();
+    if (!_nc_mouse_init())
+	return;
 
     if (on) {
 
@@ -1249,7 +1251,7 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	returnBits(0);
 
     _nc_mouse_init();
-    if (SP->_mouse_type != M_NONE) {
+    if (SP != 0 && SP->_mouse_type != M_NONE) {
 	eventmask = newmask &
 	    (REPORT_MOUSE_POSITION | BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT
 	     | BUTTON_PRESSED
