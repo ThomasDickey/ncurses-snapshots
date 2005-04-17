@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.73 2005/04/09 20:59:25 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.74 2005/04/16 18:07:56 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -396,9 +396,9 @@ enable_gpm_mouse(int enable)
 	gpm_connect.eventMask = GPM_DOWN | GPM_UP;
 	gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
 	gpm_connect.minMod = 0;
-	gpm_connect.maxMod = ~((1 << KG_SHIFT) |
-			       (1 << KG_SHIFTL) |
-			       (1 << KG_SHIFTR));
+	gpm_connect.maxMod = (unsigned short) (~((1 << KG_SHIFT) |
+						 (1 << KG_SHIFTL) |
+						 (1 << KG_SHIFTR)));
 	/*
 	 * Note: GPM hardcodes \E[?1001s and \E[?1000h during its open.
 	 * The former is recognized by wscons (SunOS), and the latter by

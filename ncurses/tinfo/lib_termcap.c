@@ -44,7 +44,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.48 2005/02/26 23:25:53 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.49 2005/04/16 16:12:49 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -97,11 +97,11 @@ rewrite_sgr(char *s, char *attr)
 {
     if (s != 0) {
 	if (attr != 0) {
-	    int len_s = strlen(s);
-	    int len_a = strlen(attr);
+	    unsigned len_s = strlen(s);
+	    unsigned len_a = strlen(attr);
 
 	    if (len_s > len_a && !strncmp(attr, s, len_a)) {
-		int n;
+		unsigned n;
 		TR(TRACE_DATABASE, ("rewrite:\n\t%s", s));
 		for (n = 0; n < len_s - len_a; ++n) {
 		    s[n] = s[n + len_a];

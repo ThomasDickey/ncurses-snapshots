@@ -42,7 +42,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_slkset.c,v 1.13 2005/01/16 01:09:13 tom Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.15 2005/04/16 17:47:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_set(int i, const char *astr, int format)
@@ -80,7 +80,7 @@ slk_set(int i, const char *astr, int format)
 	if (need == (size_t) -1)
 	    break;
 	mbrtowc(&wc, p, need, &state);
-	if (!iswprint(wc))
+	if (!iswprint((wint_t) wc))
 	    break;
 	if (wcwidth(wc) + numcols > limit)
 	    break;
@@ -104,7 +104,8 @@ slk_set(int i, const char *astr, int format)
     slk->ent[i].ent_text[numchrs] = '\0';
 
     if ((slk->ent[i].form_text = (char *) _nc_doalloc(slk->ent[i].form_text,
-						      limit + numchrs + 1)
+						      (unsigned) (limit +
+								  numchrs + 1))
 	) == 0)
 	returnCode(ERR);
 
@@ -123,16 +124,16 @@ slk_set(int i, const char *astr, int format)
     if (offset <= 0)
 	offset = 0;
     else
-	memset(slk->ent[i].form_text, ' ', offset);
+	memset(slk->ent[i].form_text, ' ', (unsigned) offset);
 
     memcpy(slk->ent[i].form_text + offset,
 	   slk->ent[i].ent_text,
-	   numchrs);
+	   (unsigned) numchrs);
 
     if (offset < limit) {
 	memset(slk->ent[i].form_text + offset + numchrs,
 	       ' ',
-	       limit - (offset + numcols));
+	       (unsigned) (limit - (offset + numcols)));
     }
 
     slk->ent[i].form_text[numchrs - numcols + limit] = 0;

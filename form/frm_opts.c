@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_opts.c,v 1.13 2004/12/11 22:06:03 tom Exp $")
+MODULE_ID("$Id: frm_opts.c,v 1.14 2005/04/16 16:59:18 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -71,7 +71,7 @@ NCURSES_EXPORT(Form_Options)
 form_opts(const FORM *form)
 {
   T((T_CALLED("form_opts(%p)"), form));
-  returnCode(Normalize_Form(form)->opts & ALL_FORM_OPTS);
+  returnCode((int)(Normalize_Form(form)->opts & ALL_FORM_OPTS));
 }
 
 /*---------------------------------------------------------------------------

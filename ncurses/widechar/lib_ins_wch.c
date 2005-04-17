@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.5 2005/02/26 20:02:40 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.6 2005/04/16 18:04:32 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -125,7 +125,7 @@ wins_nwstr(WINDOW *win, const wchar_t *wstr, int n)
 		    code = _nc_insert_wch(win, &tmp_cchar);
 		} else {
 		    /* tabs, other ASCII stuff */
-		    code = _nc_insert_ch(win, *cp);
+		    code = _nc_insert_ch(win, (chtype)(*cp));
 		}
 		if (code != OK)
 		    break;

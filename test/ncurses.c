@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.245 2005/03/19 23:21:46 tom Exp $
+$Id: ncurses.c,v 1.250 2005/04/16 21:14:45 tom Exp $
 
 ***************************************************************************/
 
@@ -70,8 +70,8 @@ $Id: ncurses.c,v 1.245 2005/03/19 23:21:46 tom Exp $
 #ifdef NCURSES_VERSION
 
 #ifdef TRACE
-static int save_trace = TRACE_ORDINARY | TRACE_CALLS;
-extern int _nc_tracing;
+static unsigned save_trace = TRACE_ORDINARY | TRACE_CALLS;
+extern unsigned _nc_tracing;
 #endif
 
 #else
@@ -144,6 +144,14 @@ do_v_line(int y, int x, chtype c, int to)
 {
     if ((to) > (y))
 	mvvline(y, x, c, (to) - (y));
+}
+
+static void
+Repaint(void)
+{
+    touchwin(stdscr);
+    touchwin(curscr);
+    wrefresh(curscr);
 }
 
 /* Common function to allow ^T to toggle trace-mode in the middle of a test
@@ -573,7 +581,7 @@ remember_boxes(unsigned level, WINDOW *txt_win, WINDOW *box_win)
  * Resize both and paint the box in the parent.
  */
 static void
-resize_boxes(int level, WINDOW *win)
+resize_boxes(unsigned level, WINDOW *win)
 {
     unsigned n;
     int base = 5;
@@ -588,7 +596,7 @@ resize_boxes(int level, WINDOW *win)
     slk_clear();
     slk_noutrefresh();
 
-    for (n = 0; (int) n < level; ++n) {
+    for (n = 0; n < level; ++n) {
 	wresize(winstack[n].frame, high, wide);
 	wresize(winstack[n].text, high - 2, wide - 2);
 	high -= 2;
@@ -611,7 +619,7 @@ resize_boxes(int level, WINDOW *win)
 #endif
 
 static void
-wgetch_test(int level, WINDOW *win, int delay)
+wgetch_test(unsigned level, WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
     int first_y, first_x;
@@ -722,9 +730,9 @@ wgetch_test(int level, WINDOW *win, int delay)
 #endif
 		(void) waddstr(win, keyname(c));
 	    } else if (c > 0x80) {
-		int c2 = (c & 0x7f);
+		unsigned c2 = (c & 0x7f);
 		if (isprint(c2))
-		    (void) wprintw(win, "M-%c", c2);
+		    (void) wprintw(win, "M-%c", UChar(c2));
 		else
 		    (void) wprintw(win, "M-%s", unctrl(c2));
 		waddstr(win, " (high-half character)");
@@ -733,7 +741,7 @@ wgetch_test(int level, WINDOW *win, int delay)
 		    (void) wprintw(win, "%c (ASCII printable character)", c);
 		else
 		    (void) wprintw(win, "%s (ASCII control character)",
-				   unctrl(c));
+				   unctrl(UChar(c)));
 	    }
 	    wgetch_wrap(win, first_y);
 	}
@@ -797,7 +805,7 @@ getch_test(void)
  */
 #ifdef KEY_RESIZE
 static void
-resize_wide_boxes(int level, WINDOW *win)
+resize_wide_boxes(unsigned level, WINDOW *win)
 {
     unsigned n;
     int base = 5;
@@ -812,7 +820,7 @@ resize_wide_boxes(int level, WINDOW *win)
     slk_clear();
     slk_noutrefresh();
 
-    for (n = 0; (int) n < level; ++n) {
+    for (n = 0; n < level; ++n) {
 	wresize(winstack[n].frame, high, wide);
 	wresize(winstack[n].text, high - 2, wide - 2);
 	high -= 2;
@@ -842,9 +850,10 @@ wcstos(const wchar_t *src)
 
     memset(&state, 0, sizeof(state));
     if ((need = wcsrtombs(0, &tmp, 0, &state)) > 0) {
-	result = (char *) calloc(need + 1, 1);
+	unsigned have = need;
+	result = (char *) calloc(have + 1, 1);
 	tmp = src;
-	if (wcsrtombs(result, &tmp, need, &state) != (size_t) need) {
+	if (wcsrtombs(result, &tmp, have, &state) != have) {
 	    free(result);
 	    result = 0;
 	}
@@ -853,7 +862,7 @@ wcstos(const wchar_t *src)
 }
 
 static void
-wget_wch_test(int level, WINDOW *win, int delay)
+wget_wch_test(unsigned level, WINDOW *win, int delay)
 {
     wchar_t wchar_buf[BUFSIZ];
     wint_t wint_buf[BUFSIZ];
@@ -976,7 +985,7 @@ wget_wch_test(int level, WINDOW *win, int delay)
 		    resize_wide_boxes(level, win);
 		}
 #endif
-		(void) waddstr(win, key_name(c));
+		(void) waddstr(win, key_name((wchar_t) c));
 	    } else {
 		if (c < 256 && iscntrl(c)) {
 		    (void) wprintw(win, "%s (control character)", unctrl(c));
@@ -1237,9 +1246,7 @@ attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 	} else {
 	    switch (ch) {
 	    case CTRL('L'):
-		touchwin(stdscr);
-		touchwin(curscr);
-		wrefresh(curscr);
+		Repaint();
 		break;
 	    case '?':
 		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
@@ -1515,9 +1522,7 @@ wide_attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 	} else {
 	    switch (ch) {
 	    case CTRL('L'):
-		touchwin(stdscr);
-		touchwin(curscr);
-		wrefresh(curscr);
+		Repaint();
 		break;
 	    case '?':
 		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
@@ -2577,11 +2582,11 @@ wide_slk_test(void)
  * terminal to perform functions.  The remaining codes can be graphic.
  */
 static void
-show_upper_chars(int first)
+show_upper_chars(unsigned first)
 {
     bool C1 = (first == 128);
-    int code;
-    int last = first + 31;
+    unsigned code;
+    unsigned last = first + 31;
     int reply;
 
     erase();
@@ -2603,7 +2608,7 @@ show_upper_chars(int first)
 	if (C1) {
 	    /* (yes, this _is_ crude) */
 	    while ((reply = Getchar()) != ERR) {
-		addch(reply);
+		addch(UChar(reply));
 		napms(10);
 	    }
 	    nodelay(stdscr, FALSE);
@@ -2704,6 +2709,9 @@ acs_display(void)
 
     do {
 	switch (c) {
+	case CTRL('L'):
+	    Repaint();
+	    break;
 	case 'a':
 	    show_acs_chars();
 	    break;
@@ -2714,7 +2722,7 @@ acs_display(void)
 	case '1':
 	case '2':
 	case '3':
-	    show_upper_chars((c - '0') * 32 + 128);
+	    show_upper_chars((unsigned) ((c - '0') * 32 + 128));
 	    break;
 	}
 	mvprintw(LINES - 3, 0,
@@ -2731,7 +2739,7 @@ acs_display(void)
 
 #if USE_WIDEC_SUPPORT
 static void
-show_upper_widechars(int first, int repeat)
+show_upper_widechars(int first, int repeat, int space)
 {
     cchar_t temp;
     wchar_t code;
@@ -2756,6 +2764,14 @@ show_upper_widechars(int first, int repeat)
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
 	setcchar(&temp, codes, attrs, 0, 0);
 	do {
+	    /*
+	     * Give non-spacing characters something to combine with.  If we
+	     * don't, they'll bunch up in a heap on the space after the ":".
+	     * Mark them with reverse-video to make them simpler to find on
+	     * the display.
+	     */
+	    if (wcwidth(code) == 0)
+		addch(space | A_REVERSE);
 	    /*
 	     * This could use add_wch(), but is done for comparison with the
 	     * normal 'f' test (and to make a test-case for echo_wchar()).
@@ -2928,9 +2944,13 @@ wide_acs_display(void)
     int c = 'a';
     int digit = 0;
     int repeat = 0;
+    int space = ' ';
 
     do {
 	switch (c) {
+	case CTRL('L'):
+	    Repaint();
+	    break;
 	case 'a':
 	    show_wacs_chars();
 	    break;
@@ -2951,11 +2971,13 @@ wide_acs_display(void)
 		++repeat;
 	    else if (c == '<' && repeat > 0)
 		--repeat;
+	    else if (c == '_')
+		space = (space == ' ') ? '_' : ' ';
 	    else {
 		beep();
 		break;
 	    }
-	    show_upper_widechars(digit * 32 + 128, repeat);
+	    show_upper_widechars(digit * 32 + 128, repeat, space);
 	    break;
 	}
 	mvprintw(LINES - 2, 0,
@@ -2979,7 +3001,7 @@ test_sgr_attributes(void)
     int pass;
 
     for (pass = 0; pass < 2; pass++) {
-	int normal = ((pass == 0 ? A_NORMAL : A_REVERSE)) | BLANK;
+	chtype normal = ((pass == 0 ? A_NORMAL : A_REVERSE)) | BLANK;
 
 	/* Use non-default colors if possible to exercise bce a little */
 	if (has_colors()) {
@@ -3594,7 +3616,7 @@ acs_and_scroll(void)
  ****************************************************************************/
 
 #if USE_LIBPANEL
-static unsigned long nap_msec = 1;
+static int nap_msec = 1;
 
 static NCURSES_CONST char *mod[] =
 {
@@ -3610,7 +3632,7 @@ static NCURSES_CONST char *mod[] =
 	wait_a_while(msec)
 --------------------------------------------------------------------------*/
 static void
-wait_a_while(unsigned long msec GCC_UNUSED)
+wait_a_while(int msec GCC_UNUSED)
 {
 #if HAVE_NAPMS
     if (nap_msec == 1)
@@ -3620,8 +3642,8 @@ wait_a_while(unsigned long msec GCC_UNUSED)
 #else
     if (nap_msec == 1)
 	wGetchar(stdscr);
-    else if (msec > 1000L)
-	sleep((int) msec / 1000L);
+    else if (msec > 1000)
+	sleep((unsigned) msec / 1000);
     else
 	sleep(1);
 #endif
@@ -3642,7 +3664,7 @@ saywhat(NCURSES_CONST char *text)
 	mkpanel(rows,cols,tly,tlx) - alloc a win and panel and associate them
 --------------------------------------------------------------------------*/
 static PANEL *
-mkpanel(int color, int rows, int cols, int tly, int tlx)
+mkpanel(unsigned color, int rows, int cols, int tly, int tlx)
 {
     WINDOW *win;
     PANEL *pan = 0;
@@ -3700,7 +3722,7 @@ fill_panel(PANEL * pan)
     for (y = 2; y < getmaxy(win) - 1; y++) {
 	for (x = 1; x < getmaxx(win) - 1; x++) {
 	    wmove(win, y, x);
-	    waddch(win, num);
+	    waddch(win, UChar(num));
 	}
     }
 }				/* end of fill_panel */
@@ -4589,7 +4611,7 @@ menu_test(void)
 #define T_TBL(name) { #name, name }
 static struct {
     const char *name;
-    int mask;
+    unsigned mask;
 } t_tbl[] = {
 
     T_TBL(TRACE_DISABLE),
@@ -4614,7 +4636,7 @@ static struct {
 };
 
 static char *
-tracetrace(int tlevel)
+tracetrace(unsigned tlevel)
 {
     static char *buf;
     int n;
@@ -4686,7 +4708,8 @@ trace_set(void)
     MENU *m;
     ITEM *items[SIZEOF(t_tbl)];
     ITEM **ip = items;
-    int mrows, mcols, newtrace;
+    int mrows, mcols;
+    unsigned newtrace;
     int n;
     WINDOW *menuwin;
 
@@ -4718,7 +4741,7 @@ trace_set(void)
     post_menu(m);
 
     for (ip = menu_items(m); *ip; ip++) {
-	int mask = t_tbl[item_index(*ip)].mask;
+	unsigned mask = t_tbl[item_index(*ip)].mask;
 	if (mask == 0)
 	    set_item_value(*ip, _nc_tracing == 0);
 	else if ((mask & _nc_tracing) == mask)
@@ -4759,11 +4782,11 @@ trace_set(void)
 static FIELD *
 make_label(int frow, int fcol, NCURSES_CONST char *label)
 {
-    FIELD *f = new_field(1, strlen(label), frow, fcol, 0, 0);
+    FIELD *f = new_field(1, (int) strlen(label), frow, fcol, 0, 0);
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, field_opts(f) & ~O_ACTIVE);
+	set_field_opts(f, (int) (field_opts(f) & ~O_ACTIVE));
     }
     return (f);
 }
@@ -5232,7 +5255,7 @@ fillwin(WINDOW *win, char ch)
     for (y = 0; y < y1; y++) {
 	wmove(win, y, 0);
 	for (x = 0; x < x1; x++)
-	    waddch(win, ch);
+	    waddch(win, UChar(ch));
     }
 }
 
@@ -5248,7 +5271,7 @@ crosswin(WINDOW *win, char ch)
 	    if (((x > (x1 - 1) / 3) && (x <= (2 * (x1 - 1)) / 3))
 		|| (((y > (y1 - 1) / 3) && (y <= (2 * (y1 - 1)) / 3)))) {
 		wmove(win, y, x);
-		waddch(win, ch);
+		waddch(win, UChar(ch));
 	    }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.10 2005/03/06 00:27:27 tom Exp $
+ * $Id: demo_forms.c,v 1.11 2005/04/16 16:31:25 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -64,11 +64,11 @@ static int o_value = 0;
 static FIELD *
 make_label(int frow, int fcol, NCURSES_CONST char *label)
 {
-    FIELD *f = new_field(1, strlen(label), frow, fcol, 0, 0);
+    FIELD *f = new_field(1, (int) strlen(label), frow, fcol, 0, 0);
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, field_opts(f) & ~O_ACTIVE);
+	set_field_opts(f, (int) (field_opts(f) & ~O_ACTIVE));
     }
     return (f);
 }

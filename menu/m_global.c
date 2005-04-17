@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.19 2005/01/16 01:02:23 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.20 2005/04/16 17:30:57 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -259,7 +259,7 @@ _nc_Calculate_Text_Width(const TEXT * item /*FIXME: limit length */ )
       int n;
 
       result = 0;
-      mbstowcs(temp, item->str, count);
+      mbstowcs(temp, item->str, (unsigned)count);
       for (n = 0; n < count; ++n)
 	{
 	  int test = wcwidth(temp[n]);

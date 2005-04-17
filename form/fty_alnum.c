@@ -12,7 +12,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alnum.c,v 1.16 2005/03/05 21:41:55 tom Exp $")
+MODULE_ID("$Id: fty_alnum.c,v 1.17 2005/04/16 18:26:04 tom Exp $")
 
 typedef struct
   {
@@ -89,7 +89,7 @@ static bool
 Check_This_Character(int c, const void *argp GCC_UNUSED)
 {
 #if USE_WIDEC_SUPPORT
-  if (iswalnum(c))
+  if (iswalnum((wint_t) c))
     return TRUE;
 #endif
   return (isalnum(UChar(c)) ? TRUE : FALSE);

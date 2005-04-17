@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.60 2004/09/25 20:16:11 tom Exp $
+ * $Id: view.c,v 1.61 2005/04/16 16:32:49 tom Exp $
  */
 
 #include <time.h>
@@ -223,7 +223,7 @@ main(int argc, char *argv[])
 #endif
 #ifdef TRACE
 	case 'T':
-	    trace(atoi(optarg));
+	    trace((unsigned) atoi(optarg));
 	    break;
 	case 't':
 	    trace(TRACE_CALLS);
@@ -326,7 +326,7 @@ main(int argc, char *argv[])
 		    mvprintw(0, 0, "Count: ");
 		    clrtoeol();
 		}
-		addch(c);
+		addch(UChar(c));
 		value = 10 * value + (c - '0');
 		got_number = TRUE;
 	    } else

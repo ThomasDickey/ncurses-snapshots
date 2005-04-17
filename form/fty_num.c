@@ -12,7 +12,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.20 2005/03/06 00:15:59 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.21 2005/04/16 18:21:10 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -25,7 +25,7 @@ MODULE_ID("$Id: fty_num.c,v 1.20 2005/03/06 00:15:59 tom Exp $")
 #endif
 
 #if USE_WIDEC_SUPPORT
-#define isDigit(c) (iswdigit(c) || isdigit(UChar(c)))
+#define isDigit(c) (iswdigit((wint_t)(c)) || isdigit(UChar(c)))
 #else
 #define isDigit(c) isdigit(UChar(c))
 #endif

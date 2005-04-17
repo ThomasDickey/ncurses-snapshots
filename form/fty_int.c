@@ -12,10 +12,10 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.17 2005/03/06 00:20:48 tom Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.18 2005/04/16 18:20:00 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
-#define isDigit(c) (iswdigit(c) || isdigit(UChar(c)))
+#define isDigit(c) (iswdigit((wint_t)(c)) || isdigit(UChar(c)))
 #else
 #define isDigit(c) isdigit(UChar(c))
 #endif

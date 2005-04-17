@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.13 2004/12/25 21:41:37 tom Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.14 2005/04/16 17:53:16 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -53,8 +53,10 @@ MODULE_ID("$Id: m_pattern.c,v 1.13 2004/12/25 21:41:37 tom Exp $")
 NCURSES_EXPORT(char *)
 menu_pattern(const MENU * menu)
 {
+  static char empty[] = "";
+
   T((T_CALLED("menu_pattern(%p)"), menu));
-  returnPtr((char *)(menu ? (menu->pattern ? menu->pattern : "") : 0));
+  returnPtr(menu ? (menu->pattern ? menu->pattern : empty) : 0);
 }
 
 /*---------------------------------------------------------------------------

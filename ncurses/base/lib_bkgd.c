@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2001-2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.31 2005/01/29 18:51:38 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.32 2005/04/16 18:03:48 tom Exp $")
 
 /*
  * Set the window's background information.
@@ -86,7 +86,7 @@ wbkgrndset(WINDOW *win, const ARG_CH_T ch)
 	    int tmp;
 
 	    wgetbkgrnd(win, &wch);
-	    tmp = _nc_to_char(CharOf(wch));
+	    tmp = _nc_to_char((wint_t) CharOf(wch));
 
 	    win->_bkgd = (((tmp == EOF) ? ' ' : (chtype) tmp)
 			  | (AttrOf(wch) & ALL_BUT_COLOR)
