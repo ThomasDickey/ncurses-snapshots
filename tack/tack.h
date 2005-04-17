@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.12 2004/12/04 16:10:12 tom Exp $ */
+/* $Id: tack.h,v 1.13 2005/04/16 16:28:42 tom Exp $ */
 
 #ifndef NCURSES_TACK_H_incl
 #define NCURSES_TACK_H_incl 1
@@ -130,7 +130,7 @@ extern int select_xon_xoff;
 
 extern int tty_frame_size;
 extern unsigned tty_baud_rate;
-extern int tty_cps;		/* The number of characters per second */
+extern unsigned long tty_cps;	/* The number of characters per second */
 extern int not_a_tty, nodelay_read;
 extern int send_reset_init;
 
@@ -194,7 +194,7 @@ extern int tx_delay[TT_MAX];	/* Number of milliseconds delay */
 extern int tx_index[TT_MAX];	/* String index */
 extern int txp;			/* number of entries used */
 extern int tx_characters;	/* printing characters sent by test */
-extern int tx_cps;		/* characters per second */
+extern unsigned long tx_cps;	/* characters per second */
 
 /*
 	Menu control for tack.
@@ -318,7 +318,7 @@ extern char txt_shorter_augment[80];
 extern char txt_shorter_test_time[80];
 extern int msec_cost(const char *const, int);
 extern int skip_pad_test(struct test_list *, int *, int *, const char *);
-extern int sliding_scale(int, int, int);
+extern int sliding_scale(int, int, unsigned long);
 extern int still_testing(void);
 extern long event_time(int);
 extern void control_init(void);

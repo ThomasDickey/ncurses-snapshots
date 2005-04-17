@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.886 2005/04/09 20:43:45 tom Exp $
+-- $Id: NEWS,v 1.888 2005/04/16 23:10:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050416
+	+ update config.guess, config.sub
+	+ modify configure script check for _XOPEN_SOURCE, disable that on
+	  Darwin whose header files have problems (patch by Chris Zubrzycki).
+	+ modify form library Is_Printable_String() to use iswprint() rather
+	  than wcwidth() for determining if a character is printable.  The
+	  latter caused it to reject menu items containing non-spacing
+	  characters.
+	+ modify ncurses test program's F-test to handle non-spacing characters
+	  by combining them with a reverse-video blank.
+	+ review/fix several gcc -Wconversion warnings.
 
 20050409
 	+ correct an off-by-one error in m_driver() for mouse-clicks used to

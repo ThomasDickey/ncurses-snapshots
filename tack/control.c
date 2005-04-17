@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #endif
 
-MODULE_ID("$Id: control.c,v 1.5 2004/12/04 16:12:38 tom Exp $")
+MODULE_ID("$Id: control.c,v 1.6 2005/04/16 16:29:18 tom Exp $")
 
 /* terminfo test program control subroutines */
 
@@ -66,7 +66,7 @@ int tx_index[TT_MAX];		/* String index */
 int tx_delay[TT_MAX];		/* Number of milliseconds delay */
 int txp;			/* number of entries used */
 int tx_characters;		/* printing characters sent by test */
-int tx_cps;			/* characters per second */
+unsigned long tx_cps;		/* characters per second */
 static struct test_list *tx_source;	/* The test that generated this data */
 
 #define RESULT_BLOCK		1024
@@ -362,7 +362,7 @@ int
 sliding_scale(
 	int dividend,
 	int factor,
-	int divisor)
+	unsigned long divisor)
 {
 	double d = dividend;
 
@@ -542,7 +542,7 @@ dump_test_stats(
 		}
 	}
 	sprintf(tbuf, "%011lu", usec_run_time);
-	sprintf(temp, "Test time: %lu.%s, characters per second %d, characters %d",
+	sprintf(temp, "Test time: %lu.%s, characters per second %ld, characters %d",
 		usec_run_time / 1000000UL, &tbuf[5], tx_cps, tx_characters);
 	ptextln(temp);
 	for (i = 0; i < txp; i++) {

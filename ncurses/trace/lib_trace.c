@@ -41,7 +41,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.57 2005/02/19 17:13:49 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.58 2005/04/16 16:15:24 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -109,7 +109,7 @@ _tracef(const char *fmt,...)
     va_list ap;
     bool before = FALSE;
     bool after = FALSE;
-    int doit = _nc_tracing;
+    unsigned doit = _nc_tracing;
     int save_err = errno;
 
     if (strlen(fmt) >= sizeof(Called) - 1) {

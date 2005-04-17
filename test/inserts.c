@@ -1,5 +1,5 @@
 /*
- * $Id: inserts.c,v 1.12 2004/11/21 00:23:19 tom Exp $
+ * $Id: inserts.c,v 1.13 2005/04/16 15:56:42 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -259,19 +259,19 @@ test_inserts(int level)
 		    switch (option) {
 		    case oDefault:
 			if (move(row2, col2) != ERR) {
-			    InsCh(buffer[col]);
+			    InsCh(UChar(buffer[col]));
 			}
 			break;
 		    case oMove:
-			MvInsCh(row2, col2, buffer[col]);
+			MvInsCh(row2, col2, UChar(buffer[col]));
 			break;
 		    case oWindow:
 			if (wmove(work, row2, col2) != ERR) {
-			    WInsCh(work, buffer[col]);
+			    WInsCh(work, UChar(buffer[col]));
 			}
 			break;
 		    case oMoveWindow:
-			MvWInsCh(work, row2, col2, buffer[col]);
+			MvWInsCh(work, row2, col2, UChar(buffer[col]));
 			break;
 		    }
 		}
@@ -315,19 +315,19 @@ test_inserts(int level)
 	    switch (option) {
 	    case oDefault:
 		if (move(limit + row, col) != ERR) {
-		    InsCh(ch);
+		    InsCh(UChar(ch));
 		}
 		break;
 	    case oMove:
-		MvInsCh(limit + row, col, ch);
+		MvInsCh(limit + row, col, UChar(ch));
 		break;
 	    case oWindow:
 		if (wmove(work, limit + row, col) != ERR) {
-		    WInsCh(work, ch);
+		    WInsCh(work, UChar(ch));
 		}
 		break;
 	    case oMoveWindow:
-		MvWInsCh(work, limit + row, col, ch);
+		MvWInsCh(work, limit + row, col, UChar(ch));
 		break;
 	    }
 

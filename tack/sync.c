@@ -22,7 +22,7 @@
 #include <tack.h>
 #include <time.h>
 
-MODULE_ID("$Id: sync.c,v 1.4 2004/12/04 15:57:42 tom Exp $")
+MODULE_ID("$Id: sync.c,v 1.5 2005/04/16 16:29:41 tom Exp $")
 
 /* terminal-synchronization and performance tests */
 
@@ -50,7 +50,7 @@ struct test_menu sync_menu = {
 int tty_can_sync;		/* TRUE if tty_sync_error() returned FALSE */
 static int tty_newline_rate;	/* The number of newlines per second */
 static int tty_clear_rate;	/* The number of clear-screens per second */
-int tty_cps;			/* The number of characters per second */
+unsigned long tty_cps;		/* The number of characters per second */
 
 #define TTY_ACK_SIZE 64
 
@@ -299,7 +299,7 @@ sync_home(
 	if (tx_cps > tty_cps) {
 		tty_cps = tx_cps;
 	}
-	sprintf(temp, "%d characters per second.  Baudrate %d  ", tx_cps, j);
+	sprintf(temp, "%ld characters per second.  Baudrate %d  ", tx_cps, j);
 	ptext(temp);
 	generic_done_message(t, state, ch);
 }
@@ -395,7 +395,7 @@ sync_summary(
 	put_crlf();
 	ptextln("Terminal  size    characters/sec linefeeds/sec  clears/sec");
 	sprintf(size, "%dx%d", columns, lines);
-	sprintf(temp, "%-10s%-11s%11d   %11d %11d", tty_basename, size,
+	sprintf(temp, "%-10s%-11s%11ld   %11d %11d", tty_basename, size,
 		tty_cps, tty_newline_rate, tty_clear_rate);
 	ptextln(temp);
 	generic_done_message(t, state, ch);

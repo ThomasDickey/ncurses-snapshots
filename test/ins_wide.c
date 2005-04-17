@@ -1,5 +1,5 @@
 /*
- * $Id: ins_wide.c,v 1.5 2004/11/21 00:25:05 tom Exp $
+ * $Id: ins_wide.c,v 1.6 2005/04/16 17:45:17 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -354,19 +354,19 @@ test_inserts(int level)
 		    switch (option) {
 		    case oDefault:
 			if (move(row2, col2) != ERR) {
-			    InsCh(buffer[col]);
+			    InsCh((chtype) buffer[col]);
 			}
 			break;
 		    case oMove:
-			MvInsCh(row2, col2, buffer[col]);
+			MvInsCh(row2, col2, (chtype) buffer[col]);
 			break;
 		    case oWindow:
 			if (wmove(work, row2, col2) != ERR) {
-			    WInsCh(work, buffer[col]);
+			    WInsCh(work, (chtype) buffer[col]);
 			}
 			break;
 		    case oMoveWindow:
-			MvWInsCh(work, row2, col2, buffer[col]);
+			MvWInsCh(work, row2, col2, (chtype) buffer[col]);
 			break;
 		    }
 		}

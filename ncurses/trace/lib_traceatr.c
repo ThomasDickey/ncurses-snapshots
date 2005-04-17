@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.51 2005/01/29 00:50:23 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.52 2005/04/16 16:43:00 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -238,7 +238,7 @@ _tracechtype2(int bufnum, chtype ch)
     if ((found = _nc_altcharset_name(ChAttrOf(ch), ch)) != 0) {
 	(void) _nc_trace_bufcat(bufnum, found);
     } else
-	(void) _nc_trace_bufcat(bufnum, _tracechar(ChCharOf(ch)));
+	(void) _nc_trace_bufcat(bufnum, _tracechar((int)ChCharOf(ch)));
 
     if (ChAttrOf(ch) != A_NORMAL) {
 	(void) _nc_trace_bufcat(bufnum, " | ");

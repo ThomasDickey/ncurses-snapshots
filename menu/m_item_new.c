@@ -38,7 +38,11 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.22 2005/01/16 01:02:23 tom Exp $")
+#if USE_WIDEC_SUPPORT
+#include <wctype.h>
+#endif
+
+MODULE_ID("$Id: m_item_new.c,v 1.25 2005/04/16 22:24:38 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -62,21 +66,17 @@ Is_Printable_String(const char *s)
   assert(s);
 
   if (count > 0
-      && (temp = typeMalloc(wchar_t, (2 + count))) != 0)
+      && (temp = typeCalloc(wchar_t, (2 + count))) != 0)
     {
       int n;
 
-      mbstowcs(temp, s, count);
+      mbstowcs(temp, s, (unsigned)count);
       for (n = 0; n < count; ++n)
-	{
-	  int test = wcwidth(temp[n]);
-
-	  if (test <= 0)
-	    {
-	      result = FALSE;
-	      break;
-	    }
-	}
+	if (!iswprint(temp[n]))
+	  {
+	    result = FALSE;
+	    break;
+	  }
       free(temp);
     }
 #else
@@ -193,7 +193,7 @@ free_item(ITEM * item)
 NCURSES_EXPORT(int)
 set_menu_mark(MENU * menu, const char *mark)
 {
-  int l;
+  unsigned l;
 
   T((T_CALLED("set_menu_mark(%p,%s)"), menu, _nc_visbuf(mark)));
 
@@ -211,7 +211,7 @@ set_menu_mark(MENU * menu, const char *mark)
 	{
 	  /* If the menu is already posted, the geometry is fixed. Then
 	     we can only accept a mark with exactly the same length */
-	  if (menu->marklen != l)
+	  if (menu->marklen != (int)l)
 	    RETURN(E_BAD_ARGUMENT);
 	}
       menu->marklen = l;

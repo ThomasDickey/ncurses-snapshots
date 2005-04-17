@@ -1,5 +1,5 @@
 /*
- * $Id: demo_menus.c,v 1.10 2005/04/09 23:07:01 tom Exp $
+ * $Id: demo_menus.c,v 1.11 2005/04/16 16:19:50 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -56,8 +56,8 @@ top_row				-
 
 #ifdef NCURSES_VERSION
 #ifdef TRACE
-static int save_trace = TRACE_ORDINARY | TRACE_CALLS;
-extern int _nc_tracing;
+static unsigned save_trace = TRACE_ORDINARY | TRACE_CALLS;
+extern unsigned _nc_tracing;
 static MENU *mpTrace;
 #endif
 #else
@@ -306,7 +306,7 @@ build_select_menu(MenuNo number, char *filename)
 
     ITEM **ip;
     const char **ap = 0;
-    int count = 0;
+    unsigned count = 0;
 
     if (filename != 0) {
 	struct stat sb;
@@ -358,7 +358,7 @@ build_select_menu(MenuNo number, char *filename)
 	*ip++ = new_item(*ap++, "");
     *ip = 0;
 
-    mpSelect = menu_create(items, count, 1, number);
+    mpSelect = menu_create(items, (int) count, 1, number);
 }
 
 static int
@@ -373,7 +373,7 @@ perform_select_menu(int cmd)
 #define T_TBL(name) { #name, name }
 static struct {
     const char *name;
-    int mask;
+    unsigned mask;
 } t_tbl[] = {
 
     T_TBL(TRACE_DISABLE),
@@ -413,7 +413,7 @@ build_trace_menu(MenuNo number)
 }
 
 static char *
-tracetrace(int tlevel)
+tracetrace(unsigned tlevel)
 {
     static char *buf;
     int n;
@@ -468,11 +468,11 @@ perform_trace_menu(int cmd)
 /* interactively set the trace level */
 {
     ITEM **ip;
-    int newtrace;
+    unsigned newtrace;
     int result;
 
     for (ip = menu_items(mpTrace); *ip; ip++) {
-	int mask = t_tbl[item_index(*ip)].mask;
+	unsigned mask = t_tbl[item_index(*ip)].mask;
 	if (mask == 0)
 	    set_item_value(*ip, _nc_tracing == 0);
 	else if ((mask & _nc_tracing) == mask)

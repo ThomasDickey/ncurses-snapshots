@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_instr.c,v 1.13 2004/11/20 21:43:09 tom Exp $")
+MODULE_ID("$Id: lib_instr.c,v 1.14 2005/04/16 17:51:12 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnstr(WINDOW *win, char *str, int n)
@@ -74,7 +74,7 @@ winnstr(WINDOW *win, char *str, int n)
 	    if (!isWidecExt(*cell)) {
 		n2 = getcchar(cell, 0, 0, 0, 0);
 		if (n2 > 0
-		    && (wch = typeCalloc(wchar_t, n2 + 1)) != 0) {
+		    && (wch = typeCalloc(wchar_t, (unsigned) n2 + 1)) != 0) {
 		    if (getcchar(cell, wch, &attrs, &pair, 0) == OK) {
 
 			init_mb(state);

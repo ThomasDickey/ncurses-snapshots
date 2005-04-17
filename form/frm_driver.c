@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.67 2005/02/26 21:30:08 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.68 2005/04/16 17:42:59 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -4201,7 +4201,7 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
     }
   else
     {
-      mvwin_wchnstr(field->working, 0, 0, widevalue, len);
+      mvwin_wchnstr(field->working, 0, 0, widevalue, (int)len);
       for (i = 0; i < len; ++i)
 	{
 	  if (CharEq(myZEROS, widevalue[i]))
@@ -4292,7 +4292,7 @@ field_buffer(const FIELD *field, int buffer)
 	{
 	  wclear(field->working);
 	  mvwadd_wchnstr(field->working, 0, 0, data, size);
-	  mvwinnstr(field->working, 0, 0, result, need + 1);
+	  mvwinnstr(field->working, 0, 0, result, (int)need + 1);
 	}
 #else
       result = Address_Of_Nth_Buffer(field, buffer);
@@ -4339,7 +4339,7 @@ _nc_Widen_String(char *source, int *lengthp)
 
   for (pass = 0; pass < 2; ++pass)
     {
-      int need = 0;
+      unsigned need = 0;
       size_t passed = 0;
 
       while (passed < given)

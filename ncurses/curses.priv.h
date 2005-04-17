@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.281 2005/03/05 20:18:47 tom Exp $
+ * $Id: curses.priv.h,v 1.282 2005/04/16 17:09:26 tom Exp $
  *
  *	curses.priv.h
  *
@@ -561,7 +561,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 	WINDOWLIST *next;
 #ifdef _XOPEN_SOURCE_EXTENDED
 	char addch_work[(MB_LEN_MAX * 9) + 1];
-	int addch_used;		/* number of bytes in addch_work[] */
+	unsigned addch_used;	/* number of bytes in addch_work[] */
 	int addch_x;		/* x-position for addch_work[] */
 	int addch_y;		/* y-position for addch_work[] */
 #endif

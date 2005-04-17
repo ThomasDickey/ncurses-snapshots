@@ -51,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.73 2005/01/15 23:52:31 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.74 2005/04/16 16:42:09 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -207,7 +207,7 @@ next_char(void)
 		if (used == 0)
 		    _nc_curr_file_pos = ftell(yyin);
 
-		if (fgets(result + used, allocated - used, yyin) != 0) {
+		if (fgets(result + used, (int) (allocated - used), yyin) != 0) {
 		    bufstart = result;
 		    if (used == 0) {
 			_nc_curr_line++;

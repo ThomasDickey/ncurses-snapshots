@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.353 2005/04/02 18:49:56 tom Exp $
+dnl $Id: aclocal.m4,v 1.354 2005/04/16 23:08:58 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -4152,7 +4152,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 17 updated: 2005/02/06 12:07:45
+dnl CF_XOPEN_SOURCE version: 18 updated: 2005/04/16 19:02:58
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -4169,6 +4169,9 @@ case $host_os in #(vi
 aix[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_ALL_SOURCE"
 	;;
+darwin*) #(vi                                                                  
+	# setting _XOPEN_SOURCE breaks things on Darwin                         
+	;;                                                                      
 freebsd*) #(vi
 	# 5.x headers associate
 	#	_XOPEN_SOURCE=600 with _POSIX_C_SOURCE=200112L

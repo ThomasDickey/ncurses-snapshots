@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -38,7 +39,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracechr.c,v 1.11 2004/04/03 22:45:03 tom Exp $")
+MODULE_ID("$Id: lib_tracechr.c,v 1.12 2005/04/16 16:55:46 tom Exp $")
 
 #ifdef TRACE
 NCURSES_EXPORT(char *)
@@ -60,7 +61,7 @@ _tracechar(int ch)
 	 */
 	(void) sprintf(result, "%#03o", ch);
     } else {
-	name = unctrl(ch);
+	name = unctrl((chtype) ch);
 	if (name == 0 || *name == 0)
 	    name = "null";	/* shouldn't happen */
 	(void) sprintf(result, "'%.30s' = %#03o", name, ch);

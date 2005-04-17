@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.32 2005/01/16 01:02:23 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.33 2005/04/16 17:31:17 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -304,7 +304,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 
 #if USE_WIDEC_SUPPORT
       New_Field->working = newpad(1, Buffer_Length(New_Field) + 1);
-      New_Field->expanded = (char **)calloc(1 + rows, sizeof(char *));
+      New_Field->expanded = (char **)calloc(1 + (unsigned)rows, sizeof(char *));
 #endif
 
       if (_nc_Copy_Type(New_Field, &default_field))

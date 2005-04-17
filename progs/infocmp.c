@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.77 2004/12/04 15:38:26 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.78 2005/04/16 16:58:16 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -260,7 +260,7 @@ entryeq(TERMTYPE *t1, TERMTYPE *t2)
 	    return (FALSE);
 
     for (i = 0; i < NUM_STRINGS(t1); i++)
-	if (capcmp(i, t1->Strings[i], t2->Strings[i]))
+	if (capcmp((PredIdx) i, t1->Strings[i], t2->Strings[i]))
 	    return (FALSE);
 
     return (TRUE);

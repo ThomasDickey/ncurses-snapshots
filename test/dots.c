@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.9 2004/04/10 23:58:46 tom Exp $
+ * $Id: dots.c,v 1.10 2005/04/16 16:33:04 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -101,7 +101,7 @@ main(
 	if (signal(j, SIG_IGN) != SIG_IGN)
 	    signal(j, onsig);
 
-    srand(time(0));
+    srand((unsigned) time(0));
     setupterm((char *) 0, 1, (int *) 0);
     outs(clear_screen);
     outs(cursor_invisible);
