@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.259 $
-#	$Date: 2005/02/26 23:36:55 $
+#	$Revision: 1.261 $
+#	$Date: 2005/04/23 20:06:04 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1785,11 +1785,25 @@ bsdos-ppc|PowerPC BSD/OS Console,
 
 #### DEC VT52
 # (<acsc>/<rmacs>/<smacs> capabilities aren't in DEC's official entry -- esr)
+#
+# Actually (TD pointed this out at the time the acsc string was added):
+# vt52 shouldn't define full acsc since most of the cells don't match.
+# see vt100 manual page A-31.  This is the list that does match:
+#	f degree
+#	g plus/minus
+#	h right-arrow
+#	k down-arrow
+#	m scan-1
+#	o scan-3
+#	q scan-5
+#	s scan-7
+# The line-drawing happens to work in several terminal emulators, but should
+# not be used as a guide to the capabilities of the vt52 -TD
 vt52|dec vt52, 
 	OTbs, 
 	cols#80, it#8, lines#24, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
-	bel=^G, clear=\EH\EJ, cr=^M, cub1=\ED, cud1=\EB, cuf1=\EC, 
+	acsc=ffgghhkkmmooqqss, bel=^G, clear=\EH\EJ, cr=^M, 
+	cub1=\ED, cud1=\EB, cuf1=\EC, 
 	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, ed=\EJ, 
 	el=\EK, home=\EH, ht=^I, ind=^J, kbs=^H, kcub1=\ED, kcud1=\EB, 
 	kcuf1=\EC, kcuu1=\EA, nel=^M^J, ri=\EI, rmacs=\EG, smacs=\EF, 
@@ -1974,7 +1988,7 @@ vt220+keypad|dec vt220 numeric keypad,
 #
 # (vt100: I added <rmam>/<smam> based on the init string, also <OTbs>. -- esr)
 vt100|vt100-am|dec vt100 (w/advanced video), 
-	OTbs, am, msgr, xenl, xon, 
+	OTbs, am, mc5i, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>, 
@@ -1984,8 +1998,9 @@ vt100|vt100-am|dec vt100 (w/advanced video),
 	cup=\E[%i%p1%d;%p2%dH$<5>, cuu=\E[%p1%dA, 
 	cuu1=\E[A$<2>, ed=\E[J$<50>, el=\E[K$<3>, el1=\E[1K$<3>, 
 	enacs=\E(B\E)0, home=\E[H, ht=^I, hts=\EH, ind=^J, kbs=^H, 
-	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, rc=\E8, 
-	rev=\E[7m$<2>, ri=\EM$<5>, rmacs=^O, rmam=\E[?7l, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, lf1=pf1, 
+	lf2=pf2, lf3=pf3, lf4=pf4, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, 
+	rc=\E8, rev=\E[7m$<2>, ri=\EM$<5>, rmacs=^O, rmam=\E[?7l, 
 	rmkx=\E[?1l\E>, rmso=\E[m$<2>, rmul=\E[m$<2>, 
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;$<2>, 
@@ -2035,7 +2050,6 @@ vt100-s-bot|vt100-bot-s|vt100 for use with bottom sysline,
 # This entry (or vt102-nsgr) is probably the right thing to use for
 # these.  
 vt102|dec vt102, 
-	mir, 
 	dch1=\E[P, dl1=\E[M, il1=\E[L, rmir=\E[4l, smir=\E[4h, 
 	use=vt100, 
 vt102-w|dec vt102 in wide mode, 
@@ -2054,7 +2068,9 @@ vt102-nsgr|vt102 no sgr (use if you see snowflakes after highlight changes),
 	sgr@, sgr0=\E[m, use=vt102, 
 
 # VT125 Graphics CRT.  Clear screen also erases graphics
+# Some vt125's came configured with vt102 support.
 vt125|vt125 graphics terminal, 
+	mir, 
 	clear=\E[H\E[2J\EPpS(E)\E\\$<50>, use=vt100, 
 
 # This isn't a DEC entry, it came from University of Wisconsin.
@@ -13446,6 +13462,10 @@ jaixterm|IBM Kanji Aixterm Terminal Eemulator,
 jaixterm-m|IBM Kanji AIXterm Monochrome Terminal Emulator, 
 	acsc@, use=aixterm-m, 
 
+# This flavor is adapted from xterm, in turn from aixterm documentation -TD
+aixterm-16color|IBM Aixterm Terminal Emulator with 16 colors, 
+	use=ibm+16color, use=aixterm, 
+
 #### Infoton/General Terminal Corp.
 #
 
@@ -20946,6 +20966,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2005-02-26
 #	* modify sgr/sgr0 in xterm-new to improve tgetent's derived "me" -TD
+#	* add aixterm-16color to demonstrate 16-color capability -TD
+#
+# 2005-04-23
+#	* add media-copy to vt100 -TD
+#	* corrected acsc string for vt52 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
