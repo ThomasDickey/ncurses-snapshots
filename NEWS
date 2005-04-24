@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.888 2005/04/16 23:10:27 tom Exp $
+-- $Id: NEWS,v 1.889 2005/04/23 20:05:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050423
+	+ minor fixes for vt100/vt52 entries -TD
+	+ add configure option --enable-largefile
+	+ corrected libraries used to build Ada95/gen/gen, found in testing
+	  gcc 4.0.0.
 
 20050416
 	+ update config.guess, config.sub

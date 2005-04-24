@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.82 2005/03/27 01:26:30 tom Exp $
+-- $Id: INSTALL,v 1.83 2005/04/23 18:27:03 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -427,6 +427,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	this a standard feature except for the concern that the terminfo entry
 	may not be accurate, or that your stty settings have disabled the use
 	of tabs.
+
+    --enable-largefile
+	Modify compiler flags as needed to use large-file interfaces.
 
     --enable-no-padding
 	Compile-in support for the $NCURSES_NO_PADDING environment variable,
