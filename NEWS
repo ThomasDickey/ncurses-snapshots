@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.889 2005/04/23 20:05:10 tom Exp $
+-- $Id: NEWS,v 1.892 2005/04/30 23:14:57 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050430
+	+ modify terminfo entries xterm-new and rxvt to add strings for
+	  shift-, control-cursor keys.
+	+ workaround to allow c++ binding to compile with g++ 2.95.3, which
+	  has a broken implementation of static_cast<> (patch by Jeff Chua).
+	+ modify initialization of key lookup table so that if an extended
+	  capability (tic -x) string is defined, and its name begins with 'k',
+	  it will automatically be treated as a key.
+	+ modify test/keynames.c to allow for the possibility of extended
+	  key names, e.g., via define_key(), or via "tic -x".
+	+ add test/demo_termcap.c to show the contents of given entry via the
+	  termcap interface.
 
 20050423
 	+ minor fixes for vt100/vt52 entries -TD

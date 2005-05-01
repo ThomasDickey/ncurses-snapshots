@@ -963,6 +963,7 @@
 ./test/demo_keyok.c
 ./test/demo_menus.c
 ./test/demo_panels.c
+./test/demo_termcap.c
 ./test/ditto.c
 ./test/dots.c
 ./test/edit_field.c

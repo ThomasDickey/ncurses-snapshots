@@ -1,7 +1,7 @@
 # Test-Program modules
-# $Id: modules,v 1.20 2003/12/07 00:01:23 tom Exp $
+# $Id: modules,v 1.21 2005/04/30 14:34:52 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -42,6 +42,7 @@ demo_keyok	progs		$(srcdir)
 demo_forms	progs		$(srcdir)	../include/form.h
 demo_menus	progs		$(srcdir)	../include/menu.h
 demo_panels	progs		$(srcdir)	../include/panel.h
+demo_termcap	progs		$(srcdir)	../include/termcap.h
 ditto		progs		$(srcdir)
 dots		progs		$(srcdir)	../include/term.h
 edit_field	progs		$(srcdir)

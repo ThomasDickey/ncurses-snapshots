@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.37 2004/07/05 13:09:39 tom Exp $
+.\" $Id: tic.1m,v 1.38 2005/04/30 19:39:28 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -196,6 +196,8 @@ Treat unknown capabilities as user-defined.
 That is, if you supply a capability name which \fBtic\fP does not recognize,
 it will infer its type (boolean, number or string) from the syntax and
 make an extended table entry for that.
+User-defined capability strings
+whose name begins with ``k'' are treated as function keys.
 .TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source

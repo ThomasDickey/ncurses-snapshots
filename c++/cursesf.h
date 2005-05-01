@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.24 2005/04/03 12:22:01 tom Exp $
+// $Id: cursesf.h,v 1.25 2005/04/30 20:26:05 Jeff.Chua Exp $
 
 #ifndef NCURSES_CURSESF_H_incl
 #define NCURSES_CURSESF_H_incl 1
@@ -73,7 +73,7 @@ protected:
 
 public:
   NCursesFieldType()
-    : fieldtype(static_cast <FIELDTYPE*>(0))
+    : fieldtype(STATIC_CAST(FIELDTYPE*)(0))
   {
   }
 
@@ -114,8 +114,8 @@ protected:
 public:
   // Create a 'Null' field. Can be used to delimit a field list
   NCursesFormField()
-    : field(static_cast<FIELD*>(0)),
-      ftype(static_cast<NCursesFieldType*>(0))
+    : field(STATIC_CAST(FIELD*)(0)),
+      ftype(STATIC_CAST(NCursesFieldType*)(0))
   {
   }
 
@@ -127,7 +127,7 @@ public:
 		    int offscreen_rows = 0,
 		    int additional_buffers = 0)
     : field(),
-      ftype(static_cast<NCursesFieldType*>(0))
+      ftype(STATIC_CAST(NCursesFieldType*)(0))
   {
       field = ::new_field(rows, ncols, first_row, first_col,
 			  offscreen_rows, additional_buffers);
@@ -403,7 +403,7 @@ protected:
 	       int  begin_y = 0,
 	       int  begin_x = 0)
     : NCursesPanel(nlines, ncols, begin_y, begin_x),
-      form (static_cast<FORM*>(0)),
+      form (STATIC_CAST(FORM*)(0)),
       sub(),
       b_sub_owner(),
       b_framed(),
@@ -632,14 +632,14 @@ public:
 		    int ncols,
 		    int first_row = 0,
 		    int first_col = 0,
-		    const T* p_UserData = static_cast<T*>(0),
+		    const T* p_UserData = STATIC_CAST(T*)(0),
 		    int offscreen_rows = 0,
 		    int additional_buffers = 0)
     : NCursesFormField (rows, ncols,
 			first_row, first_col,
 			offscreen_rows, additional_buffers) {
       if (field)
-	OnError(::set_field_userptr(field, static_cast<void *>(p_UserData)));
+	OnError(::set_field_userptr(field, STATIC_CAST(void *)(p_UserData)));
   }
 
   virtual ~NCursesUserField() {};
@@ -650,7 +650,7 @@ public:
 
   inline virtual void setUserData(const T* p_UserData) {
     if (field)
-      OnError (::set_field_userptr (field, static_cast<void *>(p_UserData)));
+      OnError (::set_field_userptr (field, STATIC_CAST(void *)(p_UserData)));
   }
 };
 //
@@ -667,7 +667,7 @@ protected:
 		   int  ncols,
 		   int  begin_y = 0,
 		   int  begin_x = 0,
-		   const T* p_UserData = static_cast<T*>(0))
+		   const T* p_UserData = STATIC_CAST(T*)(0))
     : NCursesForm(nlines,ncols,begin_y,begin_x) {
       if (form)
 	set_user (const_cast<void *>(p_UserData));
@@ -675,7 +675,7 @@ protected:
 
 public:
   NCursesUserForm (NCursesFormField Fields[],
-		   const T* p_UserData = static_cast<T*>(0),
+		   const T* p_UserData = STATIC_CAST(T*)(0),
 		   bool with_frame=FALSE,
 		   bool autoDelete_Fields=FALSE)
     : NCursesForm (Fields, with_frame, autoDelete_Fields) {
@@ -688,7 +688,7 @@ public:
 		   int ncols,
 		   int begin_y = 0,
 		   int begin_x = 0,
-		   const T* p_UserData = static_cast<T*>(0),
+		   const T* p_UserData = STATIC_CAST(T*)(0),
 		   bool with_frame=FALSE,
 		   bool autoDelete_Fields=FALSE)
     : NCursesForm (Fields, nlines, ncols, begin_y, begin_x,
