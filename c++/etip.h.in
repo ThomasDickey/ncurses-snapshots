@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.28 2005/04/03 13:36:01 tom Exp $
+// $Id: etip.h.in,v 1.29 2005/04/30 21:19:11 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -71,6 +71,10 @@
 
 #ifndef CPP_HAS_PARAM_INIT
 #define CPP_HAS_PARAM_INIT 0
+#endif
+
+#ifndef CPP_HAS_STATIC_CAST
+#define CPP_HAS_STATIC_CAST 0	// workaround for g++ 2.95.3
 #endif
 
 #ifndef USE_STRSTREAM_VSCAN
@@ -133,6 +137,12 @@ extern "C" {
 #define NCURSES_PARAM_INIT(value) = value
 #else
 #define NCURSES_PARAM_INIT(value) /*nothing*/
+#endif
+
+#if CPP_HAS_STATIC_CAST
+#define STATIC_CAST(s) static_cast<s>
+#else
+#define STATIC_CAST(s) (s)
 #endif
 
 // Forward Declarations

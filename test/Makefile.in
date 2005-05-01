@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.81 2005/01/29 19:27:15 tom Exp $
+# $Id: Makefile.in,v 1.82 2005/04/30 14:08:25 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -112,6 +112,7 @@ TESTS = \
 	demo_keyok$x \
 	demo_menus$x \
 	demo_panels$x \
+	demo_termcap$x \
 	ditto$x \
 	dots$x \
 	filter$x \
@@ -173,6 +174,9 @@ demo_menus$x: $(MODEL)/demo_menus$o $(LOCAL_LIBS)
 
 demo_panels$x: $(MODEL)/demo_panels$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_panels$o $(LDFLAGS_DEFAULT)
+
+demo_termcap$x: $(MODEL)/demo_termcap$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_termcap$o $(LDFLAGS_TINFO)
 
 ditto$x: $(MODEL)/ditto$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ditto$o $(LDFLAGS_CURSES)

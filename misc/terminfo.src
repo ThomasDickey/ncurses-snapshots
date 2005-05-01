@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.261 $
-#	$Date: 2005/04/23 20:06:04 $
+#	$Revision: 1.262 $
+#	$Date: 2005/04/30 22:09:32 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3015,6 +3015,9 @@ xterm+pcfkeys|fragment for PC-style fkeys,
 	kf56=\E[19;3~, kf57=\E[20;3~, kf58=\E[21;3~, 
 	kf59=\E[23;3~, kf6=\E[17~, kf60=\E[24;3~, kf61=\EO4P, 
 	kf62=\EO4Q, kf63=\EO4R, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	kDN=\E[1;2B, kDN5=\E[1;5B, kDN6=\E[1;6B, kLFT5=\E[1;5D, 
+	kLFT6=\E[1;6D, kRIT5=\E[1;5C, kRIT6=\E[1;6C, kUP=\E[1;2A, 
+	kUP5=\E[1;5A, kUP6=\E[1;6A, 
 #
 # This chunk is used for building the VT220/Sun/PC keyboard variants.
 xterm-basic|xterm terminal emulator - common (XFree86), 
@@ -3573,7 +3576,8 @@ rxvt+pcfkeys|fragment for PC-style fkeys,
 	kf42=\E[34\^, kf43=\E[23@, kf44=\E[24@, kf5=\E[15~, 
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
 	khome=\E[7~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
-	kDN=\E[b, kUP=\E[a, 
+	kDN=\E[b, kDN5=\EOb, kDN6=\EOB, kLFT5=\EOd, kLFT6=\EOD, 
+	kRIT5=\EOc, kRIT6=\EOC, kUP=\E[a, kUP5=\EOa, kUP6=\EOA, 
 rxvt|rxvt terminal emulator (X Window System), 
 	ncv@, 
 	hpa=\E[%i%p1%dG, kf0=\E[21~, sgr0=\E[m\017, 
@@ -20971,6 +20975,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2005-04-23
 #	* add media-copy to vt100 -TD
 #	* corrected acsc string for vt52 -TD
+#
+# 2005-04-30
+#	* add kUP, kDN (user-defined shifted up/down arrow) definitions for
+#	  xterm-new -TD
+#	* add kUP5, kUP6, etc., for xterm-new and rxvt -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

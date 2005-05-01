@@ -28,11 +28,15 @@
 
 #include <curses.priv.h>
 
-#include <term.h>		/* keypad_xmit, keypad_local, meta_on, meta_off */
-			/* cursor_visible,cursor_normal,cursor_invisible */
+#include <term.h>
+/* keypad_xmit, keypad_local, meta_on, meta_off */
+/* cursor_visible,cursor_normal,cursor_invisible */
+
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.6 2005/01/22 21:17:40 tom Exp $")
+#include <term_entry.h>
+
+MODULE_ID("$Id: init_keytry.c,v 1.7 2005/04/30 19:32:03 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -70,11 +74,35 @@ _nc_init_keytry(void)
      */
 
     if (SP != 0) {
-	for (n = 0; _nc_tinfo_fkeys[n].code; n++)
-	    if (_nc_tinfo_fkeys[n].offset < STRCOUNT)
+	for (n = 0; _nc_tinfo_fkeys[n].code; n++) {
+	    if (_nc_tinfo_fkeys[n].offset < STRCOUNT) {
 		_nc_add_to_try(&(SP->_keytry),
 			       CUR Strings[_nc_tinfo_fkeys[n].offset],
 			       _nc_tinfo_fkeys[n].code);
+	    }
+	}
+#if NCURSES_XNAMES
+	/*
+	 * Add any of the extended strings to the tries if their name begins
+	 * with 'k', i.e., they follow the convention of other terminfo key
+	 * names.
+	 */
+	{
+	    TERMTYPE *tp = &(SP->_term->type);
+	    for (n = STRCOUNT; n < NUM_STRINGS(tp); ++n) {
+		char *name = ExtStrname(tp, n, strnames);
+		char *value = tp->Strings[n];
+		if (name != 0
+		    && *name == 'k'
+		    && value != 0
+		    && key_defined(value) == 0) {
+		    _nc_add_to_try(&(SP->_keytry),
+				   value,
+				   n - STRCOUNT + KEY_MAX);
+		}
+	    }
+	}
+#endif
 #ifdef TRACE
 	_nc_trace_tries(SP->_keytry);
 #endif

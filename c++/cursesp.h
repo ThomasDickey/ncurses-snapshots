@@ -34,7 +34,7 @@
 #ifndef NCURSES_CURSESP_H_incl
 #define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.22 2005/04/09 14:11:49 tom Exp $
+// $Id: cursesp.h,v 1.23 2005/04/30 21:01:56 Jeff.Chua Exp $
 
 #include <cursesw.h>
 
@@ -229,7 +229,7 @@ public:
 		    int ncols,
 		    int begin_y = 0,
 		    int begin_x = 0,
-		    const T* p_UserData = static_cast<T*>(0))
+		    const T* p_UserData = STATIC_CAST(T*)(0))
     : NCursesPanel (nlines, ncols, begin_y, begin_x)
   {
       if (p)
@@ -238,7 +238,7 @@ public:
   // This creates an user panel of the requested size with associated
   // user data pointed to by p_UserData.
 
-  NCursesUserPanel(const T* p_UserData = static_cast<T*>(0)) : NCursesPanel()
+  NCursesUserPanel(const T* p_UserData = STATIC_CAST(T*)(0)) : NCursesPanel()
   {
     if (p)
       set_user(const_cast<void *>(p_UserData));
