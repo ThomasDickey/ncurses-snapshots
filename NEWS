@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.892 2005/04/30 23:14:57 tom Exp $
+-- $Id: NEWS,v 1.894 2005/05/07 23:44:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050507
+	+ regenerated html documentation for manpages.
+	+ add $(BUILD_EXEEXT) suffix to invocation of make_keys in
+	  ncurses/Makefile (Gentoo #89772).
+	+ modify c++/demo.cc to build with g++ -fno-implicit-templates option
+	  (patch by Mike Frysinger).
+	+ modify tic to filter out long extended names when translating to
+	  termcap format.  Only two characters are permissible for termcap
+	  capability names.
 
 20050430
 	+ modify terminfo entries xterm-new and rxvt to add strings for
