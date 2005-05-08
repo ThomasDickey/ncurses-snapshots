@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.469 2005/04/30 14:01:57 tom Exp $
+# $Id: dist.mk,v 1.471 2005/05/07 23:27:02 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 4
-NCURSES_PATCH = 20050430
+NCURSES_PATCH = 20050507
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -51,7 +51,15 @@ doc/ncurses-intro.doc: doc/html/ncurses-intro.html
 doc/hackguide.doc: doc/html/hackguide.html
 	$(DUMP2) doc/html/hackguide.html > $@
 
-MANPROG	= tbl | nroff -man
+# This is the original command:
+#	MANPROG	= tbl | nroff -man
+#
+# This happens to work for groff 1.18.1 on Debian.  At some point groff's
+# maintainer changed the line-length (we do not want/need that here).
+#
+# The distributed html files are formatted using
+#	configure --without-manpage-renames
+MANPROG	= tbl | nroff -mandoc -rLL=65n -rLT=71n -Tascii
 
 manhtml: MANIFEST
 	@rm -f doc/html/man/*.html

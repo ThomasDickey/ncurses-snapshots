@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.262 $
-#	$Date: 2005/04/30 22:09:32 $
+#	$Revision: 1.263 $
+#	$Date: 2005/05/07 19:58:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1798,11 +1798,13 @@ bsdos-ppc|PowerPC BSD/OS Console,
 #	q scan-5
 #	s scan-7
 # The line-drawing happens to work in several terminal emulators, but should
-# not be used as a guide to the capabilities of the vt52 -TD
+# not be used as a guide to the capabilities of the vt52.  Note in particular
+# that vt52 does not support line-drawing characters (the scan-X values refer
+# to a crude plotting feature) -TD
 vt52|dec vt52, 
 	OTbs, 
 	cols#80, it#8, lines#24, 
-	acsc=ffgghhkkmmooqqss, bel=^G, clear=\EH\EJ, cr=^M, 
+	acsc=ffgghhompoqqss.k, bel=^G, clear=\EH\EJ, cr=^M, 
 	cub1=\ED, cud1=\EB, cuf1=\EC, 
 	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, ed=\EJ, 
 	el=\EK, home=\EH, ht=^I, ind=^J, kbs=^H, kcub1=\ED, kcud1=\EB, 
@@ -20980,6 +20982,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add kUP, kDN (user-defined shifted up/down arrow) definitions for
 #	  xterm-new -TD
 #	* add kUP5, kUP6, etc., for xterm-new and rxvt -TD
+#
+# 2005-05-07
+#	* re-corrected acsc string for vt52 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

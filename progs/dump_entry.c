@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.67 2004/09/25 22:39:25 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.69 2005/05/07 20:26:10 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -613,6 +613,15 @@ fmt_entry(TERMTYPE *tterm,
 	else if (isObsolete(outform, name))
 	    continue;
 
+#if NCURSES_XNAMES
+	/*
+	 * Extended names can be longer than 2 characters, but termcap programs
+	 * cannot read those (filter them out).
+	 */
+	if (outform == F_TERMCAP && (strlen(name) > 2))
+	    continue;
+#endif
+
 	/*
 	 * Some older versions of vi want rmir/smir to be defined
 	 * for ich/ich1 to work.  If they're not defined, force
@@ -915,6 +924,29 @@ dump_entry(TERMTYPE *tterm,
 	    char *oldacsc = acs_chars;
 	    bool changed = FALSE;
 
+#if NCURSES_XNAMES
+	    /*
+	     * Extended names are most likely function-key definitions.  Drop
+	     * those first.
+	     */
+	    int n;
+	    for (n = STRCOUNT; n < NUM_STRINGS(tterm); n++) {
+		char *name = ExtStrname(tterm, n, strnames);
+
+		if (VALID_STRING(tterm->Strings[n])) {
+		    set_attributes = ABSENT_STRING;
+		    /* we remove long names anyway - only report the short */
+		    if (strlen(name) <= 2) {
+			SHOW_WHY("# (%s removed to fit entry within %d bytes)\n",
+				 name,
+				 critlen);
+		    }
+		    changed = TRUE;
+		    if ((len = FMT_ENTRY()) <= critlen)
+			break;
+		}
+	    }
+#endif
 	    if (VALID_STRING(set_attributes)) {
 		set_attributes = ABSENT_STRING;
 		SHOW_WHY("# (sgr removed to fit entry within %d bytes)\n",
