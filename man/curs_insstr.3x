@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2001,2004 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.14 2004/06/19 22:22:51 tom Exp $
+.\" $Id: curs_insstr.3x,v 1.16 2005/05/15 17:48:33 tom Exp $
 .TH curs_insstr 3X ""
 .SH NAME
 \fBinsstr\fR,
@@ -73,14 +73,16 @@ Special characters are handled as in \fBaddch\fP.
 All routines that return an integer return \fBERR\fR upon failure and OK (SVr4
 specifies only "an integer value other than \fBERR\fR") upon successful
 completion, unless otherwise noted in the preceding routine descriptions.
+.PP
+X/Open defines no error conditions.
+In this implementation,
+if the window parameter is null or the str parameter is null,
+an error is returned.
 .SH NOTES
 Note that all but \fBwinsnstr\fR may be macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4, which adds
-const qualifiers to the arguments.  The XSI Curses error conditions
-\fBEILSEQ\fR and \fBEILOVERFLOW\fR associated with extended-level conformance
-are not yet detected (this implementation does not yet support XPG4 multibyte
-characters).
+const qualifiers to the arguments.
 .LP
 The Single Unix Specification, Version 2 states that 
 \fBinsnstr\fP and \fBwinsnstr\fP perform wrapping.

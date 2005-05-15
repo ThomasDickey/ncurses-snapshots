@@ -26,8 +26,10 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.13 2005/04/30 19:39:53 tom Exp $
+.\" $Id: curs_util.3x,v 1.16 2005/05/15 16:46:46 tom Exp $
 .TH curs_util 3X ""
+.na
+.hy 0
 .SH NAME
 \fBdelay_output\fR,
 \fBfilter\fR,
@@ -39,6 +41,8 @@
 \fBunctrl\fR,
 \fBuse_env\fR,
 \fBwunctrl\fR - miscellaneous \fBcurses\fR utility routines
+.ad
+.hy
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .sp
@@ -114,9 +118,18 @@ Except for \fBflushinp\fR, routines that return an integer return \fBERR\fR
 upon failure and \fBOK\fR (SVr4 specifies only "an integer value other than
 \fBERR\fR") upon successful completion.
 .PP
-\fBflushinp\fR always returns \fBOK\fR.
-.PP
 Routines that return pointers return \fBNULL\fR on error.
+.PP
+X/Open does not define any error conditions.
+In this implementation
+.RS
+.TP 5
+\fBflushinp\fR
+returns an error if the terminal was not initialized.
+.TP 5
+\fBputwin\fP
+returns an error if the associated \fBfwrite\fP calls return an error.
+.RE
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.
 It states that \fBunctrl\fR and \fBwunctrl\fR will return a null pointer if

@@ -27,13 +27,17 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.26 2005/02/19 20:59:40 tom Exp $
+.\" $Id: curs_mouse.3x,v 1.28 2005/05/15 16:18:19 tom Exp $
 .TH curs_mouse 3X ""
+.na
+.hy 0
 .SH NAME
 \fBgetmouse\fR, \fBungetmouse\fR,
 \fBmousemask\fR, \fBwenclose\fR,
 \fBmouse_trafo\fR, \fBwmouse_trafo\fR,
 \fBmouseinterval\fR - mouse interface through curses
+.ad
+.hy
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
@@ -193,11 +197,28 @@ cause an error beep when cooked mode is being simulated in a window by a
 function such as \fBgetstr\fR that expects a linefeed for input-loop
 termination.
 .SH RETURN VALUE
-\fBgetmouse\fR, \fBungetmouse\fR and \fBmouseinterval\fR
+\fBgetmouse\fR and \fBungetmouse\fR
 return the integer \fBERR\fR upon failure or \fBOK\fR
 upon successful completion.
-\fBmousemask\fR returns the
-mask of reportable events.
+.RS
+.TP 5
+\fBgetmouse\fP
+returns an error.
+If no mouse driver was initialized, or
+if the mask parameter is zero,
+.TP 5
+\fBungetmouse\fP
+returns an error if the FIFO is full.
+.RE
+.PP
+\fBmousemask\fR
+returns the mask of reportable events.
+.PP
+\fBmouseinterval\fR
+returns the previous interval value, unless
+the terminal was not initialized.
+In that case, it returns the maximum interval value (166).
+.PP
 \fBwenclose\fR and \fBwmouse_trafo\fR
 are boolean functions returning \fBTRUE\fR or \fBFALSE\fR depending
 on their test result.

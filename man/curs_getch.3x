@@ -27,8 +27,10 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.26 2005/01/02 01:27:47 tom Exp $
+.\" $Id: curs_getch.3x,v 1.28 2005/05/15 16:17:49 tom Exp $
 .TH curs_getch 3X ""
+.na
+.hy 0
 .SH NAME
 \fBgetch\fR,
 \fBwgetch\fR,
@@ -36,6 +38,8 @@
 \fBmvwgetch\fR,
 \fBungetch\fR,
 \fBhas_key\fR \- get (or push back) characters from \fBcurses\fR terminal keyboard
+.ad
+.hy
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .PP
@@ -110,7 +114,6 @@ center tab(/) ;
 l l
 l l .
 \fIName\fR/\fIKey\fR \fIname\fR
-.PP
 KEY_BREAK/Break key
 KEY_DOWN/The four arrow keys ...
 KEY_UP
@@ -229,6 +232,17 @@ e.g., KEY_RESIZE and KEY_MOUSE.
 All routines return the integer \fBERR\fR upon failure and an integer value
 other than \fBERR\fR (\fBOK\fR in the case of ungetch()) upon successful
 completion.
+.RS
+.TP 5
+\fBungetch\fP
+returns an error
+if there is no more room in the FIFO.
+.TP 5
+\fBwgetch\fP
+returns an error
+if the window pointer is null, or
+if its timeout expires without having any data.
+.RE
 .SH NOTES
 Use of the escape key by a programmer for a single character function is
 discouraged, as it will cause a delay of up to one second while the
