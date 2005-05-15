@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!-- 
   ****************************************************************************
-  * Copyright (c) 2002,2004 Free Software Foundation, Inc.                   *
+  * Copyright (c) 2002-2004,2005 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_border_set.3x,v 1.4 2004/03/13 19:39:10 tom Exp @
+  * @Id: curs_border_set.3x,v 1.6 2005/05/15 16:17:37 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -47,8 +47,8 @@
 
 </PRE>
 <H2>NAME</H2><PRE>
-       <STRONG>border_set</STRONG>,  <STRONG>wborder_set</STRONG>,  <STRONG>box_set</STRONG>, <STRONG>hline_set</STRONG>, <STRONG>whline_set</STRONG>,
-       <STRONG>mvhline_set</STRONG>,    <STRONG>mvwhline_set</STRONG>,    <STRONG>vline_set</STRONG>,    <STRONG>wvline_set</STRONG>,
+       <STRONG>border_set</STRONG>, <STRONG>wborder_set</STRONG>, <STRONG>box_set</STRONG>, <STRONG>hline_set</STRONG>, <STRONG>whline_set</STRONG>,
+       <STRONG>mvhline_set</STRONG>, <STRONG>mvwhline_set</STRONG>, <STRONG>vline_set</STRONG>, <STRONG>wvline_set</STRONG>,
        <STRONG>mvvline_set</STRONG>, <STRONG>mvwvline_set</STRONG> - create <STRONG>curses</STRONG> borders or lines
        using complex characters and renditions
 
@@ -157,6 +157,9 @@
 <H2>RETURN VALUES</H2><PRE>
        Upon successful completion,  these  functions  return  <STRONG>OK</STRONG>.
        Otherwise, they return <STRONG>ERR</STRONG>.
+
+       Functions  using  a window parameter return an error if it
+       is null.
 
 
 </PRE>

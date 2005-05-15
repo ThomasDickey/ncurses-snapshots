@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.894 2005/05/07 23:44:35 tom Exp $
+-- $Id: NEWS,v 1.896 2005/05/15 16:03:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050515
+	+ document error conditions for ncurses library functions (report by
+	  Stanislav Ievlev).
+	+ regenerated html documentation for ada binding.
+	  see ftp://invisible-island.net/ncurses/patches/gnathtml 
 
 20050507
 	+ regenerated html documentation for manpages.
