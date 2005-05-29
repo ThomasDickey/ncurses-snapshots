@@ -2,12 +2,12 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.26 2005/04/16 16:10:12 tom Exp $
+ * $Id: newdemo.c,v 1.27 2005/05/28 21:40:00 tom Exp $
  */
 
-#include <time.h>
-
 #include <test.priv.h>
+
+#include <time.h>
 
 #define delay_output(x) napms(x)
 

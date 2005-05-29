@@ -1,5 +1,5 @@
 /*
- * $Id: demo_menus.c,v 1.11 2005/04/16 16:19:50 tom Exp $
+ * $Id: demo_menus.c,v 1.12 2005/05/28 19:00:59 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -65,7 +65,8 @@ static MENU *mpTrace;
 #endif
 
 typedef enum {
-    eFile
+    eUnknown = -1
+    ,eFile = 0
     ,eSelect
 #ifdef TRACE
     ,eTrace
@@ -502,7 +503,7 @@ perform_trace_menu(int cmd)
 
 /*****************************************************************************/
 
-static MenuNo
+static int
 menu_number(void)
 {
     return item_index(current_item(mpBanner));
@@ -553,7 +554,7 @@ build_menus(char *filename)
 	*ip++ = new_item(*ap, "");
     *ip = (ITEM *) 0;
 
-    mpBanner = menu_create(items, SIZEOF(labels) - 1, SIZEOF(labels) - 1, -1);
+    mpBanner = menu_create(items, SIZEOF(labels) - 1, SIZEOF(labels) - 1, eUnknown);
     set_menu_mark(mpBanner, ">");
 
     build_file_menu(eFile);

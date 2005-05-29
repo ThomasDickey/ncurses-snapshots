@@ -34,7 +34,7 @@
 #ifndef NCURSES_CURSESP_H_incl
 #define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.23 2005/04/30 21:01:56 Jeff.Chua Exp $
+// $Id: cursesp.h,v 1.25 2005/05/28 21:58:06 tom Exp $
 
 #include <cursesw.h>
 
@@ -62,7 +62,7 @@ private:
   {
     UserHook* uptr = reinterpret_cast<UserHook*>(
                            const_cast<void *>(::panel_userptr (p)));
-    return 0;
+    return uptr;
   }
 
   void init();                       // Initialize the panel object
@@ -262,4 +262,4 @@ public:
   // Associate the user panel with the user data pointed to by p_UserData.
 };
 
-#endif // NCURSES_CURSESP_H_incl
+#endif /* NCURSES_CURSESP_H_incl */

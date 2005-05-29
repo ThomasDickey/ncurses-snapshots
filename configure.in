@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.337 2005/04/30 21:21:59 tom Exp $
+dnl $Id: configure.in,v 1.340 2005/05/28 22:12:24 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.337 $)
+AC_REVISION($Revision: 1.340 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -260,6 +260,8 @@ LIB_NAME=ncurses
 AC_SUBST(LIB_NAME)
 
 LIB_DIR=../lib
+LIB_2ND=../../lib
+
 CF_LIB_PREFIX(cf_prefix)
 LIB_PREFIX=$cf_prefix
 AC_SUBST(LIB_PREFIX)
@@ -663,11 +665,10 @@ AC_MSG_CHECKING(if largefile support is wanted)
 AC_ARG_ENABLE(largefile,
 	[  --enable-largefile      compile-in large file support],
 	[with_largefile=$enableval],
-	[with_largefile=yes])
+	[with_largefile=no])
 AC_MSG_RESULT($with_largefile)
 if test "$with_largefile" = yes ; then
-	AC_FUNC_FSEEKO
-	AC_SYS_LARGEFILE
+	CF_LARGEFILE
 fi
 ])
 
@@ -1378,10 +1379,13 @@ if test "$with_termlib" != no ; then
 	fi
 
 	TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${TINFO_DEP_SUFFIX}"
+	TEST_DEP2="${LIB_2ND}/${LIB_PREFIX}${TINFO_DEP_SUFFIX}"
 	if test "$DFT_LWR_MODEL" = "libtool"; then
 		TEST_ARGS="${TEST_DEPS}"
+		TEST_ARG2="${TEST_DEP2}"
 	else
 		TEST_ARGS="-l${TINFO_ARG_SUFFIX}"
+		TEST_ARG2="-l${TINFO_ARG_SUFFIX}"
 		TINFO_ARGS="-L${LIB_DIR} $TEST_ARGS"
 		SHLIB_LIST="$SHLIB_LIST -l${TINFO_LIB_SUFFIX}"
 	fi
