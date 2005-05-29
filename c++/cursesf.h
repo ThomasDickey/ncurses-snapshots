@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.25 2005/04/30 20:26:05 Jeff.Chua Exp $
+// $Id: cursesf.h,v 1.26 2005/05/28 21:57:54 tom Exp $
 
 #ifndef NCURSES_CURSESF_H_incl
 #define NCURSES_CURSESF_H_incl 1
@@ -961,5 +961,4 @@ public:
   }
 };
 
-#endif // NCURSES_CURSESF_H_incl
-
+#endif /* NCURSES_CURSESF_H_incl */

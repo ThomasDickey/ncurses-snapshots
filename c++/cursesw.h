@@ -30,7 +30,7 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.35 2005/04/02 21:57:10 tom Exp $
+// $Id: cursesw.h,v 1.36 2005/05/28 21:58:12 tom Exp $
 
 #include <etip.h>
 #include <stdarg.h>
@@ -1430,4 +1430,4 @@ public:
 
 };
 
-#endif // NCURSES_CURSESW_H_incl
+#endif /* NCURSES_CURSESW_H_incl */

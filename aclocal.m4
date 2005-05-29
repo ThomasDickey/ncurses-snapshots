@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.354 2005/04/16 23:08:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.357 2005/05/28 22:41:50 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -934,7 +934,7 @@ esac
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_ATTRIBUTES version: 9 updated: 2002/12/21 19:25:52
+dnl CF_GCC_ATTRIBUTES version: 10 updated: 2005/05/28 13:16:28
 dnl -----------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
@@ -982,18 +982,18 @@ int main(int argc GCC_UNUSED, char *argv[[]] GCC_UNUSED) { return 0; }
 EOF
 	for cf_attribute in scanf printf unused noreturn
 	do
-		CF_UPPER(CF_ATTRIBUTE,$cf_attribute)
+		CF_UPPER(cf_ATTRIBUTE,$cf_attribute)
 		cf_directive="__attribute__(($cf_attribute))"
 		echo "checking for $CC $cf_directive" 1>&AC_FD_CC
 		case $cf_attribute in
 		scanf|printf)
 		cat >conftest.h <<EOF
-#define GCC_$CF_ATTRIBUTE 1
+#define GCC_$cf_ATTRIBUTE 1
 EOF
 			;;
 		*)
 		cat >conftest.h <<EOF
-#define GCC_$CF_ATTRIBUTE $cf_directive
+#define GCC_$cf_ATTRIBUTE $cf_directive
 EOF
 			;;
 		esac
@@ -1459,6 +1459,40 @@ AC_MSG_RESULT($cf_cv_have_isascii)
 test "$cf_cv_have_isascii" = yes && AC_DEFINE(HAVE_ISASCII)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_LARGEFILE version: 3 updated: 2005/05/28 18:40:35
+dnl ------------
+dnl Add checks for large file support.
+AC_DEFUN([CF_LARGEFILE],[
+ifdef([AC_FUNC_FSEEKO],[
+	AC_FUNC_FSEEKO
+	AC_SYS_LARGEFILE
+
+	# Normally we would collect these definitions in the config.h,
+	# but (like _XOPEN_SOURCE), some environments rely on having these
+	# defined before any of the system headers are included.  Another
+	# case comes up with C++, e.g., on AIX the compiler compiles the
+	# header files by themselves before looking at the body files it is
+	# told to compile.  For ncurses, those header files do not include
+	# the config.h
+	test "$ac_cv_sys_large_files"      != no && CPPFLAGS="$CPPFLAGS -D_LARGE_FILES "
+	test "$ac_cv_sys_largefile_source" != no && CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE "
+
+	AC_CACHE_CHECK(for struct dirent64, cf_cv_struct_dirent64,[
+		AC_TRY_COMPILE([
+#include <sys/types.h>
+#include <dirent.h>
+		],[
+		struct dirent64 *x = readdir((DIR *)0);
+		struct dirent *y = readdir((DIR *)0);
+		int z = x - y;
+		],
+		[cf_cv_struct_dirent64=yes],
+		[cf_cv_struct_dirent64=no])
+	])
+	test "$cf_cv_struct_dirent64" = yes && AC_DEFINE(HAVE_STRUCT_DIRENT64)
+])
+])
+dnl ---------------------------------------------------------------------------
 dnl CF_LIBUTF8 version: 2 updated: 2002/01/19 22:51:32
 dnl ----------
 dnl Check for libutf8
@@ -1495,7 +1529,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 35 updated: 2004/09/18 17:54:16
+dnl CF_LIB_RULES version: 36 updated: 2005/05/28 13:16:28
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1599,7 +1633,7 @@ do
 			for cf_item in $CF_LIST_MODELS
 			do
 			echo "Appending rules for ${cf_item} model (${cf_dir}: ${cf_subset})"
-			CF_UPPER(CF_ITEM,$cf_item)
+			CF_UPPER(cf_ITEM,$cf_item)
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
 			CF_OBJ_SUBDIR($cf_item,cf_subdir)
 
@@ -1651,7 +1685,7 @@ do
 			$AWK -f $srcdir/mk-1st.awk \
 				name=${cf_libname}${cf_dir_suffix} \
 				traces=$LIB_TRACING \
-				MODEL=$CF_ITEM \
+				MODEL=$cf_ITEM \
 				model=$cf_subdir \
 				prefix=$cf_prefix \
 				suffix=$cf_suffix \
@@ -1676,7 +1710,7 @@ do
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$cf_dir \
 				traces=$LIB_TRACING \
-				MODEL=$CF_ITEM \
+				MODEL=$cf_ITEM \
 				model=$cf_subdir \
 				subset=$cf_subset \
 				srcdir=$srcdir \
@@ -3427,7 +3461,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 17 updated: 2005/01/22 15:26:37
+dnl CF_SRC_MODULES version: 18 updated: 2005/05/28 12:58:54
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -3441,10 +3475,13 @@ AC_MSG_CHECKING(for src modules)
 
 # dependencies and linker-arguments for test-programs
 TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX} $TEST_DEPS"
+TEST_DEP2="${LIB_2ND}/${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX} $TEST_DEP2"
 if test "$DFT_LWR_MODEL" = "libtool"; then
 	TEST_ARGS="${TEST_DEPS}"
+	TEST_ARG2="${TEST_DEP2}"
 else
 	TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
+	TEST_ARG2="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARG2"
 fi
 
 cf_cv_src_modules=
@@ -3477,18 +3514,27 @@ do
 			AC_DEFINE_UNQUOTED(HAVE_${cf_have_include}_H)
 			AC_DEFINE_UNQUOTED(HAVE_LIB${cf_have_include})
 			TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${cf_dir}${DFT_DEP_SUFFIX} $TEST_DEPS"
+			TEST_DEP2="${LIB_2ND}/${LIB_PREFIX}${cf_dir}${DFT_DEP_SUFFIX} $TEST_DEP2"
 			if test "$DFT_LWR_MODEL" = "libtool"; then
 				TEST_ARGS="${TEST_DEPS}"
+				TEST_ARG2="${TEST_DEP2}"
 			else
 				TEST_ARGS="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARGS"
+				TEST_ARG2="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARG2"
 			fi
 		fi
 	fi
 done
 AC_MSG_RESULT($cf_cv_src_modules)
+
 TEST_ARGS="-L${LIB_DIR} $TEST_ARGS"
-AC_SUBST(TEST_DEPS)
+TEST_ARG2="-L${LIB_2ND} $TEST_ARG2"
+
 AC_SUBST(TEST_ARGS)
+AC_SUBST(TEST_DEPS)
+
+AC_SUBST(TEST_ARG2)
+AC_SUBST(TEST_DEP2)
 
 SRC_SUBDIRS="man include"
 for cf_dir in $cf_cv_src_modules
@@ -4152,7 +4198,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 18 updated: 2005/04/16 19:02:58
+dnl CF_XOPEN_SOURCE version: 19 updated: 2005/05/15 19:19:07
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -4169,9 +4215,9 @@ case $host_os in #(vi
 aix[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_ALL_SOURCE"
 	;;
-darwin*) #(vi                                                                  
-	# setting _XOPEN_SOURCE breaks things on Darwin                         
-	;;                                                                      
+darwin*) #(vi
+	# setting _XOPEN_SOURCE breaks things on Darwin
+	;;
 freebsd*) #(vi
 	# 5.x headers associate
 	#	_XOPEN_SOURCE=600 with _POSIX_C_SOURCE=200112L

@@ -29,13 +29,13 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.10 2005/04/16 16:33:04 tom Exp $
+ * $Id: dots.c,v 1.11 2005/05/28 21:38:45 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
-#include <time.h>
-
 #include <test.priv.h>
+
+#include <time.h>
 
 #define valid(s) ((s != 0) && s != (char *)-1)
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -43,7 +44,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.27 2002/10/06 01:22:05 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.28 2005/05/28 18:56:10 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -237,7 +238,7 @@ typelist(int eargc, char *eargv[],
 
     for (i = 0; i < eargc; i++) {
 	DIR *termdir;
-	struct dirent *subdir;
+	DIRENT *subdir;
 
 	if ((termdir = opendir(eargv[i])) == 0) {
 	    (void) fflush(stdout);
@@ -253,7 +254,7 @@ typelist(int eargc, char *eargv[],
 	    char buf[PATH_MAX];
 	    char name_1[PATH_MAX];
 	    DIR *entrydir;
-	    struct dirent *entry;
+	    DIRENT *entry;
 
 	    strncpy(name_1, subdir->d_name, len)[len] = '\0';
 	    if (isDotname(name_1))

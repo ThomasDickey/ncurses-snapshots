@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.250 2005/04/16 21:14:45 tom Exp $
+$Id: ncurses.c,v 1.251 2005/05/28 19:02:49 tom Exp $
 
 ***************************************************************************/
 
@@ -2600,7 +2600,7 @@ show_upper_chars(unsigned first)
 	int row = 4 + ((code - first) % 16);
 	int col = ((code - first) / 16) * COLS / 2;
 	char tmp[80];
-	sprintf(tmp, "%3d (0x%x)", code, code);
+	sprintf(tmp, "%3u (0x%x)", code, code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
 	if (C1)
 	    nodelay(stdscr, TRUE);

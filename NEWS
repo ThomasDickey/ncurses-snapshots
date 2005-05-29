@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.896 2005/05/15 16:03:19 tom Exp $
+-- $Id: NEWS,v 1.898 2005/05/28 20:52:06 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050528
+	+ add sun-color terminfo entry -TD
+	+ correct a missing assignment in c++ binding's method
+	  NCursesPanel::UserPointer() from 20050409 changes.
+	+ improve configure check for large-files, adding check for dirent64
+	  from vile.
+	+ minor change to configure script to improve linker options for the
+	  Ada95 tree.
 
 20050515
 	+ document error conditions for ncurses library functions (report by

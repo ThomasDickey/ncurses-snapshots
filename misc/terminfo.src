@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.263 $
-#	$Date: 2005/05/07 19:58:26 $
+#	$Revision: 1.264 $
+#	$Date: 2005/05/28 20:37:57 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4253,7 +4253,7 @@ oldsun|Sun Microsystems Workstation console,
 sun-il|Sun Microsystems console with working insert-line, 
 	am, km, msgr, 
 	cols#80, lines#34, 
-	bel=^G, bold@, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
 	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, ht=^I, 
 	ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
@@ -4264,8 +4264,8 @@ sun-il|Sun Microsystems console with working insert-line,
 	kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, khome=\E[214z, 
 	knp=\E[222z, kopt=\E[194z, kpp=\E[216z, kres=\E[193z, 
 	kund=\E[195z, rev=\E[7m, rmso=\E[m, rmul@, rs2=\E[s, 
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
-	sgr0=\E[m, smso=\E[7m, smul@, u8=\E[1t, u9=\E[11t, 
+	sgr=\E[0%?%p1%p3%|%t;7%;m, sgr0=\E[m, smso=\E[7m, 
+	u8=\E[1t, u9=\E[11t, 
 # On some versions of CGSIX framebuffer firmware (SparcStation 5), <il1>/<il>
 # flake out on the last line.  Unfortunately, without them the terminal has no
 # way to scroll.
@@ -4304,6 +4304,19 @@ sun-c|sun-cmd|Sun Microsystems Workstation console with scrollable history,
 sun-type4|Sun Workstation console with type 4 keyboard, 
 	kcub1=\E[217z, kcud1=\E[221z, kcuf1=\E[219z, 
 	kcuu1=\E[215z, use=sun-il, 
+
+# Most of the current references to sun-color are from users wondering why this
+# is the default on install.  Details from reading the wscons manpage, adding
+# cub, etc., here (rather than in the base sun-il entry) since it is not clear
+# when those were added -TD
+sun-color|Sun Microsystems Workstation console with color support (IA systems), 
+	colors#8, pairs#64, 
+	cub=\E[%p1%dD, cud=\E[%p1%dB, cuf=\E[%p1%dC, 
+	cuu=\E[%p1%dA, home=\E[H, op=\E[m\E[p, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, 
+	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
+	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
+	use=sun, 
 
 #### Iris consoles
 #
@@ -20985,6 +20998,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2005-05-07
 #	* re-corrected acsc string for vt52 -TD
+#
+# 2005-05-28
+#	* corrected sun-il sgr string which referred to bold and underline -TD
+#	* add sun-color entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

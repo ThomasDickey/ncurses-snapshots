@@ -24,6 +24,9 @@
  * global has no effect.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <ncurses_cfg.h>
+#endif
 #include <signal.h>	/* include before curses.h to work around glibc bug */
 
 #include <tack.h>
@@ -46,7 +49,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.13 2004/12/04 16:06:42 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.14 2005/05/28 21:25:41 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
