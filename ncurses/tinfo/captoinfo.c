@@ -93,7 +93,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.46 2004/08/28 18:08:50 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.47 2005/06/04 22:06:43 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 
@@ -835,4 +835,11 @@ main(int argc, char *argv[])
 }
 #endif /* MAIN */
 
-/* captoinfo.c ends here */
+#if NO_LEAKS
+NCURSES_EXPORT(void)
+_nc_captoinfo_leaks(void)
+{
+    FreeAndNull(my_string);
+    my_length = 0;
+}
+#endif

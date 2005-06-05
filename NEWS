@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.898 2005/05/28 20:52:06 tom Exp $
+-- $Id: NEWS,v 1.899 2005/06/04 22:33:22 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050604
+	+ fixes for termcap support:
+	  + reset pointer to _nc_curr_token.tk_name when the input stream is
+	    closed, which could point to free memory (cf: 20030215).
+	  + delink TERMTYPE data which is used by the termcap reader, so that
+	    extended names data will be freed consistently.
+	  + free pointer to TERMTYPE data in _nc_free_termtype() rather than
+	    its callers.
+	  + add some entrypoints for freeing permanently allocated data via
+	    _nc_freeall() when NO_LEAKS is defined.
+	+ amend 20041030 change to _nc_do_color to ensure that optimization is
+	  applied only when the terminal supports back_color_erase (bce).
 
 20050528
 	+ add sun-color terminfo entry -TD

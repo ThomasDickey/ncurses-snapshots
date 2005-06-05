@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey                                                *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.80 2004/09/25 23:00:25 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.81 2005/06/02 22:04:32 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -394,8 +394,9 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	code = 0;
     } else {
 	T(("read terminfo %s", filename));
-	if ((code = read_termtype(fd, ptr)) == 0)
+	if ((code = read_termtype(fd, ptr)) == 0) {
 	    _nc_free_termtype(ptr);
+	}
 	close(fd);
     }
 

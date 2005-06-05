@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.340 2005/05/28 22:12:24 tom Exp $
+dnl $Id: configure.in,v 1.341 2005/06/04 18:56:01 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.340 $)
+AC_REVISION($Revision: 1.341 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -660,17 +660,7 @@ else
 fi
 AC_SUBST(cf_cv_enable_lp64)
 
-ifdef([AC_FUNC_FSEEKO],[
-AC_MSG_CHECKING(if largefile support is wanted)
-AC_ARG_ENABLE(largefile,
-	[  --enable-largefile      compile-in large file support],
-	[with_largefile=$enableval],
-	[with_largefile=no])
-AC_MSG_RESULT($with_largefile)
-if test "$with_largefile" = yes ; then
-	CF_LARGEFILE
-fi
-])
+CF_LARGEFILE
 
 ###   use option --with-bool to override bool's type
 AC_MSG_CHECKING(for type of bool)

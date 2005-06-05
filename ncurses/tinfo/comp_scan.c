@@ -51,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.74 2005/04/16 16:42:09 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.76 2005/06/04 22:04:45 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -368,6 +368,8 @@ _nc_get_token(bool silent)
 	yyin = 0;
 	next_char();		/* frees its allocated memory */
 	if (buffer != 0) {
+	    if (_nc_curr_token.tk_name == buffer)
+		_nc_curr_token.tk_name = 0;
 	    FreeAndNull(buffer);
 	}
 	return (EOF);
@@ -879,7 +881,10 @@ _nc_push_token(int tokclass)
     _nc_get_type(pushname);
 
     DEBUG(3, ("pushing token: `%s', class %d",
-	      _nc_curr_token.tk_name, pushtype));
+	      ((_nc_curr_token.tk_name != 0)
+	       ? _nc_curr_token.tk_name
+	       : "<null>"),
+	      pushtype));
 }
 
 /*
@@ -898,3 +903,11 @@ _nc_panic_mode(char ch)
 	    return;
     }
 }
+
+#if NO_LEAKS
+NCURSES_EXPORT(void)
+_nc_comp_scan_leaks(void)
+{
+    FreeAndNull(pushname);
+}
+#endif
