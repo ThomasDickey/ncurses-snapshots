@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.282 2005/04/16 17:09:26 tom Exp $
+ * $Id: curses.priv.h,v 1.284 2005/06/04 22:31:19 tom Exp $
  *
  *	curses.priv.h
  *
@@ -250,6 +250,7 @@ color_t;
 
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 #include <term.h>
+#include <term_entry.h>
 
 #if NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT
 #define if_EXT_COLORS(stmt)	stmt
@@ -1091,6 +1092,7 @@ extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
 extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, const char *);
 
 /* elsewhere ... */
+extern NCURSES_EXPORT(ENTRY *) _nc_delink_entry(ENTRY *, TERMTYPE *);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
@@ -1106,6 +1108,7 @@ extern NCURSES_EXPORT(int) _nc_setupscreen (short, short const, FILE *);
 extern NCURSES_EXPORT(int) _nc_timed_wait(int, int, int * EVENTLIST_2nd(_nc_eventlist *));
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, bool, int (*)(int));
 extern NCURSES_EXPORT(void) _nc_flush (void);
+extern NCURSES_EXPORT(void) _nc_free_entry(ENTRY *, TERMTYPE *);
 extern NCURSES_EXPORT(void) _nc_freeall (void);
 extern NCURSES_EXPORT(void) _nc_hash_map (void);
 extern NCURSES_EXPORT(void) _nc_init_keytry (void);
@@ -1117,6 +1120,12 @@ extern NCURSES_EXPORT(void) _nc_set_buffer (FILE *, bool);
 extern NCURSES_EXPORT(void) _nc_signal_handler (bool);
 extern NCURSES_EXPORT(void) _nc_synchook (WINDOW *);
 extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *);
+
+#if NO_LEAKS
+extern NCURSES_EXPORT(void) _nc_alloc_entry_leaks(void);
+extern NCURSES_EXPORT(void) _nc_captoinfo_leaks(void);
+extern NCURSES_EXPORT(void) _nc_comp_scan_leaks(void);
+#endif
 
 #ifndef USE_TERMLIB
 extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);

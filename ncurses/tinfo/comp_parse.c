@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -53,7 +53,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.59 2004/07/05 12:01:24 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.60 2005/06/04 21:42:44 tom Exp $")
 
 static void sanity_check2(TERMTYPE *, bool);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
@@ -107,18 +107,42 @@ NCURSES_EXPORT(void)
 _nc_free_entries(ENTRY * headp)
 /* free the allocated storage consumed by list entries */
 {
-    ENTRY *ep, *next;
+    while (_nc_head != 0) {
+	_nc_free_entry(headp, &(headp->tterm));
+    }
+}
 
-    for (ep = headp; ep; ep = next) {
+NCURSES_EXPORT(ENTRY *)
+_nc_delink_entry(ENTRY * headp, TERMTYPE *tterm)
+/* delink the allocated storage for the given list entry */
+{
+    ENTRY *ep, *last;
+
+    for (last = 0, ep = headp; ep != 0; last = ep, ep = ep->next) {
+	if (&(ep->tterm) == tterm) {
+	    if (last != 0)
+		last->next = ep->next;
+	    else
+		headp = ep->next;
+	    if (ep == _nc_head)
+		_nc_head = 0;
+	    if (ep == _nc_tail)
+		_nc_tail = 0;
+	    break;
+	}
+    }
+    return ep;
+}
+
+NCURSES_EXPORT(void)
+_nc_free_entry(ENTRY * headp, TERMTYPE *tterm)
+/* free the allocated storage consumed by the given list entry */
+{
+    ENTRY *ep;
+
+    if ((ep = _nc_delink_entry(headp, tterm)) != 0) {
 	_nc_free_termtype(&(ep->tterm));
-
-	next = ep->next;
-
 	free(ep);
-	if (ep == _nc_head)
-	    _nc_head = 0;
-	if (ep == _nc_tail)
-	    _nc_tail = 0;
     }
 }
 

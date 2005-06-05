@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.83 2005/04/23 18:27:03 tom Exp $
+-- $Id: INSTALL,v 1.84 2005/06/04 18:59:10 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -300,6 +300,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	more likely writable than the system terminfo database.  Use this
 	option to disable the feature altogether.
 
+    --disable-largefile
+	Disable compiler flags needed to use large-file interfaces.
+
     --disable-leaks
 	For testing, compile-in code that frees memory that normally would not
 	be freed, to simplify analysis of memory-leaks.
@@ -427,9 +430,6 @@ SUMMARY OF CONFIGURE OPTIONS:
 	this a standard feature except for the concern that the terminfo entry
 	may not be accurate, or that your stty settings have disabled the use
 	of tabs.
-
-    --enable-largefile
-	Modify compiler flags as needed to use large-file interfaces.
 
     --enable-no-padding
 	Compile-in support for the $NCURSES_NO_PADDING environment variable,
