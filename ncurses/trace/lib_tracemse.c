@@ -38,17 +38,28 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.11 2005/02/05 18:24:04 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.12 2005/06/11 19:53:50 tom Exp $")
 
 #ifdef TRACE
 
 NCURSES_EXPORT(char *)
 _tracemouse(MEVENT const *ep)
 {
-    static char buf[80];
+    /*
+     * hmm - format is no longer than 80 columns, there are 5 numbers that
+     * could at most have 10 digits, and the mask contains no more than 32 bits
+     * with each bit representing less than 15 characters.  Usually the whole
+     * string is less than 80 columns, but this buffer size is an absolute
+     * limit.
+     */
+    static char buf[80 + (5 * 10) + (32 * 15)];
 
     (void) sprintf(buf, "id %2d  at (%2d, %2d, %2d) state %4lx = {",
-		   ep->id, ep->x, ep->y, ep->z, ep->bstate);
+		   ep->id,
+		   ep->x,
+		   ep->y,
+		   ep->z,
+		   (unsigned long) ep->bstate);
 
 #define SHOW(m, s) if ((ep->bstate & m) == m) strcat(strcat(buf, s), ", ")
 

@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.899 2005/06/04 22:33:22 tom Exp $
+-- $Id: NEWS,v 1.900 2005/06/11 19:01:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050611
+	+ change _tracef's that used "%p" format for va_list values to ignore
+	  that, since on some platforms those are not pointers.
+	+ fixes for long-formats in printf's due to largefile support.
 
 20050604
 	+ fixes for termcap support:
