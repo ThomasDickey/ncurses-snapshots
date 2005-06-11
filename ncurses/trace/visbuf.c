@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.12 2005/01/29 21:26:07 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.13 2005/06/11 19:31:35 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -68,7 +68,7 @@ _nc_vischar(char *tp, unsigned c)
 	*tp++ = '^';
 	*tp++ = '@' + c;
     } else {
-	sprintf(tp, "\\%03lo", ChCharOf(c));
+	sprintf(tp, "\\%03lo", (unsigned long) ChCharOf(c));
 	tp += strlen(tp);
     }
     *tp = 0;

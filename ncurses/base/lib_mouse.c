@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.74 2005/04/16 18:07:56 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.75 2005/06/11 17:54:21 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -1242,7 +1242,7 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 {
     mmask_t result = 0;
 
-    T((T_CALLED("mousemask(%#lx,%p)"), newmask, oldmask));
+    T((T_CALLED("mousemask(%#lx,%p)"), (unsigned long) newmask, oldmask));
 
     if (oldmask)
 	*oldmask = eventmask;

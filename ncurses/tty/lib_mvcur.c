@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.102 2005/01/22 22:15:45 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.103 2005/06/11 19:30:15 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -879,7 +879,8 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	if ((AttrOf(oldattr) & A_ALTCHARSET)
 	    || (AttrOf(oldattr) && !move_standout_mode)) {
 	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
-			       AttrOf(oldattr), _traceattr(AttrOf(oldattr))));
+			       (unsigned long) AttrOf(oldattr),
+			       _traceattr(AttrOf(oldattr))));
 	    (void) VIDATTR(A_NORMAL, 0);
 	}
 
@@ -932,7 +933,8 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	 */
 	if (!SameAttrOf(oldattr, SCREEN_ATTRS(SP))) {
 	    TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
-			       AttrOf(oldattr), _traceattr(AttrOf(oldattr))));
+			       (unsigned long) AttrOf(oldattr),
+			       _traceattr(AttrOf(oldattr))));
 	    (void) VIDATTR(AttrOf(oldattr), GetPair(oldattr));
 	}
     }

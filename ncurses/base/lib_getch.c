@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.72 2005/01/22 22:05:39 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.73 2005/06/11 18:08:57 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -234,7 +234,7 @@ _nc_wgetch(WINDOW *win,
     T((T_CALLED("_nc_wgetch(%p)"), win));
 
     *result = 0;
-    if (!win)
+    if (win == 0 || SP == 0)
 	returnCode(ERR);
 
     if (cooked_key_in_fifo()) {

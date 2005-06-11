@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.251 2005/05/28 19:02:49 tom Exp $
+$Id: ncurses.c,v 1.252 2005/06/11 19:56:48 tom Exp $
 
 ***************************************************************************/
 
@@ -412,13 +412,17 @@ ShellOut(bool message)
 }
 
 #ifdef NCURSES_MOUSE_VERSION
+/*
+ * This function is the same as _tracemouse(), but we cannot count on that
+ * being available in the non-debug library.
+ */
 static const char *
 mouse_decode(MEVENT const *ep)
 {
-    static char buf[80];
+    static char buf[80 + (5 * 10) + (32 * 15)];
 
     (void) sprintf(buf, "id %2d  at (%2d, %2d, %2d) state %4lx = {",
-		   ep->id, ep->x, ep->y, ep->z, ep->bstate);
+		   ep->id, ep->x, ep->y, ep->z, (unsigned long) ep->bstate);
 
 #define SHOW(m, s) if ((ep->bstate & m)==m) {strcat(buf,s); strcat(buf, ", ");}
 
