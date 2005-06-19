@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.84 2005/06/04 18:59:10 tom Exp $
+-- $Id: INSTALL,v 1.85 2005/06/18 21:32:58 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -546,6 +546,13 @@ SUMMARY OF CONFIGURE OPTIONS:
 	to use a terminfo database which is compatible with the native
 	applications.
 
+    --with-chtype=TYPE
+	Override type of chtype, which stores the video attributes and (if
+	--enable-widec is not given) a character.  Prior to ncurses 5.5, this
+	was always unsigned long, but with ncurses 5.5, it may be unsigned. 
+	Use this option if you need to preserve compatibility with 64-bit
+	executables.
+
     --with-database=XXX
 	Specify the terminfo source file to install.  Usually you will wish
 	to install ncurses' default (misc/terminfo.src).  Certain systems
@@ -576,7 +583,10 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-gpm
 	use Alessandro Rubini's GPM library to provide mouse support on the
-	Linux console.
+	Linux console.  Prior to ncurses 5.5, this introduced a dependency
+	on the GPM library.  Currently ncurses uses the dlsym() function to
+	bind to the at runtime, so it is only necessary that the library be
+	present when ncurses is built.
 
     --with-install-prefix=XXX
 	Allows you to specify an alternate location for installing ncurses
@@ -633,6 +643,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Tell the configure script that you with to preprocess the manpages
 	by running them through tbl to generate tables understandable by
 	nroff.
+
+    --with-mmask-t=TYPE
+	Override type of mmask_t, which stores the mouse mask.  Prior to
+	ncurses 5.5, this was always unsigned long, but with ncurses 5.5, it
+	may be unsigned.  Use this option if you need to preserve compatibility
+	with 64-bit executables.
 
     --with-ospeed=TYPE
 	Override type of ospeed variable, which is part of the termcap

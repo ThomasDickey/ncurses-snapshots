@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.357 2005/05/28 22:41:50 tom Exp $
+dnl $Id: aclocal.m4,v 1.360 2005/06/18 23:42:52 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2283,7 +2283,7 @@ if test -n "$cf_unknown" ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MANPAGE_RENAMES version: 6 updated: 2002/01/19 22:51:32
+dnl CF_MANPAGE_RENAMES version: 7 updated: 2005/06/18 18:51:57
 dnl ------------------
 dnl The Debian people have their own naming convention for manpages.  This
 dnl option lets us override the name of the file containing renaming, or
@@ -2322,7 +2322,7 @@ if test "$MANPAGE_RENAMES" != no ; then
   # Construct a sed-script to perform renaming within man-pages
   if test -n "$MANPAGE_RENAMES" ; then
     test ! -d man && mkdir man
-    sh $srcdir/man/make_sed.sh $MANPAGE_RENAMES >man/edit_man.sed
+    sh $srcdir/man/make_sed.sh $MANPAGE_RENAMES >./edit_man.sed
   fi
 fi
 
@@ -2389,7 +2389,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 27 updated: 2003/12/20 20:39:45
+dnl CF_MAN_PAGES version: 28 updated: 2005/06/18 18:51:57
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -2438,7 +2438,7 @@ case "$MANPAGE_FORMAT" in #(vi
   ;;
 esac
 
-cf_edit_man=man/edit_man.sh
+cf_edit_man=./edit_man.sh
 
 cat >$cf_edit_man <<CF_EOF
 #! /bin/sh
@@ -2465,6 +2465,7 @@ mandir=\[$]1
 shift || exit 1
 
 srcdir=\[$]1
+top_srcdir=\[$]srcdir/..
 shift || exit 1
 
 if test "\$form" = normal ; then
@@ -2504,7 +2505,7 @@ CF_EOF
 
 if test "$MANPAGE_ALIASES" != no ; then
 cat >>$cf_edit_man <<CF_EOF
-	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
+	aliases=\`sed -f \$top_srcdir/man/manlinks.sed \$inalias | sort -u\`
 CF_EOF
 fi
 
@@ -2555,7 +2556,7 @@ CF_EOF
 
 if test -f $MANPAGE_RENAMES ; then
 cat >>$cf_edit_man <<CF_EOF
-		< \$i | sed -f $srcdir/edit_man.sed >\$TMP
+		< \$i | sed -f `pwd`/edit_man.sed >\$TMP
 CF_EOF
 else
 cat >>$cf_edit_man <<CF_EOF
@@ -3731,7 +3732,7 @@ AC_MSG_RESULT($cf_cv_sys_time_select)
 test "$cf_cv_sys_time_select" = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPEOF_CHTYPE version: 4 updated: 2000/10/04 09:18:40
+dnl CF_TYPEOF_CHTYPE version: 5 updated: 2005/06/11 21:37:37
 dnl ----------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
@@ -3743,31 +3744,19 @@ AC_REQUIRE([CF_UNSIGNED_LITERALS])
 AC_MSG_CHECKING([for type of chtype])
 AC_CACHE_VAL(cf_cv_typeof_chtype,[
 		AC_TRY_RUN([
-#ifdef USE_WIDEC_SUPPORT
-#include <stddef.h>	/* we want wchar_t */
-#define WANT_BITS 39
-#else
 #define WANT_BITS 31
-#endif
 #include <stdio.h>
 int main()
 {
 	FILE *fp = fopen("cf_test.out", "w");
 	if (fp != 0) {
 		char *result = "long";
-#ifdef USE_WIDEC_SUPPORT
-		/*
-		 * If wchar_t is smaller than a long, it must be an int or a
-		 * short.  We prefer not to use a short anyway.
-		 */
-		if (sizeof(unsigned long) > sizeof(wchar_t))
-			result = "int";
-#endif
 		if (sizeof(unsigned long) > sizeof(unsigned int)) {
 			int n;
-			unsigned int x;
+			unsigned int x, y;
 			for (n = 0; n < WANT_BITS; n++) {
-				unsigned int y = (x >> n);
+				x = (1 << n);
+				y = (x >> n);
 				if (y != 1 || x == 0) {
 					x = 0;
 					break;

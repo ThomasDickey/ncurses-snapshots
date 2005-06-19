@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.900 2005/06/11 19:01:36 tom Exp $
+-- $Id: NEWS,v 1.902 2005/06/18 22:51:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050618
+	+ move build-time edit_man.sh and edit_man.sed scripts to top directory
+	  to simplify reusing them for renaming tack's manpage (prompted by a
+	  review of Debian package).
+	+ revert minor optimization from 20041030 (Debian #313609).
+	+ libtool-specific fixes, tested with libtool 1.4.3, 1.5.0, 1.5.6,
+	  1.5.10 and 1.5.18 (all work except as noted previously for the c++
+	  install using libtool 1.5.0):
+	  + modify the clean-rule in c++/Makefile.in to work with IRIX64 make
+	    program.
+	  + use $(LIBTOOL_UNINSTALL) symbol, overlooked in 20030830
+	+ add configure options --with-chtype and --with-mmask-t, to allow
+	  overriding of the non-LP64 model's use of the corresponding types.
+	+ revise test for size of chtype (and mmask_t), which always returned
+	  "long" due to an uninitialized variable (report by Daniel Jacobowitz).
 
 20050611
 	+ change _tracef's that used "%p" format for va_list values to ignore

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.36 2005/01/29 19:29:52 tom Exp $
+# $Id: Makefile.in,v 1.38 2005/06/18 23:01:43 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -57,10 +57,10 @@ $(DESTDIR)$(mandir) :
 EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
 
 install install.man : terminfo.5 $(DESTDIR)$(mandir)
-	sh ./edit_man.sh normal installing $(EDITARGS)
+	sh ../edit_man.sh normal installing $(EDITARGS)
 
 uninstall uninstall.man :
-	-sh ./edit_man.sh normal removing $(EDITARGS)
+	-sh ../edit_man.sh normal removing $(EDITARGS)
 
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/@TERMINFO_CAPS@
@@ -73,8 +73,8 @@ mostlyclean :
 clean:	mostlyclean
 	rm -f terminfo.5
 
-edit_man.sed : make_sed.sh @MANPAGE_RENAMES@
-	sh $srcdir/make_sed.sh @MANPAGE_RENAMES@ >edit_man.sed
+../edit_man.sed : make_sed.sh @MANPAGE_RENAMES@
+	sh $srcdir/make_sed.sh @MANPAGE_RENAMES@ >../edit_man.sed
 
 distclean realclean: clean
-	rm -f Makefile edit_man.*
+	rm -f Makefile ../edit_man.*
