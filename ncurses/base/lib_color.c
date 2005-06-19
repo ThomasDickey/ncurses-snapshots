@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.74 2005/06/02 22:04:32 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.75 2005/06/18 20:19:08 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -498,8 +498,6 @@ pair_content(short pair, short *f, short *b)
     returnCode(result);
 }
 
-#define isDefaultPair(pair) ((pair) == 0)
-
 NCURSES_EXPORT(void)
 _nc_do_color(int old_pair, int pair, bool reverse, int (*outc) (int))
 {
@@ -508,12 +506,6 @@ _nc_do_color(int old_pair, int pair, bool reverse, int (*outc) (int))
     NCURSES_COLOR_T old_fg, old_bg;
 
     if (pair < 0 || pair >= COLOR_PAIRS) {
-	return;
-    } else if (back_color_erase &&
-	       ((isDefaultPair(old_pair) &&
-		 isDefaultPair(pair)) &&
-		(no_color_video <= 0 ||
-		 (no_color_video & 4) == 0))) {
 	return;
     } else if (pair != 0) {
 	if (set_color_pair) {

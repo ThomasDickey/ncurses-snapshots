@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.341 2005/06/04 18:56:01 tom Exp $
+dnl $Id: configure.in,v 1.342 2005/06/18 20:56:32 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.341 $)
+AC_REVISION($Revision: 1.342 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -680,6 +680,14 @@ test -f ${srcdir}/include/${TERMINFO_CAPS} || TERMINFO_CAPS=Caps
 AC_MSG_RESULT($TERMINFO_CAPS)
 AC_SUBST(TERMINFO_CAPS)
 
+###   use option --with-chtype to override chtype's type
+AC_MSG_CHECKING(for type of chtype)
+AC_ARG_WITH(ospeed,
+	[  --with-chtype=TYPE      override type of chtype],
+	[NCURSES_CHTYPE="$withval"],
+	[NCURSES_CHTYPE=auto])
+AC_MSG_RESULT($NCURSES_CHTYPE)
+
 ###   use option --with-ospeed to override ospeed's type
 AC_MSG_CHECKING(for type of ospeed)
 AC_ARG_WITH(ospeed,
@@ -688,6 +696,14 @@ AC_ARG_WITH(ospeed,
 	[NCURSES_OSPEED=short])
 AC_MSG_RESULT($NCURSES_OSPEED)
 AC_SUBST(NCURSES_OSPEED)
+
+###   use option --with-mmask-t to override mmask_t's type
+AC_MSG_CHECKING(for type of mmask_t)
+AC_ARG_WITH(mmask-t,
+	[  --with-mmask-t=TYPE     override type of mmask_t],
+	[NCURSES_MMASK_T="$withval"],
+	[NCURSES_MMASK_T=auto])
+AC_MSG_RESULT($NCURSES_MMASK_T)
 
 ###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
 AC_MSG_CHECKING(if tputs should process BSD-style prefix padding)
@@ -1038,7 +1054,18 @@ AC_C_CONST
 AC_C_INLINE
 test "$ac_cv_c_inline" != no && AC_DEFINE(CC_HAS_INLINE_FUNCS)
 
-CF_TYPEOF_CHTYPE
+if test $NCURSES_CHTYPE = auto ; then
+	CF_TYPEOF_CHTYPE
+else
+	cf_cv_typeof_chtype=$NCURSES_CHTYPE
+fi
+
+if test $NCURSES_MMASK_T = auto ; then
+	cf_cv_typeof_mmask_t=long
+else
+	cf_cv_typeof_mmask_t=$NCURSES_MMASK_T
+fi
+AC_SUBST(cf_cv_typeof_mmask_t)
 
 ###	Checks for external-data
 CF_ERRNO

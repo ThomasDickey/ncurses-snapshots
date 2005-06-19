@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.33 2005/01/22 20:03:05 tom Exp $
+# $Id: Makefile.in,v 1.35 2005/06/18 23:01:59 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -26,7 +26,7 @@ prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
 libdir		= @libdir@
-mandir		= @mandir@/man1
+mandir		= @mandir@
 includedir	= @includedir@
 datadir		= @datadir@
 
@@ -96,15 +96,17 @@ libs \
 install.libs \
 uninstall.libs:
 
+EDITARGS = $(DESTDIR)$(mandir) $(srcdir) $(srcdir)/*.[0-9]*
+
 install.tack: $(PROGS) \
 	$(DESTDIR)$(bindir) \
 	$(DESTDIR)$(mandir)
 	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tack$x $(DESTDIR)$(bindir)/tack$x
-	$(INSTALL_DATA) $(srcdir)/tack.1 $(DESTDIR)$(mandir)/tack.1
+	sh ../edit_man.sh normal installing $(EDITARGS)
 
 uninstall.tack:
 	-@$(LIBTOOL_UNINSTALL) rm -f $(DESTDIR)$(bindir)/tack$x
-	-@rm -f $(DESTDIR)$(mandir)/tack.1
+	-sh ../edit_man.sh normal removing $(EDITARGS)
 
 $(DESTDIR)$(bindir) \
 $(DESTDIR)$(mandir) :

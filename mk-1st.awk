@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.64 2005/01/22 16:06:36 tom Exp $
+# $Id: mk-1st.awk,v 1.65 2005/06/18 19:15:57 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -315,7 +315,7 @@ END	{
 				print  "uninstall.libs \\"
 				printf "uninstall.%s ::\n", name
 				printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", lib_name
-				printf "\t-@$(LIBTOOL_CLEAN) rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
+				printf "\t-@$(LIBTOOL_UNINSTALL) rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
 			}
 			else
 			{
