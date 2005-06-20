@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.902 2005/06/18 22:51:36 tom Exp $
+-- $Id: NEWS,v 1.903 2005/06/19 22:57:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050619
+	+ correction to --with-chtype option (report by Daniel Jacobowitz).
 
 20050618
 	+ move build-time edit_man.sh and edit_man.sed scripts to top directory
