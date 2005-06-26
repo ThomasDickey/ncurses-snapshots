@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.41 2004/07/05 13:08:56 tom Exp $
+.\" $Id: terminfo.tail,v 1.42 2005/06/25 22:46:03 tom Exp $
 .\" Beginning of terminfo.tail file
 .\" See "terminfo.head" for copyright.
 .ps +1
@@ -366,16 +366,16 @@ push strlen(pop)
 arithmetic (%m is mod): push(pop() op pop())
 .TP
 %& %| %^
-bit operations: push(pop() op pop())
+bit operations (AND, OR and exclusive-OR): push(pop() op pop())
 .TP
 %= %> %<
 logical operations: push(pop() op pop())
 .TP
 %A, %O
-logical and & or operations (for conditionals)
+logical AND and OR operations (for conditionals)
 .TP
 %! %~
-unary operations push(op pop())
+unary operations (logical and bit complement): push(op pop())
 .TP
 %i
 add 1 to first two parameters (for ANSI terminals)
@@ -1065,7 +1065,7 @@ or
 .BR if .
 .SS Delays and Padding
 .PP
-Many older and slower terminals don't support either XON/XOFF or DTR
+Many older and slower terminals do not support either XON/XOFF or DTR
 handshaking, including hard copy terminals and some very archaic CRTs
 (including, for example, DEC VT100s).
 These may require padding characters
@@ -1077,7 +1077,7 @@ close to full), set
 .BR xon .
 This capability suppresses the emission of padding.
 You can also set it
-for memory-mapped console devices effectively that don't have a speed limit.
+for memory-mapped console devices effectively that do not have a speed limit.
 Padding information should still be included so that routines can
 make better decisions about relative costs, but actual pad characters will
 not be transmitted.
@@ -1513,17 +1513,17 @@ being used does, and where in the termcap file the terminal type that \fBtgetent
 is searching for is, several bad things can happen.
 .PP
 Some termcap libraries print a warning message or exit if they find an
-entry that's longer than 1023 bytes; others don't; others truncate the
+entry that's longer than 1023 bytes; others do not; others truncate the
 entries to 1023 bytes.
 Some application programs allocate more than
-the recommended 1K for the termcap entry; others don't.
+the recommended 1K for the termcap entry; others do not.
 .PP
 Each termcap entry has two important sizes associated with it: before
 "tc" expansion, and after "tc" expansion.
 "tc" is the capability that
 tacks on another termcap entry to the end of the current one, to add
 on its capabilities.
-If a termcap entry doesn't use the "tc"
+If a termcap entry does not use the "tc"
 capability, then of course the two lengths are the same.
 .PP
 The "before tc expansion" length is the most important one, because it
@@ -1548,7 +1548,7 @@ if it's the entry it wants,
 *
 and \fBtgetent()\fP is searching for a terminal type that either is the
 long entry, appears in the termcap file after the long entry, or
-doesn't appear in the file at all (so that \fBtgetent()\fP has to search
+does not appear in the file at all (so that \fBtgetent()\fP has to search
 the whole termcap file).
 .PP
 Then \fBtgetent()\fP will overwrite memory, perhaps its stack, and probably core dump
@@ -1588,12 +1588,12 @@ of terminfo (under HP-UX and AIX) which diverged from System V terminfo after
 SVr1, and have added extension capabilities to the string table that (in the
 binary format) collide with System V and XSI Curses extensions.
 .SH EXTENSIONS
-Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, don't
+Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, do not
 interpret the %A and %O operators in parameter strings.
 .PP
 SVr4/XPG4 do not specify whether \fBmsgr\fR licenses movement while in
 an alternate-character-set mode (such modes may, among other things, map
-CR and NL to characters that don't trigger local motions).
+CR and NL to characters that do not trigger local motions).
 The \fBncurses\fR implementation ignores \fBmsgr\fR in \fBALTCHARSET\fR
 mode.
 This raises the possibility that an XPG4
