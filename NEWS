@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.903 2005/06/19 22:57:03 tom Exp $
+-- $Id: NEWS,v 1.905 2005/06/25 22:42:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050625
+	+ update config.guess and config.sub from
+		http://subversions.gnu.org/cgi-bin/viewcvs/config/config/
+	+ modify misc/shlib to work in test-directory.
+	+ suppress $suffix in misc/run_tic.sh when cross-compiling.  This
+	  allows cross-compiles to use the host's tic program to handle the
+	  "make install.data" step.
+	+ improve description of $LINES and $COLUMNS variables in manpages
+	  (prompted by report by Dave Ulrick).
+	+ improve description of cross-compiling in INSTALL
+	+ add NCURSES-Programming-HOWTO.html by Pradeep Padala
+	  (see http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/).
+	+ modify configure script to obtain soname for GPM library (discussion
+	  with Daniel Jacobowitz).
+	+ modify configure script so that --with-chtype option will still
+	  compute the unsigned literals suffix for constants in curses.h
+	  (report by Daniel Jacobowitz:
+	+ patches from Daniel Jacobowitz:
+	  + the man_db.renames entry for tack.1 was backwards.
+	  + tack.1 had some 1m's that should have been 1M's.
+	  + the section for curs_inwstr.3 was wrong.
 
 20050619
 	+ correction to --with-chtype option (report by Daniel Jacobowitz).

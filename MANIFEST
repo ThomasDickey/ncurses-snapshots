@@ -206,6 +206,7 @@
 ./dist.mk
 ./doc/hackguide.doc
 ./doc/html/Ada95.html
+./doc/html/NCURSES-Programming-HOWTO.html
 ./doc/html/ada/files.htm
 ./doc/html/ada/files/T.htm
 ./doc/html/ada/funcs.htm

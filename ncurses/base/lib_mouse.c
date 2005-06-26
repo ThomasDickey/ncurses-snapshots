@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.75 2005/06/11 17:54:21 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.76 2005/06/25 20:22:30 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -145,6 +145,10 @@ make an error
 
 #if USE_GPM_SUPPORT
 #ifndef LINT
+
+#ifndef LIBGPM_SONAME
+#define LIBGPM_SONAME "libgpm.so"
+#endif
 
 #define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(obj, #name))
 
@@ -431,7 +435,7 @@ initialize_mousetype(void)
 	    void *obj;
 	    first = FALSE;
 
-	    if ((obj = dlopen("libgpm.so", my_RTLD)) != 0) {
+	    if ((obj = dlopen(LIBGPM_SONAME, my_RTLD)) != 0) {
 		if (GET_DLSYM(gpm_fd) == 0 ||
 		    GET_DLSYM(Gpm_Open) == 0 ||
 		    GET_DLSYM(Gpm_Close) == 0 ||

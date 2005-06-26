@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.33 2005/06/18 22:43:59 tom Exp $
+# $Id: man_db.renames,v 0.34 2005/06/25 18:30:53 Daniel.Jacobowitz Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -139,4 +139,4 @@ dup_field.3x			dup_field.3ncurses
 init_pair.3x			init_pair.3ncurses
 #
 # Other:
-tack.1				tack.1m
+tack.1m				tack.1

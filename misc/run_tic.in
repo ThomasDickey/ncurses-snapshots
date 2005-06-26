@@ -29,7 +29,7 @@
 #
 # Author: Thomas E. Dickey 1996,2000
 #
-# $Id: run_tic.in,v 1.18 2005/03/26 22:57:16 tom Exp $
+# $Id: run_tic.in,v 1.19 2005/06/25 18:19:44 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -71,6 +71,8 @@ SHLIB="sh $srcdir/shlib"
 else
 # Cross-compiling, so don't set PATH or run shlib.
 SHLIB=
+# reset $suffix, since it applies to the target, not the build platform.
+suffix=
 fi
 
 

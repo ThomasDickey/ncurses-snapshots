@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.16 2005/05/15 16:46:46 tom Exp $
+.\" $Id: curs_util.3x,v 1.17 2005/06/25 21:51:37 tom Exp $
 .TH curs_util 3X ""
 .na
 .hy 0
@@ -97,6 +97,8 @@ argument, the values of \fBlines\fR and \fBcolumns\fR specified in the
 \fBcurses\fR is running in a window (in which case default behavior
 would be to use the window size if \fBLINES\fR and \fBCOLUMNS\fR are
 not set).
+Note that setting \fBLINES\fR or \fBCOLUMNS\fR overrides the
+corresponding size which may be obtained from the operating system.
 .PP
 The \fBputwin\fR routine writes all data associated with window \fIwin\fR into
 the file to which \fIfilep\fR points.  This information can be later retrieved

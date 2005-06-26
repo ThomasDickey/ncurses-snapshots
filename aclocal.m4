@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.360 2005/06/18 23:42:52 tom Exp $
+dnl $Id: aclocal.m4,v 1.362 2005/06/25 20:18:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1938,6 +1938,43 @@ done
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_LIB_SONAME version: 2 updated: 2005/06/25 16:05:47
+dnl -------------
+dnl Find the and soname for the given shared library.  Set the cache variable
+dnl cf_cv_$3_soname to this, unless it is not found.  Then set the cache
+dnl variable to "unknown".
+dnl
+dnl $1 = headers
+dnl $2 = code
+dnl $3 = library name
+AC_DEFUN([CF_LIB_SONAME],
+[
+AC_CACHE_CHECK(for soname of $3 library,cf_cv_$3_soname,[
+
+cf_cv_$3_soname=unknown
+if test "$cross_compiling" != yes ; then
+cat >conftest.$ac_ext <<CF_EOF
+$1
+int main()
+{
+$2
+return 0;
+}
+CF_EOF
+cf_save_LIBS="$LIBS"
+	LIBS="-l$3 $LIBS"
+	if AC_TRY_EVAL(ac_compile) ; then
+		if AC_TRY_EVAL(ac_link) ; then
+			cf_cv_$3_soname=`ldd conftest$ac_exeext 2>/dev/null | sed -e 's,^.*/,,' -e 's, .*$,,' | fgrep lib$3.`
+			test -z "$cf_cv_$3_soname" && cf_cv_$3_soname=unknown
+		fi
+	fi
+rm -f conftest*
+LIBS="$cf_save_LIBS"
+fi
+])
+])
+dnl ---------------------------------------------------------------------------
 dnl CF_LIB_SUFFIX version: 13 updated: 2003/11/01 16:09:07
 dnl -------------
 dnl Compute the library file-suffix from the given model name
@@ -2389,7 +2426,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 28 updated: 2005/06/18 18:51:57
+dnl CF_MAN_PAGES version: 29 updated: 2005/06/18 19:42:52
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -3732,7 +3769,7 @@ AC_MSG_RESULT($cf_cv_sys_time_select)
 test "$cf_cv_sys_time_select" = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPEOF_CHTYPE version: 5 updated: 2005/06/11 21:37:37
+dnl CF_TYPEOF_CHTYPE version: 6 updated: 2005/06/25 16:16:34
 dnl ----------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
@@ -3740,7 +3777,6 @@ dnl long, but on newer 64-bit machines, probably want an int.  If we're using
 dnl wide characters, we have to have a type compatible with that, as well.
 AC_DEFUN([CF_TYPEOF_CHTYPE],
 [
-AC_REQUIRE([CF_UNSIGNED_LITERALS])
 AC_MSG_CHECKING([for type of chtype])
 AC_CACHE_VAL(cf_cv_typeof_chtype,[
 		AC_TRY_RUN([
@@ -3783,12 +3819,6 @@ AC_MSG_RESULT($cf_cv_typeof_chtype)
 
 AC_SUBST(cf_cv_typeof_chtype)
 AC_DEFINE_UNQUOTED(TYPEOF_CHTYPE,$cf_cv_typeof_chtype)
-
-cf_cv_1UL="1"
-test "$cf_cv_unsigned_literals" = yes && cf_cv_1UL="${cf_cv_1UL}U"
-test "$cf_cv_typeof_chtype"    = long && cf_cv_1UL="${cf_cv_1UL}L"
-AC_SUBST(cf_cv_1UL)
-
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_TYPE_SIGACTION version: 3 updated: 2000/08/12 23:18:52
@@ -3941,6 +3971,35 @@ if test "$with_dmalloc" = yes ; then
 		[AC_CHECK_LIB(dmalloc,[dmalloc_debug]ifelse($1,,[],[,$1]))])
 fi
 ])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_GPM version: 1 updated: 2005/06/25 15:47:45
+dnl -----------
+AC_DEFUN([CF_WITH_GPM],
+[
+AC_MSG_CHECKING(if you want to link with the GPM mouse library)
+AC_ARG_WITH(gpm,
+	[  --with-gpm              use Alessandro Rubini's GPM library],
+	[with_gpm=$withval],
+	[with_gpm=maybe])
+AC_MSG_RESULT($with_gpm)
+if test "$with_gpm" != no ; then
+	AC_CHECK_LIB(gpm,Gpm_Open,[
+		AC_CHECK_HEADER(gpm.h,[
+			AC_DEFINE(HAVE_GPM_H)
+			with_gpm=yes
+		],[
+			if test "$with_gpm" = yes ; then
+				AC_ERROR(Cannot find GPM header)
+			fi
+		])
+	],[
+		if test "$with_gpm" = yes ; then
+			AC_ERROR(Cannot link with GPM library)
+		fi
+		with_gpm=no
+	])
+fi
+])
 dnl ---------------------------------------------------------------------------
 dnl CF_WITH_LIBTOOL version: 9 updated: 2004/01/16 14:55:37
 dnl ---------------

@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.85 2005/06/18 21:32:58 tom Exp $
+-- $Id: INSTALL,v 1.87 2005/06/25 18:24:44 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1137,7 +1137,8 @@ CONFIGURING FALLBACK ENTRIES:
 	In order to support operation of ncurses programs before the terminfo
 	tree is accessible (that is, in single-user mode or at OS installation
 	time) the ncurses library can be compiled to include an array of
-	pre-fetched fallback entries.
+	pre-fetched fallback entries.  This must be done on a machine which
+	has ncurses' infocmp and terminfo database installed.
 
 	These entries are checked by setupterm() only when the conventional
 	fetches from the terminfo tree and the termcap fallback (if configured)
@@ -1145,23 +1146,23 @@ CONFIGURING FALLBACK ENTRIES:
 	shadow modifications to the on-disk entry for the same type, when that
 	entry is accessible.
 
-	By default, there are no entries on the fallback list.  After you
-	have built the ncurses suite for the first time, you can change
-	the list (the process needs infocmp(1)).  To do so, use the script
-	MKfallback.sh.  A configure script option --with-fallbacks does this
-	(it accepts a comma-separated list of the names you wish, and does
-	not require a rebuild).
+	By default, there are no entries on the fallback list.  After you have
+	built the ncurses suite for the first time, you can change the list
+	(the process needs infocmp(1)).  To do so, use the script
+	ncurses/tinfo/MKfallback.sh.  A configure script option
+	--with-fallbacks does this (it accepts a comma-separated list of the
+	names you wish, and does not require a rebuild).
 
 	If you wanted (say) to have linux, vt100, and xterm fallbacks, you
 	would use the commands
 
 		cd ncurses;
-		MKfallback.sh linux vt100 xterm >fallback.c
+		tinfo/MKfallback.sh linux vt100 xterm >fallback.c
 
 	Then just rebuild and reinstall the library as you would normally.
 	You can restore the default empty fallback list with
 
-		MKfallback.sh >fallback.c
+		tinfo/MKfallback.sh >fallback.c
 
 	The overhead for an empty fallback list is one trivial stub function.
 	Any non-empty fallback list is const-ed and therefore lives in sharable
@@ -1262,9 +1263,14 @@ BUILDING NCURSES WITH A CROSS-COMPILER
 	Ncurses can be built with a cross-compiler.  Some parts must be built
 	with the host's compiler since they are used for building programs
 	(e.g., ncurses/make_hash and ncurses/make_keys) that generate tables
-	that are compiled into the ncurses library.  You should set the
-	BUILD_CC environment variable to your host's compiler, and run the
-	configure script configuring for the cross-compiler.
+	that are compiled into the ncurses library.  The essential thing to
+	do is set the BUILD_CC environment variable to your host's compiler,
+	and run the configure script configuring for the cross-compiler.
+
+	The configure options --with-build-cc, etc., are provided to make
+	this simpler.  Since make_hash and make_keys use only ANSI C features,
+	it is normally not necessary to provide the other options such as
+	--with-build-libs, but they are provided for completeness.
 
 	Note that all of the generated source-files which are part of ncurses
 	will be made if you use
