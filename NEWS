@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.905 2005/06/25 22:42:49 tom Exp $
+-- $Id: NEWS,v 1.907 2005/07/02 22:38:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050702
+	+ modify parameter type in c++ binding for insch() and mvwinsch() to
+	  be consistent with underlying ncurses library (was char, is chtype).
+	+ modify treatment of Intel compiler to allow _GNU_SOURCE to be defined
+	  on Linux.
+	+ improve configure check for nanosleep(), checking that it works since
+	  some older systems such as AIX 4.3 have a nonworking version.
 
 20050625
 	+ update config.guess and config.sub from

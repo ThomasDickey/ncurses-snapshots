@@ -30,7 +30,7 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.36 2005/05/28 21:58:12 tom Exp $
+// $Id: cursesw.h,v 1.37 2005/07/02 17:13:57 tom Exp $
 
 #include <etip.h>
 #include <stdarg.h>
@@ -307,7 +307,7 @@ inline chtype UNDEF(inch)()  { return inch(); }
 #endif
 
 #ifdef insch
-inline int UNDEF(insch)(char c)  { return insch(c); }
+inline int UNDEF(insch)(chtype c)  { return insch(c); }
 #undef insch
 #define insch UNDEF(insch)
 #endif
@@ -567,7 +567,7 @@ inline chtype UNDEF(mvwinch)(WINDOW *win, int y, int x) {
 #endif
 
 #ifdef mvwinsch
-inline int UNDEF(mvwinsch)(WINDOW *win, int y, int x, char c)
+inline int UNDEF(mvwinsch)(WINDOW *win, int y, int x, chtype c)
 { return mvwinsch(win, y, x, c); }
 #undef mvwinsch
 #define mvwinsch UNDEF(mvwinsch)
@@ -626,7 +626,7 @@ inline chtype UNDEF(mvinch)(int y, int x) { return mvinch(y, x);}
 #endif
 
 #ifdef mvinsch
-inline int UNDEF(mvinsch)(int y, int x, char c)
+inline int UNDEF(mvinsch)(int y, int x, chtype c)
 { return mvinsch(y, x, c); }
 #undef mvinsch
 #define mvinsch UNDEF(mvinsch)
@@ -692,7 +692,9 @@ inline void UNDEF(bkgdset)(chtype ch) { bkgdset(ch); }
  *
  */
 
+extern "C" int     _nc_ripoffline(int, int (*init)(WINDOW*, int));
 extern "C" int     _nc_xx_ripoff_init(WINDOW *, int);
+extern "C" int     _nc_has_mouse(void);
 
 class NCURSES_IMPEXP NCursesWindow
 {

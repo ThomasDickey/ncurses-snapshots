@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.156 2005/06/18 20:54:14 tom Exp $ */
+/* $Id: curses.h.in,v 1.157 2005/07/02 16:58:28 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -818,7 +818,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define NCURSES_ATTR_SHIFT       8
 #define NCURSES_BITS(mask,shift) ((mask) << ((shift) + NCURSES_ATTR_SHIFT))
 
-#define A_NORMAL	0L
+#define A_NORMAL	(@cf_cv_1UL@ - @cf_cv_1UL@)
 #define A_ATTRIBUTES	NCURSES_BITS(~(@cf_cv_1UL@ - @cf_cv_1UL@),0)
 #define A_CHARTEXT	(NCURSES_BITS(@cf_cv_1UL@,0) - @cf_cv_1UL@)
 #define A_COLOR		NCURSES_BITS(((@cf_cv_1UL@) << 8) - @cf_cv_1UL@,0)

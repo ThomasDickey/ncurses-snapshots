@@ -35,7 +35,7 @@
 #include "etip.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursespad.cc,v 1.9 2005/04/02 20:25:35 tom Exp $")
+MODULE_ID("$Id: cursespad.cc,v 1.10 2005/07/02 22:41:42 tom Exp $")
 
 NCursesPad::NCursesPad(int nlines, int ncols)
   : NCursesWindow(),
@@ -180,8 +180,10 @@ int NCursesPad::noutrefresh()
   int res = OK;
   NCursesWindow* W = Win();
   if (static_cast<NCursesWindow*>(0) != W) {
-    res = copywin(*W,min_row,min_col,
-		  0,0,W->maxy(),W->maxx(),
+    int high = W->maxy();
+    int wide = W->maxx();
+    res = copywin(*W, min_row, min_col,
+		  0, 0, high, wide,
 		  FALSE);
     if (res==OK) {
       W->syncup();

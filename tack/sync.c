@@ -22,7 +22,7 @@
 #include <tack.h>
 #include <time.h>
 
-MODULE_ID("$Id: sync.c,v 1.5 2005/04/16 16:29:41 tom Exp $")
+MODULE_ID("$Id: sync.c,v 1.7 2005/07/02 16:50:38 tom Exp $")
 
 /* terminal-synchronization and performance tests */
 
@@ -299,7 +299,7 @@ sync_home(
 	if (tx_cps > tty_cps) {
 		tty_cps = tx_cps;
 	}
-	sprintf(temp, "%ld characters per second.  Baudrate %d  ", tx_cps, j);
+	sprintf(temp, "%lu characters per second.  Baudrate %d  ", tx_cps, j);
 	ptext(temp);
 	generic_done_message(t, state, ch);
 }
@@ -395,7 +395,7 @@ sync_summary(
 	put_crlf();
 	ptextln("Terminal  size    characters/sec linefeeds/sec  clears/sec");
 	sprintf(size, "%dx%d", columns, lines);
-	sprintf(temp, "%-10s%-11s%11ld   %11d %11d", tty_basename, size,
+	sprintf(temp, "%-10s%-11s%11lu   %11d %11d", tty_basename, size,
 		tty_cps, tty_newline_rate, tty_clear_rate);
 	ptextln(temp);
 	generic_done_message(t, state, ch);
