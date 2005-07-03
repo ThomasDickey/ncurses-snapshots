@@ -26,7 +26,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.29 2005/04/02 20:28:50 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.30 2005/07/02 17:14:02 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -236,7 +236,9 @@ NCursesWindow::NCursesWindow(NCursesWindow& win,
   : w(), alloced(), par(), subwins(), sib()
 {
   initialize();
-  w = :: derwin(win.w,win.height()-2,win.width()-2,1,1);
+  int height = win.height();
+  int width  = win.width();
+  w = :: derwin(win.w, height - 2, width - 2, 1, 1);
   if (w == 0) {
     err_handler("Cannot construct subwindow");
   }
@@ -269,8 +271,6 @@ typedef int (*RIPOFFINIT)(NCursesWindow&);
 static RIPOFFINIT R_INIT[5];       // There can't be more
 static int r_init_idx   = 0;
 static RIPOFFINIT* prip = R_INIT;
-
-extern "C" int _nc_ripoffline(int,int (*init)(WINDOW*,int));
 
 NCursesWindow::NCursesWindow(WINDOW *win, int ncols)
   : w(), alloced(), par(), subwins(), sib()
@@ -459,8 +459,6 @@ NCursesWindow::setcolor(short pair)
 }
 
 #if HAVE_HAS_KEY
-extern "C" int _nc_has_mouse(void);
-
 bool NCursesWindow::has_mouse() const
 {
   return ((::has_key(KEY_MOUSE) || ::_nc_has_mouse())

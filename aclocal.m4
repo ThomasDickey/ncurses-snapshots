@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.362 2005/06/25 20:18:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.364 2005/07/02 19:38:46 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -831,6 +831,40 @@ int main() {
 	fi
 ])])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_FUNC_NANOSLEEP version: 1 updated: 2005/07/02 15:38:12
+dnl -----------------
+dnl Check for existence of workable nanosleep() function.  Some systems, e.g.,
+dnl AIX 4.x, provide a non-working version.
+AC_DEFUN([CF_FUNC_NANOSLEEP],[
+AC_CACHE_CHECK(if nanosleep really works,cf_cv_func_nanosleep,[
+AC_TRY_RUN([
+#include <stdio.h>
+#include <errno.h>
+#include <time.h>
+
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+
+int main() {
+	struct timespec ts1, ts2;
+	int code;
+	ts1.tv_sec  = 0;
+	ts1.tv_nsec = 750000000;
+	ts2.tv_sec  = 0;
+	ts2.tv_nsec = 0;
+	errno = 0;
+	code = nanosleep(&ts1, &ts2); /* on failure errno is ENOSYS. */
+	exit(code != 0);
+}
+],
+	[cf_cv_func_nanosleep=yes],
+	[cf_cv_func_nanosleep=no],
+	[cf_cv_func_nanosleep=unknown])])
+
+test "$cf_cv_func_nanosleep" = "yes" && AC_DEFINE(HAVE_NANOSLEEP)
+])
+dnl ---------------------------------------------------------------------------
 dnl CF_FUNC_POLL version: 2 updated: 2000/02/06 01:38:04
 dnl ------------
 dnl See if the poll function really works.  Some platforms have poll(), but
@@ -1199,7 +1233,7 @@ case $cf_gnat_version in
 esac
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_GNU_SOURCE version: 4 updated: 2004/12/03 20:43:00
+dnl CF_GNU_SOURCE version: 5 updated: 2005/06/29 04:28:43
 dnl -------------
 dnl Check if we must define _GNU_SOURCE to get a reasonable value for
 dnl _XOPEN_SOURCE, upon which many POSIX definitions depend.  This is a defect
@@ -1211,7 +1245,6 @@ AC_DEFUN([CF_GNU_SOURCE],
 [
 AC_REQUIRE([CF_INTEL_COMPILER])
 
-if test "$INTEL_COMPILER" = no ; then
 AC_CACHE_CHECK(if we must define _GNU_SOURCE,cf_cv_gnu_source,[
 AC_TRY_COMPILE([#include <sys/types.h>],[
 #ifndef _XOPEN_SOURCE
@@ -1230,7 +1263,6 @@ make an error
 	])
 ])
 test "$cf_cv_gnu_source" = yes && CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
-fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_GPP_LIBRARY version: 8 updated: 2003/02/02 01:41:46

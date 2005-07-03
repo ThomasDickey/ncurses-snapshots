@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.345 2005/06/25 20:14:08 tom Exp $
+dnl $Id: configure.in,v 1.347 2005/07/02 19:18:25 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.345 $)
+AC_REVISION($Revision: 1.347 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -970,7 +970,7 @@ AC_ARG_WITH(trace,
 [  --with-trace            test: add trace() function to all models of ncurses],
 [cf_with_trace=$withval],
 [cf_with_trace=$cf_all_traces])
-AC_MSG_RESULT($with_trace)
+AC_MSG_RESULT($cf_with_trace)
 
 if test "$cf_with_trace" = yes ; then
 	LIB_TRACING=all
@@ -1065,7 +1065,6 @@ getegid \
 geteuid \
 getttynam \
 issetugid \
-nanosleep \
 poll \
 remove \
 select \
@@ -1086,6 +1085,7 @@ fi
 
 CF_ISASCII
 CF_STRUCT_SIGACTION
+CF_FUNC_NANOSLEEP
 CF_FUNC_TERMIOS
 CF_FUNC_VSSCANF
 CF_MKSTEMP

@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #endif
 
-MODULE_ID("$Id: control.c,v 1.6 2005/04/16 16:29:18 tom Exp $")
+MODULE_ID("$Id: control.c,v 1.7 2005/07/02 16:36:07 tom Exp $")
 
 /* terminfo test program control subroutines */
 
@@ -542,7 +542,7 @@ dump_test_stats(
 		}
 	}
 	sprintf(tbuf, "%011lu", usec_run_time);
-	sprintf(temp, "Test time: %lu.%s, characters per second %ld, characters %d",
+	sprintf(temp, "Test time: %lu.%s, characters per second %lu, characters %d",
 		usec_run_time / 1000000UL, &tbuf[5], tx_cps, tx_characters);
 	ptextln(temp);
 	for (i = 0; i < txp; i++) {
