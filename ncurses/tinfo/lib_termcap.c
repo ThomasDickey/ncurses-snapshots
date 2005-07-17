@@ -44,121 +44,12 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.49 2005/04/16 16:12:49 tom Exp $")
-
-#define CSI       233
-#define ESC       033		/* ^[ */
-#define L_BRACK   '['
-#define SHIFT_OUT 017		/* ^N */
+MODULE_ID("$Id: lib_termcap.c,v 1.51 2005/07/16 23:12:51 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
 
 static char *fix_me = 0;	/* this holds the filtered sgr0 string */
-
-static char *
-set_attribute_9(int flag)
-{
-    const char *result;
-
-    if ((result = tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, flag)) == 0)
-	result = "";
-    return strdup(result);
-}
-
-static int
-is_csi(char *s)
-{
-    if (UChar(s[0]) == CSI)
-	return 1;
-    else if (s[0] == ESC && s[1] == L_BRACK)
-	return 2;
-    return 0;
-}
-
-static char *
-skip_zero(char *s)
-{
-    if (s[0] == '0') {
-	if (s[1] == ';')
-	    s += 2;
-	else if (isalpha(UChar(s[1])))
-	    s += 1;
-    }
-    return s;
-}
-
-/*
- * Improve similar_sgr a little by moving the attr-string from the beginning
- * to the end of the s-string.
- */
-static bool
-rewrite_sgr(char *s, char *attr)
-{
-    if (s != 0) {
-	if (attr != 0) {
-	    unsigned len_s = strlen(s);
-	    unsigned len_a = strlen(attr);
-
-	    if (len_s > len_a && !strncmp(attr, s, len_a)) {
-		unsigned n;
-		TR(TRACE_DATABASE, ("rewrite:\n\t%s", s));
-		for (n = 0; n < len_s - len_a; ++n) {
-		    s[n] = s[n + len_a];
-		}
-		strcpy(s + n, attr);
-		TR(TRACE_DATABASE, ("to:\n\t%s", s));
-	    }
-	}
-	return TRUE;
-    }
-    return FALSE;		/* oops */
-}
-
-static bool
-similar_sgr(char *a, char *b)
-{
-    bool result = FALSE;
-    int csi_a = is_csi(a);
-    int csi_b = is_csi(b);
-    unsigned len_a;
-    unsigned len_b;
-
-    TR(TRACE_DATABASE, ("similar_sgr:\n\t%s\n\t%s",
-			_nc_visbuf2(1, a),
-			_nc_visbuf2(2, b)));
-    if (csi_a != 0 && csi_b != 0 && csi_a == csi_b) {
-	a += csi_a;
-	b += csi_b;
-	if (*a != *b) {
-	    a = skip_zero(a);
-	    b = skip_zero(b);
-	}
-    }
-    len_a = strlen(a);
-    len_b = strlen(b);
-    if (len_a && len_b) {
-	if (len_a > len_b)
-	    result = (strncmp(a, b, len_b) == 0);
-	else
-	    result = (strncmp(a, b, len_a) == 0);
-    }
-    TR(TRACE_DATABASE, ("...similar_sgr: %d\n\t%s\n\t%s", result,
-			_nc_visbuf2(1, a),
-			_nc_visbuf2(2, b)));
-    return result;
-}
-
-static unsigned
-chop_out(char *string, unsigned i, unsigned j)
-{
-    TR(TRACE_DATABASE, ("chop_out %d..%d from %s", i, j, _nc_visbuf(string)));
-    while (string[j] != '\0') {
-	string[i++] = string[j++];
-    }
-    string[i] = '\0';
-    return i;
-}
 
 /***************************************************************************
  *
@@ -204,104 +95,14 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	/*
-	 * While 'sgr0' is the "same" as termcap 'me', there is a compatibility
-	 * issue.  The sgr/sgr0 capabilities include setting/clearing alternate
-	 * character set mode.  A termcap application cannot use sgr, so sgr0
-	 * strings that reset alternate character set mode will be
-	 * misinterpreted.  Here, we remove those from the more common
-	 * ISO/ANSI/VT100 entries, which have sgr0 agreeing with sgr.
-	 */
-	if (exit_attribute_mode != 0
-	    && set_attributes != 0) {
-	    bool found = FALSE;
-	    char *on = set_attribute_9(1);
-	    char *off = set_attribute_9(0);
-	    char *end = strdup(exit_attribute_mode);
-	    char *tmp;
-	    size_t i, j, k;
-
-	    TR(TRACE_DATABASE, ("checking if we can trim sgr0 based on sgr"));
-	    TR(TRACE_DATABASE, ("sgr0       %s", _nc_visbuf(end)));
-	    TR(TRACE_DATABASE, ("sgr(9:off) %s", _nc_visbuf(off)));
-	    TR(TRACE_DATABASE, ("sgr(9:on)  %s", _nc_visbuf(on)));
-
-	    if (!rewrite_sgr(on, enter_alt_charset_mode)
-		|| !rewrite_sgr(off, exit_alt_charset_mode)
-		|| !rewrite_sgr(end, exit_alt_charset_mode)) {
-		FreeIfNeeded(on);
-		FreeIfNeeded(off);
-		FreeIfNeeded(end);
-	    } else if (similar_sgr(off, end)
-		       && !similar_sgr(off, on)) {
-		TR(TRACE_DATABASE, ("adjusting sgr0 : %s", _nc_visbuf(off)));
-		FreeIfNeeded(fix_me);
-		fix_me = off;
-		/*
-		 * If rmacs is a substring of sgr(0), remove that chunk.
-		 */
-		if (exit_alt_charset_mode != 0) {
-		    j = strlen(off);
-		    k = strlen(exit_alt_charset_mode);
-		    if (j > k) {
-			for (i = 0; i <= (j - k); ++i) {
-			    if (!memcmp(exit_alt_charset_mode, off + i, k)) {
-				found = TRUE;
-				chop_out(off, i, i + k);
-				break;
-			    }
-			}
-		    }
-		}
-		/*
-		 * SGR 10 would reset to normal font.
-		 */
-		if (!found) {
-		    if ((i = is_csi(off)) != 0
-			&& off[strlen(off) - 1] == 'm') {
-			TR(TRACE_DATABASE, ("looking for SGR 10 in %s",
-					    _nc_visbuf(off)));
-			tmp = skip_zero(off + i);
-			if (tmp[0] == '1'
-			    && skip_zero(tmp + 1) != tmp + 1) {
-			    i = tmp - off;
-			    if (off[i - 1] == ';')
-				i--;
-			    j = skip_zero(tmp + 1) - off;
-			    i = chop_out(off, i, j);
-			    found = TRUE;
-			}
-		    }
-		}
-		if (!found
-		    && (tmp = strstr(end, off)) != 0) {
-		    i = tmp - end;
-		    j = strlen(off);
-		    tmp = strdup(end);
-		    chop_out(tmp, i, j);
-		    free(off);
-		    fix_me = tmp;
-		}
-		TR(TRACE_DATABASE, ("...adjusted sgr0 : %s", _nc_visbuf(fix_me)));
-		if (!strcmp(fix_me, exit_attribute_mode)) {
-		    TR(TRACE_DATABASE, ("...same result, discard"));
+	FreeIfNeeded(fix_me);
+	if ((fix_me = _nc_trim_sgr0(&(cur_term->type))) != 0) {
+	    if (!strcmp(fix_me, exit_attribute_mode)) {
+		if (fix_me != exit_attribute_mode) {
 		    free(fix_me);
-		    fix_me = 0;
 		}
-	    } else {
-		/*
-		 * Either the sgr does not reference alternate character set,
-		 * or it is incorrect.  That's too hard to decide right now.
-		 */
-		free(off);
+		fix_me = 0;
 	    }
-	    free(end);
-	    free(on);
-	} else {
-	    /*
-	     * Possibly some applications are confused if sgr0 contains rmacs,
-	     * but that would be a different bug report -TD
-	     */
 	}
 
 	(void) baudrate();	/* sets ospeed as a side-effect */

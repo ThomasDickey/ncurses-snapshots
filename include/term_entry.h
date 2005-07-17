@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1998-2004               *
  ****************************************************************************/
 
-/* $Id: term_entry.h,v 1.33 2004/07/05 11:51:16 tom Exp $ */
+/* $Id: term_entry.h,v 1.34 2005/07/16 21:15:07 tom Exp $ */
 
 /*
  *	term_entry.h -- interface to entry-manipulation code
@@ -133,6 +133,9 @@ extern NCURSES_EXPORT(void) _nc_free_termtype (TERMTYPE *);
 
 /* lib_acs.c */
 extern NCURSES_EXPORT(void) _nc_init_acs (void);	/* corresponds to traditional 'init_acs()' */
+
+/* lib_termcap.c: trim sgr0 string for termcap users */
+extern NCURSES_EXPORT(char *) _nc_trim_sgr0 (TERMTYPE *);
 
 /* parse_entry.c: entry-parsing code */
 #if NCURSES_XNAMES

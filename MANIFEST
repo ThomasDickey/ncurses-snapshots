@@ -846,6 +846,7 @@
 ./ncurses/tinfo/read_termcap.c
 ./ncurses/tinfo/setbuf.c
 ./ncurses/tinfo/strings.c
+./ncurses/tinfo/trim_sgr0.c
 ./ncurses/tinfo/write_entry.c
 ./ncurses/trace/README
 ./ncurses/trace/lib_trace.c

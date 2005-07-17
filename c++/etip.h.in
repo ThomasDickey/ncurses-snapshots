@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.30 2005/05/28 22:06:53 tom Exp $
+// $Id: etip.h.in,v 1.31 2005/07/03 16:18:39 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -191,7 +191,7 @@ public:
 
   NCursesPanelException (const char *msg, int err) :
     NCursesException (msg, err),
-    p (static_cast<NCursesPanel*>(0))
+    p (NULL)
     {};
 
   NCursesPanelException (const NCursesPanel* panel,
@@ -203,7 +203,7 @@ public:
 
   NCursesPanelException (int err) :
     NCursesException ("panel library error", err),
-    p (static_cast<NCursesPanel*>(0))
+    p (NULL)
     {};
 
   NCursesPanelException (const NCursesPanel* panel,
@@ -242,7 +242,7 @@ public:
 
   NCursesMenuException (const char *msg, int err) :
     NCursesException (msg, err),
-    m (static_cast<NCursesMenu *>(0))
+    m (NULL)
     {};
 
   NCursesMenuException (const NCursesMenu* menu,
@@ -254,7 +254,7 @@ public:
 
   NCursesMenuException (int err) :
     NCursesException ("menu library error", err),
-    m (static_cast<NCursesMenu *>(0))
+    m (NULL)
     {};
 
   NCursesMenuException (const NCursesMenu* menu,
@@ -293,7 +293,7 @@ public:
 
   NCursesFormException (const char *msg, int err) :
     NCursesException (msg, err),
-    f (static_cast<NCursesForm*>(0))
+    f (NULL)
     {};
 
   NCursesFormException (const NCursesForm* form,
@@ -305,7 +305,7 @@ public:
 
   NCursesFormException (int err) :
     NCursesException ("form library error", err),
-    f (static_cast<NCursesForm*>(0))
+    f (NULL)
     {};
 
   NCursesFormException (const NCursesForm* form,

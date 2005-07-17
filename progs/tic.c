@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.117 2004/12/04 15:35:59 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.120 2005/07/16 22:58:21 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1378,6 +1378,25 @@ check_termtype(TERMTYPE *tp, bool literal)
 	       set_attributes != CANCELLED_STRING) {
 	if (_nc_syntax == SYN_TERMINFO)
 	    _nc_warning("missing sgr string");
+    }
+
+    if (PRESENT(exit_attribute_mode)) {
+	char *check_sgr0 = _nc_trim_sgr0(tp);
+	if (check_sgr0 == 0 || *check_sgr0 == '\0') {
+	    _nc_warning("trimmed sgr0 is empty");
+	} else if (check_sgr0 != exit_attribute_mode) {
+	    DEBUG(2,
+		  ("will trim sgr0 for tgetent(%s)\n\toriginal sgr0=%s\n\ttrimmed  sgr0=%s",
+		   _nc_first_name(tp->term_names),
+		   _nc_visbuf2(1, exit_attribute_mode),
+		   _nc_visbuf2(2, check_sgr0)));
+	    free(check_sgr0);
+	} else {
+	    DEBUG(2,
+		  ("will not trim sgr0 for tgetent(%s)\n\toriginal sgr0=%s",
+		   _nc_first_name(tp->term_names),
+		   _nc_visbuf(exit_attribute_mode)));
+	}
     }
 
     /*
