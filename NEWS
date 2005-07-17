@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.907 2005/07/02 22:38:16 tom Exp $
+-- $Id: NEWS,v 1.909 2005/07/17 00:26:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050716
+	+ fix special cases for trimming sgr0 for hurd and vt220 (Debian
+	  #318621).
+	+ split-out _nc_trim_sgr0() from modifications made to tgetent(), to
+	  allow it to be used by tic to provide information about the runtime
+	  changes that would be made to sgr0 for termcap applications.
+	+ modify make_sed.sh to make the group-name in the NAME section of
+	  form/menu library manpage agree with the TITLE string when renaming
+	  is done for Debian (Debian #78866).
 
 20050702
 	+ modify parameter type in c++ binding for insch() and mvwinsch() to

@@ -26,7 +26,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.30 2005/07/02 17:14:02 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.31 2005/07/09 19:14:59 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -236,9 +236,9 @@ NCursesWindow::NCursesWindow(NCursesWindow& win,
   : w(), alloced(), par(), subwins(), sib()
 {
   initialize();
-  int height = win.height();
-  int width  = win.width();
-  w = :: derwin(win.w, height - 2, width - 2, 1, 1);
+  int myHeight = win.height();
+  int myWidth  = win.width();
+  w = :: derwin(win.w, myHeight - 2, myWidth - 2, 1, 1);
   if (w == 0) {
     err_handler("Cannot construct subwindow");
   }
