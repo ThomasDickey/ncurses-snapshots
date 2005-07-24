@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.364 2005/07/02 19:38:46 tom Exp $
+dnl $Id: aclocal.m4,v 1.366 2005/07/24 00:33:20 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -623,6 +623,62 @@ fi
 test "$cf_cv_cpp_param_init" = yes && AC_DEFINE(CPP_HAS_PARAM_INIT)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_CPP_STATIC_CAST version: 1 updated: 2005/07/23 16:52:43
+dnl ------------------
+dnl Check if the C++ compiler accepts static_cast in generics.  This appears to
+dnl not be supported in g++ before 3.0
+AC_DEFUN([CF_CPP_STATIC_CAST],
+[
+if test -n "$CXX"; then
+
+AC_CACHE_CHECK(if $CXX accepts static_cast,cf_cv_cpp_static_cast,[
+	AC_LANG_SAVE
+	AC_LANG_CPLUSPLUS
+
+	AC_TRY_COMPILE([
+class NCursesPanel
+{
+public:
+  NCursesPanel(int nlines,
+	       int ncols,
+	       int begin_y = 0,
+	       int begin_x = 0)
+  {
+  }
+
+  ~NCursesPanel();
+};
+
+template<class T> class NCursesUserPanel : public NCursesPanel
+{
+public:
+  NCursesUserPanel (int nlines,
+		    int ncols,
+		    int begin_y = 0,
+		    int begin_x = 0,
+		    const T* p_UserData = static_cast<T*>(0))
+    : NCursesPanel (nlines, ncols, begin_y, begin_x)
+  {
+  };
+  NCursesUserPanel(const T* p_UserData = static_cast<T*>(0)) : NCursesPanel()
+  {
+  };
+
+  virtual ~NCursesUserPanel() {};
+};
+],[
+	const char* p_UserData = static_cast<char*>(0)],
+	[cf_cv_cpp_static_cast=yes],
+	[cf_cv_cpp_static_cast=no])
+
+	AC_LANG_RESTORE
+])
+
+fi
+
+test "$cf_cv_cpp_static_cast" = yes && AC_DEFINE(CPP_HAS_STATIC_CAST)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_CPP_VSCAN_FUNC version: 5 updated: 2001/12/02 01:39:28
 dnl -----------------
 dnl Check if the g++ compiler supports vscan function (not a standard feature).
@@ -1057,7 +1113,7 @@ if test "$GCC" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 18 updated: 2004/12/03 20:51:07
+dnl CF_GCC_WARNINGS version: 19 updated: 2005/07/09 13:23:07
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -1080,30 +1136,51 @@ AC_DEFUN([CF_GCC_WARNINGS],
 [
 AC_REQUIRE([CF_INTEL_COMPILER])
 AC_REQUIRE([CF_GCC_VERSION])
+
+cat > conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+EOF
+
 if test "$INTEL_COMPILER" = yes
 then
 # The "-wdXXX" options suppress warnings:
 # remark #1419: external declaration in primary source file
+# remark #1682: implicit conversion of a 64-bit integral type to a smaller integral type (potential portability problem)
+# remark #1683: explicit conversion of a 64-bit integral type to a smaller integral type (potential portability problem)
+# remark #1684: conversion from pointer to same-sized integral type (potential portability problem)
 # remark #193: zero used for undefined preprocessing identifier
 # remark #593: variable "curs_sb_left_arrow" was set but never used
 # remark #810: conversion from "int" to "Dimension={unsigned short}" may lose significant bits
 # remark #869: parameter "tw" was never referenced
 # remark #981: operands are evaluated in unspecified order
 # warning #269: invalid format string conversion
-	EXTRA_CFLAGS="$EXTRA_CFLAGS -Wall \
- -wd1419 \
- -wd193 \
- -wd279 \
- -wd593 \
- -wd810 \
- -wd869 \
- -wd981"
+
+	AC_CHECKING([for $CC warning options])
+	cf_save_CFLAGS="$CFLAGS"
+	EXTRA_CFLAGS="-Wall"
+	for cf_opt in $1 \
+		wd1419 \
+		wd1682 \
+		wd1683 \
+		wd1684 \
+		wd193 \
+		wd279 \
+		wd593 \
+		wd810 \
+		wd869 \
+		wd981
+	do
+		CFLAGS="$cf_save_CFLAGS $EXTRA_CFLAGS -$cf_opt"
+		if AC_TRY_EVAL(ac_compile); then
+			test -n "$verbose" && AC_MSG_RESULT(... -$cf_opt)
+			EXTRA_CFLAGS="$EXTRA_CFLAGS -$cf_opt"
+		fi
+	done
+	CFLAGS="$cf_save_CFLAGS"
+
 elif test "$GCC" = yes
 then
-	cat > conftest.$ac_ext <<EOF
-#line __oline__ "configure"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
-EOF
 	AC_CHECKING([for $CC warning options])
 	cf_save_CFLAGS="$CFLAGS"
 	EXTRA_CFLAGS="-W -Wall"
@@ -1140,9 +1217,10 @@ EOF
 			EXTRA_CFLAGS="$EXTRA_CFLAGS -$cf_opt"
 		fi
 	done
-	rm -f conftest*
 	CFLAGS="$cf_save_CFLAGS"
 fi
+rm -f conftest*
+
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -1233,7 +1311,7 @@ case $cf_gnat_version in
 esac
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_GNU_SOURCE version: 5 updated: 2005/06/29 04:28:43
+dnl CF_GNU_SOURCE version: 6 updated: 2005/07/09 13:23:07
 dnl -------------
 dnl Check if we must define _GNU_SOURCE to get a reasonable value for
 dnl _XOPEN_SOURCE, upon which many POSIX definitions depend.  This is a defect
@@ -1243,8 +1321,6 @@ dnl
 dnl Well, yes we could work around it...
 AC_DEFUN([CF_GNU_SOURCE],
 [
-AC_REQUIRE([CF_INTEL_COMPILER])
-
 AC_CACHE_CHECK(if we must define _GNU_SOURCE,cf_cv_gnu_source,[
 AC_TRY_COMPILE([#include <sys/types.h>],[
 #ifndef _XOPEN_SOURCE
@@ -1322,7 +1398,7 @@ if test "$GXX" = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GXX_WARNINGS version: 2 updated: 2005/04/02 13:49:56
+dnl CF_GXX_WARNINGS version: 3 updated: 2005/07/23 17:01:03
 dnl ---------------
 dnl Check if the compiler supports useful warning options.
 dnl
@@ -1376,8 +1452,15 @@ EOF
 	AC_CHECKING([for $CXX warning options])
 	cf_save_CXXFLAGS="$CXXFLAGS"
 	EXTRA_CXXFLAGS="-W -Wall"
-	cf_warn_CONST=""
-	test "$with_ext_const" = yes && cf_warn_CONST="Wwrite-strings"
+	cf_gxx_extra_warnings=""
+	test "$with_ext_const" = yes && cf_gxx_extra_warnings="Wwrite-strings"
+	case "$GCC_VERSION" in
+	[[1-2]].*)
+		;;
+	*)
+		cf_gxx_extra_warnings="$cf_gxx_extra_warnings Weffc++"
+		;;
+	esac
 	for cf_opt in \
 		Wabi \
 		fabi-version=0 \
@@ -1385,14 +1468,13 @@ EOF
 		Wsign-promo \
 		Wsynth \
 		Wold-style-cast \
-		Weffc++ \
 		Wcast-align \
 		Wcast-qual \
 		Wmissing-prototypes \
 		Wpointer-arith \
 		Wshadow \
 		Wstrict-prototypes \
-		Wundef $cf_warn_CONST $1
+		Wundef $cf_gxx_extra_warnings $1
 	do
 		CXXFLAGS="$cf_save_CXXFLAGS $EXTRA_CXXFLAGS -Werror -$cf_opt"
 		if AC_TRY_EVAL(ac_compile); then
@@ -1491,7 +1573,7 @@ AC_MSG_RESULT($cf_cv_have_isascii)
 test "$cf_cv_have_isascii" = yes && AC_DEFINE(HAVE_ISASCII)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LARGEFILE version: 3 updated: 2005/05/28 18:40:35
+dnl CF_LARGEFILE version: 5 updated: 2005/07/17 11:03:36
 dnl ------------
 dnl Add checks for large file support.
 AC_DEFUN([CF_LARGEFILE],[
@@ -1509,11 +1591,13 @@ ifdef([AC_FUNC_FSEEKO],[
 	test "$ac_cv_sys_large_files"      != no && CPPFLAGS="$CPPFLAGS -D_LARGE_FILES "
 	test "$ac_cv_sys_largefile_source" != no && CPPFLAGS="$CPPFLAGS -D_LARGEFILE_SOURCE "
 
-	AC_CACHE_CHECK(for struct dirent64, cf_cv_struct_dirent64,[
+	AC_CACHE_CHECK(whether to use struct dirent64, cf_cv_struct_dirent64,[
 		AC_TRY_COMPILE([
 #include <sys/types.h>
 #include <dirent.h>
 		],[
+		/* if transitional largefile support is setup, this is true */
+		extern struct dirent64 * readdir(DIR *);
 		struct dirent64 *x = readdir((DIR *)0);
 		struct dirent *y = readdir((DIR *)0);
 		int z = x - y;
@@ -2953,7 +3037,7 @@ case ".[$]$1" in #(vi
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_POSIX_C_SOURCE version: 3 updated: 2005/02/04 06:56:22
+dnl CF_POSIX_C_SOURCE version: 6 updated: 2005/07/14 20:25:10
 dnl -----------------
 dnl Define _POSIX_C_SOURCE to the given level, and _POSIX_SOURCE if needed.
 dnl
@@ -2970,6 +3054,13 @@ dnl	$1 is the nominal value for _POSIX_C_SOURCE
 AC_DEFUN([CF_POSIX_C_SOURCE],
 [
 cf_POSIX_C_SOURCE=ifelse($1,,199506L,$1)
+
+cf_save_CFLAGS="$CFLAGS"
+cf_save_CPPFLAGS="$CPPFLAGS"
+
+CF_REMOVE_DEFINE(cf_trim_CFLAGS,$cf_save_CFLAGS,_POSIX_C_SOURCE)
+CF_REMOVE_DEFINE(cf_trim_CPPFLAGS,$cf_save_CPPFLAGS,_POSIX_C_SOURCE)
+
 AC_CACHE_CHECK(if we should define _POSIX_C_SOURCE,cf_cv_posix_c_source,[
 	CF_MSG_LOG(if the symbol is already defined go no further)
 	AC_TRY_COMPILE([#include <sys/types.h>],[
@@ -2978,12 +3069,12 @@ make an error
 #endif],
 	[cf_cv_posix_c_source=no],
 	[cf_want_posix_source=no
-	 case .$cf_POSIX_C_SOURCE in
-	 .[[12]]??*)
-		cf_cv_posix_c_source="-U_POSIX_C_SOURCE -D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
+	 case .$cf_POSIX_C_SOURCE in #(vi
+	 .[[12]]??*) #(vi
+		cf_cv_posix_c_source="-D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
 		;;
-	 .2)
-		cf_cv_posix_c_source="-U_POSIX_C_SOURCE -D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
+	 .2) #(vi
+		cf_cv_posix_c_source="-D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
 		cf_want_posix_source=yes
 		;;
 	 .*)
@@ -2995,21 +3086,33 @@ make an error
 #ifdef _POSIX_SOURCE
 make an error
 #endif],[],
-		cf_cv_posix_c_source="$cf_cv_posix_c_source -U_POSIX_SOURCE -D_POSIX_SOURCE")
+		cf_cv_posix_c_source="$cf_cv_posix_c_source -D_POSIX_SOURCE")
 	 fi
 	 CF_MSG_LOG(ifdef from value $cf_POSIX_C_SOURCE)
-	 cf_save="$CPPFLAGS"
-	 CPPFLAGS="$CPPFLAGS $cf_cv_posix_c_source"
+	 CFLAGS="$cf_trim_CFLAGS"
+	 CPPFLAGS="$cf_trim_CPPFLAGS $cf_cv_posix_c_source"
 	 CF_MSG_LOG(if the second compile does not leave our definition intact error)
 	 AC_TRY_COMPILE([#include <sys/types.h>],[
 #ifndef _POSIX_C_SOURCE
 make an error
 #endif],,
-	[cf_cv_posix_c_source=no])
-	CPPFLAGS="$cf_save"
+	 [cf_cv_posix_c_source=no])
+	 CFLAGS="$cf_save_CFLAGS"
+	 CPPFLAGS="$cf_save_CPPFLAGS"
 	])
 ])
-test "$cf_cv_posix_c_source" != no && CPPFLAGS="$CPPFLAGS $cf_cv_posix_c_source"
+
+if test "$cf_cv_posix_c_source" != no ; then
+	CFLAGS="$cf_trim_CFLAGS"
+	CPPFLAGS="$cf_trim_CPPFLAGS"
+	if test "$cf_cv_cc_u_d_options" = yes ; then
+		cf_temp_posix_c_source=`echo "$cf_cv_posix_c_source" | \
+				sed -e 's/-D/-U/g' -e 's/=[[^ 	]]*//g'`
+		CPPFLAGS="$CPPFLAGS $cf_temp_posix_c_source"
+	fi
+	CPPFLAGS="$CPPFLAGS $cf_cv_posix_c_source"
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PREDEFINE version: 1 updated: 2003/07/26 17:53:56
@@ -3082,6 +3185,31 @@ if test $cf_cv_prog_$1_c_o = yes; then
 else
   AC_MSG_RESULT([no])
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PROG_CC_U_D version: 1 updated: 2005/07/14 16:59:30
+dnl --------------
+dnl Check if C (preprocessor) -U and -D options are processed in the order
+dnl given rather than by type of option.  Some compilers insist on apply all
+dnl of the -U options after all of the -D options.  Others allow mixing them,
+dnl and may predefine symbols that conflict with those we define.
+AC_DEFUN([CF_PROG_CC_U_D],
+[
+AC_CACHE_CHECK(if $CC -U and -D options work together,cf_cv_cc_u_d_options,[
+	cf_save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="-UU_D_OPTIONS -DU_D_OPTIONS -DD_U_OPTIONS -UD_U_OPTIONS"
+	AC_TRY_COMPILE([],[
+#ifndef U_D_OPTIONS
+make an undefined-error
+#endif
+#ifdef  D_U_OPTIONS
+make a defined-error
+#endif
+	],[
+	cf_cv_cc_u_d_options=yes],[
+	cf_cv_cc_u_d_options=no])
+	CPPFLAGS="$cf_save_CPPFLAGS"
+])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PROG_EXT version: 10 updated: 2004/01/03 19:28:18
@@ -3179,6 +3307,24 @@ case $cf_cv_regex in
 	regexp.h)  AC_DEFINE(HAVE_REGEXP_H_FUNCS) ;;
 	regexpr.h) AC_DEFINE(HAVE_REGEXPR_H_FUNCS) ;;
 esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_REMOVE_DEFINE version: 2 updated: 2005/07/09 16:12:18
+dnl ----------------
+dnl Remove all -U and -D options that refer to the given symbol from a list
+dnl of C compiler options.  This works around the problem that not all
+dnl compilers process -U and -D options from left-to-right, so a -U option
+dnl cannot be used to cancel the effect of a preceding -D option.
+dnl
+dnl $1 = target (which could be the same as the source variable)
+dnl $2 = source (including '$')
+dnl $3 = symbol to remove
+define([CF_REMOVE_DEFINE],
+[
+# remove $3 symbol from $2
+$1=`echo "$2" | \
+	sed	-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[[ 	]]/ /g' \
+		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_SHARED_OPTS version: 31 updated: 2005/01/01 16:39:44
@@ -4278,7 +4424,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 19 updated: 2005/05/15 19:19:07
+dnl CF_XOPEN_SOURCE version: 21 updated: 2005/07/14 17:00:39
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -4287,6 +4433,8 @@ dnl Parameters:
 dnl	$1 is the nominal value for _XOPEN_SOURCE
 dnl	$2 is the nominal value for _POSIX_C_SOURCE
 AC_DEFUN([CF_XOPEN_SOURCE],[
+
+AC_REQUIRE([CF_PROG_CC_U_D])
 
 cf_XOPEN_SOURCE=ifelse($1,,500,$1)
 cf_POSIX_C_SOURCE=ifelse($2,,199506L,$2)
@@ -4351,7 +4499,13 @@ make an error
 	CPPFLAGS="$cf_save"
 	])
 ])
-test "$cf_cv_xopen_source" != no && CPPFLAGS="$CPPFLAGS -U_XOPEN_SOURCE -D_XOPEN_SOURCE=$cf_cv_xopen_source"
+	if test "$cf_cv_xopen_source" != no ; then
+		CF_REMOVE_DEFINE(CFLAGS,$CFLAGS,_XOPEN_SOURCE)
+		CF_REMOVE_DEFINE(CPPFLAGS,$CPPFLAGS,_XOPEN_SOURCE)
+		test "$cf_cv_cc_u_d_options" = yes && \
+			CPPFLAGS="$CPPFLAGS -U_XOPEN_SOURCE"
+		CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=$cf_cv_xopen_source"
+	fi
 	CF_POSIX_C_SOURCE($cf_POSIX_C_SOURCE)
 	;;
 esac

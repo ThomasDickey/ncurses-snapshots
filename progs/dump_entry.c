@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.69 2005/05/07 20:26:10 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.70 2005/07/23 20:03:30 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -58,6 +58,9 @@ static int width = 60;		/* max line width for listings */
 static int column;		/* current column, limited by 'width' */
 static int oldcol;		/* last value of column before wrap */
 static bool pretty;		/* true if we format if-then-else strings */
+
+static char *save_sgr;
+static char *save_acsc;
 
 static DYNBUF outbuf;
 static DYNBUF tmpbuf;
@@ -498,6 +501,8 @@ fmt_complex(char *src, int level)
     return src;
 }
 
+#define SAME_CAP(n,cap) (&tterm->Strings[n] == &cap)
+
 int
 fmt_entry(TERMTYPE *tterm,
 	  PredFunc pred,
@@ -508,6 +513,7 @@ fmt_entry(TERMTYPE *tterm,
 {
     PredIdx i, j;
     char buffer[MAX_TERMINFO_LENGTH];
+    char *capability;
     NCURSES_CONST char *name;
     int predval, len;
     PredIdx num_bools = 0;
@@ -607,6 +613,7 @@ fmt_entry(TERMTYPE *tterm,
     for_each_string(j, tterm) {
 	i = StrIndirect(j);
 	name = ExtStrname(tterm, i, str_names);
+	capability = tterm->Strings[i];
 
 	if (!version_filter(STRING, i))
 	    continue;
@@ -622,25 +629,43 @@ fmt_entry(TERMTYPE *tterm,
 	    continue;
 #endif
 
-	/*
-	 * Some older versions of vi want rmir/smir to be defined
-	 * for ich/ich1 to work.  If they're not defined, force
-	 * them to be output as defined and empty.
-	 */
 	if (outform == F_TERMCAP) {
-	    if (insert_character || parm_ich) {
-		if (&tterm->Strings[i] == &enter_insert_mode
+	    /*
+	     * Some older versions of vi want rmir/smir to be defined
+	     * for ich/ich1 to work.  If they're not defined, force
+	     * them to be output as defined and empty.
+	     */
+	    if (PRESENT(insert_character) || PRESENT(parm_ich)) {
+		if (SAME_CAP(i, enter_insert_mode)
 		    && enter_insert_mode == ABSENT_STRING) {
 		    (void) strcpy(buffer, "im=");
 		    WRAP_CONCAT;
 		    continue;
 		}
 
-		if (&tterm->Strings[i] == &exit_insert_mode
+		if (SAME_CAP(i, exit_insert_mode)
 		    && exit_insert_mode == ABSENT_STRING) {
 		    (void) strcpy(buffer, "ei=");
 		    WRAP_CONCAT;
 		    continue;
+		}
+	    }
+	    /*
+	     * termcap applications such as screen will be confused if sgr0
+	     * is translated to a string containing rmacs.  Filter that out.
+	     */
+	    if (PRESENT(exit_attribute_mode)) {
+		if (SAME_CAP(i, exit_attribute_mode)) {
+		    char *trimmed_sgr0;
+		    char *my_sgr = set_attributes;
+
+		    set_attributes = save_sgr;
+
+		    trimmed_sgr0 = _nc_trim_sgr0(tterm);
+		    if (strcmp(capability, trimmed_sgr0))
+			capability = trimmed_sgr0;
+
+		    set_attributes = my_sgr;
 		}
 	    }
 	}
@@ -649,18 +674,18 @@ fmt_entry(TERMTYPE *tterm,
 	buffer[0] = '\0';
 
 	if (predval != FAIL) {
-	    if (tterm->Strings[i] != ABSENT_STRING
+	    if (capability != ABSENT_STRING
 		&& i + 1 > num_strings)
 		num_strings = i + 1;
 
-	    if (!VALID_STRING(tterm->Strings[i])) {
+	    if (!VALID_STRING(capability)) {
 		sprintf(buffer, "%s@", name);
 		WRAP_CONCAT;
 	    } else if (outform == F_TERMCAP || outform == F_TCONVERR) {
 		int params = ((i < (int) SIZEOF(parametrized))
 			      ? parametrized[i]
 			      : 0);
-		char *srccap = _nc_tic_expand(tterm->Strings[i], TRUE, numbers);
+		char *srccap = _nc_tic_expand(capability, TRUE, numbers);
 		char *cv = _nc_infotocap(name, srccap, params);
 
 		if (cv == 0) {
@@ -686,10 +711,10 @@ fmt_entry(TERMTYPE *tterm,
 		} else {
 		    sprintf(buffer, "%s=%s", name, cv);
 		}
-		len += strlen(tterm->Strings[i]) + 1;
+		len += strlen(capability) + 1;
 		WRAP_CONCAT;
 	    } else {
-		char *src = _nc_tic_expand(tterm->Strings[i],
+		char *src = _nc_tic_expand(capability,
 					   outform == F_TERMINFO, numbers);
 
 		strcpy_DYN(&tmpbuf, 0);
@@ -702,11 +727,14 @@ fmt_entry(TERMTYPE *tterm,
 		} else {
 		    strcpy_DYN(&tmpbuf, src);
 		}
-		len += strlen(tterm->Strings[i]) + 1;
+		len += strlen(capability) + 1;
 		wrap_concat(tmpbuf.text);
 		outcount = TRUE;
 	    }
 	}
+	/* e.g., trimmed_sgr0 */
+	if (capability != tterm->Strings[i])
+	    free(capability);
     }
     len += num_strings * 2;
 
@@ -907,6 +935,9 @@ dump_entry(TERMTYPE *tterm,
     }
     critlen -= already_used;
 
+    save_sgr = set_attributes;
+    save_acsc = acs_chars;
+
     if (((len = FMT_ENTRY()) > critlen)
 	&& limited) {
 	if (!suppress_untranslatable) {
@@ -920,8 +951,6 @@ dump_entry(TERMTYPE *tterm,
 	     * is really just an optimization hack.  Another good candidate is
 	     * acsc since it is both long and unused by BSD termcap.
 	     */
-	    char *oldsgr = set_attributes;
-	    char *oldacsc = acs_chars;
 	    bool changed = FALSE;
 
 #if NCURSES_XNAMES
@@ -991,8 +1020,8 @@ dump_entry(TERMTYPE *tterm,
 		}
 		tversion = oldversion;
 	    }
-	    set_attributes = oldsgr;
-	    acs_chars = oldacsc;
+	    set_attributes = save_sgr;
+	    acs_chars = save_acsc;
 	}
     }
 

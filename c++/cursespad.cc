@@ -32,10 +32,13 @@
  ****************************************************************************/
 
 #include "internal.h"
+
+#include <stdio.h>
+
 #include "etip.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursespad.cc,v 1.10 2005/07/02 22:41:42 tom Exp $")
+MODULE_ID("$Id: cursespad.cc,v 1.11 2005/07/23 20:51:23 tom Exp $")
 
 NCursesPad::NCursesPad(int nlines, int ncols)
   : NCursesWindow(),
