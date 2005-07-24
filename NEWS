@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.909 2005/07/17 00:26:46 tom Exp $
+-- $Id: NEWS,v 1.911 2005/07/24 00:30:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050723
+	+ updates/fixes for configure script macros from vile.
+	+ make prism9's sgr string agree with the rest of the terminfo -TD
+	+ make vt220's sgr0 string consistent with sgr string, do this for
+	  several related cases -TD
+	+ improve translation to termcap by filtering the 'me' (sgr0) strings
+	  as in the runtime call to tgetent() (prompted by a discussion with
+	  Thomas Klausner).
+	+ improve tic check for sgr0 versus sgr(0), to help ensure that sgr0
+	  resets line-drawing.
 
 20050716
 	+ fix special cases for trimming sgr0 for hurd and vt220 (Debian

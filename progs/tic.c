@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.120 2005/07/16 22:58:21 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.122 2005/07/23 19:22:49 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1168,6 +1168,43 @@ skip_delay(char *s)
 }
 
 /*
+ * Skip a delay altogether, e.g., when comparing a simple string to sgr,
+ * the latter may have a worst-case delay on the end.
+ */
+static char *
+ignore_delays(char *s)
+{
+    int delaying = 0;
+
+    do {
+	switch (*s) {
+	case '$':
+	    if (delaying == 0)
+		delaying = 1;
+	    break;
+	case '<':
+	    if (delaying == 1)
+		delaying = 2;
+	    break;
+	case '\0':
+	    delaying = 0;
+	    break;
+	default:
+	    if (delaying) {
+		s = skip_delay(s);
+		if (*s == '>')
+		    ++s;
+		delaying = 0;
+	    }
+	    break;
+	}
+	if (delaying)
+	    ++s;
+    } while (delaying);
+    return s;
+}
+
+/*
  * An sgr string may contain several settings other than the one we're
  * interested in, essentially sgr0 + rmacs + whatever.  As long as the
  * "whatever" is contained in the sgr string, that is close enough for our
@@ -1229,7 +1266,9 @@ similar_sgr(int num, char *a, char *b)
 	a++;
 	b++;
     }
-    return TRUE;
+    /* ignore delays on the end of the string */
+    a = ignore_delays(a);
+    return ((num != 0) || (*a == 0));
 }
 
 static char *
