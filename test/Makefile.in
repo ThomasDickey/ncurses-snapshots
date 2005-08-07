@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.82 2005/04/30 14:08:25 tom Exp $
+# $Id: Makefile.in,v 1.83 2005/08/06 14:58:25 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -209,7 +209,7 @@ ins_wide$x: $(MODEL)/ins_wide$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ins_wide$o $(LDFLAGS_CURSES)
 
 keynames$x: $(MODEL)/keynames$o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/keynames$o $(LDFLAGS_TINFO)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/keynames$o $(LDFLAGS_CURSES)
 
 knight$x: $(MODEL)/knight$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/knight$o $(LDFLAGS_CURSES)

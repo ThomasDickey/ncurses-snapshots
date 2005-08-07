@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.348 2005/07/23 20:16:57 tom Exp $
+dnl $Id: configure.in,v 1.349 2005/08/06 20:07:14 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.348 $)
+AC_REVISION($Revision: 1.349 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1004,7 +1004,6 @@ dnl These are some other potentially nonportable headers.
 AC_CHECK_HEADERS( \
 fcntl.h \
 getopt.h \
-libc.h \
 limits.h \
 locale.h \
 poll.h \
@@ -1017,7 +1016,8 @@ sys/time.h \
 sys/times.h \
 ttyent.h \
 unistd.h \
-wctype.h )
+wctype.h \
+)
 
 # check for ISC (this may also define _POSIX_SOURCE)
 # Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set

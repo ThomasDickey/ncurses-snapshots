@@ -31,13 +31,16 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.26 2005/05/28 21:57:54 tom Exp $
+// $Id: cursesf.h,v 1.27 2005/08/06 22:11:14 tom Exp $
 
 #ifndef NCURSES_CURSESF_H_incl
 #define NCURSES_CURSESF_H_incl 1
 
 #include <cursesp.h>
+
+#ifndef __EXT_QNX
 #include <string.h>
+#endif
 
 extern "C" {
 #  include <form.h>

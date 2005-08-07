@@ -33,9 +33,8 @@
 
 #include "internal.h"
 #include "cursesp.h"
-#include <string.h>
 
-MODULE_ID("$Id: cursesp.cc,v 1.24 2005/04/09 14:12:23 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.25 2005/08/06 22:12:36 tom Exp $")
 
 NCursesPanel* NCursesPanel::dummy = static_cast<NCursesPanel*>(0);
 

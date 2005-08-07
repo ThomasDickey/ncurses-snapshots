@@ -30,7 +30,7 @@
  *  Author: Thomas E. Dickey                    1997-on                     *
  ****************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.28 2005/05/28 18:54:13 tom Exp $
+ * $Id: progs.priv.h,v 1.29 2005/08/06 20:05:32 tom Exp $
  *
  *	progs.priv.h
  *
@@ -52,10 +52,6 @@
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
-#else
-# if HAVE_LIBC_H
-# include <libc.h>
-# endif
 #endif
 
 #if HAVE_SYS_BSDTYPES_H
