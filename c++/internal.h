@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: internal.h,v 1.11 2005/05/28 21:58:48 tom Exp $
+// $Id: internal.h,v 1.12 2005/08/06 22:12:25 tom Exp $
 
 #ifndef NCURSES_CPLUS_INTERNAL_H
 #define NCURSES_CPLUS_INTERNAL_H 1
@@ -45,5 +45,9 @@
 #endif
 
 #define CTRL(x) ((x) & 0x1f)
+
+#ifndef __EXT_QNX
+#include <string.h>
+#endif
 
 #endif /* NCURSES_CPLUS_INTERNAL_H */

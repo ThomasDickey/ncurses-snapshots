@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.911 2005/07/24 00:30:44 tom Exp $
+-- $Id: NEWS,v 1.913 2005/08/06 22:07:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,6 +6,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20050806
+	+ fixes to build on QNX 6.1
+	+ improve configure script checks for Intel 9.0 compiler.
+	+ remove #include's for libc.h (obsolete).
+	+ adjust ifdef's in curses.priv.h so that when cross-compiling to
+	  produce comp_hash and make_keys, no dependency on wchar.h is needed.
+	  That simplifies the build-cppflags (report by Frank van Vugt).
+	+ move modules related to key-binding into libtinfo to fix linkage
+	  problem caused by 20050430 changes to MKkeyname.sh (report by
+	  Konstantin Andreev).
+ 
 20050723
 	+ updates/fixes for configure script macros from vile.
 	+ make prism9's sgr string agree with the rest of the terminfo -TD

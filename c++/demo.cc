@@ -6,17 +6,13 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.30 2005/05/07 18:53:14 Mike.Frysinger Exp $
+ * $Id: demo.cc,v 1.31 2005/08/06 20:05:45 tom Exp $
  */
 
 #include "internal.h"
 #include "cursesapp.h"
 #include "cursesm.h"
 #include "cursesf.h"
-
-#if HAVE_LIBC_H
-#  include <libc.h>
-#endif
 
 extern "C" unsigned int sleep(unsigned int);
 

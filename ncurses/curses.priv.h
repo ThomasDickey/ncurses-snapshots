@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.284 2005/06/04 22:31:19 tom Exp $
+ * $Id: curses.priv.h,v 1.285 2005/08/06 19:40:26 tom Exp $
  *
  *	curses.priv.h
  *
@@ -292,6 +292,14 @@ typedef unsigned colorpair_t;	/* type big enough to store PAIR_OF() */
 
 #define COLOR_DEFAULT		C_MASK
 
+#ifdef USE_TERMLIB
+
+#undef NCURSES_CH_T		/* this is not a termlib feature */
+#define NCURSES_CH_T void	/* ...but we need a pointer in SCREEN */
+
+#endif	/* USE_TERMLIB */
+
+#ifndef USE_TERMLIB
 struct ldat
 {
 	NCURSES_CH_T	*text;		/* text of the line */
@@ -299,6 +307,7 @@ struct ldat
 	NCURSES_SIZE_T	lastchar;	/* last changed character in the line */
 	NCURSES_SIZE_T	oldindex;	/* index of the line at last update */
 };
+#endif	/* USE_TERMLIB */
 
 typedef enum {
 	M_XTERM	= -1		/* use xterm's mouse tracking? */
@@ -327,12 +336,7 @@ typedef struct {
 
 struct _SLK;
 
-#ifdef USE_TERMLIB
-
-#undef NCURSES_CH_T		/* this is not a termlib feature */
-#define NCURSES_CH_T void	/* ...but we need a pointer in SCREEN */
-
-#else
+#ifndef USE_TERMLIB
 
 typedef struct
 {
@@ -354,7 +358,7 @@ typedef struct _SLK {
 	NCURSES_CH_T attr;      /* soft label attribute */
 } SLK;
 
-#endif
+#endif	/* USE_TERMLIB */
 
 typedef	struct {
 	int	line;           /* lines to take, < 0 => from bottom*/
@@ -1019,7 +1023,7 @@ NCURSES_EXPORT(int) _nc_build_wch(WINDOW *win, ARG_CH_T ch);
 #endif
 
 /* lib_addstr.c */
-#if USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT && !defined(USE_TERMLIB)
 extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
 #endif
 
@@ -1133,7 +1137,7 @@ extern NCURSES_EXPORT(int) _nc_waddch_nosync (WINDOW *, const NCURSES_CH_T);
 extern NCURSES_EXPORT(void) _nc_scroll_window (WINDOW *, int const, short const, short const, NCURSES_CH_T);
 #endif
 
-#if USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT && !defined(USE_TERMLIB)
 #ifdef linux
 extern NCURSES_EXPORT(size_t) _nc_wcrtomb (char *, wchar_t, mbstate_t *);
 #else

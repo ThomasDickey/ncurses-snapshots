@@ -34,9 +34,8 @@
 #include "internal.h"
 #include "cursslk.h"
 #include "cursesapp.h"
-#include <string.h>
 
-MODULE_ID("$Id: cursslk.cc,v 1.14 2005/04/03 12:49:46 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.15 2005/08/06 22:12:36 tom Exp $")
 
 Soft_Label_Key_Set::Soft_Label_Key&
   Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)
