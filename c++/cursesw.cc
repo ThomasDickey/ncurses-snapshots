@@ -26,7 +26,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.31 2005/07/09 19:14:59 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.32 2005/08/13 18:12:17 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -165,7 +165,7 @@ NCursesWindow::initialize()
 }
 
 NCursesWindow::NCursesWindow()
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
   initialize();
 
@@ -177,7 +177,7 @@ NCursesWindow::NCursesWindow()
 }
 
 NCursesWindow::NCursesWindow(int nlines, int ncols, int begin_y, int begin_x)
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
     initialize();
 
@@ -193,7 +193,7 @@ NCursesWindow::NCursesWindow(int nlines, int ncols, int begin_y, int begin_x)
 }
 
 NCursesWindow::NCursesWindow(WINDOW* &window)
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
     initialize();
 
@@ -206,7 +206,7 @@ NCursesWindow::NCursesWindow(WINDOW* &window)
 
 NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
 			     int begin_y, int begin_x, char absrel)
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
     initialize();
     if (absrel == 'a') { // absolute origin
@@ -233,7 +233,7 @@ NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
 
 NCursesWindow::NCursesWindow(NCursesWindow& win,
 				bool do_box NCURSES_PARAM_INIT(TRUE))
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
   initialize();
   int myHeight = win.height();
@@ -273,7 +273,7 @@ static int r_init_idx   = 0;
 static RIPOFFINIT* prip = R_INIT;
 
 NCursesWindow::NCursesWindow(WINDOW *win, int ncols)
-  : w(), alloced(), par(), subwins(), sib()
+  : w(0), alloced(0), par(0), subwins(0), sib(0)
 {
   initialize();
   w = win;

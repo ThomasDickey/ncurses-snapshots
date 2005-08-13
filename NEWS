@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.913 2005/08/06 22:07:54 tom Exp $
+-- $Id: NEWS,v 1.915 2005/08/13 18:28:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050813
+	+ modify initializers in c++ binding to build with old versions of g++.
+	+ improve special case for 20050115 repainting fix, ensuring that if
+	  the first changed cell is not a character that the range to be
+	  repainted is adjusted to start at a character's beginning (Debian
+	  #316663).
 
 20050806
 	+ fixes to build on QNX 6.1

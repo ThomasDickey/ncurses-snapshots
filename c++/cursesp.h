@@ -34,7 +34,7 @@
 #ifndef NCURSES_CURSESP_H_incl
 #define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.25 2005/05/28 21:58:06 tom Exp $
+// $Id: cursesp.h,v 1.26 2005/08/13 18:09:21 tom Exp $
 
 #include <cursesw.h>
 
@@ -99,14 +99,14 @@ public:
 	       int ncols,
 	       int begin_y = 0,
 	       int begin_x = 0)
-    : NCursesWindow(nlines,ncols,begin_y,begin_x), p()
+    : NCursesWindow(nlines,ncols,begin_y,begin_x), p(0)
   {
     init();
   }
   // Create a panel with this size starting at the requested position.
 
   NCursesPanel()
-    : NCursesWindow(::stdscr), p()
+    : NCursesWindow(::stdscr), p(0)
   {
     init();
   }
