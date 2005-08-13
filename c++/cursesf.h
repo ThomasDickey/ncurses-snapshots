@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.27 2005/08/06 22:11:14 tom Exp $
+// $Id: cursesf.h,v 1.28 2005/08/13 18:08:24 tom Exp $
 
 #ifndef NCURSES_CURSESF_H_incl
 #define NCURSES_CURSESF_H_incl 1
@@ -129,7 +129,7 @@ public:
 		    int first_col = 0,
 		    int offscreen_rows = 0,
 		    int additional_buffers = 0)
-    : field(),
+    : field(0),
       ftype(STATIC_CAST(NCursesFieldType*)(0))
   {
       field = ::new_field(rows, ncols, first_row, first_col,
@@ -407,11 +407,11 @@ protected:
 	       int  begin_x = 0)
     : NCursesPanel(nlines, ncols, begin_y, begin_x),
       form (STATIC_CAST(FORM*)(0)),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_fields()
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_fields(0)
   {
   }
 
@@ -421,12 +421,12 @@ public:
 	       bool with_frame=FALSE,	      // reserve space for a frame?
 	       bool autoDelete_Fields=FALSE)  // do automatic cleanup?
     : NCursesPanel(),
-      form(),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_fields()
+      form(0),
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_fields(0)
   {
     InitForm(Fields, with_frame, autoDelete_Fields);
   }
@@ -440,12 +440,12 @@ public:
 	       bool with_frame=FALSE,	     // reserve space for a frame?
 	       bool autoDelete_Fields=FALSE) // do automatic cleanup?
     : NCursesPanel(nlines, ncols, begin_y, begin_x),
-      form(),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_fields()
+      form(0),
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_fields(0)
   {
       InitForm(Fields, with_frame, autoDelete_Fields);
   }

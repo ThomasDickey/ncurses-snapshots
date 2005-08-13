@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 2002,2004                                      *
+ *  Author: Thomas E. Dickey 2002-on                                        *
  ****************************************************************************/
 
 /*
@@ -40,13 +40,14 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.11 2005/04/16 18:02:56 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.12 2005/08/13 18:51:43 tom Exp $")
 
 #if HAVE_MBTOWC && HAVE_MBLEN
 #define reset_mbytes(state) mblen(NULL, 0), mbtowc(NULL, NULL, 0)
 #define count_mbytes(buffer,length,state) mblen(buffer,length)
 #define check_mbytes(wch,buffer,length,state) \
 	(int) mbtowc(&wch, buffer, length)
+#define state_unused
 #elif HAVE_MBRTOWC && HAVE_MBRLEN
 #define reset_mbytes(state) init_mb(state)
 #define count_mbytes(buffer,length,state) mbrlen(buffer,length,&state)
@@ -62,13 +63,14 @@ wget_wch(WINDOW *win, wint_t *result)
     int code;
     char buffer[(MB_LEN_MAX * 9) + 1];	/* allow some redundant shifts */
     int status;
-    mbstate_t state;
     size_t count = 0;
     unsigned long value;
     wchar_t wch;
+#ifndef state_unused
+    mbstate_t state;
+#endif
 
     T((T_CALLED("wget_wch(%p)"), win));
-    (void) state;
 
     /*
      * We can get a stream of single-byte characters and KEY_xxx codes from

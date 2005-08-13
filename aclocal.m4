@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.369 2005/08/06 22:38:49 tom Exp $
+dnl $Id: aclocal.m4,v 1.370 2005/08/13 18:54:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1399,7 +1399,7 @@ if test "$GXX" = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GXX_WARNINGS version: 4 updated: 2005/07/25 16:48:46
+dnl CF_GXX_WARNINGS version: 5 updated: 2005/08/13 14:54:38
 dnl ---------------
 dnl Check if the compiler supports useful warning options.
 dnl
@@ -1450,7 +1450,7 @@ then
 	AC_CHECKING([for $CC warning options])
 	cf_save_CXXFLAGS="$CXXFLAGS"
 	EXTRA_CXXFLAGS="-Wall"
-	for cf_opt in $1 \
+	for cf_opt in \
 		wd1419 \
 		wd1682 \
 		wd1683 \

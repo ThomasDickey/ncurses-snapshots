@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.31 2005/08/06 20:05:45 tom Exp $
+ * $Id: demo.cc,v 1.32 2005/08/13 18:14:44 tom Exp $
  */
 
 #include "internal.h"
@@ -210,10 +210,10 @@ private:
 public:
   TestForm()
     : NCursesForm(13, 51, (lines() - 15)/2, (cols() - 53)/2),
-      F(),
-      mft(),
-      ift(),
-      eft()
+      F(0),
+      mft(0),
+      ift(0),
+      eft(0)
   {
 
     F     = new NCursesFormField*[10];
@@ -255,7 +255,7 @@ public:
   }
 
   TestForm(const TestForm& rhs)
-    : NCursesForm(rhs), F(), mft(), ift(), eft()
+    : NCursesForm(rhs), F(0), mft(0), ift(0), eft(0)
   {
   }
 
@@ -402,7 +402,7 @@ private:
 public:
   MyMenu ()
     : NCursesMenu (n_items+2, 8, (lines()-10)/2, (cols()-10)/2),
-      P(), I(), u()
+      P(0), I(0), u(0)
   {
     u = new UserData(1);
     I = new NCursesMenuItem*[1+n_items];
@@ -431,7 +431,7 @@ public:
   }
 
   MyMenu(const MyMenu& rhs)
-    : NCursesMenu(rhs), P(), I(), u()
+    : NCursesMenu(rhs), P(0), I(0), u(0)
   {
   }
 

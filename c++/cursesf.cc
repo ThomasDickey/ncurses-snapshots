@@ -35,7 +35,7 @@
 #include "cursesf.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesf.cc,v 1.20 2005/04/02 20:33:08 tom Exp $")
+MODULE_ID("$Id: cursesf.cc,v 1.21 2005/08/13 18:09:06 tom Exp $")
 
 NCursesFormField::~NCursesFormField ()
 {
@@ -431,7 +431,7 @@ private:
 
 public:
   UDF_Init()
-    : code()
+    : code(0)
   {
     code = ::set_fieldtype_arg(UserDefinedFieldType::generic_fieldtype,
 			       _nc_xx_fld_makearg,

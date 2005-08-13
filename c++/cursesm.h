@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesm.h,v 1.24 2005/05/28 21:58:00 tom Exp $
+// $Id: cursesm.h,v 1.25 2005/08/13 18:10:36 tom Exp $
 
 #ifndef NCURSES_CURSESM_H_incl
 #define NCURSES_CURSESM_H_incl 1
@@ -61,7 +61,7 @@ protected:
 public:
   NCursesMenuItem (const char* p_name     = NULL,
 		   const char* p_descript = NULL)
-    : item()
+    : item(0)
   {
     item = p_name ? ::new_item (p_name, p_descript) : STATIC_CAST(ITEM*)(0);
     if (p_name && !item)
@@ -80,7 +80,7 @@ public:
   }
 
   NCursesMenuItem(const NCursesMenuItem& rhs)
-    : item()
+    : item(0)
   {
   }
 
@@ -174,7 +174,7 @@ public:
 
   NCursesMenuCallbackItem(const NCursesMenuCallbackItem& rhs)
     : NCursesMenuItem(rhs),
-      p_fct()
+      p_fct(0)
   {
   }
 
@@ -268,11 +268,11 @@ protected:
 	       int  begin_x = 0)
     : NCursesPanel(nlines,ncols,begin_y,begin_x),
       menu (STATIC_CAST(MENU*)(0)),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_items()
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_items(0)
   {
   }
 
@@ -282,12 +282,12 @@ public:
 	       bool with_frame=FALSE,        // Reserve space for a frame?
 	       bool autoDelete_Items=FALSE)  // Autocleanup of Items?
     : NCursesPanel(),
-      menu(),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_items()
+      menu(0),
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_items(0)
   {
       InitMenu(Items, with_frame, autoDelete_Items);
   }
@@ -301,12 +301,12 @@ public:
 	       bool with_frame=FALSE,        // Reserve space for a frame?
 	       bool autoDelete_Items=FALSE)  // Autocleanup of Items?
     : NCursesPanel(nlines, ncols, begin_y, begin_x),
-      menu(),
-      sub(),
-      b_sub_owner(),
-      b_framed(),
-      b_autoDelete(),
-      my_items()
+      menu(0),
+      sub(0),
+      b_sub_owner(0),
+      b_framed(0),
+      b_autoDelete(0),
+      my_items(0)
   {
       InitMenu(Items, with_frame, autoDelete_Items);
   }
