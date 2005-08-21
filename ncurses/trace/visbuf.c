@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.13 2005/06/11 19:31:35 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.14 2005/08/20 20:01:20 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -128,6 +128,20 @@ _nc_visbufn(const char *buf, int len)
 
 #if USE_WIDEC_SUPPORT
 #ifdef TRACE
+
+#if defined(USE_TERMLIB)
+#define _nc_wchstrlen _my_wchstrlen
+static int
+_nc_wchstrlen(const cchar_t *s)
+{
+    int result = 0;
+    while (CharOf(s[result]) != L'\0') {
+	result++;
+    }
+    return result;
+}
+#endif
+
 static const char *
 _nc_viswbuf2n(int bufnum, const wchar_t *buf, int len)
 {

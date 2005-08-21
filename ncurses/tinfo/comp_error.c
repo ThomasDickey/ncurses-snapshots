@@ -41,7 +41,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.28 2005/01/22 21:31:48 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.29 2005/08/20 19:22:36 tom Exp $")
 
 NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
 NCURSES_EXPORT_VAR(int) _nc_curr_line = 0; /* current line # in input */
@@ -49,6 +49,12 @@ NCURSES_EXPORT_VAR(int) _nc_curr_col = 0; /* current column # in input */
 
 static const char *sourcename;
 static char *termtype;
+
+NCURSES_EXPORT(const char *)
+_nc_get_source(void)
+{
+    return sourcename;
+}
 
 NCURSES_EXPORT(void)
 _nc_set_source(const char *const name)

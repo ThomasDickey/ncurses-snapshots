@@ -12,7 +12,9 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alnum.c,v 1.17 2005/04/16 18:26:04 tom Exp $")
+MODULE_ID("$Id: fty_alnum.c,v 1.18 2005/08/20 18:26:16 tom Exp $")
+
+#define thisARG alnumARG
 
 typedef struct
   {

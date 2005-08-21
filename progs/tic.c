@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.122 2005/07/23 19:22:49 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.124 2005/08/20 22:24:16 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1308,6 +1308,29 @@ check_sgr(TERMTYPE *tp, char *zero, int num, char *cap, const char *name)
 
 #define CHECK_SGR(num,name) check_sgr(tp, zero, num, name, #name)
 
+#ifdef TRACE
+/*
+ * If tic is compiled with TRACE, we'll be able to see the output from the
+ * DEBUG() macro.  But since it doesn't use traceon(), it always goes to
+ * the standard error.  Use this function to make it simpler to follow the
+ * resulting debug traces.
+ */
+static void
+show_where(unsigned level)
+{
+    if (_nc_tracing >= level) {
+	char my_name[256];
+	_nc_get_type(my_name);
+	fprintf(stderr, "\"%s\", line %d, '%s' ",
+		_nc_get_source(),
+		_nc_curr_line, my_name);
+    }
+}
+
+#else
+#define show_where(level) /* nothing */
+#endif
+
 /* other sanity-checks (things that we don't want in the normal
  * logic that reads a terminfo entry)
  */
@@ -1421,22 +1444,41 @@ check_termtype(TERMTYPE *tp, bool literal)
 
     if (PRESENT(exit_attribute_mode)) {
 	char *check_sgr0 = _nc_trim_sgr0(tp);
+
 	if (check_sgr0 == 0 || *check_sgr0 == '\0') {
 	    _nc_warning("trimmed sgr0 is empty");
-	} else if (check_sgr0 != exit_attribute_mode) {
-	    DEBUG(2,
-		  ("will trim sgr0 for tgetent(%s)\n\toriginal sgr0=%s\n\ttrimmed  sgr0=%s",
-		   _nc_first_name(tp->term_names),
-		   _nc_visbuf2(1, exit_attribute_mode),
-		   _nc_visbuf2(2, check_sgr0)));
-	    free(check_sgr0);
 	} else {
-	    DEBUG(2,
-		  ("will not trim sgr0 for tgetent(%s)\n\toriginal sgr0=%s",
-		   _nc_first_name(tp->term_names),
-		   _nc_visbuf(exit_attribute_mode)));
+	    show_where(2);
+	    if (check_sgr0 != exit_attribute_mode) {
+		DEBUG(2,
+		      ("will trim sgr0\n\toriginal sgr0=%s\n\ttrimmed  sgr0=%s",
+		       _nc_visbuf2(1, exit_attribute_mode),
+		       _nc_visbuf2(2, check_sgr0)));
+		free(check_sgr0);
+	    } else {
+		DEBUG(2,
+		      ("will not trim sgr0\n\toriginal sgr0=%s",
+		       _nc_visbuf(exit_attribute_mode)));
+	    }
 	}
     }
+#ifdef TRACE
+    show_where(2);
+    if (!auto_right_margin) {
+	DEBUG(2,
+	      ("can write to lower-right directly"));
+    } else if (PRESENT(enter_am_mode) && PRESENT(exit_am_mode)) {
+	DEBUG(2,
+	      ("can write to lower-right by suppressing automargin"));
+    } else if ((PRESENT(enter_insert_mode) && PRESENT(exit_insert_mode))
+	       || PRESENT(insert_character) || PRESENT(parm_ich)) {
+	DEBUG(2,
+	      ("can write to lower-right by using inserts"));
+    } else {
+	DEBUG(2,
+	      ("cannot write to lower-right"));
+    }
+#endif
 
     /*
      * Some standard applications (e.g., vi) and some non-curses

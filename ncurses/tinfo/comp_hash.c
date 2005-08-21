@@ -38,7 +38,7 @@
  *
  */
 
-#define USE_TERMLIB
+#define USE_TERMLIB 1
 #include <curses.priv.h>
 
 #include <tic.h>
@@ -50,7 +50,7 @@
 #define DEBUG(level, params)	/*nothing */
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.27 2005/08/06 19:38:30 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.28 2005/08/20 19:58:18 tom Exp $")
 
 static int hash_function(const char *);
 

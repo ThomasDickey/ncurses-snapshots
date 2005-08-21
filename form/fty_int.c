@@ -12,13 +12,15 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.18 2005/04/16 18:20:00 tom Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.19 2005/08/20 18:26:16 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define isDigit(c) (iswdigit((wint_t)(c)) || isdigit(UChar(c)))
 #else
 #define isDigit(c) isdigit(UChar(c))
 #endif
+
+#define thisARG integerARG
 
 typedef struct
   {

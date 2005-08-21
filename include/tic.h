@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.49 2004/04/03 20:22:58 tom Exp $
+ * $Id: tic.h,v 1.50 2005/08/20 19:41:40 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -267,11 +267,12 @@ extern NCURSES_EXPORT_VAR(long) _nc_start_line;
 #define SYN_TERMCAP	1
 
 /* comp_error.c: warning & abort messages */
-extern NCURSES_EXPORT(void) _nc_set_source (const char *const name);
-extern NCURSES_EXPORT(void) _nc_get_type (char *name);
-extern NCURSES_EXPORT(void) _nc_set_type (const char *const name);
-extern NCURSES_EXPORT(void) _nc_syserr_abort (const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern NCURSES_EXPORT(const char *) _nc_get_source (void);
 extern NCURSES_EXPORT(void) _nc_err_abort (const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern NCURSES_EXPORT(void) _nc_get_type (char *name);
+extern NCURSES_EXPORT(void) _nc_set_source (const char *const);
+extern NCURSES_EXPORT(void) _nc_set_type (const char *const);
+extern NCURSES_EXPORT(void) _nc_syserr_abort (const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
 extern NCURSES_EXPORT(void) _nc_warning (const char *const,...) GCC_PRINTFLIKE(1,2);
 extern NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings;
 
@@ -290,7 +291,7 @@ extern NCURSES_EXPORT(char *) _nc_infotocap (const char *, const char *, int con
 
 extern NCURSES_EXPORT_VAR(int) _nc_tparm_err;
 
-extern NCURSES_EXPORT(int) _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount);
+extern NCURSES_EXPORT(int) _nc_tparm_analyze(const char *, char **, int *);
 
 /* lib_tputs.c */
 extern NCURSES_EXPORT_VAR(int) _nc_nulls_sent;		/* Add one for every null sent */

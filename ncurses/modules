@@ -1,4 +1,4 @@
-# $Id: modules,v 1.103 2005/08/06 18:59:01 tom Exp $
+# $Id: modules,v 1.104 2005/08/20 20:02:44 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -98,7 +98,6 @@ lib_slkrefr	lib		$(base)		../include/term.h
 lib_slkset	lib		$(base)
 lib_slktouch	lib		$(base)
 lib_touch	lib		$(base)
-lib_traceatr	lib		$(trace)	../include/term.h
 lib_tracedmp	lib		$(trace)
 lib_tracemse	lib		$(trace)
 lib_tstp	lib		$(serial)	$(srcdir)/SigAction.h
@@ -192,6 +191,7 @@ lib_ti		lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 lib_tparm	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_tputs	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_trace	lib		$(trace)	$(INCDIR)/tic.h
+lib_traceatr	lib		$(trace)	../include/term.h
 lib_tracebits	lib		$(trace)	../include/term.h
 lib_tracechr	lib		$(trace)
 lib_ttyflags	lib		$(tinfo)	../include/term.h

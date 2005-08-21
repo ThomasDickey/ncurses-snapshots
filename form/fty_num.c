@@ -12,7 +12,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.21 2005/04/16 18:21:10 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.22 2005/08/20 18:26:16 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -29,6 +29,8 @@ MODULE_ID("$Id: fty_num.c,v 1.21 2005/04/16 18:21:10 tom Exp $")
 #else
 #define isDigit(c) isdigit(UChar(c))
 #endif
+
+#define thisARG numericARG
 
 typedef struct
   {

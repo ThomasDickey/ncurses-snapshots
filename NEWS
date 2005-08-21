@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.915 2005/08/13 18:28:34 tom Exp $
+-- $Id: NEWS,v 1.918 2005/08/20 23:45:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050820
+	+ start updating documentation for upcoming 5.5 release.
+	+ fix to make libtool  and libtinfo work together again (cf: 20050122).
+	+ fixes to allow building traces into libtinfo
+	+ add debug trace to tic that shows if/how ncurses will write to the
+	  lower corner of a terminal's screen.
+	+ update llib-l* files.
 
 20050813
 	+ modify initializers in c++ binding to build with old versions of g++.
@@ -229,7 +237,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20050305
 	+ change NCursesWindow::err_handler() to a virtual function (request by
 	  Steve Beal).
-	+ modify ftp_int.c and fty_num.c to handle wide characters (report by
+	+ modify fty_int.c and fty_num.c to handle wide characters (report by
 	  Wolfgang Gutjahr).
 	+ adapt fix for fty_alpha.c to fty_alnum.c, which also handled normal
 	  and wide characters inconsistently (report by Wolfgang Gutjahr).

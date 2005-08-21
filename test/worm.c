@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.38 2004/08/07 16:07:52 tom Exp $
+  $Id: worm.c,v 1.39 2005/08/20 20:26:29 tom Exp $
 */
 
 #include <test.priv.h>
@@ -60,7 +60,7 @@ static int length = 16, number = 3;
 static chtype trail = ' ';
 
 #ifdef TRACE
-int generation, trace_start, trace_end, singlestep;
+static int generation, trace_start, trace_end, singlestep;
 #endif /* TRACE */
 /* *INDENT-OFF* */
 static const struct options {

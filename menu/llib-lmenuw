@@ -237,6 +237,8 @@ const char *item_description(
 
 /* ./m_item_new.c */
 
+#include <wctype.h>
+
 #undef new_item
 ITEM	*new_item(
 		const char *name, 
