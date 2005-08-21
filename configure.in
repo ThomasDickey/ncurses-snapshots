@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.349 2005/08/06 20:07:14 tom Exp $
+dnl $Id: configure.in,v 1.350 2005/08/20 22:26:35 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.349 $)
+AC_REVISION($Revision: 1.350 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1380,6 +1380,7 @@ if test "$with_termlib" != no ; then
 	if test "$DFT_LWR_MODEL" = "libtool"; then
 		TEST_ARGS="${TEST_DEPS}"
 		TEST_ARG2="${TEST_DEP2}"
+		TINFO_ARGS="-L${LIB_DIR} $TEST_ARGS"
 	else
 		TEST_ARGS="-l${TINFO_ARG_SUFFIX}"
 		TEST_ARG2="-l${TINFO_ARG_SUFFIX}"

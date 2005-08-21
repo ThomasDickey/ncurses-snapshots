@@ -2691,14 +2691,6 @@ wchar_t	*wunctrl(
 		cchar_t	*wc)
 		{ return(*(wchar_t **)0); }
 
-/* ./base/define_key.c */
-
-#undef define_key
-int	define_key(
-		const char *str, 
-		int	keycode)
-		{ return(*(int *)0); }
-
 /* ./expanded.c */
 
 #undef _nc_toggle_attr_on
@@ -2727,29 +2719,6 @@ int	_nc_InsCharCost(
 void	_nc_UpdateAttrs(
 		cchar_t	c)
 		{ /* void */ }
-
-/* ./base/key_defined.c */
-
-#undef key_defined
-int	key_defined(
-		const char *str)
-		{ return(*(int *)0); }
-
-/* ./base/keybound.c */
-
-#undef keybound
-char	*keybound(
-		int	code, 
-		int	count)
-		{ return(*(char **)0); }
-
-/* ./base/keyok.c */
-
-#undef keyok
-int	keyok(
-		int	c, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
 
 /* ./base/lib_dft_fgbg.c */
 
@@ -2797,28 +2766,6 @@ int	resizeterm(
 void	_nc_trace_xnames(
 		TERMTYPE *tp)
 		{ /* void */ }
-
-/* ./base/tries.c */
-
-#undef _nc_expand_try
-char	*_nc_expand_try(
-		struct tries *tree, 
-		unsigned short code, 
-		int	*count, 
-		size_t	len)
-		{ return(*(char **)0); }
-
-#undef _nc_remove_key
-int	_nc_remove_key(
-		struct tries **tree, 
-		unsigned short code)
-		{ return(*(int *)0); }
-
-#undef _nc_remove_string
-int	_nc_remove_string(
-		struct tries **tree, 
-		const char *string)
-		{ return(*(int *)0); }
 
 /* ./base/wresize.c */
 
@@ -3043,6 +2990,18 @@ ENTRY	*_nc_tail;
 #undef _nc_free_entries
 void	_nc_free_entries(
 		ENTRY	*headp)
+		{ /* void */ }
+
+#undef _nc_delink_entry
+ENTRY	*_nc_delink_entry(
+		ENTRY	*headp, 
+		TERMTYPE *tterm)
+		{ return(*(ENTRY **)0); }
+
+#undef _nc_free_entry
+void	_nc_free_entry(
+		ENTRY	*headp, 
+		TERMTYPE *tterm)
 		{ /* void */ }
 
 #undef _nc_entry_match
@@ -3854,6 +3813,35 @@ void	_nc_trace_tries(
 		struct tries *tree)
 		{ /* void */ }
 
+/* ./base/tries.c */
+
+#undef _nc_expand_try
+char	*_nc_expand_try(
+		struct tries *tree, 
+		unsigned short code, 
+		int	*count, 
+		size_t	len)
+		{ return(*(char **)0); }
+
+#undef _nc_remove_key
+int	_nc_remove_key(
+		struct tries **tree, 
+		unsigned short code)
+		{ return(*(int *)0); }
+
+#undef _nc_remove_string
+int	_nc_remove_string(
+		struct tries **tree, 
+		const char *string)
+		{ return(*(int *)0); }
+
+/* ./tinfo/trim_sgr0.c */
+
+#undef _nc_trim_sgr0
+char	*_nc_trim_sgr0(
+		TERMTYPE *tp)
+		{ return(*(char **)0); }
+
 /* ./unctrl.c */
 
 #undef unctrl
@@ -3929,6 +3917,37 @@ void	_nc_write_entry(
 
 #undef _nc_tic_written
 int	_nc_tic_written(void)
+		{ return(*(int *)0); }
+
+/* ./base/define_key.c */
+
+#undef define_key
+int	define_key(
+		const char *str, 
+		int	keycode)
+		{ return(*(int *)0); }
+
+/* ./base/key_defined.c */
+
+#undef key_defined
+int	key_defined(
+		const char *str)
+		{ return(*(int *)0); }
+
+/* ./base/keybound.c */
+
+#undef keybound
+char	*keybound(
+		int	code, 
+		int	count)
+		{ return(*(char **)0); }
+
+/* ./base/keyok.c */
+
+#undef keyok
+int	keyok(
+		int	c, 
+		NCURSES_BOOL flag)
 		{ return(*(int *)0); }
 
 /* ./base/version.c */

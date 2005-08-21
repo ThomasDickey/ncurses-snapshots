@@ -36,10 +36,10 @@
  * it that way lets us cut down on the size of the init_keytry() function.
  */
 
-#define USE_TERMLIB
+#define USE_TERMLIB 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.11 2005/08/06 19:35:11 tom Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.12 2005/08/20 19:58:18 tom Exp $")
 
 #include <names.c>
 

@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.52 2005/04/16 16:43:00 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.53 2005/08/20 20:21:20 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -48,6 +48,7 @@ MODULE_ID("$Id: lib_traceatr.c,v 1.52 2005/04/16 16:43:00 tom Exp $")
 static const char l_brace[] = {L_BRACE, 0};
 static const char r_brace[] = {R_BRACE, 0};
 
+#ifndef USE_TERMLIB
 static char *
 color_of(int c)
 {
@@ -65,6 +66,7 @@ color_of(int c)
     }
     return buffer[sel];
 }
+#endif /* !USE_TERMLIB */
 
 NCURSES_EXPORT(char *)
 _traceattr2(int bufnum, attr_t newmode)
@@ -91,7 +93,9 @@ _traceattr2(int bufnum, attr_t newmode)
 	{ A_COLOR,		"A_COLOR" },
 	/* *INDENT-ON* */
 
-    },
+    }
+#ifndef USE_TERMLIB
+    ,
 	colors[] =
     {
 	/* *INDENT-OFF* */
@@ -105,7 +109,9 @@ _traceattr2(int bufnum, attr_t newmode)
 	{ COLOR_WHITE,		"COLOR_WHITE" },
 	/* *INDENT-ON* */
 
-    };
+    }
+#endif /* !USE_TERMLIB */
+    ;
     size_t n;
     unsigned save_nc_tracing = _nc_tracing;
     _nc_tracing = 0;
@@ -120,6 +126,10 @@ _traceattr2(int bufnum, attr_t newmode)
 
 	    if (names[n].val == A_COLOR) {
 		short pairnum = PAIR_NUMBER(newmode);
+#ifdef USE_TERMLIB
+		/* pair_content lives in libncurses */
+		(void) sprintf(temp, "{%d}", pairnum);
+#else
 		short fg, bg;
 
 		if (pair_content(pairnum, &fg, &bg) == OK) {
@@ -131,6 +141,7 @@ _traceattr2(int bufnum, attr_t newmode)
 		} else {
 		    (void) sprintf(temp, "{%d}", pairnum);
 		}
+#endif
 		buf = _nc_trace_bufcat(bufnum, temp);
 	    }
 	}

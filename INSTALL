@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.87 2005/06/25 18:24:44 tom Exp $
+-- $Id: INSTALL,v 1.93 2005/08/21 00:11:10 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -418,7 +418,7 @@ SUMMARY OF CONFIGURE OPTIONS:
     --enable-getcap-cache
 	Cache translated termcaps under the directory $HOME/.terminfo
 
-	NOTE:  this sounds good - it makes ncurses run faster the second time. 
+	NOTE:  this sounds good - it makes ncurses run faster the second time.
 	But look where the data comes from - an /etc/termcap containing lots of
 	entries that are not up to date.  If you configure with this option and
 	forget to install the terminfo database before running an ncurses
@@ -500,7 +500,7 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Specify the Ada95 compiler command (default "gnatmake")
 
     --with-ada-include=DIR
-	Tell where to install the Ada includes (default: 
+	Tell where to install the Ada includes (default:
 	PREFIX/lib/ada/adainclude)
 
     --with-ada-objects=DIR
@@ -549,7 +549,7 @@ SUMMARY OF CONFIGURE OPTIONS:
     --with-chtype=TYPE
 	Override type of chtype, which stores the video attributes and (if
 	--enable-widec is not given) a character.  Prior to ncurses 5.5, this
-	was always unsigned long, but with ncurses 5.5, it may be unsigned. 
+	was always unsigned long, but with ncurses 5.5, it may be unsigned.
 	Use this option if you need to preserve compatibility with 64-bit
 	executables.
 
@@ -654,7 +654,7 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Override type of ospeed variable, which is part of the termcap
 	compatibility interface.  In termcap, this is a 'short', which works
 	for a wide range of baudrates because ospeed is not the actual speed
-	but the encoded value, e.g., B9600 would be a small number such as 13. 
+	but the encoded value, e.g., B9600 would be a small number such as 13.
 	However the encoding scheme originally allowed for values "only" up to
 	38400bd.  A newer set of definitions past 38400bd is not encoded as
 	compactly, and is not guaranteed to fit into a short (see the function
@@ -683,7 +683,7 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Generate shared-libraries.  The names given depend on the system for
 	which you are building, typically using a ".so" suffix, along with
 	symbolic links that refer to the release version.
-	
+
 	NOTE:  Unless you override the configure script by setting the $CFLAGS
 	environment variable, these will not be built with the -g debugging
 	option.
@@ -776,10 +776,82 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     you may encounter when building a system with different versions of
     ncurses:
 
+    5.5 (unreleased)
+	Interface changes:
+
+	+ terminfo installs "xterm-new" as "xterm" entry rather than
+	  "xterm-old" (aka xterm-r6).
+
+	+ terminfo data is installed using the tic -x option (few systems
+	  still use ncurses 4.2).
+
+	+ modify C++ binding to work with newer C++ compilers by providing
+	  initializers and using modern casts.  Old-style header names are
+	  still used in this release to allow compiling with not-so-old
+	  compilers.
+
+	+ form and menu libraries now work with wide-character data. 
+	  Applications which bypassed the form library and manipulated the
+	  FIELD.buf data directly will not work properly with libformw, since
+	  that no longer points to an array of char.  The set_field_buffer()
+	  and field_buffer() functions translate to/from the actual field
+	  data.
+
+	+ change SP->_current_attr to a pointer, adjust ifdef's to ensure that
+	  libtinfo.so and libtinfow.so have the same ABI.  The reason for this
+	  is that the corresponding data which belongs to the upper-level
+	  ncurses library has a different size in each model.
+
+	+ winnstr() now returns multibyte character strings for the
+	  wide-character configuration.
+
+	+ assume_default_colors() no longer requires that use_default_colors()
+	  be called first.
+
+	+ data_ahead() now works with wide-characters.
+
+	+ slk_set() and slk_wset() now accept and store multibyte or
+	  multicolumn characters.
+
+	+ start_color() now returns OK if colors have already been started.
+	  start_color() also returns ERR if it cannot allocate memory.
+
+	+ pair_content() now returns -1 for consistency with init_pair() if it
+	  corresponds to the default-color.
+
+	+ unctrl() now returns null if its parameter does not correspond
+	  to an unsigned char.
+
+	Added extensions:
+		Experimental mouse version 2 supports wheel mice with buttons
+		4 and 5.  This requires ABI 6 because it modifies the encoding
+		of mouse events.
+
+		Experimental extended colors allows encoding of 256 foreground
+		and background colors, e.g., with the xterm-256color or
+		xterm-88color terminfo entries.  This requires ABI 6 because
+		it changes the size of cchar_t.
+
+	Added internal functions:
+		_nc_check_termtype2
+		_nc_resolve_uses2
+		_nc_retrace_cptr
+		_nc_retrace_cvoid_ptr
+		_nc_retrace_void_ptr
+		_nc_setup_term
+
+	Removed internal functions:
+		none
+
+	Modified internal functions:
+		_nc_insert_ch
+		_nc_save_str
+		_nc_trans_string
+
     5.4 (February 8, 2004)
 	Interface changes:
 
-	+ add the remaining functions for X/Open curses wide-character support. 
+	+ add the remaining functions for X/Open curses wide-character support.
 	  These are only available if the library is configured using the
 	  --enable-widec option.
 		pecho_wchar()
@@ -804,6 +876,7 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 
 	Added extensions:
 		key_defined()
+
 	Added internal functions:
 		_nc_get_locale()
 		_nc_insert_ch()
@@ -815,9 +888,11 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 		_nc_tparm_analyze()
 		_nc_trace_bufcat()	debug
 		_nc_unicode_locale()
+
 	Removed internal functions:
 		_nc_outstr()
 		_nc_sigaction()
+
 	Modified internal functions:
 		_nc_remove_string()
 		_nc_retrace_chtype()
@@ -840,6 +915,7 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 	Added extensions:
 		is_term_resized()
 		resize_term()
+
 	Added internal functions:
 		_nc_altcharset_name()	debug
 		_nc_reset_colors()
@@ -850,8 +926,10 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 		_nc_varargs()		debug
 		_nc_visbufn()		debug
 		_nc_wgetch()
+
 	Removed internal functions:
 		_nc_background()
+
 	Modified internal functions:
 		_nc_freeall()		debug
 
@@ -1243,19 +1321,21 @@ USING NCURSES WITH AFS:
 	with this by making tic use symbolic links.
 
 USING NCURSES WITH GPM:
-	Ncurses 4.1 and up can be configured to use GPM (General Purpose Mouse)
-	which is used on Linux console.  Be aware that GPM is commonly
+	Ncurses 4.1 and up can be configured to use GPM (General Purpose
+	Mouse) which is used on Linux console.  Be aware that GPM is commonly
 	installed as a shared library which contains a wrapper for the curses
 	wgetch() function (libcurses.o).  Some integrators have simplified
-	linking applications by combining all or part of libcurses.so (the BSD
-	curses) into the libgpm.so file, producing symbol conflicts with
-	ncurses (specifically the wgetch function).  You may be able to work
-	around this problem by linking as follows:
+	linking applications by combining all or part of libcurses.so into the
+	libgpm.so file, producing symbol conflicts with ncurses (specifically
+	the wgetch function).  This was originally the BSD curses, but
+	generally whatever curses library exists on the system.
+
+	You may be able to work around this problem by linking as follows:
 
 		cc -o foo foo.o -lncurses -lgpm -lncurses
 
 	but the linker may not cooperate, producing mysterious errors.
-	See the FAQ:
+	See the FAQ, as well as the discussion under the --with-gpm option:
 
 	http://invisible-island.net/ncurses/ncurses.faq.html#using_gpm_lib
 
@@ -1263,13 +1343,13 @@ BUILDING NCURSES WITH A CROSS-COMPILER
 	Ncurses can be built with a cross-compiler.  Some parts must be built
 	with the host's compiler since they are used for building programs
 	(e.g., ncurses/make_hash and ncurses/make_keys) that generate tables
-	that are compiled into the ncurses library.  The essential thing to
-	do is set the BUILD_CC environment variable to your host's compiler,
-	and run the configure script configuring for the cross-compiler.
+	that are compiled into the ncurses library.  The essential thing to do
+	is set the BUILD_CC environment variable to your host's compiler, and
+	run the configure script configuring for the cross-compiler.
 
-	The configure options --with-build-cc, etc., are provided to make
-	this simpler.  Since make_hash and make_keys use only ANSI C features,
-	it is normally not necessary to provide the other options such as
+	The configure options --with-build-cc, etc., are provided to make this
+	simpler.  Since make_hash and make_keys use only ANSI C features, it
+	is normally not necessary to provide the other options such as
 	--with-build-libs, but they are provided for completeness.
 
 	Note that all of the generated source-files which are part of ncurses
@@ -1280,6 +1360,12 @@ BUILDING NCURSES WITH A CROSS-COMPILER
 	This would be useful in porting to an environment which has little
 	support for the tools used to generate the sources, e.g., sed, awk and
 	Bourne-shell.
+
+	When ncurses has been successfully cross-compiled, you may want to use
+	"make install" (with a suitable target directory) to construct an
+	install tree.  Note that in this case (as with the --with-fallbacks
+	option), ncurses uses the development platform's tic to do the
+	"make install.data" portion.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at
