@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.16 2005/05/15 16:46:46 tom Exp @
+  * @Id: curs_util.3x,v 1.17 2005/06/25 21:51:37 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -100,7 +100,9 @@
        ables <STRONG>LINES</STRONG> and <STRONG>COLUMNS</STRONG> (used by default) are set,  or  if
        <STRONG>curses</STRONG>  is  running in a window (in which case default be-
        havior would be to  use  the  window  size  if  <STRONG>LINES</STRONG>  and
-       <STRONG>COLUMNS</STRONG> are not set).
+       <STRONG>COLUMNS</STRONG>  are not set).  Note that setting <STRONG>LINES</STRONG> or <STRONG>COLUMNS</STRONG>
+       overrides the corresponding size  which  may  be  obtained
+       from the operating system.
 
        The  <STRONG>putwin</STRONG> routine writes all data associated with window
        <EM>win</EM> into the file to which <EM>filep</EM> points.  This information

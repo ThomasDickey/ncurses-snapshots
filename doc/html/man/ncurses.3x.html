@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.74 2005/03/12 19:45:57 tom Exp @
+  * @Id: ncurses.3x,v 1.75 2005/06/25 21:32:05 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -688,19 +688,21 @@
             Specify  the  width  of  the  screen  in  characters.
             Applications  running in a windowing environment usu-
             ally are able to obtain the width of  the  window  in
-            which  they  are  executing.  If neither the $COLUMNS
+            which  they  are  executing.   If neither the <STRONG>COLUMNS</STRONG>
             value nor the terminal's screen  size  is  available,
             <STRONG>ncurses</STRONG>  uses  the size which may be specified in the
             terminfo database (i.e., the <STRONG>cols</STRONG> capability).
 
             It is important that your application use  a  correct
-            size  for  the  screen.   However, this is not always
-            possible because your application may be running on a
-            host  which  does  not honor NAWS (Negotiations About
-            Window Size), or because you are temporarily  running
-            as another user.
+            size  for  the  screen.   This is not always possible
+            because your application may be  running  on  a  host
+            which  does not honor NAWS (Negotiations About Window
+            Size), or because  you  are  temporarily  running  as
+            another  user.  However, setting <STRONG>COLUMNS</STRONG> and/or <STRONG>LINES</STRONG>
+            overrides  the  library's  use  of  the  screen  size
+            obtained from the operating system.
 
-            Either  COLUMNS  or  LINES  symbols  may be specified
+            Either  <STRONG>COLUMNS</STRONG>  or  <STRONG>LINES</STRONG>  symbols  may be specified
             independently.  This is mainly useful  to  circumvent
             legacy  misfeatures  of  terminal descriptions, e.g.,
             xterm which commonly specifies a 65 line screen.  For
@@ -708,7 +710,9 @@
             in a terminal description for terminals which are run
             as emulations.
 
-            Use the <STRONG>use_env</STRONG> function to disable this feature.
+            Use the <STRONG>use_env</STRONG> function to disable all use of exter-
+            nal environment (including system calls) to determine
+            the screen size.
 
        ESCDELAY
             Specifies  the total time, in milliseconds, for which
@@ -780,19 +784,19 @@
             Most  of  the  terminal  descriptions in the terminfo
             database are written for real  "hardware"  terminals.
             Many  people  use  terminal  emulators which run in a
-            windowing   environment    and    use    curses-based
-            applications.   Terminal  emulators can duplicate all
-            of the important aspects of a hardware terminal,  but
-            they  do  not  have  the same limitations.  The chief
-            limitation of a hardware terminal from the standpoint
-            of  your  application  is the management of dataflow,
-            i.e., timing.  Unless a hardware terminal  is  inter-
-            faced  into  a terminal concentrator (which does flow
-            control),  it  (or  your  application)  must   manage
-            dataflow, preventing overruns.  The cheapest solution
-            (no hardware cost) is for your program to do this  by
-            pausing  after  operations  that  the  terminal  does
-            slowly, such as clearing the display.
+            windowing environment and use  curses-based  applica-
+            tions.   Terminal  emulators can duplicate all of the
+            important aspects of a hardware terminal, but they do
+            not  have the same limitations.  The chief limitation
+            of a hardware terminal from the  standpoint  of  your
+            application is the management of dataflow, i.e., tim-
+            ing.  Unless a hardware terminal is interfaced into a
+            terminal  concentrator  (which does flow control), it
+            (or your application) must manage dataflow,  prevent-
+            ing  overruns.   The  cheapest  solution (no hardware
+            cost) is for your program to do this by pausing after
+            operations  that  the  terminal  does slowly, such as
+            clearing the display.
 
             As a result, many  terminal  descriptions  (including
             the  vt100)  have delay times embedded.  You may wish

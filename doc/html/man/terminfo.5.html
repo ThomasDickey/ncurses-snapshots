@@ -34,7 +34,7 @@
   ****************************************************************************
   * @Id: terminfo.head,v 1.12 2004/09/25 19:07:11 tom Exp @
   * Head of terminfo man page ends here
-  * @Id: terminfo.tail,v 1.41 2004/07/05 13:08:56 tom Exp @
+  * @Id: terminfo.tail,v 1.42 2005/06/25 22:46:03 tom Exp @
   * Beginning of terminfo.tail file
   * See "terminfo.head" for copyright.
   *.in -2
@@ -1295,25 +1295,27 @@
             arithmetic (%m is mod): push(pop() op pop())
 
        %&amp; %| %^
-            bit operations: push(pop() op pop())
+            bit operations (AND, OR and exclusive-OR): push(pop()
+            op pop())
 
        %= %&gt; %&lt;
             logical operations: push(pop() op pop())
 
        %A, %O
-            logical and &amp; or operations (for conditionals)
+            logical AND and OR operations (for conditionals)
 
        %! %~
-            unary operations push(op pop())
+            unary   operations   (logical  and  bit  complement):
+            push(op pop())
 
        %i   add 1 to first two parameters (for ANSI terminals)
 
        %? <EM>expr</EM> %t <EM>thenpart</EM> %e <EM>elsepart</EM> %;
             This forms  an  if-then-else.   The  %e  <EM>elsepart</EM>  is
             optional.   Usually  the  %? <EM>expr</EM> part pushes a value
-            onto the stack, and %t pops it from the stack,  test-
-            ing  if it is nonzero (true).  If it is zero (false),
-            control passes to the %e (else) part.
+            onto the stack,  and  %t  pops  it  from  the  stack,
+            testing  if  it  is  nonzero  (true).   If it is zero
+            (false), control passes to the %e (else) part.
 
             It is possible to form else-if's a la Algol 68:
             %? c1 %t b1 %e c2 %t b2 %e c3 %t b3 %e c4 %t b4 %e %;
@@ -1443,8 +1445,8 @@
 
        Inserting  lines  at  the  top or bottom of the screen can
        also be done using <STRONG>ri</STRONG> or <STRONG>ind</STRONG> on many terminals  without  a
-       true  insert/delete line, and is often faster even on ter-
-       minals with those features.
+       true  insert/delete  line,  and  is  often  faster even on
+       terminals with those features.
 
        The boolean <STRONG>non_dest_scroll_region</STRONG> should be set  if  each
        scrolling  window  is effectively a view port on a screen-
@@ -1641,9 +1643,9 @@
          ;4         if p2               %?%p2%|%t;4%;
          ;5         if p4               %?%p4%|%t;5%;
          ;7         if p1 or p3         %?%p1%p3%|%t;7%;
+
          ;8         if p7               %?%p7%|%t;8%;
          m          always              m
-
          ^N or ^O   if p9 ^N, else ^O   %?%p9%t^N%e^O%;
 
        Putting this all together into the sgr sequence gives:
@@ -1798,7 +1800,7 @@
        <STRONG>if</STRONG>.
 
    <STRONG>Delays</STRONG> <STRONG>and</STRONG> <STRONG>Padding</STRONG>
-       Many older  and  slower  terminals  don't  support  either
+       Many older and slower  terminals  do  not  support  either
        XON/XOFF or DTR handshaking, including hard copy terminals
        and some very archaic CRTs (including,  for  example,  DEC
        VT100s).   These may require padding characters after cer-
@@ -1809,7 +1811,7 @@
        its input buffers are close to full), set <STRONG>xon</STRONG>.  This capa-
        bility  suppresses  the emission of padding.  You can also
        set it for memory-mapped console devices effectively  that
-       don't  have  a  speed  limit.   Padding information should
+       do  not  have  a  speed limit.  Padding information should
        still be included so that routines can make  better  deci-
        sions about relative costs, but actual pad characters will
        not be transmitted.
@@ -1839,11 +1841,11 @@
        Some terminals with status lines need special sequences to
        access  the  status  line.   These  may  be expressed as a
        string with single parameter <STRONG>tsl</STRONG> which takes the cursor to
-       a  given zero-origin column on the status line.  The capa-
-       bility <STRONG>fsl</STRONG> must return to the main-screen cursor positions
-       before  the  last  <STRONG>tsl</STRONG>.   You may need to embed the string
-       values of <STRONG>sc</STRONG> (save cursor) and <STRONG>rc</STRONG> (restore cursor) in  <STRONG>tsl</STRONG>
-       and <STRONG>fsl</STRONG> to accomplish this.
+       a  given  zero-origin  column  on  the  status  line.  The
+       capability <STRONG>fsl</STRONG> must return to the main-screen cursor posi-
+       tions  before  the  last  <STRONG>tsl</STRONG>.   You may need to embed the
+       string values of <STRONG>sc</STRONG> (save cursor) and <STRONG>rc</STRONG> (restore  cursor)
+       in <STRONG>tsl</STRONG> and <STRONG>fsl</STRONG> to accomplish this.
 
        The  status  line is normally assumed to be the same width
        as the width of the terminal.  If this is untrue, you  can
@@ -1907,9 +1909,9 @@
        add  a  column  to a copy of this table for your terminal,
        giving  the  character   which   (when   emitted   between
        <STRONG>smacs</STRONG>/<STRONG>rmacs</STRONG>  switches) will be rendered as the correspond-
-       ing  graphic.   Then  read  off  the  VT100/your  terminal
-       character  pairs  right  to left in sequence; these become
-       the ACSC string.
+       ing graphic.  Then read off the VT100/your terminal  char-
+       acter  pairs  right  to left in sequence; these become the
+       ACSC string.
 
 
    <STRONG>Color</STRONG> <STRONG>Handling</STRONG>
@@ -1971,9 +1973,9 @@
        The argument values of <STRONG>setf</STRONG>/<STRONG>setb</STRONG>  historically  correspond
        to a different mapping, i.e.,
 
+
              <STRONG>Color</STRONG>       <STRONG>#define</STRONG>       <STRONG>Value</STRONG>       <STRONG>RGB</STRONG>
              black     <STRONG>COLOR_BLACK</STRONG>       0     0, 0, 0
-
              blue      <STRONG>COLOR_BLUE</STRONG>        1     0,0,max
              green     <STRONG>COLOR_GREEN</STRONG>       2     0,max,0
              cyan      <STRONG>COLOR_CYAN</STRONG>        3     0,max,max
@@ -2182,15 +2184,15 @@
 
        Some  termcap libraries print a warning message or exit if
        they find an entry that's longer than 1023  bytes;  others
-       don't;  others  truncate  the entries to 1023 bytes.  Some
+       do  not;  others truncate the entries to 1023 bytes.  Some
        application programs allocate more than the recommended 1K
-       for the termcap entry; others don't.
+       for the termcap entry; others do not.
 
        Each termcap entry has two important sizes associated with
        it: before "tc" expansion, and after "tc" expansion.  "tc"
        is  the  capability that tacks on another termcap entry to
        the end of the current one, to add  on  its  capabilities.
-       If  a  termcap entry doesn't use the "tc" capability, then
+       If  a termcap entry does not use the "tc" capability, then
        of course the two lengths are the same.
 
        The "before tc expansion" length  is  the  most  important
@@ -2213,7 +2215,7 @@
 
        *    and <STRONG>tgetent()</STRONG> is searching for a terminal  type  that
             either is the long entry, appears in the termcap file
-            after the long entry, or doesn't appear in  the  file
+            after the long entry, or does not appear in the  file
             at  all  (so  that  <STRONG>tgetent()</STRONG> has to search the whole
             termcap file).
 
@@ -2261,13 +2263,13 @@
 </PRE>
 <H2>EXTENSIONS</H2><PRE>
        Some  SVr4  <STRONG>curses</STRONG>  implementations,  and  all previous to
-       SVr4, don't interpret the %A and %O operators in parameter
-       strings.
+       SVr4, do not interpret the %A and %O operators in  parame-
+       ter strings.
 
        SVr4/XPG4  do  not  specify whether <STRONG>msgr</STRONG> licenses movement
        while in an alternate-character-set mode (such modes  may,
-       among other things, map CR and NL to characters that don't
-       trigger  local  motions).   The   <STRONG>ncurses</STRONG>   implementation
+       among  other  things,  map CR and NL to characters that do
+       not trigger local motions).   The  <STRONG>ncurses</STRONG>  implementation
        ignores  <STRONG>msgr</STRONG>  in <STRONG>ALTCHARSET</STRONG> mode.  This raises the possi-
        bility that an XPG4  implementation  making  the  opposite
        interpretation  may need terminfo entries made for <STRONG>ncurses</STRONG>
