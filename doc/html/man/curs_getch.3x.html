@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.28 2005/05/15 16:17:49 tom Exp @
+  * @Id: curs_getch.3x,v 1.29 2005/06/25 22:03:09 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -228,7 +228,9 @@
        and returns TRUE or FALSE according to whether the current
        terminal type recognizes a key with that value.  Note that
        a  few  values  do  not  correspond  to  a real key, e.g.,
-       KEY_RESIZE and KEY_MOUSE.
+       <STRONG>KEY_RESIZE</STRONG> and <STRONG>KEY_MOUSE</STRONG>.  See <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG> for more de-
+       tails  about  <STRONG>KEY_RESIZE</STRONG>, and <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG> for a discus-
+       sion of <STRONG>KEY_MOUSE</STRONG>.
 
 
 
@@ -256,13 +258,13 @@
        ing function-key sequence.
 
        Note that some keys may be the same as commonly used  con-
-       trol keys, e.g., KEY_ENTER versus control/M, KEY_BACKSPACE
+       trol keys, e.g., <STRONG>KEY_ENTER</STRONG> versus control/M, <STRONG>KEY_BACKSPACE</STRONG>
        versus control/H.  Some curses implementations may  differ
        according  to  whether  they treat these control keys spe-
        cially (and ignore the terminfo), or use the terminfo def-
        initions.   <STRONG>Ncurses</STRONG>  uses  the terminfo definition.  If it
-       says  that  KEY_ENTER  is  control/M,  <STRONG>getch</STRONG>  will  return
-       KEY_ENTER when you press control/M.
+       says  that  <STRONG>KEY_ENTER</STRONG>  is  control/M,  <STRONG>getch</STRONG>  will  return
+       <STRONG>KEY_ENTER</STRONG> when you press control/M.
 
        When  using  <STRONG>getch</STRONG>, <STRONG>wgetch</STRONG>, <STRONG>mvgetch</STRONG>, or <STRONG>mvwgetch</STRONG>, nocbreak
        mode (<STRONG>nocbreak</STRONG>) and echo mode (<STRONG>echo</STRONG>) should not be used at

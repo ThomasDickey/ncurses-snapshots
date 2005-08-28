@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.370 2005/08/13 18:54:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.371 2005/08/27 13:57:33 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1099,7 +1099,7 @@ rm -rf conftest*
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_VERSION version: 3 updated: 2003/09/06 19:16:57
+dnl CF_GCC_VERSION version: 4 updated: 2005/08/27 09:53:42
 dnl --------------
 dnl Find version of gcc
 AC_DEFUN([CF_GCC_VERSION],[
@@ -1107,7 +1107,7 @@ AC_REQUIRE([AC_PROG_CC])
 GCC_VERSION=none
 if test "$GCC" = yes ; then
 	AC_MSG_CHECKING(version of $CC)
-	GCC_VERSION="`${CC} --version|sed -e '2,$d' -e 's/^[[^0-9.]]*//' -e 's/[[^0-9.]].*//'`"
+	GCC_VERSION="`${CC} --version| sed -e '2,$d' -e 's/^.*(GCC) //' -e 's/^[[^0-9.]]*//' -e 's/[[^0-9.]].*//'`"
 	test -z "$GCC_VERSION" && GCC_VERSION=unknown
 	AC_MSG_RESULT($GCC_VERSION)
 fi
@@ -1385,7 +1385,7 @@ if test "$GXX" = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GXX_VERSION version: 4 updated: 2005/07/25 16:58:05
+dnl CF_GXX_VERSION version: 5 updated: 2005/08/27 09:53:42
 dnl --------------
 dnl Check for version of g++
 AC_DEFUN([CF_GXX_VERSION],[
@@ -1393,7 +1393,7 @@ AC_REQUIRE([AC_PROG_CPP])
 GXX_VERSION=none
 if test "$GXX" = yes; then
 	AC_MSG_CHECKING(version of g++)
-	GXX_VERSION="`${CXX-g++} --version|sed -e '2,$d' -e 's/^[[^0-9.]]*//' -e 's/[[^0-9.]].*//'`"
+	GXX_VERSION="`${CXX-g++} --version| sed -e '2,$d' -e 's/^.*(GCC) //' -e 's/^[[^0-9.]]*//' -e 's/[[^0-9.]].*//'`"
 	test -z "$GXX_VERSION" && GXX_VERSION=unknown
 	AC_MSG_RESULT($GXX_VERSION)
 fi

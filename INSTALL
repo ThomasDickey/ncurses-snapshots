@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.93 2005/08/21 00:11:10 tom Exp $
+-- $Id: INSTALL,v 1.95 2005/08/27 20:31:59 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -612,6 +612,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 	particular version of libtool, e.g.,
 		/usr/bin/libtool-1.2.3
 
+	It is possible to rebuild the configure script to use the automake
+	macros for libtool, e.g., AC_PROG_LIBTOOL.  See the comments in
+	aclocal.m4 for CF_PROG_LIBTOOL, and ensure that you build configure
+	using the appropriate patch for autoconf from
+		http://invisible-island.net/autoconf/
+
     --with-manpage-aliases
 	Tell the configure script you wish to create entries in the
 	man-directory for aliases to manpages which list them, e.g., the
@@ -687,6 +693,16 @@ SUMMARY OF CONFIGURE OPTIONS:
 	NOTE:  Unless you override the configure script by setting the $CFLAGS
 	environment variable, these will not be built with the -g debugging
 	option.
+
+	NOTE: For some configurations, e.g., installing a new version of
+	ncurses shared libraries on a machine which already has ncurses
+	shared libraries, you may encounter problems with the linker.
+	For example, it may prevent you from running  the build tree's
+	copy of tic (for installing the terminfo database) because it
+	loads the system's copy of the ncurses shared libraries.  In that
+	case, using the misc/shlib script may be helpful, since it sets
+	$LD_LIBRARY_PATH to point to the build tree, e.g.,
+		./misc/shlib make install 	
 
     --with-shlib-version=XXX
 	Specify whether to use the release or ABI version for shared libraries.

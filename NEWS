@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.918 2005/08/20 23:45:46 tom Exp $
+-- $Id: NEWS,v 1.920 2005/08/27 18:13:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050827
+	+ document some workarounds for shared and libtool library
+	  configurations in INSTALL (see --with-shared and --with-libtool).
+	+ modify CF_GCC_VERSION and CF_GXX_VERSION macros to accommodate
+	  cross-compilers which emit the platform name in their version
+	  message, e.g.,
+		arm-sa1100-linux-gnu-g++ (GCC) 4.0.1
+	  (report by Frank van Vugt).
 
 20050820
 	+ start updating documentation for upcoming 5.5 release.
