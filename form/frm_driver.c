@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.68 2005/04/16 17:42:59 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.69 2005/09/03 21:34:00 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -2625,6 +2625,7 @@ FE_Delete_Previous(FORM *form)
   if ((--(form->curcol)) < 0)
     {
       FIELD_CELL *this_line, *prev_line, *prev_end, *this_end;
+      int this_row = form->currow;
 
       form->curcol++;
       if (form->status & _OVLMODE)
@@ -2641,8 +2642,31 @@ FE_Delete_Previous(FORM *form)
       wmove(form->w, form->currow, form->curcol);
       wdeleteln(form->w);
       Adjust_Cursor_Position(form, prev_end);
-      wmove(form->w, form->currow, form->curcol);
-      myADDNSTR(form->w, this_line, (int)(this_end - this_line));
+      /*
+       * If we did not really move to the previous line, help the user a
+       * little.  It is however a little inconsistent.  Normally, when
+       * backspacing around the point where text wraps to a new line in a
+       * multi-line form, we absorb one keystroke for the wrapping point.  That
+       * is consistent with SVr4 forms.  However, SVr4 does not allow typing
+       * into the last column of the field, and requires the user to enter a
+       * newline to move to the next line.  Therefore it can consistently eat
+       * that keystroke.  Since ncurses allows the last column, it wraps
+       * automatically (given the proper options).  But we cannot eat the
+       * keystroke to back over the wrapping point, since that would put the
+       * cursor past the end of the form field.  In this case, just delete the
+       * character at the end of the field. 
+       */
+      if (form->currow == this_row && this_row > 0)
+	{
+	  form->currow -= 1;
+	  form->curcol = field->dcols - 1;
+	  DeleteChar(form);
+	}
+      else
+	{
+	  wmove(form->w, form->currow, form->curcol);
+	  myADDNSTR(form->w, this_line, (int)(this_end - this_line));
+	}
     }
   else
     {
