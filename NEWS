@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.920 2005/08/27 18:13:49 tom Exp $
+-- $Id: NEWS,v 1.921 2005/09/03 21:36:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050903
+	+ modify logic for backspacing in a multiline form field to ensure that
+	  it works even when the preceding line is full (report by Frank van
+	  Vugt).
+	+ remove comment about BUGS section of ncurses manpage (Debian #325481)
 
 20050827
 	+ document some workarounds for shared and libtool library
