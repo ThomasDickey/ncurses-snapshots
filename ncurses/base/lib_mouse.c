@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.76 2005/06/25 20:22:30 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.77 2005/09/10 22:58:57 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -371,6 +371,7 @@ enable_xterm_mouse(int enable)
 #else
     putp(tparm(SP->_mouse_xtermcap, enable));
 #endif
+    SP->_mouse_active = enable;
 }
 
 #if USE_GPM_SUPPORT
@@ -390,12 +391,14 @@ allow_gpm_mouse(void)
     return FALSE;
 }
 
-static int
+static bool
 enable_gpm_mouse(int enable)
 {
-    int result;
+    bool result;
 
-    if (enable) {
+    T((T_CALLED("enable_gpm_mouse(%d)"), enable));
+
+    if (enable && !SP->_mouse_active) {
 	/* GPM: initialize connection to gpm server */
 	gpm_connect.eventMask = GPM_DOWN | GPM_UP;
 	gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
@@ -409,14 +412,18 @@ enable_gpm_mouse(int enable)
 	 * xterm.  Those will not show up in ncurses' traces.
 	 */
 	result = (my_Gpm_Open(&gpm_connect, 0) >= 0);
+	SP->_mouse_active = result;
 	T(("GPM open %s", result ? "succeeded" : "failed"));
     } else {
-	/* GPM: close connection to gpm server */
-	my_Gpm_Close();
-	result = TRUE;
-	T(("GPM closed"));
+	if (!enable && SP->_mouse_active) {
+	    /* GPM: close connection to gpm server */
+	    my_Gpm_Close();
+	    SP->_mouse_active = FALSE;
+	    T(("GPM closed"));
+	}
+	result = FALSE;
     }
-    return result;
+    returnBool(result);
 }
 #endif /* USE_GPM_SUPPORT */
 
@@ -424,6 +431,8 @@ static void
 initialize_mousetype(void)
 {
     static const char *xterm_kmous = "\033[M";
+
+    T((T_CALLED("initialize_mousetype()")));
 
     /* Try gpm first, because gpm may be configured to run in xterm */
 #if USE_GPM_SUPPORT
@@ -457,7 +466,7 @@ initialize_mousetype(void)
 	    SP->_mouse_type = M_GPM;
 	    SP->_mouse_fd = *my_gpm_fd;
 	    T(("GPM mouse_fd %d", SP->_mouse_fd));
-	    return;
+	    returnVoid;
 	}
     }
 #endif /* USE_GPM_SUPPORT */
@@ -471,7 +480,7 @@ initialize_mousetype(void)
 
 	if (pipe(handles) < 0) {
 	    perror("mouse pipe error");
-	    return;
+	    returnVoid;
 	} else {
 	    int rc;
 
@@ -495,11 +504,10 @@ initialize_mousetype(void)
 				 mouse_server, 0, 0, 8192);
 	    if (rc) {
 		printf("mouse thread error %d=%#x", rc, rc);
-		return;
 	    } else {
 		SP->_mouse_type = M_XTERM;
-		return;
 	    }
+	    returnVoid;
 	}
     }
 #endif /* USE_EMX_MOUSE */
@@ -563,7 +571,7 @@ initialize_mousetype(void)
 		if (SP->_sysmouse_char_height <= 0)
 		    SP->_sysmouse_char_height = 16;
 		SP->_mouse_type = M_SYSMOUSE;
-		return;
+		returnVoid;
 	    }
 	}
     }
@@ -573,13 +581,12 @@ initialize_mousetype(void)
     if (key_mouse != 0) {
 	if (!strcmp(key_mouse, xterm_kmous)) {
 	    init_xterm_mouse();
-	    return;
 	}
     } else if (strstr(cur_term->type.term_names, "xterm") != 0) {
 	(void) _nc_add_to_try(&(SP->_keytry), xterm_kmous, KEY_MOUSE);
 	init_xterm_mouse();
-	return;
     }
+    returnVoid;
 }
 
 static bool
@@ -892,6 +899,7 @@ mouse_activate(bool on)
 #if USE_SYSMOUSE
 	case M_SYSMOUSE:
 	    signal(SIGUSR2, handle_sysmouse);
+	    SP->_mouse_active = TRUE;
 	    break;
 #endif
 	case M_NONE:
@@ -905,7 +913,6 @@ mouse_activate(bool on)
 	SP->_mouse_parse = _nc_mouse_parse;
 	SP->_mouse_resume = _nc_mouse_resume;
 	SP->_mouse_wrap = _nc_mouse_wrap;
-
     } else {
 
 	switch (SP->_mouse_type) {
@@ -921,6 +928,7 @@ mouse_activate(bool on)
 #if USE_SYSMOUSE
 	case M_SYSMOUSE:
 	    signal(SIGUSR2, SIG_IGN);
+	    SP->_mouse_active = FALSE;
 	    break;
 #endif
 	case M_NONE:
