@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.285 2005/08/06 19:40:26 tom Exp $
+ * $Id: curses.priv.h,v 1.286 2005/09/10 22:34:50 tom Exp $
  *
  *	curses.priv.h
  *
@@ -504,6 +504,7 @@ struct screen {
 	void            (*_mouse_resume)(SCREEN *);
 	void            (*_mouse_wrap)  (SCREEN *);
 	int             _mouse_fd;      /* file-descriptor, if any */
+	bool		_mouse_active;	/* true if initialized */
 	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
 #if USE_SYSMOUSE
 	MEVENT		_sysmouse_fifo[FIFO_SIZE];

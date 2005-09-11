@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.55 2005/08/21 00:41:30 tom Exp $
+  $Id: announce.html.in,v 1.56 2005/09/11 00:02:29 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -291,6 +291,11 @@ Portability:
                 extend beyond the screen (Solaris does this).
 
             <li>check for nl_langinfo(CODESET), use it if available.
+	        This replaces ad hoc tests of environment variables to
+		check if the terminal is setup for UTF-8 encoding.
+		Applications which do not call <code>setlocale()</code>
+		should be corrected, to make them work properly with
+		UTF-8 encoding.
 
             <li>use setlocale() to query the program's current locale rather
                 than using getenv().  This supports applications which rely

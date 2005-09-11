@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.921 2005/09/03 21:36:36 tom Exp $
+-- $Id: NEWS,v 1.922 2005/09/10 23:10:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050910
+	+ modify mouse initialization to ensure that Gpm_Open() is called only
+	  once.  Otherwise GPM gets confused in its initialization of signal
+	  handlers (Debian #326709).
 
 20050903
 	+ modify logic for backspacing in a multiline form field to ensure that
