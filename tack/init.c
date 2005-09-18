@@ -15,14 +15,14 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with TACK; see the file COPYING.  If not, write to
-** the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-** Boston, MA 02111-1307, USA.
+** the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+** Boston, MA 02110-1301, USA
 */
 /* initialization and wrapup code */
 
 #include <tack.h>
 
-MODULE_ID("$Id: init.c,v 1.5 2004/12/04 16:11:46 tom Exp $")
+MODULE_ID("$Id: init.c,v 1.6 2005/09/17 19:49:16 tom Exp $")
 
 #if NCURSES_VERSION_MAJOR >= 5 || NCURSES_VERSION_PATCH >= 981219
 #define _nc_get_curterm(p) _nc_get_tty_mode(p)

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.6 2005/04/16 18:04:32 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.7 2005/09/17 19:25:13 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -49,6 +49,7 @@ static int
 _nc_insert_wch(WINDOW *win, const cchar_t *wch)
 {
     int cells = wcwidth(CharOf(CHDEREF(wch)));
+    int cell;
 
     if (cells <= 0)
 	cells = 1;
@@ -64,6 +65,9 @@ _nc_insert_wch(WINDOW *win, const cchar_t *wch)
 	    *temp1-- = *temp2--;
 
 	*temp1 = _nc_render(win, *wch);
+	for (cell = 1; cell < cells; ++cell) {
+	    SetWidecExt(temp1[cell], cell);
+	}
 
 	win->_curx++;
     }
@@ -125,7 +129,7 @@ wins_nwstr(WINDOW *win, const wchar_t *wstr, int n)
 		    code = _nc_insert_wch(win, &tmp_cchar);
 		} else {
 		    /* tabs, other ASCII stuff */
-		    code = _nc_insert_ch(win, (chtype)(*cp));
+		    code = _nc_insert_ch(win, (chtype) (*cp));
 		}
 		if (code != OK)
 		    break;

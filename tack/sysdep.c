@@ -15,8 +15,8 @@
 ** 
 ** You should have received a copy of the GNU General Public License
 ** along with TACK; see the file COPYING.  If not, write to
-** the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-** Boston, MA 02111-1307, USA.
+** the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+** Boston, MA 02110-1301, USA
 */
 /*
  * Operating system dependent functions.  We assume the POSIX API.
@@ -49,7 +49,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.14 2005/05/28 21:25:41 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.15 2005/09/17 19:49:16 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;

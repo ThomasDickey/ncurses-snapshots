@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.371 2005/08/27 13:57:33 tom Exp $
+dnl $Id: aclocal.m4,v 1.372 2005/09/17 22:44:19 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2979,6 +2979,22 @@ dnl Write a debug message to config.log, along with the line number in the
 dnl configure script.
 AC_DEFUN([CF_MSG_LOG],[
 echo "(line __oline__) testing $* ..." 1>&AC_FD_CC
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_NCURSES_ABI_6 version: 1 updated: 2005/09/17 18:42:49
+dnl ----------------
+dnl Set ncurses' ABI to 6 unless overridden by explicit configure option, and
+dnl warn about this.
+AC_DEFUN([CF_NCURSES_ABI_6],[
+if test "${with_abi_version+set}" != set; then
+	case $cf_cv_rel_version in
+	5.*)
+		cf_cv_rel_version=6.0
+		cf_cv_abi_version=6
+		AC_MSG_WARN(Overriding ABI version to $cf_cv_abi_version)
+		;;
+	esac
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_NUMBER_SYNTAX version: 1 updated: 2003/09/20 18:12:49
