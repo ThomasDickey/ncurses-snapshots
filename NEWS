@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.922 2005/09/10 23:10:04 tom Exp $
+-- $Id: NEWS,v 1.924 2005/09/17 23:16:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050917
+	+ modify sed expression which computes path for /usr/lib/terminfo
+	  symbolic link in install to ensure that it does not change unexpected
+	  levels of the path (Gentoo #42336).
+	+ modify default for --disable-lp64 configure option to reduce impact
+	  on existing 64-bit builds.  Enabling the _LP64 option may change the
+	  size of chtype and mmask_t.  However, for ABI 6, it is enabled by
+	  default (report by Mike Frysinger).
+	+ add configure script check for --enable-ext-mouse, bump ABI to 6 by
+	  default if it is used.
+	+ improve configure script logic for bumping ABI to omit this if the
+	  --with-abi-version option was used.
+	+ update address for Free Software Foundation in tack's source.
+	+ correct wins_wch(), which was not marking the filler-cells of
+	  multi-column characters (cf:  20041023).
 
 20050910
 	+ modify mouse initialization to ensure that Gpm_Open() is called only
