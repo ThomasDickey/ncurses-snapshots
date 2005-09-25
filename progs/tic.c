@@ -42,10 +42,9 @@
 #include <sys/stat.h>
 
 #include <dump_entry.h>
-#include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.124 2005/08/20 22:24:16 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.125 2005/09/25 00:39:43 tom Exp $")
 
 const char *_nc_progname = "tic";
 

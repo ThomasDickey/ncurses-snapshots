@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.924 2005/09/17 23:16:19 tom Exp $
+-- $Id: NEWS,v 1.926 2005/09/25 00:50:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050924
+	+ correct header dependencies in progs, allowing parallel make (report
+	  by Daniel Jacobowitz).
+	+ modify CF_BUILD_CC to ensure that pre-setting $BUILD_CC overrides
+	  the configure check for --with-build-cc (report by Daniel Jacobowitz).
+	+ modify CF_CFG_DEFAULTS to not use /usr as the default prefix for
+	  NetBSD.
+	+ update config.guess and config.sub from
+		http://subversions.gnu.org/cgi-bin/viewcvs/config/config/
 
 20050917
 	+ modify sed expression which computes path for /usr/lib/terminfo

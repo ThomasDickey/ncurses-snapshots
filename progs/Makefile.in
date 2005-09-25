@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.64 2005/01/22 20:11:48 tom Exp $
+# $Id: Makefile.in,v 1.65 2005/09/25 00:42:08 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -53,6 +53,7 @@ o		= .@OBJEXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 DESTDIR		= @DESTDIR@
+top_srcdir	= @top_srcdir@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -79,7 +80,7 @@ CC		= @CC@
 CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
-INCDIR		= $(srcdir)/../include
+INCDIR		= $(top_srcdir)/include
 CPPFLAGS	= -I../progs -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
@@ -122,6 +123,12 @@ TESTPROGS = mvcur$x tctest$x hardscroll$x hashmap$x
 
 # Default library, for linking applications
 DEPS_CURSES = ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
+
+HEADER_DEPS	= \
+	../include/curses.h \
+	$(INCDIR)/term_entry.h \
+	$(INCDIR)/tic.h \
+	$(INCDIR)/nc_alloc.h
 
 ################################################################################
 all:		$(AUTO_SRC) $(PROGS)

@@ -1,5 +1,5 @@
 /*
- * $Id: edit_field.c,v 1.8 2004/05/29 22:49:23 tom Exp $
+ * $Id: edit_field.c,v 1.10 2005/09/24 22:59:10 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the result available as a null-terminated string
@@ -13,9 +13,6 @@
 #if USE_LIBFORM
 
 #include <edit_field.h>
-
-#define MY_QUIT		EDIT_FIELD('q')
-#define MY_INS_MODE	EDIT_FIELD('t')
 
 static struct {
     int code;
@@ -78,6 +75,9 @@ static struct {
 	CTRL('S'), REQ_BEG_FIELD, "go to beginning of field"
     },
     {
+	CTRL('T'), MY_EDT_MODE, "toggle O_EDIT mode, clear field status",
+    },
+    {
 	CTRL('U'), REQ_UP_FIELD, "move upward to field"
     },
     {
@@ -102,7 +102,7 @@ static struct {
 	CTRL(']'), MY_INS_MODE, "toggle REQ_INS_MODE/REQ_OVL_MODE",
     },
     {
-	KEY_F(1), EDIT_FIELD('h'), "show this screen",
+	KEY_F(1), MY_HELP, "show this screen",
     },
     {
 	KEY_BACKSPACE, REQ_DEL_PREV, "delete previous character"

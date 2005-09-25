@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.11 2005/04/16 16:31:25 tom Exp $
+ * $Id: demo_forms.c,v 1.14 2005/09/25 00:18:51 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -17,7 +17,6 @@ field_init			-
 field_just			-
 field_opts_on			-
 field_pad			-
-field_status			-
 field_term			-
 field_type			-
 form_init			-
@@ -34,11 +33,9 @@ link_fieldtype			-
 move_field			-
 new_page			-
 pos_form_cursor			-
-set_current_field		-
 set_field_fore			-
 set_field_init			-
 set_field_pad			-
-set_field_status		-
 set_field_term			-
 set_fieldtype_arg		-
 set_fieldtype_choice		-
@@ -128,16 +125,72 @@ erase_form(FORM * f)
     delwin(w);
 }
 
+static void
+show_insert_mode(bool insert_mode)
+{
+    mvaddstr(5, 57, (insert_mode
+		     ? "form_status: insert "
+		     : "form_status: overlay"));
+}
+
+#define O_SELECTABLE (O_ACTIVE | O_VISIBLE)
+
+static FIELD *
+another_field(FORM * form, FIELD * field)
+{
+    FIELD **f = form_fields(form);
+    FIELD *result = 0;
+    int n;
+
+    for (n = 0; f[n] != 0; ++n) {
+	if (f[n] != field) {
+	    result = f[n];
+	    field_opts_on(result, O_SELECTABLE);
+	    break;
+	}
+    }
+    return result;
+}
+
 static int
 my_form_driver(FORM * form, int c)
 {
+    static bool insert_mode = TRUE;
+    FIELD *field;
+
     switch (c) {
-    case EDIT_FIELD('q'):
+    case MY_QUIT:
 	if (form_driver(form, REQ_VALIDATION) == E_OK)
 	    return (TRUE);
 	break;
-    case EDIT_FIELD('h'):
+    case MY_HELP:
 	help_edit_field();
+	break;
+    case MY_EDT_MODE:
+	if ((field = current_field(form)) != 0) {
+	    set_current_field(form, another_field(form, field));
+	    if (field_opts(field) & O_EDIT) {
+		field_opts_off(field, O_EDIT);
+		set_field_status(field, 0);
+	    } else {
+		field_opts_on(field, O_EDIT);
+	    }
+	    set_current_field(form, field);
+	}
+	break;
+    case MY_INS_MODE:
+	/* there should be a form_status() function, but there is none */
+	if (!insert_mode) {
+	    if (form_driver(form, REQ_INS_MODE) == E_OK) {
+		insert_mode = TRUE;
+	    }
+	} else {
+	    if (form_driver(form, REQ_OVL_MODE) == E_OK) {
+		insert_mode = FALSE;
+	    }
+	}
+	show_insert_mode(insert_mode);
+	refresh();
 	break;
     default:
 	beep();
@@ -185,6 +238,15 @@ show_current_field(WINDOW *win, FORM * form)
 	    else
 		waddstr(win, "other");
 	}
+
+	if (field_opts(field) & O_EDIT)
+	    waddstr(win, " editable");
+	else
+	    waddstr(win, " readonly");
+
+	if (field_status(field))
+	    waddstr(win, " modified");
+
 	if (dynamic_field_info(field, &field_rows, &field_cols, &field_max)
 	    != ERR) {
 	    wprintw(win, " size %dx%d (max %d)",
@@ -218,6 +280,7 @@ demo_forms(void)
     help_edit_field();
 
     mvaddstr(4, 57, "Forms Entry Test");
+    show_insert_mode(TRUE);
 
     refresh();
 

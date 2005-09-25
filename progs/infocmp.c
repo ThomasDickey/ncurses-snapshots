@@ -39,10 +39,9 @@
 
 #include <progs.priv.h>
 
-#include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.78 2005/04/16 16:58:16 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.79 2005/09/25 00:39:43 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
