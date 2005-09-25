@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.83 2005/08/06 14:58:25 tom Exp $
+# $Id: Makefile.in,v 1.84 2005/09/24 23:05:14 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -100,6 +100,10 @@ LDFLAGS_TINFO	= $(LDFLAGS_@DFT_UPR_MODEL@) $(LIBS_TINFO)
 LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
+
+HEADER_DEPS	= \
+	../include/curses.h \
+	../include/term.h
 
 TESTS = \
 	background$x \

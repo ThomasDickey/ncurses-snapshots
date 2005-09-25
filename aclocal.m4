@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.372 2005/09/17 22:44:19 tom Exp $
+dnl $Id: aclocal.m4,v 1.373 2005/09/24 21:58:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -349,7 +349,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 4 updated: 2004/11/27 16:03:59
+dnl CF_BUILD_CC version: 5 updated: 2005/09/24 17:55:52
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -361,38 +361,58 @@ dnl $2 = default for $LIBS
 AC_DEFUN([CF_BUILD_CC],[
 AC_REQUIRE([CF_PROG_EXT])
 if test "$cross_compiling" = yes ; then
+
 	# defaults that we might want to override
-	: ${BUILD_CC:='$(CC)'}
-	: ${BUILD_CPP:='$(CC) -E'}
 	: ${BUILD_CFLAGS:=''}
 	: ${BUILD_CPPFLAGS:='ifelse([$1],,,[$1])'}
 	: ${BUILD_LDFLAGS:=''}
 	: ${BUILD_LIBS:='ifelse([$2],,,[$2])'}
 	: ${BUILD_EXEEXT:='$x'}
 	: ${BUILD_OBJEXT:='o'}
+
 	AC_ARG_WITH(build-cc,
 		[  --with-build-cc=XXX     the build C compiler ($BUILD_CC)],
 		[BUILD_CC="$withval"],
-		[AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)])
+		[AC_CHECK_PROGS(BUILD_CC, gcc cc cl)])
+	AC_MSG_CHECKING(for native build C compiler)
+	AC_MSG_RESULT($BUILD_CC)
+
+	AC_MSG_CHECKING(for native build C preprocessor)
 	AC_ARG_WITH(build-cpp,
 		[  --with-build-cpp=XXX    the build C preprocessor ($BUILD_CPP)],
 		[BUILD_CPP="$withval"],
-		[BUILD_CPP='$(CC) -E'])
+		[BUILD_CPP='$(BUILD_CC) -E'])
+	AC_MSG_RESULT($BUILD_CPP)
+
+	AC_MSG_CHECKING(for native build C flags)
 	AC_ARG_WITH(build-cflags,
-		[  --with-build-cflags=XXX the build C compiler-flags],
+		[  --with-build-cflags=XXX the build C compiler-flags ($BUILD_CFLAGS)],
 		[BUILD_CFLAGS="$withval"])
+	AC_MSG_RESULT($BUILD_CFLAGS)
+
+	AC_MSG_CHECKING(for native build C preprocessor-flags)
 	AC_ARG_WITH(build-cppflags,
-		[  --with-build-cppflags=XXX the build C preprocessor-flags],
+		[  --with-build-cppflags=XXX the build C preprocessor-flags ($BUILD_CPPFLAGS)],
 		[BUILD_CPPFLAGS="$withval"])
+	AC_MSG_RESULT($BUILD_CPPFLAGS)
+
+	AC_MSG_CHECKING(for native build linker-flags)
 	AC_ARG_WITH(build-ldflags,
-		[  --with-build-ldflags=XXX the build linker-flags],
+		[  --with-build-ldflags=XXX the build linker-flags ($BUILD_LDFLAGS)],
 		[BUILD_LDFLAGS="$withval"])
+	AC_MSG_RESULT($BUILD_LDFLAGS)
+
+	AC_MSG_CHECKING(for native build linker-libraries)
 	AC_ARG_WITH(build-libs,
-		[  --with-build-libs=XXX   the build libraries],
+		[  --with-build-libs=XXX   the build libraries ($(BUILD_LIBS)],
 		[BUILD_LIBS="$withval"])
+	AC_MSG_RESULT($BUILD_LIBS)
+
 	# this assumes we're on Unix.
 	BUILD_EXEEXT=
 	BUILD_OBJEXT=o
+
+	: ${BUILD_CC:='$(CC)'}
 
 	if ( test "$BUILD_CC" = "$CC" || test "$BUILD_CC" = '$(CC)' ) ; then
 		AC_MSG_ERROR([Cross-build requires two compilers.
@@ -420,7 +440,7 @@ AC_SUBST(BUILD_EXEEXT)
 AC_SUBST(BUILD_OBJEXT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CFG_DEFAULTS version: 6 updated: 2003/07/12 15:15:19
+dnl CF_CFG_DEFAULTS version: 7 updated: 2005/09/24 16:15:00
 dnl ---------------
 dnl Determine the default configuration into which we'll install ncurses.  This
 dnl can be overridden by the user's command-line options.  There's two items to
@@ -438,7 +458,7 @@ AC_MSG_CHECKING(for prefix)
 if test "x$prefix" = "xNONE" ; then
 	case "$cf_cv_system_name" in
 		# non-vendor systems don't have a conflict
-	openbsd*|netbsd*|freebsd*|linux*|cygwin*|k*bsd*-gnu)
+	openbsd*|freebsd*|linux*|cygwin*|k*bsd*-gnu)
 		prefix=/usr
 		;;
 	*)	prefix=$ac_default_prefix

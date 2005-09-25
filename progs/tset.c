@@ -100,11 +100,10 @@ char *ttyname(int fd);
 #include <sys/ptem.h>
 #endif
 
-#include <curses.h>		/* for bool typedef */
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.59 2005/03/20 17:48:22 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.60 2005/09/25 00:43:52 tom Exp $")
 
 extern char **environ;
 

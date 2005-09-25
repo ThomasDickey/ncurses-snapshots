@@ -42,9 +42,8 @@
 #include <sys/stat.h>
 
 #include <dump_entry.h>
-#include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.28 2005/05/28 18:56:10 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.29 2005/09/25 00:39:43 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.69 2005/09/03 21:34:00 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.70 2005/09/24 23:58:46 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -1130,8 +1130,10 @@ _nc_Synchronize_Attributes(FIELD *field)
   int res = E_OK;
   WINDOW *formwin;
 
+  T((T_CALLED("_nc_Synchronize_Attributes(%p)"), field));
+
   if (!field)
-    return (E_BAD_ARGUMENT);
+    returnCode(E_BAD_ARGUMENT);
 
   if (((form = field->form) != (FORM *)0)
       && Field_Really_Appears(field))
@@ -1166,7 +1168,7 @@ _nc_Synchronize_Attributes(FIELD *field)
 	  res = Display_Field(field);
 	}
     }
-  return (res);
+  returnCode(res);
 }
 
 /*---------------------------------------------------------------------------
@@ -1190,8 +1192,10 @@ _nc_Synchronize_Options(FIELD *field, Field_Options newopts)
   FORM *form;
   int res = E_OK;
 
+  T((T_CALLED("_nc_Synchronize_Options(%p,%#x)"), field, newopts));
+
   if (!field)
-    return (E_BAD_ARGUMENT);
+    returnCode(E_BAD_ARGUMENT);
 
   oldopts = field->opts;
   changed_opts = oldopts ^ newopts;
@@ -1203,7 +1207,7 @@ _nc_Synchronize_Options(FIELD *field, Field_Options newopts)
       if (form->current == field)
 	{
 	  field->opts = oldopts;
-	  return (E_CURRENT);
+	  returnCode(E_CURRENT);
 	}
 
       if (form->status & _POSTED)
@@ -1268,7 +1272,7 @@ _nc_Synchronize_Options(FIELD *field, Field_Options newopts)
 	res = res2;
     }
 
-  return (res);
+  returnCode(res);
 }
 
 /*---------------------------------------------------------------------------
@@ -1288,14 +1292,16 @@ _nc_Set_Current_Field(FORM *form, FIELD *newfield)
   FIELD *field;
   WINDOW *new_window;
 
+  T((T_CALLED("_nc_Set_Current_Field(%p,%p)"), form, newfield));
+
   if (!form || !newfield || !form->current || (newfield->form != form))
-    return (E_BAD_ARGUMENT);
+    returnCode(E_BAD_ARGUMENT);
 
   if ((form->status & _IN_DRIVER))
-    return (E_BAD_STATE);
+    returnCode(E_BAD_STATE);
 
   if (!(form->field))
-    return (E_NOT_CONNECTED);
+    returnCode(E_NOT_CONNECTED);
 
   field = form->current;
 
@@ -1340,7 +1346,7 @@ _nc_Set_Current_Field(FORM *form, FIELD *newfield)
 			    field->rows, field->cols, field->frow, field->fcol);
 
       if (!new_window)
-	return (E_SYSTEM_ERROR);
+	returnCode(E_SYSTEM_ERROR);
 
       form->current = field;
 
@@ -1370,7 +1376,7 @@ _nc_Set_Current_Field(FORM *form, FIELD *newfield)
     }
 
   form->currow = form->curcol = form->toprow = form->begincol = 0;
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*----------------------------------------------------------------------------
