@@ -1,5 +1,5 @@
 /*
- * $Id: edit_field.c,v 1.10 2005/09/24 22:59:10 tom Exp $
+ * $Id: edit_field.c,v 1.11 2005/10/01 16:21:55 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the result available as a null-terminated string
@@ -197,6 +197,32 @@ help_edit_field(void)
 
     do {
 	switch (ch) {
+	case KEY_HOME:
+	    y1 = 0;
+	    break;
+	case KEY_END:
+	    y1 = y2;
+	    break;
+	case KEY_PREVIOUS:
+	case KEY_PPAGE:
+	    if (y1 > 0) {
+		y1 -= high / 2;
+		if (y1 < 0)
+		    y1 = 0;
+	    } else {
+		beep();
+	    }
+	    break;
+	case KEY_NEXT:
+	case KEY_NPAGE:
+	    if (y1 < y2) {
+		y1 += high / 2;
+		if (y1 >= y2)
+		    y1 = y2;
+	    } else {
+		beep();
+	    }
+	    break;
 	case CTRL('P'):
 	case KEY_UP:
 	    if (y1 > 0)

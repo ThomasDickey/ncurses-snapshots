@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.252 2005/06/11 19:56:48 tom Exp $
+$Id: ncurses.c,v 1.253 2005/10/01 16:00:56 tom Exp $
 
 ***************************************************************************/
 
@@ -631,7 +631,6 @@ wgetch_test(unsigned level, WINDOW *win, int delay)
     int incount = 0;
     bool flags[256];
     bool blocking = (delay < 0);
-    int y, x;
 
     memset(flags, FALSE, sizeof(flags));
     flags[UChar('k')] = (win == stdscr);
@@ -716,6 +715,7 @@ wgetch_test(unsigned level, WINDOW *win, int delay)
 	    wprintw(win, "Key pressed: %04o ", c);
 #ifdef NCURSES_MOUSE_VERSION
 	    if (c == KEY_MOUSE) {
+		int y, x;
 		MEVENT event;
 
 		getmouse(&event);
@@ -1153,7 +1153,7 @@ static int
 show_attr(int row, int skip, bool arrow, chtype attr, const char *name)
 {
     int ncv = tigetnum("ncv");
-    chtype test = attr & ~A_ALTCHARSET;
+    chtype test = attr & (chtype) (~A_ALTCHARSET);
 
     if (arrow)
 	mvprintw(row, 5, "-->");

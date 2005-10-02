@@ -199,7 +199,16 @@
             it compile properly on Solaris (and other platforms).
           + remove  check  in  newwin()  that prevents allocating windows
             that extend beyond the screen (Solaris does this).
-          + check for nl_langinfo(CODESET), use it if available.
+          + check  for  nl_langinfo(CODESET),  use  it if available. This
+            replaces  ad  hoc  tests of environment variables to check if
+            the  terminal is setup for UTF-8 encoding. Applications which
+            do  not  call  setlocale()  should be corrected, to make them
+            work properly with UTF-8 encoding.
+            In  particular,  applications  which  assume (and do not call
+            setlocale())  that Latin-1 codes are printable will no longer
+            work  in a UTF-8 locale since the ad hoc check of environment
+            variables  to  see  if  the locale was UTF-8 is not used when
+            nl_langinfo(CODESET) is available.
           + use  setlocale() to query the program's current locale rather
             than  using  getenv().  This supports applications which rely
             upon  legacy treatment of 8-bit characters when the locale is

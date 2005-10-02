@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.926 2005/09/25 00:50:31 tom Exp $
+-- $Id: NEWS,v 1.927 2005/10/01 19:32:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051001
+	+ document side-effect of werase() which sets the cursor position.
+	+ save/restore the current position in form field editing to make
+	  overlay mode work.
 
 20050924
 	+ correct header dependencies in progs, allowing parallel make (report

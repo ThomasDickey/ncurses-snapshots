@@ -1,4 +1,4 @@
--- $Id: README,v 1.23 2005/04/16 23:21:41 tom Exp $
+-- $Id: README,v 1.24 2005/10/01 22:01:07 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -55,14 +55,14 @@ field_init			-
 field_just			-
 field_opts			test: demo_forms ncurses
 field_opts_off			test: cardfile demo_forms
-field_opts_on			-
+field_opts_on			test: demo_forms
 field_pad			-
-field_status			-
+field_status			test: demo_forms
 field_term			-
 field_type			test: demo_forms
 field_userptr			test: ncurses
 form_driver			test: cardfile demo_forms edit_field ncurses
-form_fields			test: cardfile
+form_fields			test: cardfile demo_forms
 form_init			-
 form_opts			-
 form_opts_off			-
@@ -87,15 +87,15 @@ new_page			-
 pos_form_cursor			-
 post_form			test: cardfile demo_forms ncurses
 scale_form			test: demo_forms ncurses
-set_current_field		-
+set_current_field		test: demo_forms
 set_field_back			test: cardfile demo_forms edit_field ncurses
 set_field_buffer		test: cardfile demo_forms edit_field ncurses
-set_field_fore			-
+set_field_fore			test: demo_forms
 set_field_init			-
-set_field_just			test: cardfile
+set_field_just			test: cardfile demo_forms
 set_field_opts			test: demo_forms ncurses
 set_field_pad			-
-set_field_status		-
+set_field_status		test: demo_forms
 set_field_term			-
 set_field_type			test: demo_forms ncurses
 set_field_userptr		test: demo_forms ncurses
@@ -255,7 +255,7 @@ dupwin				test: edit_field
 echo				test: bs hanoi ncurses testcurs testscanw
 echo_wchar			test: ncurses
 echochar			test: ncurses
-endwin				test: background blue bs cardfile color_set demo_defkey demo_forms demo_keyok demo_menus ditto filter firework firstlast gdc hanoi hashtest ins_wide inserts knight lrtest ncurses newdemo rain tclock testaddch testcurs testscanw view worm xmas
+endwin				test: background blue bs cardfile color_set demo_defkey demo_forms demo_keyok demo_menus ditto filter firework firstlast gdc hanoi hashtest ins_wide inserts keynames knight lrtest ncurses newdemo rain tclock testaddch testcurs testscanw view worm xmas
 erase				test: cardfile filter firework firstlast hanoi lrtest ncurses tclock testcurs
 erasechar			lib: ncurses
 erasewchar			-
@@ -314,7 +314,7 @@ key_name			test: ncurses
 keybound			test: demo_defkey
 keyname				test: demo_defkey demo_keyok edit_field keynames ncurses testcurs view progs: tic
 keyok				test: demo_keyok
-keypad				test: bs cardfile demo_defkey demo_forms demo_keyok demo_menus edit_field filter firework hashtest ins_wide inserts knight lrtest ncurses tclock testcurs testscanw view
+keypad				test: bs cardfile demo_defkey demo_forms demo_keyok demo_menus edit_field filter firework hashtest ins_wide inserts keynames knight lrtest ncurses tclock testcurs testscanw view
 killchar			lib: ncurses
 killwchar			-
 leaveok				test: hanoi
@@ -411,7 +411,7 @@ mvwvline_set			-
 napms				test: dots firework gdc hanoi lrtest ncurses newdemo railroad rain tclock testcurs view worm xmas progs: tset
 newpad				test: edit_field ncurses testcurs
 newscr				lib: ncurses
-newterm				test: ditto filter gdc
+newterm				test: ditto filter gdc keynames
 newwin				test: cardfile demo_defkey demo_forms demo_keyok demo_menus edit_field firstlast ins_wide inserts knight ncurses newdemo testcurs xmas
 nl				test: demo_forms ncurses rain testcurs
 nocbreak			test: testcurs
@@ -480,7 +480,7 @@ slk_wset			test: ncurses
 standend			test: blue gdc ncurses worm
 standout			test: blue ncurses
 start_color			test: background blue bs cardfile color_set demo_forms demo_menus filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain tclock testaddch testcurs view worm xmas
-stdscr				test: bs demo_forms ditto filter firework gdc hanoi hashtest ins_wide inserts knight lrtest ncurses rain tclock testcurs testscanw view xmas
+stdscr				test: bs demo_forms ditto filter firework gdc hanoi hashtest ins_wide inserts keynames knight lrtest ncurses rain tclock testcurs testscanw view xmas
 strcodes			progs: dump_entry
 strfnames			progs: dump_entry
 strnames			progs: dump_entry infocmp tic
@@ -490,10 +490,10 @@ syncok				-
 term_attrs			test: ncurses
 termattrs			test: ncurses testcurs
 termname			test: testcurs
-tgetent				test: railroad
-tgetflag			-
-tgetnum				test: railroad
-tgetstr				test: railroad
+tgetent				test: demo_termcap railroad
+tgetflag			test: demo_termcap
+tgetnum				test: demo_termcap railroad
+tgetstr				test: demo_termcap railroad
 tgoto				test: railroad
 tigetflag			progs: tput
 tigetnum			test: ncurses progs: tput
