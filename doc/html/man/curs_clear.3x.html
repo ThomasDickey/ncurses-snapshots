@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!-- 
   ****************************************************************************
-  * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+  * Copyright (c) 1998,2005 Free Software Foundation, Inc.                   *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_clear.3x,v 1.9 2005/05/15 17:28:56 tom Exp @
+  * @Id: curs_clear.3x,v 1.10 2005/10/01 19:34:43 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -115,6 +115,12 @@
        mented  feature,  the  ability  to  do  the  equivalent of
        <STRONG>clearok(...,</STRONG> <STRONG>1)</STRONG> by saying <STRONG>touchwin(stdscr)</STRONG>  or  <STRONG>clear(std-</STRONG>
        <STRONG>scr)</STRONG>.  This will not work under ncurses.
+
+       This  implementation, and others such as Solaris, sets the
+       current position to 0,0 after  erasing  via  <STRONG>werase()</STRONG>  and
+       <STRONG>wclear()</STRONG>.   That fact is not documented in other implemen-
+       tations, and may not be true of implementations which were
+       not derived from SVr4 source.
 
 
 </PRE>

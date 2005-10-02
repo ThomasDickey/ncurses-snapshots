@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.70 2005/09/24 23:58:46 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.71 2005/10/01 19:42:40 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -210,6 +210,29 @@ static int FE_Delete_Previous(FORM *);
   --------------------------------------------------------------------------*/
 static FIELD_CELL myBLANK = BLANK;
 static FIELD_CELL myZEROS;
+
+#ifdef TRACE
+static void
+check_pos(FORM *form, int lineno)
+{
+  int y, x;
+
+  if (form && form->w)
+    {
+      getyx(form->w, y, x);
+      if (y != form->currow || x != form->curcol)
+	{
+	  T(("CHECKPOS %s@%d have position %d,%d vs want %d,%d",
+	     __FILE__, lineno,
+	     y, x,
+	     form->currow, form->curcol));
+	}
+    }
+}
+#define CHECKPOS(form) check_pos(form, __LINE__)
+#else
+#define CHECKPOS(form)		/* nothing */
+#endif
 
 /*----------------------------------------------------------------------------
   Wide-character special functions
@@ -451,12 +474,14 @@ static void
 Buffer_To_Window(const FIELD *field, WINDOW *win)
 {
   int width, height;
+  int y, x;
   int len;
   int row;
   FIELD_CELL *pBuffer;
 
   assert(win && field);
 
+  getyx(win, y, x);
   width = getmaxx(win);
   height = getmaxy(win);
 
@@ -470,6 +495,7 @@ Buffer_To_Window(const FIELD *field, WINDOW *win)
 	  myADDNSTR(win, pBuffer, len);
 	}
     }
+  wmove(win, y, x);
 }
 
 /*---------------------------------------------------------------------------
@@ -1135,6 +1161,7 @@ _nc_Synchronize_Attributes(FIELD *field)
   if (!field)
     returnCode(E_BAD_ARGUMENT);
 
+  CHECKPOS(field->form);
   if (((form = field->form) != (FORM *)0)
       && Field_Really_Appears(field))
     {
@@ -1143,6 +1170,8 @@ _nc_Synchronize_Attributes(FIELD *field)
 	  Synchronize_Buffer(form);
 	  Set_Field_Window_Attributes(field, form->w);
 	  werase(form->w);
+	  wmove(form->w, form->currow, form->curcol);
+
 	  if (field->opts & O_PUBLIC)
 	    {
 	      if (Justification_Allowed(field))
@@ -1168,6 +1197,7 @@ _nc_Synchronize_Attributes(FIELD *field)
 	  res = Display_Field(field);
 	}
     }
+  CHECKPOS(form);
   returnCode(res);
 }
 
@@ -3853,6 +3883,7 @@ Data_Entry(FORM *form, int c)
   FIELD *field = form->current;
   int result = E_REQUEST_DENIED;
 
+  T((T_CALLED("Data_Entry(%p,%s)"), form, _tracechtype(c)));
   if ((field->opts & O_EDIT)
 #if FIX_FORM_INACTIVE_BUG
       && (field->opts & O_ACTIVE)
@@ -3876,10 +3907,10 @@ Data_Entry(FORM *form, int c)
 
 	  if (!(There_Is_Room ||
 		((Single_Line_Field(field) && Growable(field)))))
-	    return E_REQUEST_DENIED;
+	    RETURN(E_REQUEST_DENIED);
 
 	  if (!There_Is_Room && !Field_Grown(field, 1))
-	    return E_SYSTEM_ERROR;
+	    RETURN(E_SYSTEM_ERROR);
 
 	  winsch(form->w, (chtype)c);
 	}
@@ -3915,7 +3946,7 @@ Data_Entry(FORM *form, int c)
 	    }
 	}
     }
-  return result;
+  RETURN(result);
 }
 
 /* Structure to describe the binding of a request code to a function.

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html,v 1.47 2005/08/27 21:15:09 tom Exp $
+  $Id: announce.html,v 1.48 2005/10/01 22:27:43 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -290,7 +290,19 @@ Portability:
             <li>remove check in newwin() that prevents allocating windows that
                 extend beyond the screen (Solaris does this).
 
-            <li>check for nl_langinfo(CODESET), use it if available.
+            <li>check for <code>nl_langinfo(CODESET)</code>, use it if available.
+	        This replaces ad hoc tests of environment variables to
+		check if the terminal is setup for UTF-8 encoding.
+		Applications which do not call <code>setlocale()</code>
+		should be corrected, to make them work properly with
+		UTF-8 encoding.
+		<br>
+		<strong>In particular, applications which assume (and
+		do not call <code>setlocale()</code>) that
+		Latin-1 codes are printable will no longer work in
+		a UTF-8 locale since the ad hoc check of environment
+		variables to see if the locale was UTF-8 is not used
+		when <code>nl_langinfo(CODESET)</code> is available.</strong>
 
             <li>use setlocale() to query the program's current locale rather
                 than using getenv().  This supports applications which rely

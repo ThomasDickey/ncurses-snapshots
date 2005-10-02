@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.14 2005/09/25 00:18:51 tom Exp $
+ * $Id: demo_forms.c,v 1.17 2005/10/01 21:57:04 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -15,7 +15,6 @@ field_count			-
 field_fore			-
 field_init			-
 field_just			-
-field_opts_on			-
 field_pad			-
 field_term			-
 field_type			-
@@ -33,7 +32,6 @@ link_fieldtype			-
 move_field			-
 new_page			-
 pos_form_cursor			-
-set_field_fore			-
 set_field_init			-
 set_field_pad			-
 set_field_term			-
@@ -55,8 +53,10 @@ set_max_field			-
 #include <edit_field.h>
 
 static int d_option = 0;
+static int j_value = 0;
 static int m_value = 0;
 static int o_value = 0;
+static char *t_value = 0;
 
 static FIELD *
 make_label(int frow, int fcol, NCURSES_CONST char *label)
@@ -80,11 +80,19 @@ make_field(int frow, int fcol, int rows, int cols)
 
     if (f) {
 	set_field_back(f, A_UNDERLINE);
+	set_field_just(f, j_value);
 	set_field_userptr(f, (void *) 0);
 	if (d_option) {
+	    if (has_colors()) {
+		set_field_fore(f, COLOR_PAIR(2));
+	    } else {
+		set_field_fore(f, A_BOLD);
+	    }
 	    field_opts_off(f, O_STATIC);
 	    set_max_field(f, m_value);
 	}
+	if (t_value)
+	    set_field_buffer(f, 0, t_value);
     }
     return (f);
 }
@@ -229,8 +237,10 @@ show_current_field(WINDOW *win, FORM * form)
 		waddstr(win, "ENUM");
 	    else if (type == TYPE_INTEGER)
 		waddstr(win, "INTEGER");
+#ifdef NCURSES_VERSION
 	    else if (type == TYPE_IPV4)
 		waddstr(win, "IPV4");
+#endif
 	    else if (type == TYPE_NUMERIC)
 		waddstr(win, "NUMERIC");
 	    else if (type == TYPE_REGEXP)
@@ -310,9 +320,11 @@ demo_forms(void)
 	    f[n++] = make_field(3, 0, 1, 18);
 	    set_field_type(f[n - 1], TYPE_ALPHA, 1);
 
+#ifdef NCURSES_VERSION
 	    f[n++] = make_label(2, 20, "IP Address");
 	    f[n++] = make_field(3, 20, 1, 12);
 	    set_field_type(f[n - 1], TYPE_IPV4, 1);
+#endif
 
 	    break;
 
@@ -373,8 +385,10 @@ usage(void)
 	"Usage: demo_forms [options]"
 	,""
 	," -d        make fields dynamic"
+	," -j value  justify (1=left, 2=center, 3=right)"
 	," -m value  set maximum size of dynamic fields"
 	," -o value  specify number of offscreen rows in new_field()"
+	," -t value  specify text to fill fields initially"
     };
     unsigned int j;
     for (j = 0; j < SIZEOF(tbl); ++j)
@@ -389,16 +403,25 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, "dm:o:")) != EOF) {
+    while ((ch = getopt(argc, argv, "dj:m:o:t:")) != EOF) {
 	switch (ch) {
 	case 'd':
 	    d_option = TRUE;
+	    break;
+	case 'j':
+	    j_value = atoi(optarg);
+	    if (j_value < NO_JUSTIFICATION
+		|| j_value > JUSTIFY_RIGHT)
+		usage();
 	    break;
 	case 'm':
 	    m_value = atoi(optarg);
 	    break;
 	case 'o':
 	    o_value = atoi(optarg);
+	    break;
+	case 't':
+	    t_value = optarg;
 	    break;
 	default:
 	    usage();
@@ -417,6 +440,7 @@ main(int argc, char *argv[])
     if (has_colors()) {
 	start_color();
 	init_pair(1, COLOR_WHITE, COLOR_BLUE);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
 	bkgd(COLOR_PAIR(1));
 	refresh();
     }

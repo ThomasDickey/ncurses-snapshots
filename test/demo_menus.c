@@ -1,5 +1,5 @@
 /*
- * $Id: demo_menus.c,v 1.12 2005/05/28 19:00:59 tom Exp $
+ * $Id: demo_menus.c,v 1.13 2005/10/01 15:54:31 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -165,7 +165,11 @@ menu_offset(MenuNo number)
     if ((int) number >= 0) {
 	int spc_desc, spc_rows, spc_cols;
 
+#ifdef NCURSES_VERSION
 	menu_spacing(mpBanner, &spc_desc, &spc_rows, &spc_cols);
+#else
+	spc_rows = 0;
+#endif
 
 	/* FIXME: MENU.itemlen seems the only way to get actual width of items */
 	result = number * (mpBanner->itemlen + spc_rows);
