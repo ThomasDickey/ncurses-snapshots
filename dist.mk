@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.496 2005/10/08 20:24:48 tom Exp $
+# $Id: dist.mk,v 1.498 2005/10/09 14:41:57 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -9,12 +9,15 @@ SHELL = /bin/sh
 
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
-NCURSES_MINOR = 4
-NCURSES_PATCH = 20051008
+NCURSES_MINOR = 5
+NCURSES_PATCH = 20051010
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
 
+# The most recent html files were generated with lynx 2.8.5, configured with
+#	--without-manpage-renames
+# on Debian/testing.
 DUMP	= lynx -dump
 DUMP2	= $(DUMP) -nolist
 
