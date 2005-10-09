@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.17 2005/10/01 21:57:04 tom Exp $
+ * $Id: demo_forms.c,v 1.18 2005/10/08 21:54:20 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -80,6 +80,11 @@ make_field(int frow, int fcol, int rows, int cols)
 
     if (f) {
 	set_field_back(f, A_UNDERLINE);
+	/*
+	 * If -j and -d options are combined, -j loses.  It is documented in
+	 * "Character User Interface Programming", page 12-15 that setting
+	 * O_STATIC off makes the form library ignore justification.
+	 */
 	set_field_just(f, j_value);
 	set_field_userptr(f, (void *) 0);
 	if (d_option) {
@@ -88,6 +93,10 @@ make_field(int frow, int fcol, int rows, int cols)
 	    } else {
 		set_field_fore(f, A_BOLD);
 	    }
+	    /*
+	     * The field_opts_off() call dumps core with Solaris curses,
+	     * but that is a known bug in Solaris' form library -TD
+	     */
 	    field_opts_off(f, O_STATIC);
 	    set_max_field(f, m_value);
 	}

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_opts.3x,v 1.9 2005/05/15 16:00:28 tom Exp $
+.\" $Id: form_field_opts.3x,v 1.10 2005/10/08 22:16:18 tom Exp $
 .TH form_field_opts 3X ""
 .SH NAME
 \fBform_field_opts\fR - set and get field options
@@ -86,6 +86,7 @@ Allow a blank field.
 .TP 5
 O_STATIC
 Field buffers are fixed to field's original size.
+Turn this option off to create a dynamic field.
 .TP 5
 O_PASSOK
 Validate field only if modified by user.
