@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.351 2005/09/17 22:41:48 tom Exp $
+dnl $Id: configure.in,v 1.354 2005/10/15 21:06:25 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.351 $)
+AC_REVISION($Revision: 1.354 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -666,7 +666,7 @@ AC_ARG_WITH(caps,
 	[  --with-caps=alt         compile with alternate Caps file],
 	[TERMINFO_CAPS=Caps.$withval],
 	[TERMINFO_CAPS=Caps])
-test -f ${srcdir}/include/${TERMINFO_CAPS} || TERMINFO_CAPS=Caps
+test -f "${srcdir}/include/${TERMINFO_CAPS}" || TERMINFO_CAPS=Caps
 AC_MSG_RESULT($TERMINFO_CAPS)
 AC_SUBST(TERMINFO_CAPS)
 
@@ -1187,7 +1187,8 @@ else
 	# may change.
 
 	if test "$NCURSES_BOOL" != auto ; then
-		cf_cv_type_of_bool=$NCURSES_AUTO
+		cf_cv_type_of_bool=$NCURSES_BOOL
+		cf_cv_header_stdbool_h=0
 	else
 		if test "$cf_cv_header_stdbool_h" = 1 ; then
 			CF_BOOL_SIZE
@@ -1227,6 +1228,7 @@ CF_HELP_MESSAGE(Ada95 Binding Options:)
 
 dnl Check for availability of GNU Ada Translator (GNAT).
 dnl At the moment we support no other Ada95 compiler.
+if test -f "${srcdir}/Ada95/Makefile.in" ; then
 if test "$cf_with_ada" != "no" ; then
 cf_ada_make=gnatmake
 AC_CHECK_PROG(gnat_exists, $cf_ada_make, yes, no)
@@ -1307,6 +1309,7 @@ end conftest;],[cf_cv_pragma_unreferenced=yes],[cf_cv_pragma_unreferenced=no])
        [$]prefix/lib/ada/adalib)
    AC_SUBST(ADA_OBJECTS)
 
+fi
 fi
 fi
 

@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.265 $
-#	$Date: 2005/07/23 23:58:25 $
+#	$Revision: 1.269 $
+#	$Date: 2005/10/16 00:14:02 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2193,7 +2193,7 @@ vt220-8bit|vt220-8|vt200-8bit|vt200-8|dec vt220/200 in 8-bit mode,
 	rmam=\233?7l, rmir=\2334l, rmso=\23327m, rmul=\23324m, 
 	rs1=\233?3l, sc=\E7, 
 	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;$<2>, 
-	sgr0=\233m\E(B, smacs=\E(0, smam=\233?7h, smir=\2334h, 
+	sgr0=\2330m\E(B, smacs=\E(0, smam=\233?7h, smir=\2334h, 
 	smso=\2337m, smul=\2334m, tbc=\2333g, 
 
 # vt220d:
@@ -3122,7 +3122,7 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\2333%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
-	sgr0=\233m\E(B, smacs=\E(0, smam=\233?7h, 
+	sgr0=\2330m\E(B, smacs=\E(0, smam=\233?7h, 
 	smcup=\233?1049h, smir=\2334h, smkx=\233?1h\E=, 
 	smso=\2337m, smul=\2334m, tbc=\2333g, u6=\233[%i%d;%dR, 
 	u7=\E[6n, u8=\233[?1;2c, u9=\E[c, vpa=\233%i%p1%dd, 
@@ -3493,7 +3493,7 @@ rxvt-basic|rxvt terminal base (X Window System),
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[0m\017, smacs=^N, smcup=\E7\E[?47h, smir=\E[4h, 
 	smkx=\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	use=vt220+keypad, use=rxvt+pcfkeys, 
+	use=rxvt+pcfkeys, use=vt220+keypad,
 # Key Codes from rxvt reference:
 # 
 # Note: Shift + F1-F10 generates F11-F20
@@ -17307,11 +17307,11 @@ bq300|Bull vt320 ISO Latin 1 80 columns terminal,
 	khlp=\E[28~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
 	krdo=\E[29~, kslt=\E[4~, lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4, 
 	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8, rev=\E[7m, 
-	ri=\EM, rmacs=^O, rmam=\E[?7l, rmcup=\E[?7h, rmir=\E[4l, 
+	ri=\EM, rmacs=\E(B, rmam=\E[?7l, rmcup=\E[?7h, rmir=\E[4l, 
 	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=\E[!p, 
 	rs2=\E[?3l, s0ds=\E(B, s1ds=\E(0, sc=\E7, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m%?%p9%t\E(0%e\E(B%;, 
-	sgr0=\E[0m\E(B, smacs=^N, smam=\E[?7h, 
+	sgr0=\E[0m\E(B, smacs=\E(0, smam=\E[?7h, 
 	smcup=\E[?7l\E[?1l\E(B, smir=\E[4h, smso=\E[7m, 
 	smul=\E[4m, tbc=\E[3g, tsl=\E[1$}\E[2$~, 
 bq300-rv|Bull vt320 reverse 80 columns, 
@@ -21008,6 +21008,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  sgr string -TD
 #	* modify sgr string of prism9 to better match the individual
 #	  attributes -TD
+#
+# 2005-10-15
+#	* correct order of use= in rxvt-basic -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

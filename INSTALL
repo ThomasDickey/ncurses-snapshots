@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.98 2005/10/09 14:09:37 tom Exp $
+-- $Id: INSTALL,v 1.99 2005/10/15 20:15:44 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -677,6 +677,10 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-normal
 	Generate normal (i.e., static) libraries (default).
+
+	Note: on Linux, the configure script will attempt to use the GPM
+	library via the dlsym() function call.  Use --without-gpm to disable
+	this feature.
 
     --with-profile
 	Generate profile-libraries These are named by adding "_p" to the root,
