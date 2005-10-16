@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.929 2005/10/09 14:17:59 tom Exp $
+-- $Id: NEWS,v 1.931 2005/10/16 00:21:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051015
+	+ correct order of use-clauses in rxvt-basic entry which made codes for
+	  f1-f4 vt100-style rather than vt220-style (report by Gabor Z Papp).
+	+ suppress configure check for gnatmake if Ada95/Makefile.in is not
+	  found.
+	+ correct a typo in configure --with-bool option for the case where
+	  --without-cxx is used (report by Daniel Jacobowitz).
+	+ add a note to INSTALL's discussion of --with-normal, pointing out
+	  that one may wish to use --without-gpm to ensure a completely
+	  static link (prompted by report by Felix von Leitner).
 
 20051010 5.5 release for upload to ftp.gnu.org
 
