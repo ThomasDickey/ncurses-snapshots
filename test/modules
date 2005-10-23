@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.23 2005/09/25 00:56:17 tom Exp $
+# $Id: modules,v 1.24 2005/10/22 14:19:30 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -37,6 +37,7 @@ blue		progs		$(srcdir)	$(HEADER_DEPS)
 bs		progs		$(srcdir)	$(HEADER_DEPS)
 cardfile	progs		$(srcdir)	$(HEADER_DEPS)	../include/panel.h ../include/form.h
 color_set	progs		$(srcdir)	$(HEADER_DEPS)
+demo_altkeys	progs		$(srcdir)	$(HEADER_DEPS)
 demo_defkey	progs		$(srcdir)	$(HEADER_DEPS)
 demo_keyok	progs		$(srcdir)	$(HEADER_DEPS)
 demo_forms	progs		$(srcdir)	$(HEADER_DEPS)	../include/form.h $(srcdir)/edit_field.h

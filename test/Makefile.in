@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.84 2005/09/24 23:05:14 tom Exp $
+# $Id: Makefile.in,v 1.85 2005/10/22 14:20:00 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -111,6 +111,7 @@ TESTS = \
 	bs$x \
 	cardfile$x \
 	color_set$x \
+	demo_altkeys$x \
 	demo_defkey$x \
 	demo_forms$x \
 	demo_keyok$x \
@@ -163,6 +164,9 @@ cardfile$x: $(MODEL)/cardfile$o $(LOCAL_LIBS)
 
 color_set$x: $(MODEL)/color_set$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/color_set$o $(LDFLAGS_CURSES)
+
+demo_altkeys$x: $(MODEL)/demo_altkeys$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_altkeys$o $(LDFLAGS_CURSES)
 
 demo_defkey$x: $(MODEL)/demo_defkey$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_defkey$o $(LDFLAGS_CURSES)

@@ -1,4 +1,4 @@
-# $Id: MKkeyname.awk,v 1.28 2005/04/30 19:26:25 tom Exp $
+# $Id: MKkeyname.awk,v 1.29 2005/10/22 19:01:23 tom Exp $
 ##############################################################################
 # Copyright (c) 1999-2002,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -97,6 +97,7 @@ END {
 	print "						break;"
 	print "					}"
 	print "				}"
+	print "				free(bound);"
 	print "				if (result != 0)"
 	print "					break;"
 	print "			}"
