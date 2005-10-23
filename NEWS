@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.931 2005/10/16 00:21:50 tom Exp $
+-- $Id: NEWS,v 1.933 2005/10/22 20:29:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051022
+	+ move assignment from environment variable ESCDELAY from initscr()
+	  down to newterm() so the environment variable affects timeouts for
+	  terminals opened with newterm() as well.
+	+ fix a memory leak in keyname().
+	+ add test/demo_altkeys.c
+	+ modify test/demo_defkey.c to exit from loop via 'q' to allow
+	  leak-checking, as well as fix a buffer size in winnstr() call.
 
 20051015
 	+ correct order of use-clauses in rxvt-basic entry which made codes for

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.58 2004/08/14 20:36:39 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.59 2005/10/22 20:30:49 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -105,12 +105,18 @@ filter(void)
 NCURSES_EXPORT(SCREEN *)
 newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 {
+    int value;
     int errret;
     int slk_format = _nc_slk_format;
     SCREEN *current;
 
     START_TRACE();
     T((T_CALLED("newterm(\"%s\",%p,%p)"), name, ofp, ifp));
+
+    /* allow user to set maximum escape delay from the environment */
+    if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
+	ESCDELAY = value;
+    }
 
     /* this loads the capability entry, then sets LINES and COLS */
     if (setupterm(name, fileno(ofp), &errret) == ERR)

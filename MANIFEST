@@ -961,6 +961,7 @@
 ./test/color_set.c
 ./test/configure
 ./test/configure.in
+./test/demo_altkeys.c
 ./test/demo_defkey.c
 ./test/demo_forms.c
 ./test/demo_keyok.c

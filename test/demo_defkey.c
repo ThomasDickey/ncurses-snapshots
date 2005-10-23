@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.13 2004/01/04 00:01:13 tom Exp $
+ * $Id: demo_defkey.c,v 1.14 2005/10/22 15:11:38 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -24,9 +24,12 @@ log_last_line(WINDOW *win)
     char temp[256];
 
     if ((fp = fopen(MY_LOGFILE, "a")) != 0) {
+	int need = sizeof(temp) - 1;
+	if (need > COLS)
+	    need = COLS;
 	getyx(win, y, x);
 	wmove(win, y - 1, 0);
-	n = winnstr(win, temp, sizeof(temp));
+	n = winnstr(win, temp, need);
 	while (n-- > 0) {
 	    if (isspace(UChar(temp[n])))
 		temp[n] = '\0';
@@ -120,6 +123,8 @@ really_define_key(WINDOW *win, const char *new_string, int code)
 	vis_string = 0;
     }
 
+    if (vis_string != 0)
+	free(vis_string);
     vis_string = visible(new_string);
     if ((rc = key_defined(new_string)) > 0) {
 	wprintw(win, "%s was bound to %s\n", vis_string, keyname(rc));
@@ -141,7 +146,7 @@ really_define_key(WINDOW *win, const char *new_string, int code)
 	wprintw(win, "%s deleted\n", code_name);
 	log_last_line(win);
     }
-    if (vis_string != 0 && *vis_string != 0)
+    if (vis_string != 0)
 	free(vis_string);
     if (old_string != 0)
 	free(old_string);
@@ -236,9 +241,11 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 		name != 0 ? name : "<null>");
 	log_last_line(win);
 	wclrtoeol(win);
+	if (ch == 'q')
+	    break;
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_FAILURE);
 }
 #else
 int
