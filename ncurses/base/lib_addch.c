@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.95 2005/03/27 16:52:16 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.96 2005/10/30 00:51:36 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -315,7 +315,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	     * setup though.
 	     */
 	    for (i = 0; i < len; ++i) {
-		if (isWidecBase(win->_line[y].text[i])) {
+		if (isWidecBase(win->_line[y].text[x + i])) {
 		    break;
 		} else if (isWidecExt(win->_line[y].text[x + i])) {
 		    for (j = i; x + j <= win->_maxx; ++j) {
@@ -334,7 +334,9 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	    for (i = 0; i < len; ++i) {
 		NCURSES_CH_T value = ch;
 		SetWidecExt(value, i);
-		TR(TRACE_VIRTPUT, ("multicolumn %d:%d", i + 1, len));
+		TR(TRACE_VIRTPUT, ("multicolumn %d:%d (%d,%d)",
+				   i + 1, len,
+				   win->_begy + y, win->_begx + x));
 		line->text[x] = value;
 		CHANGED_CELL(line, x);
 		++x;
