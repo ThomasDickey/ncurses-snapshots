@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.269 $
-#	$Date: 2005/10/16 00:14:02 $
+#	$Revision: 1.270 $
+#	$Date: 2005/10/26 23:21:06 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2981,8 +2981,9 @@ xterm-new|modern xterm terminal emulator,
 	kIC=\E[2;2~, kLFT=\E[1;2D, kNXT=\E[6;2~, kPRV=\E[5;2~, 
 	kRIT=\E[1;2C, kb2=\EOE, kcbt=\E[Z, kcub1=\EOD, kcud1=\EOB, 
 	kcuf1=\EOC, kcuu1=\EOA, kend=\EOF, kent=\EOM, khome=\EOH, 
-	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	rin=\E[%p1%dT, use=xterm+pcfkeys, use=xterm-basic, 
+	kich1=\E[2~, kind=\E[1;2B, kmous=\E[M, knp=\E[6~, 
+	kpp=\E[5~, kri=\E[1;2A, rin=\E[%p1%dT, use=xterm+pcfkeys, 
+	use=xterm-basic, 
 #
 # This fragment describes as much of XFree86 xterm's "pc-style" function
 # keys as will fit into terminfo's 60 function keys.
@@ -3493,7 +3494,7 @@ rxvt-basic|rxvt terminal base (X Window System),
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[0m\017, smacs=^N, smcup=\E7\E[?47h, smir=\E[4h, 
 	smkx=\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	use=rxvt+pcfkeys, use=vt220+keypad,
+	use=rxvt+pcfkeys, use=vt220+keypad, 
 # Key Codes from rxvt reference:
 # 
 # Note: Shift + F1-F10 generates F11-F20
@@ -21011,6 +21012,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2005-10-15
 #	* correct order of use= in rxvt-basic -TD
+#
+# 2005-10-26
+#	* use kind/kri as shifted up/down cursor keys for xterm-new -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

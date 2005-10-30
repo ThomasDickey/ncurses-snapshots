@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.933 2005/10/22 20:29:24 tom Exp $
+-- $Id: NEWS,v 1.934 2005/10/30 00:54:15 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051029
+	+ add shifted up/down arrow codes to xterm-new as kind/kri strings -TD
+	+ modify wbkgrnd() to avoid clearing the A_CHARTEXT attribute bits
+	  since those record the state of multicolumn characters (Debian
+	  #316663).
+	+ modify werase to clear multicolumn characters that extend into
+	  a derived window (Debian #316663).
 
 20051022
 	+ move assignment from environment variable ESCDELAY from initscr()

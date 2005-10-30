@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.32 2005/04/16 18:03:48 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.33 2005/10/30 00:41:09 tom Exp $")
 
 /*
  * Set the window's background information.
@@ -131,11 +131,11 @@ wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 
 	for (y = 0; y <= win->_maxy; y++) {
 	    for (x = 0; x <= win->_maxx; x++) {
-		if (CharEq(win->_line[y].text[x], old_bkgrnd))
+		if (CharEq(win->_line[y].text[x], old_bkgrnd)) {
 		    win->_line[y].text[x] = win->_nc_bkgd;
-		else {
+		} else {
 		    NCURSES_CH_T wch = win->_line[y].text[x];
-		    RemAttr(wch, (~A_ALTCHARSET));
+		    RemAttr(wch, (~(A_ALTCHARSET | A_CHARTEXT)));
 		    win->_line[y].text[x] = _nc_render(win, wch);
 		}
 	    }
