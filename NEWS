@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.934 2005/10/30 00:54:15 tom Exp $
+-- $Id: NEWS,v 1.935 2005/11/12 23:11:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051112
+	+ other minor fixes to cygwin based on tack -TD
+	+ correct smacs in cygwin (Debian #338234, report by Baurzhan
+	  Ismagulov, who noted that it was fixed in Cygwin).
 
 20051029
 	+ add shifted up/down arrow codes to xterm-new as kind/kri strings -TD
