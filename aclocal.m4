@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.373 2005/09/24 21:58:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.375 2005/11/19 21:48:41 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -3390,7 +3390,7 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 31 updated: 2005/01/01 16:39:44
+dnl CF_SHARED_OPTS version: 32 updated: 2005/11/19 16:44:37
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -3476,6 +3476,14 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(CC) -dynamiclib -install_name $(DESTDIR)$(libdir)/`basename $[@]` -compatibility_version $(ABI_VERSION) -current_version $(ABI_VERSION) -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=abi
 		cf_cv_shlib_version_infix=yes
+		AC_CACHE_CHECK([if ld -search_paths_first works], cf_cv_ldflags_search_paths_first, [
+			cf_save_LDFLAGS=$LDFLAGS
+			LDFLAGS="$LDFLAGS -Wl,-search_paths_first"
+			AC_TRY_LINK(, [int i;], cf_cv_ldflags_search_paths_first=yes, cf_cv_ldflags_search_paths_first=no)
+				LDFLAGS=$cf_save_LDFLAGS])
+		if test $cf_cv_ldflags_search_paths_first = yes; then
+			LDFLAGS="$LDFLAGS -Wl,-search_paths_first"
+		fi
 		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
@@ -4487,7 +4495,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 22 updated: 2005/08/06 18:06:32
+dnl CF_XOPEN_SOURCE version: 23 updated: 2005/10/15 16:39:05
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -4505,9 +4513,6 @@ cf_POSIX_C_SOURCE=ifelse($2,,199506L,$2)
 case $host_os in #(vi
 aix[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_ALL_SOURCE"
-	;;
-darwin*) #(vi
-	# setting _XOPEN_SOURCE breaks things on Darwin
 	;;
 freebsd*) #(vi
 	# 5.x headers associate

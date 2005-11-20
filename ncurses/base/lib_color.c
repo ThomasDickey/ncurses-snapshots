@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.75 2005/06/18 20:19:08 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.76 2005/11/19 21:52:39 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -371,13 +371,11 @@ init_pair(short pair, short f, short b)
 	   tp[f].red, tp[f].green, tp[f].blue,
 	   tp[b].red, tp[b].green, tp[b].blue));
 
-	if (initialize_pair) {
-	    TPUTS_TRACE("initialize_pair");
-	    putp(tparm(initialize_pair,
-		       pair,
-		       tp[f].red, tp[f].green, tp[f].blue,
-		       tp[b].red, tp[b].green, tp[b].blue));
-	}
+	TPUTS_TRACE("initialize_pair");
+	putp(tparm(initialize_pair,
+		   pair,
+		   tp[f].red, tp[f].green, tp[f].blue,
+		   tp[b].red, tp[b].green, tp[b].blue));
     }
 
     returnCode(OK);

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.11 2003/05/17 23:50:37 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.12 2005/11/19 20:36:23 tom Exp $")
 
 #undef tabs
 
@@ -59,28 +59,51 @@ MODULE_ID("$Id: lib_ttyflags.c,v 1.11 2003/05/17 23:50:37 tom Exp $")
 NCURSES_EXPORT(int)
 _nc_get_tty_mode(TTY * buf)
 {
-    if (cur_term == 0
-	|| GET_TTY(cur_term->Filedes, buf) != 0) {
-	memset(buf, 0, sizeof(*buf));
-	return (ERR);
+    int result = OK;
+
+    if (cur_term == 0) {
+	result = ERR;
+    } else {
+	for (;;) {
+	    if (GET_TTY(cur_term->Filedes, buf) != 0) {
+		if (errno == EINTR)
+		    continue;
+		result = ERR;
+	    }
+	    break;
+	}
     }
+
+    if (result == ERR)
+	memset(buf, 0, sizeof(*buf));
+
     TR(TRACE_BITS, ("_nc_get_tty_mode(%d): %s",
 		    cur_term->Filedes, _nc_trace_ttymode(buf)));
-    return (OK);
+    return (result);
 }
 
 NCURSES_EXPORT(int)
 _nc_set_tty_mode(TTY * buf)
 {
-    if (cur_term == 0
-	|| SET_TTY(cur_term->Filedes, buf) != 0) {
-	if ((errno == ENOTTY) && (SP != 0))
-	    SP->_notty = TRUE;
-	return (ERR);
+    int result = OK;
+
+    if (cur_term == 0) {
+	result = ERR;
+    } else {
+	for (;;) {
+	    if (SET_TTY(cur_term->Filedes, buf) != 0) {
+		if (errno == EINTR)
+		    continue;
+		if ((errno == ENOTTY) && (SP != 0))
+		    SP->_notty = TRUE;
+		result = ERR;
+	    }
+	    break;
+	}
     }
     TR(TRACE_BITS, ("_nc_set_tty_mode(%d): %s",
 		    cur_term->Filedes, _nc_trace_ttymode(buf)));
-    return (OK);
+    return (result);
 }
 
 NCURSES_EXPORT(int)

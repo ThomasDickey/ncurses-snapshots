@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.935 2005/11/12 23:11:09 tom Exp $
+-- $Id: NEWS,v 1.936 2005/11/19 21:54:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051119
+	+ remove a redundant check in lib_color.c (Debian #335655).
+	+ use ld's -search_paths_first option on Darwin to work around odd
+	  search rules on that platform (report by Christian Gennerat, analysis
+	  by Andrea Govoni).
+	+ remove special case for Darwin in CF_XOPEN_SOURCE configure macro.
+	+ ignore EINTR in tcgetattr/tcsetattr calls (Debian #339518).
+	+ fix several bugs in test/bs.c (patch by Stephen Lindholm).
 
 20051112
 	+ other minor fixes to cygwin based on tack -TD
