@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.936 2005/11/19 21:54:09 tom Exp $
+-- $Id: NEWS,v 1.938 2005/11/26 15:55:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051126
+	+ move prototypes for wide-character trace functions from curses.tail
+	  to curses.wide to avoid accidental reference to those if
+	  _XOPEN_SOURCE_EXTENDED is defined without ensuring that <wchar.h> is
+	  included.
+	+ add/use NCURSES_INLINE definition.
+	+ change some internal functions to use int/unsigned rather than the
+	  short equivalents.
 
 20051119
 	+ remove a redundant check in lib_color.c (Debian #335655).

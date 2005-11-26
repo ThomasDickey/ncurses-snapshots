@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.73 2005/06/11 18:08:57 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.74 2005/11/20 01:24:32 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -80,7 +80,7 @@ check_mouse_activity(int delay EVENTLIST_2nd(_nc_eventlist * evl))
     return rc;
 }
 
-static inline int
+static NCURSES_INLINE int
 fifo_peek(void)
 {
     int ch = SP->_fifo[peek];
@@ -90,7 +90,7 @@ fifo_peek(void)
     return ch;
 }
 
-static inline int
+static NCURSES_INLINE int
 fifo_pull(void)
 {
     int ch;
@@ -110,7 +110,7 @@ fifo_pull(void)
     return ch;
 }
 
-static inline int
+static NCURSES_INLINE int
 fifo_push(EVENTLIST_0th(_nc_eventlist * evl))
 {
     int n;
@@ -206,7 +206,7 @@ fifo_push(EVENTLIST_0th(_nc_eventlist * evl))
     return ch;
 }
 
-static inline void
+static NCURSES_INLINE void
 fifo_clear(void)
 {
     memset(SP->_fifo, 0, sizeof(SP->_fifo));

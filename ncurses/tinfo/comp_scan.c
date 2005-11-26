@@ -51,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.76 2005/06/04 22:04:45 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.77 2005/11/26 15:28:47 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -284,7 +284,7 @@ end_of_stream(void)
 }
 
 /* Assume we may be looking at a termcap-style continuation */
-static inline int
+static NCURSES_INLINE int
 eat_escaped_newline(int ch)
 {
     if (ch == '\\')

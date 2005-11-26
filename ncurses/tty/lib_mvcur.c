@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.103 2005/06/11 19:30:15 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.104 2005/11/26 15:28:47 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -448,7 +448,7 @@ _nc_mvcur_wrap(void)
 /*
  * Perform repeated-append, returning cost
  */
-static inline int
+static NCURSES_INLINE int
 repeated_append(string_desc * target, int total, int num, int repeat, const char *src)
 {
     size_t need = repeat * strlen(src);
@@ -695,7 +695,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
  * the simpler method below.
  */
 
-static inline int
+static NCURSES_INLINE int
 onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 /* onscreen move from (yold, xold) to (ynew, xnew) */
 {

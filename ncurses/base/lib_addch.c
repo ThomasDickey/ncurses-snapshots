@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.96 2005/10/30 00:51:36 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.97 2005/11/20 01:22:47 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -51,7 +51,7 @@ MODULE_ID("$Id: lib_addch.c,v 1.96 2005/10/30 00:51:36 tom Exp $")
 /* Return bit mask for clearing color pair number if given ch has color */
 #define COLOR_MASK(ch) (~(attr_t)((ch) & A_COLOR ? A_COLOR : 0))
 
-static inline NCURSES_CH_T
+static NCURSES_INLINE NCURSES_CH_T
 render_char(WINDOW *win, NCURSES_CH_T ch)
 /* compute a rendition of the given char correct for the current context */
 {
@@ -222,7 +222,7 @@ _nc_build_wch(WINDOW *win, ARG_CH_T ch)
 
 static
 #if !USE_WIDEC_SUPPORT		/* cannot be inline if it is recursive */
-inline
+NCURSES_INLINE
 #endif
 int
 waddch_literal(WINDOW *win, NCURSES_CH_T ch)
@@ -367,7 +367,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
     return OK;
 }
 
-static inline int
+static NCURSES_INLINE int
 waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 /* the workhorse function -- add a character to the given window */
 {

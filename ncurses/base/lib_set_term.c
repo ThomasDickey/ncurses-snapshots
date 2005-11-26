@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.85 2005/01/22 17:36:01 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.86 2005/11/20 01:28:30 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -212,7 +212,7 @@ extract_fgbg(char *src, int *result)
 #endif
 
 NCURSES_EXPORT(int)
-_nc_setupscreen(short slines, short const scolumns, FILE *output)
+_nc_setupscreen(int slines, int const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
     int bottom_stolen = 0;

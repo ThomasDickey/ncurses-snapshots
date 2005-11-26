@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.286 2005/09/10 22:34:50 tom Exp $
+ * $Id: curses.priv.h,v 1.287 2005/11/20 01:32:15 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1091,9 +1091,9 @@ extern NCURSES_EXPORT(char *) _nc_strstr (const char *, const char *);
 extern NCURSES_EXPORT(char *) _nc_printf_string (const char *, va_list);
 
 /* tries.c */
-extern NCURSES_EXPORT(void) _nc_add_to_try (struct tries **, const char *, unsigned short);
+extern NCURSES_EXPORT(void) _nc_add_to_try (struct tries **, const char *, unsigned);
 extern NCURSES_EXPORT(char *) _nc_expand_try (struct tries *, unsigned short, int *, size_t);
-extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
+extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned);
 extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, const char *);
 
 /* elsewhere ... */
@@ -1109,7 +1109,7 @@ extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
 extern NCURSES_EXPORT(int) _nc_keypad (bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
-extern NCURSES_EXPORT(int) _nc_setupscreen (short, short const, FILE *);
+extern NCURSES_EXPORT(int) _nc_setupscreen (int, int const, FILE *);
 extern NCURSES_EXPORT(int) _nc_timed_wait(int, int, int * EVENTLIST_2nd(_nc_eventlist *));
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, bool, int (*)(int));
 extern NCURSES_EXPORT(void) _nc_flush (void);

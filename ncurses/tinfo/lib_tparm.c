@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.68 2004/02/07 20:52:51 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.69 2005/11/26 15:41:24 tom Exp $")
 
 /*
  *	char *
@@ -146,7 +146,7 @@ _nc_free_tparm(void)
 }
 #endif
 
-static inline void
+static NCURSES_INLINE void
 get_space(size_t need)
 {
     need += out_used;
@@ -158,7 +158,7 @@ get_space(size_t need)
     }
 }
 
-static inline void
+static NCURSES_INLINE void
 save_text(const char *fmt, const char *s, int len)
 {
     size_t s_len = strlen(s);
@@ -171,7 +171,7 @@ save_text(const char *fmt, const char *s, int len)
     out_used += strlen(out_buff + out_used);
 }
 
-static inline void
+static NCURSES_INLINE void
 save_number(const char *fmt, int number, int len)
 {
     if (len < 30)
@@ -183,7 +183,7 @@ save_number(const char *fmt, int number, int len)
     out_used += strlen(out_buff + out_used);
 }
 
-static inline void
+static NCURSES_INLINE void
 save_char(int c)
 {
     if (c == 0)
@@ -192,7 +192,7 @@ save_char(int c)
     out_buff[out_used++] = c;
 }
 
-static inline void
+static NCURSES_INLINE void
 npush(int x)
 {
     if (stack_ptr < STACKSIZE) {
@@ -205,7 +205,7 @@ npush(int x)
     }
 }
 
-static inline int
+static NCURSES_INLINE int
 npop(void)
 {
     int result = 0;
@@ -220,7 +220,7 @@ npop(void)
     return result;
 }
 
-static inline void
+static NCURSES_INLINE void
 spush(char *x)
 {
     if (stack_ptr < STACKSIZE) {
@@ -233,7 +233,7 @@ spush(char *x)
     }
 }
 
-static inline char *
+static NCURSES_INLINE char *
 spop(void)
 {
     static char dummy[] = "";	/* avoid const-cast */
@@ -249,7 +249,7 @@ spop(void)
     return result;
 }
 
-static inline const char *
+static NCURSES_INLINE const char *
 parse_format(const char *s, char *format, int *len)
 {
     *len = 0;
@@ -471,7 +471,7 @@ _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
     return number;
 }
 
-static inline char *
+static NCURSES_INLINE char *
 tparam_internal(const char *string, va_list ap)
 {
 #define NUM_VARS 26

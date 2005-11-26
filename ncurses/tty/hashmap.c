@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.47 2005/01/29 21:27:58 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.48 2005/11/26 15:28:47 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -108,7 +108,7 @@ static chtype oldtext[MAXLINES][TEXTWIDTH], newtext[MAXLINES][TEXTWIDTH];
 #define HASH_VAL(ch) (ch)
 #endif
 
-static inline unsigned long
+static NCURSES_INLINE unsigned long
 hash(NCURSES_CH_T * text)
 {
     int i;
@@ -156,7 +156,7 @@ update_cost_from_blank(NCURSES_CH_T * to)
  * Returns true when moving line 'from' to line 'to' seems to be cost
  * effective. 'blank' indicates whether the line 'to' would become blank.
  */
-static inline bool
+static NCURSES_INLINE bool
 cost_effective(const int from, const int to, const bool blank)
 {
     int new_from;

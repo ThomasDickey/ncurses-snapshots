@@ -1,7 +1,10 @@
-
+/*
+ * This file is part of ncurses, designed to be appended after curses.h.in
+ * (see that file for the relevant copyright).
+ */
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.29 2005/01/28 21:11:53 tom Exp $ */
+/* $Id: curses.wide,v 1.30 2005/11/26 15:58:51 tom Exp $ */
 
 extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
 
@@ -233,5 +236,10 @@ extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* imple
 #define mvwins_wstr(win,y,x,t)		(wmove(win,y,x) == ERR ? ERR : wins_wstr(win,t))
 #define mvwinwstr(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : winwstr(win,c))
 #define mvwvline_set(win,y,x,c,n)	(wmove(win,y,x) == ERR ? ERR : wvline_set(win,c,n))
+
+#if defined(TRACE) || defined(NCURSES_TEST)
+extern NCURSES_EXPORT(const char *) _nc_viswbuf(const wchar_t *);
+extern NCURSES_EXPORT(const char *) _nc_viswibuf(const wint_t *);
+#endif
 
 #endif /* _XOPEN_SOURCE_EXTENDED */

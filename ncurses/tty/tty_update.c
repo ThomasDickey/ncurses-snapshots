@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.220 2005/08/13 17:12:32 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.221 2005/11/26 15:28:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -98,7 +98,7 @@ static const NCURSES_CH_T normal = NewChar2(BLANK_TEXT, BLANK_ATTR);
  */
 /* #define POSITION_DEBUG */
 
-static inline NCURSES_CH_T ClrBlank(WINDOW *win);
+static NCURSES_INLINE NCURSES_CH_T ClrBlank(WINDOW *win);
 static int ClrBottom(int total);
 static void ClearScreen(NCURSES_CH_T blank);
 static void ClrUpdate(void);
@@ -166,7 +166,7 @@ position_check(int expected_y, int expected_x, char *legend)
  *
  ****************************************************************************/
 
-static inline void
+static NCURSES_INLINE void
 GoTo(int const row, int const col)
 {
     TR(TRACE_MOVE, ("GoTo(%d, %d) from (%d, %d)",
@@ -178,7 +178,7 @@ GoTo(int const row, int const col)
     position_check(SP->_cursrow, SP->_curscol, "GoTo2");
 }
 
-static inline void
+static NCURSES_INLINE void
 PutAttrChar(CARG_CH_T ch)
 {
     int chlen = 1;
@@ -392,7 +392,7 @@ wrap_cursor(void)
     position_check(SP->_cursrow, SP->_curscol, "wrap_cursor");
 }
 
-static inline void
+static NCURSES_INLINE void
 PutChar(const ARG_CH_T ch)
 /* insert character, handling automargin stuff */
 {
@@ -413,7 +413,7 @@ PutChar(const ARG_CH_T ch)
  * as A_REVERSE.  All attribute flags which don't affect appearance of a space
  * or can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
  */
-static inline bool
+static NCURSES_INLINE bool
 can_clear_with(ARG_CH_T ch)
 {
     if (!back_color_erase && SP->_coloron) {
@@ -881,7 +881,7 @@ doupdate(void)
 #define BCE_ATTRS (A_NORMAL|A_COLOR)
 #define BCE_BKGD(win) (((win) == curscr ? stdscr : (win))->_nc_bkgd)
 
-static inline NCURSES_CH_T
+static NCURSES_INLINE NCURSES_CH_T
 ClrBlank(WINDOW *win)
 {
     NCURSES_CH_T blank = NewChar(BLANK_TEXT);
@@ -1031,7 +1031,7 @@ ClrBottom(int total)
 
 #if USE_XMC_SUPPORT
 #if USE_WIDEC_SUPPORT
-static inline bool
+static NCURSES_INLINE bool
 check_xmc_transition(NCURSES_CH_T * a, NCURSES_CH_T * b)
 {
     if (((a->attr ^ b->attr) & ~(a->attr) & SP->_xmc_triggers) != 0) {
