@@ -48,7 +48,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.59 2005/10/22 20:30:49 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.61 2005/11/26 13:18:39 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -62,7 +62,7 @@ MODULE_ID("$Id: lib_newterm.c,v 1.59 2005/10/22 20:30:49 tom Exp $")
  * The newterm function also initializes terminal settings, and since initscr
  * is supposed to behave as if it calls newterm, we do it here.
  */
-static inline int
+static NCURSES_INLINE int
 _nc_initscr(void)
 {
     int result = ERR;
@@ -77,8 +77,10 @@ _nc_initscr(void)
 	buf.c_lflag &= ~(ECHO | ECHONL);
 	buf.c_iflag &= ~(ICRNL | INLCR | IGNCR);
 	buf.c_oflag &= ~(ONLCR);
-#else
+#elif HAVE_SGTTY_H
 	buf.sg_flags &= ~(ECHO | CRMOD);
+#else
+	memset(&buf, 0, sizeof(buf));
 #endif
 	if ((result = _nc_set_tty_mode(&buf)) == OK)
 	    cur_term->Nttyb = buf;

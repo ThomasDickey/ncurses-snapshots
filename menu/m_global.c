@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.20 2005/04/16 17:30:57 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.21 2005/11/26 15:26:33 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -106,7 +106,7 @@ NCURSES_EXPORT_VAR(ITEM) _nc_Default_Item = {
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-INLINE static void
+NCURSES_INLINE static void
 ComputeMaximum_NameDesc_Lengths(MENU * menu)
 {
   unsigned MaximumNameLength = 0;
@@ -137,7 +137,7 @@ ComputeMaximum_NameDesc_Lengths(MENU * menu)
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-INLINE static void
+NCURSES_INLINE static void
 ResetConnectionInfo(MENU * menu, ITEM ** items)
 {
   ITEM **item;

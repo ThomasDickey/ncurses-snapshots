@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.71 2005/10/01 19:42:40 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.72 2005/11/26 15:26:18 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -346,7 +346,7 @@ delete_char(FORM *form)
 |
 |   Return Values :  Pointer to first non-blank position in buffer
 +--------------------------------------------------------------------------*/
-INLINE static FIELD_CELL *
+NCURSES_INLINE static FIELD_CELL *
 Get_Start_Of_Data(FIELD_CELL *buf, int blen)
 {
   FIELD_CELL *p = buf;
@@ -368,7 +368,7 @@ Get_Start_Of_Data(FIELD_CELL *buf, int blen)
 |   Return Values :  Pointer to position after last non-blank position in
 |                    buffer.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD_CELL *
+NCURSES_INLINE static FIELD_CELL *
 After_End_Of_Data(FIELD_CELL *buf, int blen)
 {
   FIELD_CELL *p = &buf[blen];
@@ -388,7 +388,7 @@ After_End_Of_Data(FIELD_CELL *buf, int blen)
 |
 |   Return Values :  Pointer to first whitespace character in buffer.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD_CELL *
+NCURSES_INLINE static FIELD_CELL *
 Get_First_Whitespace_Character(FIELD_CELL *buf, int blen)
 {
   FIELD_CELL *p = buf;
@@ -410,7 +410,7 @@ Get_First_Whitespace_Character(FIELD_CELL *buf, int blen)
 |   Return Values :  Pointer to position after last whitespace character in
 |                    buffer.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD_CELL *
+NCURSES_INLINE static FIELD_CELL *
 After_Last_Whitespace_Character(FIELD_CELL *buf, int blen)
 {
   FIELD_CELL *p = &buf[blen];
@@ -439,7 +439,7 @@ After_Last_Whitespace_Character(FIELD_CELL *buf, int blen)
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-INLINE static void
+NCURSES_INLINE static void
 Adjust_Cursor_Position(FORM *form, const FIELD_CELL *pos)
 {
   FIELD *field;
@@ -560,7 +560,7 @@ Window_To_Buffer(WINDOW *win, FIELD *field)
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-INLINE static void
+NCURSES_INLINE static void
 Synchronize_Buffer(FORM *form)
 {
   if (form->status & _WINDOW_MODIFIED)
@@ -2206,7 +2206,7 @@ HSC_Horizontal_Half_Line_Backward(FORM *form)
 |   Return Values :  TRUE   - there is enough space
 |                    FALSE  - there is not enough space
 +--------------------------------------------------------------------------*/
-INLINE static bool
+NCURSES_INLINE static bool
 Is_There_Room_For_A_Line(FORM *form)
 {
   FIELD *field = form->current;
@@ -2228,7 +2228,7 @@ Is_There_Room_For_A_Line(FORM *form)
 |   Return Values :  TRUE    - there is room
 |                    FALSE   - there is not enough room (line full)
 +--------------------------------------------------------------------------*/
-INLINE static bool
+NCURSES_INLINE static bool
 Is_There_Room_For_A_Char_In_Line(FORM *form)
 {
   int last_char_in_line;
@@ -3110,7 +3110,7 @@ FV_Validation(FORM *form)
 |
 |   Return Values :  Pointer to the next field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Next_Field_On_Page(FIELD *field)
 {
   FORM *form = field->form;
@@ -3192,7 +3192,7 @@ _nc_First_Active_Field(FORM *form)
 |
 |   Return Values :  Pointer to the previous field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Previous_Field_On_Page(FIELD *field)
 {
   FORM *form = field->form;
@@ -3222,7 +3222,7 @@ Previous_Field_On_Page(FIELD *field)
 |
 |   Return Values :  Pointer to the next field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Sorted_Next_Field(FIELD *field)
 {
   FIELD *field_on_page = field;
@@ -3248,7 +3248,7 @@ Sorted_Next_Field(FIELD *field)
 |
 |   Return Values :  Pointer to the previous field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Sorted_Previous_Field(FIELD *field)
 {
   FIELD *field_on_page = field;
@@ -3273,7 +3273,7 @@ Sorted_Previous_Field(FIELD *field)
 |
 |   Return Values :  Pointer to left neighbor field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Left_Neighbor_Field(FIELD *field)
 {
   FIELD *field_on_page = field;
@@ -3301,7 +3301,7 @@ Left_Neighbor_Field(FIELD *field)
 |
 |   Return Values :  Pointer to right neighbor field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *
+NCURSES_INLINE static FIELD *
 Right_Neighbor_Field(FIELD *field)
 {
   FIELD *field_on_page = field;
@@ -3734,7 +3734,7 @@ _nc_Set_Form_Page(FORM *form, int page, FIELD *field)
 |
 |   Return Values :  The next page number
 +--------------------------------------------------------------------------*/
-INLINE static int
+NCURSES_INLINE static int
 Next_Page_Number(const FORM *form)
 {
   return (form->curpage + 1) % form->maxpage;
@@ -3750,7 +3750,7 @@ Next_Page_Number(const FORM *form)
 |
 |   Return Values :  The previous page number
 +--------------------------------------------------------------------------*/
-INLINE static int
+NCURSES_INLINE static int
 Previous_Page_Number(const FORM *form)
 {
   return (form->curpage != 0 ? form->curpage - 1 : form->maxpage - 1);

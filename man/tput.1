@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.22 2005/01/08 17:44:26 tom Exp $
+.\" $Id: tput.1,v 1.23 2005/11/26 17:03:09 tom Exp $
 .TH tput 1 ""
 .ds d @TERMINFO@
 .ds n 1
@@ -280,9 +280,19 @@ T}
 =
 .TE
 .SH PORTABILITY
+.PP
 The \fBlongname\fR and \fB-S\fR options, and the parameter-substitution
 features used in the \fBcup\fR example, are not supported in BSD curses or in
 AT&T/USL curses before SVr4.
+.PP
+X/Open documents only the operands for \fBclear\fP, \fBinit\fP and \fBreset\fP.
+In this implementation, \fBclear\fP is part of the \fIcapname\fR support.
+Other implementations of \fBtput\fP on
+SVr4-based systems such as Solaris, IRIX64 and HPUX
+as well as others such as AIX and Tru64
+provide support for \fIcapname\fR operands.
+A few platforms such as FreeBSD and NetBSD recognize termcap names rather
+than terminfo capability names in their respective \fBtput\fP commands.
 .SH SEE ALSO
 \fB@CLEAR@\fR(1),
 \fBstty\fR(1),

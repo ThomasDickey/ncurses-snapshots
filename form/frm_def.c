@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.17 2004/12/25 22:26:01 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.18 2005/11/26 15:33:52 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -249,7 +249,7 @@ Connect_Fields(FORM *form, FIELD **fields)
 |   Return Values :  E_OK            - success
 |                    any other       - error occurred
 +--------------------------------------------------------------------------*/
-INLINE static int
+NCURSES_INLINE static int
 Associate_Fields(FORM *form, FIELD **fields)
 {
   int res = Connect_Fields(form, fields);
