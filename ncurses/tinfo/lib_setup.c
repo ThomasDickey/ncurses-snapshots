@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.88 2005/03/12 19:41:45 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.89 2005/11/26 23:27:39 tom Exp $")
 
 /****************************************************************************
  *
@@ -417,7 +417,7 @@ _nc_locale_breaks_acs(void)
 }
 
 /*
- * This entrypoint is called from tgetent() to allow special a case of reusing
+ * This entrypoint is called from tgetent() to allow a special case of reusing
  * the same TERMINAL data (see comment).
  */
 NCURSES_EXPORT(int)

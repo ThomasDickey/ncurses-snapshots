@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.355 2005/11/26 15:22:23 tom Exp $
+dnl $Id: configure.in,v 1.356 2005/12/03 20:57:10 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.355 $)
+AC_REVISION($Revision: 1.356 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -285,10 +285,20 @@ CF_WITH_DMALLOC
 SHLIB_LIST=""
 CF_WITH_GPM
 if test "$with_gpm" = yes ; then
-	CF_FUNC_DLSYM
-	CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open(0,0)) Gpm_Close();],gpm)
-	test "$cf_cv_gpm_soname" != "unknown" && AC_DEFINE_UNQUOTED(LIBGPM_SONAME,"$cf_cv_gpm_soname")
-	SHLIB_LIST="-ldl $SHLIB_LIST"
+	AC_MSG_CHECKING(if you want to load GPM dynamically)
+	AC_ARG_WITH(dlsym,
+		[  --without-dlsym         do not use dlsym() to load GPM dynamically],
+		[with_dlsym=$withval],
+		[with_dlsym=yes])
+	AC_MSG_RESULT($with_dlsym)
+	if test "$with_dlsym" = yes ; then
+		CF_FUNC_DLSYM
+		CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open(0,0)) Gpm_Close();],gpm)
+		test "$cf_cv_gpm_soname" != "unknown" && AC_DEFINE_UNQUOTED(LIBGPM_SONAME,"$cf_cv_gpm_soname")
+		SHLIB_LIST="-ldl $SHLIB_LIST"
+	else
+		SHLIB_LIST="-lgpm $SHLIB_LIST"
+	fi
 	AC_DEFINE(HAVE_LIBGPM)
 	AC_CHECK_LIB(gpm,Gpm_Wgetch,[
 		AC_MSG_WARN(GPM library is already linked with curses - read the FAQ)

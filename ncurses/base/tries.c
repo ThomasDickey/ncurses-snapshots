@@ -39,14 +39,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.21 2005/11/20 01:31:45 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.22 2005/11/26 20:09:18 tom Exp $")
 
 /*
  * Expand a keycode into the string that it corresponds to, returning null if
  * no match was found, otherwise allocating a string of the result.
  */
 NCURSES_EXPORT(char *)
-_nc_expand_try(struct tries *tree, unsigned short code, int *count, size_t len)
+_nc_expand_try(struct tries *tree, unsigned code, int *count, size_t len)
 {
     struct tries *ptr = tree;
     char *result = 0;

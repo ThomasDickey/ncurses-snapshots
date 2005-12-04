@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.938 2005/11/26 15:55:19 tom Exp $
+-- $Id: NEWS,v 1.939 2005/12/03 20:55:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051203
+	+ add configure option --without-gpm, allowing developers to configure
+	  GPM support without using dlsym() (discussion with Michael Setzer).
+	+ fix wins_nwstr(), which did not handle single-column non-8bit codes
+	  (Debian #341661).
 
 20051126
 	+ move prototypes for wide-character trace functions from curses.tail
