@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.77 2005/09/10 22:58:57 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.79 2005/12/03 20:45:28 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -89,8 +89,11 @@ MODULE_ID("$Id: lib_mouse.c,v 1.77 2005/09/10 22:58:57 tom Exp $")
 #undef buttons			/* term.h defines this, and gpm uses it! */
 #include <gpm.h>
 #include <linux/keyboard.h>	/* defines KG_* macros */
+
+#ifdef HAVE_LIBDL
 /* use dynamic loader to avoid linkage dependency */
 #include <dlfcn.h>
+
 #ifdef RTLD_NOW
 #define my_RTLD RTLD_NOW
 #else
@@ -99,8 +102,10 @@ MODULE_ID("$Id: lib_mouse.c,v 1.77 2005/09/10 22:58:57 tom Exp $")
 #else
 make an error
 #endif
-#endif
-#endif
+#endif				/* RTLD_NOW */
+#endif				/* HAVE_LIBDL */
+
+#endif				/* !LINT */
 #endif				/* USE_GPM_SUPPORT */
 
 #if USE_SYSMOUSE
@@ -150,9 +155,9 @@ make an error
 #define LIBGPM_SONAME "libgpm.so"
 #endif
 
+#ifdef HAVE_LIBDL
+/* link dynamically to GPM */
 #define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(obj, #name))
-
-static Gpm_Connect gpm_connect;
 
 typedef int *TYPE_gpm_fd;
 typedef int (*TYPE_Gpm_Open) (Gpm_Connect *, int);
@@ -163,6 +168,15 @@ static TYPE_gpm_fd my_gpm_fd;
 static TYPE_Gpm_Open my_Gpm_Open;
 static TYPE_Gpm_Close my_Gpm_Close;
 static TYPE_Gpm_GetEvent my_Gpm_GetEvent;
+#else
+/* link statically to GPM */
+#define my_gpm_fd       &gpm_fd
+#define my_Gpm_Open     Gpm_Open
+#define my_Gpm_Close    Gpm_Close
+#define my_Gpm_GetEvent Gpm_GetEvent
+#endif
+
+static Gpm_Connect gpm_connect;
 
 #endif /* LINT */
 #endif /* USE_GPM_SUPPORT */
@@ -441,6 +455,7 @@ initialize_mousetype(void)
 	static bool found = FALSE;
 
 	if (first) {
+#ifdef HAVE_LIBDL
 	    void *obj;
 	    first = FALSE;
 
@@ -455,6 +470,10 @@ initialize_mousetype(void)
 		    found = TRUE;
 		}
 	    }
+#else /* !HAVE_LIBDL */
+	    first = FALSE;
+	    found = TRUE;
+#endif
 	}
 
 	/*
@@ -1272,7 +1291,7 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	     | BUTTON_DOUBLE_CLICKED
 	     | BUTTON_TRIPLE_CLICKED);
 
-	mouse_activate(eventmask != 0);
+	mouse_activate((bool) (eventmask != 0));
 
 	result = eventmask;
     }

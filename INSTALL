@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.99 2005/10/15 20:15:44 tom Exp $
+-- $Id: INSTALL,v 1.100 2005/12/03 20:59:42 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -594,6 +594,8 @@ SUMMARY OF CONFIGURE OPTIONS:
 	bind to the at runtime, so it is only necessary that the library be
 	present when ncurses is built.
 
+	See also --without-dlsym
+
     --with-install-prefix=XXX
 	Allows you to specify an alternate location for installing ncurses
 	after building it.  The value you specify is prepended to the "real"
@@ -678,9 +680,10 @@ SUMMARY OF CONFIGURE OPTIONS:
     --with-normal
 	Generate normal (i.e., static) libraries (default).
 
-	Note: on Linux, the configure script will attempt to use the GPM
-	library via the dlsym() function call.  Use --without-gpm to disable
-	this feature.
+	Note:  on Linux, the configure script will attempt to use the GPM
+	library via the dlsym() function call.  Use --without-dlsym to disable
+	this feature, or --without-gpm, depending on whether you wish to use
+	GPM.
 
     --with-profile
 	Generate profile-libraries These are named by adding "_p" to the root,
@@ -775,6 +778,9 @@ SUMMARY OF CONFIGURE OPTIONS:
     --without-cxx-binding
 	Suppress the configure script's check for C++, do not build the
 	C++ binding and related demo.
+
+    --without-dlsym
+	Do not use dlsym() to load GPM dynamically.
 
     --without-progs
 	Tell the configure script to suppress the build of ncurses' application
