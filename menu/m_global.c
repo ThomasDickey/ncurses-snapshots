@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.21 2005/11/26 15:26:33 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.22 2005/12/10 17:54:39 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -112,15 +112,18 @@ ComputeMaximum_NameDesc_Lengths(MENU * menu)
   unsigned MaximumNameLength = 0;
   unsigned MaximumDescriptionLength = 0;
   ITEM **items;
+  unsigned check;
 
   assert(menu && menu->items);
   for (items = menu->items; *items; items++)
     {
-      if (items[0]->name.length > MaximumNameLength)
-	MaximumNameLength = items[0]->name.length;
+      check = _nc_Calculate_Text_Width(&((*items)->name));
+      if (check > MaximumNameLength)
+	MaximumNameLength = check;
 
-      if (items[0]->description.length > MaximumDescriptionLength)
-	MaximumDescriptionLength = items[0]->description.length;
+      check = _nc_Calculate_Text_Width(&((*items)->description));
+      if (check > MaximumDescriptionLength)
+	MaximumDescriptionLength = check;
     }
 
   menu->namelen = MaximumNameLength;
@@ -249,26 +252,30 @@ _nc_Calculate_Text_Width(const TEXT * item /*FIXME: limit length */ )
 {
 #if USE_WIDEC_SUPPORT
   int result = item->length;
-  int count = mbstowcs(0, item->str, 0);
-  wchar_t *temp = 0;
 
   T((T_CALLED("_nc_menu_text_width(%p)"), item));
-  if (count > 0
-      && (temp = typeMalloc(wchar_t, 2 + count)) != 0)
+  if (result != 0 && item->str != 0)
     {
-      int n;
+      int count = mbstowcs(0, item->str, 0);
+      wchar_t *temp = 0;
 
-      result = 0;
-      mbstowcs(temp, item->str, (unsigned)count);
-      for (n = 0; n < count; ++n)
+      if (count > 0
+	  && (temp = typeMalloc(wchar_t, 2 + count)) != 0)
 	{
-	  int test = wcwidth(temp[n]);
+	  int n;
 
-	  if (test <= 0)
-	    test = 1;
-	  result += test;
+	  result = 0;
+	  mbstowcs(temp, item->str, (unsigned)count);
+	  for (n = 0; n < count; ++n)
+	    {
+	      int test = wcwidth(temp[n]);
+
+	      if (test <= 0)
+		test = 1;
+	      result += test;
+	    }
+	  free(temp);
 	}
-      free(temp);
     }
   returnCode(result);
 #else
@@ -276,10 +283,10 @@ _nc_Calculate_Text_Width(const TEXT * item /*FIXME: limit length */ )
 #endif
 }
 
-/* FIXME: this is experimental, should cache the results but don't want to
- * modify the MENU struct to do this until it's complete.
+/*
+ * Calculate the actual width of a menu entry for wide-characters.
  */
-#if 0				/* USE_WIDEC_SUPPORT */
+#if USE_WIDEC_SUPPORT
 static int
 calculate_actual_width(MENU * menu, bool name)
 {
@@ -306,7 +313,6 @@ calculate_actual_width(MENU * menu, bool name)
      name ? "name" : "desc",
      width,
      name ? menu->namelen : menu->desclen));
-  width += 2;			/* FIXME - need this? */
   return width;
 }
 #else

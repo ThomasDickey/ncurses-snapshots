@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.939 2005/12/03 20:55:59 tom Exp $
+-- $Id: NEWS,v 1.940 2005/12/10 22:45:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051210
+	+ extend test/ncurses.c 's' (overlay window) test to exercise overlay(),
+	  overwrite() and copywin() with different combinations of colors and
+	  attributes (including background color) to make it easy to see the
+	  effect of the different functions.
+	+ corrections to menu/m_global.c for wide-characters (report by
+	  Victor Julien).
 
 20051203
 	+ add configure option --without-gpm, allowing developers to configure

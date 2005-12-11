@@ -956,6 +956,7 @@
 ./test/blue.c
 ./test/bs.6
 ./test/bs.c
+./test/bulgarian-utf8.txt
 ./test/cardfile.c
 ./test/cardfile.dat
 ./test/color_set.c
@@ -999,6 +1000,7 @@
 ./test/testscanw.c
 ./test/tracemunch
 ./test/view.c
+./test/widechars-utf8.txt
 ./test/worm.c
 ./test/xmas.c
 ./test/xterm-16color.dat
