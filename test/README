@@ -1,4 +1,4 @@
--- $Id: README,v 1.24 2005/10/01 22:01:07 tom Exp $
+-- $Id: README,v 1.25 2005/12/10 22:45:34 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -235,7 +235,7 @@ clrtobot			test: demo_menus ncurses
 clrtoeol			test: blue bs hanoi hashtest ncurses view
 color_content			test: ncurses
 color_set			test: color_set ncurses
-copywin				test: testcurs
+copywin				test: ncurses testcurs
 cur_term			test: dots lrtest progs: clear tic tput tset
 curs_set			test: firework gdc hanoi lrtest newdemo rain tclock testcurs worm xmas
 curscr				test: edit_field knight lrtest ncurses tclock view
@@ -425,7 +425,7 @@ numcodes			progs: dump_entry
 numfnames			progs: dump_entry
 numnames			progs: dump_entry infocmp
 ospeed				progs: tset
-overlay				test: testcurs xmas
+overlay				test: ncurses testcurs xmas
 overwrite			test: ncurses
 pair_content			test: background color_set
 pecho_wchar			-

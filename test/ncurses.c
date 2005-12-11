@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.253 2005/10/01 16:00:56 tom Exp $
+$Id: ncurses.c,v 1.256 2005/12/10 22:42:30 tom Exp $
 
 ***************************************************************************/
 
@@ -5280,15 +5280,226 @@ crosswin(WINDOW *win, char ch)
     }
 }
 
+#define OVERLAP_FLAVORS 5
+
+static void
+overlap_helpitem(int state, int item, char *message)
+{
+    int row = (item / 2);
+    int col = ((item % 2) ? COLS / 2 : 0);
+
+    move(LINES - 6 + row, col);
+    printw("%c%c = %s", state == row ? '>' : ' ', 'a' + item, message);
+    clrtoeol();
+}
+
+static void
+overlap_test_1_attr(WINDOW *win, int flavor, int col)
+{
+    int cpair = 1 + (flavor * 2) + col;
+
+    switch (flavor) {
+    case 0:
+	wattrset(win, A_NORMAL);
+	break;
+    case 1:
+	wattrset(win, A_BOLD);
+	break;
+    case 2:
+	init_pair(cpair, COLOR_BLUE, COLOR_WHITE);
+	wattrset(win, COLOR_PAIR(cpair) | A_NORMAL);
+	break;
+    case 3:
+	init_pair(cpair, COLOR_WHITE, COLOR_BLUE);
+	wattrset(win, COLOR_PAIR(cpair) | A_BOLD);
+	break;
+    }
+}
+
+static void
+overlap_test_2_attr(WINDOW *win, int flavor, int col)
+{
+    int cpair = 9 + (flavor * 2) + col;
+
+    switch (flavor) {
+    case 0:
+	/* no effect */
+	break;
+    case 1:
+	/* no effect */
+	break;
+    case 2:
+	init_pair(cpair, COLOR_RED, COLOR_GREEN);
+	wbkgdset(win, ' ' | A_BLINK | COLOR_PAIR(cpair));
+	break;
+    case 3:
+	wbkgdset(win, ' ' | A_NORMAL);
+	break;
+    }
+}
+
+static int
+overlap_help(int state, int flavors[OVERLAP_FLAVORS])
+{
+    int row;
+    int col;
+    int item;
+    char *ths, *tht;
+    char msg[80];
+
+    if (state < 0)
+	state += OVERLAP_FLAVORS;
+    state = state % OVERLAP_FLAVORS;
+
+    for (item = 0; item < (2 * OVERLAP_FLAVORS); ++item) {
+	row = item / 2;
+	col = item % 2;
+	ths = col ? "B" : "A";
+	tht = col ? "A" : "B";
+
+	switch (row) {
+	case 0:
+	    flavors[row] = 0;
+	    sprintf(msg, "refresh %s, then %s, then doupdate.", ths, tht);
+	    break;
+	case 1:
+	    if (has_colors()) {
+		flavors[row] %= 4;
+	    } else {
+		flavors[row] %= 2;
+	    }
+	    overlap_test_1_attr(stdscr, flavors[row], col);
+	    sprintf(msg, "fill window %s with letter %s.", ths, ths);
+	    break;
+	case 2:
+	    if (has_colors()) {
+		flavors[row] %= 4;
+	    } else {
+		flavors[row] %= 2;
+	    }
+	    switch (flavors[row]) {
+	    case 0:
+		sprintf(msg, "cross pattern in window %s.", ths);
+		break;
+	    case 1:
+		sprintf(msg, "draw box in window %s.", ths);
+		break;
+	    case 2:
+		sprintf(msg, "set background of window %s.", ths);
+		break;
+	    case 3:
+		sprintf(msg, "reset background of window %s.", ths);
+		break;
+	    }
+	    break;
+	case 3:
+	    flavors[row] = 0;
+	    sprintf(msg, "clear window %s.", ths);
+	    break;
+	case 4:
+	    flavors[row] %= 4;
+	    switch (flavors[row]) {
+	    case 0:
+		sprintf(msg, "overwrite %s onto %s.", ths, tht);
+		break;
+	    case 1:
+		sprintf(msg, "copywin(FALSE) %s onto %s.", ths, tht);
+		break;
+	    case 2:
+		sprintf(msg, "copywin(TRUE) %s onto %s.", ths, tht);
+		break;
+	    case 3:
+		sprintf(msg, "overlay %s onto %s.", ths, tht);
+		break;
+	    }
+	    break;
+	}
+	overlap_helpitem(state, item, msg);
+	wattrset(stdscr, A_NORMAL);
+	wbkgdset(stdscr, ' ' | A_NORMAL);
+    }
+    move(LINES - 1, 0);
+    printw("^Q/ESC = terminate test.  Up/down/space select test variations (%d %d).",
+	   state, flavors[state]);
+
+    return state;
+}
+
+static void
+overlap_test_0(WINDOW *a, WINDOW *b)
+{
+    touchwin(a);
+    touchwin(b);
+    wnoutrefresh(a);
+    wnoutrefresh(b);
+    doupdate();
+}
+
+static void
+overlap_test_1(int flavor, int col, WINDOW *a, int fill)
+{
+    overlap_test_1_attr(a, flavor, col);
+    fillwin(a, fill);
+    wattrset(a, A_NORMAL);
+}
+
+static void
+overlap_test_2(int flavor, int col, WINDOW *a, int fill)
+{
+    overlap_test_2_attr(a, flavor, col);
+    switch (flavor) {
+    case 0:
+	crosswin(a, fill);
+	break;
+    case 1:
+	box(a, 0, 0);
+	break;
+    case 2:
+	/* done in overlap_test_2_attr */
+	break;
+    case 3:
+	/* done in overlap_test_2_attr */
+	break;
+    }
+}
+
+static void
+overlap_test_3(WINDOW *a)
+{
+    wclear(a);
+    wmove(a, 0, 0);
+}
+
+static void
+overlap_test_4(int flavor, WINDOW *a, WINDOW *b)
+{
+    switch (flavor) {
+    case 0:
+	overwrite(a, b);
+	break;
+    case 1:
+	copywin(a, b, 0, 0, 0, 0, getmaxy(b), getmaxx(b), FALSE);
+	break;
+    case 2:
+	copywin(a, b, 0, 0, 0, 0, getmaxy(b), getmaxx(b), TRUE);
+	break;
+    case 3:
+	overlay(a, b);
+	break;
+    }
+}
+
+/* test effects of overlapping windows */
 static void
 overlap_test(void)
-/* test effects of overlapping windows */
 {
     int ch;
+    int state, flavor[OVERLAP_FLAVORS];
 
     WINDOW *win1 = newwin(9, 20, 3, 3);
     WINDOW *win2 = newwin(9, 20, 9, 16);
 
+    curs_set(0);
     raw();
     refresh();
     move(0, 0);
@@ -5296,66 +5507,79 @@ overlap_test(void)
     printw("the shared region of two overlapping windows A and B.  The cross\n");
     printw("pattern in each window does not overlap the other.\n");
 
-    move(18, 0);
-    printw("a = refresh A, then B, then doupdate. b = refresh B, then A, then doupdaute\n");
-    printw("c = fill window A with letter A.      d = fill window B with letter B.\n");
-    printw("e = cross pattern in window A.        f = cross pattern in window B.\n");
-    printw("g = clear window A.                   h = clear window B.\n");
-    printw("i = overwrite A onto B.               j = overwrite B onto A.\n");
-    printw("^Q/ESC = terminate test.");
+    memset(flavor, 0, sizeof(flavor));
+    state = overlap_help(0, flavor);
 
     while ((ch = Getchar()) != QUIT && ch != ESCAPE)
 	switch (ch) {
 	case 'a':		/* refresh window A first, then B */
-	    wnoutrefresh(win1);
-	    wnoutrefresh(win2);
-	    doupdate();
+	    overlap_test_0(win1, win2);
 	    break;
 
 	case 'b':		/* refresh window B first, then A */
-	    wnoutrefresh(win2);
-	    wnoutrefresh(win1);
-	    doupdate();
+	    overlap_test_0(win2, win1);
 	    break;
 
 	case 'c':		/* fill window A so it's visible */
-	    fillwin(win1, 'A');
+	    overlap_test_1(flavor[1], 0, win1, 'A');
 	    break;
 
 	case 'd':		/* fill window B so it's visible */
-	    fillwin(win2, 'B');
+	    overlap_test_1(flavor[1], 1, win2, 'B');
 	    break;
 
 	case 'e':		/* cross test pattern in window A */
-	    crosswin(win1, 'A');
+	    overlap_test_2(flavor[2], 0, win1, 'A');
 	    break;
 
 	case 'f':		/* cross test pattern in window A */
-	    crosswin(win2, 'B');
+	    overlap_test_2(flavor[2], 1, win2, 'B');
 	    break;
 
 	case 'g':		/* clear window A */
-	    wclear(win1);
-	    wmove(win1, 0, 0);
+	    overlap_test_3(win1);
 	    break;
 
 	case 'h':		/* clear window B */
-	    wclear(win2);
-	    wmove(win2, 0, 0);
+	    overlap_test_3(win2);
 	    break;
 
 	case 'i':		/* overwrite A onto B */
-	    overwrite(win1, win2);
+	    overlap_test_4(flavor[4], win1, win2);
 	    break;
 
 	case 'j':		/* overwrite B onto A */
-	    overwrite(win2, win1);
+	    overlap_test_4(flavor[4], win2, win1);
+	    break;
+
+	case CTRL('n'):
+	case KEY_DOWN:
+	    state = overlap_help(state + 1, flavor);
+	    break;
+
+	case CTRL('p'):
+	case KEY_UP:
+	    state = overlap_help(state - 1, flavor);
+	    break;
+
+	case ' ':
+	    flavor[state] += 1;
+	    state = overlap_help(state, flavor);
+	    break;
+
+	case '?':
+	    state = overlap_help(state, flavor);
+	    break;
+
+	default:
+	    beep();
 	    break;
 	}
 
     delwin(win2);
     delwin(win1);
     erase();
+    curs_set(1);
     endwin();
 }
 
@@ -5563,7 +5787,7 @@ rip_header(WINDOW *win, int cols)
 static void
 main_menu(bool top)
 {
-    int command;
+    char command;
 
     do {
 	(void) puts("This is the ncurses main menu");
