@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.288 2005/11/26 20:07:45 tom Exp $
+ * $Id: curses.priv.h,v 1.289 2005/12/17 20:28:44 tom Exp $
  *
  *	curses.priv.h
  *
@@ -546,11 +546,12 @@ struct screen {
 	bool            _cleanup;	/* cleanup after int/quit signal */
 	int             (*_outch)(int);	/* output handler if not putc */
 
+	int		_legacy_coding;	/* see use_legacy_coding() */
+
 	/* recent versions of 'screen' have partially-working support for
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
 #if USE_WIDEC_SUPPORT
-	bool		_legacy_coding;
 	bool		_screen_acs_fix;
 #endif
 	bool		_screen_acs_map[ACS_LEN];

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.104 2005/08/20 20:02:44 tom Exp $
+# $Id: modules,v 1.105 2005/12/17 20:14:36 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -146,6 +146,7 @@ lib_wunctrl	lib		$(wide)
 # Extensions to the base library
 @ ext_funcs
 expanded	lib		.
+legacy_coding	lib		$(base)		../include/term.h
 lib_dft_fgbg	lib		$(base)		../include/term.h
 lib_print	lib		$(tinfo)	../include/term.h
 resizeterm	lib		$(base)		../include/term.h

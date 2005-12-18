@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.221 2005/11/26 15:28:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.222 2005/12/17 22:59:49 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -207,7 +207,8 @@ PutAttrChar(CARG_CH_T ch)
 
 	if (is8bits(CharOf(CHDEREF(ch)))
 	    && (isprint(CharOf(CHDEREF(ch)))
-		|| (SP->_legacy_coding && CharOf(CHDEREF(ch)) >= 160))) {
+		|| (SP->_legacy_coding > 0 && CharOf(CHDEREF(ch)) >= 160)
+		|| (SP->_legacy_coding > 1 && CharOf(CHDEREF(ch)) >= 128))) {
 	    ;
 	} else {
 	    ch = CHREF(blank);

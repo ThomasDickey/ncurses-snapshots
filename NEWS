@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.940 2005/12/10 22:45:11 tom Exp $
+-- $Id: NEWS,v 1.943 2005/12/17 22:52:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051217
+	+ add use_legacy_coding() function to support lynx's font-switching
+	  feature.
+	+ fix formatting in curs_termcap.3x (report by Mike Frysinger).
+	+ modify MKlib_gen.sh to change preprocessor-expanded _Bool back to
+	  bool.
 
 20051210
 	+ extend test/ncurses.c 's' (overlay window) test to exercise overlay(),
@@ -15,8 +22,9 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  Victor Julien).
 
 20051203
-	+ add configure option --without-gpm, allowing developers to configure
-	  GPM support without using dlsym() (discussion with Michael Setzer).
+	+ add configure option --without-dlsym, allowing developers to
+	  configure GPM support without using dlsym() (discussion with Michael
+	  Setzer).
 	+ fix wins_nwstr(), which did not handle single-column non-8bit codes
 	  (Debian #341661).
 

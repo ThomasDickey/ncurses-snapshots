@@ -598,6 +598,7 @@
 ./man/key_defined.3x
 ./man/keybound.3x
 ./man/keyok.3x
+./man/legacy_coding.3x
 ./man/make_sed.sh
 ./man/man_db.renames
 ./man/manlinks.sed
@@ -716,6 +717,7 @@
 ./ncurses/base/key_defined.c
 ./ncurses/base/keybound.c
 ./ncurses/base/keyok.c
+./ncurses/base/legacy_coding.c
 ./ncurses/base/lib_addch.c
 ./ncurses/base/lib_addstr.c
 ./ncurses/base/lib_beep.c
