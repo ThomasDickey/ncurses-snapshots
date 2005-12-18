@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.17 2005/06/25 21:51:37 tom Exp $
+.\" $Id: curs_util.3x,v 1.19 2005/12/17 23:37:28 tom Exp $
 .TH curs_util 3X ""
 .na
 .hy 0
@@ -142,17 +142,23 @@ terms.  The description here is adapted from the XSI Curses standard (which
 erroneously fails to describe the disabling of \fBcuu\fR).
 .PP
 The strings returned by \fBunctrl\fR in this implementation are determined
-at compile time, showing C1 controls from the upper-128 codes with a `~'
-prefix rather than `^'.
-Other implementations typically show both sets of control characters with `^',
-and may strip the parameter to 7 bits.
+at compile time,
+showing C1 controls from the upper-128 codes with a `~' prefix rather than `^'.
+Other implementations have different conventions.
+For example, they may show both sets of control characters with `^',
+and strip the parameter to 7 bits.
+Or they may ignore C1 controls and treat all of the upper-1280 codes as
+printable.
 This implementation uses 8 bits but does not modify the string to reflect
 locale.
+The \fBuse_legacy_coding\fP function allows the caller to
+change the output of \fBunctrl\fP.
 .PP
 The \fBkeyname\fP function may return the names of user-defined
 string capabilities which are defined in the terminfo entry via the \fB-x\fP
 option of \fBtic\fP.
 .SH SEE ALSO
+\fBuse_legacy_coding\fR(3),
 \fBcurses\fR(3X),
 \fBcurs_initscr\fR(3X),
 \fBcurs_kernel\fR(3X),

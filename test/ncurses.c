@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.256 2005/12/10 22:42:30 tom Exp $
+$Id: ncurses.c,v 1.257 2005/12/11 00:24:55 tom Exp $
 
 ***************************************************************************/
 
@@ -1070,7 +1070,7 @@ show_color_attr(int fg, int bg, int tx)
 }
 
 static bool
-cycle_color_attr(int ch, int *fg, int *bg, int *tx)
+cycle_color_attr(int ch, short *fg, short *bg, short *tx)
 {
     bool error = FALSE;
 
@@ -1235,7 +1235,7 @@ static const struct {
 /* *INDENT-ON* */
 
 static bool
-attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
+attr_getc(int *skip, short *fg, short *bg, short *tx, int *ac, unsigned *kc)
 {
     bool result = TRUE;
     bool error = FALSE;
@@ -1302,9 +1302,9 @@ attr_test(void)
 {
     int n;
     int skip = tigetnum("xmc");
-    int fg = COLOR_BLACK;	/* color pair 0 is special */
-    int bg = COLOR_BLACK;
-    int tx = -1;
+    short fg = COLOR_BLACK;	/* color pair 0 is special */
+    short bg = COLOR_BLACK;
+    short tx = -1;
     int ac = 0;
     unsigned j, k;
 
@@ -1321,7 +1321,7 @@ attr_test(void)
 	chtype extras = ac;
 
 	if (has_colors()) {
-	    int pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
+	    short pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
 	    if (pair != 0) {
 		pair = 1;
 		if (init_pair(pair, fg, bg) == ERR) {
@@ -1347,7 +1347,8 @@ attr_test(void)
 	mvaddstr(0, 20, "Character attribute test display");
 
 	for (j = 0; j < SIZEOF(attrs_to_test); ++j) {
-	    row = show_attr(row, n, j == k,
+	    bool arrow = (j == k);
+	    row = show_attr(row, n, arrow,
 			    extras |
 			    attrs_to_test[j].attr |
 			    attrs_to_test[k].attr,
@@ -1511,7 +1512,7 @@ wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const cha
 }
 
 static bool
-wide_attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
+wide_attr_getc(int *skip, short *fg, short *bg, short *tx, int *ac, unsigned *kc)
 {
     bool result = TRUE;
     bool error = FALSE;
@@ -1578,9 +1579,9 @@ wide_attr_test(void)
 {
     int n;
     int skip = tigetnum("xmc");
-    int fg = COLOR_BLACK;	/* color pair 0 is special */
-    int bg = COLOR_BLACK;
-    int tx = -1;
+    short fg = COLOR_BLACK;	/* color pair 0 is special */
+    short bg = COLOR_BLACK;
+    short tx = -1;
     int ac = 0;
     unsigned j, k;
 
@@ -1723,7 +1724,7 @@ static void
 color_test(void)
 {
     int c;
-    int i;
+    short i;
     int top = 0, width;
     int base_row = 0;
     int grid_top = top + 3;
@@ -1777,10 +1778,13 @@ color_test(void)
 	for (i = (base_row * per_row); i < pairs_max; i++) {
 	    int row = grid_top + (i / per_row) - base_row;
 	    int col = (i % per_row + 1) * width;
-	    int pair = i;
+	    short pair = i;
 
 	    if (row >= 0 && move(row, col) != ERR) {
-		init_pair(pair, i % COLORS, i / COLORS);
+		short fg = i % COLORS;
+		short bg = i / COLORS;
+
+		init_pair(pair, fg, bg);
 		attron((attr_t) COLOR_PAIR(pair));
 		if (opt_bold)
 		    attron((attr_t) A_BOLD);
@@ -2044,7 +2048,7 @@ wide_color_test(void)
 #endif /* USE_WIDEC_SUPPORT */
 
 static void
-change_color(int current, int field, int value, int usebase)
+change_color(short current, int field, int value, int usebase)
 {
     short red, green, blue;
 
@@ -2072,7 +2076,8 @@ change_color(int current, int field, int value, int usebase)
 static void
 init_all_colors(void)
 {
-    int c;
+    short c;
+
     for (c = 0; c < COLORS; ++c)
 	init_color(c,
 		   all_colors[c].red,
@@ -2086,7 +2091,9 @@ static void
 color_edit(void)
 /* display the color test pattern, without trying to edit colors */
 {
-    int i, this_c = 0, value = 0, current = 0, field = 0;
+    short i;
+    short current = 0;
+    int this_c = 0, value = 0, field = 0;
     int last_c;
     int top_color = 0;
     int page_size = (LINES - 6);
@@ -2110,6 +2117,7 @@ color_edit(void)
 	     (i - top_color < page_size)
 	     && (i < max_colors); i++) {
 	    char numeric[80];
+
 	    sprintf(numeric, "[%d]", i);
 	    mvprintw(2 + i - top_color, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
@@ -3668,7 +3676,7 @@ saywhat(NCURSES_CONST char *text)
 	mkpanel(rows,cols,tly,tlx) - alloc a win and panel and associate them
 --------------------------------------------------------------------------*/
 static PANEL *
-mkpanel(unsigned color, int rows, int cols, int tly, int tlx)
+mkpanel(short color, int rows, int cols, int tly, int tlx)
 {
     WINDOW *win;
     PANEL *pan = 0;
@@ -3677,8 +3685,9 @@ mkpanel(unsigned color, int rows, int cols, int tly, int tlx)
 	if ((pan = new_panel(win)) == 0) {
 	    delwin(win);
 	} else if (has_colors()) {
-	    int fg = (color == COLOR_BLUE) ? COLOR_WHITE : COLOR_BLACK;
-	    int bg = color;
+	    short fg = (color == COLOR_BLUE) ? COLOR_WHITE : COLOR_BLACK;
+	    short bg = color;
+
 	    init_pair(color, fg, bg);
 	    wbkgdset(win, COLOR_PAIR(color) | ' ');
 	} else {
@@ -5296,7 +5305,7 @@ overlap_helpitem(int state, int item, char *message)
 static void
 overlap_test_1_attr(WINDOW *win, int flavor, int col)
 {
-    int cpair = 1 + (flavor * 2) + col;
+    short cpair = 1 + (flavor * 2) + col;
 
     switch (flavor) {
     case 0:
@@ -5319,7 +5328,7 @@ overlap_test_1_attr(WINDOW *win, int flavor, int col)
 static void
 overlap_test_2_attr(WINDOW *win, int flavor, int col)
 {
-    int cpair = 9 + (flavor * 2) + col;
+    short cpair = 9 + (flavor * 2) + col;
 
     switch (flavor) {
     case 0:
@@ -5436,7 +5445,7 @@ overlap_test_0(WINDOW *a, WINDOW *b)
 }
 
 static void
-overlap_test_1(int flavor, int col, WINDOW *a, int fill)
+overlap_test_1(int flavor, int col, WINDOW *a, char fill)
 {
     overlap_test_1_attr(a, flavor, col);
     fillwin(a, fill);
@@ -5444,7 +5453,7 @@ overlap_test_1(int flavor, int col, WINDOW *a, int fill)
 }
 
 static void
-overlap_test_2(int flavor, int col, WINDOW *a, int fill)
+overlap_test_2(int flavor, int col, WINDOW *a, char fill)
 {
     overlap_test_2_attr(a, flavor, col);
     switch (flavor) {
@@ -6004,12 +6013,13 @@ main(int argc, char *argv[])
 	max_pairs = COLOR_PAIRS;	/* was > 256 ? 256 : COLOR_PAIRS */
 
 	if (can_change_color()) {
+	    short cp;
 	    all_colors = (RGB_DATA *) malloc(max_colors * sizeof(RGB_DATA));
-	    for (c = 0; c < max_colors; ++c) {
-		color_content(c,
-			      &all_colors[c].red,
-			      &all_colors[c].green,
-			      &all_colors[c].blue);
+	    for (cp = 0; cp < max_colors; ++cp) {
+		color_content(cp,
+			      &all_colors[cp].red,
+			      &all_colors[cp].green,
+			      &all_colors[cp].blue);
 	    }
 	    if (palette_file != 0) {
 		FILE *fp = fopen(palette_file, "r");
