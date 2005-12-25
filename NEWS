@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.943 2005/12/17 22:52:07 tom Exp $
+-- $Id: NEWS,v 1.944 2005/12/24 19:37:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051224
+	+ use BSD-specific fix for return-value from cgetent() from CVS where
+	  an unknown terminal type would be reportd as "database not found".
+	+ make tgetent() return code more readable using new symbols
+	  TGETENT_YES, etc.
+	+ remove references to non-existent "tctest" program.
+	+ remove TESTPROGS from progs/Makefile.in (it was referring to code
+	  that was never built in that directory).
+	+ typos in curs_addchstr.3x, some doc files (noticed in OpenBSD CVS).
 
 20051217
 	+ add use_legacy_coding() function to support lynx's font-switching
