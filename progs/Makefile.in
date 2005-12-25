@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.65 2005/09/25 00:42:08 tom Exp $
+# $Id: Makefile.in,v 1.66 2005/12/24 15:29:21 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey 1996-2003
+# Author: Thomas E. Dickey 1996-on
 #
 # Makefile for ncurses source code.
 #
@@ -118,8 +118,6 @@ AUTO_SRC = \
 GET_PROGS = infocmp$x clear$x tput$x tset$x
 PUT_PROGS = @MAKE_TERMINFO@ tic$x toe$x
 PROGS = $(PUT_PROGS) $(GET_PROGS)
-
-TESTPROGS = mvcur$x tctest$x hardscroll$x hashmap$x
 
 # Default library, for linking applications
 DEPS_CURSES = ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
@@ -252,7 +250,6 @@ tags:
 
 mostlyclean ::
 	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
-	-rm -f $(TESTPROGS)
 
 clean :: mostlyclean
 	-sh -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"

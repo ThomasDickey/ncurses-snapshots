@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addchstr.3x,v 1.10 2005/05/15 16:17:07 tom Exp $
+.\" $Id: curs_addchstr.3x,v 1.11 2005/12/24 13:19:59 tom Exp $
 .TH curs_addchstr 3X ""
 .na
 .hy 0
@@ -71,7 +71,7 @@ The window cursor is \fInot\fR advanced, and these routines work faster than
 (such as for the newline, backspace, or carriage return characters), they do not
 advance the current cursor position, they do not expand other control characters
 to ^-escapes, and they truncate the string if it crosses the right margin,
-rather then wrapping it around to the new line.
+rather than wrapping it around to the new line.
 .SH RETURN VALUES
 All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success
 (the SVr4 manuals specify only "an integer value other than \fBERR\fR") upon

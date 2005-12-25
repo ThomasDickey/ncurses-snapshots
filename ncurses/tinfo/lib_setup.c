@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.89 2005/11/26 23:27:39 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.90 2005/12/24 19:56:16 tom Exp $")
 
 /****************************************************************************
  *
@@ -257,9 +257,12 @@ _nc_update_screensize(void)
 					}
 
 #if USE_DATABASE || USE_TERMCAP
+/*
+ * Return 1 if entry found, 0 if not found, -1 if database not accessible,
+ * just like tgetent().
+ */
 static int
 grab_entry(const char *const tn, TERMTYPE *const tp)
-/* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
 #if USE_DATABASE
     char filename[PATH_MAX];
@@ -270,10 +273,10 @@ grab_entry(const char *const tn, TERMTYPE *const tp)
      * $TERM shouldn't contain pathname delimiters.
      */
     if (strchr(tn, '/'))
-	return 0;
+	return TGETENT_NO;
 
 #if USE_DATABASE
-    if ((status = _nc_read_entry(tn, filename, tp)) != 1) {
+    if ((status = _nc_read_entry(tn, filename, tp)) != TGETENT_YES) {
 
 #if !PURE_TERMINFO
 	/*
@@ -296,7 +299,7 @@ grab_entry(const char *const tn, TERMTYPE *const tp)
      * (The terminfo compiler bypasses this logic, since it must know if
      * a string is cancelled, for merging entries).
      */
-    if (status == 1) {
+    if (status == TGETENT_YES) {
 	unsigned n;
 	for_each_boolean(n, tp) {
 	    if (!VALID_BOOLEAN(tp->Booleans[n]))
@@ -316,7 +319,6 @@ grab_entry(const char *const tn, TERMTYPE *const tp)
 **
 **	Take the real command character out of the CC environment variable
 **	and substitute it in for the prototype given in 'command_character'.
-**
 */
 static void
 do_prototype(void)
@@ -431,11 +433,13 @@ _nc_setupterm(NCURSES_CONST char *tname, int Filedes, int *errret, bool reuse)
     if (tname == 0) {
 	tname = getenv("TERM");
 	if (tname == 0 || *tname == '\0') {
-	    ret_error0(-1, "TERM environment variable not set.\n");
+	    ret_error0(TGETENT_ERR, "TERM environment variable not set.\n");
 	}
     }
+
     if (strlen(tname) > MAX_NAME_SIZE) {
-	ret_error(-1, "TERM environment must be <= %d characters.\n",
+	ret_error(TGETENT_ERR,
+		  "TERM environment must be <= %d characters.\n",
 		  MAX_NAME_SIZE);
     }
 
@@ -477,31 +481,31 @@ _nc_setupterm(NCURSES_CONST char *tname, int Filedes, int *errret, bool reuse)
 	term_ptr = typeCalloc(TERMINAL, 1);
 
 	if (term_ptr == 0) {
-	    ret_error0(-1,
+	    ret_error0(TGETENT_ERR,
 		       "Not enough memory to create terminal structure.\n");
 	}
 #if USE_DATABASE || USE_TERMCAP
 	status = grab_entry(tname, &term_ptr->type);
 #else
-	status = 0;
+	status = TGETENT_NO;
 #endif
 
 	/* try fallback list if entry on disk */
-	if (status != 1) {
+	if (status != TGETENT_YES) {
 	    const TERMTYPE *fallback = _nc_fallback(tname);
 
 	    if (fallback) {
 		term_ptr->type = *fallback;
-		status = 1;
+		status = TGETENT_YES;
 	    }
 	}
 
-	if (status <= 0) {
+	if (status != TGETENT_YES) {
 	    del_curterm(term_ptr);
-	    if (status == -1) {
-		ret_error0(-1, "terminals database is inaccessible\n");
-	    } else if (status == 0) {
-		ret_error(0, "'%s': unknown terminal type.\n", tname);
+	    if (status == TGETENT_ERR) {
+		ret_error0(status, "terminals database is inaccessible\n");
+	    } else if (status == TGETENT_NO) {
+		ret_error(status, "'%s': unknown terminal type.\n", tname);
 	    }
 	}
 
@@ -534,15 +538,15 @@ _nc_setupterm(NCURSES_CONST char *tname, int Filedes, int *errret, bool reuse)
     _nc_get_screensize(&LINES, &COLS);
 
     if (errret)
-	*errret = 1;
+	*errret = TGETENT_YES;
 
     T((T_CREATE("screen %s %dx%d"), tname, LINES, COLS));
 
     if (generic_type) {
-	ret_error(0, "'%s': I need something more specific.\n", tname);
+	ret_error(TGETENT_NO, "'%s': I need something more specific.\n", tname);
     }
     if (hard_copy) {
-	ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
+	ret_error(TGETENT_YES, "'%s': I can't handle hardcopy terminals.\n", tname);
     }
     returnCode(OK);
 }
@@ -552,9 +556,7 @@ _nc_setupterm(NCURSES_CONST char *tname, int Filedes, int *errret, bool reuse)
  *
  *	Find and read the appropriate object file for the terminal
  *	Make cur_term point to the structure.
- *
  */
-
 NCURSES_EXPORT(int)
 setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 {

@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.81 2005/06/02 22:04:32 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.82 2005/12/24 19:08:58 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -170,7 +170,7 @@ read_termtype(int fd, TERMTYPE *ptr)
     /* grab the header */
     if (!read_shorts(fd, buf, 6)
 	|| LOW_MSB(buf) != MAGIC) {
-	return (0);
+	return (TGETENT_NO);
     }
 
     name_size = LOW_MSB(buf + 2);
@@ -188,14 +188,14 @@ read_termtype(int fd, TERMTYPE *ptr)
 	|| num_count < 0
 	|| str_count < 0
 	|| str_size < 0) {
-	return (0);
+	return (TGETENT_NO);
     }
 
     if (str_size) {
 	/* try to allocate space for the string table */
 	if (str_count * 2 >= (int) sizeof(buf)
 	    || (ptr->str_table = typeMalloc(char, (unsigned) str_size)) == 0) {
-	    return (0);
+	    return (TGETENT_NO);
 	}
     } else {
 	str_count = 0;
@@ -209,7 +209,7 @@ read_termtype(int fd, TERMTYPE *ptr)
     buf[want] = '\0';
     ptr->term_names = TYPE_CALLOC(char, strlen(buf) + 1);
     if (ptr->term_names == NULL) {
-	return (0);
+	return (TGETENT_NO);
     }
     (void) strcpy(ptr->term_names, buf);
     if (have > MAX_NAME_SIZE)
@@ -218,7 +218,7 @@ read_termtype(int fd, TERMTYPE *ptr)
     /* grab the booleans */
     if ((ptr->Booleans = TYPE_CALLOC(char, max(BOOLCOUNT, bool_count))) == 0
 	|| read(fd, ptr->Booleans, (unsigned) bool_count) < bool_count) {
-	return (0);
+	return (TGETENT_NO);
     }
 
     /*
@@ -232,21 +232,21 @@ read_termtype(int fd, TERMTYPE *ptr)
     /* grab the numbers */
     if ((ptr->Numbers = TYPE_CALLOC(short, max(NUMCOUNT, num_count))) == 0
 	|| !read_shorts(fd, buf, num_count)) {
-	return (0);
+	return (TGETENT_NO);
     }
     convert_shorts(buf, ptr->Numbers, num_count);
 
     if ((ptr->Strings = TYPE_CALLOC(char *, max(STRCOUNT, str_count))) == 0)
-	  return (0);
+	  return (TGETENT_NO);
 
     if (str_count) {
 	/* grab the string offsets */
 	if (!read_shorts(fd, buf, str_count)) {
-	    return (0);
+	    return (TGETENT_NO);
 	}
 	/* finally, grab the string table itself */
 	if (read(fd, ptr->str_table, (unsigned) str_size) != str_size)
-	    return (0);
+	    return (TGETENT_NO);
 	convert_strings(buf, ptr->Strings, str_count, str_size, ptr->str_table);
     }
 #if NCURSES_XNAMES
@@ -277,7 +277,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 	    || ext_str_count < 0
 	    || ext_str_size < 0
 	    || ext_str_limit < 0)
-	    return (0);
+	    return (TGETENT_NO);
 
 	ptr->num_Booleans = BOOLCOUNT + ext_bool_count;
 	ptr->num_Numbers = NUMCOUNT + ext_num_count;
@@ -296,7 +296,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 	if ((ptr->ext_Booleans = ext_bool_count) != 0) {
 	    if (read(fd, ptr->Booleans + BOOLCOUNT, (unsigned)
 		     ext_bool_count) != ext_bool_count)
-		return (0);
+		return (TGETENT_NO);
 	}
 	even_boundary(ext_bool_count);
 
@@ -304,7 +304,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 			    ext_num_count, (long) tell(fd)));
 	if ((ptr->ext_Numbers = ext_num_count) != 0) {
 	    if (!read_shorts(fd, buf, ext_num_count))
-		return (0);
+		return (TGETENT_NO);
 	    TR(TRACE_DATABASE, ("Before converting extended-numbers"));
 	    convert_shorts(buf, ptr->Numbers + NUMCOUNT, ext_num_count);
 	}
@@ -312,16 +312,16 @@ read_termtype(int fd, TERMTYPE *ptr)
 	TR(TRACE_DATABASE, ("READ extended-offsets @%ld", (long) tell(fd)));
 	if ((ext_str_count || need)
 	    && !read_shorts(fd, buf, ext_str_count + need))
-	    return (0);
+	    return (TGETENT_NO);
 
 	TR(TRACE_DATABASE, ("READ %d bytes of extended-strings @%ld",
 			    ext_str_limit, (long) tell(fd)));
 
 	if (ext_str_limit) {
 	    if ((ptr->ext_str_table = typeMalloc(char, ext_str_limit)) == 0)
-		  return (0);
+		  return (TGETENT_NO);
 	    if (read(fd, ptr->ext_str_table, (unsigned) ext_str_limit) != ext_str_limit)
-		return (0);
+		return (TGETENT_NO);
 	    TR(TRACE_DATABASE, ("first extended-string is %s", _nc_visbuf(ptr->ext_str_table)));
 	}
 
@@ -346,7 +346,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 
 	if (need) {
 	    if ((ptr->ext_Names = TYPE_CALLOC(char *, need)) == 0)
-		  return (0);
+		  return (TGETENT_NO);
 	    TR(TRACE_DATABASE,
 	       ("ext_NAMES starting @%d in extended_strings, first = %s",
 		base, _nc_visbuf(ptr->ext_str_table + base)));
@@ -379,7 +379,7 @@ read_termtype(int fd, TERMTYPE *ptr)
     for (i = str_count; i < STRCOUNT; i++)
 	ptr->Strings[i] = ABSENT_STRING;
 
-    return (1);
+    return (TGETENT_YES);
 }
 
 NCURSES_EXPORT(int)
@@ -391,7 +391,7 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     if (_nc_access(filename, R_OK) < 0
 	|| (fd = open(filename, O_RDONLY | O_BINARY)) < 0) {
 	T(("cannot open terminfo %s (errno=%d)", filename, errno));
-	code = 0;
+	code = TGETENT_NO;
     } else {
 	T(("read terminfo %s", filename));
 	if ((code = read_termtype(fd, ptr)) == 0) {
@@ -414,7 +414,7 @@ _nc_read_tic_entry(char *const filename,
     int need = 2 + strlen(dir) + strlen(ttn);
 
     if (need > PATH_MAX)
-	return 0;
+	return TGETENT_NO;
     (void) sprintf(filename, "%s/%s", dir, ttn);
     return _nc_read_file_entry(filename, tp);
 }
@@ -429,11 +429,11 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
 {
     char *list, *a;
     const char *b;
-    int code = 0;
+    int code = TGETENT_NO;
 
     /* we'll modify the argument, so we must copy */
     if ((b = a = list = strdup(dirs)) == NULL)
-	return (0);
+	return (TGETENT_NO);
 
     for (;;) {
 	int c = *a;
@@ -442,7 +442,7 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
 	    if ((b + 1) >= a)
 		b = TERMINFO;
 	    if (_nc_read_tic_entry(filename, b, ttn, tp) == 1) {
-		code = 1;
+		code = TGETENT_YES;
 		break;
 	    }
 	    b = a + 1;
@@ -476,7 +476,7 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE *const tp)
 	|| strcmp(tn, "..") == 0
 	|| _nc_pathlast(tn) != 0) {
 	T(("illegal or missing entry name '%s'", tn));
-	return 0;
+	return TGETENT_NO;
     }
 
     /* truncate the terminal name to prevent buffer overflow */
@@ -487,17 +487,17 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE *const tp)
      */
     if (have_tic_directory
 	&& _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp) == 1)
-	return 1;
+	return TGETENT_YES;
 
     if (use_terminfo_vars()) {
 	if ((envp = getenv("TERMINFO")) != 0
 	    && _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
-	    return 1;
+	    return TGETENT_YES;
 
 	/* this is an ncurses extension */
 	if ((envp = _nc_home_terminfo()) != 0) {
 	    if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
-		return 1;
+		return TGETENT_YES;
 	    }
 	}
 

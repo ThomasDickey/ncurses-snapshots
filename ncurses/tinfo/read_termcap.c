@@ -58,7 +58,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.67 2005/06/04 21:49:20 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.69 2005/12/24 19:33:25 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -70,10 +70,10 @@ MODULE_ID("$Id: read_termcap.c,v 1.67 2005/06/04 21:49:20 tom Exp $")
 #endif
 
 #define TC_SUCCESS     0
-#define TC_UNRESOLVED -1
-#define TC_NOT_FOUND  -2
-#define TC_SYS_ERR    -3
-#define TC_REF_LOOP   -4
+#define TC_NOT_FOUND  -1
+#define TC_SYS_ERR    -2
+#define TC_REF_LOOP   -3
+#define TC_UNRESOLVED -4	/* this is not returned by BSD cgetent */
 
 static NCURSES_CONST char *
 get_termpath(void)
@@ -232,10 +232,10 @@ _nc_cgetcap(char *buf, const char *cap, int type)
  * Returns:
  *
  * positive #    on success (i.e., the index in db_array)
- * TC_UNRESOLVED if we had too many recurrences to resolve
  * TC_NOT_FOUND  if the requested record couldn't be found
  * TC_SYS_ERR    if a system error was encountered (e.g.,couldn't open a file)
  * TC_REF_LOOP   if a potential reference loop is detected
+ * TC_UNRESOLVED if we had too many recurrences to resolve
  */
 static int
 _nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
@@ -935,13 +935,14 @@ add_tc(char *termpaths[], char *path, int count)
 NCURSES_EXPORT(int)
 _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
-    int found = FALSE;
+    int found = TGETENT_NO;
     ENTRY *ep;
 #if USE_GETCAP_CACHE
     char cwd_buf[PATH_MAX];
 #endif
 #if USE_GETCAP
     char *p, tc[TBUFSIZ];
+    int status;
     static char *source;
     static int lineno;
 
@@ -952,7 +953,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	|| strcmp(tn, "..") == 0
 	|| _nc_pathlast(tn) != 0) {
 	T(("illegal or missing entry name '%s'", tn));
-	return 0;
+	return TGETENT_NO;
     }
 
     if (use_terminfo_vars() && (p = getenv("TERMCAP")) != 0
@@ -963,8 +964,8 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	_nc_set_source("TERMCAP");
     } else {
 	/* we're using getcap(3) */
-	if (_nc_tgetent(tc, &source, &lineno, tn) < 0)
-	    return (ERR);
+	if ((status = _nc_tgetent(tc, &source, &lineno, tn)) < 0)
+	    return (status == TC_NOT_FOUND ? TGETENT_NO : TGETENT_ERR);
 
 	_nc_curr_line = lineno;
 	_nc_set_source(source);
@@ -1110,7 +1111,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 #endif /* USE_GETCAP */
 
     if (_nc_head == 0)
-	return (ERR);
+	return (TGETENT_ERR);
 
     /* resolve all use references */
     _nc_resolve_uses2(TRUE, FALSE);
@@ -1145,7 +1146,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 #if USE_GETCAP_CACHE
 		(void) _nc_write_entry(tp);
 #endif
-		found = TRUE;
+		found = TGETENT_YES;
 		break;
 	    }
 	}

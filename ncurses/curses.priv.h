@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.289 2005/12/17 20:28:44 tom Exp $
+ * $Id: curses.priv.h,v 1.290 2005/12/24 18:53:26 tom Exp $
  *
  *	curses.priv.h
  *
@@ -890,6 +890,13 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #define returnWin(code)		return code
 
 #endif /* TRACE/!TRACE */
+
+/*
+ * Return-codes for tgetent() and friends.
+ */
+#define TGETENT_YES  1		/* entry is found */
+#define TGETENT_NO   0		/* entry is not found */
+#define TGETENT_ERR -1		/* an error occurred */
 
 extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 extern NCURSES_EXPORT(const char *) _nc_visbufn (const char *, int);
