@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.22 2005/12/10 17:54:39 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.23 2005/12/31 21:51:52 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -295,18 +295,26 @@ calculate_actual_width(MENU * menu, bool name)
   ITEM **items;
 
   assert(menu && menu->items);
-  for (items = menu->items; *items; items++)
+
+  if (menu->items != 0)
     {
-      if (name)
+      for (items = menu->items; *items; items++)
 	{
-	  check = _nc_Calculate_Text_Width(&((*items)->name));
+	  if (name)
+	    {
+	      check = _nc_Calculate_Text_Width(&((*items)->name));
+	    }
+	  else
+	    {
+	      check = _nc_Calculate_Text_Width(&((*items)->description));
+	    }
+	  if (check > width)
+	    width = check;
 	}
-      else
-	{
-	  check = _nc_Calculate_Text_Width(&((*items)->description));
-	}
-      if (check > width)
-	width = check;
+    }
+  else
+    {
+      width = (name ? menu->namelen : menu->desclen);
     }
 
   T(("calculate_actual_width %s = %d/%d",

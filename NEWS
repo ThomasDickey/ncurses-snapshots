@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.944 2005/12/24 19:37:26 tom Exp $
+-- $Id: NEWS,v 1.946 2006/01/01 00:31:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20051231
+	+ add a workaround to ACS mapping to allow applications such as
+	  test/blue.c to use the "PC ROM" characters by masking them with
+	  A_ALTCHARSET.  This worked up til 5.5, but was lost in the revision
+	  of legacy coding (report by Michael Deutschmann).
+	+ add a null-pointer check in the wide-character version of
+	  calculate_actual_width() (report by Victor Julien).
+	+ improve test/ncurses 'd' (color-edit) test by allowing the RGB
+	  values to be set independently (patch by William McBrine).
+	+ modify test/configure script to allow building test programs with
+	  PDCurses/X11.
+	+ modified test programs to allow some to work with NetBSD curses. 
+	  Several do not because NetBSD curses implements a subset of X/Open
+	  curses, and also lacks much of SVr4 additions.  But it's enough for
+	  comparison.
+	+ update config.guess and config.sub
 
 20051224
 	+ use BSD-specific fix for return-value from cgetent() from CVS where

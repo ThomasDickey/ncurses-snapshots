@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,9 +29,11 @@
 /*
  * Author:  Thomas E. Dickey <dickey@clark.net> 1998
  *
- * $Id: filter.c,v 1.8 2004/06/05 21:57:30 tom Exp $
+ * $Id: filter.c,v 1.9 2005/12/31 16:50:22 tom Exp $
  */
 #include <test.priv.h>
+
+#if HAVE_FILTER
 
 /*
  * An example of the 'filter()' function in ncurses, this program prompts
@@ -103,3 +105,11 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     endwin();
     ExitProgram(EXIT_SUCCESS);
 }
+#else
+int
+main(void)
+{
+    printf("This program requires the filter function\n");
+    ExitProgram(EXIT_FAILURE);
+}
+#endif /* HAVE_FILTER */
