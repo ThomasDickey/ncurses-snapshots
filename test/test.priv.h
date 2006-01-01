@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.48 2004/04/10 20:11:37 tom Exp $ */
+/* $Id: test.priv.h,v 1.53 2005/12/31 20:51:02 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -53,14 +53,34 @@
 #endif
 
 /*
- * Fallback definitions to accommodate broken compilers
+ * Fallback definitions to accommodate broken compilers.
  */
 #ifndef HAVE_CURSES_VERSION
 #define HAVE_CURSES_VERSION 0
 #endif
 
+#ifndef HAVE_FILTER
+#define HAVE_FILTER 0
+#endif
+
 #ifndef HAVE_FORM_H
 #define HAVE_FORM_H 0
+#endif
+
+#ifndef HAVE_GETBEGX
+#define HAVE_GETBEGX 0
+#endif
+
+#ifndef HAVE_GETCURX
+#define HAVE_GETCURX 0
+#endif
+
+#ifndef HAVE_GETMAXX
+#define HAVE_GETMAXX 0
+#endif
+
+#ifndef HAVE_GETWIN
+#define HAVE_GETWIN 0
 #endif
 
 #ifndef HAVE_LIBFORM
@@ -83,6 +103,14 @@
 #define HAVE_MENU_H 0
 #endif
 
+#ifndef HAVE_MVVLINE
+#define HAVE_MVVLINE 0
+#endif
+
+#ifndef HAVE_MVWVLINE
+#define HAVE_MVWVLINE 0
+#endif
+
 #ifndef HAVE_NAPMS
 #define HAVE_NAPMS 1
 #endif
@@ -95,8 +123,56 @@
 #define HAVE_PANEL_H 0
 #endif
 
+#ifndef HAVE_PUTWIN
+#define HAVE_PUTWIN 0
+#endif
+
+#ifndef HAVE_RESIZE_TERM
+#define HAVE_RESIZE_TERM 0
+#endif
+
+#ifndef HAVE_RIPOFFLINE
+#define HAVE_RIPOFFLINE 0
+#endif
+
+#ifndef HAVE_SETUPTERM
+#define HAVE_SETUPTERM 0
+#endif
+
 #ifndef HAVE_SLK_COLOR
 #define HAVE_SLK_COLOR 0
+#endif
+
+#ifndef HAVE_SLK_INIT
+#define HAVE_SLK_INIT 0
+#endif
+
+#ifndef HAVE_TERMATTRS
+#define HAVE_TERMATTRS 0
+#endif
+
+#ifndef HAVE_TERMNAME
+#define HAVE_TERMNAME 0
+#endif
+
+#ifndef HAVE_TGETENT
+#define HAVE_TGETENT 0
+#endif
+
+#ifndef HAVE_TIGETNUM
+#define HAVE_TIGETNUM 0
+#endif
+
+#ifndef HAVE_TYPEAHEAD
+#define HAVE_TYPEAHEAD 0
+#endif
+
+#ifndef HAVE_TIGETSTR
+#define HAVE_TIGETSTR 0
+#endif
+
+#ifndef HAVE_WINSSTR
+#define HAVE_WINSSTR 0
 #endif
 
 #ifndef HAVE_WRESIZE
@@ -115,6 +191,10 @@
 #define NEED_PTEM_H 0
 #endif
 
+#ifndef NO_LEAKS
+#define NO_LEAKS 0
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -125,14 +205,23 @@
 
 #include <signal.h>	/* include before curses.h to work around glibc bug */
 
-#if defined(HAVE_NCURSESW_NCURSES_H)
+#if defined(HAVE_XCURSES)
+#include <xcurses.h>
+#elif defined(HAVE_NCURSESW_NCURSES_H)
 #include <ncursesw/curses.h>
-#include <ncursesw/term.h>
 #elif defined(HAVE_NCURSES_NCURSES_H)
 #include <ncurses/curses.h>
-#include <ncurses/term.h>
 #else
 #include <curses.h>
+#endif
+
+#if defined(HAVE_XCURSES)
+/* no other headers */
+#elif defined(HAVE_NCURSESW_TERM_H)
+#include <ncursesw/term.h>
+#elif defined(HAVE_NCURSES_TERM_H)
+#include <ncurses/term.h>
+#elif defined(HAVE_TERM_H)
 #include <term.h>
 #endif
 
@@ -172,6 +261,14 @@ extern int optind;
 
 #ifndef HAVE_GETNSTR
 #define getnstr(s,n) getstr(s)
+#endif
+
+#ifndef USE_SOFTKEYS
+#if HAVE_SLK_INIT
+#define USE_SOFTKEYS 1
+#else
+#define USE_SOFTKEYS 0
+#endif
 #endif
 
 #ifndef USE_WIDEC_SUPPORT
@@ -228,19 +325,47 @@ extern int optind;
 #define KEY_MIN 256	/* not defined in Solaris 8 */
 #endif
 
-#ifndef getcurx
+/*
+ * These usually are implemented as macros, but may be functions.
+ */
+#if !defined(getcurx) && !HAVE_GETCURX
 #define getcurx(win)            ((win)?(win)->_curx:ERR)
 #define getcury(win)            ((win)?(win)->_cury:ERR)
 #endif
 
-#ifndef getbegx
+#if !defined(getbegx) && !HAVE_GETBEGX
 #define getbegx(win)            ((win)?(win)->_begx:ERR)
 #define getbegy(win)            ((win)?(win)->_begy:ERR)
 #endif
 
-#ifndef getmaxx
+#if !defined(getmaxx) && !HAVE_GETMAXX
 #define getmaxx(win)            ((win)?((win)->_maxx + 1):ERR)
 #define getmaxy(win)            ((win)?((win)->_maxy + 1):ERR)
+#endif
+
+#if !defined(mvwvline) && !HAVE_MVWVLINE
+#define mvwvline(w,y,x,ch,n)    (move(y,x) == ERR ? ERR : wvline(w,ch,n))
+#define mvwhline(w,y,x,ch,n)    (move(y,x) == ERR ? ERR : whline(w,ch,n))
+#endif
+
+#if !defined(mvvline) && !HAVE_MVVLINE
+#define mvvline(y,x,ch,n)       (move(y,x) == ERR ? ERR : vline(ch,n))
+#define mvhline(y,x,ch,n)       (move(y,x) == ERR ? ERR : hline(ch,n))
+#endif
+
+/*
+ * Try to accommodate curses implementations that have no terminfo support.
+ */
+#if HAVE_TIGETNUM
+#define TIGETNUM(ti,tc) tigetnum(ti)
+#else
+#define TIGETNUM(ti,tc) tgetnum(tc)
+#endif
+
+#if HAVE_TIGETSTR
+#define TIGETSTR(ti,tc) tigetstr(ti)
+#else
+#define TIGETSTR(ti,tc) tgetstr(tc,&area_pointer)
 #endif
 
 /* ncurses implements tparm() with varargs, X/Open with a fixed-parameter list

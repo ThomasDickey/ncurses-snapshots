@@ -279,8 +279,8 @@ int	pair_content(
 
 #undef _nc_do_color
 void	_nc_do_color(
-		int	old_pair, 
-		int	pair, 
+		short	old_pair, 
+		short	pair, 
 		NCURSES_BOOL reverse, 
 		int	(*outc)(
 		int	p1))
@@ -1520,7 +1520,7 @@ int	wins_wstr(
 		{ return(*(int *)0); }
 
 #undef mouse_trafo
-NCURSES_BOOL	mouse_trafo(
+NCURSES_BOOL mouse_trafo(
 		int	*a1, 
 		int	*a2, 
 		NCURSES_BOOL	z)
@@ -2057,8 +2057,8 @@ void	delscreen(
 
 #undef _nc_setupscreen
 int	_nc_setupscreen(
-		short	slines, 
-		short const scolumns, 
+		int	slines, 
+		int const scolumns, 
 		FILE	*output)
 		{ return(*(int *)0); }
 
@@ -2203,57 +2203,6 @@ int	wtouchln(
 		int	n, 
 		int	changed)
 		{ return(*(int *)0); }
-
-/* ./trace/lib_traceatr.c */
-
-#undef _traceattr2
-char	*_traceattr2(
-		int	bufnum, 
-		attr_t	newmode)
-		{ return(*(char **)0); }
-
-#undef _traceattr
-char	*_traceattr(
-		attr_t	newmode)
-		{ return(*(char **)0); }
-
-#undef _nc_retrace_attr_t
-attr_t	_nc_retrace_attr_t(
-		attr_t	code)
-		{ return(*(attr_t *)0); }
-
-#undef _nc_altcharset_name
-const char *_nc_altcharset_name(
-		attr_t	attr, 
-		chtype	ch)
-		{ return(*(const char **)0); }
-
-#undef _tracechtype2
-char	*_tracechtype2(
-		int	bufnum, 
-		chtype	ch)
-		{ return(*(char **)0); }
-
-#undef _tracechtype
-char	*_tracechtype(
-		chtype	ch)
-		{ return(*(char **)0); }
-
-#undef _nc_retrace_chtype
-chtype	_nc_retrace_chtype(
-		chtype	code)
-		{ return(*(chtype *)0); }
-
-#undef _tracecchar_t2
-char	*_tracecchar_t2(
-		int	bufnum, 
-		const cchar_t *ch)
-		{ return(*(char **)0); }
-
-#undef _tracecchar_t
-char	*_tracecchar_t(
-		const cchar_t *ch)
-		{ return(*(char **)0); }
 
 /* ./trace/lib_tracedmp.c */
 
@@ -2720,6 +2669,13 @@ void	_nc_UpdateAttrs(
 		cchar_t	c)
 		{ /* void */ }
 
+/* ./base/legacy_coding.c */
+
+#undef use_legacy_coding
+int	use_legacy_coding(
+		int	level)
+		{ return(*(int *)0); }
+
 /* ./base/lib_dft_fgbg.c */
 
 #undef use_default_colors
@@ -2811,7 +2767,7 @@ int	_nc_env_access(void)
 void	_nc_add_to_try(
 		struct tries **tree, 
 		const char *str, 
-		unsigned short code)
+		unsigned code)
 		{ /* void */ }
 
 /* ./tinfo/alloc_entry.c */
@@ -2913,6 +2869,10 @@ NCURSES_BOOL _nc_suppress_warnings;
 int	_nc_curr_line;
 #undef _nc_curr_col
 int	_nc_curr_col;
+
+#undef _nc_get_source
+const char *_nc_get_source(void)
+		{ return(*(const char **)0); }
 
 #undef _nc_set_source
 void	_nc_set_source(
@@ -3470,8 +3430,8 @@ char	*tigetstr(
 
 typedef struct {
     union {
-        int num;
-        char *str;
+ int num;
+ char *str;
     } data;
     NCURSES_BOOL num_type;
 } stack_frame;
@@ -3592,6 +3552,57 @@ SCREEN	*_nc_retrace_sp(
 WINDOW	*_nc_retrace_win(
 		WINDOW	*code)
 		{ return(*(WINDOW **)0); }
+
+/* ./trace/lib_traceatr.c */
+
+#undef _traceattr2
+char	*_traceattr2(
+		int	bufnum, 
+		attr_t	newmode)
+		{ return(*(char **)0); }
+
+#undef _traceattr
+char	*_traceattr(
+		attr_t	newmode)
+		{ return(*(char **)0); }
+
+#undef _nc_retrace_attr_t
+attr_t	_nc_retrace_attr_t(
+		attr_t	code)
+		{ return(*(attr_t *)0); }
+
+#undef _nc_altcharset_name
+const char *_nc_altcharset_name(
+		attr_t	attr, 
+		chtype	ch)
+		{ return(*(const char **)0); }
+
+#undef _tracechtype2
+char	*_tracechtype2(
+		int	bufnum, 
+		chtype	ch)
+		{ return(*(char **)0); }
+
+#undef _tracechtype
+char	*_tracechtype(
+		chtype	ch)
+		{ return(*(char **)0); }
+
+#undef _nc_retrace_chtype
+chtype	_nc_retrace_chtype(
+		chtype	code)
+		{ return(*(chtype *)0); }
+
+#undef _tracecchar_t2
+char	*_tracecchar_t2(
+		int	bufnum, 
+		const cchar_t *ch)
+		{ return(*(char **)0); }
+
+#undef _tracecchar_t
+char	*_tracecchar_t(
+		const cchar_t *ch)
+		{ return(*(char **)0); }
 
 /* ./trace/lib_tracebits.c */
 
@@ -3818,7 +3829,7 @@ void	_nc_trace_tries(
 #undef _nc_expand_try
 char	*_nc_expand_try(
 		struct tries *tree, 
-		unsigned short code, 
+		unsigned code, 
 		int	*count, 
 		size_t	len)
 		{ return(*(char **)0); }
@@ -3826,7 +3837,7 @@ char	*_nc_expand_try(
 #undef _nc_remove_key
 int	_nc_remove_key(
 		struct tries **tree, 
-		unsigned short code)
+		unsigned code)
 		{ return(*(int *)0); }
 
 #undef _nc_remove_string

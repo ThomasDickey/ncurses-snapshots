@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2000-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 2000-2002,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,13 +27,15 @@
  ****************************************************************************/
 
 /*
- * Author: Thomas E. Dickey <dickey@clark.net> 2000
+ * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.11 2002/10/19 22:11:24 tom Exp $
+ * $Id: railroad.c,v 1.12 2005/12/31 19:38:14 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
 #include <test.priv.h>
+
+#if HAVE_TGETENT
 
 static char *wipeit;
 static char *moveit;
@@ -238,3 +240,13 @@ main(int argc, char *argv[])
     }
     ExitProgram(EXIT_SUCCESS);
 }
+
+#else
+int
+main(int argc GCC_UNUSED,
+     char *argv[]GCC_UNUSED)
+{
+    printf("This program requires termcap\n");
+    exit(EXIT_FAILURE);
+}
+#endif

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,11 +29,13 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.11 2005/05/28 21:38:45 tom Exp $
+ * $Id: dots.c,v 1.12 2005/12/31 17:02:15 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
 #include <test.priv.h>
+
+#if HAVE_SETUPTERM
 
 #include <time.h>
 
@@ -142,3 +144,12 @@ main(
 	fflush(stdout);
     }
 }
+#else
+int
+main(int argc GCC_UNUSED,
+     char *argv[]GCC_UNUSED)
+{
+    fprintf(stderr, "This program requires terminfo\n");
+    exit(EXIT_FAILURE);
+}
+#endif

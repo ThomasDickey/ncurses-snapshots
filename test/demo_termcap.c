@@ -29,11 +29,13 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.2 2005/04/30 14:57:54 tom Exp $
+ * $Id: demo_termcap.c,v 1.3 2005/12/31 19:26:06 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
 #include <test.priv.h>
+
+#if HAVE_TGETENT
 
 #define isCapName(c) (isgraph(c) && strchr("^#=:\\", c) == 0)
 
@@ -155,3 +157,12 @@ main(int argc, char *argv[])
 
     ExitProgram(EXIT_SUCCESS);
 }
+#else
+int
+main(int argc GCC_UNUSED,
+     char *argv[]GCC_UNUSED)
+{
+    printf("This program requires termcap\n");
+    exit(EXIT_FAILURE);
+}
+#endif

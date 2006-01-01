@@ -13,7 +13,7 @@
  * results, use the ncurses(3) library.  On non-Intel machines, SVr4 curses is
  * just as good.
  *
- * $Id: blue.c,v 1.25 2005/05/28 21:38:03 tom Exp $
+ * $Id: blue.c,v 1.27 2005/12/31 20:22:27 tom Exp $
  */
 
 #include <test.priv.h>
@@ -90,7 +90,7 @@ static chtype letters[4] =
     OR_COLORS('c', BLACK_ON_WHITE),	/* clubs */
 };
 
-#if defined(__i386__)
+#if defined(__i386__) && defined(A_ALTCHARSET) && HAVE_TIGETSTR
 static chtype glyphs[] =
 {
     PC_COLORS('\003', RED_ON_WHITE),	/* hearts */
@@ -98,6 +98,9 @@ static chtype glyphs[] =
     PC_COLORS('\004', RED_ON_WHITE),	/* diamonds */
     PC_COLORS('\005', BLACK_ON_WHITE),	/* clubs */
 };
+#define USE_CP437 1
+#else
+#define USE_CP437 0
 #endif /* __i386__ */
 
 static chtype *suits = letters;	/* this may change to glyphs below */
@@ -391,7 +394,7 @@ main(int argc, char *argv[])
     letters[1] = OR_COLORS('s', BLACK_ON_WHITE);	/* spades */
     letters[2] = OR_COLORS('d', RED_ON_WHITE);	/* diamonds */
     letters[3] = OR_COLORS('c', BLACK_ON_WHITE);	/* clubs */
-#if defined(__i386__) && defined(A_ALTCHARSET)
+#if USE_CP437
     glyphs[0] = PC_COLORS('\003', RED_ON_WHITE);	/* hearts */
     glyphs[1] = PC_COLORS('\006', BLACK_ON_WHITE);	/* spades */
     glyphs[2] = PC_COLORS('\004', RED_ON_WHITE);	/* diamonds */
@@ -399,10 +402,10 @@ main(int argc, char *argv[])
 #endif
 #endif
 
-#if defined(__i386__) && defined(A_ALTCHARSET)
+#if USE_CP437
     if (tigetstr("smpch"))
 	suits = glyphs;
-#endif /* __i386__ && A_ALTCHARSET */
+#endif /* USE_CP437 */
 
     cbreak();
 
