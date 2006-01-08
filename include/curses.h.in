@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.159 2005/12/17 22:55:10 tom Exp $ */
+/* $Id: curses.h.in,v 1.162 2006/01/07 22:13:59 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -435,6 +435,7 @@ extern NCURSES_EXPORT(int) use_default_colors (void);
 extern NCURSES_EXPORT(int) use_extended_names (bool);
 extern NCURSES_EXPORT(int) use_legacy_coding (int);
 extern NCURSES_EXPORT(int) wresize (WINDOW *, int, int);
+extern NCURSES_EXPORT(void) nofilter(void);
 #else
 #define curses_version() NCURSES_VERSION
 #endif
@@ -893,7 +894,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define wattron(win,at)		wattr_on(win, NCURSES_CAST(attr_t, at), NULL)
 #define wattroff(win,at)	wattr_off(win, NCURSES_CAST(attr_t, at), NULL)
 
-#if @NCURSES_EXT_COLORS@
+#if defined(_XOPEN_SOURCE_EXTENDED) && @NCURSES_EXT_COLORS@
 #define wattrset(win,at)	((win)->_color = PAIR_NUMBER(at), \
 				 (win)->_attrs = (at))
 #else
@@ -1022,7 +1023,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define slk_attr_off(a,v)		((v) ? ERR : slk_attroff(a))
 #define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))
 
-#if @NCURSES_EXT_COLORS@
+#if defined(_XOPEN_SOURCE_EXTENDED) && @NCURSES_EXT_COLORS@
 #define wattr_set(win,a,p,opts)		((win)->_attrs = ((a) & ~A_COLOR), \
 					 (win)->_color = (p), \
 					 OK)

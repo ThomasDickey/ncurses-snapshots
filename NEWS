@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.946 2006/01/01 00:31:13 tom Exp $
+-- $Id: NEWS,v 1.947 2006/01/07 22:39:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060107
+	+ check if filter() was called when getting the screensize.  Keep it
+	  at 1 if so (based on Redhat #174498).
+	+ add extension nofilter().
+	+ refined the workaround for ACS mapping.
+	+ make ifdef's consistent in curses.h for the extended colors so the
+	  header file can be used for the normal curses library.  The header
+	  file installed for extended colors is a variation of the
+	  wide-character configuration (report by Frederic L W Meunier).
 
 20051231
 	+ add a workaround to ACS mapping to allow applications such as

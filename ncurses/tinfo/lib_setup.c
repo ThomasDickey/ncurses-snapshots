@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.90 2005/12/24 19:56:16 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.91 2006/01/07 22:28:19 tom Exp $")
 
 /****************************************************************************
  *
@@ -167,7 +167,7 @@ _nc_get_screensize(int *linep, int *colp)
 		 * environment variable.
 		 */
 		if (*linep <= 0)
-		    *linep = WINSIZE_ROWS(size);
+		    *linep = (SP == 0 || SP->_filtered) ? 1 : WINSIZE_ROWS(size);
 		if (*colp <= 0)
 		    *colp = WINSIZE_COLS(size);
 	    }
