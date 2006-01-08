@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.223 2005/12/31 23:40:04 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.225 2006/01/07 21:51:22 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -205,11 +205,27 @@ PutAttrChar(CARG_CH_T ch)
     if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0) {
 	static NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 
+	/*
+	 * If the character falls into any of these special cases, do
+	 * not force the result to a blank:
+	 *
+	 * a) it is printable (this works around a bug in wcwidth()).
+	 * b) use_legacy_coding() has been called to modify the treatment
+	 *    of codes 128-255.
+	 * c) the acs_map[] has been initialized to allow codes 0-31
+	 *    to be rendered.  This supports Linux console's "PC"
+	 *    characters.  Codes 128-255 are allowed though this is
+	 *    not checked.
+	 */
 	if (is8bits(CharOf(CHDEREF(ch)))
 	    && (isprint(CharOf(CHDEREF(ch)))
 		|| (SP->_legacy_coding > 0 && CharOf(CHDEREF(ch)) >= 160)
 		|| (SP->_legacy_coding > 1 && CharOf(CHDEREF(ch)) >= 128)
-		|| AttrOf(attr) & A_ALTCHARSET)) {
+		|| (AttrOf(attr) & A_ALTCHARSET
+		    && ((CharOfD(ch) < ACS_LEN
+			 && SP->_acs_map != 0
+			 && SP->_acs_map[CharOfD(ch)] != 0)
+			|| (CharOfD(ch) >= 128))))) {
 	    ;
 	} else {
 	    ch = CHREF(blank);
@@ -246,8 +262,11 @@ PutAttrChar(CARG_CH_T ch)
 	    int j = CharOfD(ch);
 	    chtype temp = UChar(SP->_acs_map[j]);
 
-	    if (!(SP->_screen_acs_map[j]))
+	    if (!(SP->_screen_acs_map[j])) {
 		RemAttr(attr, A_ALTCHARSET);
+		if (temp == 0)
+		    temp = ' ';
+	    }
 	    if (temp != 0)
 		SetChar(my_ch, temp, AttrOf(attr));
 	}

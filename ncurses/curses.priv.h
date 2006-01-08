@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.290 2005/12/24 18:53:26 tom Exp $
+ * $Id: curses.priv.h,v 1.291 2006/01/07 22:09:00 tom Exp $
  *
  *	curses.priv.h
  *
@@ -374,7 +374,8 @@ struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
 	char            *_setbuf;       /* buffered I/O for output          */
-	int		_buffered;      /* setvbuf uses _setbuf data        */
+	bool		_filtered;	/* filter() was called		    */
+	bool		_buffered;      /* setvbuf uses _setbuf data        */
 	int             _checkfd;       /* filedesc for typeahead check     */
 	TERMINAL        *_term;         /* terminal type information        */
 	short           _lines;         /* screen lines                     */

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.19 2005/12/17 23:37:28 tom Exp $
+.\" $Id: curs_util.3x,v 1.20 2006/01/07 22:47:45 tom Exp $
 .TH curs_util 3X ""
 .na
 .hy 0
@@ -37,6 +37,7 @@
 \fBgetwin\fR,
 \fBkey_name\fR,
 \fBkeyname\fR,
+\fBnofilter\fR,
 \fBputwin\fR,
 \fBunctrl\fR,
 \fBuse_env\fR,
@@ -55,6 +56,8 @@
 \fBchar *key_name(wchar_t w);\fR
 .br
 \fBvoid filter(void);\fR
+.br
+\fBvoid nofilter(void);\fR
 .br
 \fBvoid use_env(bool f);\fR
 .br
@@ -88,6 +91,13 @@ The \fBfilter\fR routine, if used, must be called before \fBinitscr\fR or
 is set to 1; the capabilities \fBclear\fR, \fBcup\fR, \fBcud\fR, \fBcud1\fR,
 \fBcuu1\fR, \fBcuu\fR, \fBvpa\fR are disabled; and the \fBhome\fR string is
 set to the value of \fBcr\fR.
+.PP
+The \fBnofilter\fP routine cancels the effect of a preceding \fBfilter\fP
+call.
+That allows the caller to initialize a screen on a different device,
+using a different value of \fB$TERM\fP.
+The limitation arises because the \fBfilter\fP routine modifies the
+in-memory copy of the terminal information.
 .PP
 The \fBuse_env\fR routine, if used, is called before \fBinitscr\fR or
 \fBnewterm\fR are called.  When called with \fBFALSE\fR as an
@@ -157,6 +167,11 @@ change the output of \fBunctrl\fP.
 The \fBkeyname\fP function may return the names of user-defined
 string capabilities which are defined in the terminfo entry via the \fB-x\fP
 option of \fBtic\fP.
+.PP
+The \fBnofilter\fP routine is specific to ncurses.
+It was not supported on Version 7, BSD or System V implementations.
+It is recommended that any code depending on ncurses extensions
+be conditioned using NCURSES_VERSION.
 .SH SEE ALSO
 \fBuse_legacy_coding\fR(3),
 \fBcurses\fR(3X),

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.61 2005/11/26 13:18:39 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.62 2006/01/07 22:32:57 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -94,7 +94,7 @@ _nc_initscr(void)
  * aside from possibly delaying a filter() call until some terminals have been
  * initialized.
  */
-static int filter_mode = FALSE;
+static bool filter_mode = FALSE;
 
 NCURSES_EXPORT(void)
 filter(void)
@@ -103,6 +103,20 @@ filter(void)
     filter_mode = TRUE;
     returnVoid;
 }
+
+#if NCURSES_EXT_FUNCS
+/*
+ * An extension, allowing the application to open a new screen without
+ * requiring it to also be filtered.
+ */
+NCURSES_EXPORT(void)
+nofilter(void)
+{
+    T((T_CALLED("nofilter")));
+    filter_mode = FALSE;
+    returnVoid;
+}
+#endif
 
 NCURSES_EXPORT(SCREEN *)
 newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
@@ -170,6 +184,7 @@ newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
     SP->_use_meta = FALSE;
 #endif
     SP->_endwin = FALSE;
+    SP->_filtered = filter_mode;
 
     /* Check whether we can optimize scrolling under dumb terminals in case
      * we do not have any of these capabilities, scrolling optimization
