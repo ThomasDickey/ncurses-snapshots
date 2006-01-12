@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.91 2006/01/07 22:28:19 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.92 2006/01/11 22:23:56 tom Exp $")
 
 /****************************************************************************
  *
@@ -167,7 +167,7 @@ _nc_get_screensize(int *linep, int *colp)
 		 * environment variable.
 		 */
 		if (*linep <= 0)
-		    *linep = (SP == 0 || SP->_filtered) ? 1 : WINSIZE_ROWS(size);
+		    *linep = (SP != 0 && SP->_filtered) ? 1 : WINSIZE_ROWS(size);
 		if (*colp <= 0)
 		    *colp = WINSIZE_COLS(size);
 	    }

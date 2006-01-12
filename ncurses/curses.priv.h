@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.291 2006/01/07 22:09:00 tom Exp $
+ * $Id: curses.priv.h,v 1.292 2006/01/11 23:27:16 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1118,7 +1118,7 @@ extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
 extern NCURSES_EXPORT(int) _nc_keypad (bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
-extern NCURSES_EXPORT(int) _nc_setupscreen (int, int const, FILE *);
+extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, bool, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait(int, int, int * EVENTLIST_2nd(_nc_eventlist *));
 extern NCURSES_EXPORT(void) _nc_do_color (short, short, bool, int (*)(int));
 extern NCURSES_EXPORT(void) _nc_flush (void);

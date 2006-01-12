@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.947 2006/01/07 22:39:04 tom Exp $
+-- $Id: NEWS,v 1.949 2006/01/12 00:26:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060111
+	+ modify wgetnstr() to return KEY_RESIZE if a sigwinch occurs.  Use
+	  this in test/filter.c
+	+ fix an error in filter() modification which caused some applications
+	  to fail.
 
 20060107
 	+ check if filter() was called when getting the screensize.  Keep it
