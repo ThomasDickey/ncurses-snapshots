@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.104 2005/11/26 15:28:47 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.105 2006/01/11 23:58:53 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -1014,7 +1014,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
     (void) strcpy(tname, termname());
     load_term();
-    _nc_setupscreen(lines, columns, stdout);
+    _nc_setupscreen(lines, columns, stdout, FALSE, 0);
     baudrate();
 
     _nc_mvcur_init();

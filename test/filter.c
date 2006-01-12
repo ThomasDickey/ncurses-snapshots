@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author:  Thomas E. Dickey <dickey@clark.net> 1998
  *
- * $Id: filter.c,v 1.9 2005/12/31 16:50:22 tom Exp $
+ * $Id: filter.c,v 1.10 2006/01/12 00:24:13 tom Exp $
  */
 #include <test.priv.h>
 
@@ -56,6 +56,21 @@ new_command(char *buffer, int length, attr_t underline)
     printw("Command: ");
     attron(underline);
     code = getnstr(buffer, length);
+    /*
+     * If this returns anything except ERR/OK, it would be one of ncurses's
+     * extensions.  Fill the buffer with something harmless that the shell
+     * will execute as a comment.
+     */
+#ifdef KEY_EVENT
+    if (code == KEY_EVENT)
+	strcpy(buffer, "# event!");
+#endif
+#ifdef KEY_RESIZE
+    if (code == KEY_RESIZE) {
+	strcpy(buffer, "# resize!");
+	getch();
+    }
+#endif
     attroff(underline);
     attroff(A_BOLD);
     printw("\n");
@@ -68,6 +83,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
     char buffer[80];
     attr_t underline;
+    int code;
 
     setlocale(LC_ALL, "");
 
@@ -89,7 +105,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	underline = A_UNDERLINE;
     }
 
-    while (new_command(buffer, sizeof(buffer) - 1, underline) != ERR
+    while ((code = new_command(buffer, sizeof(buffer) - 1, underline)) != ERR
 	   && strlen(buffer) != 0) {
 	reset_shell_mode();
 	printf("\n");

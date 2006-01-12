@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.86 2005/11/20 01:28:30 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.87 2006/01/11 23:27:27 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -211,14 +211,20 @@ extract_fgbg(char *src, int *result)
 }
 #endif
 
-NCURSES_EXPORT(int)
-_nc_setupscreen(int slines, int const scolumns, FILE *output)
 /* OS-independent screen initializations */
+NCURSES_EXPORT(int)
+_nc_setupscreen(int slines,
+		int scolumns,
+		FILE *output,
+		bool filtered,
+		int slk_format)
 {
     int bottom_stolen = 0;
     int i;
 
-    T((T_CALLED("_nc_setupscreen(%d, %d, %p)"), slines, scolumns, output));
+    T((T_CALLED("_nc_setupscreen(%d, %d, %p, %d, %d)"),
+       slines, scolumns, output, filtered, slk_format));
+
     assert(SP == 0);		/* has been reset in newterm() ! */
     if (!_nc_alloc_screen())
 	returnCode(ERR);
@@ -230,6 +236,33 @@ _nc_setupscreen(int slines, int const scolumns, FILE *output)
     if ((SP->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == 0)
 	returnCode(ERR);
 
+    SP->_filtered = filtered;
+
+    /* implement filter mode */
+    if (filtered) {
+	slines = LINES = 1;
+
+	clear_screen = 0;
+	cursor_down = parm_down_cursor = 0;
+	cursor_address = 0;
+	cursor_up = parm_up_cursor = 0;
+	row_address = 0;
+
+	cursor_home = carriage_return;
+	T(("filter screensize %dx%d", LINES, COLS));
+    }
+
+    /* If we must simulate soft labels, grab off the line to be used.
+       We assume that we must simulate, if it is none of the standard
+       formats (4-4  or 3-2-3) for which there may be some hardware
+       support. */
+    if (num_labels <= 0 || !SLK_STDFMT(slk_format)) {
+	if (slk_format) {
+	    if (ERR == _nc_ripoffline(-SLK_LINES(slk_format),
+				      _nc_slk_initialize))
+		returnCode(ERR);
+	}
+    }
 #ifdef __DJGPP__
     T(("setting output mode to binary"));
     fflush(output);

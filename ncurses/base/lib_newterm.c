@@ -48,7 +48,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.62 2006/01/07 22:32:57 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.63 2006/01/11 23:12:59 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -99,6 +99,7 @@ static bool filter_mode = FALSE;
 NCURSES_EXPORT(void)
 filter(void)
 {
+    START_TRACE();
     T((T_CALLED("filter")));
     filter_mode = TRUE;
     returnVoid;
@@ -112,6 +113,7 @@ filter(void)
 NCURSES_EXPORT(void)
 nofilter(void)
 {
+    START_TRACE();
     T((T_CALLED("nofilter")));
     filter_mode = FALSE;
     returnVoid;
@@ -138,35 +140,12 @@ newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
     if (setupterm(name, fileno(ofp), &errret) == ERR)
 	returnSP(0);
 
-    /* implement filter mode */
-    if (filter_mode) {
-	LINES = 1;
-
-	clear_screen = 0;
-	cursor_down = parm_down_cursor = 0;
-	cursor_address = 0;
-	cursor_up = parm_up_cursor = 0;
-	row_address = 0;
-
-	cursor_home = carriage_return;
-    }
-
-    /* If we must simulate soft labels, grab off the line to be used.
-       We assume that we must simulate, if it is none of the standard
-       formats (4-4  or 3-2-3) for which there may be some hardware
-       support. */
-    if (num_labels <= 0 || !SLK_STDFMT(slk_format))
-	if (slk_format) {
-	    if (ERR == _nc_ripoffline(-SLK_LINES(slk_format),
-				      _nc_slk_initialize))
-		returnSP(0);
-	}
     /* this actually allocates the screen structure, and saves the
      * original terminal settings.
      */
     current = SP;
     _nc_set_screen(0);
-    if (_nc_setupscreen(LINES, COLS, ofp) == ERR) {
+    if (_nc_setupscreen(LINES, COLS, ofp, filter_mode, slk_format) == ERR) {
 	_nc_set_screen(current);
 	returnSP(0);
     }
@@ -184,7 +163,6 @@ newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
     SP->_use_meta = FALSE;
 #endif
     SP->_endwin = FALSE;
-    SP->_filtered = filter_mode;
 
     /* Check whether we can optimize scrolling under dumb terminals in case
      * we do not have any of these capabilities, scrolling optimization
