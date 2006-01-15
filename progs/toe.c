@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,6 @@
 
 /*
  *	toe.c --- table of entries report generator
- *
  */
 
 #include <progs.priv.h>
@@ -43,21 +42,17 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.29 2005/09/25 00:39:43 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.33 2006/01/14 23:03:09 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
 const char *_nc_progname;
 
-static int typelist(int eargc, char *eargv[], bool,
-		    void (*)(const char *, TERMTYPE *));
-static void deschook(const char *, TERMTYPE *);
-
 #if NO_LEAKS
 #undef ExitProgram
+static void ExitProgram(int code) GCC_NORETURN;
 static void
-ExitProgram(int code) GCC_NORETURN;
-     static void ExitProgram(int code)
+ExitProgram(int code)
 {
     _nc_free_entries(_nc_head);
     _nc_leaks_dump_entry();
@@ -92,129 +87,8 @@ get_directory(char *path)
     return path;
 }
 
-int
-main(int argc, char *argv[])
-{
-    bool direct_dependencies = FALSE;
-    bool invert_dependencies = FALSE;
-    bool header = FALSE;
-    int i, c;
-    int code;
-
-    _nc_progname = _nc_rootname(argv[0]);
-
-    while ((c = getopt(argc, argv, "huv:UV")) != EOF)
-	switch (c) {
-	case 'h':
-	    header = TRUE;
-	    break;
-	case 'u':
-	    direct_dependencies = TRUE;
-	    break;
-	case 'v':
-	    set_trace_level(atoi(optarg));
-	    break;
-	case 'U':
-	    invert_dependencies = TRUE;
-	    break;
-	case 'V':
-	    puts(curses_version());
-	    ExitProgram(EXIT_SUCCESS);
-	default:
-	    (void) fprintf(stderr, "usage: toe [-huUV] [-v n] [file...]\n");
-	    ExitProgram(EXIT_FAILURE);
-	}
-
-    if (direct_dependencies || invert_dependencies) {
-	if (freopen(argv[optind], "r", stdin) == 0) {
-	    (void) fflush(stdout);
-	    fprintf(stderr, "%s: can't open %s\n", _nc_progname, argv[optind]);
-	    ExitProgram(EXIT_FAILURE);
-	}
-
-	/* parse entries out of the source file */
-	_nc_set_source(argv[optind]);
-	_nc_read_entry_source(stdin, 0, FALSE, FALSE, NULLHOOK);
-    }
-
-    /* maybe we want a direct-dependency listing? */
-    if (direct_dependencies) {
-	ENTRY *qp;
-
-	for_entry_list(qp) {
-	    if (qp->nuses) {
-		int j;
-
-		(void) printf("%s:", _nc_first_name(qp->tterm.term_names));
-		for (j = 0; j < qp->nuses; j++)
-		    (void) printf(" %s", qp->uses[j].name);
-		putchar('\n');
-	    }
-	}
-
-	ExitProgram(EXIT_SUCCESS);
-    }
-
-    /* maybe we want a reverse-dependency listing? */
-    if (invert_dependencies) {
-	ENTRY *qp, *rp;
-	int matchcount;
-
-	for_entry_list(qp) {
-	    matchcount = 0;
-	    for_entry_list(rp) {
-		if (rp->nuses == 0)
-		    continue;
-
-		for (i = 0; i < rp->nuses; i++)
-		    if (_nc_name_match(qp->tterm.term_names,
-				       rp->uses[i].name, "|")) {
-			if (matchcount++ == 0)
-			    (void) printf("%s:",
-					  _nc_first_name(qp->tterm.term_names));
-			(void) printf(" %s",
-				      _nc_first_name(rp->tterm.term_names));
-		    }
-	    }
-	    if (matchcount)
-		putchar('\n');
-	}
-
-	ExitProgram(EXIT_SUCCESS);
-    }
-
-    /*
-     * If we get this far, user wants a simple terminal type listing.
-     */
-    if (optind < argc) {
-	code = typelist(argc - optind, argv + optind, header, deschook);
-    } else {
-	char *home, *eargv[3];
-	char personal[PATH_MAX];
-	int j;
-
-	j = 0;
-	if ((eargv[j] = get_directory(getenv("TERMINFO"))) != 0) {
-	    j++;
-	} else {
-	    if ((home = getenv("HOME")) != 0) {
-		(void) sprintf(personal, PRIVATE_INFO, home);
-		if ((eargv[j] = get_directory(personal)) != 0)
-		    j++;
-	    }
-	    if ((eargv[j] = get_directory(strcpy(personal, TERMINFO))) != 0)
-		j++;
-	}
-	eargv[j] = 0;
-
-	code = typelist(j, eargv, header, deschook);
-    }
-
-    ExitProgram(code);
-}
-
 static void
-deschook(const char *cn, TERMTYPE * tp)
+deschook(const char *cn, TERMTYPE *tp)
 /* display a description for the type */
 {
     const char *desc;
@@ -230,7 +104,7 @@ deschook(const char *cn, TERMTYPE * tp)
 static int
 typelist(int eargc, char *eargv[],
 	 bool verbosity,
-	 void (*hook) (const char *, TERMTYPE * tp))
+	 void (*hook) (const char *, TERMTYPE *tp))
 /* apply a function to each entry in given terminfo directories */
 {
     int i;
@@ -305,4 +179,188 @@ typelist(int eargc, char *eargv[],
     }
 
     return (EXIT_SUCCESS);
+}
+
+static void
+usage(void)
+{
+    (void) fprintf(stderr, "usage: toe [-ahuUV] [-v n] [file...]\n");
+    ExitProgram(EXIT_FAILURE);
+}
+
+int
+main(int argc, char *argv[])
+{
+    bool all_dirs = FALSE;
+    bool direct_dependencies = FALSE;
+    bool invert_dependencies = FALSE;
+    bool header = FALSE;
+    int i;
+    int code;
+    int this_opt, last_opt = '?';
+    int v_opt = 0;
+
+    _nc_progname = _nc_rootname(argv[0]);
+
+    while ((this_opt = getopt(argc, argv, "0123456789ahuvUV")) != EOF) {
+	/* handle optional parameter */
+	if (isdigit(this_opt)) {
+	    switch (last_opt) {
+	    case 'v':
+		v_opt = (this_opt - '0');
+		break;
+	    default:
+		if (isdigit(last_opt))
+		    v_opt *= 10;
+		else
+		    v_opt = 0;
+		v_opt += (this_opt - '0');
+		last_opt = this_opt;
+	    }
+	    continue;
+	}
+	switch (this_opt) {
+	case 'a':
+	    all_dirs = TRUE;
+	    break;
+	case 'h':
+	    header = TRUE;
+	    break;
+	case 'u':
+	    direct_dependencies = TRUE;
+	    break;
+	case 'v':
+	    v_opt = 1;
+	    break;
+	case 'U':
+	    invert_dependencies = TRUE;
+	    break;
+	case 'V':
+	    puts(curses_version());
+	    ExitProgram(EXIT_SUCCESS);
+	default:
+	    usage();
+	}
+    }
+    set_trace_level(v_opt);
+
+    if (direct_dependencies || invert_dependencies) {
+	if (freopen(argv[optind], "r", stdin) == 0) {
+	    (void) fflush(stdout);
+	    fprintf(stderr, "%s: can't open %s\n", _nc_progname, argv[optind]);
+	    ExitProgram(EXIT_FAILURE);
+	}
+
+	/* parse entries out of the source file */
+	_nc_set_source(argv[optind]);
+	_nc_read_entry_source(stdin, 0, FALSE, FALSE, NULLHOOK);
+    }
+
+    /* maybe we want a direct-dependency listing? */
+    if (direct_dependencies) {
+	ENTRY *qp;
+
+	for_entry_list(qp) {
+	    if (qp->nuses) {
+		int j;
+
+		(void) printf("%s:", _nc_first_name(qp->tterm.term_names));
+		for (j = 0; j < qp->nuses; j++)
+		    (void) printf(" %s", qp->uses[j].name);
+		putchar('\n');
+	    }
+	}
+
+	ExitProgram(EXIT_SUCCESS);
+    }
+
+    /* maybe we want a reverse-dependency listing? */
+    if (invert_dependencies) {
+	ENTRY *qp, *rp;
+	int matchcount;
+
+	for_entry_list(qp) {
+	    matchcount = 0;
+	    for_entry_list(rp) {
+		if (rp->nuses == 0)
+		    continue;
+
+		for (i = 0; i < rp->nuses; i++)
+		    if (_nc_name_match(qp->tterm.term_names,
+				       rp->uses[i].name, "|")) {
+			if (matchcount++ == 0)
+			    (void) printf("%s:",
+					  _nc_first_name(qp->tterm.term_names));
+			(void) printf(" %s",
+				      _nc_first_name(rp->tterm.term_names));
+		    }
+	    }
+	    if (matchcount)
+		putchar('\n');
+	}
+
+	ExitProgram(EXIT_SUCCESS);
+    }
+
+    /*
+     * If we get this far, user wants a simple terminal type listing.
+     */
+    if (optind < argc) {
+	code = typelist(argc - optind, argv + optind, header, deschook);
+    } else if (all_dirs) {
+	DBDIRS state;
+	int offset;
+	int pass;
+	const char *path;
+	char **eargv = 0;
+
+	code = EXIT_FAILURE;
+	for (pass = 0; pass < 2; ++pass) {
+	    int count = 0;
+
+	    _nc_first_db(&state, &offset);
+	    while ((path = _nc_next_db(&state, &offset)) != 0) {
+		if (eargv != 0) {
+		    int n, found = FALSE;
+
+		    /* eliminate duplicates */
+		    for (n = 0; n < count; ++n) {
+			if (!strcmp(path, eargv[n])) {
+			    found = TRUE;
+			    break;
+			}
+		    }
+		    if (!found) {
+			eargv[count] = strdup(path);
+			++count;
+		    }
+		} else {
+		    ++count;
+		}
+	    }
+	    if (!pass) {
+		eargv = typeCalloc(char *, count + 1);
+	    } else {
+		code = typelist(count, eargv, header, deschook);
+	    }
+	}
+    } else {
+	char *eargv[3];
+	int j;
+
+	j = 0;
+	if ((eargv[j] = get_directory(getenv("TERMINFO"))) != 0) {
+	    j++;
+	} else {
+	    if ((eargv[j] = get_directory(_nc_home_terminfo())) != 0)
+		j++;
+	    if ((eargv[j] = get_directory(TERMINFO)) != 0)
+		j++;
+	}
+	eargv[j] = 0;
+
+	code = typelist(j, eargv, header, deschook);
+    }
+
+    ExitProgram(code);
 }

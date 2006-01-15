@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.292 2006/01/11 23:27:16 tom Exp $
+ * $Id: curses.priv.h,v 1.294 2006/01/14 20:53:35 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1070,7 +1070,14 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int) _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int) _nc_locale_breaks_acs(void);
-extern NCURSES_EXPORT(int) _nc_setupterm(NCURSES_CONST char *, int , int *, bool);
+extern NCURSES_EXPORT(int) _nc_setupterm(NCURSES_CONST char *, int, int *, bool);
+
+/* lib_tstp.c */
+#if USE_SIGWINCH
+extern NCURSES_EXPORT(int) _nc_handle_sigwinch(int);
+#else
+#define _nc_handle_sigwinch(a) /* nothing */
+#endif
 
 /* lib_wacs.c */
 #if USE_WIDEC_SUPPORT
@@ -1108,7 +1115,6 @@ extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, const char *);
 /* elsewhere ... */
 extern NCURSES_EXPORT(ENTRY *) _nc_delink_entry(ENTRY *, TERMTYPE *);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
-extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
 extern NCURSES_EXPORT(char *) _nc_trace_bufcat (int, const char *);
 extern NCURSES_EXPORT(int) _nc_access (const char *, int);

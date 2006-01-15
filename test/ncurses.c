@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.263 2006/01/01 00:27:28 tom Exp $
+$Id: ncurses.c,v 1.264 2006/01/14 23:36:51 tom Exp $
 
 ***************************************************************************/
 
@@ -571,6 +571,16 @@ static WINSTACK *winstack = 0;
 static unsigned len_winstack = 0;
 
 static void
+forget_boxes(void)
+{
+    if (winstack != 0) {
+	free(winstack);
+    }
+    winstack = 0;
+    len_winstack = 0;
+}
+
+static void
 remember_boxes(unsigned level, WINDOW *txt_win, WINDOW *box_win)
 {
     unsigned need = (level + 1) * 2;
@@ -807,6 +817,7 @@ getch_test(void)
 {
     int delay = begin_getch_test();
     wgetch_test(0, stdscr, delay);
+    forget_boxes();
     finish_getch_test();
 }
 
@@ -1021,6 +1032,7 @@ get_wch_test(void)
 {
     int delay = begin_getch_test();
     wget_wch_test(0, stdscr, delay);
+    forget_boxes();
     finish_getch_test();
 }
 #endif

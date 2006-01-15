@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.92 2006/01/11 22:23:56 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.93 2006/01/14 15:17:51 tom Exp $")
 
 /****************************************************************************
  *
@@ -121,6 +121,7 @@ _nc_get_screensize(int *linep, int *colp)
     /* figure out the size of the screen */
     T(("screen size: terminfo lines = %d columns = %d", lines, columns));
 
+    _nc_handle_sigwinch(0);
     if (!_use_env) {
 	*linep = (int) lines;
 	*colp = (int) columns;
@@ -199,6 +200,7 @@ _nc_get_screensize(int *linep, int *colp)
 	lines = (short) (*linep);
 	columns = (short) (*colp);
     }
+    _nc_handle_sigwinch(1);
 
     T(("screen size is %dx%d", *linep, *colp));
 
