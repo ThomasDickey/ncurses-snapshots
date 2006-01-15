@@ -48,7 +48,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.63 2006/01/11 23:12:59 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.64 2006/01/14 15:36:24 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -127,9 +127,12 @@ newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
     int errret;
     int slk_format = _nc_slk_format;
     SCREEN *current;
+    SCREEN *result = 0;
 
     START_TRACE();
     T((T_CALLED("newterm(\"%s\",%p,%p)"), name, ofp, ifp));
+
+    _nc_handle_sigwinch(0);
 
     /* allow user to set maximum escape delay from the environment */
     if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
@@ -137,76 +140,77 @@ newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
     }
 
     /* this loads the capability entry, then sets LINES and COLS */
-    if (setupterm(name, fileno(ofp), &errret) == ERR)
-	returnSP(0);
+    if (setupterm(name, fileno(ofp), &errret) == ERR) {
+	result = 0;
+    } else {
+	/*
+	 * This actually allocates the screen structure, and saves the original
+	 * terminal settings.
+	 */
+	current = SP;
+	_nc_set_screen(0);
+	if (_nc_setupscreen(LINES, COLS, ofp, filter_mode, slk_format) == ERR) {
+	    _nc_set_screen(current);
+	    result = 0;
+	} else {
+	    /* if the terminal type has real soft labels, set those up */
+	    if (slk_format && num_labels > 0 && SLK_STDFMT(slk_format))
+		_nc_slk_initialize(stdscr, COLS);
 
-    /* this actually allocates the screen structure, and saves the
-     * original terminal settings.
-     */
-    current = SP;
-    _nc_set_screen(0);
-    if (_nc_setupscreen(LINES, COLS, ofp, filter_mode, slk_format) == ERR) {
-	_nc_set_screen(current);
-	returnSP(0);
-    }
-
-    /* if the terminal type has real soft labels, set those up */
-    if (slk_format && num_labels > 0 && SLK_STDFMT(slk_format))
-	_nc_slk_initialize(stdscr, COLS);
-
-    SP->_ifd = fileno(ifp);
-    typeahead(fileno(ifp));
+	    SP->_ifd = fileno(ifp);
+	    typeahead(fileno(ifp));
 #ifdef TERMIOS
-    SP->_use_meta = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
-		     !(cur_term->Ottyb.c_iflag & ISTRIP));
+	    SP->_use_meta = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
+			     !(cur_term->Ottyb.c_iflag & ISTRIP));
 #else
-    SP->_use_meta = FALSE;
+	    SP->_use_meta = FALSE;
 #endif
-    SP->_endwin = FALSE;
+	    SP->_endwin = FALSE;
 
-    /* Check whether we can optimize scrolling under dumb terminals in case
-     * we do not have any of these capabilities, scrolling optimization
-     * will be useless.
-     */
-    SP->_scrolling = ((scroll_forward && scroll_reverse) ||
-		      ((parm_rindex || parm_insert_line || insert_line) &&
-		       (parm_index || parm_delete_line || delete_line)));
+	    /*
+	     * Check whether we can optimize scrolling under dumb terminals in
+	     * case we do not have any of these capabilities, scrolling
+	     * optimization will be useless.
+	     */
+	    SP->_scrolling = ((scroll_forward && scroll_reverse) ||
+			      ((parm_rindex ||
+				parm_insert_line ||
+				insert_line) &&
+			       (parm_index ||
+				parm_delete_line ||
+				delete_line)));
 
-    baudrate();			/* sets a field in the SP structure */
+	    baudrate();		/* sets a field in the SP structure */
 
-    SP->_keytry = 0;
+	    SP->_keytry = 0;
 
-    /*
-     * Check for mismatched graphic-rendition capabilities.  Most SVr4
-     * terminfo trees contain entries that have rmul or rmso equated to
-     * sgr0 (Solaris curses copes with those entries).  We do this only for
-     * curses, since many termcap applications assume that smso/rmso and
-     * smul/rmul are paired, and will not function properly if we remove
-     * rmso or rmul.  Curses applications shouldn't be looking at this
-     * detail.
-     */
+	    /*
+	     * Check for mismatched graphic-rendition capabilities.  Most SVr4
+	     * terminfo trees contain entries that have rmul or rmso equated to
+	     * sgr0 (Solaris curses copes with those entries).  We do this only
+	     * for curses, since many termcap applications assume that
+	     * smso/rmso and smul/rmul are paired, and will not function
+	     * properly if we remove rmso or rmul.  Curses applications
+	     * shouldn't be looking at this detail.
+	     */
 #define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
-    SP->_use_rmso = SGR0_TEST(exit_standout_mode);
-    SP->_use_rmul = SGR0_TEST(exit_underline_mode);
+	    SP->_use_rmso = SGR0_TEST(exit_standout_mode);
+	    SP->_use_rmul = SGR0_TEST(exit_underline_mode);
 
-    /* compute movement costs so we can do better move optimization */
-    _nc_mvcur_init();
+	    /* compute movement costs so we can do better move optimization */
+	    _nc_mvcur_init();
 
-    /* initialize terminal to a sane state */
-    _nc_screen_init();
+	    /* initialize terminal to a sane state */
+	    _nc_screen_init();
 
-    /* Initialize the terminal line settings. */
-    _nc_initscr();
+	    /* Initialize the terminal line settings. */
+	    _nc_initscr();
 
-    _nc_signal_handler(TRUE);
+	    _nc_signal_handler(TRUE);
 
-#if USE_SIZECHANGE
-    /*
-     * Pretend we received a SIGWINCH, just in case we're starting up in a
-     * terminal that cannot initialize its size properly (Debian #265631).
-     */
-    SP->_sig_winch = TRUE;
-#endif
-
-    returnSP(SP);
+	    result = SP;
+	}
+    }
+    _nc_handle_sigwinch(1);
+    returnSP(result);
 }

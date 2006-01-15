@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.949 2006/01/12 00:26:55 tom Exp $
+-- $Id: NEWS,v 1.950 2006/01/14 23:05:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060114
+	+ add toe -a option, to show all databases.
+	+ fix toe from 20000909 changes which made it not look at
+	  $HOME/.terminfo
+	+ make toe's -v option parameter optional as per manpage.
+	+ improve SIGWINCH handling by postponing its effect during newterm(),
+	  etc., when allocating screens.
 
 20060111
 	+ modify wgetnstr() to return KEY_RESIZE if a sigwinch occurs.  Use

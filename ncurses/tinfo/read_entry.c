@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.82 2005/12/24 19:08:58 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.84 2006/01/14 23:19:33 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -408,14 +408,18 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
  * 0 on failure.
  */
 static int
-_nc_read_tic_entry(char *const filename,
-		   const char *const dir, const char *ttn, TERMTYPE *const tp)
+_nc_read_tic_entry(char *filename,
+		   unsigned limit,
+		   const char *const dir,
+		   const char *name,
+		   TERMTYPE *const tp)
 {
-    int need = 2 + strlen(dir) + strlen(ttn);
+    unsigned need = 4 + strlen(dir) + strlen(name);
 
-    if (need > PATH_MAX)
+    if (need > limit)
 	return TGETENT_NO;
-    (void) sprintf(filename, "%s/%s", dir, ttn);
+
+    (void) sprintf(filename, "%s/%c/%s", dir, *name, name);
     return _nc_read_file_entry(filename, tp);
 }
 
@@ -423,41 +427,130 @@ _nc_read_tic_entry(char *const filename,
  * Process the list of :-separated directories, looking for the terminal type.
  * We don't use strtok because it does not show us empty tokens.
  */
-static int
-_nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
-		       ttn, TERMTYPE *const tp)
+
+static char *this_db_list = 0;
+static int size_db_list;
+
+/*
+ * Cleanup.
+ */
+NCURSES_EXPORT(void)
+_nc_last_db(void)
 {
-    char *list, *a;
-    const char *b;
-    int code = TGETENT_NO;
+    FreeAndNull(this_db_list);
+    size_db_list = 0;
+}
 
-    /* we'll modify the argument, so we must copy */
-    if ((b = a = list = strdup(dirs)) == NULL)
-	return (TGETENT_NO);
-
-    for (;;) {
-	int c = *a;
-	if (c == 0 || c == NCURSES_PATHSEP) {
-	    *a = 0;
-	    if ((b + 1) >= a)
-		b = TERMINFO;
-	    if (_nc_read_tic_entry(filename, b, ttn, tp) == 1) {
-		code = TGETENT_YES;
-		break;
-	    }
-	    b = a + 1;
-	    if (c == 0)
-		break;
-	}
-	a++;
+/* The TERMINFO_DIRS value, if defined by the configure script, begins with a
+ * ":", which will be interpreted as TERMINFO.
+ */
+static char *
+next_list_item(char *source, int *offset)
+{
+    if (source != 0) {
+	FreeIfNeeded(this_db_list);
+	this_db_list = strdup(source);
+	size_db_list = strlen(source);
     }
 
-    free(list);
-    return (code);
+    if (this_db_list != 0 && size_db_list && *offset < size_db_list) {
+	char *result = this_db_list + *offset;
+	char *marker = strchr(result, NCURSES_PATHSEP);
+
+	/*
+	 * Put a null on the marker if a separator was found.  Set the offset
+	 * to the next position after the marker so we can call this function
+	 * again, using the data at the offset.
+	 */
+	if (marker == 0) {
+	    *offset += strlen(result) + 1;
+	    marker = result + *offset;	// FIXME
+	} else {
+	    *marker++ = 0;
+	    *offset = marker - this_db_list;
+	}
+	if (*result == 0 && result != (this_db_list + size_db_list))
+	    result = TERMINFO;
+	return result;
+    }
+    return 0;
+}
+
+#define NEXT_DBD(var, offset) next_list_item((*offset == 0) ? var : 0, offset)
+
+/*
+ * This is a simple iterator which allows the caller to step through the
+ * possible locations for a terminfo directory.  ncurses uses this to find
+ * terminfo files to read.
+ */
+NCURSES_EXPORT(const char *)
+_nc_next_db(DBDIRS * state, int *offset)
+{
+    const char *result;
+    char *envp;
+
+    while (*state < dbdLAST) {
+	DBDIRS next = *state + 1;
+
+	result = 0;
+
+	switch (*state) {
+	case dbdTIC:
+	    if (have_tic_directory)
+		result = _nc_tic_dir(0);
+	    break;
+	case dbdEnvOnce:
+	    if (use_terminfo_vars()) {
+		if ((envp = getenv("TERMINFO")) != 0)
+		    result = _nc_tic_dir(envp);
+	    }
+	    break;
+	case dbdHome:
+	    if (use_terminfo_vars()) {
+		result = _nc_home_terminfo();
+	    }
+	    break;
+	case dbdEnvList:
+	    if (use_terminfo_vars()) {
+		if ((result = NEXT_DBD(getenv("TERMINFO_DIRS"), offset)) != 0)
+		    next = *state;
+	    }
+	    break;
+	case dbdCfgList:
+#ifdef TERMINFO_DIRS
+	    if ((result = NEXT_DBD(TERMINFO_DIRS, offset)) != 0)
+		next = *state;
+#endif
+	    break;
+	case dbdCfgOnce:
+#ifndef TERMINFO_DIRS
+	    result = TERMINFO;
+#endif
+	    break;
+	case dbdLAST:
+	    break;
+	}
+	if (*state != next) {
+	    *state = next;
+	    *offset = 0;
+	    _nc_last_db();
+	}
+	if (result != 0) {
+	    return result;
+	}
+    }
+    return 0;
+}
+
+NCURSES_EXPORT(void)
+_nc_first_db(DBDIRS * state, int *offset)
+{
+    *state = dbdTIC;
+    *offset = 0;
 }
 
 /*
- *	_nc_read_entry(char *tn, char *filename, TERMTYPE *tp)
+ *	_nc_read_entry(char *name, char *filename, TERMTYPE *tp)
  *
  *	Find and read the compiled entry for a given terminal type,
  *	if it exists.  We take pains here to make sure no combination
@@ -466,53 +559,25 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
  */
 
 NCURSES_EXPORT(int)
-_nc_read_entry(const char *const tn, char *const filename, TERMTYPE *const tp)
+_nc_read_entry(const char *const name, char *const filename, TERMTYPE *const tp)
 {
-    char *envp;
-    char ttn[PATH_MAX];
-
-    if (strlen(tn) == 0
-	|| strcmp(tn, ".") == 0
-	|| strcmp(tn, "..") == 0
-	|| _nc_pathlast(tn) != 0) {
-	T(("illegal or missing entry name '%s'", tn));
+    if (strlen(name) == 0
+	|| strcmp(name, ".") == 0
+	|| strcmp(name, "..") == 0
+	|| _nc_pathlast(name) != 0) {
+	T(("illegal or missing entry name '%s'", name));
 	return TGETENT_NO;
-    }
+    } else {
+	DBDIRS state = dbdTIC;
+	int offset = 0;
+	const char *path;
 
-    /* truncate the terminal name to prevent buffer overflow */
-    (void) sprintf(ttn, "%c/%.*s", *tn, (int) sizeof(ttn) - 3, tn);
-
-    /* This is System V behavior, in conjunction with our requirements for
-     * writing terminfo entries.
-     */
-    if (have_tic_directory
-	&& _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp) == 1)
-	return TGETENT_YES;
-
-    if (use_terminfo_vars()) {
-	if ((envp = getenv("TERMINFO")) != 0
-	    && _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
-	    return TGETENT_YES;
-
-	/* this is an ncurses extension */
-	if ((envp = _nc_home_terminfo()) != 0) {
-	    if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
+	while ((path = _nc_next_db(&state, &offset)) != 0) {
+	    if (_nc_read_tic_entry(filename, PATH_MAX, path, name, tp) == 1) {
+		_nc_last_db();
 		return TGETENT_YES;
 	    }
 	}
-
-	/* this is an ncurses extension */
-	if ((envp = getenv("TERMINFO_DIRS")) != 0)
-	    return _nc_read_terminfo_dirs(envp, filename, ttn, tp);
     }
-
-    /* Try the system directory.  Note that the TERMINFO_DIRS value, if
-     * defined by the configure script, begins with a ":", which will be
-     * interpreted as TERMINFO.
-     */
-#ifdef TERMINFO_DIRS
-    return _nc_read_terminfo_dirs(TERMINFO_DIRS, filename, ttn, tp);
-#else
-    return _nc_read_tic_entry(filename, TERMINFO, ttn, tp);
-#endif
+    return TGETENT_NO;
 }
