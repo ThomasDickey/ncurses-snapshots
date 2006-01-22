@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.32 2005/08/13 18:14:44 tom Exp $
+ * $Id: demo.cc,v 1.33 2006/01/15 19:55:40 tom Exp $
  */
 
 #include "internal.h"
@@ -282,7 +282,7 @@ public:
     TestForm F;
     Soft_Label_Key_Set* S = new Soft_Label_Key_Set;
     for(int i=1; i <= S->labels(); i++) {
-      char buf[5];
+      char buf[8];
       ::sprintf(buf,"Frm%02d",i);
       (*S)[i] = buf;                                      // Text
       (*S)[i] = Soft_Label_Key_Set::Soft_Label_Key::Left; // Justification
@@ -500,7 +500,7 @@ public:
 void TestApplication::init_labels(Soft_Label_Key_Set& S) const
 {
   for(int i=1; i <= S.labels(); i++) {
-    char buf[5];
+    char buf[8];
     ::sprintf(buf,"Key%02d",i);
     S[i] = buf;                                      // Text
     S[i] = Soft_Label_Key_Set::Soft_Label_Key::Left; // Justification

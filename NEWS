@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.950 2006/01/14 23:05:34 tom Exp $
+-- $Id: NEWS,v 1.953 2006/01/21 21:48:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,8 +6,19 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20060121
+	+ minor fixes to xmc-glitch experimental code:
+	  + suppress line-drawing
+	  + implement max_attributes
+	  tested with xterm.
+	+ minor fixes for the database iterator.
+	+ fix some buffer limits in c++ demo (comment by Falk Hueffner in
+	  Debian #348117).
+
 20060114
-	+ add toe -a option, to show all databases.
+	+ add toe -a option, to show all databases.  This uses new private
+	  interfaces in the ncurses library for iterating through the list of
+	  databases.
 	+ fix toe from 20000909 changes which made it not look at
 	  $HOME/.terminfo
 	+ make toe's -v option parameter optional as per manpage.

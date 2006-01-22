@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.264 2006/01/14 23:36:51 tom Exp $
+$Id: ncurses.c,v 1.266 2006/01/21 18:06:40 tom Exp $
 
 ***************************************************************************/
 
@@ -637,6 +637,7 @@ resize_boxes(unsigned level, WINDOW *win)
     doupdate();
 }
 #else
+#define forget_boxes()		/* nothing */
 #define remember_boxes(level,text,frame)	/* nothing */
 #endif
 
@@ -2829,7 +2830,9 @@ acs_display(void)
 {
     int c = 'a';
     char *term = getenv("TERM");
-    char *pch_kludge = (term != 0 && strstr(term, "linux")) ? "p=PC, " : "";
+    const char *pch_kludge = ((term != 0 && strstr(term, "linux"))
+			      ? "p=PC, "
+			      : "");
 
     do {
 	switch (c) {
@@ -5484,7 +5487,7 @@ overlap_help(int state, int flavors[OVERLAP_FLAVORS])
     int row;
     int col;
     int item;
-    char *ths, *tht;
+    const char *ths, *tht;
     char msg[80];
 
     if (state < 0)

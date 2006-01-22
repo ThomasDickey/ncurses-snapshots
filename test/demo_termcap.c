@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2005 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2005,2006 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.3 2005/12/31 19:26:06 tom Exp $
+ * $Id: demo_termcap.c,v 1.4 2006/01/21 23:43:53 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -115,7 +115,7 @@ dumpit(char *cap)
 }
 
 static void
-demo_termcap(char *name)
+demo_termcap(const char *name)
 {
     char buffer[1024];
 

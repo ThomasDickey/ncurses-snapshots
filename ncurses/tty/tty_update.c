@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.225 2006/01/07 21:51:22 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.229 2006/01/21 23:20:38 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -658,17 +658,15 @@ doupdate(void)
 #endif /* USE_TRACE_TIMES */
 
     /*
-     * This is the support for magic-cookie terminals.  The
-     * theory: we scan the virtual screen looking for attribute
-     * turnons.  Where we find one, check to make sure it's
-     * realizable by seeing if the required number of
-     * un-attributed blanks are present before and after the
-     * attributed range; try to shift the range boundaries over
-     * blanks (not changing the screen display) so this becomes
-     * true.  If it is, shift the beginning attribute change
-     * appropriately (the end one, if we've gotten this far, is
-     * guaranteed room for its cookie). If not, nuke the added
-     * attributes out of the span.
+     * This is the support for magic-cookie terminals.  The theory:  we scan
+     * the virtual screen looking for attribute turnons.  Where we find one,
+     * check to make sure it's realizable by seeing if the required number of
+     * un-attributed blanks are present before and after the attributed range;
+     * try to shift the range boundaries over blanks (not changing the screen
+     * display) so this becomes true.  If it is, shift the beginning attribute
+     * change appropriately (the end one, if we've gotten this far, is
+     * guaranteed room for its cookie).  If not, nuke the added attributes out
+     * of the span.
      */
 #if USE_XMC_SUPPORT
     if (magic_cookie_glitch > 0) {
@@ -678,11 +676,13 @@ doupdate(void)
 	for (i = 0; i < screen_lines; i++) {
 	    for (j = 0; j < screen_columns; j++) {
 		bool failed = FALSE;
-		attr_t turnon = AttrOf(newscr->_line[i].text[j]) & ~rattr;
+		NCURSES_CH_T *thisline = newscr->_line[i].text;
+		attr_t thisattr = AttrOf(thisline[j]) & SP->_xmc_triggers;
+		attr_t turnon = thisattr & ~rattr;
 
 		/* is an attribute turned on here? */
 		if (turnon == 0) {
-		    rattr = AttrOf(newscr->_line[i].text[j]);
+		    rattr = thisattr;
 		    continue;
 		}
 
@@ -690,23 +690,33 @@ doupdate(void)
 		TR(TRACE_ATTRS, ("...to %s", _traceattr(turnon)));
 
 		/*
-		 * If the attribute change location is a blank with a
-		 * "safe" attribute, undo the attribute turnon.  This may
-		 * ensure there's enough room to set the attribute before
-		 * the first non-blank in the run.
+		 * If the attribute change location is a blank with a "safe"
+		 * attribute, undo the attribute turnon.  This may ensure
+		 * there's enough room to set the attribute before the first
+		 * non-blank in the run.
 		 */
-#define SAFE(a)	(!((a) & (attr_t)~NONBLANK_ATTR))
-		if (ISBLANK(newscr->_line[i].text[j]) && SAFE(turnon)) {
-		    RemAttr(newscr->_line[i].text[j], turnon);
+#define SAFE(a)	(!((a) & SP->_xmc_triggers))
+		if (ISBLANK(thisline[j]) && SAFE(turnon)) {
+		    RemAttr(thisline[j], turnon);
 		    continue;
 		}
 
 		/* check that there's enough room at start of span */
 		for (k = 1; k <= magic_cookie_glitch; k++) {
 		    if (j - k < 0
-			|| !ISBLANK(newscr->_line[i].text[j - k])
-			|| !SAFE(AttrOf(newscr->_line[i].text[j - k])))
+			|| !ISBLANK(thisline[j - k])
+			|| !SAFE(AttrOf(thisline[j - k]))) {
 			failed = TRUE;
+			TR(TRACE_ATTRS, ("No room at start in %d,%d%s%s",
+					 i, j - k,
+					 (ISBLANK(thisline[j - k])
+					  ? ""
+					  : ":nonblank"),
+					 (SAFE(AttrOf(thisline[j - k]))
+					  ? ""
+					  : ":unsafe")));
+			break;
+		    }
 		}
 		if (!failed) {
 		    bool end_onscreen = FALSE;
@@ -715,7 +725,8 @@ doupdate(void)
 		    /* find end of span, if it's onscreen */
 		    for (m = i; m < screen_lines; m++) {
 			for (; n < screen_columns; n++) {
-			    if (AttrOf(newscr->_line[m].text[n]) == rattr) {
+			    attr_t testattr = AttrOf(newscr->_line[m].text[n]);
+			    if ((testattr & SP->_xmc_triggers) == rattr) {
 				end_onscreen = TRUE;
 				TR(TRACE_ATTRS,
 				   ("Range attributed with %s ends at (%d, %d)",
@@ -734,22 +745,34 @@ doupdate(void)
 			NCURSES_CH_T *lastline = newscr->_line[m].text;
 
 			/*
-			 * If there are safely-attributed blanks at the
-			 * end of the range, shorten the range.  This will
-			 * help ensure that there is enough room at end
-			 * of span.
+			 * If there are safely-attributed blanks at the end of
+			 * the range, shorten the range.  This will help ensure
+			 * that there is enough room at end of span.
 			 */
 			while (n >= 0
 			       && ISBLANK(lastline[n])
-			       && SAFE(AttrOf(lastline[n])))
+			       && SAFE(AttrOf(lastline[n]))) {
 			    RemAttr(lastline[n--], turnon);
+			}
 
 			/* check that there's enough room at end of span */
-			for (k = 1; k <= magic_cookie_glitch; k++)
+			for (k = 1; k <= magic_cookie_glitch; k++) {
 			    if (n + k >= screen_columns
 				|| !ISBLANK(lastline[n + k])
-				|| !SAFE(AttrOf(lastline[n + k])))
+				|| !SAFE(AttrOf(lastline[n + k]))) {
 				failed = TRUE;
+				TR(TRACE_ATTRS,
+				   ("No room at end in %d,%d%s%s",
+				    i, j - k,
+				    (ISBLANK(lastline[n + k])
+				     ? ""
+				     : ":nonblank"),
+				    (SAFE(AttrOf(lastline[n + k]))
+				     ? ""
+				     : ":unsafe")));
+				break;
+			    }
+			}
 		    }
 		}
 
@@ -763,7 +786,8 @@ doupdate(void)
 		    /* turn off new attributes over span */
 		    for (p = i; p < screen_lines; p++) {
 			for (; q < screen_columns; q++) {
-			    if (AttrOf(newscr->_line[p].text[q]) == rattr)
+			    attr_t testattr = AttrOf(newscr->_line[p].text[q]);
+			    if ((testattr & SP->_xmc_triggers) == rattr)
 				goto foundend;
 			    RemAttr(newscr->_line[p].text[q], turnon);
 			}
@@ -776,14 +800,14 @@ doupdate(void)
 			_traceattr(turnon), i, j));
 
 		    /*
-		     * back up the start of range so there's room
-		     * for cookies before the first nonblank character
+		     * Back up the start of range so there's room for cookies
+		     * before the first nonblank character.
 		     */
 		    for (k = 1; k <= magic_cookie_glitch; k++)
-			AddAttr(newscr->_line[i].text[j - k], turnon);
+			AddAttr(thisline[j - k], turnon);
 		}
 
-		rattr = AttrOf(newscr->_line[i].text[j]);
+		rattr = thisattr;
 	    }
 	}
 

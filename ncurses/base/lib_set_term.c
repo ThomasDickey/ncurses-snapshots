@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.87 2006/01/11 23:27:27 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.89 2006/01/21 23:45:52 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -393,22 +393,45 @@ _nc_setupscreen(int slines,
     /*
      * If we've no magic cookie support, we suppress attributes that xmc
      * would affect, i.e., the attributes that affect the rendition of a
-     * space.  Note that this impacts the alternate character set mapping
-     * as well.
+     * space.
      */
+    SP->_ok_attributes = termattrs();
+    if (has_colors()) {
+	SP->_ok_attributes |= A_COLOR;
+    }
     if (magic_cookie_glitch > 0) {
 
-	SP->_xmc_triggers = termattrs() & (
-					      A_ALTCHARSET |
-					      A_BLINK |
-					      A_BOLD |
-					      A_REVERSE |
-					      A_STANDOUT |
-					      A_UNDERLINE
+	SP->_xmc_triggers = SP->_ok_attributes & (
+						     A_STANDOUT |
+						     A_UNDERLINE |
+						     A_REVERSE |
+						     A_BLINK |
+						     A_DIM |
+						     A_BOLD |
+						     A_INVIS |
+						     A_PROTECT
 	    );
+#if 0
+	/*
+	 * We "should" treat colors as an attribute.  The wyse350 (and its
+	 * clones) appear to be the only ones that have colors and magic
+	 * cookies.
+	 */
+	if (has_colors()) {
+	    SP->_xmc_triggers |= A_COLOR;
+	}
+#endif
 	SP->_xmc_suppress = SP->_xmc_triggers & (chtype) ~(A_BOLD);
 
 	T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
+	/*
+	 * Supporting line-drawing may be possible.  But make the regular
+	 * video attributes work first.
+	 */
+	acs_chars = 0;
+	ena_acs = 0;
+	enter_alt_charset_mode = 0;
+	exit_alt_charset_mode = 0;
 #if USE_XMC_SUPPORT
 	/*
 	 * To keep this simple, suppress all of the optimization hooks
@@ -419,7 +442,6 @@ _nc_setupscreen(int slines,
 	set_attributes = 0;
 #else
 	magic_cookie_glitch = ABSENT_NUMERIC;
-	acs_chars = 0;
 #endif
     }
 
