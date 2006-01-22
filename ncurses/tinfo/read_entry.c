@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.84 2006/01/14 23:19:33 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.86 2006/01/21 17:25:55 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -444,8 +444,8 @@ _nc_last_db(void)
 /* The TERMINFO_DIRS value, if defined by the configure script, begins with a
  * ":", which will be interpreted as TERMINFO.
  */
-static char *
-next_list_item(char *source, int *offset)
+static const char *
+next_list_item(const char *source, int *offset)
 {
     if (source != 0) {
 	FreeIfNeeded(this_db_list);
@@ -454,6 +454,7 @@ next_list_item(char *source, int *offset)
     }
 
     if (this_db_list != 0 && size_db_list && *offset < size_db_list) {
+	static char system_db[] = TERMINFO;
 	char *result = this_db_list + *offset;
 	char *marker = strchr(result, NCURSES_PATHSEP);
 
@@ -464,13 +465,13 @@ next_list_item(char *source, int *offset)
 	 */
 	if (marker == 0) {
 	    *offset += strlen(result) + 1;
-	    marker = result + *offset;	// FIXME
+	    marker = result + *offset;
 	} else {
 	    *marker++ = 0;
 	    *offset = marker - this_db_list;
 	}
 	if (*result == 0 && result != (this_db_list + size_db_list))
-	    result = TERMINFO;
+	    result = system_db;
 	return result;
     }
     return 0;

@@ -42,7 +42,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.33 2006/01/14 23:03:09 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.34 2006/01/21 16:59:36 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -345,6 +345,7 @@ main(int argc, char *argv[])
 	    }
 	}
     } else {
+	static char system_db[] = TERMINFO;
 	char *eargv[3];
 	int j;
 
@@ -354,7 +355,7 @@ main(int argc, char *argv[])
 	} else {
 	    if ((eargv[j] = get_directory(_nc_home_terminfo())) != 0)
 		j++;
-	    if ((eargv[j] = get_directory(TERMINFO)) != 0)
+	    if ((eargv[j] = get_directory(system_db)) != 0)
 		j++;
 	}
 	eargv[j] = 0;

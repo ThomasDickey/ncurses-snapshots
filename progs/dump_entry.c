@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.70 2005/07/23 20:03:30 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.71 2006/01/21 23:43:39 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -960,7 +960,7 @@ dump_entry(TERMTYPE *tterm,
 	     */
 	    int n;
 	    for (n = STRCOUNT; n < NUM_STRINGS(tterm); n++) {
-		char *name = ExtStrname(tterm, n, strnames);
+		const char *name = ExtStrname(tterm, n, strnames);
 
 		if (VALID_STRING(tterm->Strings[n])) {
 		    set_attributes = ABSENT_STRING;

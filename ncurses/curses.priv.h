@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.294 2006/01/14 20:53:35 tom Exp $
+ * $Id: curses.priv.h,v 1.295 2006/01/21 23:46:43 tom Exp $
  *
  *	curses.priv.h
  *
@@ -474,6 +474,7 @@ struct screen {
 	int             _default_fg;    /* assumed default foreground        */
 	int             _default_bg;    /* assumed default background        */
 #endif
+	chtype          _ok_attributes; /* valid attributes for terminal     */
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 	chtype          _xmc_triggers;  /* attributes to process if xmc      */
 	chtype          _acs_map[ACS_LEN]; /* the real alternate-charset map */
