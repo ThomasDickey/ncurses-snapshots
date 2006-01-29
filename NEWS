@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.953 2006/01/21 21:48:51 tom Exp $
+-- $Id: NEWS,v 1.954 2006/01/28 23:15:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060128
+	+ correct form library Window_To_Buffer() change (cf:  20040516), which
+	  should ignore the video attributes (report by Ricardo Cantu).
 
 20060121
 	+ minor fixes to xmc-glitch experimental code:
