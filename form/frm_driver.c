@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.72 2005/11/26 15:26:18 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.73 2006/01/28 23:09:30 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -543,7 +543,7 @@ Window_To_Buffer(WINDOW *win, FIELD *field)
 #if USE_WIDEC_SUPPORT
 	      && p->chars[1] == 0
 #endif
-	      && AttrOf(*p) == ChAttrOf(pad))
+	    )
 	    *p = myBLANK;
 	}
     }
@@ -2690,7 +2690,7 @@ FE_Delete_Previous(FORM *form)
        * automatically (given the proper options).  But we cannot eat the
        * keystroke to back over the wrapping point, since that would put the
        * cursor past the end of the form field.  In this case, just delete the
-       * character at the end of the field. 
+       * character at the end of the field.
        */
       if (form->currow == this_row && this_row > 0)
 	{
