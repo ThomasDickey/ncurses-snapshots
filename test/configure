@@ -2166,7 +2166,7 @@ case ".$withval" in #(vi
     ;;
   esac
   ;; #(vi
-.NONE/*)
+.no|.NONE/*)
   withval=`echo $withval | sed -e s%NONE%$ac_default_prefix%`
   ;;
 *)
@@ -2230,7 +2230,7 @@ else
   
 cf_cv_curses_incdir=no
 case $host_os in #(vi
-hpux10.*|hpux11.*) #(vi
+hpux10.*) #(vi
 	test -d /usr/include/curses_colr && \
 	cf_cv_curses_incdir="-I/usr/include/curses_colr"
 	;;
@@ -2554,7 +2554,7 @@ else
 fi
 
 	;;
-hpux10.*|hpux11.*) #(vi
+hpux10.*) #(vi
 	echo $ac_n "checking for initscr in -lcur_colr""... $ac_c" 1>&6
 echo "configure:2560: checking for initscr in -lcur_colr" >&5
 ac_lib_var=`echo cur_colr'_'initscr | sed 'y%./+-%__p_%'`

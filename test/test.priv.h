@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,9 +27,9 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
+ *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.53 2005/12/31 20:51:02 tom Exp $ */
+/* $Id: test.priv.h,v 1.55 2006/02/04 23:32:16 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -323,6 +323,18 @@ extern int optind;
 
 #ifndef KEY_MIN
 #define KEY_MIN 256	/* not defined in Solaris 8 */
+#endif
+
+/*
+ * Workaround for HPUX
+ */
+#if defined(__hpux) && !defined(NCURSES_VERSION)
+#define getbegx(w) __getbegx(w)
+#define getbegy(w) __getbegy(w)
+#define getmaxx(w) __getmaxx(w)
+#define getmaxy(w) __getmaxy(w)
+#define getcurx(w) __getcurx(w)
+#define getcury(w) __getcury(w)
 #endif
 
 /*

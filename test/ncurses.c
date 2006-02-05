@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.266 2006/01/21 18:06:40 tom Exp $
+$Id: ncurses.c,v 1.267 2006/02/04 22:29:03 tom Exp $
 
 ***************************************************************************/
 
@@ -2798,6 +2798,10 @@ show_acs_chars(void)
     n = show_1_acs(n, BOTH(ACS_HLINE));
     n = show_1_acs(n, BOTH(ACS_VLINE));
 
+    /*
+     * HPUX's ACS definitions are broken here.  Just give up.
+     */
+#if !(defined(__hpux) && !defined(NCURSES_VERSION))
     n = show_1_acs(n, BOTH(ACS_LARROW));
     n = show_1_acs(n, BOTH(ACS_RARROW));
     n = show_1_acs(n, BOTH(ACS_UARROW));
@@ -2823,6 +2827,7 @@ show_acs_chars(void)
     n = show_1_acs(n, BOTH(ACS_S3));
     n = show_1_acs(n, BOTH(ACS_S7));
     n = show_1_acs(n, BOTH(ACS_S9));
+#endif
 }
 
 static void
