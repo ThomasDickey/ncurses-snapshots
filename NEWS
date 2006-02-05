@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.954 2006/01/28 23:15:26 tom Exp $
+-- $Id: NEWS,v 1.956 2006/02/05 00:47:53 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060204
+	+ improved test/configure to build test/ncurses on HPUX 11 using the
+	  vendor curses.
+	+ documented ALTERNATE CONFIGURATIONS in the ncurses manpage, for the
+	  benefit of developers who do not read INSTALL.
 
 20060128
 	+ correct form library Window_To_Buffer() change (cf:  20040516), which

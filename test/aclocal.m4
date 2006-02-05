@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.12 2005/12/31 20:07:34 tom Exp $
+dnl $Id: aclocal.m4,v 1.13 2006/02/05 00:45:56 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -326,7 +326,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_CPPFLAGS version: 8 updated: 2005/12/31 13:26:39
+dnl CF_CURSES_CPPFLAGS version: 9 updated: 2006/02/04 19:44:43
 dnl ------------------
 dnl Look for the curses headers.
 AC_DEFUN([CF_CURSES_CPPFLAGS],[
@@ -334,7 +334,7 @@ AC_DEFUN([CF_CURSES_CPPFLAGS],[
 AC_CACHE_CHECK(for extra include directories,cf_cv_curses_incdir,[
 cf_cv_curses_incdir=no
 case $host_os in #(vi
-hpux10.*|hpux11.*) #(vi
+hpux10.*) #(vi
 	test -d /usr/include/curses_colr && \
 	cf_cv_curses_incdir="-I/usr/include/curses_colr"
 	;;
@@ -380,7 +380,7 @@ fi
 AC_CHECK_HEADERS($cf_cv_ncurses_header)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_LIBS version: 23 updated: 2003/11/06 19:59:57
+dnl CF_CURSES_LIBS version: 24 updated: 2006/02/04 19:44:43
 dnl --------------
 dnl Look for the curses libraries.  Older curses implementations may require
 dnl termcap/termlib to be linked as well.  Call CF_CURSES_CPPFLAGS first.
@@ -399,7 +399,7 @@ case $host_os in #(vi
 freebsd*) #(vi
 	AC_CHECK_LIB(mytinfo,tgoto,[LIBS="-lmytinfo $LIBS"])
 	;;
-hpux10.*|hpux11.*) #(vi
+hpux10.*) #(vi
 	AC_CHECK_LIB(cur_colr,initscr,[
 		LIBS="-lcur_colr $LIBS"
 		ac_cv_func_initscr=yes
@@ -1185,7 +1185,7 @@ EOF
 test "$cf_cv_ncurses_version" = no || AC_DEFINE(NCURSES)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PATH_SYNTAX version: 9 updated: 2002/09/17 23:03:38
+dnl CF_PATH_SYNTAX version: 10 updated: 2006/01/02 19:36:00
 dnl --------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
@@ -1207,7 +1207,7 @@ case ".[$]$1" in #(vi
     ;;
   esac
   ;; #(vi
-.NONE/*)
+.no|.NONE/*)
   $1=`echo [$]$1 | sed -e s%NONE%$ac_default_prefix%`
   ;;
 *)
