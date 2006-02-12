@@ -1,5 +1,5 @@
 /*
- * $Id: demo_altkeys.c,v 1.2 2005/10/22 18:59:42 tom Exp $
+ * $Id: demo_altkeys.c,v 1.3 2006/02/11 17:08:21 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2005/10/22
@@ -19,8 +19,6 @@
 #  include <time.h>
 # endif
 #endif
-
-#include <term.h>
 
 #define MY_LOGFILE "demo_altkeys.log"
 #define MY_KEYS (KEY_MAX + 1)

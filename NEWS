@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.956 2006/02/05 00:47:53 tom Exp $
+-- $Id: NEWS,v 1.958 2006/02/12 00:21:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060211
+	+ add test/movewindow.c, to test mvderwin().
+	+ fix ncurses soft-key test so color changes are shown immediately
+	  rather than delayed.
+	+ modify ncurses soft-key test to hide the keys when exiting the test
+	  screen.
+	+ fixes to build test programs with PDCurses 2.7, e.g., its headers
+	  rely on autoconf symbols, and it declares stubs for nonfunctional
+	  terminfo and termcap entrypoints.
 
 20060204
 	+ improved test/configure to build test/ncurses on HPUX 11 using the

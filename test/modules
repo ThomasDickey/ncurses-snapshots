@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.24 2005/10/22 14:19:30 tom Exp $
+# $Id: modules,v 1.25 2006/02/11 19:15:30 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -59,9 +59,11 @@ keynames	progs		$(srcdir)	$(HEADER_DEPS)
 knight		progs		$(srcdir)	$(HEADER_DEPS)
 lrtest		progs		$(srcdir)	$(HEADER_DEPS)
 ncurses		progs		$(srcdir)	$(HEADER_DEPS)	../include/panel.h ../include/menu.h ../include/form.h
+movewindow	progs		$(srcdir)	$(HEADER_DEPS)
 newdemo		progs		$(srcdir)	$(HEADER_DEPS)
 railroad	progs		$(srcdir)	$(HEADER_DEPS)
 rain		progs		$(srcdir)	$(HEADER_DEPS)
+savescreen	progs		$(srcdir)	$(HEADER_DEPS)
 tclock		progs		$(srcdir)	$(HEADER_DEPS)
 testaddch	progs		$(srcdir)	$(HEADER_DEPS)
 testcurs	progs		$(srcdir)	$(HEADER_DEPS)

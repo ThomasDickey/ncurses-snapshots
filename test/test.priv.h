@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.55 2006/02/04 23:32:16 tom Exp $ */
+/* $Id: test.priv.h,v 1.56 2006/02/11 17:10:29 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -217,6 +217,8 @@
 
 #if defined(HAVE_XCURSES)
 /* no other headers */
+#undef HAVE_SETUPTERM		/* nonfunctional */
+#undef HAVE_TGETENT		/* nonfunctional */
 #elif defined(HAVE_NCURSESW_TERM_H)
 #include <ncursesw/term.h>
 #elif defined(HAVE_NCURSES_TERM_H)

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.267 2006/02/04 22:29:03 tom Exp $
+$Id: ncurses.c,v 1.269 2006/02/11 19:49:34 tom Exp $
 
 ***************************************************************************/
 
@@ -2399,6 +2399,18 @@ slk_help(void)
     refresh();
 }
 
+#if HAVE_SLK_COLOR
+static void
+call_slk_color(short fg, short bg)
+{
+    init_pair(1, bg, fg);
+    slk_color(1);
+    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
+    clrtoeol();
+    refresh();
+}
+#endif
+
 static void
 slk_test(void)
 /* exercise the soft keys */
@@ -2409,26 +2421,16 @@ slk_test(void)
 #if HAVE_SLK_COLOR
     short fg = COLOR_BLACK;
     short bg = COLOR_WHITE;
-    bool new_color = FALSE;
 #endif
 
     c = CTRL('l');
 #if HAVE_SLK_COLOR
     if (has_colors()) {
-	new_color = TRUE;
+	call_slk_color(fg, bg);
     }
 #endif
 
     do {
-#if HAVE_SLK_COLOR
-	if (new_color) {
-	    init_pair(1, bg, fg);
-	    slk_color(1);
-	    new_color = FALSE;
-	    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
-	    refresh();
-	}
-#endif
 	move(0, 0);
 	switch (c) {
 	case CTRL('l'):
@@ -2498,13 +2500,13 @@ slk_test(void)
 	case 'F':
 	    if (has_colors()) {
 		fg = (fg + 1) % COLORS;
-		new_color = TRUE;
+		call_slk_color(fg, bg);
 	    }
 	    break;
 	case 'B':
 	    if (has_colors()) {
 		bg = (bg + 1) % COLORS;
-		new_color = TRUE;
+		call_slk_color(fg, bg);
 	    }
 	    break;
 #endif
@@ -2516,6 +2518,7 @@ slk_test(void)
 	((c = Getchar()) != EOF);
 
   done:
+    slk_clear();
     erase();
     endwin();
 }
@@ -2531,20 +2534,12 @@ wide_slk_test(void)
     char *s;
     short fg = COLOR_BLACK;
     short bg = COLOR_WHITE;
-    bool new_color = FALSE;
 
     c = CTRL('l');
     if (has_colors()) {
-	new_color = TRUE;
+	call_slk_color(fg, bg);
     }
     do {
-	if (new_color) {
-	    init_pair(1, bg, fg);
-	    slk_color(1);
-	    new_color = FALSE;
-	    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
-	    refresh();
-	}
 	move(0, 0);
 	switch (c) {
 	case CTRL('l'):
@@ -2634,13 +2629,13 @@ wide_slk_test(void)
 	case 'F':
 	    if (has_colors()) {
 		fg = (fg + 1) % COLORS;
-		new_color = TRUE;
+		call_slk_color(fg, bg);
 	    }
 	    break;
 	case 'B':
 	    if (has_colors()) {
 		bg = (bg + 1) % COLORS;
-		new_color = TRUE;
+		call_slk_color(fg, bg);
 	    }
 	    break;
 
@@ -2651,6 +2646,7 @@ wide_slk_test(void)
 	((c = Getchar()) != EOF);
 
   done:
+    slk_clear();
     erase();
     endwin();
 }
