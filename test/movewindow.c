@@ -1,0 +1,476 @@
+/*
+ * $Id: movewindow.c,v 1.10 2006/02/12 00:20:55 tom Exp $
+ *
+ * Demonstrate move functions for windows and derived windows from the curses
+ * library.
+ *
+ * Thomas Dickey - 2006/2/11
+ */
+/*
+derwin
+mvderwin
+subwin
+mvwin
+ */
+
+#include <test.priv.h>
+
+#define LINE_MIN	2
+#define LINE_MAX	(LINES - 2)
+#define COL_MIN		2
+#define COL_MAX		(COLS - 2)
+
+typedef struct {
+    int y, x;
+} PAIR;
+
+typedef struct {
+    WINDOW *parent;	/* need this since WINDOW->_parent is not portable */
+    WINDOW *child;	/* the actual value */
+} FRAME;
+
+static void head_line(char *fmt,...) GCC_PRINTFLIKE(1, 2);
+static void tail_line(char *fmt,...) GCC_PRINTFLIKE(1, 2);
+
+static unsigned num_windows;
+static FRAME *all_windows;
+
+static void
+show_help(void)
+{
+    /* TBD */
+}
+
+static void
+head_line(char *fmt,...)
+{
+    int y, x;
+    va_list argp;
+
+    getyx(stdscr, y, x);
+    move(0, 0);
+    clrtoeol();
+
+    va_start(argp, fmt);
+    vwprintw(stdscr, fmt, argp);
+    va_end(argp);
+
+    move(y, x);
+    refresh();
+}
+
+static void
+tail_line(char *fmt,...)
+{
+    int y, x;
+    va_list argp;
+
+    getyx(stdscr, y, x);
+    move(LINES - 1, 0);
+    clrtoeol();
+
+    va_start(argp, fmt);
+    vwprintw(stdscr, fmt, argp);
+    va_end(argp);
+
+    move(y, x);
+    refresh();
+}
+
+/*
+ * Arrow keys move cursor, return location at current on non-arrow key.
+ */
+static PAIR *
+selectcell(WINDOW *parent, int uli, int ulj, int lri, int lrj)
+{
+    static PAIR res;		/* result cell */
+    int si = lri - uli + 1;	/* depth of the select area */
+    int sj = lrj - ulj + 1;	/* width of the select area */
+    int i = 0, j = 0;		/* offsets into the select area */
+
+    res.y = uli;
+    res.x = ulj;
+    for (;;) {
+	tail_line("Upper left [%2d,%2d] Lower right [%2d,%2d] -> %d,%d",
+		  uli, ulj,
+		  lri, lrj,
+		  uli + i, ulj + j);
+	wmove(parent, uli + i, ulj + j);
+
+	switch (wgetch(parent)) {
+	case KEY_UP:
+	    i += si - 1;
+	    break;
+	case KEY_DOWN:
+	    i++;
+	    break;
+	case KEY_LEFT:
+	    j += sj - 1;
+	    break;
+	case KEY_RIGHT:
+	    j++;
+	    break;
+	case QUIT:
+	case ESCAPE:
+	    return ((PAIR *) 0);
+#ifdef NCURSES_MOUSE_VERSION
+	case KEY_MOUSE:
+	    {
+		MEVENT event;
+
+		getmouse(&event);
+		if (event.y > uli && event.x > ulj) {
+		    i = event.y - uli;
+		    j = event.x - ulj;
+		} else {
+		    beep();
+		    break;
+		}
+	    }
+	    /* FALLTHRU */
+#endif
+	default:
+	    res.y = uli + i;
+	    res.x = ulj + j;
+	    return (&res);
+	}
+	i %= si;
+	j %= sj;
+    }
+}
+
+/*
+ * Ask user for a window definition.
+ */
+static bool
+getwindow(WINDOW *parent, PAIR * ul, PAIR * lr)
+{
+    int min_col = (parent == stdscr) ? COL_MIN : 0;
+    int max_col = (parent == stdscr) ? COL_MAX : getmaxx(parent);
+    int min_line = (parent == stdscr) ? LINE_MIN : 0;
+    int max_line = (parent == stdscr) ? LINE_MAX : getmaxy(parent);
+    PAIR *tmp;
+    bool result = FALSE;
+
+    head_line("Use arrows to move cursor, anything else to mark corner 1");
+    if ((tmp = selectcell(parent, min_line, min_col, max_line, max_col)) != 0) {
+	*ul = *tmp;
+	mvwaddch(parent, ul->y, ul->x, '*');
+
+	head_line("Use arrows to move cursor, anything else to mark corner 2");
+	if ((tmp = selectcell(parent, ul->y, ul->x, max_line, max_col)) != 0) {
+	    *lr = *tmp;
+	    mvwaddch(parent, lr->y, lr->x, '*');
+	    wmove(parent, lr->y, lr->x);
+	    wsyncdown(parent);
+	    wrefresh(parent);
+	    result = (lr->y != ul->y && lr->x != ul->x);
+	}
+    }
+    head_line("done");
+    return result;
+}
+
+/*
+ * Draw a box inside the given window.
+ */
+static void
+box_inside(WINDOW *win)
+{
+    int y0, x0;
+    int y1, x1;
+
+    getyx(win, y0, x0);
+    getmaxyx(win, y1, x1);
+
+    mvwhline(win, 0, 0, ACS_HLINE, x1);
+    mvwhline(win, y1 - 1, 0, ACS_HLINE, x1);
+
+    mvwvline(win, 0, 0, ACS_VLINE, y1);
+    mvwvline(win, 0, x1 - 1, ACS_VLINE, y1);
+
+    mvwaddch(win, 0, 0, ACS_ULCORNER);
+    mvwaddch(win, y1 - 1, 0, ACS_LLCORNER);
+    mvwaddch(win, 0, x1 - 1, ACS_URCORNER);
+    mvwaddch(win, y1 - 1, x1 - 1, ACS_LRCORNER);
+
+    wsyncdown(win);
+    wmove(win, y0, x0);
+    wrefresh(win);
+}
+
+/*
+ * Add a window to our list.
+ */
+static void
+add_window(WINDOW *parent, WINDOW *child)
+{
+    static unsigned have = 0;
+    unsigned need = ((num_windows + 1) | 31) + 1;
+
+    keypad(child, TRUE);
+    if (need > have) {
+	all_windows = (FRAME *) realloc(all_windows, need * sizeof(FRAME));
+    }
+    all_windows[num_windows].parent = parent;
+    all_windows[num_windows].child = child;
+    num_windows++;
+}
+
+static int
+window2num(WINDOW *win)
+{
+    int n;
+    int result = -1;
+    for (n = 0; n < (int) num_windows; ++n) {
+	if (win == all_windows[n].child) {
+	    result = n;
+	    break;
+	}
+    }
+    return result;
+}
+
+static WINDOW *
+parent_of(WINDOW *win)
+{
+    WINDOW *result = 0;
+    int n = window2num(win);
+    if (n >= 0)
+	result = all_windows[n].parent;
+    return result;
+}
+
+static void
+refresh_all(WINDOW *win)
+{
+    unsigned n;
+
+    for (n = 0; n < num_windows; ++n) {
+	if (all_windows[n].child != win) {
+	    touchwin(all_windows[n].child);
+	    wnoutrefresh(all_windows[n].child);
+	}
+    }
+
+    touchwin(win);
+    wnoutrefresh(win);
+    doupdate();
+}
+
+static WINDOW *
+next_window(WINDOW *win)
+{
+    WINDOW *result = win;
+    int n = window2num(win);
+
+    if (n++ >= 0) {
+	result = all_windows[n % num_windows].child;
+	wmove(result, 0, 0);
+	wrefresh(result);
+    }
+    return result;
+}
+
+static WINDOW *
+prev_window(WINDOW *win)
+{
+    WINDOW *result = win;
+    int n = window2num(win);
+
+    if (n-- >= 0) {
+	if (n < 0)
+	    n = num_windows - 1;
+	result = all_windows[n % num_windows].child;
+	wmove(result, 0, 0);
+	wrefresh(result);
+    }
+    return result;
+}
+
+static bool
+move_window(WINDOW *win)
+{
+    WINDOW *parent = parent_of(win);
+    bool result = FALSE;
+
+    if (parent != 0) {
+	int min_col = (parent == stdscr) ? COL_MIN : 0;
+	int max_col = (parent == stdscr) ? COL_MAX : getmaxx(parent);
+	int min_line = (parent == stdscr) ? LINE_MIN : 0;
+	int max_line = (parent == stdscr) ? LINE_MAX : getmaxy(parent);
+	PAIR *tmp;
+
+	head_line("Select new position for %swindow",
+		    (parent != stdscr) ? "sub" : "");
+
+	if ((tmp = selectcell(parent, min_line, min_col, max_line, max_col)) != 0) {
+	    if (parent == stdscr) {
+		if (mvwin(win, tmp->y, tmp->x) != ERR) {
+		    refresh_all(win);
+		    doupdate();
+		    result = TRUE;
+		}
+	    } else {
+		if (mvderwin(win, tmp->y, tmp->x) != ERR) {
+		    refresh_all(win);
+		    doupdate();
+		    result = TRUE;
+		}
+	    }
+	}
+    }
+    return result;
+}
+
+static void
+fill_window(WINDOW *win, char ch)
+{
+    int y, x;
+    int y0, x0;
+    int y1, x1;
+
+    getyx(win, y0, x0);
+    getmaxyx(win, y1, x1);
+    for (y = 0; y < y1; ++y) {
+	for (x = 0; x < x1; ++x) {
+	    mvwaddch(win, y, x, ch);
+	}
+    }
+    wsyncdown(win);
+    wmove(win, y0, x0);
+    wrefresh(win);
+}
+
+#define lines_of(ul,lr)	(lr.y - ul.y + 1)
+#define cols_of(ul,lr)	(lr.x - ul.x + 1)
+#define pair_of(ul)	ul.y, ul.x
+
+static WINDOW *
+create_my_window(WINDOW *current)
+{
+    PAIR ul, lr;
+    WINDOW *result = 0;
+
+    if (getwindow(stdscr, &ul, &lr)) {
+	result = newwin(lines_of(ul, lr), cols_of(ul, lr), pair_of(ul));
+	if (result != 0) {
+	    fill_window(result, 'c');
+	    add_window(stdscr, result);
+	}
+    }
+    if (result == 0)
+	result = current;
+    return result;
+}
+
+static WINDOW *
+create_my_derwin(WINDOW *parent)
+{
+    PAIR ul, lr;
+    WINDOW *result = 0;
+
+    if (getwindow(parent, &ul, &lr)) {
+	result = derwin(parent, lines_of(ul, lr), cols_of(ul, lr), pair_of(ul));
+	if (result != 0) {
+	    fill_window(result, 'd');
+	    add_window(parent, result);
+	}
+    }
+    if (result == 0)
+	result = parent;
+    return result;
+}
+
+static WINDOW *
+create_my_subwin(WINDOW *parent)
+{
+    PAIR ul, lr;
+    WINDOW *result = 0;
+
+    if (getwindow(parent, &ul, &lr)) {
+	result = subwin(parent,
+			lines_of(ul, lr),
+			cols_of(ul, lr),
+			ul.y + getbegy(parent),
+			ul.x + getbegx(parent));
+	if (result != 0) {
+	    fill_window(result, 's');
+	    add_window(parent, result);
+	}
+    }
+    if (result == 0)
+	result = parent;
+    return result;
+}
+
+int
+main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
+{
+    WINDOW *current_win;
+    int ch;
+    bool done = FALSE;
+
+    initscr();
+    cbreak();
+    noecho();
+    nonl();
+    intrflush(stdscr, FALSE);
+
+    add_window(0, current_win = stdscr);
+
+    while (!done && (ch = wgetch(current_win)) != ERR) {
+	switch (ch) {
+	case '?':
+	    show_help();
+	    break;
+	case 'b':
+	    box_inside(current_win);
+	    break;
+	case 'c':
+	    current_win = create_my_window(current_win);
+	    break;
+	case 'd':
+	    current_win = create_my_derwin(current_win);
+	    break;
+	case 'f':
+	    fill_window(current_win, wgetch(current_win));
+	    break;
+	case 'm':
+	    if (!move_window(current_win)) {
+		tail_line("error");
+		continue;
+	    }
+	    break;
+	case 'q':
+	    done = TRUE;
+	    break;
+	case 's':
+	    current_win = create_my_subwin(current_win);
+	    break;
+	case CTRL('n'):
+	    current_win = next_window(current_win);
+	    break;
+	case CTRL('p'):
+	    current_win = prev_window(current_win);
+	    break;
+#if 0
+	    /* want to allow cursor to move around the current window too */
+	    /* want to test the resizing of windows and subwindows too */
+	    /* want to allow deleting a window also */
+#endif
+	default:
+	    tail_line("unrecognized key");
+	    beep();
+	    continue;
+	}
+	tail_line("size [%d,%d] begin [%d,%d]",
+		  getmaxy(current_win),
+		  getmaxx(current_win),
+		  getbegy(current_win),
+		  getbegx(current_win));
+	wmove(current_win, 0, 0);
+    }
+    endwin();
+    return EXIT_SUCCESS;
+}

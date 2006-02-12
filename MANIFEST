@@ -990,11 +990,13 @@
 ./test/listused.sh
 ./test/lrtest.c
 ./test/modules
+./test/movewindow.c
 ./test/ncurses.c
 ./test/ncurses_tst.hin
 ./test/newdemo.c
 ./test/railroad.c
 ./test/rain.c
+./test/savescreen.c
 ./test/tclock.c
 ./test/test.priv.h
 ./test/testaddch.c

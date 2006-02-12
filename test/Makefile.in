@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.86 2005/12/31 20:01:12 tom Exp $
+# $Id: Makefile.in,v 1.87 2006/02/11 19:15:57 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -133,8 +133,10 @@ TESTS = \
 	lrtest$x \
 	ncurses$x \
 	newdemo$x \
+	movewindow$x \
 	railroad$x \
 	rain$x \
+	savescreen$x \
 	tclock$x \
 	testaddch$x \
 	testcurs$x \
@@ -231,11 +233,17 @@ ncurses$x: $(MODEL)/ncurses$o $(LOCAL_LIBS)
 newdemo$x: $(MODEL)/newdemo$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/newdemo$o $(LDFLAGS_CURSES)
 
+movewindow$x: $(MODEL)/movewindow$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/movewindow$o $(LDFLAGS_CURSES)
+
 rain$x: $(MODEL)/rain$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/rain$o $(LDFLAGS_CURSES)
 
 railroad$x: $(MODEL)/railroad$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/railroad$o $(LDFLAGS_TINFO)
+
+savescreen$x: $(MODEL)/savescreen$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/savescreen$o $(LDFLAGS_CURSES) $(MATH_LIB)
 
 tclock$x: $(MODEL)/tclock$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/tclock$o $(LDFLAGS_CURSES) $(MATH_LIB)
