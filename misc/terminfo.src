@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.271 $
-#	$Date: 2005/11/12 23:01:03 $
+#	$Revision: 1.274 $
+#	$Date: 2006/02/18 20:05:21 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3058,7 +3058,7 @@ xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1,
 
 # This is one of the variants of XFree86 3.3 xterm, updated for 4.0 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
-	ncv#32, use=ibm+16color, use=xterm-new, 
+	use=ibm+16color, use=xterm-new, 
 
 # These variants of XFree86 3.9.16 xterm are built as a configure option.
 xterm-256color|xterm with 256 colors, 
@@ -3066,7 +3066,6 @@ xterm-256color|xterm with 256 colors,
 	colors#256, pairs#32767, 
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\, 
 	setab=\E[48;5;%p1%dm, setaf=\E[38;5;%p1%dm, 
-	setb=\E[48;5;%p1%dm, setf=\E[38;5;%p1%dm, 
 	use=xterm-new, 
 xterm-88color|xterm with 88 colors, 
 	colors#88, pairs#7744, use=xterm-256color, 
@@ -3411,20 +3410,20 @@ konsole-16color|klone of xterm-16color,
 konsole|KDE console window, 
 	use=konsole-xf4x, 
 
-# Based on mlterm 2.8.0's mlterm.ti, with corrections/additions from reading
+# Based on mlterm 2.9.2's mlterm.ti, with corrections/additions from reading
 # the source code and running tack -TD
 #
 # This is nominally a vt102 emulator, with features borrowed from rxvt and
 # xterm.
 #
 # There are some problems with vttest:
-#	save/restore cursor doesn't restore character
 #	test of character sets leaves it in line-drawing mode.
 mlterm|multi lingual terminal emulator, 
 	am, eslok, km, mc5i, mir, msgr, npc, xenl, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=00``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
-	bel=^G, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[2J, cr=^M, 
+	bel=^G, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=\E[H\E[2J, cnorm=\E[?25h, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
@@ -3442,7 +3441,7 @@ mlterm|multi lingual terminal emulator,
 	nel=\EE, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
 	rin=\E[%p1%dT, rmacs=\E(B, rmam=\E[?7l, 
 	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
-	rmso=\E[m, rmul=\E[m, 
+	rmso=\E[27m, rmul=\E[24m, 
 	rs2=\E7\E[r\E8\E[m\E[?7h\E[?1;3;4;6l\E[4l\E>\E[?1000l, 
 	sc=\E7, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;, 
@@ -9119,13 +9118,13 @@ rbcomm-w|IBM PC with RBcomm in 132 column mode,
 # NOTE: calling 'beep' turns on the backlight (bell)
 # NOTE: calling 'flash' turns it on and back off (visual bell)
 #
-MtxOrb| Generic Matrix Orbital LCD display, 
+MtxOrb|Generic Matrix Orbital LCD display, 
 	bel=\376B^A, clear=\376X\376C\376R\376K\376T, 
 	cnorm=\376K\376T, cub1=\376L, cuf1=\376M, 
 	flash=\376B\001$<200>\376F, home=\376H, 
-MtxOrb204| 20x4 Matrix Orbital LCD display, 
+MtxOrb204|20x4 Matrix Orbital LCD display, 
 	cols#20, lines#4, use=MtxOrb, 
-MtxOrb162| 16x2 Matrix Orbital LCD display, 
+MtxOrb162|16x2 Matrix Orbital LCD display, 
 	cols#16, lines#2, use=MtxOrb, 
 # The end
 
@@ -16217,6 +16216,19 @@ nsterm-s|AppKit Terminal.app v41+ w/MacRoman charset (color w/statusline),
 nsterm-c-s|AppKit Terminal.app v51+ w/MacRoman charset (full color w/statusline), 
 	use=nsterm+s, use=nsterm+c, use=nsterm+mac, 
 
+
+# This entry is based on newsgroup comments by Alain Bench, Christian Ebert, D
+# P Schreber comparing to nsterm-c-s-acs.
+#
+# D P Schreber notes that $TERM can be set in Terminal.app, e.g.,
+#	defaults write com.apple.Terminal TermCapString nsterm-c-s-acs
+# and that it is not set in Terminal's preferences dialog.
+nsterm-16color|AppKit Terminal.app v100.1.8 with MacOS X 10.3.9, 
+	kdch1=\E[3~, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, 
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	knp=\E[6~, kpp=\E[5~, use=ibm+16color, use=nsterm, 
+
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
 # On PowerPC platforms, Apple's Darwin operating system uses a
@@ -21022,6 +21034,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2005-11-12
 #	* other minor fixes to cygwin based on tack -TD
 #	* correct smacs in cygwin (report by Baurzhan Ismagulov).
+#
+# 2006-02-18
+#	* add nsterm-16color entry -TD
+#	* remove ncv flag from xterm-16color -TD
+#	* remove setf/setb from xterm-256color to match xterm #209 -TD
+#	* update mlterm entry to 2.9.2 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
