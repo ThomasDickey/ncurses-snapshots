@@ -1,5 +1,5 @@
 /*
- * $Id: demo_menus.c,v 1.13 2005/10/01 15:54:31 tom Exp $
+ * $Id: demo_menus.c,v 1.15 2006/02/19 01:09:14 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -18,10 +18,8 @@ menu_fore			-
 menu_format			-
 menu_grey			-
 menu_init			-
-menu_mark			-
 menu_opts			-
 menu_pad			-
-menu_pattern			-
 menu_request_by_name		-
 menu_request_name		-
 menu_sub			-
@@ -65,13 +63,16 @@ static MENU *mpTrace;
 #endif
 
 typedef enum {
-    eUnknown = -1
-    ,eFile = 0
+    eBanner = -1
+    ,eFile
     ,eSelect
 #ifdef TRACE
     ,eTrace
 #endif
+    ,eMAX
 } MenuNo;
+
+#define okMenuNo(n) (((n) > eBanner) && ((n) < eMAX))
 
 #define MENU_Y	1
 
@@ -162,7 +163,7 @@ menu_offset(MenuNo number)
 {
     int result = 0;
 
-    if ((int) number >= 0) {
+    if (okMenuNo(number)) {
 	int spc_desc, spc_rows, spc_cols;
 
 #ifdef NCURSES_VERSION
@@ -172,7 +173,7 @@ menu_offset(MenuNo number)
 #endif
 
 	/* FIXME: MENU.itemlen seems the only way to get actual width of items */
-	result = number * (mpBanner->itemlen + spc_rows);
+	result = (number - (eBanner + 1)) * (mpBanner->itemlen + spc_rows);
     }
     return result;
 }
@@ -183,7 +184,7 @@ menu_create(ITEM ** items, int count, int ncols, MenuNo number)
     MENU *result;
     WINDOW *menuwin;
     int mrows, mcols;
-    int y = ((int) number >= 0) ? MENU_Y : 0;
+    int y = okMenuNo(number) ? MENU_Y : 0;
     int x = menu_offset(number);
     int margin = (y == MENU_Y) ? 1 : 0;
     int maxcol = (ncols + x) < COLS ? ncols : (COLS - x - 1);
@@ -232,6 +233,7 @@ menu_destroy(MENU * m)
     int count;
 
     if (m != 0) {
+	delwin(menu_sub(m));
 	delwin(menu_win(m));
 
 	ip = menu_items(m);
@@ -510,7 +512,7 @@ perform_trace_menu(int cmd)
 static int
 menu_number(void)
 {
-    return item_index(current_item(mpBanner));
+    return item_index(current_item(mpBanner)) - (eBanner + 1);
 }
 
 static MENU *
@@ -558,7 +560,7 @@ build_menus(char *filename)
 	*ip++ = new_item(*ap, "");
     *ip = (ITEM *) 0;
 
-    mpBanner = menu_create(items, SIZEOF(labels) - 1, SIZEOF(labels) - 1, eUnknown);
+    mpBanner = menu_create(items, SIZEOF(labels) - 1, SIZEOF(labels) - 1, eBanner);
     set_menu_mark(mpBanner, ">");
 
     build_file_menu(eFile);
@@ -568,12 +570,79 @@ build_menus(char *filename)
 #endif
 }
 
+static int
+move_menu(MENU * menu, MENU * current, int by_y, int by_x)
+{
+    WINDOW *top_win = menu_win(menu);
+    WINDOW *sub_win = menu_sub(menu);
+    int y0, x0;
+    int y1, x1;
+    int result;
+
+    getbegyx(top_win, y0, x0);
+    y0 += by_y;
+    x0 += by_x;
+
+    getbegyx(sub_win, y1, x1);
+    y1 += by_y;
+    x1 += by_x;
+
+    if ((result = mvwin(top_win, y0, x0)) != ERR) {
+#if defined(NCURSES_VERSION_PATCH) && (NCURSES_VERSION_PATCH < 20060218)
+	sub_win->begy = y1;
+	sub_win->begx = x1;
+#else
+	mvwin(sub_win, y1, x1);
+#endif
+	if (menu == current) {
+	    touchwin(top_win);
+	    wnoutrefresh(top_win);
+	}
+    } else {
+	beep();
+    }
+    return result;
+}
+
+/*
+ * Move the menus around on the screen, to test mvwin().
+ */
+static void
+move_menus(MENU * current, int by_y, int by_x)
+{
+    if (move_menu(mpBanner, current, by_y, by_x) != ERR) {
+	erase();
+	wnoutrefresh(stdscr);
+	move_menu(mpFile, current, by_y, by_x);
+	move_menu(mpSelect, current, by_y, by_x);
+#ifdef TRACE
+	move_menu(mpTrace, current, by_y, by_x);
+#endif
+	doupdate();
+    }
+}
+
+static void
+show_status(int ch, MENU * menu)
+{
+    move(LINES - 1, 0);
+    printw("key %s, menu %d, mark %s, match %s",
+	   keyname(ch),
+	   menu_number(),
+	   menu_mark(menu),
+	   menu_pattern(menu));
+    clrtoeol();
+    refresh();
+}
+
 static void
 perform_menus(void)
 {
     MENU *this_menu;
     MENU *last_menu = mpFile;
-    int code = E_UNKNOWN_COMMAND, cmd, ch;
+    int code = E_UNKNOWN_COMMAND;
+    int cmd;
+    int ch = ERR;
 
 #ifdef NCURSES_MOUSE_VERSION
     mousemask(ALL_MOUSE_EVENTS, (mmask_t *) 0);
@@ -582,7 +651,30 @@ perform_menus(void)
     menu_display(last_menu);
 
     for (;;) {
+
+	if (ch != ERR)
+	    show_status(ch, last_menu);
+
 	ch = menu_getc(mpBanner);
+
+	/*
+	 * Provide for moving the menu around in the screen using shifted
+	 * cursor keys.
+	 */
+	switch (ch) {
+	case KEY_SF:
+	    move_menus(last_menu, 1, 0);
+	    continue;
+	case KEY_SR:
+	    move_menus(last_menu, -1, 0);
+	    continue;
+	case KEY_SLEFT:
+	    move_menus(last_menu, 0, -1);
+	    continue;
+	case KEY_SRIGHT:
+	    move_menus(last_menu, 0, 1);
+	    continue;
+	}
 	cmd = menu_virtualize(ch);
 
 	switch (cmd) {

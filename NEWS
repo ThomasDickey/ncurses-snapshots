@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.958 2006/02/12 00:21:46 tom Exp $
+-- $Id: NEWS,v 1.961 2006/02/19 01:13:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060218
+	+ add nsterm-16color entry -TD
+	+ updated mlterm terminfo entry -TD
+	+ remove 970913 feature for copying subwindows as they are moved in
+	  mvwin() (discussion with Bryan Christ).
+	+ modify test/demo_menus.c to demonstrate moving a menu (both the
+	  window and subwindow) using shifted cursor-keys.
+	+ start implementing recursive mvwin() in movewindow.c (incomplete).
+	+ add a fallback definition for GCC_PRINTFLIKE() in test.priv.h,
+	  for movewindow.c (report by William McBrine).
+	+ add help-message to test/movewindow.c
 
 20060211
 	+ add test/movewindow.c, to test mvderwin().

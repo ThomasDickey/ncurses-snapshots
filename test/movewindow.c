@@ -1,5 +1,5 @@
 /*
- * $Id: movewindow.c,v 1.10 2006/02/12 00:20:55 tom Exp $
+ * $Id: movewindow.c,v 1.12 2006/02/19 00:55:31 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -25,8 +25,8 @@ typedef struct {
 } PAIR;
 
 typedef struct {
-    WINDOW *parent;	/* need this since WINDOW->_parent is not portable */
-    WINDOW *child;	/* the actual value */
+    WINDOW *parent;		/* need this since WINDOW->_parent is not portable */
+    WINDOW *child;		/* the actual value */
 } FRAME;
 
 static void head_line(char *fmt,...) GCC_PRINTFLIKE(1, 2);
@@ -34,12 +34,6 @@ static void tail_line(char *fmt,...) GCC_PRINTFLIKE(1, 2);
 
 static unsigned num_windows;
 static FRAME *all_windows;
-
-static void
-show_help(void)
-{
-    /* TBD */
-}
 
 static void
 head_line(char *fmt,...)
@@ -242,19 +236,24 @@ parent_of(WINDOW *win)
 }
 
 static void
+repaint_one(WINDOW *win)
+{
+    touchwin(win);
+    wnoutrefresh(win);
+}
+
+static void
 refresh_all(WINDOW *win)
 {
     unsigned n;
 
     for (n = 0; n < num_windows; ++n) {
 	if (all_windows[n].child != win) {
-	    touchwin(all_windows[n].child);
-	    wnoutrefresh(all_windows[n].child);
+	    repaint_one(all_windows[n].child);
 	}
     }
 
-    touchwin(win);
-    wnoutrefresh(win);
+    repaint_one(win);
     doupdate();
 }
 
@@ -288,31 +287,91 @@ prev_window(WINDOW *win)
     return result;
 }
 
+static void
+recur_move_window(WINDOW *parent, int dy, int dx)
+{
+    unsigned n;
+
+    for (n = 0; n < num_windows; ++n) {
+	if (all_windows[n].parent == parent) {
+	    int y0, x0;
+	    getbegyx(all_windows[n].child, y0, x0);
+	    mvwin(all_windows[n].child, y0 + dy, x0 + dx);
+	    recur_move_window(all_windows[n].child, dy, dx);
+	}
+    }
+}
+
+/*
+ * test mvwin().
+ */
 static bool
-move_window(WINDOW *win)
+move_window(WINDOW *win, bool recur)
 {
     WINDOW *parent = parent_of(win);
     bool result = FALSE;
 
     if (parent != 0) {
-	int min_col = (parent == stdscr) ? COL_MIN : 0;
-	int max_col = (parent == stdscr) ? COL_MAX : getmaxx(parent);
-	int min_line = (parent == stdscr) ? LINE_MIN : 0;
-	int max_line = (parent == stdscr) ? LINE_MAX : getmaxy(parent);
+	bool top = (parent == stdscr);
+	int min_col = top ? COL_MIN : 0;
+	int max_col = top ? COL_MAX : getmaxx(parent);
+	int min_line = top ? LINE_MIN : 0;
+	int max_line = top ? LINE_MAX : getmaxy(parent);
 	PAIR *tmp;
 
-	head_line("Select new position for %swindow",
-		    (parent != stdscr) ? "sub" : "");
+	head_line("Select new position for %swindow", top ? "" : "sub");
 
-	if ((tmp = selectcell(parent, min_line, min_col, max_line, max_col)) != 0) {
-	    if (parent == stdscr) {
-		if (mvwin(win, tmp->y, tmp->x) != ERR) {
-		    refresh_all(win);
-		    doupdate();
-		    result = TRUE;
+	if ((tmp = selectcell(parent,
+			      min_line, min_col,
+			      max_line, max_col)) != 0) {
+	    int y0, x0;
+	    getbegyx(parent, y0, x0);
+	    /*
+	     * Note:  Moving a subwindow has the effect of moving a viewport
+	     * around the screen.  The parent window retains the contents of
+	     * the subwindow in the original location, but the viewport will
+	     * show the contents (again) at the new location.  So it will look
+	     * odd when testing.
+	     */
+	    if (mvwin(win, y0 + tmp->y, x0 + tmp->x) != ERR) {
+		if (recur) {
+		    recur_move_window(win, tmp->y, tmp->x);
 		}
-	    } else {
-		if (mvderwin(win, tmp->y, tmp->x) != ERR) {
+		refresh_all(win);
+		doupdate();
+		result = TRUE;
+	    }
+	}
+    }
+    return result;
+}
+
+/*
+ * test mvderwin().
+ */
+static bool
+move_subwin(WINDOW *win)
+{
+    WINDOW *parent = parent_of(win);
+    bool result = FALSE;
+
+    if (parent != 0) {
+	bool top = (parent == stdscr);
+	if (!top) {
+	    int min_col = top ? COL_MIN : 0;
+	    int max_col = top ? COL_MAX : getmaxx(parent);
+	    int min_line = top ? LINE_MIN : 0;
+	    int max_line = top ? LINE_MAX : getmaxy(parent);
+	    PAIR *tmp;
+
+	    head_line("Select new position for subwindow");
+
+	    if ((tmp = selectcell(parent,
+				  min_line, min_col,
+				  max_line, max_col)) != 0) {
+		int y0, x0;
+		getbegyx(parent, y0, x0);
+		if (mvderwin(win, y0 + tmp->y, x0 + tmp->x) != ERR) {
 		    refresh_all(win);
 		    doupdate();
 		    result = TRUE;
@@ -404,6 +463,46 @@ create_my_subwin(WINDOW *parent)
     return result;
 }
 
+static void
+show_help(WINDOW *current)
+{
+    /* *INDENT-OFF* */
+    static struct {
+	int	key;
+	char *	msg;
+    } help[] = {
+	{ '?',		"Show this screen" },
+	{ 'b',		"Draw a box inside the current window" },
+	{ 'c',		"Create a new window" },
+	{ 'd',		"Create a new derived window" },
+	{ 'f',		"Fill the current window with the next character" },
+	{ 'm',		"Move the current window" },
+	{ 'M',		"Move the current window (and its children)" },
+	{ 'q',		"Quit" },
+	{ 's',		"Create a new subwindow" },
+	{ 't',		"Move the current subwindow (moves content)" },
+	{ CTRL('L'),	"Repaint all windows, doing current one last" },
+	{ CTRL('N'),	"Cursor to next window" },
+	{ CTRL('P'),	"Cursor to previous window" },
+    };
+    /* *INDENT-ON* */
+
+    WINDOW *mywin = newwin(LINES, COLS, 0, 0);
+    int row;
+
+    for (row = 0; row < LINES - 2 && row < (int) SIZEOF(help); ++row) {
+	wmove(mywin, row + 1, 1);
+	wprintw(mywin, "%s", keyname(help[row].key));
+	wmove(mywin, row + 1, 20);
+	wprintw(mywin, "%s", help[row].msg);
+    }
+    box_inside(mywin);
+    wmove(mywin, 1, 1);
+    wgetch(mywin);
+    delwin(mywin);
+    refresh_all(current);
+}
+
 int
 main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
@@ -422,7 +521,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     while (!done && (ch = wgetch(current_win)) != ERR) {
 	switch (ch) {
 	case '?':
-	    show_help();
+	    show_help(current_win);
 	    break;
 	case 'b':
 	    box_inside(current_win);
@@ -437,7 +536,8 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    fill_window(current_win, wgetch(current_win));
 	    break;
 	case 'm':
-	    if (!move_window(current_win)) {
+	case 'M':
+	    if (!move_window(current_win, (ch == 'M'))) {
 		tail_line("error");
 		continue;
 	    }
@@ -448,10 +548,19 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	case 's':
 	    current_win = create_my_subwin(current_win);
 	    break;
-	case CTRL('n'):
+	case 't':
+	    if (!move_subwin(current_win)) {
+		tail_line("error");
+		continue;
+	    }
+	    break;
+	case CTRL('L'):
+	    refresh_all(current_win);
+	    break;
+	case CTRL('N'):
 	    current_win = next_window(current_win);
 	    break;
-	case CTRL('p'):
+	case CTRL('P'):
 	    current_win = prev_window(current_win);
 	    break;
 #if 0
@@ -460,7 +569,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    /* want to allow deleting a window also */
 #endif
 	default:
-	    tail_line("unrecognized key");
+	    tail_line("unrecognized key (use '?' for help)");
 	    beep();
 	    continue;
 	}

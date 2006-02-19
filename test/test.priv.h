@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.56 2006/02/11 17:10:29 tom Exp $ */
+/* $Id: test.priv.h,v 1.57 2006/02/18 16:03:25 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -256,6 +256,9 @@ extern int optind;
 
 #ifndef GCC_NORETURN
 #define GCC_NORETURN /* nothing */
+#endif
+#ifndef GCC_PRINTFLIKE
+#define GCC_PRINTFLIKE(a,b) /* nothing */
 #endif
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
