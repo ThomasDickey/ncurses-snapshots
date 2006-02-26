@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.39 2006/01/14 16:33:29 tom Exp $
+.\" $Id: tic.1m,v 1.41 2006/02/25 21:19:31 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -234,7 +234,7 @@ If the debug level \fIn\fR is not given, it is taken to be one.
 .PP
 All but one of the capabilities recognized by \fBtic\fR are documented
 in \fBterminfo\fR(\*n).  The exception is the \fBuse\fR capability.
-
+.PP
 When a \fBuse\fR=\fIentry\fR-\fIname\fR field is discovered in a
 terminal entry currently being compiled, \fBtic\fR reads in the binary
 from \fB\*d\fR to complete the entry.  (Entries created from
@@ -243,16 +243,16 @@ from \fB\*d\fR to complete the entry.  (Entries created from
 \fB\*d\fR.)  \fBtic\fR duplicates the capabilities in
 \fIentry\fR-\fIname\fR for the current entry, with the exception of
 those capabilities that explicitly are defined in the current entry.
-
+.PP
 When an entry, e.g., \fBentry_name_1\fR, contains a
 \fBuse=\fR\fIentry\fR_\fIname\fR_\fI2\fR field, any canceled
 capabilities in \fIentry\fR_\fIname\fR_\fI2\fR must also appear in
 \fBentry_name_1\fR before \fBuse=\fR for these capabilities to be
 canceled in \fBentry_name_1\fR.
-
+.PP
 If the environment variable \fBTERMINFO\fR is set, the compiled
 results are placed there instead of \fB\*d\fR.
-
+.PP
 Total compiled entries cannot exceed 4096 bytes.  The name field cannot
 exceed 512 bytes.  Terminal names exceeding the maximum alias length
 (32 characters on systems with long filenames, 14 characters otherwise)
@@ -268,7 +268,7 @@ Unlike the stock SVr4 \fBtic\fR command, this implementation can actually
 compile termcap sources.  In fact, entries in terminfo and termcap syntax can
 be mixed in a single source file.  See \fBterminfo\fR(\*n) for the list of
 termcap names taken to be equivalent to terminfo names.
-
+.PP
 The SVr4 manual pages are not clear on the resolution rules for \fBuse\fR
 capabilities.
 This implementation of \fBtic\fR will find \fBuse\fR targets anywhere
@@ -276,10 +276,10 @@ in the source file, or anywhere in the file tree rooted at \fBTERMINFO\fR (if
 \fBTERMINFO\fR is defined), or in the user's \fI$HOME/.terminfo\fR directory
 (if it exists), or (finally) anywhere in the system's file tree of
 compiled entries.
-
+.PP
 The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
-
+.PP
 The
 \fB-C\fR,
 \fB-G\fR,
@@ -300,7 +300,7 @@ The
 options
 are not supported under SVr4.
 The SVr4 \fB-c\fR mode does not report bad use links.
-
+.PP
 System V does not compile entries to or read entries from your
 \fI$HOME/.terminfo\fR directory unless TERMINFO is explicitly set to it.
 .SH FILES
@@ -308,8 +308,12 @@ System V does not compile entries to or read entries from your
 \fB\*d/?/*\fR
 Compiled terminal description database.
 .SH SEE ALSO
-\fB@INFOCMP@\fR(1M), \fB@CAPTOINFO@\fR(1M), \fB@INFOTOCAP@\fR(1M),
-\fB@TOE@\fR(1M), \fBcurses\fR(3X), \fBterminfo\fR(\*n).
+\fB@INFOCMP@\fR(1M),
+\fB@CAPTOINFO@\fR(1M),
+\fB@INFOTOCAP@\fR(1M),
+\fB@TOE@\fR(1M),
+\fBcurses\fR(3X),
+\fBterminfo\fR(\*n).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

@@ -1,5 +1,5 @@
 /*
- * $Id: firework.c,v 1.21 2005/05/28 21:39:04 tom Exp $
+ * $Id: firework.c,v 1.22 2006/02/25 22:36:27 tom Exp $
  */
 #include <test.priv.h>
 
@@ -43,9 +43,8 @@ showit(void)
     }
 }
 
-static
-int
-get_colour(chtype * bold)
+static int
+get_colour(chtype *bold)
 {
     int attr;
     attr = (rand() % 16) + 1;

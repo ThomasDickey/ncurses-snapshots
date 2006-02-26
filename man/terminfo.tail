@@ -1,10 +1,10 @@
-.\" $Id: terminfo.tail,v 1.42 2005/06/25 22:46:03 tom Exp $
+.\" $Id: terminfo.tail,v 1.43 2006/02/25 21:36:33 tom Exp $
 .\" Beginning of terminfo.tail file
 .\" See "terminfo.head" for copyright.
 .ps +1
-.PP
+..
 .SS A Sample Entry
-.PP
+..
 The following entry, describing an ANSI-standard terminal, is representative
 of what a \fBterminfo\fR entry for a modern terminal typically looks like.
 .PP
@@ -1650,8 +1650,8 @@ Supports both the SVr4 set and the AIX extensions.
 \*d/?/*
 files containing terminal descriptions
 .SH SEE ALSO
-\fBtic\fR(1M),
-\fBinfocmp\fR(1M),
+\fB@TIC@\fR(1M),
+\fB@INFOCMP@\fR(1M),
 \fBcurses\fR(3X),
 \fBprintf\fR(3S),
 \fBterm\fR(\*n).

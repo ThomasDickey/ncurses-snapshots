@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.57 2006/02/18 16:03:25 tom Exp $ */
+/* $Id: test.priv.h,v 1.59 2006/02/25 23:47:34 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -41,15 +41,15 @@
  * with wide-character ncurses.
  */
 #ifdef  HAVE_LIBFORMW
-#define HAVE_LIBFORM 1
+#define HAVE_LIBFORMW 1
 #endif
 
 #ifdef  HAVE_LIBMENUW
-#define HAVE_LIBMENU 1
+#define HAVE_LIBMENUW 1
 #endif
 
 #ifdef  HAVE_LIBPANELW
-#define HAVE_LIBPANEL 1
+#define HAVE_LIBPANELW 1
 #endif
 
 /*
@@ -77,6 +77,10 @@
 
 #ifndef HAVE_GETMAXX
 #define HAVE_GETMAXX 0
+#endif
+
+#ifndef HAVE_GETOPT_H
+#define HAVE_GETOPT_H 0
 #endif
 
 #ifndef HAVE_GETWIN
@@ -175,6 +179,10 @@
 #define HAVE_WINSSTR 0
 #endif
 
+#ifndef HAVE_USE_DEFAULT_COLORS
+#define HAVE_USE_DEFAULT_COLORS 0
+#endif
+
 #ifndef HAVE_WRESIZE
 #define HAVE_WRESIZE 0
 #endif
@@ -217,8 +225,12 @@
 
 #if defined(HAVE_XCURSES)
 /* no other headers */
-#undef HAVE_SETUPTERM		/* nonfunctional */
-#undef HAVE_TGETENT		/* nonfunctional */
+#undef  HAVE_SETUPTERM		/* nonfunctional */
+#define HAVE_SETUPTERM 0
+#undef  HAVE_TGETENT		/* nonfunctional */
+#define HAVE_TGETENT 0
+#undef  HAVE_TIGETSTR		/* nonfunctional */
+#define HAVE_TIGETSTR 0
 #elif defined(HAVE_NCURSESW_TERM_H)
 #include <ncursesw/term.h>
 #elif defined(HAVE_NCURSES_TERM_H)

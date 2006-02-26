@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mvwin.c,v 1.13 2006/02/18 22:58:01 tom Exp $")
+MODULE_ID("$Id: lib_mvwin.c,v 1.14 2006/02/25 22:53:46 tom Exp $")
 
 NCURSES_EXPORT(int)
 mvwin(WINDOW *win, int by, int bx)
@@ -51,8 +51,8 @@ mvwin(WINDOW *win, int by, int bx)
 	returnCode(ERR);
 
     /*
-     * mvwin() should only modify the indices.  See test/demo_forms.c for an
-     * example.
+     * mvwin() should only modify the indices.  See test/demo_menus.c and
+     * test/movewindow.c for examples.
      */
 #if 0
     /* Copying subwindows is allowed, but it is expensive... */

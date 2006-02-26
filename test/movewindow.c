@@ -1,5 +1,5 @@
 /*
- * $Id: movewindow.c,v 1.12 2006/02/19 00:55:31 tom Exp $
+ * $Id: movewindow.c,v 1.14 2006/02/25 23:39:28 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -14,6 +14,11 @@ mvwin
  */
 
 #include <test.priv.h>
+#include <stdarg.h>
+
+#ifdef HAVE_XCURSES
+#undef derwin
+#endif
 
 #define LINE_MIN	2
 #define LINE_MAX	(LINES - 2)
@@ -36,39 +41,46 @@ static unsigned num_windows;
 static FRAME *all_windows;
 
 static void
-head_line(char *fmt,...)
+message(int lineno, char *fmt, va_list argp)
 {
     int y, x;
-    va_list argp;
 
     getyx(stdscr, y, x);
-    move(0, 0);
+    move(lineno, 0);
     clrtoeol();
 
-    va_start(argp, fmt);
+#ifdef HAVE_XCURSES
+    {
+	char buffer[1024];
+	vsprintf(buffer, fmt, argp);
+	addstr(buffer);
+    }
+#else
     vwprintw(stdscr, fmt, argp);
-    va_end(argp);
+#endif
 
     move(y, x);
     refresh();
 }
 
 static void
-tail_line(char *fmt,...)
+head_line(char *fmt,...)
 {
-    int y, x;
     va_list argp;
 
-    getyx(stdscr, y, x);
-    move(LINES - 1, 0);
-    clrtoeol();
+    va_start(argp, fmt);
+    message(0, fmt, argp);
+    va_end(argp);
+}
+
+static void
+tail_line(char *fmt,...)
+{
+    va_list argp;
 
     va_start(argp, fmt);
-    vwprintw(stdscr, fmt, argp);
+    message(LINES - 1, fmt, argp);
     va_end(argp);
-
-    move(y, x);
-    refresh();
 }
 
 /*
@@ -295,6 +307,7 @@ recur_move_window(WINDOW *parent, int dy, int dx)
     for (n = 0; n < num_windows; ++n) {
 	if (all_windows[n].parent == parent) {
 	    int y0, x0;
+
 	    getbegyx(all_windows[n].child, y0, x0);
 	    mvwin(all_windows[n].child, y0 + dy, x0 + dx);
 	    recur_move_window(all_windows[n].child, dy, dx);
@@ -567,17 +580,20 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    /* want to allow cursor to move around the current window too */
 	    /* want to test the resizing of windows and subwindows too */
 	    /* want to allow deleting a window also */
+	    /* want to use mouse? */
 #endif
 	default:
 	    tail_line("unrecognized key (use '?' for help)");
 	    beep();
 	    continue;
 	}
-	tail_line("size [%d,%d] begin [%d,%d]",
+	tail_line("size [%d,%d] begin [%d,%d] parent [%d,%d]",
 		  getmaxy(current_win),
 		  getmaxx(current_win),
 		  getbegy(current_win),
-		  getbegx(current_win));
+		  getbegx(current_win),
+		  getpary(current_win),
+		  getparx(current_win));
 	wmove(current_win, 0, 0);
     }
     endwin();

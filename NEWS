@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.961 2006/02/19 01:13:47 tom Exp $
+-- $Id: NEWS,v 1.962 2006/02/25 23:42:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060225
+	+ workarounds to build test/movewindow with PDcurses 2.7.
+	+ fix for nsterm-16color entry (patch by Alain Bench).
+	+ correct a typo in infocmp manpage (Debian #354281).
 
 20060218
 	+ add nsterm-16color entry -TD

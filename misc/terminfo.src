@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.274 $
-#	$Date: 2006/02/18 20:05:21 $
+#	$Revision: 1.276 $
+#	$Date: 2006/02/25 20:01:02 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -16217,17 +16217,16 @@ nsterm-c-s|AppKit Terminal.app v51+ w/MacRoman charset (full color w/statusline)
 	use=nsterm+s, use=nsterm+c, use=nsterm+mac, 
 
 
-# This entry is based on newsgroup comments by Alain Bench, Christian Ebert, D
-# P Schreber comparing to nsterm-c-s-acs.
+# This entry is based on newsgroup comments by Alain Bench, Christian Ebert,
+# and D P Schreber comparing to nsterm-c-s-acs.
 #
 # D P Schreber notes that $TERM can be set in Terminal.app, e.g.,
 #	defaults write com.apple.Terminal TermCapString nsterm-c-s-acs
 # and that it is not set in Terminal's preferences dialog.
 nsterm-16color|AppKit Terminal.app v100.1.8 with MacOS X 10.3.9, 
-	kdch1=\E[3~, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, 
-	kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, 
+	kdch1=\E[3~, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
 	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	knp=\E[6~, kpp=\E[5~, use=ibm+16color, use=nsterm, 
+	knp=\E[6~, kpp=\E[5~, use=nsterm-c-s-acs, 
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
@@ -21040,6 +21039,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* remove ncv flag from xterm-16color -TD
 #	* remove setf/setb from xterm-256color to match xterm #209 -TD
 #	* update mlterm entry to 2.9.2 -TD
+#
+# 2006-02-25
+#	* fixes to make nsterm-16color match report
+#	  by Christian Ebert -Alain Bench
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
