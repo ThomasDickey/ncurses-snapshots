@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2002 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 1998-2002,2006 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_driver.3x,v 1.9 2002/02/16 22:39:52 tom Exp $
+.\" $Id: form_driver.3x,v 1.10 2006/02/25 21:42:22 tom Exp $
 .TH form_driver 3X ""
 .SH NAME
 \fBform_driver\fR - command-processing loop of the form system
@@ -52,7 +52,7 @@ Move to the first page.
 .TP 5
 REQ_LAST_PAGE
 Move to the last field.
-
+.sp
 .TP 5
 REQ_NEXT_FIELD
 Move to the next field.
@@ -89,7 +89,7 @@ Move up to a field.
 .TP 5
 REQ_DOWN_FIELD
 Move down to a field.
-
+.sp
 .TP 5
 REQ_NEXT_CHAR
 Move to the next char.
@@ -132,7 +132,7 @@ Move up in the field.
 .TP 5
 REQ_DOWN_CHAR
 Move down in the field.
-
+.sp
 .TP 5
 REQ_NEW_LINE
 Insert or overlay a new line.
@@ -169,7 +169,7 @@ Enter overlay mode.
 .TP 5
 REQ_INS_MODE
 Enter insert mode.
-
+.sp
 .TP 5
 REQ_SCR_FLINE
 Scroll the field forward a line.
@@ -188,7 +188,7 @@ Scroll the field forward half a page.
 .TP 5
 REQ_SCR_BHPAGE
 Scroll the field backward half a page.
-
+.sp
 .TP 5
 REQ_SCR_FCHAR
 Scroll the field forward a character.
@@ -207,7 +207,7 @@ Horizontal scroll the field forward half a line.
 .TP 5
 REQ_SCR_HBHALF
 Horizontal scroll the field backward half a line.
-
+.sp
 .TP
 REQ_VALIDATION
 Validate field.

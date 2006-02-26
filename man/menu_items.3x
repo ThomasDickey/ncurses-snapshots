@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998 Free Software Foundation, Inc.                        *
+.\" Copyright (c) 1998,2006 Free Software Foundation, Inc.                   *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_items.3x,v 1.5 1998/11/29 01:09:56 Rick.Ohnemus Exp $
+.\" $Id: menu_items.3x,v 1.6 2006/02/25 21:38:26 tom Exp $
 .TH menu_items 3X ""
 .SH NAME
 \fBmenu_items\fR - make and break connections between items and menus
@@ -43,16 +43,16 @@ int item_count(const MENU *menu);
 .SH DESCRIPTION
 The function \fBset_menu_items\fR changes the item pointer array of the given
 \fImenu\fR.  The array must be terminated by a \fBNULL\fR.
-
+.PP
 The function \fBmenu_items\fR returns the item array of the given menu.
-
+.PP
 The function \fBitem_count\fR returns the count of items in \fImenu\fR.
 .SH RETURN VALUES
 The function \fBmenu_items\fR returns \fBNULL\fR on error.
-
+.PP
 The function \fBitem_count\fR returns \fBERR\fR (the general \fBcurses\fR error
 return value) on error.
-
+.PP
 The function \fBset_menu_items\fR returns one of the following codes on error:
 .TP 5
 \fBE_OK\fR
@@ -77,7 +77,7 @@ The header file \fB<menu.h>\fR automatically includes the header file
 .SH PORTABILITY
 These routines emulate the System V menu library.  They were not supported on
 Version 7 or BSD versions.
-
+.PP
 The SVr4 menu library documentation specifies the \fBitem_count\fR error value
 as -1 (which is the value of \fBERR\fR).
 .SH AUTHORS

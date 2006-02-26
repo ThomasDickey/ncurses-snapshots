@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.15 2005/03/20 18:27:09 tom Exp $
+.\" $Id: tset.1,v 1.16 2006/02/25 21:28:13 tom Exp $
 .TH tset 1 ""
 .SH NAME
 \fBtset\fR, \fBreset\fR - terminal initialization
@@ -77,9 +77,9 @@ resets any unset special characters to their default values before
 doing the terminal initialization described above.  This is useful
 after a program dies leaving a terminal in an abnormal state.  Note,
 you may have to type
-
+.sp
     \fB<LF>reset<LF>\fR
-
+.sp
 (the line-feed character is normally control-J) to get the terminal
 to work, as carriage-return may no longer work in the abnormal state.
 Also, the terminal will often not echo the command.
@@ -150,9 +150,9 @@ are for \fBcsh\fR, otherwise, they are for \fBsh\fR.
 Note, the \fBcsh\fR commands set and unset the shell variable
 \fBnoglob\fR, leaving it unset.  The following line in the \fB.login\fR
 or \fB.profile\fR files will initialize the environment correctly:
-
+.sp
     eval \`tset -s options ... \`
-
+.
 .SH TERMINAL TYPE MAPPING
 When the terminal is not hardwired into the system (or the current
 system information is incorrect) the terminal type derived from the
@@ -259,9 +259,9 @@ terminal capability database
 csh(1),
 sh(1),
 stty(1),
-setupterm(3),
+setupterm(3X),
 tty(4),
-termcap(5),
+terminfo(5),
 ttys(5),
 environ(7)
 .\"#
@@ -270,4 +270,3 @@ environ(7)
 .\"# mode:nroff
 .\"# fill-column:79
 .\"# End:
-

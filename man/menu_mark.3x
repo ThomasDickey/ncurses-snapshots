@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_mark.3x,v 1.7 2006/02/18 20:43:08 tom Exp $
+.\" $Id: menu_mark.3x,v 1.8 2006/02/25 21:33:48 tom Exp $
 .TH menu_mark 3X ""
 .SH NAME
 \fBmenu_mark\fR - get and set the menu mark string
@@ -42,15 +42,15 @@ const char *menu_mark(const MENU *menu);
 In order to make menu selections visible on older terminals without
 highlighting or color capability, the menu library marks selected items
 in a menu with a prefix string.
-
+.PP
 The function \fBset_menu_mark\fR sets the mark string for the given menu.
 Calling \fBset_menu_mark\fR with a null menu item will abolish the mark string.
 Note that changing the length of the mark string for a menu while the
 menu is posted is likely to produce unhelpful behavior.
-
+.PP
 The default string is "-" (a dash). Calling \fBset_menu_mark\fR with
 a non-\fBNULL\fR menu argument will change this default.
-
+.PP
 The function \fBmenu_mark\fR returns the menu's mark string (or \fBNULL\fR if
 there is none).
 .SH RETURN VALUE
