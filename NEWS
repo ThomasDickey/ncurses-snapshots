@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.962 2006/02/25 23:42:44 tom Exp $
+-- $Id: NEWS,v 1.964 2006/03/11 21:51:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060311
+	+ add checks in waddchnstr() and wadd_wchnstr() to stop copying when
+	  a null character is found (report by Igor Bogomazov).
+	+ modify progs/Makefile.in to make "tput init" work properly with
+	  cygwin, i.e., do not pass a ".exe" in the reference string used
+	  in check_aliases (report by Samuel Thibault).
+	+ add some checks to ensure current position is within scrolling
+	  region before scrolling on a new line (report by Dan Gookin).
+	+ change some NewChar() usage to static variables to work around
+	  stack garbage introduced when cchar_t is not packed (Redhat #182024).
 
 20060225
 	+ workarounds to build test/movewindow with PDcurses 2.7.

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.97 2005/11/20 01:22:47 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.100 2006/03/11 22:04:44 tom Exp $")
+
+static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -120,6 +122,20 @@ _nc_render(WINDOW *win, NCURSES_CH_T ch)
 #define CHECK_POSITION(win, x, y)	/* nothing */
 #endif
 
+static bool
+newline_forces_scroll(WINDOW *win, NCURSES_SIZE_T * ypos)
+{
+    bool result = FALSE;
+
+    if (*ypos >= win->_regtop && (*ypos + 1) == win->_regbottom) {
+	*ypos = win->_regbottom;
+	result = TRUE;
+    } else {
+	*ypos += 1;
+    }
+    return result;
+}
+
 /*
  * The _WRAPPED flag is useful only for telling an application that we've just
  * wrapped the cursor.  We don't do anything with this flag except set it when
@@ -133,8 +149,7 @@ static int
 wrap_to_next_line(WINDOW *win)
 {
     win->_flags |= _WRAPPED;
-    if (++win->_cury > win->_regbottom) {
-	win->_cury = win->_regbottom;
+    if (newline_forces_scroll(win, &(win->_cury))) {
 	win->_curx = win->_maxx;
 	if (!win->_scroll)
 	    return (ERR);
@@ -153,7 +168,7 @@ static int waddch_literal(WINDOW *, NCURSES_CH_T);
 static void
 fill_cells(WINDOW *win, int count)
 {
-    NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
+    NCURSES_CH_T blank = blankchar;
     int save_x = win->_curx;
     int save_y = win->_cury;
 
@@ -371,7 +386,7 @@ static NCURSES_INLINE int
 waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 /* the workhorse function -- add a character to the given window */
 {
-    int x, y;
+    NCURSES_SIZE_T x, y;
     chtype t = CharOf(ch);
     const char *s = unctrl(t);
 
@@ -414,7 +429,7 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 	 */
 	if ((!win->_scroll && (y == win->_regbottom))
 	    || (x <= win->_maxx)) {
-	    NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
+	    NCURSES_CH_T blank = blankchar;
 	    AddAttr(blank, AttrOf(ch));
 	    while (win->_curx < x) {
 		if (waddch_literal(win, blank) == ERR)
@@ -424,9 +439,8 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 	} else {
 	    wclrtoeol(win);
 	    win->_flags |= _WRAPPED;
-	    if (++y > win->_regbottom) {
+	    if (newline_forces_scroll(win, &y)) {
 		x = win->_maxx;
-		y--;
 		if (win->_scroll) {
 		    scroll(win);
 		    x = 0;
@@ -438,8 +452,7 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 	break;
     case '\n':
 	wclrtoeol(win);
-	if (++y > win->_regbottom) {
-	    y--;
+	if (newline_forces_scroll(win, &y)) {
 	    if (win->_scroll)
 		scroll(win);
 	    else

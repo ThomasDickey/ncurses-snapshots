@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.229 2006/01/21 23:20:38 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.230 2006/03/11 19:29:14 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -89,7 +89,8 @@ MODULE_ID("$Id: tty_update.c,v 1.229 2006/01/21 23:20:38 tom Exp $")
 
 #define FILL_BCE() (SP->_coloron && !SP->_default_color && !back_color_erase)
 
-static const NCURSES_CH_T normal = NewChar2(BLANK_TEXT, BLANK_ATTR);
+static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
+static NCURSES_CH_T normal = NewChar(BLANK_TEXT);
 
 /*
  * Enable checking to see if doupdate and friends are tracking the true
@@ -203,7 +204,7 @@ PutAttrChar(CARG_CH_T ch)
      * on the screen.  It should be at least one.
      */
     if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0) {
-	static NCURSES_CH_T blank = NewChar(BLANK_TEXT);
+	static const NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 
 	/*
 	 * If the character falls into any of these special cases, do
@@ -929,7 +930,7 @@ doupdate(void)
 static NCURSES_INLINE NCURSES_CH_T
 ClrBlank(WINDOW *win)
 {
-    NCURSES_CH_T blank = NewChar(BLANK_TEXT);
+    NCURSES_CH_T blank = blankchar;
     if (back_color_erase)
 	AddAttr(blank, (AttrOf(BCE_BKGD(win)) & BCE_ATTRS));
     return blank;
@@ -1796,7 +1797,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	 */
 	if (res != ERR
 	    && (non_dest_scroll_region || (memory_below && bot == maxy))) {
-	    NCURSES_CH_T blank2 = NewChar(BLANK_TEXT);
+	    static const NCURSES_CH_T blank2 = NewChar(BLANK_TEXT);
 	    if (bot == maxy && clr_eos) {
 		GoTo(bot - n + 1, 0);
 		ClrToEOS(blank2);
@@ -1842,7 +1843,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	 */
 	if (res != ERR
 	    && (non_dest_scroll_region || (memory_above && top == 0))) {
-	    NCURSES_CH_T blank2 = NewChar(BLANK_TEXT);
+	    static const NCURSES_CH_T blank2 = NewChar(BLANK_TEXT);
 	    for (i = 0; i < -n; i++) {
 		GoTo(i + top, 0);
 		ClrToEOL(blank2, FALSE);
@@ -1917,7 +1918,7 @@ _nc_screen_wrap(void)
 #if NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
-	NCURSES_CH_T blank = NewChar(BLANK_TEXT);
+	static const NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 	SP->_default_color = TRUE;
 	_nc_do_color(-1, 0, FALSE, _nc_outch);
 	SP->_default_color = FALSE;
