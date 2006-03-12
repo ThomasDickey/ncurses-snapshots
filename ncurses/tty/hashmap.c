@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2005 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.48 2005/11/26 15:28:47 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.49 2006/03/11 19:33:49 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -108,6 +108,8 @@ static chtype oldtext[MAXLINES][TEXTWIDTH], newtext[MAXLINES][TEXTWIDTH];
 #define HASH_VAL(ch) (ch)
 #endif
 
+static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
+
 static NCURSES_INLINE unsigned long
 hash(NCURSES_CH_T * text)
 {
@@ -140,7 +142,7 @@ update_cost_from_blank(NCURSES_CH_T * to)
 {
     int cost = 0;
     int i;
-    NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
+    NCURSES_CH_T blank = blankchar;
 
     if (back_color_erase)
 	SetPair(blank, GetPair(stdscr->_nc_bkgd));
