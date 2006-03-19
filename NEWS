@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.965 2006/03/12 17:10:09 tom Exp $
+-- $Id: NEWS,v 1.966 2006/03/18 21:38:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060318
+	+ modify ncurses.c 'F' test to combine the wide-characters with color
+	  and/or video attributes.
+	+ modify test/ncurses to use CTL/Q or ESC consistently for exiting
+	  a test-screen (some commands used 'x' or 'q').
 
 20060312
 	+ fix an off-by-one in the scrolling-region change (cf_ 20060311).
