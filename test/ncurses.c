@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.269 2006/02/11 19:49:34 tom Exp $
+$Id: ncurses.c,v 1.273 2006/03/18 21:37:51 tom Exp $
 
 ***************************************************************************/
 
@@ -159,6 +159,13 @@ Repaint(void)
     touchwin(curscr);
     wrefresh(curscr);
 }
+
+static bool
+isQuit(int c)
+{
+    return ((c) == QUIT || (c) == ESCAPE);
+}
+#define case_QUIT	case QUIT: case ESCAPE
 
 /* Common function to allow ^T to toggle trace-mode in the middle of a test
  * so that trace-files can be made smaller.
@@ -517,7 +524,7 @@ wgetch_help(WINDOW *win, bool flags[])
 	,"g -- triggers a getstr test"
 	,"k -- toggle keypad/literal mode"
 	,"m -- toggle meta (7-bit/8-bit) mode"
-	,"q -- quit (x also exits)"
+	,"q -- quit"
 	,"s -- shell out\n"
 	,"w -- create a new window"
 #ifdef SIGTSTP
@@ -676,7 +683,7 @@ wgetch_test(unsigned level, WINDOW *win, int delay)
 	if (c == ERR && blocking) {
 	    wprintw(win, "ERR");
 	    wgetch_wrap(win, first_y);
-	} else if (c == 'x' || c == 'q') {
+	} else if (isQuit(c)) {
 	    break;
 	} else if (c == 'e') {
 	    flags[UChar('e')] = !flags[UChar('e')];
@@ -925,7 +932,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 	if (code == ERR && blocking) {
 	    wprintw(win, "ERR");
 	    wgetch_wrap(win, first_y);
-	} else if (c == 'x' || c == 'q') {
+	} else if (isQuit(c)) {
 	    break;
 	} else if (c == 'e') {
 	    flags[UChar('e')] = !flags[UChar('e')];
@@ -1102,7 +1109,7 @@ attr_legend(WINDOW *helpwin)
     int col = 1;
 
     mvwprintw(helpwin, row++, col,
-	      "q or ESC to exit.");
+	      "CTL/q or ESC to exit.");
     mvwprintw(helpwin, row++, col,
 	      "^L repaints.");
     ++row;
@@ -1356,8 +1363,7 @@ attr_getc(int *skip, short *fg, short *bg, short *tx, int *ac, unsigned *kc)
 	    case '>':
 		adjust_attr_string(1);
 		break;
-	    case 'q':
-	    case ESCAPE:
+	      case_QUIT:
 		result = FALSE;
 		break;
 	    default:
@@ -1497,10 +1503,10 @@ get_wide_background(void)
     attr_t attr;
     cchar_t ch;
     short pair;
-    wchar_t wch;
+    wchar_t wch[10];
 
     if (getbkgrnd(&ch) != ERR) {
-	if (getcchar(&ch, &wch, &attr, &pair, 0) != ERR) {
+	if (getcchar(&ch, wch, &attr, &pair, 0) != ERR) {
 	    result = attr;
 	}
     }
@@ -1633,8 +1639,7 @@ wide_attr_getc(int *skip, short *fg, short *bg, short *tx, int *ac, unsigned *kc
 	    case '>':
 		wide_adjust_attr_string(1);
 		break;
-	    case 'q':
-	    case ESCAPE:
+	      case_QUIT:
 		result = FALSE;
 		break;
 	    default:
@@ -1769,7 +1774,7 @@ color_legend(WINDOW *helpwin)
     int col = 1;
 
     mvwprintw(helpwin, row++, col,
-	      "q or ESC to exit.");
+	      "CTL/q or ESC to exit.");
     ++row;
     mvwprintw(helpwin, row++, col,
 	      "Use up/down arrow to scroll through the display if it is");
@@ -1891,8 +1896,7 @@ color_test(void)
 	case 'N':
 	    opt_nums = TRUE;
 	    break;
-	case ESCAPE:
-	case 'q':
+	  case_QUIT:
 	    done = TRUE;
 	    continue;
 	case 'w':
@@ -2052,8 +2056,7 @@ wide_color_test(void)
 	case 'N':
 	    opt_nums = TRUE;
 	    break;
-	case ESCAPE:
-	case 'q':
+	  case_QUIT:
 	    done = TRUE;
 	    continue;
 	case 'w':
@@ -2309,7 +2312,7 @@ color_edit(void)
 	    P("with a `+' or `-'.");
 	    P("");
 	    P("Press 'm' to invoke the top-level menu with the current color settings.");
-	    P("To quit, do `x' or 'q'");
+	    P("To quit, do CTL/Q or ESC");
 
 	    Pause();
 	    erase();
@@ -2321,8 +2324,7 @@ color_edit(void)
 	    refresh();
 	    break;
 
-	case 'x':
-	case 'q':
+	  case_QUIT:
 	    break;
 
 	default:
@@ -2342,7 +2344,7 @@ color_edit(void)
 	mvprintw(LINES - 1, 0, "Number: %d", value);
 	clrtoeol();
     } while
-	(this_c != 'x' && this_c != 'q');
+	(!isQuit(this_c));
 
     erase();
 
@@ -2383,7 +2385,7 @@ slk_help(void)
 #if HAVE_SLK_COLOR
 	,"F/B        -- cycle through foreground/background colors"
 #endif
-	,"x, q       -- return to main menu"
+	,"CTL/q, ESC  -- return to main menu"
 	,""
 	,"Note: if activating the soft keys causes your terminal to scroll up"
 	,"one line, your terminal auto-scrolls when anything is written to the"
@@ -2492,8 +2494,7 @@ slk_test(void)
 	    clrtobot();
 	    break;
 
-	case 'x':
-	case 'q':
+	  case_QUIT:
 	    goto done;
 
 #if HAVE_SLK_COLOR
@@ -2622,8 +2623,7 @@ wide_slk_test(void)
 	    clrtobot();
 	    break;
 
-	case 'x':
-	case 'q':
+	  case_QUIT:
 	    goto done;
 
 	case 'F':
@@ -2678,7 +2678,7 @@ show_upper_chars(unsigned first)
     refresh();
 
     for (code = first; code <= last; code++) {
-	int row = 4 + ((code - first) % 16);
+	int row = 2 + ((code - first) % 16);
 	int col = ((code - first) / 16) * COLS / 2;
 	char tmp[80];
 	sprintf(tmp, "%3u (0x%x)", code, code);
@@ -2760,7 +2760,7 @@ static int
 show_1_acs(int n, const char *name, chtype code)
 {
     const int height = 16;
-    int row = 4 + (n % height);
+    int row = 2 + (n % height);
     int col = (n / height) * COLS / 2;
     mvprintw(row, col, "%*s : ", COLS / 4, name);
     addch(code);
@@ -2843,7 +2843,7 @@ acs_display(void)
 	case 'a':
 	    show_acs_chars();
 	    break;
-	case 'b':
+	case 'x':
 	    show_box_chars();
 	    break;
 	case '0':
@@ -2862,10 +2862,10 @@ acs_display(void)
 	mvprintw(LINES - 3, 0,
 		 "Note: ANSI terminals may not display C1 characters.");
 	mvprintw(LINES - 2, 0,
-		 "Select: a=ACS, b=box, %s0=C1, 1,2,3=GR characters, q=quit",
+		 "Select: a=ACS, x=box, %s0=C1, 1,2,3=GR characters, CTL/q=quit",
 		 pch_kludge);
 	refresh();
-    } while ((c = Getchar()) != 'x' && c != 'q');
+    } while (!isQuit(c = Getchar()));
 
     Pause();
     erase();
@@ -2873,8 +2873,29 @@ acs_display(void)
 }
 
 #if USE_WIDEC_SUPPORT
+static cchar_t *
+merge_wide_attr(cchar_t *dst, cchar_t *src, attr_t attr, short pair)
+{
+    int count = getcchar(src, NULL, NULL, NULL, 0);
+    wchar_t *wch = 0;
+    attr_t ignore_attr;
+    short ignore_pair;
+
+    *dst = *src;
+    if (count > 0) {
+	if ((wch = typeMalloc(wchar_t, count)) != 0) {
+	    if (getcchar(src, wch, &ignore_attr, &ignore_pair, 0) != ERR) {
+		attr |= (ignore_attr & A_ALTCHARSET);
+		setcchar(dst, wch, attr, pair, 0);
+	    }
+	    free(wch);
+	}
+    }
+    return dst;
+}
+
 static void
-show_upper_widechars(int first, int repeat, int space)
+show_upper_widechars(int first, int repeat, int space, attr_t attr, short pair)
 {
     cchar_t temp;
     wchar_t code;
@@ -2886,18 +2907,18 @@ show_upper_widechars(int first, int repeat, int space)
     attroff(A_BOLD);
 
     for (code = first; code <= last; code++) {
-	int row = 4 + ((code - first) % 16);
+	int row = 2 + ((code - first) % 16);
 	int col = ((code - first) / 16) * COLS / 2;
 	wchar_t codes[10];
-	attr_t attrs = A_NORMAL;
 	char tmp[80];
 	int count = repeat;
+	int y, x;
 
 	memset(&codes, 0, sizeof(codes));
 	codes[0] = code;
 	sprintf(tmp, "%3ld (0x%lx)", (long) code, (long) code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
-	setcchar(&temp, codes, attrs, 0, 0);
+	setcchar(&temp, codes, attr, pair, 0);
 	do {
 	    /*
 	     * Give non-spacing characters something to combine with.  If we
@@ -2914,6 +2935,12 @@ show_upper_widechars(int first, int repeat, int space)
 	     * function is met by the builtin refresh() in echo_wchar().
 	     */
 	    echo_wchar(&temp);
+	    /*
+	     * The repeat-count may make text wrap - avoid that.
+	     */
+	    getyx(stdscr, y, x);
+	    if (x >= col + (COLS / 2) - 2)
+		break;
 	} while (--count > 0);
     }
 }
@@ -2922,21 +2949,25 @@ static int
 show_1_wacs(int n, const char *name, const cchar_t *code)
 {
     const int height = 16;
-    int row = 4 + (n % height);
+    int row = 2 + (n % height);
     int col = (n / height) * COLS / 2;
     mvprintw(row, col, "%*s : ", COLS / 4, name);
     add_wchnstr(code, 1);
     return n + 1;
 }
 
+#define MERGE_ATTR(wch) merge_wide_attr(&temp, wch, attr, pair)
+
 static void
-show_wacs_chars(void)
+show_wacs_chars(attr_t attr, short pair)
 /* display the wide-ACS character set */
 {
+    cchar_t temp;
+
     int n;
 
 /*#define BOTH2(name) #name, &(name) */
-#define BOTH2(name) #name, name
+#define BOTH2(name) #name, MERGE_ATTR(name)
 
     erase();
     attron(A_BOLD);
@@ -2986,43 +3017,57 @@ show_wacs_chars(void)
 #endif
 }
 
+#undef MERGE_ATTR
+
+#define MERGE_ATTR(wch) merge_wide_attr(&temp, wch, attr, pair)
+
 static void
-show_wbox_chars(void)
+show_wbox_chars(attr_t attr, short pair)
 {
+    cchar_t temp;
+
     erase();
     attron(A_BOLD);
     mvaddstr(0, 20, "Display of the Wide-ACS Line-Drawing Set");
     attroff(A_BOLD);
     refresh();
+
+    attr_set(attr, pair, 0);
     box_set(stdscr, 0, 0);
+    attr_set(A_NORMAL, 0, 0);
     /* *INDENT-OFF* */
-    mvhline_set(LINES / 2, 0,        WACS_HLINE, COLS);
-    mvvline_set(0,         COLS / 2, WACS_VLINE, LINES);
-    mvadd_wch(0,           COLS / 2, WACS_TTEE);
-    mvadd_wch(LINES / 2,   COLS / 2, WACS_PLUS);
-    mvadd_wch(LINES - 1,   COLS / 2, WACS_BTEE);
-    mvadd_wch(LINES / 2,   0,        WACS_LTEE);
-    mvadd_wch(LINES / 2,   COLS - 1, WACS_RTEE);
+    mvhline_set(LINES / 2, 0,        MERGE_ATTR(WACS_HLINE), COLS);
+    mvvline_set(0,         COLS / 2, MERGE_ATTR(WACS_VLINE), LINES);
+    mvadd_wch(0,           COLS / 2, MERGE_ATTR(WACS_TTEE));
+    mvadd_wch(LINES / 2,   COLS / 2, MERGE_ATTR(WACS_PLUS));
+    mvadd_wch(LINES - 1,   COLS / 2, MERGE_ATTR(WACS_BTEE));
+    mvadd_wch(LINES / 2,   0,        MERGE_ATTR(WACS_LTEE));
+    mvadd_wch(LINES / 2,   COLS - 1, MERGE_ATTR(WACS_RTEE));
     /* *INDENT-ON* */
 
 }
 
+#undef MERGE_ATTR
+
 static int
-show_2_wacs(int n, const char *name, const char *code)
+show_2_wacs(int n, const char *name, const char *code, attr_t attr, short pair)
 {
     const int height = 16;
-    int row = 4 + (n % height);
+    int row = 2 + (n % height);
     int col = (n / height) * COLS / 2;
     char temp[80];
 
     mvprintw(row, col, "%*s : ", COLS / 4, name);
+    attr_set(attr, pair, 0);
     addstr(strcpy(temp, code));
+    attr_set(A_NORMAL, 0, 0);
     return n + 1;
 }
 
+#define SHOW_UTF8(n, name, code) show_2_wacs(n, name, code, attr, pair)
+
 static void
-show_utf8_chars(void)
-/* display the wide-ACS character set */
+show_utf8_chars(attr_t attr, short pair)
 {
     int n;
 
@@ -3032,47 +3077,125 @@ show_utf8_chars(void)
     attroff(A_BOLD);
     refresh();
     /* *INDENT-OFF* */
-    n = show_2_wacs(0, "WACS_ULCORNER",	"\342\224\214");
-    n = show_2_wacs(n, "WACS_URCORNER",	"\342\224\220");
-    n = show_2_wacs(n, "WACS_LLCORNER",	"\342\224\224");
-    n = show_2_wacs(n, "WACS_LRCORNER",	"\342\224\230");
+    n = SHOW_UTF8(0, "WACS_ULCORNER",	"\342\224\214");
+    n = SHOW_UTF8(n, "WACS_URCORNER",	"\342\224\220");
+    n = SHOW_UTF8(n, "WACS_LLCORNER",	"\342\224\224");
+    n = SHOW_UTF8(n, "WACS_LRCORNER",	"\342\224\230");
 
-    n = show_2_wacs(n, "WACS_LTEE",	"\342\224\234");
-    n = show_2_wacs(n, "WACS_RTEE",	"\342\224\244");
-    n = show_2_wacs(n, "WACS_TTEE",	"\342\224\254");
-    n = show_2_wacs(n, "WACS_BTEE",	"\342\224\264");
+    n = SHOW_UTF8(n, "WACS_LTEE",	"\342\224\234");
+    n = SHOW_UTF8(n, "WACS_RTEE",	"\342\224\244");
+    n = SHOW_UTF8(n, "WACS_TTEE",	"\342\224\254");
+    n = SHOW_UTF8(n, "WACS_BTEE",	"\342\224\264");
 
-    n = show_2_wacs(n, "WACS_HLINE",	"\342\224\200");
-    n = show_2_wacs(n, "WACS_VLINE",	"\342\224\202");
+    n = SHOW_UTF8(n, "WACS_HLINE",	"\342\224\200");
+    n = SHOW_UTF8(n, "WACS_VLINE",	"\342\224\202");
 
-    n = show_2_wacs(n, "WACS_LARROW",	"\342\206\220");
-    n = show_2_wacs(n, "WACS_RARROW",	"\342\206\222");
-    n = show_2_wacs(n, "WACS_UARROW",	"\342\206\221");
-    n = show_2_wacs(n, "WACS_DARROW",	"\342\206\223");
+    n = SHOW_UTF8(n, "WACS_LARROW",	"\342\206\220");
+    n = SHOW_UTF8(n, "WACS_RARROW",	"\342\206\222");
+    n = SHOW_UTF8(n, "WACS_UARROW",	"\342\206\221");
+    n = SHOW_UTF8(n, "WACS_DARROW",	"\342\206\223");
 
-    n = show_2_wacs(n, "WACS_BLOCK",	"\342\226\256");
-    n = show_2_wacs(n, "WACS_BOARD",	"\342\226\222");
-    n = show_2_wacs(n, "WACS_LANTERN",	"\342\230\203");
-    n = show_2_wacs(n, "WACS_BULLET",	"\302\267");
-    n = show_2_wacs(n, "WACS_CKBOARD",	"\342\226\222");
-    n = show_2_wacs(n, "WACS_DEGREE",	"\302\260");
-    n = show_2_wacs(n, "WACS_DIAMOND",	"\342\227\206");
-    n = show_2_wacs(n, "WACS_PLMINUS",	"\302\261");
-    n = show_2_wacs(n, "WACS_PLUS",	"\342\224\274");
-    n = show_2_wacs(n, "WACS_GEQUAL",	"\342\211\245");
-    n = show_2_wacs(n, "WACS_NEQUAL",	"\342\211\240");
-    n = show_2_wacs(n, "WACS_LEQUAL",	"\342\211\244");
+    n = SHOW_UTF8(n, "WACS_BLOCK",	"\342\226\256");
+    n = SHOW_UTF8(n, "WACS_BOARD",	"\342\226\222");
+    n = SHOW_UTF8(n, "WACS_LANTERN",	"\342\230\203");
+    n = SHOW_UTF8(n, "WACS_BULLET",	"\302\267");
+    n = SHOW_UTF8(n, "WACS_CKBOARD",	"\342\226\222");
+    n = SHOW_UTF8(n, "WACS_DEGREE",	"\302\260");
+    n = SHOW_UTF8(n, "WACS_DIAMOND",	"\342\227\206");
+    n = SHOW_UTF8(n, "WACS_PLMINUS",	"\302\261");
+    n = SHOW_UTF8(n, "WACS_PLUS",	"\342\224\274");
+    n = SHOW_UTF8(n, "WACS_GEQUAL",	"\342\211\245");
+    n = SHOW_UTF8(n, "WACS_NEQUAL",	"\342\211\240");
+    n = SHOW_UTF8(n, "WACS_LEQUAL",	"\342\211\244");
 
-    n = show_2_wacs(n, "WACS_STERLING",	"\302\243");
-    n = show_2_wacs(n, "WACS_PI",	"\317\200");
-    n = show_2_wacs(n, "WACS_S1",	"\342\216\272");
-    n = show_2_wacs(n, "WACS_S3",	"\342\216\273");
-    n = show_2_wacs(n, "WACS_S7",	"\342\216\274");
-    n = show_2_wacs(n, "WACS_S9",	"\342\216\275");
+    n = SHOW_UTF8(n, "WACS_STERLING",	"\302\243");
+    n = SHOW_UTF8(n, "WACS_PI",		"\317\200");
+    n = SHOW_UTF8(n, "WACS_S1",		"\342\216\272");
+    n = SHOW_UTF8(n, "WACS_S3",		"\342\216\273");
+    n = SHOW_UTF8(n, "WACS_S7",		"\342\216\274");
+    n = SHOW_UTF8(n, "WACS_S9",		"\342\216\275");
     /* *INDENT-ON* */
 
 }
+/* *INDENT-OFF* */
+static struct {
+    attr_t attr;
+    char *name;
+} attrs_to_cycle[] = {
+    { A_NORMAL,		"normal" },
+    { A_BOLD,		"bold" },
+    { A_REVERSE,	"reverse" },
+    { A_UNDERLINE,	"underline" },
+};
+/* *INDENT-ON* */
 
+static bool
+cycle_attr(int ch, unsigned *at_code, attr_t *attr)
+{
+    bool result = TRUE;
+
+    switch (ch) {
+    case 'v':
+	if ((*at_code += 1) >= SIZEOF(attrs_to_cycle))
+	    *at_code = 0;
+	break;
+    case 'V':
+	if (*at_code == 1)
+	    *at_code = SIZEOF(attrs_to_cycle) - 1;
+	else
+	    *at_code -= 1;
+	break;
+    default:
+	result = FALSE;
+	break;
+    }
+    if (result)
+	*attr = attrs_to_cycle[*at_code].attr;
+    return result;
+}
+
+static bool
+cycle_colors(int ch, int *fg, int *bg, short *pair)
+{
+    bool result = FALSE;
+
+    if (has_colors()) {
+	result = TRUE;
+	switch (ch) {
+	case 'F':
+	    if ((*fg -= 1) < 0)
+		*fg = COLORS - 1;
+	    break;
+	case 'f':
+	    if ((*fg += 1) >= COLORS)
+		*fg = 0;
+	    break;
+	case 'B':
+	    if ((*bg -= 1) < 0)
+		*bg = COLORS - 1;
+	    break;
+	case 'b':
+	    if ((*bg += 1) < 0)
+		*bg = 0;
+	    break;
+	default:
+	    result = FALSE;
+	    break;
+	}
+	if (result) {
+	    *pair = (*fg != COLOR_BLACK || *bg != COLOR_BLACK);
+	    if (*pair != 0) {
+		*pair = 1;
+		if (init_pair(*pair, *fg, *bg) == ERR) {
+		    result = FALSE;
+		}
+	    }
+	}
+    }
+    return result;
+}
+
+/* display the wide-ACS character set */
 static void
 wide_acs_display(void)
 {
@@ -3080,6 +3203,12 @@ wide_acs_display(void)
     int digit = 0;
     int repeat = 0;
     int space = ' ';
+    chtype attr = A_NORMAL;
+    int fg = COLOR_BLACK;
+    int bg = COLOR_BLACK;
+    unsigned at_code = 0;
+    short pair = 0;
+    void (*last_show_wacs) (attr_t, short) = 0;
 
     do {
 	switch (c) {
@@ -3087,38 +3216,56 @@ wide_acs_display(void)
 	    Repaint();
 	    break;
 	case 'a':
-	    show_wacs_chars();
+	    last_show_wacs = show_wacs_chars;
 	    break;
-	case 'b':
-	    show_wbox_chars();
+	case 'x':
+	    last_show_wacs = show_wbox_chars;
 	    break;
 	case 'u':
-	    show_utf8_chars();
+	    last_show_wacs = show_utf8_chars;
 	    break;
 	default:
-	    if (c < 256 && isdigit(c))
+	    if (c < 256 && isdigit(c)) {
 		digit = (c - '0');
-	    else if (c == '+')
+	    } else if (c == '+') {
 		++digit;
-	    else if (c == '-' && digit > 0)
+	    } else if (c == '-' && digit > 0) {
 		--digit;
-	    else if (c == '>')
+	    } else if (c == '>' && repeat < (COLS / 4)) {
 		++repeat;
-	    else if (c == '<' && repeat > 0)
+	    } else if (c == '<' && repeat > 0) {
 		--repeat;
-	    else if (c == '_')
+	    } else if (c == '_') {
 		space = (space == ' ') ? '_' : ' ';
-	    else {
+	    } else if (cycle_attr(c, &at_code, &attr)
+		       || cycle_colors(c, &fg, &bg, &pair)) {
+		if (last_show_wacs != 0)
+		    break;
+	    } else {
 		beep();
 		break;
 	    }
-	    show_upper_widechars(digit * 32 + 128, repeat, space);
+	    last_show_wacs = 0;
+	    show_upper_widechars(digit * 32 + 128, repeat, space, attr, pair);
 	    break;
 	}
-	mvprintw(LINES - 2, 0,
-		 "Select: a WACS, b box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, q=quit");
+	if (last_show_wacs != 0)
+	    last_show_wacs(attr, pair);
+
+	mvprintw(LINES - 3, 0,
+		 "Select: a WACS, x box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, CTL/q=quit");
+	if (has_colors()) {
+	    mvprintw(LINES - 2, 0,
+		     "v/V, f/F, b/B cycle through video attributes (%s) and color %d/%d.",
+		     attrs_to_cycle[at_code].name,
+		     fg, bg);
+	} else {
+	    mvprintw(LINES - 2, 0,
+		     "v/V cycles through video attributes (%s).",
+		     attrs_to_cycle[at_code].name);
+	}
 	refresh();
-    } while ((c = Getchar()) != 'x' && c != 'q');
+    } while (!isQuit(c = Getchar()));
 
     Pause();
     erase();
@@ -3389,8 +3536,7 @@ selectcell(int uli, int ulj, int lri, int lrj)
 	case KEY_RIGHT:
 	    j++;
 	    break;
-	case QUIT:
-	case ESCAPE:
+	  case_QUIT:
 	    return ((pair *) 0);
 #ifdef NCURSES_MOUSE_VERSION
 	case KEY_MOUSE:
@@ -3731,8 +3877,7 @@ acs_and_scroll(void)
 	usescr = (current ? current->wind : stdscr);
 	wrefresh(usescr);
     } while
-	((c = wGetchar(usescr)) != QUIT
-	 && !((c == ESCAPE) && (keypad_active(usescr)))
+	(!isQuit(c = wGetchar(usescr))
 	 && (c != ERR));
 
   breakout:
@@ -4104,7 +4249,7 @@ panner_legend(int line)
 {
     static const char *const legend[] =
     {
-	"Use arrow keys (or U,D,L,R) to pan, q to quit, ! to shell-out.",
+	"Use arrow keys (or U,D,L,R) to pan, CTL/q to quit, ! to shell-out.",
 	"Use +,- (or j,k) to grow/shrink the panner vertically.",
 	"Use <,> (or h,l) to grow/shrink the panner horizontally.",
 	"Number repeats.  Toggle legend:? filler:a timer:t scrollmark:s."
@@ -4476,7 +4621,7 @@ padgetch(WINDOW *win)
 		c = KEY_DC;
 		break;
 	    case ERR:		/* FALLTHRU */
-	    case 'q':
+	      case_QUIT:
 		count = 0;
 		c = KEY_EXIT;
 		break;
@@ -5038,122 +5183,50 @@ edit_secure(FIELD * me, int c)
 static int
 form_virtualize(FORM * f, WINDOW *w)
 {
+    /* *INDENT-OFF* */
     static const struct {
 	int code;
 	int result;
     } lookup[] = {
-	{
-	    CTRL('A'), REQ_NEXT_CHOICE
-	},
-	{
-	    CTRL('B'), REQ_PREV_WORD
-	},
-	{
-	    CTRL('C'), REQ_CLR_EOL
-	},
-	{
-	    CTRL('D'), REQ_DOWN_FIELD
-	},
-	{
-	    CTRL('E'), REQ_END_FIELD
-	},
-	{
-	    CTRL('F'), REQ_NEXT_PAGE
-	},
-	{
-	    CTRL('G'), REQ_DEL_WORD
-	},
-	{
-	    CTRL('H'), REQ_DEL_PREV
-	},
-	{
-	    CTRL('I'), REQ_INS_CHAR
-	},
-	{
-	    CTRL('K'), REQ_CLR_EOF
-	},
-	{
-	    CTRL('L'), REQ_LEFT_FIELD
-	},
-	{
-	    CTRL('M'), REQ_NEW_LINE
-	},
-	{
-	    CTRL('N'), REQ_NEXT_FIELD
-	},
-	{
-	    CTRL('O'), REQ_INS_LINE
-	},
-	{
-	    CTRL('P'), REQ_PREV_FIELD
-	},
-	{
-	    CTRL('R'), REQ_RIGHT_FIELD
-	},
-	{
-	    CTRL('S'), REQ_BEG_FIELD
-	},
-	{
-	    CTRL('U'), REQ_UP_FIELD
-	},
-	{
-	    CTRL('V'), REQ_DEL_CHAR
-	},
-	{
-	    CTRL('W'), REQ_NEXT_WORD
-	},
-	{
-	    CTRL('X'), REQ_CLR_FIELD
-	},
-	{
-	    CTRL('Y'), REQ_DEL_LINE
-	},
-	{
-	    CTRL('Z'), REQ_PREV_CHOICE
-	},
-	{
-	    ESCAPE, MAX_FORM_COMMAND + 1
-	},
-	{
-	    KEY_BACKSPACE, REQ_DEL_PREV
-	},
-	{
-	    KEY_DOWN, REQ_DOWN_CHAR
-	},
-	{
-	    KEY_END, REQ_LAST_FIELD
-	},
-	{
-	    KEY_HOME, REQ_FIRST_FIELD
-	},
-	{
-	    KEY_LEFT, REQ_LEFT_CHAR
-	},
-	{
-	    KEY_LL, REQ_LAST_FIELD
-	},
-	{
-	    KEY_NEXT, REQ_NEXT_FIELD
-	},
-	{
-	    KEY_NPAGE, REQ_NEXT_PAGE
-	},
-	{
-	    KEY_PPAGE, REQ_PREV_PAGE
-	},
-	{
-	    KEY_PREVIOUS, REQ_PREV_FIELD
-	},
-	{
-	    KEY_RIGHT, REQ_RIGHT_CHAR
-	},
-	{
-	    KEY_UP, REQ_UP_CHAR
-	},
-	{
-	    QUIT, MAX_FORM_COMMAND + 1
-	}
+	{ CTRL('A'),	REQ_NEXT_CHOICE },
+	{ CTRL('B'),	REQ_PREV_WORD },
+	{ CTRL('C'),	REQ_CLR_EOL },
+	{ CTRL('D'),	REQ_DOWN_FIELD },
+	{ CTRL('E'),	REQ_END_FIELD },
+	{ CTRL('F'),	REQ_NEXT_PAGE },
+	{ CTRL('G'),	REQ_DEL_WORD },
+	{ CTRL('H'),	REQ_DEL_PREV },
+	{ CTRL('I'),	REQ_INS_CHAR },
+	{ CTRL('K'),	REQ_CLR_EOF },
+	{ CTRL('L'),	REQ_LEFT_FIELD },
+	{ CTRL('M'),	REQ_NEW_LINE },
+	{ CTRL('N'),	REQ_NEXT_FIELD },
+	{ CTRL('O'),	REQ_INS_LINE },
+	{ CTRL('P'),	REQ_PREV_FIELD },
+	{ CTRL('R'),	REQ_RIGHT_FIELD },
+	{ CTRL('S'),	REQ_BEG_FIELD },
+	{ CTRL('U'),	REQ_UP_FIELD },
+	{ CTRL('V'),	REQ_DEL_CHAR },
+	{ CTRL('W'),	REQ_NEXT_WORD },
+	{ CTRL('X'),	REQ_CLR_FIELD },
+	{ CTRL('Y'),	REQ_DEL_LINE },
+	{ CTRL('Z'),	REQ_PREV_CHOICE },
+	{ ESCAPE,	MAX_FORM_COMMAND + 1 },
+	{ KEY_BACKSPACE, REQ_DEL_PREV },
+	{ KEY_DOWN,	REQ_DOWN_CHAR },
+	{ KEY_END,	REQ_LAST_FIELD },
+	{ KEY_HOME,	REQ_FIRST_FIELD },
+	{ KEY_LEFT,	REQ_LEFT_CHAR },
+	{ KEY_LL,	REQ_LAST_FIELD },
+	{ KEY_NEXT,	REQ_NEXT_FIELD },
+	{ KEY_NPAGE,	REQ_NEXT_PAGE },
+	{ KEY_PPAGE,	REQ_PREV_PAGE },
+	{ KEY_PREVIOUS, REQ_PREV_FIELD },
+	{ KEY_RIGHT,	REQ_RIGHT_CHAR },
+	{ KEY_UP,	REQ_UP_CHAR },
+	{ QUIT,		MAX_FORM_COMMAND + 1 }
     };
+    /* *INDENT-ON* */
 
     static int mode = REQ_INS_MODE;
     int c = wGetchar(w);
@@ -5654,7 +5727,7 @@ overlap_test(void)
     memset(flavor, 0, sizeof(flavor));
     state = overlap_help(0, flavor);
 
-    while ((ch = Getchar()) != QUIT && ch != ESCAPE)
+    while (!isQuit(ch = Getchar()))
 	switch (ch) {
 	case 'a':		/* refresh window A first, then B */
 	    overlap_test_0(win1, win2);
@@ -6031,7 +6104,7 @@ main_menu(bool top)
 		(void)
 		    puts("key letter of the choice (the letter to left of the =)");
 		(void)
-		    puts("at the > prompt.  The commands `x' or `q' will exit.");
+		    puts("at the > prompt.  Type `q' to exit.");
 	    }
 	    continue;
 	}
