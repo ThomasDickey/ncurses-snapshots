@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.966 2006/03/18 21:38:56 tom Exp $
+-- $Id: NEWS,v 1.968 2006/04/01 23:25:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060401
+	+ improve discussion of init/reset in terminfo and tput manpages
+	  (report by Alain Bench).
+	+ use is3 string for a fallback of rs3 in the reset program; it was
+	  using is2 (report by Alain Bench).
+	+ correct logic for infocmp -i option, which did not account for
+	  multiple digits in a parameter (cf: 20040828) (report by Alain
+	  Bench).
+	+ move _nc_handle_sigwinch() to lib_setup.c to make --with-termlib
+	  option work after 20060114 changes (report by Arkadiusz Miskiewicz).
+	+ add copyright notices to test-programs as needed (report by William
+	  McBrine).
 
 20060318
 	+ modify ncurses.c 'F' test to combine the wide-characters with color

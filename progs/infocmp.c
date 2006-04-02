@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.79 2005/09/25 00:39:43 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.80 2006/04/01 21:44:01 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -555,12 +555,52 @@ skip_csi(const char *cap)
     return result;
 }
 
+static bool
+same_param(const char *table, const char *param, unsigned length)
+{
+    bool result = FALSE;
+    if (strncmp(table, param, length) == 0) {
+	result = !isdigit(UChar(param[length]));
+    }
+    return result;
+}
+
+static char *
+lookup_params(const assoc * table, char *dst, char *src)
+{
+    const char *ep = strtok(src, ";");
+    const assoc *ap;
+
+    do {
+	bool found = FALSE;
+
+	for (ap = table; ap->from; ap++) {
+	    size_t tlen = strlen(ap->from);
+
+	    if (same_param(ap->from, ep, tlen)) {
+		(void) strcat(dst, ap->to);
+		found = TRUE;
+		break;
+	    }
+	}
+
+	if (!found)
+	    (void) strcat(dst, ep);
+	(void) strcat(dst, ";");
+    } while
+	((ep = strtok((char *) 0, ";")));
+
+    dst[strlen(dst) - 1] = '\0';
+
+    return dst;
+}
+
 static void
 analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 {
     char buf[MAX_TERMINFO_LENGTH];
     char buf2[MAX_TERMINFO_LENGTH];
-    const char *sp, *ep;
+    const char *sp;
     const assoc *ap;
     int tp_lines = tp->Numbers[2];
 
@@ -573,7 +613,9 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	int i;
 	int csi;
 	size_t len = 0;
+	size_t next;
 	const char *expansion = 0;
+	char buf3[MAX_TERMINFO_LENGTH];
 
 	/* first, check other capabilities in this entry */
 	for (i = 0; i < STRCOUNT; i++) {
@@ -631,35 +673,15 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	if (!expansion
 	    && (csi = skip_csi(sp)) != 0
 	    && (len = strspn(sp + csi, "0123456789;"))
-	    && ((sp[csi + len] == 'h') || (sp[csi + len] == 'l'))) {
-	    char buf3[MAX_TERMINFO_LENGTH];
+	    && (next = csi + len)
+	    && ((sp[next] == 'h') || (sp[next] == 'l'))) {
 
-	    (void) strcpy(buf2, (sp[csi + len] == 'h') ? "ECMA+" : "ECMA-");
+	    (void) strcpy(buf2, (sp[next] == 'h') ? "ECMA+" : "ECMA-");
 	    (void) strncpy(buf3, sp + csi, len);
-	    len += csi + 1;
 	    buf3[len] = '\0';
+	    len += csi + 1;
 
-	    ep = strtok(buf3, ";");
-	    do {
-		bool found = FALSE;
-
-		for (ap = std_modes; ap->from; ap++) {
-		    size_t tlen = strlen(ap->from);
-
-		    if (strncmp(ap->from, ep, tlen) == 0) {
-			(void) strcat(buf2, ap->to);
-			found = TRUE;
-			break;
-		    }
-		}
-
-		if (!found)
-		    (void) strcat(buf2, ep);
-		(void) strcat(buf2, ";");
-	    } while
-		((ep = strtok((char *) 0, ";")));
-	    buf2[strlen(buf2) - 1] = '\0';
-	    expansion = buf2;
+	    expansion = lookup_params(std_modes, buf2, buf3);
 	}
 
 	/* now check for private-mode sequences */
@@ -667,71 +689,30 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    && (csi = skip_csi(sp)) != 0
 	    && sp[csi] == '?'
 	    && (len = strspn(sp + csi + 1, "0123456789;"))
-	    && ((sp[csi + 1 + len] == 'h') || (sp[csi + 1 + len] == 'l'))) {
-	    char buf3[MAX_TERMINFO_LENGTH];
+	    && (next = csi + 1 + len)
+	    && ((sp[next] == 'h') || (sp[next] == 'l'))) {
 
-	    (void) strcpy(buf2, (sp[csi + 1 + len] == 'h') ? "DEC+" : "DEC-");
+	    (void) strcpy(buf2, (sp[next] == 'h') ? "DEC+" : "DEC-");
 	    (void) strncpy(buf3, sp + csi + 1, len);
-	    len += csi + 2;
 	    buf3[len] = '\0';
+	    len += csi + 2;
 
-	    ep = strtok(buf3, ";");
-	    do {
-		bool found = FALSE;
-
-		for (ap = private_modes; ap->from; ap++) {
-		    size_t tlen = strlen(ap->from);
-
-		    if (strncmp(ap->from, ep, tlen) == 0) {
-			(void) strcat(buf2, ap->to);
-			found = TRUE;
-			break;
-		    }
-		}
-
-		if (!found)
-		    (void) strcat(buf2, ep);
-		(void) strcat(buf2, ";");
-	    } while
-		((ep = strtok((char *) 0, ";")));
-	    buf2[strlen(buf2) - 1] = '\0';
-	    expansion = buf2;
+	    expansion = lookup_params(private_modes, buf2, buf3);
 	}
 
 	/* now check for ECMA highlight sequences */
 	if (!expansion
 	    && (csi = skip_csi(sp)) != 0
 	    && (len = strspn(sp + csi, "0123456789;")) != 0
-	    && sp[csi + len] == 'm') {
-	    char buf3[MAX_TERMINFO_LENGTH];
+	    && (next = csi + len)
+	    && sp[next] == 'm') {
 
 	    (void) strcpy(buf2, "SGR:");
 	    (void) strncpy(buf3, sp + csi, len);
-	    len += csi + 1;
 	    buf3[len] = '\0';
+	    len += csi + 1;
 
-	    ep = strtok(buf3, ";");
-	    do {
-		bool found = FALSE;
-
-		for (ap = ecma_highlights; ap->from; ap++) {
-		    size_t tlen = strlen(ap->from);
-
-		    if (strncmp(ap->from, ep, tlen) == 0) {
-			(void) strcat(buf2, ap->to);
-			found = TRUE;
-			break;
-		    }
-		}
-
-		if (!found)
-		    (void) strcat(buf2, ep);
-		(void) strcat(buf2, ";");
-	    } while
-		((ep = strtok((char *) 0, ";")));
-
-	    buf2[strlen(buf2) - 1] = '\0';
-	    expansion = buf2;
+	    expansion = lookup_params(ecma_highlights, buf2, buf3);
 	}
 
 	if (!expansion

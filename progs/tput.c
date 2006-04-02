@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.35 2005/04/03 14:25:32 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.36 2006/04/01 22:12:01 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -251,8 +251,8 @@ tput(int argc, char *argv[])
 
 	if (is_reset && reset_3string != 0) {
 	    PUTS(reset_3string);
-	} else if (init_2string != 0) {
-	    PUTS(init_2string);
+	} else if (init_3string != 0) {
+	    PUTS(init_3string);
 	}
 	FLUSH;
 	return 0;
