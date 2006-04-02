@@ -46,7 +46,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.31 2006/01/14 15:25:13 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.32 2006/04/01 19:31:34 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -274,49 +274,6 @@ cleanup(int sig)
 }
 
 #if USE_SIGWINCH
-int
-_nc_handle_sigwinch(int enable)
-{
-    static int have_sigwinch = 0;	/* initially no SIGWINCH's */
-    static int can_resizeall = 1;	/* initially enabled */
-    SCREEN *scan;
-    int result;
-
-    switch (enable) {
-    default:
-	/* record a SIGWINCH */
-	have_sigwinch = 1;
-	break;
-    case 0:
-	/* temporarily disable the next block */
-	--can_resizeall;
-	break;
-    case 1:
-	/* temporarily enable the next block */
-	++can_resizeall;
-	break;
-    }
-
-    /*
-     * If we have a pending SIGWINCH, set the flag in each screen.
-     * But do this only if the block is enabled.
-     */
-    if (can_resizeall-- >= 0) {	/* test and disable */
-	if (have_sigwinch) {
-	    scan = _nc_screen_chain;
-	    while (scan) {
-		scan->_sig_winch = TRUE;
-		scan = scan->_next_screen;
-	    }
-	    have_sigwinch = 0;
-	}
-    }
-    result = can_resizeall + 1;	/* reenable (unless disables are nested) */
-    can_resizeall = result;
-
-    return result;
-}
-
 static void
 sigwinch(int sig GCC_UNUSED)
 {
