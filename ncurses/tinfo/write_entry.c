@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -52,14 +52,14 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.58 2002/04/21 20:35:08 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.59 2006/04/08 21:04:56 tom Exp $")
 
 static int total_written;
 
 static int write_object(FILE *, TERMTYPE *);
 
 static void
-write_file(char *filename, TERMTYPE * tp)
+write_file(char *filename, TERMTYPE *tp)
 {
     FILE *fp = (_nc_access(filename, W_OK) == 0) ? fopen(filename, "wb") : 0;
     if (fp == 0) {
@@ -204,7 +204,7 @@ check_writeable(int code)
  */
 
 void
-_nc_write_entry(TERMTYPE * const tp)
+_nc_write_entry(TERMTYPE *const tp)
 {
     struct stat statbuf;
     char name_list[MAX_TERMINFO_LENGTH];
@@ -404,8 +404,66 @@ convert_shorts(unsigned char *buf, short *Numbers, unsigned count)
 #define even_boundary(value) \
 	    ((value) % 2 != 0 && fwrite(&zero, sizeof(char), 1, fp) != 1)
 
+#if NCURSES_XNAMES
+static unsigned
+extended_Booleans(TERMTYPE *tp)
+{
+    unsigned short result = 0;
+    unsigned short i;
+
+    for (i = 0; i < tp->ext_Booleans; ++i) {
+	if (tp->Booleans[BOOLCOUNT + i] == TRUE)
+	    result = (i + 1);
+    }
+    return result;
+}
+
+static unsigned
+extended_Numbers(TERMTYPE *tp)
+{
+    unsigned short result = 0;
+    unsigned short i;
+
+    for (i = 0; i < tp->ext_Numbers; ++i) {
+	if (tp->Numbers[NUMCOUNT + i] != ABSENT_NUMERIC)
+	    result = (i + 1);
+    }
+    return result;
+}
+
+static unsigned
+extended_Strings(TERMTYPE *tp)
+{
+    unsigned short result = 0;
+    unsigned short i;
+
+    for (i = 0; i < tp->ext_Strings; ++i) {
+	if (tp->Strings[STRCOUNT + i] != ABSENT_STRING)
+	    result = (i + 1);
+    }
+    return result;
+}
+
+/*
+ * _nc_align_termtype() will extend entries that are referenced in a use=
+ * clause - discard the unneeded data.
+ */
+static bool
+extended_object(TERMTYPE *tp)
+{
+    bool result = FALSE;
+
+    if (_nc_user_definable) {
+	result = ((extended_Booleans(tp)
+		   + extended_Numbers(tp)
+		   + extended_Strings(tp)) != 0);
+    }
+    return result;
+}
+#endif
+
 static int
-write_object(FILE * fp, TERMTYPE * tp)
+write_object(FILE *fp, TERMTYPE *tp)
 {
     char *namelist;
     size_t namelen, boolmax, nummax, strmax;
@@ -503,7 +561,7 @@ write_object(FILE * fp, TERMTYPE * tp)
 		return (ERR);
 
 #if NCURSES_XNAMES
-    if (NUM_EXT_NAMES(tp)) {
+    if (extended_object(tp)) {
 	unsigned extcnt = NUM_EXT_NAMES(tp);
 
 	if (even_boundary(nextfree))

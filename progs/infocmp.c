@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.80 2006/04/01 21:44:01 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.81 2006/04/08 18:37:34 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -659,6 +659,8 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 		size_t adj = csi ? 2 : 0;
 
 		len = strlen(ap->from);
+		if (csi && skip_csi(ap->from) != csi)
+		    continue;
 		if (len > adj
 		    && strncmp(ap->from + adj, sp + csi, len - adj) == 0) {
 		    expansion = ap->to;

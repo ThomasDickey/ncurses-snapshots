@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.273 2006/03/18 21:37:51 tom Exp $
+$Id: ncurses.c,v 1.274 2006/04/08 16:14:15 tom Exp $
 
 ***************************************************************************/
 
@@ -520,15 +520,15 @@ wgetch_help(WINDOW *win, bool flags[])
 {
     static const char *help[] =
     {
-	"e -- toggle echo mode"
-	,"g -- triggers a getstr test"
-	,"k -- toggle keypad/literal mode"
-	,"m -- toggle meta (7-bit/8-bit) mode"
-	,"q -- quit"
-	,"s -- shell out\n"
-	,"w -- create a new window"
+	"e  -- toggle echo mode"
+	,"g  -- triggers a getstr test"
+	,"k  -- toggle keypad/literal mode"
+	,"m  -- toggle meta (7-bit/8-bit) mode"
+	,"^q -- quit"
+	,"s  -- shell out\n"
+	,"w  -- create a new window"
 #ifdef SIGTSTP
-	,"z -- suspend this process"
+	,"z  -- suspend this process"
 #endif
     };
     int y, x;

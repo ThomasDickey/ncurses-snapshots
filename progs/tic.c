@@ -44,7 +44,7 @@
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.125 2005/09/25 00:39:43 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.126 2006/04/08 19:28:44 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1317,7 +1317,7 @@ check_sgr(TERMTYPE *tp, char *zero, int num, char *cap, const char *name)
 static void
 show_where(unsigned level)
 {
-    if (_nc_tracing >= level) {
+    if (_nc_tracing >= DEBUG_LEVEL(level)) {
 	char my_name[256];
 	_nc_get_type(my_name);
 	fprintf(stderr, "\"%s\", line %d, '%s' ",
