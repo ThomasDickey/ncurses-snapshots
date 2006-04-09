@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.968 2006/04/01 23:25:59 tom Exp $
+-- $Id: NEWS,v 1.969 2006/04/08 21:08:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060408
+	+ modify write_object() to not write coincidental extensions of an
+	  entry made due to it being referenced in a use= clause (report by
+	  Alain Bench).
+	+ another fix for infocmp -i option, which did not ensure that some
+	  escape sequences had comparable prefixes (report by Alain Bench).
 
 20060401
 	+ improve discussion of init/reset in terminfo and tput manpages
