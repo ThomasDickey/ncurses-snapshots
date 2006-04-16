@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.81 2006/04/08 18:37:34 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.82 2006/04/15 22:45:44 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1545,7 +1545,6 @@ main(int argc, char *argv[])
 	    len = dump_entry(&entries[0].tterm,
 			     suppress_untranslatable,
 			     limited,
-			     0,
 			     numbers,
 			     NULL);
 	    putchar('\n');
@@ -1582,7 +1581,6 @@ main(int argc, char *argv[])
 	    len = dump_entry(&entries[0].tterm,
 			     suppress_untranslatable,
 			     limited,
-			     0,
 			     numbers,
 			     use_predicate);
 	    for (i = 1; i < termcount; i++)

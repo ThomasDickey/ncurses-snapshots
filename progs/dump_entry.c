@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.71 2006/01/21 23:43:39 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.76 2006/04/15 22:43:02 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -60,7 +60,6 @@ static int oldcol;		/* last value of column before wrap */
 static bool pretty;		/* true if we format if-then-else strings */
 
 static char *save_sgr;
-static char *save_acsc;
 
 static DYNBUF outbuf;
 static DYNBUF tmpbuf;
@@ -740,7 +739,7 @@ fmt_entry(TERMTYPE *tterm,
 
     /*
      * This piece of code should be an effective inverse of the functions
-     * postprocess_terminfo and postprocess_terminfo in parse_entry.c.
+     * postprocess_terminfo() and postprocess_terminfo() in parse_entry.c.
      * Much more work should be done on this to support dumping termcaps.
      */
     if (tversion == V_HPUX) {
@@ -902,23 +901,66 @@ kill_fkeys(TERMTYPE *tterm, int target)
     return result;
 }
 
+/*
+ * Check if the given acsc string is a 1-1 mapping, i.e., just-like-vt100.
+ * Also, since this is for termcap, we only care about the line-drawing map.
+ */
+#define isLine(c) (strchr("lmkjtuvwqxn", c) != 0)
+
+static bool
+one_one_mapping(const char *mapping)
+{
+    bool result = TRUE;
+
+    if (mapping != ABSENT_STRING) {
+	int n = 0;
+	while (mapping[n] != '\0') {
+	    if (isLine(mapping[n]) &&
+		mapping[n] != mapping[n + 1]) {
+		result = FALSE;
+		break;
+	    }
+	    n += 2;
+	}
+    }
+    return result;
+}
+
 #define FMT_ENTRY() \
 		fmt_entry(tterm, pred, \
-			(already_used > 0), \
+			0, \
 			suppress_untranslatable, \
 			infodump, numbers)
 
-#define SHOW_WHY if (!already_used) PRINTF
+#define SHOW_WHY PRINTF
 
+static bool
+purged_acs(TERMTYPE *tterm)
+{
+    bool result = FALSE;
+
+    if (VALID_STRING(acs_chars)) {
+	if (!one_one_mapping(acs_chars)) {
+	    enter_alt_charset_mode = ABSENT_STRING;
+	    exit_alt_charset_mode = ABSENT_STRING;
+	    SHOW_WHY("# (rmacs/smacs removed for consistency)\n");
+	}
+	result = TRUE;
+    }
+    return result;
+}
+
+/*
+ * Dump a single entry.
+ */
 int
 dump_entry(TERMTYPE *tterm,
 	   bool suppress_untranslatable,
 	   bool limited,
-	   int already_used,
 	   int numbers,
 	   PredFunc pred)
-/* dump a single entry */
 {
+    TERMTYPE save_tterm;
     int len, critlen;
     const char *legend;
     bool infodump;
@@ -933,13 +975,13 @@ dump_entry(TERMTYPE *tterm,
 	legend = "terminfo";
 	infodump = TRUE;
     }
-    critlen -= already_used;
 
     save_sgr = set_attributes;
-    save_acsc = acs_chars;
 
     if (((len = FMT_ENTRY()) > critlen)
 	&& limited) {
+
+	save_tterm = *tterm;
 	if (!suppress_untranslatable) {
 	    SHOW_WHY("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
 		     critlen);
@@ -983,7 +1025,7 @@ dump_entry(TERMTYPE *tterm,
 		changed = TRUE;
 	    }
 	    if (!changed || ((len = FMT_ENTRY()) > critlen)) {
-		if (VALID_STRING(acs_chars)) {
+		if (purged_acs(tterm)) {
 		    acs_chars = ABSENT_STRING;
 		    SHOW_WHY("# (acsc removed to fit entry within %d bytes)\n",
 			     critlen);
@@ -1010,19 +1052,25 @@ dump_entry(TERMTYPE *tterm,
 			     critlen);
 		    len = FMT_ENTRY();
 		}
-		if (len > critlen && !already_used) {
+		if (len > critlen) {
 		    (void) fprintf(stderr,
 				   "warning: %s entry is %d bytes long\n",
 				   _nc_first_name(tterm->term_names),
 				   len);
 		    SHOW_WHY("# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
-			     already_used + len, legend);
+			     len, legend);
 		}
 		tversion = oldversion;
 	    }
 	    set_attributes = save_sgr;
-	    acs_chars = save_acsc;
+	    *tterm = save_tterm;
 	}
+    } else if (!version_filter(STRING, STR_IDX(acs_chars))) {
+	save_tterm = *tterm;
+	if (purged_acs(tterm)) {
+	    len = FMT_ENTRY();
+	}
+	*tterm = save_tterm;
     }
 
     (void) fputs(outbuf.text, stdout);

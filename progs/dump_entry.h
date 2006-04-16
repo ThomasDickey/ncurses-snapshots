@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: dump_entry.h,v 1.27 2004/12/04 15:37:17 tom Exp $
+ * $Id: dump_entry.h,v 1.28 2006/04/15 22:43:02 tom Exp $
  *
  * Dump control definitions and variables
  */
@@ -69,7 +69,7 @@ typedef int (*PredFunc)(PredType, PredIdx);
 extern NCURSES_CONST char *nametrans(const char *);
 extern void dump_init(const char *, int, int, int, int, bool);
 extern int fmt_entry(TERMTYPE *, PredFunc, bool, bool, bool, int);
-extern int dump_entry(TERMTYPE *, bool, bool, int, int, PredFunc);
+extern int dump_entry(TERMTYPE *, bool, bool, int, PredFunc);
 extern int dump_uses(const char *, bool);
 extern void compare_entry(void (*)(PredType, PredIdx, const char *), TERMTYPE *, bool);
 extern void repair_acsc(TERMTYPE * tp);

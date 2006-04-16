@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.969 2006/04/08 21:08:11 tom Exp $
+-- $Id: NEWS,v 1.970 2006/04/15 21:41:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060415
+	+ document -U option of tic and infocmp.
+	+ modify tic/infocmp to suppress smacs/rmacs when acsc is suppressed
+	  due to size limit, e.g., converting to termcap format.  Also
+	  suppress them if the output format does not contain acsc and it
+	  was not VT100-like, i.e., a one-one mapping (Novell #163715).
+	+ add configure check to ensure that SIGWINCH is defined on platforms
+	  such as OS X which exclude that when _XOPEN_SOURCE, etc., are
+	  defined (report by Nicholas Cole)
 
 20060408
 	+ modify write_object() to not write coincidental extensions of an
