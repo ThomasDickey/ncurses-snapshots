@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.41 2006/02/25 21:26:20 tom Exp $
+.\" $Id: infocmp.1m,v 1.42 2006/04/15 20:11:31 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -43,6 +43,7 @@ G\
 I\
 L\
 T\
+U\
 V\
 c\
 d\
@@ -364,6 +365,12 @@ descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 tells \fBtic\fP to discard commented-out capabilities.
 Normally when translating from terminfo to termcap,
 untranslatable capabilities are commented-out.
+.TP 5
+\fB-U\fR
+tells \fBinfocmp\fP to not post-process the data after parsing the source file.
+This feature helps when comparing the actual contents of two source files,
+since it excludes the inferences that \fBinfocmp\fP makes to fill in missing
+data.
 .TP 5
 \fB-V\fR
 reports the version of ncurses which was used in this program, and exits.

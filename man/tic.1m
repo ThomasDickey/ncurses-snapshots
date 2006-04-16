@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.41 2006/02/25 21:19:31 tom Exp $
+.\" $Id: tic.1m,v 1.42 2006/04/15 20:12:08 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -42,6 +42,7 @@ I\
 L\
 N\
 T\
+U\
 V\
 a\
 c\
@@ -176,6 +177,11 @@ descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 tells \fBtic\fP to discard commented-out capabilities.
 Normally when translating from terminfo to termcap,
 untranslatable capabilities are commented-out.
+.TP 5
+\fB-U\fR
+tells \fBtic\fP to not post-process the data after parsing the source file.
+Normally, it infers data which is commonly missing in older terminfo data,
+or in termcaps.
 .TP
 \fB-V\fR
 reports the version of ncurses which was used in this program, and exits.

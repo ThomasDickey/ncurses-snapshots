@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.126 2006/04/08 19:28:44 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.128 2006/04/15 22:43:02 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -731,7 +731,7 @@ main(int argc, char *argv[])
 		    _nc_set_type(_nc_first_name(qp->tterm.term_names));
 
 		    (void) fseek(tmp_fp, qp->cstart, SEEK_SET);
-		    while (j--) {
+		    while (j-- > 0) {
 			if (infodump)
 			    (void) putchar(fgetc(tmp_fp));
 			else
@@ -739,7 +739,7 @@ main(int argc, char *argv[])
 		    }
 
 		    len = dump_entry(&qp->tterm, suppress_untranslatable,
-				     limited, 0, numbers, NULL);
+				     limited, numbers, NULL);
 		    for (j = 0; j < qp->nuses; j++)
 			len += dump_uses(qp->uses[j].name, !capdump);
 		    (void) putchar('\n');
@@ -1327,7 +1327,7 @@ show_where(unsigned level)
 }
 
 #else
-#define show_where(level) /* nothing */
+#define show_where(level)	/* nothing */
 #endif
 
 /* other sanity-checks (things that we don't want in the normal
