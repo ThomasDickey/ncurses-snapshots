@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.296 2006/03/11 19:27:54 tom Exp $
+ * $Id: curses.priv.h,v 1.297 2006/04/16 21:13:19 tom Exp $
  *
  *	curses.priv.h
  *
@@ -667,17 +667,17 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
-#define AddAttr(c,a)	AttrOf(c) |= a
+#define AddAttr(c,a)	AttrOf(c) |= (a)
 #define RemAttr(c,a)	AttrOf(c) &= ~(a)
-#define SetAttr(c,a)	AttrOf(c) = a
+#define SetAttr(c,a)	AttrOf(c) = (a)
 #define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
-#define NewChar(ch)	NewChar2(ChAttrOf(ch), ChCharOf(ch))
-#define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
+#define NewChar(ch)	NewChar2(ChCharOf(ch), ChAttrOf(ch))
+#define CharEq(a,b)	(!memcmp(&(a), &(b), sizeof(a)))
 #define SetChar(ch,c,a) do {							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
 			    memset(_cp, 0, sizeof(ch));				    \
-			    _cp->chars[0] = c;					    \
-			    _cp->attr = a;					    \
+			    _cp->chars[0] = (c);					    \
+			    _cp->attr = (a);					    \
 			    if_EXT_COLORS(SetPair(ch, PAIR_NUMBER(a)));		    \
 			} while (0)
 #define CHREF(wch)	(&wch)
@@ -737,13 +737,13 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #else /* }{ */
 #define CharOf(c)	ChCharOf(c)
 #define AttrOf(c)	ChAttrOf(c)
-#define AddAttr(c,a)	c |= a
-#define RemAttr(c,a)	c &= ~(a & A_ATTRIBUTES)
-#define SetAttr(c,a)	c = (c & ~A_ATTRIBUTES) | a
+#define AddAttr(c,a)	c |= (a)
+#define RemAttr(c,a)	c &= ~((a) & A_ATTRIBUTES)
+#define SetAttr(c,a)	c = ((c) & ~A_ATTRIBUTES) | (a)
 #define NewChar(ch)	(ch)
-#define NewChar2(c,a)	(c | a)
-#define CharEq(a,b)	(a == b)
-#define SetChar(ch,c,a)	ch = c | a
+#define NewChar2(c,a)	((c) | (a))
+#define CharEq(a,b)	((a) == (b))
+#define SetChar(ch,c,a)	ch = (c) | (a)
 #define CHREF(wch)	wch
 #define CHDEREF(wch)	wch
 #define ARG_CH_T	NCURSES_CH_T
