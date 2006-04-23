@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.230 2006/03/11 19:29:14 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.231 2006/04/22 20:15:02 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -892,10 +892,15 @@ doupdate(void)
 
   cleanup:
     /*
-     * Keep the physical screen in normal mode in case we get other
-     * processes writing to the screen.
+     * We would like to keep the physical screen in normal mode in case we get
+     * other processes writing to the screen.  This goal cannot be met for
+     * magic cookies since it interferes with attributes that may propagate
+     * past the current position.
      */
-    UpdateAttrs(normal);
+#if USE_XMC_SUPPORT
+    if (magic_cookie_glitch != 0)
+#endif
+	UpdateAttrs(normal);
 
     _nc_flush();
     curscr->_attrs = newscr->_attrs;

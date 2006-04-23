@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.16 2006/04/01 19:08:03 tom Exp $
+ * $Id: demo_menus.c,v 1.17 2006/04/21 16:35:24 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -616,8 +616,8 @@ move_menu(MENU * menu, MENU * current, int by_y, int by_x)
 
     if ((result = mvwin(top_win, y0, x0)) != ERR) {
 #if defined(NCURSES_VERSION_PATCH) && (NCURSES_VERSION_PATCH < 20060218)
-	sub_win->begy = y1;
-	sub_win->begx = x1;
+	sub_win->_begy = y1;
+	sub_win->_begx = x1;
 #else
 	mvwin(sub_win, y1, x1);
 #endif
