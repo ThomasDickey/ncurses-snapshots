@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.4 2006/01/21 23:43:53 tom Exp $
+ * $Id: demo_termcap.c,v 1.5 2006/05/06 19:06:36 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -108,7 +108,7 @@ dumpit(char *cap)
 	printf("\n");
     } else if ((num = tgetnum(cap)) >= 0) {
 	printf("num %s = %d\n", cap, num);
-    } else if ((num = tgetflag(cap)) != 0) {
+    } else if ((num = tgetflag(cap)) > 0) {
 	printf("flg %s\n", cap);
     }
     fflush(stdout);
@@ -120,7 +120,7 @@ demo_termcap(const char *name)
     char buffer[1024];
 
     printf("Terminal type %s\n", name);
-    if (tgetent(buffer, name)) {
+    if (tgetent(buffer, name) >= 0) {
 	char cap[3];
 	int c1, c2;
 

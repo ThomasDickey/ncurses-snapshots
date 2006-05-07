@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.15 2006/04/01 19:08:03 tom Exp $
+ * $Id: movewindow.c,v 1.16 2006/05/06 18:52:21 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -46,6 +46,8 @@ mvwin
 #ifdef HAVE_XCURSES
 #undef derwin
 #endif
+
+#undef LINE_MAX
 
 #define LINE_MIN	2
 #define LINE_MAX	(LINES - 2)

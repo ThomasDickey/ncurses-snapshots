@@ -40,11 +40,15 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.274 2006/04/08 16:14:15 tom Exp $
+$Id: ncurses.c,v 1.276 2006/05/06 20:34:21 tom Exp $
 
 ***************************************************************************/
 
 #include <test.priv.h>
+
+#ifdef __hpux
+#undef mvwdelch			/* HPUX 11.23 macro will not compile */
+#endif
 
 #if HAVE_GETTIMEOFDAY
 #if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
@@ -121,6 +125,7 @@ extern unsigned _nc_tracing;
 #undef max_colors
 static int max_colors;		/* the actual number of colors we'll use */
 static int min_colors;		/* the minimum color code */
+static bool use_colors;		/* true if we use colors */
 
 #undef max_pairs
 static int max_pairs;		/* ...and the number of color pairs */
@@ -1122,7 +1127,7 @@ attr_legend(WINDOW *helpwin)
     ++row;
     mvwprintw(helpwin, row++, col,
 	      "Toggles:");
-    if (has_colors()) {
+    if (use_colors) {
 	mvwprintw(helpwin, row++, col,
 		  "  f/F/b/F toggle foreground/background background color");
 	mvwprintw(helpwin, row++, col,
@@ -1137,7 +1142,7 @@ attr_legend(WINDOW *helpwin)
 static void
 show_color_attr(int fg, int bg, int tx)
 {
-    if (has_colors()) {
+    if (use_colors) {
 	printw("  Colors (fg %d, bg %d", fg, bg);
 	if (tx >= 0)
 	    printw(", text %d", tx);
@@ -1150,7 +1155,7 @@ cycle_color_attr(int ch, short *fg, short *bg, short *tx)
 {
     bool error = FALSE;
 
-    if (has_colors()) {
+    if (use_colors) {
 	switch (ch) {
 	case 'f':
 	    *fg = (*fg + 1);
@@ -1399,7 +1404,7 @@ attr_test(void)
 	chtype normal = A_NORMAL | BLANK;
 	chtype extras = ac;
 
-	if (has_colors()) {
+	if (use_colors) {
 	    short pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
 	    if (pair != 0) {
 		pair = 1;
@@ -1675,7 +1680,7 @@ wide_attr_test(void)
 	short pair = 0;
 	short extras = 0;
 
-	if (has_colors()) {
+	if (use_colors) {
 	    pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
 	    if (pair != 0) {
 		pair = 1;
@@ -2427,7 +2432,7 @@ slk_test(void)
 
     c = CTRL('l');
 #if HAVE_SLK_COLOR
-    if (has_colors()) {
+    if (use_colors) {
 	call_slk_color(fg, bg);
     }
 #endif
@@ -2499,13 +2504,13 @@ slk_test(void)
 
 #if HAVE_SLK_COLOR
 	case 'F':
-	    if (has_colors()) {
+	    if (use_colors) {
 		fg = (fg + 1) % COLORS;
 		call_slk_color(fg, bg);
 	    }
 	    break;
 	case 'B':
-	    if (has_colors()) {
+	    if (use_colors) {
 		bg = (bg + 1) % COLORS;
 		call_slk_color(fg, bg);
 	    }
@@ -2537,7 +2542,7 @@ wide_slk_test(void)
     short bg = COLOR_WHITE;
 
     c = CTRL('l');
-    if (has_colors()) {
+    if (use_colors) {
 	call_slk_color(fg, bg);
     }
     do {
@@ -2627,13 +2632,13 @@ wide_slk_test(void)
 	    goto done;
 
 	case 'F':
-	    if (has_colors()) {
+	    if (use_colors) {
 		fg = (fg + 1) % COLORS;
 		call_slk_color(fg, bg);
 	    }
 	    break;
 	case 'B':
-	    if (has_colors()) {
+	    if (use_colors) {
 		bg = (bg + 1) % COLORS;
 		call_slk_color(fg, bg);
 	    }
@@ -3130,7 +3135,7 @@ static struct {
 /* *INDENT-ON* */
 
 static bool
-cycle_attr(int ch, unsigned *at_code, attr_t *attr)
+cycle_attr(int ch, unsigned *at_code, chtype *attr)
 {
     bool result = TRUE;
 
@@ -3159,7 +3164,7 @@ cycle_colors(int ch, int *fg, int *bg, short *pair)
 {
     bool result = FALSE;
 
-    if (has_colors()) {
+    if (use_colors) {
 	result = TRUE;
 	switch (ch) {
 	case 'F':
@@ -3254,7 +3259,7 @@ wide_acs_display(void)
 
 	mvprintw(LINES - 3, 0,
 		 "Select: a WACS, x box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, CTL/q=quit");
-	if (has_colors()) {
+	if (use_colors) {
 	    mvprintw(LINES - 2, 0,
 		     "v/V, f/F, b/B cycle through video attributes (%s) and color %d/%d.",
 		     attrs_to_cycle[at_code].name,
@@ -3286,7 +3291,7 @@ test_sgr_attributes(void)
 	chtype normal = ((pass == 0 ? A_NORMAL : A_REVERSE)) | BLANK;
 
 	/* Use non-default colors if possible to exercise bce a little */
-	if (has_colors()) {
+	if (use_colors) {
 	    init_pair(1, COLOR_WHITE, COLOR_BLUE);
 	    normal |= COLOR_PAIR(1);
 	}
@@ -3956,7 +3961,7 @@ mkpanel(short color, int rows, int cols, int tly, int tlx)
     if ((win = newwin(rows, cols, tly, tlx)) != 0) {
 	if ((pan = new_panel(win)) == 0) {
 	    delwin(win);
-	} else if (has_colors()) {
+	} else if (use_colors) {
 	    short fg = (color == COLOR_BLUE) ? COLOR_WHITE : COLOR_BLACK;
 	    short bg = color;
 
@@ -4708,7 +4713,7 @@ flushinp_test(WINDOW *win)
 	return;
 
 #ifdef A_COLOR
-    if (has_colors()) {
+    if (use_colors) {
 	init_pair(2, COLOR_CYAN, COLOR_BLUE);
 	wbkgd(subWin, COLOR_PAIR(2) | ' ');
     }
@@ -5580,7 +5585,7 @@ overlap_help(int state, int flavors[OVERLAP_FLAVORS])
 	    sprintf(msg, "refresh %s, then %s, then doupdate.", ths, tht);
 	    break;
 	case 1:
-	    if (has_colors()) {
+	    if (use_colors) {
 		flavors[row] %= 4;
 	    } else {
 		flavors[row] %= 2;
@@ -5589,7 +5594,7 @@ overlap_help(int state, int flavors[OVERLAP_FLAVORS])
 	    sprintf(msg, "fill window %s with letter %s.", ths, ths);
 	    break;
 	case 2:
-	    if (has_colors()) {
+	    if (use_colors) {
 		flavors[row] %= 4;
 	    } else {
 		flavors[row] %= 2;
@@ -5832,7 +5837,7 @@ do_single_test(const char c)
 #endif
 
     case 'c':
-	if (!has_colors())
+	if (!use_colors)
 	    Cannot("does not support color.");
 	else
 	    color_test();
@@ -5840,7 +5845,7 @@ do_single_test(const char c)
 
 #if USE_WIDEC_SUPPORT
     case 'C':
-	if (!has_colors())
+	if (!use_colors)
 	    Cannot("does not support color.");
 	else
 	    wide_color_test();
@@ -5848,7 +5853,7 @@ do_single_test(const char c)
 #endif
 
     case 'd':
-	if (!has_colors())
+	if (!use_colors)
 	    Cannot("does not support color.");
 	else if (!can_change_color())
 	    Cannot("has hardwired color values.");
@@ -5946,8 +5951,11 @@ usage(void)
 #if USE_SOFTKEYS
 	,"  -e fmt   specify format for soft-keys test (e)"
 #endif
+#if HAVE_RIPOFFLINE
 	,"  -f       rip-off footer line (can repeat)"
 	,"  -h       rip-off header line (can repeat)"
+#endif
+	,"  -m       do not use colors"
 	,"  -p file  rgb values to use in 'd' rather than ncurses's builtin"
 #if USE_LIBPANEL
 	,"  -s msec  specify nominal time for panel-demo (default: 1, to hold)"
@@ -6131,10 +6139,11 @@ main(int argc, char *argv[])
     bool default_colors = FALSE;
 #endif
     char *palette_file = 0;
+    bool monochrome = FALSE;
 
     setlocale(LC_ALL, "");
 
-    while ((c = getopt(argc, argv, "a:de:fhp:s:t:")) != EOF) {
+    while ((c = getopt(argc, argv, "a:de:fhmp:s:t:")) != EOF) {
 	switch (c) {
 #ifdef NCURSES_VERSION
 	case 'a':
@@ -6163,6 +6172,9 @@ main(int argc, char *argv[])
 	    ripoffline(1, rip_header);
 	    break;
 #endif /* HAVE_RIPOFFLINE */
+	case 'm':
+	    monochrome = TRUE;
+	    break;
 	case 'p':
 	    palette_file = optarg;
 	    break;
@@ -6211,7 +6223,9 @@ main(int argc, char *argv[])
     bkgdset(BLANK);
 
     /* tests, in general, will want these modes */
-    if (has_colors()) {
+    use_colors = monochrome ? FALSE : has_colors();
+
+    if (use_colors) {
 	start_color();
 #ifdef NCURSES_VERSION_PATCH
 	max_colors = COLORS;	/* was > 16 ? 16 : COLORS */
