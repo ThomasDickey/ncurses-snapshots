@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.59 2006/02/25 23:47:34 tom Exp $ */
+/* $Id: test.priv.h,v 1.60 2006/05/06 18:55:29 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -348,10 +348,12 @@ extern int optind;
 #if defined(__hpux) && !defined(NCURSES_VERSION)
 #define getbegx(w) __getbegx(w)
 #define getbegy(w) __getbegy(w)
-#define getmaxx(w) __getmaxx(w)
-#define getmaxy(w) __getmaxy(w)
 #define getcurx(w) __getcurx(w)
 #define getcury(w) __getcury(w)
+#define getmaxx(w) __getmaxx(w)
+#define getmaxy(w) __getmaxy(w)
+#define getparx(w) __getparx(w)
+#define getpary(w) __getpary(w)
 #endif
 
 /*

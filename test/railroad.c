@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.12 2005/12/31 19:38:14 tom Exp $
+ * $Id: railroad.c,v 1.13 2006/05/06 19:02:45 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -186,7 +186,7 @@ railroad(char **args)
 
     if (name == 0)
 	name = "dumb";
-    if (tgetent(buffer, name)) {
+    if (tgetent(buffer, name) >= 0) {
 
 	wipeit = tgetstr("ce", &ap);
 	height = tgetnum("li");

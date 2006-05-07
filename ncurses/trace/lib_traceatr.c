@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.53 2005/08/20 20:21:20 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.54 2006/05/06 21:20:36 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -69,7 +69,7 @@ color_of(int c)
 #endif /* !USE_TERMLIB */
 
 NCURSES_EXPORT(char *)
-_traceattr2(int bufnum, attr_t newmode)
+_traceattr2(int bufnum, chtype newmode)
 {
     char *buf = _nc_trace_buf(bufnum, BUFSIZ);
     char temp[80];
