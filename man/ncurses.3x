@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.77 2006/02/05 00:41:45 tom Exp $
+.\" $Id: ncurses.3x,v 1.79 2006/05/13 20:01:26 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -42,6 +42,8 @@ The \fBncurses\fR library routines give the user a terminal-independent method
 of updating character screens with reasonable optimization.  This
 implementation is ``new curses'' (ncurses) and is the approved replacement for
 4.4BSD classic curses, which has been discontinued.
+This describes \fBncurses\fR
+version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
 .PP
 The \fBncurses\fR routines emulate the \fBcurses\fR(3X) library of System V
 Release 4 UNIX, and the XPG4 curses standard (XSI curses) but the \fBncurses\fR
@@ -727,6 +729,19 @@ For example, to tell ncurses to not assume anything
 about the colors, set this to "-1,-1".
 To make it green-on-black, set it to "2,0".
 Any positive value from zero to the terminfo \fBmax_colors\fR value is allowed.
+.TP 5
+NCURSES_NO_HARD_TABS
+\fBNcurses\fP may use tabs as part of the cursor movement optimization.
+In some cases,
+your terminal driver may not handle these properly.
+Set this environment variable to disable the feature.
+You can also adjust your \fBstty\fP settings to avoid the problem.
+.TP 5
+NCURSES_NO_MAGIC_COOKIES
+Some terminals use a magic-cookie feature which requires special handling
+to make highlighting and other video attributes display properly. 
+You can suppress the highlighting entirely for these terminals by
+setting this environment variable.
 .TP 5
 NCURSES_NO_PADDING
 Most of the terminal descriptions in the terminfo database are written

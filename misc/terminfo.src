@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.279 $
-#	$Date: 2006/05/06 21:26:06 $
+#	$Revision: 1.278 $
+#	$Date: 2006/05/06 21:23:15 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3694,9 +3694,8 @@ xterm-pcolor|xterm with color used for highlights and status line,
 	bold=\E[1m\E[43m, rev=\E[7m\E[34m, smso=\E[7m\E[31m, 
 	smul=\E[4m\E[42m, use=xterm+sl, use=xterm-r6, 
 
-# HP ships this (HPUX 9 and 10), except for the pb#9600 which was merged in
-# from BSD termcap.  (hpterm:  added empty <acsc>, we have no idea what ACS
-# chars look like --esr)
+# HP ships this, except for the pb#9600 which was merged in from BSD termcap.
+# (hpterm: added empty <acsc>, we have no idea what ACS chars look like --esr)
 hpterm|X-hpterm|hp X11 terminal emulator, 
 	am, da, db, mir, xhp, 
 	cols#80, lh#2, lines#24, lm#0, lw#8, nlab#8, pb#9600, xmc#0, 
@@ -3718,7 +3717,6 @@ hpterm|X-hpterm|hp X11 terminal emulator,
 	sgr=\E&d%?%p7%t%{115}%c%;%p1%p3%|%p6%|%{2}%*%p2%{4}%*%+%p4%+%p5%{8}%*%+%{64}%+%c%?%p9%t%'\016'%c%e%'\017'%c%;, 
 	sgr0=\E&d@, smacs=^N, smir=\EQ, smkx=\E&s1A, smln=\E&jB, 
 	smso=\E&dJ, smul=\E&dD, tbc=\E3, vpa=\E&a%p1%dY, 
-# HPUX 11 provides a color version.
 hpterm-color|HP X11 terminal emulator with color, 
 	ccc, 
 	colors#64, pairs#8, 
