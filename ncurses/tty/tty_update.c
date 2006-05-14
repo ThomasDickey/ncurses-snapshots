@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.231 2006/04/22 20:15:02 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.232 2006/05/13 21:23:58 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -477,6 +477,8 @@ static int
 EmitRange(const NCURSES_CH_T * ntext, int num)
 {
     int i;
+
+    TR(TRACE_CHARPUT, ("EmitRange %d:%s", num, _nc_viscbuf(ntext, num)));
 
     if (erase_chars || repeat_char) {
 	while (num > 0) {
@@ -898,7 +900,7 @@ doupdate(void)
      * past the current position.
      */
 #if USE_XMC_SUPPORT
-    if (magic_cookie_glitch != 0)
+    if (magic_cookie_glitch > 0)
 #endif
 	UpdateAttrs(normal);
 
@@ -1082,14 +1084,8 @@ ClrBottom(int total)
 
 #if USE_XMC_SUPPORT
 #if USE_WIDEC_SUPPORT
-static NCURSES_INLINE bool
-check_xmc_transition(NCURSES_CH_T * a, NCURSES_CH_T * b)
-{
-    if (((a->attr ^ b->attr) & ~(a->attr) & SP->_xmc_triggers) != 0) {
-	return TRUE;
-    }
-    return FALSE;
-}
+#define check_xmc_transition(a, b) \
+    ((((a)->attr ^ (b)->attr) & ~((a)->attr) & SP->_xmc_triggers) != 0)
 #define xmc_turn_on(a,b) check_xmc_transition(&(a), &(b))
 #else
 #define xmc_turn_on(a,b) ((((a)^(b)) & ~(a) & SP->_xmc_triggers) != 0)

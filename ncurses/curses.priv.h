@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.297 2006/04/16 21:13:19 tom Exp $
+ * $Id: curses.priv.h,v 1.299 2006/05/13 21:51:20 tom Exp $
  *
  *	curses.priv.h
  *
@@ -866,9 +866,10 @@ extern NCURSES_EXPORT_VAR(unsigned)     _nc_tracing;
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
 extern NCURSES_EXPORT(const char *) _nc_viswbufn (const wchar_t *, int);
-extern NCURSES_EXPORT(const char *) _nc_viscbuf2 (int, const cchar_t *, int);
-extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #endif
+
+extern NCURSES_EXPORT(const char *) _nc_viscbuf2 (int, const NCURSES_CH_T *, int);
+extern NCURSES_EXPORT(const char *) _nc_viscbuf (const NCURSES_CH_T *, int);
 
 #else /* !TRACE */
 

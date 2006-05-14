@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.977 2006/05/06 20:55:56 tom Exp $
+-- $Id: NEWS,v 1.980 2006/05/13 21:56:33 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,19 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060513
+	+ improve debug-tracing for EmitRange().
+	+ change default for --with-develop to "yes".  Add NCURSES_NO_HARD_TABS
+	  and NCURSES_NO_MAGIC_COOKIE environment variables to allow runtime
+	  suppression of the related hard-tabs and xmc-glitch features.
+	+ add ncurses version number to top-level manpages, e.g., ncurses, tic,
+	  infocmp, terminfo as well as form, menu, panel.
+	+ update config.guess, config.sub
+	+ modify ncurses.c to work around a bug in NetBSD 3.0 curses
+	  (field_buffer returning null for a valid field).  The 'r' test
+	  appears to not work with that configuration since the new_fieldtype()
+	  function is broken in that implementation.
 
 20060506
 	+ add hpterm-color terminfo entry -TD

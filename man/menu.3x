@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.16 2006/02/25 21:40:44 tom Exp $
+.\" $Id: menu.3x,v 1.17 2006/05/13 15:34:28 tom Exp $
 .TH menu 3X ""
 .SH NAME
 \fBmenu\fR - curses extension for programming menus
@@ -175,13 +175,16 @@ The header file \fB<menu.h>\fR automatically includes the header files
 .PP
 In your library list, libmenu.a should be before libncurses.a; that is,
 you want to say `-lmenu -lncurses', not the other way around (which would
-give you a link error using GNU \fBld\fR(1) and many other linkers).
+usually give a link-error).
 .SH PORTABILITY
 These routines emulate the System V menu library.  They were not supported on
 Version 7 or BSD versions.
 .SH AUTHORS
 Juergen Pfeifer.  Manual pages and adaptation for ncurses by Eric
 S. Raymond.
+.SH SEE ALSO
+This describes \fBncurses\fR
+version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

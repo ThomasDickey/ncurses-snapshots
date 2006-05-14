@@ -25,7 +25,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames,v 0.35 2006/04/22 21:46:17 tom Exp $
+# $Id: man_db.renames,v 0.36 2006/05/13 23:47:25 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -117,6 +117,7 @@ infotocap.1m			infotocap.1
 keybound.3x			keybound.3ncurses
 keyok.3x			keyok.3ncurses
 key_defined.3x			key_defined.3ncurses
+legacy_coding.3x		legacy_coding.3ncurses
 menu.3x				menu.3menu
 menu_attributes.3x		attributes.3menu
 menu_cursor.3x			cursor.3menu

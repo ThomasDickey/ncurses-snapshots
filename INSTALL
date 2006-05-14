@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.101 2006/04/22 22:19:37 tom Exp $
+-- $Id: INSTALL,v 1.102 2006/05/13 16:31:26 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -603,10 +603,6 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Specify the default terminfo database directory.  This is normally
 	DATADIR/terminfo, e.g., /usr/share/terminfo.
 
-    --with-develop
-	Enable experimental/development options.  This does not count those
-	that change the interface, such as --enable-widec.
-
     --with-dmalloc
 	For testing, compile and link with Gray Watson's dmalloc library.
 
@@ -805,6 +801,10 @@ SUMMARY OF CONFIGURE OPTIONS:
     --without-cxx-binding
 	Suppress the configure script's check for C++, do not build the
 	C++ binding and related demo.
+
+    --without-develop
+	Disable development options.  This does not include those that change
+	the interface, such as --enable-widec.
 
     --without-dlsym
 	Do not use dlsym() to load GPM dynamically.

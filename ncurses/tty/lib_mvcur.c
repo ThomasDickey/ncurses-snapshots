@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.105 2006/01/11 23:58:53 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.106 2006/05/13 16:40:46 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -309,8 +309,13 @@ _nc_mvcur_init(void)
     SP->_home_cost = CostOf(cursor_home, 0);
     SP->_ll_cost = CostOf(cursor_to_ll, 0);
 #if USE_HARD_TABS
-    SP->_ht_cost = CostOf(tab, 0);
-    SP->_cbt_cost = CostOf(back_tab, 0);
+    if (getenv("NCURSES_NO_HARD_TABS") == 0) {
+	SP->_ht_cost = CostOf(tab, 0);
+	SP->_cbt_cost = CostOf(back_tab, 0);
+    } else {
+	SP->_ht_cost = INFINITY;
+	SP->_cbt_cost = INFINITY;
+    }
 #endif /* USE_HARD_TABS */
     SP->_cub1_cost = CostOf(cursor_left, 0);
     SP->_cuf1_cost = CostOf(cursor_right, 0);

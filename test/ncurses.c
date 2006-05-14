@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.276 2006/05/06 20:34:21 tom Exp $
+$Id: ncurses.c,v 1.277 2006/05/13 11:48:47 tom Exp $
 
 ***************************************************************************/
 
@@ -5132,10 +5132,11 @@ edit_secure(FIELD * me, int c)
 
     if (field_info(me, &rows, &cols, &frow, &fcol, &nrow, &nbuf) == E_OK
 	&& nbuf > 0) {
+	char *source = field_buffer(me, 1);
 	char temp[80];
 	long len;
 
-	strcpy(temp, field_buffer(me, 1));
+	strcpy(temp, source ? source : "");
 	len = (long) (char *) field_userptr(me);
 	if (c <= KEY_MAX) {
 	    if (isgraph(c) && (len + 1) < (int) sizeof(temp)) {
