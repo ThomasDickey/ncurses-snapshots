@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: rain.c,v 1.21 2006/04/01 19:08:03 tom Exp $
+ * $Id: rain.c,v 1.22 2006/05/20 15:34:27 tom Exp $
  */
 #include <test.priv.h>
 
@@ -64,9 +64,7 @@ main(
 
     setlocale(LC_ALL, "");
 
-    for (j = SIGHUP; j <= SIGTERM; j++)
-	if (signal(j, SIG_IGN) != SIG_IGN)
-	    signal(j, onsig);
+    CATCHALL(onsig);
 
     initscr();
     if (has_colors()) {

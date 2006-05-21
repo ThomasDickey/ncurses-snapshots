@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.36 2006/04/01 22:12:01 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.37 2006/05/20 17:46:02 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -374,7 +374,7 @@ main(int argc, char **argv)
 	    break;
 	case 'V':
 	    puts(curses_version());
-	    return EXIT_SUCCESS;
+	    ExitProgram(EXIT_SUCCESS);
 	default:
 	    usage();
 	    /* NOTREACHED */
@@ -404,7 +404,7 @@ main(int argc, char **argv)
     if (cmdline) {
 	if ((argc <= 0) && !is_reset && !is_init)
 	    usage();
-	return tput(argc, argv);
+	ExitProgram(tput(argc, argv));
     }
 
     while (fgets(buf, sizeof(buf), stdin) != 0) {
@@ -432,5 +432,5 @@ main(int argc, char **argv)
 	}
     }
 
-    return result;
+    ExitProgram(result);
 }

@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: firework.c,v 1.23 2006/04/22 22:41:22 tom Exp $
+ * $Id: firework.c,v 1.24 2006/05/20 15:36:08 tom Exp $
  */
 #include <test.priv.h>
 
@@ -142,13 +142,10 @@ main(
 	int argc GCC_UNUSED,
 	char *argv[]GCC_UNUSED)
 {
-    int j;
     int start, end, row, diff, flag = 0, direction;
     unsigned seed;
 
-    for (j = SIGHUP; j <= SIGTERM; j++)
-	if (signal(j, SIG_IGN) != SIG_IGN)
-	    signal(j, onsig);
+    CATCHALL(onsig);
 
     initscr();
     noecho();

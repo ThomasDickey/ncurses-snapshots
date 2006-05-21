@@ -50,7 +50,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.63 2006/04/01 19:00:55 tom Exp $
+ * $Id: view.c,v 1.64 2006/05/20 15:37:03 tom Exp $
  */
 
 #include <test.priv.h>
@@ -235,9 +235,7 @@ main(int argc, char *argv[])
 	    try_color = TRUE;
 	    break;
 	case 'i':
-	    signal(SIGINT, SIG_IGN);
-	    signal(SIGQUIT, SIG_IGN);
-	    signal(SIGTERM, SIG_IGN);
+	    CATCHALL(SIG_IGN);
 	    break;
 	case 'n':
 	    if ((MAXLINES = atoi(optarg)) < 1)

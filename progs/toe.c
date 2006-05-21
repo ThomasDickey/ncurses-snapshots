@@ -42,7 +42,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.34 2006/01/21 16:59:36 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.35 2006/05/20 17:03:10 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -164,14 +164,7 @@ typelist(int eargc, char *eargv[],
 		    /* apply the selected hook function */
 		    (*hook) (cn, &lterm);
 		}
-		if (lterm.term_names) {
-		    free(lterm.term_names);
-		    lterm.term_names = 0;
-		}
-		if (lterm.str_table) {
-		    free(lterm.str_table);
-		    lterm.str_table = 0;
-		}
+		_nc_free_termtype(&lterm);
 	    }
 	    closedir(entrydir);
 	}

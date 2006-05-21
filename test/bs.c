@@ -34,7 +34,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.43 2006/04/22 22:41:22 tom Exp $
+ * $Id: bs.c,v 1.44 2006/05/20 15:38:52 tom Exp $
  */
 
 #include <test.priv.h>
@@ -218,11 +218,7 @@ intro(void)
 
     srand((unsigned) (time(0L) + getpid()));	/* Kick the random number generator */
 
-    (void) signal(SIGINT, uninitgame);
-    (void) signal(SIGINT, uninitgame);
-    (void) signal(SIGIOT, uninitgame);	/* for assert(3) */
-    if (signal(SIGQUIT, SIG_IGN) != SIG_IGN)
-	(void) signal(SIGQUIT, uninitgame);
+    CATCHALL(uninitgame);
 
     if ((tmpname = getlogin()) != 0) {
 	(void) strcpy(name, tmpname);

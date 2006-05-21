@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.12 2005/12/31 17:02:15 tom Exp $
+ * $Id: dots.c,v 1.13 2006/05/20 16:01:33 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -95,13 +95,11 @@ main(
 	int argc GCC_UNUSED,
 	char *argv[]GCC_UNUSED)
 {
-    int x, y, z, j, p;
+    int x, y, z, p;
     float r;
     float c;
 
-    for (j = SIGHUP; j <= SIGTERM; j++)
-	if (signal(j, SIG_IGN) != SIG_IGN)
-	    signal(j, onsig);
+    CATCHALL(onsig);
 
     srand((unsigned) time(0));
     setupterm((char *) 0, 1, (int *) 0);

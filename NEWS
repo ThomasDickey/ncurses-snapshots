@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.980 2006/05/13 21:56:33 tom Exp $
+-- $Id: NEWS,v 1.982 2006/05/20 18:41:17 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,20 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060520
+	+ if msgr is false, reset video attributes when doing an automargin
+	  wrap to the next line.  This makes the ncurses 'k' test work properly
+	  for hpterm.
+	+ correct caching of keyname(), which was using only half of its table.
+	+ minor fixes to memory-leak checking.
+	+ make SCREEN._acs_map and SCREEN._screen_acs_map pointers rather than
+	  arrays, making ACS_LEN less visible to applications (suggested by
+	  Stanislav Ievlev).
+	+ move chunk in SCREEN ifdef'd for USE_WIDEC_SUPPORT to the end, so
+	  _screen_acs_map will have the same offset in both ncurses/ncursesw,
+	  making the corresponding tinfo/tinfow libraries binary-compatible
+	  (cf: 20041016, report by Stanislav Ievlev).
 
 20060513
 	+ improve debug-tracing for EmitRange().

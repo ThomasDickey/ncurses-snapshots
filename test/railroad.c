@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2000-2002,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 2000-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.13 2006/05/06 19:02:45 tom Exp $
+ * $Id: railroad.c,v 1.14 2006/05/20 16:02:04 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -182,7 +182,6 @@ railroad(char **args)
     NCURSES_CONST char *name = getenv("TERM");
     char buffer[1024];
     char area[1024], *ap = area;
-    int j;
 
     if (name == 0)
 	name = "dumb";
@@ -216,9 +215,7 @@ railroad(char **args)
 
 	ShowCursor(0);
 
-	for (j = SIGHUP; j <= SIGTERM; j++)
-	    if (signal(j, SIG_IGN) != SIG_IGN)
-		signal(j, onsig);
+	CATCHALL(onsig);
 
 	while (*args) {
 	    ShowSign(*args++);

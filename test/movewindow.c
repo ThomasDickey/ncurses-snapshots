@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.16 2006/05/06 18:52:21 tom Exp $
+ * $Id: movewindow.c,v 1.17 2006/05/20 15:27:38 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -626,5 +626,5 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	wmove(current_win, 0, 0);
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
