@@ -40,7 +40,7 @@
  * results, use the ncurses(3) library.  On non-Intel machines, SVr4 curses is
  * just as good.
  *
- * $Id: blue.c,v 1.28 2006/04/22 22:41:22 tom Exp $
+ * $Id: blue.c,v 1.29 2006/05/20 15:38:18 tom Exp $
  */
 
 #include <test.priv.h>
@@ -402,7 +402,7 @@ game_finished(int deal)
 int
 main(int argc, char *argv[])
 {
-    (void) signal(SIGINT, die);
+    CATCHALL(die);
 
     setlocale(LC_ALL, "");
 

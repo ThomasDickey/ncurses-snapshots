@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.60 2006/05/06 18:55:29 tom Exp $ */
+/* $Id: test.priv.h,v 1.61 2006/05/20 15:40:58 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -450,5 +450,12 @@ extern int optind;
 #define VALID_STRING(s)  ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
 #define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+
+#define CATCHALL(handler) { \
+		int nsig; \
+		for (nsig = SIGHUP; nsig < SIGTERM; ++nsig) \
+		    if (nsig != SIGKILL) \
+			signal(nsig, handler); \
+	    }
 
 #endif /* __TEST_PRIV_H */

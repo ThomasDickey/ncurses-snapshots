@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.90 2006/05/13 19:51:14 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.91 2006/05/20 14:58:02 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -126,6 +126,9 @@ delscreen(SCREEN *sp)
     FreeIfNeeded(sp->oldhash);
     FreeIfNeeded(sp->newhash);
     FreeIfNeeded(sp->hashtab);
+
+    FreeIfNeeded(sp->_acs_map);
+    FreeIfNeeded(sp->_screen_acs_map);
 
     del_curterm(sp->_term);
 
@@ -227,8 +230,11 @@ _nc_setupscreen(int slines,
        slines, scolumns, output, filtered, slk_format));
 
     assert(SP == 0);		/* has been reset in newterm() ! */
-    if (!_nc_alloc_screen())
+    if (!_nc_alloc_screen()
+	|| ((SP->_acs_map = typeCalloc(chtype, ACS_LEN)) == 0)
+	|| ((SP->_screen_acs_map = typeCalloc(bool, ACS_LEN)) == 0)) {
 	returnCode(ERR);
+    }
 
     T(("created SP %p", SP));
     SP->_next_screen = _nc_screen_chain;

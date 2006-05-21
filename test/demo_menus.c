@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.17 2006/04/21 16:35:24 tom Exp $
+ * $Id: demo_menus.c,v 1.18 2006/05/20 15:18:41 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -803,7 +803,7 @@ main(int argc, char *argv[])
     destroy_menus();
 
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 #else
 int

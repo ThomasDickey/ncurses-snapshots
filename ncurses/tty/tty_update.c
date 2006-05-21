@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.232 2006/05/13 21:23:58 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.234 2006/05/20 20:00:47 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -383,31 +383,41 @@ PutCharLR(const ARG_CH_T ch)
     }
 }
 
+/*
+ * Wrap the cursor position, i.e., advance to the beginning of the next line.
+ */
 static void
 wrap_cursor(void)
 {
     if (eat_newline_glitch) {
 	/*
-	 * xenl can manifest two different ways.  The vt100
-	 * way is that, when you'd expect the cursor to wrap,
-	 * it stays hung at the right margin (on top of the
-	 * character just emitted) and doesn't wrap until the
-	 * *next* graphic char is emitted.  The c100 way is
-	 * to ignore LF received just after an am wrap.
+	 * xenl can manifest two different ways.  The vt100 way is that, when
+	 * you'd expect the cursor to wrap, it stays hung at the right margin
+	 * (on top of the character just emitted) and doesn't wrap until the
+	 * *next* graphic char is emitted.  The c100 way is to ignore LF
+	 * received just after an am wrap.
 	 *
-	 * An aggressive way to handle this would be to
-	 * emit CR/LF after the char and then assume the wrap
-	 * is done, you're on the first position of the next
-	 * line, and the terminal out of its weird state.
-	 * Here it's safe to just tell the code that the
-	 * cursor is in hyperspace and let the next mvcur()
-	 * call straighten things out.
+	 * An aggressive way to handle this would be to emit CR/LF after the
+	 * char and then assume the wrap is done, you're on the first position
+	 * of the next line, and the terminal out of its weird state.  Here
+	 * it's safe to just tell the code that the cursor is in hyperspace and
+	 * let the next mvcur() call straighten things out.
 	 */
 	SP->_curscol = -1;
 	SP->_cursrow = -1;
     } else if (auto_right_margin) {
 	SP->_curscol = 0;
 	SP->_cursrow++;
+	/*
+	 * We've actually moved - but may have to work around problems with
+	 * video attributes not working.
+	 */
+	if (!move_standout_mode && AttrOf(SCREEN_ATTRS(SP))) {
+	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before wrapping",
+			       (unsigned long) AttrOf(SCREEN_ATTRS(SP)),
+			       _traceattr(AttrOf(SCREEN_ATTRS(SP)))));
+	    (void) VIDATTR(A_NORMAL, 0);
+	}
     } else {
 	SP->_curscol--;
     }

@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.21 2006/03/11 18:03:54 tom Exp $
+ * $Id: xmas.c,v 1.22 2006/05/20 15:35:47 tom Exp $
  */
 #include <test.priv.h>
 
@@ -194,12 +194,9 @@ main(int argc GCC_UNUSED, char **argv GCC_UNUSED)
     noecho();
     nonl();
     refresh();
-    signal(SIGINT, done);
-    signal(SIGTERM, done);
-#if !defined	DOS && !defined OS2
-    signal(SIGHUP, done);
-    signal(SIGQUIT, done);
-#endif
+
+    CATCHALL(done);
+
     if (has_colors()) {
 	start_color();
 #if HAVE_USE_DEFAULT_COLORS
@@ -1145,12 +1142,8 @@ reindeer(void)
 static RETSIGTYPE
 done(int sig GCC_UNUSED)
 {
-    signal(SIGINT, done);
-    signal(SIGTERM, done);
-#if !defined	DOS && !defined OS2
-    signal(SIGHUP, done);
-    signal(SIGQUIT, done);
-#endif
+    CATCHALL(done);
+
     move(LINES - 1, 0);
     refresh();
     endwin();

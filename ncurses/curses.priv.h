@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.299 2006/05/13 21:51:20 tom Exp $
+ * $Id: curses.priv.h,v 1.301 2006/05/20 17:13:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -477,7 +477,9 @@ struct screen {
 	chtype          _ok_attributes; /* valid attributes for terminal     */
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 	chtype          _xmc_triggers;  /* attributes to process if xmc      */
-	chtype          _acs_map[ACS_LEN]; /* the real alternate-charset map */
+	chtype *        _acs_map;	/* the real alternate-charset map    */
+	bool *		_screen_acs_map;
+
 
 	/* used in lib_vidattr.c */
 	bool            _use_rmso;	/* true if we may use 'rmso'         */
@@ -550,13 +552,12 @@ struct screen {
 
 	int		_legacy_coding;	/* see use_legacy_coding() */
 
+#if USE_WIDEC_SUPPORT
 	/* recent versions of 'screen' have partially-working support for
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
-#if USE_WIDEC_SUPPORT
 	bool		_screen_acs_fix;
 #endif
-	bool		_screen_acs_map[ACS_LEN];
 };
 
 extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
@@ -1147,6 +1148,7 @@ extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *);
 extern NCURSES_EXPORT(void) _nc_alloc_entry_leaks(void);
 extern NCURSES_EXPORT(void) _nc_captoinfo_leaks(void);
 extern NCURSES_EXPORT(void) _nc_comp_scan_leaks(void);
+extern NCURSES_EXPORT(void) _nc_keyname_leaks(void);
 #endif
 
 #ifndef USE_TERMLIB

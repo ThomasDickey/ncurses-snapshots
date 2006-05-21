@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
+ *  Author: Thomas E. Dickey                    1996,1997                   *
  ****************************************************************************/
 
 #include <curses.priv.h>
@@ -40,7 +40,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.33 2005/06/04 22:34:01 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.34 2006/05/20 17:41:59 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -94,6 +94,7 @@ _nc_freeall(void)
     _nc_alloc_entry_leaks();
     _nc_captoinfo_leaks();
     _nc_comp_scan_leaks();
+    _nc_keyname_leaks();
 #endif
 
     if ((s = _nc_home_terminfo()) != 0)

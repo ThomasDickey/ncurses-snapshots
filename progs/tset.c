@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.60 2005/09/25 00:43:52 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.61 2006/05/20 17:46:48 tom Exp $")
 
 extern char **environ;
 
@@ -1167,7 +1167,7 @@ main(int argc, char **argv)
 	    break;
 	case 'V':		/* print curses-version */
 	    puts(curses_version());
-	    return EXIT_SUCCESS;
+	    ExitProgram(EXIT_SUCCESS);
 	case 'w':		/* set window-size */
 	    opt_w = TRUE;
 	    break;
@@ -1273,5 +1273,5 @@ main(int argc, char **argv)
 	(void) printf(p, ttype);
     }
 
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }

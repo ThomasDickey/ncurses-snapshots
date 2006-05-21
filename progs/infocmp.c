@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.82 2006/04/15 22:45:44 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.83 2006/05/20 16:58:11 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1512,11 +1512,10 @@ main(int argc, char *argv[])
 		dump_termtype(&entries[0].tterm);
 	    if (initdump & 2)
 		dump_initializers(&entries[0].tterm);
-	    ExitProgram(EXIT_SUCCESS);
 	}
 
 	/* analyze the init strings */
-	if (init_analyze) {
+	else if (init_analyze) {
 #undef CUR
 #define CUR	entries[0].tterm.
 	    analyze_string("is1", init_1string, &entries[0].tterm);
@@ -1528,68 +1527,68 @@ main(int argc, char *argv[])
 	    analyze_string("smcup", enter_ca_mode, &entries[0].tterm);
 	    analyze_string("rmcup", exit_ca_mode, &entries[0].tterm);
 #undef CUR
-	    ExitProgram(EXIT_SUCCESS);
-	}
+	} else {
 
-	/*
-	 * Here's where the real work gets done
-	 */
-	switch (compare) {
-	case C_DEFAULT:
-	    if (itrace)
-		(void) fprintf(stderr,
-			       "infocmp: about to dump %s\n",
-			       tname[0]);
-	    (void) printf("#\tReconstructed via infocmp from file: %s\n",
-			  tfile[0]);
-	    len = dump_entry(&entries[0].tterm,
-			     suppress_untranslatable,
-			     limited,
-			     numbers,
-			     NULL);
-	    putchar('\n');
-	    if (itrace)
-		(void) fprintf(stderr, "infocmp: length %d\n", len);
-	    break;
+	    /*
+	     * Here's where the real work gets done
+	     */
+	    switch (compare) {
+	    case C_DEFAULT:
+		if (itrace)
+		    (void) fprintf(stderr,
+				   "infocmp: about to dump %s\n",
+				   tname[0]);
+		(void) printf("#\tReconstructed via infocmp from file: %s\n",
+			      tfile[0]);
+		len = dump_entry(&entries[0].tterm,
+				 suppress_untranslatable,
+				 limited,
+				 numbers,
+				 NULL);
+		putchar('\n');
+		if (itrace)
+		    (void) fprintf(stderr, "infocmp: length %d\n", len);
+		break;
 
-	case C_DIFFERENCE:
-	    if (itrace)
-		(void) fprintf(stderr, "infocmp: dumping differences\n");
-	    (void) printf("comparing %s to %s.\n", tname[0], tname[1]);
-	    compare_entry(compare_predicate, &entries->tterm, quiet);
-	    break;
+	    case C_DIFFERENCE:
+		if (itrace)
+		    (void) fprintf(stderr, "infocmp: dumping differences\n");
+		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
+		compare_entry(compare_predicate, &entries->tterm, quiet);
+		break;
 
-	case C_COMMON:
-	    if (itrace)
-		(void) fprintf(stderr,
-			       "infocmp: dumping common capabilities\n");
-	    (void) printf("comparing %s to %s.\n", tname[0], tname[1]);
-	    compare_entry(compare_predicate, &entries->tterm, quiet);
-	    break;
+	    case C_COMMON:
+		if (itrace)
+		    (void) fprintf(stderr,
+				   "infocmp: dumping common capabilities\n");
+		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
+		compare_entry(compare_predicate, &entries->tterm, quiet);
+		break;
 
-	case C_NAND:
-	    if (itrace)
-		(void) fprintf(stderr,
-			       "infocmp: dumping differences\n");
-	    (void) printf("comparing %s to %s.\n", tname[0], tname[1]);
-	    compare_entry(compare_predicate, &entries->tterm, quiet);
-	    break;
+	    case C_NAND:
+		if (itrace)
+		    (void) fprintf(stderr,
+				   "infocmp: dumping differences\n");
+		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
+		compare_entry(compare_predicate, &entries->tterm, quiet);
+		break;
 
-	case C_USEALL:
-	    if (itrace)
-		(void) fprintf(stderr, "infocmp: dumping use entry\n");
-	    len = dump_entry(&entries[0].tterm,
-			     suppress_untranslatable,
-			     limited,
-			     numbers,
-			     use_predicate);
-	    for (i = 1; i < termcount; i++)
-		len += dump_uses(tname[i], !(outform == F_TERMCAP
-					     || outform == F_TCONVERR));
-	    putchar('\n');
-	    if (itrace)
-		(void) fprintf(stderr, "infocmp: length %d\n", len);
-	    break;
+	    case C_USEALL:
+		if (itrace)
+		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
+		len = dump_entry(&entries[0].tterm,
+				 suppress_untranslatable,
+				 limited,
+				 numbers,
+				 use_predicate);
+		for (i = 1; i < termcount; i++)
+		    len += dump_uses(tname[i], !(outform == F_TERMCAP
+						 || outform == F_TCONVERR));
+		putchar('\n');
+		if (itrace)
+		    (void) fprintf(stderr, "infocmp: length %d\n", len);
+		break;
+	    }
 	}
     } else if (compare == C_USEALL)
 	(void) fprintf(stderr, "Sorry, -u doesn't work with -F\n");
@@ -1601,6 +1600,7 @@ main(int argc, char *argv[])
     else
 	file_comparison(argc - optind, argv + optind);
 
+    free(tfile);
     ExitProgram(EXIT_SUCCESS);
 }
 

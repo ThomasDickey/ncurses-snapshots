@@ -33,7 +33,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.27 2006/04/22 22:41:22 tom Exp $
+ * $Id: gdc.c,v 1.28 2006/05/20 15:37:44 tom Exp $
  */
 
 #include <test.priv.h>
@@ -169,8 +169,7 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    signal(SIGINT, sighndl);
-    signal(SIGTERM, sighndl);
+    CATCHALL(sighndl);
 
     while ((k = getopt(argc, argv, "sn")) != EOF) {
 	switch (k) {
