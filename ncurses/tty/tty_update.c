@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.234 2006/05/20 20:00:47 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.235 2006/05/27 19:09:13 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -915,7 +915,7 @@ doupdate(void)
 	UpdateAttrs(normal);
 
     _nc_flush();
-    curscr->_attrs = newscr->_attrs;
+    WINDOW_ATTRS(curscr) = WINDOW_ATTRS(newscr);
 
 #if USE_TRACE_TIMES
     (void) times(&after);

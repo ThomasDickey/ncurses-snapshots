@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.13 2005/01/08 21:46:31 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.14 2006/05/27 19:21:19 tom Exp $")
 
 /*
  * Write the soft labels to the soft-key window.
@@ -68,7 +68,7 @@ slk_intern_refresh(SLK * slk)
 		    /* if we simulate SLK's, it's looking much more
 		       natural to use the current ATTRIBUTE also
 		       for the label window */
-		    wattrset(slk->win, stdscr->_attrs);
+		    wattrset(slk->win, WINDOW_ATTRS(stdscr));
 		}
 	    }
 	    slk->ent[i].dirty = FALSE;

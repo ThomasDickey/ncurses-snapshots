@@ -2,7 +2,7 @@
  * This file is part of ncurses, designed to be appended after curses.h.in
  * (see that file for the relevant copyright).
  */
-/* $Id: curses.tail,v 1.13 2005/11/26 15:58:54 tom Exp $ */
+/* $Id: curses.tail,v 1.14 2006/05/27 16:28:29 tom Exp $ */
 
 /* mouse interface */
 
@@ -161,12 +161,16 @@ extern NCURSES_EXPORT(const char *) _nc_visbuf (const char *);
 
 #ifdef __cplusplus
 
+#ifndef NCURSES_NOMACROS
+
 /* these names conflict with STL */
 #undef box
 #undef clear
 #undef erase
 #undef move
 #undef refresh
+
+#endif /* NCURSES_NOMACROS */
 
 }
 #endif
