@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.982 2006/05/20 18:41:17 tom Exp $
+-- $Id: NEWS,v 1.983 2006/05/27 22:00:51 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,23 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060527
+	+ add a configure option --enable-wgetch-events to enable
+	  NCURSES_WGETCH_EVENTS, and correct the associated loop-logic in
+	  lib_twait.c (report by Bernd Jendrissek).
+	+ remove include/nomacros.h from build, since the ifdef for
+	  NCURSES_NOMACROS makes that obsolete.
+	+ add entrypoints for some functions which were only provided as macros
+	  to make NCURSES_NOMACROS ifdef work properly:  getcurx(), getcury(),
+	  getbegx(), getbegy(), getmaxx(), getmaxy(), getparx() and getpary(),
+	  wgetbkgrnd().
+	+ provide ifdef for NCURSES_NOMACROS which suppresses most macro
+	  definitions from curses.h, i.e., where a macro is defined to override
+	  a function to improve performance.  Allowing a developer to suppress
+	  these definitions can simplify some application (discussion with
+	  Stanislav Ievlev).
+	+ improve description of memu/meml in terminfo manpage.
 
 20060520
 	+ if msgr is false, reset video attributes when doing an automargin

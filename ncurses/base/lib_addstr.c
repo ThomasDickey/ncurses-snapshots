@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.45 2006/03/11 21:50:15 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.46 2006/05/27 19:22:19 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -55,7 +55,8 @@ waddnstr(WINDOW *win, const char *astr, int n)
     T((T_CALLED("waddnstr(%p,%s,%d)"), win, _nc_visbufn(astr, n), n));
 
     if (win && (str != 0)) {
-	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
+	TR(TRACE_VIRTPUT | TRACE_ATTRS,
+	   ("... current %s", _traceattr(WINDOW_ATTRS(win))));
 	code = OK;
 	if (n < 0)
 	    n = (int) strlen(astr);
@@ -216,7 +217,8 @@ waddnwstr(WINDOW *win, const wchar_t *str, int n)
     T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbufn(str, n), n));
 
     if (win && (str != 0)) {
-	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
+	TR(TRACE_VIRTPUT | TRACE_ATTRS,
+	   ("... current %s", _traceattr(WINDOW_ATTRS(win))));
 	code = OK;
 	if (n < 0)
 	    n = (int) wcslen(str);

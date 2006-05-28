@@ -1,6 +1,6 @@
-# $Id: ncurses_defs,v 1.28 2005/12/31 21:14:27 tom Exp $
+# $Id: ncurses_defs,v 1.29 2006/05/27 20:00:39 tom Exp $
 ##############################################################################
-# Copyright (c) 2000-2004,2005 Free Software Foundation, Inc.                #
+# Copyright (c) 2000-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -162,7 +162,6 @@ MIXEDCASE_FILENAMES
 NCURSES_EXPANDED
 NCURSES_EXT_COLORS
 NCURSES_EXT_FUNCS
-NCURSES_NOMACROS
 NCURSES_NO_PADDING
 NCURSES_PATHSEP	':'
 NDEBUG

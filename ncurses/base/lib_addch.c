@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.101 2006/03/12 17:07:08 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.102 2006/05/27 19:07:00 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -57,7 +57,7 @@ static NCURSES_INLINE NCURSES_CH_T
 render_char(WINDOW *win, NCURSES_CH_T ch)
 /* compute a rendition of the given char correct for the current context */
 {
-    attr_t a = win->_attrs;
+    attr_t a = WINDOW_ATTRS(win);
     int pair = GetPair(ch);
 
     if (ISBLANK(ch)
@@ -91,7 +91,7 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
        ("render_char bkg %s (%d), attrs %s (%d) -> ch %s (%d)",
 	_tracech_t2(1, CHREF(win->_nc_bkgd)),
 	GetPair(win->_nc_bkgd),
-	_traceattr(win->_attrs),
+	_traceattr(WINDOW_ATTRS(win)),
 	GET_WINDOW_PAIR(win),
 	_tracech_t2(3, CHREF(ch)),
 	GetPair(ch)));

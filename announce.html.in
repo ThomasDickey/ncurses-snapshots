@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.58 2006/04/22 22:29:12 tom Exp $
+  $Id: announce.html.in,v 1.59 2006/05/27 20:32:42 tom Exp $
   ****************************************************************************
   * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
   *                                                                          *
@@ -365,14 +365,15 @@ The ncurses package also has many useful extensions over SVr4:
 <UL>
 <LI>The API is 8-bit clean and base-level conformant with the X/OPEN curses
 specification, XSI curses (that is, it implements all BASE level features,
-but not all EXTENDED features).  Most EXTENDED-level features not directly
-concerned with wide-character support are implemented, including many
-function calls not supported under SVr4 curses (but portability of all
+and most EXTENDED features).
+It includes many function calls not supported under SVr4 curses
+(but portability of all
 calls is documented so you can use the SVr4 subset only).
 <LI>Unlike SVr3 curses, ncurses can write to the rightmost-bottommost corner
 of the screen if your terminal has an insert-character capability.
 <LI>Ada95 and C++ bindings.
-<LI>Support for mouse event reporting with X Window xterm and OS/2 console windows.
+<LI>Support for mouse event reporting with X Window xterm
+and FreeBSD and OS/2 console windows.
 <LI>Extended mouse support via Alessandro Rubini's gpm package.
 <LI>The function <CODE>wresize()</CODE> allows you to resize windows, preserving
 their data.

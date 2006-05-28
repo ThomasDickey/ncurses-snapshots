@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.61 2006/05/20 15:40:58 tom Exp $ */
+/* $Id: test.priv.h,v 1.62 2006/05/27 20:01:15 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -191,10 +191,6 @@
 #define NCURSES_EXT_FUNCS 0
 #endif
 
-#ifndef NCURSES_NOMACROS
-#define NCURSES_NOMACROS 0
-#endif
-
 #ifndef NEED_PTEM_H
 #define NEED_PTEM_H 0
 #endif
@@ -241,10 +237,6 @@
 
 #ifdef NCURSES_VERSION
 #define HAVE_COLOR_SET 1
-#endif
-
-#if NCURSES_NOMACROS
-#include <nomacros.h>
 #endif
 
 #if HAVE_GETOPT_H

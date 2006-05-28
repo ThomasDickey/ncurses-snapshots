@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.36 2005/04/09 15:23:04 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.37 2006/05/27 19:21:19 tom Exp $")
 
 static WINDOW *
 remove_window_from_screen(WINDOW *win)
@@ -173,7 +173,7 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
 
     win->_pary = begy;
     win->_parx = begx;
-    win->_attrs = orig->_attrs;
+    WINDOW_ATTRS(win) = WINDOW_ATTRS(orig);
     win->_nc_bkgd = orig->_nc_bkgd;
 
     for (i = 0; i < num_lines; i++)
@@ -235,7 +235,7 @@ _nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
     win->_yoffset = SP->_topstolen;
 
     win->_flags = flags;
-    win->_attrs = A_NORMAL;
+    WINDOW_ATTRS(win) = A_NORMAL;
     SetChar(win->_nc_bkgd, BLANK_TEXT, BLANK_ATTR);
 
     win->_clear = is_pad ? FALSE : (num_lines == screen_lines

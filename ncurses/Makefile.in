@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.96 2005/05/07 18:57:05 tom Exp $
+# $Id: Makefile.in,v 1.97 2006/05/27 20:01:51 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey 1996-2002
+# Author: Thomas E. Dickey 1996-on
 #
 # Makefile for ncurses source code.
 #
@@ -141,7 +141,6 @@ FALLBACK_LIST	= @FALLBACK_LIST@
 TERMINFO_CAPS	= $(top_srcdir)/include/@TERMINFO_CAPS@
 
 AUTO_SRC = \
-	../include/nomacros.h \
 	codes.c \
 	comp_captab.c \
 	expanded.c \
@@ -188,10 +187,6 @@ fallback.c : $(tinfo)/MKfallback.sh
 
 lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
 	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h >$@
-
-../include/nomacros.h : $(base)/MKlib_gen.sh ../include/curses.h
-	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h | \
-		fgrep undef >$@
 
 init_keytry.h: make_keys$(BUILD_EXEEXT) keys.list
 	./make_keys$(BUILD_EXEEXT) keys.list > $@

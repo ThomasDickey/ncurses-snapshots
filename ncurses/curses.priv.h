@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.301 2006/05/20 17:13:54 tom Exp $
+ * $Id: curses.priv.h,v 1.303 2006/05/27 20:00:59 tom Exp $
  *
  *	curses.priv.h
  *
@@ -270,12 +270,14 @@ color_t;
 				SetAttr(value, AttrOf(value) | (A_COLOR & COLOR_PAIR(p)))
 #define GetPair(value)		PAIR_NUMBER(AttrOf(value))
 #define unColor(n)		(AttrOf(n) & ALL_BUT_COLOR)
-#define GET_WINDOW_PAIR(w)	PAIR_NUMBER((w)->_attrs)
-#define SET_WINDOW_PAIR(w,p)	(w)->_attrs &= ALL_BUT_COLOR, \
-				(w)->_attrs |= (A_COLOR & COLOR_PAIR(p))
+#define GET_WINDOW_PAIR(w)	PAIR_NUMBER(WINDOW_ATTRS(w))
+#define SET_WINDOW_PAIR(w,p)	WINDOW_ATTRS(w) &= ALL_BUT_COLOR, \
+				WINDOW_ATTRS(w) |= (A_COLOR & COLOR_PAIR(p))
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
 #define VIDATTR(attr, pair)	vidattr(attr)
 #endif
+
+#define WINDOW_ATTRS(w)		((w)->_attrs)
 
 #define SCREEN_ATTRS(s)		(*((s)->_current_attr))
 #define GET_SCREEN_PAIR(s)	GetPair(SCREEN_ATTRS(s))
@@ -561,10 +563,6 @@ struct screen {
 };
 
 extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
-
-#if NCURSES_NOMACROS
-#include <nomacros.h>
-#endif
 
 	WINDOWLIST {
 	WINDOW	win;	/* first, so WINDOW_EXT() works */

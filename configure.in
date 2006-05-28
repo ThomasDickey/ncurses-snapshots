@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.361 2006/05/13 16:32:10 tom Exp $
+dnl $Id: configure.in,v 1.362 2006/05/27 20:41:28 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.361 $)
+AC_REVISION($Revision: 1.362 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -903,6 +903,14 @@ AC_ARG_ENABLE(scroll-hints,
 AC_MSG_RESULT($with_scroll_hints)
 test "$with_scroll_hints" = yes && AC_DEFINE(USE_SCROLL_HINTS)
 fi
+
+AC_MSG_CHECKING(if you want experimental wgetch-events code)
+AC_ARG_ENABLE(wgetch-events,
+	[  --enable-wgetch-events  compile with experimental wgetch-events code],
+	[with_wgetch_events=$enableval],
+	[with_wgetch_events=no])
+AC_MSG_RESULT($with_wgetch_events)
+test "$with_wgetch_events" = yes && AC_DEFINE(NCURSES_WGETCH_EVENTS)
 
 ###############################################################################
 CF_HELP_MESSAGE(Testing/development Options:)
