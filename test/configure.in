@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.56 2006/02/11 17:02:31 tom Exp $
+dnl $Id: configure.in,v 1.57 2006/06/03 16:25:20 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -49,6 +49,7 @@ CF_CHECK_CACHE
 AC_PROG_MAKE_SET
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_AWK
 
 dnl Things that we don't need (or must override) if we're not building ncurses
 CC_G_OPT="-g"				AC_SUBST(CC_G_OPT)
@@ -234,6 +235,7 @@ LIBS=
 dnl ---------------------------------------------------------------------------
 
 AC_OUTPUT(Makefile,[
+CF_PRG_RULES([$srcdir/mk-test.awk ECHO_LINK="$ECHO_LINK"], .)
 	cat >>Makefile <<TEST_EOF
 
 # These rules are generated so we do not rely on suffix rules, which do not
@@ -251,4 +253,6 @@ do
 	@echo compiling $N; \$(CC) -c \$(CFLAGS_DEFAULT) $N.c
 TEST_EOF
 done
-],[],sort)
+],[
+AWK="$AWK"
+],cat)

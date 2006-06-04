@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.18 2006/05/20 15:18:41 tom Exp $
+ * $Id: demo_menus.c,v 1.19 2006/06/03 19:33:41 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -625,8 +625,6 @@ move_menu(MENU * menu, MENU * current, int by_y, int by_x)
 	    touchwin(top_win);
 	    wnoutrefresh(top_win);
 	}
-    } else {
-	beep();
     }
     return result;
 }
@@ -783,10 +781,78 @@ destroy_menus(void)
     menu_destroy(mpBanner);
 }
 
+#if HAVE_RIPOFFLINE
+static int
+rip_footer(WINDOW *win, int cols)
+{
+    wbkgd(win, A_REVERSE);
+    werase(win);
+    wmove(win, 0, 0);
+    wprintw(win, "footer: %d columns", cols);
+    wnoutrefresh(win);
+    return OK;
+}
+
+static int
+rip_header(WINDOW *win, int cols)
+{
+    wbkgd(win, A_REVERSE);
+    werase(win);
+    wmove(win, 0, 0);
+    wprintw(win, "header: %d columns", cols);
+    wnoutrefresh(win);
+    return OK;
+}
+#endif /* HAVE_RIPOFFLINE */
+
+static void
+usage(void)
+{
+    static const char *const tbl[] =
+    {
+	"Usage: demo_menus [options]"
+	,""
+	,"Options:"
+#if HAVE_RIPOFFLINE
+	,"  -f       rip-off footer line (can repeat)"
+	,"  -h       rip-off header line (can repeat)"
+#endif
+#ifdef TRACE
+	,"  -t mask  specify default trace-level (may toggle with ^T)"
+#endif
+    };
+    size_t n;
+    for (n = 0; n < SIZEOF(tbl); n++)
+	fprintf(stderr, "%s\n", tbl[n]);
+    ExitProgram(EXIT_FAILURE);
+}
+
 int
 main(int argc, char *argv[])
 {
+    int c;
+
     setlocale(LC_ALL, "");
+
+    while ((c = getopt(argc, argv, "a:de:fhmp:s:t:")) != EOF) {
+	switch (c) {
+#if HAVE_RIPOFFLINE
+	case 'f':
+	    ripoffline(-1, rip_footer);
+	    break;
+	case 'h':
+	    ripoffline(1, rip_header);
+	    break;
+#endif /* HAVE_RIPOFFLINE */
+#ifdef TRACE
+	case 't':
+	    trace(strtol(optarg, 0, 0));
+	    break;
+#endif
+	default:
+	    usage();
+	}
+    }
 
     initscr();
     noraw();

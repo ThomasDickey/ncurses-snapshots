@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.17 2006/05/20 15:27:38 tom Exp $
+ * $Id: movewindow.c,v 1.18 2006/06/03 17:51:36 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -560,6 +560,10 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 
     add_window(0, current_win = stdscr);
 
+#ifdef NCURSES_MOUSE_VERSION
+    (void) mousemask(BUTTON1_CLICKED, (mmask_t *) NULL);
+#endif /* NCURSES_MOUSE_VERSION */
+
     while (!done && (ch = wgetch(current_win)) != ERR) {
 	switch (ch) {
 	case '?':
@@ -609,7 +613,6 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    /* want to allow cursor to move around the current window too */
 	    /* want to test the resizing of windows and subwindows too */
 	    /* want to allow deleting a window also */
-	    /* want to use mouse? */
 #endif
 	default:
 	    tail_line("unrecognized key (use '?' for help)");

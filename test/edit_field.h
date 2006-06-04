@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 2003-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.h,v 1.4 2006/04/22 22:07:51 tom Exp $
+ * $Id: edit_field.h,v 1.5 2006/06/03 16:38:57 tom Exp $
  *
  * Interface of edit_field.c
  */
