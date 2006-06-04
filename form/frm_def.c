@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.18 2005/11/26 15:33:52 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.19 2006/06/03 17:16:24 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -182,7 +182,7 @@ Connect_Fields(FORM *form, FIELD **fields)
 	page_nr++;
       fields[field_cnt]->form = form;
     }
-  if (field_cnt == 0)
+  if (field_cnt == 0 || (short)field_cnt < 0)
     RETURN(E_BAD_ARGUMENT);
 
   /* allocate page structures */

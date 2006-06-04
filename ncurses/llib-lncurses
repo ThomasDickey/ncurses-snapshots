@@ -1017,6 +1017,46 @@ int	wstandend(
 		WINDOW	*z)
 		{ return(*(int *)0); }
 
+#undef getcurx
+int	getcurx(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getcury
+int	getcury(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getbegx
+int	getbegx(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getbegy
+int	getbegy(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getmaxx
+int	getmaxx(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getmaxy
+int	getmaxy(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getparx
+int	getparx(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
+#undef getpary
+int	getpary(
+		const WINDOW *z)
+		{ return(*(int *)0); }
+
 #undef mouse_trafo
 NCURSES_BOOL mouse_trafo(
 		int	*a1, 
@@ -1233,6 +1273,10 @@ int	mvwin(
 
 #undef filter
 void	filter(void)
+		{ /* void */ }
+
+#undef nofilter
+void	nofilter(void)
 		{ /* void */ }
 
 #undef newterm
@@ -1556,8 +1600,10 @@ void	delscreen(
 #undef _nc_setupscreen
 int	_nc_setupscreen(
 		int	slines, 
-		int const scolumns, 
-		FILE	*output)
+		int	scolumns, 
+		FILE	*output, 
+		NCURSES_BOOL filtered, 
+		int	slk_format)
 		{ return(*(int *)0); }
 
 #undef _nc_ripoffline
@@ -2585,6 +2631,11 @@ int	COLS;
 #undef TABSIZE
 int	TABSIZE;
 
+#undef _nc_handle_sigwinch
+int	_nc_handle_sigwinch(
+		int	enable)
+		{ return(*(int *)0); }
+
 #undef use_env
 void	use_env(
 		NCURSES_BOOL f)
@@ -2692,8 +2743,8 @@ char	*tigetstr(
 
 typedef struct {
     union {
- int num;
- char *str;
+        int num;
+        char *str;
     } data;
     NCURSES_BOOL num_type;
 } stack_frame;
@@ -2990,9 +3041,25 @@ int	_nc_read_file_entry(
 		TERMTYPE *ptr)
 		{ return(*(int *)0); }
 
+#undef _nc_last_db
+void	_nc_last_db(void)
+		{ /* void */ }
+
+#undef _nc_next_db
+const char *_nc_next_db(
+		DBDIRS	*state, 
+		int	*offset)
+		{ return(*(const char **)0); }
+
+#undef _nc_first_db
+void	_nc_first_db(
+		DBDIRS	*state, 
+		int	*offset)
+		{ /* void */ }
+
 #undef _nc_read_entry
 int	_nc_read_entry(
-		const char *const tn, 
+		const char *const name, 
 		char	*const filename, 
 		TERMTYPE *const tp)
 		{ return(*(int *)0); }
@@ -3127,6 +3194,19 @@ const char *_nc_visbuf(
 #undef _nc_visbufn
 const char *_nc_visbufn(
 		const char *buf, 
+		int	len)
+		{ return(*(const char **)0); }
+
+#undef _nc_viscbuf2
+const char *_nc_viscbuf2(
+		int	bufnum, 
+		const chtype *buf, 
+		int	len)
+		{ return(*(const char **)0); }
+
+#undef _nc_viscbuf
+const char *_nc_viscbuf(
+		const chtype *buf, 
 		int	len)
 		{ return(*(const char **)0); }
 

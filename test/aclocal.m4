@@ -26,7 +26,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.14 2006/04/22 22:05:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.15 2006/06/03 16:35:51 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -1350,6 +1350,30 @@ fi
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_PRG_RULES version: 1 updated: 2006/06/03 11:45:08
+dnl ------------
+dnl Append definitions and rules for the given programs to the subdirectory
+dnl Makefiles, and the recursion rule for the top-level Makefile.
+dnl
+dnl parameters
+dnl	$1 = script to run
+dnl	$2 = list of subdirectories
+dnl
+dnl variables
+dnl	$AWK
+AC_DEFUN([CF_PRG_RULES],
+[
+for cf_dir in $2
+do
+	if test ! -d $srcdir/$cf_dir; then
+		continue
+	elif test -f $srcdir/$cf_dir/programs; then
+		$AWK -f $1 $srcdir/$cf_dir/programs >>$cf_dir/Makefile
+	fi
+done
+
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_PROG_CC_U_D version: 1 updated: 2005/07/14 16:59:30
 dnl --------------
 dnl Check if C (preprocessor) -U and -D options are processed in the order
@@ -1581,10 +1605,11 @@ AC_ARG_WITH(curses-dir,
 	[cf_cv_curses_dir=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 23 updated: 2005/10/15 16:39:05
+dnl CF_XOPEN_SOURCE version: 24 updated: 2006/04/02 16:41:09
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
-dnl or adapt to the vendor's definitions to get equivalent functionality.
+dnl or adapt to the vendor's definitions to get equivalent functionality,
+dnl without losing the common non-POSIX features.
 dnl
 dnl Parameters:
 dnl	$1 is the nominal value for _XOPEN_SOURCE

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.377 2006/05/13 15:38:14 tom Exp $
+dnl $Id: aclocal.m4,v 1.378 2006/06/03 16:05:08 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1692,7 +1692,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 37 updated: 2006/04/15 13:38:12
+dnl CF_LIB_RULES version: 38 updated: 2006/06/03 10:35:16
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1711,7 +1711,9 @@ CF_LIB_PREFIX(cf_prefix)
 AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
 for cf_dir in $SRC_SUBDIRS
 do
-	if test -f $srcdir/$cf_dir/modules; then
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	elif test -f $srcdir/$cf_dir/modules; then
 
 		IMPORT_LIB=
 		SHARED_LIB=
@@ -1891,6 +1893,10 @@ done
 
 for cf_dir in $SRC_SUBDIRS
 do
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	fi
+
 	if test -f $cf_dir/Makefile ; then
 		case "$cf_dir" in
 		Ada95) #(vi
@@ -1991,6 +1997,7 @@ TMPSRC=\${TMPDIR-/tmp}/\`basename \$SRC\`\$\$
 TMPSED=\${TMPDIR-/tmp}/headers.sed\$\$
 echo installing \$SRC in \$DST
 CF_EOF
+
 if test $WITH_CURSES_H = yes; then
 	cat >>headers.sh <<CF_EOF
 case \$DST in
@@ -2007,6 +2014,7 @@ case \$DST in
 	;;
 esac
 CF_EOF
+
 else
 	cat >>headers.sh <<CF_EOF
 case \$DST in
@@ -2051,6 +2059,10 @@ chmod 0755 headers.sh
 
 for cf_dir in $SRC_SUBDIRS
 do
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	fi
+
 	if test -f $srcdir/$cf_dir/headers; then
 	cat >>$cf_dir/Makefile <<CF_EOF
 \$(DESTDIR)\$(includedir) :
@@ -2066,7 +2078,9 @@ CF_EOF
 			test -n "$j" && echo "		$j \\" >>$cf_dir/Makefile
 			j=$i
 		done
+
 		echo "		$j" >>$cf_dir/Makefile
+
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(DESTDIR)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
@@ -3221,6 +3235,30 @@ make an error
 		CPPFLAGS="$CPPFLAGS -D$1=$2"
 	fi
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PRG_RULES version: 1 updated: 2006/06/03 11:45:08
+dnl ------------
+dnl Append definitions and rules for the given programs to the subdirectory
+dnl Makefiles, and the recursion rule for the top-level Makefile.
+dnl
+dnl parameters
+dnl	$1 = script to run
+dnl	$2 = list of subdirectories
+dnl
+dnl variables
+dnl	$AWK
+AC_DEFUN([CF_PRG_RULES],
+[
+for cf_dir in $2
+do
+	if test ! -d $srcdir/$cf_dir; then
+		continue
+	elif test -f $srcdir/$cf_dir/programs; then
+		$AWK -f $1 $srcdir/$cf_dir/programs >>$cf_dir/Makefile
+	fi
+done
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PROG_CC_C_O version: 1 updated: 2004/02/14 15:00:43

@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.983 2006/05/27 22:00:51 tom Exp $
+-- $Id: NEWS,v 1.986 2006/06/03 17:53:57 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,12 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060603
+	+ enable the mouse in test/movewindow.c
+	+ improve a limit-check in frm_def.c (John Heasley).
+	+ minor copyright fixes.
+	+ change configure script to produce test/Makefile from data file.
 
 20060527
 	+ add a configure option --enable-wgetch-events to enable

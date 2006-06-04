@@ -989,11 +989,13 @@
 ./test/linux-color.dat
 ./test/listused.sh
 ./test/lrtest.c
+./test/mk-test.awk
 ./test/modules
 ./test/movewindow.c
 ./test/ncurses.c
 ./test/ncurses_tst.hin
 ./test/newdemo.c
+./test/programs
 ./test/railroad.c
 ./test/rain.c
 ./test/savescreen.c

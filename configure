@@ -14540,6 +14540,7 @@ cat >>$CONFIG_STATUS <<EOF
 AWK="$AWK"
 DFT_ARG_SUFFIX="$DFT_ARG_SUFFIX"
 DFT_LWR_MODEL="$DFT_LWR_MODEL"
+ECHO_LINK="$ECHO_LINK"
 LDCONFIG="$LDCONFIG"
 LIB_NAME="$LIB_NAME"
 LIB_SUBSETS="$LIB_SUBSETS"
@@ -14588,7 +14589,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "default" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
   "include/ncurses_cfg.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/ncurses_cfg.h:include/ncurses_cfg.hin" ;;
-  *) { { echo "$as_me:14591: error: invalid argument: $ac_config_target" >&5
+  *) { { echo "$as_me:14592: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -14947,7 +14948,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:14950: creating $ac_file" >&5
+    { echo "$as_me:14951: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -14965,7 +14966,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:14968: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:14969: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -14978,7 +14979,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:14981: error: cannot find input file: $f" >&5
+           { { echo "$as_me:14982: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -15044,7 +15045,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
   * )   ac_file_in=$ac_file.in ;;
   esac
 
-  test x"$ac_file" != x- && { echo "$as_me:15047: creating $ac_file" >&5
+  test x"$ac_file" != x- && { echo "$as_me:15048: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
 
   # First look for the input files in the build tree, otherwise in the
@@ -15055,7 +15056,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:15058: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:15059: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -15068,7 +15069,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:15071: error: cannot find input file: $f" >&5
+           { { echo "$as_me:15072: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -15126,7 +15127,7 @@ cat >>$CONFIG_STATUS <<\EOF
   rm -f $tmp/in
   if test x"$ac_file" != x-; then
     if cmp -s $ac_file $tmp/config.h 2>/dev/null; then
-      { echo "$as_me:15129: $ac_file is unchanged" >&5
+      { echo "$as_me:15130: $ac_file is unchanged" >&5
 echo "$as_me: $ac_file is unchanged" >&6;}
     else
       ac_dir=`$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
@@ -15179,6 +15180,15 @@ for ac_file in : $CONFIG_COMMANDS; do test "x$ac_file" = x: && continue
   case $ac_dest in
     default )
 
+for cf_dir in test
+do
+	if test ! -d $srcdir/$cf_dir; then
+		continue
+	elif test -f $srcdir/$cf_dir/programs; then
+		$AWK -f $srcdir/test/mk-test.awk ECHO_LINK="$ECHO_LINK" $srcdir/$cf_dir/programs >>$cf_dir/Makefile
+	fi
+done
+
 	case $cf_cv_system_name in
 	OS/2*)	LIB_PREFIX=''     ;;
 	os2*)	LIB_PREFIX=''     ;;
@@ -15188,7 +15198,9 @@ cf_prefix=$LIB_PREFIX
 
 for cf_dir in $SRC_SUBDIRS
 do
-	if test -f $srcdir/$cf_dir/modules; then
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	elif test -f $srcdir/$cf_dir/modules; then
 
 		IMPORT_LIB=
 		SHARED_LIB=
@@ -15421,6 +15433,10 @@ done
 
 for cf_dir in $SRC_SUBDIRS
 do
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	fi
+
 	if test -f $cf_dir/Makefile ; then
 		case "$cf_dir" in
 		Ada95) #(vi
@@ -15514,6 +15530,7 @@ TMPSRC=\${TMPDIR-/tmp}/\`basename \$SRC\`\$\$
 TMPSED=\${TMPDIR-/tmp}/headers.sed\$\$
 echo installing \$SRC in \$DST
 CF_EOF
+
 if test $WITH_CURSES_H = yes; then
 	cat >>headers.sh <<CF_EOF
 case \$DST in
@@ -15530,6 +15547,7 @@ case \$DST in
 	;;
 esac
 CF_EOF
+
 else
 	cat >>headers.sh <<CF_EOF
 case \$DST in
@@ -15574,6 +15592,10 @@ chmod 0755 headers.sh
 
 for cf_dir in $SRC_SUBDIRS
 do
+	if test ! -d $srcdir/$cf_dir ; then
+		continue
+	fi
+
 	if test -f $srcdir/$cf_dir/headers; then
 	cat >>$cf_dir/Makefile <<CF_EOF
 \$(DESTDIR)\$(includedir) :
@@ -15589,7 +15611,9 @@ CF_EOF
 			test -n "$j" && echo "		$j \\" >>$cf_dir/Makefile
 			j=$i
 		done
+
 		echo "		$j" >>$cf_dir/Makefile
+
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(DESTDIR)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
@@ -15622,6 +15646,7 @@ CF_EOF
 	fi
 done
 
+# _CF_HDR_RULES($SRC_SUBDIRS)
  ;;
   esac
 done

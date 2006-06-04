@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1993-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 2003-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_forms.c,v 1.19 2005/12/31 16:55:09 tom Exp $
+ * $Id: demo_forms.c,v 1.20 2006/06/03 16:41:18 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
