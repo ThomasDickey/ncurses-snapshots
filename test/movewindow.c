@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.18 2006/06/03 17:51:36 tom Exp $
+ * $Id: movewindow.c,v 1.19 2006/06/17 17:43:22 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -425,7 +425,7 @@ move_subwin(WINDOW *win)
 }
 
 static void
-fill_window(WINDOW *win, char ch)
+fill_window(WINDOW *win, chtype ch)
 {
     int y, x;
     int y0, x0;
@@ -579,7 +579,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    current_win = create_my_derwin(current_win);
 	    break;
 	case 'f':
-	    fill_window(current_win, wgetch(current_win));
+	    fill_window(current_win, (chtype) wgetch(current_win));
 	    break;
 	case 'm':
 	case 'M':

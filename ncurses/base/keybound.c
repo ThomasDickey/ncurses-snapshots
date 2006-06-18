@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2003,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,12 +27,12 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
+ *  Author: Thomas E. Dickey                 1999-on                        *
  ****************************************************************************/
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keybound.c,v 1.6 2005/11/26 20:08:50 tom Exp $")
+MODULE_ID("$Id: keybound.c,v 1.7 2006/06/17 18:19:24 tom Exp $")
 
 /*
  * Returns the count'th string definition which is associated with the
@@ -45,7 +45,7 @@ keybound(int code, int count)
 
     T((T_CALLED("keybound(%d,%d)"), code, count));
     if (SP != 0 && code >= 0) {
-	result = _nc_expand_try(SP->_keytry, code, &count, 0);
+	result = _nc_expand_try(SP->_keytry, (unsigned) code, &count, 0);
     }
     returnPtr(result);
 }

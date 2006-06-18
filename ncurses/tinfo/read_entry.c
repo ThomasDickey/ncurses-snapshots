@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.86 2006/01/21 17:25:55 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.87 2006/06/17 17:36:14 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -216,7 +216,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 	lseek(fd, (off_t) (have - MAX_NAME_SIZE), 1);
 
     /* grab the booleans */
-    if ((ptr->Booleans = TYPE_CALLOC(char, max(BOOLCOUNT, bool_count))) == 0
+    if ((ptr->Booleans = TYPE_CALLOC(NCURSES_SBOOL, max(BOOLCOUNT, bool_count))) == 0
 	|| read(fd, ptr->Booleans, (unsigned) bool_count) < bool_count) {
 	return (TGETENT_NO);
     }
@@ -283,7 +283,7 @@ read_termtype(int fd, TERMTYPE *ptr)
 	ptr->num_Numbers = NUMCOUNT + ext_num_count;
 	ptr->num_Strings = STRCOUNT + ext_str_count;
 
-	ptr->Booleans = typeRealloc(char, ptr->num_Booleans, ptr->Booleans);
+	ptr->Booleans = typeRealloc(NCURSES_SBOOL, ptr->num_Booleans, ptr->Booleans);
 	ptr->Numbers = typeRealloc(short, ptr->num_Numbers, ptr->Numbers);
 	ptr->Strings = typeRealloc(char *, ptr->num_Strings, ptr->Strings);
 

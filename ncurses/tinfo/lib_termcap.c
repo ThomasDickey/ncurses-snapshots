@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,6 +33,7 @@
  *                                                                          *
  * some of the code in here was contributed by:                             *
  * Magnus Bengtsson, d6mbeng@dtek.chalmers.se (Nov'93)                      *
+ * (but it has changed a lot)                                               *
  ****************************************************************************/
 
 #define __INTERNAL_CAPS_VISIBLE
@@ -44,12 +45,13 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.51 2005/07/16 23:12:51 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.52 2006/06/17 20:39:12 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
 
 static char *fix_me = 0;	/* this holds the filtered sgr0 string */
+static char *last_bufp = 0;	/* help with fix_me leak */
 
 /***************************************************************************
  *
@@ -76,6 +78,16 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 
     _nc_setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode, TRUE);
 
+    /*
+     * In general we cannot tell if the fixed sgr0 is still used by the
+     * caller, but if tgetent() is called with the same buffer, that is
+     * good enough, since the previous data would be invalidated by the
+     * current call.
+     */
+    if (bufp != 0 && last_bufp == bufp) {
+	FreeIfNeeded(fix_me);
+    }
+
     PC = 0;
     UP = 0;
     BC = 0;
@@ -95,7 +107,6 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	FreeIfNeeded(fix_me);
 	if ((fix_me = _nc_trim_sgr0(&(cur_term->type))) != 0) {
 	    if (!strcmp(fix_me, exit_attribute_mode)) {
 		if (fix_me != exit_attribute_mode) {
@@ -104,6 +115,7 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 		fix_me = 0;
 	    }
 	}
+	last_bufp = bufp;
 
 	(void) baudrate();	/* sets ospeed as a side-effect */
 

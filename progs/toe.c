@@ -42,7 +42,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.35 2006/05/20 17:03:10 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.36 2006/06/17 18:15:49 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -309,12 +309,13 @@ main(int argc, char *argv[])
 
 	code = EXIT_FAILURE;
 	for (pass = 0; pass < 2; ++pass) {
-	    int count = 0;
+	    unsigned count = 0;
 
 	    _nc_first_db(&state, &offset);
 	    while ((path = _nc_next_db(&state, &offset)) != 0) {
 		if (eargv != 0) {
-		    int n, found = FALSE;
+		    unsigned n;
+		    int found = FALSE;
 
 		    /* eliminate duplicates */
 		    for (n = 0; n < count; ++n) {
@@ -334,7 +335,7 @@ main(int argc, char *argv[])
 	    if (!pass) {
 		eargv = typeCalloc(char *, count + 1);
 	    } else {
-		code = typelist(count, eargv, header, deschook);
+		code = typelist((int) count, eargv, header, deschook);
 	    }
 	}
     } else {

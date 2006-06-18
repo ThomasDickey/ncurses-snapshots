@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.277 2006/05/13 11:48:47 tom Exp $
+$Id: ncurses.c,v 1.279 2006/06/17 18:18:26 tom Exp $
 
 ***************************************************************************/
 
@@ -937,7 +937,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 	if (code == ERR && blocking) {
 	    wprintw(win, "ERR");
 	    wgetch_wrap(win, first_y);
-	} else if (isQuit(c)) {
+	} else if (isQuit((int) c)) {
 	    break;
 	} else if (c == 'e') {
 	    flags[UChar('e')] = !flags[UChar('e')];
@@ -2714,7 +2714,7 @@ show_pc_chars(void)
     refresh();
 
     for (code = 0; code < 16; ++code) {
-	mvprintw(2, code * 3 + 8, "%X", code);
+	mvprintw(2, (int) code * 3 + 8, "%X", code);
     }
     for (code = 0; code < 256; code++) {
 	int row = 3 + (code / 16) + (code >= 128);
@@ -3966,7 +3966,7 @@ mkpanel(short color, int rows, int cols, int tly, int tlx)
 	    short bg = color;
 
 	    init_pair(color, fg, bg);
-	    wbkgdset(win, COLOR_PAIR(color) | ' ');
+	    wbkgdset(win, (chtype) (COLOR_PAIR(color) | ' '));
 	} else {
 	    wbkgdset(win, A_BOLD | ' ');
 	}

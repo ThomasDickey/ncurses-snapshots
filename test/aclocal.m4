@@ -26,11 +26,15 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.15 2006/06/03 16:35:51 tom Exp $
+dnl $Id: aclocal.m4,v 1.16 2006/06/17 15:23:42 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
 dnl Macros used in NCURSES test programs auto-configuration script.
+dnl
+dnl These macros are maintained separately from NCURSES.  The copyright on
+dnl this file applies to the aggregation of macros and does not affect use of
+dnl these macros in other applications.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl

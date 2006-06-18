@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.74 2006/05/27 19:10:23 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.75 2006/06/17 17:38:55 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -3883,7 +3883,7 @@ Data_Entry(FORM *form, int c)
   FIELD *field = form->current;
   int result = E_REQUEST_DENIED;
 
-  T((T_CALLED("Data_Entry(%p,%s)"), form, _tracechtype(c)));
+  T((T_CALLED("Data_Entry(%p,%s)"), form, _tracechtype((chtype) c)));
   if ((field->opts & O_EDIT)
 #if FIX_FORM_INACTIVE_BUG
       && (field->opts & O_ACTIVE)

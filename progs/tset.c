@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.61 2006/05/20 17:46:48 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.62 2006/06/17 17:38:02 tom Exp $")
 
 extern char **environ;
 
@@ -970,7 +970,7 @@ set_init(void)
  * Return TRUE if we set any tab stops, FALSE if not.
  */
 static bool
-set_tabs()
+set_tabs(void)
 {
     if (set_tab && clear_all_tabs) {
 	int c;
