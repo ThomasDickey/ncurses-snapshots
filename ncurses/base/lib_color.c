@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.77 2005/11/26 20:05:22 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.78 2006/06/17 18:21:03 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -361,7 +361,7 @@ init_pair(short pair, short f, short b)
     }
     SP->_color_pairs[pair] = result;
     if (GET_SCREEN_PAIR(SP) == pair)
-	SET_SCREEN_PAIR(SP, ~0);	/* force attribute update */
+	SET_SCREEN_PAIR(SP, (chtype) (~0));	/* force attribute update */
 
     if (initialize_pair) {
 	const color_t *tp = hue_lightness_saturation ? hls_palette : cga_palette;

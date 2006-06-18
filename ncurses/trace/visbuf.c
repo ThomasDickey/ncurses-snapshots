@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.18 2006/05/13 21:51:02 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.19 2006/06/17 17:42:27 tom Exp $")
 
 static const char d_quote[] = {D_QUOTE, 0};
 static const char l_brace[] = {L_BRACE, 0};
@@ -177,7 +177,7 @@ _nc_viswbuf2n(int bufnum, const wchar_t *buf, int len)
 	    j = strlen(temp);
 	}
 	for (k = 0; k < j; ++k) {
-	    tp = _nc_vischar(tp, temp[k]);
+	    tp = _nc_vischar(tp, UChar(temp[k]));
 	}
     }
     *tp++ = D_QUOTE;
@@ -258,7 +258,7 @@ _nc_viscbuf2(int bufnum, const NCURSES_CH_T * buf, int len)
 	result = _nc_trace_bufcat(bufnum, l_brace);
 	result = _nc_trace_bufcat(bufnum, d_quote);
 	for (j = first; j <= last; ++j) {
-	    if ((found = _nc_altcharset_name(attr, CharOf(buf[j]))) != 0) {
+	    if ((found = _nc_altcharset_name(attr, (chtype) CharOf(buf[j]))) != 0) {
 		result = _nc_trace_bufcat(bufnum, found);
 		attr &= ~A_ALTCHARSET;
 	    } else

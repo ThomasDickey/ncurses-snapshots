@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.21 2006/02/25 21:49:19 tom Exp $
+.\" $Id: curs_terminfo.3x,v 1.22 2006/06/17 15:04:48 tom Exp $
 .TH curs_terminfo 3X ""
 .ds n 5
 .na
@@ -242,11 +242,11 @@ The \fIcapname\fR for each capability is given in the table column entitled
 \fIcapname\fR code in the capabilities section of \fBterminfo\fR(\*n).
 .sp
 .RS
-\fBchar *boolnames\fR, \fB*boolcodes\fR, \fB*boolfnames\fR
+\fBchar *boolnames[]\fR, \fB*boolcodes[]\fR, \fB*boolfnames[]\fR
 .sp
-\fBchar *numnames\fR, \fB*numcodes\fR, \fB*numfnames\fR
+\fBchar *numnames[]\fR, \fB*numcodes[]\fR, \fB*numfnames[]\fR
 .sp
-\fBchar *strnames\fR, \fB*strcodes\fR, \fB*strfnames\fR
+\fBchar *strnames[]\fR, \fB*strcodes[]\fR, \fB*strfnames[]\fR
 .RE
 .PP
 These null-terminated arrays contain the \fIcapnames\fR, the

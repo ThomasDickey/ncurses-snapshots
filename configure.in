@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.363 2006/06/03 16:04:27 tom Exp $
+dnl $Id: configure.in,v 1.365 2006/06/17 18:06:37 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.363 $)
+AC_REVISION($Revision: 1.365 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -774,6 +774,21 @@ AC_ARG_ENABLE(no-padding,
 AC_MSG_RESULT($with_no_padding)
 test "$with_no_padding" = yes && AC_DEFINE(NCURSES_NO_PADDING)
 
+AC_CHECK_SIZEOF([signed char], 0)
+if test "$ac_cv_sizeof_signed_char" = 1 ; then
+	NCURSES_SBOOL="signed char"
+else
+	NCURSES_SBOOL="char"
+fi
+AC_MSG_CHECKING(if you want to use signed Boolean array in term.h)
+AC_ARG_ENABLE(signed-char,
+	[  --enable-signed-char    compile with SIGWINCH handler],
+	[with_signed_char=$enableval],
+	[with_signed_char=no])
+AC_MSG_RESULT($with_signed_char)
+test "$with_signed_char" != yes && NCURSES_SBOOL="char"
+AC_SUBST(NCURSES_SBOOL)
+
 ###   use option --enable-sigwinch to turn on use of SIGWINCH logic
 AC_MSG_CHECKING(if you want SIGWINCH handler)
 AC_ARG_ENABLE(sigwinch,
@@ -1121,12 +1136,7 @@ CF_FUNC_VSSCANF
 CF_MKSTEMP
 
 # setup for prototype of fallback for vsscanf()
-if test "$cf_cv_func_vsscanf" = vsscanf ; then
-	HAVE_VSSCANF=1
-else
-	HAVE_VSSCANF=0
-fi
-AC_SUBST(HAVE_VSSCANF)
+CF_SUBST_IF(["$cf_cv_func_vsscanf" = vsscanf], HAVE_VSSCANF, 1, 0)
 
 dnl FIXME (may need this) AC_SYS_RESTARTABLE_SYSCALLS
 if test "$cross_compiling" = yes ; then
@@ -1465,6 +1475,11 @@ AC_DEFINE_UNQUOTED(NCURSES_VERSION_STRING, "${NCURSES_MAJOR}.${NCURSES_MINOR}.${
 
 ### Now that we're done running tests, add the compiler-warnings, if any
 CF_ADD_CFLAGS($EXTRA_CFLAGS)
+
+### Define substitutions for header files to avoid name-pollution
+CF_SUBST_IF(["$cf_cv_have_tcgetattr" = yes], HAVE_TCGETATTR, 1, 0)
+CF_SUBST_IF(["$ac_cv_header_termio_h" = yes], HAVE_TERMIO_H, 1, 0)
+CF_SUBST_IF(["$ac_cv_header_termios_h" = yes], HAVE_TERMIOS_H, 1, 0)
 
 ################################################################################
 test "$use_database" = yes && SUB_MAKEFILES="$SUB_MAKEFILES misc/run_tic.sh:misc/run_tic.in"

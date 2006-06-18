@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.102 2006/05/27 19:07:00 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.103 2006/06/17 18:27:47 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -266,7 +266,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 
 	    if (len > 0) {
 		if (is8bits(CharOf(ch))) {
-		    const char *s = unctrl(CharOf(ch));
+		    const char *s = unctrl((chtype) CharOf(ch));
 		    if (s[1] != 0) {
 			return waddstr(win, s);
 		    }

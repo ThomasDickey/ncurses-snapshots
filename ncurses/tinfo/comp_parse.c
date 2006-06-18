@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -53,7 +53,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.60 2005/06/04 21:42:44 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.61 2006/06/17 19:37:39 tom Exp $")
 
 static void sanity_check2(TERMTYPE *, bool);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
@@ -207,17 +207,24 @@ _nc_read_entry_source(FILE *fp, char *buf,
 	    _nc_err_abort("terminal names must start with letter or digit");
 
 	/*
-	 * This can be used for immediate compilation of entries with no
-	 * use references to disk, so as to avoid chewing up a lot of
-	 * core when the resolution code could fetch entries off disk.
+	 * This can be used for immediate compilation of entries with no "use="
+	 * references to disk.  That avoids consuming a lot of memory when the
+	 * resolution code could fetch entries off disk.
 	 */
 	if (hook != NULLHOOK && (*hook) (&thisentry)) {
 	    immediate++;
 	} else {
 	    enqueue(&thisentry);
+	    /*
+	     * The enqueued entry is copied with _nc_copy_termtype(), so we can
+	     * free some of the data from thisentry, i.e., the arrays.
+	     */
 	    FreeIfNeeded(thisentry.tterm.Booleans);
 	    FreeIfNeeded(thisentry.tterm.Numbers);
 	    FreeIfNeeded(thisentry.tterm.Strings);
+#if NCURSES_XNAMES
+	    FreeIfNeeded(thisentry.tterm.ext_Names);
+#endif
 	}
     }
 
@@ -374,10 +381,10 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 			}
 
 		    /*
-		       * First, make sure there's no garbage in the
-		       * merge block.  as a side effect, copy into
-		       * the merged entry the name field and string
-		       * table pointer.
+		     * First, make sure there is no garbage in the
+		     * merge block.  As a side effect, copy into
+		     * the merged entry the name field and string
+		     * table pointer.
 		     */
 		    _nc_copy_termtype(&merged, &(qp->tterm));
 
