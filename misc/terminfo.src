@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.281 $
-#	$Date: 2006/06/24 19:32:21 $
+#	$Revision: 1.280 $
+#	$Date: 2006/06/24 19:05:06 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -647,6 +647,26 @@ beterm|BeOS Terminal,
 #### Linux consoles
 #
 
+# This entry is good for the 1.2.13 or later version of the Linux console.
+#
+# ***************************************************************************
+# *                                                                         *
+# *                           WARNING:                                      *
+# * Linuxes come with a default keyboard mapping kcbt=^I.  This entry, in   *
+# * response to user requests, assumes kcbt=\E[Z, the ANSI/ECMA reverse-tab *
+# * character. Here are the keymap replacement lines that will set this up: *
+# *                                                                         *
+#	keycode  15 = Tab             Tab
+#		alt     keycode  15 = Meta_Tab
+#		shift	keycode  15 = F26
+#	string F26 ="\033[Z"
+# *                                                                         *
+# * This has to use a key slot which is unfortunate (any unused one will    *
+# * do, F26 is the higher-numbered one).  The change ought to be built      *
+# * into the kernel tables.                                                 *
+# *                                                                         *
+# ***************************************************************************
+#
 # This entry is good for the 1.2.13 or later version of the Linux console.
 #
 # ***************************************************************************
@@ -3083,10 +3103,7 @@ xterm+256color|xterm 256-color feature,
 	ccc, 
 	colors#256, pairs#32767, 
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\, 
-	setab=\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;5;%p1%d%;m, 
-	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m, 
-	setb@, setf@, 
-
+	setab=\E[48;5;%p1%dm, setaf=\E[38;5;%p1%dm, 
 xterm+88color|xterm 88-color feature, 
 	colors#88, pairs#7744, use=xterm+256color, 
 
@@ -20791,7 +20808,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add rc/sc to aixterm based on manpage -TD
 #
 # 2000/5/13
-#	* remove ncv from xterm-16color, xterm-256color
+#	* remove ncv from xterm-16color, xterm-256 color
 #
 # 2000/6/10
 #	* add kmous capability to linux to use Joerg Schoen's gpm patch.
@@ -21090,7 +21107,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  by Christian Ebert -Alain Bench
 #
 # 2006-04-22
-#	* add xterm+256color building block -TD
 #	* add gnome-256color, putty-256color, rxvt-256color -TD
 #
 # 2006-05-06
@@ -21099,10 +21115,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2006-06-24
 #	* add xterm+pcc0, xterm+pcc1, xterm+pcc2, xterm+pcc3 -TD
 #	* add gnome-fc5 (prompted by GenToo #122566) -TD
-#	* remove obsolete/misleading comments about kcbt on Linux -Alain Bench
-#	* improve xterm-256color by combining the ibm+16color setaf/setab strings
-#	  with SGR 48.  The setf/setb strings also are cancelled here rather than
-#	  omitted so derived entries will cancel those also -Alain Bench
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
