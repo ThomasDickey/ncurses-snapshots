@@ -2,10 +2,10 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.25 2005/12/17 17:52:14 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.27 2006/07/01 21:25:39 tom Exp $)
 #
 ##############################################################################
-# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -380,6 +380,7 @@ BEGIN		{
 			print " * pull most of the rest of the library into your link image."
 		}
 		print " */"
+		print "#define NCURSES_ATTR_T int"
 		print "#include <curses.priv.h>"
 		print ""
 		}
@@ -394,6 +395,7 @@ EOF1
 
 cat >$TMP <<EOF
 #include <ncurses_cfg.h>
+#undef NCURSES_NOMACROS
 #include <curses.h>
 
 DECLARATIONS

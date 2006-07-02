@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.991 2006/06/25 19:16:25 tom Exp $
+-- $Id: NEWS,v 1.994 2006/07/02 00:38:28 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060701
+	+ revert a minor change for magic-cookie support from 20060513, which
+	  caused unexpected reset of attributes, e.g., when resizing test/view
+	  in color mode.
+	+ note in clear manpage that the program ignores command-line
+	  parameters (prompted by Debian #371855).
+	+ fixes to make lib_gen.c build properly with changes to the configure
+	  --disable-macros option and NCURSES_NOMACROS (cf:  20060527)
+	+ update/correct several terminfo entries -TD
+	+ add some notes regarding copyright to terminfo.src -TD
 
 20060625
 	+ fixes to build Ada95 binding with gnat-4.1.0
