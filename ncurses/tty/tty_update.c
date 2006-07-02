@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.235 2006/05/27 19:09:13 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.236 2006/07/02 00:35:56 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -910,7 +910,7 @@ doupdate(void)
      * past the current position.
      */
 #if USE_XMC_SUPPORT
-    if (magic_cookie_glitch > 0)
+    if (magic_cookie_glitch != 0)
 #endif
 	UpdateAttrs(normal);
 
