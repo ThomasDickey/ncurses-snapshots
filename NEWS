@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.994 2006/07/02 00:38:28 tom Exp $
+-- $Id: NEWS,v 1.995 2006/07/08 20:05:47 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,11 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060708
+	+ add a check for _POSIX_VDISABLE in tset (NetBSD #33916).
+	+ correct _nc_free_entries() and related functions used for memory leak
+	  checking of tic.
 
 20060701
 	+ revert a minor change for magic-cookie support from 20060513, which

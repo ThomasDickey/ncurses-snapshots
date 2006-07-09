@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.62 2006/06/17 17:38:02 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.64 2006/07/08 22:23:44 tom Exp $")
 
 extern char **environ;
 
@@ -686,7 +686,13 @@ get_termcap_entry(char *userarg)
 #define CSUSP	CTRL('Z')
 #endif
 
-#define	CHK(val, dft)	((int)val <= 0 ? dft : val)
+#if defined(_POSIX_VDISABLE) && (_POSIX_VDISABLE != -1)
+#define DISABLED(val)   ((val) == _POSIX_VDISABLE || (val) <= 0)
+#else
+#define DISABLED(val)   ((int)(val) <= 0)
+#endif
+
+#define CHK(val, dft)   (DISABLED(val) ? dft : val)
 
 static bool set_tabs(void);
 
@@ -838,13 +844,13 @@ static void
 set_control_chars(void)
 {
 #ifdef TERMIOS
-    if (mode.c_cc[VERASE] == 0 || terasechar >= 0)
+    if (DISABLED(mode.c_cc[VERASE]) || terasechar >= 0)
 	mode.c_cc[VERASE] = terasechar >= 0 ? terasechar : default_erase();
 
-    if (mode.c_cc[VINTR] == 0 || intrchar >= 0)
+    if (DISABLED(mode.c_cc[VINTR]) || intrchar >= 0)
 	mode.c_cc[VINTR] = intrchar >= 0 ? intrchar : CINTR;
 
-    if (mode.c_cc[VKILL] == 0 || tkillchar >= 0)
+    if (DISABLED(mode.c_cc[VKILL]) || tkillchar >= 0)
 	mode.c_cc[VKILL] = tkillchar >= 0 ? tkillchar : CKILL;
 #endif
 }
@@ -1020,11 +1026,13 @@ report(const char *name, int which, unsigned def)
 
     (void) fprintf(stderr, "%s %s ", name, older == newer ? "is" : "set to");
 
+    if (DISABLED(newer))
+	(void) fprintf(stderr, "undef.\n");
     /*
      * Check 'delete' before 'backspace', since the key_backspace value
      * is ambiguous.
      */
-    if (newer == 0177)
+    else if (newer == 0177)
 	(void) fprintf(stderr, "delete.\n");
     else if ((p = key_backspace) != 0
 	     && newer == (unsigned char) p[0]

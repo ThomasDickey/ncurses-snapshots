@@ -43,7 +43,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.15 2006/06/17 17:49:38 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.16 2006/07/08 19:18:38 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -381,6 +381,7 @@ _nc_align_termtype(TERMTYPE *to, TERMTYPE *from)
     bool same;
     char **ext_Names;
     int ext_Booleans, ext_Numbers, ext_Strings;
+    bool used_ext_Names = FALSE;
 
     DEBUG(2, ("align_termtype to(%d:%s), from(%d:%s)", na, to->term_names,
 	      nb, from->term_names));
@@ -444,6 +445,7 @@ _nc_align_termtype(TERMTYPE *to, TERMTYPE *from)
 	    to->ext_Names = ext_Names;
 	    DEBUG(2, ("realigned %d extended names for '%s' (to)",
 		      NUM_EXT_NAMES(to), to->term_names));
+	    used_ext_Names = TRUE;
 	}
 	if (nb != (ext_Booleans + ext_Numbers + ext_Strings)) {
 	    nb = (ext_Booleans + ext_Numbers + ext_Strings);
@@ -453,6 +455,8 @@ _nc_align_termtype(TERMTYPE *to, TERMTYPE *from)
 	    DEBUG(2, ("realigned %d extended names for '%s' (from)",
 		      NUM_EXT_NAMES(from), from->term_names));
 	}
+	if (!used_ext_Names)
+	    free(ext_Names);
     }
 }
 #endif
