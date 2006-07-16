@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.995 2006/07/08 20:05:47 tom Exp $
+-- $Id: NEWS,v 1.1000 2006/07/15 23:17:57 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,26 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060715
+	+ fix for install-rule in Ada95 to add terminal_interface.ads
+	  and terminal_interface.ali (anonymous posting in comp.lang.ada).
+	+ correction to manpage for getcchar() (report by William McBrine).
+	+ add test/chgat.c
+	+ modify wchgat() to mark updated cells as changed so a refresh will
+	  repaint those cells (comments by Sadrul H Chowdhury and William
+	  McBrine).
+	+ split up dependency of names.c and codes.c in ncurses/Makefile to
+	  work with parallel make (report/analysis by Joseph S Myers).
+	+ suppress a warning message (which is ignored) for systems without
+	  an ldconfig program (patch by Justin Hibbits).
+	+ modify configure script --disable-symlinks option to allow one to
+	  disable symlink() in tic even when link() does not work (report by
+	  Nigel Horne).
+	+ modify MKfallback.sh to use tic -x when constructing fallback tables
+	  to allow extended capabilities to be retrieved from a fallback entry.
+	+ improve leak-checking logic in tgetent() from 20060625 to ensure that
+	  it does not free the current screen (report by Miroslav Lichvar).
 
 20060708
 	+ add a check for _POSIX_VDISABLE in tset (NetBSD #33916).

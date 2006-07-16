@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.365 2006/06/17 18:06:37 tom Exp $
+dnl $Id: configure.in,v 1.366 2006/07/15 17:55:40 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.365 $)
+AC_REVISION($Revision: 1.366 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -528,29 +528,27 @@ CF_LINK_FUNCS
 with_links=no
 with_symlinks=no
 
-if test "$ac_cv_func_link" != yes ; then
-    AC_MSG_CHECKING(if tic should use symbolic links)
-    if test "$ac_cv_func_symlink" = yes ; then
-    	with_symlinks=yes
-    else
-    	with_symlinks=no
-    fi
-    AC_MSG_RESULT($with_symlinks)
-elif test "$ac_cv_func_symlink" != yes ; then
-    AC_MSG_CHECKING(if tic should use hard links)
-    if test "$ac_cv_func_link" = yes ; then
-    	with_links=yes
-    else
-    	with_links=no
-    fi
-    AC_MSG_RESULT($with_links)
-else
+# soft links (symbolic links) are useful for some systems where hard links do
+# not work, or to make it simpler to copy terminfo trees around.
+if test "$ac_cv_func_symlink" = yes ; then
     AC_MSG_CHECKING(if tic should use symbolic links)
     AC_ARG_ENABLE(symlinks,
 	[  --enable-symlinks       make tic use symbolic links not hard links],
 	[with_symlinks=$enableval],
 	[with_symlinks=no])
     AC_MSG_RESULT($with_symlinks)
+fi
+
+# If we have hard links and did not choose to use soft links instead, there is
+# no reason to make this choice optional - use the hard links.
+if test "$with_symlinks" = no ; then
+    AC_MSG_CHECKING(if tic should use hard links)
+    if test "$ac_cv_func_link" = yes ; then
+	with_links=yes
+    else
+	with_links=no
+    fi
+    AC_MSG_RESULT($with_links)
 fi
 
 test "$with_links" = yes && AC_DEFINE(USE_LINKS)

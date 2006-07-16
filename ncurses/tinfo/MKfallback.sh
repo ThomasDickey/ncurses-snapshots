@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKfallback.sh,v 1.12 2006/04/22 21:36:16 tom Exp $
+# $Id: MKfallback.sh,v 1.13 2006/07/15 16:54:20 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
@@ -52,7 +52,7 @@ if test $# != 0 ; then
 	TERMINFO_DIRS=$TERMINFO:$terminfo_dir
 	export TERMINFO_DIRS
 
-	tic $terminfo_src >&2
+	tic -x $terminfo_src >&2
 else
 	tmp_info=
 fi

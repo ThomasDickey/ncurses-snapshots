@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_altkeys.c,v 1.4 2006/04/01 19:08:03 tom Exp $
+ * $Id: demo_altkeys.c,v 1.6 2006/07/15 16:37:30 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2005/10/22
@@ -152,10 +152,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    break;
     }
     endwin();
-#if NO_LEAKS
-    delscreen(sp);
-#endif
-    ExitProgram(EXIT_FAILURE);
+    ExitProgram(EXIT_SUCCESS);
 }
 #else
 int
