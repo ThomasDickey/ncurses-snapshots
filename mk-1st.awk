@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.65 2005/06/18 19:15:57 tom Exp $
+# $Id: mk-1st.awk,v 1.66 2006/07/15 18:07:14 Justin.Hibbits Exp $
 ##############################################################################
-# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -259,7 +259,7 @@ END	{
 						printf "\tcd $(DESTDIR)$(libdir) && (rm -f %s; $(LN_S) %s %s; )\n", ovr_name, end_name, ovr_name
 					}
 				}
-				if ( ldconfig != "" ) {
+				if ( ldconfig != "" && ldconfig != ":" ) {
 					printf "\t- test -z \"$(DESTDIR)\" && %s\n", ldconfig
 				}
 				print  ""

@@ -961,6 +961,7 @@
 ./test/bulgarian-utf8.txt
 ./test/cardfile.c
 ./test/cardfile.dat
+./test/chgat.c
 ./test/color_set.c
 ./test/configure
 ./test/configure.in

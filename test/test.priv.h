@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.62 2006/05/27 20:01:15 tom Exp $ */
+/* $Id: test.priv.h,v 1.63 2006/07/15 18:27:24 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -237,6 +237,7 @@
 
 #ifdef NCURSES_VERSION
 #define HAVE_COLOR_SET 1
+#define HAVE_CHGAT 1
 #endif
 
 #if HAVE_GETOPT_H

@@ -1,4 +1,4 @@
-# $Id: programs,v 1.1 2006/06/03 14:01:12 tom Exp $
+# $Id: programs,v 1.2 2006/07/15 18:28:17 tom Exp $
 ##############################################################################
 # Copyright (c) 2006 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -34,6 +34,7 @@ background	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	background
 blue		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	blue
 bs		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	bs
 cardfile	$(LDFLAGS_DEFAULT)	$(LOCAL_LIBS)	cardfile
+chgat		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	chgat
 color_set	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	color_set
 demo_altkeys	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	demo_altkeys
 demo_defkey	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	demo_defkey

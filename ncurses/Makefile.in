@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.97 2006/05/27 20:01:51 tom Exp $
+# $Id: Makefile.in,v 1.99 2006/07/15 21:11:56 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -151,7 +151,8 @@ AUTO_SRC = \
 	lib_keyname.c \
 	link_test.c \
 	names.c \
-	unctrl.c
+	unctrl.c \
+	names-stamp
 
 TEST_DEPS	= ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 TEST_ARGS	= -L../lib -lncurses@DFT_ARG_SUFFIX@
@@ -196,7 +197,7 @@ keys.list :	$(tinfo)/MKkeys_list.sh
 
 make_keys$(BUILD_EXEEXT) : \
 		$(tinfo)/make_keys.c \
-		names.c
+		names-stamp
 	$(BUILD_CC) -o $@ $(BUILD_CCFLAGS) $(tinfo)/make_keys.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 
 make_hash$(BUILD_EXEEXT) : \
@@ -216,11 +217,18 @@ comp_captab.c: \
 lib_keyname.c: keys.list $(base)/MKkeyname.awk
 	$(AWK) -f $(base)/MKkeyname.awk keys.list > $@
 
-names.c codes.c: $(tinfo)/MKnames.awk
+names-stamp: $(tinfo)/MKnames.awk
 	$(AWK) -f $(tinfo)/MKnames.awk $(srcdir)/../include/@TERMINFO_CAPS@
 	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >names.c
 	cat namehdr boolcodes numcodes strcodes codeftr >codes.c
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+	@echo >$@
+
+names.c: names-stamp
+	@echo made $@
+
+codes.c: names-stamp
+	@echo made $@
 
 unctrl.c: $(base)/MKunctrl.awk
 	echo | $(AWK) -f $(base)/MKunctrl.awk >$@

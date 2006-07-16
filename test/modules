@@ -1,7 +1,7 @@
 # Test-Program modules
-# $Id: modules,v 1.25 2006/02/11 19:15:30 tom Exp $
+# $Id: modules,v 1.26 2006/07/15 18:53:02 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -28,7 +28,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey 1997-2005
+# Author: Thomas E. Dickey 1997-on
 #
 
 @ base
@@ -36,6 +36,7 @@ background	progs		$(srcdir)	$(HEADER_DEPS)
 blue		progs		$(srcdir)	$(HEADER_DEPS)
 bs		progs		$(srcdir)	$(HEADER_DEPS)
 cardfile	progs		$(srcdir)	$(HEADER_DEPS)	../include/panel.h ../include/form.h
+chgat		progs		$(srcdir)	$(HEADER_DEPS)
 color_set	progs		$(srcdir)	$(HEADER_DEPS)
 demo_altkeys	progs		$(srcdir)	$(HEADER_DEPS)
 demo_defkey	progs		$(srcdir)	$(HEADER_DEPS)
