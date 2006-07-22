@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.79 2005/12/03 20:45:28 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.80 2006/07/22 14:36:29 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -598,7 +598,8 @@ initialize_mousetype(void)
 
     /* we know how to recognize mouse events under "xterm" */
     if (key_mouse != 0) {
-	if (!strcmp(key_mouse, xterm_kmous)) {
+	if (!strcmp(key_mouse, xterm_kmous)
+	    || strstr(cur_term->type.term_names, "xterm") != 0) {
 	    init_xterm_mouse();
 	}
     } else if (strstr(cur_term->type.term_names, "xterm") != 0) {
