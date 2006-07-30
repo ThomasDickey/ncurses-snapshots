@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.294 $
-#	$Date: 2006/07/22 15:10:22 $
+#	$Revision: 1.290 $
+#	$Date: 2006/07/22 12:52:24 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2671,13 +2671,6 @@ vt100-putty|Reset PuTTY to pure vt100,
 putty-256color|PuTTY 0.58 with xterm 256-colors, 
 	use=xterm+256color, use=putty, 
 
-# One of the keyboard selections is "VT100+".
-# pterm (the X11 port) uses shifted F1-F10 as F11-F20
-putty-vt100|VT100+ keyboard layout, 
-	kf1=\EOP, kf10=\EOY, kf11=\EOZ, kf12=\EO[, kf2=\EOQ, 
-	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW, 
-	kf9=\EOX, use=putty, 
-
 # This entry is for Tera Term Pro version 2.3, for MS-Windows 95/NT written by
 # T. Teranishi dated Mar 10, 1998.  It is a free software terminal emulator
 # (communication program) which supports:
@@ -3092,15 +3085,15 @@ xterm-basic|xterm terminal emulator - common (XFree86),
 	kdch1=\E[3~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, meml=\El, 
 	memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
 	rmacs=\E(B, rmam=\E[?7l, rmcup=\E[?1049l, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmm=\E[?1034l, rmso=\E[27m, rmul=\E[24m, 
-	rs1=\Ec, rs2=\E[!p\E[?3;4l\E[4l\E>, sc=\E7, 
-	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=\Ec, 
+	rs2=\E[!p\E[?3;4l\E[4l\E>, sc=\E7, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m, 
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smcup=\E[?1049h, 
-	smir=\E[4h, smkx=\E[?1h\E=, smm=\E[?1034h, smso=\E[7m, 
-	smul=\E[4m, tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt100+enq, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt100+enq, 
 
 # From: David J. MacKenzie <djm@va.pubnix.com>, 14 Nov 1997
 # In retrospect, something like xterm-r6 was intended here -TD
@@ -3203,8 +3196,7 @@ xterm-sco|XFree86 xterm with SCO function keys,
 	kf4=\E[P, kf40=\E[z, kf41=\E[@, kf42=\E[[, kf43=\E[\\, 
 	kf44=\E[], kf45=\E[\^, kf46=\E[_, kf47=\E[`, kf48=\E[{, 
 	kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, 
-	kich1=\E[L, kmous=\E[>M, knp=\E[G, kpp=\E[I, 
-	use=xterm-basic, 
+	kich1=\E[L, knp=\E[G, kpp=\E[I, use=xterm-basic, 
 
 # The xterm-new description has all of the features, but is not completely
 # compatible with vt220.  If you are using a Sun or PC keyboard, set the
@@ -3718,14 +3710,6 @@ Eterm|Eterm-color|Eterm with xterm-style color support (X Window System),
 	smir=\E[4h, smkx=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	vpa=\E[%i%p1%dd, use=vt100+enq, use=rxvt+pcfkeys, 
 	use=ecma+color, 
-
-# xiterm  0.5-5.2
-# This is not based on xterm's source...
-# vttest shows several problems with keyboard, cursor-movements.
-# see also http://invisible-island.net/xterm/xterm.faq.html#bug_xiterm
-xiterm|internationalized terminal emulator for X, 
-	km@, 
-	kbs=\177, kdch1=\E[3~, use=klone+color, use=xterm-r6, 
 
 # These (xtermc and xtermm) are distributed with Solaris.  They refer to a
 # variant of xterm which is apparently no longer supported, but are interesting
@@ -20499,7 +20483,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Added x68k console
 #	* Added OTbs to several VT-series entries.
 # 9.13.4 (Wed May 22 10:54:09 EDT 1996):
-#	* screen entry update for 3.7.1 from Michael Alan Dorman.
+#	* screen entry update for 3.7.1 from Michael Alan Dorfman.
 # 9.13.5 (Wed Jun  5 11:22:41 EDT 1996):
 #	* kterm correction due to Kenji Rikitake.
 #	* ACS correction in vt320-kll due to Phillippe De Muyter.
@@ -21166,10 +21150,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* update xterm-sun and xterm-sco entries to match xterm #216 -TD
 #	* modify is2/rs2 strings for xterm-r6 as per fix in xterm #148 -TD
 #	* modify xterm-24 to inherit from "xterm" -TD
-#	* add xiterm entry -TD
-#	* add putty-vt100 entry -TD
-#	* corrected spelling of Michael A Dorman's name, prompted by
-#	  http://www.advogato.org/person/mdorman/diary.html -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

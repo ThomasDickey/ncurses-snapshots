@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.83 2006/05/20 16:58:11 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.84 2006/07/28 23:28:26 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1272,7 +1272,7 @@ main(int argc, char *argv[])
 
     while ((c = getopt(argc,
 		       argv,
-		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtUuVv:w:x")) != EOF)
+		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtUuVv:w:x")) != EOF) {
 	switch (c) {
 	case '1':
 	    mwidth = 0;
@@ -1388,7 +1388,7 @@ main(int argc, char *argv[])
 	    else {
 		(void) fprintf(stderr,
 			       "infocmp: unknown sort mode\n");
-		return EXIT_FAILURE;
+		ExitProgram(EXIT_FAILURE);
 	    }
 	    break;
 
@@ -1433,6 +1433,7 @@ main(int argc, char *argv[])
 	default:
 	    usage();
 	}
+    }
 
     /* by default, sort by terminfo name */
     if (sortmode == S_DEFAULT)
@@ -1460,7 +1461,7 @@ main(int argc, char *argv[])
 	    if (termcount >= MAXTERMS) {
 		(void) fprintf(stderr,
 			       "infocmp: too many terminal type arguments\n");
-		return EXIT_FAILURE;
+		ExitProgram(EXIT_FAILURE);
 	    } else {
 		const char *directory = termcount ? restdir : firstdir;
 		int status;
@@ -1468,6 +1469,7 @@ main(int argc, char *argv[])
 		tname[termcount] = argv[optind];
 
 		if (directory) {
+#if USE_DATABASE
 		    (void) sprintf(tfile[termcount], "%s/%c/%s",
 				   directory,
 				   *argv[optind], argv[optind]);
@@ -1478,11 +1480,15 @@ main(int argc, char *argv[])
 
 		    status = _nc_read_file_entry(tfile[termcount],
 						 &entries[termcount].tterm);
+#else
+		    (void) fprintf(stderr, "terminfo files not supported\n");
+		    ExitProgram(EXIT_FAILURE);
+#endif
 		} else {
 		    if (itrace)
 			(void) fprintf(stderr,
-				       "infocmp: reading entry %s from system directories %s\n",
-				       argv[optind], tname[termcount]);
+				       "infocmp: reading entry %s from database\n",
+				       tname[termcount]);
 
 		    status = _nc_read_entry(tname[termcount],
 					    tfile[termcount],
@@ -1494,7 +1500,7 @@ main(int argc, char *argv[])
 		    (void) fprintf(stderr,
 				   "infocmp: couldn't open terminfo file %s.\n",
 				   tfile[termcount]);
-		    return EXIT_FAILURE;
+		    ExitProgram(EXIT_FAILURE);
 		}
 		repair_acsc(&entries[termcount].tterm);
 		termcount++;

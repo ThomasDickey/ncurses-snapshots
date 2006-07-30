@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.94 2006/04/01 19:31:34 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.95 2006/07/28 22:58:13 tom Exp $")
 
 /****************************************************************************
  *
@@ -312,34 +312,8 @@ _nc_update_screensize(void)
 static int
 grab_entry(const char *const tn, TERMTYPE *const tp)
 {
-#if USE_DATABASE
     char filename[PATH_MAX];
-#endif
-    int status;
-
-    /*
-     * $TERM shouldn't contain pathname delimiters.
-     */
-    if (strchr(tn, '/'))
-	return TGETENT_NO;
-
-#if USE_DATABASE
-    if ((status = _nc_read_entry(tn, filename, tp)) != TGETENT_YES) {
-
-#if !PURE_TERMINFO
-	/*
-	 * Try falling back on the termcap file.
-	 * Note:  allowing this call links the entire terminfo/termcap
-	 * compiler into the startup code.  It's preferable to build a
-	 * real terminfo database and use that.
-	 */
-	status = _nc_read_termcap_entry(tn, tp);
-#endif /* PURE_TERMINFO */
-
-    }
-#else
-    status = _nc_read_termcap_entry(tn, tp);
-#endif
+    int status = _nc_read_entry(tn, filename, tp);
 
     /*
      * If we have an entry, force all of the cancelled strings to null

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -58,16 +58,9 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.69 2005/12/24 19:33:25 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.71 2006/07/29 12:06:51 tom Exp $")
 
 #if !PURE_TERMINFO
-
-#if defined(__EMX__) || defined(__DJGPP__)
-#define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
-		  || (((s)[0] != 0) && ((s)[1] == ':')))
-#else
-#define is_pathname(s) ((s) != 0 && (s)[0] == '/')
-#endif
 
 #define TC_SUCCESS     0
 #define TC_NOT_FOUND  -1
@@ -806,7 +799,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     _nc_str_init(&desc, pathbuf, sizeof(pathbuf));
     if (cp == NULL) {
 	_nc_safe_strcpy(&desc, get_termpath());
-    } else if (!is_pathname(cp)) {	/* TERMCAP holds an entry */
+    } else if (!_nc_is_abs_path(cp)) {	/* TERMCAP holds an entry */
 	if ((termpath = get_termpath()) != 0) {
 	    _nc_safe_strcat(&desc, termpath);
 	} else {
@@ -844,7 +837,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	}
     }
     *fname = 0;			/* mark end of vector */
-    if (is_pathname(cp)) {
+    if (_nc_is_abs_path(cp)) {
 	if (_nc_cgetset(cp) < 0) {
 	    return (TC_SYS_ERR);
 	}
@@ -897,8 +890,21 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
      * cgetent, then it is the actual filename).
      */
     if (i >= 0) {
+#if HAVE_BSD_CGETENT
+	char temp[PATH_MAX];
+
+	_nc_str_init(&desc, temp, sizeof(temp));
+	_nc_safe_strcpy(&desc, pathvec[i]);
+	_nc_safe_strcat(&desc, ".db");
+	if (_nc_access(temp, R_OK) == 0) {
+	    _nc_safe_strcpy(&desc, pathvec[i]);
+	}
+	if ((the_source = strdup(temp)) != 0)
+	    *sourcename = the_source;
+#else
 	if ((the_source = strdup(pathvec[i])) != 0)
 	    *sourcename = the_source;
+#endif
     }
 
     return (i);
@@ -957,7 +963,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
     }
 
     if (use_terminfo_vars() && (p = getenv("TERMCAP")) != 0
-	&& !is_pathname(p) && _nc_name_match(p, tn, "|:")) {
+	&& !_nc_is_abs_path(p) && _nc_name_match(p, tn, "|:")) {
 	/* TERMCAP holds a termcap entry */
 	strncpy(tc, p, sizeof(tc) - 1);
 	tc[sizeof(tc) - 1] = '\0';
@@ -1012,7 +1018,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 
     termpaths[filecount] = 0;
     if (use_terminfo_vars() && (tc = getenv("TERMCAP")) != 0) {
-	if (is_pathname(tc)) {	/* interpret as a filename */
+	if (_nc_is_abs_path(tc)) {	/* interpret as a filename */
 	    ADD_TC(tc, 0);
 	    normal = FALSE;
 	} else if (_nc_name_match(tc, tn, "|:")) {	/* treat as a capability file */

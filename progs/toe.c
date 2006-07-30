@@ -42,7 +42,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.36 2006/06/17 18:15:49 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.39 2006/07/29 20:28:25 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -61,30 +61,36 @@ ExitProgram(int code)
 #endif
 
 static bool
-is_a_file(char *path)
+is_a_file(const char *path)
 {
     struct stat sb;
     return (stat(path, &sb) == 0
 	    && (sb.st_mode & S_IFMT) == S_IFREG);
 }
 
+#if USE_DATABASE
 static bool
-is_a_directory(char *path)
+is_a_directory(const char *path)
 {
     struct stat sb;
     return (stat(path, &sb) == 0
 	    && (sb.st_mode & S_IFMT) == S_IFDIR);
 }
+#endif
 
-static char *
-get_directory(char *path)
+static bool
+is_database(const char *path)
 {
-    if (path != 0) {
-	if (!is_a_directory(path)
-	    || access(path, R_OK | X_OK) != 0)
-	    path = 0;
-    }
-    return path;
+    bool result = FALSE;
+#if USE_DATABASE
+    if (is_a_directory(path) && access(path, R_OK | X_OK) == 0)
+	result = TRUE;
+#endif
+#if USE_TERMCAP
+    if (is_a_file(path) && access(path, R_OK) == 0)
+	result = TRUE;
+#endif
+    return result;
 }
 
 static void
@@ -93,13 +99,38 @@ deschook(const char *cn, TERMTYPE *tp)
 {
     const char *desc;
 
-    if ((desc = strrchr(tp->term_names, '|')) == 0)
+    if ((desc = strrchr(tp->term_names, '|')) == 0 || *++desc == '\0')
 	desc = "(No description)";
-    else
-	++desc;
 
     (void) printf("%-10s\t%s\n", cn, desc);
 }
+
+#if USE_TERMCAP
+static void
+show_termcap(char *buffer,
+	     void (*hook) (const char *, TERMTYPE *tp))
+{
+    TERMTYPE data;
+    char *next = strchr(buffer, ':');
+    char *last;
+    char *list = buffer;
+
+    if (next)
+	*next = '\0';
+
+    last = strrchr(buffer, '|');
+    if (last)
+	++last;
+
+    data.term_names = strdup(buffer);
+    while ((next = strtok(list, "|")) != 0) {
+	if (next != last)
+	    hook(next, &data);
+	list = 0;
+    }
+    free(data.term_names);
+}
+#endif
 
 static int
 typelist(int eargc, char *eargv[],
@@ -110,65 +141,108 @@ typelist(int eargc, char *eargv[],
     int i;
 
     for (i = 0; i < eargc; i++) {
-	DIR *termdir;
-	DIRENT *subdir;
+#if USE_DATABASE
+	if (is_a_directory(eargv[i])) {
+	    DIR *termdir;
+	    DIRENT *subdir;
 
-	if ((termdir = opendir(eargv[i])) == 0) {
-	    (void) fflush(stdout);
-	    (void) fprintf(stderr,
-			   "%s: can't open terminfo directory %s\n",
-			   _nc_progname, eargv[i]);
-	    return (EXIT_FAILURE);
-	} else if (verbosity)
-	    (void) printf("#\n#%s:\n#\n", eargv[i]);
+	    if ((termdir = opendir(eargv[i])) == 0) {
+		(void) fflush(stdout);
+		(void) fprintf(stderr,
+			       "%s: can't open terminfo directory %s\n",
+			       _nc_progname, eargv[i]);
+		return (EXIT_FAILURE);
+	    } else if (verbosity)
+		(void) printf("#\n#%s:\n#\n", eargv[i]);
 
-	while ((subdir = readdir(termdir)) != 0) {
-	    size_t len = NAMLEN(subdir);
-	    char buf[PATH_MAX];
-	    char name_1[PATH_MAX];
-	    DIR *entrydir;
-	    DIRENT *entry;
+	    while ((subdir = readdir(termdir)) != 0) {
+		size_t len = NAMLEN(subdir);
+		char buf[PATH_MAX];
+		char name_1[PATH_MAX];
+		DIR *entrydir;
+		DIRENT *entry;
 
-	    strncpy(name_1, subdir->d_name, len)[len] = '\0';
-	    if (isDotname(name_1))
-		continue;
-
-	    (void) sprintf(buf, "%s/%s/", eargv[i], name_1);
-	    if (chdir(buf) != 0)
-		continue;
-
-	    entrydir = opendir(".");
-	    while ((entry = readdir(entrydir)) != 0) {
-		char name_2[PATH_MAX];
-		TERMTYPE lterm;
-		char *cn;
-		int status;
-
-		len = NAMLEN(entry);
-		strncpy(name_2, entry->d_name, len)[len] = '\0';
-		if (isDotname(name_2) || !is_a_file(name_2))
+		strncpy(name_1, subdir->d_name, len)[len] = '\0';
+		if (isDotname(name_1))
 		    continue;
 
-		status = _nc_read_file_entry(name_2, &lterm);
-		if (status <= 0) {
-		    (void) fflush(stdout);
-		    (void) fprintf(stderr,
-				   "toe: couldn't open terminfo file %s.\n",
-				   name_2);
-		    return (EXIT_FAILURE);
-		}
+		(void) sprintf(buf, "%s/%s/", eargv[i], name_1);
+		if (chdir(buf) != 0)
+		    continue;
 
-		/* only visit things once, by primary name */
-		cn = _nc_first_name(lterm.term_names);
-		if (!strcmp(cn, name_2)) {
-		    /* apply the selected hook function */
-		    (*hook) (cn, &lterm);
+		entrydir = opendir(".");
+		while ((entry = readdir(entrydir)) != 0) {
+		    char name_2[PATH_MAX];
+		    TERMTYPE lterm;
+		    char *cn;
+		    int status;
+
+		    len = NAMLEN(entry);
+		    strncpy(name_2, entry->d_name, len)[len] = '\0';
+		    if (isDotname(name_2) || !is_a_file(name_2))
+			continue;
+
+		    status = _nc_read_file_entry(name_2, &lterm);
+		    if (status <= 0) {
+			(void) fflush(stdout);
+			(void) fprintf(stderr,
+				       "%s: couldn't open terminfo file %s.\n",
+				       _nc_progname, name_2);
+			return (EXIT_FAILURE);
+		    }
+
+		    /* only visit things once, by primary name */
+		    cn = _nc_first_name(lterm.term_names);
+		    if (!strcmp(cn, name_2)) {
+			/* apply the selected hook function */
+			(*hook) (cn, &lterm);
+		    }
+		    _nc_free_termtype(&lterm);
 		}
-		_nc_free_termtype(&lterm);
+		closedir(entrydir);
 	    }
-	    closedir(entrydir);
+	    closedir(termdir);
 	}
-	closedir(termdir);
+#endif
+#if USE_TERMCAP
+#if HAVE_BSD_CGETENT
+	char *db_array[2];
+	char *buffer = 0;
+
+	if (verbosity)
+	    (void) printf("#\n#%s:\n#\n", eargv[i]);
+
+	db_array[0] = eargv[i];
+	db_array[1] = 0;
+
+	if (cgetfirst(&buffer, db_array)) {
+	    show_termcap(buffer, hook);
+	    free(buffer);
+	    while (cgetnext(&buffer, db_array)) {
+		show_termcap(buffer, hook);
+		free(buffer);
+	    }
+	}
+	cgetclose();
+#else
+	/* scan termcap text-file only */
+	if (is_a_file(eargv[i])) {
+	    char buffer[2048];
+	    FILE *fp;
+
+	    if ((fp = fopen(eargv[i], "r")) != 0) {
+		while (fgets(buffer, sizeof(buffer), fp) != 0) {
+		    if (*buffer == '#')
+			continue;
+		    if (isspace(*buffer))
+			continue;
+		    show_termcap(buffer, hook);
+		}
+		fclose(fp);
+	    }
+	}
+#endif
+#endif
     }
 
     return (EXIT_SUCCESS);
@@ -177,7 +251,7 @@ typelist(int eargc, char *eargv[],
 static void
 usage(void)
 {
-    (void) fprintf(stderr, "usage: toe [-ahuUV] [-v n] [file...]\n");
+    (void) fprintf(stderr, "usage: %s [-ahuUV] [-v n] [file...]\n", _nc_progname);
     ExitProgram(EXIT_FAILURE);
 }
 
@@ -313,7 +387,9 @@ main(int argc, char *argv[])
 
 	    _nc_first_db(&state, &offset);
 	    while ((path = _nc_next_db(&state, &offset)) != 0) {
-		if (eargv != 0) {
+		if (!is_database(path)) {
+		    ;
+		} else if (eargv != 0) {
 		    unsigned n;
 		    int found = FALSE;
 
@@ -336,26 +412,33 @@ main(int argc, char *argv[])
 		eargv = typeCalloc(char *, count + 1);
 	    } else {
 		code = typelist((int) count, eargv, header, deschook);
+		while (count-- > 0)
+		    free(eargv[count]);
+		free(eargv);
 	    }
 	}
     } else {
-	static char system_db[] = TERMINFO;
+	DBDIRS state;
+	int offset;
+	const char *path;
 	char *eargv[3];
-	int j;
+	int count = 0;
 
-	j = 0;
-	if ((eargv[j] = get_directory(getenv("TERMINFO"))) != 0) {
-	    j++;
-	} else {
-	    if ((eargv[j] = get_directory(_nc_home_terminfo())) != 0)
-		j++;
-	    if ((eargv[j] = get_directory(system_db)) != 0)
-		j++;
+	_nc_first_db(&state, &offset);
+	while ((path = _nc_next_db(&state, &offset)) != 0) {
+	    if (is_database(path)) {
+		eargv[count++] = strdup(path);
+		break;
+	    }
 	}
-	eargv[j] = 0;
+	eargv[count] = 0;
 
-	code = typelist(j, eargv, header, deschook);
+	code = typelist(count, eargv, header, deschook);
+
+	while (count-- > 0)
+	    free(eargv[count]);
     }
+    _nc_last_db();
 
     ExitProgram(code);
 }

@@ -33,7 +33,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.51 2006/01/14 22:25:41 tom Exp $
+ * $Id: tic.h,v 1.53 2006/07/29 14:40:32 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -242,6 +242,7 @@ extern NCURSES_EXPORT(const struct name_table_entry * const *) _nc_get_hash_tabl
 
 /* access.c */
 extern NCURSES_EXPORT(unsigned) _nc_pathlast (const char *);
+extern NCURSES_EXPORT(bool) _nc_is_abs_path (const char *);
 extern NCURSES_EXPORT(char *) _nc_basename (char *);
 extern NCURSES_EXPORT(char *) _nc_rootname (char *);
 
@@ -302,14 +303,21 @@ extern NCURSES_EXPORT_VAR(int) _nc_nulls_sent;		/* Add one for every null sent *
 /* comp_main.c: compiler main */
 extern const char * _nc_progname;
 
-/* read_entry.c */
+/* db_iterator.c */
 typedef enum {
     dbdTIC = 0,
+#if USE_DATABASE
     dbdEnvOnce,
     dbdHome,
     dbdEnvList,
     dbdCfgList,
     dbdCfgOnce,
+#endif
+#if USE_TERMCAP
+    dbdEnvOnce2,
+    dbdEnvList2,
+    dbdCfgList2,
+#endif
     dbdLAST
 } DBDIRS;
 

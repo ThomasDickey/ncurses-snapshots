@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -46,21 +47,25 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-#if 0
+#if 1
 #define TRACE_OUT(p) DEBUG(2, p)
 #else
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.59 2006/04/08 21:04:56 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.60 2006/07/29 20:16:03 tom Exp $")
 
 static int total_written;
 
-static int write_object(FILE *, TERMTYPE *);
+static int write_object(TERMTYPE *, char *, unsigned *, unsigned);
 
 static void
 write_file(char *filename, TERMTYPE *tp)
 {
+    unsigned offset = 0;
+    char buffer[MAX_ENTRY_SIZE];
+    unsigned limit = sizeof(buffer);
+
     FILE *fp = (_nc_access(filename, W_OK) == 0) ? fopen(filename, "wb") : 0;
     if (fp == 0) {
 	perror(filename);
@@ -68,9 +73,11 @@ write_file(char *filename, TERMTYPE *tp)
     }
     DEBUG(1, ("Created %s", filename));
 
-    if (write_object(fp, tp) == ERR) {
+    if (write_object(tp, buffer, &offset, limit) == ERR
+	|| fwrite(buffer, sizeof(char), offset, fp) != offset) {
 	_nc_syserr_abort("error writing %s/%s", _nc_tic_dir(0), filename);
     }
+
     fclose(fp);
 }
 
@@ -357,12 +364,31 @@ _nc_write_entry(TERMTYPE *const tp)
     }
 }
 
+static unsigned
+fake_write(char *dst, unsigned *offset, int limit, char *src, unsigned want, unsigned size)
+{
+    int have = (limit - *offset);
+
+    want *= size;
+    if (have > 0) {
+	if ((int) want > have)
+	    want = have;
+	memcpy(dst + *offset, src, want);
+	*offset += want;
+    } else {
+	want = 0;
+    }
+    return (int) (want / size);
+}
+
+#define Write(buf, size, count) fake_write(buffer, offset, limit, (char *) buf, count, size)
+
 #undef LITTLE_ENDIAN		/* BSD/OS defines this as a feature macro */
 #define HI(x)			((x) / 256)
 #define LO(x)			((x) % 256)
 #define LITTLE_ENDIAN(p, x)	(p)[0] = LO(x), (p)[1] = HI(x)
 
-#define WRITE_STRING(str) (fwrite(str, sizeof(char), strlen(str) + 1, fp) == strlen(str) + 1)
+#define WRITE_STRING(str) (Write(str, sizeof(char), strlen(str) + 1) == strlen(str) + 1)
 
 static int
 compute_offsets(char **Strings, unsigned strmax, short *offsets)
@@ -402,7 +428,7 @@ convert_shorts(unsigned char *buf, short *Numbers, unsigned count)
 }
 
 #define even_boundary(value) \
-	    ((value) % 2 != 0 && fwrite(&zero, sizeof(char), 1, fp) != 1)
+	    ((value) % 2 != 0 && Write(&zero, sizeof(char), 1) != 1)
 
 #if NCURSES_XNAMES
 static unsigned
@@ -463,7 +489,7 @@ extended_object(TERMTYPE *tp)
 #endif
 
 static int
-write_object(FILE *fp, TERMTYPE *tp)
+write_object(TERMTYPE *tp, char *buffer, unsigned *offset, unsigned limit)
 {
     char *namelist;
     size_t namelen, boolmax, nummax, strmax;
@@ -522,9 +548,9 @@ write_object(FILE *fp, TERMTYPE *tp)
     LITTLE_ENDIAN(buf + 10, nextfree);
 
     /* write out the header */
-    TRACE_OUT(("Header of %s @%ld", namelist, ftell(fp)));
-    if (fwrite(buf, 12, 1, fp) != 1
-	|| fwrite(namelist, sizeof(char), namelen, fp) != namelen)
+    TRACE_OUT(("Header of %s @%d", namelist, *offset));
+    if (Write(buf, 12, 1) != 1
+	|| Write(namelist, sizeof(char), namelen) != namelen)
 	  return (ERR);
 
     for (i = 0; i < boolmax; i++)
@@ -532,27 +558,27 @@ write_object(FILE *fp, TERMTYPE *tp)
 	    buf[i] = TRUE;
 	else
 	    buf[i] = FALSE;
-    if (fwrite(buf, sizeof(char), boolmax, fp) != boolmax)
+    if (Write(buf, sizeof(char), boolmax) != boolmax)
 	  return (ERR);
 
     if (even_boundary(namelen + boolmax))
 	return (ERR);
 
-    TRACE_OUT(("Numerics begin at %04lx", ftell(fp)));
+    TRACE_OUT(("Numerics begin at %04x", *offset));
 
     /* the numerics */
     convert_shorts(buf, tp->Numbers, nummax);
-    if (fwrite(buf, 2, nummax, fp) != nummax)
+    if (Write(buf, 2, nummax) != nummax)
 	return (ERR);
 
-    TRACE_OUT(("String offsets begin at %04lx", ftell(fp)));
+    TRACE_OUT(("String offsets begin at %04x", *offset));
 
     /* the string offsets */
     convert_shorts(buf, offsets, strmax);
-    if (fwrite(buf, 2, strmax, fp) != strmax)
+    if (Write(buf, 2, strmax) != strmax)
 	return (ERR);
 
-    TRACE_OUT(("String table begins at %04lx", ftell(fp)));
+    TRACE_OUT(("String table begins at %04x", *offset));
 
     /* the strings */
     for (i = 0; i < strmax; i++)
@@ -581,23 +607,23 @@ write_object(FILE *fp, TERMTYPE *tp)
 	LITTLE_ENDIAN(buf + 4, tp->ext_Strings);
 	LITTLE_ENDIAN(buf + 6, strmax);
 	LITTLE_ENDIAN(buf + 8, nextfree);
-	TRACE_OUT(("WRITE extended-header @%ld", ftell(fp)));
-	if (fwrite(buf, 10, 1, fp) != 1)
+	TRACE_OUT(("WRITE extended-header @%d", *offset));
+	if (Write(buf, 10, 1) != 1)
 	    return (ERR);
 
-	TRACE_OUT(("WRITE %d booleans @%ld", tp->ext_Booleans, ftell(fp)));
+	TRACE_OUT(("WRITE %d booleans @%d", tp->ext_Booleans, *offset));
 	if (tp->ext_Booleans
-	    && fwrite(tp->Booleans + BOOLCOUNT, sizeof(char),
-		      tp->ext_Booleans, fp) != tp->ext_Booleans)
+	    && Write(tp->Booleans + BOOLCOUNT, sizeof(char),
+		     tp->ext_Booleans) != tp->ext_Booleans)
 	      return (ERR);
 
 	if (even_boundary(tp->ext_Booleans))
 	    return (ERR);
 
-	TRACE_OUT(("WRITE %d numbers @%ld", tp->ext_Numbers, ftell(fp)));
+	TRACE_OUT(("WRITE %d numbers @%d", tp->ext_Numbers, *offset));
 	if (tp->ext_Numbers) {
 	    convert_shorts(buf, tp->Numbers + NUMCOUNT, tp->ext_Numbers);
-	    if (fwrite(buf, 2, tp->ext_Numbers, fp) != tp->ext_Numbers)
+	    if (Write(buf, 2, tp->ext_Numbers) != tp->ext_Numbers)
 		return (ERR);
 	}
 
@@ -606,8 +632,8 @@ write_object(FILE *fp, TERMTYPE *tp)
 	 * in that order.
 	 */
 	convert_shorts(buf, offsets, strmax);
-	TRACE_OUT(("WRITE offsets @%ld", ftell(fp)));
-	if (fwrite(buf, 2, strmax, fp) != strmax)
+	TRACE_OUT(("WRITE offsets @%d", *offset));
+	if (Write(buf, 2, strmax) != strmax)
 	    return (ERR);
 
 	/*
