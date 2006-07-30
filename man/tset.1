@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.17 2006/05/13 15:14:01 tom Exp $
+.\" $Id: tset.1,v 1.18 2006/07/29 11:34:07 tom Exp $
 .TH tset 1 ""
 .SH NAME
 \fBtset\fR, \fBreset\fR - terminal initialization
@@ -246,8 +246,21 @@ As of 4.4BSD, executing \fBtset\fR as \fBreset\fR no longer implies the \fB-Q\fR
 option.  Also, the interaction between the - option and the \fIterminal\fR
 argument in some historic implementations of \fBtset\fR has been removed.
 .SH ENVIRONMENT
-The \fBtset\fR command uses the \fBSHELL\fR and \fBTERM\fR
-environment variables.
+The \fBtset\fR command uses these environment variables:
+.TP 5
+SHELL
+tells \fBtset\fP whether to initialize \fBTERM\fP using \fBsh\fP or
+\fBcsh\fP syntax.
+.TP 5
+TERM
+Denotes your terminal type.
+Each terminal type is distinct, though many are similar.
+.TP 5
+TERMCAP
+may denote the location of a termcap database.
+If it is not an absolute pathname, e.g., begins with a `/',
+\fBtset\fP removes the variable from the environment before looking
+for the terminal description.
 .SH FILES
 .TP 5
 /etc/ttys

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.67 2006/03/11 21:18:22 tom Exp $
+# $Id: Makefile.in,v 1.68 2006/07/29 15:27:24 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -114,9 +114,9 @@ AUTO_SRC = \
 	termsort.c \
 	transform.h
 
-# tic and toe rely on direct access to the terminfo database
-GET_PROGS = infocmp$x clear$x tput$x tset$x
-PUT_PROGS = @MAKE_TERMINFO@ tic$x toe$x
+# tic relies on direct access to the terminfo database
+GET_PROGS = infocmp$x clear$x tput$x tset$x toe$x
+PUT_PROGS = @MAKE_TERMINFO@ tic$x
 PROGS = $(PUT_PROGS) $(GET_PROGS)
 
 # Default library, for linking applications

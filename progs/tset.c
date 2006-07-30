@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.64 2006/07/08 22:23:44 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.66 2006/07/29 12:03:57 tom Exp $")
 
 extern char **environ;
 
@@ -585,7 +585,7 @@ get_termcap_entry(char *userarg)
      * real entry from /etc/termcap.  This prevents us from being fooled
      * by out of date stuff in the environment.
      */
-  found:if ((p = getenv("TERMCAP")) != 0 && *p != '/') {
+  found:if ((p = getenv("TERMCAP")) != 0 && !_nc_is_abs_path(p)) {
 	/* 'unsetenv("TERMCAP")' is not portable.
 	 * The 'environ' array is better.
 	 */
@@ -1268,13 +1268,15 @@ main(int argc, char **argv)
 
     if (sflag) {
 	int len;
+	char *var;
+	char *leaf;
 	/*
 	 * Figure out what shell we're using.  A hack, we look for an
 	 * environmental variable SHELL ending in "csh".
 	 */
-	if ((p = getenv("SHELL")) != 0
-	    && (len = strlen(p)) >= 3
-	    && !strcmp(p + len - 3, "csh"))
+	if ((var = getenv("SHELL")) != 0
+	    && ((len = strlen(leaf = _nc_basename(var))) >= 3)
+	    && !strcmp(leaf + len - 3, "csh"))
 	    p = "set noglob;\nsetenv TERM %s;\nunset noglob;\n";
 	else
 	    p = "TERM=%s;\n";
