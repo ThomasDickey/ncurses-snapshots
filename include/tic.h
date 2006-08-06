@@ -33,7 +33,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.53 2006/07/29 14:40:32 tom Exp $
+ * $Id: tic.h,v 1.54 2006/08/05 17:15:21 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -243,6 +243,8 @@ extern NCURSES_EXPORT(const struct name_table_entry * const *) _nc_get_hash_tabl
 /* access.c */
 extern NCURSES_EXPORT(unsigned) _nc_pathlast (const char *);
 extern NCURSES_EXPORT(bool) _nc_is_abs_path (const char *);
+extern NCURSES_EXPORT(bool) _nc_is_dir_path (const char *);
+extern NCURSES_EXPORT(bool) _nc_is_file_path (const char *);
 extern NCURSES_EXPORT(char *) _nc_basename (char *);
 extern NCURSES_EXPORT(char *) _nc_rootname (char *);
 

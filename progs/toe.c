@@ -42,7 +42,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.39 2006/07/29 20:28:25 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.40 2006/08/05 17:16:52 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -61,33 +61,15 @@ ExitProgram(int code)
 #endif
 
 static bool
-is_a_file(const char *path)
-{
-    struct stat sb;
-    return (stat(path, &sb) == 0
-	    && (sb.st_mode & S_IFMT) == S_IFREG);
-}
-
-#if USE_DATABASE
-static bool
-is_a_directory(const char *path)
-{
-    struct stat sb;
-    return (stat(path, &sb) == 0
-	    && (sb.st_mode & S_IFMT) == S_IFDIR);
-}
-#endif
-
-static bool
 is_database(const char *path)
 {
     bool result = FALSE;
 #if USE_DATABASE
-    if (is_a_directory(path) && access(path, R_OK | X_OK) == 0)
+    if (_nc_is_dir_path(path) && access(path, R_OK | X_OK) == 0)
 	result = TRUE;
 #endif
 #if USE_TERMCAP
-    if (is_a_file(path) && access(path, R_OK) == 0)
+    if (_nc_is_file_path(path) && access(path, R_OK) == 0)
 	result = TRUE;
 #endif
     return result;
@@ -142,7 +124,7 @@ typelist(int eargc, char *eargv[],
 
     for (i = 0; i < eargc; i++) {
 #if USE_DATABASE
-	if (is_a_directory(eargv[i])) {
+	if (_nc_is_dir_path(eargv[i])) {
 	    DIR *termdir;
 	    DIRENT *subdir;
 
@@ -179,7 +161,7 @@ typelist(int eargc, char *eargv[],
 
 		    len = NAMLEN(entry);
 		    strncpy(name_2, entry->d_name, len)[len] = '\0';
-		    if (isDotname(name_2) || !is_a_file(name_2))
+		    if (isDotname(name_2) || !_nc_is_file_path(name_2))
 			continue;
 
 		    status = _nc_read_file_entry(name_2, &lterm);
@@ -226,7 +208,7 @@ typelist(int eargc, char *eargv[],
 	cgetclose();
 #else
 	/* scan termcap text-file only */
-	if (is_a_file(eargv[i])) {
+	if (_nc_is_file_path(eargv[i])) {
 	    char buffer[2048];
 	    FILE *fp;
 

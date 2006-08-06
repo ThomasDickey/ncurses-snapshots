@@ -34,28 +34,20 @@
 
 /*
  *	read_entry.c -- Routine for reading in a compiled terminfo file
- *
  */
 
 #include <curses.priv.h>
 
-#include <sys/stat.h>
+#if USE_HASHED_DB
+#include <db.h>
+#endif
 
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.93 2006/07/29 18:49:09 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.94 2006/08/05 20:17:32 tom Exp $")
 
 #define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
-
-/*
- *	int
- *	_nc_read_file_entry(filename, ptr)
- *
- *	Read the compiled terminfo entry in the given file into the
- *	structure pointed to by ptr, allocating space for the string
- *	table.
- */
 
 #undef  BYTE
 #define BYTE(p,n)	(unsigned char)((p)[n])
@@ -201,7 +193,8 @@ read_termtype(TERMTYPE *ptr, char *buffer, int limit)
 	offset = (have - MAX_NAME_SIZE);
 
     /* grab the booleans */
-    if ((ptr->Booleans = TYPE_CALLOC(NCURSES_SBOOL, max(BOOLCOUNT, bool_count))) == 0
+    if ((ptr->Booleans = TYPE_CALLOC(NCURSES_SBOOL, max(BOOLCOUNT,
+	bool_count))) == 0
 	|| Read(ptr->Booleans, (unsigned) bool_count) < bool_count) {
 	return (TGETENT_NO);
     }
@@ -367,6 +360,14 @@ read_termtype(TERMTYPE *ptr, char *buffer, int limit)
     return (TGETENT_YES);
 }
 
+/*
+ *	int
+ *	_nc_read_file_entry(filename, ptr)
+ *
+ *	Read the compiled terminfo entry in the given file into the
+ *	structure pointed to by ptr, allocating space for the string
+ *	table.
+ */
 NCURSES_EXPORT(int)
 _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 /* return 1 if read, 0 if not found or garbled */
@@ -383,7 +384,7 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	if ((limit = read(fd, buffer, sizeof(buffer))) > 0) {
 
 	    T(("read terminfo %s", filename));
-	    if ((code = read_termtype(ptr, buffer, limit)) == 0) {
+	    if ((code = read_termtype(ptr, buffer, limit)) == TGETENT_NO) {
 		_nc_free_termtype(ptr);
 	    }
 	} else {
@@ -395,39 +396,115 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     return (code);
 }
 
-static bool
-is_directory(const char *path)
-{
-    bool result = FALSE;
-    struct stat sb;
-
-    if (stat(path, &sb) == 0
-	&& (sb.st_mode & S_IFMT) == S_IFDIR) {
-	result = TRUE;
-    }
-    return result;
-}
-
 /*
- * Build a terminfo pathname and try to read the data.  Returns 1 on success,
- * 0 on failure.
+ * Build a terminfo pathname and try to read the data.  Returns TGETENT_YES on
+ * success, TGETENT_NO on failure.
  */
 static int
 _nc_read_tic_entry(char *filename,
 		   unsigned limit,
-		   const char *const dir,
+		   const char *const path,
 		   const char *name,
 		   TERMTYPE *const tp)
 {
     int result = TGETENT_NO;
-    if (is_directory(dir)) {
-	unsigned need = 4 + strlen(dir) + strlen(name);
+
+    /*
+     * If we are looking in a directory, assume the entry is a file under that,
+     * according to the normal rules.
+     *
+     * FIXME - add caseless-filename fixup.
+     */
+    if (_nc_is_dir_path(path)) {
+	unsigned need = 4 + strlen(path) + strlen(name);
 
 	if (need <= limit) {
-	    (void) sprintf(filename, "%s/%c/%s", dir, *name, name);
+	    (void) sprintf(filename, "%s/%c/%s", path, *name, name);
 	    result = _nc_read_file_entry(filename, tp);
 	}
     }
+#if USE_HASHED_DB
+    else {
+	DB *capdbp;
+	unsigned size = strlen(path);
+	unsigned need = 4 + size;
+
+	if (need <= limit) {
+	    if (size > 3 && !strcmp(path + size - 3, ".db"))
+		(void) strcpy(filename, path);
+	    else
+		(void) sprintf(filename, "%s.db", path);
+
+	    /*
+	     * It would be nice to optimize the dbopen/close activity, as
+	     * done in the cgetent implementation for tc= clauses.  However,
+	     * since we support multiple database locations, we cannot do
+	     * that.
+	     */
+	    if ((capdbp = dbopen(filename,
+				 O_RDONLY, 0644, DB_HASH, NULL)) != NULL) {
+		DBT key, data;
+		u_int flags = 0;
+		int code;
+		int reccnt = 0;
+		char *save = strdup(name);
+
+		T(("opened %s", filename));
+		key.data = save;
+		key.size = strlen(save);
+
+		/*
+		 * This lookup could return termcap data, which we do not want. 
+		 * We are looking for compiled (binary) terminfo data.
+		 *
+		 * cgetent uses a two-level lookup.  On the first it uses the
+		 * given name to return a record containing only the aliases
+		 * for an entry.  On the second (using that list of aliases as
+		 * a key), it returns the content of the terminal description. 
+		 * We expect second lookup to return data beginning with the
+		 * same set of aliases.
+		 *
+		 * For compiled terminfo, the list of aliases in the second
+		 * case will be null-terminated.  A termcap entry will not be,
+		 * and will run on into the description.  So we can easily
+		 * distinguish between the two (source/binary) by checking the
+		 * lengths.
+		 */
+		while ((code = capdbp->get(capdbp, &key, &data, flags)) == 0) {
+		    int used = data.size - 1;
+		    char *have = (char *) data.data;
+
+		    if (*have++ == 0) {
+			if (data.size > key.size
+			    && strcmp(have, (char *) key.data)) {
+			    result = read_termtype(tp, have, used);
+			    if (result == TGETENT_NO) {
+				_nc_free_termtype(tp);
+			    }
+			}
+			break;
+		    }
+
+		    /*
+		     * Just in case we have a corrupt database, do not waste
+		     * time with it.
+		     */
+		    if (++reccnt >= 3)
+			break;
+
+		    /*
+		     * Prepare for the second level.
+		     */
+		    key.data = have;
+		    key.size = used;
+		}
+
+		capdbp->close(capdbp);
+		free(save);
+	    }
+	}
+    }
+#endif
     return result;
 }
 #endif /* USE_DATABASE */
@@ -459,9 +536,9 @@ _nc_read_entry(const char *const name, char *const filename, TERMTYPE *const tp)
 	const char *path;
 
 	while ((path = _nc_next_db(&state, &offset)) != 0) {
-	    if (_nc_read_tic_entry(filename, PATH_MAX, path, name, tp) == 1) {
+	    code = _nc_read_tic_entry(filename, PATH_MAX, path, name, tp);
+	    if (code == TGETENT_YES) {
 		_nc_last_db();
-		code = TGETENT_YES;
 		break;
 	    }
 	}

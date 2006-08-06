@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.290 $
-#	$Date: 2006/07/22 12:52:24 $
+#	$Revision: 1.295 $
+#	$Date: 2006/08/05 21:32:08 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2671,6 +2671,13 @@ vt100-putty|Reset PuTTY to pure vt100,
 putty-256color|PuTTY 0.58 with xterm 256-colors, 
 	use=xterm+256color, use=putty, 
 
+# One of the keyboard selections is "VT100+".
+# pterm (the X11 port) uses shifted F1-F10 as F11-F20
+putty-vt100|VT100+ keyboard layout, 
+	kf1=\EOP, kf10=\EOY, kf11=\EOZ, kf12=\EO[, kf2=\EOQ, 
+	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW, 
+	kf9=\EOX, use=putty, 
+
 # This entry is for Tera Term Pro version 2.3, for MS-Windows 95/NT written by
 # T. Teranishi dated Mar 10, 1998.  It is a free software terminal emulator
 # (communication program) which supports:
@@ -3008,24 +3015,7 @@ xterm-new|modern xterm terminal emulator,
 # The meta key may also be used as a modifier in this scheme, adding another
 # bit to the parameter.
 xterm+pcfkeys|fragment for PC-style fkeys, 
-	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
-	kf13=\EO2P, kf14=\EO2Q, kf15=\EO2R, kf16=\EO2S, 
-	kf17=\E[15;2~, kf18=\E[17;2~, kf19=\E[18;2~, kf2=\EOQ, 
-	kf20=\E[19;2~, kf21=\E[20;2~, kf22=\E[21;2~, 
-	kf23=\E[23;2~, kf24=\E[24;2~, kf25=\EO5P, kf26=\EO5Q, 
-	kf27=\EO5R, kf28=\EO5S, kf29=\E[15;5~, kf3=\EOR, 
-	kf30=\E[17;5~, kf31=\E[18;5~, kf32=\E[19;5~, 
-	kf33=\E[20;5~, kf34=\E[21;5~, kf35=\E[23;5~, 
-	kf36=\E[24;5~, kf37=\EO6P, kf38=\EO6Q, kf39=\EO6R, 
-	kf4=\EOS, kf40=\EO6S, kf41=\E[15;6~, kf42=\E[17;6~, 
-	kf43=\E[18;6~, kf44=\E[19;6~, kf45=\E[20;6~, 
-	kf46=\E[21;6~, kf47=\E[23;6~, kf48=\E[24;6~, kf49=\EO3P, 
-	kf5=\E[15~, kf50=\EO3Q, kf51=\EO3R, kf52=\EO3S, 
-	kf53=\E[15;3~, kf54=\E[17;3~, kf55=\E[18;3~, 
-	kf56=\E[19;3~, kf57=\E[20;3~, kf58=\E[21;3~, 
-	kf59=\E[23;3~, kf6=\E[17~, kf60=\E[24;3~, kf61=\EO4P, 
-	kf62=\EO4Q, kf63=\EO4R, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	use=xterm+pcc2, 
+	use=xterm+pcf2, use=xterm+pcc2, 
 #
 # The "PC-style" modifier scheme was introduced in xterm patch #94 (1999/3/27)
 # and revised in patch #167 (2002/8/24).  Some other terminal emulators copied
@@ -3067,6 +3057,46 @@ xterm+pcc0|fragment with modifyCursorKeys:0,
 	kLFT6=\EO6D, kRIT5=\EO5C, kRIT6=\EO6C, kUP=\EO2A, 
 	kUP5=\EO5A, kUP6=\EO6A, 
 #
+# Here are corresponding fragments from xterm patch #216:
+#
+xterm+pcf0|fragment with modifyFunctionKeys:0, 
+	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
+	kf13=\EO2P, kf14=\EO2Q, kf15=\EO2R, kf16=\EO2S, 
+	kf17=\E[15;2~, kf18=\E[17;2~, kf19=\E[18;2~, kf2=\EOQ, 
+	kf20=\E[19;2~, kf21=\E[20;2~, kf22=\E[21;2~, 
+	kf23=\E[23;2~, kf24=\E[24;2~, kf25=\EO5P, kf26=\EO5Q, 
+	kf27=\EO5R, kf28=\EO5S, kf29=\E[15;5~, kf3=\EOR, 
+	kf30=\E[17;5~, kf31=\E[18;5~, kf32=\E[19;5~, 
+	kf33=\E[20;5~, kf34=\E[21;5~, kf35=\E[23;5~, 
+	kf36=\E[24;5~, kf37=\EO6P, kf38=\EO6Q, kf39=\EO6R, 
+	kf4=\EOS, kf40=\EO6S, kf41=\E[15;6~, kf42=\E[17;6~, 
+	kf43=\E[18;6~, kf44=\E[19;6~, kf45=\E[20;6~, 
+	kf46=\E[21;6~, kf47=\E[23;6~, kf48=\E[24;6~, kf49=\EO3P, 
+	kf5=\E[15~, kf50=\EO3Q, kf51=\EO3R, kf52=\EO3S, 
+	kf53=\E[15;3~, kf54=\E[17;3~, kf55=\E[18;3~, 
+	kf56=\E[19;3~, kf57=\E[20;3~, kf58=\E[21;3~, 
+	kf59=\E[23;3~, kf6=\E[17~, kf60=\E[24;3~, kf61=\EO4P, 
+	kf62=\EO4Q, kf63=\EO4R, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+#
+xterm+pcf2|fragment with modifyFunctionKeys:0, 
+	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
+	kf13=\E[2P, kf14=\E[2Q, kf15=\E[2R, kf16=\E[2S, 
+	kf17=\E[15;2~, kf18=\E[17;2~, kf19=\E[18;2~, kf2=\EOQ, 
+	kf20=\E[19;2~, kf21=\E[20;2~, kf22=\E[21;2~, 
+	kf23=\E[23;2~, kf24=\E[24;2~, kf25=\E[5P, kf26=\E[5Q, 
+	kf27=\E[5R, kf28=\E[5S, kf29=\E[15;5~, kf3=\EOR, 
+	kf30=\E[17;5~, kf31=\E[18;5~, kf32=\E[19;5~, 
+	kf33=\E[20;5~, kf34=\E[21;5~, kf35=\E[23;5~, 
+	kf36=\E[24;5~, kf37=\E[6P, kf38=\E[6Q, kf39=\E[6R, 
+	kf4=\EOS, kf40=\E[6S, kf41=\E[15;6~, kf42=\E[17;6~, 
+	kf43=\E[18;6~, kf44=\E[19;6~, kf45=\E[20;6~, 
+	kf46=\E[21;6~, kf47=\E[23;6~, kf48=\E[24;6~, kf49=\E[3P, 
+	kf5=\E[15~, kf50=\E[3Q, kf51=\E[3R, kf52=\E[3S, 
+	kf53=\E[15;3~, kf54=\E[17;3~, kf55=\E[18;3~, 
+	kf56=\E[19;3~, kf57=\E[20;3~, kf58=\E[21;3~, 
+	kf59=\E[23;3~, kf6=\E[17~, kf60=\E[24;3~, kf61=\E[4P, 
+	kf62=\E[4Q, kf63=\E[4R, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+#
 # This chunk is used for building the VT220/Sun/PC keyboard variants.
 xterm-basic|xterm terminal emulator - common (XFree86), 
 	OTbs, am, bce, km, mc5i, mir, msgr, xenl, AX, 
@@ -3082,18 +3112,18 @@ xterm-basic|xterm terminal emulator - common (XFree86),
 	flash=\E[?5h$<100/>\E[?5l, home=\E[H, hpa=\E[%i%p1%dG, 
 	ht=^I, hts=\EH, ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L, 
 	ind=^J, invis=\E[8m, is2=\E[!p\E[?3;4l\E[4l\E>, kbs=^H, 
-	kdch1=\E[3~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, meml=\El, 
-	memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
+	kdch1=\E[3~, kmous=\E[M, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, 
+	meml=\El, memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
 	rmacs=\E(B, rmam=\E[?7l, rmcup=\E[?1049l, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=\Ec, 
-	rs2=\E[!p\E[?3;4l\E[4l\E>, sc=\E7, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, 
+	rmkx=\E[?1l\E>, rmm=\E[?1034l, rmso=\E[27m, rmul=\E[24m, 
+	rs1=\Ec, rs2=\E[!p\E[?3;4l\E[4l\E>, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m, 
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smcup=\E[?1049h, 
-	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
-	tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt100+enq, 
+	smir=\E[4h, smkx=\E[?1h\E=, smm=\E[?1034h, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt100+enq, 
 
 # From: David J. MacKenzie <djm@va.pubnix.com>, 14 Nov 1997
 # In retrospect, something like xterm-r6 was intended here -TD
@@ -3196,7 +3226,8 @@ xterm-sco|XFree86 xterm with SCO function keys,
 	kf4=\E[P, kf40=\E[z, kf41=\E[@, kf42=\E[[, kf43=\E[\\, 
 	kf44=\E[], kf45=\E[\^, kf46=\E[_, kf47=\E[`, kf48=\E[{, 
 	kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, 
-	kich1=\E[L, knp=\E[G, kpp=\E[I, use=xterm-basic, 
+	kich1=\E[L, kmous=\E[>M, knp=\E[G, kpp=\E[I, 
+	use=xterm-basic, 
 
 # The xterm-new description has all of the features, but is not completely
 # compatible with vt220.  If you are using a Sun or PC keyboard, set the
@@ -3378,7 +3409,8 @@ gnome-rh90|GNOME Terminal,
 	bce, msgr, 
 	hpa=\E[%i%p1%dG, kDC=\E[3;2~, kLFT=\EO2D, kRIT=\EO2C, 
 	kb2=\E[E, kcbt=\E[Z, kend=\EOF, khome=\EOH, tbc=\E[3g, 
-	vpa=\E[%i%p1%dd, use=xterm+pcfkeys, use=gnome-rh80, 
+	vpa=\E[%i%p1%dd, use=xterm+pcf0, use=xterm+pcfkeys, 
+	use=gnome-rh80, 
 
 # GNOME Terminal 2.14.2 (Fedora Core 5)
 # Ed Catmur notes that gnome-terminal has recognized soft-reset since May 2002.
@@ -3711,6 +3743,14 @@ Eterm|Eterm-color|Eterm with xterm-style color support (X Window System),
 	vpa=\E[%i%p1%dd, use=vt100+enq, use=rxvt+pcfkeys, 
 	use=ecma+color, 
 
+# xiterm  0.5-5.2
+# This is not based on xterm's source...
+# vttest shows several problems with keyboard, cursor-movements.
+# see also http://invisible-island.net/xterm/xterm.faq.html#bug_xiterm
+xiterm|internationalized terminal emulator for X, 
+	km@, 
+	kbs=\177, kdch1=\E[3~, use=klone+color, use=xterm-r6, 
+
 # These (xtermc and xtermm) are distributed with Solaris.  They refer to a
 # variant of xterm which is apparently no longer supported, but are interesting
 # because they illustrate SVr4 curses mouse controls - T.Dickey
@@ -3796,16 +3836,17 @@ hpterm-color|HP X11 terminal emulator with color,
 xterm-sun|xterm with sunFunctionKeys true, 
 	kb2=\E[218z, kcpy=\E[197z, kcub1=\EOD, kcud1=\EOB, 
 	kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3z, kend=\E[220z, 
-	kf1=\E[224z, kf10=\E[233z, kf11=\E[192z, kf12=\E[193z, 
-	kf13=\E[194z, kf14=\E[195z, kf15=\E[196z, kf17=\E[198z, 
-	kf18=\E[199z, kf19=\E[200z, kf2=\E[225z, kf20=\E[201z, 
-	kf3=\E[226z, kf31=\E[208z, kf32=\E[209z, kf33=\E[210z, 
-	kf34=\E[211z, kf35=\E[212z, kf36=\E[213z, kf38=\E[215z, 
-	kf4=\E[227z, kf40=\E[217z, kf42=\E[219z, kf44=\E[221z, 
-	kf45=\E[222z, kf46=\E[234z, kf47=\E[235z, kf5=\E[228z, 
-	kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, 
-	kfnd=\E[200z, khlp=\E[196z, khome=\E[214z, kich1=\E[2z, 
-	knp=\E[222z, kpp=\E[216z, kund=\E[195z, use=xterm-basic, 
+	kent=\EOM, kf1=\E[224z, kf10=\E[233z, kf11=\E[192z, 
+	kf12=\E[193z, kf13=\E[194z, kf14=\E[195z, kf15=\E[196z, 
+	kf17=\E[198z, kf18=\E[199z, kf19=\E[200z, kf2=\E[225z, 
+	kf20=\E[201z, kf3=\E[226z, kf31=\E[208z, kf32=\E[209z, 
+	kf33=\E[210z, kf34=\E[211z, kf35=\E[212z, kf36=\E[213z, 
+	kf38=\E[215z, kf4=\E[227z, kf40=\E[217z, kf42=\E[219z, 
+	kf44=\E[221z, kf45=\E[222z, kf46=\E[234z, kf47=\E[235z, 
+	kf5=\E[228z, kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, 
+	kf9=\E[232z, kfnd=\E[200z, khlp=\E[196z, khome=\E[214z, 
+	kich1=\E[2z, knp=\E[222z, kpp=\E[216z, kund=\E[195z, 
+	use=xterm-basic, 
 xterms-sun|small (80x24) xterm with sunFunctionKeys true, 
 	cols#80, lines#24, use=xterm-sun, 
 
@@ -20483,7 +20524,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Added x68k console
 #	* Added OTbs to several VT-series entries.
 # 9.13.4 (Wed May 22 10:54:09 EDT 1996):
-#	* screen entry update for 3.7.1 from Michael Alan Dorfman.
+#	* screen entry update for 3.7.1 from Michael Alan Dorman.
 # 9.13.5 (Wed Jun  5 11:22:41 EDT 1996):
 #	* kterm correction due to Kenji Rikitake.
 #	* ACS correction in vt320-kll due to Phillippe De Muyter.
@@ -21150,6 +21191,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* update xterm-sun and xterm-sco entries to match xterm #216 -TD
 #	* modify is2/rs2 strings for xterm-r6 as per fix in xterm #148 -TD
 #	* modify xterm-24 to inherit from "xterm" -TD
+#	* add xiterm entry -TD
+#	* add putty-vt100 entry -TD
+#	* corrected spelling of Michael A Dorman's name, prompted by
+#	  http://www.advogato.org/person/mdorman/diary.html -TD
+#
+# 2006-08-05
+#	* add xterm+pcf0, xterm+pcf2 from xterm #216 -TD
+#	* update xterm+pcfkeys to match xterm #216 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
