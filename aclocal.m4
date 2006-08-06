@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.381 2006/06/17 16:37:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.382 2006/08/05 13:56:13 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2324,7 +2324,7 @@ int main()
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKEFLAGS version: 9 updated: 2001/12/30 18:17:27
+dnl CF_MAKEFLAGS version: 10 updated: 2006/08/05 09:56:13
 dnl ------------
 dnl Some 'make' programs support $(MAKEFLAGS), some $(MFLAGS), to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
@@ -2353,7 +2353,8 @@ CF_EOF
 			esac
 			break
 			;;
-		*)	echo no match "$cf_result"
+		.-)	;;
+		*)	echo "given option \"$cf_option\", no match \"$cf_result\""
 			;;
 		esac
 	done
@@ -4510,7 +4511,7 @@ AC_SUBST(LIB_UNINSTALL)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PATH version: 6 updated: 1998/10/11 00:40:17
+dnl CF_WITH_PATH version: 7 updated: 2006/08/03 15:20:08
 dnl ------------
 dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just
 dnl defaulting to yes/no.
@@ -4525,7 +4526,7 @@ AC_DEFUN([CF_WITH_PATH],
 [AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
 ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
 CF_PATH_SYNTAX(withval)
-eval $3="$withval"
+$3="$withval"
 AC_SUBST($3)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------

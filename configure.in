@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.366 2006/07/15 17:55:40 tom Exp $
+dnl $Id: configure.in,v 1.367 2006/08/05 14:16:28 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.366 $)
+AC_REVISION($Revision: 1.367 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -379,11 +379,22 @@ AC_SUBST(TERMINFO_SRC)
 CF_PATHSEP
 if test "$use_database" != no ; then
 	AC_DEFINE(USE_DATABASE)
+
 	AC_MSG_CHECKING(which terminfo source-file will be installed)
 	AC_ARG_ENABLE(database,
 		[  --with-database=XXX     specify terminfo source to install],
 		[TERMINFO_SRC=$withval])
 	AC_MSG_RESULT($TERMINFO_SRC)
+
+	AC_MSG_CHECKING(whether to use hashed database instead of directory/tree)
+	AC_ARG_WITH(hashed-db,
+		[  --with-hashed-db        specify hashed-database library],,
+		[with_hashed_db=no])
+	AC_MSG_RESULT($with_hashed_db)
+
+	if test "$with_hashed_db" != no ; then
+		AC_DEFINE(USE_HASHED_DB)
+	fi
 fi
 
 AC_MSG_CHECKING(for list of fallback descriptions)

@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.29 2006/05/27 20:00:39 tom Exp $
+# $Id: ncurses_defs,v 1.30 2006/08/05 19:27:02 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -182,6 +182,7 @@ USE_DATABASE
 USE_GETCAP
 USE_GETCAP_CACHE
 USE_HARD_TABS
+USE_HASHED_DB
 USE_HASHMAP
 USE_HOME_TERMINFO
 USE_LINKS

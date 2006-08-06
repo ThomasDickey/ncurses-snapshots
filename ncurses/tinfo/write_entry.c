@@ -38,6 +38,10 @@
 
 #include <curses.priv.h>
 
+#if USE_HASHED_DB
+#include <db.h>
+#endif
+
 #include <sys/stat.h>
 
 #include <tic.h>
@@ -53,18 +57,35 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.60 2006/07/29 20:16:03 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.61 2006/08/05 20:17:32 tom Exp $")
 
 static int total_written;
 
+static int make_db_root(const char *);
 static int write_object(TERMTYPE *, char *, unsigned *, unsigned);
 
+#if USE_HASHED_DB
+static DB *
+open_db(const char *path)
+{
+    return dbopen(path, O_CREAT | O_RDWR, 0644, DB_HASH, NULL);
+}
+
+static int
+/*
+ * Write a record to the database, returning -1 on error and 1 on duplicate.
+ */
+write_db(DB * capdb, DBT * key, DBT * data)
+{
+    return capdb->put(capdb, key, data, R_NOOVERWRITE);
+}
+#else /* !USE_HASHED_DB */
 static void
 write_file(char *filename, TERMTYPE *tp)
 {
-    unsigned offset = 0;
     char buffer[MAX_ENTRY_SIZE];
     unsigned limit = sizeof(buffer);
+    unsigned offset = 0;
 
     FILE *fp = (_nc_access(filename, W_OK) == 0) ? fopen(filename, "wb") : 0;
     if (fp == 0) {
@@ -82,88 +103,12 @@ write_file(char *filename, TERMTYPE *tp)
 }
 
 /*
- *	make_directory(char *path)
+ * Check for access rights to destination directories
+ * Create any directories which don't exist.
  *
- *	Make a directory if it doesn't exist.
+ * Note:  there's no reason to return the result of make_db_root(), since
+ * this function is called only in instances where that has to succeed.
  */
-static int
-make_directory(const char *path)
-{
-    int rc;
-    struct stat statbuf;
-    char fullpath[PATH_MAX];
-    const char *destination = _nc_tic_dir(0);
-
-    if (path == destination || *path == '/') {
-	if (strlen(path) + 1 > sizeof(fullpath))
-	    return (-1);
-	(void) strcpy(fullpath, path);
-    } else {
-	if (strlen(destination) + strlen(path) + 2 > sizeof(fullpath))
-	    return (-1);
-	(void) sprintf(fullpath, "%s/%s", destination, path);
-    }
-
-    if ((rc = stat(path, &statbuf)) < 0) {
-	rc = mkdir(path, 0777);
-    } else {
-	if (_nc_access(path, R_OK | W_OK | X_OK) < 0) {
-	    rc = -1;		/* permission denied */
-	} else if (!(S_ISDIR(statbuf.st_mode))) {
-	    rc = -1;		/* not a directory */
-	}
-    }
-    return rc;
-}
-
-NCURSES_EXPORT(void)
-_nc_set_writedir(char *dir)
-/* set the write directory for compiled entries */
-{
-    const char *destination;
-    char actual[PATH_MAX];
-
-    if (dir == 0
-	&& use_terminfo_vars())
-	dir = getenv("TERMINFO");
-
-    if (dir != 0)
-	(void) _nc_tic_dir(dir);
-
-    destination = _nc_tic_dir(0);
-    if (make_directory(destination) < 0) {
-	char *home = _nc_home_terminfo();
-
-	if (home != 0) {
-	    destination = home;
-	    if (make_directory(destination) < 0)
-		_nc_err_abort("%s: permission denied (errno %d)",
-			      destination, errno);
-	}
-    }
-
-    /*
-     * Note: because of this code, this logic should be exercised
-     * *once only* per run.
-     */
-    if (chdir(_nc_tic_dir(destination)) < 0
-	|| getcwd(actual, sizeof(actual)) == 0)
-	_nc_err_abort("%s: not a directory", destination);
-    _nc_keep_tic_dir(strdup(actual));
-}
-
-/*
- *	check_writeable(char code)
- *
- *	Miscellaneous initialisations
- *
- *	Check for access rights to destination directories
- *	Create any directories which don't exist.
- *	Note: there's no reason to return the result of make_directory(), since
- *	this function is called only in instances where that has to succeed.
- *
- */
-
 static void
 check_writeable(int code)
 {
@@ -181,16 +126,120 @@ check_writeable(int code)
 
     dir[0] = code;
     dir[1] = '\0';
-    if (make_directory(dir) < 0) {
+    if (make_db_root(dir) < 0) {
 	_nc_err_abort("%s/%s: permission denied", _nc_tic_dir(0), dir);
     }
 
     verified[s - dirnames] = TRUE;
 }
+#endif /* !USE_HASHED_DB */
+
+static int
+make_db_path(char *dst, const char *src, unsigned limit)
+{
+    int rc = -1;
+    const char *top = _nc_tic_dir(0);
+
+    if (src == top || _nc_is_abs_path(src)) {
+	if (strlen(src) + 1 <= limit) {
+	    (void) strcpy(dst, src);
+	    rc = 0;
+	}
+    } else {
+	if (strlen(top) + strlen(src) + 2 <= limit) {
+	    (void) sprintf(dst, "%s/%s", top, src);
+	    rc = 0;
+	}
+    }
+#if USE_HASHED_DB
+    if (rc == 0) {
+	unsigned have = strlen(dst);
+	if (have > 3 && strcmp(dst + have - 3, ".db")) {
+	    if (have + 3 <= limit)
+		strcat(dst, ".db");
+	    else
+		rc = -1;
+	}
+    }
+#endif
+    return rc;
+}
 
 /*
- *	_nc_write_entry()
- *
+ * Make a database-root if it doesn't exist.
+ */
+static int
+make_db_root(const char *path)
+{
+    int rc;
+    char fullpath[PATH_MAX];
+
+    if ((rc = make_db_path(fullpath, path, sizeof(fullpath))) == 0) {
+#if USE_HASHED_DB
+	DB *capdbp;
+
+	if ((capdbp = open_db(fullpath)) == NULL)
+	    rc = -1;
+	else if (capdbp->close(capdbp) < 0)
+	    rc = -1;
+#else
+	struct stat statbuf;
+
+	if ((rc = stat(path, &statbuf)) < 0) {
+	    rc = mkdir(path, 0777);
+	} else if (_nc_access(path, R_OK | W_OK | X_OK) < 0) {
+	    rc = -1;		/* permission denied */
+	} else if (!(S_ISDIR(statbuf.st_mode))) {
+	    rc = -1;		/* not a directory */
+	}
+#endif
+    }
+    return rc;
+}
+
+/*
+ * Set the write directory for compiled entries.
+ */
+NCURSES_EXPORT(void)
+_nc_set_writedir(char *dir)
+{
+    const char *destination;
+    char actual[PATH_MAX];
+
+    if (dir == 0
+	&& use_terminfo_vars())
+	dir = getenv("TERMINFO");
+
+    if (dir != 0)
+	(void) _nc_tic_dir(dir);
+
+    destination = _nc_tic_dir(0);
+    if (make_db_root(destination) < 0) {
+	char *home = _nc_home_terminfo();
+
+	if (home != 0) {
+	    destination = home;
+	    if (make_db_root(destination) < 0)
+		_nc_err_abort("%s: permission denied (errno %d)",
+			      destination, errno);
+	}
+    }
+
+    /*
+     * Note: because of this code, this logic should be exercised
+     * *once only* per run.
+     */
+#if USE_HASHED_DB
+    make_db_path(actual, destination, sizeof(actual));
+#else
+    if (chdir(_nc_tic_dir(destination)) < 0
+	|| getcwd(actual, sizeof(actual)) == 0)
+	_nc_err_abort("%s: not a directory", destination);
+#endif
+    _nc_keep_tic_dir(strdup(actual));
+}
+
+/*
  *	Save the compiled version of a description in the filesystem.
  *
  *	make a copy of the name-list
@@ -210,13 +259,18 @@ check_writeable(int code)
  *	_nc_curr_line is properly set before the write_entry() call.
  */
 
-void
+NCURSES_EXPORT(void)
 _nc_write_entry(TERMTYPE *const tp)
 {
+#if USE_HASHED_DB
+
+    char buffer[MAX_ENTRY_SIZE + 1];
+    unsigned limit = sizeof(buffer);
+    unsigned offset = 0;
+
+#else /* !USE_HASHED_DB */
+
     struct stat statbuf;
-    char name_list[MAX_TERMINFO_LENGTH];
-    char *first_name, *other_names;
-    char *ptr;
     char filename[PATH_MAX];
     char linkname[PATH_MAX];
 #if USE_SYMLINKS
@@ -226,12 +280,15 @@ _nc_write_entry(TERMTYPE *const tp)
 #define HAVE_LINK 1
 #endif
 #endif /* USE_SYMLINKS */
+
     static int call_count;
     static time_t start_time;	/* time at start of writes */
 
-    if (call_count++ == 0) {
-	start_time = 0;
-    }
+#endif /* USE_HASHED_DB */
+
+    char name_list[MAX_TERMINFO_LENGTH];
+    char *first_name, *other_names;
+    char *ptr;
 
     (void) strcpy(name_list, tp->term_names);
     DEBUG(7, ("Name list = '%s'", name_list));
@@ -262,6 +319,53 @@ _nc_write_entry(TERMTYPE *const tp)
     DEBUG(7, ("Other names = '%s'", other_names));
 
     _nc_set_type(first_name);
+
+#if USE_HASHED_DB
+    if (write_object(tp, buffer + 1, &offset, limit - 1) != ERR) {
+	DB *capdb = open_db(_nc_tic_dir(0));
+	DBT key, data;
+
+	if (capdb != 0) {
+	    buffer[0] = 0;
+
+	    key.data = tp->term_names;
+	    key.size = strlen(tp->term_names);
+
+	    data.data = buffer;
+	    data.size = offset + 1;
+
+	    write_db(capdb, &key, &data);
+
+	    buffer[0] = 2;
+
+	    key.data = name_list;
+	    key.size = strlen(name_list);
+
+	    strcpy(buffer + 1, tp->term_names);
+	    data.size = strlen(tp->term_names) + 1;
+
+	    write_db(capdb, &key, &data);
+
+	    while (*other_names != '\0') {
+		ptr = other_names++;
+		while (*other_names != '|' && *other_names != '\0')
+		    other_names++;
+
+		if (*other_names != '\0')
+		    *(other_names++) = '\0';
+
+		key.data = ptr;
+		key.size = strlen(ptr);
+
+		write_db(capdb, &key, &data);
+	    }
+	    capdb->close(capdb);
+	}
+    }
+#else /* !USE_HASHED_DB */
+    if (call_count++ == 0) {
+	start_time = 0;
+    }
 
     if (strlen(first_name) > sizeof(filename) - 3)
 	_nc_warning("terminal name too long.");
@@ -362,6 +466,7 @@ _nc_write_entry(TERMTYPE *const tp)
 	    write_file(linkname, tp);
 #endif /* HAVE_LINK */
     }
+#endif /* USE_HASHED_DB */
 }
 
 static unsigned

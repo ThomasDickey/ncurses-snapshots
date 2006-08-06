@@ -31,10 +31,13 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
+
+#include <sys/stat.h>
+
 #include <tic.h>
 #include <nc_alloc.h>
 
-MODULE_ID("$Id: access.c,v 1.11 2006/07/29 12:05:35 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.12 2006/08/05 17:18:14 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -124,6 +127,32 @@ _nc_access(const char *path, int mode)
 	return -1;
     }
     return 0;
+}
+
+NCURSES_EXPORT(bool)
+_nc_is_dir_path(const char *path)
+{
+    bool result = FALSE;
+    struct stat sb;
+
+    if (stat(path, &sb) == 0
+	&& (sb.st_mode & S_IFMT) == S_IFDIR) {
+	result = TRUE;
+    }
+    return result;
+}
+
+NCURSES_EXPORT(bool)
+_nc_is_file_path(const char *path)
+{
+    bool result = FALSE;
+    struct stat sb;
+
+    if (stat(path, &sb) == 0
+	&& (sb.st_mode & S_IFMT) == S_IFREG) {
+	result = TRUE;
+    }
+    return result;
 }
 
 #ifndef USE_ROOT_ENVIRON
