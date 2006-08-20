@@ -498,6 +498,7 @@
 ./include/curses.tail
 ./include/curses.wide
 ./include/edit_cfg.sh
+./include/hashed_db.h
 ./include/headers
 ./include/nc_alloc.h
 ./include/nc_panel.h
@@ -821,6 +822,7 @@
 ./ncurses/tinfo/doalloc.c
 ./ncurses/tinfo/free_ttype.c
 ./ncurses/tinfo/getenv_num.c
+./ncurses/tinfo/hashed_db.c
 ./ncurses/tinfo/home_terminfo.c
 ./ncurses/tinfo/init_keytry.c
 ./ncurses/tinfo/lib_acs.c

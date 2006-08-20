@@ -45,7 +45,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.55 2006/07/15 15:28:02 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.57 2006/08/16 20:11:34 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -112,8 +112,12 @@ tgetent(char *bufp, const char *name)
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
 	    if (LAST_TRM != 0 && LAST_TRM != cur_term) {
+		TERMINAL *trm = LAST_TRM;
 		del_curterm(LAST_TRM);
-		LAST_TRM = 0;
+		for (in_cache = 0; in_cache < MAX_CACHE; ++in_cache)
+		    if (LAST_TRM == trm)
+			LAST_TRM = 0;
+		in_cache = n;
 	    }
 	    found_cache = TRUE;
 	    break;

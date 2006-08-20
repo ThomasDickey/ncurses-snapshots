@@ -37,10 +37,7 @@
  */
 
 #include <curses.priv.h>
-
-#if USE_HASHED_DB
-#include <db.h>
-#endif
+#include <hashed_db.h>
 
 #include <sys/stat.h>
 
@@ -57,29 +54,14 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.61 2006/08/05 20:17:32 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.67 2006/08/19 13:52:02 tom Exp $")
 
 static int total_written;
 
 static int make_db_root(const char *);
 static int write_object(TERMTYPE *, char *, unsigned *, unsigned);
 
-#if USE_HASHED_DB
-static DB *
-open_db(const char *path)
-{
-    return dbopen(path, O_CREAT | O_RDWR, 0644, DB_HASH, NULL);
-}
-
-static int
-/*
- * Write a record to the database, returning -1 on error and 1 on duplicate.
- */
-write_db(DB * capdb, DBT * key, DBT * data)
-{
-    return capdb->put(capdb, key, data, R_NOOVERWRITE);
-}
-#else /* !USE_HASHED_DB */
+#if !USE_HASHED_DB
 static void
 write_file(char *filename, TERMTYPE *tp)
 {
@@ -153,12 +135,16 @@ make_db_path(char *dst, const char *src, unsigned limit)
     }
 #if USE_HASHED_DB
     if (rc == 0) {
-	unsigned have = strlen(dst);
-	if (have > 3 && strcmp(dst + have - 3, ".db")) {
-	    if (have + 3 <= limit)
-		strcat(dst, ".db");
-	    else
-		rc = -1;
+	if (_nc_is_dir_path(dst)) {
+	    rc = -1;
+	} else {
+	    unsigned have = strlen(dst);
+	    if (have > 3 && strcmp(dst + have - 3, DBM_SUFFIX)) {
+		if (have + 3 <= limit)
+		    strcat(dst, DBM_SUFFIX);
+		else
+		    rc = -1;
+	    }
 	}
     }
 #endif
@@ -178,9 +164,9 @@ make_db_root(const char *path)
 #if USE_HASHED_DB
 	DB *capdbp;
 
-	if ((capdbp = open_db(fullpath)) == NULL)
+	if ((capdbp = _nc_db_open(fullpath, TRUE)) == NULL)
 	    rc = -1;
-	else if (capdbp->close(capdbp) < 0)
+	else if (_nc_db_close(capdbp) < 0)
 	    rc = -1;
 #else
 	struct stat statbuf;
@@ -322,19 +308,21 @@ _nc_write_entry(TERMTYPE *const tp)
 
 #if USE_HASHED_DB
     if (write_object(tp, buffer + 1, &offset, limit - 1) != ERR) {
-	DB *capdb = open_db(_nc_tic_dir(0));
+	DB *capdb = _nc_db_open(_nc_tic_dir(0), TRUE);
 	DBT key, data;
 
 	if (capdb != 0) {
 	    buffer[0] = 0;
 
+	    memset(&key, 0, sizeof(key));
 	    key.data = tp->term_names;
 	    key.size = strlen(tp->term_names);
 
+	    memset(&data, 0, sizeof(data));
 	    data.data = buffer;
 	    data.size = offset + 1;
 
-	    write_db(capdb, &key, &data);
+	    _nc_db_put(capdb, &key, &data);
 
 	    buffer[0] = 2;
 
@@ -344,7 +332,7 @@ _nc_write_entry(TERMTYPE *const tp)
 	    strcpy(buffer + 1, tp->term_names);
 	    data.size = strlen(tp->term_names) + 1;
 
-	    write_db(capdb, &key, &data);
+	    _nc_db_put(capdb, &key, &data);
 
 	    while (*other_names != '\0') {
 		ptr = other_names++;
@@ -357,9 +345,9 @@ _nc_write_entry(TERMTYPE *const tp)
 		key.data = ptr;
 		key.size = strlen(ptr);
 
-		write_db(capdb, &key, &data);
+		_nc_db_put(capdb, &key, &data);
 	    }
-	    capdb->close(capdb);
+	    _nc_db_close(capdb);
 	}
     }
 #else /* !USE_HASHED_DB */
