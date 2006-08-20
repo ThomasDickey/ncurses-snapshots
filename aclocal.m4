@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.382 2006/08/05 13:56:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.387 2006/08/19 20:17:18 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1537,6 +1537,138 @@ fi
 rm -f conftest*
 AC_LANG_RESTORE
 AC_SUBST(EXTRA_CXXFLAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_HASHED_DB version: 1 updated: 2006/08/19 09:16:14
+dnl ------------
+dnl Look for an instance of the Berkeley hashed database.
+AC_DEFUN([CF_HASHED_DB],
+[
+AC_CHECK_HEADER(db.h,[
+CF_HASHED_DB_VERSION
+if test "$cf_cv_hashed_db_version" = unknown ; then
+	AC_MSG_ERROR(Cannot determine version of db)
+else
+	CF_HASHED_DB_LIBS
+	if test "$cf_cv_hashed_db_libs" = unknown ; then
+		AC_MSG_ERROR(Cannot determine library for db)
+	elif test "$cf_cv_hashed_db_libs" != default ; then
+		LIBS="-l$cf_cv_hashed_db_libs $LIBS"
+	fi
+fi
+],[
+	AC_MSG_ERROR(Cannot find db.h)
+])
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_HASHED_DB_LIBS version: 4 updated: 2006/08/19 16:07:40
+dnl -----------------
+dnl Given that we have the header and version for hashed database, find the
+dnl library information.
+AC_DEFUN([CF_HASHED_DB_LIBS],
+[
+AC_CACHE_CHECK(for db libraries, cf_cv_hashed_db_libs,[
+cf_cv_hashed_db_libs=unknown
+for cf_db_libs in db$cf_cv_hashed_db_version db ''
+do
+	cf_save_libs="$LIBS"
+	if test -n "$cf_db_libs"; then
+		LIBS="-l$cf_db_libs $LIBS"
+	fi
+	CF_MSG_LOG(checking for library "$cf_db_libs")
+	AC_TRY_LINK([
+$ac_includes_default
+#include <db.h>
+],[
+	char *path = "/tmp/foo";
+#ifdef DB_VERSION_MAJOR
+#if DB_VERSION_MAJOR >= 4
+	DB *result = 0;
+	db_create(&result, NULL, 0);
+	result->open(result,
+		NULL,
+		path,
+		path,
+		DB_HASH,
+		DB_CREATE,
+		0644);
+#elif DB_VERSION_MAJOR >= 3
+	DB *result = 0;
+	db_create(&result, NULL, 0);
+	result->open(result,
+		path,
+		path,
+		DB_HASH,
+		DB_CREATE,
+		0644);
+#elif DB_VERSION_MAJOR >= 2
+	DB *result = 0;
+	db_open(path,
+		DB_HASH,
+		DB_CREATE,
+		0644,
+		(DB_ENV *) 0,
+		(DB_INFO *) 0,
+		&result);
+#endif /* DB_VERSION_MAJOR */
+#else
+	DB *result = dbopen(path,
+		     2,
+		     0644,
+		     DB_HASH,
+		     0);
+#endif
+	exit(result != 0)
+],[
+	if test -n "$cf_db_libs" ; then
+		cf_cv_hashed_db_libs=$cf_db_libs
+	else
+		cf_cv_hashed_db_libs=default
+	fi
+	LIBS="$cf_save_libs"
+	break
+])
+	LIBS="$cf_save_libs"
+done
+])
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_HASHED_DB_VERSION version: 2 updated: 2006/08/19 15:12:49
+dnl --------------------
+dnl Given that we have the header file for hashed database, find the version
+dnl information.
+AC_DEFUN([CF_HASHED_DB_VERSION],
+[
+AC_CACHE_CHECK(for version of db, cf_cv_hashed_db_version,[
+cf_cv_hashed_db_version=unknown
+
+for cf_db_version in 1 2 3 4
+do
+	CF_MSG_LOG(checking for db version $cf_db_version)
+	AC_TRY_COMPILE([
+$ac_includes_default
+#include <db.h>
+
+#ifdef DB_VERSION_MAJOR
+	/* db2 (DB_VERSION_MAJOR=2) has also DB_VERSION_MINOR, tested with 7 */
+#if $cf_db_version == DB_VERSION_MAJOR
+	/* ok */
+#else
+	make an error
+#endif
+#else
+#if $cf_db_version == 1
+	/* ok: assuming this is DB 1.8.5 */
+#else
+	make an error
+#endif
+#endif
+],[DBT *foo = 0],[
+	cf_cv_hashed_db_version=$cf_db_version
+	break
+	])
+done
+])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_HELP_MESSAGE version: 3 updated: 1998/01/14 10:56:23
@@ -3445,7 +3577,7 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 32 updated: 2005/11/19 16:44:37
+dnl CF_SHARED_OPTS version: 33 updated: 2006/08/19 16:12:49
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -3517,18 +3649,18 @@ AC_DEFUN([CF_SHARED_OPTS],
 
 	case $cf_cv_system_name in
 	beos*)
-		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+		MK_SHARED_LIB='$(CC) $(CFLAGS) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
 		;;
 	cygwin*)
 		CC_SHARED_OPTS=
-		MK_SHARED_LIB='$(CC) -shared -Wl,--out-implib=$(IMPORT_LIB) -Wl,--export-all-symbols -o $(SHARED_LIB)'
+		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,--out-implib=$(IMPORT_LIB) -Wl,--export-all-symbols -o $(SHARED_LIB)'
 		cf_cv_shlib_version=cygdll
 		cf_cv_shlib_version_infix=cygdll
 		;;
 	darwin*)
 		EXTRA_CFLAGS="-no-cpp-precomp"
 		CC_SHARED_OPTS="-dynamic"
-		MK_SHARED_LIB='$(CC) -dynamiclib -install_name $(DESTDIR)$(libdir)/`basename $[@]` -compatibility_version $(ABI_VERSION) -current_version $(ABI_VERSION) -o $[@]'
+		MK_SHARED_LIB='$(CC) $(CFLAGS) -dynamiclib -install_name $(DESTDIR)$(libdir)/`basename $[@]` -compatibility_version $(ABI_VERSION) -current_version $(ABI_VERSION) -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=abi
 		cf_cv_shlib_version_infix=yes
 		AC_CACHE_CHECK([if ld -search_paths_first works], cf_cv_ldflags_search_paths_first, [
@@ -3580,7 +3712,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
-		MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
+		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
 		;;
 	openbsd2*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -3615,7 +3747,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
-			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
+			MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
 			if test "$cf_cv_shlib_version" = auto; then
 			if test ! -f /usr/libexec/ld.elf_so; then
 				cf_cv_shlib_version=rel

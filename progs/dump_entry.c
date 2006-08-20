@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.76 2006/04/15 22:43:02 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.77 2006/08/19 21:20:42 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -368,9 +368,17 @@ version_filter(PredType type, PredIdx idx)
 }
 
 static void
+trim_trailing(void)
+{
+    while (outbuf.used > 0 && outbuf.text[outbuf.used - 1] == ' ')
+	outbuf.text[--outbuf.used] = '\0';
+}
+
+static void
 force_wrap(void)
 {
     oldcol = column;
+    trim_trailing();
     strcpy_DYN(&outbuf, trailer);
     column = INDENT;
 }
@@ -802,6 +810,7 @@ fmt_entry(TERMTYPE *tterm,
 	if (trimmed) {
 	    outbuf.text[outbuf.used] = '\0';
 	    column = oldcol;
+	    strcpy_DYN(&outbuf, " ");
 	}
     }
 #if 0
@@ -953,7 +962,7 @@ purged_acs(TERMTYPE *tterm)
 /*
  * Dump a single entry.
  */
-int
+void
 dump_entry(TERMTYPE *tterm,
 	   bool suppress_untranslatable,
 	   bool limited,
@@ -1072,21 +1081,24 @@ dump_entry(TERMTYPE *tterm,
 	}
 	*tterm = save_tterm;
     }
-
-    (void) fputs(outbuf.text, stdout);
-    return len;
 }
 
-int
+void
 dump_uses(const char *name, bool infodump)
 /* dump "use=" clauses in the appropriate format */
 {
     char buffer[MAX_TERMINFO_LENGTH];
 
-    strcpy_DYN(&outbuf, 0);
     (void) sprintf(buffer, "%s%s", infodump ? "use=" : "tc=", name);
     wrap_concat(buffer);
+}
+
+int
+show_entry(void)
+{
+    trim_trailing();
     (void) fputs(outbuf.text, stdout);
+    putchar('\n');
     return outbuf.used;
 }
 

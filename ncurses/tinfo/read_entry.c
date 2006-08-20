@@ -37,24 +37,14 @@
  */
 
 #include <curses.priv.h>
-
-#if USE_HASHED_DB
-#include <db.h>
-#endif
+#include <hashed_db.h>
 
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.94 2006/08/05 20:17:32 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.99 2006/08/19 15:58:50 tom Exp $")
 
 #define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
-
-#undef  BYTE
-#define BYTE(p,n)	(unsigned char)((p)[n])
-
-#define IS_NEG1(p)	((BYTE(p,0) == 0377) && (BYTE(p,1) == 0377))
-#define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))
-#define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
 
 #if USE_DATABASE
 static void
@@ -126,8 +116,8 @@ fake_read(char *src, int *offset, int limit, char *dst, unsigned want)
 #define even_boundary(value) \
     if ((value) % 2 != 0) Read(buf, 1)
 
-static int
-read_termtype(TERMTYPE *ptr, char *buffer, int limit)
+NCURSES_EXPORT(int)
+_nc_read_termtype(TERMTYPE *ptr, char *buffer, int limit)
 /* return 1 if read, 0 if not found or garbled */
 {
     int offset = 0;
@@ -143,7 +133,7 @@ read_termtype(TERMTYPE *ptr, char *buffer, int limit)
 
     /* grab the header */
     if (!read_shorts(buf, 6)
-	|| LOW_MSB(buf) != MAGIC) {
+	|| !IS_TIC_MAGIC(buf)) {
 	return (TGETENT_NO);
     }
 
@@ -193,8 +183,8 @@ read_termtype(TERMTYPE *ptr, char *buffer, int limit)
 	offset = (have - MAX_NAME_SIZE);
 
     /* grab the booleans */
-    if ((ptr->Booleans = TYPE_CALLOC(NCURSES_SBOOL, max(BOOLCOUNT,
-	bool_count))) == 0
+    if ((ptr->Booleans = TYPE_CALLOC(NCURSES_SBOOL,
+				     max(BOOLCOUNT, bool_count))) == 0
 	|| Read(ptr->Booleans, (unsigned) bool_count) < bool_count) {
 	return (TGETENT_NO);
     }
@@ -384,7 +374,7 @@ _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	if ((limit = read(fd, buffer, sizeof(buffer))) > 0) {
 
 	    T(("read terminfo %s", filename));
-	    if ((code = read_termtype(ptr, buffer, limit)) == TGETENT_NO) {
+	    if ((code = _nc_read_termtype(ptr, buffer, limit)) == TGETENT_NO) {
 		_nc_free_termtype(ptr);
 	    }
 	} else {
@@ -425,15 +415,18 @@ _nc_read_tic_entry(char *filename,
     }
 #if USE_HASHED_DB
     else {
+	static const char suffix[] = DBM_SUFFIX;
 	DB *capdbp;
+	unsigned lens = sizeof(suffix) - 1;
 	unsigned size = strlen(path);
-	unsigned need = 4 + size;
+	unsigned need = lens + size;
 
 	if (need <= limit) {
-	    if (size > 3 && !strcmp(path + size - 3, ".db"))
+	    if (size >= lens
+		&& !strcmp(path + size - lens, suffix))
 		(void) strcpy(filename, path);
 	    else
-		(void) sprintf(filename, "%s.db", path);
+		(void) sprintf(filename, "%s%s", path, suffix);
 
 	    /*
 	     * It would be nice to optimize the dbopen/close activity, as
@@ -441,15 +434,12 @@ _nc_read_tic_entry(char *filename,
 	     * since we support multiple database locations, we cannot do
 	     * that.
 	     */
-	    if ((capdbp = dbopen(filename,
-				 O_RDONLY, 0644, DB_HASH, NULL)) != NULL) {
+	    if ((capdbp = _nc_db_open(filename, FALSE)) != 0) {
 		DBT key, data;
-		u_int flags = 0;
-		int code;
 		int reccnt = 0;
 		char *save = strdup(name);
 
-		T(("opened %s", filename));
+		memset(&key, 0, sizeof(key));
 		key.data = save;
 		key.size = strlen(save);
 
@@ -470,14 +460,14 @@ _nc_read_tic_entry(char *filename,
 		 * distinguish between the two (source/binary) by checking the
 		 * lengths.
 		 */
-		while ((code = capdbp->get(capdbp, &key, &data, flags)) == 0) {
+		while (_nc_db_get(capdbp, &key, &data) == 0) {
 		    int used = data.size - 1;
 		    char *have = (char *) data.data;
 
 		    if (*have++ == 0) {
 			if (data.size > key.size
-			    && strcmp(have, (char *) key.data)) {
-			    result = read_termtype(tp, have, used);
+			    && IS_TIC_MAGIC(have)) {
+			    result = _nc_read_termtype(tp, have, used);
 			    if (result == TGETENT_NO) {
 				_nc_free_termtype(tp);
 			    }
@@ -499,7 +489,7 @@ _nc_read_tic_entry(char *filename,
 		    key.size = used;
 		}
 
-		capdbp->close(capdbp);
+		_nc_db_close(capdbp);
 		free(save);
 	    }
 	}

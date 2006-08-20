@@ -44,7 +44,7 @@
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.128 2006/04/15 22:43:02 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.129 2006/08/19 21:20:37 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -738,11 +738,11 @@ main(int argc, char *argv[])
 			    put_translate(fgetc(tmp_fp));
 		    }
 
-		    len = dump_entry(&qp->tterm, suppress_untranslatable,
-				     limited, numbers, NULL);
+		    dump_entry(&qp->tterm, suppress_untranslatable,
+			       limited, numbers, NULL);
 		    for (j = 0; j < qp->nuses; j++)
-			len += dump_uses(qp->uses[j].name, !capdump);
-		    (void) putchar('\n');
+			dump_uses(qp->uses[j].name, !capdump);
+		    len = show_entry();
 		    if (debug_level != 0 && !limited)
 			printf("# length=%d\n", len);
 		}

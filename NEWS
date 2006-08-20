@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1006 2006/08/05 21:46:31 tom Exp $
+-- $Id: NEWS,v 1.1011 2006/08/19 21:22:38 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,16 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060817
+	+ modify tic and infocmp to avoid writing trailing blanks on terminfo
+	  source output (Debian #378783).
+	+ modify configure script to ensure that if the C compiler is used
+	  rather than the loader in making shared libraries, the $(CFLAGS)
+	  variable is also used (Redhat Bugzilla #199369).
+	+ port hashed-db code to db2 and db3.
+	+ fix a bug in tgetent() from 20060625 and 20060715 changes
+	  (patch/analysis by Miroslav Lichvar, Redhat Bugzilla #202480)
 
 20060805
 	+ updated xterm function-keys terminfo to match xterm #216 -TD

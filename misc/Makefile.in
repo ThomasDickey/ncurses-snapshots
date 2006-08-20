@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.36 2004/07/11 16:00:13 tom Exp $
+# $Id: Makefile.in,v 1.37 2006/08/19 16:53:12 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -62,6 +62,7 @@ HOSTCC		= @BUILD_CC@
 
 tabsetdir	= $(datadir)/tabset
 ticdir		= @TERMINFO@
+ticfile		= $(ticdir).db
 source		= @TERMINFO_SRC@
 
 INSTALL		= @INSTALL@
@@ -78,7 +79,7 @@ install : install.data
 
 install.data :	terminfo.tmp \
 		$(DESTDIR)$(libdir) \
-		$(DESTDIR)$(ticdir) \
+		$(DESTDIR)$(datadir) \
 		$(DESTDIR)$(tabsetdir)
 	DESTDIR=${DESTDIR} \
 	prefix=${prefix} \
@@ -109,15 +110,16 @@ run_tic.sed :
 	sh $(srcdir)/gen_edit.sh >$@
 
 $(DESTDIR)$(libdir) \
-$(DESTDIR)$(tabsetdir) \
-$(DESTDIR)$(ticdir) :
+$(DESTDIR)$(datadir) \
+$(DESTDIR)$(tabsetdir) :
 	sh $(top_srcdir)/mkinstalldirs $@
 
 uninstall : uninstall.data
 
 uninstall.data :
-	-cd $(DESTDIR)$(ticdir) && rm -rf *
-	-cd $(DESTDIR)$(tabsetdir) && rm -rf *
+	-test -d $(DESTDIR)$(tabsetdir) && rm -rf $(DESTDIR)$(tabsetdir)
+	-test -d $(DESTDIR)$(ticdir) && rm -rf $(DESTDIR)$(ticdir)
+	-test -f $(DESTDIR)$(ticfile) && rm -f $(DESTDIR)$(ticfile)
 
 tags :
 

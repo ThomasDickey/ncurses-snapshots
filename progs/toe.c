@@ -42,7 +42,11 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.40 2006/08/05 17:16:52 tom Exp $")
+#if USE_HASHED_DB
+#include <hashed_db.h>
+#endif
+
+MODULE_ID("$Id: toe.c,v 1.41 2006/08/19 18:18:09 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -60,17 +64,54 @@ ExitProgram(int code)
 }
 #endif
 
+#if USE_HASHED_DB
+static bool
+make_db_name(char *dst, const char *src, unsigned limit)
+{
+    static const char suffix[] = DBM_SUFFIX;
+
+    bool result = FALSE;
+    unsigned lens = sizeof(suffix) - 1;
+    unsigned size = strlen(src);
+    unsigned need = lens + size;
+
+    if (need <= limit) {
+	if (size >= lens
+	    && !strcmp(src + size - lens, suffix))
+	    (void) strcpy(dst, src);
+	else
+	    (void) sprintf(dst, "%s%s", src, suffix);
+	result = TRUE;
+    }
+    return result;
+}
+#endif
+
 static bool
 is_database(const char *path)
 {
     bool result = FALSE;
 #if USE_DATABASE
-    if (_nc_is_dir_path(path) && access(path, R_OK | X_OK) == 0)
+    if (_nc_is_dir_path(path) && access(path, R_OK | X_OK) == 0) {
 	result = TRUE;
+    }
 #endif
 #if USE_TERMCAP
-    if (_nc_is_file_path(path) && access(path, R_OK) == 0)
+    if (_nc_is_file_path(path) && access(path, R_OK) == 0) {
 	result = TRUE;
+    }
+#endif
+#if USE_HASHED_DB
+    if (!result) {
+	char filename[PATH_MAX];
+	if (_nc_is_file_path(path) && access(path, R_OK) == 0) {
+	    result = TRUE;
+	} else if (make_db_name(filename, path, sizeof(filename))) {
+	    if (_nc_is_file_path(filename) && access(filename, R_OK) == 0) {
+		result = TRUE;
+	    }
+	}
+    }
 #endif
     return result;
 }
@@ -185,6 +226,40 @@ typelist(int eargc, char *eargv[],
 	    }
 	    closedir(termdir);
 	}
+#if USE_HASHED_DB
+	else {
+	    DB *capdbp;
+	    char filename[PATH_MAX];
+
+	    if (make_db_name(filename, eargv[i], sizeof(filename))) {
+		if ((capdbp = _nc_db_open(filename, FALSE)) != 0) {
+		    DBT key, data;
+		    int code;
+
+		    code = _nc_db_first(capdbp, &key, &data);
+		    while (code == 0) {
+			TERMTYPE lterm;
+			int used;
+			char *have;
+			char *cn;
+
+			if (_nc_db_have_data(&key, &data, &have, &used)) {
+			    if (_nc_read_termtype(&lterm, have, used) > 0) {
+				/* only visit things once, by primary name */
+				cn = _nc_first_name(lterm.term_names);
+				/* apply the selected hook function */
+				(*hook) (cn, &lterm);
+				_nc_free_termtype(&lterm);
+			    }
+			}
+			code = _nc_db_next(capdbp, &key, &data);
+		    }
+
+		    _nc_db_close(capdbp);
+		}
+	    }
+	}
+#endif
 #endif
 #if USE_TERMCAP
 #if HAVE_BSD_CGETENT

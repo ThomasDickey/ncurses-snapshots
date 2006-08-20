@@ -41,7 +41,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.84 2006/07/28 23:28:26 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.85 2006/08/19 21:20:37 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1546,12 +1546,12 @@ main(int argc, char *argv[])
 				   tname[0]);
 		(void) printf("#\tReconstructed via infocmp from file: %s\n",
 			      tfile[0]);
-		len = dump_entry(&entries[0].tterm,
-				 suppress_untranslatable,
-				 limited,
-				 numbers,
-				 NULL);
-		putchar('\n');
+		dump_entry(&entries[0].tterm,
+			   suppress_untranslatable,
+			   limited,
+			   numbers,
+			   NULL);
+		len = show_entry();
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: length %d\n", len);
 		break;
@@ -1582,15 +1582,15 @@ main(int argc, char *argv[])
 	    case C_USEALL:
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
-		len = dump_entry(&entries[0].tterm,
-				 suppress_untranslatable,
-				 limited,
-				 numbers,
-				 use_predicate);
+		dump_entry(&entries[0].tterm,
+			   suppress_untranslatable,
+			   limited,
+			   numbers,
+			   use_predicate);
 		for (i = 1; i < termcount; i++)
-		    len += dump_uses(tname[i], !(outform == F_TERMCAP
-						 || outform == F_TCONVERR));
-		putchar('\n');
+		    dump_uses(tname[i], !(outform == F_TERMCAP
+					  || outform == F_TCONVERR));
+		len = show_entry();
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: length %d\n", len);
 		break;

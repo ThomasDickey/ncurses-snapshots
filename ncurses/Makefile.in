@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.99 2006/07/15 21:11:56 tom Exp $
+# $Id: Makefile.in,v 1.100 2006/08/19 16:39:15 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -141,17 +141,17 @@ FALLBACK_LIST	= @FALLBACK_LIST@
 TERMINFO_CAPS	= $(top_srcdir)/include/@TERMINFO_CAPS@
 
 AUTO_SRC = \
-	codes.c \
-	comp_captab.c \
-	expanded.c \
-	fallback.c \
+	./codes.c \
+	./comp_captab.c \
+	./expanded.c \
+	./fallback.c \
+	./lib_gen.c \
+	./lib_keyname.c \
+	./link_test.c \
+	./names.c \
+	./unctrl.c \
 	init_keytry.h \
 	keys.list \
-	lib_gen.c \
-	lib_keyname.c \
-	link_test.c \
-	names.c \
-	unctrl.c \
 	names-stamp
 
 TEST_DEPS	= ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
@@ -183,10 +183,10 @@ $(DESTDIR)$(libdir) :
 
 ../lib : ; mkdir $@
 
-fallback.c : $(tinfo)/MKfallback.sh
+./fallback.c : $(tinfo)/MKfallback.sh
 	sh $(tinfo)/MKfallback.sh @TERMINFO@ @TERMINFO_SRC@ $(FALLBACK_LIST) >$@
 
-lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
+./lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
 	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h >$@
 
 init_keytry.h: make_keys$(BUILD_EXEEXT) keys.list
@@ -205,16 +205,16 @@ make_hash$(BUILD_EXEEXT) : \
 		../include/hashsize.h
 	$(BUILD_CC) -o $@ $(BUILD_CCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 
-expanded.c : $(serial)/MKexpanded.sh
+./expanded.c : $(serial)/MKexpanded.sh
 	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@
 
-comp_captab.c: \
+./comp_captab.c: \
 		make_hash$(BUILD_EXEEXT) \
 		../include/hashsize.h \
 		$(tinfo)/MKcaptab.awk
 	sh $(tinfo)/MKcaptab.awk $(AWK) $(srcdir)/../include/@TERMINFO_CAPS@ > $@
 
-lib_keyname.c: keys.list $(base)/MKkeyname.awk
+./lib_keyname.c: keys.list $(base)/MKkeyname.awk
 	$(AWK) -f $(base)/MKkeyname.awk keys.list > $@
 
 names-stamp: $(tinfo)/MKnames.awk
@@ -224,13 +224,13 @@ names-stamp: $(tinfo)/MKnames.awk
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 	@echo >$@
 
-names.c: names-stamp
+./names.c: names-stamp
 	@echo made $@
 
-codes.c: names-stamp
+./codes.c: names-stamp
 	@echo made $@
 
-unctrl.c: $(base)/MKunctrl.awk
+./unctrl.c: $(base)/MKunctrl.awk
 	echo | $(AWK) -f $(base)/MKunctrl.awk >$@
 
 tags:
@@ -263,7 +263,7 @@ realclean :: distclean
 # These rules build test-programs for the modules that have test-drivers
 test_progs : $(TEST_PROGS)
 
-link_test.c : $(base)/MKlib_gen.sh ../include/curses.h
+./link_test.c : $(base)/MKlib_gen.sh ../include/curses.h
 	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" implemented <../include/curses.h >$@
 
 captoinfo$x : $(tinfo)/captoinfo.c $(TEST_DEPS)
@@ -279,7 +279,7 @@ lib_mvcur$x : $(serial)/lib_mvcur.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/dump_entry$o
 	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry$o $(TEST_LDFLAGS)
 
-link_test$x : link_test.c $(TEST_DEPS) \
+link_test$x : ./link_test.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/link_test$o
 	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) ../@DFT_OBJ_SUBDIR@/link_test$o $(TEST_LDFLAGS)
 

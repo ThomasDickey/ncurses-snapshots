@@ -33,7 +33,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.54 2006/08/05 17:15:21 tom Exp $
+ * $Id: tic.h,v 1.55 2006/08/19 14:17:49 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -76,6 +76,15 @@ extern "C" {
 */
 
 #define MAGIC		0432	/* first two bytes of a compiled entry */
+
+#undef  BYTE
+#define BYTE(p,n)	(unsigned char)((p)[n])
+
+#define IS_NEG1(p)	((BYTE(p,0) == 0377) && (BYTE(p,1) == 0377))
+#define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))
+#define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
+
+#define IS_TIC_MAGIC(p)	(LOW_MSB(p) == MAGIC)
 
 /*
  * The "maximum" here is misleading; XSI guarantees minimum values, which a

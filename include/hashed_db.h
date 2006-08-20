@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 2006 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,54 +27,41 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey                        1996-on                 *
+ *  Author: Thomas E. Dickey                        2006                    *
  ****************************************************************************/
 
-
 /*
- * $Id: dump_entry.h,v 1.29 2006/08/19 21:11:14 tom Exp $
- *
- * Dump control definitions and variables
+ * $Id: hashed_db.h,v 1.5 2006/08/19 15:58:34 tom Exp $
  */
 
-#ifndef DUMP_ENTRY_H
-#define DUMP_ENTRY_H 1
+#ifndef HASHED_DB_H
+#define HASHED_DB_H 1
 
-/* capability output formats */
-#define F_TERMINFO	0	/* use terminfo names */
-#define F_VARIABLE	1	/* use C variable names */
-#define F_TERMCAP	2	/* termcap names with capability conversion */
-#define F_TCONVERR	3	/* as T_TERMCAP, no skip of untranslatables */
-#define F_LITERAL	4	/* like F_TERMINFO, but no smart defaults */
+#include <curses.h>
 
-/* capability sort modes */
-#define S_DEFAULT	0	/* sort by terminfo name (implicit) */
-#define S_NOSORT	1	/* don't sort */
-#define S_TERMINFO	2	/* sort by terminfo names (explicit) */
-#define S_VARIABLE	3	/* sort by C variable names */
-#define S_TERMCAP	4	/* sort by termcap names */
+#if USE_HASHED_DB
 
-/* capability types for the comparison hook */
-#define CMP_BOOLEAN	0	/* comparison on booleans */
-#define CMP_NUMBER	1	/* comparison on numerics */
-#define CMP_STRING	2	/* comparison on strings */
-#define CMP_USE		3	/* comparison on use capabilities */
+#include <db.h>
 
-typedef unsigned PredType;
-typedef int PredIdx;
-typedef int (*PredFunc)(PredType, PredIdx);
+#ifndef DBN_SUFFIX
+#define DBM_SUFFIX ".db"
+#endif
 
-extern NCURSES_CONST char *nametrans(const char *);
-extern int fmt_entry(TERMTYPE *, PredFunc, bool, bool, bool, int);
-extern int show_entry(void);
-extern void compare_entry(void (*)(PredType, PredIdx, const char *), TERMTYPE *, bool);
-extern void dump_entry(TERMTYPE *, bool, bool, int, PredFunc);
-extern void dump_init(const char *, int, int, int, int, bool);
-extern void dump_uses(const char *, bool);
-extern void repair_acsc(TERMTYPE * tp);
+#ifdef DB_VERSION_MAJOR
+#define HASHED_DB_API DB_VERSION_MAJOR
+#else
+#define HASHED_DB_API 1		/* e.g., db 1.8.5 */
+#endif
 
-#define FAIL	-1
+extern NCURSES_EXPORT(DB *) _nc_db_open(const char * /* path */, bool /* modify */);
+extern NCURSES_EXPORT(bool) _nc_db_have_data(DBT * /* key */, DBT * /* data */, char ** /* buffer */, int * /* size */);
+extern NCURSES_EXPORT(bool) _nc_db_have_index(DBT * /* key */, DBT * /* data */, char ** /* buffer */, int * /* size */);
+extern NCURSES_EXPORT(int) _nc_db_close(DB * /* db */);
+extern NCURSES_EXPORT(int) _nc_db_first(DB * /* db */, DBT * /* key */, DBT * /* data */);
+extern NCURSES_EXPORT(int) _nc_db_next(DB * /* db */, DBT * /* key */, DBT * /* data */);
+extern NCURSES_EXPORT(int) _nc_db_get(DB * /* db */, DBT * /* key */, DBT * /* data */);
+extern NCURSES_EXPORT(int) _nc_db_put(DB * /* db */, DBT * /* key */, DBT * /* data */);
 
-#endif /* DUMP_ENTRY_H */
+#endif
+
+#endif /* HASHED_DB_H */
