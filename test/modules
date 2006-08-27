@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.26 2006/07/15 18:53:02 tom Exp $
+# $Id: modules,v 1.27 2006/08/26 11:39:47 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -51,6 +51,7 @@ edit_field	progs		$(srcdir)	$(HEADER_DEPS)	$(srcdir)/edit_field.h
 filter		progs		$(srcdir)	$(HEADER_DEPS)	../include/form.h
 firework	progs		$(srcdir)	$(HEADER_DEPS)
 firstlast	progs		$(srcdir)	$(HEADER_DEPS)
+foldkeys	progs		$(srcdir)	$(HEADER_DEPS)
 gdc		progs		$(srcdir)	$(HEADER_DEPS)
 hanoi		progs		$(srcdir)	$(HEADER_DEPS)
 hashtest	progs		$(srcdir)	$(HEADER_DEPS)

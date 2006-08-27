@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.20 2006/01/07 22:47:45 tom Exp $
+.\" $Id: curs_util.3x,v 1.21 2006/08/26 14:17:48 tom Exp $
 .TH curs_util 3X ""
 .na
 .hy 0
@@ -167,6 +167,11 @@ change the output of \fBunctrl\fP.
 The \fBkeyname\fP function may return the names of user-defined
 string capabilities which are defined in the terminfo entry via the \fB-x\fP
 option of \fBtic\fP.
+This implementation automatically assigns at run-time keycodes to 
+user-defined strings which begin with "k".
+The keycodes start at KEY_MAX, but are not guaranteed to be 
+the same value for different runs because user-defined codes are
+merged from all terminal descriptions which have been loaded.
 .PP
 The \fBnofilter\fP routine is specific to ncurses.
 It was not supported on Version 7, BSD or System V implementations.
