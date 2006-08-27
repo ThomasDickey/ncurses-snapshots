@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.297 $
-#	$Date: 2006/08/19 20:26:57 $
+#	$Revision: 1.298 $
+#	$Date: 2006/08/27 00:39:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3424,6 +3424,22 @@ gnome|GNOME Terminal,
 
 gnome-256color|GNOME Terminal with xterm 256-colors,
 	use=xterm+256color, use=gnome,
+
+# XFCE Terminal 0.2.5.4beta2
+#
+# This is based on some of the same source code, e.g., the VTE library, as
+# gnome-terminal, but has fewer features, fails more screens in vttest.
+# Since most of the terminfo-related behavior is due to the VTE library,
+# the terminfo is the same as gnome-terminal.
+xfce|Xfce Terminal,
+	use=gnome,
+
+# Multi-Gnome-Terminal 1.6.2
+#
+# This does not use VTE, and does have different behavior (compare xfce and
+# gnome).
+mgt|Multi GNOME Terminal,
+	indn=\E[%p1%dS, rin=\E[%p1%dT, use=xterm-xf86-v333,
 
 # This is kvt 0-18.7, shipped with Redhat 6.0 (though whether it supports bce
 # or not is debatable).
@@ -21202,6 +21218,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2006-08-17
 #	* make descriptions of xterm entries consistent with its terminfo -TD
+#
+# 2006-08-26
+#	* add xfce, mgt -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

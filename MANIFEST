@@ -982,6 +982,7 @@
 ./test/filter.c
 ./test/firework.c
 ./test/firstlast.c
+./test/foldkeys.c
 ./test/gdc.6
 ./test/gdc.c
 ./test/hanoi.c
