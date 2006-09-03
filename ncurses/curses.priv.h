@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.306 2006/09/02 20:34:14 tom Exp $
+ * $Id: curses.priv.h,v 1.307 2006/09/03 15:37:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -666,9 +666,9 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
-#define AddAttr(c,a)	AttrOf(c) |= (a)
-#define RemAttr(c,a)	AttrOf(c) &= ~(a)
-#define SetAttr(c,a)	AttrOf(c) = (a)
+#define AddAttr(c,a)	AttrOf(c) |= ((a) & A_ATTRIBUTES)
+#define RemAttr(c,a)	AttrOf(c) &= ~((a) & A_ATTRIBUTES)
+#define SetAttr(c,a)	AttrOf(c) = ((a) & A_ATTRIBUTES)
 #define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
 #define NewChar(ch)	NewChar2(ChCharOf(ch), ChAttrOf(ch))
 #define CharEq(a,b)	(!memcmp(&(a), &(b), sizeof(a)))
