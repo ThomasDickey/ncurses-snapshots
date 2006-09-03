@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.77 2006/08/19 21:20:42 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.78 2006/09/02 21:13:20 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -1089,6 +1089,8 @@ dump_uses(const char *name, bool infodump)
 {
     char buffer[MAX_TERMINFO_LENGTH];
 
+    if (outform == F_TERMCAP || outform == F_TCONVERR)
+	trim_trailing();
     (void) sprintf(buffer, "%s%s", infodump ? "use=" : "tc=", name);
     wrap_concat(buffer);
 }

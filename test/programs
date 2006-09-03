@@ -1,4 +1,4 @@
-# $Id: programs,v 1.3 2006/08/26 14:00:47 tom Exp $
+# $Id: programs,v 1.4 2006/09/02 19:40:02 Stanislav.Ievlev Exp $
 ##############################################################################
 # Copyright (c) 2006 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -48,7 +48,7 @@ dots		$(LDFLAGS_TINFO)	$(LOCAL_LIBS)	dots
 filter		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	filter
 firework	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	firework
 firstlast	$(LDFLAGS_DEFAULT)	$(LOCAL_LIBS)	firstlast
-foldkeys	$(LDFLAGS_TINFO)	$(LOCAL_LIBS)	foldkeys
+foldkeys	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	foldkeys
 gdc		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	gdc
 hanoi		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	hanoi
 hashtest	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	hashtest

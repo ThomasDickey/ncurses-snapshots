@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.298 $
-#	$Date: 2006/08/27 00:39:26 $
+#	$Revision: 1.299 $
+#	$Date: 2006/09/02 22:30:50 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3290,9 +3290,11 @@ xterm-bold|xterm terminal emulator (X11R6 Window System) standout w/bold,
 #  -- Kenji Rikitake)
 # (proper setting of enacs, smacs, rmacs makes kterm to use DEC Graphics
 #  -- MATSUMOTO Shoji)
+# kterm implements acsc via built-in table of X Drawable's
 kterm|kterm kanji terminal emulator (X window system),
 	eslok, hs,
-	acsc=++\,\,--..00ii``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+	ncv@,
+	acsc=``aajjkkllmmnnooppqqrrssttuuvvwwxx~~,
 	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs=, fsl=\E[?F,
 	kmous=\E[M, rc=\E8, rmacs=\E(B, rmam=\E[?7l, sc=\E7,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;,
@@ -21221,6 +21223,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2006-08-26
 #	* add xfce, mgt -TD
+#
+# 2006-09-02
+#	* correct acsc string in kterm -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1013 2006/08/27 00:45:32 tom Exp $
+-- $Id: NEWS,v 1.1014 2006/09/02 22:34:36 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060902
+	+ fix kterm's acsc string -TD
+	+ fix for change to tic/infocmp in 20060819 to ensure no blank is
+	  embedded into a termcap description.
+	+ workaround for 20050806 ifdef's change to allow visbuf.c to compile
+	  when using --with-termlib --with-trace options.
+	+ improve tgetstr() by making the return value point into the user's
+	  buffer, if provided (patch by Miroslav Lichvar for Redhat Bugzilla
+	  #202480).
+	+ correct libraries needed for foldkeys (report by Stanislav Ievlev)
 
 20060826
 	+ add terminfo entries for xfce terminal (xfce) and multi gnome

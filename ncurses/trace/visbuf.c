@@ -36,12 +36,13 @@
  *	visbuf.c - Tracing/Debugging support routines
  */
 
+#define NEED_NCURSES_CH_T
 #include <curses.priv.h>
 
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.19 2006/06/17 17:42:27 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.20 2006/09/02 20:33:56 tom Exp $")
 
 static const char d_quote[] = {D_QUOTE, 0};
 static const char l_brace[] = {L_BRACE, 0};

@@ -45,7 +45,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.57 2006/08/16 20:11:34 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.58 2006/09/02 19:39:46 Miroslav.Lichvar Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -267,6 +267,7 @@ tgetstr(NCURSES_CONST char *id, char **area)
 		    if (area != 0
 			&& *area != 0) {
 			(void) strcpy(*area, result);
+			result = *area;
 			*area += strlen(*area) + 1;
 		    }
 		}
