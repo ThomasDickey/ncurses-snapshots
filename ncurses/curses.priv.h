@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.305 2006/07/28 23:10:15 tom Exp $
+ * $Id: curses.priv.h,v 1.306 2006/09/02 20:34:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -294,7 +294,7 @@ typedef unsigned colorpair_t;	/* type big enough to store PAIR_OF() */
 
 #define COLOR_DEFAULT		C_MASK
 
-#ifdef USE_TERMLIB
+#if defined(USE_TERMLIB) && !defined(NEED_NCURSES_CH_T)
 
 #undef NCURSES_CH_T		/* this is not a termlib feature */
 #define NCURSES_CH_T void	/* ...but we need a pointer in SCREEN */
