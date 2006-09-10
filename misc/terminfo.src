@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.299 $
-#	$Date: 2006/09/02 22:30:50 $
+#	$Revision: 1.300 $
+#	$Date: 2006/09/09 22:38:37 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -386,11 +386,17 @@ klone+acs|alternate character set for ansi.sys displays,
 # about \E[11m as klone+acs.  True ANSI/ECMA-48 would have <rmso=\E[27m>,
 # <rmul=\E[24m>, but this isn't a documented feature of ANSI.SYS.
 klone+sgr|attribute control for ansi.sys displays,
-	blink=\E[5m, bold=\E[1m, invis=\E[8m, rev=\E[7m,
-	rmpch=\E[10m, rmso=\E[m, rmul=\E[m,
-	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
+	blink=\E[5m, bold=\E[1m, rev=\E[7m, rmpch=\E[10m,
+	rmso=\E[m, rmul=\E[m,
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p9%t;11%;m,
 	sgr0=\E[0;10m, smpch=\E[11m, smso=\E[7m, smul=\E[4m,
 	use=klone+acs,
+
+# Most Intel boxes do not treat "invis" (invisible) text.
+klone+sgr8|attribute control for ansi.sys displays,
+	invis=\E[8m,
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
+	use=klone+sgr,
 
 # Highlight controls corresponding to the ANSI.SYS standard.  *All*
 # console drivers for Intel boxes obey these.  Does not assume \E[11m will
@@ -429,7 +435,7 @@ ecma+color|color control for ECMA-48-compatible terminals,
 
 # Attribute control for ECMA-48-compatible terminals
 ecma+sgr|attribute capabilities for true ECMA-48 terminals,
-	rmso=\E[27m, rmul=\E[24m, use=klone+sgr,
+	rmso=\E[27m, rmul=\E[24m, use=klone+sgr8,
 
 # For comparison, here are all the capabilities implied by the Intel
 # Binary Compatibility Standard (level 2) that fit within terminfo.
@@ -571,7 +577,7 @@ ansi+enq|ncurses extension for ANSI ENQ,
 # standard terminfo.  Assumes ANSI.SYS-compatible attributes and color.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> Nov 6 1995
 ansi|ansi/pc-term compatible with color,
-	use=ansi+enq, use=ecma+color, use=klone+sgr, use=ansi-m,
+	use=ansi+enq, use=ecma+color, use=klone+sgr8, use=ansi-m,
 
 # ansi-generic is a vanilla ANSI terminal. This is assumed to implement
 # all the normal ANSI stuff with no extensions. It assumes
@@ -603,7 +609,7 @@ ansi.sys-old|ANSI.SYS under PC-DOS 2.1,
 	is2=\E[m\E[?7h, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K,
 	khome=^^, pfkey=\E[0;%p1%{58}%+%d;%p2"%s", rc=\E[u,
 	rmam=\E[?7l, sc=\E[s, smam=\E[?7h, u6=\E[%i%d;%dR,
-	u7=\E[6n, use=klone+color, use=klone+sgr,
+	u7=\E[6n, use=klone+color, use=klone+sgr8,
 ansi.sys|ANSI.SYS 3.1 and later versions,
 	el=\E[K, use=ansi.sys-old,
 
@@ -772,6 +778,22 @@ linux-vt|linux console using VT codes for graphics,
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz~~,
 	rmacs=\E(K, rmpch@, sgr@, sgr0=\E[0m\E(K\017, smacs=\E(0,
 	smpch@, use=linux,
+
+# This is based on the Linux console (relies on the console to perform some
+# of the functionality), but does not recognize as many control sequences.
+# The program comes bundled with an old (circa 1998) copy of the Linux
+# console terminfo.  It recognizes some non-ANSI/VT100 sequences such as
+#	\E*	move cursor to home, as as \E[H
+#	\E,X	same as \E(X
+#	\EE	move cursor to beginning of row
+#	\E[y,xf	same as \E[y,xH
+#
+# Note: The status-line support is buggy (dsl does not work).
+kon|kon2|jfbterm|Kanji ON Linux console,
+	ccc@, hs,
+	civis@, cnorm@, cvvis@, dsl=\E[?H, flash@, fsl=\E[?F, initc@,
+	initp@, kcbt@, oc@, op=\E[37;40m, rs1=\Ec, tsl=\E[?T,
+	use=linux,
 
 #### Mach
 #
@@ -1229,7 +1251,7 @@ ibmpcx|xenix|ibmx|IBM PC xenix console display,
 	ed=\E[J, el=\E[K, home=\E[H, ich1=\E[@, il1=\E[L, kbs=^H,
 	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[d,
 	kf1=\E[K, kf2=\E[L, kf3=\E[M, kf4=\E[N, khome=\E[Y, knp=\E[e,
-	kpp=\E[Z, use=klone+acs, use=klone+sgr,
+	kpp=\E[Z, use=klone+acs, use=klone+sgr8,
 
 #### QNX
 #
@@ -1771,7 +1793,7 @@ bsdos-pc-m|bsdos-pc-mono|BSD/OS PC console mono,
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, khome=\E[H, kich1=\E[L,
 	kll=\E[F, knp=\E[G, kpp=\E[I, nel=^M^J, rc=\E8, sc=\E7,
 	sgr=\E[0;10%?%p1%t;7%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m%?%p5%t\E[=8F%;,
-	use=klone+sgr,
+	use=klone+sgr8,
 
 # Old names for BSD/OS PC console used in releases before 4.1.
 pc3|BSD/OS on the PC Console,
@@ -21226,6 +21248,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2006-09-02
 #	* correct acsc string in kterm -TD
+#
+# 2006-09-09
+#	* add kon entry -TD
+#	* remove invis from linux and related entries, add klone+sgr8 for those
+#	  that implement the feature (or have not been shown to lack it) -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
