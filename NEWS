@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1015 2006/09/03 15:35:21 tom Exp $
+-- $Id: NEWS,v 1.1016 2006/09/09 22:34:18 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,11 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20060909
+	+ add kon, kon2 and jfbterm terminfo entry (request by Till Maas) -TD
+	+ remove invis capability from klone+sgr, mainly used by linux entry,
+	  since it does not really do this -TD
 
 20060903
 	+ correct logic in wadd_wch() and wecho_wch(), which did not guard
