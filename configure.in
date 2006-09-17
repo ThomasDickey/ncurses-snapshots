@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.369 2006/08/19 19:52:48 tom Exp $
+dnl $Id: configure.in,v 1.370 2006/09/16 15:32:44 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.369 $)
+AC_REVISION($Revision: 1.370 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -142,24 +142,25 @@ fi
 modules_to_build="$modules_to_build panel menu form"
 
 AC_ARG_PROGRAM
-AC_PROG_AWK
-AC_PROG_MAKE_SET
+
+CF_PROG_AWK
+CF_PROG_EGREP
 CF_PROG_INSTALL
+CF_PROG_LINT
+AC_PROG_LN_S
+
+AC_PROG_MAKE_SET
+CF_MAKE_TAGS
+CF_MAKEFLAGS
+
 AC_SYS_LONG_FILE_NAMES
 CF_MIXEDCASE_FILENAMES
-AC_PROG_LN_S
-CF_MAKE_TAGS
-AC_CHECK_PROGS(LINT, tdlint lint alint)
-AC_CHECK_PROGS(MAN, man man_db)
-AC_SUBST(LINT_OPTS)
 
 dnl These are standard among *NIX systems, but not when cross-compiling
 AC_CHECK_TOOL(RANLIB, ranlib, ':')
 AC_CHECK_TOOL(LD, ld, ld)
 AC_CHECK_TOOL(AR, ar, ar)
 CF_SUBST(archiver options,AR_OPTS,rv)
-
-CF_MAKEFLAGS
 
 dnl Special option for use by system-builders: the install-prefix is used to
 dnl adjust the location into which the actual install is done, so that an

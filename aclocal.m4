@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.387 2006/08/19 20:17:18 tom Exp $
+dnl $Id: aclocal.m4,v 1.388 2006/09/16 15:44:20 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3232,13 +3232,19 @@ ifelse($1,,,[$1=$PATHSEP])
 	AC_SUBST(PATHSEP)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PATH_SYNTAX version: 10 updated: 2006/01/02 19:36:00
+dnl CF_PATH_SYNTAX version: 11 updated: 2006/09/02 08:55:46
 dnl --------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
 dnl result begins with 'NONE'.  This is necessary to work around autoconf's
 dnl delayed evaluation of those symbols.
 AC_DEFUN([CF_PATH_SYNTAX],[
+if test "x$prefix" != xNONE; then
+  cf_path_syntax="$prefix"
+else
+  cf_path_syntax="$ac_default_prefix"
+fi
+
 case ".[$]$1" in #(vi
 .\[$]\(*\)*|.\'*\'*) #(vi
   ;;
@@ -3250,12 +3256,12 @@ case ".[$]$1" in #(vi
   eval $1="[$]$1"
   case ".[$]$1" in #(vi
   .NONE/*)
-    $1=`echo [$]$1 | sed -e s%NONE%$ac_default_prefix%`
+    $1=`echo [$]$1 | sed -e s%NONE%$cf_path_syntax%`
     ;;
   esac
   ;; #(vi
 .no|.NONE/*)
-  $1=`echo [$]$1 | sed -e s%NONE%$ac_default_prefix%`
+  $1=`echo [$]$1 | sed -e s%NONE%$cf_path_syntax%`
   ;;
 *)
   ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
@@ -3398,6 +3404,15 @@ done
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_PROG_AWK version: 1 updated: 2006/09/16 11:40:59
+dnl -----------
+dnl Check for awk, ensure that the check found something.
+AC_DEFUN([CF_PROG_AWK],
+[
+AC_PROG_AWK
+test -z "$AWK" && AC_MSG_ERROR(No awk program found)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_PROG_CC_C_O version: 1 updated: 2004/02/14 15:00:43
 dnl --------------
 dnl Analogous to AC_PROG_CC_C_O, but more useful: tests only $CC, ensures that
@@ -3462,6 +3477,21 @@ make a defined-error
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_PROG_EGREP version: 1 updated: 2006/09/16 11:40:59
+dnl -------------
+dnl AC_PROG_EGREP was introduced in autoconf 2.53.
+dnl This macro adds a check to ensure the script found something.
+AC_DEFUN([CF_PROG_EGREP],
+[AC_CACHE_CHECK([for egrep], [ac_cv_prog_egrep],
+   [if echo a | (grep -E '(a|b)') >/dev/null 2>&1
+    then ac_cv_prog_egrep='grep -E'
+    else ac_cv_prog_egrep='egrep'
+    fi])
+ EGREP=$ac_cv_prog_egrep
+ AC_SUBST([EGREP])
+test -z "$EGREP" && AC_MSG_ERROR(No egrep program found)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_PROG_EXT version: 10 updated: 2004/01/03 19:28:18
 dnl -----------
 dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
@@ -3523,6 +3553,14 @@ freebsd*) #(vi
 esac
 fi
 AC_SUBST(LDCONFIG)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PROG_LINT version: 1 updated: 2006/09/16 11:40:59
+dnl ------------
+AC_DEFUN([CF_PROG_LINT],
+[
+AC_CHECK_PROGS(LINT, tdlint lint alint)
+AC_SUBST(LINT_OPTS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_REGEX version: 3 updated: 1997/11/01 14:26:01
@@ -4234,14 +4272,15 @@ fi
 AC_SUBST($2)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SUBST_NCURSES_VERSION version: 7 updated: 2003/06/07 16:22:51
+dnl CF_SUBST_NCURSES_VERSION version: 8 updated: 2006/09/16 11:40:59
 dnl ------------------------
 dnl Get the version-number for use in shared-library naming, etc.
 AC_DEFUN([CF_SUBST_NCURSES_VERSION],
 [
-NCURSES_MAJOR="`egrep '^NCURSES_MAJOR[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
-NCURSES_MINOR="`egrep '^NCURSES_MINOR[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
-NCURSES_PATCH="`egrep '^NCURSES_PATCH[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
+AC_REQUIRE([CF_PROG_EGREP])
+NCURSES_MAJOR="`$ac_cv_prog_egrep '^NCURSES_MAJOR[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
+NCURSES_MINOR="`$ac_cv_prog_egrep '^NCURSES_MINOR[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
+NCURSES_PATCH="`$ac_cv_prog_egrep '^NCURSES_PATCH[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0-9]]*//'`"
 cf_cv_abi_version=${NCURSES_MAJOR}
 cf_cv_rel_version=${NCURSES_MAJOR}.${NCURSES_MINOR}
 dnl Show the computed version, for logging
