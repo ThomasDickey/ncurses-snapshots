@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.307 2006/09/03 15:37:52 tom Exp $
+ * $Id: curses.priv.h,v 1.310 2006/09/16 22:25:27 tom Exp $
  *
  *	curses.priv.h
  *
@@ -342,150 +342,174 @@ struct _SLK;
 
 typedef struct
 {
-	char *ent_text;         /* text for the label */
-	char *form_text;        /* formatted text (left/center/...) */
-	int ent_x;              /* x coordinate of this field */
-	char dirty;             /* this label has changed */
-	char visible;           /* field is visible */
+	char *ent_text;		/* text for the label */
+	char *form_text;	/* formatted text (left/center/...) */
+	int ent_x;		/* x coordinate of this field */
+	char dirty;		/* this label has changed */
+	char visible;		/* field is visible */
 } slk_ent;
 
 typedef struct _SLK {
-	char dirty;             /* all labels have changed */
-	char hidden;            /* soft labels are hidden */
+	char dirty;		/* all labels have changed */
+	char hidden;		/* soft labels are hidden */
 	WINDOW *win;
 	slk_ent *ent;
-	short  maxlab;          /* number of available labels */
-	short  labcnt;          /* number of allocated labels */
-	short  maxlen;          /* length of labels */
-	NCURSES_CH_T attr;      /* soft label attribute */
+	short  maxlab;		/* number of available labels */
+	short  labcnt;		/* number of allocated labels */
+	short  maxlen;		/* length of labels */
+	NCURSES_CH_T attr;	/* soft label attribute */
 } SLK;
 
 #endif	/* USE_TERMLIB */
 
 typedef	struct {
-	int	line;           /* lines to take, < 0 => from bottom*/
-	int	(*hook)(WINDOW *, int); /* callback for user        */
-	WINDOW *w;              /* maybe we need this for cleanup   */
+	int	line;		/* lines to take, < 0 => from bottom*/
+	int	(*hook)(WINDOW *, int); /* callback for user	    */
+	WINDOW *w;		/* maybe we need this for cleanup   */
 } ripoff_t;
+
+#if USE_GPM_SUPPORT
+#undef buttons			/* term.h defines this, and gpm uses it! */
+#include <gpm.h>
+
+#ifdef HAVE_LIBDL
+/* link dynamically to GPM */
+typedef int *TYPE_gpm_fd;
+typedef int (*TYPE_Gpm_Open) (Gpm_Connect *, int);
+typedef int (*TYPE_Gpm_Close) (void);
+typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
+
+#define my_gpm_fd       SP->_mouse_gpm_fd
+#define my_Gpm_Open     SP->_mouse_Gpm_Open
+#define my_Gpm_Close    SP->_mouse_Gpm_Close
+#define my_Gpm_GetEvent SP->_mouse_Gpm_GetEvent
+#else
+/* link statically to GPM */
+#define my_gpm_fd       &gpm_fd
+#define my_Gpm_Open     Gpm_Open
+#define my_Gpm_Close    Gpm_Close
+#define my_Gpm_GetEvent Gpm_GetEvent
+#endif /* HAVE_LIBDL */
+#endif /* USE_GPM_SUPPORT */
 
 /*
  * The SCREEN structure.
  */
 
 struct screen {
-	int             _ifd;           /* input file ptr for screen        */
-	FILE            *_ofp;          /* output file ptr for screen       */
-	char            *_setbuf;       /* buffered I/O for output          */
+	int		_ifd;		/* input file ptr for screen	    */
+	FILE		*_ofp;		/* output file ptr for screen	    */
+	char		*_setbuf;	/* buffered I/O for output	    */
 	bool		_filtered;	/* filter() was called		    */
-	bool		_buffered;      /* setvbuf uses _setbuf data        */
-	int             _checkfd;       /* filedesc for typeahead check     */
-	TERMINAL        *_term;         /* terminal type information        */
-	short           _lines;         /* screen lines                     */
-	short           _columns;       /* screen columns                   */
+	bool		_buffered;	/* setvbuf uses _setbuf data	    */
+	int		_checkfd;	/* filedesc for typeahead check	    */
+	TERMINAL	*_term;		/* terminal type information	    */
+	short		_lines;		/* screen lines			    */
+	short		_columns;	/* screen columns		    */
 
-	short           _lines_avail;   /* lines available for stdscr       */
-	short           _topstolen;     /* lines stolen from top            */
+	short		_lines_avail;	/* lines available for stdscr	    */
+	short		_topstolen;	/* lines stolen from top	    */
 	ripoff_t	_rippedoff[5];	/* list of lines stolen		    */
 	int		_rip_count;	/* ...and total lines stolen	    */
 
-	WINDOW          *_curscr;       /* current screen                   */
-	WINDOW          *_newscr;       /* virtual screen to be updated to  */
-	WINDOW          *_stdscr;       /* screen's full-window context     */
+	WINDOW		*_curscr;	/* current screen		    */
+	WINDOW		*_newscr;	/* virtual screen to be updated to  */
+	WINDOW		*_stdscr;	/* screen's full-window context	    */
 
-	struct tries    *_keytry;       /* "Try" for use with keypad mode   */
-	struct tries    *_key_ok;       /* Disabled keys via keyok(,FALSE)  */
-	bool            _tried;         /* keypad mode was initialized      */
-	bool            _keypad_on;     /* keypad mode is currently on      */
+	struct tries	*_keytry;	/* "Try" for use with keypad mode   */
+	struct tries	*_key_ok;	/* Disabled keys via keyok(,FALSE)  */
+	bool		_tried;		/* keypad mode was initialized	    */
+	bool		_keypad_on;	/* keypad mode is currently on	    */
 
 	bool		_called_wgetch;	/* check for recursion in wgetch()  */
 	int		_fifo[FIFO_SIZE];	/* input push-back buffer   */
-	short           _fifohead,      /* head of fifo queue               */
-	                _fifotail,      /* tail of fifo queue               */
-	                _fifopeek,      /* where to peek for next char      */
-	                _fifohold;      /* set if breakout marked           */
+	short		_fifohead,	/* head of fifo queue		    */
+			_fifotail,	/* tail of fifo queue		    */
+			_fifopeek,	/* where to peek for next char	    */
+			_fifohold;	/* set if breakout marked	    */
 
-	int             _endwin;        /* are we out of window mode?       */
-	NCURSES_CH_T	*_current_attr; /* holds current attributes set     */
-	int             _coloron;       /* is color enabled?                */
+	int		_endwin;	/* are we out of window mode?	    */
+	NCURSES_CH_T	*_current_attr; /* holds current attributes set	    */
+	int		_coloron;	/* is color enabled?		    */
 	int		_color_defs;	/* are colors modified		    */
-	int             _cursor;        /* visibility of the cursor         */
-	int             _cursrow;       /* physical cursor row              */
-	int             _curscol;       /* physical cursor column           */
+	int		_cursor;	/* visibility of the cursor	    */
+	int		_cursrow;	/* physical cursor row		    */
+	int		_curscol;	/* physical cursor column	    */
 	bool		_notty;		/* true if we cannot switch non-tty */
-	int             _nl;            /* True if NL -> CR/NL is on        */
-	int             _raw;           /* True if in raw mode              */
-	int             _cbreak;        /* 1 if in cbreak mode              */
-	                                /* > 1 if in halfdelay mode         */
-	int             _echo;          /* True if echo on                  */
-	int             _use_meta;      /* use the meta key?                */
-	struct _SLK     *_slk;          /* ptr to soft key struct / NULL    */
-        int             slk_format;     /* selected format for this screen  */
+	int		_nl;		/* True if NL -> CR/NL is on	    */
+	int		_raw;		/* True if in raw mode		    */
+	int		_cbreak;	/* 1 if in cbreak mode		    */
+					/* > 1 if in halfdelay mode	    */
+	int		_echo;		/* True if echo on		    */
+	int		_use_meta;	/* use the meta key?		    */
+	struct _SLK	*_slk;		/* ptr to soft key struct / NULL    */
+	int		slk_format;	/* selected format for this screen  */
 	/* cursor movement costs; units are 10ths of milliseconds */
 #if NCURSES_NO_PADDING
-	int             _no_padding;    /* flag to set if padding disabled  */
+	int		_no_padding;	/* flag to set if padding disabled  */
 #endif
-	int             _char_padding;  /* cost of character put            */
-	int             _cr_cost;       /* cost of (carriage_return)        */
-	int             _cup_cost;      /* cost of (cursor_address)         */
-	int             _home_cost;     /* cost of (cursor_home)            */
-	int             _ll_cost;       /* cost of (cursor_to_ll)           */
+	int		_char_padding;	/* cost of character put	    */
+	int		_cr_cost;	/* cost of (carriage_return)	    */
+	int		_cup_cost;	/* cost of (cursor_address)	    */
+	int		_home_cost;	/* cost of (cursor_home)	    */
+	int		_ll_cost;	/* cost of (cursor_to_ll)	    */
 #if USE_HARD_TABS
-	int             _ht_cost;       /* cost of (tab)                    */
-	int             _cbt_cost;      /* cost of (backtab)                */
+	int		_ht_cost;	/* cost of (tab)		    */
+	int		_cbt_cost;	/* cost of (backtab)		    */
 #endif /* USE_HARD_TABS */
-	int             _cub1_cost;     /* cost of (cursor_left)            */
-	int             _cuf1_cost;     /* cost of (cursor_right)           */
-	int             _cud1_cost;     /* cost of (cursor_down)            */
-	int             _cuu1_cost;     /* cost of (cursor_up)              */
-	int             _cub_cost;      /* cost of (parm_cursor_left)       */
-	int             _cuf_cost;      /* cost of (parm_cursor_right)      */
-	int             _cud_cost;      /* cost of (parm_cursor_down)       */
-	int             _cuu_cost;      /* cost of (parm_cursor_up)         */
-	int             _hpa_cost;      /* cost of (column_address)         */
-	int             _vpa_cost;      /* cost of (row_address)            */
+	int		_cub1_cost;	/* cost of (cursor_left)	    */
+	int		_cuf1_cost;	/* cost of (cursor_right)	    */
+	int		_cud1_cost;	/* cost of (cursor_down)	    */
+	int		_cuu1_cost;	/* cost of (cursor_up)		    */
+	int		_cub_cost;	/* cost of (parm_cursor_left)	    */
+	int		_cuf_cost;	/* cost of (parm_cursor_right)	    */
+	int		_cud_cost;	/* cost of (parm_cursor_down)	    */
+	int		_cuu_cost;	/* cost of (parm_cursor_up)	    */
+	int		_hpa_cost;	/* cost of (column_address)	    */
+	int		_vpa_cost;	/* cost of (row_address)	    */
 	/* used in tty_update.c, must be chars */
-	int             _ed_cost;       /* cost of (clr_eos)                */
-	int             _el_cost;       /* cost of (clr_eol)                */
-	int             _el1_cost;      /* cost of (clr_bol)                */
-	int             _dch1_cost;     /* cost of (delete_character)       */
-	int             _ich1_cost;     /* cost of (insert_character)       */
-	int             _dch_cost;      /* cost of (parm_dch)               */
-	int             _ich_cost;      /* cost of (parm_ich)               */
-	int             _ech_cost;      /* cost of (erase_chars)            */
-	int             _rep_cost;      /* cost of (repeat_char)            */
-	int             _hpa_ch_cost;   /* cost of (column_address)         */
-	int             _cup_ch_cost;   /* cost of (cursor_address)         */
-	int             _cuf_ch_cost;   /* cost of (parm_cursor_right)      */
-	int             _inline_cost;   /* cost of inline-move              */
-	int             _smir_cost;	/* cost of (enter_insert_mode)      */
-	int             _rmir_cost;	/* cost of (exit_insert_mode)       */
-	int             _ip_cost;       /* cost of (insert_padding)         */
+	int		_ed_cost;	/* cost of (clr_eos)		    */
+	int		_el_cost;	/* cost of (clr_eol)		    */
+	int		_el1_cost;	/* cost of (clr_bol)		    */
+	int		_dch1_cost;	/* cost of (delete_character)	    */
+	int		_ich1_cost;	/* cost of (insert_character)	    */
+	int		_dch_cost;	/* cost of (parm_dch)		    */
+	int		_ich_cost;	/* cost of (parm_ich)		    */
+	int		_ech_cost;	/* cost of (erase_chars)	    */
+	int		_rep_cost;	/* cost of (repeat_char)	    */
+	int		_hpa_ch_cost;	/* cost of (column_address)	    */
+	int		_cup_ch_cost;	/* cost of (cursor_address)	    */
+	int		_cuf_ch_cost;	/* cost of (parm_cursor_right)	    */
+	int		_inline_cost;	/* cost of inline-move		    */
+	int		_smir_cost;	/* cost of (enter_insert_mode)	    */
+	int		_rmir_cost;	/* cost of (exit_insert_mode)	    */
+	int		_ip_cost;	/* cost of (insert_padding)	    */
 	/* used in lib_mvcur.c */
-	char *          _address_cursor;
+	char *		_address_cursor;
 	/* used in tty_update.c */
-	int             _scrolling;     /* 1 if terminal's smart enough to  */
+	int		_scrolling;	/* 1 if terminal's smart enough to  */
 
 	/* used in lib_color.c */
-	color_t         *_color_table;  /* screen's color palette            */
-	int             _color_count;   /* count of colors in palette        */
-	colorpair_t     *_color_pairs;  /* screen's color pair list          */
-	int             _pair_count;    /* count of color pairs              */
+	color_t		*_color_table;	/* screen's color palette	     */
+	int		_color_count;	/* count of colors in palette	     */
+	colorpair_t	*_color_pairs;	/* screen's color pair list	     */
+	int		_pair_count;	/* count of color pairs		     */
 #if NCURSES_EXT_FUNCS
-	bool            _default_color; /* use default colors                */
-	bool            _has_sgr_39_49; /* has ECMA default color support    */
-	int             _default_fg;    /* assumed default foreground        */
-	int             _default_bg;    /* assumed default background        */
+	bool		_default_color; /* use default colors		     */
+	bool		_has_sgr_39_49; /* has ECMA default color support    */
+	int		_default_fg;	/* assumed default foreground	     */
+	int		_default_bg;	/* assumed default background	     */
 #endif
-	chtype          _ok_attributes; /* valid attributes for terminal     */
-	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
-	chtype          _xmc_triggers;  /* attributes to process if xmc      */
-	chtype *        _acs_map;	/* the real alternate-charset map    */
+	chtype		_ok_attributes; /* valid attributes for terminal     */
+	chtype		_xmc_suppress;	/* attributes to suppress if xmc     */
+	chtype		_xmc_triggers;	/* attributes to process if xmc	     */
+	chtype *	_acs_map;	/* the real alternate-charset map    */
 	bool *		_screen_acs_map;
 
 
 	/* used in lib_vidattr.c */
-	bool            _use_rmso;	/* true if we may use 'rmso'         */
-	bool            _use_rmul;	/* true if we may use 'rmul'         */
+	bool		_use_rmso;	/* true if we may use 'rmso'	     */
+	bool		_use_rmul;	/* true if we may use 'rmul'	     */
 
 	/*
 	 * These data correspond to the state of the idcok() and idlok()
@@ -494,24 +518,48 @@ struct screen {
 	 * is given as an argument.  However, ncurses implements this logic
 	 * only for the newscr/curscr update process, _not_ per-window.
 	 */
-	bool            _nc_sp_idlok;
-	bool            _nc_sp_idcok;
+	bool		_nc_sp_idlok;
+	bool		_nc_sp_idcok;
 #define _nc_idlok SP->_nc_sp_idlok
 #define _nc_idcok SP->_nc_sp_idcok
 
 	/*
 	 * These are the data that support the mouse interface.
 	 */
+	bool		_mouse_initialized;
 	MouseType	_mouse_type;
-	int             _maxclick;
-	bool            (*_mouse_event) (SCREEN *);
-	bool            (*_mouse_inline)(SCREEN *);
-	bool            (*_mouse_parse) (int);
-	void            (*_mouse_resume)(SCREEN *);
-	void            (*_mouse_wrap)  (SCREEN *);
-	int             _mouse_fd;      /* file-descriptor, if any */
+	int		_maxclick;
+	bool		(*_mouse_event) (SCREEN *);
+	bool		(*_mouse_inline)(SCREEN *);
+	bool		(*_mouse_parse) (int);
+	void		(*_mouse_resume)(SCREEN *);
+	void		(*_mouse_wrap)	(SCREEN *);
+	int		_mouse_fd;	/* file-descriptor, if any */
 	bool		_mouse_active;	/* true if initialized */
+	mmask_t		_mouse_mask;
 	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
+	MEVENT		_mouse_events[EV_MAX];	/* hold the last mouse event seen */
+	MEVENT		*_mouse_eventp;	/* next free slot in event queue */
+
+#if USE_GPM_SUPPORT
+	bool		_mouse_gpm_loaded;
+	bool		_mouse_gpm_found;
+#ifdef HAVE_LIBDL
+	TYPE_gpm_fd	_mouse_gpm_fd;
+	TYPE_Gpm_Open	_mouse_Gpm_Open;
+	TYPE_Gpm_Close	_mouse_Gpm_Close;
+	TYPE_Gpm_GetEvent _mouse_Gpm_GetEvent;
+#endif
+	Gpm_Connect	_mouse_gpm_connect;
+#endif /* USE_GPM_SUPPORT */
+
+#if USE_EMX_MOUSE
+	int		_emxmouse_wfd;
+	int		_emxmouse_thread;
+	int		_emxmouse_activated;
+	char		_emxmouse_buttons[4];
+#endif
+
 #if USE_SYSMOUSE
 	MEVENT		_sysmouse_fifo[FIFO_SIZE];
 	int		_sysmouse_head;
@@ -529,31 +577,34 @@ struct screen {
 	int		(*_resize)(int,int);
 #endif
 
-        /*
+	/*
 	 * These are data that support the proper handling of the panel stack on an
 	 * per screen basis.
 	 */
-        struct panelhook _panelHook;
+	struct panelhook _panelHook;
 	/*
 	 * Linked-list of all windows, to support '_nc_resizeall()' and
 	 * '_nc_freeall()'
 	 */
-	WINDOWLIST      *_nc_sp_windows;
+	WINDOWLIST	*_nc_sp_windows;
 #define _nc_windows SP->_nc_sp_windows
 
-	bool            _sig_winch;
-	SCREEN          *_next_screen;
+	bool		_sig_winch;
+	SCREEN		*_next_screen;
 
 	/* hashes for old and new lines */
 	unsigned long	*oldhash, *newhash;
 	HASHMAP		*hashtab;
 	int		hashtab_len;
 
-	bool            _cleanup;	/* cleanup after int/quit signal */
-	int             (*_outch)(int);	/* output handler if not putc */
+	bool		_cleanup;	/* cleanup after int/quit signal */
+	int		(*_outch)(int); /* output handler if not putc */
 
 	int		_legacy_coding;	/* see use_legacy_coding() */
 
+	/*
+	 * ncurses/ncursesw are the same up to this point.
+	 */
 #if USE_WIDEC_SUPPORT
 	/* recent versions of 'screen' have partially-working support for
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
@@ -646,7 +697,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #define UChar(c)	((unsigned char)(c))
 #define ChCharOf(c)	((c) & (chtype)A_CHARTEXT)
-#define ChAttrOf(c)     ((c) & (chtype)A_ATTRIBUTES)
+#define ChAttrOf(c)	((c) & (chtype)A_ATTRIBUTES)
 
 #ifndef MB_LEN_MAX
 #define MB_LEN_MAX 8 /* should be >= MB_CUR_MAX, but that may be a function */
@@ -730,7 +781,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 			 || (AttrOf(ch) & A_ALTCHARSET)			\
 			 || (!isWidecExt(ch) &&				\
 			     (ch).chars[1] == L'\0' &&			\
-                             _nc_is_charable(CharOf(ch))))
+			     _nc_is_charable(CharOf(ch))))
 
 #define L(ch)		L ## ch
 #else /* }{ */

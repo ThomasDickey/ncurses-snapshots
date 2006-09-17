@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.66 2006/07/29 12:03:57 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.67 2006/09/16 17:51:10 tom Exp $")
 
 extern char **environ;
 
@@ -686,8 +686,10 @@ get_termcap_entry(char *userarg)
 #define CSUSP	CTRL('Z')
 #endif
 
-#if defined(_POSIX_VDISABLE) && (_POSIX_VDISABLE != -1)
-#define DISABLED(val)   ((val) == _POSIX_VDISABLE || (val) <= 0)
+#if defined(_POSIX_VDISABLE)
+#define DISABLED(val)   (((_POSIX_VDISABLE != -1) \
+		       && ((val) == _POSIX_VDISABLE)) \
+		      || ((val) <= 0))
 #else
 #define DISABLED(val)   ((int)(val) <= 0)
 #endif
