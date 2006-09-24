@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.300 $
-#	$Date: 2006/09/09 22:38:37 $
+#	$Revision: 1.301 $
+#	$Date: 2006/09/23 22:06:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1979,7 +1979,8 @@ vt100+fnkeys|dec vt100 numeric keypad,
 #
 vt220+keypad|dec vt220 numeric keypad,
 	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, kent=\EOM,
-	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, ka2=\EOx, kb1=\EOt,
+	kb3=\EOv, kc2=\EOr,
 #
 vt100+enq|ncurses extension for vt100-style ENQ,
 	u8=\E[?1;2c, use=ansi+enq,
@@ -3704,24 +3705,26 @@ rxvt-basic|rxvt terminal base (X Window System),
 #  XK_KP_9          9                                      ESC O y
 #
 # kDN, kDN5, kDN6, etc are extensions based on the names from xterm+pcfkeys -TD
+# Removed kDN6, etc (control+shift) since rxvt does not implement this -TD
 rxvt+pcfkeys|fragment for PC-style fkeys,
-	kDC=\E[3$, kEND=\E[8$, kHOM=\E[7$, kLFT=\E[d, kNXT=\E[6$,
-	kPRV=\E[5$, kRIT=\E[c, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C,
-	kcuu1=\E[A, kdch1=\E[3~, kel=\E[8\^, kend=\E[8~,
-	kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~,
-	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~,
-	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\E[12~,
-	kf20=\E[34~, kf21=\E[23$, kf22=\E[24$, kf23=\E[11\^,
-	kf24=\E[12\^, kf25=\E[13\^, kf26=\E[14\^, kf27=\E[15\^,
-	kf28=\E[17\^, kf29=\E[18\^, kf3=\E[13~, kf30=\E[19\^,
-	kf31=\E[20\^, kf32=\E[21\^, kf33=\E[23\^, kf34=\E[24\^,
-	kf35=\E[25\^, kf36=\E[26\^, kf37=\E[28\^, kf38=\E[29\^,
-	kf39=\E[31\^, kf4=\E[14~, kf40=\E[32\^, kf41=\E[33\^,
-	kf42=\E[34\^, kf43=\E[23@, kf44=\E[24@, kf5=\E[15~,
-	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~,
-	khome=\E[7~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~,
-	kDN=\E[b, kDN5=\EOb, kDN6=\EOB, kLFT5=\EOd, kLFT6=\EOD,
-	kRIT5=\EOc, kRIT6=\EOC, kUP=\E[a, kUP5=\EOa, kUP6=\EOA,
+	kDC=\E[3$, kEND=\E[8$, kHOM=\E[7$, kIC=\E2$, kLFT=\E[d,
+	kNXT=\E[6$, kPRV=\E[5$, kRIT=\E[c, kcub1=\E[D, kcud1=\E[B,
+	kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, kel=\E[8\^,
+	kend=\E[8~, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~,
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~,
+	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~,
+	kf2=\E[12~, kf20=\E[34~, kf21=\E[23$, kf22=\E[24$,
+	kf23=\E[11\^, kf24=\E[12\^, kf25=\E[13\^, kf26=\E[14\^,
+	kf27=\E[15\^, kf28=\E[17\^, kf29=\E[18\^, kf3=\E[13~,
+	kf30=\E[19\^, kf31=\E[20\^, kf32=\E[21\^, kf33=\E[23\^,
+	kf34=\E[24\^, kf35=\E[25\^, kf36=\E[26\^, kf37=\E[28\^,
+	kf38=\E[29\^, kf39=\E[31\^, kf4=\E[14~, kf40=\E[32\^,
+	kf41=\E[33\^, kf42=\E[34\^, kf43=\E[23@, kf44=\E[24@,
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~,
+	kfnd=\E[1~, khome=\E[7~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~,
+	kslt=\E[4~, kDN=\E[b, kDN5=\EOb, kLFT5=\EOd, kRIT5=\EOc,
+	kUP=\E[a, kUP5=\EOa,
+
 rxvt|rxvt terminal emulator (X Window System),
 	ncv@,
 	hpa=\E[%i%p1%dG, kf0=\E[21~, sgr0=\E[m\017,
@@ -21253,6 +21256,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add kon entry -TD
 #	* remove invis from linux and related entries, add klone+sgr8 for those
 #	  that implement the feature (or have not been shown to lack it) -TD
+#
+# 2006-09-23
+#	* add ka2, kb1, kb3, kc2 to vt220-keypad as an extension -TD
+#	* minor improvements to rxvt+pcfkeys -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

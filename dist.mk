@@ -25,7 +25,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.550 2006/09/16 14:26:54 tom Exp $
+# $Id: dist.mk,v 1.552 2006/09/23 20:53:34 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -37,15 +37,16 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 5
-NCURSES_PATCH = 20060916
+NCURSES_PATCH = 20060923
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
 
-# The most recent html files were generated with lynx 2.8.5, configured with
+# The most recent html files were generated with lynx 2.8.6, configured with
 #	--without-manpage-renames
-# on Debian/testing.
-DUMP	= lynx -dump
+# on Debian/testing.  The -scrollbar and -width options are used to make lynx
+# use 79 columns as it did in 2.8.5 and before.
+DUMP	= lynx -dump -scrollbar=0 -width=79
 DUMP2	= $(DUMP) -nolist
 
 GNATHTML= `type -p gnathtml || type -p gnathtml.pl`
