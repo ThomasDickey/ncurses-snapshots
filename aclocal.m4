@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.388 2006/09/16 15:44:20 tom Exp $
+dnl $Id: aclocal.m4,v 1.389 2006/09/23 23:09:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1756,13 +1756,14 @@ AC_MSG_RESULT($cf_cv_have_isascii)
 test "$cf_cv_have_isascii" = yes && AC_DEFINE(HAVE_ISASCII)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LARGEFILE version: 5 updated: 2005/07/17 11:03:36
+dnl CF_LARGEFILE version: 6 updated: 2006/09/23 19:07:52
 dnl ------------
 dnl Add checks for large file support.
 AC_DEFUN([CF_LARGEFILE],[
 ifdef([AC_FUNC_FSEEKO],[
+    AC_SYS_LARGEFILE
+    if test "$enable_largefile" != no ; then
 	AC_FUNC_FSEEKO
-	AC_SYS_LARGEFILE
 
 	# Normally we would collect these definitions in the config.h,
 	# but (like _XOPEN_SOURCE), some environments rely on having these
@@ -1789,6 +1790,7 @@ ifdef([AC_FUNC_FSEEKO],[
 		[cf_cv_struct_dirent64=no])
 	])
 	test "$cf_cv_struct_dirent64" = yes && AC_DEFINE(HAVE_STRUCT_DIRENT64)
+    fi
 ])
 ])
 dnl ---------------------------------------------------------------------------
