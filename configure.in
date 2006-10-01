@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.370 2006/09/16 15:32:44 tom Exp $
+dnl $Id: configure.in,v 1.371 2006/09/30 21:33:44 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.370 $)
+AC_REVISION($Revision: 1.371 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -101,8 +101,8 @@ fi
 CF_GXX_VERSION
 case $GXX_VERSION in
 1*|2.[[0-6]]*)
-	GXX=""; CXX=""; ac_cv_prog_gxx=no
-	cf_cxx_library=no
+	# GXX=""; CXX=""; ac_cv_prog_gxx=no
+	# cf_cxx_library=no
 	AC_MSG_WARN(templates do not work)
 	;;
 esac

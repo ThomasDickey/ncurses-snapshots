@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.301 $
-#	$Date: 2006/09/23 22:06:26 $
+#	$Revision: 1.302 $
+#	$Date: 2006/09/30 20:39:58 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -352,7 +352,7 @@ ansi+arrows,
 	khome=\E[H,
 ansi+sgr|ansi graphic renditions,
 	blink=\E[5m, invis=\E[8m, rev=\E[7m,
-	sgr=\E[0%?%p3%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%;,
+	sgr=\E[0%?%p3%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E[0m,
 ansi+sgrso|ansi standout only,
 	rmso=\E[m, smso=\E[7m,
@@ -16512,13 +16512,13 @@ xnuppc+b|Darwin PowerPC Console color-bold support,
 
 xnuppc+f|Darwin PowerPC Console fancy color support,
 	ncv#35,
-	sgr=\E[0%?%p6%t;35%;%?%p2%t;36;4%;%?%p1%t;33;44%;%p3%t;7%;m,
+	sgr=\E[0%?%p6%t;35%;%?%p2%t;36;4%;%?%p1%t;33;44%;%?%p3%t;7%;m,
 	smso=\E[33;44m, smul=\E[36;4m, use=xnuppc+b,
 
 xnuppc+f2|Darwin PowerPC Console alternate fancy color support,
 	ncv#35,
 	bold=\E[33m,
-	sgr=\E[0%?%p6%t;33%;%?%p2%t;34%;%?%p1%t;31;47%;%p3%t;7%;m,
+	sgr=\E[0%?%p6%t;33%;%?%p2%t;34%;%?%p1%t;31;47%;%?%p3%t;7%;m,
 	smso=\E[31;47m, smul=\E[34m, use=xnuppc+basic,
 
 # Building blocks for specific screen sizes
@@ -21260,6 +21260,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2006-09-23
 #	* add ka2, kb1, kb3, kc2 to vt220-keypad as an extension -TD
 #	* minor improvements to rxvt+pcfkeys -TD
+#
+# 2006-09-30
+#	* fix a few typos in if/then/else expressions -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
