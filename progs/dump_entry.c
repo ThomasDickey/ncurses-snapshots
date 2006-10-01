@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.78 2006/09/02 21:13:20 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.79 2006/09/30 20:18:15 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -432,43 +432,81 @@ termcap_length(const char *src)
 #define termcap_length(src) strlen(src)
 #endif
 
+static void
+indent_DYN(DYNBUF * buffer, int level)
+{
+    int n;
+
+    for (n = 0; n < level; n++)
+	strncpy_DYN(buffer, "\t", 1);
+}
+
+static bool
+has_params(const char *src)
+{
+    bool result = FALSE;
+    int len = strlen(src);
+    int n;
+    bool ifthen = FALSE;
+    bool params = FALSE;
+
+    for (n = 0; n < len - 1; ++n) {
+	if (!strncmp(src + n, "%p", 2)) {
+	    params = TRUE;
+	} else if (!strncmp(src + n, "%;", 2)) {
+	    ifthen = TRUE;
+	    result = params;
+	    break;
+	}
+    }
+    if (!ifthen) {
+	result = ((len > 50) && params);
+    }
+    return result;
+}
+
 static char *
 fmt_complex(char *src, int level)
 {
-    int percent = 0;
-    int n;
-    bool if_then = strstr(src, "%?") != 0;
-    bool params = !if_then && (strlen(src) > 50) && (strstr(src, "%p") != 0);
+    bool percent = FALSE;
+    bool params = has_params(src);
 
     while (*src != '\0') {
 	switch (*src) {
 	case '\\':
-	    percent = 0;
+	    percent = FALSE;
 	    strncpy_DYN(&tmpbuf, src++, 1);
 	    break;
 	case '%':
-	    percent = 1;
+	    percent = TRUE;
 	    break;
 	case '?':		/* "if" */
 	case 't':		/* "then" */
 	case 'e':		/* "else" */
 	    if (percent) {
-		percent = 0;
+		percent = FALSE;
 		tmpbuf.text[tmpbuf.used - 1] = '\n';
-		/* treat a "%e%?" as else-if, on the same level */
-		if (!strncmp(src, "e%?", 3)) {
-		    for (n = 0; n < level; n++)
-			strncpy_DYN(&tmpbuf, "\t", 1);
+		/* treat a "%e" as else-if, on the same level */
+		if (*src == 'e') {
+		    indent_DYN(&tmpbuf, level);
 		    strncpy_DYN(&tmpbuf, "%", 1);
-		    strncpy_DYN(&tmpbuf, src, 3);
-		    src += 3;
+		    strncpy_DYN(&tmpbuf, src, 1);
+		    src++;
+		    params = has_params(src);
+		    if (!params && *src != '\0' && *src != '%') {
+			strncpy_DYN(&tmpbuf, "\n", 1);
+			indent_DYN(&tmpbuf, level + 1);
+		    }
 		} else {
-		    for (n = 0; n <= level; n++)
-			strncpy_DYN(&tmpbuf, "\t", 1);
+		    indent_DYN(&tmpbuf, level + 1);
 		    strncpy_DYN(&tmpbuf, "%", 1);
 		    strncpy_DYN(&tmpbuf, src, 1);
 		    if (*src++ == '?') {
 			src = fmt_complex(src, level + 1);
+			if (*src != '\0' && *src != '%') {
+			    strncpy_DYN(&tmpbuf, "\n", 1);
+			    indent_DYN(&tmpbuf, level + 1);
+			}
 		    } else if (level == 1) {
 			_nc_warning("%%%c without %%?", *src);
 		    }
@@ -478,11 +516,10 @@ fmt_complex(char *src, int level)
 	    break;
 	case ';':		/* "endif" */
 	    if (percent) {
-		percent = 0;
+		percent = FALSE;
 		if (level > 1) {
 		    tmpbuf.text[tmpbuf.used - 1] = '\n';
-		    for (n = 0; n < level; n++)
-			strncpy_DYN(&tmpbuf, "\t", 1);
+		    indent_DYN(&tmpbuf, level);
 		    strncpy_DYN(&tmpbuf, "%", 1);
 		    strncpy_DYN(&tmpbuf, src++, 1);
 		    return src;
@@ -493,14 +530,14 @@ fmt_complex(char *src, int level)
 	case 'p':
 	    if (percent && params) {
 		tmpbuf.text[tmpbuf.used - 1] = '\n';
-		for (n = 0; n <= level; n++)
-		    strncpy_DYN(&tmpbuf, "\t", 1);
+		indent_DYN(&tmpbuf, level + 1);
 		strncpy_DYN(&tmpbuf, "%", 1);
 	    }
-	    percent = 0;
+	    params = FALSE;
+	    percent = FALSE;
 	    break;
 	default:
-	    percent = 0;
+	    percent = FALSE;
 	    break;
 	}
 	strncpy_DYN(&tmpbuf, src++, 1);
