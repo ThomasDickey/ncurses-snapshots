@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.302 $
-#	$Date: 2006/09/30 20:39:58 $
+#	$Revision: 1.303 $
+#	$Date: 2006/10/07 17:52:03 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4159,7 +4159,7 @@ screen|VT 100/ANSI X3.64 virtual terminal,
 	rmcup=\E[?1049l, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[23m,
 	rmul=\E[24m, rs2=\Ec\E[?1000l\E[?25h, sc=\E7,
 	sgr=\E[0%?%p6%t;1%;%?%p1%t;3%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;,
-	sgr0=\E[m, smacs=^N, smcup=\E[?1049h, smir=\E[4h,
+	sgr0=\E[m\017, smacs=^N, smcup=\E[?1049h, smir=\E[4h,
 	smkx=\E[?1h\E=, smso=\E[3m, smul=\E[4m, tbc=\E[3g, E0=\E(B,
 	S0=\E(%p1%c, use=ecma+color,
 # The bce and status-line entries are from screen 3.9.13 (and require some
@@ -4168,6 +4168,47 @@ screen-bce|VT 100/ANSI X3.64 virtual terminal with bce,
 	bce, use=screen,
 screen-s|VT 100/ANSI X3.64 virtual terminal with hardstatus line,
 	dsl=\E_\E\\, fsl=\E\\, tsl=\E_, use=screen,
+
+# ======================================================================
+# Entries for GNU Screen with 16 colors.
+# Those variations permit to benefit from 16 colors palette, and from
+# bold font and blink attribute separated from bright colors. But they
+# are less portable than the generic "screen" 8 color entries: Their
+# usage makes real sense only if the terminals you attach and reattach
+# do all support 16 color palette.
+
+screen-16color|GNU Screen with 16 colors,
+	use=ibm+16color, use=screen,
+
+screen-16color-s|GNU Screen with 16 colors and status line,
+	use=ibm+16color, use=screen-s,
+
+screen-16color-bce|GNU Screen with 16 colors and BCE,
+	use=ibm+16color, use=screen-bce,
+
+screen-16color-bce-s|GNU Screen with 16 colors, BCE, and status line,
+	bce, use=ibm+16color, use=screen-s,
+
+# ======================================================================
+# Entries for GNU Screen 4.02 with --enable-colors256.
+
+screen-256color|GNU Screen with 256 colors,
+	ccc@,
+	initc@, use=xterm+256color, use=screen,
+
+screen-256color-s|GNU Screen with 256 colors and status line,
+	ccc@,
+	initc@, use=xterm+256color, use=screen-s,
+
+screen-256color-bce|GNU Screen with 256 colors and BCE,
+	ccc@,
+	initc@, use=xterm+256color, use=screen-bce,
+
+screen-256color-bce-s|GNU Screen with 256 colors, BCE, and status line,
+	bce, ccc@,
+	initc@, use=xterm+256color, use=screen-s,
+
+# ======================================================================
 
 # Read the fine manpage:
 #       When  screen  tries  to  figure  out  a  terminal name for
@@ -21263,6 +21304,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2006-09-30
 #	* fix a few typos in if/then/else expressions -TD
+#
+# 2006-10-07
+#	* add several GNU Screen variations with 16- and 256-colors, and
+#	  status line (Alain Bench).
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
