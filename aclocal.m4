@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.389 2006/09/23 23:09:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.392 2006/10/08 00:31:02 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1830,7 +1830,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 38 updated: 2006/06/03 10:35:16
+dnl CF_LIB_RULES version: 39 updated: 2006/10/07 15:43:39
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1900,9 +1900,9 @@ do
 			# use autodetected ${cf_prefix} for import lib and static lib, but
 			# use 'cyg' prefix for shared lib.
 			if test $cf_cv_shlib_version = cygdll ; then
-				SHARED_LIB="../lib/cyg${cf_dir}\$(ABI_VERSION).dll"
-				IMPORT_LIB="../lib/${cf_prefix}${cf_dir}.dll.a"
-				LIBS_TO_MAKE="$LIBS_TO_MAKE \$(SHARED_LIB) \$(IMPORT_LIB)"
+				SHARED_LIB="cyg${cf_dir}\$(ABI_VERSION).dll"
+				IMPORT_LIB="${cf_prefix}${cf_dir}.dll.a"
+				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\$(SHARED_LIB) ../lib/\$(IMPORT_LIB)"
 				continue
 			fi
 			fi
@@ -3617,7 +3617,7 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 33 updated: 2006/08/19 16:12:49
+dnl CF_SHARED_OPTS version: 35 updated: 2006/10/07 20:29:22
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -3693,7 +3693,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	cygwin*)
 		CC_SHARED_OPTS=
-		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,--out-implib=$(IMPORT_LIB) -Wl,--export-all-symbols -o $(SHARED_LIB)'
+		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,--out-implib=../lib/$(IMPORT_LIB) -Wl,--export-all-symbols -o ../lib/$(SHARED_LIB)'
 		cf_cv_shlib_version=cygdll
 		cf_cv_shlib_version_infix=cygdll
 		;;
@@ -3749,7 +3749,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-Wl,-rpath,"
-			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
+			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
@@ -3758,22 +3758,16 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
-	freebsd[[45]]*)
+	freebsd[[456]]*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='$(LD) -Bshareable -soname=`basename $[@]` -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
-
-# This doesn't work - I keep getting spurious references to needing
-# libncurses.so.5.3 when ldd says it's resolved.  LOCAL_LDFLAGS2 seems to be
-# no longer used anyway.  And the rpath logic isn't relative - so I have to
-# add the local and install lib-directories:
-#
-#		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
-#			LOCAL_LDFLAGS="-rpath `pwd`/lib"
-#			LOCAL_LDFLAGS2="-rpath \$(libdir) $LOCAL_LDFLAGS"
-#			cf_ld_rpath_opt="-rpath "
-#			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
-#		fi
+		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
+			LOCAL_LDFLAGS="-rpath `pwd`/lib"
+			LOCAL_LDFLAGS2="-rpath \$(libdir) $LOCAL_LDFLAGS"
+			cf_ld_rpath_opt="-rpath "
+			EXTRA_LDFLAGS="-rpath \$(libdir) $EXTRA_LDFLAGS"
+		fi
 		;;
 	openbsd*|freebsd*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
