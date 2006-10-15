@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.392 2006/10/08 00:31:02 tom Exp $
+dnl $Id: aclocal.m4,v 1.393 2006/10/14 19:24:58 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -62,7 +62,7 @@ AC_DEFUN([AM_LANGINFO_CODESET],
   fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ADA_INCLUDE_DIRS version: 4 updated: 2002/12/01 00:12:15
+dnl CF_ADA_INCLUDE_DIRS version: 5 updated: 2006/10/14 15:23:15
 dnl -------------------
 dnl Construct the list of include-options for the C programs in the Ada95
 dnl binding.
@@ -70,17 +70,17 @@ AC_DEFUN([CF_ADA_INCLUDE_DIRS],
 [
 ACPPFLAGS="-I. -I../../include $ACPPFLAGS"
 if test "$srcdir" != "."; then
-	ACPPFLAGS="-I\$(srcdir)/../../include $ACPPFLAGS"
+	ACPPFLAGS="-I\${srcdir}/../../include $ACPPFLAGS"
 fi
 if test "$GCC" != yes; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+	ACPPFLAGS="$ACPPFLAGS -I\${includedir}"
 elif test "$includedir" != "/usr/include"; then
 	if test "$includedir" = '${prefix}/include' ; then
 		if test $prefix != /usr ; then
-			ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+			ACPPFLAGS="$ACPPFLAGS -I\${includedir}"
 		fi
 	else
-		ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+		ACPPFLAGS="$ACPPFLAGS -I\${includedir}"
 	fi
 fi
 AC_SUBST(ACPPFLAGS)
@@ -353,7 +353,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 5 updated: 2005/09/24 17:55:52
+dnl CF_BUILD_CC version: 6 updated: 2006/10/14 15:23:15
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -385,7 +385,7 @@ if test "$cross_compiling" = yes ; then
 	AC_ARG_WITH(build-cpp,
 		[  --with-build-cpp=XXX    the build C preprocessor ($BUILD_CPP)],
 		[BUILD_CPP="$withval"],
-		[BUILD_CPP='$(BUILD_CC) -E'])
+		[BUILD_CPP='${BUILD_CC} -E'])
 	AC_MSG_RESULT($BUILD_CPP)
 
 	AC_MSG_CHECKING(for native build C flags)
@@ -408,7 +408,7 @@ if test "$cross_compiling" = yes ; then
 
 	AC_MSG_CHECKING(for native build linker-libraries)
 	AC_ARG_WITH(build-libs,
-		[  --with-build-libs=XXX   the build libraries ($(BUILD_LIBS)],
+		[  --with-build-libs=XXX   the build libraries (${BUILD_LIBS})],
 		[BUILD_LIBS="$withval"])
 	AC_MSG_RESULT($BUILD_LIBS)
 
@@ -416,20 +416,20 @@ if test "$cross_compiling" = yes ; then
 	BUILD_EXEEXT=
 	BUILD_OBJEXT=o
 
-	: ${BUILD_CC:='$(CC)'}
+	: ${BUILD_CC:='${CC}'}
 
-	if ( test "$BUILD_CC" = "$CC" || test "$BUILD_CC" = '$(CC)' ) ; then
+	if ( test "$BUILD_CC" = "$CC" || test "$BUILD_CC" = '${CC}' ) ; then
 		AC_MSG_ERROR([Cross-build requires two compilers.
 Use --with-build-cc to specify the native compiler.])
 	fi
 
 else
-	: ${BUILD_CC:='$(CC)'}
-	: ${BUILD_CPP:='$(CPP)'}
-	: ${BUILD_CFLAGS:='$(CFLAGS)'}
-	: ${BUILD_CPPFLAGS:='$(CPPFLAGS)'}
-	: ${BUILD_LDFLAGS:='$(LDFLAGS)'}
-	: ${BUILD_LIBS:='$(LIBS)'}
+	: ${BUILD_CC:='${CC}'}
+	: ${BUILD_CPP:='${CPP}'}
+	: ${BUILD_CFLAGS:='${CFLAGS}'}
+	: ${BUILD_CPPFLAGS:='${CPPFLAGS}'}
+	: ${BUILD_LDFLAGS:='${LDFLAGS}'}
+	: ${BUILD_LIBS:='${LIBS}'}
 	: ${BUILD_EXEEXT:='$x'}
 	: ${BUILD_OBJEXT:='o'}
 fi
@@ -1306,7 +1306,7 @@ fi
 rm -f conftest*
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GNAT_VERSION version: 11 updated: 2003/09/06 19:42:09
+dnl CF_GNAT_VERSION version: 12 updated: 2006/10/14 15:23:15
 dnl ---------------
 dnl Verify version of GNAT.
 AC_DEFUN([CF_GNAT_VERSION],
@@ -1327,7 +1327,7 @@ esac
 case $cf_gnat_version in
   3.[[1-9]]*|[[4-9]].*)
       cf_compile_generics=generics
-      cf_generic_objects="\$(GENOBJS)"
+      cf_generic_objects="\${GENOBJS}"
       ;;
   *)  cf_compile_generics=
       cf_generic_objects=
@@ -1678,7 +1678,7 @@ AC_DEFUN([CF_HELP_MESSAGE],
 [AC_DIVERT_HELP([$1])dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_INCLUDE_DIRS version: 4 updated: 2002/12/01 00:12:15
+dnl CF_INCLUDE_DIRS version: 5 updated: 2006/10/14 15:23:15
 dnl ---------------
 dnl Construct the list of include-options according to whether we're building
 dnl in the source directory or using '--srcdir=DIR' option.  If we're building
@@ -1688,17 +1688,17 @@ AC_DEFUN([CF_INCLUDE_DIRS],
 [
 CPPFLAGS="-I. -I../include $CPPFLAGS"
 if test "$srcdir" != "."; then
-	CPPFLAGS="-I\$(srcdir)/../include $CPPFLAGS"
+	CPPFLAGS="-I\${srcdir}/../include $CPPFLAGS"
 fi
 if test "$GCC" != yes; then
-	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+	CPPFLAGS="$CPPFLAGS -I\${includedir}"
 elif test "$includedir" != "/usr/include"; then
 	if test "$includedir" = '${prefix}/include' ; then
 		if test $prefix != /usr ; then
-			CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+			CPPFLAGS="$CPPFLAGS -I\${includedir}"
 		fi
 	else
-		CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+		CPPFLAGS="$CPPFLAGS -I\${includedir}"
 	fi
 fi
 AC_SUBST(CPPFLAGS)
@@ -1830,7 +1830,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 39 updated: 2006/10/07 15:43:39
+dnl CF_LIB_RULES version: 40 updated: 2006/10/14 15:23:15
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1868,14 +1868,14 @@ do
 					case .${LIB_SUFFIX} in
 					.w*)
 						cf_suffix=`echo $cf_suffix | sed 's/^w//'`
-						cf_suffix=w'.$(REL_VERSION)'"$cf_suffix"
+						cf_suffix=w'.${REL_VERSION}'"$cf_suffix"
 						;;
 					*)
-						cf_suffix='.$(REL_VERSION)'"$cf_suffix"
+						cf_suffix='.${REL_VERSION}'"$cf_suffix"
 						;;
 					esac
 					;; #(vi
-					*) cf_suffix="$cf_suffix"'.$(REL_VERSION)' ;;
+					*) cf_suffix="$cf_suffix"'.${REL_VERSION}' ;;
 					esac
 					;;
 				abi)
@@ -1884,14 +1884,14 @@ do
 					case .${LIB_SUFFIX} in
 					.w*)
 						cf_suffix=`echo $cf_suffix | sed 's/^w//'`
-						cf_suffix=w'.$(ABI_VERSION)'"$cf_suffix"
+						cf_suffix=w'.${ABI_VERSION}'"$cf_suffix"
 						;;
 					*)
-						cf_suffix='.$(ABI_VERSION)'"$cf_suffix"
+						cf_suffix='.${ABI_VERSION}'"$cf_suffix"
 						;;
 					esac
 					;; #(vi
-					*) cf_suffix="$cf_suffix"'.$(ABI_VERSION)' ;;
+					*) cf_suffix="$cf_suffix"'.${ABI_VERSION}' ;;
 					esac
 					;;
 				esac
@@ -1900,9 +1900,9 @@ do
 			# use autodetected ${cf_prefix} for import lib and static lib, but
 			# use 'cyg' prefix for shared lib.
 			if test $cf_cv_shlib_version = cygdll ; then
-				SHARED_LIB="cyg${cf_dir}\$(ABI_VERSION).dll"
+				SHARED_LIB="cyg${cf_dir}\${ABI_VERSION}.dll"
 				IMPORT_LIB="${cf_prefix}${cf_dir}.dll.a"
-				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\$(SHARED_LIB) ../lib/\$(IMPORT_LIB)"
+				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
 				continue
 			fi
 			fi
@@ -1962,7 +1962,7 @@ do
 			if test "$srcdir" = "."; then
 				cf_reldir="."
 			else
-				cf_reldir="\$(srcdir)"
+				cf_reldir="\${srcdir}"
 			fi
 
 			if test -f $srcdir/$cf_dir/$cf_dir.priv.h; then
@@ -2026,7 +2026,7 @@ do
 		done
 	fi
 
-	echo '	cd '$cf_dir' && $(MAKE) $(CF_MFLAGS) [$]@' >>Makefile
+	echo '	cd '$cf_dir' && ${MAKE} ${CF_MFLAGS} [$]@' >>Makefile
 done
 
 for cf_dir in $SRC_SUBDIRS
@@ -2041,7 +2041,7 @@ do
 			echo 'libs \' >> Makefile
 			echo 'install.libs \' >> Makefile
 			echo 'uninstall.libs ::' >> Makefile
-			echo '	cd '$cf_dir' && $(MAKE) $(CF_MFLAGS) [$]@' >> Makefile
+			echo '	cd '$cf_dir' && ${MAKE} ${CF_MFLAGS} [$]@' >> Makefile
 			;;
 		esac
 	fi
@@ -2064,7 +2064,7 @@ install.libs \\
 uninstall.libs \\
 install.$cf_dir \\
 uninstall.$cf_dir ::
-	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
+	cd $cf_dir && \${MAKE} \${CF_MFLAGS} \[$]@
 CF_EOF
 	elif test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
@@ -2074,7 +2074,7 @@ install.libs \\
 uninstall.libs \\
 install.includes \\
 uninstall.includes ::
-	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
+	cd $cf_dir && \${MAKE} \${CF_MFLAGS} \[$]@
 CF_EOF
 fi
 done
@@ -2083,16 +2083,16 @@ cat >> Makefile <<CF_EOF
 
 install.data \\
 uninstall.data ::
-$MAKE_TERMINFO	cd misc && \$(MAKE) \$(CF_MFLAGS) \[$]@
+$MAKE_TERMINFO	cd misc && \${MAKE} \${CF_MFLAGS} \[$]@
 
 install.man \\
 uninstall.man ::
-	cd man && \$(MAKE) \$(CF_MFLAGS) \[$]@
+	cd man && \${MAKE} \${CF_MFLAGS} \[$]@
 
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/ncurses_cfg.h
 	rm -f headers.sh headers.sed
-	rm -rf \$(DIRS_TO_MAKE)
+	rm -rf \${DIRS_TO_MAKE}
 CF_EOF
 
 # Special case: tack's manpage lives in its own directory.
@@ -2102,7 +2102,7 @@ cat >> Makefile <<CF_EOF
 
 install.man \\
 uninstall.man ::
-	cd tack && \$(MAKE) \$(CF_MFLAGS) \[$]@
+	cd tack && \${MAKE} \${CF_MFLAGS} \[$]@
 CF_EOF
 fi
 fi
@@ -2203,12 +2203,12 @@ do
 
 	if test -f $srcdir/$cf_dir/headers; then
 	cat >>$cf_dir/Makefile <<CF_EOF
-\$(DESTDIR)\$(includedir) :
-	sh \$(srcdir)/../mkinstalldirs \[$]@
+\${DESTDIR}\${includedir} :
+	sh \${srcdir}/../mkinstalldirs \[$]@
 
 install \\
 install.libs \\
-install.includes :: \$(AUTO_SRC) \$(DESTDIR)\$(includedir) \\
+install.includes :: \${AUTO_SRC} \${DESTDIR}\${includedir} \\
 CF_EOF
 		j=""
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
@@ -2221,8 +2221,8 @@ CF_EOF
 
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
-			echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(DESTDIR)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
-			test $i = curses.h && test $WITH_CURSES_H = yes && echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
+			echo "	@ (cd \${DESTDIR}\${includedir} && rm -f `basename $i`) ; ../headers.sh \${INSTALL_DATA} \${DESTDIR}\${includedir} \${srcdir} $i" >>$cf_dir/Makefile
+			test $i = curses.h && test $WITH_CURSES_H = yes && echo "	@ (cd \${DESTDIR}\${includedir} && rm -f ncurses.h && \${LN_S} curses.h ncurses.h)" >>$cf_dir/Makefile
 		done
 
 	cat >>$cf_dir/Makefile <<CF_EOF
@@ -2234,16 +2234,16 @@ CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			i=`basename $i`
-			echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f $i)" >>$cf_dir/Makefile
-			test $i = curses.h && echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h)" >>$cf_dir/Makefile
+			echo "	-@ (cd \${DESTDIR}\${includedir} && rm -f $i)" >>$cf_dir/Makefile
+			test $i = curses.h && echo "	-@ (cd \${DESTDIR}\${includedir} && rm -f ncurses.h)" >>$cf_dir/Makefile
 		done
 	fi
 
 	if test -f $srcdir/$cf_dir/modules; then
 		if test "$cf_dir" != "c++" ; then
 			cat >>$cf_dir/Makefile <<"CF_EOF"
-depend : $(AUTO_SRC)
-	makedepend -- $(CPPFLAGS) -- $(C_SRC)
+depend : ${AUTO_SRC}
+	makedepend -- ${CPPFLAGS} -- ${C_SRC}
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 CF_EOF
@@ -2458,17 +2458,17 @@ int main()
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKEFLAGS version: 10 updated: 2006/08/05 09:56:13
+dnl CF_MAKEFLAGS version: 11 updated: 2006/10/14 15:23:15
 dnl ------------
-dnl Some 'make' programs support $(MAKEFLAGS), some $(MFLAGS), to pass 'make'
+dnl Some 'make' programs support ${MAKEFLAGS}, some ${MFLAGS}, to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
 dnl (GNU 'make' does both, something POSIX 'make', which happens to make the
-dnl $(MAKEFLAGS) variable incompatible because it adds the assignments :-)
+dnl ${MAKEFLAGS} variable incompatible because it adds the assignments :-)
 AC_DEFUN([CF_MAKEFLAGS],
 [
 AC_CACHE_CHECK(for makeflags variable, cf_cv_makeflags,[
 	cf_cv_makeflags=''
-	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)'
+	for cf_option in '-${MAKEFLAGS}' '${MFLAGS}'
 	do
 		cat >cf_makeflags.tmp <<CF_EOF
 SHELL = /bin/sh
@@ -3617,16 +3617,16 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 35 updated: 2006/10/07 20:29:22
+dnl CF_SHARED_OPTS version: 36 updated: 2006/10/14 15:23:15
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
 dnl
-dnl Note: $(LOCAL_LDFLAGS) is used to link executables that will run within the
+dnl Note: ${LOCAL_LDFLAGS} is used to link executables that will run within the
 dnl build-tree, i.e., by making use of the libraries that are compiled in ../lib
 dnl We avoid compiling-in a ../lib path for the shared library since that can
 dnl lead to unexpected results at runtime.
-dnl $(LOCAL_LDFLAGS2) has the same intention but assumes that the shared libraries
+dnl ${LOCAL_LDFLAGS2} has the same intention but assumes that the shared libraries
 dnl are compiled in ../../lib
 dnl
 dnl The variable 'cf_cv_do_symlinks' is used to control whether we configure
@@ -3689,18 +3689,18 @@ AC_DEFUN([CF_SHARED_OPTS],
 
 	case $cf_cv_system_name in
 	beos*)
-		MK_SHARED_LIB='$(CC) $(CFLAGS) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+		MK_SHARED_LIB='${CC} ${CFLAGS} -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
 		;;
 	cygwin*)
 		CC_SHARED_OPTS=
-		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,--out-implib=../lib/$(IMPORT_LIB) -Wl,--export-all-symbols -o ../lib/$(SHARED_LIB)'
+		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,--out-implib=../lib/${IMPORT_LIB} -Wl,--export-all-symbols -o ../lib/${SHARED_LIB}'
 		cf_cv_shlib_version=cygdll
 		cf_cv_shlib_version_infix=cygdll
 		;;
 	darwin*)
 		EXTRA_CFLAGS="-no-cpp-precomp"
 		CC_SHARED_OPTS="-dynamic"
-		MK_SHARED_LIB='$(CC) $(CFLAGS) -dynamiclib -install_name $(DESTDIR)$(libdir)/`basename $[@]` -compatibility_version $(ABI_VERSION) -current_version $(ABI_VERSION) -o $[@]'
+		MK_SHARED_LIB='${CC} ${CFLAGS} -dynamiclib -install_name ${DESTDIR}${libdir}/`basename $[@]` -compatibility_version ${ABI_VERSION} -current_version ${ABI_VERSION} -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=abi
 		cf_cv_shlib_version_infix=yes
 		AC_CACHE_CHECK([if ld -search_paths_first works], cf_cv_ldflags_search_paths_first, [
@@ -3715,12 +3715,12 @@ AC_DEFUN([CF_SHARED_OPTS],
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test "$GCC" = yes; then
-			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
+			LD_SHARED_OPTS='-Xlinker +b -Xlinker ${libdir}'
 		else
 			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='-Wl,+b,$(libdir)'
+			LD_SHARED_OPTS='-Wl,+b,${libdir}'
 		fi
-		MK_SHARED_LIB='$(LD) +b $(libdir) -b -o $[@]'
+		MK_SHARED_LIB='${LD} +b ${libdir} -b -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
 		# readonly to exploit a quirk in the memory manager.
 		INSTALL_LIB="-m 555"
@@ -3729,17 +3729,17 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$cf_cv_ld_rpath" = yes ; then
 			if test "$GCC" = yes; then
 				cf_ld_rpath_opt="-Wl,-rpath,"
-				EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+				EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
 			else
 				cf_ld_rpath_opt="-rpath "
-				EXTRA_LDFLAGS="-rpath \$(libdir) $EXTRA_LDFLAGS"
+				EXTRA_LDFLAGS="-rpath \${libdir} $EXTRA_LDFLAGS"
 			fi
 		fi
 		# tested with IRIX 5.2 and 'cc'.
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
+		MK_SHARED_LIB='${LD} -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
 	linux*|gnu*|k*bsd*-gnu)
@@ -3749,29 +3749,29 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-Wl,-rpath,"
-			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
-		MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
+		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,`basename $[@] .${REL_VERSION}`.${ABI_VERSION},-stats,-lc -o $[@]'
 		;;
 	openbsd2*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
+		MK_SHARED_LIB='${LD} -Bshareable -soname,`basename $[@].${ABI_VERSION}` -o $[@]'
 		;;
 	freebsd[[456]]*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-		MK_SHARED_LIB='$(LD) -Bshareable -soname=`basename $[@]` -o $[@]'
+		MK_SHARED_LIB='${LD} -Bshareable -soname=`basename $[@]` -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
 			LOCAL_LDFLAGS="-rpath `pwd`/lib"
-			LOCAL_LDFLAGS2="-rpath \$(libdir) $LOCAL_LDFLAGS"
+			LOCAL_LDFLAGS2="-rpath \${libdir} $LOCAL_LDFLAGS"
 			cf_ld_rpath_opt="-rpath "
-			EXTRA_LDFLAGS="-rpath \$(libdir) $EXTRA_LDFLAGS"
+			EXTRA_LDFLAGS="-rpath \${libdir} $EXTRA_LDFLAGS"
 		fi
 		;;
 	openbsd*|freebsd*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+		MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		;;
 	netbsd*)
@@ -3780,22 +3780,22 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
-			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
-			MK_SHARED_LIB='$(CC) $(CFLAGS) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
+			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
+			MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,`basename $[@] .${REL_VERSION}`.${ABI_VERSION} -o $[@]'
 			if test "$cf_cv_shlib_version" = auto; then
 			if test ! -f /usr/libexec/ld.elf_so; then
 				cf_cv_shlib_version=rel
 			fi
 			fi
 		else
-			MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+			MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
 		fi
 		;;
 	osf*|mls+*)
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
-		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
+		MK_SHARED_LIB='${LD} -set_version ${REL_VERSION}:${ABI_VERSION} -expect_unresolved "*" -shared -soname `basename $[@]`'
 		case $host_os in
 		osf4*)
 			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
@@ -3817,13 +3817,13 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-belf -KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o [$]@'
+		MK_SHARED_LIB='${LD} -dy -G -h `basename $[@] .${REL_VERSION}`.${ABI_VERSION} -o [$]@'
 		if test "$cf_cv_ld_rpath" = yes ; then
 			# only way is to set LD_RUN_PATH but no switch for it
 			RUN_PATH=$libdir
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
-		LINK_PROGS='LD_RUN_PATH=$(libdir)'
+		LINK_PROGS='LD_RUN_PATH=${libdir}'
 		LINK_TESTS='Pwd=`pwd`;LD_RUN_PATH=`dirname $${Pwd}`/lib'
 		;;
 	sunos4*)
@@ -3831,7 +3831,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@]'
+		MK_SHARED_LIB='${LD} -assert pure-text -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		;;
 	solaris2*)
@@ -3839,9 +3839,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
+		MK_SHARED_LIB='${LD} -dy -G -h `basename $[@] .${REL_VERSION}`.${ABI_VERSION} -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
-			LOCAL_LDFLAGS="-R `pwd`/lib:\$(libdir)"
+			LOCAL_LDFLAGS="-R `pwd`/lib:\${libdir}"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
@@ -3855,7 +3855,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -d y -G -o [$]@'
+		MK_SHARED_LIB='${LD} -d y -G -o [$]@'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'
@@ -3885,7 +3885,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		LIBS="$cf_save_LIBS"
 		AC_MSG_RESULT($cf_rpath_space)
 		test "$cf_rpath_space" = yes && cf_ld_rpath_opt="$cf_ld_rpath_opt "
-		MK_SHARED_LIB="$MK_SHARED_LIB $cf_ld_rpath_opt\$(libdir)"
+		MK_SHARED_LIB="$MK_SHARED_LIB $cf_ld_rpath_opt\${libdir}"
 	fi
 
 	AC_SUBST(CC_SHARED_OPTS)
@@ -4549,7 +4549,7 @@ if test "$with_gpm" != no ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL version: 9 updated: 2004/01/16 14:55:37
+dnl CF_WITH_LIBTOOL version: 10 updated: 2006/10/14 15:23:15
 dnl ---------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
@@ -4589,8 +4589,8 @@ ifdef([AC_PROG_LIBTOOL],,[
 LIBTOOL=
 ])
 # common library maintenance symbols that are convenient for libtool scripts:
-LIB_CREATE='$(AR) -cr'
-LIB_OBJECT='$(OBJECTS)'
+LIB_CREATE='${AR} -cr'
+LIB_OBJECT='${OBJECTS}'
 LIB_SUFFIX=.a
 LIB_PREP="$RANLIB"
 
@@ -4624,14 +4624,14 @@ ifdef([AC_PROG_LIBTOOL],[
  		AC_MSG_ERROR(Cannot find libtool)
  	fi
 ])dnl
-	LIB_CREATE='$(LIBTOOL) --mode=link $(CC) -rpath $(DESTDIR)$(libdir) -version-info `cut -f1 $(srcdir)/VERSION` -o'
-	LIB_OBJECT='$(OBJECTS:.o=.lo)'
+	LIB_CREATE='${LIBTOOL} --mode=link ${CC} -rpath ${DESTDIR}${libdir} -version-info `cut -f1 ${srcdir}/VERSION` -o'
+	LIB_OBJECT='${OBJECTS}.o=.lo)'
 	LIB_SUFFIX=.la
-	LIB_CLEAN='$(LIBTOOL) --mode=clean'
-	LIB_COMPILE='$(LIBTOOL) --mode=compile'
-	LIB_LINK='$(LIBTOOL) --mode=link'
-	LIB_INSTALL='$(LIBTOOL) --mode=install'
-	LIB_UNINSTALL='$(LIBTOOL) --mode=uninstall'
+	LIB_CLEAN='${LIBTOOL} --mode=clean'
+	LIB_COMPILE='${LIBTOOL} --mode=compile'
+	LIB_LINK='${LIBTOOL} --mode=link'
+	LIB_INSTALL='${LIBTOOL} --mode=install'
+	LIB_UNINSTALL='${LIBTOOL} --mode=uninstall'
 	LIB_PREP=:
 
 	# Show the version of libtool

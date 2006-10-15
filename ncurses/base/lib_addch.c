@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.103 2006/06/17 18:27:47 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.104 2006/10/14 20:31:19 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -371,8 +371,8 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
   testwrapping:
     );
 
-    TR(TRACE_VIRTPUT, ("cell (%d, %d..%d) = %s",
-		       win->_cury, win->_curx, x - 1,
+    TR(TRACE_VIRTPUT, ("cell (%ld, %ld..%d) = %s",
+		       (long) win->_cury, (long) win->_curx, x - 1,
 		       _tracech_t(CHREF(ch))));
 
     if (x > win->_maxx) {

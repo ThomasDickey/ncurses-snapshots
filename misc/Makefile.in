@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.37 2006/08/19 16:53:12 tom Exp $
+# $Id: Makefile.in,v 1.39 2006/10/14 20:39:09 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.           #
+# Copyright (c) 1998-2004,2006 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey 1996-on
 #
 # Makefile for ncurses miscellany directory
 #
@@ -66,6 +66,7 @@ ticfile		= $(ticdir).db
 source		= @TERMINFO_SRC@
 
 INSTALL		= @INSTALL@
+INSTALL_PROG	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 
 ################################################################################
@@ -75,7 +76,7 @@ depend :
 
 sources :
 
-install : install.data
+install : install.data install.scripts
 
 install.data :	terminfo.tmp \
 		$(DESTDIR)$(libdir) \
@@ -92,13 +93,18 @@ install.data :	terminfo.tmp \
 	source=terminfo.tmp \
 	THIS_CC="$(CC)" \
 	THAT_CC="$(HOSTCC)" \
-	sh ./run_tic.sh
+	$(SHELL) ./run_tic.sh
 	@cd $(srcdir)/tabset && \
-		sh -c 'for i in * ; do \
+		$(SHELL) -c 'for i in * ; do \
 			if test -f $$i ; then \
 			echo installing $$i; \
 			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
 			fi; done'
+
+NCURSES_CONFIG	= ncurses@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config
+
+install.scripts :	ncurses-config
+	$(INSTALL_PROG) ncurses-config $(bindir)/$(NCURSES_CONFIG)
 
 terminfo.tmp : run_tic.sed $(source)
 	echo '** adjusting tabset paths'
@@ -107,19 +113,22 @@ terminfo.tmp : run_tic.sed $(source)
 run_tic.sed :
 	WHICH_XTERM=@WHICH_XTERM@ \
 	ticdir=${ticdir} \
-	sh $(srcdir)/gen_edit.sh >$@
+	$(SHELL) $(srcdir)/gen_edit.sh >$@
 
 $(DESTDIR)$(libdir) \
 $(DESTDIR)$(datadir) \
 $(DESTDIR)$(tabsetdir) :
-	sh $(top_srcdir)/mkinstalldirs $@
+	$(SHELL) $(top_srcdir)/mkinstalldirs $@
 
-uninstall : uninstall.data
+uninstall : uninstall.data uninstall.scripts
 
 uninstall.data :
 	-test -d $(DESTDIR)$(tabsetdir) && rm -rf $(DESTDIR)$(tabsetdir)
 	-test -d $(DESTDIR)$(ticdir) && rm -rf $(DESTDIR)$(ticdir)
 	-test -f $(DESTDIR)$(ticfile) && rm -f $(DESTDIR)$(ticfile)
+
+uninstall.scripts :
+	-rm -f $(bindir)/$(NCURSES_CONFIG)
 
 tags :
 
@@ -133,7 +142,7 @@ mostlyclean :
 clean :: mostlyclean
 
 distclean : clean
-	-rm -f Makefile run_tic.sh
+	-rm -f Makefile run_tic.sh ncurses-config
 
 realclean : distclean
 

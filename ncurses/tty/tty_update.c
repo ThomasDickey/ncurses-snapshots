@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.236 2006/07/02 00:35:56 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.237 2006/10/14 20:44:03 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1538,8 +1538,10 @@ DelChar(int count)
 {
     int n;
 
-    TR(TRACE_UPDATE, ("DelChar(%d) called, position = (%d,%d)", count,
-		      newscr->_cury, newscr->_curx));
+    TR(TRACE_UPDATE, ("DelChar(%d) called, position = (%ld,%ld)",
+		      count,
+		      (long) newscr->_cury,
+		      (long) newscr->_curx));
 
     if (parm_dch) {
 	TPUTS_TRACE("parm_dch");

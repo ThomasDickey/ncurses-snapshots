@@ -691,6 +691,7 @@
 ./misc/menu.def
 ./misc/menu.ref
 ./misc/ncu-indent
+./misc/ncurses-config.in
 ./misc/ncurses.def
 ./misc/ncurses.ref
 ./misc/panel.def

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.68 2006/07/29 15:27:24 tom Exp $
+# $Id: Makefile.in,v 1.69 2006/10/14 19:09:04 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -70,7 +70,7 @@ LIBTOOL_INSTALL	= @LIB_INSTALL@
 LIBTOOL_UNINSTALL = @LIB_UNINSTALL@
 
 INSTALL		= @INSTALL@
-INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_PROG	= @INSTALL_PROGRAM@
 transform	= @program_transform_name@
 
 AWK		= @AWK@
@@ -168,18 +168,18 @@ transform.h :
 	echo "#define PROG_INIT      \"$(define_init)\""      >>$@
 
 install.progs: $(AUTO_SRC) $(PROGS) $(DESTDIR)$(bindir)
-@MAKE_TERMINFO@	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tic$x     $(DESTDIR)$(bindir)/$(actual_tic)
-@MAKE_TERMINFO@	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) toe$x     $(DESTDIR)$(bindir)/$(actual_toe)
+@MAKE_TERMINFO@	$(LIBTOOL_INSTALL) $(INSTALL_PROG) tic$x     $(DESTDIR)$(bindir)/$(actual_tic)
+@MAKE_TERMINFO@	$(LIBTOOL_INSTALL) $(INSTALL_PROG) toe$x     $(DESTDIR)$(bindir)/$(actual_toe)
 @MAKE_TERMINFO@	@echo "linking $(actual_infotocap) to $(actual_tic)"
 @MAKE_TERMINFO@	-@rm -f $(DESTDIR)$(bindir)/$(actual_infotocap)
 @MAKE_TERMINFO@	(cd $(DESTDIR)$(bindir) && $(LN_S) $(actual_tic) $(actual_infotocap))
 @MAKE_TERMINFO@	@echo "linking $(actual_captoinfo) to $(actual_tic)"
 @MAKE_TERMINFO@	-@rm -f $(DESTDIR)$(bindir)/$(actual_captoinfo)
 @MAKE_TERMINFO@	(cd $(DESTDIR)$(bindir) && $(LN_S) $(actual_tic) $(actual_captoinfo))
-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) infocmp$x $(DESTDIR)$(bindir)/$(actual_infocmp)
-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) clear$x   $(DESTDIR)$(bindir)/$(actual_clear)
-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tput$x    $(DESTDIR)$(bindir)/$(actual_tput)
-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tset$x    $(DESTDIR)$(bindir)/$(actual_tset)
+	$(LIBTOOL_INSTALL) $(INSTALL_PROG) infocmp$x $(DESTDIR)$(bindir)/$(actual_infocmp)
+	$(LIBTOOL_INSTALL) $(INSTALL_PROG) clear$x   $(DESTDIR)$(bindir)/$(actual_clear)
+	$(LIBTOOL_INSTALL) $(INSTALL_PROG) tput$x    $(DESTDIR)$(bindir)/$(actual_tput)
+	$(LIBTOOL_INSTALL) $(INSTALL_PROG) tset$x    $(DESTDIR)$(bindir)/$(actual_tset)
 	@echo "linking $(actual_reset) to $(actual_tset)"
 	-@rm -f $(DESTDIR)$(bindir)/$(actual_reset)
 	(cd $(DESTDIR)$(bindir) && $(LN_S) $(actual_tset) $(actual_reset))

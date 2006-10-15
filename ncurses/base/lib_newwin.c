@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.37 2006/05/27 19:21:19 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.38 2006/10/14 20:31:19 tom Exp $")
 
 static WINDOW *
 remove_window_from_screen(WINDOW *win)
@@ -188,7 +188,7 @@ NCURSES_EXPORT(WINDOW *)
 subwin(WINDOW *w, int l, int c, int y, int x)
 {
     T((T_CALLED("subwin(%p, %d, %d, %d, %d)"), w, l, c, y, x));
-    T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
+    T(("parent has begy = %ld, begx = %ld", (long) w->_begy, (long) w->_begx));
 
     returnWin(derwin(w, l, c, y - w->_begy, x - w->_begx));
 }
