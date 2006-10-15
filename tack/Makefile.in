@@ -1,3 +1,4 @@
+# $Id: Makefile.in,v 1.37 2006/10/14 20:40:22 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -25,7 +26,6 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: Makefile.in,v 1.36 2006/04/22 21:46:17 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -65,7 +65,7 @@ LIBTOOL_INSTALL	= @LIB_INSTALL@
 LIBTOOL_UNINSTALL = @LIB_UNINSTALL@
 
 INSTALL		= @INSTALL@
-INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_PROG	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 
 AWK		= @AWK@
@@ -128,7 +128,7 @@ EDITARGS = $(DESTDIR)$(mandir) $(srcdir) $(srcdir)/*.[0-9]*
 install.tack: $(PROGS) \
 	$(DESTDIR)$(bindir) \
 	$(DESTDIR)$(mandir)
-	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tack$x $(DESTDIR)$(bindir)/tack$x
+	$(LIBTOOL_INSTALL) $(INSTALL_PROG) tack$x $(DESTDIR)$(bindir)/tack$x
 	sh ../edit_man.sh normal installing $(EDITARGS)
 
 uninstall.tack:

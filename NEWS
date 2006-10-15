@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1021 2006/10/07 20:55:07 tom Exp $
+-- $Id: NEWS,v 1.1023 2006/10/14 22:58:22 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -33,6 +33,11 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20061014
+	+ work around bug in bash 3.2 by adding extra quotes (Jim Gifford).
+	+ add/install a package config script, e.g., "ncurses5-config" or
+	  "ncursesw5-config", according to configuration options.
 
 20061007
 	+ add several GNU Screen terminfo variations with 16- and 256-colors,

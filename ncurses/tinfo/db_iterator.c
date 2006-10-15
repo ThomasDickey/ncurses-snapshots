@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: db_iterator.c,v 1.3 2006/07/29 14:40:54 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.4 2006/10/14 20:12:28 tom Exp $")
 
 static bool have_tic_directory = FALSE;
 static bool keep_tic_directory = FALSE;
@@ -145,7 +145,7 @@ _nc_next_db(DBDIRS * state, int *offset)
     char *envp;
 
     while (*state < dbdLAST) {
-	DBDIRS next = *state + 1;
+	DBDIRS next = (DBDIRS) ((int) (*state) + 1);
 
 	result = 0;
 

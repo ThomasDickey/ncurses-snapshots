@@ -54,7 +54,7 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.67 2006/08/19 13:52:02 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.68 2006/10/14 20:45:16 tom Exp $")
 
 static int total_written;
 
@@ -458,7 +458,12 @@ _nc_write_entry(TERMTYPE *const tp)
 }
 
 static unsigned
-fake_write(char *dst, unsigned *offset, int limit, char *src, unsigned want, unsigned size)
+fake_write(char *dst,
+	   unsigned *offset,
+	   unsigned limit,
+	   char *src,
+	   unsigned want,
+	   unsigned size)
 {
     int have = (limit - *offset);
 
