@@ -1,4 +1,4 @@
-# $Id: mk-test.awk,v 1.2 2006/06/03 20:14:45 tom Exp $
+# $Id: mk-test.awk,v 1.4 2006/10/21 22:56:50 tom Exp $
 ##############################################################################
 # Copyright (c) 2006 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -55,7 +55,7 @@ END	{
 		} else {
 			printf "\t  ";
 		}
-		printf "%s$x", progs[n];
+		printf "$(destdir)%s$x", progs[n];
 		if (n < count - 1) {
 			printf " \\";
 		}
@@ -98,7 +98,7 @@ END	{
 	}
 	for (n = 0; n < count; ++n) {
 		print "";
-		printf "%s$x:%s %s\n", progs[n], files[n], using[n];
+		printf "$(destdir)%s$x:%s %s\n", progs[n], files[n], using[n];
 		printf "\t%s$(LINK) -o $@%s %s\n", ECHO_LINK, files[n], flags[n];
 	}
 

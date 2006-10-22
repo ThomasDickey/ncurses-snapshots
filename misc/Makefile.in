@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.39 2006/10/14 20:39:09 tom Exp $
+# $Id: Makefile.in,v 1.40 2006/10/21 13:28:03 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -104,7 +104,7 @@ install.data :	terminfo.tmp \
 NCURSES_CONFIG	= ncurses@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config
 
 install.scripts :	ncurses-config
-	$(INSTALL_PROG) ncurses-config $(bindir)/$(NCURSES_CONFIG)
+	$(INSTALL_PROG) ncurses-config $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
 
 terminfo.tmp : run_tic.sed $(source)
 	echo '** adjusting tabset paths'
@@ -128,7 +128,7 @@ uninstall.data :
 	-test -f $(DESTDIR)$(ticfile) && rm -f $(DESTDIR)$(ticfile)
 
 uninstall.scripts :
-	-rm -f $(bindir)/$(NCURSES_CONFIG)
+	-rm -f $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
 
 tags :
 
