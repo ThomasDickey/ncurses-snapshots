@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.393 2006/10/14 19:24:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.397 2006/10/21 16:34:54 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2458,7 +2458,7 @@ int main()
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKEFLAGS version: 11 updated: 2006/10/14 15:23:15
+dnl CF_MAKEFLAGS version: 12 updated: 2006/10/21 08:27:03
 dnl ------------
 dnl Some 'make' programs support ${MAKEFLAGS}, some ${MFLAGS}, to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
@@ -2475,7 +2475,7 @@ SHELL = /bin/sh
 all :
 	@ echo '.$cf_option'
 CF_EOF
-		cf_result=`${MAKE-make} -k -f cf_makeflags.tmp 2>/dev/null`
+		cf_result=`${MAKE-make} -k -f cf_makeflags.tmp 2>/dev/null | sed -e 's,[[ 	]]*$,,'`
 		case "$cf_result" in
 		.*k)
 			cf_result=`${MAKE-make} -k -f cf_makeflags.tmp CC=cc 2>/dev/null`
@@ -3617,7 +3617,8 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 36 updated: 2006/10/14 15:23:15
+dnl CF_SHARED_OPTS version: 40 updated: 2006/10/21 12:33:41
+dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -3744,49 +3745,52 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	linux*|gnu*|k*bsd*-gnu)
 		if test "$DFT_LWR_MODEL" = "shared" ; then
-			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS="-Wl,-rpath,\$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-Wl,-rpath,"
 			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
 		fi
-		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
-		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,`basename $[@] .${REL_VERSION}`.${ABI_VERSION},-stats,-lc -o $[@]'
+		CF_SHARED_SONAME
+		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,'$cf_shared_soname',-stats,-lc -o $[@]'
 		;;
 	openbsd2*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='${LD} -Bshareable -soname,`basename $[@].${ABI_VERSION}` -o $[@]'
 		;;
-	freebsd[[456]]*)
+	openbsd*|freebsd[[23]]*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-		MK_SHARED_LIB='${LD} -Bshareable -soname=`basename $[@]` -o $[@]'
+		MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
+		;;
+	freebsd*)
+		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
-			LOCAL_LDFLAGS="-rpath `pwd`/lib"
+			LOCAL_LDFLAGS="-rpath \$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="-rpath \${libdir} $LOCAL_LDFLAGS"
 			cf_ld_rpath_opt="-rpath "
 			EXTRA_LDFLAGS="-rpath \${libdir} $EXTRA_LDFLAGS"
 		fi
-		;;
-	openbsd*|freebsd*)
-		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
-		MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
-		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
+		CF_SHARED_SONAME
+		MK_SHARED_LIB='${LD} -Bshareable -soname=`basename $[@]` -o $[@]'
 		;;
 	netbsd*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		test "$cf_cv_ld_rpath" = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
-			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS="-Wl,-rpath,\$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 			EXTRA_LDFLAGS="-Wl,-rpath,\${libdir} $EXTRA_LDFLAGS"
-			MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,`basename $[@] .${REL_VERSION}`.${ABI_VERSION} -o $[@]'
 			if test "$cf_cv_shlib_version" = auto; then
-			if test ! -f /usr/libexec/ld.elf_so; then
+			if test -f /usr/libexec/ld.elf_so; then
+				cf_cv_shlib_version=abi
+			else
 				cf_cv_shlib_version=rel
 			fi
 			fi
+			CF_SHARED_SONAME
+			MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,'$cf_shared_soname' -o $[@]'
 		else
 			MK_SHARED_LIB='${LD} -Bshareable -o $[@]'
 		fi
@@ -3803,7 +3807,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		esac
 		MK_SHARED_LIB="${MK_SHARED_LIB}"' -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
-			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS="-Wl,-rpath,\$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
@@ -3839,16 +3843,16 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='${LD} -dy -G -h `basename $[@] .${REL_VERSION}`.${ABI_VERSION} -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
-			LOCAL_LDFLAGS="-R `pwd`/lib:\${libdir}"
+			LOCAL_LDFLAGS="-R \$(LOCAL_LIBDIR):\${libdir}"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-R"
 			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
-		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
+		CF_SHARED_SONAME
+		MK_SHARED_LIB='${LD} -dy -G -h '$cf_shared_soname' -o $[@]'
 		;;
 	sysv5uw7*|unix_sv*)
 		# tested with UnixWare 7.1.0 (gcc 2.95.2 and cc)
@@ -3898,6 +3902,24 @@ AC_DEFUN([CF_SHARED_OPTS],
 	AC_SUBST(LOCAL_LDFLAGS2)
 	AC_SUBST(INSTALL_LIB)
 ])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_SHARED_SONAME version: 2 updated: 2006/10/21 12:33:41
+dnl ----------------
+dnl utility macro for CF_SHARED_OPTS, constructs "$cf_shared_soname" for
+dnl substitution into MK_SHARED_LIB string for the "-soname" (or similar)
+dnl option.
+dnl
+dnl $1 is the default that should be used for "$cf_cv_shlib_version".
+dnl If missing, use "rel".
+define([CF_SHARED_SONAME],
+[
+	test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=ifelse($1,,rel,$1)
+	if test "$cf_cv_shlib_version" = rel; then
+		cf_shared_soname='`basename $[@] .${REL_VERSION}`.${ABI_VERSION}'
+	else
+		cf_shared_soname='`basename $[@]`'
+	fi
+])
 dnl ---------------------------------------------------------------------------
 dnl CF_SIGWINCH version: 1 updated: 2006/04/02 16:41:09
 dnl -----------
@@ -4315,6 +4337,15 @@ AC_TRY_COMPILE([
      ])
 AC_MSG_RESULT($cf_cv_sys_time_select)
 test "$cf_cv_sys_time_select" = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_TOP_BUILDDIR version: 1 updated: 2006/10/15 16:33:23
+dnl ---------------
+dnl Define a top_builddir symbol, for applications that need an absolute path.
+AC_DEFUN([CF_TOP_BUILDDIR],
+[
+top_builddir=`pwd`
+AC_SUBST(top_builddir)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_TYPEOF_CHTYPE version: 6 updated: 2005/06/25 16:16:34

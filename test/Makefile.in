@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.90 2006/06/03 16:26:17 tom Exp $
+# $Id: Makefile.in,v 1.92 2006/10/21 22:56:03 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -38,6 +38,7 @@ SHELL		= /bin/sh
 
 @SET_MAKE@
 
+destdir		=
 x		= @EXEEXT@
 o		= .@OBJEXT@
 
@@ -71,6 +72,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 REL_VERSION	= @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
+LOCAL_LIBDIR	= @top_builddir@/lib
 LOCAL_LIBS	= @TEST_DEPS@
 MATH_LIB	= @MATH_LIB@
 
