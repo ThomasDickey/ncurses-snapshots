@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.8 2006/10/14 18:36:31 tom Exp $
+# $Id: ncurses-config.in,v 1.11 2006/10/28 20:22:52 tom Exp $
 ##############################################################################
 # Copyright (c) 2006 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -69,8 +69,6 @@ while test $# -gt 0; do
 		;;
 	# compile/link
 	--cflags)
-		DEFS=`echo .'@CPPFLAGS@' | sed -e 's,^.,,' -e 's,-I[^ ]*[ ]*,,g'`
-		DEFS=`echo ."$DEFS" | sed -e 's,^.,,' -e 's,-DNDEBUG,,g'`
 		INCS=
 		if test "${prefix}/include" != /usr/include ; then
 			INCS="-I${prefix}/include"
@@ -79,7 +77,7 @@ while test $# -gt 0; do
 			INCS="$INCS -I${prefix}/include/${THIS}"
 		fi
 		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
-			$DEFS $INCS
+			$INCS
 ENDECHO
 		;;
 	--libs)
@@ -155,3 +153,4 @@ ENDHELP
 	esac
 	shift
 done
+# vile:shmode

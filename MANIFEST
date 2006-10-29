@@ -1,4 +1,5 @@
 ./ANNOUNCE
+./AUTHORS
 ./Ada95/Makefile.in
 ./Ada95/README
 ./Ada95/TODO

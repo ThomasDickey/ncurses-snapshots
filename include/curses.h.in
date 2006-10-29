@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.164 2006/07/01 21:27:44 tom Exp $ */
+/* $Id: curses.h.in,v 1.165 2006/10/28 20:17:04 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -76,9 +76,11 @@
  * NCURSES_ATTR_T is used to quiet compiler warnings when building ncurses
  * configured using --disable-macros.
  */
-#if defined(NCURSES_NOMACROS) && !defined(NCURSES_ATTR_T)
+#ifdef NCURSES_NOMACROS
+#ifndef NCURSES_ATTR_T
 #define NCURSES_ATTR_T attr_t
 #endif
+#endif /* NCURSES_NOMACROS */
 
 #ifndef NCURSES_ATTR_T
 #define NCURSES_ATTR_T int
@@ -91,9 +93,8 @@
 #undef  NCURSES_CONST
 #define NCURSES_CONST @NCURSES_CONST@
 
-#ifndef NCURSES_INLINE
+#undef NCURSES_INLINE
 #define NCURSES_INLINE @NCURSES_INLINE@
-#endif
 
 /*
  * The internal type used for color values
@@ -501,7 +502,11 @@ extern NCURSES_EXPORT(int) wgetnstr_events(WINDOW *,char *,int,_nc_eventlist *);
 
 /*
  * We cannot define these in ncurses_cfg.h, since they require parameters to be
- * passed (that's non-portable).
+ * passed (that is non-portable).  If you happen to be using gcc with warnings
+ * enabled, define
+ *	GCC_PRINTF
+ *	GCC_SCANF
+ * to improve checking of calls to printw(), etc.
  */
 #ifndef GCC_PRINTFLIKE
 #if defined(GCC_PRINTF) && !defined(printf)
