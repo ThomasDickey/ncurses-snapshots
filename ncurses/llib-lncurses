@@ -2047,12 +2047,18 @@ int	wresize(
 
 /* ./tinfo/access.c */
 
+#include <sys/stat.h>
 #include <nc_alloc.h>
 
 #undef _nc_rootname
 char	*_nc_rootname(
 		char	*path)
 		{ return(*(char **)0); }
+
+#undef _nc_is_abs_path
+NCURSES_BOOL _nc_is_abs_path(
+		const char *path)
+		{ return(*(NCURSES_BOOL *)0); }
 
 #undef _nc_pathlast
 unsigned _nc_pathlast(
@@ -2069,6 +2075,16 @@ int	_nc_access(
 		const char *path, 
 		int	mode)
 		{ return(*(int *)0); }
+
+#undef _nc_is_dir_path
+NCURSES_BOOL _nc_is_dir_path(
+		const char *path)
+		{ return(*(NCURSES_BOOL *)0); }
+
+#undef _nc_is_file_path
+NCURSES_BOOL _nc_is_file_path(
+		const char *path)
+		{ return(*(NCURSES_BOOL *)0); }
 
 #undef _nc_env_access
 int	_nc_env_access(void)
@@ -2346,6 +2362,34 @@ void	_nc_push_token(
 #undef _nc_panic_mode
 void	_nc_panic_mode(
 		char	ch)
+		{ /* void */ }
+
+/* ./tinfo/db_iterator.c */
+
+#undef _nc_tic_dir
+const char *_nc_tic_dir(
+		const char *path)
+		{ return(*(const char **)0); }
+
+#undef _nc_keep_tic_dir
+void	_nc_keep_tic_dir(
+		const char *path)
+		{ /* void */ }
+
+#undef _nc_last_db
+void	_nc_last_db(void)
+		{ /* void */ }
+
+#undef _nc_next_db
+const char *_nc_next_db(
+		DBDIRS	*state, 
+		int	*offset)
+		{ return(*(const char **)0); }
+
+#undef _nc_first_db
+void	_nc_first_db(
+		DBDIRS	*state, 
+		int	*offset)
 		{ /* void */ }
 
 /* ./tinfo/doalloc.c */
@@ -2743,8 +2787,8 @@ char	*tigetstr(
 
 typedef struct {
     union {
-        int num;
-        char *str;
+ int num;
+ char *str;
     } data;
     NCURSES_BOOL num_type;
 } stack_frame;
@@ -3025,37 +3069,20 @@ typedef struct {
 
 /* ./tinfo/read_entry.c */
 
-#undef _nc_tic_dir
-const char *_nc_tic_dir(
-		const char *path)
-		{ return(*(const char **)0); }
+#include <hashed_db.h>
 
-#undef _nc_keep_tic_dir
-void	_nc_keep_tic_dir(
-		const char *path)
-		{ /* void */ }
+#undef _nc_read_termtype
+int	_nc_read_termtype(
+		TERMTYPE *ptr, 
+		char	*buffer, 
+		int	limit)
+		{ return(*(int *)0); }
 
 #undef _nc_read_file_entry
 int	_nc_read_file_entry(
 		const char *const filename, 
 		TERMTYPE *ptr)
 		{ return(*(int *)0); }
-
-#undef _nc_last_db
-void	_nc_last_db(void)
-		{ /* void */ }
-
-#undef _nc_next_db
-const char *_nc_next_db(
-		DBDIRS	*state, 
-		int	*offset)
-		{ return(*(const char **)0); }
-
-#undef _nc_first_db
-void	_nc_first_db(
-		DBDIRS	*state, 
-		int	*offset)
-		{ /* void */ }
 
 #undef _nc_read_entry
 int	_nc_read_entry(
@@ -3067,7 +3094,6 @@ int	_nc_read_entry(
 /* ./tinfo/read_termcap.c */
 
 #include <sys/types.h>
-#include <sys/stat.h>
 
 #undef _nc_read_termcap_entry
 int	_nc_read_termcap_entry(
@@ -3233,6 +3259,12 @@ int	define_key(
 		const char *str, 
 		int	keycode)
 		{ return(*(int *)0); }
+
+/* ./tinfo/hashed_db.c */
+
+#undef _nc_hashed_db
+void	_nc_hashed_db(void)
+		{ /* void */ }
 
 /* ./base/key_defined.c */
 

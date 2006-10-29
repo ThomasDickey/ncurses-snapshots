@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.108 2006/10/14 15:06:10 tom Exp $
+-- $Id: INSTALL,v 1.109 2006/10/28 19:49:48 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1476,3 +1476,5 @@ BUGS:
 
 	The Hacker's Guide in the doc directory includes some guidelines
 	on how to report bugs in ways that will get them fixed most quickly.
+
+-- vile:txtmode

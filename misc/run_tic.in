@@ -1,4 +1,5 @@
 #!@SHELL@
+# $Id: run_tic.in,v 1.23 2006/10/28 19:43:30 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -29,7 +30,6 @@
 #
 # Author: Thomas E. Dickey 1996,2000
 #
-# $Id: run_tic.in,v 1.21 2006/08/19 18:23:04 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -171,3 +171,4 @@ if test "$TICDIR" != "$TERMINFO" ; then
 		fi
 	fi
 fi
+# vile:shmode

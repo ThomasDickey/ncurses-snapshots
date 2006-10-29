@@ -25,14 +25,31 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1035 2006/10/22 00:44:50 tom Exp $
+-- $Id: NEWS,v 1.1039 2006/10/28 21:56:31 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
-Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
-Changes since 1.9.9e are recorded by Thomas Dickey.
+Changes through 1.9.9e are recorded by Zeyd M Ben-Halim.
+Changes since 1.9.9e are recorded by Thomas E Dickey.
+
+Contributors include those who have provided patches (even small ones), as well
+as those who provide useful information (bug reports, analyses).  Changes with
+no cited author are the work of Thomas E Dickey (TD).
+
+A few contributors are given in this file by their initials.
+They each account for one percent or more of the changes since 1.9.9e.
+See the AUTHORS file for the corresponding full names.
+
+Changes through 1.9.9e did not credit all contributions;
+it is not possible to add this information.
+
+20061028
+	+ add AUTHORS file -TD
+	+ omit the -D options from output of the new config script --cflags
+	  option (suggested by Ralf S Engelschall).
+	+ make NCURSES_INLINE unconditionally defined in curses.h
 
 20061021
 	+ revert change to accommodate bash 3.2, since that breaks other
@@ -1501,7 +1518,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  with a zero as the minor-version value (request by Chris Zubrzycki).
 	+ modify CF_MIXEDCASE_FILENAMES macro to work with cross-compiling.
 	+ modify tack to allow it to run from fallback terminfo data.
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ improve PutRange() by adjusting call to EmitRange() and corresponding
 	  return-value to not emit unchanged characters on the end of the
 	  range.
@@ -1511,7 +1528,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  in the clr_bol logic.
 
 20030913
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ in ncurses/tty/lib_mvcur.c,
 	  move the label 'nonlocal' just before the second gettimeofday() to
 	  be able to compute the diff time when 'goto nonlocal' used.
@@ -1542,7 +1559,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  --with-install-prefix is used.
 
 20030823
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ move assignments to SP->_cursrow, SP->_curscol into online_mvcur().
 	+ make baudrate computation in delay_output() consistent with the
 	  assumption in _nc_mvcur_init(), i.e., a byte is 9 bits.
@@ -1554,7 +1571,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ improve storage used by _nc_safe_strcpy() by ensuring that the size
 	  is reset based on the initialization call, in case it were called
 	  after other strcpy/strcat calls (report by Philippe Blain).
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ remove an unused ifdef for REAL_ATTR & WANT_CHAR
 	+ correct a place where _cup_cost was used rather than _cuu_cost
 
@@ -1570,7 +1587,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20030802
 	+ modify casts used for ABSENT_BOOLEAN and CANCELLED_BOOLEAN (report by
 	  Daniel Jacobowitz).
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ change padding for change_scroll_region to not be proportional to
 	  the size of the scroll-region.
 	+ correct error-return in _nc_safe_strcat().
@@ -1887,7 +1904,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  specialized type for the middle initial/name.
 	+ fix MKterminfo.sh, another workaround for POSIXLY_CORRECT misfeature
 	  of sed 4.0
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ optimize can_clear_with() a little by testing first if the parameter
 	  is indeed a "blank".
 	+ simplify ClrBottom() a little by allowing it to use clr_eos to clear
@@ -1914,7 +1931,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ correct line/column reference in adjust_window(), needed to make
 	  special windows such as curscr track properly when resizing (report
 	  by Lucas Gonze <lgonze@panix.com>).
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ correct the value used for blank in ClrBottom() (broken in 20000708).
 	+ correct an off-by-one in GoTo() parameter in _nc_scrolln().
 
@@ -2110,7 +2127,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ documented getbegx(), etc.
 	+ minor fixes to configure script to use '%' consistently as a sed
 	  delimiter rather than '@'.
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ add check in lib_overlay.c to ensure that the windows to be merged
 	  actually overlap, and in copywin(), limit the area to be touched
 	  to the lines given for the destination window.
@@ -2124,7 +2141,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  pads (request by Philippe Blain).
 	+ correct attribute-merging in wborder(), broken in 20020216 (report
 	  by Tomasz Wasiak <tjwasiak@grubasek.komputom.com.pl>).
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ corrected pop-counts in tparam_internal() to '!' and '~' cases.
 	+ use sizeof(NCURSES_CH_T) in one place that used sizeof(chtype).
 	+ remove some unused variables from mvcur test-driver.
@@ -2138,7 +2155,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ fix mismatched enums in vsscanf.c, which caused warning on Solaris.
 	+ update README.emx to reflect current patch used for autoconf.
 	+ change web- and ftp-site to invisible-island.net
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ change case for 'P' in tparam_internal() to indicate that it pops
 	  a variable from the stack.
 	+ correct sense of precision and width in parse_format(), to avoid
@@ -2167,7 +2184,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  (adapted from patch by Ilya Zakharevich - see ncurses/README.IZ).
 	+ amend check in kgetch() from 20020824 to look only for function-keys,
 	  otherwise escape sequences are not resolved properly.
-	> Philippe Blain:
+	> patch by Philippe Blain:
 	+ removed redundant assignment to SP->_checkfd from newterm().
 	+ check return-value of setupterm() in restartterm().
 	+ use sizeof(NCURSES_CH_T) in a few places that used sizeof(chtype).
@@ -3055,7 +3072,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ modify screen's terminfo entry to match the khome/kend in screen
 	  3.09.08 (Debian bug report #92215).
 	+ correct a memory leak in forms library (report by Stefan Vogtner
-	  <stefan@vogtner.de>, patch by Juergen Pfeifer).
+	  <stefan@vogtner.de>) (patch by Juergen Pfeifer).
 
 20010324
 	+ change symbols used to guard against repeated includes to begin
@@ -3814,7 +3831,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 20000318
 	+ revert part of the vt220 change (request by Todd C Miller).
-	+ add ansi-* terminfo entries from Eric's version.
+	+ add ansi-* terminfo entries from ESR's version.
 	+ add -a option to tic and infocmp, which retains commented-out
 	  capabilities during source translation/comparison, e.g., captoinfo
 	  and infotocap.
@@ -3843,7 +3860,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  keeping the existing format as the default, though not retaining the
 	  previous behavior that made the -F option compare each entry to
 	  itself.
-	+ adapted patch by Eric Raymond to make infocmp -F less verbose -TD
+	+ adapted patch by ESR to make infocmp -F less verbose -TD
 	  (the submitted patch was unusable because it did not compile
 	  properly)
 	  + modify write_entry.c to ensure that absent or cancelled booleans
@@ -4948,7 +4965,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ add xtermm and xtermc terminfo entries.
 	> from esr's terminfo version:
 	+ Added Francesco Potorti's tuned Wyse 99 entries.
-	+ dtterm enacs correction from Alexander V Lukyanov.
+	+ dtterm enacs (from Alexander V Lukyanov).
 	+ Add ncsa-ns, ncsa-m-ns and ncsa-m entries from esr version.
 
 980822
@@ -5254,7 +5271,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ modify some man-pages so no '.' or '..' falls between TH and SH
 	  macros, to accommodate man_db program (reported by Ian T. Zimmerman
 	  <itz@rahul.net>).
-	+ terminfo.src 10.2.1 from Eric's webpage.
+	+ terminfo.src 10.2.1 downloaded from ESR's webpage (ESR).
 	> several changes by Juergen Pfeifer:
 	+ add copyright notices (and rcs id's) on remaining man-pages.
 	+ corrected prototypes for slk_* functions, using chtype rather than
@@ -5277,7 +5294,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 980302	4.2 release for upload to prep.ai.mit.edu
 	+ correct Florian's email address in ncurses-intro.html
-	+ terminfo.src 10.2.0 from Eric.
+	+ terminfo.src 10.2.0 (ESR).
 
 980228	pre-release
 	+ add linux-koi8r replace linux-koi8, which is not KOI8 (patch by
@@ -5568,11 +5585,11 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ replace test for SCO with more precise header tests.
 	+ add configure test for unsigned literals, use in NCURSES_BITS macro.
 	+ comment-out the -PIC, etc., flags from c++, progs and test makefiles
-	  since they probably are not needed, and are less efficient (noted by.
+	  since they probably are not needed, and are less efficient (noted by
 	  Juergen Fluk)
 	+ add -L$(libdir) to loader options, after -L../lib so that loaders
 	  that record this information will tend to do the right thing if
-	  the programs are moved around after installing them (suggested by.
+	  the programs are moved around after installing them (suggested by
 	  Juergen Fluk).
 	+ add -R option to loader options for programs for Solaris if the
 	  --enable-rpath option is specified for the libraries.
@@ -6235,7 +6252,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ add extensions keyok() and define_key().  These are designed to allow
 	  the user's application better control over the use of function keys,
 	  e.g., disabling the ncurses KEY_MOUSE.  (The define_key idea was from
-	  a mailing-list thread started by kjahds@kjahds.com Nov'1995).
+	  a mailing-list thread started by Kenneth Albanowski
+	  <kjahds@kjahds.com> Nov'1995).
 	+ restore original behavior in ncurses 'g' test, i.e., explicitly
 	  set the keypad mode rather than use the default, since it confuses
 	  people.
@@ -6681,7 +6699,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ improve performance of panel algorithm (Juergen Pfeifer 961203).
 	+ strip RCS id's from generated .html files in Ada95 subtree.
 	+ resync with generated .html files (Juergen Pfeifer 961223).
-	+ terminfo.src 10.1.0 from Eric.
+	+ terminfo.src 10.1.0 (ESR).
 
 961224	4.0 release
 	+ release as 4.0 to accommodate Linux ld.so.1.8.5
@@ -6707,10 +6725,10 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ split-out panel.priv.h, improve dependencies for forms, menus
 	  (Juergen Pfeifer 961204).
 	+ modify _nc_freewin() to reset globals curscr/newscr/stdscr when
-	  freeing the corresponding WINDOW (Purify).
+	  freeing the corresponding WINDOW (found using Purify).
 	+ modify delwin() to return ERR if the window to be deleted has
-	  subwindows, needed as a side-effect of resizeterm() (Purify).  Tested
-	  and found that SVr4 curses behaves this way.
+	  subwindows, needed as a side-effect of resizeterm() (found using
+	  Purify).  Tested and found that SVr4 curses behaves this way.
 	+ implement logic for _nc_freeall(), bringing stub up to date.
 
 961215
@@ -6805,7 +6823,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  (Juergen Pfeifer)
 	+ use MODULE_ID (rcs keywords) in forms and menus libraries (Juergen
 	  Pfeifer).
-	> patch #324 by Eric.
+	> patch #324 (ESR):
 	+ typo in curs_termcap man page (reported by Hendrik Reichel
 	  <106065.2344@compuserve.com>)
 	+ change default xterm entry to xterm-r6.
@@ -6822,8 +6840,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ modify hanoi.c to work on non-color terminals, and to use timing
 	  delays when in autoplay mode.
 	+ correct 'echochar()' to refresh immediately (reported by Adrian
-	  Garside 94ajg2@eng.cam.ac.uk)
-	> patch #322 by eric:
+	  Garside <94ajg2@eng.cam.ac.uk>)
+	> patch #322 (ESR):
 	+ reorganize terminfo.src entries for xterm.
 
 961109	- snapshot
@@ -6846,10 +6864,10 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  resize test, use wbkgd and corrected box() parameters.
 	+ make flushinp() test work in ncurses.c by using napms() instead of
 	  sleep().
-	+ undo Eric's changes to xterm-x11r6 (it no longer matched the X11R6.1
+	+ undo ESR's changes to xterm-x11r6 (it no longer matched the X11R6.1
 	  distribution, as stated)
-	+ terminfo 9.13.18 (resync by Eric)
-	+ check for getenv("HOME") returning null (Eric).
+	+ terminfo 9.13.18 resync (ESR)
+	+ check for getenv("HOME") returning null (ESR).
 	+ change buffer used to decode xterm-mouse commands to unsigned to
 	  handle displays wider than 128 chars (Juergen Pfeifer).
 	+ correct typo curs_outopts.3x (Juergen Pfeifer).
@@ -6916,7 +6934,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  Pfeifer)
 	+ fix behavior for forms with all fields inactive (Juergen Pfeifer)
 	+ document 'field_index()' (Juergen Pfeifer)
-	> patch #321 by eric:
+	> patch #321 (ESR):
 	+ add some more XENIX keycap translations to include/Caps.
 	+ modify newwin to set initial state of each line to 'touched'
 	  (from patch by Peter Wemm <peter@spinner.dialix.com>)
@@ -6942,25 +6960,25 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ corrected order of args in AC_CHECK_LIB (from report by Ami Fischman
 	  <fischman@math.ucla.edu>).
 	+ corrected formatting of terminfo.5 tables (Juergen Ehling)
-	> patch 320 by eric:
+	> patch 320 (ESR):
 	+ change ABI to 3.3
 	+ emit a carriage-return in 'endwin()' to workaround a kernel bug in
 	  BSDI.  (requested by Mike Karels <karels@redrock.bsdi.com>)
 	+ reverse the default o configure --enable-termcap (consensus).
-	> patch 319 by eric:
+	> patch 319 (ESR):
 	+ modified logic for clearok and related functions (from report by
 	  Michael Elkins) - untested
-	> patch 318 by eric:
+	> patch 318 (ESR):
 	+ correction to #317.
-	> patch 317 by eric:
+	> patch 317 (ESR):
 	+ re-add _nc_hash_map
 	+ modify EmitRange to maintain position as per original design.
 	+ add hashtest.c, program to time the hashmap optimization.
-	> patch 316 by eric:
+	> patch 316 (ESR):
 	+ add logic to deal with magic-cookie (how was this tested?)
 	  (lib_doupdate.c).
 	+ add ncurses.c driver for magic-cookie, some fixes to ncurses.c
-	> patch 315 by eric:
+	> patch 315 (ESR):
 	+ merged Alexander V Lukyanov's patch to use ech and rep - untested
 	  (lib_doupdate.c).
 	+ modified handling of interrupted system calls - untested
@@ -6979,7 +6997,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  either ;-)
 	+ clarify the documentation for the builtin form fieldtypes (Juergen
 	  Pfeifer)
-	> patch 314 by eric:
+	> patch 314 (ESR):
 	+ reset scroll region on startup rather than at wrapup time
 	  (enhancement suggested by Alexander V Lukyanov).
 	+ make storage of palette tables and their size counts per-screen for
@@ -7002,7 +7020,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  the corresponding logic from raw, cbreak, etc.
 	+ disable ONLCR during initialization, to match SVr4 (this is needed
 	  for cursor optimization when the cursor-down is a newline).
-	+ replaced Eric's imitation of wresize with my original (his didn't
+	+ replaced ESR's imitation of wresize with my original (his didn't
 	  work).
 
 960831	- snapshot
@@ -7032,7 +7050,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  descriptions that existed in directories past the first one searched
 	  (reported by Alexander V. Lukyanov)
 	+ corrected typo in dtterm description.
-	> patch 313 by eric:
+	> patch 313 (ESR):
 	+ add dtterm description
 	+ clarify ncurses 'i' test (drop vscanf subtest)
 
@@ -7045,9 +7063,9 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 960804
 	+ revised fix to tparm; previous fix reversed parameter order.
-	> patch 312 by eric:
+	> patch 312 (ESR):
 	  correct terminfo.src corrupted by #310
-	> patch 311 by eric:
+	> patch 311 (ESR):
 	+ fix idlok() and idcok() and the default of the idlok switch.
 
 960803	- snapshot
@@ -7055,7 +7073,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  (reported by William P Setzer)
 	+ add fallback def for GCC_NORETURN, GCC_UNUSED for termcap users
 	  (reported by Tim Mooney).
-	> patch 310 by eric:
+	> patch 310 (ESR):
 	+ documentation and prototyping errors for has_color, immedok and idcok
 	  (reported by William P Setzer <wsetzer@pams.ncsu.edu>)
 	+ updated qnx terminfo entry (by Michael Hunter)
@@ -7069,7 +7087,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 960727	- snapshot
 	+ call cbreak() in initscr(), as per XSI & SVr4.
 	+ turn off hardware echo in initscr() as per XSI & SVr4
-	> patch 309 by eric:
+	> patch 309 (ESR):
 	+ terminfo changes (9.3.10), from BRL
 	+ add more checks to terminfo parser.
 	+ add more symbols to infocmp.
@@ -7086,7 +7104,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  because not all systems declare it in the headers that we can safely
 	  include therein).
 	+ move the ifdefs for errno into curses.priv.h
-	> patch 308 by eric:
+	> patch 308 (ESR):
 	+ terminfo changes (9.3.8)
 	+ modified logic of error-reporting in terminfo parser
 
@@ -7094,15 +7112,15 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ always check for <sys/bsdtypes.h> since ISC needs it to declare
 	  fd_set (Juergen Pfeifer)
 	+ install shared-libraries on NetBSD/FreeBSD with ABI-version (reported
-	  by several people:  Juergen Pfeifer, Mike Long)
+	  by Juergen Pfeifer, Mike Long)
 	+ add LOCAL_LDFLAGS2 symbol (Juergen Pfeifer)
 	+ corrected prototype for delay_output() -- bump ABI to 3.2
-	+ terminfo patches #306/307 from Eric.
+	+ terminfo patches #306/307 (ESR).
 	+ moved logic that filters out rmul and rmso from setupterm to newterm
 	  where it is less likely to interfere with termcap applications.
 
 960707
-	+ rollback Eric's #305 change to terminfo.src (it breaks existing
+	+ rollback ESR's #305 change to terminfo.src (it breaks existing
 	  applications, e.g., 'less 290').
 	+ correct path of edit_man.sh, and fix typo that made all man-pages
 	  preformatted.
@@ -7114,7 +7132,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ make lib_vidattr.c more readable using macros.
 	+ filter out rmul, rmso that conflict with sgr0 when reading terminal
 	  descriptions.
-	+ added sanity-checking of various paired string attributes (Eric).
+	+ added sanity-checking of various paired string attributes (ESR).
 	+ work around autoconf bug, force $INSTALL to absolute path
 	  (reported by Zeyd).
 	+ modify man-page install for BSDI to install preformatted .0 files
@@ -7170,7 +7188,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  screen (Juergen Pfeifer).
 	+ modified autoconf scripts to prepare for Ada95 (GNAT) binding to
 	  ncurses (Juergen Pfeifer).
-	+ incorrect buffer-size in _nc_read_entry, reported by Eric Raymond.
+	+ incorrect buffer-size in _nc_read_entry, reported by ESR.
 
 960617
 	+ corrected two logic errors in read_entry.c, write_entry.c (called by
@@ -7204,7 +7222,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  instead of curscr's state, since it is redundant.
 	+ correction to IDcTransformLine logic which controls where InsStr is
 	  invoked (refined by Alexander V Lukyanov).
-	> patches 303 by eric
+	> patch 303 (ESR):
 	+ conditionally include Chris Torek's hash function _nc_hash_map().
 	+ better fix for nvi refresh-bug (Rick Marshall)
 	+ fix for bug in handling of interrupted keystroke waits,
@@ -7237,19 +7255,19 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ include stdlib.h before defs for EXIT_SUCCESS, for OSF/1.
 	+ include sys/types.h in case stdlib.h does not declare size_t.
 	+ fixes for makefile (Tim Mooney)
-	+ fixes for menus & forms (Juergen.Pfeifer@T-Online.de)
+	+ fixes for menus & forms (Juergen Pfeifer)
 
 960518	- snapshot
 	+ revised ncurses.c panner test, let pad abut all 4 sides of screen.
 	+ refined case in lib_doupdate.c for ClrToEOL().
 	+ corrected prior change for PutRange (Alexander V Lukyanov
 	  <lav@yars.free.net>).
-	+ autoconf mods (Tim Mooney: mooney@dogbert.cc.ndsu.NoDak.edu).
-	+ locale fix for forms (Philippe De Muyter: phdemuyt@ulb.ac.be)
+	+ autoconf mods (Tim Mooney <mooney@dogbert.cc.ndsu.NoDak.edu>).
+	+ locale fix for forms (Philippe De Muyter <phdemuyt@ulb.ac.be>)
 	+ renamed "--with-datadir" option to "--with-ticdir" to avoid
 	  confusion, and made this check for the /usr/lib/terminfo pre-existing
 	  directory.
-	> patches 299-301 by eric:
+	> patches 299-301 (ESR):
 	+ added hashmap.c
 	+ mods to tracing, especially for ACS chars.
 	+ corrected off-by-one in IDCtransform.
@@ -7266,7 +7284,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ added -T options to tic and infocmp (for testing/analysis)
 	+ refined the length criteria for termcap and terminfo
 	+ optimize lib_doupdate with memcpy, PutRange
-	> patches 297, 298 by eric
+	> patches 297, 298 (ESR):
 	+ implement TERMINFO_DIRS, and -o option of tic
 	+ added TRACE_IEVENT
 	+ removed boolean version of 'getm'
@@ -7280,7 +7298,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 960504	- snapshot
 	+ modified ncurses 'p' test to allow full-screen range for panner size.
-	+ fixes for locale (phdm@labauto1.ulb.ac.be)
+	+ fixes for locale (Philippe De Muyter <phdm@labauto1.ulb.ac.be>)
 	+ don't use fixed buffer-size in fmt_entry().
 	+ added usage-message to 'infocmp'.
 	+ modified install.includes rules to prepend subdirectory-name to
@@ -7300,7 +7318,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ change ncurses 'a' test to run in raw mode.
 	+ make TIOCGWINSZ configure test less stringent, in case user
 	  configures via terminal that cannot get screen size.
-	> patches 295, 296 by eric:
+	> patches 295, 296 (ESR):
 	+ new "-e" option of tic.
 	+ fix for "infocmp -e".
 	+ restore working-directory in read_termcap.c
@@ -7312,7 +7330,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ fix for AIX 3.2.5 (must define _POSIX_SOURCE to get termios struct
 	  definitions via <termios.h>, modified macros in lib_raw.c to avoid
 	  K&R-style substitution)
-	> patches 293, 294 by eric:
+	> patches 293, 294 (ESR):
 	+ mods to wgetch() in cooked mode
 	+ corrected askuser() logic in tset
 	+ correct interaction of endwin() with mouse processing
