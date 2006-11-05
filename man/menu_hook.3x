@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_hook.3x,v 1.7 2006/02/25 21:38:26 tom Exp $
+.\" $Id: menu_hook.3x,v 1.8 2006/11/04 17:12:00 tom Exp $
 .TH menu_hook 3X ""
 .SH NAME
 \fBmenu_hook\fR - set hooks for automatic invocation by applications
@@ -77,10 +77,10 @@ is no such hook).
 Routines that return pointers return \fBNULL\fR on error.  Other routines
 return one of the following:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
+.B E_SYSTEM_ERROR
 System error occurred (see \fBerrno\fR).
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBmenu\fR(3X).

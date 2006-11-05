@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.75 2006/06/17 17:38:55 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.76 2006/11/04 18:45:35 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -1212,6 +1212,7 @@ _nc_Synchronize_Attributes(FIELD *field)
 |
 |   Return Values :  E_OK                - success
 |                    E_BAD_ARGUMENT      - invalid field pointer
+|                    E_CURRENT           - field is the current one
 |                    E_SYSTEM_ERROR      - some severe basic error
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
@@ -1312,9 +1313,10 @@ _nc_Synchronize_Options(FIELD *field, Field_Options newopts)
 |
 |   Description   :  Make the newfield the new current field.
 |
-|   Return Values :  E_OK                - success
-|                    E_BAD_ARGUMENT      - invalid form or field pointer
-|                    E_SYSTEM_ERROR      - some severe basic error
+|   Return Values :  E_OK              - success
+|                    E_BAD_ARGUMENT    - invalid form or field pointer
+|                    E_SYSTEM_ERROR    - some severe basic error
+|                    E_NOT_CONNECTED   - no fields are connected to the form
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
 _nc_Set_Current_Field(FORM *form, FIELD *newfield)
@@ -3690,6 +3692,8 @@ FN_Down_Field(FORM *form)
 |
 |   Return Values :  E_OK                - success
 |                    != E_OK             - error from subordinate call
+|                    E_BAD_ARGUMENT      - invalid field pointer
+|                    E_SYSTEM_ERROR      - some severe basic error
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
 _nc_Set_Form_Page(FORM *form, int page, FIELD *field)
@@ -3873,8 +3877,8 @@ PN_Last_Page(FORM *form)
 |   Description   :  Enter character c into at the current position of the
 |                    current field of the form.
 |
-|   Return Values :  E_OK              -
-|                    E_REQUEST_DENIED  -
+|   Return Values :  E_OK              - success
+|                    E_REQUEST_DENIED  - driver could not process the request
 |                    E_SYSTEM_ERROR    -
 +--------------------------------------------------------------------------*/
 static int
@@ -3883,7 +3887,7 @@ Data_Entry(FORM *form, int c)
   FIELD *field = form->current;
   int result = E_REQUEST_DENIED;
 
-  T((T_CALLED("Data_Entry(%p,%s)"), form, _tracechtype((chtype) c)));
+  T((T_CALLED("Data_Entry(%p,%s)"), form, _tracechtype((chtype)c)));
   if ((field->opts & O_EDIT)
 #if FIX_FORM_INACTIVE_BUG
       && (field->opts & O_ACTIVE)
@@ -4075,6 +4079,7 @@ static const Binding_Info bindings[MAX_FORM_COMMAND - MIN_FORM_COMMAND + 1] =
 |                    E_INVALID_FIELD   - field contents are invalid
 |                    E_BAD_STATE       - called from inside a hook routine
 |                    E_REQUEST_DENIED  - request failed
+|                    E_NOT_CONNECTED   - no fields are connected to the form
 |                    E_UNKNOWN_COMMAND - command not known
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)

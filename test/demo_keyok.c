@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_keyok.c,v 1.4 2006/04/01 19:08:03 tom Exp $
+ * $Id: demo_keyok.c,v 1.5 2006/11/04 20:09:51 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23
@@ -70,7 +70,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	}
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 #else
 int

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2005,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 2006 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -25,17 +25,14 @@
  * sale, use or other dealings in this Software without prior written       *
  * authorization.                                                           *
  ****************************************************************************/
-
 /*
- * Author: Thomas E. Dickey <dickey@clark.net> 1999
+ * $Id: echochar.c,v 1.2 2006/11/04 20:10:35 tom Exp $
  *
- * $Id: dots.c,v 1.15 2006/11/04 19:54:42 tom Exp $
- *
- * A simple demo of the terminfo interface.
+ * Demonstrate the echochar function (compare to dots.c).
+ * Thomas Dickey - 2006/11/4
  */
-#include <test.priv.h>
 
-#if HAVE_SETUPTERM
+#include <test.priv.h>
 
 #include <time.h>
 
@@ -45,36 +42,10 @@ static bool interrupted = FALSE;
 static long total_chars = 0;
 static time_t started;
 
-static int
-outc(int c)
-{
-    if (interrupted) {
-	char tmp = c;
-	write(STDOUT_FILENO, &tmp, 1);
-    } else {
-	putc(c, stdout);
-    }
-    return 0;
-}
-
-static bool
-outs(char *s)
-{
-    if (valid(s)) {
-	tputs(s, 1, outc);
-	return TRUE;
-    }
-    return FALSE;
-}
-
 static void
 cleanup(void)
 {
-    outs(exit_attribute_mode);
-    if (!outs(orig_colors))
-	outs(orig_pair);
-    outs(clear_screen);
-    outs(cursor_normal);
+    endwin();
 
     printf("\n\n%ld total chars, rate %.2f/sec\n",
 	   total_chars,
@@ -94,27 +65,56 @@ ranf(void)
     return ((float) r / 32768.);
 }
 
+static void
+set_color(char *my_pairs, int fg, int bg)
+{
+    int pair = (fg * COLORS) + bg;
+    if (!my_pairs[pair]) {
+	init_pair(pair, fg, bg);
+    }
+    attron(COLOR_PAIR(pair));
+}
+
 int
 main(
 	int argc GCC_UNUSED,
 	char *argv[]GCC_UNUSED)
 {
-    int x, y, z, p;
+    int ch, x, y, z, p;
     float r;
     float c;
+    bool use_colors;
+    bool opt_r = FALSE;
+    char *my_pairs = 0;
+    int last_fg = 0;
+    int last_bg = 0;
+
+    while ((ch = getopt(argc, argv, "r")) != EOF) {
+	switch (ch) {
+	case 'r':
+	    opt_r = TRUE;
+	    break;
+	default:
+	    fprintf(stderr, "usage: echochar [-r]\n");
+	    ExitProgram(EXIT_FAILURE);
+	}
+    }
 
     CATCHALL(onsig);
+    initscr();
+
+    use_colors = has_colors();
+    if (use_colors) {
+	start_color();
+	if (COLOR_PAIRS > 0) {
+	    my_pairs = calloc(COLOR_PAIRS, sizeof(*my_pairs));
+	}
+	use_colors = (my_pairs != 0);
+    }
 
     srand((unsigned) time(0));
-    setupterm((char *) 0, 1, (int *) 0);
-    outs(clear_screen);
-    outs(cursor_invisible);
-    if (max_colors > 1) {
-	if (!valid(set_a_foreground)
-	    || !valid(set_a_background)
-	    || (!valid(orig_colors) && !valid(orig_pair)))
-	    max_colors = -1;
-    }
+
+    curs_set(0);
 
     r = (float) (lines - 4);
     c = (float) (columns - 4);
@@ -125,37 +125,34 @@ main(
 	y = (int) (r * ranf()) + 2;
 	p = (ranf() > 0.9) ? '*' : ' ';
 
-	tputs(tparm3(cursor_address, y, x), 1, outc);
-	if (max_colors > 0) {
-	    z = (int) (ranf() * max_colors);
+	move(y, x);
+	if (use_colors > 0) {
+	    z = (int) (ranf() * COLORS);
 	    if (ranf() > 0.01) {
-		tputs(tparm2(set_a_foreground, z), 1, outc);
+		set_color(my_pairs, z, last_bg);
+		last_fg = z;
 	    } else {
-		tputs(tparm2(set_a_background, z), 1, outc);
+		set_color(my_pairs, last_fg, z);
+		last_bg = z;
 		napms(1);
 	    }
-	} else if (valid(exit_attribute_mode)
-		   && valid(enter_reverse_mode)) {
+	} else {
 	    if (ranf() <= 0.01) {
-		outs((ranf() > 0.6)
-		     ? enter_reverse_mode
-		     : exit_attribute_mode);
+		if (ranf() > 0.6)
+		    attron(A_REVERSE);
+		else
+		    attroff(A_REVERSE);
 		napms(1);
 	    }
 	}
-	outc(p);
-	fflush(stdout);
+	if (opt_r) {
+	    addch(p);
+	    refresh();
+	} else {
+	    echochar(p);
+	}
 	++total_chars;
     }
     cleanup();
     ExitProgram(EXIT_SUCCESS);
 }
-#else
-int
-main(int argc GCC_UNUSED,
-     char *argv[]GCC_UNUSED)
-{
-    fprintf(stderr, "This program requires terminfo\n");
-    exit(EXIT_FAILURE);
-}
-#endif

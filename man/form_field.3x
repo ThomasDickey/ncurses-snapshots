@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field.3x,v 1.7 2006/02/25 21:47:06 tom Exp $
+.\" $Id: form_field.3x,v 1.8 2006/11/04 18:01:38 tom Exp $
 .TH form_field 3X ""
 .SH NAME
 \fBform_field\fR - make and break connections between fields and forms
@@ -53,28 +53,29 @@ The function \fBfield_count\fR returns the count of fields in \fIform\fR.
 The function \fBmove_field\fR moves the given field (which must be disconnected)
 to a specified location on the screen.
 .SH RETURN VALUES
-The function \fBform_fields\fR returns \fBNULL\fR on error.
+The function \fBform_fields\fR returns a pointer (which may be \fBNULL\fR).
+It does not set errno.
 .PP
-The function \fBfield_count\fR returns \fBERR\fR (the general
-\fBcurses\fR error return value) on error.
+The function \fBfield_count\fR returns \fBERR\fR if the \fIform\fP parameter
+is \fBNULL\fP.
 .PP
 The functions \fBset_form_fields\fR and \fBmove_field\fR return one of
 the following codes on error:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_POSTED\fR
+.B E_CONNECTED
+The field is already connected to a form.
+.TP 5
+.B E_POSTED
 The form is already posted.
 .TP 5
-\fBE_CONNECTED\fR
-The field is already connected to a form.
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBform\fR(3X).
 .SH NOTES

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_current.3x,v 1.10 2006/02/25 21:38:26 tom Exp $
+.\" $Id: mitem_current.3x,v 1.11 2006/11/04 18:18:19 tom Exp $
 .TH mitem_current 3X ""
 .SH NAME
 \fBmitem_current\fR - set and get current_menu_item
@@ -58,27 +58,28 @@ row being displayed.
 The function \fBitem_index\fR returns the (zero-origin) index of \fIitem\fR in
 the menu's item pointer list.
 .SH RETURN VALUE
-\fBcurrent_item\fR returns \fBNULL\fR on error.
+\fBcurrent_item\fR returns a pointer (which may be \fBNULL\fR).
+It does not set errno.
 .PP
 \fBtop_row\fR and \fBitem_index\fR return \fBERR\fR (the general \fBcurses\fR
-error value) on error.
+error value) if their \fImenu\fP parameter is \fBNULL\fP.
 .PP
 \fBset_current_item\fR and \fBset_top_row\fR return one of the following:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_BAD_STATE\fR
+.B E_BAD_STATE
 Routine was called from an initialization or termination function.
 .TP 5
-\fBE_NOT_CONNECTED\fR
+.B E_NOT_CONNECTED
 No items are connected to the menu.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBmenu\fR(3X).
 .SH NOTES

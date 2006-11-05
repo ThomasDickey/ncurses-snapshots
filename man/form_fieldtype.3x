@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_fieldtype.3x,v 1.13 2006/02/25 21:47:06 tom Exp $
+.\" $Id: form_fieldtype.3x,v 1.14 2006/11/04 17:12:00 tom Exp $
 .TH form_fieldtype 3X ""
 .SH NAME
 \fBform_fieldtype\fR - define validation-field types
@@ -97,21 +97,34 @@ These functions take the field pointer and an
 argument-block structure as arguments.
 .SH RETURN VALUE
 The pointer-valued routines return NULL on error.
+They set errno according to their success:
+.TP 5
+.B E_OK
+The routine succeeded.
+.TP 5
+.B E_BAD_ARGUMENT
+Routine detected an incorrect or out-of-range argument.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred, e.g., malloc failure.
 .PP
 The integer-valued routines return one of the following codes on
 error:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_CONNECTED\fR
+.B E_CONNECTED
 The field is already connected to a form.
+.TP 5
+.B E_CURRENT
+The field is the current field.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBform\fR(3X).
 .SH NOTES

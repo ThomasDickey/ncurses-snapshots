@@ -1,4 +1,4 @@
-# $Id: programs,v 1.4 2006/09/02 19:40:02 Stanislav.Ievlev Exp $
+# $Id: programs,v 1.5 2006/11/04 18:56:49 tom Exp $
 ##############################################################################
 # Copyright (c) 2006 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -45,6 +45,7 @@ demo_panels	$(LDFLAGS_DEFAULT)	$(LOCAL_LIBS)	demo_panels
 demo_termcap	$(LDFLAGS_TINFO)	$(LOCAL_LIBS)	demo_termcap
 ditto		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	ditto
 dots		$(LDFLAGS_TINFO)	$(LOCAL_LIBS)	dots
+echochar	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	echochar
 filter		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	filter
 firework	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	firework
 firstlast	$(LDFLAGS_DEFAULT)	$(LOCAL_LIBS)	firstlast
@@ -62,6 +63,7 @@ ncurses		$(LDFLAGS_DEFAULT)	$(LOCAL_LIBS)	ncurses
 newdemo		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	newdemo
 railroad	$(LDFLAGS_TINFO)	$(LOCAL_LIBS)	railroad
 rain		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	rain
+redraw		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	redraw
 savescreen	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	savescreen
 tclock		$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	tclock
 testaddch	$(LDFLAGS_CURSES)	$(LOCAL_LIBS)	testaddch

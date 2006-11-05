@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_attributes.3x,v 1.8 2006/02/25 21:40:44 tom Exp $
+.\" $Id: form_field_attributes.3x,v 1.10 2006/11/04 18:51:26 tom Exp $
 .TH form_field_attributes 3X ""
 .SH NAME
 \fBform_field_attributes\fR - color and attribute control for form fields
@@ -63,14 +63,15 @@ default is a blank.
 .SH RETURN VALUE
 These routines return one of the following:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
+.
 .SH SEE ALSO
 \fBcurses\fR(3X) and related pages whose names begin "form_" for detailed
 descriptions of the entry points.

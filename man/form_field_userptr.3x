@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_userptr.3x,v 1.7 2006/02/25 21:38:26 tom Exp $
+.\" $Id: form_field_userptr.3x,v 1.8 2006/11/04 18:04:37 tom Exp $
 .TH form_field_userptr 3X ""
 .SH NAME
 \fBform_field_userptr\fR - associate application data with a form field
@@ -43,14 +43,10 @@ Every form field has a field that can be used to hold application-specific data
 (that is, the form-driver code leaves it alone).  These functions get and set
 that field.
 .SH RETURN VALUE
-The function \fBfield_userptr\fR returns \fBNULL\fR on error. The function
-\fBset_field_userptr\fR returns one of the following:
-.TP 5
-\fBE_OK\fR
-The routine succeeded.
-.TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
+The function \fBfield_userptr\fR returns a pointer (which may be \fBNULL\fR).
+It does not set errno.
+.PP
+The function \fBset_field_userptr\fR returns \fBE_OK\fP (success).
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBform\fR(3X).
 .SH NOTES
@@ -60,8 +56,8 @@ The header file \fB<form.h>\fR automatically includes the header file
 These routines emulate the System V forms library.  They were not supported on
 Version 7 or BSD versions.
 .PP
-The user pointer should be a void pointer.  We leave it as a char pointer for
-SVr4 compatibility.
+The user pointer is a void pointer.
+We chose not to leave it as a char pointer for SVr4 compatibility.
 .SH AUTHORS
 Juergen Pfeifer.  Manual pages and adaptation for new curses by Eric
 S. Raymond.

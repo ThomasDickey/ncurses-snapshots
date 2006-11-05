@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_items.3x,v 1.6 2006/02/25 21:38:26 tom Exp $
+.\" $Id: menu_items.3x,v 1.7 2006/11/04 18:35:31 tom Exp $
 .TH menu_items 3X ""
 .SH NAME
 \fBmenu_items\fR - make and break connections between items and menus
@@ -48,27 +48,29 @@ The function \fBmenu_items\fR returns the item array of the given menu.
 .PP
 The function \fBitem_count\fR returns the count of items in \fImenu\fR.
 .SH RETURN VALUES
-The function \fBmenu_items\fR returns \fBNULL\fR on error.
+The function \fBmenu_items\fR returns a pointer (which may be \fBNULL\fR).
+It does not set errno.
 .PP
 The function \fBitem_count\fR returns \fBERR\fR (the general \fBcurses\fR error
-return value) on error.
+return value) if its \fImenu\fP parameter is \fBNULL\fP.
 .PP
 The function \fBset_menu_items\fR returns one of the following codes on error:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_POSTED\fR
+.B E_NOT_CONNECTED
+No items are connected to the menu.
+.TP 5
+.B E_POSTED
 The menu is already posted.
 .TP 5
-\fBE_NOT_CONNECTED\fR
-No items are connected to the menu.
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
+.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBmenu\fR(3X).
 .SH NOTES
