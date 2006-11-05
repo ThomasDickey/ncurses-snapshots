@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.19 2006/06/03 17:16:24 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.20 2006/11/04 16:57:15 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -247,7 +247,9 @@ Connect_Fields(FORM *form, FIELD **fields)
 |                    If there are fields, position to first active field.
 |
 |   Return Values :  E_OK            - success
-|                    any other       - error occurred
+|                    E_BAD_ARGUMENT  - Invalid form pointer or field array
+|                    E_CONNECTED     - a field is already connected
+|                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
 NCURSES_INLINE static int
 Associate_Fields(FORM *form, FIELD **fields)
@@ -277,6 +279,11 @@ Associate_Fields(FORM *form, FIELD **fields)
 |   Description   :  Create new form with given array of fields.
 |
 |   Return Values :  Pointer to form. NULL if error occurred.
+!                    Set errno:
+|                    E_OK            - success
+|                    E_BAD_ARGUMENT  - Invalid form pointer or field array
+|                    E_CONNECTED     - a field is already connected
+|                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FORM *)
 new_form(FIELD **fields)
@@ -337,9 +344,11 @@ free_form(FORM *form)
 |   
 |   Description   :  Set a new association of an array of fields to a form
 |
-|   Return Values :  E_OK              - no error
-|                    E_BAD_ARGUMENT    - invalid form pointer
-|                    E_POSTED          - form is posted
+|   Return Values :  E_OK            - no error
+|                    E_BAD_ARGUMENT  - Invalid form pointer or field array
+|                    E_CONNECTED     - a field is already connected
+|                    E_POSTED        - form is posted
+|                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
 set_form_fields(FORM *form, FIELD **fields)

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.17 2006/05/13 15:34:28 tom Exp $
+.\" $Id: menu.3x,v 1.19 2006/11/04 18:38:29 tom Exp $
 .TH menu 3X ""
 .SH NAME
 \fBmenu\fR - curses extension for programming menus
@@ -131,41 +131,41 @@ unpost_menu	\fBmenu_post\fR(3X)
 Routines that return pointers return \fBNULL\fR on error.  Routines that return
 an integer return one of the following error codes:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_POSTED\fR
-The menu is already posted.
-.TP 5
-\fBE_BAD_STATE\fR
+.B E_BAD_STATE
 Routine was called from an initialization or termination function.
 .TP 5
-\fBE_NO_ROOM\fR
-Menu is too large for its window.
-.TP 5
-\fBE_NOT_POSTED\fR
-The menu has not been posted.
-.TP 5
-\fBE_UNKNOWN_COMMAND\fR
-The menu driver code saw an unknown request code.
-.TP 5
-\fBE_NO_MATCH\fR
+.B E_NO_MATCH
 Character failed to match.
 .TP 5
-\fBE_NOT_SELECTABLE\fR
-The designated item cannot be selected.
+.B E_NO_ROOM
+Menu is too large for its window.
 .TP 5
-\fBE_NOT_CONNECTED\fR
+.B E_NOT_CONNECTED
 No items are connected to the menu.
 .TP 5
-\fBE_REQUEST_DENIED\fR
+.B E_NOT_POSTED
+The menu has not been posted.
+.TP 5
+.B E_NOT_SELECTABLE
+The designated item cannot be selected.
+.TP 5
+.B E_POSTED
+The menu is already posted.
+.TP 5
+.B E_REQUEST_DENIED
 The menu driver could not process the request.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
+.TP 5
+.B E_UNKNOWN_COMMAND
+The menu driver code saw an unknown request code.
 .SH SEE ALSO
 \fBcurses\fR(3X) and related pages whose names begin "menu_" for detailed
 descriptions of the entry points.

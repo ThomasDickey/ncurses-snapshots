@@ -980,6 +980,7 @@
 ./test/demo_termcap.c
 ./test/ditto.c
 ./test/dots.c
+./test/echochar.c
 ./test/edit_field.c
 ./test/edit_field.h
 ./test/filter.c
@@ -1006,6 +1007,7 @@
 ./test/programs
 ./test/railroad.c
 ./test/rain.c
+./test/redraw.c
 ./test/savescreen.c
 ./test/tclock.c
 ./test/test.priv.h

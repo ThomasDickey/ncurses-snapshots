@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_driver.3x,v 1.10 2006/02/25 21:42:22 tom Exp $
+.\" $Id: form_driver.3x,v 1.12 2006/11/04 18:51:00 tom Exp $
 .TH form_driver 3X ""
 .SH NAME
 \fBform_driver\fR - command-processing loop of the form system
@@ -228,31 +228,32 @@ command and returns \fBE_UNKNOWN_COMMAND\fR.  Application-defined commands
 should be defined relative to \fBMAX_COMMAND\fR, the maximum value of these
 pre-defined requests.
 .SH RETURN VALUE
-\fBform_driver\fR return one of the following error codes:
+\fBform_driver\fR returns one of the following error codes:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_BAD_STATE\fR
+.B E_BAD_STATE
 Routine was called from an initialization or termination function.
 .TP 5
-\fBE_NOT_POSTED\fR
+.B E_NOT_POSTED
 The form has not been posted.
 .TP 5
-\fBE_UNKNOWN_COMMAND\fR
-The form driver code saw an unknown request code.
-.TP 5
-\fBE_INVALID_FIELD\fR
+.B E_INVALID_FIELD
 Contents of field is invalid.
 .TP 5
-\fBE_REQUEST_DENIED\fR
+.B E_REQUEST_DENIED
 The form driver could not process the request.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
+.TP 5
+.B E_UNKNOWN_COMMAND
+The form driver code saw an unknown request code.
+.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBform\fR(3X).
 .SH NOTES

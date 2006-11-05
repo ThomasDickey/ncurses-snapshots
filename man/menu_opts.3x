@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_opts.3x,v 1.8 2006/02/25 21:38:26 tom Exp $
+.\" $Id: menu_opts.3x,v 1.9 2006/11/04 17:12:00 tom Exp $
 .TH menu_opts 3X ""
 .SH NAME
 \fBmenu_opts\fR - set and get menu options
@@ -77,13 +77,13 @@ requests to the other end of the menu.
 .SH RETURN VALUE
 Except for \fBmenu_opts\fR, each routine returns one of the following:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
+.B E_SYSTEM_ERROR
 System error occurred (see \fBerrno\fR).
 .TP 5
-\fBE_POSTED\fR
+.B E_POSTED
 The menu is already posted.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBmenu\fR(3X).

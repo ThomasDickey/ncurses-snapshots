@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.23 2006/07/08 20:36:22 tom Exp $
+.\" $Id: curs_terminfo.3x,v 1.24 2006/11/04 21:50:03 tom Exp $
 .TH curs_terminfo 3X ""
 .ds n 5
 .na
@@ -308,6 +308,10 @@ Both ncurses and System V Release 4 curses implement \fBmvcur\fR using
 the SCREEN data allocated in either \fBinitscr\fR or \fBnewterm\fR.
 So though it is documented as a terminfo function,
 \fBmvcur\fR is really a curses function which is not well specified.
+.PP
+XSI states that the old location must be given.
+This implementation allows the caller to use -1's for the old ordinates.
+In that case, the old location is unknown.
 .PP
 Extended terminal capability names, e.g., as defined by \fBtic\ -x\fP,
 are not stored in the arrays described in this section.

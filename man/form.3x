@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form.3x,v 1.17 2006/05/13 15:14:01 tom Exp $
+.\" $Id: form.3x,v 1.20 2006/11/04 18:50:09 tom Exp $
 .TH form 3X ""
 .SH NAME
 \fBform\fR - curses extension for programming forms
@@ -101,11 +101,13 @@ form_term	\fBform_hook\fR(3X)
 form_userptr	\fBform_userptr\fR(3X)
 form_win	\fBform_win\fR(3X)
 free_field	\fBform_field_new\fR(3X)
+free_fieldtype	\fBform_fieldtype\fR(3X)
 free_form	\fBform_new\fR(3X)
 link_field	\fBform_field_new\fR(3X)
 link_fieldtype	\fBform_fieldtype\fR(3X)
 move_field	\fBform_field\fR(3X)
 new_field	\fBform_field_new\fR(3X)
+new_fieldtype	\fBform_fieldtype\fR(3X)
 new_form	\fBform_new\fR(3X)
 new_page	\fBform_new_page\fR(3X)
 pos_form_cursor	\fBform_cursor\fR(3X)
@@ -138,44 +140,47 @@ set_new_page	\fBform_new_page\fR(3X)
 unpost_form	\fBform_post\fR(3X)
 .TE
 .SH RETURN VALUE
-Routines that return pointers return \fBNULL\fR on error.  Routines that return
+Routines that return pointers return \fBNULL\fR on error,
+and set errno to the corresponding error-code returned by functions
+returning an integer.
+Routines that return
 an integer return one of the following error codes:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_CONNECTED\fR
-The field is already connected to a form.
-.TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
 .TP 5
-\fBE_POSTED\fR
-The form is already posted.
-.TP 5
-\fBE_BAD_STATE\fR
+.B E_BAD_STATE
 Routine was called from an initialization or termination function.
 .TP 5
-\fBE_NO_ROOM\fR
-Form is too large for its window.
+.B E_CONNECTED
+The field is already connected to a form.
 .TP 5
-\fBE_NOT_POSTED\fR
-The form has not been posted.
-.TP 5
-\fBE_UNKNOWN_COMMAND\fR
-The form driver code saw an unknown request code.
-.TP 5
-\fBE_INVALID_FIELD\fR
+.B E_INVALID_FIELD
 Contents of a field are not valid.
 .TP 5
-\fBE_NOT_CONNECTED\fR
+.B E_NOT_CONNECTED
 No fields are connected to the form.
 .TP 5
-\fBE_REQUEST_DENIED\fR
+.B E_NOT_POSTED
+The form has not been posted.
+.TP 5
+.B E_NO_ROOM
+Form is too large for its window.
+.TP 5
+.B E_POSTED
+The form is already posted.
+.TP 5
+.B E_REQUEST_DENIED
 The form driver could not process the request.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred (see \fBerrno\fR).
+.TP 5
+.B E_UNKNOWN_COMMAND
+The form driver code saw an unknown request code.
 .SH SEE ALSO
 \fBcurses\fR(3X) and related pages whose names begin "form_" for detailed
 descriptions of the entry points.

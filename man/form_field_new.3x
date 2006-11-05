@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_new.3x,v 1.13 2006/02/25 21:47:06 tom Exp $
+.\" $Id: form_field_new.3x,v 1.14 2006/11/04 17:12:00 tom Exp $
 .TH form_field_new 3X ""
 .SH NAME
 \fBform_field_new\fR - create and destroy form fields
@@ -62,17 +62,27 @@ The function \fBfree_field\fR de-allocates storage associated with a field.
 .SH RETURN VALUE
 The function, \fBnew_field\fR, \fBdup_field\fR, \fBlink_field\fR return
 \fBNULL\fR on error.
+They set errno according to their success:
+.TP 5
+.B E_OK
+The routine succeeded.
+.TP 5
+.B E_BAD_ARGUMENT
+Routine detected an incorrect or out-of-range argument.
+.TP 5
+.B E_SYSTEM_ERROR
+System error occurred, e.g., malloc failure.
 .PP
 The function \fBfree_field\fR returns one of the following:
 .TP 5
-\fBE_OK\fR
+.B E_OK
 The routine succeeded.
 .TP 5
-\fBE_SYSTEM_ERROR\fR
-System error occurred (see \fBerrno\fR).
-.TP 5
-\fBE_BAD_ARGUMENT\fR
+.B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
+.TP 5
+.B E_CONNECTED
+field is connected.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBform\fR(3X).
 .SH NOTES
