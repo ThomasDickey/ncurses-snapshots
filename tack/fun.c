@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: fun.c,v 1.8 2006/06/24 21:35:59 tom Exp $")
+MODULE_ID("$Id: fun.c,v 1.9 2006/11/26 00:15:53 tom Exp $")
 
 /*
  * Test the function keys on the terminal.  The code for echo tests
@@ -584,7 +584,7 @@ funkey_label(
 		for (i = 1; i <= num_labels; i++) {
 			sprintf(outbuf, "L%d..............................", i);
 			outbuf[label_width] = '\0';
-			tc_putp(tparm(plab_norm, i, outbuf));
+			tc_putp(TPARM_2(plab_norm, i, outbuf));
 		}
 		if (label_off) {
 			ptext("Hit any key to remove the labels: ");
@@ -615,7 +615,7 @@ funkey_prog(
 		sprintf(temp,
 			"(pfx) Set function key %d to transmit abc\\n", fk);
 		ptextln(temp);
-		tc_putp(tparm(pkey_xmit, fk, "abc\n"));
+		tc_putp(TPARM_2(pkey_xmit, fk, "abc\n"));
 		sprintf(temp, "Hit function key %d\n", fk);
 		ptextln(temp);
 		for (i = 0; i < 4; ++i)
@@ -630,7 +630,7 @@ funkey_prog(
 		}
 		flush_input();
 		if (key_f1) {
-			tc_putp(tparm(pkey_xmit, fk, key_f1));
+			tc_putp(TPARM_2(pkey_xmit, fk, key_f1));
 		}
 	} else {
 		ptextln("Function key transmit (pfx), not present.");
@@ -658,13 +658,13 @@ funkey_local(
 			"(pfloc) Set function key %d to execute a clear and print \"Done!\"", fk);
 		ptextln(temp);
 		sprintf(temp, "%sDone!", liberated(clear_screen));
-		tc_putp(tparm(pkey_local, fk, temp));
+		tc_putp(TPARM_2(pkey_local, fk, temp));
 		sprintf(temp, "Hit function key %d.  Then hit return.", fk);
 		ptextln(temp);
 		(void) wait_here();
 		flush_input();
 		if (key_f1 && pkey_xmit) {
-			tc_putp(tparm(pkey_xmit, fk, key_f1));
+			tc_putp(TPARM_2(pkey_xmit, fk, key_f1));
 		}
 	} else {
 		ptextln("Function key execute local (pfloc), not present.");

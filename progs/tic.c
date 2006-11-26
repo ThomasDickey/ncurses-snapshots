@@ -44,7 +44,7 @@
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.129 2006/08/19 21:20:37 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.130 2006/11/26 00:27:48 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1276,16 +1276,16 @@ check_sgr(TERMTYPE *tp, char *zero, int num, char *cap, const char *name)
     char *test;
 
     _nc_tparm_err = 0;
-    test = tparm(set_attributes,
-		 num == 1,
-		 num == 2,
-		 num == 3,
-		 num == 4,
-		 num == 5,
-		 num == 6,
-		 num == 7,
-		 num == 8,
-		 num == 9);
+    test = TPARM_9(set_attributes,
+		   num == 1,
+		   num == 2,
+		   num == 3,
+		   num == 4,
+		   num == 5,
+		   num == 6,
+		   num == 7,
+		   num == 8,
+		   num == 9);
     if (test != 0) {
 	if (PRESENT(cap)) {
 	    if (!similar_sgr(num, test, cap)) {
@@ -1416,7 +1416,7 @@ check_termtype(TERMTYPE *tp, bool literal)
 	if (PRESENT(exit_attribute_mode)) {
 	    zero = strdup(CHECK_SGR(0, exit_attribute_mode));
 	} else {
-	    zero = strdup(tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+	    zero = strdup(TPARM_9(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	}
 	if (_nc_tparm_err)
 	    _nc_warning("stack error in sgr(0) string");

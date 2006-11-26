@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.14 2006/05/27 19:21:19 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.15 2006/11/25 22:32:15 tom Exp $")
 
 /*
  * Write the soft labels to the soft-key window.
@@ -57,7 +57,7 @@ slk_intern_refresh(SLK * slk)
 		if (num_labels > 0 && SLK_STDFMT(fmt)) {
 		    if (i < num_labels) {
 			TPUTS_TRACE("plab_norm");
-			putp(tparm(plab_norm, i + 1, slk->ent[i].form_text));
+			putp(TPARM_2(plab_norm, i + 1, slk->ent[i].form_text));
 		    }
 		} else {
 		    wmove(slk->win, SLK_LINES(fmt) - 1, slk->ent[i].ent_x);

@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.109 2006/10/28 19:49:48 tom Exp $
+-- $Id: INSTALL,v 1.110 2006/11/26 01:09:31 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -367,6 +367,11 @@ SUMMARY OF CONFIGURE OPTIONS:
     --disable-scroll-hints
 	Compile without scroll-hints code.  This option is ignored when
 	hashmap scrolling is configured, which is the default.
+
+    --disable-tparm-varargs
+	Portable programs should call tparm() using the fixed-length parameter
+	list documented in X/Open.  ncurses provides varargs support for this
+	function.  Use --disable-tparm-varargs to disable this support.
 
     --enable-assertions
 	For testing, compile-in assertion code.  This is used only for a few

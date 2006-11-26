@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.69 2005/11/26 15:41:24 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.71 2006/11/26 01:12:56 tom Exp $")
 
 /*
  *	char *
@@ -476,7 +476,7 @@ tparam_internal(const char *string, va_list ap)
 {
 #define NUM_VARS 26
     char *p_is_s[NUM_PARM];
-    long param[NUM_PARM];
+    TPARM_ARG param[NUM_PARM];
     int popcount;
     int number;
     int len;
@@ -514,7 +514,7 @@ tparam_internal(const char *string, va_list ap)
 	if (p_is_s[i] != 0) {
 	    p_is_s[i] = va_arg(ap, char *);
 	} else {
-	    param[i] = va_arg(ap, long int);
+	    param[i] = va_arg(ap, TPARM_ARG);
 	}
     }
 
@@ -774,8 +774,14 @@ tparam_internal(const char *string, va_list ap)
     return (out_buff);
 }
 
+#if NCURSES_TPARM_VARARGS
+#define tparm_varargs tparm
+#else
+#define tparm_proto tparm
+#endif
+
 NCURSES_EXPORT(char *)
-tparm(NCURSES_CONST char *string,...)
+tparm_varargs(NCURSES_CONST char *string,...)
 {
     va_list ap;
     char *result;
@@ -789,3 +795,20 @@ tparm(NCURSES_CONST char *string,...)
     va_end(ap);
     return result;
 }
+
+#if !NCURSES_TPARM_VARARGS
+NCURSES_EXPORT(char *)
+tparm_proto(NCURSES_CONST char *string,
+	    TPARM_ARG a1,
+	    TPARM_ARG a2,
+	    TPARM_ARG a3,
+	    TPARM_ARG a4,
+	    TPARM_ARG a5,
+	    TPARM_ARG a6,
+	    TPARM_ARG a7,
+	    TPARM_ARG a8,
+	    TPARM_ARG a9)
+{
+    return tparm_varargs(string, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+}
+#endif /* NCURSES_TPARM_VARARGS */

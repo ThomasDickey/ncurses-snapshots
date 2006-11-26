@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.374 2006/10/15 20:32:32 tom Exp $
+dnl $Id: configure.in,v 1.376 2006/11/26 01:10:24 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.374 $)
+AC_REVISION($Revision: 1.376 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -586,6 +586,15 @@ elif test "$DFT_LWR_MODEL" = shared ; then
 fi
 AC_SUBST(BROKEN_LINKER)
 
+###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
+AC_MSG_CHECKING(if tputs should process BSD-style prefix padding)
+AC_ARG_ENABLE(bsdpad,
+	[  --enable-bsdpad         recognize BSD-style prefix padding],
+	[with_bsdpad=$enableval],
+	[with_bsdpad=no])
+AC_MSG_RESULT($with_bsdpad)
+test "$with_bsdpad" = yes && AC_DEFINE(BSD_TPUTS)
+
 ###   use option --enable-widec to turn on use of wide-character support
 NCURSES_CH_T=chtype
 NCURSES_LIBUTF8=0
@@ -672,6 +681,17 @@ AC_SUBST(cf_cv_enable_lp64)
 
 CF_LARGEFILE
 
+###   use option --disable-tparm-varargs to make tparm() conform to X/Open 
+AC_MSG_CHECKING(if you want tparm to use X/Open fixed-parameter list)
+AC_ARG_ENABLE(tparm-varargs,
+	[  --disable-tparm-varargs compile tparm() without varargs interface],
+	[with_tparm_varargs=$enableval],
+	[with_tparm_varargs=yes])
+AC_MSG_RESULT($with_tparm_varargs)
+NCURSES_TPARM_VARARGS=0
+test "$with_tparm_varargs" = yes && NCURSES_TPARM_VARARGS=1
+AC_SUBST(NCURSES_TPARM_VARARGS)
+
 ###   use option --with-bool to override bool's type
 AC_MSG_CHECKING(for type of bool)
 AC_ARG_WITH(bool,
@@ -714,15 +734,6 @@ AC_ARG_WITH(mmask-t,
 	[NCURSES_MMASK_T="$withval"],
 	[NCURSES_MMASK_T=auto])
 AC_MSG_RESULT($NCURSES_MMASK_T)
-
-###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
-AC_MSG_CHECKING(if tputs should process BSD-style prefix padding)
-AC_ARG_ENABLE(bsdpad,
-	[  --enable-bsdpad         recognize BSD-style prefix padding],
-	[with_bsdpad=$enableval],
-	[with_bsdpad=no])
-AC_MSG_RESULT($with_bsdpad)
-test "$with_bsdpad" = yes && AC_DEFINE(BSD_TPUTS)
 
 ### Enable compiling-in rcs id's
 AC_MSG_CHECKING(if RCS identifiers should be compiled-in)
