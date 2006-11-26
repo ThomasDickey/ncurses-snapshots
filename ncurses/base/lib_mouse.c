@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.84 2006/09/16 23:32:39 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.85 2006/11/25 22:30:28 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -343,7 +343,7 @@ enable_xterm_mouse(int enable)
 #if USE_EMX_MOUSE
     SP->_emxmouse_activated = enable;
 #else
-    putp(tparm(SP->_mouse_xtermcap, enable));
+    putp(TPARM_1(SP->_mouse_xtermcap, enable));
 #endif
     SP->_mouse_active = enable;
 }

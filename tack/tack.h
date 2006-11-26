@@ -19,7 +19,7 @@
 ** Boston, MA 02110-1301, USA
 */
 
-/* $Id: tack.h,v 1.15 2006/06/24 20:57:27 tom Exp $ */
+/* $Id: tack.h,v 1.16 2006/11/25 23:45:00 tom Exp $ */
 
 #ifndef NCURSES_TACK_H_incl
 #define NCURSES_TACK_H_incl 1
@@ -48,6 +48,7 @@
 
 #include <curses.h>
 #include <term_entry.h>
+#include <nc_tparm.h>
 
 #if USE_RCS_IDS
 #define MODULE_ID(id) static const char Ident[] = id;

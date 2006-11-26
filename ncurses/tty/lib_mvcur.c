@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.106 2006/05/13 16:40:46 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.107 2006/11/25 22:31:59 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -257,7 +257,7 @@ reset_scroll_region(void)
 {
     if (change_scroll_region) {
 	TPUTS_TRACE("change_scroll_region");
-	putp(tparm(change_scroll_region, 0, screen_lines - 1));
+	putp(TPARM_2(change_scroll_region, 0, screen_lines - 1));
     }
 }
 
@@ -361,13 +361,13 @@ _nc_mvcur_init(void)
      * All these averages depend on the assumption that all parameter values
      * are equally probable.
      */
-    SP->_cup_cost = CostOf(tparm(SP->_address_cursor, 23, 23), 1);
-    SP->_cub_cost = CostOf(tparm(parm_left_cursor, 23), 1);
-    SP->_cuf_cost = CostOf(tparm(parm_right_cursor, 23), 1);
-    SP->_cud_cost = CostOf(tparm(parm_down_cursor, 23), 1);
-    SP->_cuu_cost = CostOf(tparm(parm_up_cursor, 23), 1);
-    SP->_hpa_cost = CostOf(tparm(column_address, 23), 1);
-    SP->_vpa_cost = CostOf(tparm(row_address, 23), 1);
+    SP->_cup_cost = CostOf(TPARM_2(SP->_address_cursor, 23, 23), 1);
+    SP->_cub_cost = CostOf(TPARM_1(parm_left_cursor, 23), 1);
+    SP->_cuf_cost = CostOf(TPARM_1(parm_right_cursor, 23), 1);
+    SP->_cud_cost = CostOf(TPARM_1(parm_down_cursor, 23), 1);
+    SP->_cuu_cost = CostOf(TPARM_1(parm_up_cursor, 23), 1);
+    SP->_hpa_cost = CostOf(TPARM_1(column_address, 23), 1);
+    SP->_vpa_cost = CostOf(TPARM_1(row_address, 23), 1);
 
     /* non-parameterized screen-update strings */
     SP->_ed_cost = NormalizedCost(clr_eos, 1);
@@ -384,14 +384,14 @@ _nc_mvcur_init(void)
 	SP->_el_cost = 0;
 
     /* parameterized screen-update strings */
-    SP->_dch_cost = NormalizedCost(tparm(parm_dch, 23), 1);
-    SP->_ich_cost = NormalizedCost(tparm(parm_ich, 23), 1);
-    SP->_ech_cost = NormalizedCost(tparm(erase_chars, 23), 1);
-    SP->_rep_cost = NormalizedCost(tparm(repeat_char, ' ', 23), 1);
+    SP->_dch_cost = NormalizedCost(TPARM_1(parm_dch, 23), 1);
+    SP->_ich_cost = NormalizedCost(TPARM_1(parm_ich, 23), 1);
+    SP->_ech_cost = NormalizedCost(TPARM_1(erase_chars, 23), 1);
+    SP->_rep_cost = NormalizedCost(TPARM_2(repeat_char, ' ', 23), 1);
 
-    SP->_cup_ch_cost = NormalizedCost(tparm(SP->_address_cursor, 23, 23), 1);
-    SP->_hpa_ch_cost = NormalizedCost(tparm(column_address, 23), 1);
-    SP->_cuf_ch_cost = NormalizedCost(tparm(parm_right_cursor, 23), 1);
+    SP->_cup_ch_cost = NormalizedCost(TPARM_2(SP->_address_cursor, 23, 23), 1);
+    SP->_hpa_ch_cost = NormalizedCost(TPARM_1(column_address, 23), 1);
+    SP->_cuf_ch_cost = NormalizedCost(TPARM_1(parm_right_cursor, 23), 1);
     SP->_inline_cost = min(SP->_cup_ch_cost,
 			   min(SP->_hpa_ch_cost,
 			       SP->_cuf_ch_cost));
@@ -496,7 +496,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	vcost = INFINITY;
 
 	if (row_address != 0
-	    && _nc_safe_strcat(target, tparm(row_address, to_y))) {
+	    && _nc_safe_strcat(target, TPARM_1(row_address, to_y))) {
 	    vcost = SP->_vpa_cost;
 	}
 
@@ -506,7 +506,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	    if (parm_down_cursor
 		&& SP->_cud_cost < vcost
 		&& _nc_safe_strcat(_nc_str_copy(target, &save),
-				   tparm(parm_down_cursor, n))) {
+				   TPARM_1(parm_down_cursor, n))) {
 		vcost = SP->_cud_cost;
 	    }
 
@@ -522,7 +522,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	    if (parm_up_cursor
 		&& SP->_cuu_cost < vcost
 		&& _nc_safe_strcat(_nc_str_copy(target, &save),
-				   tparm(parm_up_cursor, n))) {
+				   TPARM_1(parm_up_cursor, n))) {
 		vcost = SP->_cuu_cost;
 	    }
 
@@ -546,7 +546,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 
 	if (column_address
 	    && _nc_safe_strcat(_nc_str_copy(target, &save),
-			       tparm(column_address, to_x))) {
+			       TPARM_1(column_address, to_x))) {
 	    hcost = SP->_hpa_cost;
 	}
 
@@ -556,7 +556,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	    if (parm_right_cursor
 		&& SP->_cuf_cost < hcost
 		&& _nc_safe_strcat(_nc_str_copy(target, &save),
-				   tparm(parm_right_cursor, n))) {
+				   TPARM_1(parm_right_cursor, n))) {
 		hcost = SP->_cuf_cost;
 	    }
 
@@ -648,7 +648,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	    if (parm_left_cursor
 		&& SP->_cub_cost < hcost
 		&& _nc_safe_strcat(_nc_str_copy(target, &save),
-				   tparm(parm_left_cursor, n))) {
+				   TPARM_1(parm_left_cursor, n))) {
 		hcost = SP->_cub_cost;
 	    }
 
@@ -719,7 +719,7 @@ onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 #define InitResult _nc_str_init(&result, buffer, sizeof(buffer))
 
     /* tactic #0: use direct cursor addressing */
-    if (_nc_safe_strcpy(InitResult, tparm(SP->_address_cursor, ynew, xnew))) {
+    if (_nc_safe_strcpy(InitResult, TPARM_2(SP->_address_cursor, ynew, xnew))) {
 	tactic = 0;
 	usecost = SP->_cup_cost;
 

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.311 2006/10/14 20:19:19 tom Exp $
+ * $Id: curses.priv.h,v 1.312 2006/11/25 23:41:07 tom Exp $
  *
  *	curses.priv.h
  *
@@ -251,6 +251,7 @@ color_t;
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 #include <term.h>
 #include <term_entry.h>
+#include <nc_tparm.h>
 
 #if NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT
 #define if_EXT_COLORS(stmt)	stmt

@@ -504,6 +504,7 @@
 ./include/headers
 ./include/nc_alloc.h
 ./include/nc_panel.h
+./include/nc_tparm.h
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
 ./include/ncurses_dll.h

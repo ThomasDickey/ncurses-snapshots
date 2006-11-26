@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 2006 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,66 +27,39 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey                        2006                    *
  ****************************************************************************/
 
-#include <curses.priv.h>
+/* $Id: nc_tparm.h,v 1.4 2006/11/26 00:49:25 tom Exp $ */
 
-#include <term.h>
+/*
+ * Cast parameters past the formatting-string for tparm() to match the
+ * assumption of the varargs code.
+ */
+#define TPARM_ARG long
+#define TPARM_N(n) (TPARM_ARG)(n)
 
-MODULE_ID("$Id: lib_print.c,v 1.16 2006/11/26 00:26:34 tom Exp $")
+#define TPARM_9(a,b,c,d,e,f,g,h,i,j) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e),TPARM_N(f),TPARM_N(g),TPARM_N(h),TPARM_N(i),TPARM_N(j))
 
-NCURSES_EXPORT(int)
-mcprint(char *data, int len)
-/* ship binary character data to the printer via mc4/mc5/mc5p */
-{
-    char *mybuf, *switchon;
-    size_t onsize, offsize, res;
-
-    errno = 0;
-    if (!cur_term || (!prtr_non && (!prtr_on || !prtr_off))) {
-	errno = ENODEV;
-	return (ERR);
-    }
-
-    if (prtr_non) {
-	switchon = TPARM_1(prtr_non, len);
-	onsize = strlen(switchon);
-	offsize = 0;
-    } else {
-	switchon = prtr_on;
-	onsize = strlen(prtr_on);
-	offsize = strlen(prtr_off);
-    }
-
-    if (switchon == 0
-	|| (mybuf = typeMalloc(char, onsize + len + offsize + 1)) == 0) {
-	errno = ENOMEM;
-	return (ERR);
-    }
-
-    (void) strcpy(mybuf, switchon);
-    memcpy(mybuf + onsize, data, (unsigned) len);
-    if (offsize)
-	(void) strcpy(mybuf + onsize + len, prtr_off);
-
-    /*
-     * We're relying on the atomicity of UNIX writes here.  The
-     * danger is that output from a refresh() might get interspersed
-     * with the printer data after the write call returns but before the
-     * data has actually been shipped to the terminal.  If the write(2)
-     * operation is truly atomic we're protected from this.
-     */
-    res = write(cur_term->Filedes, mybuf, onsize + len + offsize);
-
-    /*
-     * By giving up our scheduler slot here we increase the odds that the
-     * kernel will ship the contiguous clist items from the last write
-     * immediately.
-     */
-    (void) sleep(0);
-
-    free(mybuf);
-    return (res);
-}
+#if NCURSES_TPARM_VARARGS
+#define TPARM_8(a,b,c,d,e,f,g,h,i) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e),TPARM_N(f),TPARM_N(g),TPARM_N(h),TPARM_N(i))
+#define TPARM_7(a,b,c,d,e,f,g,h) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e),TPARM_N(f),TPARM_N(g),TPARM_N(h))
+#define TPARM_6(a,b,c,d,e,f,g) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e),TPARM_N(f),TPARM_N(g))
+#define TPARM_5(a,b,c,d,e,f) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e),TPARM_N(f))
+#define TPARM_4(a,b,c,d,e) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d),TPARM_N(e))
+#define TPARM_3(a,b,c,d) tparm(a,TPARM_N(b),TPARM_N(c),TPARM_N(d))
+#define TPARM_2(a,b,c) tparm(a,TPARM_N(b),TPARM_N(c))
+#define TPARM_1(a,b) tparm(a,TPARM_N(b))
+#define TPARM_0(a) tparm(a)
+#else
+#define TPARM_8(a,b,c,d,e,f,g,h,i) TPARM_9(a,b,c,d,e,f,g,h,i,0)
+#define TPARM_7(a,b,c,d,e,f,g,h) TPARM_8(a,b,c,d,e,f,g,h,0)
+#define TPARM_6(a,b,c,d,e,f,g) TPARM_7(a,b,c,d,e,f,g,0)
+#define TPARM_5(a,b,c,d,e,f) TPARM_6(a,b,c,d,e,f,0)
+#define TPARM_4(a,b,c,d,e) TPARM_5(a,b,c,d,e,0)
+#define TPARM_3(a,b,c,d) TPARM_4(a,b,c,d,0)
+#define TPARM_2(a,b,c) TPARM_3(a,b,c,0)
+#define TPARM_1(a,b) TPARM_2(a,b,0)
+#define TPARM_1(a,b) TPARM_2(a,b,0)
+#define TPARM_0(a) TPARM_1(a,0)
+#endif
