@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.20 2006/09/02 20:33:56 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.21 2006/12/02 21:20:28 tom Exp $")
 
 static const char d_quote[] = {D_QUOTE, 0};
 static const char l_brace[] = {L_BRACE, 0};
@@ -268,13 +268,13 @@ _nc_viscbuf2(int bufnum, const NCURSES_CH_T * buf, int len)
 		PUTC_DATA;
 
 		PUTC_INIT;
-		do {
+		for (PUTC_i = 0; PUTC_i < CCHARW_MAX; ++PUTC_i) {
 		    int k;
 
-		    PUTC_ch = PUTC_i < CCHARW_MAX ? buf[j].chars[PUTC_i] : L'\0';
-		    PUTC_n = wcrtomb(PUTC_buf, buf[j].chars[PUTC_i], &PUT_st);
+		    PUTC_ch = buf[j].chars[PUTC_i];
 		    if (PUTC_ch == L'\0')
-			--PUTC_n;
+			break;
+		    PUTC_n = wcrtomb(PUTC_buf, buf[j].chars[PUTC_i], &PUT_st);
 		    if (PUTC_n <= 0)
 			break;
 		    for (k = 0; k < PUTC_n; k++) {
@@ -282,8 +282,7 @@ _nc_viscbuf2(int bufnum, const NCURSES_CH_T * buf, int len)
 			_nc_vischar(temp, UChar(PUTC_buf[k]));
 			result = _nc_trace_bufcat(bufnum, temp);
 		    }
-		    ++PUTC_i;
-		} while (PUTC_ch != L'\0');
+		}
 	    }
 #else
 	    {

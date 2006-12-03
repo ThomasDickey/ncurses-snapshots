@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_ipv4.c,v 1.7 2006/04/22 21:33:05 tom Exp $")
+MODULE_ID("$Id: fty_ipv4.c,v 1.8 2006/12/02 19:33:02 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -60,7 +60,7 @@ Check_IPV4_Field(FIELD *field, const void *argp GCC_UNUSED)
       if (num == 4)
 	{
 	  bp += len;		/* Make bp point to what sscanf() left */
-	  while (*bp && isspace(UChar(*bp)))
+	  while (isspace(UChar(*bp)))
 	    bp++;		/* Allow trailing whitespace */
 	}
     }

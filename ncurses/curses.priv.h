@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.312 2006/11/25 23:41:07 tom Exp $
+ * $Id: curses.priv.h,v 1.313 2006/12/02 21:16:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -737,26 +737,26 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define CARG_CH_T	const NCURSES_CH_T *
 #define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
 			mbstate_t PUT_st; wchar_t PUTC_ch
-#define PUTC_INIT	init_mb (PUT_st);					    \
-			PUTC_i = 0
+#define PUTC_INIT	init_mb (PUT_st)
 #define PUTC(ch,b)	do { if(!isWidecExt(ch)) {				    \
 			if (Charable(ch)) {					    \
 			    fputc(CharOf(ch), b);				    \
 			    TRACE_OUTCHARS(1);					    \
 			} else {						    \
 			    PUTC_INIT;						    \
-			    do {						    \
-				PUTC_ch = PUTC_i < CCHARW_MAX ?			    \
-					    (ch).chars[PUTC_i] : L'\0';		    \
+			    for (PUTC_i = 0; PUTC_i < CCHARW_MAX; ++PUTC_i) {	    \
+				PUTC_ch = (ch).chars[PUTC_i];			    \
+				if (PUTC_ch == L'\0')				    \
+				    break;					    \
 				PUTC_n = wcrtomb(PUTC_buf,			    \
 						 (ch).chars[PUTC_i], &PUT_st);	    \
-				if (PUTC_ch == L'\0')				    \
-				    --PUTC_n;					    \
-				if (PUTC_n <= 0)				    \
+				if (PUTC_n <= 0) {				    \
+				    if (PUTC_ch && is8bits(PUTC_ch) && PUTC_i == 0) \
+					putc(PUTC_ch,b);			    \
 				    break;					    \
+				}						    \
 				fwrite(PUTC_buf, (unsigned) PUTC_n, 1, b);	    \
-				++PUTC_i;					    \
-			    } while (PUTC_ch != L'\0');				    \
+			    }							    \
 			    TRACE_OUTCHARS(PUTC_i);				    \
 			} } } while (0)
 
@@ -800,7 +800,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define ARG_CH_T	NCURSES_CH_T
 #define CARG_CH_T	NCURSES_CH_T
 #define PUTC_DATA	int data = 0
-#define PUTC(a,b)	do { data = CharOf(ch); putc(data,b); } while (0)
+#define PUTC(ch,b)	do { data = CharOf(ch); putc(data,b); } while (0)
 
 #define BLANK		(' '|A_NORMAL)
 #define ZEROS		('\0'|A_NORMAL)

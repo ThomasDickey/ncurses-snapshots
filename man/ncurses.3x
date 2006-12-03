@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.79 2006/05/13 20:01:26 tom Exp $
+.\" $Id: ncurses.3x,v 1.81 2006/12/02 19:23:11 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -102,11 +102,11 @@ undesired, effects.
 .PP
 Windows are referred to by variables declared as \fBWINDOW *\fR.
 These data structures are manipulated with routines described here and
-elsewhere in the \fBncurses\fR manual pages.  Among which the most basic
+elsewhere in the \fBncurses\fR manual pages.  Among those, the most basic
 routines are \fBmove\fR and \fBaddch\fR.  More general versions of
 these routines are included with names beginning with \fBw\fR,
 allowing the user to specify a window.  The routines not beginning
-with \fBw\fR affect \fBstdscr\fR.)
+with \fBw\fR affect \fBstdscr\fR.
 .PP
 After using routines to manipulate a window, \fBrefresh\fR is called,
 telling \fBcurses\fR to make the user's CRT screen look like
