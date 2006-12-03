@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.5 2006/09/03 15:43:29 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.6 2006/12/02 21:19:17 tom Exp $")
 
 NCURSES_EXPORT(int)
 wadd_wch(WINDOW *win, const cchar_t *wch)
@@ -49,10 +49,10 @@ wadd_wch(WINDOW *win, const cchar_t *wch)
 
     if (win != 0) {
 	PUTC_INIT;
-	while (PUTC_i < CCHARW_MAX) {
+	for (PUTC_i = 0; PUTC_i < CCHARW_MAX; ++PUTC_i) {
 	    attr_t attrs = (wch->attr & A_ATTRIBUTES);
 
-	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
+	    if ((PUTC_ch = wch->chars[PUTC_i]) == L'\0')
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
@@ -86,10 +86,10 @@ wecho_wchar(WINDOW *win, const cchar_t *wch)
 
     if (win != 0) {
 	PUTC_INIT;
-	while (PUTC_i < CCHARW_MAX) {
+	for (PUTC_i = 0; PUTC_i < CCHARW_MAX; ++PUTC_i) {
 	    attr_t attrs = (wch->attr & A_ATTRIBUTES);
 
-	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
+	    if ((PUTC_ch = wch->chars[PUTC_i]) == L'\0')
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;

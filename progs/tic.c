@@ -44,7 +44,7 @@
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.130 2006/11/26 00:27:48 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.131 2006/12/02 22:13:17 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -793,9 +793,6 @@ main(int argc, char *argv[])
  * references to locations in the arrays Booleans, Numbers, and Strings ---
  * precisely what's needed (see comp_parse.c).
  */
-
-TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
-
 #undef CUR
 #define CUR tp->
 

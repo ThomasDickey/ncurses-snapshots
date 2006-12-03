@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: echochar.c,v 1.2 2006/11/04 20:10:35 tom Exp $
+ * $Id: echochar.c,v 1.3 2006/12/03 00:14:29 tom Exp $
  *
  * Demonstrate the echochar function (compare to dots.c).
  * Thomas Dickey - 2006/11/4
@@ -116,8 +116,8 @@ main(
 
     curs_set(0);
 
-    r = (float) (lines - 4);
-    c = (float) (columns - 4);
+    r = (float) (LINES - 4);
+    c = (float) (COLS - 4);
     started = time((time_t *) 0);
 
     while (!interrupted) {
