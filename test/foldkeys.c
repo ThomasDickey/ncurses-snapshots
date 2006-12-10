@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey, 2006
  *
- * $Id: foldkeys.c,v 1.2 2006/08/26 18:02:30 tom Exp $
+ * $Id: foldkeys.c,v 1.3 2006/12/09 16:54:07 tom Exp $
  *
  * Demonstrate a method for altering key definitions at runtime.
  *
@@ -202,7 +202,6 @@ int
 main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
     int ch;
-    SCREEN *sp;
 #if HAVE_GETTIMEOFDAY
     int secs, msecs;
     struct timeval current, previous;
@@ -210,7 +209,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 
     unlink(MY_LOGFILE);
 
-    sp = newterm(0, stdout, stdin);
+    newterm(0, stdout, stdin);
     (void) cbreak();		/* take input chars one at a time, no wait for \n */
     (void) noecho();		/* don't echo input */
 

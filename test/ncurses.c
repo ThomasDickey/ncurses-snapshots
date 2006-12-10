@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.279 2006/06/17 18:18:26 tom Exp $
+$Id: ncurses.c,v 1.280 2006/12/10 00:13:15 tom Exp $
 
 ***************************************************************************/
 
@@ -1114,7 +1114,7 @@ attr_legend(WINDOW *helpwin)
     int col = 1;
 
     mvwprintw(helpwin, row++, col,
-	      "CTL/q or ESC to exit.");
+	      "ESC to exit.");
     mvwprintw(helpwin, row++, col,
 	      "^L repaints.");
     ++row;
@@ -1779,7 +1779,7 @@ color_legend(WINDOW *helpwin)
     int col = 1;
 
     mvwprintw(helpwin, row++, col,
-	      "CTL/q or ESC to exit.");
+	      "ESC to exit.");
     ++row;
     mvwprintw(helpwin, row++, col,
 	      "Use up/down arrow to scroll through the display if it is");
@@ -1806,7 +1806,6 @@ color_legend(WINDOW *helpwin)
 static void
 color_test(void)
 {
-    int c;
     short i;
     int top = 0, width;
     int base_row = 0;
@@ -1888,7 +1887,7 @@ color_test(void)
 	    }
 	}
 
-	switch (c = wGetchar(stdscr)) {
+	switch (wGetchar(stdscr)) {
 	case 'b':
 	    opt_bold = FALSE;
 	    break;
@@ -2317,7 +2316,7 @@ color_edit(void)
 	    P("with a `+' or `-'.");
 	    P("");
 	    P("Press 'm' to invoke the top-level menu with the current color settings.");
-	    P("To quit, do CTL/Q or ESC");
+	    P("To quit, do ESC");
 
 	    Pause();
 	    erase();
@@ -2390,7 +2389,7 @@ slk_help(void)
 #if HAVE_SLK_COLOR
 	,"F/B        -- cycle through foreground/background colors"
 #endif
-	,"CTL/q, ESC  -- return to main menu"
+	,"ESC  -- return to main menu"
 	,""
 	,"Note: if activating the soft keys causes your terminal to scroll up"
 	,"one line, your terminal auto-scrolls when anything is written to the"
@@ -2867,7 +2866,7 @@ acs_display(void)
 	mvprintw(LINES - 3, 0,
 		 "Note: ANSI terminals may not display C1 characters.");
 	mvprintw(LINES - 2, 0,
-		 "Select: a=ACS, x=box, %s0=C1, 1,2,3=GR characters, CTL/q=quit",
+		 "Select: a=ACS, x=box, %s0=C1, 1,2,3=GR characters, ESC=quit",
 		 pch_kludge);
 	refresh();
     } while (!isQuit(c = Getchar()));
@@ -3258,7 +3257,7 @@ wide_acs_display(void)
 	    last_show_wacs(attr, pair);
 
 	mvprintw(LINES - 3, 0,
-		 "Select: a WACS, x box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, CTL/q=quit");
+		 "Select: a WACS, x box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, ESC=quit");
 	if (use_colors) {
 	    mvprintw(LINES - 2, 0,
 		     "v/V, f/F, b/B cycle through video attributes (%s) and color %d/%d.",
@@ -4254,7 +4253,7 @@ panner_legend(int line)
 {
     static const char *const legend[] =
     {
-	"Use arrow keys (or U,D,L,R) to pan, CTL/q to quit, ! to shell-out.",
+	"Use arrow keys (or U,D,L,R) to pan, ESC to quit, ! to shell-out.",
 	"Use +,- (or j,k) to grow/shrink the panner vertically.",
 	"Use <,> (or h,l) to grow/shrink the panner horizontally.",
 	"Number repeats.  Toggle legend:? filler:a timer:t scrollmark:s."

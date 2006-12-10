@@ -29,7 +29,7 @@
 /*
  * Author:  Thomas E. Dickey <dickey@clark.net> 1998
  *
- * $Id: filter.c,v 1.10 2006/01/12 00:24:13 tom Exp $
+ * $Id: filter.c,v 1.11 2006/12/09 16:53:47 tom Exp $
  */
 #include <test.priv.h>
 
@@ -83,7 +83,6 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
     char buffer[80];
     attr_t underline;
-    int code;
 
     setlocale(LC_ALL, "");
 
@@ -105,7 +104,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	underline = A_UNDERLINE;
     }
 
-    while ((code = new_command(buffer, sizeof(buffer) - 1, underline)) != ERR
+    while (new_command(buffer, sizeof(buffer) - 1, underline) != ERR
 	   && strlen(buffer) != 0) {
 	reset_shell_mode();
 	printf("\n");

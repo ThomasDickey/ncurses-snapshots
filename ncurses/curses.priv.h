@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.313 2006/12/02 21:16:52 tom Exp $
+ * $Id: curses.priv.h,v 1.314 2006/12/10 00:55:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -858,6 +858,23 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define FreeAndNull(p)   free(p); p = 0
 
 #include <nc_alloc.h>
+
+/*
+ * TTY bit definition for converting tabs to spaces.
+ */
+#ifdef TAB3
+# define OFLAGS_TABS TAB3	/* POSIX specifies TAB3 */
+#else
+# ifdef XTABS
+#  define OFLAGS_TABS XTABS	/* XTABS is usually the "same" */
+# else
+#  ifdef OXTABS
+#   define OFLAGS_TABS OXTABS	/* the traditional BSD equivalent */
+#  else
+#   define OFLAGS_TABS 0
+#  endif
+# endif
+#endif
 
 /*
  * Prefixes for call/return points of library function traces.  We use these to

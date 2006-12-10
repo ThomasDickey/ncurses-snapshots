@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.c,v 1.12 2006/04/01 19:08:03 tom Exp $
+ * $Id: edit_field.c,v 1.13 2006/12/09 16:50:11 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the result available as a null-terminated string
@@ -297,7 +297,6 @@ edit_field(FORM * form, int *result)
     int ch = wgetch(form_win(form));
     int status;
     FIELD *before;
-    FIELD *after;
     unsigned n;
     char lengths[80];
     int length;
@@ -439,7 +438,7 @@ edit_field(FORM * form, int *result)
 	set_field_buffer(before, 1, lengths);
     }
 
-    if ((after = current_field(form)) != before)
+    if (current_field(form) != before)
 	set_field_back(before, A_UNDERLINE);
     return status;
 }
