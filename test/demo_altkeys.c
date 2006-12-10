@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_altkeys.c,v 1.6 2006/07/15 16:37:30 tom Exp $
+ * $Id: demo_altkeys.c,v 1.7 2006/12/09 16:49:49 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2005/10/22
@@ -84,7 +84,6 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
     int n;
     int ch;
-    SCREEN *sp;
 #if HAVE_GETTIMEOFDAY
     int secs, msecs;
     struct timeval current, previous;
@@ -92,7 +91,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 
     unlink(MY_LOGFILE);
 
-    sp = newterm(0, stdout, stdin);
+    newterm(0, stdout, stdin);
     (void) cbreak();		/* take input chars one at a time, no wait for \n */
     (void) noecho();		/* don't echo input */
 

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.376 2006/11/26 01:10:24 tom Exp $
+dnl $Id: configure.in,v 1.377 2006/12/10 01:11:26 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.376 $)
+AC_REVISION($Revision: 1.377 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -834,7 +834,7 @@ AC_MSG_CHECKING(if you want all development code)
 AC_ARG_WITH(develop,
 	[  --without-develop       disable development options],
 	[with_develop=$withval],
-	[with_develop=yes])
+	[with_develop=no])
 AC_MSG_RESULT($with_develop)
 
 ###   use option --enable-hard-tabs to turn on use of hard-tabs optimize

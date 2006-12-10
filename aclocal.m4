@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.397 2006/10/21 16:34:54 tom Exp $
+dnl $Id: aclocal.m4,v 1.398 2006/12/09 17:48:20 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2742,7 +2742,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 30 updated: 2006/05/13 11:37:21
+dnl CF_MAN_PAGES version: 31 updated: 2006/12/09 12:27:08
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -2856,11 +2856,11 @@ case \$i in #(vi
 	fi
 	fi
 	aliases=
-	source=\`basename \$i\`
-	inalias=\$source
+	cf_source=\`basename \$i\`
+	inalias=\$cf_source
 	test ! -f \$inalias && inalias="\$srcdir/\$inalias"
 	if test ! -f \$inalias ; then
-		echo .. skipped \$source
+		echo .. skipped \$cf_source
 		continue
 	fi
 CF_EOF
@@ -2875,19 +2875,19 @@ if test "$MANPAGE_RENAMES" = no ; then
 cat >>$cf_edit_man <<CF_EOF
 	# perform program transformations for section 1 man pages
 	if test \$section = 1 ; then
-		target=\$cf_subdir\${section}/\`echo \$source|sed "\${transform}"\`
+		cf_target=\$cf_subdir\${section}/\`echo \$cf_source|sed "\${transform}"\`
 	else
-		target=\$cf_subdir\${section}/\$source
+		cf_target=\$cf_subdir\${section}/\$cf_source
 	fi
 CF_EOF
 else
 cat >>$cf_edit_man <<CF_EOF
-	target=\`grep "^\$source" $MANPAGE_RENAMES | $AWK '{print \[$]2}'\`
-	if test -z "\$target" ; then
-		echo '? missing rename for '\$source
-		target="\$source"
+	cf_target=\`grep "^\$cf_source" $MANPAGE_RENAMES | $AWK '{print \[$]2}'\`
+	if test -z "\$cf_target" ; then
+		echo '? missing rename for '\$cf_source
+		cf_target="\$cf_source"
 	fi
-	target="\$cf_subdir\${section}/\${target}"
+	cf_target="\$cf_subdir\${section}/\${cf_target}"
 CF_EOF
 fi
 
@@ -2958,7 +2958,7 @@ cat >>$cf_edit_man <<CF_EOF
 		mv \$TMP.$cf_so_strip \$TMP
 	fi
 	fi
-	target="\$target.$cf_so_strip"
+	cf_target="\$cf_target.$cf_so_strip"
 CF_EOF
 fi
 
@@ -2967,22 +2967,22 @@ case "$MANPAGE_FORMAT" in #(vi
 cat >>$cf_edit_man <<CF_EOF
 	if test \$form = format ; then
 		# BSDI installs only .0 suffixes in the cat directories
-		target="\`echo \$target|sed -e 's/\.[[1-9]]\+[[a-z]]*/.0/'\`"
+		cf_target="\`echo \$cf_target|sed -e 's/\.[[1-9]]\+[[a-z]]*/.0/'\`"
 	fi
 CF_EOF
   ;;
 esac
 
 cat >>$cf_edit_man <<CF_EOF
-	suffix=\`basename \$target | sed -e 's%^[[^.]]*%%'\`
+	suffix=\`basename \$cf_target | sed -e 's%^[[^.]]*%%'\`
 	if test \$verb = installing ; then
-		echo \$verb \$target
-		\$INSTALL_DATA \$TMP \$target
+		echo \$verb \$cf_target
+		\$INSTALL_DATA \$TMP \$cf_target
 		test -n "\$aliases" && (
 			cd \$cf_subdir\${section} && (
-				source=\`echo \$target |sed -e 's%^.*/\([[^/]][[^/]]*/[[^/]][[^/]]*$\)%\1%'\`
-				test -n "$cf_so_strip" && source=\`echo \$source |sed -e 's%\.$cf_so_strip\$%%'\`
-				target=\`basename \$target\`
+				cf_source=\`echo \$cf_target |sed -e 's%^.*/\([[^/]][[^/]]*/[[^/]][[^/]]*$\)%\1%'\`
+				test -n "$cf_so_strip" && cf_source=\`echo \$cf_source |sed -e 's%\.$cf_so_strip\$%%'\`
+				cf_target=\`basename \$cf_target\`
 				for cf_alias in \$aliases
 				do
 					if test \$section = 1 ; then
@@ -2991,16 +2991,16 @@ cat >>$cf_edit_man <<CF_EOF
 
 					if test "$MANPAGE_SYMLINKS" = yes ; then
 						if test -f \$cf_alias\${suffix} ; then
-							if ( cmp -s \$target \$cf_alias\${suffix} )
+							if ( cmp -s \$cf_target \$cf_alias\${suffix} )
 							then
 								continue
 							fi
 						fi
 						echo .. \$verb alias \$cf_alias\${suffix}
 						rm -f \$cf_alias\${suffix}
-						$LN_S \$target \$cf_alias\${suffix}
-					elif test "\$target" != "\$cf_alias\${suffix}" ; then
-						echo ".so \$source" >\$TMP
+						$LN_S \$cf_target \$cf_alias\${suffix}
+					elif test "\$cf_target" != "\$cf_alias\${suffix}" ; then
+						echo ".so \$cf_source" >\$TMP
 CF_EOF
 if test -n "$cf_compress" ; then
 cat >>$cf_edit_man <<CF_EOF
@@ -3019,8 +3019,8 @@ cat >>$cf_edit_man <<CF_EOF
 			)
 		)
 	elif test \$verb = removing ; then
-		echo \$verb \$target
-		rm -f \$target
+		echo \$verb \$cf_target
+		rm -f \$cf_target
 		test -n "\$aliases" && (
 			cd \$cf_subdir\${section} && (
 				for cf_alias in \$aliases
@@ -3617,7 +3617,7 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]$3\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 40 updated: 2006/10/21 12:33:41
+dnl CF_SHARED_OPTS version: 41 updated: 2006/12/09 12:32:00
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -3740,7 +3740,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='${LD} -shared -rdata_shared -soname `basename $[@]` -o $[@]'
+		MK_SHARED_LIB='${CC} -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
 	linux*|gnu*|k*bsd*-gnu)
@@ -3852,7 +3852,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
 		CF_SHARED_SONAME
-		MK_SHARED_LIB='${LD} -dy -G -h '$cf_shared_soname' -o $[@]'
+		MK_SHARED_LIB='${CC} -dy -G -h '$cf_shared_soname' -o $[@]'
 		;;
 	sysv5uw7*|unix_sv*)
 		# tested with UnixWare 7.1.0 (gcc 2.95.2 and cc)
