@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.46 2006/06/17 17:50:30 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.47 2006/12/16 19:06:58 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -281,7 +281,9 @@ _nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)
 NCURSES_EXPORT(void)
 _nc_alloc_entry_leaks(void)
 {
-    FreeAndNull(stringbuf);
+    if (stringbuf != 0) {
+	FreeAndNull(stringbuf);
+    }
     next_free = 0;
 }
 #endif

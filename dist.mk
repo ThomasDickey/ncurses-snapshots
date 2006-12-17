@@ -25,7 +25,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.562 2006/12/09 16:11:48 tom Exp $
+# $Id: dist.mk,v 1.565 2006/12/16 22:26:55 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -42,7 +42,8 @@ NCURSES_PATCH = 20061209
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
 
-# The most recent html files were generated with lynx 2.8.6, configured with
+# The most recent html files were generated with lynx 2.8.6, using ncurses
+# configured with
 #	--without-manpage-renames
 # on Debian/testing.  The -scrollbar and -width options are used to make lynx
 # use 79 columns as it did in 2.8.5 and before.

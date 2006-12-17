@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.398 2006/12/09 17:48:20 tom Exp $
+dnl $Id: aclocal.m4,v 1.406 2006/12/17 00:13:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -285,7 +285,7 @@ else	AC_MSG_RESULT(no)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_SIZE version: 10 updated: 2002/02/23 20:38:31
+dnl CF_BOOL_SIZE version: 12 updated: 2006/12/16 12:33:30
 dnl ------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it's been deprecated.
@@ -332,7 +332,7 @@ main()
 		else if (sizeof(x) == sizeof(long)) fputs("long", fp);
 		fclose(fp);
 	}
-	exit(0);
+	${cf_cv_main_return:-return}(0);
 }
 		],
 		[cf_cv_type_of_bool=`cat cf_test.out`
@@ -807,6 +807,28 @@ done
 AC_SUBST(DIRS_TO_MAKE)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_DISABLE_LEAKS version: 4 updated: 2006/12/16 15:10:42
+dnl ----------------
+dnl Combine no-leak checks with the libraries or tools that are used for the
+dnl checks.
+AC_DEFUN([CF_DISABLE_LEAKS],[
+
+AC_REQUIRE([CF_WITH_DMALLOC])
+AC_REQUIRE([CF_WITH_DBMALLOC])
+AC_REQUIRE([CF_WITH_VALGRIND])
+
+AC_MSG_CHECKING(if you want to perform memory-leak testing)
+AC_ARG_ENABLE(leaks,
+	[  --disable-leaks         test: free permanent memory, analyze leaks],
+	[with_no_leaks=yes],
+	: ${with_no_leaks:=no})
+AC_MSG_RESULT($with_no_leaks)
+
+if test "$with_no_leaks" = yes ; then
+	AC_DEFINE(NO_LEAKS)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_ERRNO version: 5 updated: 1997/11/30 12:44:39
 dnl --------
 dnl Check if 'errno' is declared in <errno.h>
@@ -880,7 +902,7 @@ else
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_MEMMOVE version: 5 updated: 2000/08/12 23:18:52
+dnl CF_FUNC_MEMMOVE version: 7 updated: 2006/12/16 12:33:30
 dnl ---------------
 dnl Check for memmove, or a bcopy that can handle overlapping copy.  If neither
 dnl is found, add our own version of memmove to the list of objects.
@@ -896,7 +918,7 @@ int main() {
 	bcopy(data, temp, sizeof(data));
 	bcopy(temp+10, temp, 15);
 	bcopy(temp+5, temp+15, 10);
-	exit (strcmp(temp, "klmnopqrstuwwxypqrstuwwxyz"));
+	${cf_cv_main_return:-return} (strcmp(temp, "klmnopqrstuwwxypqrstuwwxyz"));
 }
 		],
 		[cf_cv_good_bcopy=yes],
@@ -911,7 +933,7 @@ int main() {
 	fi
 ])])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_NANOSLEEP version: 1 updated: 2005/07/02 15:38:12
+dnl CF_FUNC_NANOSLEEP version: 3 updated: 2006/12/16 12:33:30
 dnl -----------------
 dnl Check for existence of workable nanosleep() function.  Some systems, e.g.,
 dnl AIX 4.x, provide a non-working version.
@@ -935,7 +957,7 @@ int main() {
 	ts2.tv_nsec = 0;
 	errno = 0;
 	code = nanosleep(&ts1, &ts2); /* on failure errno is ENOSYS. */
-	exit(code != 0);
+	${cf_cv_main_return:-return}(code != 0);
 }
 ],
 	[cf_cv_func_nanosleep=yes],
@@ -945,7 +967,7 @@ int main() {
 test "$cf_cv_func_nanosleep" = "yes" && AC_DEFINE(HAVE_NANOSLEEP)
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_POLL version: 2 updated: 2000/02/06 01:38:04
+dnl CF_FUNC_POLL version: 4 updated: 2006/12/16 12:33:30
 dnl ------------
 dnl See if the poll function really works.  Some platforms have poll(), but
 dnl it does not work for terminals or files.
@@ -966,7 +988,7 @@ int main() {
 	myfds.events = POLLIN;
 
 	ret = poll(&myfds, 1, 100);
-	exit(ret != 0);
+	${cf_cv_main_return:-return}(ret != 0);
 }],
 	[cf_cv_working_poll=yes],
 	[cf_cv_working_poll=no],
@@ -1561,7 +1583,7 @@ fi
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_HASHED_DB_LIBS version: 4 updated: 2006/08/19 16:07:40
+dnl CF_HASHED_DB_LIBS version: 6 updated: 2006/12/16 12:33:30
 dnl -----------------
 dnl Given that we have the header and version for hashed database, find the
 dnl library information.
@@ -1618,7 +1640,7 @@ $ac_includes_default
 		     DB_HASH,
 		     0);
 #endif
-	exit(result != 0)
+	${cf_cv_main_return:-return}(result != 0)
 ],[
 	if test -n "$cf_db_libs" ; then
 		cf_cv_hashed_db_libs=$cf_db_libs
@@ -2253,7 +2275,7 @@ done
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_SONAME version: 2 updated: 2005/06/25 16:05:47
+dnl CF_LIB_SONAME version: 3 updated: 2006/12/16 15:55:46
 dnl -------------
 dnl Find the and soname for the given shared library.  Set the cache variable
 dnl cf_cv_$3_soname to this, unless it is not found.  Then set the cache
@@ -2273,7 +2295,7 @@ $1
 int main()
 {
 $2
-return 0;
+	${cf_cv_main_return:-return}(0);
 }
 CF_EOF
 cf_save_LIBS="$LIBS"
@@ -2338,7 +2360,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_DATAONLY version: 6 updated: 2003/02/02 01:41:46
+dnl CF_LINK_DATAONLY version: 8 updated: 2006/12/16 12:33:30
 dnl ----------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
 dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
@@ -2363,7 +2385,7 @@ EOF
 int	testfunc()
 {
 #if defined(NeXT)
-	exit(1);	/* I'm told this linker is broken */
+	${cf_cv_main_return:-return}(1);	/* I'm told this linker is broken */
 #else
 	extern int testdata[[3]];
 	return testdata[[0]] == 123
@@ -2384,7 +2406,7 @@ EOF
 	int main()
 	{
 		extern int testfunc();
-		exit (!testfunc());
+		${cf_cv_main_return:-return} (!testfunc());
 	}
 	],
 	[cf_cv_link_dataonly=yes],
@@ -2401,7 +2423,7 @@ fi
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_FUNCS version: 5 updated: 2003/02/02 01:41:46
+dnl CF_LINK_FUNCS version: 7 updated: 2006/12/16 12:33:30
 dnl -------------
 dnl Most Unix systems have both link and symlink, a few don't have symlink.
 dnl A few non-Unix systems implement symlink, but not link.
@@ -2443,7 +2465,7 @@ int main()
 #else
 	remove(dst);
 #endif
-	exit (fail);
+	${cf_cv_main_return:-return} (fail);
 }
 			],[
 			cf_cv_link_funcs="$cf_cv_link_funcs $cf_func"
@@ -2456,6 +2478,18 @@ int main()
 	test "$ac_cv_func_link"    = yes && AC_DEFINE(HAVE_LINK)
 	test "$ac_cv_func_symlink" = yes && AC_DEFINE(HAVE_SYMLINK)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_MAIN_RETURN version: 1 updated: 2006/12/10 09:51:54
+dnl --------------
+dnl Check if a return from main to the shell actually returns the same exit
+dnl code.  This is true for almost any POSIX environment.
+dnl
+dnl Some very old environments did not flush stdout, etc., on an exit.  That
+dnl would be a useful case to test for also.
+AC_DEFUN([CF_MAIN_RETURN],
+[
+cf_cv_main_return=return
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_MAKEFLAGS version: 12 updated: 2006/10/21 08:27:03
@@ -3108,7 +3142,7 @@ fi
 test "$cf_cv_mixedcase" = yes && AC_DEFINE(MIXEDCASE_FILENAMES)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MKSTEMP version: 3 updated: 2001/11/08 20:59:59
+dnl CF_MKSTEMP version: 5 updated: 2006/12/16 12:33:30
 dnl ----------
 dnl Check for a working mkstemp.  This creates two files, checks that they are
 dnl successfully created and distinct (AmigaOS apparently fails on the last).
@@ -3146,7 +3180,7 @@ int main()
 	if (result == 0
 	 && !strcmp(name[0], name[1]))
 		result = 1;
-	exit(result);
+	${cf_cv_main_return:-return}(result);
 }
 ],[cf_cv_func_mkstemp=yes
 ],[cf_cv_func_mkstemp=no
@@ -3180,6 +3214,35 @@ if test "${with_abi_version+set}" != set; then
 		;;
 	esac
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_NO_LEAKS_OPTION version: 4 updated: 2006/12/16 14:24:05
+dnl ------------------
+dnl see CF_WITH_NO_LEAKS
+AC_DEFUN([CF_NO_LEAKS_OPTION],[
+AC_MSG_CHECKING(if you want to use $1 for testing)
+AC_ARG_WITH($1,
+	[$2],
+	[AC_DEFINE($3)ifelse([$4],,[
+	 $4
+])
+	: ${with_cflags:=-g}
+	: ${with_no_leaks:=yes}
+	 with_$1=yes],
+	[with_$1=])
+AC_MSG_RESULT(${with_$1:-no})
+
+case .$with_cflags in #(vi
+.*-g*)
+	case .$CFLAGS in #(vi
+	.*-g*) #(vi
+		;;
+	*)
+		CF_ADD_CFLAGS([-g])
+		;;
+	esac
+	;;
+esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_NUMBER_SYNTAX version: 1 updated: 2003/09/20 18:12:49
@@ -3415,7 +3478,7 @@ AC_PROG_AWK
 test -z "$AWK" && AC_MSG_ERROR(No awk program found)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_CC_C_O version: 1 updated: 2004/02/14 15:00:43
+dnl CF_PROG_CC_C_O version: 2 updated: 2006/12/16 15:55:46
 dnl --------------
 dnl Analogous to AC_PROG_CC_C_O, but more useful: tests only $CC, ensures that
 dnl the output file can be renamed, and allows for a shell variable that can
@@ -3432,7 +3495,7 @@ cat > conftest.$ac_ext <<CF_EOF
 #include <stdio.h>
 int main()
 {
-	return 0;
+	${cf_cv_main_return:-return}(0);
 }
 CF_EOF
 # We do the test twice because some compilers refuse to overwrite an
@@ -4348,7 +4411,7 @@ top_builddir=`pwd`
 AC_SUBST(top_builddir)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPEOF_CHTYPE version: 6 updated: 2005/06/25 16:16:34
+dnl CF_TYPEOF_CHTYPE version: 8 updated: 2006/12/16 12:33:30
 dnl ----------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
@@ -4386,7 +4449,7 @@ int main()
 		fputs(result, fp);
 		fclose(fp);
 	}
-	exit(0);
+	${cf_cv_main_return:-return}(0);
 }
 		],
 		[cf_cv_typeof_chtype=`cat cf_test.out`],
@@ -4517,42 +4580,41 @@ $1_ABI=$cf_cv_abi_version
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_DBMALLOC version: 4 updated: 2004/02/28 05:49:27
+dnl CF_WITH_DBMALLOC version: 6 updated: 2006/12/16 14:24:05
 dnl ----------------
 dnl Configure-option for dbmalloc.  The optional parameter is used to override
 dnl the updating of $LIBS, e.g., to avoid conflict with subsequent tests.
 AC_DEFUN([CF_WITH_DBMALLOC],[
-AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
-AC_ARG_WITH(dbmalloc,
-	[  --with-dbmalloc         use Conor Cahill's dbmalloc library],
-	[with_dbmalloc=$withval],
-	[with_dbmalloc=no])
-AC_MSG_RESULT($with_dbmalloc)
+CF_NO_LEAKS_OPTION(dbmalloc,
+	[  --with-dbmalloc         test: use Conor Cahill's dbmalloc library],
+	[USE_DBMALLOC])
+
 if test "$with_dbmalloc" = yes ; then
 	AC_CHECK_HEADER(dbmalloc.h,
 		[AC_CHECK_LIB(dbmalloc,[debug_malloc]ifelse($1,,[],[,$1]))])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_DMALLOC version: 4 updated: 2004/02/28 05:49:27
+dnl CF_WITH_DMALLOC version: 6 updated: 2006/12/16 14:24:05
 dnl ---------------
 dnl Configure-option for dmalloc.  The optional parameter is used to override
 dnl the updating of $LIBS, e.g., to avoid conflict with subsequent tests.
 AC_DEFUN([CF_WITH_DMALLOC],[
-AC_MSG_CHECKING(if you want to link with dmalloc for testing)
-AC_ARG_WITH(dmalloc,
-	[  --with-dmalloc          use Gray Watson's dmalloc library],
-	[with_dmalloc=$withval],
-	[with_dmalloc=no])
-AC_MSG_RESULT($with_dmalloc)
+CF_NO_LEAKS_OPTION(dmalloc,
+	[  --with-dmalloc          test: use Gray Watson's dmalloc library],
+	[USE_DMALLOC])
+
 if test "$with_dmalloc" = yes ; then
 	AC_CHECK_HEADER(dmalloc.h,
 		[AC_CHECK_LIB(dmalloc,[dmalloc_debug]ifelse($1,,[],[,$1]))])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_GPM version: 1 updated: 2005/06/25 15:47:45
+dnl CF_WITH_GPM version: 5 updated: 2006/12/16 19:12:43
 dnl -----------
+dnl
+dnl The option parameter (if neither yes/no) is assumed to be the name of
+dnl the gpm library, e.g., for dynamic loading.
 AC_DEFUN([CF_WITH_GPM],
 [
 AC_MSG_CHECKING(if you want to link with the GPM mouse library)
@@ -4561,20 +4623,21 @@ AC_ARG_WITH(gpm,
 	[with_gpm=$withval],
 	[with_gpm=maybe])
 AC_MSG_RESULT($with_gpm)
+
 if test "$with_gpm" != no ; then
-	AC_CHECK_LIB(gpm,Gpm_Open,[
-		AC_CHECK_HEADER(gpm.h,[
-			AC_DEFINE(HAVE_GPM_H)
-			with_gpm=yes
-		],[
-			if test "$with_gpm" = yes ; then
-				AC_ERROR(Cannot find GPM header)
-			fi
+	AC_CHECK_HEADER(gpm.h,[
+		AC_DEFINE(HAVE_GPM_H)
+		if test "$with_gpm" != yes && test "$with_gpm" != maybe ; then
+			CF_VERBOSE(assuming we really have GPM library)
+			AC_DEFINE(HAVE_LIBGPM)
+		else
+			AC_CHECK_LIB(gpm,Gpm_Open,[:],[
+				AC_ERROR(Cannot link with GPM library)
+		fi
+		with_gpm=yes
 		])
 	],[
-		if test "$with_gpm" = yes ; then
-			AC_ERROR(Cannot link with GPM library)
-		fi
+		AC_MSG_WARN(Cannot find GPM header)
 		with_gpm=no
 	])
 fi
@@ -4823,6 +4886,14 @@ AC_ARG_WITH(sysmouse,
 AC_MSG_RESULT($cf_with_sysmouse)
 test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_VALGRIND version: 1 updated: 2006/12/14 18:00:21
+dnl ----------------
+AC_DEFUN([CF_WITH_VALGRIND],[
+CF_NO_LEAKS_OPTION(valgrind,
+	[  --with-valgrind         test: use valgrind],
+	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_XOPEN_SOURCE version: 24 updated: 2006/04/02 16:41:09

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -51,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.77 2005/11/26 15:28:47 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.78 2006/12/16 19:17:01 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -908,6 +908,8 @@ _nc_panic_mode(char ch)
 NCURSES_EXPORT(void)
 _nc_comp_scan_leaks(void)
 {
-    FreeAndNull(pushname);
+    if (pushname != 0) {
+	FreeAndNull(pushname);
+    }
 }
 #endif

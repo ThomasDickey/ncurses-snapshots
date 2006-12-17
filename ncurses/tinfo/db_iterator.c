@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: db_iterator.c,v 1.4 2006/10/14 20:12:28 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.5 2006/12/16 19:06:42 tom Exp $")
 
 static bool have_tic_directory = FALSE;
 static bool keep_tic_directory = FALSE;
@@ -91,7 +91,9 @@ static int size_db_list;
 NCURSES_EXPORT(void)
 _nc_last_db(void)
 {
-    FreeAndNull(this_db_list);
+    if (this_db_list != 0) {
+	FreeAndNull(this_db_list);
+    }
     size_db_list = 0;
 }
 
