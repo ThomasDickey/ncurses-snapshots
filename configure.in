@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.377 2006/12/10 01:11:26 tom Exp $
+dnl $Id: configure.in,v 1.383 2006/12/17 01:26:06 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.377 $)
+AC_REVISION($Revision: 1.383 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -281,12 +281,9 @@ AC_ARG_WITH(termlib,
 AC_MSG_RESULT($with_termlib)
 
 ### Checks for special libraries, must be done up-front.
-CF_WITH_DBMALLOC
-CF_WITH_DMALLOC
-
 SHLIB_LIST=""
 CF_WITH_GPM
-if test "$with_gpm" = yes ; then
+if test "$with_gpm" != no ; then
 	AC_MSG_CHECKING(if you want to load GPM dynamically)
 	AC_ARG_WITH(dlsym,
 		[  --without-dlsym         do not use dlsym() to load GPM dynamically],
@@ -295,7 +292,12 @@ if test "$with_gpm" = yes ; then
 	AC_MSG_RESULT($with_dlsym)
 	if test "$with_dlsym" = yes ; then
 		CF_FUNC_DLSYM
-		CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open(0,0)) Gpm_Close();],gpm)
+		if test "$with_gpm" != yes ; then
+			CF_VERBOSE(assuming soname for gpm is $with_gpm)
+			cf_cv_gpm_soname="$with_gpm"
+		else
+			CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open(0,0)) Gpm_Close();],gpm)
+		fi
 		test "$cf_cv_gpm_soname" != "unknown" && AC_DEFINE_UNQUOTED(LIBGPM_SONAME,"$cf_cv_gpm_soname")
 		SHLIB_LIST="-ldl $SHLIB_LIST"
 	else
@@ -460,7 +462,7 @@ int main() {
 	char *s = malloc(n);
 	if (s != 0)
 		s[0] = s[n-1] = 0;
-	exit(s == 0);
+	${cf_cv_main_return:-return}(s == 0);
 }],
 	[with_big_core=yes],
 	[with_big_core=no],
@@ -522,9 +524,9 @@ AC_ARG_ENABLE(home-terminfo,
 AC_MSG_RESULT($with_home_terminfo)
 test "$with_home_terminfo" = "yes" && AC_DEFINE(USE_HOME_TERMINFO)
 
-AC_MSG_CHECKING(if you want to use restrict environment when running as root)
+AC_MSG_CHECKING(if you want to use restricted environment when running as root)
 AC_ARG_ENABLE(root-environ,
-	[  --disable-root-environ  limit environment when running as root],
+	[  --disable-root-environ  restrict environment when running as root],
 	[with_root_environ=$enableval],
 	[with_root_environ=yes])
 AC_MSG_RESULT($with_root_environ)
@@ -682,7 +684,7 @@ AC_SUBST(cf_cv_enable_lp64)
 CF_LARGEFILE
 
 ###   use option --disable-tparm-varargs to make tparm() conform to X/Open 
-AC_MSG_CHECKING(if you want tparm to use X/Open fixed-parameter list)
+AC_MSG_CHECKING(if you want tparm not to use X/Open fixed-parameter list)
 AC_ARG_ENABLE(tparm-varargs,
 	[  --disable-tparm-varargs compile tparm() without varargs interface],
 	[with_tparm_varargs=$enableval],
@@ -998,9 +1000,7 @@ then
 fi
 
 ###	use option --disable-leaks to suppress "permanent" leaks, for testing
-AC_ARG_ENABLE(leaks,
-	[  --disable-leaks         test: suppress permanent memory-leaks],
-	[test "$enableval" = no && AC_DEFINE(NO_LEAKS)])
+CF_DISABLE_LEAKS
 AC_DEFINE(HAVE_NC_ALLOC_H)
 
 ###	use option --enable-expanded to generate certain macros as functions
@@ -1174,7 +1174,7 @@ if test "$with_hashed_db" != no ; then
 fi
 
 dnl We'll do our own -g libraries, unless the user's overridden via $CFLAGS
-if test -z "$cf_user_CFLAGS" ; then
+if test -z "$cf_user_CFLAGS" && test "$with_no_leaks" = no ; then
 	CF_STRIP_G_OPT(CFLAGS)
 	CF_STRIP_G_OPT(CXXFLAGS)
 fi
