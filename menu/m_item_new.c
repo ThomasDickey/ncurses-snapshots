@@ -39,10 +39,12 @@
 #include "menu.priv.h"
 
 #if USE_WIDEC_SUPPORT
+#if HAVE_WCTYPE_H
 #include <wctype.h>
 #endif
+#endif
 
-MODULE_ID("$Id: m_item_new.c,v 1.26 2006/06/17 17:51:38 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.27 2006/12/17 19:47:09 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
