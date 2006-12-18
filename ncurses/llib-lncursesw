@@ -2718,7 +2718,7 @@ int	_nc_InsCharCost(
 
 #undef _nc_UpdateAttrs
 void	_nc_UpdateAttrs(
-		chtype	c)
+		cchar_t	c)
 		{ /* void */ }
 
 /* ./base/legacy_coding.c */

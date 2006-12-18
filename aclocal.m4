@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.406 2006/12/17 00:13:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.407 2006/12/17 16:12:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4610,7 +4610,7 @@ if test "$with_dmalloc" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_GPM version: 5 updated: 2006/12/16 19:12:43
+dnl CF_WITH_GPM version: 6 updated: 2006/12/17 11:12:09
 dnl -----------
 dnl
 dnl The option parameter (if neither yes/no) is assumed to be the name of
@@ -4637,7 +4637,7 @@ if test "$with_gpm" != no ; then
 		with_gpm=yes
 		])
 	],[
-		AC_MSG_WARN(Cannot find GPM header)
+		test "$with_gpm" != maybe && AC_MSG_WARN(Cannot find GPM header)
 		with_gpm=no
 	])
 fi

@@ -4408,7 +4408,7 @@ fi
 
 else
 
-		{ echo "$as_me:4411: WARNING: Cannot find GPM header" >&5
+		test "$with_gpm" != maybe && { echo "$as_me:4411: WARNING: Cannot find GPM header" >&5
 echo "$as_me: WARNING: Cannot find GPM header" >&2;}
 		with_gpm=no
 
