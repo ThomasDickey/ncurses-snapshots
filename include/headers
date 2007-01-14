@@ -1,5 +1,6 @@
+# $Id: headers,v 1.8 2007/01/13 23:31:33 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2001,2006 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -26,11 +27,16 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996
+# Author: Thomas E. Dickey	1996-on
 #
 term.h
 curses.h
 unctrl.h
 termcap.h
 $(srcdir)/ncurses_dll.h
+@ ticlib
+tic.h
+term_entry.h
+nc_tparm.h
+
 # vile:makemode
