@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.35 2007/04/07 17:07:26 tom Exp $
+// $Id: etip.h.in,v 1.36 2007/04/07 18:56:32 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -47,6 +47,10 @@
 
 #ifndef HAVE_GPP_BUILTIN_H
 #define HAVE_GPP_BUILTIN_H 0
+#endif
+
+#ifndef HAVE_IOSTREAM
+#define HAVE_IOSTREAM 0
 #endif
 
 #ifndef HAVE_TYPEINFO
@@ -323,7 +327,13 @@ public:
 };
 
 #if !((defined(__GNUG__) && defined(__EXCEPTIONS)) || defined(__SUNPRO_CC))
-#  include <iostream.h>
+#  if HAVE_IOSTREAM
+#     include <iostream>
+using std::cerr;
+using std::endl;
+#  else
+#     include <iostream.h>
+#  endif
    extern "C" void exit(int);
 #endif
 
