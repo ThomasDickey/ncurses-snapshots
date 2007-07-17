@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.308 $
-#	$Date: 2007/07/14 19:17:05 $
+#	$Revision: 1.306 $
+#	$Date: 2007/07/14 18:04:12 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2691,9 +2691,8 @@ putty|PuTTY terminal emulator,
 vt100-putty|Reset PuTTY to pure vt100,
 	rs2=\E<\E["p\Ec\E[?3l\E]R\E[40"p\E[61"p\E[50;1;2"p,
 	use=vt100,
-# palette is hardcoded...
 putty-256color|PuTTY 0.58 with xterm 256-colors,
-	initc@, use=xterm+256color, use=putty,
+	use=xterm+256color, use=putty,
 
 # One of the keyboard selections is "VT100+".
 # pterm (the X11 port) uses shifted F1-F10 as F11-F20
@@ -3159,8 +3158,6 @@ xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1,
 xterm-16color|xterm with 16 colors like aixterm,
 	use=ibm+16color, use=xterm-new,
 
-# This is a compile-time feature of XFree86 xterm beginning with
-# patch #111 (1999/7/10) -TD
 xterm+256color|xterm 256-color feature,
 	ccc,
 	colors#256, pairs#32767,
@@ -3169,18 +3166,6 @@ xterm+256color|xterm 256-color feature,
 	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5;%p1%d%;m,
 	setb@, setf@,
 
-# This is a compile-time feature of XFree86 xterm beginning with
-# patch #115 (1999/9/18) -TD
-#
-# Note that the escape sequences used are the same as for 256-colors - xterm
-# has a different table of default color resource values.  If built for
-# 256-colors, it can still handle an 88-color palette by using the initc
-# capability.
-#
-# At this time (2007/7/14), except for rxvt 2.7.x, none of the other terminals
-# which support the xterm+256color feature support the associated initc
-# capability.  So it is cancelled in the entries which use this and/or the
-# xterm+256color block.
 xterm+88color|xterm 88-color feature,
 	colors#88, pairs#7744, use=xterm+256color,
 
@@ -3463,9 +3448,8 @@ gnome-fc5|GNOME Terminal,
 gnome|GNOME Terminal,
 	use=gnome-fc5,
 
-# palette is hardcoded...
 gnome-256color|GNOME Terminal with xterm 256-colors,
-	initc@, use=xterm+256color, use=gnome,
+	use=xterm+256color, use=gnome,
 
 # XFCE Terminal 0.2.5.4beta2
 #
@@ -3567,10 +3551,6 @@ konsole-16color|klone of xterm-16color,
 # make a default entry for konsole
 konsole|KDE console window,
 	use=konsole-xf4x,
-
-# palette is hardcoded...
-konsole-256color|KDE console window with xterm 256-colors,
-	initc@, use=xterm+256color, use=konsole,
 
 # Based on mlterm 2.9.2's mlterm.ti, with corrections/additions from reading
 # the source code and running tack -TD
@@ -21509,7 +21489,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2007-07-14
 #	* restore section of pre-ncurses-4.2 changelog to fix attribution -TD
-#	* add konsole-256color entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
