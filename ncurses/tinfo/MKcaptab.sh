@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKcaptab.sh,v 1.3 2007/07/28 22:14:57 tom Exp $
+# $Id: MKcaptab.sh,v 1.6 2007/08/12 00:26:40 tom Exp $
 AWK=${1-awk}
 OPT1=${2-0}
 OPT2=${3-tinfo/MKcaptab.awk}
@@ -39,25 +39,90 @@ cat <<'EOF'
  *
  */
 
-#include <ncurses_cfg.h>
 #include <curses.priv.h>
 #include <tic.h>
-#include <term.h>
+#include <hashsize.h>
 
 EOF
 
-./make_hash 1 info <$DATA
-./make_hash 3 cap  <$DATA
+./make_hash 1 info $OPT1 <$DATA
+./make_hash 3 cap  $OPT1 <$DATA
 
 $AWK -f $OPT2 bigstrings=$OPT1 tablename=capalias <$DATA 
 
 $AWK -f $OPT2 bigstrings=$OPT1 tablename=infoalias <$DATA
 
-cat <<'EOF'
+cat <<EOF
+
+#if $OPT1
+static void
+next_string(const char *strings, unsigned *offset)
+{
+	*offset += strlen(strings + *offset) + 1;
+}
+
+static const struct name_table_entry *
+_nc_build_names(struct name_table_entry **actual,
+		const name_table_data *source,
+		const char *strings)
+{
+	if (*actual == 0) {
+		*actual = typeCalloc(struct name_table_entry, CAPTABSIZE);
+		if (*actual != 0) {
+			unsigned n;
+			unsigned len = 0;
+			for (n = 0; n < CAPTABSIZE; ++n) {
+				(*actual)[n].nte_name = strings + len;
+				(*actual)[n].nte_type = source[n].nte_type;
+				(*actual)[n].nte_index = source[n].nte_index;
+				(*actual)[n].nte_link = source[n].nte_link;
+				next_string(strings, &len);
+			}
+		}
+	}
+	return *actual;
+}
+
+#define add_alias(field) \\
+	if (source[n].field >= 0) { \\
+		(*actual)[n].field = strings + source[n].field; \\
+	}
+
+static const struct alias *
+_nc_build_alias(struct alias **actual,
+		const alias_table_data *source,
+		const char *strings,
+		unsigned tablesize)
+{
+	if (*actual == 0) {
+		*actual = typeCalloc(struct alias, tablesize);
+		if (*actual != 0) {
+			unsigned n;
+			for (n = 0; n < tablesize; ++n) {
+				add_alias(from);
+				add_alias(to);
+				add_alias(source);
+			}
+		}
+	}
+	return *actual;
+}
+
+#define build_names(root) _nc_build_names(&_nc_##root##_table, \\
+					  root##_names_data, \\
+					  root##_names_text)
+#define build_alias(root) _nc_build_alias(_nc_##root##alias_table, \\
+					  root##alias_data, \\
+					  root##alias_text, \\
+					  SIZEOF(root##alias_data))
+#else
+#define build_names(root) _nc_ ## root ## _table
+#define build_alias(root) _nc_ ## root ## alias_table
+#endif
 
 NCURSES_EXPORT(const struct name_table_entry *) _nc_get_table (bool termcap)
 {
-	return termcap ? _nc_cap_table: _nc_info_table ;
+	return termcap ? build_names(cap) : build_names(info) ;
 }
 
 NCURSES_EXPORT(const short *) _nc_get_hash_table (bool termcap)
@@ -67,6 +132,6 @@ NCURSES_EXPORT(const short *) _nc_get_hash_table (bool termcap)
 
 NCURSES_EXPORT(const struct alias *) _nc_get_alias_table (bool termcap)
 {
-	return termcap ? _nc_capalias_table: _nc_infoalias_table ;
+	return termcap ? build_alias(cap) : build_alias(info) ;
 }
 EOF
