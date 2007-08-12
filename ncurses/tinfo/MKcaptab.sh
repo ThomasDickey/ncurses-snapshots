@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKcaptab.sh,v 1.6 2007/08/12 00:26:40 tom Exp $
+# $Id: MKcaptab.sh,v 1.8 2007/08/12 13:13:51 tom Exp $
 AWK=${1-awk}
 OPT1=${2-0}
 OPT2=${3-tinfo/MKcaptab.awk}
@@ -95,7 +95,7 @@ _nc_build_alias(struct alias **actual,
 		unsigned tablesize)
 {
 	if (*actual == 0) {
-		*actual = typeCalloc(struct alias, tablesize);
+		*actual = typeCalloc(struct alias, tablesize + 1);
 		if (*actual != 0) {
 			unsigned n;
 			for (n = 0; n < tablesize; ++n) {
@@ -111,7 +111,7 @@ _nc_build_alias(struct alias **actual,
 #define build_names(root) _nc_build_names(&_nc_##root##_table, \\
 					  root##_names_data, \\
 					  root##_names_text)
-#define build_alias(root) _nc_build_alias(_nc_##root##alias_table, \\
+#define build_alias(root) _nc_build_alias(&_nc_##root##alias_table, \\
 					  root##alias_data, \\
 					  root##alias_text, \\
 					  SIZEOF(root##alias_data))
@@ -134,4 +134,16 @@ NCURSES_EXPORT(const struct alias *) _nc_get_alias_table (bool termcap)
 {
 	return termcap ? build_alias(cap) : build_alias(info) ;
 }
+
+#if NO_LEAKS
+NCURSES_EXPORT(void) _nc_comp_captab_leaks(void)
+{
+#if $OPT1
+	FreeIfNeeded(_nc_cap_table);
+	FreeIfNeeded(_nc_info_table);
+	FreeIfNeeded(_nc_capalias_table);
+	FreeIfNeeded(_nc_infoalias_table);
+#endif
+}
+#endif /* NO_LEAKS */
 EOF
