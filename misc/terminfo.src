@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.310 $
-#	$Date: 2007/08/18 22:27:38 $
+#	$Revision: 1.309 $
+#	$Date: 2007/08/18 22:20:05 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -325,7 +325,7 @@ vanilla|dumb tty,
 # for compatibility with xterm -TD
 9term|Plan9 terminal emulator for X,
 	am,
-	OTnl=^J, bel=^G, cud1=^J,
+	bel=^G, cud1=^J, ind=^J,
 
 #### ANSI.SYS/ISO 6429/ECMA-48 Capabilities
 #
