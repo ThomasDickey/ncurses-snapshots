@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.24 2007/12/22 23:20:31 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.26 2007/12/29 21:06:57 tom Exp $")
 
 #define stolen_lines (screen_lines - SP->_lines_avail)
 
@@ -336,24 +336,63 @@ resize_term(int ToLines, int ToCols)
 NCURSES_EXPORT(int)
 resizeterm(int ToLines, int ToCols)
 {
+    int FromLines = screen_lines;
+    int FromCols = screen_columns;
     int result = ERR;
 
     T((T_CALLED("resizeterm(%d,%d) old(%d,%d)"),
        ToLines, ToCols,
-       screen_lines, screen_columns));
+       FromLines, FromCols));
 
     if (SP != 0) {
 	result = OK;
 	SP->_sig_winch = FALSE;
 
 	if (is_term_resized(ToLines, ToCols)) {
+#if USE_SIGWINCH
+	    ripoff_t *rop;
+	    bool slk_visible = (SP != 0
+				&& SP->_slk != 0
+				&& !(SP->_slk->hidden));
+
+	    if (slk_visible) {
+		slk_clear();
+	    }
+#endif
+	    result = resize_term(ToLines, ToCols);
 
 #if USE_SIGWINCH
 	    ungetch(KEY_RESIZE);	/* so application can know this */
 	    clearok(curscr, TRUE);	/* screen contents are unknown */
-#endif
 
-	    result = resize_term(ToLines, ToCols);
+	    /* ripped-off lines are a special case: if we did not lengthen
+	     * them, we haven't moved them either.  repaint them, too.
+	     */
+	    for (rop = ripoff_stack; (rop - ripoff_stack) < N_RIPS; rop++) {
+		if (rop->win != stdscr
+		    && rop->win != 0
+		    && rop->line < 0) {
+
+		    if (FromCols == ToCols)
+			mvwin(rop->win,
+			      getbegy(rop->win) + (ToLines - FromLines),
+			      0);
+
+		    if (rop->hook != _nc_slk_initialize) {
+			touchwin(rop->win);
+			wnoutrefresh(rop->win);
+		    }
+		}
+	    }
+
+	    /* soft-keys are a special case: we _know_ how to repaint them */
+	    if (slk_visible) {
+		slk_restore();
+		slk_touch();
+
+		slk_refresh();
+	    }
+#endif
 	}
     }
 
