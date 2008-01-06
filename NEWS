@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.               --
+-- Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.               --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
 -- copy of this software and associated documentation files (the             --
@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1192 2007/12/29 20:26:14 tom Exp $
+-- $Id: NEWS,v 1.1195 2008/01/06 00:01:08 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,7 +45,13 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
-20071229
+20080105
+	+ several improvements to terminfo entries based on xterm #230 -TD
+	+ modify MKlib_gen.sh to handle keyname/key_name prototypes, so the
+	  "link_test" builds properly.
+	+ fix for toe command-line options -u/-U to ensure filename is given.
+	+ fix allocation-size for command-line parsing in infocmp from 20070728
+	  (report by Miroslav Lichvar)
 	+ improve resizeterm() by moving ripped-off lines, and repainting the
 	  soft-keys (report by Katarina Machalkova)
 	+ add clarification in wclear's manpage noting that the screen will be
