@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.106 2008/02/03 00:13:03 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.108 2008/02/03 18:50:27 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -226,13 +226,8 @@ _nc_build_wch(WINDOW *win, ARG_CH_T ch)
 	 * Try the latter.
 	 */
 	TR(TRACE_VIRTPUT, ("Alert! mbrtowc returns error"));
-	if (is8bits(CharOf(CHDEREF(ch)))) {
-	    /* handle this with unctrl() */
-	    WINDOW_EXT(win, addch_used) = 0;
-	} else {
-	    buffer[0] = CharOf(CHDEREF(ch));
-	    WINDOW_EXT(win, addch_used) = 1;
-	}
+	/* handle this with unctrl() */
+	WINDOW_EXT(win, addch_used) = 0;
     }
     return len;
 }
@@ -267,7 +262,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	if (WINDOW_EXT(win, addch_used) != 0 || !Charable(ch)) {
 	    int len = _nc_build_wch(win, CHREF(ch));
 
-	    if (len == -1) {
+	    if (len >= -1) {
 		/* handle EILSEQ */
 		if (is8bits(CharOf(ch))) {
 		    const char *s = unctrl((chtype) CharOf(ch));
@@ -275,6 +270,8 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 			return waddstr(win, s);
 		    }
 		}
+		if (len == -1)
+		    return waddch(win, ' ');
 	    } else {
 		return OK;
 	    }
