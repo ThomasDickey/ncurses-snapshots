@@ -1,4 +1,4 @@
-# $Id: MKunctrl.awk,v 1.19 2008/02/03 00:55:15 tom Exp $
+# $Id: MKunctrl.awk,v 1.21 2008/02/03 20:24:30 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -35,6 +35,12 @@ BEGIN	{
 		print ""
 		print "#include <curses.priv.h>"
 		print "#include <ctype.h>"
+		print ""
+		print "#if USE_WIDEC_SUPPORT"
+		print "#if HAVE_WCTYPE_H"
+		print "#include <wctype.h>"
+		print "#endif"
+		print "#endif"
 		print ""
 		print "#undef unctrl"
 		print ""
@@ -156,12 +162,16 @@ END	{
 		print  "\t\t && ((SP != 0)"
 		print  "\t\t  && ((SP->_legacy_coding > 0)"
 		print  "\t\t   || (SP->_legacy_coding == 0"
-		print  "\t\t       && isprint(check)))))"
+		print  "\t\t       && (isprint(check) || iswprint(check))))))"
 		printf "\t\t\tresult = %s_c1[check - 128];\n", stringname;
 		print  "\t\telse"
 		print  "#else"
 		print  "\t\tif ((check >= 160)"
-		print  "\t\t && (check < 256))"
+		print  "\t\t && (check < 256)"
+		print  "\t\t && ((SP != 0)"
+		print  "\t\t  && ((SP->_legacy_coding > 0)"
+		print  "\t\t   || (SP->_legacy_coding == 0"
+		print  "\t\t       && isprint(check)))))"
 		printf "\t\t\tresult = %s_c1[check - 128];\n", stringname;
 		print  "\t\telse"
 		print  "#endif /* USE_WIDEC_SUPPORT */"
