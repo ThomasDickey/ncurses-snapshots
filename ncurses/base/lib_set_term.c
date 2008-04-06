@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.105 2008/03/29 22:33:19 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.106 2008/03/29 22:47:24 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -66,6 +66,15 @@ set_term(SCREEN *screenp)
 	stdscr = SP->_stdscr;
 	COLORS = SP->_color_count;
 	COLOR_PAIRS = SP->_pair_count;
+#endif
+    } else {
+	set_curterm(0);
+#if !USE_REENTRANT
+	curscr = 0;
+	newscr = 0;
+	stdscr = 0;
+	COLORS = 0;
+	COLOR_PAIRS = 0;
 #endif
     }
 
