@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.330 $
-#	$Date: 2008/06/28 17:22:46 $
+#	$Revision: 1.329 $
+#	$Date: 2008/06/28 17:13:06 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4411,8 +4411,6 @@ screen.rxvt|screen in rxvt,
 screen.linux|screen in linux console,
 	bw,
 	kbs=\177, kcbt@, use=screen+fkeys, use=screen,
-screen.mlterm|screen in mlterm,
-	use=screen+fkeys, use=mlterm,
 
 screen-w|VT 100/ANSI X3.64 virtual terminal with 132 cols,
 	cols#132, use=screen,
@@ -21686,7 +21684,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add screen+fkeys (prompted by Debian # 478094) -TD
 #
 # 2008-06-28
-#	* add screen.mlterm -TD
 #	* improve mlterm and mlterm+pcfkeys -TD
 #
 # The following sets edit modes for GNU EMACS.
