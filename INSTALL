@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.134 2008/11/01 20:44:13 tom Exp $
+-- $Id: INSTALL,v 1.135 2008/11/02 21:13:51 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1001,7 +1001,7 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     you may encounter when building a system with different versions of
     ncurses:
 
-    5.7 (November 1, 2008)
+    5.7 (November 2, 2008)
 	Interface changes:
 
 	+ generate linkable stubs for some macros:
