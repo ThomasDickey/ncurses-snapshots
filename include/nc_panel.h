@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: nc_panel.h,v 1.5.1.1 2008/11/16 00:19:59 juergen Exp $
+ * $Id: nc_panel.h,v 1.5 2008/08/04 18:26:46 tom Exp $
  *
  *	nc_panel.h
  *
@@ -59,14 +59,8 @@ struct panelhook {
 #endif
 };
 
-
 /* Retrieve the panelhook of the current screen */
 extern NCURSES_EXPORT(struct panelhook*) _nc_panelhook (void);
-
-struct screen; /* Forward declaration */
-/* Retrieve the panelhook of the specified screen */
-extern NCURSES_EXPORT(struct panelhook*) 
-  NC_SNAME(_nc_panelhook) (struct screen*);
 
 #ifdef __cplusplus
 }

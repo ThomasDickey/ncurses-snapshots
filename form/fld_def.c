@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.36.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.36 2007/10/13 19:29:58 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -121,7 +121,7 @@ _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
 |   Function      :  TypeArgument *_nc_Copy_Argument(const FIELDTYPE *typ,
-|                                                    TypeArgument *argp,
+|                                                    const TypeArgument *argp,
 |                                                    int *err )
 |
 |   Description   :  Create a copy of an argument structure for the specified
@@ -131,7 +131,7 @@ _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 |                    In case of an error in *err an error counter is increased.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(TypeArgument *)
-_nc_Copy_Argument(const FIELDTYPE *typ, TypeArgument *argp, int *err)
+_nc_Copy_Argument(const FIELDTYPE *typ, const TypeArgument *argp, int *err)
 {
   TypeArgument *res = (TypeArgument *)0;
   TypeArgument *p;

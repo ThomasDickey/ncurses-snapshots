@@ -38,22 +38,16 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatrset.c,v 1.7.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_slkatrset.c,v 1.7 2005/01/08 21:46:47 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_attrset)(SCREEN *sp, const chtype attr)
+slk_attrset(const chtype attr)
 {
-    T((T_CALLED("slk_attrset(%p,%s)"), sp, _traceattr(attr)));
+    T((T_CALLED("slk_attrset(%s)"), _traceattr(attr)));
 
-    if (sp != 0 && sp->_slk != 0) {
-	SetAttr(sp->_slk->attr, attr);
+    if (SP != 0 && SP->_slk != 0) {
+	SetAttr(SP->_slk->attr, attr);
 	returnCode(OK);
     } else
 	returnCode(ERR);
-}
-
-NCURSES_EXPORT(int)
-slk_attrset (const chtype attr)
-{
-    return NC_SNAME(slk_attrset)(CURRENT_SCREEN, attr);
 }

@@ -38,27 +38,21 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatrof.c,v 1.8.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_slkatrof.c,v 1.8 2005/01/08 23:01:32 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_attroff)(SCREEN *sp, const chtype attr)
+slk_attroff(const chtype attr)
 {
-    T((T_CALLED("slk_attroff(%p,%s)"), sp, _traceattr(attr)));
+    T((T_CALLED("slk_attroff(%s)"), _traceattr(attr)));
 
-    if (sp != 0 && sp->_slk != 0) {
-	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(sp->_slk->attr))));
-	RemAttr(sp->_slk->attr, attr);
+    if (SP != 0 && SP->_slk != 0) {
+	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP->_slk->attr))));
+	RemAttr(SP->_slk->attr, attr);
 	if ((attr & A_COLOR) != 0) {
-	    SetPair(sp->_slk->attr, 0);
+	    SetPair(SP->_slk->attr, 0);
 	}
-	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(sp->_slk->attr))));
+	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
 	returnCode(OK);
     } else
 	returnCode(ERR);
-}
-
-NCURSES_EXPORT(int)
-slk_attroff (const chtype attr)
-{
-    return NC_SNAME(slk_attroff)(CURRENT_SCREEN, attr);
 }

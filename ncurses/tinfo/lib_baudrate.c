@@ -38,6 +38,7 @@
  */
 
 #include <curses.priv.h>
+#include <term.h>		/* cur_term, pad_char */
 #include <termcap.h>		/* ospeed */
 #if defined(__FreeBSD__)
 #include <sys/param.h>
@@ -79,7 +80,7 @@
 #undef USE_OLD_TTY
 #endif /* USE_OLD_TTY */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.27.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.27 2008/06/28 15:19:24 tom Exp $")
 
 /*
  *	int
@@ -194,11 +195,11 @@ _nc_ospeed(int BaudRate)
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(baudrate)(SCREEN *sp)
+baudrate(void)
 {
     int result;
 
-    T((T_CALLED("baudrate(%p)"), sp));
+    T((T_CALLED("baudrate()")));
 
     /*
      * In debugging, allow the environment symbol to override when we're
@@ -206,7 +207,7 @@ NC_SNAME(baudrate)(SCREEN *sp)
      * that take into account costs that depend on baudrate.
      */
 #ifdef TRACE
-    if (IsValidTIScreen(sp) && !isatty(fileno(sp ? sp->_ofp : stdout))
+    if (!isatty(fileno(SP ? SP->_ofp : stdout))
 	&& getenv("BAUDRATE") != 0) {
 	int ret;
 	if ((ret = _nc_getenv_num("BAUDRATE")) <= 0)
@@ -216,28 +217,22 @@ NC_SNAME(baudrate)(SCREEN *sp)
     }
 #endif
 
-    if (IsValidTIScreen(sp)) {
+    if (cur_term != 0) {
 #ifdef USE_OLD_TTY
-        result = cfgetospeed(&(TerminalOf(sp)->Nttyb));
+	result = cfgetospeed(&cur_term->Nttyb);
 	ospeed = _nc_ospeed(result);
 #else /* !USE_OLD_TTY */
 #ifdef TERMIOS
-	ospeed = cfgetospeed(&(TerminalOf(sp)->Nttyb));
+	ospeed = cfgetospeed(&cur_term->Nttyb);
 #else
-	ospeed = TerminalOf(sp)->Nttyb.sg_ospeed;
+	ospeed = cur_term->Nttyb.sg_ospeed;
 #endif
 	result = _nc_baudrate(ospeed);
 #endif
-	TerminalOf(sp)->_baudrate = result;
+	cur_term->_baudrate = result;
     } else {
 	result = ERR;
     }
 
     returnCode(result);
-}
-
-NCURSES_EXPORT(int)
-baudrate (void)
-{
-    return NC_SNAME(baudrate)(CURRENT_SCREEN);
 }

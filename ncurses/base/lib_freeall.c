@@ -40,40 +40,40 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.54.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.54 2008/09/27 13:09:57 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
  * use for it as an extension).
  */
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_freeall)(SCREEN *sp)
+_nc_freeall(void)
 {
     WINDOWLIST *p, *q;
     static va_list empty_va;
 
     T((T_CALLED("_nc_freeall()")));
 #if NO_LEAKS
-    if (sp != 0) {
-	if (sp->_oldnum_list != 0) {
-	    FreeAndNull(sp->_oldnum_list);
+    if (SP != 0) {
+	if (SP->_oldnum_list != 0) {
+	    FreeAndNull(SP->_oldnum_list);
 	}
-	if (sp->_panelHook.destroy != 0) {
-	    sp->_panelHook.destroy(sp->_panelHook.stdscr_pseudo_panel);
+	if (SP->_panelHook.destroy != 0) {
+	    SP->_panelHook.destroy(SP->_panelHook.stdscr_pseudo_panel);
 	}
     }
 #endif
-    if (sp != 0) {
+    if (SP != 0) {
 	_nc_lock_global(curses);
 
-	while (sp->_windowlist != 0) {
+	while (_nc_windows != 0) {
 	    bool deleted = FALSE;
 
 	    /* Delete only windows that're not a parent */
-	    for (safe_each_window(sp, p)) {
+	    for (each_window(p)) {
 		bool found = FALSE;
 
-		for (safe_each_window(sp, q)) {
+		for (each_window(q)) {
 		    if ((p != q)
 			&& (q->win._flags & _SUBWIN)
 			&& (&(p->win) == q->win._parent)) {
@@ -95,11 +95,11 @@ NC_SNAME(_nc_freeall)(SCREEN *sp)
 	    if (!deleted)
 		break;
 	}
-	delscreen(sp);
+	delscreen(SP);
 	_nc_unlock_global(curses);
     }
-    if (HasTerminal(sp))
-	del_curterm(sp->_term);
+    if (cur_term != 0)
+	del_curterm(cur_term);
 
     (void) _nc_printf_string(0, empty_va);
 #ifdef TRACE
@@ -122,17 +122,11 @@ NC_SNAME(_nc_freeall)(SCREEN *sp)
 }
 
 NCURSES_EXPORT(void)
-_nc_freeall(void)
+_nc_free_and_exit(int code)
 {
-    NC_SNAME(_nc_freeall)(CURRENT_SCREEN);
-}
+    char *last_setbuf = (SP != 0) ? SP->_setbuf : 0;
 
-NCURSES_EXPORT(void)
-NC_SNAME(_nc_free_and_exit)(SCREEN *sp, int code)
-{
-    char *last_setbuf = (sp != 0) ? sp->_setbuf : 0;
-
-    NC_SNAME(_nc_freeall)(sp);
+    _nc_freeall();
 #ifdef TRACE
     trace(0);			/* close trace file, freeing its setbuf */
     {
@@ -147,24 +141,17 @@ NC_SNAME(_nc_free_and_exit)(SCREEN *sp, int code)
 
 #else
 NCURSES_EXPORT(void)
-_nc_freeall (void)
+_nc_freeall(void)
 {
 }
 
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_free_and_exit)(SCREEN *sp, int code)
+_nc_free_and_exit(int code)
 {
-    if (sp) {
-	delscreen(sp);
-	if (sp->_term)
-	    NC_SNAME(_nc_del_curterm)(sp, sp->_term);
-    }
+    if (SP)
+	delscreen(SP);
+    if (cur_term != 0)
+	del_curterm(cur_term);
     exit(code);
 }
 #endif
-
-NCURSES_EXPORT(void)
-_nc_free_and_exit (int code)
-{
-    NC_SNAME(_nc_free_and_exit)(CURRENT_SCREEN, code);
-}

@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.23.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.23 2007/10/13 19:32:09 tom Exp $")
 
 #define thisARG alphaARG
 
@@ -163,21 +163,5 @@ static FIELDTYPE typeTHIS =
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_ALPHA = &typeTHIS;
-
-/* The next routines are to simplify the use of ncurses from
-   programming languages with restictions on interop with C level
-   constructs (e.g. variable access or va_list + ellipsis constructs)
-*/
-NCURSES_EXPORT(FIELDTYPE *)
-_nc_TYPE_ALPHA()
-{
-    return TYPE_ALPHA;
-}
-
-NCURSES_EXPORT(int)
-_nc_set_field_type_ALPHA(FIELD *field, int minWidth)
-{
-    return set_field_type(field, TYPE_ALPHA, minWidth);
-}
 
 /* fty_alpha.c ends here */

@@ -36,7 +36,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_delete.c,v 1.8.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: p_delete.c,v 1.8 2005/02/19 16:38:45 tom Exp $")
 
 NCURSES_EXPORT(int)
 del_panel(PANEL * pan)
@@ -47,11 +47,8 @@ del_panel(PANEL * pan)
   if (pan)
     {
       dBug(("--> del_panel %s", USER_PTR(pan->user)));
-      {
-	  GetHook(pan);
-          HIDE_PANEL(pan, err, OK);
-          free((void *)pan);
-      }
+      HIDE_PANEL(pan, err, OK);
+      free((void *)pan);
     }
   else
     err = ERR;

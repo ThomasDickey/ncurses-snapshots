@@ -88,10 +88,6 @@
 #ifdef NeXT
 char *ttyname(int fd);
 #endif
-#ifdef __MINGW32__
-#  define ttyname(fd) "unknown"
-#  define ioctl(fd,cmd,buf) _nc_mingw_ioctl(fd,cmd,buf)
-#endif
 
 #if HAVE_SIZECHANGE
 # if !defined(sun) || !TERMIOS
@@ -111,7 +107,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 1.76.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: tset.c,v 1.76 2008/10/11 19:26:19 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
