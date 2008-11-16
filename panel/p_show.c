@@ -36,37 +36,34 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_show.c,v 1.11.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: p_show.c,v 1.11 2005/02/19 16:42:02 tom Exp $")
 
 NCURSES_EXPORT(int)
 show_panel(PANEL * pan)
 {
-  int err = ERR;
+  int err = OK;
 
   T((T_CALLED("show_panel(%p)"), pan));
 
-  if (pan)
-    {
-      GetHook(pan);
+  if (!pan)
+    returnCode(ERR);
 
-      if (Is_Top(pan))
-	returnCode(OK);
-      
-      dBug(("--> show_panel %s", USER_PTR(pan->user)));
-      
-      HIDE_PANEL(pan, err, OK);
-      
-      dStack("<lt%d>", 1, pan);
-      assert(_nc_bottom_panel == _nc_stdscr_pseudo_panel);
-      
-      _nc_top_panel->above = pan;
-      pan->below = _nc_top_panel;
-      pan->above = (PANEL *) 0;
-      _nc_top_panel = pan;
+  if (Is_Top(pan))
+    returnCode(OK);
 
-      err = OK;
+  dBug(("--> show_panel %s", USER_PTR(pan->user)));
 
-      dStack("<lt%d>", 9, pan);
-    }
-  returnCode(err);
+  HIDE_PANEL(pan, err, OK);
+
+  dStack("<lt%d>", 1, pan);
+  assert(_nc_bottom_panel == _nc_stdscr_pseudo_panel);
+
+  _nc_top_panel->above = pan;
+  pan->below = _nc_top_panel;
+  pan->above = (PANEL *) 0;
+  _nc_top_panel = pan;
+
+  dStack("<lt%d>", 9, pan);
+
+  returnCode(OK);
 }

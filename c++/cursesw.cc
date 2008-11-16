@@ -42,7 +42,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.49.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.49 2007/12/15 23:01:57 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -287,6 +287,7 @@ NCursesWindow::NCursesWindow(WINDOW *win, int ncols)
 {
     initialize();
     w = win;
+    assert((w->_maxx +1 ) == ncols);
 }
 
 int _nc_xx_ripoff_init(WINDOW *w, int ncols)
@@ -463,7 +464,7 @@ NCursesWindow::setcolor(short pair)
 #if HAVE_HAS_KEY
 bool NCursesWindow::has_mouse() const
 {
-    return ((::has_key(KEY_MOUSE) || ::has_mouse())
+    return ((::has_key(KEY_MOUSE) || ::_nc_has_mouse())
 	     ? TRUE : FALSE);
 }
 #endif

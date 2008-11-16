@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.15.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.15 2007/10/13 19:30:55 tom Exp $")
 
 static FIELDTYPE const default_fieldtype =
 {
@@ -49,7 +49,7 @@ static FIELDTYPE const default_fieldtype =
   NULL				/* enumerate previous function                 */
 };
 
-NCURSES_EXPORT_VAR(FIELDTYPE *)
+NCURSES_EXPORT_VAR(const FIELDTYPE *)
 _nc_Default_FieldType = &default_fieldtype;
 
 /*---------------------------------------------------------------------------
@@ -95,16 +95,6 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
       SET_ERROR(E_BAD_ARGUMENT);
     }
   returnFieldType(nftyp);
-}
-
-NCURSES_EXPORT(FIELDTYPE *)
-_nc_managed_fieldtype(bool (*const field_check) (FIELD *, const void *),
-		      bool (*const char_check)  (int, const void *))
-{
-    FIELDTYPE* res = new_fieldtype(field_check, char_check);
-    if (res)
-      res->status |= _MANAGED;
-    return res;
 }
 
 /*---------------------------------------------------------------------------

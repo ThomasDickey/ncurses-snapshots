@@ -170,11 +170,9 @@
 ./MANIFEST
 ./Makefile.in
 ./Makefile.os2
-./mk-dlls.sh
 ./NEWS
 ./README
 ./README.emx
-./README.MinGW
 ./TO-DO
 ./aclocal.m4
 ./announce.html.in
@@ -514,7 +512,6 @@
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
 ./include/ncurses_dll.h
-./include/ncurses_mingw.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -643,6 +640,7 @@
 ./man/ncurses.3x
 ./man/panel.3x
 ./man/resizeterm.3x
+./man/tabs.1
 ./man/term.5
 ./man/term.7
 ./man/terminfo.head
@@ -751,7 +749,6 @@
 ./ncurses/base/lib_delch.c
 ./ncurses/base/lib_delwin.c
 ./ncurses/base/lib_dft_fgbg.c
-./ncurses/base/lib_driver.c
 ./ncurses/base/lib_echo.c
 ./ncurses/base/lib_endwin.c
 ./ncurses/base/lib_erase.c
@@ -874,7 +871,6 @@
 ./ncurses/tinfo/read_termcap.c
 ./ncurses/tinfo/setbuf.c
 ./ncurses/tinfo/strings.c
-./ncurses/tinfo/tinfo_driver.c
 ./ncurses/tinfo/trim_sgr0.c
 ./ncurses/tinfo/use_screen.c
 ./ncurses/tinfo/write_entry.c
@@ -920,7 +916,6 @@
 ./ncurses/widechar/lib_vline_set.c
 ./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c
-./ncurses/win32con/win_driver.c
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel
@@ -953,6 +948,7 @@
 ./progs/infocmp.c
 ./progs/modules
 ./progs/progs.priv.h
+./progs/tabs.c
 ./progs/tic.c
 ./progs/toe.c
 ./progs/tput.c

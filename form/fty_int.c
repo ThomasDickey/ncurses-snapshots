@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.22.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.22 2007/10/13 19:32:40 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define isDigit(c) (iswdigit((wint_t)(c)) || isdigit(UChar(c)))
@@ -242,21 +242,5 @@ static FIELDTYPE typeTHIS =
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_INTEGER = &typeTHIS;
-
-/* The next routines are to simplify the use of ncurses from
-   programming languages with restictions on interop with C level
-   constructs (e.g. variable access or va_list + ellipsis constructs)
-*/
-NCURSES_EXPORT(FIELDTYPE *)
-_nc_TYPE_INTEGER()
-{
-    return TYPE_INTEGER;
-}
-
-NCURSES_EXPORT(int)
-_nc_set_field_type_INTEGER(FIELD *field, int prec, long low, long high)
-{
-  return set_field_type(field, TYPE_INTEGER, prec, low, high);
-}
 
 /* fty_int.c ends here */

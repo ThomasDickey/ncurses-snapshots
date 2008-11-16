@@ -39,26 +39,22 @@
 */
 
 #include <curses.priv.h>
+#include <term.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.19.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.19 2000/12/10 02:43:27 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(endwin)(SCREEN *sp)
+endwin(void)
 {
-    T((T_CALLED("endwin(%p)"), sp));
+    T((T_CALLED("endwin()")));
 
-    if (sp) {
-        TERMINAL_CONTROL_BLOCK* TCB = TCBOf(sp);
-	sp->_endwin = TRUE;
-	if (TCB && TCB->drv && TCB->drv->scexit)
-	  TCB->drv->scexit(sp);
-	returnCode(NC_SNAME(reset_shell_mode)(sp));
+    if (SP) {
+	SP->_endwin = TRUE;
+	SP->_mouse_wrap(SP);
+	_nc_screen_wrap();
+	_nc_mvcur_wrap();	/* wrap up cursor addressing */
+	returnCode(reset_shell_mode());
     }
-    returnCode(ERR);
-}
 
-NCURSES_EXPORT(int)
-endwin (void)
-{
-    return NC_SNAME(endwin)(CURRENT_SCREEN);
+    returnCode(ERR);
 }

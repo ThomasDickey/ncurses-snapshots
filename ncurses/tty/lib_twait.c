@@ -65,12 +65,10 @@
 #  include <sys/select.h>
 # endif
 #endif
-#ifdef __MINGW32__
-#  include <sys/time.h>
-#endif
+
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.59.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.59 2008/08/30 20:08:19 tom Exp $")
 
 static long
 _nc_gettime(TimeType * t0, bool first)
@@ -130,11 +128,11 @@ _nc_eventlist_timeout(_nc_eventlist * evl)
  * Wait a specified number of milliseconds, returning nonzero if the timer
  * didn't expire before there is activity on the specified file descriptors.
  * The file-descriptors are specified by the mode:
- *	TW_NONE    0 - none (absolute time)
- *	TW_INPUT   1 - ncurses' normal input-descriptor
- *	TW_MOUSE   2 - mouse descriptor, if any
- *	TW_ANY     3 - either input or mouse.
- *      TW_EVENT   4 -
+ *	0 - none (absolute time)
+ *	1 - ncurses' normal input-descriptor
+ *	2 - mouse descriptor, if any
+ *	3 - either input or mouse.
+ *
  * Experimental:  if NCURSES_WGETCH_EVENTS is defined, (mode & 4) determines
  * whether to pay attention to evl argument.  If set, the smallest of
  * millisecond and of timeout of evl is taken.
@@ -153,7 +151,7 @@ _nc_timed_wait(SCREEN *sp,
 {
     int fd;
     int count;
-    int result = TW_NONE;
+    int result = 0;
     TimeType t0;
 
 #ifdef NCURSES_WGETCH_EVENTS
@@ -176,7 +174,7 @@ _nc_timed_wait(SCREEN *sp,
 		      milliseconds, mode));
 
 #ifdef NCURSES_WGETCH_EVENTS
-    if (mode & TW_EVENT) {
+    if (mode & 4) {
 	int event_delay = _nc_eventlist_timeout(evl);
 
 	if (event_delay >= 0
@@ -195,7 +193,7 @@ _nc_timed_wait(SCREEN *sp,
     count = 0;
 
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl)
+    if ((mode & 4) && evl)
 	evl->result_flags = 0;
 #endif
 
@@ -203,23 +201,23 @@ _nc_timed_wait(SCREEN *sp,
     memset(fd_list, 0, sizeof(fd_list));
 
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl)
+    if ((mode & 4) && evl)
 	fds = typeMalloc(struct pollfd, MIN_FDS + evl->count);
 #endif
 
-    if (mode & TW_INPUT) {
+    if (mode & 1) {
 	fds[count].fd = sp->_ifd;
 	fds[count].events = POLLIN;
 	count++;
     }
-    if ((mode & TW_MOUSE)
+    if ((mode & 2)
 	&& (fd = sp->_mouse_fd) >= 0) {
 	fds[count].fd = fd;
 	fds[count].events = POLLIN;
 	count++;
     }
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl) {
+    if ((mode & 4) && evl) {
 	for (n = 0; n < evl->count; ++n) {
 	    _nc_event *ev = evl->events[n];
 
@@ -236,7 +234,7 @@ _nc_timed_wait(SCREEN *sp,
     result = poll(fds, (unsigned) count, milliseconds);
 
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl) {
+    if ((mode & 4) && evl) {
 	int c;
 
 	if (!result)
@@ -278,8 +276,8 @@ _nc_timed_wait(SCREEN *sp,
      *
      * FIXME: this assumes mode&1 if milliseconds < 0 (see lib_getch.c).
      */
-    result = TW_NONE;
-    if (mode & TW_INPUT) {
+    result = 0;
+    if (mode & 1) {
 	int step = (milliseconds < 0) ? 0 : 5000;
 	bigtime_t d;
 	bigtime_t useconds = milliseconds * 1000;
@@ -315,17 +313,17 @@ _nc_timed_wait(SCREEN *sp,
      */
     FD_ZERO(&set);
 
-    if (mode & TW_INPUT) {
+    if (mode & 1) {
 	FD_SET(sp->_ifd, &set);
 	count = sp->_ifd + 1;
     }
-    if ((mode & TW_MOUSE)
+    if ((mode & 2)
 	&& (fd = sp->_mouse_fd) >= 0) {
 	FD_SET(fd, &set);
 	count = max(fd, count) + 1;
     }
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl) {
+    if ((mode & 4) && evl) {
 	for (n = 0; n < evl->count; ++n) {
 	    _nc_event *ev = evl->events[n];
 
@@ -348,7 +346,7 @@ _nc_timed_wait(SCREEN *sp,
     }
 
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl) {
+    if ((mode & 4) && evl) {
 	evl->result_flags = 0;
 	for (n = 0; n < evl->count; ++n) {
 	    _nc_event *ev = evl->events[n];
@@ -430,22 +428,22 @@ _nc_timed_wait(SCREEN *sp,
 		}
 	    }
 #elif defined(__BEOS__)
-	    result = TW_INPUT;		/* redundant, but simple */
+	    result = 1;		/* redundant, but simple */
 #elif HAVE_SELECT
-	    if ((mode & TW_MOUSE)
+	    if ((mode & 2)
 		&& (fd = sp->_mouse_fd) >= 0
 		&& FD_ISSET(fd, &set))
-		result |= TW_MOUSE;
-	    if ((mode & TW_INPUT)
+		result |= 2;
+	    if ((mode & 1)
 		&& FD_ISSET(sp->_ifd, &set))
-		result |= TW_INPUT;
+		result |= 1;
 #endif
 	} else
 	    result = 0;
     }
 #ifdef NCURSES_WGETCH_EVENTS
-    if ((mode & TW_EVENT) && evl && evl->result_flags)
-	result |= TW_EVENT;
+    if ((mode & 4) && evl && evl->result_flags)
+	result |= 4;
 #endif
 
     return (result);

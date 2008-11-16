@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.h,v 0.20.1.1 2008/11/16 00:19:59 juergen Exp $ */
+/* $Id: form.h,v 0.20 2004/12/04 22:22:10 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H
@@ -279,6 +279,13 @@ extern NCURSES_EXPORT_VAR(FIELDTYPE *) TYPE_REGEXP;
 extern NCURSES_EXPORT_VAR(FIELDTYPE *) TYPE_IPV4;      /* Internet IP Version 4 address */
 
 	/***********************
+	*   Default objects    *
+	***********************/
+extern NCURSES_EXPORT_VAR(FORM *)	_nc_Default_Form;
+extern NCURSES_EXPORT_VAR(FIELD *)	_nc_Default_Field;
+
+
+	/***********************
 	*  FIELDTYPE routines  *
 	***********************/
 extern NCURSES_EXPORT(FIELDTYPE *) new_fieldtype (
@@ -344,7 +351,6 @@ extern NCURSES_EXPORT(Field_Options)	field_opts (const FIELD *);
 	******************/
 
 extern NCURSES_EXPORT(FORM *)	new_form (FIELD **);
-extern NCURSES_EXPORT(FORM *)	NC_SNAME(new_form) (SCREEN*, FIELD **);
 
 extern NCURSES_EXPORT(FIELD **)	form_fields (const FORM *);
 extern NCURSES_EXPORT(FIELD *)	current_field (const FORM *);

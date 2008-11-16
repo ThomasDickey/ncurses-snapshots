@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.25.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.25 2007/10/13 19:32:54 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -286,21 +286,5 @@ static FIELDTYPE typeTHIS =
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_NUMERIC = &typeTHIS;
-
-/* The next routines are to simplify the use of ncurses from
-   programming languages with restictions on interop with C level
-   constructs (e.g. variable access or va_list + ellipsis constructs)
-*/
-NCURSES_EXPORT(FIELDTYPE *)
-_nc_TYPE_NUMERIC()
-{
-    return TYPE_NUMERIC;
-}
-
-NCURSES_EXPORT(int)
-_nc_set_field_type_NUMERIC(FIELD* field, int prec, double minV, double maxV)
-{
-    return set_field_type(field,TYPE_NUMERIC,prec,minV,maxV); 
-}
 
 /* fty_num.c ends here */

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.329.1.1 2008/11/16 00:19:59 juergen Exp $
+$Id: ncurses.c,v 1.329 2008/09/27 14:34:58 tom Exp $
 
 ***************************************************************************/
 
@@ -483,11 +483,7 @@ ShellOut(bool message)
 	addstr("Shelling out...");
     def_prog_mode();
     endwin();
-#ifdef __MINGW32__
-    system("cmd.exe");
-#else
     system("sh");
-#endif
     if (message)
 	addstr("returned from shellout.\n");
     refresh();
@@ -909,7 +905,6 @@ getch_test(void)
     wgetch_test(0, stdscr, delay);
     forget_boxes();
     finish_getch_test();
-    slk_clear();
 }
 
 #if USE_WIDEC_SUPPORT
@@ -1108,8 +1103,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 		} else {
 		    wchar_t c2 = (wchar_t) c;
 		    waddnwstr(win, &c2, 1);
-		    (void) wprintw(win, " = %#x (printable character)",
-				   (unsigned) c);
+		    (void) wprintw(win, " = %#x (printable character)", (unsigned) c);
 		}
 	    }
 	    wgetch_wrap(win, first_y);
@@ -1128,7 +1122,6 @@ get_wch_test(void)
     wget_wch_test(0, stdscr, delay);
     forget_boxes();
     finish_getch_test();
-    slk_clear();
 }
 #endif
 

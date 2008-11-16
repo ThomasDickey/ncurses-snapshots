@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.88.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.88 2008/10/18 16:25:00 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -1011,7 +1011,6 @@ Undo_Justification(FIELD *field, WINDOW *win)
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
 |   Function      :  static bool Check_Char(
-|                                           FIELD *field,
 |                                           FIELDTYPE * typ,
 |                                           int ch,
 |                                           TypeArgument *argp)
@@ -1023,7 +1022,7 @@ Undo_Justification(FIELD *field, WINDOW *win)
 |                    FALSE            - Character is invalid
 +--------------------------------------------------------------------------*/
 static bool
-Check_Char(FIELD* field, FIELDTYPE *typ, int ch, TypeArgument *argp)
+Check_Char(FIELDTYPE *typ, int ch, TypeArgument *argp)
 {
   if (typ)
     {
@@ -1031,18 +1030,13 @@ Check_Char(FIELD* field, FIELDTYPE *typ, int ch, TypeArgument *argp)
 	{
 	  assert(argp);
 	  return (
-		  Check_Char(field, typ->left, ch, argp->left) ||
-		  Check_Char(field, typ->right, ch, argp->right));
+		   Check_Char(typ->left, ch, argp->left) ||
+		   Check_Char(typ->right, ch, argp->right));
 	}
       else
 	{
 	  if (typ->ccheck)
-	    {
-	      if (typ->status & _MANAGED)
-		return typ->ccheck(ch, (void *)field);
-	      else
-		return typ->ccheck(ch, (void *)argp);
-	    }
+	    return typ->ccheck(ch, (void *)argp);
 	}
     }
   return (!iscntrl(UChar(ch)) ? TRUE : FALSE);
@@ -1282,13 +1276,14 @@ _nc_Synchronize_Options(FIELD *field, Field_Options newopts)
 
   if (form)
     {
+      if (form->current == field)
+	{
+	  field->opts = oldopts;
+	  returnCode(E_CURRENT);
+	}
+
       if (form->status & _POSTED)
 	{
-	  if (form->current == field)
-	    {
-	      field->opts = oldopts;
-	      returnCode(E_CURRENT);
-	    }
 	  if ((form->curpage == field->page))
 	    {
 	      if (changed_opts & O_VISIBLE)
@@ -2612,8 +2607,7 @@ FE_Insert_Character(FORM *form)
   int result = E_REQUEST_DENIED;
 
   T((T_CALLED("FE_Insert_Character(%p)"), form));
-  if (Check_Char(field, field->type, (int)C_BLANK, 
-		 (TypeArgument *)(field->arg)))
+  if (Check_Char(field->type, (int)C_BLANK, (TypeArgument *)(field->arg)))
     {
       bool There_Is_Room = Is_There_Room_For_A_Char_In_Line(form);
 
@@ -2648,8 +2642,7 @@ FE_Insert_Line(FORM *form)
   int result = E_REQUEST_DENIED;
 
   T((T_CALLED("FE_Insert_Line(%p)"), form));
-  if (Check_Char(field, 
-		 field->type, (int)C_BLANK, (TypeArgument *)(field->arg)))
+  if (Check_Char(field->type, (int)C_BLANK, (TypeArgument *)(field->arg)))
     {
       bool Maybe_Done = (form->currow != (field->drows - 1)) &&
       Is_There_Room_For_A_Line(form);
@@ -4135,7 +4128,6 @@ form_driver(FORM *form, int c)
 {
   const Binding_Info *BI = (Binding_Info *) 0;
   int res = E_UNKNOWN_COMMAND;
-  SCREEN* sp;
 
   T((T_CALLED("form_driver(%p,%d)"), form, c));
 
@@ -4167,8 +4159,6 @@ form_driver(FORM *form, int c)
   if ((c >= MIN_FORM_COMMAND && c <= MAX_FORM_COMMAND) &&
       ((bindings[c - MIN_FORM_COMMAND].keycode & Key_Mask) == c))
     BI = &(bindings[c - MIN_FORM_COMMAND]);
-
-  sp = Get_Form_Screen(form);
 
   if (BI)
     {
@@ -4204,7 +4194,7 @@ form_driver(FORM *form, int c)
   else if (KEY_MOUSE == c)
     {
       MEVENT event;
-      WINDOW *win = form->win ? form->win : sp->_stdscr;
+      WINDOW *win = form->win ? form->win : stdscr;
       WINDOW *sub = form->sub ? form->sub : win;
 
       getmouse(&event);
@@ -4291,7 +4281,7 @@ form_driver(FORM *form, int c)
       if (!iscntrl(UChar(c)))
 #else
       if (isprint(UChar(c)) &&
-	  Check_Char(form->current, form->current->type, c,
+	  Check_Char(form->current->type, c,
 		     (TypeArgument *)(form->current->arg)))
 #endif
 	res = Data_Entry(form, c);

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_redrawln.c,v 1.12.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_redrawln.c,v 1.12 2007/10/13 20:08:56 tom Exp $")
 
 NCURSES_EXPORT(int)
 wredrawln(WINDOW *win, int beg, int num)
@@ -47,14 +47,11 @@ wredrawln(WINDOW *win, int beg, int num)
     int i;
     int end;
     size_t len;
-    SCREEN *sp;
 
     T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
 
     if (win == 0)
 	returnCode(ERR);
-
-    sp = _nc_screen_of(win);
 
     if (beg < 0)
 	beg = 0;
@@ -62,25 +59,25 @@ wredrawln(WINDOW *win, int beg, int num)
     if (touchline(win, beg, num) == ERR)
 	returnCode(ERR);
 
-    if (touchline(sp->_curscr, beg + win->_begy, num) == ERR)
+    if (touchline(curscr, beg + win->_begy, num) == ERR)
 	returnCode(ERR);
 
     end = beg + num;
-    if (end > sp->_curscr->_maxy + 1)
-	end = sp->_curscr->_maxy + 1;
+    if (end > curscr->_maxy + 1)
+	end = curscr->_maxy + 1;
     if (end > win->_maxy + 1)
 	end = win->_maxy + 1;
 
     len = (win->_maxx + 1);
-    if (len > (size_t) (sp->_curscr->_maxx + 1))
-	len = (size_t) (sp->_curscr->_maxx + 1);
-    len *= sizeof(sp->_curscr->_line[0].text[0]);
+    if (len > (size_t) (curscr->_maxx + 1))
+	len = (size_t) (curscr->_maxx + 1);
+    len *= sizeof(curscr->_line[0].text[0]);
 
     for (i = beg; i < end; i++) {
 	int crow = i + win->_begy;
 
-	memset(sp->_curscr->_line[crow].text + win->_begx, 0, len);
-	_nc_make_oldhash_sp(sp, crow);
+	memset(curscr->_line[crow].text + win->_begx, 0, len);
+	_nc_make_oldhash(crow);
     }
 
     returnCode(OK);
