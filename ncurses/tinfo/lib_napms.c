@@ -49,23 +49,26 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.17.1.1 2008/11/16 00:19:59 juergen Exp $")
-
-NCURSES_EXPORT(int)
-NC_SNAME(napms)(SCREEN* sp, int ms)
-{
-    T((T_CALLED("napms(%d)"), ms));
-
-    if (!IsValidTIScreen(sp))
-      returnCode(ERR);
-
-    CallDriver_1(sp,nap,ms);
-
-    returnCode(OK);
-}
+MODULE_ID("$Id: lib_napms.c,v 1.17 2008/05/03 21:34:13 tom Exp $")
 
 NCURSES_EXPORT(int)
 napms(int ms)
 {
-    return NC_SNAME(napms)(CURRENT_SCREEN,ms);
+    T((T_CALLED("napms(%d)"), ms));
+
+#if HAVE_NANOSLEEP
+    {
+	struct timespec request, remaining;
+	request.tv_sec = ms / 1000;
+	request.tv_nsec = (ms % 1000) * 1000000;
+	while (nanosleep(&request, &remaining) == -1
+	       && errno == EINTR) {
+	    request = remaining;
+	}
+    }
+#else
+    _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));
+#endif
+
+    returnCode(OK);
 }

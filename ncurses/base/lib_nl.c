@@ -42,34 +42,38 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_nl.c,v 1.8.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_nl.c,v 1.8 2000/12/10 02:43:27 tom Exp $")
 
 #ifdef __EMX__
 #include <io.h>
 #endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(nl)(SCREEN *sp, bool flag)
+nl(void)
 {
-    T((T_CALLED("%snl(%p,%d)"), flag?"":"no",sp, flag));
-    if (0 == sp)
-	returnCode(ERR);
-    sp->_nl = flag ? TRUE : FALSE;
+    T((T_CALLED("nl()")));
+
+    SP->_nl = TRUE;
+
 #ifdef __EMX__
     _nc_flush();
-    _fsetmode(NC_OUTPUT, flag ? "t" : "b");
+    _fsetmode(NC_OUTPUT, "t");
 #endif
+
     returnCode(OK);
 }
 
 NCURSES_EXPORT(int)
-nl (void)
+nonl(void)
 {
-    return NC_SNAME(nl)(CURRENT_SCREEN, TRUE);
-}
+    T((T_CALLED("nonl()")));
 
-NCURSES_EXPORT(int)
-nonl (void)
-{
-    return NC_SNAME(nl)(CURRENT_SCREEN, FALSE);
+    SP->_nl = FALSE;
+
+#ifdef __EMX__
+    _nc_flush();
+    _fsetmode(NC_OUTPUT, "b");
+#endif
+
+    returnCode(OK);
 }

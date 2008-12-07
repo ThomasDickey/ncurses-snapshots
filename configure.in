@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.456.1.1 2008/11/18 08:50:04 juergen Exp $
+dnl $Id: configure.in,v 1.456 2008/11/16 00:36:30 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.456.1.1 $)
+AC_REVISION($Revision: 1.456 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -223,13 +223,13 @@ cf_list_models="$cf_list_models libtool"
 
 else
 
-AC_MSG_CHECKING(if you want to build debug libraries)
-AC_ARG_WITH(debug,
-	[  --with-debug            generate debug-libraries (default)],
-	[with_debug=$withval],
-	[with_debug=yes])
-AC_MSG_RESULT($with_debug)
-test "$with_debug" = "yes" && cf_list_models="$cf_list_models debug"
+AC_MSG_CHECKING(if you want to build shared libraries)
+AC_ARG_WITH(shared,
+	[  --with-shared           generate shared-libraries],
+	[with_shared=$withval],
+	[with_shared=no])
+AC_MSG_RESULT($with_shared)
+test "$with_shared" = "yes" && cf_list_models="$cf_list_models shared"
 
 AC_MSG_CHECKING(if you want to build static libraries)
 AC_ARG_WITH(normal,
@@ -239,13 +239,13 @@ AC_ARG_WITH(normal,
 AC_MSG_RESULT($with_normal)
 test "$with_normal" = "yes" && cf_list_models="$cf_list_models normal"
 
-AC_MSG_CHECKING(if you want to build shared libraries)
-AC_ARG_WITH(shared,
-	[  --with-shared           generate shared-libraries],
-	[with_shared=$withval],
-	[with_shared=no])
-AC_MSG_RESULT($with_shared)
-test "$with_shared" = "yes" && cf_list_models="$cf_list_models shared"
+AC_MSG_CHECKING(if you want to build debug libraries)
+AC_ARG_WITH(debug,
+	[  --with-debug            generate debug-libraries (default)],
+	[with_debug=$withval],
+	[with_debug=yes])
+AC_MSG_RESULT($with_debug)
+test "$with_debug" = "yes" && cf_list_models="$cf_list_models debug"
 
 AC_MSG_CHECKING(if you want to build profiling libraries)
 AC_ARG_WITH(profile,

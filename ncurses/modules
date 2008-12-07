@@ -1,4 +1,4 @@
-# $Id: modules,v 1.112.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: modules,v 1.112 2007/09/08 22:03:34 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -48,7 +48,6 @@ lib_color	lib		$(base)		../include/term.h
 lib_colorset	lib		$(base)
 lib_delch	lib		$(base)
 lib_delwin	lib		$(base)
-lib_driver      lib             $(base)
 lib_echo	lib		$(base)
 lib_endwin	lib		$(base)		../include/term.h
 lib_erase	lib		$(base)
@@ -208,8 +207,6 @@ tries		lib		$(base)
 trim_sgr0	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 unctrl		lib		.
 visbuf		lib		$(trace)	$(INCDIR)/tic.h
-tinfo_driver	lib		$(tinfo)
-win_driver	lib             $(win32con)
 
 # Modules used only for tic, other programs using internal interfaces
 @ ticlib

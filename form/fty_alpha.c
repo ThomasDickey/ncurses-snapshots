@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.23.1.2 2008/11/18 08:50:04 juergen Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.23 2007/10/13 19:32:09 tom Exp $")
 
 #define thisARG alphaARG
 
@@ -43,31 +43,6 @@ typedef struct
     int width;
   }
 thisARG;
-
-/*---------------------------------------------------------------------------
-|   Facility      :  libnform
-|   Function      :  static void *Generic_This_Type(va_list *ap)
-|
-|   Description   :  Allocate structure for alpha type argument.
-|
-|   Return Values :  Pointer to argument structure or NULL on error
-+--------------------------------------------------------------------------*/
-static void *
-Generic_This_Type(void *arg)
-{
-  thisARG *argp = (thisARG*)0;
-  if (arg)
-    {
-      argp = typeMalloc(thisARG, 1);
-      
-      if (argp)
-	{
-	  T((T_CREATE("thisARG %p"), argp));
-	  argp->width = *((int*)arg);
-	}
-    }
-  return ((void *)argp);
-}
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -80,8 +55,15 @@ Generic_This_Type(void *arg)
 static void *
 Make_This_Type(va_list *ap)
 {
-  int w = va_arg(*ap, int);
-  return Generic_This_Type((void*)&w);
+  thisARG *argp = typeMalloc(thisARG, 1);
+
+  if (argp)
+    {
+      T((T_CREATE("thisARG %p"), argp));
+      argp->width = va_arg(*ap, int);
+    }
+
+  return ((void *)argp);
 }
 
 /*---------------------------------------------------------------------------
@@ -174,23 +156,12 @@ static FIELDTYPE typeTHIS =
   Make_This_Type,
   Copy_This_Type,
   Free_This_Type,
-  {Check_This_Field},
-  {Check_This_Character},
-  {NULL},
-  {NULL},
-  Generic_This_Type
+  Check_This_Field,
+  Check_This_Character,
+  NULL,
+  NULL
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_ALPHA = &typeTHIS;
-
-/* The next routines are to simplify the use of ncurses from
-   programming languages with restictions on interop with C level
-   constructs (e.g. variable access or va_list + ellipsis constructs)
-*/
-NCURSES_EXPORT(FIELDTYPE *)
-_nc_TYPE_ALPHA()
-{
-    return TYPE_ALPHA;
-}
 
 /* fty_alpha.c ends here */

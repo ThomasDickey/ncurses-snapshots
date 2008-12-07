@@ -35,27 +35,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_below.c,v 1.6.1.1 2008/11/16 00:19:59 juergen Exp $")
-
-NCURSES_EXPORT(PANEL *)
-ceiling_panel(const SCREEN * sp)
-{
-  T((T_CALLED("ceiling_panel(%p)"), sp));
-  if (sp)
-    {
-      struct panelhook *ph = _nc_panelhook_sp((SCREEN*)sp);
-      /* if top and bottom are equal, we have no or only the pseudo panel */
-      returnPanel(EMPTY_STACK()? (PANEL *) 0 : _nc_top_panel);
-    }
-  else
-    {
-      if (0==CURRENT_SCREEN)
-	  returnPanel(0);
-      else
-	  returnPanel(ceiling_panel(CURRENT_SCREEN));
-    }
-}
-
+MODULE_ID("$Id: p_below.c,v 1.6 2005/02/19 16:45:10 tom Exp $")
 
 NCURSES_EXPORT(PANEL *)
 panel_below(const PANEL * pan)
@@ -63,11 +43,11 @@ panel_below(const PANEL * pan)
   T((T_CALLED("panel_below(%p)"), pan));
   if (!pan)
     {
-      return ceiling_panel(CURRENT_SCREEN);
+      /* if top and bottom are equal, we have no or only the pseudo panel */
+      returnPanel(EMPTY_STACK()? (PANEL *) 0 : _nc_top_panel);
     }
   else
     {
-      GetHook(pan);
       /* we must not return the pseudo panel */
       returnPanel(Is_Pseudo(pan->below) ? (PANEL *) 0 : pan->below);
     }
