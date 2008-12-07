@@ -44,10 +44,10 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_slkset.c,v 1.17.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.17 2007/10/13 20:08:46 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_set)(SCREEN *sp, int i, const char *astr, int format)
+slk_set(int i, const char *astr, int format)
 {
     SLK *slk;
     int offset;
@@ -57,20 +57,20 @@ NC_SNAME(slk_set)(SCREEN *sp, int i, const char *astr, int format)
     const char *str = astr;
     const char *p;
 
-    T((T_CALLED("slk_set(%p, %d, \"%s\", %d)"), sp, i, str, format));
+    T((T_CALLED("slk_set(%d, \"%s\", %d)"), i, str, format));
 
-    if (sp == 0
-	|| (slk = sp->_slk) == 0
+    if (SP == 0
+	|| (slk = SP->_slk) == 0
 	|| i < 1
 	|| i > slk->labcnt
 	|| format < 0
 	|| format > 2)
 	returnCode(ERR);
-    if (str == 0)
+    if (str == NULL)
 	str = "";
     --i;			/* Adjust numbering of labels */
 
-    limit = MAX_SKEY_LEN(sp->slk_format);
+    limit = MAX_SKEY_LEN(SP->slk_format);
     while (isspace(UChar(*str)))
 	str++;			/* skip over leading spaces  */
     p = str;
@@ -146,10 +146,4 @@ NC_SNAME(slk_set)(SCREEN *sp, int i, const char *astr, int format)
     slk->ent[i].form_text[numchrs - numcols + limit] = 0;
     slk->ent[i].dirty = TRUE;
     returnCode(OK);
-}
-
-NCURSES_EXPORT(int)
-slk_set (int i, const char *astr, int format)
-{
-    return NC_SNAME(slk_set)(CURRENT_SCREEN, i, astr, format);
 }

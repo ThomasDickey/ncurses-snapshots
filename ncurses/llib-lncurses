@@ -42,16 +42,6 @@ int	*_nc_oldnums;
 void	_nc_scroll_optimize(void)
 		{ /* void */ }
 
-#undef _nc_safe_scroll_optimize
-void	_nc_safe_scroll_optimize(
-		SCREEN	*sp)
-		{ /* void */ }
-
-#undef _nc_safe_linedump
-void	_nc_safe_linedump(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_linedump
 void	_nc_linedump(void)
 		{ /* void */ }
@@ -60,32 +50,13 @@ void	_nc_linedump(void)
 
 #include <term.h>
 
-#undef _nc_safe_hash_map
-void	_nc_safe_hash_map(
-		SCREEN	*scr)
-		{ /* void */ }
-
 #undef _nc_hash_map
 void	_nc_hash_map(void)
-		{ /* void */ }
-
-#undef _nc_safe_make_oldhash
-void	_nc_safe_make_oldhash(
-		SCREEN	*sp, 
-		int	i)
 		{ /* void */ }
 
 #undef _nc_make_oldhash
 void	_nc_make_oldhash(
 		int	i)
-		{ /* void */ }
-
-#undef _nc_safe_scroll_oldhash
-void	_nc_safe_scroll_oldhash(
-		SCREEN	*sp, 
-		int	n, 
-		int	top, 
-		int	bot)
 		{ /* void */ }
 
 #undef _nc_scroll_oldhash
@@ -140,11 +111,6 @@ int	waddchnstr(
 		{ return(*(int *)0); }
 
 /* ./base/lib_beep.c */
-
-#undef _nc_safe_beep
-int	_nc_safe_beep(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
 
 #undef beep
 int	beep(void)
@@ -228,45 +194,18 @@ int	COLOR_PAIRS;
 #undef COLORS
 int	COLORS;
 
-#undef _nc_safe_reset_colors
-NCURSES_BOOL _nc_safe_reset_colors(
-		SCREEN	*sp)
-		{ return(*(NCURSES_BOOL *)0); }
-
 #undef _nc_reset_colors
 NCURSES_BOOL _nc_reset_colors(void)
 		{ return(*(NCURSES_BOOL *)0); }
 
-#undef _nc_start_color
-int	_nc_start_color(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef start_color
 int	start_color(void)
-		{ return(*(int *)0); }
-
-#undef _nc_init_pair
-int	_nc_init_pair(
-		SCREEN	*sp, 
-		short	pair, 
-		short	f, 
-		short	b)
 		{ return(*(int *)0); }
 
 #undef init_pair
 int	init_pair(
 		short	pair, 
 		short	f, 
-		short	b)
-		{ return(*(int *)0); }
-
-#undef _nc_init_color
-int	_nc_init_color(
-		SCREEN	*sp, 
-		short	color, 
-		short	r, 
-		short	g, 
 		short	b)
 		{ return(*(int *)0); }
 
@@ -278,32 +217,13 @@ int	init_color(
 		short	b)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_can_change_color
-NCURSES_BOOL _nc_safe_can_change_color(
-		SCREEN	*sp)
-		{ return(*(NCURSES_BOOL *)0); }
-
 #undef can_change_color
 NCURSES_BOOL can_change_color(void)
-		{ return(*(NCURSES_BOOL *)0); }
-
-#undef _nc_safe_has_colors
-NCURSES_BOOL _nc_safe_has_colors(
-		SCREEN	*sp)
 		{ return(*(NCURSES_BOOL *)0); }
 
 #undef has_colors
 NCURSES_BOOL has_colors(void)
 		{ return(*(NCURSES_BOOL *)0); }
-
-#undef _nc_color_content
-int	_nc_color_content(
-		SCREEN	*sp, 
-		short	color, 
-		short	*r, 
-		short	*g, 
-		short	*b)
-		{ return(*(int *)0); }
 
 #undef color_content
 int	color_content(
@@ -313,31 +233,12 @@ int	color_content(
 		short	*b)
 		{ return(*(int *)0); }
 
-#undef _nc_pair_content
-int	_nc_pair_content(
-		SCREEN	*sp, 
-		short	pair, 
-		short	*f, 
-		short	*b)
-		{ return(*(int *)0); }
-
 #undef pair_content
 int	pair_content(
 		short	pair, 
 		short	*f, 
 		short	*b)
 		{ return(*(int *)0); }
-
-#undef _nc_safe_do_color
-void	_nc_safe_do_color(
-		SCREEN	*sp, 
-		short	old_pair, 
-		short	pair, 
-		NCURSES_BOOL reverse, 
-		int	(*outc)(
-		SCREEN	*p1, 
-		int	p2))
-		{ /* void */ }
 
 #undef _nc_do_color
 void	_nc_do_color(
@@ -373,12 +274,6 @@ int	delwin(
 
 /* ./base/lib_echo.c */
 
-#undef _nc_safe_echo
-int	_nc_safe_echo(
-		SCREEN	*sp, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
-
 #undef echo
 int	echo(void)
 		{ return(*(int *)0); }
@@ -388,11 +283,6 @@ int	noecho(void)
 		{ return(*(int *)0); }
 
 /* ./base/lib_endwin.c */
-
-#undef _nc_safe_endwin
-int	_nc_safe_endwin(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
 
 #undef endwin
 int	endwin(void)
@@ -406,11 +296,6 @@ int	werase(
 		{ return(*(int *)0); }
 
 /* ./base/lib_flash.c */
-
-#undef _nc_safe_flash
-int	_nc_safe_flash(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
 
 #undef flash
 int	flash(void)
@@ -1353,11 +1238,6 @@ int	winnstr(
 
 /* ./base/lib_isendwin.c */
 
-#undef _nc_safe_isendwin
-NCURSES_BOOL _nc_safe_isendwin(
-		SCREEN	*sp)
-		{ return(*(NCURSES_BOOL *)0); }
-
 #undef isendwin
 NCURSES_BOOL isendwin(void)
 		{ return(*(NCURSES_BOOL *)0); }
@@ -1372,23 +1252,8 @@ int	leaveok(
 
 /* ./base/lib_mouse.c */
 
-#include <linux/keyboard.h>
-#include <dlfcn.h>
-
-#undef _nc_getmouse
-int	_nc_getmouse(
-		SCREEN	*sp, 
-		MEVENT	*aevent)
-		{ return(*(int *)0); }
-
 #undef getmouse
 int	getmouse(
-		MEVENT	*aevent)
-		{ return(*(int *)0); }
-
-#undef _nc_ungetmouse
-int	_nc_ungetmouse(
-		SCREEN	*sp, 
 		MEVENT	*aevent)
 		{ return(*(int *)0); }
 
@@ -1396,13 +1261,6 @@ int	_nc_ungetmouse(
 int	ungetmouse(
 		MEVENT	*aevent)
 		{ return(*(int *)0); }
-
-#undef _nc_mousemask
-mmask_t	_nc_mousemask(
-		SCREEN	*sp, 
-		mmask_t	newmask, 
-		mmask_t	*oldmask)
-		{ return(*(mmask_t *)0); }
 
 #undef mousemask
 mmask_t	mousemask(
@@ -1417,20 +1275,9 @@ NCURSES_BOOL wenclose(
 		int	x)
 		{ return(*(NCURSES_BOOL *)0); }
 
-#undef _nc_mouseinterval
-int	_nc_mouseinterval(
-		SCREEN	*sp, 
-		int	maxclick)
-		{ return(*(int *)0); }
-
 #undef mouseinterval
 int	mouseinterval(
 		int	maxclick)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_has_mouse
-int	_nc_safe_has_mouse(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef _nc_has_mouse
@@ -1456,54 +1303,23 @@ int	wmove(
 
 /* ./tty/lib_mvcur.c */
 
-#undef _nc_safe_msec_cost
-int	_nc_safe_msec_cost(
-		SCREEN	*sp, 
-		const char *const cap, 
-		int	affcnt)
-		{ return(*(int *)0); }
-
 #undef _nc_msec_cost
 int	_nc_msec_cost(
 		const char *const cap, 
 		int	affcnt)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_mvcur_resume
-void	_nc_safe_mvcur_resume(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_mvcur_resume
 void	_nc_mvcur_resume(void)
-		{ /* void */ }
-
-#undef _nc_safe_mvcur_init
-void	_nc_safe_mvcur_init(
-		SCREEN	*sp)
 		{ /* void */ }
 
 #undef _nc_mvcur_init
 void	_nc_mvcur_init(void)
 		{ /* void */ }
 
-#undef _nc_safe_mvcur_wrap
-void	_nc_safe_mvcur_wrap(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_mvcur_wrap
 void	_nc_mvcur_wrap(void)
 		{ /* void */ }
-
-#undef _nc_mvcur
-int	_nc_mvcur(
-		SCREEN	*sp, 
-		int	yold, 
-		int	xold, 
-		int	ynew, 
-		int	xnew)
-		{ return(*(int *)0); }
 
 #undef mvcur
 int	mvcur(
@@ -1544,21 +1360,10 @@ SCREEN	*newterm(
 
 /* ./base/lib_newwin.c */
 
-#include "/usr/lib/gcc/i486-linux-gnu/4.3.2/include/stddef.h"
-
 #undef _nc_freewin
 int	_nc_freewin(
 		WINDOW	*win)
 		{ return(*(int *)0); }
-
-#undef _nc_safe_newwin
-WINDOW	*_nc_safe_newwin(
-		SCREEN	*sp, 
-		int	num_lines, 
-		int	num_columns, 
-		int	begy, 
-		int	begx)
-		{ return(*(WINDOW **)0); }
 
 #undef newwin
 WINDOW	*newwin(
@@ -1586,38 +1391,21 @@ WINDOW	*subwin(
 		int	x)
 		{ return(*(WINDOW **)0); }
 
-#undef _nc_safe_makenew
-WINDOW	*_nc_safe_makenew(
-		SCREEN	*sp, 
+#undef _nc_makenew
+WINDOW	*_nc_makenew(
 		int	num_lines, 
 		int	num_columns, 
 		int	begy, 
 		int	begx, 
-		short	flags)
+		int	flags)
 		{ return(*(WINDOW **)0); }
 
-#undef _nc_curscr_of
-WINDOW	*_nc_curscr_of(
-		SCREEN	*sp)
-		{ return(*(WINDOW **)0); }
-
-#undef _nc_newscr_of
-WINDOW	*_nc_newscr_of(
-		SCREEN	*sp)
-		{ return(*(WINDOW **)0); }
-
-#undef _nc_stdscr_of
-WINDOW	*_nc_stdscr_of(
-		SCREEN	*sp)
-		{ return(*(WINDOW **)0); }
+#undef _nc_screen_of
+SCREEN	*_nc_screen_of(
+		WINDOW	*win)
+		{ return(*(SCREEN **)0); }
 
 /* ./base/lib_nl.c */
-
-#undef _nc_safe_nl
-int	_nc_safe_nl(
-		SCREEN	*sp, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
 
 #undef nl
 int	nl(void)
@@ -1655,13 +1443,6 @@ int	copywin(
 		{ return(*(int *)0); }
 
 /* ./base/lib_pad.c */
-
-#undef _nc_safe_newpad
-WINDOW	*_nc_safe_newpad(
-		SCREEN	*sp, 
-		int	l, 
-		int	c)
-		{ return(*(WINDOW **)0); }
 
 #undef newpad
 WINDOW	*newpad(
@@ -1768,14 +1549,6 @@ int	wnoutrefresh(
 
 /* ./base/lib_restart.c */
 
-#undef _nc_safe_restartterm
-int	_nc_safe_restartterm(
-		SCREEN	*sp, 
-		char	*termp, 
-		int	filenum, 
-		int	*errret)
-		{ return(*(int *)0); }
-
 #undef restartterm
 int	restartterm(
 		char	*termp, 
@@ -1835,12 +1608,6 @@ int	putwin(
 		FILE	*filep)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_scr_restore
-int	_nc_safe_scr_restore(
-		SCREEN	*sp, 
-		const char *file)
-		{ return(*(int *)0); }
-
 #undef scr_restore
 int	scr_restore(
 		const char *file)
@@ -1851,20 +1618,8 @@ int	scr_dump(
 		const char *file)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_scr_init
-int	_nc_safe_scr_init(
-		SCREEN	*sp, 
-		const char *file)
-		{ return(*(int *)0); }
-
 #undef scr_init
 int	scr_init(
-		const char *file)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_scr_set
-int	_nc_safe_scr_set(
-		SCREEN	*sp, 
 		const char *file)
 		{ return(*(int *)0); }
 
@@ -1919,16 +1674,6 @@ void	delscreen(
 		SCREEN	*sp)
 		{ /* void */ }
 
-#undef _nc_safe_setupscreen
-int	_nc_safe_setupscreen(
-		SCREEN	**spp, 
-		int	slines, 
-		int	scolumns, 
-		FILE	*output, 
-		NCURSES_BOOL filtered, 
-		int	slk_format)
-		{ return(*(int *)0); }
-
 #undef _nc_setupscreen
 int	_nc_setupscreen(
 		int	slines, 
@@ -1956,21 +1701,10 @@ int	ripoffline(
 
 /* ./base/lib_slk.c */
 
-#undef _nc_format_slks
-int	_nc_format_slks(
-		SCREEN	*sp, 
-		int	cols)
-		{ return(*(int *)0); }
-
 #undef _nc_slk_initialize
 int	_nc_slk_initialize(
 		WINDOW	*stwin, 
 		int	cols)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_slk_restore
-int	_nc_safe_slk_restore(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef slk_restore
@@ -1978,14 +1712,6 @@ int	slk_restore(void)
 		{ return(*(int *)0); }
 
 /* ./base/lib_slkatr_set.c */
-
-#undef _nc_safe_slk_attr_set
-int	_nc_safe_slk_attr_set(
-		SCREEN	*sp, 
-		const attr_t attr, 
-		short	color_pair_number, 
-		void	*opts)
-		{ return(*(int *)0); }
 
 #undef slk_attr_set
 int	slk_attr_set(
@@ -1996,24 +1722,12 @@ int	slk_attr_set(
 
 /* ./base/lib_slkatrof.c */
 
-#undef _nc_safe_slk_attroff
-int	_nc_safe_slk_attroff(
-		SCREEN	*sp, 
-		const chtype attr)
-		{ return(*(int *)0); }
-
 #undef slk_attroff
 int	slk_attroff(
 		const chtype attr)
 		{ return(*(int *)0); }
 
 /* ./base/lib_slkatron.c */
-
-#undef _nc_safe_slk_attron
-int	_nc_safe_slk_attron(
-		SCREEN	*sp, 
-		const chtype attr)
-		{ return(*(int *)0); }
 
 #undef slk_attron
 int	slk_attron(
@@ -2022,12 +1736,6 @@ int	slk_attron(
 
 /* ./base/lib_slkatrset.c */
 
-#undef _nc_safe_slk_attrset
-int	_nc_safe_slk_attrset(
-		SCREEN	*sp, 
-		const chtype attr)
-		{ return(*(int *)0); }
-
 #undef slk_attrset
 int	slk_attrset(
 		const chtype attr)
@@ -2035,33 +1743,17 @@ int	slk_attrset(
 
 /* ./base/lib_slkattr.c */
 
-#undef _nc_safe_slk_attr
-attr_t	_nc_safe_slk_attr(
-		SCREEN	*sp)
-		{ return(*(attr_t *)0); }
-
 #undef slk_attr
 attr_t	slk_attr(void)
 		{ return(*(attr_t *)0); }
 
 /* ./base/lib_slkclear.c */
 
-#undef _nc_safe_slk_clear
-int	_nc_safe_slk_clear(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef slk_clear
 int	slk_clear(void)
 		{ return(*(int *)0); }
 
 /* ./base/lib_slkcolor.c */
-
-#undef _nc_safe_slk_color
-int	_nc_safe_slk_color(
-		SCREEN	*sp, 
-		short	color_pair_number)
-		{ return(*(int *)0); }
 
 #undef slk_color
 int	slk_color(
@@ -2077,12 +1769,6 @@ int	slk_init(
 
 /* ./base/lib_slklab.c */
 
-#undef _nc_safe_slk_label
-char	*_nc_safe_slk_label(
-		SCREEN	*sp, 
-		int	n)
-		{ return(*(char **)0); }
-
 #undef slk_label
 char	*slk_label(
 		int	n)
@@ -2090,18 +1776,8 @@ char	*slk_label(
 
 /* ./base/lib_slkrefr.c */
 
-#undef _nc_safe_slk_noutrefresh
-int	_nc_safe_slk_noutrefresh(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef slk_noutrefresh
 int	slk_noutrefresh(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_slk_refresh
-int	_nc_safe_slk_refresh(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef slk_refresh
@@ -2109,14 +1785,6 @@ int	slk_refresh(void)
 		{ return(*(int *)0); }
 
 /* ./base/lib_slkset.c */
-
-#undef _nc_safe_slk_set
-int	_nc_safe_slk_set(
-		SCREEN	*sp, 
-		int	i, 
-		const char *astr, 
-		int	format)
-		{ return(*(int *)0); }
 
 #undef slk_set
 int	slk_set(
@@ -2126,11 +1794,6 @@ int	slk_set(
 		{ return(*(int *)0); }
 
 /* ./base/lib_slktouch.c */
-
-#undef _nc_safe_slk_touch
-int	_nc_safe_slk_touch(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
 
 #undef slk_touch
 int	slk_touch(void)
@@ -2194,8 +1857,8 @@ void	_nc_fifo_dump(
 		SCREEN	*sp)
 		{ /* void */ }
 
-#undef _nc_safe_ungetch
-int	_nc_safe_ungetch(
+#undef _nc_ungetch
+int	_nc_ungetch(
 		SCREEN	*sp, 
 		int	ch)
 		{ return(*(int *)0); }
@@ -2207,15 +1870,6 @@ int	ungetch(
 
 /* ./tty/lib_vidattr.c */
 
-#undef _nc_safe_vidputs
-int	_nc_safe_vidputs(
-		SCREEN	*sp, 
-		chtype	newmode, 
-		int	(*outc)(
-		SCREEN	*p1, 
-		int	p2))
-		{ return(*(int *)0); }
-
 #undef vidputs
 int	vidputs(
 		chtype	newmode, 
@@ -2223,21 +1877,10 @@ int	vidputs(
 		int	p1))
 		{ return(*(int *)0); }
 
-#undef _nc_safe_vidattr
-int	_nc_safe_vidattr(
-		SCREEN	*sp, 
-		chtype	newmode)
-		{ return(*(int *)0); }
-
 #undef vidattr
 int	vidattr(
 		chtype	newmode)
 		{ return(*(int *)0); }
-
-#undef _nc_safe_termattrs
-chtype	_nc_safe_termattrs(
-		SCREEN	*sp)
-		{ return(*(chtype *)0); }
 
 #undef termattrs
 chtype	termattrs(void)
@@ -2319,23 +1962,11 @@ WINDOW	*dupwin(
 
 /* ./base/nc_panel.c */
 
-#undef _nc_safe_panelhook
-struct panelhook *_nc_safe_panelhook(
-		SCREEN	*sp)
-		{ return(*(struct panelhook **)0); }
-
 #undef _nc_panelhook
 struct panelhook *_nc_panelhook(void)
 		{ return(*(struct panelhook **)0); }
 
 /* ./base/safe_sprintf.c */
-
-#undef _nc_safe_printf_string
-char	*_nc_safe_printf_string(
-		SCREEN	*sp, 
-		const char *fmt, 
-		va_list	ap)
-		{ return(*(char **)0); }
 
 #undef _nc_printf_string
 char	*_nc_printf_string(
@@ -2348,22 +1979,8 @@ char	*_nc_printf_string(
 #include <sys/time.h>
 #include <sys/times.h>
 
-#undef _nc_safe_doupdate
-int	_nc_safe_doupdate(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef doupdate
 int	doupdate(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_scrolln
-int	_nc_safe_scrolln(
-		SCREEN	*sp, 
-		int	n, 
-		int	top, 
-		int	bot, 
-		int	maxy)
 		{ return(*(int *)0); }
 
 #undef _nc_scrolln
@@ -2374,37 +1991,16 @@ int	_nc_scrolln(
 		int	maxy)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_screen_resume
-void	_nc_safe_screen_resume(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_screen_resume
 void	_nc_screen_resume(void)
-		{ /* void */ }
-
-#undef _nc_safe_screen_init
-void	_nc_safe_screen_init(
-		SCREEN	*sp)
 		{ /* void */ }
 
 #undef _nc_screen_init
 void	_nc_screen_init(void)
 		{ /* void */ }
 
-#undef _nc_safe_screen_wrap
-void	_nc_safe_screen_wrap(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_screen_wrap
 void	_nc_screen_wrap(void)
-		{ /* void */ }
-
-#undef _nc_safe_do_xmc_glitch
-void	_nc_safe_do_xmc_glitch(
-		SCREEN	*sp, 
-		attr_t	previous)
 		{ /* void */ }
 
 #undef _nc_do_xmc_glitch
@@ -2444,12 +2040,6 @@ void	_nc_vsscanf(void)
 void	_nc_freeall(void)
 		{ /* void */ }
 
-#undef _nc_safe_free_and_exit
-void	_nc_safe_free_and_exit(
-		SCREEN	*sp, 
-		int	code)
-		{ /* void */ }
-
 #undef _nc_free_and_exit
 void	_nc_free_and_exit(
 		int	code)
@@ -2469,20 +2059,8 @@ void	_nc_toggle_attr_off(
 		attr_t	at)
 		{ /* void */ }
 
-#undef _nc_safe_DelCharCost
-int	_nc_safe_DelCharCost(
-		SCREEN	*sp, 
-		int	count)
-		{ return(*(int *)0); }
-
 #undef _nc_DelCharCost
 int	_nc_DelCharCost(
-		int	count)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_InsCharCost
-int	_nc_safe_InsCharCost(
-		SCREEN	*sp, 
 		int	count)
 		{ return(*(int *)0); }
 
@@ -2491,24 +2069,12 @@ int	_nc_InsCharCost(
 		int	count)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_UpdateAttrs
-void	_nc_safe_UpdateAttrs(
-		SCREEN	*sp, 
-		chtype	c)
-		{ /* void */ }
-
 #undef _nc_UpdateAttrs
 void	_nc_UpdateAttrs(
 		chtype	c)
 		{ /* void */ }
 
 /* ./base/legacy_coding.c */
-
-#undef _nc_safe_use_legacy_coding
-int	_nc_safe_use_legacy_coding(
-		SCREEN	*sp, 
-		int	level)
-		{ return(*(int *)0); }
 
 #undef use_legacy_coding
 int	use_legacy_coding(
@@ -2517,20 +2083,8 @@ int	use_legacy_coding(
 
 /* ./base/lib_dft_fgbg.c */
 
-#undef _nc_safe_use_default_colors
-int	_nc_safe_use_default_colors(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef use_default_colors
 int	use_default_colors(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_assume_default_colors
-int	_nc_safe_assume_default_colors(
-		SCREEN	*sp, 
-		int	fg, 
-		int	bg)
 		{ return(*(int *)0); }
 
 #undef assume_default_colors
@@ -2541,13 +2095,6 @@ int	assume_default_colors(
 
 /* ./tinfo/lib_print.c */
 
-#undef _nc_safe_mcprint
-int	_nc_safe_mcprint(
-		SCREEN	*sp, 
-		char	*data, 
-		int	len)
-		{ return(*(int *)0); }
-
 #undef mcprint
 int	mcprint(
 		char	*data, 
@@ -2556,35 +2103,14 @@ int	mcprint(
 
 /* ./base/resizeterm.c */
 
-#undef _nc_safe_is_term_resized
-NCURSES_BOOL _nc_safe_is_term_resized(
-		SCREEN	*sp, 
-		int	ToLines, 
-		int	ToCols)
-		{ return(*(NCURSES_BOOL *)0); }
-
 #undef is_term_resized
 NCURSES_BOOL is_term_resized(
 		int	ToLines, 
 		int	ToCols)
 		{ return(*(NCURSES_BOOL *)0); }
 
-#undef _nc_safe_resize_term
-int	_nc_safe_resize_term(
-		SCREEN	*sp, 
-		int	ToLines, 
-		int	ToCols)
-		{ return(*(int *)0); }
-
 #undef resize_term
 int	resize_term(
-		int	ToLines, 
-		int	ToCols)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_resizeterm
-int	_nc_safe_resizeterm(
-		SCREEN	*sp, 
 		int	ToLines, 
 		int	ToCols)
 		{ return(*(int *)0); }
@@ -2871,11 +2397,6 @@ void	_nc_init_keytry(
 #undef acs_map
 chtype	acs_map[128];
 
-#undef _nc_safe_init_acs
-void	_nc_safe_init_acs(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_init_acs
 void	_nc_init_acs(void)
 		{ /* void */ }
@@ -2899,11 +2420,6 @@ int	_nc_ospeed(
 		int	BaudRate)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_baudrate
-int	_nc_safe_baudrate(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef baudrate
 int	baudrate(void)
 		{ return(*(int *)0); }
@@ -2913,22 +2429,10 @@ int	baudrate(void)
 #undef cur_term
 TERMINAL *cur_term;
 
-#undef _nc_safe_set_curterm
-TERMINAL *_nc_safe_set_curterm(
-		SCREEN	*sp, 
-		TERMINAL *termp)
-		{ return(*(TERMINAL **)0); }
-
 #undef set_curterm
 TERMINAL *set_curterm(
 		TERMINAL *termp)
 		{ return(*(TERMINAL **)0); }
-
-#undef _nc_safe_del_curterm
-int	_nc_safe_del_curterm(
-		SCREEN	*sp, 
-		TERMINAL *termp)
-		{ return(*(int *)0); }
 
 #undef del_curterm
 int	del_curterm(
@@ -2952,25 +2456,10 @@ NCURSES_GLOBALS _nc_globals;
 #undef _nc_prescreen
 NCURSES_PRESCREEN _nc_prescreen;
 
-#undef _nc_screen_of
-SCREEN	*_nc_screen_of(
-		WINDOW	*win)
-		{ return(*(SCREEN **)0); }
-
 /* ./tinfo/lib_has_cap.c */
-
-#undef _nc_safe_has_ic
-NCURSES_BOOL _nc_safe_has_ic(
-		SCREEN	*sp)
-		{ return(*(NCURSES_BOOL *)0); }
 
 #undef has_ic
 NCURSES_BOOL has_ic(void)
-		{ return(*(NCURSES_BOOL *)0); }
-
-#undef _nc_safe_has_il
-NCURSES_BOOL _nc_safe_has_il(
-		SCREEN	*sp)
 		{ return(*(NCURSES_BOOL *)0); }
 
 #undef has_il
@@ -2979,28 +2468,13 @@ NCURSES_BOOL has_il(void)
 
 /* ./tinfo/lib_kernel.c */
 
-#undef _nc_safe_erasechar
-char	_nc_safe_erasechar(
-		SCREEN	*sp)
-		{ return(*(char *)0); }
-
 #undef erasechar
 char	erasechar(void)
-		{ return(*(char *)0); }
-
-#undef _nc_safe_killchar
-char	_nc_safe_killchar(
-		SCREEN	*sp)
 		{ return(*(char *)0); }
 
 #undef killchar
 char	killchar(void)
 		{ return(*(char *)0); }
-
-#undef _nc_safe_flushinp
-int	_nc_safe_flushinp(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
 
 #undef flushinp
 int	flushinp(void)
@@ -3050,12 +2524,6 @@ void	idcok(
 		NCURSES_BOOL flag)
 		{ /* void */ }
 
-#undef _nc_safe_halfdelay
-int	_nc_safe_halfdelay(
-		SCREEN	*sp, 
-		int	t)
-		{ return(*(int *)0); }
-
 #undef halfdelay
 int	halfdelay(
 		int	t)
@@ -3091,32 +2559,14 @@ int	meta(
 		NCURSES_BOOL flag)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_curs_set
-int	_nc_safe_curs_set(
-		SCREEN	*sp, 
-		int	vis)
-		{ return(*(int *)0); }
-
 #undef curs_set
 int	curs_set(
 		int	vis)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_typeahead
-int	_nc_safe_typeahead(
-		SCREEN	*sp, 
-		int	fd)
-		{ return(*(int *)0); }
-
 #undef typeahead
 int	typeahead(
 		int	fd)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_has_key
-int	_nc_safe_has_key(
-		SCREEN	*sp, 
-		int	keycode)
 		{ return(*(int *)0); }
 
 #undef has_key
@@ -3132,54 +2582,29 @@ int	_nc_keypad(
 
 /* ./tinfo/lib_raw.c */
 
-#undef _nc_safe_raw
-int	_nc_safe_raw(
-		SCREEN	*sp, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
-
 #undef raw
 int	raw(void)
-		{ return(*(int *)0); }
-
-#undef noraw
-int	noraw(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_cbreak
-int	_nc_safe_cbreak(
-		SCREEN	*sp, 
-		NCURSES_BOOL flag)
 		{ return(*(int *)0); }
 
 #undef cbreak
 int	cbreak(void)
 		{ return(*(int *)0); }
 
-#undef nocbreak
-int	nocbreak(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_qiflush
-void	_nc_safe_qiflush(
-		SCREEN	*sp, 
-		NCURSES_BOOL flag)
-		{ /* void */ }
-
 #undef qiflush
 void	qiflush(void)
 		{ /* void */ }
 
+#undef noraw
+int	noraw(void)
+		{ return(*(int *)0); }
+
+#undef nocbreak
+int	nocbreak(void)
+		{ return(*(int *)0); }
+
 #undef noqiflush
 void	noqiflush(void)
 		{ /* void */ }
-
-#undef _nc_safe_intrflush
-int	_nc_safe_intrflush(
-		SCREEN	*sp, 
-		WINDOW	*win, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
 
 #undef intrflush
 int	intrflush(
@@ -3201,12 +2626,6 @@ int	LINES;
 int	COLS;
 #undef TABSIZE
 int	TABSIZE;
-
-#undef _nc_safe_set_tabsize
-int	_nc_safe_set_tabsize(
-		SCREEN	*sp, 
-		int	value)
-		{ return(*(int *)0); }
 
 #undef set_tabsize
 int	set_tabsize(
@@ -3248,16 +2667,6 @@ int	_nc_locale_breaks_acs(
 		TERMINAL *termp)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_setupterm
-int	_nc_safe_setupterm(
-		SCREEN	*sp, 
-		TERMINAL **tp, 
-		char	*tname, 
-		int	Filedes, 
-		int	*errret, 
-		NCURSES_BOOL reuse)
-		{ return(*(int *)0); }
-
 #undef _nc_setupterm
 int	_nc_setupterm(
 		char	*tname, 
@@ -3280,9 +2689,8 @@ char	*UP;
 #undef BC
 char	*BC;
 
-#undef _nc_safe_tgetent
-int	_nc_safe_tgetent(
-		SCREEN	*sp, 
+#undef tgetent
+int	tgetent(
 		char	*bufp, 
 		const char *name)
 		{ return(*(int *)0); }
@@ -3293,26 +2701,8 @@ int	_nc_safe_tgetent(
 
 #endif
 
-#undef tgetent
-int	tgetent(
-		char	*bufp, 
-		const char *name)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_tgetflag
-int	_nc_safe_tgetflag(
-		SCREEN	*sp, 
-		char	*id)
-		{ return(*(int *)0); }
-
 #undef tgetflag
 int	tgetflag(
-		char	*id)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_tgetnum
-int	_nc_safe_tgetnum(
-		SCREEN	*sp, 
 		char	*id)
 		{ return(*(int *)0); }
 
@@ -3321,13 +2711,6 @@ int	tgetnum(
 		char	*id)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_tgetstr
-char	*_nc_safe_tgetstr(
-		SCREEN	*sp, 
-		char	*id, 
-		char	**area)
-		{ return(*(char **)0); }
-
 #undef tgetstr
 char	*tgetstr(
 		char	*id, 
@@ -3335,11 +2718,6 @@ char	*tgetstr(
 		{ return(*(char **)0); }
 
 /* ./tinfo/lib_termname.c */
-
-#undef _nc_safe_termname
-char	*_nc_safe_termname(
-		SCREEN	*sp)
-		{ return(*(char **)0); }
 
 #undef termname
 char	*termname(void)
@@ -3356,20 +2734,8 @@ char	*tgoto(
 
 /* ./tinfo/lib_ti.c */
 
-#undef _nc_safe_tigetflag
-int	_nc_safe_tigetflag(
-		SCREEN	*sp, 
-		char	*str)
-		{ return(*(int *)0); }
-
 #undef tigetflag
 int	tigetflag(
-		char	*str)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_tigetnum
-int	_nc_safe_tigetnum(
-		SCREEN	*sp, 
 		char	*str)
 		{ return(*(int *)0); }
 
@@ -3377,12 +2743,6 @@ int	_nc_safe_tigetnum(
 int	tigetnum(
 		char	*str)
 		{ return(*(int *)0); }
-
-#undef _nc_safe_tigetstr
-char	*_nc_safe_tigetstr(
-		SCREEN	*sp, 
-		char	*str)
-		{ return(*(char **)0); }
 
 #undef tigetstr
 char	*tigetstr(
@@ -3421,62 +2781,23 @@ void	_nc_set_no_padding(
 		SCREEN	*sp)
 		{ /* void */ }
 
-#undef _nc_safe_delay_output
-int	_nc_safe_delay_output(
-		SCREEN	*sp, 
-		int	ms)
-		{ return(*(int *)0); }
-
 #undef delay_output
 int	delay_output(
 		int	ms)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_flush
-void	_nc_safe_flush(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef _nc_flush
 void	_nc_flush(void)
 		{ /* void */ }
-
-#undef _nc_safe_outch
-int	_nc_safe_outch(
-		SCREEN	*sp, 
-		int	ch)
-		{ return(*(int *)0); }
 
 #undef _nc_outch
 int	_nc_outch(
 		int	ch)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_putp
-int	_nc_safe_putp(
-		SCREEN	*sp, 
-		const char *string)
-		{ return(*(int *)0); }
-
 #undef putp
 int	putp(
 		const char *string)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_tputs
-int	_nc_safe_tputs(
-		SCREEN	*sp, 
-		const char *string, 
-		int	affcnt, 
-		int	(*outc)(
-		SCREEN	*p1, 
-		int	p2))
-		{ return(*(int *)0); }
-
-#undef _nc_outc_wrapper
-int	_nc_outc_wrapper(
-		SCREEN	*sp, 
-		int	c)
 		{ return(*(int *)0); }
 
 #undef tputs
@@ -3623,20 +2944,8 @@ char	*_tracechar(
 
 /* ./tinfo/lib_ttyflags.c */
 
-#undef _nc_safe_get_tty_mode
-int	_nc_safe_get_tty_mode(
-		SCREEN	*sp, 
-		struct termios *buf)
-		{ return(*(int *)0); }
-
 #undef _nc_get_tty_mode
 int	_nc_get_tty_mode(
-		struct termios *buf)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_set_tty_mode
-int	_nc_safe_set_tty_mode(
-		SCREEN	*sp, 
 		struct termios *buf)
 		{ return(*(int *)0); }
 
@@ -3645,54 +2954,24 @@ int	_nc_set_tty_mode(
 		struct termios *buf)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_def_shell_mode
-int	_nc_safe_def_shell_mode(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef def_shell_mode
 int	def_shell_mode(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_def_prog_mode
-int	_nc_safe_def_prog_mode(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef def_prog_mode
 int	def_prog_mode(void)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_reset_prog_mode
-int	_nc_safe_reset_prog_mode(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef reset_prog_mode
 int	reset_prog_mode(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_reset_shell_mode
-int	_nc_safe_reset_shell_mode(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef reset_shell_mode
 int	reset_shell_mode(void)
 		{ return(*(int *)0); }
 
-#undef _nc_safe_savetty
-int	_nc_safe_savetty(
-		SCREEN	*sp)
-		{ return(*(int *)0); }
-
 #undef savetty
 int	savetty(void)
-		{ return(*(int *)0); }
-
-#undef _nc_safe_resetty
-int	_nc_safe_resetty(
-		SCREEN	*sp)
 		{ return(*(int *)0); }
 
 #undef resetty
@@ -3773,13 +3052,6 @@ int	_nc_read_termcap_entry(
 		{ return(*(int *)0); }
 
 /* ./tinfo/setbuf.c */
-
-#undef _nc_safe_set_buffer
-void	_nc_safe_set_buffer(
-		SCREEN	*sp, 
-		FILE	*ofp, 
-		NCURSES_BOOL buffered)
-		{ /* void */ }
 
 #undef _nc_set_buffer
 void	_nc_set_buffer(
@@ -4122,13 +3394,6 @@ int	_nc_tic_written(void)
 
 /* ./base/define_key.c */
 
-#undef _nc_safe_define_key
-int	_nc_safe_define_key(
-		SCREEN	*sp, 
-		const char *str, 
-		int	keycode)
-		{ return(*(int *)0); }
-
 #undef define_key
 int	define_key(
 		const char *str, 
@@ -4143,25 +3408,12 @@ void	_nc_hashed_db(void)
 
 /* ./base/key_defined.c */
 
-#undef _nc_safe_key_defined
-int	_nc_safe_key_defined(
-		SCREEN	*sp, 
-		const char *str)
-		{ return(*(int *)0); }
-
 #undef key_defined
 int	key_defined(
 		const char *str)
 		{ return(*(int *)0); }
 
 /* ./base/keybound.c */
-
-#undef _nc_safe_keybound
-char	*_nc_safe_keybound(
-		SCREEN	*sp, 
-		int	code, 
-		int	count)
-		{ return(*(char **)0); }
 
 #undef keybound
 char	*keybound(
@@ -4170,13 +3422,6 @@ char	*keybound(
 		{ return(*(char **)0); }
 
 /* ./base/keyok.c */
-
-#undef _nc_safe_keyok
-int	_nc_safe_keyok(
-		SCREEN	*sp, 
-		int	c, 
-		NCURSES_BOOL flag)
-		{ return(*(int *)0); }
 
 #undef keyok
 int	keyok(

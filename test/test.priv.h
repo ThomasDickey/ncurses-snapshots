@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.79.1.1 2008/11/16 00:19:59 juergen Exp $ */
+/* $Id: test.priv.h,v 1.79 2008/10/04 21:53:41 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -488,13 +488,6 @@ extern int optind;
 
 #define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
 
-#ifdef __MINGW32__
-#  define SIGHUP 1
-#  define SIGKILL 9
-#  define sleep(ms) fprintf(stderr,"sleep(%d)\n",ms)
-#  define getlogin() "username"
-#endif
-
 #define CATCHALL(handler) { \
 		int nsig; \
 		for (nsig = SIGHUP; nsig < SIGTERM; ++nsig) \
@@ -567,7 +560,7 @@ typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
 #define USING_SCREEN(s,func,data) use_screen(s, (NCURSES_SCREEN_CB) func, data)
 #define WANT_USE_SCREEN() extern void _nc_want_use_screen(void)
 #else
-#define USING_SCREEN(s,func,data) func(data)
+#define USING_SCREEN(s,func,data) func(s,data)
 #define WANT_USE_SCREEN() extern void _nc_want_use_screen(void)
 #endif
 
