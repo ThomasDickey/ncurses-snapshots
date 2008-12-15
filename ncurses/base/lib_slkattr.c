@@ -38,19 +38,25 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkattr.c,v 1.6 2005/01/08 21:44:28 tom Exp $")
+MODULE_ID("$Id: lib_slkattr.c,v 1.6.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(attr_t)
-slk_attr(void)
+NC_SNAME(slk_attr)(SCREEN *sp)
 {
-    T((T_CALLED("slk_attr()")));
+    T((T_CALLED("slk_attr(%p)"), sp));
 
-    if (SP != 0 && SP->_slk != 0) {
-	attr_t result = AttrOf(SP->_slk->attr) & ALL_BUT_COLOR;
-	int pair = GetPair(SP->_slk->attr);
+    if (sp != 0 && sp->_slk != 0) {
+	attr_t result = AttrOf(sp->_slk->attr) & ALL_BUT_COLOR;
+	int pair = GetPair(sp->_slk->attr);
 
 	result |= COLOR_PAIR(pair);
 	returnAttr(result);
     } else
 	returnAttr(0);
+}
+
+NCURSES_EXPORT(attr_t)
+slk_attr (void)
+{
+    return NC_SNAME(slk_attr)(CURRENT_SCREEN);
 }

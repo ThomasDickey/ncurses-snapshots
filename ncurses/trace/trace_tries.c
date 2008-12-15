@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_tries.c,v 1.13 2008/08/03 15:43:30 tom Exp $")
+MODULE_ID("$Id: trace_tries.c,v 1.13.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 #ifdef TRACE
 #define my_buffer _nc_globals.tracetry_buf
@@ -55,7 +55,7 @@ recur_tries(TRIES * tree, unsigned level)
 	my_buffer[level + 1] = 0;
 	if (tree->value != 0) {
 	    _tracef("%5d: %s (%s)", tree->value,
-		    _nc_visbuf((char *) my_buffer), keyname(tree->value));
+		    _nc_visbuf((char *) my_buffer), keyname (tree->value));
 	}
 	if (tree->child)
 	    recur_tries(tree->child, level + 1);

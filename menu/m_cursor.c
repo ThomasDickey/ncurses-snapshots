@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_cursor.c,v 1.20 2005/10/22 23:03:32 tom Exp $")
+MODULE_ID("$Id: m_cursor.c,v 1.20.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -80,7 +80,7 @@ _nc_menu_cursor_pos(const MENU * menu, const ITEM * item, int *pY, int *pX)
 |                    E_NOT_POSTED    - Menu is not posted
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-pos_menu_cursor(const MENU * menu)
+pos_menu_cursor(const MENU* menu)
 {
   WINDOW *win, *sub;
   int x = 0, y = 0;
@@ -90,7 +90,7 @@ pos_menu_cursor(const MENU * menu)
 
   if (E_OK == err)
     {
-      win = menu->userwin ? menu->userwin : stdscr;
+      win = Get_Menu_UserWin(menu);
       sub = menu->usersub ? menu->usersub : win;
       assert(win && sub);
 

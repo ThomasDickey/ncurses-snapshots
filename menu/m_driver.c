@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.27 2008/08/03 22:08:22 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.27.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /* Macros */
 
@@ -197,7 +197,7 @@ _nc_Match_Next_Character_In_Item_Name
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
-|   Function      :  int menu_driver(MENU *menu, int c)
+|   Function      :  int menu_driver(MENU* menu, int c)
 |
 |   Description   :  Central dispatcher for the menu. Translates the logical
 |                    request 'c' into a menu action.
@@ -208,7 +208,7 @@ _nc_Match_Next_Character_In_Item_Name
 |                    E_NOT_POSTED    - menu is not posted
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-menu_driver(MENU * menu, int c)
+menu_driver(MENU* menu, int c)
 {
 #define NAVIGATE(dir) \
   if (!item->dir)\

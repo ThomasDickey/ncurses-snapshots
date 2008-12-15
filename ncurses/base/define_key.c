@@ -32,28 +32,28 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: define_key.c,v 1.13 2006/12/30 23:23:31 tom Exp $")
+MODULE_ID("$Id: define_key.c,v 1.13.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-define_key(const char *str, int keycode)
+NC_SNAME(define_key)(SCREEN *sp, const char *str, int keycode)
 {
     int code = ERR;
 
-    T((T_CALLED("define_key(%s,%d)"), _nc_visbuf(str), keycode));
-    if (SP == 0) {
+    T((T_CALLED("define_key(%p, %s,%d)"), sp, _nc_visbuf(str), keycode));
+    if (sp == 0 || !HasTInfoTerminal(sp)) {
 	code = ERR;
     } else if (keycode > 0) {
 	unsigned ukey = (unsigned) keycode;
 
 	if (str != 0) {
-	    define_key(str, 0);
-	} else if (has_key(keycode)) {
-	    while (_nc_remove_key(&(SP->_keytry), ukey))
+	    NC_SNAME(define_key)(sp, str, 0);
+	} else if (NC_SNAME(has_key)(sp, keycode)) {
+	    while (_nc_remove_key(&(sp->_keytry), ukey))
 		code = OK;
 	}
 	if (str != 0) {
-	    if (key_defined(str) == 0) {
-		if (_nc_add_to_try(&(SP->_keytry), str, ukey) == OK) {
+  	    if (NC_SNAME(key_defined)(sp, str) == 0) {
+		if (_nc_add_to_try(&(sp->_keytry), str, ukey) == OK) {
 		    code = OK;
 		} else {
 		    code = ERR;
@@ -63,8 +63,14 @@ define_key(const char *str, int keycode)
 	    }
 	}
     } else {
-	while (_nc_remove_string(&(SP->_keytry), str))
+	while (_nc_remove_string(&(sp->_keytry), str))
 	    code = OK;
     }
     returnCode(code);
+}
+
+NCURSES_EXPORT(int)
+define_key (const char *str, int keycode)
+{
+    return NC_SNAME(define_key)(CURRENT_SCREEN, str, keycode);
 }

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.25 2008/06/07 14:12:56 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.25.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(void)
 _nc_synchook(WINDOW *win)
@@ -185,16 +185,16 @@ dupwin(WINDOW *win)
     T((T_CALLED("dupwin(%p)"), win));
 
     if (win != 0) {
-
+	SCREEN *sp = _nc_screen_of(win);
 	_nc_lock_global(curses);
 	if (win->_flags & _ISPAD) {
-	    nwin = newpad(win->_maxy + 1,
-			  win->_maxx + 1);
+	    nwin = newpad_sp(sp, win->_maxy + 1,
+			     win->_maxx + 1);
 	} else {
-	    nwin = newwin(win->_maxy + 1,
-			  win->_maxx + 1,
-			  win->_begy,
-			  win->_begx);
+	    nwin = newwin_sp(sp, win->_maxy + 1,
+			     win->_maxx + 1,
+			     win->_begy,
+			     win->_begx);
 	}
 
 	if (nwin != 0) {

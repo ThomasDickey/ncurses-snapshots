@@ -38,11 +38,9 @@
  */
 
 #include <curses.priv.h>
-
-#include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.85 2007/04/07 17:07:28 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.85.1.2 2008/12/14 19:22:16 juergen Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -53,12 +51,12 @@ MODULE_ID("$Id: lib_color.c,v 1.85 2007/04/07 17:07:28 tom Exp $")
 NCURSES_EXPORT(int)
 NCURSES_PUBLIC_VAR(COLOR_PAIRS) (void)
 {
-    return SP ? SP->_pair_count : -1;
+    return CURRENT_SCREEN ? CURRENT_SCREEN->_pair_count : -1;
 }
 NCURSES_EXPORT(int)
 NCURSES_PUBLIC_VAR(COLORS) (void)
 {
-    return SP ? SP->_color_count : -1;
+    return CURRENT_SCREEN ? CURRENT_SCREEN->_color_count : -1;
 }
 #else
 NCURSES_EXPORT_VAR(int) COLOR_PAIRS = 0;
@@ -71,8 +69,9 @@ NCURSES_EXPORT_VAR(int) COLORS = 0;
 
 #define MAX_PALETTE	8
 
-#define OkColorHi(n)	(((n) < COLORS) && ((n) < max_colors))
+#define OkColorHi(n)	(((n) < COLORS) && ((n) < maxcolors))
 #define InPalette(n)	((n) >= 0 && (n) < MAX_PALETTE)
+
 
 /*
  * Given a RGB range of 0..1000, we'll normally set the individual values
@@ -106,6 +105,10 @@ static const color_t hls_palette[] =
     DATA(	300,	50,	100),		/* COLOR_CYAN */
     DATA(	0,	50,	100),		/* COLOR_WHITE */
 };
+
+NCURSES_EXPORT_VAR(const color_t*) _nc_cga_palette = cga_palette;
+NCURSES_EXPORT_VAR(const color_t*) _nc_hls_palette = hls_palette;
+
 /* *INDENT-ON* */
 
 #if NCURSES_EXT_FUNCS
@@ -114,83 +117,56 @@ static const color_t hls_palette[] =
  * vidattr - so we have to assume that SP may be null.
  */
 static int
-default_fg(void)
+default_fg(SCREEN *sp)
 {
-    return (SP != 0) ? SP->_default_fg : COLOR_WHITE;
+    return (sp != 0) ? sp->_default_fg : COLOR_WHITE;
 }
 
 static int
-default_bg(void)
+default_bg(SCREEN *sp)
 {
-    return SP != 0 ? SP->_default_bg : COLOR_BLACK;
+    return sp != 0 ? sp->_default_bg : COLOR_BLACK;
 }
 #else
-#define default_fg() COLOR_WHITE
-#define default_bg() COLOR_BLACK
+#define default_fg(sp) COLOR_WHITE
+#define default_bg(sp) COLOR_BLACK
 #endif
 
-/*
- * SVr4 curses is known to interchange color codes (1,4) and (3,6), possibly
- * to maintain compatibility with a pre-ANSI scheme.  The same scheme is
- * also used in the FreeBSD syscons.
- */
-static int
-toggled_colors(int c)
+
+static void
+set_background_color(SCREEN *sp, int bg, int (*outc) (SCREEN *, int))
 {
-    if (c < 16) {
-	static const int table[] =
-	{0, 4, 2, 6, 1, 5, 3, 7,
-	 8, 12, 10, 14, 9, 13, 11, 15};
-	c = table[c];
-    }
-    return c;
+  CallDriver_3(sp,color,FALSE,bg,outc);
 }
 
 static void
-set_background_color(int bg, int (*outc) (int))
+set_foreground_color(SCREEN *sp, int fg, int (*outc) (SCREEN *, int))
 {
-    if (set_a_background) {
-	TPUTS_TRACE("set_a_background");
-	tputs(TPARM_1(set_a_background, bg), 1, outc);
-    } else {
-	TPUTS_TRACE("set_background");
-	tputs(TPARM_1(set_background, toggled_colors(bg)), 1, outc);
-    }
+  CallDriver_3(sp,color,TRUE,fg,outc);
 }
 
 static void
-set_foreground_color(int fg, int (*outc) (int))
+init_color_table(SCREEN *sp)
 {
-    if (set_a_foreground) {
-	TPUTS_TRACE("set_a_foreground");
-	tputs(TPARM_1(set_a_foreground, fg), 1, outc);
-    } else {
-	TPUTS_TRACE("set_foreground");
-	tputs(TPARM_1(set_foreground, toggled_colors(fg)), 1, outc);
-    }
-}
-
-static void
-init_color_table(void)
-{
-    const color_t *tp;
+    const color_t *tp = InfoOf(sp).defaultPalette;
     int n;
 
-    tp = (hue_lightness_saturation) ? hls_palette : cga_palette;
+    assert(tp!=0);
+
     for (n = 0; n < COLORS; n++) {
 	if (InPalette(n)) {
-	    SP->_color_table[n] = tp[n];
+	    sp->_color_table[n] = tp[n];
 	} else {
-	    SP->_color_table[n] = tp[n % MAX_PALETTE];
-	    if (hue_lightness_saturation) {
-		SP->_color_table[n].green = 100;
+	    sp->_color_table[n] = tp[n % MAX_PALETTE];
+	    if (tp==_nc_hls_palette) {
+		sp->_color_table[n].green = 100;
 	    } else {
-		if (SP->_color_table[n].red)
-		    SP->_color_table[n].red = 1000;
-		if (SP->_color_table[n].green)
-		    SP->_color_table[n].green = 1000;
-		if (SP->_color_table[n].blue)
-		    SP->_color_table[n].blue = 1000;
+		if (sp->_color_table[n].red)
+		    sp->_color_table[n].red = 1000;
+		if (sp->_color_table[n].green)
+		    sp->_color_table[n].green = 1000;
+		if (sp->_color_table[n].blue)
+		    sp->_color_table[n].blue = 1000;
 	    }
 	}
     }
@@ -200,16 +176,9 @@ init_color_table(void)
  * Reset the color pair, e.g., to whatever color pair 0 is.
  */
 static bool
-reset_color_pair(void)
+reset_color_pair(SCREEN *sp)
 {
-    bool result = FALSE;
-
-    if (orig_pair != 0) {
-	TPUTS_TRACE("orig_pair");
-	putp(orig_pair);
-	result = TRUE;
-    }
-    return result;
+  return CallDriver(sp,rescol);
 }
 
 /*
@@ -217,72 +186,81 @@ reset_color_pair(void)
  * badly-written terminal descriptions than for the relatively rare case where
  * someone has changed the color definitions.
  */
-bool
-_nc_reset_colors(void)
+NCURSES_EXPORT(bool)
+NC_SNAME(_nc_reset_colors)(SCREEN *sp)
 {
     int result = FALSE;
 
-    T((T_CALLED("_nc_reset_colors()")));
-    if (SP->_color_defs > 0)
-	SP->_color_defs = -(SP->_color_defs);
-
-    if (reset_color_pair())
-	result = TRUE;
-    if (orig_colors != 0) {
-	TPUTS_TRACE("orig_colors");
-	putp(orig_colors);
-	result = TRUE;
-    }
+    T((T_CALLED("_nc_reset_colors(%p)"), sp));
+    if (sp->_color_defs > 0)
+      sp->_color_defs = -(sp->_color_defs);
+    if (reset_color_pair(sp))
+      result = TRUE;
+    
+    result = CallDriver(sp,rescolors);
     returnBool(result);
 }
 
+NCURSES_EXPORT(bool)
+_nc_reset_colors (void) {
+  return NC_SNAME(_nc_reset_colors)(CURRENT_SCREEN);
+}
+
 NCURSES_EXPORT(int)
-start_color(void)
+NC_SNAME(start_color)(SCREEN *sp)
 {
     int result = ERR;
+    int maxpairs = 0, maxcolors = 0;
 
-    T((T_CALLED("start_color()")));
-
-    if (SP == 0) {
-	result = ERR;
-    } else if (SP->_coloron) {
-	result = OK;
+    T((T_CALLED("start_color(%p)"),sp));
+    
+    if (sp == 0) {
+      result = ERR;
+    } else if (sp->_coloron) {
+      result = OK;
     } else {
-
-	if (reset_color_pair() != TRUE) {
-	    set_foreground_color(default_fg(), _nc_outch);
-	    set_background_color(default_bg(), _nc_outch);
-	}
-
-	if (max_pairs > 0 && max_colors > 0) {
-	    SP->_pair_count = max_pairs;
-	    SP->_color_count = max_colors;
+      maxpairs = InfoOf(sp).maxpairs;
+      maxcolors = InfoOf(sp).maxcolors;
+      if (reset_color_pair(sp) != TRUE) {
+	set_foreground_color(sp, default_fg(sp), NC_SNAME(_nc_outch));
+	set_background_color(sp, default_bg(sp), NC_SNAME(_nc_outch));
+      }
+      
+      if (maxpairs > 0 && maxcolors > 0) {
+	sp->_pair_count = maxpairs;
+	sp->_color_count = maxcolors;
 #if !USE_REENTRANT
-	    COLOR_PAIRS = max_pairs;
-	    COLORS = max_colors;
+	COLOR_PAIRS = maxpairs;
+	COLORS = maxcolors;
 #endif
-
-	    if ((SP->_color_pairs = TYPE_CALLOC(colorpair_t,
-						max_pairs)) != 0) {
-		if ((SP->_color_table = TYPE_CALLOC(color_t,
-						    max_colors)) != 0) {
-		    SP->_color_pairs[0] = PAIR_OF(default_fg(), default_bg());
-		    init_color_table();
-
-		    T(("started color: COLORS = %d, COLOR_PAIRS = %d",
-		       COLORS, COLOR_PAIRS));
-
-		    SP->_coloron = 1;
-		    result = OK;
-		} else if (SP->_color_pairs != 0) {
-		    FreeAndNull(SP->_color_pairs);
-		}
-	    }
-	} else {
+	
+	if ((sp->_color_pairs = TYPE_CALLOC(colorpair_t,
+					    maxpairs)) != 0) {
+	  if ((sp->_color_table = TYPE_CALLOC(color_t,
+					      maxcolors)) != 0) {
+	    sp->_color_pairs[0] = PAIR_OF(default_fg(sp), default_bg(sp));
+	    init_color_table(sp);
+	    
+	    T(("started color: COLORS = %d, COLOR_PAIRS = %d",
+	       COLORS, COLOR_PAIRS));
+	    
+	    sp->_coloron = 1;
 	    result = OK;
+	  } else if (sp->_color_pairs != 0) {
+	    FreeAndNull(sp->_color_pairs);
+	  }
 	}
+      } else {
+	result = OK;
+      }
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(int)
+start_color (void)
+{
+    return NC_SNAME(start_color)(CURRENT_SCREEN);
 }
 
 /* This function was originally written by Daniel Weaver <danw@znyx.com> */
@@ -328,16 +306,20 @@ rgb2hls(short r, short g, short b, short *h, short *l, short *s)
  * values.
  */
 NCURSES_EXPORT(int)
-init_pair(short pair, short f, short b)
+NC_SNAME(init_pair)(SCREEN *sp, short pair, short f, short b)
 {
     colorpair_t result;
+    int maxcolors;
 
-    T((T_CALLED("init_pair(%d,%d,%d)"), pair, f, b));
+    T((T_CALLED("init_pair(%p,%d,%d,%d)"), sp, pair, f, b));
 
-    if ((pair < 0) || (pair >= COLOR_PAIRS) || SP == 0 || !SP->_coloron)
+    if ((pair < 0) || (pair >= COLOR_PAIRS) || sp == 0 || !sp->_coloron)
 	returnCode(ERR);
+
+    maxcolors = InfoOf(sp).maxcolors;
+
 #if NCURSES_EXT_FUNCS
-    if (SP->_default_color) {
+    if (sp->_default_color) {
 	if (f < 0)
 	    f = COLOR_DEFAULT;
 	if (b < 0)
@@ -361,14 +343,14 @@ init_pair(short pair, short f, short b)
      * pair colors with the new ones).
      */
     result = PAIR_OF(f, b);
-    if (SP->_color_pairs[pair] != 0
-	&& SP->_color_pairs[pair] != result) {
+    if (sp->_color_pairs[pair] != 0
+	&& sp->_color_pairs[pair] != result) {
 	int y, x;
 
-	for (y = 0; y <= curscr->_maxy; y++) {
-	    struct ldat *ptr = &(curscr->_line[y]);
+	for (y = 0; y <= sp->_curscr->_maxy; y++) {
+	    struct ldat *ptr = &(sp->_curscr->_line[y]);
 	    bool changed = FALSE;
-	    for (x = 0; x <= curscr->_maxx; x++) {
+	    for (x = 0; x <= sp->_curscr->_maxx; x++) {
 		if (GetPair(ptr->text[x]) == pair) {
 		    /* Set the old cell to zero to ensure it will be
 		       updated on the next doupdate() */
@@ -378,102 +360,121 @@ init_pair(short pair, short f, short b)
 		}
 	    }
 	    if (changed)
-		_nc_make_oldhash(y);
+	        NC_SNAME(_nc_make_oldhash)(sp, y);
 	}
     }
-    SP->_color_pairs[pair] = result;
-    if (GET_SCREEN_PAIR(SP) == pair)
-	SET_SCREEN_PAIR(SP, (chtype) (~0));	/* force attribute update */
+    
+    sp->_color_pairs[pair] = result;
+    if (GET_SCREEN_PAIR(sp) == pair)
+	SET_SCREEN_PAIR(sp, (chtype) (~0));	/* force attribute update */
 
-    if (initialize_pair && InPalette(f) && InPalette(b)) {
-	const color_t *tp = hue_lightness_saturation ? hls_palette : cga_palette;
-
-	TR(TRACE_ATTRS,
-	   ("initializing pair: pair = %d, fg=(%d,%d,%d), bg=(%d,%d,%d)",
-	    pair,
-	    tp[f].red, tp[f].green, tp[f].blue,
-	    tp[b].red, tp[b].green, tp[b].blue));
-
-	TPUTS_TRACE("initialize_pair");
-	putp(TPARM_7(initialize_pair,
-		     pair,
-		     tp[f].red, tp[f].green, tp[f].blue,
-		     tp[b].red, tp[b].green, tp[b].blue));
-    }
-
+    CallDriver_3(sp,initpair,pair,f,b);
+    
     returnCode(OK);
+}
+
+NCURSES_EXPORT(int)
+init_pair (short pair, short f, short b)
+{
+    return NC_SNAME(init_pair)(CURRENT_SCREEN, pair, f, b);
 }
 
 #define okRGB(n) ((n) >= 0 && (n) <= 1000)
 
 NCURSES_EXPORT(int)
-init_color(short color, short r, short g, short b)
+NC_SNAME(init_color)(SCREEN *sp, short color, short r, short g, short b)
 {
     int result = ERR;
+    int maxcolors;
 
-    T((T_CALLED("init_color(%d,%d,%d,%d)"), color, r, g, b));
+    T((T_CALLED("init_color(%p,%d,%d,%d,%d)"), sp, color, r, g, b));
 
-    if (initialize_color != NULL
-	&& SP != 0
-	&& SP->_coloron
+    if (sp==0)
+      returnCode(result);
+
+    maxcolors = InfoOf(sp).maxcolors;
+
+    if (InfoOf(sp).initcolor
+	&& sp->_coloron
 	&& (color >= 0 && OkColorHi(color))
 	&& (okRGB(r) && okRGB(g) && okRGB(b))) {
 
-	SP->_color_table[color].init = 1;
-	SP->_color_table[color].r = r;
-	SP->_color_table[color].g = g;
-	SP->_color_table[color].b = b;
+	sp->_color_table[color].init = 1;
+	sp->_color_table[color].r = r;
+	sp->_color_table[color].g = g;
+	sp->_color_table[color].b = b;
 
-	if (hue_lightness_saturation) {
+	if (InfoOf(sp).defaultPalette == _nc_hls_palette) {
 	    rgb2hls(r, g, b,
-		    &SP->_color_table[color].red,
-		    &SP->_color_table[color].green,
-		    &SP->_color_table[color].blue);
+		    &sp->_color_table[color].red,
+		    &sp->_color_table[color].green,
+		    &sp->_color_table[color].blue);
 	} else {
-	    SP->_color_table[color].red = r;
-	    SP->_color_table[color].green = g;
-	    SP->_color_table[color].blue = b;
+	    sp->_color_table[color].red = r;
+	    sp->_color_table[color].green = g;
+	    sp->_color_table[color].blue = b;
 	}
 
-	TPUTS_TRACE("initialize_color");
-	putp(TPARM_4(initialize_color, color, r, g, b));
-	SP->_color_defs = max(color + 1, SP->_color_defs);
+	CallDriver_4(sp,initcolor,color,r,g,b);
+	sp->_color_defs = max(color + 1, sp->_color_defs);
+
 	result = OK;
     }
     returnCode(result);
 }
 
-NCURSES_EXPORT(bool)
-can_change_color(void)
+NCURSES_EXPORT(int)
+init_color (short color, short r, short g, short b)
 {
-    T((T_CALLED("can_change_color()")));
-    returnCode((can_change != 0) ? TRUE : FALSE);
+    return NC_SNAME(init_color)(CURRENT_SCREEN, color, r, g, b);
 }
 
 NCURSES_EXPORT(bool)
-has_colors(void)
+NC_SNAME(can_change_color)(SCREEN *sp)
 {
+    T((T_CALLED("can_change_color(%p)"),sp));
+    returnCode((InfoOf(sp).canchange != 0) ? TRUE : FALSE);
+}
+
+NCURSES_EXPORT(bool)
+can_change_color (void)
+{
+    return NC_SNAME(can_change_color)(CURRENT_SCREEN);
+}
+
+NCURSES_EXPORT(bool)
+NC_SNAME(has_colors)(SCREEN *sp)
+{
+
     T((T_CALLED("has_colors()")));
-    returnCode((VALID_NUMERIC(max_colors) && VALID_NUMERIC(max_pairs)
-		&& (((set_foreground != NULL)
-		     && (set_background != NULL))
-		    || ((set_a_foreground != NULL)
-			&& (set_a_background != NULL))
-		    || set_color_pair)) ? TRUE : FALSE);
+    returnCode(InfoOf(sp).hascolor);
+}
+
+NCURSES_EXPORT(bool)
+has_colors (void)
+{
+    return NC_SNAME(has_colors)(CURRENT_SCREEN);
 }
 
 NCURSES_EXPORT(int)
-color_content(short color, short *r, short *g, short *b)
+NC_SNAME(color_content)(SCREEN *sp, short color, short *r, short *g, short *b)
 {
-    int result;
+    int result = ERR;
+    int maxcolors;
 
-    T((T_CALLED("color_content(%d,%p,%p,%p)"), color, r, g, b));
-    if (color < 0 || !OkColorHi(color) || SP == 0 || !SP->_coloron) {
+    T((T_CALLED("color_content(%p,%d,%p,%p,%p)"), sp, color, r, g, b));
+
+    if (sp==0)
+      returnCode(result);
+
+    maxcolors = InfoOf(sp).maxcolors;
+
+    if (color < 0 || !OkColorHi(color) || !sp->_coloron) {
 	result = ERR;
     } else {
-	NCURSES_COLOR_T c_r = SP->_color_table[color].red;
-	NCURSES_COLOR_T c_g = SP->_color_table[color].green;
-	NCURSES_COLOR_T c_b = SP->_color_table[color].blue;
+	NCURSES_COLOR_T c_r = sp->_color_table[color].red;
+	NCURSES_COLOR_T c_g = sp->_color_table[color].green;
+	NCURSES_COLOR_T c_b = sp->_color_table[color].blue;
 
 	if (r)
 	    *r = c_r;
@@ -488,19 +489,24 @@ color_content(short color, short *r, short *g, short *b)
     }
     returnCode(result);
 }
+NCURSES_EXPORT(int)
+color_content (short color, short *r, short *g, short *b)
+{
+    return NC_SNAME(color_content)(CURRENT_SCREEN, color, r, g, b);
+}
 
 NCURSES_EXPORT(int)
-pair_content(short pair, short *f, short *b)
+NC_SNAME(pair_content)(SCREEN *sp, short pair, short *f, short *b)
 {
     int result;
 
-    T((T_CALLED("pair_content(%d,%p,%p)"), pair, f, b));
+    T((T_CALLED("pair_content(%p,%d,%p,%p)"), sp, pair, f, b));
 
-    if ((pair < 0) || (pair >= COLOR_PAIRS) || SP == 0 || !SP->_coloron) {
+    if ((pair < 0) || (pair >= COLOR_PAIRS) || sp == 0 || !sp->_coloron) {
 	result = ERR;
     } else {
-	NCURSES_COLOR_T fg = ((SP->_color_pairs[pair] >> C_SHIFT) & C_MASK);
-	NCURSES_COLOR_T bg = (SP->_color_pairs[pair] & C_MASK);
+	NCURSES_COLOR_T fg = ((sp->_color_pairs[pair] >> C_SHIFT) & C_MASK);
+	NCURSES_COLOR_T bg = (sp->_color_pairs[pair] & C_MASK);
 
 #if NCURSES_EXT_FUNCS
 	if (fg == COLOR_DEFAULT)
@@ -514,80 +520,31 @@ pair_content(short pair, short *f, short *b)
 	if (b)
 	    *b = bg;
 
-	TR(TRACE_ATTRS, ("...pair_content(%d,%d,%d)", pair, fg, bg));
+	TR(TRACE_ATTRS, ("...pair_content(%p,%d,%d,%d)", sp, pair, fg, bg));
 	result = OK;
     }
     returnCode(result);
 }
 
-NCURSES_EXPORT(void)
-_nc_do_color(short old_pair, short pair, bool reverse, int (*outc) (int))
+NCURSES_EXPORT(int)
+pair_content (short pair, short *f, short *b)
 {
-    NCURSES_COLOR_T fg = COLOR_DEFAULT;
-    NCURSES_COLOR_T bg = COLOR_DEFAULT;
-    NCURSES_COLOR_T old_fg, old_bg;
+    return NC_SNAME(pair_content)(CURRENT_SCREEN, pair, f, b);
+}
 
-    if (pair < 0 || pair >= COLOR_PAIRS) {
-	return;
-    } else if (pair != 0) {
-	if (set_color_pair) {
-	    TPUTS_TRACE("set_color_pair");
-	    tputs(TPARM_1(set_color_pair, pair), 1, outc);
-	    return;
-	} else if (SP != 0) {
-	    pair_content((short) pair, &fg, &bg);
-	}
-    }
+NCURSES_EXPORT(void)
+NC_SNAME(_nc_do_color)(SCREEN *sp,
+		       short old_pair,
+		       short pair,
+		       bool reverse,
+		       int (*outc) (SCREEN *, int))
+{
+    CallDriver_4(sp,docolor,old_pair,pair,reverse,outc);
+}
 
-    if (old_pair >= 0
-	&& SP != 0
-	&& pair_content(old_pair, &old_fg, &old_bg) != ERR) {
-	if ((isDefaultColor(fg) && !isDefaultColor(old_fg))
-	    || (isDefaultColor(bg) && !isDefaultColor(old_bg))) {
-#if NCURSES_EXT_FUNCS
-	    /*
-	     * A minor optimization - but extension.  If "AX" is specified in
-	     * the terminal description, treat it as screen's indicator of ECMA
-	     * SGR 39 and SGR 49, and assume the two sequences are independent.
-	     */
-	    if (SP->_has_sgr_39_49
-		&& isDefaultColor(old_bg)
-		&& !isDefaultColor(old_fg)) {
-		tputs("\033[39m", 1, outc);
-	    } else if (SP->_has_sgr_39_49
-		       && isDefaultColor(old_fg)
-		       && !isDefaultColor(old_bg)) {
-		tputs("\033[49m", 1, outc);
-	    } else
-#endif
-		reset_color_pair();
-	}
-    } else {
-	reset_color_pair();
-	if (old_pair < 0)
-	    return;
-    }
-
-#if NCURSES_EXT_FUNCS
-    if (isDefaultColor(fg))
-	fg = default_fg();
-    if (isDefaultColor(bg))
-	bg = default_bg();
-#endif
-
-    if (reverse) {
-	NCURSES_COLOR_T xx = fg;
-	fg = bg;
-	bg = xx;
-    }
-
-    TR(TRACE_ATTRS, ("setting colors: pair = %d, fg = %d, bg = %d", pair,
-		     fg, bg));
-
-    if (!isDefaultColor(fg)) {
-	set_foreground_color(fg, outc);
-    }
-    if (!isDefaultColor(bg)) {
-	set_background_color(bg, outc);
-    }
+NCURSES_EXPORT(void)
+_nc_do_color (short old_pair, short pair, bool reverse, int (*outc) (int))
+{
+    SetSafeOutcWrapper(outc);
+    NC_SNAME(_nc_do_color)(CURRENT_SCREEN, old_pair, pair, reverse, _nc_outc_wrapper);
 }

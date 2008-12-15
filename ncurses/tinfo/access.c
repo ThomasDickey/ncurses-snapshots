@@ -38,7 +38,7 @@
 #include <tic.h>
 #include <nc_alloc.h>
 
-MODULE_ID("$Id: access.c,v 1.14 2007/11/18 00:57:53 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -97,7 +97,7 @@ _nc_pathlast(const char *path)
 	test = path;
     else
 	test++;
-    return (test - path);
+    return (unsigned)(test - path);
 }
 
 NCURSES_EXPORT(char *)
