@@ -35,18 +35,35 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_above.c,v 1.6 2005/02/19 16:44:57 tom Exp $")
+MODULE_ID("$Id: p_above.c,v 1.6.1.2 2008/12/07 02:07:39 juergen Exp $")
+
+NCURSES_EXPORT(PANEL *)
+ground_panel(const SCREEN * sp)
+{
+  T((T_CALLED("ground_panel(%p)"), sp));
+  if (sp)
+    {
+      struct panelhook *ph = NC_SNAME(_nc_panelhook)((SCREEN*)sp);
+      if (_nc_bottom_panel) /* this is the pseudo panel */
+	returnPanel(_nc_bottom_panel->above);
+      else
+	returnPanel(0);
+    }
+  else
+    {
+      if (0==CURRENT_SCREEN)
+	  returnPanel(0);
+      else
+	  returnPanel(ground_panel(CURRENT_SCREEN));
+    }
+}
 
 NCURSES_EXPORT(PANEL *)
 panel_above(const PANEL * pan)
 {
   T((T_CALLED("panel_above(%p)"), pan));
-  if (!pan)
-    {
-      /* if top and bottom are equal, we have no or only the pseudo panel;
-         if not, we return the panel above the pseudo panel */
-      returnPanel(EMPTY_STACK()? (PANEL *) 0 : _nc_bottom_panel->above);
-    }
+  if (pan)
+      returnPanel(pan->above);
   else
-    returnPanel(pan->above);
+      returnPanel(ground_panel(CURRENT_SCREEN));
 }

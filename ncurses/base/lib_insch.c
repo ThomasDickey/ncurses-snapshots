@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.25 2008/02/03 00:14:37 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.25.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -56,10 +56,17 @@ _nc_insert_ch(WINDOW *win, chtype ch)
     NCURSES_CH_T wch;
     int count;
     NCURSES_CONST char *s;
-
+    SCREEN *sp = _nc_screen_of(win);
+    int tabsize = 
+#if USE_REENTRANT
+      sp->_TABSIZE
+#else
+    TABSIZE
+#endif
+      ;
     switch (ch) {
     case '\t':
-	for (count = (TABSIZE - (win->_curx % TABSIZE)); count > 0; count--) {
+	for (count = (tabsize - (win->_curx % tabsize)); count > 0; count--) {
 	    if ((code = _nc_insert_ch(win, ' ')) != OK)
 		break;
 	}
@@ -93,7 +100,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 		win->_curx++;
 	    }
 	} else if (is8bits(ChCharOf(ch)) && iscntrl(ChCharOf(ch))) {
-	    s = unctrl(ChCharOf(ch));
+	    s = unctrl_sp(sp, ChCharOf(ch));
 	    while (*s != '\0') {
 		code = _nc_insert_ch(win, ChAttrOf(ch) | UChar(*s));
 		if (code != OK)
@@ -114,7 +121,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 	    } else if (count == -1) {
 		/* handle EILSEQ */
 		if (is8bits(ch)) {
-		    s = unctrl(ChCharOf(ch));
+		    s = unctrl_sp(sp,ChCharOf(ch));
 		    while (*s != '\0') {
 			code = _nc_insert_ch(win, ChAttrOf(ch) | UChar(*s));
 			if (code != OK)

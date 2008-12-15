@@ -38,19 +38,25 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkcolor.c,v 1.12 2005/01/28 21:11:53 tom Exp $")
+MODULE_ID("$Id: lib_slkcolor.c,v 1.12.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-slk_color(short color_pair_number)
+NC_SNAME(slk_color)(SCREEN *sp, short color_pair_number)
 {
-    T((T_CALLED("slk_color(%d)"), color_pair_number));
+    T((T_CALLED("slk_color(%p,%d)"), sp, color_pair_number));
 
-    if (SP != 0 && SP->_slk != 0 &&
+    if (sp != 0 && sp->_slk != 0 &&
 	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
-	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
-	SetPair(SP->_slk->attr, color_pair_number);
-	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
+	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(sp->_slk->attr))));
+	SetPair(sp->_slk->attr, color_pair_number);
+	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(sp->_slk->attr))));
 	returnCode(OK);
     } else
 	returnCode(ERR);
+}
+
+NCURSES_EXPORT(int)
+slk_color (short color_pair_number)
+{
+    return NC_SNAME(slk_color)(CURRENT_SCREEN, color_pair_number);
 }

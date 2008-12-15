@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_unget_wch.c,v 1.10 2008/06/07 14:50:37 tom Exp $")
+MODULE_ID("$Id: lib_unget_wch.c,v 1.10.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*
  * Wrapper for wcrtomb() which obtains the length needed for the given
@@ -65,14 +65,14 @@ _nc_wcrtomb(char *target, wchar_t source, mbstate_t * state)
 }
 
 NCURSES_EXPORT(int)
-unget_wch(const wchar_t wch)
+NC_SNAME(unget_wch)(SCREEN *sp, const wchar_t wch)
 {
     int result = OK;
     mbstate_t state;
     size_t length;
     int n;
 
-    T((T_CALLED("unget_wch(%#lx)"), (unsigned long) wch));
+    T((T_CALLED("unget_wch(%p, %#lx)"), sp, (unsigned long) wch));
 
     init_mb(state);
     length = _nc_wcrtomb(0, wch, &state);
@@ -86,7 +86,7 @@ unget_wch(const wchar_t wch)
 	    wcrtomb(string, wch, &state);
 
 	    for (n = (int) (length - 1); n >= 0; --n) {
-		if (_nc_ungetch(SP, string[n]) != OK) {
+	        if (NC_SNAME(ungetch)(sp, string[n]) != OK) {
 		    result = ERR;
 		    break;
 		}
@@ -100,4 +100,10 @@ unget_wch(const wchar_t wch)
     }
 
     returnCode(result);
+}
+
+NCURSES_EXPORT(int)
+unget_wch (const wchar_t wch)
+{
+    return NC_SNAME(unget_wch)(CURRENT_SCREEN, wch);
 }

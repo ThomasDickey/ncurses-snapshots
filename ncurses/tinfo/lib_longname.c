@@ -40,18 +40,47 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_longname.c,v 1.9 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: lib_longname.c,v 1.9.1.1 2008/11/16 00:19:59 juergen Exp $")
 
+#if USE_REENTRANT
+NCURSES_EXPORT(char *)
+NC_SNAME(longname)(SCREEN *sp)
+{
+    char *ptr;
+
+    T((T_CALLED("longname(%p)"),sp));
+
+    if (sp)
+      {
+	for (ptr = sp->_ttytype + strlen(sp->_ttytype); 
+	     ptr > sp->_ttytype; 
+	     ptr--)
+	  if (*ptr == '|')
+	    returnPtr(ptr + 1);
+	returnPtr(sp->_ttytype);
+      }
+    return "";
+}
+
+NCURSES_EXPORT(char *)
+longname()
+{
+    return NC_SNAME(longname)(CURRENT_SCREEN);
+}
+
+#else
 NCURSES_EXPORT(char *)
 longname(void)
 {
     char *ptr;
 
     T((T_CALLED("longname()")));
-
-    for (ptr = ttytype + strlen(ttytype); ptr > ttytype; ptr--)
-	if (*ptr == '|')
-	    returnPtr(ptr + 1);
-
+    
+    for (ptr = ttytype + strlen(ttytype); 
+	 ptr > ttytype; 
+	 ptr--)
+      if (*ptr == '|')
+	returnPtr(ptr + 1);
     returnPtr(ttytype);
 }
+#endif

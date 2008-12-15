@@ -41,12 +41,13 @@
  */
 
 #include <curses.priv.h>
+#define CUR TerminalOf(sp)->type.
+
 #include <ctype.h>
-#include <term.h>		/* padding_baud_rate, xon_xoff */
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.66 2008/06/28 13:12:15 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.66.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT_VAR(char) PC = 0;              /* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;        /* used by termcap library */
@@ -69,62 +70,90 @@ _nc_set_no_padding(SCREEN *sp)
 }
 #endif
 
-static int (*my_outch) (int c) = _nc_outch;
-
 NCURSES_EXPORT(int)
-delay_output(int ms)
+NC_SNAME(delay_output)(SCREEN *sp, int ms)
 {
-    T((T_CALLED("delay_output(%d)"), ms));
+    T((T_CALLED("delay_output(%p,%d)"), sp, ms));
+
+    if (!HasTInfoTerminal(sp))
+      returnCode(ERR);
 
     if (no_pad_char) {
-	_nc_flush();
+        NC_SNAME(_nc_flush)(sp);
 	napms(ms);
     } else {
 	register int nullcount;
 
 	nullcount = (ms * _nc_baudrate(ospeed)) / (BAUDBYTE * 1000);
 	for (_nc_nulls_sent += nullcount; nullcount > 0; nullcount--)
-	    my_outch(PC);
-	if (my_outch == _nc_outch)
-	    _nc_flush();
+	    sp->_outch(sp, PC);
+	if (sp->_outch == NC_SNAME(_nc_outch))
+	    NC_SNAME(_nc_flush)(sp);
     }
 
     returnCode(OK);
 }
 
-NCURSES_EXPORT(void)
-_nc_flush(void)
+NCURSES_EXPORT(int)
+delay_output (int ms)
 {
-    (void) fflush(NC_OUTPUT);
+    return NC_SNAME(delay_output)(CURRENT_SCREEN, ms);
+}
+
+NCURSES_EXPORT(void)
+NC_SNAME(_nc_flush)(SCREEN *sp)
+{
+    (void) fflush(NC_OUTPUT(sp));
+}
+
+NCURSES_EXPORT(void)
+_nc_flush (void)
+{
+    NC_SNAME(_nc_flush)(CURRENT_SCREEN);
 }
 
 NCURSES_EXPORT(int)
-_nc_outch(int ch)
+NC_SNAME(_nc_outch)(SCREEN *sp, int ch)
 {
     COUNT_OUTCHARS(1);
 
-    if (SP != 0
-	&& SP->_cleanup) {
+    if (HasTInfoTerminal(sp)
+	&& sp->_cleanup) {
 	char tmp = ch;
 	/*
 	 * POSIX says write() is safe in a signal handler, but the
 	 * buffered I/O is not.
 	 */
-	write(fileno(NC_OUTPUT), &tmp, 1);
+	write(fileno(NC_OUTPUT(sp)), &tmp, 1);
     } else {
-	putc(ch, NC_OUTPUT);
+	putc(ch, NC_OUTPUT(sp));
     }
     return OK;
 }
 
 NCURSES_EXPORT(int)
-putp(const char *string)
+_nc_outch (int ch)
 {
-    return tputs(string, 1, _nc_outch);
+    return NC_SNAME(_nc_outch)(CURRENT_SCREEN, ch);
 }
 
 NCURSES_EXPORT(int)
-tputs(const char *string, int affcnt, int (*outc) (int))
+NC_SNAME(_nc_putp)(SCREEN *sp, const char *string)
+{
+    return NC_SNAME(_nc_tputs)(sp, string, 1, NC_SNAME(_nc_outch));
+}
+
+NCURSES_EXPORT(int)
+putp (const char *string)
+{
+    return NC_SNAME(_nc_putp)(CURRENT_SCREEN, string);
+}
+
+NCURSES_EXPORT(int)
+NC_SNAME(_nc_tputs)(SCREEN *sp,
+		    const char *string,
+		    int affcnt,
+		    int (*outc) (SCREEN *, int))
 {
     bool always_delay;
     bool normal_delay;
@@ -137,7 +166,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
     char addrbuf[32];
 
     if (USE_TRACEF(TRACE_TPUTS)) {
-	if (outc == _nc_outch)
+        if (outc == NC_SNAME(_nc_outch))
 	    (void) strcpy(addrbuf, "_nc_outch");
 	else
 	    (void) sprintf(addrbuf, "%p", outc);
@@ -152,10 +181,13 @@ tputs(const char *string, int affcnt, int (*outc) (int))
     }
 #endif /* TRACE */
 
+    if (sp!=0 && !HasTInfoTerminal(sp))
+        return ERR;
+
     if (!VALID_STRING(string))
 	return ERR;
 
-    if (cur_term == 0) {
+    if (sp != 0 && sp->_term == 0) {
 	always_delay = FALSE;
 	normal_delay = TRUE;
     } else {
@@ -164,7 +196,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 	    !xon_xoff
 	    && padding_baud_rate
 #if NCURSES_NO_PADDING
-	    && !GetNoPadding(SP)
+	    && !GetNoPadding(sp)
 #endif
 	    && (_nc_baudrate(ospeed) >= padding_baud_rate);
     }
@@ -198,24 +230,24 @@ tputs(const char *string, int affcnt, int (*outc) (int))
     }
 #endif /* BSD_TPUTS */
 
-    my_outch = outc;		/* redirect delay_output() */
+    sp->_outch = outc;		/* redirect delay_output() */
     while (*string) {
 	if (*string != '$')
-	    (*outc) (*string);
+	    (*outc) (sp, *string);
 	else {
 	    string++;
 	    if (*string != '<') {
-		(*outc) ('$');
+		(*outc) (sp, '$');
 		if (*string)
-		    (*outc) (*string);
+		    (*outc) (sp, *string);
 	    } else {
 		bool mandatory;
 
 		string++;
 		if ((!isdigit(UChar(*string)) && *string != '.')
 		    || !strchr(string, '>')) {
-		    (*outc) ('$');
-		    (*outc) ('<');
+		    (*outc) (sp, '$');
+		    (*outc) (sp, '<');
 		    continue;
 		}
 
@@ -250,7 +282,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 		    && (always_delay
 			|| normal_delay
 			|| mandatory))
-		    delay_output(number / 10);
+		    NC_SNAME(delay_output)(sp, number / 10);
 
 	    }			/* endelse (*string == '<') */
 	}			/* endelse (*string == '$') */
@@ -270,6 +302,23 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 	delay_output(trailpad / 10);
 #endif /* BSD_TPUTS */
 
-    my_outch = _nc_outch;
+    sp->_outch = NC_SNAME(_nc_outch);
     return OK;
+}
+
+NCURSES_EXPORT(int)
+_nc_outc_wrapper(SCREEN *sp, int c)
+{
+    if (0 == sp) {
+	return (ERR);
+    } else {
+	return sp->jump(c);
+    }
+}
+
+NCURSES_EXPORT(int)
+tputs (const char *string, int affcnt, int (*outc) (int))
+{
+    SetSafeOutcWrapper(outc);
+    return NC_SNAME(_nc_tputs)(sp, string, affcnt, _nc_outc_wrapper);
 }

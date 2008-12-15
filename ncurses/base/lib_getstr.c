@@ -39,9 +39,8 @@
 */
 
 #include <curses.priv.h>
-#include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.27 2008/08/16 19:20:04 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.27.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -89,19 +88,19 @@ wgetnstr_events(WINDOW *win,
     if (!win)
 	returnCode(ERR);
 
-    _nc_get_tty_mode(&buf);
+    _nc_get_tty_mode_sp(sp, &buf);
 
     oldnl = sp->_nl;
     oldecho = sp->_echo;
     oldraw = sp->_raw;
     oldcbreak = sp->_cbreak;
-    nl();
-    noecho();
-    noraw();
-    cbreak();
+    nl_sp(sp, TRUE);
+    echo_sp(sp, FALSE);
+    raw_sp(sp, FALSE);
+    cbreak_sp(sp, TRUE);
 
-    erasec = erasechar();
-    killc = killchar();
+    erasec = erasechar_sp(sp);
+    killc  = killchar_sp(sp);
 
     oldstr = str;
     getyx(win, y, x);
@@ -144,7 +143,7 @@ wgetnstr_events(WINDOW *win,
 	    }
 	} else if (ch >= KEY_MIN
 		   || (maxlen >= 0 && str - oldstr >= maxlen)) {
-	    beep();
+	    beep_sp(sp);
 	} else {
 	    *str++ = (char) ch;
 	    if (oldecho == TRUE) {
@@ -193,7 +192,7 @@ wgetnstr_events(WINDOW *win,
     sp->_raw = oldraw;
     sp->_cbreak = oldcbreak;
 
-    _nc_set_tty_mode(&buf);
+    _nc_set_tty_mode_sp(sp, &buf);
 
     *str = '\0';
     if (ch == ERR)

@@ -40,11 +40,9 @@
 */
 
 #include <curses.priv.h>
-
-#include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.117 2008/08/04 18:11:12 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.117.1.3 2008/12/14 19:22:16 juergen Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -56,12 +54,12 @@ set_term(SCREEN *screenp)
 
     _nc_lock_global(curses);
 
-    oldSP = SP;
+    oldSP = CURRENT_SCREEN;
     _nc_set_screen(screenp);
-    newSP = SP;
+    newSP = screenp;
 
     if (newSP != 0) {
-	set_curterm(newSP->_term);
+        NC_SNAME(_nc_set_curterm)(newSP, newSP->_term);
 #if !USE_REENTRANT
 	curscr = newSP->_curscr;
 	newscr = newSP->_newscr;
@@ -70,7 +68,7 @@ set_term(SCREEN *screenp)
 	COLOR_PAIRS = newSP->_pair_count;
 #endif
     } else {
-	set_curterm(0);
+        NC_SNAME(_nc_set_curterm)(oldSP, 0);
 #if !USE_REENTRANT
 	curscr = 0;
 	newscr = 0;
@@ -129,7 +127,17 @@ delscreen(SCREEN *sp)
 
     _nc_lock_global(curses);
     if (delink_screen(sp)) {
-
+        ripoff_t *rop;
+	if (safe_ripoff_sp && safe_ripoff_sp != safe_ripoff_stack) {
+	    for (rop = safe_ripoff_stack;
+		 rop != safe_ripoff_sp && (rop - safe_ripoff_stack) < N_RIPS;
+		 rop++) {
+	      if (rop->win) {
+		  (void)delwin(rop->win);
+		  rop->win = 0;
+	      }
+	    }
+	}
 	(void) _nc_freewin(sp->_curscr);
 	(void) _nc_freewin(sp->_newscr);
 	(void) _nc_freewin(sp->_stdscr);
@@ -176,7 +184,7 @@ delscreen(SCREEN *sp)
 	    free(sp->_setbuf);
 	}
 
-	del_curterm(sp->_term);
+	NC_SNAME(_nc_del_curterm)(sp, sp->_term);
 	free(sp);
 
 	/*
@@ -184,7 +192,7 @@ delscreen(SCREEN *sp)
 	 * application might try to use (except cur_term, which may have
 	 * multiple references in different screens).
 	 */
-	if (sp == SP) {
+	if (sp == CURRENT_SCREEN) {
 #if !USE_REENTRANT
 	    curscr = 0;
 	    newscr = 0;
@@ -248,85 +256,123 @@ extract_fgbg(char *src, int *result)
 }
 #endif
 
+/*
+ * In case of handling multiple screens, we need to have a screen before
+ * initializatin in setupscreen takes place. This is to some
+ * extend the substitute for some of the stuff in _nc_prescreen,
+ * expecially for slk and ripoff handling which should be done
+ * per screen.
+ */
+NCURSES_EXPORT(SCREEN *)
+new_prescr(void)
+{
+    SCREEN *sp = _nc_alloc_screen_sp();
+    if (sp)
+    {
+        sp->rsp = sp->rippedoff;
+	sp->_filtered = _nc_prescreen.filter_mode;
+	sp->_use_env  = _nc_prescreen.use_env;
+#if NCURSES_NO_PADDING
+	sp->_no_padding = _nc_prescreen._no_padding;
+#endif
+	sp->slk_format = 0;
+	sp->_slk = 0;
+	sp->_prescreen = TRUE;
+	SP_PRE_INIT(sp);
+#if USE_REENTRANT
+	sp->_TABSIZE  = _nc_prescreen._TABSIZE;
+	sp->_ESCDELAY = _nc_prescreen._ESCDELAY;
+#endif
+	_nc_set_screen(sp);
+    }
+    return sp;
+}
+
+
+#define ReturnScreenError() _nc_set_screen(0); \
+                            returnCode(ERR)
+
 /* OS-independent screen initializations */
 NCURSES_EXPORT(int)
-_nc_setupscreen(int slines GCC_UNUSED,
-		int scolumns GCC_UNUSED,
-		FILE *output,
-		bool filtered,
-		int slk_format)
+NC_SNAME(_nc_setupscreen)(SCREEN **spp,
+			  int slines GCC_UNUSED,
+			  int scolumns GCC_UNUSED,
+			  FILE *output,
+			  bool filtered,
+			  int slk_format)
 {
     char *env;
     int bottom_stolen = 0;
-    bool support_cookies = USE_XMC_SUPPORT;
     ripoff_t *rop;
+    SCREEN *sp;
+    int numlab;
 
-    T((T_CALLED("_nc_setupscreen(%d, %d, %p, %d, %d)"),
-       slines, scolumns, output, filtered, slk_format));
+    T((T_CALLED("_nc_setupscreen(%p, %d, %d, %p, %d, %d)"),
+       spp, slines, scolumns, output, filtered, slk_format));
 
-    assert(SP == 0);		/* has been reset in newterm() ! */
-    if (!_nc_alloc_screen()
-	|| ((SP->_acs_map = typeCalloc(chtype, ACS_LEN)) == 0)
-	|| ((SP->_screen_acs_map = typeCalloc(bool, ACS_LEN)) == 0)) {
-	returnCode(ERR);
+    assert(CURRENT_SCREEN == 0);	/* has been reset in newterm() ! */
+    assert(spp!=0);
+
+    sp = *spp;
+
+    if (!sp)
+      {
+        sp = _nc_alloc_screen_sp();
+	*spp = sp;
+      }
+    if (!sp
+	|| ((sp->_acs_map = typeCalloc(chtype, ACS_LEN)) == 0)
+	|| ((sp->_screen_acs_map = typeCalloc(bool, ACS_LEN)) == 0))
+    {
+        ReturnScreenError();
     }
 
-    T(("created SP %p", SP));
-    SP->_next_screen = _nc_screen_chain;
-    _nc_screen_chain = SP;
+    T(("created SP %p", sp));
+    sp->_next_screen = _nc_screen_chain;
+    _nc_screen_chain = sp;
 
-    if ((SP->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == 0)
-	returnCode(ERR);
+    if ((sp->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == 0)
+    {
+        ReturnScreenError();
+    }
 
     /*
      * We should always check the screensize, just in case.
      */
-    _nc_get_screensize(SP, &slines, &scolumns);
+    _nc_set_screen(sp);
+    sp->_term = cur_term;
+    TCBOf(sp)->csp = sp;
+    _nc_get_screensize(sp, sp->_term, &slines, &scolumns);
     SET_LINES(slines);
     SET_COLS(scolumns);
-    T((T_CREATE("screen %s %dx%d"), termname(), LINES, COLS));
 
-    SP->_filtered = filtered;
+    T((T_CREATE("screen %s %dx%d"), NC_SNAME(termname)(sp), slines, scolumns));
+
+    sp->_filtered = filtered;
 
     /* implement filter mode */
     if (filtered) {
 	slines = 1;
 	SET_LINES(slines);
-	clear_screen = 0;
-	cursor_down = parm_down_cursor = 0;
-	cursor_address = 0;
-	cursor_up = parm_up_cursor = 0;
-	row_address = 0;
-
-	cursor_home = carriage_return;
-	T(("filter screensize %dx%d", LINES, COLS));
+	CallDriver(sp,setfilter);
+	T(("filter screensize %dx%d", slines, scolumns));
     }
 #ifdef __DJGPP__
     T(("setting output mode to binary"));
     fflush(output);
     setmode(output, O_BINARY);
 #endif
-    _nc_set_buffer(output, TRUE);
-    SP->_term = cur_term;
-    SP->_lines = slines;
-    SP->_lines_avail = slines;
-    SP->_columns = scolumns;
-    SP->_cursrow = -1;
-    SP->_curscol = -1;
-    SP->_nl = TRUE;
-    SP->_raw = FALSE;
-    SP->_cbreak = 0;
-    SP->_echo = TRUE;
-    SP->_fifohead = -1;
-    SP->_endwin = TRUE;
-    SP->_ofp = output;
-    SP->_cursor = -1;		/* cannot know real cursor shape */
-
-    SetNoPadding(SP);
+    NC_SNAME(_nc_set_buffer)(sp, output, TRUE);
+    sp->_lines = slines;
+    sp->_lines_avail = slines;
+    sp->_columns = scolumns;
+    sp->_ofp = output;
+    SP_PRE_INIT(sp);
+    SetNoPadding(sp);
 
 #if NCURSES_EXT_FUNCS
-    SP->_default_color = FALSE;
-    SP->_has_sgr_39_49 = FALSE;
+    sp->_default_color = FALSE;
+    sp->_has_sgr_39_49 = FALSE;
 
     /*
      * Set our assumption of the terminal's default foreground and background
@@ -348,11 +394,11 @@ _nc_setupscreen(int slines GCC_UNUSED,
      * or black-on-white display under control of the application than not).
      */
 #ifdef USE_ASSUMED_COLOR
-    SP->_default_fg = COLOR_WHITE;
-    SP->_default_bg = COLOR_BLACK;
+    sp->_default_fg = COLOR_WHITE;
+    sp->_default_bg = COLOR_BLACK;
 #else
-    SP->_default_fg = C_MASK;
-    SP->_default_bg = C_MASK;
+    sp->_default_fg = C_MASK;
+    sp->_default_bg = C_MASK;
 #endif
 
     /*
@@ -364,14 +410,14 @@ _nc_setupscreen(int slines GCC_UNUSED,
 	char sep1, sep2;
 	int count = sscanf(env, "%d%c%d%c", &fg, &sep1, &bg, &sep2);
 	if (count >= 1) {
-	    SP->_default_fg = (fg >= 0 && fg < max_colors) ? fg : C_MASK;
+  	    sp->_default_fg = (fg >= 0 && fg < InfoOf(sp).maxcolors) ? fg : C_MASK;
 	    if (count >= 3) {
-		SP->_default_bg = (bg >= 0 && bg < max_colors) ? bg : C_MASK;
+	        sp->_default_bg = (bg >= 0 && bg < InfoOf(sp).maxcolors) ? bg : C_MASK;
 	    }
 	    TR(TRACE_CHARPUT | TRACE_MOVE,
 	       ("from environment assumed fg=%d, bg=%d",
-		SP->_default_fg,
-		SP->_default_bg));
+		sp->_default_fg,
+		sp->_default_bg));
 	}
     }
 #if USE_COLORFGBG
@@ -384,264 +430,224 @@ _nc_setupscreen(int slines GCC_UNUSED,
     if (getenv("COLORFGBG") != 0) {
 	char *p = getenv("COLORFGBG");
 	TR(TRACE_CHARPUT | TRACE_MOVE, ("decoding COLORFGBG %s", p));
-	p = extract_fgbg(p, &(SP->_default_fg));
-	p = extract_fgbg(p, &(SP->_default_bg));
+	p = extract_fgbg(p, &(sp->_default_fg));
+	p = extract_fgbg(p, &(sp->_default_bg));
 	if (*p)			/* assume rxvt was compiled with xpm support */
-	    p = extract_fgbg(p, &(SP->_default_bg));
+	    p = extract_fgbg(p, &(sp->_default_bg));
 	TR(TRACE_CHARPUT | TRACE_MOVE, ("decoded fg=%d, bg=%d",
-					SP->_default_fg, SP->_default_bg));
-	if (SP->_default_fg >= max_colors) {
+					sp->_default_fg, sp->_default_bg));
+	if (sp->_default_fg >= max_colors) {
 	    if (set_a_foreground != ABSENT_STRING
 		&& !strcmp(set_a_foreground, "\033[3%p1%dm")) {
 		set_a_foreground = "\033[3%?%p1%{8}%>%t9%e%p1%d%;m";
 	    } else {
-		SP->_default_fg %= max_colors;
+		sp->_default_fg %= max_colors;
 	    }
 	}
-	if (SP->_default_bg >= max_colors) {
+	if (sp->_default_bg >= max_colors) {
 	    if (set_a_background != ABSENT_STRING
 		&& !strcmp(set_a_background, "\033[4%p1%dm")) {
 		set_a_background = "\033[4%?%p1%{8}%>%t9%e%p1%d%;m";
 	    } else {
-		SP->_default_bg %= max_colors;
+		sp->_default_bg %= max_colors;
 	    }
 	}
     }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
 
-    SP->_maxclick = DEFAULT_MAXCLICK;
-    SP->_mouse_event = no_mouse_event;
-    SP->_mouse_inline = no_mouse_inline;
-    SP->_mouse_parse = no_mouse_parse;
-    SP->_mouse_resume = no_mouse_resume;
-    SP->_mouse_wrap = no_mouse_wrap;
-    SP->_mouse_fd = -1;
+    sp->_maxclick = DEFAULT_MAXCLICK;
+    sp->_mouse_event = no_mouse_event;
+    sp->_mouse_inline = no_mouse_inline;
+    sp->_mouse_parse = no_mouse_parse;
+    sp->_mouse_resume = no_mouse_resume;
+    sp->_mouse_wrap = no_mouse_wrap;
+    sp->_mouse_fd = -1;
 
     /*
      * If we've no magic cookie support, we suppress attributes that xmc would
      * affect, i.e., the attributes that affect the rendition of a space.
      */
-    SP->_ok_attributes = termattrs();
-    if (has_colors()) {
-	SP->_ok_attributes |= A_COLOR;
-    }
-#if USE_XMC_SUPPORT
-    /*
-     * If we have no magic-cookie support compiled-in, or if it is suppressed
-     * in the environment, reset the support-flag.
-     */
-    if (magic_cookie_glitch >= 0) {
-	if (getenv("NCURSES_NO_MAGIC_COOKIE") != 0) {
-	    support_cookies = FALSE;
-	}
-    }
-#endif
-
-    if (!support_cookies && magic_cookie_glitch >= 0) {
-	T(("will disable attributes to work w/o magic cookies"));
+    sp->_ok_attributes = NC_SNAME(termattrs)(sp);
+    if (NC_SNAME(has_colors)(sp)) {
+	sp->_ok_attributes |= A_COLOR;
     }
 
-    if (magic_cookie_glitch > 0) {	/* tvi, wyse */
+    _nc_cookie_init(sp);
 
-	SP->_xmc_triggers = SP->_ok_attributes & (
-						     A_STANDOUT |
-						     A_UNDERLINE |
-						     A_REVERSE |
-						     A_BLINK |
-						     A_DIM |
-						     A_BOLD |
-						     A_INVIS |
-						     A_PROTECT
-	    );
-#if 0
-	/*
-	 * We "should" treat colors as an attribute.  The wyse350 (and its
-	 * clones) appear to be the only ones that have both colors and magic
-	 * cookies.
-	 */
-	if (has_colors()) {
-	    SP->_xmc_triggers |= A_COLOR;
-	}
-#endif
-	SP->_xmc_suppress = SP->_xmc_triggers & (chtype) ~(A_BOLD);
-
-	T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
-	/*
-	 * Supporting line-drawing may be possible.  But make the regular
-	 * video attributes work first.
-	 */
-	acs_chars = ABSENT_STRING;
-	ena_acs = ABSENT_STRING;
-	enter_alt_charset_mode = ABSENT_STRING;
-	exit_alt_charset_mode = ABSENT_STRING;
-#if USE_XMC_SUPPORT
-	/*
-	 * To keep the cookie support simple, suppress all of the optimization
-	 * hooks except for clear_screen and the cursor addressing.
-	 */
-	if (support_cookies) {
-	    clr_eol = ABSENT_STRING;
-	    clr_eos = ABSENT_STRING;
-	    set_attributes = ABSENT_STRING;
-	}
-#endif
-    } else if (magic_cookie_glitch == 0) {	/* hpterm */
-    }
-
-    /*
-     * If magic cookies are not supported, cancel the strings that set
-     * video attributes.
-     */
-    if (!support_cookies && magic_cookie_glitch >= 0) {
-	magic_cookie_glitch = ABSENT_NUMERIC;
-	set_attributes = ABSENT_STRING;
-	enter_blink_mode = ABSENT_STRING;
-	enter_bold_mode = ABSENT_STRING;
-	enter_dim_mode = ABSENT_STRING;
-	enter_reverse_mode = ABSENT_STRING;
-	enter_standout_mode = ABSENT_STRING;
-	enter_underline_mode = ABSENT_STRING;
-    }
-
-    /* initialize normal acs before wide, since we use mapping in the latter */
-#if !USE_WIDEC_SUPPORT
-    if (_nc_unicode_locale() && _nc_locale_breaks_acs(cur_term)) {
-	acs_chars = NULL;
-	ena_acs = NULL;
-	enter_alt_charset_mode = NULL;
-	exit_alt_charset_mode = NULL;
-	set_attributes = NULL;
-    }
-#endif
-    _nc_init_acs();
+    NC_SNAME(_nc_init_acs)(sp);
 #if USE_WIDEC_SUPPORT
     _nc_init_wacs();
 
-    SP->_screen_acs_fix = (_nc_unicode_locale()
-			   && _nc_locale_breaks_acs(cur_term));
+    sp->_screen_acs_fix = (_nc_unicode_locale()
+			   && _nc_locale_breaks_acs(sp->_term));
 #endif
     env = _nc_get_locale();
-    SP->_legacy_coding = ((env == 0)
+    sp->_legacy_coding = ((env == 0)
 			  || !strcmp(env, "C")
 			  || !strcmp(env, "POSIX"));
-    T(("legacy-coding %d", SP->_legacy_coding));
+    T(("legacy-coding %d", sp->_legacy_coding));
 
-    _nc_idcok = TRUE;
-    _nc_idlok = FALSE;
+    sp->_nc_sp_idcok = TRUE;
+    sp->_nc_sp_idlok = FALSE;
 
-    SP->oldhash = 0;
-    SP->newhash = 0;
+    sp->oldhash = 0;
+    sp->newhash = 0;
 
     T(("creating newscr"));
-    if ((SP->_newscr = newwin(slines, scolumns, 0, 0)) == 0)
-	returnCode(ERR);
-
+    if ((sp->_newscr = NC_SNAME(newwin)(sp, slines, scolumns, 0, 0)) == 0)
+    {
+        ReturnScreenError();
+    }
     T(("creating curscr"));
-    if ((SP->_curscr = newwin(slines, scolumns, 0, 0)) == 0)
-	returnCode(ERR);
-
+    if ((sp->_curscr = NC_SNAME(newwin)(sp, slines, scolumns, 0, 0)) == 0)
+    {
+        ReturnScreenError();
+    }
 #if !USE_REENTRANT
-    newscr = SP->_newscr;
-    curscr = SP->_curscr;
+    newscr = sp->_newscr;
+    curscr = sp->_curscr;
 #endif
 #if USE_SIZECHANGE
-    SP->_resize = resizeterm;
+    sp->_resize = NC_SNAME(_nc_resizeterm);
 #endif
 
-    newscr->_clear = TRUE;
-    curscr->_clear = FALSE;
+    sp->_newscr->_clear = TRUE;
+    sp->_curscr->_clear = FALSE;
 
-    def_shell_mode();
-    def_prog_mode();
+    NC_SNAME(def_shell_mode)(sp);
+    NC_SNAME(def_prog_mode)(sp);
 
-    for (rop = ripoff_stack;
-	 rop != ripoff_sp && (rop - ripoff_stack) < N_RIPS;
-	 rop++) {
+    numlab = InfoOf(sp).numlabels;
 
-	/* If we must simulate soft labels, grab off the line to be used.
-	   We assume that we must simulate, if it is none of the standard
-	   formats (4-4 or 3-2-3) for which there may be some hardware
-	   support. */
-	if (rop->hook == _nc_slk_initialize)
-	    if (!(num_labels <= 0 || !SLK_STDFMT(slk_format)))
-		continue;
-	if (rop->hook) {
+
+    if (safe_ripoff_sp && safe_ripoff_sp != safe_ripoff_stack)
+    {
+	for (rop = safe_ripoff_stack;
+	     rop != safe_ripoff_sp && (rop - safe_ripoff_stack) < N_RIPS;
+	     rop++) {
+	  
+	  /* If we must simulate soft labels, grab off the line to be used.
+	     We assume that we must simulate, if it is none of the standard
+	     formats (4-4 or 3-2-3) for which there may be some hardware
+	     support. */
+	  if (rop->hook == _nc_slk_initialize)
+	    if (!(numlab <= 0 || !SLK_STDFMT(slk_format)))
+	      continue;
+	  if (rop->hook) {
 	    int count;
 	    WINDOW *w;
-
+	    
 	    count = (rop->line < 0) ? -rop->line : rop->line;
 	    T(("ripping off %i lines at %s", count,
 	       ((rop->line < 0)
 		? "bottom"
 		: "top")));
-
-	    w = newwin(count, scolumns,
-		       ((rop->line < 0)
-			? SP->_lines_avail - count
-			: 0),
-		       0);
+	    
+	    w = NC_SNAME(newwin)((sp), count, scolumns,
+				 ((rop->line < 0)
+				  ? sp->_lines_avail - count
+				  : 0),
+				 0);
 	    if (w) {
-		rop->win = w;
-		rop->hook(w, scolumns);
+	      rop->win = w;
+	      rop->hook(w, scolumns);
 	    } else {
-		returnCode(ERR);
+	      ReturnScreenError();
 	    }
 	    if (rop->line < 0)
-		bottom_stolen += count;
+	      bottom_stolen += count;
 	    else
-		SP->_topstolen += count;
-	    SP->_lines_avail -= count;
+	      sp->_topstolen += count;
+	    sp->_lines_avail -= count;
+	  }
 	}
+	/* reset the stack */
+	safe_ripoff_sp = safe_ripoff_stack;
     }
-    /* reset the stack */
-    ripoff_sp = ripoff_stack;
 
     T(("creating stdscr"));
-    assert((SP->_lines_avail + SP->_topstolen + bottom_stolen) == slines);
-    if ((SP->_stdscr = newwin(SP->_lines_avail, scolumns, 0, 0)) == 0)
-	returnCode(ERR);
-
-    SET_LINES(SP->_lines_avail);
+    assert(((sp)->_lines_avail + sp->_topstolen + bottom_stolen) == slines);
+    if ((sp->_stdscr = newwin_sp(sp, sp->_lines_avail,
+				 scolumns, 0, 0)) == 0)
+    {
+        ReturnScreenError();
+    }
+    SET_LINES(sp->_lines_avail);
 #if !USE_REENTRANT
-    stdscr = SP->_stdscr;
+    stdscr = sp->_stdscr;
 #endif
-
+    sp->_prescreen = FALSE;
     returnCode(OK);
 }
+
+NCURSES_EXPORT(int)
+_nc_setupscreen (int slines GCC_UNUSED,
+		 int scolumns GCC_UNUSED,
+		 FILE *output,
+		 bool filtered,
+		 int slk_format)
+{
+    SCREEN *sp = 0;
+    int rc = NC_SNAME(_nc_setupscreen)(&sp, 
+				       slines, 
+				       scolumns, 
+				       output, 
+				       filtered, 
+				       slk_format);
+    if (rc != OK)
+	_nc_set_screen(0);
+    return rc;
+}
+
 
 /*
  * The internal implementation interprets line as the number of lines to rip
  * off from the top or bottom.
  */
 NCURSES_EXPORT(int)
-_nc_ripoffline(int line, int (*init) (WINDOW *, int))
+NC_SNAME(_nc_ripoffline)(SCREEN *sp, int line, int (*init)(WINDOW*,int))
 {
-    T((T_CALLED("_nc_ripoffline(%d, %p)"), line, init));
+    int code = ERR;
 
-    if (line != 0) {
+    START_TRACE();
+    T((T_CALLED("ripoffline(%p,%d,%p)"), sp, line, init));
 
-	if (ripoff_sp == 0)
-	    ripoff_sp = ripoff_stack;
-	if (ripoff_sp >= ripoff_stack + N_RIPS)
-	    returnCode(ERR);
-
-	ripoff_sp->line = line;
-	ripoff_sp->hook = init;
-	ripoff_sp++;
+    if (sp!=0 && sp->_prescreen)
+    { 
+      if (line == 0)
+	code = OK;
+      else
+      {
+	if (safe_ripoff_sp == 0)
+	  safe_ripoff_sp = safe_ripoff_stack;
+	if (safe_ripoff_sp >= safe_ripoff_stack + N_RIPS)
+	  returnCode(ERR);
+	
+	safe_ripoff_sp->line = line;
+	safe_ripoff_sp->hook = init;
+	(safe_ripoff_sp)++;
+	code = OK;
+      }
     }
+    returnCode(code);
+}
 
-    returnCode(OK);
+NCURSES_EXPORT(int)
+_nc_ripoffline(int line, int (*init)(WINDOW*,int))
+{
+    return NC_SNAME(_nc_ripoffline)(CURRENT_SCREEN_PRE, line, init);
+}
+
+
+NCURSES_EXPORT(int)
+NC_SNAME(ripoffline)(SCREEN* sp, int line, int (*init) (WINDOW *, int))
+{
+    return NC_SNAME(_nc_ripoffline)(sp, line < 0 ? -1 : 1, init);
 }
 
 NCURSES_EXPORT(int)
 ripoffline(int line, int (*init) (WINDOW *, int))
 {
-    START_TRACE();
-    T((T_CALLED("ripoffline(%d,%p)"), line, init));
-
-    if (line == 0)
-	returnCode(OK);
-
-    returnCode(_nc_ripoffline((line < 0) ? -1 : 1, init));
+    return NC_SNAME(ripoffline)(CURRENT_SCREEN_PRE,line,init);
 }
