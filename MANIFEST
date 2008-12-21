@@ -170,11 +170,9 @@
 ./MANIFEST
 ./Makefile.in
 ./Makefile.os2
-./mk-dlls.sh
 ./NEWS
 ./README
 ./README.emx
-./README.MinGW
 ./TO-DO
 ./aclocal.m4
 ./announce.html.in
@@ -481,7 +479,6 @@
 ./form/fty_alnum.c
 ./form/fty_alpha.c
 ./form/fty_enum.c
-./form/fty_generic.c
 ./form/fty_int.c
 ./form/fty_ipv4.c
 ./form/fty_num.c
@@ -510,13 +507,11 @@
 ./include/hashed_db.h
 ./include/headers
 ./include/nc_alloc.h
-./include/nc_mingw.h
 ./include/nc_panel.h
 ./include/nc_tparm.h
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
 ./include/ncurses_dll.h
-./include/ncurses_mingw.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -754,7 +749,6 @@
 ./ncurses/base/lib_delch.c
 ./ncurses/base/lib_delwin.c
 ./ncurses/base/lib_dft_fgbg.c
-./ncurses/base/lib_driver.c
 ./ncurses/base/lib_echo.c
 ./ncurses/base/lib_endwin.c
 ./ncurses/base/lib_erase.c
@@ -877,7 +871,6 @@
 ./ncurses/tinfo/read_termcap.c
 ./ncurses/tinfo/setbuf.c
 ./ncurses/tinfo/strings.c
-./ncurses/tinfo/tinfo_driver.c
 ./ncurses/tinfo/trim_sgr0.c
 ./ncurses/tinfo/use_screen.c
 ./ncurses/tinfo/write_entry.c
@@ -923,8 +916,6 @@
 ./ncurses/widechar/lib_vline_set.c
 ./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c
-./ncurses/win32con/gettimeofday.c
-./ncurses/win32con/win_driver.c
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel
@@ -957,6 +948,7 @@
 ./progs/infocmp.c
 ./progs/modules
 ./progs/progs.priv.h
+./progs/tabs.c
 ./progs/tic.c
 ./progs/toe.c
 ./progs/tput.c
@@ -973,6 +965,7 @@
 ./test/cardfile.c
 ./test/cardfile.dat
 ./test/chgat.c
+./test/clip_printw.c
 ./test/color_set.c
 ./test/configure
 ./test/configure.in
@@ -1000,6 +993,7 @@
 ./test/inch_wide.c
 ./test/inchs.c
 ./test/ins_wide.c
+./test/insdelln.c
 ./test/inserts.c
 ./test/key_names.c
 ./test/keynames.c
