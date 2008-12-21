@@ -36,37 +36,28 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_update.c,v 1.9.1.2 2008/12/07 02:07:39 juergen Exp $")
-
-NCURSES_EXPORT(void)
-NC_SNAME(update_panels)(SCREEN *sp)
-{
-  PANEL *pan;
-
-  T((T_CALLED("update_panels(%p)"), sp));
-  dBug(("--> update_panels"));
-
-  if (sp) {
-    struct panelhook *ph = NC_SNAME(_nc_panelhook)(sp);
-    pan = _nc_bottom_panel;
-    while (pan && pan->above)
-      {
-	PANEL_UPDATE(pan, pan->above);
-	pan = pan->above;
-      }
-    
-    pan = _nc_bottom_panel;
-    while (pan)
-      {
-	Wnoutrefresh(pan);
-	pan = pan->above;
-      }
-  }
-  returnVoid;
-}
+MODULE_ID("$Id: p_update.c,v 1.9 2005/02/19 16:49:47 tom Exp $")
 
 NCURSES_EXPORT(void)
 update_panels(void)
 {
-    NC_SNAME(update_panels)(CURRENT_SCREEN);
+  PANEL *pan;
+
+  T((T_CALLED("update_panels()")));
+  dBug(("--> update_panels"));
+  pan = _nc_bottom_panel;
+  while (pan && pan->above)
+    {
+      PANEL_UPDATE(pan, pan->above);
+      pan = pan->above;
+    }
+
+  pan = _nc_bottom_panel;
+  while (pan)
+    {
+      Wnoutrefresh(pan);
+      pan = pan->above;
+    }
+
+  returnVoid;
 }

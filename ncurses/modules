@@ -1,4 +1,4 @@
-# $Id: modules,v 1.112.1.2 2008/12/07 02:07:38 juergen Exp $
+# $Id: modules,v 1.112 2007/09/08 22:03:34 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -48,7 +48,6 @@ lib_color	lib		$(base)		../include/term.h
 lib_colorset	lib		$(base)
 lib_delch	lib		$(base)
 lib_delwin	lib		$(base)
-lib_driver      lib             $(base)
 lib_echo	lib		$(base)
 lib_endwin	lib		$(base)		../include/term.h
 lib_erase	lib		$(base)
@@ -229,13 +228,5 @@ key_defined	lib		$(base)
 keybound	lib		$(base)
 keyok		lib		$(base)
 version		lib		$(base)
-
-# Porting
-@ port_win32con
-gettimeofday	lib		$(win32con)
-win_driver	lib             $(win32con)
-
-@ port_tinfo
-tinfo_driver	lib		$(tinfo)
 
 # vile:makemode

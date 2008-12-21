@@ -39,25 +39,17 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkinit.c,v 1.7.1.1 2008/11/16 00:19:59 juergen Exp $")
-
-NCURSES_EXPORT(int)
-NC_SNAME(slk_init)(SCREEN* sp, int format)
-{
-    int code = ERR;
-
-    T((T_CALLED("slk_init(%p,%d)"), sp, format));
-
-    if (sp && format >= 0 && format <= 3 && !sp->slk_format &&
-	sp->_prescreen) {
-	sp->slk_format = 1 + format;
-	code = NC_SNAME(_nc_ripoffline)(sp,-SLK_LINES(sp->slk_format), _nc_slk_initialize);
-    }
-    returnCode(code);
-}
+MODULE_ID("$Id: lib_slkinit.c,v 1.7 2008/01/12 20:23:39 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_init(int format)
 {
-    return NC_SNAME(slk_init)(CURRENT_SCREEN_PRE, format);
+    int code = ERR;
+
+    T((T_CALLED("slk_init(%d)"), format));
+    if (format >= 0 && format <= 3 && !_nc_globals.slk_format) {
+	_nc_globals.slk_format = 1 + format;
+	code = _nc_ripoffline(-SLK_LINES(_nc_globals.slk_format), _nc_slk_initialize);
+    }
+    returnCode(code);
 }

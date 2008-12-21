@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.15.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.15 2008/08/03 15:39:29 tom Exp $")
 
 #ifdef TRACE
 
@@ -117,7 +117,7 @@ _nc_tracemouse(SCREEN *sp, MEVENT const *ep)
 NCURSES_EXPORT(char *)
 _tracemouse(MEVENT const *ep)
 {
-    return _nc_tracemouse(CURRENT_SCREEN, ep);
+    return _nc_tracemouse(SP, ep);
 }
 
 #else /* !TRACE */

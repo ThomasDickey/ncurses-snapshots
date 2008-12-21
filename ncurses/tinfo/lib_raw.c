@@ -47,8 +47,9 @@
  */
 
 #include <curses.priv.h>
+#include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.14 2007/09/29 21:50:22 tom Exp $")
 
 #if SVR4_TERMIO && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -60,9 +61,9 @@ MODULE_ID("$Id: lib_raw.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 #ifdef __EMX__
 #include <io.h>
-#define _nc_setmode(sp,mode) setmode(sp->_ifd, mode)
+#define _nc_setmode(mode) setmode(SP->_ifd, mode)
 #else
-#define _nc_setmode(sp,mode)	/* nothing */
+#define _nc_setmode(mode)	/* nothing */
 #endif
 
 #define COOKED_INPUT	(IXON|BRKINT|PARMRK)
@@ -76,40 +77,31 @@ MODULE_ID("$Id: lib_raw.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
 #endif /* TRACE */
 
 NCURSES_EXPORT(int)
-NC_SNAME(raw)(SCREEN *sp, bool flag)
+raw(void)
 {
     int result = ERR;
-    T((T_CALLED("raw(%p,%d)"), sp, flag));
 
-    if (0!=TerminalOf(sp)) {
+    T((T_CALLED("raw()")));
+
+    if (SP != 0 && cur_term != 0) {
 	TTY buf;
 
 	BEFORE("raw");
-	_nc_setmode(sp, flag ? O_BINARY : O_TEXT);
+	_nc_setmode(O_BINARY);
 
-	buf = TerminalOf(sp)->Nttyb;
-	if (flag) {
+	buf = cur_term->Nttyb;
 #ifdef TERMIOS
-	    buf.c_lflag &= ~(ICANON | ISIG | IEXTEN);
-	    buf.c_iflag &= ~(COOKED_INPUT);
-	    buf.c_cc[VMIN] = 1;
-	    buf.c_cc[VTIME] = 0;
+	buf.c_lflag &= ~(ICANON | ISIG | IEXTEN);
+	buf.c_iflag &= ~(COOKED_INPUT);
+	buf.c_cc[VMIN] = 1;
+	buf.c_cc[VTIME] = 0;
 #else
-	    buf.sg_flags |= RAW;
+	buf.sg_flags |= RAW;
 #endif
-	} else {
-#ifdef TERMIOS
-	    buf.c_lflag |= ISIG | ICANON |
-	      (TerminalOf(sp)->Ottyb.c_lflag & IEXTEN);
-	    buf.c_iflag |= COOKED_INPUT;
-#else
-	    buf.sg_flags &= ~(RAW | CBREAK);
-#endif
-	}
-	if ((result = NC_SNAME(_nc_set_tty_mode)(sp, &buf)) == OK) {
-	    sp->_raw = flag ? TRUE : FALSE;
-	    sp->_cbreak = flag ? 1 : 0;
-	    TerminalOf(sp)->Nttyb = buf;
+	if ((result = _nc_set_tty_mode(&buf)) == OK) {
+	    SP->_raw = TRUE;
+	    SP->_cbreak = 1;
+	    cur_term->Nttyb = buf;
 	}
 	AFTER("raw");
     }
@@ -117,67 +109,35 @@ NC_SNAME(raw)(SCREEN *sp, bool flag)
 }
 
 NCURSES_EXPORT(int)
-raw (void)
-{
-    return NC_SNAME(raw)(CURRENT_SCREEN, TRUE);
-}
-
-NCURSES_EXPORT(int)
-noraw (void)
-{
-    return NC_SNAME(raw)(CURRENT_SCREEN, FALSE);
-}
-
-NCURSES_EXPORT(int)
-NC_SNAME(cbreak)(SCREEN *sp, bool flag)
+cbreak(void)
 {
     int result = ERR;
-    T((T_CALLED("cbreak(%p,%d)"), sp, flag));
 
-    if (0!=TerminalOf(sp)) {
+    T((T_CALLED("cbreak()")));
+
+    if (SP != 0 && cur_term != 0) {
 	TTY buf;
 
 	BEFORE("cbreak");
-	_nc_setmode(sp, flag ? O_BINARY : O_TEXT);
+	_nc_setmode(O_BINARY);
 
-	buf = TerminalOf(sp)->Nttyb;
-	if (flag) {
+	buf = cur_term->Nttyb;
 #ifdef TERMIOS
-	    buf.c_lflag &= ~ICANON;
-	    buf.c_iflag &= ~ICRNL;
-	    buf.c_lflag |= ISIG;
-	    buf.c_cc[VMIN] = 1;
-	    buf.c_cc[VTIME] = 0;
+	buf.c_lflag &= ~ICANON;
+	buf.c_iflag &= ~ICRNL;
+	buf.c_lflag |= ISIG;
+	buf.c_cc[VMIN] = 1;
+	buf.c_cc[VTIME] = 0;
 #else
-	    buf.sg_flags |= CBREAK;
+	buf.sg_flags |= CBREAK;
 #endif
-	} else {
-#ifdef TERMIOS
-	    buf.c_lflag |= ICANON;
-	    buf.c_iflag |= ICRNL;
-#else
-	    buf.sg_flags &= ~CBREAK;
-#endif
-	}
-	if ((result = NC_SNAME(_nc_set_tty_mode)(sp, &buf)) == OK) {
-	    sp->_cbreak = flag ? 1 : 0;
-	    TerminalOf(sp)->Nttyb = buf;
+	if ((result = _nc_set_tty_mode(&buf)) == OK) {
+	    SP->_cbreak = 1;
+	    cur_term->Nttyb = buf;
 	}
 	AFTER("cbreak");
     }
     returnCode(result);
-}
-
-NCURSES_EXPORT(int)
-cbreak (void)
-{
-    return NC_SNAME(cbreak)(CURRENT_SCREEN, TRUE);
-}
-
-NCURSES_EXPORT(int)
-nocbreak (void)
-{
-    return NC_SNAME(cbreak)(CURRENT_SCREEN, FALSE);
 }
 
 /*
@@ -185,48 +145,118 @@ nocbreak (void)
  * this implementation may be wrong.  See the comment under intrflush().
  */
 NCURSES_EXPORT(void)
-NC_SNAME(qiflush)(SCREEN *sp, bool flag)
+qiflush(void)
 {
     int result = ERR;
-    T((T_CALLED("qiflush(%p,%d)"), sp, flag));
 
-    if (0!=TerminalOf(sp)) {
+    T((T_CALLED("qiflush()")));
+
+    if (cur_term != 0) {
 	TTY buf;
 
 	BEFORE("qiflush");
-	buf = TerminalOf(sp)->Nttyb;
-	if (flag) {
+	buf = cur_term->Nttyb;
 #ifdef TERMIOS
-	    buf.c_lflag &= ~(NOFLSH);
-	    result = NC_SNAME(_nc_set_tty_mode)(sp, &buf);
+	buf.c_lflag &= ~(NOFLSH);
+	result = _nc_set_tty_mode(&buf);
 #else
-	    /* FIXME */
+	/* FIXME */
 #endif
-	} else {
-#ifdef TERMIOS
-	    buf.c_lflag |= NOFLSH;
-	    result = NC_SNAME(_nc_set_tty_mode)(sp, &buf);
-#else
-	    /* FIXME */
-#endif
-	}
 	if (result == OK)
-  	    TerminalOf(sp)->Nttyb = buf;
+	    cur_term->Nttyb = buf;
 	AFTER("qiflush");
     }
     returnVoid;
 }
 
-NCURSES_EXPORT(void)
-qiflush (void)
+NCURSES_EXPORT(int)
+noraw(void)
 {
-    NC_SNAME(qiflush)(CURRENT_SCREEN, TRUE);
+    int result = ERR;
+
+    T((T_CALLED("noraw()")));
+
+    if (SP != 0 && cur_term != 0) {
+	TTY buf;
+
+	BEFORE("noraw");
+	_nc_setmode(O_TEXT);
+
+	buf = cur_term->Nttyb;
+#ifdef TERMIOS
+	buf.c_lflag |= ISIG | ICANON |
+	    (cur_term->Ottyb.c_lflag & IEXTEN);
+	buf.c_iflag |= COOKED_INPUT;
+#else
+	buf.sg_flags &= ~(RAW | CBREAK);
+#endif
+	if ((result = _nc_set_tty_mode(&buf)) == OK) {
+	    SP->_raw = FALSE;
+	    SP->_cbreak = 0;
+	    cur_term->Nttyb = buf;
+	}
+	AFTER("noraw");
+    }
+    returnCode(result);
 }
 
-NCURSES_EXPORT(void)
-noqiflush (void)
+NCURSES_EXPORT(int)
+nocbreak(void)
 {
-    NC_SNAME(qiflush)(CURRENT_SCREEN, FALSE);
+    int result = ERR;
+
+    T((T_CALLED("nocbreak()")));
+
+    if (SP != 0 && cur_term != 0) {
+	TTY buf;
+
+	BEFORE("nocbreak");
+	_nc_setmode(O_TEXT);
+
+	buf = cur_term->Nttyb;
+#ifdef TERMIOS
+	buf.c_lflag |= ICANON;
+	buf.c_iflag |= ICRNL;
+#else
+	buf.sg_flags &= ~CBREAK;
+#endif
+	if ((result = _nc_set_tty_mode(&buf)) == OK) {
+	    SP->_cbreak = 0;
+	    cur_term->Nttyb = buf;
+	}
+	AFTER("nocbreak");
+    }
+    returnCode(result);
+}
+
+/*
+ * Note:
+ * this implementation may be wrong.  See the comment under intrflush().
+ */
+NCURSES_EXPORT(void)
+noqiflush(void)
+{
+    int result = ERR;
+
+    T((T_CALLED("noqiflush()")));
+
+    if (cur_term != 0) {
+	TTY buf;
+
+	BEFORE("noqiflush");
+	buf = cur_term->Nttyb;
+#ifdef TERMIOS
+	buf.c_lflag |= NOFLSH;
+	result = _nc_set_tty_mode(&buf);
+#else
+	/* FIXME */
+#endif
+	if (result == OK) {
+	    cur_term->Nttyb = buf;
+	}
+	AFTER("noqiflush");
+    }
+    returnVoid;
 }
 
 /*
@@ -237,38 +267,30 @@ noqiflush (void)
  * curs_inopts(3x) is too exact to be coincidence.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(intrflush)(SCREEN *sp, WINDOW *win GCC_UNUSED, bool flag)
+intrflush(WINDOW *win GCC_UNUSED, bool flag)
 {
     int result = ERR;
 
-    T((T_CALLED("intrflush(%p,%d)"), sp, flag));
-    if (sp == 0)
-        returnCode(ERR);
+    T((T_CALLED("intrflush(%d)"), flag));
 
-    if (0!=TerminalOf(sp)) {
+    if (cur_term != 0) {
 	TTY buf;
 
 	BEFORE("intrflush");
-	buf = TerminalOf(sp)->Nttyb;
+	buf = cur_term->Nttyb;
 #ifdef TERMIOS
 	if (flag)
 	    buf.c_lflag &= ~(NOFLSH);
 	else
 	    buf.c_lflag |= (NOFLSH);
-	result = NC_SNAME(_nc_set_tty_mode)(sp, &buf);
+	result = _nc_set_tty_mode(&buf);
 #else
 	/* FIXME */
 #endif
 	if (result == OK) {
-  	    TerminalOf(sp)->Nttyb = buf;
+	    cur_term->Nttyb = buf;
 	}
 	AFTER("intrflush");
     }
     returnCode(result);
-}
-
-NCURSES_EXPORT(int)
-intrflush(WINDOW *win GCC_UNUSED, bool flag)
-{
-  return NC_SNAME(intrflush)(CURRENT_SCREEN, win, flag);
 }

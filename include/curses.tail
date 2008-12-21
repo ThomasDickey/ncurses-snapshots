@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.17.1.1 2008/12/01 01:18:06 juergen Exp $ */
+/* $Id: curses.tail,v 1.17 2008/11/23 00:12:12 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in
@@ -94,19 +94,14 @@ typedef struct
 }
 MEVENT;
 
-extern NCURSES_EXPORT(bool)    has_mouse(void);
-extern NCURSES_EXPORT(bool)    has_mouse_sp(SCREEN*);
-extern NCURSES_EXPORT(int)     getmouse (MEVENT *);
-extern NCURSES_EXPORT(int)     getmouse_sp (SCREEN*, MEVENT *);
-extern NCURSES_EXPORT(int)     ungetmouse (MEVENT *);
-extern NCURSES_EXPORT(int)     ungetmouse_sp (SCREEN*,MEVENT *);
+extern NCURSES_EXPORT(bool) has_mouse (void);
+extern NCURSES_EXPORT(int) getmouse (MEVENT *);
+extern NCURSES_EXPORT(int) ungetmouse (MEVENT *);
 extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
-extern NCURSES_EXPORT(mmask_t) mousemask_sp (SCREEN*, mmask_t, mmask_t *);
-extern NCURSES_EXPORT(bool)    wenclose (const WINDOW *, int, int);
-extern NCURSES_EXPORT(int)     mouseinterval (int);
-extern NCURSES_EXPORT(int)     mouseinterval_sp (SCREEN*, int);
-extern NCURSES_EXPORT(bool)    wmouse_trafo (const WINDOW*, int*, int*, bool);
-extern NCURSES_EXPORT(bool)    mouse_trafo (int*, int*, bool);              /* generated */
+extern NCURSES_EXPORT(bool) wenclose (const WINDOW *, int, int);
+extern NCURSES_EXPORT(int) mouseinterval (int);
+extern NCURSES_EXPORT(bool) wmouse_trafo (const WINDOW*, int*, int*, bool);
+extern NCURSES_EXPORT(bool) mouse_trafo (int*, int*, bool);              /* generated */
 
 #define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
 
@@ -114,7 +109,6 @@ extern NCURSES_EXPORT(bool)    mouse_trafo (int*, int*, bool);              /* g
 
 extern NCURSES_EXPORT(int) mcprint (char *, int);	/* direct data to printer */
 extern NCURSES_EXPORT(int) has_key (int);		/* do we have given key? */
-extern NCURSES_EXPORT(int) has_key_sp (SCREEN*,int);    /* do we have given key? */
 
 /* Debugging : use with libncurses_g.a */
 
