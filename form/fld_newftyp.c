@@ -32,9 +32,9 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.15 2007/10/13 19:30:55 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.15.1.3 2008/12/07 02:07:35 juergen Exp $")
 
-static FIELDTYPE const default_fieldtype =
+static FIELDTYPE default_fieldtype =
 {
   0,				/* status                                      */
   0L,				/* reference count                             */
@@ -43,13 +43,14 @@ static FIELDTYPE const default_fieldtype =
   NULL,				/* makearg function                            */
   NULL,				/* copyarg function                            */
   NULL,				/* freearg function                            */
-  NULL,				/* field validation function                   */
-  NULL,				/* Character check function                    */
-  NULL,				/* enumerate next function                     */
-  NULL				/* enumerate previous function                 */
+  {NULL},			/* field validation function                   */
+  {NULL},	       		/* Character check function                    */
+  {NULL},			/* enumerate next function                     */
+  {NULL},			/* enumerate previous function                 */
+  NULL                          /* generic callback alternative to makearg     */
 };
 
-NCURSES_EXPORT_VAR(const FIELDTYPE *)
+NCURSES_EXPORT_VAR(FIELDTYPE *)
 _nc_Default_FieldType = &default_fieldtype;
 
 /*---------------------------------------------------------------------------
@@ -82,8 +83,8 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
 	{
 	  T((T_CREATE("fieldtype %p"), nftyp));
 	  *nftyp = default_fieldtype;
-	  nftyp->fcheck = field_check;
-	  nftyp->ccheck = char_check;
+	  nftyp->fieldcheck.ofcheck = field_check;
+	  nftyp->charcheck.occheck = char_check;
 	}
       else
 	{
@@ -96,6 +97,7 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
     }
   returnFieldType(nftyp);
 }
+
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform

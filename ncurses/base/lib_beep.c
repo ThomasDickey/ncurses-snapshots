@@ -40,9 +40,8 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>		/* beep, flash */
 
-MODULE_ID("$Id: lib_beep.c,v 1.10 2005/04/09 15:20:04 tom Exp $")
+MODULE_ID("$Id: lib_beep.c,v 1.10.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*
  *	beep()
@@ -53,24 +52,20 @@ MODULE_ID("$Id: lib_beep.c,v 1.10 2005/04/09 15:20:04 tom Exp $")
  */
 
 NCURSES_EXPORT(int)
-beep(void)
+NC_SNAME(beep)(SCREEN *sp)
 {
-    int res = ERR;
+  int res = ERR;
+  
+  T((T_CALLED("beep(%p)"), sp));
+  
+  if (sp!=0)
+    res = CallDriver_1(sp,doBeepOrFlash,TRUE);
 
-    T((T_CALLED("beep()")));
+  returnCode(res);
+}
 
-    /* FIXME: should make sure that we are not in altchar mode */
-    if (cur_term == 0) {
-	res = ERR;
-    } else if (bell) {
-	TPUTS_TRACE("bell");
-	res = putp(bell);
-	_nc_flush();
-    } else if (flash_screen) {
-	TPUTS_TRACE("flash_screen");
-	res = putp(flash_screen);
-	_nc_flush();
-    }
-
-    returnCode(res);
+NCURSES_EXPORT(int)
+beep (void)
+{
+    return NC_SNAME(beep)(CURRENT_SCREEN);
 }

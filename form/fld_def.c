@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.36 2007/10/13 19:29:58 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.36.1.2 2008/11/18 08:50:04 juergen Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -86,18 +86,16 @@ NCURSES_EXPORT(TypeArgument *)
 _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 {
   TypeArgument *res = (TypeArgument *)0;
-  TypeArgument *p;
 
   if (typ != 0 && (typ->status & _HAS_ARGS) != 0)
     {
       assert(err != 0 && ap != (va_list *)0);
       if ((typ->status & _LINKED_TYPE) != 0)
 	{
-	  p = typeMalloc(TypeArgument, 1);
-
+	  TypeArgument *p = typeMalloc(TypeArgument, 1);
 	  if (p != 0)
 	    {
-	      p->left = _nc_Make_Argument(typ->left, ap, err);
+	      p->left  = _nc_Make_Argument(typ->left,  ap, err);
 	      p->right = _nc_Make_Argument(typ->right, ap, err);
 	      return p;
 	    }
@@ -121,7 +119,7 @@ _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
 |   Function      :  TypeArgument *_nc_Copy_Argument(const FIELDTYPE *typ,
-|                                                    const TypeArgument *argp,
+|                                                    TypeArgument *argp,
 |                                                    int *err )
 |
 |   Description   :  Create a copy of an argument structure for the specified
@@ -131,7 +129,7 @@ _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
 |                    In case of an error in *err an error counter is increased.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(TypeArgument *)
-_nc_Copy_Argument(const FIELDTYPE *typ, const TypeArgument *argp, int *err)
+_nc_Copy_Argument(const FIELDTYPE *typ, TypeArgument *argp, int *err)
 {
   TypeArgument *res = (TypeArgument *)0;
   TypeArgument *p;
@@ -250,10 +248,10 @@ _nc_Free_Type(FIELD *field)
 {
   assert(field != 0);
   if (field->type != 0)
-    {
+  {
       field->type->ref--;
-    }
-  _nc_Free_Argument(field->type, (TypeArgument *)(field->arg));
+      _nc_Free_Argument(field->type, (TypeArgument *)(field->arg));
+  }
 }
 
 /*---------------------------------------------------------------------------

@@ -42,7 +42,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.50 2008/11/23 00:17:31 juergen Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.50.1.2 2008/12/07 02:07:34 juergen Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0

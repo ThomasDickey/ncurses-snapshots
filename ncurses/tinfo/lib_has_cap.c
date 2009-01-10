@@ -40,26 +40,49 @@
 */
 
 #include <curses.priv.h>
+#define CUR TerminalOf(sp)->type.
 
-#include <term.h>
-
-MODULE_ID("$Id: lib_has_cap.c,v 1.4 2003/10/25 19:43:55 tom Exp $")
+MODULE_ID("$Id: lib_has_cap.c,v 1.4.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(bool)
-has_ic(void)
+NC_SNAME(has_ic)(SCREEN *sp)
 {
-    T((T_CALLED("has_ic()")));
-    returnCode(cur_term &&
-	       (insert_character || parm_ich
-		|| (enter_insert_mode && exit_insert_mode))
-	       && (delete_character || parm_dch));
+    bool code = FALSE;
+  
+    T((T_CALLED("has_ic(%p)"),sp));
+
+    if (IsValidTIScreen(sp) && IsTermInfo(sp))
+    {
+      code = ((insert_character || parm_ich
+		      || (enter_insert_mode && exit_insert_mode))
+	      && (delete_character || parm_dch)) ? TRUE : FALSE;
+    }
+
+    returnCode(code);
 }
 
 NCURSES_EXPORT(bool)
-has_il(void)
+has_ic (void)
 {
-    T((T_CALLED("has_il()")));
-    returnCode(cur_term
-	       && (insert_line || parm_insert_line)
-	       && (delete_line || parm_delete_line));
+    return NC_SNAME(has_ic)(CURRENT_SCREEN);
+}
+
+NCURSES_EXPORT(bool)
+NC_SNAME(has_il)(SCREEN *sp)
+{
+    bool code = FALSE;
+    T((T_CALLED("has_il(%p)"),sp));
+    if (IsValidTIScreen(sp) && IsTermInfo(sp))
+    {
+      code = ((insert_line || parm_insert_line)
+	      && (delete_line || parm_delete_line)) ? TRUE : FALSE;
+    }
+
+    returnCode(code);
+}
+
+NCURSES_EXPORT(bool)
+has_il (void)
+{
+    return NC_SNAME(has_il)(CURRENT_SCREEN);
 }

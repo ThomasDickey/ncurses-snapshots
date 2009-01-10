@@ -40,12 +40,18 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_isendwin.c,v 1.6 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_isendwin.c,v 1.6.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(bool)
-isendwin(void)
+NC_SNAME(isendwin)(SCREEN *sp)
 {
-    if (SP == NULL)
+    if (sp == NULL)
 	return FALSE;
-    return SP->_endwin;
+    return sp->_endwin;
+}
+
+NCURSES_EXPORT(bool)
+isendwin (void)
+{
+    return NC_SNAME(isendwin)(CURRENT_SCREEN);
 }

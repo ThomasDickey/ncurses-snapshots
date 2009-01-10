@@ -36,7 +36,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_bottom.c,v 1.11 2005/02/19 16:38:16 tom Exp $")
+MODULE_ID("$Id: p_bottom.c,v 1.11.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
 bottom_panel(PANEL * pan)
@@ -46,6 +46,7 @@ bottom_panel(PANEL * pan)
   T((T_CALLED("bottom_panel(%p)"), pan));
   if (pan)
     {
+      GetHook(pan);
       if (!Is_Bottom(pan))
 	{
 

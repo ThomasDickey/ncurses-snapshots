@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.26 2004/12/25 23:57:04 tom Exp $")
+MODULE_ID("$Id: m_post.c,v 1.26.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -255,7 +255,7 @@ _nc_Draw_Menu(const MENU * menu)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
-|   Function      :  int post_menu(MENU *)
+|   Function      :  int post_menu(MENU* menu)
 |
 |   Description   :  Post a menu to the screen. This makes it visible.
 |
@@ -267,7 +267,7 @@ _nc_Draw_Menu(const MENU * menu)
 |                    E_POSTED            - Menu already posted
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-post_menu(MENU * menu)
+post_menu(MENU* menu)
 {
   T((T_CALLED("post_menu(%p)"), menu));
 
@@ -329,7 +329,7 @@ post_menu(MENU * menu)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
-|   Function      :  int unpost_menu(MENU *)
+|   Function      :  int unpost_menu(MENU*)
 |
 |   Description   :  Detach menu from screen
 |
@@ -339,7 +339,7 @@ post_menu(MENU * menu)
 |                    E_NOT_POSTED      - menu is not posted
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-unpost_menu(MENU * menu)
+unpost_menu(MENU* menu)
 {
   WINDOW *win;
 

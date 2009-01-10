@@ -32,20 +32,26 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keybound.c,v 1.7 2006/06/17 18:19:24 tom Exp $")
+MODULE_ID("$Id: keybound.c,v 1.7.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 /*
  * Returns the count'th string definition which is associated with the
  * given keycode.  The result is malloc'd, must be freed by the caller.
  */
 NCURSES_EXPORT(char *)
-keybound(int code, int count)
+NC_SNAME(keybound)(SCREEN *sp, int code, int count)
 {
     char *result = 0;
 
-    T((T_CALLED("keybound(%d,%d)"), code, count));
-    if (SP != 0 && code >= 0) {
-	result = _nc_expand_try(SP->_keytry, (unsigned) code, &count, 0);
+    T((T_CALLED("keybound(%p, %d,%d)"), sp, code, count));
+    if (sp != 0 && code >= 0) {
+	result = _nc_expand_try(sp->_keytry, (unsigned) code, &count, 0);
     }
     returnPtr(result);
+}
+
+NCURSES_EXPORT(char *)
+keybound (int code, int count)
+{
+    return NC_SNAME(keybound)(CURRENT_SCREEN, code, count);
 }
