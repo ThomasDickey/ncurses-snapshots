@@ -44,49 +44,42 @@
 #define _POSIX_SOURCE
 #endif
 
-#include <term.h>		/* lines, columns, cur_term */
-
-MODULE_ID("$Id: lib_restart.c,v 1.10 2008/06/21 17:31:22 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.10.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
+NC_SNAME(_nc_restartterm)(SCREEN *sp, NCURSES_CONST char *termp, int filenum, int *errret)
 {
     int result;
+    TERMINAL *new_term;
+    T((T_CALLED("restartterm(%p,%s,%d,%p)"), sp, termp, filenum, errret));
 
-    T((T_CALLED("restartterm(%s,%d,%p)"), termp, filenum, errret));
-
-    if (setupterm(termp, filenum, errret) != OK) {
+    if (_nc_setupterm_ex(&new_term, termp, filenum, errret, FALSE) != OK) {
 	result = ERR;
-    } else if (SP != 0) {
-	int saveecho = SP->_echo;
-	int savecbreak = SP->_cbreak;
-	int saveraw = SP->_raw;
-	int savenl = SP->_nl;
+    } else if (sp != 0) {
+	int saveecho = sp->_echo;
+	int savecbreak = sp->_cbreak;
+	int saveraw = sp->_raw;
+	int savenl = sp->_nl;
 
-	if (saveecho)
-	    echo();
-	else
-	    noecho();
+	sp->_term = new_term;
+	NC_SNAME(echo)(sp, saveecho);
 
 	if (savecbreak) {
-	    cbreak();
-	    noraw();
+	    NC_SNAME(cbreak)(sp, TRUE);
+	    NC_SNAME(raw)(sp, FALSE);
 	} else if (saveraw) {
-	    nocbreak();
-	    raw();
+	    NC_SNAME(cbreak)(sp, FALSE);
+	    NC_SNAME(raw)(sp, TRUE);
 	} else {
-	    nocbreak();
-	    noraw();
+	    NC_SNAME(cbreak)(sp, FALSE);
+	    NC_SNAME(raw)(sp, FALSE);
 	}
-	if (savenl)
-	    nl();
-	else
-	    nonl();
+	NC_SNAME(nl)(sp, savenl);
 
-	reset_prog_mode();
+	NC_SNAME(reset_prog_mode)(sp);
 
 #if USE_SIZECHANGE
-	_nc_update_screensize(SP);
+	_nc_update_screensize(sp);
 #endif
 
 	result = OK;
@@ -94,4 +87,10 @@ restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
 	result = ERR;
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(int)
+restartterm (NCURSES_CONST char *termp, int filenum, int *errret)
+{
+    return NC_SNAME(_nc_restartterm)(CURRENT_SCREEN, termp, filenum, errret);
 }

@@ -32,17 +32,23 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: legacy_coding.c,v 1.2 2005/12/17 23:38:17 tom Exp $")
+MODULE_ID("$Id: legacy_coding.c,v 1.2.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-use_legacy_coding(int level)
+NC_SNAME(use_legacy_coding)(SCREEN *sp, int level)
 {
     int result = ERR;
 
-    T((T_CALLED("use_legacy_coding(%d)"), level));
-    if (level >= 0 && level <= 2 && SP != 0) {
-	result = SP->_legacy_coding;
-	SP->_legacy_coding = level;
+    T((T_CALLED("use_legacy_coding(%p,%d)"), sp, level));
+    if (level >= 0 && level <= 2 && sp != 0) {
+	result = sp->_legacy_coding;
+	sp->_legacy_coding = level;
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(int)
+use_legacy_coding (int level)
+{
+    return NC_SNAME(use_legacy_coding)(CURRENT_SCREEN, level);
 }

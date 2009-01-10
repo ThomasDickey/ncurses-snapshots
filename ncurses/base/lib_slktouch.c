@@ -38,16 +38,22 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slktouch.c,v 1.5 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_slktouch.c,v 1.5.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-slk_touch(void)
+NC_SNAME(slk_touch)(SCREEN *sp)
 {
-    T((T_CALLED("slk_touch()")));
+    T((T_CALLED("slk_touch(%p)"), sp));
 
-    if (SP == NULL || SP->_slk == NULL)
+    if (sp == 0 || sp->_slk == 0)
 	returnCode(ERR);
-    SP->_slk->dirty = TRUE;
+    sp->_slk->dirty = TRUE;
 
     returnCode(OK);
+}
+
+NCURSES_EXPORT(int)
+slk_touch (void)
+{
+    return NC_SNAME(slk_touch)(CURRENT_SCREEN);
 }

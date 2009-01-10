@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: key_defined.c,v 1.6 2006/12/30 23:22:55 tom Exp $")
+MODULE_ID("$Id: key_defined.c,v 1.6.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 static int
 find_definition(TRIES * tree, const char *str)
@@ -65,14 +65,20 @@ find_definition(TRIES * tree, const char *str)
  * Otherwise, return the keycode's value (neither OK/ERR).
  */
 NCURSES_EXPORT(int)
-key_defined(const char *str)
+NC_SNAME(key_defined)(SCREEN *sp, const char *str)
 {
     int code = ERR;
 
-    T((T_CALLED("key_defined(%s)"), _nc_visbuf(str)));
-    if (SP != 0 && str != 0) {
-	code = find_definition(SP->_keytry, str);
+    T((T_CALLED("key_defined(%p, %s)"), sp, _nc_visbuf(str)));
+    if (sp != 0 && str != 0) {
+	code = find_definition(sp->_keytry, str);
     }
 
     returnCode(code);
+}
+
+NCURSES_EXPORT(int)
+key_defined (const char *str)
+{
+    return NC_SNAME(key_defined)(CURRENT_SCREEN, str);
 }
