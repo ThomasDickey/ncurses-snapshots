@@ -36,18 +36,13 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_hidden.c,v 1.7.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: p_hidden.c,v 1.7 2005/02/19 16:39:17 tom Exp $")
 
 NCURSES_EXPORT(int)
 panel_hidden(const PANEL * pan)
 {
-  int rc = ERR;
-
   T((T_CALLED("panel_hidden(%p)"), pan));
-  if (pan)
-    {
-      GetHook(pan);
-      rc = (IS_LINKED(pan) ? FALSE : TRUE);
-    }
-    returnCode(rc);
+  if (!pan)
+    returnCode(ERR);
+  returnCode(IS_LINKED(pan) ? FALSE : TRUE);
 }

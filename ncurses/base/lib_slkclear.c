@@ -40,33 +40,27 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkclear.c,v 1.10.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_slkclear.c,v 1.10 2007/12/29 17:51:47 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_clear)(SCREEN *sp)
+slk_clear(void)
 {
     int rc = ERR;
 
-    T((T_CALLED("slk_clear(%p)"), sp));
+    T((T_CALLED("slk_clear()")));
 
-    if (sp != 0 && sp->_slk != 0) {
-	sp->_slk->hidden = TRUE;
+    if (SP != NULL && SP->_slk != NULL) {
+	SP->_slk->hidden = TRUE;
 	/* For simulated SLK's it looks much more natural to
 	   inherit those attributes from the standard screen */
-	sp->_slk->win->_nc_bkgd = sp->_stdscr->_nc_bkgd;
-	WINDOW_ATTRS(sp->_slk->win) = WINDOW_ATTRS(sp->_stdscr);
-	if (sp->_slk->win == sp->_stdscr) {
+	SP->_slk->win->_nc_bkgd = stdscr->_nc_bkgd;
+	WINDOW_ATTRS(SP->_slk->win) = WINDOW_ATTRS(stdscr);
+	if (SP->_slk->win == stdscr) {
 	    rc = OK;
 	} else {
-	    werase(sp->_slk->win);
-	    rc = wrefresh(sp->_slk->win);
+	    werase(SP->_slk->win);
+	    rc = wrefresh(SP->_slk->win);
 	}
     }
     returnCode(rc);
-}
-
-NCURSES_EXPORT(int)
-slk_clear (void)
-{
-    return NC_SNAME(slk_clear)(CURRENT_SCREEN);
 }

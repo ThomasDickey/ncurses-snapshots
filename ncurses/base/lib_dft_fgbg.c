@@ -31,24 +31,19 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
+#include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.18.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.18 2005/11/26 20:03:38 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
  * it is white on black.  This is an extension to XSI curses.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(use_default_colors)(SCREEN *sp)
+use_default_colors(void)
 {
-    T((T_CALLED("use_default_colors(%p)"), sp));
-    returnCode(assume_default_colors_sp(sp, -1, -1));
-}
-
-NCURSES_EXPORT(int)
-use_default_colors (void)
-{
-    return NC_SNAME(use_default_colors)(CURRENT_SCREEN);
+    T((T_CALLED("use_default_colors()")));
+    returnCode(assume_default_colors(-1, -1));
 }
 
 /*
@@ -56,17 +51,25 @@ use_default_colors (void)
  * is something specific, possibly not white on black.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(assume_default_colors)(SCREEN *sp, int fg, int bg)
+assume_default_colors(int fg, int bg)
 {
-    int code = ERR;
-    T((T_CALLED("assume_default_colors(%p,%d,%d)"), sp, fg, bg));
-    if (sp!=0)
-      code = CallDriver_2(sp,defaultcolors,fg,bg);
-    returnCode(code);
-}
+    T((T_CALLED("assume_default_colors(%d,%d)"), fg, bg));
 
-NCURSES_EXPORT(int)
-assume_default_colors (int fg, int bg)
-{
-    return NC_SNAME(assume_default_colors)(CURRENT_SCREEN, fg, bg);
+    if (!orig_pair && !orig_colors)
+	returnCode(ERR);
+
+    if (initialize_pair)	/* don't know how to handle this */
+	returnCode(ERR);
+
+    SP->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
+    SP->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
+    SP->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : (fg & C_MASK);
+    SP->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : (bg & C_MASK);
+    if (SP->_color_pairs != 0) {
+	bool save = SP->_default_color;
+	SP->_default_color = TRUE;
+	init_pair(0, (short) fg, (short) bg);
+	SP->_default_color = save;
+    }
+    returnCode(OK);
 }
