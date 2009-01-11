@@ -38,7 +38,6 @@
 
 #define __INTERNAL_CAPS_VISIBLE
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
 
 #include <termcap.h>
 #include <tic.h>
@@ -46,7 +45,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.63.1.2 2008/12/28 20:20:34 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.63 2008/08/16 19:22:55 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -77,22 +76,16 @@ NCURSES_EXPORT_VAR(char *) BC = 0;
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
+tgetent(char *bufp, const char *name)
 {
-    int errcode = ERR;
+    int errcode;
     int n;
     bool found_cache = FALSE;
-    TERMINAL *termp = 0;
 
     START_TRACE();
     T((T_CALLED("tgetent()")));
 
-    _nc_setupterm_ex(&termp, (NCURSES_CONST char *) name,
-		     STDOUT_FILENO, &errcode, TRUE);
-
-    if (termp==0 ||
-        !((TERMINAL_CONTROL_BLOCK*)termp)->drv->isTerminfo)
-      return(errcode);
+    _nc_setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode, TRUE);
 
     /*
      * In general we cannot tell if the fixed sgr0 is still used by the
@@ -116,9 +109,9 @@ NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
 	    /*
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
-	    if (LAST_TRM != 0 && LAST_TRM != TerminalOf(sp)) {
+	    if (LAST_TRM != 0 && LAST_TRM != cur_term) {
 		TERMINAL *trm = LAST_TRM;
-		NC_SNAME(_nc_del_curterm)(sp, LAST_TRM);
+		del_curterm(LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
 		    if (LAST_TRM == trm)
 			LAST_TRM = 0;
@@ -138,7 +131,7 @@ NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
 	}
 	CacheInx = best;
     }
-    LAST_TRM = TerminalOf(sp);
+    LAST_TRM = cur_term;
     LAST_SEQ = ++CacheSeq;
 
     PC = 0;
@@ -160,7 +153,7 @@ NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	if ((FIX_SGR0 = _nc_trim_sgr0(&(TerminalOf(sp)->type))) != 0) {
+	if ((FIX_SGR0 = _nc_trim_sgr0(&(cur_term->type))) != 0) {
 	    if (!strcmp(FIX_SGR0, exit_attribute_mode)) {
 		if (FIX_SGR0 != exit_attribute_mode) {
 		    free(FIX_SGR0);
@@ -171,8 +164,8 @@ NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
 	LAST_BUF = bufp;
 	LAST_USE = TRUE;
 
-	SetNoPadding(sp);
-	(void) NC_SNAME(baudrate)(sp);	/* sets ospeed as a side-effect */
+	SetNoPadding(SP);
+	(void) baudrate();	/* sets ospeed as a side-effect */
 
 /* LINT_PREPRO
 #if 0*/
@@ -182,12 +175,6 @@ NC_SNAME(_nc_tgetent)(SCREEN *sp, char *bufp, const char *name)
 
     }
     returnCode(errcode);
-}
-
-NCURSES_EXPORT(int)
-tgetent (char *bufp, const char *name)
-{
-    return NC_SNAME(_nc_tgetent)(CURRENT_SCREEN, bufp, name);
 }
 
 /***************************************************************************
@@ -200,13 +187,13 @@ tgetent (char *bufp, const char *name)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_tgetflag)(SCREEN *sp, NCURSES_CONST char *id)
+tgetflag(NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetflag(%p, %s)"), sp, id));
-    if (HasTInfoTerminal(sp)) {
-        TERMTYPE *tp = &(TerminalOf(sp)->type);
+    T((T_CALLED("tgetflag(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_boolean(i, tp) {
 	    const char *capname = ExtBoolname(tp, i, boolcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -216,12 +203,6 @@ NC_SNAME(_nc_tgetflag)(SCREEN *sp, NCURSES_CONST char *id)
 	}
     }
     returnCode(0);		/* Solaris does this */
-}
-
-NCURSES_EXPORT(int)
-tgetflag (NCURSES_CONST char *id)
-{
-    return NC_SNAME(_nc_tgetflag)(CURRENT_SCREEN, id);
 }
 
 /***************************************************************************
@@ -234,13 +215,13 @@ tgetflag (NCURSES_CONST char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_tgetnum)(SCREEN *sp, NCURSES_CONST char *id)
+tgetnum(NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetnum(%p, %s)"), sp, id));
-    if (HasTInfoTerminal(sp)) {
-        TERMTYPE *tp = &(TerminalOf(sp)->type);
+    T((T_CALLED("tgetnum(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_number(i, tp) {
 	    const char *capname = ExtNumname(tp, i, numcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -253,12 +234,6 @@ NC_SNAME(_nc_tgetnum)(SCREEN *sp, NCURSES_CONST char *id)
     returnCode(ABSENT_NUMERIC);
 }
 
-NCURSES_EXPORT(int)
-tgetnum (NCURSES_CONST char *id)
-{
-    return NC_SNAME(_nc_tgetnum)(CURRENT_SCREEN, id);
-}
-
 /***************************************************************************
  *
  * tgetstr(str, area)
@@ -269,14 +244,14 @@ tgetnum (NCURSES_CONST char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(char *)
-NC_SNAME(_nc_tgetstr)(SCREEN *sp, NCURSES_CONST char *id, char **area)
+tgetstr(NCURSES_CONST char *id, char **area)
 {
     unsigned i;
     char *result = NULL;
 
     T((T_CALLED("tgetstr(%s,%p)"), id, area));
-    if (HasTInfoTerminal(sp)) {
-        TERMTYPE *tp = &(TerminalOf(sp)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_string(i, tp) {
 	    const char *capname = ExtStrname(tp, i, strcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -301,12 +276,6 @@ NC_SNAME(_nc_tgetstr)(SCREEN *sp, NCURSES_CONST char *id, char **area)
 	}
     }
     returnPtr(result);
-}
-
-NCURSES_EXPORT(char *)
-tgetstr (NCURSES_CONST char *id, char **area)
-{
-    return NC_SNAME(_nc_tgetstr)(CURRENT_SCREEN, id, area);
 }
 
 #if NO_LEAKS

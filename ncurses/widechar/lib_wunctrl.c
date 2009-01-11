@@ -35,27 +35,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.12.1.1 2008/11/16 00:19:59 juergen Exp $")
-
-NCURSES_EXPORT(wchar_t *)
-NC_SNAME(_nc_wunctrl)(SCREEN* sp, cchar_t *wc)
-{
-    static wchar_t str[CCHARW_MAX + 1], *wsp;
-
-    if (Charable(*wc)) {
-        const char *p = NC_SNAME(unctrl)(sp, (unsigned) _nc_to_char((wint_t) CharOf(*wc)));
-
-	for (wsp = str; *p; ++p) {
-	    *wsp++ = _nc_to_widechar(*p);
-	}
-	*wsp = 0;
-	return str;
-    } else
-	return wc->chars;
-}
+MODULE_ID("$Id: lib_wunctrl.c,v 1.12 2007/06/12 20:22:32 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 wunctrl(cchar_t *wc)
 {
-    return NC_SNAME(_nc_wunctrl)(CURRENT_SCREEN, wc);
+    static wchar_t str[CCHARW_MAX + 1], *sp;
+
+    if (Charable(*wc)) {
+	const char *p = unctrl((unsigned) _nc_to_char((wint_t) CharOf(*wc)));
+
+	for (sp = str; *p; ++p) {
+	    *sp++ = _nc_to_widechar(*p);
+	}
+	*sp = 0;
+	return str;
+    } else
+	return wc->chars;
 }
