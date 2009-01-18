@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.345 $
-#	$Date: 2009/01/11 00:47:37 $
+#	$Revision: 1.344 $
+#	$Date: 2009/01/11 00:46:13 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4518,7 +4518,8 @@ screen.rxvt|screen in rxvt,
 	kcuu1=\EOA, use=screen+fkeys, use=vt100+enq,
 	use=rxvt+pcfkeys, use=vt220+keypad, use=screen,
 screen.Eterm|screen in Eterm,
-	use=screen+fkeys, use=Eterm,
+	use=screen+fkeys,
+	use=Eterm,
 # fix the backspace key
 screen.linux|screen in linux console,
 	bw,
