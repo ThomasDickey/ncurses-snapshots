@@ -42,20 +42,26 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_echo.c,v 1.5 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_echo.c,v 1.5.1.2 2009/02/07 23:09:39 tom Exp $")
+
+NCURSES_EXPORT(int)
+NC_SNAME(echo) (SCREEN *sp, bool flag)
+{
+    T((T_CALLED("%secho(%p,%d)"), flag ? "" : "no", sp, flag));
+    if (0 == sp)
+	returnCode(ERR);
+    sp->_echo = flag ? TRUE : FALSE;
+    returnCode(OK);
+}
 
 NCURSES_EXPORT(int)
 echo(void)
 {
-    T((T_CALLED("echo()")));
-    SP->_echo = TRUE;
-    returnCode(OK);
+    return NC_SNAME(echo) (CURRENT_SCREEN, TRUE);
 }
 
 NCURSES_EXPORT(int)
 noecho(void)
 {
-    T((T_CALLED("noecho()")));
-    SP->_echo = FALSE;
-    returnCode(OK);
+    return NC_SNAME(echo) (CURRENT_SCREEN, FALSE);
 }

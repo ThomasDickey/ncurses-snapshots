@@ -46,9 +46,8 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.24 2004/05/08 17:11:21 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.24.1.2 2009/02/07 23:09:41 tom Exp $")
 
 static int
 _nc_vdisable(void)
@@ -79,21 +78,27 @@ _nc_vdisable(void)
  */
 
 NCURSES_EXPORT(char)
-erasechar(void)
+NC_SNAME(erasechar) (SCREEN *sp)
 {
     int result = ERR;
-    T((T_CALLED("erasechar()")));
+    T((T_CALLED("erasechar(%p)"), sp));
 
-    if (cur_term != 0) {
+    if (0 != TerminalOf(sp)) {
 #ifdef TERMIOS
-	result = cur_term->Ottyb.c_cc[VERASE];
+	result = TerminalOf(sp)->Ottyb.c_cc[VERASE];
 	if (result == _nc_vdisable())
 	    result = ERR;
 #else
-	result = cur_term->Ottyb.sg_erase;
+	result = TerminalOf(sp)->Ottyb.sg_erase;
 #endif
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(char)
+erasechar(void)
+{
+    return NC_SNAME(erasechar) (CURRENT_SCREEN);
 }
 
 /*
@@ -104,21 +109,27 @@ erasechar(void)
  */
 
 NCURSES_EXPORT(char)
-killchar(void)
+NC_SNAME(killchar) (SCREEN *sp)
 {
     int result = ERR;
-    T((T_CALLED("killchar()")));
+    T((T_CALLED("killchar(%p)"), sp));
 
-    if (cur_term != 0) {
+    if (0 != TerminalOf(sp)) {
 #ifdef TERMIOS
-	result = cur_term->Ottyb.c_cc[VKILL];
+	result = TerminalOf(sp)->Ottyb.c_cc[VKILL];
 	if (result == _nc_vdisable())
 	    result = ERR;
 #else
-	result = cur_term->Ottyb.sg_kill;
+	result = TerminalOf(sp)->Ottyb.sg_kill;
 #endif
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(char)
+killchar(void)
+{
+    return NC_SNAME(killchar) (CURRENT_SCREEN);
 }
 
 /*
@@ -129,26 +140,32 @@ killchar(void)
  */
 
 NCURSES_EXPORT(int)
-flushinp(void)
+NC_SNAME(flushinp) (SCREEN *sp)
 {
-    T((T_CALLED("flushinp()")));
+    T((T_CALLED("flushinp(%p)"), sp));
 
-    if (cur_term != 0) {
+    if (0 != TerminalOf(sp)) {
 #ifdef TERMIOS
-	tcflush(cur_term->Filedes, TCIFLUSH);
+	tcflush(TerminalOf(sp)->Filedes, TCIFLUSH);
 #else
 	errno = 0;
 	do {
-	    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
+	    ioctl(TerminalOf(sp)->Filedes, TIOCFLUSH, 0);
 	} while
 	    (errno == EINTR);
 #endif
-	if (SP) {
-	    SP->_fifohead = -1;
-	    SP->_fifotail = 0;
-	    SP->_fifopeek = 0;
+	if (sp) {
+	    sp->_fifohead = -1;
+	    sp->_fifotail = 0;
+	    sp->_fifopeek = 0;
 	}
 	returnCode(OK);
     }
     returnCode(ERR);
+}
+
+NCURSES_EXPORT(int)
+flushinp(void)
+{
+    return NC_SNAME(flushinp) (CURRENT_SCREEN);
 }

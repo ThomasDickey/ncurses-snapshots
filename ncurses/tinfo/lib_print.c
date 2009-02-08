@@ -32,20 +32,19 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
+#define CUR TerminalOf(sp)->type.
 
-#include <term.h>
-
-MODULE_ID("$Id: lib_print.c,v 1.16 2006/11/26 00:26:34 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.16.1.1 2008/11/16 00:19:59 juergen Exp $")
 
 NCURSES_EXPORT(int)
-mcprint(char *data, int len)
+_nc_tinfo_mcprint(SCREEN *sp, char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
 {
     char *mybuf, *switchon;
     size_t onsize, offsize, res;
 
     errno = 0;
-    if (!cur_term || (!prtr_non && (!prtr_on || !prtr_off))) {
+    if (!HasTInfoTerminal(sp) || (!prtr_non && (!prtr_on || !prtr_off))) {
 	errno = ENODEV;
 	return (ERR);
     }
@@ -78,15 +77,16 @@ mcprint(char *data, int len)
      * data has actually been shipped to the terminal.  If the write(2)
      * operation is truly atomic we're protected from this.
      */
-    res = write(cur_term->Filedes, mybuf, onsize + len + offsize);
+    res = write(TerminalOf(sp)->Filedes, mybuf, onsize + len + offsize);
 
     /*
      * By giving up our scheduler slot here we increase the odds that the
      * kernel will ship the contiguous clist items from the last write
      * immediately.
      */
+#ifndef __MINGW32__
     (void) sleep(0);
-
+#endif
     free(mybuf);
     return (res);
 }

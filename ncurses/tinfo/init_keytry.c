@@ -27,16 +27,11 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
-
-#include <term.h>
-/* keypad_xmit, keypad_local, meta_on, meta_off */
-/* cursor_visible,cursor_normal,cursor_invisible */
-
 #include <tic.h>		/* struct tinfo_fkeys */
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: init_keytry.c,v 1.12 2008/05/24 21:44:51 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.12.1.2 2009/02/07 23:09:41 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -102,7 +97,7 @@ _nc_init_keytry(SCREEN *sp)
 		if (name != 0
 		    && *name == 'k'
 		    && value != 0
-		    && key_defined(value) == 0) {
+		    && NC_SNAME(key_defined) (sp, value) == 0) {
 		    (void) _nc_add_to_try(&(sp->_keytry),
 					  value,
 					  n - STRCOUNT + KEY_MAX);

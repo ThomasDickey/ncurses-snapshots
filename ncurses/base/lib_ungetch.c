@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ungetch.c,v 1.11 2008/05/31 16:44:54 tom Exp $")
+MODULE_ID("$Id: lib_ungetch.c,v 1.11.1.2 2009/02/07 23:09:41 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -57,9 +57,10 @@ _nc_fifo_dump(SCREEN *sp)
 #endif /* TRACE */
 
 NCURSES_EXPORT(int)
-_nc_ungetch(SCREEN *sp, int ch)
+NC_SNAME(ungetch) (SCREEN *sp, int ch)
 {
     int rc = ERR;
+    T((T_CALLED("ungetch(%p,%s)"), sp, _nc_tracechar(sp, ch)));
 
     if (tail != -1) {
 	if (head == -1) {
@@ -85,6 +86,5 @@ _nc_ungetch(SCREEN *sp, int ch)
 NCURSES_EXPORT(int)
 ungetch(int ch)
 {
-    T((T_CALLED("ungetch(%s)"), _nc_tracechar(SP, ch)));
-    returnCode(_nc_ungetch(SP, ch));
+    return (NC_SNAME(ungetch) (CURRENT_SCREEN, ch));
 }

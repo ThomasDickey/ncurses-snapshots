@@ -37,9 +37,9 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>		/* acs_chars */
+#define CUR TerminalOf(sp)->type.
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.63 2008/08/03 16:24:53 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.63.1.2 2009/02/07 23:09:42 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -186,6 +186,7 @@ _nc_altcharset_name(attr_t attr, chtype ch)
 	unsigned int val;
 	const char *name;
     } ALT_NAMES;
+    SCREEN *sp = CURRENT_SCREEN;
     static const ALT_NAMES names[] =
     {
 	{'l', "ACS_ULCORNER"},	/* upper left corner */
@@ -228,7 +229,7 @@ _nc_altcharset_name(attr_t attr, chtype ch)
     if ((attr & A_ALTCHARSET) && (acs_chars != 0)) {
 	char *cp;
 	char *found = 0;
-	const ALT_NAMES *sp;
+	const ALT_NAMES *strp;
 
 	for (cp = acs_chars; cp[0] && cp[1]; cp += 2) {
 	    if (ChCharOf(cp[1]) == ChCharOf(ch)) {
@@ -239,9 +240,9 @@ _nc_altcharset_name(attr_t attr, chtype ch)
 
 	if (found != 0) {
 	    ch = ChCharOf(*found);
-	    for (sp = names; sp->val; sp++)
-		if (sp->val == ch) {
-		    result = sp->name;
+	    for (strp = names; strp->val; strp++)
+		if (strp->val == ch) {
+		    result = strp->name;
 		    break;
 		}
 	}
@@ -260,7 +261,9 @@ _tracechtype2(int bufnum, chtype ch)
 	if ((found = _nc_altcharset_name(ChAttrOf(ch), ch)) != 0) {
 	    (void) _nc_trace_bufcat(bufnum, found);
 	} else
-	    (void) _nc_trace_bufcat(bufnum, _nc_tracechar(SP, (int) ChCharOf(ch)));
+	    (void) _nc_trace_bufcat(bufnum,
+				    _nc_tracechar(CURRENT_SCREEN,
+						  (int) ChCharOf(ch)));
 
 	if (ChAttrOf(ch) != A_NORMAL) {
 	    (void) _nc_trace_bufcat(bufnum, " | ");
@@ -320,7 +323,7 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 			if (PUTC_ch != L'\0') {
 			    /* it could not be a multibyte sequence */
 			    (void) _nc_trace_bufcat(bufnum,
-						    _nc_tracechar(SP,
+						    _nc_tracechar(CURRENT_SCREEN,
 								  UChar(ch->chars[PUTC_i])));
 			}
 			break;
@@ -329,7 +332,7 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 			if (n)
 			    (void) _nc_trace_bufcat(bufnum, ", ");
 			(void) _nc_trace_bufcat(bufnum,
-						_nc_tracechar(SP,
+						_nc_tracechar(CURRENT_SCREEN,
 							      UChar(PUTC_buf[n])));
 		    }
 		}

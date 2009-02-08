@@ -45,10 +45,9 @@
 #define _POSIX_SOURCE
 #endif
 
-#include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.73 2008/08/16 21:20:48 Werner.Fink Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.73.1.4 2009/02/07 23:09:40 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -63,16 +62,17 @@ MODULE_ID("$Id: lib_newterm.c,v 1.73 2008/08/16 21:20:48 Werner.Fink Exp $")
  * is supposed to behave as if it calls newterm, we do it here.
  */
 static NCURSES_INLINE int
-_nc_initscr(void)
+_nc_initscr(SCREEN *sp)
 {
     int result = ERR;
+    TERMINAL *term = TerminalOf(sp);
 
     /* for extended XPG4 conformance requires cbreak() at this point */
     /* (SVr4 curses does this anyway) */
-    if (cbreak() == OK) {
+    if (NC_SNAME(cbreak) (sp, TRUE) == OK) {
 	TTY buf;
 
-	buf = cur_term->Nttyb;
+	buf = term->Nttyb;
 #ifdef TERMIOS
 	buf.c_lflag &= ~(ECHO | ECHONL);
 	buf.c_iflag &= ~(ICRNL | INLCR | IGNCR);
@@ -82,10 +82,23 @@ _nc_initscr(void)
 #else
 	memset(&buf, 0, sizeof(buf));
 #endif
-	if ((result = _nc_set_tty_mode(&buf)) == OK)
-	    cur_term->Nttyb = buf;
+	if ((result = NC_SNAME(_nc_set_tty_mode) (sp, &buf)) == OK)
+	    term->Nttyb = buf;
     }
     return result;
+}
+
+NCURSES_EXPORT(int)
+NC_SNAME(filter) (SCREEN *sp, bool f)
+{
+    int code = ERR;
+    START_TRACE();
+    T((T_CALLED("filter(%p,%d)"), sp, (int) f));
+    if (IsPreScreen(sp)) {
+	sp->_filtered = f;
+	code = OK;
+    }
+    returnCode(code);
 }
 
 /*
@@ -118,118 +131,125 @@ nofilter(void)
 }
 #endif
 
-NCURSES_EXPORT(SCREEN *)
-newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
+NCURSES_EXPORT(bool)
+NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 {
     int value;
     int errret;
-    SCREEN *current;
     SCREEN *result = 0;
+    SCREEN *current;
     TERMINAL *its_term;
+    TERMINAL *new_term;
+    FILE *_ofp = ofp ? ofp : stdout;
+    FILE *_ifp = ifp ? ifp : stdin;
+    int cols;
+    int numlab;
+    bool code = FALSE;
 
     START_TRACE();
-    T((T_CALLED("newterm(\"%s\",%p,%p)"), name, ofp, ifp));
+    T((T_CALLED("newterm(%p, \"%s\", %p,%p)"), sp, name, ofp, ifp));
+
+    assert(sp != 0);
+    if (sp == 0)
+	returnCode(code);
 
     _nc_init_pthreads();
     _nc_lock_global(curses);
 
-    current = SP;
-    its_term = (SP ? SP->_term : 0);
+    current = CURRENT_SCREEN;
+    its_term = (current ? current->_term : 0);
 
     /* this loads the capability entry, then sets LINES and COLS */
-    if (setupterm(name, fileno(ofp), &errret) != ERR) {
-	int slk_format = _nc_globals.slk_format;
+    if (sp->_prescreen &&
+	_nc_setupterm_ex(&new_term, name,
+			 fileno(_ofp), &errret, FALSE) != ERR) {
 
+	_nc_set_screen(0);
+	assert(new_term != 0);
 	/*
 	 * This actually allocates the screen structure, and saves the original
 	 * terminal settings.
 	 */
-	_nc_set_screen(0);
-
-	/* allow user to set maximum escape delay from the environment */
-	if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
-	    set_escdelay(value);
-	}
-
-	if (_nc_setupscreen(LINES,
-			    COLS,
-			    ofp,
-			    _nc_prescreen.filter_mode,
-			    slk_format) == ERR) {
+	if (NC_SNAME(_nc_setupscreen) (&sp,
+				       *(ptrLines(sp)),
+				       *(ptrCols(sp)),
+				       _ofp,
+				       sp->_filtered,
+				       sp->slk_format) == ERR) {
 	    _nc_set_screen(current);
 	    result = 0;
 	} else {
-	    assert(SP != 0);
+	    TERMINAL_CONTROL_BLOCK *TCB;
+	    assert(sp != 0);
+	    _nc_set_screen(sp);
+	    cols = *(ptrCols(sp));
+	    TCB = (TERMINAL_CONTROL_BLOCK *) new_term;
+	    TCB->csp = sp;
+	    numlab = InfoOf(sp).numlabels;
+
 	    /*
 	     * In setupterm() we did a set_curterm(), but it was before we set
-	     * SP.  So the "current" screen's terminal pointer was overwritten
+	     * CURRENT_SCREEN.  So the "current" screen's terminal pointer was overwritten
 	     * with a different terminal.  Later, in _nc_setupscreen(), we set
-	     * SP and the terminal pointer in the new screen.
+	     * CURRENT_SCREEN and the terminal pointer in the new screen.
 	     *
 	     * Restore the terminal-pointer for the pre-existing screen, if
 	     * any.
 	     */
+
 	    if (current)
 		current->_term = its_term;
 
-	    /* if the terminal type has real soft labels, set those up */
-	    if (slk_format && num_labels > 0 && SLK_STDFMT(slk_format))
-		_nc_slk_initialize(stdscr, COLS);
+	    sp->_term = new_term;
 
-	    SP->_ifd = fileno(ifp);
-	    typeahead(fileno(ifp));
-#ifdef TERMIOS
-	    SP->_use_meta = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
-			     !(cur_term->Ottyb.c_iflag & ISTRIP));
+	    /* allow user to set maximum escape delay from the environment */
+	    if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
+#if USE_REENTRANT
+		NC_SNAME(set_escdelay) (sp, value);
 #else
-	    SP->_use_meta = FALSE;
+		ESCDELAY = value;
 #endif
-	    SP->_endwin = FALSE;
+	    }
 
-	    /*
-	     * Check whether we can optimize scrolling under dumb terminals in
-	     * case we do not have any of these capabilities, scrolling
-	     * optimization will be useless.
-	     */
-	    SP->_scrolling = ((scroll_forward && scroll_reverse) ||
-			      ((parm_rindex ||
-				parm_insert_line ||
-				insert_line) &&
-			       (parm_index ||
-				parm_delete_line ||
-				delete_line)));
+	    /* if the terminal type has real soft labels, set those up */
+	    if (sp->slk_format && numlab > 0 && SLK_STDFMT(sp->slk_format))
+		_nc_slk_initialize(sp->_stdscr, cols);
 
-	    baudrate();		/* sets a field in the SP structure */
+	    sp->_ifd = fileno(_ifp);
+	    NC_SNAME(typeahead) (sp, fileno(_ifp));
+#ifdef TERMIOS
+	    sp->_use_meta = ((sp->_term->Ottyb.c_cflag & CSIZE) == CS8 &&
+			     !(sp->_term->Ottyb.c_iflag & ISTRIP));
+#else
+	    sp->_use_meta = FALSE;
+#endif
+	    sp->_endwin = FALSE;
 
-	    SP->_keytry = 0;
+	    NC_SNAME(baudrate) (sp);	/* sets a field in the screen structure */
 
-	    /*
-	     * Check for mismatched graphic-rendition capabilities.  Most SVr4
-	     * terminfo trees contain entries that have rmul or rmso equated to
-	     * sgr0 (Solaris curses copes with those entries).  We do this only
-	     * for curses, since many termcap applications assume that
-	     * smso/rmso and smul/rmul are paired, and will not function
-	     * properly if we remove rmso or rmul.  Curses applications
-	     * shouldn't be looking at this detail.
-	     */
-#define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
-	    SP->_use_rmso = SGR0_TEST(exit_standout_mode);
-	    SP->_use_rmul = SGR0_TEST(exit_underline_mode);
+	    sp->_keytry = 0;
 
 	    /* compute movement costs so we can do better move optimization */
-	    _nc_mvcur_init();
-
-	    /* initialize terminal to a sane state */
-	    _nc_screen_init();
+	    TCBOf(sp)->drv->scinit(sp);
 
 	    /* Initialize the terminal line settings. */
-	    _nc_initscr();
+	    _nc_initscr(sp);
 
 	    _nc_signal_handler(TRUE);
-
-	    result = SP;
+	    result = sp;
+	    code = TRUE;
 	}
     }
     _nc_unlock_global(curses);
-    returnSP(result);
+    returnCode(code);
+}
+
+NCURSES_EXPORT(SCREEN *)
+newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
+{
+    SCREEN *sp = CURRENT_SCREEN_PRE;
+    if (NC_SNAME(newterm) (sp, name, ofp, ifp))
+	return sp;
+    else
+	return (SCREEN *) 0;
 }

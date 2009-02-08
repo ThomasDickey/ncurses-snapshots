@@ -46,7 +46,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.37 2008/05/03 16:24:56 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.37.1.2 2009/02/07 23:09:42 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -59,16 +59,20 @@ static const char *
 signal_name(int sig)
 {
     switch (sig) {
+#ifdef SIGALRM
     case SIGALRM:
 	return "SIGALRM";
+#endif
 #ifdef SIGCONT
     case SIGCONT:
 	return "SIGCONT";
 #endif
     case SIGINT:
 	return "SIGINT";
+#ifdef SIGQUIT
     case SIGQUIT:
 	return "SIGQUIT";
+#endif
     case SIGTERM:
 	return "SIGTERM";
 #ifdef SIGTSTP
@@ -154,11 +158,11 @@ tstp(int dummy GCC_UNUSED)
      * parent was stopped before us, and we would likely pick up the
      * settings already modified by the shell.
      */
-    if (SP != 0 && !SP->_endwin)	/* don't do this if we're not in curses */
+    if (CURRENT_SCREEN != 0 && !CURRENT_SCREEN->_endwin)	/* don't do this if we're not in curses */
 #if HAVE_TCGETPGRP
 	if (tcgetpgrp(STDIN_FILENO) == getpgrp())
 #endif
-	    def_prog_mode();
+	    NC_SNAME(def_prog_mode) (CURRENT_SCREEN);
 
     /*
      * Block window change and timer signals.  The latter
@@ -166,7 +170,9 @@ tstp(int dummy GCC_UNUSED)
      * to repaint the screen.
      */
     (void) sigemptyset(&mask);
+#ifdef SIGALRM
     (void) sigaddset(&mask, SIGALRM);
+#endif
 #if USE_SIGWINCH
     (void) sigaddset(&mask, SIGWINCH);
 #endif
@@ -185,7 +191,7 @@ tstp(int dummy GCC_UNUSED)
      * End window mode, which also resets the terminal state to the
      * original (pre-curses) modes.
      */
-    endwin();
+    NC_SNAME(endwin) (CURRENT_SCREEN);
 
     /* Unblock SIGTSTP. */
     (void) sigemptyset(&mask);
@@ -212,19 +218,19 @@ tstp(int dummy GCC_UNUSED)
 
     T(("SIGCONT received"));
     sigaction(SIGTSTP, &oact, NULL);
-    flushinp();
+    NC_SNAME(flushinp) (CURRENT_SCREEN);
 
     /*
      * If the user modified the tty state while suspended, he wants
      * those changes to stick.  So save the new "default" terminal state.
      */
-    def_shell_mode();
+    NC_SNAME(def_shell_mode) (CURRENT_SCREEN);
 
     /*
      * This relies on the fact that doupdate() will restore the
      * program-mode tty state, and issue enter_ca_mode if need be.
      */
-    doupdate();
+    NC_SNAME(doupdate) (CURRENT_SCREEN);
 
     /* Reset the signals. */
     (void) sigprocmask(SIG_SETMASK, &omask, NULL);
@@ -241,7 +247,10 @@ cleanup(int sig)
      */
     if (!_nc_globals.cleanup_nested++
 	&& (sig == SIGINT
-	    || sig == SIGQUIT)) {
+#ifdef SIGQUIT
+	    || sig == SIGQUIT
+#endif
+	)) {
 #if HAVE_SIGACTION || HAVE_SIGVEC
 	sigaction_t act;
 	sigemptyset(&act.sa_mask);
@@ -257,12 +266,12 @@ cleanup(int sig)
 		if (scan->_ofp != 0
 		    && isatty(fileno(scan->_ofp))) {
 		    scan->_cleanup = TRUE;
-		    scan->_outch = _nc_outch;
+		    scan->_outch = NC_SNAME(_nc_outch);
 		}
 		set_term(scan);
-		endwin();
-		if (SP)
-		    SP->_endwin = FALSE;	/* in case we have an atexit! */
+		NC_SNAME(endwin) (CURRENT_SCREEN);
+		if (CURRENT_SCREEN)
+		    CURRENT_SCREEN->_endwin = FALSE;	/* in case we have an atexit! */
 	    }
 	}
     }
