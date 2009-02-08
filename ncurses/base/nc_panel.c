@@ -32,10 +32,17 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: nc_panel.c,v 1.4 2000/12/10 02:43:28 tom Exp $")
+MODULE_ID("$Id: nc_panel.c,v 1.4.1.2 2009/02/07 23:09:41 tom Exp $")
+
+NCURSES_EXPORT(struct panelhook *)
+NC_SNAME(_nc_panelhook) (SCREEN *sp)
+{
+    return (sp ? &(sp->_panelHook) :
+	    (CURRENT_SCREEN ? &(CURRENT_SCREEN->_panelHook) : 0));
+}
 
 NCURSES_EXPORT(struct panelhook *)
 _nc_panelhook(void)
 {
-    return (SP ? &(SP->_panelHook) : NULL);
+    return NC_SNAME(_nc_panelhook) (CURRENT_SCREEN);
 }

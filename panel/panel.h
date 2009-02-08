@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: panel.h,v 1.10 2006/05/27 19:49:40 tom Exp $ */
+/* $Id: panel.h,v 1.10.1.2 2008/12/28 20:20:37 tom Exp $ */
 
 /* panel.h -- interface file for panels library */
 
@@ -54,6 +54,7 @@ extern "C" {
 
 extern NCURSES_EXPORT(WINDOW*) panel_window (const PANEL *);
 extern NCURSES_EXPORT(void)    update_panels (void);
+  extern NCURSES_EXPORT(void)  NC_SNAME(update_panels) (SCREEN*);
 extern NCURSES_EXPORT(int)     hide_panel (PANEL *);
 extern NCURSES_EXPORT(int)     show_panel (PANEL *);
 extern NCURSES_EXPORT(int)     del_panel (PANEL *);
@@ -67,6 +68,9 @@ extern NCURSES_EXPORT(NCURSES_CONST void*) panel_userptr (const PANEL *);
 extern NCURSES_EXPORT(int)     move_panel (PANEL *, int, int);
 extern NCURSES_EXPORT(int)     replace_panel (PANEL *,WINDOW *);
 extern NCURSES_EXPORT(int)     panel_hidden (const PANEL *);
+
+extern NCURSES_EXPORT(PANEL *) ground_panel(SCREEN *);
+extern NCURSES_EXPORT(PANEL *) ceiling_panel(SCREEN *);
 
 #if	defined(__cplusplus)
 }

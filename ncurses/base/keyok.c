@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keyok.c,v 1.7 2006/12/30 16:22:33 tom Exp $")
+MODULE_ID("$Id: keyok.c,v 1.7.1.2 2009/02/07 23:09:39 tom Exp $")
 
 /*
  * Enable (or disable) ncurses' interpretation of a keycode by adding (or
@@ -45,34 +45,17 @@ MODULE_ID("$Id: keyok.c,v 1.7 2006/12/30 16:22:33 tom Exp $")
  */
 
 NCURSES_EXPORT(int)
-keyok(int c, bool flag)
+NC_SNAME(keyok) (SCREEN *sp, int c, bool flag)
 {
     int code = ERR;
-    int count = 0;
-    char *s;
 
-    T((T_CALLED("keyok(%d,%d)"), c, flag));
-    if (c >= 0) {
-	unsigned ch = (unsigned) c;
-	if (flag) {
-	    while ((s = _nc_expand_try(SP->_key_ok, ch, &count, 0)) != 0
-		   && _nc_remove_key(&(SP->_key_ok), ch)) {
-		code = _nc_add_to_try(&(SP->_keytry), s, ch);
-		free(s);
-		count = 0;
-		if (code != OK)
-		    break;
-	    }
-	} else {
-	    while ((s = _nc_expand_try(SP->_keytry, ch, &count, 0)) != 0
-		   && _nc_remove_key(&(SP->_keytry), ch)) {
-		code = _nc_add_to_try(&(SP->_key_ok), s, ch);
-		free(s);
-		count = 0;
-		if (code != OK)
-		    break;
-	    }
-	}
-    }
+    T((T_CALLED("keyok(%p, %d,%d)"), sp, c, flag));
+    code = CallDriver_2(sp, kyOk, c, flag);
     returnCode(code);
+}
+
+NCURSES_EXPORT(int)
+keyok(int c, bool flag)
+{
+    return NC_SNAME(keyok) (CURRENT_SCREEN, c, flag);
 }

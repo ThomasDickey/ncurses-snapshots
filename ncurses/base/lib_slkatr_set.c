@@ -38,27 +38,36 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatr_set.c,v 1.11 2009/01/25 00:47:15 tom Exp $")
+MODULE_ID("$Id: lib_slkatr_set.c,v 1.11.1.2 2009/02/07 22:35:59 tom Exp $")
+
+NCURSES_EXPORT(int)
+NC_SNAME(slk_attr_set) (SCREEN *sp,
+			const attr_t attr,
+			short color_pair_number,
+			void *opts)
+{
+    int code = ERR;
+
+    T((T_CALLED("slk_attr_set(%p,%s,%d)"), sp, _traceattr(attr), color_pair_number));
+
+    if (sp != 0
+	&& sp->_slk != 0
+	&& !opts
+	&& color_pair_number >= 0
+	&& color_pair_number < sp->_pair_limit) {
+	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(sp->_slk->attr))));
+	SetAttr(sp->_slk->attr, attr);
+	if (color_pair_number > 0) {
+	    SetPair(sp->_slk->attr, color_pair_number);
+	}
+	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(sp->_slk->attr))));
+	code = OK;
+    }
+    returnCode(code);
+}
 
 NCURSES_EXPORT(int)
 slk_attr_set(const attr_t attr, short color_pair_number, void *opts)
 {
-    int code = ERR;
-
-    T((T_CALLED("slk_attr_set(%s,%d)"), _traceattr(attr), color_pair_number));
-
-    if (SP != 0
-	&& SP->_slk != 0
-	&& !opts
-	&& color_pair_number >= 0
-	&& color_pair_number < SP->_pair_limit) {
-	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP->_slk->attr))));
-	SetAttr(SP->_slk->attr, attr);
-	if (color_pair_number > 0) {
-	    SetPair(SP->_slk->attr, color_pair_number);
-	}
-	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
-	code = OK;
-    }
-    returnCode(code);
+    return NC_SNAME(slk_attr_set) (CURRENT_SCREEN, attr, color_pair_number, opts);
 }

@@ -28,17 +28,23 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_termname.c,v 1.8 2003/12/27 18:23:01 tom Exp $")
+MODULE_ID("$Id: lib_termname.c,v 1.8.1.2 2009/02/07 23:09:42 tom Exp $")
+
+NCURSES_EXPORT(char *)
+NC_SNAME(termname) (SCREEN *sp)
+{
+    char *name = 0;
+
+    T((T_CALLED("termname(%p)"), sp));
+
+    if (0 != TerminalOf(sp))
+	name = TerminalOf(sp)->_termname;
+
+    returnPtr(name);
+}
 
 NCURSES_EXPORT(char *)
 termname(void)
 {
-    char *name = 0;
-
-    T((T_CALLED("termname()")));
-
-    if (cur_term != 0)
-	name = cur_term->_termname;
-
-    returnPtr(name);
+    return NC_SNAME(termname) (CURRENT_SCREEN);
 }

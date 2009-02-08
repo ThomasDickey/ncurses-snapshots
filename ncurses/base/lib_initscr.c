@@ -45,7 +45,7 @@
 #include <sys/termio.h>		/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.38 2008/08/16 21:20:48 Werner.Fink Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.38.1.2 2009/02/07 23:09:39 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 initscr(void)
@@ -90,7 +90,7 @@ initscr(void)
 	}
 
 	/* def_shell_mode - done in newterm/_nc_setupscreen */
-	def_prog_mode();
+	NC_SNAME(def_prog_mode) (CURRENT_SCREEN);
     }
     result = stdscr;
     _nc_unlock_global(curses);

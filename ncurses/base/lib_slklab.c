@@ -38,14 +38,20 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slklab.c,v 1.7 2003/03/29 22:53:48 tom Exp $")
+MODULE_ID("$Id: lib_slklab.c,v 1.7.1.2 2009/02/07 23:09:40 tom Exp $")
+
+NCURSES_EXPORT(char *)
+NC_SNAME(slk_label) (SCREEN *sp, int n)
+{
+    T((T_CALLED("slk_label(%p,%d)"), sp, n));
+
+    if (sp == 0 || sp->_slk == 0 || n < 1 || n > sp->_slk->labcnt)
+	returnPtr(0);
+    returnPtr(sp->_slk->ent[n - 1].ent_text);
+}
 
 NCURSES_EXPORT(char *)
 slk_label(int n)
 {
-    T((T_CALLED("slk_label(%d)"), n));
-
-    if (SP == NULL || SP->_slk == NULL || n < 1 || n > SP->_slk->labcnt)
-	returnPtr(0);
-    returnPtr(SP->_slk->ent[n - 1].ent_text);
+    return NC_SNAME(slk_label) (CURRENT_SCREEN, n);
 }
