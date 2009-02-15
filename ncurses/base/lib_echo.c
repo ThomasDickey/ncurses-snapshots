@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,8 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2009                    *
  ****************************************************************************/
 
 /*
@@ -42,14 +44,12 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_echo.c,v 1.5.1.3 2009/02/14 20:51:33 tom Exp $")
+MODULE_ID("$Id: lib_echo.c,v 1.6 2009/02/15 00:34:19 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(echo) (NCURSES_SP_DCL)
+NCURSES_SP_NAME(echo) (NCURSES_SP_DCL0)
 {
-    T((T_CALLED("echo(%p)"), SP_PARM));
-    if (0 == SP_PARM)
-	returnCode(ERR);
+    T((T_CALLED("echo()")));
     SP_PARM->_echo = TRUE;
     returnCode(OK);
 }
@@ -63,11 +63,9 @@ echo(void)
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(noecho) (NCURSES_SP_DCL)
+NCURSES_SP_NAME(noecho) (NCURSES_SP_DCL0)
 {
-    T((T_CALLED("noecho(%p)"), SP_PARM));
-    if (0 == SP_PARM)
-	returnCode(ERR);
+    T((T_CALLED("noecho()")));
     SP_PARM->_echo = FALSE;
     returnCode(OK);
 }

@@ -93,7 +93,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.52.1.2 2009/02/07 23:09:41 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.52 2008/08/16 19:24:51 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 

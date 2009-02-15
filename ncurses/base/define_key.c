@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2005,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,33 +27,34 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey                    1997-on                     *
+ *  Author: Thomas E. Dickey                        1997-on                 *
+ *     and: Juergen Pfeifer                         2009                    *
  ****************************************************************************/
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: define_key.c,v 1.13.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: define_key.c,v 1.15 2009/02/15 00:30:40 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(define_key) (SCREEN *sp, const char *str, int keycode)
+NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
 {
     int code = ERR;
 
-    T((T_CALLED("define_key(%p, %s,%d)"), sp, _nc_visbuf(str), keycode));
-    if (sp == 0 || !HasTInfoTerminal(sp)) {
+    T((T_CALLED("define_key(%s,%d)"), _nc_visbuf(str), keycode));
+    if (SP_PARM == 0) {
 	code = ERR;
     } else if (keycode > 0) {
 	unsigned ukey = (unsigned) keycode;
 
 	if (str != 0) {
-	    NC_SNAME(define_key) (sp, str, 0);
-	} else if (NC_SNAME(has_key) (sp, keycode)) {
-	    while (_nc_remove_key(&(sp->_keytry), ukey))
+	    define_key(str, 0);
+	} else if (has_key(keycode)) {
+	    while (_nc_remove_key(&(SP_PARM->_keytry), ukey))
 		code = OK;
 	}
 	if (str != 0) {
-	    if (NC_SNAME(key_defined) (sp, str) == 0) {
-		if (_nc_add_to_try(&(sp->_keytry), str, ukey) == OK) {
+	    if (key_defined(str) == 0) {
+		if (_nc_add_to_try(&(SP_PARM->_keytry), str, ukey) == OK) {
 		    code = OK;
 		} else {
 		    code = ERR;
@@ -63,14 +64,16 @@ NC_SNAME(define_key) (SCREEN *sp, const char *str, int keycode)
 	    }
 	}
     } else {
-	while (_nc_remove_string(&(sp->_keytry), str))
+	while (_nc_remove_string(&(SP_PARM->_keytry), str))
 	    code = OK;
     }
     returnCode(code);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 define_key(const char *str, int keycode)
 {
-    return NC_SNAME(define_key) (CURRENT_SCREEN, str, keycode);
+    return NCURSES_SP_NAME(define_key) (CURRENT_SCREEN, str, keycode);
 }
+#endif

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,27 +38,29 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatrof.c,v 1.8.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_slkatrof.c,v 1.9 2009/02/15 00:33:48 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_attroff) (SCREEN *sp, const chtype attr)
+NCURSES_SP_NAME(slk_attroff) (NCURSES_SP_DCLx const chtype attr)
 {
-    T((T_CALLED("slk_attroff(%p,%s)"), sp, _traceattr(attr)));
+    T((T_CALLED("slk_attroff(%s)"), _traceattr(attr)));
 
-    if (sp != 0 && sp->_slk != 0) {
-	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(sp->_slk->attr))));
-	RemAttr(sp->_slk->attr, attr);
+    if (SP_PARM != 0 && SP_PARM->_slk != 0) {
+	TR(TRACE_ATTRS, ("... current %s", _tracech_t(CHREF(SP_PARM->_slk->attr))));
+	RemAttr(SP_PARM->_slk->attr, attr);
 	if ((attr & A_COLOR) != 0) {
-	    SetPair(sp->_slk->attr, 0);
+	    SetPair(SP_PARM->_slk->attr, 0);
 	}
-	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(sp->_slk->attr))));
+	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP_PARM->_slk->attr))));
 	returnCode(OK);
     } else
 	returnCode(ERR);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 slk_attroff(const chtype attr)
 {
-    return NC_SNAME(slk_attroff) (CURRENT_SCREEN, attr);
+    return NCURSES_SP_NAME(slk_attroff) (CURRENT_SCREEN, attr);
 }
+#endif

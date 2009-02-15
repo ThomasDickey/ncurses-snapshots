@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2005,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,8 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2009                    *
  ****************************************************************************/
 
 /*
@@ -49,23 +51,34 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.17.1.3 2009/02/07 23:09:41 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.18 2009/02/15 00:48:27 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(napms) (SCREEN *sp, int ms)
+NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 {
     T((T_CALLED("napms(%d)"), ms));
 
-    if (!IsValidScreen(sp))
-	returnCode(ERR);
-
-    CallDriver_1(sp, nap, ms);
+#if HAVE_NANOSLEEP
+    {
+	struct timespec request, remaining;
+	request.tv_sec = ms / 1000;
+	request.tv_nsec = (ms % 1000) * 1000000;
+	while (nanosleep(&request, &remaining) == -1
+	       && errno == EINTR) {
+	    request = remaining;
+	}
+    }
+#else
+    _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));
+#endif
 
     returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 napms(int ms)
 {
-    return NC_SNAME(napms) (CURRENT_SCREEN, ms);
+    return NCURSES_SP_NAME(napms) (CURRENT_SCREEN, ms);
 }
+#endif

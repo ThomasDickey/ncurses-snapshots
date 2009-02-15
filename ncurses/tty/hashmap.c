@@ -68,9 +68,9 @@ AUTHOR
 *****************************************************************************/
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
+#include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.56.1.2 2009/02/07 23:09:42 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.56 2007/10/13 18:47:25 Miroslav.Lichvar Exp $")
 
 #ifdef HASHDEBUG
 
@@ -83,25 +83,25 @@ MODULE_ID("$Id: hashmap.c,v 1.56.1.2 2009/02/07 23:09:42 tom Exp $")
 int oldnums[MAXLINES], reallines[MAXLINES];
 static NCURSES_CH_T oldtext[MAXLINES][TEXTWIDTH];
 static NCURSES_CH_T newtext[MAXLINES][TEXTWIDTH];
-# define OLDNUM(sp,n)	oldnums[n]
-# define OLDTEXT(sp,n)	oldtext[n]
-# define NEWTEXT(sp,m)	newtext[m]
-# define PENDING(sp,n)  1
+# define OLDNUM(n)	oldnums[n]
+# define OLDTEXT(n)	oldtext[n]
+# define NEWTEXT(m)	newtext[m]
+# define PENDING(n)     1
 
 #else /* !HASHDEBUG */
 
-# define OLDNUM(sp,n)	(sp)->_oldnum_list[n]
-# define OLDTEXT(sp,n)	(sp)->_curscr->_line[n].text
-# define NEWTEXT(sp,m)	(sp)->_newscr->_line[m].text
-# define TEXTWIDTH(sp)	((sp)->_curscr->_maxx+1)
-# define PENDING(sp,n)  ((sp)->_newscr->_line[n].firstchar != _NOCHANGE)
+# define OLDNUM(n)	SP->_oldnum_list[n]
+# define OLDTEXT(n)	curscr->_line[n].text
+# define NEWTEXT(m)	newscr->_line[m].text
+# define TEXTWIDTH	(curscr->_maxx+1)
+# define PENDING(n)     (newscr->_line[n].firstchar != _NOCHANGE)
 
 #endif /* !HASHDEBUG */
 
-#define oldhash(sp)	((sp)->oldhash)
-#define newhash(sp)	((sp)->newhash)
-#define hashtab(sp)	((sp)->hashtab)
-#define lines_alloc(sp)	((sp)->hashtab_len)
+#define oldhash		(SP->oldhash)
+#define newhash		(SP->newhash)
+#define hashtab		(SP->hashtab)
+#define lines_alloc	(SP->hashtab_len)
 
 #if USE_WIDEC_SUPPORT
 #define HASH_VAL(ch) (ch.chars[0])
@@ -112,12 +112,12 @@ static NCURSES_CH_T newtext[MAXLINES][TEXTWIDTH];
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
 static NCURSES_INLINE unsigned long
-hash(SCREEN *sp, NCURSES_CH_T * text)
+hash(NCURSES_CH_T * text)
 {
     int i;
     NCURSES_CH_T ch;
     unsigned long result = 0;
-    for (i = TEXTWIDTH(sp); i > 0; i--) {
+    for (i = TEXTWIDTH; i > 0; i--) {
 	ch = *text++;
 	result += (result << 5) + HASH_VAL(ch);
     }
@@ -126,12 +126,12 @@ hash(SCREEN *sp, NCURSES_CH_T * text)
 
 /* approximate update cost */
 static int
-update_cost(SCREEN *sp, NCURSES_CH_T * from, NCURSES_CH_T * to)
+update_cost(NCURSES_CH_T * from, NCURSES_CH_T * to)
 {
     int cost = 0;
     int i;
 
-    for (i = TEXTWIDTH(sp); i > 0; i--, from++, to++)
+    for (i = TEXTWIDTH; i > 0; i--, from++, to++)
 	if (!(CharEq(*from, *to)))
 	    cost++;
 
@@ -139,7 +139,7 @@ update_cost(SCREEN *sp, NCURSES_CH_T * from, NCURSES_CH_T * to)
 }
 
 static int
-update_cost_from_blank(SCREEN *sp, NCURSES_CH_T * to)
+update_cost_from_blank(NCURSES_CH_T * to)
 {
     int cost = 0;
     int i;
@@ -148,7 +148,7 @@ update_cost_from_blank(SCREEN *sp, NCURSES_CH_T * to)
     if (back_color_erase)
 	SetPair(blank, GetPair(stdscr->_nc_bkgd));
 
-    for (i = TEXTWIDTH(sp); i > 0; i--, to++)
+    for (i = TEXTWIDTH; i > 0; i--, to++)
 	if (!(CharEq(blank, *to)))
 	    cost++;
 
@@ -160,14 +160,14 @@ update_cost_from_blank(SCREEN *sp, NCURSES_CH_T * to)
  * effective. 'blank' indicates whether the line 'to' would become blank.
  */
 static NCURSES_INLINE bool
-cost_effective(SCREEN *sp, const int from, const int to, const bool blank)
+cost_effective(const int from, const int to, const bool blank)
 {
     int new_from;
 
     if (from == to)
 	return FALSE;
 
-    new_from = OLDNUM(sp, from);
+    new_from = OLDNUM(from);
     if (new_from == _NEWINDEX)
 	new_from = from;
 
@@ -175,17 +175,16 @@ cost_effective(SCREEN *sp, const int from, const int to, const bool blank)
      * On the left side of >= is the cost before moving;
      * on the right side -- cost after moving.
      */
-    return (((blank ? update_cost_from_blank(sp, NEWTEXT(sp, to))
-	      : update_cost(sp, OLDTEXT(sp, to), NEWTEXT(sp, to)))
-	     + update_cost(sp, OLDTEXT(sp, new_from), NEWTEXT(sp, from)))
-	    >= ((new_from == from ? update_cost_from_blank(sp, NEWTEXT(sp, from))
-		 : update_cost(sp, OLDTEXT(sp, new_from), NEWTEXT(sp, from)))
-		+ update_cost(sp, OLDTEXT(sp, from), NEWTEXT(sp, to))))
-	? TRUE : FALSE;
+    return (((blank ? update_cost_from_blank(NEWTEXT(to))
+	      : update_cost(OLDTEXT(to), NEWTEXT(to)))
+	     + update_cost(OLDTEXT(new_from), NEWTEXT(from)))
+	    >= ((new_from == from ? update_cost_from_blank(NEWTEXT(from))
+		 : update_cost(OLDTEXT(new_from), NEWTEXT(from)))
+		+ update_cost(OLDTEXT(from), NEWTEXT(to)))) ? TRUE : FALSE;
 }
 
 static void
-grow_hunks(SCREEN *sp)
+grow_hunks(void)
 {
     int start, end, shift;
     int back_limit, forward_limit;	/* limits for cells to fill */
@@ -201,36 +200,35 @@ grow_hunks(SCREEN *sp)
     back_ref_limit = 0;
 
     i = 0;
-    while (i < screen_lines(sp) && OLDNUM(sp, i) == _NEWINDEX)
+    while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	i++;
-    for (; i < screen_lines(sp); i = next_hunk) {
+    for (; i < screen_lines; i = next_hunk) {
 	start = i;
-	shift = OLDNUM(sp, i) - i;
+	shift = OLDNUM(i) - i;
 
 	/* get forward limit */
 	i = start + 1;
-	while (i < screen_lines(sp)
-	       && OLDNUM(sp, i) != _NEWINDEX
-	       && OLDNUM(sp, i) - i == shift)
+	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i
+	       == shift)
 	    i++;
 	end = i;
-	while (i < screen_lines(sp) && OLDNUM(sp, i) == _NEWINDEX)
+	while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	    i++;
 	next_hunk = i;
 	forward_limit = i;
-	if (i >= screen_lines(sp) || OLDNUM(sp, i) >= i)
+	if (i >= screen_lines || OLDNUM(i) >= i)
 	    forward_ref_limit = i;
 	else
-	    forward_ref_limit = OLDNUM(sp, i);
+	    forward_ref_limit = OLDNUM(i);
 
 	i = start - 1;
 	/* grow back */
 	if (shift < 0)
 	    back_limit = back_ref_limit + (-shift);
 	while (i >= back_limit) {
-	    if (newhash(sp)[i] == oldhash(sp)[i + shift]
-		|| cost_effective(sp, i + shift, i, shift < 0)) {
-		OLDNUM(sp, i) = i + shift;
+	    if (newhash[i] == oldhash[i + shift]
+		|| cost_effective(i + shift, i, shift < 0)) {
+		OLDNUM(i) = i + shift;
 		TR(TRACE_UPDATE | TRACE_MOVE,
 		   ("connected new line %d to old line %d (backward continuation)",
 		    i, i + shift));
@@ -248,9 +246,9 @@ grow_hunks(SCREEN *sp)
 	if (shift > 0)
 	    forward_limit = forward_ref_limit - shift;
 	while (i < forward_limit) {
-	    if (newhash(sp)[i] == oldhash(sp)[i + shift]
-		|| cost_effective(sp, i + shift, i, shift > 0)) {
-		OLDNUM(sp, i) = i + shift;
+	    if (newhash[i] == oldhash[i + shift]
+		|| cost_effective(i + shift, i, shift > 0)) {
+		OLDNUM(i) = i + shift;
 		TR(TRACE_UPDATE | TRACE_MOVE,
 		   ("connected new line %d to old line %d (forward continuation)",
 		    i, i + shift));
@@ -270,51 +268,51 @@ grow_hunks(SCREEN *sp)
 }
 
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_hash_map) (SCREEN *scr)
+_nc_hash_map(void)
 {
     HASHMAP *sp;
     register int i;
     int start, shift, size;
 
-    if (screen_lines(scr) > lines_alloc(scr)) {
-	if (hashtab(scr))
-	    free(hashtab(scr));
-	hashtab(scr) = typeMalloc(HASHMAP, (screen_lines(scr) + 1) * 2);
-	if (!hashtab(scr)) {
-	    if (oldhash(scr)) {
-		FreeAndNull(oldhash(scr));
+    if (screen_lines > lines_alloc) {
+	if (hashtab)
+	    free(hashtab);
+	hashtab = typeMalloc(HASHMAP, (screen_lines + 1) * 2);
+	if (!hashtab) {
+	    if (oldhash) {
+		FreeAndNull(oldhash);
 	    }
-	    lines_alloc(scr) = 0;
+	    lines_alloc = 0;
 	    return;
 	}
-	lines_alloc(scr) = screen_lines(scr);
+	lines_alloc = screen_lines;
     }
 
-    if (oldhash(scr) && newhash(scr)) {
+    if (oldhash && newhash) {
 	/* re-hash only changed lines */
-	for (i = 0; i < screen_lines(scr); i++) {
-	    if (PENDING(scr, i))
-		newhash(scr)[i] = hash(scr, NEWTEXT(scr, i));
+	for (i = 0; i < screen_lines; i++) {
+	    if (PENDING(i))
+		newhash[i] = hash(NEWTEXT(i));
 	}
     } else {
 	/* re-hash all */
-	if (oldhash(scr) == 0)
-	    oldhash(scr) = typeCalloc(unsigned long, (unsigned) screen_lines(scr));
-	if (newhash(scr) == 0)
-	    newhash(scr) = typeCalloc(unsigned long, (unsigned) screen_lines(scr));
-	if (!oldhash(scr) || !newhash(scr))
+	if (oldhash == 0)
+	    oldhash = typeCalloc(unsigned long, (unsigned) screen_lines);
+	if (newhash == 0)
+	    newhash = typeCalloc(unsigned long, (unsigned) screen_lines);
+	if (!oldhash || !newhash)
 	    return;		/* malloc failure */
-	for (i = 0; i < screen_lines(scr); i++) {
-	    newhash(scr)[i] = hash(scr, NEWTEXT(scr, i));
-	    oldhash(scr)[i] = hash(scr, OLDTEXT(scr, i));
+	for (i = 0; i < screen_lines; i++) {
+	    newhash[i] = hash(NEWTEXT(i));
+	    oldhash[i] = hash(OLDTEXT(i));
 	}
     }
 
 #ifdef HASH_VERIFY
-    for (i = 0; i < screen_lines(scr); i++) {
-	if (newhash(scr)[i] != hash(scr, NEWTEXT(scr, i)))
+    for (i = 0; i < screen_lines; i++) {
+	if (newhash[i] != hash(NEWTEXT(i)))
 	    fprintf(stderr, "error in newhash[%d]\n", i);
-	if (oldhash(scr)[i] != hash(scr, OLDTEXT(scr, i)))
+	if (oldhash[i] != hash(OLDTEXT(i)))
 	    fprintf(stderr, "error in oldhash[%d]\n", i);
     }
 #endif
@@ -322,29 +320,28 @@ NC_SNAME(_nc_hash_map) (SCREEN *scr)
     /*
      * Set up and count line-hash values.
      */
-    memset(hashtab(scr), '\0',
-	   sizeof(*(hashtab(scr))) * (screen_lines(scr) + 1) * 2);
-    for (i = 0; i < screen_lines(scr); i++) {
-	unsigned long hashval = oldhash(scr)[i];
+    memset(hashtab, '\0', sizeof(*hashtab) * (screen_lines + 1) * 2);
+    for (i = 0; i < screen_lines; i++) {
+	unsigned long hashval = oldhash[i];
 
-	for (sp = hashtab(scr); sp->hashval; sp++)
+	for (sp = hashtab; sp->hashval; sp++)
 	    if (sp->hashval == hashval)
 		break;
 	sp->hashval = hashval;	/* in case this is a new entry */
 	sp->oldcount++;
 	sp->oldindex = i;
     }
-    for (i = 0; i < screen_lines(scr); i++) {
-	unsigned long hashval = newhash(scr)[i];
+    for (i = 0; i < screen_lines; i++) {
+	unsigned long hashval = newhash[i];
 
-	for (sp = hashtab(scr); sp->hashval; sp++)
+	for (sp = hashtab; sp->hashval; sp++)
 	    if (sp->hashval == hashval)
 		break;
 	sp->hashval = hashval;	/* in case this is a new entry */
 	sp->newcount++;
 	sp->newindex = i;
 
-	OLDNUM(scr, i) = _NEWINDEX;	/* initialize old indices array */
+	OLDNUM(i) = _NEWINDEX;	/* initialize old indices array */
     }
 
     /*
@@ -354,16 +351,16 @@ NC_SNAME(_nc_hash_map) (SCREEN *scr)
      * extending hunks by cost_effective. Otherwise, it does not
      * have any side effects.
      */
-    for (sp = hashtab(scr); sp->hashval; sp++)
+    for (sp = hashtab; sp->hashval; sp++)
 	if (sp->oldcount == 1 && sp->newcount == 1
 	    && sp->oldindex != sp->newindex) {
 	    TR(TRACE_UPDATE | TRACE_MOVE,
 	       ("new line %d is hash-identical to old line %d (unique)",
 		sp->newindex, sp->oldindex));
-	    OLDNUM(scr, sp->newindex) = sp->oldindex;
+	    OLDNUM(sp->newindex) = sp->oldindex;
 	}
 
-    grow_hunks(scr);
+    grow_hunks();
 
     /*
      * Eliminate bad or impossible shifts -- this includes removing
@@ -371,74 +368,56 @@ NC_SNAME(_nc_hash_map) (SCREEN *scr)
      * those which are to be moved too far, they are likely to destroy
      * more than carry.
      */
-    for (i = 0; i < screen_lines(scr);) {
-	while (i < screen_lines(scr) && OLDNUM(scr, i) == _NEWINDEX)
+    for (i = 0; i < screen_lines;) {
+	while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	    i++;
-	if (i >= screen_lines(scr))
+	if (i >= screen_lines)
 	    break;
 	start = i;
-	shift = OLDNUM(scr, i) - i;
+	shift = OLDNUM(i) - i;
 	i++;
-	while (i < screen_lines(scr)
-	       && OLDNUM(scr, i) != _NEWINDEX
-	       && OLDNUM(scr, i) - i == shift)
+	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i
+	       == shift)
 	    i++;
 	size = i - start;
 	if (size < 3 || size + min(size / 8, 2) < abs(shift)) {
 	    while (start < i) {
-		OLDNUM(scr, start) = _NEWINDEX;
+		OLDNUM(start) = _NEWINDEX;
 		start++;
 	    }
 	}
     }
 
     /* After clearing invalid hunks, try grow the rest. */
-    grow_hunks(scr);
-}
-
-NCURSES_EXPORT(void)
-_nc_hash_map(void)
-{
-    NC_SNAME(_nc_hash_map) (CURRENT_SCREEN);
-}
-
-NCURSES_EXPORT(void)
-NC_SNAME(_nc_make_oldhash) (SCREEN *sp, int i)
-{
-    if (oldhash(sp))
-	oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+    grow_hunks();
 }
 
 NCURSES_EXPORT(void)
 _nc_make_oldhash(int i)
 {
-    NC_SNAME(_nc_make_oldhash) (CURRENT_SCREEN, i);
+    if (oldhash)
+	oldhash[i] = hash(OLDTEXT(i));
 }
 
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_scroll_oldhash) (SCREEN *sp, int n, int top, int bot)
+_nc_scroll_oldhash(int n, int top, int bot)
 {
     size_t size;
     int i;
 
-    if (!oldhash(sp))
+    if (!oldhash)
 	return;
 
-    size = sizeof(*(oldhash(sp))) * (bot - top + 1 - abs(n));
+    size = sizeof(*oldhash) * (bot - top + 1 - abs(n));
     if (n > 0) {
-	memmove(oldhash(sp) + top, oldhash(sp) + top + n, size);
+	memmove(oldhash + top, oldhash + top + n, size);
 	for (i = bot; i > bot - n; i--)
-	    oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+	    oldhash[i] = hash(OLDTEXT(i));
     } else {
-	memmove(oldhash(sp) + top - n, oldhash(sp) + top, size);
+	memmove(oldhash + top - n, oldhash + top, size);
 	for (i = top; i < top - n; i++)
-	    oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+	    oldhash[i] = hash(OLDTEXT(i));
     }
-}
-NCURSES_EXPORT(void)
-_nc_scroll_oldhash(int n, int top, int bot)
-{
-    NC_SNAME(_nc_scroll_oldhash) (CURRENT_SCREEN, n, top, bot);
 }
 
 #ifdef HASHDEBUG

@@ -38,7 +38,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_new.c,v 1.10.1.3 2009/02/07 23:11:45 tom Exp $")
+MODULE_ID("$Id: p_new.c,v 1.10 2008/08/04 18:25:48 tom Exp $")
 
 #ifdef TRACE
 static char *stdscr_id;
@@ -50,22 +50,20 @@ static char *new_id;
   Establish the pseudo panel for stdscr if necessary.
 --------------------------------------------------------------------------*/
 static PANEL *
-root_panel(SCREEN * sp)
+root_panel(void)
 {
-  struct panelhook *ph = NC_SNAME(_nc_panelhook) (sp);
-
   if (_nc_stdscr_pseudo_panel == (PANEL *) 0)
     {
 
-      assert(sp && sp->_stdscr && !_nc_bottom_panel && !_nc_top_panel);
+      assert(stdscr && !_nc_bottom_panel && !_nc_top_panel);
 #if NO_LEAKS
-      ph->destroy = del_panel;
+      _nc_panelhook()->destroy = del_panel;
 #endif
       _nc_stdscr_pseudo_panel = (PANEL *) malloc(sizeof(PANEL));
       if (_nc_stdscr_pseudo_panel != 0)
 	{
 	  PANEL *pan = _nc_stdscr_pseudo_panel;
-	  WINDOW *win = sp->_stdscr;
+	  WINDOW *win = stdscr;
 
 	  pan->win = win;
 	  pan->below = (PANEL *) 0;
@@ -87,8 +85,6 @@ NCURSES_EXPORT(PANEL *)
 new_panel(WINDOW *win)
 {
   PANEL *pan = (PANEL *) 0;
-  SCREEN *sp = _nc_screen_of(win);
-  struct panelhook *ph = NC_SNAME(_nc_panelhook) (sp);
 
   T((T_CALLED("new_panel(%p)"), win));
 
@@ -96,7 +92,7 @@ new_panel(WINDOW *win)
     returnPanel(pan);
 
   if (!_nc_stdscr_pseudo_panel)
-    (void)root_panel(sp);
+    (void)root_panel();
   assert(_nc_stdscr_pseudo_panel);
 
   if (!(win->_flags & _ISPAD) && (pan = (PANEL *) malloc(sizeof(PANEL))))

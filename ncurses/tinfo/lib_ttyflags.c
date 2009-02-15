@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,55 +36,36 @@
  */
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
+#include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.18.1.2 2009/02/07 23:09:42 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.19 2009/02/15 00:33:49 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_get_tty_mode) (SCREEN *sp, TTY * buf)
+_nc_get_tty_mode(TTY * buf)
 {
     int result = OK;
 
-    if (buf == 0 || sp == 0) {
+    if (buf == 0) {
 	result = ERR;
     } else {
-	if (0 == TerminalOf(sp)) {
+	if (cur_term == 0) {
 	    result = ERR;
 	} else {
-	    result = CallDriver_2(sp, sgmode, FALSE, buf);
+	    for (;;) {
+		if (GET_TTY(cur_term->Filedes, buf) != 0) {
+		    if (errno == EINTR)
+			continue;
+		    result = ERR;
+		}
+		break;
+	    }
 	}
 
 	if (result == ERR)
 	    memset(buf, 0, sizeof(*buf));
 
 	TR(TRACE_BITS, ("_nc_get_tty_mode(%d): %s",
-			sp->_term ? sp->_term->Filedes : -1,
-			_nc_trace_ttymode(buf)));
-    }
-    return (result);
-}
-
-NCURSES_EXPORT(int)
-_nc_get_tty_mode(TTY * buf)
-{
-    return NC_SNAME(_nc_get_tty_mode) (CURRENT_SCREEN, buf);
-}
-
-NCURSES_EXPORT(int)
-NC_SNAME(_nc_set_tty_mode) (SCREEN *sp, TTY * buf)
-{
-    int result = OK;
-
-    if (buf == 0 || sp == 0) {
-	result = ERR;
-    } else {
-	if (0 == TerminalOf(sp)) {
-	    result = ERR;
-	} else {
-	    result = CallDriver_2(sp, sgmode, TRUE, buf);
-	}
-	TR(TRACE_BITS, ("_nc_set_tty_mode(%d): %s",
-			sp->_term ? sp->_term->Filedes : -1,
+			cur_term ? cur_term->Filedes : -1,
 			_nc_trace_ttymode(buf)));
     }
     return (result);
@@ -93,104 +74,153 @@ NC_SNAME(_nc_set_tty_mode) (SCREEN *sp, TTY * buf)
 NCURSES_EXPORT(int)
 _nc_set_tty_mode(TTY * buf)
 {
-    return NC_SNAME(_nc_set_tty_mode) (CURRENT_SCREEN, buf);
+    int result = OK;
+
+    if (buf == 0) {
+	result = ERR;
+    } else {
+	if (cur_term == 0) {
+	    result = ERR;
+	} else {
+	    for (;;) {
+		if (SET_TTY(cur_term->Filedes, buf) != 0) {
+		    if (errno == EINTR)
+			continue;
+		    if ((errno == ENOTTY) && (SP != 0))
+			SP->_notty = TRUE;
+		    result = ERR;
+		}
+		break;
+	    }
+	}
+	TR(TRACE_BITS, ("_nc_set_tty_mode(%d): %s",
+			cur_term ? cur_term->Filedes : -1,
+			_nc_trace_ttymode(buf)));
+    }
+    return (result);
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(def_shell_mode) (SCREEN *sp)
+NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_DCL0)
 {
     int rc = ERR;
 
-    T((T_CALLED("def_shell_mode(%p)"), sp));
+    T((T_CALLED("def_shell_mode()")));
 
-    if (0 == sp)
-	returnCode(rc);
-
-    if (0 != TerminalOf(sp)) {
-	rc = CallDriver_2(sp, mode, FALSE, TRUE);
+    if (cur_term != 0) {
+	/*
+	 * If XTABS was on, remove the tab and backtab capabilities.
+	 */
+	if (_nc_get_tty_mode(&cur_term->Ottyb) == OK) {
+#ifdef TERMIOS
+	    if (cur_term->Ottyb.c_oflag & OFLAGS_TABS)
+		tab = back_tab = NULL;
+#else
+	    if (cur_term->Ottyb.sg_flags & XTABS)
+		tab = back_tab = NULL;
+#endif
+	    rc = OK;
+	}
     }
     returnCode(rc);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 def_shell_mode(void)
 {
-    return NC_SNAME(def_shell_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(def_shell_mode) (CURRENT_SCREEN);
 }
+#endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(def_prog_mode) (SCREEN *sp)
+NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_DCL0)
 {
     int rc = ERR;
 
-    T((T_CALLED("def_prog_mode(%p)"), sp));
+    T((T_CALLED("def_prog_mode()")));
 
-    if (0 == sp)
-	returnCode(rc);
-
-    if (0 != TerminalOf(sp)) {
-	rc = CallDriver_2(sp, mode, TRUE, TRUE);
+    if (cur_term != 0) {
+	/*
+	 * Turn off the XTABS bit in the tty structure if it was on.
+	 */
+	if (_nc_get_tty_mode(&cur_term->Nttyb) == OK) {
+#ifdef TERMIOS
+	    cur_term->Nttyb.c_oflag &= ~OFLAGS_TABS;
+#else
+	    cur_term->Nttyb.sg_flags &= ~XTABS;
+#endif
+	    rc = OK;
+	}
     }
     returnCode(rc);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 def_prog_mode(void)
 {
-    return NC_SNAME(def_prog_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(def_prog_mode) (CURRENT_SCREEN);
 }
+#endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(reset_prog_mode) (SCREEN *sp)
+NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_DCL0)
 {
-    int rc = ERR;
+    T((T_CALLED("reset_prog_mode()")));
 
-    T((T_CALLED("reset_prog_mode(%p)"), sp));
-
-    if (0 == sp)
-	returnCode(rc);
-
-    if (0 != TerminalOf(sp)) {
-	rc = CallDriver_2(sp, mode, TRUE, FALSE);
+    if (cur_term != 0) {
+	if (_nc_set_tty_mode(&cur_term->Nttyb) == OK) {
+	    if (SP_PARM) {
+		if (SP_PARM->_keypad_on)
+		    _nc_keypad(SP_PARM, TRUE);
+		NC_BUFFERED(TRUE);
+	    }
+	    returnCode(OK);
+	}
     }
-    returnCode(rc);
+    returnCode(ERR);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 reset_prog_mode(void)
 {
-    return NC_SNAME(reset_prog_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(reset_prog_mode) (CURRENT_SCREEN);
 }
+#endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(reset_shell_mode) (SCREEN *sp)
+NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_DCL0)
 {
-    int rc = ERR;
+    T((T_CALLED("reset_shell_mode()")));
 
-    T((T_CALLED("reset_shell_mode(%p)"), sp));
-
-    if (0 == sp)
-	returnCode(rc);
-
-    if (0 != TerminalOf(sp)) {
-	rc = CallDriver_2(sp, mode, FALSE, FALSE);
+    if (cur_term != 0) {
+	if (SP_PARM) {
+	    _nc_keypad(SP_PARM, FALSE);
+	    _nc_flush();
+	    NC_BUFFERED(FALSE);
+	}
+	returnCode(_nc_set_tty_mode(&cur_term->Ottyb));
     }
-    returnCode(rc);
+    returnCode(ERR);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 reset_shell_mode(void)
 {
-    return NC_SNAME(reset_shell_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(reset_shell_mode) (CURRENT_SCREEN);
 }
+#endif
 
 static TTY *
-saved_tty(SCREEN *sp)
+saved_tty(void)
 {
     TTY *result = 0;
 
-    if (sp != 0) {
-	result = (TTY *) & (sp->_saved_tty);
+    if (SP != 0) {
+	result = &(SP->_saved_tty);
     } else {
 	if (_nc_prescreen.saved_tty == 0) {
 	    _nc_prescreen.saved_tty = typeCalloc(TTY, 1);
@@ -206,27 +236,17 @@ saved_tty(SCREEN *sp)
 */
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_savetty) (SCREEN *sp)
-{
-    T((T_CALLED("savetty(%p)"), sp));
-    returnCode(NC_SNAME(_nc_get_tty_mode) (sp, saved_tty(sp)));
-}
-
-NCURSES_EXPORT(int)
 savetty(void)
 {
-    return NC_SNAME(_nc_savetty) (CURRENT_SCREEN);
-}
+    T((T_CALLED("savetty()")));
 
-NCURSES_EXPORT(int)
-NC_SNAME(_nc_resetty) (SCREEN *sp)
-{
-    T((T_CALLED("resetty(%p)"), sp));
-    returnCode(NC_SNAME(_nc_set_tty_mode) (sp, saved_tty(sp)));
+    returnCode(_nc_get_tty_mode(saved_tty()));
 }
 
 NCURSES_EXPORT(int)
 resetty(void)
 {
-    return NC_SNAME(_nc_resetty) (CURRENT_SCREEN);
+    T((T_CALLED("resetty()")));
+
+    returnCode(_nc_set_tty_mode(saved_tty()));
 }

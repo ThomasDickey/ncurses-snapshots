@@ -40,16 +40,15 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.17.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_delwin.c,v 1.17 2008/06/07 14:10:56 tom Exp $")
 
 static bool
 cannot_delete(WINDOW *win)
 {
     WINDOWLIST *p;
     bool result = TRUE;
-    SCREEN *sp = _nc_screen_of(win);
 
-    for (each_window(sp, p)) {
+    for (each_window(p)) {
 	if (&(p->win) == win) {
 	    result = FALSE;
 	} else if ((p->win._flags & _SUBWIN) != 0
@@ -73,11 +72,11 @@ delwin(WINDOW *win)
 	    || cannot_delete(win)) {
 	    result = ERR;
 	} else {
-	    SCREEN *sp = _nc_screen_of(win);
+
 	    if (win->_flags & _SUBWIN)
 		touchwin(win->_parent);
-	    else if (sp->_curscr != 0)
-		touchwin(sp->_curscr);
+	    else if (curscr != 0)
+		touchwin(curscr);
 
 	    result = _nc_freewin(win);
 	}

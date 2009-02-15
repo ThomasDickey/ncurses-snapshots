@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.190.1.6 2009/02/14 20:50:52 tom Exp $ */
+/* $Id: curses.h.in,v 1.193 2009/02/15 00:04:23 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -881,88 +881,91 @@ extern NCURSES_EXPORT(int) wgetscrreg (const WINDOW *, int *, int *); /* @GENERA
 #if @NCURSES_SP_FUNCS@
 #undef  NCURSES_SP_FUNCS
 #define NCURSES_SP_FUNCS @NCURSES_PATCH@
-#define NC_SNAME(name) name##_sp
+#define NCURSES_SP_NAME(name) name##_sp
 
 extern NCURSES_EXPORT(SCREEN*) new_prescr(void); /* implemented */
 
-extern NCURSES_EXPORT(int) NC_SNAME(baudrate) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(beep) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(can_change_color) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(cbreak) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(nocbreak) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(color_content) (SCREEN*, short, short*, short*, short*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(def_prog_mode) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(def_shell_mode) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(delay_output) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(doupdate) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(echo) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(noecho) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(endwin) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(char) NC_SNAME(erasechar) (SCREEN*);/* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(filter) (SCREEN*, bool); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(flash) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(flushinp) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(halfdelay)(SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(has_colors) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(has_ic) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(has_il) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(init_color) (SCREEN*, short, short, short, short); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(init_pair) (SCREEN*, short, short, short); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(intrflush) (SCREEN*, WINDOW*, bool);	/* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(isendwin) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(NCURSES_CONST char *) NC_SNAME(keyname) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(char) NC_SNAME(killchar) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(char *) NC_SNAME(longname) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(mvcur) (SCREEN*, int, int, int, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(napms) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(WINDOW *) NC_SNAME(newpad) (SCREEN*, int, int); /* implemented */
-extern NCURSES_EXPORT(bool) NC_SNAME(newterm) (SCREEN*, NCURSES_CONST char *, FILE *, FILE *); /* implemented */
-extern NCURSES_EXPORT(WINDOW *) NC_SNAME(newwin) (SCREEN*, int, int, int, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(nl) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(nonl) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(pair_content) (SCREEN*, short, short*, short*); /* implemented */
-extern NCURSES_EXPORT(void) NC_SNAME(qiflush) (SCREEN*, bool); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(raw) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(noraw) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(reset_prog_mode) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(reset_shell_mode) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(ripoffline) (SCREEN*, int, int (*)(WINDOW *, int));	/* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(scr_set) (SCREEN*, const char *); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_attroff) (SCREEN*, const chtype); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_attron) (SCREEN*, const chtype); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_attrset) (SCREEN*, const chtype); /* implemented */
-extern NCURSES_EXPORT(attr_t) NC_SNAME(slk_attr) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_attr_set) (SCREEN*, const attr_t, short, void*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_clear) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_color) (SCREEN*, short); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_init) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(char *) NC_SNAME(slk_label) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_noutrefresh) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_refresh) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_restore) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_set) (SCREEN*, int, const char *, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(slk_touch) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(start_color) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(chtype) NC_SNAME(termattrs) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(char *) NC_SNAME(termname) (SCREEN*); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(typeahead) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(ungetch) (SCREEN*, int); /* implemented */
-extern NCURSES_EXPORT(int) NC_SNAME(use_env) (SCREEN*, bool); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(baudrate) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(beep) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(bool) NCURSES_SP_NAME(can_change_color) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(cbreak) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(color_content) (SCREEN*, short, short*, short*, short*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(def_prog_mode) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(def_shell_mode) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(delay_output) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(doupdate) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(echo) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(endwin) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(char) NCURSES_SP_NAME(erasechar) (SCREEN*);/* implemented */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(filter) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(flash) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(flushinp) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(halfdelay)(SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(bool) NCURSES_SP_NAME(has_colors) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(bool) NCURSES_SP_NAME(has_ic) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(bool) NCURSES_SP_NAME(has_il) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_color) (SCREEN*, short, short, short, short); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_pair) (SCREEN*, short, short, short); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(intrflush) (SCREEN*, WINDOW*, bool);	/* implemented */
+extern NCURSES_EXPORT(bool) NCURSES_SP_NAME(isendwin) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(NCURSES_CONST char *) NCURSES_SP_NAME(keyname) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(char) NCURSES_SP_NAME(killchar) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(char *) NCURSES_SP_NAME(longname) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(mvcur) (SCREEN*, int, int, int, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(napms) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(WINDOW *) NCURSES_SP_NAME(newpad) (SCREEN*, int, int); /* implemented */
+extern NCURSES_EXPORT(SCREEN *) NCURSES_SP_NAME(newterm) (SCREEN*, NCURSES_CONST char *, FILE *, FILE *); /* implemented */
+extern NCURSES_EXPORT(WINDOW *) NCURSES_SP_NAME(newwin) (SCREEN*, int, int, int, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(nl) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(nocbreak) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(noecho) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(nofilter) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(nonl) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(noqiflush) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(noraw) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(pair_content) (SCREEN*, short, short*, short*); /* implemented */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(qiflush) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(raw) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(reset_prog_mode) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(reset_shell_mode) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(ripoffline) (SCREEN*, int, int (*)(WINDOW *, int));	/* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(scr_set) (SCREEN*, const char *); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attroff) (SCREEN*, const chtype); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attron) (SCREEN*, const chtype); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attrset) (SCREEN*, const chtype); /* implemented */
+extern NCURSES_EXPORT(attr_t) NCURSES_SP_NAME(slk_attr) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_attr_set) (SCREEN*, const attr_t, short, void*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_clear) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_color) (SCREEN*, short); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_init) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(char *) NCURSES_SP_NAME(slk_label) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_noutrefresh) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_refresh) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_restore) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_set) (SCREEN*, int, const char *, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(slk_touch) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(start_color) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(chtype) NCURSES_SP_NAME(termattrs) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(char *) NCURSES_SP_NAME(termname) (SCREEN*); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(typeahead) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(ungetch) (SCREEN*, int); /* implemented */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(use_env) (SCREEN*, bool); /* implemented */
 #if @NCURSES_EXT_FUNCS@
-extern NCURSES_EXPORT(char *) NC_SNAME(keybound) (SCREEN*, int, int);
-extern NCURSES_EXPORT(int) NC_SNAME(assume_default_colors) (SCREEN*, int, int);
-extern NCURSES_EXPORT(int) NC_SNAME(define_key) (SCREEN*, const char *, int);
-extern NCURSES_EXPORT(int) NC_SNAME(get_escdelay) (SCREEN*);
-extern NCURSES_EXPORT(int) NC_SNAME(key_defined)(SCREEN*, const char *);
-extern NCURSES_EXPORT(int) NC_SNAME(keyok) (SCREEN*, int, bool);
-extern NCURSES_EXPORT(int) NC_SNAME(set_escdelay) (SCREEN*, int);
-extern NCURSES_EXPORT(int) NC_SNAME(set_tabsize) (SCREEN*, int);
-extern NCURSES_EXPORT(int) NC_SNAME(use_default_colors) (SCREEN*);
-extern NCURSES_EXPORT(int) NC_SNAME(use_legacy_coding) (SCREEN*, int);
+extern NCURSES_EXPORT(char *) NCURSES_SP_NAME(keybound) (SCREEN*, int, int);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(assume_default_colors) (SCREEN*, int, int);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(define_key) (SCREEN*, const char *, int);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(get_escdelay) (SCREEN*);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(key_defined)(SCREEN*, const char *);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(keyok) (SCREEN*, int, bool);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_escdelay) (SCREEN*, int);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_tabsize) (SCREEN*, int);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_default_colors) (SCREEN*);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);
 #endif
 #else
 #undef  NCURSES_SP_FUNCS
 #define NCURSES_SP_FUNCS 0
+#define NCURSES_SP_NAME(name) name
 #endif
 
 /* attributes */

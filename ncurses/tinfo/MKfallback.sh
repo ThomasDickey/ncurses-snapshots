@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKfallback.sh,v 1.13.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: MKfallback.sh,v 1.13 2006/07/15 16:54:20 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
@@ -63,6 +63,7 @@ cat <<EOF
  */
 
 #include <curses.priv.h>
+#include <term.h>
 
 EOF
 

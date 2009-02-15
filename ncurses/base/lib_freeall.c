@@ -40,40 +40,40 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.55.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.55 2008/12/06 23:52:29 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
  * use for it as an extension).
  */
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_freeall) (SCREEN *sp)
+_nc_freeall(void)
 {
     WINDOWLIST *p, *q;
     static va_list empty_va;
 
     T((T_CALLED("_nc_freeall()")));
 #if NO_LEAKS
-    if (sp != 0) {
-	if (sp->_oldnum_list != 0) {
-	    FreeAndNull(sp->_oldnum_list);
+    if (SP != 0) {
+	if (SP->_oldnum_list != 0) {
+	    FreeAndNull(SP->_oldnum_list);
 	}
-	if (sp->_panelHook.destroy != 0) {
-	    sp->_panelHook.destroy(sp->_panelHook.stdscr_pseudo_panel);
+	if (SP->_panelHook.destroy != 0) {
+	    SP->_panelHook.destroy(SP->_panelHook.stdscr_pseudo_panel);
 	}
     }
 #endif
-    if (sp != 0) {
+    if (SP != 0) {
 	_nc_lock_global(curses);
 
-	while (sp->_windowlist != 0) {
+	while (_nc_windows != 0) {
 	    bool deleted = FALSE;
 
 	    /* Delete only windows that're not a parent */
-	    for (each_window(sp, p)) {
+	    for (each_window(p)) {
 		bool found = FALSE;
 
-		for (each_window(sp, q)) {
+		for (each_window(q)) {
 		    if ((p != q)
 			&& (q->win._flags & _SUBWIN)
 			&& (&(p->win) == q->win._parent)) {
@@ -95,7 +95,7 @@ NC_SNAME(_nc_freeall) (SCREEN *sp)
 	    if (!deleted)
 		break;
 	}
-	delscreen(sp);
+	delscreen(SP);
 	_nc_unlock_global(curses);
     }
 
@@ -120,17 +120,11 @@ NC_SNAME(_nc_freeall) (SCREEN *sp)
 }
 
 NCURSES_EXPORT(void)
-_nc_freeall(void)
+_nc_free_and_exit(int code)
 {
-    NC_SNAME(_nc_freeall) (CURRENT_SCREEN);
-}
+    char *last_setbuf = (SP != 0) ? SP->_setbuf : 0;
 
-NCURSES_EXPORT(void)
-NC_SNAME(_nc_free_and_exit) (SCREEN *sp, int code)
-{
-    char *last_setbuf = (sp != 0) ? sp->_setbuf : 0;
-
-    NC_SNAME(_nc_freeall) (sp);
+    _nc_freeall();
 #ifdef TRACE
     trace(0);			/* close trace file, freeing its setbuf */
     {
@@ -150,19 +144,12 @@ _nc_freeall(void)
 }
 
 NCURSES_EXPORT(void)
-NC_SNAME(_nc_free_and_exit) (SCREEN *sp, int code)
+_nc_free_and_exit(int code)
 {
-    if (sp) {
-	delscreen(sp);
-	if (sp->_term)
-	    NC_SNAME(_nc_del_curterm) (sp, sp->_term);
-    }
+    if (SP)
+	delscreen(SP);
+    if (cur_term != 0)
+	del_curterm(cur_term);
     exit(code);
 }
 #endif
-
-NCURSES_EXPORT(void)
-_nc_free_and_exit(int code)
-{
-    NC_SNAME(_nc_free_and_exit) (CURRENT_SCREEN, code);
-}

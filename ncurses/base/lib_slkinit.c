@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2009                    *
  ****************************************************************************/
 
 /*
@@ -39,25 +40,25 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkinit.c,v 1.7.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_slkinit.c,v 1.8 2009/02/15 00:42:36 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(slk_init) (SCREEN *sp, int format)
+NCURSES_SP_NAME(slk_init) (NCURSES_SP_DCLx int format)
 {
     int code = ERR;
 
-    T((T_CALLED("slk_init(%p,%d)"), sp, format));
-
-    if (sp && format >= 0 && format <= 3 && !sp->slk_format &&
-	sp->_prescreen) {
-	sp->slk_format = 1 + format;
-	code = NC_SNAME(_nc_ripoffline) (sp, -SLK_LINES(sp->slk_format), _nc_slk_initialize);
+    T((T_CALLED("slk_init(%d)"), format));
+    if (format >= 0 && format <= 3 && !_nc_globals.slk_format) {
+	_nc_globals.slk_format = 1 + format;
+	code = _nc_ripoffline(-SLK_LINES(_nc_globals.slk_format), _nc_slk_initialize);
     }
     returnCode(code);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 slk_init(int format)
 {
-    return NC_SNAME(slk_init) (CURRENT_SCREEN_PRE, format);
+    return NCURSES_SP_NAME(slk_init) (CURRENT_SCREEN, format);
 }
+#endif

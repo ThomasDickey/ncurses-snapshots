@@ -1,6 +1,6 @@
-# $Id: MKkeyname.awk,v 1.40.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: MKkeyname.awk,v 1.41 2009/02/15 00:24:58 tom Exp $
 ##############################################################################
-# Copyright (c) 1999-2007,2008 Free Software Foundation, Inc.                #
+# Copyright (c) 1999-2008,2009 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -67,7 +67,7 @@ END {
 	print "#define SIZEOF_TABLE 256"
 	print "#define MyTable _nc_globals.keyname_table"
 	print ""
-	print "NCURSES_EXPORT(NCURSES_CONST char *) NC_SNAME(keyname) (SCREEN *sp, int c)"
+	print "NCURSES_EXPORT(NCURSES_CONST char *) _nc_keyname (SCREEN *sp, int c)"
 	print "{"
 	print "	int i;"
 	print "	char name[20];"
@@ -116,14 +116,14 @@ END {
 	print "				result = MyTable[c];"
 	print "			}"
 	print "#if NCURSES_EXT_FUNCS && NCURSES_XNAMES"
-	print "		} else if (result == 0 && HasTerminal(sp)) {"
+	print "		} else if (result == 0 && cur_term != 0) {"
 	print "			int j, k;"
 	print "			char * bound;"
-	print "			TERMTYPE *tp = &(TerminalOf(sp)->type);"
+	print "			TERMTYPE *tp = &(cur_term->type);"
 	print "			int save_trace = _nc_tracing;"
 	print ""
 	print "			_nc_tracing = 0;	/* prevent recursion via keybound() */"
-	print "			for (j = 0; (bound = NC_SNAME(keybound)(sp, c, j)) != 0; ++j) {"
+	print "			for (j = 0; (bound = keybound(c, j)) != 0; ++j) {"
 	print "				for(k = STRCOUNT; k < (int) NUM_STRINGS(tp);  k++) {"
 	print "					if (tp->Strings[k] != 0 && !strcmp(bound, tp->Strings[k])) {"
 	print "						result = ExtStrname(tp, k, strnames);"
@@ -141,10 +141,19 @@ END {
 	print "	return result;"
 	print "}"
 	print ""
-	print "NCURSES_EXPORT(NCURSES_CONST char *) keyname (int c)"
+	print "NCURSES_EXPORT(NCURSES_CONST char *)"
+	print "NCURSES_SP_NAME(keyname) (NCURSES_SP_DCLx int c)"
 	print "{"
-	print "\treturn NC_SNAME(keyname)(CURRENT_SCREEN, c);"
+	print "\treturn _nc_keyname(SP_PARM, c);"
 	print "}"
+	print ""
+	print "#if NCURSES_SP_FUNCS"
+	print "NCURSES_EXPORT(NCURSES_CONST char *)"
+	print "keyname (int c)"
+	print "{"
+	print "	return NCURSES_SP_NAME(keyname) (CURRENT_SCREEN, c);"
+	print "}"
+	print "#endif"
 	print ""
 	print "#if NO_LEAKS"
 	print "void _nc_keyname_leaks(void)"
