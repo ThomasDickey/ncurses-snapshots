@@ -34,7 +34,7 @@
 /* panel.c -- implementation of panels library, some core routines */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.23.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: panel.c,v 1.23 2005/02/19 18:04:31 tom Exp $")
 
 /*+-------------------------------------------------------------------------
 	_nc_retrace_panel (pan)
@@ -90,8 +90,6 @@ NCURSES_EXPORT(void)
 _nc_dStack(const char *fmt, int num, const PANEL * pan)
 {
   char s80[80];
-
-  GetHook(pan);
 
   sprintf(s80, fmt, num, pan);
   _tracef("%s b=%s t=%s", s80,

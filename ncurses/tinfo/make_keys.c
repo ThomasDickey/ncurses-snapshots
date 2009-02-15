@@ -39,16 +39,16 @@
 #define USE_TERMLIB 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.14 2008/08/03 21:57:22 tom Exp $")
 
 #include <names.c>
 
 #define UNKNOWN (SIZEOF(strnames) + SIZEOF(strfnames))
 
-static unsigned
+static size_t
 lookup(const char *name)
 {
-    unsigned n;
+    size_t n;
     bool found = FALSE;
     for (n = 0; strnames[n] != 0; n++) {
 	if (!strcmp(name, strnames[n])) {
@@ -73,7 +73,7 @@ make_keys(FILE *ifp, FILE *ofp)
     char buffer[BUFSIZ];
     char from[256];
     char to[256];
-    unsigned maxlen = 16;
+    int maxlen = 16;
     int scanned;
 
     while (fgets(buffer, sizeof(buffer), ifp) != 0) {
@@ -85,10 +85,10 @@ make_keys(FILE *ifp, FILE *ofp)
 
 	scanned = sscanf(buffer, "%255s %255s", to, from);
 	if (scanned == 2) {
-	    unsigned code = lookup(from);
+	    int code = lookup(from);
 	    if (code == UNKNOWN)
 		continue;
-	    if (strlen(from) > maxlen)
+	    if ((int) strlen(from) > maxlen)
 		maxlen = strlen(from);
 	    fprintf(ofp, "\t{ %4d, %-*.*s },\t/* %s */\n",
 		    code,

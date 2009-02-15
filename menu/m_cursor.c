@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_cursor.c,v 1.20.1.2 2009/02/07 23:11:44 tom Exp $")
+MODULE_ID("$Id: m_cursor.c,v 1.20 2005/10/22 23:03:32 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -90,7 +90,7 @@ pos_menu_cursor(const MENU * menu)
 
   if (E_OK == err)
     {
-      win = Get_Menu_UserWin(menu);
+      win = menu->userwin ? menu->userwin : stdscr;
       sub = menu->usersub ? menu->usersub : win;
       assert(win && sub);
 

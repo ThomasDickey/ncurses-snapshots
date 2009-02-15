@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.115.1.2 2009/02/07 22:36:00 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.115 2009/01/17 20:37:32 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -261,7 +261,6 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
      * Build up multibyte characters until we have a wide-character.
      */
     if_WIDEC({
-	SCREEN *sp = _nc_screen_of(win);
 	if (WINDOW_EXT(win, addch_used) != 0 || !Charable(ch)) {
 	    int len = _nc_build_wch(win, CHREF(ch));
 
@@ -271,7 +270,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		/* handle EILSEQ (i.e., when len >= -1) */
 		if (is8bits(CharOf(ch))) {
 		    int rc = OK;
-		    const char *s = unctrl_sp(sp, (chtype) CharOf(ch));
+		    const char *s = unctrl((chtype) CharOf(ch));
 
 		    if (s[1] != '\0') {
 			while (*s != '\0') {
@@ -406,9 +405,8 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 {
     NCURSES_SIZE_T x, y;
     chtype t = CharOf(ch);
-    SCREEN *sp = _nc_screen_of(win);
-    const char *s = unctrl_sp(sp, t);
-    int tabsize = 8;
+    const char *s = unctrl(t);
+
     /*
      * If we are using the alternate character set, forget about locale.
      * Otherwise, if unctrl() returns a single-character or the locale
@@ -417,14 +415,14 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
     if ((AttrOf(ch) & A_ALTCHARSET)
 	|| (
 #if USE_WIDEC_SUPPORT
-	       (sp != 0 && sp->_legacy_coding) &&
+	       (SP != 0 && SP->_legacy_coding) &&
 #endif
 	       s[1] == 0
 	)
 	|| (
 	       isprint(t)
 #if USE_WIDEC_SUPPORT
-	       || ((sp == 0 || !sp->_legacy_coding) &&
+	       || ((SP == 0 || !SP->_legacy_coding) &&
 		   (WINDOW_EXT(win, addch_used)
 		    || !_nc_is_charable(CharOf(ch))))
 #endif
@@ -440,12 +438,8 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 
     switch (t) {
     case '\t':
-#if USE_REENTRANT
-	tabsize = sp->_TABSIZE;
-#else
-	tabsize = TABSIZE;
-#endif
-	x += (tabsize - (x % tabsize));
+	x += (TABSIZE - (x % TABSIZE));
+
 	/*
 	 * Space-fill the tab on the bottom line so that we'll get the
 	 * "correct" cursor position.

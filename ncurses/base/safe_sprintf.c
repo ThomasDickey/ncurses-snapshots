@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.20.1.2 2009/02/07 23:09:41 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.20 2007/04/21 22:28:06 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -214,7 +214,7 @@ _nc_printf_length(const char *fmt, va_list ap)
  * Wrapper for vsprintf that allocates a buffer big enough to hold the result.
  */
 NCURSES_EXPORT(char *)
-NC_SNAME(_nc_printf_string) (SCREEN *sp, const char *fmt, va_list ap)
+_nc_printf_string(const char *fmt, va_list ap)
 {
     char *result = 0;
 
@@ -237,11 +237,11 @@ NC_SNAME(_nc_printf_string) (SCREEN *sp, const char *fmt, va_list ap)
 #define MyCols _nc_globals.safeprint_cols
 #define MyRows _nc_globals.safeprint_rows
 
-	if (screen_lines(sp) > MyRows || screen_columns(sp) > MyCols) {
-	    if (screen_lines(sp) > MyRows)
-		MyRows = screen_lines(sp);
-	    if (screen_columns(sp) > MyCols)
-		MyCols = screen_columns(sp);
+	if (screen_lines > MyRows || screen_columns > MyCols) {
+	    if (screen_lines > MyRows)
+		MyRows = screen_lines;
+	    if (screen_columns > MyCols)
+		MyCols = screen_columns;
 	    my_length = (MyRows * (MyCols + 1)) + 1;
 	    my_buffer = typeRealloc(char, my_length, my_buffer);
 	}
@@ -261,10 +261,4 @@ NC_SNAME(_nc_printf_string) (SCREEN *sp, const char *fmt, va_list ap)
 	my_length = 0;
     }
     return result;
-}
-
-NCURSES_EXPORT(char *)
-_nc_printf_string(const char *fmt, va_list ap)
-{
-    return NC_SNAME(_nc_printf_string) (CURRENT_SCREEN, fmt, ap);
 }

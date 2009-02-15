@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2009                    *
  ****************************************************************************/
 
 /*
@@ -41,33 +42,23 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.58.1.3 2009/02/14 20:49:54 tom Exp $")
+#include <term.h>
 
-/*
- * Internal entrypoints use SCREEN* parameter to obtain capabilities rather
- * than cur_term.
- */
-#undef CUR
-#define CUR (sp->_term)->type.
+MODULE_ID("$Id: lib_options.c,v 1.59 2009/02/15 00:48:40 tom Exp $")
 
-static int __nc_putp(SCREEN *sp, const char *name GCC_UNUSED, const char *value);
-static int __nc_putp_flush(SCREEN *sp, const char *name, const char *value);
+static int _nc_curs_set(SCREEN *, int);
+static int _nc_meta(SCREEN *, bool);
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
 {
-    int res = ERR;
     T((T_CALLED("idlok(%p,%d)"), win, flag));
 
     if (win) {
-	SCREEN *sp = _nc_screen_of(win);
-	if (sp && IsTermInfo(sp)) {
-	    sp->_nc_sp_idlok = win->_idlok = (flag && (NCURSES_SP_NAME(has_il) (sp)
-						       || change_scroll_region));
-	    res = OK;
-	}
-    }
-    returnCode(res);
+	_nc_idlok = win->_idlok = (flag && (has_il() || change_scroll_region));
+	returnCode(OK);
+    } else
+	returnCode(ERR);
 }
 
 NCURSES_EXPORT(void)
@@ -75,31 +66,32 @@ idcok(WINDOW *win, bool flag)
 {
     T((T_CALLED("idcok(%p,%d)"), win, flag));
 
-    if (win) {
-	SCREEN *sp = _nc_screen_of(win);
-	sp->_nc_sp_idcok = win->_idcok = (flag && NCURSES_SP_NAME(has_ic) (sp));
-    }
+    if (win)
+	_nc_idcok = win->_idcok = (flag && has_ic());
+
     returnVoid;
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(halfdelay) (SCREEN *sp, int t)
+NCURSES_SP_NAME(halfdelay) (NCURSES_SP_DCLx int t)
 {
-    T((T_CALLED("halfdelay(%p,%d)"), sp, t));
+    T((T_CALLED("halfdelay(%d)"), t));
 
-    if (t < 1 || t > 255 || !IsValidTIScreen(sp))
+    if (t < 1 || t > 255 || SP_PARM == 0)
 	returnCode(ERR);
 
-    NCURSES_SP_NAME(cbreak) (sp);
-    sp->_cbreak = t + 1;
+    cbreak();
+    SP_PARM->_cbreak = t + 1;
     returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 halfdelay(int t)
 {
     return NCURSES_SP_NAME(halfdelay) (CURRENT_SCREEN, t);
 }
+#endif
 
 NCURSES_EXPORT(int)
 nodelay(WINDOW *win, bool flag)
@@ -146,118 +138,53 @@ keypad(WINDOW *win, bool flag)
 
     if (win) {
 	win->_use_keypad = flag;
-	returnCode(_nc_keypad(_nc_screen_of(win), flag));
+	returnCode(_nc_keypad(SP, flag));
     } else
 	returnCode(ERR);
-}
-
-static int
-__nc_putp(SCREEN *sp, const char *name GCC_UNUSED, const char *value)
-{
-    int rc = ERR;
-
-    if (value) {
-	TPUTS_TRACE(name);
-	rc = NCURSES_SP_NAME(_nc_putp) (sp, value);
-    }
-    return rc;
-}
-
-static int
-__nc_putp_flush(SCREEN *sp, const char *name, const char *value)
-{
-    int rc = __nc_putp(sp, name, value);
-    if (rc != ERR) {
-	NCURSES_SP_NAME(_nc_flush) (sp);
-    }
-    return rc;
 }
 
 NCURSES_EXPORT(int)
 meta(WINDOW *win GCC_UNUSED, bool flag)
 {
-    int result = ERR;
-    SCREEN *sp = (win == 0) ? CURRENT_SCREEN : _nc_screen_of(win);
+    int result;
 
     /* Ok, we stay relaxed and don't signal an error if win is NULL */
     T((T_CALLED("meta(%p,%d)"), win, flag));
-
-    /* Ok, we stay relaxed and don't signal an error if win is NULL */
-
-    if (sp != 0) {
-	sp->_use_meta = flag;
-
-	if (IsTermInfo(sp)) {
-	    if (flag) {
-		__nc_putp(sp, "meta_on", meta_on);
-	    } else {
-		__nc_putp(sp, "meta_off", meta_off);
-	    }
-	}
-	result = OK;
-    }
+    result = _nc_meta(SP, flag);
     returnCode(result);
 }
 
 /* curs_set() moved here to narrow the kernel interface */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_curs_set) (SCREEN *sp, int vis)
+curs_set(int vis)
 {
-    int result = ERR;
-    T((T_CALLED("curs_set(%p,%d)"), sp, vis));
+    int result;
 
-    if (sp != 0 && vis >= 0 && vis <= 2) {
-	int cursor = sp->_cursor;
-	bool bBuiltIn = !IsTermInfo(sp);
-	if (vis == cursor) {
-	    result = cursor;
-	} else {
-	    if (!bBuiltIn) {
-		switch (vis) {
-		case 2:
-		    result = __nc_putp_flush(sp, "cursor_visible", cursor_visible);
-		    break;
-		case 1:
-		    result = __nc_putp_flush(sp, "cursor_normal", cursor_normal);
-		    break;
-		case 0:
-		    result = __nc_putp_flush(sp, "cursor_invisible", cursor_invisible);
-		    break;
-		}
-	    } else
-		result = ERR;
-	    if (result != ERR)
-		result = (cursor == -1 ? 1 : cursor);
-	    sp->_cursor = vis;
-	}
-    }
+    T((T_CALLED("curs_set(%d)"), vis));
+    result = _nc_curs_set(SP, vis);
     returnCode(result);
 }
 
 NCURSES_EXPORT(int)
-curs_set(int vis)
+NCURSES_SP_NAME(typeahead) (NCURSES_SP_DCLx int fd)
 {
-    return (NCURSES_SP_NAME(_nc_curs_set) (CURRENT_SCREEN, vis));
-}
-
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(typeahead) (SCREEN *sp, int fd)
-{
-    T((T_CALLED("typeahead(%p, %d)"), sp, fd));
-    if (IsValidTIScreen(sp)) {
-	sp->_checkfd = fd;
+    T((T_CALLED("typeahead(%d)"), fd));
+    if (SP_PARM != 0) {
+	SP_PARM->_checkfd = fd;
 	returnCode(OK);
     } else {
 	returnCode(ERR);
     }
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 typeahead(int fd)
 {
     return NCURSES_SP_NAME(typeahead) (CURRENT_SCREEN, fd);
 }
+#endif
 
 /*
 **      has_key()
@@ -280,13 +207,41 @@ has_key_internal(int keycode, TRIES * tp)
 }
 
 NCURSES_EXPORT(int)
-_nc_tinfo_has_key(SCREEN *sp, int keycode)
+has_key(int keycode)
 {
-    return IsValidTIScreen(sp) ?
-	has_key_internal(keycode, sp->_keytry) : 0;
+    T((T_CALLED("has_key(%d)"), keycode));
+    returnCode(SP != 0 ? has_key_internal(keycode, SP->_keytry) : FALSE);
+}
+#endif /* NCURSES_EXT_FUNCS */
+
+/*
+ * Internal entrypoints use SCREEN* parameter to obtain capabilities rather
+ * than cur_term.
+ */
+#undef CUR
+#define CUR (sp->_term)->type.
+
+static int
+_nc_putp(const char *name GCC_UNUSED, const char *value)
+{
+    int rc = ERR;
+
+    if (value) {
+	TPUTS_TRACE(name);
+	rc = putp(value);
+    }
+    return rc;
 }
 
-#endif /* NCURSES_EXT_FUNCS */
+static int
+_nc_putp_flush(const char *name, const char *value)
+{
+    int rc = _nc_putp(name, value);
+    if (rc != ERR) {
+	_nc_flush();
+    }
+    return rc;
+}
 
 /* Turn the keypad on/off
  *
@@ -307,12 +262,12 @@ _nc_keypad(SCREEN *sp, bool flag)
 	 * has wgetch() reading in more than one thread.  putp() and below
 	 * may use SP explicitly.
 	 */
-	if (_nc_use_pthreads && sp != CURRENT_SCREEN) {
+	if (_nc_use_pthreads && sp != SP) {
 	    SCREEN *save_sp;
 
 	    /* cannot use use_screen(), since that is not in tinfo library */
 	    _nc_lock_global(curses);
-	    save_sp = CURRENT_SCREEN;
+	    save_sp = SP;
 	    _nc_set_screen(sp);
 	    rc = _nc_keypad(sp, flag);
 	    _nc_set_screen(save_sp);
@@ -320,10 +275,70 @@ _nc_keypad(SCREEN *sp, bool flag)
 	} else
 #endif
 	{
-	    rc = CallDriver_1(sp, kpad, flag);
-	    if (rc == OK)
-		sp->_keypad_on = flag;
+	    if (flag) {
+		(void) _nc_putp_flush("keypad_xmit", keypad_xmit);
+	    } else if (!flag && keypad_local) {
+		(void) _nc_putp_flush("keypad_local", keypad_local);
+	    }
+
+	    if (flag && !sp->_tried) {
+		_nc_init_keytry(sp);
+		sp->_tried = TRUE;
+	    }
+	    sp->_keypad_on = flag;
+	    rc = OK;
 	}
     }
     return (rc);
+}
+
+static int
+_nc_curs_set(SCREEN *sp, int vis)
+{
+    int result = ERR;
+
+    T((T_CALLED("curs_set(%d)"), vis));
+    if (sp != 0 && vis >= 0 && vis <= 2) {
+	int cursor = sp->_cursor;
+
+	if (vis == cursor) {
+	    result = cursor;
+	} else {
+	    switch (vis) {
+	    case 2:
+		result = _nc_putp_flush("cursor_visible", cursor_visible);
+		break;
+	    case 1:
+		result = _nc_putp_flush("cursor_normal", cursor_normal);
+		break;
+	    case 0:
+		result = _nc_putp_flush("cursor_invisible", cursor_invisible);
+		break;
+	    }
+	    if (result != ERR)
+		result = (cursor == -1 ? 1 : cursor);
+	    sp->_cursor = vis;
+	}
+    }
+    returnCode(result);
+}
+
+static int
+_nc_meta(SCREEN *sp, bool flag)
+{
+    int result = ERR;
+
+    /* Ok, we stay relaxed and don't signal an error if win is NULL */
+
+    if (SP != 0) {
+	SP->_use_meta = flag;
+
+	if (flag) {
+	    _nc_putp("meta_on", meta_on);
+	} else {
+	    _nc_putp("meta_off", meta_off);
+	}
+	result = OK;
+    }
+    return result;
 }

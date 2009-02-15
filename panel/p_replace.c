@@ -36,25 +36,23 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_replace.c,v 1.9.1.2 2009/02/07 23:11:45 tom Exp $")
+MODULE_ID("$Id: p_replace.c,v 1.9 2005/02/19 16:41:31 tom Exp $")
 
 NCURSES_EXPORT(int)
 replace_panel(PANEL * pan, WINDOW *win)
 {
-  int rc = ERR;
-
   T((T_CALLED("replace_panel(%p,%p)"), pan, win));
 
-  if (pan)
+  if (!pan)
+    returnCode(ERR);
+
+  if (IS_LINKED(pan))
     {
-      GetHook(pan);
-      if (IS_LINKED(pan))
-	{
-	  Touchpan(pan);
-	  PANEL_UPDATE(pan, (PANEL *) 0);
-	}
-      pan->win = win;
-      rc = OK;
+      Touchpan(pan);
+      PANEL_UPDATE(pan, (PANEL *) 0);
     }
-  returnCode(rc);
+
+  pan->win = win;
+
+  returnCode(OK);
 }

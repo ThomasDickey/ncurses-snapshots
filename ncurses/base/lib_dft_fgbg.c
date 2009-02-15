@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,46 +27,66 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey                                                *
+ *  Author: Thomas E. Dickey          1998-on                               *
+ *          Juergen Pfeifer           2009                                  *
  ****************************************************************************/
 
 #include <curses.priv.h>
+#include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.18.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.19 2009/02/14 21:53:21 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
  * it is white on black.  This is an extension to XSI curses.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(use_default_colors) (SCREEN *sp)
+NCURSES_SP_NAME(use_default_colors) (NCURSES_SP_DCL0)
 {
-    T((T_CALLED("use_default_colors(%p)"), sp));
-    returnCode(assume_default_colors_sp(sp, -1, -1));
+    T((T_CALLED("use_default_colors()")));
+    returnCode(NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_ARGx - 1, -1));
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 use_default_colors(void)
 {
-    return NC_SNAME(use_default_colors) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(use_default_colors) (CURRENT_SCREEN);
 }
+#endif
 
 /*
  * Modify the behavior of color-pair 0 so that the library assumes that it
  * is something specific, possibly not white on black.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(assume_default_colors) (SCREEN *sp, int fg, int bg)
+NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 {
-    int code = ERR;
-    T((T_CALLED("assume_default_colors(%p,%d,%d)"), sp, fg, bg));
-    if (sp != 0)
-	code = CallDriver_2(sp, defaultcolors, fg, bg);
-    returnCode(code);
+    T((T_CALLED("assume_default_colors(%d,%d)"), fg, bg));
+
+    if (!orig_pair && !orig_colors)
+	returnCode(ERR);
+
+    if (initialize_pair)	/* don't know how to handle this */
+	returnCode(ERR);
+
+    SP_PARM->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
+    SP_PARM->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
+    SP_PARM->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : (fg & C_MASK);
+    SP_PARM->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : (bg & C_MASK);
+    if (SP_PARM->_color_pairs != 0) {
+	bool save = SP_PARM->_default_color;
+	SP_PARM->_default_color = TRUE;
+	init_pair(0, (short) fg, (short) bg);
+	SP_PARM->_default_color = save;
+    }
+    returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 assume_default_colors(int fg, int bg)
 {
-    return NC_SNAME(assume_default_colors) (CURRENT_SCREEN, fg, bg);
+    return NCURSES_SP_NAME(assume_default_colors) (CURRENT_SCREEN, fg, bg);
 }
+#endif
