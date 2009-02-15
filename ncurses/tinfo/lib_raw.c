@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2007 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.14.1.2 2009/02/07 23:09:41 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.14.1.4 2009/02/14 21:01:14 tom Exp $")
 
 #if SVR4_TERMIO && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -75,8 +75,8 @@ MODULE_ID("$Id: lib_raw.c,v 1.14.1.2 2009/02/07 23:09:41 tom Exp $")
 #define AFTER(s)
 #endif /* TRACE */
 
-NCURSES_EXPORT(int)
-NC_SNAME(raw) (SCREEN *sp, bool flag)
+static int
+_nc_raw(SCREEN *sp, bool flag)
 {
     int result = ERR;
     T((T_CALLED("raw(%p,%d)"), sp, flag));
@@ -106,7 +106,7 @@ NC_SNAME(raw) (SCREEN *sp, bool flag)
 	    buf.sg_flags &= ~(RAW | CBREAK);
 #endif
 	}
-	if ((result = NC_SNAME(_nc_set_tty_mode) (sp, &buf)) == OK) {
+	if ((result = NCURSES_SP_NAME(_nc_set_tty_mode) (sp, &buf)) == OK) {
 	    sp->_raw = flag ? TRUE : FALSE;
 	    sp->_cbreak = flag ? 1 : 0;
 	    TerminalOf(sp)->Nttyb = buf;
@@ -117,19 +117,33 @@ NC_SNAME(raw) (SCREEN *sp, bool flag)
 }
 
 NCURSES_EXPORT(int)
+NCURSES_SP_NAME(raw) (SCREEN *sp)
+{
+    return _nc_raw(sp, TRUE);
+}
+
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(noraw) (SCREEN *sp)
+{
+    return _nc_raw(sp, FALSE);
+}
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
 raw(void)
 {
-    return NC_SNAME(raw) (CURRENT_SCREEN, TRUE);
+    return _nc_raw(CURRENT_SCREEN, TRUE);
 }
 
 NCURSES_EXPORT(int)
 noraw(void)
 {
-    return NC_SNAME(raw) (CURRENT_SCREEN, FALSE);
+    return _nc_raw(CURRENT_SCREEN, FALSE);
 }
+#endif
 
-NCURSES_EXPORT(int)
-NC_SNAME(cbreak) (SCREEN *sp, bool flag)
+static int
+_nc_cbreak(SCREEN *sp, bool flag)
 {
     int result = ERR;
     T((T_CALLED("cbreak(%p,%d)"), sp, flag));
@@ -159,7 +173,7 @@ NC_SNAME(cbreak) (SCREEN *sp, bool flag)
 	    buf.sg_flags &= ~CBREAK;
 #endif
 	}
-	if ((result = NC_SNAME(_nc_set_tty_mode) (sp, &buf)) == OK) {
+	if ((result = NCURSES_SP_NAME(_nc_set_tty_mode) (sp, &buf)) == OK) {
 	    sp->_cbreak = flag ? 1 : 0;
 	    TerminalOf(sp)->Nttyb = buf;
 	}
@@ -169,23 +183,37 @@ NC_SNAME(cbreak) (SCREEN *sp, bool flag)
 }
 
 NCURSES_EXPORT(int)
+NCURSES_SP_NAME(cbreak) (SCREEN *sp)
+{
+    return _nc_cbreak(sp, TRUE);
+}
+
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(nocbreak) (SCREEN *sp)
+{
+    return _nc_cbreak(sp, FALSE);
+}
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
 cbreak(void)
 {
-    return NC_SNAME(cbreak) (CURRENT_SCREEN, TRUE);
+    return _nc_cbreak(CURRENT_SCREEN, TRUE);
 }
 
 NCURSES_EXPORT(int)
 nocbreak(void)
 {
-    return NC_SNAME(cbreak) (CURRENT_SCREEN, FALSE);
+    return _nc_cbreak(CURRENT_SCREEN, FALSE);
 }
+#endif
 
 /*
  * Note:
  * this implementation may be wrong.  See the comment under intrflush().
  */
 NCURSES_EXPORT(void)
-NC_SNAME(qiflush) (SCREEN *sp, bool flag)
+NCURSES_SP_NAME(qiflush) (SCREEN *sp, bool flag)
 {
     int result = ERR;
     T((T_CALLED("qiflush(%p,%d)"), sp, flag));
@@ -198,14 +226,14 @@ NC_SNAME(qiflush) (SCREEN *sp, bool flag)
 	if (flag) {
 #ifdef TERMIOS
 	    buf.c_lflag &= ~(NOFLSH);
-	    result = NC_SNAME(_nc_set_tty_mode) (sp, &buf);
+	    result = NCURSES_SP_NAME(_nc_set_tty_mode) (sp, &buf);
 #else
 	    /* FIXME */
 #endif
 	} else {
 #ifdef TERMIOS
 	    buf.c_lflag |= NOFLSH;
-	    result = NC_SNAME(_nc_set_tty_mode) (sp, &buf);
+	    result = NCURSES_SP_NAME(_nc_set_tty_mode) (sp, &buf);
 #else
 	    /* FIXME */
 #endif
@@ -220,13 +248,13 @@ NC_SNAME(qiflush) (SCREEN *sp, bool flag)
 NCURSES_EXPORT(void)
 qiflush(void)
 {
-    NC_SNAME(qiflush) (CURRENT_SCREEN, TRUE);
+    NCURSES_SP_NAME(qiflush) (CURRENT_SCREEN, TRUE);
 }
 
 NCURSES_EXPORT(void)
 noqiflush(void)
 {
-    NC_SNAME(qiflush) (CURRENT_SCREEN, FALSE);
+    NCURSES_SP_NAME(qiflush) (CURRENT_SCREEN, FALSE);
 }
 
 /*
@@ -237,7 +265,7 @@ noqiflush(void)
  * curs_inopts(3x) is too exact to be coincidence.
  */
 NCURSES_EXPORT(int)
-NC_SNAME(intrflush) (SCREEN *sp, WINDOW *win GCC_UNUSED, bool flag)
+NCURSES_SP_NAME(intrflush) (SCREEN *sp, WINDOW *win GCC_UNUSED, bool flag)
 {
     int result = ERR;
 
@@ -255,7 +283,7 @@ NC_SNAME(intrflush) (SCREEN *sp, WINDOW *win GCC_UNUSED, bool flag)
 	    buf.c_lflag &= ~(NOFLSH);
 	else
 	    buf.c_lflag |= (NOFLSH);
-	result = NC_SNAME(_nc_set_tty_mode) (sp, &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode) (sp, &buf);
 #else
 	/* FIXME */
 #endif
@@ -270,5 +298,5 @@ NC_SNAME(intrflush) (SCREEN *sp, WINDOW *win GCC_UNUSED, bool flag)
 NCURSES_EXPORT(int)
 intrflush(WINDOW *win GCC_UNUSED, bool flag)
 {
-    return NC_SNAME(intrflush) (CURRENT_SCREEN, win, flag);
+    return NCURSES_SP_NAME(intrflush) (CURRENT_SCREEN, win, flag);
 }

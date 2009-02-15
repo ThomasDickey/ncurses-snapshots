@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,34 +42,52 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_nl.c,v 1.8.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_nl.c,v 1.8.1.3 2009/02/14 20:49:54 tom Exp $")
 
 #ifdef __EMX__
 #include <io.h>
 #endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(nl) (SCREEN *sp, bool flag)
+NCURSES_SP_NAME(nl) (SCREEN *sp)
 {
-    T((T_CALLED("%snl(%p,%d)"), flag ? "" : "no", sp, flag));
+    T((T_CALLED("nl(%p)"), sp));
     if (0 == sp)
 	returnCode(ERR);
-    sp->_nl = flag ? TRUE : FALSE;
+    sp->_nl = TRUE;
 #ifdef __EMX__
     _nc_flush();
-    _fsetmode(NC_OUTPUT, flag ? "t" : "b");
+    _fsetmode(NC_OUTPUT, "t");
 #endif
     returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 nl(void)
 {
-    return NC_SNAME(nl) (CURRENT_SCREEN, TRUE);
+    return NCURSES_SP_NAME(nl) (CURRENT_SCREEN);
+}
+#endif
+
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(nonl) (SCREEN *sp)
+{
+    T((T_CALLED("nonl(%p)"), sp));
+    if (0 == sp)
+	returnCode(ERR);
+    sp->_nl = FALSE;
+#ifdef __EMX__
+    _nc_flush();
+    _fsetmode(NC_OUTPUT, "b");
+#endif
+    returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 nonl(void)
 {
-    return NC_SNAME(nl) (CURRENT_SCREEN, FALSE);
+    return NCURSES_SP_NAME(nonl) (CURRENT_SCREEN);
 }
+#endif

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.465.1.1 2009/02/07 22:15:27 tom Exp $
+dnl $Id: configure.in,v 1.465.1.2 2009/02/14 13:26:33 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.465.1.1 $)
+AC_REVISION($Revision: 1.465.1.2 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -867,6 +867,23 @@ else
 fi
 AC_SUBST(NCURSES_EXT_FUNCS)
 AC_SUBST(GENERATED_EXT_FUNCS)
+
+AC_MSG_CHECKING(if you want to build with SCREEN extensions)
+AC_ARG_ENABLE(sp-funcs,
+	[  --disable-sp-funcs      disable SCREEN-extensions],
+	[with_sp_funcs=$enableval],
+	[with_sp_funcs=yes])
+AC_MSG_RESULT($with_sp_funcs)
+if test "$with_sp_funcs" = yes ; then
+	NCURSES_SP_FUNCS=1
+	AC_DEFINE(NCURSES_SP_FUNCS)
+	GENERATED_SP_FUNCS=generated
+else
+	NCURSES_SP_FUNCS=0
+	GENERATED_SP_FUNCS=
+fi
+AC_SUBST(NCURSES_SP_FUNCS)
+AC_SUBST(GENERATED_SP_FUNCS)
 
 ###   use option --enable-const to turn on use of const beyond that in XSI.
 AC_MSG_CHECKING(for extended use of const keyword)

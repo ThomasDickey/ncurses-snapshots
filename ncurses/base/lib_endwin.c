@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,25 +40,27 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.19.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.19.1.3 2009/02/14 20:51:33 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(endwin) (SCREEN *sp)
+NCURSES_SP_NAME(endwin) (NCURSES_SP_DCL)
 {
-    T((T_CALLED("endwin(%p)"), sp));
+    T((T_CALLED("endwin(%p)"), SP_PARM));
 
-    if (sp) {
-	TERMINAL_CONTROL_BLOCK *TCB = TCBOf(sp);
-	sp->_endwin = TRUE;
+    if (SP_PARM) {
+	TERMINAL_CONTROL_BLOCK *TCB = TCBOf(SP_PARM);
+	SP_PARM->_endwin = TRUE;
 	if (TCB && TCB->drv && TCB->drv->scexit)
-	    TCB->drv->scexit(sp);
-	returnCode(NC_SNAME(reset_shell_mode) (sp));
+	    TCB->drv->scexit(SP_PARM);
+	returnCode(NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_ARG));
     }
     returnCode(ERR);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 endwin(void)
 {
     return NC_SNAME(endwin) (CURRENT_SCREEN);
 }
+#endif

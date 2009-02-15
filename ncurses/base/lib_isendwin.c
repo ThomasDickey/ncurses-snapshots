@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,18 +40,20 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_isendwin.c,v 1.6.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_isendwin.c,v 1.6.1.3 2009/02/14 20:50:52 tom Exp $")
 
 NCURSES_EXPORT(bool)
-NC_SNAME(isendwin) (SCREEN *sp)
+NCURSES_SP_NAME(isendwin) (NCURSES_SP_DCL)
 {
-    if (sp == NULL)
+    if (SP_PARM == NULL)
 	return FALSE;
-    return sp->_endwin;
+    return SP_PARM->_endwin;
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(bool)
 isendwin(void)
 {
     return NC_SNAME(isendwin) (CURRENT_SCREEN);
 }
+#endif

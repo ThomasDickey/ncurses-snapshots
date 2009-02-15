@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.27.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.27.1.3 2009/02/14 20:55:30 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -94,13 +94,13 @@ wgetnstr_events(WINDOW *win,
     oldecho = sp->_echo;
     oldraw = sp->_raw;
     oldcbreak = sp->_cbreak;
-    nl_sp(sp, TRUE);
-    echo_sp(sp, FALSE);
-    raw_sp(sp, FALSE);
-    cbreak_sp(sp, TRUE);
+    NCURSES_SP_NAME(nl) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(noecho) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(noraw) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG);
 
-    erasec = erasechar_sp(sp);
-    killc = killchar_sp(sp);
+    erasec = NCURSES_SP_NAME(erasechar) (NCURSES_SP_ARG);
+    killc = NCURSES_SP_NAME(killchar) (NCURSES_SP_ARG);
 
     oldstr = str;
     getyx(win, y, x);
@@ -143,7 +143,7 @@ wgetnstr_events(WINDOW *win,
 	    }
 	} else if (ch >= KEY_MIN
 		   || (maxlen >= 0 && str - oldstr >= maxlen)) {
-	    beep_sp(sp);
+	    NCURSES_SP_NAME(beep) (NCURSES_SP_ARG);
 	} else {
 	    *str++ = (char) ch;
 	    if (oldecho == TRUE) {

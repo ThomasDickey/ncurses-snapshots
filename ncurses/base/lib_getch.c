@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.99.1.3 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.99.1.4 2009/02/14 20:50:52 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -57,11 +57,11 @@ NCURSES_EXPORT_VAR(int) ESCDELAY = 1000;
 
 #if NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
-NC_SNAME(set_escdelay) (SCREEN *sp, int value)
+NCURSES_SP_NAME(set_escdelay) (NCURSES_SP_DCLx int value)
 {
     int code = OK;
-    if (sp) {
-	*(_nc_ptr_Escdelay(sp)) = value;
+    if (SP_PARM) {
+	*(_nc_ptr_Escdelay(SP_PARM)) = value;
     } else {
 	code = ERR;
     }
@@ -69,9 +69,9 @@ NC_SNAME(set_escdelay) (SCREEN *sp, int value)
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(get_escdelay) (SCREEN *sp)
+NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
 {
-    return *(_nc_ptr_Escdelay(sp));
+    return *(_nc_ptr_Escdelay(SP_PARM));
 }
 #endif
 
@@ -79,8 +79,8 @@ NC_SNAME(get_escdelay) (SCREEN *sp)
 NCURSES_EXPORT(int *)
 _nc_ptr_Escdelay(SCREEN *sp)
 {
-    if (sp)
-	return &(sp->_ESCDELAY);
+    if (SP_PARM)
+	return &(SP_PARM->_ESCDELAY);
     else
 	return (&_nc_prescreen._ESCDELAY);
 }
@@ -93,17 +93,19 @@ _nc_ptr_Escdelay(SCREEN *sp GCC_UNUSED)
 #endif
 
 #if NCURSES_EXT_FUNCS
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 set_escdelay(int value)
 {
 #if USE_REENTRANT
-    return NC_SNAME(set_escdelay) (CURRENT_SCREEN, value);
+    return NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
 #else
     ESCDELAY = value;
     return OK;
 #endif
 }
 #endif
+#endif /* NCURSES_EXT_FUNCS */
 
 static int
 _nc_use_meta(WINDOW *win)
@@ -204,7 +206,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 
     if (mask & TW_EVENT) {
 	T(("fifo_push: ungetch KEY_EVENT"));
-	NC_SNAME(ungetch) (sp, KEY_EVENT);
+	NCURSES_SP_NAME(ungetch) (sp, KEY_EVENT);
 	return KEY_EVENT;
     }
 #elif USE_GPM_SUPPORT || USE_EMX_MOUSE || USE_SYSMOUSE
@@ -391,9 +393,9 @@ _nc_wgetch(WINDOW *win,
 #ifdef NCURSES_WGETCH_EVENTS
 	if (rc != KEY_EVENT)
 #endif
-	    NC_SNAME(ungetch) (sp, '\n');
+	    NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx '\n');
 	for (bufp = buf + strlen(buf); bufp > buf; bufp--)
-	    NC_SNAME(ungetch) (sp, bufp[-1]);
+	    NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx bufp[-1]);
 
 #ifdef NCURSES_WGETCH_EVENTS
 	/* Return it first */
@@ -475,7 +477,7 @@ _nc_wgetch(WINDOW *win,
 		 || !sp->_mouse_parse(sp, runcount)));
 #ifdef NCURSES_WGETCH_EVENTS
 	if ((rc & TW_EVENT) && !(ch == KEY_EVENT)) {
-	    NC_SNAME(ungetch) (sp, ch);
+	    NCURSES_SP_NAME(ungetch) (sp, ch);
 	    ch = KEY_EVENT;
 	}
 #endif
@@ -483,12 +485,12 @@ _nc_wgetch(WINDOW *win,
 #ifdef NCURSES_WGETCH_EVENTS
 	    /* mouse event sequence ended by an event, report event */
 	    if (ch == KEY_EVENT) {
-		NC_SNAME(ungetch) (sp, KEY_MOUSE);	/* FIXME This interrupts a gesture... */
+		NCURSES_SP_NAME(ungetch) (sp, KEY_MOUSE);	/* FIXME This interrupts a gesture... */
 	    } else
 #endif
 	    {
 		/* mouse event sequence ended by keystroke, store keystroke */
-		NC_SNAME(ungetch) (sp, ch);
+		NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx ch);
 		ch = KEY_MOUSE;
 	    }
 	}

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,11 +44,13 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_restart.c,v 1.10.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.10.1.3 2009/02/14 20:57:17 tom Exp $")
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_restartterm) (SCREEN *sp, NCURSES_CONST char *termp, int
-			   filenum, int *errret)
+NCURSES_SP_NAME(_nc_restartterm) (SCREEN *sp,
+				  NCURSES_CONST char *termp,
+				  int filenum,
+				  int *errret)
 {
     int result;
     TERMINAL *new_term;
@@ -63,21 +65,29 @@ NC_SNAME(_nc_restartterm) (SCREEN *sp, NCURSES_CONST char *termp, int
 	int savenl = sp->_nl;
 
 	sp->_term = new_term;
-	NC_SNAME(echo) (sp, saveecho);
+	if (saveecho) {
+	    NCURSES_SP_NAME(echo) (sp);
+	} else {
+	    NCURSES_SP_NAME(noecho) (sp);
+	}
 
 	if (savecbreak) {
-	    NC_SNAME(cbreak) (sp, TRUE);
-	    NC_SNAME(raw) (sp, FALSE);
+	    NCURSES_SP_NAME(cbreak) (sp);
+	    NCURSES_SP_NAME(noraw) (sp);
 	} else if (saveraw) {
-	    NC_SNAME(cbreak) (sp, FALSE);
-	    NC_SNAME(raw) (sp, TRUE);
+	    NCURSES_SP_NAME(nocbreak) (sp);
+	    NCURSES_SP_NAME(raw) (sp);
 	} else {
-	    NC_SNAME(cbreak) (sp, FALSE);
-	    NC_SNAME(raw) (sp, FALSE);
+	    NCURSES_SP_NAME(nocbreak) (sp);
+	    NCURSES_SP_NAME(noraw) (sp);
 	}
-	NC_SNAME(nl) (sp, savenl);
+	if (savenl) {
+	    NCURSES_SP_NAME(nl) (sp);
+	} else {
+	    NCURSES_SP_NAME(nonl) (sp);
+	}
 
-	NC_SNAME(reset_prog_mode) (sp);
+	NCURSES_SP_NAME(reset_prog_mode) (sp);
 
 #if USE_SIZECHANGE
 	_nc_update_screensize(sp);
@@ -93,5 +103,5 @@ NC_SNAME(_nc_restartterm) (SCREEN *sp, NCURSES_CONST char *termp, int
 NCURSES_EXPORT(int)
 restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
 {
-    return NC_SNAME(_nc_restartterm) (CURRENT_SCREEN, termp, filenum, errret);
+    return NCURSES_SP_NAME(_nc_restartterm) (CURRENT_SCREEN, termp, filenum, errret);
 }

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_flash.c,v 1.6.1.2 2009/02/07 23:09:39 tom Exp $")
+MODULE_ID("$Id: lib_flash.c,v 1.6.1.3 2009/02/14 20:51:33 tom Exp $")
 
 /*
  *	flash()
@@ -51,17 +51,19 @@ MODULE_ID("$Id: lib_flash.c,v 1.6.1.2 2009/02/07 23:09:39 tom Exp $")
  */
 
 NCURSES_EXPORT(int)
-NC_SNAME(flash) (SCREEN *sp)
+NCURSES_SP_NAME(flash) (NCURSES_SP_DCL)
 {
     int ret = ERR;
-    T((T_CALLED("flash(%p)"), sp));
-    if (sp != 0)
-	ret = CallDriver_1(sp, doBeepOrFlash, FALSE);
+    T((T_CALLED("flash(%p)"), SP_PARM));
+    if (SP_PARM != 0)
+	ret = CallDriver_1(SP_PARM, doBeepOrFlash, FALSE);
     returnCode(ret);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 flash(void)
 {
-    return NC_SNAME(flash) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(flash) (CURRENT_SCREEN);
 }
+#endif
