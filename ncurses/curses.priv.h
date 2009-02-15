@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.396.1.2 2009/02/07 22:36:11 tom Exp $
+ * $Id: curses.priv.h,v 1.396.1.4 2009/02/14 20:00:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -255,6 +255,35 @@ color_t;
 
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
+/*
+ * Declare SCREEN-functions macro here, for internal use.
+ */
+#ifndef NC_SNAME
+#define NC_SNAME(name) name##_sp
+#endif
+
+/*
+ * If curses.h did not expose the SCREEN-functions, then we do not need the
+ * parameter in the corresponding unextended functions.
+ */
+#if NCURSES_SP_FUNCS
+#define SP_PARM         sp	/* use parameter */
+#define NCURSES_SP_NAME(name)   name##_sp
+#define NCURSES_SP_ARG          SP_PARM
+#define NCURSES_SP_DCL  SCREEN *NCURSES_SP_ARG
+#define NCURSES_SP_DCL0 NCURSES_SP_DCL
+#define NCURSES_SP_ARGx         NCURSES_SP_ARG,
+#define NCURSES_SP_DCLx SCREEN *NCURSES_SP_ARGx
+#else
+#define SP_PARM         SP	/* use global variable */
+#define NCURSES_SP_NAME(name)   name
+#define NCURSES_SP_ARG
+#define NCURSES_SP_DCL
+#define NCURSES_SP_DCL0 void
+#define NCURSES_SP_ARGx
+#define NCURSES_SP_DCLx
+#endif
+
 #include <nc_panel.h>
 
 #define IsPreScreen(sp)      (((sp)!=0) && sp->_prescreen)
@@ -271,7 +300,6 @@ color_t;
 #include <term_entry.h>
 
 #include <nc_tparm.h>
-
 
 #if NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT
 #define if_EXT_COLORS(stmt)	stmt

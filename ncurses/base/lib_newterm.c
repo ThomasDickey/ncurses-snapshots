@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.73.1.4 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.73.1.5 2009/02/14 21:03:10 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -69,7 +69,7 @@ _nc_initscr(SCREEN *sp)
 
     /* for extended XPG4 conformance requires cbreak() at this point */
     /* (SVr4 curses does this anyway) */
-    if (NC_SNAME(cbreak) (sp, TRUE) == OK) {
+    if (NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG) == OK) {
 	TTY buf;
 
 	buf = term->Nttyb;
@@ -82,14 +82,15 @@ _nc_initscr(SCREEN *sp)
 #else
 	memset(&buf, 0, sizeof(buf));
 #endif
-	if ((result = NC_SNAME(_nc_set_tty_mode) (sp, &buf)) == OK)
+	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx & buf);
+	if (result == OK)
 	    term->Nttyb = buf;
     }
     return result;
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(filter) (SCREEN *sp, bool f)
+NCURSES_SP_NAME(filter) (NCURSES_SP_DCLx bool f)
 {
     int code = ERR;
     START_TRACE();
@@ -107,6 +108,7 @@ NC_SNAME(filter) (SCREEN *sp, bool f)
  * aside from possibly delaying a filter() call until some terminals have been
  * initialized.
  */
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 filter(void)
 {
@@ -115,6 +117,7 @@ filter(void)
     _nc_prescreen.filter_mode = TRUE;
     returnVoid;
 }
+#endif
 
 #if NCURSES_EXT_FUNCS
 /*
@@ -132,7 +135,10 @@ nofilter(void)
 #endif
 
 NCURSES_EXPORT(bool)
-NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
+NCURSES_SP_NAME(newterm) (SCREEN *sp,
+			  NCURSES_CONST char *name,
+			  FILE *ofp,
+			  FILE *ifp)
 {
     int value;
     int errret;
@@ -170,12 +176,12 @@ NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 	 * This actually allocates the screen structure, and saves the original
 	 * terminal settings.
 	 */
-	if (NC_SNAME(_nc_setupscreen) (&sp,
-				       *(ptrLines(sp)),
-				       *(ptrCols(sp)),
-				       _ofp,
-				       sp->_filtered,
-				       sp->slk_format) == ERR) {
+	if (NCURSES_SP_NAME(_nc_setupscreen) (&sp,
+					      *(ptrLines(sp)),
+					      *(ptrCols(sp)),
+					      _ofp,
+					      sp->_filtered,
+					      sp->slk_format) == ERR) {
 	    _nc_set_screen(current);
 	    result = 0;
 	} else {
@@ -205,7 +211,7 @@ NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 	    /* allow user to set maximum escape delay from the environment */
 	    if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
 #if USE_REENTRANT
-		NC_SNAME(set_escdelay) (sp, value);
+		NCURSES_SP_NAME(set_escdelay) (sp, value);
 #else
 		ESCDELAY = value;
 #endif
@@ -216,7 +222,7 @@ NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 		_nc_slk_initialize(sp->_stdscr, cols);
 
 	    sp->_ifd = fileno(_ifp);
-	    NC_SNAME(typeahead) (sp, fileno(_ifp));
+	    NCURSES_SP_NAME(typeahead) (sp, fileno(_ifp));
 #ifdef TERMIOS
 	    sp->_use_meta = ((sp->_term->Ottyb.c_cflag & CSIZE) == CS8 &&
 			     !(sp->_term->Ottyb.c_iflag & ISTRIP));
@@ -225,7 +231,7 @@ NC_SNAME(newterm) (SCREEN *sp, NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 #endif
 	    sp->_endwin = FALSE;
 
-	    NC_SNAME(baudrate) (sp);	/* sets a field in the screen structure */
+	    NCURSES_SP_NAME(baudrate) (sp);	/* sets a field in the screen structure */
 
 	    sp->_keytry = 0;
 
@@ -248,7 +254,7 @@ NCURSES_EXPORT(SCREEN *)
 newterm(NCURSES_CONST char *name, FILE *ofp, FILE *ifp)
 {
     SCREEN *sp = CURRENT_SCREEN_PRE;
-    if (NC_SNAME(newterm) (sp, name, ofp, ifp))
+    if (NCURSES_SP_NAME(newterm) (sp, name, ofp, ifp))
 	return sp;
     else
 	return (SCREEN *) 0;

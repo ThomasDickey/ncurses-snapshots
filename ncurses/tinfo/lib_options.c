@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.58.1.2 2009/02/07 23:09:41 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.58.1.3 2009/02/14 20:49:54 tom Exp $")
 
 /*
  * Internal entrypoints use SCREEN* parameter to obtain capabilities rather
@@ -62,7 +62,7 @@ idlok(WINDOW *win, bool flag)
     if (win) {
 	SCREEN *sp = _nc_screen_of(win);
 	if (sp && IsTermInfo(sp)) {
-	    sp->_nc_sp_idlok = win->_idlok = (flag && (NC_SNAME(has_il) (sp)
+	    sp->_nc_sp_idlok = win->_idlok = (flag && (NCURSES_SP_NAME(has_il) (sp)
 						       || change_scroll_region));
 	    res = OK;
 	}
@@ -77,20 +77,20 @@ idcok(WINDOW *win, bool flag)
 
     if (win) {
 	SCREEN *sp = _nc_screen_of(win);
-	sp->_nc_sp_idcok = win->_idcok = (flag && NC_SNAME(has_ic) (sp));
+	sp->_nc_sp_idcok = win->_idcok = (flag && NCURSES_SP_NAME(has_ic) (sp));
     }
     returnVoid;
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(halfdelay) (SCREEN *sp, int t)
+NCURSES_SP_NAME(halfdelay) (SCREEN *sp, int t)
 {
     T((T_CALLED("halfdelay(%p,%d)"), sp, t));
 
     if (t < 1 || t > 255 || !IsValidTIScreen(sp))
 	returnCode(ERR);
 
-    NC_SNAME(cbreak) (sp, TRUE);
+    NCURSES_SP_NAME(cbreak) (sp);
     sp->_cbreak = t + 1;
     returnCode(OK);
 }
@@ -98,7 +98,7 @@ NC_SNAME(halfdelay) (SCREEN *sp, int t)
 NCURSES_EXPORT(int)
 halfdelay(int t)
 {
-    return NC_SNAME(halfdelay) (CURRENT_SCREEN, t);
+    return NCURSES_SP_NAME(halfdelay) (CURRENT_SCREEN, t);
 }
 
 NCURSES_EXPORT(int)
@@ -158,7 +158,7 @@ __nc_putp(SCREEN *sp, const char *name GCC_UNUSED, const char *value)
 
     if (value) {
 	TPUTS_TRACE(name);
-	rc = NC_SNAME(_nc_putp) (sp, value);
+	rc = NCURSES_SP_NAME(_nc_putp) (sp, value);
     }
     return rc;
 }
@@ -168,7 +168,7 @@ __nc_putp_flush(SCREEN *sp, const char *name, const char *value)
 {
     int rc = __nc_putp(sp, name, value);
     if (rc != ERR) {
-	NC_SNAME(_nc_flush) (sp);
+	NCURSES_SP_NAME(_nc_flush) (sp);
     }
     return rc;
 }
@@ -202,7 +202,7 @@ meta(WINDOW *win GCC_UNUSED, bool flag)
 /* curs_set() moved here to narrow the kernel interface */
 
 NCURSES_EXPORT(int)
-NC_SNAME(_nc_curs_set) (SCREEN *sp, int vis)
+NCURSES_SP_NAME(_nc_curs_set) (SCREEN *sp, int vis)
 {
     int result = ERR;
     T((T_CALLED("curs_set(%p,%d)"), sp, vis));
@@ -238,11 +238,11 @@ NC_SNAME(_nc_curs_set) (SCREEN *sp, int vis)
 NCURSES_EXPORT(int)
 curs_set(int vis)
 {
-    return (NC_SNAME(_nc_curs_set) (CURRENT_SCREEN, vis));
+    return (NCURSES_SP_NAME(_nc_curs_set) (CURRENT_SCREEN, vis));
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(typeahead) (SCREEN *sp, int fd)
+NCURSES_SP_NAME(typeahead) (SCREEN *sp, int fd)
 {
     T((T_CALLED("typeahead(%p, %d)"), sp, fd));
     if (IsValidTIScreen(sp)) {
@@ -256,7 +256,7 @@ NC_SNAME(typeahead) (SCREEN *sp, int fd)
 NCURSES_EXPORT(int)
 typeahead(int fd)
 {
-    return NC_SNAME(typeahead) (CURRENT_SCREEN, fd);
+    return NCURSES_SP_NAME(typeahead) (CURRENT_SCREEN, fd);
 }
 
 /*

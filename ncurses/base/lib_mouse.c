@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.104.1.2 2009/02/07 23:09:40 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.104.1.3 2009/02/14 20:50:52 tom Exp $")
 
 #include <tic.h>
 
@@ -163,13 +163,13 @@ static void _nc_mouse_wrap(SCREEN *);
 #define LastEV(sp)	((sp)->_mouse_events + EV_MAX - 1)
 
 #undef  NEXT
-#define NEXT(ep)	((ep >= LastEV(sp)) \
-			 ? FirstEV(sp) \
+#define NEXT(ep)	((ep >= LastEV(SP_PARM)) \
+			 ? FirstEV(SP_PARM) \
 			 : ep + 1)
 
 #undef  PREV
-#define PREV(ep)	((ep <= FirstEV(sp)) \
-			 ? LastEV(sp) \
+#define PREV(ep)	((ep <= FirstEV(SP_PARM)) \
+			 ? LastEV(SP_PARM) \
 			 : ep - 1)
 
 #define IndexEV(sp, ep)	(ep - FirstEV(sp))
@@ -349,7 +349,7 @@ enable_xterm_mouse(SCREEN *sp, int enable)
 #if USE_EMX_MOUSE
     sp->_emxmouse_activated = enable;
 #else
-    NC_SNAME(_nc_putp) (sp, TPARM_1(sp->_mouse_xtermcap, enable));
+    NCURSES_SP_NAME(_nc_putp) (sp, TPARM_1(sp->_mouse_xtermcap, enable));
 #endif
     sp->_mouse_active = enable;
 }
@@ -923,7 +923,7 @@ mouse_activate(SCREEN *sp, bool on)
 	switch (sp->_mouse_type) {
 	case M_XTERM:
 #if NCURSES_EXT_FUNCS
-	    NC_SNAME(keyok) (sp, KEY_MOUSE, on);
+	    NCURSES_SP_NAME(keyok) (NCURSES_SP_ARGx KEY_MOUSE, on);
 #endif
 	    TPUTS_TRACE("xterm mouse initialization");
 	    enable_xterm_mouse(sp, 1);
@@ -975,7 +975,7 @@ mouse_activate(SCREEN *sp, bool on)
 	    return;
 	}
     }
-    NC_SNAME(_nc_flush) (sp);
+    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
 }
 
 /**************************************************************************
@@ -1251,12 +1251,12 @@ _nc_mouse_resume(SCREEN *sp)
  **************************************************************************/
 
 NCURSES_EXPORT(int)
-NC_SNAME(getmouse) (SCREEN *sp, MEVENT * aevent)
+NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 {
-    T((T_CALLED("getmouse(%p,%p)"), sp, aevent));
+    T((T_CALLED("getmouse(%p,%p)"), SP_PARM, aevent));
 
-    if ((aevent != 0) && (sp != 0) && (sp->_mouse_type != M_NONE)) {
-	MEVENT *eventp = sp->_mouse_eventp;
+    if ((aevent != 0) && (SP_PARM != 0) && (SP_PARM->_mouse_type != M_NONE)) {
+	MEVENT *eventp = SP_PARM->_mouse_eventp;
 	/* compute the current-event pointer */
 	MEVENT *prev = PREV(eventp);
 
@@ -1264,8 +1264,8 @@ NC_SNAME(getmouse) (SCREEN *sp, MEVENT * aevent)
 	*aevent = *prev;
 
 	TR(TRACE_IEVENT, ("getmouse: returning event %s from slot %ld",
-			  _nc_tracemouse(sp, prev),
-			  (long) IndexEV(sp, prev)));
+			  _nc_tracemouse(SP_PARM, prev),
+			  (long) IndexEV(SP_PARM, prev)));
 
 	prev->id = INVALID_EVENT;	/* so the queue slot becomes free */
 	returnCode(OK);
@@ -1273,57 +1273,61 @@ NC_SNAME(getmouse) (SCREEN *sp, MEVENT * aevent)
     returnCode(ERR);
 }
 
+#if NCURSES_SP_FUNCS
 /* grab a copy of the current mouse event */
 NCURSES_EXPORT(int)
 getmouse(MEVENT * aevent)
 {
-    return NC_SNAME(getmouse) (CURRENT_SCREEN, aevent);
+    return NCURSES_SP_NAME(getmouse) (CURRENT_SCREEN, aevent);
 }
+#endif
 
 NCURSES_EXPORT(int)
-NC_SNAME(ungetmouse) (SCREEN *sp, MEVENT * aevent)
+NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 {
     int result = ERR;
 
-    T((T_CALLED("ungetmouse(%p,%p)"), sp, aevent));
+    T((T_CALLED("ungetmouse(%p,%p)"), SP_PARM, aevent));
 
-    if (aevent != 0 && sp != 0) {
-	MEVENT *eventp = sp->_mouse_eventp;
+    if (aevent != 0 && SP_PARM != 0) {
+	MEVENT *eventp = SP_PARM->_mouse_eventp;
 
 	/* stick the given event in the next-free slot */
 	*eventp = *aevent;
 
 	/* bump the next-free pointer into the circular list */
-	sp->_mouse_eventp = NEXT(eventp);
+	SP_PARM->_mouse_eventp = NEXT(eventp);
 
 	/* push back the notification event on the keyboard queue */
-	result = NC_SNAME(ungetch) (sp, KEY_MOUSE);
+	result = NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx KEY_MOUSE);
     }
     returnCode(result);
 }
 
+#if NCURSES_SP_FUNCS
 /* enqueue a synthesized mouse event to be seen by the next wgetch() */
 NCURSES_EXPORT(int)
 ungetmouse(MEVENT * aevent)
 {
-    return NC_SNAME(ungetmouse) (CURRENT_SCREEN, aevent);
+    return NCURSES_SP_NAME(ungetmouse) (CURRENT_SCREEN, aevent);
 }
+#endif
 
 NCURSES_EXPORT(mmask_t)
-NC_SNAME(mousemask) (SCREEN *sp, mmask_t newmask, mmask_t * oldmask)
+NCURSES_SP_NAME(mousemask) (NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
 /* set the mouse event mask */
 {
     mmask_t result = 0;
 
-    T((T_CALLED("mousemask(%p,%#lx,%p)"), sp, (unsigned long) newmask, oldmask));
+    T((T_CALLED("mousemask(%p,%#lx,%p)"), SP_PARM, (unsigned long) newmask, oldmask));
 
-    if (sp != 0) {
+    if (SP_PARM != 0) {
 	if (oldmask)
-	    *oldmask = sp->_mouse_mask;
+	    *oldmask = SP_PARM->_mouse_mask;
 
-	if (newmask || sp->_mouse_initialized) {
-	    _nc_mouse_init(sp);
-	    if (sp->_mouse_type != M_NONE) {
+	if (newmask || SP_PARM->_mouse_initialized) {
+	    _nc_mouse_init(SP_PARM);
+	    if (SP_PARM->_mouse_type != M_NONE) {
 		result = newmask &
 		    (REPORT_MOUSE_POSITION
 		     | BUTTON_ALT
@@ -1335,20 +1339,22 @@ NC_SNAME(mousemask) (SCREEN *sp, mmask_t newmask, mmask_t * oldmask)
 		     | BUTTON_DOUBLE_CLICKED
 		     | BUTTON_TRIPLE_CLICKED);
 
-		mouse_activate(sp, (bool) (result != 0));
+		mouse_activate(SP_PARM, (bool) (result != 0));
 
-		sp->_mouse_mask = result;
+		SP_PARM->_mouse_mask = result;
 	    }
 	}
     }
     returnBits(result);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(mmask_t)
 mousemask(mmask_t newmask, mmask_t * oldmask)
 {
-    return NC_SNAME(mousemask) (CURRENT_SCREEN, newmask, oldmask);
+    return NCURSES_SP_NAME(mousemask) (CURRENT_SCREEN, newmask, oldmask);
 }
+#endif
 
 NCURSES_EXPORT(bool)
 wenclose(const WINDOW *win, int y, int x)
@@ -1369,17 +1375,17 @@ wenclose(const WINDOW *win, int y, int x)
 }
 
 NCURSES_EXPORT(int)
-NC_SNAME(mouseinterval) (SCREEN *sp, int maxclick)
+NCURSES_SP_NAME(mouseinterval) (NCURSES_SP_DCLx int maxclick)
 /* set the maximum mouse interval within which to recognize a click */
 {
     int oldval;
 
-    T((T_CALLED("mouseinterval(%p,%d)"), sp, maxclick));
+    T((T_CALLED("mouseinterval(%p,%d)"), SP_PARM, maxclick));
 
-    if (sp != 0) {
-	oldval = sp->_maxclick;
+    if (SP_PARM != 0) {
+	oldval = SP_PARM->_maxclick;
 	if (maxclick >= 0)
-	    sp->_maxclick = maxclick;
+	    SP_PARM->_maxclick = maxclick;
     } else {
 	oldval = DEFAULT_MAXCLICK;
     }
@@ -1387,11 +1393,13 @@ NC_SNAME(mouseinterval) (SCREEN *sp, int maxclick)
     returnCode(oldval);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 mouseinterval(int maxclick)
 {
-    return NC_SNAME(mouseinterval) (CURRENT_SCREEN, maxclick);
+    return NCURSES_SP_NAME(mouseinterval) (CURRENT_SCREEN, maxclick);
 }
+#endif
 
 /* This may be used by other routines to ask for the existence of mouse
    support */
@@ -1402,16 +1410,18 @@ _nc_has_mouse(SCREEN *sp)
 }
 
 NCURSES_EXPORT(bool)
-NC_SNAME(has_mouse) (SCREEN *sp)
+NCURSES_SP_NAME(has_mouse) (NCURSES_SP_DCL)
 {
-    return _nc_has_mouse(sp);
+    return _nc_has_mouse(SP_PARM);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(bool)
 has_mouse(void)
 {
     return _nc_has_mouse(CURRENT_SCREEN);
 }
+#endif
 
 NCURSES_EXPORT(bool)
 wmouse_trafo(const WINDOW *win, int *pY, int *pX, bool to_screen)
