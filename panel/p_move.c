@@ -36,24 +36,21 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_move.c,v 1.9.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: p_move.c,v 1.9 2005/02/19 16:46:49 tom Exp $")
 
 NCURSES_EXPORT(int)
 move_panel(PANEL * pan, int starty, int startx)
 {
-  int rc = ERR;
-
   T((T_CALLED("move_panel(%p,%d,%d)"), pan, starty, startx));
 
-  if (pan)
+  if (!pan)
+    returnCode(ERR);
+
+  if (IS_LINKED(pan))
     {
-      GetHook(pan);
-      if (IS_LINKED(pan))
-	{
-	  Touchpan(pan);
-	  PANEL_UPDATE(pan, (PANEL *) 0);
-	}
-      rc = mvwin(pan->win, starty, startx);
+      Touchpan(pan);
+      PANEL_UPDATE(pan, (PANEL *) 0);
     }
-  returnCode(rc);
+
+  returnCode(mvwin(pan->win, starty, startx));
 }

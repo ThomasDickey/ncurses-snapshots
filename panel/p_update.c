@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,39 +36,28 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_update.c,v 1.9.1.4 2009/02/21 15:25:14 tom Exp $")
-
-NCURSES_EXPORT(void)
-NCURSES_SP_NAME(update_panels) (SCREEN * sp)
-{
-  PANEL *pan;
-
-  T((T_CALLED("update_panels(%p)"), sp));
-  dBug(("--> update_panels"));
-
-  if (sp)
-    {
-      struct panelhook *ph = NCURSES_SP_NAME(_nc_panelhook) (sp);
-
-      pan = _nc_bottom_panel;
-      while (pan && pan->above)
-	{
-	  PANEL_UPDATE(pan, pan->above);
-	  pan = pan->above;
-	}
-
-      pan = _nc_bottom_panel;
-      while (pan)
-	{
-	  Wnoutrefresh(pan);
-	  pan = pan->above;
-	}
-    }
-  returnVoid;
-}
+MODULE_ID("$Id: p_update.c,v 1.9 2005/02/19 16:49:47 tom Exp $")
 
 NCURSES_EXPORT(void)
 update_panels(void)
 {
-  NCURSES_SP_NAME(update_panels) (CURRENT_SCREEN);
+  PANEL *pan;
+
+  T((T_CALLED("update_panels()")));
+  dBug(("--> update_panels"));
+  pan = _nc_bottom_panel;
+  while (pan && pan->above)
+    {
+      PANEL_UPDATE(pan, pan->above);
+      pan = pan->above;
+    }
+
+  pan = _nc_bottom_panel;
+  while (pan)
+    {
+      Wnoutrefresh(pan);
+      pan = pan->above;
+    }
+
+  returnVoid;
 }

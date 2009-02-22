@@ -42,18 +42,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.100.1.1 2009/02/21 20:34:08 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.100 2009/02/15 00:36:00 tom Exp $")
 
 #include <fifo_defs.h>
 
 #if USE_REENTRANT
+#define GetEscdelay(sp) (sp)->_ESCDELAY
 NCURSES_EXPORT(int)
 NCURSES_PUBLIC_VAR(ESCDELAY) (void)
 {
-    return *(_nc_ptr_Escdelay(CURRENT_SCREEN));
+    return SP ? GetEscdelay(SP) : 1000;
 }
 #else
-NCURSES_EXPORT_VAR(int) ESCDELAY = 1000;
+#define GetEscdelay(sp) ESCDELAY
+NCURSES_EXPORT_VAR (int)
+  ESCDELAY = 1000;		/* max interval betw. chars in funkeys, in millisecs */
 #endif
 
 #if NCURSES_EXT_FUNCS
@@ -61,49 +64,24 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(set_escdelay) (NCURSES_SP_DCLx int value)
 {
     int code = OK;
+#if USE_REENTRANT
     if (SP_PARM) {
-	*(_nc_ptr_Escdelay(SP_PARM)) = value;
+	SP_PARM->_ESCDELAY = value;
     } else {
 	code = ERR;
     }
+#else
+    (void) SP_PARM;
+    ESCDELAY = value;
+#endif
     return code;
 }
 
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
-{
-    return *(_nc_ptr_Escdelay(SP_PARM));
-}
-#endif
-
-#if USE_REENTRANT
-NCURSES_EXPORT(int *)
-_nc_ptr_Escdelay(SCREEN *sp)
-{
-    if (SP_PARM)
-	return &(SP_PARM->_ESCDELAY);
-    else
-	return (&_nc_prescreen._ESCDELAY);
-}
-#else
-NCURSES_EXPORT(int *)
-_nc_ptr_Escdelay(SCREEN *sp GCC_UNUSED)
-{
-    return &ESCDELAY;
-}
-#endif
-
-#if NCURSES_EXT_FUNCS
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 set_escdelay(int value)
 {
-#if USE_REENTRANT
     return NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
-#else
-    ESCDELAY = value;
-    return OK;
-#endif
 }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
@@ -116,10 +94,11 @@ _nc_use_meta(WINDOW *win)
 }
 
 #ifdef NCURSES_WGETCH_EVENTS
-#define TWAIT_MASK (TW_ANY | TW_EVENT)
+#define TWAIT_MASK 7
 #else
-#define TWAIT_MASK TW_ANY
+#define TWAIT_MASK 3
 #endif
+
 /*
  * Check for mouse activity, returning nonzero if we find any.
  */
@@ -131,17 +110,16 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
 #if USE_SYSMOUSE
     if ((sp->_mouse_type == M_SYSMOUSE)
 	&& (sp->_sysmouse_head < sp->_sysmouse_tail)) {
-	return TW_MOUSE;
+	return 2;
     }
 #endif
-    rc = TCBOf(sp)->drv->twait(TCBOf(sp), TWAIT_MASK, delay, (int *) 0
-			       EVENTLIST_2nd(evl));
+    rc = _nc_timed_wait(sp, TWAIT_MASK, delay, (int *) 0 EVENTLIST_2nd(evl));
 #if USE_SYSMOUSE
     if ((sp->_mouse_type == M_SYSMOUSE)
 	&& (sp->_sysmouse_head < sp->_sysmouse_tail)
 	&& (rc == 0)
 	&& (errno == EINTR)) {
-	rc |= TW_MOUSE;
+	rc |= 2;
     }
 #endif
     return rc;
@@ -205,7 +183,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 	mask = 0;
 
-    if (mask & TW_EVENT) {
+    if (mask & 4) {
 	T(("fifo_push: ungetch KEY_EVENT"));
 	_nc_ungetch(sp, KEY_EVENT);
 	return KEY_EVENT;
@@ -217,7 +195,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 #endif
 
 #if USE_GPM_SUPPORT || USE_EMX_MOUSE
-    if ((sp->_mouse_fd >= 0) && (mask & TW_MOUSE)) {
+    if ((sp->_mouse_fd >= 0) && (mask & 2)) {
 	sp->_mouse_event(sp);
 	ch = KEY_MOUSE;
 	n = 1;
@@ -237,9 +215,9 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 #endif
     {				/* Can block... */
-	int buf;
-	n = CallDriver_1(sp, read, &buf);
-	ch = buf;
+	unsigned char c2 = 0;
+	n = read(sp->_ifd, &c2, 1);
+	ch = c2;
     }
 
 #ifdef HIDE_EINTR
@@ -292,12 +270,12 @@ recur_wrefresh(WINDOW *win)
 {
 #ifdef USE_PTHREADS
     SCREEN *sp = _nc_screen_of(win);
-    if (_nc_use_pthreads && sp != CURRENT_SCREEN) {
+    if (_nc_use_pthreads && sp != SP) {
 	SCREEN *save_SP;
 
 	/* temporarily switch to the window's screen to check/refresh */
 	_nc_lock_global(curses);
-	save_SP = CURRENT_SCREEN;
+	save_SP = SP;
 	_nc_set_screen(sp);
 	recur_wrefresh(win);
 	_nc_set_screen(save_SP);
@@ -318,12 +296,12 @@ recur_wgetnstr(WINDOW *win, char *buf)
 
     if (sp != 0) {
 #ifdef USE_PTHREADS
-	if (_nc_use_pthreads && sp != CURRENT_SCREEN) {
+	if (_nc_use_pthreads && sp != SP) {
 	    SCREEN *save_SP;
 
 	    /* temporarily switch to the window's screen to get cooked input */
 	    _nc_lock_global(curses);
-	    save_SP = CURRENT_SCREEN;
+	    save_SP = SP;
 	    _nc_set_screen(sp);
 	    rc = recur_wgetnstr(win, buf);
 	    _nc_set_screen(save_SP);
@@ -434,7 +412,7 @@ _nc_wgetch(WINDOW *win,
 	    rc = check_mouse_activity(sp, delay EVENTLIST_2nd(evl));
 
 #ifdef NCURSES_WGETCH_EVENTS
-	    if (rc & TW_EVENT) {
+	    if (rc & 4) {
 		*result = KEY_EVENT;
 		returnCode(KEY_CODE_YES);
 	    }
@@ -459,7 +437,7 @@ _nc_wgetch(WINDOW *win,
 	 * increase the wait with mouseinterval().
 	 */
 	int runcount = 0;
-	int rc = 0;
+	int rc;
 
 	do {
 	    ch = kgetch(sp EVENTLIST_2nd(evl));
@@ -474,10 +452,10 @@ _nc_wgetch(WINDOW *win,
 	    (ch == KEY_MOUSE
 	     && (((rc = check_mouse_activity(sp, sp->_maxclick
 					     EVENTLIST_2nd(evl))) != 0
-		  && !(rc & TW_EVENT))
+		  && !(rc & 4))
 		 || !sp->_mouse_parse(sp, runcount)));
 #ifdef NCURSES_WGETCH_EVENTS
-	if ((rc & TW_EVENT) && !(ch == KEY_EVENT)) {
+	if ((rc & 4) && !ch == KEY_EVENT) {
 	    _nc_ungetch(sp, ch);
 	    ch = KEY_EVENT;
 	}
@@ -614,7 +592,7 @@ kgetch(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 {
     TRIES *ptr;
     int ch = 0;
-    int timeleft = *_nc_ptr_Escdelay(sp);
+    int timeleft = GetEscdelay(sp);
 
     TR(TRACE_IEVENT, ("kgetch() called"));
 
@@ -677,7 +655,7 @@ kgetch(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 	    TR(TRACE_IEVENT, ("waiting for rest of sequence"));
 	    rc = check_mouse_activity(sp, timeleft EVENTLIST_2nd(evl));
 #ifdef NCURSES_WGETCH_EVENTS
-	    if (rc & TW_EVENT) {
+	    if (rc & 4) {
 		TR(TRACE_IEVENT, ("interrupted by a user event"));
 		/* FIXME Should have preserved remainder timeleft for reuse... */
 		peek = head;	/* Restart interpreting later */

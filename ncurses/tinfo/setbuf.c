@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2007 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: setbuf.c,v 1.13.1.3 2009/02/21 15:11:29 tom Exp $")
+MODULE_ID("$Id: setbuf.c,v 1.13 2007/05/12 19:04:02 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -98,20 +98,11 @@ MODULE_ID("$Id: setbuf.c,v 1.13.1.3 2009/02/21 15:11:29 tom Exp $")
  * buffer.  So we disable this by default (there may yet be a workaround).
  */
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_set_buffer) (SCREEN *sp, FILE *ofp, bool buffered)
+_nc_set_buffer(FILE *ofp, bool buffered)
 {
-    int Cols;
-    int Lines;
-
-    if (0 == sp)
-	return;
-
-    Cols = *(ptrCols(sp));
-    Lines = *(ptrLines(sp));
-
     /* optional optimization hack -- do before any output to ofp */
 #if HAVE_SETVBUF || HAVE_SETBUFFER
-    if (sp->_buffered != buffered) {
+    if (SP->_buffered != buffered) {
 	unsigned buf_len;
 	char *buf_ptr;
 
@@ -123,11 +114,11 @@ NCURSES_SP_NAME(_nc_set_buffer) (SCREEN *sp, FILE *ofp, bool buffered)
 	setmode(ofp, O_BINARY);
 #endif
 	if (buffered != 0) {
-	    buf_len = min(Lines * (Cols + 6), 2800);
-	    if ((buf_ptr = sp->_setbuf) == 0) {
+	    buf_len = min(LINES * (COLS + 6), 2800);
+	    if ((buf_ptr = SP->_setbuf) == 0) {
 		if ((buf_ptr = typeMalloc(char, buf_len)) == NULL)
 		      return;
-		sp->_setbuf = buf_ptr;
+		SP->_setbuf = buf_ptr;
 		/* Don't try to free this! */
 	    }
 #if !USE_SETBUF_0
@@ -153,13 +144,7 @@ NCURSES_SP_NAME(_nc_set_buffer) (SCREEN *sp, FILE *ofp, bool buffered)
 	(void) setbuffer(ofp, buf_ptr, (int) buf_len);
 #endif
 
-	sp->_buffered = buffered;
+	SP->_buffered = buffered;
     }
 #endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
-}
-
-NCURSES_EXPORT(void)
-_nc_set_buffer(FILE *ofp, bool buffered)
-{
-    NCURSES_SP_NAME(_nc_set_buffer) (CURRENT_SCREEN, ofp, buffered);
 }

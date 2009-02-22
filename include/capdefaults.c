@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: capdefaults.c,v 1.13.1.1 2008/11/16 00:19:59 juergen Exp $ */
+/* $Id: capdefaults.c,v 1.14 2008/11/16 00:19:59 juergen Exp $ */
 
     /*
      * Compute obsolete capabilities.  The reason this is an include file is

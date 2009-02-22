@@ -39,7 +39,7 @@
 #define USE_TERMLIB 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.14.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.15 2008/11/16 00:19:59 juergen Exp $")
 
 #include <names.c>
 

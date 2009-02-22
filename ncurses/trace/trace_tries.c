@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_tries.c,v 1.13.1.2 2009/02/07 23:09:42 tom Exp $")
+MODULE_ID("$Id: trace_tries.c,v 1.13 2008/08/03 15:43:30 tom Exp $")
 
 #ifdef TRACE
 #define my_buffer _nc_globals.tracetry_buf

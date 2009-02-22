@@ -41,25 +41,24 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.41.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.41 2007/09/29 20:39:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
 {
     int code;
-    SCREEN *sp = _nc_screen_of(win);
 
     T((T_CALLED("wrefresh(%p)"), win));
 
     if (win == 0) {
 	code = ERR;
-    } else if (win == sp->_curscr) {
-	sp->_curscr->_clear = TRUE;
-	code = doupdate_sp(sp);
+    } else if (win == curscr) {
+	curscr->_clear = TRUE;
+	code = doupdate();
     } else if ((code = wnoutrefresh(win)) == OK) {
 	if (win->_clear)
-	    sp->_newscr->_clear = TRUE;
-	code = doupdate_sp(sp);
+	    newscr->_clear = TRUE;
+	code = doupdate();
 	/*
 	 * Reset the clearok() flag in case it was set for the special
 	 * case in hardscroll.c (if we don't reset it here, we'll get 2
@@ -82,7 +81,6 @@ wnoutrefresh(WINDOW *win)
 #if USE_SCROLL_HINTS
     bool wide;
 #endif
-    SCREEN *sp = _nc_screen_of(win);
 
     T((T_CALLED("wnoutrefresh(%p)"), win));
 #ifdef TRACE
@@ -103,8 +101,8 @@ wnoutrefresh(WINDOW *win)
     begx = win->_begx;
     begy = win->_begy;
 
-    sp->_newscr->_nc_bkgd = win->_nc_bkgd;
-    WINDOW_ATTRS(sp->_newscr) = WINDOW_ATTRS(win);
+    newscr->_nc_bkgd = win->_nc_bkgd;
+    WINDOW_ATTRS(newscr) = WINDOW_ATTRS(win);
 
     /* merge in change information from all subwindows of this window */
     wsyncdown(win);
@@ -124,7 +122,7 @@ wnoutrefresh(WINDOW *win)
      * windows).  Note that changing this formula will not break any code,
      * merely change the costs of various update cases.
      */
-    wide = (begx <= 1 && win->_maxx >= (sp->_newscr->_maxx - 1));
+    wide = (begx <= 1 && win->_maxx >= (newscr->_maxx - 1));
 #endif
 
     win->_flags &= ~_HASMOVED;
@@ -139,13 +137,13 @@ wnoutrefresh(WINDOW *win)
     /* limit(dst_col) */
     limit_x = win->_maxx;
     /* limit(src_col) */
-    if (limit_x > sp->_newscr->_maxx - begx)
-	limit_x = sp->_newscr->_maxx - begx;
+    if (limit_x > newscr->_maxx - begx)
+	limit_x = newscr->_maxx - begx;
 
     for (src_row = 0, dst_row = begy + win->_yoffset;
-	 src_row <= win->_maxy && dst_row <= sp->_newscr->_maxy;
+	 src_row <= win->_maxy && dst_row <= newscr->_maxy;
 	 src_row++, dst_row++) {
-	register struct ldat *nline = &(sp->_newscr->_line[dst_row]);
+	register struct ldat *nline = &newscr->_line[dst_row];
 	register struct ldat *oline = &win->_line[src_row];
 
 	if (oline->firstchar != _NOCHANGE) {
@@ -227,7 +225,7 @@ wnoutrefresh(WINDOW *win)
 		     * this character.  Find the end of the character.
 		     */
 		    ++j;
-		    while (j <= sp->_newscr->_maxx && isWidecExt(nline->text[j])) {
+		    while (j <= newscr->_maxx && isWidecExt(nline->text[j])) {
 			fix_right = j++;
 		    }
 		}
@@ -271,18 +269,18 @@ wnoutrefresh(WINDOW *win)
 
     if (win->_clear) {
 	win->_clear = FALSE;
-	sp->_newscr->_clear = TRUE;
+	newscr->_clear = TRUE;
     }
 
     if (!win->_leaveok) {
-	sp->_newscr->_cury = win->_cury + win->_begy + win->_yoffset;
-	sp->_newscr->_curx = win->_curx + win->_begx;
+	newscr->_cury = win->_cury + win->_begy + win->_yoffset;
+	newscr->_curx = win->_curx + win->_begx;
     }
-    sp->_newscr->_leaveok = win->_leaveok;
+    newscr->_leaveok = win->_leaveok;
 
 #ifdef TRACE
     if (USE_TRACEF(TRACE_UPDATE)) {
-	_tracedump("newscr", sp->_newscr);
+	_tracedump("newscr", newscr);
 	_nc_unlock_global(tracef);
     }
 #endif /* TRACE */

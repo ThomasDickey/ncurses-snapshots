@@ -40,7 +40,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkclear.c,v 1.11.1.1 2009/02/21 17:47:14 tom Exp $")
+MODULE_ID("$Id: lib_slkclear.c,v 1.12 2009/02/21 17:47:14 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(slk_clear) (NCURSES_SP_DCL0)

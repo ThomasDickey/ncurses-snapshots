@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_sub.c,v 1.9.1.2 2009/02/07 23:11:44 tom Exp $")
+MODULE_ID("$Id: frm_sub.c,v 1.9 2004/12/11 22:13:39 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -50,13 +50,9 @@ set_form_sub(FORM *form, WINDOW *win)
 
   if (form && (form->status & _POSTED))
     RETURN(E_POSTED);
-  else
-    {
-      FORM *f = Normalize_Form(form);
 
-      f->sub = win ? win : Get_Form_Screen(f)->_stdscr;
-      RETURN(E_OK);
-    }
+  Normalize_Form(form)->sub = win;
+  RETURN(E_OK);
 }
 
 /*---------------------------------------------------------------------------
