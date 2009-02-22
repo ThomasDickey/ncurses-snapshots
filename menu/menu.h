@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2007 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: menu.h,v 1.19 2007/02/24 17:32:13 tom Exp $ */
+/* $Id: menu.h,v 1.19.1.2 2009/02/21 15:25:14 tom Exp $ */
 
 #ifndef ETI_MENU
 #define ETI_MENU
@@ -177,6 +177,7 @@ extern NCURSES_EXPORT(ITEM *)	current_item (const MENU *);
 extern NCURSES_EXPORT(ITEM *)	new_item (const char *,const char *);
 
 extern NCURSES_EXPORT(MENU *)	new_menu (ITEM **);
+extern NCURSES_EXPORT(MENU *)	NCURSES_SP_NAME(new_menu) (SCREEN*, ITEM **);
 
 extern NCURSES_EXPORT(Item_Options)	item_opts (const ITEM *);
 extern NCURSES_EXPORT(Menu_Options)	menu_opts (const MENU *);

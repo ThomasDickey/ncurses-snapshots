@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2005 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,27 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_below.c,v 1.6 2005/02/19 16:45:10 tom Exp $")
+MODULE_ID("$Id: p_below.c,v 1.6.1.5 2009/02/21 15:25:14 tom Exp $")
+
+NCURSES_EXPORT(PANEL *)
+ceiling_panel(SCREEN * sp)
+{
+  T((T_CALLED("ceiling_panel(%p)"), sp));
+  if (sp)
+    {
+      struct panelhook *ph = NCURSES_SP_NAME(_nc_panelhook) (sp);
+
+      /* if top and bottom are equal, we have no or only the pseudo panel */
+      returnPanel(EMPTY_STACK()? (PANEL *) 0 : _nc_top_panel);
+    }
+  else
+    {
+      if (0 == CURRENT_SCREEN)
+	returnPanel(0);
+      else
+	returnPanel(ceiling_panel(CURRENT_SCREEN));
+    }
+}
 
 NCURSES_EXPORT(PANEL *)
 panel_below(const PANEL * pan)
@@ -43,11 +63,11 @@ panel_below(const PANEL * pan)
   T((T_CALLED("panel_below(%p)"), pan));
   if (!pan)
     {
-      /* if top and bottom are equal, we have no or only the pseudo panel */
-      returnPanel(EMPTY_STACK()? (PANEL *) 0 : _nc_top_panel);
+      return ceiling_panel(CURRENT_SCREEN);
     }
   else
     {
+      GetHook(pan);
       /* we must not return the pseudo panel */
       returnPanel(Is_Pseudo(pan->below) ? (PANEL *) 0 : pan->below);
     }

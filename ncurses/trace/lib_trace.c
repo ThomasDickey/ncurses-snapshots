@@ -46,7 +46,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.71 2008/08/23 18:04:29 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.71.1.2 2009/02/07 23:09:42 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -56,26 +56,26 @@ NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 NCURSES_EXPORT(const char *)
 NCURSES_PUBLIC_VAR(_nc_tputs_trace) (void)
 {
-    return SP ? SP->_tputs_trace : _nc_prescreen._tputs_trace;
+    return CURRENT_SCREEN ? CURRENT_SCREEN->_tputs_trace : _nc_prescreen._tputs_trace;
 }
 NCURSES_EXPORT(long)
 NCURSES_PUBLIC_VAR(_nc_outchars) (void)
 {
-    return SP ? SP->_outchars : _nc_prescreen._outchars;
+    return CURRENT_SCREEN ? CURRENT_SCREEN->_outchars : _nc_prescreen._outchars;
 }
 NCURSES_EXPORT(void)
 _nc_set_tputs_trace(const char *s)
 {
-    if (SP)
-	SP->_tputs_trace = s;
+    if (CURRENT_SCREEN)
+	CURRENT_SCREEN->_tputs_trace = s;
     else
 	_nc_prescreen._tputs_trace = s;
 }
 NCURSES_EXPORT(void)
 _nc_count_outchars(long increment)
 {
-    if (SP)
-	SP->_outchars += increment;
+    if (CURRENT_SCREEN)
+	CURRENT_SCREEN->_outchars += increment;
     else
 	_nc_prescreen._outchars += increment;
 }
@@ -95,7 +95,7 @@ trace(const unsigned int tracelevel)
 	const char *mode = _nc_globals.init_trace ? "ab" : "wb";
 
 	if (TracePath[0] == '\0') {
-	    int size = sizeof(TracePath) - 12;
+	    unsigned size = sizeof(TracePath) - 12;
 	    if (getcwd(TracePath, size) == 0) {
 		perror("curses: Can't get working directory");
 		exit(EXIT_FAILURE);
@@ -326,8 +326,9 @@ _nc_locked_tracef(const char *fmt,...)
     _nc_va_tracef(fmt, ap);
     va_end(ap);
 
-    if (--(_nc_globals.nested_tracef) == 0)
+    if (--(_nc_globals.nested_tracef) == 0) {
 	_nc_unlock_global(tracef);
+    }
 }
 #endif /* USE_REENTRANT */
 
