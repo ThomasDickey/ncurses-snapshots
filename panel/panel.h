@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: panel.h,v 1.10 2006/05/27 19:49:40 tom Exp $ */
+/* $Id: panel.h,v 1.10.1.3 2009/02/21 15:25:14 tom Exp $ */
 
 /* panel.h -- interface file for panels library */
 
@@ -54,6 +54,7 @@ extern "C" {
 
 extern NCURSES_EXPORT(WINDOW*) panel_window (const PANEL *);
 extern NCURSES_EXPORT(void)    update_panels (void);
+  extern NCURSES_EXPORT(void)  NCURSES_SP_NAME(update_panels) (SCREEN*);
 extern NCURSES_EXPORT(int)     hide_panel (PANEL *);
 extern NCURSES_EXPORT(int)     show_panel (PANEL *);
 extern NCURSES_EXPORT(int)     del_panel (PANEL *);
@@ -67,6 +68,9 @@ extern NCURSES_EXPORT(NCURSES_CONST void*) panel_userptr (const PANEL *);
 extern NCURSES_EXPORT(int)     move_panel (PANEL *, int, int);
 extern NCURSES_EXPORT(int)     replace_panel (PANEL *,WINDOW *);
 extern NCURSES_EXPORT(int)     panel_hidden (const PANEL *);
+
+extern NCURSES_EXPORT(PANEL *) ground_panel(SCREEN *);
+extern NCURSES_EXPORT(PANEL *) ceiling_panel(SCREEN *);
 
 #if	defined(__cplusplus)
 }
