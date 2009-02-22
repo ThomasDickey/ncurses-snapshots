@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ungetch.c,v 1.12.1.1 2009/02/21 16:51:25 tom Exp $")
+MODULE_ID("$Id: lib_ungetch.c,v 1.12 2009/02/15 00:46:58 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -58,11 +58,9 @@ _nc_fifo_dump(SCREEN *sp)
 #endif /* TRACE */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
+_nc_ungetch(SCREEN *sp, int ch)
 {
     int rc = ERR;
-
-    T((T_CALLED("ungetch(%p,%s)"), SP_PARM, _nc_tracechar(SP_PARM, ch)));
 
     if (tail != -1) {
 	if (head == -1) {
@@ -72,17 +70,24 @@ NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
 	} else
 	    h_dec();
 
-	SP_PARM->_fifo[head] = ch;
-	T(("ungetch %s ok", _nc_tracechar(SP_PARM, ch)));
+	sp->_fifo[head] = ch;
+	T(("ungetch %s ok", _nc_tracechar(sp, ch)));
 #ifdef TRACE
 	if (USE_TRACEF(TRACE_IEVENT)) {
-	    _nc_fifo_dump(SP_PARM);
+	    _nc_fifo_dump(sp);
 	    _nc_unlock_global(tracef);
 	}
 #endif
 	rc = OK;
     }
-    returnCode(rc);
+    return rc;
+}
+
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
+{
+    T((T_CALLED("ungetch(%s)"), _nc_tracechar(SP_PARM, ch)));
+    returnCode(_nc_ungetch(SP_PARM, ch));
 }
 
 #if NCURSES_SP_FUNCS

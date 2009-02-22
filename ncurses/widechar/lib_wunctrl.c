@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001-2007,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001-2005,2007 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,29 +35,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.12.1.3 2009/02/21 15:54:51 tom Exp $")
-
-NCURSES_EXPORT(wchar_t *)
-NCURSES_SP_NAME(_nc_wunctrl) (SCREEN *sp, cchar_t *wc)
-{
-    static wchar_t str[CCHARW_MAX + 1], *wsp;
-
-    if (Charable(*wc)) {
-	const char *p = NCURSES_SP_NAME(unctrl) (sp, (unsigned)
-						 _nc_to_char((wint_t)
-							     CharOf(*wc)));
-
-	for (wsp = str; *p; ++p) {
-	    *wsp++ = _nc_to_widechar(*p);
-	}
-	*wsp = 0;
-	return str;
-    } else
-	return wc->chars;
-}
+MODULE_ID("$Id: lib_wunctrl.c,v 1.12 2007/06/12 20:22:32 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 wunctrl(cchar_t *wc)
 {
-    return NCURSES_SP_NAME(_nc_wunctrl) (CURRENT_SCREEN, wc);
+    static wchar_t str[CCHARW_MAX + 1], *sp;
+
+    if (Charable(*wc)) {
+	const char *p = unctrl((unsigned) _nc_to_char((wint_t) CharOf(*wc)));
+
+	for (sp = str; *p; ++p) {
+	    *sp++ = _nc_to_widechar(*p);
+	}
+	*sp = 0;
+	return str;
+    } else
+	return wc->chars;
 }

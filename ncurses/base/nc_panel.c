@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,17 +32,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: nc_panel.c,v 1.4.1.3 2009/02/21 15:11:29 tom Exp $")
-
-NCURSES_EXPORT(struct panelhook *)
-NCURSES_SP_NAME(_nc_panelhook) (SCREEN *sp)
-{
-    return (sp ? &(sp->_panelHook) :
-	    (CURRENT_SCREEN ? &(CURRENT_SCREEN->_panelHook) : 0));
-}
+MODULE_ID("$Id: nc_panel.c,v 1.4 2000/12/10 02:43:28 tom Exp $")
 
 NCURSES_EXPORT(struct panelhook *)
 _nc_panelhook(void)
 {
-    return NCURSES_SP_NAME(_nc_panelhook) (CURRENT_SCREEN);
+    return (SP ? &(SP->_panelHook) : NULL);
 }

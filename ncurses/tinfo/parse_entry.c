@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.69.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.69 2008/08/16 21:52:03 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -84,13 +84,13 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
     case NUMBER:
 	first = tp->ext_Booleans;
 	last = tp->ext_Numbers + first;
-	offset = (unsigned) (tp->ext_Booleans + tp->ext_Numbers);
+	offset = tp->ext_Booleans + tp->ext_Numbers;
 	tindex = tp->num_Numbers;
 	break;
     case STRING:
-	first = (unsigned) (tp->ext_Booleans + tp->ext_Numbers);
+	first = tp->ext_Booleans + tp->ext_Numbers;
 	last = tp->ext_Strings + first;
-	offset = (unsigned) (tp->ext_Booleans + tp->ext_Numbers + tp->ext_Strings);
+	offset = tp->ext_Booleans + tp->ext_Numbers + tp->ext_Strings;
 	tindex = tp->num_Strings;
 	break;
     case CANCEL:
@@ -137,31 +137,27 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
 	    break;
 	}
     }
-
-#define for_each_value(max) \
-	for (last = (unsigned) (max - 1); last > tindex; last--)
-
     if (!found) {
 	switch (token_type) {
 	case BOOLEAN:
-	    tp->ext_Booleans++;
-	    tp->num_Booleans++;
+	    tp->ext_Booleans += 1;
+	    tp->num_Booleans += 1;
 	    tp->Booleans = typeRealloc(NCURSES_SBOOL, tp->num_Booleans, tp->Booleans);
-	    for_each_value(tp->num_Booleans)
+	    for (last = tp->num_Booleans - 1; last > tindex; last--)
 		tp->Booleans[last] = tp->Booleans[last - 1];
 	    break;
 	case NUMBER:
-	    tp->ext_Numbers++;
-	    tp->num_Numbers++;
+	    tp->ext_Numbers += 1;
+	    tp->num_Numbers += 1;
 	    tp->Numbers = typeRealloc(short, tp->num_Numbers, tp->Numbers);
-	    for_each_value(tp->num_Numbers)
+	    for (last = tp->num_Numbers - 1; last > tindex; last--)
 		tp->Numbers[last] = tp->Numbers[last - 1];
 	    break;
 	case STRING:
-	    tp->ext_Strings++;
-	    tp->num_Strings++;
+	    tp->ext_Strings += 1;
+	    tp->num_Strings += 1;
 	    tp->Strings = typeRealloc(char *, tp->num_Strings, tp->Strings);
-	    for_each_value(tp->num_Strings)
+	    for (last = tp->num_Strings - 1; last > tindex; last--)
 		tp->Strings[last] = tp->Strings[last - 1];
 	    break;
 	}
@@ -174,7 +170,7 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
 
     temp.nte_name = tp->ext_Names[offset];
     temp.nte_type = token_type;
-    temp.nte_index = (short) tindex;
+    temp.nte_index = tindex;
     temp.nte_link = -1;
 
     return &temp;
@@ -448,7 +444,7 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 
 	    case NUMBER:
 		entryp->tterm.Numbers[entry_ptr->nte_index] =
-		    (short) _nc_curr_token.tk_valnumber;
+		    _nc_curr_token.tk_valnumber;
 		break;
 
 	    case STRING:
@@ -792,7 +788,7 @@ postprocess_termcap(TERMTYPE *tp, bool has_base)
 	for (base = other_non_function_keys;
 	     (cp = strchr(base, ',')) != 0;
 	     base = cp + 1) {
-	    size_t len = (unsigned) (cp - base);
+	    size_t len = cp - base;
 
 	    for (ap = ko_xlate; ap->from; ap++) {
 		if (len == strlen(ap->from)

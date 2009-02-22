@@ -25,7 +25,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKnames.awk,v 1.20.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: MKnames.awk,v 1.21 2008/11/16 00:19:59 juergen Exp $
 function large_item(value) {
 	result = sprintf("%d,", offset);
 	offset = offset + length(value) + 1;
