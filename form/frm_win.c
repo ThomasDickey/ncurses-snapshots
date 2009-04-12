@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_win.c,v 1.13 2004/12/11 22:15:27 tom Exp $")
+MODULE_ID("$Id: frm_win.c,v 1.13.1.3 2009/04/11 18:23:27 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -50,9 +50,18 @@ set_form_win(FORM *form, WINDOW *win)
 
   if (form && (form->status & _POSTED))
     RETURN(E_POSTED);
+  else
+    {
+#if NCURSES_SP_FUNCS
+      FORM *f = Normalize_Form(form);
 
-  Normalize_Form(form)->win = win;
-  RETURN(E_OK);
+      f->win = win ? win : Get_Form_Screen(f)->_stdscr;
+      RETURN(E_OK);
+#else
+      Normalize_Form(form)->win = win;
+      RETURN(E_OK);
+#endif
+    }
 }
 
 /*---------------------------------------------------------------------------
@@ -71,7 +80,7 @@ form_win(const FORM *form)
   T((T_CALLED("form_win(%p)"), form));
 
   f = Normalize_Form(form);
-  returnWin(f->win ? f->win : stdscr);
+  returnWin(f->win ? f->win : Get_Form_Screen(f)->_stdscr);
 }
 
 /* frm_win.c ends here */
