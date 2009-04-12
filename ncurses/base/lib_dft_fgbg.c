@@ -32,9 +32,8 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
-#include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.19 2009/02/14 21:53:21 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.19.1.1 2009/02/21 16:22:22 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -43,7 +42,7 @@ MODULE_ID("$Id: lib_dft_fgbg.c,v 1.19 2009/02/14 21:53:21 tom Exp $")
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(use_default_colors) (NCURSES_SP_DCL0)
 {
-    T((T_CALLED("use_default_colors()")));
+    T((T_CALLED("use_default_colors(%p)"), SP_PARM));
     returnCode(NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_ARGx - 1, -1));
 }
 
@@ -62,25 +61,11 @@ use_default_colors(void)
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 {
-    T((T_CALLED("assume_default_colors(%d,%d)"), fg, bg));
-
-    if (!orig_pair && !orig_colors)
-	returnCode(ERR);
-
-    if (initialize_pair)	/* don't know how to handle this */
-	returnCode(ERR);
-
-    SP_PARM->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
-    SP_PARM->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
-    SP_PARM->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : (fg & C_MASK);
-    SP_PARM->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : (bg & C_MASK);
-    if (SP_PARM->_color_pairs != 0) {
-	bool save = SP_PARM->_default_color;
-	SP_PARM->_default_color = TRUE;
-	init_pair(0, (short) fg, (short) bg);
-	SP_PARM->_default_color = save;
-    }
-    returnCode(OK);
+    int code = ERR;
+    T((T_CALLED("assume_default_colors(%p,%d,%d)"), sp, fg, bg));
+    if (sp != 0)
+	code = CallDriver_2(sp, defaultcolors, fg, bg);
+    returnCode(code);
 }
 
 #if NCURSES_SP_FUNCS

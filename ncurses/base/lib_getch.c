@@ -42,21 +42,18 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.101 2009/02/28 19:16:40 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.101.1.1 2009/04/04 23:08:21 tom Exp $")
 
 #include <fifo_defs.h>
 
 #if USE_REENTRANT
-#define GetEscdelay(sp) (sp)->_ESCDELAY
 NCURSES_EXPORT(int)
 NCURSES_PUBLIC_VAR(ESCDELAY) (void)
 {
-    return SP ? GetEscdelay(SP) : 1000;
+    return *(_nc_ptr_Escdelay(CURRENT_SCREEN));
 }
 #else
-#define GetEscdelay(sp) ESCDELAY
-NCURSES_EXPORT_VAR (int)
-  ESCDELAY = 1000;		/* max interval betw. chars in funkeys, in millisecs */
+NCURSES_EXPORT_VAR(int) ESCDELAY = 1000;
 #endif
 
 #if NCURSES_EXT_FUNCS
@@ -64,24 +61,49 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(set_escdelay) (NCURSES_SP_DCLx int value)
 {
     int code = OK;
-#if USE_REENTRANT
     if (SP_PARM) {
-	SP_PARM->_ESCDELAY = value;
+	*(_nc_ptr_Escdelay(SP_PARM)) = value;
     } else {
 	code = ERR;
     }
-#else
-    (void) SP_PARM;
-    ESCDELAY = value;
-#endif
     return code;
 }
 
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
+{
+    return *(_nc_ptr_Escdelay(SP_PARM));
+}
+#endif
+
+#if USE_REENTRANT
+NCURSES_EXPORT(int *)
+_nc_ptr_Escdelay(SCREEN *sp)
+{
+    if (SP_PARM)
+	return &(SP_PARM->_ESCDELAY);
+    else
+	return (&_nc_prescreen._ESCDELAY);
+}
+#else
+NCURSES_EXPORT(int *)
+_nc_ptr_Escdelay(SCREEN *sp GCC_UNUSED)
+{
+    return &ESCDELAY;
+}
+#endif
+
+#if NCURSES_EXT_FUNCS
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 set_escdelay(int value)
 {
+#if USE_REENTRANT
     return NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
+#else
+    ESCDELAY = value;
+    return OK;
+#endif
 }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
@@ -98,7 +120,6 @@ _nc_use_meta(WINDOW *win)
 #else
 #define TWAIT_MASK TW_ANY
 #endif
-
 /*
  * Check for mouse activity, returning nonzero if we find any.
  */
@@ -110,10 +131,11 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
 #if USE_SYSMOUSE
     if ((sp->_mouse_type == M_SYSMOUSE)
 	&& (sp->_sysmouse_head < sp->_sysmouse_tail)) {
-	return 2;
+	return TW_MOUSE;
     }
 #endif
-    rc = _nc_timed_wait(sp, TWAIT_MASK, delay, (int *) 0 EVENTLIST_2nd(evl));
+    rc = TCBOf(sp)->drv->twait(TCBOf(sp), TWAIT_MASK, delay, (int *) 0
+			       EVENTLIST_2nd(evl));
 #if USE_SYSMOUSE
     if ((sp->_mouse_type == M_SYSMOUSE)
 	&& (sp->_sysmouse_head < sp->_sysmouse_tail)
@@ -215,9 +237,9 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 #endif
     {				/* Can block... */
-	unsigned char c2 = 0;
-	n = read(sp->_ifd, &c2, 1);
-	ch = c2;
+	int buf;
+	n = CallDriver_1(sp, read, &buf);
+	ch = buf;
     }
 
 #ifdef HIDE_EINTR
@@ -592,7 +614,7 @@ kgetch(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 {
     TRIES *ptr;
     int ch = 0;
-    int timeleft = GetEscdelay(sp);
+    int timeleft = *_nc_ptr_Escdelay(sp);
 
     TR(TRACE_IEVENT, ("kgetch() called"));
 
