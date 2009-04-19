@@ -147,7 +147,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.42.1.3 2009/02/21 15:59:55 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.43 2009/04/18 21:41:30 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -182,61 +182,61 @@ NCURSES_EXPORT_VAR (int *)
 #endif /* defined(SCROLLDEBUG) || defined(HASHDEBUG) */
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_scroll_optimize) (SCREEN *sp)
+NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_DCL0)
 /* scroll optimization to transform curscr to newscr */
 {
     int i;
     int start, end, shift;
 
-    TR(TRACE_ICALLS, (T_CALLED("_nc_scroll_optimize(%p)"), sp));
+    TR(TRACE_ICALLS, (T_CALLED("_nc_scroll_optimize(%p)"), SP_PARM));
 
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
 #if USE_HASHMAP
     /* get enough storage */
-    if (OLDNUM_SIZE(sp) < screen_lines(sp)) {
-	int *new_oldnums = typeRealloc(int, screen_lines(sp), oldnums(sp));
+    if (OLDNUM_SIZE(SP_PARM) < screen_lines(SP_PARM)) {
+	int *new_oldnums = typeRealloc(int, screen_lines(SP_PARM), oldnums(SP_PARM));
 	if (!new_oldnums)
 	    return;
-	oldnums(sp) = new_oldnums;
-	OLDNUM_SIZE(sp) = screen_lines(sp);
+	oldnums(SP_PARM) = new_oldnums;
+	OLDNUM_SIZE(SP_PARM) = screen_lines(SP_PARM);
     }
     /* calculate the indices */
-    NCURSES_SP_NAME(_nc_hash_map) (sp);
+    NCURSES_SP_NAME(_nc_hash_map) (NCURSES_SP_ARG);
 #endif
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
 
 #ifdef TRACE
     if (USE_TRACEF(TRACE_UPDATE | TRACE_MOVE)) {
-	NCURSES_SP_NAME(_nc_linedump) (sp);
-	//_nc_unlock_global(tracef);
+	NCURSES_SP_NAME(_nc_linedump) (NCURSES_SP_ARG);
+	_nc_unlock_global(tracef);
     }
 #endif /* TRACE */
 
     /* pass 1 - from top to bottom scrolling up */
-    for (i = 0; i < screen_lines(sp);) {
-	while (i < screen_lines(sp)
-	       && (OLDNUM(sp, i) == _NEWINDEX || OLDNUM(sp, i) <= i))
+    for (i = 0; i < screen_lines(SP_PARM);) {
+	while (i < screen_lines(SP_PARM)
+	       && (OLDNUM(SP_PARM, i) == _NEWINDEX || OLDNUM(SP_PARM, i) <= i))
 	    i++;
-	if (i >= screen_lines(sp))
+	if (i >= screen_lines(SP_PARM))
 	    break;
 
-	shift = OLDNUM(sp, i) - i;	/* shift > 0 */
+	shift = OLDNUM(SP_PARM, i) - i;		/* shift > 0 */
 	start = i;
 
 	i++;
-	while (i < screen_lines(sp)
-	       && OLDNUM(sp, i) != _NEWINDEX
-	       && OLDNUM(sp, i) - i == shift)
+	while (i < screen_lines(SP_PARM)
+	       && OLDNUM(SP_PARM, i) != _NEWINDEX
+	       && OLDNUM(SP_PARM, i) - i == shift)
 	    i++;
 	end = i - 1 + shift;
 
 	TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", start, end, shift));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-	if (NCURSES_SP_NAME(_nc_scrolln) (sp,
+	if (NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_ARGx
 					  shift,
 					  start,
 					  end,
-					  screen_lines(sp) - 1) == ERR) {
+					  screen_lines(SP_PARM) - 1) == ERR) {
 	    TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 	    continue;
 	}
@@ -244,27 +244,33 @@ NCURSES_SP_NAME(_nc_scroll_optimize) (SCREEN *sp)
     }
 
     /* pass 2 - from bottom to top scrolling down */
-    for (i = screen_lines(sp) - 1; i >= 0;) {
-	while (i >= 0 && (OLDNUM(sp, i) == _NEWINDEX || OLDNUM(sp, i) >= i))
+    for (i = screen_lines(SP_PARM) - 1; i >= 0;) {
+	while (i >= 0
+	       && (OLDNUM(SP_PARM, i) == _NEWINDEX
+		   || OLDNUM(SP_PARM, i) >= i)) {
 	    i--;
+	}
 	if (i < 0)
 	    break;
 
-	shift = OLDNUM(sp, i) - i;	/* shift < 0 */
+	shift = OLDNUM(SP_PARM, i) - i;		/* shift < 0 */
 	end = i;
 
 	i--;
-	while (i >= 0 && OLDNUM(sp, i) != _NEWINDEX && OLDNUM(sp, i) - i == shift)
+	while (i >= 0
+	       && OLDNUM(SP_PARM, i) != _NEWINDEX
+	       && OLDNUM(SP_PARM, i) - i == shift) {
 	    i--;
+	}
 	start = i + 1 - (-shift);
 
 	TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", start, end, shift));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-	if (NCURSES_SP_NAME(_nc_scrolln) (sp,
+	if (NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_ARGx
 					  shift,
 					  start,
 					  end,
-					  screen_lines(sp) - 1) == ERR) {
+					  screen_lines(SP_PARM) - 1) == ERR) {
 	    TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 	    continue;
 	}
@@ -273,36 +279,41 @@ NCURSES_SP_NAME(_nc_scroll_optimize) (SCREEN *sp)
     TR(TRACE_ICALLS, (T_RETURN("")));
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_scroll_optimize(void)
 {
     NCURSES_SP_NAME(_nc_scroll_optimize) (CURRENT_SCREEN);
 }
+#endif
 
 #if defined(TRACE) || defined(SCROLLDEBUG) || defined(HASHDEBUG)
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_linedump) (SCREEN *sp)
+NCURSES_SP_NAME(_nc_linedump) (NCURSES_SP_DCL0)
 /* dump the state of the real and virtual oldnum fields */
 {
     int n;
     char *buf = 0;
-    size_t want = (screen_lines(sp) + 1) * 4;
+    size_t want = (screen_lines(SP_PARM) + 1) * 4;
 
     if ((buf = typeMalloc(char, want)) != 0) {
 
 	(void) strcpy(buf, "virt");
-	for (n = 0; n < screen_lines(sp); n++)
-	    (void) sprintf(buf + strlen(buf), " %02d", OLDNUM(sp, n));
+	for (n = 0; n < screen_lines(SP_PARM); n++)
+	    (void) sprintf(buf + strlen(buf), " %02d", OLDNUM(SP_PARM, n));
 	TR(TRACE_UPDATE | TRACE_MOVE, (buf));
 	free(buf);
     }
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_linedump(void)
 {
     NCURSES_SP_NAME(_nc_linedump) (CURRENT_SCREEN);
 }
+#endif
+
 #endif /* defined(TRACE) || defined(SCROLLDEBUG) */
 
 #ifdef SCROLLDEBUG

@@ -1,4 +1,4 @@
-# $Id: MKunctrl.awk,v 1.23.1.2 2009/02/21 15:25:14 tom Exp $
+# $Id: MKunctrl.awk,v 1.25 2009/04/18 23:43:49 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -46,9 +46,8 @@ BEGIN	{
 		print ""
 	}
 END	{
-		print "NCURSES_EXPORT(NCURSES_CONST char *) NCURSES_SP_NAME(unctrl) (void *spv, chtype ch)"
+		print "NCURSES_EXPORT(NCURSES_CONST char *) safe_unctrl(SCREEN *sp, chtype ch)"
 		print "{"
-    		print "SCREEN* sp = (SCREEN*)spv;"
 		blob=""
 		offset=0
 		if (bigstrings) {
@@ -187,6 +186,6 @@ END	{
 		print  ""
 		print  "NCURSES_EXPORT(NCURSES_CONST char *) unctrl (chtype ch)"
 		print  "{"
-		print  "\treturn NCURSES_SP_NAME(unctrl)(CURRENT_SCREEN, ch);"
+		print  "\treturn safe_unctrl(CURRENT_SCREEN, ch);"
 		print  "}"
 	}

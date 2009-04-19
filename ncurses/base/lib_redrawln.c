@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_redrawln.c,v 1.12.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_redrawln.c,v 1.13 2009/04/18 18:46:00 tom Exp $")
 
 NCURSES_EXPORT(int)
 wredrawln(WINDOW *win, int beg, int num)
@@ -80,7 +80,7 @@ wredrawln(WINDOW *win, int beg, int num)
 	int crow = i + win->_begy;
 
 	memset(sp->_curscr->_line[crow].text + win->_begx, 0, len);
-	_nc_make_oldhash_sp(sp, crow);
+	NCURSES_SP_NAME(_nc_make_oldhash) (NCURSES_SP_ARGx crow);
     }
 
     returnCode(OK);

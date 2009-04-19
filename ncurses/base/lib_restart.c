@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,53 +44,49 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_restart.c,v 1.10.1.3 2009/02/14 20:57:17 tom Exp $")
+#include <term.h>		/* lines, columns, cur_term */
+
+MODULE_ID("$Id: lib_restart.c,v 1.10 2008/06/21 17:31:22 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_restartterm) (SCREEN *sp,
-				  NCURSES_CONST char *termp,
-				  int filenum,
-				  int *errret)
+restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
 {
     int result;
-    TERMINAL *new_term;
-    T((T_CALLED("restartterm(%p,%s,%d,%p)"), sp, termp, filenum, errret));
 
-    if (_nc_setupterm_ex(&new_term, termp, filenum, errret, FALSE) != OK) {
+    T((T_CALLED("restartterm(%s,%d,%p)"), termp, filenum, errret));
+
+    if (setupterm(termp, filenum, errret) != OK) {
 	result = ERR;
-    } else if (sp != 0) {
-	int saveecho = sp->_echo;
-	int savecbreak = sp->_cbreak;
-	int saveraw = sp->_raw;
-	int savenl = sp->_nl;
+    } else if (SP != 0) {
+	int saveecho = SP->_echo;
+	int savecbreak = SP->_cbreak;
+	int saveraw = SP->_raw;
+	int savenl = SP->_nl;
 
-	sp->_term = new_term;
-	if (saveecho) {
-	    NCURSES_SP_NAME(echo) (sp);
-	} else {
-	    NCURSES_SP_NAME(noecho) (sp);
-	}
+	if (saveecho)
+	    echo();
+	else
+	    noecho();
 
 	if (savecbreak) {
-	    NCURSES_SP_NAME(cbreak) (sp);
-	    NCURSES_SP_NAME(noraw) (sp);
+	    cbreak();
+	    noraw();
 	} else if (saveraw) {
-	    NCURSES_SP_NAME(nocbreak) (sp);
-	    NCURSES_SP_NAME(raw) (sp);
+	    nocbreak();
+	    raw();
 	} else {
-	    NCURSES_SP_NAME(nocbreak) (sp);
-	    NCURSES_SP_NAME(noraw) (sp);
+	    nocbreak();
+	    noraw();
 	}
-	if (savenl) {
-	    NCURSES_SP_NAME(nl) (sp);
-	} else {
-	    NCURSES_SP_NAME(nonl) (sp);
-	}
+	if (savenl)
+	    nl();
+	else
+	    nonl();
 
-	NCURSES_SP_NAME(reset_prog_mode) (sp);
+	reset_prog_mode();
 
 #if USE_SIZECHANGE
-	_nc_update_screensize(sp);
+	_nc_update_screensize(SP);
 #endif
 
 	result = OK;
@@ -98,10 +94,4 @@ NCURSES_SP_NAME(_nc_restartterm) (SCREEN *sp,
 	result = ERR;
     }
     returnCode(result);
-}
-
-NCURSES_EXPORT(int)
-restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
-{
-    return NCURSES_SP_NAME(_nc_restartterm) (CURRENT_SCREEN, termp, filenum, errret);
 }

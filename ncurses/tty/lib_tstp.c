@@ -46,7 +46,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.37.1.3 2009/02/21 15:11:29 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.38 2009/04/18 19:36:11 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -140,6 +140,7 @@ signal_name(int sig)
 static void
 tstp(int dummy GCC_UNUSED)
 {
+    SCREEN *sp = CURRENT_SCREEN;
     sigset_t mask, omask;
     sigaction_t act, oact;
 
@@ -158,11 +159,11 @@ tstp(int dummy GCC_UNUSED)
      * parent was stopped before us, and we would likely pick up the
      * settings already modified by the shell.
      */
-    if (CURRENT_SCREEN != 0 && !CURRENT_SCREEN->_endwin)	/* don't do this if we're not in curses */
+    if (sp != 0 && !sp->_endwin)	/* don't do this if we're not in curses */
 #if HAVE_TCGETPGRP
 	if (tcgetpgrp(STDIN_FILENO) == getpgrp())
 #endif
-	    NCURSES_SP_NAME(def_prog_mode) (CURRENT_SCREEN);
+	    NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_ARG);
 
     /*
      * Block window change and timer signals.  The latter
@@ -191,7 +192,7 @@ tstp(int dummy GCC_UNUSED)
      * End window mode, which also resets the terminal state to the
      * original (pre-curses) modes.
      */
-    NCURSES_SP_NAME(endwin) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(endwin) (NCURSES_SP_ARG);
 
     /* Unblock SIGTSTP. */
     (void) sigemptyset(&mask);
@@ -218,19 +219,19 @@ tstp(int dummy GCC_UNUSED)
 
     T(("SIGCONT received"));
     sigaction(SIGTSTP, &oact, NULL);
-    NCURSES_SP_NAME(flushinp) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(flushinp) (NCURSES_SP_ARG);
 
     /*
      * If the user modified the tty state while suspended, he wants
      * those changes to stick.  So save the new "default" terminal state.
      */
-    NCURSES_SP_NAME(def_shell_mode) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_ARG);
 
     /*
      * This relies on the fact that doupdate() will restore the
      * program-mode tty state, and issue enter_ca_mode if need be.
      */
-    NCURSES_SP_NAME(doupdate) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(doupdate) (NCURSES_SP_ARG);
 
     /* Reset the signals. */
     (void) sigprocmask(SIG_SETMASK, &omask, NULL);
@@ -240,6 +241,8 @@ tstp(int dummy GCC_UNUSED)
 static void
 cleanup(int sig)
 {
+    SCREEN *sp = CURRENT_SCREEN;
+
     /*
      * Actually, doing any sort of I/O from within an signal handler is
      * "unsafe".  But we'll _try_ to clean up the screen and terminal
@@ -266,12 +269,12 @@ cleanup(int sig)
 		if (scan->_ofp != 0
 		    && isatty(fileno(scan->_ofp))) {
 		    scan->_cleanup = TRUE;
-		    scan->_outch = NCURSES_SP_NAME(_nc_outch);
+		    scan->_outch = _nc_outch;
 		}
 		set_term(scan);
-		NCURSES_SP_NAME(endwin) (CURRENT_SCREEN);
-		if (CURRENT_SCREEN)
-		    CURRENT_SCREEN->_endwin = FALSE;	/* in case we have an atexit! */
+		NCURSES_SP_NAME(endwin) (NCURSES_SP_ARG);
+		if (sp)
+		    sp->_endwin = FALSE;	/* in case we have an atexit! */
 	    }
 	}
     }

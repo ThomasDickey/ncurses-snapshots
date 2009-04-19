@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -70,7 +70,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.59.1.4 2009/02/07 23:09:43 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.60 2009/04/18 21:01:13 tom Exp $")
 
 static long
 _nc_gettime(TimeType * t0, bool first)

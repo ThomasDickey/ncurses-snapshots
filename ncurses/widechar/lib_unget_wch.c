@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_unget_wch.c,v 1.10.1.4 2009/04/04 23:57:25 tom Exp $")
+MODULE_ID("$Id: lib_unget_wch.c,v 1.11 2009/04/04 23:57:25 tom Exp $")
 
 /*
  * Wrapper for wcrtomb() which obtains the length needed for the given

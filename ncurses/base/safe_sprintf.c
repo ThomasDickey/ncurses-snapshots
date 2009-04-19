@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.21.1.1 2009/04/04 22:41:52 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.22 2009/04/18 18:46:46 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -214,7 +214,9 @@ _nc_printf_length(const char *fmt, va_list ap)
  * Wrapper for vsprintf that allocates a buffer big enough to hold the result.
  */
 NCURSES_EXPORT(char *)
-NCURSES_SP_NAME(_nc_printf_string) (SCREEN *sp, const char *fmt, va_list ap)
+NCURSES_SP_NAME(_nc_printf_string) (NCURSES_SP_DCLx
+				    const char *fmt,
+				    va_list ap)
 {
     char *result = 0;
 
@@ -237,11 +239,11 @@ NCURSES_SP_NAME(_nc_printf_string) (SCREEN *sp, const char *fmt, va_list ap)
 #define MyCols _nc_globals.safeprint_cols
 #define MyRows _nc_globals.safeprint_rows
 
-	if (screen_lines(sp) > MyRows || screen_columns(sp) > MyCols) {
-	    if (screen_lines(sp) > MyRows)
-		MyRows = screen_lines(sp);
-	    if (screen_columns(sp) > MyCols)
-		MyCols = screen_columns(sp);
+	if (screen_lines(SP_PARM) > MyRows || screen_columns(SP_PARM) > MyCols) {
+	    if (screen_lines(SP_PARM) > MyRows)
+		MyRows = screen_lines(SP_PARM);
+	    if (screen_columns(SP_PARM) > MyCols)
+		MyCols = screen_columns(SP_PARM);
 	    my_length = (MyRows * (MyCols + 1)) + 1;
 	    my_buffer = typeRealloc(char, my_length, my_buffer);
 	}
