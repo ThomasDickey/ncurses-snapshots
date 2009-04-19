@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ungetch.c,v 1.12.1.1 2009/02/21 16:51:25 tom Exp $")
+MODULE_ID("$Id: lib_ungetch.c,v 1.13 2009/04/18 20:30:12 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -58,11 +58,11 @@ _nc_fifo_dump(SCREEN *sp)
 #endif /* TRACE */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
+safe_ungetch(SCREEN *sp, int ch)
 {
     int rc = ERR;
 
-    T((T_CALLED("ungetch(%p,%s)"), SP_PARM, _nc_tracechar(SP_PARM, ch)));
+    T((T_CALLED("ungetch(%p,%s)"), sp, _nc_tracechar(sp, ch)));
 
     if (tail != -1) {
 	if (head == -1) {
@@ -72,11 +72,11 @@ NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
 	} else
 	    h_dec();
 
-	SP_PARM->_fifo[head] = ch;
-	T(("ungetch %s ok", _nc_tracechar(SP_PARM, ch)));
+	sp->_fifo[head] = ch;
+	T(("ungetch %s ok", _nc_tracechar(sp, ch)));
 #ifdef TRACE
 	if (USE_TRACEF(TRACE_IEVENT)) {
-	    _nc_fifo_dump(SP_PARM);
+	    _nc_fifo_dump(sp);
 	    _nc_unlock_global(tracef);
 	}
 #endif
@@ -85,10 +85,8 @@ NCURSES_SP_NAME(ungetch) (NCURSES_SP_DCLx int ch)
     returnCode(rc);
 }
 
-#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 ungetch(int ch)
 {
-    return NCURSES_SP_NAME(ungetch) (CURRENT_SCREEN, ch);
+    return safe_ungetch(CURRENT_SCREEN, ch);
 }
-#endif

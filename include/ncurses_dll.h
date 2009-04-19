@@ -25,7 +25,7 @@
  * sale, use or other dealings in this Software without prior written       *
  * authorization.                                                           *
  ****************************************************************************/
-/* $Id: ncurses_dll.h,v 1.7.1.1 2009/04/04 22:26:27 tom Exp $ */
+/* $Id: ncurses_dll.h,v 1.8 2009/04/04 22:26:27 tom Exp $ */
 
 #ifndef NCURSES_DLL_H_incl
 #define NCURSES_DLL_H_incl 1

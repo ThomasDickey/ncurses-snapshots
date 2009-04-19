@@ -41,9 +41,8 @@
 */
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
 
-MODULE_ID("$Id: lib_has_cap.c,v 1.5.1.1 2009/02/21 16:39:49 tom Exp $")
+MODULE_ID("$Id: lib_has_cap.c,v 1.6 2009/04/18 17:28:45 tom Exp $")
 
 NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(has_ic) (NCURSES_SP_DCL0)
@@ -52,7 +51,7 @@ NCURSES_SP_NAME(has_ic) (NCURSES_SP_DCL0)
 
     T((T_CALLED("has_ic(%p)"), SP_PARM));
 
-    if (IsValidTIScreen(sp) && IsTermInfo(sp)) {
+    if (IsValidTIScreen(SP_PARM) && IsTermInfo(SP_PARM)) {
 	code = ((insert_character || parm_ich
 		 || (enter_insert_mode && exit_insert_mode))
 		&& (delete_character || parm_dch)) ? TRUE : FALSE;
@@ -74,7 +73,7 @@ NCURSES_SP_NAME(has_il) (NCURSES_SP_DCL0)
 {
     bool code = FALSE;
     T((T_CALLED("has_il(%p)"), SP_PARM));
-    if (IsValidTIScreen(sp) && IsTermInfo(sp)) {
+    if (IsValidTIScreen(SP_PARM) && IsTermInfo(SP_PARM)) {
 	code = ((insert_line || parm_insert_line)
 		&& (delete_line || parm_delete_line)) ? TRUE : FALSE;
     }

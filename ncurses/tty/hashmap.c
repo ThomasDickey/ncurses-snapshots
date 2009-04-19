@@ -68,9 +68,8 @@ AUTHOR
 *****************************************************************************/
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
 
-MODULE_ID("$Id: hashmap.c,v 1.56.1.3 2009/02/21 15:11:29 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.57 2009/04/18 19:03:50 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -270,51 +269,53 @@ grow_hunks(SCREEN *sp)
 }
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_hash_map) (SCREEN *scr)
+NCURSES_SP_NAME(_nc_hash_map) (NCURSES_SP_DCL0)
 {
-    HASHMAP *sp;
+    HASHMAP *hsp;
     register int i;
     int start, shift, size;
 
-    if (screen_lines(scr) > lines_alloc(scr)) {
-	if (hashtab(scr))
-	    free(hashtab(scr));
-	hashtab(scr) = typeMalloc(HASHMAP, (screen_lines(scr) + 1) * 2);
-	if (!hashtab(scr)) {
-	    if (oldhash(scr)) {
-		FreeAndNull(oldhash(scr));
+    if (screen_lines(SP_PARM) > lines_alloc(SP_PARM)) {
+	if (hashtab(SP_PARM))
+	    free(hashtab(SP_PARM));
+	hashtab(SP_PARM) = typeMalloc(HASHMAP, (screen_lines(SP_PARM) + 1) * 2);
+	if (!hashtab(SP_PARM)) {
+	    if (oldhash(SP_PARM)) {
+		FreeAndNull(oldhash(SP_PARM));
 	    }
-	    lines_alloc(scr) = 0;
+	    lines_alloc(SP_PARM) = 0;
 	    return;
 	}
-	lines_alloc(scr) = screen_lines(scr);
+	lines_alloc(SP_PARM) = screen_lines(SP_PARM);
     }
 
-    if (oldhash(scr) && newhash(scr)) {
+    if (oldhash(SP_PARM) && newhash(SP_PARM)) {
 	/* re-hash only changed lines */
-	for (i = 0; i < screen_lines(scr); i++) {
-	    if (PENDING(scr, i))
-		newhash(scr)[i] = hash(scr, NEWTEXT(scr, i));
+	for (i = 0; i < screen_lines(SP_PARM); i++) {
+	    if (PENDING(SP_PARM, i))
+		newhash(SP_PARM)[i] = hash(SP_PARM, NEWTEXT(SP_PARM, i));
 	}
     } else {
 	/* re-hash all */
-	if (oldhash(scr) == 0)
-	    oldhash(scr) = typeCalloc(unsigned long, (unsigned) screen_lines(scr));
-	if (newhash(scr) == 0)
-	    newhash(scr) = typeCalloc(unsigned long, (unsigned) screen_lines(scr));
-	if (!oldhash(scr) || !newhash(scr))
+	if (oldhash(SP_PARM) == 0)
+	    oldhash(SP_PARM) = typeCalloc(unsigned long,
+					    (unsigned) screen_lines(SP_PARM));
+	if (newhash(SP_PARM) == 0)
+	    newhash(SP_PARM) = typeCalloc(unsigned long,
+					    (unsigned) screen_lines(SP_PARM));
+	if (!oldhash(SP_PARM) || !newhash(SP_PARM))
 	    return;		/* malloc failure */
-	for (i = 0; i < screen_lines(scr); i++) {
-	    newhash(scr)[i] = hash(scr, NEWTEXT(scr, i));
-	    oldhash(scr)[i] = hash(scr, OLDTEXT(scr, i));
+	for (i = 0; i < screen_lines(SP_PARM); i++) {
+	    newhash(SP_PARM)[i] = hash(SP_PARM, NEWTEXT(SP_PARM, i));
+	    oldhash(SP_PARM)[i] = hash(SP_PARM, OLDTEXT(SP_PARM, i));
 	}
     }
 
 #ifdef HASH_VERIFY
-    for (i = 0; i < screen_lines(scr); i++) {
-	if (newhash(scr)[i] != hash(scr, NEWTEXT(scr, i)))
+    for (i = 0; i < screen_lines(SP_PARM); i++) {
+	if (newhash(SP_PARM)[i] != hash(SP_PARM, NEWTEXT(SP_PARM, i)))
 	    fprintf(stderr, "error in newhash[%d]\n", i);
-	if (oldhash(scr)[i] != hash(scr, OLDTEXT(scr, i)))
+	if (oldhash(SP_PARM)[i] != hash(SP_PARM, OLDTEXT(SP_PARM, i)))
 	    fprintf(stderr, "error in oldhash[%d]\n", i);
     }
 #endif
@@ -322,29 +323,29 @@ NCURSES_SP_NAME(_nc_hash_map) (SCREEN *scr)
     /*
      * Set up and count line-hash values.
      */
-    memset(hashtab(scr), '\0',
-	   sizeof(*(hashtab(scr))) * (screen_lines(scr) + 1) * 2);
-    for (i = 0; i < screen_lines(scr); i++) {
-	unsigned long hashval = oldhash(scr)[i];
+    memset(hashtab(SP_PARM), '\0',
+	   sizeof(*(hashtab(SP_PARM))) * (screen_lines(SP_PARM) + 1) * 2);
+    for (i = 0; i < screen_lines(SP_PARM); i++) {
+	unsigned long hashval = oldhash(SP_PARM)[i];
 
-	for (sp = hashtab(scr); sp->hashval; sp++)
-	    if (sp->hashval == hashval)
+	for (hsp = hashtab(SP_PARM); hsp->hashval; hsp++)
+	    if (hsp->hashval == hashval)
 		break;
-	sp->hashval = hashval;	/* in case this is a new entry */
-	sp->oldcount++;
-	sp->oldindex = i;
+	hsp->hashval = hashval;	/* in case this is a new entry */
+	hsp->oldcount++;
+	hsp->oldindex = i;
     }
-    for (i = 0; i < screen_lines(scr); i++) {
-	unsigned long hashval = newhash(scr)[i];
+    for (i = 0; i < screen_lines(SP_PARM); i++) {
+	unsigned long hashval = newhash(SP_PARM)[i];
 
-	for (sp = hashtab(scr); sp->hashval; sp++)
-	    if (sp->hashval == hashval)
+	for (hsp = hashtab(SP_PARM); hsp->hashval; hsp++)
+	    if (hsp->hashval == hashval)
 		break;
-	sp->hashval = hashval;	/* in case this is a new entry */
-	sp->newcount++;
-	sp->newindex = i;
+	hsp->hashval = hashval;	/* in case this is a new entry */
+	hsp->newcount++;
+	hsp->newindex = i;
 
-	OLDNUM(scr, i) = _NEWINDEX;	/* initialize old indices array */
+	OLDNUM(SP_PARM, i) = _NEWINDEX;		/* initialize old indices array */
     }
 
     /*
@@ -354,16 +355,16 @@ NCURSES_SP_NAME(_nc_hash_map) (SCREEN *scr)
      * extending hunks by cost_effective. Otherwise, it does not
      * have any side effects.
      */
-    for (sp = hashtab(scr); sp->hashval; sp++)
-	if (sp->oldcount == 1 && sp->newcount == 1
-	    && sp->oldindex != sp->newindex) {
+    for (hsp = hashtab(SP_PARM); hsp->hashval; hsp++)
+	if (hsp->oldcount == 1 && hsp->newcount == 1
+	    && hsp->oldindex != hsp->newindex) {
 	    TR(TRACE_UPDATE | TRACE_MOVE,
 	       ("new line %d is hash-identical to old line %d (unique)",
-		sp->newindex, sp->oldindex));
-	    OLDNUM(scr, sp->newindex) = sp->oldindex;
+		hsp->newindex, hsp->oldindex));
+	    OLDNUM(SP_PARM, hsp->newindex) = hsp->oldindex;
 	}
 
-    grow_hunks(scr);
+    grow_hunks(SP_PARM);
 
     /*
      * Eliminate bad or impossible shifts -- this includes removing
@@ -371,75 +372,82 @@ NCURSES_SP_NAME(_nc_hash_map) (SCREEN *scr)
      * those which are to be moved too far, they are likely to destroy
      * more than carry.
      */
-    for (i = 0; i < screen_lines(scr);) {
-	while (i < screen_lines(scr) && OLDNUM(scr, i) == _NEWINDEX)
+    for (i = 0; i < screen_lines(SP_PARM);) {
+	while (i < screen_lines(SP_PARM) && OLDNUM(SP_PARM, i) == _NEWINDEX)
 	    i++;
-	if (i >= screen_lines(scr))
+	if (i >= screen_lines(SP_PARM))
 	    break;
 	start = i;
-	shift = OLDNUM(scr, i) - i;
+	shift = OLDNUM(SP_PARM, i) - i;
 	i++;
-	while (i < screen_lines(scr)
-	       && OLDNUM(scr, i) != _NEWINDEX
-	       && OLDNUM(scr, i) - i == shift)
+	while (i < screen_lines(SP_PARM)
+	       && OLDNUM(SP_PARM, i) != _NEWINDEX
+	       && OLDNUM(SP_PARM, i) - i == shift)
 	    i++;
 	size = i - start;
 	if (size < 3 || size + min(size / 8, 2) < abs(shift)) {
 	    while (start < i) {
-		OLDNUM(scr, start) = _NEWINDEX;
+		OLDNUM(SP_PARM, start) = _NEWINDEX;
 		start++;
 	    }
 	}
     }
 
     /* After clearing invalid hunks, try grow the rest. */
-    grow_hunks(scr);
+    grow_hunks(SP_PARM);
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_hash_map(void)
 {
     NCURSES_SP_NAME(_nc_hash_map) (CURRENT_SCREEN);
 }
+#endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_make_oldhash) (SCREEN *sp, int i)
+NCURSES_SP_NAME(_nc_make_oldhash) (NCURSES_SP_DCLx int i)
 {
-    if (oldhash(sp))
-	oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+    if (oldhash(SP_PARM))
+	oldhash(SP_PARM)[i] = hash(SP_PARM, OLDTEXT(SP_PARM, i));
 }
 
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_make_oldhash(int i)
 {
     NCURSES_SP_NAME(_nc_make_oldhash) (CURRENT_SCREEN, i);
 }
+#endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_scroll_oldhash) (SCREEN *sp, int n, int top, int bot)
+NCURSES_SP_NAME(_nc_scroll_oldhash) (NCURSES_SP_DCLx int n, int top, int bot)
 {
     size_t size;
     int i;
 
-    if (!oldhash(sp))
+    if (!oldhash(SP_PARM))
 	return;
 
-    size = sizeof(*(oldhash(sp))) * (bot - top + 1 - abs(n));
+    size = sizeof(*(oldhash(SP_PARM))) * (bot - top + 1 - abs(n));
     if (n > 0) {
-	memmove(oldhash(sp) + top, oldhash(sp) + top + n, size);
+	memmove(oldhash(SP_PARM) + top, oldhash(SP_PARM) + top + n, size);
 	for (i = bot; i > bot - n; i--)
-	    oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+	    oldhash(SP_PARM)[i] = hash(SP_PARM, OLDTEXT(SP_PARM, i));
     } else {
-	memmove(oldhash(sp) + top - n, oldhash(sp) + top, size);
+	memmove(oldhash(SP_PARM) + top - n, oldhash(SP_PARM) + top, size);
 	for (i = top; i < top - n; i++)
-	    oldhash(sp)[i] = hash(sp, OLDTEXT(sp, i));
+	    oldhash(SP_PARM)[i] = hash(SP_PARM, OLDTEXT(SP_PARM, i));
     }
 }
+
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_scroll_oldhash(int n, int top, int bot)
 {
     NCURSES_SP_NAME(_nc_scroll_oldhash) (CURRENT_SCREEN, n, top, bot);
 }
+#endif
 
 #ifdef HASHDEBUG
 static void

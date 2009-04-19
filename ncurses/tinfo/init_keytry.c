@@ -31,7 +31,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: init_keytry.c,v 1.12.1.3 2009/02/21 15:11:29 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.13 2009/04/18 18:53:37 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -97,7 +97,8 @@ _nc_init_keytry(SCREEN *sp)
 		if (name != 0
 		    && *name == 'k'
 		    && value != 0
-		    && NCURSES_SP_NAME(key_defined) (sp, value) == 0) {
+		    && NCURSES_SP_NAME(key_defined) (NCURSES_SP_ARGx
+						     value) == 0) {
 		    (void) _nc_add_to_try(&(sp->_keytry),
 					  value,
 					  n - STRCOUNT + KEY_MAX);
