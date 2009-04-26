@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey (1998-on)
  *
- * $Id: ditto.c,v 1.32.1.1 2008/11/16 00:19:59 juergen Exp $
+ * $Id: ditto.c,v 1.32 2008/08/04 13:21:41 tom Exp $
  *
  * The program illustrates how to set up multiple screens from a single
  * program.
@@ -130,16 +130,15 @@ put_fifo(FIFO * fifo, int value)
  * but modify the peek-index.
  *
  * FIXME - test/workaround for case where fifo gets more than a buffer
- * ahead
- of peek.
+ * ahead of peek.
  */
 static int
 peek_fifo(FIFO * fifo, PEEK * peek)
 {
     int result = -1;
     if (peek->sequence < fifo->sequence) {
-	result = fifo->data[THIS_FIFO(peek->sequence)];
 	peek->sequence += 1;
+	result = fifo->data[THIS_FIFO(peek->sequence)];
     }
     return result;
 }
@@ -189,11 +188,7 @@ open_tty(char *path)
 }
 
 static void
-init_screen(
-#if HAVE_USE_WINDOW
-	       SCREEN *sp GCC_UNUSED,
-#endif
-	       void *arg)
+init_screen(SCREEN *sp GCC_UNUSED, void *arg)
 {
     DITTO *target = (DITTO *) arg;
     int high, wide;
@@ -242,7 +237,6 @@ open_screen(DITTO * target, char **source, int length, int which1)
     target->which1 = which1;
     target->titles = source;
     target->length = length;
-    target->fifo.head = -1;
     target->screen = newterm((char *) 0,	/* assume $TERM is the same */
 			     target->output,
 			     target->input);
@@ -254,14 +248,10 @@ open_screen(DITTO * target, char **source, int length, int which1)
 }
 
 static int
-close_screen(
-#if HAVE_USE_WINDOW
-		SCREEN *sp GCC_UNUSED,
-#endif
-		void *arg GCC_UNUSED)
+close_screen(SCREEN *sp GCC_UNUSED, void *arg GCC_UNUSED)
 {
-    /*(void) sp;
-       (void) arg;??? */
+    (void) sp;
+    (void) arg;
     return endwin();
 }
 
@@ -269,11 +259,7 @@ close_screen(
  * Read data from the 'source' screen.
  */
 static int
-read_screen(
-#if HAVE_USE_WINDOW
-	       SCREEN *sp GCC_UNUSED,
-#endif
-	       void *arg)
+read_screen(SCREEN *sp GCC_UNUSED, void *arg)
 {
     DDATA *data = (DDATA *) arg;
     DITTO *ditto = &(data->ditto[data->source]);
@@ -292,11 +278,7 @@ read_screen(
  * Write all of the data that's in fifos for the 'target' screen.
  */
 static int
-write_screen(
-#if HAVE_USE_WINDOW
-		SCREEN *sp GCC_UNUSED,
-#endif
-		void *arg GCC_UNUSED)
+write_screen(SCREEN *sp GCC_UNUSED, void *arg GCC_UNUSED)
 {
     DDATA *data = (DDATA *) arg;
     DITTO *ditto = &(data->ditto[data->target]);
@@ -378,7 +360,7 @@ main(int argc, char *argv[])
 
     if (argc <= 1)
 	usage();
-    
+
     if ((data = typeCalloc(DITTO, (size_t) argc)) == 0)
 	failed("calloc data");
 

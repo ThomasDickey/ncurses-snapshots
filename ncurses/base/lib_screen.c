@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.32.1.1 2009/02/21 18:55:49 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.32 2009/02/15 00:39:13 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -57,12 +57,9 @@ getwin(FILE *filep)
 	returnWin(0);
 
     if (tmp._flags & _ISPAD) {
-	nwin = NCURSES_SP_NAME(newpad) (CURRENT_SCREEN,
-					tmp._maxy + 1, tmp._maxx + 1);
+	nwin = newpad(tmp._maxy + 1, tmp._maxx + 1);
     } else {
-	nwin = NCURSES_SP_NAME(newwin) (CURRENT_SCREEN,
-					tmp._maxy + 1,
-					tmp._maxx + 1, 0, 0);
+	nwin = newwin(tmp._maxy + 1, tmp._maxx + 1, 0, 0);
     }
 
     /*
@@ -149,13 +146,13 @@ NCURSES_SP_NAME(scr_restore) (NCURSES_SP_DCLx const char *file)
 {
     FILE *fp = 0;
 
-    T((T_CALLED("scr_restore(%p,%s)"), SP_PARM, _nc_visbuf(file)));
+    T((T_CALLED("scr_restore(%s)"), _nc_visbuf(file)));
 
     if (_nc_access(file, R_OK) < 0
 	|| (fp = fopen(file, "rb")) == 0) {
 	returnCode(ERR);
     } else {
-	delwin(SP_PARM->_newscr);
+	delwin(newscr);
 	SP_PARM->_newscr = getwin(fp);
 #if !USE_REENTRANT
 	newscr = SP_PARM->_newscr;
@@ -194,23 +191,24 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
 {
     FILE *fp = 0;
-    int code = ERR;
 
-    T((T_CALLED("scr_init(%p,%s)"), SP_PARM, _nc_visbuf(file)));
+    T((T_CALLED("scr_init(%s)"), _nc_visbuf(file)));
 
-    if (SP_PARM != 0 && InfoOf(SP_PARM).caninit) {
-	if (_nc_access(file, R_OK) >= 0
-	    && (fp = fopen(file, "rb")) != 0) {
-	    delwin(SP_PARM->_curscr);
-	    SP_PARM->_curscr = getwin(fp);
+    if (exit_ca_mode && non_rev_rmcup)
+	returnCode(ERR);
+
+    if (_nc_access(file, R_OK) < 0
+	|| (fp = fopen(file, "rb")) == 0) {
+	returnCode(ERR);
+    } else {
+	delwin(curscr);
+	SP_PARM->_curscr = getwin(fp);
 #if !USE_REENTRANT
-	    curscr = SP_PARM->_curscr;
+	curscr = SP_PARM->_curscr;
 #endif
-	    (void) fclose(fp);
-	    code = OK;
-	}
+	(void) fclose(fp);
+	returnCode(OK);
     }
-    returnCode(code);
 }
 
 #if NCURSES_SP_FUNCS
@@ -224,12 +222,12 @@ scr_init(const char *file)
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(scr_set) (NCURSES_SP_DCLx const char *file)
 {
-    T((T_CALLED("scr_set(%p,%s)"), SP_PARM, _nc_visbuf(file)));
+    T((T_CALLED("scr_set(%s)"), _nc_visbuf(file)));
 
-    if (NCURSES_SP_NAME(scr_init) (NCURSES_SP_ARGx file) == ERR) {
+    if (scr_init(file) == ERR) {
 	returnCode(ERR);
     } else {
-	delwin(SP_PARM->_newscr);
+	delwin(newscr);
 	SP_PARM->_newscr = dupwin(curscr);
 #if !USE_REENTRANT
 	newscr = SP_PARM->_newscr;
