@@ -68,8 +68,9 @@ AUTHOR
 *****************************************************************************/
 
 #include <curses.priv.h>
+#define CUR TerminalOf(sp)->type.
 
-MODULE_ID("$Id: hashmap.c,v 1.57 2009/04/18 19:03:50 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.57.1.1 2009/04/25 20:08:24 tom Exp $")
 
 #ifdef HASHDEBUG
 

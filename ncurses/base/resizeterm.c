@@ -39,11 +39,8 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.35 2009/04/18 20:32:33 tom Exp $")
-
-#define stolen_lines (screen_lines - SP->_lines_avail)
+MODULE_ID("$Id: resizeterm.c,v 1.35.1.1 2009/04/25 20:19:30 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -64,18 +61,23 @@ static int current_cols;
 static void
 show_window_sizes(const char *name)
 {
+    SCREEN *sp;
     WINDOWLIST *wp;
 
     _nc_lock_global(curses);
-    _tracef("%s resizing: %2d x %2d (%2d x %2d)", name, LINES, COLS,
-	    screen_lines(CURRENT_SCREEN), screen_columns(CURRENT_SCREEN));
-    for (each_window(wp)) {
-	_tracef("  window %p is %2ld x %2ld at %2ld,%2ld",
-		&(wp->win),
-		(long) wp->win._maxy + 1,
-		(long) wp->win._maxx + 1,
-		(long) wp->win._begy,
-		(long) wp->win._begx);
+    for (each_screen(sp)) {
+	_tracef("%s resizing: %p: %2d x %2d (%2d x %2d)", name, sp,
+		*(ptrLines(sp)),
+		*(ptrCols(sp)),
+		screen_lines(sp), screen_columns(sp));
+	for (each_window(sp, wp)) {
+	    _tracef("  window %p is %2ld x %2ld at %2ld,%2ld",
+		    &(wp->win),
+		    (long) wp->win._maxy + 1,
+		    (long) wp->win._maxx + 1,
+		    (long) wp->win._begy,
+		    (long) wp->win._begx);
+	}
     }
     _nc_unlock_global(curses);
 }
@@ -86,14 +88,22 @@ show_window_sizes(const char *name)
  * structure's size.
  */
 NCURSES_EXPORT(bool)
-is_term_resized(int ToLines, int ToCols)
+NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_DCLx int ToLines, int ToCols)
 {
-    T((T_CALLED("is_term_resized(%d, %d)"), ToLines, ToCols));
+    T((T_CALLED("is_term_resized(%p, %d, %d)"), SP_PARM, ToLines, ToCols));
     returnCode(ToLines > 0
 	       && ToCols > 0
-	       && (ToLines != screen_lines(CURRENT_SCREEN)
-		   || ToCols != screen_columns(CURRENT_SCREEN)));
+	       && (ToLines != screen_lines(SP_PARM)
+		   || ToCols != screen_columns(SP_PARM)));
 }
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(bool)
+is_term_resized(int ToLines, int ToCols)
+{
+    return NCURSES_SP_NAME(is_term_resized) (CURRENT_SCREEN, ToLines, ToCols);
+}
+#endif
 
 /*
  */
@@ -102,8 +112,8 @@ ripped_window(WINDOW *win)
 {
     ripoff_t *result = 0;
     ripoff_t *rop;
-
     if (win != 0) {
+	SCREEN *sp = _nc_screen_of(win);
 	for (each_ripoff(rop)) {
 	    if (rop->win == win && rop->line != 0) {
 		result = rop;
@@ -125,6 +135,7 @@ ripped_bottom(WINDOW *win)
     ripoff_t *rop;
 
     if (win != 0) {
+	SCREEN *sp = _nc_screen_of(win);
 	for (each_ripoff(rop)) {
 	    if (rop->line < 0) {
 		result -= rop->line;
@@ -146,9 +157,10 @@ child_depth(WINDOW *cmp)
     int depth = 0;
 
     if (cmp != 0) {
+	SCREEN *sp = _nc_screen_of(cmp);
 	WINDOWLIST *wp;
 
-	for (each_window(wp)) {
+	for (each_window(sp, wp)) {
 	    WINDOW *tst = &(wp->win);
 	    if (tst->_parent == cmp) {
 		depth = 1 + child_depth(tst);
@@ -184,7 +196,7 @@ static int
 adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
 {
     int result;
-    int bottom = CurLines + SP->_topstolen - stolen;
+    int bottom = CurLines + _nc_screen_of(win)->_topstolen - stolen;
     int myLines = win->_maxy + 1;
     int myCols = win->_maxx + 1;
     ripoff_t *rop = ripped_window(win);
@@ -203,6 +215,8 @@ adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
 	 * move it to the same relative position.
 	 */
 	win->_begy = ToLines - ripped_bottom(win) - 0 - win->_yoffset;
+	if (rop->hook == _nc_slk_initialize)
+	    _nc_format_slks(_nc_screen_of(win), ToCols);
     } else if (win->_begy >= bottom) {
 	/*
 	 * If it is below the bottom of the new screen, move up by the same
@@ -239,19 +253,19 @@ adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
  * children, decrease those to fit, then decrease the containing window, etc.
  */
 static int
-decrease_size(int ToLines, int ToCols, int stolen EXTRA_DCLS)
+decrease_size(NCURSES_SP_DCLx int ToLines, int ToCols, int stolen EXTRA_DCLS)
 {
     bool found;
     int depth = 0;
     WINDOWLIST *wp;
 
-    T((T_CALLED("decrease_size(%d, %d)"), ToLines, ToCols));
+    T((T_CALLED("decrease_size(%p, %d, %d)"), SP_PARM, ToLines, ToCols));
 
     do {
 	found = FALSE;
 	TR(TRACE_UPDATE, ("decreasing size of windows to %dx%d, depth=%d",
 			  ToLines, ToCols, depth));
-	for (each_window(wp)) {
+	for (each_window(SP_PARM, wp)) {
 	    WINDOW *win = &(wp->win);
 
 	    if (!(win->_flags & _ISPAD)) {
@@ -273,19 +287,19 @@ decrease_size(int ToLines, int ToCols, int stolen EXTRA_DCLS)
  * parent, increase those to fit, then increase the contained window, etc.
  */
 static int
-increase_size(int ToLines, int ToCols, int stolen EXTRA_DCLS)
+increase_size(SCREEN *sp, int ToLines, int ToCols, int stolen EXTRA_DCLS)
 {
     bool found;
     int depth = 0;
     WINDOWLIST *wp;
 
-    T((T_CALLED("increase_size(%d, %d)"), ToLines, ToCols));
+    T((T_CALLED("increase_size(%p, %d, %d)"), SP_PARM, ToLines, ToCols));
 
     do {
 	found = FALSE;
 	TR(TRACE_UPDATE, ("increasing size of windows to %dx%d, depth=%d",
 			  ToLines, ToCols, depth));
-	for (each_window(wp)) {
+	for (each_window(SP_PARM, wp)) {
 	    WINDOW *win = &(wp->win);
 
 	    if (!(win->_flags & _ISPAD)) {
@@ -307,25 +321,24 @@ increase_size(int ToLines, int ToCols, int stolen EXTRA_DCLS)
  * such as ungetch().
  */
 NCURSES_EXPORT(int)
-resize_term(int ToLines, int ToCols)
+NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     int result = OK EXTRA_ARGS;
     int was_stolen;
 
-    T((T_CALLED("resize_term(%d,%d) old(%d,%d)"),
-       ToLines, ToCols,
-       screen_lines(CURRENT_SCREEN), screen_columns(CURRENT_SCREEN)));
+    T((T_CALLED("resize_term(%p,%d,%d) old(%d,%d)"),
+       SP_PARM, ToLines, ToCols,
+       SP_PARM == 0 ? -1 : screen_lines(SP_PARM),
+       SP_PARM == 0 ? -1 : screen_columns(SP_PARM)));
 
-    if (SP == 0) {
+    if (SP_PARM == 0) {
 	returnCode(ERR);
     }
 
-    _nc_lock_global(curses);
-
-    was_stolen = (screen_lines(CURRENT_SCREEN) - SP->_lines_avail);
-    if (is_term_resized(ToLines, ToCols)) {
-	int myLines = CurLines = screen_lines(CURRENT_SCREEN);
-	int myCols = CurCols = screen_columns(CURRENT_SCREEN);
+    was_stolen = (screen_lines(SP_PARM) - SP_PARM->_lines_avail);
+    if (NCURSES_SP_NAME(is_term_resized) (SP_PARM, ToLines, ToCols)) {
+	int myLines = CurLines = screen_lines(SP_PARM);
+	int myCols = CurCols = screen_columns(SP_PARM);
 
 #ifdef TRACE
 	if (USE_TRACEF(TRACE_UPDATE)) {
@@ -333,33 +346,35 @@ resize_term(int ToLines, int ToCols)
 	    _nc_unlock_global(tracef);
 	}
 #endif
-	if (ToLines > screen_lines(CURRENT_SCREEN)) {
-	    increase_size(myLines = ToLines, myCols, was_stolen EXTRA_ARGS);
+	if (ToLines > screen_lines(SP_PARM)) {
+	    increase_size(SP_PARM, myLines = ToLines, myCols, was_stolen EXTRA_ARGS);
 	    CurLines = myLines;
 	    CurCols = myCols;
 	}
 
-	if (ToCols > screen_columns(CURRENT_SCREEN)) {
-	    increase_size(myLines, myCols = ToCols, was_stolen EXTRA_ARGS);
+	if (ToCols > screen_columns(SP_PARM)) {
+	    increase_size(SP_PARM, myLines, myCols = ToCols, was_stolen EXTRA_ARGS);
 	    CurLines = myLines;
 	    CurCols = myCols;
 	}
 
 	if (ToLines < myLines ||
 	    ToCols < myCols) {
-	    decrease_size(ToLines, ToCols, was_stolen EXTRA_ARGS);
+	    decrease_size(NCURSES_SP_ARGx ToLines, ToCols, was_stolen EXTRA_ARGS);
 	}
 
-	screen_lines(CURRENT_SCREEN) = lines = ToLines;
-	screen_columns(CURRENT_SCREEN) = columns = ToCols;
+	screen_lines(SP_PARM) = ToLines;
+	screen_columns(SP_PARM) = ToCols;
 
-	SP->_lines_avail = lines - was_stolen;
+	CallDriver_2(SP_PARM, setsize, ToLines, ToCols);
 
-	if (SP->oldhash) {
-	    FreeAndNull(SP->oldhash);
+	SP_PARM->_lines_avail = ToLines - was_stolen;
+
+	if (SP_PARM->oldhash) {
+	    FreeAndNull(SP_PARM->oldhash);
 	}
-	if (SP->newhash) {
-	    FreeAndNull(SP->newhash);
+	if (SP_PARM->newhash) {
+	    FreeAndNull(SP_PARM->newhash);
 	}
 #ifdef TRACE
 	if (USE_TRACEF(TRACE_UPDATE)) {
@@ -378,10 +393,20 @@ resize_term(int ToLines, int ToCols)
     SET_LINES(ToLines - was_stolen);
     SET_COLS(ToCols);
 
-    _nc_unlock_global(curses);
-
     returnCode(result);
 }
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+resize_term(int ToLines, int ToCols)
+{
+    int res = ERR;
+    _nc_lock_global(curses);
+    res = NCURSES_SP_NAME(resize_term) (CURRENT_SCREEN, ToLines, ToCols);
+    _nc_unlock_global(curses);
+    return (res);
+}
+#endif
 
 /*
  * This function reallocates NCURSES window structures.  It is invoked in
@@ -392,34 +417,34 @@ resize_term(int ToLines, int ToCols)
  * invoked directly from the signal handler.
  */
 NCURSES_EXPORT(int)
-resizeterm(int ToLines, int ToCols)
+NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     int result = ERR;
 
-    T((T_CALLED("resizeterm(%d,%d) old(%d,%d)"),
-       ToLines, ToCols,
-       screen_lines(CURRENT_SCREEN), screen_columns(CURRENT_SCREEN)));
+    T((T_CALLED("resizeterm(%p, %d,%d) old(%d,%d)"),
+       SP_PARM, ToLines, ToCols,
+       SP_PARM == 0 ? -1 : screen_lines(SP_PARM), screen_columns(SP_PARM)));
 
-    if (SP != 0) {
+    if (SP_PARM != 0) {
 	result = OK;
-	SP->_sig_winch = FALSE;
+	SP_PARM->_sig_winch = FALSE;
 
-	if (is_term_resized(ToLines, ToCols)) {
+	if (NCURSES_SP_NAME(is_term_resized) (SP_PARM, ToLines, ToCols)) {
 #if USE_SIGWINCH
 	    ripoff_t *rop;
-	    bool slk_visible = (SP != 0
-				&& SP->_slk != 0
-				&& !(SP->_slk->hidden));
+	    bool slk_visible = (SP_PARM != 0
+				&& SP_PARM->_slk != 0
+				&& !(SP_PARM->_slk->hidden));
 
 	    if (slk_visible) {
 		slk_clear();
 	    }
 #endif
-	    result = resize_term(ToLines, ToCols);
+	    result = NCURSES_SP_NAME(resize_term) (SP_PARM, ToLines, ToCols);
 
 #if USE_SIGWINCH
-	    safe_ungetch(SP, KEY_RESIZE);	/* so application can know this */
-	    clearok(curscr, TRUE);	/* screen contents are unknown */
+	    NCURSES_SP_NAME(ungetch) (SP_PARM, KEY_RESIZE);	/* so application can know this */
+	    clearok(SP_PARM->_curscr, TRUE);	/* screen contents are unknown */
 
 	    /* ripped-off lines are a special case: if we did not lengthen
 	     * them, we haven't moved them either.  repaint them, too.
@@ -429,7 +454,7 @@ resizeterm(int ToLines, int ToCols)
 	     * not know which are really on top.
 	     */
 	    for (each_ripoff(rop)) {
-		if (rop->win != stdscr
+		if (rop->win != SP_PARM->_stdscr
 		    && rop->win != 0
 		    && rop->line < 0) {
 
@@ -442,10 +467,9 @@ resizeterm(int ToLines, int ToCols)
 
 	    /* soft-keys are a special case: we _know_ how to repaint them */
 	    if (slk_visible) {
-		slk_restore();
-		slk_touch();
-
-		slk_refresh();
+		NCURSES_SP_NAME(slk_restore) (NCURSES_SP_ARG);
+		NCURSES_SP_NAME(slk_touch) (NCURSES_SP_ARG);
+		NCURSES_SP_NAME(slk_refresh) (NCURSES_SP_ARG);
 	    }
 #endif
 	}
@@ -453,3 +477,11 @@ resizeterm(int ToLines, int ToCols)
 
     returnCode(result);
 }
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+resizeterm(int ToLines, int ToCols)
+{
+    return NCURSES_SP_NAME(resizeterm) (CURRENT_SCREEN, ToLines, ToCols);
+}
+#endif

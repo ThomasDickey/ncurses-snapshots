@@ -41,8 +41,9 @@
 */
 
 #include <curses.priv.h>
+#define CUR TerminalOf(SP_PARM)->type.
 
-MODULE_ID("$Id: lib_has_cap.c,v 1.6 2009/04/18 17:28:45 tom Exp $")
+MODULE_ID("$Id: lib_has_cap.c,v 1.6.1.1 2009/04/25 19:45:53 tom Exp $")
 
 NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(has_ic) (NCURSES_SP_DCL0)
