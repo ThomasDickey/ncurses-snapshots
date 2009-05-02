@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2008                    *
  ****************************************************************************/
 
 /*
@@ -44,49 +45,53 @@
 #define _POSIX_SOURCE
 #endif
 
-#include <term.h>		/* lines, columns, cur_term */
-
-MODULE_ID("$Id: lib_restart.c,v 1.10 2008/06/21 17:31:22 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.10.1.4 2009/05/02 19:39:00 tom Exp $")
 
 NCURSES_EXPORT(int)
-restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
+NCURSES_SP_NAME(restartterm) (NCURSES_SP_DCLx
+			      NCURSES_CONST char *termp,
+			      int filenum,
+			      int *errret)
 {
     int result;
+    TERMINAL *new_term;
+    T((T_CALLED("restartterm(%p,%s,%d,%p)"), SP_PARM, termp, filenum, errret));
 
-    T((T_CALLED("restartterm(%s,%d,%p)"), termp, filenum, errret));
-
-    if (setupterm(termp, filenum, errret) != OK) {
+    if (_nc_setupterm_ex(&new_term, termp, filenum, errret, FALSE) != OK) {
 	result = ERR;
-    } else if (SP != 0) {
-	int saveecho = SP->_echo;
-	int savecbreak = SP->_cbreak;
-	int saveraw = SP->_raw;
-	int savenl = SP->_nl;
+    } else if (SP_PARM != 0) {
+	int saveecho = SP_PARM->_echo;
+	int savecbreak = SP_PARM->_cbreak;
+	int saveraw = SP_PARM->_raw;
+	int savenl = SP_PARM->_nl;
 
-	if (saveecho)
-	    echo();
-	else
-	    noecho();
+	SP_PARM->_term = new_term;
+	if (saveecho) {
+	    NCURSES_SP_NAME(echo) (NCURSES_SP_ARG);
+	} else {
+	    NCURSES_SP_NAME(noecho) (NCURSES_SP_ARG);
+	}
 
 	if (savecbreak) {
-	    cbreak();
-	    noraw();
+	    NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(noraw) (NCURSES_SP_ARG);
 	} else if (saveraw) {
-	    nocbreak();
-	    raw();
+	    NCURSES_SP_NAME(nocbreak) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(raw) (NCURSES_SP_ARG);
 	} else {
-	    nocbreak();
-	    noraw();
+	    NCURSES_SP_NAME(nocbreak) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(noraw) (NCURSES_SP_ARG);
 	}
-	if (savenl)
-	    nl();
-	else
-	    nonl();
+	if (savenl) {
+	    NCURSES_SP_NAME(nl) (NCURSES_SP_ARG);
+	} else {
+	    NCURSES_SP_NAME(nonl) (NCURSES_SP_ARG);
+	}
 
-	reset_prog_mode();
+	NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_ARG);
 
 #if USE_SIZECHANGE
-	_nc_update_screensize(SP);
+	_nc_update_screensize(SP_PARM);
 #endif
 
 	result = OK;
@@ -94,4 +99,10 @@ restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
 	result = ERR;
     }
     returnCode(result);
+}
+
+NCURSES_EXPORT(int)
+restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
+{
+    return NCURSES_SP_NAME(restartterm) (CURRENT_SCREEN, termp, filenum, errret);
 }
