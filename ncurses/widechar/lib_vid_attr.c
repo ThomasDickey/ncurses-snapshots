@@ -31,11 +31,11 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
+#include <term.h>
 
-MODULE_ID("$Id: lib_vid_attr.c,v 1.5.1.4 2009/02/21 15:58:13 tom Exp $")
+MODULE_ID("$Id: lib_vid_attr.c,v 1.7 2009/05/02 23:30:44 tom Exp $")
 
-#define doPut(mode) TPUTS_TRACE(#mode); NCURSES_SP_NAME(_nc_tputs)(sp, mode, 1, outc)
+#define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
 #define TurnOn(mask,mode) \
 	if ((turn_on & mask) && mode) { doPut(mode); }
@@ -50,18 +50,18 @@ MODULE_ID("$Id: lib_vid_attr.c,v 1.5.1.4 2009/02/21 15:58:13 tom Exp $")
 		if ((pair != old_pair) \
 		 || (fix_pair0 && (pair == 0)) \
 		 || (reverse ^ ((old_attr & A_REVERSE) != 0))) { \
-		  NCURSES_SP_NAME(_nc_do_color)(sp,old_pair, pair, reverse, outc); \
+			_nc_do_color(old_pair, pair, reverse, outc); \
 		} \
 	}
 
 #define set_color(mode, pair) mode &= ALL_BUT_COLOR; mode |= COLOR_PAIR(pair)
 
-static int
-_nc_vid_puts(SCREEN *sp,
-	     attr_t newmode,
-	     short pair,
-	     void *opts GCC_UNUSED,
-	     int (*outc) (SCREEN *, int))
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(vid_puts)(NCURSES_SP_DCLx
+			  attr_t newmode,
+			  short pair,
+			  void *opts GCC_UNUSED,
+			  int (*outc) (int))
 {
 #if NCURSES_EXT_COLORS
     static attr_t previous_attr = A_NORMAL;
@@ -69,9 +69,9 @@ _nc_vid_puts(SCREEN *sp,
 
     attr_t turn_on, turn_off;
     bool reverse = FALSE;
-    bool can_color = (sp == 0 || sp->_coloron);
+    bool can_color = (SP_PARM == 0 || SP_PARM->_coloron);
 #if NCURSES_EXT_FUNCS
-    bool fix_pair0 = (sp != 0 && sp->_coloron && !sp->_default_color);
+    bool fix_pair0 = (SP_PARM != 0 && SP_PARM->_coloron && !SP_PARM->_default_color);
 #else
 #define fix_pair0 FALSE
 #endif
@@ -80,18 +80,18 @@ _nc_vid_puts(SCREEN *sp,
     T((T_CALLED("vid_puts(%s,%d)"), _traceattr(newmode), pair));
 
     /* this allows us to go on whether or not newterm() has been called */
-    if (sp) {
-	previous_attr = AttrOf(SCREEN_ATTRS(sp));
-	previous_pair = GetPair(SCREEN_ATTRS(sp));
+    if (SP_PARM) {
+	previous_attr = AttrOf(SCREEN_ATTRS(SP_PARM));
+	previous_pair = GetPair(SCREEN_ATTRS(SP_PARM));
     }
 
     TR(TRACE_ATTRS, ("previous attribute was %s, %d",
 		     _traceattr(previous_attr), previous_pair));
 
 #if !USE_XMC_SUPPORT
-    if ((sp != 0)
+    if ((SP_PARM != 0)
 	&& (magic_cookie_glitch > 0))
-	newmode &= ~(sp->_xmc_suppress);
+	newmode &= ~(SP_PARM->_xmc_suppress);
 #endif
 
     /*
@@ -148,10 +148,10 @@ _nc_vid_puts(SCREEN *sp,
 	    if (exit_attribute_mode) {
 		doPut(exit_attribute_mode);
 	    } else {
-		if (!sp || sp->_use_rmul) {
+		if (!SP_PARM || SP_PARM->_use_rmul) {
 		    TurnOff(A_UNDERLINE, exit_underline_mode);
 		}
-		if (!sp || sp->_use_rmso) {
+		if (!SP_PARM || SP_PARM->_use_rmso) {
 		    TurnOff(A_STANDOUT, exit_standout_mode);
 		}
 	    }
@@ -163,18 +163,16 @@ _nc_vid_puts(SCREEN *sp,
     } else if (set_attributes) {
 	if (turn_on || turn_off) {
 	    TPUTS_TRACE("set_attributes");
-	    NCURSES_SP_NAME(_nc_tputs) (sp,
-					TPARM_9(set_attributes,
-						(newmode & A_STANDOUT) != 0,
-						(newmode & A_UNDERLINE) != 0,
-						(newmode & A_REVERSE) != 0,
-						(newmode & A_BLINK) != 0,
-						(newmode & A_DIM) != 0,
-						(newmode & A_BOLD) != 0,
-						(newmode & A_INVIS) != 0,
-						(newmode & A_PROTECT) != 0,
-						(newmode & A_ALTCHARSET) != 0),
-					1, outc);
+	    tputs(TPARM_9(set_attributes,
+			  (newmode & A_STANDOUT) != 0,
+			  (newmode & A_UNDERLINE) != 0,
+			  (newmode & A_REVERSE) != 0,
+			  (newmode & A_BLINK) != 0,
+			  (newmode & A_DIM) != 0,
+			  (newmode & A_BOLD) != 0,
+			  (newmode & A_INVIS) != 0,
+			  (newmode & A_PROTECT) != 0,
+			  (newmode & A_ALTCHARSET) != 0), 1, outc);
 	    previous_attr &= ALL_BUT_COLOR;
 	    previous_pair = 0;
 	}
@@ -185,11 +183,11 @@ _nc_vid_puts(SCREEN *sp,
 
 	TurnOff(A_ALTCHARSET, exit_alt_charset_mode);
 
-	if (!sp || sp->_use_rmul) {
+	if (!SP_PARM || SP_PARM->_use_rmul) {
 	    TurnOff(A_UNDERLINE, exit_underline_mode);
 	}
 
-	if (!sp || sp->_use_rmso) {
+	if (!SP_PARM || SP_PARM->_use_rmso) {
 	    TurnOff(A_STANDOUT, exit_standout_mode);
 	}
 
@@ -227,9 +225,9 @@ _nc_vid_puts(SCREEN *sp,
     if (reverse)
 	newmode |= A_REVERSE;
 
-    if (sp) {
-	SetAttr(SCREEN_ATTRS(sp), newmode);
-	SetPair(SCREEN_ATTRS(sp), pair);
+    if (SP_PARM) {
+	SetAttr(SCREEN_ATTRS(SP_PARM), newmode);
+	SetPair(SCREEN_ATTRS(SP_PARM), pair);
     } else {
 	previous_attr = newmode;
 	previous_pair = pair;
@@ -239,48 +237,46 @@ _nc_vid_puts(SCREEN *sp,
 #else
     T((T_CALLED("vid_puts(%s,%d)"), _traceattr(newmode), pair));
     set_color(newmode, pair);
-    returnCode(NCURSES_SP_NAME(_nc_vidputs) (sp, newmode, outc));
+    returnCode(vidputs(newmode, outc));
 #endif
-}
-
-NCURSES_EXPORT(int)
-vid_puts(attr_t newmode,
-	 short pair,
-	 void *opts GCC_UNUSED,
-	 int (*outc) (int))
-{
-    SetSafeOutcWrapper(outc);
-    return _nc_vid_puts(CURRENT_SCREEN, newmode, pair, opts, _nc_outc_wrapper);
 }
 
 #undef vid_attr
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_vid_attr) (SCREEN *sp,
-			       attr_t newmode,
-			       short pair,
-			       void *opts)
+NCURSES_SP_NAME(vid_attr) (NCURSES_SP_DCLx
+			   attr_t newmode,
+			   short pair,
+			   void *opts)
 {
     T((T_CALLED("vid_attr(%s,%d)"), _traceattr(newmode), pair));
-    returnCode(_nc_vid_puts(sp, newmode, pair, opts, NCURSES_SP_NAME(_nc_outch)));
+    returnCode(vid_puts(newmode, pair, opts, _nc_outch));
+}
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+vid_puts(attr_t newmode, short pair, void *opts GCC_UNUSED, int (*outc) (int))
+{
+    return NCURSES_SP_NAME(vid_puts) (CURRENT_SCREEN, newmode, pair, opts, outc);
 }
 
 NCURSES_EXPORT(int)
 vid_attr(attr_t newmode, short pair, void *opts)
 {
-    return NCURSES_SP_NAME(_nc_vid_attr) (CURRENT_SCREEN, newmode, pair, opts);
+    return NCURSES_SP_NAME(vid_attr) (CURRENT_SCREEN, newmode, pair, opts);
 }
+#endif
 
 /*
  * This implementation uses the same mask values for A_xxx and WA_xxx, so
  * we can use termattrs() for part of the logic.
  */
 NCURSES_EXPORT(attr_t)
-NCURSES_SP_NAME(term_attrs) (SCREEN *sp)
+term_attrs(void)
 {
     attr_t attrs;
 
     T((T_CALLED("term_attrs()")));
-    attrs = sp ? NCURSES_SP_NAME(termattrs) (sp) : 0;
+    attrs = termattrs();
 
     /* these are only supported for wide-character mode */
     if (enter_horizontal_hl_mode)
@@ -297,10 +293,4 @@ NCURSES_SP_NAME(term_attrs) (SCREEN *sp)
 	attrs |= WA_VERTICAL;
 
     returnAttr(attrs);
-}
-
-NCURSES_EXPORT(attr_t)
-term_attrs(void)
-{
-    return NCURSES_SP_NAME(term_attrs) (CURRENT_SCREEN);
 }

@@ -34,7 +34,7 @@ BEGIN		{
 		    print  "/*    and: Thomas E. Dickey                        1995-on                  */"
 		    print  "/****************************************************************************/"
 		    print  ""
-		    print  "/* $Id: MKterm.h.awk.in,v 1.55.1.1 2009/05/02 19:25:57 tom Exp $ */"
+		    print  "/* $Id: MKterm.h.awk.in,v 1.56 2009/05/02 19:25:57 tom Exp $ */"
 		    print  ""
 		    print  "/*"
 		    print  "**	term.h -- Definition of struct term"

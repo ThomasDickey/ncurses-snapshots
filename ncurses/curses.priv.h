@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.410.1.2 2009/05/02 19:26:49 tom Exp $
+ * $Id: curses.priv.h,v 1.412 2009/05/02 21:28:57 tom Exp $
  *
  *	curses.priv.h
  *
@@ -289,9 +289,7 @@ color_t;
 #endif
 
 #include <term.h>
-#undef CUR
 #include <term_entry.h>
-
 #include <nc_tparm.h>
 
 #if NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT
@@ -305,8 +303,14 @@ color_t;
 #define GET_WINDOW_PAIR(w)	(w)->_color
 #define SET_WINDOW_PAIR(w,p)	(w)->_color = (p)
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b) && GetPair(a) == GetPair(b))
-#define VIDATTR(sp,attr,pair)	NCURSES_SP_NAME(_nc_vid_attr)(sp,attr,pair,0)
+
+#if NCURSES_SP_FUNCS
+#define VIDATTR(sp,attr,pair)	NCURSES_SP_NAME(vid_attr)(sp, attr, pair, 0)
 #else
+#define VIDATTR(sp,attr,pair)	vid_attr(attr, pair, 0)
+#endif
+
+#else /* !(NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT) */
 #define if_EXT_COLORS(stmt)	/* nothing */
 #define SetPair(value,p)	RemAttr(value, A_COLOR), \
 				SetAttr(value, AttrOf(value) | (A_COLOR & COLOR_PAIR(p)))
@@ -316,8 +320,14 @@ color_t;
 #define SET_WINDOW_PAIR(w,p)	WINDOW_ATTRS(w) &= ALL_BUT_COLOR, \
 				WINDOW_ATTRS(w) |= (A_COLOR & COLOR_PAIR(p))
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
-#define VIDATTR(sp,attr,pair)	NCURSES_SP_NAME(_nc_vidattr)(sp,attr)
+
+#if NCURSES_SP_FUNCS
+#define VIDATTR(sp,attr,pair)	NCURSES_SP_NAME(vidattr)(sp, attr)
+#else
+#define VIDATTR(sp,attr,pair)	vidattr(attr)
 #endif
+
+#endif /* NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT */
 
 #if NCURSES_NO_PADDING
 #define GetNoPadding(sp)	((sp) ? (sp)->_no_padding : _nc_prescreen._no_padding)
@@ -334,25 +344,18 @@ extern NCURSES_EXPORT(void)     _nc_set_no_padding(SCREEN *);
 #define GET_SCREEN_PAIR(s)	GetPair(SCREEN_ATTRS(s))
 #define SET_SCREEN_PAIR(s,p)	SetPair(SCREEN_ATTRS(s), p)
 
-extern NCURSES_EXPORT(int*) _nc_ptr_Lines (SCREEN*);
-extern NCURSES_EXPORT(int*) _nc_ptr_Cols (SCREEN*);
-extern NCURSES_EXPORT(int*) _nc_ptr_Tabsize (SCREEN*);
-extern NCURSES_EXPORT(int*) _nc_ptr_Escdelay (SCREEN*);
-
 #if USE_REENTRANT
+NCURSES_EXPORT(int *)        _nc_ptr_Lines (void);
+NCURSES_EXPORT(int *)        _nc_ptr_Cols (void);
 #define ptrLines(sp)         (sp ? &(sp->_LINES) : &(_nc_prescreen._LINES))
-#define ptrCols(sp)          (sp ? &(sp->_COLS)  : &(_nc_prescreen._COLS))
-#define SET_LINES(value)     *(_nc_ptr_Lines(sp)) = value
-#define SET_COLS(value)      *(_nc_ptr_Cols(sp)) = value
-#define SET_TABSIZE(value)   *(_nc_ptr_Tabsize(sp)) = value
-#define SET_ESCDELAY(value)  *(_nc_ptr_Escdelay(sp)) = value
+#define ptrCols(sp)          (sp ? &(sp->_COLS) : &(_nc_prescreen._COLS))
+#define SET_LINES(value)     *_nc_ptr_Lines() = value
+#define SET_COLS(value)      *_nc_ptr_Cols() = value
 #else
 #define ptrLines(sp)         &LINES
 #define ptrCols(sp)          &COLS
 #define SET_LINES(value)     LINES = value
 #define SET_COLS(value)      COLS = value
-#define SET_TABSIZE(value)   TABSIZE = value
-#define SET_ESCDELAY(value)  ESCDELAY = value
 #endif
 
 #define TR_MUTEX(data) _tracef("%s@%d: me:%08lX COUNT:%2u/%2d/%6d/%2d/%s%9u: " #data, \
@@ -651,6 +654,9 @@ typedef struct {
 	int		tgetent_index;
 	long		tgetent_sequence;
 
+	WINDOWLIST	*_nc_windowlist;
+#define _nc_windows	_nc_globals._nc_windowlist
+
 #if USE_HOME_TERMINFO
 	char		*home_terminfo;
 #endif
@@ -683,9 +689,7 @@ typedef struct {
 	char		traceatr_color_buf[2][80];
 	int		traceatr_color_sel;
 	int		traceatr_color_last;
-#if !defined(USE_PTHREADS) && USE_REENTRANT
-	int		nested_tracef;
-#endif
+
 #endif	/* TRACE */
 
 #ifdef USE_PTHREADS
@@ -700,6 +704,8 @@ typedef struct {
 
 extern NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals;
 
+#define N_RIPS 5
+
 /*
  * Global data which can be swept up into a SCREEN when one is created.
  * It may be modified before the next SCREEN is created.
@@ -708,8 +714,10 @@ typedef struct {
 	bool		use_env;
 	bool		filter_mode;
 	attr_t		previous_attr;
+	ripoff_t	rippedoff[N_RIPS];
+	ripoff_t	*rsp;
 	TPARM_STATE	tparm_state;
-	void		*saved_tty;	/* savetty/resetty information	    */
+	TTY		*saved_tty;	/* savetty/resetty information	    */
 #if NCURSES_NO_PADDING
 	bool		_no_padding;	/* flag to set if padding disabled  */
 #endif
@@ -717,8 +725,6 @@ typedef struct {
 	chtype		*real_acs_map;
 	int		_LINES;
 	int		_COLS;
-	int		_TABSIZE;
-	int		_ESCDELAY;
 	TERMINAL	*_cur_term;
 #ifdef TRACE
 	long		_outchars;
@@ -727,11 +733,8 @@ typedef struct {
 #endif
 } NCURSES_PRESCREEN;
 
-#define N_RIPS 5
-
-#define safe_ripoff_sp     (sp)->rsp
-#define safe_ripoff_stack  (sp)->rippedoff
-
+#define ripoff_sp	_nc_prescreen.rsp
+#define ripoff_stack	_nc_prescreen.rippedoff
 
 extern NCURSES_EXPORT_VAR(NCURSES_PRESCREEN) _nc_prescreen;
 
@@ -749,7 +752,7 @@ struct screen {
 	bool		_use_env;	/* LINES & COLS from environment?   */
 	int		_checkfd;	/* filedesc for typeahead check	    */
 	TERMINAL	*_term;		/* terminal type information	    */
-	void*		_saved_tty;	/* savetty/resetty information	    */
+	TTY		_saved_tty;	/* savetty/resetty information	    */
 	NCURSES_SIZE_T	_lines;		/* screen lines			    */
 	NCURSES_SIZE_T	_columns;	/* screen columns		    */
 
@@ -866,9 +869,8 @@ struct screen {
 	 */
 	bool		_nc_sp_idlok;
 	bool		_nc_sp_idcok;
-
-#define _nc_idlok SP_PARM->_nc_sp_idlok
-#define _nc_idcok SP_PARM->_nc_sp_idcok
+#define _nc_idlok SP->_nc_sp_idlok
+#define _nc_idcok SP->_nc_sp_idcok
 
 	/*
 	 * These are the data that support the mouse interface.
@@ -922,7 +924,7 @@ struct screen {
 	 * This supports automatic resizing
 	 */
 #if USE_SIZECHANGE
-	int		(*_resize)(SCREEN*,int,int);
+	int		(*_resize)(int,int);
 #endif
 
 	/*
@@ -941,8 +943,8 @@ struct screen {
 	int		*_oldnum_list;
 	int		_oldnum_size;
 
-	bool		_cleanup;	        /* cleanup after int/quit signal */
-	int		(*_outch)(SCREEN*,int); /* output handler if not putc */
+	bool		_cleanup;	/* cleanup after int/quit signal */
+	int		(*_outch)(int); /* output handler if not putc */
 
 	int		_legacy_coding;	/* see use_legacy_coding() */
 
@@ -962,12 +964,6 @@ struct screen {
 	char		tracechr_buf[40];
 	char		tracemse_buf[TRACEMSE_MAX];
 #endif
-	WINDOWLIST*	_windowlist;
-	int		(*jump)(int);
-
-	ripoff_t	rippedoff[N_RIPS];
-	ripoff_t	*rsp;
-
 	/*
 	 * ncurses/ncursesw are the same up to this point.
 	 */
@@ -1009,7 +1005,6 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
     sp->_windowlist = 0;                        \
     sp->_outch = NCURSES_SP_NAME(_nc_outch);    \
     sp->jump = 0                                \
-
 
 /* usually in <limits.h> */
 #ifndef UCHAR_MAX
@@ -1282,8 +1277,9 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
  * Standardize/simplify common loops
  */
 #define each_screen(p) p = _nc_screen_chain; p != 0; p = (p)->_next_screen
-#define each_window(screen,p) p = (screen)->_windowlist; p != 0; p = (p)->next
-#define each_ripoff(p) p = safe_ripoff_stack; (p - safe_ripoff_stack) < N_RIPS; ++p
+#define each_window(p) p = _nc_windows; p != 0; p = (p)->next
+#define each_ripoff(p) p = ripoff_stack; (p - ripoff_stack) < N_RIPS; ++p
+
 /*
  * Prefixes for call/return points of library function traces.  We use these to
  * instrument the public functions so that the traces can be easily transformed
@@ -1453,19 +1449,19 @@ extern	NCURSES_EXPORT(void) name (void); \
 #if USE_XMC_SUPPORT
 #define UpdateAttrs(sp,c)	if (!SameAttrOf(SCREEN_ATTRS(sp), c)) { \
 				attr_t chg = AttrOf(SCREEN_ATTRS(sp)); \
-				VIDATTR(sp,AttrOf(c), GetPair(c));     \
+				VIDATTR(sp, AttrOf(c), GetPair(c)); \
 				if (magic_cookie_glitch > 0 \
 				 && XMC_CHANGES((chg ^ AttrOf(SCREEN_ATTRS(sp))))) { \
 					T(("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
 						sp->_cursrow, \
 						sp->_curscol)); \
-					NCURSES_SP_NAME(_nc_do_xmc_glitch)(sp,chg); \
+					_nc_do_xmc_glitch(chg); \
 				} \
 			}
 #else
-#define UpdateAttrs(sp,c)	if (!SameAttrOf(SCREEN_ATTRS(sp), c))	\
-				    VIDATTR(sp,AttrOf(c), GetPair(c));
+#define UpdateAttrs(sp,c)	if (!SameAttrOf(SCREEN_ATTRS(sp), c)) \
+				    VIDATTR(sp, AttrOf(c), GetPair(c));
 #endif
 
 /*
@@ -1550,8 +1546,8 @@ extern NCURSES_EXPORT(void) _nc_linedump (void);
 #endif
 
 /* lib_acs.c */
-extern NCURSES_EXPORT(void) _nc_init_acs (void); /* corresponds to traditional 'init_acs()' */
-extern NCURSES_EXPORT(int)  _nc_msec_cost (const char *const, int);  /* used by 'tack' program */
+extern NCURSES_EXPORT(void) _nc_init_acs (void);	/* corresponds to traditional 'init_acs()' */
+extern NCURSES_EXPORT(int) _nc_msec_cost (const char *const, int);  /* used by 'tack' program */
 
 /* lib_addch.c */
 #if USE_WIDEC_SUPPORT
@@ -1578,7 +1574,6 @@ extern NCURSES_EXPORT(int) _nc_insert_ch(WINDOW *, chtype);
 extern NCURSES_EXPORT(void) _nc_mvcur_init (void);
 extern NCURSES_EXPORT(void) _nc_mvcur_resume (void);
 extern NCURSES_EXPORT(void) _nc_mvcur_wrap (void);
-extern NCURSES_EXPORT(int)  _nc_tinfo_mvcur(SCREEN*,int,int,int,int);
 
 extern NCURSES_EXPORT(int) _nc_scrolln (int, int, int, int);
 
@@ -1598,11 +1593,7 @@ extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int)    _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int)    _nc_locale_breaks_acs(TERMINAL *);
 extern NCURSES_EXPORT(int)    _nc_setupterm(NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL**, NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL*, int *, int *);
-
-/* lib_set_term.c */
-extern NCURSES_EXPORT(int)    _nc_ripoffline(int line, int(*)(WINDOW*,int));
+extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 
 /* lib_tstp.c */
 #if USE_SIGWINCH
@@ -1610,7 +1601,6 @@ extern NCURSES_EXPORT(int) _nc_handle_sigwinch(SCREEN *);
 #else
 #define _nc_handle_sigwinch(a) /* nothing */
 #endif
-
 
 /* lib_wacs.c */
 #if USE_WIDEC_SUPPORT
@@ -1647,6 +1637,7 @@ extern NCURSES_EXPORT(int) _nc_remove_string (TRIES **, const char *);
 
 /* elsewhere ... */
 extern NCURSES_EXPORT(ENTRY *) _nc_delink_entry (ENTRY *, TERMTYPE *);
+extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_keyname (SCREEN *, int);
 extern NCURSES_EXPORT(SCREEN *) _nc_screen_of (WINDOW *);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
@@ -1658,9 +1649,10 @@ extern NCURSES_EXPORT(int) _nc_baudrate (int);
 extern NCURSES_EXPORT(int) _nc_freewin (WINDOW *);
 extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
 extern NCURSES_EXPORT(int) _nc_keypad (SCREEN *, bool);
-extern NCURSES_EXPORT(int) _nc_tinfo_has_key(SCREEN*, int);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
+extern NCURSES_EXPORT(int) _nc_putp(const char *, const char *);
+extern NCURSES_EXPORT(int) _nc_putp_flush(const char *, const char *);
 extern NCURSES_EXPORT(int) _nc_read_termcap_entry (const char *const, TERMTYPE *const);
 extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, bool, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait (SCREEN *, int, int, int * EVENTLIST_2nd(_nc_eventlist *));
@@ -1730,7 +1722,7 @@ extern NCURSES_EXPORT_VAR(int *) _nc_oldnums;
 
 #define USE_SETBUF_0 0
 
-#define NC_BUFFERED(sp,flag) NCURSES_SP_NAME(_nc_set_buffer)(sp,sp->_ofp, flag)
+#define NC_BUFFERED(flag) _nc_set_buffer(SP->_ofp, flag)
 
 #define NC_OUTPUT(sp) ((sp != 0) ? sp->_ofp : stdout)
 
@@ -1738,20 +1730,19 @@ extern NCURSES_EXPORT_VAR(int *) _nc_oldnums;
  * On systems with a broken linker, define 'SP' as a function to force the
  * linker to pull in the data-only module with 'SP'.
  */
-#define _nc_alloc_screen_sp() typeCalloc(SCREEN, 1)
-
 #if BROKEN_LINKER
+#define SP _nc_screen()
 extern NCURSES_EXPORT(SCREEN *) _nc_screen (void);
 extern NCURSES_EXPORT(int)      _nc_alloc_screen (void);
 extern NCURSES_EXPORT(void)     _nc_set_screen (SCREEN *);
-#define CURRENT_SCREEN          _nc_screen()
 #else
 /* current screen is private data; avoid possible linking conflicts too */
 extern NCURSES_EXPORT_VAR(SCREEN *) SP;
-#define CURRENT_SCREEN SP
-#define _nc_alloc_screen()      ((SP = _nc_alloc_screen_sp()) != 0)
+#define _nc_alloc_screen()      ((SP = typeCalloc(SCREEN, 1)) != 0)
 #define _nc_set_screen(sp)      SP = sp
 #endif
+
+#define CURRENT_SCREEN SP
 
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 
@@ -1764,7 +1755,6 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define screen_columns(sp)      (sp)->_columns
 
 extern NCURSES_EXPORT(int) _nc_slk_initialize (WINDOW *, int);
-extern NCURSES_EXPORT(int) _nc_format_slks (SCREEN *, int);
 
 /*
  * Some constants related to SLK's
@@ -1782,14 +1772,13 @@ extern NCURSES_EXPORT(int) _nc_format_slks (SCREEN *, int);
 #define MAX_SKEY(fmt)     (SLK_STDFMT(fmt)? MAX_SKEY_OLD : MAX_SKEY_PC)
 #define MAX_SKEY_LEN(fmt) (SLK_STDFMT(fmt)? MAX_SKEY_LEN_OLD : MAX_SKEY_LEN_PC)
 
+extern NCURSES_EXPORT(int) _nc_ripoffline (int line, int (*init)(WINDOW *,int));
+
 /*
  * Common error messages
  */
 #define MSG_NO_MEMORY "Out of memory"
 #define MSG_NO_INPUTS "Premature EOF"
-
-extern NCURSES_EXPORT(int) _nc_set_tty_mode(TTY*);
-extern NCURSES_EXPORT(int) _nc_get_tty_mode(TTY *);
 
 /* timed_wait flag definitions */
 #define TW_NONE    0
@@ -1904,18 +1893,9 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 
-#define IsTermInfo(sp) (TCBOf(sp) && ((TCBOf(sp)->drv->isTerminfo)))
+#define IsTermInfo(sp) TRUE
 #define HasTInfoTerminal(sp) ((0!=TerminalOf(sp)) && IsTermInfo(sp))
 #define IsValidTIScreen(sp)  (HasTInfoTerminal(sp))
-
-
-extern NCURSES_EXPORT(int) _nc_get_driver(TERMINAL_CONTROL_BLOCK*, const char*, int*);
-
-#if NCURSES_SP_FUNCS
-#define _nc_ungetch(sp, ch) NCURSES_SP_NAME(ungetch) (sp, ch)
-#else
-NCURSES_EXPORT(int) _nc_ungetch) (SCREEN *, int);
-#endif
 
 /*
  * Exported entrypoints beyond the published API
@@ -1936,7 +1916,6 @@ extern NCURSES_EXPORT(char *)    NCURSES_SP_NAME(longname)(SCREEN*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_set_tabsize)(SCREEN*, int);
 #endif
 
-
 /*
  * We put the safe versions of various calls here as they are not published
  * part of the API up to now
@@ -1954,7 +1933,7 @@ extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_get_tty_mode)(SCREEN*,TTY*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_mcprint)(SCREEN*,char*, int);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_msec_cost)(SCREEN*, const char *, int);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_outch)(SCREEN*, int);
-extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp)(SCREEN*, const char*);
+extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp)(SCREEN*, const char *, const char *);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp_flush)(SCREEN*, const char *, const char *);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resetty)(SCREEN*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resize_term)(SCREEN*,int,int);
@@ -1969,12 +1948,11 @@ extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tgetent)(SCREEN*,char*,const
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tigetnum)(SCREEN*,NCURSES_CONST char*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tputs)(SCREEN*,const char*,int,int(*)(SCREEN*, int));
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vid_attr)(SCREEN *, attr_t, short, void *);
-extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vidattr)(SCREEN *, chtype);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vidputs)(SCREEN*,chtype,int(*) (SCREEN*, int));
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_do_color)(SCREEN*, short, short, bool, int (*)(SCREEN*,int));
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_do_xmc_glitch)(SCREEN*, attr_t);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_flush)(SCREEN*);
-extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_free_and_exit)(SCREEN*, int);
+extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_free_and_exit)(SCREEN*, int) GCC_NORETURN;
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_freeall)(SCREEN*);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_hash_map)(SCREEN*);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_init_acs)(SCREEN*);

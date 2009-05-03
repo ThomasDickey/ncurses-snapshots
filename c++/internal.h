@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: internal.h,v 1.16.1.1 2008/12/07 02:07:34 juergen Exp $
+// $Id: internal.h,v 1.17 2008/12/07 02:07:34 juergen Exp $
 
 #ifndef NCURSES_CPLUS_INTERNAL_H
 #define NCURSES_CPLUS_INTERNAL_H 1
