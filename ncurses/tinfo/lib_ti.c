@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,17 +36,17 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.23.1.4 2009/04/18 17:37:50 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.23 2003/05/24 21:10:28 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx NCURSES_CONST char *str)
+tigetflag(NCURSES_CONST char *str)
 {
     unsigned i;
 
-    T((T_CALLED("tigetflag(%p, %s)"), SP_PARM, str));
+    T((T_CALLED("tigetflag(%s)"), str));
 
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_boolean(i, tp) {
 	    const char *capname = ExtBoolname(tp, i, boolnames);
 	    if (!strcmp(str, capname)) {
@@ -59,23 +59,15 @@ NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx NCURSES_CONST char *str)
     returnCode(ABSENT_BOOLEAN);
 }
 
-#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
-tigetflag(NCURSES_CONST char *str)
-{
-    return NCURSES_SP_NAME(tigetflag) (CURRENT_SCREEN, str);
-}
-#endif
-
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx NCURSES_CONST char *str)
+tigetnum(NCURSES_CONST char *str)
 {
     unsigned i;
 
-    T((T_CALLED("tigetnum(%p, %s)"), SP_PARM, str));
+    T((T_CALLED("tigetnum(%s)"), str));
 
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_number(i, tp) {
 	    const char *capname = ExtNumname(tp, i, numnames);
 	    if (!strcmp(str, capname)) {
@@ -89,23 +81,15 @@ NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx NCURSES_CONST char *str)
     returnCode(CANCELLED_NUMERIC);	/* Solaris returns a -1 instead */
 }
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-tigetnum(NCURSES_CONST char *str)
-{
-    return NCURSES_SP_NAME(tigetnum) (CURRENT_SCREEN, str);
-}
-#endif
-
 NCURSES_EXPORT(char *)
-NCURSES_SP_NAME(tigetstr) (NCURSES_SP_DCLx NCURSES_CONST char *str)
+tigetstr(NCURSES_CONST char *str)
 {
     unsigned i;
 
-    T((T_CALLED("tigetstr(%p, %s)"), SP_PARM, str));
+    T((T_CALLED("tigetstr(%s)"), str));
 
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_string(i, tp) {
 	    const char *capname = ExtStrname(tp, i, strnames);
 	    if (!strcmp(str, capname)) {
@@ -117,11 +101,3 @@ NCURSES_SP_NAME(tigetstr) (NCURSES_SP_DCLx NCURSES_CONST char *str)
 
     returnPtr(CANCELLED_STRING);
 }
-
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(char *)
-tigetstr(NCURSES_CONST char *str)
-{
-    return NCURSES_SP_NAME(tigetstr) (CURRENT_SCREEN, str);
-}
-#endif

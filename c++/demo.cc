@@ -35,7 +35,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.38.1.1 2008/12/07 02:07:34 juergen Exp $
+ * $Id: demo.cc,v 1.39 2008/12/07 02:07:34 juergen Exp $
  */
 
 #include "internal.h"
