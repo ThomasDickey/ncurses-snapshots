@@ -153,13 +153,13 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>
 #include <ctype.h>
+#define CUR TerminalOf(SP_PARM)->type.
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.118 2009/05/02 20:38:58 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.118.1.2 2009/05/09 15:59:41 tom Exp $")
 
-#define WANT_CHAR(sp, y, x) (sp)->_newscr->_line[y].text[x]	/* desired state */
-#define BAUDRATE(sp)	cur_term->_baudrate	/* bits per second */
+#define WANT_CHAR(sp,y, x) (sp)->_newscr->_line[y].text[x]	/* desired state */
+#define BAUDRATE(sp)	sp->_term->_baudrate	/* bits per second */
 
 #if defined(MAIN) || defined(NCURSES_TEST)
 #include <sys/time.h>
@@ -254,7 +254,7 @@ static int
 normalized_cost(NCURSES_SP_DCLx const char *const cap, int affcnt)
 /* compute the effective character-count for an operation (round up) */
 {
-    int cost = _nc_msec_cost(cap, affcnt);
+    int cost = NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_ARGx cap, affcnt);
     if (cost != INFINITY)
 	cost = (cost + SP_PARM->_char_padding - 1) / SP_PARM->_char_padding;
     return cost;
@@ -265,8 +265,8 @@ reset_scroll_region(NCURSES_SP_DCL0)
 /* Set the scroll-region to a known state (the default) */
 {
     if (change_scroll_region) {
+	TPUTS_TRACE("change_scroll_region");
 	NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-				   "change_scroll_region",
 				   TPARM_2(change_scroll_region,
 					   0, screen_lines(SP_PARM) - 1));
     }
@@ -276,11 +276,13 @@ NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_DCL0)
 /* what to do at initialization time and after each shellout */
 {
+    if (SP_PARM && !IsTermInfo(SP_PARM))
+	return;
+
     /* initialize screen for cursor access */
     if (enter_ca_mode) {
-	NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-				   "enter_ca_mode",
-				   enter_ca_mode);
+	TPUTS_TRACE("enter_ca_mode");
+	NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx enter_ca_mode);
     }
 
     /*
@@ -440,7 +442,7 @@ NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
      * SCREEN's _endwin to TRUE at window initialization time and let this be
      * called by doupdate's return-from-shellout code.
      */
-    _nc_mvcur_resume();
+    NCURSES_SP_NAME(_nc_mvcur_resume) (sp);
 }
 
 #if NCURSES_SP_FUNCS
@@ -448,7 +450,6 @@ NCURSES_EXPORT(void)
 _nc_mvcur_init(void)
 {
     NCURSES_SP_NAME(_nc_mvcur_init) (CURRENT_SCREEN);
-    _nc_mvcur_resume();
 }
 #endif
 
@@ -457,7 +458,10 @@ NCURSES_SP_NAME(_nc_mvcur_wrap) (NCURSES_SP_DCL0)
 /* wrap up cursor-addressing mode */
 {
     /* leave cursor at screen bottom */
-    mvcur(-1, -1, screen_lines(CURRENT_SCREEN) - 1, 0);
+    _nc_tinfo_mvcur(NCURSES_SP_ARGx -1, -1, screen_lines(SP_PARM) - 1, 0);
+
+    if (SP_PARM && !IsTermInfo(SP_PARM))
+	return;
 
     /* set cursor to normal mode */
     if (SP_PARM->_cursor != -1) {
@@ -467,9 +471,8 @@ NCURSES_SP_NAME(_nc_mvcur_wrap) (NCURSES_SP_DCL0)
     }
 
     if (exit_ca_mode) {
-	NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-				   "exit_ca_mode",
-				   exit_ca_mode);
+	TPUTS_TRACE("exit_ca_mode");
+	NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx exit_ca_mode);
     }
     /*
      * Reset terminal's tab counter.  There's a long-time bug that
@@ -806,9 +809,8 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
     /* tactic #1: use local movement */
     if (yold != -1 && xold != -1
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
-				     NullResult,
-				     yold, xold,
-				     ynew, xnew, ovw)) != INFINITY)
+				     NullResult, yold, xold, ynew, xnew,
+				     ovw)) != INFINITY)
 	&& newcost < usecost) {
 	tactic = 1;
 	usecost = newcost;
@@ -817,8 +819,7 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
     /* tactic #2: use carriage-return + local movement */
     if (yold != -1 && carriage_return
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
-				     NullResult,
-				     yold, 0,
+				     NullResult, yold, 0,
 				     ynew, xnew, ovw)) != INFINITY)
 	&& SP_PARM->_cr_cost + newcost < usecost) {
 	tactic = 2;
@@ -828,8 +829,7 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
     /* tactic #3: use home-cursor + local movement */
     if (cursor_home
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
-				     NullResult,
-				     0, 0,
+				     NullResult, 0, 0,
 				     ynew, xnew, ovw)) != INFINITY)
 	&& SP_PARM->_home_cost + newcost < usecost) {
 	tactic = 3;
@@ -838,8 +838,7 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
 
     /* tactic #4: use home-down + local movement */
     if (cursor_to_ll
-	&& ((newcost = relative_move(NCURSES_SP_ARGx
-				     NullResult,
+	&& ((newcost = relative_move(NCURSES_SP_ARGx NullResult,
 				     screen_lines(SP_PARM) - 1, 0,
 				     ynew, xnew, ovw)) != INFINITY)
 	&& SP_PARM->_ll_cost + newcost < usecost) {
@@ -854,8 +853,7 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
     t5_cr_cost = (xold > 0 ? SP_PARM->_cr_cost : 0);
     if (auto_left_margin && !eat_newline_glitch
 	&& yold > 0 && cursor_left
-	&& ((newcost = relative_move(NCURSES_SP_ARGx
-				     NullResult,
+	&& ((newcost = relative_move(NCURSES_SP_ARGx NullResult,
 				     yold - 1, screen_columns(SP_PARM) - 1,
 				     ynew, xnew, ovw)) != INFINITY)
 	&& t5_cr_cost + SP_PARM->_cub1_cost + newcost < usecost) {
@@ -920,7 +918,8 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
 
     if (usecost != INFINITY) {
 	TPUTS_TRACE("mvcur");
-	tputs(buffer, 1, _nc_outch);
+	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
+				buffer, 1, NCURSES_SP_NAME(_nc_outch));
 	SP_PARM->_cursrow = ynew;
 	SP_PARM->_curscol = xnew;
 	return (OK);
@@ -928,113 +927,103 @@ onscreen_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew, bool ovw)
 	return (ERR);
 }
 
-/* optimized cursor move from (yold, xold) to (ynew, xnew) */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(mvcur) (NCURSES_SP_DCLx
-			int yold, int xold, int ynew, int xnew)
+_nc_tinfo_mvcur(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew)
+/* optimized cursor move from (yold, xold) to (ynew, xnew) */
 {
     NCURSES_CH_T oldattr;
-    int code;
+    int code = ERR;
 
-    TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("mvcur(%d,%d,%d,%d)"),
-				  yold, xold, ynew, xnew));
+    TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("_nc_tinfo_mvcur(%p,%d,%d,%d,%d)"),
+				  SP_PARM, yold, xold, ynew, xnew));
 
-    if (SP_PARM == 0) {
-	code = ERR;
-    } else if (yold == ynew && xold == xnew) {
-	code = OK;
-    } else {
-
-	/*
-	 * Most work here is rounding for terminal boundaries getting the
-	 * column position implied by wraparound or the lack thereof and
-	 * rolling up the screen to get ynew on the screen.
-	 */
-	if (xnew >= screen_columns(SP_PARM)) {
-	    ynew += xnew / screen_columns(SP_PARM);
-	    xnew %= screen_columns(SP_PARM);
-	}
-
-	/*
-	 * Force restore even if msgr is on when we're in an alternate
-	 * character set -- these have a strong tendency to screw up the CR &
-	 * LF used for local character motions!
-	 */
-	oldattr = SCREEN_ATTRS(SP_PARM);
-	if ((AttrOf(oldattr) & A_ALTCHARSET)
-	    || (AttrOf(oldattr) && !move_standout_mode)) {
-	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
-			       (unsigned long) AttrOf(oldattr),
-			       _traceattr(AttrOf(oldattr))));
-	    (void) VIDATTR(SP_PARM, A_NORMAL, 0);
-	}
-
-	if (xold >= screen_columns(SP_PARM)) {
-	    int l;
-
-	    if (SP_PARM->_nl) {
-		l = (xold + 1) / screen_columns(SP_PARM);
-		yold += l;
-		if (yold >= screen_lines(SP_PARM))
-		    l -= (yold - screen_lines(SP_PARM) - 1);
-
-		if (l > 0) {
-		    if (carriage_return) {
-			NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-						   "carriage_return",
-						   carriage_return);
-		    } else
-			NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_ARGx '\r');
-		    xold = 0;
-
-		    while (l > 0) {
-			if (newline) {
-			    NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-						       "newline",
-						       newline);
-			} else
-			    NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_ARGx '\n');
-			l--;
-		    }
-		}
-	    } else {
-		/*
-		 * If caller set nonl(), we cannot really use newlines to
-		 * position to the next row.
-		 */
-		xold = -1;
-		yold = -1;
+    if (SP_PARM == 0)
+	returnCode(code);
+    else {
+	if (yold == ynew && xold == xnew) {
+	    code = OK;
+	} else {
+	    /*
+	     * Most work here is rounding for terminal boundaries getting the
+	     * column position implied by wraparound or the lack thereof and
+	     * rolling up the screen to get ynew on the screen.
+	     */
+	    if (xnew >= screen_columns(SP_PARM)) {
+		ynew += xnew / screen_columns(SP_PARM);
+		xnew %= screen_columns(SP_PARM);
 	    }
-	}
 
-	if (yold > screen_lines(SP_PARM) - 1)
-	    yold = screen_lines(SP_PARM) - 1;
-	if (ynew > screen_lines(SP_PARM) - 1)
-	    ynew = screen_lines(SP_PARM) - 1;
+	    /*
+	     * Force restore even if msgr is on when we're in an alternate
+	     * character set -- these have a strong tendency to screw up the CR &
+	     * LF used for local character motions!
+	     */
+	    oldattr = SCREEN_ATTRS(SP_PARM);
+	    if ((AttrOf(oldattr) & A_ALTCHARSET)
+		|| (AttrOf(oldattr) && !move_standout_mode)) {
+		TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
+				   (unsigned long) AttrOf(oldattr),
+				   _traceattr(AttrOf(oldattr))));
+		(void) VIDATTR(SP_PARM, A_NORMAL, 0);
+	    }
 
-	/* destination location is on screen now */
-	code = onscreen_mvcur(NCURSES_SP_ARGx yold, xold, ynew, xnew, TRUE);
+	    if (xold >= screen_columns(SP_PARM)) {
+		int l;
 
-	/*
-	 * Restore attributes if we disabled them before moving.
-	 */
-	if (!SameAttrOf(oldattr, SCREEN_ATTRS(SP_PARM))) {
-	    TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
-			       (unsigned long) AttrOf(oldattr),
-			       _traceattr(AttrOf(oldattr))));
-	    (void) VIDATTR(SP_PARM, AttrOf(oldattr), GetPair(oldattr));
+		if (SP_PARM->_nl) {
+		    l = (xold + 1) / screen_columns(SP_PARM);
+		    yold += l;
+		    if (yold >= screen_lines(SP_PARM))
+			l -= (yold - screen_lines(SP_PARM) - 1);
+
+		    if (l > 0) {
+			if (carriage_return) {
+			    TPUTS_TRACE("carriage_return");
+			    NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx carriage_return);
+			} else
+			    NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_ARGx '\r');
+			xold = 0;
+
+			while (l > 0) {
+			    if (newline) {
+				TPUTS_TRACE("newline");
+				NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx newline);
+			    } else
+				NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_ARGx '\n');
+			    l--;
+			}
+		    }
+		} else {
+		    /*
+		     * If caller set nonl(), we cannot really use newlines to
+		     * position to the next row.
+		     */
+		    xold = -1;
+		    yold = -1;
+		}
+	    }
+
+	    if (yold > screen_lines(SP_PARM) - 1)
+		yold = screen_lines(SP_PARM) - 1;
+	    if (ynew > screen_lines(SP_PARM) - 1)
+		ynew = screen_lines(SP_PARM) - 1;
+
+	    /* destination location is on screen now */
+	    code = onscreen_mvcur(NCURSES_SP_ARGx yold, xold, ynew, xnew, TRUE);
+
+	    /*
+	     * Restore attributes if we disabled them before moving.
+	     */
+	    if (!SameAttrOf(oldattr, SCREEN_ATTRS(SP_PARM))) {
+		TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
+				   (unsigned long) AttrOf(oldattr),
+				   _traceattr(AttrOf(oldattr))));
+		(void) VIDATTR(SP_PARM, AttrOf(oldattr), GetPair(oldattr));
+	    }
 	}
     }
     returnCode(code);
 }
-
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-mvcur(int yold, int xold, int ynew, int xnew)
-{
-    return NCURSES_SP_NAME(mvcur) (CURRENT_SCREEN, yold, xold, ynew, xnew);
-}
-#endif
 
 #if defined(TRACE) || defined(NCURSES_TEST)
 NCURSES_EXPORT_VAR(int) _nc_optimize_enable = OPTIMIZE_ALL;
