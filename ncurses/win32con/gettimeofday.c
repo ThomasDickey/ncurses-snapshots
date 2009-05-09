@@ -26,62 +26,26 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- ****************************************************************************/
-
-/*
-**	lib_delwin.c
-**
-**	The routine delwin().
-**
-*/
+#define WINVER 0x0501
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.17.1.1 2008/11/16 00:19:59 juergen Exp $")
+#include <windows.h>
 
-static bool
-cannot_delete(WINDOW *win)
+MODULE_ID("$Id: gettimeofday.c,v 0.1 2008/12/07 02:07:39 juergen Exp $")
+
+#define JAN1970 116444736000000000LL	/* the value for 01/01/1970 00:00 */
+
+int
+gettimeofday(struct timeval *tv, void *tz)
 {
-    WINDOWLIST *p;
-    bool result = TRUE;
-    SCREEN *sp = _nc_screen_of(win);
+    union {
+	FILETIME ft;
+	long long since1601;	/* time since 1 Jan 1601 in 100ns units */
+    } data;
 
-    for (each_window(sp, p)) {
-	if (&(p->win) == win) {
-	    result = FALSE;
-	} else if ((p->win._flags & _SUBWIN) != 0
-		   && p->win._parent == win) {
-	    result = TRUE;
-	    break;
-	}
-    }
-    return result;
-}
-
-NCURSES_EXPORT(int)
-delwin(WINDOW *win)
-{
-    int result = ERR;
-
-    T((T_CALLED("delwin(%p)"), win));
-
-    if (_nc_try_global(curses) == 0) {
-	if (win == 0
-	    || cannot_delete(win)) {
-	    result = ERR;
-	} else {
-	    SCREEN *sp = _nc_screen_of(win);
-	    if (win->_flags & _SUBWIN)
-		touchwin(win->_parent);
-	    else if (sp->_curscr != 0)
-		touchwin(sp->_curscr);
-
-	    result = _nc_freewin(win);
-	}
-	_nc_unlock_global(curses);
-    }
-    returnCode(result);
+    GetSystemTimeAsFileTime(&data.ft);
+    tv->tv_usec = (long) ((data.since1601 / 10LL) % 1000000LL);
+    tv->tv_sec = (long) ((data.since1601 - JAN1970) / 10000000LL);
+    return (0);
 }

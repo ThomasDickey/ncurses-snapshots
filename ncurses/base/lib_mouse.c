@@ -79,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.105 2009/02/28 21:09:20 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.105.1.1 2009/04/04 23:28:36 tom Exp $")
 
 #include <tic.h>
 
@@ -149,7 +149,7 @@ make an error
 #define LIBGPM_SONAME "libgpm.so"
 #endif
 
-#define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(SP_PARM->_dlopen_gpm, #name))
+#define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(sp->_dlopen_gpm, #name))
 
 #endif				/* USE_GPM_SUPPORT */
 
@@ -344,22 +344,12 @@ handle_sysmouse(int sig GCC_UNUSED)
 #endif /* USE_SYSMOUSE */
 
 static void
-init_xterm_mouse(SCREEN *sp)
-{
-    sp->_mouse_type = M_XTERM;
-    sp->_mouse_xtermcap = tigetstr("XM");
-    if (!VALID_STRING(sp->_mouse_xtermcap))
-	sp->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
-}
-
-static void
 enable_xterm_mouse(SCREEN *sp, int enable)
 {
 #if USE_EMX_MOUSE
     sp->_emxmouse_activated = enable;
 #else
     NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-			       "xterm-mouse",
 			       TPARM_1(sp->_mouse_xtermcap, enable));
 #endif
     sp->_mouse_active = enable;
@@ -479,8 +469,6 @@ enable_gpm_mouse(SCREEN *sp, bool enable)
 }
 #endif /* USE_GPM_SUPPORT */
 
-#define xterm_kmous "\033[M"
-
 static void
 initialize_mousetype(SCREEN *sp)
 {
@@ -515,7 +503,7 @@ initialize_mousetype(SCREEN *sp)
     /* OS/2 VIO */
 #if USE_EMX_MOUSE
     if (!sp->_emxmouse_thread
-	&& strstr(cur_term->type.term_names, "xterm") == 0
+	&& strstr(TerminalOf(sp)->type.term_names, "xterm") == 0
 	&& key_mouse) {
 	int handles[2];
 
@@ -622,16 +610,8 @@ initialize_mousetype(SCREEN *sp)
     }
 #endif /* USE_SYSMOUSE */
 
-    /* we know how to recognize mouse events under "xterm" */
-    if (key_mouse != 0) {
-	if (!strcmp(key_mouse, xterm_kmous)
-	    || strstr(cur_term->type.term_names, "xterm") != 0) {
-	    init_xterm_mouse(sp);
-	}
-    } else if (strstr(cur_term->type.term_names, "xterm") != 0) {
-	if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
-	    init_xterm_mouse(sp);
-    }
+    CallDriver(sp, initmouse);
+
     returnVoid;
 }
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008,2009 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,61 +27,33 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ * Author: Thomas Dickey, 2008-on                                           * 
+ *                                                                          *
  ****************************************************************************/
 
-/*
-**	lib_delwin.c
-**
-**	The routine delwin().
-**
-*/
+/* $Id: nc_mingw.h,v 1.1 2009/02/07 23:33:19 tom Exp $ */
 
-#include <curses.priv.h>
+#ifndef NC_MINGW_H
+#define NC_MINGW_H 1
 
-MODULE_ID("$Id: lib_delwin.c,v 1.17.1.1 2008/11/16 00:19:59 juergen Exp $")
+#define WINVER 0x0501
+#include <windows.h>
 
-static bool
-cannot_delete(WINDOW *win)
-{
-    WINDOWLIST *p;
-    bool result = TRUE;
-    SCREEN *sp = _nc_screen_of(win);
+#undef sleep
+#define sleep(n) Sleep((n) * 1000)
 
-    for (each_window(sp, p)) {
-	if (&(p->win) == win) {
-	    result = FALSE;
-	} else if ((p->win._flags & _SUBWIN) != 0
-		   && p->win._parent == win) {
-	    result = TRUE;
-	    break;
-	}
-    }
-    return result;
-}
+#undef gettimeofday
+#define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 
-NCURSES_EXPORT(int)
-delwin(WINDOW *win)
-{
-    int result = ERR;
+#include <sys/time.h>	/* for struct timeval */
 
-    T((T_CALLED("delwin(%p)"), win));
+extern int _nc_gettimeofday(struct timeval *, void *);
 
-    if (_nc_try_global(curses) == 0) {
-	if (win == 0
-	    || cannot_delete(win)) {
-	    result = ERR;
-	} else {
-	    SCREEN *sp = _nc_screen_of(win);
-	    if (win->_flags & _SUBWIN)
-		touchwin(win->_parent);
-	    else if (sp->_curscr != 0)
-		touchwin(sp->_curscr);
+#undef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY 1
 
-	    result = _nc_freewin(win);
-	}
-	_nc_unlock_global(curses);
-    }
-    returnCode(result);
-}
+#define SIGHUP  1
+#define SIGKILL 9
+#define getlogin() "username"
+
+#endif /* NC_MINGW_H */
