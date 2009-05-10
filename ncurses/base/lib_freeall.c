@@ -40,7 +40,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.57.1.4 2009/05/09 17:50:43 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.58 2009/05/09 18:34:30 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical

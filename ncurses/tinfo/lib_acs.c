@@ -33,13 +33,18 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
+#include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.37.1.1 2009/04/04 22:58:59 tom Exp $")
+#ifndef CUR
+#define CUR SP_TERMTYPE 
+#endif
+
+MODULE_ID("$Id: lib_acs.c,v 1.39 2009/05/10 00:48:29 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
-NCURSES_EXPORT_VAR (chtype *)
-_nc_acs_map(void)
+NCURSES_EXPORT(chtype *)
+NCURSES_PUBLIC_VAR(acs_map) (void)
 {
     if (MyBuffer == 0)
 	MyBuffer = typeCalloc(chtype, ACS_LEN);
@@ -53,27 +58,14 @@ NCURSES_EXPORT_VAR (chtype) acs_map[ACS_LEN] =
 };
 #endif
 
-NCURSES_EXPORT(chtype)
-NCURSES_SP_NAME(_nc_acs_char) (SCREEN *sp, int c)
-{
-    chtype *map;
-    if (c < 0 || c >= ACS_LEN)
-	return (chtype) 0;
-    map = (sp != 0) ? sp->_acs_map :
-#if BROKEN_LINKER || USE_REENTRANT
-	_nc_prescreen.real_acs_map
-#else
-	acs_map
-#endif
-	;
-    return map[c];
-}
-
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_init_acs) (SCREEN *sp)
+_nc_init_acs(void)
 {
+#if NCURSES_SP_FUNCS
+    SCREEN *sp = CURRENT_SCREEN;
+#endif
     chtype *fake_map = acs_map;
-    chtype *real_map = sp != 0 ? sp->_acs_map : fake_map;
+    chtype *real_map = SP != 0 ? SP->_acs_map : fake_map;
     int j;
 
     T(("initializing ACS map"));
@@ -87,8 +79,8 @@ NCURSES_SP_NAME(_nc_init_acs) (SCREEN *sp)
 	for (j = 1; j < ACS_LEN; ++j) {
 	    real_map[j] = 0;
 	    fake_map[j] = A_ALTCHARSET | j;
-	    if (sp)
-		sp->_screen_acs_map[j] = FALSE;
+	    if (SP)
+		SP->_screen_acs_map[j] = FALSE;
 	}
     } else {
 	for (j = 1; j < ACS_LEN; ++j) {
@@ -134,13 +126,76 @@ NCURSES_SP_NAME(_nc_init_acs) (SCREEN *sp)
     real_map['|'] = '!';	/* should be not-equal */
     real_map['}'] = 'f';	/* should be pound-sterling symbol */
 
-    CallDriver_2(sp, initacs, real_map, fake_map);
-}
-
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(void)
-_nc_init_acs(void)
-{
-    NCURSES_SP_NAME(_nc_init_acs) (CURRENT_SCREEN);
-}
+    if (ena_acs != NULL) {
+	TPUTS_TRACE("ena_acs");
+	putp(ena_acs);
+    }
+#if NCURSES_EXT_FUNCS
+    /*
+     * Linux console "supports" the "PC ROM" character set by the coincidence
+     * that smpch/rmpch and smacs/rmacs have the same values.  ncurses has
+     * no codepage support (see SCO Merge for an example).  Outside of the
+     * values defined in acsc, there are no definitions for the "PC ROM"
+     * character set (assumed by some applications to be codepage 437), but we
+     * allow those applications to use those codepoints.
+     *
+     * test/blue.c uses this feature.
+     */
+#define PCH_KLUDGE(a,b) (a != 0 && b != 0 && !strcmp(a,b))
+    if (PCH_KLUDGE(enter_pc_charset_mode, enter_alt_charset_mode) &&
+	PCH_KLUDGE(exit_pc_charset_mode, exit_alt_charset_mode)) {
+	size_t i;
+	for (i = 1; i < ACS_LEN; ++i) {
+	    if (real_map[i] == 0) {
+		real_map[i] = i;
+		if (real_map != fake_map) {
+		    if (SP != 0)
+			SP->_screen_acs_map[i] = TRUE;
+		}
+	    }
+	}
+    }
 #endif
+
+    if (acs_chars != NULL) {
+	size_t i = 0;
+	size_t length = strlen(acs_chars);
+
+	while (i + 1 < length) {
+	    if (acs_chars[i] != 0 && UChar(acs_chars[i]) < ACS_LEN) {
+		real_map[UChar(acs_chars[i])] = UChar(acs_chars[i + 1]) | A_ALTCHARSET;
+		if (SP != 0)
+		    SP->_screen_acs_map[UChar(acs_chars[i])] = TRUE;
+	    }
+	    i += 2;
+	}
+    }
+#ifdef TRACE
+    /* Show the equivalent mapping, noting if it does not match the
+     * given attribute, whether by re-ordering or duplication.
+     */
+    if (USE_TRACEF(TRACE_CALLS)) {
+	size_t n, m;
+	char show[ACS_LEN * 2 + 1];
+	for (n = 1, m = 0; n < ACS_LEN; n++) {
+	    if (real_map[n] != 0) {
+		show[m++] = (char) n;
+		show[m++] = (char) ChCharOf(real_map[n]);
+	    }
+	}
+	show[m] = 0;
+	if (acs_chars == NULL || strcmp(acs_chars, show))
+	    _tracef("%s acs_chars %s",
+		    (acs_chars == NULL) ? "NULL" : "READ",
+		    _nc_visbuf(acs_chars));
+	_tracef("%s acs_chars %s",
+		(acs_chars == NULL)
+		? "NULL"
+		: (strcmp(acs_chars, show)
+		   ? "DIFF"
+		   : "SAME"),
+		_nc_visbuf(show));
+	_nc_unlock_global(tracef);
+    }
+#endif /* TRACE */
+}

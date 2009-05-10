@@ -1,4 +1,4 @@
-# $Id: MKkeyname.awk,v 1.42 2009/02/21 16:55:53 tom Exp $
+# $Id: MKkeyname.awk,v 1.43 2009/05/09 19:01:49 tom Exp $
 ##############################################################################
 # Copyright (c) 1999-2008,2009 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -67,7 +67,8 @@ END {
 	print "#define SIZEOF_TABLE 256"
 	print "#define MyTable _nc_globals.keyname_table"
 	print ""
-	print "NCURSES_EXPORT(NCURSES_CONST char *) NCURSES_SP_NAME(keyname) (NCURSES_SP_DCLx int c)"
+	print "NCURSES_EXPORT(NCURSES_CONST char *)"
+	print "safe_keyname (SCREEN *sp, int c)"
 	print "{"
 	print "	int i;"
 	print "	char name[20];"
@@ -100,7 +101,7 @@ END {
 	print "				if (MyTable[c] == 0) {"
 	print "					int cc = c;"
 	print "					p = name;"
-	print "					if (cc >= 128 && (SP_PARM == 0 || SP_PARM->_use_meta)) {"
+	print "					if (cc >= 128 && (sp == 0 || sp->_use_meta)) {"
 	print "						strcpy(p, \"M-\");"
 	print "						p += 2;"
 	print "						cc -= 128;"
@@ -123,7 +124,7 @@ END {
 	print "			int save_trace = _nc_tracing;"
 	print ""
 	print "			_nc_tracing = 0;	/* prevent recursion via keybound() */"
-	print "			for (j = 0; (bound = NCURSES_SP_NAME(keybound)(sp, c, j)) != 0; ++j) {"
+	print "			for (j = 0; (bound = NCURSES_SP_NAME(keybound)(NCURSES_SP_ARGx c, j)) != 0; ++j) {"
 	print "				for(k = STRCOUNT; k < (int) NUM_STRINGS(tp);  k++) {"
 	print "					if (tp->Strings[k] != 0 && !strcmp(bound, tp->Strings[k])) {"
 	print "						result = ExtStrname(tp, k, strnames);"
@@ -141,13 +142,11 @@ END {
 	print "	return result;"
 	print "}"
 	print ""
-	print "#if NCURSES_SP_FUNCS"
 	print "NCURSES_EXPORT(NCURSES_CONST char *)"
 	print "keyname (int c)"
 	print "{"
-	print "	return NCURSES_SP_NAME(keyname) (CURRENT_SCREEN, c);"
+	print "	return safe_keyname (CURRENT_SCREEN, c);"
 	print "}"
-	print "#endif"
 	print ""
 	print "#if NO_LEAKS"
 	print "void _nc_keyname_leaks(void)"

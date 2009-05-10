@@ -39,7 +39,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkinit.c,v 1.9 2009/02/21 17:44:53 tom Exp $")
+MODULE_ID("$Id: lib_slkinit.c,v 1.10 2009/05/09 18:32:07 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(slk_init) (NCURSES_SP_DCLx int format)
@@ -51,7 +51,7 @@ NCURSES_SP_NAME(slk_init) (NCURSES_SP_DCLx int format)
     if (SP_PARM && format >= 0 && format <= 3 && !SP_PARM->slk_format &&
 	SP_PARM->_prescreen) {
 	SP_PARM->slk_format = 1 + format;
-	code = NCURSES_SP_NAME(_nc_ripoffline) (SP_PARM,
+	code = NCURSES_SP_NAME(_nc_ripoffline) (NCURSES_SP_ARGx
 						-SLK_LINES(SP_PARM->slk_format),
 						_nc_slk_initialize);
     }

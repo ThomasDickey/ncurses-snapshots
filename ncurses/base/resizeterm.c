@@ -39,8 +39,15 @@
  */
 
 #include <curses.priv.h>
+#include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.35.1.1 2009/04/25 20:19:30 tom Exp $")
+#ifndef CUR
+#define CUR SP_TERMTYPE 
+#endif
+
+MODULE_ID("$Id: resizeterm.c,v 1.39 2009/05/10 00:48:29 tom Exp $")
+
+#define stolen_lines (screen_lines - SP->_lines_avail)
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -112,8 +119,11 @@ ripped_window(WINDOW *win)
 {
     ripoff_t *result = 0;
     ripoff_t *rop;
+
     if (win != 0) {
+#if NCURSES_SP_FUNCS
 	SCREEN *sp = _nc_screen_of(win);
+#endif
 	for (each_ripoff(rop)) {
 	    if (rop->win == win && rop->line != 0) {
 		result = rop;
@@ -135,7 +145,9 @@ ripped_bottom(WINDOW *win)
     ripoff_t *rop;
 
     if (win != 0) {
+#if NCURSES_SP_FUNCS
 	SCREEN *sp = _nc_screen_of(win);
+#endif
 	for (each_ripoff(rop)) {
 	    if (rop->line < 0) {
 		result -= rop->line;
@@ -157,7 +169,9 @@ child_depth(WINDOW *cmp)
     int depth = 0;
 
     if (cmp != 0) {
+#if NCURSES_SP_FUNCS
 	SCREEN *sp = _nc_screen_of(cmp);
+#endif
 	WINDOWLIST *wp;
 
 	for (each_window(sp, wp)) {
@@ -215,8 +229,6 @@ adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
 	 * move it to the same relative position.
 	 */
 	win->_begy = ToLines - ripped_bottom(win) - 0 - win->_yoffset;
-	if (rop->hook == _nc_slk_initialize)
-	    _nc_format_slks(_nc_screen_of(win), ToCols);
     } else if (win->_begy >= bottom) {
 	/*
 	 * If it is below the bottom of the new screen, move up by the same
@@ -287,7 +299,7 @@ decrease_size(NCURSES_SP_DCLx int ToLines, int ToCols, int stolen EXTRA_DCLS)
  * parent, increase those to fit, then increase the contained window, etc.
  */
 static int
-increase_size(SCREEN *sp, int ToLines, int ToCols, int stolen EXTRA_DCLS)
+increase_size(NCURSES_SP_DCLx int ToLines, int ToCols, int stolen EXTRA_DCLS)
 {
     bool found;
     int depth = 0;
@@ -335,8 +347,10 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	returnCode(ERR);
     }
 
+    _nc_lock_global(curses);
+
     was_stolen = (screen_lines(SP_PARM) - SP_PARM->_lines_avail);
-    if (NCURSES_SP_NAME(is_term_resized) (SP_PARM, ToLines, ToCols)) {
+    if (NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_ARGx ToLines, ToCols)) {
 	int myLines = CurLines = screen_lines(SP_PARM);
 	int myCols = CurCols = screen_columns(SP_PARM);
 
@@ -347,13 +361,15 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	}
 #endif
 	if (ToLines > screen_lines(SP_PARM)) {
-	    increase_size(SP_PARM, myLines = ToLines, myCols, was_stolen EXTRA_ARGS);
+	    increase_size(NCURSES_SP_ARGx
+			  myLines = ToLines, myCols, was_stolen EXTRA_ARGS);
 	    CurLines = myLines;
 	    CurCols = myCols;
 	}
 
 	if (ToCols > screen_columns(SP_PARM)) {
-	    increase_size(SP_PARM, myLines, myCols = ToCols, was_stolen EXTRA_ARGS);
+	    increase_size(NCURSES_SP_ARGx
+			  myLines, myCols = ToCols, was_stolen EXTRA_ARGS);
 	    CurLines = myLines;
 	    CurCols = myCols;
 	}
@@ -363,12 +379,10 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	    decrease_size(NCURSES_SP_ARGx ToLines, ToCols, was_stolen EXTRA_ARGS);
 	}
 
-	screen_lines(SP_PARM) = ToLines;
-	screen_columns(SP_PARM) = ToCols;
+	screen_lines(SP_PARM) = lines = ToLines;
+	screen_columns(SP_PARM) = columns = ToCols;
 
-	CallDriver_2(SP_PARM, setsize, ToLines, ToCols);
-
-	SP_PARM->_lines_avail = ToLines - was_stolen;
+	SP_PARM->_lines_avail = lines - was_stolen;
 
 	if (SP_PARM->oldhash) {
 	    FreeAndNull(SP_PARM->oldhash);
@@ -392,6 +406,8 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
      */
     SET_LINES(ToLines - was_stolen);
     SET_COLS(ToCols);
+
+    _nc_unlock_global(curses);
 
     returnCode(result);
 }
@@ -429,7 +445,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	result = OK;
 	SP_PARM->_sig_winch = FALSE;
 
-	if (NCURSES_SP_NAME(is_term_resized) (SP_PARM, ToLines, ToCols)) {
+	if (NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_ARGx ToLines, ToCols)) {
 #if USE_SIGWINCH
 	    ripoff_t *rop;
 	    bool slk_visible = (SP_PARM != 0
@@ -440,11 +456,11 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 		slk_clear();
 	    }
 #endif
-	    result = NCURSES_SP_NAME(resize_term) (SP_PARM, ToLines, ToCols);
+	    result = NCURSES_SP_NAME(resize_term) (NCURSES_SP_ARGx ToLines, ToCols);
 
 #if USE_SIGWINCH
-	    NCURSES_SP_NAME(ungetch) (SP_PARM, KEY_RESIZE);	/* so application can know this */
-	    clearok(SP_PARM->_curscr, TRUE);	/* screen contents are unknown */
+	    safe_ungetch(SP_PARM, KEY_RESIZE);	/* so application can know this */
+	    clearok(CurScreen(SP_PARM), TRUE);	/* screen contents are unknown */
 
 	    /* ripped-off lines are a special case: if we did not lengthen
 	     * them, we haven't moved them either.  repaint them, too.
@@ -454,7 +470,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	     * not know which are really on top.
 	     */
 	    for (each_ripoff(rop)) {
-		if (rop->win != SP_PARM->_stdscr
+		if (rop->win != StdScreen(SP_PARM)
 		    && rop->win != 0
 		    && rop->line < 0) {
 
