@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_ftchoice.c,v 1.9.1.1 2008/11/18 08:50:04 juergen Exp $")
+MODULE_ID("$Id: fld_ftchoice.c,v 1.9 2004/12/11 21:44:57 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -57,8 +57,8 @@ set_fieldtype_choice(FIELDTYPE *typ,
     RETURN(E_BAD_ARGUMENT);
 
   typ->status |= _HAS_CHOICE;
-  typ->enum_next.onext = next_choice;
-  typ->enum_prev.oprev = prev_choice;
+  typ->next = next_choice;
+  typ->prev = prev_choice;
   RETURN(E_OK);
 }
 

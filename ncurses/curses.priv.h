@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.412.1.7 2009/05/09 17:51:08 tom Exp $
+ * $Id: curses.priv.h,v 1.416 2009/05/10 01:01:51 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,7 +196,7 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Terminal drivers...
  */
-#define USE_TERM_DRIVER 1
+#define USE_TERM_DRIVER 0
 
 /*
  * Note:  ht/cbt expansion flakes out randomly under Linux 1.1.47, but only
@@ -302,9 +302,15 @@ color_t;
 
 #include <term.h>
 
-#if NCURSES_SP_FUNCS
+/*
+ * Reduce dependency on cur_term global by using terminfo data from SCREEN's
+ * pointer to this data.
+ */
+#ifdef USE_SP_TERMTYPE
 #undef CUR
 #endif
+
+#define SP_TERMTYPE TerminalOf(sp)->type.
 
 #include <term_entry.h>
 
@@ -329,7 +335,6 @@ color_t;
 #endif
 
 #else /* !(NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT) */
-
 #define if_EXT_COLORS(stmt)	/* nothing */
 #define SetPair(value,p)	RemAttr(value, A_COLOR), \
 				SetAttr(value, AttrOf(value) | (A_COLOR & COLOR_PAIR(p)))
@@ -363,25 +368,18 @@ extern NCURSES_EXPORT(void)     _nc_set_no_padding(SCREEN *);
 #define GET_SCREEN_PAIR(s)	GetPair(SCREEN_ATTRS(s))
 #define SET_SCREEN_PAIR(s,p)	SetPair(SCREEN_ATTRS(s), p)
 
-extern NCURSES_EXPORT(int *)    _nc_ptr_Lines (SCREEN*);
-extern NCURSES_EXPORT(int *)    _nc_ptr_Cols (SCREEN*);
-extern NCURSES_EXPORT(int *)    _nc_ptr_Tabsize (SCREEN*);
-extern NCURSES_EXPORT(int *)    _nc_ptr_Escdelay (SCREEN*);
-
 #if USE_REENTRANT
+NCURSES_EXPORT(int *)        _nc_ptr_Lines (void);
+NCURSES_EXPORT(int *)        _nc_ptr_Cols (void);
 #define ptrLines(sp)         (sp ? &(sp->_LINES) : &(_nc_prescreen._LINES))
-#define ptrCols(sp)          (sp ? &(sp->_COLS)  : &(_nc_prescreen._COLS))
-#define SET_LINES(value)     *(_nc_ptr_Lines(sp)) = value
-#define SET_COLS(value)      *(_nc_ptr_Cols(sp)) = value
-#define SET_TABSIZE(value)   *(_nc_ptr_Tabsize(sp)) = value
-#define SET_ESCDELAY(value)  *(_nc_ptr_Escdelay(sp)) = value
+#define ptrCols(sp)          (sp ? &(sp->_COLS) : &(_nc_prescreen._COLS))
+#define SET_LINES(value)     *_nc_ptr_Lines() = value
+#define SET_COLS(value)      *_nc_ptr_Cols() = value
 #else
 #define ptrLines(sp)         &LINES
 #define ptrCols(sp)          &COLS
 #define SET_LINES(value)     LINES = value
 #define SET_COLS(value)      COLS = value
-#define SET_TABSIZE(value)   TABSIZE = value
-#define SET_ESCDELAY(value)  ESCDELAY = value
 #endif
 
 #define TR_MUTEX(data) _tracef("%s@%d: me:%08lX COUNT:%2u/%2d/%6d/%2d/%s%9u: " #data, \
@@ -680,6 +678,9 @@ typedef struct {
 	int		tgetent_index;
 	long		tgetent_sequence;
 
+	WINDOWLIST	*_nc_windowlist;
+#define WindowList(sp)	_nc_globals._nc_windowlist
+
 #if USE_HOME_TERMINFO
 	char		*home_terminfo;
 #endif
@@ -729,6 +730,8 @@ typedef struct {
 
 extern NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals;
 
+#define N_RIPS 5
+
 /*
  * Global data which can be swept up into a SCREEN when one is created.
  * It may be modified before the next SCREEN is created.
@@ -737,8 +740,10 @@ typedef struct {
 	bool		use_env;
 	bool		filter_mode;
 	attr_t		previous_attr;
+	ripoff_t	rippedoff[N_RIPS];
+	ripoff_t	*rsp;
 	TPARM_STATE	tparm_state;
-	void		*saved_tty;	/* savetty/resetty information	    */
+	TTY		*saved_tty;	/* savetty/resetty information	    */
 #if NCURSES_NO_PADDING
 	bool		_no_padding;	/* flag to set if padding disabled  */
 #endif
@@ -746,8 +751,6 @@ typedef struct {
 	chtype		*real_acs_map;
 	int		_LINES;
 	int		_COLS;
-	int		_TABSIZE;
-	int		_ESCDELAY;
 	TERMINAL	*_cur_term;
 #ifdef TRACE
 	long		_outchars;
@@ -756,10 +759,16 @@ typedef struct {
 #endif
 } NCURSES_PRESCREEN;
 
-#define N_RIPS 5
-
+/*
+ * Use screen-specific ripoff data (for softkeys) rather than global.
+ */
+#ifdef USE_SP_RIPOFF
 #define safe_ripoff_sp     (sp)->rsp
 #define safe_ripoff_stack  (sp)->rippedoff
+#else
+#define safe_ripoff_sp	   _nc_prescreen.rsp
+#define safe_ripoff_stack  _nc_prescreen.rippedoff
+#endif
 
 extern NCURSES_EXPORT_VAR(NCURSES_PRESCREEN) _nc_prescreen;
 
@@ -777,7 +786,7 @@ struct screen {
 	bool		_use_env;	/* LINES & COLS from environment?   */
 	int		_checkfd;	/* filedesc for typeahead check	    */
 	TERMINAL	*_term;		/* terminal type information	    */
-	void*		_saved_tty;	/* savetty/resetty information	    */
+	TTY		_saved_tty;	/* savetty/resetty information	    */
 	NCURSES_SIZE_T	_lines;		/* screen lines			    */
 	NCURSES_SIZE_T	_columns;	/* screen columns		    */
 
@@ -898,9 +907,8 @@ struct screen {
 	 */
 	bool		_nc_sp_idlok;
 	bool		_nc_sp_idcok;
-
-#define _nc_idlok SP_PARM->_nc_sp_idlok
-#define _nc_idcok SP_PARM->_nc_sp_idcok
+#define _nc_idlok SP->_nc_sp_idlok
+#define _nc_idcok SP->_nc_sp_idcok
 
 	/*
 	 * These are the data that support the mouse interface.
@@ -954,7 +962,7 @@ struct screen {
 	 * This supports automatic resizing
 	 */
 #if USE_SIZECHANGE
-	int		(*_resize)(SCREEN*,int,int);
+	int		(*_resize)(int,int);
 #endif
 
 	/*
@@ -994,8 +1002,10 @@ struct screen {
 	char		tracechr_buf[40];
 	char		tracemse_buf[TRACEMSE_MAX];
 #endif
+#if 0
 	WINDOWLIST*	_windowlist;
 #define WindowList(sp)  (sp)->_windowlist
+#endif
 	NCURSES_OUTC	jump;
 
 	ripoff_t	rippedoff[N_RIPS];
@@ -1042,7 +1052,6 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
     WindowList(sp) = 0;                         \
     sp->_outch = NCURSES_SP_NAME(_nc_outch);    \
     sp->jump = 0                                \
-
 
 /* usually in <limits.h> */
 #ifndef UCHAR_MAX
@@ -1317,6 +1326,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define each_screen(p) p = _nc_screen_chain; p != 0; p = (p)->_next_screen
 #define each_window(sp,p) p = WindowList(sp); p != 0; p = (p)->next
 #define each_ripoff(p) p = safe_ripoff_stack; (p - safe_ripoff_stack) < N_RIPS; ++p
+
 /*
  * Prefixes for call/return points of library function traces.  We use these to
  * instrument the public functions so that the traces can be easily transformed
@@ -1493,7 +1503,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 						__FILE__, __LINE__, \
 						sp->_cursrow, \
 						sp->_curscol)); \
-					NCURSES_SP_NAME(_nc_do_xmc_glitch)(sp,chg); \
+					NCURSES_SP_NAME(_nc_do_xmc_glitch)(NCURSES_SP_ARGx chg); \
 				} \
 			}
 #else
@@ -1611,7 +1621,6 @@ extern NCURSES_EXPORT(int) _nc_insert_ch(WINDOW *, chtype);
 extern NCURSES_EXPORT(void) _nc_mvcur_init (void);
 extern NCURSES_EXPORT(void) _nc_mvcur_resume (void);
 extern NCURSES_EXPORT(void) _nc_mvcur_wrap (void);
-extern NCURSES_EXPORT(int)  _nc_tinfo_mvcur(SCREEN*,int,int,int,int);
 
 extern NCURSES_EXPORT(int) _nc_scrolln (int, int, int, int);
 
@@ -1631,11 +1640,7 @@ extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int)    _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int)    _nc_locale_breaks_acs(TERMINAL *);
 extern NCURSES_EXPORT(int)    _nc_setupterm(NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL**, NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL*, int *, int *);
-
-/* lib_set_term.c */
-extern NCURSES_EXPORT(int)    _nc_ripoffline(int line, int(*)(WINDOW*,int));
+extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 
 /* lib_tstp.c */
 #if USE_SIGWINCH
@@ -1643,7 +1648,6 @@ extern NCURSES_EXPORT(int) _nc_handle_sigwinch(SCREEN *);
 #else
 #define _nc_handle_sigwinch(a) /* nothing */
 #endif
-
 
 /* lib_wacs.c */
 #if USE_WIDEC_SUPPORT
@@ -1691,9 +1695,10 @@ extern NCURSES_EXPORT(int) _nc_baudrate (int);
 extern NCURSES_EXPORT(int) _nc_freewin (WINDOW *);
 extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
 extern NCURSES_EXPORT(int) _nc_keypad (SCREEN *, bool);
-extern NCURSES_EXPORT(int) _nc_tinfo_has_key(SCREEN*, int);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
+extern NCURSES_EXPORT(int) _nc_putp(const char *, const char *);
+extern NCURSES_EXPORT(int) _nc_putp_flush(const char *, const char *);
 extern NCURSES_EXPORT(int) _nc_read_termcap_entry (const char *const, TERMTYPE *const);
 extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, bool, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait (SCREEN *, int, int, int * EVENTLIST_2nd(_nc_eventlist *));
@@ -1771,9 +1776,8 @@ extern NCURSES_EXPORT_VAR(int *) _nc_oldnums;
  * On systems with a broken linker, define 'SP' as a function to force the
  * linker to pull in the data-only module with 'SP'.
  */
-#define _nc_alloc_screen_sp() typeCalloc(SCREEN, 1)
-
 #if BROKEN_LINKER
+#define SP _nc_screen()
 extern NCURSES_EXPORT(SCREEN *) _nc_screen (void);
 extern NCURSES_EXPORT(int)      _nc_alloc_screen (void);
 extern NCURSES_EXPORT(void)     _nc_set_screen (SCREEN *);
@@ -1782,11 +1786,11 @@ extern NCURSES_EXPORT(void)     _nc_set_screen (SCREEN *);
 /* current screen is private data; avoid possible linking conflicts too */
 extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define CURRENT_SCREEN SP
-#define _nc_alloc_screen()      ((SP = _nc_alloc_screen_sp()) != 0)
+#define _nc_alloc_screen()      ((SP = typeCalloc(SCREEN, 1)) != 0)
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS
+#if NCURSES_SP_FUNCS && 0
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN
@@ -1801,7 +1805,6 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define screen_columns(sp)      (sp)->_columns
 
 extern NCURSES_EXPORT(int) _nc_slk_initialize (WINDOW *, int);
-extern NCURSES_EXPORT(int) _nc_format_slks (SCREEN *, int);
 
 /*
  * Some constants related to SLK's
@@ -1819,14 +1822,13 @@ extern NCURSES_EXPORT(int) _nc_format_slks (SCREEN *, int);
 #define MAX_SKEY(fmt)     (SLK_STDFMT(fmt)? MAX_SKEY_OLD : MAX_SKEY_PC)
 #define MAX_SKEY_LEN(fmt) (SLK_STDFMT(fmt)? MAX_SKEY_LEN_OLD : MAX_SKEY_LEN_PC)
 
+extern NCURSES_EXPORT(int) _nc_ripoffline (int line, int (*init)(WINDOW *,int));
+
 /*
  * Common error messages
  */
 #define MSG_NO_MEMORY "Out of memory"
 #define MSG_NO_INPUTS "Premature EOF"
-
-extern NCURSES_EXPORT(int) _nc_set_tty_mode(TTY *);
-extern NCURSES_EXPORT(int) _nc_get_tty_mode(TTY *);
 
 /* timed_wait flag definitions */
 #define TW_NONE    0
@@ -1950,8 +1952,6 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #define HasTInfoTerminal(sp) ((0 != TerminalOf(sp)) && IsTermInfo(sp))
 #define IsValidTIScreen(sp)  (HasTInfoTerminal(sp))
 
-extern NCURSES_EXPORT(int) _nc_get_driver(TERMINAL_CONTROL_BLOCK*, const char*, int*);
-
 /*
  * Exported entrypoints beyond the published API
  */
@@ -1971,7 +1971,6 @@ extern NCURSES_EXPORT(char *)    NCURSES_SP_NAME(longname)(SCREEN*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_set_tabsize)(SCREEN*, int);
 #endif
 
-
 /*
  * We put the safe versions of various calls here as they are not published
  * part of the API up to now
@@ -1989,7 +1988,7 @@ extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_get_tty_mode)(SCREEN*,TTY*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_mcprint)(SCREEN*,char*, int);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_msec_cost)(SCREEN*, const char *, int);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_outch)(SCREEN*, int);
-extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp)(SCREEN*, const char*);
+extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp)(SCREEN*, const char *, const char *);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_putp_flush)(SCREEN*, const char *, const char *);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resetty)(SCREEN*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_resize_term)(SCREEN*,int,int);
@@ -2004,7 +2003,7 @@ extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tgetent)(SCREEN*,char*,const
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_tigetnum)(SCREEN*,NCURSES_CONST char*);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vid_attr)(SCREEN *, attr_t, short, void *);
 extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_vidputs)(SCREEN*,chtype,int(*) (SCREEN*, int));
-extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_do_color)(SCREEN*, short, short, bool, int (*)(SCREEN*,int));
+extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_do_color)(SCREEN*, short, short, bool, NCURSES_SP_OUTC);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_do_xmc_glitch)(SCREEN*, attr_t);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_flush)(SCREEN*);
 extern NCURSES_EXPORT(void)     NCURSES_SP_NAME(_nc_free_and_exit)(SCREEN*, int) GCC_NORETURN;
@@ -2048,6 +2047,7 @@ extern NCURSES_EXPORT(wchar_t *) NCURSES_SP_NAME(_nc_wunctrl)(SCREEN*, cchar_t *
 #define safe_unctrl  _nc_unctrl
 #define safe_ungetch _nc_ungetch
 
+extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_keyname (SCREEN *, int);
 extern NCURSES_EXPORT(int) _nc_ungetch (SCREEN *, int);
 extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_unctrl (SCREEN *, chtype);
 

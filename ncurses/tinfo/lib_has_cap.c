@@ -42,11 +42,11 @@
 
 #include <curses.priv.h>
 
-#if NCURSES_SP_FUNCS
-#define CUR TerminalOf(SP_PARM)->type.
+#ifndef CUR
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_has_cap.c,v 1.6.1.2 2009/05/09 15:14:21 tom Exp $")
+MODULE_ID("$Id: lib_has_cap.c,v 1.8 2009/05/10 00:53:52 tom Exp $")
 
 NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(has_ic) (NCURSES_SP_DCL0)

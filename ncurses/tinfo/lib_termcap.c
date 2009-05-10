@@ -38,7 +38,6 @@
 
 #define __INTERNAL_CAPS_VISIBLE
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
 
 #include <termcap.h>
 #include <tic.h>
@@ -46,7 +45,11 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.63.1.5 2009/04/25 18:44:41 tom Exp $")
+#ifndef CUR
+#define CUR SP_TERMTYPE 
+#endif
+
+MODULE_ID("$Id: lib_termcap.c,v 1.65 2009/05/10 00:48:29 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -77,22 +80,19 @@ NCURSES_EXPORT_VAR(char *) BC = 0;
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
+tgetent(char *bufp, const char *name)
 {
-    int errcode = ERR;
+#if NCURSES_SP_FUNCS
+    SCREEN *sp = CURRENT_SCREEN;
+#endif
+    int errcode;
     int n;
     bool found_cache = FALSE;
-    TERMINAL *termp = 0;
 
     START_TRACE();
     T((T_CALLED("tgetent()")));
 
-    _nc_setupterm_ex(&termp, (NCURSES_CONST char *) name,
-		     STDOUT_FILENO, &errcode, TRUE);
-
-    if (termp == 0 ||
-	!((TERMINAL_CONTROL_BLOCK *) termp)->drv->isTerminfo)
-	return (errcode);
+    _nc_setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode, TRUE);
 
     /*
      * In general we cannot tell if the fixed sgr0 is still used by the
@@ -116,9 +116,9 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	    /*
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
-	    if (LAST_TRM != 0 && LAST_TRM != TerminalOf(SP_PARM)) {
+	    if (LAST_TRM != 0 && LAST_TRM != cur_term) {
 		TERMINAL *trm = LAST_TRM;
-		NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx LAST_TRM);
+		del_curterm(LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
 		    if (LAST_TRM == trm)
 			LAST_TRM = 0;
@@ -138,7 +138,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	}
 	CacheInx = best;
     }
-    LAST_TRM = TerminalOf(SP_PARM);
+    LAST_TRM = cur_term;
     LAST_SEQ = ++CacheSeq;
 
     PC = 0;
@@ -160,7 +160,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	if ((FIX_SGR0 = _nc_trim_sgr0(&(TerminalOf(SP_PARM)->type))) != 0) {
+	if ((FIX_SGR0 = _nc_trim_sgr0(&(cur_term->type))) != 0) {
 	    if (!strcmp(FIX_SGR0, exit_attribute_mode)) {
 		if (FIX_SGR0 != exit_attribute_mode) {
 		    free(FIX_SGR0);
@@ -171,8 +171,8 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	LAST_BUF = bufp;
 	LAST_USE = TRUE;
 
-	SetNoPadding(SP_PARM);
-	(void) NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);	/* sets ospeed as a side-effect */
+	SetNoPadding(SP);
+	(void) baudrate();	/* sets ospeed as a side-effect */
 
 /* LINT_PREPRO
 #if 0*/
@@ -184,14 +184,6 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
     returnCode(errcode);
 }
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-tgetent(char *bufp, const char *name)
-{
-    return NCURSES_SP_NAME(tgetent) (CURRENT_SCREEN, bufp, name);
-}
-#endif
-
 /***************************************************************************
  *
  * tgetflag(str)
@@ -202,13 +194,13 @@ tgetent(char *bufp, const char *name)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx NCURSES_CONST char *id)
+tgetflag(NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetflag(%p, %s)"), SP_PARM, id));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    T((T_CALLED("tgetflag(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_boolean(i, tp) {
 	    const char *capname = ExtBoolname(tp, i, boolcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -220,14 +212,6 @@ NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx NCURSES_CONST char *id)
     returnCode(0);		/* Solaris does this */
 }
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-tgetflag(NCURSES_CONST char *id)
-{
-    return NCURSES_SP_NAME(tgetflag) (CURRENT_SCREEN, id);
-}
-#endif
-
 /***************************************************************************
  *
  * tgetnum(str)
@@ -238,13 +222,13 @@ tgetflag(NCURSES_CONST char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx NCURSES_CONST char *id)
+tgetnum(NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetnum(%p, %s)"), SP_PARM, id));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    T((T_CALLED("tgetnum(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_number(i, tp) {
 	    const char *capname = ExtNumname(tp, i, numcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -257,14 +241,6 @@ NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx NCURSES_CONST char *id)
     returnCode(ABSENT_NUMERIC);
 }
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-tgetnum(NCURSES_CONST char *id)
-{
-    return NCURSES_SP_NAME(tgetnum) (CURRENT_SCREEN, id);
-}
-#endif
-
 /***************************************************************************
  *
  * tgetstr(str, area)
@@ -275,14 +251,17 @@ tgetnum(NCURSES_CONST char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(char *)
-NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx NCURSES_CONST char *id, char **area)
+tgetstr(NCURSES_CONST char *id, char **area)
 {
+#if NCURSES_SP_FUNCS
+    SCREEN *sp = CURRENT_SCREEN;
+#endif
     unsigned i;
     char *result = NULL;
 
     T((T_CALLED("tgetstr(%s,%p)"), id, area));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_string(i, tp) {
 	    const char *capname = ExtStrname(tp, i, strcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -308,14 +287,6 @@ NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx NCURSES_CONST char *id, char **area)
     }
     returnPtr(result);
 }
-
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(char *)
-tgetstr(NCURSES_CONST char *id, char **area)
-{
-    return NCURSES_SP_NAME(tgetstr) (CURRENT_SCREEN, id, area);
-}
-#endif
 
 #if NO_LEAKS
 NCURSES_EXPORT(void)

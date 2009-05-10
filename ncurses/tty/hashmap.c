@@ -69,11 +69,11 @@ AUTHOR
 
 #include <curses.priv.h>
 
-#if NCURSES_SP_FUNCS
-#define CUR TerminalOf(sp)->type.
+#ifndef CUR
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: hashmap.c,v 1.57.1.2 2009/05/09 15:15:19 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.59 2009/05/10 00:51:57 tom Exp $")
 
 #ifdef HASHDEBUG
 

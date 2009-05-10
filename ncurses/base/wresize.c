@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.29.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: wresize.c,v 1.30 2009/05/09 18:37:43 tom Exp $")
 
 static int
 cleanup_lines(struct ldat *data, int length)
@@ -53,11 +53,10 @@ repair_subwindows(WINDOW *cmp)
     WINDOWLIST *wp;
     struct ldat *pline = cmp->_line;
     int row;
-    SCREEN *sp = _nc_screen_of(cmp);
 
     _nc_lock_global(curses);
 
-    for (each_window(sp, wp)) {
+    for (each_window(SP, wp)) {
 	WINDOW *tst = &(wp->win);
 
 	if (tst->_parent == cmp) {

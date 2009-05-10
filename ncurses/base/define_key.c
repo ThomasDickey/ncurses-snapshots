@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: define_key.c,v 1.16 2009/02/21 17:03:29 tom Exp $")
+MODULE_ID("$Id: define_key.c,v 1.17 2009/05/09 18:30:16 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
@@ -47,7 +47,7 @@ NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
 	unsigned ukey = (unsigned) keycode;
 
 	if (str != 0) {
-	    NCURSES_SP_NAME(define_key) (SP_PARM, str, 0);
+	    NCURSES_SP_NAME(define_key) (NCURSES_SP_ARGx str, 0);
 	} else if (NCURSES_SP_NAME(has_key) (NCURSES_SP_ARGx keycode)) {
 	    while (_nc_remove_key(&(SP_PARM->_keytry), ukey))
 		code = OK;

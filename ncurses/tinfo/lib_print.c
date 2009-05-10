@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,19 +32,27 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
-#define CUR TerminalOf(sp)->type.
 
-MODULE_ID("$Id: lib_print.c,v 1.16.1.1 2008/11/16 00:19:59 juergen Exp $")
+#include <term.h>
+
+#ifndef CUR
+#define CUR SP_TERMTYPE 
+#endif
+
+MODULE_ID("$Id: lib_print.c,v 1.18 2009/05/10 00:48:29 tom Exp $")
 
 NCURSES_EXPORT(int)
-_nc_tinfo_mcprint(SCREEN *sp, char *data, int len)
+mcprint(char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
 {
+#if NCURSES_SP_FUNCS
+    SCREEN *sp = CURRENT_SCREEN;
+#endif
     char *mybuf, *switchon;
     size_t onsize, offsize, res;
 
     errno = 0;
-    if (!HasTInfoTerminal(sp) || (!prtr_non && (!prtr_on || !prtr_off))) {
+    if (!cur_term || (!prtr_non && (!prtr_on || !prtr_off))) {
 	errno = ENODEV;
 	return (ERR);
     }
@@ -77,16 +85,15 @@ _nc_tinfo_mcprint(SCREEN *sp, char *data, int len)
      * data has actually been shipped to the terminal.  If the write(2)
      * operation is truly atomic we're protected from this.
      */
-    res = write(TerminalOf(sp)->Filedes, mybuf, onsize + len + offsize);
+    res = write(cur_term->Filedes, mybuf, onsize + len + offsize);
 
     /*
      * By giving up our scheduler slot here we increase the odds that the
      * kernel will ship the contiguous clist items from the last write
      * immediately.
      */
-#ifndef __MINGW32__
     (void) sleep(0);
-#endif
+
     free(mybuf);
     return (res);
 }
