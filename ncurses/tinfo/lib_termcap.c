@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                                                 *
  *                                                                          *
  * some of the code in here was contributed by:                             *
  * Magnus Bengtsson, d6mbeng@dtek.chalmers.se (Nov'93)                      *
@@ -49,7 +50,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.65.1.1 2009/05/23 19:45:09 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.66 2009/05/23 23:47:34 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -82,20 +83,14 @@ NCURSES_EXPORT_VAR(char *) BC = 0;
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 {
-    int errcode = ERR;
+    int errcode;
     int n;
     bool found_cache = FALSE;
-    TERMINAL *termp = 0;
 
     START_TRACE();
     T((T_CALLED("tgetent()")));
 
-    _nc_setupterm_ex(&termp, (NCURSES_CONST char *) name,
-		     STDOUT_FILENO, &errcode, TRUE);
-
-    if (termp == 0 ||
-	!((TERMINAL_CONTROL_BLOCK *) termp)->drv->isTerminfo)
-	return (errcode);
+    _nc_setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode, TRUE);
 
     /*
      * In general we cannot tell if the fixed sgr0 is still used by the
@@ -119,7 +114,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	    /*
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
-	    if (LAST_TRM != 0 && LAST_TRM != TerminalOf(SP_PARM)) {
+	    if (LAST_TRM != 0 && LAST_TRM != cur_term) {
 		TERMINAL *trm = LAST_TRM;
 		NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
@@ -141,7 +136,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	}
 	CacheInx = best;
     }
-    LAST_TRM = TerminalOf(SP_PARM);
+    LAST_TRM = cur_term;
     LAST_SEQ = ++CacheSeq;
 
     PC = 0;
@@ -163,7 +158,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	if ((FIX_SGR0 = _nc_trim_sgr0(&(TerminalOf(SP_PARM)->type))) != 0) {
+	if ((FIX_SGR0 = _nc_trim_sgr0(&(cur_term->type))) != 0) {
 	    if (!strcmp(FIX_SGR0, exit_attribute_mode)) {
 		if (FIX_SGR0 != exit_attribute_mode) {
 		    free(FIX_SGR0);
@@ -209,9 +204,9 @@ NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetflag(%p, %s)"), SP_PARM, id));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    T((T_CALLED("tgetflag(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_boolean(i, tp) {
 	    const char *capname = ExtBoolname(tp, i, boolcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -245,9 +240,9 @@ NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx NCURSES_CONST char *id)
 {
     unsigned i;
 
-    T((T_CALLED("tgetnum(%p, %s)"), SP_PARM, id));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    T((T_CALLED("tgetnum(%s)"), id));
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_number(i, tp) {
 	    const char *capname = ExtNumname(tp, i, numcodes);
 	    if (!strncmp(id, capname, 2)) {
@@ -284,8 +279,8 @@ NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx NCURSES_CONST char *id, char **area)
     char *result = NULL;
 
     T((T_CALLED("tgetstr(%s,%p)"), id, area));
-    if (HasTInfoTerminal(SP_PARM)) {
-	TERMTYPE *tp = &(TerminalOf(SP_PARM)->type);
+    if (cur_term != 0) {
+	TERMTYPE *tp = &(cur_term->type);
 	for_each_string(i, tp) {
 	    const char *capname = ExtStrname(tp, i, strcodes);
 	    if (!strncmp(id, capname, 2)) {
