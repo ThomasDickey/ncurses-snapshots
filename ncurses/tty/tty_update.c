@@ -82,7 +82,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.256.1.1 2009/05/23 21:19:33 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.256 2009/05/17 00:13:49 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -192,12 +192,12 @@ position_check(NCURSES_SP_DCLx int expected_y, int expected_x, char *legend)
 static NCURSES_INLINE void
 GoTo(NCURSES_SP_DCLx int const row, int const col)
 {
-    TR(TRACE_MOVE, ("GoTo(%p, %d, %d) from (%d, %d)",
-		    SP_PARM, row, col, SP_PARM->_cursrow, SP_PARM->_curscol));
+    TR(TRACE_MOVE, ("GoTo(%d, %d) from (%d, %d)",
+		    row, col, SP_PARM->_cursrow, SP_PARM->_curscol));
 
     position_check(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, "GoTo");
 
-    _nc_tinfo_mvcur(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, row, col);
+    mvcur(SP_PARM->_cursrow, SP_PARM->_curscol, row, col);
     position_check(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, "GoTo2");
 }
 
@@ -558,8 +558,7 @@ EmitRange(NCURSES_SP_DCLx const NCURSES_CH_T * ntext, int num)
 		&& runcount > SP_PARM->_ech_cost + SP_PARM->_cup_ch_cost
 		&& can_clear_with(NCURSES_SP_ARGx CHREF(ntext0))) {
 		UpdateAttrs(SP_PARM, ntext0);
-		NCURSES_SP_NAME(putp) (NCURSES_SP_ARGx
-				       TPARM_1(erase_chars, runcount));
+		NCURSES_SP_NAME(putp) (NCURSES_SP_ARGx TPARM_1(erase_chars, runcount));
 
 		/*
 		 * If this is the last part of the given interval,
@@ -625,7 +624,7 @@ PutRange(NCURSES_SP_DCLx
     int i, j, same;
 
     TR(TRACE_CHARPUT, ("PutRange(%p, %p, %p, %d, %d, %d)",
-		       NCURSES_SP_ARGx otext, ntext, row, first, last));
+		       SP_PARM, otext, ntext, row, first, last));
 
     if (otext != ntext
 	&& (last - first + 1) > SP_PARM->_inline_cost) {
@@ -659,7 +658,7 @@ PutRange(NCURSES_SP_DCLx
 		if_USE_SCROLL_HINTS(win->_line[row].oldindex = row)
 
 NCURSES_EXPORT(int)
-_nc_tinfo_doupdate(SCREEN *sp)
+NCURSES_SP_NAME(doupdate) (NCURSES_SP_DCL0)
 {
     int i;
     int nonempty;
@@ -667,7 +666,7 @@ _nc_tinfo_doupdate(SCREEN *sp)
     struct tms before, after;
 #endif /* USE_TRACE_TIMES */
 
-    T((T_CALLED("_nc_tinfo:doupdate(%p)"), SP_PARM));
+    T((T_CALLED("doupdate()")));
 
 #if !USE_REENTRANT
     /*
@@ -807,8 +806,9 @@ _nc_tinfo_doupdate(SCREEN *sp)
 		    /* find end of span, if it's onscreen */
 		    for (m = i; m < screen_lines(SP_PARM); m++) {
 			for (; n < screen_columns(SP_PARM); n++) {
-			    attr_t testattr =
-			    AttrOf(NewScreen(SP_PARM)->_line[m].text[n]);
+			    attr_t testattr
+			    = AttrOf(NewScreen(SP_PARM)->_line[m].text[n]);
+
 			    if ((testattr & SP_PARM->_xmc_triggers) == rattr) {
 				end_onscreen = TRUE;
 				TR(TRACE_ATTRS,
@@ -870,7 +870,8 @@ _nc_tinfo_doupdate(SCREEN *sp)
 		    /* turn off new attributes over span */
 		    for (p = i; p < screen_lines(SP_PARM); p++) {
 			for (; q < screen_columns(SP_PARM); q++) {
-			    attr_t testattr = AttrOf(newscr->_line[p].text[q]);
+			    attr_t testattr =
+			    AttrOf(NewScreen(SP_PARM)->_line[p].text[q]);
 			    if ((testattr & SP_PARM->_xmc_triggers) == rattr)
 				goto foundend;
 			    RemAttr(NewScreen(SP_PARM)->_line[p].text[q], turnon);
@@ -920,7 +921,7 @@ _nc_tinfo_doupdate(SCREEN *sp)
 	nonempty = min(screen_lines(SP_PARM), NewScreen(SP_PARM)->_maxy + 1);
 
 	if (SP_PARM->_scrolling) {
-	    NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_ARG);
+	    _nc_scroll_optimize();
 	}
 
 	nonempty = ClrBottom(NCURSES_SP_ARGx nonempty);
@@ -937,8 +938,8 @@ _nc_tinfo_doupdate(SCREEN *sp)
 	    }
 
 	    /*
-	     * newscr->line[i].firstchar is normally set
-	     * by wnoutrefresh.  curscr->line[i].firstchar
+	     * newscr.line[i].firstchar is normally set
+	     * by wnoutrefresh.  curscr.line[i].firstchar
 	     * is normally set by _nc_scroll_window in the
 	     * vertical-movement optimization code,
 	     */
@@ -1002,6 +1003,14 @@ _nc_tinfo_doupdate(SCREEN *sp)
     returnCode(OK);
 }
 
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+doupdate(void)
+{
+    return NCURSES_SP_NAME(doupdate) (CURRENT_SCREEN);
+}
+#endif
+
 /*
  *	ClrBlank(win)
  *
@@ -1013,14 +1022,14 @@ _nc_tinfo_doupdate(SCREEN *sp)
  *	in the wbkgd() call.  Assume 'stdscr' for this case.
  */
 #define BCE_ATTRS (A_NORMAL|A_COLOR)
-#define BCE_BKGD(sp,win) (((win) == CurScreen(sp) ? StdScreen(sp) : (win))->_nc_bkgd)
+#define BCE_BKGD(win) (((win) == CurScreen(SP_PARM) ? StdScreen(SP_PARM) : (win))->_nc_bkgd)
 
 static NCURSES_INLINE NCURSES_CH_T
 ClrBlank(NCURSES_SP_DCLx WINDOW *win)
 {
     NCURSES_CH_T blank = blankchar;
     if (back_color_erase)
-	AddAttr(blank, (AttrOf(BCE_BKGD(sp, win)) & BCE_ATTRS));
+	AddAttr(blank, (AttrOf(BCE_BKGD(win)) & BCE_ATTRS));
     return blank;
 }
 
@@ -1064,7 +1073,7 @@ ClrToEOL(NCURSES_SP_DCLx NCURSES_CH_T blank, bool needclear)
 {
     int j;
 
-    if (SP_PARM != 0 && CurScreen(SP_PARM) != 0
+    if (CurScreen(SP_PARM) != 0
 	&& SP_PARM->_cursrow >= 0) {
 	for (j = SP_PARM->_curscol; j < screen_columns(SP_PARM); j++) {
 	    if (j >= 0) {
@@ -1182,7 +1191,7 @@ ClrBottom(NCURSES_SP_DCLx int total)
 #define xmc_turn_on(sp,a,b) ((((a)^(b)) & ~(a) & (sp)->_xmc_triggers) != 0)
 #endif
 
-#define xmc_new(sp,r,c) NewScreen(sp)->_line[r].text[c]
+#define xmc_new(sp,r,c) NewScreen(SP_PARM)->_line[r].text[c]
 #define xmc_turn_off(sp,a,b) xmc_turn_on(sp,b,a)
 #endif /* USE_XMC_SUPPORT */
 
@@ -1262,8 +1271,8 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
     if (attrchanged) {		/* we may have to disregard the whole line */
 	GoTo(NCURSES_SP_ARGx lineno, firstChar);
 	ClrToEOL(NCURSES_SP_ARGx
-		 ClrBlank(NCURSES_SP_ARGx
-			  CurScreen(SP_PARM)), FALSE);
+		 ClrBlank(NCURSES_SP_ARGx CurScreen(SP_PARM)),
+		 FALSE);
 	PutRange(NCURSES_SP_ARGx
 		 oldLine, newLine, lineno, 0,
 		 screen_columns(SP_PARM) - 1);
@@ -1423,8 +1432,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 	    ClrToEOL(NCURSES_SP_ARGx blank, FALSE);
 	} else if ((nLastChar != oLastChar)
 		   && (!CharEq(newLine[nLastChar], oldLine[oLastChar])
-		       || !(SP_PARM->_nc_sp_idcok
-			    && NCURSES_SP_NAME(has_ic) (NCURSES_SP_ARG)))) {
+		       || !(_nc_idcok && has_ic()))) {
 	    GoTo(NCURSES_SP_ARGx lineno, firstChar);
 	    if ((oLastChar - nLastChar) > SP_PARM->_el_cost) {
 		if (PutRange(NCURSES_SP_ARGx
@@ -1568,6 +1576,7 @@ ClearScreen(NCURSES_SP_DCLx NCURSES_CH_T blank)
 	} else if (clr_eos) {
 	    SP_PARM->_cursrow = SP_PARM->_curscol = -1;
 	    GoTo(NCURSES_SP_ARGx 0, 0);
+
 	    UpdateAttrs(SP_PARM, blank);
 	    TPUTS_TRACE("clr_eos");
 	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
@@ -1576,6 +1585,7 @@ ClearScreen(NCURSES_SP_DCLx NCURSES_CH_T blank)
 				    NCURSES_SP_NAME(_nc_outch));
 	} else if (clr_eol) {
 	    SP_PARM->_cursrow = SP_PARM->_curscol = -1;
+
 	    UpdateAttrs(SP_PARM, blank);
 	    for (i = 0; i < screen_lines(SP_PARM); i++) {
 		GoTo(NCURSES_SP_ARGx i, 0);
@@ -1923,17 +1933,12 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
 			      int maxy)
 /* scroll region from top to bot by n lines */
 {
-    NCURSES_CH_T blank;
+    NCURSES_CH_T blank = ClrBlank(NCURSES_SP_ARGx StdScreen(SP_PARM));
     int i;
     bool cursor_saved = FALSE;
     int res;
 
-    TR(TRACE_MOVE, ("_nc_scrolln(%p, %d, %d, %d, %d)", SP_PARM, n, top, bot, maxy));
-
-    if (!IsValidScreen(SP_PARM))
-	return (ERR);
-
-    blank = ClrBlank(NCURSES_SP_ARGx StdScreen(SP_PARM));
+    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
 
 #if USE_XMC_SUPPORT
     /*
@@ -1977,7 +1982,7 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
 	    SP_PARM->_cursrow = SP_PARM->_curscol = -1;
 	}
 
-	if (res == ERR && SP_PARM->_nc_sp_idlok)
+	if (res == ERR && _nc_idlok)
 	    res = scroll_idl(NCURSES_SP_ARGx n, top, bot - n + 1, blank);
 
 	/*
@@ -2028,7 +2033,7 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
 	    SP_PARM->_cursrow = SP_PARM->_curscol = -1;
 	}
 
-	if (res == ERR && SP_PARM->_nc_sp_idlok)
+	if (res == ERR && _nc_idlok)
 	    res = scroll_idl(NCURSES_SP_ARGx -n, bot + n + 1, top, blank);
 
 	/*
@@ -2074,7 +2079,7 @@ NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_DCL0)
 
     /* reset color pairs and definitions */
     if (SP_PARM->_coloron || SP_PARM->_color_defs)
-	NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_ARG);
+	_nc_reset_colors();
 
     /* restore user-defined colors, if any */
     if (SP_PARM->_color_defs < 0) {
@@ -2146,23 +2151,20 @@ NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 	static const NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 	SP_PARM->_default_color = TRUE;
 	NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_ARGx
-				       -1,
-				       0,
+				       -1, 0,
 				       FALSE,
 				       NCURSES_SP_NAME(_nc_outch));
 	SP_PARM->_default_color = FALSE;
 
-	_nc_tinfo_mvcur(SP_PARM,
-			SP_PARM->_cursrow,
-			SP_PARM->_curscol,
-			screen_lines(SP_PARM) - 1,
-			0);
+	mvcur(SP_PARM->_cursrow,
+	      SP_PARM->_curscol,
+	      screen_lines(SP_PARM) - 1, 0);
 
 	ClrToEOL(NCURSES_SP_ARGx blank, TRUE);
     }
 #endif
     if (SP_PARM->_color_defs) {
-	NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_ARG);
+	_nc_reset_colors();
     }
 }
 
@@ -2179,7 +2181,6 @@ NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_do_xmc_glitch) (NCURSES_SP_DCLx attr_t previous)
 {
     if (SP_PARM != 0) {
-
 	attr_t chg = XMC_CHANGES(previous ^ AttrOf(SCREEN_ATTRS(SP_PARM)));
 
 	while (chg != 0) {

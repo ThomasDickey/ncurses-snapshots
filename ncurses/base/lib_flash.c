@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_flash.c,v 1.9.1.1 2009/05/23 19:37:09 tom Exp $")
+MODULE_ID("$Id: lib_flash.c,v 1.10 2009/05/23 19:37:09 tom Exp $")
 
 /*
  *	flash()

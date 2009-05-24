@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_beep.c,v 1.13.1.1 2009/05/23 19:33:20 tom Exp $")
+MODULE_ID("$Id: lib_beep.c,v 1.14 2009/05/23 19:33:20 tom Exp $")
 
 /*
  *	beep()

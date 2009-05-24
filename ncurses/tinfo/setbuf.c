@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: setbuf.c,v 1.14.1.1 2009/05/23 22:13:44 tom Exp $")
+MODULE_ID("$Id: setbuf.c,v 1.14 2009/05/09 23:09:00 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -102,15 +102,6 @@ MODULE_ID("$Id: setbuf.c,v 1.14.1.1 2009/05/23 22:13:44 tom Exp $")
 NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_set_buffer) (NCURSES_SP_DCLx FILE *ofp, bool buffered)
 {
-    int Cols;
-    int Lines;
-
-    if (0 == SP_PARM)
-	return;
-
-    Cols = *(ptrCols(SP_PARM));
-    Lines = *(ptrLines(SP_PARM));
-
     /* optional optimization hack -- do before any output to ofp */
 #if HAVE_SETVBUF || HAVE_SETBUFFER
     if (SP_PARM->_buffered != buffered) {
@@ -125,7 +116,7 @@ NCURSES_SP_NAME(_nc_set_buffer) (NCURSES_SP_DCLx FILE *ofp, bool buffered)
 	setmode(ofp, O_BINARY);
 #endif
 	if (buffered != 0) {
-	    buf_len = min(Lines * (Cols + 6), 2800);
+	    buf_len = min(LINES * (COLS + 6), 2800);
 	    if ((buf_ptr = SP_PARM->_setbuf) == 0) {
 		if ((buf_ptr = typeMalloc(char, buf_len)) == NULL)
 		      return;
@@ -164,6 +155,6 @@ NCURSES_SP_NAME(_nc_set_buffer) (NCURSES_SP_DCLx FILE *ofp, bool buffered)
 NCURSES_EXPORT(void)
 _nc_set_buffer(FILE *ofp, bool buffered)
 {
-    NCURSES_SP_NAME(_nc_set_buffer) (CURRENT_SCREEN, ofp, buffered);
+    return NCURSES_SP_NAME(_nc_set_buffer) (CURRENT_SCREEN, ofp, buffered);
 }
 #endif

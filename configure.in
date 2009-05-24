@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.470.1.1 2009/04/04 22:39:25 tom Exp $
+dnl $Id: configure.in,v 1.470 2009/03/28 18:22:39 Charles.Wilson Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.470.1.1 $)
+AC_REVISION($Revision: 1.470 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -870,9 +870,9 @@ AC_SUBST(GENERATED_EXT_FUNCS)
 
 AC_MSG_CHECKING(if you want to build with experimental SCREEN extensions)
 AC_ARG_ENABLE(sp-funcs,
-	[  --disable-sp-funcs      disable SCREEN-extensions],
+	[  --enable-sp-funcs       disable experimental SCREEN-extensions],
 	[with_sp_funcs=$enableval],
-	[with_sp_funcs=yes])
+	[with_sp_funcs=no])
 AC_MSG_RESULT($with_sp_funcs)
 if test "$with_sp_funcs" = yes ; then
 	NCURSES_SP_FUNCS=1
