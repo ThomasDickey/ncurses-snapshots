@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2005,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008,2009 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,73 +27,33 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey          1998-on                               *
- *          Juergen Pfeifer           2009                                  *
+ * Author: Thomas Dickey, 2008-on                                           * 
+ *                                                                          *
  ****************************************************************************/
 
-#include <curses.priv.h>
+/* $Id: nc_mingw.h,v 1.1 2009/02/07 23:33:19 tom Exp $ */
 
-#ifndef CUR
-#define CUR SP_TERMTYPE
-#endif
+#ifndef NC_MINGW_H
+#define NC_MINGW_H 1
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.22 2009/05/23 20:02:46 tom Exp $")
+#define WINVER 0x0501
+#include <windows.h>
 
-/*
- * Modify the behavior of color-pair 0 so that the library doesn't assume that
- * it is white on black.  This is an extension to XSI curses.
- */
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(use_default_colors) (NCURSES_SP_DCL0)
-{
-    T((T_CALLED("use_default_colors(%p)"), SP_PARM));
-    returnCode(NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_ARGx -1, -1));
-}
+#undef sleep
+#define sleep(n) Sleep((n) * 1000)
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-use_default_colors(void)
-{
-    return NCURSES_SP_NAME(use_default_colors) (CURRENT_SCREEN);
-}
-#endif
+#undef gettimeofday
+#define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 
-/*
- * Modify the behavior of color-pair 0 so that the library assumes that it
- * is something specific, possibly not white on black.
- */
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
-{
-    int code = ERR;
+#include <sys/time.h>	/* for struct timeval */
 
-    T((T_CALLED("assume_default_colors(%p,%d,%d)"), sp, fg, bg));
-#ifdef USE_TERM_DRIVER
-    if (sp != 0)
-	code = CallDriver_2(sp, defaultcolors, fg, bg);
-#else
-    if ((orig_pair || orig_colors) && !initialize_pair) {
+extern int _nc_gettimeofday(struct timeval *, void *);
 
-	SP_PARM->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
-	SP_PARM->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
-	SP_PARM->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : (fg & C_MASK);
-	SP_PARM->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : (bg & C_MASK);
-	if (SP_PARM->_color_pairs != 0) {
-	    bool save = SP_PARM->_default_color;
-	    SP_PARM->_default_color = TRUE;
-	    init_pair(0, (short) fg, (short) bg);
-	    SP_PARM->_default_color = save;
-	}
-	code = OK;
-    }
-#endif
-    returnCode(code);
-}
+#undef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY 1
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-assume_default_colors(int fg, int bg)
-{
-    return NCURSES_SP_NAME(assume_default_colors) (CURRENT_SCREEN, fg, bg);
-}
-#endif
+#define SIGHUP  1
+#define SIGKILL 9
+#define getlogin() "username"
+
+#endif /* NC_MINGW_H */

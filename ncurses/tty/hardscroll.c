@@ -147,7 +147,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.43 2009/04/18 21:41:30 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.43.1.1 2009/04/25 19:24:24 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -208,7 +208,7 @@ NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_DCL0)
 #ifdef TRACE
     if (USE_TRACEF(TRACE_UPDATE | TRACE_MOVE)) {
 	NCURSES_SP_NAME(_nc_linedump) (NCURSES_SP_ARG);
-	_nc_unlock_global(tracef);
+	//_nc_unlock_global(tracef);
     }
 #endif /* TRACE */
 
