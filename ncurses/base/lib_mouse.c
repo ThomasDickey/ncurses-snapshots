@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                         2008                    *
  ****************************************************************************/
 
 /*
@@ -80,10 +81,10 @@
 #include <curses.priv.h>
 
 #ifndef CUR
-#define CUR SP_TERMTYPE 
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.107 2009/05/10 00:48:29 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.107.1.2 2009/05/23 22:43:26 tom Exp $")
 
 #include <tic.h>
 
@@ -153,7 +154,7 @@ make an error
 #define LIBGPM_SONAME "libgpm.so"
 #endif
 
-#define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(SP_PARM->_dlopen_gpm, #name))
+#define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(sp->_dlopen_gpm, #name))
 
 #endif				/* USE_GPM_SUPPORT */
 
@@ -347,6 +348,9 @@ handle_sysmouse(int sig GCC_UNUSED)
 }
 #endif /* USE_SYSMOUSE */
 
+#ifndef USE_TERM_DRIVER
+#define xterm_kmous "\033[M"
+
 static void
 init_xterm_mouse(SCREEN *sp)
 {
@@ -355,6 +359,7 @@ init_xterm_mouse(SCREEN *sp)
     if (!VALID_STRING(sp->_mouse_xtermcap))
 	sp->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
 }
+#endif
 
 static void
 enable_xterm_mouse(SCREEN *sp, int enable)
@@ -362,9 +367,8 @@ enable_xterm_mouse(SCREEN *sp, int enable)
 #if USE_EMX_MOUSE
     sp->_emxmouse_activated = enable;
 #else
-    NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
-			       "xterm-mouse",
-			       TPARM_1(sp->_mouse_xtermcap, enable));
+    NCURSES_SP_NAME(putp) (NCURSES_SP_ARGx
+			   TPARM_1(sp->_mouse_xtermcap, enable));
 #endif
     sp->_mouse_active = enable;
 }
@@ -483,8 +487,6 @@ enable_gpm_mouse(SCREEN *sp, bool enable)
 }
 #endif /* USE_GPM_SUPPORT */
 
-#define xterm_kmous "\033[M"
-
 static void
 initialize_mousetype(SCREEN *sp)
 {
@@ -519,7 +521,7 @@ initialize_mousetype(SCREEN *sp)
     /* OS/2 VIO */
 #if USE_EMX_MOUSE
     if (!sp->_emxmouse_thread
-	&& strstr(cur_term->type.term_names, "xterm") == 0
+	&& strstr(TerminalOf(sp)->type.term_names, "xterm") == 0
 	&& key_mouse) {
 	int handles[2];
 
@@ -626,6 +628,9 @@ initialize_mousetype(SCREEN *sp)
     }
 #endif /* USE_SYSMOUSE */
 
+#ifdef USE_TERM_DRIVER
+    CallDriver(sp, initmouse);
+#else
     /* we know how to recognize mouse events under "xterm" */
     if (key_mouse != 0) {
 	if (!strcmp(key_mouse, xterm_kmous)
@@ -636,6 +641,8 @@ initialize_mousetype(SCREEN *sp)
 	if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
 	    init_xterm_mouse(sp);
     }
+#endif
+
     returnVoid;
 }
 
