@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008,2009 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,38 +27,33 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey                        1997-on                 *
- *     and: Juergen Pfeifer                         2009                    *
+ * Author: Thomas Dickey, 2008-on                                           * 
+ *                                                                          *
  ****************************************************************************/
 
-#include <curses.priv.h>
+/* $Id: nc_mingw.h,v 1.1 2009/02/07 23:33:19 tom Exp $ */
 
-MODULE_ID("$Id: keyok.c,v 1.8.1.1 2009/02/21 16:25:56 tom Exp $")
+#ifndef NC_MINGW_H
+#define NC_MINGW_H 1
 
-/*
- * Enable (or disable) ncurses' interpretation of a keycode by adding (or
- * removing) the corresponding 'tries' entry.
- *
- * Do this by storing a second tree of tries, which records the disabled keys. 
- * The simplest way to copy is to make a function that returns the string (with
- * nulls set to 0200), then use that to reinsert the string into the
- * corresponding tree.
- */
+#define WINVER 0x0501
+#include <windows.h>
 
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(keyok) (NCURSES_SP_DCLx int c, bool flag)
-{
-    int code = ERR;
+#undef sleep
+#define sleep(n) Sleep((n) * 1000)
 
-    T((T_CALLED("keyok(%p, %d,%d)"), SP_PARM, c, flag));
-    code = CallDriver_2(sp, kyOk, c, flag);
-    returnCode(code);
-}
+#undef gettimeofday
+#define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-keyok(int c, bool flag)
-{
-    return NCURSES_SP_NAME(keyok) (CURRENT_SCREEN, c, flag);
-}
-#endif
+#include <sys/time.h>	/* for struct timeval */
+
+extern int _nc_gettimeofday(struct timeval *, void *);
+
+#undef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY 1
+
+#define SIGHUP  1
+#define SIGKILL 9
+#define getlogin() "username"
+
+#endif /* NC_MINGW_H */

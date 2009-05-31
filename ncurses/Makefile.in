@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.115 2009/03/28 18:22:39 Charles.Wilson Exp $
+# $Id: Makefile.in,v 1.115.1.1 2009/04/04 22:49:00 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -165,11 +165,12 @@ TEST_PROGS = \
 	hashmap$x \
 	lib_mvcur$x
 
-base	= $(srcdir)/base
-serial	= $(srcdir)/tty
-tinfo	= $(srcdir)/tinfo
-trace	= $(srcdir)/trace
-wide	= $(srcdir)/widechar
+base	 = $(srcdir)/base
+serial	 = $(srcdir)/tty
+tinfo	 = $(srcdir)/tinfo
+trace	 = $(srcdir)/trace
+wide	 = $(srcdir)/widechar
+win32con = $(srcdir)/win32con
 
 ################################################################################
 all \

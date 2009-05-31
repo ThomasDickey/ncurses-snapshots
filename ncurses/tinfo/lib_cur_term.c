@@ -40,10 +40,23 @@
 #include <term_entry.h>		/* TTY, cur_term */
 #include <termcap.h>		/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.22 2009/05/30 13:55:19 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.22.1.1 2009/05/30 20:20:15 tom Exp $")
 
 #undef CUR
 #define CUR termp->type.
+
+NCURSES_EXPORT(TERMINAL *)
+NCURSES_SP_NAME(cur_term) (SCREEN *sp)
+{
+    return ((0 != TerminalOf(sp)) ?
+	    TerminalOf(sp) :
+#if BROKEN_LINKER || USE_REENTRANT
+	    _nc_prescreen._cur_term
+#else
+	    cur_term
+#endif
+	);
+}
 
 #if BROKEN_LINKER && !USE_REENTRANT
 NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
@@ -51,14 +64,14 @@ NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 NCURSES_EXPORT(TERMINAL *)
 NCURSES_PUBLIC_VAR(cur_term) (void)
 {
-    return (SP != 0 && SP->_term != 0) ? SP->_term : _nc_prescreen._cur_term;
+    return NCURSES_SP_NAME(cur_term) (CURRENT_SCREEN);
 }
 #else
 NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 #endif
 
 NCURSES_EXPORT(TERMINAL *)
-set_curterm(TERMINAL * termp)
+NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
 {
     TERMINAL *oldterm;
 
@@ -66,8 +79,8 @@ set_curterm(TERMINAL * termp)
 
     _nc_lock_global(curses);
     oldterm = cur_term;
-    if (SP)
-	SP->_term = termp;
+    if (SP_PARM)
+	SP_PARM->_term = termp;
 #if BROKEN_LINKER && !USE_REENTRANT
     cur_term = termp;
 #elif BROKEN_LINKER || USE_REENTRANT
@@ -76,10 +89,12 @@ set_curterm(TERMINAL * termp)
     cur_term = termp;
 #endif
     if (termp != 0) {
+	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 	ospeed = _nc_ospeed(termp->_baudrate);
-	if (termp->type.Strings) {
+	if (TCB->drv->isTerminfo && termp->type.Strings) {
 	    PC = (char) ((pad_char != NULL) ? pad_char[0] : 0);
 	}
+	TCB->csp = SP_PARM;
     }
     _nc_unlock_global(curses);
 
@@ -87,28 +102,45 @@ set_curterm(TERMINAL * termp)
     return (oldterm);
 }
 
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(TERMINAL *)
+set_curterm(TERMINAL * termp)
+{
+    return NCURSES_SP_NAME(set_curterm) (CURRENT_SCREEN, termp);
+}
+#endif
+
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
 {
     int rc = ERR;
 
-    T((T_CALLED("del_curterm(%p)"), termp));
+    T((T_CALLED("del_curterm(%p, %p)"), SP_PARM, termp));
 
-    _nc_lock_global(curses);
     if (termp != 0) {
+	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
+	TERMINAL *cur =
+#if BROKEN_LINKER || USE_REENTRANT
+	NCURSES_SP_NAME(cur_term) (NCURSES_SP_ARG);
+#else
+	cur_term;
+#endif
+
 	_nc_free_termtype(&(termp->type));
+	if (termp == cur)
+	    NCURSES_SP_NAME(set_curterm) (NCURSES_SP_ARGx 0);
+
 	FreeIfNeeded(termp->_termname);
 #if USE_HOME_TERMINFO
 	if (_nc_globals.home_terminfo != 0)
 	    FreeAndNull(_nc_globals.home_terminfo);
 #endif
+	if (TCB->drv)
+	    TCB->drv->release(TCB);
 	free(termp);
-	if (termp == cur_term)
-	    set_curterm(0);
+
 	rc = OK;
     }
-    _nc_unlock_global(curses);
-
     returnCode(rc);
 }
 
@@ -117,7 +149,11 @@ NCURSES_EXPORT(int)
 del_curterm(TERMINAL * termp)
 {
     int rc = ERR;
+
+    _nc_lock_global(curses);
     rc = NCURSES_SP_NAME(del_curterm) (CURRENT_SCREEN, termp);
+    _nc_unlock_global(curses);
+
     return (rc);
 }
 #endif

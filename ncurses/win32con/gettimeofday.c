@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,39 +26,26 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Thomas E. Dickey                        1997-on                 *
- *     and: Juergen Pfeifer                         2009                    *
- ****************************************************************************/
+#define WINVER 0x0501
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keyok.c,v 1.8.1.1 2009/02/21 16:25:56 tom Exp $")
+#include <windows.h>
 
-/*
- * Enable (or disable) ncurses' interpretation of a keycode by adding (or
- * removing) the corresponding 'tries' entry.
- *
- * Do this by storing a second tree of tries, which records the disabled keys. 
- * The simplest way to copy is to make a function that returns the string (with
- * nulls set to 0200), then use that to reinsert the string into the
- * corresponding tree.
- */
+MODULE_ID("$Id: gettimeofday.c,v 0.1 2008/12/07 02:07:39 juergen Exp $")
 
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(keyok) (NCURSES_SP_DCLx int c, bool flag)
+#define JAN1970 116444736000000000LL	/* the value for 01/01/1970 00:00 */
+
+int
+gettimeofday(struct timeval *tv, void *tz)
 {
-    int code = ERR;
+    union {
+	FILETIME ft;
+	long long since1601;	/* time since 1 Jan 1601 in 100ns units */
+    } data;
 
-    T((T_CALLED("keyok(%p, %d,%d)"), SP_PARM, c, flag));
-    code = CallDriver_2(sp, kyOk, c, flag);
-    returnCode(code);
+    GetSystemTimeAsFileTime(&data.ft);
+    tv->tv_usec = (long) ((data.since1601 / 10LL) % 1000000LL);
+    tv->tv_sec = (long) ((data.since1601 - JAN1970) / 10000000LL);
+    return (0);
 }
-
-#if NCURSES_SP_FUNCS
-NCURSES_EXPORT(int)
-keyok(int c, bool flag)
-{
-    return NCURSES_SP_NAME(keyok) (CURRENT_SCREEN, c, flag);
-}
-#endif
