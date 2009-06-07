@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.53.1.1 2009/05/30 21:17:40 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.54 2009/06/06 18:46:31 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -51,17 +51,17 @@ MODULE_ID("$Id: lib_data.c,v 1.53.1.1 2009/05/30 21:17:40 tom Exp $")
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(stdscr) (void)
 {
-    return CURRENT_SCREEN ? CURRENT_SCREEN->_stdscr : 0;
+    return CURRENT_SCREEN ? StdScreen(CURRENT_SCREEN) : 0;
 }
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(curscr) (void)
 {
-    return CURRENT_SCREEN ? CURRENT_SCREEN->_curscr : 0;
+    return CURRENT_SCREEN ? CurScreen(CURRENT_SCREEN) : 0;
 }
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(newscr) (void)
 {
-    return CURRENT_SCREEN ? CURRENT_SCREEN->_newscr : 0;
+    return CURRENT_SCREEN ? NewScreen(CURRENT_SCREEN) : 0;
 }
 #else
 NCURSES_EXPORT_VAR(WINDOW *) stdscr = 0;
@@ -258,12 +258,6 @@ _nc_screen_of(WINDOW *win)
 	sp = wp->screen;
     }
     return (sp);
-}
-
-NCURSES_EXPORT(SCREEN *)
-_nc_SP()
-{
-    return CURRENT_SCREEN;
 }
 
 /******************************************************************************/

@@ -50,7 +50,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.66.1.1 2009/05/30 20:05:20 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.67 2009/05/30 20:05:20 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;

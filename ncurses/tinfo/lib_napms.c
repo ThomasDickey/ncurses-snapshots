@@ -51,14 +51,30 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.18.1.2 2009/04/11 23:13:13 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.19 2009/06/06 18:50:30 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 {
     T((T_CALLED("napms(%d)"), ms));
 
+#ifdef USE_TERM_DRIVER
     CallDriver_1(sp, nap, ms);
+#else /* !USE_TERM_DRIVER */
+#if HAVE_NANOSLEEP
+    {
+	struct timespec request, remaining;
+	request.tv_sec = ms / 1000;
+	request.tv_nsec = (ms % 1000) * 1000000;
+	while (nanosleep(&request, &remaining) == -1
+	       && errno == EINTR) {
+	    request = remaining;
+	}
+    }
+#else
+    _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));
+#endif
+#endif /* !USE_TERM_DRIVER */
 
     returnCode(OK);
 }

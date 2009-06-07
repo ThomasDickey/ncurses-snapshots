@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keyok.c,v 1.8.1.1 2009/02/21 16:25:56 tom Exp $")
+MODULE_ID("$Id: keyok.c,v 1.9 2009/06/06 19:24:57 tom Exp $")
 
 /*
  * Enable (or disable) ncurses' interpretation of a keycode by adding (or
@@ -51,7 +51,36 @@ NCURSES_SP_NAME(keyok) (NCURSES_SP_DCLx int c, bool flag)
     int code = ERR;
 
     T((T_CALLED("keyok(%p, %d,%d)"), SP_PARM, c, flag));
+#ifdef USE_TERM_DRIVER
     code = CallDriver_2(sp, kyOk, c, flag);
+#else
+    T((T_CALLED("keyok(%d,%d)"), c, flag));
+    if (c >= 0) {
+	int count = 0;
+	char *s;
+	unsigned ch = (unsigned) c;
+
+	if (flag) {
+	    while ((s = _nc_expand_try(SP_PARM->_key_ok, ch, &count, 0)) != 0
+		   && _nc_remove_key(&(SP_PARM->_key_ok), ch)) {
+		code = _nc_add_to_try(&(SP_PARM->_keytry), s, ch);
+		free(s);
+		count = 0;
+		if (code != OK)
+		    break;
+	    }
+	} else {
+	    while ((s = _nc_expand_try(SP_PARM->_keytry, ch, &count, 0)) != 0
+		   && _nc_remove_key(&(SP_PARM->_keytry), ch)) {
+		code = _nc_add_to_try(&(SP_PARM->_key_ok), s, ch);
+		free(s);
+		count = 0;
+		if (code != OK)
+		    break;
+	    }
+	}
+    }
+#endif
     returnCode(code);
 }
 

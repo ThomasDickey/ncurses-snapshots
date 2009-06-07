@@ -48,7 +48,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_kernel.c,v 1.25.1.1 2009/02/21 17:41:18 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.27 2009/06/06 21:25:50 tom Exp $")
 
 static int
 _nc_vdisable(void)
@@ -82,15 +82,17 @@ NCURSES_EXPORT(char)
 NCURSES_SP_NAME(erasechar) (NCURSES_SP_DCL0)
 {
     int result = ERR;
+    TERMINAL *termp = TerminalOf(SP_PARM);
+
     T((T_CALLED("erasechar(%p)"), SP_PARM));
 
-    if (0 != TerminalOf(SP_PARM)) {
+    if (termp != 0) {
 #ifdef TERMIOS
-	result = TerminalOf(SP_PARM)->Ottyb.c_cc[VERASE];
+	result = termp->Ottyb.c_cc[VERASE];
 	if (result == _nc_vdisable())
 	    result = ERR;
 #else
-	result = TerminalOf(SP_PARM)->Ottyb.sg_erase;
+	result = termp->Ottyb.sg_erase;
 #endif
     }
     returnCode(result);
@@ -115,15 +117,17 @@ NCURSES_EXPORT(char)
 NCURSES_SP_NAME(killchar) (NCURSES_SP_DCL0)
 {
     int result = ERR;
+    TERMINAL *termp = TerminalOf(SP_PARM);
+
     T((T_CALLED("killchar(%p)"), SP_PARM));
 
-    if (0 != TerminalOf(SP_PARM)) {
+    if (termp != 0) {
 #ifdef TERMIOS
-	result = TerminalOf(SP_PARM)->Ottyb.c_cc[VKILL];
+	result = termp->Ottyb.c_cc[VKILL];
 	if (result == _nc_vdisable())
 	    result = ERR;
 #else
-	result = TerminalOf(SP_PARM)->Ottyb.sg_kill;
+	result = termp->Ottyb.sg_kill;
 #endif
     }
     returnCode(result);
@@ -147,15 +151,17 @@ killchar(void)
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(flushinp) (NCURSES_SP_DCL0)
 {
+    TERMINAL *termp = TerminalOf(SP_PARM);
+
     T((T_CALLED("flushinp(%p)"), SP_PARM));
 
-    if (0 != TerminalOf(SP_PARM)) {
+    if (termp != 0) {
 #ifdef TERMIOS
-	tcflush(TerminalOf(SP_PARM)->Filedes, TCIFLUSH);
+	tcflush(termp->Filedes, TCIFLUSH);
 #else
 	errno = 0;
 	do {
-	    ioctl(TerminalOf(SP_PARM)->Filedes, TIOCFLUSH, 0);
+	    ioctl(termp->Filedes, TIOCFLUSH, 0);
 	} while
 	    (errno == EINTR);
 #endif
