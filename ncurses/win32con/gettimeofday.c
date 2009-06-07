@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,40 +26,26 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *   Author:  Juergen Pfeifer, 1995,1997                                    *
- ****************************************************************************/
+#define WINVER 0x0501
 
-#include "form.priv.h"
+#include <curses.priv.h>
 
-MODULE_ID("$Id: fld_ftchoice.c,v 1.9.1.1 2008/11/18 08:50:04 juergen Exp $")
+#include <windows.h>
 
-/*---------------------------------------------------------------------------
-|   Facility      :  libnform  
-|   Function      :  int set_fieldtype_choice(
-|                          FIELDTYPE *typ,
-|                          bool (* const next_choice)(FIELD *,const void *),
-|                          bool (* const prev_choice)(FIELD *,const void *))
-|
-|   Description   :  Define implementation of enumeration requests.
-|
-|   Return Values :  E_OK           - success
-|                    E_BAD_ARGUMENT - invalid arguments
-+--------------------------------------------------------------------------*/
-NCURSES_EXPORT(int)
-set_fieldtype_choice(FIELDTYPE *typ,
-		     bool (*const next_choice) (FIELD *, const void *),
-		     bool (*const prev_choice) (FIELD *, const void *))
+MODULE_ID("$Id: gettimeofday.c,v 0.1 2008/12/07 02:07:39 juergen Exp $")
+
+#define JAN1970 116444736000000000LL	/* the value for 01/01/1970 00:00 */
+
+int
+gettimeofday(struct timeval *tv, void *tz)
 {
-  T((T_CALLED("set_fieldtype_choice(%p,%p,%p)"), typ, next_choice, prev_choice));
+    union {
+	FILETIME ft;
+	long long since1601;	/* time since 1 Jan 1601 in 100ns units */
+    } data;
 
-  if (!typ || !next_choice || !prev_choice)
-    RETURN(E_BAD_ARGUMENT);
-
-  typ->status |= _HAS_CHOICE;
-  typ->enum_next.onext = next_choice;
-  typ->enum_prev.oprev = prev_choice;
-  RETURN(E_OK);
+    GetSystemTimeAsFileTime(&data.ft);
+    tv->tv_usec = (long) ((data.since1601 / 10LL) % 1000000LL);
+    tv->tv_sec = (long) ((data.since1601 - JAN1970) / 10000000LL);
+    return (0);
 }
-
-/* fld_ftchoice.c ends here */

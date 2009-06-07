@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008,2009 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,39 +27,33 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author:  Juergen Pfeifer, 1995,1997                                    *
+ * Author: Thomas Dickey, 2008-on                                           * 
+ *                                                                          *
  ****************************************************************************/
 
-#include "form.priv.h"
+/* $Id: nc_mingw.h,v 1.1 2009/02/07 23:33:19 tom Exp $ */
 
-MODULE_ID("$Id: fld_ftchoice.c,v 1.9.1.1 2008/11/18 08:50:04 juergen Exp $")
+#ifndef NC_MINGW_H
+#define NC_MINGW_H 1
 
-/*---------------------------------------------------------------------------
-|   Facility      :  libnform  
-|   Function      :  int set_fieldtype_choice(
-|                          FIELDTYPE *typ,
-|                          bool (* const next_choice)(FIELD *,const void *),
-|                          bool (* const prev_choice)(FIELD *,const void *))
-|
-|   Description   :  Define implementation of enumeration requests.
-|
-|   Return Values :  E_OK           - success
-|                    E_BAD_ARGUMENT - invalid arguments
-+--------------------------------------------------------------------------*/
-NCURSES_EXPORT(int)
-set_fieldtype_choice(FIELDTYPE *typ,
-		     bool (*const next_choice) (FIELD *, const void *),
-		     bool (*const prev_choice) (FIELD *, const void *))
-{
-  T((T_CALLED("set_fieldtype_choice(%p,%p,%p)"), typ, next_choice, prev_choice));
+#define WINVER 0x0501
+#include <windows.h>
 
-  if (!typ || !next_choice || !prev_choice)
-    RETURN(E_BAD_ARGUMENT);
+#undef sleep
+#define sleep(n) Sleep((n) * 1000)
 
-  typ->status |= _HAS_CHOICE;
-  typ->enum_next.onext = next_choice;
-  typ->enum_prev.oprev = prev_choice;
-  RETURN(E_OK);
-}
+#undef gettimeofday
+#define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 
-/* fld_ftchoice.c ends here */
+#include <sys/time.h>	/* for struct timeval */
+
+extern int _nc_gettimeofday(struct timeval *, void *);
+
+#undef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY 1
+
+#define SIGHUP  1
+#define SIGKILL 9
+#define getlogin() "username"
+
+#endif /* NC_MINGW_H */
