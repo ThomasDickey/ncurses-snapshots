@@ -40,10 +40,10 @@
 #include <curses.priv.h>
 
 #ifndef CUR
-#define CUR SP_TERMTYPE 
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.20.1.1 2009/05/23 21:23:33 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.21 2009/06/06 20:26:17 tom Exp $")
 
 /*
  * Paint the info line for the PC style SLK emulation.
@@ -90,7 +90,14 @@ slk_intern_refresh(SCREEN *sp)
 	if (slk->dirty || slk->ent[i].dirty) {
 	    if (slk->ent[i].visible) {
 		if (numlab > 0 && SLK_STDFMT(fmt)) {
+#ifdef USE_TERM_DRIVER
 		    CallDriver_2(sp, hwlabel, i + 1, slk->ent[i].form_text);
+#else
+		    if (i < num_labels) {
+			TPUTS_TRACE("plab_norm");
+			putp(TPARM_2(plab_norm, i + 1, slk->ent[i].form_text));
+		    }
+#endif
 		} else {
 		    if (fmt == 4)
 			slk_paint_info(slk->win);
@@ -102,7 +109,7 @@ slk_intern_refresh(SCREEN *sp)
 		    /* if we simulate SLK's, it's looking much more
 		       natural to use the current ATTRIBUTE also
 		       for the label window */
-		    wattrset(slk->win, WINDOW_ATTRS(sp->_stdscr));
+		    wattrset(slk->win, WINDOW_ATTRS(StdScreen(sp)));
 		}
 	    }
 	    slk->ent[i].dirty = FALSE;

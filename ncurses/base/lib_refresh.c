@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,6 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                                                 *
  ****************************************************************************/
 
 /*
@@ -41,25 +42,27 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.41.1.1 2008/11/16 00:19:59 juergen Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.42 2009/06/06 20:27:39 tom Exp $")
 
 NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
 {
     int code;
-    SCREEN *sp = _nc_screen_of(win);
+#if NCURSES_SP_FUNCS
+    SCREEN *SP_PARM = _nc_screen_of(win);
+#endif
 
     T((T_CALLED("wrefresh(%p)"), win));
 
     if (win == 0) {
 	code = ERR;
-    } else if (win == sp->_curscr) {
-	sp->_curscr->_clear = TRUE;
-	code = doupdate_sp(sp);
+    } else if (win == CurScreen(SP_PARM)) {
+	CurScreen(SP_PARM)->_clear = TRUE;
+	code = NCURSES_SP_NAME(doupdate) (NCURSES_SP_ARG);
     } else if ((code = wnoutrefresh(win)) == OK) {
 	if (win->_clear)
-	    sp->_newscr->_clear = TRUE;
-	code = doupdate_sp(sp);
+	    NewScreen(SP_PARM)->_clear = TRUE;
+	code = NCURSES_SP_NAME(doupdate) (NCURSES_SP_ARG);
 	/*
 	 * Reset the clearok() flag in case it was set for the special
 	 * case in hardscroll.c (if we don't reset it here, we'll get 2
@@ -82,7 +85,9 @@ wnoutrefresh(WINDOW *win)
 #if USE_SCROLL_HINTS
     bool wide;
 #endif
-    SCREEN *sp = _nc_screen_of(win);
+#if NCURSES_SP_FUNCS
+    SCREEN *SP_PARM = _nc_screen_of(win);
+#endif
 
     T((T_CALLED("wnoutrefresh(%p)"), win));
 #ifdef TRACE
@@ -103,8 +108,8 @@ wnoutrefresh(WINDOW *win)
     begx = win->_begx;
     begy = win->_begy;
 
-    sp->_newscr->_nc_bkgd = win->_nc_bkgd;
-    WINDOW_ATTRS(sp->_newscr) = WINDOW_ATTRS(win);
+    NewScreen(SP_PARM)->_nc_bkgd = win->_nc_bkgd;
+    WINDOW_ATTRS(NewScreen(SP_PARM)) = WINDOW_ATTRS(win);
 
     /* merge in change information from all subwindows of this window */
     wsyncdown(win);
@@ -124,7 +129,7 @@ wnoutrefresh(WINDOW *win)
      * windows).  Note that changing this formula will not break any code,
      * merely change the costs of various update cases.
      */
-    wide = (begx <= 1 && win->_maxx >= (sp->_newscr->_maxx - 1));
+    wide = (begx <= 1 && win->_maxx >= (NewScreen(SP_PARM)->_maxx - 1));
 #endif
 
     win->_flags &= ~_HASMOVED;
@@ -139,13 +144,13 @@ wnoutrefresh(WINDOW *win)
     /* limit(dst_col) */
     limit_x = win->_maxx;
     /* limit(src_col) */
-    if (limit_x > sp->_newscr->_maxx - begx)
-	limit_x = sp->_newscr->_maxx - begx;
+    if (limit_x > NewScreen(SP_PARM)->_maxx - begx)
+	limit_x = NewScreen(SP_PARM)->_maxx - begx;
 
     for (src_row = 0, dst_row = begy + win->_yoffset;
-	 src_row <= win->_maxy && dst_row <= sp->_newscr->_maxy;
+	 src_row <= win->_maxy && dst_row <= NewScreen(SP_PARM)->_maxy;
 	 src_row++, dst_row++) {
-	register struct ldat *nline = &(sp->_newscr->_line[dst_row]);
+	register struct ldat *nline = &(NewScreen(SP_PARM)->_line[dst_row]);
 	register struct ldat *oline = &win->_line[src_row];
 
 	if (oline->firstchar != _NOCHANGE) {
@@ -227,7 +232,8 @@ wnoutrefresh(WINDOW *win)
 		     * this character.  Find the end of the character.
 		     */
 		    ++j;
-		    while (j <= sp->_newscr->_maxx && isWidecExt(nline->text[j])) {
+		    while (j <= NewScreen(SP_PARM)->_maxx &&
+			   isWidecExt(nline->text[j])) {
 			fix_right = j++;
 		    }
 		}
@@ -271,18 +277,18 @@ wnoutrefresh(WINDOW *win)
 
     if (win->_clear) {
 	win->_clear = FALSE;
-	sp->_newscr->_clear = TRUE;
+	NewScreen(SP_PARM)->_clear = TRUE;
     }
 
     if (!win->_leaveok) {
-	sp->_newscr->_cury = win->_cury + win->_begy + win->_yoffset;
-	sp->_newscr->_curx = win->_curx + win->_begx;
+	NewScreen(SP_PARM)->_cury = win->_cury + win->_begy + win->_yoffset;
+	NewScreen(SP_PARM)->_curx = win->_curx + win->_begx;
     }
-    sp->_newscr->_leaveok = win->_leaveok;
+    NewScreen(SP_PARM)->_leaveok = win->_leaveok;
 
 #ifdef TRACE
     if (USE_TRACEF(TRACE_UPDATE)) {
-	_tracedump("newscr", sp->_newscr);
+	_tracedump("newscr", NewScreen(SP_PARM));
 	_nc_unlock_global(tracef);
     }
 #endif /* TRACE */

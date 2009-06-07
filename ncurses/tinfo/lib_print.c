@@ -36,10 +36,10 @@
 #include <curses.priv.h>
 
 #ifndef CUR
-#define CUR SP_TERMTYPE 
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_print.c,v 1.18.1.1 2009/05/23 19:30:31 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.19 2009/06/06 20:26:17 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
@@ -100,6 +100,6 @@ NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
 NCURSES_EXPORT(int)
 mcprint(char *data, int len)
 {
-    return NCURSES_SP_NAME(mcprint)(CURRENT_SCREEN, data, len);
+    return NCURSES_SP_NAME(mcprint) (CURRENT_SCREEN, data, len);
 }
 #endif

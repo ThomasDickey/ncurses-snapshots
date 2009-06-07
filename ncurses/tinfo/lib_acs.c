@@ -39,7 +39,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.39.1.1 2009/05/23 20:13:07 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.40 2009/06/06 18:08:04 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
@@ -58,6 +58,7 @@ NCURSES_EXPORT_VAR (chtype) acs_map[ACS_LEN] =
 };
 #endif
 
+#ifdef USE_TERM_DRIVER
 NCURSES_EXPORT(chtype)
 NCURSES_SP_NAME(_nc_acs_char) (NCURSES_SP_DCLx int c)
 {
@@ -73,6 +74,7 @@ NCURSES_SP_NAME(_nc_acs_char) (NCURSES_SP_DCLx int c)
 	;
     return map[c];
 }
+#endif /* USE_TERM_DRIVER */
 
 NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)

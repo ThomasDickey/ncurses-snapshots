@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2006 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2006,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,8 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
+ *     and: Juergen Pfeifer                                                 *
  ****************************************************************************/
 
 /*
@@ -40,18 +42,19 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mvwin.c,v 1.15.1.1 2009/04/19 00:59:01 tom Exp $")
+MODULE_ID("$Id: lib_mvwin.c,v 1.16 2009/06/06 20:25:07 tom Exp $")
 
 NCURSES_EXPORT(int)
 mvwin(WINDOW *win, int by, int bx)
 {
-    SCREEN *sp;
+#if NCURSES_SP_FUNCS
+    SCREEN *sp = _nc_screen_of(win);
+#endif
+
     T((T_CALLED("mvwin(%p,%d,%d)"), win, by, bx));
 
     if (!win || (win->_flags & _ISPAD))
 	returnCode(ERR);
-
-    sp = _nc_screen_of(win);
 
     /*
      * mvwin() should only modify the indices.  See test/demo_menus.c and
@@ -99,8 +102,8 @@ mvwin(WINDOW *win, int by, int bx)
     }
 #endif
 
-    if (by + win->_maxy > screen_lines(sp) - 1
-	|| bx + win->_maxx > screen_columns(sp) - 1
+    if (by + win->_maxy > screen_lines(SP_PARM) - 1
+	|| bx + win->_maxx > screen_columns(SP_PARM) - 1
 	|| by < 0
 	|| bx < 0)
 	returnCode(ERR);

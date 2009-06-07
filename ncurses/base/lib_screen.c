@@ -36,15 +36,15 @@
 #include <curses.priv.h>
 
 #ifndef CUR
-#define CUR SP_TERMTYPE 
+#define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.34.1.1 2009/05/23 21:31:39 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.35 2009/06/06 20:26:17 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
 NCURSES_EXPORT(WINDOW *)
-NCURSES_SP_NAME(getwin)(NCURSES_SP_DCLx FILE *filep)
+NCURSES_SP_NAME(getwin) (NCURSES_SP_DCLx FILE *filep)
 {
     WINDOW tmp, *nwin;
     int n;
@@ -210,7 +210,13 @@ NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
 
     T((T_CALLED("scr_init(%p,%s)"), SP_PARM, _nc_visbuf(file)));
 
-    if (SP_PARM != 0 && InfoOf(SP_PARM).caninit) {
+    if (SP_PARM != 0 &&
+#ifdef USE_TERM_DRIVER
+	InfoOf(SP_PARM).caninit
+#else
+	!(exit_ca_mode && non_rev_rmcup)
+#endif
+	) {
 	if (_nc_access(file, R_OK) >= 0
 	    && (fp = fopen(file, "rb")) != 0) {
 	    delwin(CurScreen(SP_PARM));
