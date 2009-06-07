@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.102 2008/09/07 13:58:29 tom Exp $
+# $Id: Makefile.in,v 1.102.1.1 2008/11/16 00:19:59 juergen Exp $
 ##############################################################################
 # Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -113,5 +113,8 @@ LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
 HEADER_DEPS	= \
 	../include/curses.h \
 	../include/term.h
+
+clean::
+	rm -f *.tmp
 
 # The rest is generated from the "programs" and "modules" files...
