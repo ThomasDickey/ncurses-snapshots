@@ -69,7 +69,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.56.1.1 2009/05/23 20:46:28 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.57 2009/05/23 20:46:28 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \

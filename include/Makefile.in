@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.35.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: Makefile.in,v 1.36 2009/06/13 21:42:45 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -72,9 +72,9 @@ AUTO_SRC = \
 	curses.h \
 	hashsize.h \
 	ncurses_def.h \
+	ncurses_dll.h \
 	parametrized.h \
-	term.h \
-	dummy.tmp
+	term.h
 
 ################################################################################
 all \
@@ -95,10 +95,6 @@ curses.h : $(TERMINFO_CAPS) \
 term.h: $(TERMINFO_CAPS) MKterm.h.awk
 	$(AWK) -f MKterm.h.awk $(TERMINFO_CAPS) > $@
 	sh $(srcdir)/edit_cfg.sh ../include/ncurses_cfg.h $@
-
-dummy.tmp : ncurses_mingw.h
-	touch term.h
-	touch $@
 
 hashsize.h: $(TERMINFO_CAPS) $(srcdir)/MKhashsize.sh
 	sh $(srcdir)/MKhashsize.sh $(TERMINFO_CAPS) >$@
