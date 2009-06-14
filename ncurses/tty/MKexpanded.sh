@@ -29,7 +29,7 @@
 #
 # Author: Thomas E. Dickey <dickey@clark.net> 1997
 #
-# $Id: MKexpanded.sh,v 1.11.1.1 2008/11/16 00:19:59 juergen Exp $
+# $Id: MKexpanded.sh,v 1.12 2008/11/16 00:19:59 juergen Exp $
 #
 # Script to generate 'expanded.c', a dummy source that contains functions
 # corresponding to complex macros used in this library.  By making functions,
