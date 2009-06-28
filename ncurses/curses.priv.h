@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.421.1.1 2009/06/07 14:47:17 tom Exp $
+ * $Id: curses.priv.h,v 1.427 2009/06/27 20:31:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,10 +196,12 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
+#if 0
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
 #define USE_SP_WINDOWLIST 1
 #define USE_TERM_DRIVER   1
+#endif
 
 /*
  * Note:  ht/cbt expansion flakes out randomly under Linux 1.1.47, but only
@@ -765,7 +767,7 @@ typedef struct {
 	ripoff_t	*rsp;
 #endif
 	TPARM_STATE	tparm_state;
-	void		*saved_tty;	/* savetty/resetty information	    */
+	TTY		*saved_tty;	/* savetty/resetty information	    */
 #if NCURSES_NO_PADDING
 	bool		_no_padding;	/* flag to set if padding disabled  */
 #endif
@@ -810,7 +812,7 @@ struct screen {
 	bool		_use_env;	/* LINES & COLS from environment?   */
 	int		_checkfd;	/* filedesc for typeahead check	    */
 	TERMINAL	*_term;		/* terminal type information	    */
-	void*		_saved_tty;	/* savetty/resetty information	    */
+	TTY		_saved_tty;	/* savetty/resetty information	    */
 	NCURSES_SIZE_T	_lines;		/* screen lines			    */
 	NCURSES_SIZE_T	_columns;	/* screen columns		    */
 
@@ -932,8 +934,8 @@ struct screen {
 	bool		_nc_sp_idlok;
 	bool		_nc_sp_idcok;
 
-#define _nc_idlok SP_PARM->_nc_sp_idlok
-#define _nc_idcok SP_PARM->_nc_sp_idcok
+#define _nc_idlok SP->_nc_sp_idlok
+#define _nc_idcok SP->_nc_sp_idcok
 
 	/*
 	 * These are the data that support the mouse interface.
@@ -1560,16 +1562,28 @@ extern NCURSES_EXPORT(void) _nc_toggle_attr_on (attr_t *, attr_t);
 extern NCURSES_EXPORT(void) _nc_toggle_attr_off (attr_t *, attr_t);
 
 #undef  DelCharCost
-#define DelCharCost(count) _nc_DelCharCost(count)
-extern NCURSES_EXPORT(int) _nc_DelCharCost (int);
+#define DelCharCost(sp, count) NCURSES_SP_NAME(_nc_DelCharCost)(NCURSES_SP_ARGx count)
 
 #undef  InsCharCost
-#define InsCharCost(count) _nc_InsCharCost(count)
-extern NCURSES_EXPORT(int) _nc_InsCharCost (int);
+#define InsCharCost(sp, count) NCURSES_SP_NAME(_nc_InsCharCost)(NCURSES_SP_ARGx count)
+
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(_nc_DelCharCost) (NCURSES_SP_DCLx int _c);
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(_nc_InsCharCost) (NCURSES_SP_DCLx int _c);
 
 #undef  UpdateAttrs
-#define UpdateAttrs(c) _nc_UpdateAttrs(c)
-extern NCURSES_EXPORT(void) _nc_UpdateAttrs (NCURSES_CH_T);
+#define UpdateAttrs(sp,c) NCURSES_SP_NAME(_nc_UpdateAttrs)(NCURSES_SP_ARGx CHREF(c))
+
+#if defined(NEED_NCURSES_CH_T)
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(_nc_UpdateAttrs) (NCURSES_SP_DCLx CARG_CH_T _c);
+#else
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(_nc_UpdateAttrs) (NCURSES_SP_DCLx chtype c);
+#endif
+
+#if NCURSES_SP_FUNCS
+extern NCURSES_EXPORT(int) _nc_DelCharCost (int);
+extern NCURSES_EXPORT(int) _nc_InsCharCost (int);
+extern NCURSES_EXPORT(void) _nc_UpdateAttrs (CARG_CH_T);
+#endif /* NCURSES_SP_FUNCS */
 
 #else
 
@@ -1665,8 +1679,7 @@ extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int)    _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int)    _nc_locale_breaks_acs(TERMINAL *);
 extern NCURSES_EXPORT(int)    _nc_setupterm(NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL**, NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL*, int *, int *);
+extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 
 /* lib_set_term.c */
 extern NCURSES_EXPORT(int)    _nc_ripoffline(int, int(*)(WINDOW*, int));
@@ -1727,6 +1740,7 @@ extern NCURSES_EXPORT(int) _nc_keypad (SCREEN *, bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
 extern NCURSES_EXPORT(int) _nc_putp(const char *, const char *);
+extern NCURSES_EXPORT(int) _nc_putp_flush(const char *, const char *);
 extern NCURSES_EXPORT(int) _nc_read_termcap_entry (const char *const, TERMTYPE *const);
 extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, bool, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait (SCREEN *, int, int, int * EVENTLIST_2nd(_nc_eventlist *));
@@ -1819,7 +1833,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS
+#if NCURSES_SP_FUNCS && 0
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN

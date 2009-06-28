@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: mk-dlls.sh,v 0.1.1.1 2008/11/18 08:50:04 juergen Exp $
+# $Id: mk-dlls.sh,v 1.1 2008/11/18 08:50:04 juergen Exp $
 ##############################################################################
 # Copyright (c) 2008 Free Software Foundation, Inc.                          #
 #                                                                            #

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include <windows.h>
 
-MODULE_ID("$Id: gettimeofday.c,v 0.1 2008/12/07 02:07:39 juergen Exp $")
+MODULE_ID("$Id: gettimeofday.c,v 1.1 2008/12/07 02:07:39 juergen Exp $")
 
 #define JAN1970 116444736000000000LL	/* the value for 01/01/1970 00:00 */
 

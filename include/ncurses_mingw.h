@@ -31,7 +31,7 @@
  *                                                                          *
  ****************************************************************************/
 
-/* $Id: ncurses_mingw.h,v 0.1.1.1 2008/12/14 19:22:16 juergen Exp $ */
+/* $Id: ncurses_mingw.h,v 1.1 2008/12/14 19:22:16 juergen Exp $ */
 
 /*
  * This is a placholder up to now and describes what needs to be implemented

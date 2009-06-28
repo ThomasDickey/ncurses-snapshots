@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: win_driver.c,v 0.1.1.5 2009/02/21 15:11:29 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.1 2009/02/21 15:11:29 juergen Exp $")
 
 static bool drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *);
 static void drv_init(TERMINAL_CONTROL_BLOCK *);
