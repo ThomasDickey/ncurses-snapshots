@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 2008,2009 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 0.1.1.12 2009/05/23 22:40:30 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.1 2009/05/23 22:40:30 juergen Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,

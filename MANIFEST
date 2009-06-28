@@ -170,11 +170,10 @@
 ./MANIFEST
 ./Makefile.in
 ./Makefile.os2
-./mk-dlls.sh
 ./NEWS
 ./README
-./README.emx
 ./README.MinGW
+./README.emx
 ./TO-DO
 ./aclocal.m4
 ./announce.html.in
@@ -515,7 +514,7 @@
 ./include/nc_tparm.h
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
-./include/ncurses_dll.h
+./include/ncurses_dll.h.in
 ./include/ncurses_mingw.h
 ./include/term_entry.h
 ./include/termcap.h.in
@@ -725,6 +724,7 @@
 ./mk-0th.awk
 ./mk-1st.awk
 ./mk-2nd.awk
+./mk-dlls.sh
 ./mk-hdr.awk
 ./mkdirs.sh
 ./ncurses/Makefile.in
@@ -825,6 +825,7 @@
 ./ncurses/fifo_defs.h
 ./ncurses/llib-lncurses
 ./ncurses/llib-lncursest
+./ncurses/llib-lncursestw
 ./ncurses/llib-lncursesw
 ./ncurses/modules
 ./ncurses/tinfo/MKcaptab.awk
