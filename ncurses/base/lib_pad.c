@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.43.1.1 2009/04/25 19:49:08 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.44 2009/07/04 19:45:20 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 NCURSES_SP_NAME(newpad) (NCURSES_SP_DCLx int l, int c)
@@ -105,10 +105,11 @@ prefresh(WINDOW *win,
 	 int smaxrow,
 	 int smaxcol)
 {
+#if NCURSES_SP_FUNCS
     SCREEN *sp = _nc_screen_of(win);
+#endif
 
     T((T_CALLED("prefresh()")));
-
     if (pnoutrefresh(win, pminrow, pmincol, sminrow, smincol, smaxrow,
 		     smaxcol) != ERR
 	&& NCURSES_SP_NAME(doupdate) (NCURSES_SP_ARG) != ERR) {
@@ -211,13 +212,13 @@ pnoutrefresh(WINDOW *win,
      * merely change the costs of various update cases.
      */
 #if USE_SCROLL_HINTS
-    wide = (smincol < my_len && smaxcol > (sp->_newscr->_maxx - my_len));
+    wide = (smincol < my_len && smaxcol > (NewScreen(sp)->_maxx - my_len));
 #endif
 
     for (i = pminrow, m = sminrow + win->_yoffset;
-	 i <= pmaxrow && m <= sp->_newscr->_maxy;
+	 i <= pmaxrow && m <= NewScreen(sp)->_maxy;
 	 i++, m++) {
-	register struct ldat *nline = &(sp->_newscr->_line[m]);
+	register struct ldat *nline = &NewScreen(sp)->_line[m];
 	register struct ldat *oline = &win->_line[i];
 	for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
 	    NCURSES_CH_T ch = oline->text[j];
@@ -246,9 +247,9 @@ pnoutrefresh(WINDOW *win,
 		|| nind > smaxrow) {
 		nind = _NEWINDEX;
 	    } else if (displaced) {
-		register struct ldat *pline = &(sp->_curscr->_line[nind]);
+		register struct ldat *pline = &CurScreen(sp)->_line[nind];
 		for (j = 0; j <= my_len; j++) {
-		    int k = sp->_newscr->_maxx - j;
+		    int k = NewScreen(sp)->_maxx - j;
 		    if (pline->text[j] != nline->text[j]
 			|| pline->text[k] != nline->text[k]) {
 			nind = _NEWINDEX;
@@ -283,7 +284,7 @@ pnoutrefresh(WINDOW *win,
 
     if (win->_clear) {
 	win->_clear = FALSE;
-	sp->_newscr->_clear = TRUE;
+	NewScreen(sp)->_clear = TRUE;
     }
 
     /*
@@ -295,10 +296,10 @@ pnoutrefresh(WINDOW *win,
 	&& win->_curx >= pmincol
 	&& win->_cury <= pmaxrow
 	&& win->_curx <= pmaxcol) {
-	sp->_newscr->_cury = win->_cury - pminrow + win->_begy + win->_yoffset;
-	sp->_newscr->_curx = win->_curx - pmincol + win->_begx;
+	NewScreen(sp)->_cury = win->_cury - pminrow + win->_begy + win->_yoffset;
+	NewScreen(sp)->_curx = win->_curx - pmincol + win->_begx;
     }
-    sp->_newscr->_leaveok = win->_leaveok;
+    NewScreen(sp)->_leaveok = win->_leaveok;
     win->_flags &= ~_HASMOVED;
 
     /*

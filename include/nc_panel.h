@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: nc_panel.h,v 1.6.1.1 2009/04/11 21:44:43 tom Exp $
+ * $Id: nc_panel.h,v 1.7 2009/07/04 18:20:02 tom Exp $
  *
  *	nc_panel.h
  *
@@ -60,13 +60,10 @@ extern "C"
 #endif
     };
 
-/* Retrieve the panelhook of the current screen */
-  extern NCURSES_EXPORT(struct panelhook *) _nc_panelhook(void);
-
   struct screen;		/* Forward declaration */
 /* Retrieve the panelhook of the specified screen */
   extern NCURSES_EXPORT(struct panelhook *)
-    NCURSES_SP_NAME(_nc_panelhook) (struct screen *);
+    _nc_panelhook (void);
 #if NCURSES_SP_FUNCS
   extern NCURSES_EXPORT(struct panelhook *)
     NCURSES_SP_NAME(_nc_panelhook) (SCREEN *);

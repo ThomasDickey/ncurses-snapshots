@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.107.1.2 2009/05/23 22:43:26 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.108 2009/07/04 19:51:08 tom Exp $")
 
 #include <tic.h>
 
@@ -367,8 +367,9 @@ enable_xterm_mouse(SCREEN *sp, int enable)
 #if USE_EMX_MOUSE
     sp->_emxmouse_activated = enable;
 #else
-    NCURSES_SP_NAME(putp) (NCURSES_SP_ARGx
-			   TPARM_1(sp->_mouse_xtermcap, enable));
+    NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx
+			       "xterm-mouse",
+			       TPARM_1(sp->_mouse_xtermcap, enable));
 #endif
     sp->_mouse_active = enable;
 }
@@ -634,10 +635,10 @@ initialize_mousetype(SCREEN *sp)
     /* we know how to recognize mouse events under "xterm" */
     if (key_mouse != 0) {
 	if (!strcmp(key_mouse, xterm_kmous)
-	    || strstr(cur_term->type.term_names, "xterm") != 0) {
+	    || strstr(TerminalOf(sp)->type.term_names, "xterm") != 0) {
 	    init_xterm_mouse(sp);
 	}
-    } else if (strstr(cur_term->type.term_names, "xterm") != 0) {
+    } else if (strstr(TerminalOf(sp)->type.term_names, "xterm") != 0) {
 	if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
 	    init_xterm_mouse(sp);
     }
