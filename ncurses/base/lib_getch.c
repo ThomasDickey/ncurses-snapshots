@@ -42,18 +42,26 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.103.1.1 2009/05/30 20:33:33 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.104 2009/07/04 20:41:13 tom Exp $")
 
 #include <fifo_defs.h>
 
 #if USE_REENTRANT
+#define GetEscdelay(sp) *_nc_ptr_Escdelay(sp)
+NCURSES_EXPORT(int *)
+_nc_ptr_Escdelay(SCREEN *sp)
+{
+    return ptrEscdelay(sp);
+}
 NCURSES_EXPORT(int)
 NCURSES_PUBLIC_VAR(ESCDELAY) (void)
 {
     return *(_nc_ptr_Escdelay(CURRENT_SCREEN));
 }
 #else
-NCURSES_EXPORT_VAR(int) ESCDELAY = 1000;
+#define GetEscdelay(sp) ESCDELAY
+NCURSES_EXPORT_VAR (int)
+  ESCDELAY = 1000;		/* max interval betw. chars in funkeys, in millisecs */
 #endif
 
 #if NCURSES_EXT_FUNCS
@@ -74,41 +82,37 @@ NCURSES_SP_NAME(set_escdelay) (NCURSES_SP_DCLx int value)
     return code;
 }
 
-NCURSES_EXPORT(int)
-NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
-{
-    return *(_nc_ptr_Escdelay(SP_PARM));
-}
-#endif
-
-#if USE_REENTRANT
-NCURSES_EXPORT(int *)
-_nc_ptr_Escdelay(SCREEN *sp)
-{
-    if (SP_PARM)
-	return &(SP_PARM->_ESCDELAY);
-    else
-	return (&_nc_prescreen._ESCDELAY);
-}
-#else
-NCURSES_EXPORT(int *)
-_nc_ptr_Escdelay(SCREEN *sp GCC_UNUSED)
-{
-    return &ESCDELAY;
-}
-#endif
-
-#if NCURSES_EXT_FUNCS
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 set_escdelay(int value)
 {
+    int code;
 #if USE_REENTRANT
-    return NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
+    code = NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
 #else
     ESCDELAY = value;
-    return OK;
+    code = OK;
 #endif
+    return code;
+}
+#endif
+#endif /* NCURSES_EXT_FUNCS */
+
+#if NCURSES_EXT_FUNCS
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
+{
+#if !USE_REENTRANT
+    (void) SP_PARM;
+#endif
+    return GetEscdelay(SP_PARM);
+}
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+get_escdelay (void)
+{
+    return NCURSES_SP_NAME(get_escdelay)(CURRENT_SCREEN);
 }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
@@ -637,7 +641,7 @@ kgetch(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 {
     TRIES *ptr;
     int ch = 0;
-    int timeleft = *_nc_ptr_Escdelay(sp);
+    int timeleft = GetEscdelay(sp);
 
     TR(TRACE_IEVENT, ("kgetch() called"));
 

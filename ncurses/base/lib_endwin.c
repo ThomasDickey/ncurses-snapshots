@@ -42,21 +42,32 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.20.1.1 2009/02/21 16:46:23 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.21 2009/07/04 18:35:43 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(endwin) (NCURSES_SP_DCL0)
 {
+    int code = ERR;
+
     T((T_CALLED("endwin(%p)"), SP_PARM));
 
     if (SP_PARM) {
+#ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = TCBOf(SP_PARM);
+
 	SP_PARM->_endwin = TRUE;
 	if (TCB && TCB->drv && TCB->drv->scexit)
 	    TCB->drv->scexit(SP_PARM);
-	returnCode(NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_ARG));
+#else
+	SP_PARM->_endwin = TRUE;
+	SP_PARM->_mouse_wrap(SP_PARM);
+	_nc_screen_wrap();
+	_nc_mvcur_wrap();	/* wrap up cursor addressing */
+#endif
+	code = NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_ARG);
     }
-    returnCode(ERR);
+
+    returnCode(code);
 }
 
 #if NCURSES_SP_FUNCS

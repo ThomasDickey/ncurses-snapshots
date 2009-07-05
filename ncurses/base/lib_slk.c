@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slk.c,v 1.38.1.1 2009/05/23 20:25:33 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.39 2009/07/04 18:37:57 tom Exp $")
 
 /*
  * Free any memory related to soft labels, return an error.
@@ -226,7 +226,7 @@ NCURSES_SP_NAME(slk_restore) (NCURSES_SP_DCL0)
     SP_PARM->_slk->hidden = FALSE;
     SP_PARM->_slk->dirty = TRUE;
 
-    returnCode(NCURSES_SP_NAME(slk_refresh) (SP_PARM));
+    returnCode(NCURSES_SP_NAME(slk_refresh) (NCURSES_SP_ARG));
 }
 
 #if NCURSES_SP_FUNCS
