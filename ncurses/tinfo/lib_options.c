@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_options.c,v 1.66 2009/07/25 14:08:17 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.69 2009/07/25 16:05:16 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -86,7 +86,7 @@ NCURSES_SP_NAME(halfdelay) (NCURSES_SP_DCLx int t)
     if (t < 1 || t > 255 || !IsValidTIScreen(SP_PARM))
 	returnCode(ERR);
 
-    NCURSES_SP_NAME(cbreak) (SP_PARM);
+    NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG);
     SP_PARM->_cbreak = t + 1;
     returnCode(OK);
 }
@@ -272,13 +272,29 @@ has_key_internal(int keycode, TRIES * tp)
 		|| has_key_internal(keycode, tp->sibling));
 }
 
+#ifdef USE_TERM_DRIVER
 NCURSES_EXPORT(int)
 _nc_tinfo_has_key(SCREEN *sp, int keycode)
 {
     return IsValidTIScreen(sp) ?
 	has_key_internal(keycode, sp->_keytry) : 0;
 }
+#else
+NCURSES_EXPORT(int)
+NCURSES_SP_NAME(has_key) (NCURSES_SP_DCLx int keycode)
+{
+    T((T_CALLED("has_key(%p,%d)"), SP_PARM, keycode));
+    returnCode(SP != 0 ? has_key_internal(keycode, SP_PARM->_keytry) : FALSE);
+}
 
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(int)
+has_key(int keycode)
+{
+    return NCURSES_SP_NAME(has_key) (CURRENT_SCREEN, keycode);
+}
+#endif
+#endif
 #endif /* NCURSES_EXT_FUNCS */
 
 NCURSES_EXPORT(int)
