@@ -37,7 +37,7 @@
 #define USE_LIBTINFO
 #include <progs.priv.h>
 
-MODULE_ID("$Id: tabs.c,v 1.15 2008/11/23 00:47:51 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.15.1.2 2008/12/07 02:07:41 juergen Exp $")
 
 static void usage(void) GCC_NORETURN;
 
