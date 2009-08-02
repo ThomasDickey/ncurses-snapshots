@@ -45,7 +45,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.40.1.1 2009/07/25 14:02:55 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.40 2009/07/04 18:38:49 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -351,6 +351,8 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	returnCode(ERR);
     }
 
+    _nc_lock_global(curses);
+
     was_stolen = (screen_lines(SP_PARM) - SP_PARM->_lines_avail);
     if (NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_ARGx ToLines, ToCols)) {
 	int myLines = CurLines = screen_lines(SP_PARM);
@@ -415,6 +417,8 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
      */
     SET_LINES(ToLines - was_stolen);
     SET_COLS(ToCols);
+
+    _nc_unlock_global(curses);
 
     returnCode(result);
 }
