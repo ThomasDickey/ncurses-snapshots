@@ -49,7 +49,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.16 2009/08/01 18:05:48 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.17 2009/08/01 23:11:02 tom Exp $")
 
 #if SVR4_TERMIO && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -241,7 +241,7 @@ NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
     int result = ERR;
     TERMINAL *termp;
 
-    T((T_CALLED("nocbreak(%p,%d)"), SP_PARM));
+    T((T_CALLED("nocbreak(%p)"), SP_PARM));
     if ((termp = TerminalOf(SP_PARM)) != 0) {
 	TTY buf;
 
