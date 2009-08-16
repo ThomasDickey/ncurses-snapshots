@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2007 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.16 2009/04/11 21:27:33 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.16.1.1 2009/04/11 21:46:55 tom Exp $")
 
 static FIELDTYPE default_fieldtype =
 {
@@ -43,10 +43,11 @@ static FIELDTYPE default_fieldtype =
   NULL,				/* makearg function                            */
   NULL,				/* copyarg function                            */
   NULL,				/* freearg function                            */
-  NULL,				/* field validation function                   */
-  NULL,				/* Character check function                    */
-  NULL,				/* enumerate next function                     */
-  NULL				/* enumerate previous function                 */
+  {NULL},			/* field validation function                   */
+  {NULL},			/* Character check function                    */
+  {NULL},			/* enumerate next function                     */
+  {NULL},			/* enumerate previous function                 */
+  NULL				/* generic callback alternative to makearg     */
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE *)
@@ -82,8 +83,8 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
 	{
 	  T((T_CREATE("fieldtype %p"), nftyp));
 	  *nftyp = default_fieldtype;
-	  nftyp->fcheck = field_check;
-	  nftyp->ccheck = char_check;
+	  nftyp->fieldcheck.ofcheck = field_check;
+	  nftyp->charcheck.occheck = char_check;
 	}
       else
 	{
