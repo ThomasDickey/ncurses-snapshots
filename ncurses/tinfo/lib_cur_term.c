@@ -40,32 +40,27 @@
 #include <term_entry.h>		/* TTY, cur_term */
 #include <termcap.h>		/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.22.1.1 2009/05/30 20:20:15 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.23 2009/08/22 17:39:59 tom Exp $")
 
 #undef CUR
 #define CUR termp->type.
 
-NCURSES_EXPORT(TERMINAL *)
-NCURSES_SP_NAME(cur_term) (SCREEN *sp)
-{
-    return ((0 != TerminalOf(sp)) ?
-	    TerminalOf(sp) :
-#if BROKEN_LINKER || USE_REENTRANT
-	    _nc_prescreen._cur_term
-#else
-	    cur_term
-#endif
-	);
-}
-
 #if BROKEN_LINKER && !USE_REENTRANT
 NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 #elif BROKEN_LINKER || USE_REENTRANT
+
+NCURSES_EXPORT(TERMINAL *)
+NCURSES_SP_NAME(cur_term) (SCREEN *sp)
+{
+    return ((0 != TerminalOf(sp)) ? TerminalOf(sp) : CurTerm);
+}
+
 NCURSES_EXPORT(TERMINAL *)
 NCURSES_PUBLIC_VAR(cur_term) (void)
 {
     return NCURSES_SP_NAME(cur_term) (CURRENT_SCREEN);
 }
+
 #else
 NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 #endif
@@ -83,18 +78,23 @@ NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
 	SP_PARM->_term = termp;
 #if BROKEN_LINKER && !USE_REENTRANT
     cur_term = termp;
-#elif BROKEN_LINKER || USE_REENTRANT
-    _nc_prescreen._cur_term = termp;
 #else
-    cur_term = termp;
+    CurTerm = termp;
 #endif
     if (termp != 0) {
+#ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 	ospeed = _nc_ospeed(termp->_baudrate);
 	if (TCB->drv->isTerminfo && termp->type.Strings) {
 	    PC = (char) ((pad_char != NULL) ? pad_char[0] : 0);
 	}
 	TCB->csp = SP_PARM;
+#else
+	ospeed = _nc_ospeed(termp->_baudrate);
+	if (termp->type.Strings) {
+	    PC = (char) ((pad_char != NULL) ? pad_char[0] : 0);
+	}
+#endif
     }
     _nc_unlock_global(curses);
 
@@ -118,13 +118,18 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
     T((T_CALLED("del_curterm(%p, %p)"), SP_PARM, termp));
 
     if (termp != 0) {
+#ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
-	TERMINAL *cur =
-#if BROKEN_LINKER || USE_REENTRANT
-	NCURSES_SP_NAME(cur_term) (NCURSES_SP_ARG);
-#else
-	cur_term;
 #endif
+	TERMINAL *cur = (
+#if BROKEN_LINKER && !USE_REENTRANT
+			    cur_term
+#elif BROKEN_LINKER || USE_REENTRANT
+			    NCURSES_SP_NAME(cur_term) (NCURSES_SP_ARG)
+#else
+			    cur_term
+#endif
+	);
 
 	_nc_free_termtype(&(termp->type));
 	if (termp == cur)
@@ -135,8 +140,10 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
 	if (_nc_globals.home_terminfo != 0)
 	    FreeAndNull(_nc_globals.home_terminfo);
 #endif
+#ifdef USE_TERM_DRIVER
 	if (TCB->drv)
 	    TCB->drv->release(TCB);
+#endif
 	free(termp);
 
 	rc = OK;

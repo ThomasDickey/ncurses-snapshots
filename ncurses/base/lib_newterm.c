@@ -47,12 +47,12 @@
 #endif
 
 #ifndef CUR
-#define CUR SP_TERMTYPE 
+#define CUR SP_TERMTYPE
 #endif
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.77.1.5 2009/08/16 13:58:08 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.77.1.6 2009/08/22 19:14:33 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -180,7 +180,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 
     /* this loads the capability entry, then sets LINES and COLS */
     if (SP_PARM->_prescreen &&
-	_nc_setupterm_ex(&new_term, name,
+	TINFO_SETUP_TERM(&new_term, name,
 			 fileno(_ofp), &errret, FALSE) != ERR) {
 
 	_nc_set_screen(0);
@@ -198,12 +198,16 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 	    _nc_set_screen(current);
 	    result = 0;
 	} else {
+#ifdef USE_TERM_DRIVER
 	    TERMINAL_CONTROL_BLOCK *TCB;
+#endif
 	    assert(SP_PARM != 0);
 	    _nc_set_screen(SP_PARM);
 	    cols = *(ptrCols(SP_PARM));
+#ifdef USE_TERM_DRIVER
 	    TCB = (TERMINAL_CONTROL_BLOCK *) new_term;
 	    TCB->csp = SP_PARM;
+#endif
 	    numlab = NumLabels;
 
 	    /*
@@ -235,7 +239,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 		_nc_slk_initialize(SP_PARM->_stdscr, cols);
 
 	    SP_PARM->_ifd = fileno(_ifp);
-	    NCURSES_SP_NAME(typeahead) (SP_PARM, fileno(_ifp));
+	    NCURSES_SP_NAME(typeahead) (NCURSES_SP_ARGx fileno(_ifp));
 #ifdef TERMIOS
 	    SP_PARM->_use_meta = ((SP_PARM->_term->Ottyb.c_cflag & CSIZE) ==
 				  CS8 &&
@@ -244,8 +248,22 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 	    SP_PARM->_use_meta = FALSE;
 #endif
 	    SP_PARM->_endwin = FALSE;
+#ifndef USE_TERM_DRIVER
+	    /*
+	     * Check whether we can optimize scrolling under dumb terminals in
+	     * case we do not have any of these capabilities, scrolling
+	     * optimization will be useless.
+	     */
+	    SP_PARM->_scrolling = ((scroll_forward && scroll_reverse) ||
+				   ((parm_rindex ||
+				     parm_insert_line ||
+				     insert_line) &&
+				    (parm_index ||
+				     parm_delete_line ||
+				     delete_line)));
+#endif
 
-	    NCURSES_SP_NAME(baudrate) (SP_PARM);	/* sets a field in the screen structure */
+	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);		/* sets a field in the screen structure */
 
 	    SP_PARM->_keytry = 0;
 
@@ -265,6 +283,12 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 #define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
 	    SP->_use_rmso = SGR0_TEST(exit_standout_mode);
 	    SP->_use_rmul = SGR0_TEST(exit_underline_mode);
+
+	    /* compute movement costs so we can do better move optimization */
+	    _nc_mvcur_init();
+
+	    /* initialize terminal to a sane state */
+	    _nc_screen_init();
 #endif
 
 	    /* Initialize the terminal line settings. */

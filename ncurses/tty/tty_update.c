@@ -82,7 +82,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.258.1.2 2009/08/16 14:20:30 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.259 2009/08/22 17:16:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -197,7 +197,10 @@ GoTo(NCURSES_SP_DCLx int const row, int const col)
 
     position_check(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, "GoTo");
 
-    TINFO_MVCUR(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, row, col);
+    TINFO_MVCUR(NCURSES_SP_ARGx
+		SP_PARM->_cursrow,
+		SP_PARM->_curscol,
+		row, col);
     position_check(SP_PARM, SP_PARM->_cursrow, SP_PARM->_curscol, "GoTo2");
 }
 
@@ -1001,6 +1004,14 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 
     returnCode(OK);
 }
+
+#if NCURSES_SP_FUNCS && !defined(USE_TERM_DRIVER)
+NCURSES_EXPORT(int)
+doupdate(void)
+{
+    return TINFO_DOUPDATE(CURRENT_SCREEN);
+}
+#endif
 
 /*
  *	ClrBlank(win)
@@ -2152,7 +2163,7 @@ NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 				       NCURSES_SP_NAME(_nc_outch));
 	SP_PARM->_default_color = FALSE;
 
-	TINFO_MVCUR(SP_PARM,
+	TINFO_MVCUR(NCURSES_SP_ARGx
 		    SP_PARM->_cursrow,
 		    SP_PARM->_curscol,
 		    screen_lines(SP_PARM) - 1,

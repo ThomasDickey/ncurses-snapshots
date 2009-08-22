@@ -45,7 +45,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.40.1.1 2009/07/25 14:02:55 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.40.1.2 2009/08/22 19:14:05 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -230,9 +230,9 @@ adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
 	if (rop->hook == _nc_slk_initialize)
 	    _nc_format_slks(
 #if NCURSES_SP_FUNCS
-		_nc_screen_of(win),
+			       _nc_screen_of(win),
 #endif
-		ToCols);
+			       ToCols);
     } else if (win->_begy >= bottom) {
 	/*
 	 * If it is below the bottom of the new screen, move up by the same

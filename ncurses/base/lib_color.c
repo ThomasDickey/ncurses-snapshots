@@ -45,7 +45,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.93 2009/08/16 13:54:27 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.95 2009/08/22 19:04:36 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -59,7 +59,7 @@ MODULE_ID("$Id: lib_color.c,v 1.93 2009/08/16 13:54:27 tom Exp $")
 #define CanChange      can_change
 #define DefaultPalette (hue_lightness_saturation ? hls_palette : cga_palette)
 #define HasColor       has_color
-#define InitColor      init_color
+#define InitColor      initialize_color
 #define MaxColors      max_colors
 #define MaxPairs       max_pairs
 #define UseHlsPalette  (hue_lightness_saturation)
@@ -524,7 +524,7 @@ NCURSES_SP_NAME(init_pair) (NCURSES_SP_DCLx short pair, short f, short b)
 		}
 	    }
 	    if (changed)
-		NCURSES_SP_NAME(_nc_make_oldhash) (SP_PARM, y);
+		NCURSES_SP_NAME(_nc_make_oldhash) (NCURSES_SP_ARGx y);
 	}
     }
 
@@ -600,7 +600,12 @@ NCURSES_SP_NAME(init_color) (NCURSES_SP_DCLx
 	    SP_PARM->_color_table[color].blue = b;
 	}
 
+#ifdef USE_TERM_DRIVER
 	CallDriver_4(SP_PARM, initcolor, color, r, g, b);
+#else
+	TPUTS_TRACE("initialize_color");
+	putp(TPARM_4(initialize_color, color, r, g, b));
+#endif
 	SP_PARM->_color_defs = max(color + 1, SP_PARM->_color_defs);
 
 	result = OK;
@@ -800,9 +805,9 @@ NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_DCLx
 
 #if NCURSES_EXT_FUNCS
     if (isDefaultColor(fg))
-	fg = default_fg();
+	fg = default_fg(NCURSES_SP_ARG);
     if (isDefaultColor(bg))
-	bg = default_bg();
+	bg = default_bg(NCURSES_SP_ARG);
 #endif
 
     if (reverse) {

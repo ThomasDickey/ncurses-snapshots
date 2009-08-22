@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_set_term.c,v 1.124.1.2 2009/08/16 13:21:20 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.124.1.3 2009/08/22 19:35:28 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -72,7 +72,7 @@ set_term(SCREEN *screenp)
     newSP = screenp;
 
     if (newSP != 0) {
-	NCURSES_SP_NAME(set_curterm) (newSP, newSP->_term);
+	TINFO_SET_CURTERM (newSP, newSP->_term);
 #if !USE_REENTRANT
 	curscr = newSP->_curscr;
 	newscr = newSP->_newscr;
@@ -81,7 +81,7 @@ set_term(SCREEN *screenp)
 	COLOR_PAIRS = newSP->_pair_count;
 #endif
     } else {
-	NCURSES_SP_NAME(set_curterm) (oldSP, 0);
+	TINFO_SET_CURTERM (oldSP, 0);
 #if !USE_REENTRANT
 	curscr = 0;
 	newscr = 0;
@@ -197,7 +197,7 @@ delscreen(SCREEN *sp)
 	    free(sp->_setbuf);
 	}
 
-	NCURSES_SP_NAME(del_curterm) (sp, sp->_term);
+	NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx sp->_term);
 	free(sp);
 
 	/*
@@ -271,10 +271,9 @@ extract_fgbg(char *src, int *result)
 
 /*
  * In case of handling multiple screens, we need to have a screen before
- * initializatin in setupscreen takes place. This is to some
- * extend the substitute for some of the stuff in _nc_prescreen,
- * expecially for slk and ripoff handling which should be done
- * per screen.
+ * initialization in setupscreen takes place.  This is to extend the substitute
+ * for some of the stuff in _nc_prescreen, especially for slk and ripoff
+ * handling which should be done per screen.
  */
 NCURSES_EXPORT(SCREEN *)
 new_prescr(void)
@@ -317,6 +316,9 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
     ripoff_t *rop;
     SCREEN *sp;
     int numlab;
+#ifndef USE_TERM_DRIVER
+    bool support_cookies = USE_XMC_SUPPORT;
+#endif
 
     T((T_CALLED("_nc_setupscreen(%p, %d, %d, %p, %d, %d)"),
        spp, slines, scolumns, output, filtered, slk_format));
@@ -349,12 +351,19 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
      */
     _nc_set_screen(sp);
     sp->_term = cur_term;
+#ifdef USE_TERM_DRIVER
     TCBOf(sp)->csp = sp;
     _nc_get_screensize(sp, sp->_term, &slines, &scolumns);
+#else
+    _nc_get_screensize(SP, &slines, &scolumns);
+    _nc_set_screen(sp);
+    sp->_term = cur_term;
+#endif
     SET_LINES(slines);
     SET_COLS(scolumns);
 
-    T((T_CREATE("screen %s %dx%d"), NCURSES_SP_NAME(termname) (sp), slines, scolumns));
+    T((T_CREATE("screen %s %dx%d"),
+       NCURSES_SP_NAME(termname) (NCURSES_SP_ARG), slines, scolumns));
 
     sp->_filtered = filtered;
 
@@ -362,7 +371,17 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
     if (filtered) {
 	slines = 1;
 	SET_LINES(slines);
+#ifdef USE_TERM_DRIVER
 	CallDriver(sp, setfilter);
+#else
+	clear_screen = 0;
+	cursor_down = parm_down_cursor = 0;
+	cursor_address = 0;
+	cursor_up = parm_up_cursor = 0;
+	row_address = 0;
+
+	cursor_home = carriage_return;
+#endif
 	T(("filter screensize %dx%d", slines, scolumns));
     }
 #ifdef __DJGPP__
@@ -370,7 +389,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
     fflush(output);
     setmode(output, O_BINARY);
 #endif
-    NCURSES_SP_NAME(_nc_set_buffer) (sp, output, TRUE);
+    NCURSES_SP_NAME(_nc_set_buffer) (NCURSES_SP_ARGx output, TRUE);
     sp->_lines = slines;
     sp->_lines_avail = slines;
     sp->_columns = scolumns;
@@ -477,14 +496,93 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
      * If we've no magic cookie support, we suppress attributes that xmc would
      * affect, i.e., the attributes that affect the rendition of a space.
      */
-    sp->_ok_attributes = NCURSES_SP_NAME(termattrs) (sp);
-    if (NCURSES_SP_NAME(has_colors) (sp)) {
+    sp->_ok_attributes = NCURSES_SP_NAME(termattrs) (NCURSES_SP_ARG);
+    if (NCURSES_SP_NAME(has_colors) (NCURSES_SP_ARG)) {
 	sp->_ok_attributes |= A_COLOR;
     }
-
+#ifdef USE_TERM_DRIVER
     _nc_cookie_init(sp);
+#else
+#if USE_XMC_SUPPORT
+    /*
+     * If we have no magic-cookie support compiled-in, or if it is suppressed
+     * in the environment, reset the support-flag.
+     */
+    if (magic_cookie_glitch >= 0) {
+	if (getenv("NCURSES_NO_MAGIC_COOKIE") != 0) {
+	    support_cookies = FALSE;
+	}
+    }
+#endif
 
-    NCURSES_SP_NAME(_nc_init_acs) (sp);
+    if (!support_cookies && magic_cookie_glitch >= 0) {
+	T(("will disable attributes to work w/o magic cookies"));
+    }
+
+    if (magic_cookie_glitch > 0) {	/* tvi, wyse */
+
+	SP->_xmc_triggers = SP->_ok_attributes & (
+						     A_STANDOUT |
+						     A_UNDERLINE |
+						     A_REVERSE |
+						     A_BLINK |
+						     A_DIM |
+						     A_BOLD |
+						     A_INVIS |
+						     A_PROTECT
+	    );
+#if 0
+	/*
+	 * We "should" treat colors as an attribute.  The wyse350 (and its
+	 * clones) appear to be the only ones that have both colors and magic
+	 * cookies.
+	 */
+	if (has_colors()) {
+	    SP->_xmc_triggers |= A_COLOR;
+	}
+#endif
+	SP->_xmc_suppress = SP->_xmc_triggers & (chtype) ~(A_BOLD);
+
+	T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
+	/*
+	 * Supporting line-drawing may be possible.  But make the regular
+	 * video attributes work first.
+	 */
+	acs_chars = ABSENT_STRING;
+	ena_acs = ABSENT_STRING;
+	enter_alt_charset_mode = ABSENT_STRING;
+	exit_alt_charset_mode = ABSENT_STRING;
+#if USE_XMC_SUPPORT
+	/*
+	 * To keep the cookie support simple, suppress all of the optimization
+	 * hooks except for clear_screen and the cursor addressing.
+	 */
+	if (support_cookies) {
+	    clr_eol = ABSENT_STRING;
+	    clr_eos = ABSENT_STRING;
+	    set_attributes = ABSENT_STRING;
+	}
+#endif
+    } else if (magic_cookie_glitch == 0) {	/* hpterm */
+    }
+
+    /*
+     * If magic cookies are not supported, cancel the strings that set
+     * video attributes.
+     */
+    if (!support_cookies && magic_cookie_glitch >= 0) {
+	magic_cookie_glitch = ABSENT_NUMERIC;
+	set_attributes = ABSENT_STRING;
+	enter_blink_mode = ABSENT_STRING;
+	enter_bold_mode = ABSENT_STRING;
+	enter_dim_mode = ABSENT_STRING;
+	enter_reverse_mode = ABSENT_STRING;
+	enter_standout_mode = ABSENT_STRING;
+	enter_underline_mode = ABSENT_STRING;
+    }
+#endif
+
+    NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_ARG);
 #if USE_WIDEC_SUPPORT
     _nc_init_wacs();
 
@@ -504,12 +602,14 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
     sp->newhash = 0;
 
     T(("creating newscr"));
-    sp->_newscr = NCURSES_SP_NAME(newwin) (sp, slines, scolumns, 0, 0);
+    sp->_newscr = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx slines, scolumns,
+					   0, 0);
     if (sp->_newscr == 0) {
 	ReturnScreenError();
     }
     T(("creating curscr"));
-    sp->_curscr = NCURSES_SP_NAME(newwin) (sp, slines, scolumns, 0, 0);
+    sp->_curscr = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx slines, scolumns,
+					   0, 0);
     if (sp->_curscr == 0) {
 	ReturnScreenError();
     }
@@ -524,8 +624,8 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
     sp->_newscr->_clear = TRUE;
     sp->_curscr->_clear = FALSE;
 
-    NCURSES_SP_NAME(def_shell_mode) (sp);
-    NCURSES_SP_NAME(def_prog_mode) (sp);
+    NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_ARG);
 
     numlab = NumLabels;
 
@@ -551,7 +651,8 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
 		    ? "bottom"
 		    : "top")));
 
-		w = NCURSES_SP_NAME(newwin) ((sp), count, scolumns,
+		w = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx
+					     count, scolumns,
 					     ((rop->line < 0)
 					      ? sp->_lines_avail - count
 					      : 0),
@@ -575,8 +676,9 @@ NCURSES_SP_NAME(_nc_setupscreen) (SCREEN **spp,
 
     T(("creating stdscr"));
     assert(((sp)->_lines_avail + sp->_topstolen + bottom_stolen) == slines);
-    if ((sp->_stdscr = newwin_sp(sp, sp->_lines_avail,
-				 scolumns, 0, 0)) == 0) {
+    if ((sp->_stdscr = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx
+						sp->_lines_avail,
+						scolumns, 0, 0)) == 0) {
 	ReturnScreenError();
     }
     SET_LINES(sp->_lines_avail);
