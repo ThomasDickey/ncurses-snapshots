@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.430.1.2 2009/08/16 14:15:57 tom Exp $
+ * $Id: curses.priv.h,v 1.434.1.1 2009/08/22 19:48:02 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,10 +196,12 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
+#if 1
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
 #define USE_SP_WINDOWLIST 1
 #define USE_TERM_DRIVER   1
+#endif
 
 /*
  * Note:  ht/cbt expansion flakes out randomly under Linux 1.1.47, but only
@@ -770,7 +772,7 @@ typedef struct {
 	ripoff_t	*rsp;
 #endif
 	TPARM_STATE	tparm_state;
-	void		*saved_tty;	/* savetty/resetty information	    */
+	TTY		*saved_tty;	/* savetty/resetty information	    */
 #if NCURSES_NO_PADDING
 	bool		_no_padding;	/* flag to set if padding disabled  */
 #endif
@@ -815,7 +817,7 @@ struct screen {
 	bool		_use_env;	/* LINES & COLS from environment?   */
 	int		_checkfd;	/* filedesc for typeahead check	    */
 	TERMINAL	*_term;		/* terminal type information	    */
-	void*		_saved_tty;	/* savetty/resetty information	    */
+	TTY		_saved_tty;	/* savetty/resetty information	    */
 	NCURSES_SIZE_T	_lines;		/* screen lines			    */
 	NCURSES_SIZE_T	_columns;	/* screen columns		    */
 
@@ -1682,8 +1684,6 @@ extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int)    _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int)    _nc_locale_breaks_acs(TERMINAL *);
 extern NCURSES_EXPORT(int)    _nc_setupterm(NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL**, NCURSES_CONST char *, int, int *, bool);
-extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL*, int *, int *);
 
 /* lib_set_term.c */
 extern NCURSES_EXPORT(int)    _nc_ripoffline(int, int(*)(WINDOW*, int));
@@ -1744,6 +1744,7 @@ extern NCURSES_EXPORT(int) _nc_keypad (SCREEN *, bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
 extern NCURSES_EXPORT(int) _nc_putp(const char *, const char *);
+extern NCURSES_EXPORT(int) _nc_putp_flush(const char *, const char *);
 extern NCURSES_EXPORT(int) _nc_read_termcap_entry (const char *const, TERMTYPE *const);
 extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, bool, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait (SCREEN *, int, int, int * EVENTLIST_2nd(_nc_eventlist *));
@@ -1836,7 +1837,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS
+#if NCURSES_SP_FUNCS && 1
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN
@@ -1986,6 +1987,7 @@ extern NCURSES_EXPORT_VAR(const color_t*) _nc_cga_palette;
 extern NCURSES_EXPORT_VAR(const color_t*) _nc_hls_palette;
 
 extern NCURSES_EXPORT(int)      _nc_get_driver(TERMINAL_CONTROL_BLOCK*, const char*, int*);
+extern NCURSES_EXPORT(void)     _nc_get_screensize_ex(SCREEN *, TERMINAL *, int *, int *);
 #endif /* USE_TERM_DRIVER */
 
 /*
@@ -2000,16 +2002,40 @@ extern NCURSES_EXPORT(int)      TINFO_HAS_KEY(SCREEN*, int);
 extern NCURSES_EXPORT(int)      TINFO_DOUPDATE(SCREEN *);
 extern NCURSES_EXPORT(int)      TINFO_MVCUR(SCREEN*, int, int, int, int);
 #else
-#define TINFO_HAS_KEY           NCURSES_SP_NAMES(has_key)
-#define TINFO_DOUPDATE          NCURSES_SP_NAMES(doupdate)
-#define TINFO_MVCUR             NCURSES_SP_NAMES(mvcur)
+#define TINFO_HAS_KEY           NCURSES_SP_NAME(has_key)
+#define TINFO_DOUPDATE          NCURSES_SP_NAME(doupdate)
+#define TINFO_MVCUR             NCURSES_SP_NAME(mvcur)
 #endif
 
+/*
+ * Entrypoints using an extra parameter with the terminal driver.
+ */
+#ifdef USE_TERM_DRIVER
+extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL *, int *, int *);
+extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL **, NCURSES_CONST char *, int , int *, bool);
+#define TINFO_GET_SIZE(sp, tp, lp, cp) \
+	_nc_get_screensize(sp, tp, lp, cp)
+#define TINFO_SET_CURTERM(sp, tp) \
+	NCURSES_SP_NAME(set_curterm)(sp, tp)
+#define TINFO_SETUP_TERM(tpp, name, fd, err, reuse) \
+	_nc_setupterm_ex(tpp, name, fd, err, reuse)
+#else /* !USE_TERM_DRIVER */
+extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
+#define TINFO_GET_SIZE(sp, tp, lp, cp) \
+	_nc_get_screensize(sp, lp, cp)
+#define TINFO_SET_CURTERM(sp, tp) \
+	set_curterm(tp)
+#define TINFO_SETUP_TERM(tpp, name, fd, err, reuse) \
+	_nc_setupterm(name, fd, err, reuse)
+#endif /* !USE_TERM_DRIVER */
+
+#ifdef USE_TERM_DRIVER
 #ifdef __MINGW32__
 #include <nc_mingw.h>
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
+#endif
 
 #ifdef USE_TERM_DRIVER
 #define IsTermInfo(sp)       (TCBOf(sp) && ((TCBOf(sp)->drv->isTerminfo)))

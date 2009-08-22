@@ -52,7 +52,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.117.1.1 2009/06/07 15:06:46 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.117.1.2 2009/08/22 19:11:04 tom Exp $")
 
 /****************************************************************************
  *
@@ -166,24 +166,6 @@ NCURSES_EXPORT_VAR(char) ttytype[NAMESIZE] = "";
 NCURSES_EXPORT_VAR(int) LINES = 0;
 NCURSES_EXPORT_VAR(int) COLS = 0;
 NCURSES_EXPORT_VAR(int) TABSIZE = 8;
-
-NCURSES_EXPORT(int *)
-_nc_ptr_Tabsize(SCREEN *sp GCC_UNUSED)
-{
-    return &TABSIZE;
-}
-
-NCURSES_EXPORT(int *)
-_nc_ptr_Lines(SCREEN *sp GCC_UNUSED)
-{
-    return &LINES;
-}
-
-NCURSES_EXPORT(int *)
-_nc_ptr_Cols(SCREEN *sp GCC_UNUSED)
-{
-    return &COLS;
-}
 #endif
 
 #if NCURSES_EXT_FUNCS
@@ -256,11 +238,11 @@ use_env(bool f)
 #endif
 
 NCURSES_EXPORT(void)
-_nc_get_screensize(SCREEN *sp
-#if !USE_REENTRANT
-		   GCC_UNUSED
+_nc_get_screensize(SCREEN *sp,
+#ifdef USE_TERM_DRIVER
+		   TERMINAL * termp,
 #endif
-		   ,TERMINAL * termp, int *linep, int *colp)
+		   int *linep, int *colp)
 /* Obtain lines/columns values from the environment and/or terminfo entry */
 {
 #ifdef USE_TERM_DRIVER
@@ -405,7 +387,7 @@ _nc_update_screensize(SCREEN *sp)
     int old_cols = columns;
 #endif
 
-    _nc_get_screensize(sp, sp->_term, &new_lines, &new_cols);
+    TINFO_GET_SIZE(sp, sp->_term, &new_lines, &new_cols);
 
     /*
      * See is_term_resized() and resizeterm().
@@ -590,8 +572,12 @@ _nc_setupterm_ex(TERMINAL ** tp,
 		 int *errret,
 		 bool reuse)
 {
-    TERMINAL *termp;
+#ifdef USE_TERM_DRIVER
     TERMINAL_CONTROL_BLOCK *TCB = 0;
+#else
+    int status;
+#endif
+    TERMINAL *termp;
     SCREEN *sp = 0;
     int code = ERR;
 
@@ -603,7 +589,7 @@ _nc_setupterm_ex(TERMINAL ** tp,
 
     if (tp == 0) {
 	ret_error0(TGETENT_ERR,
-		   "Invalid paramter, internal error.\n");
+		   "Invalid parameter, internal error.\n");
     } else
 	termp = *tp;
 #else
@@ -736,7 +722,7 @@ _nc_setupterm_ex(TERMINAL ** tp,
     /*
      * We should always check the screensize, just in case.
      */
-    _nc_get_screensize(sp, termp, ptrLines(sp), ptrCols(sp));
+    TINFO_GET_SIZE(sp, termp, ptrLines(sp), ptrCols(sp));
 
     if (errret)
 	*errret = TGETENT_YES;
