@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.434.1.1 2009/08/22 19:48:02 tom Exp $
+ * $Id: curses.priv.h,v 1.435 2009/08/22 22:33:25 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,7 +196,7 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
-#if 1
+#if 0
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
 #define USE_SP_WINDOWLIST 1
@@ -1731,6 +1731,7 @@ extern NCURSES_EXPORT(int) _nc_remove_string (TRIES **, const char *);
 /* elsewhere ... */
 extern NCURSES_EXPORT(ENTRY *) _nc_delink_entry (ENTRY *, TERMTYPE *);
 extern NCURSES_EXPORT(SCREEN *) _nc_screen_of (WINDOW *);
+extern NCURSES_EXPORT(TERMINAL*) _nc_get_cur_term (void);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
 extern NCURSES_EXPORT(char *) _nc_trace_bufcat (int, const char *);
@@ -1837,7 +1838,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS && 1
+#if NCURSES_SP_FUNCS && 0
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN
@@ -2069,7 +2070,7 @@ extern NCURSES_EXPORT(int)      NCURSES_SP_NAME(_nc_set_tabsize)(SCREEN*, int);
  * We put the safe versions of various calls here as they are not published
  * part of the API up to now
  */
-extern NCURSES_EXPORT(TERMINAL*) NCURSES_SP_NAME(cur_term)(SCREEN *sp);
+extern NCURSES_EXPORT(TERMINAL*) NCURSES_SP_NAME(_nc_get_cur_term) (SCREEN *sp);
 extern NCURSES_EXPORT(WINDOW *) NCURSES_SP_NAME(_nc_makenew) (SCREEN*, int, int, int, int, int);
 extern NCURSES_EXPORT(bool)     NCURSES_SP_NAME(_nc_reset_colors)(SCREEN*);
 extern NCURSES_EXPORT(char *)   NCURSES_SP_NAME(_nc_printf_string)(SCREEN*, const char *, va_list);
