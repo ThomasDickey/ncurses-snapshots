@@ -40,7 +40,7 @@
 #include <term_entry.h>		/* TTY, cur_term */
 #include <termcap.h>		/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.23 2009/08/22 17:39:59 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.24 2009/08/22 22:37:13 tom Exp $")
 
 #undef CUR
 #define CUR termp->type.
@@ -50,15 +50,23 @@ NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 #elif BROKEN_LINKER || USE_REENTRANT
 
 NCURSES_EXPORT(TERMINAL *)
-NCURSES_SP_NAME(cur_term) (SCREEN *sp)
+NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_DCL0)
 {
-    return ((0 != TerminalOf(sp)) ? TerminalOf(sp) : CurTerm);
+    return ((0 != TerminalOf(SP_PARM)) ? TerminalOf(SP_PARM) : CurTerm);
 }
+
+#if NCURSES_SP_FUNCS
+NCURSES_EXPORT(TERMINAL *)
+_nc_get_cur_term(void)
+{
+    return NCURSES_SP_NAME(_nc_get_cur_term) (CURRENT_SCREEN);
+}
+#endif
 
 NCURSES_EXPORT(TERMINAL *)
 NCURSES_PUBLIC_VAR(cur_term) (void)
 {
-    return NCURSES_SP_NAME(cur_term) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_ARG);
 }
 
 #else
@@ -125,7 +133,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL * termp)
 #if BROKEN_LINKER && !USE_REENTRANT
 			    cur_term
 #elif BROKEN_LINKER || USE_REENTRANT
-			    NCURSES_SP_NAME(cur_term) (NCURSES_SP_ARG)
+			    NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_ARG)
 #else
 			    cur_term
 #endif
