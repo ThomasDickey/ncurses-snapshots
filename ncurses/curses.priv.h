@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.435 2009/08/22 22:33:25 tom Exp $
+ * $Id: curses.priv.h,v 1.435.1.3 2009/08/30 17:44:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,7 +196,7 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
-#if 0
+#if 1
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
 #define USE_SP_WINDOWLIST 1
@@ -480,6 +480,36 @@ extern NCURSES_EXPORT(int) _nc_sigprocmask(int, const sigset_t *, sigset_t *);
 #define _nc_unlock_global(name)	/* nothing */
 
 #endif /* USE_PTHREADS */
+
+/*
+ * When using sp-funcs, locks are targeted to SCREEN-level granularity.
+ * So the locking is done in the non-sp-func (which calls the sp-func) rather
+ * than in the sp-func itself.
+ *
+ * Use the _nc_nonsp_XXX functions in the function using "NCURSES_SP_NAME()".
+ * Use the _nc_sp_XXX functions in the function using "#if NCURSES_SP_FUNCS".
+ */
+#if NCURSES_SP_FUNCS
+
+#define _nc_nonsp_lock_global(name)	/* nothing */
+#define _nc_nonsp_try_global(name)    0
+#define _nc_nonsp_unlock_global(name)	/* nothing */
+
+#define _nc_sp_lock_global(name)	_nc_lock_global(name)
+#define _nc_sp_try_global(name)         _nc_try_global(name)
+#define _nc_sp_unlock_global(name)	_nc_unlock_global(name)
+
+#else
+
+#define _nc_nonsp_lock_global(name)	_nc_lock_global(name)
+#define _nc_nonsp_try_global(name)      _nc_try_global(name)
+#define _nc_nonsp_unlock_global(name)	_nc_unlock_global(name)
+
+#define _nc_sp_lock_global(name)	/* nothing */
+#define _nc_sp_try_global(name)    0
+#define _nc_sp_unlock_global(name)	/* nothing */
+
+#endif
 
 #if HAVE_GETTIMEOFDAY
 # define PRECISE_GETTIME 1
@@ -1838,7 +1868,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS && 0
+#if NCURSES_SP_FUNCS && 1
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN
@@ -2057,7 +2087,6 @@ extern NCURSES_EXPORT(WINDOW *) _nc_stdscr_of(SCREEN*);
 extern NCURSES_EXPORT(int)      _nc_outc_wrapper(SCREEN*,int);
 
 #if USE_REENTRANT
-extern NCURSES_EXPORT(char *)    NCURSES_SP_NAME(_nc_ttytype)(SCREEN*);
 extern NCURSES_EXPORT(int)       NCURSES_SP_NAME(_nc_TABSIZE)(SCREEN*);
 extern NCURSES_EXPORT(char *)    NCURSES_SP_NAME(longname)(SCREEN*);
 #endif
