@@ -40,7 +40,7 @@
 #include <term_entry.h>		/* TTY, cur_term */
 #include <termcap.h>		/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.25 2009/08/30 14:43:21 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.26 2009/09/05 18:05:27 tom Exp $")
 
 #undef CUR
 #define CUR termp->type.
@@ -66,7 +66,7 @@ _nc_get_cur_term(void)
 NCURSES_EXPORT(TERMINAL *)
 NCURSES_PUBLIC_VAR(cur_term) (void)
 {
-    return NCURSES_SP_NAME(_nc_get_cur_term) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_ARG);
 }
 
 #else

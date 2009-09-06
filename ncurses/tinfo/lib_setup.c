@@ -52,7 +52,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.118 2009/08/30 17:55:06 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.119 2009/09/05 20:10:02 tom Exp $")
 
 /****************************************************************************
  *
@@ -602,6 +602,7 @@ TINFO_SETUP_TERM(TERMINAL ** tp,
 	termp = *tp;
 #else
     termp = cur_term;
+    T((T_CALLED("setupterm(%s,%d,%p)"), _nc_visbuf(tname), Filedes, errret));
 #endif
 
     if (tname == 0) {
@@ -718,6 +719,7 @@ TINFO_SETUP_TERM(TERMINAL ** tp,
 	    def_prog_mode();
 	    baudrate();
 	}
+	code = OK;
 #endif
     }
 
@@ -725,6 +727,8 @@ TINFO_SETUP_TERM(TERMINAL ** tp,
     *tp = termp;
     NCURSES_SP_NAME(set_curterm) (sp, termp);
     TCB->drv->init(TCB);
+#else
+    sp = SP;
 #endif
 
     /*
