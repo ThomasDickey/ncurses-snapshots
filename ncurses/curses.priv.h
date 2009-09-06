@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.435.1.3 2009/08/30 17:44:03 tom Exp $
+ * $Id: curses.priv.h,v 1.436 2009/08/30 18:13:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -196,7 +196,7 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
-#if 1
+#if 0
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
 #define USE_SP_WINDOWLIST 1
@@ -1868,7 +1868,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define _nc_set_screen(sp)      SP = sp
 #endif
 
-#if NCURSES_SP_FUNCS && 1
+#if NCURSES_SP_FUNCS && 0
 #define CURRENT_SCREEN_PRE      (IsPreScreen(CURRENT_SCREEN) ? CURRENT_SCREEN : new_prescr())
 #else
 #define CURRENT_SCREEN_PRE      CURRENT_SCREEN
