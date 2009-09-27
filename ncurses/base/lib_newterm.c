@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.80 2009/09/26 19:59:45 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.81 2009/09/27 00:34:05 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -180,7 +180,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
     int cols;
     int slk_format;
     int filter_mode;
-    TERMINAL *new_term;
+    TERMINAL *new_term = 0;
 
     START_TRACE();
     T((T_CALLED("newterm(%p, \"%s\", %p,%p)"), SP_PARM, name, ofp, ifp));

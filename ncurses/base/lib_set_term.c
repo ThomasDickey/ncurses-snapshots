@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_set_term.c,v 1.127 2009/09/26 18:33:55 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.128 2009/09/27 14:21:25 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -298,7 +298,6 @@ new_prescr(void)
 	sp->_TABSIZE = _nc_prescreen._TABSIZE;
 	sp->_ESCDELAY = _nc_prescreen._ESCDELAY;
 #endif
-	_nc_set_screen(sp);
     }
     return sp;
 }
