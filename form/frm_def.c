@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.23.1.3 2009/02/21 15:25:14 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.23 2008/08/04 00:07:55 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -283,55 +283,7 @@ Associate_Fields(FORM *form, FIELD **fields)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  FORM *new_form_sp(SCREEN* sp, FIELD** fields )
-|   
-|   Description   :  Create new form with given array of fields.
-|
-|   Return Values :  Pointer to form. NULL if error occurred.
-!                    Set errno:
-|                    E_OK            - success
-|                    E_BAD_ARGUMENT  - Invalid form pointer or field array
-|                    E_CONNECTED     - a field is already connected
-|                    E_SYSTEM_ERROR  - not enough memory
-+--------------------------------------------------------------------------*/
-NCURSES_EXPORT(FORM *)
-NCURSES_SP_NAME(new_form) (SCREEN * sp, FIELD **fields)
-{
-  int err = E_SYSTEM_ERROR;
-  FORM *form = (FORM *)0;
-
-  T((T_CALLED("new_form(%p,%p)"), sp, fields));
-
-  if (IsValidScreen(sp))
-    {
-      form = typeMalloc(FORM, 1);
-
-      if (form)
-	{
-	  T((T_CREATE("form %p"), form));
-	  *form = *_nc_Default_Form;
-	  /* This ensures win and sub are always non-null,
-	     so we can derive always the SCREEN that this form is
-	     running on. */
-	  form->win = sp->_stdscr;
-	  form->sub = sp->_stdscr;
-	  if ((err = Associate_Fields(form, fields)) != E_OK)
-	    {
-	      free_form(form);
-	      form = (FORM *)0;
-	    }
-	}
-    }
-
-  if (!form)
-    SET_ERROR(err);
-
-  returnForm(form);
-}
-
-/*---------------------------------------------------------------------------
-|   Facility      :  libnform  
-|   Function      :  FORM* new_form(FIELD** fields )
+|   Function      :  FORM *new_form( FIELD **fields )
 |   
 |   Description   :  Create new form with given array of fields.
 |
@@ -345,7 +297,26 @@ NCURSES_SP_NAME(new_form) (SCREEN * sp, FIELD **fields)
 NCURSES_EXPORT(FORM *)
 new_form(FIELD **fields)
 {
-  return NCURSES_SP_NAME(new_form) (CURRENT_SCREEN, fields);
+  int err = E_SYSTEM_ERROR;
+
+  FORM *form = typeMalloc(FORM, 1);
+
+  T((T_CALLED("new_form(%p)"), fields));
+  if (form)
+    {
+      T((T_CREATE("form %p"), form));
+      *form = *_nc_Default_Form;
+      if ((err = Associate_Fields(form, fields)) != E_OK)
+	{
+	  free_form(form);
+	  form = (FORM *)0;
+	}
+    }
+
+  if (!form)
+    SET_ERROR(err);
+
+  returnForm(form);
 }
 
 /*---------------------------------------------------------------------------
