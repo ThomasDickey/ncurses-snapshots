@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2006,2007 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2007,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.25.1.3 2009/02/07 23:11:44 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.27 2009/11/07 20:17:58 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -313,23 +313,27 @@ static FIELDTYPE typeTHIS =
   Make_This_Type,
   Copy_This_Type,
   Free_This_Type,
-  {Check_This_Field},
-  {Check_This_Character},
-  {NULL},
-  {NULL},
+  INIT_FT_FUNC(Check_This_Field),
+  INIT_FT_FUNC(Check_This_Character),
+  INIT_FT_FUNC(NULL),
+  INIT_FT_FUNC(NULL),
+#if NCURSES_INTEROP_FUNCS
   Generic_This_Type
+#endif
 };
 
 NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_NUMERIC = &typeTHIS;
 
+#if NCURSES_INTEROP_FUNCS
 /* The next routines are to simplify the use of ncurses from
    programming languages with restictions on interop with C level
    constructs (e.g. variable access or va_list + ellipsis constructs)
 */
 NCURSES_EXPORT(FIELDTYPE *)
-_nc_TYPE_NUMERIC()
+_nc_TYPE_NUMERIC(void)
 {
   return TYPE_NUMERIC;
 }
+#endif
 
 /* fty_num.c ends here */

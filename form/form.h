@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.h,v 0.20.1.3 2009/02/21 15:25:14 tom Exp $ */
+/* $Id: form.h,v 0.21 2009/11/07 19:31:11 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H
@@ -152,6 +152,7 @@ typedef struct typenode {
   void* (*copyarg)(const void *);		/* copy fieldtype arg 	    */
   void	(*freearg)(void *);			/* free fieldtype arg	    */
 
+#if NCURSES_INTEROP_FUNCS
   union {
     bool (*ofcheck)(FIELD *,const void *);	/* field validation	    */
     bool (*gfcheck)(FORM*,FIELD *,const void*);	/* generic field validation */
@@ -170,8 +171,14 @@ typedef struct typenode {
     bool (*gprev)(FORM*,FIELD*,const void*);    /* generic enumerate prev   */
   } enum_prev;
   void* (*genericarg)(void*);                   /* Alternate Arg method     */
-} FIELDTYPE;
+#else
+  bool	(*fcheck)(FIELD *,const void *);	/* field validation	*/
+  bool	(*ccheck)(int,const void *);		/* character validation */
 
+  bool	(*next)(FIELD *,const void *);		/* enumerate next value */
+  bool	(*prev)(FIELD *,const void *);		/* enumerate prev value */
+#endif
+} FIELDTYPE;
 
 typedef void (*Form_Hook)(FORM *);
 
@@ -359,7 +366,6 @@ extern NCURSES_EXPORT(Field_Options)	field_opts (const FIELD *);
 	******************/
 
 extern NCURSES_EXPORT(FORM *)	new_form (FIELD **);
-extern NCURSES_EXPORT(FORM *)	NCURSES_SP_NAME(new_form) (SCREEN*, FIELD **);
 
 extern NCURSES_EXPORT(FIELD **)	form_fields (const FORM *);
 extern NCURSES_EXPORT(FIELD *)	current_field (const FORM *);
@@ -404,6 +410,10 @@ extern NCURSES_EXPORT(Form_Options)	form_opts (const FORM *);
 
 extern NCURSES_EXPORT(bool)	data_ahead (const FORM *);
 extern NCURSES_EXPORT(bool)	data_behind (const FORM *);
+
+#if NCURSES_SP_FUNCS
+extern NCURSES_EXPORT(FORM *)	NCURSES_SP_NAME(new_form) (SCREEN*, FIELD **);
+#endif
 
 #ifdef __cplusplus
   }

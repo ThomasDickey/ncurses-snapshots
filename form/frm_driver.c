@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2008,2009 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.93.1.1 2009/10/31 23:20:04 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.94 2009/11/07 19:54:03 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -1064,6 +1064,7 @@ Check_Char(FORM *form,
 	}
       else
 	{
+#if NCURSES_INTEROP_FUNCS
 	  if (typ->charcheck.occheck)
 	    {
 	      if (typ->status & _GENERIC)
@@ -1071,6 +1072,10 @@ Check_Char(FORM *form,
 	      else
 		return typ->charcheck.occheck(ch, (void *)argp);
 	    }
+#else
+	  if (typ->ccheck)
+	    return typ->ccheck(ch, (void *)argp);
+#endif
 	}
     }
   return (!iscntrl(UChar(ch)) ? TRUE : FALSE);
@@ -2977,11 +2982,16 @@ Next_Choice(FORM *form, FIELDTYPE *typ, FIELD *field, TypeArgument *argp)
     }
   else
     {
+#if NCURSES_INTEROP_FUNCS
       assert(typ->enum_next.onext);
       if (typ->status & _GENERIC)
 	return typ->enum_next.gnext(form, field, (void *)argp);
       else
 	return typ->enum_next.onext(field, (void *)argp);
+#else
+      assert(typ->next);
+      return typ->next(field, (void *)argp);
+#endif
     }
 }
 
@@ -3013,11 +3023,16 @@ Previous_Choice(FORM *form, FIELDTYPE *typ, FIELD *field, TypeArgument *argp)
     }
   else
     {
+#if NCURSES_INTEROP_FUNCS
       assert(typ->enum_prev.oprev);
       if (typ->status & _GENERIC)
 	return typ->enum_prev.gprev(form, field, (void *)argp);
       else
 	return typ->enum_prev.oprev(field, (void *)argp);
+#else
+      assert(typ->prev);
+      return typ->prev(field, (void *)argp);
+#endif
     }
 }
 /*----------------------------------------------------------------------------
@@ -3118,6 +3133,7 @@ Check_Field(FORM *form, FIELDTYPE *typ, FIELD *field, TypeArgument *argp)
 	}
       else
 	{
+#if NCURSES_INTEROP_FUNCS
 	  if (typ->fieldcheck.ofcheck)
 	    {
 	      if (typ->status & _GENERIC)
@@ -3125,6 +3141,10 @@ Check_Field(FORM *form, FIELDTYPE *typ, FIELD *field, TypeArgument *argp)
 	      else
 		return typ->fieldcheck.ofcheck(field, (void *)argp);
 	    }
+#else
+	  if (typ->fcheck)
+	    return typ->fcheck(field, (void *)argp);
+#endif
 	}
     }
   return TRUE;
@@ -4178,7 +4198,6 @@ form_driver(FORM *form, int c)
 {
   const Binding_Info *BI = (Binding_Info *) 0;
   int res = E_UNKNOWN_COMMAND;
-  SCREEN *sp;
 
   T((T_CALLED("form_driver(%p,%d)"), (void *)form, c));
 
@@ -4210,8 +4229,6 @@ form_driver(FORM *form, int c)
   if ((c >= MIN_FORM_COMMAND && c <= MAX_FORM_COMMAND) &&
       ((bindings[c - MIN_FORM_COMMAND].keycode & Key_Mask) == c))
     BI = &(bindings[c - MIN_FORM_COMMAND]);
-
-  sp = Get_Form_Screen(form);
 
   if (BI)
     {
@@ -4247,7 +4264,7 @@ form_driver(FORM *form, int c)
   else if (KEY_MOUSE == c)
     {
       MEVENT event;
-      WINDOW *win = form->win ? form->win : sp->_stdscr;
+      WINDOW *win = form->win ? form->win : StdScreen(Get_Form_Screen(form));
       WINDOW *sub = form->sub ? form->sub : win;
 
       getmouse(&event);
