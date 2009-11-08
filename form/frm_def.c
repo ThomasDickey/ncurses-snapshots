@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.23.1.3 2009/02/21 15:25:14 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.24 2009/11/07 16:59:03 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -295,14 +295,14 @@ Associate_Fields(FORM *form, FIELD **fields)
 |                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FORM *)
-NCURSES_SP_NAME(new_form) (SCREEN * sp, FIELD **fields)
+NCURSES_SP_NAME(new_form) (NCURSES_SP_DCLx FIELD **fields)
 {
   int err = E_SYSTEM_ERROR;
   FORM *form = (FORM *)0;
 
-  T((T_CALLED("new_form(%p,%p)"), sp, fields));
+  T((T_CALLED("new_form(%p,%p)"), SP_PARM, fields));
 
-  if (IsValidScreen(sp))
+  if (IsValidScreen(SP_PARM))
     {
       form = typeMalloc(FORM, 1);
 
@@ -313,8 +313,8 @@ NCURSES_SP_NAME(new_form) (SCREEN * sp, FIELD **fields)
 	  /* This ensures win and sub are always non-null,
 	     so we can derive always the SCREEN that this form is
 	     running on. */
-	  form->win = sp->_stdscr;
-	  form->sub = sp->_stdscr;
+	  form->win = StdScreen(SP_PARM);
+	  form->sub = StdScreen(SP_PARM);
 	  if ((err = Associate_Fields(form, fields)) != E_OK)
 	    {
 	      free_form(form);
@@ -342,11 +342,13 @@ NCURSES_SP_NAME(new_form) (SCREEN * sp, FIELD **fields)
 |                    E_CONNECTED     - a field is already connected
 |                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
+#if NCURSES_SP_FUNCS
 NCURSES_EXPORT(FORM *)
 new_form(FIELD **fields)
 {
   return NCURSES_SP_NAME(new_form) (CURRENT_SCREEN, fields);
 }
+#endif
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
