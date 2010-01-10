@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2005,2010 Free Software Foundation, Inc.              *
+ * Copyright (c) 2010 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey       1996-2005,2010                           *
+ *  Author: Thomas E. Dickey       2010                                     *
  ****************************************************************************/
 /* LINTLIBRARY */
 
@@ -434,7 +434,7 @@ int	field_count(
 void	_nc_get_fieldbuffer(
 		FORM	*form, 
 		FIELD	*field, 
-		char	*buf)
+		cchar_t	*buf)
 		{ /* void */ }
 
 #undef _nc_Position_Form_Cursor
@@ -506,6 +506,12 @@ char	*field_buffer(
 		const FIELD *field, 
 		int	buffer)
 		{ return(*(char **)0); }
+
+#undef _nc_Widen_String
+wchar_t	*_nc_Widen_String(
+		char	*source, 
+		int	*lengthp)
+		{ return(*(wchar_t **)0); }
 
 /* ./frm_hook.c */
 
