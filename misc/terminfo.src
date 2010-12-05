@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.378 $
-#	$Date: 2010/11/27 19:28:07 $
+#	$Revision: 1.380 $
+#	$Date: 2010/12/04 18:38:55 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -16251,6 +16251,15 @@ tek4106brl|tek4107brl|tek4109brl|Tektronix 4106 4107 or 4109,
 	sc=\E7, sgr0=\E[m, smacs=^N, smcup=\E[?6l, smir=\E[4h,
 	smkx=\E[?1h\E=, smso=\E[7;42m, smul=\E[4m, tbc=\E[3g,
 
+# Tektronix 4107/4109 interpret 4 modes using "\E%!" followed by a code:
+# 0 selects Tek mode, i.e., \E%!0
+# 1 selects ANSI mode
+# 2 selects ANSI edit-mode
+# 3 selects VT52 mode
+#
+# One odd thing about the description (which has been unchanged since the 90s)
+# is that the cursor addressing is using VT52 mode, and a few others use the
+# VT52's non-CSI versions of ANSI, e.g., \EJ.
 tek4107|tek4109|tektronix terminals 4107 4109,
 	OTbs, am, mir, msgr, ul, xenl, xt,
 	cols#79, it#8, lines#29,
@@ -22327,13 +22336,4 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2010-11-27
 #	* fix typo in rmso for tek4106 -Goran Weinholt
 #
-# The following sets edit modes for GNU EMACS.
-# Local Variables:
-# fill-prefix:"\t"
-# fill-column:75
-# comment-column:0
-# comment-start-skip:"^#+"
-# comment-start:"# "
-# compile-command:"tic -c terminfo.master"
-# End:
 ######## SHANTIH!  SHANTIH!  SHANTIH!
