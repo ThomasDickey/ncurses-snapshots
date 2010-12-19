@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.17 2010/03/31 23:38:02 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.18 2010/12/19 01:33:31 tom Exp $")
 
 /* 
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -125,7 +125,7 @@ getcchar(const cchar_t *wcval,
 	    code = ERR;
 	} else if (len >= 0) {
 	    *attrs = AttrOf(*wcval) & A_ATTRIBUTES;
-	    *color_pair = GetPair(*wcval);
+	    *color_pair = (short) GetPair(*wcval);
 	    wmemcpy(wch, wcval->chars, (unsigned) len);
 	    wch[len] = L'\0';
 	    code = OK;

@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.465 2010/08/28 20:56:48 tom Exp $
+ * $Id: curses.priv.h,v 1.466 2010/12/19 01:10:02 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1310,7 +1310,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define SetChar(ch,c,a) do {							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
 			    memset(_cp, 0, sizeof(ch));				    \
-			    _cp->chars[0] = (c);					    \
+			    _cp->chars[0] = (wchar_t) (c);			    \
 			    _cp->attr = (a);					    \
 			    if_EXT_COLORS(SetPair(ch, PairNumber(a)));		    \
 			} while (0)
@@ -1331,8 +1331,8 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 				PUTC_ch = (ch).chars[PUTC_i];			    \
 				if (PUTC_ch == L'\0')				    \
 				    break;					    \
-				PUTC_n = wcrtomb(PUTC_buf,			    \
-						 (ch).chars[PUTC_i], &PUT_st);	    \
+				PUTC_n = (int) wcrtomb(PUTC_buf,		    \
+						       (ch).chars[PUTC_i], &PUT_st); \
 				if (PUTC_n <= 0) {				    \
 				    if (PUTC_ch && is8bits(PUTC_ch) && PUTC_i == 0) \
 					putc(PUTC_ch,b);			    \
@@ -1354,7 +1354,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 	 * zero.  Otherwise we can use those bits to tell if a cell is the
 	 * first or extension part of a wide character.
 	 */
-#define WidecExt(ch)	(AttrOf(ch) & A_CHARTEXT)
+#define WidecExt(ch)	(int) (AttrOf(ch) & A_CHARTEXT)
 #define isWidecBase(ch)	(WidecExt(ch) == 1)
 #define isWidecExt(ch)	(WidecExt(ch) > 1 && WidecExt(ch) < 32)
 #define SetWidecExt(dst, ext)	AttrOf(dst) &= ~A_CHARTEXT,		\
@@ -1420,16 +1420,16 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define CHANGED_RANGE(line,start,end) \
 	if (line->firstchar == _NOCHANGE \
 	 || line->firstchar > (start)) \
-		line->firstchar = start; \
+		line->firstchar = (NCURSES_SIZE_T) start; \
 	if (line->lastchar == _NOCHANGE \
 	 || line->lastchar < (end)) \
-		line->lastchar = end
+		line->lastchar = (NCURSES_SIZE_T) end
 
 #define CHANGED_TO_EOL(line,start,end) \
 	if (line->firstchar == _NOCHANGE \
 	 || line->firstchar > (start)) \
-		line->firstchar = start; \
-	line->lastchar = end
+		line->firstchar = (NCURSES_SIZE_T) start; \
+	line->lastchar = (NCURSES_SIZE_T) end
 
 #define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 
@@ -1590,7 +1590,7 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const NCURSES_CH_T *, int);
  * Workaround for defective implementation of gcc attribute warn_unused_result
  */
 #if defined(__GNUC__) && defined(_FORTIFY_SOURCE)
-#define IGNORE_RC(func) errno = func
+#define IGNORE_RC(func) errno = (int) func
 #else
 #define IGNORE_RC(func) (void) func
 #endif /* gcc workarounds */
@@ -1615,9 +1615,9 @@ extern	NCURSES_EXPORT(void) name (void); \
 
 #define toggle_attr_on(S,at) {\
    if (PairNumber(at) > 0) {\
-      (S) = ((S) & ALL_BUT_COLOR) | (at);\
+      (S) = ((S) & ALL_BUT_COLOR) | (attr_t) (at);\
    } else {\
-      (S) |= (at);\
+      (S) |= (attr_t) (at);\
    }\
    TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
