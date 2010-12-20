@@ -35,7 +35,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.466 2010/12/19 01:10:02 tom Exp $
+ * $Id: curses.priv.h,v 1.469 2010/12/20 01:28:39 tom Exp $
  *
  *	curses.priv.h
  *
@@ -346,7 +346,7 @@ color_t;
  */
 #if 1
 #define ColorPair(n)		NCURSES_BITS(n, 0)
-#define PairNumber(a)		(NCURSES_CAST(int,(((a) & A_COLOR) >> NCURSES_ATTR_SHIFT)))
+#define PairNumber(a)		(NCURSES_CAST(int,(((unsigned long)(a) & A_COLOR) >> NCURSES_ATTR_SHIFT)))
 #else
 #define ColorPair(pair)		COLOR_PAIR(pair)
 #define PairNumber(attr)	PAIR_NUMBER(attr)
@@ -383,11 +383,11 @@ color_t;
 
 #define if_EXT_COLORS(stmt)	/* nothing */
 #define SetPair(value,p)	RemAttr(value, A_COLOR), \
-				SetAttr(value, AttrOf(value) | (A_COLOR & ColorPair(p)))
+				SetAttr(value, AttrOf(value) | (A_COLOR & (attr_t) ColorPair(p)))
 #define GetPair(value)		PairNumber(AttrOf(value))
 #define GET_WINDOW_PAIR(w)	PairNumber(WINDOW_ATTRS(w))
 #define SET_WINDOW_PAIR(w,p)	WINDOW_ATTRS(w) &= ALL_BUT_COLOR, \
-				WINDOW_ATTRS(w) |= (A_COLOR & ColorPair(p))
+				WINDOW_ATTRS(w) |= (A_COLOR & (attr_t) ColorPair(p))
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
 
 #if NCURSES_SP_FUNCS
