@@ -39,7 +39,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.42 2010/12/19 01:41:29 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.43 2010/12/25 23:00:45 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
@@ -189,7 +189,7 @@ NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
 	size_t i;
 	for (i = 1; i < ACS_LEN; ++i) {
 	    if (real_map[i] == 0) {
-		real_map[i] = i;
+		real_map[i] = (chtype) i;
 		if (real_map != fake_map) {
 		    if (SP != 0)
 			SP->_screen_acs_map[i] = TRUE;
