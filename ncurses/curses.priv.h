@@ -33,9 +33,8 @@
  *     and: Juergen Pfeifer                                                 *
  ****************************************************************************/
 
-
 /*
- * $Id: curses.priv.h,v 1.469 2010/12/20 01:28:39 tom Exp $
+ * $Id: curses.priv.h,v 1.470 2010/12/25 23:45:09 tom Exp $
  *
  *	curses.priv.h
  *
@@ -46,6 +45,7 @@
 
 #ifndef CURSES_PRIV_H
 #define CURSES_PRIV_H 1
+/* *INDENT-OFF* */
 
 #include <ncurses_dll.h>
 
@@ -1175,7 +1175,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #endif
 };
 
-#define WINDOW_EXT(w,m) (((WINDOWLIST *)((char *)(w) - offsetof(WINDOWLIST, win)))->m)
+#define WINDOW_EXT(w,m) (((WINDOWLIST *)((void *)((char *)(w) - offsetof(WINDOWLIST, win))))->m)
 
 #define SP_PRE_INIT(sp)                         \
     sp->_cursrow = -1;                          \
@@ -2297,5 +2297,7 @@ extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_unctrl (SCREEN *, chtype);
 #ifdef __cplusplus
 }
 #endif
+
+/* *INDENT-ON* */
 
 #endif /* CURSES_PRIV_H */
