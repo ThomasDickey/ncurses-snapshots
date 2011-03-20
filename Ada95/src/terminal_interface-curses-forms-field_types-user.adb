@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author:  Juergen Pfeifer, 1996
 --  Version Control:
---  $Revision: 1.17 $
---  $Date: 2011/03/08 01:16:49 $
+--  $Revision: 1.18 $
+--  $Date: 2011/03/18 23:10:44 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
@@ -54,7 +54,7 @@ package body Terminal_Interface.Curses.Forms.Field_Types.User is
                              Cft  : C_Field_Type := C_Generic_Type;
                              Arg1 : Argument_Access)
                              return C_Int;
-      pragma Import (C, Set_Fld_Type, "set_field_type");
+      pragma Import (C, Set_Fld_Type, "set_field_type_user");
 
       Res : Eti_Error;
 
