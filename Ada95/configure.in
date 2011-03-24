@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: configure.in,v 1.23 2011/03/19 17:47:55 tom Exp $
+dnl $Id: configure.in,v 1.24 2011/03/24 00:06:42 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.23 $)
+AC_REVISION($Revision: 1.24 $)
 AC_INIT(gen/gen.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -504,7 +504,9 @@ if test "$cf_with_ada" != "no" ; then
 			;;
 		esac
 
+		CF_GNAT_GENERICS
 		CF_GNAT_PRAGMA_UNREF
+		CF_GNAT_PROJECTS
 
 		CF_WITH_ADA_COMPILER
 
@@ -514,7 +516,11 @@ if test "$cf_with_ada" != "no" ; then
 		CF_WITH_ADA_INCLUDE
 		CF_WITH_ADA_OBJECTS
 		CF_WITH_ADA_SHAREDLIB
+	else
+		AC_MSG_ERROR(No usable Ada compiler found)
 	fi
+else
+	AC_MSG_ERROR(The Ada compiler is needed for this package)
 fi
 
 ################################################################################
