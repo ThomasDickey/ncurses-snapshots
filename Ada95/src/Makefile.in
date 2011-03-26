@@ -28,7 +28,7 @@
 #
 #  Author:  Juergen Pfeifer, 1996
 #
-#  $Id: Makefile.in,v 1.56 2011/03/23 23:57:27 tom Exp $
+#  $Id: Makefile.in,v 1.57 2011/03/25 20:51:29 tom Exp $
 #
 .SUFFIXES:
 
@@ -224,7 +224,7 @@ c_varargs_to_ada.o :	$(srcdir)/c_varargs_to_ada.c
 
 ###############################################################################
 
-@USE_OLD_MAKERULES@MIXED_OBJS = $(C_OBJS) $(LIBOBJS) @cf_generic_objects@
+MIXED_OBJS = $(C_OBJS) @USE_OLD_MAKERULES@$(LIBOBJS) @cf_generic_objects@
 
 @USE_OLD_MAKERULES@$(BUILD_DIR_LIB)/$(STATIC_LIBNAME) :: \
 @USE_OLD_MAKERULES@		$(BUILD_DIR_LIB) \
@@ -269,10 +269,10 @@ SHARED_DIRS = \
 	$(BUILD_DIR)/dynamic-ali \
 	$(BUILD_DIR)/dynamic-obj
 
-@MAKE_ADA_SHAREDLIB@all \
+@MAKE_ADA_SHAREDLIB@all :: $(BUILD_DIR_LIB)/$(SHARED_LIBNAME)
 @MAKE_ADA_SHAREDLIB@$(BUILD_DIR_LIB)/$(SHARED_LIBNAME) :: $(ABASE)-trace.adb $(SHARED_DIRS)
+@MAKE_ADA_SHAREDLIB@	cp $(MIXED_OBJS) $(BUILD_DIR)/dynamic-obj/
 @MAKE_ADA_SHAREDLIB@	$(ADAMAKE) $(ADAMAKEFLAGS) -XLIB_KIND=dynamic
-@MAKE_ADA_SHAREDLIB@	$(AR) $(ARFLAGS) $@ $(MIXED_OBJS)
 
 install \
 install.libs :: $(ADA_INCLUDE)
