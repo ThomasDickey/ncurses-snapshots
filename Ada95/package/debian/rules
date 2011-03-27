@@ -64,12 +64,10 @@ install-stamp: build-stamp
 	dh_installdirs
 
 	$(MAKE) install DESTDIR=$(TARGET_DIR)
-	mkdir -p $(SAMPLE_DIR)
-	$(SHELL) -c 'for prog in ncurses rain tour; \
-	do \
-		mv samples/$$prog $(SAMPLE_DIR)/; \
-	done'
-	strip $(SAMPLE_DIR)/*
+	
+	# FIXME: it would be nice to make these into separate packages
+	( cd samples && $(MAKE) install.examples DESTDIR=$(TARGET_DIR) )
+	( cd doc && $(MAKE) install.html DESTDIR=$(TARGET_DIR) )
 
 	touch install-stamp
 

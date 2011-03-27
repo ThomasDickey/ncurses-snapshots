@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: make-tar.sh,v 1.8 2011/03/25 19:21:48 tom Exp $
+# $Id: make-tar.sh,v 1.10 2011/03/26 20:46:51 tom Exp $
 ##############################################################################
 # Copyright (c) 2010,2011 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -104,21 +104,31 @@ done
 
 # Make rpm and dpkg scripts for test-builds
 grep_patchdate
-edit_specfile $BUILD/$ROOTNAME/package/$PKG_NAME.spec
+for spec in $BUILD/$ROOTNAME/package/*.spec
+do
+	edit_specfile $spec
+done
 make_changelog $BUILD/$ROOTNAME/package/debian/changelog
 
 cp -p $SOURCE/NEWS $BUILD/$ROOTNAME
+
+# cleanup empty directories (an artifact of ncurses source archives)
 
 touch $BUILD/$ROOTNAME/MANIFEST 
 ( cd $BUILD/$ROOTNAME && find . -type f -print |$SOURCE/misc/csort >MANIFEST )
 
 cd $BUILD || exit 
 
+# Remove build-artifacts.
+find . -name RCS -exec rm -rf {} \;
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+
 # There is no need for this script in the tar file.
 rm -f $ROOTNAME/make-tar.sh
 
 # Remove build-artifacts.
-find . -name RCS -exec rm -rf {} \;
 find . -name "*.gz" -exec rm -rf {} \;
 
 # Make the files writable...
