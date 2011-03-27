@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author:  Juergen Pfeifer, 1996
 --  Version Control
---  $Revision: 1.25 $
---  $Date: 2011/03/23 00:30:22 $
+--  $Revision: 1.26 $
+--  $Date: 2011/03/26 22:33:29 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 --  Poor mans help system. This scans a sequential file for key lines and
@@ -85,6 +85,8 @@ package body Sample.Explanation is
 
    function Search (Key : String) return Help_Line_Access;
    procedure Release_Help (Root : in out Help_Line_Access);
+
+   function Check_File (Name : String) return Boolean;
 
    procedure Explain (Key : String)
    is
@@ -403,12 +405,26 @@ package body Sample.Explanation is
       end if;
    end Notepad;
 
+   function Check_File (Name : String) return Boolean is
+      The_File : File_Type;
+   begin
+      Open (The_File, In_File, Name);
+      Close (The_File);
+      return True;
+   exception
+      when Name_Error =>
+         return False;
+   end Check_File;
+
 begin
-   Open (F, In_File, File_Name);
-exception
-   when Name_Error =>
+   if Check_File ("/usr/share/AdaCurses/" & File_Name) then
+      Open (F, In_File, "/usr/share/AdaCurses/" & File_Name);
+   elsif Check_File (File_Name) then
+      Open (F, In_File, File_Name);
+   else
       Put_Line (Standard_Error,
                 "The file explain.txt was not found in the current directory."
                 );
-      raise;
+      raise Name_Error;
+   end if;
 end Sample.Explanation;

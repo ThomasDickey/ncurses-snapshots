@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: make-tar.sh,v 1.9 2011/03/25 19:19:18 tom Exp $
+# $Id: make-tar.sh,v 1.12 2011/03/26 19:07:38 tom Exp $
 ##############################################################################
 # Copyright (c) 2010,2011 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -104,28 +104,41 @@ done
 
 # Make rpm and dpkg scripts for test-builds
 grep_patchdate
-edit_specfile $BUILD/$ROOTNAME/package/$PKG_NAME.spec
+for spec in $BUILD/$ROOTNAME/package/*.spec
+do
+	edit_specfile $spec
+done
 make_changelog $BUILD/$ROOTNAME/package/debian/changelog
 
-# Add the ada documentation.
-mkdir $BUILD/$ROOTNAME/doc || exit
-cd ../doc/html || exit
+cp -p ../man/MKada_config.in $BUILD/$ROOTNAME/doc/
+if test -z "$NO_HTML_DOCS"
+then
+	# Add the ada documentation.
+	cd ../doc/html || exit
 
-cp -p -r Ada* $BUILD/$ROOTNAME/doc/
-cp -p -r ada $BUILD/$ROOTNAME/doc/
+	cp -p -r Ada* $BUILD/$ROOTNAME/doc/
+	cp -p -r ada $BUILD/$ROOTNAME/doc/
+fi
 
 cp -p $SOURCE/NEWS $BUILD/$ROOTNAME
+
+# cleanup empty directories (an artifact of ncurses source archives)
 
 touch $BUILD/$ROOTNAME/MANIFEST 
 ( cd $BUILD/$ROOTNAME && find . -type f -print |$SOURCE/misc/csort >MANIFEST )
 
 cd $BUILD || exit 
 
+# Remove build-artifacts.
+find . -name RCS -exec rm -rf {} \;
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+find $BUILD/$ROOTNAME -type d -exec rmdir {} \; 2>/dev/null
+
 # There is no need for this script in the tar file.
 rm -f $ROOTNAME/make-tar.sh
 
 # Remove build-artifacts.
-find . -name RCS -exec rm -rf {} \;
 find . -name "*.gz" -exec rm -rf {} \;
 
 # Make the files writable...

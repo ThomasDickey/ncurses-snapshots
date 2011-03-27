@@ -2,7 +2,7 @@ Summary: AdaCurses - Ada95 binding for ncurses
 %define AppProgram AdaCurses
 %define AppVersion MAJOR.MINOR
 %define AppRelease YYYYMMDD
-# $Id: AdaCurses.spec,v 1.3 2011/03/25 19:34:13 tom Exp $
+# $Id: AdaCurses.spec,v 1.5 2011/03/26 20:41:44 tom Exp $
 Name: %{AppProgram}
 Version: %{AppVersion}
 Release: %{AppRelease}
@@ -30,6 +30,7 @@ INSTALL_PROGRAM='${INSTALL}' \
 		--prefix=%{_prefix} \
 		--bindir=%{_bindir} \
 		--libdir=%{_libdir} \
+		--mandir=%{_mandir} \
 		--datadir=%{_datadir} \
 		--with-ada-sharedlib
 
@@ -40,22 +41,22 @@ make
 
 make install               DESTDIR=$RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT%{_bindir}/%{AppProgram}
-for prog in ncurses rain tour
-do
-	mv samples/$prog $RPM_BUILD_ROOT%{_bindir}/%{AppProgram}/
-done
-strip $RPM_BUILD_ROOT%{_bindir}/%{AppProgram}/*
+( cd samples &&
+  make install.examples \
+	BINDIR=$RPM_BUILD_ROOT%{_bindir}/%{AppProgram}
+)
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_bindir}/adacurses-config
+%{_bindir}/adacurses*-config
 %{_bindir}/%{AppProgram}/*
-%{_libdir}/ada/adalib/libAdaCurses.a
+%{_libdir}/libAdaCurses.*
+%{_libdir}/ada/adalib/libAdaCurses.*
 %{_libdir}/ada/adalib/terminal_interface*
+%{_mandir}/man1/adacurses*-config.1*
 %{_datadir}/ada/adainclude/terminal_interface*
 
 %changelog
