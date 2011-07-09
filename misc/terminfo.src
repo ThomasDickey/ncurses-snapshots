@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.384 $
-#	$Date: 2011/06/11 17:42:45 $
+#	$Revision: 1.388 $
+#	$Date: 2011/07/09 12:04:00 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5825,7 +5825,7 @@ pcmw|PC running Microsoft Works,
 	ht=^I, hts=\EH$<2/>, ind=\ED$<5/>, is2=\E[1;24r\E[24;1H,
 	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, nel=\r\ED$<5/>,
-	rc=\E8, rev=\E[7m$<2/>, rf=/usr/share/lib/tabset/vt100,
+	rc=\E8, rev=\E[7m$<2/>, rf=/usr/share/tabset/vt100,
 	ri=\EM$<5/>, rmso=\E[m$<2/>, rmul=\E[m$<2/>,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7,
 	sgr0=\E[m$<2/>, smso=\E[7m$<2/>, smul=\E[4m$<2/>,
@@ -5968,7 +5968,7 @@ altos2|alt2|altos-2|altos II,
 #	:cC=^Al\r:cD=^Am\r:cE=^An\r:cF=^Ao\r:
 #	:XU=^Aq\r:XD=^Ar\r:XR=^As\r:XL=^At\r:\
 #	:HL=^AP\r:SP=\E[i:\
-#	:IS=\E[@:DE=\E[P:IL=\E[L:NS=\E[S:PS=\E[T:\
+#	:IS=\E[@:DE=\E[P:IL=\E[L:NS=\E[S:PS=\E[T:
 altos3|altos5|alt3|alt5|altos-3|altos-5|altos III or V,
 	blink=\E[5p, ri=\EM, sgr0=\E[p, use=altos2,
 altos4|alt4|altos-4|altos IV,
@@ -17752,18 +17752,9 @@ osexec|Osborne executive,
 # See
 #	http://www.minix3.org/manpages/man4/console.4.html
 minix|minix console (v3),
-	am, xenl,
-	colors#8, cols#80, it#8, lines#25, pairs#64,
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376,
-	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[0J, cr=^M,
-	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B,
-	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH,
-	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P,
-	dl=\E[%p1%dM, dl1=\E[M, ed=\E[0J, el=\E[K, home=\E[H, ht=^I,
-	ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J,
-	is2=\E[0m, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C,
-	kcuu1=\E[A, kdch1=\177, kend=\E[Y, kf0=\E[21~, kf1=\E[11~,
-	kf10=\E[21~, kf11=\E[11;2~, kf12=\E[12;2~, kf13=\E[13;2~,
+	kdch1=\177, kend=\E[Y, kf0=\E[21~, kf1=\E[11~, kf10=\E[21~,
+	kf11=\E[11;2~, kf12=\E[12;2~, kf13=\E[13;2~,
 	kf14=\E[14;2~, kf15=\E[15;2~, kf16=\E[17;2~,
 	kf17=\E[18;2~, kf18=\E[19;2~, kf19=\E[20;2~, kf2=\E[12~,
 	kf20=\E[21;2~, kf21=\E[11;5~, kf22=\E[12;5~,
@@ -17774,10 +17765,11 @@ minix|minix console (v3),
 	kf35=\E[15;6~, kf36=\E[17;6~, kf37=\E[18;6~,
 	kf38=\E[19;6~, kf39=\E[20;6~, kf4=\E[14~, kf40=\E[21;6~,
 	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~,
-	khome=\E[H, kich1=\E[@, knp=\E[U, kpp=\E[V, nel=^M^J,
-	rev=\E[7m, ri=\EM, rmso=\E[0m, rmul=\E[0m,
-	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0m,
-	smso=\E[7m, smul=\E[4m,
+	kich1=\E[@, knp=\E[U, kpp=\E[V, lf0@, lf1@, lf2@, lf3@, lf4@, lf5@,
+	use=minix-3.0,
+
+minix-3.0|minix console (v3.0),
+	use=ecma+color, use=minix-1.7,
 
 # See
 #	http://www.minix-vmd.org/pub/Minix-vmd/1.7.0/wwwman/man4/console.4.html
@@ -17817,7 +17809,7 @@ minix-old-am|minix console with linewrap,
 	am, use=minix-old,
 
 pc-minix|minix console on an Intel box,
-	use=klone+acs, use=minix,
+	use=klone+acs, use=minix-3.0,
 
 # According to the Coherent 2.3 manual, the PC console is similar
 # to a z19. The differences seem to be (1) 25 lines, (2) no status
@@ -22249,7 +22241,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add screen.rxvt -TD
 #
 # 2008-04-28
-#	* add screen+fkeys (prompted by Debian # 478094) -TD
+#	* add screen+fkeys (prompted by Debian #478094) -TD
 #
 # 2008-06-28
 #	* add screen.mlterm -TD
@@ -22379,9 +22371,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add xterm-utf8 as a demo of the U8 feature -TD
 #
 # 2011-02-20
-#	* add cons25-debian entry (Brian M Carlson, Debina #607662).
+#	* add cons25-debian entry (Brian M Carlson, Debian #607662).
 #
 # 2011-06-11
 #	* update minix entry to minix 3.2 (Thomas Cort).
+#
+# 2011-07-09
+#	* fix inconsistent tabset path in pcmw (Todd C. Miller).
+#	* remove a backslash which continued comment, obscuring altos3
+#	  definition with OpenBSD toolset (Nicholas Marriott).
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
