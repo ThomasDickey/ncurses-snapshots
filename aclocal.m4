@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.577 2011/10/22 18:58:44 tom Exp $
+dnl $Id: aclocal.m4,v 1.580 2011/10/29 19:02:12 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -975,6 +975,27 @@ if test "$cf_cv_check_gpm_wgetch" != yes ; then
 fi
 ])])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_CHECK_WCHAR_H version: 1 updated: 2011/10/29 15:01:05
+dnl ----------------
+dnl Check if wchar.h can be used, i.e., without defining _XOPEN_SOURCE_EXTENDED
+AC_DEFUN([CF_CHECK_WCHAR_H],[
+AC_CACHE_CHECK(if wchar.h can be used as is,cf_cv_wchar_h_okay,[
+AC_TRY_COMPILE(
+[
+#include <stdlib.h>
+#include <wchar.h>
+],[
+	wint_t foo = 0;
+	int bar = iswpunct(foo)],
+	[cf_cv_wchar_h_okay=yes],
+	[cf_cv_wchar_h_okay=no])])
+
+if test $cf_cv_wchar_h_okay = no
+then
+	CF_PREDEFINE(_XOPEN_SOURCE_EXTENDED)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_CPP_PARAM_INIT version: 4 updated: 2001/04/07 22:31:18
 dnl -----------------
 dnl Check if the C++ compiler accepts duplicate parameter initialization.  This
@@ -1144,6 +1165,54 @@ AC_MSG_RESULT($with_no_leaks)
 if test "$with_no_leaks" = yes ; then
 	AC_DEFINE(NO_LEAKS)
 	AC_DEFINE(YY_NO_LEAKS)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CXX_AR_FLAGS version: 1 updated: 2011/10/29 08:35:34
+dnl ---------------
+dnl Setup special archiver flags for given compilers.
+AC_DEFUN([CF_CXX_AR_FLAGS],[
+	CXX_AR='$(AR)'
+	CXX_ARFLAGS='$(ARFLAGS)'
+	case $cf_cv_system_name in #(vi
+	irix*) #(vi
+	    if test "$GXX" != yes ; then
+		CXX_AR='$(CXX)'
+		CXX_ARFLAGS='-ar -o'
+	    fi
+	    ;;
+	sco3.2v5*) #(vi
+	    CXXLDFLAGS="-u main"
+	    ;;
+	solaris2*)
+	    if test "$GXX" != yes ; then
+		CXX_AR='$(CXX)'
+		CXX_ARFLAGS='-xar -o'
+	    fi
+	    ;;
+	esac
+	AC_SUBST(CXXLDFLAGS)
+	AC_SUBST(CXX_AR)
+	AC_SUBST(CXX_ARFLAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CXX_IOSTREAM_NAMESPACE version: 1 updated: 2011/10/29 08:35:34
+dnl -------------------------
+dnl For c++, check if iostream uses "std::" namespace.
+AC_DEFUN([CF_CXX_IOSTREAM_NAMESPACE],[
+AC_CHECK_HEADERS(iostream)
+if test x"$ac_cv_header_iostream" = xyes ; then
+	AC_MSG_CHECKING(if iostream uses std-namespace)
+	AC_TRY_COMPILE([
+#include <iostream>
+using std::endl;
+using std::cerr;],[
+cerr << "testing" << endl;
+],[cf_iostream_namespace=yes],[cf_iostream_namespace=no])
+	AC_MSG_RESULT($cf_iostream_namespace)
+	if test "$cf_iostream_namespace" = yes ; then
+		AC_DEFINE(IOSTREAM_NAMESPACE)
+	fi
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -6683,7 +6752,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 37 updated: 2011/08/06 20:32:05
+dnl CF_XOPEN_SOURCE version: 38 updated: 2011/10/29 08:35:34
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -6749,10 +6818,7 @@ nto-qnx*) #(vi
 sco*) #(vi
 	# setting _XOPEN_SOURCE breaks Lynx on SCO Unix / OpenServer
 	;;
-solaris2.1[[0-9]]) #(vi
-	cf_xopen_source="-D__EXTENSIONS__ -D_XOPEN_SOURCE=$cf_XOPEN_SOURCE"
-	;;
-solaris2.[[1-9]]) #(vi
+solaris2.*) #(vi
 	cf_xopen_source="-D__EXTENSIONS__"
 	;;
 *)
