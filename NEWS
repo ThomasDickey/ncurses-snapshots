@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.1886 2012/03/31 23:44:45 tom Exp $
+-- $Id: NEWS,v 1.1889 2012/04/01 20:25:48 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -44,6 +44,18 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20120401
+	+ improve special case in tic parsing of description to allow it to be
+	  followed by terminfo capabilities.  Previously the description had to
+	  be the last field on an input line to allow tic to distinguish
+	  between termcap and terminfo format while still allowing commas to be
+	  embedded in the description.
+	+ correct variable name in gen_edit.sh which broke configurability of
+	  the --with-xterm-kbs option.
+	+ further amend 20110910 change, providing for configure-script
+	  override of the "linux" terminfo entry to install and changing the
+	  default for that to "linux2.2" (Debian #665959).
 
 20120331
 	+ update Ada95/configure to use CF_DISABLE_ECHO (cf: 20120317).
