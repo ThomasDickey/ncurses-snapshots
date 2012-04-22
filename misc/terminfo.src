@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.433 $
-#	$Date: 2012/04/14 23:14:51 $
+#	$Revision: 1.434 $
+#	$Date: 2012/04/21 15:56:47 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2762,8 +2762,9 @@ vt400|vt400-24|dec-vt400|dec vt400 24x80 column autowrap,
 
 # (vt420: I removed <kf0>, it collided with <kf10>.  I also restored
 # a missing <sc> -- esr)
+# add msgr -TD
 vt420|DEC VT420,
-	am, mir, xenl, xon,
+	am, mir, msgr, xenl, xon,
 	cols#80, lines#24, vt#3,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>,
@@ -22819,5 +22820,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  a status-line. -TD
 #	* change use-clauses in ansi-mtabs, hp2626, and hp2622 based on review
 #	  of ordering and overrides -TD
+#
+# 2012-04-21
+#	* add msgr to vt420 entry -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
