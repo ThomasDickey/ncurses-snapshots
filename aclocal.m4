@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.612 2012/06/08 16:25:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.613 2012/06/09 20:22:17 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1708,7 +1708,7 @@ int main() {
 	int ret;
 
 	/* check for Darwin bug with respect to "devices" */
-	myfds.fd = open("/dev/null", 1);
+	myfds.fd = open("/dev/null", 1);	/* O_WRONLY */
 	if (myfds.fd < 0)
 		myfds.fd = 0;
 	myfds.events = POLLIN;
@@ -1721,17 +1721,17 @@ int main() {
 	} else {
 		int fd = 0;
 		if (!isatty(fd)) {
-			fd = open("/dev/tty", O_RDWR);
+			fd = open("/dev/tty", 2);	/* O_RDWR */
 		}
 
-		/* also check with standard input */
-		myfds.fd = fd;
-		myfds.events = POLLIN;
-		myfds.revents = 0;
-
-		ret = poll(&myfds, 1, 100);
-		if (ret < 0) {
-			ret = 0;
+		if (fd >= 0) {
+			/* also check with standard input */
+			myfds.fd = fd;
+			myfds.events = POLLIN;
+			myfds.revents = 0;
+			ret = poll(&myfds, 1, 100);
+		} else {
+			ret = -1;
 		}
 	}
 	${cf_cv_main_return:-return}(ret < 0);
