@@ -1,3 +1,9 @@
+ncurses6 (5.9-20120609) unstable; urgency=low
+
+  * latest weekly patch
+
+ -- Thomas E. Dickey <dickey@invisible-island.net>  Sat, 09 Jun 2012 14:26:04 -0400
+
 ncurses6 (5.9-20120608) unstable; urgency=low
 
   * initial release
