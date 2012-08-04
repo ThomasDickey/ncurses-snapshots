@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.464 $
-#	$Date: 2012/07/28 19:10:53 $
+#	$Revision: 1.463 $
+#	$Date: 2012/07/28 18:56:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3220,20 +3220,19 @@ xterm-r5|xterm R5 version,
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A,
 	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J,
 	el=\E[K, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@,
-	il=\E[%p1%dL, il1=\E[L, ind=^J, kbs=^H, kcub1=\EOD,
-	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~,
-	kdl1=\E[31~, kel=\E[8~, kend=\E[4~, kf0=\EOq, kf1=\E[11~,
-	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf2=\E[12~,
-	kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~,
-	kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kich1=\E[2~,
-	kil1=\E[30~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, rc=\E8,
-	rev=\E[7m, ri=\EM, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m,
-	rmul=\E[m,
+	il=\E[%p1%dL, il1=\E[L, ind=^J, kcub1=\EOD, kcud1=\EOB,
+	kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~, kdl1=\E[31~,
+	kel=\E[8~, kend=\E[4~, kf0=\EOq, kf1=\E[11~, kf10=\E[21~,
+	kf11=\E[23~, kf12=\E[24~, kf2=\E[12~, kf3=\E[13~,
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~,
+	kf9=\E[20~, khome=\E[1~, kich1=\E[2~, kil1=\E[30~,
+	kmous=\E[M, knp=\E[6~, kpp=\E[5~, rc=\E8, rev=\E[7m, ri=\EM,
+	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m,
 	rs2=\E>\E[?1;3;4;5;6l\E[4l\E[?7h\E[m\E[r\E[2J\E[H,
 	sc=\E7,
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m,
 	sgr0=\E[m, smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m,
-	smul=\E[4m, tbc=\E[3g, use=vt100+enq,
+	smul=\E[4m, tbc=\E[3g, use=xterm+kbs, use=vt100+enq,
 # Compatible with the R6 xterm
 # (from XFree86 3.2 distribution, <acsc> and <it> added, <blink@> removed)
 # added khome/kend, hts based on the R6 xterm code - TD
@@ -3250,7 +3249,7 @@ xterm-r6|xterm X11R6 version,
 	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J,
 	el=\E[K, enacs=\E)0, home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL,
 	il1=\E[L, ind=^J,
-	is2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8, kbs=^H,
+	is2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8,
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
 	kdch1=\E[3~, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~,
 	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~,
@@ -3264,7 +3263,7 @@ xterm-r6|xterm X11R6 version,
 	rs2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8, sc=\E7,
 	sgr0=\E[m, smacs=^N, smcup=\E7\E[?47h, smir=\E[4h,
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g,
-	use=vt100+enq,
+	use=xterm+kbs, use=vt100+enq,
 xterm-old|antique xterm version,
 	use=xterm-r6,
 # This is the base xterm entry for the xterm supplied with XFree86 3.2 & up.
@@ -3284,8 +3283,8 @@ xterm-xf86-v32|xterm terminal emulator (XFree86 3.2 Window System),
 	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL,
 	il1=\E[L, ind=^J,
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>,
-	kbeg=\EOE, kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
-	kcuu1=\EOA, kdch1=\177, kend=\EOF, kf1=\E[11~, kf10=\E[21~,
+	kbeg=\EOE, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
+	kdch1=\177, kend=\EOF, kf1=\E[11~, kf10=\E[21~,
 	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~,
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~,
 	kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, kf3=\E[13~,
@@ -3301,7 +3300,7 @@ xterm-xf86-v32|xterm terminal emulator (XFree86 3.2 Window System),
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h,
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m,
-	tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt100+enq,
+	tbc=\E[3g, vpa=\E[%i%p1%dd, use=xterm+kbs, use=vt100+enq,
 	use=ecma+color, use=vt220+keypad,
 
 # This is the stock xterm entry supplied with XFree86 3.3, which uses VT100
@@ -5064,7 +5063,7 @@ screen.xterm-xfree86|screen.xterm-new|screen customized for modern xterm,
 	bce@, bw,
 	invis@, kIC@, kNXT@, kPRV@, meml@, memu@,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m,
-	E3@, use=screen+fkeys, use=xterm-new,
+	use=screen+fkeys, use=xterm-new,
 # xterm-r6 does not really support khome/kend unless it is propped up by
 # the translations resource.
 screen.xterm-r6|screen customized for X11R6 xterm,
@@ -22894,7 +22893,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2012-06-10
 #	* modify some older xterm entries to align with xterm source -TD
-#	* separate "xterm-old" alias from "xterm-r6" -TD
+#	  In particular, separate "xterm-old" alias from "xterm-r6"
+#	  and use xterm+kbs.
 #
 # 2012-07-28
 #	* add E3 to xterm-basic and putty -TD
