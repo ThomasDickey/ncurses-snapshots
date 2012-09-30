@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.622 2012/08/26 14:01:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.625 2012/09/29 22:24:14 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3130,11 +3130,11 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 65 updated: 2012/06/30 17:25:25
+dnl CF_LIB_RULES version: 66 updated: 2012/09/29 15:28:14
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
-dnl subdirectory is a library-source directory, modify the LIBS_TO_MAKE list in
+dnl subdirectory is a library-source directory, modify the Libs_To_Make list in
 dnl the corresponding makefile to list the models that we'll generate.
 dnl
 dnl For shared libraries, make a list of symbolic links to construct when
@@ -3143,6 +3143,8 @@ dnl one:
 dnl	lib<name>.so	->
 dnl	lib<name>.so.<major>	->
 dnl	lib<name>.so.<maj>.<minor>
+dnl
+dnl Note: Libs_To_Make is mixed case, since it is not a pure autoconf variable.
 AC_DEFUN([CF_LIB_RULES],
 [
 cf_prefix=$LIB_PREFIX
@@ -3179,7 +3181,7 @@ do
 	elif test -f $srcdir/$cf_dir/modules; then
 
 		SHARED_LIB=
-		LIBS_TO_MAKE=
+		Libs_To_Make=
 		for cf_item in $cf_LIST_MODELS
 		do
 			CF_LIB_SUFFIX($cf_item,cf_suffix,cf_depsuf)
@@ -3242,23 +3244,23 @@ do
 			case $cf_cv_shlib_version in #(vi
 			cygdll) #(vi
 				cf_cygsuf=`echo "$cf_suffix" | sed -e 's/\.dll/\${ABI_VERSION}.dll/'`
-				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/cyg${cf_dir}${cf_cygsuf}"
+				Libs_To_Make="$Libs_To_Make ../lib/cyg${cf_dir}${cf_cygsuf}"
 				continue
 				;;
 			mingw)
 				cf_cygsuf=`echo "$cf_suffix" | sed -e 's/\.dll/\${ABI_VERSION}.dll/'`
-				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/lib${cf_dir}${cf_cygsuf}"
+				Libs_To_Make="$Libs_To_Make ../lib/lib${cf_dir}${cf_cygsuf}"
 				continue
 				;;
 			esac
 			fi
-			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
+			Libs_To_Make="$Libs_To_Make ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
 		done
 
 		if test $cf_dir = ncurses ; then
 			cf_subsets="$LIB_SUBSETS"
 			cf_r_parts="$cf_subsets"
-			cf_liblist="$LIBS_TO_MAKE"
+			cf_liblist="$Libs_To_Make"
 
 			while test -n "$cf_r_parts"
 			do
@@ -3278,7 +3280,7 @@ do
 						;;
 					esac
 					if test -n "$cf_item"; then
-						LIBS_TO_MAKE="$cf_item $LIBS_TO_MAKE"
+						Libs_To_Make="$cf_item $Libs_To_Make"
 					fi
 				else
 					break
@@ -3288,7 +3290,7 @@ do
 			cf_subsets=`echo "$LIB_SUBSETS" | sed -e 's/^termlib.* //'`
 		fi
 
-		sed -e "s%@LIBS_TO_MAKE@%$LIBS_TO_MAKE%" \
+		sed -e "s%@Libs_To_Make@%$Libs_To_Make%" \
 		    -e "s%@SHARED_LIB@%$SHARED_LIB%" \
 			$cf_dir/Makefile >$cf_dir/Makefile.out
 		mv $cf_dir/Makefile.out $cf_dir/Makefile
@@ -3619,7 +3621,7 @@ CF_EOF
 		fi
 	fi
 done
-AC_SUBST(LIBS_TO_MAKE)
+AC_SUBST(Libs_To_Make)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_LIB_SONAME version: 5 updated: 2010/08/14 18:25:37
@@ -4705,17 +4707,20 @@ AC_DEFUN([CF_OBJ_SUBDIR],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PATHSEP version: 5 updated: 2010/05/26 05:38:42
+dnl CF_PATHSEP version: 6 updated: 2012/09/29 15:04:19
 dnl ----------
-dnl Provide a value for the $PATH and similar separator
+dnl Provide a value for the $PATH and similar separator (or amend the value
+dnl as provided in autoconf 2.5x).
 AC_DEFUN([CF_PATHSEP],
 [
+	AC_MSG_CHECKING(for PATH separator)
 	case $cf_cv_system_name in
 	os2*)	PATH_SEPARATOR=';'  ;;
-	*)	PATH_SEPARATOR=':'  ;;
+	*)	${PATH_SEPARATOR:=':'}  ;;
 	esac
 ifelse([$1],,,[$1=$PATH_SEPARATOR])
 	AC_SUBST(PATH_SEPARATOR)
+	AC_MSG_RESULT($PATH_SEPARATOR)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PATH_SYNTAX version: 14 updated: 2012/06/19 20:58:54
@@ -6821,7 +6826,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PATH version: 10 updated: 2010/10/23 15:44:18
+dnl CF_WITH_PATH version: 11 updated: 2012/09/29 15:04:19
 dnl ------------
 dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just
 dnl defaulting to yes/no.
@@ -6842,7 +6847,7 @@ eval $3="$withval"
 AC_SUBST($3)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PATHLIST version: 7 updated: 2010/10/23 16:10:30
+dnl CF_WITH_PATHLIST version: 8 updated: 2012/09/29 15:04:19
 dnl ----------------
 dnl Process an option specifying a list of colon-separated paths.
 dnl
