@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.465 $
-#	$Date: 2012/08/11 14:49:47 $
+#	$Revision: 1.467 $
+#	$Date: 2012/10/13 23:17:51 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4042,6 +4042,14 @@ vte-2008|VTE in GNOME Terminal snapshot 2.22.3,
 gnome-2008|GNOME Terminal snapshot 2.22.3,
 	use=vte-2008,
 
+# GNOME Terminal 3.6.0 (2012)
+# VTE 0.34.1 refers to an unreleased version as of 2012-10-13 (0.34.0 was
+# released 2012-09-26, 0.34.1 has not been marked in git) -TD
+vte-2012|VTE 0.34.1,
+	ritm=\E[23m, sitm=\E[3m, use=xterm+pcc2, use=gnome-fc5,
+gnome-2012|GNOME Terminal 3.6.0,
+	use=vte-2012,
+
 # GNOME terminal may automatically use the contents of the "xterm" terminfo to
 # supply key information which is not built into the program.  With 2.22.3,
 # this list is built into the program (which addresses the inadvertant use of
@@ -4070,7 +4078,7 @@ gnome+pcfkeys|VTE's variation on xterm+pcfkeys,
 	use=vte+pcfkeys,
 
 vte|VTE aka GNOME Terminal,
-	use=vte-2008,
+	use=vte-2012,
 gnome|GNOME Terminal,
 	use=vte,
 
@@ -4087,7 +4095,7 @@ gnome-256color|GNOME Terminal with xterm 256-colors,
 # Since most of the terminfo-related behavior is due to the VTE library,
 # the terminfo is the same as gnome-terminal.
 xfce|Xfce Terminal,
-	use=vte,
+	use=vte-2008,
 
 #### Other GNOME
 # Multi-Gnome-Terminal 1.6.2
@@ -17486,6 +17494,10 @@ nsterm-c-s|AppKit Terminal.app v51+ w/MacRoman charset (full color w/statusline)
 # and it is still not settable from the preferences dialog. This is
 # tracked under rdar://problem/7365108 and rdar://problem/7365134
 # in Apple's bug reporter.
+#
+# In OS X 10.7 (Leopard) the TERM which can be set in the preferences dialog
+# defaults to xterm-color.  Alternative selections are ansi, dtterm, rxvt,
+# vt52, vt100, vt102 and xterm.
 nsterm-16color|AppKit Terminal.app v240.2+ with Mac OS X version 10.5,
 	bw@, mir, npc,
 	civis=\E[?25l, cnorm=\E[?25h, dch=\E[%p1%dP, dch1=\E[P,
@@ -17497,7 +17509,7 @@ nsterm-16color|AppKit Terminal.app v240.2+ with Mac OS X version 10.5,
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khome=\E[H,
 	knp=\E[6~, kpp=\E[5~, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l,
 	smcup=\E7\E[?47h, smir=\E[4h, vpa=\E[%i%p1%dd,
-	use=nsterm-c-s-acs,
+	kLFT5=\E[5D, kRIT5=\E[5C, use=nsterm-c-s-acs,
 
 # The versions of Terminal.app in Mac OS X version 10.3.x seem to have
 # the background color erase feature. The newer version 240.2 in Mac OS X
@@ -17514,6 +17526,24 @@ nsterm-16color|AppKit Terminal.app v240.2+ with Mac OS X version 10.5,
 # and that it is not set in Terminal's preferences dialog.
 #
 # Modified for OS X 10.8, omitting bw based on testing with tack -TD
+#
+# Notes:
+# * The terminal description matches the default settings.
+# * The keyboard is configurable via a dialog.
+# * By default khome, kend, knext and kprev are honored only with a
+#   shift-modifier.
+# * There are bindings for control left/right arrow (but not up/down).
+#   Added those to nsterm-16color, which is the version used for OS X 10.6
+# * "Allow VT100 application keypage mode" is by default disabled.
+#   There is no way to press keypad-comma unless application mode is enabled
+#   and used.
+# * 132-column mode stopped working during vttest's tests.  Consider it broken.
+# * CHT, REP, SU, SD are buggy.
+# * ECH works (also in Leopard), but is not used here for compatibility.
+# * The terminal preferences dialog replaces xterm-color by xterm-16color and
+#   xterm-256color.  However, it adds "nsterm", so it is possible to use the
+#   nsterm entry from this file to override the MacPorts (20110404) or
+#   system (20081102) copy of this file.
 nsterm-bce|AppKit Terminal.app v71+/v100.1.8+ with Mac OS X version 10.3/10.4 (bce),
 	bce, use=nsterm-16color,
 
@@ -22914,5 +22944,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2012-08-11
 #	* add nsterm-256color, make this the default nsterm -TD
 #	* remove bw from nsterm-bce, per testing with tack -TD
+#
+# 2012-10-12
+#       * add vte-2012, gnome-2012, making these the defaults for vte/gnome
+#	  (patch by Christian Persch).
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
