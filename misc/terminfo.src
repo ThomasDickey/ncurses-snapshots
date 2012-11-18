@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.470 $
-#	$Date: 2012/11/04 15:59:03 $
+#	$Revision: 1.468 $
+#	$Date: 2012/11/03 18:42:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4047,9 +4047,10 @@ gnome-2008|GNOME Terminal snapshot 2.22.3,
 # in ncurses).  It inherited from gnome-fc5, which broke the modified forms
 # of f1-f4 -TD
 #
-# Testing with tack shows that flash does not/has not worked -TD
+# Testing with tack shows that neither bell nor flash works (previous releases
+# broke one at a time).
 vte-2012|VTE 0.34.1,
-	flash@, ritm=\E[23m, sitm=\E[3m, use=vte-2008,
+	bel@, flash@, ritm=\E[23m, sitm=\E[3m, use=vte-2008,
 # Version 3.6.1 sets TERM to xterm-256color (still hardcoded), which has
 # 61 differences from a correct entry for gnome terminal.
 gnome-2012|GNOME Terminal 3.6.0,
@@ -4826,7 +4827,7 @@ st-256color|simpleterm with 256 colors,
 	ccc@,
 	initc@, use=xterm+256color, use=simpleterm,
 
-#### TERMINATOR
+### TERMINATOR
 # http://software.jessies.org/terminator/
 # Tested using their Debian package org.jessies.terminator 6.104.3256 on 64-bit
 # Debian/current -TD (2011/8/20)
@@ -22741,7 +22742,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2009-12-12
 #	* updated nsterm* entries (Benjamin Sittler, Emanuele Giaquinta)
 #
-# 2009-12-19
+# 2009-12-12
 #	* add bw (auto-left-margin) to nsterm* entries (Benjamin Sittler)
 #	* rename minix to minix-1.7, add minix entry for Minux3 -TD
 #
@@ -22955,8 +22956,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (patch by Christian Persch).
 #
 # 2012-11-02
-#	* reviewed vte-2012, reverted most of the change since it was incorrect
-#	  based on testing with tack -TD
+#	* reviewed vte-2012, reverted most of the change since it was incorrect.
+#	  updated based on testing with tack -TD
 #	* un-cancel the initc in vte-256color, since this was implemented
 #	  starting with version 0.20 in 2009 -TD
 #
