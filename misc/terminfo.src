@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.468 $
-#	$Date: 2012/11/03 18:42:26 $
+#	$Revision: 1.472 $
+#	$Date: 2013/03/16 22:39:31 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1025,7 +1025,7 @@ kon|kon2|jfbterm|Kanji ON Linux console,
 # you use a 512-character console font. This uses bold for bright
 # foreground colors and blink for bright background colors.
 linux-16color|linux console with 16 colors,
-	colors#16, ncv#54, pairs#256,
+	colors#16, ncv#62, pairs#256,
 	setab=\E[4%p1%{8}%m%d%?%p1%{8}%>%t;5%e%p1%{8}%=%t;2%e;25%;m,
 	setaf=\E[3%p1%{8}%m%d%?%p1%{8}%>%t;1%e%p1%{8}%=%t;2%e;21%;m,
 	use=linux,
@@ -4047,10 +4047,9 @@ gnome-2008|GNOME Terminal snapshot 2.22.3,
 # in ncurses).  It inherited from gnome-fc5, which broke the modified forms
 # of f1-f4 -TD
 #
-# Testing with tack shows that neither bell nor flash works (previous releases
-# broke one at a time).
+# Testing with tack shows that flash does not/has not worked -TD
 vte-2012|VTE 0.34.1,
-	bel@, flash@, ritm=\E[23m, sitm=\E[3m, use=vte-2008,
+	flash@, ritm=\E[23m, sitm=\E[3m, use=vte-2008,
 # Version 3.6.1 sets TERM to xterm-256color (still hardcoded), which has
 # 61 differences from a correct entry for gnome terminal.
 gnome-2012|GNOME Terminal 3.6.0,
@@ -4827,7 +4826,7 @@ st-256color|simpleterm with 256 colors,
 	ccc@,
 	initc@, use=xterm+256color, use=simpleterm,
 
-### TERMINATOR
+#### TERMINATOR
 # http://software.jessies.org/terminator/
 # Tested using their Debian package org.jessies.terminator 6.104.3256 on 64-bit
 # Debian/current -TD (2011/8/20)
@@ -4891,7 +4890,7 @@ terminator|Terminator no line wrap,
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>,
 	s0ds=\E(B, s1ds=\E(0, sc=\E7, setab=\E[48;5;%p1%dm,
 	setaf=\E[38;5;%p1%dm,
-	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%;m%?%p9%t\E(0%e\E(B%;,
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;,
 	sgr0=\E[m\E(B, smacs=\E(0, smcup=\E7\E[?47h, smir=\E[4h,
 	smso=\E[7m, smul=\E[4m, tbc=\E[3g, tsl=\E]2;%p1,
 	vpa=\E[%i%p1%dd,
@@ -5432,13 +5431,13 @@ sun-type4|Sun Workstation console with type 4 keyboard,
 # It supports bold, but not underline -TD (2009-09-19)
 sun-color|Sun Microsystems Workstation console with color support (IA systems),
 	colors#8, ncv#3, pairs#64,
-	cub=\E[%p1%dD, cud=\E[%p1%dB, cuf=\E[%p1%dC,
+	bold=\E[1m, cub=\E[%p1%dD, cud=\E[%p1%dB, cuf=\E[%p1%dC,
 	cuu=\E[%p1%dA, home=\E[H, op=\E[0m, rs2=\E[s,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
-	sgr=\E[0%?%p1;1%;%?%p3%;7%;m, sgr0=\E[m, smso=\E[1m,
-	use=sun,
+	sgr=\E[0%?%p6%t;1%;%?%p1%p3%|%t;7%;m, sgr0=\E[m,
+	smso=\E[7m, use=sun,
 
 #### Iris consoles
 #
@@ -22742,7 +22741,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2009-12-12
 #	* updated nsterm* entries (Benjamin Sittler, Emanuele Giaquinta)
 #
-# 2009-12-12
+# 2009-12-19
 #	* add bw (auto-left-margin) to nsterm* entries (Benjamin Sittler)
 #	* rename minix to minix-1.7, add minix entry for Minux3 -TD
 #
@@ -22956,9 +22955,17 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (patch by Christian Persch).
 #
 # 2012-11-02
-#	* reviewed vte-2012, reverted most of the change since it was incorrect.
-#	  updated based on testing with tack -TD
+#	* reviewed vte-2012, reverted most of the change since it was incorrect
+#	  based on testing with tack -TD
 #	* un-cancel the initc in vte-256color, since this was implemented
 #	  starting with version 0.20 in 2009 -TD
+#
+# 2013-03-16
+#	* correct typo in sgr string for sun-color,
+#	  add bold for consistency with sgr,
+#	  change smso for consistency with sgr -TD
+#	* correct typo in sgr string for terminator -TD
+#	* add blink to the attributes masked by ncv in linux-16color (report
+#	  by Benjamin Sittler)
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
