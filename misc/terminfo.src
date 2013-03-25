@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.474 $
-#	$Date: 2013/03/23 20:42:52 $
+#	$Revision: 1.473 $
+#	$Date: 2013/03/23 20:28:45 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1025,9 +1025,9 @@ kon|kon2|jfbterm|Kanji ON Linux console,
 # you use a 512-character console font. This uses bold for bright
 # foreground colors and blink for bright background colors.
 linux-16color|linux console with 16 colors,
-	colors#16, ncv#63, pairs#256,
-	setab=\E[4%p1%{8}%m%d%?%p1%{7}%>%t;5%e;25%;m,
-	setaf=\E[3%p1%{8}%m%d%?%p1%{7}%>%t;1%e;21%;m,
+	colors#16, ncv#62, pairs#256,
+	setab=\E[4%p1%{8}%m%d%?%p1%{8}%>%t;5%e%p1%{8}%=%t;2%e;25%;m,
+	setaf=\E[3%p1%{8}%m%d%?%p1%{8}%>%t;1%e%p1%{8}%=%t;2%e;21%;m,
 	use=linux,
 
 # bterm (bogl 0.1.18)
@@ -22971,6 +22971,5 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2013-03-23
 #	* change initialization for vt220, similar entries for consistency
 #	  with cursor-key strings (NetBSD #47674) -TD
-#	* further improvements to linux-16color (Benjamin Sittler)
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
