@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.476 $
-#	$Date: 2013/05/11 19:27:02 $
+#	$Revision: 1.478 $
+#	$Date: 2013/06/07 23:27:32 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1210,6 +1210,21 @@ nsterm-16color|AppKit Terminal.app v240.2+ with Mac OS X version 10.5,
 #   xterm-256color.  However, it adds "nsterm", so it is possible to use the
 #   nsterm entry from this file to override the MacPorts (20110404) or
 #   system (20081102) copy of this file.
+# + In OS X 10.8 (Mountain Lion) the TERM which can be set in the preferences
+#   dialog defaults to xterm-256color.  Alternative selections are ansi,
+#   dtterm, rxvt, vt52, vt100, vt102, xterm and xterm-16color.  However,
+#   the menu says "Declare terminal as" without promising to actually emulate
+#   the corresponding terminals.  Indeed, changing TERM does not affect the
+#   emulation itself.  This means that
+#   + the function-keys do not match for dtterm for kf1-kf4 as well as
+#     khome/kend
+#   + the color model is the same for each setting of TERM (does not match
+#     ansi or dtterm).
+#   + the shift/control/meta key modifiers from rxvt and xterm variants are not
+#     recognised except for a few special cases, i.e., kRIT5 and kLFT5.
+#   + the vt52 emulation does not give a usable shell because screen-clearing
+#     does not work as expected.
+#   + selecting "xterm" or "xterm-16color" sets TERM to "xterm-256color".
 nsterm-bce|AppKit Terminal.app v71+/v100.1.8+ with Mac OS X version 10.3/10.4 (bce),
 	bce, use=nsterm-16color,
 
@@ -1821,382 +1836,6 @@ hurd|The GNU Hurd console server,
 	smso=\E[7m, smul=\E[4m, vpa=\E[%i%p1%dd, grbom=\E[>1l,
 	gsbom=\E[>1h,
 
-#### OSF Unix
-#
-
-# OSF/1 1.1 Snapshot 2
-pmcons|pmconsole|PMAX console,
-	am,
-	cols#128, lines#57,
-	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuu1=^K, ht=^I,
-	ind=^J, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
-	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
-
-# SCO console and SOS-Syscons console for 386bsd
-# (scoansi: had unknown capabilities
-#	:Gc=N:Gd=K:Gh=M:Gl=L:Gu=J:Gv=\072:\
-#	:GC=E:GD=B:GH=D:GL=\64:GU=A:GV=\63:GR=C:
-#	:G1=?:G2=Z:G3=@:G4=Y:G5=;:G6=I:G7=H:G8=<:\
-#	:CW=\E[M:NU=\E[N:RF=\E[O:RC=\E[P:\
-#	:WL=\E[S:WR=\E[T:CL=\E[U:CR=\E[V:\
-# I renamed GS/GE/HM/EN/PU/PD/RT and added klone+sgr-dumb, based
-# on the <smacs>=\E[12m  -- esr)
-#
-# klone+sgr-dumb is an error since the acsc does not match -TD
-#
-# In this description based on SCO's keyboard(HW) manpage list of default
-# function key values:
-#	F13-F24 are shifted F1-F12
-#	F25-F36 are control F1-F12
-#	F37-F48 are shift+control F1-F12
-#
-# hpa/vpa work in the console, but not in scoterm:
-#	hpa=\E[%p1%dG,
-#	vpa=\E[%p1%dd,
-#
-# SCO's terminfo uses
-#	kLFT=\E[d,
-#	kRIT=\E[c,
-# which do not work (console or scoterm).
-#
-# Console documents only 3 attributes can be set with SGR (so we don't use sgr).
-scoansi-old|SCO Extended ANSI standard crt (5.0.5),
-	OTbs, am, bce, eo, xon,
-	colors#8, cols#80, it#8, lines#25, pairs#64,
-	acsc=+/\,.-\230.\2310[5566778899\:\:;;<<==>>FFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXX`\204a0fxgqh2jYk?lZm@nEqDtCu4vAwBx3yszr{c}\034~\207,
-	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z,
-	civis=\E[=14;12C, clear=\E[H\E[2J, cnorm=\E[=10;12C,
-	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B,
-	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH,
-	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[=0;12C, dch=\E[%p1%dP,
-	dch1=\E[P, dispc=\E[=%p1%dg, dl=\E[%p1%dM, dl1=\E[M,
-	ed=\E[m\E[J, el=\E[m\E[K, el1=\E[1K, home=\E[H, ht=^I,
-	hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L,
-	ind=\E[S, indn=\E[%p1%dS, invis=\E[8m, kbeg=\E[E, kbs=^H,
-	kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
-	kdch1=\177, kend=\E[F, kf1=\E[M, kf10=\E[V, kf11=\E[W,
-	kf12=\E[X, kf13=\E[Y, kf15=\E[a, kf16=\E[b, kf17=\E[c,
-	kf18=\E[d, kf19=\E[e, kf2=\E[N, kf20=\E[f, kf21=\E[g,
-	kf22=\E[h, kf23=\E[i, kf24=\E[j, kf25=\E[k, kf26=\E[l,
-	kf27=\E[m, kf28=\E[n, kf29=\E[o, kf3=\E[O, kf30=\E[p,
-	kf31=\E[q, kf32=\E[r, kf33=\E[s, kf34=\E[t, kf35=\E[u,
-	kf36=\E[v, kf37=\E[w, kf38=\E[x, kf39=\E[y, kf4=\E[P,
-	kf40=\E[z, kf41=\E[@, kf42=\E[[, kf43=\E[\\, kf44=\E[],
-	kf45=\E[\^, kf46=\E[_, kf47=\E[`, kf48=\E[{, kf5=\E[Q,
-	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H,
-	kich1=\E[L, knp=\E[G, kpp=\E[I, op=\E[0;37;40m, rc=\E8,
-	rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, rmacs=\E[10m,
-	rmam=\E[?7l, rmso=\E[m, rmul=\E[m, sc=\E7,
-	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0;10m,
-	smacs=\E[12m, smam=\E[?7h, smso=\E[7m, smul=\E[4m,
-scoansi-new|SCO Extended ANSI standard crt (5.0.6),
-	km,
-	civis=\E[=0c, cnorm=\E[=1c, csr=\E[%i%p1%d;%p2%dr,
-	cvvis=\E[=2c, mgc=\E[=r, oc=\E[51m, op=\E[50m,
-	rep=\E[%p1%d;%p2%db, rmm=\E[=11L,
-	sgr=\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%e;10%;m,
-	smgb=\E[=1;0m, smgbp=\E[=1;%i%p1%dm,
-	smglp=\E[=2;%i%p1%dm, smgr=\E[=3;0m,
-	smgrp=\E[=3;%i%p1%dm, smgt=\E[=0;0m,
-	smgtp=\E[=0;%i%p1%dm, smm=\E[=10L,
-	wind=\E[%i%p1%d;%p2%d;%i%p3%d;%p4%dr,
-	use=scoansi-old,
-# make this easy to change...
-scoansi|SCO Extended ANSI standard crt,
-	use=scoansi-old,
-
-# This actually describes the generic SVr4 display driver for Intel boxes.
-# The <dim=\E[2m> isn't documented and therefore may not be reliable.
-# From: Eric Raymond <esr@snark.thyrsus.com> Mon Nov 27 19:00:53 EST 1995
-att6386|at386|386at|AT&T WGS 6386 console,
-	am, bw, eo, xon,
-	cols#80, it#8, lines#25,
-	acsc=``a1fxgqh0jYk?lZm@nEooppqDrrsstCu4vAwBx3yyzz{{||}}~~,
-	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[=C,
-	clear=\E[2J\E[H, cnorm=\E[=1C, cr=^M, cub=\E[%p1%dD,
-	cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC,
-	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
-	cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m,
-	dl=\E[%p1%dM, dl1=\E[1M, ech=\E[%p1%dX, ed=\E[J, el=\E[K,
-	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@,
-	ich1=\E[1@, il=\E[%p1%dL, il1=\E[1L, ind=\E[S,
-	indn=\E[%p1%dS, invis=\E[9m, is2=\E[0;10;39m, kbs=^H,
-	kcbt=^], kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
-	kdch1=\E[P, kend=\E[Y, kf1=\EOP, kf10=\EOY, kf11=\EOZ,
-	kf12=\EOA, kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU,
-	kf7=\EOV, kf8=\EOW, kf9=\EOX, khome=\E[H, kich1=\E[@,
-	knp=\E[U, kpp=\E[V, krmir=\E0, nel=\r\E[S, rc=\E8, rev=\E[7m,
-	ri=\E[T, rin=\E[%p1%dT, rmacs=\E[10m, rmso=\E[m, rmul=\E[m,
-	sc=\E7,
-	sgr=\E[10m\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p9%t;12%e;10%;%?%p7%t;9%;m,
-	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m,
-	tbc=\E[3g, vpa=\E[%i%p1%dd, use=klone+color,
-# (pc6300plus: removed ":KM=/usr/lib/ua/kmap.s5:"; renamed BO/EE/CI/CV -- esr)
-pc6300plus|AT&T 6300 plus,
-	OTbs, am, xon,
-	cols#80, lines#24,
-	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[=C,
-	clear=\E[2J\E[H, cnorm=\E[=1C, cr=^M, cub1=^H, cud1=\E[B,
-	cuf1=\E[C, cup=\E[%i%p1%2d;%p2%2dH, cuu1=\E[A,
-	dch1=\E[1P, dim=\E[2m, dl1=\E[1M, ed=\E[0J, el=\E[0K,
-	home=\E[H, hts=\EH, ich1=\E[1@, il1=\E[1L, ind=^J,
-	invis=\E[9m, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C,
-	kcuu1=\E[A, kf1=\EOc, kf10=\EOu, kf2=\EOd, kf3=\EOe,
-	kf4=\EOf, kf5=\EOg, kf6=\EOh, kf7=\EOi, kf8=\EOj, kf9=\EOk,
-	nel=^M^J, rev=\E[7m, rmso=\E[m, rmul=\E[m, sgr0=\E[m,
-	smso=\E[7m, smul=\E[4m, tbc=\E[3g,
-
-# From: Benjamin C. W. Sittler <bsittler@nmt.edu>
-#
-# I have a UNIX PC which I use as a terminal attached to my Linux PC.
-# Unfortunately, the UNIX PC terminfo entry that comes with ncurses
-# is broken. All the special key sequences are broken, making it unusable
-# with Emacs. The problem stems from the following:
-#
-# The UNIX PC has a plethora of keys (103 of them, and there's no numeric
-# keypad!), loadable fonts, and strange highlighting modes ("dithered"
-# half-intensity, "smeared" bold, and real strike-out, for example.) It also
-# uses resizable terminal windows, but the bundled terminal program always
-# uses an 80x24 window (and doesn't support seem to support a 132-column
-# mode.)
-#
-# HISTORY: The UNIX PC was one of the first machines with a GUI, and used a
-# library which was a superset of SVr3.5 curses (called tam, for "terminal
-# access method".) tam includes support for real, overlapping windows,
-# onscreen function key labels, and bitmap graphics. But since the primary
-# user interface on the UNIX PC was a GUI program (ua, for "user
-# assistant",) and remote administration was considered important for the
-# machine, tam also supported VT100-compatible terminals attached to the
-# serial port or used across the StarLan network. To simulate the extra keys
-# not present on a VT100, users could press ESC and a two-letter sequence,
-# such as u d (Undo) or U D (Shift-Undo.) These two-letter sequences,
-# however, were not the same as those sent by the actual Undo key. The
-# actual Undo key sends ESC 0 s unshifted, and ESC 0 S shifted, for example.
-# (If you're interested in adding some of the tam calls to ncurses, btw, I
-# have the full documentation and several programs which use tam. It also
-# used an extended terminfo format to describe key sequences, special
-# highlighting modes, etc.)
-#
-# KEYS: This means that ncurses would quite painful on the UNIX PC, since
-# there are two sequences for every key-modifier combination (local keyboard
-# sequence and remote "VT100" sequence.) But I doubt many people are trying
-# to use ncurses on the UNIX PC, since ncurses doesn't properly handle the
-# GUI. Unfortunately, the terminfo entry (and the termcap, too, I presume)
-# seem to have been built from the manual describing the VT100 sequences.
-# This means it doesn't work for a real live UNIX PC.
-#
-# FONTS: The UNIX PC also has a strange interpretation of "alternate
-# character set". Rather than the VT100 graphics you might expect, it allows
-# up to 8 custom fonts to be loaded at any given time. This means that
-# programs expecting VT100 graphics will usually be disappointed. For this
-# reason I have disabled the smacs/rmacs sequences, but they could easily be
-# re-enabled. Here are the relevant control sequences (from the ESCAPE(7)
-# manpage), should you wish to do so:
-#
-# SGR10 - Select font 0 - ESC [ 10 m or SO
-# SGR11 - Select font 1 - ESC [ 11 m or SI
-# SGR12 - Select font 2 - ESC [ 12 m
-# ... (etc.)
-# SGR17 - Select font 7 - ESC [ 17 m
-#
-# Graphics for line drawing are not reliably found at *any* character
-# location because the UNIX PC has dynamically reloadable fonts. I use font
-# 0 for regular text and font 1 for italics, but this is by no means
-# universal. So ASCII line drawing is in order if smacs/rmacs are enabled.
-#
-# MISC: The cursor visible/cursor invisible sequences were swapped in the
-# distributed terminfo.
-#
-# To ameliorate these problems (and fix a few highlighting bugs) I rewrote
-# the UNIX PC terminfo entry. The modified version works great with Lynx,
-# Emacs, and XEmacs running on my Linux PC and displaying on the UNIX PC
-# attached by serial cable. In Emacs, even the Undo key works, and many
-# applications can now use the F1-F8 keys.
-#
-# esr's notes:
-#	Terminfo entry for the AT&T Unix PC 7300
-#	from escape(7) in Unix PC 7300 Manual.
-#	Somewhat similar to a vt100-am (but different enough
-#	to redo this from scratch.)
-#
-#	/***************************************************************
-#	*
-#	*           FONT LOADING PROGRAM FOR THE UNIX PC
-#	*
-#	*     This routine loads a font defined in the file ALTFONT
-#	*     into font memory slot #1.  Once the font has been loaded,
-#	*     it can be used as an alternative character set.
-#	*
-#	*     The call to ioctl with the argument WIOCLFONT is the key
-#	*     to this routine.  For more information, see window(7) in
-#	*     the PC 7300 documentation.
-#	***************************************************************/
-#	#include <string.h>		/* needed for strcpy call */
-#	#include <sys/window.h>         /* needed for ioctl call */
-#	#define FNSIZE	60		/* font name size */
-#	#define ALTFONT  "/usr/lib/wfont/special.8.ft"  /* font file */
-#	/*
-#	*     The file /usr/lib/wfont/special.8.ft comes with the
-#	*     standard PC software.  It defines a graphics character set
-#	*     similar to that of the Teletype 5425 terminal.  To view
-#	*     this or other fonts in /usr/lib/wfont, use the command
-#	*     cfont <filename>.  For further information on fonts see
-#	*     cfont(1) in the PC 7300 documentation.
-#	*/
-#
-#	struct altfdata 	/* structure for alt font data */
-#	{
-#	short	altf_slot;		/* memory slot number */
-#	char	altf_name[FNSIZE];	/* font name (file name) */
-#	};
-#	ldfont()
-#	{
-#		int wd;		/* window in which altfont will be */
-#		struct altfdata altf;
-#		altf.altf_slot=1;
-#		strcpy(altf.altf_name,ALTFONT);
-#		for (wd =1; wd < 12; wd++) {
-#		     ioctl(wd, WIOCLFONT,&altf);
-#	        }
-#	}
-#
-# (att7300: added <civis>/<cnorm>/<ich1>/<invis> from the BSDI entry,
-# they're confirmed by the man page for the System V display---esr)
-#
-att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300,
-	am, xon,
-	cols#80, it#8, lines#24,
-	bel=^G, blink=\E[9m, bold=\E[1m, cbt=\E^I, civis=\E[=1C,
-	clear=\E[2J\E[H, cnorm=\E[=0C, cr=^M, cub=\E[%p1%dD,
-	cub1=^H, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC,
-	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
-	cuu1=\E[A, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M,
-	ed=\E[0J, el=\E[0K, home=\E[H, ich1=\E[@, il=\E[%p1%dL,
-	il1=\E[L, ind=^J, invis=\E[9m, is1=\017\E[=1w, kBEG=\ENB,
-	kCAN=\EOW, kCPY=\END, kCRT=\EON, kDC=\ENF, kDL=\ENE,
-	kEND=\ENN, kEOL=\EOA, kFND=\EOX, kHLP=\EOM, kHOM=\ENM,
-	kIC=\ENJ, kLFT=\ENK, kMOV=\ENC, kNXT=\ENH, kOPT=\EOR,
-	kPRV=\ENG, kRDO=\EOT, kRIT=\ENL, kRPL=\EOY, kSAV=\EOO,
-	kUND=\EOS, kbeg=\ENb, kbs=^H, kcan=\EOw, kcbt=\E[Z,
-	kclo=\EOV, kclr=\E[J, kcmd=\EOu, kcpy=\ENd, kcrt=\EOn,
-	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\ENf,
-	ked=\E[J, kel=\EOa, kend=\E0, kext=\EOk, kf1=\EOc, kf2=\EOd,
-	kf3=\EOe, kf4=\EOf, kf5=\EOg, kf6=\EOh, kf7=\EOi, kf8=\EOj,
-	kfnd=\EOx, khlp=\EOm, khome=\E[H, kich1=\ENj, kind=\E[B,
-	kmov=\ENc, kmrk=\ENi, knp=\E[U, knxt=\ENh, kopn=\EOv,
-	kopt=\EOr, kpp=\E[V, kprt=\EOz, kprv=\ENg, krdo=\EOt,
-	kref=\EOb, krfr=\ENa, kri=\E[A, krpl=\EOy, krst=\EOB,
-	ksav=\EOo, kslt=\ENI, kund=\EOs, nel=\EE, rev=\E[7m, ri=\EM,
-	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smso=\E[7m,
-	smul=\E[4m,
-
-# Sent by Stefan Stapelberg <stefan@rent-a-guru.de>, 24 Feb 1997, this is
-# from SGI's terminfo database.  SGI's entry shows F9-F12 with the codes
-# for the application keypad mode.  We have added iris-ansi-ap rather than
-# change the original to keypad mode.
-#
-# (iris-ansi: added rmam/smam based on init string -- esr)
-#
-# This entry, and those derived from it, is used in xwsh (also known as
-# winterm).  Some capabilities that do not fit into the terminfo model
-# include the shift- and control-functionkeys:
-#
-# F1-F12 generate different codes when shift or control modifiers are used.
-# For example:
-#	F1      	\E[001q
-#	shift F1	\E[013q
-#	control-F1	\E[025q
-#
-# In application keypad mode, F9-F12 generate codes like vt100 PF1-PF4, i.e.,
-# \EOP to \EOS.  The shifted and control modifiers still do the same thing.
-#
-# The cursor keys also have different codes:
-#	control-up	\E[162q
-#	control-down	\E[165q
-#	control-left	\E[159q
-#	control-right	\E[168q
-#
-#	shift-up	\E[161q
-#	shift-down	\E[164q
-#	shift-left	\E[158q
-#	shift-right	\E[167q
-#
-#	control-tab	\[072q
-#
-iris-ansi|iris-ansi-net|IRIS emulating 40 line ANSI terminal (almost VT100),
-	am,
-	cols#80, it#8, lines#40,
-	bel=^G, bold=\E[1m, clear=\E[H\E[2J,
-	cnorm=\E[9/y\E[12/y\E[=6l, cr=^M, cub=\E[%p1%dD,
-	cub1=\E[D, cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC,
-	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
-	cuu1=\E[A, cvvis=\E[10/y\E[=1h\E[=2l\E[=6h,
-	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K,
-	home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL, il1=\E[L, ind=\ED,
-	is2=\E[?1l\E>\E[?7h\E[100g\E[0m\E7\E[r\E8, kDC=\E[P,
-	kEND=\E[147q, kHOM=\E[143q, kLFT=\E[158q, kPRT=\E[210q,
-	kRIT=\E[167q, kSPD=\E[218q, kbs=^H, kcbt=\E[Z, kcub1=\E[D,
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177,
-	kend=\E[146q, kent=^M, kf1=\E[001q, kf10=\E[010q,
-	kf11=\E[011q, kf12=\E[012q, kf2=\E[002q, kf3=\E[003q,
-	kf4=\E[004q, kf5=\E[005q, kf6=\E[006q, kf7=\E[007q,
-	kf8=\E[008q, kf9=\E[009q, khome=\E[H, kich1=\E[139q,
-	knp=\E[154q, kpp=\E[150q, kprt=\E[209q, krmir=\E[146q,
-	kspd=\E[217q, nel=\EE, pfkey=\EP101;%p1%d.y%p2%s\E\\,
-	rc=\E8, rev=\E[7m, ri=\EM, rmam=\E[?7l, rmso=\E[m, rmul=\E[m,
-	sc=\E7, sgr0=\E[m, smam=\E[?7h, smso=\E[1;7m, smul=\E[4m,
-	tbc=\E[3g,
-iris-ansi-ap|IRIS ANSI in application-keypad mode,
-	is2=\E[?1l\E=\E[?7h, kent=\EOM, kf10=\E[010q,
-	kf11=\E[011q, kf12=\E[012q, kf9=\E[009q, use=iris-ansi,
-
-# From the man-page, this is a quasi-vt100 emulator that runs on SGI's IRIX
-# (T.Dickey 98/1/24)
-iris-color|xwsh|IRIX ANSI with color,
-	ncv#33,
-	csr=\E[%i%p1%d;%p2%dr, dch=\E[%p1%dP, dim=\E[2m,
-	ech=\E[%p1%dX, ich=\E[%p1%d@, rc=\E8, ritm=\E[23m,
-	rmul=\E[24m, rs1=\Ec,
-	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7,
-	sitm=\E[3m, use=vt100+enq, use=klone+color,
-	use=iris-ansi-ap,
-
-# The following is a version of the ibm-pc entry distributed with PC/IX,
-# (Interactive Systems' System 3 for the Big Blue), modified by Richard
-# McIntosh at UCB/CSM.  The :pt: and :uc: have been removed from the original,
-# (the former is untrue, and the latter failed under UCB/man); standout and
-# underline modes have been added.  Note: this entry describes the "native"
-# capabilities of the PC monochrome display, without ANY emulation; most
-# communications packages (but NOT PC/IX connect) do some kind of emulation.
-pcix|PC/IX console,
-	am, bw, eo,
-	cols#80, lines#24,
-	clear=\Ec, cub1=^H, cud1=\E[B, cuf1=\E[C,
-	cup=\E[%i%p1%2d;%p2%2dH, cuu1=\E[A, ed=\E[J, el=\E[K,
-	home=\E[H, rmso=\E[m, rmul=\E[m, sgr0=\E[m, smso=\E[7m,
-	smul=\E[4m,
-
-# (ibmpcx: this entry used to be known as ibmx.
-# It formerly included the following extension capabilities:
-#	:GC=b:GL=v:GR=t:RT=^J:\
-#	:GH=\E[196g:GV=\E[179g:\
-#	:GU=\E[193g:GD=\E[194g:\
-#	:G1=\E[191g:G2=\E[218g:G3=\E[192g:G4=\E[217g:\
-#	:CW=\E[E:NU=\E[F:RF=\E[G:RC=\E[H:\
-#	:WL=\E[K:WR=\E[L:CL=\E[M:CR=\E[N:\
-# I renamed GS/GE/WL/WR/CL/CR/PU/PD/HM/EN; also, removed a duplicate
-# ":kh=\E[Y:".  Added IBM-PC forms characters and highlights, they match
-# what was there before. -- esr)
-ibmpcx|xenix|ibmx|IBM PC xenix console display,
-	OTbs, am, msgr,
-	cols#80, lines#25,
-	clear=^L, cub1=^H, cud1=\E[B, cuf1=\E[C,
-	cup=\E[%p1%d;%p2%dH, cuu1=\E[A, dch1=\E[P, dl1=\E[M,
-	ed=\E[J, el=\E[K, home=\E[H, ich1=\E[@, il1=\E[L, kbs=^H,
-	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[d,
-	kf1=\E[K, kf2=\E[L, kf3=\E[M, kf4=\E[N, khome=\E[Y, knp=\E[e,
-	kpp=\E[Z, use=klone+acs, use=klone+sgr8,
-
 #### QNX
 #
 
@@ -2359,6 +1998,154 @@ qansi-m|QNX ansi with mouse,
 #
 qansi-w|QNX ansi for windows,
 	xvpa, use=qansi-m,
+
+#### SCO consoles
+
+# SCO console and SOS-Syscons console for 386bsd
+# (scoansi: had unknown capabilities
+#	:Gc=N:Gd=K:Gh=M:Gl=L:Gu=J:Gv=\072:\
+#	:GC=E:GD=B:GH=D:GL=\64:GU=A:GV=\63:GR=C:
+#	:G1=?:G2=Z:G3=@:G4=Y:G5=;:G6=I:G7=H:G8=<:\
+#	:CW=\E[M:NU=\E[N:RF=\E[O:RC=\E[P:\
+#	:WL=\E[S:WR=\E[T:CL=\E[U:CR=\E[V:\
+# I renamed GS/GE/HM/EN/PU/PD/RT and added klone+sgr-dumb, based
+# on the <smacs>=\E[12m  -- esr)
+#
+# klone+sgr-dumb is an error since the acsc does not match -TD
+#
+# In this description based on SCO's keyboard(HW) manpage list of default
+# function key values:
+#	F13-F24 are shifted F1-F12
+#	F25-F36 are control F1-F12
+#	F37-F48 are shift+control F1-F12
+#
+# hpa/vpa work in the console, but not in scoterm:
+#	hpa=\E[%p1%dG,
+#	vpa=\E[%p1%dd,
+#
+# SCO's terminfo uses
+#	kLFT=\E[d,
+#	kRIT=\E[c,
+# which do not work (console or scoterm).
+#
+# Console documents only 3 attributes can be set with SGR (so we don't use sgr).
+scoansi-old|SCO Extended ANSI standard crt (5.0.5),
+	OTbs, am, bce, eo, xon,
+	colors#8, cols#80, it#8, lines#25, pairs#64,
+	acsc=+/\,.-\230.\2310[5566778899\:\:;;<<==>>FFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXX`\204a0fxgqh2jYk?lZm@nEqDtCu4vAwBx3yszr{c}\034~\207,
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z,
+	civis=\E[=14;12C, clear=\E[H\E[2J, cnorm=\E[=10;12C,
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B,
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH,
+	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[=0;12C, dch=\E[%p1%dP,
+	dch1=\E[P, dispc=\E[=%p1%dg, dl=\E[%p1%dM, dl1=\E[M,
+	ed=\E[m\E[J, el=\E[m\E[K, el1=\E[1K, home=\E[H, ht=^I,
+	hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L,
+	ind=\E[S, indn=\E[%p1%dS, invis=\E[8m, kbeg=\E[E, kbs=^H,
+	kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kdch1=\177, kend=\E[F, kf1=\E[M, kf10=\E[V, kf11=\E[W,
+	kf12=\E[X, kf13=\E[Y, kf15=\E[a, kf16=\E[b, kf17=\E[c,
+	kf18=\E[d, kf19=\E[e, kf2=\E[N, kf20=\E[f, kf21=\E[g,
+	kf22=\E[h, kf23=\E[i, kf24=\E[j, kf25=\E[k, kf26=\E[l,
+	kf27=\E[m, kf28=\E[n, kf29=\E[o, kf3=\E[O, kf30=\E[p,
+	kf31=\E[q, kf32=\E[r, kf33=\E[s, kf34=\E[t, kf35=\E[u,
+	kf36=\E[v, kf37=\E[w, kf38=\E[x, kf39=\E[y, kf4=\E[P,
+	kf40=\E[z, kf41=\E[@, kf42=\E[[, kf43=\E[\\, kf44=\E[],
+	kf45=\E[\^, kf46=\E[_, kf47=\E[`, kf48=\E[{, kf5=\E[Q,
+	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H,
+	kich1=\E[L, knp=\E[G, kpp=\E[I, op=\E[0;37;40m, rc=\E8,
+	rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, rmacs=\E[10m,
+	rmam=\E[?7l, rmso=\E[m, rmul=\E[m, sc=\E7,
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0;10m,
+	smacs=\E[12m, smam=\E[?7h, smso=\E[7m, smul=\E[4m,
+scoansi-new|SCO Extended ANSI standard crt (5.0.6),
+	km,
+	civis=\E[=0c, cnorm=\E[=1c, csr=\E[%i%p1%d;%p2%dr,
+	cvvis=\E[=2c, mgc=\E[=r, oc=\E[51m, op=\E[50m,
+	rep=\E[%p1%d;%p2%db, rmm=\E[=11L,
+	sgr=\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%e;10%;m,
+	smgb=\E[=1;0m, smgbp=\E[=1;%i%p1%dm,
+	smglp=\E[=2;%i%p1%dm, smgr=\E[=3;0m,
+	smgrp=\E[=3;%i%p1%dm, smgt=\E[=0;0m,
+	smgtp=\E[=0;%i%p1%dm, smm=\E[=10L,
+	wind=\E[%i%p1%d;%p2%d;%i%p3%d;%p4%dr,
+	use=scoansi-old,
+# make this easy to change...
+scoansi|SCO Extended ANSI standard crt,
+	use=scoansi-old,
+
+#### SGI consoles
+
+# Sent by Stefan Stapelberg <stefan@rent-a-guru.de>, 24 Feb 1997, this is
+# from SGI's terminfo database.  SGI's entry shows F9-F12 with the codes
+# for the application keypad mode.  We have added iris-ansi-ap rather than
+# change the original to keypad mode.
+#
+# (iris-ansi: added rmam/smam based on init string -- esr)
+#
+# This entry, and those derived from it, is used in xwsh (also known as
+# winterm).  Some capabilities that do not fit into the terminfo model
+# include the shift- and control-functionkeys:
+#
+# F1-F12 generate different codes when shift or control modifiers are used.
+# For example:
+#	F1      	\E[001q
+#	shift F1	\E[013q
+#	control-F1	\E[025q
+#
+# In application keypad mode, F9-F12 generate codes like vt100 PF1-PF4, i.e.,
+# \EOP to \EOS.  The shifted and control modifiers still do the same thing.
+#
+# The cursor keys also have different codes:
+#	control-up	\E[162q
+#	control-down	\E[165q
+#	control-left	\E[159q
+#	control-right	\E[168q
+#
+#	shift-up	\E[161q
+#	shift-down	\E[164q
+#	shift-left	\E[158q
+#	shift-right	\E[167q
+#
+#	control-tab	\[072q
+#
+iris-ansi|iris-ansi-net|IRIS emulating 40 line ANSI terminal (almost VT100),
+	am,
+	cols#80, it#8, lines#40,
+	bel=^G, bold=\E[1m, clear=\E[H\E[2J,
+	cnorm=\E[9/y\E[12/y\E[=6l, cr=^M, cub=\E[%p1%dD,
+	cub1=\E[D, cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC,
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
+	cuu1=\E[A, cvvis=\E[10/y\E[=1h\E[=2l\E[=6h,
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K,
+	home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL, il1=\E[L, ind=\ED,
+	is2=\E[?1l\E>\E[?7h\E[100g\E[0m\E7\E[r\E8, kDC=\E[P,
+	kEND=\E[147q, kHOM=\E[143q, kLFT=\E[158q, kPRT=\E[210q,
+	kRIT=\E[167q, kSPD=\E[218q, kbs=^H, kcbt=\E[Z, kcub1=\E[D,
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177,
+	kend=\E[146q, kent=^M, kf1=\E[001q, kf10=\E[010q,
+	kf11=\E[011q, kf12=\E[012q, kf2=\E[002q, kf3=\E[003q,
+	kf4=\E[004q, kf5=\E[005q, kf6=\E[006q, kf7=\E[007q,
+	kf8=\E[008q, kf9=\E[009q, khome=\E[H, kich1=\E[139q,
+	knp=\E[154q, kpp=\E[150q, kprt=\E[209q, krmir=\E[146q,
+	kspd=\E[217q, nel=\EE, pfkey=\EP101;%p1%d.y%p2%s\E\\,
+	rc=\E8, rev=\E[7m, ri=\EM, rmam=\E[?7l, rmso=\E[m, rmul=\E[m,
+	sc=\E7, sgr0=\E[m, smam=\E[?7h, smso=\E[1;7m, smul=\E[4m,
+	tbc=\E[3g,
+iris-ansi-ap|IRIS ANSI in application-keypad mode,
+	is2=\E[?1l\E=\E[?7h, kent=\EOM, kf10=\E[010q,
+	kf11=\E[011q, kf12=\E[012q, kf9=\E[009q, use=iris-ansi,
+
+# From the man-page, this is a quasi-vt100 emulator that runs on SGI's IRIX
+# (T.Dickey 98/1/24)
+iris-color|xwsh|IRIX ANSI with color,
+	ncv#33,
+	csr=\E[%i%p1%d;%p2%dr, dch=\E[%p1%dP, dim=\E[2m,
+	ech=\E[%p1%dX, ich=\E[%p1%d@, rc=\E8, ritm=\E[23m,
+	rmul=\E[24m, rs1=\Ec,
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7,
+	sitm=\E[3m, use=vt100+enq, use=klone+color,
+	use=iris-ansi-ap,
 
 #### OpenBSD consoles
 #
@@ -2805,6 +2592,7 @@ bsdos-sparc|Sun SPARC BSD/OS Console,
 # BSD/OS on the PowerPC
 bsdos-ppc|PowerPC BSD/OS Console,
 	use=bsdos-pc,
+
 
 #### DEC VT52
 # (<acsc>/<rmacs>/<smacs> capabilities aren't in DEC's official entry -- esr)
@@ -5584,6 +5372,8 @@ pty|4bsd pseudo teletype,
 	cup=\EG%p1%{32}%+%c%p2%{32}%+%c, rmso=\Eb$, rmul=\Eb!,
 	smso=\Ea$, smul=\Ea!, use=cbunix,
 
+#### Emacs
+
 # The codes supported by the term.el terminal emulation in GNU Emacs 19.30
 eterm|gnu emacs term.el terminal emulation,
 	am, mir, xenl,
@@ -5618,6 +5408,8 @@ eterm-color|Emacs term.el terminal emulator term-protocol-version 0.96,
 	sgr=\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;m,
 	sgr0=\E[m, smir=\E[4h, smso=\E[7m, smul=\E[4m,
 	u6=\E[%i%d;%dR, u7=\E[6n,
+
+#### Screen
 
 # Entries for use by the `screen' program by Juergen Weigert,
 # Michael Schroeder, Oliver Laumann.  The screen and
@@ -5847,6 +5639,8 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 	rmir=\E[4l, rmkx=\E>, rmso=\E[23m, rmul=\E[24m, rs1=\Ec,
 	sc=\E7, sgr0=\E[m, smir=\E[4h, smkx=\E=, smso=\E[3m,
 	smul=\E[4m, tbc=\E[3g,
+
+#### NCSA Telnet
 
 # Francesco Potorti <F.Potorti@cnuce.cnr.it>:
 # NCSA telnet is one of the most used telnet clients for the Macintosh.  It has
@@ -6370,7 +6164,7 @@ dtterm|CDE desktop terminal,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h,
 	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, use=ecma+color,
 
-#### Non-Unix Consoles
+######## Non-Unix Consoles
 #
 
 #### EMX termcap.dat compatibility modes
@@ -6425,6 +6219,8 @@ mono-emx|stupid monochrome ansi terminal with only one kind of emphasis,
 	kf5=\0?, kf6=\0@, kf7=\0A, kf8=\0B, kf9=\0C, khome=\0G,
 	kich1=\0R, kll=\0O, knp=\0Q, kpp=\0I, nel=^M^J, rev=\E[7m,
 	sgr0=\E[0m,
+
+#### Cygwin
 
 # Use this for cygwin32 (tested with beta 19.1)
 # underline is colored bright magenta
@@ -6550,6 +6346,8 @@ cygwinDBG|Debug Version for Cygwin,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%;m,
 	sgr0=\E[0;10m, smacs=\E[11m, smir=\E[4h, smso=\E[7m,
 	smul=\E[4m, tbc=\E[3g, vpa=\E[%i%p1%dd, use=vt102+enq,
+
+#### DJGPP
 
 # Key definitions:
 # The encodings for unshifted arrow keys, F1-F12, Home, Insert, etc.  match the
@@ -6717,6 +6515,8 @@ djgpp204|Entry for DJGPP 2.04,
 	ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, setab=\E[4%p1%dm,
 	setaf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, smul=\E[4m,
 
+#### U/Win
+
 # This is tested using U/Win's telnet.  Scrolling is omitted because it is
 # buggy.  Another odd bug appears when displaying "~" in alternate character
 # set (the emulator spits out error messages).  Compare with att6386 -TD
@@ -6739,6 +6539,8 @@ uwin|U/Win 3.2 console,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0;10m,
 	smacs=\E[11m, smir=\E[4h, smpch=\E[11m, smso=\E[7m,
 	smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n,
+
+#### Microsoft (miscellaneous)
 
 # This entry fits the Windows NT console when the _POSIX_TERM environment
 # variable is set to 'on'.  While the Windows NT POSIX console is seldom used,
@@ -20180,6 +19982,193 @@ apollo_19L|apollo 19 inch display,
 apollo_color|apollo color display,
 	rmir@, smir@, use=vt132,
 
+#### AT&T consoles
+
+# This actually describes the generic SVr4 display driver for Intel boxes.
+# The <dim=\E[2m> isn't documented and therefore may not be reliable.
+# From: Eric Raymond <esr@snark.thyrsus.com> Mon Nov 27 19:00:53 EST 1995
+att6386|at386|386at|AT&T WGS 6386 console,
+	am, bw, eo, xon,
+	cols#80, it#8, lines#25,
+	acsc=``a1fxgqh0jYk?lZm@nEooppqDrrsstCu4vAwBx3yyzz{{||}}~~,
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[=C,
+	clear=\E[2J\E[H, cnorm=\E[=1C, cr=^M, cub=\E[%p1%dD,
+	cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC,
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
+	cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m,
+	dl=\E[%p1%dM, dl1=\E[1M, ech=\E[%p1%dX, ed=\E[J, el=\E[K,
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@,
+	ich1=\E[1@, il=\E[%p1%dL, il1=\E[1L, ind=\E[S,
+	indn=\E[%p1%dS, invis=\E[9m, is2=\E[0;10;39m, kbs=^H,
+	kcbt=^], kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kdch1=\E[P, kend=\E[Y, kf1=\EOP, kf10=\EOY, kf11=\EOZ,
+	kf12=\EOA, kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU,
+	kf7=\EOV, kf8=\EOW, kf9=\EOX, khome=\E[H, kich1=\E[@,
+	knp=\E[U, kpp=\E[V, krmir=\E0, nel=\r\E[S, rc=\E8, rev=\E[7m,
+	ri=\E[T, rin=\E[%p1%dT, rmacs=\E[10m, rmso=\E[m, rmul=\E[m,
+	sc=\E7,
+	sgr=\E[10m\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p9%t;12%e;10%;%?%p7%t;9%;m,
+	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m,
+	tbc=\E[3g, vpa=\E[%i%p1%dd, use=klone+color,
+# (pc6300plus: removed ":KM=/usr/lib/ua/kmap.s5:"; renamed BO/EE/CI/CV -- esr)
+pc6300plus|AT&T 6300 plus,
+	OTbs, am, xon,
+	cols#80, lines#24,
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[=C,
+	clear=\E[2J\E[H, cnorm=\E[=1C, cr=^M, cub1=^H, cud1=\E[B,
+	cuf1=\E[C, cup=\E[%i%p1%2d;%p2%2dH, cuu1=\E[A,
+	dch1=\E[1P, dim=\E[2m, dl1=\E[1M, ed=\E[0J, el=\E[0K,
+	home=\E[H, hts=\EH, ich1=\E[1@, il1=\E[1L, ind=^J,
+	invis=\E[9m, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C,
+	kcuu1=\E[A, kf1=\EOc, kf10=\EOu, kf2=\EOd, kf3=\EOe,
+	kf4=\EOf, kf5=\EOg, kf6=\EOh, kf7=\EOi, kf8=\EOj, kf9=\EOk,
+	nel=^M^J, rev=\E[7m, rmso=\E[m, rmul=\E[m, sgr0=\E[m,
+	smso=\E[7m, smul=\E[4m, tbc=\E[3g,
+
+# From: Benjamin C. W. Sittler <bsittler@nmt.edu>
+#
+# I have a UNIX PC which I use as a terminal attached to my Linux PC.
+# Unfortunately, the UNIX PC terminfo entry that comes with ncurses
+# is broken. All the special key sequences are broken, making it unusable
+# with Emacs. The problem stems from the following:
+#
+# The UNIX PC has a plethora of keys (103 of them, and there's no numeric
+# keypad!), loadable fonts, and strange highlighting modes ("dithered"
+# half-intensity, "smeared" bold, and real strike-out, for example.) It also
+# uses resizable terminal windows, but the bundled terminal program always
+# uses an 80x24 window (and doesn't support seem to support a 132-column
+# mode.)
+#
+# HISTORY: The UNIX PC was one of the first machines with a GUI, and used a
+# library which was a superset of SVr3.5 curses (called tam, for "terminal
+# access method".) tam includes support for real, overlapping windows,
+# onscreen function key labels, and bitmap graphics. But since the primary
+# user interface on the UNIX PC was a GUI program (ua, for "user
+# assistant",) and remote administration was considered important for the
+# machine, tam also supported VT100-compatible terminals attached to the
+# serial port or used across the StarLan network. To simulate the extra keys
+# not present on a VT100, users could press ESC and a two-letter sequence,
+# such as u d (Undo) or U D (Shift-Undo.) These two-letter sequences,
+# however, were not the same as those sent by the actual Undo key. The
+# actual Undo key sends ESC 0 s unshifted, and ESC 0 S shifted, for example.
+# (If you're interested in adding some of the tam calls to ncurses, btw, I
+# have the full documentation and several programs which use tam. It also
+# used an extended terminfo format to describe key sequences, special
+# highlighting modes, etc.)
+#
+# KEYS: This means that ncurses would quite painful on the UNIX PC, since
+# there are two sequences for every key-modifier combination (local keyboard
+# sequence and remote "VT100" sequence.) But I doubt many people are trying
+# to use ncurses on the UNIX PC, since ncurses doesn't properly handle the
+# GUI. Unfortunately, the terminfo entry (and the termcap, too, I presume)
+# seem to have been built from the manual describing the VT100 sequences.
+# This means it doesn't work for a real live UNIX PC.
+#
+# FONTS: The UNIX PC also has a strange interpretation of "alternate
+# character set". Rather than the VT100 graphics you might expect, it allows
+# up to 8 custom fonts to be loaded at any given time. This means that
+# programs expecting VT100 graphics will usually be disappointed. For this
+# reason I have disabled the smacs/rmacs sequences, but they could easily be
+# re-enabled. Here are the relevant control sequences (from the ESCAPE(7)
+# manpage), should you wish to do so:
+#
+# SGR10 - Select font 0 - ESC [ 10 m or SO
+# SGR11 - Select font 1 - ESC [ 11 m or SI
+# SGR12 - Select font 2 - ESC [ 12 m
+# ... (etc.)
+# SGR17 - Select font 7 - ESC [ 17 m
+#
+# Graphics for line drawing are not reliably found at *any* character
+# location because the UNIX PC has dynamically reloadable fonts. I use font
+# 0 for regular text and font 1 for italics, but this is by no means
+# universal. So ASCII line drawing is in order if smacs/rmacs are enabled.
+#
+# MISC: The cursor visible/cursor invisible sequences were swapped in the
+# distributed terminfo.
+#
+# To ameliorate these problems (and fix a few highlighting bugs) I rewrote
+# the UNIX PC terminfo entry. The modified version works great with Lynx,
+# Emacs, and XEmacs running on my Linux PC and displaying on the UNIX PC
+# attached by serial cable. In Emacs, even the Undo key works, and many
+# applications can now use the F1-F8 keys.
+#
+# esr's notes:
+#	Terminfo entry for the AT&T Unix PC 7300
+#	from escape(7) in Unix PC 7300 Manual.
+#	Somewhat similar to a vt100-am (but different enough
+#	to redo this from scratch.)
+#
+#	/***************************************************************
+#	*
+#	*           FONT LOADING PROGRAM FOR THE UNIX PC
+#	*
+#	*     This routine loads a font defined in the file ALTFONT
+#	*     into font memory slot #1.  Once the font has been loaded,
+#	*     it can be used as an alternative character set.
+#	*
+#	*     The call to ioctl with the argument WIOCLFONT is the key
+#	*     to this routine.  For more information, see window(7) in
+#	*     the PC 7300 documentation.
+#	***************************************************************/
+#	#include <string.h>		/* needed for strcpy call */
+#	#include <sys/window.h>         /* needed for ioctl call */
+#	#define FNSIZE	60		/* font name size */
+#	#define ALTFONT  "/usr/lib/wfont/special.8.ft"  /* font file */
+#	/*
+#	*     The file /usr/lib/wfont/special.8.ft comes with the
+#	*     standard PC software.  It defines a graphics character set
+#	*     similar to that of the Teletype 5425 terminal.  To view
+#	*     this or other fonts in /usr/lib/wfont, use the command
+#	*     cfont <filename>.  For further information on fonts see
+#	*     cfont(1) in the PC 7300 documentation.
+#	*/
+#
+#	struct altfdata 	/* structure for alt font data */
+#	{
+#	short	altf_slot;		/* memory slot number */
+#	char	altf_name[FNSIZE];	/* font name (file name) */
+#	};
+#	ldfont()
+#	{
+#		int wd;		/* window in which altfont will be */
+#		struct altfdata altf;
+#		altf.altf_slot=1;
+#		strcpy(altf.altf_name,ALTFONT);
+#		for (wd =1; wd < 12; wd++) {
+#		     ioctl(wd, WIOCLFONT,&altf);
+#	        }
+#	}
+#
+# (att7300: added <civis>/<cnorm>/<ich1>/<invis> from the BSDI entry,
+# they're confirmed by the man page for the System V display---esr)
+#
+att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300,
+	am, xon,
+	cols#80, it#8, lines#24,
+	bel=^G, blink=\E[9m, bold=\E[1m, cbt=\E^I, civis=\E[=1C,
+	clear=\E[2J\E[H, cnorm=\E[=0C, cr=^M, cub=\E[%p1%dD,
+	cub1=^H, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC,
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA,
+	cuu1=\E[A, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M,
+	ed=\E[0J, el=\E[0K, home=\E[H, ich1=\E[@, il=\E[%p1%dL,
+	il1=\E[L, ind=^J, invis=\E[9m, is1=\017\E[=1w, kBEG=\ENB,
+	kCAN=\EOW, kCPY=\END, kCRT=\EON, kDC=\ENF, kDL=\ENE,
+	kEND=\ENN, kEOL=\EOA, kFND=\EOX, kHLP=\EOM, kHOM=\ENM,
+	kIC=\ENJ, kLFT=\ENK, kMOV=\ENC, kNXT=\ENH, kOPT=\EOR,
+	kPRV=\ENG, kRDO=\EOT, kRIT=\ENL, kRPL=\EOY, kSAV=\EOO,
+	kUND=\EOS, kbeg=\ENb, kbs=^H, kcan=\EOw, kcbt=\E[Z,
+	kclo=\EOV, kclr=\E[J, kcmd=\EOu, kcpy=\ENd, kcrt=\EOn,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\ENf,
+	ked=\E[J, kel=\EOa, kend=\E0, kext=\EOk, kf1=\EOc, kf2=\EOd,
+	kf3=\EOe, kf4=\EOf, kf5=\EOg, kf6=\EOh, kf7=\EOi, kf8=\EOj,
+	kfnd=\EOx, khlp=\EOm, khome=\E[H, kich1=\ENj, kind=\E[B,
+	kmov=\ENc, kmrk=\ENi, knp=\E[U, knxt=\ENh, kopn=\EOv,
+	kopt=\EOr, kpp=\E[V, kprt=\EOz, kprv=\ENg, krdo=\EOt,
+	kref=\EOb, krfr=\ENa, kri=\E[A, krpl=\EOy, krst=\EOB,
+	ksav=\EOo, kslt=\ENI, kund=\EOs, nel=\EE, rev=\E[7m, ri=\EM,
+	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smso=\E[7m,
+	smul=\E[4m,
+
 #### Convergent Technology
 #
 # Burroughs bought Convergent shortly before it merged with Univac.
@@ -20284,6 +20273,54 @@ masscomp1|masscomp large screen version 1,
 	cols#104, lines#36, use=masscomp,
 masscomp2|masscomp large screen version 2,
 	cols#64, lines#21, use=masscomp,
+
+#### OSF Unix
+#
+
+# OSF/1 1.1 Snapshot 2
+pmcons|pmconsole|PMAX console,
+	am,
+	cols#128, lines#57,
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuu1=^K, ht=^I,
+	ind=^J, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
+
+#### Other consoles
+# The following is a version of the ibm-pc entry distributed with PC/IX,
+# (Interactive Systems' System 3 for the Big Blue), modified by Richard
+# McIntosh at UCB/CSM.  The :pt: and :uc: have been removed from the original,
+# (the former is untrue, and the latter failed under UCB/man); standout and
+# underline modes have been added.  Note: this entry describes the "native"
+# capabilities of the PC monochrome display, without ANY emulation; most
+# communications packages (but NOT PC/IX connect) do some kind of emulation.
+pcix|PC/IX console,
+	am, bw, eo,
+	cols#80, lines#24,
+	clear=\Ec, cub1=^H, cud1=\E[B, cuf1=\E[C,
+	cup=\E[%i%p1%2d;%p2%2dH, cuu1=\E[A, ed=\E[J, el=\E[K,
+	home=\E[H, rmso=\E[m, rmul=\E[m, sgr0=\E[m, smso=\E[7m,
+	smul=\E[4m,
+
+# (ibmpcx: this entry used to be known as ibmx.
+# It formerly included the following extension capabilities:
+#	:GC=b:GL=v:GR=t:RT=^J:\
+#	:GH=\E[196g:GV=\E[179g:\
+#	:GU=\E[193g:GD=\E[194g:\
+#	:G1=\E[191g:G2=\E[218g:G3=\E[192g:G4=\E[217g:\
+#	:CW=\E[E:NU=\E[F:RF=\E[G:RC=\E[H:\
+#	:WL=\E[K:WR=\E[L:CL=\E[M:CR=\E[N:\
+# I renamed GS/GE/WL/WR/CL/CR/PU/PD/HM/EN; also, removed a duplicate
+# ":kh=\E[Y:".  Added IBM-PC forms characters and highlights, they match
+# what was there before. -- esr)
+ibmpcx|xenix|ibmx|IBM PC xenix console display,
+	OTbs, am, msgr,
+	cols#80, lines#25,
+	clear=^L, cub1=^H, cud1=\E[B, cuf1=\E[C,
+	cup=\E[%p1%d;%p2%dH, cuu1=\E[A, dch1=\E[P, dl1=\E[M,
+	ed=\E[J, el=\E[K, home=\E[H, ich1=\E[@, il1=\E[L, kbs=^H,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[d,
+	kf1=\E[K, kf2=\E[L, kf3=\E[M, kf4=\E[N, khome=\E[Y, knp=\E[e,
+	kpp=\E[Z, use=klone+acs, use=klone+sgr8,
 
 ######## OTHER OBSOLETE TYPES
 #
@@ -22976,5 +23013,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2013-05-11
 #	* move nsterm-related entries out of "obsolete" section to more
 #	  plausible "ansi consoles" -TD
+#	* additional cleanup of table-of-contents by reordering -TD
+#
+# 2013-06-07
+#	* added note to clarify Terminal.app's non-emulation of the various
+#	  terminal types listed in the preferences dialog -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
