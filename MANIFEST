@@ -1106,6 +1106,7 @@
 ./test/package/debian/rules
 ./test/package/debian/source/format
 ./test/package/debian/watch
+./test/package/mingw-ncurses-examples.spec
 ./test/package/ncurses-examples.spec
 ./test/programs
 ./test/railroad.c
