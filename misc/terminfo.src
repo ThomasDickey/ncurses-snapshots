@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.481 $
-#	$Date: 2013/11/02 20:56:05 $
+#	$Revision: 1.482 $
+#	$Date: 2013/11/11 00:54:46 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4064,10 +4064,15 @@ xterm-88color|xterm with 88 colors,
 # These two are used to demonstrate the any-event mouse support, i.e., by
 # using an extended name "XM" which tells ncurses to put the terminal into
 # a special mode when initializing the xterm mouse.
-xterm-1002|testing xterm-mouse,
+xterm+sm+1002|testing xterm-mouse,
 	XM=\E[?1002%?%p1%{1}%=%th%el%;, use=xterm-new,
-xterm-1003|testing xterm-mouse,
+xterm+sm+1003|testing xterm-mouse,
 	XM=\E[?1003%?%p1%{1}%=%th%el%;, use=xterm-new,
+
+xterm-1002|testing xterm-mouse,
+	use=xterm+sm+1002, use=xterm-new,
+xterm-1003|testing xterm-mouse,
+	use=xterm+sm+1003, use=xterm-new,
 
 # This chunk is based on suggestions by Ailin Nemui and Nicholas Marriott, who
 # asked for some of xterm's advanced features to be added to its terminfo
@@ -23029,5 +23034,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  http://git.savannah.gnu.org/cgit/hurd/hurd.git/log/console/display.c
 #	  (Debian #727119).
 #	* simplify pfkey expression in ansi.sys -TD
+#
+# 2013-11-10
+#	* split-out building blocks xterm+sm+1002 and xterm+sm+1003 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
