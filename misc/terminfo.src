@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.483 $
-#	$Date: 2014/02/22 18:32:16 $
+#	$Revision: 1.486 $
+#	$Date: 2014/03/22 18:26:51 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2560,6 +2560,52 @@ cons60l1|cons60-iso|freebsd console w/iso 8859-1 chars (60 lines),
 cons60l1-m|cons60-iso-m|freebsd console w/iso 8859-1 chars (60-line mono),
 	lines#60, use=cons25l1-m,
 
+# Starting with FreeBSD 8, an alternative configuration for syscons is provided,
+# which is intended to be xterm-compatible.  See for example
+#	http://svnweb.freebsd.org/base/stable/8/sys/dev/syscons/
+# in particular scterm-teken.c
+#
+# For FreeBSD 9 and 10:
+# --------------------
+# The /etc/ttys entries for console and other ttys are all configured to set
+# TERM=xterm.
+#
+# Testing with tack:
+# There is no VT100 line-drawing (uses +'s and -'s)
+# Shifted f1-f12 give cons25 codes, rather than xterm function-keys
+#
+# Testing with vttest:
+# Menu 2 diamonds don't work, blink ditto, light background ditto
+# The terminal identifies itself as VT100 with AVO
+# There is no VT52 support
+# There is no doublesize character support
+# The terminal supports ECH (like rxvt)
+# The terminal does not support send/receive mode
+# The terminal supports all of the ISO-6429 cursor-movement
+# The terminal supports some of the ISO-6429 miscellaneous tests
+#	(SL/SR also leave unexpected char on screen too)
+#
+# Considering cons25 as a base, the line-drawing mostly works, but is missing
+# the cells which happen to have ASCII control-character values:
+#	-    ^X    arrow pointing up
+#	.    ^Y    arrow pointing down
+#	i    ^Y    lantern
+#	`    ^D    diamond
+#
+# Those are removed from this entry's acsc string to avoid confusion.
+# The resulting description provides correct line-drawing and function-keys -TD
+teken|syscons with teken,
+	bw@, mir, xenl,
+	acsc=0\333a\260f\370g\361h\261j\331k\277l\332m\300n\305q\304t\303u\264v\301w\302x\263y\363z\362~\371,
+	civis=\E[?25l, cnorm=\E[?25h, cvvis@, hpa=\E[%i%p1%dG,
+	hts=\EH, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kdch1=\E[3~, kend=\E[F, kent=^M, kf1=\EOP, kf10=\E[21~,
+	kf11=\E[23~, kf12=\E[24~, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~,
+	khome=\E[H, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, rmir=\E[4l,
+	smir=\E[4h, tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n,
+	u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, use=cons25,
+
 #### 386BSD and BSD/OS Consoles
 #
 
@@ -4706,6 +4752,19 @@ konsole-256color|KDE console window with xterm 256-colors,
 	initc@, use=xterm+256color, use=konsole,
 
 #### MLTERM
+# http://mlterm.sourceforge.net/
+
+mlterm|multi lingual terminal emulator,
+	use=mlterm,
+
+# Tested mlterm 3.2.2:
+# mlterm 3.x has made changes, but they are not reflected in the included
+# mlterm.ti; this entry is based on testing with tack and vttest -TD
+mlterm3|multi lingual terminal emulator,
+	kf1=\E[11~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~,
+	use=xterm+app, use=xterm+pcf0, use=xterm+pcc2,
+	use=xterm+pce2, use=mlterm2,
+
 # This is mlterm 2.9.3's mlterm.ti, with some additions/corrections -TD
 #
 # It is nominally a vt102 emulator, with features borrowed from rxvt and
@@ -4725,7 +4784,7 @@ konsole-256color|KDE console window with xterm 256-colors,
 #	control/alt		kf1 to kf12	\E[11;7~ to \E[24;7~
 #	control/shift/alt	kf1 to kf12	\E[11;8~ to \E[24;8~
 #
-mlterm|multi lingual terminal emulator,
+mlterm2|multi lingual terminal emulator,
 	am, eslok, km, mc5i, mir, msgr, npc, xenl, XT,
 	colors#8, cols#80, it#8, lines#24, pairs#64,
 	acsc=00``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
@@ -4769,7 +4828,7 @@ mlterm+pcfkeys|fragment for PC-style fkeys,
 	kUP4=\EO1;4A, kUP5=\EO1;5A, kUP6=\EO1;6A, kUP7=\EO1;7A,
 
 mlterm-256color|mlterm 3.0 with xterm 256-colors,
-	use=xterm+256color, use=rxvt,
+	use=xterm+256color, use=mlterm,
 
 #### RXVT
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
@@ -5391,6 +5450,66 @@ terminator|Terminator no line wrap,
 	sgr0=\E[m\E(B, smacs=\E(0, smcup=\E7\E[?47h, smir=\E[4h,
 	smso=\E[7m, smul=\E[4m, tbc=\E[3g, vpa=\E[%i%p1%dd,
 	use=xterm+sl-twm,
+
+#### TERMINOLOGY
+# http://enlightenment.org
+#
+# Tested terminology-0.3.0, using tack and vttest.  This is not a vt100
+# emulator, nor is it compatible with xterm, but it uses a few features from
+# both -TD
+#
+# General comments:
+#	cursor does not fill on focus
+#	there are pervasive problems with clearing/erasing parts of the screen
+#	resizing the window causes it to stop listening to the keyboard
+# tack -
+#	doesn't understand vt100 CPR needed for resize
+#	no CBT
+#	no cvvis
+#	has invis
+#	no blink
+#	uses bce model for colors, but (see below) fails the vttest screens
+#	has partial support for 256color feature.
+#	tack cursor-keys:
+#			ctrl+shift (ignored)
+#		2	shift
+#			shift-alt modifier -> shift (2)
+#		3	alt
+#		4
+#		5	ctrl
+#	tack modifiers do not work for fkeys
+#	ctrl + khome/kend works - none of the other modifiers do
+# vttest -
+#	spits lots of messages from termptyesc.c especially in vttest.
+#	no 132-column mode
+#	fails menu 1, 2 (definitely not vt100-compatible)
+#	primary and
+#	secondary report says (perhaps... vt420): \E[>41;285;0c
+#	CHA, HPR, VPA, CNL, CPL work
+#	BCE with ED/EL - fail
+#	BCE with ECH/indexing - fail
+#	SD/SU work
+#	unlike teken, background light/dark works
+#	can set title
+#	X10 and Normal mouse work
+#	Any-event mouse works
+#	Mouse button-event works
+terminology|EFL-based terminal emulator,
+	ccc@, mc5i@, xon@,
+	blink@, ed@, el@, el1@, initc@, invis=\E[8m, kLFT=\E[1;2D,
+	kRIT=\E[1;2C, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~,
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~,
+	kind=\E[1;2B, kri=\E[1;2A,
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p7%t;8%;m%?%p9%t\016%e\017%;$<2>,
+	vpa=\E[%i%p1%dd, kDC3=\E[3;3~, kDC4=\E[3;4~,
+	kDC5=\E[3;5~, kDC6=\E[3;6~, kDC7=\E[3;7~, kDN=\E[1;2B,
+	kDN3=\E[1;3B, kDN4=\E[1;4B, kDN5=\E[1;5B, kDN6=\E[1;6B,
+	kDN7=\E[1;7B, kEND5=\E[1;5F, kHOM5=\E[1;5H,
+	kLFT3=\E[1;3D, kLFT4=\E[1;4D, kLFT5=\E[1;5D,
+	kLFT6=\E[1;6D, kLFT7=\E[1;7D, kRIT3=\E[1;3C,
+	kRIT4=\E[1;4C, kRIT5=\E[1;5C, kRIT6=\E[1;6C,
+	kRIT7=\E[1;7C, kUP=\E[1;2A, use=vt100,
+	use=xterm+256color,
 
 ######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
@@ -23077,5 +23196,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2014-02-22
 #	* updated notes for wsvt25 based on tack and vttest -TD
+#	* add teken entry to show actual properties of FreeBSD's "xterm"
+#	  console -TD
+#
+# 2014-03-22
+#	* add terminology entry -TD
+#	* add mlterm3 entry, use that as "mlterm" -TD
+#	* inherit mlterm-256color from mlterm -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
