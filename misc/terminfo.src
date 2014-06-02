@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.494 $
-#	$Date: 2014/05/24 16:04:53 $
+#	$Revision: 1.493 $
+#	$Date: 2014/05/22 23:58:33 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -14749,7 +14749,7 @@ sb1|beehive superbee,
 	smso=\E_1, smul=\E_0, tbc=\E3,
 sbi|superbee|beehive superbee at Indiana U.,
 	xsb,
-	cr=\r$<1>, il1=\EN$<1>\EL$<9>\EQ \EP$<9> \EO\ER\EA,
+	cr=\r$<1>, il1=1\EN\EL$<9>\EQ \EP$<9> \EO\ER\EA,
 	use=sb1,
 # Alternate (older) description of Superbee - f1=escape, f2=^C.
 # Note: there are at least 3 kinds of superbees in the world.  The sb1
@@ -23307,6 +23307,5 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  terminfo: adm21, aj510, alto-h19, att605-pc, x820 -TD
 #	* correct syntax for padding in some entries: dg211, h19 -TD
 #	* correct ti924-8 which had confused padding versus octal escapes -TD
-#	* correct padding in sbi entry -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
