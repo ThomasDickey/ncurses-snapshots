@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: adacurses-config.in,v 1.7 2014/05/31 20:55:18 tom Exp $
+# $Id: adacurses-config.in,v 1.9 2014/06/07 19:32:22 Pascal.Pignard Exp $
 ##############################################################################
 # Copyright (c) 2007-2010,2014 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -40,7 +40,7 @@ ADA_OBJECTS=@ADA_OBJECTS@
 
 VERSION=@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@
 
-CFLAGS="-I$ADA_INCLUDE -aO$ADA_OBJECTS"
+CFLAGS="-aI$ADA_INCLUDE -aO$ADA_OBJECTS"
 LIBS="-L$ADA_OBJECTS -lAdaCurses"
 
 THIS="adacurses"
@@ -57,7 +57,7 @@ case "x$1" in
 		;;
 	x)
 		# if no parameter is given, give what gnatmake needs
-		echo "$CFLAGS -i -largs $LIBS"
+		echo "$CFLAGS -largs $LIBS"
 		;;
 	x--help)
 		cat <<ENDHELP
@@ -70,6 +70,8 @@ Options:
   --version          echos the release+patchdate version of ${THIS}
 
   --help             prints this message
+
+If no options are given, echos the full set of flags needed by gnatmake.
 ENDHELP
 		;;
 	*)
