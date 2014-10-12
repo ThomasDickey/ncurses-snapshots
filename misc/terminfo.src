@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.503 $
-#	$Date: 2014/06/14 09:30:05 $
+#	$Revision: 1.524 $
+#	$Date: 2014/10/11 23:02:12 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1052,26 +1052,26 @@ nsterm+7|AppKit Terminal.app v41+ basic capabilities w/ASCII charset,
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H,
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C,
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A,
-	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K,
-	home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL, il1=\E[L, ind=^J,
-	invis=\E[8m, kbs=\177, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
-	kcuu1=\EOA, kent=\EOM, rc=\E8, rev=\E[7m, ri=\EM,
+	dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K,
+	el1=\E[1K, home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL, il1=\E[L,
+	ind=^J, invis=\E[8m, kbs=\177, kcub1=\EOD, kcud1=\EOB,
+	kcuf1=\EOC, kcuu1=\EOA, kent=\EOM, rc=\E8, rev=\E[7m, ri=\EM,
 	rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7,
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m,
 	sgr0=\E[m, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m,
 	smul=\E[4m, tbc=\E[3g, use=vt100+enq, use=vt100+pfkeys,
 
 nsterm+acs|AppKit Terminal.app v41+ basic capabilities w/VT100 alternate-charset,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	enacs=\E(B\E)0, rmacs=^O,
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, use=nsterm+7,
 
 nsterm+mac|AppKit Terminal.app v41+ basic capabilities w/MacRoman alternate-charset,
 	acsc=+\335\,\334-\366.\3770#`\327a\:f\241g\261h#i\360jjkkllmmnno\370p\370q\321rrssttuuvvwwxxy\262z\263{\271|\255}\243~\245,
 	enacs=\E(B\E)0, rmacs=^O,
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, use=nsterm+7,
 
 # compare with xterm+sl-twm
@@ -1246,10 +1246,11 @@ nsterm|Apple_Terminal|AppKit Terminal.app,
 #
 # NOTE: When tack tests (csr) + (nel) iTerm.app crashes, so (csr) is
 # disabled.
-iTerm.app|iTerm.app terminal emulator for Mac OS X,
+iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 	bce, bw@,
-	csr@, kend=\EOF, khome=\EOH, use=xterm+256setaf,
-	use=nsterm-16color,
+	csr@, dim@, kend=\EOF, khome=\EOH,
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
+	use=xterm+256setaf, use=nsterm-16color,
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
@@ -4163,19 +4164,6 @@ xterm-256color|xterm with 256 colors,
 xterm-88color|xterm with 88 colors,
 	use=xterm+88color, use=xterm-256color,
 
-# These two are used to demonstrate the any-event mouse support, i.e., by
-# using an extended name "XM" which tells ncurses to put the terminal into
-# a special mode when initializing the xterm mouse.
-xterm+sm+1002|testing xterm-mouse,
-	XM=\E[?1002%?%p1%{1}%=%th%el%;, use=xterm-new,
-xterm+sm+1003|testing xterm-mouse,
-	XM=\E[?1003%?%p1%{1}%=%th%el%;, use=xterm-new,
-
-xterm-1002|testing xterm-mouse,
-	use=xterm+sm+1002, use=xterm-new,
-xterm-1003|testing xterm-mouse,
-	use=xterm+sm+1003, use=xterm-new,
-
 # This chunk is based on suggestions by Ailin Nemui and Nicholas Marriott, who
 # asked for some of xterm's advanced features to be added to its terminfo
 # entry.  It defines extended capabilities not found in standard terminfo or
@@ -4376,6 +4364,132 @@ xterm-nic|xterm with ich/ich1 suppressed for non-curses programs,
 # From: Mark Sheppard <kimble@mistral.co.uk>, 4 May 1996
 xterm1|xterm terminal emulator ignoring the alternate screen buffer,
 	rmcup@, smcup@, use=xterm,
+
+#### XTERM Mouse
+# The xterm mouse protocol is used by other terminal emulators.
+# In this section, two extended capabilities are used to illustrate the mouse
+# protocol: XM and xm.  The "XM" capability is recognized by ncurses to allow
+# enabling/disabling other mouse protocols.  The "xm" capability describes the
+# mouse response; currently there is no interpreter which would use this
+# information to make the mouse support completely data-driven.
+
+# Here is the "original" xterm mouse protocol.
+#
+# First seen in X10.3, February 1986, this likely dates from 1985 based on the
+# copyright dates in the sources.  A comment in charproc.c notes "MIT bogus
+# sequence", referring to the fact that it does not correspond to a "real"
+# terminal.  The mouse responses for the X10 protocol are sent only for
+# button-presses.
+xterm+x10mouse|X10 xterm mouse protocol,
+	kmous=\E[M, XM=\E[?9%?%p1%{1}%=%th%el%;,
+	xm=\E[M%p3%' '%+%c%p2%'!'%+%c%p1%'!'%+%c,
+xterm-x10mouse|X10 xterm mouse,
+	use=xterm+x10mouse, use=xterm,
+
+# Here is the conventional xterm mouse protocol, introduced with X11R1 in
+# September 1987.
+#
+# The mouse responses for the X11 protocol covered button releases, as well as
+# modifiers:
+#  shift    4
+#  alt/meta 8 (technically the "mod1" mask, because X11 has no such keys)
+#  control 16
+#
+# The modifiers are not reflected in this description because as used in xterm
+# they are normally inaccessible because the translations resources assign
+# shift and control to other features.  However, they are important because
+# they take up space in the first byte of the response.  The other bits of this
+# byte are used to encode the button number for both presses and releases.
+# In the X11 protocol, any button-release is encoded with "3" (the lowest 2
+# bits in the byte).  Later work on XFree86 xterm used the remaining 3 bits to
+# provide additional features, e.g., wheel mouse.
+#
+# X11R1's xterm also supported an "emacs" mouse protocol, with final character
+# "t" or "T", which was activated by double-clicking.  The "t" response was
+# used when the starting/ending positions were the same.
+#
+# X11R3 (February 1988) added the highlight/tracking mode.
+#
+# X11R4 (December 1989) added the control sequences document, listing the
+# control sequences for the X10/X11 protocols without descriptions.  It also
+# mentioned the "emacs" ("T") response.  Comments in button.c referred to the
+# X11 protocol as "DEC vt200 compatible", although DEC offered no such terminal.
+#
+# X11R5 (November 1993) gave a description of the mouse protocol.
+#
+# X11R6 (January 1995) moved the control sequences document out of the xterm
+# source-directory to xc/doc/specs/xterm, polishing the formatting but adding
+# no new information.
+xterm+x11mouse|X11 xterm mouse protocol,
+	kmous=\E[M, XM=\E[?1000%?%p1%{1}%=%th%el%;,
+	xm=\E[M%?%p4%t3%e%p3%' '%+%c%;%p2%'!'%+%c%p1%'!'%+%c,
+xterm-x11mouse|X11 mouse,
+	use=xterm+x11mouse, use=xterm,
+
+# Here is a suggested description of the xterm highlighting protocol.
+# A more complicated example could be constructed to account for the "t"
+# response.
+xterm+x11hilite|X11 xterm mouse protocol with highlight,
+	kmous=\E[M, XM=\E[?1001%?%p1%{1}%=%th%el%;,
+	xm=\E[%p7%'!'%+%p6%'!'%+%c%p9%'!'%+%c%p8%'!'%+%c%p2%'!'%+%c%p1%'!'%+%cT,
+xterm-x11hilite|X11 mouse with highlight,
+	use=xterm+x11mouse, use=xterm,
+
+# The preceding were the sources from X Consortium.  Other sources (or patches)
+# were available.  Starting in mid-1995, XFree86 developers collected some of
+# those changes and began improvements, e.g., to support color.  This was, by
+# the way, around the same time that rxvt developers began implementing color,
+# though dates (and attributions) are not well documented.  I became interested
+# in xterm in late 1995, and involved in early 1996.  To complete the picture,
+# CDE's dtterm was introduced around the same time, with no mouse protocol -TD
+
+# xterm patch #83 (1998/10/7), added Jason Bacon's changes to provide an
+# "any-event" mouse mode. 
+xterm+sm+1002|xterm any-event mouse,
+	kmous=\E[M, XM=\E[?1002%?%p1%{1}%=%th%el%;,
+xterm-1002|xterm any-event mouse,
+	use=xterm+sm+1002, use=xterm,
+
+xterm+sm+1003|testing xterm-mouse,
+	kmous=\E[M, XM=\E[?1003%?%p1%{1}%=%th%el%;,
+
+xterm-1003|testing xterm-mouse,
+	use=xterm+sm+1003, use=xterm,
+
+# xterm patch #116 (1999/9/25) added Stephen P Wall's changes to support DEC
+# locator mode.
+
+# xterm patch #120 (1999/10/28) added my change to support wheel mouse, by
+# dropping support for the X11 mouse protocol's shift-modifier and using
+# available bits in the first byte of the response to encode buttons 4 and 5.
+# xterm patch #126 (2000/2/8) amended that change to avoid conflicting with
+# older configurations which might have used the obsolete modifiers.
+
+# xterm patch #262 (2010/8/30) added Ryan Johnson's changes to provide a mode
+# where the coordinates in the mouse response would be encoded in UTF-8,
+# thereby extending the range of coordinates past 222=(255-33).  This is the
+# "1005" mouse mode.
+xterm+sm+1005|xterm UTF-8 mouse,
+	kmous=\E[M, XM=\E[?1005;1000%?%p1%{1}%=%th%el%;,
+	xm=\E[M%?%p4%t3%e%p3%' '%+%c%;%p2%'!'%+%u%p1%'!'%+%u,
+xterm-1005|xterm UTF-8 mouse,
+	use=xterm+sm+1005, use=xterm,
+
+# xterm patch #277 (2012/1/7) provides a mode where the mouse response uses
+# SGR-style parameters.
+#
+# Someone stated that the 1005 mouse mode would not be handled properly in luit.
+# (By the way, this is a problem with the X11 protocol).  A more plausible
+# criticism is that the responses provided by the 1005 mode are not distinct
+# from the non-1005 responses.
+#
+# As an alternative (and fixing the longstanding limitation of X11 mouse
+# protocol regarding button-releases), I provided this:
+xterm+sm+1006|xterm SGR-mouse,
+	kmous=\E[<, XM=\E[?1006;1000%?%p1%{1}%=%th%el%;,
+	xm=\E[<%p1%d;%p2%d;%p3%d;%?%p4%tM%em%;,
+xterm-1006|xterm SGR-mouse,
+	use=xterm+sm+1006, use=xterm,
 
 #### KTERM
 # (kterm: this had extension capabilities ":KJ:TY=ascii:" -- esr)
@@ -4611,7 +4725,10 @@ gnome-2008|GNOME Terminal snapshot 2.22.3,
 #
 # Testing with tack shows that flash does not/has not worked -TD
 vte-2012|VTE 0.34.1,
-	flash@, ritm=\E[23m, sitm=\E[3m, use=vte-2008,
+	ncv#16,
+	dim=\E[2m, flash@, invis=\E[8m, ritm=\E[23m,
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p5%t;2%;%?%p7%t;8%;%?%p1%p3%|%t;7%;m%?%p9%t\016%e\017%;,
+	sitm=\E[3m, use=vte-2008,
 # Version 3.6.1 sets TERM to xterm-256color (still hardcoded), which has
 # 61 differences from a correct entry for gnome terminal.
 gnome-2012|GNOME Terminal 3.6.0,
@@ -4713,6 +4830,9 @@ kvt|KDE terminal,
 # Updated for konsole 1.6.6:
 #    add control-key modifiers for function-keys, etc.
 #
+# Updated for konsole 2.12.4:
+#    add sitm/ritm
+#
 # vttest menu 1 shows that both konsole and gnome terminal do wrapping
 # different from xterm (and vt100's).  They have the same behavior in this
 # detail, but it is unclear which copies the other.
@@ -4724,11 +4844,11 @@ konsole-base|KDE console window,
 	hpa=\E[%i%p1%dG, indn=\E[%p1%dS, kbs=\177, kdch1=\E[3~,
 	kend=\E[4~, kf1@, kf10@, kf11@, kf12@, kf13@, kf14@, kf15@, kf16@,
 	kf17@, kf18@, kf19@, kf2@, kf20@, kf3@, kf4@, kf5@, kf6@, kf7@, kf8@,
-	kf9@, kfnd@, khome=\E[1~, kslt@, rin=\E[%p1%dT, rmam=\E[?7l,
-	rmso=\E[27m, rmul=\E[24m,
+	kf9@, kfnd@, khome=\E[1~, kslt@, rin=\E[%p1%dT, ritm=\E[23m,
+	rmam=\E[?7l, rmso=\E[27m, rmul=\E[24m,
 	rs2=\E7\E[r\E8\E[m\E[?7h\E[?1;3;4;6l\E[4l\E>\E[?1000l\E[?25h,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;,
-	sgr0=\E[0m\017, smam=\E[?7h, vpa=\E[%i%p1%dd,
+	sgr0=\E[0m\017, sitm=\E[3m, smam=\E[?7h, vpa=\E[%i%p1%dd,
 	use=ecma+color, use=xterm-r6,
 konsole-linux|KDE console window with linux keyboard,
 	kf1=\E[[A, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13@,
@@ -4781,8 +4901,8 @@ mlterm|multi lingual terminal emulator,
 # mlterm.ti; this entry is based on testing with tack and vttest -TD
 mlterm3|multi lingual terminal emulator,
 	kf1=\E[11~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~,
-	use=xterm+app, use=xterm+pcf0, use=xterm+pcc2,
-	use=xterm+pce2, use=mlterm2,
+	ritm=\E[23m, sitm=\E[3m, use=xterm+app, use=xterm+pcf0,
+	use=xterm+pcc2, use=xterm+pce2, use=mlterm2,
 
 # This is mlterm 2.9.3's mlterm.ti, with some additions/corrections -TD
 #
@@ -4997,6 +5117,25 @@ rxvt+pcfkeys|fragment for PC-style fkeys,
 	kLFT5=\EOd, kNXT5=\E[6\^, kNXT6=\E[6@, kPRV5=\E[5\^,
 	kPRV6=\E[5@, kRIT5=\EOc, kUP=\E[a, kUP5=\EOa,
 
+# rxvt was originally "xvt", first announced in April 1993:
+#	http://www.informatica.co.cr/linux-desktops/research/1993/0416.html
+#
+# Though its change-log does not mention this, John Davis has stated that he
+# was the author of the changes to use the bce ("new color model") which was
+# incorporated into rxvt 2.11 (June 15, 1995).  The change-log does not give
+# dates, nor give developer's names.  Initial color support was added for rxvt
+# "2.0", which was sometime in 1994.
+#
+# rxvt had usable color support with 2.16 (April 2, 1996), with some help by my work on
+# vttest, as well as bug reports to Mark Olesen.  For instance, the fix
+# mentioned here
+#	http://web.archiveorange.com/archive/v/6ETvLb5wHtbbzCaS4S9J
+# was from one of my bug-reports -TD
+#
+# While the color model both for xterm and rxvt was based on Linux console,
+# Olesen (or possibly Davis) diverged in one respect from Linux's bce color
+# behavior: inserting/deleting characters does not fill the newly empty cell
+# with the default background color.
 rxvt|rxvt terminal emulator (X Window System),
 	ncv@,
 	hpa=\E[%i%p1%dG, kf0=\E[21~, sgr0=\E[m\017,
@@ -5026,6 +5165,23 @@ rxvt-16color|xterm with 16 colors like aixterm,
 #
 # mrxvt is based on rxvt 2.7.11, but has by default XTERM_FKEYS defined, which
 # makes its function-keys different from other flavors of rxvt -TD
+#
+# Testing with tack:
+# +	made custom description (below) to work, though it sets TERM=xterm.
+#
+# Testing with vttest:
+# +	While "based on" rxvt, some of the basic functionality is broken.  The
+#	window collapses to a single line when running several of the screens
+#	in vttest, e.g., the tests for cursor movement, screen features,
+#	double-sized characters.
+# +	The vt52 test works properly, but this is an exception.  Due to the
+#	other bug(s) most of vttest is untestable.
+# +	the color test using ECH shows a gap in the bce model, like rxvt.
+#
+# Testing with xterm "vttest" scripts:
+# +	resize.pl does not work because mrxvt does implement CSI 18 t
+#	(not in rxvt, but not documented by mrxvt) but not CSI 19 t.
+# +	none of the "dynamic colors" (OSC colors) scripts work.
 mrxvt|multitabbed rxvt,
 	XT,
 	kEND=\E[8;2~, kHOM=\E[7;2~, kcub1=\E[D, kcud1=\E[B,
@@ -21802,7 +21958,18 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # TS is a string capability which acts like "tsl", but uses no parameter and
 #    goes to the first column of the "status line".
 # XM is a string capability which overrides ncurses's built-in string which
-#    enables xterm mouse mode.
+#    enables/disables xterm mouse mode.
+# xm shows the format of the mouse responses.  Parameters are (from zero):
+#	p1 = y-ordinate
+#	p2 = x-ordinate
+#	p3 = button
+#	p4 = state, e.g., pressed or released
+#	p6 = y-ordinate starting region
+#	p7 = x-ordinate starting region
+#	p8 = y-ordinate ending region
+#	p9 = x-ordinate ending region
+# Other extensions, used in xm:
+#	%u = UTF-8
 #
 #### Miscellaneous extensions:
 #
@@ -23382,5 +23549,19 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2014-06-14
 #	+ modify sgr for screen.xterm-new to support dim capability -TD
+#	+ add dim capability to nsterm+7 -TD
+#	+ cancel dim capability for iterm -TD
+#	+ add dim, invis capabilities to vte-2012 -TD
+#	+ add sitm/ritm to konsole-base and mlterm3 -TD
+#
+# 2014-10-06
+#	+ add xterm-1005 and xterm-1006 entries, with suggested extension
+#	  capability "xm" -TD
+#
+# 2014-10-07
+#	+ update test-report for mrxvt -TD
+#
+# 2014-10-11
+#	+ add xterm-x10mouse, xterm-x11mouse, etc. -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
