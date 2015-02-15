@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.2344 2015/02/08 00:42:08 tom Exp $
+-- $Id: NEWS,v 1.2349 2015/02/15 01:13:13 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,9 +45,11 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
-20150207
-	+ (no patch).  worked to incorporate --enable-weak-symbols into script
-	  but found problems in resulting node-labels.
+20150214
+	+ regenerate html manpages using improved man2html from work on xterm.
+	+ regenerated ".map" and ".sym" files using improved script, accounting
+	  for the "--enable-weak-symbols" configure option (report by Werner
+	  Fink).
 
 20150131
 	+ regenerated ".map" and ".sym" files using improved script, showing
