@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.734 2015/01/22 01:13:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.738 2015/04/12 15:43:31 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3191,7 +3191,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 78 updated: 2015/01/21 20:10:54
+dnl CF_LIB_RULES version: 79 updated: 2015/04/12 11:42:01
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -3221,16 +3221,16 @@ esac
 if test -n "$TINFO_SUFFIX" ; then
 	case $TINFO_SUFFIX in
 	tw*)
-		TINFO_NAME="${TINFO_NAME}tw"
-		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^tw//'`
+		TINFO_NAME="${TINFO_NAME}tw${EXTRA_SUFFIX}"
+		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^tw'$EXTRA_SUFFIX'//'`
 		;;
 	t*)
-		TINFO_NAME="${TINFO_NAME}t"
-		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^t//'`
+		TINFO_NAME="${TINFO_NAME}t${EXTRA_SUFFIX}"
+		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^t'$EXTRA_SUFFIX'//'`
 		;;
 	w*)
-		TINFO_NAME="${TINFO_NAME}w"
-		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^w//'`
+		TINFO_NAME="${TINFO_NAME}w${EXTRA_SUFFIX}"
+		TINFO_SUFFIX=`echo $TINFO_SUFFIX | sed 's/^w'$EXTRA_SUFFIX'//'`
 		;;
 	esac
 fi
@@ -3276,7 +3276,7 @@ CF_EOF
 			if test $cf_item = shared ; then
 				if test -n "${LIB_SUFFIX}"
 				then
-					cf_shared_suffix=`echo "$cf_suffix" | sed 's/^'"${LIB_SUFFIX}"'//'`
+					cf_shared_suffix=`echo "$cf_suffix" | sed 's/^'"${USE_LIB_SUFFIX}"'//'`
 				else
 					cf_shared_suffix="$cf_suffix"
 				fi
@@ -3304,9 +3304,9 @@ CF_EOF
 							;;
 						esac
 					fi
-					if test -n "${LIB_SUFFIX}"
+					if test -n "${USE_LIB_SUFFIX}"
 					then
-						cf_shared_suffix=`echo "$cf_suffix" | sed 's/^'"${LIB_SUFFIX}"'//'`
+						cf_shared_suffix=`echo "$cf_suffix" | sed 's/^'"${USE_LIB_SUFFIX}"'//'`
 					else
 						cf_shared_suffix="$cf_suffix"
 					fi
@@ -3317,22 +3317,28 @@ CF_EOF
 				case $cf_cv_shlib_version in #(vi
 				cygdll) #(vi
 					cf_cygsuf=`echo "$cf_suffix" | sed -e 's/\.dll/\${ABI_VERSION}.dll/'`
-					Libs_To_Make="$Libs_To_Make ../lib/cyg${cf_libname}${cf_cygsuf}"
-					continue
+					cf_add_lib="../lib/cyg${cf_libname}${cf_cygsuf}"
 					;;
 				msysdll) #(vi
 					cf_cygsuf=`echo "$cf_suffix" | sed -e 's/\.dll/\${ABI_VERSION}.dll/'`
-					Libs_To_Make="$Libs_To_Make ../lib/msys-${cf_libname}${cf_cygsuf}"
-					continue
+					cf_add_lib="../lib/msys-${cf_libname}${cf_cygsuf}"
 					;;
 				mingw)
 					cf_cygsuf=`echo "$cf_suffix" | sed -e 's/\.dll/\${ABI_VERSION}.dll/'`
-					Libs_To_Make="$Libs_To_Make ../lib/lib${cf_libname}${cf_cygsuf}"
-					continue
+					cf_add_lib="../lib/lib${cf_libname}${cf_cygsuf}"
+					;;
+				(*)
+					cf_add_lib=
 					;;
 				esac
+				if test -n "$cf_add_lib"
+				then
+					Libs_To_Make="$Libs_To_Make $cf_add_lib"
+					continue
+				fi
 			fi
-			Libs_To_Make="$Libs_To_Make ../lib/${cf_prefix}${cf_libname}${cf_suffix}"
+			cf_add_lib="../lib/${cf_prefix}${cf_libname}${cf_suffix}"
+			Libs_To_Make="$Libs_To_Make $cf_add_lib"
 		done
 
 		if test $cf_dir = ncurses ; then
@@ -3345,20 +3351,20 @@ CF_EOF
 				cf_l_parts=`echo "$cf_r_parts" |sed -e 's/ .*$//'`
 				cf_r_parts=`echo "$cf_r_parts" |sed -e 's/^[[^ ]]* //'`
 				if test "$cf_l_parts" != "$cf_r_parts" ; then
-					cf_item=
+					cf_add_lib=
 					case $cf_l_parts in #(vi
 					*termlib*) #(vi
-						cf_item=`echo $cf_liblist |sed -e s%${LIB_NAME}${LIB_SUFFIX}%${TINFO_LIB_SUFFIX}%g`
+						cf_add_lib=`echo $cf_liblist |sed -e s%${LIB_NAME}${USE_LIB_SUFFIX}%${TINFO_LIB_SUFFIX}%g`
 						;;
 					*ticlib*)
-						cf_item=`echo $cf_liblist |sed -e s%${LIB_NAME}${LIB_SUFFIX}%${TICS_LIB_SUFFIX}%g`
+						cf_add_lib=`echo $cf_liblist |sed -e s%${LIB_NAME}${USE_LIB_SUFFIX}%${TICS_LIB_SUFFIX}%g`
 						;;
 					*)
 						break
 						;;
 					esac
-					if test -n "$cf_item"; then
-						Libs_To_Make="$cf_item $Libs_To_Make"
+					if test -n "$cf_add_lib"; then
+						Libs_To_Make="$cf_add_lib $Libs_To_Make"
 					fi
 				else
 					break
@@ -3434,7 +3440,7 @@ CF_EOF
 			if test $cf_dir = ncurses ; then
 				case $cf_subset in
 				*base*)
-					cf_libname=${cf_libname}$LIB_SUFFIX
+					cf_libname=${cf_libname}$USE_LIB_SUFFIX
 					;;
 				*termlib*)
 					cf_libname=$TINFO_LIB_SUFFIX
@@ -3444,13 +3450,13 @@ CF_EOF
 					;;
 				esac
 			elif test $cf_dir = c++ ; then
-				cf_libname=ncurses++$LIB_SUFFIX
+				cf_libname=ncurses++$USE_LIB_SUFFIX
 			else
-				cf_libname=${cf_libname}$LIB_SUFFIX
+				cf_libname=${cf_libname}$USE_LIB_SUFFIX
 			fi
-			if test -n "${DFT_ARG_SUFFIX}" ; then
-				# undo $LIB_SUFFIX add-on in CF_LIB_SUFFIX
-				cf_suffix=`echo $cf_suffix |sed -e "s%^${LIB_SUFFIX}%%"`
+			if test -n "${USE_ARG_SUFFIX}" ; then
+				# undo $USE_LIB_SUFFIX add-on in CF_LIB_SUFFIX
+				cf_suffix=`echo $cf_suffix |sed -e "s%^${USE_LIB_SUFFIX}%%"`
 			fi
 
 			# These dependencies really are for development, not
@@ -3471,22 +3477,27 @@ CF_EOF
  			cf_dir_suffix=
  			old_cf_suffix="$cf_suffix"
  			if test "$cf_cv_shlib_version_infix" = yes ; then
-			if test -n "$LIB_SUFFIX" ; then
-				case $LIB_SUFFIX in
+			if test -n "$USE_LIB_SUFFIX" ; then
+				case $USE_LIB_SUFFIX in
 				tw*)
 					cf_libname=`echo $cf_libname | sed 's/tw$//'`
-					cf_suffix=`echo $cf_suffix | sed 's/^tw//'`
+					cf_suffix=`echo $cf_suffix | sed 's/^tw'$EXTRA_SUFFIX'//'`
 					cf_dir_suffix=tw
 					;;
 				t*)
 					cf_libname=`echo $cf_libname | sed 's/t$//'`
-					cf_suffix=`echo $cf_suffix | sed 's/^t//'`
+					cf_suffix=`echo $cf_suffix | sed 's/^t'$EXTRA_SUFFIX'//'`
 					cf_dir_suffix=t
 					;;
 				w*)
 					cf_libname=`echo $cf_libname | sed 's/w$//'`
-					cf_suffix=`echo $cf_suffix | sed 's/^w//'`
+					cf_suffix=`echo $cf_suffix | sed 's/^w'$EXTRA_SUFFIX'//'`
 					cf_dir_suffix=w
+					;;
+				(*)
+					cf_libname=`echo $cf_libname | sed 's/$//'`
+					cf_suffix=`echo $cf_suffix | sed 's/^'$EXTRA_SUFFIX'//'`
+					cf_dir_suffix=
 					;;
 				esac
 			fi
@@ -3792,7 +3803,7 @@ fi
 ])
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_SUFFIX version: 23 updated: 2014/06/21 17:47:12
+dnl CF_LIB_SUFFIX version: 24 updated: 2015/04/12 11:42:01
 dnl -------------
 dnl Compute the library file-suffix from the given model name
 dnl $1 = model name
@@ -3851,8 +3862,11 @@ AC_DEFUN([CF_LIB_SUFFIX],
 		$3=[$]$2
 		;;
 	esac
-	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
-	test -n "$LIB_SUFFIX" && $3="${LIB_SUFFIX}[$]{$3}"
+	if test -n "${LIB_SUFFIX}${EXTRA_SUFFIX}"
+	then
+		$2="${LIB_SUFFIX}${EXTRA_SUFFIX}[$]{$2}"
+		$3="${LIB_SUFFIX}${EXTRA_SUFFIX}[$]{$3}"
+	fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_LIB_TYPE version: 4 updated: 2000/10/20 22:57:49
@@ -6069,7 +6083,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 28 updated: 2014/09/20 20:16:32
+dnl CF_SRC_MODULES version: 29 updated: 2015/04/12 11:42:01
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -6088,11 +6102,11 @@ if test "$DFT_LWR_MODEL" = "libtool"; then
 	TEST_ARGS="${TEST_DEPS}"
 	TEST_ARG2="${TEST_DEP2}"
 else
-	TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
-	TEST_ARG2="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARG2"
+	TEST_ARGS="-l${LIB_NAME}${USE_ARG_SUFFIX} $TEST_ARGS"
+	TEST_ARG2="-l${LIB_NAME}${USE_ARG_SUFFIX} $TEST_ARG2"
 fi
 
-PC_MODULES_TO_MAKE="ncurses${DFT_ARG_SUFFIX}"
+PC_MODULES_TO_MAKE="ncurses${USE_ARG_SUFFIX}"
 cf_cv_src_modules=
 for cf_dir in $1
 do
@@ -6128,10 +6142,10 @@ do
 				TEST_ARGS="${TEST_DEPS}"
 				TEST_ARG2="${TEST_DEP2}"
 			else
-				TEST_ARGS="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARGS"
-				TEST_ARG2="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARG2"
+				TEST_ARGS="-l${cf_dir}${USE_ARG_SUFFIX} $TEST_ARGS"
+				TEST_ARG2="-l${cf_dir}${USE_ARG_SUFFIX} $TEST_ARG2"
 			fi
-			PC_MODULES_TO_MAKE="${PC_MODULES_TO_MAKE} ${cf_dir}${DFT_ARG_SUFFIX}"
+			PC_MODULES_TO_MAKE="${PC_MODULES_TO_MAKE} ${cf_dir}${USE_ARG_SUFFIX}"
 		fi
 	fi
 done
@@ -6161,7 +6175,7 @@ fi
 # always make this, to install the ncurses-config script
 SRC_SUBDIRS="$SRC_SUBDIRS misc"
 if test "$cf_with_cxx_binding" != no; then
-	PC_MODULES_TO_MAKE="${PC_MODULES_TO_MAKE} ncurses++${DFT_ARG_SUFFIX}"
+	PC_MODULES_TO_MAKE="${PC_MODULES_TO_MAKE} ncurses++${USE_ARG_SUFFIX}"
 	SRC_SUBDIRS="$SRC_SUBDIRS c++"
 fi
 
