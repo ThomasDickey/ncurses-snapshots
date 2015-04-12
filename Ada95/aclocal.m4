@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.94 2014/12/21 00:19:39 tom Exp $
+dnl $Id: aclocal.m4,v 1.95 2015/04/12 15:44:53 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -738,7 +738,7 @@ CF_ARG_DISABLE(gnat-projects,
 AC_MSG_RESULT($enable_gnat_projects)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ENABLE_PC_FILES version: 10 updated: 2014/12/13 18:48:46
+dnl CF_ENABLE_PC_FILES version: 11 updated: 2015/01/10 17:03:43
 dnl ------------------
 dnl This is the "--enable-pc-files" option, which is available if there is a
 dnl pkg-config configuration on the local machine.
@@ -758,10 +758,19 @@ AC_ARG_ENABLE(pc-files,
 	[enable_pc_files=$enableval],
 	[enable_pc_files=no])
 AC_MSG_RESULT($enable_pc_files)
+
 if test "x$enable_pc_files" != xno
 then
-	CF_PATH_SYNTAX(PKG_CONFIG_LIBDIR)
-	MAKE_PC_FILES=
+	case "x$PKG_CONFIG_LIBDIR" in #(vi
+	xno|xyes) #(vi
+		AC_MSG_WARN(no PKG_CONFIG_LIBDIR was found)
+		MAKE_PC_FILES="#"
+		;;
+	*)
+		CF_PATH_SYNTAX(PKG_CONFIG_LIBDIR)
+		MAKE_PC_FILES=
+		;;
+	esac
 else
 	MAKE_PC_FILES="#"
 fi
@@ -1759,7 +1768,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_SUFFIX version: 23 updated: 2014/06/21 17:47:12
+dnl CF_LIB_SUFFIX version: 24 updated: 2015/04/12 11:42:01
 dnl -------------
 dnl Compute the library file-suffix from the given model name
 dnl $1 = model name
@@ -1818,8 +1827,11 @@ AC_DEFUN([CF_LIB_SUFFIX],
 		$3=[$]$2
 		;;
 	esac
-	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
-	test -n "$LIB_SUFFIX" && $3="${LIB_SUFFIX}[$]{$3}"
+	if test -n "${LIB_SUFFIX}${EXTRA_SUFFIX}"
+	then
+		$2="${LIB_SUFFIX}${EXTRA_SUFFIX}[$]{$2}"
+		$3="${LIB_SUFFIX}${EXTRA_SUFFIX}[$]{$3}"
+	fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_LIB_TYPE version: 4 updated: 2000/10/20 22:57:49
@@ -2845,7 +2857,7 @@ define([CF_REMOVE_LIB],
 $1=`echo "$2" | sed -e 's/-l$3[[ 	]]//g' -e 's/-l$3[$]//'`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 84 updated: 2013/11/03 06:26:10
+dnl CF_SHARED_OPTS version: 86 updated: 2015/01/21 20:10:54
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -3002,7 +3014,7 @@ CF_EOF
 		fi
 		;;
 	hpux[[7-8]]*) #(vi
-		# HP-UX 8.07 ld lacks "+b" option used for libdir search-list 
+		# HP-UX 8.07 ld lacks "+b" option used for libdir search-list
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='+Z'
 		fi
@@ -3108,7 +3120,7 @@ CF_EOF
 			EXTRA_LDFLAGS="${cf_ld_rpath_opt}\${RPATH_LIST} $EXTRA_LDFLAGS"
 		fi
 		CF_SHARED_SONAME
-		MK_SHARED_LIB='${LD} -shared -Bshareable -soname=`basename $[@]` -o $[@]'
+		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-soname,'$cf_cv_shared_soname',-stats,-lc -o $[@]'
 		;;
 	netbsd*) #(vi
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -3625,7 +3637,7 @@ eval $3="$withval"
 AC_SUBST($3)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PKG_CONFIG_LIBDIR version: 3 updated: 2014/12/13 18:48:46
+dnl CF_WITH_PKG_CONFIG_LIBDIR version: 5 updated: 2015/01/21 20:10:54
 dnl -------------------------
 dnl Allow the choice of the pkg-config library directory to be overridden.
 AC_DEFUN([CF_WITH_PKG_CONFIG_LIBDIR],[
@@ -3652,7 +3664,7 @@ xyes) #(vi
 	#
 	# This case allows for Debian's 2014-flavor of multiarch, along with the
 	# most common variations before that point.  Some other variants spell the
-	# directory differently, e.g., "pkg-config", and put it in unusual places. 
+	# directory differently, e.g., "pkg-config", and put it in unusual places.
 	# pkg-config has always been poorly standardized, which is ironic...
 	case x`(arch) 2>/dev/null` in #(vi
 	*64) #(vi
@@ -3668,7 +3680,8 @@ xyes) #(vi
 			$cf_path/lib/*-linux-gnu \
 			$cf_path/share \
 			$cf_path/lib32 \
-			$cf_path/lib"
+			$cf_path/lib \
+			$cf_path/libdata"
 		;;
 	esac
 
