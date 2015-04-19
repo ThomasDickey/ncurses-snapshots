@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.33 2015/04/11 13:24:31 tom Exp $
+# $Id: ncurses-config.in,v 1.34 2015/04/18 17:25:07 tom Exp $
 ##############################################################################
 # Copyright (c) 2006-2012,2015 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -45,7 +45,7 @@ datarootdir="@datarootdir@"
 datadir="@datadir@"
 mandir="@mandir@"
 
-THIS="@LIB_NAME@@DFT_ARG_SUFFIX@"
+THIS="@LIB_NAME@@USE_LIB_SUFFIX@"
 TINFO_LIB="@TINFO_ARG_SUFFIX@"
 RPATH_LIST="@RPATH_LIST@"
 
