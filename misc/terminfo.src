@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.540 $
-#	$Date: 2015/05/23 15:49:15 $
+#	$Revision: 1.545 $
+#	$Date: 2015/05/30 20:30:55 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3524,9 +3524,10 @@ putty|PuTTY terminal emulator,
 	ind=^J, indn=\E[%p1%dS,
 	initc=\E]P%p1%x%p2%{255}%*%{1000}%/%02x%p3%{255}%*%{1000}%/%02x%p4%{255}%*%{1000}%/%02x,
 	is2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>\E]R,
-	kb2=\E[G, kbs=\177, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B,
-	kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, kend=\E[4~,
-	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~,
+	kLFT=\EOD, kRIT=\EOC, kb2=\E[G, kbs=\177, kcbt=\E[Z,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kdch1=\E[3~, kend=\E[4~, khome=\E[1~, kich1=\E[2~,
+	kind=\EOB, kmous=\E[M, knp=\E[6~, kpp=\E[5~, kri=\EOA,
 	kspd=^Z, nel=^M^J, oc=\E]R, op=\E[39;49m, rc=\E8, rev=\E[7m,
 	ri=\EM, rin=\E[%p1%dT, rmacs=^O, rmam=\E[?7l,
 	rmcup=\E[2J\E[?47l, rmir=\E[4l, rmpch=\E[10m,
@@ -3549,21 +3550,20 @@ putty-256color|PuTTY 0.58 with xterm 256-colors,
 # One of the keyboard selections is "VT100+".
 # pterm (the X11 port) uses shifted F1-F10 as F11-F20
 putty-vt100|VT100+ keyboard layout,
-	kf1=\EOP, kf10=\EOY, kf11=\EOZ, kf12=\EO[, kf2=\EOQ,
-	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW,
-	kf9=\EOX, use=putty,
+	use=putty+fnkeys+vt100, use=putty,
 
-# Unlike xterm-sco, this leaves kmous ambiguous with kf1.
-#
-# Use modifiers to obtain function keys past 12:
-# F1-F12 - normal
-# F13-F24 - shift
-# F25-F36 - control/alt
-# F37-F48 - control/shift
-#
 putty-sco|putty with SCO function keys,
 	use=putty+fnkeys+sco, use=putty,
 
+# PuTTY has more than one section in its Keyboard configuration:
+# a) backspace/delete, which we ignore since that choice largely depends on
+#    whether one matches Unix and BSD or Linux.
+# b) home/end keys, also ignored because the "rxvt" setting sends keys which
+#    are unrelated to rxvt's actual settings.
+# c) function keys and keypad - this is the interesting part.  None of the
+#    selections match any of their respective namesakes, but they are shown
+#    here to help users who expect that the selections do what is implied.
+#
 # This is the default setting for PuTTY
 putty+fnkeys|fn-keys for PuTTY,
 	use=putty+fnkeys+esc,
@@ -3576,13 +3576,31 @@ putty+fnkeys+esc|ESC[n~ fn-keys for PuTTY,
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~,
 
 putty+fnkeys+linux|Linux fn-keys for PuTTY,
+	kf1=\E[[A, kf2=\E[[B, kf3=\E[[C, kf4=\E[[D, kf5=\E[[E,
+	use=putty+fnkeys+esc,
 
 putty+fnkeys+xterm|Xterm R6 fn-keys for PuTTY,
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
+	use=putty+fnkeys+esc,
 
 putty+fnkeys+vt400|VT400 fn-keys for PuTTY,
+	use=putty+fnkeys+esc,
 
+# Shifted F1 is F11.  F13-F20 inherit from the defaults, and the last distinct
+# key is F20.
 putty+fnkeys+vt100|VT100+ fn-keys for PuTTY,
+	kf1=\EOP, kf10=\EOY, kf11=\EOZ, kf12=\EO[, kf2=\EOQ,
+	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW,
+	kf9=\EOX, use=putty+fnkeys+esc,
 
+# Unlike xterm-sco, this leaves kmous ambiguous with kf1.
+#
+# Use modifiers to obtain function keys past 12:
+# F1-F12 - normal
+# F13-F24 - shift
+# F25-F36 - control/alt
+# F37-F48 - control/shift
+#
 putty+fnkeys+sco|SCO fn-keys for PuTTY,
 	kbeg=\E[E, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
 	kdch1=\177, kend=\E[F, kf1=\E[M, kf10=\E[V, kf11=\E[W,
@@ -4791,10 +4809,16 @@ vte+pcfkeys|VTE's variation on xterm+pcfkeys,
 gnome+pcfkeys|VTE's variation on xterm+pcfkeys,
 	use=vte+pcfkeys,
 
-vte|VTE aka GNOME Terminal,
-	use=vte-2012,
+# deprecated - use "vte" for newer versions
 gnome|GNOME Terminal,
-	use=vte,
+	use=vte-2012,
+
+# relevant changes were made in January 2014
+vte-2014|VTE 0.35.1,
+	use=xterm+pcfkeys, use=vte-2012,
+
+vte|VTE aka GNOME Terminal,
+	use=vte-2014,
 
 # palette is hardcoded...
 vte-256color|VTE with xterm 256-colors,
@@ -5606,7 +5630,7 @@ st|stterm| simpleterm 0.4.1,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
-	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%;m,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m,
 	sgr0=\E[0m, sitm=\E[3m, smacs=\E(0, smcup=\E[?1049h,
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m,
 	tbc=\E[3g, tsl=\E]0;, u6=\E[%i%d;%dR, u7=\E[6n,
@@ -23660,5 +23684,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2015-05-23
 #	+ add putty+fnkeys* building-block entries -TD
+#
+# 2015-05-30
+#	+ remove spurious "%;" from st entry (report by Daniel Pitts) -TD
+#	+ add vte-2014, update vte to use that -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
