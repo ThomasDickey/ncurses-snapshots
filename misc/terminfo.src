@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.549 $
-#	$Date: 2015/07/25 19:27:20 $
+#	$Revision: 1.547 $
+#	$Date: 2015/07/25 17:35:10 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5584,13 +5584,8 @@ mgr-linux|Mgr window with Linux keyboard,
 # Rather, it acts like xterm - when the meta feature is disabled.
 #
 # Removed invis -TD
-# Added eo, removed ul -TD
-#
-# Reviewed st 0.5:
-# implements control-modifier, but not control-shift for special keys
-# implements alt-modifier, but not alt-shift for special keys
 st|stterm| simpleterm 0.4.1,
-	am, bce, eo, hs, mir, msgr, xenl,
+	am, bce, hs, mir, msgr, ul, xenl,
 	colors#8, cols#80, it#8, lines#24, ncv#3, pairs#64,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l,
@@ -23700,6 +23695,5 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2015-07-25
 #	+ add status line to tmux via xterm+sl (patch by Nicholas Marriott).
-#	+ fixes for st 0.5 from testing with tack -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
