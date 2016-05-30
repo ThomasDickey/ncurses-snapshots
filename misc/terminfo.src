@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.563 $
-#	$Date: 2016/05/15 00:30:28 $
+#	$Revision: 1.564 $
+#	$Date: 2016/05/29 23:28:06 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4230,7 +4230,8 @@ xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1,
 xterm-16color|xterm with 16 colors like aixterm,
 	ccc,
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\,
-	use=ibm+16color, use=xterm-new,
+	oc=\E]104\007, rs1=\Ec\E]104\007, use=ibm+16color,
+	use=xterm-new,
 
 # 256-colors is a compile-time feature of XFree86 xterm beginning with
 # patch #111 (1999/7/10) -TD
@@ -4273,9 +4274,10 @@ xterm+88color|xterm 88-color feature,
 
 # These variants of XFree86 3.9.16 xterm are built as a configure option.
 xterm-256color|xterm with 256 colors,
-	use=xterm+256color, use=xterm-new,
+	rs1=\Ec\E]104\007, use=xterm+256color, use=xterm-new,
 xterm-88color|xterm with 88 colors,
-	use=xterm+88color, use=xterm-256color,
+	rs1=\Ec\E]104\007, use=xterm+88color,
+	use=xterm-256color,
 
 # This chunk is based on suggestions by Ailin Nemui and Nicholas Marriott, who
 # asked for some of xterm's advanced features to be added to its terminfo
@@ -23835,5 +23837,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2016-05-14
 #	+ modify linux2.6 entry to improve line-drawing -TD
 #	+ make linux3.0 entry the default linux entry (Debian #823658) -TD
+#
+# 2016-05-29
+#	+ modify rs1 for xterm-16color, xterm-88color and xterm-256color to
+#	  reset palette using "oc" string as in linux -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
