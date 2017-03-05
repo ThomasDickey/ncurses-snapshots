@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.586 $
-#	$Date: 2017/01/28 23:50:28 $
+#	$Revision: 1.587 $
+#	$Date: 2017/03/05 02:34:42 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -883,13 +883,13 @@ st52-old|Atari ST with VT52 emulation,
 
 # nsterm*|Apple_Terminal - AppKit Terminal.app
 #
-# Terminal.app is a Terminal emulator bundled with NeXT's NeXTStep and
+# Terminal.app is a Terminal emulator bundled with NeXT's NeXTSTEP and
 # OPENSTEP/Mach operating systems, and with Apple's Rhapsody, Mac OS X
 # Server and Mac OS X operating systems. There is also a
-# "terminal.app" in GNUStep, but I believe it to be an unrelated
+# "terminal.app" in GNUstep, but I believe it to be an unrelated
 # codebase and I have not attempted to describe it here.
 #
-# For NeXTStep, OPENSTEP/Mach, Rhapsody and Mac OS X Server 1.0, you
+# For NeXTSTEP, OPENSTEP/Mach, Rhapsody and Mac OS X Server 1.0, you
 # are pretty much on your own. Use "nsterm-7-m" and hope for the best.
 # You might also try "nsterm-7" and "nsterm-old" if you suspect your
 # version supports color.
@@ -942,19 +942,19 @@ st52-old|Atari ST with VT52 emulation,
 #
 # The Mythology* of AppKit Terminal.app:
 #
-# In the days of NeXTSTep 0.x and 1.x there were two incompatible
+# In the days of NeXTSTEP 0.x and 1.x there were two incompatible
 # bundled terminal emulators, Shell and Terminal. Scott Hess wrote a
 # shareware replacement for Terminal called "Stuart" which NeXT bought
-# and used as the basis for the Terminal.app in NeXTstep 2+,
+# and used as the basis for the Terminal.app in NeXTSTEP 2+,
 # OPENSTEP/Mach, Apple Rhapsody, Mac OS X Server 1.0, and Mac OS X. I
 # don't know the TERM_PROGRAM and TERM_PROGRAM_VERSION settings or
 # capabilities for the early versions, but I believe that the
 # TERM_PROGRAM_VERSION may have been reset at some point.
 #
 # The early versions were tailored to the NeXT character set. Sometime
-# after the Apple aquisition the encoding was swiched to MacRoman
-# (initally with serious altcharset bugs due to incomplete conversion
-# of the old NeXT code,) and then later to UTF-8. Alos sometime during
+# after the Apple acquisition the encoding was switched to MacRoman
+# (initially with serious altcharset bugs due to incomplete conversion
+# of the old NeXT code,) and then later to UTF-8. Also sometime during
 # or just prior to the early days of Mac OS X, the Terminal grew ANSI
 # 8-color support (initially buggy when combined with attributes, but
 # that was later fixed.) More recently, around Mac OS X version 10.3
@@ -984,7 +984,7 @@ st52-old|Atari ST with VT52 emulation,
 #   "nsterm" to comply with the name length and case conventions and
 #   limitations of various software packages [notably Solaris terminfo
 #   and UNIX.] A single Apple_Terminal alias is retained for
-#   backwards-compatbility.
+#   backwards-compatibility.
 #
 # * Added function key support (F1-F4). These only work in Terminal.app
 #   version 51, hopefully the capabilities won't cause problems for people
@@ -2477,7 +2477,7 @@ arm100-w|arm100-wam|Arm(RiscPC) ncurses compatible (for 1024x768),
 	cols#132, lines#50, use=arm100,
 
 # NetBSD/x68k console vt200 emulator. This port runs on a 68K machine
-# manufactured by Sharp for the Japenese market.
+# manufactured by Sharp for the Japanese market.
 # From Minoura Makoto <minoura@netlaputa.or.jp>, 12 May 1996
 x68k|x68k-ite|NetBSD/x68k ITE,
 	cols#96, lines#32,
@@ -5004,7 +5004,7 @@ gnome-2012|GNOME Terminal 3.6.0,
 
 # GNOME terminal may automatically use the contents of the "xterm" terminfo to
 # supply key information which is not built into the program.  With 2.22.3,
-# this list is built into the program (which addresses the inadvertant use of
+# this list is built into the program (which addresses the inadvertent use of
 # random terminfo data, though using a set of values which does not correspond
 # to any that xterm produces - still not solving the problem that GNOME
 # terminal hardcodes the $TERM variable as "xterm").
@@ -7192,7 +7192,7 @@ cygwinB19|ansi emulation for cygwin32,
 #   kPRV  [shifted prev key] not implemented
 #   khome [home key] really is \E[1~ NOT \E[H
 #   tbc   [clear tab stops] not implemented
-#   xenl  [newline ignnored after 80 cols] messes up last line? Ehud Karni
+#   xenl  [newline ignored after 80 cols] messes up last line? Ehud Karni
 #   smpch [Start PC charset] is \E[11m, same as smacs
 #   rmpch [End PC charset] is \E[10m, same as rmacs
 #   mir   [move in insert mode] fails in tack?
@@ -7534,7 +7534,7 @@ pcmw|PC running Microsoft Works,
 
 # From: Federico Bianchi
 # This is the entry for the OpenNT terminal.
-# The ntconsole name is for backward compatability.
+# The ntconsole name is for backward compatibility.
 # This is for OpenNT 2.0 and later.
 # Later OpenNT was renamed to Interix.
 #
@@ -8599,7 +8599,7 @@ adm22|lsi adm22,
 # on    off   off   Busy active on J5-19, CD disabled - Factory Set.
 # on    off   on    Busy active on J5-19, CD enabled
 #
-# sw4   Used in conjuction with S4 for comm interface control - Fact 0
+# sw4   Used in conjunction with S4 for comm interface control - Fact 0
 #
 # sw5   Secondary Channel Control (Hardware implementation only) - Fact 0
 #
@@ -9074,7 +9074,7 @@ tvi912cc|tvi912 at cowell college,
 # (including some with magic cookies), fancy half-duplex mode, and
 # different bugs.
 #
-# Some operations reqire truly incredible amounts of padding. The
+# Some operations require truly incredible amounts of padding. The
 # insert_line (<il1>) and delete_line (<dl1>) operations in particular
 # are so slow as to be nearly unusable.
 #
@@ -10865,8 +10865,8 @@ wy85-wvb|wyse85-wvb|wyse 85 with visible bell 132-columns,
 # terminfo. At one point, I found some reference indicating that this
 # terminal bug (not sending \E[) was acknowledged by Wyse (so it's not just
 # me), but I can't find that and the server under my bookmark to "Wyse
-# Technical" isn't responding.  So there's the question of wether the wy85
-# terminfo should reflect the manufactuer's intended behaviour of the terminal
+# Technical" isn't responding.  So there's the question of whether the wy85
+# terminfo should reflect the manufacturer's intended behaviour of the terminal
 # or the actual."
 wy85-8bit|wyse85-8bit|wyse 85 in 8-bit mode,
 	am, hs, mc5i, mir, msgr, xenl, xon,
@@ -11588,7 +11588,7 @@ vt320-k311|dec vt320 series as defined by kermit 3.11,
 # These entries attempt to describe Avatar, a terminal emulation used with
 # MS-DOS bulletin-board systems.  It was designed to give ANSI-like
 # capabilities, but with cheaper (shorter) control sequences.  Messy design,
-# excessively dependent on PC idiosyncracies, but apparently rather popular
+# excessively dependent on PC idiosyncrasies, but apparently rather popular
 # in the BBS world.
 #
 # No color support.  Avatar doesn't fit either of the Tektronix or HP color
@@ -11630,7 +11630,7 @@ vt320-k311|dec vt320 series as defined by kermit 3.11,
 # ^V^Q%c	-- query the driver
 # ^V^R		-- driver reset
 # ^V^S		-- Sound tone (PC-specific)
-# ^V^T			-- change highlight at current cursor poition to %c
+# ^V^T			-- change highlight at current cursor position to %c
 # ^V^U%p1%c%p2%c	-- highlight window <a> with attribute <b>
 # ^V^V%p1%c%p2%c%p3%c%p4%c%p5%c
 #			-- define window
@@ -13117,7 +13117,7 @@ ampex232w|Ampex Model 232 / 132 columns,
 #	Briefly, the settings are for the following modes:
 #	   (values are for bit set/clear with * indicating our preference
 #	    and the value used to test these termcaps)
-#	Note that many of these settings are irrelevent to the terminfo
+#	Note that many of these settings are irrelevant to the terminfo
 #	and are just set to the default mode of the terminal as shipped
 #	by the factory.
 #
@@ -13546,7 +13546,7 @@ screwpoint|adds viewpoint with ^O bug,
 # Cursor forward                  FF
 # Cursor home                     RS
 # Cursor up                       VT
-# Cursor supress                  ETB
+# Cursor suppress                 ETB
 # Cursor enable                   CAN
 # Erase to end of line            ESC,T
 # Erase to end of page            ESC,Y
@@ -13686,8 +13686,8 @@ cit101e|C. Itoh CIT-101e,
 # tset or setterm etc.) provided that the terminal has been manually set
 # up (and the setup saved with ^S) to be compatible with this termcap.  To be
 # compatible it should be in ANSI mode (not VT52).   A set-up that
-# works is to set all the manually setable stuff to factory defaults
-# by pressing ^D in set-up mode.  Then increse the brighness with the
+# works is to set all the manually settable stuff to factory defaults
+# by pressing ^D in set-up mode.  Then increase the brightness with the
 # up-arrow key since the factory default will likely be dim on an old
 # terminal.  Then change any options you want (provided that they are
 # compatible with the termcap).  For my terminal I set: Screen
@@ -14193,7 +14193,7 @@ oc100|oconcept|c100-1p|old 1 page concept 100,
 #	there is no way of knowing what it is that the program wants turned
 #	off.
 # smul: The "underline" attribute is reconfigurable to an overline or
-#	strikethru, or (as done with \E[;3+} in is2=), to a line at the true
+#	strike-through, or (as done with \E[;3+} in is2=), to a line at the true
 #	bottom of the character cell.  This was done to allow for more readable
 #	underlined characters, and to be able to distinguish between an
 #	underlined space, an underscore, and an underlined underscore.
@@ -14297,7 +14297,7 @@ oc100|oconcept|c100-1p|old 1 page concept 100,
 #	 It's not made clear in the manuals, but based on other ansi/vt type
 #	 terminals, it's a good guess that this terminal is capable of both
 #	 "transparent print" (which doesn't copy data to the screen, and
-#	 therefore needs mc5i: specified to say so) and "auxilliary print"
+#	 therefore needs mc5i: specified to say so) and "auxiliary print"
 #	 (which does duplicate printed data on the screen, in which case mc4=
 #	 and mc5= should use the \E[?4i and \E[?5i strings instead).
 
@@ -16303,7 +16303,7 @@ infoton,
 #ctrl-A          set SOM position at cursor position
 #ctrl-G          Bell
 #ctrl-H          Backspace
-#ctrl-I          Horiz tab
+#ctrl-I          Horizontal tab
 #ctrl-J          Linefeed
 #ctrl-K          Cursor up
 #ctrl-L          Cursor right
@@ -17210,7 +17210,7 @@ ncr260intpp|NCR Intecolor emulation of the 2900_260C with a PC+ keyboard,
 	colors#8, pairs#64,
 	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	use=ncr260vt300pp,
-# The Intecolor emulation of the NCR 2900/260C color terminal is basicly a
+# The Intecolor emulation of the NCR 2900/260C color terminal is basically a
 # DEC vt200/300 with color capabilities added.
 ncr260intwpp|NCR Intecolor emulation of the 2900_260C with a PC+ keyboard in 132 column mode,
 	colors#8, pairs#64,
@@ -17451,7 +17451,7 @@ NCR260VT300WPP|ncr260vt300wpp|NCR 2900_260 vt300 wide mode pc+  kybd,
 # 'setf' definition.  The escape sequence to set color attributes is
 #		ESC d y <foreground_color> <background_color> 1
 # In addition, the background color can be changed through the desk accessories.
-# The capablitiy 'op' sets colors to green on black (default combination).
+# The capability 'op' sets colors to green on black (default combination).
 #
 # NOTE:  The NCR Unix System Administrator's Shell will not function properly
 #	    if the 'pairs' capability is defined. Un-Comment the 'pairs'
@@ -19684,10 +19684,10 @@ linux-m1|Linux Minitel 1 "like" Couleurs,
 # 1. Using double-shapes for vt100 graphical chars (eg: mc).
 # 2. Native brown color corrected to good yellow color.
 # 3. Adding "Insert" and "Delete Line" keys as ESC Up and ESC Down arrow keys.
-# 4. Suppressed inexistant underlined mode (normally as bright).
+# 4. Suppressed nonexistant underlined mode (normally as bright).
 # 5. ich/ich1 not filled because of non-curses programs.
 #--
-# 6. Suppressed inexistant invisible mode.
+# 6. Suppressed nonexistant invisible mode.
 #(7.)Adding forgotten "cub/cud/cuf/cuu" sequences deplacement.
 
 linux-m1b|Linux Minitel 1B "like" Monochrome (Gris/Blanc/Noir+Dim),
@@ -20736,7 +20736,7 @@ ddr|rebus3180|ddr3180|Rebus/DDR 3180 vt100 emulator,
 # Approximate date of release was 1982 (early 80s, anyway), and it had several
 # evolutions including (limited) color versions such as the PS330C. PS300s
 # were effectively obsolete by the late 80s, replaced by raster graphics
-# systems, although specialized applications like molecular modelling
+# systems, although specialized applications like molecular modeling
 # hung onto them for a while longer.  AFAIK all E&S vector graphics systems
 # are out of production, though of course E&S is very much alive (in 1996).
 # (ps300: changed ":pt@:" to "it@" -- esr)
@@ -20904,7 +20904,7 @@ z29|zenith29|z29b|zenith z29b,
 # indicated by the name. kc -> key click, nkc -> no key click, uc -> underscore
 # cursor, bc -> block cursor.
 # From: Mike Meyers
-# (z29a: replaced nonexistent <if=/usr/share/tabset/zenith29> befause <hts>
+# (z29a: replaced nonexistent <if=/usr/share/tabset/zenith29> because <hts>
 # looks vt100-compatible -- esr)
 z29a|z29a-kc-bc|h29a-kc-bc|heath/zenith 29 in ansi mode,
 	OTbs, OTpt, am, eslok, hs, mir, msgr,
@@ -21226,7 +21226,7 @@ omron|Omron 8025AG,
 #### Ramtek
 #
 # Ramtek was a vendor of high-end graphics terminals around 1979-1983; they
-# were competition for things like the Tektronics 4025.
+# were competition for things like the Tektronix 4025.
 #
 
 # Ramtek 6221 from BRL, probably by Doug Gwyn
@@ -22517,7 +22517,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # You can obtain ECMA-48 for free by sending email to helpdesk@ecma.ch
 # requesting the standard(s) you want (i.e. ECMA-48, "Control Functions for
 # Coded Character Sets"), include your snail-mail address, and you should
-# receive the document in due course.  Don't expect an email acknowledgement.
+# receive the document in due course.  Don't expect an email acknowledgment.
 #
 # Related standards include "X3.4-1977: American National Standard Code for
 # Information Interchange" (the ASCII standard) and "X3.41.1974:
@@ -22542,8 +22542,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # sequences.  In the main table, \E stands for an escape (\033) character,
 # SPC for space.  Pn stands for a single numeric parameter to be inserted
 # in decimal ASCII.  Ps stands for a list of such parameters separated by
-# semicolons.  Parameter meanings for most parametrized sequences are
-# decribed in the notes.
+# semicolons.  Parameter meanings for most parameterized sequences are
+# described in the notes.
 #
 # Sequence     Sequence                             Parameter   or
 # Mnemonic     Name              Sequence           Value      Mode   terminfo
@@ -23140,7 +23140,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # There is a set of nonstandard terminfos used by IBM's AIX operating system.
 # The AIX terminfo library diverged from SVr1 terminfo, and replaces all
-# capabilities following prtr_non with the following special capabilties:
+# capabilities following prtr_non with the following special capabilities:
 # box[12], batt[12], colb[0123456789], colf[0123456789], f[01234567], kbtab,
 # kdo, kcmd, kcpn, kend, khlp, knl, knpn, kppn, kppn, kquit, ksel, kscl, kscr,
 # ktab, kmpf[123456789], apstr, ksf1..ksf10, kf11...kf63, kact, topl, btml,
@@ -23551,7 +23551,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Corrected hpa/vpa in linux entry.  They still fail the worm test.
 #	* We can handle the HP meml/memu capability now.
 #	* Added smacs to klone entries, just as documentation.
-#	* Carrected ansi.sys and cit-500 entries.
+#	* Corrected ansi.sys and cit-500 entries.
 #	* Added z39, vt320-k311, v220c, and avatar entries.
 #	* Make pcansi use the ansi.sys invis capability.
 #	* Added DIP switch descriptions for vt100, adm31, tvi910, tvi920c,
@@ -23971,7 +23971,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* resolve ambiguity of kend/kll/kslt and khome/kfnd/kich1 strings in
 #	  xterm and ncsa entries by removing the unneeded ones.  Note that
 #	  some entries will return kend & khome versus kslt and kfnd, for
-#	  PC-style keyboards versus strict vt220 compatiblity - TD
+#	  PC-style keyboards versus strict vt220 compatibility - TD
 #
 # 1999/3/13
 #	* adjust xterm-xfree86 khome/kend to match default PC-style keyboard
@@ -24564,7 +24564,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2009-12-19
 #	* add bw (auto-left-margin) to nsterm* entries (Benjamin Sittler)
-#	* rename minix to minix-1.7, add minix entry for Minux3 -TD
+#	* rename minix to minix-1.7, add minix entry for Minix3 -TD
 #
 # 2009-12-26
 #	* add bterm (bogl 0.1.18) -TD
@@ -24990,5 +24990,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (patch by Nicholas Marriott).
 #	+ uncancel Ms in tmux entry (Harry Gindi, Nicholas Marriott).
 #	+ add dumb-emacs-ansi -TD
+#
+# 2017-03-04
+#	+ correct a few spelling errors in comments -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
