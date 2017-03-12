@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.587 $
-#	$Date: 2017/03/05 02:34:42 $
+#	$Revision: 1.595 $
+#	$Date: 2017/03/11 23:17:18 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1825,6 +1825,31 @@ kon|kon2|jfbterm|Kanji ON Linux console,
 	initp@, kcbt@, oc@, op=\E[37;40m, rs1=\Ec, tsl=\E[?T,
 	use=linux,
 
+# FbTerm
+# Another variant.  There are two parts (src, src/lib) with the latter
+# comprising the escape-sequence parsing.  The copyright notice on that
+# says it is based on GTerm by Timothy Miller.
+#
+# The original developer "dragchan" has left, but as of March 2017 there is
+# (still dead) code from May 2015 here:
+#	https://github.com/izmntuk/fbterm
+#
+# The acsc string may be incorrect.
+#
+# Not used here, the program recognizes escapes for italic, underline and
+# dim, rendering those as green, cyan and gray respectively.
+fbterm|FbTerm for Linux with framebuffer,
+	colors#256, pairs#32767,
+	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i
+	     \316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u
+	     \264v\301w\302x\263y\363z\362{\343|\330}\234~\376,
+	initc=\E[3;%p1%d;%p2%d;%p3%d;%p4%d}, rmacs=\E[10m,
+	setab=\E[2;%p1%d}, setaf=\E[1;%p1%d}, setb=\E[2;%p1%d},
+	setf=\E[1;%p1%d},
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5
+	    %t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
+	sgr0=\E[0;10m, smacs=\E[11m, use=linux,
+
 # 16-color linux console entry; this works with a 256-character
 # console font but bright background colors turn into dim ones when
 # you use a 512-character console font. This uses bold for bright
@@ -3040,7 +3065,7 @@ vt102+enq|ncurses extension for vt102-style ENQ,
 #                | | | |                     | | | |
 #                | | | Auto XON/XOFF 0-Off   | | | Power 0-60 Hz
 #                | | |               1-On    | | |       1-50 Hz
-#                | | Ansi/VT52 0-VT52        | | Bits Per Char. 0-7 Bits
+#                | | ANSI/VT52 0-VT52        | | Bits Per Char. 0-7 Bits
 #                | |           1-ANSI        | |                1-8 Bits
 #                | Keyclick 0-Off            | Parity 0-Off
 #                |          1-On             |        1-On
@@ -3059,26 +3084,34 @@ vt102+enq|ncurses extension for vt102-style ENQ,
 #
 # (vt100: I added <rmam>/<smam> based on the init string, also <OTbs>. -- esr)
 vt100|vt100-am|dec vt100 (w/advanced video),
-	OTbs, am, mc5i, msgr, xenl, xon,
-	cols#80, it#8, lines#24, vt#3,
+	OTbs, mc5i, xenl, xon,
+	vt#3,
+	csr=\E[%i%p1%d;%p2%dr, kcub1=\EOD, kcud1=\EOB,
+	kcuf1=\EOC, kcuu1=\EOA, lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4,
+	mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, rc=\E8, rmam=\E[?7l,
+	rmkx=\E[?1l\E>, rs2=\E<\E>\E[?3;4;5l\E[?7;8h\E[r,
+	sc=\E7,
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5
+	    %;m%?%p9%t\016%e\017%;$<2>,
+	smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m$<2>,
+	use=vt100+4bsd, use=vt100+fnkeys,
+vt100+4bsd|dec vt100 from 4.0BSD,
+	am, msgr,
+	cols#80, it#8, lines#24,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>,
-	clear=\E[H\E[J$<50>, cr=^M, csr=\E[%i%p1%d;%p2%dr,
-	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J,
-	cuf=\E[%p1%dC, cuf1=\E[C$<2>,
+	clear=\E[H\E[J$<50>, cr=^M, cub=\E[%p1%dD, cub1=^H,
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C$<2>,
 	cup=\E[%i%p1%d;%p2%dH$<5>, cuu=\E[%p1%dA,
 	cuu1=\E[A$<2>, ed=\E[J$<50>, el=\E[K$<3>, el1=\E[1K$<3>,
 	enacs=\E(B\E)0, home=\E[H, ht=^I, hts=\EH, ind=^J, kbs=^H,
-	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, lf1=pf1,
-	lf2=pf2, lf3=pf3, lf4=pf4, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i,
-	rc=\E8, rev=\E[7m$<2>, ri=\EM$<5>, rmacs=^O, rmam=\E[?7l,
-	rmkx=\E[?1l\E>, rmso=\E[m$<2>, rmul=\E[m$<2>,
-	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	rev=\E[7m$<2>, ri=\EM$<5>, rmacs=^O, rmso=\E[m$<2>,
+	rmul=\E[m$<2>, rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h,
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5
-	    %;m%?%p9%t\016%e\017%;$<2>,
-	sgr0=\E[m\017$<2>, smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=,
-	smso=\E[7m$<2>, smul=\E[4m$<2>, tbc=\E[3g,
-	use=vt100+fnkeys,
+	    %;m%?%p9%t\016%e\017%;,
+	sgr0=\E[m\017$<2>, smacs=^N, smso=\E[1;7m$<2>,
+	smul=\E[4m$<2>, tbc=\E[3g,
 vt100nam|vt100-nam|vt100 no automargins,
 	am@, xenl@,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7l\E[?8h, use=vt100-am,
@@ -8196,7 +8229,7 @@ hpsub|hp terminals -- capability subset,
 #
 # (hpex: removed memory-lock capabilities ":ml=\El:mu=\Em:",
 # moved <rmir> here from hpsub -- esr)
-hpex|hp extended capabilites,
+hpex|hp extended capabilities,
 	cr=^M, cud1=^J, cup=\E&a%p1%dy%p2%dC, ht=^I, ind=^J, kbs=^H,
 	kcub1=^H, kcud1=^J, nel=^M^J, rmir=\ER, rmul=\E&d@, smir=\EQ,
 	smul=\E&dD, vpa=\E&a%p1%dY, use=hpsub,
@@ -8701,7 +8734,7 @@ adm36|LSI ADM36,
 	OTbs, OTpt,
 	OTkn#4,
 	if=/usr/share/tabset/vt100,
-	is2=\E<\E>\E[6;?2;?7;?8h\E[4;20;?1;?3;?4;?5;?6;?18;?19l, use=vt100,
+	is2=\E<\E>\E[6;?2;?7;?8h\E[4;20;?1;?3;?4;?5;?6;?18;?19l, use=vt100+4bsd,
 # (adm42: removed obsolete ":ma=^K^P:" -- esr)
 adm42|lsi adm42,
 	OTbs, am,
@@ -10120,7 +10153,7 @@ vi603|visual603|visual 603,
 	ind=\ED, is1=\E>\E[?3l\E[?4l\E[?7h\E[?8h\E[1;24r,
 	rev=\E[7m, ri=\EM, rmir=\E[4l, rmso=\E[27m, rmul=\E[24m,
 	sgr0=\E[m, smir=\E[4h, smso=\E[7m, smul=\E[4m, tsl=\EP2~,
-	use=vt100,
+	use=vt100+4bsd,
 
 #### Wyse (wy)
 #
@@ -13809,7 +13842,7 @@ cdc721|CDC Viking,
 	clear=^L, cuf1=^X, cup=\002%p2%{32}%+%c%p1%{32}%+%c,
 	cuu1=^W, el=^K, home=^Y, kcub1=^H, kcud1=^J, kcuf1=^I,
 	kcuu1=^W, khome=^Y,
-cdc721ll|CDC Vikingll,
+cdc721ll|CDC Viking with long lines,
 	OTbs, am,
 	cols#132, lines#24,
 	clear=^L, cuf1=^X, cup=\002%p2%{32}%+%c%p1%{32}%+%c,
@@ -15288,7 +15321,7 @@ dm3045|datamedia 3045a,
 #
 # 2	Margin Bell	0=off  1=on
 #	Keyclick	0=off  1=on
-#	Ansi/VT52	0=VT52 1=Ansi
+#	ANSI/VT52	0=VT52 1=ANSI
 #	Xon/Xoff	0=Off  1=On
 #
 # 3	Shift3		0=Hash 1=UK Pound
@@ -15316,7 +15349,7 @@ dm80|dmdt80|dt80|datamedia dt80/1,
 	cup=%i\E[%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K,
 	home=\E[H, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, ri=\EM,
 	rmso=\E[m, rmul=\E[m, sgr0=\E[m, smso=\E[7m, smul=\E[4m,
-	use=vt100,
+	use=vt100+4bsd,
 # except in 132 column mode, where it needs a little padding.
 # This is still less padding than the vt100, and you can always turn on
 # the ^S/^Q handshaking, so you can use vt100 flavors for things like
@@ -18471,7 +18504,7 @@ tek4125|tektronix 4125,
 	is2=\E%\E!0\EQD1\EUX03\EKA\ELBB2\ELCE0\ELI100\ELJ2\ELLB2
 	    \ELM0\ELS1\ELX00\ELV1\E%\E!1\E>\E[?3l\E[?4l\E[?5l\E[?7h
 	    \E[?8h,
-	rc@, sc@, smkx=\E=, use=vt100,
+	rc@, sc@, smkx=\E=, use=vt100+4bsd,
 
 # From: <jcoker@ucbic>
 # (tek4207: This was the termcap file's entry for the 4107/4207, but SCO
@@ -18694,7 +18727,7 @@ vc415|volker-craig 415,
 # Steve Jacobson 8/85
 pcplot|pc-plot terminal emulation program,
 	xenl@,
-	csr@, dl@, dl1@, il@, il1@, rc@, sc@, use=vt100,
+	csr@, dl@, dl1@, il@, il1@, rc@, sc@, use=vt100+4bsd,
 # KayPro II from Richard G Turner <rturner at Darcom-Hq.ARPA>
 # I've found that my KayPro II, running MDM730, continues to emulate an
 # ADM-3A terminal, just like I was running TERM.COM. On our 4.2 UNIX
@@ -18960,7 +18993,7 @@ mac|macintosh|Macintosh with MacTerminal,
 	OTdN#30,
 	blink@, dch1=\E[P$<7/>, ich1=\E[@$<9/>, ip=$<7/>, use=lisa,
 # Lisaterm in 132 column ("wide") mode.
-mac-w|macterminal-w|Apple Macintosh with Macterminal in 132 column mode,
+mac-w|macterminal-w|Apple Macintosh with MacTerminal in 132 column mode,
 	cols#132, use=mac,
 
 #### Radio Shack/Tandy
@@ -19684,10 +19717,10 @@ linux-m1|Linux Minitel 1 "like" Couleurs,
 # 1. Using double-shapes for vt100 graphical chars (eg: mc).
 # 2. Native brown color corrected to good yellow color.
 # 3. Adding "Insert" and "Delete Line" keys as ESC Up and ESC Down arrow keys.
-# 4. Suppressed nonexistant underlined mode (normally as bright).
+# 4. Suppressed nonexistent underlined mode (normally as bright).
 # 5. ich/ich1 not filled because of non-curses programs.
 #--
-# 6. Suppressed nonexistant invisible mode.
+# 6. Suppressed nonexistent invisible mode.
 #(7.)Adding forgotten "cub/cud/cuf/cuu" sequences deplacement.
 
 linux-m1b|Linux Minitel 1B "like" Monochrome (Gris/Blanc/Noir+Dim),
@@ -19792,7 +19825,7 @@ screen.putty-m2|Putty m2 specific for screen,
 # From: Alexandre Montaron, 19 Nov 2015, updated 19 Sep 2016
 #
 # He comments:
-# viewdata lacks a true cup capabilitie,
+# viewdata lacks a true cup capability,
 # so I achieved it with home and cud1/cuf1 sequences only !
 viewdata|prestel/viewdata terminals,
 	am, bw, eslok, hz,
@@ -20744,7 +20777,7 @@ ddr|rebus3180|ddr3180|Rebus/DDR 3180 vt100 emulator,
 ps300|Picture System 300,
 	xt,
 	it@,
-	rmso@, rmul@, smso@, smul@, use=vt100,
+	rmso@, rmul@, smso@, smul@, use=vt100+4bsd,
 
 #### General Electric (ge)
 #
@@ -20926,7 +20959,7 @@ z29a|z29a-kc-bc|h29a-kc-bc|heath/zenith 29 in ansi mode,
 	    \E[11m,
 	sc=\E[s, sgr0=\E[m, smcup=\E[?7l, smso=\E[7;2m, smul=\E[4m,
 	tbc=\E[3g, tsl=\E[s\E[>5;1h\E[25;%i%dH\E[1K,
-z29a-kc-uc|h29a-kc-uc|z29 ansi mode with keyckick and underscore cursor,
+z29a-kc-uc|h29a-kc-uc|z29 ansi mode with keyclick and underscore cursor,
 	rs1=\E<\E[1;24r\E[24;1H\E[?7h\E[>1;2;3;4;5;6;7;8;9l\E[m\E[11
 	    m,
 	use=z29a,
@@ -21125,7 +21158,7 @@ modgraph|mod24|modgraph terminal emulating vt100,
 	is2=\E\^9;0s\E\^7;1s\E[3g\E\^11;9s\E\^11;17s\E\^11;25s\E\^11
 	    ;33s\E\^11;41s\E\^11;49s\E\^11;57s\E\^11;65s\E\^11;73s
 	    \E\^11;81s\E\^11;89s,
-	rf@, ri=\EM\E[K$<5/>, use=vt100,
+	rf@, ri=\EM\E[K$<5/>, use=vt100+4bsd,
 # The GX-1000 manual is dated 1984.  This looks rather like a VT-52.
 modgraph2|modgraph gx-1000 80x24 with keypad not enabled,
 	am, da, db,
@@ -21444,7 +21477,8 @@ tab132|tab|tab132-15|tab 132/15,
 	OTdN@, cols#80, lines#24, lm#96,
 	cud1=^J, cup=\E[%i%p1%d;%p2%dH, dch1=\E[P, dl1=\E[M,
 	il1=\E[L, is2=\E[?7h\E[?3l\E[?5l, kcub1=\E[D, kcud1=\E[B,
-	kcuu1=\E[A, rmir=\E[4l, rmkx@, smir=\E[4h, smkx@, use=vt100,
+	kcuu1=\E[A, rmir=\E[4l, rmkx@, smir=\E[4h, smkx@,
+	use=vt100+4bsd,
 tab132-w|tab132 in wide mode,
 	cols#132,
 	is2=\E[?7h\E[?3h\E[?5l, use=tab132,
@@ -22177,7 +22211,7 @@ h19k|h19kermit|heathkit emulation provided by Kermit (no auto margin),
 # Software (formerly Peripherals Computers & Supplies, Inc) of
 # 2457 Perkiomen Ave., Reading, PA 19606, 1-800-876-8376.  They can
 # also be reached at support@synergy.com.
-versaterm|versaterm vt100 emulator for the macintosh,
+versaterm|versaterm vt100 emulator for the Macintosh,
 	am, xenl,
 	cols#80, it#8, lines#24,
 	bel=^G, blink=\E[5m$<2/>, bold=\E[1m$<2/>,
@@ -22384,7 +22418,7 @@ env230|envision230|envision 230 graphics terminal,
 	enacs@, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, rmacs@,
 	sgr=\E[0%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;
 	    1%;m$<2>,
-	sgr0=\E[0m$<2>, smacs@, use=vt100,
+	sgr0=\E[0m$<2>, smacs@, use=vt100+4bsd,
 # These execuports were impact-printer ttys with a 30- or maybe 15-cps acoustic
 # coupler attached, the whole rig fitting in a suitcase and more or less
 # portable.  Hot stuff for c.1977 :-) -- esr
@@ -22551,7 +22585,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # APC  Applicatn Program Command \E _                -         Delim  -
 # BEL  Bell *                    ^G                  -         -      bel
 # BPH  Break Permitted Here *    \E B                -         *      -
-# BS   Backpace *                ^H                  -         EF     -
+# BS   BackSpace *               ^H                  -         EF     -
 # CAN  Cancel *                  ^X                  -         -      -   (A)
 # CBT  Cursor Backward Tab       \E [ Pn Z           1         eF     cbt
 # CCH  Cancel Previous Character \E T                -         -      -
@@ -22729,9 +22763,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # (E) ECMA-48 calls this "Active Position Report" but preserves the CPR
 # abbreviation.
 #
-# (F) CTC parameter values: 0 = set char tab, 1 = set line tab, 2 = clear
-# char tab, 3 = clear line tab, 4 = clear all char tabs on current line,
-# 5 = clear all char tabs, 6 = clear all line tabs.
+# (F) CTC parameter values:
+#	0 = set char tab,
+#	1 = set line tab,
+#	2 = clear char tab,
+#	3 = clear line tab,
+#	4 = clear all char tabs on current line,
+#	5 = clear all char tabs,
+#	6 = clear all line tabs.
 #
 # (G) CUP and HVP are identical in effect.  Some ANSI.SYS versions accept
 # HVP, but always allow CUP as an alternate.  ECMA-48 calls HVP "Character
@@ -22740,12 +22779,19 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # (H) ECMA calls this "Cursor Line Tabulation" but preserves the CVT
 # abbreviation.
 #
-# (I) DSR parameter values: 0 = ready, 1 = busy, 2 = busy, will send DSR
-# later, 3 = malfunction, 4 = malfunction, will send DSR later, 5 = request
-# DSR, 6 = request CPR response.
+# (I) DSR parameter values:
+#	0 = ready,
+#	1 = busy,
+#	2 = busy, will send DSR later,
+#	3 = malfunction,
+#	4 = malfunction, will send DSR later,
+#	5 = request DSR,
+#	6 = request CPR response.
 #
-# (J) ECMA calls ED "Erase In Page". EA/ED/EL parameters: 0 = clear to end,
-# 1 = clear from beginning, 2 = clear.
+# (J) ECMA calls ED "Erase In Page". EA/ED/EL parameters:
+#	0 = clear to end,
+#	1 = clear from beginning,
+#	2 = clear.
 #
 # (K) ECMA calls this "End of Guarded Area" but preserves the EPA abbreviation.
 #
@@ -22758,20 +22804,57 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # (N) ECMA-48 calls this "Character Tabulation" but retains the HT
 # abbreviation.
 #
-# (O) SGR parameter values: 0 = default mode (attributes off), 1 = bold,
-# 2 = dim, 3 = italicized, 4 = underlined, 5 = slow blink, 6 = fast blink,
-# 7 = reverse video, 8 = invisible, 9 = crossed-out (marked for deletion),
-# 10 = primary font, 10 + n (n in 1..9) = nth alternative font, 20 = Fraktur,
-# 21 = double underline, 22 = turn off 2, 23 = turn off 3, 24 = turn off 4,
-# 25 = turn off 5, 26 = proportional spacing, 27 = turn off 7, 28 = turn off
-# 8, 29 = turn off 9, 30 = black fg, 31 = red fg, 32 = green fg, 33 = yellow
-# fg, 34 = blue fg, 35 = magenta fg, 36 = cyan fg, 37 = white fg, 38 = set
-# fg color as in CCIT T.416, 39 = set default fg color, 40 = black bg
-# 41 = red bg, 42 = green bg, 43 = yellow bg, 44 = blue bg, 45 = magenta bg,
-# 46 = cyan bg, 47 = white bg, 48 = set bg color as in CCIT T.416, 39 = set
-# default bg color, 50 = turn off 26, 51 = framed, 52 = encircled, 53 =
-# overlined, 54 = turn off 51 & 52, 55 = not overlined, 56-59 = reserved,
-# 61-65 = variable highlights for ideograms.
+# (O) SGR parameter values:
+#	0 = default mode (attributes off),
+#	1 = bold,
+#	2 = dim,
+#	3 = italicized,
+#	4 = underlined,
+#	5 = slow blink,
+#	6 = fast blink,
+#	7 = reverse video,
+#	8 = invisible,
+#	9 = crossed-out (marked for deletion),
+#	10 = primary font,
+#	10 + n (n in 1..9) = nth alternative font,
+#	20 = Fraktur,
+#	21 = double underline,
+#	22 = turn off 2,
+#	23 = turn off 3,
+#	24 = turn off 4,
+#	25 = turn off 5,
+#	26 = proportional spacing,
+#	27 = turn off 7,
+#	28 = turn off 8,
+#	29 = turn off 9,
+#	30 = black fg,
+#	31 = red fg,
+#	32 = green fg,
+#	33 = yellow fg,
+#	34 = blue fg,
+#	35 = magenta fg,
+#	36 = cyan fg,
+#	37 = white fg,
+#	38 = set fg color as in CCITT T.416,
+#	39 = set default fg color,
+#	40 = black bg
+#	41 = red bg,
+#	42 = green bg,
+#	43 = yellow bg,
+#	44 = blue bg,
+#	45 = magenta bg,
+#	46 = cyan bg,
+#	47 = white bg,
+#	48 = set bg color as in CCITT T.416,
+#	49 = set default bg color,
+#	50 = turn off 26,
+#	51 = framed,
+#	52 = encircled,
+#	53 = overlined,
+#	54 = turn off 51 & 52,
+#	55 = not overlined,
+#	56-59 = reserved,
+#	61-65 = variable highlights for ideograms.
 #
 # (P) SI is also called LSO, Locking Shift Zero.
 #
@@ -22781,11 +22864,15 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # use CUD for this function and ignore VPR.  ECMA calls it `Line Position
 # Absolute' but retains the VPA abbreviation.
 #
-# (S) MC parameters: 0 = start xfer to primary aux device, 1 = start xfer from
-# primary aux device, 2 = start xfer to secondary aux device, 3 = start xfer
-# from secondary aux device, 4 = stop relay to primary aux device, 5 =
-# start relay to primary aux device, 6 = stop relay to secondary aux device,
-# 7 = start relay to secondary aux device.
+# (S) MC parameters:
+#	0 = start xfer to primary aux device,
+#	1 = start xfer from primary aux device,
+#	2 = start xfer to secondary aux device,
+#	3 = start xfer from secondary aux device,
+#	4 = stop relay to primary aux device,
+#	5 = start relay to primary aux device,
+#	6 = stop relay to secondary aux device,
+#	7 = start relay to secondary aux device.
 #
 # (T) ECMA-48 calls this "Partial Line Forward" but retains the PLD
 # abbreviation.
@@ -22795,19 +22882,32 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # (V) ECMA-48 calls this "Reverse Line Feed" but retains the RI abbreviation.
 #
-# (W) RM/SM modes are as follows: 1 = Guarded Area Transfer Mode (GATM),
-# 2 = Keyboard Action Mode (KAM), 3 = Control Representation Mode (CRM),
-# 4 = Insertion Replacement Mode, 5 = Status Report Transfer Mode (SRTM),
-# 6 = Erasure Mode (ERM), 7 = Line Editing Mode (LEM), 8 = Bi-Directional
-# Support Mode (BDSM), 9 = Device Component Select Mode (DCSM),
-# 10 = Character Editing Mode (HEM), 11 = Positioning Unit Mode (PUM),
-# 12 = Send/Receive Mode, 13 = Format Effector Action Mode (FEAM),
-# 14 = Format Effector Transfer Mode (FETM), 15 = Multiple Area Transfer
-# Mode (MATM), 16 = Transfer Termination Mode, 17 = Selected Area Transfer
-# Mode, 18 = Tabulation Stop Mode, 19 = Editing Boundary Mode, 20 = Line Feed
-# New Line Mode (LF/NL), Graphic Rendition Combination Mode (GRCM), 22 =
-# Zero Default Mode (ZDM).  The EBM and LF/NL modes have actually been removed
-# from ECMA-48's 5th edition but are listed here for reference.
+# (W) RM/SM modes are as follows:
+#	1 = Guarded Area Transfer Mode (GATM),
+#	2 = Keyboard Action Mode (KAM),
+#	3 = Control Representation Mode (CRM),
+#	4 = Insertion Replacement Mode (IRM),
+#	5 = Status Report Transfer Mode (SRTM),
+#	6 = Erasure Mode (ERM),
+#	7 = Line Editing Mode (LEM),
+#	8 = Bi-Directional Support Mode (BDSM),
+#	9 = Device Component Select Mode (DCSM),
+#	10 = Character Editing Mode (HEM),
+#	11 = Positioning Unit Mode (PUM),
+#	12 = Send/Receive Mode (SRM),
+#	13 = Format Effector Action Mode (FEAM),
+#	14 = Format Effector Transfer Mode (FETM),
+#	15 = Multiple Area Transfer Mode (MATM),
+#	16 = Transfer Termination Mode (TTM),
+#	17 = Selected Area Transfer Mode (SATM),
+#	18 = Tabulation Stop Mode (TSM),
+#	19 = Editing Boundary Mode (EBM),
+#	20 = Line Feed New Line Mode (LF/NL),
+#	21 = Graphic Rendition Combination Mode (GRCM),
+#	22 = Zero Default Mode (ZDM).
+#
+# The EBM and LF/NL modes have actually been removed from ECMA-48's 5th edition
+# but are listed here for reference.
 #
 # (X) Select Alternate Presentation Variants is used only for non-Latin
 # alphabets.
@@ -23365,7 +23465,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 9.4.2 (Thu Mar  9 01:45:44 EST 1995):
 #	* Merged in DEC's official entries for its terminals.  The only old
 #	  entry I kept was Doug Gwyn's alternate vt100 (as vt100-avo).
-#	* Replaced the translated BBN Bitgraph entries with purpose-built
+#	* Replaced the translated BBN BitGraph entries with purpose-built
 #	  ones from AT&T's SVr3.
 #	* Replaced the AT&T entries with AT&T's official terminfos.
 #	* Added teleray 16, vc415, cops10.
@@ -24991,7 +25091,15 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ uncancel Ms in tmux entry (Harry Gindi, Nicholas Marriott).
 #	+ add dumb-emacs-ansi -TD
 #
-# 2017-03-04
+# 2017-03-05
 #	+ correct a few spelling errors in comments -TD
+#	+ add fbterm -TD
+#
+# 2017-03-11
+#	+ add vt100+4bsd building block, use that for older terminals rather
+#	  than "vt100" which is now mostly used as a building block for
+#	  terminal emulators -TD
+#	+ modify vt100 rs2 string to reset vt52 mode and scrolling regions
+#	  (report/analysis by Robert King) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
