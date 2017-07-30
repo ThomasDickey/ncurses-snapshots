@@ -159,7 +159,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.144 2017/07/22 23:59:07 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.145 2017/07/23 00:08:37 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -1065,7 +1065,7 @@ NCURSES_SP_NAME(_nc_mvcur) (NCURSES_SP_DCLx
      * external calls.  Flush the output if the screen has not been
      * initialized, e.g., when used from low-level terminfo programs.
      */
-    if (SP_PARM->_endwin == ewInitial)
+    if ((SP_PARM != 0) && (SP_PARM->_endwin == ewInitial))
 	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
     return rc;
 }
@@ -1092,7 +1092,7 @@ TINFO_MVCUR(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew)
 			ynew, xnew,
 			NCURSES_SP_NAME(_nc_outch),
 			TRUE);
-    if (SP_PARM->_endwin == ewInitial)
+    if ((SP_PARM != 0) && (SP_PARM->_endwin == ewInitial))
 	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
     NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
     return rc;
