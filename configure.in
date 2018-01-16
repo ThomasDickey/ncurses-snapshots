@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.651 2018/01/01 15:11:50 tom Exp $
+dnl $Id: configure.in,v 1.652 2018/01/15 19:22:07 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See https://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20170501)
-AC_REVISION($Revision: 1.651 $)
+AC_REVISION($Revision: 1.652 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1472,6 +1472,9 @@ else
 	test -n "$LIBTOOL_CXX" && LIBTOOL_CXX="$LIBTOOL_CXX --silent"
 fi
 AC_SUBST(ECHO_LINK)
+
+# --disable-stripping is used for debugging
+CF_INSTALL_OPTS
 
 ###	use option --enable-warnings to turn on all gcc warnings
 AC_MSG_CHECKING(if you want to see compiler warnings)
