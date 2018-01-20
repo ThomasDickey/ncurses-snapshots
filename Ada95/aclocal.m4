@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.129 2018/01/15 22:09:57 tom Exp $
+dnl $Id: aclocal.m4,v 1.131 2018/01/16 21:49:43 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2973,8 +2973,11 @@ else
 			cd ..
 			rm -rf conftest* *~conftest*
 		fi
+	else
+		# gprconfig is newer than gnatmake; we can continue...
+		cf_ada_config="##"
 	fi
-	if test -z "$cf_ada_config"
+	if test "x$cf_ada_config" != "x#"
 	then
 		CF_GNAT_VERSION
 		AC_CHECK_PROG(M4_exists, m4, yes, no)
