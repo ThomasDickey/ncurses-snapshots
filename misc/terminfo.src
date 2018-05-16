@@ -7003,7 +7003,7 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 tmux|tmux terminal multiplexer,
 	invis=\E[8m, rmso=\E[27m,
 	sgr=\E[0%?%p6%t;1%;%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;
-	    \s\s\s\s\s\s\s\s\s\s\s\s5%;%?%p5%t;2%;m%?%p9%t\016%e
+	    5%;%?%p5%t;2%;m%?%p9%t\016%e
 	    \017%;,
 	smso=\E[7m, E3=\E[3J, use=ecma+italics,
 	use=ecma+strikeout, use=xterm+edit, use=xterm+pcfkeys,
