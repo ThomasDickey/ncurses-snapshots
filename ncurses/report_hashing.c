@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2017,2020 Free Software Foundation, Inc.              *
+ * Copyright (c) 2020 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,72 +27,47 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey                    1999-on                     *
+ *  Author: Thomas E. Dickey                                                *
  ****************************************************************************/
 
-/*
- * free_ttype.c -- allocation functions for TERMTYPE
- *
- *	_nc_free_termtype()
- *	use_extended_names()
- *
- */
-
 #include <curses.priv.h>
-
 #include <tic.h>
 
-MODULE_ID("$Id: free_ttype.c,v 1.18 2020/02/01 16:36:19 tom Exp $")
+MODULE_ID("$Id: report_hashing.c,v 1.2 2020/02/01 22:36:16 tom Exp $")
 
 static void
-really_free_termtype(TERMTYPE2 *ptr, bool freeStrings)
+check_names(const char *name, NCURSES_CONST char *const *table, int termcap)
 {
-    T(("_nc_free_termtype(%s)", ptr->term_names));
+    int errs = 0;
+    int n;
+    struct name_table_entry const *entry_ptr;
+    const HashValue *hash_table = _nc_get_hash_table(termcap);
 
-    if (freeStrings) {
-	FreeIfNeeded(ptr->str_table);
+    printf("%s:\n", name);
+    for (n = 0; table[n] != NULL; ++n) {
+	entry_ptr = _nc_find_entry(table[n], hash_table);
+	if (entry_ptr == 0) {
+	    printf("  %s\n", table[n]);
+	    errs++;
+	}
     }
-    FreeIfNeeded(ptr->Booleans);
-    FreeIfNeeded(ptr->Numbers);
-    FreeIfNeeded(ptr->Strings);
-#if NCURSES_XNAMES
-    if (freeStrings) {
-	FreeIfNeeded(ptr->ext_str_table);
-    }
-    FreeIfNeeded(ptr->ext_Names);
-#endif
-    memset(ptr, 0, sizeof(TERMTYPE));
-    _nc_free_entry(_nc_head, ptr);
+    if (errs)
+	printf("%d errors\n", errs);
 }
 
-/*
- * This entrypoint is used by tack 1.07
- */
-NCURSES_EXPORT(void)
-_nc_free_termtype(TERMTYPE *ptr)
+int
+main(void)
 {
-    really_free_termtype((TERMTYPE2 *) ptr, !NCURSES_EXT_NUMBERS);
+#define CHECK_TI(name) check_names(#name, name, 0)
+#define CHECK_TC(name) check_names(#name, name, 1)
+
+    CHECK_TI(boolnames);
+    CHECK_TI(numnames);
+    CHECK_TI(strnames);
+
+    CHECK_TC(boolcodes);
+    CHECK_TC(numcodes);
+    CHECK_TC(strcodes);
+
+    return EXIT_SUCCESS;
 }
-
-#if NCURSES_EXT_NUMBERS
-NCURSES_EXPORT(void)
-_nc_free_termtype2(TERMTYPE2 *ptr)
-{
-    really_free_termtype(ptr, TRUE);
-}
-#endif
-
-#if NCURSES_XNAMES
-NCURSES_EXPORT_VAR(bool) _nc_user_definable = TRUE;
-
-NCURSES_EXPORT(int)
-use_extended_names(bool flag)
-{
-    int oldflag = _nc_user_definable;
-
-    START_TRACE();
-    T((T_CALLED("use_extended_names(%d)"), flag));
-    _nc_user_definable = flag;
-    returnBool(oldflag);
-}
-#endif

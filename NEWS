@@ -25,7 +25,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3431 2020/01/19 02:02:44 tom Exp $
+-- $Id: NEWS,v 1.3436 2020/02/01 21:21:18 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -44,6 +44,16 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20200201
+	+ modify comparison in make_hash.c to correct a special case in
+	  collision handling for Caps-hpux11
+	+ add testing utility report_hashing to check hash-tables used for
+	  terminfo and termcap names.
+	+ fix a missing prototype for _nc_free_and_exit().
+	+ update a few comments about tack 1.07
+	+ use an awk script to split too-long pathnames used in Ada95 sample
+	  programs for explain.txt
 
 20200118
 	+ expanded description of XM in user_caps.5

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2018,2019 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2019,2020 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.31 2019/04/27 23:28:31 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.32 2020/02/01 16:36:19 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -598,7 +598,7 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
 }
 
 /*
- * This entrypoint is used by tack.
+ * This entrypoint is used by tack 1.07
  */
 NCURSES_EXPORT(void)
 _nc_copy_termtype(TERMTYPE *dst, const TERMTYPE *src)
