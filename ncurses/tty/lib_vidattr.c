@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2018,2019 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2019,2020 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -69,7 +69,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.74 2019/04/13 22:40:54 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.75 2020/02/01 22:10:48 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \
@@ -152,7 +152,11 @@ NCURSES_SP_NAME(vidputs) (NCURSES_SP_DCLx
 	};
 	unsigned n;
 	int used = 0;
+#ifdef max_attributes		/* not in U/Win */
 	int limit = (max_attributes <= 0) ? 1 : max_attributes;
+#else
+	int limit = 1;
+#endif
 	chtype retain = 0;
 
 	/*
@@ -324,7 +328,6 @@ NCURSES_SP_NAME(vidputs) (NCURSES_SP_DCLx
 	TurnOn(A_VERTICAL,	enter_vertical_hl_mode);
 #endif
 	/* *INDENT-ON* */
-
     }
 
     if (reverse)
