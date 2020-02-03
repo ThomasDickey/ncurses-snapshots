@@ -1,5 +1,6 @@
 /****************************************************************************
- * Copyright (c) 1998-2019,2020 Free Software Foundation, Inc.              *
+ * Copyright 2019,2020 Thomas E. Dickey                                     *
+ * Copyright 1998-2008,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +45,7 @@
 #include <tic.h>
 #include <hashsize.h>
 
-MODULE_ID("$Id: comp_hash.c,v 1.52 2020/02/01 16:36:19 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.53 2020/02/02 23:34:34 tom Exp $")
 
 /*
  * Finds the entry for the given string in the hash table if present.

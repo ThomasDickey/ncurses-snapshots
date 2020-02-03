@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2020 Free Software Foundation, Inc.                          #
+# Copyright 2020 Thomas E. Dickey                                            #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -28,7 +28,7 @@
 #
 #  Author:  Thomas E. Dickey
 #
-#  $Id: split-path.awk,v 1.2 2020/02/02 01:13:49 tom Exp $
+#  $Id: split-path.awk,v 1.3 2020/02/02 23:34:34 tom Exp $
 BEGIN	{ cols = 72; }
 /[$]THIS_DATADIR/ {
 	gsub("[$]THIS_DATADIR", "\"" this_datadir "\"");
