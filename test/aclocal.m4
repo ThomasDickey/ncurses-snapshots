@@ -1,5 +1,6 @@
 dnl***************************************************************************
-dnl Copyright (c) 2003-2019,2020 Free Software Foundation, Inc.              *
+dnl Copyright 2018-2019,2020 Thomas E. Dickey                                *
+dnl Copyright 2003-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -26,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.172 2020/01/18 17:30:44 tom Exp $
+dnl $Id: aclocal.m4,v 1.173 2020/02/02 23:34:34 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl

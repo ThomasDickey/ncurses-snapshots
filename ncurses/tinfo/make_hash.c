@@ -1,5 +1,6 @@
 /****************************************************************************
- * Copyright (c) 1998-2019,2020 Free Software Foundation, Inc.              *
+ * Copyright 2018-2019,2020 Thomas E. Dickey                                *
+ * Copyright 2009-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +44,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: make_hash.c,v 1.32 2020/02/01 21:16:56 tom Exp $")
+MODULE_ID("$Id: make_hash.c,v 1.33 2020/02/02 23:34:34 tom Exp $")
 
 /*
  *	_nc_make_hash_table()

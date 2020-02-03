@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2020 Free Software Foundation, Inc.                        *
+ * Copyright 2020 Thomas E. Dickey                                          *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: report_hashing.c,v 1.2 2020/02/01 22:36:16 tom Exp $")
+MODULE_ID("$Id: report_hashing.c,v 1.3 2020/02/02 23:34:34 tom Exp $")
 
 static void
 check_names(const char *name, NCURSES_CONST char *const *table, int termcap)

@@ -1,5 +1,6 @@
 /****************************************************************************
- * Copyright (c) 1999-2017,2020 Free Software Foundation, Inc.              *
+ * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 1999-2011,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: free_ttype.c,v 1.18 2020/02/01 16:36:19 tom Exp $")
+MODULE_ID("$Id: free_ttype.c,v 1.19 2020/02/02 23:34:34 tom Exp $")
 
 static void
 really_free_termtype(TERMTYPE2 *ptr, bool freeStrings)
