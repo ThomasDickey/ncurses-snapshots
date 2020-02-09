@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.265 2020/02/02 23:34:34 tom Exp $ */
+/* $Id: curses.h.in,v 1.266 2020/02/08 10:51:53 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -128,6 +128,14 @@
  */
 #ifndef NCURSES_REENTRANT
 #define NCURSES_REENTRANT @cf_cv_enable_reentrant@
+#endif
+
+/*
+ * In certain environments, we must work around linker problems for data
+ */
+#undef NCURSES_BROKEN_LINKER
+#if @BROKEN_LINKER@
+#define NCURSES_BROKEN_LINKER 1
 #endif
 
 /*
