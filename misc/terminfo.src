@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.799 $
-#	$Date: 2020/05/03 12:47:06 $
+#	$Revision: 1.800 $
+#	$Date: 2020/05/16 16:59:20 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4299,6 +4299,22 @@ ms-terminal|Windows10 terminal,
 	use=xterm-basic,
 
 #### Visual Studio
+# Visual Studio Code 1.45.0 uses xterm.js 12.8.1 (see https://xtermjs.org/).
+#
+# vttest:
+# - fixes menu 1 problem with wrapping
+# - supports DECALN
+# - fixes menu 8 problem with delete-character
+# - REP, SL/SL work
+# - keypad application mode still does not work; PF1-PF4 are not assigned.
+# - DECRQM/DECRPM do not work
+# - xterm mouse features:
+#   - SGR coordinates work; the other modes do not (see vscode #96058)
+#   - focus-events are not sent
+#   - mouse highlight tracking does not send button event
+# tack/other:
+# - little or no change since previous review
+#
 # Visual Studio Code 1.35.1 uses xterm.js (see https://xtermjs.org/).
 # https://code.visualstudio.com/docs/editor/integrated-terminal
 #
@@ -26537,5 +26553,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2020-05-03
 #	+ fix some dead URLs -TD
+#
+# 2020-05-16
+#	+ update notes on vscode / xterm.js -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
