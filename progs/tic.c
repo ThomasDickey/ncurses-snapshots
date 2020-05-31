@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.285 2020/05/31 00:12:39 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.286 2020/05/31 21:05:44 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -1179,6 +1179,14 @@ check_acs(TERMTYPE2 *tp)
     }
 }
 
+static char *
+safe_strdup(const char *value)
+{
+    if (value == NULL)
+	value = "";
+    return strdup(value);
+}
+
 static bool
 same_color(NCURSES_CONST char *oldcap, NCURSES_CONST char *newcap, int limit)
 {
@@ -1189,8 +1197,8 @@ same_color(NCURSES_CONST char *oldcap, NCURSES_CONST char *newcap, int limit)
 	int n;
 	int same;
 	for (n = same = 0; n < limit; ++n) {
-	    char *oldvalue = strdup(TIPARM_1(oldcap, n));
-	    char *newvalue = strdup(TIPARM_1(newcap, n));
+	    char *oldvalue = safe_strdup(TIPARM_1(oldcap, n));
+	    char *newvalue = safe_strdup(TIPARM_1(newcap, n));
 	    same += !strcmp(oldvalue, newvalue);
 	    free(oldvalue);
 	    free(newvalue);
