@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2023 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.2 2020/11/21 23:35:56 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.3 2023/03/25 14:08:36 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -924,11 +924,14 @@ wcon_initmouse(TERMINAL_CONTROL_BLOCK * TCB)
 {
     SCREEN *sp;
 
+    T((T_CALLED("win32con::wcon_initmouse(%p)"), TCB));
+
     if (validateConsoleHandle()) {
 	SetSP();
 
 	sp->_mouse_type = M_TERM_DRIVER;
     }
+    returnVoid;
 }
 
 static int
@@ -939,6 +942,7 @@ wcon_testmouse(TERMINAL_CONTROL_BLOCK * TCB,
     int rc = 0;
     SCREEN *sp;
 
+    T((T_CALLED("win32con::wcon_testmouse(%p)"), TCB));
     if (validateConsoleHandle()) {
 	SetSP();
 
@@ -953,7 +957,7 @@ wcon_testmouse(TERMINAL_CONTROL_BLOCK * TCB,
 	}
     }
 
-    return rc;
+    returnCode(rc);
 }
 
 static int

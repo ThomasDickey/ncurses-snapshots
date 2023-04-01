@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1052 $
-#	$Date: 2023/01/28 23:21:43 $
+#	$Revision: 1.1056 $
+#	$Date: 2023/04/01 23:24:35 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4622,6 +4622,16 @@ ms-vt-utf8|vt-utf8|UTF-8 flavor of VT100+,
 # Windows Terminal (Preview)
 # https://github.com/microsoft/terminal
 #
+# Windows 10 22H2 (also Windows 11)
+# Version 1.16.10261.0
+#
+# - Windows Terminal #1553: "Feature Request:  Mouse/Touch/Pointer Bindings
+#   (like middle-click paste, right-click context menu, etc.)", compare to
+#   https://learn.microsoft.com/en-us/windows/console/mouse-event-record-str
+#   This appears to be related to a problem with its implementation of the
+#   Console API; the mouse does not work in a "Command Window" (e.g., as used
+#   in the ncurses MinGW driver), although escape sequences work.
+#
 # Windows 10 21H1
 # Version 1.9.1942.0
 #
@@ -7985,10 +7995,10 @@ foot+base|foot base fragment,
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cr=\r,
 	cub1=^H, cud1=\n, dim=\E[2m, ech=\E[%p1%dX, ed=\E[J, el=\E[K,
 	el1=\E[1K, flash=\E]555\E\\, ind=\n, invis=\E[8m,
-	is2=\E[!p\E[?3;4l\E[4l\E>, kbs=^?, kcbt=\E[Z,
-	oc=\E]104\E\\, op=\E[39;49m, rev=\E[7m, ri=\EM, rmacs=\E(B,
-	rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m,
-	rs1=\Ec, rs2=\E[!p\E[?3;4l\E[4l\E>,
+	is2=\E[!p\E[4l\E>, kbs=^?, kcbt=\E[Z, oc=\E]104\E\\,
+	op=\E[39;49m, rev=\E[7m, ri=\EM, rmacs=\E(B, rmam=\E[?7l,
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=\Ec,
+	rs2=\E[!p\E[4l\E>,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smkx=\E[?1h\E=,
@@ -27776,13 +27786,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ correct PS vs PE names in bracketed+paste (report by Bram Moolenaar)
 #	  -TD
 #
-# 2022-01-07
+# 2023-01-07
 #	+ add comment to bracketed+paste explaining that vim patch 9.0.1117 is
 #	  needed for use with the updated xterm descriptions (suggested by Bram
 #	  Moolenaar).
 #	+ add RV report+version (suggested by Bram Moolenaar).
 #
-# 2022-01-14
+# 2023-01-14
 #	+ change RV to XR/xr, to avoid conflict with pre-existing usage in vim,
 #	  to use RV/rv to denote DA2 and its response (discussion with Bram
 #	  Moolenaar) -TD
@@ -27790,8 +27800,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  of terminals which may support focus in/out -TD
 #	+ use xterm+focus in xterm-p370 and tmux -TD
 #
-# 2022-01-28
+# 2023-01-28
 #	+ document XF, kxIN and kxOUT -TD
 #	+ add note on sun/wscons/cmdtool/shelltool -TD
+#
+# 2023-04-01
+#	+ remove DECCOLM+DECSCLM from foot (patch by Daniel Ekloef).
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

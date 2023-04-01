@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.197 2022/08/13 14:13:12 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.198 2023/03/25 23:27:28 tom Exp $")
 
 #include <tic.h>
 
@@ -380,7 +380,7 @@ handle_sysmouse(int sig GCC_UNUSED)
 }
 #endif /* USE_SYSMOUSE */
 
-#ifndef USE_TERM_DRIVER
+#if !defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)
 #define xterm_kmous "\033[M"
 
 static void
@@ -442,6 +442,9 @@ init_xterm_mouse(SCREEN *sp)
 static void
 enable_xterm_mouse(SCREEN *sp, int enable)
 {
+    TPUTS_TRACE(enable
+		? "xterm mouse initialization"
+		: "xterm mouse deinitialization");
 #if USE_EMX_MOUSE
     sp->_emxmouse_activated = enable;
 #else
@@ -449,6 +452,18 @@ enable_xterm_mouse(SCREEN *sp, int enable)
 #endif
     sp->_mouse_active = enable;
 }
+
+#if defined(USE_TERM_DRIVER)
+static void
+enable_win32_mouse(SCREEN *sp, int enable)
+{
+#if defined(EXP_WIN32_DRIVER)
+    enable_xterm_mouse(sp, enable);
+#else
+    sp->_mouse_active = enable;
+#endif
+}
+#endif
 
 #if USE_GPM_SUPPORT
 static bool
@@ -741,7 +756,8 @@ initialize_mousetype(SCREEN *sp)
 
 #ifdef USE_TERM_DRIVER
     CallDriver(sp, td_initmouse);
-#else
+#endif
+#if !defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)
     /* we know how to recognize mouse events under "xterm" */
     if (NonEmpty(key_mouse)) {
 	init_xterm_mouse(sp);
@@ -760,13 +776,15 @@ _nc_mouse_init(SCREEN *sp)
 {
     bool result = FALSE;
 
+    T((T_CALLED("_nc_mouse_init(%p)"), sp));
+
     if (sp != 0) {
 	if (!sp->_mouse_initialized) {
 	    int i;
 
 	    sp->_mouse_initialized = TRUE;
 
-	    TR(MY_TRACE, ("_nc_mouse_init() called"));
+	    TR(MY_TRACE, ("set _mouse_initialized"));
 
 	    sp->_mouse_eventp = FirstEV(sp);
 	    for (i = 0; i < EV_MAX; i++)
@@ -774,11 +792,11 @@ _nc_mouse_init(SCREEN *sp)
 
 	    initialize_mousetype(sp);
 
-	    T(("_nc_mouse_init() set mousetype to %d", sp->_mouse_type));
+	    T(("set _mouse_type to %d", sp->_mouse_type));
 	}
 	result = sp->_mouse_initialized;
     }
-    return result;
+    returnCode(result);
 }
 
 /*
@@ -1388,11 +1406,14 @@ _nc_mouse_inline(SCREEN *sp)
 static void
 mouse_activate(SCREEN *sp, int on)
 {
+    T((T_CALLED("mouse_activate(%p,%s)"),
+       (void *) SP_PARM, on ? "on" : "off"));
+
     if (!on && !sp->_mouse_initialized)
-	return;
+	returnVoid;
 
     if (!_nc_mouse_init(sp))
-	return;
+	returnVoid;
 
     if (on) {
 	sp->_mouse_bstate = 0;
@@ -1401,7 +1422,6 @@ mouse_activate(SCREEN *sp, int on)
 #if NCURSES_EXT_FUNCS
 	    NCURSES_SP_NAME(keyok) (NCURSES_SP_ARGx KEY_MOUSE, on);
 #endif
-	    TPUTS_TRACE("xterm mouse initialization");
 	    enable_xterm_mouse(sp, 1);
 	    break;
 #if USE_GPM_SUPPORT
@@ -1420,25 +1440,28 @@ mouse_activate(SCREEN *sp, int on)
 #endif
 #ifdef USE_TERM_DRIVER
 	case M_TERM_DRIVER:
-	    sp->_mouse_active = TRUE;
+	    enable_win32_mouse(sp, TRUE);
 	    break;
 #endif
 	case M_NONE:
-	    return;
+	    returnVoid;
+	default:
+	    T(("unexpected mouse mode"));
+	    break;
 	}
 	/* Make runtime binding to cut down on object size of applications that
 	 * do not use the mouse (e.g., 'clear').
 	 */
-	sp->_mouse_event = _nc_mouse_event;
+	/* *INDENT-EQLS* */
+	sp->_mouse_event  = _nc_mouse_event;
 	sp->_mouse_inline = _nc_mouse_inline;
-	sp->_mouse_parse = _nc_mouse_parse;
+	sp->_mouse_parse  = _nc_mouse_parse;
 	sp->_mouse_resume = _nc_mouse_resume;
-	sp->_mouse_wrap = _nc_mouse_wrap;
+	sp->_mouse_wrap   = _nc_mouse_wrap;
     } else {
 
 	switch (sp->_mouse_type) {
 	case M_XTERM:
-	    TPUTS_TRACE("xterm mouse deinitialization");
 	    enable_xterm_mouse(sp, 0);
 	    break;
 #if USE_GPM_SUPPORT
@@ -1454,14 +1477,18 @@ mouse_activate(SCREEN *sp, int on)
 #endif
 #ifdef USE_TERM_DRIVER
 	case M_TERM_DRIVER:
-	    sp->_mouse_active = FALSE;
+	    enable_win32_mouse(sp, FALSE);
 	    break;
 #endif
 	case M_NONE:
-	    return;
+	    returnVoid;
+	default:
+	    T(("unexpected mouse mode"));
+	    break;
 	}
     }
     NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    returnVoid;
 }
 
 /**************************************************************************

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.660 2023/02/25 21:24:20 tom Exp $
+ * $Id: curses.priv.h,v 1.661 2023/03/25 23:12:24 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1657,7 +1657,7 @@ typedef void VoidFunc(void);
 #define returnMMask(code)	TRACE_RETURN_SP(code,mmask_t)
 #define returnPtr(code)		TRACE_RETURN1(code,ptr)
 #define returnSP(code)		TRACE_RETURN1(code,sp)
-#define returnVoid		T((T_RETURN(""))); return
+#define returnVoid		{ T((T_RETURN(""))); return; }
 #define returnVoidPtr(code)	TRACE_RETURN1(code,void_ptr)
 #define returnWin(code)		TRACE_RETURN1(code,win)
 
