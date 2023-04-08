@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2022 Thomas E. Dickey                                *
+  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_terminfo.3x,v 1.82 2022/06/04 22:47:05 tom Exp @
+  * @Id: curs_terminfo.3x,v 1.83 2023/04/08 22:54:21 tom Exp @
   * ***************************************************************************
   * ***************************************************************************
   * ***************************************************************************
@@ -83,6 +83,9 @@
        <STRONG>int</STRONG> <STRONG>restartterm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>term</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>filedes</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>errret</EM><STRONG>);</STRONG>
 
        <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
+            <EM>or</EM>
+       <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>long</STRONG> <EM>p1</EM> <EM>...</EM> <STRONG>long</STRONG> <EM>p9</EM><STRONG>);</STRONG>
+
        <STRONG>int</STRONG> <STRONG>tputs(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>affcnt</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG><EM>putc</EM><STRONG>)(int));</STRONG>
        <STRONG>int</STRONG> <STRONG>putp(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
 
@@ -398,6 +401,11 @@
                the initial windows (stdscr, curscr, newscr).  Other error con-
                ditions are documented above.
 
+          <STRONG>tparm</STRONG>
+               returns a null if the capability would require  unexpected  pa-
+               rameters,  e.g., too many, too few, or incorrect types (strings
+               where integers are expected, or vice versa).
+
           <STRONG>tputs</STRONG>
                returns an error if the string parameter is null.  It does  not
                detect  I/O errors: X/Open states that <STRONG>tputs</STRONG> ignores the return
@@ -466,7 +474,6 @@
        <STRONG>Function</STRONG>    <STRONG>Description</STRONG>
        -------------------------------------------
        tigetflag   get boolean entry for given <EM>id</EM>
-
        tigetnum    get numeric entry for given <EM>id</EM>
        tigetstr    get string entry for given <EM>id</EM>
 
@@ -567,6 +574,34 @@
 
            In  response  to review comments by Thomas E. Dickey, X/Open Curses
            Issue 7 proposed the <STRONG>tiparm</STRONG> function in mid-2009.
+
+           While <STRONG>tiparm</STRONG> is always provided in ncurses, the older form is  only
+           available  as  a build-time configuration option.  If not specially
+           configured, <STRONG>tparm</STRONG> is the same as <STRONG>tiparm</STRONG>.
+
+       Both forms of <STRONG>tparm</STRONG> have drawbacks:
+
+       <STRONG>o</STRONG>   Most of the calls to <STRONG>tparm</STRONG> use only one or two parameters.  Passing
+           nine on each call is awkward.
+
+           Using  <STRONG>long</STRONG>  for the numeric parameter type is a workaround to make
+           the parameter use the same amount of stack as a pointer.  That  ap-
+           proach  dates  back  to  the  mid-1980s,  before C was standarized.
+           Since then, there is a standard (and pointers are not  required  to
+           fit in a long).
+
+       <STRONG>o</STRONG>   Providing  the  right  number of parameters for a variadic function
+           such as <STRONG>tiparm</STRONG> can be a problem, in particular for  string  parame-
+           ters.  However, only a few terminfo capabilities use string parame-
+           ters (e.g., the ones used for programmable function keys).
+
+           The ncurses library checks usage of these capabilities, and returns
+           an  error  if  the capability mishandles string parameters.  But it
+           cannot check if a calling program provides  strings  in  the  right
+           places for the <STRONG>tparm</STRONG> calls.
+
+           The  <STRONG><A HREF="tput.3x.html">tput(3x)</A></STRONG>  program  checks its use of these capabilities with a
+           table, so that it calls <STRONG>tparm</STRONG> correctly.
 
 
 </PRE><H3><a name="h3-Special-TERM-treatment">Special TERM treatment</a></H3><PRE>

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.320 2022/09/17 18:55:28 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.321 2023/04/08 15:51:57 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -2270,8 +2270,14 @@ check_1_infotocap(const char *name, NCURSES_CONST char *value, int count)
 
     _nc_reset_tparm(NULL);
     switch (actual) {
+    case Str:
+	result = TPARM_1(value, strings[1]);
+	break;
     case Num_Str:
 	result = TPARM_2(value, numbers[1], strings[2]);
+	break;
+    case Str_Str:
+	result = TPARM_2(value, strings[1], strings[2]);
 	break;
     case Num_Str_Str:
 	result = TPARM_3(value, numbers[1], strings[2], strings[3]);

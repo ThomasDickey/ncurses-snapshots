@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2022 Thomas E. Dickey                                *
+  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
   * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.56 2022/02/12 20:05:11 tom Exp @
+  * @Id: curs_termcap.3x,v 1.57 2023/04/08 21:43:01 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
@@ -148,27 +148,32 @@
            first parameter is merely a placeholder.
 
        <STRONG>o</STRONG>   Normally the ncurses library is compiled with terminfo support.  In
-           that case, <STRONG>tgoto</STRONG> uses <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG> (a more capable formatter).
+           that  case, <STRONG>tgoto</STRONG> uses an internal version of <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG> (a more ca-
+           pable formatter).
 
-           However,  <STRONG>tparm</STRONG>  is not a <EM>termcap</EM> feature, and portable <EM>termcap</EM> ap-
+           With terminfo support, <STRONG>tgoto</STRONG> is able to use some  of  the  terminfo
+           features,  but  not all.  In particular, it allows only numeric pa-
+           rameters; <STRONG>tparm</STRONG> supports string parameters.
+
+           However, <STRONG>tparm</STRONG> is not a <EM>termcap</EM> feature, and portable  <EM>termcap</EM>  ap-
            plications should not rely upon its availability.
 
-       The <STRONG>tputs</STRONG> routine is described on the  <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>  manual  page.
+       The  <STRONG>tputs</STRONG>  routine  is described on the <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG> manual page.
        It can retrieve capabilities by either termcap or terminfo name.
 
 
 </PRE><H3><a name="h3-Global-Variables">Global Variables</a></H3><PRE>
-       The  variables <STRONG>PC</STRONG>, <STRONG>UP</STRONG> and <STRONG>BC</STRONG> are set by <STRONG>tgetent</STRONG> to the terminfo entry's
+       The variables <STRONG>PC</STRONG>, <STRONG>UP</STRONG> and <STRONG>BC</STRONG> are set by <STRONG>tgetent</STRONG> to the terminfo  entry's
        data for <STRONG>pad_char</STRONG>, <STRONG>cursor_up</STRONG> and <STRONG>backspace_if_not_bs</STRONG>, respectively.  <STRONG>UP</STRONG>
-       is  not used by ncurses.  <STRONG>PC</STRONG> is used in the <STRONG>tdelay_output</STRONG> function.  <STRONG>BC</STRONG>
-       is used in the <STRONG>tgoto</STRONG> emulation.  The variable <STRONG>ospeed</STRONG> is set by  ncurses
+       is not used by ncurses.  <STRONG>PC</STRONG> is used in the <STRONG>tdelay_output</STRONG> function.   <STRONG>BC</STRONG>
+       is  used in the <STRONG>tgoto</STRONG> emulation.  The variable <STRONG>ospeed</STRONG> is set by ncurses
        in a system-specific coding to reflect the terminal speed.
 
 
 </PRE><H3><a name="h3-Releasing-Memory">Releasing Memory</a></H3><PRE>
-       The  termcap  functions  provide  no  means for freeing memory, because
-       legacy termcap implementations used only the buffer areas  provided  by
-       the  caller  via <STRONG>tgetent</STRONG> and <STRONG>tgetstr</STRONG>.  Those buffers are unused in ter-
+       The termcap functions provide no  means  for  freeing  memory,  because
+       legacy  termcap  implementations used only the buffer areas provided by
+       the caller via <STRONG>tgetent</STRONG> and <STRONG>tgetstr</STRONG>.  Those buffers are unused  in  ter-
        minfo.
 
        On the other hand, terminfo allocates memory.  It uses <STRONG>setupterm</STRONG> to re-
@@ -178,41 +183,55 @@
             <STRONG>del_curterm(cur_term);</STRONG>
 
 
-       to free this memory, but  there  is  an  additional  complication  with
-       ncurses.   It uses a fixed-size <EM>pool</EM> of storage locations, one per set-
-       ting of the <STRONG>TERM</STRONG> variable when <STRONG>tgetent</STRONG> is called.  The  <STRONG>screen(1)</STRONG>  pro-
+       to  free  this  memory,  but  there  is an additional complication with
+       ncurses.  It uses a fixed-size <EM>pool</EM> of storage locations, one per  set-
+       ting  of  the <STRONG>TERM</STRONG> variable when <STRONG>tgetent</STRONG> is called.  The <STRONG>screen(1)</STRONG> pro-
        gram relies upon this arrangement, to improve its performance.
 
-       An  application  which  uses only the low-level termcap functions could
+       An application which uses only the low-level  termcap  functions  could
        free the memory using <STRONG>del_curterm</STRONG>, because the pool is freed using oth-
        er functions (see <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>).
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except  where  explicitly noted, routines that return an integer return
-       <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> (SVr4 only specifies "an  integer  value  other
+       Except where explicitly noted, routines that return an  integer  return
+       <STRONG>ERR</STRONG>  upon  failure  and <STRONG>OK</STRONG> (SVr4 only specifies "an integer value other
        than <STRONG>ERR</STRONG>") upon successful completion.
 
        Routines that return pointers return <STRONG>NULL</STRONG> on error.
 
+       A few special cases apply:
+
+       <STRONG>o</STRONG>   If the terminal database has not been initialized, these return  an
+           error.
+
+       <STRONG>o</STRONG>   The  calls  with  a  string  parameter  (<STRONG>tgoto</STRONG>, <STRONG>tputs</STRONG>) check if the
+           string is null, or cancelled.  Those return an error.
+
+       <STRONG>o</STRONG>   A call to <STRONG>tgoto</STRONG> using a capability with string parameters is an er-
+           ror.
+
+       <STRONG>o</STRONG>   A call to <STRONG>tgoto</STRONG> using a capability with no parameters, or more than
+           two is an error.
+
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
-       If  you  call <STRONG>tgetstr</STRONG> to fetch <STRONG>ca</STRONG> or any other parameterized string, be
-       aware that it will be returned in terminfo notation, not the older  and
+       If you call <STRONG>tgetstr</STRONG> to fetch <STRONG>ca</STRONG> or any other parameterized  string,  be
+       aware  that it will be returned in terminfo notation, not the older and
        not-quite-compatible termcap notation.  This will not cause problems if
-       all you do with it is call <STRONG>tgoto</STRONG> or <STRONG>tparm</STRONG>, which both expand  terminfo-
-       style  strings as terminfo.  (The <STRONG>tgoto</STRONG> function, if configured to sup-
-       port termcap, will check if the  string  is  indeed  terminfo-style  by
-       looking  for  "%p"  parameters or "$&lt;..&gt;" delays, and invoke a termcap-
+       all  you do with it is call <STRONG>tgoto</STRONG> or <STRONG>tparm</STRONG>, which both expand terminfo-
+       style strings as terminfo.  (The <STRONG>tgoto</STRONG> function, if configured to  sup-
+       port  termcap,  will  check  if  the string is indeed terminfo-style by
+       looking for "%p" parameters or "$&lt;..&gt;" delays, and  invoke  a  termcap-
        style parser if the string does not appear to be terminfo).
 
-       Because terminfo conventions for representing padding in  string  capa-
+       Because  terminfo  conventions for representing padding in string capa-
        bilities differ from termcap's, users can be surprised:
 
        <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG> in a terminfo system will put out a literal "50" rather
            than busy-waiting for 50 milliseconds.
 
-       <STRONG>o</STRONG>   However, if ncurses is configured to support termcap, it  may  also
+       <STRONG>o</STRONG>   However,  if  ncurses is configured to support termcap, it may also
            have been configured to support the BSD-style padding.
 
            In that case, <STRONG>tputs</STRONG> inspects strings passed to it, looking for dig-
@@ -221,9 +240,9 @@
            <STRONG>tputs("50")</STRONG> in a termcap system may wait for 50 milliseconds rather
            than put out a literal "50"
 
-       Note  that termcap has nothing analogous to terminfo's <STRONG>sgr</STRONG> string.  One
-       consequence of this is that termcap applications  assume  <STRONG>me</STRONG>  (terminfo
-       <STRONG>sgr0</STRONG>)  does not reset the alternate character set.  This implementation
+       Note that termcap has nothing analogous to terminfo's <STRONG>sgr</STRONG> string.   One
+       consequence  of  this  is that termcap applications assume <STRONG>me</STRONG> (terminfo
+       <STRONG>sgr0</STRONG>) does not reset the alternate character set.  This  implementation
        checks for, and modifies the data shown to the termcap interface to ac-
        commodate termcap's limitation in this respect.
 
@@ -231,22 +250,22 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
 
 </PRE><H3><a name="h3-Standards">Standards</a></H3><PRE>
-       These  functions  are  provided for supporting legacy applications, and
+       These functions are provided for supporting  legacy  applications,  and
        should not be used in new programs:
 
        <STRONG>o</STRONG>   The XSI Curses standard, Issue 4 describes these functions.  Howev-
-           er,  they  are  marked TO BE WITHDRAWN and may be removed in future
+           er, they are marked TO BE WITHDRAWN and may be  removed  in  future
            versions.
 
        <STRONG>o</STRONG>   X/Open Curses, Issue 5 (December 2007) marked the termcap interface
            (along with <STRONG>vwprintw</STRONG> and <STRONG>vwscanw</STRONG>) as withdrawn.
 
-       Neither  the  XSI Curses standard nor the SVr4 man pages documented the
-       return values of <STRONG>tgetent</STRONG> correctly, though all three were in  fact  re-
-       turned  ever  since SVr1.  In particular, an omission in the XSI Curses
-       documentation has been misinterpreted to mean that <STRONG>tgetent</STRONG>  returns  <STRONG>OK</STRONG>
-       or  <STRONG>ERR</STRONG>.  Because the purpose of these functions is to provide compati-
-       bility with the <EM>termcap</EM> library, that is a defect in XCurses, Issue  4,
+       Neither the XSI Curses standard nor the SVr4 man pages  documented  the
+       return  values  of <STRONG>tgetent</STRONG> correctly, though all three were in fact re-
+       turned ever since SVr1.  In particular, an omission in the  XSI  Curses
+       documentation  has  been misinterpreted to mean that <STRONG>tgetent</STRONG> returns <STRONG>OK</STRONG>
+       or <STRONG>ERR</STRONG>.  Because the purpose of these functions is to provide  compati-
+       bility  with the <EM>termcap</EM> library, that is a defect in XCurses, Issue 4,
        Version 2 rather than in ncurses.
 
 
@@ -254,68 +273,68 @@
        External variables are provided for support of certain termcap applica-
        tions.  However, termcap applications' use of those variables is poorly
        documented, e.g., not distinguishing between input and output.  In par-
-       ticular, some applications are reported to declare  and/or  modify  <STRONG>os-</STRONG>
+       ticular,  some  applications  are reported to declare and/or modify <STRONG>os-</STRONG>
        <STRONG>peed</STRONG>.
 
-       The  comment that only the first two characters of the <STRONG>id</STRONG> parameter are
+       The comment that only the first two characters of the <STRONG>id</STRONG> parameter  are
        used escapes many application developers.  The original BSD 4.2 termcap
        library (and historical relics thereof) did not require a trailing null
-       NUL on the parameter name passed  to  <STRONG>tgetstr</STRONG>,  <STRONG>tgetnum</STRONG>  and  <STRONG>tgetflag</STRONG>.
-       Some  applications  assume  that the termcap interface does not require
+       NUL  on  the  parameter  name  passed to <STRONG>tgetstr</STRONG>, <STRONG>tgetnum</STRONG> and <STRONG>tgetflag</STRONG>.
+       Some applications assume that the termcap interface  does  not  require
        the trailing NUL for the parameter name.  Taking into account these is-
        sues:
 
-       <STRONG>o</STRONG>   As  a  special  case,  <STRONG>tgetflag</STRONG>  matched against a single-character
-           identifier provided that was at the end of  the  terminal  descrip-
+       <STRONG>o</STRONG>   As a special case,  <STRONG>tgetflag</STRONG>  matched  against  a  single-character
+           identifier  provided  that  was at the end of the terminal descrip-
            tion.  You should not rely upon this behavior in portable programs.
-           This implementation disallows matches against single-character  ca-
+           This  implementation disallows matches against single-character ca-
            pability names.
 
-       <STRONG>o</STRONG>   This  implementation  disallows  matches  by  the termcap interface
+       <STRONG>o</STRONG>   This implementation disallows  matches  by  the  termcap  interface
            against extended capability names which are longer than two charac-
            ters.
 
        The BSD termcap function <STRONG>tgetent</STRONG> returns the text of a termcap entry in
-       the buffer passed as an argument.  This library  (like  other  terminfo
+       the  buffer  passed  as an argument.  This library (like other terminfo
        implementations) does not store terminal descriptions as text.  It sets
        the buffer contents to a null-terminated string.
 
 
 </PRE><H3><a name="h3-Other-Compatibility">Other Compatibility</a></H3><PRE>
-       This library includes a termcap.h header, for compatibility with  other
-       implementations.   But  the header is rarely used because the other im-
+       This  library includes a termcap.h header, for compatibility with other
+       implementations.  But the header is rarely used because the  other  im-
        plementations are not strictly compatible.
 
        The original BSD termcap (through 4.3BSD) had no header file which gave
        function prototypes, because that was a feature of ANSI C.  BSD termcap
-       was written several years before C was  standardized.   However,  there
+       was  written  several  years before C was standardized.  However, there
        were two different termcap.h header files in the BSD sources:
 
-       <STRONG>o</STRONG>   One  was used internally by the <STRONG>jove</STRONG> editor in 2BSD through 4.4BSD.
+       <STRONG>o</STRONG>   One was used internally by the <STRONG>jove</STRONG> editor in 2BSD through  4.4BSD.
            It defined global symbols for the termcap variables which it used.
 
-       <STRONG>o</STRONG>   The other appeared in 4.4BSD Lite Release 2 (mid-1993) as  part  of
+       <STRONG>o</STRONG>   The  other  appeared in 4.4BSD Lite Release 2 (mid-1993) as part of
            <EM>libedit</EM> (also known as the <EM>editline</EM> library).  The CSRG source his-
-           tory shows that this was added in  mid-1992.   The  <EM>libedit</EM>  header
-           file  was used internally, as a convenience for compiling the <EM>edit-</EM>
+           tory  shows  that  this  was added in mid-1992.  The <EM>libedit</EM> header
+           file was used internally, as a convenience for compiling the  <EM>edit-</EM>
            <EM>line</EM> library.  It declared function prototypes, but no global vari-
            ables.
 
-       The  header  file from <EM>libedit</EM> was added to NetBSD's termcap library in
+       The header file from <EM>libedit</EM> was added to NetBSD's termcap  library  in
        mid-1994.
 
-       Meanwhile, GNU termcap was under development, starting  in  1990.   The
-       first  release  (termcap 1.0) in 1991 included a termcap.h header.  The
-       second release (termcap 1.1) in September 1992 modified the  header  to
+       Meanwhile,  GNU  termcap  was under development, starting in 1990.  The
+       first release (termcap 1.0) in 1991 included a termcap.h  header.   The
+       second  release  (termcap 1.1) in September 1992 modified the header to
        use <STRONG>const</STRONG> for the function prototypes in the header where one would ex-
-       pect the parameters to be read-only.  This was a difference versus  the
-       original  BSD  termcap.   The prototype for <STRONG>tputs</STRONG> also differed, but in
+       pect  the parameters to be read-only.  This was a difference versus the
+       original BSD termcap.  The prototype for <STRONG>tputs</STRONG> also  differed,  but  in
        that instance, it was <EM>libedit</EM> which differed from BSD termcap.
 
        A copy of GNU termcap 1.3 was bundled with <EM>bash</EM> in mid-1993, to support
        the <STRONG>readline(3)</STRONG> library.
 
-       A  termcap.h  file was provided in ncurses 1.8.1 (November 1993).  That
+       A termcap.h file was provided in ncurses 1.8.1 (November  1993).   That
        reflected influence by <STRONG>emacs(1)</STRONG> (rather than <STRONG>jove(1)</STRONG>) and GNU termcap:
 
        <STRONG>o</STRONG>   it provided declarations for a few global symbols used by <STRONG>emacs</STRONG>
@@ -325,8 +344,8 @@
        <STRONG>o</STRONG>   a prototype for <STRONG>tparam</STRONG> (a GNU termcap feature) was provided.
 
        Later (in mid-1996) the <STRONG>tparam</STRONG> function was removed from ncurses.  As a
-       result,  there are differences between any of the four implementations,
-       which must be taken into account by programs which can  work  with  all
+       result, there are differences between any of the four  implementations,
+       which  must  be  taken into account by programs which can work with all
        termcap library interfaces.
 
 
