@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.141 2023/04/08 18:24:18 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.142 2023/04/14 00:29:31 tom Exp $")
 
 /*
  *	char *
@@ -1271,7 +1271,39 @@ _nc_tiparm(int expected, const char *string, ...)
 #endif /* TRACE */
 
     if (tparm_setup(cur_term, string, &myData) == OK && ValidCap()) {
-	if (myData.num_actual == 0) {
+#ifdef CUR
+	if (myData.num_actual != expected && cur_term != NULL) {
+	    int needed = expected;
+	    if (CHECK_CAP(to_status_line)) {
+		needed = 0;	/* allow for xterm's status line */
+	    } else if (CHECK_CAP(set_a_background)) {
+		needed = 0;	/* allow for monochrome fakers */
+	    } else if (CHECK_CAP(set_a_foreground)) {
+		needed = 0;
+	    } else if (CHECK_CAP(set_background)) {
+		needed = 0;
+	    } else if (CHECK_CAP(set_foreground)) {
+		needed = 0;
+	    }
+#if NCURSES_XNAMES
+	    else {
+		char *check;
+
+		check = tigetstr("xm");
+		if (CHECK_CAP(check)) {
+		    needed = 3;
+		}
+		check = tigetstr("S0");
+		if (CHECK_CAP(check)) {
+		    needed = 0;	/* used in screen-base */
+		}
+	    }
+#endif
+	    if (myData.num_actual >= needed && myData.num_actual <= expected)
+		expected = myData.num_actual;
+	}
+#endif
+	if (myData.num_actual == 0 && expected) {
 	    T(("missing parameter%s, expected %s%d",
 	       expected > 1 ? "s" : "",
 	       expected == 9 ? "up to " : "",

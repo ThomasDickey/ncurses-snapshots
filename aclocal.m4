@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1037 2023/03/05 19:30:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.1038 2023/04/15 20:03:39 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -9940,7 +9940,7 @@ fi
 AC_SUBST(no_x11_rgb)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 65 updated: 2023/03/05 13:14:56
+dnl CF_XOPEN_SOURCE version: 66 updated: 2023/04/03 04:19:37
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -9949,6 +9949,18 @@ dnl
 dnl Parameters:
 dnl	$1 is the nominal value for _XOPEN_SOURCE
 dnl	$2 is the nominal value for _POSIX_C_SOURCE
+dnl
+dnl The default case prefers _XOPEN_SOURCE over _POSIX_C_SOURCE if the
+dnl implementation predefines it, because X/Open and most implementations agree
+dnl that the latter is a legacy or "aligned" value.
+dnl
+dnl Because _XOPEN_SOURCE is preferred, if defining _POSIX_C_SOURCE turns
+dnl that off, then refrain from setting _POSIX_C_SOURCE explicitly.
+dnl
+dnl References:
+dnl https://pubs.opengroup.org/onlinepubs/007904975/functions/xsh_chap02_02.html
+dnl https://docs.oracle.com/cd/E19253-01/816-5175/standards-5/index.html
+dnl https://www.gnu.org/software/libc/manual/html_node/Feature-Test-Macros.html
 AC_DEFUN([CF_XOPEN_SOURCE],[
 AC_REQUIRE([AC_CANONICAL_HOST])
 AC_REQUIRE([CF_POSIX_VISIBLE])
@@ -10040,8 +10052,8 @@ case "$host_os" in
 	cf_save_xopen_cppflags="$CPPFLAGS"
 	CF_POSIX_C_SOURCE($cf_POSIX_C_SOURCE)
 	# Some of these niche implementations use copy/paste, double-check...
-	if test "$cf_cv_xopen_source" != no ; then
-		CF_VERBOSE(checking if _POSIX_C_SOURCE inteferes)
+	if test "$cf_cv_xopen_source" = no ; then
+		CF_VERBOSE(checking if _POSIX_C_SOURCE interferes with _XOPEN_SOURCE)
 		AC_TRY_COMPILE(CF__XOPEN_SOURCE_HEAD,CF__XOPEN_SOURCE_BODY,,[
 			AC_MSG_WARN(_POSIX_C_SOURCE definition is not usable)
 			CPPFLAGS="$cf_save_xopen_cppflags"])

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2023 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,17 +29,34 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.24 2022/12/10 23:23:27 tom Exp $
+ * $Id: test_tparm.c,v 1.30 2023/04/15 22:31:47 tom Exp $
  *
  * Exercise tparm, either for all possible capabilities with fixed parameters,
  * or one capability with all possible parameters.
  *
- * TODO: incorporate tic.h and _nc_tparm_analyze
  * TODO: optionally test tiparm
  * TODO: add checks/logic to handle "%s" in tparm
  */
 #define USE_TINFO
 #include <test.priv.h>
+
+#if NCURSES_XNAMES
+#if HAVE_TERM_ENTRY_H
+#include <term_entry.h>
+#else
+#undef NCURSES_XNAMES
+#define NCURSES_XNAMES 0
+#endif
+#endif
+
+#define GrowArray(array,limit,length) \
+	    if (length + 2 >= limit) { \
+		limit *= 2; \
+		array = typeRealloc(char *, limit, array); \
+		if (array == 0) { \
+		    failed("no memory: " #array); \
+		} \
+	    }
 
 static GCC_NORETURN void failed(const char *);
 
@@ -119,7 +136,7 @@ relevant(const char *name, const char *value)
 }
 
 static int
-increment(int *all_parms, int *num_parms, int len_parms, int end_parms)
+increment(long *all_parms, int *num_parms, int len_parms, int end_parms)
 {
     int rc = 0;
     int n;
@@ -143,38 +160,82 @@ increment(int *all_parms, int *num_parms, int len_parms, int end_parms)
     return rc;
 }
 
-static void
-test_tparm(const char *name, const char *format, int *number)
+/* parse the format string to determine which positional parameters
+ * are assumed to be strings.
+ */
+#if HAVE__NC_TPARM_ANALYZE
+extern int _nc_tparm_analyze(TERMINAL *, const char *, char **, int *);
+
+static int
+analyze_format(const char *format, char **p_is_s)
 {
-    char *result = tparm(format,
-			 number[0],
-			 number[1],
-			 number[2],
-			 number[3],
-			 number[4],
-			 number[5],
-			 number[6],
-			 number[7],
-			 number[8]);
+    int popcount = 0;
+    int analyzed = _nc_tparm_analyze(cur_term, format, p_is_s, &popcount);
+    if (analyzed < popcount) {
+	analyzed = popcount;
+    }
+    return analyzed;
+}
+#else
+/* TODO: make this work without direct use of ncurses internals. */
+static int
+analyze_format(const char *format, char **p_is_s)
+{
+    int n;
+    char *filler = strstr(format, "%s");
+    for (n = 0; n < 9; ++n) {
+	p_is_s[n] = filler;
+    }
+    return n;
+}
+#endif
+
+#define NumStr(n) use_strings[n] \
+ 		  ? (long) (number[n] \
+		     ? string[n] \
+		     : NULL) \
+		  : number[n]
+
+static void
+test_tparm(const char *name, const char *format, long *number, char **string)
+{
+    char *use_strings[9];
+    char *result;
+    int nparam;
+
+    nparam = analyze_format(format, use_strings);
+    result = tparm(format,
+		   NumStr(0),
+		   NumStr(1),
+		   NumStr(2),
+		   NumStr(3),
+		   NumStr(4),
+		   NumStr(5),
+		   NumStr(6),
+		   NumStr(7),
+		   NumStr(8));
     total_tests++;
     if (result != NULL) {
 	tputs(result, 1, output_func);
     } else {
 	total_fails++;
     }
-    if (v_opt > 1)
-	printf(".. %2d = %2d %2d %2d %2d %2d %2d %2d %2d %2d %s\n",
-	       result != 0 ? (int) strlen(result) : -1,
-	       number[0],
-	       number[1],
-	       number[2],
-	       number[3],
-	       number[4],
-	       number[5],
-	       number[6],
-	       number[7],
-	       number[8],
-	       name);
+    if (v_opt > 1) {
+	int n;
+	printf(".. %3d =", result != 0 ? (int) strlen(result) : -1);
+	for (n = 0; n < nparam; ++n) {
+	    if (use_strings[n]) {
+		if (number[n]) {
+		    printf(" \"%s\"", string[n]);
+		} else {
+		    printf("  ?");
+		}
+	    } else {
+		printf(" %2ld", number[n]);
+	    }
+	}
+	printf(" %s\n", name);
+    }
 }
 
 static void
@@ -221,11 +282,12 @@ main(int argc, char *argv[])
     int r_opt = 1;
     char *t_opt = 0;
 
+    int std_caps = 0;		/* predefine items in all_caps[] */
     int len_caps = 0;		/* cur # of items in all_caps[] */
     int max_caps = 10;		/* max # of items in all_caps[] */
     char **all_caps = typeCalloc(char *, max_caps);
 
-    int all_parms[10];		/* workspace for "-a" option */
+    long all_parms[10];		/* workspace for "-a" option */
 
     int len_terms = 0;		/* cur # of items in all_terms[] */
     int max_terms = 10;		/* max # of items in all_terms[] */
@@ -370,13 +432,7 @@ main(int argc, char *argv[])
     if (len_caps == 0) {
 #if defined(HAVE_CURSES_DATA_BOOLNAMES) || defined(DECL_CURSES_DATA_BOOLNAMES)
 	for (n = 0; strnames[n] != 0; ++n) {
-	    if (len_caps + 2 >= max_caps) {
-		max_caps *= 2;
-		all_caps = typeRealloc(char *, max_caps, all_caps);
-		if (all_caps == 0) {
-		    failed("no memory: all_caps");
-		}
-	    }
+	    GrowArray(all_caps, max_caps, len_caps);
 	    all_caps[len_caps++] = strdup(strnames[n]);
 	}
 #else
@@ -384,6 +440,7 @@ main(int argc, char *argv[])
 	all_caps[len_caps++] = strdup("sgr");
 #endif
     }
+    std_caps = len_caps;
     all_caps[len_caps] = 0;
     if (v_opt) {
 	printf("%d name%s%s\n", PLURAL(len_caps), COLONS(len_caps));
@@ -394,8 +451,8 @@ main(int argc, char *argv[])
 	}
     }
 
-    cap_name = typeMalloc(char *, len_caps);
-    cap_data = typeMalloc(char *, len_caps);
+    cap_name = typeMalloc(char *, 1 + len_caps);
+    cap_data = typeMalloc(char *, 1 + len_caps);
 
     if (r_opt <= 0)
 	r_opt = 1;
@@ -413,6 +470,16 @@ main(int argc, char *argv[])
 	    if (setupterm(all_terms[t_run], fileno(stdout), &errs) != OK) {
 		printf("** skipping %s (errs:%d)\n", all_terms[t_run], errs);
 	    }
+#if NCURSES_XNAMES
+	    len_caps = std_caps;
+	    if (cur_term) {
+		TERMTYPE *term = (TERMTYPE *) cur_term;
+		for (n = STRCOUNT; n < NUM_STRINGS(term); ++n) {
+		    GrowArray(all_caps, max_caps, len_caps);
+		    all_caps[len_caps++] = strdup(ExtStrname(term, (int) n, strnames));
+		}
+	    }
+#endif
 
 	    /*
 	     * Most of the capabilities have no parameters, e.g., they are
@@ -430,7 +497,7 @@ main(int argc, char *argv[])
 	    }
 
 	    if (v_opt) {
-		printf("[%d:%d] %d cap%s * %ld param%s \"%s\"\n",
+		printf("[%d:%d] %d paramerized cap%s * %ld test-case%s \"%s\"\n",
 		       r_run + 1, r_opt,
 		       PLURAL(use_caps),
 		       PLURAL(use_parms),
@@ -442,16 +509,27 @@ main(int argc, char *argv[])
 		/* for each combination of values */
 		do {
 		    for (n_run = 0; n_run < use_caps; ++n_run) {
-			test_tparm(cap_name[n_run], cap_data[n_run], all_parms);
+			test_tparm(cap_name[n_run],
+				   cap_data[n_run],
+				   all_parms,
+				   str_parms);
 		    }
 		}
 		while (increment(all_parms, num_parms, len_parms, 0));
 	    } else {
 		/* for the given values */
 		for (n_run = 0; n_run < use_caps; ++n_run) {
-		    test_tparm(cap_name[n_run], cap_data[n_run], all_parms);
+		    test_tparm(cap_name[n_run],
+			       cap_data[n_run],
+			       all_parms,
+			       str_parms);
 		}
 	    }
+#if NCURSES_XNAMES
+	    for (n = std_caps; n < len_caps; ++n) {
+		free(all_caps[n]);
+	    }
+#endif
 	    if (cur_term != 0) {
 		del_curterm(cur_term);
 	    } else {
@@ -470,7 +548,7 @@ main(int argc, char *argv[])
     printf(NUMFORM " printable\n", total_print);
     printf(NUMFORM " total\n", total_nulls + total_ctrls + total_print);
 #if NO_LEAKS
-    for (n = 0; n < len_caps; ++n) {
+    for (n = 0; n < std_caps; ++n) {
 	free(all_caps[n]);
     }
     free(all_caps);

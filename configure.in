@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.757 2023/02/25 19:50:10 tom Exp $
+dnl $Id: configure.in,v 1.758 2023/04/15 20:06:19 Sven.Joachim Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.757 $)
+AC_REVISION($Revision: 1.758 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -875,7 +875,7 @@ AC_MSG_RESULT($with_root_environ)
 test "x$with_root_environ" = xyes && AC_DEFINE(USE_ROOT_ENVIRON,1,[Define to 1 if root is allowed to use ncurses environment])
 
 AC_MSG_CHECKING(if you want to permit setuid programs to access all files)
-AC_ARG_ENABLE(root-environ,
+AC_ARG_ENABLE(root-access,
 	[  --disable-root-access   restrict file-access when running setuid],
 	[with_root_access=$enableval],
 	[with_root_access=yes])

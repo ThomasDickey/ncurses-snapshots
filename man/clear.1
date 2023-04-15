@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.27 2022/02/12 20:07:29 tom Exp $
+.\" $Id: clear.1,v 1.29 2023/04/09 08:28:00 tom Exp $
 .TH @CLEAR@ 1 ""
 .\" these would be fallbacks for DS/DE,
 .\" but groff changed the meaning of the macros.
@@ -157,7 +157,9 @@ The latter documents \fBtput\fP, which could be used to replace this utility
 either via a shell script or by an alias (such as a symbolic link) to
 run \fB@TPUT@\fP as \fB@CLEAR@\fP.
 .SH SEE ALSO
-\fB@TPUT@\fP(1), \fBterminfo\fP(\*n), \fBxterm\fP(1).
+\fB@TPUT@\fP(1),
+\fBxterm\fP(1),
+\fBterminfo\fP(\*n).
 .PP
 This describes \fBncurses\fP
 version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).

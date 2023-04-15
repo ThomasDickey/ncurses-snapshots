@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.210 2023/02/25 21:26:04 tom Exp $ */
+/* $Id: test.priv.h,v 1.213 2023/04/15 21:44:58 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -377,6 +377,10 @@
 
 #ifndef NO_LEAKS
 #define NO_LEAKS 0
+#endif
+
+#ifndef HAVE__NC_TPARM_ANALYZE
+#define HAVE__NC_TPARM_ANALYZE 0
 #endif
 
 /*
@@ -744,10 +748,7 @@ static char *version_common(char **argv) { \
 	char *base = argv[0]; \
 	char *leaf = strrchr(base, '/'); \
 	char *result = malloc(strlen(base) + 80); \
-	if (result == NULL) { \
-	    static char unknown[] = "?"; \
-	    result = unknown; \
-	} else { \
+	if (result != NULL) { \
 	    if (leaf++ == NULL) leaf = base; \
 	    sprintf(result, "%.20s: ", leaf); \
 	    format_version(result + strlen(result)); \
@@ -995,7 +996,9 @@ extern int TABSIZE;
 
 #define UChar(c)    ((unsigned char)(c))
 
+#ifndef SIZEOF
 #define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
+#endif
 
 #if defined(NCURSES_VERSION) && HAVE_NC_ALLOC_H
 #include <nc_alloc.h>

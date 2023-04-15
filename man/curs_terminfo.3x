@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.83 2023/04/08 22:54:21 tom Exp $
+.\" $Id: curs_terminfo.3x,v 1.84 2023/04/09 08:13:16 tom Exp $
 .TH curs_terminfo 3X ""
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -698,7 +698,7 @@ and returns an error if the capability mishandles string parameters.
 But it cannot check if a calling program provides strings in the right
 places for the \fBtparm\fP calls.
 .IP
-The \fBtput\fR(3X) program checks its use of these capabilities with a table,
+The \fB@TPUT@\fR(1) program checks its use of these capabilities with a table,
 so that it calls \fBtparm\fP correctly.
 .SS Special TERM treatment
 .PP

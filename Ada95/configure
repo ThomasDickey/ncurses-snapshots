@@ -1853,7 +1853,7 @@ GCC_VERSION=none
 if test "$GCC" = yes ; then
 	echo "$as_me:1854: checking version of $CC" >&5
 echo $ECHO_N "checking version of $CC... $ECHO_C" >&6
-	GCC_VERSION="`${CC} --version 2>/dev/null | sed -e '2,$d' -e 's/^.*(GCC[^)]*) //' -e 's/^.*(Debian[^)]*) //' -e 's/^[^0-9.]*//' -e 's/[^0-9.].*//'`"
+	GCC_VERSION="`${CC} --version 2>/dev/null | sed -e '2,$d' -e 's/^[^(]*([^)][^)]*) //' -e 's/^[^0-9.]*//' -e 's/[^0-9.].*//'`"
 	test -z "$GCC_VERSION" && GCC_VERSION=unknown
 	echo "$as_me:1858: result: $GCC_VERSION" >&5
 echo "${ECHO_T}$GCC_VERSION" >&6
@@ -12475,7 +12475,7 @@ case "$host_os" in
 	cf_xopen_source="-D_SGI_SOURCE"
 	cf_XOPEN_SOURCE=
 	;;
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys)
+(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*)
 
 cf_gnu_xopen_source=$cf_XOPEN_SOURCE
 
@@ -13795,10 +13795,10 @@ fi
 fi # cf_cv_posix_visible
 
 	# Some of these niche implementations use copy/paste, double-check...
-	if test "$cf_cv_xopen_source" != no ; then
-		test -n "$verbose" && echo "	checking if _POSIX_C_SOURCE inteferes" 1>&6
+	if test "$cf_cv_xopen_source" = no ; then
+		test -n "$verbose" && echo "	checking if _POSIX_C_SOURCE interferes with _XOPEN_SOURCE" 1>&6
 
-echo "${as_me:-configure}:13801: testing checking if _POSIX_C_SOURCE inteferes ..." 1>&5
+echo "${as_me:-configure}:13801: testing checking if _POSIX_C_SOURCE interferes with _XOPEN_SOURCE ..." 1>&5
 
 		cat >"conftest.$ac_ext" <<_ACEOF
 #line 13804 "configure"

@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.103 2023/02/25 15:51:21 tom Exp $
+# $Id: ncurses_defs,v 1.104 2023/04/15 19:33:17 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2023 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -225,6 +225,7 @@ HAVE_WRESIZE
 HAVE_WSYNCDOWN	1
 HAVE__DOSCAN
 HAVE__TRACEF
+HAVE__NC_TPARM_ANALYZE 1
 MIXEDCASE_FILENAMES
 NCURSES_CHAR_EQ
 NCURSES_EXPANDED
