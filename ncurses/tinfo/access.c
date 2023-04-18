@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,9 +43,16 @@
 #endif
 #endif
 
+#if HAVE_GETAUXVAL && HAVE_SYS_AUXV_H && defined(__GLIBC__) && (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 19)
+#include <sys/auxv.h>
+#define USE_GETAUXVAL 1
+#else
+#define USE_GETAUXVAL 0
+#endif
+
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.31 2021/08/29 10:35:17 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.35 2023/04/18 00:18:35 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -177,14 +184,25 @@ _nc_is_file_path(const char *path)
     return result;
 }
 
-#if HAVE_ISSETUGID
-#define is_elevated() issetugid()
-#elif HAVE_GETEUID && HAVE_GETEGID
-#define is_elevated() \
+#if HAVE_GETEUID && HAVE_GETEGID
+#define is_posix_elevated() \
 	(getuid() != geteuid() \
 	 || getgid() != getegid())
 #else
-#define is_elevated() FALSE
+#define is_posix_elevated() FALSE
+#endif
+
+#if HAVE_ISSETUGID
+#define is_elevated() issetugid()
+#elif USE_GETAUXVAL && defined(AT_SECURE)
+#define is_elevated() \
+	(getauxval(AT_SECURE) \
+	 ? TRUE \
+	 : (errno != ENOENT \
+	    ? FALSE \
+	    : is_posix_elevated()))
+#else
+#define is_elevated() is_posix_elevated()
 #endif
 
 #if HAVE_SETFSUID
@@ -203,24 +221,25 @@ _nc_is_file_path(const char *path)
 #define resume_elevation()	/* nothing */
 #endif
 
-#ifndef USE_ROOT_ENVIRON
 /*
- * Returns true if we allow application to use environment variables that are
- * used for searching lists of directories, etc.
+ * Returns true if not running as root or setuid.  We use this check to allow
+ * applications to use environment variables that are used for searching lists
+ * of directories, etc.
  */
 NCURSES_EXPORT(int)
 _nc_env_access(void)
 {
     int result = TRUE;
 
+#if HAVE_GETUID && HAVE_GETEUID
     if (is_elevated()) {
 	result = FALSE;
     } else if ((getuid() == ROOT_UID) || (geteuid() == ROOT_UID)) {
 	result = FALSE;
     }
+#endif
     return result;
 }
-#endif /* USE_ROOT_ENVIRON */
 
 #ifndef USE_ROOT_ACCESS
 /*
@@ -257,4 +276,4 @@ _nc_safe_open3(const char *path, int flags, mode_t mode)
 #endif
     return result;
 }
-#endif /* USE_ROOT_ENVIRON */
+#endif /* USE_ROOT_ACCESS */

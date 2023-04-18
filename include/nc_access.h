@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2021 Thomas E. Dickey                                          *
+ * Copyright 2021,2023 Thomas E. Dickey                                     *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/* $Id: nc_access.h,v 1.2 2021/07/10 22:07:06 tom Exp $ */
+/* $Id: nc_access.h,v 1.3 2023/04/17 23:29:12 tom Exp $ */
 
 #ifndef NC_ACCESS_included
 #define NC_ACCESS_included 1
@@ -44,15 +44,12 @@ extern "C" {
  * Turn off this symbol to limit access to environment variables when root.
  */
 #ifdef USE_ROOT_ENVIRON
-
 #define use_terminfo_vars() 1
-
 #else
-
 #define use_terminfo_vars() _nc_env_access()
-extern NCURSES_EXPORT(int) _nc_env_access (void);
-
 #endif
+
+extern NCURSES_EXPORT(int) _nc_env_access (void);
 
 /*
  * Turn off this symbol to limit access to files when running setuid.

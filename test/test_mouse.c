@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.27 2023/01/07 17:22:42 tom Exp $
+ * $Id: test_mouse.c,v 1.28 2023/04/16 17:36:47 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -63,7 +63,7 @@ raw_loop(void)
 	return 1;
     }
 
-    putp(tparm(xtermcap, 1));
+    putp(tgoto(xtermcap, 1, 1));
     fflush(stdout);
 
     tcsetattr(0, TCSANOW, &tty);
@@ -85,7 +85,7 @@ raw_loop(void)
 	}
     }
 
-    putp(tparm(xtermcap, 0));
+    putp(tgoto(xtermcap, 0, 0));
     fflush(stdout);
     tcsetattr(0, TCSANOW, &old);
     return 0;

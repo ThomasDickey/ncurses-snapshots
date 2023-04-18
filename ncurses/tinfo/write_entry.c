@@ -51,7 +51,7 @@
 #define TRACE_NUM(n)		/* nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.121 2023/03/05 18:45:59 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.122 2023/04/17 08:08:08 tom Exp $")
 
 static int total_written;
 static int total_parts;
@@ -215,11 +215,7 @@ _nc_set_writedir(const char *dir)
     const char *destination;
     char actual[PATH_MAX];
 
-    if (dir == 0
-#ifndef USE_ROOT_ENVIRON
-	&& use_terminfo_vars()
-#endif
-	)
+    if (dir == 0 && use_terminfo_vars())
 	dir = getenv("TERMINFO");
 
     if (dir != 0)

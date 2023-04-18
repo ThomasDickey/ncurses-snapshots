@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019,2020 Thomas E. Dickey                                     *
+ * Copyright 2019-2020,2023 Thomas E. Dickey                                *
  * Copyright 1998-2012,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.40 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.42 2023/04/17 08:14:39 tom Exp $")
 
 NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
 NCURSES_EXPORT_VAR(int) _nc_curr_line = 0; /* current line # in input */
@@ -148,9 +148,7 @@ _nc_syserr_abort(const char *const fmt, ...)
     /* If we're debugging, try to show where the problem occurred - this
      * will dump core.
      */
-#ifndef USE_ROOT_ENVIRON
-    if (getuid() != ROOT_UID)
-#endif
+    if (_nc_env_access())
 	abort();
 #endif
     /* Dumping core in production code is not a good idea.

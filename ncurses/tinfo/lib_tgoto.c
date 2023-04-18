@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.22 2023/04/08 13:48:58 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.23 2023/04/16 17:19:40 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -214,7 +214,9 @@ tgoto(const char *string, int x, int y)
 	 * using tgoto().  The internal _nc_tiparm() function returns a NULL
 	 * for that case; retry for the single-parameter case.
 	 */
-	result = TIPARM_1(string, y);
+	if ((result = TIPARM_1(string, y)) == NULL) {
+	    result = TIPARM_0(string);
+	}
     }
     returnPtr(result);
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# $Id: rules,v 1.45 2022/10/22 18:35:38 tom Exp $
+# $Id: rules,v 1.46 2023/04/18 07:52:46 tom Exp $
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -64,6 +64,8 @@ configure = \
 		--disable-macros  \
 		--disable-overwrite  \
 		--disable-relink \
+		--disable-root-access \
+		--disable-root-environ \
 		--disable-termcap \
 		--enable-hard-tabs \
 		--enable-opaque-curses \

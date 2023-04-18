@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.57 2023/04/08 21:43:01 tom Exp $
+.\" $Id: curs_termcap.3x,v 1.58 2023/04/16 18:16:40 tom Exp $
 .TH curs_termcap 3X ""
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -247,8 +247,8 @@ Those return an error.
 .bP
 A call to \fBtgoto\fP using a capability with string parameters is an error.
 .bP
-A call to \fBtgoto\fP using a capability with no parameters,
-or more than two is an error.
+A call to \fBtgoto\fP using a capability with more than two parameters
+is an error.
 .SH BUGS
 If you call \fBtgetstr\fP to fetch \fBca\fP or any other parameterized string,
 be aware that it will be returned in terminfo notation, not the older and

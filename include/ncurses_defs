@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.104 2023/04/15 19:33:17 tom Exp $
+# $Id: ncurses_defs,v 1.106 2023/04/18 00:20:54 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2023 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -71,6 +71,7 @@ HAVE_FCNTL_H
 HAVE_FILTER	1
 HAVE_FORM_H
 HAVE_FPATHCONF
+HAVE_GETAUXVAL
 HAVE_GETBEGX	1
 HAVE_GETCURX	1
 HAVE_GETCWD
@@ -82,6 +83,7 @@ HAVE_GETOPT_H
 HAVE_GETPARX	1
 HAVE_GETTIMEOFDAY
 HAVE_GETTTYNAM
+HAVE_GETUID
 HAVE_GETWIN	1
 HAVE_GPM_H
 HAVE_GPP_BUILTIN_H
@@ -168,6 +170,7 @@ HAVE_STRSTR
 HAVE_SYMLINK
 HAVE_SYSCONF
 HAVE_SYS_BSDTYPES_H
+HAVE_SYS_AUXV_H
 HAVE_SYS_IOCTL_H
 HAVE_SYS_PARAM_H
 HAVE_SYS_POLL_H

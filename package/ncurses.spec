@@ -1,7 +1,7 @@
 Summary: shared libraries for terminal handling
 Name: ncurses6
 Version: 6.4
-Release: 20230415
+Release: 20230418
 License: X11
 Group: Development/Libraries
 URL: https://invisible-island.net/ncurses/
@@ -69,15 +69,17 @@ This package is used for testing ABI %{MY_ABI}.
 	--disable-leaks \\\
 	--disable-macros  \\\
 	--disable-overwrite  \\\
-	%{_test_relink}  \\\
+	--disable-root-access \\\
+	--disable-root-environ \\\
+	--disable-rpath \\\
 	--disable-termcap \\\
+	%{_test_relink}  \\\
 	--enable-hard-tabs \\\
 	--enable-opaque-curses \\\
 	--enable-opaque-form \\\
 	--enable-opaque-menu \\\
 	--enable-opaque-panel \\\
 	--enable-pc-files \\\
-	--disable-rpath \\\
 	--enable-stdnoreturn \\\
 	--enable-warnings \\\
 	--enable-wgetch-events \\\
