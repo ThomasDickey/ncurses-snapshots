@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.165 2023/04/08 20:14:49 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.166 2023/04/22 15:11:52 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -892,9 +892,6 @@ _nc_read_entry2(const char *const name, char *const filename, TERMTYPE2 *const t
 }
 
 #if NCURSES_EXT_NUMBERS
-/*
- * This entrypoint is used by tack 1.07
- */
 NCURSES_EXPORT(int)
 _nc_read_entry(const char *const name, char *const filename, TERMTYPE *const tp)
 {

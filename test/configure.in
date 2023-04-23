@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-on
 dnl
-dnl $Id: configure.in,v 1.170 2023/04/15 19:55:36 tom Exp $
+dnl $Id: configure.in,v 1.173 2023/04/23 20:30:38 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -317,6 +317,8 @@ wcstombs \
 fi
 
 CF_CURSES_FUNCS( \
+_nc_tparm_analyze \
+_tracef \
 alloc_pair \
 assume_default_colors \
 chgat \
@@ -358,6 +360,9 @@ termname \
 tgetent \
 tigetnum \
 tigetstr \
+tiparm \
+tiparm_s \
+tiscan_s \
 tputs_sp \
 typeahead \
 unget_wch \
@@ -375,8 +380,6 @@ winsdelln \
 winsstr \
 wresize \
 wsyncdown \
-_nc_tparm_analyze \
-_tracef \
 )
 
 CF_TPUTS_PROTO

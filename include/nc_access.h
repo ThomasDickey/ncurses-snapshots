@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/* $Id: nc_access.h,v 1.3 2023/04/17 23:29:12 tom Exp $ */
+/* $Id: nc_access.h,v 1.4 2023/04/22 20:32:13 tom Exp $ */
 
 #ifndef NC_ACCESS_included
 #define NC_ACCESS_included 1
@@ -41,9 +41,10 @@ extern "C" {
 #endif
 
 /*
- * Turn off this symbol to limit access to environment variables when root.
+ * Turn off the 'use_terminfo_vars()' symbol to limit access to environment
+ * variables when running with privileges.
  */
-#ifdef USE_ROOT_ENVIRON
+#if defined(USE_ROOT_ENVIRON) && defined(USE_SETUID_ENVIRON)
 #define use_terminfo_vars() 1
 #else
 #define use_terminfo_vars() _nc_env_access()

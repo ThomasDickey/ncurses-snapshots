@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3939 2023/04/18 22:22:09 tom Exp $
+-- $Id: NEWS,v 1.3944 2023/04/23 21:11:05 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,18 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230423
+	+ add tiscan_s() to help applications check formatting capabilities
+	  that would be passed to tiparm_s, etc.
+	+ add tiparm_s() to provide applications a way to tell ncurses what
+	  the expected parameters are for a capability (tmux #3531).
+	+ improve check in lib_tparm.c, ensuring that a char* fits into a
+	  TPARM_ARG.
+	+ add --disable-setuid-environ configure option (request by Sven
+	  Joachim).
+	+ drop compatibility with obsolete versions of tack, e.g., pre-1.08
+	  (Debian #1034549, cf: 20170722).
 
 20230418
 	+ improve checks for limits on privileged execution:

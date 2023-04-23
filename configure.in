@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.760 2023/04/18 00:22:49 tom Exp $
+dnl $Id: configure.in,v 1.762 2023/04/22 22:16:28 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.760 $)
+AC_REVISION($Revision: 1.762 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -186,22 +186,6 @@ AC_ARG_WITH(progs,
 	[cf_with_progs=yes])
 AC_MSG_RESULT($cf_with_progs)
 
-if test -f "$srcdir/tack/tack.h" ; then
-	if test "x$cross_compiling" = xyes ; then
-		CF_VERBOSE(ignoring tack because we are cross-compiling)
-		cf_with_tack=no
-	else
-		AC_MSG_CHECKING(if you want to build the tack program)
-		AC_ARG_WITH(tack,
-			[  --without-tack          suppress build/install with tack program],
-			[cf_with_tack=$withval],
-			[cf_with_tack=$cf_with_progs])
-		AC_MSG_RESULT($cf_with_tack)
-	fi
-else
-	cf_with_tack=no
-fi
-
 AC_MSG_CHECKING(if you want to build test-programs)
 AC_ARG_WITH(tests,
 	[  --without-tests         suppress build/install with test-programs],
@@ -218,7 +202,6 @@ AC_MSG_RESULT($with_curses_h)
 
 modules_to_build="ncurses"
 test "X$cf_with_progs" != Xno && modules_to_build="$modules_to_build progs"
-test "X$cf_with_tack"  != Xno && modules_to_build="$modules_to_build tack"
 modules_to_build="$modules_to_build panel menu form"
 
 AC_ARG_PROGRAM
@@ -872,7 +855,7 @@ AC_ARG_ENABLE(root-environ,
 	[with_root_environ=$enableval],
 	[with_root_environ=yes])
 AC_MSG_RESULT($with_root_environ)
-test "x$with_root_environ" = xyes && AC_DEFINE(USE_ROOT_ENVIRON,1,[Define to 1 if root is allowed to use ncurses environment])
+test "x$with_root_environ" = xyes && AC_DEFINE(USE_ROOT_ENVIRON,1,[Define to 1 if root/setuid application is allowed to use ncurses environment])
 
 AC_MSG_CHECKING(if you want to permit setuid programs to access all files)
 AC_ARG_ENABLE(root-access,
@@ -881,6 +864,14 @@ AC_ARG_ENABLE(root-access,
 	[with_root_access=yes])
 AC_MSG_RESULT($with_root_access)
 test "x$with_root_access" = xyes && AC_DEFINE(USE_ROOT_ACCESS,1,[Define to 1 if setuid is allowed all file-access])
+
+AC_MSG_CHECKING(if you want to permit setuid use of ncurses environment variables)
+AC_ARG_ENABLE(setuid-environ,
+	[  --disable-setuid-environ restrict setuid use of ncurses environment variables],
+	[with_setuid_environ=$enableval],
+	[with_setuid_environ=$with_root_environ])
+AC_MSG_RESULT($with_setuid_environ)
+test "x$with_setuid_environ" = xyes && AC_DEFINE(USE_SETUID_ENVIRON,1,[Define to 1 if setuid/setgid application is allowed to use ncurses environment])
 
 ###   Use option --enable-symlinks to make tic use symlinks, not hard links
 ###   to reduce storage requirements for the terminfo database.
@@ -2347,10 +2338,6 @@ AC_SUBST(TICS_LIST)
 AC_SUBST(TINFO_LIST)
 AC_SUBST(SHLIB_LIST)
 
-# used to separate tack out of the tree
-NCURSES_TREE=
-AC_SUBST(NCURSES_TREE)
-
 ### predefined stuff for the test programs
 AC_DEFINE(HAVE_SLK_COLOR,1,[Define to 1 if we have slk_color for test-programs])
 
@@ -2541,8 +2528,6 @@ AC_SUBST(PRIVATE_LIBS)
 
 # This is used for the *-config script and *.pc data files.
 CF_LD_SEARCHPATH
-
-AC_DEFINE(HAVE_CURSES_DATA_BOOLNAMES,1,[definition needed for in-tree build of tack])
 
 AC_OUTPUT( \
 	include/MKterm.h.awk \

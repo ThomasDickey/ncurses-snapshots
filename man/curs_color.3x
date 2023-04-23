@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.68 2022/02/12 20:06:41 tom Exp $
+.\" $Id: curs_color.3x,v 1.69 2023/04/23 20:53:20 tom Exp $
 .TH curs_color 3X ""
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -516,6 +516,12 @@ the NetBSD color-pair information is stored in
 the attributes field of \fBcchar_t\fP, limiting the number of color-pairs
 by the size of the bitfield.
 .SH PORTABILITY
+.SS Extensions
+The functions marked as extensions were designed for \fBncurses\fP(3X),
+and are not found in SVr4 curses, 4.4BSD curses,
+or any other previous version of curses.
+.SS Standards
+.PP
 This implementation satisfies XSI Curses's minimum maximums
 for \fBCOLORS\fP and \fBCOLOR_PAIRS\fP.
 .PP

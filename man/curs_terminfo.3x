@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.84 2023/04/09 08:13:16 tom Exp $
+.\" $Id: curs_terminfo.3x,v 1.85 2023/04/23 20:52:38 tom Exp $
 .TH curs_terminfo 3X ""
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -51,6 +51,8 @@
 \fBtigetnum\fP,
 \fBtigetstr\fP,
 \fBtiparm\fP,
+\fBtiparm_s\fP,
+\fBtiscan_s\fP,
 \fBtparm\fP,
 \fBtputs\fP,
 \fBvid_attr\fP,
@@ -111,6 +113,12 @@
 \fBchar *tigetstr(const char *\fIcapname\fB);\fR
 .sp
 \fBchar *tiparm(const char *\fIstr\fB, ...);\fR
+.sp
+/* extensions */
+.br
+\fBchar *tiparm_s(int \fIexpected\fB, int \fImask\fB, const char *\fIstr\fB, ...);\fR
+.br
+\fBint tiscan_s(int *\fIexpected\fB, int *\fImask\fB, const char *\fIstr\fB);\fR
 .br
 .fi
 .SH DESCRIPTION
@@ -294,6 +302,22 @@ Use \*(``\\200\*('' where an ASCII NUL is needed in the output.
 \fBtiparm\fP is a newer form of \fBtparm\fP which uses \fI<stdarg.h>\fP
 rather than a fixed-parameter list.
 Its numeric parameters are integers (int) rather than longs.
+.PP
+Both \fBtparm\fP and \fBtiparm\fP assume that the application passes
+parameters consistent with the terminal description.
+Two extensions are provided as alternatives to deal with untrusted data:
+.bP
+\fBtiparm_s\fP is an extension which is a safer formatting function
+than \fBtparm\fR or \fBtiparm\fR,
+because it allows the developer to tell the curses
+library how many parameters to expect in the parameter list,
+and which may be string parameters.
+.IP
+The \fImask\fP parameter has one bit set for each of the parameters
+(up to 9) which will be passed as char* rather than numbers.
+.bP
+The extension \fBtiscan_s\fP allows the application
+to inspect a formatting capability to see what the curses library would assume.
 .\" ***************************************************************************
 .SS Output Functions
 .PP
@@ -609,6 +633,11 @@ but none were documented.
 The functions marked \*(``obsolete\*('' remained in use
 by the Unix \fBvi\fP(1) editor.
 .SH PORTABILITY
+.SS Extensions
+The functions marked as extensions were designed for \fBncurses\fP(3X),
+and are not found in SVr4 curses, 4.4BSD curses,
+or any other previous version of curses.
+.PP
 .SS Legacy functions
 .PP
 X/Open notes that \fBvidattr\fP and \fBvidputs\fP may be macros.

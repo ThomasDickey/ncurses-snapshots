@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1038 2023/04/15 20:03:39 tom Exp $
+dnl $Id: aclocal.m4,v 1.1040 2023/04/22 15:51:54 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4518,7 +4518,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 98 updated: 2023/01/07 16:32:06
+dnl CF_LIB_RULES version: 99 updated: 2023/04/22 11:51:06
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -5028,18 +5028,6 @@ distclean ::
 	rm -f edit_man.* man_alias.*
 	rm -rf \${DIRS_TO_MAKE}
 CF_EOF
-
-# Special case: tack's manpage lives in its own directory.
-if test "x$cf_with_manpages" = xyes; then
-if test "x$cf_with_tack" = "xyes"; then
-cat >> Makefile <<CF_EOF
-
-install.man \\
-uninstall.man ::
-	( cd tack && \${MAKE} \${TOP_MFLAGS} \[$]@ )
-CF_EOF
-fi
-fi
 
 dnl If we're installing into a subdirectory of /usr/include, etc., we should
 dnl prepend the subdirectory's name to the "#include" paths.  It won't hurt
@@ -8056,7 +8044,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 33 updated: 2021/01/01 13:31:04
+dnl CF_SRC_MODULES version: 34 updated: 2023/04/22 11:51:06
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -8086,14 +8074,6 @@ for cf_dir in $1
 do
 	if test -f "$srcdir/$cf_dir/modules" ; then
 
-		# We may/may not have tack in the distribution, though the
-		# makefile is.
-		if test "$cf_dir" = tack ; then
-			if test "x$cf_with_tack" != "xyes"; then
-				continue
-			fi
-		fi
-
 		if test -z "$cf_cv_src_modules"; then
 			cf_cv_src_modules=$cf_dir
 		else
@@ -8104,9 +8084,7 @@ do
 		# well.  These are header files that are the same name as their
 		# directory.  Ncurses is the only library that does not follow
 		# that pattern.
-		if test "$cf_dir" = tack ; then
-			continue
-		elif test -f "$srcdir/${cf_dir}/${cf_dir}.h" ; then
+		if test -f "$srcdir/${cf_dir}/${cf_dir}.h" ; then
 			CF_UPPER(cf_have_include,$cf_dir)
 			AC_DEFINE_UNQUOTED(HAVE_${cf_have_include}_H)
 			AC_DEFINE_UNQUOTED(HAVE_LIB${cf_have_include})

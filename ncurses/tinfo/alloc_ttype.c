@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.46 2022/09/17 21:44:35 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.48 2023/04/22 15:50:28 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -665,9 +665,6 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
     DEBUG(2, (T_RETURN("")));
 }
 
-/*
- * This entrypoint is used by tack 1.07
- */
 NCURSES_EXPORT(void)
 _nc_copy_termtype(TERMTYPE *dst, const TERMTYPE *src)
 {

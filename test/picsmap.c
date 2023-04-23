@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 2017,2018 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.148 2022/12/04 00:40:11 tom Exp $
+ * $Id: picsmap.c,v 1.149 2023/04/23 23:20:37 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -52,13 +52,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#if HAVE_STDINT_H
-#include <stdint.h>
-#define my_intptr_t	intptr_t
-#else
-#define my_intptr_t	long
-#endif
 
 #if HAVE_TSEARCH
 #include <search.h>

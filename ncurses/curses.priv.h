@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.661 2023/03/25 23:12:24 tom Exp $
+ * $Id: curses.priv.h,v 1.663 2023/04/22 15:11:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1945,7 +1945,7 @@ extern NCURSES_EXPORT(void) _nc_linedump (void);
 
 /* lib_acs.c */
 extern NCURSES_EXPORT(void) _nc_init_acs (void); /* corresponds to traditional 'init_acs()' */
-extern NCURSES_EXPORT(int)  _nc_msec_cost (const char *const, int);  /* used by 'tack' program */
+extern NCURSES_EXPORT(int)  _nc_msec_cost (const char *const, int);
 
 /* lib_addch.c */
 #if USE_WIDEC_SUPPORT
@@ -2103,6 +2103,7 @@ extern NCURSES_EXPORT(int) _nc_read_termcap_entry (const char *const, TERMTYPE2 
 extern NCURSES_EXPORT(int) _nc_setup_tinfo(const char *, TERMTYPE2 *);
 extern NCURSES_EXPORT(int) _nc_setupscreen (int, int, FILE *, int, int);
 extern NCURSES_EXPORT(int) _nc_timed_wait (SCREEN *, int, int, int * EVENTLIST_2nd(_nc_eventlist *));
+extern NCURSES_EXPORT(int) _nc_trans_string (char *, char *);
 extern NCURSES_EXPORT(void) _nc_init_termtype (TERMTYPE2 *const);
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, int, NCURSES_OUTC);
 extern NCURSES_EXPORT(void) _nc_flush (void);
@@ -2112,6 +2113,7 @@ extern NCURSES_EXPORT(void) _nc_hash_map (void);
 extern NCURSES_EXPORT(void) _nc_init_keytry (SCREEN *);
 extern NCURSES_EXPORT(void) _nc_keep_tic_dir (const char *);
 extern NCURSES_EXPORT(void) _nc_make_oldhash (int i);
+extern NCURSES_EXPORT(void) _nc_reset_input (FILE *, char *);
 extern NCURSES_EXPORT(void) _nc_scroll_oldhash (int n, int top, int bot);
 extern NCURSES_EXPORT(void) _nc_scroll_optimize (void);
 extern NCURSES_EXPORT(void) _nc_set_buffer (FILE *, int);
@@ -2125,6 +2127,8 @@ extern NCURSES_EXPORT(const TERMTYPE2 *) _nc_fallback2 (const char *);
 #else
 #define _nc_fallback2(tp) _nc_fallback(tp)
 #endif
+
+NCURSES_EXPORT(void) _nc_copy_termtype(TERMTYPE *, const TERMTYPE *);
 
 #if NCURSES_EXT_NUMBERS
 extern NCURSES_EXPORT(void) _nc_copy_termtype2 (TERMTYPE2 *, const TERMTYPE2 *);

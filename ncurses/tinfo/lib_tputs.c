@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,12 +52,12 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.109 2022/07/21 23:26:34 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.110 2023/04/22 15:12:57 tom Exp $")
 
 NCURSES_EXPORT_VAR(char) PC = 0;              /* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;        /* used by termcap library */
 
-NCURSES_EXPORT_VAR(int) _nc_nulls_sent = 0;   /* used by 'tack' program */
+NCURSES_EXPORT_VAR(int) _nc_nulls_sent = 0;
 
 #if NCURSES_NO_PADDING
 NCURSES_EXPORT(void)

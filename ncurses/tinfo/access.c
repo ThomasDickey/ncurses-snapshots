@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.35 2023/04/18 00:18:35 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.36 2023/04/22 21:19:56 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -232,12 +232,17 @@ _nc_env_access(void)
     int result = TRUE;
 
 #if HAVE_GETUID && HAVE_GETEUID
+#if !defined(USE_SETUID_ENVIRON)
     if (is_elevated()) {
-	result = FALSE;
-    } else if ((getuid() == ROOT_UID) || (geteuid() == ROOT_UID)) {
 	result = FALSE;
     }
 #endif
+#if !defined(USE_ROOT_ENVIRON)
+    if ((getuid() == ROOT_UID) || (geteuid() == ROOT_UID)) {
+	result = FALSE;
+    }
+#endif
+#endif /* HAVE_GETUID && HAVE_GETEUID */
     return result;
 }
 

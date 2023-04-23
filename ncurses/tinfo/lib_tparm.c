@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.142 2023/04/14 00:29:31 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.146 2023/04/23 20:57:33 tom Exp $")
 
 /*
  *	char *
@@ -1138,10 +1138,11 @@ check_string_caps(TPARM_DATA *data, const char *string)
     return result;
 }
 
-#define ValidCap() (myData.tparm_type == 0 || \
-		    check_string_caps(&myData, string))
+#define ValidCap(allow_strings) (myData.tparm_type == 0 || \
+				 (allow_strings && \
+				  check_string_caps(&myData, string)))
 #else
-#define ValidCap() 1
+#define ValidCap(allow_strings) 1
 #endif
 
 #if NCURSES_TPARM_VARARGS
@@ -1158,7 +1159,7 @@ tparm(const char *string, ...)
     tps->tname = "tparm";
 #endif /* TRACE */
 
-    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap()) {
+    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap(TRUE)) {
 	va_list ap;
 
 	va_start(ap, string);
@@ -1193,7 +1194,9 @@ tparm(const char *string,
     tps->tname = "tparm";
 #endif /* TRACE */
 
-    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap()) {
+#define string_ok (sizeof(char*) <= sizeof(TPARM_ARG))
+
+    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap(string_ok)) {
 
 	myData.param[0] = a1;
 	myData.param[1] = a2;
@@ -1224,7 +1227,7 @@ tiparm(const char *string, ...)
     tps->tname = "tiparm";
 #endif /* TRACE */
 
-    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap()) {
+    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap(TRUE)) {
 	va_list ap;
 
 	va_start(ap, string);
@@ -1232,6 +1235,61 @@ tiparm(const char *string, ...)
 	va_end(ap);
 
 	result = tparam_internal(tps, string, &myData);
+    }
+    return result;
+}
+
+/*
+ * Use tparm if the formatting string matches the expected number of parameters
+ * counting string-parameters.
+ */
+NCURSES_EXPORT(char *)
+tiparm_s(int num_expected, int tparm_type, const char *string, ...)
+{
+    TPARM_STATE *tps = get_tparm_state(cur_term);
+    TPARM_DATA myData;
+    char *result = NULL;
+
+    _nc_tparm_err = 0;
+#ifdef TRACE
+    tps->tname = "tiparm_s";
+#endif /* TRACE */
+    if (num_expected >= 0 &&
+	num_expected <= 9 &&
+	tparm_type >= 0 &&
+	tparm_type < 7 &&	/* limit to 2 string parameters */
+	tparm_setup(cur_term, string, &myData) == OK &&
+	myData.tparm_type == tparm_type &&
+	myData.num_actual == num_expected) {
+	va_list ap;
+
+	va_start(ap, string);
+	tparm_copy_valist(&myData, FALSE, ap);
+	va_end(ap);
+
+	result = tparam_internal(tps, string, &myData);
+    }
+    return result;
+}
+
+/*
+ * Analyze the formatting string, return the analysis.
+ */
+NCURSES_EXPORT(int)
+tiscan_s(int *num_expected, int *tparm_type, const char *string)
+{
+    TPARM_DATA myData;
+    int result = ERR;
+
+#ifdef TRACE
+    TPARM_STATE *tps = get_tparm_state(cur_term);
+    tps->tname = "tiscan_s";
+#endif /* TRACE */
+
+    if (tparm_setup(cur_term, string, &myData) == OK) {
+	*num_expected = myData.num_actual;
+	*tparm_type = myData.tparm_type;
+	result = OK;
     }
     return result;
 }
@@ -1270,7 +1328,7 @@ _nc_tiparm(int expected, const char *string, ...)
     tps->tname = "_nc_tiparm";
 #endif /* TRACE */
 
-    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap()) {
+    if (tparm_setup(cur_term, string, &myData) == OK && ValidCap(FALSE)) {
 #ifdef CUR
 	if (myData.num_actual != expected && cur_term != NULL) {
 	    int needed = expected;

@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2020,2021 Thomas E. Dickey                                      --
+-- Copyright 2020-2021,2023 Thomas E. Dickey                                 --
 -- Copyright 1998-2012,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: README,v 1.29 2021/06/17 21:20:30 tom Exp $
+-- $Id: README,v 1.30 2023/04/22 15:49:24 tom Exp $
 -------------------------------------------------------------------------------
 		README file for the ncurses package
 
@@ -45,8 +45,7 @@ ROADMAP AND PACKAGE OVERVIEW:
 You should be reading this file in a directory called:  ncurses-d.d, where d.d
 is the current version number (see the dist.mk file in this directory for
 that).  There should be a number of subdirectories, including `c++', `form',
-`man', `menu', `misc', `ncurses', `panel', `progs', `test', 'tack' and `Ada95'.
-(The 'tack' program may be distributed separately).
+`man', `menu', `misc', `ncurses', `panel', `progs', `test', and `Ada95'.
 
 A full build/install of this package typically installs several libraries, a
 handful of utilities, and a database hierarchy.  Here is an inventory of the

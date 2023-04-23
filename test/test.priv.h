@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.213 2023/04/15 21:44:58 tom Exp $ */
+/* $Id: test.priv.h,v 1.216 2023/04/23 23:38:22 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -303,6 +303,18 @@
 #define HAVE_TIGETSTR 0
 #endif
 
+#ifndef HAVE_TIPARM
+#define HAVE_TIPARM 0
+#endif
+
+#ifndef HAVE_TIPARM_S
+#define HAVE_TIPARM_S 0
+#endif
+
+#ifndef HAVE_TISCAN_S
+#define HAVE_TISCAN_S 0
+#endif
+
 #ifndef HAVE_TPUTS_SP
 #define HAVE_TPUTS_SP 0
 #endif
@@ -474,6 +486,13 @@ extern int optind;
 
 #include <assert.h>
 #include <ctype.h>
+
+#if HAVE_STDINT_H
+#include <stdint.h>
+#define my_intptr_t	intptr_t
+#else
+#define my_intptr_t	long
+#endif
 
 #if defined(_MSC_VER)
 #undef popen

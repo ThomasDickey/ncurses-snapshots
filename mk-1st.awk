@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.124 2021/10/15 00:50:05 tom Exp $
+# $Id: mk-1st.awk,v 1.125 2023/04/22 15:49:59 tom Exp $
 ##############################################################################
-# Copyright 2018-2020,2021 Thomas E. Dickey                                  #
+# Copyright 2018-2021,2023 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -354,8 +354,7 @@ BEGIN	{
 		 && ( $1 != "link_test" ) \
 		 && ( $2 == "lib" \
 		   || $2 == "progs" \
-		   || $2 == "c++" \
-		   || $2 == "tack" ))
+		   || $2 == "c++" ))
 		{
 			if ( found == 0 )
 			{
