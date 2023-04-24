@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3944 2023/04/23 21:11:05 tom Exp $
+-- $Id: NEWS,v 1.3945 2023/04/24 22:48:50 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230424
+	+ check return value of _nc_save_str(), in special case for tic where
+	  extended capabilities are processed but the terminal description was
+	  not initialized (report by Ziqiao Kong).
+	+ regenerate llib-* files.
 
 20230423
 	+ add tiscan_s() to help applications check formatting capabilities

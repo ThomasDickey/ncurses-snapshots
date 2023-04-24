@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -4701,6 +4701,21 @@ char	*tiparm(
 		const char *string,
 		...)
 		{ return(*(char **)0); }
+
+#undef tiparm_s
+char	*tiparm_s(
+		int	num_expected,
+		int	tparm_type,
+		const char *string,
+		...)
+		{ return(*(char **)0); }
+
+#undef tiscan_s
+int	tiscan_s(
+		int	*num_expected,
+		int	*tparm_type,
+		const char *string)
+		{ return(*(int *)0); }
 
 #undef _nc_tiparm
 char	*_nc_tiparm(

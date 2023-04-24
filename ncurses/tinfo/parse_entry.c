@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.107 2022/05/08 00:11:44 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.108 2023/04/24 22:32:33 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -110,7 +110,7 @@ _nc_extend_names(ENTRY * entryp, const char *name, int token_type)
 	/* Well, we are given a cancel for a name that we don't recognize */
 	return _nc_extend_names(entryp, name, STRING);
     default:
-	return 0;
+	return NULL;
     }
 
     /* Adjust the 'offset' (insertion-point) to keep the lists of extended
@@ -142,6 +142,11 @@ _nc_extend_names(ENTRY * entryp, const char *name, int token_type)
 	for (last = (unsigned) (max - 1); last > tindex; last--)
 
     if (!found) {
+	char *saved;
+
+	if ((saved = _nc_save_str(name)) == NULL)
+	    return NULL;
+
 	switch (token_type) {
 	case BOOLEAN:
 	    tp->ext_Booleans++;
@@ -169,7 +174,7 @@ _nc_extend_names(ENTRY * entryp, const char *name, int token_type)
 	TYPE_REALLOC(char *, actual, tp->ext_Names);
 	while (--actual > offset)
 	    tp->ext_Names[actual] = tp->ext_Names[actual - 1];
-	tp->ext_Names[offset] = _nc_save_str(name);
+	tp->ext_Names[offset] = saved;
     }
 
     temp.nte_name = tp->ext_Names[offset];
@@ -364,6 +369,8 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 	bool is_use = (strcmp(_nc_curr_token.tk_name, "use") == 0);
 	bool is_tc = !is_use && (strcmp(_nc_curr_token.tk_name, "tc") == 0);
 	if (is_use || is_tc) {
+	    char *saved;
+
 	    if (!VALID_STRING(_nc_curr_token.tk_valstring)
 		|| _nc_curr_token.tk_valstring[0] == '\0') {
 		_nc_warning("missing name for use-clause");
@@ -377,11 +384,13 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 			    _nc_curr_token.tk_valstring);
 		continue;
 	    }
-	    entryp->uses[entryp->nuses].name = _nc_save_str(_nc_curr_token.tk_valstring);
-	    entryp->uses[entryp->nuses].line = _nc_curr_line;
-	    entryp->nuses++;
-	    if (entryp->nuses > 1 && is_tc) {
-		BAD_TC_USAGE
+	    if ((saved = _nc_save_str(_nc_curr_token.tk_valstring)) != NULL) {
+		entryp->uses[entryp->nuses].name = saved;
+		entryp->uses[entryp->nuses].line = _nc_curr_line;
+		entryp->nuses++;
+		if (entryp->nuses > 1 && is_tc) {
+		    BAD_TC_USAGE
+		}
 	    }
 	} else {
 	    /* normal token lookup */

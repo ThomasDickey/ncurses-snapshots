@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2018-2021,2022 Thomas E. Dickey                                 --
+-- Copyright 2018-2022,2023 Thomas E. Dickey                                 --
 -- Copyright 1998-2017,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: README,v 1.77 2022/08/13 23:34:33 tom Exp $
+-- $Id: README,v 1.78 2023/04/24 23:14:45 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are used to test and demonstrate ncurses.
@@ -296,8 +296,8 @@ cur_term			test: demo_termcap demo_terminfo dots dots_mvcur filter list_keys lrt
 curs_set			test: demo_new_pair echochar firework gdc hanoi lrtest ncurses newdemo picsmap rain savescreen tclock testcurs worm xmas
 curs_set_sp			test: sp_tinfo
 curscr				test: demo_panels knight lrtest ncurses popup_msg savescreen tclock
-curses_trace			test: demo_menus hashtest lrtest ncurses padview redraw test_sgr test_termattrs test_vid_puts test_vidputs testcurs view worm
-curses_version			test: ncurses progs: clear infocmp tabs tic toe tput tset
+curses_trace			test: demo_menus hashtest lrtest ncurses padview redraw test_sgr test_termattrs test_vid_puts test_vidputs testcurs view worm progs: infocmp tic toe
+curses_version			test: back_ground background blue bs cardfile chgat clip_printw color_content color_set combine demo_altkeys demo_defkey demo_forms demo_keyok demo_menus demo_new_pair demo_panels demo_tabs demo_termcap demo_terminfo ditto dots dots_curses dots_mvcur dots_termcap dots_xcurses dup_field echochar extended_color filter firework firstlast foldkeys form_driver_w gdc hanoi hashtest inch_wide inchs ins_wide insdelln inserts key_names keynames knight list_keys lrtest move_field movewindow ncurses newdemo padview pair_content picsmap railroad rain redraw savescreen sp_tinfo tclock test_add_wchstr test_addchstr test_addstr test_addwstr test_arrays test_delwin test_get_wstr test_getstr test_instr test_inwstr test_mouse test_opaque test_setupterm test_sgr test_termattrs test_tparm test_unget_wch test_vid_puts test_vidputs testaddch testcurs testscanw view worm xmas progs: clear infocmp tabs tic toe tput tset
 def_prog_mode			test: bs ncurses
 def_prog_mode_sp		test: sp_tinfo
 def_shell_mode			-
@@ -543,7 +543,7 @@ mvwprintw			test: demo_menus demo_panels inch_wide inchs ncurses test_delwin tes
 mvwscanw			test: testcurs
 mvwvline			test: ins_wide inserts movewindow ncurses test_add_wchstr test_addchstr test_addstr test_addwstr
 mvwvline_set			-
-napms				test: demo_panels ditto dots dots_curses dots_mvcur dots_xcurses echochar extended_color firework firstlast gdc hanoi lrtest ncurses padview picsmap railroad rain tclock test_opaque testcurs view worm xmas progs: tset
+napms				test: demo_panels ditto dots dots_curses dots_mvcur dots_termcap dots_xcurses echochar extended_color firework firstlast gdc hanoi lrtest ncurses padview picsmap railroad rain tclock test_opaque testcurs view worm xmas progs: tset
 napms_sp			test: sp_tinfo
 new_prescr			test: sp_tinfo
 newpad				test: ncurses padview popup_msg testcurs
@@ -686,7 +686,7 @@ tgetnum				test: demo_termcap dots_termcap railroad
 tgetnum_sp			test: sp_tinfo
 tgetstr				test: demo_termcap dots_termcap railroad
 tgetstr_sp			test: sp_tinfo
-tgoto				test: dots_termcap railroad progs: tic
+tgoto				test: dots_termcap railroad test_mouse progs: tic
 tigetflag			test: demo_terminfo savescreen progs: tic tput
 tigetflag_sp			test: sp_tinfo
 tigetnum			test: demo_tabs demo_terminfo dots dots_mvcur ncurses savescreen progs: tput
@@ -694,10 +694,12 @@ tigetnum_sp			test: sp_tinfo
 tigetstr			test: blue demo_defkey demo_new_pair demo_terminfo foldkeys list_keys savescreen test_mouse test_sgr test_tparm testcurs progs: clear_cmd tic tput
 tigetstr_sp			test: sp_tinfo
 timeout				test: filter rain savescreen
-tiparm				-
+tiparm				test: test_tparm
+tiparm_s			test: test_tparm
+tiscan_s			test: test_tparm
 touchline			test: chgat clip_printw insdelln
 touchwin			test: chgat clip_printw demo_menus filter firstlast inch_wide inchs ins_wide insdelln inserts movewindow ncurses popup_msg redraw test_add_wchstr test_addchstr test_addstr test_addwstr test_delwin test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
-tparm				test: dots dots_mvcur test_mouse test_sgr test_tparm progs: tic tput
+tparm				test: dots dots_mvcur test_sgr progs: tic tput
 tputs				test: dots dots_mvcur dots_termcap railroad test_tparm test_vid_puts test_vidputs progs: clear_cmd reset_cmd tabs
 tputs_sp			test: sp_tinfo
 trace				-
