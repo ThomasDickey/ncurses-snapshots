@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3945 2023/04/24 22:48:50 tom Exp $
+-- $Id: NEWS,v 1.3948 2023/04/29 20:33:12 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230429
+	+ revise recent change to _nc_write_entry to isolate it to a Cygwin bug
+	  (cf: 20230311)
+	+ amend fix for wgetnstr, wgetn_wstr to use cbreak mode unless raw
+	  mode was set (cf: 20210522).
+	+ fix a few warnings from cppcheck, etc.
+	+ correct copy/paste error in nc_access.h (report by Werner Fink).
 
 20230424
 	+ check return value of _nc_save_str(), in special case for tic where

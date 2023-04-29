@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.104 2021/10/23 17:12:16 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.105 2023/04/28 20:58:54 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -90,7 +90,6 @@ typedef struct {
 typedef struct {
     const char name[17];
     PARAM_TYPE type;
-    size_t size;
     size_t offset;
 } SCR_PARAMS;
 
@@ -120,8 +119,7 @@ static const SCR_ATTRS scr_attrs[] =
 };
 #undef DATA
 
-#define sizeof2(type,name) sizeof(((type *)0)->name)
-#define DATA(name, type) { { #name }, type, sizeof2(WINDOW, name), offsetof(WINDOW, name) }
+#define DATA(name, type) { { #name }, type, offsetof(WINDOW, name) }
 
 static const SCR_PARAMS scr_params[] =
 {

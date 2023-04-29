@@ -42,6 +42,8 @@
 
 #include <tic.h>
 
+MODULE_ID("$Id: write_entry.c,v 1.126 2023/04/29 20:30:57 tom Exp $")
+
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
 #define TRACE_NUM(n) if (VALID_NUMERIC(Numbers[n])) { \
@@ -51,7 +53,15 @@
 #define TRACE_NUM(n)		/* nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.122 2023/04/17 08:08:08 tom Exp $")
+/*
+ * FIXME: special case to work around Cygwin bug in link(), which updates
+ * the target file's timestamp.
+ */
+#if HAVE_LINK && !USE_SYMLINKS && !MIXEDCASE_FILENAMES && defined(__CYGWIN__)
+#define LINK_TOUCHES 1
+#else
+#define LINK_TOUCHES 0
+#endif
 
 static int total_written;
 static int total_parts;
@@ -77,7 +87,7 @@ write_file(char *filename, TERMTYPE2 *tp)
 
 	if (fp == 0) {
 	    perror(filename);
-	    _nc_syserr_abort("can't open %s/%s", _nc_tic_dir(0), filename);
+	    _nc_syserr_abort("cannot open %s/%s", _nc_tic_dir(0), filename);
 	}
 
 	actual = fwrite(buffer, sizeof(char), (size_t) offset, fp);
@@ -468,10 +478,14 @@ _nc_write_entry(TERMTYPE2 *const tp)
 
 	if (strcmp(filename, linkname) == 0) {
 	    _nc_warning("self-synonym ignored");
-	} else if (stat(linkname, &statbuf) >= 0 &&
-		   statbuf.st_mtime > start_time) {
+	}
+#if !LINK_TOUCHES
+	else if (stat(linkname, &statbuf) >= 0 &&
+		 statbuf.st_mtime < start_time) {
 	    _nc_warning("alias %s multiply defined.", ptr);
-	} else if (_nc_access(linkname, W_OK) == 0)
+	}
+#endif
+	else if (_nc_access(linkname, W_OK) == 0)
 #if HAVE_LINK
 	{
 	    int code;
@@ -510,9 +524,9 @@ _nc_write_entry(TERMTYPE2 *const tp)
 		    write_file(linkname, tp);
 		else {
 #if MIXEDCASE_FILENAMES
-		    _nc_syserr_abort("can't link %s to %s", filename, linkname);
+		    _nc_syserr_abort("cannot link %s to %s", filename, linkname);
 #else
-		    _nc_warning("can't link %s to %s (errno=%d)", filename,
+		    _nc_warning("cannot link %s to %s (errno=%d)", filename,
 				linkname, errno);
 #endif
 		}
@@ -708,7 +722,7 @@ _nc_write_object(TERMTYPE2 *tp, char *buffer, unsigned *offset, unsigned limit)
     unsigned last_str = STRWRITE;
 #if NCURSES_EXT_NUMBERS
     bool need_ints = FALSE;
-    size_t (*convert_numbers) (unsigned char *, NCURSES_INT2 *, size_t) = convert_32bit;
+    size_t (*convert_numbers) (unsigned char *, NCURSES_INT2 *, size_t);
 #else
 #define convert_numbers convert_shorts
 #endif

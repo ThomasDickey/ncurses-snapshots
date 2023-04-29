@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.102 2021/09/04 10:29:15 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.103 2023/04/28 20:59:14 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -324,7 +324,7 @@ _nc_getent(
 	    if (fd >= 0) {
 		(void) lseek(fd, (off_t) 0, SEEK_SET);
 	    } else if ((_nc_access(db_array[current], R_OK) < 0)
-		       || (fd = open(db_array[current], O_RDONLY, 0)) < 0) {
+		       || (fd = safe_open2(db_array[current], O_RDONLY)) < 0) {
 		/* No error on unfound file. */
 		if (errno == ENOENT)
 		    continue;

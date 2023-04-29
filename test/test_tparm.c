@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.36 2023/04/23 23:20:43 tom Exp $
+ * $Id: test_tparm.c,v 1.37 2023/04/28 23:12:00 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -319,7 +319,7 @@ test_tparm(const char *name, const char *format, long *number, char **string)
 	}
     } else
 #endif
-	result = tiparm(NS_9(format));
+	result = tparm(NS_9(format));
     total_tests++;
     if (result != NULL) {
 	tputs(result, 1, output_func);

@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2020-2021,2022 Thomas E. Dickey                                *
+,* Copyright 2020-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.119 2022/08/07 00:20:26 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.120 2023/04/29 19:54:37 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -302,7 +302,7 @@ push_back(int c)
 /* push a character back onto the input stream */
 {
     if (bufptr == bufstart)
-	_nc_syserr_abort("Can't backspace off beginning of line");
+	_nc_syserr_abort("cannot backspace off beginning of line");
     *--bufptr = (char) c;
     _nc_curr_col--;
 }

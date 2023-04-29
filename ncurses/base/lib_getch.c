@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.145 2022/12/24 22:38:38 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.146 2023/04/29 18:57:12 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -298,8 +298,8 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 #endif
 #if USE_KLIBC_KBD
-    if (NC_ISATTY(sp->_ifd) && sp->_cbreak) {
-	ch = _read_kbd(0, 1, !sp->_raw);
+    if (NC_ISATTY(sp->_ifd) && IsCbreak(sp)) {
+	ch = _read_kbd(0, 1, !IsRaw(sp));
 	n = (ch == -1) ? -1 : 1;
 	sp->_extended_key = (ch == 0);
     } else
@@ -308,7 +308,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 #if defined(USE_TERM_DRIVER)
 	int buf;
 # if defined(EXP_WIN32_DRIVER)
-	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && sp->_cbreak) {
+	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && IsCbreak(sp)) {
 	    _nc_set_read_thread(TRUE);
 	    n = _nc_console_read(sp,
 				 _nc_console_handle(sp->_ifd),
@@ -316,7 +316,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 	    _nc_set_read_thread(FALSE);
 	} else
 # elif defined(_NC_WINDOWS)
-	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && sp->_cbreak)
+	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && IsCbreak(sp))
 	    n = _nc_mingw_console_read(sp,
 				       _nc_get_handle(sp->_ifd),
 				       &buf);
@@ -479,8 +479,8 @@ _nc_wgetch(WINDOW *win,
      */
     if (head == -1 &&
 	!sp->_notty &&
-	!sp->_raw &&
-	!sp->_cbreak &&
+	!IsRaw(sp) &&
+	!IsCbreak(sp) &&
 	!sp->_called_wgetch) {
 	char buf[MAXCOLUMNS], *bufp;
 
@@ -513,13 +513,13 @@ _nc_wgetch(WINDOW *win,
 
     recur_wrefresh(win);
 
-    if (win->_notimeout || (win->_delay >= 0) || (sp->_cbreak > 1)) {
+    if (win->_notimeout || (win->_delay >= 0) || (IsCbreak(sp) > 1)) {
 	if (head == -1) {	/* fifo is empty */
 	    int delay;
 
 	    TR(TRACE_IEVENT, ("timed delay in wgetch()"));
-	    if (sp->_cbreak > 1)
-		delay = (sp->_cbreak - 1) * 100;
+	    if (IsCbreak(sp) > 1)
+		delay = (IsCbreak(sp) - 1) * 100;
 	    else
 		delay = win->_delay;
 
@@ -638,7 +638,7 @@ _nc_wgetch(WINDOW *win,
      * However, we provide the same visual result as Solaris, moving the
      * cursor to the left.
      */
-    if (sp->_echo && !IS_PAD(win)) {
+    if (IsEcho(sp) && !IS_PAD(win)) {
 	chtype backup = (chtype) ((ch == KEY_BACKSPACE) ? '\b' : ch);
 	if (backup < KEY_MIN)
 	    wechochar(win, backup);
@@ -647,7 +647,7 @@ _nc_wgetch(WINDOW *win,
     /*
      * Simulate ICRNL mode
      */
-    if ((ch == '\r') && sp->_nl)
+    if ((ch == '\r') && IsNl(sp))
 	ch = '\n';
 
     /* Strip 8th-bit if so desired.  We do this only for characters that

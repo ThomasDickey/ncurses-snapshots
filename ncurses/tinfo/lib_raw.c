@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2023 Thomas E. Dickey                                     *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.26 2020/11/21 22:07:48 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.27 2023/04/29 18:56:30 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -116,8 +116,8 @@ NCURSES_SP_NAME(raw) (NCURSES_SP_DCL0)
 	    KbdSetStatus(&kbdinfo, 0);
 #endif
 	    if (SP_PARM) {
-		SP_PARM->_raw = TRUE;
-		SP_PARM->_cbreak = 1;
+		IsRaw(SP_PARM) = TRUE;
+		IsCbreak(SP_PARM) = 1;
 	    }
 	    termp->Nttyb = buf;
 	}
@@ -163,7 +163,7 @@ NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
 	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 	    if (SP_PARM) {
-		SP_PARM->_cbreak = 1;
+		IsCbreak(SP_PARM) = 1;
 	    }
 	    termp->Nttyb = buf;
 	}
@@ -255,8 +255,8 @@ NCURSES_SP_NAME(noraw) (NCURSES_SP_DCL0)
 	    KbdSetStatus(&kbdinfo, 0);
 #endif
 	    if (SP_PARM) {
-		SP_PARM->_raw = FALSE;
-		SP_PARM->_cbreak = 0;
+		IsRaw(SP_PARM) = FALSE;
+		IsCbreak(SP_PARM) = 0;
 	    }
 	    termp->Nttyb = buf;
 	}
@@ -298,7 +298,7 @@ NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
 	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 	    if (SP_PARM) {
-		SP_PARM->_cbreak = 0;
+		IsCbreak(SP_PARM) = 0;
 	    }
 	    termp->Nttyb = buf;
 	}

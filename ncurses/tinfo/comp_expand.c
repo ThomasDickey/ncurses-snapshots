@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.34 2021/09/04 10:29:15 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.35 2023/04/28 20:59:06 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -129,7 +129,6 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		    if (dst != 0
 			&& *dst == R_BRACE
 			&& value < 127
-			&& value != '\\'	/* FIXME */
 			&& isprint((int) value)) {
 			ch = (int) value;
 			buffer[bufp++] = S_QUOTE;

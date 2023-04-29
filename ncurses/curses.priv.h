@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.663 2023/04/22 15:11:52 tom Exp $
+ * $Id: curses.priv.h,v 1.664 2023/04/29 19:10:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -936,6 +936,19 @@ typedef enum {
     ewSuspend
 } ENDWIN;
 
+typedef struct {
+	int		_nl;		/* True if NL -> CR/NL is on	    */
+	int		_raw;		/* True if in raw mode		    */
+	int		_cbreak;	/* 1 if in cbreak mode		    */
+					/* > 1 if in halfdelay mode	    */
+	int		_echo;		/* True if echo on		    */
+} TTY_FLAGS;
+
+#define IsNl(sp)        (sp)->_tty_flags._nl
+#define IsRaw(sp)       (sp)->_tty_flags._raw
+#define IsCbreak(sp)    (sp)->_tty_flags._cbreak
+#define IsEcho(sp)      (sp)->_tty_flags._echo
+
 /*
  * The SCREEN structure.
  */
@@ -986,11 +999,7 @@ typedef struct screen {
 	int		_cursrow;	/* physical cursor row		    */
 	int		_curscol;	/* physical cursor column	    */
 	bool		_notty;		/* true if we cannot switch non-tty */
-	int		_nl;		/* True if NL -> CR/NL is on	    */
-	int		_raw;		/* True if in raw mode		    */
-	int		_cbreak;	/* 1 if in cbreak mode		    */
-					/* > 1 if in halfdelay mode	    */
-	int		_echo;		/* True if echo on		    */
+	TTY_FLAGS	_tty_flags;
 	int		_use_meta;	/* use the meta key?		    */
 	struct _SLK	*_slk;		/* ptr to soft key struct / NULL    */
 	int		slk_format;	/* selected format for this screen  */
@@ -1250,18 +1259,18 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #endif
 
 #define SP_PRE_INIT(sp)                         \
-    sp->_cursrow = -1;                          \
-    sp->_curscol = -1;                          \
-    sp->_nl = TRUE;                             \
-    sp->_raw = FALSE;                           \
-    sp->_cbreak = 0;                            \
-    sp->_echo = TRUE;                           \
-    sp->_fifohead = -1;                         \
-    sp->_endwin = ewSuspend;                    \
-    sp->_cursor = -1;                           \
+    sp->_cursrow           = -1;                \
+    sp->_curscol           = -1;                \
+    IsNl(sp)               = TRUE;              \
+    IsRaw(sp)              = FALSE;             \
+    IsCbreak(sp)           = 0;                 \
+    IsEcho(sp)             = TRUE;              \
+    sp->_fifohead          = -1;                \
+    sp->_endwin            = ewSuspend;         \
+    sp->_cursor            = -1;                \
     SP_INIT_WINDOWLIST(sp);                     \
-    sp->_outch = NCURSES_OUTC_FUNC;             \
-    sp->jump = 0                                \
+    sp->_outch             = NCURSES_OUTC_FUNC; \
+    sp->jump               = 0                  \
 
 /* usually in <limits.h> */
 #ifndef UCHAR_MAX
