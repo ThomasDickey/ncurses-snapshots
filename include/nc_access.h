@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/* $Id: nc_access.h,v 1.5 2023/04/28 20:04:43 tom Exp $ */
+/* $Id: nc_access.h,v 1.6 2023/05/06 10:54:55 tom Exp $ */
 
 #ifndef NC_ACCESS_included
 #define NC_ACCESS_included 1
@@ -64,7 +64,7 @@ extern NCURSES_EXPORT(int) _nc_env_access (void);
 #else
 
 #define safe_fopen(name,mode)       _nc_safe_fopen(name,mode)
-#define safe_open2(name,flags)      _nc_safe_open2(name,flags,0)
+#define safe_open2(name,flags)      _nc_safe_open3(name,flags,0)
 #define safe_open3(name,flags,mode) _nc_safe_open3(name,flags,mode)
 extern NCURSES_EXPORT(FILE *)       _nc_safe_fopen (const char *, const char *);
 extern NCURSES_EXPORT(int)          _nc_safe_open3 (const char *, int, mode_t);
