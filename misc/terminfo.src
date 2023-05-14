@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1057 $
-#	$Date: 2023/04/08 21:08:00 $
+#	$Revision: 1.1058 $
+#	$Date: 2023/05/08 08:23:18 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5885,9 +5885,9 @@ xterm-x11hilite|X11 mouse with highlight,
 # "any-event" mouse mode.
 #
 # These building blocks incorporate later features as well:
-# xterm patch #224 (2007/2/11 added private mode 1004, for enabling/disabling
+# xterm patch #224 (2007/2/11) added private mode 1004, for enabling/disabling
 # focus in/out event reporting.
-# xterm patch #277 (2012/01/07 added private mode 1006
+# xterm patch #277 (2012/01/07) added private mode 1006
 
 xterm+sm+1002|xterm any-button mouse,
 	kmous=\E[<, XM=\E[?1006;1004;1002%?%p1%{1}%=%th%el%;,
@@ -5937,7 +5937,7 @@ xterm-1005|xterm UTF-8 mouse,
 # protocol regarding button-releases), I provided the 1006 mode, referring
 # to it as "SGR 1006" since the replies resemble the SGR control string:
 xterm+sm+1006|xterm SGR-mouse (building block),
-	kmous=\E[<, XM=\E[?1006;1000%?%p1%{1}%=%th%el%;,
+	kmous=\E[<, XM=\E[?1006;1004;1000%?%p1%{1}%=%th%el%;,
 	xm=\E[<%i%p3%d;%p1%d;%p2%d;%?%p4%tM%em%;,
 xterm-1006|xterm SGR-mouse,
 	use=xterm+sm+1006, use=xterm,
@@ -27809,5 +27809,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2023-04-08
 #	+ add xterm+focus to alacritty+common (patch by Christian Duerr).
+#
+# 2023-05-08
+#	+ add mode 1004 to xterm+sm+1006 from xterm #380 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

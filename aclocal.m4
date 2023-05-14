@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1044 2023/05/06 22:18:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.1046 2023/05/13 21:42:47 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -5844,7 +5844,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 56 updated: 2023/01/21 16:49:25
+dnl CF_MAN_PAGES version: 57 updated: 2023/05/13 19:14:15
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -6064,6 +6064,14 @@ esac
 
 cat >>$cf_edit_man <<CF_EOF
 	suffix=\`basename "\$cf_target" | sed -e 's%^[[^.]]*%%'\`
+	extra_suffix=
+	if test -n "$EXTRA_SUFFIX" ; then
+		case \$cf_target in
+		(*${EXTRA_SUFFIX}\$suffix)
+			extra_suffix="$EXTRA_SUFFIX"
+			;;
+		esac
+	fi
 	if test "\$verb" = installing ; then
 		echo "\$verb \$cf_target"
 		\$INSTALL_DATA \$TMP "\$cf_target"
@@ -6078,6 +6086,7 @@ cat >>$cf_edit_man <<CF_EOF
 					if test "\$section" = 1 ; then
 						cf_alias=\`echo "\$cf_alias" |sed "\${transform}"\`
 					fi
+					cf_alias="\${cf_alias}\${extra_suffix}"
 
 					if test "$MANPAGE_SYMLINKS" = yes ; then
 						if test -f "\$cf_alias\${suffix}" ; then
@@ -6134,6 +6143,7 @@ cat >>$cf_edit_man <<CF_EOF
 					if test "\$section" = 1 ; then
 						cf_alias=\`echo "\$cf_alias" |sed "\${transform}"\`
 					fi
+					cf_alias="\${cf_alias}\${extra_suffix}"
 
 					echo ".. \$verb alias \$cf_alias\${suffix}"
 					rm -f "\$cf_alias\${suffix}"
