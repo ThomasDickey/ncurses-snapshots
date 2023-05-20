@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.131 2022/10/23 13:15:58 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.132 2023/05/20 18:08:48 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -225,7 +225,7 @@ _nc_read_entry_source(FILE *fp, char *buf,
 	  (T_CALLED("_nc_read_entry_source("
 		    "file=%p, buf=%p, literal=%d, silent=%d, hook=%#"
 		    PRIxPTR ")"),
-	   (void *) fp, buf, literal, silent, (intptr_t) hook));
+	   (void *) fp, buf, literal, silent, CASTxPTR(hook)));
 
     if (silent)
 	_nc_suppress_warnings = TRUE;	/* shut the lexer up, too */

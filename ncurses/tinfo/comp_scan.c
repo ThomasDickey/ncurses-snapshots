@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.120 2023/04/29 19:54:37 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.121 2023/05/20 18:33:33 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -311,7 +311,7 @@ static long
 stream_pos(void)
 /* return our current character position in the input stream */
 {
-    return (yyin ? ftell(yyin) : (bufptr ? bufptr - bufstart : 0));
+    return (yyin ? ftell(yyin) : (bufptr ? (long) (bufptr - bufstart) : 0));
 }
 
 static bool
