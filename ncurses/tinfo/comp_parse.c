@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.132 2023/05/20 18:08:48 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.133 2023/05/27 20:13:10 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -264,8 +264,9 @@ _nc_read_entry_source(FILE *fp, char *buf,
 
     if (_nc_tail) {
 	/* set up the head pointer */
-	for (_nc_head = _nc_tail; _nc_head->last; _nc_head = _nc_head->last)
-	    continue;
+	for (_nc_head = _nc_tail; _nc_head->last; _nc_head = _nc_head->last) {
+	    /* EMPTY */ ;
+	}
 
 	DEBUG(2, ("head = %s", _nc_head->tterm.term_names));
 	DEBUG(2, ("tail = %s", _nc_tail->tterm.term_names));

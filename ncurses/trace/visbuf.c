@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2023 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.53 2021/02/27 20:07:57 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.54 2023/05/27 20:13:10 tom Exp $")
 
 #define NUM_VISBUFS 4
 
@@ -67,7 +67,9 @@ static const char r_brace[] = StringOf(R_BRACE);
 static char *
 _nc_vischar(char *tp, unsigned c LIMIT_ARG)
 {
-    if (c == '"' || c == '\\') {
+    if (tp == NULL) {
+	return NULL;
+    } else if (c == '"' || c == '\\') {
 	*tp++ = '\\';
 	*tp++ = (char) c;
     } else if (is7bits((int) c) && (isgraph((int) c) || c == ' ')) {

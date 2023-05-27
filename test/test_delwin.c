@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2022 Thomas E. Dickey                                          *
+ * Copyright 2022,2023 Thomas E. Dickey                                     *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /*
- * $Id: test_delwin.c,v 1.4 2022/12/10 22:14:07 tom Exp $
+ * $Id: test_delwin.c,v 1.5 2023/05/27 20:34:51 tom Exp $
  */
 #include <test.priv.h>
 
@@ -123,7 +123,7 @@ main(int argc, char **argv)
 
     show_rc("Deleted parent",
 	    "should fail, it still has a subwindow",
-	    rc = delwin(parent));
+	    delwin(parent));
     next_step(stdscr);
     show_rc("Deleted child1",
 	    "should succeed",

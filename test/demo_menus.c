@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2003-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.79 2022/12/04 00:40:11 tom Exp $
+ * $Id: demo_menus.c,v 1.80 2023/05/27 20:13:10 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -925,7 +925,6 @@ perform_menus(void)
 	}
 	if (code == E_REQUEST_DENIED)
 	    beep();
-	continue;
     }
 }
 

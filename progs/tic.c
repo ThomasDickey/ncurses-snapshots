@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.321 2023/04/08 15:51:57 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.322 2023/05/27 20:13:10 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -1169,6 +1169,7 @@ check_acs(TERMTYPE2 *tp)
 	char *q;
 
 	memset(mapped, 0, sizeof(mapped));
+	memset(missing, 0, sizeof(missing));
 	for (p = acs_chars; *p != '\0'; p += 2) {
 	    if (p[1] == '\0') {
 		_nc_warning("acsc has odd number of characters");
@@ -1350,8 +1351,7 @@ check_ansi_cursor(char *list[4])
     for (j = 0; j < 4; ++j) {
 	skip[j] = FALSE;
 	for (k = 0; k < j; ++k) {
-	    if (j != k
-		&& !strcmp(list[j], list[k])) {
+	    if (!strcmp(list[j], list[k])) {
 		char *value = _nc_tic_expand(list[k], TRUE, 0);
 		_nc_warning("repeated cursor control %s", value);
 		repeated = TRUE;
@@ -2440,60 +2440,63 @@ static void
 check_infotocap(TERMTYPE2 *tp, int i, const char *value)
 {
     const char *name = ExtStrname(tp, i, strnames);
-    int params = ((i < (int) SIZEOF(parametrized))
-		  ? parametrized[i]
-		  : ((*value == 'k')
-		     ? 0
-		     : has_params(value, FALSE)));
     char *ti_value = NULL;
-    char *tc_value;
-    bool embedded;
 
     assert(SIZEOF(parametrized) == STRCOUNT);
     if (!VALID_STRING(value) || (ti_value = strdup(value)) == NULL) {
 	_nc_warning("tic-expansion of %s failed", name);
-    } else if ((tc_value = _nc_infotocap(name, ti_value, params)) == ABSENT_STRING) {
-	_nc_warning("tic-conversion of %s failed", name);
-    } else if (params > 0) {
-	int limit = 5;
-	int count;
-	bool first = TRUE;
+    } else {
+	char *tc_value;
+	bool embedded;
+	int params = ((i < (int) SIZEOF(parametrized))
+		      ? parametrized[i]
+		      : ((*value == 'k')
+			 ? 0
+			 : has_params(value, FALSE)));
 
-	if (!strcmp(name, "setf")
-	    || !strcmp(name, "setb")
-	    || !strcmp(name, "setaf")
-	    || !strcmp(name, "setab")) {
-	    if ((limit = max_colors) > 256)
-		limit = 256;
-	}
-	for (count = 0; count < limit; ++count) {
-	    char *ti_check = check_1_infotocap(name, ti_value, count);
-	    char *tc_check = check_1_infotocap(name, tc_value, count);
+	if ((tc_value = _nc_infotocap(name, ti_value, params)) == ABSENT_STRING) {
+	    _nc_warning("tic-conversion of %s failed", name);
+	} else if (params > 0) {
+	    int limit = 5;
+	    int count;
+	    bool first = TRUE;
 
-	    if (strcmp(ti_check, tc_check)) {
-		if (first) {
-		    fprintf(stderr, "check_infotocap(%s)\n", name);
-		    fprintf(stderr, "...ti '%s'\n", _nc_visbuf2(0, ti_value));
-		    fprintf(stderr, "...tc '%s'\n", _nc_visbuf2(0, tc_value));
-		    first = FALSE;
-		}
-		_nc_warning("tparm-conversion of %s(%d) differs between\n\tterminfo %s\n\ttermcap  %s",
-			    name, count,
-			    _nc_visbuf2(0, ti_check),
-			    _nc_visbuf2(1, tc_check));
+	    if (!strcmp(name, "setf")
+		|| !strcmp(name, "setb")
+		|| !strcmp(name, "setaf")
+		|| !strcmp(name, "setab")) {
+		if ((limit = max_colors) > 256)
+		    limit = 256;
 	    }
-	    free(ti_check);
-	    free(tc_check);
+	    for (count = 0; count < limit; ++count) {
+		char *ti_check = check_1_infotocap(name, ti_value, count);
+		char *tc_check = check_1_infotocap(name, tc_value, count);
+
+		if (strcmp(ti_check, tc_check)) {
+		    if (first) {
+			fprintf(stderr, "check_infotocap(%s)\n", name);
+			fprintf(stderr, "...ti '%s'\n", _nc_visbuf2(0, ti_value));
+			fprintf(stderr, "...tc '%s'\n", _nc_visbuf2(0, tc_value));
+			first = FALSE;
+		    }
+		    _nc_warning("tparm-conversion of %s(%d) differs between\n\tterminfo %s\n\ttermcap  %s",
+				name, count,
+				_nc_visbuf2(0, ti_check),
+				_nc_visbuf2(1, tc_check));
+		}
+		free(ti_check);
+		free(tc_check);
+	    }
+	} else if (params == 0 && !same_ti_tc(ti_value, tc_value, &embedded)) {
+	    if (embedded) {
+		_nc_warning("termcap equivalent of %s cannot use embedded delay", name);
+	    } else {
+		_nc_warning("tic-conversion of %s changed value\n\tfrom %s\n\tto   %s",
+			    name, ti_value, tc_value);
+	    }
 	}
-    } else if (params == 0 && !same_ti_tc(ti_value, tc_value, &embedded)) {
-	if (embedded) {
-	    _nc_warning("termcap equivalent of %s cannot use embedded delay", name);
-	} else {
-	    _nc_warning("tic-conversion of %s changed value\n\tfrom %s\n\tto   %s",
-			name, ti_value, tc_value);
-	}
+	free(ti_value);
     }
-    free(ti_value);
 }
 
 static char *

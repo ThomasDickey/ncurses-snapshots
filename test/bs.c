@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.78 2022/12/11 00:18:37 tom Exp $
+ * $Id: bs.c,v 1.79 2023/05/27 20:13:10 tom Exp $
  */
 
 #include <test.priv.h>
@@ -898,8 +898,9 @@ sgetc(const char *s)
 	    ch = toupper(ch);
 	if (is_QUIT(ch))
 	    uninitgame(0);
-	for (s1 = s; *s1 && ch != *s1; ++s1)
-	    continue;
+	for (s1 = s; *s1 && ch != *s1; ++s1) {
+	    /* EMPTY */ ;
+	}
 	if (*s1) {
 	    AddCh(ch);
 	    (void) refresh();
@@ -1270,8 +1271,9 @@ main(int argc, char *argv[])
 		    }
 		}
 	    } else
-		while ((turn ? cputurn() : plyturn()) && awinna() == -1)
-		    continue;
+		while ((turn ? cputurn() : plyturn()) && awinna() == -1) {
+		    /* EMPTY */ ;
+		}
 	    turn = OTHER;
 	}
     } while

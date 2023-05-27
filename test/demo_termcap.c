@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2005-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.64 2022/12/10 23:22:09 tom Exp $
+ * $Id: demo_termcap.c,v 1.65 2023/05/27 20:13:10 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -105,7 +105,7 @@ static long total_s_values;
 #define EachCapName(n) n = 33; n < 127; ++n
 
 static char *
-make_dbitem(char *p, char *q)
+make_dbitem(const char *const p, const char *const q)
 {
     size_t need = strlen(e_opt) + 2 + (size_t) (p - q);
     char *result = malloc(need);
@@ -404,7 +404,8 @@ typedef enum {
 static void
 parse_description(const char *input_name)
 {
-    static char empty[1];
+    static char empty[1] =
+    {0};
 
     FILE *fp;
     struct stat sb;
@@ -437,11 +438,13 @@ parse_description(const char *input_name)
 	failed("cannot allocate memory for input-file");
     }
 
-    if ((fp = fopen(input_name, "r")) == 0)
+    if ((fp = fopen(input_name, "r")) == 0) {
 	failed("cannot open input-file");
-    len = fread(my_blob, sizeof(char), (size_t) sb.st_size, fp);
-    my_blob[sb.st_size] = '\0';
-    fclose(fp);
+    } else {
+	len = fread(my_blob, sizeof(char), (size_t) sb.st_size, fp);
+	my_blob[sb.st_size] = '\0';
+	fclose(fp);
+    }
 
     /*
      * First, get rid of comments and escaped newlines, as well as repeated

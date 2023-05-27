@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2015-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_sgr.c,v 1.21 2022/12/10 23:23:27 tom Exp $
+ * $Id: test_sgr.c,v 1.22 2023/05/27 20:13:10 tom Exp $
  *
  * A simple demo of the sgr/sgr0 terminal capabilities.
  */
@@ -61,7 +61,7 @@ static int db_item;
 static long total_values;
 
 static char *
-make_dbitem(char *p, char *q)
+make_dbitem(const char *const p, const char *const q)
 {
     size_t need = strlen(e_opt) + 2 + (size_t) (p - q);
     char *result = malloc(need);

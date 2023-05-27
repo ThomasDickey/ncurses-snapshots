@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2010,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.47 2021/11/06 22:22:03 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.48 2023/05/27 20:13:10 tom Exp $")
 
 NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
@@ -208,7 +208,6 @@ wnoutrefresh(WINDOW *win)
 	    });
 
 	    if_WIDEC({
-		static cchar_t blank = BLANK;
 		int last_dst = begx + ((last_src < win->_maxx)
 				       ? last_src
 				       : win->_maxx);
@@ -254,6 +253,7 @@ wnoutrefresh(WINDOW *win)
 		 */
 		if (fix_left < dst_col || fix_right > last_dst) {
 		    for (j = fix_left; j <= fix_right; ++j) {
+			static cchar_t blank = BLANK;
 			nline->text[j] = blank;
 			CHANGED_CELL(nline, j);
 		    }

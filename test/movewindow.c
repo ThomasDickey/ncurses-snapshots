@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 2006-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.53 2022/12/10 23:31:31 tom Exp $
+ * $Id: movewindow.c,v 1.54 2023/05/27 20:13:10 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -324,6 +324,7 @@ add_window(WINDOW *parent, WINDOW *child)
 	all_windows = typeRealloc(FRAME, need, all_windows);
 	if (!all_windows)
 	    failed("add_window");
+	have = need;
     }
     all_windows[num_windows].parent = parent;
     all_windows[num_windows].child = child;
@@ -331,7 +332,7 @@ add_window(WINDOW *parent, WINDOW *child)
 }
 
 static int
-window2num(WINDOW *win)
+window2num(const WINDOW *const win)
 {
     int n;
     int result = -1;
@@ -407,7 +408,7 @@ prev_window(WINDOW *win)
 }
 
 static void
-recur_move_window(WINDOW *parent, int dy, int dx)
+recur_move_window(const WINDOW *const parent, int dy, int dx)
 {
     unsigned n;
 

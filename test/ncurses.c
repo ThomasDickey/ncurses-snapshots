@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.534 2023/02/25 19:30:27 tom Exp $
+$Id: ncurses.c,v 1.535 2023/05/27 20:13:10 tom Exp $
 
 ***************************************************************************/
 
@@ -770,7 +770,7 @@ slk_repaint(void)
  * Resize both and paint the box in the parent.
  */
 static void
-resize_boxes(unsigned level, WINDOW *win)
+resize_boxes(unsigned level, const WINDOW *const win)
 {
     unsigned n;
     int base = 5;
@@ -1012,7 +1012,7 @@ getch_test(bool recur GCC_UNUSED)
  */
 #if defined(KEY_RESIZE) && HAVE_WRESIZE
 static void
-resize_wide_boxes(unsigned level, WINDOW *win)
+resize_wide_boxes(unsigned level, const WINDOW *const win)
 {
     unsigned n;
     int base = 5;
@@ -6161,7 +6161,6 @@ menu_test(bool recur GCC_UNUSED)
 	    break;
 	if (c == E_REQUEST_DENIED)
 	    beep();
-	continue;
     }
 
     MvPrintw(LINES - 2, 0,
@@ -6329,8 +6328,9 @@ trace_set(bool recur GCC_UNUSED)
 	    set_item_value(*ip, TRUE);
     }
 
-    while (run_trace_menu(m))
-	continue;
+    while (run_trace_menu(m)) {
+	/* EMPTY */ ;
+    }
 
     newtrace = 0;
     for (ip = menu_items(m); *ip; ip++)

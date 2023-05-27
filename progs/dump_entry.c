@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.195 2023/01/21 21:25:21 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.196 2023/05/27 20:13:10 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -1311,7 +1311,7 @@ fmt_entry(TERMTYPE2 *tterm,
 }
 
 static bool
-kill_string(TERMTYPE2 *tterm, char *cap)
+kill_string(TERMTYPE2 *tterm, const char *const cap)
 {
     unsigned n;
     for (n = 0; n < NUM_STRINGS(tterm); ++n) {
@@ -1693,7 +1693,7 @@ show_entry(void)
 		outbuf.used = (size_t) j;
 	    } else if (!infodump && ch == '\\') {
 		outbuf.used = (size_t) j;
-	    } else if (ch == delim && (j == 0 || outbuf.text[j - 1] != '\\')) {
+	    } else if (ch == delim && (outbuf.text[j - 1] != '\\')) {
 		outbuf.used = (size_t) (j + 1);
 	    } else {
 		break;

@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.126 2023/04/29 20:30:57 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.127 2023/05/27 20:13:10 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -128,18 +128,16 @@ check_writeable(int code)
     char dir[sizeof(LEAF_FMT)];
     char *s = 0;
 
-    if (code == 0 || (s = (strchr) (dirnames, code)) == 0)
+    if (code == 0 || (s = (strchr) (dirnames, code)) == 0) {
 	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", code);
-
-    if (verified[s - dirnames])
-	return;
-
-    _nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
-    if (make_db_root(dir) < 0) {
-	_nc_err_abort("%s/%s: permission denied", _nc_tic_dir(0), dir);
+    } else if (!verified[s - dirnames]) {
+	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
+	if (make_db_root(dir) < 0) {
+	    _nc_err_abort("%s/%s: permission denied", _nc_tic_dir(0), dir);
+	} else {
+	    verified[s - dirnames] = TRUE;
+	}
     }
-
-    verified[s - dirnames] = TRUE;
 }
 #endif /* !USE_HASHED_DB */
 
@@ -333,8 +331,9 @@ _nc_write_entry(TERMTYPE2 *const tp)
     if (ptr != name_list) {
 	*ptr = '\0';
 
-	for (ptr = name_list; *ptr != '\0' && *ptr != '|'; ptr++)
-	    continue;
+	for (ptr = name_list; *ptr != '\0' && *ptr != '|'; ptr++) {
+	    /* EMPTY */ ;
+	}
 
 	if (*ptr == '\0')
 	    other_names = ptr;

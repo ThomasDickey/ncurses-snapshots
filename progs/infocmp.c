@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.156 2022/09/24 10:13:06 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.157 2023/05/27 20:13:10 tom Exp $")
 
 #define MAX_STRING	1024	/* maximum formatted string */
 
@@ -158,7 +158,7 @@ no_numeric(int value)
 }
 
 static bool
-no_string(char *value)
+no_string(const char *const value)
 {
     bool result = (value == ABSENT_STRING);
     if (!strcmp(s_absent, s_cancel))

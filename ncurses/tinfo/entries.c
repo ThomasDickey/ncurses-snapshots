@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2006-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: entries.c,v 1.34 2022/08/13 16:57:35 tom Exp $")
+MODULE_ID("$Id: entries.c,v 1.35 2023/05/27 20:13:10 tom Exp $")
 
 /****************************************************************************
  *
@@ -65,7 +65,7 @@ NCURSES_EXPORT_VAR(ENTRY *) _nc_head = 0;
 NCURSES_EXPORT_VAR(ENTRY *) _nc_tail = 0;
 
 static ENTRY *
-_nc_delink_entry(ENTRY * headp, TERMTYPE2 *tterm)
+_nc_delink_entry(ENTRY * headp, const TERMTYPE2 *const tterm)
 /* delink the allocated storage for the given list entry */
 {
     ENTRY *ep, *last;

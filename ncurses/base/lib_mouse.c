@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.198 2023/03/25 23:27:28 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.199 2023/05/27 20:13:10 tom Exp $")
 
 #include <tic.h>
 
@@ -776,7 +776,7 @@ _nc_mouse_init(SCREEN *sp)
 {
     bool result = FALSE;
 
-    T((T_CALLED("_nc_mouse_init(%p)"), sp));
+    T((T_CALLED("_nc_mouse_init(%p)"), (void *)sp));
 
     if (sp != 0) {
 	if (!sp->_mouse_initialized) {

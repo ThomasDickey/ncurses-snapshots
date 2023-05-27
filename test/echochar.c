@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2006-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: echochar.c,v 1.25 2022/12/10 22:28:50 tom Exp $
+ * $Id: echochar.c,v 1.26 2023/05/27 20:13:10 tom Exp $
  *
  * Demonstrate the echochar function (compare to dots.c).
  * Thomas Dickey - 2006/11/4
@@ -65,7 +65,7 @@ ranf(void)
 }
 
 static void
-set_color(char *my_pairs, int fg, int bg)
+set_color(const char *const my_pairs, int fg, int bg)
 {
     int pair = (fg * COLORS) + bg;
     if (pair < COLOR_PAIRS) {
