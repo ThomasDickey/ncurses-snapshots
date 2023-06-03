@@ -48,7 +48,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.102 2023/05/20 18:09:07 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.103 2023/05/28 14:39:10 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -95,11 +95,12 @@ NCURSES_EXPORT_VAR(long) _nc_outchars = 0;
 #endif /* TRACE */
 
 #if USE_REENTRANT
-#define Locked(statement) { \
+#define Locked(statement) \
+    do { \
 	_nc_lock_global(tst_tracef); \
 	statement; \
 	_nc_unlock_global(tst_tracef); \
-    }
+    } while (0)
 #else
 #define Locked(statement) statement
 #endif

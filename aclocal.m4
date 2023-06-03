@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1046 2023/05/13 21:42:47 tom Exp $
+dnl $Id: aclocal.m4,v 1.1048 2023/06/03 19:19:41 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4003,7 +4003,7 @@ CPPFLAGS="-I. $CPPFLAGS"
 AC_SUBST(CPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_INSTALL_OPTS version: 2 updated: 2018/08/18 12:19:21
+dnl CF_INSTALL_OPTS version: 3 updated: 2023/06/03 15:17:30
 dnl ---------------
 dnl prompt for/fill-in useful install-program options
 AC_DEFUN([CF_INSTALL_OPTS],
@@ -4011,6 +4011,7 @@ AC_DEFUN([CF_INSTALL_OPTS],
 CF_INSTALL_OPT_S
 CF_INSTALL_OPT_P
 CF_INSTALL_OPT_O
+CF_INSTALL_OPT_STRIP_PROG
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_INSTALL_OPT_O version: 3 updated: 2020/12/31 20:19:42
@@ -4093,6 +4094,72 @@ then
 	INSTALL_OPT_S="-s"
 else
 	INSTALL_OPT_S=
+fi
+AC_SUBST(INSTALL_OPT_S)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_INSTALL_OPT_STRIP_PROG version: 1 updated: 2023/06/03 15:17:30
+dnl -------------------------
+dnl Provide an option for overriding the strip program used in install "-s"
+dnl
+dnl coreutils install provides a --strip-program option
+dnl FreeBSD uses STRIPBIN environment variable, while NetBSD and OpenBSD use
+dnl STRIP environment variable.  Other versions of install do not support this.
+AC_DEFUN([CF_INSTALL_OPT_STRIP_PROG],
+[
+AC_REQUIRE([CF_INSTALL_OPT_S])
+if test -n "$INSTALL_OPT_S"
+then
+	AC_MSG_CHECKING(if you want to specify strip-program)
+	AC_ARG_WITH(strip-program,
+		[  --with-strip-program=XX specify program to use when stripping in install],
+		[with_strip_program=$withval],
+		[with_strip_program=no])
+	AC_MSG_RESULT($with_strip_program)
+	if test "$with_strip_program" != no
+	then
+		AC_MSG_CHECKING(if strip-program is supported with this installer)
+		cf_install_program=`echo "$INSTALL" | sed -e 's%[[ ]]*[[ ]]-.%%'`
+		check_install_strip=no
+		if test -f "$cf_install_program"
+		then
+			check_install_version=`"$cf_install_program" --version 2>/dev/null | head -n 1 | grep coreutils`
+			if test -n "$check_install_version"
+			then
+				check_install_strip="option"
+			else
+				for check_strip_variable in STRIPBIN STRIP
+				do
+					if strings "$cf_install_program" | grep "^$check_strip_variable[$]" >/dev/null
+					then
+						check_install_strip="environ"
+						break
+					fi
+				done
+			fi
+		fi
+		AC_MSG_RESULT($check_install_strip)
+		case "$check_install_strip" in
+		(no)
+			AC_MSG_WARN($cf_install_program does not support strip program option)
+			with_strip_program=no
+			;;
+		(environ)
+			cat >install.tmp <<-CF_EOF
+			#! $SHELL
+			STRIPBIN="$with_strip_program" \\
+			STRIP="$with_strip_program" \\
+			$INSTALL "[$]@"
+			CF_EOF
+			INSTALL="`pwd`/install.tmp"
+			chmod +x "$INSTALL"
+			CF_VERBOSE(created $INSTALL)
+			;;
+		(option)
+			INSTALL_OPT_S="$INSTALL_OPT_S --strip-program=\"$with_strip_program\""
+			;;
+		esac
+	fi
 fi
 AC_SUBST(INSTALL_OPT_S)
 ])dnl
@@ -4518,7 +4585,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 99 updated: 2023/04/22 11:51:06
+dnl CF_LIB_RULES version: 100 updated: 2023/06/03 15:17:30
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -5025,7 +5092,7 @@ cat >> Makefile <<CF_EOF
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/ncurses_cfg.h
 	rm -f headers.sh headers.sed mk_shared_lib.sh
-	rm -f edit_man.* man_alias.*
+	rm -f edit_man.* man_alias.* *.tmp
 	rm -rf \${DIRS_TO_MAKE}
 CF_EOF
 
@@ -5592,7 +5659,7 @@ AC_SUBST(MAKE_UPPER_TAGS)
 AC_SUBST(MAKE_LOWER_TAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MANPAGE_FORMAT version: 17 updated: 2023/01/21 16:49:25
+dnl CF_MANPAGE_FORMAT version: 18 updated: 2023/05/19 18:35:02
 dnl -----------------
 dnl Option to allow user to override automatic configuration of manpage format.
 dnl There are several special cases:
@@ -5740,6 +5807,11 @@ case "$cf_item" in
 	;;
 esac
 done
+
+AC_SUBST(cf_manpage_format)
+AC_SUBST(cf_manpage_inboth)
+AC_SUBST(cf_manpage_so_strip)
+AC_SUBST(cf_manpage_compress)
 
 ])dnl
 dnl ---------------------------------------------------------------------------

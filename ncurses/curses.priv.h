@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.667 2023/05/27 20:13:10 tom Exp $
+ * $Id: curses.priv.h,v 1.668 2023/06/03 12:33:07 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1362,10 +1362,11 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define TR_PUTC(c)	TR(TRACE_CHARPUT, ("PUTC %#x", UChar(c)))
 
 #ifndef MB_LEN_MAX
-#define MB_LEN_MAX 8 /* should be >= MB_CUR_MAX, but that may be a function */
+#define MB_LEN_MAX 16	/* should be >= MB_CUR_MAX, but that may be a function */
 #endif
 
 #if USE_WIDEC_SUPPORT /* { */
+/* true if the status/errno indicate an illegal multibyte sequence */
 #define isEILSEQ(status) (((size_t)status == (size_t)-1) && (errno == EILSEQ))
 
 #define init_mb(state)	memset(&(state), 0, sizeof(state))

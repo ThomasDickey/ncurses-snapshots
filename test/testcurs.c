@@ -6,7 +6,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.57 2022/12/10 23:35:36 tom Exp $
+ * $Id: testcurs.c,v 1.58 2023/05/28 14:23:34 tom Exp $
  */
 
 #include <test.priv.h>
@@ -252,11 +252,11 @@ inputTest(WINDOW *win)
 #ifdef KEY_MOUSE
 	if (c == KEY_MOUSE) {
 #if defined(NCURSES_MOUSE_VERSION)
-#define ButtonChanged(n) ((event.bstate) & NCURSES_MOUSE_MASK(1, 037))
-#define ButtonPressed(n) ((event.bstate) & NCURSES_MOUSE_MASK(1, NCURSES_BUTTON_PRESSED))
-#define ButtonDouble(n)  ((event.bstate) & NCURSES_MOUSE_MASK(1, NCURSES_DOUBLE_CLICKED))
-#define ButtonTriple(n)  ((event.bstate) & NCURSES_MOUSE_MASK(1, NCURSES_TRIPLE_CLICKED))
-#define ButtonRelease(n) ((event.bstate) & NCURSES_MOUSE_MASK(1, NCURSES_BUTTON_RELEASED))
+#define ButtonChanged(n) ((event.bstate) & NCURSES_MOUSE_MASK(n, (NCURSES_BUTTON_RELEASED|NCURSES_BUTTON_PRESSED|NCURSES_BUTTON_CLICKED|NCURSES_DOUBLE_CLICKED|NCURSES_TRIPLE_CLICKED|NCURSES_RESERVED_EVENT)))
+#define ButtonPressed(n) ((event.bstate) & NCURSES_MOUSE_MASK(n, NCURSES_BUTTON_PRESSED))
+#define ButtonDouble(n)  ((event.bstate) & NCURSES_MOUSE_MASK(n, NCURSES_DOUBLE_CLICKED))
+#define ButtonTriple(n)  ((event.bstate) & NCURSES_MOUSE_MASK(n, NCURSES_TRIPLE_CLICKED))
+#define ButtonRelease(n) ((event.bstate) & NCURSES_MOUSE_MASK(n, NCURSES_BUTTON_RELEASED))
 	    MEVENT event;
 	    int button = 0;
 
