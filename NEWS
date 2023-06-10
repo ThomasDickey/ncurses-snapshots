@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3959 2023/06/03 20:12:53 tom Exp $
+-- $Id: NEWS,v 1.3962 2023/06/10 16:51:20 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230610
+	+ improve manpages discussing file descriptors in low-level functions.
+	+ modify flushinp to use file descriptors in SCREEN, rather than from
+	  TERMINAL, and check if they are for a terminal, like SVr4.
+	+ modify mcprint to use file descriptor in SCREEN, for consistency.
+	+ add xterm+focus to foot+base (patch by Daniel Ekloef).
+	+ correct definition of Charable() for non-wide ncurses library (report
+	  and test-case by Zbigniew Baniewski).
 
 20230603
 	+ add configure option --with-strip-program, to override program

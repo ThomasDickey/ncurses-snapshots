@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.62 2022/02/12 20:02:20 tom Exp $
+.\" $Id: tset.1,v 1.63 2023/06/10 15:46:24 tom Exp $
 .TH @TSET@ 1 ""
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -76,7 +76,8 @@ error output device in the \fI/etc/ttys\fP file.
 \fBgetty\fP(1) does this job by setting
 \fBTERM\fP according to the type passed to it by \fI/etc/inittab\fP.)
 .PP
-4. The default terminal type, \*(``unknown\*(''.
+4. The default terminal type, \*(``unknown\*('',
+is not suitable for curses applications.
 .PP
 If the terminal type was not specified on the command-line, the \fB\-m\fP
 option mappings are then applied (see the section

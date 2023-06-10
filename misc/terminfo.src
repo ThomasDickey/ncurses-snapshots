@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1058 $
-#	$Date: 2023/05/08 08:23:18 $
+#	$Revision: 1.1059 $
+#	$Date: 2023/06/05 21:40:20 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8009,7 +8009,7 @@ foot+base|foot base fragment,
 	use=ecma+strikeout, use=xterm+alt+title,
 	use=xterm+pcfkeys, use=xterm+sm+1006, use=xterm+tmux2,
 	use=xterm+sl-alt, use=bracketed+paste,
-	use=report+version,
+	use=report+version, use=xterm+focus,
 
 ######## WEB CLIENTS
 
@@ -27812,5 +27812,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2023-05-08
 #	+ add mode 1004 to xterm+sm+1006 from xterm #380 -TD
+#
+# 2023-06-05
+#	+ add xterm+focus to foot+base (patch by Daniel Ekloef).
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
