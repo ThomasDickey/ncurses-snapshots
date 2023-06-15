@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.166 2023/04/22 15:11:52 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.169 2023/06/15 20:51:06 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -138,12 +138,13 @@ convert_16bits(char *buf, NCURSES_INT2 *Numbers, int count)
 }
 #endif
 
-static void
-convert_strings(char *buf, char **Strings, int count, int size, char *table)
+static bool
+convert_strings(char *buf, char **Strings, int count, int size,
+		char *table, bool always)
 {
     int i;
     char *p;
-    bool corrupt = FALSE;
+    bool success = TRUE;
 
     for (i = 0; i < count; i++) {
 	if (IS_NEG1(buf + 2 * i)) {
@@ -159,13 +160,10 @@ convert_strings(char *buf, char **Strings, int count, int size, char *table)
 		TR(TRACE_DATABASE, ("Strings[%d] = %s", i,
 				    _nc_visbuf(Strings[i])));
 	    } else {
-		if (!corrupt) {
-		    corrupt = TRUE;
-		    TR(TRACE_DATABASE,
-		       ("ignore out-of-range index %d to Strings[]", nn));
-		    _nc_warning("corrupt data found in convert_strings");
-		}
-		Strings[i] = ABSENT_STRING;
+		TR(TRACE_DATABASE,
+		   ("found out-of-range index %d to Strings[%d]", nn, i));
+		success = FALSE;
+		break;
 	    }
 	}
 
@@ -175,10 +173,25 @@ convert_strings(char *buf, char **Strings, int count, int size, char *table)
 		if (*p == '\0')
 		    break;
 	    /* if there is no NUL, ignore the string */
-	    if (p >= table + size)
+	    if (p >= table + size) {
 		Strings[i] = ABSENT_STRING;
+	    } else if (p == Strings[i] && always) {
+		TR(TRACE_DATABASE,
+		   ("found empty but required Strings[%d]", i));
+		success = FALSE;
+		break;
+	    }
+	} else if (always) {	/* names are always needed */
+	    TR(TRACE_DATABASE,
+	       ("found invalid but required Strings[%d]", i));
+	    success = FALSE;
+	    break;
 	}
     }
+    if (!success) {
+	_nc_warning("corrupt data found in convert_strings");
+    }
+    return success;
 }
 
 static int
@@ -382,7 +395,10 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	if (Read(string_table, (unsigned) str_size) != str_size) {
 	    returnDB(TGETENT_NO);
 	}
-	convert_strings(buf, ptr->Strings, str_count, str_size, string_table);
+	if (!convert_strings(buf, ptr->Strings, str_count, str_size,
+			     string_table, FALSE)) {
+	    returnDB(TGETENT_NO);
+	}
     }
 #if NCURSES_XNAMES
 
@@ -483,8 +499,10 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	       ("Before computing extended-string capabilities "
 		"str_count=%d, ext_str_count=%d",
 		str_count, ext_str_count));
-	    convert_strings(buf, ptr->Strings + str_count, ext_str_count,
-			    ext_str_limit, ptr->ext_str_table);
+	    if (!convert_strings(buf, ptr->Strings + str_count, ext_str_count,
+				 ext_str_limit, ptr->ext_str_table, FALSE)) {
+		returnDB(TGETENT_NO);
+	    }
 	    for (i = ext_str_count - 1; i >= 0; i--) {
 		TR(TRACE_DATABASE, ("MOVE from [%d:%d] %s",
 				    i, i + str_count,
@@ -516,10 +534,13 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	    TR(TRACE_DATABASE,
 	       ("ext_NAMES starting @%d in extended_strings, first = %s",
 		base, _nc_visbuf(ptr->ext_str_table + base)));
-	    convert_strings(buf + (2 * ext_str_count),
-			    ptr->ext_Names,
-			    (int) need,
-			    ext_str_limit, ptr->ext_str_table + base);
+	    if (!convert_strings(buf + (2 * ext_str_count),
+				 ptr->ext_Names,
+				 (int) need,
+				 ext_str_limit, ptr->ext_str_table + base,
+				 TRUE)) {
+		returnDB(TGETENT_NO);
+	    }
 	}
 
 	TR(TRACE_DATABASE,
@@ -572,13 +593,17 @@ _nc_read_file_entry(const char *const filename, TERMTYPE2 *ptr)
 	int limit;
 	char buffer[MAX_ENTRY_SIZE + 1];
 
-	if ((limit = (int) fread(buffer, sizeof(char), sizeof(buffer), fp))
-	    > 0) {
+	limit = (int) fread(buffer, sizeof(char), sizeof(buffer), fp);
+	if (limit > 0) {
+	    const char *old_source = _nc_get_source();
 
 	    TR(TRACE_DATABASE, ("read terminfo %s", filename));
+	    if (old_source == NULL)
+		_nc_set_source(filename);
 	    if ((code = _nc_read_termtype(ptr, buffer, limit)) == TGETENT_NO) {
 		_nc_free_termtype2(ptr);
 	    }
+	    _nc_set_source(old_source);
 	} else {
 	    code = TGETENT_NO;
 	}
