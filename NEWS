@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3964 2023/06/15 11:35:35 tom Exp $
+-- $Id: NEWS,v 1.3967 2023/06/17 17:17:42 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,10 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230617
+	+ markup manpages with revision information (prompted by discussion
+	  with Bjarni Ingi Gislason).
 
 20230615
 	+ modify _nc_read_file_entry() to show relevant filename in warnings.
@@ -11186,7 +11190,7 @@ it is not possible to add this information.
 	+ add mgterm terminfo entry from NetBSD, minor adjustments to sun-ss5,
 	  aixterm entries -TD
 	+ modify tack/ansi.c to make it more tolerant of bad ANSI replies.  An
-	  example of an illegal ANSI resonse can be found using Microsoft's
+	  example of an illegal ANSI response can be found using Microsoft's
 	  Telnet client.  A correct display can be found using a VT-4xx
 	  terminal or XFree86 xterm with:
 		XTerm*VT100*decTerminalID:  450
@@ -12080,7 +12084,7 @@ it is not possible to add this information.
 	+ correct a typo in term.7 (Todd C Miller).
 	+ add configure --with-shlib-version option to allow installing shared
 	  libraries named according to release or ABI versions.  This
-	  parameterizes some existing logic in the configure script, and is
+	  parametrizes some existing logic in the configure script, and is
 	  intended for compatibility upgrades on Digital Unix, which used
 	  versioned libraries in ncurses 4.2, but no longer does (cf:  980425).
 	+ resync configure script against autoconf 2.13 + patches

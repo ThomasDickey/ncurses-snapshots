@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.245 2023/06/03 20:14:17 tom Exp $
+-- $Id: INSTALL,v 1.246 2023/06/17 17:18:20 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -444,7 +444,7 @@ CONFIGURE OPTIONS:
 		--with-menu-libname=XXX
 		--with-panel-libname=XXX
 
-	Rather than renaming them abitrarily, a prefix or suffix is
+	Rather than renaming them arbitrarily, a prefix or suffix is
 	recommended.  An "n" prefix provides consistency with ncurses versus
 	curses, i.e.,
 

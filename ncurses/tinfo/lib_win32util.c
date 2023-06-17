@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32util.c,v 1.3 2023/02/25 20:07:48 tom Exp $")
+MODULE_ID("$Id: lib_win32util.c,v 1.4 2023/06/17 17:19:06 tom Exp $")
 
 #ifdef _NC_WINDOWS
 #include <io.h>
@@ -54,7 +54,7 @@ MODULE_ID("$Id: lib_win32util.c,v 1.3 2023/02/25 20:07:48 tom Exp $")
      Pipe and can query the server side of the pipe, looking whether
      or not this is mintty.
      For now we terminate the program if we discover that situation.
-     Althogh in theory it would be possible, to remotely manipulate
+     Although in theory it would be possible, to remotely manipulate
      the terminal state of mintty, this is out of scope for now and
      not worth the significant effort.
  */
