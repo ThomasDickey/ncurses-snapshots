@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2023 Thomas E. Dickey                                     *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -148,7 +148,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.54 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.56 2023/06/24 22:55:24 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -204,13 +204,19 @@ NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_DCL0)
 	int *new_oldnums = typeRealloc(int,
 				       (size_t) need_lines,
 				       oldnums(SP_PARM));
-	if (!new_oldnums)
+	if (!new_oldnums) {
+	    TR(TRACE_ICALLS, (T_RETURN("")));
 	    return;
+	}
 	oldnums(SP_PARM) = new_oldnums;
 	OLDNUM_SIZE(SP_PARM) = need_lines;
     }
     /* calculate the indices */
     NCURSES_SP_NAME(_nc_hash_map) (NCURSES_SP_ARG);
+    if (SP_PARM->hashtab_len < screen_lines(SP_PARM)) {
+	TR(TRACE_ICALLS, (T_RETURN("")));
+	return;
+    }
 #endif
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
 

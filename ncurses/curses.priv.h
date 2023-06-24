@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.669 2023/06/06 22:31:04 tom Exp $
+ * $Id: curses.priv.h,v 1.670 2023/06/24 13:00:26 tom Exp $
  *
  *	curses.priv.h
  *
@@ -574,10 +574,10 @@ extern NCURSES_EXPORT(void)     _nc_set_no_padding(SCREEN *);
 #define SET_SCREEN_PAIR(s,p)	SetPair(SCREEN_ATTRS(s), p)
 
 #if USE_REENTRANT || NCURSES_SP_FUNCS
-NCURSES_EXPORT(int *)        _nc_ptr_Lines (SCREEN *);
-NCURSES_EXPORT(int *)        _nc_ptr_Cols (SCREEN *);
-NCURSES_EXPORT(int *)        _nc_ptr_Tabsize (SCREEN *);
-NCURSES_EXPORT(int *)        _nc_ptr_Escdelay (SCREEN *);
+extern NCURSES_EXPORT(int *)    _nc_ptr_Lines (SCREEN *);
+extern NCURSES_EXPORT(int *)    _nc_ptr_Cols (SCREEN *);
+extern NCURSES_EXPORT(int *)    _nc_ptr_Tabsize (SCREEN *);
+extern NCURSES_EXPORT(int *)    _nc_ptr_Escdelay (SCREEN *);
 #endif
 
 #if USE_REENTRANT
@@ -1540,6 +1540,9 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 
 #define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 
+#include <nc_alloc.h>
+#include <nc_access.h>
+
 #define FreeIfNeeded(p)  if ((p) != 0) free(p)
 
 /* FreeAndNull() is not a comma-separated expression because some compilers
@@ -1547,8 +1550,18 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
  */
 #define FreeAndNull(p)   do { free(p); p = 0; } while (0)
 
-#include <nc_alloc.h>
-#include <nc_access.h>
+#ifdef EXP_OOM_TESTING
+extern NCURSES_EXPORT(void *)	_nc_oom_malloc(size_t size);
+extern NCURSES_EXPORT(void *)	_nc_oom_calloc(size_t nmemb, size_t size);
+extern NCURSES_EXPORT(void *)	_nc_oom_realloc(void *ptr, size_t size);
+extern NCURSES_EXPORT(void)	_nc_oom_free(void *ptr);
+extern NCURSES_EXPORT(char *)	_nc_oom_strdup(const char *ptr);
+#define malloc(size)		_nc_oom_malloc(size)
+#define calloc(nmemb, size)	_nc_oom_calloc(nmemb, size)
+#define realloc(ptr, size)	_nc_oom_realloc(ptr, size)
+#define free(ptr)		_nc_oom_free(ptr)
+#define strdup(ptr)		_nc_oom_strdup(ptr)
+#endif
 
 /*
  * Use these for tic/infocmp malloc failures.  Generally the ncurses library
@@ -1968,7 +1981,7 @@ extern NCURSES_EXPORT(int)  _nc_msec_cost (const char *const, int);
 
 /* lib_addch.c */
 #if USE_WIDEC_SUPPORT
-NCURSES_EXPORT(int) _nc_build_wch(WINDOW *win, ARG_CH_T ch);
+extern NCURSES_EXPORT(int) _nc_build_wch(WINDOW *win, ARG_CH_T ch);
 #endif
 
 /* lib_addstr.c */
@@ -2147,7 +2160,7 @@ extern NCURSES_EXPORT(const TERMTYPE2 *) _nc_fallback2 (const char *);
 #define _nc_fallback2(tp) _nc_fallback(tp)
 #endif
 
-NCURSES_EXPORT(void) _nc_copy_termtype(TERMTYPE *, const TERMTYPE *);
+extern NCURSES_EXPORT(void) _nc_copy_termtype(TERMTYPE *, const TERMTYPE *);
 
 #if NCURSES_EXT_NUMBERS
 extern NCURSES_EXPORT(void) _nc_copy_termtype2 (TERMTYPE2 *, const TERMTYPE2 *);
@@ -2229,7 +2242,7 @@ extern int __MINGW_NOTHROW _nc_mblen(const char *, size_t);
 
 #if defined(_NC_WINDOWS) || defined(_NC_MINGW)
 /* see wcwidth.c */
-NCURSES_EXPORT(int) mk_wcwidth(wchar_t);
+extern NCURSES_EXPORT(int) mk_wcwidth(wchar_t);
 #define wcwidth(ucs) _nc_wcwidth(ucs)
 #endif
 
@@ -2621,8 +2634,8 @@ extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_unctrl (SCREEN *, chtype);
 #endif
 
 #ifdef EXP_XTERM_1005
-NCURSES_EXPORT(int) _nc_conv_to_utf8(unsigned char *, unsigned, unsigned);
-NCURSES_EXPORT(int) _nc_conv_to_utf32(unsigned *, const char *, unsigned);
+extern NCURSES_EXPORT(int) _nc_conv_to_utf8(unsigned char *, unsigned, unsigned);
+extern NCURSES_EXPORT(int) _nc_conv_to_utf32(unsigned *, const char *, unsigned);
 #endif
 
 #ifdef __cplusplus

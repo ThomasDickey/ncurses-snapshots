@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.103 2023/04/28 20:59:14 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.104 2023/06/24 21:53:16 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -1055,15 +1055,15 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
     if (normal) {		/* normal case */
 	char envhome[PATH_MAX], *h;
 
-	copied = strdup(get_termpath());
-	for (cp = copied; *cp; cp++) {
-	    if (*cp == NCURSES_PATHSEP)
-		*cp = '\0';
-	    else if (cp == copied || cp[-1] == '\0') {
-		ADD_TC(cp, filecount);
+	if ((copied = strdup(get_termpath())) != 0) {
+	    for (cp = copied; *cp; cp++) {
+		if (*cp == NCURSES_PATHSEP)
+		    *cp = '\0';
+		else if (cp == copied || cp[-1] == '\0') {
+		    ADD_TC(cp, filecount);
+		}
 	    }
 	}
-
 #define PRIVATE_CAP "%.*s/.termcap"
 
 	if (use_terminfo_vars() && (h = getenv("HOME")) != NULL && *h != '\0'

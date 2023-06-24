@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.36 2023/04/22 21:19:56 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.37 2023/06/24 21:55:09 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -70,8 +70,8 @@ _nc_rootname(char *path)
     static char *temp;
     char *s;
 
-    temp = strdup(result);
-    result = temp;
+    if ((temp = strdup(result)) != 0)
+	result = temp;
 #if !MIXEDCASE_FILENAMES
     for (s = result; *s != '\0'; ++s) {
 	*s = (char) LOWERCASE(*s);

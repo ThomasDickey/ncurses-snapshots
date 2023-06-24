@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.157 2022/08/20 18:28:58 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.158 2023/06/24 17:34:43 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -675,7 +675,7 @@ relative_move(NCURSES_SP_DCLx
 		 * and the time the structure WANT_CHAR would access has been
 		 * updated.
 		 */
-		if (ovw) {
+		if (ovw && to_y >= 0) {
 		    int i;
 
 		    for (i = 0; i < n; i++) {
@@ -690,7 +690,7 @@ relative_move(NCURSES_SP_DCLx
 			}
 		    }
 		}
-		if (ovw) {
+		if (ovw && to_y >= 0) {
 		    int i;
 
 		    for (i = 0; i < n; i++)

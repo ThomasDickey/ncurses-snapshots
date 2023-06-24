@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,7 +28,7 @@
  ****************************************************************************/
 
 /*
- * $Id: sp_tinfo.c,v 1.28 2022/12/10 23:23:27 tom Exp $
+ * $Id: sp_tinfo.c,v 1.29 2023/06/24 14:14:56 tom Exp $
  *
  * TOTO: add option for non-sp-funcs interface
  */
@@ -339,8 +339,12 @@ main(int argc, char *argv[])
     do_stuff(my_out);
     do_stuff(my_err);
 
-    cleanup(my_out);
-    cleanup(my_err);
+    if (my_out != my_err) {
+	cleanup(my_out);
+	cleanup(my_err);
+    } else {
+	cleanup(my_out);
+    }
 
     ExitProgram(EXIT_SUCCESS);
 }

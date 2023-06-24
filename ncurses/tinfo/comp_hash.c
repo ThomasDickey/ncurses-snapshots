@@ -45,7 +45,7 @@
 #include <tic.h>
 #include <hashsize.h>
 
-MODULE_ID("$Id: comp_hash.c,v 1.54 2023/04/22 15:12:57 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.55 2023/06/24 13:29:43 tom Exp $")
 
 /*
  * Finds the entry for the given string in the hash table if present.
@@ -103,14 +103,16 @@ _nc_find_type_entry(const char *string,
 	&& data->table_data[hashvalue] >= 0) {
 	const struct name_table_entry *const table = _nc_get_table(termcap);
 
-	ptr = table + data->table_data[hashvalue];
-	while (ptr->nte_type != type
-	       || !data->compare_names(ptr->nte_name, string)) {
-	    if (ptr->nte_link < 0) {
-		ptr = 0;
-		break;
+	if (table != NULL) {
+	    ptr = table + data->table_data[hashvalue];
+	    while (ptr->nte_type != type
+		   || !data->compare_names(ptr->nte_name, string)) {
+		if (ptr->nte_link < 0) {
+		    ptr = 0;
+		    break;
+		}
+		ptr = table + (ptr->nte_link + data->table_data[data->table_size]);
 	    }
-	    ptr = table + (ptr->nte_link + data->table_data[data->table_size]);
 	}
     }
 

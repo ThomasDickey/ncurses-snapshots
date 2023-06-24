@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 2006-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: db_iterator.c,v 1.49 2022/04/23 20:03:15 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.50 2023/06/24 21:52:32 tom Exp $")
 
 #define HaveTicDirectory _nc_globals.have_tic_directory
 #define KeepTicDirectory _nc_globals.keep_tic_directory
@@ -383,8 +383,11 @@ _nc_first_db(DBDIRS * state, int *offset)
 		 */
 		for (j = 0; my_list[j] != 0; ++j) {
 #ifdef TERMINFO
-		    if (*my_list[j] == '\0')
-			my_list[j] = strdup(TERMINFO);
+		    if (*my_list[j] == '\0') {
+			char *my_copy = strdup(TERMINFO);
+			if (my_copy != 0)
+			    my_list[j] = my_copy;
+		    }
 #endif
 		    trim_formatting(my_list[j]);
 		    for (k = 0; k < j; ++k) {

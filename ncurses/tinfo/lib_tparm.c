@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.146 2023/04/23 20:57:33 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.150 2023/06/24 16:12:52 tom Exp $")
 
 /*
  *	char *
@@ -177,19 +177,21 @@ _nc_free_tparm(TERMINAL *termp)
 #if HAVE_TSEARCH
     if (MyCount != 0) {
 	delete_tparm = typeCalloc(TPARM_DATA *, MyCount);
-	which_tparm = 0;
-	twalk(MyCache, visit_nodes);
-	for (which_tparm = 0; which_tparm < MyCount; ++which_tparm) {
-	    TPARM_DATA *ptr = delete_tparm[which_tparm];
-	    if (ptr != NULL) {
-		tdelete(ptr, &MyCache, cmp_format);
-		free((char *) ptr->format);
-		free(ptr);
+	if (delete_tparm != NULL) {
+	    which_tparm = 0;
+	    twalk(MyCache, visit_nodes);
+	    for (which_tparm = 0; which_tparm < MyCount; ++which_tparm) {
+		TPARM_DATA *ptr = delete_tparm[which_tparm];
+		if (ptr != NULL) {
+		    tdelete(ptr, &MyCache, cmp_format);
+		    free((char *) ptr->format);
+		    free(ptr);
+		}
 	    }
+	    which_tparm = 0;
+	    twalk(MyCache, visit_nodes);
+	    FreeAndNull(delete_tparm);
 	}
-	which_tparm = 0;
-	twalk(MyCache, visit_nodes);
-	FreeAndNull(delete_tparm);
 	MyCount = 0;
 	which_tparm = 0;
     }
@@ -795,6 +797,11 @@ tparam_internal(TPARM_STATE *tps, const char *string, TPARM_DATA *data)
     int dynamic_vars[NUM_VARS];
 
     tparm_trace_call(tps, string, data);
+
+    if (TPS(fmt_buff) == NULL) {
+	T((T_RETURN("<null>")));
+	return NULL;
+    }
 
     while ((cp - string) < (int) len2) {
 	if (*cp != '%') {

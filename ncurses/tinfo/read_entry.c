@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.169 2023/06/15 20:51:06 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.170 2023/06/24 18:09:05 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -802,6 +802,9 @@ _nc_read_tic_entry(char *filename,
 	DBT key, data;
 	int reccnt = 0;
 	char *save = strdup(name);
+
+	if (save == 0)
+	    returnDB(code);
 
 	memset(&key, 0, sizeof(key));
 	key.data = save;

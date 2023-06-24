@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.218 2022/08/13 18:12:22 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.219 2023/06/24 13:25:14 tom Exp $")
 
 /****************************************************************************
  *
@@ -679,10 +679,9 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 #endif
     }
     myname = strdup(tname);
-
-    if (strlen(myname) > MAX_NAME_SIZE) {
+    if (myname == NULL || strlen(myname) > MAX_NAME_SIZE) {
 	ret_error(TGETENT_ERR,
-		  "TERM environment must be <= %d characters.\n",
+		  "TERM environment must be 1..%d characters.\n",
 		  MAX_NAME_SIZE,
 		  free(myname));
     }
