@@ -37,7 +37,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: obsolete.c,v 1.9 2023/06/24 22:02:25 tom Exp $")
+MODULE_ID("$Id: obsolete.c,v 1.10 2023/06/25 16:56:27 tom Exp $")
 
 /*
  * Obsolete entrypoint retained for binary compatibility.
@@ -252,6 +252,8 @@ _nc_conv_to_utf32(unsigned *target, const char *source, unsigned limit)
 #undef free
 #undef strdup
 
+#define TR_OOM(stmt) T(stmt)
+
 static long oom_limit = -1;
 static long oom_count = 0;
 
@@ -272,11 +274,12 @@ oom_check(void)
 		oom_limit = 0;
 	}
     }
+    ++oom_count;
     if (oom_limit >= 0) {
-	result = (++oom_count > oom_limit);
+	result = (oom_count > oom_limit);
 	if (result && !triggered) {
 	    triggered = TRUE;
-	    T(("out-of-memory"));
+	    TR_OOM(("out-of-memory"));
 	}
     }
     return result;
@@ -288,7 +291,7 @@ _nc_oom_malloc(size_t size)
     char *result = (oom_check()
 		    ? NULL
 		    : malloc(size));
-    T(("oom #%ld malloc(%ld) %p", oom_count, size, result));
+    TR_OOM(("oom #%ld malloc(%ld) %p", oom_count, size, result));
     return result;
 }
 
@@ -298,7 +301,7 @@ _nc_oom_calloc(size_t nmemb, size_t size)
     char *result = (oom_check()
 		    ? NULL
 		    : calloc(nmemb, size));
-    T(("oom #%ld calloc(%ld, %ld) %p", oom_count, nmemb, size, result));
+    TR_OOM(("oom #%ld calloc(%ld, %ld) %p", oom_count, nmemb, size, result));
     return result;
 }
 
@@ -308,14 +311,15 @@ _nc_oom_realloc(void *ptr, size_t size)
     char *result = (oom_check()
 		    ? NULL
 		    : realloc(ptr, size));
-    T(("oom #%ld realloc(%p, %ld) %p", oom_count, ptr, size, result));
+    TR_OOM(("oom #%ld realloc(%p, %ld) %p", oom_count, ptr, size, result));
     return result;
 }
 
 NCURSES_EXPORT(void)
 _nc_oom_free(void *ptr)
 {
-    T(("oom #%ld free(%p)", oom_count, ptr));
+    ++oom_count;
+    TR_OOM(("oom #%ld free(%p)", oom_count, ptr));
     free(ptr);
 }
 
@@ -325,7 +329,7 @@ _nc_oom_strdup(const char *ptr)
     char *result = (oom_check()
 		    ? NULL
 		    : strdup(ptr));
-    T(("oom #%ld strdup(%p) %p", oom_count, ptr, result));
+    TR_OOM(("oom #%ld strdup(%p) %p", oom_count, ptr, result));
     return result;
 }
 #endif /* EXP_OOM_TESTING */

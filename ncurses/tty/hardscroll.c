@@ -148,7 +148,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.56 2023/06/24 22:55:24 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.57 2023/06/25 15:39:32 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -307,20 +307,27 @@ NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_linedump) (NCURSES_SP_DCL0)
 /* dump the state of the real and virtual oldnum fields */
 {
-    char *buf = 0;
-    size_t want = ((size_t) screen_lines(SP_PARM) + 1) * 4;
-    (void) SP_PARM;
+    if (USE_TRACEF(TRACE_UPDATE | TRACE_MOVE)) {
+	char *buf = 0;
+	size_t want = ((size_t) screen_lines(SP_PARM) + 1) * 4;
+	(void) SP_PARM;
 
-    if ((buf = typeMalloc(char, want)) != 0) {
-	int n;
+	if ((buf = typeMalloc(char, want)) != 0) {
+	    int n;
 
-	*buf = '\0';
-	for (n = 0; n < screen_lines(SP_PARM); n++)
-	    _nc_SPRINTF(buf + strlen(buf),
-			_nc_SLIMIT(want - strlen(buf))
-			" %02d", OLDNUM(SP_PARM, n));
-	TR(TRACE_UPDATE | TRACE_MOVE, ("virt %s", buf));
-	free(buf);
+	    *buf = '\0';
+	    for (n = 0; n < screen_lines(SP_PARM); n++) {
+		int number = OLDNUM(SP_PARM, n);
+		if (number >= -99 && number < 999) {
+		    _nc_SPRINTF(buf + strlen(buf),
+				_nc_SLIMIT(want - strlen(buf))
+				" %02d", number);
+		} else {
+		    strcat(buf, " ??");
+		}
+	    }
+	    free(buf);
+	}
     }
 }
 

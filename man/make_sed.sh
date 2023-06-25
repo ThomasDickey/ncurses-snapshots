@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: make_sed.sh,v 1.16 2022/10/01 13:14:07 tom Exp $
+# $Id: make_sed.sh,v 1.17 2023/06/25 18:13:17 tom Exp $
 ##############################################################################
-# Copyright 2020-2021,2022 Thomas E. Dickey                                  #
+# Copyright 2020-2022,2023 Thomas E. Dickey                                  #
 # Copyright 1998-2005,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -69,9 +69,9 @@ sed	-e 's/^/s\/\\</' \
 echo "# Do the TH lines"
 sed	-e 's/\//\/TH /' \
 	-e 's/	/ /' \
-	-e 's/	/ ""\/TH /' \
+	-e 's/	/ \/TH /' \
 	-e 's/	/ /' \
-	-e 's/\/$/ ""\//' \
+	-e 's/\/$/ \//' \
 	$UPPER
 
 echo "# Do the embedded references"
