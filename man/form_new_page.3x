@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_new_page.3x,v 1.21 2022/02/12 20:03:40 tom Exp $
-.TH form_new_page 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: form_new_page.3x,v 1.24 2023/07/01 15:46:10 tom Exp $
+.TH form_new_page 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -43,7 +43,6 @@
 \fBint set_new_page(FIELD *\fIfield\fB, bool \fInew_page_flag\fB);\fR
 .br
 \fBbool new_page(const FIELD *\fIfield\fB);\fR
-.br
 .SH DESCRIPTION
 The function \fBset_new_page\fP sets or resets a flag marking the given field
 as the beginning of a new page on its form.

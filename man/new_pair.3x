@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2017 Free Software Foundation, Inc.                            *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.21 2023/06/17 17:50:37 tom Exp $
-.TH new_pair 3X 2023-06-17 "ncurses 6.4" "Library calls"
+.\" $Id: new_pair.3x,v 1.24 2023/07/01 15:46:10 tom Exp $
+.TH new_pair 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -141,7 +141,6 @@ Otherwise it returns \-1.
 Marks the given color pair as unused,
 i.e., like color pair 0.
 .SH RETURN VALUE
-.PP
 The \fBalloc_pair\fP function returns a color pair number in the range
 1 through \fBCOLOR_PAIRS\fP\-1, unless it encounters an error updating
 its fast index to the color pair values, preventing it from allocating

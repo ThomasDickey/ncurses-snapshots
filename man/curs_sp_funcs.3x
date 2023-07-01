@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.28 2022/02/12 20:05:11 tom Exp $
-.TH curs_sp_funcs 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.31 2023/07/01 15:43:20 tom Exp $
+.TH curs_sp_funcs 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -317,14 +317,12 @@ curs_sp_funcs \- \fBcurses\fP screen-pointer extension
 .sp
 \fBNCURSES_CONST char* unctrl_sp(SCREEN* \fIsp\fB, chtype \fIc\fB);\fR
 .ad
-.br
 .SH DESCRIPTION
 This implementation can be configured to provide a set of functions which
 improve the ability to manage multiple screens.
 This feature can be added to any of the configurations supported by ncurses;
 it adds new entrypoints
 without changing the meaning of any of the existing ones.
-.PP
 .\" ***************************************************************************
 .SS IMPROVED FUNCTIONS
 Most of the functions are new versions of existing functions.
@@ -380,7 +378,6 @@ where an \fINCURSES_OUTC\fP is used in the unextended library.
 NCURSES_OUTC
 This is a function-pointer type used for the cases where a function passes
 characters to the output stream, e.g., \fBvidputs\fP(3X).
-.PP
 .SH PORTABILITY
 These routines are specific to ncurses.
 They were not supported on Version 7, BSD or System V implementations.

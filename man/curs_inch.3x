@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.29 2022/02/12 20:07:29 tom Exp $
-.TH curs_inch 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inch.3x,v 1.32 2023/07/01 15:43:20 tom Exp $
+.TH curs_inch 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -53,7 +53,6 @@
 \fBchtype mvinch(int \fIy\fB, int \fIx\fB);\fR
 .br
 \fBchtype mvwinch(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-.br
 .SH DESCRIPTION
 These routines return the character, of type \fBchtype\fP, at the current
 position in the named window.

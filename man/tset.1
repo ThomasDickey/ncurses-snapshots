@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.64 2023/06/10 15:46:24 tom Exp $
-.TH @TSET@ 1 2023-06-10 "ncurses 6.4" "User commands"
+.\" $Id: tset.1,v 1.66 2023/07/01 15:21:06 tom Exp $
+.TH @TSET@ 1 2023-07-01 "ncurses 6.4" "User commands"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -116,7 +116,6 @@ Finally, if the erase, interrupt and line kill characters have changed,
 or are not set to their default values, their values are displayed to the
 standard error output.
 .SS reset - reinitialization
-.PP
 When invoked as \fB@RESET@\fP, \fB@TSET@\fP sets the terminal
 modes to \*(``sane\*('' values:
 .bP
@@ -145,7 +144,6 @@ to work, as carriage-return may no longer work in the abnormal state.
 .bP
 Also, the terminal will often not echo the command.
 .SH OPTIONS
-.PP
 The options are as follows:
 .TP 5
 .B \-c
@@ -284,7 +282,6 @@ entire \fB\-m\fP option argument be placed within single quote characters,
 and that \fBcsh\fP users insert a backslash character (\*(``\e\*('') before
 any exclamation marks (\*(``!\*('').
 .SH HISTORY
-.PP
 A \fBreset\fP command appeared in 1BSD (March 1978), written by Kurt Shoens.
 This program set the \fIerase\fP and \fIkill\fP characters
 to \fB^H\fP (backspace) and \fB@\fP respectively.
@@ -312,7 +309,6 @@ The \fBncurses\fP implementation
 was lightly adapted from the 4.4BSD sources for a terminfo environment by Eric
 S. Raymond <esr@snark.thyrsus.com>.
 .SH COMPATIBILITY
-.PP
 Neither IEEE Std 1003.1/The Open Group Base Specifications Issue 7
 (POSIX.1-2008) nor
 X/Open Curses Issue 7 documents \fB@TSET@\fP or \fB@RESET@\fP.

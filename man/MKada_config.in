@@ -27,9 +27,9 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.14 2021/12/25 17:39:16 tom Exp $
+.\" $Id: MKada_config.in,v 1.15 2021/12/25 17:39:16 tom Exp $
 .ds C adacurses@USE_CFG_SUFFIX@\-config
-.TH ADACURSES "1" "" "" "User Commands"
+.TH ADACURSES 1 2021-12-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .SH NAME
 adacurses@USE_CFG_SUFFIX@\-config \- helper script for @ADA_LIBNAME@ libraries
 .SH SYNOPSIS

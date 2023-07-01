@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.33 2023/03/11 20:40:45 tom Exp $
-.TH curs_add_wch 3X 2023-03-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.36 2023/07/01 14:23:04 tom Exp $
+.TH curs_add_wch 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -45,7 +45,6 @@
 \fBecho_wchar\fP,
 \fBwecho_wchar\fP \- add a complex character and rendition to a \fBcurses\fP window, then advance the cursor
 .SH SYNOPSIS
-.PP
 \fB#include <curses.h>\fP
 .sp
 .B "int add_wch( const cchar_t *\fIwch\fB );"
@@ -59,10 +58,8 @@
 .B "int echo_wchar( const cchar_t *\fIwch\fB );"
 .br
 .B "int wecho_wchar( WINDOW *\fIwin\fP, const cchar_t *\fIwch\fB );"
-.br
 .SH DESCRIPTION
 .SS add_wch
-.PP
 The
 \fBadd_wch\fP,
 \fBwadd_wch\fP,
@@ -91,7 +88,6 @@ If the character part of \fIwch\fP is
 a tab, newline, backspace or other control character,
 the window is updated and the cursor moves as if \fBaddch\fP were called.
 .SS echo_wchar
-.PP
 The \fBecho_wchar\fP
 function is functionally equivalent to a call to
 \fBadd_wch\fP
@@ -209,7 +205,6 @@ U+2501 BOX DRAWINGS HEAVY HORIZONTAL
 .bP
 U+2550 BOX DRAWINGS DOUBLE HORIZONTAL
 .SH RETURN VALUE
-.PP
 All routines return the integer \fBERR\fP upon failure and \fBOK\fP on success.
 .PP
 X/Open does not define any error conditions.
@@ -235,7 +230,6 @@ Functions with a \*(``mv\*('' prefix first perform a cursor movement using
 \fBwmove\fP, and return an error if the position is outside the window,
 or if the window pointer is null.
 .SH NOTES
-.PP
 Note that
 \fBadd_wch\fP,
 \fBmvadd_wch\fP,
@@ -243,7 +237,6 @@ Note that
 \fBecho_wchar\fP
 may be macros.
 .SH PORTABILITY
-.PP
 All of these functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for line-drawing characters apply in the POSIX locale.
 .PP
@@ -324,7 +317,6 @@ Others have suggested these alternatives:
 \[u2612] U+2612 (ballot box with x).
 .SH SEE ALSO
 .na
-.PP
 \fBcurses\fP(3X),
 \fBcurs_addch\fP(3X),
 \fBcurs_attr\fP(3X),

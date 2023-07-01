@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,7 +28,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.61 2023/06/17 17:50:37 tom Exp $
+.\" $Id: curs_mouse.3x,v 1.64 2023/07/01 15:43:20 tom Exp $
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -51,7 +51,7 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_mouse 3X 2023-06-17 "ncurses 6.4" "Library calls"
+.TH curs_mouse 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -98,7 +98,6 @@ These functions provide an interface to mouse events from
 Mouse events are represented by \fBKEY_MOUSE\fP
 pseudo-key values in the \fBwgetch\fP(3X) input stream.
 .SS mousemask
-.PP
 To make mouse events visible, use the \fBmousemask\fP function.
 This sets the mouse events to be reported.
 By default, no mouse events are reported.
@@ -118,7 +117,6 @@ As a side effect, setting a zero mousemask may turn off the mouse pointer;
 setting a nonzero mask may turn it on.
 Whether this happens is device-dependent.
 .SS Mouse events
-.PP
 Here are the mouse event type masks which may be defined:
 .PP
 .TS
@@ -164,7 +162,6 @@ REPORT_MOUSE_POSITION	report mouse movement
 _
 .TE
 .SS getmouse
-.PP
 Once a class of mouse events has been made visible in a window,
 calling the \fBwgetch\fP function on that window may return
 \fBKEY_MOUSE\fP as an indicator that a mouse event has been queued.
@@ -181,20 +178,17 @@ The corresponding data in the queue is marked invalid.
 A subsequent call to \fBgetmouse\fP will retrieve the next older
 item from the queue.
 .SS ungetmouse
-.PP
 The \fBungetmouse\fP function behaves analogously to \fBungetch\fP.
 It pushes
 a \fBKEY_MOUSE\fP event onto the input queue, and associates with that event
 the given state data and screen-relative character-cell coordinates.
 .SS wenclose
-.PP
 The \fBwenclose\fP function tests whether a given pair of screen-relative
 character-cell coordinates is enclosed by a given window, returning \fBTRUE\fP
 if it is and \fBFALSE\fP otherwise.
 It is useful for determining what subset of
 the screen windows enclose the location of a mouse event.
 .SS wmouse_trafo
-.PP
 The \fBwmouse_trafo\fP function transforms a given pair of coordinates
 from stdscr-relative coordinates
 to coordinates relative to the given window or vice versa.
@@ -226,12 +220,10 @@ The referenced coordinates
 are only replaced by the converted coordinates if the transformation was
 successful.
 .SS mouse_trafo
-.PP
 The \fBmouse_trafo\fP function performs the same translation
 as \fBwmouse_trafo\fP,
 using stdscr for \fIwin\fP.
 .SS mouseinterval
-.PP
 The \fBmouseinterval\fP function sets the maximum time (in thousands of a
 second) that can elapse between press and release events for them to
 be recognized as a click.
@@ -240,7 +232,6 @@ This function returns the previous interval value.
 Use \fBmouseinterval(\-1)\fP to obtain the interval without altering it.
 The default is one sixth of a second.
 .SS has_mouse
-.PP
 The \fBhas_mouse\fP function returns \fBTRUE\fP if the mouse driver has been
 successfully initialized.
 .PP

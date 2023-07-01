@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.26 2022/02/12 20:05:11 tom Exp $
-.TH curs_instr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_instr.3x,v 1.29 2023/07/01 15:43:20 tom Exp $
+.TH curs_instr 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -64,7 +64,6 @@
 \fBint mvwinstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB);\fR
 .br
 \fBint mvwinnstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB, int \fIn\fB);\fR
-.br
 .SH DESCRIPTION
 These routines return a string of characters in \fIstr\fP, extracted starting
 at the current cursor position in the named window.

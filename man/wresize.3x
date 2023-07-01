@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996
 .\"
-.\" $Id: wresize.3x,v 1.21 2022/02/12 20:07:29 tom Exp $
-.TH wresize 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: wresize.3x,v 1.24 2023/07/01 15:46:10 tom Exp $
+.TH wresize 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBwresize\fP \- resize a curses window
 .SH SYNOPSIS
@@ -55,7 +55,6 @@ simplify the logic of \fBresizeterm\fP.
 The caller must ensure that the window's dimensions fit within the
 actual screen dimensions.
 .SH PORTABILITY
-.PP
 It is not possible to resize windows with SVr4 curses.
 .PP
 This extension of ncurses was introduced in mid-1995.

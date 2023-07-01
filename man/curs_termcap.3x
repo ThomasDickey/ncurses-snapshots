@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.59 2023/04/16 18:16:40 tom Exp $
-.TH curs_termcap 3X 2023-04-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.62 2023/07/01 15:28:47 tom Exp $
+.TH curs_termcap 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -77,7 +77,6 @@
 \fBchar *tgoto(const char *\fIcap\fB, int \fIcol\fB, int \fIrow\fB);\fR
 .br
 \fBint tputs(const char *\fIstr\fB, int \fIaffcnt\fB, int (*\fIputc\fB)(int));\fR
-.br
 .SH DESCRIPTION
 These routines are included as a conversion aid for programs that use
 the \fItermcap\fP library.
@@ -87,7 +86,6 @@ Thus, they
 can only be used to query the capabilities of entries for which a
 terminfo entry has been compiled.
 .SS Initialization
-.PP
 The \fBtgetent\fP routine loads the entry for \fIname\fP.
 It returns:
 .RS 3
@@ -119,7 +117,6 @@ description is marked with the \fIgeneric\fP capability,
 or if the terminal description has cursor-addressing.
 .RE
 .SS Capability Values
-.PP
 The \fBtgetflag\fP routine gets the boolean entry for \fIid\fP,
 or zero if it is not available.
 .PP
@@ -153,7 +150,6 @@ Only the first two characters of the \fBid\fP parameter of
 \fBtgetnum\fP and
 \fBtgetstr\fP are compared in lookups.
 .SS Formatting Capabilities
-.PP
 The \fBtgoto\fP routine expands the given capability using the parameters.
 .bP
 Because the capability may have padding characters,
@@ -188,7 +184,6 @@ The \fBtputs\fP routine is described on the \fBcurs_terminfo\fP(3X) manual
 page.
 It can retrieve capabilities by either termcap or terminfo name.
 .SS Global Variables
-.PP
 The variables
 \fBPC\fP,
 \fBUP\fP and
@@ -214,7 +209,7 @@ It uses \fBsetupterm\fP to retrieve the data used by \fBtgetent\fP
 and the functions which return capability values such as \fBtgetstr\fP.
 One could use
 .sp
-	\fBdel_curterm(cur_term);\fP
+        \fBdel_curterm(cur_term);\fP
 .sp
 .PP
 to free this memory, but there is an additional complication with ncurses.
@@ -303,7 +298,6 @@ Because the purpose of these functions is to provide compatibility with
 the \fItermcap\fP library, that is a defect in XCurses, Issue 4, Version 2
 rather than in ncurses.
 .SS Compatibility with BSD Termcap
-.PP
 External variables are provided for support of certain termcap applications.
 However, termcap applications' use of those variables is poorly documented,
 e.g., not distinguishing between input and output.

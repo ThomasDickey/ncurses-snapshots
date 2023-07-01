@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3971 2023/06/25 18:16:49 tom Exp $
+-- $Id: NEWS,v 1.3973 2023/07/01 17:55:50 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,10 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230701
+	+ fix mandoc warnings about unnecessary markup.
+	+ improve parameter check in tparm_setup()
 
 20230625
 	+ adjust man/make_sed.sh to work with dates as the third field of TH.

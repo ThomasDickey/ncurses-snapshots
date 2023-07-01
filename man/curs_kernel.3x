@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.33 2022/02/12 20:05:11 tom Exp $
+.\" $Id: curs_kernel.3x,v 1.36 2023/07/01 15:43:20 tom Exp $
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -36,7 +36,7 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_kernel 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.TH curs_kernel 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -77,13 +77,11 @@
 \fBint curs_set(int \fIvisibility\fB);\fR
 .br
 \fBint napms(int \fIms\fB);\fR
-.br
 .SH DESCRIPTION
 The following routines give low-level access
 to various \fBcurses\fP capabilities.
 These routines typically are used inside library routines.
 .SS def_prog_mode, def_shell_mode
-.PP
 The \fBdef_prog_mode\fP and \fBdef_shell_mode\fP routines save the
 current terminal modes as the \*(``program\*('' (in \fBcurses\fP) or \*(``shell\*(''
 (not in \fBcurses\fP) state for use by the \fBreset_prog_mode\fP and
@@ -92,7 +90,6 @@ This is done automatically by \fBinitscr\fP.
 There is one such save area for each screen context
 allocated by \fBnewterm\fP.
 .SS reset_prog_mode, reset_shell_mode
-.PP
 The \fBreset_prog_mode\fP and \fBreset_shell_mode\fP routines restore
 the terminal to \*(``program\*('' (in \fBcurses\fP) or \*(``shell\*('' (out of
 \fBcurses\fP) state.
@@ -100,14 +97,12 @@ These are done automatically by \fBendwin\fP(3X) and,
 after an \fBendwin\fP, by \fBdoupdate\fP,
 so they normally are not called.
 .SS resetty, savetty
-.PP
 The \fBresetty\fP and \fBsavetty\fP routines save and restore the
 state of the terminal modes.
 \fBsavetty\fP saves the current state in
 a buffer and \fBresetty\fP restores the state to what it was at the
 last call to \fBsavetty\fP.
 .SS getsyx
-.PP
 The \fBgetsyx\fP routine returns the current coordinates
 of the \fIvirtual screen\fP cursor in \fIy\fP and \fIx\fP.
 If \fBleaveok\fP is currently \fBTRUE\fP, then
@@ -120,7 +115,6 @@ therefore, \fIy\fP and \fIx\fP should be used only as arguments for
 Few applications will use this feature,
 most use \fBgetyx\fP instead.
 .SS setsyx
-.PP
 The \fBsetsyx\fP routine sets
 the \fIvirtual screen\fP cursor to \fIy\fP, \fIx\fP.
 If \fIy\fP and \fIx\fP are both \fB\-1\fP, then
@@ -137,7 +131,6 @@ at the beginning, do its manipulation of its own windows, do a
 Few applications will use this feature,
 most use \fBwmove\fP instead.
 .SS ripoffline
-.PP
 The \fBripoffline\fP routine provides access to the same facility that
 \fBslk_init\fP [see \fBcurs_slk\fP(3X)] uses to reduce the size of the
 screen.
@@ -165,7 +158,6 @@ It is allowable to call \fBwnoutrefresh\fP during the initialization routine.
 \fBripoffline\fP can be called up to five times before calling \fBinitscr\fP or
 \fBnewterm\fP.
 .SS curs_set
-.PP
 The \fBcurs_set\fP routine sets the cursor state to invisible,
 normal, or very visible for \fBvisibility\fP equal to \fB0\fP,
 \fB1\fP, or \fB2\fP respectively.
@@ -173,7 +165,6 @@ If the terminal supports the \fIvisibility\fP requested,
 the previous \fIcursor\fP state is returned;
 otherwise, \fBERR\fP is returned.
 .SS napms
-.PP
 The \fBnapms\fP routine is used to sleep for \fIms\fP milliseconds.
 .SH RETURN VALUE
 Except for \fBcurs_set\fP, these routines always return \fBOK\fP.

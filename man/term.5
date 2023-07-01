@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2020,2021 Thomas E. Dickey                                *
+.\" Copyright 2018-2021,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.45 2023/06/17 17:52:54 tom Exp $
-.TH term 5 2023-06-17 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.48 2023/07/01 15:46:10 tom Exp $
+.TH term 5 2023-07-01 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -262,7 +262,6 @@ described in \fBterm_variables\fP(3X) which associate the long capability
 names with members of a \fBTERMTYPE\fP structure.
 .
 .SS EXTENDED NUMBER FORMAT
-.PP
 On occasion, 16-bit signed integers are not large enough.
 With \fBncurses\fP 6.1, a new format was introduced by making a few changes
 to the legacy format:
@@ -279,7 +278,6 @@ The library uses a similar but hidden data structure \fBTERMTYPE2\fP
 to provide data for the terminfo functions.
 .SH PORTABILITY
 .SS setupterm
-.PP
 Note that it is possible for
 .B setupterm
 to expect a different set of capabilities
@@ -298,7 +296,6 @@ this is why the numbers and sizes are included.
 Also, new capabilities must always be added at the end of the lists
 of boolean, number, and string capabilities.
 .SS Binary format
-.PP
 X/Open Curses does not specify a format for the terminfo database.
 UNIX System V curses used a directory-tree of binary files,
 one per terminal description.
@@ -322,7 +319,6 @@ The format used by the other Unix versions
 can be matched by building ncurses
 with different configuration options.
 .SS Magic codes
-.PP
 The magic number in a binary terminfo file is the first 16-bits (two bytes).
 Besides making it more reliable for the library to check that a file
 is terminfo,
@@ -332,13 +328,11 @@ with 0433, 0435 as screen-dumps (see \fBscr_dump\fP(5)).
 This implementation uses 01036 as a continuation of that sequence,
 but with a different high-order byte to avoid confusion.
 .SS The TERMTYPE structure
-.PP
 Direct access to the \fBTERMTYPE\fP structure is provided for legacy
 applications.
 Portable applications should use the \fBtigetflag\fP and related functions
 described in \fBcurs_terminfo\fP(3X) for reading terminal capabilities.
 .SS Mixed-case terminal names
-.PP
 A small number of terminal descriptions use uppercase characters in
 their names.
 If the underlying filesystem ignores the difference between
@@ -356,7 +350,7 @@ adm3a|lsi adm3a,
         bel=^G, clear=\032$<1>, cr=^M, cub1=^H, cud1=^J,
         cuf1=^L, cup=\\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K,
         home=^^, ind=^J,
-.NS
+.NE
 .PP
 and a hexadecimal dump of the compiled terminal description:
 .NS
@@ -400,7 +394,7 @@ Compiled entries are limited to 32768 bytes because offsets into the
 The legacy format could have supported 32768-byte entries,
 but was limited a virtual memory page's 4096 bytes.
 .SH FILES
-\*d/*/*	compiled terminal capability database
+\*d/*/* compiled terminal capability database
 .SH SEE ALSO
 \fBcurses\fP(3X), \fBterminfo\fP(\*n).
 .SH AUTHORS

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKncu_config.in,v 1.6 2021/12/25 17:39:16 tom Exp $
-.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 ""
+.\" $Id: MKncu_config.in,v 1.7 2021/12/25 17:39:16 tom Exp $
+.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2021-12-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .SH NAME
 @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config \- helper script for ncurses libraries
 .SH SYNOPSIS

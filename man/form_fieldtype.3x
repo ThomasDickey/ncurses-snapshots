@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2006,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,12 +28,12 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_fieldtype.3x,v 1.32 2022/02/12 20:03:40 tom Exp $
+.\" $Id: form_fieldtype.3x,v 1.35 2023/07/01 15:46:10 tom Exp $
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH form_fieldtype 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.TH form_fieldtype 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_fieldtype\fP \- define validation-field types
 .SH SYNOPSIS
@@ -82,11 +82,9 @@ This function validates input characters as they are entered.
 The form library passes it the character to be checked
 and a pointer to an argument-block structure.
 .SS free_fieldtype
-.PP
 The \fBfree_fieldtype\fP function
 frees the space allocated for a given validation type by \fBnew_fieldtype\fP.
 .SS set_fieldtype_arg
-.PP
 The function \fBset_fieldtype_arg\fP associates
 three storage-management functions with a field type:
 .TP 5
@@ -109,7 +107,6 @@ In this case, the form library assumes
 that \fImake_arg\fP does not allocate memory but simply loads the
 argument into a single scalar value.
 .SS set_fieldtype_choice
-.PP
 The form driver requests \fBREQ_NEXT_CHOICE\fP and \fBREQ_PREV_CHOICE\fP assume
 that the possible values of a field form an ordered set, and provide the forms
 user with a way to move through the set.
@@ -120,7 +117,6 @@ for the field type.
 These functions take the field pointer and an
 argument-block structure as arguments.
 .SS link_fieldtype
-.PP
 The function \fBlink_fieldtype\fP creates
 a new field type from the two given types.
 They are connected by an logical 'OR'.

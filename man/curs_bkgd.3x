@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,12 +27,12 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.36 2022/06/25 21:55:45 tom Exp $
+.\" $Id: curs_bkgd.3x,v 1.39 2023/07/01 15:43:20 tom Exp $
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_bkgd 3X 2022-06-25 "ncurses 6.4" "Library calls"
+.TH curs_bkgd 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBbkgdset\fP, \fBwbkgdset\fP,
 \fBbkgd\fP, \fBwbkgd\fP,
@@ -71,12 +71,10 @@ To the extent possible on a particular terminal,
 the attribute part of the background is displayed
 as the graphic rendition of the character put on the screen.
 .SS bkgd
-.PP
 The \fBbkgd\fP and \fBwbkgd\fP functions
 set the background property of the current or specified window
 and then apply this setting to every character position in that window.
 According to X/Open Curses, it should do this:
-.PP
 .bP
 The rendition of every character on the screen is changed to
 the new background rendition.
@@ -128,11 +126,9 @@ If the terminal does not support color,
 or if color has not been started with \fBstart_color\fP,
 the new background character's color attribute will be ignored.
 .SS getbkgd
-.PP
 The \fBgetbkgd\fP function returns the given window's current background
 character/attribute pair.
 .SH RETURN VALUE
-.PP
 These functions are described in the XSI Curses standard, Issue 4.
 It specifies that \fBbkgd\fP and \fBwbkgd\fP return \fBERR\fP on failure,
 but gives no failure conditions.
@@ -149,7 +145,6 @@ The SVr4 curses \fBwrefresh\fP returns the number of characters
 written to the screen during the refresh.
 This implementation does not do that.
 .SH NOTES
-.PP
 Note that \fBbkgdset\fP and \fBbkgd\fP may be macros.
 .PP
 X/Open Curses mentions that the character part of the background must
@@ -157,12 +152,10 @@ be a single-byte value.
 This implementation, like SVr4, checks to ensure that,
 and will reuse the old background character if the check fails.
 .SH PORTABILITY
-.PP
 These functions are described in the XSI Curses standard, Issue 4
 (X/Open Curses).
 .SH SEE ALSO
 .na
-.PP
 \fBcurses\fP(3X),
 \fBcurs_addch\fP(3X),
 \fBcurs_attr\fP(3X),

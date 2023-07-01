@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.38 2023/06/17 17:52:54 tom Exp $
-.TH @TOE@ 1M 2023-06-17 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.40 2023/07/01 15:46:10 tom Exp $
+.TH @TOE@ 1M 2023-07-01 "ncurses 6.4" "User commands"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -57,9 +57,7 @@
 \fB@TOE@\fP \- table of (terminfo) entries
 .SH SYNOPSIS
 \fB@TOE@\fP [\fB\-v\fP[\fIn\fP]] [\fB\-ahsuUV\fP] \fIfile...\fP
-.br
 .SH DESCRIPTION
-.PP
 With no options,
 \fB@TOE@\fP lists all available terminal types by primary name
 with descriptions.
@@ -123,7 +121,6 @@ If ncurses is built without tracing support, the optional parameter is ignored.
 reports the version of ncurses which was used in this program,
 and exits.
 .SH EXAMPLES
-.PP
 Without sorting, the \fB\-a\fP option reports all of the names found
 in all of the terminal databases found by the \fBTERMINFO\fP and
 \fBTERMINFO_DIRS\fP environment variables:

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2020,2021 Thomas E. Dickey                                *
+.\" Copyright 2018-2021,2023 Thomas E. Dickey                                *
 .\" Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.37 2023/06/17 17:50:37 tom Exp $
-.TH @TABS@ 1 2023-06-17 "ncurses 6.4" "User commands"
+.\" $Id: tabs.1,v 1.39 2023/07/01 15:46:10 tom Exp $
+.TH @TABS@ 1 2023-07-01 "ncurses 6.4" "User commands"
 .ds n 5
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -57,7 +57,6 @@
 .SH SYNOPSIS
 \fB@TABS@\fP [\fIoptions\fP]] \fI[tabstop-list]\fP
 .SH DESCRIPTION
-.PP
 The \fB@TABS@\fP program clears and sets tab-stops on the terminal.
 This uses the terminfo \fBclear_all_tabs\fP and \fBset_tab\fP capabilities.
 If either is absent, \fB@TABS@\fP is unable to clear/set tab-stops.
@@ -213,7 +212,6 @@ on moving the cursor before the current left-margin.
 When setting or resetting the left-margin,
 @TABS@ may reset the right-margin.
 .SH PORTABILITY
-.PP
 \fIIEEE Std 1003.1/The Open Group Base Specifications Issue 7\fP (POSIX.1-2008)
 describes a \fBtabs\fP utility.
 However

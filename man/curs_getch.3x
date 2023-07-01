@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.64 2022/02/12 20:07:45 tom Exp $
-.TH curs_getch 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.67 2023/07/01 15:43:20 tom Exp $
+.TH curs_getch 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .ie \n(.g .ds `` \(lq
@@ -101,7 +101,6 @@ If the window is not a pad, and it has been moved or modified since the last
 call to \fBwrefresh\fP, \fBwrefresh\fP will be called before another character
 is read.
 .SS Keypad mode
-.PP
 If \fBkeypad\fP is \fBTRUE\fP, and a function key is pressed, the token for
 that function key is returned instead of the raw characters:
 .bP
@@ -136,11 +135,9 @@ Because function keys usually begin with an escape character,
 the terminal may appear to hang in notimeout mode after pressing the escape key
 until another key is pressed.
 .SS Ungetting characters
-.PP
 The \fBungetch\fP routine places \fIch\fP back onto the input queue to be
 returned by the next call to \fBwgetch\fP.
 There is just one input queue for all windows.
-.PP
 .SS Predefined key-codes
 The following special keys are defined in \fB<curses.h>\fP.
 .bP
@@ -281,7 +278,6 @@ because (e.g., with \fBxterm\fP(1) mouse prototocol) ncurses must
 read escape sequences,
 just like a function key.
 .SS Testing key-codes
-.PP
 The \fBhas_key\fP routine takes a key-code value from the above list, and
 returns \fBTRUE\fP or \fBFALSE\fP according to whether
 the current terminal type recognizes a key with that value.
@@ -296,7 +292,6 @@ defines a key-code for a given string (see \fBdefine_key\fP(3X)).
 checks if there is a key-code defined for a given
 string (see \fBkey_defined\fP(3X)).
 .RE
-.PP
 .SH RETURN VALUE
 All routines return the integer \fBERR\fP upon failure and an integer value
 other than \fBERR\fP (\fBOK\fP in the case of \fBungetch\fP) upon successful

@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.77 2022/02/12 20:02:20 tom Exp $
-.TH @TPUT@ 1 2022-02-12 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.79 2023/07/01 15:46:10 tom Exp $
+.TH @TPUT@ 1 2023-07-01 "ncurses 6.4" "User commands"
 .ds d @TERMINFO@
 .ds n 1
 .ie \n(.g .ds `` \(lq
@@ -56,7 +56,6 @@
 \fB@TPUT@ \-S\fP  \fB<<\fP
 .br
 \fB@TPUT@ \-V\fP
-.br
 .SH DESCRIPTION
 The \fB@TPUT@\fP utility uses the \fBterminfo\fP database to make the
 values of terminal-dependent capabilities and information available to
@@ -273,7 +272,6 @@ same effect as \fB@TPUT@ init\fP.
 Again, you are less likely to use that link because another program
 named \fBinit\fP has a more well-established use.
 .SS Terminal Size
-.PP
 Besides the special commands (e.g., \fBclear\fP),
 @TPUT@ treats certain terminfo capabilities specially:
 \fBlines\fP and \fBcols\fP.
@@ -481,7 +479,6 @@ almost without change,
 Raymond made improvements to the way the command-line parameters
 were handled.
 .SH PORTABILITY
-.PP
 This implementation of \fBtput\fP differs from AT&T \fBtput\fP in
 two important areas:
 .bP

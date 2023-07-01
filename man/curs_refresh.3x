@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.27 2023/03/11 20:41:02 tom Exp $
-.TH curs_refresh 3X 2023-03-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.30 2023/07/01 14:31:54 tom Exp $
+.TH curs_refresh 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -62,7 +62,6 @@
 \fBint redrawwin(WINDOW *\fIwin\fB);\fR
 .br
 \fBint wredrawln(WINDOW *\fIwin\fB, int \fIbeg_line\fB, int \fInum_lines\fB);\fR
-.br
 .SH DESCRIPTION
 .SS refresh/wrefresh
 The \fBrefresh\fP and \fBwrefresh\fP routines (or \fBwnoutrefresh\fP and
@@ -77,7 +76,6 @@ Unless \fBleaveok\fP(3X) has been
 enabled, the physical cursor of the terminal is left at the location of the
 cursor for that window.
 .SS wnoutrefresh/doupdate
-.PP
 The \fBwnoutrefresh\fP and \fBdoupdate\fP routines allow multiple updates with
 more efficiency than \fBwrefresh\fP alone.
 In addition to all the window
@@ -121,7 +119,6 @@ changed.
 (But see the section on \fBPORTABILITY\fP below for a warning about
 exploiting this behavior.)
 .SS wredrawln/redrawwin
-.PP
 The \fBwredrawln\fP routine indicates to \fBcurses\fP that some screen lines
 are corrupted and should be thrown away before anything is written over them.
 It touches the indicated lines (marking them changed).

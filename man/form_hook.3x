@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_hook.3x,v 1.20 2022/02/12 20:03:40 tom Exp $
-.TH form_hook 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: form_hook.3x,v 1.23 2023/07/01 15:46:10 tom Exp $
+.TH form_hook 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_hook\fP \- set hooks for automatic invocation by applications
 .SH SYNOPSIS
@@ -50,7 +50,6 @@
 \fBint set_form_term(FORM *\fIform\fB, Form_Hook \fIfunc\fB);\fR
 .br
 \fBForm_Hook form_term(const FORM *\fIform\fB);\fR
-.br
 .SH DESCRIPTION
 These functions make it possible to set hook functions to be called at various
 points in the automatic processing of input event codes by \fBform_driver\fP.

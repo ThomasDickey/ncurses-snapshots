@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.85 2022/09/17 19:01:24 tom Exp $
-.TH @TIC@ 1M 2022-09-17 "ncurses 6.4" "User commands"
+.\" $Id: tic.1m,v 1.87 2023/07/01 15:46:10 tom Exp $
+.TH @TIC@ 1M 2023-07-01 "ncurses 6.4" "User commands"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -74,7 +74,6 @@ x\
 [\fB\-v\fP[\fIn\fP]]
 [\fB\-w\fP[\fIn\fP]]
 \fIfile\fP
-.br
 .SH DESCRIPTION
 The \fB@TIC@\fP command translates a \fBterminfo\fP file from source
 format into compiled format.
@@ -130,7 +129,6 @@ a compiled-in list of directories (@TERMINFO_DIRS@), and
 .bP
 the system terminfo database (\fI\*d\fP).
 .SS ALIASES
-.PP
 This is the same program as @INFOTOCAP@ and @CAPTOINFO@;
 usually those are linked to, or copied from this program:
 .bP
@@ -394,7 +392,6 @@ describes the capabilities of a particular terminal.
 If \fIfile\fP is \*(``-\*('', then the data is read from the standard input.
 The \fIfile\fP parameter may also be the path of a character-device.
 .SS PROCESSING
-.PP
 All but one of the capabilities recognized by \fB@TIC@\fP are documented
 in \fBterminfo\fP(\*n).
 The exception is the \fBuse\fP capability.
@@ -422,7 +419,6 @@ Terminal names exceeding the maximum alias length
 will be truncated to the maximum alias length
 and a warning message will be printed.
 .SH HISTORY
-.PP
 System V Release 2 provided a \fBtic\fP utility.
 It accepted a single option: \fB\-v\fP (optionally followed by a number).
 According to Ross Ridge's comment in \fImytinfo\fP,
@@ -485,7 +481,6 @@ It is also used to ensure consistency with the user-defined capabilities.
 There are 527 distinct capabilities in ncurses' terminal database;
 128 of those are user-defined.
 .SH PORTABILITY
-.PP
 X/Open Curses, Issue 7 (2009) provides a brief description of \fBtic\fP.
 It lists one option: \fB\-c\fP.
 The omission of \fB\-v\fP is unexpected.

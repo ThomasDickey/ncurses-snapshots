@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.41 2023/06/10 16:50:22 tom Exp $
-.TH curs_initscr 3X 2023-06-10 "ncurses 6.4" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.44 2023/07/01 14:25:06 tom Exp $
+.TH curs_initscr 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -62,7 +62,6 @@
 \fBSCREEN *set_term(SCREEN *\fInew\fB);\fR
 .br
 \fBvoid delscreen(SCREEN* \fIsp\fB);\fR
-.br
 .SH DESCRIPTION
 .SS initscr
 \fBinitscr\fP is normally the first \fBcurses\fP routine to call when
@@ -81,7 +80,6 @@ If errors occur, \fBinitscr\fP writes an appropriate error
 message to standard error and exits;
 otherwise, a pointer is returned to \fBstdscr\fP.
 .SS newterm
-.PP
 A program that outputs to more than one terminal should use the \fBnewterm\fP
 routine for each terminal instead of \fBinitscr\fP.
 A program that needs to inspect capabilities,
@@ -106,7 +104,6 @@ The file descriptor of the output stream is passed to \fBsetupterm\fP(3X),
 which returns a pointer to a \fBTERMINAL\fP structure.
 \fBnewterm\fP's return value holds a pointer to the \fBTERMINAL\fP structure.
 .SS endwin
-.PP
 The program must also call
 \fBendwin\fP for each terminal being used before exiting from \fBcurses\fP.
 If \fBnewterm\fP is called more than once for the same terminal, the first
@@ -131,19 +128,16 @@ restores tty modes (see \fBreset_shell_mode\fP(3X)).
 Calling \fBrefresh\fP(3X) or \fBdoupdate\fP(3X) after a
 temporary escape causes the program to resume visual mode.
 .SS isendwin
-.PP
 The \fBisendwin\fP routine returns \fBTRUE\fP if \fBendwin\fP has been
 called without any subsequent calls to \fBwrefresh\fP,
 and \fBFALSE\fP otherwise.
 .SS set_term
-.PP
 The \fBset_term\fP routine is used to switch between different terminals.
 The screen reference \fInew\fP becomes the new current terminal.
 The previous terminal is returned by the routine.
 This is the only routine which manipulates \fBSCREEN\fP pointers;
 all other routines affect only the current terminal.
 .SS delscreen
-.PP
 The \fBdelscreen\fP routine frees storage associated with the
 \fBSCREEN\fP data structure.
 The \fBendwin\fP routine does not do
@@ -231,7 +225,6 @@ e.g.,
 \fBdef_prog_mode\fP(3X).
 SVr4 curses uses the descriptor in \fBSCREEN\fP.
 .SS Unset TERM Variable
-.PP
 If the TERM variable is missing or empty, \fBinitscr\fP uses the
 value \*(``unknown\*('',
 which normally corresponds to a terminal entry with the \fIgeneric\fP
@@ -240,7 +233,6 @@ Generic entries are detected by \fBsetupterm\fP(3X)
 and cannot be used for full-screen operation.
 Other implementations may handle a missing/empty TERM variable differently.
 .SS Signal Handlers
-.PP
 Quoting from X/Open Curses, section 3.1.1:
 .RS 5
 .hy 0

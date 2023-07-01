@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2011,2012 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border_set.3x,v 1.17 2022/02/12 20:06:41 tom Exp $
-.TH curs_border_set 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_border_set.3x,v 1.20 2023/07/01 15:43:20 tom Exp $
+.TH curs_border_set 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -50,7 +50,6 @@
 .ad
 .hy
 .SH SYNOPSIS
-.PP
 \fB#include <curses.h>\fP
 .sp
 \fBint border_set(\fP
@@ -103,9 +102,7 @@
    \fBWINDOW *\fIwin\fR,
    \fBint \fIy\fR, \fBint \fIx\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 .SH DESCRIPTION
-.PP
 The
 \fBborder_set\fP
 and
@@ -181,7 +178,6 @@ The
 functions draw a line proceeding toward the last line of the window.
 .br
 .SH NOTES
-.PP
 Note that
 \fBborder_set\fP,
 \fBhline_set\fP,
@@ -191,9 +187,7 @@ Note that
 \fBmvwvline_set\fP, and
 \fBvline_set\fP
 may be macros.
-.br
 .SH RETURN VALUE
-.PP
 Upon successful completion, these functions return
 \fBOK\fP.
 Otherwise, they return

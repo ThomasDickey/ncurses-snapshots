@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,12 +27,12 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.30 2022/02/12 20:05:11 tom Exp $
+.\" $Id: curs_pad.3x,v 1.33 2023/07/01 15:43:20 tom Exp $
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_pad 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.TH curs_pad 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -81,7 +81,6 @@ Note that these
 routines require additional parameters to specify the part of the pad to be
 displayed and the location on the screen to be used for the display.
 .SS subpad
-.PP
 The \fBsubpad\fP routine creates and returns a pointer to a subwindow within a
 pad with the given number of lines, \fInlines\fP, and columns, \fIncols\fP.
 Unlike \fBsubwin\fP, which uses screen coordinates, the window is at position
@@ -93,7 +92,6 @@ During the use of this routine, it will often be
 necessary to call \fBtouchwin\fP or \fBtouchline\fP on \fIorig\fP before
 calling \fBprefresh\fP.
 .SS prefresh, pnoutrefresh
-.PP
 The \fBprefresh\fP and \fBpnoutrefresh\fP routines are analogous to
 \fBwrefresh\fP and \fBwnoutrefresh\fP except that they relate to pads instead
 of windows.
@@ -117,7 +115,6 @@ Negative values of
 \fIpminrow\fP, \fIpmincol\fP, \fIsminrow\fP, or \fIsmincol\fP are treated as if
 they were zero.
 .SS pechochar
-.PP
 The \fBpechochar\fP routine is functionally equivalent to a call to \fBaddch\fP
 followed by a call to \fBrefresh\fP(3X),
 a call to \fBwaddch\fP followed by a call
@@ -130,7 +127,6 @@ equivalents.
 In the case of \fBpechochar\fP, the last location of the pad on
 the screen is reused for the arguments to \fBprefresh\fP.
 .SS pecho_wchar
-.PP
 The \fBpecho_wchar\fP function is the analogous wide-character
 form of \fBpechochar\fP.
 It outputs one character to a pad and immediately refreshes the pad.

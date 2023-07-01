@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.27 2022/02/12 20:05:11 tom Exp $
-.TH curs_touch 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_touch.3x,v 1.30 2023/07/01 15:46:10 tom Exp $
+.TH curs_touch 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -54,7 +54,6 @@
 \fBbool is_linetouched(WINDOW *\fIwin\fB, int \fIline\fB);\fR
 .br
 \fBbool is_wintouched(WINDOW *\fIwin\fB);\fR
-.br
 .SH DESCRIPTION
 The \fBtouchwin\fP and \fBtouchline\fP routines throw away all
 optimization information about which parts of the window have been
@@ -110,7 +109,6 @@ if the window pointer is null, or
 if the line number is outside the window.
 .RE
 .SH PORTABILITY
-.PP
 These functions were introduced by SVr4.
 The Solaris curses header file,
 for instance, defines both an actual function and macro for each.

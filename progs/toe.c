@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -45,7 +45,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.88 2022/09/03 23:29:32 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.89 2023/07/01 17:04:46 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -572,7 +572,7 @@ typelist(int eargc, char *eargv[],
 			break;
 		    if (*buffer == '#')
 			continue;
-		    if (isspace(*buffer))
+		    if (isspace(UChar(*buffer)))
 			continue;
 		    show_termcap(i, eargc, buffer, hook);
 		}

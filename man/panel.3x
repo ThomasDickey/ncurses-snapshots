@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.43 2022/02/12 20:03:40 tom Exp $
-.TH panel 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: panel.3x,v 1.46 2023/07/01 15:46:10 tom Exp $
+.TH panel 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -228,7 +228,6 @@ In your library list, libpanel.a should be before libncurses.a; that is,
 you should say \*(``\-lpanel \-lncurses\*('', not the other way around
 (which would give a link-error with static libraries).
 .SH PORTABILITY
-.PP
 The panel facility was documented in SVr4.2 in
 \fICharacter User Interface Programming (UNIX SVR4.2)\fP.
 .PP
@@ -256,7 +255,6 @@ NetBSD 8 (2018)
 has a panel library begun by Valery Ushakov in 2015.
 This is based on the AT&T documentation.
 .SH FILES
-.P
 panel.h
 interface for the panels library
 .P
@@ -269,7 +267,6 @@ the panels library itself
 This describes \fBncurses\fP
 version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
 .SH AUTHOR
-.PP
 Originally written by Warren Tucker <wht@n4hgf.mt-park.ga.us>,
 primarily to assist in porting \fIu386mon\fP to systems without a native
 panels library.

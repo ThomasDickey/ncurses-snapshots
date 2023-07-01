@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.18 2022/02/12 20:05:11 tom Exp $
-.TH curs_inwstr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.21 2023/07/01 15:43:20 tom Exp $
+.TH curs_inwstr 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -63,7 +63,6 @@
 \fBint mvwinnwstr(\fBWINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wchar_t *\fIwstr\fB, int \fIn\fB);\fR
 .fi
 .SH DESCRIPTION
-.PP
 These routines return a string of \fBwchar_t\fP wide characters in \fIwstr\fP,
 extracted starting at the current cursor position in the named window.
 .PP
@@ -76,7 +75,6 @@ been stored at the location referenced by \fIwstr\fP.
 If the size \fIn\fP is not large enough to store a complete complex character,
 an error is generated.
 .SH NOTES
-.PP
 All routines except
 \fBwinnwstr\fP
 may be macros.

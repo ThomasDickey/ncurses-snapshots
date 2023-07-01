@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2020,2021 Thomas E. Dickey                                *
+.\" Copyright 2018-2021,2023 Thomas E. Dickey                                *
 .\" Copyright 2017 Free Software Foundation, Inc.                            *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.22 2023/06/17 17:50:37 tom Exp $
-.TH scr_dump 5 2023-06-17 "ncurses 6.4" "File formats"
+.\" $Id: scr_dump.5,v 1.25 2023/07/01 15:46:10 tom Exp $
+.TH scr_dump 5 2023-07-01 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -56,7 +56,6 @@ scr_dump \- format of curses screen-dumps.
 .SH SYNOPSIS
 .B scr_dump
 .SH DESCRIPTION
-.PP
 The curses library provides applications with the ability to write the
 contents of a window to an external file using \fBscr_dump\fP or \fBputwin\fP,
 and read it back using \fBscr_restore\fP or \fBgetwin\fP.
@@ -65,7 +64,6 @@ The \fBputwin\fP and \fBgetwin\fP functions do the work;
 while \fBscr_dump\fP and \fBscr_restore\fP conveniently save and restore
 the whole screen, i.e., \fBstdscr\fP.
 .SS ncurses6
-.PP
 A longstanding implementation of screen-dump was
 revised with ncurses6 to remedy problems with the earlier approach:
 .bP
@@ -112,7 +110,6 @@ because the library truncates or fills the screen as necessary.
 .bP
 The ncurses6 \fBgetwin\fP reads the legacy screen dumps from ncurses5.
 .SS ncurses5 (legacy)
-.PP
 The screen-dump feature was added to ncurses in June 1995.
 While there were fixes and improvements in succeeding years,
 the basic scheme was unchanged:
@@ -129,11 +126,9 @@ and adjust the \fBWINDOW\fP structure which was read back into memory.
 This is similar to Unix SystemV,
 but does not write a \*(``magic number\*('' to identify the file format.
 .SH PORTABILITY
-.PP
 There is no standard format for \fBputwin\fP.
 This section gives a brief description of the existing formats.
 .SS X/Open Curses
-.PP
 Refer to \fIX/Open Curses, Issue 7\fP (2009).
 .PP
 X/Open's documentation for \fIenhanced curses\fP says only:
@@ -171,7 +166,6 @@ In the foregoing, emphasis was added to \fBunspecified format\fP
 and to \fBXPG4 or to earlier XPG releases\fP,
 for clarity.
 .SS Unix SystemV
-.PP
 Unix SystemV curses identified the file format by writing a
 \*(``magic number\*('' at the beginning of the dump.
 The \fBWINDOW\fP data and the lines of text follow, all in binary form.
@@ -222,7 +216,6 @@ Solaris 10 (13273 bytes)
 .bP
 ncurses5 (12888 bytes)
 .SS Solaris
-.PP
 As noted above, Solaris curses has no magic number corresponding
 to SVr4 curses.
 This is odd since Solaris was the first operating system
@@ -242,7 +235,6 @@ Unlike ncurses6, the contents of the window are written piecemeal,
 with coordinates and attributes for each chunk of text rather
 than writing the whole window from top to bottom.
 .SS PDCurses
-.PP
 PDCurses added support for screen dumps in version 2.7 (2005).
 Like Unix SystemV and ncurses5,
 it writes the \fBWINDOW\fP structure in binary,
@@ -253,7 +245,6 @@ e.g.,
 	\*(``PDC\\001\*(''
 .NE
 .SS NetBSD
-.PP
 As of April 2017, NetBSD curses does
 not support \fBscr_dump\fP and \fBscr_restore\fP
 (or \fBscr_init\fP, \fBscr_set\fP),
@@ -272,7 +263,6 @@ some data for wide-characters referenced by the \fBWINDOW\fP structure, and
 .bP
 finally, lines as done by other implementations.
 .SH EXAMPLE
-.PP
 Given a simple program which writes text to the screen
 (and for the sake of example, limiting the screen-size to 10x20):
 .NS
@@ -415,11 +405,9 @@ Here is the corresponding dump (using \*(``od -t x1\*(''):
 0002371
 .NE
 .SH SEE ALSO
-.PP
 \fBcurs_scr_dump\fP(3X),
 \fBcurs_util\fP(3X).
 .SH AUTHORS
-.PP
 Thomas E. Dickey
 .br
 extended screen-dump format for ncurses 6.0 (2015)

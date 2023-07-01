@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2017 Free Software Foundation, Inc.                            *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.24 2023/06/17 17:52:54 tom Exp $
-.TH user_caps 5 2023-06-17 "ncurses 6.4" "File formats"
+.\" $Id: user_caps.5,v 1.27 2023/07/01 15:46:10 tom Exp $
+.TH user_caps 5 2023-07-01 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -57,7 +57,6 @@ user_caps \- user-defined terminfo capabilities
 .B @TIC@ -x, @INFOCMP@ -x
 .SH DESCRIPTION
 .SS Background
-.PP
 Before ncurses 5.0,
 terminfo databases used a \fIfixed repertoire\fP of terminal
 capabilities designed for the SVr2 terminal database in 1984,
@@ -188,7 +187,6 @@ Fitting that into termcap's limitation of 2-character names
 would be pointless.
 These extended keys are available only with terminfo.
 .SS Recognized capabilities
-.PP
 The ncurses library uses the user-definable capabilities.
 While the terminfo database may have other extensions,
 ncurses makes explicit checks for these:
@@ -345,7 +343,6 @@ xterm mouse protocols:
 .fi
 .
 .SS Extended key-definitions
-.PP
 Several terminals provide the ability to send distinct strings for
 combinations of modified special keys.
 There is no standard for what those keys can send.
@@ -414,17 +411,14 @@ ask \fBtigetstr\fP(3X) for their values, and
 given the list of values,
 ask \fBkey_defined\fP(3X) for the \fIkey-code\fP which
 would be returned for those keys by \fBwgetch\fP(3X).
-.PP
 .\"
 .SH PORTABILITY
-.PP
 The \*(``\-x\*('' extension feature of \fB@TIC@\fP and \fB@INFOCMP@\fP
 has been adopted in NetBSD curses.
 That implementation stores user-defined capabilities,
 but makes no use of these capabilities itself.
 .\"
 .SH SEE ALSO
-.PP
 \fB@INFOCMP@\fP(1M),
 \fB@TIC@\fP(1M).
 .PP
@@ -439,7 +433,6 @@ provides further information on the \fBxterm\fP(1) features
 which are used in these extended capabilities.
 .\"
 .SH AUTHORS
-.PP
 Thomas E. Dickey
 .br
 beginning with ncurses 5.0 (1999)

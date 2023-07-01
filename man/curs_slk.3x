@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.45 2022/10/29 22:44:14 tom Exp $
-.TH curs_slk 3X 2022-10-29 "ncurses 6.4" "Library calls"
+.\" $Id: curs_slk.3x,v 1.48 2023/07/01 15:43:20 tom Exp $
+.TH curs_slk 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -119,7 +119,6 @@ the bottom of the screen;
 it does not try to use any hardware support for this
 mode.
 .SS Initialization
-.PP
 The \fBslk_init\fP routine must be called before \fBinitscr\fP or \fBnewterm\fP
 is called.
 If \fBinitscr\fP eventually uses a line from \fBstdscr\fP to
@@ -143,7 +142,6 @@ but in addition an index line is generated, helping the user to
 identify the key numbers easily.
 .RE
 .SS Labels
-.PP
 The \fBslk_set\fP routine
 (and the \fBslk_wset\fP routine for the wide-character library)
 has three parameters:
@@ -170,7 +168,6 @@ label.
 The \fBslk_label\fP routine returns the current label for label number
 \fIlabnum\fP, with leading and trailing blanks stripped.
 .SS Screen updates
-.PP
 The \fBslk_refresh\fP and \fBslk_noutrefresh\fP routines correspond to
 the \fBwrefresh\fP and \fBwnoutrefresh\fP routines.
 .PP
@@ -182,7 +179,6 @@ after a \fBslk_clear\fP has been performed.
 The \fBslk_touch\fP routine forces all the soft labels to be output
 the next time a \fBslk_noutrefresh\fP is performed.
 .SS Video attributes
-.PP
 The
 \fBslk_attron\fP, \fBslk_attrset\fP, \fBslk_attroff\fP and \fBslk_attr\fP
 routines correspond to
@@ -192,7 +188,6 @@ the screen.
 The default highlight for soft keys is A_STANDOUT (as in
 System V curses, which does not document this fact).
 .SS Colors
-.PP
 The \fBslk_color\fP routine corresponds to \fBcolor_set\fP.
 It has an effect only
 if soft labels are simulated on the bottom line of the screen.
@@ -273,7 +268,6 @@ X/Open Curses added these:
   slk_color
   slk_wset
 .SH EXTENSIONS
-.PP
 X/Open Curses documents the \fIopts\fP argument as reserved for future use,
 saying that it must be null.
 This implementation
@@ -320,7 +314,7 @@ Reading the source code (i.e., Illumos):
 .bP
 Soft-key groups are an array of \fIng\fP integers.
 .bP
-In SVr4, \fBslk_init\fP calls \fBslk_start\fP passing a null for \fIgp\fP. 
+In SVr4, \fBslk_init\fP calls \fBslk_start\fP passing a null for \fIgp\fP.
 For this case, \fBslk_start\fP uses the number of groups \fIng\fP
 (3 for the 3-2-3 layout, 2 for the 4-4 layout) which \fBslk_init\fP provided.
 .IP

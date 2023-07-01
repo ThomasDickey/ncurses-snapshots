@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.113 2022/12/10 19:51:10 tom Exp $
+.\" $Id: terminfo.tail,v 1.116 2023/07/01 15:33:13 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -129,9 +129,7 @@ or the size of particular delays, and
 string
 capabilities, which give a sequence which can be used to perform particular
 terminal operations.
-.PP
 .SS Types of Capabilities
-.PP
 All capabilities have names.
 For instance, the fact that
 ANSI-standard terminals have
@@ -232,9 +230,7 @@ For example, see the second
 in the example above.
 .br
 .ne 5
-.PP
 .SS Fetching Compiled Descriptions
-.PP
 The \fBncurses\fP library searches for terminal descriptions in several places.
 It uses only the first description found.
 The library has a compiled-in list of places to search
@@ -266,7 +262,6 @@ a list of directories (@TERMINFO_DIRS@), and
 the system terminfo directory, \fI\*d\fP (the compiled-in default).
 .RE
 .SS Preparing Descriptions
-.PP
 We now outline how to prepare descriptions of terminals.
 The most effective way to prepare a terminal description is by imitating
 the description of a similar terminal in
@@ -287,9 +282,7 @@ delete 16 or so lines from the middle of the screen, then hit the \*(``u\*(''
 key several times quickly.
 If the terminal messes up, more padding is usually needed.
 A similar test can be used for insert character.
-.PP
 .SS Basic Capabilities
-.PP
 The number of columns on each line for the terminal is given by the
 \fBcols\fP numeric capability.
 If the terminal is a \s-1CRT\s0, then the
@@ -421,9 +414,7 @@ while the Lear Siegler \s-1ADM-3\s0 is described as
 .\".in +2
 .ft R
 .fi
-.PP
 .SS Parameterized Strings
-.PP
 Cursor addressing and other strings requiring parameters
 in the terminal are described by a
 parameterized string capability,
@@ -448,7 +439,6 @@ It is noted that more complex operations are often necessary,
 e.g., in the \fBsgr\fP string.
 .PP
 The \fB%\fP encodings have the following meanings:
-.PP
 .TP 5
 \fB%%\fP
 outputs \*(``%\*(''
@@ -513,7 +503,7 @@ Beginning with version 6.3, ncurses stores \fIstatic\fP and \fIdynamic\fP
 variables in the same manner as SVr4.
 .RS
 .bP
-Unlike other implementations, ncurses zeros dynamic variables 
+Unlike other implementations, ncurses zeros dynamic variables
 before the first \fB%g\fP or \fB%P\fP operator.
 .bP
 Like SVr2,
@@ -602,9 +592,7 @@ ASCII value for a space (32), adds them (pushing the sum on the stack
 in place of the two previous values) and outputs that value as a character.
 Then the same is done for the second parameter.
 More complex arithmetic is possible using the stack.
-.PP
 .SS Cursor Motions
-.PP
 If the terminal has a fast way to home the cursor
 (to very upper left corner of screen) then this can be given as
 \fBhome\fP; similarly a fast way of getting to the lower left-hand corner
@@ -655,7 +643,6 @@ sets the command character to be the one used by terminfo.
 If the \fBsmcup\fP sequence will not restore the screen after an
 \fBrmcup\fP sequence is output (to the state prior to outputting
 \fBrmcup\fP), specify \fBnrrmc\fP.
-.PP
 .SS Margins
 SVr4 (and X/Open Curses)
 list several string capabilities for setting margins.
@@ -675,7 +662,6 @@ line position, and
 .bP
 parameterized capabilities for setting the top, bottom, left, right margins
 given the number of rows or columns.
-.RE
 .RE
 .PP
 In practice, the categorization into \*(``terminal\*('' and \*(``printer\*(''
@@ -753,7 +739,7 @@ When developing an application that uses \fBsmgbp\fP to set the bottom margin,
 both arguments must be given.
 .PP
 Conversely, when only one capability in the pair is set:
-.bP 
+.bP
 If only one of \fBsmglp\fP and \fBsmgrp\fP is set,
 then it is used with two arguments,
 the column number of the left and right margins, in that order.
@@ -782,7 +768,6 @@ The \fBmgc\fP string capability should be defined.
 Applications such as \fBtabs\fP(1) rely upon this to reset all margins.
 .\"
 .SS Area Clears
-.PP
 If the terminal can clear from the current position to the end of the
 line, leaving the cursor where it is, this should be given as \fBel\fP.
 If the terminal can clear from the beginning of the line to the current
@@ -795,10 +780,8 @@ display, then this should be given as \fBed\fP.
 if a true
 .B ed
 is not available.)
-.PP
 .\"
 .SS Insert/delete line and vertical motions
-.PP
 If the terminal can open a new blank line before the line where the cursor
 is, this should be given as \fBil1\fP; this is done only from the first
 position of a line.
@@ -875,9 +858,7 @@ below, then \fBdb\fP should be given.
 These indicate
 that deleting a line or scrolling may bring non-blank lines up from below
 or that scrolling back with \fBri\fP may bring down non-blank lines.
-.PP
 .SS Insert/Delete Character
-.PP
 There are two basic kinds of intelligent terminals with respect to
 insert/delete character which can be described using
 .I terminfo.
@@ -989,9 +970,7 @@ blanks without moving the cursor)
 can be given as
 .B ech
 with one parameter.
-.PP
 .SS "Highlighting, Underlining, and Visible Bells"
-.PP
 If your terminal has one or more kinds of display attributes,
 these can be represented in a number of different ways.
 You should choose one display form as
@@ -1161,9 +1140,7 @@ If a character overstriking another leaves both characters on the screen,
 specify the capability \fBos\fP.
 If overstrikes are erasable with a blank,
 then this should be indicated by giving \fBeo\fP.
-.PP
 .SS Keypad and Function Keys
-.PP
 If the terminal has a keypad that transmits codes when the keys are pressed,
 this information can be given.
 Note that it is not possible to handle
@@ -1270,9 +1247,7 @@ If there are commands to turn the labels on and off,
 give them in \fBsmln\fP and \fBrmln\fP.
 \fBsmln\fP is normally output after one or more pln
 sequences to make sure that the change becomes visible.
-.PP
 .SS Tabs and Initialization
-.PP
 A few capabilities are used only for tabs:
 .bP
 If the terminal has hardware tabs, the command to advance to the next
@@ -1457,7 +1432,6 @@ use the
 only when the \fBit\fP (\fBinit_tabs\fP) capability
 is set to a value other than \fIeight\fP.
 .SS Delays and Padding
-.PP
 Many older and slower terminals do not support either XON/XOFF or DTR
 handshaking, including hard copy terminals and some very archaic CRTs
 (including, for example, DEC VT100s).
@@ -1485,7 +1459,6 @@ then this can be given as \fBpad\fP.
 Only the first character of the
 .B pad
 string is used.
-.PP
 .SS Status Lines
 Some terminals have an extra \*(``status line\*('' which is not normally used by
 software (and thus not counted in the terminal's \fBlines\fP capability).
@@ -1520,9 +1493,7 @@ etc., work ordinarily in the status line.
 .PP
 The \fBncurses\fP implementation does not yet use any of these capabilities.
 They are documented here in case they ever become important.
-.PP
 .SS Line Graphics
-.PP
 Many terminals have alternate character sets useful for forms-drawing.
 Terminfo and \fBcurses\fP have built-in support
 for most of the drawing characters
@@ -1598,9 +1569,7 @@ to a copy of this table for your terminal, giving the character which
 as the corresponding graphic.
 Then read off the VT100/your terminal
 character pairs right to left in sequence; these become the ACSC string.
-.PP
 .SS Color Handling
-.PP
 The curses library functions \fBinit_pair\fP and \fBinit_color\fP
 manipulate the \fIcolor pairs\fP and \fIcolor values\fP discussed in this
 section
@@ -1761,7 +1730,6 @@ an \fBncv\fP capability of 2.
 .PP
 SVr4 curses does nothing with \fBncv\fP, ncurses recognizes it and optimizes
 the output in favor of colors.
-.PP
 .SS Miscellaneous
 If the terminal requires other than a null (zero) character as a pad, then this
 can be given as pad.
@@ -1868,9 +1836,7 @@ All text, including
 is transparently passed to the printer while an
 .B mc5p
 is in effect.
-.PP
 .SS Glitches and Braindamage
-.PP
 Hazeltine terminals, which do not allow \*(``~\*('' characters to be displayed should
 indicate \fBhz\fP.
 .PP
@@ -1904,9 +1870,7 @@ Note that in older terminfo versions, this capability was called
 .PP
 Other specific terminal problems may be corrected by adding more
 capabilities of the form \fBx\fP\fIx\fP.
-.PP
 .SS Pitfalls of Long Entries
-.PP
 Long terminfo entries are unlikely to be a problem; to date, no entry has even
 approached terminfo's 4096-byte string-table maximum.
 Unfortunately, the termcap
@@ -1994,7 +1958,6 @@ of terminfo (under HP\-UX and AIX) which diverged from System V terminfo after
 SVr1, and have added extension capabilities to the string table that (in the
 binary format) collide with System V and XSI Curses extensions.
 .SH EXTENSIONS
-.PP
 Searching for terminal descriptions in
 \fB$HOME/.terminfo\fP and TERMINFO_DIRS
 is not supported by older implementations.
@@ -2029,11 +1992,11 @@ that can return mouse-tracking information in the keyboard-input stream.
 X/Open Curses does not mention italics.
 Portable applications must assume that numeric capabilities are
 signed 16-bit values.
-This includes the \fIno_color_video\fP (ncv) capability.
-The 32768 mask value used for italics with ncv can be confused with
-an absent or cancelled ncv.
+This includes the \fIno_color_video\fP (\fBncv\fP) capability.
+The 32768 mask value used for italics with \fBncv\fP can be confused with
+an absent or cancelled \fBncv\fP.
 If italics should work with colors,
-then the ncv value must be specified, even if it is zero.
+then the \fBncv\fP value must be specified, even if it is zero.
 .PP
 Different commercial ports of terminfo and curses support different subsets of
 the XSI Curses standard and (in some cases) different extension sets.

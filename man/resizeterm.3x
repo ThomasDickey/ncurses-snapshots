@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.33 2022/02/20 00:32:18 tom Exp $
-.TH resizeterm 3X 2022-02-19 "ncurses 6.4" "Library calls"
+.\" $Id: resizeterm.3x,v 1.36 2023/07/01 15:46:10 tom Exp $
+.TH resizeterm 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -48,7 +48,6 @@
 .br
 \fBint resizeterm(int \fIlines\fB, int \fIcolumns\fB);\fR
 .SH DESCRIPTION
-.PP
 This is an extension to the curses library.
 It provides callers with a hook into the \fBncurses\fP data to resize windows,
 primarily for use by programs running in an X Window terminal (e.g., xterm)
@@ -84,14 +83,12 @@ can call \fBresizeterm\fP, but in that case, the library will not
 see \fBSIGWINCH\fP, and proper layout will rely upon the application.
 .SH FUNCTIONS
 .SS resizeterm
-.PP
 The function \fBresizeterm\fP resizes the standard and current windows
 (i.e., \fBstdscr\fP and \fBcurscr\fP)
 to the specified dimensions, and adjusts other bookkeeping data used by
 the \fBncurses\fP library that record the window dimensions
 such as the \fBLINES\fP and \fBCOLS\fP variables.
 .SS resize_term
-.PP
 Most of the work for \fBresizeterm\fP is
 done by the inner function \fBresize_term\fP.
 The outer function \fBresizeterm\fP adds bookkeeping
@@ -116,7 +113,6 @@ then on resizing the window, \fBresize_term\fP will keep the window
 extending to the corresponding limit, regardless of whether the
 screen has shrunk or grown.
 .SS is_term_resized
-.PP
 A support function \fBis_term_resized\fP is provided so that applications
 can check if the \fBresize_term\fP function would modify the window structures.
 It returns \fBTRUE\fP if the windows would be modified,
@@ -161,7 +157,6 @@ the operating system.
 Thus, even if a \fBSIGWINCH\fP is received,
 no screen size change may be recorded.
 .SH PORTABILITY
-.PP
 It is possible to resize the screen with SVr4 curses,
 by
 .bP

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.31 2022/02/12 20:06:41 tom Exp $
-.TH curs_border 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_border.3x,v 1.34 2023/07/01 15:43:20 tom Exp $
+.TH curs_border 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -76,7 +76,6 @@
 \fBint mvvline(int \fIy\fB, int \fIx\fB, chtype \fIch\fB, int \fIn\fB);\fR
 .br
 \fBint mvwvline(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, chtype \fIch\fB, int \fIn\fB);\fR
-.br
 .SH DESCRIPTION
 The \fBborder\fP, \fBwborder\fP and \fBbox\fP routines
 draw a box around the edges of a window.

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1999-2010,2016 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1999-on
 .\"
-.\" $Id: curs_extend.3x,v 1.29 2022/02/12 20:07:29 tom Exp $
-.TH curs_extend 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_extend.3x,v 1.32 2023/07/01 15:43:20 tom Exp $
+.TH curs_extend 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -49,7 +49,6 @@
 These functions are extensions to the curses library
 which do not fit easily into other categories.
 .SS curses_version
-.PP
 Use \fBcurses_version\fP
 to get the version number, including patch level of the library,
 prefixed by \*(``ncurses\*('', e.g.,
@@ -58,7 +57,6 @@ prefixed by \*(``ncurses\*('', e.g.,
 .B ncurses 5.0.19991023
 .RE
 .SS use_extended_names
-.PP
 The \fBuse_extended_names\fP
 function controls whether the calling application
 is able to use user-defined or nonstandard names
@@ -70,7 +68,6 @@ extended terminal definitions.
 However you can disable this feature
 to ensure compatibility with other implementations of curses.
 .SH RETURN VALUE
-.PP
 \fBcurses_version\fP returns a pointer to static memory; you should not free
 this in your application.
 .PP

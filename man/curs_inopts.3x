@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.37 2022/02/12 20:07:29 tom Exp $
-.TH curs_inopts 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.40 2023/07/01 15:43:20 tom Exp $
+.TH curs_inopts 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -128,7 +128,6 @@ Note that \fBcbreak\fP overrides \fBraw\fP.
 discussion of how these routines interact with \fBecho\fP and \fBnoecho\fP.]
 .\"
 .SS echo/noecho
-.PP
 The \fBecho\fP and \fBnoecho\fP routines control whether characters typed by
 the user are echoed by \fBgetch\fP(3X) as they are typed.
 Echoing by the tty
@@ -142,7 +141,6 @@ discussion of how these routines interact with \fBcbreak\fP and
 \fBnocbreak\fP.]
 .\"
 .SS halfdelay
-.PP
 The \fBhalfdelay\fP routine is used for half-delay mode, which is similar to
 \fBcbreak\fP mode in that characters typed by the user are immediately
 available to the program.
@@ -154,7 +152,6 @@ Use \fBnocbreak\fP to leave half-delay
 mode.
 .\"
 .SS intrflush
-.PP
 If the \fBintrflush\fP option is enabled (\fIbf\fP is \fBTRUE\fP), and an
 interrupt key is pressed on the keyboard (interrupt, break, quit), all output in
 the tty driver queue will be flushed, giving the effect of faster response to
@@ -166,7 +163,6 @@ The default for the option is inherited from the tty driver settings.
 The window argument is ignored.
 .\"
 .SS keypad
-.PP
 The \fBkeypad\fP option enables the keypad of the user's terminal.
 If
 enabled (\fIbf\fP is \fBTRUE\fP), the user can press a function key
@@ -183,7 +179,6 @@ called.
 The default value for keypad is \fBFALSE\fP.
 .\"
 .SS meta
-.PP
 Initially, whether the terminal returns 7 or 8 significant bits on
 input depends on the control mode of the tty driver [see \fBtermios\fP(3)].
 To force 8 bits to be returned, invoke \fBmeta\fP(\fIwin\fP,
@@ -201,18 +196,15 @@ If the terminfo capabilities \fBsmm\fP
 \fBFALSE\fP) is called.
 .\"
 .SS nl/nonl
-.PP
 The \fBnl\fP and \fBnonl\fP routines control whether the underlying display
 device translates the return key into newline on input.
 .\"
 .SS nodelay
-.PP
 The \fBnodelay\fP option causes \fBgetch\fP to be a non-blocking call.
 If no input is ready, \fBgetch\fP returns \fBERR\fP.
 If disabled
 (\fIbf\fP is \fBFALSE\fP), \fBgetch\fP waits until a key is pressed.
 .SS notimeout
-.PP
 When interpreting an escape sequence, \fBwgetch\fP(3X) sets a timer
 while waiting for the next character.
 If \fBnotimeout(\fIwin\fR,
@@ -222,7 +214,6 @@ purpose of the timeout is to differentiate between sequences received
 from a function key and those typed by a user.
 .\"
 .SS raw/noraw
-.PP
 The \fBraw\fP and \fBnoraw\fP routines place the terminal into or out of raw
 mode.
 Raw mode is similar to \fBcbreak\fP mode, in that characters typed are
@@ -235,7 +226,6 @@ the BREAK key depends on other bits in the tty driver that are not set by
 \fBcurses\fP.
 .\"
 .SS qiflush/noqiflush
-.PP
 When the \fBnoqiflush\fP routine is used, normal flush of input and
 output queues associated with the \fBINTR\fP, \fBQUIT\fP and
 \fBSUSP\fP characters will not be done [see \fBtermios\fP(3)].
@@ -247,7 +237,6 @@ handler if you want output to continue as though the interrupt
 had not occurred, after the handler exits.
 .\"
 .SS timeout/wtimeout
-.PP
 The \fBtimeout\fP and \fBwtimeout\fP routines set blocking or
 non-blocking read for a given window.
 If \fIdelay\fP is negative,
@@ -263,7 +252,6 @@ plus the additional capability of being able to block for only
 \fIdelay\fP milliseconds (where \fIdelay\fP is positive).
 .\"
 .SS typeahead
-.PP
 The \fBcurses\fP library does \*(``line-breakout optimization\*(''
 by looking for typeahead periodically while updating the screen.
 If input is found, and it is coming from a tty,

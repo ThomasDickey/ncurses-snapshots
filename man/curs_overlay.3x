@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2020-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2020-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2013,2015 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.23 2022/02/12 20:05:11 tom Exp $
-.TH curs_overlay 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_overlay.3x,v 1.26 2023/07/01 15:43:20 tom Exp $
+.TH curs_overlay 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -56,7 +56,6 @@ to be the same size; only text where the two windows overlap is copied.
 The difference is that \fBoverlay\fP is non-destructive
 (blanks are not copied) whereas \fBoverwrite\fP is destructive.
 .SS copywin
-.PP
 The \fBcopywin\fP routine provides a finer granularity of control over the
 \fBoverlay\fP and \fBoverwrite\fP routines.
 As in the \fBprefresh\fP routine,

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.31 2023/06/17 17:50:37 tom Exp $
-.TH @CLEAR@ 1 2023-06-17 "ncurses 6.4" "User commands"
+.\" $Id: clear.1,v 1.33 2023/07/01 14:23:04 tom Exp $
+.TH @CLEAR@ 1 2023-07-01 "ncurses 6.4" "User commands"
 .\" these would be fallbacks for DS/DE,
 .\" but groff changed the meaning of the macros.
 .de NS
@@ -58,7 +58,6 @@
 \fB@CLEAR@\fP \- clear the terminal screen
 .SH SYNOPSIS
 \fB@CLEAR@\fR [\fB\-T\fItype\fR] [\fB\-V\fR] [\fB\-x\fR]
-.br
 .SH DESCRIPTION
 \fB@CLEAR@\fP clears your terminal's screen if this is possible,
 including the terminal's scrollback buffer
@@ -73,7 +72,6 @@ You can redirect the standard output to a file (which prevents
 \fB@CLEAR@\fP from actually clearing the screen),
 and later \fBcat\fP the file to the screen, clearing it at that point.
 .SH OPTIONS
-.PP
 .TP 5
 .B \-T \fItype\fP
 indicates the \fItype\fP of terminal.

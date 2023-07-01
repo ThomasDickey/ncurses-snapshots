@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.74 2023/06/17 17:50:37 tom Exp $
-.TH curs_attr 3X 2023-06-17 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.77 2023/07/01 15:43:20 tom Exp $
+.TH curs_attr 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -144,7 +144,6 @@
 \fBint wstandout(WINDOW *\fIwin\fB);\fR
 .\" ---------------------------------------------------------------------------
 .SH DESCRIPTION
-.PP
 These routines manipulate the current attributes of the named window,
 which then apply to all characters that are written into
 the window with \fBwaddch\fP, \fBwaddstr\fP and \fBwprintw\fP.
@@ -165,7 +164,6 @@ For example,
 \fBattr_set\fP is the \fBstdscr\fP variant of \fBwattr_set\fP.
 .\" ---------------------------------------------------------------------------
 .SS Window attributes
-.PP
 There are two sets of functions:
 .bP
 functions for manipulating the window attributes and color:
@@ -236,7 +234,6 @@ There is no corresponding \fBattrget\fP function as such in X/Open Curses,
 although ncurses provides \fBgetattrs\fP (see curs_legacy(3X)).
 .\" ---------------------------------------------------------------------------
 .SS Change character rendition
-.PP
 The routine \fBchgat\fP changes the attributes of a given number of characters
 starting at the current cursor location of \fBstdscr\fP.
 It does not update
@@ -256,7 +253,6 @@ The routine \fBcolor_set\fP sets the current color of the given window to the
 foreground/background combination described by the color \fIpair\fP parameter.
 .\" ---------------------------------------------------------------------------
 .SS Standout
-.PP
 The routine \fBstandout\fP is
 the same as \fBattron(A_STANDOUT)\fP.
 The routine \fBstandend\fP is the same
@@ -467,7 +463,6 @@ The resulting 4.4BSD curses was replaced by ncurses over the next ten years.
 U/Win is rarely used now.
 .\" ---------------------------------------------------------------------------
 .SH EXTENSIONS
-.PP
 This implementation provides the \fBA_ITALIC\fP attribute for terminals
 which have the \fBenter_italics_mode\fP (\fBsitm\fP)
 and \fBexit_italics_mode\fP (\fBritm\fP) capabilities.

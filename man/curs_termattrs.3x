@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termattrs.3x,v 1.21 2023/03/11 20:41:12 tom Exp $
-.TH curs_termattrs 3X 2023-03-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termattrs.3x,v 1.24 2023/07/01 14:31:54 tom Exp $
+.TH curs_termattrs 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBbaudrate\fP,
 \fBerasechar\fP,
@@ -73,7 +73,6 @@ The
 number returned is in bits per second, for example \fB9600\fP, and is an
 integer.
 .SS erasechar, erasewchar
-.PP
 The \fBerasechar\fP routine returns the user's current erase character.
 .PP
 The \fBerasewchar\fP routine stores the current erase character
@@ -81,7 +80,6 @@ in the location referenced by \fIch\fP.
 If no erase character has been defined, the routine fails
 and the location referenced by \fIch\fP is not changed.
 .SS has_is, has_il
-.PP
 The \fBhas_ic\fP routine is true if the terminal has insert- and delete-
 character capabilities.
 .PP
@@ -91,7 +89,6 @@ This might
 be used to determine if it would be appropriate to turn on physical
 scrolling using \fBscrollok\fP(3X).
 .SS killchar, killwchar
-.PP
 The \fBkillchar\fP routine returns the user's current line kill character.
 .PP
 The \fBkillwchar\fP routine stores the current line-kill character
@@ -99,7 +96,6 @@ in the location referenced by \fIch\fP.
 If no line-kill character has been defined,
 the routine fails and the location referenced by \fIch\fP is not changed.
 .SS longname
-.PP
 The \fBlongname\fP routine returns a pointer to a static area
 containing a verbose description of the current terminal.
 The maximum
@@ -111,7 +107,6 @@ overwritten by each call to \fBnewterm\fP and is not restored by
 \fBnewterm\fP if \fBlongname\fP is going to be used with multiple
 terminals.
 .SS termattrs, term_attrs
-.PP
 If a given terminal does not support a video attribute that an
 application program is trying to use, \fBcurses\fP may substitute a
 different video attribute for it.
@@ -121,7 +116,6 @@ terminal using \fBA_\fP and \fBWA_\fP constants respectively.
 This information is useful when a \fBcurses\fP program
 needs complete control over the appearance of the screen.
 .SS termname
-.PP
 The \fBtermname\fP routine returns the terminal name used by \fBsetupterm\fP.
 .SH RETURN VALUE
 \fBlongname\fP and \fBtermname\fP return \fBNULL\fP on error.

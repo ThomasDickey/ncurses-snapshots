@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.37 2022/02/12 20:05:11 tom Exp $
-.TH curs_outopts 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.40 2023/07/01 15:43:20 tom Exp $
+.TH curs_outopts 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .de bP
@@ -64,15 +64,12 @@
 \fBint setscrreg(int \fItop\fB, int \fIbot\fB);\fR
 .br
 \fBint wsetscrreg(WINDOW *\fIwin\fB, int \fItop\fB, int \fIbot\fB);\fR
-.br
 .SH DESCRIPTION
-.PP
 These routines set options that change the style of output within
 \fBcurses\fP.
 All options are initially \fBFALSE\fP, unless otherwise stated.
 It is not necessary to turn these options off before calling \fBendwin\fP(3X).
 .SS clearok
-.PP
 If \fBclearok\fP is called with \fBTRUE\fP as argument, the next
 call to \fBwrefresh\fP with this window will clear the screen completely and
 redraw the entire screen from scratch.
@@ -83,7 +80,6 @@ the \fIwin\fP argument to \fBclearok\fP is the global variable \fBcurscr\fP,
 the next call to \fBwrefresh\fP with any window causes the screen to be cleared
 and repainted from scratch.
 .SS idlok
-.PP
 If \fBidlok\fP is called with \fBTRUE\fP as second argument, \fBcurses\fP
 considers using the hardware insert/delete line feature of terminals so
 equipped.
@@ -97,7 +93,6 @@ when used in applications where it is not really needed.
 If insert/delete line
 cannot be used, \fBcurses\fP redraws the changed portions of all lines.
 .SS idcok
-.PP
 If \fBidcok\fP is called with \fBFALSE\fP as second argument, \fBcurses\fP
 no longer considers using the hardware insert/delete character feature of
 terminals so equipped.
@@ -105,7 +100,6 @@ Use of character insert/delete is enabled by default.
 Calling \fBidcok\fP with \fBTRUE\fP as second argument re-enables use
 of character insertion and deletion.
 .SS immedok
-.PP
 If \fBimmedok\fP is called with \fBTRUE as argument\fP, any change
 in the window image, such as the ones caused by \fBwaddch, wclrtobot, wscrl\fP,
 etc., automatically cause a call to \fBwrefresh\fP.
@@ -113,7 +107,6 @@ However, it may
 degrade performance considerably, due to repeated calls to \fBwrefresh\fP.
 It is disabled by default.
 .SS leaveok
-.PP
 Normally, the hardware cursor is left at the location of the window cursor
 being refreshed.
 The \fBleaveok\fP option allows the cursor to be left
@@ -121,7 +114,6 @@ wherever the update happens to leave it.
 It is useful for applications where
 the cursor is not used, since it reduces the need for cursor motions.
 .SS scrollok
-.PP
 The \fBscrollok\fP option controls what happens when the cursor of a window is
 moved off the edge of the window or scrolling region, either as a result of a
 newline action on the bottom line, or typing the last character of the last
@@ -132,7 +124,6 @@ If enabled, (\fIbf\fP is \fBTRUE\fP), the window is scrolled up one line
 (Note that to get the physical scrolling effect on the terminal, it is
 also necessary to call \fBidlok\fP).
 .SS  setscrreg/wsetscrreg
-.PP
 The \fBsetscrreg\fP and \fBwsetscrreg\fP routines allow the application
 programmer to set a software scrolling region in a window.
 The \fItop\fP and
@@ -165,7 +156,6 @@ will return an error if the window pointer is null
 .bP
 \fBwsetscrreg\fP
 returns an error if the scrolling region limits extend outside the window.
-.RE
 .PP
 X/Open does not define any error conditions.
 This implementation returns an error

@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_new.3x,v 1.28 2022/02/12 20:03:40 tom Exp $
-.TH form_field_new 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: form_field_new.3x,v 1.31 2023/07/01 15:46:10 tom Exp $
+.TH form_field_new 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBnew_field\fP,
 \fBdup_field\fP,
@@ -47,7 +47,6 @@
 \fBFIELD *link_field(FIELD *\fIfield\fB, int \fItoprow\fB, int \fIleftcol\fB);\fR
 .br
 \fBint free_field(FIELD *\fIfield\fB);\fR
-.br
 .SH DESCRIPTION
 The function \fBnew_field\fP allocates a new field and initializes it from the
 parameters given: height, width, row of upper-left corner, column of upper-left

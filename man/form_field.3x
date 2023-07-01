@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2012 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field.3x,v 1.21 2022/02/12 20:03:40 tom Exp $
-.TH form_field 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: form_field.3x,v 1.24 2023/07/01 15:46:10 tom Exp $
+.TH form_field 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_field\fP \- make and break connections between fields and forms
 .SH SYNOPSIS
@@ -42,7 +42,6 @@
 \fBint field_count(const FORM *\fIform\fB);\fR
 .br
 \fBint move_field(FIELD *\fIfield\fB, int \fIfrow\fB, int \fIfcol\fB);\fR
-.br
 .SH DESCRIPTION
 The function \fBset_form_fields\fP changes the field pointer array of
 the given \fIform\fP.  The array must be terminated by a \fBNULL\fP.

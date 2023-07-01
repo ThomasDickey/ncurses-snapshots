@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_validation.3x,v 1.37 2022/02/12 20:03:40 tom Exp $
-.TH form_field_validation 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: form_field_validation.3x,v 1.40 2023/07/01 15:46:10 tom Exp $
+.TH form_field_validation 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -63,7 +63,6 @@
 \fBFIELDTYPE *TYPE_REGEXP;\fP
 .br
 \fBFIELDTYPE *TYPE_IPV4;\fP
-.br
 .SH DESCRIPTION
 By default, no validation is done on form fields.
 You can associate a form with with a \fIfield type\fP,
@@ -84,7 +83,6 @@ via arguments which the caller provides when calling \fBset_field_type\fP.
 .PP
 Several field types are predefined by the form library.
 .SS Predefined types
-.PP
 It is possible to set up new programmer-defined field types.
 Field types are implemented via the \fBFIELDTYPE\fP data
 structure, which contains several pointers to functions.
