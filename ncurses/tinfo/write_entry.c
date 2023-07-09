@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.127 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.130 2023/07/08 14:00:24 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -95,12 +95,12 @@ write_file(char *filename, TERMTYPE2 *tp)
 	    int myerr = ferror(fp) ? errno : 0;
 	    if (myerr) {
 		_nc_syserr_abort("error writing %s/%s: %s",
-				 _nc_tic_dir(0),
+				 _nc_tic_dir(NULL),
 				 filename,
 				 strerror(myerr));
 	    } else {
 		_nc_syserr_abort("error writing %s/%s: %u bytes vs actual %lu",
-				 _nc_tic_dir(0),
+				 _nc_tic_dir(NULL),
 				 filename,
 				 offset,
 				 (unsigned long) actual);
@@ -133,7 +133,7 @@ check_writeable(int code)
     } else if (!verified[s - dirnames]) {
 	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
 	if (make_db_root(dir) < 0) {
-	    _nc_err_abort("%s/%s: permission denied", _nc_tic_dir(0), dir);
+	    _nc_err_abort("%s/%s: permission denied", _nc_tic_dir(NULL), dir);
 	} else {
 	    verified[s - dirnames] = TRUE;
 	}
@@ -145,7 +145,7 @@ static int
 make_db_path(char *dst, const char *src, size_t limit)
 {
     int rc = -1;
-    const char *top = _nc_tic_dir(0);
+    const char *top = _nc_tic_dir(NULL);
 
     if (src == top || _nc_is_abs_path(src)) {
 	if (strlen(src) + 1 <= limit) {
@@ -222,22 +222,30 @@ _nc_set_writedir(const char *dir)
 {
     const char *destination;
     char actual[PATH_MAX];
+    bool specific = (dir != NULL);
 
-    if (dir == 0 && use_terminfo_vars())
+    if (!specific && use_terminfo_vars())
 	dir = getenv("TERMINFO");
 
-    if (dir != 0)
+    if (dir != NULL)
 	(void) _nc_tic_dir(dir);
 
-    destination = _nc_tic_dir(0);
+    destination = _nc_tic_dir(NULL);
     if (make_db_root(destination) < 0) {
-	char *home = _nc_home_terminfo();
+	bool success = FALSE;
 
-	if (home != 0) {
-	    destination = home;
-	    if (make_db_root(destination) < 0)
-		_nc_err_abort("%s: permission denied (errno %d)",
-			      destination, errno);
+	if (!specific) {
+	    char *home = _nc_home_terminfo();
+
+	    if (home != NULL) {
+		destination = home;
+		if (make_db_root(destination) == 0)
+		    success = TRUE;
+	    }
+	}
+	if (!success) {
+	    _nc_err_abort("%s: permission denied (errno %d)",
+			  destination, errno);
 	}
     }
 
@@ -249,7 +257,7 @@ _nc_set_writedir(const char *dir)
     make_db_path(actual, destination, sizeof(actual));
 #else
     if (chdir(_nc_tic_dir(destination)) < 0
-	|| getcwd(actual, sizeof(actual)) == 0)
+	|| getcwd(actual, sizeof(actual)) == NULL)
 	_nc_err_abort("%s: not a directory", destination);
 #endif
     _nc_keep_tic_dir(actual);
@@ -350,10 +358,10 @@ _nc_write_entry(TERMTYPE2 *const tp)
 
 #if USE_HASHED_DB
     if (_nc_write_object(tp, buffer + 1, &offset, limit - 1) != ERR) {
-	DB *capdb = _nc_db_open(_nc_tic_dir(0), TRUE);
+	DB *capdb = _nc_db_open(_nc_tic_dir(NULL), TRUE);
 	DBT key, data;
 
-	if (capdb != 0) {
+	if (capdb != NULL) {
 	    buffer[0] = 0;
 
 	    memset(&key, 0, sizeof(key));
@@ -450,7 +458,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 	if (stat(filename, &statbuf) == -1
 	    || (start_time = statbuf.st_mtime) == 0) {
 	    _nc_syserr_abort("error obtaining time from %s/%s",
-			     _nc_tic_dir(0), filename);
+			     _nc_tic_dir(NULL), filename);
 	}
     }
     while (*other_names != '\0') {
@@ -465,7 +473,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 	    _nc_warning("terminal alias %s too long.", ptr);
 	    continue;
 	}
-	if (strchr(ptr, '/') != 0) {
+	if (strchr(ptr, '/') != NULL) {
 	    _nc_warning("cannot link alias %s.", ptr);
 	    continue;
 	}

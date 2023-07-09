@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3973 2023/07/01 17:55:50 tom Exp $
+-- $Id: NEWS,v 1.3975 2023/07/09 00:08:03 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230708
+	+ add linux+kbs for terminals which imitate xterm's behavior with
+	  Linux -TD
+	+ modify MinGW driver to return KEY_BACKSPACE when an unmodified
+	  VK_BACK virtual key is entered (prompted by patch by Pavel Fedin,
+	  Savannah #64292).
+	+ disallow using $TERMINFO or $HOME/.terminfo when tic "-o" option is
+	  used (report by Sven Joachim, Debian #1040048).
 
 20230701
 	+ fix mandoc warnings about unnecessary markup.

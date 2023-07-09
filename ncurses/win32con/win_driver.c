@@ -55,7 +55,9 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.70 2023/02/12 00:31:33 tom Exp $")
+#define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
+
+MODULE_ID("$Id: win_driver.c,v 1.71 2023/07/08 19:53:51 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -82,33 +84,34 @@ static bool okConsoleHandle(TERMINAL_CONTROL_BLOCK *);
 #define write_screen WriteConsoleOutput
 #define read_screen  ReadConsoleOutput
 #endif
-
+/* *INDENT-OFF* */
 static const LONG keylist[] =
 {
-    GenMap(VK_PRIOR, KEY_PPAGE),
-    GenMap(VK_NEXT, KEY_NPAGE),
-    GenMap(VK_END, KEY_END),
-    GenMap(VK_HOME, KEY_HOME),
-    GenMap(VK_LEFT, KEY_LEFT),
-    GenMap(VK_UP, KEY_UP),
-    GenMap(VK_RIGHT, KEY_RIGHT),
-    GenMap(VK_DOWN, KEY_DOWN),
+    GenMap(VK_PRIOR,  KEY_PPAGE),
+    GenMap(VK_NEXT,   KEY_NPAGE),
+    GenMap(VK_END,    KEY_END),
+    GenMap(VK_HOME,   KEY_HOME),
+    GenMap(VK_LEFT,   KEY_LEFT),
+    GenMap(VK_UP,     KEY_UP),
+    GenMap(VK_RIGHT,  KEY_RIGHT),
+    GenMap(VK_DOWN,   KEY_DOWN),
     GenMap(VK_DELETE, KEY_DC),
     GenMap(VK_INSERT, KEY_IC)
 };
 static const LONG ansi_keys[] =
 {
-    GenMap(VK_PRIOR, 'I'),
-    GenMap(VK_NEXT, 'Q'),
-    GenMap(VK_END, 'O'),
-    GenMap(VK_HOME, 'H'),
-    GenMap(VK_LEFT, 'K'),
-    GenMap(VK_UP, 'H'),
-    GenMap(VK_RIGHT, 'M'),
-    GenMap(VK_DOWN, 'P'),
+    GenMap(VK_PRIOR,  'I'),
+    GenMap(VK_NEXT,   'Q'),
+    GenMap(VK_END,    'O'),
+    GenMap(VK_HOME,   'H'),
+    GenMap(VK_LEFT,   'K'),
+    GenMap(VK_UP,     'H'),
+    GenMap(VK_RIGHT,  'M'),
+    GenMap(VK_DOWN,   'P'),
     GenMap(VK_DELETE, 'S'),
     GenMap(VK_INSERT, 'R')
 };
+/* *INDENT-ON* */
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24
 #define MAPSIZE (FKEYS + N_INI)
@@ -2126,9 +2129,9 @@ _nc_mingw_console_read(
 		*buf = (int) inp_rec.Event.KeyEvent.uChar.AsciiChar;
 		vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
 		/*
-		 * There are 24 virtual function-keys, and typically
-		 * 12 function-keys on a keyboard.  Use the shift-modifier
-		 * to provide the remaining 12 keys.
+		 * There are 24 virtual function-keys (defined in winuser.h),
+		 * and typically 12 function-keys on a keyboard.  Use the
+		 * shift-modifier to provide the remaining keys.
 		 */
 		if (vk >= VK_F1 && vk <= VK_F12) {
 		    if (inp_rec.Event.KeyEvent.dwControlKeyState & SHIFT_PRESSED) {
@@ -2144,6 +2147,11 @@ _nc_mingw_console_read(
 		    } else {
 			ungetch('\0');
 			*buf = AnsiKey(vk);
+		    }
+		} else if (vk == VK_BACK) {
+		    if (!(inp_rec.Event.KeyEvent.dwControlKeyState
+			  & (SHIFT_PRESSED | CONTROL_PRESSED))) {
+			*buf = KEY_BACKSPACE;
 		    }
 		}
 		break;

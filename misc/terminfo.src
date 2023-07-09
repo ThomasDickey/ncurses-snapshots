@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1059 $
-#	$Date: 2023/06/05 21:40:20 $
+#	$Revision: 1.1060 $
+#	$Date: 2023/07/09 00:05:04 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4155,9 +4155,10 @@ crt|crt-vt220|CRT 2.3 emulating VT220,
 #	resize.pl gets no reply, resize.sh needs fix for no reply.
 scrt|securecrt|SecureCRT emulating xterm-256color,
 	bce@, km@, npc,
-	bel@, cvvis@, kcbt=\E[Z, kent=\EOM, use=vt220+pcedit,
-	use=xterm+256setaf, use=ecma+index, use=ansi+rep,
-	use=xterm+keypad, use=xterm+pcfkeys, use=xterm-basic,
+	bel@, cvvis@, kcbt=\E[Z, kent=\EOM, use=linux+kbs,
+	use=vt220+pcedit, use=xterm+256setaf, use=ecma+index,
+	use=ansi+rep, use=xterm+keypad, use=xterm+pcfkeys,
+	use=xterm-basic,
 
 # Absolute Telnet
 # (eval 2021/02/20)
@@ -4205,7 +4206,7 @@ scrt|securecrt|SecureCRT emulating xterm-256color,
 #	supports 256-colors, including changing palette (ncurses menu d works)
 #	supports UTF-8, but honors VT100 line-drawing
 absolute|Absolute Telnet emulating xterm,
-	kcbt=\E[Z, use=ecma+index, use=ansi+rep,
+	kcbt=\E[Z, use=ecma+index, use=linux+kbs, use=ansi+rep,
 	use=vt220+pcedit, use=xterm+keypad, use=xterm+app,
 	use=xterm+pcf0, use=xterm+256color, use=xterm+x11mouse,
 	use=xterm-basic,
@@ -4417,7 +4418,7 @@ mintty+common|shared capabilities for mintty,
 	rsupm=\E[75m, smm@, smpch=\E[11m, sshm=\E[1:2m,
 	ssubm=\E[74m, ssupm=\E[73m, Rmol=\E[55m, Smol=\E[53m,
 	Smulx=\E[4:%p1%dm, blink2=\E[6m, norm=\E[22m,
-	opaq=\E[28m, smul2=\E[21m, use=ansi+rep,
+	opaq=\E[28m, smul2=\E[21m, use=linux+kbs, use=ansi+rep,
 	use=ecma+strikeout, use=ecma+index, use=vt420+lrmm,
 	use=xterm+sm+1006, use=xterm+pcfkeys, use=xterm+tmux,
 	use=ecma+italics, use=xterm-basic, use=bracketed+paste,
@@ -4722,10 +4723,10 @@ ms-vt-utf8|vt-utf8|UTF-8 flavor of VT100+,
 ms-terminal|Windows10 terminal,
 	npc,
 	cud1=\E[B, kcbt=\E[Z, rmkx=\E[?1l, rmm@, smkx=\E[?1h, smm@,
-	Cr@, Ms@, use=xterm+256color, use=xterm+pcfkeys,
-	use=ansi+rep, use=xterm+sm+1006, use=ecma+index,
-	use=ecma+italics, use=ecma+strikeout, use=xterm-basic,
-	use=xterm+tmux,
+	Cr@, Ms@, use=linux+kbs, use=xterm+256color,
+	use=xterm+pcfkeys, use=ansi+rep, use=xterm+sm+1006,
+	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
+	use=xterm-basic, use=xterm+tmux,
 
 #### Visual Studio
 # Visual Studio Code 1.45.0 uses xterm.js 12.8.1 (see https://xtermjs.org/).
@@ -4774,9 +4775,10 @@ ms-terminal|Windows10 terminal,
 # - color-palette cannot be changed
 vscode|xterm.js|Visual Studio Code terminal using xterm.js,
 	npc,
-	kcbt=\E[Z, rmkx=\E[?1l, smkx=\E[?1h, use=xterm+256setaf,
-	use=ecma+index, use=xterm+sm+1006, use=xterm+pcfkeys,
-	use=ecma+italics, use=xterm-basic, use=bracketed+paste,
+	kcbt=\E[Z, rmkx=\E[?1l, smkx=\E[?1h, use=linux+kbs,
+	use=xterm+256setaf, use=ecma+index, use=xterm+sm+1006,
+	use=xterm+pcfkeys, use=ecma+italics, use=xterm-basic,
+	use=bracketed+paste,
 vscode-direct|Visual Studio Code with direct-colors,
 	use=xterm+indirect, use=vscode,
 
@@ -5018,9 +5020,15 @@ xterm-new|modern xterm terminal emulator,
 	use=xterm-p370,
 
 # This fragment is for people who cannot agree on what the backspace key
-# should send.
+# should send.  The ncurses configure script option "--with-xterm-kbs" can
+# set it to BS (standard) or DEL (Linux's notion of "vt220").  xterm provides
+# either, depending on how the pseudoterminals are configured.
 xterm+kbs|fragment for backspace key,
 	kbs=^H,
+
+# Use this fragment for terminals that always use DEL for "backspace".
+linux+kbs|fragment for "backspace" key,
+	kbs=^?,
 #
 # This fragment describes as much of XFree86 xterm's "pc-style" function
 # keys as will fit into terminfo's 60 function keys.
@@ -6114,7 +6122,7 @@ xterms-sun|small (80x24) xterm with sunFunctionKeys true,
 gnome-rh62|GNOME terminal,
 	bce,
 	kdch1=^?, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
-	use=xterm-color,
+	use=linux+kbs, use=xterm-color,
 
 # GNOME Terminal 1.4.0.4 (Redhat 7.2)
 #
@@ -6141,7 +6149,7 @@ gnome-rh72|GNOME Terminal in RedHat 7,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\016%e
 	    \017%;,
 	sgr0=\E[0m\017, smam=\E[?7h, tbc@, use=vt220+cvis,
-	use=xterm-color,
+	use=linux+kbs, use=xterm-color,
 
 # GNOME Terminal 2.0.1 (Redhat 8.0)
 #
@@ -6336,11 +6344,11 @@ xfce|Xfce Terminal,
 hterm|Chromium hterm,
 	npc,
 	U8#1,
-	kcbt=\E[Z, kent=\EOM, nel=\EE, use=xterm+osc104,
-	use=ecma+index, use=ansi+rep, use=ecma+strikeout,
-	use=vt420+lrmm, use=xterm+sm+1006, use=xterm+tmux,
-	use=ecma+italics, use=xterm+pcfkeys, use=xterm-basic,
-	use=bracketed+paste,
+	kcbt=\E[Z, kent=\EOM, nel=\EE, use=linux+kbs,
+	use=xterm+osc104, use=ecma+index, use=ansi+rep,
+	use=ecma+strikeout, use=vt420+lrmm, use=xterm+sm+1006,
+	use=xterm+tmux, use=ecma+italics, use=xterm+pcfkeys,
+	use=xterm-basic, use=bracketed+paste,
 hterm-256color|Chromium hterm with xterm 256-colors,
 	use=xterm+256color2, use=hterm,
 
@@ -6402,7 +6410,8 @@ mgt|Multi GNOME Terminal,
 # or not is debatable).
 kvt|KDE terminal,
 	bce, km@,
-	kdch1=^?, kend=\E[F, khome=\E[H, use=xterm-color,
+	kdch1=^?, kend=\E[F, khome=\E[H, use=linux+kbs,
+	use=xterm-color,
 
 # Konsole 1.0.1 (2001/11/25)
 # (formerly known as kvt)
@@ -7715,8 +7724,8 @@ terminology-1.0.0|EFL-based terminal emulator (1.0.0),
 terminology-1.8.1|EFL-based terminal emulator (1.8.1),
 	km@,
 	cvvis@, flash@, initc@, kcbt=\E[Z, rmm@, smm@, Ms@,
-	use=ecma+index, use=xterm+256setaf, use=ansi+rep,
-	use=ecma+strikeout, use=xterm+sm+1006,
+	use=linux+kbs, use=ecma+index, use=xterm+256setaf,
+	use=ansi+rep, use=ecma+strikeout, use=xterm+sm+1006,
 	use=xterm+pcfkeys, use=xterm+tmux, use=vt220+cvis,
 	use=ecma+italics, use=xterm-basic, use=report+version,
 
@@ -8063,9 +8072,9 @@ domterm|DomTerm web client,
 	bel@, blink@, dim@, invis@, kcbt=\E[Z, ritm@, rmkx=\E[?1l,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;m,
-	sitm@, smkx=\E[?1h, use=xterm+256setaf, use=ecma+index,
-	use=xterm+sm+1006, use=xterm+pcfkeys, use=xterm-basic,
-	use=bracketed+paste,
+	sitm@, smkx=\E[?1h, use=linux+kbs, use=xterm+256setaf,
+	use=ecma+index, use=xterm+sm+1006, use=xterm+pcfkeys,
+	use=xterm-basic, use=bracketed+paste,
 
 ######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
@@ -27815,5 +27824,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2023-06-05
 #	+ add xterm+focus to foot+base (patch by Daniel Ekloef).
+#
+# 2023-07-08
+#	+ add linux+kbs for terminals which imitate xterm's behavior with
+#	  Linux -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
