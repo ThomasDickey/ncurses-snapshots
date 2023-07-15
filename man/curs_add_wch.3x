@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.36 2023/07/01 14:23:04 tom Exp $
-.TH curs_add_wch 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.37 2023/07/15 16:45:14 tom Exp $
+.TH curs_add_wch 3X 2023-07-15 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -75,14 +75,21 @@ If \fIwch\fP refers to a spacing character,
 then any previous character at that location is removed.
 A new character specified by \fIwch\fP is
 placed at that location with rendition specified by \fIwch\fP.
-The cursor then advances to
-the next spacing character on the screen.
+The cursor then advances after this spacing character,
+to prepare for writing the next character on the screen.
+.IP
+The newly added spacing character is the base of the active complex character.
+Subsequent non-spacing characters can be combined with this base
+until another spacing character is written to the screen,
+or the cursor is moved, e.g., using \fBwmove\fP.
 .bP
 If \fIwch\fP refers to a non-spacing character,
-all previous characters at that location are preserved.
-The non-spacing characters of \fIwch\fP
-are added to the spacing complex character,
-and the rendition specified by \fIwch\fP is ignored.
+it is appended to the active complex character,
+retaining the previous characters at that location.
+The rendition specified by \fIwch\fP is ignored.
+.IP
+The cursor is not advanced after adding a non-spacing character.
+Subsequent calls to add non-spacing characters will update the same position.
 .bP
 If the character part of \fIwch\fP is
 a tab, newline, backspace or other control character,
@@ -239,7 +246,7 @@ may be macros.
 .SH PORTABILITY
 All of these functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for line-drawing characters apply in the POSIX locale.
-.PP
+.SS WACS Symbols
 X/Open Curses makes it clear that the WACS_ symbols should be defined as
 a pointer to \fBcchar_t\fP data, e.g., in the discussion of \fBborder_set\fP.
 A few implementations are problematic:
@@ -315,12 +322,33 @@ Others have suggested these alternatives:
 \[u2327] U+2327 (x in a rectangle),
 \[u256C] U+256C (forms double vertical and horizontal), and
 \[u2612] U+2612 (ballot box with x).
+.SS Complex Characters
+The complex character type \fBcchar_t\fR
+can store more than one wide character (\fBwchar_t\fR).
+The X/Open Curses description does not mention this possibility,
+describing only the cases where \fIwch\fP is a spacing character
+or a non-spacing character.
+.PP
+This implementation assumes that \fIwch\fP is constructed using
+\fBsetcchar\fP(3X), and in turn that the result
+.bP
+contains at most one spacing character in the beginning of its list of wide
+characters,
+and zero or more non-spacing characters
+or
+.bP
+may hold one non-spacing character.
+.PP
+In the latter case, ncurses adds the non-spacing character to the active
+(base) spacing character.
 .SH SEE ALSO
 .na
+.hy 0
 \fBcurses\fP(3X),
 \fBcurs_addch\fP(3X),
 \fBcurs_attr\fP(3X),
 \fBcurs_clear\fP(3X),
+\fBcurs_getcchar\fP(3X),
 \fBcurs_outopts\fP(3X),
 \fBcurs_refresh\fP(3X),
 \fBputwc\fP(3)

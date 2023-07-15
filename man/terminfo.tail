@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.116 2023/07/01 15:33:13 tom Exp $
+.\" $Id: terminfo.tail,v 1.120 2023/07/15 19:46:56 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -72,6 +72,12 @@ limit assumed by termcap implementations and their applications.
 In particular, providing extended sets of function keys (past the 60
 numbered keys and the handful of special named keys) is best done using
 the longer names available using terminfo.
+.PP
+The ncurses library uses a few of these user-defined capabilities,
+as described in \fBuser_caps\fR(5).
+Other user-defined capabilities (including function keys) are
+described in the terminal database, in the section on
+.I "NCURSES USER-DEFINABLE CAPABILITIES"
 .
 .SS A Sample Entry
 .
@@ -2033,6 +2039,8 @@ Supports both the SVr4 set and the AIX extensions.
 \*d/?/*
 files containing terminal descriptions
 .SH SEE ALSO
+.na
+.hy 0
 \fB@INFOCMP@\fP(1M),
 \fB@TABS@\fP(1),
 \fB@TIC@\fP(1M),

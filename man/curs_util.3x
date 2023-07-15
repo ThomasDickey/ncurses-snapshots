@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.70 2023/07/01 14:31:54 tom Exp $
-.TH curs_util 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.71 2023/07/15 18:01:08 tom Exp $
+.TH curs_util 3X 2023-07-15 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -84,20 +84,14 @@
 .SH DESCRIPTION
 .SS unctrl
 The \fBunctrl\fP routine returns a character string which is a printable
-representation of the character \fIc\fP, ignoring attributes.
-Control characters are displayed in the \fB^\fIX\fR notation.
-Printing characters are displayed as is.
-.PP
-The corresponding \fBwunctrl\fP returns a printable representation of
-a wide character.
-.SS keyname/key_name
-The \fBkeyname\fP routine returns a character string
-corresponding to the key \fIc\fP:
+representation of the character \fIc\fP:
 .bP
 Printable characters are displayed as themselves,
 e.g., a one-character string containing the key.
 .bP
 Control characters are displayed in the \fB^\fIX\fR notation.
+.bP
+Printing characters are displayed as is.
 .bP
 DEL (character 127) is displayed as \fB^?\fP.
 .bP
@@ -108,18 +102,37 @@ shown in the \fBM\-\fIX\fR notation,
 or are displayed as themselves.
 In the latter case, the values may not be printable;
 this follows the X/Open specification.
+.PP
+The corresponding \fBwunctrl\fP returns a printable representation of
+a complex character \fIc\fP.
+.PP
+In both \fBunctrl\fP and \fBwunctrl\fP the attributes and color associated
+with the character parameter are ignored.
+.SS keyname/key_name
+The \fBkeyname\fP routine returns a character string
+corresponding to the key \fIc\fP.
+Key codes are different from character codes.
 .bP
-Values above 256 may be the names of the names of function keys.
+Key codes below 256 are characters.
+They are displayed using \fBunctrl\fP.
 .bP
-Otherwise (if there is no corresponding name) the function returns null,
-to denote an error.
+Values above 256 may be the codes for function keys.
+The function key name is displayed.
+.bP
+Otherwise (if there is no corresponding name and the key is not a character)
+the function returns null, to denote an error.
 X/Open also lists an \*(``UNKNOWN KEY\*('' return value,
 which some implementations return rather than null.
 .LP
-The corresponding \fBkey_name\fP returns a character string corresponding
+The corresponding \fBkey_name\fP returns
+a multibyte character string corresponding
 to the wide-character value \fIw\fP.
-The two functions do not return the same set of strings;
-the latter returns null where the former would display a meta character.
+The two functions (\fBkeyname\fP and \fBkey_name\fP)
+do not return the same set of strings:
+.bP
+\fBkeyname\fP returns null where \fBkey_name\fP would display a meta character.
+.bP
+\fBkey_name\fP does not return the name of a function key.
 .SS filter/nofilter
 The \fBfilter\fP routine, if used, must be called before \fBinitscr\fP or
 \fBnewterm\fP are called.

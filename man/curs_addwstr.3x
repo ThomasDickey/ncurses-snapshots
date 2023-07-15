@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.19 2022/02/12 20:07:29 tom Exp $
-.TH curs_addwstr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.20 2023/07/15 17:11:59 tom Exp $
+.TH curs_addwstr 3X 2023-07-15 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -74,8 +74,14 @@
 These functions write the characters of the
 (null-terminated) \fBwchar_t\fP character string
 \fIwstr\fP on the given window.
-It is similar to constructing a \fBcchar_t\fP for each wchar_t in the string,
-then calling \fBwadd_wch\fP for the resulting \fBcchar_t\fP.
+It is similar to constructing a \fBcchar_t\fP for
+each \fBwchar_t\fR in the string,
+then calling \fBwadd_wch\fP(3X) for the resulting \fBcchar_t\fP:
+.bP
+spacing and non-spacing characters in the string
+are processed one at a time, and
+.bP
+control characters are processed as in \fBwaddch\fP(3X).
 .PP
 The \fImv\fP functions perform cursor movement once, before writing any
 characters.
@@ -106,4 +112,5 @@ All of these functions except \fBwaddnwstr\fP may be macros.
 These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
 \fBcurses\fP(3X),
-\fBcurs_add_wch\fP(3X)
+\fBcurs_addch\fP(3X),
+\fBcurs_add_wch\fP(3X).

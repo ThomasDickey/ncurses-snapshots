@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2023 Thomas E. Dickey                                *
  * Copyright 2004-2011,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.17 2021/06/17 21:26:02 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.18 2023/07/15 17:34:12 tom Exp $")
 
 /* clone/adapt lib_addch.c */
 static const cchar_t blankchar = NewChar(BLANK_TEXT);
@@ -204,10 +204,16 @@ wadd_wch_literal(WINDOW *win, cchar_t ch)
 	if (len == 0) {		/* non-spacing */
 	    if ((x > 0 && y >= 0)
 		|| (win->_maxx >= 0 && win->_cury >= 1)) {
-		if (x > 0 && y >= 0)
-		    chars = (win->_line[y].text[x - 1].chars);
-		else
+		if (x > 0 && y >= 0) {
+		    for (j = x - 1; j > 0; --j) {
+			if (!isWidecExt(win->_line[y].text[j])) {
+			    break;
+			}
+		    }
+		    chars = (win->_line[y].text[j].chars);
+		} else {
 		    chars = (win->_line[y - 1].text[win->_maxx].chars);
+		}
 		for (i = 0; i < CCHARW_MAX; ++i) {
 		    if (chars[i] == 0) {
 			TR(TRACE_VIRTPUT,

@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+  * Copyright 2019-2022,2023 Thomas E. Dickey                                *
   * Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addwstr.3x,v 1.19 2022/02/12 20:07:29 tom Exp @
+  * @Id: curs_addwstr.3x,v 1.20 2023/07/15 17:11:59 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addwstr 3x 2022-02-12 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_addwstr 3x 2023-07-15 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addwstr 3x 2022-02-12 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_addwstr 3x 2023-07-15 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
 
@@ -69,22 +69,27 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These  functions  write the characters of the (null-terminated) <STRONG>wchar_t</STRONG>
        character string <EM>wstr</EM> on the given window.  It is similar to construct-
-       ing a <STRONG>cchar_t</STRONG> for each wchar_t in the string, then calling <STRONG>wadd_wch</STRONG> for
-       the resulting <STRONG>cchar_t</STRONG>.
+       ing a <STRONG>cchar_t</STRONG> for each <STRONG>wchar_t</STRONG> in the string, then calling <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>
+       for the resulting <STRONG>cchar_t</STRONG>:
+
+       <STRONG>o</STRONG>   spacing and non-spacing characters in the string are processed  one
+           at a time, and
+
+       <STRONG>o</STRONG>   control characters are processed as in <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>.
 
        The <EM>mv</EM> functions perform cursor movement once, before writing any char-
        acters.  Thereafter, the cursor is advanced as a side-effect of writing
        to the window.
 
-       The four functions with <EM>n</EM> as the last argument write at most <EM>n</EM>  <STRONG>wchar_t</STRONG>
-       characters,  or  until a terminating null is reached.  If <EM>n</EM> is -1, then
+       The  four functions with <EM>n</EM> as the last argument write at most <EM>n</EM> <STRONG>wchar_t</STRONG>
+       characters, or until a terminating null is reached.  If <EM>n</EM> is  -1,  then
        the entire string will be added.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        All functions return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
 
-       X/Open does not define any error conditions.  This  implementation  re-
+       X/Open  does  not define any error conditions.  This implementation re-
        turns an error
 
        <STRONG>o</STRONG>   if the window pointer is null or
@@ -93,7 +98,7 @@
 
        <STRONG>o</STRONG>   if the corresponding calls to <STRONG>wadd_wch</STRONG> return an error.
 
-       Functions  with  a  "mv"  prefix  first perform a cursor movement using
+       Functions with a "mv" prefix first  perform  a  cursor  movement  using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
        the window pointer is null.
 
@@ -107,11 +112,11 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>.
 
 
 
-ncurses 6.4                       2022-02-12                  <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
+ncurses 6.4                       2023-07-15                  <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1060 $
-#	$Date: 2023/07/09 00:05:04 $
+#	$Revision: 1.1061 $
+#	$Date: 2023/07/15 12:18:12 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -25488,7 +25488,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # differences, noted in
 #	https://invisible-island.net/ncurses/ncurses-netbsd.html
 #
-# ncurses makes explicit checks for a few user-definable capabilities:  AX,
+# ncurses makes explicit checks for a few user-definable capabilities:  AX, E3,
 # RGB, U8, XM, which are documented in the user_caps(5) manual page.
 #
 #### SCREEN Extensions:
@@ -27828,5 +27828,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2023-07-08
 #	+ add linux+kbs for terminals which imitate xterm's behavior with
 #	  Linux -TD
+#
+# 2023-07-15
+#	+ mention E3 in regard to user_caps(5) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
