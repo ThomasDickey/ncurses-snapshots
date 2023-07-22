@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3977 2023/07/15 17:58:51 tom Exp $
+-- $Id: NEWS,v 1.3979 2023/07/22 17:26:24 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,9 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230722
+	+ add "auto" default for --with-xterm-kbs configure option.
 
 20230715
 	+ correct wadd_wch_literal() when adding a non-spacing character to a

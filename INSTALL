@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.246 2023/06/17 17:18:20 tom Exp $
+-- $Id: INSTALL,v 1.247 2023/07/22 17:25:24 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1360,7 +1360,8 @@ CONFIGURE OPTIONS:
     --with-xterm-kbs=XXX
 	Configure xterm's terminfo entries to use either BS (^H, i.e., ASCII
 	backspace) or DEL (^?, or 127).  XXX can be BS (or bs, 8) or DEL
-	(or del, 127).
+	(or del, 127).  If XXX is "auto", the configure script chooses BS or
+	DEL according to platform defaults.
 
 	During installation, the makefile and scripts modifies the "xterm+kbs"
 	terminfo entry to use this setting.
