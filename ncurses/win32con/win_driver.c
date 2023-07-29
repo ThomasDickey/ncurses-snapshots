@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.71 2023/07/08 19:53:51 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.72 2023/07/22 20:13:04 Pavel.Fedin Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -126,7 +126,6 @@ static struct {
     BOOL buffered;
     BOOL window_only;
     BOOL progMode;
-    BOOL isMinTTY;
     BOOL isTermInfoConsole;
     HANDLE out;
     HANDLE inp;
@@ -613,6 +612,12 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
     returnCode(result);
 }
 
+#ifdef __MING32__
+#define SysISATTY(fd) _isatty(fd)
+#else
+#define SysISATTY(fd) isatty(fd)
+#endif
+
 static bool
 wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 	       const char *tname,
@@ -643,6 +648,8 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 	    code = TRUE;
 	}
     } else if (tname != 0 && stricmp(tname, "unknown") == 0) {
+	code = TRUE;
+    } else if (SysISATTY(TCB->term.Filedes)) {
 	code = TRUE;
     }
 
@@ -1960,11 +1967,6 @@ _nc_mingw_isatty(int fd)
 {
     int result = 0;
 
-#ifdef __MING32__
-#define SysISATTY(fd) _isatty(fd)
-#else
-#define SysISATTY(fd) isatty(fd)
-#endif
     if (SysISATTY(fd)) {
 	result = 1;
     } else {
@@ -2180,9 +2182,6 @@ InitConsole(void)
 	BOOL b;
 
 	START_TRACE();
-	if (_nc_mingw_isatty(0)) {
-	    CON.isMinTTY = TRUE;
-	}
 
 	for (i = 0; i < (N_INI + FKEYS); i++) {
 	    if (i < N_INI) {

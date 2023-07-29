@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1048 2023/06/03 19:19:41 tom Exp $
+dnl $Id: aclocal.m4,v 1.1050 2023/07/29 00:15:23 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -5916,7 +5916,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 57 updated: 2023/05/13 19:14:15
+dnl CF_MAN_PAGES version: 58 updated: 2023/07/28 20:13:29
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -5954,6 +5954,7 @@ NCURSES_PATCH="$NCURSES_PATCH"
 
 NCURSES_OSPEED="$NCURSES_OSPEED"
 TERMINFO="$TERMINFO"
+TERMINFO_DIRS="$TERMINFO_DIRS"
 
 INSTALL="$INSTALL"
 INSTALL_DATA="$INSTALL_DATA"
