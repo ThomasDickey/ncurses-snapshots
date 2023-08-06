@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.12 2023/02/26 19:55:10 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.14 2023/08/05 20:44:38 tom Exp $")
 
 #ifdef _NC_WINDOWS
 
@@ -58,19 +58,7 @@ MODULE_ID("$Id: lib_win32con.c,v 1.12 2023/02/26 19:55:10 tom Exp $")
 #define read_screen  ReadConsoleOutput
 #endif
 
-static BOOL IsConsoleHandle(HANDLE hdl);
-static bool save_original_screen(void);
-static bool restore_original_screen(void) GCC_UNUSED;
 static bool read_screen_data(void);
-static int Adjust(int milliseconds, int diff);
-static int decode_mouse(SCREEN *sp, int mask);
-static bool handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer);
-static int rkeycompare(const void *el1, const void *el2);
-static int keycompare(const void *el1, const void *el2);
-static int MapKey(WORD vKey);
-static int AnsiKey(WORD vKey);
-
-static ULONGLONG tdiff(FILETIME fstart, FILETIME fend);
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
 static const LONG keylist[] =
@@ -416,6 +404,7 @@ save_original_screen(void)
     return result;
 }
 
+#if 0
 static bool
 restore_original_screen(void)
 {
@@ -450,6 +439,7 @@ restore_original_screen(void)
     }
     return result;
 }
+#endif
 
 static bool
 read_screen_data(void)
@@ -641,10 +631,10 @@ Adjust(int milliseconds, int diff)
                      FROM_LEFT_4TH_BUTTON_PRESSED | \
                      RIGHTMOST_BUTTON_PRESSED)
 
-static int
+static mmask_t
 decode_mouse(SCREEN *sp, int mask)
 {
-    int result = 0;
+    mmask_t result = 0;
 
     (void) sp;
     assert(sp && console_initialized);
@@ -699,15 +689,11 @@ handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer)
 	memset(&work, 0, sizeof(work));
 
 	if (sp->_drv_mouse_new_buttons) {
-	    work.bstate |=
-		(mmask_t) decode_mouse(sp,
-				       sp->_drv_mouse_new_buttons);
+	    work.bstate |= decode_mouse(sp, sp->_drv_mouse_new_buttons);
 	} else {
 	    /* cf: BUTTON_PRESSED, BUTTON_RELEASED */
-	    work.bstate |=
-		(mmask_t) (decode_mouse(sp,
-					sp->_drv_mouse_old_buttons)
-			   >> 1);
+	    work.bstate |= (decode_mouse(sp, sp->_drv_mouse_old_buttons)
+			    >> 1);
 	    result = TRUE;
 	}
 

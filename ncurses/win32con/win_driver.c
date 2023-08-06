@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.72 2023/07/22 20:13:04 Pavel.Fedin Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.73 2023/08/05 19:02:24 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -1486,10 +1486,10 @@ Adjust(int milliseconds, int diff)
 		     FROM_LEFT_4TH_BUTTON_PRESSED | \
 		     RIGHTMOST_BUTTON_PRESSED)
 
-static int
+static mmask_t
 decode_mouse(SCREEN *sp, int mask)
 {
-    int result = 0;
+    mmask_t result = 0;
 
     (void) sp;
     assert(sp && console_initialized);
@@ -1678,14 +1678,14 @@ handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer)
 
 	if (sp->_drv_mouse_new_buttons) {
 
-	    work.bstate |= (mmask_t) decode_mouse(sp, sp->_drv_mouse_new_buttons);
+	    work.bstate |= decode_mouse(sp, sp->_drv_mouse_new_buttons);
 
 	} else {
 
 	    /* cf: BUTTON_PRESSED, BUTTON_RELEASED */
-	    work.bstate |= (mmask_t) (decode_mouse(sp,
-						   sp->_drv_mouse_old_buttons)
-				      >> 1);
+	    work.bstate |= (decode_mouse(sp,
+					 sp->_drv_mouse_old_buttons)
+			    >> 1);
 
 	    result = TRUE;
 	}

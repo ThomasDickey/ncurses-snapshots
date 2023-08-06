@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.71 2023/07/15 18:01:08 tom Exp $
-.TH curs_util 3X 2023-07-15 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.72 2023/08/05 13:34:35 tom Exp $
+.TH curs_util 3X 2023-08-05 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -67,12 +67,8 @@
 \fBconst char *key_name(wchar_t \fIw\fB);\fR
 .sp
 \fBvoid filter(void);\fP
-.br
-\fBvoid nofilter(void);\fP
 .sp
 \fBvoid use_env(bool \fIf\fB);\fR
-.br
-\fBvoid use_tioctl(bool \fIf\fB);\fR
 .sp
 \fBint putwin(WINDOW *\fIwin\fB, FILE *\fIfilep\fB);\fR
 .br
@@ -81,6 +77,12 @@
 \fBint delay_output(int \fIms\fB);\fR
 .br
 \fBint flushinp(void);\fP
+.sp
+/* extensions */
+.br
+\fBvoid nofilter(void);\fP
+.br
+\fBvoid use_tioctl(bool \fIf\fB);\fR
 .SH DESCRIPTION
 .SS unctrl
 The \fBunctrl\fP routine returns a character string which is a printable
@@ -394,7 +396,7 @@ the state of \fBuse_env\fP and \fBuse_tioctl\fP may be updated before
 creating each \fIscreen\fP rather than once only
 (\fBcurs_sp_funcs\fP(3X)).
 This feature of \fBuse_env\fP
-is not provided by other implementation of curses.
+is not provided by other implementations of curses.
 .SH SEE ALSO
 \fBcurses\fP(3X),
 \fBcurs_initscr\fP(3X),

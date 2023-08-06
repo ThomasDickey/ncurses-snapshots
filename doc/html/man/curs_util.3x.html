@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.71 2023/07/15 18:01:08 tom Exp @
+  * @Id: curs_util.3x,v 1.72 2023/08/05 13:34:35 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-07-15 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2023-08-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-07-15 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2023-08-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -63,16 +63,18 @@
        <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*key_name(wchar_t</STRONG> <EM>w</EM><STRONG>);</STRONG>
 
        <STRONG>void</STRONG> <STRONG>filter(void);</STRONG>
-       <STRONG>void</STRONG> <STRONG>nofilter(void);</STRONG>
 
        <STRONG>void</STRONG> <STRONG>use_env(bool</STRONG> <EM>f</EM><STRONG>);</STRONG>
-       <STRONG>void</STRONG> <STRONG>use_tioctl(bool</STRONG> <EM>f</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>putwin(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>FILE</STRONG> <STRONG>*</STRONG><EM>filep</EM><STRONG>);</STRONG>
        <STRONG>WINDOW</STRONG> <STRONG>*getwin(FILE</STRONG> <STRONG>*</STRONG><EM>filep</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>delay_output(int</STRONG> <EM>ms</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>flushinp(void);</STRONG>
+
+       /* extensions */
+       <STRONG>void</STRONG> <STRONG>nofilter(void);</STRONG>
+       <STRONG>void</STRONG> <STRONG>use_tioctl(bool</STRONG> <EM>f</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -359,7 +361,7 @@
        If <STRONG>ncurses</STRONG> is configured to provide  the  sp-functions  extension,  the
        state  of  <STRONG>use_env</STRONG>  and  <STRONG>use_tioctl</STRONG> may be updated before creating each
        <EM>screen</EM> rather than once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).   This  feature  of
-       <STRONG>use_env</STRONG> is not provided by other implementation of curses.
+       <STRONG>use_env</STRONG> is not provided by other implementations of curses.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -369,7 +371,7 @@
 
 
 
-ncurses 6.4                       2023-07-15                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2023-08-05                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

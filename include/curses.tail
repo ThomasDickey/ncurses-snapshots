@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.26 2021/03/20 15:49:25 tom Exp $ */
+/* $Id: curses.tail,v 1.27 2023/08/05 19:43:46 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in
@@ -13,12 +13,12 @@
 #define NCURSES_MOUSE_MASK(b,m) ((m) << (((b) - 1) * 6))
 #endif
 
-#define	NCURSES_BUTTON_RELEASED	001L
-#define	NCURSES_BUTTON_PRESSED	002L
-#define	NCURSES_BUTTON_CLICKED	004L
-#define	NCURSES_DOUBLE_CLICKED	010L
-#define	NCURSES_TRIPLE_CLICKED	020L
-#define	NCURSES_RESERVED_EVENT	040L
+#define	NCURSES_BUTTON_RELEASED	001UL
+#define	NCURSES_BUTTON_PRESSED	002UL
+#define	NCURSES_BUTTON_CLICKED	004UL
+#define	NCURSES_DOUBLE_CLICKED	010UL
+#define	NCURSES_TRIPLE_CLICKED	020UL
+#define	NCURSES_RESERVED_EVENT	040UL
 
 /* event masks */
 #define	BUTTON1_RELEASED	NCURSES_MOUSE_MASK(1, NCURSES_BUTTON_RELEASED)

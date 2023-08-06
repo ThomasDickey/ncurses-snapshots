@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.29 2023/07/29 16:52:52 tom Exp $
-.TH curs_get_wstr 3X 2023-07-29 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.30 2023/08/05 12:14:30 tom Exp $
+.TH curs_get_wstr 3X 2023-08-05 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -166,9 +166,9 @@ X/Open defines no error conditions.
 In this implementation,
 these functions return an error
 .bP
-if the window pointer is null, or
+if the window pointer is null,
 .bP
-if its timeout expires without having any data.
+if its timeout expires without having any data, or
 .bP
 if the associated call to
 \fBwget_wch\fP
