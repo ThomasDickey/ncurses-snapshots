@@ -750,6 +750,42 @@ int	intrflush(
 		NCURSES_BOOL flag)
 		{ return(*(int *)0); }
 
+#undef is_nl_sp
+int	is_nl_sp(
+		SCREEN	*sp)
+		{ return(*(int *)0); }
+
+#undef is_raw_sp
+int	is_raw_sp(
+		SCREEN	*sp)
+		{ return(*(int *)0); }
+
+#undef is_cbreak_sp
+int	is_cbreak_sp(
+		SCREEN	*sp)
+		{ return(*(int *)0); }
+
+#undef is_echo_sp
+int	is_echo_sp(
+		SCREEN	*sp)
+		{ return(*(int *)0); }
+
+#undef is_nl
+int	is_nl(void)
+		{ return(*(int *)0); }
+
+#undef is_raw
+int	is_raw(void)
+		{ return(*(int *)0); }
+
+#undef is_cbreak
+int	is_cbreak(void)
+		{ return(*(int *)0); }
+
+#undef is_echo
+int	is_echo(void)
+		{ return(*(int *)0); }
+
 /* ./tinfo/lib_setup.c */
 
 #undef _nc_ttytype
@@ -1542,7 +1578,7 @@ string_desc *_nc_str_null(
 #undef _nc_str_copy
 string_desc *_nc_str_copy(
 		string_desc *dst,
-		string_desc *src)
+		const string_desc *const src)
 		{ return(*(string_desc **)0); }
 
 #undef _nc_safe_strcat

@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1061 $
-#	$Date: 2023/07/15 12:18:12 $
+#	$Revision: 1.1062 $
+#	$Date: 2023/08/12 20:21:29 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4212,8 +4212,16 @@ absolute|Absolute Telnet emulating xterm,
 	use=xterm-basic,
 
 #### PuTTY
-# PuTTY 0.74 (27 June 2020)
 # http://www.chiark.greenend.org.uk/~sgtatham/putty/
+#
+# PuTTY 0.78 (September 2020, tested 12 August 2023)
+# Testing with tack:
+#	implements cross-out text (shortly after 0.74)
+#	restore kLFT as kLFT5, etc. (mentioned in October 2021)
+#	does not support direct-colors (mentioned in July 2021)
+#
+# PuTTY 0.74 (27 June 2020)
+#	(unchanged)
 #
 # PuTTY 0.73 (September 2019)
 # Testing with tack:
@@ -4295,6 +4303,12 @@ putty|PuTTY terminal emulator,
 	use=xterm+alt1049, use=xterm+sm+1006, use=putty+fnkeys,
 	use=vt102+enq, use=xterm+sl, use=vt100+fnkeys,
 	use=putty+keypad, use=vt220+cvis, use=bracketed+paste,
+	use=putty+cursor, use=ecma+strikeout,
+# older versions (e.g., before 0.71) of PuTTY used a shift-modifier to toggle
+# between normal- and application-mode for the cursor-keys.  That was dropped,
+# and a few years later (after 0.74) restored as the control-modifier.
+putty+cursor|PuTTY modified cursor-keys,
+	kDN5=\E[B, kLFT5=\E[D, kRIT5=\E[C, kUP5=\E[A,
 putty+keypad|PuTTY numeric keypad,
 	kp1=\EOq, kp2=\EOr, kp3=\EOs, kp4=\EOt, kp5=\EOu, kp6=\EOv,
 	kp7=\EOw, kp8=\EOx, kp9=\EOy, kpADD=\EOl, kpDIV=\EOQ,
@@ -27831,5 +27845,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2023-07-15
 #	+ mention E3 in regard to user_caps(5) -TD
+#
+# 2023-08-12
+#	+ add/use putty+cursor to reflect amending of modified cursor-keys in
+#	  2021 -TD
+#	+ add ecma+strikeout to putty -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

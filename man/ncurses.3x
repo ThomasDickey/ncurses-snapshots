@@ -28,9 +28,9 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.162 2023/07/01 15:21:06 tom Exp $
+.\" $Id: ncurses.3x,v 1.163 2023/08/12 17:14:08 tom Exp $
 .hy 0
-.TH ncurses 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.TH ncurses 3X 2023-08-12 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -458,16 +458,20 @@ insstr/\fBcurs_insstr\fP(3X)
 instr/\fBcurs_instr\fP(3X)
 intrflush/\fBcurs_inopts\fP(3X)
 inwstr/\fBcurs_inwstr\fP(3X)
+is_cbreak/\fBcurs_inopts\fP(3X)*
 is_cleared/\fBcurs_opaque\fP(3X)*
+is_echo/\fBcurs_inopts\fP(3X)*
 is_idcok/\fBcurs_opaque\fP(3X)*
 is_idlok/\fBcurs_opaque\fP(3X)*
 is_immedok/\fBcurs_opaque\fP(3X)*
 is_keypad/\fBcurs_opaque\fP(3X)*
 is_leaveok/\fBcurs_opaque\fP(3X)*
 is_linetouched/\fBcurs_touch\fP(3X)
+is_nl/\fBcurs_inopts\fP(3X)*
 is_nodelay/\fBcurs_opaque\fP(3X)*
 is_notimeout/\fBcurs_opaque\fP(3X)*
 is_pad/\fBcurs_opaque\fP(3X)*
+is_raw/\fBcurs_inopts\fP(3X)*
 is_scrollok/\fBcurs_opaque\fP(3X)*
 is_subwin/\fBcurs_opaque\fP(3X)*
 is_syncok/\fBcurs_opaque\fP(3X)*

@@ -1,3 +1,4 @@
+'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
@@ -27,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.40 2023/07/01 15:43:20 tom Exp $
-.TH curs_inopts 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.42 2023/08/12 17:07:04 tom Exp $
+.TH curs_inopts 3X 2023-08-12 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,21 +38,25 @@
 .hy 0
 .SH NAME
 \fBcbreak\fP,
-\fBnocbreak\fP,
 \fBecho\fP,
-\fBnoecho\fP,
 \fBhalfdelay\fP,
 \fBintrflush\fP,
+\fBis_cbreak\fP,
+\fBis_echo\fP,
+\fBis_nl\fP,
+\fBis_raw\fP,
 \fBkeypad\fP,
 \fBmeta\fP,
 \fBnl\fP,
-\fBnonl\fP,
+\fBnocbreak\fP,
 \fBnodelay\fP,
-\fBnotimeout\fP,
-\fBraw\fP,
-\fBnoraw\fP,
-\fBqiflush\fP,
+\fBnoecho\fP,
+\fBnonl\fP,
 \fBnoqiflush\fP,
+\fBnoraw\fP,
+\fBnotimeout\fP,
+\fBqiflush\fP,
+\fBraw\fP,
 \fBtimeout\fP,
 \fBwtimeout\fP,
 \fBtypeahead\fP \- \fBcurses\fP input options
@@ -97,6 +102,16 @@
 \fBvoid wtimeout(WINDOW *\fIwin\fB, int \fIdelay\fB);\fR
 .sp
 \fBint typeahead(int \fIfd\fB);\fR
+.sp
+/* extensions */
+.br
+\fBint is_cbreak(void);\fP
+.br
+\fBint is_echo(void);\fP
+.br
+\fBint is_nl(void);\fP
+.br
+\fBint is_raw(void);\fP
 .br
 .SH DESCRIPTION
 The \fBncurses\fP library provides several functions which let an application
@@ -277,14 +292,44 @@ In this implementation,
 functions with a window parameter will return an error if it is null.
 Any function will also return an error if the terminal was not initialized.
 Also,
-.RS
+.RS 3
 .TP 5
 \fBhalfdelay\fP
 returns an error
 if its parameter is outside the range 1..255.
 .RE
+.SH EXTENSIONS
+This implementation provides four functions which may be used to detect
+if the corresponding flags were set or reset:
+.TS
+l l l
+_ _ _ _
+l l l .
+\fBQuery\fP	\fBSet\fP	\fBReset\fP
+is_cbreak	cbreak	nocbreak
+is_echo	echo	noecho
+is_nl	nl	nonl
+is_raw	raw	noraw
+.TE
+.PP
+In each case, the function returns
+.TP 5
+1
+if the flag is set,
+.TP 5
+0
+if the flag is reset, or
+.TP 5
+-1
+if the curses library was not initialized.
+.PP
+These routines are specific to ncurses.
+They were not supported on Version 7, BSD or System V implementations.
+It is recommended that any code depending on ncurses extensions
+be conditioned using NCURSES_VERSION.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+Except as noted in the section on extensions,
+these functions are described in the XSI Curses standard, Issue 4.
 .PP
 The ncurses library obeys the XPG4 standard and the historical practice of the
 AT&T curses implementations, in that the echo bit is cleared when curses

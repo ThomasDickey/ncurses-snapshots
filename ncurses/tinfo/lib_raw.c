@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.27 2023/04/29 18:56:30 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.28 2023/08/12 15:45:07 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -395,3 +395,44 @@ intrflush(WINDOW *win GCC_UNUSED, bool flag)
     return NCURSES_SP_NAME(intrflush) (CURRENT_SCREEN, win, flag);
 }
 #endif
+
+#if NCURSES_EXT_FUNCS
+
+/*
+ * SCREEN is always opaque, but nl/raw/cbreak/echo set properties in it.
+ * As an extension, provide a way to query the properties.
+ *
+ * There are other properties which could be queried, e.g., filter, keypad,
+ * use_env, use_meta, but these particular properties are saved/restored within
+ * the wgetnstr() and wgetn_wstr() functions, which requires that the higher
+ * level curses library knows about the internal state of the lower level
+ * terminfo library.
+ */
+
+#define is_TEST(show,what) \
+    NCURSES_EXPORT(int) \
+    NCURSES_SP_NAME(show) (NCURSES_SP_DCL0) \
+    { \
+	return ((SP_PARM != NULL) ? (what(SP_PARM) ? 1 : 0) : -1); \
+    }
+
+is_TEST(is_nl, IsNl);
+is_TEST(is_raw, IsRaw);
+is_TEST(is_cbreak, IsCbreak);
+is_TEST(is_echo, IsEcho);
+
+#if NCURSES_SP_FUNCS
+#undef is_TEST
+#define is_TEST(show) \
+    NCURSES_EXPORT(int) \
+    show(void) \
+    { \
+	return NCURSES_SP_NAME(show) (CURRENT_SCREEN); \
+    }
+is_TEST(is_nl);
+is_TEST(is_raw);
+is_TEST(is_cbreak);
+is_TEST(is_echo);
+#endif
+
+#endif /* extensions */

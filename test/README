@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: README,v 1.78 2023/04/24 23:14:45 tom Exp $
+-- $Id: README,v 1.79 2023/08/12 19:07:07 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are used to test and demonstrate ncurses.
@@ -415,16 +415,24 @@ instr				test: test_instr
 intrflush			test: demo_forms dup_field move_field movewindow
 intrflush_sp			test: sp_tinfo
 inwstr				test: test_inwstr
+is_cbreak			-
+is_cbreak_sp			-
 is_cleared			test: test_opaque
+is_echo				-
+is_echo_sp			-
 is_idcok			test: test_opaque
 is_idlok			test: test_opaque
 is_immedok			test: test_opaque
 is_keypad			test: ncurses test_opaque
 is_leaveok			test: test_opaque
 is_linetouched			lib: form
+is_nl				-
+is_nl_sp			-
 is_nodelay			test: test_opaque
 is_notimeout			test: test_opaque
 is_pad				test: test_opaque
+is_raw				-
+is_raw_sp			-
 is_scrollok			test: ncurses test_opaque
 is_subwin			test: test_opaque
 is_syncok			test: test_opaque
@@ -699,7 +707,7 @@ tiparm_s			test: test_tparm
 tiscan_s			test: test_tparm
 touchline			test: chgat clip_printw insdelln
 touchwin			test: chgat clip_printw demo_menus filter firstlast inch_wide inchs ins_wide insdelln inserts movewindow ncurses popup_msg redraw test_add_wchstr test_addchstr test_addstr test_addwstr test_delwin test_get_wstr test_getstr test_instr test_inwstr test_opaque xmas
-tparm				test: dots dots_mvcur test_sgr progs: tic tput
+tparm				test: dots dots_mvcur test_sgr test_tparm progs: tic tput
 tputs				test: dots dots_mvcur dots_termcap railroad test_tparm test_vid_puts test_vidputs progs: clear_cmd reset_cmd tabs
 tputs_sp			test: sp_tinfo
 trace				-
