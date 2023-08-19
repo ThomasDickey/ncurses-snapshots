@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.30 2023/07/01 14:31:54 tom Exp $
-.TH curs_refresh 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.31 2023/08/19 19:47:40 tom Exp $
+.TH curs_refresh 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -82,9 +82,11 @@ In addition to all the window
 structures, \fBcurses\fP keeps two data structures representing the terminal
 screen:
 .bP
-a \fIphysical screen\fP, describing what is actually on the screen, and
+a \fIphysical screen\fP,
+describing what is actually on the screen, and
 .bP
-a \fIvirtual screen\fP, describing what the programmer wants to have on the screen.
+a \fIvirtual screen\fP,
+describing what the programmer wants to have on the screen.
 .PP
 The routine \fBwrefresh\fP works by
 .bP

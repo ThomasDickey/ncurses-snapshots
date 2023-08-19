@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.42 2023/08/12 17:07:04 tom Exp $
-.TH curs_inopts 3X 2023-08-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.43 2023/08/19 20:55:23 tom Exp $
+.TH curs_inopts 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -301,11 +301,11 @@ if its parameter is outside the range 1..255.
 .SH EXTENSIONS
 This implementation provides four functions which may be used to detect
 if the corresponding flags were set or reset:
+.PP
 .TS
-l l l
-_ _ _ _
-l l l .
+l l l.
 \fBQuery\fP	\fBSet\fP	\fBReset\fP
+_
 is_cbreak	cbreak	nocbreak
 is_echo	echo	noecho
 is_nl	nl	nonl

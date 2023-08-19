@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.46 2023/07/01 15:46:10 tom Exp $
-.TH panel 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: panel.3x,v 1.48 2023/08/19 21:01:21 tom Exp $
+.TH panel 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -150,8 +150,8 @@ is \fB(PANEL *)0\fP, it returns a pointer to the top panel in the stack.
 .\" ---------
 .SS panel_hidden
 \fBpanel_hidden(\fIpan\fB)\fR
-returns \fBTRUE\fP if the panel \fIpan\fP is in the panel stack,
-\fBFALSE\fP if it is not.
+returns \fBFALSE\fP if the panel \fIpan\fP is in the panel stack,
+\fBTRUE\fP if it is not.
 If the panel is a null pointer, return \fBERR\fP.
 .\" ---------
 .SS panel_userptr

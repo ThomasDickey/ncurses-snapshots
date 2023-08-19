@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.67 2023/07/01 15:43:20 tom Exp $
-.TH curs_getch 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.68 2023/08/19 20:45:12 tom Exp $
+.TH curs_getch 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .ie \n(.g .ds `` \(lq
@@ -151,8 +151,9 @@ misspellings (such as \*(``RSUME\*('' for \*(``resume\*('').
 The names correspond to the long terminfo capability names for the keys,
 and were defined long ago, in the 1980s.
 .PP
+.RS
 .TS
-center tab(/) ;
+tab(/) ;
 l l .
 \fBName\fP/\fBKey\fP \fBname\fP
 _
@@ -253,16 +254,19 @@ KEY_SUNDO/Shifted undo key
 KEY_SUSPEND/Suspend key
 KEY_UNDO/Undo key
 .TE
+.RE
 .PP
 Keypad is arranged like this:
-.br
+.PP
+.RS
 .TS
-center allbox tab(/) ;
+allbox tab(/) ;
 c c c .
 \fBA1\fP/\fBup\fP/\fBA3\fP
 \fBleft\fP/\fBB2\fP/\fBright\fP
 \fBC1\fP/\fBdown\fP/\fBC3\fP
 .TE
+.RE
 .sp
 A few of these predefined values do \fInot\fP correspond to a real key:
 .bP

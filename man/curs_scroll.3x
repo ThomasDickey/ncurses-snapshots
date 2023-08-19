@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.27 2023/07/01 14:31:54 tom Exp $
-.TH curs_scroll 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.28 2023/08/19 19:47:52 tom Exp $
+.TH curs_scroll 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -78,8 +78,8 @@ if scrolling is not enabled in the window, e.g., with \fBscrollok\fP(3X).
 Note that \fBscrl\fP and \fBscroll\fP may be macros.
 .PP
 The SVr4 documentation says that the optimization of physically scrolling
-immediately if the scroll region is the entire screen \*(``is\*('' performed, not
-\*(``may be\*('' performed.
+immediately if the scroll region is the entire screen \*(``is\*('' performed,
+not \*(``may be\*('' performed.
 This implementation deliberately does not guarantee
 that this will occur, to leave open the possibility of smarter
 optimization of multiple scroll actions on the next update.

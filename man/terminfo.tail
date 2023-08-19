@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.120 2023/07/15 19:46:56 tom Exp $
+.\" $Id: terminfo.tail,v 1.122 2023/08/19 20:14:38 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -143,15 +143,22 @@ ANSI-standard terminals have
 (i.e., an automatic return and line-feed
 when the end of a line is reached) is indicated by the capability \fBam\fP.
 Hence the description of ansi includes \fBam\fP.
-Numeric capabilities are followed by the character \*(``#\*('' and then a positive value.
+Numeric capabilities are followed by the character \*(``#\*(''
+and then a positive value.
 Thus \fBcols\fP, which indicates the number of columns the terminal has,
 gives the value \*(``80\*('' for ansi.
-Values for numeric capabilities may be specified in decimal, octal or hexadecimal,
-using the C programming language conventions (e.g., 255, 0377 and 0xff or 0xFF).
+Values for numeric capabilities may be specified in
+decimal,
+octal, or
+hexadecimal,
+using the C programming language conventions
+(e.g., 255, 0377 and 0xff or 0xFF).
 .PP
-Finally, string valued capabilities, such as \fBel\fP (clear to end of line
-sequence) are given by the two-character code, an \*(``=\*('', and then a string
-ending at the next following \*(``,\*(''.
+Finally, string valued capabilities,
+such as \fBel\fP (clear to end of line sequence)
+are given by the two-character code,
+an \*(``=\*('', and then
+a string ending at the next following \*(``,\*(''.
 .PP
 A number of escape sequences are provided in the string valued capabilities
 for easy encoding of characters there:
@@ -212,7 +219,8 @@ and padding characters are supplied by \fBtputs\fP(3X)
 to provide this delay.
 .bP
 The delay must be a number with at most one decimal
-place of precision; it may be followed by suffixes \*(``*\*('' or \*(``/\*('' or both.
+place of precision;
+it may be followed by suffixes \*(``*\*('' or \*(``/\*('' or both.
 .bP
 A \*(``*\*(''
 indicates that the padding required is proportional to the number of lines
@@ -395,7 +403,8 @@ it may still be possible to craft a working
 .B nel
 out of one or both of them.
 .PP
-These capabilities suffice to describe hard-copy and \*(``glass-tty\*('' terminals.
+These capabilities suffice to describe
+hard-copy and \*(``glass-tty\*('' terminals.
 Thus the model 33 teletype is described as
 .PP
 .DT
@@ -449,7 +458,7 @@ The \fB%\fP encodings have the following meanings:
 \fB%%\fP
 outputs \*(``%\*(''
 .TP
-\fB%\fP\fI[[\fP:\fI]flags][width[.precision]][\fP\fBdoxXs\fP\fI]\fP
+\fB%\fI[[\fR:\fI]flags][width[.precision]][\fBdoxXs\fI]\fR
 as in \fBprintf\fP(3), flags are \fI[\-+#]\fP and \fIspace\fP.
 Use a \*(``:\*('' to allow the next character to be a \*(``\-\*('' flag,
 avoiding interpreting \*(``%\-\*('' as an operator.
@@ -460,19 +469,19 @@ print \fIpop()\fP like %c in \fBprintf\fP
 \fB%s\fP
 print \fIpop()\fP like %s in \fBprintf\fP
 .TP
-\fB%p\fP\fI[1\-9]\fP
+\fB%p\fI[1\-9]\fR
 push \fIi\fP'th parameter
 .TP
-\fB%P\fP\fI[a\-z]\fP
+\fB%P\fI[a\-z]\fR
 set dynamic variable \fI[a\-z]\fP to \fIpop()\fP
 .TP
-\fB%g\fP\fI[a\-z]\fP
+\fB%g\fI[a\-z]\fR
 get dynamic variable \fI[a\-z]\fP and push it
 .TP
-\fB%P\fP\fI[A\-Z]\fP
+\fB%P\fI[A\-Z]\fR
 set static variable \fI[a\-z]\fP to \fIpop()\fP
 .TP
-\fB%g\fP\fI[A\-Z]\fP
+\fB%g\fI[A\-Z]\fR
 get static variable \fI[a\-z]\fP and push it
 .IP
 The terms \*(``static\*('' and \*(``dynamic\*('' are misleading.
@@ -520,10 +529,10 @@ Use static variables if persistent storage is needed.
 .RE
 .RE
 .TP
-\fB%\(aq\fP\fIc\fP\fB\(aq\fP
+\fB%\(aq\fIc\fB\(aq\fR
 char constant \fIc\fP
 .TP
-\fB%{\fP\fInn\fP\fB}\fP
+\fB%{\fInn\fB}\fR
 integer constant \fInn\fP
 .TP
 \fB%l\fP
@@ -574,14 +583,19 @@ persistent across escape-string evaluations.
 .PP
 Consider the HP2645, which, to get to row 3 and column 12, needs
 to be sent \eE&a12c03Y padded for 6 milliseconds.
-Note that the order
-of the rows and columns is inverted here, and that the row and column
-are printed as two digits.
-Thus its \fBcup\fP capability is \*(``cup=6\eE&%p2%2dc%p1%2dY\*(''.
+The order of the rows and columns is inverted here,
+and the row and column are printed as two digits.
+The corresponding terminal description is expressed thus:
+.RS
+cup=\eE&a%p2%dc%p1%dY$<6>,
+.RE
 .PP
 The Microterm \s-1ACT-IV\s0 needs the current row and column sent
 preceded by a \fB^T\fP, with the row and column simply encoded in binary,
-\*(``cup=^T%p1%c%p2%c\*(''.
+.RS
+cup=^T%p1%c%p2%c
+.RE
+.PP
 Terminals which use \*(``%c\*('' need to be able to
 backspace the cursor (\fBcub1\fP),
 and to move the cursor up one line on the screen (\fBcuu1\fP).
@@ -592,7 +606,11 @@ tabs are never expanded, so \et is safe to send.
 This turns out to be essential for the Ann Arbor 4080.)
 .PP
 A final example is the \s-1LSI ADM\s0-3a, which uses row and column
-offset by a blank character, thus \*(``cup=\eE=%p1%\(aq \(aq%+%c%p2%\(aq \(aq%+%c\*(''.
+offset by a blank character, thus
+.RS
+cup=\eE=%p1%\(aq \(aq%+%c%p2%\(aq \(aq%+%c
+.RE
+.PP
 After sending \*(``\eE=\*('', this pushes the first parameter, pushes the
 ASCII value for a space (32), adds them (pushing the sum on the stack
 in place of the two previous values) and outputs that value as a character.
@@ -636,7 +654,8 @@ such as the \s-1TEKTRONIX\s+1 4025.
 .PP
 If the terminal needs to be in a special mode when running
 a program that uses these capabilities,
-the codes to enter and exit this mode can be given as \fBsmcup\fP and \fBrmcup\fP.
+the codes to enter and exit this mode can be given
+as \fBsmcup\fP and \fBrmcup\fP.
 This arises, for example, from terminals like the Concept with more than
 one page of memory.
 If the terminal has only memory relative cursor addressing and not screen
@@ -1028,7 +1047,8 @@ this should be given as
 .B sgr
 (set attributes),
 taking 9 parameters.
-Each parameter is either 0 or nonzero, as the corresponding attribute is on or off.
+Each parameter is either zero (0) or nonzero,
+as the corresponding attribute is on or off.
 The 9 parameters are, in order:
 standout, underline, reverse, blink, dim, bold, blank, protect, alternate
 character set.
@@ -1766,7 +1786,8 @@ The first parameter is the character to be repeated and the second
 is the number of times to repeat it.
 Thus, tparm(repeat_char, \(aqx\(aq, 10) is the same as \*(``xxxxxxxxxx\*(''.
 .PP
-If the terminal has a settable command character, such as the \s-1TEKTRONIX\s+1 4025,
+If the terminal has a settable command character,
+such as the \s-1TEKTRONIX\s+1 4025,
 this can be indicated with
 .BR cmdch .
 A prototype command character is chosen which is used in all capabilities.
@@ -1843,7 +1864,8 @@ is transparently passed to the printer while an
 .B mc5p
 is in effect.
 .SS Glitches and Braindamage
-Hazeltine terminals, which do not allow \*(``~\*('' characters to be displayed should
+Hazeltine terminals,
+which do not allow \*(``~\*('' characters to be displayed should
 indicate \fBhz\fP.
 .PP
 Terminals which ignore a line-feed immediately after an \fBam\fP wrap,
@@ -1875,26 +1897,32 @@ Note that in older terminfo versions, this capability was called
 \*(``beehive_glitch\*(''; it is now \*(``no_esc_ctl_c\*(''.
 .PP
 Other specific terminal problems may be corrected by adding more
-capabilities of the form \fBx\fP\fIx\fP.
+capabilities of the form \fBx\fIx\fR.
 .SS Pitfalls of Long Entries
 Long terminfo entries are unlikely to be a problem; to date, no entry has even
 approached terminfo's 4096-byte string-table maximum.
 Unfortunately, the termcap
-translations are much more strictly limited (to 1023 bytes), thus termcap translations
-of long terminfo entries can cause problems.
+translations are much more strictly limited (to 1023 bytes),
+thus termcap translations of long terminfo entries can cause problems.
 .PP
-The man pages for 4.3BSD and older versions of \fBtgetent\fP instruct the user to
+The man pages for 4.3BSD
+and older versions of \fBtgetent\fP instruct the user to
 allocate a 1024-byte buffer for the termcap entry.
 The entry gets null-terminated by
 the termcap library, so that makes the maximum safe length for a termcap entry
 1k\-1 (1023) bytes.
-Depending on what the application and the termcap library
-being used does, and where in the termcap file the terminal type that \fBtgetent\fP
-is searching for is, several bad things can happen.
+Depending on what the application and the termcap library being used does,
+and where in the termcap file the terminal type that \fBtgetent\fP
+is searching for is, several bad things can happen:
+.bP
+some termcap libraries print a warning message,
+.bP
+some exit if they find an entry that's longer than 1023 bytes,
+.bP
+some neither exit nor warn, doing nothing useful, and
+.bP
+some simply truncate the entries to 1023 bytes.
 .PP
-Some termcap libraries print a warning message or exit if they find an
-entry that's longer than 1023 bytes; others do not; others truncate the
-entries to 1023 bytes.
 Some application programs allocate more than
 the recommended 1K for the termcap entry; others do not.
 .PP
@@ -1927,8 +1955,9 @@ long entry, appears in the termcap file after the long entry, or
 does not appear in the file at all (so that \fBtgetent\fP has to search
 the whole termcap file).
 .PP
-Then \fBtgetent\fP will overwrite memory, perhaps its stack, and probably core dump
-the program.
+Then \fBtgetent\fP will overwrite memory,
+perhaps its stack,
+and probably core dump the program.
 Programs like telnet are particularly vulnerable; modern telnets
 pass along values like the terminal type automatically.
 The results are almost

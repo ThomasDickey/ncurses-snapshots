@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.36 2023/07/01 15:43:20 tom Exp $
+.\" $Id: curs_kernel.3x,v 1.37 2023/08/19 19:47:16 tom Exp $
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -36,7 +36,7 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_kernel 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.TH curs_kernel 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME
@@ -83,7 +83,8 @@ to various \fBcurses\fP capabilities.
 These routines typically are used inside library routines.
 .SS def_prog_mode, def_shell_mode
 The \fBdef_prog_mode\fP and \fBdef_shell_mode\fP routines save the
-current terminal modes as the \*(``program\*('' (in \fBcurses\fP) or \*(``shell\*(''
+current terminal modes as the \*(``program\*(''
+(in \fBcurses\fP) or \*(``shell\*(''
 (not in \fBcurses\fP) state for use by the \fBreset_prog_mode\fP and
 \fBreset_shell_mode\fP routines.
 This is done automatically by \fBinitscr\fP.

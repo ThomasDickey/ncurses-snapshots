@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.29 2023/08/06 00:00:22 tom Exp $
-.TH user_caps 5 2023-08-05 "ncurses 6.4" "File formats"
+.\" $Id: user_caps.5,v 1.30 2023/08/19 20:39:40 tom Exp $
+.TH user_caps 5 2023-08-19 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -359,6 +359,7 @@ to find these special keys in the terminal description.
 Starting with the curses convention that \fIkey names\fP begin with \*(``k\*(''
 and that shifted special keys are an uppercase name,
 ncurses' terminal database defines these names to which a suffix is added:
+.PP
 .RS 5
 .TS
 tab(/) ;
@@ -378,6 +379,7 @@ kUP/special form of kcuu1 (cursor-up)
 .RE
 .PP
 These are the suffixes used to denote the modifiers:
+.PP
 .RS 5
 .TS
 tab(/) ;

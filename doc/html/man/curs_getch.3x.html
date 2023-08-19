@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.67 2023/07/01 15:43:20 tom Exp @
+  * @Id: curs_getch.3x,v 1.68 2023/08/19 20:45:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2023-07-01 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getch 3x 2023-08-19 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2023-07-01 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2023-08-19 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -150,112 +150,112 @@
            the  long  terminfo capability names for the keys, and were defined
            long ago, in the 1980s.
 
-                  <STRONG>Name</STRONG>            <STRONG>Key</STRONG> <STRONG>name</STRONG>
-                  -------------------------------------------------
-                  KEY_BREAK       Break key
-                  KEY_DOWN        The four arrow keys ...
-                  KEY_UP
-                  KEY_LEFT
-                  KEY_RIGHT
-                  KEY_HOME        Home key (upward+left arrow)
-                  KEY_BACKSPACE   Backspace
-                  KEY_F0          Function keys; space for 64 keys
-                                  is reserved.
-                  KEY_F(<EM>n</EM>)        For 0 &lt;= <EM>n</EM> &lt;= 63
-                  KEY_DL          Delete line
-                  KEY_IL          Insert line
-                  KEY_DC          Delete character
-                  KEY_IC          Insert char or enter insert mode
-                  KEY_EIC         Exit insert char mode
-                  KEY_CLEAR       Clear screen
-                  KEY_EOS         Clear to end of screen
-                  KEY_EOL         Clear to end of line
-                  KEY_SF          Scroll 1 line forward
-                  KEY_SR          Scroll 1 line backward (reverse)
-                  KEY_NPAGE       Next page
-                  KEY_PPAGE       Previous page
-                  KEY_STAB        Set tab
-                  KEY_CTAB        Clear tab
-                  KEY_CATAB       Clear all tabs
-                  KEY_ENTER       Enter or send
-                  KEY_SRESET      Soft (partial) reset
-                  KEY_RESET       Reset or hard reset
+              <STRONG>Name</STRONG>            <STRONG>Key</STRONG> <STRONG>name</STRONG>
+              -------------------------------------------------
+              KEY_BREAK       Break key
+              KEY_DOWN        The four arrow keys ...
+              KEY_UP
+              KEY_LEFT
+              KEY_RIGHT
+              KEY_HOME        Home key (upward+left arrow)
+              KEY_BACKSPACE   Backspace
+              KEY_F0          Function keys; space for 64 keys
+                              is reserved.
+              KEY_F(<EM>n</EM>)        For 0 &lt;= <EM>n</EM> &lt;= 63
+              KEY_DL          Delete line
+              KEY_IL          Insert line
+              KEY_DC          Delete character
+              KEY_IC          Insert char or enter insert mode
+              KEY_EIC         Exit insert char mode
+              KEY_CLEAR       Clear screen
+              KEY_EOS         Clear to end of screen
+              KEY_EOL         Clear to end of line
+              KEY_SF          Scroll 1 line forward
+              KEY_SR          Scroll 1 line backward (reverse)
+              KEY_NPAGE       Next page
+              KEY_PPAGE       Previous page
+              KEY_STAB        Set tab
+              KEY_CTAB        Clear tab
+              KEY_CATAB       Clear all tabs
+              KEY_ENTER       Enter or send
+              KEY_SRESET      Soft (partial) reset
+              KEY_RESET       Reset or hard reset
 
-                  KEY_PRINT       Print or copy
-                  KEY_LL          Home down or bottom (lower left)
-                  KEY_A1          Upper left of keypad
-                  KEY_A3          Upper right of keypad
-                  KEY_B2          Center of keypad
-                  KEY_C1          Lower left of keypad
-                  KEY_C3          Lower right of keypad
-                  KEY_BTAB        Back tab key
-                  KEY_BEG         Beg(inning) key
-                  KEY_CANCEL      Cancel key
-                  KEY_CLOSE       Close key
-                  KEY_COMMAND     Cmd (command) key
-                  KEY_COPY        Copy key
-                  KEY_CREATE      Create key
-                  KEY_END         End key
-                  KEY_EXIT        Exit key
-                  KEY_FIND        Find key
-                  KEY_HELP        Help key
-                  KEY_MARK        Mark key
-                  KEY_MESSAGE     Message key
-                  KEY_MOUSE       Mouse event occurred
-                  KEY_MOVE        Move key
-                  KEY_NEXT        Next object key
-                  KEY_OPEN        Open key
-                  KEY_OPTIONS     Options key
-                  KEY_PREVIOUS    Previous object key
-                  KEY_REDO        Redo key
-                  KEY_REFERENCE   Ref(erence) key
-                  KEY_REFRESH     Refresh key
-                  KEY_REPLACE     Replace key
-                  KEY_RESIZE      Screen resized
-                  KEY_RESTART     Restart key
-                  KEY_RESUME      Resume key
-                  KEY_SAVE        Save key
-                  KEY_SBEG        Shifted beginning key
-                  KEY_SCANCEL     Shifted cancel key
-                  KEY_SCOMMAND    Shifted command key
-                  KEY_SCOPY       Shifted copy key
-                  KEY_SCREATE     Shifted create key
-                  KEY_SDC         Shifted delete char key
-                  KEY_SDL         Shifted delete line key
-                  KEY_SELECT      Select key
-                  KEY_SEND        Shifted end key
-                  KEY_SEOL        Shifted clear line key
-                  KEY_SEXIT       Shifted exit key
-                  KEY_SFIND       Shifted find key
-                  KEY_SHELP       Shifted help key
-                  KEY_SHOME       Shifted home key
-                  KEY_SIC         Shifted insert key
-                  KEY_SLEFT       Shifted left arrow key
-                  KEY_SMESSAGE    Shifted message key
-                  KEY_SMOVE       Shifted move key
-                  KEY_SNEXT       Shifted next key
-                  KEY_SOPTIONS    Shifted options key
-                  KEY_SPREVIOUS   Shifted prev key
-                  KEY_SPRINT      Shifted print key
-                  KEY_SREDO       Shifted redo key
-                  KEY_SREPLACE    Shifted replace key
-                  KEY_SRIGHT      Shifted right arrow key
-                  KEY_SRSUME      Shifted resume key
-                  KEY_SSAVE       Shifted save key
-                  KEY_SSUSPEND    Shifted suspend key
-                  KEY_SUNDO       Shifted undo key
-                  KEY_SUSPEND     Suspend key
-                  KEY_UNDO        Undo key
+              KEY_PRINT       Print or copy
+              KEY_LL          Home down or bottom (lower left)
+              KEY_A1          Upper left of keypad
+              KEY_A3          Upper right of keypad
+              KEY_B2          Center of keypad
+              KEY_C1          Lower left of keypad
+              KEY_C3          Lower right of keypad
+              KEY_BTAB        Back tab key
+              KEY_BEG         Beg(inning) key
+              KEY_CANCEL      Cancel key
+              KEY_CLOSE       Close key
+              KEY_COMMAND     Cmd (command) key
+              KEY_COPY        Copy key
+              KEY_CREATE      Create key
+              KEY_END         End key
+              KEY_EXIT        Exit key
+              KEY_FIND        Find key
+              KEY_HELP        Help key
+              KEY_MARK        Mark key
+              KEY_MESSAGE     Message key
+              KEY_MOUSE       Mouse event occurred
+              KEY_MOVE        Move key
+              KEY_NEXT        Next object key
+              KEY_OPEN        Open key
+              KEY_OPTIONS     Options key
+              KEY_PREVIOUS    Previous object key
+              KEY_REDO        Redo key
+              KEY_REFERENCE   Ref(erence) key
+              KEY_REFRESH     Refresh key
+              KEY_REPLACE     Replace key
+              KEY_RESIZE      Screen resized
+              KEY_RESTART     Restart key
+              KEY_RESUME      Resume key
+              KEY_SAVE        Save key
+              KEY_SBEG        Shifted beginning key
+              KEY_SCANCEL     Shifted cancel key
+              KEY_SCOMMAND    Shifted command key
+              KEY_SCOPY       Shifted copy key
+              KEY_SCREATE     Shifted create key
+              KEY_SDC         Shifted delete char key
+              KEY_SDL         Shifted delete line key
+              KEY_SELECT      Select key
+              KEY_SEND        Shifted end key
+              KEY_SEOL        Shifted clear line key
+              KEY_SEXIT       Shifted exit key
+              KEY_SFIND       Shifted find key
+              KEY_SHELP       Shifted help key
+              KEY_SHOME       Shifted home key
+              KEY_SIC         Shifted insert key
+              KEY_SLEFT       Shifted left arrow key
+              KEY_SMESSAGE    Shifted message key
+              KEY_SMOVE       Shifted move key
+              KEY_SNEXT       Shifted next key
+              KEY_SOPTIONS    Shifted options key
+              KEY_SPREVIOUS   Shifted prev key
+              KEY_SPRINT      Shifted print key
+              KEY_SREDO       Shifted redo key
+              KEY_SREPLACE    Shifted replace key
+              KEY_SRIGHT      Shifted right arrow key
+              KEY_SRSUME      Shifted resume key
+              KEY_SSAVE       Shifted save key
+              KEY_SSUSPEND    Shifted suspend key
+              KEY_SUNDO       Shifted undo key
+              KEY_SUSPEND     Suspend key
+              KEY_UNDO        Undo key
 
        Keypad is arranged like this:
 
-                                +-----+------+-------+
-                                | <STRONG>A1</STRONG>  |  <STRONG>up</STRONG>  |  <STRONG>A3</STRONG>   |
-                                +-----+------+-------+
-                                |<STRONG>left</STRONG> |  <STRONG>B2</STRONG>  | <STRONG>right</STRONG> |
-                                +-----+------+-------+
-                                | <STRONG>C1</STRONG>  | <STRONG>down</STRONG> |  <STRONG>C3</STRONG>   |
-                                +-----+------+-------+
+              +-----+------+-------+
+              | <STRONG>A1</STRONG>  |  <STRONG>up</STRONG>  |  <STRONG>A3</STRONG>   |
+              +-----+------+-------+
+              |<STRONG>left</STRONG> |  <STRONG>B2</STRONG>  | <STRONG>right</STRONG> |
+              +-----+------+-------+
+              | <STRONG>C1</STRONG>  | <STRONG>down</STRONG> |  <STRONG>C3</STRONG>   |
+              +-----+------+-------+
        A few of these predefined values do <EM>not</EM> correspond to a real key:
 
        <STRONG>o</STRONG>   <STRONG>KEY_RESIZE</STRONG>  is  returned when the <STRONG>SIGWINCH</STRONG> signal has been detected
@@ -383,7 +383,7 @@
 
 
 
-ncurses 6.4                       2023-07-01                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.4                       2023-08-19                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

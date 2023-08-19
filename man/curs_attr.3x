@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.77 2023/07/01 15:43:20 tom Exp $
-.TH curs_attr 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.78 2023/08/19 20:37:30 tom Exp $
+.TH curs_attr 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -295,6 +295,7 @@ l l .
 .PP
 These video attributes are supported by \fBattr_on\fP and related functions
 (which also support the attributes recognized by \fBattron\fP, etc.):
+.PP
 .RS
 .TS
 l l
@@ -387,6 +388,7 @@ the format and size of the defined constants
 as well as clues such as the alternate character set implementation.
 A 32-bit library can be used on a 64-bit system,
 but not necessarily the reverse.
+.PP
 .RS
 .TS
 l l l l l l

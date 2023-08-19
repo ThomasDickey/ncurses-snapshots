@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.64 2023/07/01 14:23:04 tom Exp $
-.TH curs_addch 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addch.3x,v 1.65 2023/08/19 19:45:54 tom Exp $
+.TH curs_addch 3X 2023-08-19 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -100,8 +100,9 @@ using the same convention as \fBunctrl\fR(3X):
 .bP
 Control characters are displayed in the \fB^\fIX\fR notation.
 .bP
-Values above 128 are either meta characters (if the screen has not
-been initialized, or if \fBmeta\fP(3X) has been called with a \fBTRUE\fP E parameter),
+Values above 128 are either meta characters
+(if the screen has not been initialized,
+or if \fBmeta\fP(3X) has been called with a \fBTRUE\fP E parameter),
 shown in the \fBM\-\fIX\fR notation, or are displayed as themselves.
 In the latter case, the values may not be printable;
 this follows the X/Open specification.
