@@ -36,7 +36,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.51 2023/07/08 12:46:45 tom Exp $
+ * $Id: demo.cc,v 1.52 2023/08/26 19:14:14 tom Exp $
  */
 
 #include "internal.h"
@@ -169,7 +169,7 @@ public:
 //
 // -------------------------------------------------------------------------
 //
-template<class T> class MyAction : public NCursesUserItem<T>
+template<class T> class NCURSES_CXX_IMPEXP MyAction : public NCursesUserItem<UserData>
 {
 public:
   MyAction (const char* p_name,
@@ -185,9 +185,6 @@ public:
     return FALSE;
   }
 };
-
-template class MyAction<UserData>;
-template class NCURSES_CXX_IMPEXP NCursesUserItem<UserData>;
 
 class QuitItem : public NCursesMenuItem
 {

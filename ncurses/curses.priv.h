@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.670 2023/06/24 13:00:26 tom Exp $
+ * $Id: curses.priv.h,v 1.671 2023/08/26 19:01:27 tom Exp $
  *
  *	curses.priv.h
  *
@@ -144,14 +144,14 @@ extern int errno;
 #if (defined(__USE_MINGW_ANSI_STDIO) && __USE_MINGW_ANSI_STDIO != 0) && (defined(__GNUC__) && (__GNUC__ < 12))
 # undef PRIxPTR		/* gcc bug fixed in 12.x */
 # define PRIxPTR	"lX"
-# define CASTxPTR(n)    (unsigned long)(intptr_t)(n)
+# define CASTxPTR(n)    (unsigned long)(intptr_t)(void*)(n)
 #else
-# define CASTxPTR(n)    (intptr_t)(n)
+# define CASTxPTR(n)    (intptr_t)(void*)(n)
 #endif
 
 #ifndef PRIxPTR
 # define PRIxPTR	"lx"
-# define CASTxPTR(n)    (long)(n)
+# define CASTxPTR(n)    (long)(void*)(n)
 #endif
 
 /* include signal.h before curses.h to work-around defect in glibc 2.1.3 */
