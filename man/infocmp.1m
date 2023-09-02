@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.87 2023/08/19 20:39:40 tom Exp $
-.TH @INFOCMP@ 1M 2023-08-19 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.88 2023/09/02 22:29:02 tom Exp $
+.TH @INFOCMP@ 1M 2023-09-02 "ncurses 6.4" "User commands"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -274,8 +274,9 @@ were not needed.
 Like other \fBncurses\fP utilities,
 \fB@INFOCMP@\fP looks for the terminal descriptions in several places.
 You can use the \fBTERMINFO\fP and \fBTERMINFO_DIRS\fP environment variables
-to override the compiled-in default list of places to search
-(see \fBcurses\fP(3X) for details).
+to override the compiled-in default list of places to search.
+See \fBcurses\fP(3X), as well as
+the \fIFetching Compiled Descriptions\fP section in \fBterminfo\fR(\*n).
 .PP
 You can also use the options \fB\-A\fP
 and \fB\-B\fP to override the list of places to search

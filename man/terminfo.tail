@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.122 2023/08/19 20:14:38 tom Exp $
+.\" $Id: terminfo.tail,v 1.125 2023/09/02 22:39:26 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -245,26 +245,34 @@ in the example above.
 .br
 .ne 5
 .SS Fetching Compiled Descriptions
-The \fBncurses\fP library searches for terminal descriptions in several places.
-It uses only the first description found.
-The library has a compiled-in list of places to search
+Terminal descriptions in \fBncurses\fP are stored in terminal databases.
+These databases, which are found by their pathname,
+may be configured either as directory trees or hashed databases
+(see \fBterm\fR(\*n)),
+.PP
+The library uses a compiled-in list of pathnames,
 which can be overridden by environment variables.
 Before starting to search,
-\fBncurses\fP eliminates duplicates in its search list.
+\fBncurses\fP checks the search list,
+eliminating duplicates and pathnames where no terminal database is found.
+The \fBncurses\fP library reads the first description
+which passes its consistency checks.
 .bP
-If the environment variable TERMINFO is set, it is interpreted as the pathname
-of a directory containing the compiled description you are working on.
-Only that directory is searched.
+The environment variable \fBTERMINFO\fR is checked first, for
+a terminal database containing the terminal description.
 .bP
-If TERMINFO is not set,
-\fBncurses\fP will instead look in the directory \fB$HOME/.terminfo\fP
+Next,
+\fBncurses\fP looks in \fB$HOME/.terminfo\fP
 for a compiled description.
-.bP
-Next, if the environment variable TERMINFO_DIRS is set,
-\fBncurses\fP will interpret the contents of that variable
-as a list of colon-separated directories (or database files) to be searched.
 .IP
-An empty directory name (i.e., if the variable begins or ends
+This is an optional feature which may be omitted entirely from
+the library, or limited to prevent accidental use by privileged applications.
+.bP
+Next, if the environment variable \fBTERMINFO_DIRS\fR is set,
+\fBncurses\fP interprets the contents of that variable
+as a list of colon-separated pathnames of terminal databases to be searched.
+.IP
+An empty pathname (i.e., if the variable begins or ends
 with a colon, or contains adjacent colons)
 is interpreted as the system location \fI\*d\fP.
 .bP
@@ -273,8 +281,25 @@ Finally, \fBncurses\fP searches these compiled-in locations:
 .bP
 a list of directories (@TERMINFO_DIRS@), and
 .bP
-the system terminfo directory, \fI\*d\fP (the compiled-in default).
+the system terminfo directory, \fI\*d\fP
 .RE
+.PP
+The \fBTERMINFO\fP variable can contain a terminal description instead
+of the pathname of a terminal database.
+If this variable begins with \*(``hex:\*('' or \*(``b64:\*(''
+then \fBncurses\fP reads a terminal description from 
+hexadecimal- or base64-encoded data,
+and if that description matches the name sought, will use that.
+This encoded data can be set using the \*(``\-Q\*('' option of
+\fB@TIC@\fR or \fB@INFOCMP@\fR.
+.PP
+The preceding addresses the usual configuration of \fBncurses\fP,
+which uses terminal descriptions prepared in \fIterminfo\fP format.
+While \fItermcap\fP is less expressive,
+\fBncurses\fP can also be configured to read \fItermcap\fP descriptions.
+In that configuration, it checks the \fBTERMCAP\fP and \fBTERMPATH\fP
+variables (for content and search path, respectively)
+after the system terminal database.
 .SS Preparing Descriptions
 We now outline how to prepare descriptions of terminals.
 The most effective way to prepare a terminal description is by imitating
