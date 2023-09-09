@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.28 2023/08/12 15:45:07 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.29 2023/09/09 23:14:48 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -397,6 +397,7 @@ intrflush(WINDOW *win GCC_UNUSED, bool flag)
 #endif
 
 #if NCURSES_EXT_FUNCS
+/* *INDENT-OFF* */
 
 /*
  * SCREEN is always opaque, but nl/raw/cbreak/echo set properties in it.
@@ -416,10 +417,10 @@ intrflush(WINDOW *win GCC_UNUSED, bool flag)
 	return ((SP_PARM != NULL) ? (what(SP_PARM) ? 1 : 0) : -1); \
     }
 
-is_TEST(is_nl, IsNl);
-is_TEST(is_raw, IsRaw);
-is_TEST(is_cbreak, IsCbreak);
-is_TEST(is_echo, IsEcho);
+is_TEST(is_nl, IsNl)
+is_TEST(is_raw, IsRaw)
+is_TEST(is_cbreak, IsCbreak)
+is_TEST(is_echo, IsEcho)
 
 #if NCURSES_SP_FUNCS
 #undef is_TEST
@@ -429,10 +430,11 @@ is_TEST(is_echo, IsEcho);
     { \
 	return NCURSES_SP_NAME(show) (CURRENT_SCREEN); \
     }
-is_TEST(is_nl);
-is_TEST(is_raw);
-is_TEST(is_cbreak);
-is_TEST(is_echo);
+is_TEST(is_nl)
+is_TEST(is_raw)
+is_TEST(is_cbreak)
+is_TEST(is_echo)
 #endif
 
+/* *INDENT-ON* */
 #endif /* extensions */

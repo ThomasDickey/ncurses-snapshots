@@ -27,19 +27,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.25 2023/07/01 15:46:10 tom Exp $
-.TH scr_dump 5 2023-07-01 "ncurses 6.4" "File formats"
+.\" $Id: scr_dump.5,v 1.27 2023/09/09 21:20:16 tom Exp $
+.TH scr_dump 5 2023-09-09 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

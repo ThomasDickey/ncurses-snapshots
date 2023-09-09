@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.40 2023/07/01 15:46:10 tom Exp $
-.TH @TOE@ 1M 2023-07-01 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.42 2023/09/09 21:15:25 tom Exp $
+.TH @TOE@ 1M 2023-09-09 "ncurses 6.4" "User commands"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -37,13 +37,18 @@
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

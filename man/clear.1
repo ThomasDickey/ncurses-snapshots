@@ -27,8 +27,13 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.33 2023/07/01 14:23:04 tom Exp $
-.TH @CLEAR@ 1 2023-07-01 "ncurses 6.4" "User commands"
+.\" $Id: clear.1,v 1.35 2023/09/09 21:12:26 tom Exp $
+.TH @CLEAR@ 1 2023-09-09 "ncurses 6.4" "User commands"
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .\" these would be fallbacks for DS/DE,
 .\" but groff changed the meaning of the macros.
 .de NS
@@ -37,7 +42,7 @@
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

@@ -28,18 +28,23 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.64 2023/07/01 15:43:20 tom Exp $
+.\" $Id: curs_mouse.3x,v 1.66 2023/09/09 21:13:51 tom Exp $
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi
@@ -51,7 +56,7 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_mouse 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.TH curs_mouse 3X 2023-09-09 "ncurses 6.4" "Library calls"
 .na
 .hy 0
 .SH NAME

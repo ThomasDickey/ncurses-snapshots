@@ -27,9 +27,14 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.16 2023/08/19 19:12:34 tom Exp $
+.\" $Id: MKada_config.in,v 1.18 2023/09/09 23:32:29 tom Exp $
 .ds C adacurses@USE_CFG_SUFFIX@\-config
-.TH ADACURSES 1 2023-08-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.TH ADACURSES 1 2023-09-09 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .SH NAME
 adacurses@USE_CFG_SUFFIX@\-config \- helper script for @ADA_LIBNAME@ libraries
 .SH SYNOPSIS
@@ -64,7 +69,7 @@ program for @ADA_LIBNAME@.
 Make a file named "hello.adb":
 .RS
 .nf
-.ft CW
+.ft \*(CW
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 
 procedure Hello is
@@ -103,14 +108,14 @@ end Hello;
 .PP
 Then, using
 .RS
-.ft CW
+.ft \*(CW
 gnatmake `adacurses-config --cflags` hello -largs `adacurses-config --libs`
 .ft
 .RE
 .PP
 or (simpler):
 .RS
-.ft CW
+.ft \*(CW
 gnatmake hello `adacurses-config`
 .ft
 .RE

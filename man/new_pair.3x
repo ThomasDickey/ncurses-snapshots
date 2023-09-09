@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.24 2023/07/01 15:46:10 tom Exp $
-.TH new_pair 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: new_pair.3x,v 1.26 2023/09/09 21:20:16 tom Exp $
+.TH new_pair 3X 2023-09-09 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -39,13 +39,18 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

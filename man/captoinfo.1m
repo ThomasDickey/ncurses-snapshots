@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.37 2023/08/19 20:36:21 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-08-19 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.39 2023/09/09 16:40:25 tom Exp $
+.TH @CAPTOINFO@ 1M 2023-09-09 "ncurses 6.4" "User commands"
 .ds n 5
 .ds d @TERMINFO@
 .SH NAME
@@ -79,12 +79,12 @@ will issue an notification to stderr, inviting the user to check that
 it has not mistakenly translated a completely unknown and random
 capability and/or syntax error.
 .PP
-.TS H
-c c c c
-c c c c
-l l l l.
-Nonstd	Std	From	Terminfo
-name	name		capability
+.TS
+cb cb cb cb
+cb cb cb cb
+l  l  l  l .
+Nonstd	Std	\&	Terminfo
+name	name	From	capability
 _
 BO	mr	AT&T	enter_reverse_mode
 CI	vi	AT&T	cursor_invisible
@@ -121,8 +121,8 @@ for forms drawing, designed to take advantage of the IBM PC
 high-half graphics.
 They were as follows:
 .PP
-.TS H
-c c
+.TS
+cb cb
 l l.
 Cap	Graphic
 _
@@ -162,8 +162,8 @@ The following AIX extensions are automatically
 translated:
 .PP
 .TS
-c c
-l l.
+cb cb
+l  l .
 IBM	XSI
 _
 ksel	kslt

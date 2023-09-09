@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.77 2022/10/15 19:37:33 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.78 2023/09/09 16:06:00 Nicholas.Marriott Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -251,7 +251,7 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
     TERMTYPE2 *from = &(source->tterm);
 #if NCURSES_XNAMES
     TERMTYPE2 copy;
-    size_t str_size;
+    size_t str_size, copy_size;
     char *str_table;
 #endif
     unsigned i;
@@ -285,21 +285,27 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 	if ((str_table = malloc(str_size)) == NULL)
 	    _nc_err_abort(MSG_NO_MEMORY);
 	str_copied = str_table;
-	strcpy(str_copied, to->term_names);
+	_nc_STRCPY(str_copied, to->term_names, str_size);
 	to->term_names = str_copied;
-	str_copied += strlen(str_copied) + 1;
+	copy_size = strlen(str_copied) + 1;
+	str_copied += copy_size;
+	str_size -= copy_size;
 	for_each_string(i, from) {
 	    if (VALID_STRING(from->Strings[i])) {
-		strcpy(str_copied, from->Strings[i]);
+		_nc_STRCPY(str_copied, from->Strings[i], str_size);
 		from->Strings[i] = str_copied;
-		str_copied += strlen(str_copied) + 1;
+		copy_size = strlen(str_copied) + 1;
+		str_copied += copy_size;
+		str_size -= copy_size;
 	    }
 	}
 	for_each_string(i, to) {
 	    if (VALID_STRING(to->Strings[i])) {
-		strcpy(str_copied, to->Strings[i]);
+		_nc_STRCPY(str_copied, to->Strings[i], str_size);
 		to->Strings[i] = str_copied;
-		str_copied += strlen(str_copied) + 1;
+		copy_size = strlen(str_copied) + 1;
+		str_copied += copy_size;
+		str_size -= copy_size;
 	    }
 	}
 	free(to->str_table);
@@ -330,16 +336,20 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 	str_copied = str_table;
 	for (i = 0; i < NUM_EXT_NAMES(from); ++i) {
 	    if (VALID_STRING(from->ext_Names[i])) {
-		strcpy(str_copied, from->ext_Names[i]);
+		_nc_STRCPY(str_copied, from->ext_Names[i], str_size);
 		from->ext_Names[i] = str_copied;
-		str_copied += strlen(str_copied) + 1;
+		copy_size = strlen(str_copied) + 1;
+		str_copied += copy_size;
+		str_size -= copy_size;
 	    }
 	}
 	for (i = 0; i < NUM_EXT_NAMES(to); ++i) {
 	    if (VALID_STRING(to->ext_Names[i])) {
-		strcpy(str_copied, to->ext_Names[i]);
+		_nc_STRCPY(str_copied, to->ext_Names[i], str_size);
 		to->ext_Names[i] = str_copied;
-		str_copied += strlen(str_copied) + 1;
+		copy_size = strlen(str_copied) + 1;
+		str_copied += copy_size;
+		str_size -= copy_size;
 	    }
 	}
 	free(to->ext_str_table);

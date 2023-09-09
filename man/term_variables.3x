@@ -27,13 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term_variables.3x,v 1.21 2023/07/01 15:21:06 tom Exp $
-.TH term_variables 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: term_variables.3x,v 1.23 2023/09/09 17:06:25 tom Exp $
+.TH term_variables 3X 2023-09-09 "ncurses 6.4" "Library calls"
 .ds n 5
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .na
 .hy 0
 .SH NAME
@@ -152,7 +157,7 @@ These are in terms of the symbol \fBCUR\fP,
 which is defined
 .PP
 .nf
-.ft CW
+.ft \*(CW
 #define CUR ((TERMTYPE *)(cur_term))->
 .fi
 .ft R

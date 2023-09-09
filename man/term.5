@@ -27,19 +27,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.48 2023/07/01 15:46:10 tom Exp $
-.TH term 5 2023-07-01 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.52 2023/09/09 17:14:44 tom Exp $
+.TH term 5 2023-09-09 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi
@@ -353,9 +358,12 @@ adm3a|lsi adm3a,
 .NE
 .PP
 and a hexadecimal dump of the compiled terminal description:
-.NS
-.ft CW
-\s-20000  1a 01 10 00 02 00 03 00  82 00 31 00 61 64 6d 33  ........ ..1.adm3
+.PP
+.ie n .in -2n
+.el   .in +4n
+.TS
+lp-1f(\*(CW).
+0000  1a 01 10 00 02 00 03 00  82 00 31 00 61 64 6d 33  ........ ..1.adm3
 0010  61 7c 6c 73 69 20 61 64  6d 33 61 00 00 01 50 00  a|lsi ad m3a...P.
 0020  ff ff 18 00 ff ff 00 00  02 00 ff ff ff ff 04 00  ........ ........
 0030  ff ff ff ff ff ff ff ff  0a 00 25 00 27 00 ff ff  ........ ..%.'...
@@ -376,10 +384,9 @@ and a hexadecimal dump of the compiled terminal description:
 0120  ff ff ff ff ff ff 2f 00  07 00 0d 00 1a 24 3c 31  ....../. .....$<1
 0130  3e 00 1b 3d 25 70 31 25  7b 33 32 7d 25 2b 25 63  >..=%p1% {32}%+%c
 0140  25 70 32 25 7b 33 32 7d  25 2b 25 63 00 0a 00 1e  %p2%{32} %+%c....
-0150  00 08 00 0c 00 0b 00 0a  00                       ........ .\s+2
-.ft R
-.NE
-.sp
+0150  00 08 00 0c 00 0b 00 0a  00                       ........ .
+.TE
+.in
 .SH LIMITS
 Some limitations:
 .bP

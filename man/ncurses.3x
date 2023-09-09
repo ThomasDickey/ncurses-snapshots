@@ -28,13 +28,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.164 2023/08/19 19:23:43 tom Exp $
+.\" $Id: ncurses.3x,v 1.167 2023/09/09 21:11:08 tom Exp $
 .hy 0
-.TH ncurses 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.TH ncurses 3X 2023-09-09 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -45,7 +50,7 @@
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi
@@ -1036,7 +1041,7 @@ ncurses checks for an extended terminfo capability \fBU8\fP.
 This is a numeric capability which can be compiled using \fB@TIC@\ \-x\fP.
 For example
 .RS 3
-.ft CW
+.ft \*(CW
 .sp
 .nf
 # linux console, if patched to provide working
@@ -1048,7 +1053,7 @@ linux-vt100|linux console with VT100 line-graphics,
 xterm-utf8|xterm relying on UTF-8 line-graphics,
         U8#1, use=xterm,
 .fi
-.ft
+.ft R
 .RE
 .PP
 The name \*(``U8\*('' is chosen to be two characters,

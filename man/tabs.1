@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.39 2023/07/01 15:46:10 tom Exp $
-.TH @TABS@ 1 2023-07-01 "ncurses 6.4" "User commands"
+.\" $Id: tabs.1,v 1.41 2023/09/09 21:19:07 tom Exp $
+.TH @TABS@ 1 2023-09-09 "ncurses 6.4" "User commands"
 .ds n 5
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -38,13 +38,18 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

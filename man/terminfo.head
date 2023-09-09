@@ -27,14 +27,23 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.45 2023/09/02 22:30:22 tom Exp $
-.TH terminfo 5 2023-09-02 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.48 2023/09/09 21:34:18 tom Exp $
+.TH terminfo 5 2023-09-09 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ds n 5
 .ds d @TERMINFO@
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie \n(.g .ds ^ \(ha
+.el       .ds ^ ^
+.ie \n(.g .ds ~ \(ti
+.el       .ds ~ ~
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -45,7 +54,7 @@
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft C			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi
@@ -135,10 +144,11 @@ Thus, a vt100 in 132-column mode would be vt100\-w.
 The following suffixes should be used where possible:
 .PP
 .TS
-center ;
-l c l
-l l l.
-\fBSuffix	Meaning	Example\fP
+center;
+lb cb lb
+l  l  l .
+Suffix	Meaning	Example
+_
 \-\fInn\fP	Number of lines on the screen	aaa\-60
 \-\fIn\fPp	Number of pages of memory	c100\-4p
 \-am	With automargins (usually the default)	vt100\-am

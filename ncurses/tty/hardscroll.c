@@ -148,7 +148,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.57 2023/06/25 15:39:32 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.58 2023/09/09 16:04:08 Nicholas.Marriott Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -323,7 +323,7 @@ NCURSES_SP_NAME(_nc_linedump) (NCURSES_SP_DCL0)
 				_nc_SLIMIT(want - strlen(buf))
 				" %02d", number);
 		} else {
-		    strcat(buf, " ??");
+		    _nc_STRCAT(buf, " ??", want - strlen(buf));
 		}
 	    }
 	    free(buf);

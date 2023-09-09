@@ -32,7 +32,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.45 2023/09/02 22:30:22 tom Exp @
+  * @Id: terminfo.head,v 1.48 2023/09/09 21:34:18 tom Exp @
   * Head of terminfo man page ends here
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
@@ -62,24 +62,23 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.125 2023/09/02 22:39:26 tom Exp @
+  * @Id: terminfo.tail,v 1.130 2023/09/09 17:08:08 tom Exp @
   *.in -2
   *.in +2
   *.in -2
   *.in +2
-  *.TH
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2023-09-02 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2023-09-09 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2023-09-02 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2023-09-09 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -106,7 +105,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20230902).
+       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20230909).
 
 
 </PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
@@ -161,6 +160,7 @@
        following suffixes should be used where possible:
 
             <STRONG>Suffix</STRONG>                  <STRONG>Meaning</STRONG>                   <STRONG>Example</STRONG>
+            -------------------------------------------------------------
             -<EM>nn</EM>      Number of lines on the screen            aaa-60
             -<EM>n</EM>p      Number of pages of memory                c100-4p
             -am      With automargins (usually the default)   vt100-am
@@ -283,7 +283,6 @@
 
                   <STRONG>Variable</STRONG>            <STRONG>Cap-</STRONG>      <STRONG>TCap</STRONG>       <STRONG>Description</STRONG>
                   <STRONG>Booleans</STRONG>            <STRONG>name</STRONG>      <STRONG>Code</STRONG>
-
 
 
           auto_left_margin            bw        bw     cub1 wraps from
@@ -1679,18 +1678,18 @@
 
        These are the margin-related capabilities:
 
-                <STRONG>Name</STRONG>       <STRONG>Description</STRONG>
-                ------------------------------------------------------
-                smgl       Set left margin at current column
-                smgr       Set right margin at current column
-                smgb       Set bottom margin at current line
-                smgt       Set top margin at current line
-                smgbp      Set bottom margin at line <EM>N</EM>
-                smglp      Set left margin at column <EM>N</EM>
-                smgrp      Set right margin at column <EM>N</EM>
-                smgtp      Set top margin at line <EM>N</EM>
-                smglr      Set both left and right margins to <EM>L</EM> and <EM>R</EM>
-                smgtb      Set both top and bottom margins to <EM>T</EM> and <EM>B</EM>
+                 <STRONG>Name</STRONG>    <STRONG>Description</STRONG>
+                 ---------------------------------------------------
+                 <STRONG>smgl</STRONG>    Set left margin at current column
+                 <STRONG>smgr</STRONG>    Set right margin at current column
+                 <STRONG>smgb</STRONG>    Set bottom margin at current line
+                 <STRONG>smgt</STRONG>    Set top margin at current line
+                 <STRONG>smgbp</STRONG>   Set bottom margin at line <EM>N</EM>
+                 <STRONG>smglp</STRONG>   Set left margin at column <EM>N</EM>
+                 <STRONG>smgrp</STRONG>   Set right margin at column <EM>N</EM>
+                 <STRONG>smgtp</STRONG>   Set top margin at line <EM>N</EM>
+                 <STRONG>smglr</STRONG>   Set both left and right margins to <EM>L</EM> and <EM>R</EM>
+                 <STRONG>smgtb</STRONG>   Set both top and bottom margins to <EM>T</EM> and <EM>B</EM>
 
        When writing an application that uses these  string  capabilities,  the
        pairs  should be first checked to see if each capability in the pair is
@@ -1922,18 +1921,18 @@
 
        For example, the DEC vt220 supports most of the modes:
 
-               <STRONG>tparm</STRONG> <STRONG>parameter</STRONG>      <STRONG>attribute</STRONG>        <STRONG>escape</STRONG> <STRONG>sequence</STRONG>
-
-               none                 none             \E[0m
-               p1                   standout         \E[0;1;7m
-               p2                   underline        \E[0;4m
-               p3                   reverse          \E[0;7m
-               p4                   blink            \E[0;5m
-               p5                   dim              not available
-               p6                   bold             \E[0;1m
-               p7                   invis            \E[0;8m
-               p8                   protect          not used
-               p9                   altcharset       ^O (off) ^N (on)
+                   <STRONG>tparm</STRONG> <STRONG>Parameter</STRONG>   <STRONG>Attribute</STRONG>    <STRONG>Escape</STRONG> <STRONG>Sequence</STRONG>
+                   ------------------------------------------------
+                   none              none         \E[0m
+                   p1                standout     \E[0;1;7m
+                   p2                underline    \E[0;4m
+                   p3                reverse      \E[0;7m
+                   p4                blink        \E[0;5m
+                   p5                dim          not available
+                   p6                bold         \E[0;1m
+                   p7                invis        \E[0;8m
+                   p8                protect      not used
+                   p9                altcharset   ^O (off) ^N (on)
 
        We begin each escape sequence by turning off any existing modes,  since
        there  is  no quick way to determine whether they are active.  Standout
@@ -1950,16 +1949,16 @@
 
        Writing out the above sequences, along with their dependencies yields
 
-            <STRONG>sequence</STRONG>             <STRONG>when</STRONG> <STRONG>to</STRONG> <STRONG>output</STRONG>      <STRONG>terminfo</STRONG> <STRONG>translation</STRONG>
-
-            \E[0                 always              \E[0
-            ;1                   if p1 or p6         %?%p1%p6%|%t;1%;
-            ;4                   if p2               %?%p2%|%t;4%;
-            ;5                   if p4               %?%p4%|%t;5%;
-            ;7                   if p1 or p3         %?%p1%p3%|%t;7%;
-            ;8                   if p7               %?%p7%|%t;8%;
-            m                    always              m
-            ^N or ^O             if p9 ^N, else ^O   %?%p9%t^N%e^O%;
+                 <STRONG>Sequence</STRONG>   <STRONG>When</STRONG> <STRONG>to</STRONG> <STRONG>Output</STRONG>      <STRONG>terminfo</STRONG> <STRONG>Translation</STRONG>
+                 ----------------------------------------------------
+                 \E[0       always              \E[0
+                 ;1         if p1 or p6         %?%p1%p6%|%t;1%;
+                 ;4         if p2               %?%p2%|%t;4%;
+                 ;5         if p4               %?%p4%|%t;5%;
+                 ;7         if p1 or p3         %?%p1%p3%|%t;7%;
+                 ;8         if p7               %?%p7%|%t;8%;
+                 m          always              m
+                 ^N or ^O   if p9 ^N, else ^O   %?%p9%t^N%e^O%;
 
        Putting this all together into the sgr sequence gives:
 
@@ -2243,41 +2242,41 @@
        4410v1 added.  This alternate character set may  be  specified  by  the
        <STRONG>acsc</STRONG> capability.
 
-         <STRONG>Glyph</STRONG>                       <STRONG>ACS</STRONG>            <STRONG>Ascii</STRONG>     <STRONG>acsc</STRONG>     <STRONG>acsc</STRONG>
-         <STRONG>Name</STRONG>                        <STRONG>Name</STRONG>           <STRONG>Default</STRONG>   <STRONG>Char</STRONG>     <STRONG>Value</STRONG>
+                                                   <STRONG>ASCII</STRONG>      <STRONG>acsc</STRONG>     <STRONG>acsc</STRONG>
+         <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>                 <STRONG>ACS</STRONG> <STRONG>Name</STRONG>       <STRONG>Fallback</STRONG>   <STRONG>Symbol</STRONG>   <STRONG>Value</STRONG>
          --------------------------------------------------------------------
-         arrow pointing right        ACS_RARROW     &gt;         +        0x2b
-         arrow pointing left         ACS_LARROW     &lt;         ,        0x2c
-         arrow pointing up           ACS_UARROW     ^         -        0x2d
-         arrow pointing down         ACS_DARROW     v         .        0x2e
-         solid square block          ACS_BLOCK      #         0        0x30
-         diamond                     ACS_DIAMOND    +         `        0x60
-         checker board (stipple)     ACS_CKBOARD    :         a        0x61
-         degree symbol               ACS_DEGREE     \         f        0x66
-         plus/minus                  ACS_PLMINUS    #         g        0x67
-         board of squares            ACS_BOARD      #         h        0x68
-         lantern symbol              ACS_LANTERN    #         i        0x69
-         lower right corner          ACS_LRCORNER   +         j        0x6a
-         upper right corner          ACS_URCORNER   +         k        0x6b
-         upper left corner           ACS_ULCORNER   +         l        0x6c
-         lower left corner           ACS_LLCORNER   +         m        0x6d
-         large plus or crossover     ACS_PLUS       +         n        0x6e
-         scan line 1                 ACS_S1         ~         o        0x6f
-         scan line 3                 ACS_S3         -         p        0x70
-         horizontal line             ACS_HLINE      -         q        0x71
-         scan line 7                 ACS_S7         -         r        0x72
-         scan line 9                 ACS_S9         _         s        0x73
-         tee pointing right          ACS_LTEE       +         t        0x74
-         tee pointing left           ACS_RTEE       +         u        0x75
-         tee pointing up             ACS_BTEE       +         v        0x76
-         tee pointing down           ACS_TTEE       +         w        0x77
-         vertical line               ACS_VLINE      |         x        0x78
-         less-than-or-equal-to       ACS_LEQUAL     &lt;         y        0x79
-         greater-than-or-equal-to    ACS_GEQUAL     &gt;         z        0x7a
-         greek pi                    ACS_PI         *         {        0x7b
-         not-equal                   ACS_NEQUAL     !         |        0x7c
-         UK pound sign               ACS_STERLING   f         }        0x7d
-         bullet                      ACS_BULLET     o         ~        0x7e
+         arrow pointing right       <STRONG>ACS_RARROW</STRONG>     &gt;          +        0x2b
+         arrow pointing left        <STRONG>ACS_LARROW</STRONG>     &lt;          ,        0x2c
+         arrow pointing up          <STRONG>ACS_UARROW</STRONG>     ^          -        0x2d
+         arrow pointing down        <STRONG>ACS_DARROW</STRONG>     v          .        0x2e
+         solid square block         <STRONG>ACS_BLOCK</STRONG>      #          0        0x30
+         diamond                    <STRONG>ACS_DIAMOND</STRONG>    +          `        0x60
+         checker board (stipple)    <STRONG>ACS_CKBOARD</STRONG>    :          a        0x61
+         degree symbol              <STRONG>ACS_DEGREE</STRONG>     \          f        0x66
+         plus/minus                 <STRONG>ACS_PLMINUS</STRONG>    #          g        0x67
+         board of squares           <STRONG>ACS_BOARD</STRONG>      #          h        0x68
+         lantern symbol             <STRONG>ACS_LANTERN</STRONG>    #          i        0x69
+         lower right corner         <STRONG>ACS_LRCORNER</STRONG>   +          j        0x6a
+         upper right corner         <STRONG>ACS_URCORNER</STRONG>   +          k        0x6b
+         upper left corner          <STRONG>ACS_ULCORNER</STRONG>   +          l        0x6c
+         lower left corner          <STRONG>ACS_LLCORNER</STRONG>   +          m        0x6d
+         large plus or crossover    <STRONG>ACS_PLUS</STRONG>       +          n        0x6e
+         scan line 1                <STRONG>ACS_S1</STRONG>         ~          o        0x6f
+         scan line 3                <STRONG>ACS_S3</STRONG>         -          p        0x70
+         horizontal line            <STRONG>ACS_HLINE</STRONG>      -          q        0x71
+         scan line 7                <STRONG>ACS_S7</STRONG>         -          r        0x72
+         scan line 9                <STRONG>ACS_S9</STRONG>         _          s        0x73
+         tee pointing right         <STRONG>ACS_LTEE</STRONG>       +          t        0x74
+         tee pointing left          <STRONG>ACS_RTEE</STRONG>       +          u        0x75
+         tee pointing up            <STRONG>ACS_BTEE</STRONG>       +          v        0x76
+         tee pointing down          <STRONG>ACS_TTEE</STRONG>       +          w        0x77
+         vertical line              <STRONG>ACS_VLINE</STRONG>      |          x        0x78
+         less-than-or-equal-to      <STRONG>ACS_LEQUAL</STRONG>     &lt;          y        0x79
+         greater-than-or-equal-to   <STRONG>ACS_GEQUAL</STRONG>     &gt;          z        0x7a
+         greek pi                   <STRONG>ACS_PI</STRONG>         *          {        0x7b
+         not-equal                  <STRONG>ACS_NEQUAL</STRONG>     !          |        0x7c
+         UK pound sign              <STRONG>ACS_STERLING</STRONG>   f          }        0x7d
+         bullet                     <STRONG>ACS_BULLET</STRONG>     o          ~        0x7e
 
        A few notes apply to the table itself:
 
@@ -2358,28 +2357,30 @@
        free  to  map  these  as  it  likes, but the RGB values indicate normal
        locations in color space.
 
-                    <STRONG>Color</STRONG>       <STRONG>#define</STRONG>       <STRONG>Value</STRONG>       <STRONG>RGB</STRONG>
-                    black     <STRONG>COLOR_BLACK</STRONG>       0     0, 0, 0
-                    red       <STRONG>COLOR_RED</STRONG>         1     max,0,0
-                    green     <STRONG>COLOR_GREEN</STRONG>       2     0,max,0
-                    yellow    <STRONG>COLOR_YELLOW</STRONG>      3     max,max,0
-                    blue      <STRONG>COLOR_BLUE</STRONG>        4     0,0,max
-                    magenta   <STRONG>COLOR_MAGENTA</STRONG>     5     max,0,max
-                    cyan      <STRONG>COLOR_CYAN</STRONG>        6     0,max,max
-                    white     <STRONG>COLOR_WHITE</STRONG>       7     max,max,max
+                    <STRONG>Color</STRONG>      <STRONG>#define</STRONG>       <STRONG>Value</STRONG>        <STRONG>RGB</STRONG>
+                   ------------------------------------------------
+                   black     <STRONG>COLOR_BLACK</STRONG>       0     0,   0,   0
+                   red       <STRONG>COLOR_RED</STRONG>         1     max, 0,   0
+                   green     <STRONG>COLOR_GREEN</STRONG>       2     0,   max, 0
+                   yellow    <STRONG>COLOR_YELLOW</STRONG>      3     max, max, 0
+                   blue      <STRONG>COLOR_BLUE</STRONG>        4     0,   0,   max
+                   magenta   <STRONG>COLOR_MAGENTA</STRONG>     5     max, 0,   max
+                   cyan      <STRONG>COLOR_CYAN</STRONG>        6     0,   max, max
+                   white     <STRONG>COLOR_WHITE</STRONG>       7     max, max, max
 
        The argument values of <STRONG>setf</STRONG>/<STRONG>setb</STRONG> historically correspond to a different
        mapping, i.e.,
 
-                    <STRONG>Color</STRONG>       <STRONG>#define</STRONG>       <STRONG>Value</STRONG>       <STRONG>RGB</STRONG>
-                    black     <STRONG>COLOR_BLACK</STRONG>       0     0, 0, 0
-                    blue      <STRONG>COLOR_BLUE</STRONG>        1     0,0,max
-                    green     <STRONG>COLOR_GREEN</STRONG>       2     0,max,0
-                    cyan      <STRONG>COLOR_CYAN</STRONG>        3     0,max,max
-                    red       <STRONG>COLOR_RED</STRONG>         4     max,0,0
-                    magenta   <STRONG>COLOR_MAGENTA</STRONG>     5     max,0,max
-                    yellow    <STRONG>COLOR_YELLOW</STRONG>      6     max,max,0
-                    white     <STRONG>COLOR_WHITE</STRONG>       7     max,max,max
+                    <STRONG>Color</STRONG>      <STRONG>#define</STRONG>       <STRONG>Value</STRONG>        <STRONG>RGB</STRONG>
+                   ------------------------------------------------
+                   black     <STRONG>COLOR_BLACK</STRONG>       0     0,   0,   0
+                   blue      <STRONG>COLOR_BLUE</STRONG>        1     0,   0,   max
+                   green     <STRONG>COLOR_GREEN</STRONG>       2     0,   max, 0
+                   cyan      <STRONG>COLOR_CYAN</STRONG>        3     0,   max, max
+                   red       <STRONG>COLOR_RED</STRONG>         4     max, 0,   0
+                   magenta   <STRONG>COLOR_MAGENTA</STRONG>     5     max, 0,   max
+                   yellow    <STRONG>COLOR_YELLOW</STRONG>      6     max, max, 0
+                   white     <STRONG>COLOR_WHITE</STRONG>       7     max, max, max
 
        It  is  important  to  not  confuse the two sets of color capabilities;
        otherwise red/blue will be interchanged on the display.
@@ -2409,23 +2410,25 @@
        of  attributes  not  to  be  used  when  colors   are   enabled.    The
        correspondence with the attributes understood by <STRONG>curses</STRONG> is as follows:
 
-                  <STRONG>Attribute</STRONG>              <STRONG>Bit</STRONG>   <STRONG>Decimal</STRONG>      <STRONG>Set</STRONG> <STRONG>by</STRONG>
-                  A_STANDOUT             0     1            sgr
-                  A_UNDERLINE            1     2            sgr
-                  A_REVERSE              2     4            sgr
-                  A_BLINK                3     8            sgr
-                  A_DIM                  4     16           sgr
-                  A_BOLD                 5     32           sgr
-                  A_INVIS                6     64           sgr
-                  A_PROTECT              7     128          sgr
-                  A_ALTCHARSET           8     256          sgr
-                  A_HORIZONTAL           9     512          sgr1
-                  A_LEFT                 10    1024         sgr1
-                  A_LOW                  11    2048         sgr1
-                  A_RIGHT                12    4096         sgr1
-                  A_TOP                  13    8192         sgr1
-                  A_VERTICAL             14    16384        sgr1
-                  A_ITALIC               15    32768        sitm
+                         <STRONG>Attribute</STRONG>     <STRONG>Bit</STRONG>   <STRONG>Decimal</STRONG>   <STRONG>Set</STRONG> <STRONG>by</STRONG>
+                        --------------------------------------
+                        <STRONG>A_STANDOUT</STRONG>      0         1    <STRONG>sgr</STRONG>
+                        <STRONG>A_UNDERLINE</STRONG>     1         2    <STRONG>sgr</STRONG>
+                        <STRONG>A_REVERSE</STRONG>       2         4    <STRONG>sgr</STRONG>
+                        <STRONG>A_BLINK</STRONG>         3         8    <STRONG>sgr</STRONG>
+                        <STRONG>A_DIM</STRONG>           4        16    <STRONG>sgr</STRONG>
+                        <STRONG>A_BOLD</STRONG>          5        32    <STRONG>sgr</STRONG>
+                        <STRONG>A_INVIS</STRONG>         6        64    <STRONG>sgr</STRONG>
+                        <STRONG>A_PROTECT</STRONG>       7       128    <STRONG>sgr</STRONG>
+                        <STRONG>A_ALTCHARSET</STRONG>    8       256    <STRONG>sgr</STRONG>
+                        <STRONG>A_HORIZONTAL</STRONG>    9       512    <STRONG>sgr1</STRONG>
+                        <STRONG>A_LEFT</STRONG>         10      1024    <STRONG>sgr1</STRONG>
+                        <STRONG>A_LOW</STRONG>          11      2048    <STRONG>sgr1</STRONG>
+                        <STRONG>A_RIGHT</STRONG>        12      4096    <STRONG>sgr1</STRONG>
+                        <STRONG>A_TOP</STRONG>          13      8192    <STRONG>sgr1</STRONG>
+
+                        <STRONG>A_VERTICAL</STRONG>     14     16384    <STRONG>sgr1</STRONG>
+                        <STRONG>A_ITALIC</STRONG>       15     32768    <STRONG>sitm</STRONG>
 
        For  example, on many IBM PC consoles, the underline attribute collides
        with the foreground color blue and is  not  available  in  color  mode.
@@ -2689,7 +2692,7 @@
 
 
 
-ncurses 6.4                       2023-09-02                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2023-09-09                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

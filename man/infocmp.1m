@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.88 2023/09/02 22:29:02 tom Exp $
-.TH @INFOCMP@ 1M 2023-09-02 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.90 2023/09/09 21:14:05 tom Exp $
+.TH @INFOCMP@ 1M 2023-09-09 "ncurses 6.4" "User commands"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -39,13 +39,18 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

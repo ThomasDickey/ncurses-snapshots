@@ -28,19 +28,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.78 2023/08/19 20:37:30 tom Exp $
-.TH curs_attr 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.80 2023/09/09 21:13:26 tom Exp $
+.TH curs_attr 3X 2023-09-09 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
+.\}
 .de NS
 .ie n  .sp
 .el    .sp .5
 .ie n  .in +4
 .el    .in +2
 .nf
-.ft CR			\" Courier
+.ft \*(CW
 ..
 .de NE
 .fi

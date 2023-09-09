@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.125 2023/09/02 22:39:26 tom Exp $
+.\" $Id: terminfo.tail,v 1.130 2023/09/09 17:08:08 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -85,7 +85,7 @@ The following entry, describing an ANSI-standard terminal, is representative
 of what a \fBterminfo\fP entry for a modern terminal typically looks like.
 .PP
 .nf
-.ft CW
+.ft \*(CW
 \s-2ansi|ansi/pc-term compatible with color,
         am, mc5i, mir, msgr,
         colors#8, cols#80, it#8, lines#24, ncv#3, pairs#64,
@@ -287,7 +287,7 @@ the system terminfo directory, \fI\*d\fP
 The \fBTERMINFO\fP variable can contain a terminal description instead
 of the pathname of a terminal database.
 If this variable begins with \*(``hex:\*('' or \*(``b64:\*(''
-then \fBncurses\fP reads a terminal description from 
+then \fBncurses\fP reads a terminal description from
 hexadecimal- or base64-encoded data,
 and if that description matches the name sought, will use that.
 This encoded data can be set using the \*(``\-Q\*('' option of
@@ -434,7 +434,7 @@ Thus the model 33 teletype is described as
 .PP
 .DT
 .nf
-.ft CW
+.ft \*(CW
 .\".in -2
 \s-133\||\|tty33\||\|tty\||\|model 33 teletype,
         bel=^G, cols#72, cr=^M, cud1=^J, hc, ind=^J, os,\s+1
@@ -446,7 +446,7 @@ while the Lear Siegler \s-1ADM-3\s0 is described as
 .PP
 .DT
 .nf
-.ft CW
+.ft \*(CW
 .\".in -2
 \s-1adm3\||\|3\||\|lsi adm3,
         am, bel=^G, clear=^Z, cols#80, cr=^M, cub1=^H, cud1=^J,
@@ -488,7 +488,7 @@ as in \fBprintf\fP(3), flags are \fI[\-+#]\fP and \fIspace\fP.
 Use a \*(``:\*('' to allow the next character to be a \*(``\-\*('' flag,
 avoiding interpreting \*(``%\-\*('' as an operator.
 .TP
-\f(CW%c\fP
+\f\*(CW%c\fP
 print \fIpop()\fP like %c in \fBprintf\fP
 .TP
 \fB%s\fP
@@ -739,12 +739,13 @@ If either is omitted, the corresponding margin is set to the left or
 right edge of the display (rather than leaving the margin unmodified).
 .PP
 These are the margin-related capabilities:
+.PP
 .TS
 center;
-l l
-_ _
-lw8 lw18.
-\fBName	Description\fP
+lb lb
+lb l .
+Name	Description
+_
 smgl	Set left margin at current column
 smgr	Set right margin at current column
 smgb	Set bottom margin at current line
@@ -1085,19 +1086,18 @@ For example, the DEC vt220 supports most of the modes:
 .PP
 .TS
 center;
-l l l
-l l l
-lw18 lw14 lw18.
-\fBtparm parameter	attribute	escape sequence\fP
-
-none	none	\\E[0m
-p1	standout	\\E[0;1;7m
-p2	underline	\\E[0;4m
-p3	reverse	\\E[0;7m
-p4	blink	\\E[0;5m
+lb lb lb
+l  l  l .
+tparm Parameter	Attribute	Escape Sequence
+_
+none	none	\eE[0m
+p1	standout	\eE[0;1;7m
+p2	underline	\eE[0;4m
+p3	reverse	\eE[0;7m
+p4	blink	\eE[0;5m
 p5	dim	not available
-p6	bold	\\E[0;1m
-p7	invis	\\E[0;8m
+p6	bold	\eE[0;1m
+p7	invis	\eE[0;8m
 p8	protect	not used
 p9	altcharset	^O (off) ^N (on)
 .TE
@@ -1121,12 +1121,10 @@ Writing out the above sequences, along with their dependencies yields
 .ne 11
 .TS
 center;
-l l l
-l l l
-lw18 lw14 lw18.
-\fBsequence	when to output	terminfo translation\fP
-
-.ft CW
+lb lb lb
+l  l  l .
+Sequence	When to Output	terminfo Translation
+_
 \\E[0	always	\\E[0
 ;1	if p1 or p6	%?%p1%p6%|%t;1%;
 ;4	if p2	%?%p2%|%t;4%;
@@ -1134,13 +1132,12 @@ lw18 lw14 lw18.
 ;7	if p1 or p3	%?%p1%p3%|%t;7%;
 ;8	if p7	%?%p7%|%t;8%;
 m	always	m
-^N or ^O	if p9 ^N, else ^O	%?%p9%t^N%e^O%;
-.ft R
+\*^N or \*^O	if p9 \*^N, else \*^O	%?%p9%t\*^N%e\*^O%;
 .TE
 .PP
 Putting this all together into the sgr sequence gives:
 .PP
-.ft CW
+.ft \*(CW
 .nf
     sgr=\\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p4%t;5%;
         %?%p1%p3%|%t;7%;%?%p7%t;8%;m%?%p9%t\\016%e\\017%;,
@@ -1551,18 +1548,17 @@ for most of the drawing characters
 supported by the VT100, with some characters from the AT&T 4410v1 added.
 This alternate character set may be specified by the \fBacsc\fP capability.
 .PP
-.TS H
-center expand;
-l l l l l
-l l l l l
-_ _ _ _ _
-lw25 lw10 lw6 lw6 lw6.
-.\".TH
-\fBGlyph	ACS	Ascii	acsc	acsc\fP
-\fBName	Name	Default	Char	Value\fP
+.TS
+center;
+lb lb lb lb lb.
+\&	\&	ASCII	acsc	acsc
+Glyph Name	ACS Name	Fallback	Symbol	Value
+_
+.T&
+l  lb l  l  l .
 arrow pointing right	ACS_RARROW	>	+	0x2b
 arrow pointing left	ACS_LARROW	<	,	0x2c
-arrow pointing up	ACS_UARROW	^	\-	0x2d
+arrow pointing up	ACS_UARROW	\*^	\-	0x2d
 arrow pointing down	ACS_DARROW	v	.	0x2e
 solid square block	ACS_BLOCK	#	0	0x30
 diamond         	ACS_DIAMOND	+	`	0x60
@@ -1576,7 +1572,7 @@ upper right corner	ACS_URCORNER	+	k	0x6b
 upper left corner	ACS_ULCORNER	+	l	0x6c
 lower left corner	ACS_LLCORNER	+	m	0x6d
 large plus or crossover	ACS_PLUS	+	n	0x6e
-scan line 1     	ACS_S1  	~	o	0x6f
+scan line 1     	ACS_S1  	\*~	o	0x6f
 scan line 3     	ACS_S3  	\-	p	0x70
 horizontal line 	ACS_HLINE	\-	q	0x71
 scan line 7     	ACS_S7  	\-	r	0x72
@@ -1591,7 +1587,7 @@ greater-than-or-equal-to	ACS_GEQUAL	>	z	0x7a
 greek pi        	ACS_PI	*	{	0x7b
 not-equal       	ACS_NEQUAL	!	|	0x7c
 UK pound sign        	ACS_STERLING	f	}	0x7d
-bullet          	ACS_BULLET	o	~	0x7e
+bullet          	ACS_BULLET	o	\*~	0x7e
 .TE
 .PP
 A few notes apply to the table itself:
@@ -1683,36 +1679,39 @@ The terminal hardware is free to
 map these as it likes, but the RGB values indicate normal locations in color
 space.
 .PP
-.TS H
+.TS
 center;
-l c c c
-l l n l.
-\fBColor	#define 	Value	RGB\fP
-black	\fBCOLOR_BLACK\fP	0	0, 0, 0
-red	\fBCOLOR_RED\ \fP	1	max,0,0
-green	\fBCOLOR_GREEN\fP	2	0,max,0
-yellow	\fBCOLOR_YELLOW\fP	3	max,max,0
-blue	\fBCOLOR_BLUE\fP	4	0,0,max
-magenta	\fBCOLOR_MAGENTA\fP	5	max,0,max
-cyan	\fBCOLOR_CYAN\fP	6	0,max,max
-white	\fBCOLOR_WHITE\fP	7	max,max,max
+cb cb cb cb s  s
+l  lb c  l1 l1 l .
+Color	#define 	Value	RGB
+_
+black	COLOR_BLACK	0	0,	0,	0
+red	COLOR_RED	1	max,	0,	0
+green	COLOR_GREEN	2	0,	max,	0
+yellow	COLOR_YELLOW	3	max,	max,	0
+blue	COLOR_BLUE	4	0,	0,	max
+magenta	COLOR_MAGENTA	5	max,	0,	max
+cyan	COLOR_CYAN	6	0,	max,	max
+white	COLOR_WHITE	7	max,	max,	max
 .TE
 .PP
 The argument values of \fBsetf\fP/\fBsetb\fP historically correspond to
 a different mapping, i.e.,
-.TS H
+.PP
+.TS
 center;
-l c c c
-l l n l.
-\fBColor	#define 	Value	RGB\fP
-black	\fBCOLOR_BLACK\fP	0	0, 0, 0
-blue	\fBCOLOR_BLUE\fP	1	0,0,max
-green	\fBCOLOR_GREEN\fP	2	0,max,0
-cyan	\fBCOLOR_CYAN\fP	3	0,max,max
-red	\fBCOLOR_RED\ \fP	4	max,0,0
-magenta	\fBCOLOR_MAGENTA\fP	5	max,0,max
-yellow	\fBCOLOR_YELLOW\fP	6	max,max,0
-white	\fBCOLOR_WHITE\fP	7	max,max,max
+cb cb cb cb s  s
+l  lb c  l1 l1 l .
+Color	#define 	Value	RGB
+_
+black	COLOR_BLACK	0	0,	0,	0
+blue	COLOR_BLUE	1	0,	0,	max
+green	COLOR_GREEN	2	0,	max,	0
+cyan	COLOR_CYAN	3	0,	max,	max
+red	COLOR_RED	4	max,	0,	0
+magenta	COLOR_MAGENTA	5	max,	0,	max
+yellow	COLOR_YELLOW	6	max,	max,	0
+white	COLOR_WHITE	7	max,	max,	max
 .TE
 .PP
 It is important to not confuse the two sets of color capabilities;
@@ -1753,16 +1752,17 @@ attributes understood by \fBcurses\fP is as follows:
 .PP
 .TS
 center;
-l l l l
-lw20 lw2 lw10 lw10.
-\fBAttribute	Bit	Decimal	Set by\fP
+cb cb cb cb
+lb n  n  lb.
+Attribute	Bit	Decimal	Set by
+_
 A_STANDOUT	0	1	sgr
 A_UNDERLINE	1	2	sgr
 A_REVERSE	2	4	sgr
-A_BLINK   	3	8	sgr
-A_DIM      	4	16	sgr
-A_BOLD    	5	32	sgr
-A_INVIS   	6	64	sgr
+A_BLINK	3	8	sgr
+A_DIM	4	16	sgr
+A_BOLD	5	32	sgr
+A_INVIS	6	64	sgr
 A_PROTECT	7	128	sgr
 A_ALTCHARSET	8	256	sgr
 A_HORIZONTAL	9	512	sgr1
