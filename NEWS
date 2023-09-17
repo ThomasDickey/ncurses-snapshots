@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.3995 2023/09/09 16:45:37 tom Exp $
+-- $Id: NEWS,v 1.4000 2023/09/17 08:34:59 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,8 +46,19 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20230917
+	+ improve formatting of manpages (integrated patches by Branden
+	  Robinson).
+	+ correct limit for name-length in write_entry.c (report/testcase by
+	  Luna Saphie Mittelbach).
+	+ limit delays to 30 seconds, i.e., padding delays in terminfo, as well
+	  as napms() and delay_output() functions.
+	+ improve a few pointer-checks.
+	+ improve parsing in _nc_msec_cost, allowing a single decimal point.
+
 20230909
-	+ improve formatting of manpages (patches by Branden Robinson).
+	+ improve formatting of manpages (patches by Branden Robinson), for
+	  captoinfo.1m and terminfo.5
 	> patches by Nicholas Marriott:
 	  + use string-hacks in alloc_entry.c, alloc_type.c and hardscroll.c,
 	    overlooked due to compiler changes in recent OpenBSD releases.

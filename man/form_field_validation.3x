@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_validation.3x,v 1.40 2023/07/01 15:46:10 tom Exp $
-.TH form_field_validation 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: form_field_validation.3x,v 1.44 2023/09/16 23:37:03 tom Exp $
+.TH form_field_validation 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -38,7 +38,8 @@
 .el    .IP \(bu 2
 ..
 .SH NAME
-\fBform_field_validation\fP \- data type validation for fields
+\fBform_field_validation\fP \-
+data type validation for fields
 .SH SYNOPSIS
 \fB#include <form.h>\fP
 .sp
@@ -82,7 +83,7 @@ Most field types are configurable,
 via arguments which the caller provides when calling \fBset_field_type\fP.
 .PP
 Several field types are predefined by the form library.
-.SS Predefined types
+.SH PREDEFINED TYPES
 It is possible to set up new programmer-defined field types.
 Field types are implemented via the \fBFIELDTYPE\fP data
 structure, which contains several pointers to functions.
@@ -92,27 +93,19 @@ which describes functions which can be used to construct
 a field-type dynamically.
 .PP
 The predefined types are as follows:
-.TP 5
-TYPE_ALNUM
+.SS TYPE_ALNUM
 Alphanumeric data.
 Required parameter:
-.RS
 .bP
 a third \fBint\fP argument, a minimum field width.
-.RE
-.TP 5
-TYPE_ALPHA
+.SS TYPE_ALPHA
 Character data.
 Required parameter:
-.RS
 .bP
 a third \fBint\fP argument, a minimum field width.
-.RE
-.TP 5
-TYPE_ENUM
+.SS TYPE_ENUM
 Accept one of a specified set of strings.
 Required parameters:
-.RS
 .bP
 a third \fB(char **)\fP argument pointing to a string list;
 .bP
@@ -122,15 +115,12 @@ a fifth \fBint\fP flag argument specifying whether a partial
 match must be a unique one.
 If this flag is off, a prefix matches the first
 of any set of more than one list elements with that prefix.
-.RE
-.IP
+.PP
 The library copies the string list,
 so you may use a list that lives in automatic variables on the stack.
-.TP 5
-TYPE_INTEGER
+.SS TYPE_INTEGER
 Integer data, parsable to an integer by \fBatoi\fP(3).
 Required parameters:
-.RS
 .bP
 a third \fBint\fP argument controlling the precision,
 .bP
@@ -139,18 +129,15 @@ a fourth \fBlong\fP argument constraining minimum value,
 a fifth \fBlong\fP constraining maximum value.
 If the maximum value is less than or equal to the minimum value, the range is
 simply ignored.
-.RE
-.IP
+.PP
 On return, the field buffer is formatted according to the
 \fBprintf\fP format specification \*(``.*ld\*('',
 where the \*(``*\*('' is replaced by the precision argument.
-.IP
+.PP
 For details of the precision handling see \fBprintf\fP(3).
-.TP 5
-TYPE_NUMERIC
+.SS TYPE_NUMERIC
 Numeric data (may have a decimal-point part).
 Required parameters:
-.RS
 .bP
 a third \fBint\fP argument controlling the precision,
 .bP
@@ -161,26 +148,22 @@ If your system supports locales,
 the decimal point character must be the one specified by your locale.
 If the maximum value is less than or equal to the minimum value,
 the range is simply ignored.
-.RE
-.IP
+.PP
 On return, the field buffer is formatted according to the
 \fBprintf\fP format specification \*(``.*f\*('',
 where the \*(``*\*('' is replaced by the precision argument.
-.IP
+.PP
 For details of the precision handling see \fBprintf\fP(3).
-.TP 5
-TYPE_REGEXP
+.SS TYPE_REGEXP
 Regular expression data.
 Required parameter:
-.RS
 .bP
 a third argument, a regular expression \fB(char *)\fP string.
 The data is valid if the regular expression matches it.
-.RE
-.IP
+.PP
 Regular expressions
 are in the format of \fBregcomp\fP and \fBregexec\fP.
-.IP
+.PP
 The regular expression must match the whole field.
 If you have for example, an eight character wide field,
 a regular expression "^[0\-9]*$" always
@@ -190,20 +173,17 @@ you may use for example "^[0\-9]* *$" which is good for
 trailing spaces (up to an empty field),
 or "^ *[0\-9]* *$" which is good for
 leading and trailing spaces around the digits.
-.TP 5
-TYPE_IPV4
+.SS TYPE_IPV4
 An Internet Protocol Version 4 address.
 Required parameter:
-.RS
 .bP
 none
-.RE
-.IP
+.PP
 The form library checks whether or not the buffer has the form \fIa.b.c.d\fP,
 where \fIa\fP, \fIb\fP, \fIc\fP, and \fId\fP are numbers in the range 0 to 255.
 Trailing blanks in the buffer are ignored.
 The address itself is not validated.
-.IP
+.PP
 This is an ncurses extension;
 this field type may not be available in other curses implementations.
 .SH RETURN VALUE

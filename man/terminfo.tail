@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.130 2023/09/09 17:08:08 tom Exp $
+.\" $Id: terminfo.tail,v 1.131 2023/09/16 17:01:55 Branden.Robinson Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -2092,6 +2092,9 @@ Supports both the SVr4 set and the AIX extensions.
 .TP 25
 \*d/?/*
 files containing terminal descriptions
+.SH AUTHORS
+Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
+Based on \fIpcurses\fP by Pavel Curtis.
 .SH SEE ALSO
 .na
 .hy 0
@@ -2105,6 +2108,3 @@ files containing terminal descriptions
 \fBterm_variables\fP(3X).
 \fBterm\fP(\*n).
 \fBuser_caps\fP(5).
-.SH AUTHORS
-Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
-Based on \fIpcurses\fP by Pavel Curtis.

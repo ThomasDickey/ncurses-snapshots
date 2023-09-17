@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.221 2023/07/22 20:13:04 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.222 2023/09/16 12:29:28 tom Exp $")
 
 /****************************************************************************
  *
@@ -503,6 +503,7 @@ _nc_setup_tinfo(const char *const tn, TERMTYPE2 *const tp)
      */
     if (status == TGETENT_YES) {
 	unsigned n;
+	T(("_nc_setup_tinfo - resetting invalid booleans/strings"));
 	for_each_boolean(n, tp) {
 	    if (!VALID_BOOLEAN(tp->Booleans[n]))
 		tp->Booleans[n] = FALSE;
@@ -517,9 +518,9 @@ _nc_setup_tinfo(const char *const tn, TERMTYPE2 *const tp)
 #endif
 
 /*
-**	Take the real command character out of the CC environment variable
-**	and substitute it in for the prototype given in 'command_character'.
-*/
+ * Take the real command character out of the CC environment variable
+ * and substitute it in for the prototype given in 'command_character'.
+ */
 void
 _nc_tinfo_cmdch(TERMINAL *termp, int proto)
 {
@@ -535,9 +536,12 @@ _nc_tinfo_cmdch(TERMINAL *termp, int proto)
 	char CC = *tmp;
 
 	for_each_string(i, &(termp->type)) {
-	    for (tmp = termp->type.Strings[i]; tmp && *tmp; tmp++) {
-		if (UChar(*tmp) == proto)
-		    *tmp = CC;
+	    tmp = termp->type.Strings[i];
+	    if (VALID_STRING(tmp)) {
+		for (; *tmp; ++tmp) {
+		    if (UChar(*tmp) == proto)
+			*tmp = CC;
+		}
 	    }
 	}
     }
@@ -822,7 +826,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 
 	set_curterm(termp);
 
-	if (command_character)
+	if (VALID_STRING(command_character))
 	    _nc_tinfo_cmdch(termp, UChar(*command_character));
 
 	/*

@@ -27,7 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.37 2023/08/19 19:47:16 tom Exp $
+.\" $Id: curs_kernel.3x,v 1.44 2023/09/16 23:37:03 tom Exp $
+.TH curs_kernel 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -36,23 +37,19 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_kernel 3X 2023-08-19 "ncurses 6.4" "Library calls"
-.na
-.hy 0
 .SH NAME
-\fBdef_prog_mode\fP,
-\fBdef_shell_mode\fP,
-\fBreset_prog_mode\fP,
-\fBreset_shell_mode\fP,
-\fBresetty\fP,
-\fBsavetty\fP,
-\fBgetsyx\fP,
-\fBsetsyx\fP,
-\fBripoffline\fP,
-\fBcurs_set\fP,
-\fBnapms\fP \- low-level \fBcurses\fP routines
-.ad
-.hy
+\fB\%def_prog_mode\fP,
+\fB\%def_shell_mode\fP,
+\fB\%reset_prog_mode\fP,
+\fB\%reset_shell_mode\fP,
+\fB\%resetty\fP,
+\fB\%savetty\fP,
+\fB\%getsyx\fP,
+\fB\%setsyx\fP,
+\fB\%ripoffline\fP,
+\fB\%curs_set\fP,
+\fB\%napms\fP \-
+low-level \fIcurses\fR routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp
@@ -177,18 +174,14 @@ requested \fIvisibility\fP is not supported.
 X/Open defines no error conditions.
 In this implementation
 .TP 5
-.na
-.hy 0
 \fBdef_prog_mode\fP, \fBdef_shell_mode\fP, \fBreset_prog_mode\fP, \fBreset_shell_mode\fP
-.hy
-.ad
 return an error
 if the terminal was not initialized, or
 if the I/O call to obtain the terminal settings fails.
 .TP 5
 \fBripoffline\fP
 returns an error if the maximum number of ripped-off lines
-exceeds the maximum (NRIPS = 5).
+exceeds the maximum (5).
 .SH NOTES
 Note that \fBgetsyx\fP is a macro, so \fB&\fP is not necessary before
 the variables \fIy\fP and \fIx\fP.

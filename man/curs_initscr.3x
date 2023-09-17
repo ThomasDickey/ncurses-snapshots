@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.45 2023/08/19 19:46:20 tom Exp $
-.TH curs_initscr 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.50 2023/09/16 23:37:03 tom Exp $
+.TH curs_initscr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -37,17 +37,14 @@
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
-.na
-.hy 0
 .SH NAME
-\fBinitscr\fP,
-\fBnewterm\fP,
-\fBendwin\fP,
-\fBisendwin\fP,
-\fBset_term\fP,
-\fBdelscreen\fP \- \fBcurses\fP screen initialization and manipulation routines
-.ad
-.hy
+\fB\%initscr\fP,
+\fB\%newterm\fP,
+\fB\%endwin\fP,
+\fB\%isendwin\fP,
+\fB\%set_term\fP,
+\fB\%delscreen\fP \-
+initialize, manipulate, or tear down \fIcurses\fR terminal interface
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp
@@ -235,25 +232,23 @@ Generic entries are detected by \fBsetupterm\fP(3X)
 and cannot be used for full-screen operation.
 Other implementations may handle a missing/empty TERM variable differently.
 .SS Signal Handlers
-Quoting from X/Open Curses, section 3.1.1:
+Quoting from X/Open Curses Issue 7, section 3.1.1:
 .RS 5
-.hy 0
 .PP
-.I Curses implementations may provide for special handling of the
-.I \fBSIGINT\fP,
-.I \fBSIGQUIT\fP and
-.I \fBSIGTSTP\fP signals
-.I if their disposition is \fBSIG_DFL\fP at the time
-\fBinitscr\fI is called \fR...
+Curses implementations may provide for special handling of the
+\%SIGINT,
+\%SIGQUIT,
+and \%SIGTSTP signals if their disposition is \%SIG_DFL at the time
+.I \%initscr
+is called.\|.\|.
 .PP
-.I Any special handling for these signals may remain in effect for the
-.I life of the process or until the process changes the disposition of
-.I the signal.
+Any special handling for these signals may remain in effect for the
+life of the process or until the process changes the disposition of
+the signal.
 .PP
-.I None of the Curses functions are required to be safe
-.I with respect to signals \fP...
+None of the Curses functions are required to be safe
+with respect to signals.\|.\|.
 .RE
-.hy
 .PP
 This implementation establishes signal handlers during initialization,
 e.g., \fBinitscr\fP or \fBnewterm\fP.

@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.26 2023/09/09 21:20:16 tom Exp $
-.TH new_pair 3X 2023-09-09 "ncurses 6.4" "Library calls"
+.\" $Id: new_pair.3x,v 1.30 2023/09/16 23:38:39 tom Exp $
+.TH new_pair 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -59,9 +59,10 @@
 .el    .in -2
 ..
 .SH NAME
-\fBalloc_pair\fP,
-\fBfind_pair\fP,
-\fBfree_pair\fP \- new curses color-pair functions
+\fB\%alloc_pair\fP,
+\fB\%find_pair\fP,
+\fB\%free_pair\fP \-
+dynamically allocate \fIcurses\fR color pairs
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp

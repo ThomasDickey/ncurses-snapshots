@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.73 2022/08/13 14:36:43 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.74 2023/09/16 10:44:33 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -206,8 +206,8 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
     save_ttytype(termp);
 #endif
 
-    if (command_character)
-	_nc_tinfo_cmdch(termp, *command_character);
+    if (VALID_STRING(command_character))
+	_nc_tinfo_cmdch(termp, UChar(*command_character));
 
     /*
      * If an application calls setupterm() rather than initscr() or

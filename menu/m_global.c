@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.33 2021/03/27 23:46:29 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.34 2023/09/16 16:39:26 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -568,7 +568,7 @@ _nc_New_TopRow_and_CurrentItem(
       cur_item = menu->curitem;
       assert(cur_item);
       menu->toprow = (short)(((menu->rows - menu->frows) >= 0)
-			     ? min(menu->rows - menu->frows, new_toprow)
+			     ? Min(menu->rows - menu->frows, new_toprow)
 			     : 0);
       menu->curitem = new_current_item;
 
@@ -592,7 +592,7 @@ _nc_New_TopRow_and_CurrentItem(
   else
     {				/* if we are not posted, this is quite simple */
       menu->toprow = (short)(((menu->rows - menu->frows) >= 0)
-			     ? min(menu->rows - menu->frows, new_toprow)
+			     ? Min(menu->rows - menu->frows, new_toprow)
 			     : 0);
       menu->curitem = new_current_item;
     }

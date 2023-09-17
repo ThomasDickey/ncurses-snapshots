@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2021 Thomas E. Dickey                                          *
+ * Copyright 2021,2023 Thomas E. Dickey                                     *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,13 +27,12 @@
  ****************************************************************************/
 
 /*
- * $Id: term.priv.h,v 1.7 2021/11/20 23:33:33 tom Exp $
+ * $Id: term.priv.h,v 1.8 2023/09/16 15:16:38 tom Exp $
  *
  *	term.priv.h
  *
  *	Header file for terminfo library objects which are private to
  *	the library.
- *
  */
 
 #ifndef _TERM_PRIV_H
@@ -45,6 +44,10 @@ extern "C" {
 #endif
 
 #include <ncurses_cfg.h>
+
+#ifndef __NCURSES_H
+#include <curses.h>
+#endif
 
 #undef NCURSES_OPAQUE
 #define NCURSES_INTERNALS 1

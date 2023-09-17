@@ -27,14 +27,23 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_legacy.3x,v 1.17 2023/07/01 15:43:20 tom Exp $
+.\" $Id: curs_legacy.3x,v 1.22 2023/09/16 23:37:03 tom Exp $
+.TH curs_legacy 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_legacy 3X 2023-07-01 "ncurses 6.4" "Library calls"
 .SH NAME
-curs_legacy \- get \fBcurses\fP cursor and window coordinates, attributes
+\fB\%getattrs\fP,
+\fB\%getbegx\fP,
+\fB\%getbegy\fP,
+\fB\%getcurx\fP,
+\fB\%getcury\fP,
+\fB\%getmaxx\fP,
+\fB\%getmaxy\fP,
+\fB\%getparx\fP,
+\fB\%getpary\fP \-
+get \fIcurses\fR cursor and window coordinates or attributes (legacy)
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp

@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_threads.3x,v 1.37 2023/08/19 20:38:10 tom Exp @
+  * @Id: curs_threads.3x,v 1.41 2023/09/16 23:37:03 tom Exp @
   * ***************************************************************************
   * ***************************************************************************
 -->
@@ -37,12 +37,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_threads 3x 2023-08-19 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_threads 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_threads 3x 2023-08-19 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_threads 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>
 
@@ -50,7 +50,7 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>curs_threads</STRONG> - <STRONG>curses</STRONG> thread support
+       <STRONG>curs_threads</STRONG> - <EM>curses</EM> thread support
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -69,13 +69,13 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        This  implementation  can  be configured to provide rudimentary support
-       for multi-threaded applications.  This makes a  different  set  of  li-
-       braries, e.g., <STRONG>libncursest</STRONG> since the binary interfaces are different.
+       for  multi-threaded  applications.   This  makes  a  different  set  of
+       libraries, e.g., <STRONG>libncursest</STRONG> since the binary interfaces are different.
 
        Rather  than  modify  the interfaces to pass a thread specifier to each
-       function, it adds a few functions which can be used in  any  configura-
-       tion  which  hide  the  mutex's needed to prevent concurrent use of the
-       global variables when configured for threading.
+       function,  it  adds  a  few  functions  which  can  be  used   in   any
+       configuration  which  hide the mutex's needed to prevent concurrent use
+       of the global variables when configured for threading.
 
        In addition to forcing access to members of the <STRONG>WINDOW</STRONG> structure to  be
        via  functions  (see <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>), it makes functions of the common
@@ -90,33 +90,34 @@
        are considered writable by some applications.  The functions  described
        here address these special situations.
 
-       The ESCDELAY and TABSIZE global variables are modified by some applica-
-       tions.  To modify them in any configuration, use  the  <STRONG>set_escdelay</STRONG>  or
-       <STRONG>set_tabsize</STRONG> functions.  Other global variables are not modifiable.
+       The  ESCDELAY  and  TABSIZE  global  variables  are  modified  by  some
+       applications.   To  modify  them  in   any   configuration,   use   the
+       <STRONG>set_escdelay</STRONG>  or <STRONG>set_tabsize</STRONG> functions.  Other global variables are not
+       modifiable.
 
        The <STRONG>get_escdelay</STRONG> function returns the value for ESCDELAY.
 
-       The  <STRONG>use_window</STRONG> and <STRONG>use_screen</STRONG> functions provide coarse granularity mu-
-       texes for their respective <STRONG>WINDOW</STRONG> and <STRONG>SCREEN</STRONG> parameters, and call a us-
-       er-supplied  function,  passing  it a <EM>data</EM> parameter, and returning the
+       The <STRONG>use_window</STRONG> and  <STRONG>use_screen</STRONG>  functions  provide  coarse  granularity
+       mutexes  for  their respective <STRONG>WINDOW</STRONG> and <STRONG>SCREEN</STRONG> parameters, and call a
+       user-supplied function, passing it a <EM>data</EM> parameter, and returning  the
        value from the user-supplied function to the application.
 
 
 </PRE><H3><a name="h3-USAGE">USAGE</a></H3><PRE>
-       All of the ncurses library functions assume that the locale is not  al-
-       tered during operation.  In addition, they use data which is maintained
-       within a hierarchy of scopes.
+       All  of  the  ncurses  library  functions assume that the locale is not
+       altered  during  operation.   In  addition,  they  use  data  which  is
+       maintained within a hierarchy of scopes.
 
-          <STRONG>o</STRONG>   global data, e.g., used in the low-level terminfo or termcap in-
-              terfaces.
+          <STRONG>o</STRONG>   global  data,  e.g.,  used  in the low-level terminfo or termcap
+              interfaces.
 
           <STRONG>o</STRONG>   terminal data, e.g., associated with a call to <STRONG>set_curterm</STRONG>.  The
               terminal data are initialized when screens are created.
 
           <STRONG>o</STRONG>   screen data, e.g., associated with a call to <STRONG>newterm</STRONG> or <STRONG>initscr</STRONG>.
 
-          <STRONG>o</STRONG>   window data, e.g., associated with a call to <STRONG>newwin</STRONG>  or  <STRONG>subwin</STRONG>.
-              Windows  are  associated with screens.  Pads are not necessarily
+          <STRONG>o</STRONG>   window  data,  e.g., associated with a call to <STRONG>newwin</STRONG> or <STRONG>subwin</STRONG>.
+              Windows are associated with screens.  Pads are  not  necessarily
               associated with a particular screen.
 
               Most curses applications operate on one or more windows within a
@@ -124,7 +125,7 @@
 
           <STRONG>o</STRONG>   reentrant, i.e., it uses only the data passed as parameters.
 
-       This  table lists the scope of data used for each symbol in the ncurses
+       This table lists the scope of data used for each symbol in the  ncurses
        library when it is configured to support threading:
 
             Symbol                  Scope
@@ -178,10 +179,10 @@
             chgat                   window (stdscr)
             clear                   window (stdscr)
             clearok                 window
+
             clrtobot                window (stdscr)
             clrtoeol                window (stdscr)
             color_content           screen
-
             color_set               window (stdscr)
             copywin                 window locks(source, target)
             cur_term                terminal
@@ -244,11 +245,11 @@
             in_wchnstr              window (stdscr)
             in_wchstr               window (stdscr)
             inch                    window (stdscr)
+
             inchnstr                window (stdscr)
             inchstr                 window (stdscr)
             init_color              screen
             init_pair               screen
-
             initscr                 global locks(screenlist)
             innstr                  window (stdscr)
             innwstr                 window (stdscr)
@@ -310,12 +311,12 @@
             mvget_wch               screen (input-operation)
             mvget_wstr              screen (input-operation)
             mvgetch                 screen (input-operation)
+
             mvgetn_wstr             screen (input-operation)
             mvgetnstr               screen (input-operation)
             mvgetstr                screen (input-operation)
             mvhline                 window (stdscr)
             mvhline_set             window (stdscr)
-
             mvin_wch                window (stdscr)
             mvin_wchnstr            window (stdscr)
             mvin_wchstr             window (stdscr)
@@ -376,13 +377,13 @@
             mvwprintw               window
             mvwscanw                screen
             mvwvline                window
+
             mvwvline_set            window
             napms                   reentrant
             newpad                  global locks(windowlist)
             newscr                  screen (readonly)
             newterm                 global locks(screenlist)
             newwin                  global locks(windowlist)
-
             nl                      screen
             nocbreak                screen
             nodelay                 window
@@ -442,6 +443,7 @@
             slk_attrset             screen
             slk_clear               screen
             slk_color               screen
+
             slk_init                screen
             slk_label               screen
             slk_noutrefresh         screen
@@ -449,7 +451,6 @@
             slk_restore             screen
             slk_set                 screen
             slk_touch               screen
-
             slk_wset                screen
             standend                window
             standout                window
@@ -508,6 +509,7 @@
             waddchnstr              window
             waddchstr               window
             waddnstr                window
+
             waddnwstr               window
             waddstr                 window
             waddwstr                window
@@ -516,7 +518,6 @@
             wattr_on                window
             wattr_set               window
             wattroff                window
-
             wattron                 window
             wattrset                window
             wbkgd                   window
@@ -574,6 +575,7 @@
             wredrawln               window
             wrefresh                screen
             wresize                 window locks(windowlist)
+
             wscanw                  screen
             wscrl                   window
             wsetscrreg              window
@@ -583,7 +585,6 @@
             wsyncup                 screen (affects window plus parents)
             wtimeout                window
             wtouchln                window
-
             wunctrl                 global (static data)
             wvline                  window
             wvline_set              window
@@ -598,10 +599,10 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines are specific to ncurses.  They  were  not  supported  on
+       These  routines  are  specific  to ncurses.  They were not supported on
        Version 7, BSD or System V implementations.  It is recommended that any
-       code depending on ncurses extensions be conditioned using  NCURSES_VER-
-       SION.
+       code   depending   on   ncurses   extensions   be   conditioned   using
+       NCURSES_VERSION.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -609,7 +610,7 @@
 
 
 
-ncurses 6.4                       2023-08-19                  <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                  <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

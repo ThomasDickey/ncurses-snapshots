@@ -48,7 +48,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.3 2023/03/25 14:08:36 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.4 2023/09/16 16:29:24 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -393,7 +393,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 
 	Width = screen_columns(sp);
 	Height = screen_lines(sp);
-	nonempty = min(Height, NewScreen(sp)->_maxy + 1);
+	nonempty = Min(Height, NewScreen(sp)->_maxy + 1);
 
 	T(("... %dx%d clear cur:%d new:%d",
 	   Height, Width,

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.149 2022/04/30 18:36:54 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.150 2023/09/16 16:39:15 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -745,7 +745,7 @@ _nc_init_color(SCREEN *sp, int color, int r, int g, int b)
 	NCURSES_PUTP2("initialize_color",
 		      TIPARM_4(initialize_color, color, r, g, b));
 #endif
-	sp->_color_defs = max(color + 1, sp->_color_defs);
+	sp->_color_defs = Max(color + 1, sp->_color_defs);
 
 	result = OK;
     }

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_pad.3x,v 1.33 2023/07/01 15:43:20 tom Exp @
+  * @Id: curs_pad.3x,v 1.38 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_pad 3x 2023-07-01 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_pad 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_pad 3x 2023-07-01 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_pad 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 
@@ -48,7 +48,7 @@
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>newpad</STRONG>, <STRONG>subpad</STRONG>, <STRONG>prefresh</STRONG>, <STRONG>pnoutrefresh</STRONG>, <STRONG>pechochar</STRONG>, <STRONG>pecho_wchar</STRONG> - create
-       and display <STRONG>curses</STRONG> pads
+       and display <EM>curses</EM> pads
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -73,12 +73,12 @@
        A pad is like a window, except that it is not restricted by the  screen
        size,  and  is not necessarily associated with a particular part of the
        screen.  Pads can be used when a large window is  needed,  and  only  a
-       part  of  the  window will be on the screen at one time.  Automatic re-
-       freshes of pads (e.g., from scrolling or echoing of input) do  not  oc-
-       cur.
+       part  of  the  window  will  be  on  the screen at one time.  Automatic
+       refreshes of pads (e.g., from scrolling or echoing  of  input)  do  not
+       occur.
 
-       It  is  not  legal to call <STRONG>wrefresh</STRONG> with a <EM>pad</EM> as an argument; the rou-
-       tines <STRONG>prefresh</STRONG> or <STRONG>pnoutrefresh</STRONG> should be  called  instead.   Note  that
+       It  is  not  legal  to  call  <STRONG>wrefresh</STRONG>  with  a <EM>pad</EM> as an argument; the
+       routines <STRONG>prefresh</STRONG> or <STRONG>pnoutrefresh</STRONG> should be called instead.  Note  that
        these routines require additional parameters to specify the part of the
        pad to be displayed and the location on the screen to be used  for  the
        display.
@@ -86,8 +86,8 @@
 
 </PRE><H3><a name="h3-subpad">subpad</a></H3><PRE>
        The  <STRONG>subpad</STRONG> routine creates and returns a pointer to a subwindow within
-       a pad with the given number of lines, <EM>nlines</EM>, and columns, <EM>ncols</EM>.   Un-
-       like  <STRONG>subwin</STRONG>,  which uses screen coordinates, the window is at position
+       a pad with the given number  of  lines,  <EM>nlines</EM>,  and  columns,  <EM>ncols</EM>.
+       Unlike <STRONG>subwin</STRONG>, which uses screen coordinates, the window is at position
        (<EM>begin</EM>_<EM>x</EM><STRONG>,</STRONG> <EM>begin</EM>_<EM>y</EM>) on the pad.  The window is made in the middle of the
        window  <EM>orig</EM>,  so  that changes made to one window affect both windows.
        During the use of this routine, it will  often  be  necessary  to  call
@@ -100,8 +100,8 @@
        additional  parameters  are needed to indicate what part of the pad and
        screen are involved.
 
-       <STRONG>o</STRONG>   The <EM>pminrow</EM> and <EM>pmincol</EM> parameters specify the upper left-hand cor-
-           ner of the rectangle to be displayed in the pad.
+       <STRONG>o</STRONG>   The <EM>pminrow</EM> and <EM>pmincol</EM>  parameters  specify  the  upper  left-hand
+           corner of the rectangle to be displayed in the pad.
 
        <STRONG>o</STRONG>   The  <EM>sminrow</EM>,  <EM>smincol</EM>, <EM>smaxrow</EM>, and <EM>smaxcol</EM> parameters specify the
            edges of the rectangle to be displayed on the screen.
@@ -118,23 +118,23 @@
        followed  by a call to <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>, a call to <STRONG>waddch</STRONG> followed by a call
        to <STRONG>wrefresh</STRONG>, or a call to <STRONG>waddch</STRONG> followed by a call to  <STRONG>prefresh</STRONG>.   The
        knowledge  that  only  a single character is being output is taken into
-       consideration and, for non-control characters, a  considerable  perfor-
-       mance  gain  might  be  seen  by  using these routines instead of their
+       consideration  and,  for   non-control   characters,   a   considerable
+       performance gain might be seen by using these routines instead of their
        equivalents.  In the case of <STRONG>pechochar</STRONG>, the last location of the pad on
        the screen is reused for the arguments to <STRONG>prefresh</STRONG>.
 
 
 </PRE><H3><a name="h3-pecho_wchar">pecho_wchar</a></H3><PRE>
-       The  <STRONG>pecho_wchar</STRONG>  function  is the analogous wide-character form of <STRONG>pe-</STRONG>
-       <STRONG>chochar</STRONG>.  It outputs one character to a pad and  immediately  refreshes
-       the pad.  It does this by a call to <STRONG>wadd_wch</STRONG> followed by a call to <STRONG>pre-</STRONG>
-       <STRONG>fresh</STRONG>.
+       The  <STRONG>pecho_wchar</STRONG>  function  is  the  analogous  wide-character  form of
+       <STRONG>pechochar</STRONG>.  It outputs one character to a pad and immediately refreshes
+       the  pad.   It  does  this  by a call to <STRONG>wadd_wch</STRONG> followed by a call to
+       <STRONG>prefresh</STRONG>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Routines that return an integer return <STRONG>ERR</STRONG> upon failure  and  <STRONG>OK</STRONG>  (SVr4
-       only  specifies "an integer value other than <STRONG>ERR</STRONG>") upon successful com-
-       pletion.
+       only  specifies  "an  integer  value  other  than <STRONG>ERR</STRONG>") upon successful
+       completion.
 
        Routines that return pointers return <STRONG>NULL</STRONG> on error, and  set  <STRONG>errno</STRONG>  to
        <STRONG>ENOMEM</STRONG>.
@@ -144,16 +144,16 @@
           <STRONG>prefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>
                return an error if the window pointer is null, or if the window
                is not really a pad or if the  area  to  refresh  extends  off-
-               screen or if the minimum coordinates are greater than the maxi-
-               mum.
+               screen  or  if  the  minimum  coordinates  are greater than the
+               maximum.
 
           <STRONG>pechochar</STRONG>
-               returns an error if the window is not really a pad, and the as-
-               sociated call to <STRONG>wechochar</STRONG> returns an error.
+               returns an error if the window is not really  a  pad,  and  the
+               associated call to <STRONG>wechochar</STRONG> returns an error.
 
           <STRONG>pecho_wchar</STRONG>
-               returns an error if the window is not really a pad, and the as-
-               sociated call to <STRONG>wecho_wchar</STRONG> returns an error.
+               returns  an  error  if  the window is not really a pad, and the
+               associated call to <STRONG>wecho_wchar</STRONG> returns an error.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -163,18 +163,18 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        BSD curses has no <EM>pad</EM> feature.
 
-       SVr2 curses (1986) provided the <STRONG>newpad</STRONG> and related functions, document-
-       ing  them  in  a single line each.  SVr3 (1987) provided more extensive
-       documentation.
+       SVr2  curses  (1986)  provided  the  <STRONG>newpad</STRONG>  and   related   functions,
+       documenting  them  in  a  single  line each.  SVr3 (1987) provided more
+       extensive documentation.
 
        The documentation does not explain the term <EM>pad</EM>.  However,  the  Apollo
        <EM>Aegis</EM> workstation operating system supported a graphical <EM>pad</EM> feature:
 
-       <STRONG>o</STRONG>   These  graphical pads could be much larger than the computer's dis-
-           play.
+       <STRONG>o</STRONG>   These  graphical  pads  could  be  much  larger than the computer's
+           display.
 
-       <STRONG>o</STRONG>   The read-only output from a command could be scrolled back  to  in-
-           spect, and select text from the pad.
+       <STRONG>o</STRONG>   The read-only output from a  command  could  be  scrolled  back  to
+           inspect, and select text from the pad.
 
        The two uses may be related.
 
@@ -195,16 +195,16 @@
            returning <STRONG>ERR</STRONG> in that case.
 
            However,  it only sets the flag for subwindows if the parent window
-           is a pad.  Its <STRONG>newpad</STRONG> function does not set this information.  Con-
-           sequently, the check will never fail.
+           is a pad.  Its <STRONG>newpad</STRONG>  function  does  not  set  this  information.
+           Consequently, the check will never fail.
 
            It  makes no comparable check in <STRONG>pnoutrefresh</STRONG>, though interestingly
            enough, a comment in the source code states  that  the  lack  of  a
            check was an MKS extension.
 
        <STRONG>o</STRONG>   NetBSD  7 curses sets a flag in the <STRONG>WINDOW</STRONG> structure for <STRONG>newpad</STRONG> and
-           <STRONG>subpad</STRONG>, using this to help with the  distinction  between  <STRONG>wnoutre-</STRONG>
-           <STRONG>fresh</STRONG> and <STRONG>pnoutrefresh</STRONG>.
+           <STRONG>subpad</STRONG>,  using  this  to  help   with   the   distinction   between
+           <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>.
 
            It  does  not  check for the case where a subwindow is created in a
            pad using <STRONG>subwin</STRONG> or <STRONG>derwin</STRONG>.
@@ -223,8 +223,8 @@
        <STRONG>o</STRONG>   checks  in  both  <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG> to ensure that pads
            and windows are handled distinctly, and
 
-       <STRONG>o</STRONG>   ensures that <STRONG>dupwin</STRONG> and <STRONG>getwin</STRONG> treat pads  versus  windows  consis-
-           tently.
+       <STRONG>o</STRONG>   ensures  that  <STRONG>dupwin</STRONG>  and  <STRONG>getwin</STRONG>  treat   pads   versus   windows
+           consistently.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -232,7 +232,7 @@
 
 
 
-ncurses 6.4                       2023-07-01                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

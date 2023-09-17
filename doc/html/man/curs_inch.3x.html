@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inch.3x,v 1.33 2023/08/19 20:46:33 tom Exp @
+  * @Id: curs_inch.3x,v 1.37 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inch 3x 2023-08-19 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_inch 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inch 3x 2023-08-19 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_inch 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 
@@ -48,8 +48,7 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>inch</STRONG>,  <STRONG>winch</STRONG>,  <STRONG>mvinch</STRONG>,  <STRONG>mvwinch</STRONG> - get a character and attributes from a
-       <STRONG>curses</STRONG> window
+       <STRONG>inch</STRONG>, <STRONG>winch</STRONG>, <STRONG>mvinch</STRONG>, <STRONG>mvwinch</STRONG> - get a <EM>curses</EM> character from a window
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -63,15 +62,15 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       These routines return the character, of type  <STRONG>chtype</STRONG>,  at  the  current
-       position  in  the  named  window.   If  any attributes are set for that
-       position, their values are OR'ed into the  value  returned.   Constants
-       defined  in <STRONG>&lt;curses.h&gt;</STRONG> can be used with the <STRONG>&amp;</STRONG> (logical AND) operator to
+       These  routines  return  the  character, of type <STRONG>chtype</STRONG>, at the current
+       position in the named window.  If  any  attributes  are  set  for  that
+       position,  their  values  are OR'ed into the value returned.  Constants
+       defined in <STRONG>&lt;curses.h&gt;</STRONG> can be used with the <STRONG>&amp;</STRONG> (logical AND) operator  to
        extract the character or attributes alone.
 
 
 </PRE><H3><a name="h3-Attributes">Attributes</a></H3><PRE>
-       The following bit-masks may  be  AND-ed  with  characters  returned  by
+       The  following  bit-masks  may  be  AND-ed  with characters returned by
        <STRONG>winch</STRONG>.
 
        <STRONG>A_CHARTEXT</STRONG>     Bit-mask to extract character
@@ -80,12 +79,12 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Functions  with  a  "mv"  prefix  first perform a cursor movement using
+       Functions with a "mv" prefix first  perform  a  cursor  movement  using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
        the window pointer is null.
 
-       The  <STRONG>winch</STRONG>  function  does  not  return an error if the window contains
-       characters larger than 8-bits (255).  Only the low-order 8 bits of  the
+       The <STRONG>winch</STRONG> function does not return an  error  if  the  window  contains
+       characters  larger than 8-bits (255).  Only the low-order 8 bits of the
        character are used by <STRONG>winch</STRONG>.
 
 
@@ -96,26 +95,26 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        These functions are described in the XSI Curses standard, Issue 4.
 
-       Very  old systems (before standardization) provide a different function
+       Very old systems (before standardization) provide a different  function
        with the same name:
 
-       <STRONG>o</STRONG>   The <STRONG>winch</STRONG> function was part of the  original  BSD  curses  library,
-           which   stored   a  7-bit  character  combined  with  the  <EM>standout</EM>
+       <STRONG>o</STRONG>   The  <STRONG>winch</STRONG>  function  was  part of the original BSD curses library,
+           which  stored  a  7-bit  character  combined  with   the   <EM>standout</EM>
            attribute.
 
-           In BSD curses, <STRONG>winch</STRONG> returned only the character  (as  an  integer)
+           In  BSD  curses,  <STRONG>winch</STRONG> returned only the character (as an integer)
            with the <EM>standout</EM> attribute removed.
 
-       <STRONG>o</STRONG>   System  V  curses  added support for several video attributes which
+       <STRONG>o</STRONG>   System V curses added support for several  video  attributes  which
            could be combined with characters in the window.
 
            Reflecting this improvement, the function was altered to return the
            character combined with all video attributes in a <STRONG>chtype</STRONG> value.
 
        X/Open Curses does not specify the size and layout of attributes, color
-       and character values in <STRONG>chtype</STRONG>; it is  implementation-dependent.   This
-       implementation  uses 8 bits for character values.  An application using
-       more bits,  e.g.,  a  Unicode  value,  should  use  the  wide-character
+       and  character  values in <STRONG>chtype</STRONG>; it is implementation-dependent.  This
+       implementation uses 8 bits for character values.  An application  using
+       more  bits,  e.g.,  a  Unicode  value,  should  use  the wide-character
        equivalents to these functions.
 
 
@@ -124,16 +123,16 @@
             gives an overview of the WINDOW and <STRONG>chtype</STRONG> data types.
 
        <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-            goes  into  more  detail,  pointing  out  portability problems and
+            goes into more  detail,  pointing  out  portability  problems  and
             constraints on the use of <STRONG>chtype</STRONG> for returning window information.
 
        <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
-            describes comparable functions for the  wide-character  (ncursesw)
+            describes  comparable  functions for the wide-character (ncursesw)
             library.
 
 
 
-ncurses 6.4                       2023-08-19                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

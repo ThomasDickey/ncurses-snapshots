@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+  * Copyright 2018-2021,2023 Thomas E. Dickey                                *
   * Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_variables.3x,v 1.18 2021/12/25 21:49:32 tom Exp @
+  * @Id: curs_variables.3x,v 1.23 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_variables 3x 2021-12-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_variables 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_variables 3x 2021-12-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_variables 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
@@ -47,8 +47,8 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>COLORS</STRONG>, <STRONG>COLOR_PAIRS</STRONG>, <STRONG>COLS</STRONG>, <STRONG>ESCDELAY</STRONG>, <STRONG>LINES</STRONG>, <STRONG>TABSIZE</STRONG>, <STRONG>curscr</STRONG>, <STRONG>newscr</STRONG>,
-       <STRONG>stdscr</STRONG> - <STRONG>curses</STRONG> global variables
+       <STRONG>COLORS</STRONG>,  <STRONG>COLOR_PAIRS</STRONG>,  <STRONG>COLS</STRONG>,  <STRONG>ESCDELAY</STRONG>, <STRONG>LINES</STRONG>, <STRONG>TABSIZE</STRONG>, <STRONG>curscr</STRONG>, <STRONG>newscr</STRONG>,
+       <STRONG>stdscr</STRONG> - <EM>curses</EM> global variables
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -101,8 +101,8 @@
 </PRE><H3><a name="h3-ESCDELAY">ESCDELAY</a></H3><PRE>
        This variable holds the number of milliseconds to wait after reading an
        escape character, to distinguish between an individual escape character
-       entered on the keyboard from escape sequences sent by cursor- and func-
-       tion-keys (see <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>).
+       entered  on  the  keyboard  from  escape  sequences sent by cursor- and
+       function-keys (see <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>).
 
 
 </PRE><H3><a name="h3-LINES">LINES</a></H3><PRE>
@@ -112,8 +112,8 @@
 
 </PRE><H3><a name="h3-TABSIZE">TABSIZE</a></H3><PRE>
        This  variable  holds  the number of columns used by the <EM>curses</EM> library
-       when converting a tab character to spaces as it adds the tab to a  win-
-       dow (see <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>.
+       when converting a tab character to spaces as  it  adds  the  tab  to  a
+       window (see <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>.
 
 
 </PRE><H3><a name="h3-The-Current-Screen">The Current Screen</a></H3><PRE>
@@ -125,8 +125,8 @@
 
 
 </PRE><H3><a name="h3-The-New-Screen">The New Screen</a></H3><PRE>
-       This  implementation of curses uses a special window <STRONG>newscr</STRONG> to hold up-
-       dates to the terminal screen before applying them to <STRONG>curscr</STRONG>.
+       This  implementation  of  curses  uses  a special window <STRONG>newscr</STRONG> to hold
+       updates to the terminal screen before applying them to <STRONG>curscr</STRONG>.
 
        This is referred to as the "virtual  screen"  in  the  <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG> and <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG> manual pages.
@@ -150,22 +150,22 @@
        <STRONG>TABSIZE</STRONG>  is  a feature of SVr4 curses which is not documented by X/Open
        curses.
 
-       <STRONG>o</STRONG>   In SVr4 curses, <STRONG>TABSIZE</STRONG> is initially set from the terminal descrip-
-           tion's  <STRONG>init_tabs</STRONG> capability.  After that, it can be altered by the
-           applications using SVr4 curses.
+       <STRONG>o</STRONG>   In  SVr4  curses,  <STRONG>TABSIZE</STRONG>  is  initially  set  from  the  terminal
+           description's  <STRONG>init_tabs</STRONG> capability.  After that, it can be altered
+           by the applications using SVr4 curses.
 
-           SVr4 curses uses the current value of <STRONG>TABSIZE</STRONG> to compute the  posi-
-           tion  of  tabstops  for  updating both the virtual screen with <STRONG>add-</STRONG>
-           <STRONG><A HREF="addch.3x.html">ch(3x)</A></STRONG> as well as the physical screen with <STRONG><A HREF="curs_terminfo.3x.html">mvcur(3x)</A></STRONG>.
+           SVr4 curses uses the  current  value  of  <STRONG>TABSIZE</STRONG>  to  compute  the
+           position  of  tabstops  for  updating  both the virtual screen with
+           <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG> as well as the physical screen with <STRONG><A HREF="curs_terminfo.3x.html">mvcur(3x)</A></STRONG>.
 
-       <STRONG>o</STRONG>   This implementation uses the current value of <STRONG>TABSIZE</STRONG> only for  up-
-           dating  the  virtual screen.  It uses the terminal description's <STRONG>it</STRONG>
+       <STRONG>o</STRONG>   This implementation uses the current  value  of  <STRONG>TABSIZE</STRONG>  only  for
+           updating the virtual screen.  It uses the terminal description's <STRONG>it</STRONG>
            (<STRONG>init_tabs</STRONG>) capability for computing hardware tabs (i.e., tab stops
            on the physical screen).
 
        <STRONG>o</STRONG>   Other  implementations  differ.  For instance, NetBSD curses allows
-           <STRONG>TABSIZE</STRONG> to be set through an environment variable.  This  implemen-
-           tation does not.
+           <STRONG>TABSIZE</STRONG>  to  be  set  through  an   environment   variable.    This
+           implementation does not.
 
            NetBSD curses does not support hardware tabs; it uses the <STRONG>init_tabs</STRONG>
            capability and the <STRONG>TABSIZE</STRONG> variable only for updating  the  virtual
@@ -177,8 +177,8 @@
 
        <STRONG>o</STRONG>   The default value for AIX's <STRONG>ESCDELAY</STRONG> is 0.1 seconds.
 
-       <STRONG>o</STRONG>   AIX  also enforces a limit of 10,000 seconds for <STRONG>ESCDELAY</STRONG>; this im-
-           plementation currently has no upper limit.
+       <STRONG>o</STRONG>   AIX  also  enforces  a  limit  of 10,000 seconds for <STRONG>ESCDELAY</STRONG>; this
+           implementation currently has no upper limit.
 
        This implementation has long used <STRONG>ESCDELAY</STRONG> with units of  milliseconds,
        making  it  impossible to be completely compatible with AIX.  Likewise,
@@ -192,7 +192,7 @@
 
 
 
-ncurses 6.4                       2021-12-25                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

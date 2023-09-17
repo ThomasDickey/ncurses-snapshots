@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.78 2023/09/09 16:06:00 Nicholas.Marriott Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.79 2023/09/15 08:16:12 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -158,8 +158,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 	/* copy term_names, Strings, uses */
 	tp->term_names = _nc_save_str(tp->term_names);
 	for_each_string(i, tp) {
-	    if (tp->Strings[i] != ABSENT_STRING &&
-		tp->Strings[i] != CANCELLED_STRING) {
+	    if (VALID_STRING(tp->Strings[i])) {
 		tp->Strings[i] = _nc_save_str(tp->Strings[i]);
 	    }
 	}

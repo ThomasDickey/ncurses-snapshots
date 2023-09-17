@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.28 2023/03/11 20:40:52 tom Exp $
-.TH curs_addstr 3X 2023-03-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.32 2023/09/16 23:34:43 tom Exp $
+.TH curs_addstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,19 +37,16 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBaddstr\fP,
-\fBaddnstr\fP,
-\fBwaddstr\fP,
-\fBwaddnstr\fP,
-\fBmvaddstr\fP,
-\fBmvaddnstr\fP,
-\fBmvwaddstr\fP,
-\fBmvwaddnstr\fP \- add a string of characters to a \fBcurses\fP window and advance cursor
-.ad
-.hy
+\fB\%addstr\fP,
+\fB\%addnstr\fP,
+\fB\%waddstr\fP,
+\fB\%waddnstr\fP,
+\fB\%mvaddstr\fP,
+\fB\%mvaddnstr\fP,
+\fB\%mvwaddstr\fP,
+\fB\%mvwaddnstr\fP \-
+add a string to a \fIcurses\fR window and advance the cursor
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

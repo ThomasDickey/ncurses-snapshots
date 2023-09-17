@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_opaque.3x,v 1.23 2023/07/01 14:31:54 tom Exp @
+  * @Id: curs_opaque.3x,v 1.27 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_opaque 3x 2023-07-01 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_opaque 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_opaque 3x 2023-07-01 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_opaque 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>
 
@@ -47,9 +47,9 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>is_cleared</STRONG>, <STRONG>is_idlok</STRONG>, <STRONG>is_idcok</STRONG>, <STRONG>is_immedok</STRONG>, <STRONG>is_keypad</STRONG>, <STRONG>is_leaveok</STRONG>,
-       <STRONG>is_nodelay</STRONG>, <STRONG>is_notimeout</STRONG>, <STRONG>is_pad</STRONG>, <STRONG>is_scrollok</STRONG>, <STRONG>is_subwin</STRONG>, <STRONG>is_syncok</STRONG>,
-       <STRONG>wgetdelay</STRONG>, <STRONG>wgetparent</STRONG>, <STRONG>wgetscrreg</STRONG> - <STRONG>curses</STRONG> window properties
+       <STRONG>is_cleared</STRONG>,  <STRONG>is_idlok</STRONG>,  <STRONG>is_idcok</STRONG>,  <STRONG>is_immedok</STRONG>,  <STRONG>is_keypad</STRONG>,  <STRONG>is_leaveok</STRONG>,
+       <STRONG>is_nodelay</STRONG>, <STRONG>is_notimeout</STRONG>, <STRONG>is_pad</STRONG>,  <STRONG>is_scrollok</STRONG>,  <STRONG>is_subwin</STRONG>,  <STRONG>is_syncok</STRONG>,
+       <STRONG>wgetdelay</STRONG>, <STRONG>wgetparent</STRONG>, <STRONG>wgetscrreg</STRONG> - obtain <EM>curses</EM> window properties
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -74,8 +74,8 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        This  implementation  provides functions which return properties set in
-       the WINDOW structure, allowing it to be "opaque" if the  symbol  <STRONG>NCURS-</STRONG>
-       <STRONG>ES_OPAQUE</STRONG> is defined:
+       the WINDOW  structure,  allowing  it  to  be  "opaque"  if  the  symbol
+       <STRONG>NCURSES_OPAQUE</STRONG> is defined:
 
        <STRONG>is_cleared</STRONG>
             returns the value set in <STRONG><A HREF="curs_outopts.3x.html">clearok(3x)</A></STRONG>
@@ -108,8 +108,8 @@
             returns the value set in <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>
 
        <STRONG>is_subwin</STRONG>
-            returns  <STRONG>TRUE</STRONG>  if the window is a subwindow, i.e., created by <STRONG>sub-</STRONG>
-            <STRONG><A HREF="subwin.3x.html">win(3x)</A></STRONG> or <STRONG><A HREF="derwin.3x.html">derwin(3x)</A></STRONG>
+            returns  <STRONG>TRUE</STRONG>  if  the  window  is  a  subwindow, i.e., created by
+            <STRONG><A HREF="subwin.3x.html">subwin(3x)</A></STRONG> or <STRONG><A HREF="derwin.3x.html">derwin(3x)</A></STRONG>
 
        <STRONG>is_syncok</STRONG>
             returns the value set in <STRONG><A HREF="syncok.3x.html">syncok(3x)</A></STRONG>
@@ -118,8 +118,8 @@
             returns the delay timeout as set in <STRONG><A HREF="wtimeout.3x.html">wtimeout(3x)</A></STRONG>.
 
        <STRONG>wgetparent</STRONG>
-            returns the parent WINDOW pointer for subwindows, or NULL for win-
-            dows having no parent.
+            returns the parent WINDOW pointer  for  subwindows,  or  NULL  for
+            windows having no parent.
 
        <STRONG>wgetscrreg</STRONG>
             returns the top and bottom rows for the scrolling margin as set in
@@ -137,8 +137,8 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        These routines are specific to ncurses.  They  were  not  supported  on
        Version 7, BSD or System V implementations.  It is recommended that any
-       code depending on ncurses extensions be conditioned using  NCURSES_VER-
-       SION.
+       code   depending   on   ncurses   extensions   be   conditioned   using
+       NCURSES_VERSION.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -146,7 +146,7 @@
 
 
 
-ncurses 6.4                       2023-07-01                   <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                   <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

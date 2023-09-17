@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.65 2023/08/19 19:45:54 tom Exp $
-.TH curs_addch 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addch.3x,v 1.69 2023/09/16 23:34:43 tom Exp $
+.TH curs_addch 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -39,12 +39,13 @@
 .el    .IP \(bu 2
 ..
 .SH NAME
-\fBaddch\fP,
-\fBwaddch\fP,
-\fBmvaddch\fP,
-\fBmvwaddch\fP,
-\fBechochar\fP,
-\fBwechochar\fP \- add a character (with attributes) to a \fBcurses\fP window, then advance the cursor
+\fB\%addch\fP,
+\fB\%waddch\fP,
+\fB\%mvaddch\fP,
+\fB\%mvwaddch\fP,
+\fB\%echochar\fP,
+\fB\%wechochar\fP \-
+add a \fIcurses\fR character to a window and advance the cursor
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .PP

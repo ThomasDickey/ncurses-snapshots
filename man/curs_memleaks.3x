@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2008-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_memleaks.3x,v 1.16 2022/06/04 23:33:48 tom Exp $
-.TH curs_memleaks 3X 2022-06-04 "ncurses 6.4" "Library calls"
+.\" $Id: curs_memleaks.3x,v 1.21 2023/09/16 23:37:03 tom Exp $
+.TH curs_memleaks 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,13 +37,10 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBexit_curses\fP,
-\fBexit_terminfo\fP \- \fBcurses\fP memory-leak checking
-.ad
-.hy
+\fB\%exit_curses\fP,
+\fB\%exit_terminfo\fP \-
+check for memory leaks in \fIcurses\fR
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .br

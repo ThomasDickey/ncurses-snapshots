@@ -28,10 +28,11 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_hook.3x,v 1.23 2023/07/01 15:46:10 tom Exp $
-.TH form_hook 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: form_hook.3x,v 1.25 2023/09/16 23:37:03 tom Exp $
+.TH form_hook 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .SH NAME
-\fBform_hook\fP \- set hooks for automatic invocation by applications
+\fBform_hook\fP \-
+set hooks for automatic invocation by applications
 .SH SYNOPSIS
 \fB#include <form.h>\fP
 .sp
@@ -53,27 +54,28 @@
 .SH DESCRIPTION
 These functions make it possible to set hook functions to be called at various
 points in the automatic processing of input event codes by \fBform_driver\fP.
-.PP
-The function \fBset_field_init\fP sets a hook to be called at form-post time
+.SS set_field_init\fP
+sets a hook to be called at form-post time
 and each time the selected field changes (after the change).
-\fBfield_init\fP
+.SS field_init
 returns the current field init hook, if any (\fBNULL\fP if there is no such
 hook).
-.PP
-The function \fBset_field_term\fP sets a hook to be called at form-unpost time
+.SS set_field_term
+sets a hook to be called at form-unpost time
 and each time the selected field changes (before the change).
-\fBfield_term\fP
+.SS field_term
 returns the current field term hook, if any (\fBNULL\fP if there is no such
 hook).
-.PP
-The function \fBset_form_init\fP sets a hook to be called at form-post time and
+.SS set_form_init
+sets a hook to be called at form-post time and
 just after a page change once it is posted.
-\fBform_init\fP returns the
-current form init hook, if any (\fBNULL\fP if there is no such hook).
-.PP
-The function \fBset_form_term\fP sets a hook to be called at form-unpost time
+.SS form_init
+returns the current form init hook,
+if any (\fBNULL\fP if there is no such hook).
+.SS set_form_term
+sets a hook to be called at form-unpost time
 and just before a page change once it is posted.
-\fBform_init\fP
+.SS form_init
 returns the current form term hook, if any (\fBNULL\fP if there is no such
 hook).
 .SH RETURN VALUE

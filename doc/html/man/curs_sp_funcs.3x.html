@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_sp_funcs.3x,v 1.33 2023/08/19 19:48:07 tom Exp @
+  * @Id: curs_sp_funcs.3x,v 1.37 2023/09/16 23:37:03 tom Exp @
   * ***************************************************************************
   * ***************************************************************************
   * ***************************************************************************
@@ -37,12 +37,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_sp_funcs 3x 2023-08-19 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_sp_funcs 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_sp_funcs 3x 2023-08-19 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_sp_funcs 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
 
@@ -50,7 +50,7 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       curs_sp_funcs - <STRONG>curses</STRONG> screen-pointer extension
+       <STRONG>curs_sp_funcs</STRONG> - <EM>curses</EM> screen-pointer extension
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -229,14 +229,14 @@
 
 
 </PRE><H3><a name="h3-IMPROVED-FUNCTIONS">IMPROVED FUNCTIONS</a></H3><PRE>
-       Most of the functions are new versions of existing functions.  A param-
-       eter  is  added  at  the  front  of the parameter list.  It is a SCREEN
+       Most of the functions  are  new  versions  of  existing  functions.   A
+       parameter  is added at the front of the parameter list.  It is a SCREEN
        pointer.
 
        The existing functions all use the current screen, which  is  a  static
-       variable.  The extended functions use the specified screen, thereby re-
-       ducing the number of variables which must be modified to update  multi-
-       ple screens.
+       variable.   The  extended  functions  use the specified screen, thereby
+       reducing the number of variables  which  must  be  modified  to  update
+       multiple screens.
 
 
 </PRE><H3><a name="h3-NEW-FUNCTIONS">NEW FUNCTIONS</a></H3><PRE>
@@ -254,8 +254,8 @@
             With  the  screen-pointer extension, there are situations where it
             must create a current screen before the unextended  library  does.
             The  <STRONG>new_prescr</STRONG> function is used internally to handle these cases.
-            It is also provided as an entrypoint to allow applications to cus-
-            tomize the library initialization.
+            It is also provided as an  entrypoint  to  allow  applications  to
+            customize the library initialization.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -268,27 +268,28 @@
 
        NCURSES_SP_NAME
             The new functions are named using the macro <EM>NCURSES</EM><STRONG>_</STRONG><EM>SP</EM><STRONG>_</STRONG><EM>NAME</EM>, which
-            hides the actual implementation.  Currently this adds a "_sp" suf-
-            fix  to the name of the unextended function.  This manual page in-
-            dexes the extensions showing the full name.   However  the  proper
-            usage of these functions uses the macro, to provide for the possi-
-            bility of changing the naming convention for specific library con-
-            figurations.
+            hides the actual implementation.   Currently  this  adds  a  "_sp"
+            suffix  to  the name of the unextended function.  This manual page
+            indexes the extensions showing the full name.  However the  proper
+            usage  of  these  functions  uses  the  macro,  to provide for the
+            possibility of changing the naming convention for specific library
+            configurations.
 
        NCURSES_SP_OUTC
             This  is  a new function-pointer type to use in the screen-pointer
             functions where an <EM>NCURSES</EM><STRONG>_</STRONG><EM>OUTC</EM> is used in the unextended library.
 
        NCURSES_OUTC
-            This is a function-pointer type used for the cases where  a  func-
-            tion passes characters to the output stream, e.g., <STRONG><A HREF="curs_terminfo.3x.html">vidputs(3x)</A></STRONG>.
+            This is a  function-pointer  type  used  for  the  cases  where  a
+            function   passes   characters   to   the   output  stream,  e.g.,
+            <STRONG><A HREF="curs_terminfo.3x.html">vidputs(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  are  specific  to ncurses.  They were not supported on
+       These routines are specific to ncurses.  They  were  not  supported  on
        Version 7, BSD or System V implementations.  It is recommended that any
-       code  depending  on  ncurses  extensions  be  conditioned  using <EM>NCURS-</EM>
-       <EM>ES</EM><STRONG>_</STRONG><EM>SP</EM><STRONG>_</STRONG><EM>FUNCS</EM>.
+       code   depending   on   ncurses   extensions   be   conditioned   using
+       <EM>NCURSES</EM><STRONG>_</STRONG><EM>SP</EM><STRONG>_</STRONG><EM>FUNCS</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -296,7 +297,7 @@
 
 
 
-ncurses 6.4                       2023-08-19                 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

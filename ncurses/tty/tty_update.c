@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -85,7 +85,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.314 2022/07/23 22:12:59 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.315 2023/09/16 16:38:41 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1004,7 +1004,7 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 	if (check_pending(NCURSES_SP_ARG))
 	    goto cleanup;
 
-	nonempty = min(screen_lines(SP_PARM), NewScreen(SP_PARM)->_maxy + 1);
+	nonempty = Min(screen_lines(SP_PARM), NewScreen(SP_PARM)->_maxy + 1);
 
 	if (SP_PARM->_scrolling) {
 	    NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_ARG);
@@ -1134,7 +1134,7 @@ ClrUpdate(NCURSES_SP_DCL0)
     if (0 != SP_PARM) {
 	int i;
 	NCURSES_CH_T blank = ClrBlank(NCURSES_SP_ARGx StdScreen(SP_PARM));
-	int nonempty = min(screen_lines(SP_PARM),
+	int nonempty = Min(screen_lines(SP_PARM),
 			   NewScreen(SP_PARM)->_maxy + 1);
 
 	ClearScreen(NCURSES_SP_ARGx blank);
@@ -1233,7 +1233,7 @@ static int
 ClrBottom(NCURSES_SP_DCLx int total)
 {
     int top = total;
-    int last = min(screen_columns(SP_PARM), NewScreen(SP_PARM)->_maxx + 1);
+    int last = Min(screen_columns(SP_PARM), NewScreen(SP_PARM)->_maxx + 1);
     NCURSES_CH_T blank = NewScreen(SP_PARM)->_line[total - 1].text[last - 1];
 
     if (clr_eos && can_clear_with(NCURSES_SP_ARGx CHREF(blank))) {
@@ -1293,7 +1293,7 @@ ClrBottom(NCURSES_SP_DCLx int total)
 **		nLastChar = position of last different character in new line
 **
 **		move to firstChar
-**		overwrite chars up to min(oLastChar, nLastChar)
+**		overwrite chars up to Min(oLastChar, nLastChar)
 **		if oLastChar < nLastChar
 **			insert newLine[oLastChar+1..nLastChar]
 **		else
@@ -1531,7 +1531,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 		}
 		ClrToEOL(NCURSES_SP_ARGx blank, FALSE);
 	    } else {
-		n = max(nLastChar, oLastChar);
+		n = Max(nLastChar, oLastChar);
 		PutRange(NCURSES_SP_ARGx
 			 oldLine,
 			 newLine,
@@ -1556,7 +1556,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 		    break;
 	    }
 
-	    n = min(oLastChar, nLastChar);
+	    n = Min(oLastChar, nLastChar);
 	    if (n >= firstChar) {
 		GoTo(NCURSES_SP_ARGx lineno, firstChar);
 		PutRange(NCURSES_SP_ARGx
@@ -1568,7 +1568,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 	    }
 
 	    if (oLastChar < nLastChar) {
-		int m = max(nLastNonblank, oLastNonblank);
+		int m = Max(nLastNonblank, oLastNonblank);
 #if USE_WIDEC_SUPPORT
 		if (n) {
 		    while (isWidecExt(newLine[n + 1]) && n) {

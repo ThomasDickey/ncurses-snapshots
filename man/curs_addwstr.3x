@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.20 2023/07/15 17:11:59 tom Exp $
-.TH curs_addwstr 3X 2023-07-15 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.24 2023/09/16 23:34:43 tom Exp $
+.TH curs_addwstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,19 +37,16 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBaddwstr\fP,
-\fBaddnwstr\fP,
-\fBwaddwstr\fP,
-\fBwaddnwstr\fP,
-\fBmvaddwstr\fP,
-\fBmvaddnwstr\fP,
-\fBmvwaddwstr\fP,
-\fBmvwaddnwstr\fP \- add a string of wide characters to a \fBcurses\fP window and advance cursor
-.ad
-.hy
+\fB\%addwstr\fP,
+\fB\%addnwstr\fP,
+\fB\%waddwstr\fP,
+\fB\%waddnwstr\fP,
+\fB\%mvaddwstr\fP,
+\fB\%mvaddnwstr\fP,
+\fB\%mvwaddwstr\fP,
+\fB\%mvwaddnwstr\fP \-
+add a wide-character string to a \fIcurses\fR window and advance the cursor
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.48 2023/07/01 15:43:20 tom Exp $
-.TH curs_slk 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_slk.3x,v 1.53 2023/09/16 23:37:03 tom Exp $
+.TH curs_slk 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,29 +37,26 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBslk_init\fP,
-\fBslk_set\fP,
-\fBslk_wset\fP,
-\fBslk_refresh\fP,
-\fBslk_noutrefresh\fP,
-\fBslk_label\fP,
-\fBslk_clear\fP,
-\fBslk_restore\fP,
-\fBslk_touch\fP,
-\fBslk_attron\fP,
-\fBslk_attrset\fP,
-\fBslk_attroff\fP,
-\fBslk_attr_on\fP,
-\fBslk_attr_set\fP,
-\fBslk_attr_off\fP,
-\fBslk_attr\fP,
-\fBslk_color\fP,
-\fBextended_slk_color\fP \- \fBcurses\fP soft label routines
-.ad
-.hy
+\fB\%slk_init\fP,
+\fB\%slk_set\fP,
+\fB\%slk_wset\fP,
+\fB\%slk_refresh\fP,
+\fB\%slk_noutrefresh\fP,
+\fB\%slk_label\fP,
+\fB\%slk_clear\fP,
+\fB\%slk_restore\fP,
+\fB\%slk_touch\fP,
+\fB\%slk_attron\fP,
+\fB\%slk_attrset\fP,
+\fB\%slk_attroff\fP,
+\fB\%slk_attr_on\fP,
+\fB\%slk_attr_set\fP,
+\fB\%slk_attr_off\fP,
+\fB\%slk_attr\fP,
+\fB\%slk_color\fP,
+\fB\%extended_slk_color\fP \-
+\fIcurses\fR soft label key routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp
@@ -208,11 +205,7 @@ In this implementation
 \fBslk_attr\fP
 returns the attribute used for the soft keys.
 .TP 5
-.na
-.hy 0
 \fBslk_attroff\fP, \fBslk_attron\fP, \fBslk_clear\fP, \fBslk_noutrefresh\fP, \fBslk_refresh\fP, \fBslk_touch\fP
-.ad
-.hy
 return an error
 if the terminal or the softkeys were not initialized.
 .TP 5

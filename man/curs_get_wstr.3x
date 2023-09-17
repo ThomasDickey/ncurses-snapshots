@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.30 2023/08/05 12:14:30 tom Exp $
-.TH curs_get_wstr 3X 2023-08-05 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.34 2023/09/16 23:34:43 tom Exp $
+.TH curs_get_wstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,19 +37,16 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBget_wstr\fP,
-\fBgetn_wstr\fP,
-\fBwget_wstr\fP,
-\fBwgetn_wstr\fP,
-\fBmvget_wstr\fP,
-\fBmvgetn_wstr\fP,
-\fBmvwget_wstr\fP,
-\fBmvwgetn_wstr\fP \- get an array of wide characters from a curses terminal keyboard
-.ad
-.hy
+\fB\%get_wstr\fP,
+\fB\%getn_wstr\fP,
+\fB\%wget_wstr\fP,
+\fB\%wgetn_wstr\fP,
+\fB\%mvget_wstr\fP,
+\fB\%mvgetn_wstr\fP,
+\fB\%mvwget_wstr\fP,
+\fB\%mvwgetn_wstr\fP \-
+get a wide-character string from a \fIcurses\fR terminal keyboard
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

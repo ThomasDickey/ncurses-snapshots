@@ -27,16 +27,17 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.18 2023/09/09 23:32:29 tom Exp $
+.\" $Id: MKada_config.in,v 1.22 2023/09/17 08:29:17 tom Exp $
+.TH ADACURSES 1 2023-09-17 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ds C adacurses@USE_CFG_SUFFIX@\-config
-.TH ADACURSES 1 2023-09-09 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie n .ds CW R
 .el   \{
 .ie \n(.g .ds CW CR
 .el       .ds CW CW
 .\}
 .SH NAME
-adacurses@USE_CFG_SUFFIX@\-config \- helper script for @ADA_LIBNAME@ libraries
+\fB\%adacurses@USE_CFG_SUFFIX@\-config\fP \-
+helper script for @ADA_LIBNAME@ libraries
 .SH SYNOPSIS
 .B \*C
 [\fIoptions\fP]

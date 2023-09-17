@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: form_hook.3x,v 1.23 2023/07/01 15:46:10 tom Exp @
+  * @Id: form_hook.3x,v 1.25 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>form_hook 3x 2023-07-01 ncurses 6.4 Library calls</TITLE>
+<TITLE>form_hook 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">form_hook 3x 2023-07-01 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">form_hook 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="form_hook.3x.html">form_hook(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="form_hook.3x.html">form_hook(3x)</A></STRONG>
 
@@ -72,23 +72,45 @@
        various points in the automatic processing  of  input  event  codes  by
        <STRONG>form_driver</STRONG>.
 
-       The  function <STRONG>set_field_init</STRONG> sets a hook to be called at form-post time
-       and  each  time  the  selected  field  changes  (after   the   change).
-       <STRONG>field_init</STRONG>  returns  the current field init hook, if any (<STRONG>NULL</STRONG> if there
-       is no such hook).
 
-       The function <STRONG>set_field_term</STRONG> sets a hook to  be  called  at  form-unpost
-       time  and  each  time  the  selected field changes (before the change).
-       <STRONG>field_term</STRONG> returns the current field term hook, if any (<STRONG>NULL</STRONG>  if  there
-       is no such hook).
+</PRE><H3><a name="h3-set_field_init">set_field_init</a></H3><PRE>
+       sets  a  hook to be called at form-post time and each time the selected
+       field changes (after the change).
 
-       The  function  <STRONG>set_form_init</STRONG> sets a hook to be called at form-post time
-       and just after a page change once it is posted.  <STRONG>form_init</STRONG> returns  the
-       current form init hook, if any (<STRONG>NULL</STRONG> if there is no such hook).
 
-       The function <STRONG>set_form_term</STRONG> sets a hook to be called at form-unpost time
-       and just before a page change once it is posted.  <STRONG>form_init</STRONG> returns the
-       current form term hook, if any (<STRONG>NULL</STRONG> if there is no such hook).
+</PRE><H3><a name="h3-field_init">field_init</a></H3><PRE>
+       returns the current field init hook, if any (<STRONG>NULL</STRONG> if there is  no  such
+       hook).
+
+
+</PRE><H3><a name="h3-set_field_term">set_field_term</a></H3><PRE>
+       sets a hook to be called at form-unpost time and each time the selected
+       field changes (before the change).
+
+
+</PRE><H3><a name="h3-field_term">field_term</a></H3><PRE>
+       returns the current field term hook, if any (<STRONG>NULL</STRONG> if there is  no  such
+       hook).
+
+
+</PRE><H3><a name="h3-set_form_init">set_form_init</a></H3><PRE>
+       sets a hook to be called at form-post time and just after a page change
+       once it is posted.
+
+
+</PRE><H3><a name="h3-form_init">form_init</a></H3><PRE>
+       returns the current form init hook, if any (<STRONG>NULL</STRONG> if there  is  no  such
+       hook).
+
+
+</PRE><H3><a name="h3-set_form_term">set_form_term</a></H3><PRE>
+       sets  a  hook  to  be called at form-unpost time and just before a page
+       change once it is posted.
+
+
+</PRE><H3><a name="h3-form_init">form_init</a></H3><PRE>
+       returns the current form term hook, if any (<STRONG>NULL</STRONG> if there  is  no  such
+       hook).
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -121,13 +143,24 @@
 
 
 
-ncurses 6.4                       2023-07-01                     <STRONG><A HREF="form_hook.3x.html">form_hook(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                     <STRONG><A HREF="form_hook.3x.html">form_hook(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
 <li><a href="#h2-NAME">NAME</a></li>
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
-<li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
+<li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
+<ul>
+<li><a href="#h3-set_field_init">set_field_init</a></li>
+<li><a href="#h3-field_init">field_init</a></li>
+<li><a href="#h3-set_field_term">set_field_term</a></li>
+<li><a href="#h3-field_term">field_term</a></li>
+<li><a href="#h3-set_form_init">set_form_init</a></li>
+<li><a href="#h3-form_init">form_init</a></li>
+<li><a href="#h3-set_form_term">set_form_term</a></li>
+<li><a href="#h3-form_init">form_init</a></li>
+</ul>
+</li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>

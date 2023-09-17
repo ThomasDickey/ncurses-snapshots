@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addstr.3x,v 1.28 2023/03/11 20:40:52 tom Exp @
+  * @Id: curs_addstr.3x,v 1.32 2023/09/16 23:34:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addstr 3x 2023-03-11 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_addstr 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addstr 3x 2023-03-11 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_addstr 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 
@@ -47,9 +47,8 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>addstr</STRONG>, <STRONG>addnstr</STRONG>, <STRONG>waddstr</STRONG>, <STRONG>waddnstr</STRONG>, <STRONG>mvaddstr</STRONG>, <STRONG>mvaddnstr</STRONG>, <STRONG>mvwaddstr</STRONG>,
-       <STRONG>mvwaddnstr</STRONG> - add a string of characters to a <STRONG>curses</STRONG> window and advance
-       cursor
+       <STRONG>addstr</STRONG>,  <STRONG>addnstr</STRONG>,  <STRONG>waddstr</STRONG>,  <STRONG>waddnstr</STRONG>,  <STRONG>mvaddstr</STRONG>, <STRONG>mvaddnstr</STRONG>, <STRONG>mvwaddstr</STRONG>,
+       <STRONG>mvwaddnstr</STRONG> - add a string to a <EM>curses</EM> window and advance the cursor
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -68,23 +67,23 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These functions write the (null-terminated) character string <EM>str</EM> on the
-       given window.  It is similar to calling <STRONG>waddch</STRONG> once for  each  byte  in
+       given  window.   It  is similar to calling <STRONG>waddch</STRONG> once for each byte in
        the string.
 
-       The <EM>mv</EM> functions perform cursor movement once, before writing any char-
-       acters.  Thereafter, the cursor is advanced as a side-effect of writing
-       to the window.
+       The <EM>mv</EM> functions perform  cursor  movement  once,  before  writing  any
+       characters.   Thereafter,  the  cursor  is advanced as a side-effect of
+       writing to the window.
 
-       The  four  functions with <EM>n</EM> as the last argument write at most <EM>n</EM> bytes,
-       or until a terminating null is reached.  If <EM>n</EM> is -1,  then  the  entire
+       The four functions with <EM>n</EM> as the last argument write at most  <EM>n</EM>  bytes,
+       or  until  a  terminating null is reached.  If <EM>n</EM> is -1, then the entire
        string will be added.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        All functions return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
 
-       X/Open  does  not define any error conditions.  This implementation re-
-       turns an error
+       X/Open does not  define  any  error  conditions.   This  implementation
+       returns an error
 
        <STRONG>o</STRONG>   if the window pointer is null or
 
@@ -92,16 +91,16 @@
 
        <STRONG>o</STRONG>   if the corresponding calls to <STRONG>waddch</STRONG> return an error.
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
+       Functions  with  a  "mv"  prefix  first perform a cursor movement using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
-       the window pointer is null.  If an error is returned by the  <STRONG>wmove</STRONG>,  no
+       the  window  pointer is null.  If an error is returned by the <STRONG>wmove</STRONG>, no
        characters are added to the window.
 
-       If  an  error  is  returned  by <STRONG>waddch</STRONG> (e.g., because the window is not
-       large enough, or an illegal byte sequence was detected)  only  part  of
-       the  string  may be added.  Aside from that, there is a special case in
-       <STRONG>waddch</STRONG> where an error may be  returned  after  successfully  writing  a
-       character  to  the  lower-right corner of a window when <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is
+       If an error is returned by <STRONG>waddch</STRONG> (e.g.,  because  the  window  is  not
+       large  enough,  or  an illegal byte sequence was detected) only part of
+       the string may be added.  Aside from that, there is a special  case  in
+       <STRONG>waddch</STRONG>  where  an  error  may  be returned after successfully writing a
+       character to the lower-right corner of a window  when  <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>  is
        disabled.
 
 
@@ -118,7 +117,7 @@
 
 
 
-ncurses 6.4                       2023-03-11                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

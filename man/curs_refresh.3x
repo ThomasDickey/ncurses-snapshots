@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.31 2023/08/19 19:47:40 tom Exp $
-.TH curs_refresh 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.35 2023/09/16 23:37:03 tom Exp $
+.TH curs_refresh 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,17 +37,14 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBdoupdate\fP,
-\fBredrawwin\fP,
-\fBrefresh\fP,
-\fBwnoutrefresh\fP,
-\fBwredrawln\fP,
-\fBwrefresh\fP \- refresh \fBcurses\fP windows and lines
-.ad
-.hy
+\fB\%doupdate\fP,
+\fB\%redrawwin\fP,
+\fB\%refresh\fP,
+\fB\%wnoutrefresh\fP,
+\fB\%wredrawln\fP,
+\fB\%wrefresh\fP \-
+refresh \fIcurses\fR windows or lines thereupon
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp

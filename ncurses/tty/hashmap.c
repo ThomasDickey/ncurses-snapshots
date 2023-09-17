@@ -74,7 +74,7 @@ AUTHOR
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: hashmap.c,v 1.70 2023/06/25 17:16:01 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.71 2023/09/16 16:28:53 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -406,7 +406,7 @@ NCURSES_SP_NAME(_nc_hash_map) (NCURSES_SP_DCL0)
 	       && OLDNUM(SP_PARM, i) - i == shift)
 	    i++;
 	size = i - start;
-	if (size < 3 || size + min(size / 8, 2) < abs(shift)) {
+	if (size < 3 || size + Min(size / 8, 2) < abs(shift)) {
 	    while (start < i) {
 		OLDNUM(SP_PARM, start) = _NEWINDEX;
 		start++;

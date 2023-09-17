@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.80 2023/09/09 21:13:26 tom Exp $
-.TH curs_attr 3X 2023-09-09 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.84 2023/09/16 23:34:43 tom Exp $
+.TH curs_attr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -57,42 +57,33 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .\" ---------------------------------------------------------------------------
 .SH NAME
-.\" attr_get
-\fBattr_get\fP,
-\fBwattr_get\fP,
-\fBattr_set\fP,
-\fBwattr_set\fP,
-.\" .br
-\fBattr_off\fP,
-\fBwattr_off\fP,
-\fBattr_on\fP,
-\fBwattr_on\fP,
-.\" .br
-\fBattroff\fP,
-\fBwattroff\fP,
-\fBattron\fP,
-\fBwattron\fP,
-\fBattrset\fP,
-\fBwattrset\fP,
-.\" .br
-\fBchgat\fP,
-\fBwchgat\fP,
-\fBmvchgat\fP,
-\fBmvwchgat\fP,
-.\" .br
-\fBcolor_set\fP,
-\fBwcolor_set\fP,
-.\" .br
-\fBstandend\fP,
-\fBwstandend\fP,
-\fBstandout\fP,
-\fBwstandout\fP \- \fBcurses\fP character and window attribute control routines
-.ad
-.hy
+\fB\%attr_get\fP,
+\fB\%wattr_get\fP,
+\fB\%attr_set\fP,
+\fB\%wattr_set\fP,
+\fB\%attr_off\fP,
+\fB\%wattr_off\fP,
+\fB\%attr_on\fP,
+\fB\%wattr_on\fP,
+\fB\%attroff\fP,
+\fB\%wattroff\fP,
+\fB\%attron\fP,
+\fB\%wattron\fP,
+\fB\%attrset\fP,
+\fB\%wattrset\fP,
+\fB\%chgat\fP,
+\fB\%wchgat\fP,
+\fB\%mvchgat\fP,
+\fB\%mvwchgat\fP,
+\fB\%color_set\fP,
+\fB\%wcolor_set\fP,
+\fB\%standend\fP,
+\fB\%wstandend\fP,
+\fB\%standout\fP,
+\fB\%wstandout\fP \-
+manipulate attributes of character cells in \fIcurses\fR windows
 .\" ---------------------------------------------------------------------------
 .SH SYNOPSIS
 \fB#include <curses.h>\fP

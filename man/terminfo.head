@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.48 2023/09/09 21:34:18 tom Exp $
-.TH terminfo 5 2023-09-09 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.51 2023/09/17 08:29:38 tom Exp $
+.TH terminfo 5 2023-09-17 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ds n 5
 .ds d @TERMINFO@
 .ie \n(.g .ds `` \(lq
@@ -63,7 +63,8 @@
 .el    .in -2
 ..
 .SH NAME
-terminfo \- terminal capability database
+\fB\%terminfo\fP \-
+terminal capability database
 .SH SYNOPSIS
 \*d/*/*
 .SH DESCRIPTION

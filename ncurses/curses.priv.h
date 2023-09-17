@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.672 2023/09/09 23:13:32 tom Exp $
+ * $Id: curses.priv.h,v 1.674 2023/09/16 16:31:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -876,6 +876,12 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
 #endif /* USE_GPM_SUPPORT */
 
 /*
+ * Limit delay-times to 30 seconds, which is consistent with signed 16-bit
+ * numbers in legacy terminfo.
+ */
+#define MAX_DELAY_MSECS 30000
+
+/*
  * When converting from terminfo to termcap, check for cases where we can trim
  * octal escapes down to 2-character form.  It is useful for terminfo format
  * also, but not as important.
@@ -1292,12 +1298,12 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 /* Checks for isprint() should be done on 8-bit characters (non-wide) */
 #define is8bits(c)	((unsigned)(c) <= UCHAR_MAX)
 
-#ifndef min
-#define min(a,b)	((a) > (b)  ?  (b)  :  (a))
+#ifndef Min
+#define Min(a,b)	((a) > (b)  ?  (b)  :  (a))
 #endif
 
-#ifndef max
-#define max(a,b)	((a) < (b)  ?  (b)  :  (a))
+#ifndef Max
+#define Max(a,b)	((a) < (b)  ?  (b)  :  (a))
 #endif
 
 /* usually in <unistd.h> */

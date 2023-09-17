@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.170 2023/06/24 18:09:05 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.171 2023/09/16 16:30:34 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -351,7 +351,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
     }
 
     /* grab the name (a null-terminated string) */
-    want = min(MAX_NAME_SIZE, (unsigned) name_size);
+    want = Min(MAX_NAME_SIZE, (unsigned) name_size);
     ptr->str_table = string_table;
     ptr->term_names = string_table;
     if ((have = (unsigned) Read(ptr->term_names, want)) != want) {
@@ -364,7 +364,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	offset = (int) (have - MAX_NAME_SIZE);
 
     /* grab the booleans */
-    TYPE_CALLOC(NCURSES_SBOOL, max(BOOLCOUNT, bool_count), ptr->Booleans);
+    TYPE_CALLOC(NCURSES_SBOOL, Max(BOOLCOUNT, bool_count), ptr->Booleans);
     if (Read(ptr->Booleans, (unsigned) bool_count) < bool_count) {
 	returnDB(TGETENT_NO);
     }
@@ -378,13 +378,13 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
     even_boundary(name_size + bool_count);
 
     /* grab the numbers */
-    TYPE_CALLOC(NCURSES_INT2, max(NUMCOUNT, num_count), ptr->Numbers);
+    TYPE_CALLOC(NCURSES_INT2, Max(NUMCOUNT, num_count), ptr->Numbers);
     if (!read_numbers(buf, num_count)) {
 	returnDB(TGETENT_NO);
     }
     convert_numbers(buf, ptr->Numbers, num_count);
 
-    TYPE_CALLOC(char *, max(STRCOUNT, str_count), ptr->Strings);
+    TYPE_CALLOC(char *, Max(STRCOUNT, str_count), ptr->Strings);
 
     if (str_count) {
 	/* grab the string offsets */

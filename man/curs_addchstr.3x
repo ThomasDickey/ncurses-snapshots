@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addchstr.3x,v 1.26 2022/02/12 20:07:29 tom Exp $
-.TH curs_addchstr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addchstr.3x,v 1.31 2023/09/16 23:34:43 tom Exp $
+.TH curs_addchstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,19 +37,16 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBaddchstr\fP,
-\fBaddchnstr\fP,
-\fBwaddchstr\fP,
-\fBwaddchnstr\fP,
-\fBmvaddchstr\fP,
-\fBmvaddchnstr\fP,
-\fBmvwaddchstr\fP,
-\fBmvwaddchnstr\fP \- add a string of characters (and attributes) to a \fBcurses\fP window
-.ad
-.hy
+\fB\%addchstr\fP,
+\fB\%addchnstr\fP,
+\fB\%waddchstr\fP,
+\fB\%waddchnstr\fP,
+\fB\%mvaddchstr\fP,
+\fB\%mvaddchnstr\fP,
+\fB\%mvwaddchstr\fP,
+\fB\%mvwaddchnstr\fP \-
+add a \fIcurses\fR character string to a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

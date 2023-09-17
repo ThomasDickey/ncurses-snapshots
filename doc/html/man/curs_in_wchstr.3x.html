@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
   * Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_in_wchstr.3x,v 1.18 2022/02/12 20:07:29 tom Exp @
+  * @Id: curs_in_wchstr.3x,v 1.23 2023/09/16 23:37:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_in_wchstr 3x 2022-02-12 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_in_wchstr 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_in_wchstr 3x 2022-02-12 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_in_wchstr 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 
@@ -47,9 +47,9 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>in_wchstr</STRONG>, <STRONG>in_wchnstr</STRONG>, <STRONG>win_wchstr</STRONG>, <STRONG>win_wchnstr</STRONG>, <STRONG>mvin_wchstr</STRONG>,
-       <STRONG>mvin_wchnstr</STRONG>, <STRONG>mvwin_wchstr</STRONG>, <STRONG>mvwin_wchnstr</STRONG> - get an array of complex
-       characters and renditions from a curses window
+       <STRONG>in_wchstr</STRONG>,    <STRONG>in_wchnstr</STRONG>,    <STRONG>win_wchstr</STRONG>,    <STRONG>win_wchnstr</STRONG>,   <STRONG>mvin_wchstr</STRONG>,
+       <STRONG>mvin_wchnstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>,  <STRONG>mvwin_wchnstr</STRONG>  -  get  a  <EM>curses</EM>  complex
+       character string from a window
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -67,9 +67,9 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       These functions return an array of complex characters in <EM>wchstr</EM>, start-
-       ing at the current cursor position in  the  named  window.   Attributes
-       (rendition) are stored with the characters.
+       These  functions  return  an  array  of  complex  characters in <EM>wchstr</EM>,
+       starting  at  the  current  cursor  position  in  the   named   window.
+       Attributes (rendition) are stored with the characters.
 
        The  <STRONG>in_wchnstr</STRONG>,  <STRONG>mvin_wchnstr</STRONG>,  <STRONG>mvwin_wchnstr</STRONG> and <STRONG>win_wchnstr</STRONG> fill the
        array with at most <EM>n</EM> <STRONG>cchar_t</STRONG> elements.
@@ -79,9 +79,9 @@
        Note that all routines except <STRONG>win_wchnstr</STRONG> may be macros.
 
        Reading a line that overflows the  array  pointed  to  by  <EM>wchstr</EM>  with
-       <STRONG>in_wchstr</STRONG>, <STRONG>mvin_wchstr</STRONG>, <STRONG>mvwin_wchstr</STRONG> or <STRONG>win_wchstr</STRONG> causes undefined re-
-       sults.  Therefore, the use of <STRONG>in_wchnstr</STRONG>, <STRONG>mvin_wchnstr</STRONG>,  <STRONG>mvwin_wchnstr</STRONG>,
-       or <STRONG>win_wchnstr</STRONG> is recommended.
+       <STRONG>in_wchstr</STRONG>,  <STRONG>mvin_wchstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>  or  <STRONG>win_wchstr</STRONG> causes undefined
+       results.    Therefore,   the   use   of    <STRONG>in_wchnstr</STRONG>,    <STRONG>mvin_wchnstr</STRONG>,
+       <STRONG>mvwin_wchnstr</STRONG>, or <STRONG>win_wchnstr</STRONG> is recommended.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -104,7 +104,7 @@
 
 
 
-ncurses 6.4                       2022-02-12                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

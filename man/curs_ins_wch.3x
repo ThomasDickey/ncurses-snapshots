@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,17 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wch.3x,v 1.14 2022/02/12 20:05:11 tom Exp $
-.TH curs_ins_wch 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_ins_wch.3x,v 1.19 2023/09/16 23:37:03 tom Exp $
+.TH curs_ins_wch 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
 .SH NAME
-\fBins_wch\fP,
-\fBmvins_wch\fP,
-\fBmvwins_wch\fP,
-\fBwins_wch\fP \- insert a complex character and rendition into a window
+\fB\%ins_wch\fP,
+\fB\%mvins_wch\fP,
+\fB\%mvwins_wch\fP,
+\fB\%wins_wch\fP \-
+insert a \fIcurses\fR complex character string in a window
 .SH SYNOPSIS
 #include <curses.h>
 .sp

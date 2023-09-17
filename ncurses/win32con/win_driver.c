@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.73 2023/08/05 19:02:24 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.74 2023/09/16 16:27:44 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -488,7 +488,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 
 	Width = screen_columns(sp);
 	Height = screen_lines(sp);
-	nonempty = min(Height, NewScreen(sp)->_maxy + 1);
+	nonempty = Min(Height, NewScreen(sp)->_maxy + 1);
 
 	T(("... %dx%d clear cur:%d new:%d",
 	   Height, Width,

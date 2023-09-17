@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_printw.3x,v 1.33 2022/02/12 20:05:11 tom Exp $
-.TH curs_printw 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_printw.3x,v 1.38 2023/09/16 23:37:03 tom Exp $
+.TH curs_printw 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,16 +37,14 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBprintw\fP,
-\fBwprintw\fP,
-\fBmvprintw\fP,
-\fBmvwprintw\fP,
-\fBvwprintw\fP, \fBvw_printw\fP \- print formatted output in \fBcurses\fP windows
-.ad
-.hy
+\fB\%printw\fP,
+\fB\%wprintw\fP,
+\fB\%mvprintw\fP,
+\fB\%mvwprintw\fP,
+\fB\%vwprintw\fP,
+\fB\%vw_printw\fP \-
+write formatted output to \fIcurses\fR windows
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp

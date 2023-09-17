@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.130 2023/07/08 14:00:24 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.131 2023/09/16 16:28:36 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -790,7 +790,8 @@ _nc_write_object(TERMTYPE2 *tp, char *buffer, unsigned *offset, unsigned limit)
 #else
     LITTLE_ENDIAN(buf, MAGIC);
 #endif
-    LITTLE_ENDIAN(buf + 2, min(namelen, MAX_NAME_SIZE + 1));
+    namelen = Min(namelen, MAX_NAME_SIZE + 1);
+    LITTLE_ENDIAN(buf + 2, namelen);
     LITTLE_ENDIAN(buf + 4, boolmax);
     LITTLE_ENDIAN(buf + 6, nummax);
     LITTLE_ENDIAN(buf + 8, strmax);

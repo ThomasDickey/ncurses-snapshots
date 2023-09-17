@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,25 +27,22 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wchstr.3x,v 1.18 2022/02/12 20:07:29 tom Exp $
-.TH curs_in_wchstr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_in_wchstr.3x,v 1.23 2023/09/16 23:37:03 tom Exp $
+.TH curs_in_wchstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
-.na
-.hy 0
 .SH NAME
-\fBin_wchstr\fP,
-\fBin_wchnstr\fP,
-\fBwin_wchstr\fP,
-\fBwin_wchnstr\fP,
-\fBmvin_wchstr\fP,
-\fBmvin_wchnstr\fP,
-\fBmvwin_wchstr\fP,
-\fBmvwin_wchnstr\fP \- get an array of complex characters and renditions from a curses window
-.ad
-.hy
+\fB\%in_wchstr\fP,
+\fB\%in_wchnstr\fP,
+\fB\%win_wchstr\fP,
+\fB\%win_wchnstr\fP,
+\fB\%mvin_wchstr\fP,
+\fB\%mvin_wchnstr\fP,
+\fB\%mvwin_wchstr\fP,
+\fB\%mvwin_wchnstr\fP \-
+get a \fIcurses\fR complex character string from a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

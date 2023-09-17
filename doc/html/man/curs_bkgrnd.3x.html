@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgrnd.3x,v 1.21 2023/08/12 18:31:54 tom Exp @
+  * @Id: curs_bkgrnd.3x,v 1.27 2023/09/16 23:34:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgrnd 3x 2023-08-12 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_bkgrnd 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgrnd 3x 2023-08-12 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_bkgrnd 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 
@@ -47,15 +47,15 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>bkgrnd</STRONG>,  <STRONG>wbkgrnd</STRONG>, <STRONG>bkgrndset</STRONG>, <STRONG>wbkgrndset</STRONG>, <STRONG>getbkgrnd</STRONG>, <STRONG>wgetbkgrnd</STRONG> - <STRONG>curses</STRONG>
-       window complex background manipulation routines
+       <STRONG>bkgrnd</STRONG>,   <STRONG>wbkgrnd</STRONG>,   <STRONG>bkgrndset</STRONG>,  <STRONG>wbkgrndset</STRONG>,  <STRONG>getbkgrnd</STRONG>,  <STRONG>wgetbkgrnd</STRONG>  -
+       manipulate background of a <EM>curses</EM> window of wide characters
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>bkgrnd(</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wbkgrnd(</STRONG> <STRONG>WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>bkgrnd(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wbkgrnd(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
 
        <STRONG>void</STRONG> <STRONG>bkgrndset(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM> <STRONG>);</STRONG>
        <STRONG>void</STRONG> <STRONG>wbkgrndset(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
@@ -100,22 +100,23 @@
 
 </PRE><H3><a name="h3-getbkgrnd">getbkgrnd</a></H3><PRE>
        The <STRONG>getbkgrnd</STRONG> function returns the given  window's  current  background
-       character/attribute  pair  via  the  <STRONG>wch</STRONG>  pointer.  If the given window
-       pointer is null, the character is not updated (but no error returned).
+       character/attribute  pair  via  the  <EM>wch</EM>  pointer.  If the given window
+       pointer is null,  the  character  is  not  updated  (but  no  error  is
+       returned).
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        Note that <STRONG>bkgrnd</STRONG>, <STRONG>bkgrndset</STRONG>, and <STRONG>getbkgrnd</STRONG> may be macros.
 
        X/Open Curses does not provide details on how the rendition is changed.
-       This  implementation follows the approach used in SVr4 curses, which is
+       This implementation follows the approach used in SVr4 curses, which  is
        explained in the manual page for <STRONG>wbkgd</STRONG>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        The <STRONG>bkgrndset</STRONG> and <STRONG>wbkgrndset</STRONG> routines do not return a value.
 
-       Upon successful completion, the other functions return <STRONG>OK</STRONG>.   Otherwise,
+       Upon  successful completion, the other functions return <STRONG>OK</STRONG>.  Otherwise,
        they return <STRONG>ERR</STRONG>:
 
        <STRONG>o</STRONG>   A null window pointer is treated as an error.
@@ -124,7 +125,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  functions  are  described  in  the  XSI Curses standard, Issue 4
+       These functions are described in  the  XSI  Curses  standard,  Issue  4
        (X/Open Curses).
 
 
@@ -133,7 +134,7 @@
 
 
 
-ncurses 6.4                       2023-08-12                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

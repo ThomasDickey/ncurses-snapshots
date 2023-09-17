@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2021,2022 Thomas E. Dickey                                *
+.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.20 2022/02/12 20:07:29 tom Exp $
-.TH curs_add_wchstr 3X 2022-02-12 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.25 2023/09/16 23:34:43 tom Exp $
+.TH curs_add_wchstr 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -37,19 +37,16 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.na
-.hy 0
 .SH NAME
-\fBadd_wchstr\fP,
-\fBadd_wchnstr\fP,
-\fBwadd_wchstr\fP,
-\fBwadd_wchnstr\fP,
-\fBmvadd_wchstr\fP,
-\fBmvadd_wchnstr\fP,
-\fBmvwadd_wchstr\fP,
-\fBmvwadd_wchnstr\fP \- add an array of complex characters (and attributes) to a curses window
-.ad
-.hy
+\fB\%add_wchstr\fP,
+\fB\%add_wchnstr\fP,
+\fB\%wadd_wchstr\fP,
+\fB\%wadd_wchnstr\fP,
+\fB\%mvadd_wchstr\fP,
+\fB\%mvadd_wchnstr\fP,
+\fB\%mvwadd_wchstr\fP,
+\fB\%mvwadd_wchnstr\fP \-
+add a \fIcurses\fR complex character string to a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP

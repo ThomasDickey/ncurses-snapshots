@@ -28,40 +28,37 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.43 2023/08/19 20:55:23 tom Exp $
-.TH curs_inopts 3X 2023-08-19 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.47 2023/09/16 23:37:03 tom Exp $
+.TH curs_inopts 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
 .el       .ds '' ''
-.na
-.hy 0
 .SH NAME
-\fBcbreak\fP,
-\fBecho\fP,
-\fBhalfdelay\fP,
-\fBintrflush\fP,
-\fBis_cbreak\fP,
-\fBis_echo\fP,
-\fBis_nl\fP,
-\fBis_raw\fP,
-\fBkeypad\fP,
-\fBmeta\fP,
-\fBnl\fP,
-\fBnocbreak\fP,
-\fBnodelay\fP,
-\fBnoecho\fP,
-\fBnonl\fP,
-\fBnoqiflush\fP,
-\fBnoraw\fP,
-\fBnotimeout\fP,
-\fBqiflush\fP,
-\fBraw\fP,
-\fBtimeout\fP,
-\fBwtimeout\fP,
-\fBtypeahead\fP \- \fBcurses\fP input options
-.ad
-.hy
+\fB\%cbreak\fP,
+\fB\%echo\fP,
+\fB\%halfdelay\fP,
+\fB\%intrflush\fP,
+\fB\%is_cbreak\fP,
+\fB\%is_echo\fP,
+\fB\%is_nl\fP,
+\fB\%is_raw\fP,
+\fB\%keypad\fP,
+\fB\%meta\fP,
+\fB\%nl\fP,
+\fB\%nocbreak\fP,
+\fB\%nodelay\fP,
+\fB\%noecho\fP,
+\fB\%nonl\fP,
+\fB\%noqiflush\fP,
+\fB\%noraw\fP,
+\fB\%notimeout\fP,
+\fB\%qiflush\fP,
+\fB\%raw\fP,
+\fB\%timeout\fP,
+\fB\%wtimeout\fP,
+\fB\%typeahead\fP \-
+get and set \fIcurses\fR terminal input options
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .PP

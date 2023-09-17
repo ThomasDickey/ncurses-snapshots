@@ -1,6 +1,6 @@
-# $Id: manlinks.sed,v 1.15 2021/01/05 20:30:00 tom Exp $
+# $Id: manlinks.sed,v 1.19 2023/09/17 08:26:33 tom Exp $
 ##############################################################################
-# Copyright 2020,2021 Thomas E. Dickey                                       #
+# Copyright 2020-2021,2023 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -31,6 +31,9 @@
 # listed in the "NAME" section, i.e., the names that we would like to use
 # as aliases for the manpage -T.Dickey
 #
+# workaround for manpages without a SYNOPSIS
+s/^\.\\"SH/.SH/
+#
 # eliminate formatting controls that get in the way
 /^'\\"/d
 /\.\\"/d
@@ -39,12 +42,13 @@
 /typedef/d
 s/^\.IX//
 s/\\f.//g
+s/\\%//g
 s/[:,]/ /g
 #
 # ignore C-style comments
 s%/\*.*\*/%%
 #
-# eliminate unnecessary whitespace, convert multiple blanks to single space
+# Eliminate unnecessary whitespace, convert multiple blanks to single space.
 s/^[ 	][ 	]*//
 s/[ 	][ 	]*$//
 s/[ 	][ 	]*/ /g
@@ -54,16 +58,16 @@ s/[ 	][ 	]*/ /g
 s/\.SH[ 	][ 	]*/.SH_(/
 #
 # in ".SH NAME"
-# change "\-" to "-", eliminate text after "-", and split the remaining lines
-# at each space, making a list of names:
-/^\.SH_(NAME/,/^\.SH_(SYNOPSIS/{
-s/\\-.*/ -/
-/ -/{
-s/ -.*//
-s/ /\
-/g
-}
-/^-/{
+# Convert a list of names separated from their description by " \-" to a list
+# of names on separate lines.  Normally the list is also comma-separated, but
+# we ignore that detail here.  The description is on a separate line to make
+# the nroff source more pleasing to some eyes.
+/^\.SH_(NAME/,/ \\-$/{
+s/\\-/-/g
+s/  / /g
+/ -$/{
+s/ -$//
+n
 d
 }
 s/ /\
@@ -71,9 +75,14 @@ s/ /\
 }
 #
 # in ".SH SYNOPSIS"
-# remove any line that does not contain a '(', since we only want functions.
+# For readability, the NAME section may not contain all function names, but we
+# still want to make aliases for those.  Do this by extracting names from the
+# list of function prototypes in the synopsis.
+#
+# Remove any line that does not contain a '(', since we only want functions. 
 # then strip off return-type of each function.
-# finally, remove the parameter list, which begins with a '('.
+#
+# Finally, remove the parameter list, which begins with a '('.
 /^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
 /^[^(]*$/d
 # reduce

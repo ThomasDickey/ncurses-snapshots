@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addwstr.3x,v 1.20 2023/07/15 17:11:59 tom Exp @
+  * @Id: curs_addwstr.3x,v 1.24 2023/09/16 23:34:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addwstr 3x 2023-07-15 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_addwstr 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addwstr 3x 2023-07-15 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_addwstr 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
 
@@ -47,9 +47,9 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>addwstr</STRONG>, <STRONG>addnwstr</STRONG>, <STRONG>waddwstr</STRONG>, <STRONG>waddnwstr</STRONG>, <STRONG>mvaddwstr</STRONG>, <STRONG>mvaddnwstr</STRONG>,
-       <STRONG>mvwaddwstr</STRONG>, <STRONG>mvwaddnwstr</STRONG> - add a string of wide characters to a <STRONG>curses</STRONG>
-       window and advance cursor
+       <STRONG>addwstr</STRONG>,   <STRONG>addnwstr</STRONG>,   <STRONG>waddwstr</STRONG>,   <STRONG>waddnwstr</STRONG>,   <STRONG>mvaddwstr</STRONG>,  <STRONG>mvaddnwstr</STRONG>,
+       <STRONG>mvwaddwstr</STRONG>, <STRONG>mvwaddnwstr</STRONG> - add  a  wide-character  string  to  a  <EM>curses</EM>
+       window and advance the cursor
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -68,18 +68,18 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These  functions  write the characters of the (null-terminated) <STRONG>wchar_t</STRONG>
-       character string <EM>wstr</EM> on the given window.  It is similar to construct-
-       ing a <STRONG>cchar_t</STRONG> for each <STRONG>wchar_t</STRONG> in the string, then calling <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>
-       for the resulting <STRONG>cchar_t</STRONG>:
+       character  string  <EM>wstr</EM>  on  the  given  window.   It  is  similar   to
+       constructing  a  <STRONG>cchar_t</STRONG>  for  each <STRONG>wchar_t</STRONG> in the string, then calling
+       <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG> for the resulting <STRONG>cchar_t</STRONG>:
 
        <STRONG>o</STRONG>   spacing and non-spacing characters in the string are processed  one
            at a time, and
 
        <STRONG>o</STRONG>   control characters are processed as in <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>.
 
-       The <EM>mv</EM> functions perform cursor movement once, before writing any char-
-       acters.  Thereafter, the cursor is advanced as a side-effect of writing
-       to the window.
+       The  <EM>mv</EM>  functions  perform  cursor  movement  once, before writing any
+       characters.  Thereafter, the cursor is advanced  as  a  side-effect  of
+       writing to the window.
 
        The  four functions with <EM>n</EM> as the last argument write at most <EM>n</EM> <STRONG>wchar_t</STRONG>
        characters, or until a terminating null is reached.  If <EM>n</EM> is  -1,  then
@@ -89,8 +89,8 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        All functions return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
 
-       X/Open  does  not define any error conditions.  This implementation re-
-       turns an error
+       X/Open  does  not  define  any  error  conditions.  This implementation
+       returns an error
 
        <STRONG>o</STRONG>   if the window pointer is null or
 
@@ -116,7 +116,7 @@
 
 
 
-ncurses 6.4                       2023-07-15                  <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                  <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

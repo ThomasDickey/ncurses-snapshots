@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.80 2023/03/04 23:47:00 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.81 2023/09/16 16:30:40 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -360,7 +360,7 @@ _nc_timed_wait(SCREEN *sp MAYBE_UNUSED,
     if ((mode & TW_MOUSE)
 	&& (fd = sp->_mouse_fd) >= 0) {
 	FD_SET(fd, &set);
-	count = max(fd, count) + 1;
+	count = Max(fd, count) + 1;
     }
 #ifdef NCURSES_WGETCH_EVENTS
     if ((mode & TW_EVENT) && evl) {
@@ -370,7 +370,7 @@ _nc_timed_wait(SCREEN *sp MAYBE_UNUSED,
 	    if (ev->type == _NC_EVENT_FILE
 		&& (ev->data.fev.flags & _NC_EVENT_FILE_READABLE)) {
 		FD_SET(ev->data.fev.fd, &set);
-		count = max(ev->data.fev.fd + 1, count);
+		count = Max(ev->data.fev.fd + 1, count);
 	    }
 	}
     }

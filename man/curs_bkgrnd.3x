@@ -27,25 +27,26 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.21 2023/08/12 18:31:54 tom Exp $
+.\" $Id: curs_bkgrnd.3x,v 1.27 2023/09/16 23:34:43 tom Exp $
+.TH curs_bkgrnd 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.TH curs_bkgrnd 3X 2023-08-12 "ncurses 6.4" "Library calls"
 .SH NAME
-\fBbkgrnd\fP,
-\fBwbkgrnd\fP,
-\fBbkgrndset\fP,
-\fBwbkgrndset\fP,
-\fBgetbkgrnd\fP,
-\fBwgetbkgrnd\fP \- \fBcurses\fP window complex background manipulation routines
+\fB\%bkgrnd\fP,
+\fB\%wbkgrnd\fP,
+\fB\%bkgrndset\fP,
+\fB\%wbkgrndset\fP,
+\fB\%getbkgrnd\fP,
+\fB\%wgetbkgrnd\fP \-
+manipulate background of a \fIcurses\fP window of wide characters
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .sp
-\fBint bkgrnd(\fB const cchar_t *\fIwch\fB);\fR
+\fBint bkgrnd(\fBconst cchar_t *\fIwch\fB);\fR
 .br
-\fBint wbkgrnd(\fB WINDOW *\fIwin\fB, const cchar_t *\fIwch\fB);\fR
+\fBint wbkgrnd(\fBWINDOW *\fIwin\fB, const cchar_t *\fIwch\fB);\fR
 .sp
 \fBvoid bkgrndset(const cchar_t *\fIwch\fR \fB);\fR
 .br
@@ -87,9 +88,11 @@ Wherever the former background character
 appears, it is changed to the new background character.
 .SS getbkgrnd
 The \fBgetbkgrnd\fP function returns the given window's current background
-character/attribute pair via the \fBwch\fP pointer.
+character/attribute pair via the
+.I wch
+pointer.
 If the given window pointer is null,
-the character is not updated (but no error returned).
+the character is not updated (but no error is returned).
 .SH NOTES
 Note that
 \fBbkgrnd\fP,

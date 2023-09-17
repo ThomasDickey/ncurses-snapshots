@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.73 2023/07/01 14:23:04 tom Exp $
-.TH curs_color 3X 2023-07-01 "ncurses 6.4" "Library calls"
+.\" $Id: curs_color.3x,v 1.77 2023/09/16 23:34:43 tom Exp $
+.TH curs_color 3X 2023-09-16 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -38,25 +38,22 @@
 .el    .IP \(bu 2
 ..
 .ds n 5
-.na
-.hy 0
 .SH NAME
-\fBstart_color\fP,
-\fBhas_colors\fP,
-\fBcan_change_color\fP,
-\fBinit_pair\fP,
-\fBinit_color\fP,
-\fBinit_extended_pair\fP,
-\fBinit_extended_color\fP,
-\fBcolor_content\fP,
-\fBpair_content\fP,
-\fBextended_color_content\fP,
-\fBextended_pair_content\fP,
-\fBreset_color_pairs\fP,
-\fBCOLOR_PAIR\fP,
-\fBPAIR_NUMBER\fP \- \fBcurses\fP color manipulation routines
-.ad
-.hy
+\fB\%start_color\fP,
+\fB\%has_colors\fP,
+\fB\%can_change_color\fP,
+\fB\%init_pair\fP,
+\fB\%init_color\fP,
+\fB\%init_extended_pair\fP,
+\fB\%init_extended_color\fP,
+\fB\%color_content\fP,
+\fB\%pair_content\fP,
+\fB\%extended_color_content\fP,
+\fB\%extended_pair_content\fP,
+\fB\%reset_color_pairs\fP,
+\fB\%COLOR_PAIR\fP,
+\fB\%PAIR_NUMBER\fP \-
+manipulate terminal colors with \fIcurses\fR
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 .sp

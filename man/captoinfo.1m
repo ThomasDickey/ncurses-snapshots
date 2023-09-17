@@ -28,14 +28,20 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.39 2023/09/09 16:40:25 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-09-09 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.44 2023/09/16 23:39:05 tom Exp $
+.TH @CAPTOINFO@ 1M 2023-09-16 "ncurses 6.4" "User commands"
 .ds n 5
 .ds d @TERMINFO@
 .SH NAME
-\fB@CAPTOINFO@\fP \- convert a \fItermcap\fP description into a \fIterminfo\fP description
+\fB\%@CAPTOINFO@\fP \-
+convert a \fItermcap\fR description into a \fIterminfo\fR description
 .SH SYNOPSIS
-\fB@CAPTOINFO@\fR [\fB\-v\fIn\fR \fIwidth\fR]  [\fB\-V\fR] [\fB\-1\fR] [\fB\-w\fR \fIwidth\fR] \fIfile\fR ...
+.B @CAPTOINFO@
+.RI [ tic-option ]
+.I file
+\&.\|.\|.
+.P
+\fB@CAPTOINFO@\fR \fB\-V\fR
 .SH DESCRIPTION
 \fB@CAPTOINFO@\fP looks in each given text
 \fIfile\fP for \fBtermcap\fP descriptions.
@@ -52,21 +58,18 @@ the terminal whose name is specified in the environment variable \fBTERM\fP is
 extracted from that file.
 If the environment variable \fBTERMCAP\fP is not
 set, then the file \fB\*d\fP is read.
-.TP 5
-\fB\-v\fP
-print out tracing information on standard error as the program runs.
-.TP 5
-\fB\-V\fP
-print out the version of the program in use on standard error and exit.
-.TP 5
-\fB\-1\fP
-cause the fields to print out one to a line.
-Otherwise, the fields
-will be printed several to a line to a maximum width of 60
-characters.
-.TP 5
-\fB\-w\fP
-change the output to \fIwidth\fP characters.
+.PP
+This utility is implemented as a link to \fB@TIC@\fP(1M),
+with the latter's
+.B \-I
+option implied.
+You can use other \fB@TIC@\fP options such as
+.BR \-1 ,
+.BR \-f ,
+.BR \-v ,
+.BR \-w ,
+and
+.BR \-x .
 .SH FILES
 .TP 20
 \*d
@@ -181,9 +184,6 @@ Hewlett-Packard's terminfo library supports two nonstandard terminfo
 capabilities \fBmeml\fP (memory lock) and \fBmemu\fP (memory unlock).
 These will be discarded with a warning message.
 .SH NOTES
-This utility is actually a link to \fB@TIC@\fP(1M), running in \fI\-I\fP mode.
-You can use other \fB@TIC@\fP options such as \fB\-f\fP and  \fB\-x\fP.
-.PP
 The verbose option is not identical to SVr4's.
 Under SVr4, instead of following
 the \fB\-v\fP with a trace level n, you repeat it n times.

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.39 2023/08/19 20:37:30 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.43 2023/09/16 23:34:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2023-08-19 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2023-08-19 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2023-09-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -49,8 +49,7 @@
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>add_wch</STRONG>, <STRONG>wadd_wch</STRONG>, <STRONG>mvadd_wch</STRONG>, <STRONG>mvwadd_wch</STRONG>, <STRONG>echo_wchar</STRONG>, <STRONG>wecho_wchar</STRONG> - add
-       a complex character and rendition to a <STRONG>curses</STRONG> window, then advance  the
-       cursor
+       a <EM>curses</EM> complex character to a window and advance the cursor
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -68,53 +67,53 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
 </PRE><H3><a name="h3-add_wch">add_wch</a></H3><PRE>
-       The  <STRONG>add_wch</STRONG>,  <STRONG>wadd_wch</STRONG>,  <STRONG>mvadd_wch</STRONG>,  and  <STRONG>mvwadd_wch</STRONG> functions put the
-       complex character <EM>wch</EM> into the given window at  its  current  position,
-       which  is then advanced.  These functions perform wrapping and special-
+       The <STRONG>add_wch</STRONG>, <STRONG>wadd_wch</STRONG>, <STRONG>mvadd_wch</STRONG>,  and  <STRONG>mvwadd_wch</STRONG>  functions  put  the
+       complex  character  <EM>wch</EM>  into the given window at its current position,
+       which is then advanced.  These functions perform wrapping and  special-
        character processing as follows:
 
-       <STRONG>o</STRONG>   If <EM>wch</EM> refers to a spacing character, then any  previous  character
-           at  that  location is removed.  A new character specified by <EM>wch</EM> is
-           placed at that location  with  rendition  specified  by  <EM>wch</EM>.   The
-           cursor  then  advances after this spacing character, to prepare for
+       <STRONG>o</STRONG>   If  <EM>wch</EM>  refers to a spacing character, then any previous character
+           at that location is removed.  A new character specified by  <EM>wch</EM>  is
+           placed  at  that  location  with  rendition  specified by <EM>wch</EM>.  The
+           cursor then advances after this spacing character, to  prepare  for
            writing the next character on the screen.
 
            The newly added spacing character is the base of the active complex
-           character.   Subsequent non-spacing characters can be combined with
+           character.  Subsequent non-spacing characters can be combined  with
            this base until another spacing character is written to the screen,
            or the cursor is moved, e.g., using <STRONG>wmove</STRONG>.
 
-       <STRONG>o</STRONG>   If  <EM>wch</EM>  refers  to  a non-spacing character, it is appended to the
+       <STRONG>o</STRONG>   If <EM>wch</EM> refers to a non-spacing character, it  is  appended  to  the
            active complex character, retaining the previous characters at that
            location.  The rendition specified by <EM>wch</EM> is ignored.
 
-           The  cursor  is  not advanced after adding a non-spacing character.
+           The cursor is not advanced after adding  a  non-spacing  character.
            Subsequent calls to add non-spacing characters will update the same
            position.
 
-       <STRONG>o</STRONG>   If  the character part of <EM>wch</EM> is a tab, newline, backspace or other
+       <STRONG>o</STRONG>   If the character part of <EM>wch</EM> is a tab, newline, backspace or  other
            control character, the window is updated and the cursor moves as if
            <STRONG>addch</STRONG> were called.
 
 
 </PRE><H3><a name="h3-echo_wchar">echo_wchar</a></H3><PRE>
        The <STRONG>echo_wchar</STRONG> function is functionally equivalent to a call to <STRONG>add_wch</STRONG>
-       followed by a call  to  <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>.   Similarly,  the  <STRONG>wecho_wchar</STRONG>  is
-       functionally  equivalent  to  a  call to <STRONG>wadd_wch</STRONG> followed by a call to
-       <STRONG>wrefresh</STRONG>.  The knowledge that only a single character is  being  output
-       is   taken  into  consideration  and,  for  non-control  characters,  a
-       considerable performance  gain  might  be  seen  by  using  the  *<STRONG>echo</STRONG>*
+       followed  by  a  call  to  <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>.   Similarly, the <STRONG>wecho_wchar</STRONG> is
+       functionally equivalent to a call to <STRONG>wadd_wch</STRONG> followed  by  a  call  to
+       <STRONG>wrefresh</STRONG>.   The  knowledge that only a single character is being output
+       is  taken  into  consideration  and,  for  non-control  characters,   a
+       considerable  performance  gain  might  be  seen  by  using  the *<STRONG>echo</STRONG>*
        functions instead of their equivalents.
 
 
 </PRE><H3><a name="h3-Line-Graphics">Line Graphics</a></H3><PRE>
-       Like  <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>, <STRONG>addch_wch</STRONG> accepts symbols which make it simple to draw
-       lines and other frequently  used  special  characters.   These  symbols
+       Like <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>, <STRONG>addch_wch</STRONG> accepts symbols which make it simple to  draw
+       lines  and  other  frequently  used  special characters.  These symbols
        correspond to the same VT100 line-drawing set as <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>.
 
        <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>    <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
-
        <STRONG>Name</STRONG>              <STRONG>Default</STRONG>    <STRONG>Default</STRONG>   <STRONG>char</STRONG>    <STRONG>Name</STRONG>
+
        ------------------------------------------------------------------------
        WACS_BLOCK        0x25ae     #         0       solid square block
        WACS_BOARD        0x2592     #         h       board of squares
@@ -149,7 +148,7 @@
        WACS_URCORNER     0x2510     +         k       upper right-hand corner
        WACS_VLINE        0x2502     |         x       vertical line
 
-       The  wide-character  configuration  of ncurses also defines symbols for
+       The wide-character configuration of ncurses also  defines  symbols  for
        thick lines (<STRONG>acsc</STRONG> "J" to "V"):
 
        <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
@@ -179,15 +178,15 @@
        WACS_D_LTEE       0x2560    +         F       double tee pointing right
        WACS_D_PLUS       0x256c    +         E       double large plus
        WACS_D_RTEE       0x2563    +         G       double tee pointing left
-
        WACS_D_TTEE       0x2566    +         I       double tee pointing down
+
        WACS_D_ULCORNER   0x2554    +         C       double upper left corner
        WACS_D_URCORNER   0x2557    +         B       double upper right corner
        WACS_D_VLINE      0x2551    |         Y       double vertical line
 
-       Unicode's descriptions  for  these  characters  differs  slightly  from
-       ncurses,  by  introducing  the  term "light" (along with less important
-       details).  Here are its descriptions for the normal, thick, and  double
+       Unicode's  descriptions  for  these  characters  differs  slightly from
+       ncurses, by introducing the term "light"  (along  with  less  important
+       details).   Here are its descriptions for the normal, thick, and double
        horizontal lines:
 
        <STRONG>o</STRONG>   U+2500 BOX DRAWINGS LIGHT HORIZONTAL
@@ -200,7 +199,7 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        All routines return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
 
-       X/Open  does  not  define  any  error  conditions.  This implementation
+       X/Open does not  define  any  error  conditions.   This  implementation
        returns an error
 
        <STRONG>o</STRONG>   if the window pointer is null or
@@ -209,15 +208,15 @@
 
        The latter may be due to different causes:
 
-       <STRONG>o</STRONG>   If <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is not enabled, writing a character  at  the  lower
+       <STRONG>o</STRONG>   If  <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>  is  not enabled, writing a character at the lower
            right margin succeeds.  However, an error is returned because it is
            not possible to wrap to a new line
 
-       <STRONG>o</STRONG>   If an error is detected when converting a multibyte character to  a
-           sequence  of  bytes,  or  if  it  is not possible to add all of the
+       <STRONG>o</STRONG>   If  an error is detected when converting a multibyte character to a
+           sequence of bytes, or if it is not  possible  to  add  all  of  the
            resulting bytes in the window, an error is returned.
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
+       Functions  with  a  "mv"  prefix  first perform a cursor movement using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
        the window pointer is null.
 
@@ -227,80 +226,80 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       All of these functions are described in the XSI Curses standard,  Issue
-       4.   The  defaults  specified  for line-drawing characters apply in the
+       All  of these functions are described in the XSI Curses standard, Issue
+       4.  The defaults specified for line-drawing  characters  apply  in  the
        POSIX locale.
 
 
 </PRE><H3><a name="h3-WACS-Symbols">WACS Symbols</a></H3><PRE>
-       X/Open Curses makes it clear that the WACS_ symbols should  be  defined
+       X/Open  Curses  makes it clear that the WACS_ symbols should be defined
        as a pointer to <STRONG>cchar_t</STRONG> data, e.g., in the discussion of <STRONG>border_set</STRONG>.  A
        few implementations are problematic:
 
        <STRONG>o</STRONG>   NetBSD curses defines the symbols as a <STRONG>wchar_t</STRONG> within a <STRONG>cchar_t</STRONG>.
 
        <STRONG>o</STRONG>   HPUX curses equates some of the <STRONG>ACS_</STRONG> symbols to the analogous <STRONG>WACS_</STRONG>
-           symbols   as  if  the  <STRONG>ACS_</STRONG>  symbols  were  wide  characters.   The
-           misdefined symbols are the arrows and other symbols which  are  not
+           symbols  as  if  the  <STRONG>ACS_</STRONG>  symbols  were  wide  characters.    The
+           misdefined  symbols  are the arrows and other symbols which are not
            used for line-drawing.
 
        X/Open Curses does not define symbols for thick- or double-lines.  SVr4
-       curses implementations defined their line-drawing symbols in  terms  of
+       curses  implementations  defined their line-drawing symbols in terms of
        intermediate  symbols.   This  implementation  extends  those  symbols,
        providing new definitions which are not in the SVr4 implementations.
 
-       Not all  Unicode-capable  terminals  provide  support  for  VT100-style
-       alternate  character  sets  (i.e.,  the  <STRONG>acsc</STRONG>  capability),  with their
-       corresponding line-drawing characters.  X/Open Curses did  not  address
-       the   aspect  of  integrating  Unicode  with  line-drawing  characters.
-       Existing implementations of Unix curses (AIX, HPUX, Solaris)  use  only
+       Not  all  Unicode-capable  terminals  provide  support  for VT100-style
+       alternate character  sets  (i.e.,  the  <STRONG>acsc</STRONG>  capability),  with  their
+       corresponding  line-drawing  characters.  X/Open Curses did not address
+       the  aspect  of  integrating  Unicode  with  line-drawing   characters.
+       Existing  implementations  of Unix curses (AIX, HPUX, Solaris) use only
        the <STRONG>acsc</STRONG> character-mapping to provide this feature.  As a result, those
        implementations  can  only  use  single-byte  line-drawing  characters.
-       Ncurses  5.3  (2002)  provided a table of Unicode values to solve these
+       Ncurses 5.3 (2002) provided a table of Unicode values  to  solve  these
        problems.  NetBSD curses incorporated that table in 2010.
 
-       In this implementation, the Unicode values  are  used  instead  of  the
+       In  this  implementation,  the  Unicode  values are used instead of the
        terminal description's <STRONG>acsc</STRONG> mapping as discussed in <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> for the
-       environment variable <STRONG>NCURSES_NO_UTF8_ACS</STRONG>.  In contrast,  for  the  same
+       environment  variable  <STRONG>NCURSES_NO_UTF8_ACS</STRONG>.   In contrast, for the same
        cases, the line-drawing characters described in <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG> will use
        only the ASCII default values.
 
-       Having Unicode available does not solve all of the problems with  line-
+       Having  Unicode available does not solve all of the problems with line-
        drawing for curses:
 
-       <STRONG>o</STRONG>   The  closest  Unicode  equivalents to the VT100 graphics <EM>S1</EM>, <EM>S3</EM>, <EM>S7</EM>
-           and <EM>S9</EM> frequently are not displayed at the regular intervals  which
+       <STRONG>o</STRONG>   The closest Unicode equivalents to the VT100 graphics  <EM>S1</EM>,  <EM>S3</EM>,  <EM>S7</EM>
+           and  <EM>S9</EM> frequently are not displayed at the regular intervals which
            the terminal used.
 
-       <STRONG>o</STRONG>   The  <EM>lantern</EM>  is  a special case.  It originated with the AT&amp;T 4410
-           terminal in the early 1980s.  There is no accessible  documentation
+       <STRONG>o</STRONG>   The <EM>lantern</EM> is a special case.  It originated with  the  AT&amp;T  4410
+           terminal  in the early 1980s.  There is no accessible documentation
            depicting the lantern symbol on the AT&amp;T terminal.
 
            Lacking documentation, most readers assume that a <EM>storm</EM> <EM>lantern</EM> was
            intended.  But there are several possibilities, all with problems.
 
-           Unicode 6.0 (2010) does provide two lantern  symbols:  U+1F383  and
-           U+1F3EE.   Those  were  not  available  in 2002, and are irrelevant
-           since they lie outside the BMP and as a result  are  not  generally
+           Unicode  6.0  (2010)  does provide two lantern symbols: U+1F383 and
+           U+1F3EE.  Those were not available  in  2002,  and  are  irrelevant
+           since  they  lie  outside the BMP and as a result are not generally
            available in terminals.  They are not storm lanterns, in any case.
 
            Most <EM>storm</EM> <EM>lanterns</EM> have a tapering glass chimney (to guard against
            tipping); some have a wire grid protecting the chimney.
 
-           For the tapering appearance,  U+2603 was adequate.   In  use  on  a
+           For  the  tapering  appearance,   U+2603 was adequate.  In use on a
            terminal, no one can tell what the image represents.  Unicode calls
            it a snowman.
 
            Others have suggested these alternatives: &lt;section&gt; U+00A7 (section
-           mark),  &lt;Theta&gt;  U+0398 (theta), &lt;Phi&gt; U+03A6 (phi), &lt;delta&gt; U+03B4
+           mark), &lt;Theta&gt; U+0398 (theta), &lt;Phi&gt; U+03A6 (phi),  &lt;delta&gt;  U+03B4
            (delta),  U+2327 (x in a rectangle),  U+256C (forms double vertical
            and horizontal), and  U+2612 (ballot box with x).
 
 
 </PRE><H3><a name="h3-Complex-Characters">Complex Characters</a></H3><PRE>
-       The  complex  character  type  <STRONG>cchar_t</STRONG>  can  store  more  than one wide
-       character (<STRONG>wchar_t</STRONG>).  The X/Open Curses description  does  not  mention
-       this  possibility,  describing  only  the  cases where <EM>wch</EM> is a spacing
+       The complex character  type  <STRONG>cchar_t</STRONG>  can  store  more  than  one  wide
+       character  (<STRONG>wchar_t</STRONG>).   The  X/Open Curses description does not mention
+       this possibility, describing only the cases  where  <EM>wch</EM>  is  a  spacing
        character or a non-spacing character.
 
        This implementation assumes that <EM>wch</EM> is constructed using <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>,
@@ -311,7 +310,7 @@
 
        <STRONG>o</STRONG>   may hold one non-spacing character.
 
-       In the latter case, ncurses  adds  the  non-spacing  character  to  the
+       In  the  latter  case,  ncurses  adds  the non-spacing character to the
        active (base) spacing character.
 
 
@@ -321,7 +320,7 @@
 
 
 
-ncurses 6.4                       2023-08-19                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.4                       2023-09-16                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
