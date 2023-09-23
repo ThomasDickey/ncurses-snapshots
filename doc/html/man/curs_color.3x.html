@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_color.3x,v 1.77 2023/09/16 23:34:43 tom Exp @
+  * @Id: curs_color.3x,v 1.82 2023/09/23 22:24:15 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_color 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_color 3x 2023-09-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_color 3x 2023-09-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_color 3x 2023-09-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
@@ -63,17 +63,17 @@
 
        <STRONG>int</STRONG> <STRONG>init_pair(short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>f</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>init_color(short</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>r</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>g</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>b</EM><STRONG>);</STRONG>
-       /* extensions */
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>int</STRONG> <STRONG>init_extended_pair(int</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>f</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>init_extended_color(int</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>r</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>g</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>b</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>color_content(short</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <STRONG>*</STRONG><EM>r</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <STRONG>*</STRONG><EM>g</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <STRONG>*</STRONG><EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>pair_content(short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <STRONG>*</STRONG><EM>f</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <STRONG>*</STRONG><EM>b</EM><STRONG>);</STRONG>
-       /* extensions */
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>int</STRONG> <STRONG>extended_color_content(int</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>r</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>g</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>extended_pair_content(int</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>f</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>b</EM><STRONG>);</STRONG>
 
-       /* extensions */
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>void</STRONG> <STRONG>reset_color_pairs(void);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>COLOR_PAIR(int</STRONG> <EM>n</EM><STRONG>);</STRONG>
@@ -83,7 +83,7 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
 </PRE><H3><a name="h3-Overview">Overview</a></H3><PRE>
-       <STRONG>curses</STRONG> supports color attributes on terminals with that capability.  To
+       <EM>curses</EM> supports color attributes on terminals with that capability.  To
        use  these  routines  <STRONG>start_color</STRONG>  must  be called, usually right after
        <STRONG>initscr</STRONG>.  Colors are always used in pairs (referred to as color-pairs).
        A  color-pair  consists  of  a  foreground color (for characters) and a
@@ -103,7 +103,7 @@
 
 
 </PRE><H3><a name="h3-Color-Rendering">Color Rendering</a></H3><PRE>
-       The  <STRONG>curses</STRONG>  library  combines  these  inputs  to  produce  the  actual
+       The  <EM>curses</EM>  library  combines  these  inputs  to  produce  the  actual
        foreground and background colors shown on the screen:
 
        <STRONG>o</STRONG>   per-character video attributes (e.g., via <STRONG>waddch</STRONG>),
@@ -120,32 +120,32 @@
        The background character is a special case:  it  includes  a  character
        value, just as if it were passed to <STRONG>waddch</STRONG>.
 
-       The  <STRONG>curses</STRONG> library does the actual work of combining these color pairs
+       The  <EM>curses</EM> library does the actual work of combining these color pairs
        in an internal function called from <STRONG>waddch</STRONG>:
 
        <STRONG>o</STRONG>   If the parameter passed to <STRONG>waddch</STRONG> is <EM>blank</EM>, and it uses the special
            color pair 0,
 
-           <STRONG>o</STRONG>   <STRONG>curses</STRONG> next checks the window attribute.
+           <STRONG>o</STRONG>   <EM>curses</EM> next checks the window attribute.
 
-           <STRONG>o</STRONG>   If  the window attribute does not use color pair 0, <STRONG>curses</STRONG> uses
+           <STRONG>o</STRONG>   If  the window attribute does not use color pair 0, <EM>curses</EM> uses
                the color pair from the window attribute.
 
-           <STRONG>o</STRONG>   Otherwise, <STRONG>curses</STRONG> uses the background character.
+           <STRONG>o</STRONG>   Otherwise, <EM>curses</EM> uses the background character.
 
        <STRONG>o</STRONG>   If the parameter passed to <STRONG>waddch</STRONG> is <EM>not</EM> <EM>blank</EM>, or it does not  use
-           the  special  color  pair 0, <STRONG>curses</STRONG> prefers the color pair from the
+           the  special  color  pair 0, <EM>curses</EM> prefers the color pair from the
            parameter, if it  is  nonzero.   Otherwise,  it  tries  the  window
            attribute next, and finally the background character.
 
-       Some  <STRONG>curses</STRONG>  functions  such  as  <STRONG>wprintw</STRONG>  call  <STRONG>waddch</STRONG>.  Those do not
+       Some  <EM>curses</EM>  functions  such  as  <STRONG>wprintw</STRONG>  call  <STRONG>waddch</STRONG>.  Those do not
        combine its parameter with a color pair.  Consequently those calls  use
        only the window attribute or the background character.
 
 
 </PRE><H2><a name="h2-CONSTANTS">CONSTANTS</a></H2><PRE>
        In <STRONG>&lt;curses.h&gt;</STRONG> the following macros are defined.  These are the standard
-       colors (ISO-6429).  <STRONG>curses</STRONG> also assumes that <STRONG>COLOR_BLACK</STRONG> is the default
+       colors (ISO-6429).  <EM>curses</EM> also assumes that <STRONG>COLOR_BLACK</STRONG> is the default
        background color for all terminals.
 
              <STRONG>COLOR_BLACK</STRONG>
@@ -413,7 +413,7 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       In  the  <STRONG>ncurses</STRONG>  implementation,  there is a separate color activation
+       In  the  <EM>ncurses</EM>  implementation,  there is a separate color activation
        flag, color palette, color  pairs  table,  and  associated  <STRONG>COLORS</STRONG>  and
        <STRONG>COLOR_PAIRS</STRONG>  counts  for  each  screen;  the  <STRONG>start_color</STRONG> function only
        affects the current screen.   The  SVr4/XSI  interface  is  not  really
@@ -525,7 +525,7 @@
 
 
 
-ncurses 6.4                       2023-09-16                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
+ncurses 6.4                       2023-09-23                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

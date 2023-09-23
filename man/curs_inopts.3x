@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.47 2023/09/16 23:37:03 tom Exp $
-.TH curs_inopts 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.54 2023/09/23 22:24:15 tom Exp $
+.TH curs_inopts 3X 2023-09-23 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -60,58 +60,44 @@
 \fB\%typeahead\fP \-
 get and set \fIcurses\fR terminal input options
 .SH SYNOPSIS
+.nf
 \fB#include <curses.h>\fP
 .PP
 \fBint cbreak(void);\fP
-.br
 \fBint nocbreak(void);\fP
-.sp
+.PP
 \fBint echo(void);\fP
-.br
 \fBint noecho(void);\fP
-.sp
+.PP
 \fBint intrflush(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
 \fBint keypad(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
 \fBint meta(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
 \fBint nodelay(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
 \fBint notimeout(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.sp
+.PP
 \fBint nl(void);\fP
-.br
 \fBint nonl(void);\fP
-.sp
+.PP
 \fBint raw(void);\fP
-.br
 \fBint noraw(void);\fP
-.sp
+.PP
 \fBvoid qiflush(void);\fP
-.br
 \fBvoid noqiflush(void);\fP
-.sp
+.PP
 \fBint halfdelay(int \fItenths\fB);\fR
-.br
 \fBvoid timeout(int \fIdelay\fB);\fR
-.br
 \fBvoid wtimeout(WINDOW *\fIwin\fB, int \fIdelay\fB);\fR
-.sp
+.PP
 \fBint typeahead(int \fIfd\fB);\fR
-.sp
-/* extensions */
-.br
+.PP
+\fI/* extensions */\fP
 \fBint is_cbreak(void);\fP
-.br
 \fBint is_echo(void);\fP
-.br
 \fBint is_nl(void);\fP
-.br
 \fBint is_raw(void);\fP
-.br
+.fi
 .SH DESCRIPTION
-The \fBncurses\fP library provides several functions which let an application
+The \fIncurses\fP library provides several functions which let an application
 change the way input from the terminal is handled.
 Some are global, applying to all windows.
 Others apply only to a specific window.
@@ -123,51 +109,51 @@ is needed.
 .SS cbreak/nocbreak
 Normally, the tty driver buffers typed characters until a newline or carriage
 return is typed.
-The \fBcbreak\fP routine disables line buffering and
+The \fB\%cbreak\fP routine disables line buffering and
 erase/kill character-processing (interrupt and flow control characters are
 unaffected), making characters typed by the user immediately available to the
 program.
-The \fBnocbreak\fP routine returns the terminal to normal (cooked)
+The \fB\%nocbreak\fP routine returns the terminal to normal (cooked)
 mode.
 .PP
-Initially the terminal may or may not be in \fBcbreak\fP mode, as the mode is
-inherited; therefore, a program should call \fBcbreak\fP or \fBnocbreak\fP
+Initially the terminal may or may not be in \fB\%cbreak\fP mode, as the mode is
+inherited; therefore, a program should call \fB\%cbreak\fP or \fB\%nocbreak\fP
 explicitly.
-Most interactive programs using \fBcurses\fP set the \fBcbreak\fP
+Most interactive programs using \fIcurses\fP set the \fB\%cbreak\fP
 mode.
-Note that \fBcbreak\fP overrides \fBraw\fP.
-[See \fBcurs_getch\fP(3X) for a
-discussion of how these routines interact with \fBecho\fP and \fBnoecho\fP.]
+Note that \fB\%cbreak\fP overrides \fBraw\fP.
+[See \fB\%curs_getch\fP(3X) for a
+discussion of how these routines interact with \fBecho\fP and \fB\%noecho\fP.]
 .\"
 .SS echo/noecho
-The \fBecho\fP and \fBnoecho\fP routines control whether characters typed by
-the user are echoed by \fBgetch\fP(3X) as they are typed.
+The \fBecho\fP and \fB\%noecho\fP routines control whether characters typed by
+the user are echoed by \fB\%getch\fP(3X) as they are typed.
 Echoing by the tty
-driver is always disabled, but initially \fBgetch\fP is in echo mode, so
+driver is always disabled, but initially \fB\%getch\fP is in echo mode, so
 characters typed are echoed.
 Authors of most interactive programs prefer to do
 their own echoing in a controlled area of the screen, or not to echo at all, so
-they disable echoing by calling \fBnoecho\fP.
-[See \fBcurs_getch\fP(3X) for a
-discussion of how these routines interact with \fBcbreak\fP and
-\fBnocbreak\fP.]
+they disable echoing by calling \fB\%noecho\fP.
+[See \fB\%curs_getch\fP(3X) for a
+discussion of how these routines interact with \fB\%cbreak\fP and
+\fB\%nocbreak\fP.]
 .\"
 .SS halfdelay
-The \fBhalfdelay\fP routine is used for half-delay mode, which is similar to
-\fBcbreak\fP mode in that characters typed by the user are immediately
+The \fB\%halfdelay\fP routine is used for half-delay mode, which is similar to
+\fB\%cbreak\fP mode in that characters typed by the user are immediately
 available to the program.
 However, after blocking for \fItenths\fP tenths of
 seconds, \fBERR\fP is returned if nothing has been typed.
 The value of \fItenths\fP
 must be a number between 1 and 255.
-Use \fBnocbreak\fP to leave half-delay
+Use \fB\%nocbreak\fP to leave half-delay
 mode.
 .\"
 .SS intrflush
-If the \fBintrflush\fP option is enabled (\fIbf\fP is \fBTRUE\fP), and an
+If the \fB\%intrflush\fP option is enabled (\fIbf\fP is \fBTRUE\fP), and an
 interrupt key is pressed on the keyboard (interrupt, break, quit), all output in
 the tty driver queue will be flushed, giving the effect of faster response to
-the interrupt, but causing \fBcurses\fP to have the wrong idea of what is on
+the interrupt, but causing \fIcurses\fP to have the wrong idea of what is on
 the screen.
 Disabling the option (\fIbf\fP is \fBFALSE\fP) prevents the
 flush.
@@ -175,24 +161,24 @@ The default for the option is inherited from the tty driver settings.
 The window argument is ignored.
 .\"
 .SS keypad
-The \fBkeypad\fP option enables the keypad of the user's terminal.
+The \fB\%keypad\fP option enables the keypad of the user's terminal.
 If
 enabled (\fIbf\fP is \fBTRUE\fP), the user can press a function key
-(such as an arrow key) and \fBwgetch\fP(3X) returns a single value
-representing the function key, as in \fBKEY_LEFT\fP.
+(such as an arrow key) and \fB\%wgetch\fP(3X) returns a single value
+representing the function key, as in \fB\%KEY_LEFT\fP.
 If disabled
-(\fIbf\fP is \fBFALSE\fP), \fBcurses\fP does not treat function keys
+(\fIbf\fP is \fBFALSE\fP), \fIcurses\fP does not treat function keys
 specially and the program has to interpret the escape sequences
 itself.
 If the keypad in the terminal can be turned on (made to
 transmit) and off (made to work locally), turning on this option
-causes the terminal keypad to be turned on when \fBwgetch\fP(3X) is
+causes the terminal keypad to be turned on when \fB\%wgetch\fP(3X) is
 called.
 The default value for keypad is \fBFALSE\fP.
 .\"
 .SS meta
 Initially, whether the terminal returns 7 or 8 significant bits on
-input depends on the control mode of the tty driver [see \fBtermios\fP(3)].
+input depends on the control mode of the tty driver [see \fB\%termios\fP(3)].
 To force 8 bits to be returned, invoke \fBmeta\fP(\fIwin\fP,
 \fBTRUE\fP); this is equivalent, under POSIX, to setting the CS8 flag
 on the terminal.
@@ -212,44 +198,44 @@ The \fBnl\fP and \fBnonl\fP routines control whether the underlying display
 device translates the return key into newline on input.
 .\"
 .SS nodelay
-The \fBnodelay\fP option causes \fBgetch\fP to be a non-blocking call.
-If no input is ready, \fBgetch\fP returns \fBERR\fP.
+The \fB\%nodelay\fP option causes \fB\%getch\fP to be a non-blocking call.
+If no input is ready, \fB\%getch\fP returns \fBERR\fP.
 If disabled
-(\fIbf\fP is \fBFALSE\fP), \fBgetch\fP waits until a key is pressed.
+(\fIbf\fP is \fBFALSE\fP), \fB\%getch\fP waits until a key is pressed.
 .SS notimeout
-When interpreting an escape sequence, \fBwgetch\fP(3X) sets a timer
+When interpreting an escape sequence, \fB\%wgetch\fP(3X) sets a timer
 while waiting for the next character.
-If \fBnotimeout(\fIwin\fR,
-\fBTRUE\fP) is called, then \fBwgetch\fP does not set a timer.
+If \fB\%notimeout(\fIwin\fR,
+\fBTRUE\fP) is called, then \fB\%wgetch\fP does not set a timer.
 The
 purpose of the timeout is to differentiate between sequences received
 from a function key and those typed by a user.
 .\"
 .SS raw/noraw
-The \fBraw\fP and \fBnoraw\fP routines place the terminal into or out of raw
+The \fBraw\fP and \fB\%noraw\fP routines place the terminal into or out of raw
 mode.
-Raw mode is similar to \fBcbreak\fP mode, in that characters typed are
+Raw mode is similar to \fB\%cbreak\fP mode, in that characters typed are
 immediately passed through to the user program.
 The differences are that in
 raw mode, the interrupt, quit, suspend, and flow control characters are all
 passed through uninterpreted, instead of generating a signal.
 The behavior of
 the BREAK key depends on other bits in the tty driver that are not set by
-\fBcurses\fP.
+\fIcurses\fP.
 .\"
 .SS qiflush/noqiflush
-When the \fBnoqiflush\fP routine is used, normal flush of input and
+When the \fB\%noqiflush\fP routine is used, normal flush of input and
 output queues associated with the \fBINTR\fP, \fBQUIT\fP and
-\fBSUSP\fP characters will not be done [see \fBtermios\fP(3)].
+\fBSUSP\fP characters will not be done [see \fB\%termios\fP(3)].
 When
-\fBqiflush\fP is called, the queues will be flushed when these control
+\fB\%qiflush\fP is called, the queues will be flushed when these control
 characters are read.
-You may want to call \fBnoqiflush\fP in a signal
+You may want to call \fB\%noqiflush\fP in a signal
 handler if you want output to continue as though the interrupt
 had not occurred, after the handler exits.
 .\"
 .SS timeout/wtimeout
-The \fBtimeout\fP and \fBwtimeout\fP routines set blocking or
+The \fB\%timeout\fP and \fB\%wtimeout\fP routines set blocking or
 non-blocking read for a given window.
 If \fIdelay\fP is negative,
 blocking read is used (i.e., waits indefinitely for
@@ -259,21 +245,21 @@ If \fIdelay\fP is zero, then non-blocking read is used
 If
 \fIdelay\fP is positive, then read blocks for \fIdelay\fP
 milliseconds, and returns \fBERR\fP if there is still no input.
-Hence, these routines provide the same functionality as \fBnodelay\fP,
+Hence, these routines provide the same functionality as \fB\%nodelay\fP,
 plus the additional capability of being able to block for only
 \fIdelay\fP milliseconds (where \fIdelay\fP is positive).
 .\"
 .SS typeahead
-The \fBcurses\fP library does \*(``line-breakout optimization\*(''
+The \fIcurses\fP library does \*(``line-breakout optimization\*(''
 by looking for typeahead periodically while updating the screen.
 If input is found, and it is coming from a tty,
 the current update is postponed until
-\fBrefresh\fP(3X) or \fBdoupdate\fP is called again.
+\fB\%refresh\fP(3X) or \fB\%doupdate\fP is called again.
 This allows faster response to commands typed in advance.
 Normally, the input FILE
-pointer passed to \fBnewterm\fP, or \fBstdin\fP in the case that
-\fBinitscr\fP was used, will be used to do this typeahead checking.
-The \fBtypeahead\fP routine specifies that the file descriptor
+pointer passed to \fB\%newterm\fP, or \fBstdin\fP in the case that
+\fB\%initscr\fP was used, will be used to do this typeahead checking.
+The \fB\%typeahead\fP routine specifies that the file descriptor
 \fIfd\fP is to be used to check for typeahead instead.
 If \fIfd\fP is
 \-1, then no typeahead checking is done.
@@ -291,7 +277,7 @@ Any function will also return an error if the terminal was not initialized.
 Also,
 .RS 3
 .TP 5
-\fBhalfdelay\fP
+\fB\%halfdelay\fP
 returns an error
 if its parameter is outside the range 1..255.
 .RE
@@ -317,64 +303,64 @@ if the flag is set,
 0
 if the flag is reset, or
 .TP 5
--1
-if the curses library was not initialized.
+\-1
+if the \fIcurses\fP library was not initialized.
 .PP
-These routines are specific to ncurses.
+These routines are specific to \fIncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on ncurses extensions
+It is recommended that any code depending on \fIncurses\fP extensions
 be conditioned using NCURSES_VERSION.
 .SH PORTABILITY
 Except as noted in the section on extensions,
 these functions are described in the XSI Curses standard, Issue 4.
 .PP
-The ncurses library obeys the XPG4 standard and the historical practice of the
-AT&T curses implementations, in that the echo bit is cleared when curses
+The \fIncurses\fP library obeys the XPG4 standard and the historical practice of the
+AT&T \fIcurses\fP implementations, in that the echo bit is cleared when \fIcurses\fP
 initializes the terminal state.
-BSD curses differed from this slightly; it
+BSD \fIcurses\fP differed from this slightly; it
 left the echo bit on at initialization, but the BSD \fBraw\fP call turned it
 off as a side-effect.
-For best portability, set \fBecho \fPor \fBnoecho\fP explicitly
+For best portability, set \fBecho \fPor \fB\%noecho\fP explicitly
 just after initialization, even if your program remains in cooked mode.
 .PP
 The XSI Curses standard is ambiguous on the question of whether \fBraw\fP
 should disable the CRLF translations controlled by \fBnl\fP and \fBnonl\fP.
-BSD curses did turn off these translations; AT&T curses (at least as late as
+BSD \fIcurses\fP did turn off these translations; AT&T \fIcurses\fP (at least as late as
 SVr1) did not.
 We chose to do so, on the theory that a programmer requesting
 raw input wants a clean (ideally 8-bit clean) connection that the operating
 system will not alter.
 .PP
-When \fBkeypad\fP is first enabled,
-ncurses loads the key-definitions for the current terminal description.
+When \fB\%keypad\fP is first enabled,
+\fIncurses\fP loads the key-definitions for the current terminal description.
 If the terminal description includes extended string capabilities,
 e.g., from using the \fB\-x\fP option of \fB@TIC@\fP,
-then ncurses also defines keys for the capabilities whose names
+then \fIncurses\fP also defines keys for the capabilities whose names
 begin with \*(``k\*(''.
 The corresponding keycodes are generated and (depending on previous
 loads of terminal descriptions) may differ from one execution of a
 program to the next.
-The generated keycodes are recognized by the \fBkeyname\fP function
+The generated keycodes are recognized by the \fB\%keyname\fP function
 (which will then return a name beginning with \*(``k\*('' denoting the
-terminfo capability name rather than \*(``K\*('', used for curses key-names).
-On the other hand, an application can use \fBdefine_key\fP to establish
+terminfo capability name rather than \*(``K\*('', used for \fIcurses\fP key-names).
+On the other hand, an application can use \fB\%define_key\fP to establish
 a specific keycode for a given string.
 This makes it possible for an application to check for an extended
-capability's presence with \fBtigetstr\fP,
+capability's presence with \fB\%tigetstr\fP,
 and reassign the keycode to match its own needs.
 .PP
-Low-level applications can use \fBtigetstr\fP to obtain the definition
+Low-level applications can use \fB\%tigetstr\fP to obtain the definition
 of any particular string capability.
-Higher-level applications which use the curses \fBwgetch\fP
+Higher-level applications which use the \fIcurses\fP \fB\%wgetch\fP
 and similar functions to return keycodes rely upon the order in which
 the strings are loaded.
 If more than one key definition has the same string value,
-then \fBwgetch\fP can return only one keycode.
-Most curses implementations (including ncurses)
+then \fB\%wgetch\fP can return only one keycode.
+Most \fIcurses\fP implementations (including \fIncurses\fP)
 load key definitions in the order
 defined by the array of string capability names.
 The last key to be loaded determines the keycode which will be returned.
-In ncurses, you may also have extended capabilities interpreted as
+In \fIncurses\fP, you may also have extended capabilities interpreted as
 key definitions.
 These are loaded after the predefined keys,
 and if a capability's value is the same as a previously-loaded
@@ -383,28 +369,28 @@ the later definition is the one used.
 .SH NOTES
 Note that
 \fBecho\fP,
-\fBnoecho\fP,
-\fBhalfdelay\fP,
-\fBintrflush\fP,
+\fB\%noecho\fP,
+\fB\%halfdelay\fP,
+\fB\%intrflush\fP,
 \fBmeta\fP,
 \fBnl\fP,
 \fBnonl\fP,
-\fBnodelay\fP,
-\fBnotimeout\fP,
-\fBnoqiflush\fP,
-\fBqiflush\fP,
-\fBtimeout\fP, and
-\fBwtimeout\fP may be macros.
+\fB\%nodelay\fP,
+\fB\%notimeout\fP,
+\fB\%noqiflush\fP,
+\fB\%qiflush\fP,
+\fB\%timeout\fP, and
+\fB\%wtimeout\fP may be macros.
 .PP
-The \fBnoraw\fP and \fBnocbreak\fP calls follow historical practice in that
+The \fB\%noraw\fP and \fB\%nocbreak\fP calls follow historical practice in that
 they attempt to restore to normal (\*(``cooked\*('') mode
 from raw and cbreak modes respectively.
 Mixing raw/noraw and cbreak/nocbreak calls leads to tty driver
 control states that are hard to predict or understand; it is not recommended.
 .SH SEE ALSO
-\fBcurses\fP(3X),
-\fBcurs_getch\fP(3X),
-\fBcurs_initscr\fP(3X),
-\fBcurs_util\fP(3X),
-\fBdefine_key\fP(3X),
-\fBtermios\fP(3)
+\fB\%curses\fP(3X),
+\fB\%curs_getch\fP(3X),
+\fB\%curs_initscr\fP(3X),
+\fB\%curs_util\fP(3X),
+\fB\%define_key\fP(3X),
+\fB\%termios\fP(3)

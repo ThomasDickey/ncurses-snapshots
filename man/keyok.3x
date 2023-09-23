@@ -29,19 +29,19 @@
 .\"
 .\" Author: Thomas E. Dickey 1997
 .\"
-.\" $Id: keyok.3x,v 1.26 2023/09/16 23:38:39 tom Exp $
-.TH keyok 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: keyok.3x,v 1.32 2023/09/23 22:49:51 tom Exp $
+.TH keyok 3X 2023-09-23 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%keyok\fP \-
 enable or disable a \fIcurses\fR keycode
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
-.sp
+.PP
 \fBint keyok(int \fIkeycode\fB, bool \fIenable\fB);\fR
 .SH DESCRIPTION
-This is an extension to the curses library.
+This is an extension to the \fIcurses\fP library.
 It permits an application to disable specific keycodes, rather than
-use the \fBkeypad\fP function to disable all keycodes.
+use the \fB\%keypad\fP function to disable all keycodes.
 Keys that have been disabled can be re-enabled.
 .SH RETURN VALUE
 The keycode must be greater than zero, else \fBERR\fP is returned.
@@ -50,12 +50,12 @@ If the \fIenable\fP parameter is true, then the key must have been disabled,
 and vice versa.
 Otherwise, the function returns \fBOK\fP.
 .SH PORTABILITY
-This routine is specific to ncurses.
+This routine is specific to \fIncurses\fP.
 It was not supported on
 Version 7, BSD or System V implementations.
 It is recommended that
-any code depending on them be conditioned using NCURSES_VERSION.
+any code depending on them be conditioned using \fB\%NCURSES_VERSION\fP.
 .SH SEE ALSO
-\fBdefine_key\fP(3X).
+\fB\%define_key\fP(3X)
 .SH AUTHOR
-Thomas Dickey.
+Thomas Dickey

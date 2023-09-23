@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: scr_dump.5,v 1.31 2023/09/16 23:38:39 tom Exp @
+  * @Id: scr_dump.5,v 1.33 2023/09/23 23:37:26 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>scr_dump 5 2023-09-16 ncurses 6.4 File formats</TITLE>
+<TITLE>scr_dump 5 2023-09-23 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">scr_dump 5 2023-09-16 ncurses 6.4 File formats</H1>
+<H1 class="no-header">scr_dump 5 2023-09-23 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>                      File formats                      <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 
@@ -124,8 +124,8 @@
            into  the  array of line-data and adjust the <STRONG>WINDOW</STRONG> structure which
            was read back into memory.
 
-       This is similar to Unix SystemV, but does not write a "magic number" to
-       identify the file format.
+       This is similar to Unix System V, but does not write a  "magic  number"
+       to identify the file format.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -165,8 +165,8 @@
        <STRONG>or</STRONG> <STRONG>to</STRONG> <STRONG>earlier</STRONG> <STRONG>XPG</STRONG> <STRONG>releases</STRONG>, for clarity.
 
 
-</PRE><H3><a name="h3-Unix-SystemV">Unix SystemV</a></H3><PRE>
-       Unix SystemV curses identified the file  format  by  writing  a  "magic
+</PRE><H3><a name="h3-Unix-System-V">Unix System V</a></H3><PRE>
+       Unix System V curses identified the file format  by  writing  a  "magic
        number" at the beginning of the dump.  The <STRONG>WINDOW</STRONG> data and the lines of
        text follow, all in binary form.
 
@@ -233,7 +233,7 @@
 
 </PRE><H3><a name="h3-PDCurses">PDCurses</a></H3><PRE>
        PDCurses added support for screen dumps in version  2.7  (2005).   Like
-       Unix  SystemV  and  ncurses5, it writes the <STRONG>WINDOW</STRONG> structure in binary,
+       Unix  System V  and ncurses5, it writes the <STRONG>WINDOW</STRONG> structure in binary,
        but begins the file with its three-byte identifier "PDC", followed by a
        one-byte version, e.g.,
 
@@ -407,7 +407,7 @@
 
 
 
-ncurses 6.4                       2023-09-16                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
+ncurses 6.4                       2023-09-23                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -422,7 +422,7 @@ ncurses 6.4                       2023-09-16                       <STRONG><A HR
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-X_Open-Curses">X/Open Curses</a></li>
-<li><a href="#h3-Unix-SystemV">Unix SystemV</a></li>
+<li><a href="#h3-Unix-System-V">Unix System V</a></li>
 <li><a href="#h3-Solaris">Solaris</a></li>
 <li><a href="#h3-PDCurses">PDCurses</a></li>
 <li><a href="#h3-NetBSD">NetBSD</a></li>

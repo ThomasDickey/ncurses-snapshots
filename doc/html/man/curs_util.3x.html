@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.77 2023/09/16 23:37:03 tom Exp @
+  * @Id: curs_util.3x,v 1.83 2023/09/23 23:14:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2023-09-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-09-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2023-09-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -72,7 +72,7 @@
        <STRONG>int</STRONG> <STRONG>delay_output(int</STRONG> <EM>ms</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>flushinp(void);</STRONG>
 
-       /* extensions */
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>void</STRONG> <STRONG>nofilter(void);</STRONG>
        <STRONG>void</STRONG> <STRONG>use_tioctl(bool</STRONG> <EM>f</EM><STRONG>);</STRONG>
 
@@ -151,10 +151,10 @@
 </PRE><H3><a name="h3-use_env">use_env</a></H3><PRE>
        The <STRONG>use_env</STRONG> routine, if  used,  should  be  called  before  <STRONG>initscr</STRONG>  or
        <STRONG>newterm</STRONG>  are  called  (because  those  compute  the  screen  size).  It
-       modifies the way <STRONG>ncurses</STRONG> treats environment variables when  determining
+       modifies the way <EM>ncurses</EM> treats environment variables when  determining
        the screen size.
 
-       <STRONG>o</STRONG>   Normally  <STRONG>ncurses</STRONG>  looks  first  at  the  terminal database for the
+       <STRONG>o</STRONG>   Normally  <EM>ncurses</EM>  looks  first  at  the  terminal database for the
            screen size.
 
            If <STRONG>use_env</STRONG> was called with  <STRONG>FALSE</STRONG>  for  parameter,  it  stops  here
@@ -188,21 +188,18 @@
        <STRONG>o</STRONG>   <STRONG>ncurses</STRONG> re-fetches the value of the environment variables  so  that
            it is still the environment variables which set the screen size.
 
-       The <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> routines combine as summarized here:
+       The <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> routines combine as follows.
 
-           <STRONG>use_env</STRONG>   <STRONG>use_tioctl</STRONG>   <STRONG>Summary</STRONG>
-           ----------------------------------------------------------------
-           TRUE      FALSE        This  is  the default behavior.  <STRONG>ncurses</STRONG>
-                                  uses  operating  system   calls   unless
-                                  overridden   by   $LINES   or   $COLUMNS
-                                  environment variables.
-           TRUE      TRUE         <STRONG>ncurses</STRONG>  updates  $LINES  and   $COLUMNS
-                                  based on operating system calls.
-           FALSE     TRUE         <STRONG>ncurses</STRONG>  ignores  $LINES  and  $COLUMNS,
-                                  uses operating system  calls  to  obtain
-                                  size.
-           FALSE     FALSE        <STRONG>ncurses</STRONG>  relies on the terminal database
-                                  to determine size.
+              <STRONG>use_env</STRONG>   <STRONG>use_tioctl</STRONG>   <STRONG>Summary</STRONG>
+              -----------------------------------------------------------------
+              <STRONG>TRUE</STRONG>      <STRONG>FALSE</STRONG>        This  is  the  default behavior.  <EM>ncurses</EM>
+                                     uses  operating   system   calls   unless
+                                     overridden    by    <STRONG>LINES</STRONG>    or   <STRONG>COLUMNS</STRONG>
+                                     environment variables; default.
+              <STRONG>TRUE</STRONG>      <STRONG>TRUE</STRONG>         <EM>ncurses</EM> updates <STRONG>LINES</STRONG> and  <STRONG>COLUMNS</STRONG>  based
+                                     on operating system calls.
+              <STRONG>FALSE</STRONG>     <STRONG>TRUE</STRONG>         <EM>ncurses</EM>  ignores <STRONG>LINES</STRONG> and <STRONG>COLUMNS</STRONG>, using
+                                     operating system calls to obtain size.
 
 
 </PRE><H3><a name="h3-putwin_getwin">putwin/getwin</a></H3><PRE>
@@ -282,7 +279,7 @@
        The  <STRONG>nofilter</STRONG>  and  <STRONG>use_tioctl</STRONG>  routines are specific to <STRONG>ncurses</STRONG>.  They
        were not supported on Version 7, BSD or System V  implementations.   It
        is  recommended  that  any  code  depending  on  <STRONG>ncurses</STRONG>  extensions be
-       conditioned using NCURSES_VERSION.
+       conditioned using <STRONG>NCURSES_VERSION</STRONG>.
 
 
 </PRE><H3><a name="h3-putwin_getwin-file-format">putwin/getwin file-format</a></H3><PRE>
@@ -372,7 +369,7 @@
 
 
 
-ncurses 6.4                       2023-09-16                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2023-09-23                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

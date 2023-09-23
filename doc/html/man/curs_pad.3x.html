@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_pad.3x,v 1.38 2023/09/16 23:37:03 tom Exp @
+  * @Id: curs_pad.3x,v 1.43 2023/09/23 22:49:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_pad 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_pad 3x 2023-09-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_pad 3x 2023-09-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_pad 3x 2023-09-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 
@@ -161,9 +161,9 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       BSD curses has no <EM>pad</EM> feature.
+       BSD <EM>curses</EM> has no <EM>pad</EM> feature.
 
-       SVr2  curses  (1986)  provided  the  <STRONG>newpad</STRONG>  and   related   functions,
+       SVr2  <EM>curses</EM>  (1986)  provided  the  <STRONG>newpad</STRONG>  and   related   functions,
        documenting  them  in  a  single  line each.  SVr3 (1987) provided more
        extensive documentation.
 
@@ -183,7 +183,7 @@
        conditions.   The  behavior of <STRONG>subpad</STRONG> if the parent window is not a pad
        is undocumented, and is not checked by the vendor Unix implementations:
 
-       <STRONG>o</STRONG>   SVr4 curses sets a flag in the <STRONG>WINDOW</STRONG>  structure  in  <STRONG>newpad</STRONG>  which
+       <STRONG>o</STRONG>   SVr4 <EM>curses</EM> sets a flag in the <STRONG>WINDOW</STRONG>  structure  in  <STRONG>newpad</STRONG>  which
            tells if the window is a <EM>pad</EM>.
 
            However,  it  uses this information only in <STRONG>waddch</STRONG> (to decide if it
@@ -202,7 +202,7 @@
            enough, a comment in the source code states  that  the  lack  of  a
            check was an MKS extension.
 
-       <STRONG>o</STRONG>   NetBSD  7 curses sets a flag in the <STRONG>WINDOW</STRONG> structure for <STRONG>newpad</STRONG> and
+       <STRONG>o</STRONG>   NetBSD  7 <EM>curses</EM> sets a flag in the <STRONG>WINDOW</STRONG> structure for <STRONG>newpad</STRONG> and
            <STRONG>subpad</STRONG>,  using  this  to  help   with   the   distinction   between
            <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>.
 
@@ -228,11 +228,11 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>.
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-09-16                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
+ncurses 6.4                       2023-09-23                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

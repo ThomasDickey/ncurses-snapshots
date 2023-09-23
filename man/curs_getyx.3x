@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getyx.3x,v 1.31 2023/09/16 23:37:03 tom Exp $
-.TH curs_getyx 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getyx.3x,v 1.37 2023/09/23 22:10:55 tom Exp $
+.TH curs_getyx 3X 2023-09-23 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%getyx\fP,
 \fB\%getparyx\fP,
@@ -36,25 +36,24 @@
 \fB\%getmaxyx\fP \-
 get \fIcurses\fR cursor and window coordinates
 .SH SYNOPSIS
+.nf
 \fB#include <curses.h>\fP
-.sp
+.PP
 \fBvoid getyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-.br
 \fBvoid getparyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-.br
 \fBvoid getbegyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-.br
 \fBvoid getmaxyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
+.fi
 .SH DESCRIPTION
-The \fBgetyx\fP macro places the current cursor position of the given window in
+The \fB\%getyx\fP macro places the current cursor position of the given window in
 the two integer variables \fIy\fP and \fIx\fP.
 .PP
-If \fIwin\fP is a subwindow, the \fBgetparyx\fP macro places the beginning
+If \fIwin\fP is a subwindow, the \fB\%getparyx\fP macro places the beginning
 coordinates of the subwindow relative to the parent window into two integer
 variables \fIy\fP and \fIx\fP.
 Otherwise, \fB\-1\fP is placed into \fIy\fP and \fIx\fP.
 .PP
-Like \fBgetyx\fP, the \fBgetbegyx\fP and \fBgetmaxyx\fP macros store
+Like \fB\%getyx\fP, the \fB\%getbegyx\fP and \fB\%getmaxyx\fP macros store
 the current beginning coordinates and size of the specified window.
 .SH RETURN VALUE
 The return values of these macros are undefined (i.e.,
@@ -64,38 +63,39 @@ All of these interfaces are macros.
 A "\fB&\fP" is not necessary before the variables \fIy\fP and \fIx\fP.
 .SH PORTABILITY
 The
-\fBgetyx\fP,
-\fBgetparyx\fP,
-\fBgetbegyx\fP and
-\fBgetmaxyx\fP
+\fB\%getyx\fP,
+\fB\%getparyx\fP,
+\fB\%getbegyx\fP and
+\fB\%getmaxyx\fP
 macros are described in the XSI Curses standard, Issue 4.
 .PP
 This implementation also provides functions
-\fBgetbegx\fP,
-\fBgetbegy\fP,
-\fBgetcurx\fP,
-\fBgetcury\fP,
-\fBgetmaxx\fP,
-\fBgetmaxy\fP,
-\fBgetparx\fP and
-\fBgetpary\fP
-for compatibility with older versions of curses.
+\fB\%getbegx\fP,
+\fB\%getbegy\fP,
+\fB\%getcurx\fP,
+\fB\%getcury\fP,
+\fB\%getmaxx\fP,
+\fB\%getmaxy\fP,
+\fB\%getparx\fP and
+\fB\%getpary\fP
+for compatibility with older versions of \fIcurses\fP;
+see \fB\%curs_legacy\fP(3X).
 .PP
 Although X/Open Curses does not address this,
-many implementations provide members of the WINDOW structure
+many implementations provide members of the \fB\%WINDOW\fP structure
 containing values corresponding to these macros.
-For best portability, do not rely on using the data in WINDOW,
-since some implementations make WINDOW opaque (do not allow
+For best portability, do not rely on using the data in \fB\%WINDOW\fP,
+since some implementations make \fB\%WINDOW\fP opaque (do not allow
 direct use of its members).
 .PP
 Besides the problem of opaque structures,
 the data stored in like-named members may not have like-values in
 different implementations.
-For example, the WINDOW._maxx and WINDOW._maxy values in ncurses
+For example, the \fB\%WINDOW._maxx\fP and \fB\%WINDOW._maxy\fP values in \fIncurses\fP
 have (at least since release 1.8.1) differed by one from some
 other implementations.
-The difference is hidden by means of the macro \fBgetmaxyx\fP.
+The difference is hidden by means of the macro \fB\%getmaxyx\fP.
 .SH SEE ALSO
-\fBcurses\fP(3X),
-\fBcurs_legacy\fP(3X),
-\fBcurs_opaque\fP(3X)
+\fB\%curses\fP(3X),
+\fB\%curs_legacy\fP(3X),
+\fB\%curs_opaque\fP(3X)

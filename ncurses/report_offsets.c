@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2023 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: report_offsets.c,v 1.22 2021/08/19 19:51:33 tom Exp $")
+MODULE_ID("$Id: report_offsets.c,v 1.23 2023/09/23 16:47:57 tom Exp $")
 
 #define show_size(type) \
 	flag = 0; \
@@ -65,12 +65,7 @@ MODULE_ID("$Id: report_offsets.c,v 1.22 2021/08/19 19:51:33 tom Exp $")
 #define show_MLEAKS(type,member)	/* nothing */
 #endif
 
-#ifdef USE_TERM_DRIVER
-#define show_NORMAL(type,member)	/* nothing */
-#else
 #define show_NORMAL(type,member) { flag = "n"; show_offset(type,member); }
-#endif
-
 #define show_OPTION(type,member) { flag = "+"; show_offset(type,member); }
 
 #if USE_REENTRANT
@@ -160,7 +155,9 @@ main(void)
 #if USE_SIZECHANGE
     show_OPTION(SCREEN, _resize);
 #endif
-    show_DRIVER(SCREEN, _windowlist);
+#ifdef USE_SP_WINDOWLIST
+    show_NORMAL(SCREEN, _windowlist);
+#endif
     show_REENTR(SCREEN, _ttytype);
     show_SPFUNC(SCREEN, use_tioctl);
     show_WIDECH(SCREEN, _screen_acs_fix);
@@ -210,7 +207,9 @@ main(void)
     show_offset(NCURSES_GLOBALS, cached_tparm);
 #endif
     show_DRIVER(NCURSES_GLOBALS, term_driver);
+#ifndef USE_SP_WINDOWLIST
     show_NORMAL(NCURSES_GLOBALS, _nc_windowlist);
+#endif
 #if USE_HOME_TERMINFO
     show_OPTION(NCURSES_GLOBALS, home_terminfo);
 #endif

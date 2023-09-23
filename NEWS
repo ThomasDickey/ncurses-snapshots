@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4001 2023/09/17 22:41:20 tom Exp $
+-- $Id: NEWS,v 1.4004 2023/09/23 23:48:03 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20230923
+	+ improve formatting of manpages (patches by Branden Robinson).
+	+ amend change to delscreen() to limit the windows which it creates to
+	  just those associated with the screen (report by Frederic Boiteux,
+	  cf: 20220813).
 
 20230918
 	+ new tarball/errata (report by Sven Joachim).

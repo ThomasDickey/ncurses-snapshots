@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.77 2023/09/16 23:37:03 tom Exp $
-.TH curs_util 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.83 2023/09/23 23:14:19 tom Exp $
+.TH curs_util 3X 2023-09-23 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -53,33 +53,29 @@
 \fB\%wunctrl\fP \-
 miscellaneous \fIcurses\fR utility routines
 .SH SYNOPSIS
+.nf
 \fB#include <curses.h>\fP
-.sp
+.PP
 \fBconst char *unctrl(chtype \fIc\fB);\fR
-.br
 \fBwchar_t *wunctrl(cchar_t *\fIc\fB);\fR
-.sp
+.PP
 \fBconst char *keyname(int \fIc\fB);\fR
-.br
 \fBconst char *key_name(wchar_t \fIw\fB);\fR
-.sp
+.PP
 \fBvoid filter(void);\fP
-.sp
+.PP
 \fBvoid use_env(bool \fIf\fB);\fR
-.sp
+.PP
 \fBint putwin(WINDOW *\fIwin\fB, FILE *\fIfilep\fB);\fR
-.br
 \fBWINDOW *getwin(FILE *\fIfilep\fB);\fR
-.sp
+.PP
 \fBint delay_output(int \fIms\fB);\fR
-.br
 \fBint flushinp(void);\fP
-.sp
-/* extensions */
-.br
+.PP
+\fI/* extensions */\fP
 \fBvoid nofilter(void);\fP
-.br
 \fBvoid use_tioctl(bool \fIf\fB);\fR
+.fi
 .SH DESCRIPTION
 .SS unctrl
 The \fBunctrl\fP routine returns a character string which is a printable
@@ -164,10 +160,10 @@ The \fBuse_env\fP routine, if used,
 should be called before \fBinitscr\fP or
 \fBnewterm\fP are called
 (because those compute the screen size).
-It modifies the way \fBncurses\fP treats environment variables
+It modifies the way \fIncurses\fP treats environment variables
 when determining the screen size.
 .bP
-Normally \fBncurses\fP looks first at the terminal database for the screen size.
+Normally \fIncurses\fP looks first at the terminal database for the screen size.
 .IP
 If \fBuse_env\fP was called with \fBFALSE\fP for parameter,
 it stops here unless
@@ -202,29 +198,27 @@ or from the terminal database.
 \fBncurses\fP re-fetches the value of the environment variables so that
 it is still the environment variables which set the screen size.
 .PP
-The \fBuse_env\fP and \fBuse_tioctl\fP routines combine as
-summarized here:
-.PP
+The \fB\%use_env\fP and \fB\%use_tioctl\fP routines combine as follows.
+.IP
 .TS
-center tab(/);
-l l l
-_ _ _
-lw7 lw7 lw40.
-\fBuse_env\fP/\fBuse_tioctl\fP/\fBSummary\fP
-TRUE/FALSE/T{
+lB lB lB
+lB lB lx.
+use_env	use_tioctl	Summary
+_
+TRUE	FALSE	T{
 This is the default behavior.
-\fBncurses\fP uses operating system calls
-unless overridden by $LINES or $COLUMNS environment variables.
+\fIncurses\fP uses operating system calls
+unless overridden by \fBLINES\fP or \fB\%COLUMNS\fP environment
+variables;
+default.
 T}
-TRUE/TRUE/T{
-\fBncurses\fP updates $LINES and $COLUMNS based on operating system calls.
+TRUE	TRUE	T{
+\fIncurses\fP updates \fBLINES\fP and \fB\%COLUMNS\fP based on operating
+system calls.
 T}
-FALSE/TRUE/T{
-\fBncurses\fP ignores $LINES and $COLUMNS,
-uses operating system calls to obtain size.
-T}
-FALSE/FALSE/T{
-\fBncurses\fP relies on the terminal database to determine size.
+FALSE	TRUE	T{
+\fIncurses\fP ignores \fBLINES\fP and \fB\%COLUMNS\fP,
+using operating system calls to obtain size.
 T}
 .TE
 .SS putwin/getwin
@@ -303,7 +297,7 @@ loaded when the terminal description is read by the library.
 The \fBnofilter\fP and \fBuse_tioctl\fP routines are specific to \fBncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
 It is recommended that any code depending on \fBncurses\fP extensions
-be conditioned using NCURSES_VERSION.
+be conditioned using \fBNCURSES_VERSION\fP.
 .SS putwin/getwin file-format
 The \fBputwin\fP and \fBgetwin\fP functions have several issues with
 portability:

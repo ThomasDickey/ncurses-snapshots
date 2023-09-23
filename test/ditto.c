@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey (1998-on)
  *
- * $Id: ditto.c,v 1.58 2022/12/24 23:53:08 tom Exp $
+ * $Id: ditto.c,v 1.59 2023/09/23 17:08:43 tom Exp $
  *
  * The program illustrates how to set up multiple screens from a single
  * program.
@@ -237,6 +237,14 @@ init_screen(
     }
     doupdate();
     return TRUE;
+}
+
+static void
+free_screen(DITTO * target)
+{
+    free(target->parents);
+    free(target->windows);
+    free(target->peeks);
 }
 
 static void
@@ -480,8 +488,10 @@ main(int argc, char *argv[])
 	fflush(data[j].output);
 	fclose(data[j].output);
 	delscreen(data[j].screen);
+	free_screen(&data[j]);
 	UnlockIt();
     }
+    free(data);
     ExitProgram(EXIT_SUCCESS);
 }
 #else

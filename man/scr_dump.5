@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.31 2023/09/16 23:38:39 tom Exp $
-.TH scr_dump 5 2023-09-16 "ncurses 6.4" "File formats"
+.\" $Id: scr_dump.5,v 1.33 2023/09/23 23:37:26 tom Exp $
+.TH scr_dump 5 2023-09-23 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -129,7 +129,7 @@ When \fBgetwin\fP restored the window,
 it would keep track of offsets into the array of line-data
 and adjust the \fBWINDOW\fP structure which was read back into memory.
 .PP
-This is similar to Unix SystemV,
+This is similar to Unix System\ V,
 but does not write a \*(``magic number\*('' to identify the file format.
 .SH PORTABILITY
 There is no standard format for \fBputwin\fP.
@@ -171,8 +171,8 @@ or more specific portability warnings about use of the material.
 In the foregoing, emphasis was added to \fBunspecified format\fP
 and to \fBXPG4 or to earlier XPG releases\fP,
 for clarity.
-.SS Unix SystemV
-Unix SystemV curses identified the file format by writing a
+.SS Unix System V
+Unix System\ V curses identified the file format by writing a
 \*(``magic number\*('' at the beginning of the dump.
 The \fBWINDOW\fP data and the lines of text follow, all in binary form.
 .PP
@@ -242,7 +242,7 @@ with coordinates and attributes for each chunk of text rather
 than writing the whole window from top to bottom.
 .SS PDCurses
 PDCurses added support for screen dumps in version 2.7 (2005).
-Like Unix SystemV and ncurses5,
+Like Unix System\ V and ncurses5,
 it writes the \fBWINDOW\fP structure in binary,
 but begins the file with its three-byte identifier \*(``PDC\*('',
 followed by a one-byte version,

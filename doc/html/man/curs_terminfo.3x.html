@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_terminfo.3x,v 1.99 2023/09/16 23:37:03 tom Exp @
+  * @Id: curs_terminfo.3x,v 1.108 2023/09/23 23:38:10 tom Exp @
   * ***************************************************************************
   * ***************************************************************************
   * ***************************************************************************
@@ -44,12 +44,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_terminfo 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_terminfo 3x 2023-09-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_terminfo 3x 2023-09-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_terminfo 3x 2023-09-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 
@@ -104,16 +104,16 @@
 
        <STRONG>char</STRONG> <STRONG>*tiparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
 
-       /* extensions */
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>char</STRONG> <STRONG>*tiparm_s(int</STRONG> <EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>mask</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
        <STRONG>int</STRONG> <STRONG>tiscan_s(int</STRONG> <STRONG>*</STRONG><EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>mask</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These low-level routines must be called by programs that have  to  deal
-       directly   with  the  <STRONG>terminfo</STRONG>  database  to  handle  certain  terminal
+       directly   with  the  <EM>terminfo</EM>  database  to  handle  certain  terminal
        capabilities,  such  as  programming  function  keys.   For  all  other
-       functionality,  <STRONG>curses</STRONG>  routines  are  more  suitable  and their use is
+       functionality,  <EM>curses</EM>  routines  are  more  suitable  and their use is
        recommended.
 
        None of these functions use  (or  are  aware  of)  multibyte  character
@@ -194,26 +194,26 @@
                If <STRONG>ERR</STRONG> is returned, examine <EM>errret</EM>:
 
                <STRONG>1</STRONG>    means  that  the  terminal is hardcopy, cannot be used for
-                    curses applications.
+                    <EM>curses</EM> applications.
 
                     <STRONG>setupterm</STRONG> determines if the entry is a  hardcopy  type  by
                     checking the <STRONG>hc</STRONG> (<STRONG>hardcopy</STRONG>) capability.
 
                <STRONG>0</STRONG>    means  that the terminal could not be found, or that it is
-                    a generic type, having too little information  for  curses
+                    a generic type, having too little information  for  <EM>curses</EM>
                     applications to run.
 
                     <STRONG>setupterm</STRONG>  determines  if  the  entry is a generic type by
                     checking the <STRONG>gn</STRONG> (<STRONG>generic_type</STRONG>) capability.
 
-               <STRONG>-1</STRONG>   means that the <STRONG>terminfo</STRONG> database could not be found.
+               <STRONG>-1</STRONG>   means that the <EM>terminfo</EM> database could not be found.
 
                If <EM>errret</EM> is null,  <STRONG>setupterm</STRONG>  prints  an  error  message  upon
                finding an error and exits.  Thus, the simplest call is:
 
-                     <STRONG>setupterm((char</STRONG> <STRONG>*)0,</STRONG> <STRONG>1,</STRONG> <STRONG>(int</STRONG> <STRONG>*)0);</STRONG>,
+               <STRONG>setupterm((char</STRONG> <STRONG>*)0,</STRONG> <STRONG>1,</STRONG> <STRONG>(int</STRONG> <STRONG>*)0);</STRONG>,
 
-               which uses all the defaults and sends the output to <STRONG>stdout</STRONG>.
+          which uses all the defaults and sends the output to <STRONG>stdout</STRONG>.
 
 
 </PRE><H3><a name="h3-The-Terminal-State">The Terminal State</a></H3><PRE>
@@ -337,8 +337,8 @@
        derived from the output stream parameter of <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.
 
        While <STRONG>putp</STRONG> and <STRONG>mvcur</STRONG> are low-level functions which do not use the high-
-       level curses state, they are declared in <STRONG>&lt;curses.h&gt;</STRONG> because SystemV did
-       this (see <EM>HISTORY</EM>).
+       level  curses  state,  they are declared in <STRONG>&lt;curses.h&gt;</STRONG> because System V
+       did this (see <EM>HISTORY</EM>).
 
 
 </PRE><H3><a name="h3-Terminal-Capability-Functions">Terminal Capability Functions</a></H3><PRE>
@@ -372,13 +372,13 @@
 </PRE><H3><a name="h3-Terminal-Capability-Names">Terminal Capability Names</a></H3><PRE>
        These null-terminated arrays contain
 
-       <STRONG>o</STRONG>   the short terminfo names ("codes"),
+       <STRONG>o</STRONG>   the short <EM>terminfo</EM> names ("codes"),
 
-       <STRONG>o</STRONG>   the <STRONG>termcap</STRONG> names ("names"), and
+       <STRONG>o</STRONG>   the <EM>termcap</EM> names ("names"), and
 
-       <STRONG>o</STRONG>   the long terminfo names ("fnames")
+       <STRONG>o</STRONG>   the long <EM>terminfo</EM> names ("fnames")
 
-       for each of the predefined <STRONG>terminfo</STRONG> variables:
+       for each of the predefined <EM>terminfo</EM> variables:
 
               <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*boolnames[]</STRONG>, <STRONG>*boolcodes[]</STRONG>, <STRONG>*boolfnames[]</STRONG>
               <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*numnames[]</STRONG>, <STRONG>*numcodes[]</STRONG>, <STRONG>*numfnames[]</STRONG>
@@ -390,7 +390,7 @@
        description.  As a side-effect, it  sets  <STRONG>cur_term</STRONG>  to  point  to  this
        memory.  If an application calls
 
-               <STRONG>del_curterm(cur_term);</STRONG>
+              <STRONG>del_curterm(cur_term);</STRONG>
 
        the memory will be freed.
 
@@ -453,9 +453,9 @@
        In SVr4, those are found in <STRONG>&lt;curses.h&gt;</STRONG>, but  except  for  <STRONG>setterm</STRONG>,  are
        likewise macros.  The one function, <STRONG>setterm</STRONG>, is mentioned in the manual
        page.  The manual page notes that the <STRONG>setterm</STRONG> routine was  replaced  by
-       <STRONG>setupterm</STRONG>, stating that the call:
+       <STRONG>setupterm</STRONG>, stating that the call
 
-             <STRONG>setupterm(</STRONG><EM>term</EM><STRONG>,</STRONG> <STRONG>1,</STRONG> <STRONG>(int</STRONG> <STRONG>*)0)</STRONG>
+              <STRONG>setupterm(</STRONG><EM>term</EM><STRONG>,</STRONG> <STRONG>1,</STRONG> <STRONG>(int</STRONG> <STRONG>*)0)</STRONG>
 
        provides   the   same   functionality  as  <STRONG>setterm(</STRONG><EM>term</EM><STRONG>)</STRONG>,  and  is  not
        recommended for new programs.  This  implementation  provides  each  of
@@ -464,61 +464,61 @@
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        SVr2 introduced the terminfo feature.  Its programming manual mentioned
-       these low-level functions:
+       the following low-level functions.
 
        <STRONG>Function</STRONG>    <STRONG>Description</STRONG>
-       ------------------------------------------------------------
-       fixterm     restore tty to "in curses" state
+       ------------------------------------------------------------------------
+       <STRONG>fixterm</STRONG>     restore tty to "in curses" state
 
-       gettmode    establish current tty modes
-       mvcur       low level cursor motion
-       putp        utility  function  that  uses  <STRONG>tputs</STRONG>  to   send
-                   characters via <STRONG>putchar</STRONG>.
-       resetterm   set tty modes to "out of curses" state
-       resetty     reset tty flags to stored value
-       saveterm    save current modes as "in curses" state
-       savetty     store current tty flags
-       setterm     establish terminal with given type
-       setupterm   establish terminal with given type
-       tparm       instantiate a string expression with parameters
-       tputs       apply padding information to a string
-       vidattr     like <STRONG>vidputs</STRONG>, but outputs through <STRONG>putchar</STRONG>
-       vidputs     output  a string to put terminal in a specified
-                   video attribute mode
+       <STRONG>gettmode</STRONG>    establish current tty modes
+       <STRONG>mvcur</STRONG>       low level cursor motion
+       <STRONG>putp</STRONG>        utility function that uses <STRONG>tputs</STRONG>  to  send  characters  via
+                   <STRONG>putchar</STRONG>.
+       <STRONG>resetterm</STRONG>   set tty modes to "out of curses" state
+       <STRONG>resetty</STRONG>     reset tty flags to stored value
+       <STRONG>saveterm</STRONG>    save current modes as "in curses" state
+       <STRONG>savetty</STRONG>     store current tty flags
+       <STRONG>setterm</STRONG>     establish terminal with given type
+       <STRONG>setupterm</STRONG>   establish terminal with given type
+       <STRONG>tparm</STRONG>       instantiate a string expression with parameters
+       <STRONG>tputs</STRONG>       apply padding information to a string
+       <STRONG>vidattr</STRONG>     like <STRONG>vidputs</STRONG>, but outputs through <STRONG>putchar</STRONG>
+       <STRONG>vidputs</STRONG>     output  a  string  to  put  terminal  in  a specified video
+                   attribute mode
 
-       The programming manual also mentioned functions  provided  for  termcap
-       compatibility (commenting that they "may go away at a later date"):
+       The programming manual also mentioned functions  provided  for  <EM>termcap</EM>
+       compatibility (commenting that they "may go away at a later date").
 
        <STRONG>Function</STRONG>   <STRONG>Description</STRONG>
-       ------------------------------------------------
-       tgetent    look up termcap entry for given <EM>name</EM>
-       tgetflag   get boolean entry for given <EM>id</EM>
-       tgetnum    get numeric entry for given <EM>id</EM>
-       tgetstr    get string entry for given <EM>id</EM>
-       tgoto      apply parameters to given capability
-       tputs      apply padding to capability, calling
-                  a function to put characters
+       ------------------------------------------------------------------------
+       <STRONG>tgetent</STRONG>    look up <EM>termcap</EM> entry for given <EM>name</EM>
+       <STRONG>tgetflag</STRONG>   get boolean entry for given <EM>id</EM>
+       <STRONG>tgetnum</STRONG>    get numeric entry for given <EM>id</EM>
+       <STRONG>tgetstr</STRONG>    get string entry for given <EM>id</EM>
+       <STRONG>tgoto</STRONG>      apply parameters to given capability
+       <STRONG>tputs</STRONG>      apply  padding  to  capability,  calling  a  function to put
+                  characters
 
        Early terminfo programs obtained capability values  from  the  <STRONG>TERMINAL</STRONG>
        structure initialized by <STRONG>setupterm</STRONG>.
 
        SVr3  extended  terminfo  by  adding  functions  to retrieve capability
-       values (like the termcap interface), and reusing tgoto and tputs:
+       values (like the termcap interface), and reusing <STRONG>tgoto</STRONG> and <STRONG>tputs</STRONG>:
 
        <STRONG>Function</STRONG>    <STRONG>Description</STRONG>
-       -------------------------------------------
-       tigetflag   get boolean entry for given <EM>id</EM>
-       tigetnum    get numeric entry for given <EM>id</EM>
-       tigetstr    get string entry for given <EM>id</EM>
+       ------------------------------------------------------------------------
+       <STRONG>tigetflag</STRONG>   get boolean entry for given <EM>id</EM>
+       <STRONG>tigetnum</STRONG>    get numeric entry for given <EM>id</EM>
+       <STRONG>tigetstr</STRONG>    get string entry for given <EM>id</EM>
 
-       SVr3 also replaced several of the SVr2 terminfo functions which had  no
-       counterpart in the termcap interface, documenting them as obsolete:
+       SVr3 also replaced several of the SVr2 <EM>terminfo</EM> functions which had  no
+       counterpart in the <EM>termcap</EM> interface, documenting them as obsolete.
 
        <STRONG>Function</STRONG>    <STRONG>Replaced</STRONG> <STRONG>by</STRONG>
-       -----------------------------
+       ------------------------------------------------------------------------
        crmode      cbreak
        fixterm     reset_prog_mode
-       gettmode    N/A
+       gettmode    <EM>n/a</EM>
        nocrmode    nocbreak
        resetterm   reset_shell_mode
        saveterm    def_prog_mode
@@ -542,7 +542,7 @@
 
        SVr4 added the <STRONG>vid_attr</STRONG> and <STRONG>vid_puts</STRONG> functions.
 
-       There are other low-level functions declared in the curses header files
+       There are other low-level functions declared in the <EM>curses</EM> header files
        on Unix systems,  but  none  were  documented.   The  functions  marked
        "obsolete" remained in use by the Unix <STRONG>vi(1)</STRONG> editor.
 
@@ -601,7 +601,7 @@
            hand, <EM>writable</EM> <EM>strings</EM> are an obsolescent feature.
 
            As  an  extension,  this implementation can be configured to change
-           the function prototypes to use the <STRONG>const</STRONG> keyword.  The ncurses  ABI
+           the function prototypes to use the <STRONG>const</STRONG> keyword.  The <EM>ncurses</EM>  ABI
            6 enables this feature by default.
 
        <STRONG>o</STRONG>   X/Open  Curses  prototypes <STRONG>tparm</STRONG> with a fixed number of parameters,
@@ -692,7 +692,7 @@
 
 
 
-ncurses 6.4                       2023-09-16                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+ncurses 6.4                       2023-09-23                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

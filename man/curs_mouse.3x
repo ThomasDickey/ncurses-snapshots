@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.71 2023/09/16 23:37:03 tom Exp $
-.TH curs_mouse 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.78 2023/09/23 23:08:40 tom Exp $
+.TH curs_mouse 3X 2023-09-23 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -68,42 +68,39 @@
 \fB\%mouseinterval\fP \-
 get mouse events in \fIcurses\fR
 .SH SYNOPSIS
+.nf
 \fB#include <curses.h>\fP
 .PP
 \fBtypedef unsigned long mmask_t;\fP
 .PP
-.nf
 \fBtypedef struct {\fP
 \fB    short id;         \fI/* ID to distinguish multiple devices */\fR
 \fB    int x, y, z;      \fI/* event coordinates */\fR
 \fB    mmask_t bstate;   \fI/* button state bits */\fR
 \fB} MEVENT;\fP
-.fi
 .PP
 \fBbool has_mouse(void);\fP
-.sp
+.PP
 \fBint getmouse(MEVENT *\fIevent\fB);\fR
-.br
 \fBint ungetmouse(MEVENT *\fIevent\fB);\fR
-.sp
+.PP
 \fBmmask_t mousemask(mmask_t \fInewmask\fB, mmask_t *\fIoldmask\fB);\fR
-.sp
+.PP
 \fBbool wenclose(const WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-.sp
+.PP
 \fBbool mouse_trafo(int* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);\fR
-.br
 \fBbool wmouse_trafo(const WINDOW* \fIwin\fB,\fR
                   \fBint* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);\fR
-.sp
+.PP
 \fBint mouseinterval(int \fIerval\fB);\fR
-.br
+.fi
 .SH DESCRIPTION
 These functions provide an interface to mouse events from
-\fBncurses\fP(3X).
-Mouse events are represented by \fBKEY_MOUSE\fP
-pseudo-key values in the \fBwgetch\fP(3X) input stream.
+\fB\%ncurses\fP(3X).
+Mouse events are represented by \fB\%KEY_MOUSE\fP
+pseudo-key values in the \fB\%wgetch\fP(3X) input stream.
 .SS mousemask
-To make mouse events visible, use the \fBmousemask\fP function.
+To make mouse events visible, use the \fB\%mousemask\fP function.
 This sets the mouse events to be reported.
 By default, no mouse events are reported.
 .bP
@@ -114,7 +111,7 @@ If the screen has not been initialized,
 or if the terminal does not support mouse-events,
 this function returns 0.
 .bP
-If \fIoldmask\fP is non-NULL,
+If \fIoldmask\fP is non-\fBNULL\fP,
 this function fills the indicated location with the previous value of the
 current screen's mouse event mask.
 .PP
@@ -125,10 +122,10 @@ Whether this happens is device-dependent.
 Here are the mouse event type masks which may be defined:
 .PP
 .TS
-l l
-_ _
-l l.
-\fBName\fP	\fBDescription\fP
+lB lB
+lB l .
+Name	Description
+_
 BUTTON1_PRESSED	mouse button 1 down
 BUTTON1_RELEASED	mouse button 1 up
 BUTTON1_CLICKED	mouse button 1 clicked
@@ -168,39 +165,39 @@ _
 .TE
 .SS getmouse
 Once a class of mouse events has been made visible in a window,
-calling the \fBwgetch\fP function on that window may return
-\fBKEY_MOUSE\fP as an indicator that a mouse event has been queued.
+calling the \fB\%wgetch\fP function on that window may return
+\fB\%KEY_MOUSE\fP as an indicator that a mouse event has been queued.
 To read the event data and pop the event off the queue, call
-\fBgetmouse\fP.
+\fB\%getmouse\fP.
 This function will return \fBOK\fP if a mouse event
 is actually visible in the given window, \fBERR\fP otherwise.
-When \fBgetmouse\fP returns \fBOK\fP, the data deposited as y and
+When \fB\%getmouse\fP returns \fBOK\fP, the data deposited as y and
 x in the event structure coordinates will be screen-relative character-cell
 coordinates.
 The returned state mask will have exactly one bit set to
 indicate the event type.
 The corresponding data in the queue is marked invalid.
-A subsequent call to \fBgetmouse\fP will retrieve the next older
+A subsequent call to \fB\%getmouse\fP will retrieve the next older
 item from the queue.
 .SS ungetmouse
-The \fBungetmouse\fP function behaves analogously to \fBungetch\fP.
+The \fB\%ungetmouse\fP function behaves analogously to \fB\%ungetch\fP.
 It pushes
-a \fBKEY_MOUSE\fP event onto the input queue, and associates with that event
+a \fB\%KEY_MOUSE\fP event onto the input queue, and associates with that event
 the given state data and screen-relative character-cell coordinates.
 .SS wenclose
-The \fBwenclose\fP function tests whether a given pair of screen-relative
+The \fB\%wenclose\fP function tests whether a given pair of screen-relative
 character-cell coordinates is enclosed by a given window, returning \fBTRUE\fP
 if it is and \fBFALSE\fP otherwise.
 It is useful for determining what subset of
 the screen windows enclose the location of a mouse event.
 .SS wmouse_trafo
-The \fBwmouse_trafo\fP function transforms a given pair of coordinates
+The \fB\%wmouse_trafo\fP function transforms a given pair of coordinates
 from stdscr-relative coordinates
 to coordinates relative to the given window or vice versa.
 The resulting stdscr-relative coordinates are not always identical
 to window-relative coordinates due to the mechanism to reserve lines on top
 or bottom of the screen for other purposes
-(see the \fBripoffline\fP and \fBslk_init\fP(3X) calls, for example).
+(see the \fB\%ripoffline\fP and \fB\%slk_init\fP(3X) calls, for example).
 .bP
 If the parameter \fIto_screen\fP is \fBTRUE\fP, the pointers
 \fIpY, pX\fP must reference the coordinates of a location
@@ -209,7 +206,7 @@ They are converted to window-relative coordinates and returned
 through the pointers.
 If the conversion was successful, the function returns \fBTRUE\fP.
 .bP
-If one of the parameters was NULL or the location is
+If one of the parameters was \fBNULL\fP or the location is
 not inside the window, \fBFALSE\fP is returned.
 .bP
 If \fIto_screen\fP is
@@ -219,38 +216,38 @@ They are converted to stdscr-relative coordinates if the
 window \fIwin\fP encloses this point.
 In this case the function returns \fBTRUE\fP.
 .bP
-If one of the parameters is NULL or the point is not inside the
+If one of the parameters is \fBNULL\fP or the point is not inside the
 window, \fBFALSE\fP is returned.
 The referenced coordinates
 are only replaced by the converted coordinates if the transformation was
 successful.
 .SS mouse_trafo
-The \fBmouse_trafo\fP function performs the same translation
-as \fBwmouse_trafo\fP,
+The \fB\%mouse_trafo\fP function performs the same translation
+as \fB\%wmouse_trafo\fP,
 using stdscr for \fIwin\fP.
 .SS mouseinterval
-The \fBmouseinterval\fP function sets the maximum time (in thousands of a
+The \fB\%mouseinterval\fP function sets the maximum time (in thousands of a
 second) that can elapse between press and release events for them to
 be recognized as a click.
-Use \fBmouseinterval(0)\fP to disable click resolution.
+Use \fB\%mouseinterval(0)\fP to disable click resolution.
 This function returns the previous interval value.
-Use \fBmouseinterval(\-1)\fP to obtain the interval without altering it.
+Use \fB\%mouseinterval(\-1)\fP to obtain the interval without altering it.
 The default is one sixth of a second.
 .SS has_mouse
-The \fBhas_mouse\fP function returns \fBTRUE\fP if the mouse driver has been
+The \fB\%has_mouse\fP function returns \fBTRUE\fP if the mouse driver has been
 successfully initialized.
 .PP
 Note that mouse events will be ignored when input is in cooked mode, and will
 cause an error beep when cooked mode is being simulated in a window by a
-function such as \fBgetstr\fP that expects a linefeed for input-loop
+function such as \fB\%getstr\fP that expects a linefeed for input-loop
 termination.
 .SH RETURN VALUE
-\fBgetmouse\fP and \fBungetmouse\fP
+\fB\%getmouse\fP and \fB\%ungetmouse\fP
 return the integer \fBERR\fP upon failure or \fBOK\fP
 upon successful completion:
 .RS 3
 .TP 5
-\fBgetmouse\fP
+\fB\%getmouse\fP
 returns an error.
 .bP
 If no mouse driver was initialized, or
@@ -261,26 +258,26 @@ current \fImousemask\fP.
 .bP
 It also returns an error if no more events remain in the queue.
 .TP 5
-\fBungetmouse\fP
+\fB\%ungetmouse\fP
 returns an error if the FIFO is full.
 .RE
 .PP
-\fBmousemask\fP
+\fB\%mousemask\fP
 returns the mask of reportable events.
 .PP
-\fBmouseinterval\fP
+\fB\%mouseinterval\fP
 returns the previous interval value, unless
 the terminal was not initialized.
 In that case, it returns the maximum interval value (166).
 .PP
-\fBwenclose\fP and \fBwmouse_trafo\fP
+\fB\%wenclose\fP and \fB\%wmouse_trafo\fP
 are boolean functions returning \fBTRUE\fP or \fBFALSE\fP depending
 on their test result.
 .SH PORTABILITY
-These calls were designed for \fBncurses\fP(3X), and are not found in SVr4
-curses, 4.4BSD curses, or any other previous version of curses.
+These calls were designed for \fIncurses\fP, and are not found in SVr4
+\fIcurses\fP, 4.4BSD \fIcurses\fP, or any other previous version of \fIcurses\fP.
 .PP
-SVr4 curses had support for the mouse in a variant of \fBxterm\fP(1).
+SVr4 \fIcurses\fP had support for the mouse in a variant of \fBxterm\fP(1).
 It is mentioned in a few places, but with no supporting documentation:
 .bP
 the \*(``libcurses\*('' manual page lists functions for this feature
@@ -304,20 +301,20 @@ mouse_info        minfo   Mi       Mouse status information
 req_mouse_pos     reqmp   RQ       Request mouse position report
 .NE
 .bP
-the interface made assumptions (as does ncurses) about the escape sequences
+the interface made assumptions (as does \fIncurses\fP) about the escape sequences
 sent to and received from the terminal.
 .IP
 For instance
-the SVr4 curses library used the \fBget_mouse\fP capability to tell the
+the SVr4 \fIcurses\fP library used the \fB\%get_mouse\fP capability to tell the
 terminal which mouse button events it should send,
 passing the mouse-button bit-mask to the terminal.
 Also, it could ask the terminal
-where the mouse was using the \fBreq_mouse_pos\fP capability.
+where the mouse was using the \fB\%req_mouse_pos\fP capability.
 .IP
-Those features required a terminal which had been modified to work with curses.
+Those features required a terminal which had been modified to work with \fIcurses\fP.
 They were not part of the X Consortium's xterm.
 .PP
-When developing the xterm mouse support for ncurses in September 1995,
+When developing the xterm mouse support for \fIncurses\fP in September 1995,
 Eric Raymond was uninterested in using the same interface due to its
 lack of documentation.
 Later, in 1998, Mark Hesseling provided support in
@@ -326,12 +323,12 @@ PDCurses, however, does not use video terminals,
 making it unnecessary to be concerned about compatibility with the
 escape sequences.
 .PP
-The feature macro \fBNCURSES_MOUSE_VERSION\fP is provided so the preprocessor
+The feature macro \fB\%NCURSES_MOUSE_VERSION\fP is provided so the preprocessor
 can be used to test whether these features are present.
-If the interface is changed, the value of \fBNCURSES_MOUSE_VERSION\fP will be
+If the interface is changed, the value of \fB\%NCURSES_MOUSE_VERSION\fP will be
 incremented.
-These values for \fBNCURSES_MOUSE_VERSION\fP may be
-specified when configuring ncurses:
+These values for \fB\%NCURSES_MOUSE_VERSION\fP may be
+specified when configuring \fIncurses\fP:
 .RS 3
 .TP 3
 1
@@ -344,10 +341,10 @@ removes the definitions for reserved events.
 The mask uses 29 bits.
 .RE
 .PP
-The order of the \fBMEVENT\fP structure members is not guaranteed.
+The order of the \fB\%MEVENT\fP structure members is not guaranteed.
 Additional fields may be added to the structure in the future.
 .PP
-Under \fBncurses\fP(3X), these calls are implemented using either
+Under \fIncurses\fP, these calls are implemented using either
 xterm's built-in mouse-tracking API or
 platform-specific drivers including
 .RS 3
@@ -361,7 +358,7 @@ OS/2 EMX
 .PP
 If you are using an unsupported configuration,
 mouse events will not be visible to
-\fBncurses\fP(3X) (and the \fBmousemask\fP function will always
+\fIncurses\fP (and the \fB\%mousemask\fP function will always
 return \fB0\fP).
 .PP
 If the terminfo entry contains a \fBXM\fP string,
@@ -385,37 +382,37 @@ It is intended
 for use with touch screens (which may be pressure-sensitive) or with
 3D-mice/trackballs/power gloves.
 .PP
-The \fBALL_MOUSE_EVENTS\fP class does not include \fBREPORT_MOUSE_POSITION\fP.
+The \fB\%ALL_MOUSE_EVENTS\fP class does not include \fB\%REPORT_MOUSE_POSITION\fP.
 They are distinct.
 For example, in xterm,
 wheel/scrolling mice send position reports as a sequence of
 presses of buttons 4 or 5 without matching button-releases.
 .SH BUGS
 Mouse events under xterm will not in fact be ignored during cooked mode,
-if they have been enabled by \fBmousemask\fP.
+if they have been enabled by \fB\%mousemask\fP.
 Instead, the xterm mouse
 report sequence will appear in the string read.
 .PP
 Mouse events under xterm will not be detected correctly in a window with
 its keypad bit off, since they are interpreted as a variety of function key.
-Your terminfo description should have \fBkmous\fP set to \*(``\\E[M\*(''
+Your terminfo description should have \fB\%kmous\fP set to \*(``\\E[M\*(''
 (the beginning of the response from xterm for mouse clicks).
-Other values for \fBkmous\fP are permitted,
+Other values for \fB\%kmous\fP are permitted,
 but under the same assumption,
 i.e., it is the beginning of the response.
 .PP
 Because there are no standard terminal responses that would serve to identify
-terminals which support the xterm mouse protocol, \fBncurses\fP assumes that
-if \fBkmous\fP is defined in the terminal description,
+terminals which support the xterm mouse protocol, \fIncurses\fP assumes that
+if \fB\%kmous\fP is defined in the terminal description,
 or if the terminal description's primary name or aliases
 contain the string \*(``xterm\*('',
 then the terminal may send mouse events.
-The \fBkmous\fP capability is checked first,
+The \fB\%kmous\fP capability is checked first,
 allowing the use of newer xterm mouse protocols
 such as xterm's private mode 1006.
 .SH SEE ALSO
-\fBcurses\fP(3X),
-\fBcurs_inopts\fP(3X),
-\fBcurs_kernel\fP(3X),
-\fBcurs_slk\fP(3X),
-\fBcurs_variables\fP(3X).
+\fB\%curses\fP(3X),
+\fB\%curs_inopts\fP(3X),
+\fB\%curs_kernel\fP(3X),
+\fB\%curs_slk\fP(3X),
+\fB\%curs_variables\fP(3X)
