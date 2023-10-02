@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_userptr.3x,v 1.25 2023/09/16 23:38:39 tom Exp $
-.TH menu_userptr 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: menu_userptr.3x,v 1.28 2023/09/30 21:38:11 tom Exp $
+.TH menu_userptr 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_menu_userptr\fP,
 \fBmenu_userptr\fP \-
@@ -49,8 +49,6 @@ These functions get and set the menu user pointer field.
 It does not set \fBerrno\fP.
 .PP
 \fBset_menu_userptr\fP returns \fBE_OK\fP (success).
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBmenu\fP(3X).
 .SH NOTES
 The header file \fB<menu.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -64,3 +62,6 @@ We chose not to leave it as a char pointer for SVr4 compatibility.
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%menu\fP(3X)

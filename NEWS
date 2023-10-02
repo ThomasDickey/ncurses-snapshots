@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4004 2023/09/23 23:48:03 tom Exp $
+-- $Id: NEWS,v 1.4009 2023/10/01 23:03:08 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,17 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20231001
+	+ modify setupterm to provide for using ANSI cursor-position report (in
+	  user6/user7 terminfo capabilities) to obtain screensize if neither
+	  environment variables or ioctl is used.  The ncurses test-program
+	  with options "-E -T" demonstrates this feature.
+	+ improve error messages in tic (patch by Branden Robinson).
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ modify test/clip_printw.c to optionally test non-wrapped updates.
+	+ fix reallocation loop for vsnprintf() in _nc_sprintf_string() by
+	  copying the va_list variable (patch by Ian Abbott).
 
 20230923
 	+ improve formatting of manpages (patches by Branden Robinson).

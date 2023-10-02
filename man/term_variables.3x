@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term_variables.3x,v 1.27 2023/09/16 23:38:39 tom Exp $
-.TH term_variables 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: term_variables.3x,v 1.30 2023/09/30 23:13:32 tom Exp $
+.TH term_variables 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ds n 5
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
@@ -167,9 +167,7 @@ into the current terminal description loaded into memory.
 .\"
 .SH NOTES
 The low-level terminfo interface is initialized using
-.hy 0
-\fBsetupterm\fP(3X).
-.hy
+\fB\%setupterm\fP(3X).
 The upper-level curses interface uses the low-level terminfo interface,
 internally.
 .\"
@@ -186,9 +184,7 @@ All implementations which provide terminfo interfaces add definitions
 as described in the \fBTerminfo Names\fP section.
 Most, but not all, base the definition upon the \fBcur_term\fP variable.
 .SH SEE ALSO
-.hy 0
-\fBcurses\fP(3X),
-\fBcurs_terminfo\fP(3X),
-\fBcurs_threads\fP(3X),
-\fBterminfo\fP(\*n).
-.hy
+\fB\%curses\fP(3X),
+\fB\%curs_terminfo\fP(3X),
+\fB\%curs_threads\fP(3X),
+\fB\%terminfo\fP(\*n)

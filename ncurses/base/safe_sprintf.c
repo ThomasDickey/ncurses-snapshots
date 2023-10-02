@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.35 2021/10/03 00:25:09 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.36 2023/09/30 10:42:42 Ian.Abbott Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -264,11 +264,18 @@ NCURSES_SP_NAME(_nc_printf_string) (NCURSES_SP_DCLx
 # if HAVE_VSNPRINTF
 	    /* SUSv2, 1997 */
 	    int used;
-	    while ((used = vsnprintf(my_buffer, my_length, fmt, ap))
-		   >= (int) my_length) {
+
+	    do {
+		va_list ap2;
+
+		begin_va_copy(ap2, ap);
+		used = vsnprintf(my_buffer, my_length, fmt, ap2);
+		end_va_copy(ap2);
+		if (used < (int) my_length)
+		    break;
 		my_length = (size_t) ((3 * used) / 2);
 		my_buffer = typeRealloc(char, my_length, my_buffer);
-	    }
+	    } while (my_buffer != NULL);
 # else
 	    /* ISO/ANSI C, 1989 */
 	    vsprintf(my_buffer, fmt, ap);

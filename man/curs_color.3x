@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.82 2023/09/23 22:24:15 tom Exp $
-.TH curs_color 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_color.3x,v 1.84 2023/09/30 20:13:18 tom Exp $
+.TH curs_color 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -193,14 +193,14 @@ No other color pairs are initialized.
 It restores the colors on the terminal to the values
 they had when the terminal was just turned on.
 .bP
-If the terminal supports the \fBinitc\fP (\fB\%initialize_color\fP) capability,
+If the terminal supports the \fBinitc\fP \%(\fBinitialize_color\fP) capability,
 \fB\%start_color\fP
 initializes its internal table representing the
 red, green, and blue components of the color palette.
 .IP
 The components depend on whether the terminal uses
 CGA (aka \*(``ANSI\*('') or
-HLS (i.e., the \fBhls\fP (\fB\%hue_lightness_saturation\fP) capability is set).
+HLS (i.e., the \fBhls\fP \%(\fBhue_lightness_saturation\fP) capability is set).
 The table is initialized first for eight basic colors
 (black, red, green, yellow, blue, magenta, cyan, and white),
 using weights that depend upon the CGA/HLS choice.

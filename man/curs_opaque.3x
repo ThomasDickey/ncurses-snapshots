@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_opaque.3x,v 1.33 2023/09/23 22:59:48 tom Exp $
-.TH curs_opaque 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_opaque.3x,v 1.35 2023/09/30 22:01:38 tom Exp $
+.TH curs_opaque 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -66,67 +66,74 @@ obtain \fIcurses\fR window properties
 \fBbool is_scrollok(const WINDOW *\fIwin\fB);\fR
 \fBbool is_subwin(const WINDOW *\fIwin\fB);\fR
 \fBbool is_syncok(const WINDOW *\fIwin\fB);\fR
+.PP
 \fBWINDOW * wgetparent(const WINDOW *\fIwin\fB);\fR
 \fBint wgetdelay(const WINDOW *\fIwin\fB);\fR
 \fBint wgetscrreg(const WINDOW *\fIwin\fB, int *\fItop\fB, int *\fIbottom\fB);\fR
 .fi
 .SH DESCRIPTION
-This implementation provides functions which return properties
-set in the \fB\%WINDOW\fP structure, allowing it to be \*(``opaque\*('' if
-the symbol \fB\%NCURSES_OPAQUE\fP is defined:
-.TP 5
+\fIncurses\fP provides functions returning properties of a
+\fI\%WINDOW\fP structure,
+allowing it to be \*(``opaque\*('' if
+the application defines the \fB\%NCURSES_OPAQUE\fP preprocessor symbol.
+.TP
 \fBis_cleared\fP
-returns the value set in \fB\%clearok\fP(3X)
-.TP 5
+returns the value set by \fB\%clearok\fP(3X).
+.TP
 \fBis_idcok\fP
-returns the value set in \fB\%idcok\fP(3X)
-.TP 5
+returns the value set by \fB\%idcok\fP(3X).
+.TP
 \fBis_idlok\fP
-returns the value set in \fB\%idlok\fP(3X)
-.TP 5
+returns the value set by \fB\%idlok\fP(3X).
+.TP
 \fBis_immedok\fP
-returns the value set in \fB\%immedok\fP(3X)
-.TP 5
+returns the value set by \fB\%immedok\fP(3X).
+.TP
 \fBis_keypad\fP
-returns the value set in \fB\%keypad\fP(3X)
-.TP 5
+returns the value set by \fB\%keypad\fP(3X).
+.TP
 \fBis_leaveok\fP
-returns the value set in \fB\%leaveok\fP(3X)
-.TP 5
+returns the value set by \fB\%leaveok\fP(3X).
+.TP
 \fBis_nodelay\fP
-returns the value set in \fB\%nodelay\fP(3X)
-.TP 5
+returns the value set by \fB\%nodelay\fP(3X).
+.TP
 \fBis_notimeout\fP
-returns the value set in \fB\%notimeout\fP(3X)
-.TP 5
+returns the value set by \fB\%notimeout\fP(3X).
+.TP
 \fBis_pad\fP
-returns \fBTRUE\fP if the window is a pad
-i.e., created by \fB\%newpad\fP(3X)
-.TP 5
+returns \fBTRUE\fP if the window is a pad;
+that is,
+it created by \fB\%newpad\fP(3X).
+.TP
 \fBis_scrollok\fP
-returns the value set in \fB\%scrollok\fP(3X)
-.TP 5
+returns the value set by \fB\%scrollok\fP(3X).
+.TP
 \fBis_subwin\fP
 returns \fBTRUE\fP if the window is a subwindow,
-i.e., created by \fB\%subwin\fP(3X) or \fB\%derwin\fP(3X)
-.TP 5
+that is,
+it was created by \fB\%subwin\fP(3X) or \fB\%derwin\fP(3X).
+.TP
 \fBis_syncok\fP
-returns the value set in \fB\%syncok\fP(3X)
-.TP 5
+returns the value set by \fB\%syncok\fP(3X).
+.TP
 \fBwgetdelay\fP
-returns the delay timeout as set in \fB\%wtimeout\fP(3X).
-.TP 5
+returns the delay timeout set by \fB\%wtimeout\fP(3X).
+.TP
 \fBwgetparent\fP
-returns the parent \fB\%WINDOW\fP pointer for subwindows,
+returns the parent \fI\%WINDOW\fP pointer for subwindows,
 or \fBNULL\fP for windows having no parent.
-.TP 5
+.TP
 \fBwgetscrreg\fP
-returns the top and bottom rows for the scrolling margin
-as set in \fB\%wsetscrreg\fP(3X).
+stores the the top and bottom rows for the scrolling margin set by
+\fB\%wsetscrreg\fP(3X) in the corresponding arguments,
+returning \fBERR\fP upon failure and \fBOK\fP upon successful
+completion.
 .SH RETURN VALUE
-These functions all return \fBTRUE\fP or \fBFALSE\fP, except as noted.
+These functions return \fBTRUE\fP or \fBFALSE\fP except as noted.
 .SH NOTES
-Both a macro and a function are provided for each name.
+\fIncurses\fP provides both a C function and a preprocessor macro for
+each function documented in this page.
 .SH PORTABILITY
 These routines are specific to \fIncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
@@ -136,4 +143,5 @@ be conditioned using \fB\%NCURSES_VERSION\fP.
 \fB\%curses\fP(3X),
 \fB\%curs_inopts\fP(3X),
 \fB\%curs_outopts\fP(3X),
+\fB\%curs_threads\fP(3X),
 \fB\%curs_window\fP(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_memleaks.3x,v 1.25 2023/09/23 21:07:59 tom Exp $
-.TH curs_memleaks 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_memleaks.3x,v 1.27 2023/09/30 23:13:30 tom Exp $
+.TH curs_memleaks 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -49,7 +49,7 @@ check for memory leaks in \fIcurses\fR
 \fB#include <term.h>\fP
 \fBvoid exit_terminfo(int \fIcode\fB);\fR
 .PP
-/* deprecated (intentionally not declared in curses.h or term.h) */
+\fI/* deprecated (intentionally not declared in curses.h or term.h) */\fP
 \fBvoid _nc_freeall(void);\fP
 \fBvoid _nc_free_and_exit(int \fIcode\fB);\fR
 \fBvoid _nc_free_tinfo(int \fIcode\fB);\fR

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: menu_spacing.3x,v 1.26 2023/09/16 23:38:39 tom Exp @
+  * @Id: menu_spacing.3x,v 1.31 2023/09/30 23:44:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>menu_spacing 3x 2023-09-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>menu_spacing 3x 2023-09-30 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">menu_spacing 3x 2023-09-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">menu_spacing 3x 2023-09-30 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="menu_spacing.3x.html">menu_spacing(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="menu_spacing.3x.html">menu_spacing(3x)</A></STRONG>
 
@@ -67,29 +67,35 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        The function <STRONG>set_menu_spacing</STRONG> sets  the  spacing  information  for  the
-       menu.   Its  parameter  <STRONG>spc_description</STRONG>  controls  the number of spaces
-       between an item name and an item description.  It must  not  be  larger
-       than  <STRONG>TABSIZE</STRONG>.  The menu system puts in the middle of this spacing area
-       the pad character.  The remaining parts are filled  with  spaces.   The
-       <STRONG>spc_rows</STRONG>  parameter  controls  the  number of rows that are used for an
-       item.  It must not be larger than 3.  The menu system inserts the blank
-       lines  between item rows, these lines will contain the pad character in
-       the appropriate positions.   The  <STRONG>spc_columns</STRONG>  parameter  controls  the
-       number  of blanks between columns of items.  It must not be larger than
-       <STRONG>TABSIZE</STRONG>.  A value of 0 for all the spacing values resets  them  to  the
-       default, which is 1 for all of them.
-       The  function  <STRONG>menu_spacing</STRONG>  passes back the spacing info for the menu.
-       If a pointer is NULL, this specific info is simply not returned.
+       menu.  Its parameters provide the description and the size (in rows and
+       columns).
+
+       <EM>spc</EM><STRONG>_</STRONG><EM>description</EM>
+              controls the number of spaces between an item name and  an  item
+              description.   It  must  not  be  larger than <STRONG>TABSIZE</STRONG>.  The menu
+              system  puts  in  the  middle  of  this  spacing  area  the  pad
+              character.  The remaining parts are filled with spaces.
+
+       <EM>spc</EM><STRONG>_</STRONG><EM>rows</EM>
+              controls  the number of rows that are used for an item.  It must
+              not be larger than 3.  The menu system inserts the  blank  lines
+              between item rows, these lines will contain the pad character in
+              the appropriate positions.
+
+       <EM>spc</EM><STRONG>_</STRONG><EM>columns</EM>
+              controls the number of blanks between columns of items.  It must
+              not  be  larger  than <STRONG>TABSIZE</STRONG>.  A value of 0 for all the spacing
+              values resets them to the default, which is 1 for all of them.
+
+       The function <STRONG>menu_spacing</STRONG> returns the spacing information for the menu.
+       If  a  pointer  is  NULL,  the  corresponding information is simply not
+       returned.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Both routines return <STRONG>E_OK</STRONG>  on  success.   <STRONG>set_menu_spacing</STRONG>  may  return
        <STRONG>E_POSTED</STRONG> if the menu is posted, or <STRONG>E_BAD_ARGUMENT</STRONG> if one of the spacing
        values is out of range.
-
-
-</PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG><A HREF="menu.3x.html">menu(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -108,8 +114,12 @@
        Raymond.
 
 
+</PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG><A HREF="menu.3x.html">menu(3x)</A></STRONG>
 
-ncurses 6.4                       2023-09-16                  <STRONG><A HREF="menu_spacing.3x.html">menu_spacing(3x)</A></STRONG>
+
+
+ncurses 6.4                       2023-09-30                  <STRONG><A HREF="menu_spacing.3x.html">menu_spacing(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -117,10 +127,10 @@ ncurses 6.4                       2023-09-16                  <STRONG><A HREF="m
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
-<li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>
+<li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>
 </BODY>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.174 2023/09/23 22:58:27 tom Exp $
-.TH ncurses 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: ncurses.3x,v 1.177 2023/09/30 21:38:11 tom Exp $
+.TH ncurses 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -1329,13 +1329,6 @@ than assuming it is always in the debug library.
 directory containing initialization files for the terminal capability database
 @TERMINFO@
 terminal capability database
-.SH SEE ALSO
-\fBterminfo\fP(\*n) and related pages whose names begin
-\*(``curs_\*('' for detailed routine descriptions.
-.br
-\fBcurs_variables\fP(3X)
-.br
-\fBuser_caps\fP(5) for user-defined capabilities
 .SH EXTENSIONS
 The \fBncurses\fP library can be compiled with an option (\fB\-DUSE_GETCAP\fP)
 that falls back to the old-style /etc/termcap file if the terminal setup code
@@ -1538,3 +1531,10 @@ This was an undocumented feature of AT&T System V Release 3 curses.
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on \fIpcurses\fP by Pavel Curtis.
+.SH SEE ALSO
+\fB\%terminfo\fP(\*n) and related pages whose names begin
+\*(``curs_\*('' for detailed routine descriptions.
+.br
+\fB\%curs_variables\fP(3X)
+.br
+\fB\%user_caps\fP(5) for user-defined capabilities

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.72 2023/09/16 23:34:43 tom Exp $
-.TH curs_getch 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.74 2023/09/30 21:38:11 tom Exp $
+.TH curs_getch 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -400,15 +400,15 @@ The \fBhas_key\fP function is unique to \fBncurses\fP.
 We recommend that
 any code using it be conditionalized on the \fBNCURSES_VERSION\fP feature macro.
 .SH SEE ALSO
-\fBcurses\fP(3X),
-\fBcurs_inopts\fP(3X),
-\fBcurs_mouse\fP(3X),
-\fBcurs_move\fP(3X),
-\fBcurs_outopts\fP(3X),
-\fBcurs_refresh\fP(3X),
-\fBcurs_variables\fP(3X),
-\fBresizeterm\fP(3X).
+\fB\%curses\fP(3X),
+\fB\%curs_inopts\fP(3X),
+\fB\%curs_mouse\fP(3X),
+\fB\%curs_move\fP(3X),
+\fB\%curs_outopts\fP(3X),
+\fB\%curs_refresh\fP(3X),
+\fB\%curs_variables\fP(3X),
+\fB\%resizeterm\fP(3X)
 .PP
 Comparable functions in the wide-character (ncursesw) library are
 described in
-\fBcurs_get_wch\fP(3X).
+\fB\%curs_get_wch\fP(3X).

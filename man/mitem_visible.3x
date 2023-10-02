@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_visible.3x,v 1.19 2023/09/16 23:38:39 tom Exp $
-.TH mitem_visible 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_visible.3x,v 1.22 2023/09/30 21:38:11 tom Exp $
+.TH mitem_visible 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBmitem_visible\fP \-
 check visibility of a menu item
@@ -41,8 +41,6 @@ check visibility of a menu item
 A menu item is visible when it is in the portion of a posted menu that
 is mapped onto the screen (if the menu is scrollable, in particular, this
 portion will be smaller than the whole menu).
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBmenu\fP(3X).
 .SH NOTES
 The header file \fB<menu.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -53,3 +51,6 @@ Version 7 or BSD versions.
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%menu\fP(3X)

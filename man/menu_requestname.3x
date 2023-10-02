@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_requestname.3x,v 1.24 2023/09/16 23:38:39 tom Exp $
-.TH menu_requestname 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: menu_requestname.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
+.TH menu_requestname 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBmenu_request_by_name\fP,
 \fBmenu_request_name\fP \-
@@ -53,8 +53,6 @@ and sets \fBerrno\fP to \fBE_BAD_ARGUMENT\fP.
 .br
 \fBmenu_request_by_name\fP returns \fBE_NO_MATCH\fP on error.
 It does not set \fBerrno\fP.
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBmenu\fP(3X).
 .SH NOTES
 The header file \fB<menu.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -67,3 +65,6 @@ any code depending on them be conditioned using NCURSES_VERSION.
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%menu\fP(3X)

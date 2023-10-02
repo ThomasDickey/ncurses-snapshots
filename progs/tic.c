@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.322 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.323 2023/09/30 21:17:23 Branden.Robinson Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -459,17 +459,20 @@ open_input(const char *filename, char *alt_file)
     if (!strcmp(filename, "-")) {
 	fp = copy_input(stdin, STDIN_NAME, alt_file);
     } else if (stat(filename, &sb) == -1) {
-	fprintf(stderr, "%s: %s %s\n", _nc_progname, filename, strerror(errno));
+	fprintf(stderr, "%s: cannot open '%s': %s\n", _nc_progname,
+		filename, strerror(errno));
 	ExitProgram(EXIT_FAILURE);
     } else if ((mode = (sb.st_mode & S_IFMT)) == S_IFDIR
 	       || (mode != S_IFREG && mode != S_IFCHR && mode != S_IFIFO)) {
-	fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);
+	fprintf(stderr, "%s: cannot open '%s'; it is not a file\n",
+		_nc_progname, filename);
 	ExitProgram(EXIT_FAILURE);
     } else {
 	fp = safe_fopen(filename, "r");
 
 	if (fp == NULL) {
-	    fprintf(stderr, "%s: Can't open %s\n", _nc_progname, filename);
+	    fprintf(stderr, "%s: cannot open '%s': %s\n", _nc_progname,
+		    filename, strerror(errno));
 	    ExitProgram(EXIT_FAILURE);
 	}
 	if (mode != S_IFREG) {
@@ -477,7 +480,8 @@ open_input(const char *filename, char *alt_file)
 		FILE *fp2 = copy_input(fp, filename, alt_file);
 		fp = fp2;
 	    } else {
-		fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);
+		fprintf(stderr, "%s: cannot open '%s'; it is not a"
+			" file\n", _nc_progname, filename);
 		ExitProgram(EXIT_FAILURE);
 	    }
 	}

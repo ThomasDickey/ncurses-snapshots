@@ -27,103 +27,148 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.22 2023/09/17 08:29:17 tom Exp $
-.TH ADACURSES 1 2023-09-17 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKada_config.in,v 1.28 2023/09/30 23:55:34 tom Exp $
+.TH adacurses@USE_CFG_SUFFIX@\-config 1 2023-09-30 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ds C adacurses@USE_CFG_SUFFIX@\-config
 .ie n .ds CW R
 .el   \{
 .ie \n(.g .ds CW CR
 .el       .ds CW CW
 .\}
+.
+.nr mE 0 \" in an example (EX/EE)?
+.
+.\" Start example.
+.if !\n(.g \{\
+.de EX
+.  br
+.  if !\\n(mE \{\
+.    nr mF \\n(.f
+.    nr mP \\n(PD
+.    nr PD 1v
+.    nf
+.    ft \\*(CW
+.    nr mE 1
+.  \}
+..
+.\}
+.
+.\" End example.
+.if !\n(.g \{\
+.de EE
+.  br
+.  if \\n(mE \{\
+.    ft \\n(mF
+.    nr PD \\n(mP
+.    fi
+.    nr mE 0
+.  \}
+..
+.\}
+.
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.ds '  \(aq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.ie t .ds '  \(aq
+.el   .ds '  '
+.\}
+.
 .SH NAME
 \fB\%adacurses@USE_CFG_SUFFIX@\-config\fP \-
-helper script for @ADA_LIBNAME@ libraries
+configuration helper for \fI@ADA_LIBNAME@\fP libraries
 .SH SYNOPSIS
 .B \*C
-[\fIoptions\fP]
+.RB [ \-\-cflags ]
+.RB [ \-\-libs ]
+.PP
+.B \*C \-\-version
+.PP
+.B \*C \-\-help
 .SH DESCRIPTION
-This is a shell script which simplifies configuring an application to use
-the @ADA_LIBNAME@ library binding to ncurses.
+This program development aid simplifies the process of configuring
+applications to use the \fI@ADA_LIBNAME@\fP library binding to
+\fIncurses\fP.
 .SH OPTIONS
-.TP
+.TP 11 \" "--version" + 2n
 \fB\-\-cflags\fP
-echos the gnat (Ada compiler) flags needed to compile with @ADA_LIBNAME@.
+reports the GNAT (Ada compiler) flags needed to compile with
+\fI@ADA_LIBNAME@\fP.
 .TP
 \fB\-\-libs\fP
-echos the gnat libraries needed to link with @ADA_LIBNAME@.
+reports the GNAT libraries needed to link with \fI@ADA_LIBNAME@\fP.
 .TP
 \fB\-\-version\fP
-echos the release+patchdate version of the ncurses libraries used
-to configure and build @ADA_LIBNAME@.
+reports the release and patch date information of the \fIncurses\fP
+libraries used to configure and build \fI@ADA_LIBNAME@\fP and exits
+successfully.
 .TP
 \fB\-\-help\fP
-prints a list of the \fB\*C\fP script's options.
+issues a usage message and exits successfully.
 .PP
-If no options are given, \fB\*C\fP prints the combination
-of
-\fB\-\-cflags\fP and
-\fB\-\-libs\fP
-that \fBgnatmake\fP expects (see example).
+Omitting options implies \*(``\fB\-\-cflags \-\-libs\fP\*(''.
 .SH EXAMPLE
-For example, supposing that you want to compile the "Hello World!"
-program for @ADA_LIBNAME@.
-Make a file named "hello.adb":
-.RS
-.nf
-.ft \*(CW
+Consider a program using \fI@ADA_LIBNAME@\fP to write the message
+\*(``Hello, world!\*('' in the center of the screen and wait for the
+user to press the \*(``q\*('' key before exiting.
+Populate a file \fIhello.adb\fP with the following.
+.PP
+.RS 4
+.EX
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 
 procedure Hello is
-
    Visibility : Cursor_Visibility := Invisible;
+   Message : constant String := "Hello, World!";
    done : Boolean := False;
    c : Key_Code;
-
 begin
-
    Init_Screen;
    Set_Echo_Mode (False);
-
    Set_Cursor_Visibility (Visibility);
    Set_Timeout_Mode (Standard_Window, Non_Blocking, 0);
 
-   Move_Cursor (Line => Lines / 2, Column => (Columns - 12) / 2);
-   Add (Str => "Hello World!");
+   Move_Cursor (Line => Lines / 2,
+                Column => (Columns \- Message\*'Length) / 2);
+   Add (Str => Message);
 
    while not done loop
-
       c := Get_Keystroke (Standard_Window);
+
       case c is
-      when Character'Pos ('q') => done := True;
-      when others => null;
+          when Character\*'Pos (\*'q\*') => done := True;
+          when others => null;
       end case;
 
       Nap_Milli_Seconds (50);
    end loop;
 
    End_Windows;
-
 end Hello;
-.fi
+.EE
 .RE
+.br
+.ne 2
 .PP
 Then, using
-.RS
-.ft \*(CW
-gnatmake `adacurses-config --cflags` hello -largs `adacurses-config --libs`
-.ft
+.RS 4
+.EX
+gnatmake \(gaadacurses@USE_CFG_SUFFIX@\-config \-\-cflags\(ga hello \e
+    \-largs \(gaadacurses@USE_CFG_SUFFIX@\-config \-\-libs\(ga
+.EE
 .RE
-.PP
-or (simpler):
-.RS
-.ft \*(CW
-gnatmake hello `adacurses-config`
-.ft
+or, more simply,
+.RS 4
+.EX
+gnatmake hello \(gaadacurses@USE_CFG_SUFFIX@\-config\(ga
+.EE
 .RE
-.PP
-you will compile and link the program.
+you can compile and link the program.
 .SH "SEE ALSO"
-\fBcurses\fP(3X)
-.PP
-This describes \fBncurses\fP
-version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
+\fB\%curses\fP(3X)

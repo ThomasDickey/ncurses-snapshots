@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.37 2023/09/16 23:37:03 tom Exp $
-.TH curs_inch 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inch.3x,v 1.39 2023/09/30 21:38:11 tom Exp $
+.TH curs_inch 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -107,13 +107,15 @@ This implementation uses 8 bits for character values.
 An application using more bits, e.g., a Unicode value,
 should use the wide-character equivalents to these functions.
 .SH SEE ALSO
-.TP 5
-\fBcurses\fP(3X)
-gives an overview of the WINDOW and \fBchtype\fP data types.
-.TP 5
-\fBcurs_attr\fP(3X)
+.TP
+\fB\%curses\fP(3X)
+gives an overview of the \fB\%WINDOW\fP and \fB\%chtype\fP data types.
+.TP
+\fB\%curs_attr\fP(3X)
 goes into more detail, pointing out portability problems and
-constraints on the use of \fBchtype\fP for returning window information.
-.TP 5
-\fBcurs_in_wch\fP(3X)
-describes comparable functions for the wide-character (ncursesw) library.
+constraints on the use of \fB\%chtype\fP for returning window
+information.
+.TP
+\fB\%curs_in_wch\fP(3X)
+describes comparable functions for the wide-character (ncursesw)
+library.

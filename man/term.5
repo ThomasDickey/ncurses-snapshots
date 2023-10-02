@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.56 2023/09/16 23:38:39 tom Exp $
-.TH term 5 2023-09-16 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.58 2023/09/30 21:26:43 tom Exp $
+.TH term 5 2023-09-30 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -403,8 +403,6 @@ The legacy format could have supported 32768-byte entries,
 but was limited a virtual memory page's 4096 bytes.
 .SH FILES
 \*d/*/* compiled terminal capability database
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBterminfo\fP(\*n).
 .SH AUTHORS
 Thomas E. Dickey
 .br
@@ -417,3 +415,7 @@ extended number support for ncurses 6.1
 Eric S. Raymond
 .br
 documented legacy terminfo format, e.g., from \fIpcurses\fP.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%curs_terminfo\fP(3X),
+\fB\%terminfo\fP(\*n)

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field.3x,v 1.26 2023/09/16 23:37:03 tom Exp $
-.TH form_field 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: form_field.3x,v 1.29 2023/09/30 21:38:11 tom Exp $
+.TH form_field 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_field\fP \-
 make and break connections between fields and forms
@@ -77,8 +77,6 @@ The form is already posted.
 .TP 5
 .B E_SYSTEM_ERROR
 System error occurred (see \fBerrno\fP(3)).
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBform\fP(3X).
 .SH NOTES
 The header file \fB<form.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -92,3 +90,6 @@ as \-1 (which is the value of \fBERR\fP).
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%form\fP(3X)

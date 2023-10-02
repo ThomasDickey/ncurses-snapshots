@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.36 2023/09/16 23:37:03 tom Exp $
-.TH curs_window 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_window.3x,v 1.39 2023/09/30 23:13:32 tom Exp $
+.TH curs_window 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -104,22 +104,20 @@ rather than a duplicate (with \fBdupwin\fP),
 all of the window modes are initialized to the default values.
 These functions set window modes after a window is created:
 .RS
-.na
 .PP
-idcok,
-idlok,
-immedok,
-keypad,
-leaveok,
-nodelay,
-scrollok,
-setscrreg,
-syncok,
-wbkgdset,
-wbkgrndset, and
-wtimeout
+\fB\%idcok\fP
+\fB\%idlok\fP
+\fB\%immedok\fP
+\fB\%keypad\fP
+\fB\%leaveok\fP
+\fB\%nodelay\fP
+\fB\%scrollok\fP
+\fB\%setscrreg\fP
+\fB\%syncok\fP
+\fB\%wbkgdset\fP
+\fB\%wbkgrndset\fP and
+\fB\%wtimeout\fP.
 .RE
-.ad
 .SS delwin
 Calling \fBdelwin\fP deletes the named window, freeing all memory
 associated with it (it does not actually erase the window's screen
@@ -263,8 +261,8 @@ NetBSD copied this feature of ncurses in 2003.
 .br
 PDCurses follows the scheme used in Solaris X/Open curses.
 .SH SEE ALSO
-\fBcurses\fP(3X),
-\fBcurs_initscr\fP(3X),
-\fBcurs_refresh\fP(3X),
-\fBcurs_touch\fP(3X),
-\fBcurs_variables\fP(3X)
+\fB\%curses\fP(3X),
+\fB\%curs_initscr\fP(3X),
+\fB\%curs_refresh\fP(3X),
+\fB\%curs_touch\fP(3X),
+\fB\%curs_variables\fP(3X)

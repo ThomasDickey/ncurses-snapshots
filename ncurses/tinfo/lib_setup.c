@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.222 2023/09/16 12:29:28 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.226 2023/10/01 23:53:23 tom Exp $")
 
 /****************************************************************************
  *
@@ -272,6 +272,144 @@ use_tioctl(bool f)
 }
 #endif
 
+#if !(defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER))
+static void
+_nc_default_screensize(TERMINAL *termp, int *linep, int *colp)
+{
+    /* if we can't get dynamic info about the size, use static */
+    if (*linep <= 0) {
+	*linep = (int) lines;
+    }
+    if (*colp <= 0) {
+	*colp = (int) columns;
+    }
+
+    /* the ultimate fallback, assume fixed 24x80 size */
+    if (*linep <= 0) {
+	*linep = 24;
+    }
+    if (*colp <= 0) {
+	*colp = 80;
+    }
+}
+
+static const char *
+skip_csi(const char *value)
+{
+    if (UChar(*value) == CSI_CHR) {
+	++value;
+    } else if (*value == ESC_CHR && value[1] == L_BLOCK) {
+	value += 2;
+    }
+    return value;
+}
+
+static bool
+is_expected(const char *value, const char *expected)
+{
+    bool result = FALSE;
+    if (VALID_STRING(value)) {
+	const char *skipped = skip_csi(value);
+	if (skipped != value) {
+	    if (!strcmp(skipped, expected))
+		result = TRUE;
+	}
+    }
+    return result;
+}
+
+static bool
+get_position(TERMINAL *termp, int fd, int *row, int *col)
+{
+    bool result = FALSE;
+    size_t need = strlen(user7);
+    int have;
+
+    have = (int) write(fd, user7, need);
+
+    if (have == (int) need) {
+	int y, x;
+	char buf[20];
+	char *s;
+	char ignore;
+
+	s = memset(buf, '\0', sizeof(buf));
+	do {
+	    int ask = (int) (sizeof(buf) - 1 - (s - buf));
+	    int got = (int) read(fd, s, ask);
+	    if (got == 0)
+		break;
+	    s += got;
+	    *s = '\0';
+	} while (strchr(buf, 'R') == NULL);
+	T(("response %s", _nc_visbuf(buf)));
+	if (sscanf(skip_csi(buf), "%d;%d%c", &y, &x, &ignore) != 2
+	    || (ignore != 'R' && ignore != ';')) {
+	    *row = y;
+	    *col = x;
+	    result = TRUE;
+	}
+    }
+    T(("get_position %d,%d", *row, *col));
+    return result;
+}
+
+static bool
+set_position(TERMINAL *termp, int fd, int row, int col)
+{
+    bool result = FALSE;
+    char *actual = TIPARM_2(cursor_address, row, col);
+    T(("set_position %d,%d", row, col));
+    if (actual != NULL) {
+	size_t want = strlen(actual);
+	int have = (int) write(fd, actual, want);	/* FIXME - padding */
+	result = ((int) want == have);
+    }
+    return result;
+}
+
+/*
+ * This is a little more complicated than one might expect, because we do this
+ * before setting up the terminal modes, etc.
+ */
+static void
+_nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
+{
+    int fd = fileno(stderr);
+    TTY saved;
+
+    if (NC_ISATTY(fd)
+	&& VALID_STRING(cursor_address)
+	&& is_expected(user7, "6n")
+	&& is_expected(user6, "%i%d;%dR")
+	&& GET_TTY(fd, &saved) == OK) {
+	int current_y, current_x;
+	int updated_y, updated_x;
+	TTY alter = saved;
+
+	alter.c_lflag &= (unsigned) ~(ECHO | ICANON | ISIG | IEXTEN);
+	alter.c_iflag &= (unsigned) ~(IXON | BRKINT | PARMRK);
+	alter.c_cc[VMIN] = 0;
+	alter.c_cc[VTIME] = 1;
+	SET_TTY(fd, &alter);
+
+	if (get_position(termp, fd, &current_y, &current_x)
+	    && set_position(termp, fd, 9999, 9999)
+	    && get_position(termp, fd, &updated_y, &updated_x)) {
+	    *linep = updated_y;
+	    *colp = updated_x;
+	    set_position(termp, fd, current_y, current_x);
+	}
+	/* restore tty modes */
+	SET_TTY(fd, &saved);
+    }
+
+    _nc_default_screensize(termp, linep, colp);
+}
+#else
+#define _nc_check_screensize(termp, linep, colp) _nc_default_screensize(termp, linep, colp)
+#endif
+
 NCURSES_EXPORT(void)
 _nc_get_screensize(SCREEN *sp,
 #ifdef USE_TERM_DRIVER
@@ -389,22 +527,10 @@ _nc_get_screensize(SCREEN *sp,
 		*colp = value;
 		T(("screen size: environment COLUMNS = %d", *colp));
 	    }
-	}
 
-	/* if we can't get dynamic info about the size, use static */
-	if (*linep <= 0) {
-	    *linep = (int) lines;
-	}
-	if (*colp <= 0) {
-	    *colp = (int) columns;
-	}
-
-	/* the ultimate fallback, assume fixed 24x80 size */
-	if (*linep <= 0) {
-	    *linep = 24;
-	}
-	if (*colp <= 0) {
-	    *colp = 80;
+	    _nc_default_screensize(termp, linep, colp);
+	} else {
+	    _nc_check_screensize(termp, linep, colp);
 	}
 
 	/*
@@ -419,6 +545,8 @@ _nc_get_screensize(SCREEN *sp,
 	OldNumber(termp, lines) = (short) (*linep);
 	OldNumber(termp, columns) = (short) (*colp);
 #endif
+    } else {
+	_nc_check_screensize(termp, linep, colp);
     }
 
     T(("screen size is %dx%d", *linep, *colp));

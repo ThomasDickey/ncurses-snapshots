@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.25 2023/09/23 23:00:59 tom Exp $
+# $Id: manhtml.aliases,v 1.26 2023/09/30 22:12:35 tom Exp $
 #***************************************************************************
 # Copyright 2019-2022,2023 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -28,8 +28,11 @@
 # authorization.                                                           *
 #***************************************************************************
 # Items in this list will be linked to the corresponding manpages by man2html
+add_wch(3X)		curs_add_wch(3X)
 addch(3X)		curs_addch(3X)
 assume_default_colors(3X)	default_colors(3X)
+attr_on(3X)		curs_attr(3X)
+attron(3X)		curs_attr(3X)
 baudrate(3X)		curs_termattrs(3X)
 clearok(3X)		curs_outopts(3X)
 curs_set(3X)		curs_kernel(3X)
@@ -43,6 +46,7 @@ get_wch(3X)		curs_get_wch(3X)
 getcchar(3X)		curs_getcchar(3X)
 getch(3X)		curs_getch(3X)
 immedok(3X)		curs_outopts(3X)
+in_wch(3X)		curs_in_wch(3X)
 inch(3X)		curs_inch(3X)
 infocmp(1)		infocmp(1M)
 initscr(3X)		curs_initscr(3X)
@@ -53,6 +57,7 @@ meta(3X)		curs_inopts(3X)
 mvcur(3X)		curs_terminfo(3X)
 mvwin(3X)		curs_window(3X)
 newterm(3X)		curs_initscr(3X)
+newwin(3X)		curs_window(3X)
 refresh(3X)		curs_refresh(3X)
 reset_shell_mode(3X)	curs_kernel(3X)
 restartterm(3X)		curs_terminfo(3X)

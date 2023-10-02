@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.36 2023/09/16 23:38:39 tom Exp $
-.TH user_caps 5 2023-09-16 "ncurses 6.4" "File formats"
+.\" $Id: user_caps.5,v 1.40 2023/09/30 23:47:46 tom Exp $
+.TH user_caps 5 2023-09-30 "ncurses 6.4" "File formats"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -194,6 +194,7 @@ the terminal.
 The command \*(``\fBtput clear\fP\*('' does the same thing.
 .TP 3
 NQ
+\fIboolean\fP,
 used to suppress a consistency check in @TIC@ for the ncurses capabilities
 in user6 through user9 (u6, u7, u8 and u9)
 which tell how to query the terminal's cursor position
@@ -408,21 +409,22 @@ has been adopted in NetBSD curses.
 That implementation stores user-defined capabilities,
 but makes no use of these capabilities itself.
 .\"
+.SH AUTHORS
+Thomas E. Dickey
+.br
+beginning with ncurses 5.0 (1999)
+.\"
 .SH SEE ALSO
-\fB@INFOCMP@\fP(1M),
-\fB@TIC@\fP(1M).
+\fB\%@INFOCMP@\fP(1M),
+\fB\%@TIC@\fP(1M)
 .PP
 The terminal database section
 .I "NCURSES USER-DEFINABLE CAPABILITIES"
 summarizes commonly-used user-defined capabilities
 which are used in the terminal descriptions.
-Some of those features are mentioned in \fBscreen\fP(1) or \fBtmux\fP(1).
+Some of those features are mentioned in \fB\%screen\fP(1) or
+\fBtmux\fP(1).
 .PP
 .I "XTerm Control Sequences"
-provides further information on the \fBxterm\fP(1) features
-which are used in these extended capabilities.
-.\"
-.SH AUTHORS
-Thomas E. Dickey
-.br
-beginning with ncurses 5.0 (1999)
+provides further information on the \fB\%xterm\fP(1) features
+that are used in these extended capabilities.

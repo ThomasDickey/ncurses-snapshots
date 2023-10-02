@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_info.3x,v 1.24 2023/09/16 23:39:54 tom Exp $
-.TH form_field_info 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: form_field_info.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
+.TH form_field_info 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .ie \n(.g .ds `` \(lq
 .el       .ds `` ``
 .ie \n(.g .ds '' \(rq
@@ -74,9 +74,6 @@ System error occurred (see \fBerrno\fP(3)).
 .TP 5
 .B E_BAD_ARGUMENT
 Routine detected an incorrect or out-of-range argument.
-.SH SEE ALSO
-\fBcurses\fP(3X) and related pages whose names begin \*(``form_\*('' for detailed
-descriptions of the entry points.
 .SH NOTES
 The header file \fB<form.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -91,3 +88,6 @@ Not all implementations allow this, e.g., Solaris 2.7 does not.
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X) and related pages whose names begin \*(``form_\*(''
+for detailed descriptions of the entry points.

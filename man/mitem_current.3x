@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_current.3x,v 1.29 2023/09/16 23:38:39 tom Exp $
-.TH mitem_current 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_current.3x,v 1.32 2023/09/30 21:38:11 tom Exp $
+.TH mitem_current 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBmitem_current\fP \-
 set and get current_menu_item
@@ -84,8 +84,6 @@ No items are connected to the menu.
 .TP 5
 .B E_SYSTEM_ERROR
 System error occurred (see \fBerrno\fP(3)).
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBmenu\fP(3X).
 .SH NOTES
 The header file \fB<menu.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -99,3 +97,6 @@ The SVr4 menu library documentation specifies the \fBtop_row\fP and
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%menu\fP(3X)

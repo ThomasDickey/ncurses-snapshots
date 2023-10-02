@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_userptr.3x,v 1.26 2023/09/16 23:38:39 tom Exp $
-.TH mitem_userptr 3X 2023-09-16 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_userptr.3x,v 1.29 2023/09/30 21:38:11 tom Exp $
+.TH mitem_userptr 3X 2023-09-30 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_item_userptr\fP,
 \fBitem_userptr\fP \-
@@ -50,9 +50,6 @@ The function \fBitem_userptr\fP returns a pointer (possibly \fBNULL\fP).
 It does not set \fBerrno\fP.
 .PP
 The \fBset_item_userptr\fP always returns \fBE_OK\fP (success).
-.
-.SH SEE ALSO
-\fBcurses\fP(3X), \fBmenu\fP(3X).
 .SH NOTES
 The header file \fB<menu.h>\fP automatically includes the header file
 \fB<curses.h>\fP.
@@ -66,3 +63,6 @@ We chose not to leave it as a char pointer for SVr4 compatibility.
 .SH AUTHORS
 Juergen Pfeifer.
 Manual pages and adaptation for new curses by Eric S. Raymond.
+.SH SEE ALSO
+\fB\%curses\fP(3X),
+\fB\%menu\fP(3X)
