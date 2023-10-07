@@ -27,18 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_value.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
-.TH mitem_value 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_value.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
+.TH mitem_value 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_item_value\fP,
 \fBitem_value\fP \-
 set and get menu item values
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
-.sp
-\fBint set_item_value(ITEM *\fIitem\fB, bool \fIvalue\fB);\fR
-.br
-\fBbool item_value(const ITEM *\fIitem\fB);\fR
+.nf
+\fB#include <menu.h>
+.PP
+\fBint set_item_value(ITEM *\fIitem\fP, bool \fIvalue\fP);
+\fBbool item_value(const ITEM *\fIitem\fP);
+.fi
 .SH DESCRIPTION
 If you turn off the menu option \fBO_ONEVALUE\fP (e.g., with
 \fBset_menu_opts\fP or \fBmenu_opts_off\fP; see \fBmenu_opts\fP(3X)), the menu

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getyx.3x,v 1.37 2023/09/23 22:10:55 tom Exp $
-.TH curs_getyx 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getyx.3x,v 1.38 2023/10/07 21:19:07 tom Exp $
+.TH curs_getyx 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%getyx\fP,
 \fB\%getparyx\fP,
@@ -37,12 +37,12 @@
 get \fIcurses\fR cursor and window coordinates
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBvoid getyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-\fBvoid getparyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-\fBvoid getbegyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-\fBvoid getmaxyx(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
+\fBvoid getyx(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBvoid getparyx(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBvoid getbegyx(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBvoid getmaxyx(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .fi
 .SH DESCRIPTION
 The \fB\%getyx\fP macro places the current cursor position of the given window in

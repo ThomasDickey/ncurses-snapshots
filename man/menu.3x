@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.38 2023/09/30 21:38:11 tom Exp $
-.TH menu 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: menu.3x,v 1.39 2023/10/07 21:19:07 tom Exp $
+.TH menu 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -42,7 +49,9 @@
 \fBmenu\fP \-
 curses extension for programming menus
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
+.nf
+\fB#include <menu.h>
+.fi
 .SH DESCRIPTION
 The \fBmenu\fP library provides terminal-independent facilities for composing
 menu systems on character-cell terminals.

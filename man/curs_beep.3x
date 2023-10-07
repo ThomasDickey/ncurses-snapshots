@@ -27,19 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_beep.3x,v 1.24 2023/09/30 21:38:11 tom Exp $
-.TH curs_beep 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_beep.3x,v 1.25 2023/10/07 21:19:07 tom Exp $
+.TH curs_beep 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%beep\fP,
 \fB\%flash\fP \-
 ring the (visual) bell of the terminal with \fIcurses\fR
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
+.nf
+\fB#include <curses.h>
 .PP
-\fBint beep(void);\fP
-.br
-\fBint flash(void);\fP
-.br
+\fBint beep(void);
+\fBint flash(void);
+.fi
 .SH DESCRIPTION
 The \fBbeep\fP and \fBflash\fP routines are used to alert the terminal user.
 The routine \fBbeep\fP sounds an audible alarm on the terminal, if possible;

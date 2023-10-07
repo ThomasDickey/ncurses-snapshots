@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
@@ -28,24 +27,25 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_spacing.3x,v 1.31 2023/09/30 23:44:51 tom Exp $
-.TH menu_spacing 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: menu_spacing.3x,v 1.32 2023/10/07 21:19:07 tom Exp $
+.TH menu_spacing 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_menu_spacing\fP,
 \fBmenu_spacing\fP \-
 set and get spacing between menu items.
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
-.sp
-\fBint set_menu_spacing(MENU *\fImenu\fB,\fR
+.nf
+\fB#include <menu.h>
+.PP
+\fBint set_menu_spacing(MENU *\fImenu\fP,
                      \fBint \fIspc_description\fB,\fR
                      \fBint \fIspc_rows\fB,\fR
                      \fBint \fIspc_columns\fB);\fR
-.br
 \fBint menu_spacing(const MENU *\fImenu\fB,\fR
                  \fBint* \fIspc_description\fB,\fR
                  \fBint* \fIspc_rows\fB,\fR
                  \fBint* \fIspc_columns\fB);\fR
+.fi
 .SH DESCRIPTION
 The function \fBset_menu_spacing\fP sets the spacing information for the menu.
 Its parameters provide the description and the size (in rows and columns).

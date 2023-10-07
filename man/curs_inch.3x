@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.39 2023/09/30 21:38:11 tom Exp $
-.TH curs_inch 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_inch.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
+.TH curs_inch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -45,15 +52,15 @@
 \fB\%mvwinch\fP \-
 get a \fIcurses\fR character from a window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBchtype inch(void);\fP
-.br
-\fBchtype winch(WINDOW *\fIwin\fB);\fR
-.sp
-\fBchtype mvinch(int \fIy\fB, int \fIx\fB);\fR
-.br
-\fBchtype mvwinch(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBchtype inch(void);
+\fBchtype winch(WINDOW *\fIwin\fP);
+.PP
+\fBchtype mvinch(int \fIy\fP, int \fIx\fP);
+\fBchtype mvwinch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+.fi
 .SH DESCRIPTION
 These routines return the character, of type \fBchtype\fP, at the current
 position in the named window.

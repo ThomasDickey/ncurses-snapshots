@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.25 2023/09/30 21:38:11 tom Exp $
-.TH curs_get_wch 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_get_wch.3x,v 1.26 2023/10/07 21:19:07 tom Exp $
+.TH curs_get_wch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -45,17 +52,16 @@
 \fB\%unget_wch\fP \-
 get (or push back) a wide character from \fIcurses\fR terminal keyboard
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint get_wch(wint_t *\fIwch\fB);\fR
-.br
-\fBint wget_wch(WINDOW *\fIwin\fB, wint_t *\fIwch\fB);\fR
-.br
-\fBint mvget_wch(int \fIy\fB, int \fIx\fB, wint_t *\fIwch\fB);\fR
-.br
-\fBint mvwget_wch(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wint_t *\fIwch\fB);\fR
-.sp
-\fBint unget_wch(const wchar_t \fIwch\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint get_wch(wint_t *\fIwch\fP);
+\fBint wget_wch(WINDOW *\fIwin\fP, wint_t *\fIwch\fP);
+\fBint mvget_wch(int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
+\fBint mvwget_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
+.PP
+\fBint unget_wch(const wchar_t \fIwch\fP);
+.fi
 .SH DESCRIPTION
 .SS wget_wch
 The

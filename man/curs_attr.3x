@@ -28,31 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.86 2023/09/30 21:38:11 tom Exp $
-.TH curs_attr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
+.\" $Id: curs_attr.3x,v 1.87 2023/10/07 22:21:46 tom Exp $
+.TH curs_attr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
 .\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -86,58 +74,42 @@
 manipulate attributes of character cells in \fIcurses\fR windows
 .\" ---------------------------------------------------------------------------
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint attr_get(attr_t *\fIattrs\fB, short *\fIpair\fB, void *\fIopts\fB);\fR
-.br
-\fBint wattr_get(WINDOW *\fIwin\fB, attr_t *\fIattrs\fB, short *\fIpair\fB,\fR \fBvoid *\fIopts\fB);\fR
-.br
-\fBint attr_set(attr_t \fIattrs\fB, short \fIpair\fB, void *\fIopts\fB);\fR
-.br
-\fBint wattr_set(WINDOW *\fIwin\fB, attr_t \fIattrs\fB, short \fIpair\fB, void *\fIopts\fB);\fR
-.sp
-\fBint attr_off(attr_t \fIattrs\fB, void *\fIopts\fB);\fR
-.br
-\fBint wattr_off(WINDOW *\fIwin\fB, attr_t \fIattrs\fB, void *\fIopts\fB);\fR
-.br
-\fBint attr_on(attr_t \fIattrs\fB, void *\fIopts\fB);\fR
-.br
-\fBint wattr_on(WINDOW *\fIwin\fB, attr_t \fIattrs\fB, void *\fIopts\fB);\fR
-.sp
-\fBint attroff(int \fIattrs);\fR
-.br
-\fBint wattroff(WINDOW *\fIwin\fB, int \fIattrs\fB);\fR
-.br
-\fBint attron(int \fIattrs\fB);\fR
-.br
-\fBint wattron(WINDOW *\fIwin\fB, int \fIattrs\fB);\fR
-.br
-\fBint attrset(int \fIattrs\fB);\fR
-.br
-\fBint wattrset(WINDOW *\fIwin\fB, int \fIattrs\fB);\fR
-.sp
-\fBint chgat(int \fIn\fB, attr_t \fIattr\fB, short \fIpair\fB,\fR \fBconst void *\fIopts\fB);\fR
-.br
-\fBint wchgat(WINDOW *\fIwin\fB,\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint attr_get(attr_t *\fIattrs\fP, short *\fIpair\fP, void *\fIopts\fP);
+\fBint wattr_get(WINDOW *\fIwin\fP, attr_t *\fIattrs\fP, short *\fIpair\fP,\fR \fPvoid *\fIopts\fP);
+\fBint attr_set(attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP);
+\fBint wattr_set(WINDOW *\fIwin\fP, attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP);
+.PP
+\fBint attr_off(attr_t \fIattrs\fP, void *\fIopts\fP);
+\fBint wattr_off(WINDOW *\fIwin\fP, attr_t \fIattrs\fP, void *\fIopts\fP);
+\fBint attr_on(attr_t \fIattrs\fP, void *\fIopts\fP);
+\fBint wattr_on(WINDOW *\fIwin\fP, attr_t \fIattrs\fP, void *\fIopts\fP);
+.PP
+\fBint attroff(int \fIattrs\fP);
+\fBint wattroff(WINDOW *\fIwin\fP, int \fIattrs\fP);
+\fBint attron(int \fIattrs\fP);
+\fBint wattron(WINDOW *\fIwin\fP, int \fIattrs\fP);
+\fBint attrset(int \fIattrs\fP);
+\fBint wattrset(WINDOW *\fIwin\fP, int \fIattrs\fP);
+.PP
+\fBint chgat(int \fIn\fP, attr_t \fIattr\fP, short \fIpair\fP,\fR \fPconst void *\fIopts\fP);
+\fBint wchgat(WINDOW *\fIwin\fP,
       \fBint \fIn\fB, attr_t \fIattr\fB,\fR \fBshort \fIpair\fB, const void *\fIopts\fB);\fR
-.br
 \fBint mvchgat(int \fIy\fB, int \fIx\fB,\fR
       \fBint \fIn\fB, attr_t \fIattr\fB,\fR \fBshort \fIpair\fB, const void *\fIopts\fB);\fR
-.br
 \fBint mvwchgat(WINDOW *\fIwin, int \fIy, int \fIx\fB,\fR
       \fBint \fIn,\fR \fBattr_t \fIattr\fB, short \fIpair\fB, const void *\fIopts\fB);\fR
-.sp
+.PP
 \fBint color_set(short \fIpair\fB, void* \fIopts\fB);\fR
-.br
-\fBint wcolor_set(WINDOW *\fIwin\fB, short \fIpair\fB,\fR \fBvoid* \fIopts);\fR
-.sp
+\fBint wcolor_set(WINDOW *\fIwin\fB, short \fIpair\fB,\fR \fBvoid* \fIopts\fP);\fR
+.PP
 \fBint standend(void);\fP
-.br
 \fBint wstandend(WINDOW *\fIwin\fB);\fR
-.br
 \fBint standout(void);\fP
-.br
 \fBint wstandout(WINDOW *\fIwin\fB);\fR
+.fi
 .\" ---------------------------------------------------------------------------
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window,
@@ -198,10 +170,13 @@ the attribute parameter.
 For example,
 as long as that value fits into the \fBA_COLOR\fP mask,
 then these calls produce similar results:
-.NS
+.PP
+.RS 4
+.EX
 attrset(A_BOLD | COLOR_PAIR(\fIpair\fP));
 attr_set(A_BOLD, \fIpair\fP, NULL);
-.NE
+.EE
+.RE
 .PP
 However, if the value does not fit, then the \fBCOLOR_PAIR\fP macro
 uses only the bits that fit.
@@ -213,10 +188,13 @@ The \fBPAIR_NUMBER\fP macro extracts a pair number from an \fBint\fP
 (or \fBchtype\fP).
 For example, the \fIinput\fP and \fIoutput\fP values in these statements
 would be the same:
-.NS
+.PP
+.RS 4
+.EX
 int value = A_BOLD | COLOR_PAIR(\fIinput\fP);
 int \fIoutput\fP = PAIR_NUMBER(value);
-.NE
+.EE
+.RE
 .PP
 The \fBattrset\fP routine is a legacy feature predating SVr4 curses
 but kept in X/Open Curses for the same reason that SVr4 curses kept it:

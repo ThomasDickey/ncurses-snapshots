@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
@@ -28,29 +27,27 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_hook.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
-.TH menu_hook 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: menu_hook.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
+.TH menu_hook 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBmenu_hook\fP \-
 set hooks for automatic invocation by applications
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
-.sp
-\fBint set_item_init(MENU *\fImenu\fB, Menu_Hook \fIfunc);\fR
-.br
-\fBMenu_Hook item_init(const MENU *\fImenu);\fR
-.sp
-\fBint set_item_term(MENU *\fImenu\fB, Menu_Hook \fIfunc);\fR
-.br
-\fBMenu_Hook item_term(const MENU *\fImenu);\fR
-.sp
-\fBint set_menu_init(MENU *\fImenu\fB, Menu_Hook \fIfunc);\fR
-.br
-\fBMenu_Hook menu_init(const MENU *\fImenu);\fR
-.sp
-\fBint set_menu_term(MENU *\fImenu\fB, Menu_Hook \fIfunc);\fR
-.br
-\fBMenu_Hook menu_term(const MENU *\fImenu);\fR
+.nf
+\fB#include <menu.h>
+.PP
+\fBint set_item_init(MENU *\fImenu\fP, Menu_Hook \fIfunc\fP);
+\fBMenu_Hook item_init(const MENU *\fImenu\fP);
+.PP
+\fBint set_item_term(MENU *\fImenu\fP, Menu_Hook \fIfunc\fP);
+\fBMenu_Hook item_term(const MENU *\fImenu\fP);
+.PP
+\fBint set_menu_init(MENU *\fImenu\fP, Menu_Hook \fIfunc\fP);
+\fBMenu_Hook menu_init(const MENU *\fImenu\fP);
+.PP
+\fBint set_menu_term(MENU *\fImenu\fP, Menu_Hook \fIfunc\fP);
+\fBMenu_Hook menu_term(const MENU *\fImenu\fP);
+.fi
 .SH DESCRIPTION
 These functions make it possible to set hook functions to be called at various
 points in the automatic processing of input event codes by \fBmenu_driver\fP.

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getcchar.3x,v 1.37 2023/09/30 21:38:11 tom Exp $
-.TH curs_getcchar 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getcchar.3x,v 1.38 2023/10/07 21:19:07 tom Exp $
+.TH curs_getcchar 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -38,31 +38,23 @@
 \fB\%setcchar\fP \-
 convert between a wide-character string and a \fIcurses\fR complex character string
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint getcchar(\fP
-.br
+.nf
+\fB#include <curses.h>
+.PP
+\fBint getcchar(
 .B "        const cchar_t *\fIwcval\fP,"
-.br
 .B "        wchar_t *\fIwch\fP,"
-.br
 .B "        attr_t *\fIattrs\fP,"
-.br
 .B "        short *\fIcolor_pair\fP,"
-.br
 .B "        void *\fIopts\fP );"
-.sp
+.PP
 .B "int setcchar("
-.br
 .B "        cchar_t *\fIwcval\fP,"
-.br
 .B "        const wchar_t *\fIwch\fP,"
-.br
 .B "        const attr_t \fIattrs\fP,"
-.br
 .B "        short \fIcolor_pair\fP,"
-.br
 .B "        const void *\fIopts\fP );"
+.fi
 .SH DESCRIPTION
 .SS getcchar
 The \fBgetcchar\fP function gets a wide-character string
@@ -102,7 +94,7 @@ The color pair in
 \fIcolor_pair\fP
 .bP
 The wide-character string pointed to by \fIwch\fP.
-The string must be L'\\0' terminated,
+The string must be L'\e0' terminated,
 contain at most one spacing character,
 which must be the first.
 .IP

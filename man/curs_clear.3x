@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_clear.3x,v 1.37 2023/09/30 21:38:11 tom Exp $
-.TH curs_clear 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_clear.3x,v 1.38 2023/10/07 21:19:07 tom Exp $
+.TH curs_clear 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -44,23 +44,21 @@
 \fB\%wclrtoeol\fP \-
 clear all or part of a \fIcurses\fR window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint erase(void);\fP
-.br
-\fBint werase(WINDOW *\fIwin\fB);\fR
-.sp
-\fBint clear(void);\fP
-.br
-\fBint wclear(WINDOW *\fIwin\fB);\fR
-.sp
-\fBint clrtobot(void);\fP
-.br
-\fBint wclrtobot(WINDOW *\fIwin\fB);\fR
-.sp
-\fBint clrtoeol(void);\fP
-.br
-\fBint wclrtoeol(WINDOW *\fIwin\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint erase(void);
+\fBint werase(WINDOW *\fIwin\fP);
+.PP
+\fBint clear(void);
+\fBint wclear(WINDOW *\fIwin\fP);
+.PP
+\fBint clrtobot(void);
+\fBint wclrtobot(WINDOW *\fIwin\fP);
+.PP
+\fBint clrtoeol(void);
+\fBint wclrtoeol(WINDOW *\fIwin\fP);
+.fi
 .SH DESCRIPTION
 .SS erase/werase
 The \fBerase\fP and \fBwerase\fP routines copy blanks to every

@@ -28,12 +28,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.54 2023/09/23 22:24:15 tom Exp $
-.TH curs_inopts 3X 2023-09-23 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_inopts.3x,v 1.55 2023/10/07 21:19:07 tom Exp $
+.TH curs_inopts 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%cbreak\fP,
 \fB\%echo\fP,
@@ -61,40 +67,40 @@
 get and set \fIcurses\fR terminal input options
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint cbreak(void);\fP
-\fBint nocbreak(void);\fP
+\fBint cbreak(void);
+\fBint nocbreak(void);
 .PP
-\fBint echo(void);\fP
-\fBint noecho(void);\fP
+\fBint echo(void);
+\fBint noecho(void);
 .PP
-\fBint intrflush(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-\fBint keypad(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-\fBint meta(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-\fBint nodelay(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-\fBint notimeout(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
+\fBint intrflush(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint keypad(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint meta(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint nodelay(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint notimeout(WINDOW *\fIwin\fP, bool \fIbf\fP);
 .PP
-\fBint nl(void);\fP
-\fBint nonl(void);\fP
+\fBint nl(void);
+\fBint nonl(void);
 .PP
-\fBint raw(void);\fP
-\fBint noraw(void);\fP
+\fBint raw(void);
+\fBint noraw(void);
 .PP
-\fBvoid qiflush(void);\fP
-\fBvoid noqiflush(void);\fP
+\fBvoid qiflush(void);
+\fBvoid noqiflush(void);
 .PP
-\fBint halfdelay(int \fItenths\fB);\fR
-\fBvoid timeout(int \fIdelay\fB);\fR
-\fBvoid wtimeout(WINDOW *\fIwin\fB, int \fIdelay\fB);\fR
+\fBint halfdelay(int \fItenths\fP);
+\fBvoid timeout(int \fIdelay\fP);
+\fBvoid wtimeout(WINDOW *\fIwin\fP, int \fIdelay\fP);
 .PP
-\fBint typeahead(int \fIfd\fB);\fR
+\fBint typeahead(int \fIfd\fP);
 .PP
-\fI/* extensions */\fP
-\fBint is_cbreak(void);\fP
-\fBint is_echo(void);\fP
-\fBint is_nl(void);\fP
-\fBint is_raw(void);\fP
+\fI/* extensions */
+\fBint is_cbreak(void);
+\fBint is_echo(void);
+\fBint is_nl(void);
+\fBint is_raw(void);
 .fi
 .SH DESCRIPTION
 The \fIncurses\fP library provides several functions which let an application

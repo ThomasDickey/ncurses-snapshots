@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.39 2023/09/23 22:49:51 tom Exp $
-.TH curs_touch 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_touch.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
+.TH curs_touch 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -39,17 +39,17 @@
 control terminal output refresh in a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint touchline(WINDOW *\fIwin\fB, int \fIstart\fB, int \fIcount\fB);\fR
+\fBint touchline(WINDOW *\fIwin\fP, int \fIstart\fP, int \fIcount\fP);
 .PP
-\fBint touchwin(WINDOW *\fIwin\fB);\fR
-\fBint wtouchln(WINDOW *\fIwin\fB, int \fIy\fB, int \fIn\fB, int \fIchanged\fB);\fR
+\fBint touchwin(WINDOW *\fIwin\fP);
+\fBint wtouchln(WINDOW *\fIwin\fP, int \fIy\fP, int \fIn\fP, int \fIchanged\fP);
 .PP
-\fBint untouchwin(WINDOW *\fIwin\fB);\fR
+\fBint untouchwin(WINDOW *\fIwin\fP);
 .PP
-\fBbool is_linetouched(WINDOW *\fIwin\fB, int \fIline\fB);\fR
-\fBbool is_wintouched(WINDOW *\fIwin\fB);\fR
+\fBbool is_linetouched(WINDOW *\fIwin\fP, int \fIline\fP);
+\fBbool is_wintouched(WINDOW *\fIwin\fP);
 .fi
 .SH DESCRIPTION
 The \fB\%touchwin\fP and \fB\%touchline\fP routines throw away all

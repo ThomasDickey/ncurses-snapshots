@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_printw.3x,v 1.40 2023/09/30 21:38:11 tom Exp $
-.TH curs_printw 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_printw.3x,v 1.41 2023/10/07 21:19:07 tom Exp $
+.TH curs_printw 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -46,21 +53,18 @@
 \fB\%vw_printw\fP \-
 write formatted output to \fIcurses\fR windows
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint printw(const char *\fIfmt\fB, ...);\fR
-.br
-\fBint wprintw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, ...);\fR
-.br
-\fBint mvprintw(int \fIy\fB, int \fIx\fB, const char *\fIfmt\fB, ...);\fR
-.br
-\fBint mvwprintw(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const char *\fIfmt\fB, ...);\fR
-.br
-\fBint vw_printw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, va_list \fIvarglist\fB);\fR
-.sp
-/* obsolete */
-.br
-\fBint vwprintw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, va_list \fIvarglist\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint printw(const char *\fIfmt\fP, ...);
+\fBint wprintw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, ...);
+\fBint mvprintw(int \fIy\fP, int \fIx\fP, const char *\fIfmt\fP, ...);
+\fBint mvwprintw(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIfmt\fP, ...);
+\fBint vw_printw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, va_list \fIvarglist\fP);
+.PP
+\fI/* obsolete */\fP
+\fBint vwprintw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, va_list \fIvarglist\fP);
+.fi
 .SH DESCRIPTION
 The \fBprintw\fP, \fBwprintw\fP, \fBmvprintw\fP and \fBmvwprintw\fP
 routines are analogous to \fBprintf\fP [see \fBprintf\fP(3)].

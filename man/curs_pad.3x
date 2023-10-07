@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.43 2023/09/23 22:49:51 tom Exp $
-.TH curs_pad 3X 2023-09-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_pad.3x,v 1.44 2023/10/07 21:19:07 tom Exp $
+.TH curs_pad 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -43,10 +43,10 @@
 create and display \fIcurses\fR pads
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBWINDOW *newpad(int \fInlines\fB, int \fIncols\fB);\fR
-\fBWINDOW *subpad(WINDOW *\fIorig\fB, int \fInlines\fB, int \fIncols\fB,\fR
+\fBWINDOW *newpad(int \fInlines\fP, int \fIncols\fP);
+\fBWINDOW *subpad(WINDOW *\fIorig\fP, int \fInlines\fP, int \fIncols\fP,
       \fBint \fIbegin_y\fB, int \fIbegin_x\fB);\fR
 \fBint prefresh(WINDOW *\fIpad\fB, int \fIpminrow\fB, int \fIpmincol\fB,\fR
       \fBint \fIsminrow\fB, int \fIsmincol\fB, int \fIsmaxrow\fB, int \fIsmaxcol\fB);\fR

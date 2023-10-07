@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
@@ -28,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_opts.3x,v 1.29 2023/09/30 21:38:11 tom Exp $
-.TH form_opts 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_opts.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
+.TH form_opts 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_form_opts\fP,
 \fBform_opts_on\fP,
@@ -37,15 +36,15 @@
 \fBform_opts\fP \-
 set and get form options
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_form_opts(FORM *\fIform\fB, Field_Options \fIopts\fB);\fR
-.br
-\fBField_Options form_opts(const FORM *\fIform\fB);\fR
-.sp
-\fBint form_opts_on(FORM *\fIform\fB, Field_Options \fIopts\fB);\fR
-.br
-\fBint form_opts_off(FORM *\fIform\fB, Field_Options \fIopts\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_form_opts(FORM *\fIform\fP, Field_Options \fIopts\fP);
+\fBField_Options form_opts(const FORM *\fIform\fP);
+.PP
+\fBint form_opts_on(FORM *\fIform\fP, Field_Options \fIopts\fP);
+\fBint form_opts_off(FORM *\fIform\fP, Field_Options \fIopts\fP);
+.fi
 .SH DESCRIPTION
 The function \fBset_form_opts\fP sets all the given form's option bits (form
 option bits may be logically-OR'ed together).

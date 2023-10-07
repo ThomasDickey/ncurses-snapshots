@@ -29,22 +29,29 @@
 .\"
 .\" Author: Thomas E. Dickey 1997,1999,2000,2005
 .\"
-.\" $Id: default_colors.3x,v 1.44 2023/09/30 21:38:11 tom Exp $
-.TH default_colors 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: default_colors.3x,v 1.45 2023/10/07 21:19:07 tom Exp $
+.TH default_colors 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%use_default_colors\fP,
 \fB\%assume_default_colors\fP \-
 use terminal's default colors
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint use_default_colors(void);\fP
-.br
-\fBint assume_default_colors(int \fIfg\fB, int \fIbg\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint use_default_colors(void);
+\fBint assume_default_colors(int \fIfg\fP, int \fIbg\fP);
+.fi
 .SH DESCRIPTION
 The \fBuse_default_colors\fP and \fBassume_default_colors\fP
 functions are extensions to the curses library.

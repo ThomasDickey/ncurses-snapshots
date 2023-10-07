@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.26 2023/09/30 21:38:11 tom Exp $
-.TH curs_addwstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_addwstr.3x,v 1.27 2023/10/07 21:19:07 tom Exp $
+.TH curs_addwstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -49,23 +56,17 @@
 add a wide-character string to a \fIcurses\fR window and advance the cursor
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint addwstr(const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint addnwstr(const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint waddwstr(WINDOW *\fIwin\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint waddnwstr(WINDOW *\fIwin\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvaddwstr(int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvaddnwstr(int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwaddwstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvwaddnwstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
+\fBint addwstr(const wchar_t *\fIwstr\fP);
+\fBint addnwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint waddwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
+\fBint waddnwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+.PP
+\fBint mvaddwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
+\fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint mvwaddwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
+\fBint mvwaddnwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 These functions write the characters of the

@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998,2010 Free Software Foundation, Inc.                       *
@@ -28,15 +27,17 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_visible.3x,v 1.22 2023/09/30 21:38:11 tom Exp $
-.TH mitem_visible 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_visible.3x,v 1.23 2023/10/07 21:19:07 tom Exp $
+.TH mitem_visible 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBmitem_visible\fP \-
 check visibility of a menu item
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
-.sp
-\fBbool item_visible(const ITEM *\fIitem\fB);\fR
+.nf
+\fB#include <menu.h>
+.PP
+\fBbool item_visible(const ITEM *\fIitem\fP);
+.fi
 .SH DESCRIPTION
 A menu item is visible when it is in the portion of a posted menu that
 is mapped onto the screen (if the menu is scrollable, in particular, this

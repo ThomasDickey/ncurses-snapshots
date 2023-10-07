@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.39 2023/09/30 21:38:11 tom Exp $
-.TH curs_insstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_insstr.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
+.TH curs_insstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%insstr\fP,
 \fB\%insnstr\fP,
@@ -44,23 +50,18 @@
 \fB\%mvwinsnstr\fP \-
 insert a string in a \fIcurses\fR window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.br
-\fBint insstr(const char *\fIstr\fB);\fR
-.br
-\fBint insnstr(const char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint winsstr(WINDOW *\fIwin\fB, const char *\fIstr\fB);\fR
-.br
-\fBint winsnstr(WINDOW *\fIwin\fB, const char *\fIstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvinsstr(int \fIy\fB, int \fIx\fB, const char *\fIstr\fB);\fR
-.br
-\fBint mvinsnstr(int \fIy\fB, int \fIx\fB, const char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwinsstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const char *\fIstr\fB);\fR
-.br
-\fBint mvwinsnstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const char *\fIstr\fB, int \fIn\fB);\fR
+.nf
+\fB#include <curses.h>
+\fBint insstr(const char *\fIstr\fP);
+\fBint insnstr(const char *\fIstr\fP, int \fIn\fP);
+\fBint winsstr(WINDOW *\fIwin\fP, const char *\fIstr\fP);
+\fBint winsnstr(WINDOW *\fIwin\fP, const char *\fIstr\fP, int \fIn\fP);
+.PP
+\fBint mvinsstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
+\fBint mvinsnstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
+\fBint mvwinsstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
+\fBint mvwinsnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
+.fi
 .SH DESCRIPTION
 These routines insert a character string
 (as many characters as will fit on the line)

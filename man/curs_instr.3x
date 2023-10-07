@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.35 2023/09/30 21:38:11 tom Exp $
-.TH curs_instr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_instr.3x,v 1.36 2023/10/07 21:19:07 tom Exp $
+.TH curs_instr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -48,23 +55,19 @@
 \fB\%mvwinnstr\fP \-
 get a string from a \fIcurses\fR window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint instr(char *\fIstr\fB);\fR
-.br
-\fBint innstr(char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint winstr(WINDOW *\fIwin\fB, char *\fIstr\fB);\fR
-.br
-\fBint winnstr(WINDOW *\fIwin\fB, char *\fIstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvinstr(int \fIy\fB, int \fIx\fB, char *\fIstr\fB);\fR
-.br
-\fBint mvinnstr(int \fIy\fB, int \fIx\fB, char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwinstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB);\fR
-.br
-\fBint mvwinnstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB, int \fIn\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint instr(char *\fIstr\fP);
+\fBint innstr(char *\fIstr\fP, int \fIn\fP);
+\fBint winstr(WINDOW *\fIwin\fP, char *\fIstr\fP);
+\fBint winnstr(WINDOW *\fIwin\fP, char *\fIstr\fP, int \fIn\fP);
+.PP
+\fBint mvinstr(int \fIy\fP, int \fIx\fP, char *\fIstr\fP);
+\fBint mvinnstr(int \fIy\fP, int \fIx\fP, char *\fIstr\fP, int \fIn\fP);
+\fBint mvwinstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, char *\fIstr\fP);
+\fBint mvwinnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, char *\fIstr\fP, int \fIn\fP);
+.fi
 .SH DESCRIPTION
 These routines return a string of characters in \fIstr\fP, extracted starting
 at the current cursor position in the named window.

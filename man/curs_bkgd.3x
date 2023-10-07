@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.46 2023/09/30 21:38:11 tom Exp $
-.TH curs_bkgd 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.47 2023/10/07 21:19:07 tom Exp $
+.TH curs_bkgd 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -41,18 +41,17 @@
 \fB\%getbkgd\fP \-
 manipulate background of a \fIcurses\fR window of characters
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
+.nf
+\fB#include <curses.h>
 .PP
-\fBvoid bkgdset(chtype \fIch\fB);\fR
-.br
-\fBvoid wbkgdset(WINDOW *\fIwin, chtype \fIch\fB);\fR
-.sp
-\fBint bkgd(chtype \fIch\fB);\fR
-.br
-\fBint wbkgd(WINDOW *\fIwin\fB, chtype \fIch\fB);\fR
-.sp
-\fBchtype getbkgd(WINDOW *\fIwin\fB);\fR
-.br
+\fBvoid bkgdset(chtype \fIch\fP);
+\fBvoid wbkgdset(WINDOW *\fIwin\fP, chtype \fIch\fP);
+.PP
+\fBint bkgd(chtype \fIch\fP);
+\fBint wbkgd(WINDOW *\fIwin\fP, chtype \fIch\fP);
+.PP
+\fBchtype getbkgd(WINDOW *\fIwin\fP);
+.fi
 .SH DESCRIPTION
 .SS bkgdset
 The \fBbkgdset\fP and \fBwbkgdset\fP routines

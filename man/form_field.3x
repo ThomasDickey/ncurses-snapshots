@@ -28,21 +28,20 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field.3x,v 1.29 2023/09/30 21:38:11 tom Exp $
-.TH form_field 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_field.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
+.TH form_field 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_field\fP \-
 make and break connections between fields and forms
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_form_fields(FORM *\fIform\fB, FIELD **\fIfields\fB);\fR
-.br
-\fBFIELD **form_fields(const FORM *\fIform\fB);\fR
-.br
-\fBint field_count(const FORM *\fIform\fB);\fR
-.br
-\fBint move_field(FIELD *\fIfield\fB, int \fIfrow\fB, int \fIfcol\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_form_fields(FORM *\fIform\fP, FIELD **\fIfields\fP);
+\fBFIELD **form_fields(const FORM *\fIform\fP);
+\fBint field_count(const FORM *\fIform\fP);
+\fBint move_field(FIELD *\fIfield\fP, int \fIfrow\fP, int \fIfcol\fP);
+.fi
 .SH DESCRIPTION
 The function \fBset_form_fields\fP changes the field pointer array of
 the given \fIform\fP.  The array must be terminated by a \fBNULL\fP.

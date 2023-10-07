@@ -28,29 +28,34 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_attributes.3x,v 1.30 2023/09/30 21:38:11 tom Exp $
-.TH form_field_attributes 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: form_field_attributes.3x,v 1.31 2023/10/07 21:19:07 tom Exp $
+.TH form_field_attributes 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fBform_field_attributes\fP \-
 color and attribute control for form fields
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_field_fore(FIELD *\fIfield\fB, chtype \fIattr\fB);\fR
-.br
-\fBchtype field_fore(const FIELD *\fIfield\fB);\fR
-.sp
-\fBint set_field_back(FIELD *\fIfield\fB, chtype \fIattr\fB);\fR
-.br
-\fBchtype field_back(const FIELD *\fIfield\fB);\fR
-.sp
-\fBint set_field_pad(FIELD *\fIfield\fB, int \fIpad\fB);\fR
-.br
-\fBint field_pad(const FIELD *\fIfield\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_field_fore(FIELD *\fIfield\fP, chtype \fIattr\fP);
+\fBchtype field_fore(const FIELD *\fIfield\fP);
+.PP
+\fBint set_field_back(FIELD *\fIfield\fP, chtype \fIattr\fP);
+\fBchtype field_back(const FIELD *\fIfield\fP);
+.PP
+\fBint set_field_pad(FIELD *\fIfield\fP, int \fIpad\fP);
+\fBint field_pad(const FIELD *\fIfield\fP);
+.fi
 .SH DESCRIPTION
 The function \fBset_field_fore\fP sets the foreground attribute of
 \fIfield\fP. This is the highlight used to display the field contents.  The

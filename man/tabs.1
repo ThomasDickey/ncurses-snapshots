@@ -27,36 +27,25 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.46 2023/09/30 21:38:11 tom Exp $
-.TH @TABS@ 1 2023-09-30 "ncurses 6.4" "User commands"
-.ds n 5
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: tabs.1,v 1.47 2023/10/07 21:19:07 tom Exp $
+.TH @TABS@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
-.\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.
+.ds n 5
 .SH NAME
 \fB\%@TABS@\fP \-
 set terminal tab stops
@@ -67,9 +56,12 @@ The \fB@TABS@\fP program clears and sets tab-stops on the terminal.
 This uses the terminfo \fBclear_all_tabs\fP and \fBset_tab\fP capabilities.
 If either is absent, \fB@TABS@\fP is unable to clear/set tab-stops.
 The terminal should be configured to use hard tabs, e.g.,
-.NS
+.PP
+.RS 4
+.EX
 stty tab0
-.NE
+.EE
+.RE
 .PP
 Like \fB@CLEAR@\fP(1), \fB@TABS@\fP writes to the standard output.
 You can redirect the standard output to a file (which prevents
@@ -84,9 +76,12 @@ If the hardware tabstops differ from the information in the terminal
 database, the result is unpredictable.
 Before running curses programs,
 you should either reset tab-stops to the standard interval
-.NS
-tabs -8
-.NE
+.PP
+.RS 4
+.EX
+tabs \-8
+.EE
+.RE
 .PP
 or use the \fB@RESET@\fP program,
 since the normal initialization sequences do not ensure that tab-stops
@@ -130,18 +125,23 @@ An explicit list can be defined after the options
 The values in the list must be in increasing numeric order,
 and greater than zero.
 They are separated by a comma or a blank, for example,
-.NS
+.PP
+.RS 4
+.EX
 tabs 1,6,11,16,21
-.br
 tabs 1 6 11 16 21
-.NE
+.EE
+.RE
 .PP
 Use a \*(``+\*('' to treat a number
 as an increment relative to the previous value,
 e.g.,
-.NS
+.PP
+.RS 4
+.EX
 tabs 1,+5,+5,+5,+5
-.NE
+.EE
+.RE
 .PP
 which is equivalent to the 1,6,11,16,21 example.
 .SS Predefined Tab-Stops

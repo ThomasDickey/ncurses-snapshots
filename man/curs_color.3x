@@ -27,16 +27,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.84 2023/09/30 20:13:18 tom Exp $
-.TH curs_color 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_color.3x,v 1.85 2023/10/07 21:19:07 tom Exp $
+.TH curs_color 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
 .ds n 5
 .SH NAME
 \fB\%start_color\fP,
@@ -56,30 +64,30 @@
 manipulate terminal colors with \fIcurses\fR
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint start_color(void);\fP
+\fBint start_color(void);
 .PP
-\fBbool has_colors(void);\fP
-\fBbool can_change_color(void);\fP
+\fBbool has_colors(void);
+\fBbool can_change_color(void);
 .PP
-\fBint init_pair(short \fIpair\fB, short \fIf\fB, short \fIb\fB);\fR
-\fBint init_color(short \fIcolor\fB, short \fIr\fB, short \fIg\fB, short \fIb\fB);\fR
-\fI/* extensions */\fP
-\fBint init_extended_pair(int \fIpair\fB, int \fIf\fB, int \fIb\fB);\fR
-\fBint init_extended_color(int \fIcolor\fB, int \fIr\fB, int \fIg\fB, int \fIb\fB);\fR
+\fBint init_pair(short \fIpair\fP, short \fIf\fP, short \fIb\fP);
+\fBint init_color(short \fIcolor\fP, short \fIr\fP, short \fIg\fP, short \fIb\fP);
+\fI/* extensions */
+\fBint init_extended_pair(int \fIpair\fP, int \fIf\fP, int \fIb\fP);
+\fBint init_extended_color(int \fIcolor\fP, int \fIr\fP, int \fIg\fP, int \fIb\fP);
 .PP
-\fBint color_content(short \fIcolor\fB, short *\fIr\fB, short *\fIg\fB, short *\fIb\fB);\fR
-\fBint pair_content(short \fIpair\fB, short *\fIf\fB, short *\fIb\fB);\fR
-\fI/* extensions */\fP
-\fBint extended_color_content(int \fIcolor\fB, int *\fIr\fB, int *\fIg\fB, int *\fIb\fB);\fR
-\fBint extended_pair_content(int \fIpair\fB, int *\fIf\fB, int *\fIb\fB);\fR
+\fBint color_content(short \fIcolor\fP, short *\fIr\fP, short *\fIg\fP, short *\fIb\fP);
+\fBint pair_content(short \fIpair\fP, short *\fIf\fP, short *\fIb\fP);
+\fI/* extensions */
+\fBint extended_color_content(int \fIcolor\fP, int *\fIr\fP, int *\fIg\fP, int *\fIb\fP);
+\fBint extended_pair_content(int \fIpair\fP, int *\fIf\fP, int *\fIb\fP);
 .PP
-\fI/* extensions */\fP
-\fBvoid reset_color_pairs(void);\fP
+\fI/* extensions */
+\fBvoid reset_color_pairs(void);
 .PP
-\fBint COLOR_PAIR(int \fIn\fB);\fR
-\fBPAIR_NUMBER(\fIattrs\fB);\fR
+\fBint COLOR_PAIR(int \fIn\fP);
+\fBPAIR_NUMBER(\fIattrs\fP);
 .fi
 .SH DESCRIPTION
 .SS Overview

@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insch.3x,v 1.32 2023/09/30 21:38:11 tom Exp $
-.TH curs_insch 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_insch.3x,v 1.33 2023/10/07 21:19:07 tom Exp $
+.TH curs_insch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%insch\fP,
 \fB\%winsch\fP,
@@ -40,15 +46,15 @@
 \fB\%mvwinsch\fP \-
 insert a \fIcurses\fR character in a window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint insch(chtype \fIch\fB);\fR
-.br
-\fBint winsch(WINDOW *\fIwin\fB, chtype \fIch\fB);\fR
-.sp
-\fBint mvinsch(int \fIy\fB, int \fIx\fB, chtype \fIch\fB);\fR
-.br
-\fBint mvwinsch(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, chtype \fIch\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint insch(chtype \fIch\fP);
+\fBint winsch(WINDOW *\fIwin\fP, chtype \fIch\fP);
+.PP
+\fBint mvinsch(int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
+\fBint mvwinsch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
+.fi
 .SH DESCRIPTION
 These routines insert the character \fIch\fP before the character under the
 cursor.

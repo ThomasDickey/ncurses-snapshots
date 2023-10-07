@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.40 2023/09/30 23:47:46 tom Exp $
-.TH user_caps 5 2023-09-30 "ncurses 6.4" "File formats"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: user_caps.5,v 1.41 2023/10/07 21:19:07 tom Exp $
+.TH user_caps 5 2023-10-07 "ncurses 6.4" "File formats"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -42,7 +49,9 @@
 user_caps \-
 user-defined \fIterminfo\fR capability format
 .SH SYNOPSIS
-.B @TIC@ -x, @INFOCMP@ -x
+.B @INFOCMP@ \-x
+.PP
+.B @TIC@ \-x
 .SH DESCRIPTION
 .SS Background
 Before ncurses 5.0,
@@ -317,15 +326,15 @@ xterm mouse protocols:
 .IP
 .nf
   xterm+x11mouse|X11 xterm mouse protocol,
-          kmous=\\E[M, XM=\\E[?1000%?%p1%{1}%=%th%el%;,
-          xm=\\E[M
+          kmous=\eE[M, XM=\eE[?1000%?%p1%{1}%=%th%el%;,
+          xm=\eE[M
              %?%p4%t%p3%e%{3}%;%'\ '%+%c
              %p2%'!'%+%c
              %p1%'!'%+%c,
 
   xterm+sm+1006|xterm SGR-mouse,
-          kmous=\\E[<, XM=\\E[?1006;1000%?%p1%{1}%=%th%el%;,
-          xm=\\E[<%i%p3%d;
+          kmous=\eE[<, XM=\eE[?1006;1000%?%p1%{1}%=%th%el%;,
+          xm=\eE[<%i%p3%d;
              %p1%d;
              %p2%d;
              %?%p4%tM%em%;,

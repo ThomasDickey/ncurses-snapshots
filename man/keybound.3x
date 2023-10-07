@@ -29,15 +29,17 @@
 .\"
 .\" Author: Thomas E. Dickey 1999
 .\"
-.\" $Id: keybound.3x,v 1.29 2023/09/30 21:26:43 tom Exp $
-.TH keybound 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: keybound.3x,v 1.30 2023/10/07 22:24:44 tom Exp $
+.TH keybound 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%keybound\fP \-
 get definition of \fIcurses\fR keycode
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
+.nf
+\fB#include <curses.h>
 .PP
-\fBchar * keybound(int \fIkeycode\fB, int \fIcount);\fR
+\fBchar * keybound(int \fIkeycode\fP, int \fIcount\fP);
+.fi
 .SH DESCRIPTION
 This is an extension to the \fIcurses\fP library.
 It permits an application to determine the string which is defined

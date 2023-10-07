@@ -27,18 +27,27 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.31 2023/10/01 22:36:35 tom Exp $
-.TH curs_variables 3X 2023-10-01 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_variables.3x,v 1.32 2023/10/07 21:19:07 tom Exp $
+.TH curs_variables 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .ie \n(.g .ds : \:
 .el       .ds : \" empty
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
 .ds n 5
 .SH NAME
 \fI\%bool\fP,
@@ -62,32 +71,32 @@
 \fIcurses\fR data types, constants, and global variables
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fI/* data types */\fP
-\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP bool;\fP
-\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP chtype;\fP
-\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP cchar_t;\fP
-\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP attr_t;\fP
-\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP WINDOW;\fP
+\fI/* data types */
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP bool;
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP chtype;
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP cchar_t;
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP attr_t;
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP WINDOW;
 .PP
-\fI/* constants */\fP
-\fBconst bool TRUE;\fP
-\fBconst bool FALSE;\fP
+\fI/* constants */
+\fBconst bool TRUE;
+\fBconst bool FALSE;
 .PP
-\fBconst \fI/*\fP .\|.\|. \fI*/\fP ERR;\fP
-\fBconst \fI/*\fP .\|.\|. \fI*/\fP OK;\fP
+\fBconst \fI/*\fP .\|.\|. \fI*/\fP ERR;
+\fBconst \fI/*\fP .\|.\|. \fI*/\fP OK;
 .PP
-\fI/* variables */\fP
-\fBint COLOR_PAIRS;\fP
-\fBint COLORS;\fP
-\fBint COLS;\fP
-\fBint ESCDELAY;\fP
-\fBint LINES;\fP
-\fBint TABSIZE;\fP
-\fBWINDOW * curscr;\fP
-\fBWINDOW * newscr;\fP
-\fBWINDOW * stdscr;\fP
+\fI/* variables */
+\fBint COLOR_PAIRS;
+\fBint COLORS;
+\fBint COLS;
+\fBint ESCDELAY;
+\fBint LINES;
+\fBint TABSIZE;
+\fBWINDOW * curscr;
+\fBWINDOW * newscr;
+\fBWINDOW * stdscr;
 .fi
 .SH DESCRIPTION
 This page summarizes data types,

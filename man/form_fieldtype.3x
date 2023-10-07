@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2006,2010 Free Software Foundation, Inc.                  *
@@ -28,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_fieldtype.3x,v 1.41 2023/09/30 21:38:11 tom Exp $
-.TH form_fieldtype 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_fieldtype.3x,v 1.42 2023/10/07 21:19:07 tom Exp $
+.TH form_fieldtype 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -38,27 +37,27 @@
 \fBform_fieldtype\fP \-
 define validation-field types
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBFIELDTYPE *new_fieldtype(\fP
+.nf
+\fB#include <form.h>
+.PP
+\fBFIELDTYPE *new_fieldtype(
     \fBbool (* const \fIfield_check\fB)(FIELD *, const void *),\fR
     \fBbool (* const \fIchar_check\fB)(int, const void *));\fR
-.br
 \fBint free_fieldtype(FIELDTYPE *\fIfieldtype\fB);\fR
-.sp
+.PP
 \fBint set_fieldtype_arg(\fP
     \fBFIELDTYPE *\fIfieldtype\fB,\fR
     \fBvoid *(* const \fImake_arg\fB)(va_list *),\fR
     \fBvoid *(* const \fIcopy_arg\fB)(const void *),\fR
     \fBvoid  (* const \fIfree_arg\fB)(void *));\fR
-.br
 \fBint set_fieldtype_choice(\fP
     \fBFIELDTYPE *\fIfieldtype\fB,\fR
     \fBbool (* const \fInext_choice\fB)(FIELD *, const void *),\fR
     \fBbool (* const \fIprev_choice\fB)(FIELD *, const void *));\fR
-.sp
+.PP
 \fBFIELDTYPE *link_fieldtype(FIELDTYPE *\fItype1\fB,\fR
                           \fBFIELDTYPE *\fItype2\fB);\fR
+.fi
 .SH DESCRIPTION
 .SS new_fieldtype
 The function \fBnew_fieldtype\fP creates a new field type usable for data

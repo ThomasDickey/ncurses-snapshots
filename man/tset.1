@@ -27,12 +27,21 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.71 2023/09/30 21:38:11 tom Exp $
-.TH @TSET@ 1 2023-09-30 "ncurses 6.4" "User commands"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: tset.1,v 1.72 2023/10/07 21:19:07 tom Exp $
+.TH @TSET@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.ds ^  \(ha
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.ds       ^  ^
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -200,7 +209,7 @@ unless \fBsetupterm\fP is not able to detect the window size.
 The arguments for the \fB\-e\fP, \fB\-i\fP, and \fB\-k\fP
 options may either be entered as actual characters
 or by using the \*(``hat\*(''
-notation, i.e., control-h may be specified as \*(``^H\*('' or \*(``^h\*(''.
+notation, i.e., control-h may be specified as \*(``\*^H\*('' or \*(``\*^h\*(''.
 .PP
 If neither \fB\-c\fP or \fB\-w\fP is given, both options are assumed.
 .
@@ -219,7 +228,7 @@ Note, the \fBcsh\fP commands set and unset the shell variable
 The following line in the \fB.login\fP
 or \fB.profile\fP files will initialize the environment correctly:
 .sp
-    eval \`@TSET@ \-s options ... \`
+    eval \(ga@TSET@ \-s options ... \(ga
 .
 .SH TERMINAL TYPE MAPPING
 When the terminal is not hardwired into the system (or the current

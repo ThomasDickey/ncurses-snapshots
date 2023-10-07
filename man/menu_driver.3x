@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_driver.3x,v 1.40 2023/09/30 21:38:11 tom Exp $
-.TH menu_driver 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: menu_driver.3x,v 1.41 2023/10/07 21:19:07 tom Exp $
+.TH menu_driver 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -37,9 +37,11 @@
 \fBmenu_driver\fP \-
 command-processing loop of the menu system
 .SH SYNOPSIS
-\fB#include <menu.h>\fP
-.sp
-\fBint menu_driver(MENU *\fImenu\fB, int \fIc\fB);\fR
+.nf
+\fB#include <menu.h>
+.PP
+\fBint menu_driver(MENU *\fImenu\fP, int \fIc\fP);
+.fi
 .SH DESCRIPTION
 Once a menu has been posted (displayed), you should funnel input events to it
 through \fBmenu_driver\fP.  This routine has three major input cases:

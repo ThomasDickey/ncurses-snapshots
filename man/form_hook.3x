@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
@@ -28,29 +27,27 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_hook.3x,v 1.28 2023/09/30 21:38:11 tom Exp $
-.TH form_hook 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_hook.3x,v 1.29 2023/10/07 21:19:07 tom Exp $
+.TH form_hook 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_hook\fP \-
 set hooks for automatic invocation by applications
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_field_init(FORM *\fIform\fB, Form_Hook \fIfunc\fB);\fR
-.br
-\fBForm_Hook field_init(const FORM *\fIform\fB);\fR
-.sp
-\fBint set_field_term(FORM *\fIform\fB, Form_Hook \fIfunc\fB);\fR
-.br
-\fBForm_Hook field_term(const FORM *\fIform\fB);\fR
-.sp
-\fBint set_form_init(FORM *\fIform\fB, Form_Hook \fIfunc\fB);\fR
-.br
-\fBForm_Hook form_init(const FORM *\fIform\fB);\fR
-.sp
-\fBint set_form_term(FORM *\fIform\fB, Form_Hook \fIfunc\fB);\fR
-.br
-\fBForm_Hook form_term(const FORM *\fIform\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_field_init(FORM *\fIform\fP, Form_Hook \fIfunc\fP);
+\fBForm_Hook field_init(const FORM *\fIform\fP);
+.PP
+\fBint set_field_term(FORM *\fIform\fP, Form_Hook \fIfunc\fP);
+\fBForm_Hook field_term(const FORM *\fIform\fP);
+.PP
+\fBint set_form_init(FORM *\fIform\fP, Form_Hook \fIfunc\fP);
+\fBForm_Hook form_init(const FORM *\fIform\fP);
+.PP
+\fBint set_form_term(FORM *\fIform\fP, Form_Hook \fIfunc\fP);
+\fBForm_Hook form_term(const FORM *\fIform\fP);
+.fi
 .SH DESCRIPTION
 These functions make it possible to set hook functions to be called at various
 points in the automatic processing of input event codes by \fBform_driver\fP.

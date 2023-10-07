@@ -27,18 +27,20 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term_variables.3x,v 1.30 2023/09/30 23:13:32 tom Exp $
-.TH term_variables 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ds n 5
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
+.\" $Id: term_variables.3x,v 1.31 2023/10/07 21:19:07 tom Exp $
+.TH term_variables 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
 .\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
+.ds n 5
 .SH NAME
 \fB\%SP\fP,
 \fB\%acs_map\fP,
@@ -56,36 +58,28 @@
 \fIterminfo\fR global variables
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
-.br
-\fB#include <term.h>\fP
+\fB#include <curses.h>
+\fB#include <term.h>
 .PP
-\fBchtype acs_map[];\fP
-.sp
-\fBSCREEN * SP;\fP
-.sp
-\fBTERMINAL * cur_term;\fP
-.sp
-\fBchar ttytype[];\fP
-.sp
-\fBNCURSES_CONST char * const boolcodes[];\fP
-.br
-\fBNCURSES_CONST char * const boolfnames[];\fP
-.br
-\fBNCURSES_CONST char * const boolnames[];\fP
-.sp
-\fBNCURSES_CONST char * const numcodes[];\fP
-.br
-\fBNCURSES_CONST char * const numfnames[];\fP
-.br
-\fBNCURSES_CONST char * const numnames[];\fP
-.sp
-\fBNCURSES_CONST char * const strcodes[];\fP
-.br
-\fBNCURSES_CONST char * const strfnames[];\fP
-.br
-\fBNCURSES_CONST char * const strnames[];\fP
-.br
+\fBchtype acs_map[];
+.PP
+\fBSCREEN * SP;
+.PP
+\fBTERMINAL * cur_term;
+.PP
+\fBchar ttytype[];
+.PP
+\fBNCURSES_CONST char * const boolcodes[];
+\fBNCURSES_CONST char * const boolfnames[];
+\fBNCURSES_CONST char * const boolnames[];
+.PP
+\fBNCURSES_CONST char * const numcodes[];
+\fBNCURSES_CONST char * const numfnames[];
+\fBNCURSES_CONST char * const numnames[];
+.PP
+\fBNCURSES_CONST char * const strcodes[];
+\fBNCURSES_CONST char * const strfnames[];
+\fBNCURSES_CONST char * const strnames[];
 .fi
 .SH DESCRIPTION
 This page summarizes variables provided by the \fBcurses\fP library's
@@ -152,11 +146,9 @@ terminfo capability \fIlong name\fP.
 These are in terms of the symbol \fBCUR\fP,
 which is defined
 .PP
-.nf
-.ft \*(CW
-#define CUR ((TERMTYPE *)(cur_term))->
-.fi
-.ft R
+.EX
+#define CUR ((TERMTYPE *)(cur_term))\->
+.EE
 .PP
 These symbols provide a faster method of accessing terminfo capabilities
 than using \fBtigetstr\fP(3X), etc.

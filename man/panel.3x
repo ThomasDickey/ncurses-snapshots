@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.55 2023/09/30 21:38:11 tom Exp $
-.TH panel 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: panel.3x,v 1.56 2023/10/07 21:19:07 tom Exp $
+.TH panel 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -41,46 +48,34 @@
 panel \-
 panel stack extension for curses
 .SH SYNOPSIS
-\fB#include <panel.h>\fP
-.P
-\fBcc [flags] sourcefiles \-lpanel \-lncurses\fP
-.P
-\fBPANEL *new_panel(WINDOW *\fIwin\fB);\fR
-.sp
-\fBint bottom_panel(PANEL *\fIpan\fB);\fR
-.br
-\fBint top_panel(PANEL *\fIpan\fB);\fR
-.br
-\fBint show_panel(PANEL *\fIpan\fB);\fR
-.br
-\fBvoid update_panels(void);\fP
-.br
-\fBint hide_panel(PANEL *\fIpan\fB);\fR
-.sp
-\fBWINDOW *panel_window(const PANEL *\fIpan\fB);\fR
-.br
-\fBint replace_panel(PANEL *\fIpan\fB, WINDOW *\fIwindow\fB);\fR
-.br
-\fBint move_panel(PANEL *\fIpan\fB, int \fIstarty\fB, int \fIstartx\fB);\fR
-.br
-\fBint panel_hidden(const PANEL *\fIpan\fB);\fR
-.sp
-\fBPANEL *panel_above(const PANEL *\fIpan\fB);\fR
-.br
-\fBPANEL *panel_below(const PANEL *\fIpan\fB);\fR
-.sp
-\fBint set_panel_userptr(PANEL *\fIpan\fB, const void *\fIptr\fB);\fR
-.br
-\fBconst void *panel_userptr(const PANEL *\fIpan\fB);\fR
-.sp
-\fBint del_panel(PANEL *\fIpan\fB);\fR
-.sp
-\fR/* ncurses-extensions */\fP
-.br
-\fBPANEL *ground_panel(SCREEN *\fIsp\fB);\fR
-.br
-\fBPANEL *ceiling_panel(SCREEN *\fIsp\fB);\fR
-.br
+.nf
+\fB#include <panel.h>
+.PP
+\fBPANEL *new_panel(WINDOW *\fIwin\fP);
+.PP
+\fBint bottom_panel(PANEL *\fIpan\fP);
+\fBint top_panel(PANEL *\fIpan\fP);
+\fBint show_panel(PANEL *\fIpan\fP);
+\fBvoid update_panels(void);
+\fBint hide_panel(PANEL *\fIpan\fP);
+.PP
+\fBWINDOW *panel_window(const PANEL *\fIpan\fP);
+\fBint replace_panel(PANEL *\fIpan\fP, WINDOW *\fIwindow\fP);
+\fBint move_panel(PANEL *\fIpan\fP, int \fIstarty\fP, int \fIstartx\fP);
+\fBint panel_hidden(const PANEL *\fIpan\fP);
+.PP
+\fBPANEL *panel_above(const PANEL *\fIpan\fP);
+\fBPANEL *panel_below(const PANEL *\fIpan\fP);
+.PP
+\fBint set_panel_userptr(PANEL *\fIpan\fP, const void *\fIptr\fP);
+\fBconst void *panel_userptr(const PANEL *\fIpan\fP);
+.PP
+\fBint del_panel(PANEL *\fIpan\fP);
+.PP
+\fI/* ncurses extensions */\fP
+\fBPANEL *ground_panel(SCREEN *\fIsp\fP);
+\fBPANEL *ceiling_panel(SCREEN *\fIsp\fP);
+.fi
 .SH DESCRIPTION
 Panels are \fBcurses\fP(3X) windows with the added feature of
 depth.

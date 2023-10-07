@@ -27,41 +27,32 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.51 2023/09/17 08:29:38 tom Exp $
-.TH terminfo 5 2023-09-17 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
-.ds n 5
-.ds d @TERMINFO@
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: terminfo.head,v 1.52 2023/10/07 21:19:07 tom Exp $
+.TH terminfo 5 2023-10-07 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.ie \n(.g .ds ' \(aq
+.el       .ds ' '
 .ie \n(.g .ds ^ \(ha
 .el       .ds ^ ^
 .ie \n(.g .ds ~ \(ti
 .el       .ds ~ ~
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
-.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.
+.ds n 5
+.ds d @TERMINFO@
 .SH NAME
 \fB\%terminfo\fP \-
 terminal capability database
@@ -94,7 +85,7 @@ consist of a sequence of fields:
 .bP
 Each field ends with a comma \*(``,\*(''
 (embedded commas may be
-escaped with a backslash or written as \*(``\\054\*('').
+escaped with a backslash or written as \*(``\e054\*('').
 .bP
 White space between fields is ignored.
 .bP

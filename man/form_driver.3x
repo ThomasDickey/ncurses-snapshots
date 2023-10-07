@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_driver.3x,v 1.50 2023/09/30 21:38:11 tom Exp $
-.TH form_driver 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_driver.3x,v 1.51 2023/10/07 21:19:07 tom Exp $
+.TH form_driver 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -39,11 +39,12 @@
 \fBform_driver_w\fP \-
 command-processing loop of the form system
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint form_driver(FORM *\fIform\fB, int \fIc\fB);\fR
-.br
-\fBint form_driver_w(FORM *\fIform\fB, int \fIc\fB, wchar_t \fIwch\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint form_driver(FORM *\fIform\fP, int \fIc\fP);
+\fBint form_driver_w(FORM *\fIform\fP, int \fIc\fP, wchar_t \fIwch\fP);
+.fi
 .SH DESCRIPTION
 .SS form_driver
 Once a form has been posted (displayed), you should funnel input events to it

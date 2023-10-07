@@ -27,23 +27,27 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.40 2023/10/01 22:12:38 tom Exp $
-.TH @CLEAR@ 1 2023-10-01 "ncurses 6.4" "User commands"
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
+.\" $Id: clear.1,v 1.41 2023/10/07 21:19:07 tom Exp $
+.TH @CLEAR@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.ds '  \(aq
 .\}
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ie \n(.g .ds '  \(aq
-.el       .ds ' '
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.ie t .ds '  \(aq
+.el   .ds '  '
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
 .ds n 5
 .SH NAME
 \fB\%@CLEAR@\fP \-
@@ -127,21 +131,22 @@ The \fBE3\fP extension came later.
 In June 1999, \fIxterm\fP provided an extension to the standard control
 sequence for clearing the screen.
 Rather than clearing just the visible part of the screen using
-.IP
 .RS 8
+.PP
 .EX
 printf \*'\e033[2J\*'
 .EE
 .RE
 .IP
 one could clear the scrollback buffer using
-.IP
 .RS 8
+.PP
 .EX
 printf \*'\e033[\fB3\fPJ\*'
 .EE
 .RE
 .IP
+instead.
 \*(``XTerm Control Sequences\fP\*('' documents this feature as
 originating with \fIxterm\fP.
 .bP

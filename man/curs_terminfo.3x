@@ -28,16 +28,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.111 2023/09/30 21:38:11 tom Exp $
-.TH curs_terminfo 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_terminfo.3x,v 1.112 2023/10/07 21:19:07 tom Exp $
+.TH curs_terminfo 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
 .ds n 5
 .SH NAME
 \fB\%del_curterm\fP,
@@ -61,49 +69,49 @@
 \fIcurses\fR interfaces to \fIterminfo\fR database
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
-\fB#include <term.h>\fP
+\fB#include <curses.h>
+\fB#include <term.h>
 .PP
-\fBTERMINAL *cur_term;\fP
+\fBTERMINAL *cur_term;
 .PP
-\fBconst char * const boolnames[];\fP
-\fBconst char * const boolcodes[];\fP
-\fBconst char * const boolfnames[];\fP
-\fBconst char * const numnames[];\fP
-\fBconst char * const numcodes[];\fP
-\fBconst char * const numfnames[];\fP
-\fBconst char * const strnames[];\fP
-\fBconst char * const strcodes[];\fP
-\fBconst char * const strfnames[];\fP
+\fBconst char * const boolnames[];
+\fBconst char * const boolcodes[];
+\fBconst char * const boolfnames[];
+\fBconst char * const numnames[];
+\fBconst char * const numcodes[];
+\fBconst char * const numfnames[];
+\fBconst char * const strnames[];
+\fBconst char * const strcodes[];
+\fBconst char * const strfnames[];
 .PP
-\fBint setupterm(const char *\fIterm\fB, int \fIfiledes\fB, int *\fIerrret\fB);\fR
-\fBTERMINAL *set_curterm(TERMINAL *\fInterm\fB);\fR
-\fBint del_curterm(TERMINAL *\fIoterm\fB);\fR
-\fBint restartterm(const char *\fIterm\fB, int \fIfiledes\fB, int *\fIerrret\fB);\fR
+\fBint setupterm(const char *\fIterm\fP, int \fIfiledes\fP, int *\fIerrret\fP);
+\fBTERMINAL *set_curterm(TERMINAL *\fInterm\fP);
+\fBint del_curterm(TERMINAL *\fIoterm\fP);
+\fBint restartterm(const char *\fIterm\fP, int \fIfiledes\fP, int *\fIerrret\fP);
 .PP
-\fBchar *tparm(const char *\fIstr\fB, ...);\fR
-	\fIor\fP
-\fBchar *tparm(const char *\fIstr\fB, long \fIp1 ... \fBlong \fIp9\fB);\fR
+\fBchar *tparm(const char *\fIstr\fP, ...);
+	\fIor
+\fBchar *tparm(const char *\fIstr\fP, long \fIp1 ... \fPlong \fIp9\fP);
 .PP
-\fBint tputs(const char *\fIstr\fB, int \fIaffcnt\fB, int (*\fIputc\fB)(int));\fR
-\fBint putp(const char *\fIstr\fB);\fR
+\fBint tputs(const char *\fIstr\fP, int \fIaffcnt\fP, int (*\fIputc\fP)(int));
+\fBint putp(const char *\fIstr\fP);
 .PP
-\fBint vidputs(chtype \fIattrs\fB, int (*\fIputc\fB)(int));\fR
-\fBint vidattr(chtype \fIattrs\fB);\fR
-\fBint vid_puts(attr_t \fIattrs\fB, short \fIpair\fB, void *\fIopts\fB, int (*\fIputc\fB)(int));\fR
-\fBint vid_attr(attr_t \fIattrs\fB, short \fIpair\fB, void *\fIopts\fB);\fR
+\fBint vidputs(chtype \fIattrs\fP, int (*\fIputc\fP)(int));
+\fBint vidattr(chtype \fIattrs\fP);
+\fBint vid_puts(attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP, int (*\fIputc\fP)(int));
+\fBint vid_attr(attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP);
 .PP
-\fBint mvcur(int \fIoldrow\fB, int \fIoldcol\fB, int \fInewrow\fR, int \fInewcol\fB);\fR
+\fBint mvcur(int \fIoldrow\fP, int \fIoldcol\fP, int \fInewrow\fP, int \fInewcol\fP);
 .PP
-\fBint tigetflag(const char *\fIcapname\fB);\fR
-\fBint tigetnum(const char *\fIcapname\fB);\fR
-\fBchar *tigetstr(const char *\fIcapname\fB);\fR
+\fBint tigetflag(const char *\fIcapname\fP);
+\fBint tigetnum(const char *\fIcapname\fP);
+\fBchar *tigetstr(const char *\fIcapname\fP);
 .PP
-\fBchar *tiparm(const char *\fIstr\fB, ...);\fR
+\fBchar *tiparm(const char *\fIstr\fP, ...);
 .PP
-\fI/* extensions */\fP
-\fBchar *tiparm_s(int \fIexpected\fB, int \fImask\fB, const char *\fIstr\fB, ...);\fR
-\fBint tiscan_s(int *\fIexpected\fB, int *\fImask\fB, const char *\fIstr\fB);\fR
+\fI/* extensions */
+\fBchar *tiparm_s(int \fIexpected\fP, int \fImask\fP, const char *\fIstr\fP, ...);
+\fBint tiscan_s(int *\fIexpected\fP, int *\fImask\fP, const char *\fIstr\fP);
 .fi
 .SH DESCRIPTION
 These low-level routines must be called by programs that have to deal
@@ -283,7 +291,7 @@ Padding information is ignored by \fBtparm\fP;
 it is interpreted by \fBtputs\fP.
 .bP
 The capability string is null-terminated.
-Use \*(``\\200\*('' where an ASCII NUL is needed in the output.
+Use \*(``\e200\*('' where an ASCII NUL is needed in the output.
 .PP
 \fBtiparm\fP is a newer form of \fBtparm\fP which uses \fI<stdarg.h>\fP
 rather than a fixed-parameter list.

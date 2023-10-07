@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
@@ -28,22 +27,29 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_new_page.3x,v 1.29 2023/09/30 21:38:11 tom Exp $
-.TH form_new_page 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: form_new_page.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
+.TH form_new_page 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fBset_new_page\fP,
 \fBnew_page\fP \-
 form pagination functions
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_new_page(FIELD *\fIfield\fB, bool \fInew_page_flag\fB);\fR
-.br
-\fBbool new_page(const FIELD *\fIfield\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_new_page(FIELD *\fIfield\fP, bool \fInew_page_flag\fP);
+\fBbool new_page(const FIELD *\fIfield\fP);
+.fi
 .SH DESCRIPTION
 The function \fBset_new_page\fP sets or resets a flag marking the given field
 as the beginning of a new page on its form.

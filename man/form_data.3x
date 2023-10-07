@@ -28,18 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_data.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
-.TH form_data 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: form_data.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
+.TH form_data 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBdata_ahead\fP,
 \fBdata_behind\fP \-
 test for off-screen data in given forms
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBbool data_ahead(const FORM *\fIform\fB);\fR
-.br
-\fBbool data_behind(const FORM *\fIform\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBbool data_ahead(const FORM *\fIform\fP);
+\fBbool data_behind(const FORM *\fIform\fP);
+.fi
 .SH DESCRIPTION
 The function \fBdata_ahead\fP tests whether there is off-screen data
 ahead in the given form.

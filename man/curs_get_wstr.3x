@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.36 2023/09/30 21:38:11 tom Exp $
-.TH curs_get_wstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_get_wstr.3x,v 1.37 2023/10/07 21:19:07 tom Exp $
+.TH curs_get_wstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -49,23 +56,17 @@
 get a wide-character string from a \fIcurses\fR terminal keyboard
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
-.sp
-\fBint get_wstr(wint_t *\fIwstr\fB);\fR
-.br
-\fBint getn_wstr(wint_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint wget_wstr(WINDOW *\fIwin\fB, wint_t *\fIwstr\fB);\fR
-.br
-\fBint wgetn_wstr(WINDOW *\fIwin\fB, wint_t *\fIwstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvget_wstr(int \fIy\fB, int \fIx\fB, wint_t *\fIwstr\fB);\fR
-.br
-\fBint mvgetn_wstr(int \fIy\fB, int \fIx\fB, wint_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwget_wstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wint_t *\fIwstr\fB);\fR
-.br
-\fBint mvwgetn_wstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wint_t *\fIwstr\fB, int \fIn\fB);\fR
+\fB#include <curses.h>
+.PP
+\fBint get_wstr(wint_t *\fIwstr\fP);
+\fBint getn_wstr(wint_t *\fIwstr\fP, int \fIn\fP);
+\fBint wget_wstr(WINDOW *\fIwin\fP, wint_t *\fIwstr\fP);
+\fBint wgetn_wstr(WINDOW *\fIwin\fP, wint_t *\fIwstr\fP, int \fIn\fP);
+.PP
+\fBint mvget_wstr(int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP);
+\fBint mvgetn_wstr(int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP, int \fIn\fP);
+\fBint mvwget_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP);
+\fBint mvwgetn_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 The function

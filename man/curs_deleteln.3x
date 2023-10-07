@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_deleteln.3x,v 1.30 2023/09/30 21:38:11 tom Exp $
-.TH curs_deleteln 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_deleteln.3x,v 1.31 2023/10/07 21:19:07 tom Exp $
+.TH curs_deleteln 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%deleteln\fP,
 \fB\%wdeleteln\fP,
@@ -38,19 +38,18 @@
 \fB\%winsertln\fP \-
 delete or insert lines in a \fIcurses\fR window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint deleteln(void);\fP
-.br
-\fBint wdeleteln(WINDOW *\fIwin\fB);\fR
-.sp
-\fBint insdelln(int \fIn\fB);\fR
-.br
-\fBint winsdelln(WINDOW *\fIwin\fB, int \fIn\fB);\fR
-.sp
-\fBint insertln(void);\fP
-.br
-\fBint winsertln(WINDOW *\fIwin\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint deleteln(void);
+\fBint wdeleteln(WINDOW *\fIwin\fP);
+.PP
+\fBint insdelln(int \fIn\fP);
+\fBint winsdelln(WINDOW *\fIwin\fP, int \fIn\fP);
+.PP
+\fBint insertln(void);
+\fBint winsertln(WINDOW *\fIwin\fP);
+.fi
 .SH DESCRIPTION
 The \fBdeleteln\fP and \fBwdeleteln\fP routines delete the line under the
 cursor in the window; all lines below the current line are moved up one line.

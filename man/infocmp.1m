@@ -28,36 +28,25 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.95 2023/09/30 21:38:11 tom Exp $
-.TH @INFOCMP@ 1M 2023-09-30 "ncurses 6.4" "User commands"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ds n 5
+.\" $Id: infocmp.1m,v 1.96 2023/10/07 21:19:07 tom Exp $
+.TH @INFOCMP@ 1M 2023-10-07 "ncurses 6.4" "User commands"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
-.\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.
+.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 \fB@INFOCMP@\fP \-
@@ -461,9 +450,12 @@ hexadecimal and base64
 .IP
 For example, this prints the compiled terminfo value as a string
 which could be assigned to the \fBTERMINFO\fP environment variable:
-.NS
-@INFOCMP@ -0 -q -Q2
-.NE
+.PP
+.RS 9
+.EX
+@INFOCMP@ \-0 \-q \-Q2
+.EE
+.RE
 .TP 5
 \fB\-q\fP
 This makes the output a little shorter:

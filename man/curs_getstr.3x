@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.48 2023/09/30 21:38:11 tom Exp $
-.TH curs_getstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_getstr.3x,v 1.49 2023/10/07 21:19:07 tom Exp $
+.TH curs_getstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -48,23 +55,19 @@
 \fB\%mvwgetnstr\fP \-
 accept character strings from \fIcurses\fR terminal keyboard
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint getstr(char *\fIstr\fB);\fR
-.br
-\fBint getnstr(char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint wgetstr(WINDOW *\fIwin\fB, char *\fIstr\fB);\fR
-.br
-\fBint wgetnstr(WINDOW *\fIwin\fB, char *\fIstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvgetstr(int \fIy\fB, int \fIx\fB, char *\fIstr\fB);\fR
-.br
-\fBint mvwgetstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB);\fR
-.br
-\fBint mvgetnstr(int \fIy\fB, int \fIx\fB, char *\fIstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwgetnstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, char *\fIstr\fB, int \fIn\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint getstr(char *\fIstr\fP);
+\fBint getnstr(char *\fIstr\fP, int \fIn\fP);
+\fBint wgetstr(WINDOW *\fIwin\fP, char *\fIstr\fP);
+\fBint wgetnstr(WINDOW *\fIwin\fP, char *\fIstr\fP, int \fIn\fP);
+.PP
+\fBint mvgetstr(int \fIy\fP, int \fIx\fP, char *\fIstr\fP);
+\fBint mvwgetstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, char *\fIstr\fP);
+\fBint mvgetnstr(int \fIy\fP, int \fIx\fP, char *\fIstr\fP, int \fIn\fP);
+\fBint mvwgetnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, char *\fIstr\fP, int \fIn\fP);
+.fi
 .SH DESCRIPTION
 The function
 \fBwgetnstr\fP
@@ -272,7 +275,7 @@ That may have been done to make function- and cursor-keys work;
 it is not necessary with ncurses.
 .IP
 Since 1995, ncurses has provided signal handlers for INTR and QUIT
-(e.g., \fB^C\fP or \fB^\\\fP).
+(e.g., \fB^C\fP or \fB^\e\fP).
 With the \fBnoraw\fP and \fBcbreak\fP settings,
 those may catch a signal and stop the program,
 where other implementations allow one to enter those characters in the buffer.

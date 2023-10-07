@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termattrs.3x,v 1.30 2023/09/30 21:38:11 tom Exp $
-.TH curs_termattrs 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termattrs.3x,v 1.31 2023/10/07 21:19:07 tom Exp $
+.TH curs_termattrs 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%baudrate\fP,
 \fB\%erasechar\fP,
@@ -43,30 +43,21 @@
 \fB\%termname\fP \-
 \fIcurses\fR environment query routines
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
+.nf
+\fB#include <curses.h>
 .PP
-\fBint baudrate(void);\fP
-.br
-\fBchar erasechar(void);\fP
-.br
-\fBint erasewchar(wchar_t *\fIch\fB);\fR
-.br
-\fBbool has_ic(void);\fP
-.br
-\fBbool has_il(void);\fP
-.br
-\fBchar killchar(void);\fP
-.br
-\fBint killwchar(wchar_t *\fIch\fB);\fR
-.br
-\fBchar *longname(void);\fP
-.br
-\fBattr_t term_attrs(void);\fP
-.br
-\fBchtype termattrs(void);\fP
-.br
-\fBchar *termname(void);\fP
-.br
+\fBint baudrate(void);
+\fBchar erasechar(void);
+\fBint erasewchar(wchar_t *\fIch\fP);
+\fBbool has_ic(void);
+\fBbool has_il(void);
+\fBchar killchar(void);
+\fBint killwchar(wchar_t *\fIch\fP);
+\fBchar *longname(void);
+\fBattr_t term_attrs(void);
+\fBchtype termattrs(void);
+\fBchar *termname(void);
+.fi
 .SH DESCRIPTION
 .SS baudrate
 The \fBbaudrate\fP routine returns the output speed of the terminal.

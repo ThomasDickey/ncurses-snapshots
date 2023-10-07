@@ -29,34 +29,22 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.39 2023/09/30 21:38:11 tom Exp $
-.TH new_pair 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: new_pair.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
+.TH new_pair 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
-..
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
-.\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
 ..
 .SH NAME
 \fB\%alloc_pair\fP,
@@ -65,11 +53,11 @@
 dynamically allocate \fIcurses\fR color pairs
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint alloc_pair(int \fIfg\fB, int \fIbg\fB);\fR
-\fBint find_pair(int \fIfg\fB, int \fIbg\fB);\fR
-\fBint free_pair(int \fIpair\fB);\fR
+\fBint alloc_pair(int \fIfg\fP, int \fIbg\fP);
+\fBint find_pair(int \fIfg\fP, int \fIbg\fP);
+\fBint free_pair(int \fIpair\fP);
 .fi
 .SH DESCRIPTION
 These functions are an extension to the \fIcurses\fP library.
@@ -90,21 +78,27 @@ Color pairs are the \fIcurses\fP library's way of managing a color palette
 on a terminal.
 If the library does not keep track of the \fIcombinations\fP of
 colors which are displayed, it will be inefficient.
-.bP
+.IP \(bu 4
 For simple terminal emulators
 with only a few dozen color combinations,
 it is convenient to use the maximum number of combinations
 as the limit on color pairs:
-.NS
+.PP
+.RS 8
+.EX
 \fBCOLORS\fI * \fBCOLORS\fR
-.NE
-.bP
+.EE
+.RE
+.IP \(bu 4
 Terminals which support \fIdefault colors\fP distinct
 from \*(``ANSI colors\*(''
 add to the possible combinations, producing this total:
-.NS
+.PP
+.RS 8
+.EX
 \fI( \fBCOLORS\fI + 1 ) * ( \fBCOLORS\fI + 1 )\fR
-.NE
+.EE
+.RE
 .bP
 An application might use up to a few dozen color pairs to
 implement a predefined color scheme.

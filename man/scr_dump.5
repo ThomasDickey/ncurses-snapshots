@@ -27,31 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.36 2023/09/30 21:38:11 tom Exp $
-.TH scr_dump 5 2023-09-30 "ncurses 6.4" "File formats"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
+.\" $Id: scr_dump.5,v 1.37 2023/10/07 21:19:07 tom Exp $
+.TH scr_dump 5 2023-10-07 "ncurses 6.4" "File formats"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
 .\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -72,7 +60,7 @@ the whole screen, i.e., \fBstdscr\fP.
 .SS ncurses6
 A longstanding implementation of screen-dump was
 revised with ncurses6 to remedy problems with the earlier approach:
-.bP
+.IP \(bu 4
 A \*(``magic number\*('' is written to the beginning of the dump file,
 allowing applications (such as \fBfile\fP(1)) to recognize curses dump files.
 .IP
@@ -80,25 +68,36 @@ Because ncurses6 uses a new format,
 that requires a new magic number
 was unused by other applications.
 This 16-bit number was unused:
-.NS
-0x8888 (octal \*(``\\210\\210\*('')
-.NE
-.IP
+.RS 4
+.PP
+.RS 4
+.EX
+0x8888 (octal \*(``\e210\e210\*('')
+.EE
+.RE
+.PP
 but to be more certain, this 32-bit number was chosen:
-.NS
-0x88888888 (octal \*(``\\210\\210\\210\\210\*('')
-.NE
-.IP
+.PP
+.RS 4
+.EX
+0x88888888 (octal \*(``\e210\e210\e210\e210\*('')
+.EE
+.RE
+.PP
 This is the pattern submitted to the maintainers of the \fBfile\fP program:
-.NS
+.PP
+.RS 4
+.EX
 #
 # ncurses5 (and before) did not use a magic number,
 # making screen dumps "data".
 #
 # ncurses6 (2015) uses this format, ignoring byte-order
-0    string    \\210\\210\\210\\210ncurses    ncurses6 screen image
+0    string    \e210\e210\e210\e210ncurses    ncurses6 screen image
 #
-.NE
+.EE
+.RE
+.RE
 .bP
 The screen dumps are written in textual form,
 so that internal data sizes are not directly related to the dump-format, and
@@ -177,31 +176,40 @@ Unix System\ V curses identified the file format by writing a
 The \fBWINDOW\fP data and the lines of text follow, all in binary form.
 .PP
 The Solaris curses source has these definitions:
-.NS
+.PP
+.RS 4
+.EX
 /* terminfo magic number */
 #define MAGNUM  0432
 
 /* curses screen dump magic number */
 #define SVR2_DUMP_MAGIC_NUMBER  0433
 #define SVR3_DUMP_MAGIC_NUMBER  0434
-.NE
+.EE
+.RE
 .PP
 That is, the feature was likely introduced in SVr2 (1984),
 and improved in SVr3 (1987).
 The Solaris curses source has no magic number for SVr4 (1989).
 Other operating systems (AIX and HPUX) use a magic number which would
 correspond to this definition:
-.NS
+.PP
+.RS 4
+.EX
 /* curses screen dump magic number */
 #define SVR4_DUMP_MAGIC_NUMBER  0435
-.NE
+.EE
+.RE
 .PP
 That octal number in bytes is 001, 035.
 Because most Unix vendors use big-endian hardware,
 the magic number is written with the high-order byte first, e.g.,
-.NS
-\001\035
-.NE
+.PP
+.RS 4
+.EX
+\e001\e035
+.EE
+.RE
 .PP
 After the magic number, the \fBWINDOW\fP structure and line-data are
 written in binary format.
@@ -247,9 +255,12 @@ it writes the \fBWINDOW\fP structure in binary,
 but begins the file with its three-byte identifier \*(``PDC\*('',
 followed by a one-byte version,
 e.g.,
-.NS
-	\*(``PDC\\001\*(''
-.NE
+.PP
+.RS 4
+.EX
+	\*(``PDC\e001\*(''
+.EE
+.RE
 .SS NetBSD
 As of April 2017, NetBSD curses does
 not support \fBscr_dump\fP and \fBscr_restore\fP
@@ -271,7 +282,9 @@ finally, lines as done by other implementations.
 .SH EXAMPLE
 Given a simple program which writes text to the screen
 (and for the sake of example, limiting the screen-size to 10x20):
-.NS
+.PP
+.RS 4
+.EX
 #include <curses.h>
 
 int
@@ -296,33 +309,37 @@ main(void)
     endwin();
     return 0;
 }
-.NE
+.EE
+.RE
 .PP
 When run using ncurses6, the output looks like this:
-.NS
-\\210\\210\\210\\210ncurses 6.0.20170415
+.PP
+.RS 4
+.EX
+\e210\e210\e210\e210ncurses 6.0.20170415
 _cury=5
 _curx=11
 _maxy=9
 _maxx=19
 _flags=14
-_attrs=\\{REVERSE|C2}
+_attrs=\e{REVERSE|C2}
 flag=_idcok
 _delay=-1
 _regbottom=9
-_bkgrnd=\\{NORMAL|C1}\\s
+_bkgrnd=\e{NORMAL|C1}\es
 rows:
-1:\\{NORMAL|C1}\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-2:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-3:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-4:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-5:\\s\\s\\s\\s\\s\\{BOLD}Hello\\{NORMAL}\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-6:\\s\\s\\s\\s\\s\\{REVERSE|C2}World!\\{NORMAL|C1}\\s\\s\\s\\s\\s\\s\\s\\s\\s
-7:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-8:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-9:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-10:\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s
-.NE
+1:\e{NORMAL|C1}\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+2:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+3:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+4:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+5:\es\es\es\es\es\e{BOLD}Hello\e{NORMAL}\es\es\es\es\es\es\es\es\es\es
+6:\es\es\es\es\es\e{REVERSE|C2}World!\e{NORMAL|C1}\es\es\es\es\es\es\es\es\es
+7:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+8:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+9:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+10:\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es\es
+.EE
+.RE
 .PP
 The first four octal escapes are actually nonprinting characters,
 while the remainder of the file is printable text.
@@ -330,10 +347,10 @@ You may notice:
 .bP
 The actual color pair values are not written to the file.
 .bP
-All characters are shown in printable form; spaces are \*(``\\s\*('' to
+All characters are shown in printable form; spaces are \*(``\es\*('' to
 ensure they are not overlooked.
 .bP
-Attributes are written in escaped curly braces, e.g., \*(``\\{BOLD}\*('',
+Attributes are written in escaped curly braces, e.g., \*(``\e{BOLD}\*('',
 and may include a color-pair (C1 or C2 in this example).
 .bP
 The parameters in the header are written out only if they are nonzero.
@@ -341,7 +358,9 @@ When reading back, order does not matter.
 .ne 10
 .PP
 Running the same program with Solaris \fIxpg4\fP curses gives this dump:
-.NS
+.PP
+.RS 4
+.EX
 MAX=10,20
 BEG=0,0
 SCROLL=0,10
@@ -375,7 +394,8 @@ BG=0,0,
 9,0,0,1,
 9,19,0,0,
 CUR=11,5
-.NE
+.EE
+.RE
 .PP
 Solaris \fBgetwin\fP requires that all parameters are present, and
 in the same order.
@@ -385,8 +405,10 @@ The \fIxpg4\fP curses library does not know about the \fBbce\fP
 .PP
 On the other hand, the SVr4 curses library does know about the background color.
 However, its screen dumps are in binary.
-Here is the corresponding dump (using \*(``od -t x1\*(''):
-.NS
+Here is the corresponding dump (using \*(``od \-t x1\*(''):
+.PP
+.RS 4
+.EX
 0000000 1c 01 c3 d6 f3 58 05 00 0b 00 0a 00 14 00 00 00
 0000020 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00
 0000040 00 00 b8 1a 06 08 cc 1a 06 08 00 00 09 00 10 00
@@ -409,7 +431,8 @@ Here is the corresponding dump (using \*(``od -t x1\*(''):
 0001620 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 *
 0002371
-.NE
+.EE
+.RE
 .SH AUTHORS
 Thomas E. Dickey
 .br

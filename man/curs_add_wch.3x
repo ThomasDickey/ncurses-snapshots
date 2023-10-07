@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.45 2023/09/30 21:38:11 tom Exp $
-.TH curs_add_wch 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_add_wch.3x,v 1.46 2023/10/07 21:19:07 tom Exp $
+.TH curs_add_wch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -47,19 +54,17 @@
 \fB\%wecho_wchar\fP \-
 add a \fIcurses\fR complex character to a window and advance the cursor
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-.B "int add_wch( const cchar_t *\fIwch\fB );"
-.br
-.B "int wadd_wch( WINDOW *\fIwin\fP, const cchar_t *\fIwch\fB );"
-.br
-.B "int mvadd_wch( int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fB );"
-.br
-.B "int mvwadd_wch( WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fB );"
-.sp
-.B "int echo_wchar( const cchar_t *\fIwch\fB );"
-.br
-.B "int wecho_wchar( WINDOW *\fIwin\fP, const cchar_t *\fIwch\fB );"
+.nf
+\fB#include <curses.h>
+.PP
+\fBint add_wch(const cchar_t *\fIwch\fP);
+\fBint wadd_wch(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
+\fBint mvadd_wch(int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fP);
+\fBint mvwadd_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fP);
+.PP
+\fBint echo_wchar(const cchar_t *\fIwch\fP);
+\fBint wecho_wchar(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
+.fi
 .SH DESCRIPTION
 .SS add_wch
 The
@@ -133,7 +138,7 @@ WACS_BULLET	0x00b7 	o	~	bullet
 WACS_CKBOARD	0x2592 	:	a	checker board (stipple)
 WACS_DARROW	0x2193 	v	.	arrow pointing down
 WACS_DEGREE	0x00b0 	'	f	degree symbol
-WACS_DIAMOND	0x25c6 	+	`	diamond
+WACS_DIAMOND	0x25c6 	+	\(ga	diamond
 WACS_GEQUAL	0x2265 	>	>	greater-than-or-equal-to
 WACS_HLINE	0x2500 	\-	q	horizontal line
 WACS_LANTERN	0x2603 	#	i	lantern symbol

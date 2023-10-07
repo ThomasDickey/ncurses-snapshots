@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.22 2023/09/30 21:38:11 tom Exp $
-.TH curs_ins_wstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_ins_wstr.3x,v 1.23 2023/10/07 22:22:46 tom Exp $
+.TH curs_ins_wstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%ins_wstr\fP,
 \fB\%ins_nwstr\fP,
@@ -45,23 +51,17 @@
 insert a wide-character string in a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
-.sp
-\fBint ins_wstr(const wchar_t *\fIwstr);\fR
-.br
-\fBint ins_nwstr(const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint wins_wstr(WINDOW *\fIwin\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint wins_nwstr(WINDOW *\fIwin\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvins_wstr(int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvins_nwstr(int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwins_wstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvwins_nwstr(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const wchar_t *\fIwstr\fB, int \fIn\fB);\fR
+\fB#include <curses.h>
+.PP
+\fBint ins_wstr(const wchar_t *\fIwstr\fP);
+\fBint ins_nwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint wins_wstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
+\fBint wins_nwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+.PP
+\fBint mvins_wstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
+\fBint mvins_nwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint mvwins_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
+\fBint mvwins_nwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 These routines insert a \fBwchar_t\fP character string

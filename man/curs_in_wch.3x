@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wch.3x,v 1.21 2023/09/30 21:38:11 tom Exp $
-.TH curs_in_wch 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_in_wch.3x,v 1.22 2023/10/07 21:19:07 tom Exp $
+.TH curs_in_wch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%in_wch\fP,
 \fB\%mvin_wch\fP,
@@ -40,15 +46,15 @@
 \fB\%win_wch\fP \-
 get a \fIcurses\fR complex character from a window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint in_wch(cchar_t *\fIwcval\fB);\fR
-.br
-\fBint win_wch(WINDOW *\fIwin\fB, cchar_t *\fIwcval\fB);\fR
-.sp
-\fBint mvin_wch(int \fIy\fB, int \fIx\fB, cchar_t *\fIwcval\fB);\fR
-.br
-\fBint mvwin_wch(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, cchar_t *\fIwcval\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint in_wch(cchar_t *\fIwcval\fP);
+\fBint win_wch(WINDOW *\fIwin\fP, cchar_t *\fIwcval\fP);
+.PP
+\fBint mvin_wch(int \fIy\fP, int \fIx\fP, cchar_t *\fIwcval\fP);
+\fBint mvwin_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t *\fIwcval\fP);
+.fi
 .SH DESCRIPTION
 These functions extract the complex character and rendition from
 the current position in the named window into the \fBcchar_t\fP object

@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.85 2023/09/30 21:38:11 tom Exp $
-.TH curs_util 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_util.3x,v 1.86 2023/10/07 21:19:07 tom Exp $
+.TH curs_util 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -54,27 +61,27 @@
 miscellaneous \fIcurses\fR utility routines
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBconst char *unctrl(chtype \fIc\fB);\fR
-\fBwchar_t *wunctrl(cchar_t *\fIc\fB);\fR
+\fBconst char *unctrl(chtype \fIc\fP);
+\fBwchar_t *wunctrl(cchar_t *\fIc\fP);
 .PP
-\fBconst char *keyname(int \fIc\fB);\fR
-\fBconst char *key_name(wchar_t \fIw\fB);\fR
+\fBconst char *keyname(int \fIc\fP);
+\fBconst char *key_name(wchar_t \fIw\fP);
 .PP
-\fBvoid filter(void);\fP
+\fBvoid filter(void);
 .PP
-\fBvoid use_env(bool \fIf\fB);\fR
+\fBvoid use_env(bool \fIf\fP);
 .PP
-\fBint putwin(WINDOW *\fIwin\fB, FILE *\fIfilep\fB);\fR
-\fBWINDOW *getwin(FILE *\fIfilep\fB);\fR
+\fBint putwin(WINDOW *\fIwin\fP, FILE *\fIfilep\fP);
+\fBWINDOW *getwin(FILE *\fIfilep\fP);
 .PP
-\fBint delay_output(int \fIms\fB);\fR
-\fBint flushinp(void);\fP
+\fBint delay_output(int \fIms\fP);
+\fBint flushinp(void);
 .PP
-\fI/* extensions */\fP
-\fBvoid nofilter(void);\fP
-\fBvoid use_tioctl(bool \fIf\fB);\fR
+\fI/* extensions */
+\fBvoid nofilter(void);
+\fBvoid use_tioctl(bool \fIf\fP);
 .fi
 .SH DESCRIPTION
 .SS unctrl

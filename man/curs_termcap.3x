@@ -27,16 +27,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.68 2023/09/30 21:38:11 tom Exp $
-.TH curs_termcap 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_termcap.3x,v 1.69 2023/10/07 21:19:07 tom Exp $
+.TH curs_termcap 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
 .ds n 5
 .SH NAME
 \fB\%PC\fP,
@@ -51,29 +59,22 @@
 \fB\%tputs\fP \-
 \fIcurses\fR emulation of \fItermcap\fR
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.br
-\fB#include <term.h>\fP
-.sp
-\fBextern char PC;\fP
-.br
-\fBextern char * UP;\fP
-.br
-\fBextern char * BC;\fP
-.br
-\fBextern @NCURSES_OSPEED@ ospeed;\fP
-.sp
-\fBint tgetent(char *\fIbp\fB, const char *\fIname\fB);\fR
-.br
-\fBint tgetflag(const char *\fIid\fB);\fR
-.br
-\fBint tgetnum(const char *\fIid\fB);\fR
-.br
-\fBchar *tgetstr(const char *\fIid\fB, char **\fIarea\fB);\fR
-.br
-\fBchar *tgoto(const char *\fIcap\fB, int \fIcol\fB, int \fIrow\fB);\fR
-.br
-\fBint tputs(const char *\fIstr\fB, int \fIaffcnt\fB, int (*\fIputc\fB)(int));\fR
+.nf
+\fB#include <curses.h>
+\fB#include <term.h>
+.PP
+\fBextern char PC;
+\fBextern char * UP;
+\fBextern char * BC;
+\fBextern @NCURSES_OSPEED@ ospeed;
+.PP
+\fBint tgetent(char *\fIbp\fP, const char *\fIname\fP);
+\fBint tgetflag(const char *\fIid\fP);
+\fBint tgetnum(const char *\fIid\fP);
+\fBchar *tgetstr(const char *\fIid\fP, char **\fIarea\fP);
+\fBchar *tgoto(const char *\fIcap\fP, int \fIcol\fP, int \fIrow\fP);
+\fBint tputs(const char *\fIstr\fP, int \fIaffcnt\fP, int (*\fIputc\fP)(int));
+.fi
 .SH DESCRIPTION
 These routines are included as a conversion aid for programs that use
 the \fItermcap\fP library.

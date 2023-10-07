@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.46 2023/09/30 21:38:11 tom Exp $
-.TH curs_outopts 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.48 2023/10/07 22:54:10 tom Exp $
+.TH curs_outopts 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -44,23 +44,19 @@
 \fB\%scrollok\fP \-
 set \fIcurses\fR output options
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint clearok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
-\fBint idlok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
-\fBvoid idcok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
-\fBvoid immedok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
-\fBint leaveok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.br
-\fBint scrollok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-.sp
-\fBint setscrreg(int \fItop\fB, int \fIbot\fB);\fR
-.br
-\fBint wsetscrreg(WINDOW *\fIwin\fB, int \fItop\fB, int \fIbot\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint clearok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint idlok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBvoid idcok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBvoid immedok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint leaveok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint scrollok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+.PP
+\fBint setscrreg(int \fItop\fP, int \fIbot\fP);
+\fBint wsetscrreg(WINDOW *\fIwin\fP, int \fItop\fP, int \fIbot\fP);
+.fi
 .SH DESCRIPTION
 These routines set options that change the style of output within
 \fBcurses\fP.
@@ -97,12 +93,15 @@ Use of character insert/delete is enabled by default.
 Calling \fBidcok\fP with \fBTRUE\fP as second argument re-enables use
 of character insertion and deletion.
 .SS immedok
-If \fBimmedok\fP is called with \fBTRUE as argument\fP, any change
-in the window image, such as the ones caused by \fBwaddch, wclrtobot, wscrl\fP,
-etc., automatically cause a call to \fBwrefresh\fP.
-However, it may
-degrade performance considerably, due to repeated calls to \fBwrefresh\fP.
-It is disabled by default.
+If \fBimmedok\fP is called with \fBTRUE\fP as second argument,
+any change in the window image,
+such as the ones caused by \fBwaddch, wclrtobot, wscrl\fP,
+etc., automatically causes a call to \fBwrefresh\fP.
+However, it may degrade performance considerably,
+due to repeated calls to \fBwrefresh\fP.
+Calling \fBimmedok\fP with \fBFALSE\fP as second argument
+restores the default behavior,
+i.e., deferring screen updates until a refresh is needed.
 .SS leaveok
 Normally, the hardware cursor is left at the location of the window cursor
 being refreshed.

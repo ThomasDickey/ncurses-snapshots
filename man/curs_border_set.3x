@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border_set.3x,v 1.26 2023/09/30 21:38:11 tom Exp $
-.TH curs_border_set 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_border_set.3x,v 1.27 2023/10/07 21:19:07 tom Exp $
+.TH curs_border_set 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%border_set\fP,
 \fB\%wborder_set\fP,
@@ -47,14 +53,14 @@
 \fB\%mvwvline_set\fP \-
 draw borders and lines in a \fIcurses\fR window of wide characters
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint border_set(\fP
+.nf
+\fB#include <curses.h>
+.PP
+\fBint border_set(
    \fBconst cchar_t *\fIls\fR, \fBconst cchar_t *\fIrs\fR,
    \fBconst cchar_t *\fIts\fR, \fBconst cchar_t *\fIbs\fR,
    \fBconst cchar_t *\fItl\fR, \fBconst cchar_t *\fItr\fR,
-   \fBconst cchar_t *\fIbl\fR, \fBconst cchar_t *\fIbr\fR
-\fB);\fP
+   \fBconst cchar_t *\fIbl\fR, \fBconst cchar_t *\fIbr\fB);\fR
 .br
 \fBint wborder_set(\fP
    \fBWINDOW *win\fP,
@@ -62,43 +68,35 @@ draw borders and lines in a \fIcurses\fR window of wide characters
    \fBconst cchar_t *\fIts\fR, \fBconst cchar_t *\fIbs\fR,
    \fBconst cchar_t *\fItl\fR, \fBconst cchar_t *\fItr\fR,
    \fBconst cchar_t *\fIbl\fR, \fBconst cchar_t *\fIbr\fB);\fR
-.br
 \fBint box_set(\fP
    \fBWINDOW *win\fP,
    \fBconst cchar_t *\fIverch\fR,
    \fBconst cchar_t *\fIhorch\fB);\fR
-.br
 \fBint hline_set(\fP
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint whline_set(\fP
    \fBWINDOW *\fIwin\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint mvhline_set(\fP
    \fBint \fIy\fR, \fBint \fIx\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint mvwhline_set(\fP
    \fBWINDOW *\fIwin\fR,
    \fBint \fIy\fR, \fBint \fIx\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint vline_set(\fP
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint wvline_set(\fP
    \fBWINDOW *\fIwin\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint mvvline_set(\fP
    \fBint \fIy\fR, \fBint \fIx\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
-.br
 \fBint mvwvline_set(\fP
    \fBWINDOW *\fIwin\fR,
    \fBint \fIy\fR, \fBint \fIx\fR,
    \fBconst cchar_t *\fIwch\fR, \fBint \fIn\fB);\fR
+.fi
 .SH DESCRIPTION
 The
 \fBborder_set\fP

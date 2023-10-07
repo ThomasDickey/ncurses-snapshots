@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scanw.3x,v 1.40 2023/09/30 21:38:11 tom Exp $
-.TH curs_scanw 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_scanw.3x,v 1.41 2023/10/07 21:19:07 tom Exp $
+.TH curs_scanw 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -46,21 +53,19 @@
 \fB\%vw_scanw\fP \-
 read formatted input from a \fIcurses\fR window
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint scanw(const char *\fIfmt\fB, ...);\fR
-.br
-\fBint wscanw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, ...);\fR
-.br
-\fBint mvscanw(int \fIy\fB, int \fIx\fB, const char *\fIfmt\fB, ...);\fR
-.br
-\fBint mvwscanw(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, const char *\fIfmt\fB, ...);\fR
-.sp
-\fBint vw_scanw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, va_list \fIvarglist\fB);\fR
-.sp
-/* obsolete */
-.br
-\fBint vwscanw(WINDOW *\fIwin\fB, const char *\fIfmt\fB, va_list \fIvarglist\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint scanw(const char *\fIfmt\fP, ...);
+\fBint wscanw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, ...);
+\fBint mvscanw(int \fIy\fP, int \fIx\fP, const char *\fIfmt\fP, ...);
+\fBint mvwscanw(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIfmt\fP, ...);
+.PP
+\fBint vw_scanw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, va_list \fIvarglist\fP);
+.PP
+\fI/* obsolete */\fP
+\fBint vwscanw(WINDOW *\fIwin\fP, const char *\fIfmt\fP, va_list \fIvarglist\fP);
+.fi
 .SH DESCRIPTION
 The \fBscanw\fP, \fBwscanw\fP and \fBmvscanw\fP routines are analogous to
 \fBscanf\fP [see \fBscanf\fP(3)].

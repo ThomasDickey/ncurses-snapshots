@@ -28,12 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form.3x,v 1.47 2023/09/30 21:38:11 tom Exp $
-.TH form 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: form.3x,v 1.48 2023/10/07 21:19:07 tom Exp $
+.TH form 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -42,7 +49,9 @@
 \fBform\fP \-
 curses extension for programming forms
 .SH SYNOPSIS
-\fB#include <form.h>\fP
+.nf
+\fB#include <form.h>
+.fi
 .SH DESCRIPTION
 The \fBform\fP library provides terminal-independent facilities for composing
 form screens on character-cell terminals.

@@ -1,4 +1,3 @@
-'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2015 Free Software Foundation, Inc.                  *
@@ -28,22 +27,29 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_just.3x,v 1.30 2023/09/30 21:38:11 tom Exp $
-.TH form_field_just 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: form_field_just.3x,v 1.31 2023/10/07 21:19:07 tom Exp $
+.TH form_field_just 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fBset_field_just\fP,
 \fBfield_just\fP \-
 retrieve field characteristics
 .SH SYNOPSIS
-\fB#include <form.h>\fP
-.sp
-\fBint set_field_just(FIELD *\fIfield\fB, int \fIjustification\fB);\fR
-.br
-\fBint field_just(const FIELD *\fIfield\fB);\fR
+.nf
+\fB#include <form.h>
+.PP
+\fBint set_field_just(FIELD *\fIfield\fP, int \fIjustification\fP);
+\fBint field_just(const FIELD *\fIfield\fP);
+.fi
 .SH DESCRIPTION
 The function \fBset_field_just\fP sets the justification attribute of
 a field; \fBfield_just\fP returns a field's justification attribute.

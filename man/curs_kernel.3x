@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.46 2023/09/30 21:38:11 tom Exp $
-.TH curs_kernel 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_kernel.3x,v 1.47 2023/10/07 21:19:07 tom Exp $
+.TH curs_kernel 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -51,29 +58,25 @@
 \fB\%napms\fP \-
 low-level \fIcurses\fR routines
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint def_prog_mode(void);\fP
-.br
-\fBint def_shell_mode(void);\fP
-.sp
-\fBint reset_prog_mode(void);\fP
-.br
-\fBint reset_shell_mode(void);\fP
-.sp
-\fBint resetty(void);\fP
-.br
-\fBint savetty(void);\fP
-.sp
-\fBvoid getsyx(int \fIy\fB, int \fIx\fB);\fR
-.br
-\fBvoid setsyx(int \fIy\fB, int \fIx\fB);\fR
-.sp
-\fBint ripoffline(int \fIline\fB, int (*\fIinit\fB)(WINDOW *, int));\fR
-.br
-\fBint curs_set(int \fIvisibility\fB);\fR
-.br
-\fBint napms(int \fIms\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint def_prog_mode(void);
+\fBint def_shell_mode(void);
+.PP
+\fBint reset_prog_mode(void);
+\fBint reset_shell_mode(void);
+.PP
+\fBint resetty(void);
+\fBint savetty(void);
+.PP
+\fBvoid getsyx(int \fIy\fP, int \fIx\fP);
+\fBvoid setsyx(int \fIy\fP, int \fIx\fP);
+.PP
+\fBint ripoffline(int \fIline\fP, int (*\fIinit\fP)(WINDOW *, int));
+\fBint curs_set(int \fIvisibility\fP);
+\fBint napms(int \fIms\fP);
+.fi
 .SH DESCRIPTION
 The following routines give low-level access
 to various \fBcurses\fP capabilities.

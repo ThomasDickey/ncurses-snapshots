@@ -29,15 +29,17 @@
 .\"
 .\" Author: Thomas E. Dickey 2003
 .\"
-.\" $Id: key_defined.3x,v 1.28 2023/09/30 21:26:43 tom Exp $
-.TH key_defined 3X 2023-09-30 "ncurses 6.4" "Library calls"
+.\" $Id: key_defined.3x,v 1.29 2023/10/07 21:19:07 tom Exp $
+.TH key_defined 3X 2023-10-07 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%key_defined\fP \-
 test whether a \fIcurses\fR keycode is defined
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
+.nf
+\fB#include <curses.h>
 .PP
-\fBint key_defined(const char *\fIdefinition\fB);\fR
+\fBint key_defined(const char *\fIdefinition\fP);
+.fi
 .SH DESCRIPTION
 This is an extension to the \fIcurses\fP library.
 It permits an application to determine if a string is currently bound

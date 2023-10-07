@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.37 2023/09/30 21:38:11 tom Exp $
-.TH curs_refresh 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_refresh.3x,v 1.38 2023/10/07 21:19:07 tom Exp $
+.TH curs_refresh 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -46,19 +53,17 @@
 \fB\%wrefresh\fP \-
 refresh \fIcurses\fR windows or lines thereupon
 .SH SYNOPSIS
-\fB#include <curses.h>\fP
-.sp
-\fBint refresh(void);\fP
-.br
-\fBint wrefresh(WINDOW *\fIwin\fB);\fR
-.br
-\fBint wnoutrefresh(WINDOW *\fIwin\fB);\fR
-.br
-\fBint doupdate(void);\fP
-.sp
-\fBint redrawwin(WINDOW *\fIwin\fB);\fR
-.br
-\fBint wredrawln(WINDOW *\fIwin\fB, int \fIbeg_line\fB, int \fInum_lines\fB);\fR
+.nf
+\fB#include <curses.h>
+.PP
+\fBint refresh(void);
+\fBint wrefresh(WINDOW *\fIwin\fP);
+\fBint wnoutrefresh(WINDOW *\fIwin\fP);
+\fBint doupdate(void);
+.PP
+\fBint redrawwin(WINDOW *\fIwin\fP);
+\fBint wredrawln(WINDOW *\fIwin\fP, int \fIbeg_line\fP, int \fInum_lines\fP);
+.fi
 .SH DESCRIPTION
 .SS refresh/wrefresh
 The \fBrefresh\fP and \fBwrefresh\fP routines (or \fBwnoutrefresh\fP and

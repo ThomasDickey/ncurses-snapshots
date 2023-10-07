@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.226 2023/10/01 23:53:23 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.228 2023/10/07 23:06:04 tom Exp $")
 
 /****************************************************************************
  *
@@ -335,13 +335,13 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 
 	s = memset(buf, '\0', sizeof(buf));
 	do {
-	    int ask = (int) (sizeof(buf) - 1 - (s - buf));
+	    size_t ask = (sizeof(buf) - 1 - (size_t) (s - buf));
 	    int got = (int) read(fd, s, ask);
 	    if (got == 0)
 		break;
 	    s += got;
 	    *s = '\0';
-	} while (strchr(buf, 'R') == NULL);
+	} while (strchr(buf, 'R') == NULL && (size_t) (s + 1 - buf) < sizeof(buf));
 	T(("response %s", _nc_visbuf(buf)));
 	if (sscanf(skip_csi(buf), "%d;%d%c", &y, &x, &ignore) != 2
 	    || (ignore != 'R' && ignore != ';')) {

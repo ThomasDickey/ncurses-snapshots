@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.62 2023/09/30 20:13:18 tom Exp $
-.TH curs_slk 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_slk.3x,v 1.63 2023/10/07 21:19:07 tom Exp $
+.TH curs_slk 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -59,33 +66,33 @@
 \fIcurses\fR soft label key routines
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBint slk_init(int \fIfmt\fB);\fR
+\fBint slk_init(int \fIfmt\fP);
 .PP
-\fBint slk_set(int \fIlabnum\fB, const char *\fIlabel\fB, int \fIfmt\fB);\fR
-\fBint slk_wset(int \fIlabnum\fB, const wchar_t *\fIlabel\fB, int \fIfmt\fB);\fR
+\fBint slk_set(int \fIlabnum\fP, const char *\fIlabel\fP, int \fIfmt\fP);
+\fBint slk_wset(int \fIlabnum\fP, const wchar_t *\fIlabel\fP, int \fIfmt\fP);
 .PP
-\fBchar *slk_label(int \fIlabnum\fB);\fR
+\fBchar *slk_label(int \fIlabnum\fP);
 .PP
-\fBint slk_refresh(void);\fP
-\fBint slk_noutrefresh(void);\fP
-\fBint slk_clear(void);\fP
-\fBint slk_restore(void);\fP
-\fBint slk_touch(void);\fP
+\fBint slk_refresh(void);
+\fBint slk_noutrefresh(void);
+\fBint slk_clear(void);
+\fBint slk_restore(void);
+\fBint slk_touch(void);
 .PP
-\fBint slk_attron(const chtype \fIattrs\fB);\fR
-\fBint slk_attroff(const chtype \fIattrs\fB);\fR
-\fBint slk_attrset(const chtype \fIattrs\fB);\fR
-\fBint slk_attr_on(attr_t \fIattrs\fB, void* \fIopts\fB);\fR
-\fBint slk_attr_off(const attr_t \fIattrs\fB, void * \fIopts\fB);\fR
-\fBint slk_attr_set(const attr_t \fIattrs\fB, short \fIpair\fB, void* \fIopts\fB);\fR
-\fI/* extension */\fP
-\fBattr_t slk_attr(void);\fP
+\fBint slk_attron(const chtype \fIattrs\fP);
+\fBint slk_attroff(const chtype \fIattrs\fP);
+\fBint slk_attrset(const chtype \fIattrs\fP);
+\fBint slk_attr_on(attr_t \fIattrs\fP, void* \fIopts\fP);
+\fBint slk_attr_off(const attr_t \fIattrs\fP, void * \fIopts\fP);
+\fBint slk_attr_set(const attr_t \fIattrs\fP, short \fIpair\fP, void* \fIopts\fP);
+\fI/* extension */
+\fBattr_t slk_attr(void);
 .PP
-\fBint slk_color(short \fIpair\fB);\fR
-\fI/* extension */\fP
-\fBint extended_slk_color(int \fIpair\fB);\fR
+\fBint slk_color(short \fIpair\fP);
+\fI/* extension */
+\fBint extended_slk_color(int \fIpair\fP);
 .fi
 .SH DESCRIPTION
 The \fBslk\fP* functions manipulate the set of soft function-key labels that exist on

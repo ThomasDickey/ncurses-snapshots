@@ -27,12 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_memleaks.3x,v 1.27 2023/09/30 23:13:30 tom Exp $
-.TH curs_memleaks 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_memleaks.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
+.TH curs_memleaks 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -43,16 +50,16 @@
 check for memory leaks in \fIcurses\fR
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
-\fBvoid exit_curses(int \fIcode\fB);\fR
+\fB#include <curses.h>
+\fBvoid exit_curses(int \fIcode\fP);
 .PP
-\fB#include <term.h>\fP
-\fBvoid exit_terminfo(int \fIcode\fB);\fR
+\fB#include <term.h>
+\fBvoid exit_terminfo(int \fIcode\fP);
 .PP
-\fI/* deprecated (intentionally not declared in curses.h or term.h) */\fP
-\fBvoid _nc_freeall(void);\fP
-\fBvoid _nc_free_and_exit(int \fIcode\fB);\fR
-\fBvoid _nc_free_tinfo(int \fIcode\fB);\fR
+\fI/* deprecated (intentionally not declared in curses.h or term.h) */
+\fBvoid _nc_freeall(void);
+\fBvoid _nc_free_and_exit(int \fIcode\fP);
+\fBvoid _nc_free_tinfo(int \fIcode\fP);
 .fi
 .SH DESCRIPTION
 These functions are used to simplify analysis of memory leaks in the ncurses

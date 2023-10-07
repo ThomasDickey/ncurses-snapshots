@@ -28,31 +28,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.78 2023/09/23 23:08:40 tom Exp $
-.TH curs_mouse 3X 2023-09-23 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
-.ie n .ds CW R
-.el   \{
-.ie \n(.g .ds CW CR
-.el       .ds CW CW
+.\" $Id: curs_mouse.3x,v 1.79 2023/10/07 21:19:07 tom Exp $
+.TH curs_mouse 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
 .\}
-.de NS
-.ie n  .sp
-.el    .sp .5
-.ie n  .in +4
-.el    .in +2
-.nf
-.ft \*(CW
-..
-.de NE
-.fi
-.ft R
-.ie n  .in -4
-.el    .in -2
-..
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -69,27 +57,27 @@
 get mouse events in \fIcurses\fR
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fP
+\fB#include <curses.h>
 .PP
-\fBtypedef unsigned long mmask_t;\fP
+\fBtypedef unsigned long mmask_t;
 .PP
-\fBtypedef struct {\fP
-\fB    short id;         \fI/* ID to distinguish multiple devices */\fR
-\fB    int x, y, z;      \fI/* event coordinates */\fR
-\fB    mmask_t bstate;   \fI/* button state bits */\fR
-\fB} MEVENT;\fP
+\fBtypedef struct {
+\fB    short id;         \fI/* ID to distinguish multiple devices */
+\fB    int x, y, z;      \fI/* event coordinates */
+\fB    mmask_t bstate;   \fI/* button state bits */
+\fB} MEVENT;
 .PP
-\fBbool has_mouse(void);\fP
+\fBbool has_mouse(void);
 .PP
-\fBint getmouse(MEVENT *\fIevent\fB);\fR
-\fBint ungetmouse(MEVENT *\fIevent\fB);\fR
+\fBint getmouse(MEVENT *\fIevent\fP);
+\fBint ungetmouse(MEVENT *\fIevent\fP);
 .PP
-\fBmmask_t mousemask(mmask_t \fInewmask\fB, mmask_t *\fIoldmask\fB);\fR
+\fBmmask_t mousemask(mmask_t \fInewmask\fP, mmask_t *\fIoldmask\fP);
 .PP
-\fBbool wenclose(const WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
+\fBbool wenclose(const WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
-\fBbool mouse_trafo(int* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);\fR
-\fBbool wmouse_trafo(const WINDOW* \fIwin\fB,\fR
+\fBbool mouse_trafo(int* \fIpY\fP, int* \fIpX\fP, bool \fIto_screen\fP);
+\fBbool wmouse_trafo(const WINDOW* \fIwin\fP,
                   \fBint* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);\fR
 .PP
 \fBint mouseinterval(int \fIerval\fB);\fR
@@ -282,7 +270,9 @@ It is mentioned in a few places, but with no supporting documentation:
 .bP
 the \*(``libcurses\*('' manual page lists functions for this feature
 which are prototyped in \fBcurses.h\fP:
-.NS
+.PP
+.RS 8
+.EX
 extern int mouse_set(long int);
 extern int mouse_on(long int);
 extern int mouse_off(long int);
@@ -290,16 +280,20 @@ extern int request_mouse_pos(void);
 extern int map_button(unsigned long);
 extern void wmouse_position(WINDOW *, int *, int *);
 extern unsigned long getmouse(void), getbmap(void);
-.NE
+.EE
+.RE
 .bP
 the \*(``terminfo\*('' manual page lists capabilities for the feature
-.NS
+.PP
+.RS 8
+.EX
 buttons           btns    BT       Number of buttons on the mouse
 get_mouse         getm    Gm       Curses should get button events
 key_mouse         kmous   Km       0631, Mouse event has occurred
 mouse_info        minfo   Mi       Mouse status information
 req_mouse_pos     reqmp   RQ       Request mouse position report
-.NE
+.EE
+.RE
 .bP
 the interface made assumptions (as does \fIncurses\fP) about the escape sequences
 sent to and received from the terminal.
@@ -368,13 +362,13 @@ The default, if \fBXM\fP is not found,
 corresponds to private mode 1000 of xterm:
 .PP
 .RS 3
-\\E[?1000%?%p1%{1}%=%th%el%;
+\eE[?1000%?%p1%{1}%=%th%el%;
 .RE
 .PP
 The mouse driver also recognizes a newer xterm private mode 1006, e.g.,
 .PP
 .RS 3
-\\E[?1006;1000%?%p1%{1}%=%th%el%;
+\eE[?1006;1000%?%p1%{1}%=%th%el%;
 .RE
 .PP
 The \fIz\fP member in the event structure is not presently used.
@@ -395,7 +389,7 @@ report sequence will appear in the string read.
 .PP
 Mouse events under xterm will not be detected correctly in a window with
 its keypad bit off, since they are interpreted as a variety of function key.
-Your terminfo description should have \fB\%kmous\fP set to \*(``\\E[M\*(''
+Your terminfo description should have \fB\%kmous\fP set to \*(``\eE[M\*(''
 (the beginning of the response from xterm for mouse clicks).
 Other values for \fB\%kmous\fP are permitted,
 but under the same assumption,

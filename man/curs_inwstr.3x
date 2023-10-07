@@ -27,12 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.27 2023/09/30 21:38:11 tom Exp $
-.TH curs_inwstr 3X 2023-09-30 "ncurses 6.4" "Library calls"
-.ie \n(.g .ds `` \(lq
-.el       .ds `` ``
-.ie \n(.g .ds '' \(rq
-.el       .ds '' ''
+.\" $Id: curs_inwstr.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
+.TH curs_inwstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
 .SH NAME
 \fB\%inwstr\fP,
 \fB\%innwstr\fP,
@@ -45,23 +51,17 @@
 get a wide-character string from a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h> \fP
-.sp
-\fBint inwstr(\fBwchar_t *\fIwstr\fB);\fR
-.br
-\fBint innwstr(\fBwchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint winwstr(\fBWINDOW *\fIwin\fB, wchar_t *\fIwstr\fB);\fR
-.br
-\fBint winnwstr(\fBWINDOW *\fIwin\fB, wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.sp
-\fBint mvinwstr(\fBint \fIy\fB, int \fIx\fB, wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvinnwstr(\fBint \fIy\fB, int \fIx\fB, wchar_t *\fIwstr\fB, int \fIn\fB);\fR
-.br
-\fBint mvwinwstr(\fBWINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wchar_t *\fIwstr\fB);\fR
-.br
-\fBint mvwinnwstr(\fBWINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB, wchar_t *\fIwstr\fB, int \fIn\fB);\fR
+\fB#include <curses.h>
+.PP
+\fBint inwstr(wchar_t *\fIwstr\fP);
+\fBint innwstr(wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint winwstr(WINDOW *\fIwin\fP, wchar_t *\fIwstr\fP);
+\fBint winnwstr(WINDOW *\fIwin\fP, wchar_t *\fIwstr\fP, int \fIn\fP);
+.PP
+\fBint mvinwstr(int \fIy\fP, int \fIx\fP, wchar_t *\fIwstr\fP);
+\fBint mvinnwstr(int \fIy\fP, int \fIx\fP, wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint mvwinwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t *\fIwstr\fP);
+\fBint mvwinnwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t *\fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 These routines return a string of \fBwchar_t\fP wide characters in \fIwstr\fP,
