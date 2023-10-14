@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.79 2023/10/07 21:19:07 tom Exp $
-.TH curs_mouse 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.80 2023/10/14 20:00:10 tom Exp $
+.TH curs_mouse 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -382,28 +382,31 @@ For example, in xterm,
 wheel/scrolling mice send position reports as a sequence of
 presses of buttons 4 or 5 without matching button-releases.
 .SH BUGS
-Mouse events under xterm will not in fact be ignored during cooked mode,
-if they have been enabled by \fB\%mousemask\fP.
-Instead, the xterm mouse
-report sequence will appear in the string read.
+Mouse events from \fI\%xterm\fP are \fInot\fP ignored in cooked mode if
+they have been enabled by \fB\%mousemask\fP.
+Instead,
+the \fI\%xterm\fP mouse report sequence appears in the string read.
 .PP
-Mouse events under xterm will not be detected correctly in a window with
-its keypad bit off, since they are interpreted as a variety of function key.
-Your terminfo description should have \fB\%kmous\fP set to \*(``\eE[M\*(''
-(the beginning of the response from xterm for mouse clicks).
-Other values for \fB\%kmous\fP are permitted,
-but under the same assumption,
-i.e., it is the beginning of the response.
+Mouse event reports from \fI\%xterm\fP are not detected correctly in
+a window with keypad application mode disabled,
+since they are interpreted as a variety of function key.
+Set the the terminal's \fI\%terminfo\fP capability \fB\%kmous\fP to
+\*(``\eE[M\*(''
+(the beginning of the response from \fI\%xterm\fP for mouse clicks).
+Other values of \fB\%kmous\fP are permitted under the same assumption,
+that is,
+the report begins with that sequence.
 .PP
-Because there are no standard terminal responses that would serve to identify
-terminals which support the xterm mouse protocol, \fIncurses\fP assumes that
-if \fB\%kmous\fP is defined in the terminal description,
-or if the terminal description's primary name or aliases
-contain the string \*(``xterm\*('',
+Because there are no standard response sequences that serve to identify
+terminals supporting the \fI\%xterm\fP mouse protocol,
+\fI\%ncurses\fP assumes that if \fB\%kmous\fP is defined in the terminal
+description,
+or if the terminal type's primary name or aliases contain the string
+\%\*(``xterm\*('',
 then the terminal may send mouse events.
 The \fB\%kmous\fP capability is checked first,
-allowing the use of newer xterm mouse protocols
-such as xterm's private mode 1006.
+allowing use of newer \fI\%xterm\fP mouse protocols such as its private
+mode 1006.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_inopts\fP(3X),

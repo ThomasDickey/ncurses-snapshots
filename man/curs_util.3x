@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.86 2023/10/07 21:19:07 tom Exp $
-.TH curs_util 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.88 2023/10/14 22:26:23 tom Exp $
+.TH curs_util 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -259,10 +259,21 @@ they will not be colored when the window is refreshed.
 .SS delay_output
 The \fBdelay_output\fP routine inserts an \fIms\fP millisecond pause
 in output.
-This routine should not be used extensively because
-padding characters are used rather than a CPU pause.
-If no padding character is specified,
-this uses \fBnapms\fP to perform the delay.
+Employ this function judiciously when terminal output uses padding,
+because \fIncurses\fP transmits null characters
+(consuming CPU and I/O resources)
+instead of sleeping and requesting resumption from the operating system.
+Padding is used unless:
+.bP
+the terminal description has \fBnpc\fP (\fBno_pad_char\fP) capability, or
+.bP
+the environment variable \fB\%NCURSES_NO_PADDING\fP is set.
+.PP
+If padding is not in use,
+\fIncurses\fP uses \fBnapms\fP to perform the delay.
+If the value of \fIms\fP exceeds 30,000
+(thirty seconds),
+it is capped at that value.
 .SS flushinp
 The \fBflushinp\fP routine throws away any typeahead that has been typed by the
 user and has not yet been read by the program.
@@ -289,6 +300,17 @@ The SVr4 documentation describes the action of \fBfilter\fP only in the vaguest
 terms.
 The description here is adapted from the XSI Curses standard (which
 erroneously fails to describe the disabling of \fBcuu\fP).
+.SS delay_output padding
+The limitation to 30 seconds
+and the use of \fBnapms\fP
+differ from other implementations.
+.bP
+SVr4 curses does not delay if no padding character is available.
+.bP
+NetBSD curses uses \fBnapms\fP when no padding character is available,
+but does not take timing into account when using the padding character.
+.PP
+Neither limits the delay.
 .SS keyname
 The \fBkeyname\fP function may return the names of user-defined
 string capabilities which are defined in the terminfo entry via the \fB\-x\fP

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
-.TH curs_window 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_window.3x,v 1.41 2023/10/14 19:27:01 tom Exp $
+.TH curs_window 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -127,6 +127,7 @@ with the given number of lines, \fInlines\fP, and columns, \fIncols\fP.
 The window is at position (\fIbegin\fR_\fIy\fP,
 \fIbegin\fR_\fIx\fP) on the screen.
 The subwindow shares memory with the window \fIorig\fP,
+its \fIancestor\fP,
 so that changes made to one window
 will affect both windows.
 When using this routine, it is necessary to call
@@ -220,18 +221,6 @@ If many small changes are made to the window, the \fBwsyncup\fP option could
 degrade performance.
 .PP
 Note that \fBsyncok\fP may be a macro.
-.SH BUGS
-The subwindow functions (\fBsubwin\fP, \fBderwin\fP, \fBmvderwin\fP,
-\fBwsyncup\fP, \fBwsyncdown\fP, \fBwcursyncup\fP, \fBsyncok\fP) are flaky,
-incompletely implemented, and not well tested.
-.PP
-The System V curses documentation is very unclear about what \fBwsyncup\fP
-and \fBwsyncdown\fP actually do.
-It seems to imply that they are only
-supposed to touch exactly those lines that are affected by ancestor changes.
-The language here, and the behavior of the \fBcurses\fP implementation,
-is patterned on the XPG4 curses standard.
-The weaker XPG4 spec may result in slower updates.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.
 .PP
@@ -252,6 +241,28 @@ to ensure that a window has no subwindows before allowing deletion.
 NetBSD copied this feature of ncurses in 2003.
 .br
 PDCurses follows the scheme used in Solaris X/Open curses.
+.SH BUGS
+The subwindow functions
+\fB\%subwin\fP,
+\fB\%derwin\fP,
+\fB\%mvderwin\fP,
+\fB\%wsyncup\fP,
+\fB\%wsyncdown\fP,
+\fB\%wcursyncup\fP,
+and
+\fB\%syncok\fP
+are flaky,
+incompletely implemented,
+and not well tested.
+.PP
+System\ V's \fIcurses\fP documentation is unclear about what
+\fB\%wsyncup\fP and \fB\%wsyncdown\fP actually do.
+It seems to imply that they are supposed to touch only those lines that
+are affected by changes to a window's ancestors.
+The language here,
+and behavior of \fI\%ncurses\fP,
+is patterned on the X/Open Curses standard;
+this approach may result in slower updates.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_initscr\fP(3X),

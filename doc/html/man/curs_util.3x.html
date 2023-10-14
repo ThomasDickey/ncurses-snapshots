@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.86 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_util.3x,v 1.88 2023/10/14 22:26:23 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2023-10-14 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2023-10-14 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -228,19 +228,28 @@
 
 </PRE><H3><a name="h3-delay_output">delay_output</a></H3><PRE>
        The <STRONG>delay_output</STRONG> routine inserts an <EM>ms</EM>  millisecond  pause  in  output.
-       This  routine should not be used extensively because padding characters
-       are used  rather  than  a  CPU  pause.   If  no  padding  character  is
-       specified, this uses <STRONG>napms</STRONG> to perform the delay.
+       Employ  this  function  judiciously  when terminal output uses padding,
+       because <EM>ncurses</EM>  transmits  null  characters  (consuming  CPU  and  I/O
+       resources)  instead  of  sleeping  and  requesting  resumption from the
+       operating system.  Padding is used unless:
+
+       <STRONG>o</STRONG>   the terminal description has <STRONG>npc</STRONG> (<STRONG>no_pad_char</STRONG>) capability, or
+
+       <STRONG>o</STRONG>   the environment variable <STRONG>NCURSES_NO_PADDING</STRONG> is set.
+
+       If padding is not in use, <EM>ncurses</EM> uses <STRONG>napms</STRONG> to perform the delay.   If
+       the  value  of <EM>ms</EM> exceeds 30,000 (thirty seconds), it is capped at that
+       value.
 
 
 </PRE><H3><a name="h3-flushinp">flushinp</a></H3><PRE>
-       The  <STRONG>flushinp</STRONG>  routine throws away any typeahead that has been typed by
+       The <STRONG>flushinp</STRONG> routine throws away any typeahead that has been  typed  by
        the user and has not yet been read by the program.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except for <STRONG>flushinp</STRONG>, routines that return an integer  return  <STRONG>ERR</STRONG>  upon
-       failure  and <STRONG>OK</STRONG> (SVr4 specifies only "an integer value other than <STRONG>ERR</STRONG>")
+       Except  for  <STRONG>flushinp</STRONG>,  routines that return an integer return <STRONG>ERR</STRONG> upon
+       failure and <STRONG>OK</STRONG> (SVr4 specifies only "an integer value other than  <STRONG>ERR</STRONG>")
        upon successful completion.
 
        Routines that return pointers return <STRONG>NULL</STRONG> on error.
@@ -251,16 +260,29 @@
                returns an error if the terminal was not initialized.
 
           <STRONG>putwin</STRONG>
-               returns an error if  the  associated  <STRONG>fwrite</STRONG>  calls  return  an
+               returns  an  error  if  the  associated  <STRONG>fwrite</STRONG> calls return an
                error.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
 
 </PRE><H3><a name="h3-filter">filter</a></H3><PRE>
-       The  SVr4  documentation  describes  the  action  of <STRONG>filter</STRONG> only in the
-       vaguest terms.  The description here is adapted  from  the  XSI  Curses
+       The SVr4 documentation describes the  action  of  <STRONG>filter</STRONG>  only  in  the
+       vaguest  terms.   The  description  here is adapted from the XSI Curses
        standard (which erroneously fails to describe the disabling of <STRONG>cuu</STRONG>).
+
+
+</PRE><H3><a name="h3-delay_output-padding">delay_output padding</a></H3><PRE>
+       The limitation to 30 seconds and the use of  <STRONG>napms</STRONG>  differ  from  other
+       implementations.
+
+       <STRONG>o</STRONG>   SVr4 curses does not delay if no padding character is available.
+
+       <STRONG>o</STRONG>   NetBSD  curses  uses  <STRONG>napms</STRONG> when no padding character is available,
+           but does not take  timing  into  account  when  using  the  padding
+           character.
+
+       Neither limits the delay.
 
 
 </PRE><H3><a name="h3-keyname">keyname</a></H3><PRE>
@@ -369,7 +391,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2023-10-14                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -391,6 +413,7 @@ ncurses 6.4                       2023-10-07                     <STRONG><A HREF
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-filter">filter</a></li>
+<li><a href="#h3-delay_output-padding">delay_output padding</a></li>
 <li><a href="#h3-keyname">keyname</a></li>
 <li><a href="#h3-nofilter_use_tioctl">nofilter/use_tioctl</a></li>
 <li><a href="#h3-putwin_getwin-file-format">putwin/getwin file-format</a></li>

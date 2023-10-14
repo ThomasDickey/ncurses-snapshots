@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_print.3x,v 1.32 2023/10/07 21:19:07 tom Exp $
-.TH curs_print 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_print.3x,v 1.33 2023/10/14 19:26:28 tom Exp $
+.TH curs_print 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%mcprint\fP \-
 write binary data to printer using \fIterminfo\fR capabilities
@@ -71,7 +71,9 @@ in SVr4 \fIcurses\fP, 4.4BSD \fIcurses\fP, or any other previous version of \fIc
 It is recommended that any code depending on \fIncurses\fP extensions
 be conditioned using \fB\%NCURSES_VERSION\fP.
 .SH BUGS
-Padding in the \fBmc5p\fP, \fBmc4\fP and \fBmc5\fP capabilities will not be
-interpreted.
+Padding in the
+\fBmc5p\fP,
+\fBmc4\fP, and
+\fBmc5\fP capabilities is not interpreted.
 .SH SEE ALSO
 \fB\%curses\fP(3X)

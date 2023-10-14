@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.202 2023/04/15 20:02:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.203 2023/09/06 22:55:27 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2126,7 +2126,7 @@ CPPFLAGS="-I. $CPPFLAGS"
 AC_SUBST(CPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_INSTALL_OPTS version: 2 updated: 2018/08/18 12:19:21
+dnl CF_INSTALL_OPTS version: 3 updated: 2023/06/03 15:17:30
 dnl ---------------
 dnl prompt for/fill-in useful install-program options
 AC_DEFUN([CF_INSTALL_OPTS],
@@ -2134,6 +2134,7 @@ AC_DEFUN([CF_INSTALL_OPTS],
 CF_INSTALL_OPT_S
 CF_INSTALL_OPT_P
 CF_INSTALL_OPT_O
+CF_INSTALL_OPT_STRIP_PROG
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_INSTALL_OPT_O version: 3 updated: 2020/12/31 20:19:42
@@ -2216,6 +2217,72 @@ then
 	INSTALL_OPT_S="-s"
 else
 	INSTALL_OPT_S=
+fi
+AC_SUBST(INSTALL_OPT_S)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_INSTALL_OPT_STRIP_PROG version: 1 updated: 2023/06/03 15:17:30
+dnl -------------------------
+dnl Provide an option for overriding the strip program used in install "-s"
+dnl
+dnl coreutils install provides a --strip-program option
+dnl FreeBSD uses STRIPBIN environment variable, while NetBSD and OpenBSD use
+dnl STRIP environment variable.  Other versions of install do not support this.
+AC_DEFUN([CF_INSTALL_OPT_STRIP_PROG],
+[
+AC_REQUIRE([CF_INSTALL_OPT_S])
+if test -n "$INSTALL_OPT_S"
+then
+	AC_MSG_CHECKING(if you want to specify strip-program)
+	AC_ARG_WITH(strip-program,
+		[  --with-strip-program=XX specify program to use when stripping in install],
+		[with_strip_program=$withval],
+		[with_strip_program=no])
+	AC_MSG_RESULT($with_strip_program)
+	if test "$with_strip_program" != no
+	then
+		AC_MSG_CHECKING(if strip-program is supported with this installer)
+		cf_install_program=`echo "$INSTALL" | sed -e 's%[[ ]]*[[ ]]-.%%'`
+		check_install_strip=no
+		if test -f "$cf_install_program"
+		then
+			check_install_version=`"$cf_install_program" --version 2>/dev/null | head -n 1 | grep coreutils`
+			if test -n "$check_install_version"
+			then
+				check_install_strip="option"
+			else
+				for check_strip_variable in STRIPBIN STRIP
+				do
+					if strings "$cf_install_program" | grep "^$check_strip_variable[$]" >/dev/null
+					then
+						check_install_strip="environ"
+						break
+					fi
+				done
+			fi
+		fi
+		AC_MSG_RESULT($check_install_strip)
+		case "$check_install_strip" in
+		(no)
+			AC_MSG_WARN($cf_install_program does not support strip program option)
+			with_strip_program=no
+			;;
+		(environ)
+			cat >install.tmp <<-CF_EOF
+			#! $SHELL
+			STRIPBIN="$with_strip_program" \\
+			STRIP="$with_strip_program" \\
+			$INSTALL "[$]@"
+			CF_EOF
+			INSTALL="`pwd`/install.tmp"
+			chmod +x "$INSTALL"
+			CF_VERBOSE(created $INSTALL)
+			;;
+		(option)
+			INSTALL_OPT_S="$INSTALL_OPT_S --strip-program=\"$with_strip_program\""
+			;;
+		esac
+	fi
 fi
 AC_SUBST(INSTALL_OPT_S)
 ])dnl
@@ -5045,7 +5112,7 @@ AC_ARG_WITH(system-type,
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 66 updated: 2023/04/03 04:19:37
+dnl CF_XOPEN_SOURCE version: 67 updated: 2023/09/06 18:55:27
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -5105,7 +5172,7 @@ case "$host_os" in
 	cf_xopen_source="-D_SGI_SOURCE"
 	cf_XOPEN_SOURCE=
 	;;
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*)
+(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
 	CF_GNU_SOURCE($cf_XOPEN_SOURCE)
 	;;
 (minix*)

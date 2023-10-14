@@ -27,24 +27,24 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.52 2023/10/07 21:19:07 tom Exp $
-.TH terminfo 5 2023-10-07 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.53 2023/10/14 19:53:57 tom Exp $
+.TH terminfo 5 2023-10-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
+.ds '  \(aq
+.ds ^  \(ha
+.ds ~  \(ti
 .\}
 .el \{\
 .ie t .ds `` ``
 .el   .ds `` ""
 .ie t .ds '' ''
 .el   .ds '' ""
+.ds       '  '
+.ds       ^  ^
+.ds       ~  ~
 .\}
-.ie \n(.g .ds ' \(aq
-.el       .ds ' '
-.ie \n(.g .ds ^ \(ha
-.el       .ds ^ ^
-.ie \n(.g .ds ~ \(ti
-.el       .ds ~ ~
 .
 .de bP
 .ie n  .IP \(bu 4

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_window.3x,v 1.40 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_window.3x,v 1.41 2023/10/14 19:27:01 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_window 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_window 3x 2023-10-14 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_window 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_window 3x 2023-10-14 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 
@@ -114,19 +114,20 @@
        Calling  <STRONG>subwin</STRONG>  creates and returns a pointer to a new window with the
        given number of lines, <EM>nlines</EM>, and columns, <EM>ncols</EM>.  The  window  is  at
        position (<EM>begin</EM>_<EM>y</EM>, <EM>begin</EM>_<EM>x</EM>) on the screen.  The subwindow shares memory
-       with the window <EM>orig</EM>, so that changes made to one  window  will  affect
-       both  windows.   When  using  this  routine,  it  is  necessary to call
-       <STRONG>touchwin</STRONG> or <STRONG>touchline</STRONG> on <EM>orig</EM> before calling <STRONG>wrefresh</STRONG> on the subwindow.
+       with the window <EM>orig</EM>, its <EM>ancestor</EM>, so that changes made to one  window
+       will  affect both windows.  When using this routine, it is necessary to
+       call <STRONG>touchwin</STRONG> or <STRONG>touchline</STRONG> on  <EM>orig</EM>  before  calling  <STRONG>wrefresh</STRONG>  on  the
+       subwindow.
 
 
 </PRE><H3><a name="h3-derwin">derwin</a></H3><PRE>
-       Calling <STRONG>derwin</STRONG> is the same as calling <STRONG>subwin,</STRONG> except that  <EM>begin</EM>_<EM>y</EM>  and
-       <EM>begin</EM>_<EM>x</EM>  are  relative to the origin of the window <EM>orig</EM> rather than the
-       screen.  There is no difference between the subwindows and the  derived
+       Calling  <STRONG>derwin</STRONG>  is the same as calling <STRONG>subwin,</STRONG> except that <EM>begin</EM>_<EM>y</EM> and
+       <EM>begin</EM>_<EM>x</EM> are relative to the origin of the window <EM>orig</EM> rather  than  the
+       screen.   There is no difference between the subwindows and the derived
        windows.
 
-       Calling  <STRONG>mvderwin</STRONG>  moves  a  derived  window  (or subwindow) inside its
-       parent window.  The screen-relative parameters of the  window  are  not
+       Calling <STRONG>mvderwin</STRONG> moves a  derived  window  (or  subwindow)  inside  its
+       parent  window.   The  screen-relative parameters of the window are not
        changed.  This routine is used to display different parts of the parent
        window at the same physical position on the screen.
 
@@ -136,27 +137,27 @@
 
 
 </PRE><H3><a name="h3-wsyncup">wsyncup</a></H3><PRE>
-       Calling <STRONG>wsyncup</STRONG> touches all locations in  ancestors  of  <EM>win</EM>  that  are
-       changed  in  <EM>win</EM>.   If  <STRONG>syncok</STRONG> is called with second argument <STRONG>TRUE</STRONG> then
-       <STRONG>wsyncup</STRONG> is called automatically whenever  there  is  a  change  in  the
+       Calling  <STRONG>wsyncup</STRONG>  touches  all  locations  in ancestors of <EM>win</EM> that are
+       changed in <EM>win</EM>.  If <STRONG>syncok</STRONG> is called with  second  argument  <STRONG>TRUE</STRONG>  then
+       <STRONG>wsyncup</STRONG>  is  called  automatically  whenever  there  is a change in the
        window.
 
 
 </PRE><H3><a name="h3-wsyncdown">wsyncdown</a></H3><PRE>
-       The  <STRONG>wsyncdown</STRONG>  routine  touches  each  location  in  <EM>win</EM> that has been
-       touched in any of its ancestor windows.   This  routine  is  called  by
+       The <STRONG>wsyncdown</STRONG> routine touches  each  location  in  <EM>win</EM>  that  has  been
+       touched  in  any  of  its  ancestor windows.  This routine is called by
        <STRONG>wrefresh</STRONG>, so it should almost never be necessary to call it manually.
 
 
 </PRE><H3><a name="h3-wcursyncup">wcursyncup</a></H3><PRE>
-       The  routine  <STRONG>wcursyncup</STRONG> updates the current cursor position of all the
-       ancestors of the window to reflect the current cursor position  of  the
+       The routine <STRONG>wcursyncup</STRONG> updates the current cursor position of  all  the
+       ancestors  of  the window to reflect the current cursor position of the
        window.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Routines that return an integer return the integer <STRONG>ERR</STRONG> upon failure and
-       <STRONG>OK</STRONG> (SVr4 only  specifies  "an  integer  value  other  than  <STRONG>ERR</STRONG>")  upon
+       <STRONG>OK</STRONG>  (SVr4  only  specifies  "an  integer  value  other  than <STRONG>ERR</STRONG>") upon
        successful completion.
 
        Routines that return pointers return <STRONG>NULL</STRONG> on error.
@@ -164,19 +165,19 @@
        X/Open defines no error conditions.  In this implementation
 
        <STRONG>delwin</STRONG>
-            returns  an  error if the window pointer is null, or if the window
+            returns an error if the window pointer is null, or if  the  window
             is the parent of another window.
 
        <STRONG>derwin</STRONG>
-            returns an error if the parent window pointer is null, or  if  any
-            of  its  ordinates  or dimensions is negative, or if the resulting
+            returns  an  error if the parent window pointer is null, or if any
+            of its ordinates or dimensions is negative, or  if  the  resulting
             window does not fit inside the parent window.
 
        <STRONG>dupwin</STRONG>
             returns an error if the window pointer is null.
 
-            This implementation also maintains a list of windows,  and  checks
-            that  the  pointer  passed  to  <STRONG>delwin</STRONG>  is  one  that  it created,
+            This  implementation  also maintains a list of windows, and checks
+            that the  pointer  passed  to  <STRONG>delwin</STRONG>  is  one  that  it  created,
             returning an error if it was not..
 
        <STRONG>mvderwin</STRONG>
@@ -184,46 +185,33 @@
             the window would be placed off-screen.
 
        <STRONG>mvwin</STRONG>
-            returns  an  error if the window pointer is null, or if the window
-            is really a pad, or if some part of the  window  would  be  placed
+            returns an error if the window pointer is null, or if  the  window
+            is  really  a  pad,  or if some part of the window would be placed
             off-screen.
 
        <STRONG>newwin</STRONG>
-            will  fail if either of its beginning ordinates is negative, or if
+            will fail if either of its beginning ordinates is negative, or  if
             either the number of lines or columns is negative.
 
        <STRONG>syncok</STRONG>
             returns an error if the window pointer is null.
 
        <STRONG>subwin</STRONG>
-            returns an error if the parent window pointer is null, or  if  any
-            of  its  ordinates  or dimensions is negative, or if the resulting
+            returns  an  error if the parent window pointer is null, or if any
+            of its ordinates or dimensions is negative, or  if  the  resulting
             window does not fit inside the parent window.
 
-       The functions which return a window pointer may also fail if  there  is
-       insufficient  memory  for  its data structures.  Any of these functions
+       The  functions  which return a window pointer may also fail if there is
+       insufficient memory for its data structures.  Any  of  these  functions
        will fail if the screen has not been initialized, i.e., with <STRONG>initscr</STRONG> or
        <STRONG>newterm</STRONG>.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       If  many small changes are made to the window, the <STRONG>wsyncup</STRONG> option could
+       If many small changes are made to the window, the <STRONG>wsyncup</STRONG> option  could
        degrade performance.
 
        Note that <STRONG>syncok</STRONG> may be a macro.
-
-
-</PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
-       The subwindow functions (<STRONG>subwin</STRONG>, <STRONG>derwin</STRONG>, <STRONG>mvderwin</STRONG>, <STRONG>wsyncup</STRONG>,  <STRONG>wsyncdown</STRONG>,
-       <STRONG>wcursyncup</STRONG>,  <STRONG>syncok</STRONG>)  are flaky, incompletely implemented, and not well
-       tested.
-
-       The System V curses documentation is very unclear  about  what  <STRONG>wsyncup</STRONG>
-       and  <STRONG>wsyncdown</STRONG>  actually  do.   It  seems  to  imply that they are only
-       supposed to touch exactly those lines that  are  affected  by  ancestor
-       changes.    The   language   here,  and  the  behavior  of  the  <STRONG>curses</STRONG>
-       implementation, is patterned on the XPG4 curses standard.   The  weaker
-       XPG4 spec may result in slower updates.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -248,13 +236,25 @@
            PDCurses follows the scheme used in Solaris X/Open curses.
 
 
+</PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
+       The subwindow functions <STRONG>subwin</STRONG>, <STRONG>derwin</STRONG>, <STRONG>mvderwin</STRONG>,  <STRONG>wsyncup</STRONG>,  <STRONG>wsyncdown</STRONG>,
+       <STRONG>wcursyncup</STRONG>,  and  <STRONG>syncok</STRONG>  are  flaky, incompletely implemented, and not
+       well tested.
+
+       System V's <EM>curses</EM> documentation  is  unclear  about  what  <STRONG>wsyncup</STRONG>  and
+       <STRONG>wsyncdown</STRONG>  actually  do.   It  seems to imply that they are supposed to
+       touch only those lines that are  affected  by  changes  to  a  window's
+       ancestors.  The language here, and behavior of <EM>ncurses</EM>, is patterned on
+       the X/Open Curses standard; this approach may result in slower updates.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>,
        <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-10-07                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+ncurses 6.4                       2023-10-14                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -275,8 +275,8 @@ ncurses 6.4                       2023-10-07                   <STRONG><A HREF="
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
-<li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.86 2023/10/07 21:19:07 tom Exp $
-.TH @TPUT@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.87 2023/10/14 19:29:06 tom Exp $
+.TH @TPUT@ 1 2023-10-14 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -369,16 +369,11 @@ and turns on bold (extra bright) mode.
 The list is terminated by an exclamation mark (\fB!\fP) on a line by itself.
 .SH FILES
 .TP
-\fB\*d\fP
-compiled terminal description database
+.I @DATADIR@/tabset
+tab stop initialization database
 .TP
-\fB@DATADIR@/tabset/*\fP
-tab settings for some terminals, in a format
-appropriate to be output to the terminal (escape
-sequences that set margins and tabs); for more
-information, see the
-.IR "Tabs and Initialization" ,
-section of \fBterminfo\fP(5)
+.I \*d
+compiled terminal description database
 .SH EXIT CODES
 If the \fB\-S\fP option is used,
 \fB@TPUT@\fP checks for errors from each line,

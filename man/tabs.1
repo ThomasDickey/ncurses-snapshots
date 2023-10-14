@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.47 2023/10/07 21:19:07 tom Exp $
-.TH @TABS@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: tabs.1,v 1.48 2023/10/14 19:29:06 tom Exp $
+.TH @TABS@ 1 2023-10-14 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -217,6 +217,10 @@ on moving the cursor before the current left-margin.
 .PP
 When setting or resetting the left-margin,
 @TABS@ may reset the right-margin.
+.SH FILES
+.TP
+.I @DATADIR@/tabset
+tab stop initialization database
 .SH PORTABILITY
 \fIIEEE Std 1003.1/The Open Group Base Specifications Issue 7\fP (POSIX.1-2008)
 describes a \fBtabs\fP utility.

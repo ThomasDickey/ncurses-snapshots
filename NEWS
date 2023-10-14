@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4012 2023/10/07 23:07:35 tom Exp $
+-- $Id: NEWS,v 1.4014 2023/10/14 19:43:34 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20231014
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ updated configure script macro CF_XOPEN_SOURCE, for uClibc-ng
+	+ update config.guess, config.sub
 
 20231007
 	+ improve loop-limit for get_position().

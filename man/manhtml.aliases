@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.26 2023/09/30 22:12:35 tom Exp $
+# $Id: manhtml.aliases,v 1.27 2023/10/14 22:36:19 tom Exp $
 #***************************************************************************
 # Copyright 2019-2022,2023 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -38,6 +38,7 @@ clearok(3X)		curs_outopts(3X)
 curs_set(3X)		curs_kernel(3X)
 def_prog_mode(3X)	curs_kernel(3X)
 def_shell_mode(3X)	curs_kernel(3X)
+delay_output(3X)	curs_util(3X)
 delscreen(3X)		curs_initscr(3X)
 doupdate(3X)		curs_refresh(3X)
 endwin(3X)		curs_initscr(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.72 2023/10/07 21:19:07 tom Exp $
-.TH @TSET@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: tset.1,v 1.73 2023/10/14 19:24:28 tom Exp $
+.TH @TSET@ 1 2023-10-14 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,6 +46,8 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
+.ds d @TERMINFO@
 .SH NAME
 \fB\%@TSET@\fP,
 \fB\%@RESET@\fP \-
@@ -295,7 +297,7 @@ any exclamation marks (\*(``!\*('').
 .SH HISTORY
 A \fBreset\fP command appeared in 1BSD (March 1978), written by Kurt Shoens.
 This program set the \fIerase\fP and \fIkill\fP characters
-to \fB^H\fP (backspace) and \fB@\fP respectively.
+to \fB\*^H\fP (backspace) and \fB@\fP respectively.
 Mark Horton improved that in 3BSD (October 1979), adding
 \fIintr\fP, \fIquit\fP, \fIstart\fP/\fIstop\fP and \fIeof\fP characters
 as well as changing the program to avoid modifying any user settings.
@@ -428,8 +430,8 @@ for the terminal description.
 /etc/ttys
 system port name to terminal type mapping database (BSD versions only).
 .TP
-@TERMINFO@
-terminal capability database
+.I \*d
+compiled terminal description database directory
 .SH SEE ALSO
 \fB\%csh\fP(1),
 \fB\%sh\fP(1),

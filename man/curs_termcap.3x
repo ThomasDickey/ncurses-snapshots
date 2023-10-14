@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.69 2023/10/07 21:19:07 tom Exp $
-.TH curs_termcap 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.70 2023/10/14 19:26:28 tom Exp $
+.TH curs_termcap 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -242,39 +242,6 @@ A call to \fBtgoto\fP using a capability with string parameters is an error.
 .bP
 A call to \fBtgoto\fP using a capability with more than two parameters
 is an error.
-.SH BUGS
-If you call \fBtgetstr\fP to fetch \fBca\fP or any other parameterized string,
-be aware that it will be returned in terminfo notation, not the older and
-not-quite-compatible termcap notation.
-This will not cause problems if all
-you do with it is call \fBtgoto\fP or \fBtparm\fP, which both expand
-terminfo-style strings as terminfo.
-(The \fBtgoto\fP function, if configured to support termcap, will check
-if the string is indeed terminfo-style by looking for "%p" parameters or
-"$<..>" delays, and invoke a termcap-style parser if the string does not
-appear to be terminfo).
-.PP
-Because terminfo conventions for representing padding in string capabilities
-differ from termcap's,
-users can be surprised:
-.bP
-\fBtputs("50")\fP in a terminfo system will put out a literal \*(``50\*(''
-rather than busy-waiting for 50 milliseconds.
-.bP
-However, if ncurses is configured to support termcap,
-it may also have been configured to support the BSD-style padding.
-.IP
-In that case, \fBtputs\fP inspects strings passed to it,
-looking for digits at the beginning of the string.
-.IP
-\fBtputs("50")\fP in a termcap system may wait for 50 milliseconds
-rather than put out a literal \*(``50\*(''
-.PP
-Note that termcap has nothing analogous to terminfo's \fBsgr\fP string.
-One consequence of this is that termcap applications assume \fBme\fP
-(terminfo \fBsgr0\fP) does not reset the alternate character set.
-This implementation checks for, and modifies the data shown to the
-termcap interface to accommodate termcap's limitation in this respect.
 .SH PORTABILITY
 .SS Standards
 These functions are provided for supporting legacy applications,
@@ -376,10 +343,53 @@ Later (in mid-1996) the \fBtparam\fP function was removed from ncurses.
 As a result, there are differences between any of the four implementations,
 which must be taken into account by programs which can work with all
 termcap library interfaces.
+.SH BUGS
+If you call \fB\%tgetstr\fP to fetch \fB\%ca\fP or any other
+parameterized string capability,
+be aware that it is returned in \fI\%terminfo\fP notation,
+not the older and not-quite-compatible \fI\%termcap\fP notation.
+This does not cause problems if all you do with it is call \fB\%tgoto\fP
+or \fB\%tparm\fP, which both expand
+\fI\%terminfo\fP-style strings as \fI\%terminfo\fP does.
+(The \fB\%tgoto\fP function,
+if configured to support \fI\%termcap,\fP
+checks if the string is indeed \fI\%terminfo\fP-style by looking for
+\*(``\fB%p\fP\*('' parameters or \*(``\fB<\fP.\|.\|.\fB>\fP\*('' delays,
+and invokes a \fI\%termcap\fP-style parser if the string appears not to
+use \fI\%terminfo\fP syntax.)
+.PP
+Because \fI\%terminfo\fP's syntax for padding in string capabilities
+differs from \fI\%termcap\fP's,
+users can be surprised.
+.IP \(bu 4
+\fB\%tputs("50")\fP in a \fI\%terminfo\fP system transmits \*(``50\*(''
+rather than busy-waiting for 50 milliseconds.
+.IP \(bu 4
+However,
+if \fI\%ncurses\fP is configured to support \fI\%termcap\fP,
+it may also have been configured to support BSD-style padding.
+.IP
+In that case,
+\fB\%tputs\fP inspects strings passed to it,
+looking for digits at the beginning of the string.
+.IP
+\fB\%tputs("50")\fP in a \fI\%termcap\fP system may busy-wait for 50
+milliseconds rather than transmitting \*(``50\*(''.
+.PP
+\fI\%termcap\fP has nothing analogous to \fI\%terminfo\fP's \fBsgr\fP
+string.
+One consequence is that \fI\%termcap\fP applications assume that
+\fBme\fP
+(equivalent to \fI\%terminfo\fP's \fBsgr0\fP capability)
+does not reset the alternate character set.
+\fI\%ncurses\fP checks for,
+and modifies the data shared with,
+the \fI\%termcap\fP interface to accommodate the latter's limitation in
+this respect.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%putc\fP(3),
 \fB\%term_variables\fP(3X),
 \fB\%terminfo\fP(\*n)
 .PP
-https://invisible-island.net/ncurses/tctest.html
+https://invisible\-island.net/ncurses/tctest.html

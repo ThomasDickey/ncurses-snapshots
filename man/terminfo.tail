@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.133 2023/10/07 20:53:54 tom Exp $
+.\" $Id: terminfo.tail,v 1.134 2023/10/14 19:18:14 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -2080,9 +2080,9 @@ of incompatible string table extensions.
 \fBOSF\fP \-\-
 Supports both the SVr4 set and the AIX extensions.
 .SH FILES
-.TP 25
-\*d/?/*
-files containing terminal descriptions
+.TP
+.I \*d
+compiled terminal description database directory
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on \fIpcurses\fP by Pavel Curtis.

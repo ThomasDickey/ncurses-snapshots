@@ -32,7 +32,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.52 2023/10/07 21:19:07 tom Exp @
+  * @Id: terminfo.head,v 1.53 2023/10/14 19:53:57 tom Exp @
   * Head of terminfo man page ends here
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
@@ -62,7 +62,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.133 2023/10/07 20:53:54 tom Exp @
+  * @Id: terminfo.tail,v 1.134 2023/10/14 19:18:14 tom Exp @
   *.in -2
   *.in +2
   *.in -2
@@ -73,12 +73,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2023-10-07 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2023-10-14 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2023-10-07 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2023-10-14 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -105,7 +105,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231007).
+       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231014).
 
 
 </PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
@@ -243,25 +243,29 @@
        terminfo  description  block  and available to terminfo-using code.  In
        each line of the table,
 
-       The <STRONG>variable</STRONG> is the name by  which  the  programmer  (at  the  terminfo
-       level) accesses the capability.
+       <STRONG>o</STRONG>   The <STRONG>variable</STRONG> is the name by which the programmer (at  the  terminfo
+           level) accesses the capability.
 
-       The  <STRONG>capname</STRONG> is the short name used in the text of the database, and is
-       used by a person updating the database.   Whenever  possible,  capnames
-       are chosen to be the same as or similar to the ANSI X3.64-1979 standard
-       (now superseded by  ECMA-48,  which  uses  identical  or  very  similar
-       names).    Semantics   are   also   intended  to  match  those  of  the
-       specification.
+       <STRONG>o</STRONG>   The  <STRONG>capname</STRONG>  (<EM>Cap-name</EM>)  is the short name used in the text of the
+           database, and is used by a person updating the database.
 
-       The termcap code is the old <STRONG>termcap</STRONG> capability name (some  capabilities
-       are new, and have names which termcap did not originate).
+           Whenever possible, capnames are chosen to be the same as or similar
+           to  the  ANSI X3.64-1979 standard (now superseded by ECMA-48, which
+           uses identical or very similar names).  Semantics are also intended
+           to match those of the specification.
 
-       Capability  names have no hard length limit, but an informal limit of 5
-       characters has been adopted to keep them short and to allow the tabs in
-       the source file <STRONG>Caps</STRONG> to line up nicely.
+           Capability  names  have no hard length limit, but an informal limit
+           of 5 characters has been adopted to keep them short  and  to  allow
+           the tabs in the source file <STRONG>Caps</STRONG> to line up nicely.
 
-       Finally,  the description field attempts to convey the semantics of the
-       capability.  You may find some codes in the description field:
+       <STRONG>o</STRONG>   The   <STRONG>termcap</STRONG>   (<EM>Tcap</EM>)  code  is  the  old  capability  name  (some
+           capabilities  are  new,  and  have  names  which  termcap  did  not
+           originate).
+
+       <STRONG>o</STRONG>   Finally,  the <STRONG>description</STRONG> field attempts to convey the semantics of
+           the capability.
+
+       You may find some codes in the description field:
 
        (P)    indicates that padding may be specified
 
@@ -283,8 +287,6 @@
 
                   <STRONG>Variable</STRONG>            <STRONG>Cap-</STRONG>      <STRONG>TCap</STRONG>       <STRONG>Description</STRONG>
                   <STRONG>Booleans</STRONG>            <STRONG>name</STRONG>      <STRONG>Code</STRONG>
-
-
           auto_left_margin            bw        bw     cub1 wraps from
                                                        column 0 to last
                                                        column
@@ -348,9 +350,9 @@
                                                        f2=ctrl C)
           no_pad_char                 npc       NP     pad character does
                                                        not exist
+
           non_dest_scroll_region      ndscr     ND     scrolling region is
                                                        non-destructive
-
           non_rev_rmcup               nrrmc     NR     smcup does not
                                                        reverse rmcup
           over_strike                 os        os     terminal can
@@ -414,7 +416,6 @@
        The  following  numeric  capabilities  are  present  in the SVr4.0 term
        structure, but are not yet documented in the man page.   They  came  in
        with SVr4's printer support.
-
 
 
                   <STRONG>Variable</STRONG>            <STRONG>Cap-</STRONG>      <STRONG>TCap</STRONG>       <STRONG>Description</STRONG>
@@ -481,7 +482,6 @@
                                                        lines per inch to #1
           change_res_horz             chr       ZC     Change horizontal
                                                        resolution to #1
-
 
           change_res_vert             cvr       ZD     Change vertical
                                                        resolution to #1
@@ -2677,7 +2677,8 @@
 
 
 </PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
-       /usr/share/terminfo/?/*  files containing terminal descriptions
+       <EM>/usr/share/terminfo</EM>
+              compiled terminal description database directory
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
@@ -2692,7 +2693,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2023-10-14                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

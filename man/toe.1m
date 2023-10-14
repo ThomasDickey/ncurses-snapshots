@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.52 2023/10/07 21:19:07 tom Exp $
-.TH @TOE@ 1M 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.53 2023/10/14 19:18:14 tom Exp $
+.TH @TOE@ 1M 2023-10-14 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -105,7 +105,7 @@ sorts the output by the entry names.
 lists terminal type dependencies in \fIfile\fP,
 a \fIterminfo\fP entry source or \fItermcap\fP database file.
 The report summarizes the \*(``\fBuse\fP\*('' (\fIterminfo\fP) and
-\*(``\fBtc\fP\*('' (\fItermcap\fP) relations:
+\fBtc\fP (\fItermcap\fP) relations:
 each line comprises the primary name of a terminal type employing
 \fBuse\fP/\fBtc\fP capabilities,
 a colon,
@@ -117,7 +117,7 @@ and a newline.
 lists terminal type reverse dependencies in \fIfile\fP,
 a \fIterminfo\fP entry source or \fItermcap\fP database file.
 The report summarizes the \*(``\fBuse\fP\*('' (\fIterminfo\fP) and
-\*(``\fBtc\fP\*('' (\fItermcap\fP) reverse relations:
+\fBtc\fP (\fItermcap\fP) reverse relations:
 each line comprises the primary name of a terminal type occurring in
 \fBuse\fP/\fBtc\fP capabilities,
 a colon,
@@ -201,7 +201,7 @@ l.
 .RE
 .SH FILES
 .TP
-\fI\*d\fP
+.I \*d
 compiled terminal description database
 .SH HISTORY
 \fB\%@TOE@\fP is not provided by other implementations.

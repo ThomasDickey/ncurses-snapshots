@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.47 2023/10/07 21:19:07 tom Exp $
-.TH curs_kernel 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.49 2023/10/14 22:03:52 tom Exp $
+.TH curs_kernel 3X 2023-10-14 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -167,6 +167,9 @@ the previous \fIcursor\fP state is returned;
 otherwise, \fBERR\fP is returned.
 .SS napms
 The \fBnapms\fP routine is used to sleep for \fIms\fP milliseconds.
+If the value of \fIms\fP exceeds 30,000
+(thirty seconds),
+it is capped at that value.
 .SH RETURN VALUE
 Except for \fBcurs_set\fP, these routines always return \fBOK\fP.
 .PP
@@ -209,6 +212,10 @@ The SVr4 documentation describes \fBsetsyx\fP and \fBgetsyx\fP
 as having return type int.
 This is misleading, as they are macros with no documented semantics
 for the return value.
+.PP
+If interrupted, ncurses restarts \fBnapms\fP.
+That, and the limitation to 30 seconds,
+are different from other implementations.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_initscr\fP(3X),

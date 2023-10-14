@@ -27,11 +27,12 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.59 2023/10/07 21:19:07 tom Exp $
-.TH term 5 2023-10-07 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.60 2023/10/14 19:18:14 tom Exp $
+.TH term 5 2023-10-14 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
+.ds '  \(aq
 .ds ^  \(ha
 .\}
 .el \{\
@@ -39,6 +40,7 @@
 .el   .ds `` ""
 .ie t .ds '' ''
 .el   .ds '' ""
+.ds       '  '
 .ds       ^  ^
 .\}
 .
@@ -361,8 +363,8 @@ lp-1f(\*(CW).
 0000  1a 01 10 00 02 00 03 00  82 00 31 00 61 64 6d 33  ........ ..1.adm3
 0010  61 7c 6c 73 69 20 61 64  6d 33 61 00 00 01 50 00  a|lsi ad m3a...P.
 0020  ff ff 18 00 ff ff 00 00  02 00 ff ff ff ff 04 00  ........ ........
-0030  ff ff ff ff ff ff ff ff  0a 00 25 00 27 00 ff ff  ........ ..%.'...
-0040  29 00 ff ff ff ff 2b 00  ff ff 2d 00 ff ff ff ff  ).....+. ..-.....
+0030  ff ff ff ff ff ff ff ff  0a 00 25 00 27 00 ff ff  ........ ..%.\*'...
+0040  29 00 ff ff ff ff 2b 00  ff ff 2d 00 ff ff ff ff  ).....+. ..\-.....
 0050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
 0060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
 0070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
@@ -396,7 +398,9 @@ Compiled entries are limited to 32768 bytes because offsets into the
 The legacy format could have supported 32768-byte entries,
 but was limited a virtual memory page's 4096 bytes.
 .SH FILES
-\*d/*/* compiled terminal capability database
+.TP
+.I \*d
+compiled terminal description database
 .SH AUTHORS
 Thomas E. Dickey
 .br

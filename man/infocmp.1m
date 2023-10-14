@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.96 2023/10/07 21:19:07 tom Exp $
-.TH @INFOCMP@ 1M 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.97 2023/10/14 19:26:28 tom Exp $
+.TH @INFOCMP@ 1M 2023-10-14 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -567,9 +567,9 @@ print information for user-defined capabilities (see \fBuser_caps(\*n)\fP.
 These are extensions to the terminfo repertoire which can be loaded
 using the \fB\-x\fP option of \fB@TIC@\fP.
 .SH FILES
-.TP 20
-\*d
-Compiled terminal description database.
+.TP
+.I \*d
+compiled terminal description database
 .SH HISTORY
 Although System V Release 2 provided a terminfo library,
 it had no documented tool for decompiling the terminal descriptions.
@@ -631,13 +631,14 @@ is System V Release 4's.
 Actual BSD curses versions will have a more restricted set.
 To see only the
 4.4BSD set, use \fB\-r\fP \fB\-RBSD\fP.
-.SH BUGS
-The \fB\-F\fP option of \fB@INFOCMP@\fP(1M) should be a \fB@TOE@\fP(1M) mode.
 .SH AUTHOR
 Eric S. Raymond <esr@snark.thyrsus.com>
 and
 .br
-Thomas E. Dickey <dickey@invisible-island.net>
+Thomas E. Dickey <dickey@invisible\-island.net>
+.SH BUGS
+The \fB\-F\fP option of \fB\%@INFOCMP@\fP(1M) should be a
+\fB\%@TOE@\fP(1M) mode.
 .SH SEE ALSO
 \fB\%@CAPTOINFO@\fP(1M),
 \fB\%@INFOTOCAP@\fP(1M),
@@ -647,4 +648,4 @@ Thomas E. Dickey <dickey@invisible-island.net>
 \fB\%terminfo\fP(\*n),
 \fB\%user_caps\fP(\*n)
 .PP
-https://invisible-island.net/ncurses/tctest.html
+https://invisible\-island.net/ncurses/tctest.html

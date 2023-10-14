@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.69 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_termcap.3x,v 1.70 2023/10/14 19:26:28 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2023-10-14 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2023-10-14 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -215,38 +215,6 @@
            an error.
 
 
-</PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
-       If you call <STRONG>tgetstr</STRONG> to fetch <STRONG>ca</STRONG> or any other parameterized  string,  be
-       aware  that it will be returned in terminfo notation, not the older and
-       not-quite-compatible termcap notation.  This will not cause problems if
-       all  you do with it is call <STRONG>tgoto</STRONG> or <STRONG>tparm</STRONG>, which both expand terminfo-
-       style strings as terminfo.   (The  <STRONG>tgoto</STRONG>  function,  if  configured  to
-       support  termcap,  will check if the string is indeed terminfo-style by
-       looking for "%p" parameters or "$&lt;..&gt;" delays, and  invoke  a  termcap-
-       style parser if the string does not appear to be terminfo).
-
-       Because   terminfo  conventions  for  representing  padding  in  string
-       capabilities differ from termcap's, users can be surprised:
-
-       <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG> in a terminfo system will put out a literal "50" rather
-           than busy-waiting for 50 milliseconds.
-
-       <STRONG>o</STRONG>   However,  if  ncurses is configured to support termcap, it may also
-           have been configured to support the BSD-style padding.
-
-           In that case, <STRONG>tputs</STRONG> inspects strings  passed  to  it,  looking  for
-           digits at the beginning of the string.
-
-           <STRONG>tputs("50")</STRONG> in a termcap system may wait for 50 milliseconds rather
-           than put out a literal "50"
-
-       Note that termcap has nothing analogous to terminfo's <STRONG>sgr</STRONG> string.   One
-       consequence  of  this  is that termcap applications assume <STRONG>me</STRONG> (terminfo
-       <STRONG>sgr0</STRONG>) does not reset the alternate character set.  This  implementation
-       checks  for,  and  modifies  the data shown to the termcap interface to
-       accommodate termcap's limitation in this respect.
-
-
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
 
 </PRE><H3><a name="h3-Standards">Standards</a></H3><PRE>
@@ -349,6 +317,39 @@
        termcap library interfaces.
 
 
+</PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
+       If you call <STRONG>tgetstr</STRONG> to fetch  <STRONG>ca</STRONG>  or  any  other  parameterized  string
+       capability,  be aware that it is returned in <EM>terminfo</EM> notation, not the
+       older and not-quite-compatible <EM>termcap</EM> notation.  This does  not  cause
+       problems  if  all  you  do  with  it is call <STRONG>tgoto</STRONG> or <STRONG>tparm</STRONG>, which both
+       expand <EM>terminfo</EM>-style strings as <EM>terminfo</EM> does.  (The  <STRONG>tgoto</STRONG>  function,
+       if  configured  to  support  <EM>termcap,</EM>  checks  if  the string is indeed
+       <EM>terminfo</EM>-style by looking for "<STRONG>%p</STRONG>" parameters or  "<STRONG>&lt;</STRONG>...<STRONG>&gt;</STRONG>"  delays,  and
+       invokes  a  <EM>termcap</EM>-style  parser  if  the  string  appears  not to use
+       <EM>terminfo</EM> syntax.)
+
+       Because <EM>terminfo</EM>'s syntax for padding in  string  capabilities  differs
+       from <EM>termcap</EM>'s, users can be surprised.
+
+       <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG>  in  a <EM>terminfo</EM> system transmits "50" rather than busy-
+           waiting for 50 milliseconds.
+
+       <STRONG>o</STRONG>   However, if <EM>ncurses</EM> is configured to support <EM>termcap</EM>, it  may  also
+           have been configured to support BSD-style padding.
+
+           In  that  case,  <STRONG>tputs</STRONG>  inspects  strings passed to it, looking for
+           digits at the beginning of the string.
+
+           <STRONG>tputs("50")</STRONG> in a <EM>termcap</EM> system may busy-wait for  50  milliseconds
+           rather than transmitting "50".
+
+       <EM>termcap</EM>   has   nothing   analogous  to  <EM>terminfo</EM>'s  <STRONG>sgr</STRONG>  string.   One
+       consequence is that <EM>termcap</EM> applications assume that <STRONG>me</STRONG> (equivalent  to
+       <EM>terminfo</EM>'s <STRONG>sgr0</STRONG> capability) does not reset the alternate character set.
+       <EM>ncurses</EM> checks for, and modifies the  data  shared  with,  the  <EM>termcap</EM>
+       interface to accommodate the latter's limitation in this respect.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG>putc(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -356,7 +357,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.4                       2023-10-14                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -372,7 +373,6 @@ ncurses 6.4                       2023-10-07                  <STRONG><A HREF="c
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
-<li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-Standards">Standards</a></li>
@@ -380,6 +380,7 @@ ncurses 6.4                       2023-10-07                  <STRONG><A HREF="c
 <li><a href="#h3-Other-Compatibility">Other Compatibility</a></li>
 </ul>
 </li>
+<li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>
