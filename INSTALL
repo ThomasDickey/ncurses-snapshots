@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.247 2023/07/22 17:25:24 tom Exp $
+-- $Id: INSTALL,v 1.248 2023/10/16 23:06:54 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -550,6 +550,10 @@ CONFIGURE OPTIONS:
     --enable-bsdpad
 	Recognize BSD-style prefix padding.  Some ancient BSD programs (such as
 	nethack) call tputs("50") to implement delays.
+
+    --enable-check-size
+	Compile-in feature to detect screensize for terminals which do not
+	advertise their screensize, e.g., serial terminals.
 
     --enable-colorfgbg
 	Compile with experimental $COLORFGBG code.  That environment variable

@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.765 2023/07/22 17:20:35 tom Exp $
+dnl $Id: configure.in,v 1.766 2023/10/16 23:04:12 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.765 $)
+AC_REVISION($Revision: 1.766 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1512,6 +1512,15 @@ AC_ARG_ENABLE(hashmap,
 	[with_hashmap=yes])
 AC_MSG_RESULT($with_hashmap)
 test "x$with_hashmap" = xyes && AC_DEFINE(USE_HASHMAP,1,[Define to 1 to compile with hashmap scrolling-optimization])
+
+###   use option --enable-colorfgbg to turn on use of $COLORFGBG environment
+AC_MSG_CHECKING(if you want code to check screensize)
+AC_ARG_ENABLE(check-size,
+	[  --enable-check-size     compile-in code to detect screensize],
+	[with_check_size=$enableval],
+	[with_check_size=no])
+AC_MSG_RESULT($with_check_size)
+test "x$with_check_size" = xyes && AC_DEFINE(USE_CHECK_SIZE,1,[Define to 1 to compile-in code to detect screensize])
 
 ###   use option --enable-colorfgbg to turn on use of $COLORFGBG environment
 AC_MSG_CHECKING(if you want colorfgbg code)

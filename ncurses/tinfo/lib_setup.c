@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.228 2023/10/07 23:06:04 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.229 2023/10/16 23:05:28 tom Exp $")
 
 /****************************************************************************
  *
@@ -293,6 +293,7 @@ _nc_default_screensize(TERMINAL *termp, int *linep, int *colp)
     }
 }
 
+#ifdef USE_CHECK_SIZE
 static const char *
 skip_csi(const char *value)
 {
@@ -406,9 +407,10 @@ _nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
 
     _nc_default_screensize(termp, linep, colp);
 }
-#else
-#define _nc_check_screensize(termp, linep, colp) _nc_default_screensize(termp, linep, colp)
+#else /* !USE_CHECK_SIZE */
+#define _nc_check_screensize(termp, linep, colp) /* nothing */
 #endif
+#endif /* !(defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)) */
 
 NCURSES_EXPORT(void)
 _nc_get_screensize(SCREEN *sp,
