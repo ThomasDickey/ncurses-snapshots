@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_legacy.3x,v 1.28 2023/10/07 21:19:07 tom Exp $
-.TH curs_legacy 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_legacy.3x,v 1.29 2023/10/21 10:28:36 tom Exp $
+.TH curs_legacy 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -63,9 +63,11 @@ get \fIcurses\fR cursor and window coordinates or attributes (legacy)
 \fBint getpary(const WINDOW *\fIwin\fP);
 .fi
 .SH DESCRIPTION
-These legacy functions are simpler to use than the X/Open \fIcurses\fP functions:
+These legacy functions are simpler to use
+than the X/Open \fIcurses\fP functions:
 .bP
-The \fB\%getattrs\fP function returns the same attribute data as \fB\%wattr_get\fP.
+The \fB\%getattrs\fP function returns the same attribute data
+as \fB\%wattr_get\fP.
 .IP
 However, \fB\%getattrs\fP returns an integer (actually a \fB\%chtype\fP),
 while \fB\%wattr_get\fP returns the current color pair in a separate parameter.
@@ -76,7 +78,8 @@ so \fB\%wattr_get\fP is the only way to obtain the color information.
 Because \fB\%getattrs\fP returns the attributes in a single parameter,
 it would not be possible for an application to distinguish that from
 \fBERR\fP (a \fI-1\fP).
-If the window parameter is null, \fB\%getattrs\fP returns \fB\%A_NORMAL\fP (zero).
+If the window parameter is null, \fB\%getattrs\fP
+returns \fB\%A_NORMAL\fP (zero).
 .bP
 The \fB\%getbegy\fP and \fB\%getbegx\fP functions return the same
 data as \fB\%getbegyx\fP.

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.63 2023/10/07 21:19:07 tom Exp $
-.TH curs_slk 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_slk.3x,v 1.64 2023/10/21 10:31:22 tom Exp $
+.TH curs_slk 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -95,8 +95,8 @@
 \fBint extended_slk_color(int \fIpair\fP);
 .fi
 .SH DESCRIPTION
-The \fBslk\fP* functions manipulate the set of soft function-key labels that exist on
-many terminals.
+The \fBslk\fP* functions manipulate the set
+of soft function-key labels that exist on many terminals.
 For those terminals that do not have soft labels,
 \fIcurses\fP takes over the bottom line of \fB\%stdscr\fP, reducing the size of
 \fB\%stdscr\fP and the variable \fBLINES\fP.
@@ -111,7 +111,8 @@ the bottom of the screen;
 it does not try to use any hardware support for this
 mode.
 .SS Initialization
-The \fB\%slk_init\fP routine must be called before \fB\%initscr\fP or \fB\%newterm\fP
+The \fB\%slk_init\fP routine must be called
+before \fB\%initscr\fP or \fB\%newterm\fP
 is called.
 If \fB\%initscr\fP eventually uses a line from \fB\%stdscr\fP to
 emulate the soft labels,
@@ -184,7 +185,8 @@ The \fB\%slk_color\fP routine corresponds to \fB\%color_set\fP.
 It has an effect only
 if soft labels are simulated on the bottom line of the screen.
 .PP
-Because \fB\%slk_color\fP accepts only \fBshort\fP (signed 16-bit integer) values,
+Because \fB\%slk_color\fP accepts
+only \fBshort\fP (signed 16-bit integer) values,
 this implementation provides
 \fB\%extended_slk_color\fP which accepts an integer value, e.g., 32-bits.
 .
@@ -256,7 +258,8 @@ X/Open \fIcurses\fP added these:
   \fBslk_color\fP
   \fBslk_wset\fP
 .SH EXTENSIONS
-X/Open \fIcurses\fP documents the \fIopts\fP argument as reserved for future use,
+X/Open \fIcurses\fP documents the \fIopts\fP argument
+as reserved for future use,
 saying that it must be null.
 This implementation
 uses that parameter in ABI 6 for the functions which have a color-pair
@@ -311,7 +314,8 @@ If \fIng\fP is neither 2 or 3,
 interpreting that as a comma-separated list of numbers,
 e.g., \*(``3,2,3\*('' for the 3-2-3 layout.
 .IP
-Finally, if there is no \fBfln\fP capability, \fB\%slk_start\fP returns \fBERR\fP.
+Finally, if there is no \fBfln\fP capability,
+\fB\%slk_start\fP returns \fBERR\fP.
 .bP
 If \fB\%slk_start\fP is given a non-null \fIgp\fP,
 it copies the \fIng\fP elements of the group of soft-keys, up to 16.

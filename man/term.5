@@ -1,3 +1,4 @@
+'\" t
 .\"***************************************************************************
 .\" Copyright 2018-2021,2023 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
@@ -27,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.60 2023/10/14 19:18:14 tom Exp $
-.TH term 5 2023-10-14 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.62 2023/10/21 15:33:10 tom Exp $
+.TH term 5 2023-10-21 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -42,6 +43,11 @@
 .el   .ds '' ""
 .ds       '  '
 .ds       ^  ^
+.\}
+.ie n .ds CW R
+.el   \{
+.ie \n(.g .ds CW CR
+.el       .ds CW CW
 .\}
 .
 .de bP

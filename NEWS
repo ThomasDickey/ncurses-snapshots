@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4016 2023/10/16 23:09:02 tom Exp $
+-- $Id: NEWS,v 1.4019 2023/10/21 23:13:51 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20231021
+	+ use oldxterm+sm+1006 in vte-2014 (report by Benno Schulenberg) -TD
+	+ add ansi+apparrows -TD
+	+ change defaults for configure opaque and widec options (prompted by
+	  discussion with Branden Robinson).
+	+ minor cleanup of compiler- and manpage-warnings.
 
 20231016
 	+ make the recent change to setupterm optional "--enable-check-size"
@@ -5570,7 +5577,7 @@ it is not possible to add this information.
 	  function pointer passed to tputs().
 	+ modify init_pair() to accept -1's for color value after
 	  assume_default_colors() has been called (Debian #337095).
-	+ modify test/background.c, adding commmand-line options to demonstrate
+	+ modify test/background.c, adding command-line options to demonstrate
 	  assume_default_colors() and use_default_colors().
 
 20110416

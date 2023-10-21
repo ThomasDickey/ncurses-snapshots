@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
-.TH new_pair 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: new_pair.3x,v 1.41 2023/10/21 10:31:22 tom Exp $
+.TH new_pair 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -130,7 +130,8 @@ All of the color pairs are allocated from a table of possible color pairs.
 The size of the table is determined by the terminfo \fBpairs\fP capability.
 The table is shared with \fBinit_pair\fP;
 in fact \fBalloc_pair\fP calls \fBinit_pair\fP after
-updating the \fIncurses\fP library's fast index to the colors versus color pairs.
+updating the \fIncurses\fP library's fast index
+to the colors versus color pairs.
 .SS find_pair
 The \fBfind_pair\fP function accepts parameters for
 foreground and background color, and

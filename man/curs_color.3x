@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.86 2023/10/14 19:19:11 tom Exp $
-.TH curs_color 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_color.3x,v 1.87 2023/10/21 10:28:36 tom Exp $
+.TH curs_color 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -477,7 +477,8 @@ attributes and color-pair values, allowing increased range of color-pairs.
 Both color-pairs and color-values used a signed \fBshort\fP,
 limiting values to 15 bits.
 .bP
-ncurses (1992-present) uses eight bits for \fB\%A_COLOR\fP in \fB\%chtype\fP values.
+ncurses (1992-present) uses eight bits
+for \fB\%A_COLOR\fP in \fB\%chtype\fP values.
 .IP
 Version 5.3 provided a wide-character interface (2002),
 but left color-pairs as part of the attributes-field.

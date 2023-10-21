@@ -37,7 +37,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: obsolete.c,v 1.10 2023/06/25 16:56:27 tom Exp $")
+MODULE_ID("$Id: obsolete.c,v 1.11 2023/10/21 15:38:47 tom Exp $")
 
 /*
  * Obsolete entrypoint retained for binary compatibility.
@@ -243,7 +243,7 @@ _nc_conv_to_utf32(unsigned *target, const char *source, unsigned limit)
 /*
  * Out-of-memory testing, suitable for checking if initialization (and limited
  * running) recovers from errors due to insufficient memory.  In practice, this
- * is unlikely except with artifically constructed tests (or poorly behaved
+ * is unlikely except with artificially constructed tests (or poorly behaved
  * applications).
  */
 #undef malloc

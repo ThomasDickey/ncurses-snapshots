@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.80 2023/10/14 20:00:10 tom Exp $
-.TH curs_mouse 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.81 2023/10/21 10:29:45 tom Exp $
+.TH curs_mouse 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -295,7 +295,8 @@ req_mouse_pos     reqmp   RQ       Request mouse position report
 .EE
 .RE
 .bP
-the interface made assumptions (as does \fIncurses\fP) about the escape sequences
+the interface made assumptions (as does \fIncurses\fP)
+about the escape sequences
 sent to and received from the terminal.
 .IP
 For instance
@@ -305,7 +306,8 @@ passing the mouse-button bit-mask to the terminal.
 Also, it could ask the terminal
 where the mouse was using the \fB\%req_mouse_pos\fP capability.
 .IP
-Those features required a terminal which had been modified to work with \fIcurses\fP.
+Those features required a terminal which had been modified
+to work with \fIcurses\fP.
 They were not part of the X Consortium's xterm.
 .PP
 When developing the xterm mouse support for \fIncurses\fP in September 1995,
@@ -376,7 +378,8 @@ It is intended
 for use with touch screens (which may be pressure-sensitive) or with
 3D-mice/trackballs/power gloves.
 .PP
-The \fB\%ALL_MOUSE_EVENTS\fP class does not include \fB\%REPORT_MOUSE_POSITION\fP.
+The \fB\%ALL_MOUSE_EVENTS\fP class does not
+include \fB\%REPORT_MOUSE_POSITION\fP.
 They are distinct.
 For example, in xterm,
 wheel/scrolling mice send position reports as a sequence of

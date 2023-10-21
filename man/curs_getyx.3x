@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getyx.3x,v 1.38 2023/10/07 21:19:07 tom Exp $
-.TH curs_getyx 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getyx.3x,v 1.39 2023/10/21 10:28:36 tom Exp $
+.TH curs_getyx 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%getyx\fP,
 \fB\%getparyx\fP,
@@ -45,8 +45,8 @@ get \fIcurses\fR cursor and window coordinates
 \fBvoid getmaxyx(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .fi
 .SH DESCRIPTION
-The \fB\%getyx\fP macro places the current cursor position of the given window in
-the two integer variables \fIy\fP and \fIx\fP.
+The \fB\%getyx\fP macro places the current cursor position
+of the given window in the two integer variables \fIy\fP and \fIx\fP.
 .PP
 If \fIwin\fP is a subwindow, the \fB\%getparyx\fP macro places the beginning
 coordinates of the subwindow relative to the parent window into two integer
@@ -91,9 +91,10 @@ direct use of its members).
 Besides the problem of opaque structures,
 the data stored in like-named members may not have like-values in
 different implementations.
-For example, the \fB\%WINDOW._maxx\fP and \fB\%WINDOW._maxy\fP values in \fIncurses\fP
-have (at least since release 1.8.1) differed by one from some
-other implementations.
+For example, the \fB\%WINDOW._maxx\fP and \fB\%WINDOW._maxy\fP values
+in \fIncurses\fP have
+(at least since release 1.8.1)
+differed by one from some other implementations.
 The difference is hidden by means of the macro \fB\%getmaxyx\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

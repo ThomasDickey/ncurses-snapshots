@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1062 $
-#	$Date: 2023/08/12 20:21:29 $
+#	$Revision: 1.1065 $
+#	$Date: 2023/10/21 22:49:03 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -368,6 +368,9 @@ ansi+idc|ANSI insert/delete characters,
 ansi+arrows|ANSI normal-mode home and cursor-keys,
 	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
 	khome=\E[H,
+ansi+apparrows|ANSI application-mode home and cursor-keys,
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, khome=\EOH,
+	use=ansi+arrows,
 ansi+sgr|ANSI graphic renditions,
 	blink=\E[5m, invis=\E[8m, rev=\E[7m,
 	sgr=\E[0%?%p3%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
@@ -5964,6 +5967,13 @@ xterm+sm+1006|xterm SGR-mouse (building block),
 xterm-1006|xterm SGR-mouse,
 	use=xterm+sm+1006, use=xterm,
 
+# Some terminal emulators implement xterm focus in/out, but do it incorrectly,
+# interfering with user applications.
+# https://lists.gnu.org/archive/html/bug-ncurses/2023-10/msg00087.html
+oldxterm+sm+1006|xterm SGR-mouse (building block),
+	kmous=\E[<, XM=\E[?1006;1000%?%p1%{1}%=%th%el%;,
+	xm=\E[<%i%p3%d;%p1%d;%p2%d;%?%p4%tM%em%;,
+
 #### KTERM
 # (kterm: this had extension capabilities ":KJ:TY=ascii:" -- esr)
 # (kterm should not invoke DEC Graphics as the alternate character set
@@ -6297,7 +6307,7 @@ vte-2014|VTE 0.35.1,
 	ncv@,
 	cbt=\E[Z, el1=\E[1K, flash=\E[?5h$<100/>\E[?5l,
 	ich=\E[%p1%d@, kent=\EOM, use=ecma+index,
-	use=xterm+sm+1006, use=xterm+pcfkeys, use=vte-2012,
+	use=oldxterm+sm+1006, use=xterm+pcfkeys, use=vte-2012,
 	use=bracketed+paste,
 
 # As of January 2018, this was the  most recent release,
@@ -27850,5 +27860,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add/use putty+cursor to reflect amending of modified cursor-keys in
 #	  2021 -TD
 #	+ add ecma+strikeout to putty -TD
+#
+# 2023-10-21
+#	+ use oldxterm+sm+1006 in vte-2014 (report by Benno Schulenberg) -TD
+#	+ add ansi+apparrows -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

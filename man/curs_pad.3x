@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.44 2023/10/07 21:19:07 tom Exp $
-.TH curs_pad 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_pad.3x,v 1.45 2023/10/21 10:29:45 tom Exp $
+.TH curs_pad 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -109,7 +109,8 @@ Negative values of
 \fIpminrow\fP, \fIpmincol\fP, \fIsminrow\fP, or \fIsmincol\fP are treated as if
 they were zero.
 .SS pechochar
-The \fB\%pechochar\fP routine is functionally equivalent to a call to \fB\%addch\fP
+The \fB\%pechochar\fP routine is functionally equivalent
+to a call to \fB\%addch\fP
 followed by a call to \fB\%refresh\fP(3X),
 a call to \fB\%waddch\fP followed by a call
 to \fB\%wrefresh\fP, or a call to \fB\%waddch\fP followed by a call to
@@ -124,7 +125,8 @@ the screen is reused for the arguments to \fB\%prefresh\fP.
 The \fB\%pecho_wchar\fP function is the analogous wide-character
 form of \fB\%pechochar\fP.
 It outputs one character to a pad and immediately refreshes the pad.
-It does this by a call to \fB\%wadd_wch\fP followed by a call to \fB\%prefresh\fP.
+It does this by a call to \fB\%wadd_wch\fP followed by a call
+to \fB\%prefresh\fP.
 .SH RETURN VALUE
 Routines that return an integer return \fBERR\fP upon failure and \fBOK\fP
 (SVr4 only specifies "an integer value other than \fBERR\fP") upon successful
@@ -202,7 +204,8 @@ though interestingly enough, a comment in the source code
 states that the lack of a check was an MKS extension.
 .bP
 NetBSD 7 \fIcurses\fP
-sets a flag in the \fB\%WINDOW\fP structure for \fB\%newpad\fP and \fB\%subpad\fP,
+sets a flag in the \fB\%WINDOW\fP structure
+for \fB\%newpad\fP and \fB\%subpad\fP,
 using this to help with the distinction between \fB\%wnoutrefresh\fP
 and \fB\%pnoutrefresh\fP.
 .IP
@@ -215,7 +218,8 @@ data was from a pad.
 .PP
 This implementation
 .bP
-sets a flag in the \fB\%WINDOW\fP structure for \fB\%newpad\fP and \fB\%subpad\fP,
+sets a flag in the \fB\%WINDOW\fP structure
+for \fB\%newpad\fP and \fB\%subpad\fP,
 .bP
 allows a \fB\%subwin\fP or \fB\%derwin\fP call to succeed having a pad parent by
 forcing the subwindow to be a pad,

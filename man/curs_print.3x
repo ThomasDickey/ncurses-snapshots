@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_print.3x,v 1.33 2023/10/14 19:26:28 tom Exp $
-.TH curs_print 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_print.3x,v 1.34 2023/10/21 10:31:22 tom Exp $
+.TH curs_print 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%mcprint\fP \-
 write binary data to printer using \fIterminfo\fR capabilities
@@ -42,7 +42,8 @@ write binary data to printer using \fIterminfo\fR capabilities
 This function uses the \fBmc5p\fP or \fBmc4\fP and \fBmc5\fP capabilities,
 if they are present, to ship given data to a printer attached to the terminal.
 .PP
-Note that the \fB\%mcprint\fP code has no way to do flow control with the printer
+Note that the \fB\%mcprint\fP code has no way
+to do flow control with the printer
 or to know how much buffering it has.
 Your application is responsible for
 keeping the rate of writes to the printer below its continuous throughput rate
@@ -67,7 +68,8 @@ When \fB\%mcprint\fP succeeds, it returns the number of characters actually
 sent to the printer.
 .SH PORTABILITY
 The \fB\%mcprint\fP call was designed for \fIncurses\fP, and is not found
-in SVr4 \fIcurses\fP, 4.4BSD \fIcurses\fP, or any other previous version of \fIcurses\fP.
+in SVr4 \fIcurses\fP, 4.4BSD \fIcurses\fP,
+or any other previous version of \fIcurses\fP.
 It is recommended that any code depending on \fIncurses\fP extensions
 be conditioned using \fB\%NCURSES_VERSION\fP.
 .SH BUGS

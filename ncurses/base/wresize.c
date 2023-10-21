@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2010,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.42 2021/10/23 18:54:16 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.43 2023/10/21 11:13:03 tom Exp $")
 
 static int
 cleanup_lines(struct ldat *data, int length)
@@ -55,7 +55,7 @@ repair_subwindows(WINDOW *cmp)
     WINDOWLIST *wp;
     struct ldat *pline = cmp->_line;
     int row;
-#ifdef USE_SP_WINDOWLIST
+#if NCURSES_SP_FUNCS && defined(USE_SP_WINDOWLIST)
     SCREEN *sp = _nc_screen_of(cmp);
 #endif
 

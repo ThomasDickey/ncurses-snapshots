@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1051 2023/09/06 22:55:27 tom Exp $
+dnl $Id: aclocal.m4,v 1.1053 2023/10/21 12:54:23 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -67,7 +67,7 @@ $ac_includes_default
 	fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ABI_DEFAULTS version: 4 updated: 2023/01/07 16:32:06
+dnl CF_ABI_DEFAULTS version: 5 updated: 2023/10/21 08:54:23
 dnl ---------------
 dnl Provide configure-script defaults for different ncurses ABIs.
 AC_DEFUN([CF_ABI_DEFAULTS],[
@@ -88,9 +88,10 @@ cf_dft_opaque_curses=no
 cf_dft_ordinate_type=short
 cf_dft_signed_char=no
 cf_dft_tparm_arg=long
+cf_dft_widec=no
 cf_dft_with_lp64=no
 
-# ABI 6 defaults:
+# ABI 6 default differences from ABI 5:
 case x$cf_cv_abi_default in
 (x[[6789]])
 	cf_dft_chtype=uint32_t
@@ -102,17 +103,18 @@ case x$cf_cv_abi_default in
 	cf_dft_filter_syms=yes
 	cf_dft_interop=yes
 	cf_dft_mmask_t=uint32_t
+	cf_dft_opaque_curses=yes
 	cf_dft_tparm_arg=intptr_t
+	cf_dft_widec=yes
 	cf_dft_with_lp64=yes
 	;;
 esac
 
-# ABI 7 defaults:
+# ABI 7 default differences from ABI 6:
 case x$cf_cv_abi_default in
 (x[[789]])
 	cf_dft_ccharw_max=6
 	cf_dft_mmask_t=uint64_t
-	cf_dft_opaque_curses=yes
 	cf_dft_ordinate_type=int
 	cf_dft_signed_char=yes
 	# also: remove the wgetch-events feature in ABI 7

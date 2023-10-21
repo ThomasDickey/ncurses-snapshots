@@ -343,7 +343,7 @@
 ./doc/html/announce.html
 ./doc/html/hackguide.html
 ./doc/html/index.html
-./doc/html/man/adacurses6-config.1.html
+./doc/html/man/adacursesw6-config.1.html
 ./doc/html/man/captoinfo.1m.html
 ./doc/html/man/clear.1.html
 ./doc/html/man/curs_add_wch.3x.html
@@ -464,7 +464,7 @@
 ./doc/html/man/mitem_value.3x.html
 ./doc/html/man/mitem_visible.3x.html
 ./doc/html/man/ncurses.3x.html
-./doc/html/man/ncurses6-config.1.html
+./doc/html/man/ncursesw6-config.1.html
 ./doc/html/man/new_pair.3x.html
 ./doc/html/man/panel.3x.html
 ./doc/html/man/resizeterm.3x.html

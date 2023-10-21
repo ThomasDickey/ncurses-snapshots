@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.55 2023/10/07 21:19:07 tom Exp $
-.TH curs_inopts 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.56 2023/10/21 10:28:36 tom Exp $
+.TH curs_inopts 3X 2023-10-21 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -320,8 +320,10 @@ be conditioned using NCURSES_VERSION.
 Except as noted in the section on extensions,
 these functions are described in the XSI Curses standard, Issue 4.
 .PP
-The \fIncurses\fP library obeys the XPG4 standard and the historical practice of the
-AT&T \fIcurses\fP implementations, in that the echo bit is cleared when \fIcurses\fP
+The \fIncurses\fP library obeys the XPG4 standard
+and the historical practice of the
+AT&T \fIcurses\fP implementations,
+in that the echo bit is cleared when \fIcurses\fP
 initializes the terminal state.
 BSD \fIcurses\fP differed from this slightly; it
 left the echo bit on at initialization, but the BSD \fBraw\fP call turned it
@@ -331,8 +333,8 @@ just after initialization, even if your program remains in cooked mode.
 .PP
 The XSI Curses standard is ambiguous on the question of whether \fBraw\fP
 should disable the CRLF translations controlled by \fBnl\fP and \fBnonl\fP.
-BSD \fIcurses\fP did turn off these translations; AT&T \fIcurses\fP (at least as late as
-SVr1) did not.
+BSD \fIcurses\fP did turn off these translations;
+AT&T \fIcurses\fP (at least as late as SVr1) did not.
 We chose to do so, on the theory that a programmer requesting
 raw input wants a clean (ideally 8-bit clean) connection that the operating
 system will not alter.
@@ -348,7 +350,8 @@ loads of terminal descriptions) may differ from one execution of a
 program to the next.
 The generated keycodes are recognized by the \fB\%keyname\fP function
 (which will then return a name beginning with \*(``k\*('' denoting the
-terminfo capability name rather than \*(``K\*('', used for \fIcurses\fP key-names).
+terminfo capability name rather than \*(``K\*('',
+used for \fIcurses\fP key-names).
 On the other hand, an application can use \fB\%define_key\fP to establish
 a specific keycode for a given string.
 This makes it possible for an application to check for an extended

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2008,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.24 2021/12/11 23:56:25 tom Exp $")
+MODULE_ID("$Id: lib_delwin.c,v 1.25 2023/10/21 11:12:44 tom Exp $")
 
 static bool
 cannot_delete(WINDOW *win)
@@ -54,7 +54,7 @@ cannot_delete(WINDOW *win)
 	result = FALSE;
     } else {
 	WINDOWLIST *p;
-#ifdef USE_SP_WINDOWLIST
+#if NCURSES_SP_FUNCS && defined(USE_SP_WINDOWLIST)
 	SCREEN *sp = _nc_screen_of(win);
 #endif
 
