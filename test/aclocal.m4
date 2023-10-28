@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.216 2023/09/06 22:55:27 tom Exp $
+dnl $Id: aclocal.m4,v 1.218 2023/10/28 16:08:26 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -3312,7 +3312,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PKG_CONFIG version: 12 updated: 2021/10/10 20:18:09
+dnl CF_PKG_CONFIG version: 13 updated: 2023/10/28 11:59:01
 dnl -------------
 dnl Check for the package-config program, unless disabled by command-line.
 dnl
@@ -3321,7 +3321,7 @@ AC_DEFUN([CF_PKG_CONFIG],
 [
 AC_MSG_CHECKING(if you want to use pkg-config)
 AC_ARG_WITH(pkg-config,
-	[  --with-pkg-config{=path} enable/disable use of pkg-config],
+	[[  --with-pkg-config[=CMD] enable/disable use of pkg-config and its name CMD]],
 	[cf_pkg_config=$withval],
 	[cf_pkg_config=yes])
 AC_MSG_RESULT($cf_pkg_config)
@@ -4298,7 +4298,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_X11_RGB version: 2 updated: 2019/12/31 08:53:54
+dnl CF_WITH_X11_RGB version: 3 updated: 2023/10/28 11:59:01
 dnl ---------------
 dnl Handle configure option "--with-x11-rgb", setting these shell
 dnl variables:
@@ -4338,7 +4338,7 @@ dnl 	/usr/X11/lib/X11/rgb.txt
 AC_DEFUN([CF_WITH_X11_RGB],[
 AC_MSG_CHECKING(for X11 rgb file)
 AC_ARG_WITH(x11-rgb,
-	[  --with-x11-rgb=FILE   file containing X11 rgb information (EPREFIX/lib/X11/rgb.txt)],
+	[  --with-x11-rgb=FILE     obtain X11 color definitions from FILE (default: EPREFIX/lib/X11/rgb.txt)],
 	[RGB_PATH=$withval],
 	[RGB_PATH=auto])
 

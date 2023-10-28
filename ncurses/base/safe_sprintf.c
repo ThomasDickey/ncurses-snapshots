@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2023 Thomas E. Dickey                                *
  * Copyright 1998-2012,2013 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.36 2023/09/30 10:42:42 Ian.Abbott Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.37 2023/09/30 10:42:42 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 

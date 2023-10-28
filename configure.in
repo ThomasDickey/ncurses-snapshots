@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.769 2023/10/21 15:43:56 tom Exp $
+dnl $Id: configure.in,v 1.770 2023/10/28 15:41:34 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.769 $)
+AC_REVISION($Revision: 1.770 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -217,7 +217,7 @@ AC_SYS_LONG_FILE_NAMES
 # of package conflict.
 cf_config_suffix=
 AC_ARG_WITH(config-suffix,
-	[  --with-config-suffix=X  suffixes ncursesXX-config file],
+	[  --with-config-suffix=X  name ncurses*X-config file with X],
 	[case "x$withval" in
 	(xyes|xno)
 		AC_MSG_WARN(expected a value for config-suffix option)
@@ -233,9 +233,9 @@ CF_WITH_PKG_CONFIG_LIBDIR
 CF_ENABLE_PC_FILES
 if test -z "$MAKE_PC_FILES"
 then
-	AC_MSG_CHECKING(for suffix to add to pc-files)
+	AC_MSG_CHECKING(for suffix to add to pkg-config files)
 AC_ARG_WITH(pc-suffix,
-	[  --with-pc-suffix        suffixes pc-files],
+	[  --with-pc-suffix=XXX    suffix pkg-config files with XXX],
 	[case "x$withval" in
 	(xyes|xno)
 		PC_MODULE_SUFFIX=
@@ -280,16 +280,16 @@ CF_AR_FLAGS
 dnl Special option for use by system-builders: the install-prefix is used to
 dnl adjust the location into which the actual install is done, so that an
 dnl archive can be built without modifying the host system's configuration.
-AC_MSG_CHECKING(if you have specified an install-prefix)
+AC_MSG_CHECKING(for an installation directory prefix)
 AC_ARG_WITH(install-prefix,
-	[  --with-install-prefix   prefixes actual install-location ($DESTDIR)],
+	[  --with-install-prefix=DESTDIR use DESTDIR as installation directory prefix],
 	[case "x$withval" in
 	(xyes|xno)
 		;;
 	(*)	DESTDIR="$withval"
 		;;
 	esac])
-AC_MSG_RESULT($DESTDIR)
+AC_MSG_RESULT([${DESTDIR:-(none)}])
 AC_SUBST(DESTDIR)
 
 ###############################################################################
@@ -449,7 +449,7 @@ case "$DFT_LWR_MODEL" in
 (shared)  LD_MODEL=''   ;;
 esac
 AC_SUBST(LD_MODEL)dnl		the type of link (e.g., -g or -pg)
-AC_MSG_RESULT($LD_MODEL)
+AC_MSG_RESULT([${LD_MODEL:-(none)}])
 
 case "$DFT_LWR_MODEL" in
 (shared)
@@ -562,10 +562,10 @@ AC_SUBST(EXTRA_PKG_LDFLAGS)
 CF_HELP_MESSAGE(Fine-Tuning Your Configuration:)
 
 ###	use option --with-extra-suffix to append suffix to headers and libraries
-AC_MSG_CHECKING(if you wish to append extra suffix to header/library paths)
+AC_MSG_CHECKING(for extra suffix to append to header/library paths)
 EXTRA_SUFFIX=
 AC_ARG_WITH(extra-suffix,
-	[  --with-extra-suffix=X   append extra suffix to header/library paths],
+	[  --with-extra-suffix=X   append extra suffix X to header/library paths],
 	[case x$withval in
 	(xno)
 		;;
@@ -577,7 +577,7 @@ AC_ARG_WITH(extra-suffix,
 		;;
 	esac
 	])
-AC_MSG_RESULT($EXTRA_SUFFIX)
+AC_MSG_RESULT([${EXTRA_SUFFIX:-(none)}])
 AC_SUBST(EXTRA_SUFFIX)
 
 ###	use option --disable-overwrite to leave out the link to -lcurses
@@ -625,12 +625,12 @@ else
 fi
 AC_SUBST(NCURSES_USE_DATABASE)
 
-AC_MSG_CHECKING(for list of fallback descriptions)
+AC_MSG_CHECKING(for list of fallback terminal descriptions)
 AC_ARG_WITH(fallbacks,
 	[  --with-fallbacks=XXX    specify list of fallback terminal descriptions],
 	[with_fallback=$withval],
 	[with_fallback=])
-AC_MSG_RESULT($with_fallback)
+AC_MSG_RESULT([${with_fallback:-(none)}])
 
 case ".$with_fallback" in
 (.|.no)
@@ -947,7 +947,7 @@ NCURSES_OK_WINT_T=
 
 AC_MSG_CHECKING(if you want wide-character code)
 AC_ARG_ENABLE(widec,
-	[  --disable-widec         do not compile with wide-char/UTF-8 code],
+	[  --disable-widec         compile without wide character and UTF-8 support],
 	[with_widec=$enableval],
 	[with_widec=$cf_dft_widec])
 AC_MSG_RESULT($with_widec)
@@ -959,8 +959,8 @@ if test "x$with_widec" = xyes ; then
 	if test "x$disable_lib_suffixes" = xno ; then
 		LIB_SUFFIX="w${LIB_SUFFIX}"
 	fi
-	AC_DEFINE(USE_WIDEC_SUPPORT,1,[Define to 1 to compile with wide-char/UTF-8 code])
-	AC_DEFINE(NCURSES_WIDECHAR,1,[Define to 1 to compile with wide-char/UTF-8 code])
+	AC_DEFINE(USE_WIDEC_SUPPORT,1,[Define to 1 to compile with wide character and UTF-8 support])
+	AC_DEFINE(NCURSES_WIDECHAR,1,[Define to 1 to compile with wide character and UTF-8 support])
 	case "$CPPFLAGS" in
 	(*_XOPEN_SOURCE=*)
 		;;
@@ -1063,7 +1063,7 @@ CF_WITH_X11_RGB
 ###   use option --with-bool to override bool's type
 AC_MSG_CHECKING(for type of bool)
 AC_ARG_WITH(bool,
-	[  --with-bool=TYPE        override fallback type of bool variable],
+	[  --with-bool=TYPE        fall back to TYPE for curses 'bool' typedef],
 	[NCURSES_BOOL="$withval"],
 	[NCURSES_BOOL=auto])
 AC_MSG_RESULT($NCURSES_BOOL)
@@ -1122,9 +1122,9 @@ if test "$ac_cv_sizeof_signed_char" = 1 ; then
 else
 	NCURSES_SBOOL="char"
 fi
-AC_MSG_CHECKING(if you want to use signed Boolean array in term.h)
+AC_MSG_CHECKING(whether to use signed chars for Boolean array in term.h)
 AC_ARG_ENABLE(signed-char,
-	[  --enable-signed-char    compile using signed Boolean's in term.h],
+	[  --enable-signed-char    use signed chars for Boolean array in term.h],
 	[with_signed_char=$enableval],
 	[with_signed_char=$cf_dft_signed_char])
 AC_MSG_RESULT($with_signed_char)
@@ -1411,9 +1411,9 @@ AC_SUBST(cf_cv_enable_opaque)
 
 AC_SUBST(NCURSES_SIZE_T)
 
-AC_MSG_CHECKING(if you want opaque curses-library structures)
+AC_MSG_CHECKING(whether curses library structures should be opaque)
 CF_ARG_ENABLE(opaque-curses,
-	[  --disable-opaque-curses do not make curses WINDOW, etc., "opaque"],
+	[  --disable-opaque-curses do not make WINDOW, etc., structures opaque],
 	[enable_opaque_curses=yes],[
 	 test "$cf_cv_enable_reentrant" = 1 && enable_opaque_curses=yes
 	 test "$cf_cv_enable_reentrant" = 1 || enable_opaque_curses=$cf_dft_opaque_curses
@@ -1424,21 +1424,21 @@ test "$cf_cv_enable_reentrant" = 1 && \
 test "$enable_opaque_curses" = no && \
 AC_MSG_ERROR(reentrant configuration requires opaque library)
 
-AC_MSG_CHECKING(if you want opaque form-library structures)
+AC_MSG_CHECKING(whether form library structures should be opaque)
 AC_ARG_ENABLE(opaque-form,
-	[  --disable-opaque-form   do not make form-library structures "opaque"],
+	[  --disable-opaque-form   do not make form library structures opaque],
 	[enable_opaque_form=yes],[enable_opaque_form=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_form)
 
-AC_MSG_CHECKING(if you want opaque menu-library structures)
+AC_MSG_CHECKING(whether menu library structures should be opaque)
 AC_ARG_ENABLE(opaque-menu,
-	[  --disable-opaque-menu   do not make menu-library structures "opaque"],
+	[  --disable-opaque-menu   do not make menu library structures opaque],
 	[enable_opaque_menu=yes],[enable_opaque_menu=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_menu)
 
-AC_MSG_CHECKING(if you want opaque panel-library structures)
+AC_MSG_CHECKING(whether panel library structures should be opaque)
 AC_ARG_ENABLE(opaque-panel,
-	[  --disable-opaque-panel  do not make panel-library structures "opaque"],
+	[  --disable-opaque-panel  do not make panel library structures opaque],
 	[enable_opaque_panel=yes],[enable_opaque_panel=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_panel)
 
@@ -2352,6 +2352,7 @@ AC_SUBST(SHLIB_LIST)
 AC_DEFINE(HAVE_SLK_COLOR,1,[Define to 1 if we have slk_color for test-programs])
 
 # pkgsrc uses these
+CF_HELP_MESSAGE(Library basenames for pkgsrc:)
 CF_WITH_LIB_BASENAME(FORM_NAME,form)
 CF_WITH_LIB_BASENAME(MENU_NAME,menu)
 CF_WITH_LIB_BASENAME(PANEL_NAME,panel)
@@ -2433,7 +2434,7 @@ esac
 
 # Help to automatically enable the extended curses features when using either
 # the *-config or the ".pc" files by adding defines.
-AC_MSG_CHECKING(for defines to add to ncurses${USE_CFG_SUFFIX}-config script)
+AC_MSG_CHECKING(for defines to add to ncurses${USE_CFG_SUFFIX}${cf_config_suffix}-config script)
 PKG_CFLAGS=
 for cf_loop1 in $CPPFLAGS_after_XOPEN
 do

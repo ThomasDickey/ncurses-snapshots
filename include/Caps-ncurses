@@ -28,7 +28,7 @@
 #
 # Author: Thomas E. Dickey
 #
-# $Id: Caps-ncurses,v 1.14 2023/01/15 01:02:07 tom Exp $
+# $Id: Caps-ncurses,v 1.15 2023/10/28 21:55:47 tom Exp $
 #
 #############################################################################
 #
@@ -410,6 +410,8 @@ userdef	PS	str	-	is sent before pasted text
 userdef	RV	str	-	report terminal secondary device attributes
 userdef	XR	str	-	report terminal version as a free-format string.
 userdef	XF	bool	-	terminal supports xterm focus in/out
+userdef	fd	str	-	disable xterm focus-events
+userdef	fe	str	-	enable xterm focus-events
 userdef	rv	str	-	response to RV, regular expression
 userdef	xr	str	-	response to XR, regular expression
 #

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_opaque.3x,v 1.36 2023/10/07 21:19:07 tom Exp $
-.TH curs_opaque 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_opaque.3x,v 1.38 2023/10/28 14:49:04 tom Exp $
+.TH curs_opaque 3X 2023-10-28 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -82,6 +82,14 @@ obtain \fIcurses\fR window properties
 \fI\%WINDOW\fP structure,
 allowing it to be \*(``opaque\*('' if
 the application defines the \fB\%NCURSES_OPAQUE\fP preprocessor symbol.
+\fIOpacity\fP in this sense means that the members of \fIstruct\fP data
+types are not directly accessible
+(for instance,
+through \*(``.\*('' or \*(``\->\*('' operators),
+but instead must be queried and/or set via library functions.
+Advantages of opacity include greater abstraction and improved
+management of concurrent accesses to data structures,
+keeping object states coherent.
 .TP
 \fBis_cleared\fP
 returns the value set by \fB\%clearok\fP(3X).

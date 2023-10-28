@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1065 $
-#	$Date: 2023/10/21 22:49:03 $
+#	$Revision: 1.1067 $
+#	$Date: 2023/10/28 21:45:20 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4437,9 +4437,9 @@ mintty+common|shared capabilities for mintty,
 	Smulx=\E[4:%p1%dm, blink2=\E[6m, norm=\E[22m,
 	opaq=\E[28m, smul2=\E[21m, use=linux+kbs, use=ansi+rep,
 	use=ecma+strikeout, use=ecma+index, use=vt420+lrmm,
-	use=xterm+sm+1006, use=xterm+pcfkeys, use=xterm+tmux,
-	use=ecma+italics, use=xterm-basic, use=bracketed+paste,
-	use=report+version,
+	use=xterm+focus, use=xterm+sm+1006, use=xterm+pcfkeys,
+	use=xterm+tmux, use=ecma+italics, use=xterm-basic,
+	use=bracketed+paste, use=report+version,
 # 2019-06-09: These capabilities are commented-out for compatibility with
 # existing releases 5.9-6.1, and may be considered for inclusion after the
 # release of ncurses 6.2:
@@ -4793,9 +4793,9 @@ ms-terminal|Windows10 terminal,
 vscode|xterm.js|Visual Studio Code terminal using xterm.js,
 	npc,
 	kcbt=\E[Z, rmkx=\E[?1l, smkx=\E[?1h, use=linux+kbs,
-	use=xterm+256setaf, use=ecma+index, use=xterm+sm+1006,
-	use=xterm+pcfkeys, use=ecma+italics, use=xterm-basic,
-	use=bracketed+paste,
+	use=xterm+256setaf, use=ecma+index, use=xterm+focus,
+	use=xterm+sm+1006, use=xterm+pcfkeys, use=ecma+italics,
+	use=xterm-basic, use=bracketed+paste,
 vscode-direct|Visual Studio Code with direct-colors,
 	use=xterm+indirect, use=vscode,
 
@@ -5016,8 +5016,8 @@ xterm+nofkeys|building block for xterm fkey-variants,
 	npc,
 	kcbt=\E[Z, kent=\EOM, nel=\EE, use=ecma+index,
 	use=ansi+rep, use=ecma+strikeout, use=vt420+lrmm,
-	use=xterm+sm+1006, use=xterm+tmux, use=ecma+italics,
-	use=xterm+keypad, use=xterm-basic,
+	use=xterm+focus, use=xterm+sm+1006, use=xterm+tmux,
+	use=ecma+italics, use=xterm+keypad, use=xterm-basic,
 
 xterm-p370|xterm patch #370,
 	npc,
@@ -5686,8 +5686,8 @@ xterm-vt220|xterm emulating VT220,
 	kmous=\E[M, knp=\E[6~, kpp=\E[5~, nel=\EE, use=xterm+app,
 	use=xterm+edit, use=vt220+keypad, use=ecma+italics,
 	use=ecma+index, use=ansi+rep, use=ecma+strikeout,
-	use=xterm+sm+1006, use=xterm+tmux, use=xterm+keypad,
-	use=xterm-basic,
+	use=xterm+focus, use=xterm+sm+1006, use=xterm+tmux,
+	use=xterm+keypad, use=xterm-basic,
 
 xterm-vt52|xterm emulating DEC VT52,
 	cols#80, it#8, lines#24,
@@ -5927,9 +5927,12 @@ xterm+sm+1003|xterm any-event mouse,
 xterm-1003|example of xterm any-event mouse,
 	use=xterm+sm+1003, use=xterm,
 
+# Some terminal emulators implement xterm focus in/out, but do it incorrectly,
+# interfering with user applications.
+# https://lists.gnu.org/archive/html/bug-ncurses/2023-10/msg00087.html
 xterm+focus|xterm focus-in/out event "keys",
 	XF,
-	kxIN=\E[I, kxOUT=\E[O,
+	fd=\E[?1004l, fe=\E[?1004h, kxIN=\E[I, kxOUT=\E[O,
 
 # xterm patch #116 (1999/9/25) added Stephen P Wall's changes to support DEC
 # locator mode.
@@ -5962,7 +5965,7 @@ xterm-1005|xterm UTF-8 mouse,
 # protocol regarding button-releases), I provided the 1006 mode, referring
 # to it as "SGR 1006" since the replies resemble the SGR control string:
 xterm+sm+1006|xterm SGR-mouse (building block),
-	kmous=\E[<, XM=\E[?1006;1004;1000%?%p1%{1}%=%th%el%;,
+	kmous=\E[<, XM=\E[?1006;1000%?%p1%{1}%=%th%el%;,
 	xm=\E[<%i%p3%d;%p1%d;%p2%d;%?%p4%tM%em%;,
 xterm-1006|xterm SGR-mouse,
 	use=xterm+sm+1006, use=xterm,
@@ -6370,9 +6373,10 @@ hterm|Chromium hterm,
 	U8#1,
 	kcbt=\E[Z, kent=\EOM, nel=\EE, use=linux+kbs,
 	use=xterm+osc104, use=ecma+index, use=ansi+rep,
-	use=ecma+strikeout, use=vt420+lrmm, use=xterm+sm+1006,
-	use=xterm+tmux, use=ecma+italics, use=xterm+pcfkeys,
-	use=xterm-basic, use=bracketed+paste,
+	use=ecma+strikeout, use=vt420+lrmm, use=xterm+focus,
+	use=xterm+sm+1006, use=xterm+tmux, use=ecma+italics,
+	use=xterm+pcfkeys, use=xterm-basic,
+	use=bracketed+paste,
 hterm-256color|Chromium hterm with xterm 256-colors,
 	use=xterm+256color2, use=hterm,
 
@@ -6503,9 +6507,9 @@ konsole-base|KDE console window (common),
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[0m\017, smam=\E[?7h, vpa=\E[%i%p1%dd,
-	use=ecma+index, use=xterm+sm+1006, use=ecma+strikeout,
-	use=ecma+italics, use=ecma+color, use=xterm-r6,
-	use=vt220+cvis, use=bracketed+paste,
+	use=ecma+index, use=xterm+focus, use=xterm+sm+1006,
+	use=ecma+strikeout, use=ecma+italics, use=ecma+color,
+	use=xterm-r6, use=vt220+cvis, use=bracketed+paste,
 	use=report+version,
 
 # The keytab feature was introduced in 0.9.12 (February 2000) with "linux" and
@@ -7749,9 +7753,10 @@ terminology-1.8.1|EFL-based terminal emulator (1.8.1),
 	km@,
 	cvvis@, flash@, initc@, kcbt=\E[Z, rmm@, smm@, Ms@,
 	use=linux+kbs, use=ecma+index, use=xterm+256setaf,
-	use=ansi+rep, use=ecma+strikeout, use=xterm+sm+1006,
-	use=xterm+pcfkeys, use=xterm+tmux, use=vt220+cvis,
-	use=ecma+italics, use=xterm-basic, use=report+version,
+	use=ansi+rep, use=ecma+strikeout, use=xterm+focus,
+	use=xterm+sm+1006, use=xterm+pcfkeys, use=xterm+tmux,
+	use=vt220+cvis, use=ecma+italics, use=xterm-basic,
+	use=report+version,
 
 terminology|EFL-based terminal emulator,
 	use=terminology-1.8.1,
@@ -7820,11 +7825,11 @@ alacritty-direct|alacritty with direct color indexing,
 alacritty+common|base fragment for alacritty,
 	km@, npc,
 	kb2=\EOE, kbs=^?, kcbt=\E[Z, kent=\EOM, Se=\E[0 q,
-	Smulx=\E[4:%p1%dm, use=ecma+index, use=xterm+sm+1006,
-	use=xterm-basic, use=xterm+app, use=ansi+rep,
-	use=xterm+tmux, use=ecma+strikeout, use=xterm+sl-twm,
-	use=ecma+italics, use=xterm+pce2, use=xterm+pcc2,
-	use=xterm+pcf2, use=bracketed+paste, use=xterm+focus,
+	Smulx=\E[4:%p1%dm, use=ecma+index, use=xterm+focus,
+	use=xterm+sm+1006, use=xterm-basic, use=xterm+app,
+	use=ansi+rep, use=xterm+tmux, use=ecma+strikeout,
+	use=xterm+sl-twm, use=ecma+italics, use=xterm+pce2,
+	use=xterm+pcc2, use=xterm+pcf2, use=bracketed+paste,
 
 #### Kitty
 # https://github.com/kovidgoyal/kitty
@@ -7976,8 +7981,8 @@ kitty+common|KovId's TTY common properties,
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smir=\E[4h,
 	smkx=\E[?1h, smso=\E[7m, smul=\E[4m, tbc=\E[3g,
 	vpa=\E[%i%p1%dd, Smulx=\E[4:%p1%dm, use=ansi+enq,
-	use=ansi+rep, use=xterm+sm+1006, use=ecma+index,
-	use=xterm+pcfkeys, use=xterm+sl-twm,
+	use=ansi+rep, use=xterm+focus, use=xterm+sm+1006,
+	use=ecma+index, use=xterm+pcfkeys, use=xterm+sl-twm,
 	use=ecma+strikeout, use=ecma+italics,
 	use=xterm+alt1049, use=att610+cvis, use=xterm+tmux,
 	use=bracketed+paste, use=report+version,
@@ -8097,8 +8102,9 @@ domterm|DomTerm web client,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;m,
 	sitm@, smkx=\E[?1h, use=linux+kbs, use=xterm+256setaf,
-	use=ecma+index, use=xterm+sm+1006, use=xterm+pcfkeys,
-	use=xterm-basic, use=bracketed+paste,
+	use=ecma+index, use=xterm+focus, use=xterm+sm+1006,
+	use=xterm+pcfkeys, use=xterm-basic,
+	use=bracketed+paste,
 
 ######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
@@ -8550,7 +8556,7 @@ tmux|tmux terminal multiplexer,
 	use=ecma+italics, use=ecma+strikeout, use=xterm+edit,
 	use=xterm+pcfkeys, use=xterm+sl, use=xterm+tmux,
 	use=screen, use=bracketed+paste, use=report+version,
-	use=xterm+focus,
+	use=xterm+focus, use=xterm+sm+1006,
 
 tmux-256color|tmux with 256 colors,
 	use=xterm+256setaf, use=tmux,
@@ -8599,7 +8605,7 @@ mosh|mobile shell,
 	    %t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, use=ansi+enq, use=xterm+meta,
 	use=ecma+italics, use=ecma+index, use=xterm+acs,
-	use=xterm+sm+1006, use=xterm+pcfkeys,
+	use=xterm+focus, use=xterm+sm+1006, use=xterm+pcfkeys,
 	use=xterm-xfree86, use=bracketed+paste,
 
 mosh-256color|mosh using 256-colors,
@@ -25602,6 +25608,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # PS is sent before the pasted text
 # PE is sent after the pasted text
 #
+# vim also uses these names for xterm focus:
+#
+# fe enables focus events
+# fd disables focus events
+#
 # Here are the other xterm-related extensions which are used in this file:
 #
 # Cr is a string capability which resets the cursor color
@@ -27864,5 +27875,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2023-10-21
 #	+ use oldxterm+sm+1006 in vte-2014 (report by Benno Schulenberg) -TD
 #	+ add ansi+apparrows -TD
+#
+# 2023-10-28
+#	+ move xterm focus mode 1004 from xterm+sm+1006 into xterm+focus as
+#	  fe/fd capabilities, like vim (vim-pr #13440).
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

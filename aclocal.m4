@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1053 2023/10/21 12:54:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.1056 2023/10/28 16:51:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2273,7 +2273,7 @@ AC_DEFUN([CF_ERRNO],
 CF_CHECK_ERRNO(errno)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ETIP_DEFINES version: 6 updated: 2021/01/02 17:09:14
+dnl CF_ETIP_DEFINES version: 7 updated: 2023/10/28 11:59:01
 dnl ---------------
 dnl Test for conflicting definitions of exception in gcc 2.8.0, etc., between
 dnl math.h and builtin.h, only for ncurses
@@ -2305,7 +2305,7 @@ AC_TRY_COMPILE([
 ],[])
 done
 done
-AC_MSG_RESULT($cf_result)
+AC_MSG_RESULT([${cf_result:-(none)}])
 CXXFLAGS="$cf_save_CXXFLAGS"
 ])
 dnl ---------------------------------------------------------------------------
@@ -6623,7 +6623,7 @@ case ".[$]$1" in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PKG_CONFIG version: 12 updated: 2021/10/10 20:18:09
+dnl CF_PKG_CONFIG version: 13 updated: 2023/10/28 11:59:01
 dnl -------------
 dnl Check for the package-config program, unless disabled by command-line.
 dnl
@@ -6632,7 +6632,7 @@ AC_DEFUN([CF_PKG_CONFIG],
 [
 AC_MSG_CHECKING(if you want to use pkg-config)
 AC_ARG_WITH(pkg-config,
-	[  --with-pkg-config{=path} enable/disable use of pkg-config],
+	[[  --with-pkg-config[=CMD] enable/disable use of pkg-config and its name CMD]],
 	[cf_pkg_config=$withval],
 	[cf_pkg_config=yes])
 AC_MSG_RESULT($cf_pkg_config)
@@ -7375,7 +7375,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 107 updated: 2021/09/04 06:47:34
+dnl CF_SHARED_OPTS version: 108 updated: 2023/10/28 11:59:01
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -7421,9 +7421,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 	cf_ld_rpath_opt=
 	test "$cf_cv_enable_rpath" = yes && cf_ld_rpath_opt="$LD_RPATH_OPT"
 
-	AC_MSG_CHECKING(if release/abi version should be used for shared libs)
+	AC_MSG_CHECKING(whether to use release or ABI version in shared library file names)
 	AC_ARG_WITH(shlib-version,
-	[  --with-shlib-version=X  Specify rel or abi version for shared libs],
+	[[  --with-shlib-version[={rel|abi}] use release or ABI version in shared library file names]],
 	[test -z "$withval" && withval=auto
 	case "$withval" in
 	(yes)
@@ -8953,26 +8953,26 @@ $1_ABI=$cf_cv_abi_version
 cf_cv_abi_default=$cf_cv_abi_version
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_COMPILER version: 2 updated: 2010/06/26 17:35:58
+dnl CF_WITH_ADA_COMPILER version: 3 updated: 2023/10/28 11:59:01
 dnl --------------------
 dnl Command-line option to specify the Ada95 compiler.
 AC_DEFUN([CF_WITH_ADA_COMPILER],[
-AC_MSG_CHECKING(for ada-compiler)
+AC_MSG_CHECKING(for Ada95 compiler)
 AC_ARG_WITH(ada-compiler,
-	[  --with-ada-compiler=CMD specify Ada95 compiler command (default gnatmake)],
+	[[  --with-ada-compiler[=CMD] use CMD as Ada95 compiler (default: gnatmake)]],
 	[cf_ada_compiler=$withval],
 	[cf_ada_compiler=gnatmake])
 AC_SUBST(cf_ada_compiler)
 AC_MSG_RESULT($cf_ada_compiler)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_INCLUDE version: 2 updated: 2010/06/26 17:35:58
+dnl CF_WITH_ADA_INCLUDE version: 3 updated: 2023/10/28 11:59:01
 dnl -------------------
 dnl Command-line option to specify where Ada includes will install.
 AC_DEFUN([CF_WITH_ADA_INCLUDE],[
-AC_MSG_CHECKING(for ada-include)
+AC_MSG_CHECKING(for Ada95 include directory)
 CF_WITH_PATH(ada-include,
-   [  --with-ada-include=DIR  Ada includes are in DIR],
+   [  --with-ada-include=DIR  find Ada95 includes in DIR],
    ADA_INCLUDE,
    PREFIX/share/ada/adainclude,
    [$]prefix/share/ada/adainclude)
@@ -8980,16 +8980,16 @@ AC_SUBST(ADA_INCLUDE)
 AC_MSG_RESULT($ADA_INCLUDE)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_LIBNAME version: 1 updated: 2019/09/07 18:59:41
+dnl CF_WITH_ADA_LIBNAME version: 2 updated: 2023/10/28 11:59:01
 dnl -------------------
 dnl CF_WITH_ADA_LIBNAME
 dnl -------------------
 dnl Command-line option to specify how to name the resulting Ada library.
 dnl $1 = default value
 AC_DEFUN([CF_WITH_ADA_LIBNAME],[
-AC_MSG_CHECKING(for ada-libname)
+AC_MSG_CHECKING(for Ada95 curses library name)
 AC_ARG_WITH(ada-libname,
-   [  --with-ada-libname=XXX  override default Ada library-name],
+   [  --with-ada-libname=XXX  use XXX as Ada95 library name],
    ADA_LIBNAME=[$]withval,
    ADA_LIBNAME=$1)
 case "x$ADA_LIBNAME" in
@@ -9001,13 +9001,13 @@ AC_SUBST(ADA_LIBNAME)
 AC_MSG_RESULT($ADA_LIBNAME)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_OBJECTS version: 2 updated: 2010/06/26 17:35:58
+dnl CF_WITH_ADA_OBJECTS version: 3 updated: 2023/10/28 11:59:01
 dnl -------------------
 dnl Command-line option to specify where Ada objects will install.
 AC_DEFUN([CF_WITH_ADA_OBJECTS],[
-AC_MSG_CHECKING(for ada-objects)
+AC_MSG_CHECKING(for Ada95 object directory)
 CF_WITH_PATH(ada-objects,
-   [  --with-ada-objects=DIR  Ada objects are in DIR],
+   [  --with-ada-objects=DIR  find Ada95 objects in DIR],
    ADA_OBJECTS,
    PREFIX/lib/ada/adalib,
    [$]prefix/lib/ada/adalib)
@@ -9015,26 +9015,32 @@ AC_SUBST(ADA_OBJECTS)
 AC_MSG_RESULT($ADA_OBJECTS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_SHAREDLIB version: 5 updated: 2018/07/21 19:10:35
+dnl CF_WITH_ADA_SHAREDLIB version: 6 updated: 2023/10/28 11:59:01
 dnl ---------------------
-dnl Command-line option to specify if an Ada95 shared-library should be built,
+dnl Command-line option to specify if an Ada95 shared library should be built,
 dnl and optionally what its soname should be.
 AC_DEFUN([CF_WITH_ADA_SHAREDLIB],[
 AC_REQUIRE([CF_GNAT_PROJECTS])
-AC_MSG_CHECKING(if an Ada95 shared-library should be built)
+AC_MSG_CHECKING(whether to build an Ada95 shared library)
 AC_ARG_WITH(ada-sharedlib,
-	[  --with-ada-sharedlib=soname build shared-library (requires GNAT projects)],
+	[  --with-ada-sharedlib    build Ada95 shared library; requires GNAT project support],
 	[with_ada_sharedlib=$withval],
 	[with_ada_sharedlib=no])
-AC_MSG_RESULT($with_ada_sharedlib)
+cf_ada_sharedlib_warn=no
 
 if test "x$with_ada_sharedlib" != xno
 then
 	if test "x$cf_gnat_projects" != xyes
 	then
-		AC_MSG_WARN(disabling shared-library since GNAT projects are not supported)
 		with_ada_sharedlib=no
+		cf_ada_sharedlib_warn=yes
 	fi
+fi
+
+AC_MSG_RESULT($with_ada_sharedlib)
+if test "x$cf_ada_sharedlib_warn" != xno
+then
+	AC_MSG_WARN(disabling Ada95 shared library since GNAT projects are not supported)
 fi
 
 ADA_SHAREDLIB='lib$(LIB_NAME).so.1'
@@ -9083,7 +9089,7 @@ if test "$with_dmalloc" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_EXPORT_SYMS version: 3 updated: 2014/12/20 19:16:08
+dnl CF_WITH_EXPORT_SYMS version: 4 updated: 2023/10/28 11:59:01
 dnl -------------------
 dnl Use this with libtool to specify the list of symbols that may be exported.
 dnl The input file contains one symbol per line; comments work with "#".
@@ -9093,7 +9099,7 @@ AC_DEFUN([CF_WITH_EXPORT_SYMS],
 [
 AC_MSG_CHECKING(if exported-symbols file should be used)
 AC_ARG_WITH(export-syms,
-	[  --with-export-syms=XXX  limit exported symbols using libtool],
+	[  --with-export-syms=SYM-FILE limit symbols exported by libtool to those listed in SYM-FILE],
 	[with_export_syms=$withval],
 	[with_export_syms=no])
 if test "x$with_export_syms" = xyes
@@ -9285,7 +9291,7 @@ AC_SUBST(LIB_UNINSTALL)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL_OPTS version: 4 updated: 2015/04/17 21:13:04
+dnl CF_WITH_LIBTOOL_OPTS version: 5 updated: 2023/10/28 11:59:01
 dnl --------------------
 dnl Allow user to pass additional libtool options into the library creation
 dnl and link steps.  The main use for this is to do something like
@@ -9295,7 +9301,7 @@ dnl	./configure --enable-static
 AC_DEFUN([CF_WITH_LIBTOOL_OPTS],[
 AC_MSG_CHECKING(for additional libtool options)
 AC_ARG_WITH(libtool-opts,
-	[  --with-libtool-opts=XXX specify additional libtool options],
+	[  --with-libtool-opts=XXX give libtool additional options XXX],
 	[with_libtool_opts=$withval],
 	[with_libtool_opts=no])
 AC_MSG_RESULT($with_libtool_opts)
@@ -9541,14 +9547,13 @@ if test -n "$PKG_CONFIG_PATH"; then
 elif test -n "$PKG_CONFIG_LIBDIR"; then
 	cf_search_path=`echo "$PKG_CONFIG_LIBDIR" | sed -e 's/:/ /g' -e 's,^[[ 	]]*,,' -e 's,[[ 	]]*$,,'`
 else
-	cf_search_path=auto
+	cf_search_path=libdir
 fi
 
 # if the option is used, let that override.  otherwise default to "libdir"
 AC_ARG_WITH(pkg-config-libdir,
 	[  --with-pkg-config-libdir=XXX use given directory for installing pc-files],
-	[cf_search_path=$withval],
-	[test "x$PKG_CONFIG" != xnone && test -z "$cf_search_path" && cf_search_path=libdir])
+	[cf_search_path=$withval])
 
 case "x$cf_search_path" in
 (xlibdir)
@@ -9779,7 +9784,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 10 updated: 2021/01/04 18:48:01
+dnl CF_WITH_VERSIONED_SYMS version: 11 updated: 2023/10/28 11:59:01
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -9792,7 +9797,7 @@ AC_REQUIRE([AC_PROG_EGREP])dnl
 
 AC_MSG_CHECKING(if versioned-symbols file should be used)
 AC_ARG_WITH(versioned-syms,
-	[  --with-versioned-syms=X markup versioned symbols using ld],
+	[  --with-versioned-syms=MAP-FILE version ELF shared library symbols per MAP-FILE],
 	[with_versioned_syms=$withval],
 	[with_versioned_syms=no])
 case "x$with_versioned_syms" in
@@ -9918,7 +9923,7 @@ AC_SUBST(VERSIONED_SYMS)
 AC_SUBST(WILDCARD_SYMS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_X11_RGB version: 2 updated: 2019/12/31 08:53:54
+dnl CF_WITH_X11_RGB version: 3 updated: 2023/10/28 11:59:01
 dnl ---------------
 dnl Handle configure option "--with-x11-rgb", setting these shell
 dnl variables:
@@ -9958,7 +9963,7 @@ dnl 	/usr/X11/lib/X11/rgb.txt
 AC_DEFUN([CF_WITH_X11_RGB],[
 AC_MSG_CHECKING(for X11 rgb file)
 AC_ARG_WITH(x11-rgb,
-	[  --with-x11-rgb=FILE   file containing X11 rgb information (EPREFIX/lib/X11/rgb.txt)],
+	[  --with-x11-rgb=FILE     obtain X11 color definitions from FILE (default: EPREFIX/lib/X11/rgb.txt)],
 	[RGB_PATH=$withval],
 	[RGB_PATH=auto])
 

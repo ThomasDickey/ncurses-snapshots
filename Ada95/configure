@@ -705,7 +705,7 @@ General Options:
   --with-system-type=XXX  test: override derived host system-type
   --disable-stripping     do not strip (debug info) installed executables
   --with-strip-program=XX specify program to use when stripping in install
-  --with-pkg-config{=path} enable/disable use of pkg-config
+  --with-pkg-config[=CMD] enable/disable use of pkg-config and its name CMD
   --with-pkg-config-libdir=XXX use given directory for installing pc-files
   --without-tests         suppress build with test-programs
   --enable-mixed-case     tic should assume mixed-case filenames
@@ -722,7 +722,7 @@ Options to Specify the Libraries Built/Used:
   --with-curses-dir=DIR   directory in which (n)curses is installed
   --enable-widec          compile with wide-char/UTF-8 code
   --with-lib-prefix       override library-prefix
-  --with-shlib-version=X  Specify rel or abi version for shared libs
+  --with-shlib-version[={rel|abi}] use release or ABI version in shared library file names
   --enable-rpath-link     link sample programs with rpath option
 Fine-Tuning Your Configuration:
   --enable-broken_linker  compile with broken-linker support code
@@ -748,11 +748,11 @@ Testing/development Options:
   --with-trace            test: add trace() function to all models of ncurses
   --disable-gnat-projects test: disable GNAT projects even if usable
 Ada95 Binding Options:
-  --with-ada-compiler=CMD specify Ada95 compiler command (default gnatmake)
-  --with-ada-include=DIR  Ada includes are in DIR (default: PREFIX/share/ada/adainclude)
-  --with-ada-objects=DIR  Ada objects are in DIR (default: PREFIX/lib/ada/adalib)
-  --with-ada-sharedlib=soname build shared-library (requires GNAT projects)
-  --with-ada-libname=XXX  override default Ada library-name
+  --with-ada-compiler[=CMD] use CMD as Ada95 compiler (default: gnatmake)
+  --with-ada-include=DIR  find Ada95 includes in DIR (default: PREFIX/share/ada/adainclude)
+  --with-ada-objects=DIR  find Ada95 objects in DIR (default: PREFIX/lib/ada/adalib)
+  --with-ada-sharedlib    build Ada95 shared library; requires GNAT project support
+  --with-ada-libname=XXX  use XXX as Ada95 library name
 
 Some influential environment variables:
   CC          C compiler command
@@ -11746,8 +11746,8 @@ fi
 	cf_ld_rpath_opt=
 	test "$cf_cv_enable_rpath" = yes && cf_ld_rpath_opt="$LD_RPATH_OPT"
 
-	echo "$as_me:11749: checking if release/abi version should be used for shared libs" >&5
-echo $ECHO_N "checking if release/abi version should be used for shared libs... $ECHO_C" >&6
+	echo "$as_me:11749: checking whether to use release or ABI version in shared library file names" >&5
+echo $ECHO_N "checking whether to use release or ABI version in shared library file names... $ECHO_C" >&6
 
 # Check whether --with-shlib-version or --without-shlib-version was given.
 if test "${with_shlib_version+set}" = set; then
@@ -18043,8 +18043,8 @@ else
 	USE_GNAT_LIBRARIES="#"
 fi
 
-echo "$as_me:18046: checking for ada-compiler" >&5
-echo $ECHO_N "checking for ada-compiler... $ECHO_C" >&6
+echo "$as_me:18046: checking for Ada95 compiler" >&5
+echo $ECHO_N "checking for Ada95 compiler... $ECHO_C" >&6
 
 # Check whether --with-ada-compiler or --without-ada-compiler was given.
 if test "${with_ada_compiler+set}" = set; then
@@ -18059,8 +18059,8 @@ echo "${ECHO_T}$cf_ada_compiler" >&6
 
 		cf_ada_package=terminal_interface
 
-echo "$as_me:18062: checking for ada-include" >&5
-echo $ECHO_N "checking for ada-include... $ECHO_C" >&6
+echo "$as_me:18062: checking for Ada95 include directory" >&5
+echo $ECHO_N "checking for Ada95 include directory... $ECHO_C" >&6
 
 # Check whether --with-ada-include or --without-ada-include was given.
 if test "${with_ada_include+set}" = set; then
@@ -18107,8 +18107,8 @@ eval ADA_INCLUDE="$withval"
 echo "$as_me:18107: result: $ADA_INCLUDE" >&5
 echo "${ECHO_T}$ADA_INCLUDE" >&6
 
-echo "$as_me:18110: checking for ada-objects" >&5
-echo $ECHO_N "checking for ada-objects... $ECHO_C" >&6
+echo "$as_me:18110: checking for Ada95 object directory" >&5
+echo $ECHO_N "checking for Ada95 object directory... $ECHO_C" >&6
 
 # Check whether --with-ada-objects or --without-ada-objects was given.
 if test "${with_ada_objects+set}" = set; then
@@ -18155,8 +18155,8 @@ eval ADA_OBJECTS="$withval"
 echo "$as_me:18155: result: $ADA_OBJECTS" >&5
 echo "${ECHO_T}$ADA_OBJECTS" >&6
 
-echo "$as_me:18158: checking if an Ada95 shared-library should be built" >&5
-echo $ECHO_N "checking if an Ada95 shared-library should be built... $ECHO_C" >&6
+echo "$as_me:18158: checking whether to build an Ada95 shared library" >&5
+echo $ECHO_N "checking whether to build an Ada95 shared library... $ECHO_C" >&6
 
 # Check whether --with-ada-sharedlib or --without-ada-sharedlib was given.
 if test "${with_ada_sharedlib+set}" = set; then
@@ -18165,17 +18165,23 @@ if test "${with_ada_sharedlib+set}" = set; then
 else
   with_ada_sharedlib=no
 fi;
-echo "$as_me:18168: result: $with_ada_sharedlib" >&5
-echo "${ECHO_T}$with_ada_sharedlib" >&6
+cf_ada_sharedlib_warn=no
 
 if test "x$with_ada_sharedlib" != xno
 then
 	if test "x$cf_gnat_projects" != xyes
 	then
-		{ echo "$as_me:18175: WARNING: disabling shared-library since GNAT projects are not supported" >&5
-echo "$as_me: WARNING: disabling shared-library since GNAT projects are not supported" >&2;}
 		with_ada_sharedlib=no
+		cf_ada_sharedlib_warn=yes
 	fi
+fi
+
+echo "$as_me:18179: result: $with_ada_sharedlib" >&5
+echo "${ECHO_T}$with_ada_sharedlib" >&6
+if test "x$cf_ada_sharedlib_warn" != xno
+then
+	{ echo "$as_me:18183: WARNING: disabling Ada95 shared library since GNAT projects are not supported" >&5
+echo "$as_me: WARNING: disabling Ada95 shared library since GNAT projects are not supported" >&2;}
 fi
 
 ADA_SHAREDLIB='lib$(LIB_NAME).so.1'
@@ -18192,8 +18198,8 @@ fi
 
 		# allow the Ada binding to be renamed
 
-echo "$as_me:18195: checking for ada-libname" >&5
-echo $ECHO_N "checking for ada-libname... $ECHO_C" >&6
+echo "$as_me:18201: checking for Ada95 curses library name" >&5
+echo $ECHO_N "checking for Ada95 curses library name... $ECHO_C" >&6
 
 # Check whether --with-ada-libname or --without-ada-libname was given.
 if test "${with_ada_libname+set}" = set; then
@@ -18208,16 +18214,16 @@ case "x$ADA_LIBNAME" in
 	;;
 esac
 
-echo "$as_me:18211: result: $ADA_LIBNAME" >&5
+echo "$as_me:18217: result: $ADA_LIBNAME" >&5
 echo "${ECHO_T}$ADA_LIBNAME" >&6
 
 	else
-		{ { echo "$as_me:18215: error: No usable Ada compiler found" >&5
+		{ { echo "$as_me:18221: error: No usable Ada compiler found" >&5
 echo "$as_me: error: No usable Ada compiler found" >&2;}
    { (exit 1); exit 1; }; }
 	fi
 else
-	{ { echo "$as_me:18220: error: The Ada compiler is needed for this package" >&5
+	{ { echo "$as_me:18226: error: The Ada compiler is needed for this package" >&5
 echo "$as_me: error: The Ada compiler is needed for this package" >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -18257,7 +18263,7 @@ elif test "$includedir" != "/usr/include"; then
 fi
 
 ### Build up pieces for makefile rules
-echo "$as_me:18260: checking default library suffix" >&5
+echo "$as_me:18266: checking default library suffix" >&5
 echo $ECHO_N "checking default library suffix... $ECHO_C" >&6
 
 	case $DFT_LWR_MODEL in
@@ -18268,10 +18274,10 @@ echo $ECHO_N "checking default library suffix... $ECHO_C" >&6
 	(shared)  DFT_ARG_SUFFIX=''   ;;
 	esac
 	test -n "$LIB_SUFFIX" && DFT_ARG_SUFFIX="${LIB_SUFFIX}${DFT_ARG_SUFFIX}"
-echo "$as_me:18271: result: $DFT_ARG_SUFFIX" >&5
+echo "$as_me:18277: result: $DFT_ARG_SUFFIX" >&5
 echo "${ECHO_T}$DFT_ARG_SUFFIX" >&6
 
-echo "$as_me:18274: checking default library-dependency suffix" >&5
+echo "$as_me:18280: checking default library-dependency suffix" >&5
 echo $ECHO_N "checking default library-dependency suffix... $ECHO_C" >&6
 
 	case X$DFT_LWR_MODEL in
@@ -18354,10 +18360,10 @@ echo $ECHO_N "checking default library-dependency suffix... $ECHO_C" >&6
 		DFT_LIB_SUFFIX="${LIB_SUFFIX}${EXTRA_SUFFIX}${DFT_LIB_SUFFIX}"
 		DFT_DEP_SUFFIX="${LIB_SUFFIX}${EXTRA_SUFFIX}${DFT_DEP_SUFFIX}"
 	fi
-echo "$as_me:18357: result: $DFT_DEP_SUFFIX" >&5
+echo "$as_me:18363: result: $DFT_DEP_SUFFIX" >&5
 echo "${ECHO_T}$DFT_DEP_SUFFIX" >&6
 
-echo "$as_me:18360: checking default object directory" >&5
+echo "$as_me:18366: checking default object directory" >&5
 echo $ECHO_N "checking default object directory... $ECHO_C" >&6
 
 	case $DFT_LWR_MODEL in
@@ -18373,7 +18379,7 @@ echo $ECHO_N "checking default object directory... $ECHO_C" >&6
 			DFT_OBJ_SUBDIR='obj_s' ;;
 		esac
 	esac
-echo "$as_me:18376: result: $DFT_OBJ_SUBDIR" >&5
+echo "$as_me:18382: result: $DFT_OBJ_SUBDIR" >&5
 echo "${ECHO_T}$DFT_OBJ_SUBDIR" >&6
 
 ### Set up low-level terminfo dependencies for makefiles.
@@ -18515,7 +18521,7 @@ DEFS=-DHAVE_CONFIG_H
 : "${CONFIG_STATUS=./config.status}"
 ac_clean_files_save=$ac_clean_files
 ac_clean_files="$ac_clean_files $CONFIG_STATUS"
-{ echo "$as_me:18518: creating $CONFIG_STATUS" >&5
+{ echo "$as_me:18524: creating $CONFIG_STATUS" >&5
 echo "$as_me: creating $CONFIG_STATUS" >&6;}
 cat >"$CONFIG_STATUS" <<_ACEOF
 #! $SHELL
@@ -18696,7 +18702,7 @@ cat >>"$CONFIG_STATUS" <<\EOF
     echo "$ac_cs_version"; exit 0 ;;
   --he | --h)
     # Conflict between --help and --header
-    { { echo "$as_me:18699: error: ambiguous option: $1
+    { { echo "$as_me:18705: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -18715,7 +18721,7 @@ Try \`$0 --help' for more information." >&2;}
     ac_need_defaults=false;;
 
   # This is an error.
-  -*) { { echo "$as_me:18718: error: unrecognized option: $1
+  -*) { { echo "$as_me:18724: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -18790,7 +18796,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "default" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
   "include/ncurses_cfg.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/ncurses_cfg.h:include/ncurses_cfg.hin" ;;
-  *) { { echo "$as_me:18793: error: invalid argument: $ac_config_target" >&5
+  *) { { echo "$as_me:18799: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -19151,7 +19157,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:19154: creating $ac_file" >&5
+    { echo "$as_me:19160: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -19169,7 +19175,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo "$tmp"/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:19172: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:19178: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo "$f";;
@@ -19182,7 +19188,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo "$srcdir/$f"
          else
            # /dev/null tree
-           { { echo "$as_me:19185: error: cannot find input file: $f" >&5
+           { { echo "$as_me:19191: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -19198,7 +19204,7 @@ cat >>"$CONFIG_STATUS" <<\EOF
       if test -n "$ac_seen"; then
         ac_used=`grep '@datarootdir@' "$ac_item"`
         if test -z "$ac_used"; then
-          { echo "$as_me:19201: WARNING: datarootdir was used implicitly but not set:
+          { echo "$as_me:19207: WARNING: datarootdir was used implicitly but not set:
 $ac_seen" >&5
 echo "$as_me: WARNING: datarootdir was used implicitly but not set:
 $ac_seen" >&2;}
@@ -19207,7 +19213,7 @@ $ac_seen" >&2;}
       fi
       ac_seen=`grep '${datarootdir}' "$ac_item"`
       if test -n "$ac_seen"; then
-        { echo "$as_me:19210: WARNING: datarootdir was used explicitly but not set:
+        { echo "$as_me:19216: WARNING: datarootdir was used explicitly but not set:
 $ac_seen" >&5
 echo "$as_me: WARNING: datarootdir was used explicitly but not set:
 $ac_seen" >&2;}
@@ -19252,7 +19258,7 @@ cat >>"$CONFIG_STATUS" <<\EOF
             ac_init=`$EGREP '[ 	]*'$ac_name'[ 	]*=' "$ac_file"`
             if test -z "$ac_init"; then
               ac_seen=`echo "$ac_seen" |sed -e 's,^,'"$ac_file"':,'`
-              { echo "$as_me:19255: WARNING: Variable $ac_name is used but was not set:
+              { echo "$as_me:19261: WARNING: Variable $ac_name is used but was not set:
 $ac_seen" >&5
 echo "$as_me: WARNING: Variable $ac_name is used but was not set:
 $ac_seen" >&2;}
@@ -19263,7 +19269,7 @@ $ac_seen" >&2;}
     $EGREP -n '@[A-Z_][A-Z_0-9]+@' "$ac_file" >>"$tmp"/out
     if test -s "$tmp"/out; then
       ac_seen=`sed -e 's,^,'"$ac_file"':,' < "$tmp"/out`
-      { echo "$as_me:19266: WARNING: Some variables may not be substituted:
+      { echo "$as_me:19272: WARNING: Some variables may not be substituted:
 $ac_seen" >&5
 echo "$as_me: WARNING: Some variables may not be substituted:
 $ac_seen" >&2;}
@@ -19312,7 +19318,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
   * )   ac_file_in=$ac_file.in ;;
   esac
 
-  test x"$ac_file" != x- && { echo "$as_me:19315: creating $ac_file" >&5
+  test x"$ac_file" != x- && { echo "$as_me:19321: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
 
   # First look for the input files in the build tree, otherwise in the
@@ -19323,7 +19329,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo "$tmp"/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:19326: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:19332: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -19336,7 +19342,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo "$srcdir/$f"
          else
            # /dev/null tree
-           { { echo "$as_me:19339: error: cannot find input file: $f" >&5
+           { { echo "$as_me:19345: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -19394,7 +19400,7 @@ cat >>"$CONFIG_STATUS" <<\EOF
   rm -f "$tmp"/in
   if test x"$ac_file" != x-; then
     if cmp -s "$ac_file" "$tmp/config.h" 2>/dev/null; then
-      { echo "$as_me:19397: $ac_file is unchanged" >&5
+      { echo "$as_me:19403: $ac_file is unchanged" >&5
 echo "$as_me: $ac_file is unchanged" >&6;}
     else
       ac_dir=`$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
