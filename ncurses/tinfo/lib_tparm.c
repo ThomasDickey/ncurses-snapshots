@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.152 2023/09/16 16:30:27 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.153 2023/11/04 19:28:41 tom Exp $")
 
 /*
  *	char *
@@ -1120,8 +1120,10 @@ check_string_caps(TPARM_DATA *data, const char *string)
 	    want_type = 2;	/* function key #1, transmit string #2 */
 	else if (CHECK_CAP(plab_norm))
 	    want_type = 2;	/* label #1, show string #2 */
+#ifdef pkey_plab
 	else if (CHECK_CAP(pkey_plab))
 	    want_type = 6;	/* function key #1, type string #2, show string #3 */
+#endif
 #if NCURSES_XNAMES
 	else {
 	    char *check;

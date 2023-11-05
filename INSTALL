@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.251 2023/10/28 16:54:24 tom Exp $
+-- $Id: INSTALL,v 1.253 2023/11/03 20:55:47 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -47,7 +47,7 @@ If you are converting from BSD curses and do not have root access, be sure
 to read the BSD CONVERSION NOTES section below.
 
 If you are trying to build applications using gpm with ncurses,
-read the USING NCURSES WITH GPM section below.
+read the USING GPM section below.
 
 If you are cross-compiling, see the note below on
 BUILDING WITH A CROSS-COMPILER.
@@ -80,7 +80,7 @@ INSTALLATION PROCEDURE:
     The --prefix option to configure changes the root directory for installing
     ncurses.  The default is normally in subdirectories of /usr/local, except
     for systems where ncurses is normally installed as a system library (see
-    "IF YOU ARE A SYSTEM INTEGRATOR").  Use --prefix=/usr to replace your
+    "FOR SYSTEM INTEGRATORS").  Use --prefix=/usr to replace your
     default curses distribution.
 
     The package gets installed beneath the --prefix directory as follows:
@@ -177,7 +177,7 @@ INSTALLATION PROCEDURE:
     You can make curses and terminfo fall back to an existing file of termcap
     definitions by configuring with --enable-termcap.  If you do this, the
     library will search /etc/termcap before the terminfo database, and will
-    also interpret the contents of the TERM environment variable.  See the
+    also interpret the contents of the $TERM environment variable.  See the
     section BSD CONVERSION NOTES below.
 
 3.  Type 'make'.  Ignore any warnings; no error messages should be produced.
@@ -1275,7 +1275,7 @@ CONFIGURE OPTIONS:
 	Specify a search-list of terminfo directories which will be compiled
 	into the ncurses library (default: DATADIR/terminfo)
 
-	This is a colon-separated list, like the TERMINFO_DIRS environment
+	This is a colon-separated list, like the $TERMINFO_DIRS environment
 	variable.
 
     --with-termlib[=XXX]

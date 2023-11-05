@@ -39,7 +39,7 @@
 #include <progs.priv.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tabs.c,v 1.52 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.53 2023/11/04 20:46:09 tom Exp $")
 
 static GCC_NORETURN void usage(void);
 
@@ -370,7 +370,9 @@ do_set_margin(int margin, bool no_op)
 	    }
 	    tputs(set_left_margin, 1, putch);
 	}
-    } else if (VALID_STRING(set_left_margin_parm)) {
+    }
+#if defined(set_left_margin_parm) && defined(set_right_margin_parm)
+    else if (VALID_STRING(set_left_margin_parm)) {
 	result = TRUE;
 	if (!no_op) {
 	    if (VALID_STRING(set_right_margin_parm)) {
@@ -379,12 +381,16 @@ do_set_margin(int margin, bool no_op)
 		tputs(TIPARM_2(set_left_margin_parm, margin, max_cols), 1, putch);
 	    }
 	}
-    } else if (VALID_STRING(set_lr_margin)) {
+    }
+#endif
+#if defined(set_lr_margin)
+    else if (VALID_STRING(set_lr_margin)) {
 	result = TRUE;
 	if (!no_op) {
 	    tputs(TIPARM_2(set_lr_margin, margin, max_cols), 1, putch);
 	}
     }
+#endif
     return result;
 }
 

@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.323 2023/09/30 21:17:23 Branden.Robinson Exp $")
+MODULE_ID("$Id: tic.c,v 1.324 2023/11/04 19:43:43 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -3149,6 +3149,7 @@ guess_ANSI_VTxx(TERMTYPE2 *tp)
  * In particular, any ECMA-48 terminal should support these, though the details
  * for u9 are implementation dependent.
  */
+#if defined(user6) && defined(user7) && defined(user8) && defined(user9)
 static void
 check_user_6789(TERMTYPE2 *tp)
 {
@@ -3184,6 +3185,9 @@ check_user_6789(TERMTYPE2 *tp)
 	break;
     }
 }
+#else
+#define check_user_6789(tp)	/* nothing */
+#endif
 
 /* other sanity-checks (things that we don't want in the normal
  * logic that reads a terminfo entry)
