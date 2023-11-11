@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_forms.c,v 1.62 2023/05/27 20:13:10 tom Exp $
+ * $Id: demo_forms.c,v 1.63 2023/11/11 00:29:53 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -154,7 +154,7 @@ make_label(const char *label, int frow, int fcol)
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, (int) ((unsigned) field_opts(f) & ~O_ACTIVE));
+	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
     }
     return (f);
 }

@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.37 2023/04/28 23:12:00 tom Exp $
+ * $Id: test_tparm.c,v 1.39 2023/11/11 01:00:03 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -69,10 +69,16 @@ failed(const char *msg)
 #if HAVE_TIGETSTR
 
 static int a_opt;
-static int i_opt;
 static int p_opt;
-static int s_opt;
 static int v_opt;
+
+#if HAVE_TIPARM
+static int i_opt;
+#endif
+
+#if HAVE_TIPARM_S
+static int s_opt;
+#endif
 
 /*
  * Total tests (and failures):
@@ -605,6 +611,8 @@ main(int argc, char *argv[])
 		    all_caps[len_caps++] = strdup(ExtStrname(term, (int) n, strnames));
 		}
 	    }
+#else
+	    (void) std_caps;
 #endif
 
 	    /*

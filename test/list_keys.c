@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: list_keys.c,v 1.32 2023/06/24 13:57:11 tom Exp $
+ * $Id: list_keys.c,v 1.33 2023/11/11 00:35:05 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -52,7 +52,10 @@
 static bool f_opt = FALSE;
 static bool m_opt = FALSE;
 static bool t_opt = FALSE;
+
+#if NCURSES_XNAMES || HAVE_USE_EXTENDED_NAMES
 static bool x_opt = FALSE;
+#endif
 
 typedef enum {
     ktCursor
@@ -471,7 +474,7 @@ main(int argc, char *argv[])
 	case 't':
 	    t_opt = TRUE;
 	    break;
-#ifdef NCURSES_VERSION
+#if NCURSES_XNAMES || HAVE_USE_EXTENDED_NAMES
 	case 'x':
 	    x_opt = TRUE;
 	    break;

@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.216 2023/04/23 23:38:22 tom Exp $ */
+/* $Id: test.priv.h,v 1.217 2023/11/11 00:23:26 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -765,11 +765,11 @@ extern int optind;
 #define VERSION_COMMON() \
 static char *version_common(char **argv) { \
 	char *base = argv[0]; \
-	char *leaf = strrchr(base, '/'); \
+	char *part = strrchr(base, '/'); \
 	char *result = malloc(strlen(base) + 80); \
 	if (result != NULL) { \
-	    if (leaf++ == NULL) leaf = base; \
-	    sprintf(result, "%.20s: ", leaf); \
+	    if (part++ == NULL) part = base; \
+	    sprintf(result, "%.20s: ", part); \
 	    format_version(result + strlen(result)); \
 	} \
 	return result; \

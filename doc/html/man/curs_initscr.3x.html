@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.53 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_initscr.3x,v 1.54 2023/11/11 23:20:20 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2023-11-11 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2023-11-11 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -157,7 +157,13 @@
 
        X/Open defines no error conditions.  In this implementation
 
-       <STRONG>o</STRONG>   <STRONG>endwin</STRONG> returns an error if the terminal was not initialized.
+       <STRONG>o</STRONG>   <STRONG>endwin</STRONG> returns an error if
+
+           <STRONG>o</STRONG>   the terminal was not initialized, or
+
+           <STRONG>o</STRONG>   <STRONG>endwin</STRONG> is called more than once without updating the screen, or
+
+           <STRONG>o</STRONG>   <STRONG><A HREF="curs_kernel.3x.html">reset_shell_mode(3x)</A></STRONG> returns an error.
 
        <STRONG>o</STRONG>   <STRONG>newterm</STRONG> returns an error if it cannot allocate the data  structures
            for  the  screen,  or  for the top-level windows within the screen,
@@ -294,7 +300,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.4                       2023-11-11                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

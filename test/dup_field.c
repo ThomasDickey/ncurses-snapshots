@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2023 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.7 2022/12/10 23:31:31 tom Exp $
+ * $Id: dup_field.c,v 1.8 2023/11/11 00:29:10 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -116,7 +116,7 @@ make_label(const char *label, int frow, int fcol)
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, (int) ((unsigned) field_opts(f) & ~O_ACTIVE));
+	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
     }
     return (f);
 }

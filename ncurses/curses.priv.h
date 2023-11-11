@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.676 2023/09/23 18:46:47 tom Exp $
+ * $Id: curses.priv.h,v 1.677 2023/11/10 15:11:11 tom Exp $
  *
  *	curses.priv.h
  *
@@ -956,7 +956,8 @@ extern NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals;
 extern NCURSES_EXPORT_VAR(NCURSES_PRESCREEN) _nc_prescreen;
 
 typedef enum {
-    ewInitial = 0,
+    ewUnknown = 0,
+    ewInitial,
     ewRunning,
     ewSuspend
 } ENDWIN;

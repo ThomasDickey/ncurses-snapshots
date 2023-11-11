@@ -1,7 +1,7 @@
 Summary: shared libraries for terminal handling
 Name: ncurses6
 Version: 6.4
-Release: 20231104
+Release: 20231111
 License: X11
 Group: Development/Libraries
 URL: https://invisible-island.net/ncurses/

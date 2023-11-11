@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.157 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.158 2023/11/11 18:25:52 tom Exp $")
 
 #define MAX_STRING	1024	/* maximum formatted string */
 
@@ -209,15 +209,18 @@ use_predicate(unsigned type, PredIdx idx)
 	     * unlike numbers and strings, whose cancelled/absent state is
 	     * recorded in the terminfo database.
 	     */
-	    for (ep = &entries[1]; ep < entries + termcount; ep++)
-		if (ep->tterm.Booleans[idx] == TRUE) {
-		    is_set = entries[0].tterm.Booleans[idx];
-		    break;
+	    if (idx < NUM_BOOLEANS(&(entries[0].tterm))) {
+		for (ep = &entries[1]; ep < entries + termcount; ep++) {
+		    if (idx < NUM_BOOLEANS(&(ep->tterm))
+			&& ep->tterm.Booleans[idx] == TRUE) {
+			is_set = entries[0].tterm.Booleans[idx];
+			break;
+		    }
 		}
-	    if (is_set != entries[0].tterm.Booleans[idx])
-		return (!is_set);
-	    else
-		return (FAIL);
+		if (is_set != entries[0].tterm.Booleans[idx])
+		    return (!is_set);
+	    }
+	    return (FAIL);
 	}
 
     case NUMBER:
@@ -229,16 +232,18 @@ use_predicate(unsigned type, PredIdx idx)
 	     * capability gets the first non-default value found
 	     * in the sequence of use entries'.
 	     */
-	    for (ep = &entries[1]; ep < entries + termcount; ep++)
-		if (VALID_NUMERIC(ep->tterm.Numbers[idx])) {
-		    value = ep->tterm.Numbers[idx];
-		    break;
-		}
+	    if (idx < NUM_NUMBERS(&(entries[0].tterm))) {
+		for (ep = &entries[1]; ep < entries + termcount; ep++)
+		    if (idx < NUM_NUMBERS(&(ep->tterm))
+			&& VALID_NUMERIC(ep->tterm.Numbers[idx])) {
+			value = ep->tterm.Numbers[idx];
+			break;
+		    }
 
-	    if (value != entries[0].tterm.Numbers[idx])
-		return (value != ABSENT_NUMERIC);
-	    else
-		return (FAIL);
+		if (value != entries[0].tterm.Numbers[idx])
+		    return (value != ABSENT_NUMERIC);
+	    }
+	    return (FAIL);
 	}
 
     case STRING:
@@ -252,18 +257,20 @@ use_predicate(unsigned type, PredIdx idx)
 	     * capability gets the first non-default value found
 	     * in the sequence of use entries'.
 	     */
-	    for (ep = &entries[1]; ep < entries + termcount; ep++)
-		if (ep->tterm.Strings[idx]) {
-		    usestr = ep->tterm.Strings[idx];
-		    break;
-		}
+	    if (idx < NUM_STRINGS(&(entries[0].tterm))) {
+		for (ep = &entries[1]; ep < entries + termcount; ep++)
+		    if (idx < NUM_STRINGS(&(ep->tterm))
+			&& ep->tterm.Strings[idx]) {
+			usestr = ep->tterm.Strings[idx];
+			break;
+		    }
 
-	    if (usestr == ABSENT_STRING && termstr == ABSENT_STRING)
-		return (FAIL);
-	    else if (!usestr || !termstr || capcmp(idx, usestr, termstr))
-		return (TRUE);
-	    else
-		return (FAIL);
+		if (usestr == ABSENT_STRING && termstr == ABSENT_STRING)
+		    return (FAIL);
+		else if (!usestr || !termstr || capcmp(idx, usestr, termstr))
+		    return (TRUE);
+	    }
+	    return (FAIL);
 	}
     }
 

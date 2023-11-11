@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.535 2023/05/27 20:13:10 tom Exp $
+$Id: ncurses.c,v 1.538 2023/11/11 01:23:59 tom Exp $
 
 ***************************************************************************/
 
@@ -3157,7 +3157,7 @@ color_edit(bool recur GCC_UNUSED)
  *
  ****************************************************************************/
 static bool
-cycle_attr(int ch, unsigned *at_code, chtype *attr, ATTR_TBL * list, unsigned limit)
+cycle_attr(int ch, unsigned *at_code, attr_t *attr, ATTR_TBL * list, unsigned limit)
 {
     bool result = TRUE;
 
@@ -3318,7 +3318,7 @@ slk_test(bool recur GCC_UNUSED)
     int c, fmt = 1;
     char buf[9];
     char *s;
-    chtype attr = A_NORMAL;
+    attr_t attr = A_NORMAL;
     unsigned at_code = 0;
 #if HAVE_SLK_COLOR
     int fg = COLOR_BLACK;
@@ -3408,7 +3408,7 @@ slk_test(bool recur GCC_UNUSED)
 
 	default:
 	    if (cycle_attr(c, &at_code, &attr, my_list, my_size)) {
-		slk_attrset(attr);
+		slk_attrset((chtype) attr);
 		slk_touch();
 		slk_noutrefresh();
 		break;
@@ -3824,7 +3824,7 @@ acs_test(bool recur GCC_UNUSED)
     const char *pch_kludge = ((term != 0 && strstr(term, "linux"))
 			      ? "p=PC, "
 			      : "");
-    chtype attr = A_NORMAL;
+    attr_t attr = A_NORMAL;
     int digit = 0;
     int repeat = 1;
     int fg = COLOR_BLACK;
@@ -6369,7 +6369,7 @@ make_label(int frow, int fcol, NCURSES_CONST char *label)
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, (int) ((unsigned) field_opts(f) & ~O_ACTIVE));
+	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
     }
     return (f);
 }
