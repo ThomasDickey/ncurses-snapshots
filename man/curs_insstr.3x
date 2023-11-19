@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.42 2023/11/11 11:46:07 tom Exp $
-.TH curs_insstr 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.44 2023/11/18 23:46:00 tom Exp $
+.TH curs_insstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,11 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.de bP
+.ie n  .IP \(bu 4
+.el    .IP \(bu 2
+..
 .SH NAME
 \fB\%insstr\fP,
 \fB\%insnstr\fP,
@@ -65,42 +70,53 @@ insert a string in a \fIcurses\fR window
 .SH DESCRIPTION
 These routines insert a character string
 (as many characters as will fit on the line)
-before the character under the cursor.
-All characters to the right of the cursor are shifted right
+before the character under the cursor,
+as if calling \fBwinsch\fP(3X).
+All characters to the right of the cursor are shifted right,
 with the possibility of the rightmost characters on the line being lost.
+No wrapping is performed.
+.PP
 The cursor position does not change
 (after moving to \fIy\fP, \fIx\fP, if specified).
+.PP
 The functions with \fIn\fP as the last argument
 insert a leading substring of at most \fIn\fP characters.
-If \fIn\fP<=0, then the entire string is inserted.
+If \fIn\fP is less than zero, the entire string is inserted
+(stopping on a NUL character).
 .PP
-Special characters are handled as in \fBaddch\fP.
+Special characters are handled as in \fBwaddch\fP(3X).
 .SH RETURN VALUE
-All routines that return an integer return \fBERR\fP upon failure and \fBOK\fP
-(SVr4 specifies only "an integer value other than \fBERR\fP")
-upon successful completion,
-unless otherwise noted in the preceding routine descriptions.
+All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
 .PP
-X/Open defines no error conditions.
-In this implementation,
-if the window parameter is null or the str parameter is null,
-an error is returned.
+X/Open does not define any error conditions.
+This implementation returns an error
+.bP
+if the \fIwin\fP parameter is null or
+.bP
+if the \fIstr\fP parameter is null or
+.bP
+the \fBwinsch\fP(3X) function returns an error.
 .PP
 Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
+\fBwmove\fP(3X), and return an error if the position is outside the window,
 or if the window pointer is null.
 .SH NOTES
-Note that all but \fBwinsnstr\fP may be macros.
+All but \fBwinsnstr\fP may be macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4, which adds
 const qualifiers to the arguments.
-.LP
+.PP
 The Single Unix Specification, Version 2 states that
 \fBinsnstr\fP and \fBwinsnstr\fP perform wrapping.
 This is probably an error, since it makes this group of functions inconsistent.
 Also, no implementation of curses documents this inconsistency.
+.PP
+X/Open states that the entire string is inserted if \fIn\fP is less than 1.
+This is probably an error,
+because it is inconsistent with other functions,
+and differs from the SVr4 and X/Open implementations on Solaris.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
-\fB\%curs_clear\fP(3X),
 \fB\%curs_inch\fP(3X),
+\fB\%curs_ins_wstr\fP(3X),
 \fB\%curs_util\fP(3X)

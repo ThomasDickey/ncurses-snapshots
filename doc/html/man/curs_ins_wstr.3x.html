@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_ins_wstr.3x,v 1.25 2023/11/11 11:43:21 tom Exp @
+  * @Id: curs_ins_wstr.3x,v 1.27 2023/11/18 23:44:30 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_ins_wstr 3x 2023-11-11 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_ins_wstr 3x 2023-11-18 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_ins_wstr 3x 2023-11-11 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_ins_wstr 3x 2023-11-18 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
 
@@ -68,39 +68,53 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These routines insert a <STRONG>wchar_t</STRONG> character string (as many characters as
-       will fit on the line) before  the  character  under  the  cursor.   All
-       characters  to  the  right  of  the  cursor are shifted right, with the
-       possibility of the rightmost characters on the  line  being  lost.   No
-       wrapping  is  performed.   The  cursor  position does not change (after
-       moving to <EM>y</EM>, <EM>x</EM>, if specified).  The four routines with <EM>n</EM>  as  the  last
-       argument  insert  a  leading substring of at most <EM>n</EM> <STRONG>wchar_t</STRONG> characters.
-       If <EM>n</EM> is less than 1, the entire string is inserted.
+       will fit on the line) before the character  under  the  cursor,  as  if
+       calling  <STRONG><A HREF="curs_ins_wch.3x.html">wins_wch(3x)</A></STRONG>.   All  characters to the right of the cursor are
+       shifted right, with the possibility of the rightmost characters on  the
+       line being lost.  No wrapping is performed.
 
-       If a character in <EM>wstr</EM> is a tab, newline, carriage return or backspace,
-       the  cursor  is  moved appropriately within the window.  A newline also
-       does a <STRONG>clrtoeol</STRONG> before moving.  Tabs are  considered  to  be  at  every
-       eighth column.  If a character in <EM>wstr</EM> is another control character, it
-       is drawn in the <STRONG>^</STRONG><EM>X</EM> notation.  Calling <STRONG>win_wch</STRONG> after  adding  a  control
-       character  (and moving to it, if necessary) does not return the control
-       character, but instead returns a character in the  ^-representation  of
-       the control character.
+       The  cursor  position  does  not  change  (after  moving  to  <EM>y</EM>,  <EM>x</EM>, if
+       specified).
+
+       The functions with <EM>n</EM> as the last argument insert a leading substring of
+       at  most  <EM>n</EM>  <STRONG>wchar_t</STRONG>  characters.   If  <EM>n</EM> is less than zero, the entire
+       string is inserted (stopping on a L'\0' character).
+
+       Special characters are handled as in <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
+
+
+</PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
+       All functions return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
+
+       X/Open does not  define  any  error  conditions.   This  implementation
+       returns an error
+
+       <STRONG>o</STRONG>   if the <EM>win</EM> parameter is null or
+
+       <STRONG>o</STRONG>   if the <EM>wstr</EM> parameter is null or
+
+       <STRONG>o</STRONG>   if the <STRONG>wins_wch</STRONG> function returns an error.
+
+       Functions  with  a  "mv"  prefix  first perform a cursor movement using
+       <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG>, and return an error if the position is outside  the  window,
+       or if the window pointer is null.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Note that all but wins_nwstr may be macros.
+       All but <STRONG>wins_nwstr</STRONG> may be macros.
 
        If  the  first character in the string is a nonspacing character, these
        functions will fail.  XSI  does  not  define  what  will  happen  if  a
        nonspacing character follows a control character.
 
 
-</PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Upon successful completion, these functions return <STRONG>OK</STRONG>.  Otherwise, they
-       return <STRONG>ERR</STRONG>.
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
+       These  functions  are  described  in  the XSI Curses standard, Issue 4,
+       which adds const qualifiers to the arguments.
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
-       <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
-       the window pointer is null.
+       X/Open states that the entire string is inserted if <EM>n</EM> is less  than  1.
+       This  is  probably  an  error,  because  it  is inconsistent with other
+       functions, and differs from the X/Open implementation on Solaris.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -108,15 +122,16 @@
 
 
 
-ncurses 6.4                       2023-11-11                 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
+ncurses 6.4                       2023-11-18                 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
 <li><a href="#h2-NAME">NAME</a></li>
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
-<li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-NOTES">NOTES</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2023 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -45,7 +45,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.58 2022/06/11 20:12:04 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.61 2023/11/18 23:54:19 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -55,16 +55,18 @@ waddnstr(WINDOW *win, const char *astr, int n)
 
     T((T_CALLED("waddnstr(%p,%s,%d)"), (void *) win, _nc_visbufn(astr, n), n));
 
-    if (win && (str != 0)) {
+    if (win && (str != 0) && (n != 0)) {
+	bool explicit = (n > 0);
+
 	TR(TRACE_VIRTPUT | TRACE_ATTRS,
 	   ("... current %s", _traceattr(WINDOW_ATTRS(win))));
 	code = OK;
 
 	TR(TRACE_VIRTPUT, ("str is not null, length = %d",
-			   ((n > 0) ? n : (int) strlen(str))));
-	if (n < 0)
+			   (explicit ? n : (int) strlen(str))));
+	if (!explicit)
 	    n = INT_MAX;
-	while ((*str != '\0') && (n-- > 0)) {
+	while ((explicit || (*str != '\0')) && (n-- > 0)) {
 	    NCURSES_CH_T ch;
 	    TR(TRACE_VIRTPUT, ("*str = %#o", UChar(*str)));
 	    SetChar(ch, UChar(*str++), A_NORMAL);
@@ -144,7 +146,7 @@ wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
        _nc_viscbuf(astr, n),
        n));
 
-    if (!win)
+    if (!win || !astr)
 	returnCode(ERR);
 
     y = win->_cury;
@@ -228,16 +230,18 @@ waddnwstr(WINDOW *win, const wchar_t *str, int n)
 
     T((T_CALLED("waddnwstr(%p,%s,%d)"), (void *) win, _nc_viswbufn(str, n), n));
 
-    if (win && (str != 0)) {
+    if (win && (str != 0) && (n != 0)) {
+	bool explicit = (n > 0);
+
 	TR(TRACE_VIRTPUT | TRACE_ATTRS,
 	   ("... current %s", _traceattr(WINDOW_ATTRS(win))));
 	code = OK;
 
 	TR(TRACE_VIRTPUT, ("str is not null, length = %d",
-			   ((n > 0) ? n : (int) wcslen(str))));
-	if (n < 0)
+			   (explicit ? n : (int) wcslen(str))));
+	if (!explicit)
 	    n = INT_MAX;
-	while ((*str != L('\0')) && (n-- > 0)) {
+	while ((explicit || (*str != L('\0'))) && (n-- > 0)) {
 	    NCURSES_CH_T ch;
 	    TR(TRACE_VIRTPUT, ("*str[0] = %#lx", (unsigned long) *str));
 	    SetChar(ch, *str++, A_NORMAL);

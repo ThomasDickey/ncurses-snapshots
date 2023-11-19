@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.25 2023/11/11 11:43:21 tom Exp $
-.TH curs_ins_wstr 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.27 2023/11/18 23:44:30 tom Exp $
+.TH curs_ins_wstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,11 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.de bP
+.ie n  .IP \(bu 4
+.el    .IP \(bu 2
+..
 .SH NAME
 \fB\%ins_wstr\fP,
 \fB\%ins_nwstr\fP,
@@ -66,41 +71,51 @@ insert a wide-character string in a \fIcurses\fR window
 .SH DESCRIPTION
 These routines insert a \fBwchar_t\fP character string
 (as many characters as will fit on the line)
-before the character under the cursor.
+before the character under the cursor,
+as if calling \fBwins_wch\fP(3X).
 All characters to the right of the cursor are shifted right,
 with the possibility of the rightmost characters on the line being lost.
 No wrapping is performed.
+.PP
 The cursor position does not change
 (after moving to \fIy\fP, \fIx\fP, if specified).
-The four routines with \fIn\fP as the last argument
-insert a leading substring of at most \fIn\fP \fBwchar_t\fP characters.
-If \fIn\fP is less than 1, the entire string is inserted.
 .PP
-If a character in \fIwstr\fP is a tab, newline, carriage return or
-backspace, the cursor is moved appropriately within the window.
-A newline also does a \fBclrtoeol\fP before moving.
-Tabs are considered to be at every eighth column.
-If a character in \fIwstr\fP is another control character,
-it is drawn in the \fB^\fIX\fR notation.
-Calling \fBwin_wch\fP after adding a control character
-(and moving to it, if necessary)
-does not return the control character,
-but instead returns a character in the ^-representation
-of the control character.
+The functions with \fIn\fP as the last argument
+insert a leading substring of at most \fIn\fP \fBwchar_t\fP characters.
+If \fIn\fP is less than zero, the entire string is inserted
+(stopping on a L'\e0' character).
+.PP
+Special characters are handled as in \fBwadd_wch\fP(3X).
+.SH RETURN VALUE
+All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
+.PP
+X/Open does not define any error conditions.
+This implementation returns an error
+.bP
+if the \fIwin\fP parameter is null or
+.bP
+if the \fIwstr\fP parameter is null or
+.bP
+if the \fBwins_wch\fP function returns an error.
+.PP
+Functions with a \*(``mv\*('' prefix first perform a cursor movement using
+\fBwmove\fP(3X), and return an error if the position is outside the window,
+or if the window pointer is null.
 .SH NOTES
-Note that all but wins_nwstr may be macros.
+All but \fBwins_nwstr\fP may be macros.
 .PP
 If the first character in the string is a nonspacing character, these
 functions will fail.
 XSI does not define what will happen if a nonspacing character follows
 a control character.
-.SH RETURN VALUE
-Upon successful completion, these functions return \fBOK\fP.
-Otherwise, they return \fBERR\fP.
+.SH PORTABILITY
+These functions are described in the XSI Curses standard, Issue 4, which adds
+const qualifiers to the arguments.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+X/Open states that the entire string is inserted if \fIn\fP is less than 1.
+This is probably an error,
+because it is inconsistent with other functions,
+and differs from the X/Open implementation on Solaris.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_insstr\fP(3X),

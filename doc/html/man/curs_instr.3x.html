@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_instr.3x,v 1.36 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_instr.3x,v 1.41 2023/11/19 00:20:02 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_instr 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_instr 3x 2023-11-18 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_instr 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_instr 3x 2023-11-18 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
 
@@ -66,22 +66,26 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       These routines return a string of characters in <EM>str</EM>, extracted starting
-       at  the  current  cursor  position in the named window.  Attributes are
-       stripped from the characters.  The four functions with <EM>n</EM>  as  the  last
-       argument   return  a  leading  substring  at  most  <EM>n</EM>  characters  long
-       (exclusive of the trailing NUL).
+       These routines return a string of characters in <EM>str</EM>,  starting  at  the
+       current  cursor  position in the named window.  Attributes are stripped
+       from the characters.
+
+       The four functions with  <EM>n</EM>  as  the  last  argument  return  a  leading
+       substring  at  most  <EM>n</EM> characters long (exclusive of the trailing NUL).
+       Transfer stops at the end of the current line,  or  when  <EM>n</EM>  characters
+       have been stored at the location referenced by <EM>str</EM>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       All of the  functions  return  <STRONG>ERR</STRONG>  upon  failure,  or  the  number  of
+       All  of  the  functions  return  <STRONG>ERR</STRONG>  upon  failure,  or  the number of
        characters actually read into the string.
 
-       X/Open Curses defines no error conditions.  In this implementation:
+       X/Open Curses defines no error conditions.  This implementation returns
+       an error
 
-       <STRONG>o</STRONG>   If the <EM>win</EM> parameter is null, an error is returned,
+       <STRONG>o</STRONG>   if the <EM>win</EM> parameter is null or
 
-       <STRONG>o</STRONG>   If the <EM>chstr</EM> parameter is null, an error is returned,
+       <STRONG>o</STRONG>   if the <EM>chstr</EM> parameter is null.
 
        Functions  with  a  "mv"  prefix  first perform a cursor movement using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
@@ -89,7 +93,11 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Note that all routines except <STRONG>winnstr</STRONG> may be macros.
+       All routines except <STRONG>winnstr</STRONG> may be macros.
+
+       Reading  a  line that overflows the array pointed to by <EM>str</EM> with <STRONG>instr</STRONG>,
+       <STRONG>mvinstr</STRONG>, <STRONG>mvwinstr</STRONG> or <STRONG>winstr</STRONG> causes undefined results.   Therefore,  the
+       use of <STRONG>innstr</STRONG>, <STRONG>mvinnstr</STRONG>, <STRONG>mvwinnstr</STRONG>, or <STRONG>winnstr</STRONG> is recommended.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -102,11 +110,12 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>,    <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>,     <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-10-07                    <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
+ncurses 6.4                       2023-11-18                    <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
