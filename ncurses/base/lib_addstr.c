@@ -45,7 +45,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.61 2023/11/18 23:54:19 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.62 2023/11/21 21:47:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -66,7 +66,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
 			   (explicit ? n : (int) strlen(str))));
 	if (!explicit)
 	    n = INT_MAX;
-	while ((explicit || (*str != '\0')) && (n-- > 0)) {
+	while ((n-- > 0) && (*str != '\0')) {
 	    NCURSES_CH_T ch;
 	    TR(TRACE_VIRTPUT, ("*str = %#o", UChar(*str)));
 	    SetChar(ch, UChar(*str++), A_NORMAL);
@@ -241,7 +241,7 @@ waddnwstr(WINDOW *win, const wchar_t *str, int n)
 			   (explicit ? n : (int) wcslen(str))));
 	if (!explicit)
 	    n = INT_MAX;
-	while ((explicit || (*str != L('\0'))) && (n-- > 0)) {
+	while ((n-- > 0) && (*str != L('\0'))) {
 	    NCURSES_CH_T ch;
 	    TR(TRACE_VIRTPUT, ("*str[0] = %#lx", (unsigned long) *str));
 	    SetChar(ch, *str++, A_NORMAL);

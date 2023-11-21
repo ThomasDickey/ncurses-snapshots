@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insnstr.c,v 1.9 2023/11/18 23:47:19 tom Exp $")
+MODULE_ID("$Id: lib_insnstr.c,v 1.10 2023/11/21 21:58:03 tom Exp $")
 
 NCURSES_EXPORT(int)
 winsnstr(WINDOW *win, const char *s, int n)
@@ -62,7 +62,7 @@ winsnstr(WINDOW *win, const char *s, int n)
 	 * call to the wins_nwstr() function.
 	 */
 	if (sp->_screen_unicode) {
-	    size_t nn = (n >= 0) ? (size_t) n : strlen(s);
+	    size_t nn = (n > 0) ? (size_t) n : strlen(s);
 	    wchar_t *buffer = typeMalloc(wchar_t, nn + 1);
 	    if (buffer != 0) {
 		mbstate_t state;
