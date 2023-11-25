@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_requestname.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
-.TH form_requestname 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: form_requestname.3x,v 1.32 2023/11/25 13:58:47 tom Exp $
+.TH form_requestname 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_request_by_name\fP,
 \fBform_request_name\fP \-
@@ -52,9 +52,6 @@ to \fBE_BAD_ARGUMENT\fP.
 .PP
 \fBform_request_by_name\fP returns \fBE_NO_MATCH\fP on error.
 It does not set \fBerrno\fP.
-.SH NOTES
-The header file \fB<form.h>\fP automatically includes the header file
-\fB<curses.h>\fP.
 .SH PORTABILITY
 These routines are specific to ncurses.
 They were not supported on

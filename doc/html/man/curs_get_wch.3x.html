@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_get_wch.3x,v 1.28 2023/11/11 11:39:15 tom Exp @
+  * @Id: curs_get_wch.3x,v 1.30 2023/11/25 13:58:47 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_get_wch 3x 2023-11-11 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_get_wch 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_get_wch 3x 2023-11-11 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_get_wch 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 
@@ -118,33 +118,35 @@
        special keys.
 
 
-</PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The header file  <STRONG>&lt;curses.h&gt;</STRONG>  automatically  includes  the  header  file
-       <STRONG>&lt;stdio.h&gt;</STRONG>.
-
-       Applications  should  not  define the escape key by itself as a single-
-       character function.
-
-       When using <STRONG>get_wch</STRONG>, <STRONG>wget_wch</STRONG>, <STRONG>mvget_wch</STRONG>,  or  <STRONG>mvwget_wch</STRONG>,  applications
-       should not use <STRONG>nocbreak</STRONG> mode and <STRONG>echo</STRONG> mode at the same time.  Depending
-       on the state of the tty  driver  when  each  character  is  typed,  the
-       program may produce undesirable results.
-
-       All functions except <STRONG>wget_wch</STRONG> and <STRONG>unget_wch</STRONG> may be macros.
-
-
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        When   <STRONG>get_wch</STRONG>,   <STRONG>wget_wch</STRONG>,   <STRONG>mvget_wch</STRONG>,   and   <STRONG>mvwget_wch</STRONG>   functions
-       successfully report  the  pressing  of  a  function  key,  they  return
-       <STRONG>KEY_CODE_YES</STRONG>.   When  they  successfully  report a wide character, they
+       successfully  report  the  pressing  of  a  function  key,  they return
+       <STRONG>KEY_CODE_YES</STRONG>.  When they successfully report  a  wide  character,  they
        return <STRONG>OK</STRONG>.  Otherwise, they return <STRONG>ERR</STRONG>.
 
-       Upon successful  completion,  <STRONG>unget_wch</STRONG>  returns  <STRONG>OK</STRONG>.   Otherwise,  the
+       Upon  successful  completion,  <STRONG>unget_wch</STRONG>  returns  <STRONG>OK</STRONG>.   Otherwise, the
        function returns <STRONG>ERR</STRONG>.
 
-       Functions  with  a  "mv"  prefix  first perform a cursor movement using
+       Functions with a "mv" prefix first  perform  a  cursor  movement  using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
        the window pointer is null.
+
+
+</PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
+       Applications should not define the escape key by itself  as  a  single-
+       character function.
+
+       When  using  <STRONG>get_wch</STRONG>,  <STRONG>wget_wch</STRONG>, <STRONG>mvget_wch</STRONG>, or <STRONG>mvwget_wch</STRONG>, applications
+       should not use <STRONG>nocbreak</STRONG> mode and <STRONG>echo</STRONG> mode at the same time.  Depending
+       on  the  state  of  the  tty  driver  when each character is typed, the
+       program may produce undesirable results.
+
+       All of these symbols except <STRONG>wget_wch</STRONG> and <STRONG>unget_wch</STRONG> may be available  as
+       macros.
+
+
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
+       These functions are described in the XSI Curses standard, Issue 4.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -153,7 +155,7 @@
 
 
 
-ncurses 6.4                       2023-11-11                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -165,8 +167,9 @@ ncurses 6.4                       2023-11-11                  <STRONG><A HREF="c
 <li><a href="#h3-unget_wch">unget_wch</a></li>
 </ul>
 </li>
-<li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-NOTES">NOTES</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.117 2023/11/11 11:48:04 tom Exp $
-.TH curs_terminfo 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.119 2023/11/25 14:32:36 tom Exp $
+.TH curs_terminfo 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,7 +46,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .SH NAME
 \fB\%del_curterm\fP,
 \fB\%mvcur\fP,
@@ -133,7 +132,7 @@ Initially, \fBsetupterm\fP should be called.
 The high-level curses functions \fBinitscr\fP and
 \fBnewterm\fP call \fBsetupterm\fP to initialize the
 low-level set of terminal-dependent variables
-[listed in \fBterminfo\fP(\*n)].
+[listed in \fBterminfo\fP(5)].
 .PP
 Applications can use the
 terminal capabilities either directly (via header definitions),
@@ -393,7 +392,7 @@ The \fBtigetflag\fP, \fBtigetnum\fP and \fBtigetstr\fP routines return
 the value of the capability corresponding to the \fBterminfo\fP
 \fIcapname\fP passed to them, such as \fBxenl\fP.
 The \fIcapname\fP for each capability is given in the table column entitled
-\fIcapname\fP code in the capabilities section of \fBterminfo\fP(\*n).
+\fIcapname\fP code in the capabilities section of \fBterminfo\fP(5).
 .PP
 These routines return special values to denote errors.
 .PP
@@ -458,7 +457,7 @@ allocated by \fBsetupterm\fP:
 the \*(``static\*('' terminfo variables [a-z].
 Before ncurses 6.3, those were shared by all screens.
 With ncurses 6.3, those are allocated per screen.
-See \fBterminfo\fP(\*n) for details.
+See \fBterminfo\fP(5) for details.
 .bP
 to improve performance, ncurses 6.3 caches the result of analyzing terminfo
 strings for their parameter types.
@@ -509,6 +508,18 @@ X/Open states that \fBtputs\fP ignores the return value
 of the output function \fIputc\fP.
 .RE
 .\" ***************************************************************************
+.SH NOTES
+X/Open notes that \fBvidattr\fP and \fBvidputs\fP may be macros.
+.\" ***************************************************************************
+.SH EXTENSIONS
+The functions marked as extensions were designed for \fBncurses\fP(3X),
+and are not found in SVr4 curses, 4.4BSD curses,
+or any other previous version of curses.
+.\" ***************************************************************************
+.SH PORTABILITY
+The function \fBsetterm\fP is not described by X/Open and must
+be considered non-portable.
+All other functions are as described by X/Open.
 .SS Compatibility macros
 This implementation provides a few macros for compatibility with systems
 before SVr4 (see \fIHISTORY\fP).
@@ -532,126 +543,7 @@ was replaced by \fB\%setupterm\fP, stating that the call
 provides the same functionality as \fBsetterm(\fIterm\fB)\fR,
 and is not recommended for new programs.
 This implementation provides each of those symbols
-as macros for BSD compatibility,
-.\" ***************************************************************************
-.SH HISTORY
-SVr2 introduced the terminfo feature.
-Its programming manual mentioned the following low-level functions.
-.PP
-.TS
-lB lB
-lB lx.
-Function	Description
-_
-fixterm	restore tty to \*(``in curses\*('' state
-gettmode	establish current tty modes
-mvcur	low level cursor motion
-putp	T{
-utility function that uses \fBtputs\fP to send characters via \fBputchar\fP.
-T}
-resetterm	set tty modes to \*(``out of curses\*('' state
-resetty	reset tty flags to stored value
-saveterm	save current modes as \*(``in curses\*('' state
-savetty	store current tty flags
-setterm	establish terminal with given type
-setupterm	establish terminal with given type
-tparm	instantiate a string expression with parameters
-tputs	apply padding information to a string
-vidattr	like \fBvidputs\fP, but outputs through \fBputchar\fP
-vidputs	T{
-output a string to put terminal in a specified video attribute mode
-T}
-.TE
-.PP
-The programming manual also mentioned
-functions provided for \fItermcap\fP compatibility
-(commenting that they \*(``may go away at a later date\*('').
-.PP
-.TS
-lB lB
-lB lx.
-Function	Description
-_
-tgetent	look up \fItermcap\fP entry for given \fIname\fP
-tgetflag	get boolean entry for given \fIid\fP
-tgetnum	get numeric entry for given \fIid\fP
-tgetstr	get string entry for given \fIid\fP
-tgoto	apply parameters to given capability
-tputs	T{
-apply padding to capability, calling a function to put characters
-T}
-.TE
-.PP
-Early terminfo programs obtained capability values from the
-\fBTERMINAL\fP structure initialized by \fBsetupterm\fP.
-.PP
-SVr3 extended terminfo by adding functions to retrieve capability values
-(like the termcap interface),
-and reusing \fBtgoto\fP and \fBtputs\fP:
-.PP
-.TS
-lB lB
-lB lx.
-Function	Description
-_
-tigetflag	get boolean entry for given \fIid\fP
-tigetnum	get numeric entry for given \fIid\fP
-tigetstr	get string entry for given \fIid\fP
-.TE
-.PP
-SVr3 also replaced several of the SVr2 \fIterminfo\fP functions
-which had no counterpart in the \fItermcap\fP interface,
-documenting them as obsolete.
-.PP
-.TS
-lB lB
-l  lx.
-Function	Replaced by
-_
-crmode	cbreak
-fixterm	reset_prog_mode
-gettmode	\fIn/a\fP
-nocrmode	nocbreak
-resetterm	reset_shell_mode
-saveterm	def_prog_mode
-setterm	setupterm
-.TE
-.PP
-SVr3 kept the \fBmvcur\fP, \fBvidattr\fP and \fBvidputs\fP functions,
-along with \fBputp\fP, \fBtparm\fP and \fBtputs\fP.
-The latter were needed to support padding,
-and handling functions such as \fBvidattr\fP
-(which used more than the two parameters supported by \fBtgoto\fP).
-.PP
-SVr3 introduced the functions for switching between terminal
-descriptions, e.g., \fBset_curterm\fP.
-Some of that was incremental improvements to the SVr2 library:
-.bP
-The \fBTERMINAL\fP type definition was introduced in SVr3.01,
-for the \fBterm\fP structure provided in SVr2.
-.bP
-The various global variables such as \fBboolnames\fP were mentioned
-in the programming manual at this point,
-though the variables were provided in SVr2.
-.PP
-SVr4 added the \fBvid_attr\fP and \fBvid_puts\fP functions.
-.PP
-There are other low-level functions declared in the \fIcurses\fP header files
-on Unix systems,
-but none were documented.
-The functions marked \*(``obsolete\*('' remained in use
-by the Unix \fBvi\fP(1) editor.
-.SH PORTABILITY
-.SS Extensions
-The functions marked as extensions were designed for \fBncurses\fP(3X),
-and are not found in SVr4 curses, 4.4BSD curses,
-or any other previous version of curses.
-.SS Legacy functions
-X/Open notes that \fBvidattr\fP and \fBvidputs\fP may be macros.
-.PP
-The function \fBsetterm\fP is not described by X/Open and must
-be considered non-portable.
-All other functions are as described by X/Open.
+as macros for BSD compatibility.
 .SS Legacy data
 \fBsetupterm\fP copies the terminal name to the array \fBttytype\fP.
 This is not part of X/Open Curses, but is assumed by some applications.
@@ -774,6 +666,114 @@ So though it is documented as a terminfo function,
 X/Open states that the old location must be given for \fBmvcur\fP.
 This implementation allows the caller to use \-1's for the old ordinates.
 In that case, the old location is unknown.
+.\" ***************************************************************************
+.SH HISTORY
+SVr2 introduced the terminfo feature.
+Its programming manual mentioned the following low-level functions.
+.PP
+.TS
+lB lB
+lB lx.
+Function	Description
+_
+fixterm	restore tty to \*(``in curses\*('' state
+gettmode	establish current tty modes
+mvcur	low level cursor motion
+putp	T{
+utility function that uses \fBtputs\fP to send characters via \fBputchar\fP.
+T}
+resetterm	set tty modes to \*(``out of curses\*('' state
+resetty	reset tty flags to stored value
+saveterm	save current modes as \*(``in curses\*('' state
+savetty	store current tty flags
+setterm	establish terminal with given type
+setupterm	establish terminal with given type
+tparm	instantiate a string expression with parameters
+tputs	apply padding information to a string
+vidattr	like \fBvidputs\fP, but outputs through \fBputchar\fP
+vidputs	T{
+output a string to put terminal in a specified video attribute mode
+T}
+.TE
+.PP
+The programming manual also mentioned
+functions provided for \fItermcap\fP compatibility
+(commenting that they \*(``may go away at a later date\*('').
+.PP
+.TS
+lB lB
+lB lx.
+Function	Description
+_
+tgetent	look up \fItermcap\fP entry for given \fIname\fP
+tgetflag	get boolean entry for given \fIid\fP
+tgetnum	get numeric entry for given \fIid\fP
+tgetstr	get string entry for given \fIid\fP
+tgoto	apply parameters to given capability
+tputs	T{
+apply padding to capability, calling a function to put characters
+T}
+.TE
+.PP
+Early terminfo programs obtained capability values from the
+\fBTERMINAL\fP structure initialized by \fBsetupterm\fP.
+.PP
+SVr3 extended terminfo by adding functions to retrieve capability values
+(like the termcap interface),
+and reusing \fBtgoto\fP and \fBtputs\fP:
+.PP
+.TS
+lB lB
+lB lx.
+Function	Description
+_
+tigetflag	get boolean entry for given \fIid\fP
+tigetnum	get numeric entry for given \fIid\fP
+tigetstr	get string entry for given \fIid\fP
+.TE
+.PP
+SVr3 also replaced several of the SVr2 \fIterminfo\fP functions
+which had no counterpart in the \fItermcap\fP interface,
+documenting them as obsolete.
+.PP
+.TS
+lB lB
+l  lx.
+Function	Replaced by
+_
+crmode	cbreak
+fixterm	reset_prog_mode
+gettmode	\fIn/a\fP
+nocrmode	nocbreak
+resetterm	reset_shell_mode
+saveterm	def_prog_mode
+setterm	setupterm
+.TE
+.PP
+SVr3 kept the \fBmvcur\fP, \fBvidattr\fP and \fBvidputs\fP functions,
+along with \fBputp\fP, \fBtparm\fP and \fBtputs\fP.
+The latter were needed to support padding,
+and handling functions such as \fBvidattr\fP
+(which used more than the two parameters supported by \fBtgoto\fP).
+.PP
+SVr3 introduced the functions for switching between terminal
+descriptions, e.g., \fBset_curterm\fP.
+Some of that was incremental improvements to the SVr2 library:
+.bP
+The \fBTERMINAL\fP type definition was introduced in SVr3.01,
+for the \fBterm\fP structure provided in SVr2.
+.bP
+The various global variables such as \fBboolnames\fP were mentioned
+in the programming manual at this point,
+though the variables were provided in SVr2.
+.PP
+SVr4 added the \fBvid_attr\fP and \fBvid_puts\fP functions.
+.PP
+There are other low-level functions declared in the \fIcurses\fP header files
+on Unix systems,
+but none were documented.
+The functions marked \*(``obsolete\*('' remained in use
+by the Unix \fBvi\fP(1) editor.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_initscr\fP(3X),
@@ -783,4 +783,4 @@ In that case, the old location is unknown.
 \fB\%curs_variables\fP(3X),
 \fB\%putc\fP(3),
 \fB\%term_variables\fP(3X),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5)

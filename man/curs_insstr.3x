@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.44 2023/11/18 23:46:00 tom Exp $
-.TH curs_insstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.46 2023/11/25 11:29:34 tom Exp $
+.TH curs_insstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -103,8 +103,8 @@ or if the window pointer is null.
 .SH NOTES
 All but \fBwinsnstr\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4, which adds
-const qualifiers to the arguments.
+These functions are described in the XSI Curses standard, Issue 4,
+which adds \fI\%const\fP qualifiers to the arguments.
 .PP
 The Single Unix Specification, Version 2 states that
 \fBinsnstr\fP and \fBwinsnstr\fP perform wrapping.

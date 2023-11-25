@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_userptr.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
-.TH mitem_userptr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_userptr.3x,v 1.32 2023/11/25 13:58:47 tom Exp $
+.TH mitem_userptr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBset_item_userptr\fP,
 \fBitem_userptr\fP \-
@@ -50,9 +50,6 @@ The function \fBitem_userptr\fP returns a pointer (possibly \fBNULL\fP).
 It does not set \fBerrno\fP.
 .PP
 The \fBset_item_userptr\fP always returns \fBE_OK\fP (success).
-.SH NOTES
-The header file \fB<menu.h>\fP automatically includes the header file
-\fB<curses.h>\fP.
 .SH PORTABILITY
 These routines emulate the System V menu library.
 They were not supported on

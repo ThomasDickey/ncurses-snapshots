@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.54 2023/10/21 15:30:27 tom Exp $
-.TH @TOE@ 1M 2023-10-21 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.56 2023/11/25 14:32:36 tom Exp $
+.TH @TOE@ 1M 2023-11-25 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,7 +50,6 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 \fB\%@TOE@\fP \-
@@ -139,6 +138,27 @@ If \fIncurses\fP is built without tracing support,
 \fB\-V\fP
 reports the version of \fIncurses\fP associated
 with this program and exits with a successful status.
+.SH FILES
+.TP
+.I \*d
+compiled terminal description database
+.SH HISTORY
+\fB\%@TOE@\fP is not provided by other implementations.
+There is no applicable X/Open or POSIX standard for it.
+.PP
+It replaces a \fB\-T\fP option that was briefly supported by
+the \fIncurses\fP \fB\%infocmp\fP utility in 1995.
+.PP
+The \fB\-a\fP and \fB\-s\fP options were added in 2006 and 2011,
+respectively.
+.PP
+The program's name originates with a developer's pun:
+.bP
+\fBtic\fP,
+.bP
+\fBtac\fP (now \fBtack\fP),
+.bP
+\fBtoe\fP.
 .SH EXAMPLES
 When not sorting with the \fB\-s\fP option,
 the \fB\-a\fP option reports all of the names found in all of the
@@ -200,31 +220,10 @@ l.
 \&.\|.\|.
 .TE
 .RE
-.SH FILES
-.TP
-.I \*d
-compiled terminal description database
-.SH HISTORY
-\fB\%@TOE@\fP is not provided by other implementations.
-There is no applicable X/Open or POSIX standard for it.
-.PP
-It replaces a \fB\-T\fP option that was briefly supported by
-the \fIncurses\fP \fB\%infocmp\fP utility in 1995.
-.PP
-The \fB\-a\fP and \fB\-s\fP options were added in 2006 and 2011,
-respectively.
-.PP
-The program's name originates with a developer's pun:
-.bP
-\fBtic\fP,
-.bP
-\fBtac\fP (now \fBtack\fP),
-.bP
-\fBtoe\fP.
 .SH SEE ALSO
 \fB\%@CAPTOINFO@\fP(1M),
 \fB\%@INFOCMP@\fP(1M),
 \fB\%@INFOTOCAP@\fP(1M),
 \fB\%@TIC@\fP(1M),
 \fB\%curses\fP(3X),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5)

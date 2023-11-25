@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.179 2023/10/14 19:29:06 tom Exp $
-.TH ncurses 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: ncurses.3x,v 1.181 2023/11/25 14:32:36 tom Exp $
+.TH ncurses 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,7 +45,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 \fB\%ncurses\fP \-
@@ -64,20 +63,39 @@ This describes \fBncurses\fP
 version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
 .PP
 The \fBncurses\fP library emulates the curses library of
-System V Release 4 UNIX,
+System V Release 4 Unix (\*(``SVr4\*(''),
 and XPG4 (X/Open Portability Guide) curses (also known as XSI curses).
 XSI stands for X/Open System Interfaces Extension.
 The \fBncurses\fP library is freely redistributable in source form.
-Differences from the SVr4
-curses are summarized under the
-\fIEXTENSIONS\fP and \fIPORTABILITY\fP sections below and
-described in detail in the respective
-\fIEXTENSIONS\fP, \fIPORTABILITY\fP and \fIBUGS\fP sections
-of individual man pages.
 .PP
-The \fBncurses\fP library also provides many useful extensions,
-i.e., features which cannot be implemented by a simple add-on library
-but which require access to the internals of the library.
+\fI\%ncurses\fP man pages employ several sections to clarify matters of
+usage and interoperability with other \fIcurses\fP implementations.
+.bP
+\*(``NOTES\*('' describes matters and caveats of which any user of the
+\fI\%ncurses\fP API should be aware,
+such as limitations on the size of an underlying integral type or the
+availability of a preprocessor macro for a function
+(which prevents its address from being taken).
+This section also describes implementation details that will be
+significant to the programmer but which are not standardized.
+.bP
+\*(``EXTENSIONS\*('' presents \fI\%ncurses\fP innovations beyond the
+X/Open Curses standard and/or the SVr4 \fIcurses\fP implementation.
+They are termed \fIextensions\fP to indicate that they cannot be
+implemented solely by using the library API, but require access to the
+library's internal state.
+.bP
+\*(``PORTABILITY\*('' discusses matters
+(beyond the exercise of extensions)
+that should be considered when writing to a \fIcurses\fP standard,
+or to multiple implementations.
+.bP
+\*(``HISTORY\*('' examines points of detail in \fI\%ncurses\fP and other
+\fIcurses\fP implementations over the decades of their development,
+particularly where precedent or inertia have frustrated better design
+(and,
+in a few cases,
+where such inertia has been overcome).
 .PP
 A program using these routines must be linked with the \fB\-lncurses\fP option,
 or (if it has been generated) with the debugging library \fB\-lncurses_g\fP.
@@ -139,7 +157,7 @@ should be set and its initialization strings, if defined, must be output.
 This can be done by executing the \fB@TPUT@ init\fP command
 after the shell environment variable \fBTERM\fP has been exported.
 (The BSD-style \fB\%@TSET@\fP(1) utility also performs this function.)
-See subsection \*(``Tabs and Initialization\*('' of \fBterminfo\fP(\*n).
+See subsection \*(``Tabs and Initialization\*('' of \fBterminfo\fP(5).
 .SS Datatypes
 The \fBncurses\fP library permits manipulation of data structures,
 called \fIwindows\fP, which can be thought of as two-dimensional
@@ -1373,6 +1391,13 @@ tab stop initialization database
 .TP
 .I \*d
 compiled terminal capability database
+.SH NOTES
+If standard output from a \fBncurses\fP program is re-directed to something
+which is not a tty, screen updates will be directed to standard error.
+This was an undocumented feature of AT&T System V Release 3 curses.
+.PP
+See subsection \*(``Header files\*('' below regarding symbols exposed by
+inclusion of \fI\%curses.h\fP.
 .SH EXTENSIONS
 The \fBncurses\fP library can be compiled with an option (\fB\-DUSE_GETCAP\fP)
 that falls back to the old-style /etc/termcap file if the terminal setup code
@@ -1468,14 +1493,14 @@ See \fBcurs_sp_funcs\fP(3X) for details.
 .SS Padding differences
 In historic curses versions, delays embedded in the capabilities \fBcr\fP,
 \fBind\fP, \fBcub1\fP, \fBff\fP and \fBtab\fP activated corresponding delay
-bits in the UNIX tty driver.
+bits in the Unix tty driver.
 In this implementation, all padding is done by sending NUL bytes.
 This method is slightly more expensive, but narrows the interface
-to the UNIX kernel significantly and increases the package's portability
+to the Unix kernel significantly and increases the package's portability
 correspondingly.
 .SS Header files
-The header file \fB<curses.h>\fP automatically includes the header files
-\fB<stdio.h>\fP and \fB<unctrl.h>\fP.
+The header file \fI\%curses.h\fP itself includes the header files
+\fI\%stdio.h\fP and \fI\%unctrl.h\fP.
 .PP
 X/Open Curses has more to say,
 but does not finish the story:
@@ -1568,15 +1593,11 @@ None of the X/Open Curses implementations require an application
 to include <stdarg.h> before <curses.h> because they either
 have allowed for a special type, or (like ncurses) include <stdarg.h>
 directly to provide a portable interface.
-.SH NOTES
-If standard output from a \fBncurses\fP program is re-directed to something
-which is not a tty, screen updates will be directed to standard error.
-This was an undocumented feature of AT&T System V Release 3 curses.
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on \fIpcurses\fP by Pavel Curtis.
 .SH SEE ALSO
-\fB\%terminfo\fP(\*n) and related pages whose names begin
+\fB\%terminfo\fP(5) and related pages whose names begin
 \*(``curs_\*('' for detailed routine descriptions.
 .br
 \fB\%curs_variables\fP(3X)

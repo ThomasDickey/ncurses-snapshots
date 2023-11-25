@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.218 2023/10/28 16:08:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.219 2023/11/23 01:48:30 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -4180,7 +4180,7 @@ if test "$with_dmalloc" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIB_BASENAME version: 1 updated: 2020/03/07 20:05:14
+dnl CF_WITH_LIB_BASENAME version: 2 updated: 2023/11/22 20:48:30
 dnl --------------------
 dnl Allow for overriding the basename of a library, i.e., the part to which
 dnl prefixes/suffixes are attached.
@@ -4192,7 +4192,7 @@ AC_DEFUN([CF_WITH_LIB_BASENAME],
 [
 AC_MSG_CHECKING(for desired basename for $2 library)
 AC_ARG_WITH($2-libname,
-	[  --with-$2-libname=XXX override ifelse($3,,$2,$3) basename of library],
+	[[  --with-$2-libname[=XXX] override ifelse($3,,$2,$3) basename of library]],
 	[with_lib_basename=$withval],
 	[with_lib_basename=ifelse($3,,$2,$3)])
 $1="$with_lib_basename"

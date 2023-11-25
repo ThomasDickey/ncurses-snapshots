@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.40 2023/10/07 21:19:07 tom Exp $
-.TH curs_touch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_touch.3x,v 1.42 2023/11/25 14:08:05 tom Exp $
+.TH curs_touch 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -105,6 +105,8 @@ returns an error
 if the window pointer is null, or
 if the line number is outside the window.
 .RE
+.SH NOTES
+All of these routines except \fB\%wtouchln\fP may be macros.
 .SH PORTABILITY
 These functions were introduced by SVr4.
 The Solaris \fIcurses\fP header file,
@@ -116,8 +118,6 @@ otherwise this implementation behaves the same as SVr4.
 .PP
 The XSI Curses standard, Issue 4 describes these functions,
 but defines no error conditions.
-.SH NOTES
-All of these routines except \fB\%wtouchln\fP may be macros.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_refresh\fP(3X),

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: infotocap.1m,v 1.35 2023/10/14 19:25:26 tom Exp @
+  * @Id: infotocap.1m,v 1.37 2023/11/25 14:32:36 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>infotocap 1m 2023-10-14 ncurses 6.4 User commands</TITLE>
+<TITLE>infotocap 1m 2023-11-25 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">infotocap 1m 2023-10-14 ncurses 6.4 User commands</H1>
+<H1 class="no-header">infotocap 1m 2023-11-25 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>                    User commands                   <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>
 
@@ -57,12 +57,12 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       <STRONG>infotocap</STRONG> looks in each given text <EM>file</EM> for <EM>terminfo</EM> descriptions.  For
-       each one found, it writes  an  analogous  <EM>termcap</EM>  description  to  the
-       standard  output  stream.   <EM>terminfo</EM>  "<STRONG>use</STRONG>" capabilities are translated
-       directly to  <EM>termcap</EM>  <STRONG>tc</STRONG>  capabilities.   Because  <EM>termcap</EM>  is  a  less
-       expressive   format   than   <EM>terminfo</EM>,   some  capabilities  cannot  be
-       translated.
+       <STRONG>infotocap</STRONG>  translates  terminal  descriptions.   It looks in each given
+       text <EM>file</EM> for <EM>terminfo</EM> entries and, For each one found,  it  writes  an
+       analogous  <EM>termcap</EM> description to the standard output stream.  <EM>terminfo</EM>
+       "<STRONG>use</STRONG>" capabilities  translate  to  <EM>termcap</EM>  <STRONG>tc</STRONG>  capabilities.   Because
+       <EM>termcap</EM>  is  a  less expressive format than <EM>terminfo</EM>, some capabilities
+       cannot be translated.
 
        This utility is implemented as a link to <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>, with the latter's  <STRONG>-C</STRONG>
        option  implied.  You can use other <STRONG>tic</STRONG> options such as <STRONG>-1</STRONG>, <STRONG>-f</STRONG>, <STRONG>-v</STRONG>, <STRONG>-w</STRONG>,
@@ -80,7 +80,7 @@
        application.
 
 
-</PRE><H2><a name="h2-AUTHOR">AUTHOR</a></H2><PRE>
+</PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
        Eric S. Raymond &lt;esr@snark.thyrsus.com&gt; and
        Thomas E. Dickey &lt;dickey@invisible-island.net&gt;
 
@@ -90,7 +90,7 @@
 
 
 
-ncurses 6.4                       2023-10-14                     <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>
+ncurses 6.4                       2023-11-25                     <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -99,7 +99,7 @@ ncurses 6.4                       2023-10-14                     <STRONG><A HREF
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
-<li><a href="#h2-AUTHOR">AUTHOR</a></li>
+<li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

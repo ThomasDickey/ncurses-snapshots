@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: scr_dump.5,v 1.37 2023/10/07 21:19:07 tom Exp @
+  * @Id: scr_dump.5,v 1.39 2023/11/25 14:21:48 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>scr_dump 5 2023-10-07 ncurses 6.4 File formats</TITLE>
+<TITLE>scr_dump 5 2023-11-25 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">scr_dump 5 2023-10-07 ncurses 6.4 File formats</H1>
+<H1 class="no-header">scr_dump 5 2023-11-25 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>                      File formats                      <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 
@@ -155,7 +155,7 @@
           <STRONG>o</STRONG>   Shading is used to identify  <EM>X/Open</EM>  <EM>Enhanced</EM>  <EM>Curses</EM>  material,
               relating to interfaces included to provide enhanced capabilities
               for applications originally written to be  compiled  on  systems
-              based  on  the  UNIX  operating system.  Therefore, the features
+              based  on  the  Unix  operating system.  Therefore, the features
               described may not be present on systems that conform to <STRONG>XPG4</STRONG>  <STRONG>or</STRONG>
               <STRONG>to</STRONG>  <STRONG>earlier</STRONG>  <STRONG>XPG</STRONG>  <STRONG>releases</STRONG>.   The  relevant  reference pages may
               provide additional or more specific portability  warnings  about
@@ -181,7 +181,7 @@
 
        That is, the feature was likely introduced in SVr2 (1984), and improved
        in SVr3 (1987).  The Solaris curses source has no magic number for SVr4
-       (1989).  Other operating systems (AIX and  HPUX)  use  a  magic  number
+       (1989).  Other operating systems (AIX and HP-UX)  use  a  magic  number
        which would correspond to this definition:
 
            /* curses screen dump magic number */
@@ -205,7 +205,7 @@
 
        <STRONG>o</STRONG>   AIX (51817 bytes)
 
-       <STRONG>o</STRONG>   HPUX (90093 bytes)
+       <STRONG>o</STRONG>   HP-UX (90093 bytes)
 
        <STRONG>o</STRONG>   Solaris 10 (13273 bytes)
 
@@ -258,7 +258,7 @@
        <STRONG>o</STRONG>   finally, lines as done by other implementations.
 
 
-</PRE><H2><a name="h2-EXAMPLE">EXAMPLE</a></H2><PRE>
+</PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
        Given  a  simple  program  which writes text to the screen (and for the
        sake of example, limiting the screen-size to 10x20):
 
@@ -407,7 +407,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
+ncurses 6.4                       2023-11-25                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -428,7 +428,7 @@ ncurses 6.4                       2023-10-07                       <STRONG><A HR
 <li><a href="#h3-NetBSD">NetBSD</a></li>
 </ul>
 </li>
-<li><a href="#h2-EXAMPLE">EXAMPLE</a></li>
+<li><a href="#h2-EXAMPLES">EXAMPLES</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>

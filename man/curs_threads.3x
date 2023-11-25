@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_threads.3x,v 1.47 2023/10/07 21:19:07 tom Exp $
-.TH curs_threads 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_threads.3x,v 1.49 2023/11/25 14:09:12 tom Exp $
+.TH curs_threads 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -81,7 +81,7 @@ since doing so alters \fIncurses\fP's application binary interface
 Instead of modifying the programming interface (API) to make
 \fIncurses\fP functions expect an additional argument specifying a
 thread,
-the library adds a few functions,
+the library adds functions,
 usable in any configuration,
 that hide the \fImutexes\fP
 (mutual exclusion locks)

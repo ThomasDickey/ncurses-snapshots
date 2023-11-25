@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: captoinfo.1m,v 1.52 2023/10/14 19:25:26 tom Exp @
+  * @Id: captoinfo.1m,v 1.54 2023/11/25 14:32:36 tom Exp @
   * TODO: There are about 40 box drawing code points in CCSID 437;
   * were there no XENIX capabilities for the mixed single- and double-
   * line intersections?
@@ -39,12 +39,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>captoinfo 1m 2023-10-14 ncurses 6.4 User commands</TITLE>
+<TITLE>captoinfo 1m 2023-11-25 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">captoinfo 1m 2023-10-14 ncurses 6.4 User commands</H1>
+<H1 class="no-header">captoinfo 1m 2023-11-25 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>                    User commands                   <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
 
@@ -62,15 +62,15 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       <STRONG>captoinfo</STRONG>  looks in each given text <EM>file</EM> for <EM>termcap</EM> descriptions.  For
-       each one found, it writes an equivalent  <EM>terminfo</EM>  description  to  the
-       standard   output  stream.   <EM>termcap</EM>  <STRONG>tc</STRONG>  capabilities  are  translated
-       directly to <EM>terminfo</EM> "<STRONG>use</STRONG>" capabilities.
+       <STRONG>captoinfo</STRONG>  translates  terminal  descriptions.   It looks in each given
+       text <EM>file</EM> for <EM>termcap</EM> entries  and,  for  each  one  found,  writes  an
+       equivalent <EM>terminfo</EM> description to the standard output stream.  <EM>termcap</EM>
+       <STRONG>tc</STRONG> capabilities translate to <EM>terminfo</EM> "<STRONG>use</STRONG>" capabilities.
 
        If no <EM>file</EM>s are specified, <STRONG>captoinfo</STRONG>  interprets  the  content  of  the
-       environment  variable  <STRONG>TERMCAP</STRONG>  as  a  file name, and extracts only the
-       entry for the terminal named in the environment variable <STRONG>TERM</STRONG> from  it.
-       If  the  environment  variable  <STRONG>TERMCAP</STRONG>  is  not  set,  <STRONG>captoinfo</STRONG> reads
+       environment  variable  <EM>TERMCAP</EM>  as  a  file name, and extracts only the
+       entry for the terminal named in the environment variable <EM>TERM</EM> from  it.
+       If  the  environment  variable  <EM>TERMCAP</EM>  is  not  set,  <STRONG>captoinfo</STRONG> reads
        <EM>/etc/termcap</EM>.
 
        This utility is implemented as a link to <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>, with the latter's  <STRONG>-I</STRONG>
@@ -86,75 +86,73 @@
        check that it has not mistakenly  translated  an  unknown  or  mistyped
        capability name.
 
-       <STRONG>Nonstandard</STRONG>   <STRONG>Standard</STRONG>                  <EM>t</I<STRONG>t</STRONG><EM>e</I<STRONG>e</STRONG><EM>r</I<STRONG>r</STRONG><EM>m</I<STRONG>m</STRONG><EM>i</I<STRONG>i</STRONG><EM>n</I<STRONG>n</STRONG><EM>f</I<STRONG>f</STRONG><EM>o</I<STRONG>o</STRONG>
-          <STRONG>name</STRONG>         <STRONG>name</STRONG>     <STRONG>From</STRONG>          <STRONG>capability</STRONG>
-       --------------------------------------------------------
-           <STRONG>BO</STRONG>           <STRONG>mr</STRONG>      AT&amp;T    <STRONG>enter_reverse_mode</STRONG>
-           <STRONG>CI</STRONG>           <STRONG>vi</STRONG>      AT&amp;T    <STRONG>cursor_invisible</STRONG>
-           <STRONG>CV</STRONG>           <STRONG>ve</STRONG>      AT&amp;T    <STRONG>cursor_normal</STRONG>
-           <STRONG>DS</STRONG>           <STRONG>mh</STRONG>      AT&amp;T    <STRONG>enter_dim_mode</STRONG>
-           <STRONG>EE</STRONG>           <STRONG>me</STRONG>      AT&amp;T    <STRONG>exit_attribute_mode</STRONG>
-           <STRONG>FE</STRONG>           <STRONG>LF</STRONG>      AT&amp;T    <STRONG>label_on</STRONG>
-           <STRONG>FL</STRONG>           <STRONG>LO</STRONG>      AT&amp;T    <STRONG>label_off</STRONG>
-           <STRONG>XS</STRONG>           <STRONG>mk</STRONG>      AT&amp;T    <STRONG>enter_secure_mode</STRONG>
-           <STRONG>EN</STRONG>           <STRONG>@7</STRONG>      XENIX   <STRONG>key_end</STRONG>
-           <STRONG>GE</STRONG>           <STRONG>ae</STRONG>      XENIX   <STRONG>exit_alt_charset_mode</STRONG>
-           <STRONG>GS</STRONG>           <STRONG>as</STRONG>      XENIX   <STRONG>enter_alt_charset_mode</STRONG>
-           <STRONG>HM</STRONG>           <STRONG>kh</STRONG>      XENIX   <STRONG>key_home</STRONG>
-           <STRONG>LD</STRONG>           <STRONG>kL</STRONG>      XENIX   <STRONG>key_dl</STRONG>
-           <STRONG>PD</STRONG>           <STRONG>kN</STRONG>      XENIX   <STRONG>key_npage</STRONG>
-           <STRONG>PN</STRONG>           <STRONG>po</STRONG>      XENIX   <STRONG>prtr_off</STRONG>
-           <STRONG>PS</STRONG>           <STRONG>pf</STRONG>      XENIX   <STRONG>prtr_on</STRONG>
-           <STRONG>PU</STRONG>           <STRONG>kP</STRONG>      XENIX   <STRONG>key_ppage</STRONG>
-           <STRONG>RT</STRONG>           <STRONG>@8</STRONG>      XENIX   <STRONG>kent</STRONG>
-           <STRONG>UP</STRONG>           <STRONG>ku</STRONG>      XENIX   <STRONG>kcuu1</STRONG>
-           <STRONG>KA</STRONG>           <STRONG>k;</STRONG>      Tek     <STRONG>key_f10</STRONG>
-           <STRONG>KB</STRONG>           <STRONG>F1</STRONG>      Tek     <STRONG>key_f11</STRONG>
-           <STRONG>KC</STRONG>           <STRONG>F2</STRONG>      Tek     <STRONG>key_f12</STRONG>
-           <STRONG>KD</STRONG>           <STRONG>F3</STRONG>      Tek     <STRONG>key_f13</STRONG>
-           <STRONG>KE</STRONG>           <STRONG>F4</STRONG>      Tek     <STRONG>key_f14</STRONG>
-           <STRONG>KF</STRONG>           <STRONG>F5</STRONG>      Tek     <STRONG>key_f15</STRONG>
-           <STRONG>BC</STRONG>           <STRONG>Sb</STRONG>      Tek     <STRONG>set_background</STRONG>
+              <STRONG>Name</STRONG>
+       <STRONG>Obsolete</STRONG>   <STRONG>Standard</STRONG>    <STRONG>Origin</STRONG>      <EM>t</I<STRONG>t</STRONG><EM>e</I<STRONG>e</STRONG><EM>r</I<STRONG>r</STRONG><EM>m</I<STRONG>m</STRONG><EM>i</I<STRONG>i</STRONG><EM>n</I<STRONG>n</STRONG><EM>f</I<STRONG>f</STRONG><EM>o</I<STRONG>o</STRONG> <STRONG>capability</STRONG>
+       ---------------------------------------------------------
+          <STRONG>BO</STRONG>         <STRONG>mr</STRONG>        AT&amp;T      <STRONG>enter_reverse_mode</STRONG>
+          <STRONG>CI</STRONG>         <STRONG>vi</STRONG>        AT&amp;T      <STRONG>cursor_invisible</STRONG>
+          <STRONG>CV</STRONG>         <STRONG>ve</STRONG>        AT&amp;T      <STRONG>cursor_normal</STRONG>
+          <STRONG>DS</STRONG>         <STRONG>mh</STRONG>        AT&amp;T      <STRONG>enter_dim_mode</STRONG>
+          <STRONG>EE</STRONG>         <STRONG>me</STRONG>        AT&amp;T      <STRONG>exit_attribute_mode</STRONG>
+          <STRONG>FE</STRONG>         <STRONG>LF</STRONG>        AT&amp;T      <STRONG>label_on</STRONG>
+          <STRONG>FL</STRONG>         <STRONG>LO</STRONG>        AT&amp;T      <STRONG>label_off</STRONG>
+          <STRONG>XS</STRONG>         <STRONG>mk</STRONG>        AT&amp;T      <STRONG>enter_secure_mode</STRONG>
+          <STRONG>EN</STRONG>         <STRONG>@7</STRONG>        XENIX     <STRONG>key_end</STRONG>
+          <STRONG>GE</STRONG>         <STRONG>ae</STRONG>        XENIX     <STRONG>exit_alt_charset_mode</STRONG>
+          <STRONG>GS</STRONG>         <STRONG>as</STRONG>        XENIX     <STRONG>enter_alt_charset_mode</STRONG>
+          <STRONG>HM</STRONG>         <STRONG>kh</STRONG>        XENIX     <STRONG>key_home</STRONG>
+          <STRONG>LD</STRONG>         <STRONG>kL</STRONG>        XENIX     <STRONG>key_dl</STRONG>
+          <STRONG>PD</STRONG>         <STRONG>kN</STRONG>        XENIX     <STRONG>key_npage</STRONG>
+          <STRONG>PN</STRONG>         <STRONG>po</STRONG>        XENIX     <STRONG>prtr_off</STRONG>
+          <STRONG>PS</STRONG>         <STRONG>pf</STRONG>        XENIX     <STRONG>prtr_on</STRONG>
+          <STRONG>PU</STRONG>         <STRONG>kP</STRONG>        XENIX     <STRONG>key_ppage</STRONG>
+          <STRONG>RT</STRONG>         <STRONG>@8</STRONG>        XENIX     <STRONG>kent</STRONG>
+          <STRONG>UP</STRONG>         <STRONG>ku</STRONG>        XENIX     <STRONG>kcuu1</STRONG>
+          <STRONG>KA</STRONG>         <STRONG>k;</STRONG>      Tektronix   <STRONG>key_f10</STRONG>
+          <STRONG>KB</STRONG>         <STRONG>F1</STRONG>      Tektronix   <STRONG>key_f11</STRONG>
+          <STRONG>KC</STRONG>         <STRONG>F2</STRONG>      Tektronix   <STRONG>key_f12</STRONG>
+          <STRONG>KD</STRONG>         <STRONG>F3</STRONG>      Tektronix   <STRONG>key_f13</STRONG>
+          <STRONG>KE</STRONG>         <STRONG>F4</STRONG>      Tektronix   <STRONG>key_f14</STRONG>
+          <STRONG>KF</STRONG>         <STRONG>F5</STRONG>      Tektronix   <STRONG>key_f15</STRONG>
+          <STRONG>BC</STRONG>         <STRONG>Sb</STRONG>      Tektronix   <STRONG>set_background</STRONG>
 
-           <STRONG>FC</STRONG>           <STRONG>Sf</STRONG>      Tek     <STRONG>set_foreground</STRONG>
-           <STRONG>HS</STRONG>           <STRONG>mh</STRONG>      Iris    <STRONG>enter_dim_mode</STRONG>
+          <STRONG>FC</STRONG>         <STRONG>Sf</STRONG>      Tektronix   <STRONG>set_foreground</STRONG>
+          <STRONG>HS</STRONG>         <STRONG>mh</STRONG>        IRIX      <STRONG>enter_dim_mode</STRONG>
 
        XENIX <EM>termcap</EM> had a set of extension capabilities, corresponding to box
        drawing characters of CCSID ("code page") 437, as follows.
 
-       <STRONG>Termcap</STRONG>
-        <STRONG>Name</STRONG>              <STRONG>Graphic</STRONG>
-       ------------------------------------
-         <STRONG>G2</STRONG>      upper left corner
-         <STRONG>G3</STRONG>      lower left corner
-         <STRONG>G1</STRONG>      upper right corner
-         <STRONG>G4</STRONG>      lower right corner
-         <STRONG>GR</STRONG>      tee pointing right
-         <STRONG>GL</STRONG>      tee pointing left
-         <STRONG>GU</STRONG>      tee pointing up
-         <STRONG>GD</STRONG>      tee pointing down
-         <STRONG>GH</STRONG>      horizontal line
-         <STRONG>GV</STRONG>      vertical line
-         <STRONG>GC</STRONG>      intersection
-         <STRONG>G6</STRONG>      double upper left corner
-         <STRONG>G7</STRONG>      double lower left corner
-         <STRONG>G5</STRONG>      double upper right corner
-         <STRONG>G8</STRONG>      double lower right corner
-         <STRONG>Gr</STRONG>      double tee pointing right
-         <STRONG>Gr</STRONG>      double tee pointing left
-         <STRONG>Gu</STRONG>      double tee pointing up
-         <STRONG>Gd</STRONG>      double tee pointing down
-         <STRONG>Gh</STRONG>      double horizontal line
-         <STRONG>Gv</STRONG>      double vertical line
-         <STRONG>Gc</STRONG>      double intersection
-         <STRONG>GG</STRONG>      ACS magic cookie count
+       <EM>t</I<STRONG>t</STRONG><EM>e</I<STRONG>e</STRONG><EM>r</I<STRONG>r</STRONG><EM>m</I<STRONG>m</STRONG><EM>c</I<STRONG>c</STRONG><EM>a</I<STRONG>a</STRONG><EM>p</I<STRONG>p</STRONG> <STRONG>Name</STRONG>            <STRONG>Graphic</STRONG>
+       -----------------------------------------
+            <STRONG>G2</STRONG>        upper left corner
+            <STRONG>G3</STRONG>        lower left corner
+            <STRONG>G1</STRONG>        upper right corner
+            <STRONG>G4</STRONG>        lower right corner
+            <STRONG>GR</STRONG>        tee pointing right
+            <STRONG>GL</STRONG>        tee pointing left
+            <STRONG>GU</STRONG>        tee pointing up
+            <STRONG>GD</STRONG>        tee pointing down
+            <STRONG>GH</STRONG>        horizontal line
+            <STRONG>GV</STRONG>        vertical line
+            <STRONG>GC</STRONG>        intersection
+            <STRONG>G6</STRONG>        double upper left corner
+            <STRONG>G7</STRONG>        double lower left corner
+            <STRONG>G5</STRONG>        double upper right corner
+            <STRONG>G8</STRONG>        double lower right corner
+            <STRONG>Gr</STRONG>        double tee pointing right
+            <STRONG>Gr</STRONG>        double tee pointing left
+            <STRONG>Gu</STRONG>        double tee pointing up
+            <STRONG>Gd</STRONG>        double tee pointing down
+            <STRONG>Gh</STRONG>        double horizontal line
+            <STRONG>Gv</STRONG>        double vertical line
+            <STRONG>Gc</STRONG>        double intersection
+            <STRONG>GG</STRONG>        ACS magic cookie count
 
-       If the single-line capabilities occur in an entry,  they  are  composed
-       into an <STRONG>acsc</STRONG> string.  The double-line capabilities and <STRONG>GG</STRONG> are discarded
-       with a warning message.
+       <STRONG>captoinfo</STRONG> composes single-line capabilities into an  <STRONG>acsc</STRONG>  string,  and
+       discards <STRONG>GG</STRONG> and double-line capabilities with a warning diagnostic.
 
-       IBM's AIX has a <EM>terminfo</EM> facility descended  from  SVr1  <EM>terminfo</EM>,  but
-       which  is  incompatible with the SVr4 format.  <STRONG>captoinfo</STRONG> translates the
+       IBM's  AIX  has  a  <EM>terminfo</EM> facility descended from SVr1 <EM>terminfo</EM>, but
+       which is incompatible with the SVr4 format.  <STRONG>captoinfo</STRONG>  translates  the
        following AIX extensions.
 
         <STRONG>IBM</STRONG>    <STRONG>XSI</STRONG>
@@ -166,11 +164,11 @@
        font2   s2ds
        font3   s3ds
 
-       Additionally, this program translates the AIX  <STRONG>box1</STRONG>  capability  to  an
+       Additionally,  this  program  translates  the AIX <STRONG>box1</STRONG> capability to an
        <STRONG>acsc</STRONG> string.
 
-       The   HP-UX   <EM>terminfo</EM>   library   supports  two  nonstandard  <EM>terminfo</EM>
-       capabilities, <STRONG>meml</STRONG> (memory lock) and <STRONG>memu</STRONG> (memory  unlock).   <STRONG>captoinfo</STRONG>
+       The  HP-UX  <EM>terminfo</EM>  library   supports   two   nonstandard   <EM>terminfo</EM>
+       capabilities,  <STRONG>meml</STRONG>  (memory lock) and <STRONG>memu</STRONG> (memory unlock).  <STRONG>captoinfo</STRONG>
        discards these with a warning message.
 
 
@@ -180,19 +178,19 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The  verbose option is not identical to SVr4's.  Under SVr4, instead of
+       The verbose option is not identical to SVr4's.  Under SVr4, instead  of
        following the <STRONG>-v</STRONG> with a trace level <EM>n</EM>, you repeat it <EM>n</EM> times.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 7 (2009) describes <STRONG>tic</STRONG>  briefly,  but  omits  this
+       X/Open  Curses,  Issue  7  (2009) describes <STRONG>tic</STRONG> briefly, but omits this
        program.  SVr4 systems provide <STRONG>captoinfo</STRONG> as a separate application from
        <STRONG>tic</STRONG>.
 
        NetBSD does not provide this application.
 
 
-</PRE><H2><a name="h2-AUTHOR">AUTHOR</a></H2><PRE>
+</PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
        Eric S. Raymond &lt;esr@snark.thyrsus.com&gt; and
        Thomas E. Dickey &lt;dickey@invisible-island.net&gt;
 
@@ -202,7 +200,7 @@
 
 
 
-ncurses 6.4                       2023-10-14                     <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
+ncurses 6.4                       2023-11-25                     <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -216,7 +214,7 @@ ncurses 6.4                       2023-10-14                     <STRONG><A HREF
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
-<li><a href="#h2-AUTHOR">AUTHOR</a></li>
+<li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

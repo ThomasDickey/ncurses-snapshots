@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.7,v 1.42 2023/11/11 11:48:16 tom Exp $
-.TH term 7 2023-11-11 "ncurses 6.4" Miscellaneous
+.\" $Id: term.7,v 1.44 2023/11/25 17:20:42 tom Exp $
+.TH term 7 2023-11-25 "ncurses 6.4" Miscellaneous
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -40,7 +40,6 @@
 .el   .ds '' ""
 .\}
 .
-.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 term \-
@@ -53,12 +52,12 @@ This information
 is critical for all screen-oriented programs, including your editor and mailer.
 .PP
 A default \fBTERM\fP value will be set on a per-line basis by either
-\fB/etc/inittab\fP (e.g., System\-V-like UNIXes)
-or \fB/etc/ttys\fP (BSD UNIXes).
+\fB/etc/inittab\fP (e.g., System\-V-like Unices)
+or \fB/etc/ttys\fP (BSD Unices).
 This will nearly always suffice for workstation and microcomputer consoles.
 .PP
 If you use a dialup line, the type of device attached to it may vary.
-Older UNIX systems pre-set a very dumb terminal type
+Older Unix systems pre-set a very dumb terminal type
 like \*(``dumb\*('' or \*(``dialup\*('' on dialup lines.
 Newer ones may pre-set \*(``vt100\*('', reflecting the prevalence of DEC
 VT100-compatible terminals and personal-computer emulators.
@@ -99,9 +98,9 @@ where \fIentry_name\fP is the name of the type you wish to examine (and the
 name of its capability file the subdirectory of \*d named for its first
 letter).
 This command dumps a capability file in the text format described by
-\fBterminfo\fP(\*n).
+\fBterminfo\fP(5).
 .PP
-The first line of a \fBterminfo\fP(\*n) description gives the names by which
+The first line of a \fBterminfo\fP(5) description gives the names by which
 terminfo knows a terminal,
 separated by \*(``|\*('' (pipe-bar) characters with the last
 name field terminated by a comma.
@@ -215,20 +214,20 @@ Commands which use a terminal type to control display often accept a \-T
 option that accepts a terminal name argument.
 Such programs should fall back
 on the \fBTERM\fP environment variable when no \-T option is specified.
-.SH PORTABILITY
-For maximum compatibility with older System V UNIXes, names and aliases
-should be unique within the first 14 characters.
 .SH FILES
 .TP 5
 .I \*d
 compiled terminal description database
 .TP 5
 /etc/inittab
-tty line initialization (AT&T-like UNIXes)
+tty line initialization (AT&T-like Unices)
 .TP 5
 /etc/ttys
-tty line initialization (BSD-like UNIXes)
+tty line initialization (BSD-like Unices)
+.SH PORTABILITY
+For maximum compatibility with older System V Unices, names and aliases
+should be unique within the first 14 characters.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
-\fB\%term\fP(\*n),
-\fB\%terminfo\fP(\*n)
+\fB\%term\fP(5),
+\fB\%terminfo\fP(5)

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.46 2023/10/07 21:19:07 tom Exp $
-.TH curs_add_wch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.48 2023/11/25 14:20:05 tom Exp $
+.TH curs_add_wch 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -252,7 +252,7 @@ Note that
 \fBecho_wchar\fP
 may be macros.
 .SH PORTABILITY
-All of these functions are described in the XSI Curses standard, Issue 4.
+These functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for line-drawing characters apply in the POSIX locale.
 .SS WACS Symbols
 X/Open Curses makes it clear that the WACS_ symbols should be defined as
@@ -261,7 +261,7 @@ A few implementations are problematic:
 .bP
 NetBSD curses defines the symbols as a \fBwchar_t\fP within a \fBcchar_t\fP.
 .bP
-HPUX curses equates some of the \fBACS_\fP symbols
+HP-UX curses equates some of the \fBACS_\fP symbols
 to the analogous \fBWACS_\fP symbols as if the \fBACS_\fP symbols were
 wide characters.
 The misdefined symbols are the arrows
@@ -278,7 +278,7 @@ alternate character sets (i.e., the \fBacsc\fP capability),
 with their corresponding line-drawing characters.
 X/Open Curses did not address the aspect of integrating Unicode with
 line-drawing characters.
-Existing implementations of Unix curses (AIX, HPUX, Solaris)
+Existing implementations of Unix curses (AIX, HP-UX, Solaris)
 use only the \fBacsc\fP character-mapping to provide this feature.
 As a result, those implementations can only use single-byte line-drawing
 characters.

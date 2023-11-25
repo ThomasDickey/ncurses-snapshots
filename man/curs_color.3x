@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.89 2023/11/11 11:38:59 tom Exp $
-.TH curs_color 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_color.3x,v 1.92 2023/11/25 17:36:51 tom Exp $
+.TH curs_color 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,7 +45,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .SH NAME
 \fB\%start_color\fP,
 \fB\%has_colors\fP,
@@ -229,10 +228,10 @@ An application may use \fB\%init_color\fP to alter the internal table
 along with the terminal's color.
 .PP
 These limits apply to color values and color pairs.
-Values outside these limits are not legal, and may result in a runtime error:
+Values outside these limits are not valid, and may result in a runtime error:
 .bP
 \fBCOLORS\fP corresponds to the terminal database's \fB\%max_colors\fP capability,
-(see \fB\%terminfo\fP(\*n)).
+(see \fB\%terminfo\fP(5)).
 .bP
 color values are expected to be in the range \fB0\fP to \fB\%COLORS\-1\fP,
 inclusive (including \fB0\fP and \fB\%COLORS\-1\fP).
@@ -242,9 +241,9 @@ to denote the \fIdefault color\fP (see \fB\%use_default_colors\fP(3X)).
 .bP
 \fB\%COLOR_PAIRS\fP corresponds to
 the terminal database's \fB\%max_pairs\fP capability,
-(see \fB\%terminfo\fP(\*n)).
+(see \fB\%terminfo\fP(5)).
 .bP
-legal color pair values are in the range \fB1\fP to \fB\%COLOR_PAIRS\-1\fP,
+valid color pair values are in the range \fB1\fP to \fB\%COLOR_PAIRS\-1\fP,
 inclusive.
 .bP
 color pair \fB0\fP is special; it denotes \*(``no color\*(''.
@@ -272,12 +271,12 @@ the number of the color-pair to be changed, the foreground
 color number, and the background color number.
 For portable applications:
 .bP
-The first argument must be a legal color pair value.
+The first argument must be a valid color pair value.
 If default colors are used (see \fB\%use_default_colors\fP(3X))
 the upper limit is adjusted to allow for extra pairs which use
 a default color in foreground and/or background.
 .bP
-The second and third arguments must be legal color values.
+The second and third arguments must be valid color values.
 .PP
 If the color-pair was previously initialized,
 the screen is refreshed and all occurrences of that color-pair
@@ -300,7 +299,7 @@ It takes four arguments:
 the number of the color to be changed followed by three RGB values
 (for the amounts of red, green, and blue components).
 .bP
-The first argument must be a legal color value;
+The first argument must be a valid color value;
 default colors are not allowed here.
 (See the section \fB\%Colors\fP for the default color index.)
 .bP
@@ -326,7 +325,7 @@ of \fBshort\fRs for storing
 the information about the amounts of red, green, and blue components in the
 given color.
 .bP
-The first argument must be a legal color value, i.e.,
+The first argument must be a valid color value, i.e.,
 \fB0\fP through \fB\%COLORS\-1\fP, inclusive.
 .bP
 The values that are stored at the addresses pointed to by the
@@ -348,7 +347,7 @@ It requires three arguments: the color-pair
 number, and two addresses of \fBshort\fRs for storing the foreground and the
 background color numbers.
 .bP
-The first argument must be a legal color value,
+The first argument must be a valid color value,
 i.e., in the range \fB1\fP through \fB\%COLOR_PAIRS\-1\fP, inclusive.
 .bP
 The values that are stored at the addresses pointed
@@ -449,6 +448,37 @@ Paradise and compatibles) do the wrong thing when you try to set a bright
 \*(``yellow\*('' background (you get a blinking yellow foreground instead).
 .bP
 Color RGB values are not settable.
+.SH EXTENSIONS
+The functions marked as extensions were designed for \fBncurses\fP(3X),
+and are not found in SVr4 curses, 4.4BSD curses,
+or any other previous version of curses.
+.SH PORTABILITY
+This implementation satisfies XSI Curses's minimum maximums
+for \fB\%COLORS\fP and \fB\%COLOR_PAIRS\fP.
+.PP
+The \fB\%init_pair\fP routine accepts negative values of foreground
+and background color to support the \fB\%use_default_colors\fP(3X) extension,
+but only if that routine has been first invoked.
+.PP
+The assumption that \fB\%COLOR_BLACK\fP is the default
+background color for all terminals can be modified using the
+\fB\%assume_default_colors\fP(3X) extension.
+.PP
+This implementation checks the pointers,
+e.g., for the values returned by
+\fB\%color_content\fP and \fB\%pair_content\fP,
+and will treat those as optional parameters when null.
+.PP
+X/Open Curses does not specify a limit for the number of colors and
+color pairs which a terminal can support.
+However, in its use of \fBshort\fP for the parameters,
+it carries over SVr4's implementation detail for the compiled
+terminfo database, which uses signed 16-bit numbers.
+This implementation provides extended versions of those functions
+which use \fBshort\fP parameters,
+allowing applications to use larger color- and pair-numbers.
+.PP
+The \fB\%reset_color_pairs\fP function is an extension of ncurses.
 .SH HISTORY
 SVr3.2 introduced color support to curses in 1987.
 .PP
@@ -497,38 +527,6 @@ Like ncurses before version 6,
 the NetBSD color-pair information is stored in
 the attributes field of \fB\%cchar_t\fP, limiting the number of color-pairs
 by the size of the bitfield.
-.SH PORTABILITY
-.SS Extensions
-The functions marked as extensions were designed for \fBncurses\fP(3X),
-and are not found in SVr4 curses, 4.4BSD curses,
-or any other previous version of curses.
-.SS Standards
-This implementation satisfies XSI Curses's minimum maximums
-for \fB\%COLORS\fP and \fB\%COLOR_PAIRS\fP.
-.PP
-The \fB\%init_pair\fP routine accepts negative values of foreground
-and background color to support the \fB\%use_default_colors\fP(3X) extension,
-but only if that routine has been first invoked.
-.PP
-The assumption that \fB\%COLOR_BLACK\fP is the default
-background color for all terminals can be modified using the
-\fB\%assume_default_colors\fP(3X) extension.
-.PP
-This implementation checks the pointers,
-e.g., for the values returned by
-\fB\%color_content\fP and \fB\%pair_content\fP,
-and will treat those as optional parameters when null.
-.PP
-X/Open Curses does not specify a limit for the number of colors and
-color pairs which a terminal can support.
-However, in its use of \fBshort\fP for the parameters,
-it carries over SVr4's implementation detail for the compiled
-terminfo database, which uses signed 16-bit numbers.
-This implementation provides extended versions of those functions
-which use \fBshort\fP parameters,
-allowing applications to use larger color- and pair-numbers.
-.PP
-The \fB\%reset_color_pairs\fP function is an extension of ncurses.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_attr\fP(3X),

@@ -726,9 +726,9 @@ Curses Version-dependent Options:
   --with-XawPlus          link with Athena-Plus library
   --with-x                use the X Window System
   --with-x11-rgb=FILE     obtain X11 color definitions from FILE (default: EPREFIX/lib/X11/rgb.txt)
-  --with-form-libname=XXX override form basename of library
-  --with-menu-libname=XXX override menu basename of library
-  --with-panel-libname=XXX override panel basename of library
+  --with-form-libname[=XXX] override ifelse(,,form,) basename of library
+  --with-menu-libname[=XXX] override ifelse(,,menu,) basename of library
+  --with-panel-libname[=XXX] override ifelse(,,panel,) basename of library
   --disable-panel         disable checks for panel functions
   --disable-menu          disable checks for menu functions
   --disable-form          disable checks for form functions

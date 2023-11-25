@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_printw.3x,v 1.41 2023/10/07 21:19:07 tom Exp $
-.TH curs_printw 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_printw.3x,v 1.43 2023/11/25 11:31:06 tom Exp $
+.TH curs_printw 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -91,6 +91,25 @@ It will return an error if the window pointer is null.
 Functions with a \*(``mv\*('' prefix first perform a cursor movement using
 \fBwmove\fP, and return an error if the position is outside the window,
 or if the window pointer is null.
+.SH PORTABILITY
+In this implementation, \fBvw_printw\fP and \fBvwprintw\fP are equivalent,
+to support legacy applications.
+However, the latter (\fBvwprintw\fP) is obsolete:
+.bP
+The XSI Curses standard, Issue 4 described these functions.
+The function
+\fBvwprintw\fP is marked TO BE WITHDRAWN, and is to be replaced by a function
+\fBvw_printw\fP using the \fB<stdarg.h>\fP interface.
+.bP
+The Single Unix Specification, Version 2 states that
+\fBvw_printw\fP  is preferred to \fBvwprintw\fP since the latter requires
+including \fB<varargs.h>\fP, which
+cannot be used in the same file as \fB<stdarg.h>\fP.
+This implementation uses \fB<stdarg.h>\fP for both,
+because that header is included in \fB<curses.h\fP>.
+.bP
+X/Open Curses, Issue 5 (December 2007) marked \fBvwprintw\fP (along with
+\fBvwscanw\fP and the termcap interface) as withdrawn.
 .SH HISTORY
 While \fBprintw\fP was implemented in 4BSD,
 it was unused until 4.2BSD (which used it in games).
@@ -127,25 +146,6 @@ type.
 .PP
 X/Open Curses added \fBvw_printw\fP to replace \fBvwprintw\fP,
 stating that its \fBva_list\fP definition requires <stdarg.h>.
-.SH PORTABILITY
-In this implementation, \fBvw_printw\fP and \fBvwprintw\fP are equivalent,
-to support legacy applications.
-However, the latter (\fBvwprintw\fP) is obsolete:
-.bP
-The XSI Curses standard, Issue 4 described these functions.
-The function
-\fBvwprintw\fP is marked TO BE WITHDRAWN, and is to be replaced by a function
-\fBvw_printw\fP using the \fB<stdarg.h>\fP interface.
-.bP
-The Single Unix Specification, Version 2 states that
-\fBvw_printw\fP  is preferred to \fBvwprintw\fP since the latter requires
-including \fB<varargs.h>\fP, which
-cannot be used in the same file as \fB<stdarg.h>\fP.
-This implementation uses \fB<stdarg.h>\fP for both,
-because that header is included in \fB<curses.h\fP>.
-.bP
-X/Open Curses, Issue 5 (December 2007) marked \fBvwprintw\fP (along with
-\fBvwscanw\fP and the termcap interface) as withdrawn.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addstr\fP(3X),

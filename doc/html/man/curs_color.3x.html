@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_color.3x,v 1.89 2023/11/11 11:38:59 tom Exp @
+  * @Id: curs_color.3x,v 1.92 2023/11/25 17:36:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_color 3x 2023-11-11 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_color 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_color 3x 2023-11-11 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_color 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
@@ -213,7 +213,7 @@
            alter the internal table along with the terminal's color.
 
        These limits apply to color values and  color  pairs.   Values  outside
-       these limits are not legal, and may result in a runtime error:
+       these limits are not valid, and may result in a runtime error:
 
        <STRONG>o</STRONG>   <STRONG>COLORS</STRONG>   corresponds   to   the   terminal   database's  <STRONG>max_colors</STRONG>
            capability, (see <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>).
@@ -227,7 +227,7 @@
        <STRONG>o</STRONG>   <STRONG>COLOR_PAIRS</STRONG>  corresponds  to  the  terminal  database's   <STRONG>max_pairs</STRONG>
            capability, (see <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>).
 
-       <STRONG>o</STRONG>   legal  color  pair  values  are  in  the  range <STRONG>1</STRONG> to <STRONG>COLOR_PAIRS-1</STRONG>,
+       <STRONG>o</STRONG>   valid  color  pair  values  are  in  the  range <STRONG>1</STRONG> to <STRONG>COLOR_PAIRS-1</STRONG>,
            inclusive.
 
        <STRONG>o</STRONG>   color pair <STRONG>0</STRONG> is special; it denotes "no color".
@@ -258,12 +258,12 @@
        foreground color number, and the background color number.  For portable
        applications:
 
-       <STRONG>o</STRONG>   The first argument must be a legal color pair  value.   If  default
+       <STRONG>o</STRONG>   The first argument must be a valid color pair  value.   If  default
            colors  are  used  (see  <STRONG><A HREF="default_colors.3x.html">use_default_colors(3x)</A></STRONG>) the upper limit is
            adjusted to allow for extra pairs which  use  a  default  color  in
            foreground and/or background.
 
-       <STRONG>o</STRONG>   The second and third arguments must be legal color values.
+       <STRONG>o</STRONG>   The second and third arguments must be valid color values.
 
        If  the  color-pair was previously initialized, the screen is refreshed
        and  all  occurrences  of  that  color-pair  are  changed  to  the  new
@@ -287,7 +287,7 @@
        four arguments: the number of the color to be changed followed by three
        RGB values (for the amounts of red, green, and blue components).
 
-       <STRONG>o</STRONG>   The  first argument must be a legal color value; default colors are
+       <STRONG>o</STRONG>   The  first argument must be a valid color value; default colors are
            not allowed here.  (See the section <STRONG>Colors</STRONG> for  the  default  color
            index.)
 
@@ -313,7 +313,7 @@
        storing the information about the  amounts  of  red,  green,  and  blue
        components in the given color.
 
-       <STRONG>o</STRONG>   The  first  argument  must  be a legal color value, i.e., <STRONG>0</STRONG> through
+       <STRONG>o</STRONG>   The  first  argument  must  be a valid color value, i.e., <STRONG>0</STRONG> through
            <STRONG>COLORS-1</STRONG>, inclusive.
 
        <STRONG>o</STRONG>   The values that are stored at the addresses pointed to by the  last
@@ -335,7 +335,7 @@
        pair number, and two addresses of <STRONG>short</STRONG>s for storing the foreground and
        the background color numbers.
 
-       <STRONG>o</STRONG>   The  first argument must be a legal color value, i.e., in the range
+       <STRONG>o</STRONG>   The  first argument must be a valid color value, i.e., in the range
            <STRONG>1</STRONG> through <STRONG>COLOR_PAIRS-1</STRONG>, inclusive.
 
        <STRONG>o</STRONG>   The values that are stored at  the  addresses  pointed  to  by  the
@@ -440,59 +440,13 @@
        <STRONG>o</STRONG>   Color RGB values are not settable.
 
 
-</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       SVr3.2 introduced color support to curses in 1987.
-
-       SVr4  made  internal  changes,  e.g.,  moving the storage for the color
-       state  from  <STRONG>SP</STRONG>  (the  <STRONG>SCREEN</STRONG>  structure)  to  <STRONG>cur_term</STRONG>  (the  <STRONG>TERMINAL</STRONG>
-       structure), but provided the same set of library functions.
-
-       SVr4  curses  limits  the  number of color pairs to 64, reserving color
-       pair zero (0) as the terminal's initial uncolored  state.   This  limit
-       arises  because  the color pair information is a bitfield in the <STRONG>chtype</STRONG>
-       data type (denoted by <STRONG>A_COLOR</STRONG>).
-
-       Other implementations of curses had different limits:
-
-       <STRONG>o</STRONG>   PCCurses (1987-1990) provided for only eight (8) colors.
-
-       <STRONG>o</STRONG>   PDCurses  (1992-present)  inherited  the  8-color  limitation  from
-           PCCurses, but changed this to 256 in version 2.5 (2001), along with
-           changing <STRONG>chtype</STRONG> from 16-bits to 32-bits.
-
-       <STRONG>o</STRONG>   X/Open Curses (1992-present) added a new structure <STRONG>cchar_t</STRONG> to store
-           the character, attributes and color-pair values, allowing increased
-           range of color-pairs.  Both color-pairs  and  color-values  used  a
-           signed <STRONG>short</STRONG>, limiting values to 15 bits.
-
-       <STRONG>o</STRONG>   ncurses  (1992-present)  uses  eight  bits  for  <STRONG>A_COLOR</STRONG>  in <STRONG>chtype</STRONG>
-           values.
-
-           Version 5.3 provided a wide-character interface  (2002),  but  left
-           color-pairs as part of the attributes-field.
-
-           Since version 6 (2015), ncurses uses a separate <STRONG>int</STRONG> for color-pairs
-           in the <STRONG>cchar_t</STRONG> values.  When those color-pair values fit in 8 bits,
-           ncurses  allows  color-pairs  to  be  manipulated via the functions
-           using <STRONG>chtype</STRONG> values.
-
-       <STRONG>o</STRONG>   NetBSD curses used  6  bits  from  2000  (when  colors  were  first
-           supported)  until  2004.   At  that point, NetBSD changed to use 10
-           bits.  As of 2021, that size is  unchanged.   Like  ncurses  before
-           version  6,  the  NetBSD  color-pair  information  is stored in the
-           attributes field of <STRONG>cchar_t</STRONG>, limiting the number of color-pairs  by
-           the size of the bitfield.
-
-
-</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-
-</PRE><H3><a name="h3-Extensions">Extensions</a></H3><PRE>
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
        The  functions  marked as extensions were designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and
        are not found in SVr4 curses, 4.4BSD  curses,  or  any  other  previous
        version of curses.
 
 
-</PRE><H3><a name="h3-Standards">Standards</a></H3><PRE>
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        This  implementation satisfies XSI Curses's minimum maximums for <STRONG>COLORS</STRONG>
        and <STRONG>COLOR_PAIRS</STRONG>.
 
@@ -519,13 +473,57 @@
        The <STRONG>reset_color_pairs</STRONG> function is an extension of ncurses.
 
 
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       SVr3.2 introduced color support to curses in 1987.
+
+       SVr4 made internal changes, e.g., moving  the  storage  for  the  color
+       state  from  <STRONG>SP</STRONG>  (the  <STRONG>SCREEN</STRONG>  structure)  to  <STRONG>cur_term</STRONG>  (the  <STRONG>TERMINAL</STRONG>
+       structure), but provided the same set of library functions.
+
+       SVr4 curses limits the number of color pairs  to  64,  reserving  color
+       pair  zero  (0)  as the terminal's initial uncolored state.  This limit
+       arises because the color pair information is a bitfield in  the  <STRONG>chtype</STRONG>
+       data type (denoted by <STRONG>A_COLOR</STRONG>).
+
+       Other implementations of curses had different limits:
+
+       <STRONG>o</STRONG>   PCCurses (1987-1990) provided for only eight (8) colors.
+
+       <STRONG>o</STRONG>   PDCurses  (1992-present)  inherited  the  8-color  limitation  from
+           PCCurses, but changed this to 256 in version 2.5 (2001), along with
+           changing <STRONG>chtype</STRONG> from 16-bits to 32-bits.
+
+       <STRONG>o</STRONG>   X/Open Curses (1992-present) added a new structure <STRONG>cchar_t</STRONG> to store
+           the character, attributes and color-pair values, allowing increased
+           range  of  color-pairs.   Both  color-pairs and color-values used a
+           signed <STRONG>short</STRONG>, limiting values to 15 bits.
+
+       <STRONG>o</STRONG>   ncurses (1992-present)  uses  eight  bits  for  <STRONG>A_COLOR</STRONG>  in  <STRONG>chtype</STRONG>
+           values.
+
+           Version  5.3  provided  a wide-character interface (2002), but left
+           color-pairs as part of the attributes-field.
+
+           Since version 6 (2015), ncurses uses a separate <STRONG>int</STRONG> for color-pairs
+           in the <STRONG>cchar_t</STRONG> values.  When those color-pair values fit in 8 bits,
+           ncurses allows color-pairs to  be  manipulated  via  the  functions
+           using <STRONG>chtype</STRONG> values.
+
+       <STRONG>o</STRONG>   NetBSD  curses  used  6  bits  from  2000  (when  colors were first
+           supported) until 2004.  At that point, NetBSD  changed  to  use  10
+           bits.   As  of  2021,  that size is unchanged.  Like ncurses before
+           version 6, the NetBSD  color-pair  information  is  stored  in  the
+           attributes  field of <STRONG>cchar_t</STRONG>, limiting the number of color-pairs by
+           the size of the bitfield.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-11-11                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -564,13 +562,9 @@ ncurses 6.4                       2023-11-11                    <STRONG><A HREF=
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-HISTORY">HISTORY</a></li>
-<li><a href="#h2-PORTABILITY">PORTABILITY</a>
-<ul>
-<li><a href="#h3-Extensions">Extensions</a></li>
-<li><a href="#h3-Standards">Standards</a></li>
-</ul>
-</li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

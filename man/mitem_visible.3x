@@ -27,10 +27,10 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: mitem_visible.3x,v 1.23 2023/10/07 21:19:07 tom Exp $
-.TH mitem_visible 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: mitem_visible.3x,v 1.25 2023/11/25 14:18:16 tom Exp $
+.TH mitem_visible 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .SH NAME
-\fBmitem_visible\fP \-
+\fBitem_visible\fP \-
 check visibility of a menu item
 .SH SYNOPSIS
 .nf
@@ -42,9 +42,6 @@ check visibility of a menu item
 A menu item is visible when it is in the portion of a posted menu that
 is mapped onto the screen (if the menu is scrollable, in particular, this
 portion will be smaller than the whole menu).
-.SH NOTES
-The header file \fB<menu.h>\fP automatically includes the header file
-\fB<curses.h>\fP.
 .SH PORTABILITY
 These routines emulate the System V menu library.
 They were not supported on

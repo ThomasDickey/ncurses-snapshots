@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.60 2023/04/22 15:49:32 tom Exp $
+# $Id: man_db.renames.in,v 1.61 2023/11/25 14:32:36 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -163,7 +163,6 @@ term.5				term.5
 term.7				term.7
 term_variables.3x		terminfo_variables.3ncurses
 terminfo.5			terminfo.5
-terminfo.\\\*n			terminfo.5
 tic.1m				tic.1
 toe.1m				toe.1
 tput.1				tput.1

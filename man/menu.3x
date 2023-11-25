@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.39 2023/10/07 21:19:07 tom Exp $
-.TH menu 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: menu.3x,v 1.41 2023/11/25 13:59:44 tom Exp $
+.TH menu 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -190,19 +190,15 @@ System error occurred (see \fBerrno\fP(3)).
 .B E_UNKNOWN_COMMAND
 The menu driver code saw an unknown request code.
 .SH NOTES
-The header file \fB<menu.h>\fP automatically includes the header files
-\fB<curses.h>\fP and \fB<eti.h>\fP.
-.PP
-In your library list, libmenu.a should be before libncurses.a; that is,
-you should say \*(``\-lmenu \-lncurses\*('', not the other way around
-(which would give a link-error when using static libraries).
+The header file \fI\%menu.h\fP itself includes the header file
+\fI\%curses.h\fP.
 .SH PORTABILITY
 These routines emulate the System V menu library.
 They were not supported on
 Version 7 or BSD versions.
 .PP
-The menu facility was documented in SVr4.2 in
-\fICharacter User Interface Programming (UNIX SVR4.2)\fP.
+A menu facility was documented in SVr4.2's
+\fICharacter User Interface Programming\fP document.
 .PP
 It is not part of X/Open Curses.
 .PP

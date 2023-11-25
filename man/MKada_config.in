@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.29 2023/10/07 21:19:07 tom Exp $
-.TH adacurses@USE_CFG_SUFFIX@\-config 1 2023-10-07 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKada_config.in,v 1.31 2023/11/25 19:51:50 tom Exp $
+.TH adacurses@USE_CFG_SUFFIX@\-config 1 2023-11-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ds C adacurses@USE_CFG_SUFFIX@\-config
 .ie \n(.g \{\
 .ds `` \(lq
@@ -76,7 +76,7 @@ successfully.
 issues a usage message and exits successfully.
 .PP
 Omitting options implies \*(``\fB\-\-cflags \-\-libs\fP\*(''.
-.SH EXAMPLE
+.SH EXAMPLES
 Consider a program using \fI@ADA_LIBNAME@\fP to write the message
 \*(``Hello, world!\*('' in the center of the screen and wait for the
 user to press the \*(``q\*('' key before exiting.

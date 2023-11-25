@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scr_dump.3x,v 1.33 2023/11/11 11:47:41 tom Exp $
-.TH curs_scr_dump 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scr_dump.3x,v 1.35 2023/11/25 11:29:34 tom Exp $
+.TH curs_scr_dump 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -103,8 +103,8 @@ each will return an error if the file cannot be opened.
 .SH NOTES
 Note that \fBscr_init\fP, \fBscr_set\fP, and \fBscr_restore\fP may be macros.
 .SH PORTABILITY
-The XSI Curses standard, Issue 4, describes these functions (adding the const
-qualifiers).
+These functions are described in the XSI Curses standard, Issue 4,
+which adds \fI\%const\fP qualifiers to the arguments.
 .PP
 The SVr4 docs merely say under \fBscr_init\fP that the dump data is also
 considered invalid "if the time-stamp of the tty is old" but do not define

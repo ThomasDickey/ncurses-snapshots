@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.52 2023/10/14 19:25:26 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-10-14 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.54 2023/11/25 14:32:36 tom Exp $
+.TH @CAPTOINFO@ 1M 2023-11-25 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -44,7 +44,6 @@
 .el   .ds '  '
 .\}
 .
-.ds n 5
 .ds d /etc/termcap
 .SH NAME
 \fB\%@CAPTOINFO@\fP \-
@@ -57,20 +56,20 @@ convert a \fItermcap\fR description into a \fIterminfo\fR description
 .P
 .B "@CAPTOINFO@ \-V"
 .SH DESCRIPTION
-\fB\%@CAPTOINFO@\fP looks in each given text
-\fIfile\fP for \fItermcap\fP descriptions.
-For each one found,
-it writes an equivalent \fIterminfo\fP description to the standard
-output stream.
-\fItermcap\fP \fBtc\fP capabilities are translated directly to
-\fIterminfo\fP \*(``\fBuse\fP\*('' capabilities.
+\fB\%@CAPTOINFO@\fP translates terminal descriptions.
+It looks in each given text \fIfile\fP for \fI\%termcap\fP entries and,
+for each one found,
+writes an equivalent \fI\%terminfo\fP description to the standard output
+stream.
+\fI\%termcap\fP \fBtc\fP capabilities translate to \fI\%terminfo\fP
+\*(``\fBuse\fP\*('' capabilities.
 .PP
 If no \fIfile\fPs are specified,
 \fB\%@CAPTOINFO@\fP interprets the content of the environment variable
-\fB\%TERMCAP\fP as a file name,
+\fI\%TERMCAP\fP as a file name,
 and extracts only the entry for the terminal named in the environment
-variable \fB\%TERM\fP from it.
-If the environment variable \fB\%TERMCAP\fP is not set,
+variable \fITERM\fP from it.
+If the environment variable \fI\%TERMCAP\fP is not set,
 \fB\%@CAPTOINFO@\fP reads \fI\%\*d\fP.
 .PP
 This utility is implemented as a link to \fB\%@TIC@\fP(1M),
@@ -84,22 +83,23 @@ You can use other \fB\%@TIC@\fP options such as
 .BR \-w ,
 and
 .BR \-x .
-The \fB\-V\fP option reports the version of \fIncurses\fP associated
+The \fB\-V\fP option reports the version of \fI\%ncurses\fP associated
 with this program and exits with a successful status.
 .SS "Translations from nonstandard capabilities"
 \fB\%@CAPTOINFO@\fP translates some obsolete,
-nonstandard capabilities into standard (SVr4/XSI Curses) \fIterminfo\fP
-capabilities.
+nonstandard capabilities into standard
+(SVr4/XSI Curses)
+\fI\%terminfo\fP capabilities.
 It issues a diagnostic to the standard error stream for each,
 inviting the user to check that it has not mistakenly translated an
 unknown or mistyped capability name.
 .PP
 .TS
-cb cb cb cb
-cb cb cb cb
-cb cb l  lb.
-Nonstandard	Standard	\&	\f(BIterminfo\fP
-name	name	From	capability
+Cb S
+Cb Cb Cb Cb
+Cb Cb C  Lb.
+Name
+Obsolete	Standard	Origin	\f(BIterminfo\fP capability
 _
 BO	mr	AT&T	enter_reverse_mode
 CI	vi	AT&T	cursor_invisible
@@ -120,28 +120,26 @@ PS	pf	XENIX	prtr_on
 PU	kP	XENIX	key_ppage
 RT	@8	XENIX	kent
 UP	ku	XENIX	kcuu1
-KA	k;	Tek	key_f10
-KB	F1	Tek	key_f11
-KC	F2	Tek	key_f12
-KD	F3	Tek	key_f13
-KE	F4	Tek	key_f14
-KF	F5	Tek	key_f15
-BC	Sb	Tek	set_background
-FC	Sf	Tek	set_foreground
-HS	mh	Iris	enter_dim_mode
+KA	k;	Tektronix	key_f10
+KB	F1	Tektronix	key_f11
+KC	F2	Tektronix	key_f12
+KD	F3	Tektronix	key_f13
+KE	F4	Tektronix	key_f14
+KF	F5	Tektronix	key_f15
+BC	Sb	Tektronix	set_background
+FC	Sf	Tektronix	set_foreground
+HS	mh	IRIX	enter_dim_mode
 .TE
 .PP
-XENIX \fItermcap\fP had a set of extension capabilities,
+XENIX \fI\%termcap\fP had a set of extension capabilities,
 corresponding to box drawing characters of CCSID
 (\*(``code page\*('') 437,
 as follows.
 .PP
 .TS
 cb cb
-cb cb
 cb l .
-Termcap
-Name	Graphic
+\f(BItermcap\fP Name	Graphic
 _
 G2	upper left corner
 G3	lower left corner
@@ -173,13 +171,13 @@ Gc	double intersection
 GG	ACS magic cookie count
 .TE
 .PP
-If the single-line capabilities occur in an entry,
-they are composed into an \fBacsc\fP string.
-The double-line capabilities and
-\fBGG\fP are discarded with a warning message.
+\fB\%@CAPTOINFO@\fP composes single-line capabilities into an \fBacsc\fP
+string,
+and discards \fBGG\fP and double-line capabilities with a warning
+diagnostic.
 .PP
-IBM's AIX has a \fIterminfo\fP facility descended from SVr1
-\fIterminfo\fP,
+IBM's AIX has a \fI\%terminfo\fP facility descended from SVr1
+\fI\%terminfo\fP,
 but which is incompatible with the SVr4 format.
 \fB\%@CAPTOINFO@\fP translates the following AIX extensions.
 .PP
@@ -200,27 +198,28 @@ Additionally,
 this program translates the AIX \fBbox1\fP capability to an \fBacsc\fP
 string.
 .PP
-The HP-UX \fIterminfo\fP library supports two nonstandard \fIterminfo\fP
-capabilities,
+The HP-UX \fI\%terminfo\fP library supports two nonstandard
+\fI\%terminfo\fP capabilities,
 \fBmeml\fP (memory lock) and \fBmemu\fP (memory unlock).
 \fB\%@CAPTOINFO@\fP discards these with a warning message.
 .SH FILES
 .TP
 \fI\*d\fP
-default \fItermcap\fP terminal capability database
+default \fI\%termcap\fP terminal capability database
 .SH NOTES
 The verbose option is not identical to SVr4's.
-Under SVr4, instead of following
-the \fB\-v\fP with a trace level \fIn\fP,
+Under SVr4,
+instead of following the \fB\-v\fP with a trace level \fIn\fP,
 you repeat it \fIn\fP times.
 .SH PORTABILITY
-X/Open Curses, Issue 7 (2009) describes \fBtic\fP briefly,
+X/Open Curses,
+Issue 7 (2009) describes \fBtic\fP briefly,
 but omits this program.
 SVr4 systems provide \fB\%captoinfo\fP as a separate application from
 \fBtic\fP.
 .PP
 NetBSD does not provide this application.
-.SH AUTHOR
+.SH AUTHORS
 Eric S. Raymond <esr@snark.thyrsus.com>
 and
 .br
@@ -229,4 +228,4 @@ Thomas E. Dickey <dickey@invisible\-island.net>
 \fB\%@INFOCMP@\fP(1M),
 \fB\%@TIC@\fP(1M),
 \fB\%curses\fP(3X),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5)

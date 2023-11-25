@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1056 2023/10/28 16:51:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.1059 2023/11/25 21:12:05 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -8980,7 +8980,7 @@ AC_SUBST(ADA_INCLUDE)
 AC_MSG_RESULT($ADA_INCLUDE)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_LIBNAME version: 2 updated: 2023/10/28 11:59:01
+dnl CF_WITH_ADA_LIBNAME version: 3 updated: 2023/11/22 20:48:30
 dnl -------------------
 dnl CF_WITH_ADA_LIBNAME
 dnl -------------------
@@ -8989,7 +8989,7 @@ dnl $1 = default value
 AC_DEFUN([CF_WITH_ADA_LIBNAME],[
 AC_MSG_CHECKING(for Ada95 curses library name)
 AC_ARG_WITH(ada-libname,
-   [  --with-ada-libname=XXX  use XXX as Ada95 library name],
+   [[  --with-ada-libname[=XXX]  use XXX as Ada95 library name]],
    ADA_LIBNAME=[$]withval,
    ADA_LIBNAME=$1)
 case "x$ADA_LIBNAME" in
@@ -9089,7 +9089,7 @@ if test "$with_dmalloc" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_EXPORT_SYMS version: 4 updated: 2023/10/28 11:59:01
+dnl CF_WITH_EXPORT_SYMS version: 5 updated: 2023/11/22 20:48:30
 dnl -------------------
 dnl Use this with libtool to specify the list of symbols that may be exported.
 dnl The input file contains one symbol per line; comments work with "#".
@@ -9099,7 +9099,7 @@ AC_DEFUN([CF_WITH_EXPORT_SYMS],
 [
 AC_MSG_CHECKING(if exported-symbols file should be used)
 AC_ARG_WITH(export-syms,
-	[  --with-export-syms=SYM-FILE limit symbols exported by libtool to those listed in SYM-FILE],
+	[[  --with-export-syms[=SYM-FILE] limit symbols exported by libtool to those listed in SYM-FILE]],
 	[with_export_syms=$withval],
 	[with_export_syms=no])
 if test "x$with_export_syms" = xyes
@@ -9291,7 +9291,7 @@ AC_SUBST(LIB_UNINSTALL)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL_OPTS version: 5 updated: 2023/10/28 11:59:01
+dnl CF_WITH_LIBTOOL_OPTS version: 6 updated: 2023/11/22 20:48:30
 dnl --------------------
 dnl Allow user to pass additional libtool options into the library creation
 dnl and link steps.  The main use for this is to do something like
@@ -9301,7 +9301,7 @@ dnl	./configure --enable-static
 AC_DEFUN([CF_WITH_LIBTOOL_OPTS],[
 AC_MSG_CHECKING(for additional libtool options)
 AC_ARG_WITH(libtool-opts,
-	[  --with-libtool-opts=XXX give libtool additional options XXX],
+	[[  --with-libtool-opts[=XXX] give libtool additional options XXX]],
 	[with_libtool_opts=$withval],
 	[with_libtool_opts=no])
 AC_MSG_RESULT($with_libtool_opts)
@@ -9317,7 +9317,7 @@ esac
 AC_SUBST(LIBTOOL_OPTS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIB_BASENAME version: 1 updated: 2020/03/07 20:05:14
+dnl CF_WITH_LIB_BASENAME version: 2 updated: 2023/11/22 20:48:30
 dnl --------------------
 dnl Allow for overriding the basename of a library, i.e., the part to which
 dnl prefixes/suffixes are attached.
@@ -9329,7 +9329,7 @@ AC_DEFUN([CF_WITH_LIB_BASENAME],
 [
 AC_MSG_CHECKING(for desired basename for $2 library)
 AC_ARG_WITH($2-libname,
-	[  --with-$2-libname=XXX override ifelse($3,,$2,$3) basename of library],
+	[[  --with-$2-libname[=XXX] override ifelse($3,,$2,$3) basename of library]],
 	[with_lib_basename=$withval],
 	[with_lib_basename=ifelse($3,,$2,$3)])
 $1="$with_lib_basename"
@@ -9517,7 +9517,7 @@ if test "x$with_pcre2" != xno ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PKG_CONFIG_LIBDIR version: 21 updated: 2023/01/22 13:37:42
+dnl CF_WITH_PKG_CONFIG_LIBDIR version: 23 updated: 2023/11/22 20:48:30
 dnl -------------------------
 dnl Allow the choice of the pkg-config library directory to be overridden.
 dnl
@@ -9547,13 +9547,14 @@ if test -n "$PKG_CONFIG_PATH"; then
 elif test -n "$PKG_CONFIG_LIBDIR"; then
 	cf_search_path=`echo "$PKG_CONFIG_LIBDIR" | sed -e 's/:/ /g' -e 's,^[[ 	]]*,,' -e 's,[[ 	]]*$,,'`
 else
-	cf_search_path=libdir
+	cf_search_path=auto
 fi
 
 # if the option is used, let that override.  otherwise default to "libdir"
 AC_ARG_WITH(pkg-config-libdir,
-	[  --with-pkg-config-libdir=XXX use given directory for installing pc-files],
-	[cf_search_path=$withval])
+	[[  --with-pkg-config-libdir[=XXX] use given directory for installing pc-files]],
+	[cf_search_path=$withval],
+	[test "x$PKG_CONFIG" != xnone && test -z "$cf_search_path" && cf_search_path=libdir])
 
 case "x$cf_search_path" in
 (xlibdir)
@@ -9776,6 +9777,27 @@ AC_ARG_WITH(system-type,
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_WITH_TYPE version: 2 updated: 2023/11/25 16:11:47
+dnl ------------
+dnl Accept a TYPE for substitution:
+dnl $1 = name of type
+dnl $2 = help/usage message
+dnl $3 = symbol to set
+dnl $4 = default value
+AC_DEFUN([CF_WITH_TYPE],[
+AC_MSG_CHECKING(for type of $1)
+AC_ARG_WITH([$1], [$2],
+	[$3="$withval"],
+	[$3=$4])
+AC_MSG_RESULT([$]$3)
+case x[$]$3 in
+(x|xyes|xno)
+	AC_MSG_ERROR(expected a type name for $1)
+	;;
+esac
+AC_SUBST($3)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_WITH_VALGRIND version: 1 updated: 2006/12/14 18:00:21
 dnl ----------------
 AC_DEFUN([CF_WITH_VALGRIND],[
@@ -9784,7 +9806,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 11 updated: 2023/10/28 11:59:01
+dnl CF_WITH_VERSIONED_SYMS version: 12 updated: 2023/11/22 20:48:30
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -9797,7 +9819,7 @@ AC_REQUIRE([AC_PROG_EGREP])dnl
 
 AC_MSG_CHECKING(if versioned-symbols file should be used)
 AC_ARG_WITH(versioned-syms,
-	[  --with-versioned-syms=MAP-FILE version ELF shared library symbols per MAP-FILE],
+	[[  --with-versioned-syms[=MAP-FILE] version ELF shared library symbols per MAP-FILE]],
 	[with_versioned_syms=$withval],
 	[with_versioned_syms=no])
 case "x$with_versioned_syms" in

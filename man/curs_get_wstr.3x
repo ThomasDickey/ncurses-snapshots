@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.39 2023/11/11 11:39:29 tom Exp $
-.TH curs_get_wstr 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.41 2023/11/25 14:29:54 tom Exp $
+.TH curs_get_wstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -130,6 +130,26 @@ versions read at most
 \fIn\fP
 characters, letting the application prevent overflow of the
 input buffer.
+.SH RETURN VALUE
+All of these functions return the integer \fBOK\fP upon successful completion.
+If unsuccessful, they return \fBERR\fP.
+.PP
+X/Open defines no error conditions.
+.PP
+In this implementation,
+these functions return an error
+.bP
+if the window pointer is null,
+.bP
+if its timeout expires without having any data, or
+.bP
+if the associated call to
+\fBwget_wch\fP
+failed.
+.PP
+Functions with a \*(``mv\*('' prefix first perform a cursor movement using
+\fBwmove\fP, and return an error if the position is outside the window,
+or if the window pointer is null.
 .SH NOTES
 Any of these functions other than
 \fBwgetn_wstr\fP
@@ -154,27 +174,6 @@ respectively, is recommended.
 .PP
 These functions cannot return \fBKEY_\fP values because there
 is no way to distinguish a \fBKEY_\fP value from a valid \fBwchar_t\fP value.
-may be macros.
-.SH RETURN VALUE
-All of these functions return the integer \fBOK\fP upon successful completion.
-If unsuccessful, they return \fBERR\fP.
-.PP
-X/Open defines no error conditions.
-.PP
-In this implementation,
-these functions return an error
-.bP
-if the window pointer is null,
-.bP
-if its timeout expires without having any data, or
-.bP
-if the associated call to
-\fBwget_wch\fP
-failed.
-.PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
 .SH PORTABILITY
 These functions are described in The Single Unix Specification, Version 2.
 No error conditions are defined.

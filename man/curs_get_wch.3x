@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.28 2023/11/11 11:39:15 tom Exp $
-.TH curs_get_wch 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.30 2023/11/25 13:58:47 tom Exp $
+.TH curs_get_wch 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -138,32 +138,6 @@ An application can push special keys
 which it may read via \fBwget_wch\fP
 by checking for the \fBKEY_CODE_YES\fP result,
 and using \fBungetch\fP for those special keys.
-.SH NOTES
-The header file
-\fB<curses.h>\fP
-automatically
-includes the header file
-\fB<stdio.h>\fP.
-.PP
-Applications should not define the escape key by itself as a single-character
-function.
-.PP
-When using
-\fBget_wch\fP,
-\fBwget_wch\fP,
-\fBmvget_wch\fP, or
-\fBmvwget_wch\fP, applications should
-not use
-\fBnocbreak\fP
-mode and
-\fBecho\fP
-mode
-at the same time.
-Depending on the state of the tty driver when each character
-is typed, the program may produce undesirable results.
-.PP
-All functions except \fBwget_wch\fP and \fBunget_wch\fP
-may be macros.
 .SH RETURN VALUE
 When
 \fBget_wch\fP,
@@ -188,6 +162,30 @@ Otherwise, the function returns
 Functions with a \*(``mv\*('' prefix first perform a cursor movement using
 \fBwmove\fP, and return an error if the position is outside the window,
 or if the window pointer is null.
+.SH NOTES
+Applications should not define the escape key by itself as a single-character
+function.
+.PP
+When using
+\fBget_wch\fP,
+\fBwget_wch\fP,
+\fBmvget_wch\fP, or
+\fBmvwget_wch\fP, applications should
+not use
+\fBnocbreak\fP
+mode and
+\fBecho\fP
+mode
+at the same time.
+Depending on the state of the tty driver when each character
+is typed, the program may produce undesirable results.
+.PP
+All of these symbols except
+\fB\%wget_wch\fP and
+\fB\%unget_wch\fP
+may be available as macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_getch\fP(3X),

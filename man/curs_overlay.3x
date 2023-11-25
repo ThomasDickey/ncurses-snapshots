@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.33 2023/10/07 21:19:07 tom Exp $
-.TH curs_overlay 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_overlay.3x,v 1.35 2023/11/25 11:29:34 tom Exp $
+.TH curs_overlay 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%overlay\fP,
 \fB\%overwrite\fP,
@@ -76,8 +76,8 @@ if some part of the window would be placed off-screen.
 .SH NOTES
 Note that \fBoverlay\fP and \fBoverwrite\fP may be macros.
 .SH PORTABILITY
-The XSI Curses standard, Issue 4 describes these functions (adding the const
-qualifiers).
+These functions are described in the XSI Curses standard, Issue 4,
+which adds \fI\%const\fP qualifiers to the arguments.
 It further specifies their behavior in the presence of characters
 with multibyte renditions (not yet supported in this implementation).
 .SH SEE ALSO

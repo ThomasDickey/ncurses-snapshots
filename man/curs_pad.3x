@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.47 2023/11/11 11:47:10 tom Exp $
-.TH curs_pad 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_pad.3x,v 1.49 2023/11/25 14:08:35 tom Exp $
+.TH curs_pad 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -68,11 +68,9 @@ window will be on the screen at one time.
 Automatic refreshes of pads
 (e.g., from scrolling or echoing of input) do not occur.
 .PP
-It is not
-legal to call \fB\%wrefresh\fP with a \fIpad\fP as an argument; the routines
-\fB\%prefresh\fP or \fB\%pnoutrefresh\fP should be called instead.
-Note that these
-routines require additional parameters to specify the part of the pad to be
+It is not valid to call \fB\%wrefresh\fP with a \fIpad\fP argument;
+call \fB\%prefresh\fP or \fB\%pnoutrefresh\fP instead.
+They require additional parameters to specify the part of the pad to be
 displayed and the location on the screen to be used for the display.
 .SS subpad
 The \fB\%subpad\fP routine creates and returns a pointer to a subwindow within a

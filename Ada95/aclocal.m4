@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.205 2023/10/28 16:05:04 tom Exp $
+dnl $Id: aclocal.m4,v 1.206 2023/11/23 01:48:30 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4764,7 +4764,7 @@ AC_SUBST(ADA_INCLUDE)
 AC_MSG_RESULT($ADA_INCLUDE)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA_LIBNAME version: 2 updated: 2023/10/28 11:59:01
+dnl CF_WITH_ADA_LIBNAME version: 3 updated: 2023/11/22 20:48:30
 dnl -------------------
 dnl CF_WITH_ADA_LIBNAME
 dnl -------------------
@@ -4773,7 +4773,7 @@ dnl $1 = default value
 AC_DEFUN([CF_WITH_ADA_LIBNAME],[
 AC_MSG_CHECKING(for Ada95 curses library name)
 AC_ARG_WITH(ada-libname,
-   [  --with-ada-libname=XXX  use XXX as Ada95 library name],
+   [[  --with-ada-libname[=XXX]  use XXX as Ada95 library name]],
    ADA_LIBNAME=[$]withval,
    ADA_LIBNAME=$1)
 case "x$ADA_LIBNAME" in
@@ -4914,7 +4914,7 @@ eval $3="$withval"
 AC_SUBST($3)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PKG_CONFIG_LIBDIR version: 21 updated: 2023/01/22 13:37:42
+dnl CF_WITH_PKG_CONFIG_LIBDIR version: 23 updated: 2023/11/22 20:48:30
 dnl -------------------------
 dnl Allow the choice of the pkg-config library directory to be overridden.
 dnl
@@ -4949,7 +4949,7 @@ fi
 
 # if the option is used, let that override.  otherwise default to "libdir"
 AC_ARG_WITH(pkg-config-libdir,
-	[  --with-pkg-config-libdir=XXX use given directory for installing pc-files],
+	[[  --with-pkg-config-libdir[=XXX] use given directory for installing pc-files]],
 	[cf_search_path=$withval],
 	[test "x$PKG_CONFIG" != xnone && test -z "$cf_search_path" && cf_search_path=libdir])
 

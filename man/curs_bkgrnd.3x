@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.30 2023/10/07 21:19:07 tom Exp $
-.TH curs_bkgrnd 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgrnd.3x,v 1.32 2023/11/25 14:01:49 tom Exp $
+.TH curs_bkgrnd 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -92,16 +92,6 @@ character/attribute pair via the
 pointer.
 If the given window pointer is null,
 the character is not updated (but no error is returned).
-.SH NOTES
-Note that
-\fBbkgrnd\fP,
-\fBbkgrndset\fP, and
-\fBgetbkgrnd\fP
-may be macros.
-.PP
-X/Open Curses does not provide details on how the rendition is changed.
-This implementation follows the approach used in SVr4 curses,
-which is explained in the manual page for \fBwbkgd\fP.
 .SH RETURN VALUE
 The \fBbkgrndset\fP and \fBwbkgrndset\fP routines do not return a value.
 .PP
@@ -111,9 +101,17 @@ Otherwise, they return \fBERR\fP:
 A null window pointer is treated as an error.
 .bP
 A null character pointer is treated as an error.
+.SH NOTES
+\fB\%bkgrnd\fP,
+\fB\%bkgrndset\fP, and
+\fB\%getbkgrnd\fP
+may be available as macros.
+.PP
+X/Open Curses does not provide details on how the rendition is changed.
+This implementation follows the approach used in SVr4 curses,
+which is explained in the manual page for \fBwbkgd\fP.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4
-(X/Open Curses).
+These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_bkgd\fP(3X)

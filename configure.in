@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.770 2023/10/28 15:41:34 tom Exp $
+dnl $Id: configure.in,v 1.772 2023/11/25 21:05:05 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.770 $)
+AC_REVISION($Revision: 1.772 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -235,7 +235,7 @@ if test -z "$MAKE_PC_FILES"
 then
 	AC_MSG_CHECKING(for suffix to add to pkg-config files)
 AC_ARG_WITH(pc-suffix,
-	[  --with-pc-suffix=XXX    suffix pkg-config files with XXX],
+	[[  --with-pc-suffix[=XXX]  suffix pkg-config files with XXX]],
 	[case "x$withval" in
 	(xyes|xno)
 		PC_MODULE_SUFFIX=
@@ -565,7 +565,7 @@ CF_HELP_MESSAGE(Fine-Tuning Your Configuration:)
 AC_MSG_CHECKING(for extra suffix to append to header/library paths)
 EXTRA_SUFFIX=
 AC_ARG_WITH(extra-suffix,
-	[  --with-extra-suffix=X   append extra suffix X to header/library paths],
+	[[  --with-extra-suffix[=X] append extra suffix X to header/library paths]],
 	[case x$withval in
 	(xno)
 		;;
@@ -694,7 +694,7 @@ esac
 
 AC_MSG_CHECKING(if xterm backspace sends BS or DEL)
 AC_ARG_WITH(xterm-kbs,
-	[  --with-xterm-kbs=XXX    specify if xterm backspace sends BS or DEL],
+	[[  --with-xterm-kbs[=XXX]  specify if xterm backspace sends BS or DEL]],
 	[with_xterm_kbs=$withval],
 	[with_xterm_kbs=auto])
 case x$with_xterm_kbs in
@@ -1061,13 +1061,10 @@ AC_SUBST(NCURSES_WATTR_MACROS)
 CF_WITH_X11_RGB
 
 ###   use option --with-bool to override bool's type
-AC_MSG_CHECKING(for type of bool)
-AC_ARG_WITH(bool,
+CF_WITH_TYPE(bool,
 	[  --with-bool=TYPE        fall back to TYPE for curses 'bool' typedef],
-	[NCURSES_BOOL="$withval"],
-	[NCURSES_BOOL=auto])
-AC_MSG_RESULT($NCURSES_BOOL)
-AC_SUBST(NCURSES_BOOL)
+	NCURSES_BOOL,
+	auto)
 
 AC_MSG_CHECKING(for alternate terminal capabilities file)
 AC_ARG_WITH(caps,
@@ -1083,29 +1080,22 @@ AC_MSG_RESULT($TERMINFO_CAPS)
 AC_SUBST(TERMINFO_CAPS)
 
 ###   use option --with-chtype to override chtype's type
-AC_MSG_CHECKING(for type of chtype)
-AC_ARG_WITH(chtype,
+CF_WITH_TYPE(chtype,
 	[  --with-chtype=TYPE      override type of chtype],
-	[NCURSES_CHTYPE="$withval"],
-	[NCURSES_CHTYPE=$cf_dft_chtype])
-AC_MSG_RESULT($NCURSES_CHTYPE)
+	NCURSES_CHTYPE,
+	$cf_dft_chtype)
 
 ###   use option --with-ospeed to override ospeed's type
-AC_MSG_CHECKING(for type of ospeed)
-AC_ARG_WITH(ospeed,
+CF_WITH_TYPE(ospeed,
 	[  --with-ospeed=TYPE      override type of ospeed variable],
-	[NCURSES_OSPEED="$withval"],
-	[NCURSES_OSPEED=short])
-AC_MSG_RESULT($NCURSES_OSPEED)
-AC_SUBST(NCURSES_OSPEED)
+	NCURSES_OSPEED,
+	short)
 
 ###   use option --with-mmask-t to override mmask_t's type
-AC_MSG_CHECKING(for type of mmask_t)
-AC_ARG_WITH(mmask-t,
+CF_WITH_TYPE(mmask-t,
 	[  --with-mmask-t=TYPE     override type of mmask_t],
-	[NCURSES_MMASK_T="$withval"],
-	[NCURSES_MMASK_T=$cf_dft_mmask_t])
-AC_MSG_RESULT($NCURSES_MMASK_T)
+	NCURSES_MMASK_T,
+	$cf_dft_mmask_t)
 
 ###   use option --with-ccharw-max to override CCHARW_MAX size
 AC_MSG_CHECKING(for size CCHARW_MAX)
@@ -1132,13 +1122,10 @@ test "x$with_signed_char" != xyes && NCURSES_SBOOL="char"
 AC_SUBST(NCURSES_SBOOL)
 
 ###   use option --with-tparm-arg to override tparm's argument type
-AC_MSG_CHECKING(for type of tparm args)
-AC_ARG_WITH(tparm-arg,
+CF_WITH_TYPE(tparm-arg,
 	[  --with-tparm-arg=TYPE   override parameter type of tparm],
-	[NCURSES_TPARM_ARG="$withval"],
-	[NCURSES_TPARM_ARG=$cf_dft_tparm_arg])
-AC_MSG_RESULT($NCURSES_TPARM_ARG)
-AC_SUBST(NCURSES_TPARM_ARG)
+	NCURSES_TPARM_ARG,
+	$cf_dft_tparm_arg)
 
 ### Enable compiling-in rcs id's
 AC_MSG_CHECKING(if RCS identifiers should be compiled-in)

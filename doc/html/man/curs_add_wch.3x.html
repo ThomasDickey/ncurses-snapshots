@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.46 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.48 2023/11/25 14:20:05 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -226,9 +226,9 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       All  of these functions are described in the XSI Curses standard, Issue
-       4.  The defaults specified for line-drawing  characters  apply  in  the
-       POSIX locale.
+       These functions are described in the XSI Curses standard, Issue 4.  The
+       defaults specified for  line-drawing  characters  apply  in  the  POSIX
+       locale.
 
 
 </PRE><H3><a name="h3-WACS-Symbols">WACS Symbols</a></H3><PRE>
@@ -238,8 +238,8 @@
 
        <STRONG>o</STRONG>   NetBSD curses defines the symbols as a <STRONG>wchar_t</STRONG> within a <STRONG>cchar_t</STRONG>.
 
-       <STRONG>o</STRONG>   HPUX curses equates some of the <STRONG>ACS_</STRONG> symbols to the analogous <STRONG>WACS_</STRONG>
-           symbols  as  if  the  <STRONG>ACS_</STRONG>  symbols  were  wide  characters.    The
+       <STRONG>o</STRONG>   HP-UX  curses  equates  some  of  the <STRONG>ACS_</STRONG> symbols to the analogous
+           <STRONG>WACS_</STRONG> symbols as if the <STRONG>ACS_</STRONG> symbols  were  wide  characters.   The
            misdefined  symbols  are the arrows and other symbols which are not
            used for line-drawing.
 
@@ -252,7 +252,7 @@
        alternate character  sets  (i.e.,  the  <STRONG>acsc</STRONG>  capability),  with  their
        corresponding  line-drawing  characters.  X/Open Curses did not address
        the  aspect  of  integrating  Unicode  with  line-drawing   characters.
-       Existing  implementations  of Unix curses (AIX, HPUX, Solaris) use only
+       Existing  implementations of Unix curses (AIX, HP-UX, Solaris) use only
        the <STRONG>acsc</STRONG> character-mapping to provide this feature.  As a result, those
        implementations  can  only  use  single-byte  line-drawing  characters.
        Ncurses 5.3 (2002) provided a table of Unicode values  to  solve  these
@@ -320,7 +320,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

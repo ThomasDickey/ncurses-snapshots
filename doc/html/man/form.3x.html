@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: form.3x,v 1.48 2023/10/07 21:19:07 tom Exp @
+  * @Id: form.3x,v 1.50 2023/11/25 13:59:44 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>form 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>form 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">form 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">form 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>                         Library calls                        <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
 
@@ -211,20 +211,15 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The header  file  <STRONG>&lt;form.h&gt;</STRONG>  automatically  includes  the  header  files
-       <STRONG>&lt;curses.h&gt;</STRONG> and <STRONG>&lt;eti.h&gt;</STRONG>.
-
-       In your library list, libform.a should be before libncurses.a; that is,
-       you want to say "-lform -lncurses", not the  other  way  around  (which
-       would give you a link error when using static libraries).
+       The header file <EM>form.h</EM> itself includes <EM>curses.h</EM>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  emulate  the  System  V  forms library.  They were not
+       These routines emulate the System  V  forms  library.   They  were  not
        supported on Version 7 or BSD versions.
 
-       The menu facility was documented in SVr4.2 in <EM>Character</EM> <EM>User</EM>  <EM>Interface</EM>
-       <EM>Programming</EM> <EM>(UNIX</EM> <EM>SVR4.2)</EM>.
+       A  form  facility  was  documented in SVr4.2's <EM>Character</EM> <EM>User</EM> <EM>Interface</EM>
+       <EM>Programming</EM> document.
 
        It is not part of X/Open Curses.
 
@@ -234,23 +229,23 @@
 
        <STRONG>o</STRONG>   NetBSD curses.
 
-       A  few  functions  in  this  implementation  are  extensions  added for
+       A few  functions  in  this  implementation  are  extensions  added  for
        ncurses,   but   not   provided   by   other   implementations,   e.g.,
        <STRONG>form_driver_w</STRONG>, <STRONG>unfocus_current_field</STRONG>.
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
-       Juergen  Pfeifer.   Manual  pages and adaptation for ncurses by Eric S.
+       Juergen Pfeifer.  Manual pages and adaptation for ncurses  by  Eric  S.
        Raymond.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG> and related pages whose names  begin  "form_"  for  detailed
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>  and  related  pages  whose names begin "form_" for detailed
        descriptions of the entry points.
 
 
 
-ncurses 6.4                       2023-10-07                          <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                          <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

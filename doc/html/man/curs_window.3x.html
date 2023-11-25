@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_window.3x,v 1.41 2023/10/14 19:27:01 tom Exp @
+  * @Id: curs_window.3x,v 1.43 2023/11/25 14:17:29 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_window 3x 2023-10-14 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_window 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_window 3x 2023-10-14 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_window 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 
@@ -126,6 +126,8 @@
        screen.   There is no difference between the subwindows and the derived
        windows.
 
+
+</PRE><H3><a name="h3-mvderwin">mvderwin</a></H3><PRE>
        Calling <STRONG>mvderwin</STRONG> moves a  derived  window  (or  subwindow)  inside  its
        parent  window.   The  screen-relative parameters of the window are not
        changed.  This routine is used to display different parts of the parent
@@ -254,7 +256,7 @@
 
 
 
-ncurses 6.4                       2023-10-14                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -267,6 +269,7 @@ ncurses 6.4                       2023-10-14                   <STRONG><A HREF="
 <li><a href="#h3-mvwin">mvwin</a></li>
 <li><a href="#h3-subwin">subwin</a></li>
 <li><a href="#h3-derwin">derwin</a></li>
+<li><a href="#h3-mvderwin">mvderwin</a></li>
 <li><a href="#h3-dupwin">dupwin</a></li>
 <li><a href="#h3-wsyncup">wsyncup</a></li>
 <li><a href="#h3-wsyncdown">wsyncdown</a></li>

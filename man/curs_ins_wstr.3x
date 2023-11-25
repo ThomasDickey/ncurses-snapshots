@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.27 2023/11/18 23:44:30 tom Exp $
-.TH curs_ins_wstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.29 2023/11/25 11:29:34 tom Exp $
+.TH curs_ins_wstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -109,8 +109,8 @@ functions will fail.
 XSI does not define what will happen if a nonspacing character follows
 a control character.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4, which adds
-const qualifiers to the arguments.
+These functions are described in the XSI Curses standard, Issue 4,
+which adds \fI\%const\fP qualifiers to the arguments.
 .PP
 X/Open states that the entire string is inserted if \fIn\fP is less than 1.
 This is probably an error,

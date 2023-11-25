@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form.3x,v 1.48 2023/10/07 21:19:07 tom Exp $
-.TH form 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: form.3x,v 1.50 2023/11/25 13:59:44 tom Exp $
+.TH form 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -215,19 +215,14 @@ System error occurred (see \fBerrno\fP(3)).
 .B E_UNKNOWN_COMMAND
 The form driver code saw an unknown request code.
 .SH NOTES
-The header file \fB<form.h>\fP automatically includes the header files
-\fB<curses.h>\fP and \fB<eti.h>\fP.
-.PP
-In your library list, libform.a should be before libncurses.a; that is,
-you want to say \*(``\-lform \-lncurses\*('', not the other way around
-(which would give you a link error when using static libraries).
+The header file \fI\%form.h\fP itself includes \fI\%curses.h\fP.
 .SH PORTABILITY
 These routines emulate the System V forms library.
 They were not supported on
 Version 7 or BSD versions.
 .PP
-The menu facility was documented in SVr4.2 in
-\fICharacter User Interface Programming (UNIX SVR4.2)\fP.
+A form facility was documented in SVr4.2's
+\fICharacter User Interface Programming\fP document.
 .PP
 It is not part of X/Open Curses.
 .PP

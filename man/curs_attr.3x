@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.87 2023/10/07 22:21:46 tom Exp $
-.TH curs_attr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.89 2023/11/25 15:33:56 tom Exp $
+.TH curs_attr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -98,9 +98,9 @@ manipulate attributes of character cells in \fIcurses\fR windows
 \fBint wchgat(WINDOW *\fIwin\fP,
       \fBint \fIn\fB, attr_t \fIattr\fB,\fR \fBshort \fIpair\fB, const void *\fIopts\fB);\fR
 \fBint mvchgat(int \fIy\fB, int \fIx\fB,\fR
-      \fBint \fIn\fB, attr_t \fIattr\fB,\fR \fBshort \fIpair\fB, const void *\fIopts\fB);\fR
-\fBint mvwchgat(WINDOW *\fIwin, int \fIy, int \fIx\fB,\fR
-      \fBint \fIn,\fR \fBattr_t \fIattr\fB, short \fIpair\fB, const void *\fIopts\fB);\fR
+      \fBint \fIn\fB, attr_t \fIattr\fB, short \fIpair\fB, const void *\fIopts\fB);\fR
+\fBint mvwchgat(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB,\fR
+      \fBint \fIn\fB, attr_t \fIattr\fB, short \fIpair\fB, const void *\fIopts\fB);\fR
 .PP
 \fBint color_set(short \fIpair\fB, void* \fIopts\fB);\fR
 \fBint wcolor_set(WINDOW *\fIwin\fB, short \fIpair\fB,\fR \fBvoid* \fIopts\fP);\fR
@@ -240,7 +240,7 @@ they have well established legacy use, and
 there is no ambiguity about the way the attributes
 might be combined with a color pair.
 .\" ---------------------------------------------------------------------------
-.SH VIDEO ATTRIBUTES
+.SS "Video Attributes"
 The following video attributes, defined in \fB<curses.h>\fP, can be passed to
 the routines \fBattron\fP, \fBattroff\fP, and \fBattrset\fP, or OR'd with the
 characters passed to \fBaddch\fP (see \fBcurs_addch\fP(3X)).
@@ -289,6 +289,25 @@ The return values of many of these routines are not meaningful (they are
 implemented as macro-expanded assignments and simply return their argument).
 The SVr4 manual page claims (falsely) that these routines always return \fB1\fP.
 .\" ---------------------------------------------------------------------------
+.SH RETURN VALUE
+All routines return the integer \fBOK\fP on success, or \fBERR\fP on failure.
+.PP
+X/Open does not define any error conditions.
+.PP
+This implementation
+.bP
+returns an error if the window pointer is null.
+.bP
+returns an error if the color pair parameter
+for \fBwcolor_set\fP is outside the range 0..COLOR_PAIRS\-1.
+.bP
+does not return an error if either of the parameters of \fBwattr_get\fP
+used for retrieving attribute or color-pair values is \fBNULL\fP.
+.PP
+Functions with a \*(``mv\*('' prefix first perform a cursor movement using
+\fBwmove\fP, and return an error if the position is outside the window,
+or if the window pointer is null.
+.\" ---------------------------------------------------------------------------
 .SH NOTES
 These functions may be macros:
 .sp
@@ -304,139 +323,6 @@ value directly.
 However, ncurses ABI 4 and 5 simply OR this value
 within the alternate functions.
 You must use ncurses ABI 6 to support more than 256 color pairs.
-.\" ---------------------------------------------------------------------------
-.SH HISTORY
-X/Open Curses is largely based on SVr4 curses,
-adding support for \*(``wide-characters\*('' (not specific to Unicode).
-Some of the X/Open differences from SVr4 curses address the way
-video attributes can be applied to wide-characters.
-But aside from that, \fBattrset\fP and \fBattr_set\fP are similar.
-SVr4 curses provided the basic features for manipulating video attributes.
-However, earlier versions of curses provided a part of these features.
-.PP
-As seen in 2.8BSD, curses assumed 7-bit characters,
-using the eighth bit of a byte to represent the \fIstandout\fP
-feature (often implemented as bold and/or reverse video).
-The BSD curses library provided functions \fBstandout\fP and \fBstandend\fP
-which were carried along into X/Open Curses due to their pervasive use
-in legacy applications.
-.PP
-Some terminals in the 1980s could support a variety of video attributes,
-although the BSD curses library could do nothing with those.
-System V (1983) provided an improved curses library.
-It defined the \fBA_\fP symbols for use by applications to manipulate the
-other attributes.
-There are few useful references for the chronology.
-.PP
-Goodheart's book
-\fIUNIX Curses Explained\fP (1991) describes SVr3 (1987),
-commenting on several functions:
-.bP
-the \fBattron\fP, \fBattroff\fP, \fBattrset\fP functions
-(and most of the functions found in SVr4 but not in BSD curses) were
-introduced by System V,
-.bP
-the alternate character set feature with \fBA_ALTCHARSET\fP was
-added in SVr2 and improved in SVr3 (by adding \fBacs_map[]\fP),
-.bP
-\fBstart_color\fP and related color-functions were introduced by System V.3.2,
-.bP
-pads, soft-keys were added in SVr3, and
-.PP
-Goodheart did not mention the background character or the \fBcchar_t\fP type.
-Those are respectively SVr4 and X/Open features.
-He did mention the \fBA_\fP constants, but did not indicate their values.
-Those were not the same in different systems,
-even for those marked as System V.
-.PP
-Different Unix systems used different sizes for the bit-fields in \fBchtype\fP
-for \fIcharacters\fP and \fIcolors\fP, and took into account the different
-integer sizes (32-bit versus 64-bit).
-.PP
-This table showing the number of bits for \fBA_COLOR\fP
-and \fBA_CHARTEXT\fP
-was gleaned from the curses header files for
-various operating systems and architectures.
-The inferred architecture and notes reflect
-the format and size of the defined constants
-as well as clues such as the alternate character set implementation.
-A 32-bit library can be used on a 64-bit system,
-but not necessarily the reverse.
-.PP
-.RS
-.TS
-l l l l l l
-_ _ _ _ _ _
-l l l l l l .
-\fBYear\fP	\fBSystem\fP	\fBArch\fP	\fBColor\fP	\fBChar\fP	\fBNotes\fP
-1992	Solaris 5.2	32	6	17	SVr4 curses
-1992	HPUX 9	32	no	8	SVr2 curses
-1992	AIX 3.2	32	no	23	SVr2 curses
-1994	OSF/1 r3	32	no	23	SVr2 curses
-1995	HP-UX 10.00	32	6	16	SVr3 \*(``curses_colr\*(''
-1995	HP-UX 10.00	32	6	8	SVr4, X/Open curses
-1995	Solaris 5.4	32/64	7	16	X/Open curses
-1996	AIX 4.2	32	7	16	X/Open curses
-1996	OSF/1 r4	32	6	16	X/Open curses
-1997	HP-UX 11.00	32	6	8	X/Open curses
-2000	U/Win	32/64	7/31	16	uses \fBchtype\fP
-.TE
-.RE
-.PP
-Notes:
-.RS 3
-.PP
-Regarding HP-UX,
-.bP
-HP-UX 10.20 (1996) added support for 64-bit PA-RISC processors in 1996.
-.bP
-HP-UX 10.30 (1997) marked \*(``curses_colr\*('' obsolete.
-That version of curses was dropped with HP-UX 11.30 in 2006.
-.PP
-Regarding OSF/1 (and Tru64),
-.bP
-These used 64-bit hardware.
-Like ncurses, the OSF/1 curses interface is not customized for 32-bit
-and 64-bit versions.
-.bP
-Unlike other systems which evolved from AT&T code,
-OSF/1 provided a new implementation for X/Open curses.
-.PP
-Regarding Solaris,
-.bP
-The initial release of Solaris was in 1992.
-.bP
-The \fIxpg4\fP (X/Open) curses was developed by MKS from 1990 to 1995.
-Sun's copyright began in 1996.
-.bP
-Sun updated the X/Open curses interface
-after 64-bit support was introduced in 1997,
-but did not modify the SVr4 curses interface.
-.PP
-Regarding U/Win,
-.bP
-Development of the curses library began in 1991, stopped in 2000.
-.bP
-Color support was added in 1998.
-.bP
-The library uses only \fBchtype\fP (no \fBcchar_t\fP).
-.RE
-.PP
-Once X/Open curses was adopted in the mid-1990s, the constraint of
-a 32-bit interface with many colors and wide-characters for \fBchtype\fP
-became a moot point.
-The \fBcchar_t\fP structure (whose size and
-members are not specified in X/Open Curses) could be extended as needed.
-.PP
-Other interfaces are rarely used now:
-.bP
-BSD curses was improved slightly in 1993/1994 using Keith Bostic's
-modification to make the library 8-bit clean for \fBnvi\fP(1).
-He moved \fIstandout\fP attribute to a structure member.
-.IP
-The resulting 4.4BSD curses was replaced by ncurses over the next ten years.
-.bP
-U/Win is rarely used now.
 .\" ---------------------------------------------------------------------------
 .SH EXTENSIONS
 This implementation provides the \fBA_ITALIC\fP attribute for terminals
@@ -472,7 +358,7 @@ the \fIopts\fP parameter is ignored except
 except to check that it is \fBNULL\fP.
 .\" ---------------------------------------------------------------------------
 .SH PORTABILITY
-These functions are supported in the XSI Curses standard, Issue 4.
+These functions are described in the XSI Curses standard, Issue 4.
 The standard defined the dedicated type for highlights,
 \fBattr_t\fP, which was not defined in SVr4 curses.
 The functions taking \fBattr_t\fP arguments were not supported under SVr4.
@@ -560,24 +446,138 @@ As of August 2013,
 no known terminal provides these highlights
 (i.e., via the \fBsgr1\fP capability).
 .\" ---------------------------------------------------------------------------
-.SH RETURN VALUE
-All routines return the integer \fBOK\fP on success, or \fBERR\fP on failure.
+.SH HISTORY
+X/Open Curses is largely based on SVr4 curses,
+adding support for \*(``wide-characters\*('' (not specific to Unicode).
+Some of the X/Open differences from SVr4 curses address the way
+video attributes can be applied to wide-characters.
+But aside from that, \fBattrset\fP and \fBattr_set\fP are similar.
+SVr4 curses provided the basic features for manipulating video attributes.
+However, earlier versions of curses provided a part of these features.
 .PP
-X/Open does not define any error conditions.
+As seen in 2.8BSD, curses assumed 7-bit characters,
+using the eighth bit of a byte to represent the \fIstandout\fP
+feature (often implemented as bold and/or reverse video).
+The BSD curses library provided functions \fBstandout\fP and \fBstandend\fP
+which were carried along into X/Open Curses due to their pervasive use
+in legacy applications.
 .PP
-This implementation
-.bP
-returns an error if the window pointer is null.
-.bP
-returns an error if the color pair parameter
-for \fBwcolor_set\fP is outside the range 0..COLOR_PAIRS\-1.
-.bP
-does not return an error if either of the parameters of \fBwattr_get\fP
-used for retrieving attribute or color-pair values is \fBNULL\fP.
+Some terminals in the 1980s could support a variety of video attributes,
+although the BSD curses library could do nothing with those.
+System V (1983) provided an improved curses library.
+It defined the \fBA_\fP symbols for use by applications to manipulate the
+other attributes.
+There are few useful references for the chronology.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Goodheart's book
+\fIUNIX Curses Explained\fP (1991) describes SVr3 (1987),
+commenting on several functions:
+.bP
+the \fBattron\fP, \fBattroff\fP, \fBattrset\fP functions
+(and most of the functions found in SVr4 but not in BSD curses) were
+introduced by System V,
+.bP
+the alternate character set feature with \fBA_ALTCHARSET\fP was
+added in SVr2 and improved in SVr3 (by adding \fBacs_map[]\fP),
+.bP
+\fBstart_color\fP and related color-functions were introduced by System V.3.2,
+.bP
+pads, soft-keys were added in SVr3, and
+.PP
+Goodheart did not mention the background character or the \fBcchar_t\fP type.
+Those are respectively SVr4 and X/Open features.
+He did mention the \fBA_\fP constants, but did not indicate their values.
+Those were not the same in different systems,
+even for those marked as System V.
+.PP
+Different Unix systems used different sizes for the bit-fields in \fBchtype\fP
+for \fIcharacters\fP and \fIcolors\fP, and took into account the different
+integer sizes (32-bit versus 64-bit).
+.PP
+This table showing the number of bits for \fBA_COLOR\fP
+and \fBA_CHARTEXT\fP
+was gleaned from the curses header files for
+various operating systems and architectures.
+The inferred architecture and notes reflect
+the format and size of the defined constants
+as well as clues such as the alternate character set implementation.
+A 32-bit library can be used on a 64-bit system,
+but not necessarily the reverse.
+.PP
+.RS
+.TS
+l l l l l l
+_ _ _ _ _ _
+l l l l l l .
+\fBYear\fP	\fBSystem\fP	\fBArch\fP	\fBColor\fP	\fBChar\fP	\fBNotes\fP
+1992	Solaris 5.2	32	6	17	SVr4 curses
+1992	HP-UX 9	32	no	8	SVr2 curses
+1992	AIX 3.2	32	no	23	SVr2 curses
+1994	OSF/1 r3	32	no	23	SVr2 curses
+1995	HP-UX 10.00	32	6	16	SVr3 \*(``curses_colr\*(''
+1995	HP-UX 10.00	32	6	8	SVr4, X/Open curses
+1995	Solaris 5.4	32/64	7	16	X/Open curses
+1996	AIX 4.2	32	7	16	X/Open curses
+1996	OSF/1 r4	32	6	16	X/Open curses
+1997	HP-UX 11.00	32	6	8	X/Open curses
+2000	U/Win	32/64	7/31	16	uses \fBchtype\fP
+.TE
+.RE
+.PP
+Notes:
+.RS 3
+.PP
+Regarding HP-UX,
+.bP
+HP-UX 10.20 (1996) added support for 64-bit PA-RISC processors in 1996.
+.bP
+HP-UX 10.30 (1997) marked \*(``curses_colr\*('' obsolete.
+That version of curses was dropped with HP-UX 11.30 in 2006.
+.PP
+Regarding OSF/1 (and Tru64),
+.bP
+These used 64-bit hardware.
+Like ncurses, the OSF/1 curses interface is not customized for 32-bit
+and 64-bit versions.
+.bP
+Unlike other systems which evolved from AT&T code,
+OSF/1 provided a new implementation for X/Open curses.
+.PP
+Regarding Solaris,
+.bP
+The initial release of Solaris was in 1992.
+.bP
+The \fIxpg4\fP (X/Open) curses was developed by MKS from 1990 to 1995.
+Sun's copyright began in 1996.
+.bP
+Sun updated the X/Open curses interface
+after 64-bit support was introduced in 1997,
+but did not modify the SVr4 curses interface.
+.PP
+Regarding U/Win,
+.bP
+Development of the curses library began in 1991, stopped in 2000.
+.bP
+Color support was added in 1998.
+.bP
+The library uses only \fBchtype\fP (no \fBcchar_t\fP).
+.RE
+.PP
+Once X/Open curses was adopted in the mid-1990s, the constraint of
+a 32-bit interface with many colors and wide-characters for \fBchtype\fP
+became a moot point.
+The \fBcchar_t\fP structure (whose size and
+members are not specified in X/Open Curses) could be extended as needed.
+.PP
+Other interfaces are rarely used now:
+.bP
+BSD curses was improved slightly in 1993/1994 using Keith Bostic's
+modification to make the library 8-bit clean for \fBnvi\fP(1).
+He moved \fIstandout\fP attribute to a structure member.
+.IP
+The resulting 4.4BSD curses was replaced by ncurses over the next ten years.
+.bP
+U/Win is rarely used now.
 .\" ---------------------------------------------------------------------------
 .SH SEE ALSO
 \fB\%curses\fP(3X),

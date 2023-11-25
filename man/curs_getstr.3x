@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.49 2023/10/07 21:19:07 tom Exp $
-.TH curs_getstr 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.51 2023/11/25 14:29:54 tom Exp $
+.TH curs_getstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -127,27 +127,6 @@ versions read at most
 \fIn\fP
 characters, letting the application prevent overflow of the
 input buffer.
-.SH NOTES
-Any of these functions other than
-\fBwgetnstr\fP
-may be macros.
-.PP
-Using
-\fBgetstr\fP,
-\fBmvgetstr\fP,
-\fBmvwgetstr\fP, or
-\fBwgetstr\fP
-to read a line that
-overflows the array pointed to by
-\fBstr\fP
-causes undefined
-results.
-The use of
-\fBgetnstr\fP,
-\fBmvgetnstr\fP,
-\fBmvwgetnstr\fP, or
-\fBwgetnstr\fP,
-respectively, is recommended.
 .SH RETURN VALUE
 All of these functions return the integer \fBOK\fP upon successful completion.
 (SVr4 specifies only \*(``an integer value other than \fBERR\fP\*('')
@@ -173,6 +152,27 @@ rather than \fBOK\fP or \fBERR\fP.
 Functions with a \*(``mv\*('' prefix first perform a cursor movement using
 \fBwmove\fP, and return an error if the position is outside the window,
 or if the window pointer is null.
+.SH NOTES
+Any of these functions other than
+\fBwgetnstr\fP
+may be macros.
+.PP
+Using
+\fBgetstr\fP,
+\fBmvgetstr\fP,
+\fBmvwgetstr\fP, or
+\fBwgetstr\fP
+to read a line that
+overflows the array pointed to by
+\fBstr\fP
+causes undefined
+results.
+The use of
+\fBgetnstr\fP,
+\fBmvgetnstr\fP,
+\fBmvwgetnstr\fP, or
+\fBwgetnstr\fP,
+respectively, is recommended.
 .SH PORTABILITY
 These functions are described in The Single Unix Specification, Version 2.
 No error conditions are defined.

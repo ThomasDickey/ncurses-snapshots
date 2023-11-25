@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: term.5,v 1.62 2023/10/21 15:33:10 tom Exp @
+  * @Id: term.5,v 1.65 2023/11/25 22:58:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>term 5 2023-10-21 ncurses 6.4 File formats</TITLE>
+<TITLE>term 5 2023-11-25 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">term 5 2023-10-21 ncurses 6.4 File formats</H1>
+<H1 class="no-header">term 5 2023-11-25 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="term.5.html">term(5)</A></STRONG>                          File formats                          <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 
@@ -63,7 +63,7 @@
        the <STRONG>ncurses</STRONG> libraries):
 
        <STRONG>directory</STRONG> <STRONG>tree</STRONG>
-            A two-level scheme is used to avoid a linear search of a huge UNIX
+            A two-level scheme is used to avoid a linear search of a huge Unix
             system directory: <STRONG>/usr/share/terminfo/c/name</STRONG>  where  <EM>name</EM>  is  the
             name of the terminal, and <EM>c</EM> is the first character of <EM>name</EM>.  Thus,
             <EM>act4</EM>  can  be  found  in  the   file   <STRONG>/usr/share/terminfo/a/act4</STRONG>.
@@ -189,7 +189,7 @@
 </PRE><H3><a name="h3-EXTENDED-STORAGE-FORMAT">EXTENDED STORAGE FORMAT</a></H3><PRE>
        The previous section describes the conventional terminfo binary format.
        With  some  minor variations of the offsets (see PORTABILITY), the same
-       binary format is used in all modern UNIX systems.  Each system  uses  a
+       binary format is used in all modern Unix systems.  Each system  uses  a
        predefined set of boolean, number or string capabilities.
 
        The <STRONG>ncurses</STRONG> libraries and applications support extended terminfo binary
@@ -223,6 +223,12 @@
        extended  capabilities  in  order,  e.g.,  booleans,  then  numbers and
        finally strings.
 
+       By storing terminal descriptions  in  this  way,  <STRONG>ncurses</STRONG>  is  able  to
+       provide  a  database  useful  with  legacy  applications,  as  well  as
+       providing data for applications which need  more  than  the  predefined
+       capabilities.  See <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG> for an overview of the way <STRONG>ncurses</STRONG> uses
+       this extended information.
+
        Applications which manipulate terminal data  can  use  the  definitions
        described  in  <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>  which  associate the long capability
        names with members of a <STRONG>TERMTYPE</STRONG> structure.
@@ -245,6 +251,11 @@
        <STRONG>TERMTYPE2</STRONG> to provide data for the terminfo functions.
 
 
+</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
+       <EM>/usr/share/terminfo</EM>
+              compiled terminal description database
+
+
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
 
 </PRE><H3><a name="h3-setupterm">setupterm</a></H3><PRE>
@@ -261,12 +272,12 @@
 
 </PRE><H3><a name="h3-Binary-format">Binary format</a></H3><PRE>
        X/Open  Curses  does  not  specify  a format for the terminfo database.
-       UNIX System V curses used a directory-tree of  binary  files,  one  per
-       terminal description.
+       System V curses used a directory-tree of binary files, one per terminal
+       description.
 
        Despite  the  consistent  use  of  little-endian  for  numbers  and the
        otherwise  self-describing  format,  it  is  not  wise  to   count   on
-       portability   of   binary  terminfo  entries  between  commercial  UNIX
+       portability   of   binary  terminfo  entries  between  commercial  Unix
        versions.  The problem is that there are at  least  three  versions  of
        terminfo  (under  HP-UX,  AIX,  and OSF/1) which diverged from System V
        terminfo after SVr1, and  have  added  extension  capabilities  to  the
@@ -306,8 +317,39 @@
        directory tree in (two-character) hexadecimal form.
 
 
-</PRE><H2><a name="h2-EXAMPLE">EXAMPLE</a></H2><PRE>
-       As an example, here is a description  for  the  Lear-Siegler  ADM-3,  a
+</PRE><H3><a name="h3-Limits">Limits</a></H3><PRE>
+       <STRONG>ncurses</STRONG> stores compiled terminal descriptions in three related formats,
+       described in the sections
+
+       <STRONG>o</STRONG>   <STRONG>LEGACY</STRONG> <STRONG>STORAGE</STRONG> <STRONG>FORMAT</STRONG>, and
+
+       <STRONG>o</STRONG>   <STRONG>EXTENDED</STRONG> <STRONG>STORAGE</STRONG> <STRONG>FORMAT</STRONG>, and
+
+       <STRONG>o</STRONG>   <STRONG>EXTENDED</STRONG> <STRONG>NUMBER</STRONG> <STRONG>FORMAT</STRONG>.
+
+       The  legacy storage format and the extended number format differ by the
+       types of numeric capability which they can store (i.e.,  16-bit  versus
+       32-bit  integers).   The  extended storage format introduced by ncurses
+       5.0 adds data to either of these formats.
+
+       Some limitations apply:
+
+       <STRONG>o</STRONG>   total compiled entries cannot  exceed  4096  bytes  in  the  legacy
+           format.
+
+       <STRONG>o</STRONG>   total  compiled  entries  cannot exceed 32768 bytes in the extended
+           format.
+
+       <STRONG>o</STRONG>   the name field cannot exceed 128 bytes.
+
+       Compiled entries are limited to 32768 bytes because  offsets  into  the
+       <EM>strings</EM>  <EM>table</EM>  use  two-byte  integers.   The legacy format could have
+       supported 32768-byte entries, but  was  limited  to  a  virtual  memory
+       page's 4096 bytes.
+
+
+</PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
+       As  an  example,  here  is  a description for the Lear-Siegler ADM-3, a
        popular though rather stupid early terminal:
 
            adm3a|lsi adm3a,
@@ -343,28 +385,6 @@
      0150  00 08 00 0c 00 0b 00 0a  00                       ........ .
 
 
-</PRE><H2><a name="h2-LIMITS">LIMITS</a></H2><PRE>
-       Some limitations:
-
-       <STRONG>o</STRONG>   total  compiled  entries  cannot  exceed  4096  bytes in the legacy
-           format.
-
-       <STRONG>o</STRONG>   total compiled entries cannot exceed 32768 bytes  in  the  extended
-           format.
-
-       <STRONG>o</STRONG>   the name field cannot exceed 128 bytes.
-
-       Compiled  entries  are  limited to 32768 bytes because offsets into the
-       <EM>strings</EM> <EM>table</EM> use two-byte integers.   The  legacy  format  could  have
-       supported  32768-byte  entries, but was limited a virtual memory page's
-       4096 bytes.
-
-
-</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
-       <EM>/usr/share/terminfo</EM>
-              compiled terminal description database
-
-
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
        Thomas E. Dickey
        extended terminfo format for ncurses 5.0
@@ -376,11 +396,11 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>, <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-10-21                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
+ncurses 6.4                       2023-11-25                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -394,6 +414,7 @@ ncurses 6.4                       2023-10-21                           <STRONG><
 <li><a href="#h3-EXTENDED-NUMBER-FORMAT">EXTENDED NUMBER FORMAT</a></li>
 </ul>
 </li>
+<li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-setupterm">setupterm</a></li>
@@ -401,11 +422,10 @@ ncurses 6.4                       2023-10-21                           <STRONG><
 <li><a href="#h3-Magic-codes">Magic codes</a></li>
 <li><a href="#h3-The-TERMTYPE-structure">The TERMTYPE structure</a></li>
 <li><a href="#h3-Mixed-case-terminal-names">Mixed-case terminal names</a></li>
+<li><a href="#h3-Limits">Limits</a></li>
 </ul>
 </li>
-<li><a href="#h2-EXAMPLE">EXAMPLE</a></li>
-<li><a href="#h2-LIMITS">LIMITS</a></li>
-<li><a href="#h2-FILES">FILES</a></li>
+<li><a href="#h2-EXAMPLES">EXAMPLES</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>

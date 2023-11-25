@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.41 2023/10/07 21:19:07 tom Exp $
-.TH @CLEAR@ 1 2023-10-07 "ncurses 6.4" "User commands"
+.\" $Id: clear.1,v 1.43 2023/11/25 14:32:36 tom Exp $
+.TH @CLEAR@ 1 2023-11-25 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -48,7 +48,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .SH NAME
 \fB\%@CLEAR@\fP \-
 clear the terminal screen
@@ -56,7 +55,7 @@ clear the terminal screen
 .B @CLEAR@
 .RB [ \-x ]
 .RB [ \-T\ \c
-.IR type ]
+.IR terminal-type ]
 .PP
 .B "@CLEAR@ \-V"
 .SH DESCRIPTION
@@ -90,6 +89,16 @@ exits with a successful status.
 .TP
 .B \-x
 prevents \fB\%@CLEAR@\fP from attempting to clear the scrollback buffer.
+.SH PORTABILITY
+Neither IEEE Std 1003.1/The Open Group Base Specifications Issue 7
+(POSIX.1-2008) nor X/Open Curses Issue 7 documents \fB\%@TSET@\fP or
+\fB\%@RESET@\fP.
+.PP
+The latter documents \fBtput\fP,
+which could be used to replace this utility either via a shell script or
+by an alias
+(such as a symbolic link)
+to run \fB\%@TPUT@\fP as \fB\%@CLEAR@\fP.
 .SH HISTORY
 A \fBclear\fP command using the \fItermcap\fP database and library
 appeared in 2BSD (1979).
@@ -171,17 +180,7 @@ the \fBE3\fP capability was not exercised by
 \*(``\fB\%@TPUT@ clear\fP\*(''.
 That oversight was addressed in 2016 by reorganizing \fB\%@TPUT@\fP to
 share its logic with \fB\%@CLEAR@\fP and \fB\%@TSET@\fP.
-.SH PORTABILITY
-Neither IEEE Std 1003.1/The Open Group Base Specifications Issue 7
-(POSIX.1-2008) nor X/Open Curses Issue 7 documents \fB\%@TSET@\fP or
-\fB\%@RESET@\fP.
-.PP
-The latter documents \fBtput\fP,
-which could be used to replace this utility either via a shell script or
-by an alias
-(such as a symbolic link)
-to run \fB\%@TPUT@\fP as \fB\%@CLEAR@\fP.
 .SH SEE ALSO
 \fB\%@TPUT@\fP(1),
 \fB\%xterm\fP(1),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5)

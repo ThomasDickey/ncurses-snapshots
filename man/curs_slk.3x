@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.64 2023/10/21 10:31:22 tom Exp $
-.TH curs_slk 3X 2023-10-21 "ncurses 6.4" "Library calls"
+.\" $Id: curs_slk.3x,v 1.66 2023/11/25 14:31:07 tom Exp $
+.TH curs_slk 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -234,29 +234,9 @@ the \fIlabnum\fP parameter is outside the range of label counts, or
 if the format parameter is outside the range 0..2, or if
 memory for the labels cannot be allocated.
 .RE
-.SH HISTORY
-SVr3 introduced these functions:
-  \fBslk_clear\fP
-  \fBslk_init\fP
-  \fBslk_label\fP
-  \fBslk_noutrefresh\fP
-  \fBslk_refresh\fP
-  \fBslk_restore\fP
-  \fBslk_set\fP
-  \fBslk_touch\fP
-.PP
-SVr4 added these functions:
-  \fBslk_attroff\fP
-  \fBslk_attron\fP
-  \fBslk_attrset\fP
-  \fBslk_start\fP
-.PP
-X/Open \fIcurses\fP added these:
-  \fBslk_attr_off\fP
-  \fBslk_attr_on\fP
-  \fBslk_attr_set\fP
-  \fBslk_color\fP
-  \fBslk_wset\fP
+.SH NOTES
+Most applications would use \fB\%slk_noutrefresh\fP because a
+\fB\%wrefresh\fP is likely to follow soon.
 .SH EXTENSIONS
 X/Open \fIcurses\fP documents the \fIopts\fP argument
 as reserved for future use,
@@ -268,9 +248,6 @@ parameter to support extended color pairs.
 For  functions  which modify the color, e.g., \fB\%slk_attr_set\fP,
 if \fIopts\fP is set it is treated as a pointer to \fBint\fP,
 and used to  set  the  color pair instead of the \fBshort\fP pair parameter.
-.SH NOTES
-Most applications would use \fB\%slk_noutrefresh\fP because a
-\fB\%wrefresh\fP is likely to follow soon.
 .SH PORTABILITY
 The XSI \fIcurses\fP standard, Issue 4, described the soft-key functions,
 with some differences from SVr4 \fIcurses\fP:
@@ -336,6 +313,29 @@ terminfo database, which uses signed 16-bit numbers.
 This implementation provides extended versions of those functions
 which use \fBint\fP parameters,
 allowing applications to use larger color- and pair-numbers.
+.SH HISTORY
+SVr3 introduced these functions:
+  \fBslk_clear\fP
+  \fBslk_init\fP
+  \fBslk_label\fP
+  \fBslk_noutrefresh\fP
+  \fBslk_refresh\fP
+  \fBslk_restore\fP
+  \fBslk_set\fP
+  \fBslk_touch\fP
+.PP
+SVr4 added these functions:
+  \fBslk_attroff\fP
+  \fBslk_attron\fP
+  \fBslk_attrset\fP
+  \fBslk_start\fP
+.PP
+X/Open \fIcurses\fP added these:
+  \fBslk_attr_off\fP
+  \fBslk_attr_on\fP
+  \fBslk_attr_set\fP
+  \fBslk_color\fP
+  \fBslk_wset\fP
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_attr\fP(3X),

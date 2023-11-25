@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.72 2023/10/07 21:19:07 tom Exp $
-.TH curs_addch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addch.3x,v 1.74 2023/11/25 14:20:05 tom Exp $
+.TH curs_addch 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -207,7 +207,7 @@ an error is returned.
 Note that \fBaddch\fP, \fBmvaddch\fP, \fBmvwaddch\fP, and
 \fBechochar\fP may be macros.
 .SH PORTABILITY
-All these functions are described in the XSI Curses standard, Issue 4.
+These functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for forms-drawing characters apply in the POSIX locale.
 .SS ACS Symbols
 X/Open Curses states that the \fBACS_\fP definitions are \fBchar\fP constants.
@@ -222,7 +222,7 @@ This implementation uses an array \fBacs_map\fP, as done in SVr4 curses.
 NetBSD also uses an array, actually named \fB_acs_char\fP, with a \fB#define\fP
 for compatibility.
 .bP
-HPUX curses equates some of the \fBACS_\fP symbols
+HP-UX curses equates some of the \fBACS_\fP symbols
 to the analogous \fBWACS_\fP symbols as if the \fBACS_\fP symbols were
 wide characters.
 The misdefined symbols are the arrows

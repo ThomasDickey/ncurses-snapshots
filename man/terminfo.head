@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.53 2023/10/14 19:53:57 tom Exp $
-.TH terminfo 5 2023-10-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.55 2023/11/25 19:52:56 tom Exp $
+.TH terminfo 5 2023-11-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -51,7 +51,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 \fB\%terminfo\fP \-
@@ -121,7 +120,7 @@ it allows that to be both an alias and a verbose name
 .bP
 Lines beginning with a \*(``#\*('' in the first column are treated as comments.
 .IP
-While comment lines are legal at any point, the output of \fB@CAPTOINFO@\fP
+While comment lines are valid at any point, the output of \fB@CAPTOINFO@\fP
 and \fB@INFOTOCAP@\fP (aliases for \fB@TIC@\fP)
 will move comments so they occur only between entries.
 .PP

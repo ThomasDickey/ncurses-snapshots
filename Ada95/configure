@@ -706,7 +706,7 @@ General Options:
   --disable-stripping     do not strip (debug info) installed executables
   --with-strip-program=XX specify program to use when stripping in install
   --with-pkg-config[=CMD] enable/disable use of pkg-config and its name CMD
-  --with-pkg-config-libdir=XXX use given directory for installing pc-files
+  --with-pkg-config-libdir[=XXX] use given directory for installing pc-files
   --without-tests         suppress build with test-programs
   --enable-mixed-case     tic should assume mixed-case filenames
   --with-install-prefix   prefixes actual install-location ($DESTDIR)
@@ -752,7 +752,7 @@ Ada95 Binding Options:
   --with-ada-include=DIR  find Ada95 includes in DIR (default: PREFIX/share/ada/adainclude)
   --with-ada-objects=DIR  find Ada95 objects in DIR (default: PREFIX/lib/ada/adalib)
   --with-ada-sharedlib    build Ada95 shared library; requires GNAT project support
-  --with-ada-libname=XXX  use XXX as Ada95 library name
+  --with-ada-libname[=XXX]  use XXX as Ada95 library name
 
 Some influential environment variables:
   CC          C compiler command

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_printw.3x,v 1.41 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_printw.3x,v 1.43 2023/11/25 11:31:06 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_printw 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_printw 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_printw 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_printw 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
 
@@ -91,34 +91,6 @@
        the window pointer is null.
 
 
-</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       While <STRONG>printw</STRONG> was implemented in 4BSD, it was unused until 4.2BSD (which
-       used it in games).  That early version of curses was before the ANSI  C
-       standard.   It  did not use &lt;varargs.h&gt;, though that was available.  In
-       1991 (a couple of years after SVr4 was generally available,  and  after
-       the  C  standard  was published), other developers updated the library,
-       using  &lt;stdarg.h&gt;  internally  in  4.4BSD  curses.   Even   with   this
-       improvement,  BSD  curses  did  not  use  function  prototypes (or even
-       declare functions) in the &lt;curses.h&gt; header until 1992.
-
-       SVr2 documented <STRONG>printw</STRONG>, <STRONG>wprintw</STRONG>  tersely  as  "printf  on  <EM>stdscr</EM>"  and
-       tersely as "printf on <EM>win</EM>", respectively.
-
-       SVr3  added  <STRONG>mvprintw</STRONG>,  and <STRONG>mvwprintw</STRONG>, with a three-line summary saying
-       that they were analogous to <STRONG>printf(3)</STRONG>, explaining that the string which
-       would be output from <STRONG>printf(3)</STRONG> would instead be output using <STRONG>waddstr</STRONG> on
-       the given window.  SVr3 also added  <STRONG>vwprintw</STRONG>,  saying  that  the  third
-       parameter  is  a  <STRONG>va_list</STRONG>,  defined  in  &lt;varargs.h&gt;, and referring the
-       reader to the  manual  pages  for  <EM>varargs</EM>  and  <STRONG>vprintf</STRONG>  for  detailed
-       descriptions.
-
-       SVr4  added  no  new  variations  of  <STRONG>printw</STRONG>,  but  provided  for using
-       &lt;varargs.h&gt; or &lt;stdarg.h&gt; to define the <STRONG>va_list</STRONG> type.
-
-       X/Open Curses added <STRONG>vw_printw</STRONG> to replace  <STRONG>vwprintw</STRONG>,  stating  that  its
-       <STRONG>va_list</STRONG> definition requires &lt;stdarg.h&gt;.
-
-
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        In  this  implementation,  <STRONG>vw_printw</STRONG>  and  <STRONG>vwprintw</STRONG>  are equivalent, to
        support  legacy  applications.   However,  the  latter  (<STRONG>vwprintw</STRONG>)   is
@@ -138,13 +110,41 @@
            <STRONG>vwscanw</STRONG> and the termcap interface) as withdrawn.
 
 
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       While <STRONG>printw</STRONG> was implemented in 4BSD, it was unused until 4.2BSD (which
+       used  it in games).  That early version of curses was before the ANSI C
+       standard.  It did not use &lt;varargs.h&gt;, though that was  available.   In
+       1991  (a  couple of years after SVr4 was generally available, and after
+       the C standard was published), other developers  updated  the  library,
+       using   &lt;stdarg.h&gt;   internally  in  4.4BSD  curses.   Even  with  this
+       improvement, BSD curses  did  not  use  function  prototypes  (or  even
+       declare functions) in the &lt;curses.h&gt; header until 1992.
+
+       SVr2  documented  <STRONG>printw</STRONG>,  <STRONG>wprintw</STRONG>  tersely  as  "printf on <EM>stdscr</EM>" and
+       tersely as "printf on <EM>win</EM>", respectively.
+
+       SVr3 added <STRONG>mvprintw</STRONG>, and <STRONG>mvwprintw</STRONG>, with a  three-line  summary  saying
+       that they were analogous to <STRONG>printf(3)</STRONG>, explaining that the string which
+       would be output from <STRONG>printf(3)</STRONG> would instead be output using <STRONG>waddstr</STRONG> on
+       the  given  window.   SVr3  also  added <STRONG>vwprintw</STRONG>, saying that the third
+       parameter is a <STRONG>va_list</STRONG>,  defined  in  &lt;varargs.h&gt;,  and  referring  the
+       reader  to  the  manual  pages  for  <EM>varargs</EM>  and  <STRONG>vprintf</STRONG> for detailed
+       descriptions.
+
+       SVr4 added  no  new  variations  of  <STRONG>printw</STRONG>,  but  provided  for  using
+       &lt;varargs.h&gt; or &lt;stdarg.h&gt; to define the <STRONG>va_list</STRONG> type.
+
+       X/Open  Curses  added  <STRONG>vw_printw</STRONG>  to replace <STRONG>vwprintw</STRONG>, stating that its
+       <STRONG>va_list</STRONG> definition requires &lt;stdarg.h&gt;.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>,    <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>,    <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>,
        <STRONG>printf(3)</STRONG>, <STRONG>vprintf(3)</STRONG>
 
 
 
-ncurses 6.4                       2023-10-07                   <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                   <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -152,8 +152,8 @@ ncurses 6.4                       2023-10-07                   <STRONG><A HREF="
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
-<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: toe.1m,v 1.54 2023/10/21 15:30:27 tom Exp @
+  * @Id: toe.1m,v 1.56 2023/11/25 14:32:36 tom Exp @
   * toe -a | grep -E '^(xterm|vt)'
   * The next row overruns the line length on DWB nroff (65n).
   * toe -as | grep -E '(^-+&gt;|:.(xterm|vt))'
@@ -40,12 +40,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>toe 1m 2023-10-21 ncurses 6.4 User commands</TITLE>
+<TITLE>toe 1m 2023-11-25 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">toe 1m 2023-10-21 ncurses 6.4 User commands</H1>
+<H1 class="no-header">toe 1m 2023-11-25 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>                          User commands                         <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 
@@ -118,6 +118,29 @@
                 and exits with a successful status.
 
 
+</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
+       <EM>/usr/share/terminfo</EM>
+              compiled terminal description database
+
+
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       <STRONG>toe</STRONG>  is  not provided by other implementations.  There is no applicable
+       X/Open or POSIX standard for it.
+
+       It replaces a <STRONG>-T</STRONG> option that  was  briefly  supported  by  the  <EM>ncurses</EM>
+       <STRONG>infocmp</STRONG> utility in 1995.
+
+       The <STRONG>-a</STRONG> and <STRONG>-s</STRONG> options were added in 2006 and 2011, respectively.
+
+       The program's name originates with a developer's pun:
+
+       <STRONG>o</STRONG>   <STRONG>tic</STRONG>,
+
+       <STRONG>o</STRONG>   <STRONG>tac</STRONG> (now <STRONG>tack</STRONG>),
+
+       <STRONG>o</STRONG>   <STRONG>toe</STRONG>.
+
+
 </PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
        When  not  sorting with the <STRONG>-s</STRONG> option, the <STRONG>-a</STRONG> option reports all of the
        names found in all of the terminal database directories  named  in  the
@@ -159,36 +182,13 @@
            ...
 
 
-</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
-       <EM>/usr/share/terminfo</EM>
-              compiled terminal description database
-
-
-</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       <STRONG>toe</STRONG> is not provided by other implementations.  There is  no  applicable
-       X/Open or POSIX standard for it.
-
-       It  replaces  a  <STRONG>-T</STRONG>  option  that  was briefly supported by the <EM>ncurses</EM>
-       <STRONG>infocmp</STRONG> utility in 1995.
-
-       The <STRONG>-a</STRONG> and <STRONG>-s</STRONG> options were added in 2006 and 2011, respectively.
-
-       The program's name originates with a developer's pun:
-
-       <STRONG>o</STRONG>   <STRONG>tic</STRONG>,
-
-       <STRONG>o</STRONG>   <STRONG>tac</STRONG> (now <STRONG>tack</STRONG>),
-
-       <STRONG>o</STRONG>   <STRONG>toe</STRONG>.
-
-
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>,   <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>,   <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>,   <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>,   <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,
        <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-10-21                           <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
+ncurses 6.4                       2023-11-25                           <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -196,9 +196,9 @@ ncurses 6.4                       2023-10-21                           <STRONG><
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-OPTIONS">OPTIONS</a></li>
-<li><a href="#h2-EXAMPLES">EXAMPLES</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-HISTORY">HISTORY</a></li>
+<li><a href="#h2-EXAMPLES">EXAMPLES</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

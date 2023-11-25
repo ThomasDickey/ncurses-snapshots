@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: term.7,v 1.42 2023/11/11 11:48:16 tom Exp @
+  * @Id: term.7,v 1.44 2023/11/25 17:20:42 tom Exp @
   *SH SYNOPSIS
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -35,12 +35,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>term 7 2023-11-11 ncurses 6.4 Miscellaneous</TITLE>
+<TITLE>term 7 2023-11-25 ncurses 6.4 Miscellaneous</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">term 7 2023-11-11 ncurses 6.4 Miscellaneous</H1>
+<H1 class="no-header">term 7 2023-11-25 ncurses 6.4 Miscellaneous</H1>
 <PRE>
 <STRONG><A HREF="term.7.html">term(7)</A></STRONG>                          Miscellaneous                         <STRONG><A HREF="term.7.html">term(7)</A></STRONG>
 
@@ -58,12 +58,12 @@
        your editor and mailer.
 
        A default <STRONG>TERM</STRONG> value  will  be  set  on  a  per-line  basis  by  either
-       <STRONG>/etc/inittab</STRONG>  (e.g.,  System-V-like  UNIXes) or <STRONG>/etc/ttys</STRONG> (BSD UNIXes).
+       <STRONG>/etc/inittab</STRONG>  (e.g.,  System-V-like  Unices) or <STRONG>/etc/ttys</STRONG> (BSD Unices).
        This will nearly  always  suffice  for  workstation  and  microcomputer
        consoles.
 
        If  you  use a dialup line, the type of device attached to it may vary.
-       Older UNIX systems pre-set a very dumb terminal  type  like  "dumb"  or
+       Older Unix systems pre-set a very dumb terminal  type  like  "dumb"  or
        "dialup"  on  dialup lines.  Newer ones may pre-set "vt100", reflecting
        the prevalence of DEC VT100-compatible terminals and  personal-computer
        emulators.
@@ -196,20 +196,20 @@
        specified.
 
 
-</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       For maximum compatibility with older System V UNIXes, names and aliases
-       should be unique within the first 14 characters.
-
-
 </PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
        <EM>/usr/share/terminfo</EM>
             compiled terminal description database
 
        /etc/inittab
-            tty line initialization (AT&amp;T-like UNIXes)
+            tty line initialization (AT&amp;T-like Unices)
 
        /etc/ttys
-            tty line initialization (BSD-like UNIXes)
+            tty line initialization (BSD-like Unices)
+
+
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
+       For maximum compatibility with older System V Unices, names and aliases
+       should be unique within the first 14 characters.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -217,14 +217,14 @@
 
 
 
-ncurses 6.4                       2023-11-11                           <STRONG><A HREF="term.7.html">term(7)</A></STRONG>
+ncurses 6.4                       2023-11-25                           <STRONG><A HREF="term.7.html">term(7)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
 <li><a href="#h2-NAME">NAME</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
-<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.48 2023/10/14 19:29:06 tom Exp $
-.TH @TABS@ 1 2023-10-14 "ncurses 6.4" "User commands"
+.\" $Id: tabs.1,v 1.50 2023/11/25 14:32:36 tom Exp $
+.TH @TABS@ 1 2023-11-25 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,12 +45,11 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .SH NAME
 \fB\%@TABS@\fP \-
 set terminal tab stops
 .SH SYNOPSIS
-\fB@TABS@\fP [\fIoptions\fP]] \fI[tabstop-list]\fP
+\fB@TABS@\fP [\fIoptions\fP] [\fItabstop-list\fP]
 .SH DESCRIPTION
 The \fB@TABS@\fP program clears and sets tab-stops on the terminal.
 This uses the terminfo \fBclear_all_tabs\fP and \fBset_tab\fP capabilities.
@@ -295,4 +294,4 @@ Those provide the capability of setting abitrary tab stops.
 \fB\%@INFOCMP@\fP(1M),
 \fB\%@TSET@\fP(1),
 \fB\%curses\fP(3X),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5)

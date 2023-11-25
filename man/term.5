@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.62 2023/10/21 15:33:10 tom Exp $
-.TH term 5 2023-10-21 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.65 2023/11/25 22:58:12 tom Exp $
+.TH term 5 2023-11-25 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -55,7 +55,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds n 5
 .ds d @TERMINFO@
 .SH NAME
 term \-
@@ -69,7 +68,7 @@ Two configurations are supported (when building the \fBncurses\fP libraries):
 .TP 5
 .B directory tree
 A two-level scheme is used to avoid a linear search
-of a huge \s-1UNIX\s+1 system directory: \fB\*d/c/name\fP where
+of a huge Unix system directory: \fB\*d/c/name\fP where
 .I name
 is the name of the terminal, and
 .I c
@@ -217,7 +216,7 @@ stored intact in uninterpreted form.
 .SS EXTENDED STORAGE FORMAT
 The previous section describes the conventional terminfo binary format.
 With some minor variations of the offsets (see PORTABILITY),
-the same binary format is used in all modern UNIX systems.
+the same binary format is used in all modern Unix systems.
 Each system uses a predefined set of boolean, number or string capabilities.
 .PP
 The \fBncurses\fP libraries and applications support
@@ -262,6 +261,13 @@ After the end of these values, it contains the names for each of
 the extended capabilities in order, e.g., booleans, then numbers and
 finally strings.
 .PP
+By storing terminal descriptions in this way,
+\fBncurses\fP is able to provide a database useful with legacy applications,
+as well as providing data for applications which need more than the
+predefined capabilities.
+See \fBuser_caps\fP(5) for an overview
+of the way \fBncurses\fP uses this extended information.
+.PP
 Applications which manipulate terminal data can use the definitions
 described in \fBterm_variables\fP(3X) which associate the long capability
 names with members of a \fBTERMTYPE\fP structure.
@@ -281,6 +287,10 @@ to direct users of the \fBTERMTYPE\fP structure as in previous formats.
 However, that cannot provide callers with the extended numbers.
 The library uses a similar but hidden data structure \fBTERMTYPE2\fP
 to provide data for the terminfo functions.
+.SH FILES
+.TP
+.I \*d
+compiled terminal description database
 .SH PORTABILITY
 .SS setupterm
 Note that it is possible for
@@ -302,18 +312,18 @@ Also, new capabilities must always be added at the end of the lists
 of boolean, number, and string capabilities.
 .SS Binary format
 X/Open Curses does not specify a format for the terminfo database.
-UNIX System V curses used a directory-tree of binary files,
+System V curses used a directory-tree of binary files,
 one per terminal description.
 .PP
 Despite the consistent use of little-endian for numbers and the otherwise
 self-describing format, it is not wise to count on portability of binary
-terminfo entries between commercial UNIX versions.
+terminfo entries between commercial Unix versions.
 The problem is that there
 are at least three versions of terminfo (under HP\-UX, AIX, and OSF/1) which
 diverged from System V terminfo after SVr1, and have added extension
 capabilities to the string table that (in the binary format) collide with
 System V and XSI Curses extensions.
-See \fBterminfo\fP(\*n) for detailed
+See \fBterminfo\fP(5) for detailed
 discussion of terminfo source compatibility issues.
 .PP
 This implementation is by default compatible with the binary
@@ -345,7 +355,36 @@ uppercase and lowercase,
 \fBncurses\fP represents the \*(``first character\*(''
 of the terminal name used as
 the intermediate level of a directory tree in (two-character) hexadecimal form.
-.SH EXAMPLE
+.SS Limits
+\fBncurses\fP stores compiled terminal descriptions
+in three related formats,
+described in the sections
+.bP
+\fBLEGACY STORAGE FORMAT\fP, and
+.bP
+\fBEXTENDED STORAGE FORMAT\fP, and
+.bP
+\fBEXTENDED NUMBER FORMAT\fP.
+.PP
+The legacy storage format and the extended number format differ by
+the types of numeric capability which they can store
+(i.e., 16-bit versus 32-bit integers).
+The extended storage format introduced by ncurses 5.0 adds data to
+either of these formats.
+.PP
+Some limitations apply:
+.bP
+total compiled entries cannot exceed 4096 bytes in the legacy format.
+.bP
+total compiled entries cannot exceed 32768 bytes in the extended format.
+.bP
+the name field cannot exceed 128 bytes.
+.PP
+Compiled entries are limited to 32768 bytes because offsets into the
+\fIstrings table\fP use two-byte integers.
+The legacy format could have supported 32768-byte entries,
+but was limited to a virtual memory page's 4096 bytes.
+.SH EXAMPLES
 As an example, here is a description for the Lear-Siegler
 ADM\-3, a popular though rather stupid early terminal:
 .PP
@@ -390,23 +429,6 @@ lp-1f(\*(CW).
 0150  00 08 00 0c 00 0b 00 0a  00                       ........ .
 .TE
 .in
-.SH LIMITS
-Some limitations:
-.bP
-total compiled entries cannot exceed 4096 bytes in the legacy format.
-.bP
-total compiled entries cannot exceed 32768 bytes in the extended format.
-.bP
-the name field cannot exceed 128 bytes.
-.PP
-Compiled entries are limited to 32768 bytes because offsets into the
-\fIstrings table\fP use two-byte integers.
-The legacy format could have supported 32768-byte entries,
-but was limited a virtual memory page's 4096 bytes.
-.SH FILES
-.TP
-.I \*d
-compiled terminal description database
 .SH AUTHORS
 Thomas E. Dickey
 .br
@@ -422,4 +444,5 @@ documented legacy terminfo format, e.g., from \fIpcurses\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_terminfo\fP(3X),
-\fB\%terminfo\fP(\*n)
+\fB\%terminfo\fP(5),
+\fB\%user_caps\fP(5)

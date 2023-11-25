@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.41 2023/10/14 19:27:01 tom Exp $
-.TH curs_window 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_window.3x,v 1.43 2023/11/25 14:17:29 tom Exp $
+.TH curs_window 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -138,7 +138,7 @@ Calling \fBderwin\fP is the same as calling \fBsubwin,\fP except that
 \fIbegin\fR_\fIy\fP and \fIbegin\fR_\fIx\fP are relative to the origin
 of the window \fIorig\fP rather than the screen.
 There is no difference between the subwindows and the derived windows.
-.PP
+.SS mvderwin
 Calling \fBmvderwin\fP moves a derived window (or subwindow)
 inside its parent window.
 The screen-relative parameters of the window are not changed.

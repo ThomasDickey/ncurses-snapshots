@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.50 2023/11/11 11:46:54 tom Exp $
-.TH curs_outopts 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.52 2023/11/25 14:08:05 tom Exp $
+.TH curs_outopts 3X 2023-11-25 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -156,6 +156,16 @@ returns an error if the scrolling region limits extend outside the window.
 X/Open does not define any error conditions.
 This implementation returns an error
 if the window pointer is null.
+.SH NOTES
+Note that
+\fBclearok\fP,
+\fBleaveok\fP,
+\fBscrollok\fP,
+\fBidcok\fP, and
+\fBsetscrreg\fP may be macros.
+.PP
+The \fBimmedok\fP routine is useful for windows that are used as terminal
+emulators.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 .PP
@@ -188,16 +198,6 @@ The XSI Curses standard does not mention that the cursor should be
 made invisible as a side-effect of \fBleaveok\fP.
 SVr4 curses documentation does this, but the code does not.
 Use \fBcurs_set\fP to make the cursor invisible.
-.SH NOTES
-Note that
-\fBclearok\fP,
-\fBleaveok\fP,
-\fBscrollok\fP,
-\fBidcok\fP, and
-\fBsetscrreg\fP may be macros.
-.PP
-The \fBimmedok\fP routine is useful for windows that are used as terminal
-emulators.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),

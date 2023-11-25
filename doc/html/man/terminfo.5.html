@@ -32,7 +32,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.53 2023/10/14 19:53:57 tom Exp @
+  * @Id: terminfo.head,v 1.55 2023/11/25 19:52:56 tom Exp @
   * Head of terminfo man page ends here
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
@@ -62,7 +62,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.134 2023/10/14 19:18:14 tom Exp @
+  * @Id: terminfo.tail,v 1.135 2023/11/25 14:32:36 tom Exp @
   *.in -2
   *.in +2
   *.in -2
@@ -73,12 +73,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2023-10-14 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2023-11-25 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2023-10-14 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2023-11-25 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -105,7 +105,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231118).
+       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231125).
 
 
 </PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
@@ -147,7 +147,7 @@
        <STRONG>o</STRONG>   Lines  beginning  with  a  "#"  in  the first column are treated as
            comments.
 
-           While comment lines are legal at any point, the output of <STRONG>captoinfo</STRONG>
+           While comment lines are valid at any point, the output of <STRONG>captoinfo</STRONG>
            and  <STRONG>infotocap</STRONG>  (aliases  for <STRONG>tic</STRONG>) will move comments so they occur
            only between entries.
 
@@ -2464,7 +2464,7 @@
        4025, this can be indicated with <STRONG>cmdch</STRONG>.  A prototype command  character
        is  chosen  which is used in all capabilities.  This character is given
        in the <STRONG>cmdch</STRONG> capability to identify it.  The  following  convention  is
-       supported on some UNIX systems: The environment is to be searched for a
+       supported on some Unix systems: The environment is to be searched for a
        <STRONG>CC</STRONG> variable, and if found, all occurrences of the  prototype  character
        are replaced with the character in the environment variable.
 
@@ -2486,7 +2486,7 @@
        of <STRONG>lm</STRONG>#0 indicates that the number of lines is not fixed, but that there
        is still more memory than fits on the screen.
 
-       If  the terminal is one of those supported by the UNIX virtual terminal
+       If  the terminal is one of those supported by the Unix virtual terminal
        protocol, the terminal number can be given as <STRONG>vt</STRONG>.
 
        Media copy strings which control an auxiliary printer connected to  the
@@ -2608,13 +2608,13 @@
        (after tc expansion) lengths.
 
 
-</PRE><H3><a name="h3-Binary-Compatibility">Binary Compatibility</a></H3><PRE>
-       It is not wise to count  on  portability  of  binary  terminfo  entries
-       between  commercial  UNIX  versions.   The problem is that there are at
-       least two versions of terminfo (under HP-UX  and  AIX)  which  diverged
-       from   System   V   terminfo  after  SVr1,  and  have  added  extension
-       capabilities to the string table that (in the  binary  format)  collide
-       with System V and XSI Curses extensions.
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
+       Do not count on  compiled  (binary)  <EM>terminfo</EM>  entries  being  portable
+       between  commercial  Unix  systems.   At  least  two implementations of
+       <EM>terminfo</EM> (those of HP-UX and AIX) diverged from those of other System V
+       Unices  after  SVr1,  adding extension capabilities to the string table
+       that (in the binary format) collide with subsequent System  V  and  XSI
+       Curses extensions.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
@@ -2652,28 +2652,29 @@
        <STRONG>ncv</STRONG>.  If italics should work with colors, then the <STRONG>ncv</STRONG>  value  must  be
        specified, even if it is zero.
 
-       Different  commercial  ports  of  terminfo and curses support different
-       subsets of the XSI  Curses  standard  and  (in  some  cases)  different
-       extension sets.  Here is a summary, accurate as of October 1995:
+       Different  commercial  ports  of  <EM>terminfo</EM> and <EM>curses</EM> support different
+       subsets of XSI Curses and (in some cases) different  extensions.   Here
+       is  a  summary, accurate as of October 1995, after which the commercial
+       Unix market contracted and lost diversity.
 
-       <STRONG>o</STRONG>   <STRONG>SVR4,</STRONG> <STRONG>Solaris,</STRONG> <STRONG>ncurses</STRONG> -- These support all SVr4 capabilities.
+       <STRONG>o</STRONG>   SVr4, Solaris, and <EM>ncurses</EM> support all SVr4 capabilities.
 
-       <STRONG>o</STRONG>   <STRONG>SGI</STRONG> -- Supports the SVr4 set, adds one undocumented extended string
-           capability (<STRONG>set_pglen</STRONG>).
+       <STRONG>o</STRONG>   IRIX supports the SVr4  set  and  adds  one  undocumented  extended
+           string capability (<STRONG>set_pglen</STRONG>).
 
-       <STRONG>o</STRONG>   <STRONG>SVr1,</STRONG> <STRONG>Ultrix</STRONG> -- These  support  a  restricted  subset  of  terminfo
-           capabilities.   The  booleans  end with <STRONG>xon_xoff</STRONG>; the numerics with
+       <STRONG>o</STRONG>   SVr1   and   Ultrix   support   a  restricted  subset  of  <EM>terminfo</EM>
+           capabilities.  The Booleans end with <STRONG>xon_xoff</STRONG>;  the  numerics  with
            <STRONG>width_status_line</STRONG>; and the strings with <STRONG>prtr_non</STRONG>.
 
-       <STRONG>o</STRONG>   <STRONG>HP/UX</STRONG> -- Supports the  SVr1  subset,  plus  the  SVr[234]  numerics
-           <STRONG>num_labels</STRONG>,   <STRONG>label_height</STRONG>,  <STRONG>label_width</STRONG>,  plus  function  keys  11
-           through 63, plus <STRONG>plab_norm</STRONG>,  <STRONG>label_on</STRONG>,  and  <STRONG>label_off</STRONG>,  plus  some
-           incompatible extensions in the string table.
+       <STRONG>o</STRONG>   HP/UX   supports  the  SVr1  subset,  plus  the  SVr[234]  numerics
+           <STRONG>num_labels</STRONG>,  <STRONG>label_height</STRONG>,  <STRONG>label_width</STRONG>,  plus  function  keys   11
+           through  63, plus <STRONG>plab_norm</STRONG>, <STRONG>label_on</STRONG>, and <STRONG>label_off</STRONG>, plus a number
+           of incompatible string table extensions.
 
-       <STRONG>o</STRONG>   <STRONG>AIX</STRONG>  -- Supports the SVr1 subset, plus function keys 11 through 63,
+       <STRONG>o</STRONG>   AIX supports the SVr1 subset, plus function  keys  11  through  63,
            plus a number of incompatible string table extensions.
 
-       <STRONG>o</STRONG>   <STRONG>OSF</STRONG> -- Supports both the SVr4 set and the AIX extensions.
+       <STRONG>o</STRONG>   OSF/1 supports both the SVr4 set and the AIX extensions.
 
 
 </PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
@@ -2687,13 +2688,13 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>,     <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>,    <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>,    <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,  <STRONG>printf(3)</STRONG>,  <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>,
+       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>,    <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>,    <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>,    <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>,  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,  <STRONG>printf(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>,
        <STRONG><A HREF="term.5.html">term(5)</A></STRONG>, <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-10-14                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2023-11-25                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -2727,9 +2728,9 @@ ncurses 6.4                       2023-10-14                       <STRONG><A HR
 <li><a href="#h3-Miscellaneous">Miscellaneous</a></li>
 <li><a href="#h3-Glitches-and-Braindamage">Glitches and Braindamage</a></li>
 <li><a href="#h3-Pitfalls-of-Long-Entries">Pitfalls of Long Entries</a></li>
-<li><a href="#h3-Binary-Compatibility">Binary Compatibility</a></li>
 </ul>
 </li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>

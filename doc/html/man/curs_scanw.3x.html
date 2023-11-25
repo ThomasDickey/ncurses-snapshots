@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_scanw.3x,v 1.41 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_scanw.3x,v 1.43 2023/11/25 11:31:06 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_scanw 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_scanw 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_scanw 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_scanw 3x 2023-11-25 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
 
@@ -90,6 +90,44 @@
        the window pointer is null.
 
 
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
+       In this implementation, <STRONG>vw_scanw</STRONG> and <STRONG>vwscanw</STRONG> are equivalent, to support
+       legacy applications.  However, the latter (<STRONG>vwscanw</STRONG>) is obsolete:
+
+       <STRONG>o</STRONG>   The XSI Curses standard, Issue 4 described these functions,  noting
+           that  the  function <STRONG>vwscanw</STRONG> is marked TO BE WITHDRAWN, and is to be
+           replaced by a function <STRONG>vw_scanw</STRONG> using the <STRONG>&lt;stdarg.h&gt;</STRONG> interface.
+
+       <STRONG>o</STRONG>   The Single Unix Specification, Version 2 states that  <STRONG>vw_scanw</STRONG>   is
+           preferred   to   <STRONG>vwscanw</STRONG>   since   the  latter  requires  including
+           <STRONG>&lt;varargs.h&gt;</STRONG>, which cannot be used in the same file  as  <STRONG>&lt;stdarg.h&gt;</STRONG>.
+           This  implementation  uses <STRONG>&lt;stdarg.h&gt;</STRONG> for both, because that header
+           is included in <STRONG>&lt;curses.h</STRONG>&gt;.
+
+       <STRONG>o</STRONG>   X/Open Curses, Issue 5 (December 2007) marked <STRONG>vwscanw</STRONG>  (along  with
+           <STRONG>vwprintw</STRONG> and the termcap interface) as withdrawn.
+
+       Both  XSI and The Single Unix Specification, Version 2 state that these
+       functions return <STRONG>ERR</STRONG> or <STRONG>OK</STRONG>.
+
+       <STRONG>o</STRONG>   Since the underlying  <STRONG>scanf(3)</STRONG>  can  return  the  number  of  items
+           scanned, and the SVr4 code was documented to use this feature, this
+           is probably an editing error which was introduced  in  XSI,  rather
+           than being done intentionally.
+
+       <STRONG>o</STRONG>   This  implementation  returns  the  number  of  items  scanned, for
+           compatibility with SVr4 curses.  As of  2018,  NetBSD  curses  also
+           returns  the  number  of  items  scanned.   Both ncurses and NetBSD
+           curses call <STRONG>vsscanf</STRONG> to scan the string, which returns <STRONG>EOF</STRONG> on error.
+
+       <STRONG>o</STRONG>   Portable applications should only test if the return value is  <STRONG>ERR</STRONG>,
+           since the <STRONG>OK</STRONG> value (zero) is likely to be misleading.
+
+           One  possible  way  to  get  useful  results would be to use a "%n"
+           conversion at the end of the format string to ensure that something
+           was processed.
+
+
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        While  <STRONG>scanw</STRONG>  was implemented in 4BSD, none of the BSD releases used it
        until 4.4BSD (in a game).  That early version of curses was before  the
@@ -119,51 +157,13 @@
        <STRONG>va_list</STRONG> definition requires &lt;stdarg.h&gt;.
 
 
-</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       In this implementation, <STRONG>vw_scanw</STRONG> and <STRONG>vwscanw</STRONG> are equivalent, to support
-       legacy applications.  However, the latter (<STRONG>vwscanw</STRONG>) is obsolete:
-
-       <STRONG>o</STRONG>   The  XSI Curses standard, Issue 4 described these functions, noting
-           that the function <STRONG>vwscanw</STRONG> is marked TO BE WITHDRAWN, and is  to  be
-           replaced by a function <STRONG>vw_scanw</STRONG> using the <STRONG>&lt;stdarg.h&gt;</STRONG> interface.
-
-       <STRONG>o</STRONG>   The  Single  Unix Specification, Version 2 states that <STRONG>vw_scanw</STRONG>  is
-           preferred  to  <STRONG>vwscanw</STRONG>  since   the   latter   requires   including
-           <STRONG>&lt;varargs.h&gt;</STRONG>,  which  cannot be used in the same file as <STRONG>&lt;stdarg.h&gt;</STRONG>.
-           This implementation uses <STRONG>&lt;stdarg.h&gt;</STRONG> for both, because  that  header
-           is included in <STRONG>&lt;curses.h</STRONG>&gt;.
-
-       <STRONG>o</STRONG>   X/Open  Curses,  Issue 5 (December 2007) marked <STRONG>vwscanw</STRONG> (along with
-           <STRONG>vwprintw</STRONG> and the termcap interface) as withdrawn.
-
-       Both XSI and The Single Unix Specification, Version 2 state that  these
-       functions return <STRONG>ERR</STRONG> or <STRONG>OK</STRONG>.
-
-       <STRONG>o</STRONG>   Since  the  underlying  <STRONG>scanf(3)</STRONG>  can  return  the  number of items
-           scanned, and the SVr4 code was documented to use this feature, this
-           is  probably  an  editing error which was introduced in XSI, rather
-           than being done intentionally.
-
-       <STRONG>o</STRONG>   This implementation  returns  the  number  of  items  scanned,  for
-           compatibility  with  SVr4  curses.   As of 2018, NetBSD curses also
-           returns the number of  items  scanned.   Both  ncurses  and  NetBSD
-           curses call <STRONG>vsscanf</STRONG> to scan the string, which returns <STRONG>EOF</STRONG> on error.
-
-       <STRONG>o</STRONG>   Portable  applications should only test if the return value is <STRONG>ERR</STRONG>,
-           since the <STRONG>OK</STRONG> value (zero) is likely to be misleading.
-
-           One possible way to get useful results  would  be  to  use  a  "%n"
-           conversion at the end of the format string to ensure that something
-           was processed.
-
-
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>,    <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>,    <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>,
        <STRONG>scanf(3)</STRONG>
 
 
 
-ncurses 6.4                       2023-10-07                    <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
+ncurses 6.4                       2023-11-25                    <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -171,8 +171,8 @@ ncurses 6.4                       2023-10-07                    <STRONG><A HREF=
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
-<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>
