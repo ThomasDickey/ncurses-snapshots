@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKncu_config.in,v 1.17 2023/10/01 09:59:29 tom Exp $
-.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-10-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKncu_config.in,v 1.19 2023/12/02 21:37:31 tom Exp $
+.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-12-02 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .SH NAME
 \fB\%@LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config\fP \-
 configuration helper for \fIncurses\fR libraries
@@ -44,7 +44,7 @@ configuration helper for \fIncurses\fR libraries
 This program development aid simplifies the process of configuring
 applications against a particular set of \fIncurses\fP libraries.
 .SH OPTIONS
-.TP
+.TP 18 \" "--mouse-version" + 2n + adjustment for PDF
 \fB\-\-prefix\fP
 reports the package prefix of \fIncurses\fP.
 .TP
@@ -83,16 +83,16 @@ reports the directory containing \fIncurses\fP libraries.
 reports the directory containing \fIncurses\fP man pages.
 .TP
 \fB\-\-terminfo\fP
-reports the \fBTERMINFO\fP \fIterminfo\fP database path,
+reports the \fI\%TERMINFO\fP \fIterminfo\fP database path,
 for example \fI\%@TERMINFO@\fP.
 .TP
 \fB\-\-terminfo\-dirs\fP
-reports the \fBTERMINFO_DIRS\fP supplemental search path for the
+reports the \fI\%TERMINFO_DIRS\fP supplemental search path for the
 \fIterminfo\fP database,
 for example \fI\%@TERMINFO_DIRS@\fP.
 .TP
 \fB\-\-termpath\fP
-reports the \fBTERMPATH\fP supplemental search path for the
+reports the \fI\%TERMPATH\fP supplemental search path for the
 \fItermcap\fP database,
 if support for \fItermcap\fP is configured.
 .TP

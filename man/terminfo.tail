@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.135 2023/11/25 14:32:36 tom Exp $
+.\" $Id: terminfo.tail,v 1.137 2023/12/03 00:17:23 tom Exp $
 .ps +1
 .SS User-Defined Capabilities
 .
@@ -261,13 +261,14 @@ The environment variable \fBTERMINFO\fR is checked first, for
 a terminal database containing the terminal description.
 .bP
 Next,
-\fBncurses\fP looks in \fB$HOME/.terminfo\fP
+\fBncurses\fP looks in \fI$HOME/.terminfo\fP
 for a compiled description.
 .IP
 This is an optional feature which may be omitted entirely from
 the library, or limited to prevent accidental use by privileged applications.
 .bP
-Next, if the environment variable \fBTERMINFO_DIRS\fR is set,
+Next,
+if the environment variable \fI\%TERMINFO_DIRS\fP is set,
 \fBncurses\fP interprets the contents of that variable
 as a list of colon-separated pathnames of terminal databases to be searched.
 .IP
@@ -296,8 +297,10 @@ The preceding addresses the usual configuration of \fBncurses\fP,
 which uses terminal descriptions prepared in \fIterminfo\fP format.
 While \fItermcap\fP is less expressive,
 \fBncurses\fP can also be configured to read \fItermcap\fP descriptions.
-In that configuration, it checks the \fBTERMCAP\fP and \fBTERMPATH\fP
-variables (for content and search path, respectively)
+In that configuration,
+it checks the \fI\%TERMCAP\fP and \fI\%TERMPATH\fP variables
+(for content and search path,
+respectively)
 after the system terminal database.
 .SS Preparing Descriptions
 We now outline how to prepare descriptions of terminals.
@@ -1984,7 +1987,7 @@ termcap library truncates long entries, like OSF/1 3.0, it is immune to dying
 here but will return incorrect data for the terminal.
 .PP
 The \*(``after tc expansion\*('' length will have a similar effect to the
-above, but only for people who actually set TERM to that terminal
+above, but only for people who actually set \fITERM\fP to that terminal
 type, since \fBtgetent\fP only does \*(``tc\*('' expansion once it is found the
 terminal type it was looking for, not while searching.
 .PP
@@ -1993,7 +1996,7 @@ on various combinations of termcap libraries and applications, a core
 dump, warnings, or incorrect operation.
 If it is too long even before
 \*(``tc\*('' expansion, it will have this effect even for users of some other
-terminal types and users whose TERM variable does not have a termcap
+terminal types and users whose \fITERM\fP variable does not have a termcap
 entry.
 .PP
 When in \-C (translate to termcap) mode, the \fBncurses\fP implementation of
@@ -2012,7 +2015,7 @@ adding extension capabilities to the string table that
 collide with subsequent System V and XSI Curses extensions.
 .SH EXTENSIONS
 Searching for terminal descriptions in
-\fB$HOME/.terminfo\fP and TERMINFO_DIRS
+\fI$HOME/.terminfo\fP and \fI\%TERMINFO_DIRS\fP
 is not supported by older implementations.
 .PP
 Some SVr4 \fBcurses\fP implementations, and all previous to SVr4, do not

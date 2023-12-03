@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.101 2023/11/25 23:02:52 tom Exp $
-.TH @TIC@ 1M 2023-11-25 "ncurses 6.4" "User commands"
+.\" $Id: tic.1m,v 1.103 2023/12/02 20:50:53 tom Exp $
+.TH @TIC@ 1M 2023-12-02 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -116,22 +116,22 @@ There are two ways to achieve this:
 .bP
 First, you may override the system default either by
 using the \fB\-o\fP option,
-or by setting the variable \fBTERMINFO\fP
+or by setting the variable \fI\%TERMINFO\fP
 in your shell environment to a valid database location.
 .bP
 Secondly, if \fB@TIC@\fP cannot write in \fI\*d\fP
-or the location specified using your TERMINFO variable,
+or the location specified using your \fI\%TERMINFO\fP variable,
 it looks for the directory \fI$HOME/.terminfo\fP
 (or hashed database \fI$HOME/.terminfo.db)\fP;
 if that location exists, the entry is placed there.
 .PP
 Libraries that read terminfo entries are expected to check in succession
 .bP
-a location specified with the TERMINFO environment variable,
+a location specified with the \fI\%TERMINFO\fP environment variable,
 .bP
 \fI$HOME/.terminfo\fP,
 .bP
-directories listed in the TERMINFO_DIRS environment variable,
+directories listed in the \fI\%TERMINFO_DIRS\fP environment variable,
 .bP
 a compiled-in list of directories (@TERMINFO_DIRS@), and
 .bP
@@ -264,7 +264,7 @@ obsolete capabilities.
 .TP
 \fB\-o\fIdir\fR
 Write compiled entries to given database location.
-Overrides the TERMINFO environment variable.
+Overrides the \fI\%TERMINFO\fP environment variable.
 .TP
 \fB\-Q\fIn\fR
 Rather than show source in terminfo (text) format,
@@ -461,8 +461,11 @@ termcap names taken to be equivalent to terminfo names.
 The SVr4 manual pages are not clear on the resolution rules for \fBuse\fP
 capabilities.
 This implementation of \fB@TIC@\fP will find \fBuse\fP targets anywhere
-in the source file, or anywhere in the file tree rooted at \fBTERMINFO\fP (if
-\fBTERMINFO\fP is defined),
+in the source file,
+or anywhere in the file tree rooted at
+\fI\%TERMINFO\fP
+(if
+\fI\%TERMINFO\fP is defined),
 or in the user's \fI$HOME/.terminfo\fP database
 (if it exists),
 or (finally) anywhere in the system's file tree of
@@ -512,12 +515,13 @@ as @INFOCMP@'s \fB\-e\fP and \fB\-E\fP options).
 The SVr4 \fB\-c\fP mode does not report bad \*(``use=\*('' links.
 .PP
 System V does not compile entries to or read entries from your
-\fI$HOME/.terminfo\fP database unless TERMINFO is explicitly set to it.
+\fI$HOME/.terminfo\fP database unless \fI\%TERMINFO\fP is explicitly set
+to it.
 .SH PORTABILITY
 X/Open Curses, Issue 7 (2009) provides a brief description of \fBtic\fP.
 It lists one option: \fB\-c\fP.
 The omission of \fB\-v\fP is unexpected.
-The change history states that the description is derived from Tru64 UNIX.
+The change history states that the description is derived from Tru64.
 According to its manual pages, that system also supported the \fB\-v\fP option.
 .PP
 Shortly after Issue 7 was released, Tru64 was discontinued.
@@ -562,8 +566,8 @@ extend the \fIpcurses\fP table to 469 capabilities
 Of those 13, 11 were ultimately discarded
 (perhaps to match the draft of X/Open Curses).
 The exceptions were
-\fBmemory_lock_above\fP and
-\fBmemory_unlock\fP (see \fBuser_caps\fP(5)).
+\fB\%memory_lock_above\fP and
+\fB\%memory_unlock\fP (see \fB\%user_caps\fP(5)).
 .PP
 Eric Raymond incorporated parts of \fImytinfo\fP into ncurses
 to implement the termcap-to-terminfo source conversion,

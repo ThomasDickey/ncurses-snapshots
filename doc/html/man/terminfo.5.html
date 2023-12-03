@@ -62,7 +62,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.135 2023/11/25 14:32:36 tom Exp @
+  * @Id: terminfo.tail,v 1.137 2023/12/03 00:17:23 tom Exp @
   *.in -2
   *.in +2
   *.in -2
@@ -105,7 +105,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231125).
+       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231202).
 
 
 </PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
@@ -1328,13 +1328,13 @@
        <STRONG>o</STRONG>   The  environment variable <STRONG>TERMINFO</STRONG> is checked first, for a terminal
            database containing the terminal description.
 
-       <STRONG>o</STRONG>   Next, <STRONG>ncurses</STRONG> looks in <STRONG>$HOME/.terminfo</STRONG> for a compiled description.
+       <STRONG>o</STRONG>   Next, <STRONG>ncurses</STRONG> looks in <EM>$HOME/.terminfo</EM> for a compiled description.
 
            This is an optional feature which may be omitted entirely from  the
            library,  or  limited  to  prevent  accidental  use  by  privileged
            applications.
 
-       <STRONG>o</STRONG>   Next, if the environment variable  <STRONG>TERMINFO_DIRS</STRONG>  is  set,  <STRONG>ncurses</STRONG>
+       <STRONG>o</STRONG>   Next, if the environment variable  <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>  is  set,  <STRONG>ncurses</STRONG>
            interprets  the  contents  of  that  variable  as  a list of colon-
            separated pathnames of terminal databases to be searched.
 
@@ -1358,8 +1358,8 @@
        The  preceding addresses the usual configuration of <STRONG>ncurses</STRONG>, which uses
        terminal descriptions prepared in <EM>terminfo</EM> format.   While  <EM>termcap</EM>  is
        less  expressive,  <STRONG>ncurses</STRONG>  can  also  be  configured  to  read <EM>termcap</EM>
-       descriptions.   In  that  configuration,  it  checks  the  <STRONG>TERMCAP</STRONG>  and
-       <STRONG>TERMPATH</STRONG>  variables  (for  content and search path, respectively) after
+       descriptions.   In  that  configuration,  it  checks  the  <EM>TERMCAP</EM>  and
+       <EM>TERMPATH</EM>  variables  (for  content and search path, respectively) after
        the system terminal database.
 
 
@@ -2591,7 +2591,7 @@
        will return incorrect data for the terminal.
 
        The  "after  tc  expansion"  length  will  have a similar effect to the
-       above, but only for people who actually set TERM to that terminal type,
+       above, but only for people who actually set <EM>TERM</EM> to that terminal type,
        since  <STRONG>tgetent</STRONG>  only  does "tc" expansion once it is found the terminal
        type it was looking for, not while searching.
 
@@ -2599,7 +2599,7 @@
        on  various  combinations of termcap libraries and applications, a core
        dump, warnings, or incorrect operation.  If it is too long even  before
        "tc"  expansion,  it will have this effect even for users of some other
-       terminal types and users whose TERM variable does not  have  a  termcap
+       terminal types and users whose <EM>TERM</EM> variable does not  have  a  termcap
        entry.
 
        When  in  -C (translate to termcap) mode, the <STRONG>ncurses</STRONG> implementation of
@@ -2618,8 +2618,8 @@
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       Searching    for   terminal   descriptions   in   <STRONG>$HOME/.terminfo</STRONG>   and
-       TERMINFO_DIRS is not supported by older implementations.
+       Searching    for   terminal   descriptions   in   <EM>$HOME/.terminfo</EM>   and
+       <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> is not supported by older implementations.
 
        Some SVr4 <STRONG>curses</STRONG> implementations, and all  previous  to  SVr4,  do  not
        interpret the %A and %O operators in parameter strings.

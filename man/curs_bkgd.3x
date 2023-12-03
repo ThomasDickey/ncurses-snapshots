@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.49 2023/11/25 14:01:49 tom Exp $
-.TH curs_bkgd 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.51 2023/12/02 21:02:44 tom Exp $
+.TH curs_bkgd 3X 2023-12-02 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -88,10 +99,12 @@ Neither X/Open Curses nor the SVr4 manual pages give details about
 the way the rendition of characters on the screen is updated when
 \fBbkgd\fP or \fBwbkgd\fP is used to change the background character.
 .PP
-This implementation, like SVr4 curses, does not store the background
-and window attribute contributions to each cell separately.
-It updates the rendition by comparing the character, non-color attributes and
-colors contained in the background.
+\fI\%ncurses\fP,
+like SVr4 \fIcurses\fP,
+does not store the background and window attribute contributions to each
+cell separately.
+It updates the rendition by comparing the character,
+non-color attributes and colors contained in the background.
 For each cell in the window, whether or not it is blank:
 .bP
 The library first compares the \fIcharacter\fP,
@@ -131,30 +144,39 @@ the new background character's color attribute will be ignored.
 The \fBgetbkgd\fP function returns the given window's current background
 character/attribute pair.
 .SH RETURN VALUE
-These functions are described in the XSI Curses standard, Issue 4.
-It specifies that \fBbkgd\fP and \fBwbkgd\fP return \fBERR\fP on failure,
-but gives no failure conditions.
-.PP
-The routines \fBbkgd\fP and \fBwbkgd\fP return the integer \fBOK\fP,
-unless the library has not been initialized.
+Functions returning an \fIint\fP return \fBOK\fP on success.
+\fB\%bkgd\fP returns \fBERR\fP if the library has not been initialized.
+\fB\%wbkgd\fP and \fB\%getbkgd\fP return \fBERR\fP if the \fI\%WINDOW\fP
+pointer argument is null.
 .PP
 In contrast,
-the SVr4.0 manual says \fBbkgd\fP and \fBwbkgd\fP may return \fBOK\fP
-"or a non-negative integer if \fBimmedok\fP is set",
-which refers to the return value from \fBwrefresh\fP
+the SVr4.0 manual says \fB\%bkgd\fP and \fB\%wbkgd\fP may return
+\fBOK\fP
+\*(``or a non-negative integer if \fB\%immedok\fP is set\*('',
+which refers to the return value from \fB\%wrefresh\fP
 (used to implement the immediate repainting).
-The SVr4 curses \fBwrefresh\fP returns the number of characters
+SVr4 \fIcurses\fP \fB\%wrefresh\fP returns the number of characters
 written to the screen during the refresh.
-This implementation does not do that.
+\fI\%ncurses\fP does not do that.
 .SH NOTES
+Unusually,
+there is no \fB\%wgetbkgd\fP function;
+\fB\%getbkgd\fP behaves as one would expect \fB\%wgetbkgd\fP to,
+accepting a \fI\%WINDOW\fP pointer argument.
+.PP
 Note that \fBbkgdset\fP and \fBbkgd\fP may be macros.
 .PP
 X/Open Curses mentions that the character part of the background must
 be a single-byte value.
-This implementation, like SVr4, checks to ensure that,
+\fI\%ncurses\fP,
+like SVr4 \fIcurses\fP,
+checks to ensure that,
 and will reuse the old background character if the check fails.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
+It specifies that \fBbkgd\fP and \fBwbkgd\fP return \fBERR\fP on
+failure,
+but gives no failure conditions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),

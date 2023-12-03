@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.88 2023/10/14 22:26:23 tom Exp @
+  * @Id: curs_util.3x,v 1.90 2023/12/02 21:10:36 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-10-14 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-10-14 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2023-12-02 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -164,12 +164,12 @@
            successful, it overrides the values from the terminal database.
 
        <STRONG>o</STRONG>   Finally (unless <STRONG>use_env</STRONG> was called with <STRONG>FALSE</STRONG>  parameter),  <STRONG>ncurses</STRONG>
-           examines  the <STRONG>LINES</STRONG> or <STRONG>COLUMNS</STRONG> environment variables, using a value
+           examines  the <EM>LINES</EM> or <EM>COLUMNS</EM> environment variables, using a value
            in those to override the  results  from  the  operating  system  or
            terminal database.
 
            <STRONG>Ncurses</STRONG>  also  updates  the  screen  size  in response to <STRONG>SIGWINCH</STRONG>,
-           unless overridden by the <STRONG>LINES</STRONG> or <STRONG>COLUMNS</STRONG> environment variables,
+           unless overridden by the <EM>LINES</EM> or <EM>COLUMNS</EM> environment variables,
 
 
 </PRE><H3><a name="h3-use_tioctl">use_tioctl</a></H3><PRE>
@@ -178,7 +178,7 @@
        <STRONG>use_tioctl</STRONG> is called with <STRONG>TRUE</STRONG> as an  argument,  <STRONG>ncurses</STRONG>  modifies  the
        last step in its computation of screen size as follows:
 
-       <STRONG>o</STRONG>   checks  if the <STRONG>LINES</STRONG> and <STRONG>COLUMNS</STRONG> environment variables are set to a
+       <STRONG>o</STRONG>   checks  if the <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables are set to a
            number greater than zero.
 
        <STRONG>o</STRONG>   for each, <STRONG>ncurses</STRONG> updates the  corresponding  environment  variable
@@ -194,11 +194,11 @@
               -----------------------------------------------------------------
               <STRONG>TRUE</STRONG>      <STRONG>FALSE</STRONG>        This  is  the  default behavior.  <EM>ncurses</EM>
                                      uses  operating   system   calls   unless
-                                     overridden    by    <STRONG>LINES</STRONG>    or   <STRONG>COLUMNS</STRONG>
+                                     overridden    by    <EM>LINES</EM>    or   <EM>COLUMNS</EM>
                                      environment variables; default.
-              <STRONG>TRUE</STRONG>      <STRONG>TRUE</STRONG>         <EM>ncurses</EM> updates <STRONG>LINES</STRONG> and  <STRONG>COLUMNS</STRONG>  based
+              <STRONG>TRUE</STRONG>      <STRONG>TRUE</STRONG>         <EM>ncurses</EM> updates <EM>LINES</EM> and  <EM>COLUMNS</EM>  based
                                      on operating system calls.
-              <STRONG>FALSE</STRONG>     <STRONG>TRUE</STRONG>         <EM>ncurses</EM>  ignores <STRONG>LINES</STRONG> and <STRONG>COLUMNS</STRONG>, using
+              <STRONG>FALSE</STRONG>     <STRONG>TRUE</STRONG>         <EM>ncurses</EM>  ignores <EM>LINES</EM> and <EM>COLUMNS</EM>, using
                                      operating system calls to obtain size.
 
 
@@ -391,7 +391,7 @@
 
 
 
-ncurses 6.4                       2023-10-14                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2023-12-02                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

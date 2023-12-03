@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.99 2023/11/25 17:10:25 tom Exp $
-.TH @INFOCMP@ 1M 2023-11-25 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.101 2023/12/02 20:49:04 tom Exp $
+.TH @INFOCMP@ 1M 2023-12-02 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -140,7 +140,7 @@ Use the \fB\-x\fP option to add the BSD-compatibility
 capabilities (names prefixed with \*(``OT\*('').
 .IP
 If no \fIterminal-types\fP are given,
-\fB@INFOCMP@\fP uses the environment variable \fBTERM\fP
+\fB@INFOCMP@\fP uses the environment variable \fITERM\fP
 for each of the \fIterminal-types\fP.
 .SS Source Listing Options [\-I] [\-L] [\-C] [\-r]
 The \fB\-I\fP, \fB\-L\fP, and \fB\-C\fP options will produce
@@ -157,7 +157,7 @@ l l .
 .TE
 .PP
 If no \fIterminal-types\fP are given,
-the environment variable \fBTERM\fP will be used for the terminal name.
+the environment variable \fITERM\fP will be used for the terminal name.
 .PP
 The source produced by the \fB\-C\fP option may be used directly as a
 \fBtermcap\fP entry, but not all parameterized strings can be changed to
@@ -272,8 +272,8 @@ were not needed.
 .SS Changing Databases [\-A \fIdirectory\fR] [\-B \fIdirectory\fR]
 Like other \fBncurses\fP utilities,
 \fB@INFOCMP@\fP looks for the terminal descriptions in several places.
-You can use the \fBTERMINFO\fP and \fBTERMINFO_DIRS\fP environment variables
-to override the compiled-in default list of places to search.
+You can use the \fI\%TERMINFO\fP and \fI\%TERMINFO_DIRS\fP environment
+variables to override the compiled-in default list of places to search.
 See \fBcurses\fP(3X), as well as
 the \fIFetching Compiled Descriptions\fP section in \fBterminfo\fR(5).
 .PP
@@ -454,7 +454,7 @@ hexadecimal and base64
 .RE
 .IP
 For example, this prints the compiled terminfo value as a string
-which could be assigned to the \fBTERMINFO\fP environment variable:
+which could be assigned to the \fI\%TERMINFO\fP environment variable:
 .PP
 .RS 9
 .EX

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.88 2023/10/14 22:26:23 tom Exp $
-.TH curs_util 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.90 2023/12/02 21:10:36 tom Exp $
+.TH curs_util 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -181,12 +181,14 @@ If successful,
 it overrides the values from the terminal database.
 .bP
 Finally (unless \fBuse_env\fP was called with \fBFALSE\fP parameter),
-\fBncurses\fP examines the \fBLINES\fP or \fBCOLUMNS\fP environment variables,
+\fBncurses\fP examines the \fILINES\fP or \fI\%COLUMNS\fP environment
+variables,
 using a value in those to override the results
 from the operating system or terminal database.
 .IP
 \fBNcurses\fP also updates the screen size in response to \fBSIGWINCH\fP,
-unless overridden by the \fBLINES\fP or \fBCOLUMNS\fP environment variables,
+unless overridden by the \fILINES\fP or \fI\%COLUMNS\fP environment
+variables,
 .SS use_tioctl
 The \fBuse_tioctl\fP routine, if used,
 should be called before \fBinitscr\fP or \fBnewterm\fP are called
@@ -195,7 +197,7 @@ After \fBuse_tioctl\fP is called with \fBTRUE\fP as an argument,
 \fBncurses\fP modifies the last step in its computation
 of screen size as follows:
 .bP
-checks if the \fBLINES\fP and \fBCOLUMNS\fP environment variables
+checks if the \fILINES\fP and \fI\%COLUMNS\fP environment variables
 are set to a number greater than zero.
 .bP
 for each, \fBncurses\fP updates the corresponding environment variable
@@ -215,16 +217,16 @@ _
 TRUE	FALSE	T{
 This is the default behavior.
 \fIncurses\fP uses operating system calls
-unless overridden by \fBLINES\fP or \fB\%COLUMNS\fP environment
+unless overridden by \fILINES\fP or \fI\%COLUMNS\fP environment
 variables;
 default.
 T}
 TRUE	TRUE	T{
-\fIncurses\fP updates \fBLINES\fP and \fB\%COLUMNS\fP based on operating
+\fIncurses\fP updates \fILINES\fP and \fI\%COLUMNS\fP based on operating
 system calls.
 T}
 FALSE	TRUE	T{
-\fIncurses\fP ignores \fBLINES\fP and \fB\%COLUMNS\fP,
+\fIncurses\fP ignores \fILINES\fP and \fI\%COLUMNS\fP,
 using operating system calls to obtain size.
 T}
 .TE

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: infocmp.1m,v 1.99 2023/11/25 17:10:25 tom Exp @
+  * @Id: infocmp.1m,v 1.101 2023/12/02 20:49:04 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>infocmp 1m 2023-11-25 ncurses 6.4 User commands</TITLE>
+<TITLE>infocmp 1m 2023-12-02 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">infocmp 1m 2023-11-25 ncurses 6.4 User commands</H1>
+<H1 class="no-header">infocmp 1m 2023-12-02 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>                      User commands                     <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 
@@ -112,7 +112,7 @@
             with "OT").
 
             If  no  <EM>terminal-types</EM>  are  given,  <STRONG>infocmp</STRONG>  uses the environment
-            variable <STRONG>TERM</STRONG> for each of the <EM>terminal-types</EM>.
+            variable <EM>TERM</EM> for each of the <EM>terminal-types</EM>.
 
 
 </PRE><H3><a name="h3-Source-Listing-Options-_-I_-_-L_-_-C_-_-r_">Source Listing Options [-I] [-L] [-C] [-r]</a></H3><PRE>
@@ -125,7 +125,7 @@
             <STRONG>-r</STRONG>   when using <STRONG>-C</STRONG>, put out all capabilities in <STRONG>termcap</STRONG> form
             <STRONG>-K</STRONG>   modifies the <STRONG>-C</STRONG> option, improving BSD-compatibility.
 
-       If  no  <EM>terminal-types</EM> are given, the environment variable <STRONG>TERM</STRONG> will be
+       If  no  <EM>terminal-types</EM> are given, the environment variable <EM>TERM</EM> will be
        used for the terminal name.
 
        The source produced by the <STRONG>-C</STRONG> option may be used directly as a  <STRONG>termcap</STRONG>
@@ -219,8 +219,8 @@
 
    <STRONG>Changing</STRONG> <STRONG>Databases</STRONG> <STRONG>[-A</STRONG> <EM>directory</EM>] [-B <EM>directory</EM>]
        Like  other  <STRONG>ncurses</STRONG>  utilities,  <STRONG>infocmp</STRONG>  looks   for   the   terminal
-       descriptions   in  several  places.   You  can  use  the  <STRONG>TERMINFO</STRONG>  and
-       <STRONG>TERMINFO_DIRS</STRONG> environment variables to override the compiled-in default
+       descriptions   in  several  places.   You  can  use  the  <EM>TERMINFO</EM>  and
+       <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> environment variables to override the compiled-in default
        list  of  places  to  search.   See <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, as well as the <EM>Fetching</EM>
        <EM>Compiled</EM> <EM>Descriptions</EM> section in <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.
 
@@ -368,7 +368,7 @@
                3  hexadecimal and base64
 
             For example, this prints the compiled terminfo value as  a  string
-            which could be assigned to the <STRONG>TERMINFO</STRONG> environment variable:
+            which could be assigned to the <EM>TERMINFO</EM> environment variable:
 
                 infocmp -0 -q -Q2
 
@@ -531,7 +531,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
+ncurses 6.4                       2023-12-02                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

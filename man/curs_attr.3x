@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.89 2023/11/25 15:33:56 tom Exp $
-.TH curs_attr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.91 2023/12/02 21:05:24 tom Exp $
+.TH curs_attr 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -126,10 +126,6 @@ These routines do not affect the attributes used
 when erasing portions of the window.
 See \fBcurs_bkgd\fP(3X) for functions which modify the attributes used for
 erasing and clearing.
-.PP
-Routines which do not have a \fBWINDOW*\fP parameter apply to \fBstdscr\fP.
-For example,
-\fBattr_set\fP is the \fBstdscr\fP variant of \fBwattr_set\fP.
 .\" ---------------------------------------------------------------------------
 .SS Window attributes
 There are two sets of functions:
@@ -245,6 +241,7 @@ The following video attributes, defined in \fB<curses.h>\fP, can be passed to
 the routines \fBattron\fP, \fBattroff\fP, and \fBattrset\fP, or OR'd with the
 characters passed to \fBaddch\fP (see \fBcurs_addch\fP(3X)).
 .PP
+.ne 15
 .RS
 .TS
 l l

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.72 2023/11/25 14:32:36 tom Exp $
-.TH curs_termcap 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.74 2023/12/02 20:49:04 tom Exp $
+.TH curs_termcap 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -211,7 +211,7 @@ One could use
 .PP
 to free this memory, but there is an additional complication with ncurses.
 It uses a fixed-size \fIpool\fP of storage locations,
-one per setting of the \fBTERM\fP variable when \fBtgetent\fP is called.
+one per setting of the \fITERM\fP variable when \fBtgetent\fP is called.
 The \fBscreen\fP(1) program relies upon this arrangement,
 to improve its performance.
 .PP

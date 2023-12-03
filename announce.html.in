@@ -1,7 +1,7 @@
 <!--
-  $Id: announce.html.in,v 1.104 2022/12/31 20:35:34 tom Exp $
+  $Id: announce.html.in,v 1.105 2023/12/02 21:45:06 tom Exp $
   ****************************************************************************
-  * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -927,30 +927,31 @@
     </li>
 
     <li>
-      <p><span class="main-name">ncurses</span> supports all of the
-      for SVr4 curses features including keyboard mapping, color,
-      forms-drawing with ACS characters, and automatic recognition
-      of keypad and function keys.</p>
+      <p><span class="main-name">ncurses</span> supports the features of
+      SVr4 curses including keyboard mapping, color, form drawing with
+      ACS characters, and automatic recognition of keypad and function
+      keys.</p>
     </li>
 
     <li>
-      <p><span class="main-name">ncurses</span> provides these SVr4
-      add-on libraries (not part of X/Open Curses):</p>
+      <p><span class="main-name">ncurses</span> provides work-alike
+      replacements of SVr4 supplemental libraries based on curses, but
+      which were not specified by X/Open Curses:</p>
 
       <ul>
         <li>
-          <p>the panels library, supporting a stack of windows with
-          backing store.</p>
+          <p>the panel library, supporting a stack of windows with
+          backing store</p>
         </li>
 
         <li>
-          <p>the menus library, supporting a uniform but flexible
-          interface for menu programming.</p>
+          <p>the menu library, supporting a uniform but flexible
+          interface for menu programming</p>
         </li>
 
         <li>
           <p>the form library, supporting data collection through
-          on-screen forms.</p>
+          on-screen forms</p>
         </li>
       </ul>
     </li>
@@ -962,7 +963,7 @@
       <ul>
         <li>
           <p><span class="main-name">ncurses</span> supports
-          user-defined capabilities which it can see, but which are
+          user-defined capabilities that it can see, but which are
           hidden from SVr4 curses applications using the
           <em>same</em> terminal database.</p>
         </li>

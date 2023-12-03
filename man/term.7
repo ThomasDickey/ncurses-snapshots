@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.7,v 1.44 2023/11/25 17:20:42 tom Exp $
-.TH term 7 2023-11-25 "ncurses 6.4" Miscellaneous
+.\" $Id: term.7,v 1.46 2023/12/02 20:51:25 tom Exp $
+.TH term 7 2023-12-02 "ncurses 6.4" Miscellaneous
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,12 +46,13 @@ term \-
 conventions for naming terminal types
 .\"SH SYNOPSIS
 .SH DESCRIPTION
-The environment variable \fBTERM\fP should normally contain the type name of
-the terminal, console or display-device type you are using.
+The environment variable \fITERM\fP should normally contain the type
+name of the terminal,
+console or display-device type you are using.
 This information
 is critical for all screen-oriented programs, including your editor and mailer.
 .PP
-A default \fBTERM\fP value will be set on a per-line basis by either
+A default \fITERM\fP value will be set on a per-line basis by either
 \fB/etc/inittab\fP (e.g., System\-V-like Unices)
 or \fB/etc/ttys\fP (BSD Unices).
 This will nearly always suffice for workstation and microcomputer consoles.
@@ -62,22 +63,23 @@ like \*(``dumb\*('' or \*(``dialup\*('' on dialup lines.
 Newer ones may pre-set \*(``vt100\*('', reflecting the prevalence of DEC
 VT100-compatible terminals and personal-computer emulators.
 .PP
-Modern telnets pass your \fBTERM\fP environment variable from the local side to
-the remote one.
+Modern telnets pass your \fITERM\fP environment variable from the local
+side to the remote one.
 There can be problems if the remote terminfo or termcap entry
 for your type is not compatible with yours, but this situation is rare and
 can almost always be avoided by explicitly exporting \*(``vt100\*(''
 (assuming you are in fact using a VT100-superset console,
 terminal, or terminal emulator).
 .PP
-In any case, you are free to override the system \fBTERM\fP setting to your
-taste in your shell profile.
+In any case, you are free to override the system \fITERM\fP setting to
+your taste in your shell profile.
 The \fB@TSET@\fP(1) utility may be of assistance;
 you can give it a set of rules for deducing or requesting a terminal type based
 on the tty device and baud rate.
 .PP
-Setting your own \fBTERM\fP value may also be useful if you have created a
-custom entry incorporating options (such as visual bell or reverse-video)
+Setting your own \fITERM\fP value may also be useful if you have created
+a custom entry incorporating options
+(such as visual bell or reverse-video)
 which you wish to override the system default type for your line.
 .PP
 Terminal type descriptions are stored as files of capability data underneath
@@ -105,8 +107,11 @@ terminfo knows a terminal,
 separated by \*(``|\*('' (pipe-bar) characters with the last
 name field terminated by a comma.
 The first name field is the type's
-\fIprimary name\fP, and is the one to use when setting \fBTERM\fP.  The last
-name field (if distinct from the first) is actually a description of the
+\fIprimary name\fP,
+and is the one to use when setting \fITERM\fP.
+The last name field
+(if distinct from the first)
+is actually a description of the
 terminal type (it may contain blanks; the others must be single words).
 Name
 fields between the first and last (if present) are aliases for the terminal,
@@ -213,16 +218,16 @@ are distinguished by using embedded plus signs rather than dashes.
 Commands which use a terminal type to control display often accept a \-T
 option that accepts a terminal name argument.
 Such programs should fall back
-on the \fBTERM\fP environment variable when no \-T option is specified.
+on the \fITERM\fP environment variable when no \-T option is specified.
 .SH FILES
-.TP 5
+.TP
 .I \*d
 compiled terminal description database
-.TP 5
-/etc/inittab
+.TP
+.I /etc/inittab
 tty line initialization (AT&T-like Unices)
-.TP 5
-/etc/ttys
+.TP
+.I /etc/ttys
 tty line initialization (BSD-like Unices)
 .SH PORTABILITY
 For maximum compatibility with older System V Unices, names and aliases

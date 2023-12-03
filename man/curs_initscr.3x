@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.54 2023/11/11 23:20:20 tom Exp $
-.TH curs_initscr 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.56 2023/12/03 00:09:54 tom Exp $
+.TH curs_initscr 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -238,13 +238,13 @@ e.g.,
 \fBdef_prog_mode\fP(3X).
 SVr4 curses uses the descriptor in \fBSCREEN\fP.
 .SS Unset TERM Variable
-If the TERM variable is missing or empty, \fBinitscr\fP uses the
+If the \fITERM\fP variable is missing or empty, \fBinitscr\fP uses the
 value \*(``unknown\*('',
 which normally corresponds to a terminal entry with the \fIgeneric\fP
 (\fIgn\fP) capability.
 Generic entries are detected by \fBsetupterm\fP(3X)
 and cannot be used for full-screen operation.
-Other implementations may handle a missing/empty TERM variable differently.
+Other implementations may handle a missing/empty \fITERM\fP variable differently.
 .SS Signal Handlers
 Quoting from X/Open Curses Issue 7, section 3.1.1:
 .RS 5

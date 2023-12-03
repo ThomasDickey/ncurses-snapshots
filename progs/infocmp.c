@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.158 2023/11/11 18:25:52 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.159 2023/12/02 17:29:01 tom Exp $")
 
 #define MAX_STRING	1024	/* maximum formatted string */
 
@@ -1865,8 +1865,16 @@ main(int argc, char *argv[])
 	}
 
 #if NCURSES_XNAMES
-	if (termcount > 1)
-	    _nc_align_termtype(&entries[0].tterm, &entries[1].tterm);
+	if (termcount > 1) {
+	    /*
+	     * User-defined capabilities in different terminal descriptions
+	     * may have the same name/type but different indices.  Line up
+	     * the names to use comparable indices.  We may have more than two
+	     * entries to compare when processing the "-u" option.
+	     */
+	    for (c = 1; c < termcount; ++c)
+		_nc_align_termtype(&entries[c].tterm, &entries[0].tterm);
+	}
 #endif
 
 	/* dump as C initializer for the terminal type */

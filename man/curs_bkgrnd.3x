@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.32 2023/11/25 14:01:49 tom Exp $
-.TH curs_bkgrnd 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgrnd.3x,v 1.34 2023/12/02 21:30:00 tom Exp $
+.TH curs_bkgrnd 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -86,21 +86,20 @@ the new background rendition.
 Wherever the former background character
 appears, it is changed to the new background character.
 .SS getbkgrnd
-The \fBgetbkgrnd\fP function returns the given window's current background
-character/attribute pair via the
+The \fB\%getbkgrnd\fP and \fB\%wgetbkgrnd\fP functions obtain the given
+or specified window's current background character and attribute pair
+and store it via the
 .I wch
 pointer.
-If the given window pointer is null,
-the character is not updated (but no error is returned).
 .SH RETURN VALUE
 The \fBbkgrndset\fP and \fBwbkgrndset\fP routines do not return a value.
 .PP
 Upon successful completion, the other functions return \fBOK\fP.
 Otherwise, they return \fBERR\fP:
 .bP
-A null window pointer is treated as an error.
+A null \fI\%WINDOW\fP pointer is treated as an error.
 .bP
-A null character pointer is treated as an error.
+A null \fI\%cchar_t\fP pointer is treated as an error.
 .SH NOTES
 \fB\%bkgrnd\fP,
 \fB\%bkgrndset\fP, and

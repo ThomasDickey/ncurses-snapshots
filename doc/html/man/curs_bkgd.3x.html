@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgd.3x,v 1.49 2023/11/25 14:01:49 tom Exp @
+  * @Id: curs_bkgd.3x,v 1.51 2023/12/02 21:02:44 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgd 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_bkgd 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgd 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_bkgd 3x 2023-12-02 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
 
@@ -101,11 +101,11 @@
        way the rendition of characters on the screen is updated when  <STRONG>bkgd</STRONG>  or
        <STRONG>wbkgd</STRONG> is used to change the background character.
 
-       This  implementation,  like  SVr4 curses, does not store the background
-       and window attribute contributions to each cell separately.  It updates
-       the  rendition  by  comparing  the  character, non-color attributes and
-       colors contained in the background.   For  each  cell  in  the  window,
-       whether or not it is blank:
+       <EM>ncurses</EM>,  like  SVr4  <EM>curses</EM>,  does not store the background and window
+       attribute contributions  to  each  cell  separately.   It  updates  the
+       rendition  by  comparing the character, non-color attributes and colors
+       contained in the background.  For each cell in the window,  whether  or
+       not it is blank:
 
        <STRONG>o</STRONG>   The  library  first  compares  the <EM>character</EM>, and if it matches the
            current character part of the background, it replaces that with the
@@ -146,31 +146,32 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       These functions are described in the XSI Curses standard, Issue 4.   It
-       specifies  that  <STRONG>bkgd</STRONG>  and  <STRONG>wbkgd</STRONG>  return  <STRONG>ERR</STRONG> on failure, but gives no
-       failure conditions.
+       Functions returning an <EM>int</EM> return <STRONG>OK</STRONG> on success.  <STRONG>bkgd</STRONG> returns  <STRONG>ERR</STRONG>  if
+       the  library has not been initialized.  <STRONG>wbkgd</STRONG> and <STRONG>getbkgd</STRONG> return <STRONG>ERR</STRONG> if
+       the <EM>WINDOW</EM> pointer argument is null.
 
-       The routines <STRONG>bkgd</STRONG> and <STRONG>wbkgd</STRONG> return the integer <STRONG>OK</STRONG>, unless  the  library
-       has not been initialized.
-
-       In  contrast, the SVr4.0 manual says <STRONG>bkgd</STRONG> and <STRONG>wbkgd</STRONG> may return <STRONG>OK</STRONG> "or a
-       non-negative integer if <STRONG>immedok</STRONG> is set", which  refers  to  the  return
-       value  from <STRONG>wrefresh</STRONG> (used to implement the immediate repainting).  The
-       SVr4 curses <STRONG>wrefresh</STRONG> returns the number of characters  written  to  the
-       screen during the refresh.  This implementation does not do that.
+       In contrast, the SVr4.0 manual says <STRONG>bkgd</STRONG> and <STRONG>wbkgd</STRONG> may return <STRONG>OK</STRONG> "or  a
+       non-negative  integer  if  <STRONG>immedok</STRONG>  is set", which refers to the return
+       value from <STRONG>wrefresh</STRONG> (used to implement the immediate repainting).  SVr4
+       <EM>curses</EM>  <STRONG>wrefresh</STRONG> returns the number of characters written to the screen
+       during the refresh.  <EM>ncurses</EM> does not do that.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
+       Unusually, there is no <STRONG>wgetbkgd</STRONG> function; <STRONG>getbkgd</STRONG> behaves as one  would
+       expect <STRONG>wgetbkgd</STRONG> to, accepting a <EM>WINDOW</EM> pointer argument.
+
        Note that <STRONG>bkgdset</STRONG> and <STRONG>bkgd</STRONG> may be macros.
 
        X/Open  Curses  mentions that the character part of the background must
-       be a single-byte value.  This  implementation,  like  SVr4,  checks  to
-       ensure  that,  and will reuse the old background character if the check
-       fails.
+       be a single-byte value.  <EM>ncurses</EM>, like SVr4 <EM>curses</EM>,  checks  to  ensure
+       that, and will reuse the old background character if the check fails.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions are described in the XSI Curses standard, Issue 4.
+       These  functions are described in the XSI Curses standard, Issue 4.  It
+       specifies that <STRONG>bkgd</STRONG> and <STRONG>wbkgd</STRONG> return  <STRONG>ERR</STRONG>  on  failure,  but  gives  no
+       failure conditions.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -178,7 +179,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                     <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
+ncurses 6.4                       2023-12-02                     <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

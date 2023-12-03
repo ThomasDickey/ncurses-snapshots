@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.89 2023/11/25 14:32:36 tom Exp @
+  * @Id: tput.1,v 1.91 2023/12/02 20:49:04 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2023-11-25 ncurses 6.4 User commands</TITLE>
+<TITLE>tput 1 2023-12-02 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2023-11-25 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tput 1 2023-12-02 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -102,8 +102,8 @@
 
        <STRONG>-T</STRONG><EM>type</EM> indicates  the  <EM>type</EM>  of  terminal.   Normally  this  option  is
               unnecessary,  because  the default is taken from the environment
-              variable <STRONG>TERM</STRONG>.  If <STRONG>-T</STRONG> is specified,  then  the  shell  variables
-              <STRONG>LINES</STRONG> and <STRONG>COLUMNS</STRONG> will also be ignored.
+              variable <EM>TERM</EM>.  If <STRONG>-T</STRONG> is specified,  then  the  shell  variables
+              <EM>LINES</EM> and <EM>COLUMNS</EM> will also be ignored.
 
        <STRONG>-V</STRONG>     reports  the  version of ncurses which was used in this program,
               and exits.
@@ -151,7 +151,7 @@
 
               (2)  if the window size cannot be obtained  from  the  operating
                    system, but the terminal description (or environment, e.g.,
-                   <STRONG>LINES</STRONG> and  <STRONG>COLUMNS</STRONG>  variables  specify  this),  update  the
+                   <EM>LINES</EM> and  <EM>COLUMNS</EM>  variables  specify  this),  update  the
                    operating system's notion of the window size.
 
               (3)  the terminal modes will be updated:
@@ -258,7 +258,7 @@
            generally works, unless connecting via a serial line which does not
            support <EM>NAWS</EM>: negotiations about window size).
 
-       <STRONG>o</STRONG>   finally, it inspects the environment variables  <STRONG>LINES</STRONG>  and  <STRONG>COLUMNS</STRONG>
+       <STRONG>o</STRONG>   finally, it inspects the environment variables  <EM>LINES</EM>  and  <EM>COLUMNS</EM>
            which may override the terminal size.
 
        If  the  <STRONG>-T</STRONG>  option  is given tput ignores the environment variables by
@@ -483,13 +483,13 @@
 </PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
        <STRONG>tput</STRONG> <STRONG>init</STRONG>
             Initialize  the  terminal according to the type of terminal in the
-            environmental variable <STRONG>TERM</STRONG>.  This command should be  included  in
-            everyone's .profile after the environmental variable <STRONG>TERM</STRONG> has been
+            environmental variable <EM>TERM</EM>.  This command should be  included  in
+            everyone's .profile after the environmental variable <EM>TERM</EM> has been
             exported, as illustrated on the <STRONG>profile(5)</STRONG> manual page.
 
        <STRONG>tput</STRONG> <STRONG>-T5620</STRONG> <STRONG>reset</STRONG>
             Reset an AT&amp;T 5620 terminal, overriding the type  of  terminal  in
-            the environmental variable <STRONG>TERM</STRONG>.
+            the environmental variable <EM>TERM</EM>.
 
        <STRONG>tput</STRONG> <STRONG>cup</STRONG> <STRONG>0</STRONG> <STRONG>0</STRONG>
             Send the sequence to move the cursor to row <STRONG>0</STRONG>, column <STRONG>0</STRONG> (the upper
@@ -524,7 +524,7 @@
 
        <STRONG>tput</STRONG> <STRONG>longname</STRONG>
             Print the long name from the <STRONG>terminfo</STRONG> database  for  the  type  of
-            terminal specified in the environmental variable <STRONG>TERM</STRONG>.
+            terminal specified in the environmental variable <EM>TERM</EM>.
 
             <STRONG>tput</STRONG> <STRONG>-S</STRONG> <STRONG>&lt;&lt;!</STRONG>
             <STRONG>&gt;</STRONG> <STRONG>clear</STRONG>
@@ -543,7 +543,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.4                       2023-12-02                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

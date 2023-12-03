@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.65 2023/11/25 22:58:12 tom Exp $
-.TH term 5 2023-11-25 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.67 2023/12/02 20:49:04 tom Exp $
+.TH term 5 2023-12-02 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -91,9 +91,9 @@ If built to write hashed databases,
 but cannot write entries into the directory tree.
 It can write (or rewrite) entries in the hashed database.
 .IP
-\fBncurses\fP distinguishes the two cases in the TERMINFO and TERMINFO_DIRS
-environment variable by assuming a directory tree for entries that
-correspond to an existing directory,
+\fBncurses\fP distinguishes the two cases in the \fI\%TERMINFO\fP and
+\fI\%TERMINFO_DIRS\fP environment variable by assuming a directory tree
+for entries that correspond to an existing directory,
 and hashed database otherwise.
 .SS LEGACY STORAGE FORMAT
 The format has been chosen so that it will be the same on all hardware.

@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.51 2023/11/25 14:26:30 tom Exp $
-.TH resizeterm 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: resizeterm.3x,v 1.53 2023/12/02 20:49:04 tom Exp $
+.TH resizeterm 3X 2023-12-02 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -153,7 +153,7 @@ directly from a signal handler is unsafe.
 This indirect method is used to provide a safe way to resize the \fIncurses\fP
 data structures.
 .PP
-If the environment variables \fB\%LINES\fP or \fB\%COLUMNS\fP are set,
+If the environment variables \fILINES\fP or \fI\%COLUMNS\fP are set,
 this overrides the library's use of the window size obtained from
 the operating system.
 Thus, even if a \fB\%SIGWINCH\fP is received,

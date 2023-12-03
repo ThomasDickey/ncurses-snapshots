@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.75 2023/11/25 14:32:36 tom Exp $
-.TH @TSET@ 1 2023-11-25 "ncurses 6.4" "User commands"
+.\" $Id: tset.1,v 1.77 2023/12/02 20:52:24 tom Exp $
+.TH @TSET@ 1 2023-12-02 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -81,13 +81,13 @@ This determination is done as follows, using the first terminal type found.
 .PP
 1. The \fBterminal\fP argument specified on the command line.
 .PP
-2. The value of the \fBTERM\fP environmental variable.
+2. The value of the \fITERM\fP environmental variable.
 .PP
 3. (BSD systems only.) The terminal type associated with the standard
 error output device in the \fI/etc/ttys\fP file.
-(On System\-V-like Unices and systems using that convention,
+(On System\ V hosts and systems using that convention,
 \fBgetty\fP(1) does this job by setting
-\fBTERM\fP according to the type passed to it by \fI/etc/inittab\fP.)
+\fITERM\fP according to the type passed to it by \fI\%/etc/inittab\fP.)
 .PP
 4. The default terminal type, \*(``unknown\*('',
 is not suitable for curses applications.
@@ -111,8 +111,10 @@ if the \*(``\fB\-w\fP\*('' option is enabled, \fB@TSET@\fP may update
 the terminal's window size.
 .IP
 If the window size cannot be obtained from the operating system,
-but the terminal description (or environment, e.g., \fBLINES\fP
-and \fBCOLUMNS\fP variables specify this),
+but the terminal description
+(or environment,
+e.g.,
+\fILINES\fP and \fI\%COLUMNS\fP variables specify this),
 use this to set the operating system's notion of the window size.
 .bP
 if the \*(``\fB\-c\fP\*('' option is enabled,
@@ -162,8 +164,8 @@ This is done using the \fB\-s\fP option.
 .PP
 When the \fB\-s\fP option is specified, the commands to enter the information
 into the shell's environment are written to the standard output.
-If
-the \fBSHELL\fP environmental variable ends in \*(``csh\*('', the commands
+If the \fISHELL\fP environmental variable ends in \*(``csh\*('',
+the commands
 are for \fBcsh\fP, otherwise, they are for \fBsh\fP(1).
 Note, the \fBcsh\fP commands set and unset the shell variable
 \fBnoglob\fP, leaving it unset.
@@ -175,7 +177,7 @@ or \fB.profile\fP files will initialize the environment correctly:
 .SS "Terminal Type Mapping"
 When the terminal is not hardwired into the system (or the current
 system information is incorrect) the terminal type derived from the
-\fI/etc/ttys\fP file or the \fBTERM\fP environmental variable is often
+\fI/etc/ttys\fP file or the \fITERM\fP environmental variable is often
 something generic like \fBnetwork\fP, \fBdialup\fP, or \fBunknown\fP.
 When \fB@TSET@\fP is used in a startup script it is often desirable to
 provide information about the type of terminal used on such ports.
@@ -271,7 +273,7 @@ Print the terminal type to the standard error output.
 .TP
 .B \-s
 Print the sequence of shell commands to initialize the environment variable
-\fBTERM\fP to the standard output;
+\fITERM\fP to the standard output;
 see subsection \*(``Setting the Environment\*(''.
 .TP
 .B \-V
@@ -291,22 +293,22 @@ If neither \fB\-c\fP or \fB\-w\fP is given, both options are assumed.
 .SH ENVIRONMENT
 The \fB@TSET@\fP command uses these environment variables:
 .TP 5
-SHELL
-tells \fB@TSET@\fP whether to initialize \fBTERM\fP using \fBsh\fP(1) or
+.I SHELL
+tells \fB@TSET@\fP whether to initialize \fITERM\fP using \fBsh\fP(1) or
 \fBcsh\fP(1) syntax.
 .TP 5
-TERM
+.I TERM
 Denotes your terminal type.
 Each terminal type is distinct, though many are similar.
 .TP 5
-TERMCAP
+.I TERMCAP
 may denote the location of a termcap database.
 If it is not an absolute pathname, e.g., begins with a \*(``/\*('',
 \fB@TSET@\fP removes the variable from the environment before looking
 for the terminal description.
 .SH FILES
-.TP 5
-/etc/ttys
+.TP
+.I /etc/ttys
 system port name to terminal type mapping database (BSD versions only).
 .TP
 .I \*d
@@ -324,21 +326,24 @@ However, each of those systems still provides \fBtset\fP.
 In fact, the commonly-used \fBreset\fP utility
 is always an alias for \fBtset\fP.
 .PP
-The \fB@TSET@\fP utility provides for backward-compatibility with BSD
-environments (under most modern Unices, \fB/etc/inittab\fP and \fBgetty\fP(1)
-can set \fBTERM\fP appropriately for each dial-up line; this obviates what was
-\fB@TSET@\fP's most important use).
-This implementation behaves like 4.4BSD
-\fBtset\fP, with a few exceptions specified here.
+The \fB\%@TSET@\fP utility provides backward compatibility with BSD
+environments;
+under most modern Unices,
+\fI\%/etc/inittab\fP and \fBgetty\fP(1) can set \fITERM\fP appropriately
+for each dial-up line,
+obviating what was \fB\%@TSET@\fP's most important use.
+This implementation behaves like 4.4BSD \fBtset\fP,
+with a few exceptions we shall consider now.
 .PP
 A few options are different
-because the \fBTERMCAP\fP variable
+because the \fI\%TERMCAP\fP variable
 is no longer supported under terminfo-based \fBncurses\fP:
 .bP
 The \fB\-S\fP option of BSD \fBtset\fP no longer works;
 it prints an error message to the standard error and dies.
 .bP
-The \fB\-s\fP option only sets \fBTERM\fP, not \fBTERMCAP\fP.
+The \fB\-s\fP option only sets \fITERM\fP,
+not \fI\%TERMCAP\fP.
 .PP
 There was an undocumented 4.4BSD feature
 that invoking \fBtset\fP via a link named
@@ -385,7 +390,7 @@ size from the operating system.
 In ncurses, \fB@TSET@\fP obtains the window size using
 \fBsetupterm\fP, which may be from
 the operating system,
-the \fBLINES\fP and \fBCOLUMNS\fP environment variables or
+the \fILINES\fP and \fICOLUMNS\fP environment variables or
 the terminal description.
 .PP
 Obtaining the window size from the terminal description is common to
@@ -394,7 +399,8 @@ Its only practical use is for hardware terminals.
 Generally speaking, a window size would be unset only if there were
 some problem obtaining the value from the operating system
 (and \fBsetupterm\fP would still fail).
-For that reason, the \fBLINES\fP and \fBCOLUMNS\fP environment variables
+For that reason,
+the \fILINES\fP and \fI\%COLUMNS\fP environment variables
 may be useful for working around window-size problems.
 Those have the drawback that if the window is resized,
 those variables must be recomputed and reassigned.
