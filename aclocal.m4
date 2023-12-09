@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1059 2023/11/25 21:12:05 tom Exp $
+dnl $Id: aclocal.m4,v 1.1062 2023/12/04 00:39:37 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -598,7 +598,7 @@ AC_DEFUN([CF_AWK_BIG_PRINTF],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_DECL version: 8 updated: 2004/01/30 15:51:18
+dnl CF_BOOL_DECL version: 9 updated: 2023/12/03 09:21:34
 dnl ------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
@@ -613,13 +613,13 @@ AC_DEFUN([CF_BOOL_DECL],
 AC_MSG_CHECKING(if we should include stdbool.h)
 
 AC_CACHE_VAL(cf_cv_header_stdbool_h,[
-	AC_TRY_COMPILE([],[bool foo = false],
+	AC_TRY_COMPILE([],[bool foo = false; (void)foo],
 		[cf_cv_header_stdbool_h=0],
 		[AC_TRY_COMPILE([
 #ifndef __BEOS__
 #include <stdbool.h>
 #endif
-],[bool foo = false],
+],[bool foo = false; (void)foo],
 			[cf_cv_header_stdbool_h=1],
 			[cf_cv_header_stdbool_h=0])])])
 
@@ -634,7 +634,7 @@ AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 	AC_TRY_COMPILE([
 #include <stdio.h>
 #include <sys/types.h>
-],[bool x = false],
+],[bool x = false; (void)x],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])
 	])
@@ -1196,7 +1196,7 @@ __attribute__ ((visibility("default"))) int somefunc() {return 42;}
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_GETENV version: 3 updated: 2023/01/05 17:47:56
+dnl CF_CHECK_GETENV version: 4 updated: 2023/12/03 10:18:09
 dnl ---------------
 dnl Check if repeated getenv calls return the same pointer, e.g., it does not
 dnl discard the previous pointer when returning a new one.
@@ -1273,7 +1273,7 @@ int main(void)
 				}
 			}
 		} while (found);
-		sprintf(value, "%lu:%p", (unsigned long) k, &mynames[j]);
+		sprintf(value, "%lu:%p", (unsigned long) k, (void*)&mynames[j]);
 		set_value(name, value);
 		mynames[j] = str_alloc(name);
 		myvalues[j] = str_alloc(value);
@@ -1445,7 +1445,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_WCHAR_H version: 4 updated: 2023/02/18 17:41:25
+dnl CF_CHECK_WCHAR_H version: 5 updated: 2023/12/03 09:21:34
 dnl ----------------
 dnl Check if wchar.h can be used, i.e., without defining _XOPEN_SOURCE_EXTENDED
 AC_DEFUN([CF_CHECK_WCHAR_H],[
@@ -1465,7 +1465,7 @@ $ac_includes_default
 #endif
 ],[
 	wint_t foo = 0;
-	int bar = iswpunct(foo)],
+	int bar = iswpunct(foo); (void) bar],
 	[cf_cv_wchar_h_okay=yes],
 	[cf_cv_wchar_h_okay=no])])
 
@@ -1475,7 +1475,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_WCWIDTH_GRAPHICS version: 3 updated: 2023/01/05 18:01:30
+dnl CF_CHECK_WCWIDTH_GRAPHICS version: 4 updated: 2023/12/03 10:17:07
 dnl -------------------------
 dnl Most "modern" terminal emulators are based to some degree on VT100, and
 dnl should support line-drawing.  Even with Unicode.  There is a problem.
@@ -1584,7 +1584,7 @@ int
 main(void)
 {
 	FILE *fp;
-	int value;
+	unsigned value;
 	char buffer[MY_LEN + 1];
 	char notes[MY_LEN + 1];
 	int totals = 0;
@@ -1600,9 +1600,9 @@ main(void)
 					fprintf(stderr, "\\t%s", buffer);
 				} else if (sscanf(buffer, "%x %s", &value, notes) == 2) {
 					++totals;
-					if (wcwidth(value) == 1)
+					if (wcwidth((int)value) == 1)
 						++passed;
-					fprintf(stderr, "%d\\t%s", wcwidth(value), buffer);
+					fprintf(stderr, "%d\\t%s", wcwidth((int)value), buffer);
 				} else {
 					fprintf(stderr, "?\\t%s", buffer);
 				}
@@ -1687,7 +1687,7 @@ if test "x$ifelse([$2],,CLANG_COMPILER,[$2])" = "xyes" ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_CONST_X_STRING version: 7 updated: 2021/06/07 17:39:17
+dnl CF_CONST_X_STRING version: 8 updated: 2023/12/01 17:22:50
 dnl -----------------
 dnl The X11R4-X11R6 Xt specification uses an ambiguous String type for most
 dnl character-strings.
@@ -1722,6 +1722,7 @@ AC_TRY_COMPILE(
 AC_CACHE_CHECK(for X11/Xt const-feature,cf_cv_const_x_string,[
 	AC_TRY_COMPILE(
 		[
+#undef  _CONST_X_STRING
 #define _CONST_X_STRING	/* X11R7.8 (perhaps) */
 #undef  XTSTRINGDEFINES	/* X11R5 and later */
 #include <stdlib.h>
@@ -2774,7 +2775,7 @@ int main(void) {
 test "$cf_cv_func_nanosleep" = "yes" && AC_DEFINE(HAVE_NANOSLEEP,1,[Define to 1 if we have nanosleep()])
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_OPENPTY version: 6 updated: 2021/01/01 13:31:04
+dnl CF_FUNC_OPENPTY version: 7 updated: 2023/12/03 09:21:34
 dnl ---------------
 dnl Check for openpty() function, along with <pty.h> header.  It may need the
 dnl "util" library as well.
@@ -2791,6 +2792,7 @@ AC_CACHE_CHECK(for openpty header,cf_cv_func_openpty,[
 ],[
 	int x = openpty((int *)0, (int *)0, (char *)0,
 				   (struct termios *)0, (struct winsize *)0);
+	(void)x;
 ],[
 		cf_cv_func_openpty=$cf_header
 		break
@@ -2893,19 +2895,29 @@ tcgetattr(1, &foo);],
 test "$cf_cv_have_tcgetattr" = yes && AC_DEFINE(HAVE_TCGETATTR,1,[Define to 1 if we have tcgetattr])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_VSSCANF version: 7 updated: 2021/01/01 13:31:04
+dnl CF_FUNC_VSSCANF version: 8 updated: 2023/12/03 19:09:59
 dnl ---------------
 dnl Check for vsscanf() function, which is in c9x but generally not in earlier
-dnl versions of C.  It is in the GNU C library, and can often be simulated by
-dnl other functions.
+dnl versions of C.  It can often be simulated by other functions on older
+dnl systems (where FILE is not opaque).
 AC_DEFUN([CF_FUNC_VSSCANF],
 [
 AC_CACHE_CHECK(for vsscanf function or workaround,cf_cv_func_vsscanf,[
 AC_TRY_LINK([
 #include <stdarg.h>
-#include <stdio.h>],[
+#include <stdio.h>
+
+static void
+myfunc(const char *str, const char *fmt, ...)
+{
 	va_list ap;
-	vsscanf("from", "%d", ap)],[cf_cv_func_vsscanf=vsscanf],[
+	va_start(ap, fmt);
+	vsscanf(str, fmt, ap);
+	va_end(ap);
+}
+],[
+	myfunc("55", "%d");
+],[cf_cv_func_vsscanf=vsscanf],[
 AC_TRY_LINK([
 #include <stdarg.h>
 #include <stdio.h>],[
@@ -4204,14 +4216,14 @@ cf_save_CFLAGS="$cf_save_CFLAGS -we147"
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ISASCII version: 4 updated: 2012/10/06 17:56:13
+dnl CF_ISASCII version: 5 updated: 2023/12/03 09:21:34
 dnl ----------
 dnl Check if we have either a function or macro for 'isascii()'.
 AC_DEFUN([CF_ISASCII],
 [
 AC_MSG_CHECKING(for isascii)
 AC_CACHE_VAL(cf_cv_have_isascii,[
-	AC_TRY_LINK([#include <ctype.h>],[int x = isascii(' ')],
+	AC_TRY_LINK([#include <ctype.h>],[int x = isascii(' '); (void)x],
 	[cf_cv_have_isascii=yes],
 	[cf_cv_have_isascii=no])
 ])dnl
@@ -4219,7 +4231,7 @@ AC_MSG_RESULT($cf_cv_have_isascii)
 test "$cf_cv_have_isascii" = yes && AC_DEFINE(HAVE_ISASCII,1,[Define to 1 if we have isascii()])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LARGEFILE version: 12 updated: 2020/03/19 20:23:48
+dnl CF_LARGEFILE version: 13 updated: 2023/12/03 19:09:59
 dnl ------------
 dnl Add checks for large file support.
 AC_DEFUN([CF_LARGEFILE],[
@@ -4253,11 +4265,15 @@ ifdef([AC_FUNC_FSEEKO],[
 #pragma GCC diagnostic error "-Wincompatible-pointer-types"
 #include <sys/types.h>
 #include <dirent.h>
+
+#ifndef __REDIRECT
+/* if transitional largefile support is setup, this is true */
+extern struct dirent64 * readdir(DIR *);
+#endif
 		],[
-		/* if transitional largefile support is setup, this is true */
-		extern struct dirent64 * readdir(DIR *);
-		struct dirent64 *x = readdir((DIR *)0);
-		struct dirent *y = readdir((DIR *)0);
+		DIR *dp = opendir(".");
+		struct dirent64 *x = readdir(dp);
+		struct dirent *y = readdir(dp);
 		int z = x - y;
 		(void)z;
 		],
@@ -5367,7 +5383,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_DATAONLY version: 13 updated: 2020/02/08 15:59:30
+dnl CF_LINK_DATAONLY version: 15 updated: 2023/12/03 10:03:10
 dnl ----------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
 dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
@@ -5389,17 +5405,21 @@ EOF
 	rm -f conftest.$ac_ext data.o
 	cat >conftest.$ac_ext <<EOF
 #line __oline__ "configure"
+extern int testfunc(void);
+#if defined(NeXT)
 int	testfunc(void)
 {
-#if defined(NeXT)
 	${cf_cv_main_return:-return}(1);	/* I'm told this linker is broken */
+}
 #else
-	extern int testdata[[3]];
+extern int testdata[[3]];
+int	testfunc(void)
+{
 	return testdata[[0]] == 123
 	   &&  testdata[[1]] == 456
 	   &&  testdata[[2]] == 789;
-#endif
 }
+#endif
 EOF
 	if AC_TRY_EVAL(ac_compile); then
 		mv conftest.o func.o && \
@@ -5410,9 +5430,9 @@ EOF
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
 	AC_TRY_RUN([
+	extern int testfunc(void);
 	int main(void)
 	{
-		extern int testfunc();
 		${cf_cv_main_return:-return} (!testfunc());
 	}
 	],
@@ -5431,7 +5451,7 @@ AC_SUBST(BROKEN_LINKER)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_FUNCS version: 12 updated: 2023/01/05 17:51:41
+dnl CF_LINK_FUNCS version: 13 updated: 2023/12/03 09:24:04
 dnl -------------
 dnl Most Unix systems have both link and symlink, a few don't have symlink.
 dnl A few non-Unix systems implement symlink, but not link.
@@ -5462,8 +5482,8 @@ $ac_includes_default
 int main(void)
 {
 	int fail = 0;
-	char *src = "conftest.tmp";
-	char *dst = "conftest.chk";
+	char src[] = "conftest.tmp";
+	char dst[] = "conftest.chk";
 	struct stat src_sb, dst_sb;
 	FILE *fp = fopen(src, "w");
 	if (fp == 0) { fail = 3; } else {
@@ -6335,7 +6355,7 @@ fi
 test "$cf_cv_mixedcase" = yes && AC_DEFINE(MIXEDCASE_FILENAMES,1,[Define to 1 if filesystem supports mixed-case filenames.])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MKSTEMP version: 12 updated: 2023/01/05 17:53:11
+dnl CF_MKSTEMP version: 13 updated: 2023/12/01 17:22:50
 dnl ----------
 dnl Check for a working mkstemp.  This creates two files, checks that they are
 dnl successfully created and distinct (AmigaOS apparently fails on the last).
@@ -6350,7 +6370,7 @@ $ac_includes_default
 
 int main(void)
 {
-	char *tmpl = "conftestXXXXXX";
+	static char tmpl[] = "conftestXXXXXX";
 	char name[2][80];
 	int n;
 	int result = 0;
@@ -7375,7 +7395,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 108 updated: 2023/10/28 11:59:01
+dnl CF_SHARED_OPTS version: 109 updated: 2023/12/03 09:21:34
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -7465,7 +7485,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		for CC_SHARED_OPTS in -fPIC -fpic ''
 		do
 			CFLAGS="$cf_save_CFLAGS $CC_SHARED_OPTS"
-			AC_TRY_COMPILE([#include <stdio.h>],[int x = 1],[break],[])
+			AC_TRY_COMPILE([#include <stdio.h>],[int x = 1; (void)x],[break],[])
 		done
 		AC_MSG_RESULT($CC_SHARED_OPTS)
 		CFLAGS="$cf_save_CFLAGS"
@@ -8304,7 +8324,7 @@ dnl	Remove "-g" option from the compiler options
 AC_DEFUN([CF_STRIP_G_OPT],
 [$1=`echo "${$1}" | CF__SED_TRIMBLANKS(-e 's%-g %%' -e 's%-g$%%')`])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_STRUCT_SIGACTION version: 5 updated: 2012/10/06 17:56:13
+dnl CF_STRUCT_SIGACTION version: 6 updated: 2023/12/03 09:21:34
 dnl -------------------
 dnl Check if we need _POSIX_SOURCE defined to use struct sigaction.  We'll only
 dnl do this if we've found the sigaction function.
@@ -8316,14 +8336,14 @@ AC_MSG_CHECKING(whether sigaction needs _POSIX_SOURCE)
 AC_TRY_COMPILE([
 #include <sys/types.h>
 #include <signal.h>],
-	[struct sigaction act],
+	[struct sigaction act; (void)act],
 	[sigact_bad=no],
 	[
 AC_TRY_COMPILE([
 #define _POSIX_SOURCE
 #include <sys/types.h>
 #include <signal.h>],
-	[struct sigaction act],
+	[struct sigaction act; (void)act],
 	[sigact_bad=yes
 	 AC_DEFINE(_POSIX_SOURCE,1,[Define to 1 if we must define _POSIX_SOURCE])],
 	 [sigact_bad=unknown])])
@@ -8331,7 +8351,7 @@ AC_MSG_RESULT($sigact_bad)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_STRUCT_TERMIOS version: 11 updated: 2020/03/19 20:46:13
+dnl CF_STRUCT_TERMIOS version: 13 updated: 2023/12/03 19:38:54
 dnl -----------------
 dnl Some machines require _POSIX_SOURCE to completely define struct termios.
 AC_DEFUN([CF_STRUCT_TERMIOS],[
@@ -8354,12 +8374,12 @@ if test "$ac_cv_header_termios_h" = yes ; then
 	if test "$termios_bad" = maybe ; then
 	AC_MSG_CHECKING(whether termios.h needs _POSIX_SOURCE)
 	AC_TRY_COMPILE([#include <termios.h>],
-		[struct termios foo; int x = foo.c_iflag = 1; (void)x],
+		[struct termios foo; int x = (int)(foo.c_iflag = 1); (void)x],
 		termios_bad=no, [
 		AC_TRY_COMPILE([
 #define _POSIX_SOURCE
 #include <termios.h>],
-			[struct termios foo; int x = foo.c_iflag = 2; (void)x],
+			[struct termios foo; int x = (int)(foo.c_iflag = 2); (void)x],
 			termios_bad=unknown,
 			termios_bad=yes AC_DEFINE(_POSIX_SOURCE,1,[Define to 1 if we must define _POSIX_SOURCE]))
 			])
@@ -8575,7 +8595,7 @@ AC_SUBST(cf_cv_typeof_chtype)
 AC_DEFINE_UNQUOTED(TYPEOF_CHTYPE,$cf_cv_typeof_chtype,[Define to actual type if needed for chtype])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPE_SIGACTION version: 4 updated: 2012/10/06 17:56:13
+dnl CF_TYPE_SIGACTION version: 5 updated: 2023/12/03 09:21:34
 dnl -----------------
 dnl
 AC_DEFUN([CF_TYPE_SIGACTION],
@@ -8584,14 +8604,14 @@ AC_MSG_CHECKING([for type sigaction_t])
 AC_CACHE_VAL(cf_cv_type_sigaction,[
 	AC_TRY_COMPILE([
 #include <signal.h>],
-		[sigaction_t x],
+		[sigaction_t x; (void)x],
 		[cf_cv_type_sigaction=yes],
 		[cf_cv_type_sigaction=no])])
 AC_MSG_RESULT($cf_cv_type_sigaction)
 test "$cf_cv_type_sigaction" = yes && AC_DEFINE(HAVE_TYPE_SIGACTION,1,[Define to 1 if we have the sigaction_t type])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UNSIGNED_LITERALS version: 2 updated: 1998/02/07 22:10:16
+dnl CF_UNSIGNED_LITERALS version: 3 updated: 2023/12/03 10:02:17
 dnl --------------------
 dnl Test if the compiler supports 'U' and 'L' suffixes.  Only old compilers
 dnl won't, but they're still there.
@@ -8599,7 +8619,7 @@ AC_DEFUN([CF_UNSIGNED_LITERALS],
 [
 AC_MSG_CHECKING([if unsigned literals are legal])
 AC_CACHE_VAL(cf_cv_unsigned_literals,[
-	AC_TRY_COMPILE([],[long x = 1L + 1UL + 1U + 1],
+	AC_TRY_COMPILE([],[long x = 1L + 1UL + 1U + 1; (void)x],
 		[cf_cv_unsigned_literals=yes],
 		[cf_cv_unsigned_literals=no])
 	])
@@ -8827,7 +8847,7 @@ ifelse($1,,,[
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WCHAR_TYPE version: 4 updated: 2012/10/06 16:39:58
+dnl CF_WCHAR_TYPE version: 5 updated: 2023/12/03 09:21:34
 dnl -------------
 dnl Check if type wide-character type $1 is declared, and if so, which header
 dnl file is needed.  The second parameter is used to set a shell variable when
@@ -8844,7 +8864,7 @@ AC_TRY_COMPILE([
 #ifdef HAVE_LIBUTF8_H
 #include <libutf8.h>
 #endif],
-	[$1 state],
+	[$1 state; (void)state],
 	[cf_cv_$1=no],
 	[AC_TRY_COMPILE([
 #include <stdlib.h>
@@ -8854,7 +8874,7 @@ AC_TRY_COMPILE([
 #ifdef HAVE_LIBUTF8_H
 #include <libutf8.h>
 #endif],
-	[$1 value],
+	[$1 value; (void) value],
 	[cf_cv_$1=yes],
 	[cf_cv_$1=unknown])])])
 
@@ -9806,7 +9826,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 12 updated: 2023/11/22 20:48:30
+dnl CF_WITH_VERSIONED_SYMS version: 13 updated: 2023/12/03 09:24:04
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -9906,15 +9926,15 @@ local:
 EOF
 		cat >conftest.$ac_ext <<EOF
 #line __oline__ "configure"
-int	_ismissing(void) { return 1; }
-int	_localf1(void) { return 1; }
-int	_localf2(void) { return 2; }
-int	globalf1(void) { return 1; }
-int	globalf2(void) { return 2; }
-int	_sublocalf1(void) { return 1; }
-int	_sublocalf2(void) { return 2; }
-int	subglobalf1(void) { return 1; }
-int	subglobalf2(void) { return 2; }
+extern int _ismissing(void);    int _ismissing(void)  { return 1; }
+extern int _localf1(void);      int _localf1(void)    { return 1; }
+extern int _localf2(void);      int _localf2(void)    { return 2; }
+extern int globalf1(void);      int globalf1(void)    { return 1; }
+extern int globalf2(void);      int globalf2(void)    { return 2; }
+extern int _sublocalf1(void);   int _sublocalf1(void) { return 1; }
+extern int _sublocalf2(void);   int _sublocalf2(void) { return 2; }
+extern int subglobalf1(void);   int subglobalf1(void) { return 1; }
+extern int subglobalf2(void);   int subglobalf2(void) { return 2; }
 EOF
 		cat >conftest.mk <<EOF
 CC=${CC}

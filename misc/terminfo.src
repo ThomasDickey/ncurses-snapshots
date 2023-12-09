@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1081 $
-#	$Date: 2023/11/11 20:54:00 $
+#	$Revision: 1.1083 $
+#	$Date: 2023/12/09 18:07:12 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4154,7 +4154,7 @@ crt|crt-vt220|CRT 2.3 emulating VT220,
 #	resize.pl gets no reply, resize.sh needs fix for no reply.
 scrt|securecrt|SecureCRT emulating xterm-256color,
 	bce@, km@, npc,
-	bel@, cvvis@, kcbt=\E[Z, use=linux+kbs, use=vt220+pcedit,
+	bel@, cvvis@, kcbt=\E[Z, use=vt220+pcedit,
 	use=xterm+256setaf, use=ecma+index, use=ansi+rep,
 	use=xterm+keypad, use=xterm+pcfkeys, use=xterm-basic,
 
@@ -8515,7 +8515,7 @@ tmux|tmux terminal multiplexer,
 	use=ecma+italics, use=ecma+strikeout, use=xterm+edit,
 	use=xterm+pcfkeys, use=xterm+sl, use=xterm+tmux,
 	use=screen, use=bracketed+paste, use=report+version,
-	use=xterm+focus, use=xterm+sm+1006,
+	use=xterm+focus,
 
 tmux-256color|tmux with 256 colors,
 	use=xterm+256setaf, use=tmux,
@@ -18190,7 +18190,7 @@ ibm+16color|IBM aixterm color definitions,
 	setf=%p1%{8}%/%{6}%*%{3}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e
 	     %ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m,
 ibm5154|IBM 5154 Color display,
-	colors#8, ncv@, pairs#64,
+	ncv@,
 	bold@, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ibm5151,
 	use=ibm+color,
 ibmega-c|ibm5154-c|IBM Enhanced Color Display with standout and underline,
@@ -18237,12 +18237,10 @@ ibm8512|ibm8513|IBM color VGA Terminal,
 	smacs=^N, smam=\E[?7h, smcup=\E[20;4l\E[?7h\Eb,
 	smdc=\E[4h, use=ibm8503,
 hft-c|HFT with Color,
-	colors#8, pairs#64,
 	acsc=jjkkllmmnnqqttuuvvwwxx, s0ds=\E(B, s1ds=\E(0,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0m\E(B,
 	use=ibm5151, use=ibm+color,
 hft-c-old|HFT with Color PC850,
-	colors#8, pairs#64,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ibm5151,
 	use=ibm+color,
 hft-old|AIWS High Function Terminal,
@@ -27775,6 +27773,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  fe/fd capabilities, like vim (vim-pr #13440).
 #
 # 2023-11-11
+#	+ used "infocmp -u" to help trim redundant capabilities -TD
+#
+# 2023-12-09
+#	+ remove xterm+sm+1006 from tmux (Debian #1057688).
 #	+ used "infocmp -u" to help trim redundant capabilities -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

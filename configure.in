@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.772 2023/11/25 21:05:05 tom Exp $
+dnl $Id: configure.in,v 1.773 2023/12/03 11:07:25 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.772 $)
+AC_REVISION($Revision: 1.773 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -765,7 +765,7 @@ AC_ARG_ENABLE(big-core,
 	[AC_TRY_RUN([
 #include <stdlib.h>
 #include <string.h>
-int main() {
+int main(void) {
 	unsigned long n = 6000000L;
 	char *s = malloc(n);
 	if (s != 0)
