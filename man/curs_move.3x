@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_move.3x,v 1.32 2023/10/07 21:19:07 tom Exp $
-.TH curs_move 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_move.3x,v 1.33 2023/12/16 21:33:08 tom Exp $
+.TH curs_move 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .SH NAME
 \fB\%move\fP,
 \fB\%wmove\fP \-
@@ -48,9 +59,10 @@ until \fBrefresh\fP(3X) is called.
 The position specified is relative to the upper
 left-hand corner of the window, which is (0,0).
 .SH RETURN VALUE
-These routines return \fBERR\fP upon failure and \fBOK\fP (SVr4
-specifies only "an integer value other than \fBERR\fP") upon successful
-completion.
+These routines return the integer \fBERR\fP upon failure and an \fBOK\fP
+(SVr4 specifies only
+\*(``an integer value other than \fBERR\fP\*('')
+upon successful completion.
 .PP
 Specifically, they return an error
 if the window pointer is null, or

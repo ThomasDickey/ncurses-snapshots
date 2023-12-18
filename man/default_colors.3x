@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1997,1999,2000,2005
 .\"
-.\" $Id: default_colors.3x,v 1.47 2023/11/25 14:26:30 tom Exp $
-.TH default_colors 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: default_colors.3x,v 1.48 2023/12/16 20:32:22 tom Exp $
+.TH default_colors 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -93,9 +93,9 @@ The following are equivalent:
 .I assume_default_colors(\-1,\-1);
 .RE
 .PP
-These are ncurses extensions.
+These are \fI\%ncurses\fP extensions.
 For other curses implementations, color
-number \-1 does not mean anything, just as for ncurses before a
+number \-1 does not mean anything, just as for \fI\%ncurses\fP before a
 successful call of \fBuse_default_colors\fP or \fBassume_default_colors\fP.
 .PP
 Other curses implementations do not allow an application to modify color pair 0.
@@ -106,7 +106,7 @@ If your application does not use either
 .B use_default_colors
 or
 .B assume_default_colors
-ncurses will paint a white foreground (text) with black background
+\fI\%ncurses\fP will paint a white foreground (text) with black background
 for color pair 0.
 .SH RETURN VALUE
 These functions return the integer \fBERR\fP upon failure
@@ -140,7 +140,7 @@ a different problem: support for applications which would use
 environment variables and other configuration to bypass curses'
 notion of the terminal's default colors, setting specific values.
 .SH PORTABILITY
-These routines are specific to ncurses.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on
 Version 7, BSD or System V implementations.
 It is recommended that

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_memleaks.3x,v 1.31 2023/11/11 11:46:43 tom Exp $
-.TH curs_memleaks 3X 2023-11-11 "ncurses 6.4" "Library calls"
+.\" $Id: curs_memleaks.3x,v 1.32 2023/12/16 20:32:22 tom Exp $
+.TH curs_memleaks 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -62,15 +62,16 @@ check for memory leaks in \fIcurses\fR
 \fBvoid _nc_free_tinfo(int \fIcode\fP);
 .fi
 .SH DESCRIPTION
-These functions are used to simplify analysis of memory leaks in the ncurses
-library.
+These functions are used to simplify analysis of memory leaks in the
+\fI\%ncurses\fP library.
 .PP
 Any implementation of curses must not free the memory associated with
 a screen, since (even after calling \fB\%endwin\fP(3X)), it must be available
 for use in the next call to \fB\%refresh\fP(3X).
 There are also chunks of memory held for performance reasons.
 That makes it hard to analyze curses applications for memory leaks.
-When using the specially configured debugging version of the ncurses library,
+When using the specially configured debugging version of the
+\fI\%ncurses\fP library,
 applications can call functions which free those chunks of memory,
 simplifying the process of memory-leak checking.
 .PP
@@ -78,10 +79,11 @@ Some of the functions are named with a \*(``_nc_\*('' prefix
 because they are not intended for use in the non-debugging library:
 .TP 5
 \fB\%_nc_freeall\fP
-This frees (almost) all of the memory allocated by ncurses.
+This frees (almost) all of the memory allocated by \fI\%ncurses\fP.
 .TP 5
 \fB\%_nc_free_and_exit\fP
-This frees the memory allocated by ncurses (like \fB\%_nc_freeall\fP),
+This frees the memory allocated by \fI\%ncurses\fP
+(like \fB\%_nc_freeall\fP),
 and exits the program.
 It is preferred over \fB\%_nc_freeall\fP since some of that memory
 may be required to keep the application running.

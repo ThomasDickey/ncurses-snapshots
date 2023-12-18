@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.77 2023/12/02 20:52:24 tom Exp $
-.TH @TSET@ 1 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: tset.1,v 1.78 2023/12/16 20:32:22 tom Exp $
+.TH @TSET@ 1 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -277,7 +277,8 @@ Print the sequence of shell commands to initialize the environment variable
 see subsection \*(``Setting the Environment\*(''.
 .TP
 .B \-V
-reports the version of ncurses which was used in this program, and exits.
+reports the version of \fI\%ncurses\fP which was used in this program,
+and exits.
 .TP
 .B \-w
 Resize the window to match the size deduced via \fBsetupterm\fP(3X).
@@ -337,7 +338,7 @@ with a few exceptions we shall consider now.
 .PP
 A few options are different
 because the \fI\%TERMCAP\fP variable
-is no longer supported under terminfo-based \fBncurses\fP:
+is no longer supported under terminfo-based \fI\%ncurses\fP:
 .bP
 The \fB\-S\fP option of BSD \fBtset\fP no longer works;
 it prints an error message to the standard error and dies.
@@ -387,7 +388,7 @@ In 4.4BSD, \fBtset\fP uses the window size from the termcap description
 to set the window size if \fBtset\fP is not able to obtain the window
 size from the operating system.
 .bP
-In ncurses, \fB@TSET@\fP obtains the window size using
+In \fI\%ncurses\fP, \fB@TSET@\fP obtains the window size using
 \fBsetupterm\fP, which may be from
 the operating system,
 the \fILINES\fP and \fICOLUMNS\fP environment variables or

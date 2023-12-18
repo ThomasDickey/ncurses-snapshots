@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1083 $
-#	$Date: 2023/12/09 18:07:12 $
+#	$Revision: 1.1085 $
+#	$Date: 2023/12/16 13:48:44 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -6130,7 +6130,7 @@ xterm-sun|xterm with sunFunctionKeys true,
 	kich1=\E[2z, knp=\E[222z, kpp=\E[216z, kund=\E[195z,
 	use=xterm+nofkeys, use=xterm+nopcfkeys,
 xterms-sun|small (80x24) xterm with sunFunctionKeys true,
-	cols#80, lines#24, use=xterm-sun,
+	use=xterm-sun,
 
 #### GNOME (VTE)
 # this describes the alpha-version of GNOME terminal shipped with Redhat 6.0
@@ -8863,7 +8863,7 @@ sun-e-s|sun-s-e|Sun Microsystems Workstation with status hacked for emacs,
 sun-48|Sun 48-line window,
 	cols#80, lines#48, use=sun,
 sun-34|Sun 34-line window,
-	cols#80, lines#34, use=sun,
+	use=sun,
 sun-24|Sun 24-line window,
 	cols#80, lines#24, use=sun,
 sun-17|Sun 17-line window,
@@ -19983,7 +19983,7 @@ ndr9500-mc|NDR 9500 with magic cookies (enables underline inverse video invisibl
 	blink=\EG2, invis=\EG1, rev=\EG4, rmso=\EG0, rmul=\EG0,
 	sgr=\E%%\E(%?%p5%p8%|%t\E)%;%?%p9%t\E$%;\EG%{48}%?%p7%t%{1}
 	    %+%;%?%p4%t%{2}%+%;%?%p3%p1%|%t%{4}%+%;%?%p2%t%{8}%+%;%c,
-	sgr0=\EG0\E%%\E(, smso=\EG4, smul=\EG8, use=ndr9500,
+	smso=\EG4, smul=\EG8, use=ndr9500,
 
 ndr9500-25-mc|NDR 500 with 25 lines and magic cookies,
 	lines#25, use=ndr9500-mc,
@@ -21656,7 +21656,6 @@ minitel2-80|minitel 2 (80cols) avec filets VT100 (DEC),
 	use=minitel12-80,
 
 minitel12-80|minitel 12 (80cols),
-	G0,
 	civis=\E[<1h, cnorm=\E[<1l, is2=\E[12h, u6=\E[%i%d;%dH,
 	u7=\E[6n,
 	.acsc=ffggj+k+l+m+n+ovq-swt+u+v+w+xx}}\,m+k.l-j0
@@ -21664,7 +21663,7 @@ minitel12-80|minitel 12 (80cols),
 	.enacs=\E)3, .rmacs=^O, .rs3=\E[?4l, .scs=\E(%p1%c,
 	.smacs=^N,
 	C0=ffggj+k+l+m+n+ovq-swt+u+v+w+xx}}\,m+k.l-j0\177,
-	E0=^O, S0=\E)3\016,
+	S0=\E)3\016,
 	XC=B%\E(B\,\243\E(3}\,\247\E(R[\,\257\E(3v\,\260\E(3f\,\261
 	   \E(3g\,\267\E(3~\,\274\E(3O\,\275\E(3P\,\276\E(3Q\,\300A
 	   \,\301A\,\302A\,\303A\,\304A\,\305A\,\306E\,\307C\,\310E
@@ -27777,6 +27776,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2023-12-09
 #	+ remove xterm+sm+1006 from tmux (Debian #1057688).
+#	+ used "infocmp -u" to help trim redundant capabilities -TD
+#
+# 2023-12-16
 #	+ used "infocmp -u" to help trim redundant capabilities -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.45 2023/12/02 20:49:04 tom Exp $
-.TH @CLEAR@ 1 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: clear.1,v 1.46 2023/12/16 20:32:22 tom Exp $
+.TH @CLEAR@ 1 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -69,7 +69,8 @@ that type to determine how to perform these actions.
 The capabilities to clear the screen and scrollback buffer are named
 \*(``clear\*('' and \*(``E3\*('', respectively.
 The latter is a \fIuser-defined capability\fP,
-applying an extension mechanism introduced in \fIncurses\fP 5.0 (1999).
+applying an extension mechanism introduced in \fI\%ncurses\fP 5.0
+(1999).
 .SH OPTIONS
 \fB\%@CLEAR@\fP recognizes the following options.
 .TP 9 \" "-T type" + 2n
@@ -84,7 +85,7 @@ If this option is specified,
 \fI\%COLUMNS\fP as well.
 .TP
 .B \-V
-reports the version of \fIncurses\fP associated with this program and
+reports the version of \fI\%ncurses\fP associated with this program and
 exits with a successful status.
 .TP
 .B \-x
@@ -132,8 +133,8 @@ exec tput clear
 The remainder of the script in each case is a copyright notice.
 .PP
 In 1995,
-\fIncurses\fP's \fBclear\fP began by adapting BSD's original \fBclear\fP
-command to use \fIterminfo\fP.
+\fI\%ncurses\fP's \fBclear\fP began by adapting BSD's original
+\fBclear\fP command to use \fIterminfo\fP.
 The \fBE3\fP extension came later.
 .bP
 In June 1999, \fIxterm\fP provided an extension to the standard control
@@ -171,7 +172,7 @@ motivating the feature.
 .bP
 Subsequently,
 more terminal developers adopted the feature.
-The next relevant step was to change the \fIncurses\fP \fBclear\fP
+The next relevant step was to change the \fI\%ncurses\fP \fBclear\fP
 program in 2013 to incorporate this extension.
 .bP
 In 2013,

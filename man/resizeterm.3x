@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.53 2023/12/02 20:49:04 tom Exp $
-.TH resizeterm 3X 2023-12-02 "ncurses 6.4" "Library calls"
+.\" $Id: resizeterm.3x,v 1.54 2023/12/16 20:32:22 tom Exp $
+.TH resizeterm 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -50,7 +50,8 @@ manage the terminal dimensions understood by \fIcurses\fR
 .fi
 .SH DESCRIPTION
 This is an extension to the \fIcurses\fP library.
-It provides callers with a hook into the \fIncurses\fP data to resize windows,
+It provides callers with a hook into the \fI\%ncurses\fP data to resize
+windows,
 primarily for use by programs running in an X Window terminal (e.g., xterm)
 when the terminal's screen size is changed by the user:
 .bP
@@ -62,9 +63,9 @@ rows and/or columns can be added to existing windows.
 The added cells should match the current attributes of the windows.
 .PP
 If the calling program has not set up a handler for \fB\%SIGWINCH\fP
-when it initializes \fIncurses\fP
+when it initializes \fI\%ncurses\fP
 (e.g., using \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)),
-then \fIncurses\fP sets a handler for \fB\%SIGWINCH\fP which notifies
+then \fI\%ncurses\fP sets a handler for \fB\%SIGWINCH\fP which notifies
 the library when a window-size event has occurred.
 The library checks for this notification
 .bP
@@ -87,7 +88,7 @@ see \fB\%SIGWINCH\fP, and proper layout will rely upon the application.
 The function \fB\%resizeterm\fP resizes the standard and current windows
 (i.e., \fB\%stdscr\fP and \fB\%curscr\fP)
 to the specified dimensions, and adjusts other bookkeeping data used by
-the \fIncurses\fP library that record the window dimensions
+the \fI\%ncurses\fP library that record the window dimensions
 such as the \fB\%LINES\fP and \fB\%COLS\fP variables.
 .SS resize_term
 Most of the work for \fB\%resizeterm\fP is
@@ -130,7 +131,8 @@ While these functions are intended to be used to support a signal handler
 context where \fB\%malloc\fP or \fB\%realloc\fP may have been interrupted,
 since it uses those functions.
 .PP
-If \fIncurses\fP is configured to supply its own \fB\%SIGWINCH\fP handler,
+If \fI\%ncurses\fP is configured to supply its own \fB\%SIGWINCH\fP
+handler,
 .bP
 on receipt of a \fB\%SIGWINCH\fP, the handler sets a flag
 .bP
@@ -150,8 +152,8 @@ be done automatically.
 .IP
 Calling \fB\%resizeterm\fP or \fB\%resize_term\fP
 directly from a signal handler is unsafe.
-This indirect method is used to provide a safe way to resize the \fIncurses\fP
-data structures.
+This indirect method is used to provide a safe way to resize the
+\fI\%ncurses\fP data structures.
 .PP
 If the environment variables \fILINES\fP or \fI\%COLUMNS\fP are set,
 this overrides the library's use of the window size obtained from
@@ -168,7 +170,7 @@ resuming using \fB\%refresh\fP(3X).
 .PP
 Doing that clears the screen and is visually distracting.
 .PP
-This extension of \fIncurses\fP was introduced in mid-1995.
+This extension of \fI\%ncurses\fP was introduced in mid-1995.
 It was adopted in NetBSD \fIcurses\fP (2001) and PDCurses (2003).
 .SH AUTHORS
 Thomas Dickey (from an equivalent function written in 1988 for BSD \fIcurses\fP)

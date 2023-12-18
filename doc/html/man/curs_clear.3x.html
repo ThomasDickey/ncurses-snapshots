@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_clear.3x,v 1.40 2023/11/25 11:31:27 tom Exp @
+  * @Id: curs_clear.3x,v 1.41 2023/12/16 21:09:11 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_clear 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_clear 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_clear 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_clear 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 
@@ -114,14 +114,14 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        These functions are described in the XSI Curses standard, Issue 4.
 
-       The SVr4.0 manual says  that  these  functions  could  return  "a  non-
-       negative  integer if <STRONG><A HREF="curs_outopts.3x.html">immedok(3x)</A></STRONG> is set", referring to the return-value
-       of <STRONG>wrefresh</STRONG>.  In that implementation, <STRONG>wrefresh</STRONG> would return a count  of
-       the number of characters written to the terminal.
+       The SVr4.0 manual says that these functions could  return  "or  a  non-
+       negative  integer  if <STRONG>immedok</STRONG> is set", referring to the return-value of
+       <STRONG>wrefresh</STRONG>.  In that implementation, <STRONG>wrefresh</STRONG> would return a count of the
+       number of characters written to the terminal.
 
        Some  historic  curses implementations had, as an undocumented feature,
        the  ability  to  do  the  equivalent  of  <STRONG>clearok(...,</STRONG>  <STRONG>1)</STRONG>  by  saying
-       <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under ncurses.
+       <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under <EM>ncurses</EM>.
 
        This  implementation,  and  others  such  as  Solaris, sets the current
        position to 0,0 after erasing via <STRONG>werase</STRONG> and <STRONG>wclear</STRONG>.  That fact is  not
@@ -138,7 +138,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

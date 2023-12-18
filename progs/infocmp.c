@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.161 2023/12/09 19:56:10 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.163 2023/12/16 17:27:47 tom Exp $")
 
 #define MAX_STRING	1024	/* maximum formatted string */
 
@@ -187,9 +187,19 @@ capcmp(PredIdx idx, const char *s, const char *t)
 	return (_nc_capcmp(s, t));
 }
 
+/*
+ * Predicate function to use for "use=" decompilation.
+ *
+ * Return value is used in fmt_entry:
+ *   FAIL  show nothing for this capability.
+ *   FALSE show cancel for booleans (a compromise)
+ *   TRUE  show capability
+ *
+ * The only difference between FALSE/TRUE returns is in the treatment of
+ * booleans.
+ */
 static int
 use_predicate(unsigned type, PredIdx idx)
-/* predicate function to use for use decompilation */
 {
     int result = FAIL;
     ENTRY *ep;
@@ -213,8 +223,7 @@ use_predicate(unsigned type, PredIdx idx)
 	    if (idx < NUM_BOOLEANS(&(entries[0].tterm))) {
 		for (ep = &entries[1]; ep < entries + termcount; ep++) {
 		    if (idx < NUM_BOOLEANS(&(ep->tterm))
-			&& ep->tterm.Booleans[idx] == TRUE) {
-			is_set = entries[0].tterm.Booleans[idx];
+			&& (is_set = ep->tterm.Booleans[idx])) {
 			break;
 		    }
 		}
@@ -267,6 +276,8 @@ use_predicate(unsigned type, PredIdx idx)
 
 		if (usestr == CANCELLED_STRING && termstr == ABSENT_STRING)
 		    result = (FAIL);
+		else if (usestr == CANCELLED_STRING && termstr == CANCELLED_STRING)
+		    result = (TRUE);
 		else if (usestr == ABSENT_STRING && termstr == ABSENT_STRING)
 		    result = (FAIL);
 		else if (!usestr || !termstr || capcmp(idx, usestr, termstr))

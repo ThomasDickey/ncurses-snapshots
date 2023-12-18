@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.52 2023/11/25 14:08:05 tom Exp $
-.TH curs_outopts 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.53 2023/12/16 20:32:22 tom Exp $
+.TH curs_outopts 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -169,8 +169,9 @@ emulators.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 .PP
-From the outset, ncurses used \fBnl\fP/\fBnonl\fP to control the conversion
-of newlines to carriage return/line-feed on output as well as input.
+From the outset,
+\fI\%ncurses\fP used \fBnl\fP/\fBnonl\fP to control the conversion of
+newlines to carriage return/line-feed on output as well as input.
 XSI Curses documents only the use of these functions for input.
 This difference arose from converting the \fIpcurses\fP source
 (which used \fBioctl\fP calls with the \fBsgttyb\fP structure)
@@ -179,18 +180,18 @@ In the former, both input and output were controlled via a single
 option \fBCRMOD\fP,
 while the latter separates these features.
 Because that conversion interferes with output optimization,
-\fBnl\fP/\fBnonl\fP were amended after ncurses 6.2
+\fBnl\fP/\fBnonl\fP were amended after \fI\%ncurses\fP 6.2
 to eliminate their effect on output.
 .PP
 Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fP by saying
 \fBtouchwin(stdscr)\fP or \fBclear(stdscr)\fP.
-This will not work under ncurses.
+This will not work under \fI\%ncurses\fP.
 .PP
 Earlier System V curses implementations specified that with \fBscrollok\fP
 enabled, any window modification triggering a scroll also forced a physical
 refresh.
-XSI Curses does not require this, and \fBncurses\fP avoids doing
+XSI Curses does not require this, and \fI\%ncurses\fP avoids doing
 it to perform better vertical-motion optimization at \fBwrefresh\fP
 time.
 .PP

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.56 2023/12/03 00:09:54 tom Exp @
+  * @Id: curs_initscr.3x,v 1.59 2023/12/17 23:56:04 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2023-12-17 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2023-12-02 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2023-12-17 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -181,8 +181,8 @@
        X/Open  specifies that portable applications must not call <STRONG>initscr</STRONG> more
        than once:
 
-       <STRONG>o</STRONG>   The portable way to use <STRONG>initscr</STRONG> is once only,  using  <STRONG>refresh</STRONG>  (see
-           <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>) to restore the screen after <STRONG>endwin</STRONG>.
+       <STRONG>o</STRONG>   The portable way to use <STRONG>initscr</STRONG> is once only, using <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>  to
+           restore the screen after <STRONG>endwin</STRONG>.
 
        <STRONG>o</STRONG>   This implementation allows using <STRONG>initscr</STRONG> after <STRONG>endwin</STRONG>.
 
@@ -205,15 +205,15 @@
            <STRONG>curscr</STRONG>  as  well  as a work area <STRONG>newscr</STRONG>.  SVr4 curses ignores other
            windows.
 
-       <STRONG>o</STRONG>   Since version 4.0 (1996), ncurses has  maintained  a  list  of  all
+       <STRONG>o</STRONG>   Since version 4.0 (1996), <EM>ncurses</EM> has  maintained  a  list  of  all
            windows  for  each  screen,  using that information to delete those
            windows when <STRONG>delscreen</STRONG> is called.
 
-       <STRONG>o</STRONG>   NetBSD copied this feature of ncurses in  2001.   PDCurses  follows
+       <STRONG>o</STRONG>   NetBSD copied this feature of <EM>ncurses</EM> in  2001.   PDCurses  follows
            the SVr4 model, deleting only the standard <STRONG>WINDOW</STRONG> structures.
 
 
-</PRE><H3><a name="h3-High-level-versus-low-level">High-level versus low-level</a></H3><PRE>
+</PRE><H3><a name="h3-High-level-versus-Low-level">High-level versus Low-level</a></H3><PRE>
        Different  implementations  may  disagree  regarding  the level of some
        functions.  For example, <STRONG>SCREEN</STRONG>  (returned  by  <STRONG>newterm</STRONG>)  and  <STRONG>TERMINAL</STRONG>
        (returned  by  <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>)  hold  file  descriptors  for  the output
@@ -225,14 +225,13 @@
        For example
 
        <STRONG>o</STRONG>   NetBSD's  <STRONG><A HREF="curs_termattrs.3x.html">baudrate(3x)</A></STRONG>  function  uses  the descriptor in <STRONG>TERMINAL</STRONG>.
-           <STRONG>ncurses</STRONG> and SVr4 use the descriptor in <STRONG>SCREEN</STRONG>.
+           <EM>ncurses</EM> and SVr4 use the descriptor in <STRONG>SCREEN</STRONG>.
 
-       <STRONG>o</STRONG>   NetBSD and <STRONG>ncurses</STRONG> use the descriptor in <STRONG>TERMINAL</STRONG> for terminal  I/O
+       <STRONG>o</STRONG>   NetBSD and <EM>ncurses</EM> use the descriptor in <STRONG>TERMINAL</STRONG> for terminal  I/O
            modes,  e.g.,  <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>,  <STRONG><A HREF="curs_kernel.3x.html">def_prog_mode(3x)</A></STRONG>.  SVr4 curses
            uses the descriptor in <STRONG>SCREEN</STRONG>.
 
-
-</PRE><H3><a name="h3-Unset-TERM-Variable">Unset TERM Variable</a></H3><PRE>
+   <STRONG>Unset</STRONG> <EM>TERM</EM> <STRONG>Variable</STRONG>
        If the <EM>TERM</EM> variable is  missing  or  empty,  <STRONG>initscr</STRONG>  uses  the  value
        "unknown",  which  normally  corresponds  to  a terminal entry with the
        <EM>generic</EM> (<EM>gn</EM>) capability.  Generic entries are detected by <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>
@@ -280,18 +279,18 @@
        <STRONG>SIGTSTP</STRONG>
             This handles the <EM>stop</EM> signal, used in job control.  When  resuming
             the  process,  this  implementation  discards  pending  input with
-            <STRONG>flushinput</STRONG> (see <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>), and repaints the  screen  assuming
-            that  it  has  been completely altered.  It also updates the saved
-            terminal modes with <STRONG>def_shell_mode</STRONG> (see <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>).
+            <STRONG><A HREF="curs_util.3x.html">flushinp(3x)</A></STRONG>, and repaints the screen assuming that  it  has  been
+            completely altered.  It also updates the saved terminal modes with
+            <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>.
 
        <STRONG>SIGWINCH</STRONG>
             This handles the window-size changes which  were  ignored  in  the
             standardization   efforts.    The  handler  sets  a  (signal-safe)
-            variable which is later tested in <STRONG>wgetch</STRONG> (see <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>).  If
-            <STRONG>keypad</STRONG>  has  been  enabled  for  the  corresponding window, <STRONG>wgetch</STRONG>
-            returns the key symbol <STRONG>KEY_RESIZE</STRONG>.  At the same time, <STRONG>wgetch</STRONG> calls
-            <STRONG>resizeterm</STRONG>  to adjust the standard screen <STRONG>stdscr</STRONG>, and update other
-            data such as <STRONG>LINES</STRONG> and <STRONG>COLS</STRONG>.
+            variable which is later tested in <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>.  If <STRONG>keypad</STRONG> has  been
+            enabled  for  the  corresponding  window,  <STRONG>wgetch</STRONG>  returns the key
+            symbol <STRONG>KEY_RESIZE</STRONG>.  At the same time, <STRONG>wgetch</STRONG> calls  <STRONG>resizeterm</STRONG>  to
+            adjust  the  standard screen <STRONG>stdscr</STRONG>, and update other data such as
+            <STRONG>LINES</STRONG> and <STRONG>COLS</STRONG>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -300,7 +299,7 @@
 
 
 
-ncurses 6.4                       2023-12-02                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.4                       2023-12-17                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -320,8 +319,7 @@ ncurses 6.4                       2023-12-02                  <STRONG><A HREF="c
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-Differences">Differences</a></li>
-<li><a href="#h3-High-level-versus-low-level">High-level versus low-level</a></li>
-<li><a href="#h3-Unset-TERM-Variable">Unset TERM Variable</a></li>
+<li><a href="#h3-High-level-versus-Low-level">High-level versus Low-level</a></li>
 <li><a href="#h3-Signal-Handlers">Signal Handlers</a></li>
 </ul>
 </li>

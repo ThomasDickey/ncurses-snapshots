@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.122 2023/12/03 00:10:20 tom Exp $
-.TH curs_terminfo 3X 2023-12-02 "ncurses 6.4" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.123 2023/12/16 21:11:53 tom Exp $
+.TH curs_terminfo 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -88,9 +88,9 @@
 \fBint del_curterm(TERMINAL *\fIoterm\fP);
 \fBint restartterm(const char *\fIterm\fP, int \fIfiledes\fP, int *\fIerrret\fP);
 .PP
-\fBchar *tparm(const char *\fIstr\fP, ...);
-	\fIor
-\fBchar *tparm(const char *\fIstr\fP, long \fIp1 ... \fPlong \fIp9\fP);
+\fBchar *tparm(const char *\fIstr\fP, \fR.\|.\|.\fP);
+	\fI/* or */
+\fBchar *tparm(const char *\fIstr\fP, long \fIp1\fP \fR.\|.\|.\fP \fBlong\fP \fIp9\fP);
 .PP
 \fBint tputs(const char *\fIstr\fP, int \fIaffcnt\fP, int (*\fIputc\fP)(int));
 \fBint putp(const char *\fIstr\fP);
@@ -106,7 +106,7 @@
 \fBint tigetnum(const char *\fIcapname\fP);
 \fBchar *tigetstr(const char *\fIcapname\fP);
 .PP
-\fBchar *tiparm(const char *\fIstr\fP, ...);
+\fBchar *tiparm(const char *\fIstr\fP, \fR.\|.\|.\fP);
 .PP
 \fI/* extensions */
 \fBchar *tiparm_s(int \fIexpected\fP, int \fImask\fP, const char *\fIstr\fP, ...);
@@ -242,7 +242,7 @@ Thus, the simplest call is:
 which uses all the defaults and sends the output to \fBstdout\fP.
 .RE
 .\" ***************************************************************************
-.SS The Terminal State
+.SS "The Terminal State"
 The \fBsetupterm\fP routine stores its information about the terminal
 in a \fBTERMINAL\fP structure pointed to by the global variable \fBcur_term\fP.
 If it detects an error,
@@ -277,7 +277,7 @@ but the terminal type and baud rate may be different.
 Accordingly, \fBrestartterm\fP saves various tty state bits,
 calls \fBsetupterm\fP, and then restores the bits.
 .\" ***************************************************************************
-.SS Formatting Output
+.SS "Formatting Output"
 The \fBtparm\fP routine instantiates the string \fIstr\fP with
 parameters \fIpi\fP.  A pointer is returned to the result of \fIstr\fP
 with the parameters applied.
@@ -315,7 +315,7 @@ The \fImask\fP parameter has one bit set for each of the parameters
 The extension \fBtiscan_s\fP allows the application
 to inspect a formatting capability to see what the curses library would assume.
 .\" ***************************************************************************
-.SS Output Functions
+.SS "Output Functions"
 String capabilities can contain padding information,
 a time delay
 (accommodating performance limitations of hardware terminals)
@@ -366,7 +366,7 @@ i.e.,
 .bP
 \fIattrs\fP of type \fBattr_t\fP for the attributes and
 .bP
-\fIpair\fP of type \fBshort\fP for the color-pair number.
+\fIpair\fP of type \fBshort\fP for the color pair number.
 .PP
 The \fBvid_attr\fP and \fBvid_puts\fP routines
 are designed to use the attribute constants with the \fBWA_\fP prefix.
@@ -389,7 +389,7 @@ do not use the high-level curses state,
 they are declared in \fB\%<curses.h>\fP because System\ V did this
 (see \fIHISTORY\fP).
 .\" ***************************************************************************
-.SS Terminal Capability Functions
+.SS "Terminal Capability Functions"
 The \fBtigetflag\fP, \fBtigetnum\fP and \fBtigetstr\fP routines return
 the value of the capability corresponding to the \fBterminfo\fP
 \fIcapname\fP passed to them, such as \fBxenl\fP.
@@ -424,7 +424,7 @@ or
 \fB0\fP
 if it is canceled or absent from the terminal description.
 .\" ***************************************************************************
-.SS Terminal Capability Names
+.SS "Terminal Capability Names"
 These null-terminated arrays contain
 .bP
 the short \fIterminfo\fP names (\*(``codes\*(''),
@@ -443,7 +443,7 @@ for each of the predefined \fIterminfo\fP variables:
 .fi
 .RE
 .\" ***************************************************************************
-.SS Releasing Memory
+.SS "Releasing Memory"
 Each successful call to \fBsetupterm\fP allocates memory to hold the terminal
 description.
 As a side-effect, it sets \fBcur_term\fP to point to this memory.
@@ -457,11 +457,12 @@ The formatting functions \fBtparm\fP and \fBtiparm\fP extend the storage
 allocated by \fBsetupterm\fP:
 .bP
 the \*(``static\*('' terminfo variables [a-z].
-Before ncurses 6.3, those were shared by all screens.
-With ncurses 6.3, those are allocated per screen.
+Before \fI\%ncurses\fP 6.3, those were shared by all screens.
+With \fI\%ncurses\fP 6.3, those are allocated per screen.
 See \fBterminfo\fP(5) for details.
 .bP
-to improve performance, ncurses 6.3 caches the result of analyzing terminfo
+to improve performance,
+\fI\%ncurses\fP 6.3 caches the result of analyzing terminfo
 strings for their parameter types.
 That is stored as a binary tree referenced from the \fBTERMINAL\fP structure.
 .PP
@@ -514,7 +515,8 @@ of the output function \fIputc\fP.
 X/Open notes that \fBvidattr\fP and \fBvidputs\fP may be macros.
 .\" ***************************************************************************
 .SH EXTENSIONS
-The functions marked as extensions were designed for \fBncurses\fP(3X),
+The functions marked as extensions were designed for
+\fB\%ncurses\fP(3X),
 and are not found in SVr4 curses, 4.4BSD curses,
 or any other previous version of curses.
 .\" ***************************************************************************
@@ -522,7 +524,7 @@ or any other previous version of curses.
 The function \fBsetterm\fP is not described by X/Open and must
 be considered non-portable.
 All other functions are as described by X/Open.
-.SS Compatibility macros
+.SS "Compatibility Macros"
 This implementation provides a few macros for compatibility with systems
 before SVr4 (see \fIHISTORY\fP).
 Those include
@@ -546,7 +548,7 @@ provides the same functionality as \fBsetterm(\fIterm\fB)\fR,
 and is not recommended for new programs.
 This implementation provides each of those symbols
 as macros for BSD compatibility.
-.SS Legacy data
+.SS "Legacy Data"
 \fBsetupterm\fP copies the terminal name to the array \fBttytype\fP.
 This is not part of X/Open Curses, but is assumed by some applications.
 .PP
@@ -556,24 +558,25 @@ X/Open does not specify them.
 .PP
 Extended terminal capability names, e.g., as defined by \fB@TIC@\ \-x\fP,
 are not stored in the arrays described here.
-.SS Output buffering
-Older versions of \fBncurses\fP assumed that the file descriptor passed to
-\fBsetupterm\fP from \fBinitscr\fP or \fBnewterm\fP uses buffered I/O,
+.SS "Output Buffering"
+Older versions of \fI\%ncurses\fP assumed that the file descriptor
+passed to \fBsetupterm\fP from \fBinitscr\fP or \fBnewterm\fP uses
+buffered I/O,
 and would write to the corresponding stream.
 In addition to the limitation that the terminal was left in block-buffered
 mode on exit (like System V curses),
-it was problematic because \fBncurses\fP
+it was problematic because \fI\%ncurses\fP
 did not allow a reliable way to cleanup on receiving SIGTSTP.
 .PP
 The current version (ncurses6)
-uses output buffers managed directly by \fBncurses\fP.
+uses output buffers managed directly by \fI\%ncurses\fP.
 Some of the low-level functions described in this manual page write
 to the standard output.
 They are not signal-safe.
-The high-level functions in \fBncurses\fP use
+The high-level functions in \fI\%ncurses\fP use
 alternate versions of these functions
 using the more reliable buffering scheme.
-.SS Function prototypes
+.SS "Function Prototypes"
 The X/Open Curses prototypes are based on the SVr4 curses header declarations,
 which were defined at the same time the C language was first standardized in
 the late 1980s.
@@ -587,7 +590,7 @@ On the other hand, \fIwritable strings\fP are an obsolescent feature.
 .IP
 As an extension, this implementation can be configured to change the
 function prototypes to use the \fBconst\fP keyword.
-The \fIncurses\fP ABI 6 enables this feature by default.
+The \fI\%ncurses\fP ABI 6 enables this feature by default.
 .bP
 X/Open Curses prototypes \fBtparm\fP with a fixed number of parameters,
 rather than a variable argument list.
@@ -600,7 +603,7 @@ zeroes are fine for this purpose.
 In response to review comments by Thomas E. Dickey,
 X/Open Curses Issue 7 proposed the \fBtiparm\fP function in mid-2009.
 .IP
-While \fBtiparm\fP is always provided in ncurses,
+While \fBtiparm\fP is always provided in \fI\%ncurses\fP,
 the older form is only available as a build-time configuration option.
 If not specially configured, \fBtparm\fP is the same as \fBtiparm\fP.
 .PP
@@ -620,14 +623,14 @@ such as \fBtiparm\fP can be a problem, in particular for string parameters.
 However, only a few terminfo capabilities use string parameters
 (e.g., the ones used for programmable function keys).
 .IP
-The ncurses library checks usage of these capabilities,
+The \fI\%ncurses\fP library checks usage of these capabilities,
 and returns an error if the capability mishandles string parameters.
 But it cannot check if a calling program provides strings in the right
 places for the \fBtparm\fP calls.
 .IP
 The \fB@TPUT@\fR(1) program checks its use of these capabilities with a table,
 so that it calls \fBtparm\fP correctly.
-.SS Special TERM treatment
+.SS "Special \fITERM\fP treatment"
 If configured to use the terminal-driver,
 e.g., for the MinGW port,
 .bP
@@ -645,7 +648,7 @@ A generic terminal is unsuitable for full-screen applications.
 \fBsetupterm\fP allows explicit use of the
 the windows console driver by checking if \fB$TERM\fP is set to
 \*(``#win32con\*('' or an abbreviation of that string.
-.SS Other portability issues
+.SS "Other Portability Issues"
 In System V Release 4, \fBset_curterm\fP has an \fBint\fP return type and
 returns \fBOK\fP or \fBERR\fP.  We have chosen to implement the X/Open Curses
 semantics.
@@ -660,8 +663,9 @@ That returns the length of the string, and does no error-checking.
 X/Open notes that after calling \fBmvcur\fP, the curses state may not match the
 actual terminal state, and that an application should touch and refresh
 the window before resuming normal curses calls.
-Both \fBncurses\fP and System V Release 4 curses implement \fBmvcur\fP using
-the SCREEN data allocated in either \fBinitscr\fP or \fBnewterm\fP.
+Both \fI\%ncurses\fP and System V Release 4 curses implement \fBmvcur\fP
+using the SCREEN data allocated in either \fBinitscr\fP or
+\fBnewterm\fP.
 So though it is documented as a terminfo function,
 \fBmvcur\fP is really a curses function which is not well specified.
 .PP

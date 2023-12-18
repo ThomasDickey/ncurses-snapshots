@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4047 2023/12/09 22:52:42 tom Exp $
+-- $Id: NEWS,v 1.4053 2023/12/17 23:18:40 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,13 +46,24 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20231217
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ correct an assignment in infocmp "-u" for detecting if a boolean
+	  is unset in a base entry and set in a use'd chunk, i.e., if it was
+	  cancelled.
+	+ modify infocmp "-u" option to not report cancels for strings which
+	  were already cancelled in a use'd chunk.
+	+ join two lines in infotocap.3x to eliminate a spurious "description"
+	  link in installed manpages (report by Sven Joachim).
+	+ fix typo in NEWS (report by Sven Joachim).
+
 20231209
 	+ modify infocmp "-u" option to not report cancels in use'd chunks
 	  which are not mentioned in the top-level terminal description.
 	+ remove xterm+sm+1006 from tmux (Debian #1057688).
 	+ used "infocmp -u" to help trim redundant capabilities -TD
 	+ updated man/edit_man.sh to allow for "\%" markers embedded after
-	  bold font escapes in manpage cross-references (Debian #1057541).
+	  bold font escapes in manpage cross-references (Debian #1057651).
 	+ reduce compiler-warnings in configure checks
 
 20231202

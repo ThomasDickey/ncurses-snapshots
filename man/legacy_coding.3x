@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: legacy_coding.3x,v 1.23 2023/11/25 14:26:30 tom Exp $
-.TH legacy_coding 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: legacy_coding.3x,v 1.24 2023/12/16 20:32:22 tom Exp $
+.TH legacy_coding 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%use_legacy_coding\fP \-
 override \fIcurses\fR locale encoding checks
@@ -68,9 +68,9 @@ or the \fIlevel\fP parameter is out of range,
 the function returns \fBERR\fP.
 Otherwise, it returns the previous level: \fB0\fP, \fB1\fP or \fB2\fP.
 .SH PORTABILITY
-This routine is specific to ncurses.
+This routine is specific to \fI\%ncurses\fP.
 It was not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on ncurses extensions
+It is recommended that any code depending on \fI\%ncurses\fP extensions
 be conditioned using NCURSES_VERSION.
 .SH AUTHORS
 Thomas Dickey (to support lynx's font-switching feature).

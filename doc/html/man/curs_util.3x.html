@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.90 2023/12/02 21:10:36 tom Exp @
+  * @Id: curs_util.3x,v 1.91 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-12-02 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -163,29 +163,29 @@
        <STRONG>o</STRONG>   Then  it  asks  for the screen size via operating system calls.  If
            successful, it overrides the values from the terminal database.
 
-       <STRONG>o</STRONG>   Finally (unless <STRONG>use_env</STRONG> was called with <STRONG>FALSE</STRONG>  parameter),  <STRONG>ncurses</STRONG>
+       <STRONG>o</STRONG>   Finally (unless <STRONG>use_env</STRONG> was called with <STRONG>FALSE</STRONG>  parameter),  <EM>ncurses</EM>
            examines  the <EM>LINES</EM> or <EM>COLUMNS</EM> environment variables, using a value
            in those to override the  results  from  the  operating  system  or
            terminal database.
 
-           <STRONG>Ncurses</STRONG>  also  updates  the  screen  size  in response to <STRONG>SIGWINCH</STRONG>,
-           unless overridden by the <EM>LINES</EM> or <EM>COLUMNS</EM> environment variables,
+           <EM>curses</EM> also updates the screen size in response to <STRONG>SIGWINCH</STRONG>, unless
+           overridden by the <EM>LINES</EM> or <EM>COLUMNS</EM> environment variables,
 
 
 </PRE><H3><a name="h3-use_tioctl">use_tioctl</a></H3><PRE>
        The <STRONG>use_tioctl</STRONG> routine, if used, should be  called  before  <STRONG>initscr</STRONG>  or
        <STRONG>newterm</STRONG>  are  called  (because  those  compute the screen size).  After
-       <STRONG>use_tioctl</STRONG> is called with <STRONG>TRUE</STRONG> as an  argument,  <STRONG>ncurses</STRONG>  modifies  the
+       <STRONG>use_tioctl</STRONG> is called with <STRONG>TRUE</STRONG> as an  argument,  <EM>ncurses</EM>  modifies  the
        last step in its computation of screen size as follows:
 
        <STRONG>o</STRONG>   checks  if the <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables are set to a
            number greater than zero.
 
-       <STRONG>o</STRONG>   for each, <STRONG>ncurses</STRONG> updates the  corresponding  environment  variable
+       <STRONG>o</STRONG>   for each, <EM>ncurses</EM> updates the  corresponding  environment  variable
            with  the  value  that it has obtained via operating system call or
            from the terminal database.
 
-       <STRONG>o</STRONG>   <STRONG>ncurses</STRONG> re-fetches the value of the environment variables  so  that
+       <STRONG>o</STRONG>   <EM>ncurses</EM> re-fetches the value of the environment variables  so  that
            it is still the environment variables which set the screen size.
 
        The <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> routines combine as follows.
@@ -214,7 +214,7 @@
 
        <STRONG>o</STRONG>   the  data  written  is  a  copy  of  the  <STRONG>WINDOW</STRONG> structure, and its
            associated character cells.  The format differs between  the  wide-
-           character  (<STRONG>ncursesw</STRONG>)  and  non-wide  (<STRONG>ncurses</STRONG>) libraries.  You can
+           character  (<EM>ncursesw</EM>)  and  non-wide  (<EM>ncurses</EM>) libraries.  You can
            transfer data between the two, however.
 
        <STRONG>o</STRONG>   the retrieved window is always created as a  top-level  window  (or
@@ -298,9 +298,9 @@
 
 
 </PRE><H3><a name="h3-nofilter_use_tioctl">nofilter/use_tioctl</a></H3><PRE>
-       The  <STRONG>nofilter</STRONG>  and  <STRONG>use_tioctl</STRONG>  routines are specific to <STRONG>ncurses</STRONG>.  They
+       The  <STRONG>nofilter</STRONG>  and  <STRONG>use_tioctl</STRONG>  routines are specific to <EM>ncurses</EM>.  They
        were not supported on Version 7, BSD or System V  implementations.   It
-       is  recommended  that  any  code  depending  on  <STRONG>ncurses</STRONG>  extensions be
+       is  recommended  that  any  code  depending  on  <EM>ncurses</EM>  extensions be
        conditioned using <STRONG>NCURSES_VERSION</STRONG>.
 
 
@@ -319,7 +319,7 @@
 
        <STRONG>o</STRONG>   Most implementations simply dump the binary <STRONG>WINDOW</STRONG> structure to the
            file.   These  include SVr4 curses, NetBSD and PDCurses, as well as
-           older <STRONG>ncurses</STRONG> versions.  This implementation (as well as the X/Open
+           older <EM>ncurses</EM> versions.  This implementation (as well as the X/Open
            variant of Solaris curses, dated 1995) uses textual dumps.
 
            The  implementations  which  use  binary  dumps  use block-I/O (the
@@ -372,13 +372,13 @@
        before  initializing  curses),  this  implementation  returns   strings
        "M-^@", "M-^A", etc.
 
-       X/Open Curses documents <STRONG>unctrl</STRONG> as declared in <STRONG>&lt;unctrl.h&gt;</STRONG>, which <STRONG>ncurses</STRONG>
-       does.  However, <STRONG>ncurses</STRONG>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>,  matching  the
+       X/Open Curses documents <STRONG>unctrl</STRONG> as declared in <STRONG>&lt;unctrl.h&gt;</STRONG>, which <EM>ncurses</EM>
+       does.  However, <EM>ncurses</EM>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>,  matching  the
        behavior of SVr4 curses.  Other implementations may not do that.
 
 
 </PRE><H3><a name="h3-use_env_use_tioctl">use_env/use_tioctl</a></H3><PRE>
-       If  <STRONG>ncurses</STRONG>  is  configured  to provide the sp-functions extension, the
+       If  <EM>ncurses</EM>  is  configured  to provide the sp-functions extension, the
        state of <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> may be  updated  before  creating  each
        <EM>screen</EM>  rather  than  once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).  This feature of
        <STRONG>use_env</STRONG> is not provided by other implementations of curses.
@@ -391,7 +391,7 @@
 
 
 
-ncurses 6.4                       2023-12-02                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

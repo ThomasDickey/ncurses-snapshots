@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_memleaks.3x,v 1.31 2023/11/11 11:46:43 tom Exp @
+  * @Id: curs_memleaks.3x,v 1.32 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_memleaks 3x 2023-11-11 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_memleaks 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_memleaks 3x 2023-11-11 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_memleaks 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>
 
@@ -65,14 +65,14 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These  functions  are  used to simplify analysis of memory leaks in the
-       ncurses library.
+       <EM>ncurses</EM> library.
 
        Any implementation of curses must not free the memory associated with a
        screen, since (even after calling <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG>), it must be available for
        use in the next call to <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>.  There are also chunks  of  memory
        held  for  performance  reasons.   That makes it hard to analyze curses
        applications for memory leaks.  When  using  the  specially  configured
-       debugging  version  of  the  ncurses  library,  applications  can  call
+       debugging  version  of  the  <EM>ncurses</EM>  library,  applications  can  call
        functions which free those chunks of memory, simplifying the process of
        memory-leak checking.
 
@@ -80,10 +80,10 @@
        not intended for use in the non-debugging library:
 
        <STRONG>_nc_freeall</STRONG>
-            This frees (almost) all of the memory allocated by ncurses.
+            This frees (almost) all of the memory allocated by <EM>ncurses</EM>.
 
        <STRONG>_nc_free_and_exit</STRONG>
-            This frees the memory allocated by ncurses (like <STRONG>_nc_freeall</STRONG>), and
+            This frees the memory allocated by <EM>ncurses</EM> (like <STRONG>_nc_freeall</STRONG>), and
             exits the program.  It is preferred over <STRONG>_nc_freeall</STRONG> since some of
             that memory may be  required  to  keep  the  application  running.
             Simply exiting (with the given exit-code) is safer.
@@ -132,7 +132,7 @@
 
 
 
-ncurses 6.4                       2023-11-11                 <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                 <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

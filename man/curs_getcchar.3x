@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getcchar.3x,v 1.42 2023/11/25 14:30:18 tom Exp $
-.TH curs_getcchar 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getcchar.3x,v 1.43 2023/12/16 21:07:24 tom Exp $
+.TH curs_getcchar 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -66,7 +66,7 @@ Extracts information from a \fBcchar_t\fP value \fIwcval\fP
 .bP
 Stores the character attributes in the location pointed to by \fIattrs\fP
 .bP
-Stores the color-pair in the location pointed to by \fIcolor_pair\fP
+Stores the color pair in the location pointed to by \fIcolor_pair\fP
 .bP
 Stores the wide-character string,
 characters referenced by \fIwcval\fP, into the array pointed to by \fIwch\fP.
@@ -98,11 +98,11 @@ The string must be L'\e0' terminated,
 contain at most one spacing character,
 which must be the first.
 .IP
-Up to \fBCCHARW_MAX\fP\-1 nonspacing characters may follow.
-Additional nonspacing characters are ignored.
+Up to \fBCCHARW_MAX\fP\-1 non-spacing characters may follow.
+Additional non-spacing characters are ignored.
 .IP
 The string may contain a single control character instead.
-In that case, no nonspacing characters are allowed.
+In that case, no non-spacing characters are allowed.
 .SH RETURN VALUE
 When \fIwch\fP is a null pointer,
 \fBgetcchar\fP returns the number of wide characters referenced by
@@ -123,7 +123,7 @@ If \fIwcval\fP is constructed by any other means, the effect is unspecified.
 X/Open Curses documents the \fIopts\fP argument as reserved for future use,
 saying that it must be null.
 This implementation
-uses that parameter in ABI 6 for the functions which have a color-pair
+uses that parameter in ABI 6 for the functions which have a color pair
 parameter to support extended color pairs:
 .bP
 For  functions  which modify the color, e.g., \fBsetcchar\fP,
@@ -135,7 +135,7 @@ if \fIopts\fP is set it is treated as a pointer to \fBint\fP,
 and  used  to  retrieve  the color pair as an \fBint\fP value,
 in addition retrieving it via the standard pointer to \fBshort\fP parameter.
 .SH PORTABILITY
-The \fBCCHARW_MAX\fP symbol is specific to ncurses.
+The \fBCCHARW_MAX\fP symbol is specific to \fI\%ncurses\fP.
 X/Open Curses does not provide details for the layout of the \fBcchar_t\fP
 structure.
 It tells what data are stored in it:

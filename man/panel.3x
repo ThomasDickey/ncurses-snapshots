@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.59 2023/11/25 14:08:47 tom Exp $
-.TH panel 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: panel.3x,v 1.60 2023/12/16 21:24:43 tom Exp $
+.TH panel 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,7 +46,7 @@
 ..
 .SH NAME
 panel \-
-panel stack extension for \fI\%curses\fP
+panel stack extension for \fIcurses\fP
 .SH SYNOPSIS
 .nf
 \fB#include <panel.h>
@@ -80,7 +80,7 @@ panel stack extension for \fI\%curses\fP
 Panels are \fBcurses\fP(3X) windows with the added property of
 depth.
 Panel functions allow the use of stacked windows and ensure that the
-proper portions of each window and the \fI\%curses\fP \fB\%stdscr\fP
+proper portions of each window and the \fIcurses\fP \fB\%stdscr\fP
 window are hidden or displayed when panels are added,
 moved,
 modified,
@@ -97,9 +97,9 @@ hide,
 and show panels.
 You can relocate a panel to any desired position in the stack.
 .PP
-Panel routines are a functional layer added to \fI\%curses\fP,
-make only high-level \fI\%curses\fP calls,
-and work anywhere \fI\%curses\fP does.
+Panel routines are a functional layer added to \fIcurses\fP,
+make only high-level \fIcurses\fP calls,
+and work anywhere \fIcurses\fP does.
 .SH FUNCTIONS
 .\" ---------
 .SS bottom_panel
@@ -260,7 +260,7 @@ Systems based on SVr4 source code,
 such as Solaris,
 provide this library.
 .bP
-\fIncurses\fP (since version 0.6 in 1993)
+\fI\%ncurses\fP (since version 0.6 in 1993)
 and \fIPDCurses\fP (since version 2.2 in 1995)
 provide a panel library whose common ancestor
 is a public domain implementation by Warren Tucker

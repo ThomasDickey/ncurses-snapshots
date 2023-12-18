@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.39 2023/11/25 14:21:48 tom Exp $
-.TH scr_dump 5 2023-11-25 "ncurses 6.4" "File formats"
+.\" $Id: scr_dump.5,v 1.40 2023/12/16 21:07:24 tom Exp $
+.TH scr_dump 5 2023-12-16 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -115,7 +115,7 @@ because the library truncates or fills the screen as necessary.
 .bP
 The ncurses6 \fBgetwin\fP reads the legacy screen dumps from ncurses5.
 .SS ncurses5 (legacy)
-The screen-dump feature was added to ncurses in June 1995.
+The screen-dump feature was added to \fI\%ncurses\fP in June 1995.
 While there were fixes and improvements in succeeding years,
 the basic scheme was unchanged:
 .bP
@@ -228,7 +228,7 @@ HP-UX (90093 bytes)
 .bP
 Solaris 10 (13273 bytes)
 .bP
-ncurses5 (12888 bytes)
+\fI\%ncurses\fP5 (12888 bytes)
 .SS Solaris
 As noted above, Solaris curses has no magic number corresponding
 to SVr4 curses.
@@ -351,7 +351,7 @@ All characters are shown in printable form; spaces are \*(``\es\*('' to
 ensure they are not overlooked.
 .bP
 Attributes are written in escaped curly braces, e.g., \*(``\e{BOLD}\*('',
-and may include a color-pair (C1 or C2 in this example).
+and may include a color pair (C1 or C2 in this example).
 .bP
 The parameters in the header are written out only if they are nonzero.
 When reading back, order does not matter.
@@ -436,11 +436,11 @@ Here is the corresponding dump (using \*(``od \-t x1\*(''):
 .SH AUTHORS
 Thomas E. Dickey
 .br
-extended screen-dump format for ncurses 6.0 (2015)
+extended screen-dump format for \fI\%ncurses\fP 6.0 (2015)
 .sp
 Eric S. Raymond
 .br
-screen dump feature in ncurses 1.9.2d (1995)
+screen dump feature in \fI\%ncurses\fP 1.9.2d (1995)
 .SH SEE ALSO
 \fB\%curs_scr_dump\fP(3X),
 \fB\%curs_util\fP(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_opaque.3x,v 1.40 2023/12/02 20:52:50 tom Exp $
-.TH curs_opaque 3X 2023-12-02 "ncurses 6.4" "Library calls"
+.\" $Id: curs_opaque.3x,v 1.41 2023/12/16 20:32:22 tom Exp $
+.TH curs_opaque 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -78,7 +78,7 @@ obtain \fIcurses\fR window properties
 \fBint wgetscrreg(const WINDOW *\fIwin\fP, int *\fItop\fP, int *\fIbottom\fP);
 .fi
 .SH DESCRIPTION
-\fIncurses\fP provides functions returning properties of a
+\fI\%ncurses\fP provides functions returning properties of a
 \fI\%WINDOW\fP structure,
 allowing it to be \*(``opaque\*('' if
 the application defines the \fB\%NCURSES_OPAQUE\fP preprocessor symbol.
@@ -146,12 +146,12 @@ completion.
 .SH RETURN VALUE
 These functions return \fBTRUE\fP or \fBFALSE\fP except as noted.
 .SH NOTES
-\fIncurses\fP provides both a C function and a preprocessor macro for
+\fI\%ncurses\fP provides both a C function and a preprocessor macro for
 each function documented in this page.
 .SH PORTABILITY
-These routines are specific to \fIncurses\fP.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on \fIncurses\fP extensions
+It is recommended that any code depending on \fI\%ncurses\fP extensions
 be conditioned using \fB\%NCURSES_VERSION\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

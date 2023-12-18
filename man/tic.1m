@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.103 2023/12/02 20:50:53 tom Exp $
-.TH @TIC@ 1M 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: tic.1m,v 1.104 2023/12/16 20:33:11 tom Exp $
+.TH @TIC@ 1M 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -86,7 +86,7 @@ x\
 The \fB@TIC@\fP command translates a \fBterminfo\fP file from source
 format into compiled format.
 The compiled format is necessary for use with
-the library routines in \fBncurses\fP(3X).
+the library routines in \fB\%ncurses\fP(3X).
 .PP
 As described in \fBterm\fP(5), the database may be either a directory
 tree (one file per terminal entry) or a hashed database (one record per entry).
@@ -242,7 +242,7 @@ rather than their decimal equivalents.
 Force source translation to terminfo format.
 .TP
 \fB\-K\fP
-Suppress some longstanding ncurses extensions to termcap format,
+Suppress some longstanding \fI\%ncurses\fP extensions to termcap format,
 e.g., "\es" for space.
 .TP
 \fB\-L\fP
@@ -331,7 +331,8 @@ Normally, it infers data which is commonly missing in older terminfo data,
 or in termcaps.
 .TP
 \fB\-V\fP
-reports the version of ncurses which was used in this program, and exits.
+reports the version of \fI\%ncurses\fP which was used in this program,
+and exits.
 .TP
 \fB\-v\fIn\fR
 specifies that (verbose) output be written to standard error trace
@@ -341,7 +342,8 @@ The optional parameter \fIn\fP is a number from 1 to 9, inclusive,
 indicating the desired level of detail of information.
 .RS
 .bP
-If ncurses is built without tracing support, the optional parameter is ignored.
+If \fI\%ncurses\fP is built without tracing support,
+the optional parameter is ignored.
 .bP
 If \fIn\fP is omitted, the default level is 1.
 .bP
@@ -500,7 +502,7 @@ are not supported by SVr4 \fBtic\fP:
 \fB\-x\fP
 .RE
 .bP
-The NetBSD \fBtic\fP  supports a few of the ncurses options
+The NetBSD \fBtic\fP supports a few of the \fI\%ncurses\fP options
 .sp
 .RS
 \fB\-a\fP
@@ -527,7 +529,7 @@ According to its manual pages, that system also supported the \fB\-v\fP option.
 Shortly after Issue 7 was released, Tru64 was discontinued.
 As of 2019, the surviving implementations of \fBtic\fP
 are SVr4 (AIX, HP-UX and Solaris),
-ncurses
+\fI\%ncurses\fP
 and NetBSD curses.
 The SVr4 \fBtic\fP programs all support the \fB\-v\fP option.
 The NetBSD \fBtic\fP program follows X/Open's documentation,
@@ -559,7 +561,7 @@ While the program itself was changed little as development
 continued with System V Release 4,
 the table of capabilities grew from 180 (\fIpcurses\fP) to 464 (Solaris).
 .PP
-In early development of ncurses (1993),
+In early development of \fI\%ncurses\fP (1993),
 Zeyd Ben-Halim used the table from \fImytinfo\fP to
 extend the \fIpcurses\fP table to 469 capabilities
 (456 matched SVr4, 8 were only in SVr4, 13 were not in SVr4).
@@ -569,7 +571,7 @@ The exceptions were
 \fB\%memory_lock_above\fP and
 \fB\%memory_unlock\fP (see \fB\%user_caps\fP(5)).
 .PP
-Eric Raymond incorporated parts of \fImytinfo\fP into ncurses
+Eric Raymond incorporated parts of \fImytinfo\fP into \fI\%ncurses\fP
 to implement the termcap-to-terminfo source conversion,
 and extended that to begin development of
 the corresponding terminfo-to-termcap source conversion,
@@ -580,7 +582,7 @@ to support user-defined capabilities.
 .PP
 In 2010, Roy Marples provided a \fBtic\fP program
 and terminfo library for NetBSD.
-That implementation adapts several features from ncurses,
+That implementation adapts several features from \fI\%ncurses\fP,
 including \fB@TIC@\fP's \fB\-x\fP option.
 .PP
 The \fB\-c\fP option tells \fB@TIC@\fP to check for problems in the
@@ -589,18 +591,20 @@ Continued development provides additional checks:
 .bP
 \fIpcurses\fP had 8 warnings
 .bP
-ncurses in 1996 had 16 warnings
+\fI\%ncurses\fP in 1996 had 16 warnings
 .bP
 Solaris (SVr4) curses has 28 warnings
 .bP
 NetBSD tic in 2019 has 19 warnings.
 .bP
-ncurses in 2019 has 96 warnings
+\fI\%ncurses\fP in 2019 has 96 warnings
 .PP
-The checking done in ncurses' \fB@TIC@\fP helps with the conversion to
-termcap, as well as pointing out errors and inconsistencies.
+The checking done in \fI\%ncurses\fP' \fB@TIC@\fP helps with the
+conversion to termcap,
+as well as pointing out errors and inconsistencies.
 It is also used to ensure consistency with the user-defined capabilities.
-There are 527 distinct capabilities in ncurses' terminal database;
+There are 527 distinct capabilities in \fI\%ncurses\fP' terminal
+database;
 128 of those are user-defined.
 .SH AUTHORS
 Eric S. Raymond <esr@snark.thyrsus.com>

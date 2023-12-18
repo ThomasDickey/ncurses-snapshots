@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_trace.3x,v 1.40 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_trace.3x,v 1.41 2023/12/16 20:50:14 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_trace 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_trace 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_trace 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_trace 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 
@@ -76,8 +76,8 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       The <EM>curses</EM> <EM>trace</EM> routines are used for debugging the ncurses libraries,
-       as  well  as  applications  which  use  the  ncurses  libraries.   Some
+       The <EM>curses</EM> <EM>trace</EM> routines are used for debugging the <EM>ncurses</EM> libraries,
+       as  well  as  applications  which  use  the  <EM>ncurses</EM>  libraries.   Some
        limitations apply:
 
        <STRONG>o</STRONG>   Aside from <STRONG>curses_trace</STRONG>, the other functions are normally available
@@ -113,7 +113,7 @@
            parameter  updates  the  trace mask, and returns the previous trace
            mask.
 
-           When the trace mask is nonzero, ncurses creates the file "trace" in
+           When the trace mask is nonzero, <EM>ncurses</EM> creates the file "trace" in
            the  current  directory for output.  If the file already exists, no
            tracing is done.
 
@@ -184,7 +184,7 @@
 
 
 </PRE><H3><a name="h3-Initialization">Initialization</a></H3><PRE>
-       These  functions  check  the <STRONG>NCURSES_TRACE</STRONG> environment variable, to set
+       These  functions  check  the <EM>NCURSES</EM><STRONG>_</STRONG><EM>TRACE</EM> environment variable, to set
        the tracing feature as if <STRONG>curses_trace</STRONG> was called:
 
            filter,  initscr,  new_prescr,  newterm,   nofilter,   restartterm,
@@ -200,14 +200,14 @@
 
        Because  the  command-line  utilities may call initialization functions
        such  as  <STRONG>setupterm</STRONG>,  <STRONG>tgetent</STRONG>  or  <STRONG>use_extended_names</STRONG>,  some  of  their
-       debugging output may be directed to the <EM>trace</EM> file if the <STRONG>NCURSES_TRACE</STRONG>
+       debugging output may be directed to the <EM>trace</EM> file if the <EM>NCURSES</EM><STRONG>_</STRONG><EM>TRACE</EM>
        environment variable is set:
 
        <STRONG>o</STRONG>   messages produced in the utility are written to the standard error.
 
        <STRONG>o</STRONG>   messages produced by the underlying library are written to <EM>trace</EM>.
 
-       If ncurses is built without tracing, none of the latter  are  produced,
+       If <EM>ncurses</EM> is built without tracing, none of the latter  are  produced,
        and fewer diagnostics are provided by the command-line utilities.
 
 
@@ -219,7 +219,7 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        These functions are not part of the XSI interface.  Some  other  curses
        implementations  are  known  to have similar features, but they are not
-       compatible with ncurses:
+       compatible with <EM>ncurses</EM>:
 
        <STRONG>o</STRONG>   SVr4 provided <STRONG>traceon</STRONG> and <STRONG>traceoff</STRONG>, to  control  whether  debugging
            information  was  written to the "trace" file.  While the functions
@@ -233,19 +233,19 @@
            a debug-library is built.
 
            PDCurses  has  a  short description of these functions, with a note
-           that they are not present in X/Open Curses, ncurses or NetBSD.   It
+           that they are not present in X/Open Curses, <EM>ncurses</EM> or NetBSD.   It
            does  not  mention  SVr4,  but the functions' inclusion in a header
            file section labeled "Quasi-standard" hints at the origin.
 
        <STRONG>o</STRONG>   NetBSD does not provide functions  for  enabling/disabling  traces.
-           It     uses    environment    variables    <STRONG>CURSES_TRACE_MASK</STRONG>    and
-           <STRONG>CURSES_TRACE_FILE</STRONG> to  determine  what  is  traced,  and  where  the
+           It     uses    environment    variables    <EM>CURSES</EM><STRONG>_</STRONG><EM>TRACE</EM><STRONG>_</STRONG><EM>MASK</EM>    and
+           <EM>CURSES</EM><STRONG>_</STRONG><EM>TRACE</EM><STRONG>_</STRONG><EM>FILE</EM> to  determine  what  is  traced,  and  where  the
            results  are  written.  This is available only when a debug-library
            is built.
 
            The NetBSD tracing feature is undocumented.
 
-       A few ncurses functions are not  provided  when  symbol  versioning  is
+       A few <EM>ncurses</EM> functions are not  provided  when  symbol  versioning  is
        used:
 
            _nc_tracebits, _tracedump, _tracemouse
@@ -259,7 +259,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

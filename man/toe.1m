@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.58 2023/12/02 20:49:04 tom Exp $
-.TH @TOE@ 1M 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.59 2023/12/16 21:01:59 tom Exp $
+.TH @TOE@ 1M 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -71,9 +71,9 @@ list table of entries of \fIterminfo\fR terminal types
 \fB\%@TOE@\fP reports to the standard output stream the (primary) names
 and descriptions of the terminal types available to the \fIterminfo\fP
 library.
-Each \fIdirectory\fP operand is scanned;
+Each \fIdirectory\fP is scanned;
 if none are given,
-\fB\%@TOE@\fP scans the the default \fIterminfo\fP directory.
+\fB\%@TOE@\fP scans the default \fIterminfo\fP directory.
 .SH OPTIONS
 The \fB\-h\fP option can be helpful to observe where \fB\%@TOE@\fP is
 looking for terminal descriptions.
@@ -132,11 +132,11 @@ showing \fB\%@TOE@\fP's progress.
 .IP
 The optional parameter \fIn\fP is an integer between 1 and 10 inclusive,
 interpreted as for \fB\%@TIC@\fP(1M).
-If \fIncurses\fP is built without tracing support,
+If \fI\%ncurses\fP is built without tracing support,
 \fIn\fP is ignored.
 .TP
 \fB\-V\fP
-reports the version of \fIncurses\fP associated
+reports the version of \fI\%ncurses\fP associated
 with this program and exits with a successful status.
 .SH FILES
 .TP
@@ -147,7 +147,7 @@ compiled terminal description database
 There is no applicable X/Open or POSIX standard for it.
 .PP
 It replaces a \fB\-T\fP option that was briefly supported by
-the \fIncurses\fP \fB\%infocmp\fP utility in 1995.
+the \fI\%ncurses\fP \fB\%infocmp\fP utility in 1995.
 .PP
 The \fB\-a\fP and \fB\-s\fP options were added in 2006 and 2011,
 respectively.

@@ -32,7 +32,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.55 2023/11/25 19:52:56 tom Exp @
+  * @Id: terminfo.head,v 1.57 2023/12/18 01:15:58 tom Exp @
   * Head of terminfo man page ends here
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
@@ -62,7 +62,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.137 2023/12/03 00:17:23 tom Exp @
+  * @Id: terminfo.tail,v 1.139 2023/12/17 22:56:21 tom Exp @
   *.in -2
   *.in +2
   *.in -2
@@ -73,12 +73,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2023-11-25 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2023-12-17 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2023-11-25 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2023-12-17 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -105,7 +105,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <STRONG>ncurses</STRONG> version 6.4 (patch 20231202).
+       This manual describes <EM>ncurses</EM> version 6.4 (patch 20231217).
 
 
 </PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
@@ -1142,14 +1142,14 @@
        which are awkward or impossible to represent by reusing the  predefined
        capabilities.
 
-       <STRONG>ncurses</STRONG>    addresses   this   limitation   by   allowing   user-defined
+       <EM>ncurses</EM>    addresses   this   limitation   by   allowing   user-defined
        capabilities.  The <STRONG>tic</STRONG> and <STRONG>infocmp</STRONG> programs provide the <STRONG>-x</STRONG>  option  for
        this purpose.  When <STRONG>-x</STRONG> is set, <STRONG>tic</STRONG> treats unknown capabilities as user-
        defined.  That is, if <STRONG>tic</STRONG> encounters a capability name  which  it  does
        not  recognize, it infers its type (boolean, number or string) from the
        syntax and makes an extended table  entry  for  that  capability.   The
        <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>  function  makes  this information conditionally
-       available to applications.   The  ncurses  library  provides  the  data
+       available to applications.   The  <EM>ncurses</EM>  library  provides  the  data
        leaving most of the behavior to applications:
 
        <STRONG>o</STRONG>   User-defined  capability  strings  whose  name  begins with "k" are
@@ -1171,7 +1171,7 @@
        numbered keys and the handful of special named keys) is best done using
        the longer names available using terminfo.
 
-       The ncurses library uses a few of these user-defined  capabilities,  as
+       The <EM>ncurses</EM> library uses a few of these user-defined  capabilities,  as
        described  in <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>.  Other user-defined capabilities (including
        function keys) are described in the terminal database, in  the  section
        on <EM>NCURSES</EM> <EM>USER-DEFINABLE</EM> <EM>CAPABILITIES</EM>
@@ -1247,7 +1247,7 @@
 
        <STRONG>o</STRONG>   Both <STRONG>\E</STRONG> and <STRONG>\e</STRONG> map to an ESCAPE character,
 
-       <STRONG>o</STRONG>   <STRONG>^</STRONG><EM>x</I<STRONG>x</STRONG> maps to a control-<EM>x</EM> for any appropriate <EM>x</EM>, and
+       <STRONG>o</STRONG>   <STRONG>^</STRONG><STRONG><EM>x</EM></STRONG> maps to a control-<EM>x</EM> for any appropriate <EM>x</EM>, and
 
        <STRONG>o</STRONG>   the sequences
 
@@ -1315,26 +1315,26 @@
 
 
 </PRE><H3><a name="h3-Fetching-Compiled-Descriptions">Fetching Compiled Descriptions</a></H3><PRE>
-       Terminal  descriptions  in  <STRONG>ncurses</STRONG>  are  stored in terminal databases.
+       Terminal  descriptions  in  <EM>ncurses</EM>  are  stored in terminal databases.
        These databases, which are found by their pathname, may  be  configured
        either as directory trees or hashed databases (see <STRONG><A HREF="term.5.html">term(5)</A></STRONG>),
 
        The  library  uses  a  compiled-in  list  of  pathnames,  which  can be
        overridden  by  environment  variables.   Before  starting  to  search,
-       <STRONG>ncurses</STRONG>  checks  the  search list, eliminating duplicates and pathnames
-       where no terminal database is found.  The  <STRONG>ncurses</STRONG>  library  reads  the
+       <EM>ncurses</EM>  checks  the  search list, eliminating duplicates and pathnames
+       where no terminal database is found.  The  <EM>ncurses</EM>  library  reads  the
        first description which passes its consistency checks.
 
        <STRONG>o</STRONG>   The  environment variable <STRONG>TERMINFO</STRONG> is checked first, for a terminal
            database containing the terminal description.
 
-       <STRONG>o</STRONG>   Next, <STRONG>ncurses</STRONG> looks in <EM>$HOME/.terminfo</EM> for a compiled description.
+       <STRONG>o</STRONG>   Next, <EM>ncurses</EM> looks in <EM>$HOME/.terminfo</EM> for a compiled description.
 
            This is an optional feature which may be omitted entirely from  the
            library,  or  limited  to  prevent  accidental  use  by  privileged
            applications.
 
-       <STRONG>o</STRONG>   Next, if the environment variable  <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>  is  set,  <STRONG>ncurses</STRONG>
+       <STRONG>o</STRONG>   Next, if the environment variable  <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>  is  set,  <EM>ncurses</EM>
            interprets  the  contents  of  that  variable  as  a list of colon-
            separated pathnames of terminal databases to be searched.
 
@@ -1342,7 +1342,7 @@
            colon,  or  contains  adjacent colons) is interpreted as the system
            location <EM>/usr/share/terminfo</EM>.
 
-       <STRONG>o</STRONG>   Finally, <STRONG>ncurses</STRONG> searches these compiled-in locations:
+       <STRONG>o</STRONG>   Finally, <EM>ncurses</EM> searches these compiled-in locations:
 
            <STRONG>o</STRONG>   a list of directories (/usr/share/terminfo), and
 
@@ -1350,14 +1350,14 @@
 
        The <STRONG>TERMINFO</STRONG> variable can contain a terminal description instead of the
        pathname  of  a terminal database.  If this variable begins with "hex:"
-       or "b64:" then <STRONG>ncurses</STRONG> reads a terminal description  from  hexadecimal-
+       or "b64:" then <EM>ncurses</EM> reads a terminal description  from  hexadecimal-
        or  base64-encoded  data,  and  if  that  description  matches the name
        sought, will use that.  This encoded data can be  set  using  the  "-Q"
        option of <STRONG>tic</STRONG> or <STRONG>infocmp</STRONG>.
 
-       The  preceding addresses the usual configuration of <STRONG>ncurses</STRONG>, which uses
+       The  preceding addresses the usual configuration of <EM>ncurses</EM>, which uses
        terminal descriptions prepared in <EM>terminfo</EM> format.   While  <EM>termcap</EM>  is
-       less  expressive,  <STRONG>ncurses</STRONG>  can  also  be  configured  to  read <EM>termcap</EM>
+       less  expressive,  <EM>ncurses</EM>  can  also  be  configured  to  read <EM>termcap</EM>
        descriptions.   In  that  configuration,  it  checks  the  <EM>TERMCAP</EM>  and
        <EM>TERMPATH</EM>  variables  (for  content and search path, respectively) after
        the system terminal database.
@@ -1515,16 +1515,16 @@
                 <EM>static</EM>  variables.  They are the same.  Like SVr4 curses, XPG4
                 curses does not initialize these explicitly.
 
-            <STRONG>o</STRONG>   Before version 6.3, ncurses stores  both  <EM>dynamic</EM>  and  <EM>static</EM>
+            <STRONG>o</STRONG>   Before version 6.3, <EM>ncurses</EM> stores  both  <EM>dynamic</EM>  and  <EM>static</EM>
                 variables in persistent storage, initialized to zeros.
 
-            <STRONG>o</STRONG>   Beginning  with version 6.3, ncurses stores <EM>static</EM> and <EM>dynamic</EM>
+            <STRONG>o</STRONG>   Beginning  with version 6.3, <EM>ncurses</EM> stores <EM>static</EM> and <EM>dynamic</EM>
                 variables in the same manner as SVr4.
 
-                <STRONG>o</STRONG>   Unlike  other  implementations,  ncurses   zeros   dynamic
+                <STRONG>o</STRONG>   Unlike  other  implementations,  <EM>ncurses</EM>   zeros   dynamic
                     variables before the first <STRONG>%g</STRONG> or <STRONG>%P</STRONG> operator.
 
-                <STRONG>o</STRONG>   Like  SVr2,  the  scope of dynamic variables in ncurses is
+                <STRONG>o</STRONG>   Like  SVr2,  the  scope of dynamic variables in <EM>ncurses</EM> is
                     within the current call to <STRONG>tparm</STRONG>.  Use static variables if
                     persistent storage is needed.
 
@@ -1755,7 +1755,7 @@
        available.)
 
 
-</PRE><H3><a name="h3-Insert_delete-line-and-vertical-motions">Insert/delete line and vertical motions</a></H3><PRE>
+</PRE><H3><a name="h3-Insert_Delete-Line-and-Vertical-Motions">Insert/Delete Line and Vertical Motions</a></H3><PRE>
        If  the  terminal  can  open a new blank line before the line where the
        cursor is, this should be given as <STRONG>il1</STRONG>; this  is  done  only  from  the
        first  position  of  a  line.  The cursor must then appear on the newly
@@ -2231,7 +2231,7 @@
        The  boolean  capability  <STRONG>eslok</STRONG>  specifies that escape sequences, tabs,
        etc., work ordinarily in the status line.
 
-       The <STRONG>ncurses</STRONG> implementation does not yet use any of these  capabilities.
+       The <EM>ncurses</EM> implementation does not yet use any of these  capabilities.
        They are documented here in case they ever become important.
 
 
@@ -2314,19 +2314,19 @@
 
        <STRONG>o</STRONG>   Tektronix-like terminals have a predefined set of <EM>N</EM> colors (where <EM>N</EM>
            is usually 8), and can set character-cell foreground and background
-           characters independently, mixing them into <EM>N</EM> * <EM>N</EM> color-pairs.
+           characters independently, mixing them into <EM>N</EM> * <EM>N</EM> color pairs.
 
        <STRONG>o</STRONG>   On  HP-like  terminals,  the  user  must  set  each  color  pair up
            separately  (foreground  and  background  are   not   independently
-           settable).   Up  to  <EM>M</EM> color-pairs may be set up from 2*<EM>M</EM> different
+           settable).   Up  to  <EM>M</EM> color pairs may be set up from 2*<EM>M</EM> different
            colors.  ANSI-compatible terminals are Tektronix-like.
 
        Some basic color capabilities are independent of the color method.  The
        numeric  capabilities  <STRONG>colors</STRONG>  and <STRONG>pairs</STRONG> specify the maximum numbers of
-       colors and color-pairs that can be displayed  simultaneously.   The  <STRONG>op</STRONG>
+       colors and color pairs that can be displayed  simultaneously.   The  <STRONG>op</STRONG>
        (original pair) string resets foreground and background colors to their
        default values for the terminal.  The <STRONG>oc</STRONG> string resets  all  colors  or
-       color-pairs  to  their default values for the terminal.  Some terminals
+       color  pairs  to their default values for the terminal.  Some terminals
        (including many PC terminal emulators)  erase  screen  areas  with  the
        current  background  color rather than the power-up default background;
        these should have the boolean capability <STRONG>bce</STRONG>.
@@ -2353,7 +2353,7 @@
        The  <STRONG>setaf</STRONG>/<STRONG>setab</STRONG>  and  <STRONG>setf</STRONG>/<STRONG>setb</STRONG>  capabilities  take  a  single numeric
        argument each.  Argument values 0-7 of <STRONG>setaf</STRONG>/<STRONG>setab</STRONG> are portably defined
        as  follows (the middle column is the symbolic #define available in the
-       header for the <STRONG>curses</STRONG> or <STRONG>ncurses</STRONG> libraries).  The terminal hardware  is
+       header for the <STRONG>curses</STRONG> or <EM>ncurses</EM> libraries).  The terminal hardware  is
        free  to  map  these  as  it  likes, but the RGB values indicate normal
        locations in color space.
 
@@ -2385,7 +2385,7 @@
        It  is  important  to  not  confuse the two sets of color capabilities;
        otherwise red/blue will be interchanged on the display.
 
-       On an HP-like terminal, use <STRONG>scp</STRONG> with a color-pair number  parameter  to
+       On an HP-like terminal, use <STRONG>scp</STRONG> with a color pair number  parameter  to
        set which color pair is current.
 
        Some terminals allow the <EM>color</EM> <EM>values</EM> to be modified:
@@ -2399,14 +2399,14 @@
            Saturation) indices.  The ranges are terminal-dependent.
 
        <STRONG>o</STRONG>   On  an HP-like terminal, <STRONG>initp</STRONG> may give a capability for changing a
-           color-pair value.  It will  take  seven  parameters;  a  color-pair
+           color pair value.  It will take  seven  parameters;  a  color  pair
            number  (0  to  <STRONG>max_pairs</STRONG>  -  1),  and two triples describing first
            background and then foreground colors.  These  parameters  must  be
            (Red,  Green,  Blue)  or  (Hue, Lightness, Saturation) depending on
            <STRONG>hls</STRONG>.
 
        On some color terminals,  colors  collide  with  highlights.   You  can
-       register  these collisions with the <STRONG>ncv</STRONG> capability.  This is a bit-mask
+       register  these collisions with the <STRONG>ncv</STRONG> capability.  This is a bit mask
        of  attributes  not  to  be  used  when  colors   are   enabled.    The
        correspondence with the attributes understood by <STRONG>curses</STRONG> is as follows:
 
@@ -2434,7 +2434,7 @@
        with the foreground color blue and is  not  available  in  color  mode.
        These should have an <STRONG>ncv</STRONG> capability of 2.
 
-       SVr4  curses does nothing with <STRONG>ncv</STRONG>, ncurses recognizes it and optimizes
+       SVr4  curses does nothing with <STRONG>ncv</STRONG>, <EM>ncurses</EM> recognizes it and optimizes
        the output in favor of colors.
 
 
@@ -2442,9 +2442,9 @@
        If the terminal requires other than a null (zero) character as  a  pad,
        then  this  can  be  given as pad.  Only the first character of the pad
        string is used.  If the terminal does not have a pad character, specify
-       npc.   Note that ncurses implements the termcap-compatible <STRONG>PC</STRONG> variable;
+       npc.   Note that <EM>ncurses</EM> implements the termcap-compatible <STRONG>PC</STRONG> variable;
        though the application may set this value to  something  other  than  a
-       null,  ncurses will test <STRONG>npc</STRONG> first and use napms if the terminal has no
+       null,  <EM>ncurses</EM> will test <STRONG>npc</STRONG> first and use napms if the terminal has no
        pad character.
 
        If the terminal can move up or down half a line, this can be  indicated
@@ -2501,7 +2501,7 @@
        while an <STRONG>mc5p</STRONG> is in effect.
 
 
-</PRE><H3><a name="h3-Glitches-and-Braindamage">Glitches and Braindamage</a></H3><PRE>
+</PRE><H3><a name="h3-Glitches-and-Brain-Damage">Glitches and Brain Damage</a></H3><PRE>
        Hazeltine  terminals, which do not allow "~" characters to be displayed
        should indicate <STRONG>hz</STRONG>.
 
@@ -2517,7 +2517,7 @@
        teleray_glitch.   This  glitch  is  also  taken  to mean that it is not
        possible to position the cursor on top of a  "magic  cookie",  that  to
        erase  standout  mode  it is instead necessary to use delete and insert
-       line.  The ncurses implementation ignores this glitch.
+       line.  The <EM>ncurses</EM> implementation ignores this glitch.
 
        The Beehive Superbee, which is unable to correctly transmit the  escape
        or  control/C  characters,  has <STRONG>xsb</STRONG>, indicating that the f1 key is used
@@ -2602,10 +2602,75 @@
        terminal types and users whose <EM>TERM</EM> variable does not  have  a  termcap
        entry.
 
-       When  in  -C (translate to termcap) mode, the <STRONG>ncurses</STRONG> implementation of
+       When  in  -C (translate to termcap) mode, the <EM>ncurses</EM> implementation of
        <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG> issues warning messages when the pre-tc  length  of  a  termcap
        translation  is  too  long.  The -c (check) option also checks resolved
        (after tc expansion) lengths.
+
+
+</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
+       <EM>/usr/share/terminfo</EM>
+              compiled terminal description database directory
+
+
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
+       Searching   for   terminal   descriptions   in   <EM>$HOME/.terminfo</EM>    and
+       <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> is not supported by older implementations.
+
+       Some  SVr4  <STRONG>curses</STRONG>  implementations,  and  all previous to SVr4, do not
+       interpret the %A and %O operators in parameter strings.
+
+       SVr4/XPG4 do not specify whether <STRONG>msgr</STRONG> licenses  movement  while  in  an
+       alternate-character-set  mode  (such modes may, among other things, map
+       CR and NL to characters  that  do  not  trigger  local  motions).   The
+       <EM>ncurses</EM>  implementation  ignores  <STRONG>msgr</STRONG> in <STRONG>ALTCHARSET</STRONG> mode.  This raises
+       the  possibility  that  an  XPG4  implementation  making  the  opposite
+       interpretation  may need terminfo entries made for <EM>ncurses</EM> to have <STRONG>msgr</STRONG>
+       turned off.
+
+       The <EM>ncurses</EM> library handles insert-character and insert-character modes
+       in  a  slightly  non-standard way to get better update efficiency.  See
+       the <STRONG>Insert/Delete</STRONG> <STRONG>Character</STRONG> subsection above.
+
+       The parameter substitutions for <STRONG>set_clock</STRONG>  and  <STRONG>display_clock</STRONG>  are  not
+       documented  in  SVr4 or the XSI Curses standard.  They are deduced from
+       the documentation for the AT&amp;T 505 terminal.
+
+       Be careful assigning the <STRONG>kmous</STRONG> capability.  The <EM>ncurses</EM>  library  wants
+       to  interpret  it as <STRONG>KEY_MOUSE</STRONG>, for use by terminals and emulators like
+       xterm that can return mouse-tracking information in the  keyboard-input
+       stream.
+
+       X/Open  Curses  does  not  mention italics.  Portable applications must
+       assume that  numeric  capabilities  are  signed  16-bit  values.   This
+       includes  the  <EM>no</EM><STRONG>_</STRONG><EM>color</EM><STRONG>_</STRONG><EM>video</EM>  (<STRONG>ncv</STRONG>)  capability.  The 32768 mask value
+       used for italics with <STRONG>ncv</STRONG> can be confused with an absent  or  cancelled
+       <STRONG>ncv</STRONG>.   If  italics  should work with colors, then the <STRONG>ncv</STRONG> value must be
+       specified, even if it is zero.
+
+       Different commercial ports of <EM>terminfo</EM>  and  <EM>curses</EM>  support  different
+       subsets  of  XSI Curses and (in some cases) different extensions.  Here
+       is a summary, accurate as of October 1995, after which  the  commercial
+       Unix market contracted and lost diversity.
+
+       <STRONG>o</STRONG>   SVr4, Solaris, and <EM>ncurses</EM> support all SVr4 capabilities.
+
+       <STRONG>o</STRONG>   IRIX  supports  the  SVr4  set  and  adds one undocumented extended
+           string capability (<STRONG>set_pglen</STRONG>).
+
+       <STRONG>o</STRONG>   SVr1  and  Ultrix  support  a   restricted   subset   of   <EM>terminfo</EM>
+           capabilities.   The  Booleans  end with <STRONG>xon_xoff</STRONG>; the numerics with
+           <STRONG>width_status_line</STRONG>; and the strings with <STRONG>prtr_non</STRONG>.
+
+       <STRONG>o</STRONG>   HP/UX  supports  the  SVr1  subset,  plus  the  SVr[234]   numerics
+           <STRONG>num_labels</STRONG>,   <STRONG>label_height</STRONG>,  <STRONG>label_width</STRONG>,  plus  function  keys  11
+           through 63, plus <STRONG>plab_norm</STRONG>, <STRONG>label_on</STRONG>, and <STRONG>label_off</STRONG>, plus a  number
+           of incompatible string table extensions.
+
+       <STRONG>o</STRONG>   AIX  supports  the  SVr1  subset, plus function keys 11 through 63,
+           plus a number of incompatible string table extensions.
+
+       <STRONG>o</STRONG>   OSF/1 supports both the SVr4 set and the AIX extensions.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -2615,71 +2680,6 @@
        Unices  after  SVr1,  adding extension capabilities to the string table
        that (in the binary format) collide with subsequent System  V  and  XSI
        Curses extensions.
-
-
-</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       Searching    for   terminal   descriptions   in   <EM>$HOME/.terminfo</EM>   and
-       <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> is not supported by older implementations.
-
-       Some SVr4 <STRONG>curses</STRONG> implementations, and all  previous  to  SVr4,  do  not
-       interpret the %A and %O operators in parameter strings.
-
-       SVr4/XPG4  do  not  specify  whether <STRONG>msgr</STRONG> licenses movement while in an
-       alternate-character-set mode (such modes may, among other  things,  map
-       CR  and  NL  to  characters  that  do  not trigger local motions).  The
-       <STRONG>ncurses</STRONG> implementation ignores <STRONG>msgr</STRONG> in <STRONG>ALTCHARSET</STRONG>  mode.   This  raises
-       the  possibility  that  an  XPG4  implementation  making  the  opposite
-       interpretation may need terminfo entries made for <STRONG>ncurses</STRONG> to have  <STRONG>msgr</STRONG>
-       turned off.
-
-       The <STRONG>ncurses</STRONG> library handles insert-character and insert-character modes
-       in a slightly non-standard way to get better  update  efficiency.   See
-       the <STRONG>Insert/Delete</STRONG> <STRONG>Character</STRONG> subsection above.
-
-       The  parameter  substitutions  for  <STRONG>set_clock</STRONG> and <STRONG>display_clock</STRONG> are not
-       documented in SVr4 or the XSI Curses standard.  They are  deduced  from
-       the documentation for the AT&amp;T 505 terminal.
-
-       Be  careful  assigning the <STRONG>kmous</STRONG> capability.  The <STRONG>ncurses</STRONG> library wants
-       to interpret it as <STRONG>KEY_MOUSE</STRONG>, for use by terminals and  emulators  like
-       xterm  that can return mouse-tracking information in the keyboard-input
-       stream.
-
-       X/Open Curses does not mention  italics.   Portable  applications  must
-       assume  that  numeric  capabilities  are  signed  16-bit  values.  This
-       includes the <EM>no</EM><STRONG>_</STRONG><EM>color</EM><STRONG>_</STRONG><EM>video</EM> (<STRONG>ncv</STRONG>) capability.   The  32768  mask  value
-       used  for  italics with <STRONG>ncv</STRONG> can be confused with an absent or cancelled
-       <STRONG>ncv</STRONG>.  If italics should work with colors, then the <STRONG>ncv</STRONG>  value  must  be
-       specified, even if it is zero.
-
-       Different  commercial  ports  of  <EM>terminfo</EM> and <EM>curses</EM> support different
-       subsets of XSI Curses and (in some cases) different  extensions.   Here
-       is  a  summary, accurate as of October 1995, after which the commercial
-       Unix market contracted and lost diversity.
-
-       <STRONG>o</STRONG>   SVr4, Solaris, and <EM>ncurses</EM> support all SVr4 capabilities.
-
-       <STRONG>o</STRONG>   IRIX supports the SVr4  set  and  adds  one  undocumented  extended
-           string capability (<STRONG>set_pglen</STRONG>).
-
-       <STRONG>o</STRONG>   SVr1   and   Ultrix   support   a  restricted  subset  of  <EM>terminfo</EM>
-           capabilities.  The Booleans end with <STRONG>xon_xoff</STRONG>;  the  numerics  with
-           <STRONG>width_status_line</STRONG>; and the strings with <STRONG>prtr_non</STRONG>.
-
-       <STRONG>o</STRONG>   HP/UX   supports  the  SVr1  subset,  plus  the  SVr[234]  numerics
-           <STRONG>num_labels</STRONG>,  <STRONG>label_height</STRONG>,  <STRONG>label_width</STRONG>,  plus  function  keys   11
-           through  63, plus <STRONG>plab_norm</STRONG>, <STRONG>label_on</STRONG>, and <STRONG>label_off</STRONG>, plus a number
-           of incompatible string table extensions.
-
-       <STRONG>o</STRONG>   AIX supports the SVr1 subset, plus function  keys  11  through  63,
-           plus a number of incompatible string table extensions.
-
-       <STRONG>o</STRONG>   OSF/1 supports both the SVr4 set and the AIX extensions.
-
-
-</PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
-       <EM>/usr/share/terminfo</EM>
-              compiled terminal description database directory
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
@@ -2694,7 +2694,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2023-12-17                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -2716,7 +2716,7 @@ ncurses 6.4                       2023-11-25                       <STRONG><A HR
 <li><a href="#h3-Cursor-Motions">Cursor Motions</a></li>
 <li><a href="#h3-Margins">Margins</a></li>
 <li><a href="#h3-Area-Clears">Area Clears</a></li>
-<li><a href="#h3-Insert_delete-line-and-vertical-motions">Insert/delete line and vertical motions</a></li>
+<li><a href="#h3-Insert_Delete-Line-and-Vertical-Motions">Insert/Delete Line and Vertical Motions</a></li>
 <li><a href="#h3-Insert_Delete-Character">Insert/Delete Character</a></li>
 <li><a href="#h3-Highlighting_-Underlining_-and-Visible-Bells">Highlighting, Underlining, and Visible Bells</a></li>
 <li><a href="#h3-Keypad-and-Function-Keys">Keypad and Function Keys</a></li>
@@ -2726,13 +2726,13 @@ ncurses 6.4                       2023-11-25                       <STRONG><A HR
 <li><a href="#h3-Line-Graphics">Line Graphics</a></li>
 <li><a href="#h3-Color-Handling">Color Handling</a></li>
 <li><a href="#h3-Miscellaneous">Miscellaneous</a></li>
-<li><a href="#h3-Glitches-and-Braindamage">Glitches and Braindamage</a></li>
+<li><a href="#h3-Glitches-and-Brain-Damage">Glitches and Brain Damage</a></li>
 <li><a href="#h3-Pitfalls-of-Long-Entries">Pitfalls of Long Entries</a></li>
 </ul>
 </li>
-<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
-<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>

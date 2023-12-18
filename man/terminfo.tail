@@ -27,9 +27,9 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.137 2023/12/03 00:17:23 tom Exp $
+.\" $Id: terminfo.tail,v 1.139 2023/12/17 22:56:21 tom Exp $
 .ps +1
-.SS User-Defined Capabilities
+.SS "User-Defined Capabilities"
 .
 The preceding section listed the \fIpredefined\fP capabilities.
 They deal with some special features for terminals no longer
@@ -38,7 +38,8 @@ Occasionally there are special features of newer terminals which
 are awkward or impossible to represent by reusing the predefined
 capabilities.
 .PP
-\fBncurses\fP addresses this limitation by allowing user-defined capabilities.
+\fI\%ncurses\fP addresses this limitation by allowing user-defined
+capabilities.
 The \fB@TIC@\fP and \fB@INFOCMP@\fP programs provide
 the \fB\-x\fP option for this purpose.
 When \fB\-x\fP is set,
@@ -49,8 +50,8 @@ it infers its type (boolean, number or string) from the syntax
 and makes an extended table entry for that capability.
 The \fBuse_extended_names\fP(3X) function makes this information
 conditionally available to applications.
-The ncurses library provides the data leaving most of the behavior
-to applications:
+The \fI\%ncurses\fP library provides the data leaving most of the
+behavior to applications:
 .bP
 User-defined capability strings whose name begins
 with \*(``k\*('' are treated as function keys.
@@ -73,13 +74,14 @@ In particular, providing extended sets of function keys (past the 60
 numbered keys and the handful of special named keys) is best done using
 the longer names available using terminfo.
 .PP
-The ncurses library uses a few of these user-defined capabilities,
+The \fI\%ncurses\fP library uses a few of these user-defined
+capabilities,
 as described in \fBuser_caps\fR(5).
 Other user-defined capabilities (including function keys) are
 described in the terminal database, in the section on
 .I "NCURSES USER-DEFINABLE CAPABILITIES"
 .
-.SS A Sample Entry
+.SS "A Sample Entry"
 .
 The following entry, describing an ANSI-standard terminal, is representative
 of what a \fBterminfo\fP entry for a modern terminal typically looks like.
@@ -133,7 +135,7 @@ or the size of particular delays, and
 string
 capabilities, which give a sequence which can be used to perform particular
 terminal operations.
-.SS Types of Capabilities
+.SS "Types of Capabilities"
 All capabilities have names.
 For instance, the fact that
 ANSI-standard terminals have
@@ -243,8 +245,9 @@ For example, see the second
 in the example above.
 .br
 .ne 5
-.SS Fetching Compiled Descriptions
-Terminal descriptions in \fBncurses\fP are stored in terminal databases.
+.SS "Fetching Compiled Descriptions"
+Terminal descriptions in \fI\%ncurses\fP are stored in terminal
+databases.
 These databases, which are found by their pathname,
 may be configured either as directory trees or hashed databases
 (see \fBterm\fR(5)),
@@ -252,16 +255,16 @@ may be configured either as directory trees or hashed databases
 The library uses a compiled-in list of pathnames,
 which can be overridden by environment variables.
 Before starting to search,
-\fBncurses\fP checks the search list,
+\fI\%ncurses\fP checks the search list,
 eliminating duplicates and pathnames where no terminal database is found.
-The \fBncurses\fP library reads the first description
+The \fI\%ncurses\fP library reads the first description
 which passes its consistency checks.
 .bP
 The environment variable \fBTERMINFO\fR is checked first, for
 a terminal database containing the terminal description.
 .bP
 Next,
-\fBncurses\fP looks in \fI$HOME/.terminfo\fP
+\fI\%ncurses\fP looks in \fI$HOME/.terminfo\fP
 for a compiled description.
 .IP
 This is an optional feature which may be omitted entirely from
@@ -269,14 +272,14 @@ the library, or limited to prevent accidental use by privileged applications.
 .bP
 Next,
 if the environment variable \fI\%TERMINFO_DIRS\fP is set,
-\fBncurses\fP interprets the contents of that variable
+\fI\%ncurses\fP interprets the contents of that variable
 as a list of colon-separated pathnames of terminal databases to be searched.
 .IP
 An empty pathname (i.e., if the variable begins or ends
 with a colon, or contains adjacent colons)
 is interpreted as the system location \fI\*d\fP.
 .bP
-Finally, \fBncurses\fP searches these compiled-in locations:
+Finally, \fI\%ncurses\fP searches these compiled-in locations:
 .RS
 .bP
 a list of directories (@TERMINFO_DIRS@), and
@@ -287,22 +290,23 @@ the system terminfo directory, \fI\*d\fP
 The \fBTERMINFO\fP variable can contain a terminal description instead
 of the pathname of a terminal database.
 If this variable begins with \*(``hex:\*('' or \*(``b64:\*(''
-then \fBncurses\fP reads a terminal description from
+then \fI\%ncurses\fP reads a terminal description from
 hexadecimal- or base64-encoded data,
 and if that description matches the name sought, will use that.
 This encoded data can be set using the \*(``\-Q\*('' option of
 \fB@TIC@\fR or \fB@INFOCMP@\fR.
 .PP
-The preceding addresses the usual configuration of \fBncurses\fP,
+The preceding addresses the usual configuration of \fI\%ncurses\fP,
 which uses terminal descriptions prepared in \fIterminfo\fP format.
 While \fItermcap\fP is less expressive,
-\fBncurses\fP can also be configured to read \fItermcap\fP descriptions.
+\fI\%ncurses\fP can also be configured to read \fItermcap\fP
+descriptions.
 In that configuration,
 it checks the \fI\%TERMCAP\fP and \fI\%TERMPATH\fP variables
 (for content and search path,
 respectively)
 after the system terminal database.
-.SS Preparing Descriptions
+.SS "Preparing Descriptions"
 We now outline how to prepare descriptions of terminals.
 The most effective way to prepare a terminal description is by imitating
 the description of a similar terminal in
@@ -323,7 +327,7 @@ delete 16 or so lines from the middle of the screen, then hit the \*(``u\*(''
 key several times quickly.
 If the terminal messes up, more padding is usually needed.
 A similar test can be used for insert character.
-.SS Basic Capabilities
+.SS "Basic Capabilities"
 The number of columns on each line for the terminal is given by the
 \fBcols\fP numeric capability.
 If the terminal is a \s-1CRT\s0, then the
@@ -450,7 +454,7 @@ while the Lear Siegler \s-1ADM-3\s0 is described as
         ind=\*^J, lines#24,\s+1
 .\".in +2
 .EE
-.SS Parameterized Strings
+.SS "Parameterized Strings"
 Cursor addressing and other strings requiring parameters
 in the terminal are described by a
 parameterized string capability,
@@ -532,18 +536,20 @@ Solaris XPG4 curses does not distinguish between \fIdynamic\fP and
 They are the same.
 Like SVr4 curses, XPG4 curses does not initialize these explicitly.
 .bP
-Before version 6.3, ncurses stores both \fIdynamic\fP and \fIstatic\fP
+Before version 6.3,
+\fI\%ncurses\fP stores both \fIdynamic\fP and \fIstatic\fP
 variables in persistent storage, initialized to zeros.
 .bP
-Beginning with version 6.3, ncurses stores \fIstatic\fP and \fIdynamic\fP
+Beginning with version 6.3,
+\fI\%ncurses\fP stores \fIstatic\fP and \fIdynamic\fP
 variables in the same manner as SVr4.
 .RS
 .bP
-Unlike other implementations, ncurses zeros dynamic variables
+Unlike other implementations, \fI\%ncurses\fP zeros dynamic variables
 before the first \fB%g\fP or \fB%P\fP operator.
 .bP
 Like SVr2,
-the scope of dynamic variables in ncurses
+the scope of dynamic variables in \fI\%ncurses\fP
 is within the current call to
 \fBtparm\fP.
 Use static variables if persistent storage is needed.
@@ -637,7 +643,7 @@ ASCII value for a space (32), adds them (pushing the sum on the stack
 in place of the two previous values) and outputs that value as a character.
 Then the same is done for the second parameter.
 More complex arithmetic is possible using the stack.
-.SS Cursor Motions
+.SS "Cursor Motions"
 If the terminal has a fast way to home the cursor
 (to very upper left corner of screen) then this can be given as
 \fBhome\fP; similarly a fast way of getting to the lower left-hand corner
@@ -814,7 +820,7 @@ When setting margins, the line- and column-values are zero-based.
 The \fBmgc\fP string capability should be defined.
 Applications such as \fBtabs\fP(1) rely upon this to reset all margins.
 .\"
-.SS Area Clears
+.SS "Area Clears"
 If the terminal can clear from the current position to the end of the
 line, leaving the cursor where it is, this should be given as \fBel\fP.
 If the terminal can clear from the beginning of the line to the current
@@ -828,7 +834,7 @@ if a true
 .B ed
 is not available.)
 .\"
-.SS Insert/delete line and vertical motions
+.SS "Insert/Delete Line and Vertical Motions"
 If the terminal can open a new blank line before the line where the cursor
 is, this should be given as \fBil1\fP; this is done only from the first
 position of a line.
@@ -861,7 +867,7 @@ and
 .B rc
 (save and restore cursor) commands may be useful for ensuring that
 your synthesized insert/delete string does not move the cursor.
-(Note that the \fBncurses\fP(3X) library does this synthesis
+(Note that the \fB\%ncurses\fP(3X) library does this synthesis
 automatically, so you need not compose insert/delete strings for
 an entry with \fBcsr\fP).
 .PP
@@ -905,7 +911,7 @@ below, then \fBdb\fP should be given.
 These indicate
 that deleting a line or scrolling may bring non-blank lines up from below
 or that scrolling back with \fBri\fP may bring down non-blank lines.
-.SS Insert/Delete Character
+.SS "Insert/Delete Character"
 There are two basic kinds of intelligent terminals with respect to
 insert/delete character which can be described using
 .I terminfo.
@@ -1182,7 +1188,7 @@ If a character overstriking another leaves both characters on the screen,
 specify the capability \fBos\fP.
 If overstrikes are erasable with a blank,
 then this should be indicated by giving \fBeo\fP.
-.SS Keypad and Function Keys
+.SS "Keypad and Function Keys"
 If the terminal has a keypad that transmits codes when the keys are pressed,
 this information can be given.
 Note that it is not possible to handle
@@ -1289,7 +1295,7 @@ If there are commands to turn the labels on and off,
 give them in \fBsmln\fP and \fBrmln\fP.
 \fBsmln\fP is normally output after one or more pln
 sequences to make sure that the change becomes visible.
-.SS Tabs and Initialization
+.SS "Tabs and Initialization"
 A few capabilities are used only for tabs:
 .bP
 If the terminal has hardware tabs, the command to advance to the next
@@ -1473,7 +1479,7 @@ use the
 \fBhts\fP (\fBset_tab\fP) capabilities directly
 only when the \fBit\fP (\fBinit_tabs\fP) capability
 is set to a value other than \fIeight\fP.
-.SS Delays and Padding
+.SS "Delays and Padding"
 Many older and slower terminals do not support either XON/XOFF or DTR
 handshaking, including hard copy terminals and some very archaic CRTs
 (including, for example, DEC VT100s).
@@ -1501,7 +1507,7 @@ then this can be given as \fBpad\fP.
 Only the first character of the
 .B pad
 string is used.
-.SS Status Lines
+.SS "Status Lines"
 Some terminals have an extra \*(``status line\*('' which is not normally used by
 software (and thus not counted in the terminal's \fBlines\fP capability).
 .PP
@@ -1533,9 +1539,10 @@ A command to erase or blank the status line may be specified as \fBdsl\fP.
 The boolean capability \fBeslok\fP specifies that escape sequences, tabs,
 etc., work ordinarily in the status line.
 .PP
-The \fBncurses\fP implementation does not yet use any of these capabilities.
+The \fI\%ncurses\fP implementation does not yet use any of these
+capabilities.
 They are documented here in case they ever become important.
-.SS Line Graphics
+.SS "Line Graphics"
 Many terminals have alternate character sets useful for forms-drawing.
 Terminfo and \fBcurses\fP have built-in support
 for most of the drawing characters
@@ -1610,7 +1617,7 @@ to a copy of this table for your terminal, giving the character which
 as the corresponding graphic.
 Then read off the VT100/your terminal
 character pairs right to left in sequence; these become the ACSC string.
-.SS Color Handling
+.SS "Color Handling"
 The curses library functions \fBinit_pair\fP and \fBinit_color\fP
 manipulate the \fIcolor pairs\fP and \fIcolor values\fP discussed in this
 section
@@ -1623,21 +1630,21 @@ terminals have a predefined set of \fIN\fP colors
 (where \fIN\fP is usually 8),
 and can set
 character-cell foreground and background characters independently, mixing them
-into \fIN\fP\ *\ \fIN\fP color-pairs.
+into \fIN\fP\ *\ \fIN\fP color pairs.
 .bP
 On HP-like terminals, the user must set each color
 pair up separately (foreground and background are not independently settable).
-Up to \fIM\fP color-pairs may be set up from 2*\fIM\fP different colors.
+Up to \fIM\fP color pairs may be set up from 2*\fIM\fP different colors.
 ANSI-compatible terminals are Tektronix-like.
 .PP
 Some basic color capabilities are independent of the color method.
 The numeric
 capabilities \fBcolors\fP and \fBpairs\fP specify the maximum numbers of colors
-and color-pairs that can be displayed simultaneously.
+and color pairs that can be displayed simultaneously.
 The \fBop\fP (original
 pair) string resets foreground and background colors to their default values
 for the terminal.
-The \fBoc\fP string resets all colors or color-pairs to
+The \fBoc\fP string resets all colors or color pairs to
 their default values for the terminal.
 Some terminals (including many PC
 terminal emulators) erase screen areas with the current background color rather
@@ -1668,7 +1675,7 @@ The \fBsetaf\fP/\fBsetab\fP and \fBsetf\fP/\fBsetb\fP capabilities take a
 single numeric argument each.
 Argument values 0-7 of \fBsetaf\fP/\fBsetab\fP are portably defined as
 follows (the middle column is the symbolic #define available in the header for
-the \fBcurses\fP or \fBncurses\fP libraries).
+the \fBcurses\fP or \fI\%ncurses\fP libraries).
 The terminal hardware is free to
 map these as it likes, but the RGB values indicate normal locations in color
 space.
@@ -1711,7 +1718,7 @@ white	COLOR_WHITE	7	max,	max,	max
 It is important to not confuse the two sets of color capabilities;
 otherwise red/blue will be interchanged on the display.
 .PP
-On an HP-like terminal, use \fBscp\fP with a color-pair number parameter to set
+On an HP-like terminal, use \fBscp\fP with a color pair number parameter to set
 which color pair is current.
 .PP
 Some terminals allow the \fIcolor values\fP to be modified:
@@ -1729,8 +1736,8 @@ The ranges are
 terminal-dependent.
 .bP
 On an HP-like terminal, \fBinitp\fP may give a capability for changing a
-color-pair value.
-It will take seven parameters; a color-pair number (0 to
+color pair value.
+It will take seven parameters; a color pair number (0 to
 \fBmax_pairs\fP \- 1), and two triples describing first background and then
 foreground colors.
 These parameters must be (Red, Green, Blue) or
@@ -1739,7 +1746,7 @@ These parameters must be (Red, Green, Blue) or
 On some color terminals, colors collide with highlights.
 You can register
 these collisions with the \fBncv\fP capability.
-This is a bit-mask of
+This is a bit mask of
 attributes not to be used when colors are enabled.
 The correspondence with the
 attributes understood by \fBcurses\fP is as follows:
@@ -1773,16 +1780,19 @@ foreground color blue and is not available in color mode.
 These should have
 an \fBncv\fP capability of 2.
 .PP
-SVr4 curses does nothing with \fBncv\fP, ncurses recognizes it and optimizes
+SVr4 curses does nothing with \fBncv\fP,
+\fI\%ncurses\fP recognizes it and optimizes
 the output in favor of colors.
 .SS Miscellaneous
 If the terminal requires other than a null (zero) character as a pad, then this
 can be given as pad.
 Only the first character of the pad string is used.
 If the terminal does not have a pad character, specify npc.
-Note that ncurses implements the termcap-compatible \fBPC\fP variable;
+Note that \fI\%ncurses\fP implements the termcap-compatible \fBPC\fP
+variable;
 though the application may set this value to something other than
-a null, ncurses will test \fBnpc\fP first and use napms if the terminal
+a null,
+\fI\%ncurses\fP will test \fBnpc\fP first and use napms if the terminal
 has no pad character.
 .PP
 If the terminal can move up or down half a line,
@@ -1882,7 +1892,7 @@ All text, including
 is transparently passed to the printer while an
 .B mc5p
 is in effect.
-.SS Glitches and Braindamage
+.SS "Glitches and Brain Damage"
 Hazeltine terminals,
 which do not allow \*(``\*~\*('' characters to be displayed should
 indicate \fBhz\fP.
@@ -1905,7 +1915,7 @@ This glitch is also taken to mean that it is not possible to position
 the cursor on top of a \*(``magic cookie\*('',
 that to erase standout mode it is instead necessary to use
 delete and insert line.
-The ncurses implementation ignores this glitch.
+The \fI\%ncurses\fP implementation ignores this glitch.
 .PP
 The Beehive Superbee, which is unable to correctly transmit the escape
 or control/C characters, has
@@ -1917,7 +1927,7 @@ Note that in older terminfo versions, this capability was called
 .PP
 Other specific terminal problems may be corrected by adding more
 capabilities of the form \fBx\fIx\fR.
-.SS Pitfalls of Long Entries
+.SS "Pitfalls of Long Entries"
 Long terminfo entries are unlikely to be a problem; to date, no entry has even
 approached terminfo's 4096-byte string-table maximum.
 Unfortunately, the termcap
@@ -1999,20 +2009,16 @@ If it is too long even before
 terminal types and users whose \fITERM\fP variable does not have a termcap
 entry.
 .PP
-When in \-C (translate to termcap) mode, the \fBncurses\fP implementation of
+When in \-C (translate to termcap) mode,
+the \fI\%ncurses\fP implementation of
 \fB@TIC@\fP(1M) issues warning messages when the pre-tc length of a termcap
 translation is too long.
 The \-c (check) option also checks resolved (after tc
 expansion) lengths.
-.SH PORTABILITY
-Do not count on compiled (binary) \fI\%terminfo\fP entries being
-portable between commercial Unix systems.
-At least two implementations of \fI\%terminfo\fP
-(those of HP-UX and AIX)
-diverged from those of other System V Unices after SVr1,
-adding extension capabilities to the string table that
-(in the binary format)
-collide with subsequent System V and XSI Curses extensions.
+.SH FILES
+.TP
+.I \*d
+compiled terminal description database directory
 .SH EXTENSIONS
 Searching for terminal descriptions in
 \fI$HOME/.terminfo\fP and \fI\%TERMINFO_DIRS\fP
@@ -2024,14 +2030,15 @@ interpret the %A and %O operators in parameter strings.
 SVr4/XPG4 do not specify whether \fBmsgr\fP licenses movement while in
 an alternate-character-set mode (such modes may, among other things, map
 CR and NL to characters that do not trigger local motions).
-The \fBncurses\fP implementation ignores \fBmsgr\fP in \fBALTCHARSET\fP
-mode.
+The \fI\%ncurses\fP implementation ignores \fBmsgr\fP in
+\fBALTCHARSET\fP mode.
 This raises the possibility that an XPG4
 implementation making the opposite interpretation may need terminfo
-entries made for \fBncurses\fP to have \fBmsgr\fP turned off.
+entries made for \fI\%ncurses\fP to have \fBmsgr\fP turned off.
 .PP
-The \fBncurses\fP library handles insert-character and insert-character modes
-in a slightly non-standard way to get better update efficiency.
+The \fI\%ncurses\fP library handles insert-character and
+insert-character modes in a slightly non-standard way to get better
+update efficiency.
 See
 the \fBInsert/Delete Character\fP subsection above.
 .PP
@@ -2041,7 +2048,7 @@ They are deduced from the
 documentation for the AT&T 505 terminal.
 .PP
 Be careful assigning the \fBkmous\fP capability.
-The \fBncurses\fP library wants to interpret it as \fBKEY_MOUSE\fP,
+The \fI\%ncurses\fP library wants to interpret it as \fBKEY_MOUSE\fP,
 for use by terminals and emulators like xterm
 that can return mouse-tracking information in the keyboard-input stream.
 .PP
@@ -2093,10 +2100,15 @@ plus function keys 11 through 63,
 plus a number of incompatible string table extensions.
 .bP
 OSF/1 supports both the SVr4 set and the AIX extensions.
-.SH FILES
-.TP
-.I \*d
-compiled terminal description database directory
+.SH PORTABILITY
+Do not count on compiled (binary) \fI\%terminfo\fP entries being
+portable between commercial Unix systems.
+At least two implementations of \fI\%terminfo\fP
+(those of HP-UX and AIX)
+diverged from those of other System V Unices after SVr1,
+adding extension capabilities to the string table that
+(in the binary format)
+collide with subsequent System V and XSI Curses extensions.
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on \fIpcurses\fP by Pavel Curtis.

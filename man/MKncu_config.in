@@ -27,11 +27,11 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKncu_config.in,v 1.19 2023/12/02 21:37:31 tom Exp $
-.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-12-02 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKncu_config.in,v 1.20 2023/12/16 21:43:05 tom Exp $
+.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-12-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .SH NAME
 \fB\%@LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config\fP \-
-configuration helper for \fIncurses\fR libraries
+configuration helper for \fI\%ncurses\fP libraries
 .SH SYNOPSIS
 .B @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config
 .I option
@@ -42,45 +42,45 @@ configuration helper for \fIncurses\fR libraries
 .B "@LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config \-\-help"
 .SH DESCRIPTION
 This program development aid simplifies the process of configuring
-applications against a particular set of \fIncurses\fP libraries.
+applications against a particular set of \fI\%ncurses\fP libraries.
 .SH OPTIONS
 .TP 18 \" "--mouse-version" + 2n + adjustment for PDF
 \fB\-\-prefix\fP
-reports the package prefix of \fIncurses\fP.
+reports the package prefix of \fI\%ncurses\fP.
 .TP
 \fB\-\-exec\-prefix\fP
-reports the executable prefix of \fIncurses\fP.
+reports the executable prefix of \fI\%ncurses\fP.
 .TP
 \fB\-\-cflags\fP
-reports the C compiler flags needed to compile with \fIncurses\fP.
+reports the C compiler flags needed to compile with \fI\%ncurses\fP.
 .TP
 \fB\-\-libs\fP
-reports the libraries needed to link with \fIncurses\fP.
+reports the libraries needed to link with \fI\%ncurses\fP.
 .TP
 \fB\-\-version\fP
-reports the release and patch date information of \fIncurses\fP and
+reports the release and patch date information of \fI\%ncurses\fP and
 exits successfully.
 .TP
 \fB\-\-abi\-version\fP
-reports the ABI version of \fIncurses\fP.
+reports the ABI version of \fI\%ncurses\fP.
 .TP
 \fB\-\-mouse\-version\fP
-reports the mouse\-interface version of \fIncurses\fP.
+reports the mouse\-interface version of \fI\%ncurses\fP.
 .TP
 \fB\-\-bindir\fP
-reports the directory containing \fIncurses\fP programs.
+reports the directory containing \fI\%ncurses\fP programs.
 .TP
 \fB\-\-datadir\fP
-reports the directory containing \fIncurses\fP data.
+reports the directory containing \fI\%ncurses\fP data.
 .TP
 \fB\-\-includedir\fP
-reports the directory containing \fIncurses\fP header files.
+reports the directory containing \fI\%ncurses\fP header files.
 .TP
 \fB\-\-libdir\fP
-reports the directory containing \fIncurses\fP libraries.
+reports the directory containing \fI\%ncurses\fP libraries.
 .TP
 \fB\-\-mandir\fP
-reports the directory containing \fIncurses\fP man pages.
+reports the directory containing \fI\%ncurses\fP man pages.
 .TP
 \fB\-\-terminfo\fP
 reports the \fI\%TERMINFO\fP \fIterminfo\fP database path,

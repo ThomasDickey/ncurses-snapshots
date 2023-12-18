@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.48 2023/11/25 14:20:05 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.49 2023/12/16 21:19:37 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -148,7 +148,7 @@
        WACS_URCORNER     0x2510     +         k       upper right-hand corner
        WACS_VLINE        0x2502     |         x       vertical line
 
-       The wide-character configuration of ncurses also  defines  symbols  for
+       The wide-character configuration of <EM>ncurses</EM> also  defines  symbols  for
        thick lines (<STRONG>acsc</STRONG> "J" to "V"):
 
        <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
@@ -185,7 +185,7 @@
        WACS_D_VLINE      0x2551    |         Y       double vertical line
 
        Unicode's  descriptions  for  these  characters  differs  slightly from
-       ncurses, by introducing the term "light"  (along  with  less  important
+       <EM>ncurses</EM>, by introducing the term "light"  (along  with  less  important
        details).   Here are its descriptions for the normal, thick, and double
        horizontal lines:
 
@@ -210,7 +210,7 @@
 
        <STRONG>o</STRONG>   If  <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>  is  not enabled, writing a character at the lower
            right margin succeeds.  However, an error is returned because it is
-           not possible to wrap to a new line
+           not possible to wrap to a new line.
 
        <STRONG>o</STRONG>   If  an error is detected when converting a multibyte character to a
            sequence of bytes, or if it is not  possible  to  add  all  of  the
@@ -255,14 +255,14 @@
        Existing  implementations of Unix curses (AIX, HP-UX, Solaris) use only
        the <STRONG>acsc</STRONG> character-mapping to provide this feature.  As a result, those
        implementations  can  only  use  single-byte  line-drawing  characters.
-       Ncurses 5.3 (2002) provided a table of Unicode values  to  solve  these
+       <EM>ncurses</EM> 5.3 (2002) provided a table of Unicode values  to  solve  these
        problems.  NetBSD curses incorporated that table in 2010.
 
        In  this  implementation,  the  Unicode  values are used instead of the
        terminal description's <STRONG>acsc</STRONG> mapping as discussed in <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> for the
-       environment  variable  <STRONG>NCURSES_NO_UTF8_ACS</STRONG>.   In contrast, for the same
-       cases, the line-drawing characters described in <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG> will use
-       only the ASCII default values.
+       environment  variable  <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>UTF8</EM><STRONG>_</STRONG><EM>ACS</EM>.   In contrast, for the same
+       cases, the line-drawing characters described in <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG> will use only
+       the ASCII default values.
 
        Having  Unicode available does not solve all of the problems with line-
        drawing for curses:
@@ -310,7 +310,7 @@
 
        <STRONG>o</STRONG>   may hold one non-spacing character.
 
-       In  the  latter  case,  ncurses  adds  the non-spacing character to the
+       In  the  latter  case,  <EM>ncurses</EM>  adds  the non-spacing character to the
        active (base) spacing character.
 
 
@@ -320,7 +320,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

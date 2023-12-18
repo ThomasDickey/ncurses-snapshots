@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.43 2023/11/25 11:31:27 tom Exp $
-.TH curs_border 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_border.3x,v 1.44 2023/12/16 21:09:11 tom Exp $
+.TH curs_border 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -137,8 +137,9 @@ The line is at most \fIn\fP characters
 long, or as many as fit into the window.
 .SH RETURN VALUE
 All routines return the integer \fBOK\fP.
-The SVr4.0 manual says "or a
-non-negative integer if \fBimmedok\fP is set", but this appears to be an error.
+The SVr4.0 manual says
+\*(``or a non-negative integer if \fB\%immedok\fP is set\*('',
+but this appears to be an error.
 .PP
 X/Open does not define any error conditions.
 This implementation returns an error

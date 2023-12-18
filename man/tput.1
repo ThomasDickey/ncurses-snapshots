@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.91 2023/12/02 20:49:04 tom Exp $
-.TH @TPUT@ 1 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.92 2023/12/16 20:32:22 tom Exp $
+.TH @TPUT@ 1 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -119,7 +119,8 @@ If \fB\-T\fP is specified, then the shell
 variables \fILINES\fP and \fI\%COLUMNS\fP will also be ignored.
 .TP
 \fB\-V\fP
-reports the version of ncurses which was used in this program, and exits.
+reports the version of \fI\%ncurses\fP which was used in this program,
+and exits.
 .TP
 .B \-x
 prevents \fB\%@TPUT@\fP from attempting to clear the scrollback buffer.
@@ -248,7 +249,8 @@ If \fB@TPUT@\fP is invoked by a link named \fBreset\fP, this has the
 same effect as \fB@TPUT@ reset\fP.
 The \fB@TSET@\fP(1) utility also treats a link named \fBreset\fP specially.
 .PP
-Before ncurses 6.1, the two utilities were different from each other:
+Before \fI\%ncurses\fP 6.1,
+the two utilities were different from each other:
 .bP
 \fB@TSET@\fP utility reset the terminal modes and special characters
 (not done with \fB@TPUT@\fP).
@@ -261,8 +263,8 @@ in contrast to the tab-stops and margins which are set by this utility.
 The \fBreset\fP program is usually an alias for \fB@TSET@\fP,
 because of this difference with resetting terminal modes and special characters.
 .PP
-With the changes made for ncurses 6.1, the \fIreset\fP feature of the
-two programs is (mostly) the same.
+With the changes made for \fI\%ncurses\fP 6.1,
+the \fIreset\fP feature of the two programs is (mostly) the same.
 A few differences remain:
 .bP
 The \fB@TSET@\fP program waits one second when resetting,
@@ -383,7 +385,7 @@ before falling back to \*(``/dev/tty\*('' and finally just assumes
 a 1200Bd terminal.
 When updating terminal modes, it ignores errors.
 .IP
-Until changes made after ncurses 6.0,
+Until changes made after \fI\%ncurses\fP 6.0,
 \fB@TPUT@\fP did not modify terminal modes.
 \fB@TPUT@\fP now uses a similar scheme,
 using functions shared with \fB@TSET@\fP
@@ -405,11 +407,11 @@ function to analyze nonstandard \fIcapname\fP operands.
 .IP
 Besides providing more reliable operation than AT&T's utility,
 a portability problem is introduced by this analysis:
-An OpenBSD developer adapted the internal library function from ncurses
-to port NetBSD's termcap-based \fBtput\fP to terminfo.
+An OpenBSD developer adapted the internal library function from
+\fI\%ncurses\fP to port NetBSD's termcap-based \fBtput\fP to terminfo.
 That had been modified to interpret multiple commands on a line.
 Portable applications should not rely upon this feature;
-ncurses provides it to support applications written
+\fI\%ncurses\fP provides it to support applications written
 specifically for OpenBSD.
 .PP
 This implementation (unlike others) can accept both \fItermcap\fP
@@ -454,7 +456,7 @@ than terminfo capability names in their respective \fBtput\fP commands.
 Since 2010, NetBSD's \fBtput\fP uses terminfo names.
 Before that, it (like FreeBSD) recognized termcap names.
 .IP
-Beginning in 2021, FreeBSD uses the ncurses \fBtput\fP,
+Beginning in 2021, FreeBSD uses the \fI\%ncurses\fP \fBtput\fP,
 configured for both terminfo (tested first) and termcap (as a fallback).
 .PP
 Because (apparently) \fIall\fP of the certified Unix systems
@@ -490,10 +492,10 @@ confusing the \fB\-1\fP written to the standard output for an absent
 or cancelled numeric value versus an (unsigned) exit code.
 .PP
 The various Unix systems (AIX, HP-UX, Solaris) use the same exit-codes
-as ncurses.
+as \fI\%ncurses\fP.
 .PP
 NetBSD curses documents different exit codes which do not correspond
-to either ncurses or X/Open.
+to either \fI\%ncurses\fP or X/Open.
 .SH HISTORY
 The \fBtput\fP command was begun by Bill Joy in 1980.
 The initial version only cleared the screen.
@@ -537,7 +539,7 @@ AT&T or BSD: Ross Ridge's \fImytinfo\fP package, published on
 Ridge's program made more sophisticated use of the terminal capabilities
 than the BSD program.
 Eric Raymond used that \fBtput\fP program
-(and other parts of \fImytinfo\fP) in ncurses in June 1995.
+(and other parts of \fImytinfo\fP) in \fI\%ncurses\fP in June 1995.
 Using the portions dealing with terminal capabilities
 almost without change,
 Raymond made improvements to the way the command-line parameters

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form.3x,v 1.50 2023/11/25 13:59:44 tom Exp $
-.TH form 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: form.3x,v 1.51 2023/12/16 20:32:22 tom Exp $
+.TH form 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -89,7 +89,7 @@ rendering of fields already created.
 The following table lists each \fBform\fP routine and the name of
 the manual page on which it is described.
 Routines flagged with \*(``*\*(''
-are ncurses-specific, not present in SVr4.
+are \fI\%ncurses\fP-specific, not present in SVr4.
 .PP
 .TS
 l l
@@ -226,19 +226,20 @@ A form facility was documented in SVr4.2's
 .PP
 It is not part of X/Open Curses.
 .PP
-Aside from ncurses, there are few implementations:
+Aside from \fI\%ncurses\fP, there are few implementations:
 .bP
 systems based on SVr4 source code, e.g., Solaris.
 .bP
 NetBSD curses.
 .PP
-A few functions in this implementation are extensions added for ncurses,
+A few functions in this implementation are extensions added for
+\fI\%ncurses\fP,
 but not provided by other implementations, e.g.,
 \fBform_driver_w\fP,
 \fBunfocus_current_field\fP.
 .SH AUTHORS
 Juergen Pfeifer.
-Manual pages and adaptation for ncurses by Eric
+Manual pages and adaptation for \fI\%ncurses\fP by Eric
 S. Raymond.
 .SH SEE ALSO
 \fBcurses\fP(3X) and related pages whose names begin \*(``form_\*('' for

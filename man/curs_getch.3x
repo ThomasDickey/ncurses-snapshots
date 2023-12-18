@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.75 2023/10/07 21:19:07 tom Exp $
-.TH curs_getch 3X 2023-10-07 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.76 2023/12/16 21:01:28 tom Exp $
+.TH curs_getch 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -59,7 +59,6 @@ get (or push back) characters from \fIcurses\fR terminal keyboard
 .PP
 .B int getch(void);
 .B int wgetch(WINDOW *\fIwin\fP);
-.PP
 .B int mvgetch(int \fIy\fP, int \fIx\fP);
 .B int mvwgetch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
@@ -129,7 +128,7 @@ otherwise, the function key value is returned.
 For this reason, many terminals experience a delay between the time
 a user presses the escape key and the escape is returned to the program.
 .PP
-In \fBncurses\fP, the timer normally expires after
+In \fI\%ncurses\fP, the timer normally expires after
 the value in \fBESCDELAY\fP (see \fBcurs_variables\fP(3X)).
 If \fBnotimeout\fP is \fBTRUE\fP, the timer does not expire;
 it is an infinite (or very large) value.
@@ -280,8 +279,10 @@ This code is returned whether or not \fBkeypad\fP has been enabled.
 .B KEY_MOUSE
 is returned for mouse-events (see \fBcurs_mouse\fP(3X)).
 This code relies upon whether or not \fBkeypad\fP(3X) has been enabled,
-because (e.g., with \fBxterm\fP(1) mouse prototocol) ncurses must
-read escape sequences,
+because
+(e.g.,
+with \fBxterm\fP(1) mouse prototocol)
+\fI\%ncurses\fP must read escape sequences,
 just like a function key.
 .SS Testing key-codes
 The \fBhas_key\fP routine takes a key-code value from the above list, and
@@ -331,7 +332,7 @@ keys, e.g.,
 Some curses implementations may differ according to whether they
 treat these control keys specially (and ignore the terminfo), or
 use the terminfo definitions.
-\fBNcurses\fP uses the terminfo definition.
+\fI\%ncurses\fP uses the terminfo definition.
 If it says that \fBKEY_ENTER\fP is control/M,
 \fBgetch\fP will return \fBKEY_ENTER\fP
 when you press control/M.
@@ -391,9 +392,9 @@ input timeout or non-blocking mode has been set.
 .PP
 \fBKEY_MOUSE\fP is mentioned in XSI Curses, along with a few related
 terminfo capabilities, but no higher-level functions use the feature.
-The implementation in ncurses is an extension.
+The implementation in \fI\%ncurses\fP is an extension.
 .PP
-\fBKEY_RESIZE\fP is an extension first implemented for ncurses.
+\fBKEY_RESIZE\fP is an extension first implemented for \fI\%ncurses\fP.
 NetBSD curses later added this extension.
 .PP
 Programmers concerned about portability should be prepared for either of two
@@ -401,7 +402,7 @@ cases: (a) signal receipt does not interrupt \fBgetch\fP; (b) signal receipt
 interrupts \fBgetch\fP and causes it to return \fBERR\fP with \fBerrno\fP set to
 \fBEINTR\fP.
 .PP
-The \fBhas_key\fP function is unique to \fBncurses\fP.
+The \fBhas_key\fP function is unique to \fI\%ncurses\fP.
 We recommend that
 any code using it be conditionalized on the \fBNCURSES_VERSION\fP feature macro.
 .SH SEE ALSO

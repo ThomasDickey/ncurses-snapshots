@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.67 2023/12/02 20:49:04 tom Exp $
-.TH term 5 2023-12-02 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.68 2023/12/16 20:32:22 tom Exp $
+.TH term 5 2023-12-16 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -64,7 +64,8 @@ compiled \fIterminfo\fR terminal description
 .SH DESCRIPTION
 .SS STORAGE LOCATION
 Compiled terminfo descriptions are placed under the directory \fB\*d\fP.
-Two configurations are supported (when building the \fBncurses\fP libraries):
+Two configurations are supported
+(when building the \fI\%ncurses\fP libraries):
 .TP 5
 .B directory tree
 A two-level scheme is used to avoid a linear search
@@ -87,11 +88,12 @@ the terminfo's primary name as a key,
 and records containing only aliases pointing to the primary name.
 .IP
 If built to write hashed databases,
-\fBncurses\fP can still read terminfo databases organized as a directory tree,
+\fI\%ncurses\fP can still read terminfo databases organized as a
+directory tree,
 but cannot write entries into the directory tree.
 It can write (or rewrite) entries in the hashed database.
 .IP
-\fBncurses\fP distinguishes the two cases in the \fI\%TERMINFO\fP and
+\fI\%ncurses\fP distinguishes the two cases in the \fI\%TERMINFO\fP and
 \fI\%TERMINFO_DIRS\fP environment variable by assuming a directory tree
 for entries that correspond to an existing directory,
 and hashed database otherwise.
@@ -219,14 +221,14 @@ With some minor variations of the offsets (see PORTABILITY),
 the same binary format is used in all modern Unix systems.
 Each system uses a predefined set of boolean, number or string capabilities.
 .PP
-The \fBncurses\fP libraries and applications support
+The \fI\%ncurses\fP libraries and applications support
 extended terminfo binary format,
 allowing users to define capabilities which are loaded at runtime.
 This
 extension is made possible by using the fact that the other implementations
 stop reading the terminfo data when they have reached the end of the size given
 in the header.
-\fBncurses\fP checks the size,
+\fI\%ncurses\fP checks the size,
 and if it exceeds that due to the predefined data,
 continues to parse according to its own scheme.
 .PP
@@ -253,8 +255,9 @@ The count- and size-values for the extended string table
 include the extended capability \fInames\fP as well as
 extended capability \fIvalues\fP.
 .PP
-Using the counts and sizes, \fBncurses\fP allocates arrays and reads data
-for the extended capabilities in the same order as the header information.
+Using the counts and sizes,
+\fI\%ncurses\fP allocates arrays and reads data for the extended
+capabilities in the same order as the header information.
 .PP
 The extended string table contains values for string capabilities.
 After the end of these values, it contains the names for each of
@@ -262,11 +265,12 @@ the extended capabilities in order, e.g., booleans, then numbers and
 finally strings.
 .PP
 By storing terminal descriptions in this way,
-\fBncurses\fP is able to provide a database useful with legacy applications,
+\fI\%ncurses\fP is able to provide a database useful with legacy
+applications,
 as well as providing data for applications which need more than the
 predefined capabilities.
 See \fBuser_caps\fP(5) for an overview
-of the way \fBncurses\fP uses this extended information.
+of the way \fI\%ncurses\fP uses this extended information.
 .PP
 Applications which manipulate terminal data can use the definitions
 described in \fBterm_variables\fP(3X) which associate the long capability
@@ -274,7 +278,8 @@ names with members of a \fBTERMTYPE\fP structure.
 .
 .SS EXTENDED NUMBER FORMAT
 On occasion, 16-bit signed integers are not large enough.
-With \fBncurses\fP 6.1, a new format was introduced by making a few changes
+With \fI\%ncurses\fP 6.1,
+a new format was introduced by making a few changes
 to the legacy format:
 .bP
 a different magic number (octal 01036)
@@ -331,7 +336,7 @@ terminfo format used by Solaris curses,
 except in a few less-used details
 where it was found that the latter did not match X/Open Curses.
 The format used by the other Unix versions
-can be matched by building ncurses
+can be matched by building \fI\%ncurses\fP
 with different configuration options.
 .SS Magic codes
 The magic number in a binary terminfo file is the first 16-bits (two bytes).
@@ -352,11 +357,11 @@ A small number of terminal descriptions use uppercase characters in
 their names.
 If the underlying filesystem ignores the difference between
 uppercase and lowercase,
-\fBncurses\fP represents the \*(``first character\*(''
+\fI\%ncurses\fP represents the \*(``first character\*(''
 of the terminal name used as
 the intermediate level of a directory tree in (two-character) hexadecimal form.
 .SS Limits
-\fBncurses\fP stores compiled terminal descriptions
+\fI\%ncurses\fP stores compiled terminal descriptions
 in three related formats,
 described in the sections
 .bP
@@ -369,8 +374,8 @@ described in the sections
 The legacy storage format and the extended number format differ by
 the types of numeric capability which they can store
 (i.e., 16-bit versus 32-bit integers).
-The extended storage format introduced by ncurses 5.0 adds data to
-either of these formats.
+The extended storage format introduced by \fI\%ncurses\fP 5.0 adds data
+to either of these formats.
 .PP
 Some limitations apply:
 .bP
@@ -432,11 +437,11 @@ lp-1f(\*(CW).
 .SH AUTHORS
 Thomas E. Dickey
 .br
-extended terminfo format for ncurses 5.0
+extended terminfo format for \fI\%ncurses\fP 5.0
 .br
-hashed database support for ncurses 5.6
+hashed database support for \fI\%ncurses\fP 5.6
 .br
-extended number support for ncurses 6.1
+extended number support for \fI\%ncurses\fP 6.1
 .sp
 Eric S. Raymond
 .br

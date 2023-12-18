@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.41 2023/10/07 21:19:07 tom Exp $
-.TH user_caps 5 2023-10-07 "ncurses 6.4" "File formats"
+.\" $Id: user_caps.5,v 1.42 2023/12/16 20:32:22 tom Exp $
+.TH user_caps 5 2023-12-16 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -54,7 +54,7 @@ user-defined \fIterminfo\fR capability format
 .B @TIC@ \-x
 .SH DESCRIPTION
 .SS Background
-Before ncurses 5.0,
+Before \fI\%ncurses\fP 5.0,
 terminfo databases used a \fIfixed repertoire\fP of terminal
 capabilities designed for the SVr2 terminal database in 1984,
 and extended in stages through SVr4 (1989),
@@ -88,22 +88,24 @@ Although they \fImay\fP provide all of the standard capability names,
 the position in the tables differs because some features were added as needed,
 while others were added (out of order) to comply with X/Open Curses.
 .IP
-While ncurses' repertoire of predefined capabilities is closest to Solaris,
+While \fI\%ncurses\fP' repertoire of predefined capabilities is closest
+to Solaris,
 Solaris's terminfo database has a few differences from
 the list published by X/Open Curses.
-For example, ncurses can be configured with tables which match the
-terminal databases for AIX, HP-UX or OSF/1,
+For example,
+\fI\%ncurses\fP can be configured with tables which match the terminal
+databases for AIX, HP-UX or OSF/1,
 rather than the default Solaris-like configuration.
 .bP
-In SVr4 curses and ncurses,
+In SVr4 curses and \fI\%ncurses\fP,
 the terminal database is defined at compile-time using a text file
 which lists the different terminal capabilities.
 .IP
 In principle, the text-file can be extended,
 but doing this requires recompiling and reinstalling the library.
-The text-file used in ncurses for terminal capabilities includes
+The text-file used in \fI\%ncurses\fP for terminal capabilities includes
 details for various systems past the documented X/Open Curses features.
-For example, ncurses supports these capabilities in each configuration:
+For example, \fI\%ncurses\fP supports these capabilities in each configuration:
 .RS 8
 .TP 5
 memory_lock
@@ -138,16 +140,16 @@ it could represent larger numbers.
 Although termcap's extensibility was rarely used
 (it was never the \fIspeaker\fP who had actually used the feature),
 the criticism had a point.
-ncurses 5.0 provided a way to detect nonstandard capabilities,
+\fI\%ncurses\fP 5.0 provided a way to detect nonstandard capabilities,
 determine their
 type and optionally store and retrieve them in a way which did not interfere
 with other applications.
 These are referred to as \fIuser-defined capabilities\fP because no
 modifications to the toolset's predefined capability names are needed.
 .PP
-The ncurses utilities \fB@TIC@\fP and \fB@INFOCMP@\fP have a command-line
-option \*(``\-x\*('' to control whether the nonstandard capabilities
-are stored or retrieved.
+The \fI\%ncurses\fP utilities \fB@TIC@\fP and \fB@INFOCMP@\fP have a
+command-line option \*(``\-x\*('' to control whether the nonstandard
+capabilities are stored or retrieved.
 A library function \fBuse_extended_names\fP
 is provided for the same purpose.
 .PP
@@ -155,7 +157,7 @@ When compiling a terminal database, if \*(``\-x\*('' is set,
 \fB@TIC@\fP will store a user-defined capability if the capability name is not
 one of the predefined names.
 .PP
-Because ncurses provides a termcap library interface,
+Because \fI\%ncurses\fP provides a termcap library interface,
 these user-defined capabilities may be visible to termcap applications:
 .bP
 The termcap interface (like all implementations of termcap)
@@ -177,16 +179,16 @@ While terminfo and termcap have a set of 60 predefined function-key names,
 to which a series of keys can be assigned,
 that is insufficient for more than a dozen keys multiplied by more than
 a couple of modifier combinations.
-The ncurses database uses a convention based on \fBxterm\fP(1) to
-provide extended special-key names.
+The \fI\%ncurses\fP database uses a convention based on \fBxterm\fP(1)
+to provide extended special-key names.
 .IP
 Fitting that into termcap's limitation of 2-character names
 would be pointless.
 These extended keys are available only with terminfo.
 .SS Recognized capabilities
-The ncurses library uses the user-definable capabilities.
+The \fI\%ncurses\fP library uses the user-definable capabilities.
 While the terminfo database may have other extensions,
-ncurses makes explicit checks for these:
+\fI\%ncurses\fP makes explicit checks for these:
 .RS 3
 .TP 3
 AX
@@ -204,7 +206,8 @@ The command \*(``\fBtput clear\fP\*('' does the same thing.
 .TP 3
 NQ
 \fIboolean\fP,
-used to suppress a consistency check in @TIC@ for the ncurses capabilities
+used to suppress a consistency check in @TIC@ for the \fI\%ncurses\fP
+capabilities
 in user6 through user9 (u6, u7, u8 and u9)
 which tell how to query the terminal's cursor position
 and its device attributes.
@@ -219,21 +222,23 @@ This capability allows the \fBcolor_content\fP function to
 return appropriate values without requiring the application
 to initialize colors using \fBinit_color\fP.
 .IP
-The capability type determines the values which ncurses sees:
+The capability type determines the values which \fI\%ncurses\fP sees:
 .RS 3
 .TP 3
 \fIboolean\fP
 implies that the number of bits for red, green and blue are the same.
 Using the maximum number of colors,
-ncurses adds two, divides that sum by three, and assigns the result
-to red, green and blue in that order.
+\fI\%ncurses\fP adds two,
+divides that sum by three,
+and assigns the result to red,
+green and blue in that order.
 .IP
 If the number of bits needed for the number of colors is not a multiple
 of three, the blue (and green) components lose in comparison to red.
 .TP 3
 \fInumber\fP
-tells ncurses what result to add to red, green and blue.
-If ncurses runs out of bits,
+tells \fI\%ncurses\fP what result to add to red, green and blue.
+If \fI\%ncurses\fP runs out of bits,
 blue (and green) lose just as in the \fIboolean\fP case.
 .TP 3
 \fIstring\fP
@@ -249,27 +254,29 @@ to represent the standard eight ANSI colors, i.e., one bit per color.
 .TP 3
 U8
 \fInumber\fP,
-asserts that ncurses must use Unicode values for line-drawing characters,
+asserts that \fI\%ncurses\fP must use Unicode values for line-drawing
+characters,
 and that it should ignore the alternate character set capabilities
 when the locale uses UTF-8 encoding.
 For more information, see the discussion of
-\fBNCURSES_NO_UTF8_ACS\fP in \fBncurses\fP(3X).
+\fBNCURSES_NO_UTF8_ACS\fP in \fB\%ncurses\fP(3X).
 .IP
 Set this capability to a nonzero value to enable it.
 .TP 3
 XM
 \fIstring\fP,
-override ncurses's built-in string which
+override \fI\%ncurses\fP's built-in string which
 enables/disables \fBxterm\fP(1) mouse mode.
 .IP
-ncurses sends a character sequence to the terminal to initialize mouse mode,
+\fI\%ncurses\fP sends a character sequence to the terminal to initialize mouse mode,
 and when the user clicks the mouse buttons or (in certain modes) moves the
 mouse, handles the characters sent back by the terminal to tell it what
 was done with the mouse.
 .IP
 The mouse protocol is enabled when
 the \fImask\fP passed in the \fBmousemask\fP function is nonzero.
-By default, ncurses handles the responses for the X11 xterm mouse protocol.
+By default,
+\fI\%ncurses\fP handles the responses for the X11 xterm mouse protocol.
 It also knows about the \fISGR 1006\fP xterm mouse protocol,
 but must to be told to look for this specifically.
 It will not be able to guess which mode is used,
@@ -278,7 +285,7 @@ because the responses are enough alike that only confusion would result.
 The \fBXM\fP capability has a single parameter.
 If nonzero, the mouse protocol should be enabled.
 If zero, the mouse protocol should be disabled.
-ncurses inspects this capability if it is present,
+\fI\%ncurses\fP inspects this capability if it is present,
 to see whether the 1006 protocol is used.
 If so, it expects the responses to use the \fISGR 1006\fP xterm mouse protocol.
 .IP
@@ -348,14 +355,15 @@ There is no standard for what those keys can send.
 Since 1999, \fBxterm\fP(1) has supported
 \fIshift\fP, \fIcontrol\fP, \fIalt\fP, and \fImeta\fP modifiers which produce
 distinct special-key strings.
-In a terminal description, ncurses has no special knowledge of the
-modifiers used.
+In a terminal description,
+\fI\%ncurses\fP has no special knowledge of the modifiers used.
 Applications can use the \fInaming convention\fP established for \fBxterm\fP
 to find these special keys in the terminal description.
 .PP
 Starting with the curses convention that \fIkey names\fP begin with \*(``k\*(''
 and that shifted special keys are an uppercase name,
-ncurses' terminal database defines these names to which a suffix is added:
+\fI\%ncurses\fP' terminal database defines these names to which a suffix
+is added:
 .PP
 .RS 5
 .TS
@@ -402,8 +410,9 @@ _
 .RE
 .PP
 None of these are predefined; terminal descriptions can refer to \fInames\fP
-which ncurses will allocate at runtime to \fIkey-codes\fP.
-To use these keys in an ncurses program, an application could do this:
+which \fI\%ncurses\fP will allocate at runtime to \fIkey-codes\fP.
+To use these keys in an \fI\%ncurses\fP program,
+an application could do this:
 .bP
 using a list of extended key \fInames\fP,
 ask \fBtigetstr\fP(3X) for their values, and
@@ -421,7 +430,7 @@ but makes no use of these capabilities itself.
 .SH AUTHORS
 Thomas E. Dickey
 .br
-beginning with ncurses 5.0 (1999)
+beginning with \fI\%ncurses\fP 5.0 (1999)
 .\"
 .SH SEE ALSO
 \fB\%@INFOCMP@\fP(1M),

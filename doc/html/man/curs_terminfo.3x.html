@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_terminfo.3x,v 1.122 2023/12/03 00:10:20 tom Exp @
+  * @Id: curs_terminfo.3x,v 1.123 2023/12/16 21:11:53 tom Exp @
   * ***************************************************************************
   * ***************************************************************************
   * ***************************************************************************
@@ -46,12 +46,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_terminfo 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_terminfo 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_terminfo 3x 2023-12-02 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_terminfo 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 
@@ -86,9 +86,9 @@
        <STRONG>int</STRONG> <STRONG>del_curterm(TERMINAL</STRONG> <STRONG>*</STRONG><EM>oterm</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>restartterm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>term</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>filedes</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG><EM>errret</EM><STRONG>);</STRONG>
 
-       <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
-            <EM>or</EM>
-       <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>long</STRONG> <EM>p1</EM> <EM>...</EM> <STRONG>long</STRONG> <EM>p9</EM><STRONG>);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> ...<STRONG>);</STRONG>
+            <EM>/*</EM> <EM>or</EM> <EM>*/</EM>
+       <STRONG>char</STRONG> <STRONG>*tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>long</STRONG> <EM>p1</EM> ... <STRONG>long</STRONG> <EM>p9</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>tputs(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>affcnt</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG><EM>putc</EM><STRONG>)(int));</STRONG>
        <STRONG>int</STRONG> <STRONG>putp(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
@@ -104,7 +104,7 @@
        <STRONG>int</STRONG> <STRONG>tigetnum(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>capname</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*tigetstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>capname</EM><STRONG>);</STRONG>
 
-       <STRONG>char</STRONG> <STRONG>*tiparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*tiparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> ...<STRONG>);</STRONG>
 
        <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
        <STRONG>char</STRONG> <STRONG>*tiparm_s(int</STRONG> <EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>mask</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
@@ -330,7 +330,7 @@
 
        <STRONG>o</STRONG>   <EM>attrs</EM> of type <STRONG>attr_t</STRONG> for the attributes and
 
-       <STRONG>o</STRONG>   <EM>pair</EM> of type <STRONG>short</STRONG> for the color-pair number.
+       <STRONG>o</STRONG>   <EM>pair</EM> of type <STRONG>short</STRONG> for the color pair number.
 
        The <STRONG>vid_attr</STRONG> and <STRONG>vid_puts</STRONG> routines are designed to  use  the  attribute
        constants with the <STRONG>WA_</STRONG> prefix.
@@ -407,11 +407,11 @@
        The  formatting functions <STRONG>tparm</STRONG> and <STRONG>tiparm</STRONG> extend the storage allocated
        by <STRONG>setupterm</STRONG>:
 
-       <STRONG>o</STRONG>   the "static" terminfo variables [a-z].  Before ncurses  6.3,  those
-           were  shared by all screens.  With ncurses 6.3, those are allocated
+       <STRONG>o</STRONG>   the "static" terminfo variables [a-z].  Before <EM>ncurses</EM>  6.3,  those
+           were  shared by all screens.  With <EM>ncurses</EM> 6.3, those are allocated
            per screen.  See <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG> for details.
 
-       <STRONG>o</STRONG>   to improve performance, ncurses 6.3 caches the result of  analyzing
+       <STRONG>o</STRONG>   to improve performance, <EM>ncurses</EM> 6.3 caches the result of  analyzing
            terminfo  strings  for  their parameter types.  That is stored as a
            binary tree referenced from the <STRONG>TERMINAL</STRONG> structure.
 
@@ -470,7 +470,7 @@
        non-portable.  All other functions are as described by X/Open.
 
 
-</PRE><H3><a name="h3-Compatibility-macros">Compatibility macros</a></H3><PRE>
+</PRE><H3><a name="h3-Compatibility-Macros">Compatibility Macros</a></H3><PRE>
        This  implementation  provides  a  few  macros  for  compatibility with
        systems before SVr4 (see  <EM>HISTORY</EM>).   Those  include  <STRONG>crmode</STRONG>,  <STRONG>fixterm</STRONG>,
        <STRONG>gettmode</STRONG>, <STRONG>nocrmode</STRONG>, <STRONG>resetterm</STRONG>, <STRONG>saveterm</STRONG>, and <STRONG>setterm</STRONG>.
@@ -487,7 +487,7 @@
        those symbols as macros for BSD compatibility.
 
 
-</PRE><H3><a name="h3-Legacy-data">Legacy data</a></H3><PRE>
+</PRE><H3><a name="h3-Legacy-Data">Legacy Data</a></H3><PRE>
        <STRONG>setupterm</STRONG> copies the terminal name to the array <STRONG>ttytype</STRONG>.  This  is  not
        part of X/Open Curses, but is assumed by some applications.
 
@@ -498,22 +498,22 @@
        stored in the arrays described here.
 
 
-</PRE><H3><a name="h3-Output-buffering">Output buffering</a></H3><PRE>
-       Older  versions  of  <STRONG>ncurses</STRONG> assumed that the file descriptor passed to
+</PRE><H3><a name="h3-Output-Buffering">Output Buffering</a></H3><PRE>
+       Older  versions  of  <EM>ncurses</EM> assumed that the file descriptor passed to
        <STRONG>setupterm</STRONG> from <STRONG>initscr</STRONG> or <STRONG>newterm</STRONG> uses buffered I/O, and would write to
        the  corresponding  stream.   In  addition  to  the limitation that the
        terminal was left  in  block-buffered  mode  on  exit  (like  System  V
-       curses),  it  was  problematic because <STRONG>ncurses</STRONG> did not allow a reliable
+       curses),  it  was  problematic because <EM>ncurses</EM> did not allow a reliable
        way to cleanup on receiving SIGTSTP.
 
        The current version (ncurses6) uses output buffers managed directly  by
-       <STRONG>ncurses</STRONG>.  Some of the low-level functions described in this manual page
+       <EM>ncurses</EM>.  Some of the low-level functions described in this manual page
        write to the standard output.  They are  not  signal-safe.   The  high-
-       level  functions  in  <STRONG>ncurses</STRONG> use alternate versions of these functions
+       level  functions  in  <EM>ncurses</EM> use alternate versions of these functions
        using the more reliable buffering scheme.
 
 
-</PRE><H3><a name="h3-Function-prototypes">Function prototypes</a></H3><PRE>
+</PRE><H3><a name="h3-Function-Prototypes">Function Prototypes</a></H3><PRE>
        The X/Open Curses prototypes  are  based  on  the  SVr4  curses  header
        declarations,  which  were  defined at the same time the C language was
        first standardized in the late 1980s.
@@ -540,7 +540,7 @@
            In  response  to review comments by Thomas E. Dickey, X/Open Curses
            Issue 7 proposed the <STRONG>tiparm</STRONG> function in mid-2009.
 
-           While <STRONG>tiparm</STRONG> is always provided in ncurses, the older form is  only
+           While <STRONG>tiparm</STRONG> is always provided in <EM>ncurses</EM>, the older form is  only
            available  as  a build-time configuration option.  If not specially
            configured, <STRONG>tparm</STRONG> is the same as <STRONG>tiparm</STRONG>.
 
@@ -560,7 +560,7 @@
            parameters.   However,  only a few terminfo capabilities use string
            parameters (e.g., the ones used for programmable function keys).
 
-           The ncurses library checks usage of these capabilities, and returns
+           The <EM>ncurses</EM> library checks usage of these capabilities, and returns
            an  error  if  the capability mishandles string parameters.  But it
            cannot check if a calling program provides  strings  in  the  right
            places for the <STRONG>tparm</STRONG> calls.
@@ -568,8 +568,7 @@
            The  <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>  program  checks  its use of these capabilities with a
            table, so that it calls <STRONG>tparm</STRONG> correctly.
 
-
-</PRE><H3><a name="h3-Special-TERM-treatment">Special TERM treatment</a></H3><PRE>
+   <STRONG>Special</STRONG> <EM>TERM</EM> <STRONG>treatment</STRONG>
        If configured to use the terminal-driver, e.g., for the MinGW port,
 
        <STRONG>o</STRONG>   <STRONG>setupterm</STRONG> interprets a missing/empty <EM>TERM</EM> variable as  the  special
@@ -586,7 +585,7 @@
            string.
 
 
-</PRE><H3><a name="h3-Other-portability-issues">Other portability issues</a></H3><PRE>
+</PRE><H3><a name="h3-Other-Portability-Issues">Other Portability Issues</a></H3><PRE>
        In  System  V Release 4, <STRONG>set_curterm</STRONG> has an <STRONG>int</STRONG> return type and returns
        <STRONG>OK</STRONG> or <STRONG>ERR</STRONG>.  We have chosen to implement the X/Open Curses semantics.
 
@@ -599,7 +598,7 @@
 
        X/Open  notes  that after calling <STRONG>mvcur</STRONG>, the curses state may not match
        the actual terminal state, and that an  application  should  touch  and
-       refresh  the  window before resuming normal curses calls.  Both <STRONG>ncurses</STRONG>
+       refresh  the  window before resuming normal curses calls.  Both <EM>ncurses</EM>
        and System V Release 4 curses implement <STRONG>mvcur</STRONG>  using  the  SCREEN  data
        allocated  in either <STRONG>initscr</STRONG> or <STRONG>newterm</STRONG>.  So though it is documented as
        a terminfo function, <STRONG>mvcur</STRONG> is really a curses  function  which  is  not
@@ -702,7 +701,7 @@
 
 
 
-ncurses 6.4                       2023-12-02                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -724,12 +723,11 @@ ncurses 6.4                       2023-12-02                 <STRONG><A HREF="cu
 <li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
-<li><a href="#h3-Compatibility-macros">Compatibility macros</a></li>
-<li><a href="#h3-Legacy-data">Legacy data</a></li>
-<li><a href="#h3-Output-buffering">Output buffering</a></li>
-<li><a href="#h3-Function-prototypes">Function prototypes</a></li>
-<li><a href="#h3-Special-TERM-treatment">Special TERM treatment</a></li>
-<li><a href="#h3-Other-portability-issues">Other portability issues</a></li>
+<li><a href="#h3-Compatibility-Macros">Compatibility Macros</a></li>
+<li><a href="#h3-Legacy-Data">Legacy Data</a></li>
+<li><a href="#h3-Output-Buffering">Output Buffering</a></li>
+<li><a href="#h3-Function-Prototypes">Function Prototypes</a></li>
+<li><a href="#h3-Other-Portability-Issues">Other Portability Issues</a></li>
 </ul>
 </li>
 <li><a href="#h2-HISTORY">HISTORY</a></li>

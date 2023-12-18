@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.75 2023/10/07 21:19:07 tom Exp @
+  * @Id: curs_getch.3x,v 1.76 2023/12/16 21:01:28 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2023-10-07 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getch 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2023-10-07 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -57,7 +57,6 @@
 
        <STRONG>int</STRONG> <STRONG>getch(void);</STRONG>
        <STRONG>int</STRONG> <STRONG>wgetch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>);</STRONG>
-
        <STRONG>int</STRONG> <STRONG>mvgetch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvwgetch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
@@ -122,7 +121,7 @@
        experience  a  delay between the time a user presses the escape key and
        the escape is returned to the program.
 
-       In <STRONG>ncurses</STRONG>, the timer normally expires after the value in <STRONG>ESCDELAY</STRONG> (see
+       In <EM>ncurses</EM>, the timer normally expires after the value in <STRONG>ESCDELAY</STRONG> (see
        <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>).   If <STRONG>notimeout</STRONG> is <STRONG>TRUE</STRONG>, the timer does not expire;
        it is an infinite (or very large) value.  Because function keys usually
        begin  with  an  escape  character,  the terminal may appear to hang in
@@ -180,8 +179,8 @@
               KEY_ENTER       Enter or send
               KEY_SRESET      Soft (partial) reset
               KEY_RESET       Reset or hard reset
-
               KEY_PRINT       Print or copy
+
               KEY_LL          Home down or bottom (lower left)
               KEY_A1          Upper left of keypad
               KEY_A3          Upper right of keypad
@@ -264,7 +263,7 @@
 
        <STRONG>o</STRONG>   <STRONG>KEY_MOUSE</STRONG>  is returned for mouse-events (see <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>).  This
            code relies upon  whether  or  not  <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  has  been  enabled,
-           because  (e.g.,  with  <STRONG>xterm(1)</STRONG> mouse prototocol) ncurses must read
+           because  (e.g.,  with  <STRONG>xterm(1)</STRONG> mouse prototocol) <EM>ncurses</EM> must read
            escape sequences, just like a function key.
 
 
@@ -309,7 +308,7 @@
        <STRONG>KEY_ENTER</STRONG>  versus  control/M,  <STRONG>KEY_BACKSPACE</STRONG>  versus  control/H.   Some
        curses implementations may differ according to whether they treat these
        control  keys  specially (and ignore the terminfo), or use the terminfo
-       definitions.  <STRONG>Ncurses</STRONG> uses the terminfo definition.  If  it  says  that
+       definitions.  <EM>ncurses</EM> uses the terminfo definition.  If  it  says  that
        <STRONG>KEY_ENTER</STRONG>  is  control/M,  <STRONG>getch</STRONG>  will  return <STRONG>KEY_ENTER</STRONG> when you press
        control/M.
 
@@ -361,9 +360,9 @@
 
        <STRONG>KEY_MOUSE</STRONG> is mentioned in XSI Curses, along with a few related terminfo
        capabilities,  but  no  higher-level  functions  use  the feature.  The
-       implementation in ncurses is an extension.
+       implementation in <EM>ncurses</EM> is an extension.
 
-       <STRONG>KEY_RESIZE</STRONG> is an  extension  first  implemented  for  ncurses.   NetBSD
+       <STRONG>KEY_RESIZE</STRONG> is an  extension  first  implemented  for  <EM>ncurses</EM>.   NetBSD
        curses later added this extension.
 
        Programmers  concerned  about portability should be prepared for either
@@ -371,7 +370,7 @@
        receipt  interrupts <STRONG>getch</STRONG> and causes it to return <STRONG>ERR</STRONG> with <STRONG>errno</STRONG> set to
        <STRONG>EINTR</STRONG>.
 
-       The <STRONG>has_key</STRONG> function is unique to <STRONG>ncurses</STRONG>.  We recommend that any  code
+       The <STRONG>has_key</STRONG> function is unique to <EM>ncurses</EM>.  We recommend that any  code
        using it be conditionalized on the <STRONG>NCURSES_VERSION</STRONG> feature macro.
 
 
@@ -384,7 +383,7 @@
 
 
 
-ncurses 6.4                       2023-10-07                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

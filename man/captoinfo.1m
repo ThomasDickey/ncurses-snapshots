@@ -28,26 +28,23 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.56 2023/12/02 20:51:25 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-12-02 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.57 2023/12/16 21:34:23 tom Exp $
+.TH @CAPTOINFO@ 1M 2023-12-16 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
-.ds '  \(aq
 .\}
 .el \{\
 .ie t .ds `` ``
 .el   .ds `` ""
 .ie t .ds '' ''
 .el   .ds '' ""
-.ie t .ds '  \(aq
-.el   .ds '  '
 .\}
 .
 .ds d /etc/termcap
 .SH NAME
 \fB\%@CAPTOINFO@\fP \-
-convert a \fItermcap\fR description into a \fIterminfo\fR description
+convert a \fItermcap\fP description into a \fI\%term\%info\fP description
 .SH SYNOPSIS
 .B @CAPTOINFO@
 .RI [ tic-option ]
@@ -59,9 +56,9 @@ convert a \fItermcap\fR description into a \fIterminfo\fR description
 \fB\%@CAPTOINFO@\fP translates terminal descriptions.
 It looks in each given text \fIfile\fP for \fI\%termcap\fP entries and,
 for each one found,
-writes an equivalent \fI\%terminfo\fP description to the standard output
-stream.
-\fI\%termcap\fP \fBtc\fP capabilities translate to \fI\%terminfo\fP
+writes an equivalent \fI\%\%term\%info\fP description to the standard
+output stream.
+\fI\%termcap\fP \fBtc\fP capabilities translate to \fI\%\%term\%info\fP
 \*(``\fBuse\fP\*('' capabilities.
 .PP
 If no \fIfile\fPs are specified,
@@ -89,12 +86,13 @@ with this program and exits with a successful status.
 \fB\%@CAPTOINFO@\fP translates some obsolete,
 nonstandard capabilities into standard
 (SVr4/XSI Curses)
-\fI\%terminfo\fP capabilities.
+\fI\%\%term\%info\fP capabilities.
 It issues a diagnostic to the standard error stream for each,
 inviting the user to check that it has not mistakenly translated an
 unknown or mistyped capability name.
 .PP
 .TS
+center;
 Cb S
 Cb Cb Cb Cb
 Cb Cb C  Lb.
@@ -137,6 +135,7 @@ corresponding to box drawing characters of CCSID
 as follows.
 .PP
 .TS
+center;
 cb cb
 cb l .
 \f(BItermcap\fP Name	Graphic
@@ -176,12 +175,13 @@ string,
 and discards \fBGG\fP and double-line capabilities with a warning
 diagnostic.
 .PP
-IBM's AIX has a \fI\%terminfo\fP facility descended from SVr1
-\fI\%terminfo\fP,
+IBM's AIX has a \fI\%\%term\%info\fP facility descended from SVr1
+\fI\%\%term\%info\fP,
 but which is incompatible with the SVr4 format.
 \fB\%@CAPTOINFO@\fP translates the following AIX extensions.
 .PP
 .TS
+center;
 cb cb
 l  l .
 IBM	XSI
@@ -198,25 +198,29 @@ Additionally,
 this program translates the AIX \fBbox1\fP capability to an \fBacsc\fP
 string.
 .PP
-The HP-UX \fI\%terminfo\fP library supports two nonstandard
-\fI\%terminfo\fP capabilities,
+The HP-UX \fI\%\%term\%info\fP library supports two nonstandard
+\fI\%\%term\%info\fP capabilities,
 \fBmeml\fP (memory lock) and \fBmemu\fP (memory unlock).
 \fB\%@CAPTOINFO@\fP discards these with a warning message.
 .SH FILES
 .TP
 .I \*d
 default \fI\%termcap\fP terminal capability database
-.SH NOTES
-The verbose option is not identical to SVr4's.
-Under SVr4,
-instead of following the \fB\-v\fP with a trace level \fIn\fP,
-you repeat it \fIn\fP times.
 .SH PORTABILITY
 X/Open Curses,
 Issue 7 (2009) describes \fBtic\fP briefly,
 but omits this program.
+.PP
 SVr4 systems provide \fB\%captoinfo\fP as a separate application from
 \fBtic\fP.
+Its
+.B \-v
+option does not accept a trace level argument
+.I n;
+repeat
+.B \-v
+.I n
+times instead.
 .PP
 NetBSD does not provide this application.
 .SH AUTHORS

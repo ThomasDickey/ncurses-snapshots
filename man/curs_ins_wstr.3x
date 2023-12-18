@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.29 2023/11/25 11:29:34 tom Exp $
-.TH curs_ins_wstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.30 2023/12/16 20:36:15 tom Exp $
+.TH curs_ins_wstr 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -104,9 +104,9 @@ or if the window pointer is null.
 .SH NOTES
 All but \fBwins_nwstr\fP may be macros.
 .PP
-If the first character in the string is a nonspacing character, these
+If the first character in the string is a non-spacing character, these
 functions will fail.
-XSI does not define what will happen if a nonspacing character follows
+XSI does not define what will happen if a non-spacing character follows
 a control character.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4,

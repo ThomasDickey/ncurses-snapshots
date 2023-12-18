@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.51 2023/11/25 14:29:54 tom Exp $
-.TH curs_getstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.52 2023/12/16 20:32:22 tom Exp $
+.TH curs_getstr 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -203,7 +203,7 @@ X/Open Curses, Issue 7 (2009) changed that to say they
 to allow for the terminating NUL.
 As of 2018, some implementations count it, some do not:
 .bP
-ncurses 6.1 and PDCurses do not count the NUL in the given limit, while
+\fI\%ncurses\fP 6.1 and PDCurses do not count the NUL in the given limit, while
 .bP
 Solaris SVr4 and NetBSD curses count the NUL as part of the limit.
 .bP
@@ -231,15 +231,15 @@ that it is greater than zero.
 .IP
 A comment in NetBSD's source code states that this is specified in SUSv2.
 .bP
-ncurses (before 6.2) assumes no particular limit for the result
+\fI\%ncurses\fP (before 6.2) assumes no particular limit for the result
 from \fBwgetstr\fP, and treats the \fIn\fP parameter of \fBwgetnstr\fP
 like SVr4 curses.
 .bP
-ncurses 6.2 uses \fBLINE_MAX\fP,
+\fI\%ncurses\fP 6.2 uses \fBLINE_MAX\fP,
 or a larger (system-dependent) value
 which the \fBsysconf\fP function may provide.
 If neither \fBLINE_MAX\fP or \fBsysconf\fP is available,
-ncurses uses the POSIX value for \fBLINE_MAX\fP (a 2048 byte limit).
+\fI\%ncurses\fP uses the POSIX value for \fBLINE_MAX\fP (a 2048 byte limit).
 In either case, it reserves a byte for the terminating NUL.
 .PP
 Although \fBgetnstr\fP is equivalent to a series of calls to \fBgetch\fP,
@@ -269,18 +269,22 @@ They may take the \fIcbreak\fP
 mode set by the caller into account when deciding whether to handle
 echoing within \fBgetnstr\fP or as a side-effect of the \fBgetch\fP calls.
 .bP
-The original ncurses (as \fIpcurses\fP in 1986) set \fBnoraw\fP and \fBcbreak\fP
-when accepting input for \fBgetnstr\fP.
+The original \fI\%ncurses\fP
+(as \fIpcurses\fP in 1986)
+set \fBnoraw\fP and \fBcbreak\fP when accepting input for \fBgetnstr\fP.
 That may have been done to make function- and cursor-keys work;
-it is not necessary with ncurses.
+it is not necessary with \fI\%ncurses\fP.
 .IP
-Since 1995, ncurses has provided signal handlers for INTR and QUIT
+Since 1995,
+\fI\%ncurses\fP has provided signal handlers for INTR and QUIT
 (e.g., \fB^C\fP or \fB^\e\fP).
 With the \fBnoraw\fP and \fBcbreak\fP settings,
 those may catch a signal and stop the program,
 where other implementations allow one to enter those characters in the buffer.
 .bP
-Starting in 2021 (ncurses 6.3), \fBgetnstr\fP sets \fBraw\fP,
+Starting in 2021
+(\fI\%ncurses\fP 6.3),
+\fBgetnstr\fP sets \fBraw\fP,
 rather than \fBnoraw\fP and \fBcbreak\fP for better compatibility with
 SVr4-curses, e.g., allowing one to enter a \fB^C\fP into the buffer.
 .SH SEE ALSO

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.41 2023/11/25 14:29:54 tom Exp $
-.TH curs_get_wstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.42 2023/12/16 20:32:22 tom Exp $
+.TH curs_get_wstr 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -208,12 +208,12 @@ This implementation counts the terminator in the length.
 X/Open Curses does not specify what happens if the length \fIn\fP is negative.
 .bP
 For analogy with \fBwgetnstr\fP,
-ncurses 6.2 uses a limit (based on \fBLINE_MAX\fP).
+\fI\%ncurses\fP 6.2 uses a limit (based on \fBLINE_MAX\fP).
 .bP
 Some other implementations (such as Solaris xcurses) do the same,
 while others (PDCurses) do not allow this.
 .bP
-NetBSD 7 curses imitates ncurses 6.1 in this regard,
+NetBSD 7 curses imitates \fI\%ncurses\fP 6.1 in this regard,
 treating a \fB\-1\fP as an indefinite number of characters.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

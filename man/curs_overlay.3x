@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.35 2023/11/25 11:29:34 tom Exp $
-.TH curs_overlay 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_overlay.3x,v 1.36 2023/12/16 21:32:51 tom Exp $
+.TH curs_overlay 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .SH NAME
 \fB\%overlay\fP,
 \fB\%overwrite\fP,
@@ -63,9 +74,10 @@ If the argument \fIoverlay\fP is \fBtrue\fP,
 then copying is non-destructive,
 as in \fBoverlay\fP.
 .SH RETURN VALUE
-Routines that return an integer return \fBERR\fP upon failure, and \fBOK\fP
-(SVr4 only specifies "an integer value other than \fBERR\fP") upon successful
-completion.
+These routines return the integer \fBERR\fP upon failure and an \fBOK\fP
+(SVr4 specifies only
+\*(``an integer value other than \fBERR\fP\*('')
+upon successful completion.
 .PP
 X/Open defines no error conditions.
 In this implementation,

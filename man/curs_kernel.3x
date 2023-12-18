@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.49 2023/10/14 22:03:52 tom Exp $
-.TH curs_kernel 3X 2023-10-14 "ncurses 6.4" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.50 2023/12/16 20:32:22 tom Exp $
+.TH curs_kernel 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -197,12 +197,12 @@ of \fBcurs_set\fP \*(``is currently incorrect\*(''.
 This implementation gets it right, but it may be unwise to count
 on the correctness of the return value anywhere else.
 .PP
-Both ncurses and SVr4 will call \fBcurs_set\fP in \fBendwin\fP
+Both \fI\%ncurses\fP and SVr4 will call \fBcurs_set\fP in \fBendwin\fP
 if \fBcurs_set\fP
 has been called to make the cursor other than normal, i.e., either
 invisible or very visible.
-There is no way for ncurses to determine the initial cursor state to
-restore that.
+There is no way for \fI\%ncurses\fP to determine the initial cursor
+state to restore that.
 .SH PORTABILITY
 The \fIvirtual screen\fP functions \fBsetsyx\fP and \fBgetsyx\fP
 are not described in the XSI Curses standard, Issue 4.
@@ -213,7 +213,7 @@ as having return type int.
 This is misleading, as they are macros with no documented semantics
 for the return value.
 .PP
-If interrupted, ncurses restarts \fBnapms\fP.
+If interrupted, \fI\%ncurses\fP restarts \fBnapms\fP.
 That, and the limitation to 30 seconds,
 are different from other implementations.
 .SH SEE ALSO

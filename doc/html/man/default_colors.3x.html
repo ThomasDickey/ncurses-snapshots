@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1997,1999,2000,2005
-  * @Id: default_colors.3x,v 1.47 2023/11/25 14:26:30 tom Exp @
+  * @Id: default_colors.3x,v 1.48 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>default_colors 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>default_colors 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">default_colors 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">default_colors 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>               Library calls              <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 
@@ -90,15 +90,15 @@
               <EM>use</EM><STRONG>_</STRONG><EM>default</EM><STRONG>_</STRONG><EM>colors();</EM>
               <EM>assume</EM><STRONG>_</STRONG><EM>default</EM><STRONG>_</STRONG><EM>colors(-1,-1);</EM>
 
-       These are ncurses extensions.  For other curses implementations,  color
-       number  -1  does  not  mean  anything,  just  as  for  ncurses before a
+       These are <EM>ncurses</EM> extensions.  For other curses implementations,  color
+       number  -1  does  not  mean  anything,  just  as  for  <EM>ncurses</EM> before a
        successful call of <STRONG>use_default_colors</STRONG> or <STRONG>assume_default_colors</STRONG>.
 
        Other curses implementations do not  allow  an  application  to  modify
        color  pair  0.  They assume that the background is COLOR_BLACK, but do
        not ensure that the color pair 0 is painted to  match  the  assumption.
        If   your   application  does  not  use  either  <STRONG>use_default_colors</STRONG>  or
-       <STRONG>assume_default_colors</STRONG> ncurses will paint a white foreground (text) with
+       <STRONG>assume_default_colors</STRONG> <EM>ncurses</EM> will paint a white foreground (text) with
        black background for color pair 0.
 
 
@@ -134,7 +134,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines are specific to ncurses.  They  were  not  supported  on
+       These routines are specific to <EM>ncurses</EM>.  They  were  not  supported  on
        Version 7, BSD or System V implementations.  It is recommended that any
        code depending on them be conditioned using NCURSES_VERSION.
 
@@ -149,7 +149,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

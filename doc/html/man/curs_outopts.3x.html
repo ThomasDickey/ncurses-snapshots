@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_outopts.3x,v 1.52 2023/11/25 14:08:05 tom Exp @
+  * @Id: curs_outopts.3x,v 1.53 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_outopts 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_outopts 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_outopts 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_outopts 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 
@@ -173,7 +173,7 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        These functions are described in the XSI Curses standard, Issue 4.
 
-       From  the  outset,  ncurses  used  <STRONG>nl</STRONG>/<STRONG>nonl</STRONG> to control the conversion of
+       From  the  outset,  <EM>ncurses</EM>  used  <STRONG>nl</STRONG>/<STRONG>nonl</STRONG> to control the conversion of
        newlines to carriage return/line-feed on output as well as input.   XSI
        Curses  documents  only  the  use  of  these functions for input.  This
        difference arose from converting the <EM>pcurses</EM> source (which  used  <STRONG>ioctl</STRONG>
@@ -181,15 +181,15 @@
        interface).  In the former, both input and output were controlled via a
        single  option  <STRONG>CRMOD</STRONG>,  while  the  latter  separates  these  features.
        Because that conversion interferes with  output  optimization,  <STRONG>nl</STRONG>/<STRONG>nonl</STRONG>
-       were amended after ncurses 6.2 to eliminate their effect on output.
+       were amended after <EM>ncurses</EM> 6.2 to eliminate their effect on output.
 
        Some  historic  curses implementations had, as an undocumented feature,
        the  ability  to  do  the  equivalent  of  <STRONG>clearok(...,</STRONG>  <STRONG>1)</STRONG>  by  saying
-       <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under ncurses.
+       <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under <EM>ncurses</EM>.
 
        Earlier  System  V  curses implementations specified that with <STRONG>scrollok</STRONG>
        enabled, any window modification triggering  a  scroll  also  forced  a
-       physical refresh.  XSI Curses does not require this, and <STRONG>ncurses</STRONG> avoids
+       physical refresh.  XSI Curses does not require this, and <EM>ncurses</EM> avoids
        doing it to perform better  vertical-motion  optimization  at  <STRONG>wrefresh</STRONG>
        time.
 
@@ -205,7 +205,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

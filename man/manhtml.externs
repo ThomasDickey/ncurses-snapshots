@@ -1,7 +1,7 @@
-# $Id: manhtml.externs,v 1.15 2021/12/26 00:02:52 tom Exp $
+# $Id: manhtml.externs,v 1.18 2023/12/18 00:35:38 tom Exp $
 # Items in this list will not be linked by man2html
 #***************************************************************************
-# Copyright 2019-2020,2021 Thomas E. Dickey                                *
+# Copyright 2019-2021,2023 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
 #                                                                          *
 # Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,10 +28,8 @@
 # sale, use or other dealings in this Software without prior written       *
 # authorization.                                                           *
 #***************************************************************************
-ADACURSES(1)
 COLOR_PAIR(1)
 COLOR_PAIR(2)
-COLOR_PAIR(3)
 atoi(3)
 conflict(1)
 cron(1)
@@ -59,10 +57,13 @@ scanf(3)
 screen(1)
 setlocale(3)
 sh(1)
+scanf(3)
+scanf(3S)
 sscanf(3)
 stdio(3)
 stty(1)
 system(3)
+swprintf(3)
 termios(3)
 tmux(1)
 tty(4)
@@ -70,6 +71,7 @@ ttys(5)
 vi(1)
 vprintf(3)
 vscanf(3)
+vsscanf(3)
 wcwidth(3)
 write(2)
 xterm(1)

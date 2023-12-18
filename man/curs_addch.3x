@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.74 2023/11/25 14:20:05 tom Exp $
-.TH curs_addch 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addch.3x,v 1.75 2023/12/16 21:19:37 tom Exp $
+.TH curs_addch 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -76,13 +76,13 @@ If the advance is at the right margin:
 The cursor automatically wraps to the beginning of the next line.
 .bP
 At the bottom of the current scrolling region,
-and if \fBscrollok\fP(3X) is enabled,
+and if \fB\%scrollok\fP(3X) is enabled,
 the scrolling region is scrolled up one line.
 .bP
-If \fBscrollok\fP(3X) is not enabled,
+If \fB\%scrollok\fP(3X) is not enabled,
 writing a character at the lower right margin succeeds.
-However, an error is returned because
-it is not possible to wrap to a new line
+However,
+an error is returned because it is not possible to wrap to a new line.
 .PP
 If \fIch\fP is a tab, newline, carriage return or backspace,
 the cursor is moved appropriately within the window:
@@ -101,13 +101,13 @@ The tab interval may be altered by setting the \fBTABSIZE\fP variable.
 .PP
 If \fIch\fP is any other nonprintable character,
 it is drawn in printable form,
-using the same convention as \fBunctrl\fR(3X):
+using the same convention as \fB\%unctrl\fP(3X):
 .bP
 Control characters are displayed in the \fB^\fIX\fR notation.
 .bP
 Values above 128 are either meta characters
 (if the screen has not been initialized,
-or if \fBmeta\fP(3X) has been called with a \fBTRUE\fP E parameter),
+or if \fB\%meta\fP(3X) has been called with a \fBTRUE\fP E parameter),
 shown in the \fBM\-\fIX\fR notation, or are displayed as themselves.
 In the latter case, the values may not be printable;
 this follows the X/Open specification.
@@ -119,12 +119,12 @@ but instead returns the printable representation of the character.
 Video attributes can be combined with a character argument passed to
 \fBaddch\fP or related functions by logical-ORing them into the character.
 (Thus, text, including attributes, can be copied from one place to another
-using \fBinch\fP(3X) and \fBaddch\fP.)  See the \fBcurs_attr\fP(3X) page for
-values of predefined video attribute constants that can be usefully OR'ed
-into characters.
+using \fB\%inch\fP(3X) and \fBaddch\fP.)
+See the \fB\%curs_attr\fP(3X) page for values of predefined video
+attribute constants that can be usefully OR'ed into characters.
 .SS Echoing characters
 The \fBechochar\fP and \fBwechochar\fP routines are equivalent to a call to
-\fBaddch\fP followed by a call to \fBrefresh\fP(3X), or a call to \fBwaddch\fP
+\fBaddch\fP followed by a call to \fB\%refresh\fP(3X), or a call to \fBwaddch\fP
 followed by a call to \fBwrefresh\fP.
 The knowledge that only a single
 character is being output is used and, for non-control characters, a
@@ -194,10 +194,10 @@ or if the window pointer is null.
 If it is not possible to add a complete character,
 an error is returned:
 .bP
-If \fBscrollok\fP(3X) is not enabled,
+If \fB\%scrollok\fP(3X) is not enabled,
 writing a character at the lower right margin succeeds.
-However, an error is returned because
-it is not possible to wrap to a new line
+However,
+an error is returned because it is not possible to wrap to a new line.
 .bP
 If an error is detected when converting a multibyte character to a sequence
 of bytes,
@@ -253,23 +253,26 @@ However, many publicly available terminfos
 include \fBacsc\fP strings in which their key characters (pryz{|}) are
 embedded, and a second-hand list of their character descriptions has come
 to light.
-The ACS-prefixed names for them were invented for \fBncurses\fP(3X).
+The ACS-prefixed names for them were invented for \fB\%ncurses\fP(3X).
 .LP
 The \fIdisplayed\fP values for the \fBACS_\fP and \fBWACS_\fP constants
 depend on
 .bP
-the library configuration, i.e., \fBncurses\fP versus \fBncursesw\fP,
+the library configuration,
+i.e.,
+\fI\%ncurses\fP versus \fI\%ncursesw\fP,
 where the latter is capable of displaying Unicode while the former is not, and
 .bP
 whether the \fIlocale\fP uses UTF-8 encoding.
 .LP
 In certain cases, the terminal is unable to display line-drawing characters
-except by using UTF-8 (see the discussion of \fBNCURSES_NO_UTF8_ACS\fP in
-ncurses(3X)).
+except by using UTF-8
+(see the discussion of \fB\%NCURSES_NO_UTF8_ACS\fP in
+\fB\%ncurses\fP(3X)).
 .SS Character Set
 X/Open Curses assumes that the parameter passed to \fBwaddch\fP contains
 a single character.
-As discussed in \fBcurs_attr\fP(3X), that character may have been
+As discussed in \fB\%curs_attr\fP(3X), that character may have been
 more than eight bits in an SVr3 or SVr4 implementation,
 but in the X/Open Curses model, the details are not given.
 The important distinction between SVr4 curses and X/Open Curses is
@@ -278,22 +281,22 @@ separated from the character information which is packed in a \fBchtype\fP
 to pass to \fBwaddch\fP.
 .PP
 In this implementation, \fBchtype\fP holds an eight-bit character.
-But ncurses allows multibyte characters to be passed in a succession
-of calls to \fBwaddch\fP.
+But \fI\%ncurses\fP allows multibyte characters to be passed in a
+succession of calls to \fBwaddch\fP.
 The other implementations do not do this;
 a call to \fBwaddch\fP passes exactly one character
 which may be rendered as one or more cells on the screen
 depending on whether it is printable.
 .PP
 Depending on the locale settings,
-ncurses will inspect the byte passed in each call to \fBwaddch\fP,
+\fI\%ncurses\fP will inspect the byte passed in each call to \fBwaddch\fP,
 and check if the latest call will continue a multibyte sequence.
 When a character is \fIcomplete\fP,
-ncurses displays the character and moves to the next position in the screen.
+\fI\%ncurses\fP displays the character and moves to the next position in the screen.
 .PP
 If the calling application interrupts the succession of bytes in
 a multibyte character by moving the current location (e.g., using \fBwmove\fP),
-ncurses discards the partially built character,
+\fI\%ncurses\fP discards the partially built character,
 starting over again.
 .PP
 For portability to other implementations,

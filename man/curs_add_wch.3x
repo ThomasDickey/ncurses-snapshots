@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.48 2023/11/25 14:20:05 tom Exp $
-.TH curs_add_wch 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.49 2023/12/16 21:19:37 tom Exp $
+.TH curs_add_wch 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,7 +106,7 @@ The \fBecho_wchar\fP
 function is functionally equivalent to a call to
 \fBadd_wch\fP
 followed by a call to
-\fBrefresh\fP(3X).
+\fB\%refresh\fP(3X).
 Similarly, the
 \fBwecho_wchar\fP
 is functionally equivalent to a call to
@@ -118,11 +118,11 @@ that only a single character is being output is taken into consideration and,
 for non-control characters, a considerable performance gain might be seen
 by using the *\fBecho\fP* functions instead of their equivalents.
 .SS Line Graphics
-Like \fBaddch\fP(3X),
+Like \fB\%addch\fP(3X),
 \fBaddch_wch\fP accepts symbols which make it simple to draw lines and other
 frequently used special characters.
 These symbols correspond to the same VT100 line-drawing set as
-\fBaddch\fP(3X).
+\fB\%addch\fP(3X).
 .PP
 .TS
 l l l l l
@@ -165,7 +165,7 @@ WACS_URCORNER	0x2510 	+	k	upper right-hand corner
 WACS_VLINE	0x2502 	|	x	vertical line
 .TE
 .PP
-The wide-character configuration of ncurses also defines symbols
+The wide-character configuration of \fI\%ncurses\fP also defines symbols
 for thick lines (\fBacsc\fP \*(``J\*('' to \*(``V\*(''):
 .PP
 .TS
@@ -210,7 +210,8 @@ WACS_D_URCORNER	0x2557	+	B	double upper right corner
 WACS_D_VLINE	0x2551	|	Y	double vertical line
 .TE
 .PP
-Unicode's descriptions for these characters differs slightly from ncurses,
+Unicode's descriptions for these characters differs slightly from
+\fI\%ncurses\fP,
 by introducing the term \*(``light\*('' (along with less important details).
 Here are its descriptions for the normal, thick, and double horizontal lines:
 .bP
@@ -231,10 +232,10 @@ if it is not possible to add a complete character in the window.
 .PP
 The latter may be due to different causes:
 .bP
-If \fBscrollok\fP(3X) is not enabled,
+If \fB\%scrollok\fP(3X) is not enabled,
 writing a character at the lower right margin succeeds.
-However, an error is returned because
-it is not possible to wrap to a new line
+However,
+an error is returned because it is not possible to wrap to a new line.
 .bP
 If an error is detected when converting a multibyte character to a sequence
 of bytes,
@@ -282,14 +283,16 @@ Existing implementations of Unix curses (AIX, HP-UX, Solaris)
 use only the \fBacsc\fP character-mapping to provide this feature.
 As a result, those implementations can only use single-byte line-drawing
 characters.
-Ncurses 5.3 (2002) provided a table of Unicode values to solve these problems.
+\fI\%ncurses\fP 5.3 (2002) provided a table of Unicode values to solve
+these problems.
 NetBSD curses incorporated that table in 2010.
 .PP
 In this implementation, the Unicode values are used instead of the
-terminal description's \fBacsc\fP mapping as discussed in ncurses(3X)
-for the environment variable \fBNCURSES_NO_UTF8_ACS\fP.
+terminal description's \fBacsc\fP mapping as discussed in
+\fB\%ncurses\fP(3X) for the environment variable
+\fINCURSES_NO_UTF8_ACS\fP.
 In contrast, for the same cases, the line-drawing characters
-described in \fBcurs_addch\fP(3X) will use only the ASCII default values.
+described in \fB\%addch\fP(3X) will use only the ASCII default values.
 .PP
 Having Unicode available does not solve all of the problems with
 line-drawing for curses:
@@ -338,7 +341,7 @@ describing only the cases where \fIwch\fP is a spacing character
 or a non-spacing character.
 .PP
 This implementation assumes that \fIwch\fP is constructed using
-\fBsetcchar\fP(3X), and in turn that the result
+\fB\%setcchar\fP(3X), and in turn that the result
 .bP
 contains at most one spacing character in the beginning of its list of wide
 characters,
@@ -347,7 +350,8 @@ or
 .bP
 may hold one non-spacing character.
 .PP
-In the latter case, ncurses adds the non-spacing character to the active
+In the latter case,
+\fI\%ncurses\fP adds the non-spacing character to the active
 (base) spacing character.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

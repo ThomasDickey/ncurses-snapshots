@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_color.3x,v 1.92 2023/11/25 17:36:51 tom Exp @
+  * @Id: curs_color.3x,v 1.93 2023/12/16 21:07:24 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_color 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_color 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_color 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_color 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
@@ -50,7 +50,9 @@
        <STRONG>start_color</STRONG>,   <STRONG>has_colors</STRONG>,   <STRONG>can_change_color</STRONG>,  <STRONG>init_pair</STRONG>,  <STRONG>init_color</STRONG>,
        <STRONG>init_extended_pair</STRONG>, <STRONG>init_extended_color</STRONG>,  <STRONG>color_content</STRONG>,  <STRONG>pair_content</STRONG>,
        <STRONG>extended_color_content</STRONG>,    <STRONG>extended_pair_content</STRONG>,    <STRONG>reset_color_pairs</STRONG>,
-       <STRONG>COLOR_PAIR</STRONG>, <STRONG>PAIR_NUMBER</STRONG> - manipulate terminal colors with <EM>curses</EM>
+       <STRONG>COLOR_PAIR</STRONG>, <STRONG>PAIR_NUMBER</STRONG>, <STRONG>COLORS</STRONG>, <STRONG>COLOR_PAIRS</STRONG>,  <STRONG>COLOR_BLACK</STRONG>,  <STRONG>COLOR_RED</STRONG>,
+       <STRONG>COLOR_GREEN</STRONG>,   <STRONG>COLOR_YELLOW</STRONG>,   <STRONG>COLOR_BLUE</STRONG>,  <STRONG>COLOR_MAGENTA</STRONG>,  <STRONG>COLOR_CYAN</STRONG>,
+       <STRONG>COLOR_WHITE</STRONG> - manipulate terminal colors with <EM>curses</EM>
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -77,7 +79,7 @@
        <STRONG>void</STRONG> <STRONG>reset_color_pairs(void);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>COLOR_PAIR(int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>PAIR_NUMBER(</STRONG><EM>attrs</EM><STRONG>);</STRONG>
+       <STRONG>PAIR_NUMBER(int</STRONG> <EM>attr</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -85,10 +87,10 @@
 </PRE><H3><a name="h3-Overview">Overview</a></H3><PRE>
        <EM>curses</EM> supports color attributes on terminals with that capability.  To
        use  these  routines  <STRONG>start_color</STRONG>  must  be called, usually right after
-       <STRONG>initscr</STRONG>.  Colors are always used in pairs (referred to as color-pairs).
-       A  color-pair  consists  of  a  foreground color (for characters) and a
+       <STRONG>initscr</STRONG>.  Colors are always used in pairs (referred to as color pairs).
+       A  color  pair  consists  of  a foreground color (for characters) and a
        background color (for the blank  field  on  which  the  characters  are
-       displayed).   A  programmer  initializes  a color-pair with the routine
+       displayed).   A  programmer  initializes  a color pair with the routine
        <STRONG>init_pair</STRONG>.  After it has been initialized, <STRONG>COLOR_PAIR</STRONG>(<EM>n</EM>) can be used to
        convert the pair to a video attribute.
 
@@ -99,7 +101,7 @@
        the programmer can change the colors.  The routine <STRONG>color_content</STRONG> allows
        a programmer to extract the amounts of red, green, and blue  components
        in  an initialized color.  The routine <STRONG>pair_content</STRONG> allows a programmer
-       to find out how a given color-pair is currently defined.
+       to find out how a given color pair is currently defined.
 
 
 </PRE><H3><a name="h3-Color-Rendering">Color Rendering</a></H3><PRE>
@@ -182,7 +184,7 @@
        routine right after <STRONG>initscr</STRONG>.  <STRONG>start_color</STRONG> does this:
 
        <STRONG>o</STRONG>   It   initializes  two  global  variables,  <STRONG>COLORS</STRONG>  and  <STRONG>COLOR_PAIRS</STRONG>
-           (respectively defining the maximum number of colors and color-pairs
+           (respectively defining the maximum number of colors and color pairs
            the terminal can support).
 
        <STRONG>o</STRONG>   It  initializes  the special color pair <STRONG>0</STRONG> to the default foreground
@@ -253,8 +255,8 @@
 
 
 </PRE><H3><a name="h3-init_pair">init_pair</a></H3><PRE>
-       The <STRONG>init_pair</STRONG> routine changes the definition of a color-pair.  It takes
-       three arguments: the number  of  the  color-pair  to  be  changed,  the
+       The <STRONG>init_pair</STRONG> routine changes the definition of a color pair.  It takes
+       three arguments: the number of  the  color  pair  to  be  changed,  the
        foreground color number, and the background color number.  For portable
        applications:
 
@@ -265,11 +267,11 @@
 
        <STRONG>o</STRONG>   The second and third arguments must be valid color values.
 
-       If  the  color-pair was previously initialized, the screen is refreshed
-       and  all  occurrences  of  that  color-pair  are  changed  to  the  new
+       If  the  color pair was previously initialized, the screen is refreshed
+       and all  occurrences  of  that  color  pair  are  changed  to  the  new
        definition.
 
-       As  an  extension,  ncurses  allows  you  to  set  color pair <STRONG>0</STRONG> via the
+       As  an  extension,  <EM>ncurses</EM>  allows  you  to  set  color pair <STRONG>0</STRONG> via the
        <STRONG><A HREF="default_colors.3x.html">assume_default_colors(3x)</A></STRONG> routine, or to specify  the  use  of  default
        colors (color number <STRONG>-1</STRONG>) if you first invoke the <STRONG><A HREF="default_colors.3x.html">use_default_colors(3x)</A></STRONG>
        routine.
@@ -277,8 +279,8 @@
 
 </PRE><H3><a name="h3-init_extended_pair">init_extended_pair</a></H3><PRE>
        Because <STRONG>init_pair</STRONG> uses signed <STRONG>short</STRONG>s for its  parameters,  that  limits
-       color-pairs   and  color-values  to  32767  on  modern  hardware.   The
-       extension <STRONG>init_extended_pair</STRONG> uses <STRONG>int</STRONG>s for the  color-pair  and  color-
+       color  pairs  and  color-values  to  32767  on  modern  hardware.   The
+       extension <STRONG>init_extended_pair</STRONG> uses <STRONG>int</STRONG>s for the color  pair  and  color-
        value, allowing a larger number of colors to be supported.
 
 
@@ -331,7 +333,7 @@
 
 </PRE><H3><a name="h3-pair_content">pair_content</a></H3><PRE>
        The <STRONG>pair_content</STRONG> routine allows programmers to find out what  colors  a
-       given  color-pair consists of.  It requires three arguments: the color-
+       given  color  pair consists of.  It requires three arguments: the color
        pair number, and two addresses of <STRONG>short</STRONG>s for storing the foreground and
        the background color numbers.
 
@@ -345,58 +347,59 @@
 
 </PRE><H3><a name="h3-extended_pair_content">extended_pair_content</a></H3><PRE>
        Because <STRONG>pair_content</STRONG> uses signed <STRONG>short</STRONG>s for its parameters, that limits
-       color-pair and color-values to 32767 on modern hardware.  The extension
+       color pair and color-values to 32767 on modern hardware.  The extension
        <STRONG>extended_pair_content</STRONG> uses <STRONG>int</STRONG>s for the color pair  and  for  returning
        the  foreground  and  background  colors,  allowing  a larger number of
        colors to be supported.
 
 
 </PRE><H3><a name="h3-reset_color_pairs">reset_color_pairs</a></H3><PRE>
-       The extension <STRONG>reset_color_pairs</STRONG> tells ncurses to  discard  all  of  the
-       color-pair  information  which was set with <STRONG>init_pair</STRONG>.  It also touches
+       The extension <STRONG>reset_color_pairs</STRONG> tells <EM>ncurses</EM> to  discard  all  of  the
+       color  pair  information which was set with <STRONG>init_pair</STRONG>.  It also touches
        the current- and standard-screens, allowing an  application  to  switch
        color palettes rapidly.
 
 
-</PRE><H3><a name="h3-PAIR_NUMBER">PAIR_NUMBER</a></H3><PRE>
-       <STRONG>PAIR_NUMBER(</STRONG><EM>attrs</EM>)  extracts  the  color value from its <EM>attrs</EM> parameter
-       and returns it as a color pair number.
-
-
 </PRE><H3><a name="h3-COLOR_PAIR">COLOR_PAIR</a></H3><PRE>
-       Its inverse <STRONG>COLOR_PAIR(</STRONG><EM>n</EM><STRONG>)</STRONG> converts a color pair number to an attribute.
-       Attributes  can  hold color pairs in the range 0 to 255.  If you need a
-       color pair larger than that, you must use functions  such  as  <STRONG>attr_set</STRONG>
-       (which  pass  the  color  pair as a separate parameter) rather than the
-       legacy functions such as <STRONG>attrset</STRONG>.
+       <STRONG>COLOR_PAIR(</STRONG><EM>n</EM><STRONG>)</STRONG> converts a color pair number to an attribute.  Attributes
+       can hold color pairs in the range 0 to 255.  If you need a  color  pair
+       larger  than  that, you must use functions such as <STRONG>attr_set</STRONG> (which pass
+       the color  pair  as  a  separate  parameter)  rather  than  the  legacy
+       functions such as <STRONG>attrset</STRONG>.
+
+
+</PRE><H3><a name="h3-PAIR_NUMBER">PAIR_NUMBER</a></H3><PRE>
+       <STRONG>PAIR_NUMBER(</STRONG><EM>attr</EM>)   extracts   the  color  information  from  its  <EM>attr</EM>
+       parameter and returns it as a color pair  number;  it  is  the  inverse
+       operation of <STRONG>COLOR_PAIR</STRONG>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        The routines <STRONG>can_change_color</STRONG> and <STRONG>has_colors</STRONG> return <STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>.
 
-       All other routines return the integer <STRONG>ERR</STRONG> upon failure and an <STRONG>OK</STRONG>  (SVr4
-       specifies  only  "an  integer  value  other  than <STRONG>ERR</STRONG>") upon successful
+       All  other routines return the integer <STRONG>ERR</STRONG> upon failure and an <STRONG>OK</STRONG> (SVr4
+       specifies only "an integer  value  other  than  <STRONG>ERR</STRONG>")  upon  successful
        completion.
 
-       X/Open defines no error conditions.   SVr4  does  document  some  error
+       X/Open  defines  no  error  conditions.   SVr4 does document some error
        conditions which apply in general:
 
        <STRONG>o</STRONG>   This implementation will return <STRONG>ERR</STRONG> on attempts to use color values
-           outside the range <STRONG>0</STRONG> to <STRONG>COLORS</STRONG>-1  (except  for  the  default  colors
-           extension),   or   use   color   pairs   outside  the  range  <STRONG>0</STRONG>  to
+           outside  the  range  <STRONG>0</STRONG>  to  <STRONG>COLORS</STRONG>-1 (except for the default colors
+           extension),  or  use  color  pairs   outside   the   range   <STRONG>0</STRONG>   to
            <STRONG>COLOR_PAIRS-1</STRONG>.
 
            Color values used in <STRONG>init_color</STRONG> must be in the range <STRONG>0</STRONG> to <STRONG>1000</STRONG>.
 
-           An error is returned from all functions if  the  terminal  has  not
+           An  error  is  returned  from all functions if the terminal has not
            been initialized.
 
-           An  error is returned from secondary functions such as <STRONG>init_pair</STRONG> if
+           An error is returned from secondary functions such as <STRONG>init_pair</STRONG>  if
            <STRONG>start_color</STRONG> was not called.
 
-       <STRONG>o</STRONG>   SVr4  does  much  the  same,  except  that  it  returns  <STRONG>ERR</STRONG>   from
-           <STRONG>pair_content</STRONG>  if  the pair was not initialized using <STRONG>init_pairs</STRONG> and
-           it returns <STRONG>ERR</STRONG> from <STRONG>color_content</STRONG> if the terminal does not  support
+       <STRONG>o</STRONG>   SVr4   does  much  the  same,  except  that  it  returns  <STRONG>ERR</STRONG>  from
+           <STRONG>pair_content</STRONG> if the pair was not initialized using  <STRONG>init_pairs</STRONG>  and
+           it  returns <STRONG>ERR</STRONG> from <STRONG>color_content</STRONG> if the terminal does not support
            changing colors.
 
            This implementation does not return <STRONG>ERR</STRONG> for either case.
@@ -405,7 +408,7 @@
 
           <STRONG>init_color</STRONG>
                returns an error if the terminal does not support this feature,
-               e.g., if the <STRONG>initialize_color</STRONG> capability  is  absent  from  the
+               e.g.,  if  the  <STRONG>initialize_color</STRONG>  capability is absent from the
                terminal description.
 
           <STRONG>start_color</STRONG>
@@ -413,76 +416,76 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       In  the  <EM>ncurses</EM>  implementation,  there is a separate color activation
-       flag, color palette, color  pairs  table,  and  associated  <STRONG>COLORS</STRONG>  and
-       <STRONG>COLOR_PAIRS</STRONG>  counts  for  each  screen;  the  <STRONG>start_color</STRONG> function only
-       affects the current screen.   The  SVr4/XSI  interface  is  not  really
-       designed  with  this  in mind, and historical implementations may use a
+       In the <EM>ncurses</EM> implementation, there is  a  separate  color  activation
+       flag,  color  palette,  color  pairs  table,  and associated <STRONG>COLORS</STRONG> and
+       <STRONG>COLOR_PAIRS</STRONG> counts for  each  screen;  the  <STRONG>start_color</STRONG>  function  only
+       affects  the  current  screen.   The  SVr4/XSI  interface is not really
+       designed with this in mind, and historical implementations  may  use  a
        single shared color palette.
 
-       Setting an implicit background color via  a  color  pair  affects  only
-       character  cells  that  a character write operation explicitly touches.
-       To change the background color used when parts of a window are  blanked
+       Setting  an  implicit  background  color  via a color pair affects only
+       character cells that a character write  operation  explicitly  touches.
+       To  change the background color used when parts of a window are blanked
        by erasing or scrolling operations, see <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>.
 
-       Several  caveats  apply  on  older x86 machines (e.g., i386, i486) with
+       Several caveats apply on older x86 machines  (e.g.,  i386,  i486)  with
        VGA-compatible graphics:
 
-       <STRONG>o</STRONG>   COLOR_YELLOW is actually brown.  To get  yellow,  use  COLOR_YELLOW
+       <STRONG>o</STRONG>   COLOR_YELLOW  is  actually  brown.  To get yellow, use COLOR_YELLOW
            combined with the <STRONG>A_BOLD</STRONG> attribute.
 
-       <STRONG>o</STRONG>   The  A_BLINK  attribute should in theory cause the background to go
+       <STRONG>o</STRONG>   The A_BLINK attribute should in theory cause the background  to  go
            bright.  This often fails to work, and even some cards for which it
-           mostly  works  (such  as the Paradise and compatibles) do the wrong
-           thing when you try to set a bright "yellow" background (you  get  a
+           mostly works (such as the Paradise and compatibles)  do  the  wrong
+           thing  when  you try to set a bright "yellow" background (you get a
            blinking yellow foreground instead).
 
        <STRONG>o</STRONG>   Color RGB values are not settable.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       The  functions  marked as extensions were designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and
-       are not found in SVr4 curses, 4.4BSD  curses,  or  any  other  previous
+       The functions marked as extensions were designed for  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>,  and
+       are  not  found  in  SVr4  curses, 4.4BSD curses, or any other previous
        version of curses.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       This  implementation satisfies XSI Curses's minimum maximums for <STRONG>COLORS</STRONG>
+       This implementation satisfies XSI Curses's minimum maximums for  <STRONG>COLORS</STRONG>
        and <STRONG>COLOR_PAIRS</STRONG>.
 
        The  <STRONG>init_pair</STRONG>  routine  accepts  negative  values  of  foreground  and
-       background  color  to support the <STRONG><A HREF="default_colors.3x.html">use_default_colors(3x)</A></STRONG> extension, but
+       background color to support the <STRONG><A HREF="default_colors.3x.html">use_default_colors(3x)</A></STRONG>  extension,  but
        only if that routine has been first invoked.
 
        The assumption that <STRONG>COLOR_BLACK</STRONG> is the default background color for all
-       terminals   can   be   modified   using  the  <STRONG><A HREF="default_colors.3x.html">assume_default_colors(3x)</A></STRONG>
+       terminals  can  be   modified   using   the   <STRONG><A HREF="default_colors.3x.html">assume_default_colors(3x)</A></STRONG>
        extension.
 
-       This implementation checks the pointers, e.g., for the values  returned
-       by  <STRONG>color_content</STRONG>  and  <STRONG>pair_content</STRONG>,  and will treat those as optional
+       This  implementation checks the pointers, e.g., for the values returned
+       by <STRONG>color_content</STRONG> and <STRONG>pair_content</STRONG>, and will  treat  those  as  optional
        parameters when null.
 
-       X/Open Curses does not specify a limit for the  number  of  colors  and
+       X/Open  Curses  does  not  specify a limit for the number of colors and
        color pairs which a terminal can support.  However, in its use of <STRONG>short</STRONG>
-       for the parameters, it carries over SVr4's  implementation  detail  for
+       for  the  parameters,  it carries over SVr4's implementation detail for
        the compiled terminfo database, which uses signed 16-bit numbers.  This
-       implementation provides extended versions of those functions which  use
-       <STRONG>short</STRONG>  parameters, allowing applications to use larger color- and pair-
+       implementation  provides extended versions of those functions which use
+       <STRONG>short</STRONG> parameters, allowing applications to use larger color- and  pair-
        numbers.
 
-       The <STRONG>reset_color_pairs</STRONG> function is an extension of ncurses.
+       The <STRONG>reset_color_pairs</STRONG> function is an extension of <EM>ncurses</EM>.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        SVr3.2 introduced color support to curses in 1987.
 
-       SVr4 made internal changes, e.g., moving  the  storage  for  the  color
+       SVr4  made  internal  changes,  e.g.,  moving the storage for the color
        state  from  <STRONG>SP</STRONG>  (the  <STRONG>SCREEN</STRONG>  structure)  to  <STRONG>cur_term</STRONG>  (the  <STRONG>TERMINAL</STRONG>
        structure), but provided the same set of library functions.
 
-       SVr4 curses limits the number of color pairs  to  64,  reserving  color
-       pair  zero  (0)  as the terminal's initial uncolored state.  This limit
-       arises because the color pair information is a bitfield in  the  <STRONG>chtype</STRONG>
+       SVr4  curses  limits  the  number of color pairs to 64, reserving color
+       pair zero (0) as the terminal's initial uncolored  state.   This  limit
+       arises  because  the color pair information is a bitfield in the <STRONG>chtype</STRONG>
        data type (denoted by <STRONG>A_COLOR</STRONG>).
 
        Other implementations of curses had different limits:
@@ -494,36 +497,36 @@
            changing <STRONG>chtype</STRONG> from 16-bits to 32-bits.
 
        <STRONG>o</STRONG>   X/Open Curses (1992-present) added a new structure <STRONG>cchar_t</STRONG> to store
-           the character, attributes and color-pair values, allowing increased
-           range  of  color-pairs.   Both  color-pairs and color-values used a
+           the character, attributes and color pair values, allowing increased
+           range of color pairs.  Both color pairs  and  color-values  used  a
            signed <STRONG>short</STRONG>, limiting values to 15 bits.
 
-       <STRONG>o</STRONG>   ncurses (1992-present)  uses  eight  bits  for  <STRONG>A_COLOR</STRONG>  in  <STRONG>chtype</STRONG>
+       <STRONG>o</STRONG>   <EM>ncurses</EM>  (1992-present)  uses  eight  bits  for  <STRONG>A_COLOR</STRONG>  in <STRONG>chtype</STRONG>
            values.
 
-           Version  5.3  provided  a wide-character interface (2002), but left
-           color-pairs as part of the attributes-field.
+           Version 5.3 provided a wide-character interface  (2002),  but  left
+           color pairs as part of the attributes-field.
 
-           Since version 6 (2015), ncurses uses a separate <STRONG>int</STRONG> for color-pairs
-           in the <STRONG>cchar_t</STRONG> values.  When those color-pair values fit in 8 bits,
-           ncurses allows color-pairs to  be  manipulated  via  the  functions
+           Since version 6 (2015), ncurses uses a separate <STRONG>int</STRONG> for color pairs
+           in the <STRONG>cchar_t</STRONG> values.  When those color pair values fit in 8 bits,
+           ncurses  allows  color  pairs  to  be manipulated via the functions
            using <STRONG>chtype</STRONG> values.
 
-       <STRONG>o</STRONG>   NetBSD  curses  used  6  bits  from  2000  (when  colors were first
-           supported) until 2004.  At that point, NetBSD  changed  to  use  10
-           bits.   As  of  2021,  that size is unchanged.  Like ncurses before
-           version 6, the NetBSD  color-pair  information  is  stored  in  the
-           attributes  field of <STRONG>cchar_t</STRONG>, limiting the number of color-pairs by
+       <STRONG>o</STRONG>   NetBSD curses used  6  bits  from  2000  (when  colors  were  first
+           supported)  until  2004.   At  that point, NetBSD changed to use 10
+           bits.  As of 2021, that size is  unchanged.   Like  <EM>ncurses</EM>  before
+           version  6,  the  NetBSD  color  pair  information is stored in the
+           attributes field of <STRONG>cchar_t</STRONG>, limiting the number of color pairs  by
            the size of the bitfield.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,   <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-11-25                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -556,8 +559,8 @@ ncurses 6.4                       2023-11-25                    <STRONG><A HREF=
 <li><a href="#h3-pair_content">pair_content</a></li>
 <li><a href="#h3-extended_pair_content">extended_pair_content</a></li>
 <li><a href="#h3-reset_color_pairs">reset_color_pairs</a></li>
-<li><a href="#h3-PAIR_NUMBER">PAIR_NUMBER</a></li>
 <li><a href="#h3-COLOR_PAIR">COLOR_PAIR</a></li>
+<li><a href="#h3-PAIR_NUMBER">PAIR_NUMBER</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>

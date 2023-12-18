@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_clear.3x,v 1.40 2023/11/25 11:31:27 tom Exp $
-.TH curs_clear 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_clear.3x,v 1.41 2023/12/16 21:09:11 tom Exp $
+.TH curs_clear 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -95,8 +106,8 @@ Note that \fBerase\fP, \fBwerase\fP, \fBclear\fP, \fBwclear\fP,
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 .PP
-The SVr4.0 manual says that these functions could
-return "a non-negative integer if \fBimmedok\fP(3X) is set",
+The SVr4.0 manual says that these functions could return
+\*(``or a non-negative integer if \fB\%immedok\fP is set\*('',
 referring to the return-value of \fBwrefresh\fP.
 In that implementation, \fBwrefresh\fP would return a count of
 the number of characters written to the terminal.
@@ -105,7 +116,7 @@ Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fP by saying
 \fBtouchwin(stdscr)\fP or \fBclear(stdscr)\fP.
 This will not work under
-ncurses.
+\fI\%ncurses\fP.
 .PP
 This implementation, and others such as Solaris,
 sets the current position to 0,0 after erasing

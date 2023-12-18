@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.58 2023/11/25 14:30:50 tom Exp $
-.TH curs_inopts 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.59 2023/12/16 20:32:22 tom Exp $
+.TH curs_inopts 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -103,8 +103,8 @@ get and set \fIcurses\fR terminal input options
 \fBint is_raw(void);
 .fi
 .SH DESCRIPTION
-The \fIncurses\fP library provides several functions which let an application
-change the way input from the terminal is handled.
+The \fI\%ncurses\fP library provides several functions which let an
+application change the way input from the terminal is handled.
 Some are global, applying to all windows.
 Others apply only to a specific window.
 Window-specific settings are not automatically applied to new or derived
@@ -333,15 +333,15 @@ if the flag is reset, or
 \-1
 if the \fIcurses\fP library was not initialized.
 .PP
-These routines are specific to \fIncurses\fP.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on \fIncurses\fP extensions
+It is recommended that any code depending on \fI\%ncurses\fP extensions
 be conditioned using NCURSES_VERSION.
 .SH PORTABILITY
 Except as noted in the section on extensions,
 these functions are described in the XSI Curses standard, Issue 4.
 .PP
-The \fIncurses\fP library obeys the XPG4 standard
+The \fI\%ncurses\fP library obeys the XPG4 standard
 and the historical practice of the
 AT&T \fIcurses\fP implementations,
 in that the echo bit is cleared when \fIcurses\fP
@@ -361,10 +361,11 @@ raw input wants a clean (ideally 8-bit clean) connection that the operating
 system will not alter.
 .PP
 When \fB\%keypad\fP is first enabled,
-\fIncurses\fP loads the key-definitions for the current terminal description.
+\fI\%ncurses\fP loads the key-definitions for the current terminal
+description.
 If the terminal description includes extended string capabilities,
 e.g., from using the \fB\-x\fP option of \fB@TIC@\fP,
-then \fIncurses\fP also defines keys for the capabilities whose names
+then \fI\%ncurses\fP also defines keys for the capabilities whose names
 begin with \*(``k\*(''.
 The corresponding keycodes are generated and (depending on previous
 loads of terminal descriptions) may differ from one execution of a
@@ -386,12 +387,12 @@ and similar functions to return keycodes rely upon the order in which
 the strings are loaded.
 If more than one key definition has the same string value,
 then \fB\%wgetch\fP can return only one keycode.
-Most \fIcurses\fP implementations (including \fIncurses\fP)
+Most \fIcurses\fP implementations (including \fI\%ncurses\fP)
 load key definitions in the order
 defined by the array of string capability names.
 The last key to be loaded determines the keycode which will be returned.
-In \fIncurses\fP, you may also have extended capabilities interpreted as
-key definitions.
+In \fI\%ncurses\fP,
+you may also have extended capabilities interpreted as key definitions.
 These are loaded after the predefined keys,
 and if a capability's value is the same as a previously-loaded
 key definition,

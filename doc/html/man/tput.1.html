@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.91 2023/12/02 20:49:04 tom Exp @
+  * @Id: tput.1,v 1.92 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2023-12-02 ncurses 6.4 User commands</TITLE>
+<TITLE>tput 1 2023-12-16 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2023-12-02 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tput 1 2023-12-16 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -105,7 +105,7 @@
               variable <EM>TERM</EM>.  If <STRONG>-T</STRONG> is specified,  then  the  shell  variables
               <EM>LINES</EM> and <EM>COLUMNS</EM> will also be ignored.
 
-       <STRONG>-V</STRONG>     reports  the  version of ncurses which was used in this program,
+       <STRONG>-V</STRONG>     reports  the  version of <EM>ncurses</EM> which was used in this program,
               and exits.
 
        <STRONG>-x</STRONG>     prevents <STRONG>tput</STRONG> from attempting to clear the scrollback buffer.
@@ -212,7 +212,7 @@
        <STRONG>tput</STRONG>  <STRONG>reset</STRONG>.   The  <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>  utility  also  treats  a  link named <STRONG>reset</STRONG>
        specially.
 
-       Before ncurses 6.1, the two utilities were different from each other:
+       Before <EM>ncurses</EM> 6.1, the two utilities were different from each other:
 
        <STRONG>o</STRONG>   <STRONG>tset</STRONG> utility reset the terminal modes and special  characters  (not
            done with <STRONG>tput</STRONG>).
@@ -225,7 +225,7 @@
        <STRONG>o</STRONG>   The <STRONG>reset</STRONG> program is usually an alias for  <STRONG>tset</STRONG>,  because  of  this
            difference with resetting terminal modes and special characters.
 
-       With  the  changes  made  for ncurses 6.1, the <EM>reset</EM> feature of the two
+       With  the  changes  made  for <EM>ncurses</EM> 6.1, the <EM>reset</EM> feature of the two
        programs is (mostly) the same.  A few differences remain:
 
        <STRONG>o</STRONG>   The <STRONG>tset</STRONG> program waits  one  second  when  resetting,  in  case  it
@@ -335,7 +335,7 @@
            before falling back to "/dev/tty" and finally just assumes a 1200Bd
            terminal.  When updating terminal modes, it ignores errors.
 
-           Until  changes made after ncurses 6.0, <STRONG>tput</STRONG> did not modify terminal
+           Until  changes made after <EM>ncurses</EM> 6.0, <STRONG>tput</STRONG> did not modify terminal
            modes.  <STRONG>tput</STRONG> now uses a similar scheme, using functions shared with
            <STRONG>tset</STRONG>  (and ultimately based on the 4.4BSD <STRONG>tset</STRONG>).  If it is not able
            to open a terminal, e.g., when running in <STRONG>cron(1)</STRONG>, <STRONG>tput</STRONG> will return
@@ -355,10 +355,10 @@
 
            Besides  providing  more  reliable operation than AT&amp;T's utility, a
            portability problem is introduced  by  this  analysis:  An  OpenBSD
-           developer  adapted  the  internal  library function from ncurses to
+           developer  adapted  the  internal  library function from <EM>ncurses</EM> to
            port NetBSD's  termcap-based  <STRONG>tput</STRONG>  to  terminfo.   That  had  been
            modified  to  interpret  multiple  commands  on  a  line.  Portable
-           applications should not rely upon this feature; ncurses provides it
+           applications should not rely upon this feature; <EM>ncurses</EM> provides it
            to support applications written specifically for OpenBSD.
 
        This  implementation  (unlike  others)  can  accept  both  <EM>termcap</EM>  and
@@ -397,7 +397,7 @@
            2010, NetBSD's <STRONG>tput</STRONG> uses terminfo names.   Before  that,  it  (like
            FreeBSD) recognized termcap names.
 
-           Beginning  in  2021,  FreeBSD uses the ncurses <STRONG>tput</STRONG>, configured for
+           Beginning  in  2021,  FreeBSD uses the <EM>ncurses</EM> <STRONG>tput</STRONG>, configured for
            both terminfo (tested first) and termcap (as a fallback).
 
        Because (apparently) <EM>all</EM> of the certified Unix systems support the full
@@ -431,10 +431,10 @@
            absent or cancelled numeric value versus an (unsigned) exit code.
 
        The various Unix systems (AIX, HP-UX, Solaris) use the same  exit-codes
-       as ncurses.
+       as <EM>ncurses</EM>.
 
        NetBSD curses documents different exit codes which do not correspond to
-       either ncurses or X/Open.
+       either <EM>ncurses</EM> or X/Open.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -474,7 +474,7 @@
        BSD:  Ross  Ridge's  <EM>mytinfo</EM> package, published on <EM>comp.sources.unix</EM> in
        December 1992.  Ridge's program made  more  sophisticated  use  of  the
        terminal  capabilities  than  the  BSD program.  Eric Raymond used that
-       <STRONG>tput</STRONG> program (and other parts of <EM>mytinfo</EM>)  in  ncurses  in  June  1995.
+       <STRONG>tput</STRONG> program (and other parts of <EM>mytinfo</EM>)  in  <EM>ncurses</EM>  in  June  1995.
        Using  the  portions  dealing with terminal capabilities almost without
        change,  Raymond  made  improvements  to  the  way   the   command-line
        parameters were handled.
@@ -543,7 +543,7 @@
 
 
 
-ncurses 6.4                       2023-12-02                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.4                       2023-12-16                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

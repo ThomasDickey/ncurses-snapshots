@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.91 2023/12/02 21:05:24 tom Exp @
+  * @Id: curs_attr.3x,v 1.92 2023/12/16 21:07:24 tom Exp @
   * ---------------------------------------------------------------------------
   * ---------------------------------------------------------------------------
   * ---------------------------------------------------------------------------
@@ -50,12 +50,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2023-12-02 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_attr 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2023-12-02 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -159,7 +159,7 @@
            attr_set(A_BOLD, <EM>pair</EM>, NULL);
 
        However, if the value does not fit, then the <STRONG>COLOR_PAIR</STRONG> macro uses only
-       the  bits  that fit.  For example, because in ncurses <STRONG>A_COLOR</STRONG> has eight
+       the  bits  that fit.  For example, because in <EM>ncurses</EM> <STRONG>A_COLOR</STRONG> has eight
        (8) bits, then <STRONG>COLOR_PAIR(</STRONG><EM>259</EM><STRONG>)</STRONG> is 4 (i.e., 259 is 4 more than the limit
        255).
 
@@ -179,7 +179,7 @@
        than <STRONG>attr_t</STRONG>.
 
        There  is  no  corresponding <STRONG>attrget</STRONG> function as such in X/Open Curses,
-       although ncurses provides <STRONG>getattrs</STRONG> (see <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>).
+       although <EM>ncurses</EM> provides <STRONG>getattrs</STRONG> (see <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>).
 
 
 </PRE><H3><a name="h3-Change-character-rendition">Change character rendition</a></H3><PRE>
@@ -191,7 +191,7 @@
        function  generalizes  this to any window; the <STRONG>mvwchgat</STRONG> function does a
        cursor move before acting.
 
-       In these functions, the color <EM>pair</EM> argument is a color-pair  index  (as
+       In these functions, the color <EM>pair</EM> argument is a color pair  index  (as
        in the first argument of <STRONG>init_pair</STRONG>, see <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>).
 
 
@@ -266,7 +266,7 @@
            outside the range 0..COLOR_PAIRS-1.
 
        <STRONG>o</STRONG>   does  not  return an error if either of the parameters of <STRONG>wattr_get</STRONG>
-           used for retrieving attribute or color-pair values is <STRONG>NULL</STRONG>.
+           used for retrieving attribute or color pair values is <STRONG>NULL</STRONG>.
 
        Functions with a "mv" prefix first  perform  a  cursor  movement  using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
@@ -281,8 +281,8 @@
 
        Color  pair  values can only be OR'd with attributes if the pair number
        is less than 256.  The alternate functions such as <STRONG>color_set</STRONG> can pass a
-       color pair value directly.  However, ncurses ABI 4 and 5 simply OR this
-       value within the alternate functions.  You must use ncurses  ABI  6  to
+       color pair value directly.  However, <EM>ncurses</EM> ABI 4 and 5 simply OR this
+       value within the alternate functions.  You must use <EM>ncurses</EM>  ABI  6  to
        support more than 256 color pairs.
 
 
@@ -298,7 +298,7 @@
        X/Open  Curses  still  (after  more  than  twenty  years)  documents as
        reserved  for  future  use,  saying  that  it  should  be  <STRONG>NULL</STRONG>.   This
        implementation  uses  that  parameter  in ABI 6 for the functions which
-       have a color-pair parameter to support <EM>extended</EM> <EM>color</EM> <EM>pairs</EM>:
+       have a color pair parameter to support <EM>extended</EM> <EM>color</EM> <EM>pairs</EM>:
 
        <STRONG>o</STRONG>   For functions which modify the color, e.g., <STRONG>wattr_set</STRONG> and <STRONG>wattr_on</STRONG>,
            if  <EM>opts</EM>  is set it is treated as a pointer to <STRONG>int</STRONG>, and used to set
@@ -371,7 +371,7 @@
            the same because it simplifies copying information  between  <STRONG>chtype</STRONG>
            and <STRONG>cchar_t</STRONG> variables.
 
-       <STRONG>o</STRONG>   Because  ncurses's  <STRONG>attr_t</STRONG>  can  hold  a color pair (in the <STRONG>A_COLOR</STRONG>
+       <STRONG>o</STRONG>   Because  <EM>ncurses</EM>'s  <STRONG>attr_t</STRONG>  can  hold  a color pair (in the <STRONG>A_COLOR</STRONG>
            field), a call to <STRONG>wattr_on</STRONG>, <STRONG>wattr_off</STRONG>, or <STRONG>wattr_set</STRONG> may  alter  the
            window's  color.   If  the  color pair information in the attribute
            parameter is zero, no change is made to the window's color.
@@ -462,7 +462,7 @@
 
           Regarding OSF/1 (and Tru64),
 
-          <STRONG>o</STRONG>   These used 64-bit hardware.   Like  ncurses,  the  OSF/1  curses
+          <STRONG>o</STRONG>   These used 64-bit hardware.   Like  <EM>ncurses</EM>,  the  OSF/1  curses
               interface is not customized for 32-bit and 64-bit versions.
 
           <STRONG>o</STRONG>   Unlike  other  systems  which  evolved  from  AT&amp;T  code,  OSF/1
@@ -499,7 +499,7 @@
            modification to make the library 8-bit clean for <STRONG>nvi(1)</STRONG>.  He  moved
            <EM>standout</EM> attribute to a structure member.
 
-           The  resulting  4.4BSD curses was replaced by ncurses over the next
+           The  resulting  4.4BSD curses was replaced by <EM>ncurses</EM> over the next
            ten years.
 
        <STRONG>o</STRONG>   U/Win is rarely used now.
@@ -511,7 +511,7 @@
 
 
 
-ncurses 6.4                       2023-12-02                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

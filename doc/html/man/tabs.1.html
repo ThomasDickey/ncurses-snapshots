@@ -27,19 +27,26 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tabs.1,v 1.50 2023/11/25 14:32:36 tom Exp @
+  * @Id: tabs.1,v 1.51 2023/12/17 00:13:57 tom Exp @
+  * https://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1/sys/source/s2/\
+  *   tabs.c
+  * https://minnie.tuhs.org/cgi-bin/utree.pl?file=V7/usr/src/cmd/tabs.c
+  * https://minnie.tuhs.org/cgi-bin/utree.pl?file=3BSD/usr/src/cmd/\
+  *   tabs.c
+  * https://minnie.tuhs.org/cgi-bin/utree.pl?file=SysVR4/cmd/tabs/tabs.c
+  * https://pubs.opengroup.org/onlinepubs/009604499/utilities/tabs.html
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tabs 1 2023-11-25 ncurses 6.4 User commands</TITLE>
+<TITLE>tabs 1 2023-12-16 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tabs 1 2023-11-25 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tabs 1 2023-12-16 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 
@@ -97,7 +104,7 @@
        <STRONG>-n</STRONG>   This  option tells <STRONG>tabs</STRONG> to check the options and run any debugging
             option, but not to modify the terminal settings.
 
-       <STRONG>-V</STRONG>   reports the version of ncurses which was used in this program, and
+       <STRONG>-V</STRONG>   reports the version of <EM>ncurses</EM> which was used in this program, and
             exits.
 
        The <STRONG>tabs</STRONG> program processes a single list of tab stops.  The last option
@@ -210,48 +217,49 @@
        The <STRONG>-d</STRONG> (debug) and <STRONG>-n</STRONG> (no-op) options are extensions  not  provided  by
        other implementations.
 
-       A  <STRONG>tabs</STRONG>  utility  appeared in PWB/Unix 1.0 (1977).  There was a reduced
-       version of the <STRONG>tabs</STRONG> utility in Unix 7th edition  and  in  3BSD  (1979).
-       The  latter supported a single "-n" option (to cause the first tab stop
-       to be set on the left margin).  That option is not documented by POSIX.
 
-       The PWB/Unix <STRONG>tabs</STRONG> utility, which was included  in  System  III  (1980),
-       used  built-in  tables  rather than the terminal database, to support a
-       half-dozen hardcopy terminal (printer) types.   It  also  had  built-in
-       logic  to support the left-margin, as well as a feature for copying the
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       A  <STRONG>tabs</STRONG>  utility  appeared  in  PWB/Unix 1.0 (1977).  A reduced version
+       shipped in Seventh Edition Unix (early 1979) and  in  3BSD  (later  the
+       same year); it supported a "-n" option to set the first tab stop at the
+       left margin.  That option is not documented by POSIX.
+
+       The PWB/Unix <STRONG>tabs</STRONG> utility returned  in  System  III  (1980),  and  used
+       built-in  tables  rather than the terminal database, to support a half-
+       dozen hardcopy terminal (printer) types.  It also had built-in logic to
+       support  setting  the left margin, as well as a feature for copying the
        tab settings from a file.
 
-       Later versions of Unix, e.g., SVr4,  added  support  for  the  terminal
-       database,  but  kept the tables to support the printers.  In an earlier
-       development effort, the tab-stop initialization provided by <STRONG>tset</STRONG> (1982)
-       and incorporated into <STRONG>tput</STRONG> uses the terminal database,
+       Versions of the program in later releases of AT&amp;T Unix, such  as  SVr4,
+       added  support  for  the  terminal database, but retained the tables to
+       support the printers.  In an earlier development effort, the  tab  stop
+       initialization  provided  by  <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>  (1982),  and  incorporated  into
+       <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG> uses the terminal database,
 
-       The  <STRONG>+m</STRONG>  option  was  documented  in  the  Base  Specifications Issue 5
-       (Unix98,  1997),  and  omitted  in  Issue  6  (Unix03,  2004)   without
-       documenting   the   rationale,  though  an  introductory  comment  <EM>"and</EM>
-       <EM>optionally</EM> <EM>adjusts</EM> <EM>the</EM> <EM>margin"</EM> remains, overlooked in the removal.  The
-       documented  <STRONG>tabs</STRONG>  utility  in  Issues  6 and later has no mechanism for
-       setting margins.  The <STRONG>+m</STRONG> option in this implementation differs from the
-       feature  in  SVr4  by  using terminal capabilities rather than built-in
-       tables.
+       The <STRONG>+m</STRONG> option was documented in the POSIX Base Specifications  Issue  5
+       (Unix98,  1997), then omitted in Issue 6 (Unix03, 2004) without express
+       motivation, though an introductory comment <EM>"and</EM> <EM>optionally</EM> <EM>adjusts</EM>  <EM>the</EM>
+       <EM>margin"</EM>   remains,   overlooked  in  the  removal.   The  <STRONG>tabs</STRONG>  utility
+       documented in Issues 6 and later has no mechanism for setting  margins.
+       The  <STRONG>+m</STRONG>  option  in <EM>ncurses</EM> <STRONG>tabs</STRONG> differs from the SVr4 feature by using
+       terminal capabilities rather than built-in tables.
 
-       POSIX documents no limits on the number of  tab  stops.   Documentation
-       for other implementations states that there is a limit on the number of
-       tab stops (e.g., 20 in PWB/Unix's <STRONG>tabs</STRONG> utility).  While some  terminals
-       may  not  accept  an arbitrary number of tab stops, this implementation
-       will attempt to set tab stops up to the right margin of the screen,  if
-       the given list happens to be that long.
+       POSIX  documents  no  limit  on  the  number  of  tab   stops.    Other
+       implementations impose one; the limit is 20 in PWB/Unix's <STRONG>tabs</STRONG> utility.
+       While some terminals may not accept an arbitrary number of  tab  stops,
+       <EM>ncurses</EM>  <STRONG>tabs</STRONG>  attempts  to set tab stops up to the right margin if the
+       list thereof is sufficiently long.
 
-       The  <EM>Rationale</EM> section of the POSIX documentation goes into some detail
-       about the ways the committee considered redesigning the <STRONG>tabs</STRONG>  and  <STRONG>tput</STRONG>
-       utilities, without proposing an improved solution.  It comments that
+       The "Rationale" section of the Issue 6 <STRONG>tabs</STRONG> reference page details  how
+       the  committee  considered  redesigning  the  <STRONG>tabs</STRONG>  and <STRONG>tput</STRONG> utilities,
+       without settling on an improved solution.  It claims that
 
-            no  known  historical  version  of tabs supports the capability of
+            no known historical version of tabs  supports  the  capability  of
             setting arbitrary tab stops.
 
-       However,  the  <EM>Explicit</EM>  <EM>Lists</EM>  described  in  this  manual  page  were
-       implemented  in  PWB/Unix.   Those  provide  the  capability of setting
-       abitrary tab stops.
+       Nevertheless,  the  feature  described  in  subsection "Explicit Lists"
+       above was implemented in PWB/Unix, and permits the setting of  abitrary
+       tab stops.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -259,7 +267,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
+ncurses 6.4                       2023-12-16                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -277,6 +285,7 @@ ncurses 6.4                       2023-11-25                           <STRONG><
 </li>
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

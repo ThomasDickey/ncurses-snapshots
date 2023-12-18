@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.49 2023/11/25 14:08:35 tom Exp $
-.TH curs_pad 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_pad.3x,v 1.50 2023/12/16 21:18:02 tom Exp $
+.TH curs_pad 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -57,16 +68,19 @@ create and display \fIcurses\fR pads
 .fi
 .SH DESCRIPTION
 .SS newpad
-The \fB\%newpad\fP routine creates and returns a pointer to a new pad data
-structure with the given number of lines, \fInlines\fP, and columns,
+\fB\%newpad\fP creates and returns a pointer to a new pad data structure
+with the given number of lines,
+\fInlines\fP,
+and columns,
 \fIncols\fP.
-A pad is like a window, except that it is not restricted by the
-screen size, and is not necessarily associated with a particular part of the
-screen.
-Pads can be used when a large window is needed, and only a part of the
-window will be on the screen at one time.
+A pad is like a window,
+except that it is not restricted by the screen size,
+and is not necessarily associated with a particular part of the screen.
+Pads can be used when a large window is needed,
+and only a part of the window will be on the screen at one time.
 Automatic refreshes of pads
-(e.g., from scrolling or echoing of input) do not occur.
+(as from scrolling or echoing of input)
+do not occur.
 .PP
 It is not valid to call \fB\%wrefresh\fP with a \fIpad\fP argument;
 call \fB\%prefresh\fP or \fB\%pnoutrefresh\fP instead.
@@ -126,14 +140,16 @@ It outputs one character to a pad and immediately refreshes the pad.
 It does this by a call to \fB\%wadd_wch\fP followed by a call
 to \fB\%prefresh\fP.
 .SH RETURN VALUE
-Routines that return an integer return \fBERR\fP upon failure and \fBOK\fP
-(SVr4 only specifies "an integer value other than \fBERR\fP") upon successful
-completion.
+Functions that return an integer return \fBERR\fP upon failure and
+\fBOK\fP
+(SVr4 specifies only
+\*(``an integer value other than \fBERR\fP\*('')
+upon successful completion.
 .PP
-Routines that return pointers return \fBNULL\fP on error, and set \fB\%errno\fP
-to \fB\%ENOMEM\fP.
+Functions that return pointers return \fBNULL\fP on error,
+and set \fB\%errno\fP to \fB\%ENOMEM\fP.
 .PP
-X/Open does not define any error conditions.
+X/Open Curses does not define any error conditions.
 In this implementation
 .RS 3
 .TP 5
@@ -155,7 +171,7 @@ if the window is not really a pad, and the associated call
 to \fB\%wecho_wchar\fP returns an error.
 .RE
 .SH NOTES
-Note that \fB\%pechochar\fP may be a macro.
+\fB\%pechochar\fP may be a macro.
 .SH PORTABILITY
 BSD \fIcurses\fP has no \fIpad\fP feature.
 .PP
@@ -181,8 +197,8 @@ The behavior of \fB\%subpad\fP if the parent window is not
 a pad is undocumented,
 and is not checked by the vendor Unix implementations:
 .bP
-SVr4 \fIcurses\fP sets a flag in the \fB\%WINDOW\fP structure in \fB\%newpad\fP
-which tells if the window is a \fIpad\fP.
+SVr4 \fIcurses\fP sets a flag in the \fI\%WINDOW\fP structure in
+\fB\%newpad\fP which tells if the window is a \fIpad\fP.
 .IP
 However, it uses this information only in
 \fB\%waddch\fP (to decide if it should call \fB\%wrefresh\fP) and
@@ -190,10 +206,12 @@ However, it uses this information only in
 and does not check in \fB\%wrefresh\fP to ensure that the pad
 is refreshed properly.
 .bP
-Solaris X/Open Curses checks if a window is a pad in \fB\%wnoutrefresh\fP,
+Solaris \fI\%xcurses\fP checks whether a window is a pad in
+\fB\%wnoutrefresh\fP,
 returning \fBERR\fP in that case.
 .IP
-However, it only sets the flag for subwindows if the parent window is a pad.
+However,
+it only sets the flag for subwindows if the parent window is a pad.
 Its \fB\%newpad\fP function does not set this information.
 Consequently, the check will never fail.
 .IP
@@ -202,7 +220,7 @@ though interestingly enough, a comment in the source code
 states that the lack of a check was an MKS extension.
 .bP
 NetBSD 7 \fIcurses\fP
-sets a flag in the \fB\%WINDOW\fP structure
+sets a flag in the \fI\%WINDOW\fP structure
 for \fB\%newpad\fP and \fB\%subpad\fP,
 using this to help with the distinction between \fB\%wnoutrefresh\fP
 and \fB\%pnoutrefresh\fP.
@@ -216,7 +234,7 @@ data was from a pad.
 .PP
 This implementation
 .bP
-sets a flag in the \fB\%WINDOW\fP structure
+sets a flag in the \fI\%WINDOW\fP structure
 for \fB\%newpad\fP and \fB\%subpad\fP,
 .bP
 allows a \fB\%subwin\fP or \fB\%derwin\fP call to succeed having a pad parent by

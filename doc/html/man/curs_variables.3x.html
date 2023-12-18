@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_variables.3x,v 1.34 2023/11/25 14:32:36 tom Exp @
+  * @Id: curs_variables.3x,v 1.35 2023/12/16 21:05:52 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_variables 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_variables 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_variables 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_variables 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
@@ -73,12 +73,13 @@
        <STRONG>int</STRONG> <STRONG>COLOR_PAIRS;</STRONG>
        <STRONG>int</STRONG> <STRONG>COLORS;</STRONG>
        <STRONG>int</STRONG> <STRONG>COLS;</STRONG>
-       <STRONG>int</STRONG> <STRONG>ESCDELAY;</STRONG>
        <STRONG>int</STRONG> <STRONG>LINES;</STRONG>
-       <STRONG>int</STRONG> <STRONG>TABSIZE;</STRONG>
        <STRONG>WINDOW</STRONG> <STRONG>*</STRONG> <STRONG>curscr;</STRONG>
-       <STRONG>WINDOW</STRONG> <STRONG>*</STRONG> <STRONG>newscr;</STRONG>
        <STRONG>WINDOW</STRONG> <STRONG>*</STRONG> <STRONG>stdscr;</STRONG>
+       <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
+       <STRONG>int</STRONG> <STRONG>ESCDELAY;</STRONG>
+       <STRONG>int</STRONG> <STRONG>TABSIZE;</STRONG>
+       <STRONG>WINDOW</STRONG> <STRONG>*</STRONG> <STRONG>newscr;</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -92,7 +93,7 @@
        library.
 
 
-</PRE><H3><a name="h3-bool_-TRUE_-FALSE">bool, TRUE, FALSE</a></H3><PRE>
+</PRE><H3><a name="h3-bool_-TRUE_-FALSE"><EM>bool,</EM> TRUE, FALSE</a></H3><PRE>
        X/Open Issue 4 <EM>curses</EM>  (1996)  preceded  the  ISO  C99  and  ISO  C++98
        standards,  each of which also defined a Boolean data type.  The <EM>curses</EM>
        library requires an integral type <EM>bool</EM> and constants <STRONG>TRUE</STRONG> and <STRONG>FALSE</STRONG>  to
@@ -104,14 +105,14 @@
        values indicating failure and success, respectively.
 
 
-</PRE><H3><a name="h3-chtype">chtype</a></H3><PRE>
+</PRE><H3><a name="h3-chtype"><EM>chtype</EM></a></H3><PRE>
        The <EM>chtype</EM> integral type combines a ("narrow",  8-bit)  character  with
        attributes  encoding  the character's <EM>rendition</EM>, such as the styling of
        its  typeface  and/or  foreground  and  background  colors.   See,  for
        example, <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG>, and <STRONG><A HREF="curs_inch.3x.html">inch(3x)</A></STRONG>.
 
 
-</PRE><H3><a name="h3-cchar_t_-attr_t">cchar_t, attr_t</a></H3><PRE>
+</PRE><H3><a name="h3-cchar_t_-attr_t"><EM>cchar_t,</EM> attr_t</a></H3><PRE>
        <EM>chtype</EM>  is  too small for the standard C library's wide-character type,
        <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>.  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> is a type that can accommodate an <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>  and  enough
        wide  characters  to  store  what  Unicode  terms a <EM>grapheme</EM> <EM>cluster</EM> (a
@@ -255,7 +256,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

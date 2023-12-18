@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getstr.3x,v 1.51 2023/11/25 14:29:54 tom Exp @
+  * @Id: curs_getstr.3x,v 1.52 2023/12/16 20:32:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getstr 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getstr 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getstr 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getstr 3x 2023-12-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 
@@ -162,7 +162,7 @@
        "read at most <EM>n</EM>-1 bytes" to allow for the terminating NUL.  As of 2018,
        some implementations count it, some do not:
 
-       <STRONG>o</STRONG>   ncurses 6.1 and PDCurses do not count the NUL in the  given  limit,
+       <STRONG>o</STRONG>   <EM>ncurses</EM> 6.1 and PDCurses do not count the NUL in the  given  limit,
            while
 
        <STRONG>o</STRONG>   Solaris SVr4 and NetBSD curses count the NUL as part of the limit.
@@ -189,13 +189,13 @@
            A comment in NetBSD's source code states that this is specified  in
            SUSv2.
 
-       <STRONG>o</STRONG>   ncurses  (before  6.2)  assumes  no particular limit for the result
+       <STRONG>o</STRONG>   <EM>ncurses</EM>  (before  6.2)  assumes  no particular limit for the result
            from <STRONG>wgetstr</STRONG>, and treats the <EM>n</EM>  parameter  of  <STRONG>wgetnstr</STRONG>  like  SVr4
            curses.
 
-       <STRONG>o</STRONG>   ncurses  6.2  uses  <STRONG>LINE_MAX</STRONG>,  or a larger (system-dependent) value
+       <STRONG>o</STRONG>   <EM>ncurses</EM>  6.2  uses  <STRONG>LINE_MAX</STRONG>,  or a larger (system-dependent) value
            which the <STRONG>sysconf</STRONG> function may provide.   If  neither  <STRONG>LINE_MAX</STRONG>  or
-           <STRONG>sysconf</STRONG>  is available, ncurses uses the POSIX value for <STRONG>LINE_MAX</STRONG> (a
+           <STRONG>sysconf</STRONG>  is available, <EM>ncurses</EM> uses the POSIX value for <STRONG>LINE_MAX</STRONG> (a
            2048 byte limit).  In either case,  it  reserves  a  byte  for  the
            terminating NUL.
 
@@ -221,16 +221,16 @@
            caller into account when deciding whether to handle echoing  within
            <STRONG>getnstr</STRONG> or as a side-effect of the <STRONG>getch</STRONG> calls.
 
-       <STRONG>o</STRONG>   The original ncurses (as <EM>pcurses</EM> in 1986) set <STRONG>noraw</STRONG> and <STRONG>cbreak</STRONG> when
+       <STRONG>o</STRONG>   The original <EM>ncurses</EM> (as <EM>pcurses</EM> in 1986) set <STRONG>noraw</STRONG> and <STRONG>cbreak</STRONG> when
            accepting input for <STRONG>getnstr</STRONG>.  That  may  have  been  done  to  make
-           function- and cursor-keys work; it is not necessary with ncurses.
+           function- and cursor-keys work; it is not necessary with <EM>ncurses</EM>.
 
-           Since  1995, ncurses has provided signal handlers for INTR and QUIT
+           Since  1995, <EM>ncurses</EM> has provided signal handlers for INTR and QUIT
            (e.g., <STRONG>^C</STRONG> or <STRONG>^\</STRONG>).  With the <STRONG>noraw</STRONG> and <STRONG>cbreak</STRONG>  settings,  those  may
            catch  a  signal  and stop the program, where other implementations
            allow one to enter those characters in the buffer.
 
-       <STRONG>o</STRONG>   Starting in 2021 (ncurses 6.3), <STRONG>getnstr</STRONG> sets <STRONG>raw</STRONG>, rather than <STRONG>noraw</STRONG>
+       <STRONG>o</STRONG>   Starting in 2021 (<EM>ncurses</EM> 6.3), <STRONG>getnstr</STRONG> sets <STRONG>raw</STRONG>, rather than <STRONG>noraw</STRONG>
            and   <STRONG>cbreak</STRONG>  for  better  compatibility  with  SVr4-curses,  e.g.,
            allowing one to enter a <STRONG>^C</STRONG> into the buffer.
 
@@ -240,7 +240,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
+ncurses 6.4                       2023-12-16                   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

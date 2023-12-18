@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_threads.3x,v 1.49 2023/11/25 14:09:12 tom Exp $
-.TH curs_threads 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_threads.3x,v 1.50 2023/12/16 20:32:22 tom Exp $
+.TH curs_threads 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -70,16 +70,16 @@
 \fBint use_window(WINDOW *\fIwin\fP, NCURSES_WINDOW_CB \fIfunc\fP, void *\fIdata\fP);
 .fi
 .SH DESCRIPTION
-The \fIncurses\fP library can be configured to support multi-threaded
+The \fI\%ncurses\fP library can be configured to support multi-threaded
 applications in a rudimentary way.
 Such configuration produces a different set of libraries,
 named \fIlibncursest\fP,
 for example,
-since doing so alters \fIncurses\fP's application binary interface
+since doing so alters \fI\%ncurses\fP's application binary interface
 (ABI).
 .PP
 Instead of modifying the programming interface (API) to make
-\fIncurses\fP functions expect an additional argument specifying a
+\fI\%ncurses\fP functions expect an additional argument specifying a
 thread,
 the library adds functions,
 usable in any configuration,
@@ -88,8 +88,9 @@ that hide the \fImutexes\fP
 needed to prevent concurrent access to variables shared by multiple
 threads of execution.
 .PP
-\fIncurses\fP threading support requires the use of functions to access
-members of the \fI\%WINDOW\fP structure (see \fBcurs_opaque\fP(3X)).
+\fI\%ncurses\fP threading support requires the use of functions to
+access members of the \fI\%WINDOW\fP structure (see
+\fBcurs_opaque\fP(3X)).
 It further makes functions of the common global variables
 \fB\%COLORS\fP,
 \fB\%COLOR_PAIRS\fP,
@@ -127,7 +128,7 @@ pass it a \fIdata\fP parameter,
 and return the value from the user-supplied function to the application.
 .\" ***************************************************************************
 .SS Usage
-All \fIncurses\fP library functions assume that the locale is not
+All \fI\%ncurses\fP library functions assume that the locale is not
 altered during operation.
 In addition,
 they use data that is maintained within a hierarchy of scopes.
@@ -154,8 +155,9 @@ single screen.
 reentrant data associated with \*(``pure\*('' functions that alter no
 shared variables
 .PP
-The following table lists the scope of each symbol in the \fIncurses\fP
-library when configured to support multi-threaded applications.
+The following table lists the scope of each symbol in the
+\fI\%ncurses\fP library when configured to support multi-threaded
+applications.
 .PP
 .TS
 center tab(/);
@@ -623,12 +625,12 @@ failure and \fBOK\fP upon successful completion.
 \fB\%use_screen\fP and \fB\%use_window\fP return the \fIint\fP returned
 by the user-supplied function they are called with.
 .SH NOTES
-\fIncurses\fP provides both a C function and a preprocessor macro for
+\fI\%ncurses\fP provides both a C function and a preprocessor macro for
 each function documented in this page.
 .SH PORTABILITY
-These routines are specific to \fIncurses\fP.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on \fIncurses\fP extensions
+It is recommended that any code depending on \fI\%ncurses\fP extensions
 be conditioned using \fB\%NCURSES_VERSION\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

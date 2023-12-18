@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.44 2023/11/25 15:48:03 tom Exp $
-.TH curs_sp_funcs 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.45 2023/12/16 20:32:22 tom Exp $
+.TH curs_sp_funcs 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -213,7 +213,8 @@
 .SH DESCRIPTION
 This implementation can be configured to provide a set of functions which
 improve the ability to manage multiple screens.
-This feature can be added to any of the configurations supported by ncurses;
+This feature can be added to any of the configurations supported by
+\fI\%ncurses\fP;
 it adds new entrypoints
 without changing the meaning of any of the existing ones.
 .\" ***************************************************************************
@@ -273,9 +274,9 @@ NCURSES_OUTC
 This is a function-pointer type used for the cases where a function passes
 characters to the output stream, e.g., \fBvidputs\fP(3X).
 .SH PORTABILITY
-These routines are specific to ncurses.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on ncurses extensions
+It is recommended that any code depending on \fI\%ncurses\fP extensions
 be conditioned using \fINCURSES_SP_FUNCS\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1997
 .\"
-.\" $Id: define_key.3x,v 1.39 2023/11/25 14:26:30 tom Exp $
-.TH define_key 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: define_key.3x,v 1.40 2023/12/16 20:32:22 tom Exp $
+.TH define_key 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%define_key\fP \-
 define a \fIcurses\fR keycode
@@ -43,7 +43,8 @@ define a \fIcurses\fR keycode
 .SH DESCRIPTION
 This is an extension to the \fIcurses\fP library.
 It permits an application to define keycodes with their corresponding control
-strings, so that the \fIncurses\fP library will interpret them just as it would
+strings,
+so that the \fI\%ncurses\fP library will interpret them just as it would
 the predefined codes in the terminfo database.
 .PP
 If \fIdefinition\fP is \fBNULL\fP,
@@ -58,7 +59,7 @@ otherwise \fBERR\fP is returned.
 data to store the definition.
 If no error is detected, \fBOK\fP is returned.
 .SH PORTABILITY
-These routines are specific to \fIncurses\fP.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on
 Version 7, BSD or System V implementations.
 It is recommended that

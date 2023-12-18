@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.43 2023/11/25 14:26:30 tom Exp $
-.TH new_pair 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: new_pair.3x,v 1.44 2023/12/16 20:32:22 tom Exp $
+.TH new_pair 3X 2023-12-16 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -130,7 +130,7 @@ All of the color pairs are allocated from a table of possible color pairs.
 The size of the table is determined by the terminfo \fBpairs\fP capability.
 The table is shared with \fBinit_pair\fP;
 in fact \fBalloc_pair\fP calls \fBinit_pair\fP after
-updating the \fIncurses\fP library's fast index
+updating the \fI\%ncurses\fP library's fast index
 to the colors versus color pairs.
 .SS find_pair
 The \fBfind_pair\fP function accepts parameters for
@@ -155,7 +155,7 @@ or \-1 if not.
 Likewise, \fBfree_pair\fP returns \fBOK\fP unless it encounters an
 error updating the fast index or if no such color pair is in use.
 .SH PORTABILITY
-These routines are specific to \fIncurses\fP.
+These routines are specific to \fI\%ncurses\fP.
 They were not supported on
 Version 7, BSD or System V implementations.
 It is recommended that
