@@ -32,7 +32,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.57 2023/12/18 01:15:58 tom Exp @
+  * @Id: terminfo.head,v 1.59 2023/12/23 23:44:58 tom Exp @
   * Head of terminfo man page ends here
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
@@ -62,7 +62,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.tail,v 1.139 2023/12/17 22:56:21 tom Exp @
+  * @Id: terminfo.tail,v 1.140 2023/12/23 16:23:35 tom Exp @
   *.in -2
   *.in +2
   *.in -2
@@ -73,12 +73,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2023-12-17 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2023-12-23 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2023-12-17 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2023-12-23 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -105,10 +105,10 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <EM>ncurses</EM> version 6.4 (patch 20231217).
+       This manual describes <EM>ncurses</EM> version 6.4 (patch 20231223).
 
 
-</PRE><H3><a name="h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></H3><PRE>
+</PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
        Entries in <EM>terminfo</EM> consist of a sequence of fields:
 
        <STRONG>o</STRONG>   Each field ends with a comma "," (embedded commas  may  be  escaped
@@ -178,7 +178,7 @@
        For more on terminal naming conventions, see the <STRONG><A HREF="term.7.html">term(7)</A></STRONG> manual page.
 
 
-</PRE><H3><a name="h3-Terminfo-Capabilities-Syntax">Terminfo Capabilities Syntax</a></H3><PRE>
+</PRE><H3><a name="h3-terminfo-Capabilities-Syntax"><EM>terminfo</EM> Capabilities Syntax</a></H3><PRE>
        The terminfo entry consists of  several  <EM>capabilities</EM>,  i.e.,  features
        that  the  terminal  has,  or  methods  for  exercising  the terminal's
        features.
@@ -1505,7 +1505,7 @@
                 stack in the <STRONG>tparm</STRONG> function.
 
             <STRONG>o</STRONG>   SVr3.2  curses supported <EM>static</EM> variables.  Those are an array
-                in the <STRONG>TERMINAL</STRONG> structure (declared in <STRONG>term.h</STRONG>), and are zeroed
+                in the <EM>TERMINAL</EM> structure (declared in <STRONG>term.h</STRONG>), and are zeroed
                 automatically when the <STRONG>setupterm</STRONG> function allocates the data.
 
             <STRONG>o</STRONG>   SVr4 curses made no further improvements to the <EM>dynamic/static</EM>
@@ -2694,7 +2694,7 @@
 
 
 
-ncurses 6.4                       2023-12-17                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2023-12-23                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -2702,8 +2702,8 @@ ncurses 6.4                       2023-12-17                       <STRONG><A HR
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-Terminfo-Entry-Syntax">Terminfo Entry Syntax</a></li>
-<li><a href="#h3-Terminfo-Capabilities-Syntax">Terminfo Capabilities Syntax</a></li>
+<li><a href="#h3-terminfo-Entry-Syntax">terminfo Entry Syntax</a></li>
+<li><a href="#h3-terminfo-Capabilities-Syntax">terminfo Capabilities Syntax</a></li>
 <li><a href="#h3-Similar-Terminals">Similar Terminals</a></li>
 <li><a href="#h3-Predefined-Capabilities">Predefined Capabilities</a></li>
 <li><a href="#h3-User-Defined-Capabilities">User-Defined Capabilities</a></li>

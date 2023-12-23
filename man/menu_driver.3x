@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu_driver.3x,v 1.44 2023/12/16 20:32:22 tom Exp $
-.TH menu_driver 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: menu_driver.3x,v 1.45 2023/12/23 16:08:25 tom Exp $
+.TH menu_driver 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -118,7 +118,7 @@ If there is no such match, \fBmenu_driver\fP returns
 .PP
 If the second argument is one of the above pre-defined requests, the
 corresponding action is performed.
-.SS MOUSE HANDLING
+.SS "Mouse Handling"
 If the second argument is the KEY_MOUSE special key, the associated
 mouse event is translated into one of the above pre-defined requests.
 Currently only clicks in the user window (e.g., inside the menu display
@@ -158,7 +158,7 @@ into a request was done, \fBmenu_driver\fP returns the result of this request.
 If you clicked outside the user window
 or the mouse event could not be translated
 into a menu request an \fBE_REQUEST_DENIED\fP is returned.
-.SS APPLICATION-DEFINED COMMANDS
+.SS "Application-defined Commands"
 If the second argument is neither printable nor one of the above
 pre-defined menu requests or KEY_MOUSE,
 the drive assumes it is an application-specific

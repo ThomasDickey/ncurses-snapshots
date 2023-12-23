@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: scr_dump.5,v 1.40 2023/12/16 21:07:24 tom Exp @
+  * @Id: scr_dump.5,v 1.41 2023/12/23 16:27:25 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>scr_dump 5 2023-12-16 ncurses 6.4 File formats</TITLE>
+<TITLE>scr_dump 5 2023-12-23 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">scr_dump 5 2023-12-16 ncurses 6.4 File formats</H1>
+<H1 class="no-header">scr_dump 5 2023-12-23 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>                      File formats                      <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 
@@ -110,18 +110,18 @@
        <STRONG>o</STRONG>   The ncurses6 <STRONG>getwin</STRONG> reads the legacy screen dumps from ncurses5.
 
 
-</PRE><H3><a name="h3-ncurses5-_legacy_">ncurses5 (legacy)</a></H3><PRE>
+</PRE><H3><a name="h3-ncurses5-_Legacy_">ncurses5 (Legacy)</a></H3><PRE>
        The screen-dump feature was added to <EM>ncurses</EM> in June 1995.  While there
        were fixes and improvements in succeeding years, the basic  scheme  was
        unchanged:
 
-       <STRONG>o</STRONG>   The <STRONG>WINDOW</STRONG> structure was written in binary form.
+       <STRONG>o</STRONG>   The <EM>WINDOW</EM> structure was written in binary form.
 
-       <STRONG>o</STRONG>   The <STRONG>WINDOW</STRONG> structure refers to lines of data, which were written as
-           an array of binary data following the <STRONG>WINDOW</STRONG>.
+       <STRONG>o</STRONG>   The <EM>WINDOW</EM> structure refers to lines of data, which were written as
+           an array of binary data following the <EM>WINDOW</EM>.
 
        <STRONG>o</STRONG>   When <STRONG>getwin</STRONG> restored the window, it would  keep  track  of  offsets
-           into  the  array of line-data and adjust the <STRONG>WINDOW</STRONG> structure which
+           into  the  array of line-data and adjust the <EM>WINDOW</EM> structure which
            was read back into memory.
 
        This is similar to Unix System V, but does not write a  "magic  number"
@@ -167,7 +167,7 @@
 
 </PRE><H3><a name="h3-Unix-System-V">Unix System V</a></H3><PRE>
        Unix System V curses identified the file format  by  writing  a  "magic
-       number" at the beginning of the dump.  The <STRONG>WINDOW</STRONG> data and the lines of
+       number" at the beginning of the dump.  The <EM>WINDOW</EM> data and the lines of
        text follow, all in binary form.
 
        The Solaris curses source has these definitions:
@@ -193,7 +193,7 @@
 
            \001\035
 
-       After  the magic number, the <STRONG>WINDOW</STRONG> structure and line-data are written
+       After  the magic number, the <EM>WINDOW</EM> structure and line-data are written
        in binary format.  While the magic number used by the Unix systems  can
        be seen using <STRONG>od(1)</STRONG>, none of the Unix systems documents the format used
        for screen-dumps.
@@ -233,7 +233,7 @@
 
 </PRE><H3><a name="h3-PDCurses">PDCurses</a></H3><PRE>
        PDCurses added support for screen dumps in version  2.7  (2005).   Like
-       Unix  System V  and ncurses5, it writes the <STRONG>WINDOW</STRONG> structure in binary,
+       Unix  System V  and ncurses5, it writes the <EM>WINDOW</EM> structure in binary,
        but begins the file with its three-byte identifier "PDC", followed by a
        one-byte version, e.g.,
 
@@ -250,9 +250,9 @@
        <STRONG>o</STRONG>   the curses shared library major and minor versions as the first two
            bytes (e.g., 7 and 1),
 
-       <STRONG>o</STRONG>   followed by a binary dump of the <STRONG>WINDOW</STRONG>,
+       <STRONG>o</STRONG>   followed by a binary dump of the <EM>WINDOW</EM>,
 
-       <STRONG>o</STRONG>   some data for wide-characters referenced by the  <STRONG>WINDOW</STRONG>  structure,
+       <STRONG>o</STRONG>   some data for wide-characters referenced by the  <EM>WINDOW</EM>  structure,
            and
 
        <STRONG>o</STRONG>   finally, lines as done by other implementations.
@@ -407,7 +407,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
+ncurses 6.4                       2023-12-23                       <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -416,7 +416,7 @@ ncurses 6.4                       2023-12-16                       <STRONG><A HR
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
 <li><a href="#h3-ncurses6">ncurses6</a></li>
-<li><a href="#h3-ncurses5-_legacy_">ncurses5 (legacy)</a></li>
+<li><a href="#h3-ncurses5-_Legacy_">ncurses5 (Legacy)</a></li>
 </ul>
 </li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>

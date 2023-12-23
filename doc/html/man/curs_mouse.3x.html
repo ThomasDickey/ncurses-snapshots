@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.82 2023/12/16 21:08:16 tom Exp @
+  * @Id: curs_mouse.3x,v 1.83 2023/12/23 20:37:56 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -104,7 +104,7 @@
        is device-dependent.
 
 
-</PRE><H3><a name="h3-Mouse-events">Mouse events</a></H3><PRE>
+</PRE><H3><a name="h3-Mouse-Events">Mouse Events</a></H3><PRE>
        Here are the mouse event type masks which may be defined:
 
        <STRONG>Name</STRONG>                     <STRONG>Description</STRONG>
@@ -253,21 +253,10 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The feature macro <STRONG>NCURSES_MOUSE_VERSION</STRONG> is provided so the preprocessor
-       can be used to  test  whether  these  features  are  present.   If  the
-       interface  is  changed,  the  value  of  <STRONG>NCURSES_MOUSE_VERSION</STRONG>  will be
-       incremented.  These values for <STRONG>NCURSES_MOUSE_VERSION</STRONG> may  be  specified
-       when configuring <EM>ncurses</EM>:
-
-          1  has definitions for reserved events.  The mask uses 28 bits.
-
-          2  adds  definitions  for  button  5,  removes  the  definitions for
-             reserved events.  The mask uses 29 bits.
-
-       The  order  of  the  <STRONG>MEVENT</STRONG>  structure  members  is   not   guaranteed.
+       The   order   of  the  <STRONG>MEVENT</STRONG>  structure  members  is  not  guaranteed.
        Additional fields may be added to the structure in the future.
 
-       Under  <EM>ncurses</EM>, these calls are implemented using either xterm's built-
+       Under <EM>ncurses,</EM> these calls are implemented using either <EM>xterm</EM>'s  built-
        in mouse-tracking API or platform-specific drivers including
 
           <STRONG>o</STRONG>   Alessandro Rubini's gpm server
@@ -279,36 +268,52 @@
        If you are using an unsupported configuration, mouse events will not be
        visible to <EM>ncurses</EM> (and the <STRONG>mousemask</STRONG> function will always return <STRONG>0</STRONG>).
 
-       If  the  terminfo entry contains a <STRONG>XM</STRONG> string, this is used in the xterm
-       mouse driver to control the way the terminal is initialized  for  mouse
-       operation.   The  default,  if  <STRONG>XM</STRONG> is not found, corresponds to private
-       mode 1000 of xterm:
+       If the <EM>terminfo</EM> entry contains a <STRONG>XM</STRONG> string, this is used in  the  <EM>xterm</EM>
+       mouse  driver  to control the way the terminal is initialized for mouse
+       operation.  The default, if <STRONG>XM</STRONG> is not  found,  corresponds  to  private
+       mode 1000 of <EM>xterm:</EM>
 
           \E[?1000%?%p1%{1}%=%th%el%;
 
-       The mouse driver also recognizes a newer xterm private mode 1006, e.g.,
+       The mouse driver also recognizes a newer <EM>xterm</EM> private mode 1006, e.g.,
 
           \E[?1006;1000%?%p1%{1}%=%th%el%;
 
-       The <EM>z</EM> member in the event structure  is  not  presently  used.   It  is
-       intended  for  use with touch screens (which may be pressure-sensitive)
+       The  <EM>z</EM>  member  in  the  event  structure is not presently used.  It is
+       intended for use with touch screens (which may  be  pressure-sensitive)
        or with 3D-mice/trackballs/power gloves.
 
-       The <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include  <STRONG>REPORT_MOUSE_POSITION</STRONG>.
-       They  are  distinct.   For example, in xterm, wheel/scrolling mice send
-       position reports as a sequence of presses of buttons  4  or  5  without
+       The  <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include <STRONG>REPORT_MOUSE_POSITION</STRONG>.
+       They are distinct.  For example, in <EM>xterm,</EM>  wheel/scrolling  mice  send
+       position  reports  as  a  sequence of presses of buttons 4 or 5 without
        matching button-releases.
 
 
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
+       These functions were designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and  are  not  found  in
+       SVr4   <EM>curses</EM>,   4.4BSD   <EM>curses</EM>,   or   any   other   previous  curses
+       implementation.  (SVr4 <EM>curses</EM> did have a <EM>getmouse</EM> function, which  took
+       no argument and returned a different type.)
+
+
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  calls  were  designed  for  <EM>ncurses</EM>,  and  are not found in SVr4
-       <EM>curses</EM>, 4.4BSD <EM>curses</EM>, or any other previous version of <EM>curses</EM>.
+       Applications employing the <EM>ncurses</EM> mouse extension should condition its
+       use on the visibility of the <STRONG>NCURSES_MOUSE_VERSION</STRONG> preprocessor  macro.
+       When  the  interface  changes,  the macro's value increments.  Multiple
+       versions  are  available  when  <EM>ncurses</EM>  is  configured;  see   section
+       "ALTERNATE CONFIGURATIONS" of <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.  The following values may be
+       specified.
 
-       SVr4 <EM>curses</EM> had support for the mouse in a variant of <STRONG>xterm(1)</STRONG>.  It  is
-       mentioned in a few places, but with no supporting documentation:
+          1  has definitions for reserved events.  The mask uses 28 bits.
 
-       <STRONG>o</STRONG>   the  "libcurses" manual page lists functions for this feature which
-           are prototyped in <STRONG>curses.h</STRONG>:
+          2  adds definitions  for  button  5,  removes  the  definitions  for
+             reserved events.  The mask uses 29 bits.
+
+       SVr4  <EM>curses</EM> had support for the mouse in a variant of <STRONG>xterm(1)</STRONG>.  It is
+       mentioned in a few places, with little supporting documentation.
+
+       <STRONG>o</STRONG>   Its "libcurses"  manual  page  lists  functions  for  this  feature
+           prototyped in <EM>curses.h</EM>.
 
                extern int mouse_set(long int);
                extern int mouse_on(long int);
@@ -318,7 +323,7 @@
                extern void wmouse_position(WINDOW *, int *, int *);
                extern unsigned long getmouse(void), getbmap(void);
 
-       <STRONG>o</STRONG>   the "terminfo" manual page lists capabilities for the feature
+       <STRONG>o</STRONG>   Its "terminfo" manual page lists capabilities for the feature.
 
                buttons           btns    BT       Number of buttons on the mouse
                get_mouse         getm    Gm       Curses should get button events
@@ -326,22 +331,23 @@
                mouse_info        minfo   Mi       Mouse status information
                req_mouse_pos     reqmp   RQ       Request mouse position report
 
-       <STRONG>o</STRONG>   the interface made assumptions (as does <EM>ncurses</EM>) about  the  escape
+       <STRONG>o</STRONG>   The  interface  made assumptions (as does <EM>ncurses</EM>) about the escape
            sequences sent to and received from the terminal.
 
-           For  instance the SVr4 <EM>curses</EM> library used the <STRONG>get_mouse</STRONG> capability
-           to tell the terminal which mouse  button  events  it  should  send,
-           passing  the mouse-button bit mask to the terminal.  Also, it could
-           ask the terminal  where  the  mouse  was  using  the  <STRONG>req_mouse_pos</STRONG>
+           For instance, the SVr4 <EM>curses</EM> library used the <STRONG>get_mouse</STRONG> capability
+           to  tell  the  terminal  which  mouse button events it should send,
+           passing the mouse-button bit mask to the terminal.  Also, it  could
+           ask  the  terminal  where  the  mouse  was  using the <STRONG>req_mouse_pos</STRONG>
            capability.
 
-           Those  features required a terminal which had been modified to work
-           with <EM>curses</EM>.  They were not part of the X Consortium's xterm.
+           Those features required a terminal program that had  been  modified
+           to work with SVr4 <EM>curses.</EM>  They were not part of the X Consortium's
+           <EM>xterm.</EM>
 
-       When developing the xterm mouse support for <EM>ncurses</EM> in September  1995,
+       When developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September  1995,
        Eric  Raymond  was  uninterested in using the same interface due to its
        lack of documentation.  Later, in 1998, Mark Hesseling provided support
-       in  PDCurses 2.3 using the SVr4 interface.  PDCurses, however, does not
+       in  <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses,</EM> however, does not
        use video terminals,  making  it  unnecessary  to  be  concerned  about
        compatibility with the escape sequences.
 
@@ -353,17 +359,17 @@
 
        Mouse  event  reports from <EM>xterm</EM> are not detected correctly in a window
        with keypad application mode disabled, since they are interpreted as  a
-       variety  of  function  key.  Set the the terminal's <EM>terminfo</EM> capability
-       <STRONG>kmous</STRONG> to "\E[M" (the beginning of the response  from  <EM>xterm</EM>  for  mouse
-       clicks).    Other   values  of  <STRONG>kmous</STRONG>  are  permitted  under  the  same
-       assumption, that is, the report begins with that sequence.
+       variety  of function key.  Set the terminal's <EM>terminfo</EM> capability <STRONG>kmous</STRONG>
+       to "\E[M" (the beginning of the response from <EM>xterm</EM> for mouse  clicks).
+       Other values of <STRONG>kmous</STRONG> are permitted under the same assumption, that is,
+       the report begins with that sequence.
 
        Because there are no standard response sequences that serve to identify
        terminals  supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that if
        <STRONG>kmous</STRONG> is defined in the terminal description, or if the terminal type's
        primary  name  or aliases contain the string "xterm", then the terminal
        may send mouse events.  The <STRONG>kmous</STRONG> capability is checked first, allowing
-       use of newer <EM>xterm</EM> mouse protocols such as its private mode 1006.
+       use of newer <EM>xterm</EM> mouse protocols, such as its private mode 1006.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -372,7 +378,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -381,7 +387,7 @@ ncurses 6.4                       2023-12-16                    <STRONG><A HREF=
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
 <li><a href="#h3-mousemask">mousemask</a></li>
-<li><a href="#h3-Mouse-events">Mouse events</a></li>
+<li><a href="#h3-Mouse-Events">Mouse Events</a></li>
 <li><a href="#h3-getmouse">getmouse</a></li>
 <li><a href="#h3-ungetmouse">ungetmouse</a></li>
 <li><a href="#h3-wenclose">wenclose</a></li>
@@ -393,6 +399,7 @@ ncurses 6.4                       2023-12-16                    <STRONG><A HREF=
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

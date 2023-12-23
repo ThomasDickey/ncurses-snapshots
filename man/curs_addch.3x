@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.75 2023/12/16 21:19:37 tom Exp $
-.TH curs_addch 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addch.3x,v 1.76 2023/12/23 16:27:51 tom Exp $
+.TH curs_addch 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,11 +66,11 @@ add a \fIcurses\fR character to a window and advance the cursor
 \fBint wechochar(WINDOW *\fIwin\fP, const chtype \fIch\fP);
 .fi
 .SH DESCRIPTION
-.SS Adding characters
+.SS "Adding Characters"
 The \fBaddch\fP, \fBwaddch\fP, \fBmvaddch\fP and \fBmvwaddch\fP routines put
 the character \fIch\fP into the given window at its current window position,
 which is then advanced.
-They are analogous to \fBputchar\fP(3) in \fBstdio\fP(3).
+They are analogous to the standard C library's \fI\%putchar\fP(3).
 If the advance is at the right margin:
 .bP
 The cursor automatically wraps to the beginning of the next line.
@@ -122,7 +122,7 @@ Video attributes can be combined with a character argument passed to
 using \fB\%inch\fP(3X) and \fBaddch\fP.)
 See the \fB\%curs_attr\fP(3X) page for values of predefined video
 attribute constants that can be usefully OR'ed into characters.
-.SS Echoing characters
+.SS "Echoing Characters"
 The \fBechochar\fP and \fBwechochar\fP routines are equivalent to a call to
 \fBaddch\fP followed by a call to \fB\%refresh\fP(3X), or a call to \fBwaddch\fP
 followed by a call to \fBwrefresh\fP.
@@ -130,7 +130,7 @@ The knowledge that only a single
 character is being output is used and, for non-control characters, a
 considerable performance gain may be seen by using these routines instead of
 their equivalents.
-.SS Line Graphics
+.SS "Line Graphics"
 The following variables may be used to add line drawing characters to the
 screen with routines of the \fBaddch\fP family.
 The default character listed
@@ -209,7 +209,7 @@ Note that \fBaddch\fP, \fBmvaddch\fP, \fBmvwaddch\fP, and
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for forms-drawing characters apply in the POSIX locale.
-.SS ACS Symbols
+.SS "ACS Symbols"
 X/Open Curses states that the \fBACS_\fP definitions are \fBchar\fP constants.
 For the wide-character implementation (see \fBcurs_add_wch\fP),
 there are analogous \fBWACS_\fP definitions which are \fBcchar_t\fP constants.
@@ -269,7 +269,7 @@ In certain cases, the terminal is unable to display line-drawing characters
 except by using UTF-8
 (see the discussion of \fB\%NCURSES_NO_UTF8_ACS\fP in
 \fB\%ncurses\fP(3X)).
-.SS Character Set
+.SS "Character Set"
 X/Open Curses assumes that the parameter passed to \fBwaddch\fP contains
 a single character.
 As discussed in \fB\%curs_attr\fP(3X), that character may have been

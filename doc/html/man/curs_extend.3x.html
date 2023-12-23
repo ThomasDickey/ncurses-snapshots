@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1999-on
-  * @Id: curs_extend.3x,v 1.43 2023/12/16 20:32:22 tom Exp @
+  * @Id: curs_extend.3x,v 1.44 2023/12/23 16:36:18 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_extend 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_extend 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_extend 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_extend 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_extend.3x.html">curs_extend(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_extend.3x.html">curs_extend(3x)</A></STRONG>
 
@@ -88,10 +88,14 @@
        this and restore it.
 
 
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
+       These  functions  are <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> extensions, and are not found in SVr4
+       <EM>curses</EM>, 4.4BSD <EM>curses</EM>, or any other previous curses implementation.
+
+
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  are  specific  to <EM>ncurses</EM>.  They were not supported on
-       Version 7, BSD or System V implementations.  It is recommended that any
-       code depending on them be conditioned using NCURSES_VERSION.
+       Applications employing <EM>ncurses</EM> extensions should condition their use on
+       the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
@@ -105,7 +109,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                   <STRONG><A HREF="curs_extend.3x.html">curs_extend(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                   <STRONG><A HREF="curs_extend.3x.html">curs_extend(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -118,6 +122,7 @@ ncurses 6.4                       2023-12-16                   <STRONG><A HREF="
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

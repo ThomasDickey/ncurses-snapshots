@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.57 2023/12/16 21:34:23 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-12-16 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.58 2023/12/23 16:28:31 tom Exp $
+.TH @CAPTOINFO@ 1M 2023-12-23 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -40,8 +40,6 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
-.
-.ds d /etc/termcap
 .SH NAME
 \fB\%@CAPTOINFO@\fP \-
 convert a \fItermcap\fP description into a \fI\%term\%info\fP description
@@ -67,7 +65,8 @@ If no \fIfile\fPs are specified,
 and extracts only the entry for the terminal named in the environment
 variable \fITERM\fP from it.
 If the environment variable \fI\%TERMCAP\fP is not set,
-\fB\%@CAPTOINFO@\fP reads \fI\%\*d\fP.
+\fB\%@CAPTOINFO@\fP reads
+.I \%/etc/termcap.
 .PP
 This utility is implemented as a link to \fB\%@TIC@\fP(1M),
 with the latter's
@@ -82,7 +81,7 @@ and
 .BR \-x .
 The \fB\-V\fP option reports the version of \fI\%ncurses\fP associated
 with this program and exits with a successful status.
-.SS "Translations from nonstandard capabilities"
+.SS "Translations from Nonstandard Capabilities"
 \fB\%@CAPTOINFO@\fP translates some obsolete,
 nonstandard capabilities into standard
 (SVr4/XSI Curses)
@@ -204,7 +203,7 @@ The HP-UX \fI\%\%term\%info\fP library supports two nonstandard
 \fB\%@CAPTOINFO@\fP discards these with a warning message.
 .SH FILES
 .TP
-.I \*d
+.I /etc/termcap
 default \fI\%termcap\fP terminal capability database
 .SH PORTABILITY
 X/Open Curses,

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.76 2023/12/18 00:22:30 tom Exp $
-.TH curs_termcap 3X 2023-12-17 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.80 2023/12/23 20:19:05 tom Exp $
+.TH curs_termcap 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -87,12 +87,12 @@ entries for which a \fI\%term\%info\fP entry has been compiled.
 \fB\%tgetent\fP loads the terminal database entry for \fIname\fP;
 see \fBterm\fP(7).
 This must be done before calling any of the other functions.
-It returns:
+It returns
 .RS 3
-.TP 4
+.TP 5 \" "-1" + 2n + adjust for PDF
 1
 on success,
-.TP 4
+.TP
 0
 if there is no such entry
 (or if the matching entry describes a generic terminal,
@@ -100,7 +100,7 @@ having too little information for
 .I curses
 applications to run),
 and
-.TP 4
+.TP
 \-1
 if the \fI\%term\%info\fP database could not be found.
 .RE
@@ -120,9 +120,9 @@ which is not the same thing.
 .bP
 The meanings of the return values differ.
 The BSD \fItermcap\fP library does not check whether the terminal type
-description is marked with the
-.B gn
-.RB ( \%generic )
+description includes the
+.B \%generic
+.RB ( gn )
 capability,
 nor whether the terminal type description supports an addressable
 cursor,
@@ -189,13 +189,13 @@ Doing so reveals a quirk in \fB\%tgoto\fP:
 most hardware terminals use cursor addressing with \fIrow\fP first,
 but the original developers of the \fItermcap\fP interface chose to
 put the \fIcol\fP (column) parameter first.
-The \fB\%tgoto\fP function swaps the order of parameters.
+The \fB\%tgoto\fP function swaps the order of its parameters.
 It does this even for calls requiring only a single parameter.
 In that case,
 the first parameter is merely a placeholder.
 .bP
 Normally the \fI\%ncurses\fP library is compiled without
-full \fI\%term\%cap\fP support.
+full \fI\%termcap\fP support.
 In that case,
 \fB\%tgoto\fP uses an internal version of \fB\%tparm\fP(3X)
 (a more capable function).
@@ -214,7 +214,7 @@ availability.
 .PP
 \fB\%tputs\fP is described in \fB\%curs_terminfo\fP(3X).
 It can retrieve capabilities by either \fItermcap\fP or
-\fI\%term\%info\fP name.
+\fI\%term\%info\fP code.
 .SS "Global Variables"
 The variables
 \fBPC\fP,
@@ -249,9 +249,8 @@ del_curterm(cur_term);
 to free this memory,
 but there is an additional complication with \fI\%ncurses\fP.
 It uses a fixed-size pool of storage locations,
-one per value of the \fITERM\fP environment variable when
-\fB\%tgetent\fP is called.
-The \fBscreen\fP(1) program relies upon this arrangement to improve its
+one per value of the terminal name parameter given to \fB\%tgetent\fP.
+The \fIscreen\fP(1) program relies upon this arrangement to improve its
 performance.
 .PP
 An application that uses only the \fItermcap\fP functions,
@@ -308,17 +307,16 @@ They should not be used in new programs.
 .SS Standards
 .bP
 X/Open Curses, Issue 4, Version 2 (1996),
-describes these functions.
-However,
-they are marked
+describes these functions,
+marking them as
 \*(``TO BE WITHDRAWN\*(''.
 .bP
-X/Open Curses, Issue 7 (2009) marked the \fItermcap\fP interface
+X/Open Curses, Issue 7 (2009) marks the \fItermcap\fP interface
 (along with \fB\%vwprintw\fP and \fB\%vwscanw\fP) as withdrawn.
 .PP
 Neither X/Open Curses nor the SVr4 man pages documented the return
 values of \fB\%tgetent\fP correctly,
-though all three were in fact returned ever since SVr1.
+though all three shown here were in fact returned ever since SVr1.
 In particular,
 an omission in the X/Open Curses specification has been misinterpreted
 to mean that \fB\%tgetent\fP returns \fBOK\fP or \fBERR\fP.
@@ -411,20 +409,20 @@ The library remained much the same though 4.3BSD
 (June 1986).
 4.4BSD-Lite
 (June 1994)
-refactored it
+refactored it,
 .\" Observe the `tncktc()`, `tnamatch()`, `tskip()`, and `tdecode()`
 .\" entry points disappearing from termcap.c.
-but left the API unchanged.
+leaving the API unchanged.
 .PP
-Function prototypes were a feature of the forthcoming ANSI C (1989).
-Thus the library provided no header file declaring them.
+Function prototypes were a feature of ANSI C (1989).
+Thus the library itself provided no header file declaring them.
 Nevertheless,
 the BSD sources included two different \fI\%termcap.h\fP header files
 over time.
 .bP
 One was used internally by \fBjove\fP(1) from 4.3BSD onward.
 .\" 2BSD became a branch retaining support for non-virtual memory
-.\" systems (like the PDP-11) whereas most BSD development focused on
+.\" systems (such as the PDP-11) whereas most BSD development focused on
 .\" the VAX and other VM-enabled systems starting with 3BSD.
 .\"
 .\" This man page previously located a termcap.h in 2BSD, but that may
@@ -461,8 +459,8 @@ The prototype for \fB\%tputs\fP also differed,
 but in that instance,
 it was \fIlibedit\fP that differed from BSD \fItermcap\fP.
 .PP
-GNU \fItermcap\fP 1.3 was bundled with \fIbash\fP in mid-1993 to support
-the \fBreadline\fP(3) library.
+GNU \fItermcap\fP 1.3 was bundled with \fIbash\fP(1) in mid-1993 to
+support the \fI\%readline\fP(3) library.
 .PP
 \fI\%ncurses\fP 1.8.1
 (November 1993)
@@ -486,8 +484,10 @@ Any two of the four implementations thus differ,
 and programs that intend to work with all \fItermcap\fP library
 interfaces must account for that fact.
 .SH BUGS
-If you call \fB\%tgetstr\fP to fetch \fB\%ca\fP or any other
-parameterized string capability,
+If you call \fB\%tgetstr\fP to fetch
+.B \%column_address
+.RB ( ch )
+or any other parameterized string capability,
 be aware that it is returned in \fI\%term\%info\fP notation,
 not the older and not-quite-compatible \fItermcap\fP notation.
 This does not cause problems if all you do with it is call \fB\%tgoto\fP
@@ -521,11 +521,16 @@ looking for digits at the beginning of the string.
 \fB\%tputs("50")\fP in a \fItermcap\fP system may busy-wait for 50
 milliseconds rather than transmitting \*(``50\*(''.
 .PP
-\fItermcap\fP has nothing analogous to \fI\%term\%info\fP's \fBsgr\fP
-string.
+\fItermcap\fP has nothing analogous to \fI\%term\%info\fP's
+.B \%set_attributes
+.RB ( sgr )
+capability.
 One consequence is that \fItermcap\fP applications assume that
 .RB \*(`` me \*(''
-(equivalent to \fI\%term\%info\fP's \fBsgr0\fP capability)
+(equivalent to \fI\%term\%info\fP's
+.B \%exit_attribute_mode
+.RB ( sgr0 )
+capability)
 does not reset the alternate character set.
 \fI\%ncurses\fP checks for,
 and modifies the data shared with,

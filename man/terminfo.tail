@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.139 2023/12/17 22:56:21 tom Exp $
+.\" $Id: terminfo.tail,v 1.140 2023/12/23 16:23:35 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -523,7 +523,7 @@ will give unpredictable results, because dynamic variables are
 an uninitialized local array on the stack in the \fBtparm\fP function.
 .bP
 SVr3.2 curses supported \fIstatic\fP variables.
-Those are an array in the \fBTERMINAL\fP
+Those are an array in the \fI\%TERMINAL\fP
 structure (declared in \fBterm.h\fP),
 and are zeroed automatically when the \fBsetupterm\fP function
 allocates the data.

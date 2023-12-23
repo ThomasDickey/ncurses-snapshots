@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_print.3x,v 1.35 2023/12/16 20:32:22 tom Exp @
+  * @Id: curs_print.3x,v 1.36 2023/12/23 16:36:18 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_print 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_print 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_print 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_print 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>
 
@@ -84,11 +84,14 @@
        sent to the printer.
 
 
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
+       <STRONG>mcprint</STRONG> was designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and was not found in SVr4 <EM>curses</EM>,
+       4.4BSD <EM>curses</EM>, or any other previous curses implementation.
+
+
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       The  <STRONG>mcprint</STRONG>  call  was  designed for <EM>ncurses</EM>, and is not found in SVr4
-       <EM>curses</EM>, 4.4BSD <EM>curses</EM>, or any other previous version of <EM>curses</EM>.  It  is
-       recommended   that   any   code  depending  on  <EM>ncurses</EM>  extensions  be
-       conditioned using <STRONG>NCURSES_VERSION</STRONG>.
+       Applications employing this <EM>ncurses</EM> extension should condition its  use
+       on the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
@@ -100,7 +103,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                    <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -108,6 +111,7 @@ ncurses 6.4                       2023-12-16                    <STRONG><A HREF=
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-BUGS">BUGS</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

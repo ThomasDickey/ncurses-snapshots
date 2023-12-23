@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.187 2023/12/17 23:44:14 tom Exp @
+  * @Id: ncurses.3x,v 1.189 2023/12/23 16:32:37 tom Exp @
   * X/Open Curses Issue 7 assumes some optimization will be done, but
   * does not mandate it in any way.
 -->
@@ -37,12 +37,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2023-12-17 ncurses 6.4 Library calls</TITLE>
+<TITLE>ncurses 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2023-12-17 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -62,7 +62,7 @@
        method of updating  character  screens  with  reasonable  optimization.
        This  implementation  is  "new  curses"  (<EM>ncurses</EM>)  and is the approved
        replacement for 4.4BSD classic curses,  which  has  been  discontinued.
-       This describes <EM>ncurses</EM> version 6.4 (patch 20231217).
+       This describes <EM>ncurses</EM> version 6.4 (patch 20231223).
 
        The  <EM>ncurses</EM>  library emulates the curses library of System V Release 4
        Unix ("SVr4"), and XPG4 (X/Open Portability Guide) curses  (also  known
@@ -99,8 +99,8 @@
        <STRONG>-lncurses_g</STRONG>.   (Your  system  integrator  may also have installed these
        libraries under the names  <STRONG>-lcurses</STRONG>  and  <STRONG>-lcurses_g</STRONG>.)   The  ncurses_g
        library  generates  trace logs (in a file called "trace" in the current
-       directory) that describe curses  actions.   See  also  the  section  on
-       <STRONG>ALTERNATE</STRONG> <STRONG>CONFIGURATIONS</STRONG>.
+       directory)  that  describe  curses  actions.   See  section  "ALTERNATE
+       CONFIGURATIONS" below.
 
        The   <EM>ncurses</EM>   package   supports:  overall  screen,  window  and  pad
        manipulation; output to  windows  and  pads;  reading  terminal  input;
@@ -192,12 +192,12 @@
        modes  as  underlined,  in reverse video, or in color on terminals that
        support such display enhancements.  See <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>.
 
-       <EM>curses</EM> predefines symbols for a small set of line graphics  characters,
-       corresponding  to  the  VT100  line  drawing  set.   See <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> and
-       <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
+       <EM>curses</EM> predefines constants for a small set of line-drawing  and  other
+       graphics  corresponding  to  the  DEC  Alternate Character Set (ACS), a
+       feature of VT100 and other terminals.  See <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> and <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
 
        <EM>curses</EM> is implemented using the  operating  system's  terminal  driver;
-       keystroke  events are not received as scan codes but as byte sequences.
+       keystroke  events are received not as scan codes but as byte sequences.
        Graphical keycaps (alphanumeric and punctuation keys,  and  the  space)
        appear  as-is.   Everything  else,  including  the  tab,  enter/return,
        keypad, arrow, and function keys, appears as a control character  or  a
@@ -292,7 +292,7 @@
 
                  <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can  store  a  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or   the   constant   <STRONG>WEOF</STRONG>,
                           analogously  to the <EM>int</EM>-sized character manipulation
-                          functions of ISO C and their constant <STRONG>EOF</STRONG>.
+                          functions of ISO C and its constant <STRONG>EOF</STRONG>.
 
                  The  wide  library   provides   additional   functions   that
                  complement  those  in  the non-wide library where the size of
@@ -1002,7 +1002,7 @@
 
        The  reason  for the change was to make the behavior for interrupts and
        other  signals   more   robust.    One   drawback   is   that   certain
-       nonconventional  programs  would  mix ordinary stdio calls with <EM>ncurses</EM>
+       nonconventional programs would mix ordinary <STRONG>stdio(3)</STRONG> calls with <EM>ncurses</EM>
        calls and (usually) work.  This is no longer possible since <EM>ncurses</EM>  is
        not  using the buffered standard output but its own output (to the same
        file descriptor).  As a special case, the low-level calls such as  <STRONG>putp</STRONG>
@@ -1178,10 +1178,10 @@
 
 
 </PRE><H2><a name="h2-ALTERNATE-CONFIGURATIONS">ALTERNATE CONFIGURATIONS</a></H2><PRE>
-       Several   different  configurations  are  possible,  depending  on  the
-       configure script options used when building <EM>ncurses</EM>.  There are  a  few
-       main  options  whose  effects are visible to the applications developer
-       using <EM>ncurses</EM>:
+       Many  different  <EM>ncurses</EM> configurations are possible, determined by the
+       options given to the <EM>configure</EM> script when building the  library.   Run
+       the  script  with  the  <STRONG>--help</STRONG> option to peruse them all.  A few are of
+       particular significance to the application developer employing <EM>ncurses.</EM>
 
        --disable-overwrite
             The standard include for <EM>ncurses</EM> is as noted in <STRONG>SYNOPSIS</STRONG>:
@@ -1356,12 +1356,12 @@
        sections of the library man pages.
 
 
-</PRE><H3><a name="h3-Error-checking">Error checking</a></H3><PRE>
+</PRE><H3><a name="h3-Error-Checking">Error Checking</a></H3><PRE>
        In many cases, X/Open Curses is vague about error conditions,  omitting
        some of the SVr4 documentation.
 
        Unlike  other  implementations,  this  one  checks  parameters  such as
-       pointers to WINDOW structures to ensure they are not  null.   The  main
+       pointers to <EM>WINDOW</EM> structures to ensure they are not  null.   The  main
        reason  for  providing  this  behavior  is  to guard against programmer
        error.  The standard interface does not provide a way for  the  library
        to  tell an application which of several possible errors were detected.
@@ -1369,7 +1369,7 @@
        portability of curses applications.
 
 
-</PRE><H3><a name="h3-Extensions-versus-portability">Extensions versus portability</a></H3><PRE>
+</PRE><H3><a name="h3-Extensions-Versus-Portability">Extensions Versus Portability</a></H3><PRE>
        Most  of the extensions provided by <EM>ncurses</EM> have not been standardized.
        Some  have  been  incorporated  into  other  implementations,  such  as
        PDCurses or NetBSD curses.  Here are a few to consider:
@@ -1391,7 +1391,7 @@
        <STRONG>o</STRONG>   The routine <STRONG>wresize</STRONG> is not part of XPG4, nor is it present in SVr4.
            See the <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG> manual page for details.
 
-       <STRONG>o</STRONG>   The  WINDOW  structure's  internal  details  can  be  hidden   from
+       <STRONG>o</STRONG>   The  <EM>WINDOW</EM>  structure's  internal  details  can  be  hidden   from
            application  programs.   See  <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG> for the discussion of
            <STRONG>is_scrollok</STRONG>, etc.
 
@@ -1404,7 +1404,7 @@
            See <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG> for details.
 
 
-</PRE><H3><a name="h3-Padding-differences">Padding differences</a></H3><PRE>
+</PRE><H3><a name="h3-Padding-Differences">Padding Differences</a></H3><PRE>
        In historic curses versions, delays embedded in  the  capabilities  <STRONG>cr</STRONG>,
        <STRONG>ind</STRONG>,  <STRONG>cub1</STRONG>,  <STRONG>ff</STRONG>  and <STRONG>tab</STRONG> activated corresponding delay bits in the Unix
        tty driver.  In this implementation, all padding is done by sending NUL
@@ -1413,7 +1413,7 @@
        portability correspondingly.
 
 
-</PRE><H3><a name="h3-Header-files">Header files</a></H3><PRE>
+</PRE><H3><a name="h3-Header-Files">Header Files</a></H3><PRE>
        The  header  file <EM>curses.h</EM> itself includes the header files <EM>stdio.h</EM> and
        <EM>unctrl.h</EM>.
 
@@ -1514,7 +1514,7 @@
 
 
 
-ncurses 6.4                       2023-12-17                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -1562,10 +1562,10 @@ ncurses 6.4                       2023-12-17                       <STRONG><A HR
 <li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
-<li><a href="#h3-Error-checking">Error checking</a></li>
-<li><a href="#h3-Extensions-versus-portability">Extensions versus portability</a></li>
-<li><a href="#h3-Padding-differences">Padding differences</a></li>
-<li><a href="#h3-Header-files">Header files</a></li>
+<li><a href="#h3-Error-Checking">Error Checking</a></li>
+<li><a href="#h3-Extensions-Versus-Portability">Extensions Versus Portability</a></li>
+<li><a href="#h3-Padding-Differences">Padding Differences</a></li>
+<li><a href="#h3-Header-Files">Header Files</a></li>
 </ul>
 </li>
 <li><a href="#h2-AUTHORS">AUTHORS</a></li>

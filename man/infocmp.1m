@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.102 2023/12/16 20:32:22 tom Exp $
-.TH @INFOCMP@ 1M 2023-12-16 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.103 2023/12/23 16:08:25 tom Exp $
+.TH @INFOCMP@ 1M 2023-12-23 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -90,14 +90,14 @@ binary file (\fBterm\fP) in a variety of formats.
 In all cases, the boolean
 fields will be printed first, followed by the numeric fields, followed by the
 string fields.
-.SS Default Options
+.SS "Default Options"
 If no options are specified and zero or one \fIterminal-types\fP are
 specified,
 the
 \fB\-I\fP option will be assumed.
 If more than one \fIterminal-type\fP is specified,
 the \fB\-d\fP option will be assumed.
-.SS Comparison Options [\-d] [\-c] [\-n]
+.SS "Comparison Options [\-d] [\-c] [\-n]"
 \fB@INFOCMP@\fP compares the \fBterminfo\fP description of the first terminal
 \fIterminal-type\fP with each of the descriptions given by the entries
 for the other terminal's \fIterminal-types\fP.
@@ -142,7 +142,7 @@ capabilities (names prefixed with \*(``OT\*('').
 If no \fIterminal-types\fP are given,
 \fB@INFOCMP@\fP uses the environment variable \fITERM\fP
 for each of the \fIterminal-types\fP.
-.SS Source Listing Options [\-I] [\-L] [\-C] [\-r]
+.SS "Source Listing Options [\-I] [\-L] [\-C] [\-r]"
 The \fB\-I\fP, \fB\-L\fP, and \fB\-C\fP options will produce
 a source listing for each terminal named.
 .PP
@@ -222,7 +222,7 @@ l l l.
 \fB%p1%?%'x'%>%t%p1%'y'%+%;/%>xy\fP/concept
 \fB%p2\fP is printed before \fB%p1/%r\fP/hp
 .TE
-.SS Use= Option [\-u]
+.SS "Use= Option [\-u]"
 The \fB\-u\fP option produces a \fBterminfo\fP source description of the first
 terminal \fIterminal-type\fP which is relative to the sum of the
 descriptions given by the entries for the other \fIterminal-types\fP.
@@ -269,7 +269,7 @@ the compilation time, is specifying extra \fBuse=\fP fields that are
 superfluous.
 \fB@INFOCMP@\fP will flag any other \fIterminal-type use=\fP fields that
 were not needed.
-.SS Changing Databases [\-A \fIdirectory\fR] [\-B \fIdirectory\fR]
+.SS "Changing Databases [\-A \fIdirectory\fR] [\-B \fIdirectory\fR]"
 Like other \fI\%ncurses\fP utilities,
 \fB@INFOCMP@\fP looks for the terminal descriptions in several places.
 You can use the \fI\%TERMINFO\fP and \fI\%TERMINFO_DIRS\fP environment
@@ -292,7 +292,7 @@ databases.
 For instance,
 you can use this feature for comparing descriptions for the same terminal
 created by different people.
-.SS Other Options
+.SS "Other Options"
 .TP 5
 \fB\-0\fP
 causes the fields to be printed on one line, without wrapping.

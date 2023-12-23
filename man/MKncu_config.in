@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKncu_config.in,v 1.20 2023/12/16 21:43:05 tom Exp $
-.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-12-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKncu_config.in,v 1.22 2023/12/23 23:44:26 tom Exp $
+.TH @LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config 1 2023-12-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .SH NAME
 \fB\%@LIB_NAME@@DFT_ARG_SUFFIX@@cf_cv_abi_version@-config\fP \-
 configuration helper for \fI\%ncurses\fP libraries
@@ -56,10 +56,6 @@ reports the C compiler flags needed to compile with \fI\%ncurses\fP.
 .TP
 \fB\-\-libs\fP
 reports the libraries needed to link with \fI\%ncurses\fP.
-.TP
-\fB\-\-version\fP
-reports the release and patch date information of \fI\%ncurses\fP and
-exits successfully.
 .TP
 \fB\-\-abi\-version\fP
 reports the ABI version of \fI\%ncurses\fP.
@@ -95,8 +91,14 @@ for example \fI\%@TERMINFO_DIRS@\fP.
 reports the \fI\%TERMPATH\fP supplemental search path for the
 \fItermcap\fP database,
 if support for \fItermcap\fP is configured.
-.TP
+.PP
+The following options cause all others to be ignored.
+.TP 11 .\" "--version" + 2n
 \fB\-\-help\fP
 issues a usage message and exits successfully.
+.TP
+\fB\-\-version\fP
+issues the release and patch date information of \fI\%ncurses\fP and
+exits successfully.
 .SH "SEE ALSO"
 \fB\%curses\fP(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.60 2023/12/16 21:24:43 tom Exp $
-.TH panel 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: panel.3x,v 1.61 2023/12/23 16:22:25 tom Exp $
+.TH panel 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -109,7 +109,7 @@ puts panel \fIpan\fP at the bottom of all panels.
 .SS ceiling_panel
 \fB\%ceiling_panel(\fIsp\fB)\fR
 acts like \fB\%panel_below(NULL)\fP
-for the given \fI\%SCREEN\fP \fIsp\fP.
+for the given \fISCREEN\fP \fIsp\fP.
 .\" ---------
 .SS del_panel
 \fB\%del_panel(\fIpan\fB)\fR
@@ -119,7 +119,7 @@ removes the given panel \fIpan\fP from the stack and deallocates the
 .SS ground_panel
 \fB\%ground_panel(\fIsp\fB)\fR
 acts like \fB\%panel_above(NULL)\fP
-for the given \fI\%SCREEN\fP \fIsp\fP.
+for the given \fISCREEN\fP \fIsp\fP.
 .\" ---------
 .SS hide_panel
 \fB\%hide_panel(\fIpan\fB)\fR

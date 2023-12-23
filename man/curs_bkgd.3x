@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.54 2023/12/17 23:31:28 tom Exp $
-.TH curs_bkgd 3X 2023-12-17 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.55 2023/12/23 16:35:10 tom Exp $
+.TH curs_bkgd 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -173,7 +173,9 @@ there is no \fB\%wgetbkgd\fP function;
 \fB\%getbkgd\fP behaves as one would expect \fB\%wgetbkgd\fP to,
 accepting a \fI\%WINDOW\fP pointer argument.
 .PP
-\fB\%bkgd\fP and \fB\%bkgdset\fP may be available as macros.
+\fB\%bkgd\fP and
+\fB\%bkgdset\fP
+may be implemented as macros.
 .PP
 X/Open Curses mentions that the character part of the background must
 be a single-byte value.

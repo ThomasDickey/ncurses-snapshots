@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: scr_dump.5,v 1.40 2023/12/16 21:07:24 tom Exp $
-.TH scr_dump 5 2023-12-16 "ncurses 6.4" "File formats"
+.\" $Id: scr_dump.5,v 1.41 2023/12/23 16:27:25 tom Exp $
+.TH scr_dump 5 2023-12-23 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -114,26 +114,26 @@ screen-size,
 because the library truncates or fills the screen as necessary.
 .bP
 The ncurses6 \fBgetwin\fP reads the legacy screen dumps from ncurses5.
-.SS ncurses5 (legacy)
+.SS "ncurses5 (Legacy)"
 The screen-dump feature was added to \fI\%ncurses\fP in June 1995.
 While there were fixes and improvements in succeeding years,
 the basic scheme was unchanged:
 .bP
-The \fBWINDOW\fP structure was written in binary form.
+The \fI\%WINDOW\fP structure was written in binary form.
 .bP
-The \fBWINDOW\fP structure refers to lines of data,
-which were written as an array of binary data following the \fBWINDOW\fP.
+The \fI\%WINDOW\fP structure refers to lines of data,
+which were written as an array of binary data following the \fI\%WINDOW\fP.
 .bP
 When \fBgetwin\fP restored the window,
 it would keep track of offsets into the array of line-data
-and adjust the \fBWINDOW\fP structure which was read back into memory.
+and adjust the \fI\%WINDOW\fP structure which was read back into memory.
 .PP
 This is similar to Unix System\ V,
 but does not write a \*(``magic number\*('' to identify the file format.
 .SH PORTABILITY
 There is no standard format for \fBputwin\fP.
 This section gives a brief description of the existing formats.
-.SS X/Open Curses
+.SS "X/Open Curses"
 Refer to \fIX/Open Curses, Issue 7\fP (2009).
 .PP
 X/Open's documentation for \fIenhanced curses\fP says only:
@@ -145,7 +145,7 @@ The function
 then creates and initializes a new window using that data.
 .PP
 The \fBputwin(\ )\fP function writes all data associated
-with \fIwin\fP into the \fBstdio\fP(3) stream to which \fIfilep\fP
+with \fIwin\fP into the \fI\%stdio\fP(3) stream to which \fIfilep\fP
 points, using an \fBunspecified format\fP.
 This information can be retrieved later using \fBgetwin(\ )\fP.
 .RE
@@ -170,10 +170,10 @@ or more specific portability warnings about use of the material.
 In the foregoing, emphasis was added to \fBunspecified format\fP
 and to \fBXPG4 or to earlier XPG releases\fP,
 for clarity.
-.SS Unix System V
+.SS "Unix System V"
 Unix System\ V curses identified the file format by writing a
 \*(``magic number\*('' at the beginning of the dump.
-The \fBWINDOW\fP data and the lines of text follow, all in binary form.
+The \fI\%WINDOW\fP data and the lines of text follow, all in binary form.
 .PP
 The Solaris curses source has these definitions:
 .PP
@@ -211,7 +211,7 @@ the magic number is written with the high-order byte first, e.g.,
 .EE
 .RE
 .PP
-After the magic number, the \fBWINDOW\fP structure and line-data are
+After the magic number, the \fI\%WINDOW\fP structure and line-data are
 written in binary format.
 While the magic number used by the Unix systems can be seen using \fBod\fP(1),
 none of the Unix systems documents the format used for screen-dumps.
@@ -251,7 +251,7 @@ than writing the whole window from top to bottom.
 .SS PDCurses
 PDCurses added support for screen dumps in version 2.7 (2005).
 Like Unix System\ V and ncurses5,
-it writes the \fBWINDOW\fP structure in binary,
+it writes the \fI\%WINDOW\fP structure in binary,
 but begins the file with its three-byte identifier \*(``PDC\*('',
 followed by a one-byte version,
 e.g.,
@@ -274,9 +274,9 @@ It writes
 the curses shared library major and minor versions
 as the first two bytes (e.g., 7 and 1),
 .bP
-followed by a binary dump of the \fBWINDOW\fP,
+followed by a binary dump of the \fI\%WINDOW\fP,
 .bP
-some data for wide-characters referenced by the \fBWINDOW\fP structure, and
+some data for wide-characters referenced by the \fI\%WINDOW\fP structure, and
 .bP
 finally, lines as done by other implementations.
 .SH EXAMPLES

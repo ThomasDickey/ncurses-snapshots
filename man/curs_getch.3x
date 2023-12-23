@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.76 2023/12/16 21:01:28 tom Exp $
-.TH curs_getch 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.77 2023/12/23 16:36:18 tom Exp $
+.TH curs_getch 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -68,7 +68,7 @@ get (or push back) characters from \fIcurses\fR terminal keyboard
 .B int has_key(int \fIch\fP);
 .fi
 .SH DESCRIPTION
-.SS Reading characters
+.SS "Reading Characters"
 The \fBgetch\fP, \fBwgetch\fP, \fBmvgetch\fP and \fBmvwgetch\fP, routines read
 a character from the window.
 In no-delay mode, if no input is waiting, the value \fBERR\fP is returned.
@@ -101,7 +101,7 @@ Otherwise the character is simply output to the screen.
 If the window is not a pad, and it has been moved or modified since the last
 call to \fBwrefresh\fP, \fBwrefresh\fP will be called before another character
 is read.
-.SS Keypad mode
+.SS "Keypad Mode"
 If \fBkeypad\fP is \fBTRUE\fP, and a function key is pressed, the token for
 that function key is returned instead of the raw characters:
 .bP
@@ -135,11 +135,11 @@ it is an infinite (or very large) value.
 Because function keys usually begin with an escape character,
 the terminal may appear to hang in notimeout mode after pressing the escape key
 until another key is pressed.
-.SS Ungetting characters
+.SS "Ungetting Characters"
 The \fBungetch\fP routine places \fIch\fP back onto the input queue to be
 returned by the next call to \fBwgetch\fP.
 There is just one input queue for all windows.
-.SS Predefined key-codes
+.SS "Predefined Key Codes"
 The following special keys are defined in \fB<curses.h>\fP.
 .bP
 Except for the special case \fBKEY_RESIZE\fP,
@@ -284,7 +284,7 @@ because
 with \fBxterm\fP(1) mouse prototocol)
 \fI\%ncurses\fP must read escape sequences,
 just like a function key.
-.SS Testing key-codes
+.SS "Testing Key Codes"
 The \fBhas_key\fP routine takes a key-code value from the above list, and
 returns \fBTRUE\fP or \fBFALSE\fP according to whether
 the current terminal type recognizes a key with that value.
@@ -370,32 +370,61 @@ consoles typically support little more than \fBKEY_UP\fP, \fBKEY_DOWN\fP,
 \fBKEY_NPAGE\fP, \fBKEY_PPAGE\fP, and function keys 1 through 12.
 The Ins key
 is usually mapped to \fBKEY_IC\fP.
+.SH EXTENSIONS
+\fB\%has_key\fP was designed for \fB\%ncurses\fP(3X),
+and is not found in SVr4
+.IR curses ,
+4.4BSD
+.IR curses ,
+or any other previous curses implementation.
 .SH PORTABILITY
-The *get* functions are described in the XSI Curses standard, Issue 4.
-They
-read single-byte characters only.
-The standard specifies that they return
-\fBERR\fP on failure, but specifies no error conditions.
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
 .PP
-The echo behavior of these functions on input of \fBKEY_\fP or backspace
-characters was not specified in the SVr4 documentation.
-This description is
-adopted from the XSI Curses standard.
+X/Open Curses, Issue 4, Version 2, describes
+\fB\%getch\fP,
+\fB\%wgetch\fP,
+\fB\%mvgetch\fP,
+\fB\%mvwgetch\fP,
+and
+\fB\%ungetch\fP.
+They read single-byte characters only.
+The standard specifies that they return \fBERR\fP on failure,
+but describes no failure conditions.
 .PP
-The behavior of \fBgetch\fP and friends in the presence of handled signals is
-unspecified in the SVr4 and XSI Curses documentation.
-Under historical curses
-implementations, it varied depending on whether the operating system's
-implementation of handled signal receipt interrupts a \fBread\fP(2) call in
-progress or not, and also (in some implementations) depending on whether an
-input timeout or non-blocking mode has been set.
+The echo behavior of these functions on input of
+.B KEY_
+or backspace characters was not specified in the SVr4 documentation.
+This description is adapted from X/Open Curses.
 .PP
-\fBKEY_MOUSE\fP is mentioned in XSI Curses, along with a few related
-terminfo capabilities, but no higher-level functions use the feature.
-The implementation in \fI\%ncurses\fP is an extension.
+The behavior of \fBgetch\fP and friends in the presence of signal
+handlers is unspecified in the SVr4 documentation and X/Open Curses.
+Under historical curses implementations,
+it varied depending on whether the operating system's dispatch of a
+signal to a handler interrupts a \fBread\fP(2) call in progress or not,
+and also
+(in some implementations)
+whether an input timeout or non-blocking mode has been set.
 .PP
-\fBKEY_RESIZE\fP is an extension first implemented for \fI\%ncurses\fP.
-NetBSD curses later added this extension.
+.B KEY_MOUSE
+is mentioned in X/Open Curses,
+along with a few related
+.I \%term\%info
+capabilities,
+but no higher-level functions use the feature.
+The implementation in
+.I \%ncurses
+is an extension.
+.PP
+.B KEY_RESIZE
+is an extension first implemented for
+.I \%ncurses.
+NetBSD
+.I curses
+later added this extension.
 .PP
 Programmers concerned about portability should be prepared for either of two
 cases: (a) signal receipt does not interrupt \fBgetch\fP; (b) signal receipt

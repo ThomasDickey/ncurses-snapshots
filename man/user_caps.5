@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.42 2023/12/16 20:32:22 tom Exp $
-.TH user_caps 5 2023-12-16 "ncurses 6.4" "File formats"
+.\" $Id: user_caps.5,v 1.43 2023/12/23 16:08:25 tom Exp $
+.TH user_caps 5 2023-12-23 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -185,7 +185,7 @@ to provide extended special-key names.
 Fitting that into termcap's limitation of 2-character names
 would be pointless.
 These extended keys are available only with terminfo.
-.SS Recognized capabilities
+.SS "Recognized Capabilities"
 The \fI\%ncurses\fP library uses the user-definable capabilities.
 While the terminfo database may have other extensions,
 \fI\%ncurses\fP makes explicit checks for these:
@@ -347,7 +347,7 @@ xterm mouse protocols:
              %?%p4%tM%em%;,
 .fi
 .
-.SS Extended key-definitions
+.SS "Extended Key Definitions"
 Several terminals provide the ability to send distinct strings for
 combinations of modified special keys.
 There is no standard for what those keys can send.

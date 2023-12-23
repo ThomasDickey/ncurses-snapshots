@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.93 2023/12/16 21:07:24 tom Exp $
-.TH curs_color 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_color.3x,v 1.95 2023/12/23 20:18:13 tom Exp $
+.TH curs_color 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -75,6 +75,10 @@ manipulate terminal colors with \fIcurses\fR
 .nf
 \fB#include <curses.h>
 .PP
+\fI/* variables */
+\fBint COLOR_PAIRS;
+\fBint COLORS;
+.PP
 \fBint start_color(void);
 .PP
 \fBbool has_colors(void);
@@ -100,43 +104,55 @@ manipulate terminal colors with \fIcurses\fR
 .fi
 .SH DESCRIPTION
 .SS Overview
-\fIcurses\fP supports color attributes on terminals with that capability.
-To use these routines \fB\%start_color\fP must be called, usually right after
-\fB\%initscr\fP.
-Colors are always used in pairs (referred to as color pairs).
-A color pair consists of a foreground color (for characters) and a background
-color (for the blank field on which the characters are displayed).
-A programmer initializes a color pair with the routine \fB\%init_pair\fP.
-After it has been initialized, \fB\%COLOR_PAIR\fP(\fIn\fP)
-can be used to convert the pair to a video attribute.
+\fIcurses\fP supports color attributes on terminals with that
+capability.
+Call \fB\%start_color\fP
+(typically right after \fB\%initscr\fP(3X))
+to enable this feature.
+Colors are always used in pairs.
+A
+.I "color pair"
+couples a foreground color for characters with a background color for
+the blank field on which characters are rendered.
+\fB\%init_pair\fP initializes a color pair.
+The macro \fB\%COLOR_PAIR\fP(\fIn\fP) can then convert the pair to a
+video attribute.
 .PP
-If a terminal is capable of redefining colors, the programmer can use the
-routine \fB\%init_color\fP to change the definition of a color.
-The routines \fB\%has_colors\fP and \fB\%can_change_color\fP
+If a terminal has the relevant capability,
+\fB\%init_color\fP permits (re)definition of a color.
+\fB\%has_colors\fP and \fB\%can_change_color\fP
 return \fBTRUE\fP or \fBFALSE\fP,
-depending on whether the terminal has color capabilities and whether the
+depending on whether the terminal has color capability and whether the
 programmer can change the colors.
-The routine \fB\%color_content\fP allows a
-programmer to extract the amounts of red, green, and blue components in an
-initialized color.
-The routine \fB\%pair_content\fP allows a programmer to find
-out how a given color pair is currently defined.
-.SS Color Rendering
-The \fIcurses\fP library combines these inputs to produce the
-actual foreground and background colors shown on the screen:
+\fB\%color_content\fP permits extraction of the
+red,
+green,
+and blue components of an initialized color.
+\fB\%pair_content\fP permits discovery of a color pair's current
+definition.
+.SS Rendering
+.I curses
+combines the following data to render a character cell.
+Any of them can include color information.
 .bP
-per-character video attributes (e.g., via \fB\%waddch\fP),
+.I curses
+character attributes,
+as from \fB\%waddch\fP(3X) or \fB\%wadd_wch\fP(3X)
 .bP
-the window attribute (e.g., by \fB\%wattrset\fP), and
+window attributes,
+as from \fB\%wattrset\fP(3X) or \fB\%wattr_set\fP(3X)
 .bP
-the background character (e.g., \fB\%wbkgdset\fP).
+window background character atttributes,
+as from \fB\%wbkgdset\fP(3X) or \fB\%wbkgrndset\fP(3X)
 .PP
-Per-character and window attributes are usually set by a parameter containing
-video attributes including a color pair value.
-Some functions such as \fB\%wattr_set\fP use a separate parameter which
-is the color pair number.
+Per-character and window attributes are usually set through a function
+parameter containing attributes including a color pair value.
+Some functions,
+such as \fB\%wattr_set\fP,
+use a separate color pair number parameter.
 .PP
-The background character is a special case: it includes a character value,
+The background character is a special case:
+it includes a character code,
 just as if it were passed to \fB\%waddch\fP.
 .PP
 The \fIcurses\fP library does the actual work of combining these color
@@ -189,8 +205,21 @@ There are no standard names for those additional colors.
 is initialized by \fB\%start_color\fP to the maximum number of colors
 the terminal can support.
 .SS COLOR_PAIRS
-is initialized by \fB\%start_color\fP to the maximum number of color pairs
-the terminal can support.
+is initialized by \fB\%start_color\fP to the maximum number of color
+pairs the terminal can support.
+Often,
+its value is the product \fB\%COLORS\fP \(mu \fB\%COLORS\fP,
+but this is not always true.
+.bP
+A few terminals use the HLS color space
+(see \fB\%start_color\fP below),
+ignoring this rule;
+and
+.bP
+terminals supporting a large number of colors are limited to the number
+of color pairs that a
+.I "signed short"
+value can represent.
 .SH FUNCTIONS
 .SS start_color
 The \fB\%start_color\fP routine requires no arguments.
@@ -465,9 +494,18 @@ Color RGB values are not settable.
 .SH EXTENSIONS
 The functions marked as extensions were designed for
 \fB\%ncurses\fP(3X),
-and are not found in SVr4 curses, 4.4BSD curses,
-or any other previous version of curses.
+and are not found in SVr4
+.IR curses ,
+4.4BSD
+.IR curses ,
+or any other previous curses implementation.
 .SH PORTABILITY
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
+.PP
 This implementation satisfies XSI Curses's minimum maximums
 for \fB\%COLORS\fP and \fB\%COLOR_PAIRS\fP.
 .PP
@@ -500,8 +538,8 @@ SVr3.2 introduced color support to curses in 1987.
 .PP
 SVr4 made internal changes,
 e.g., moving the storage for the color state
-from \fBSP\fP (the \fBSCREEN\fP structure)
-to \fB\%cur_term\fP (the \fB\%TERMINAL\fP structure),
+from \fBSP\fP (the \fISCREEN\fP structure)
+to \fB\%cur_term\fP (the \fI\%TERMINAL\fP structure),
 but provided the same set of library functions.
 .PP
 SVr4 curses limits the number of color pairs to 64,

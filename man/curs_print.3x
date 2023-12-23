@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_print.3x,v 1.35 2023/12/16 20:32:22 tom Exp $
-.TH curs_print 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_print.3x,v 1.36 2023/12/23 16:36:18 tom Exp $
+.TH curs_print 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .SH NAME
 \fB\%mcprint\fP \-
 write binary data to printer using \fIterminfo\fR capabilities
@@ -66,13 +66,20 @@ Couldn't allocate sufficient memory to buffer the printer write.
 .PP
 When \fB\%mcprint\fP succeeds, it returns the number of characters actually
 sent to the printer.
+.SH EXTENSIONS
+\fB\%mcprint\fP was designed for
+\fB\%ncurses\fP(3X),
+and was not found in SVr4
+.IR curses ,
+4.4BSD
+.IR curses ,
+or any other previous curses implementation.
 .SH PORTABILITY
-The \fB\%mcprint\fP call was designed for \fI\%ncurses\fP,
-and is not found in SVr4 \fIcurses\fP,
-4.4BSD \fIcurses\fP,
-or any other previous version of \fIcurses\fP.
-It is recommended that any code depending on \fI\%ncurses\fP extensions
-be conditioned using \fB\%NCURSES_VERSION\fP.
+Applications employing this
+.I \%ncurses
+extension should condition its use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
 .SH BUGS
 Padding in the
 \fBmc5p\fP,

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.45 2023/12/16 20:32:22 tom Exp $
-.TH curs_sp_funcs 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.46 2023/12/23 16:26:05 tom Exp $
+.TH curs_sp_funcs 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -215,13 +215,13 @@ This implementation can be configured to provide a set of functions which
 improve the ability to manage multiple screens.
 This feature can be added to any of the configurations supported by
 \fI\%ncurses\fP;
-it adds new entrypoints
+it adds new symbols
 without changing the meaning of any of the existing ones.
 .\" ***************************************************************************
-.SS IMPROVED FUNCTIONS
+.SS "Improved Functions"
 Most of the functions are new versions of existing functions.
 A parameter is added at the front of the parameter list.
-It is a SCREEN pointer.
+It is a \fISCREEN\fP pointer.
 .PP
 The existing functions all use the current screen,
 which is a static variable.
@@ -229,7 +229,7 @@ The extended functions use the specified screen,
 thereby reducing the number of variables which must be modified
 to update multiple screens.
 .\" ***************************************************************************
-.SS NEW FUNCTIONS
+.SS "New Functions"
 Here are the new functions:
 .TP 5
 ceiling_panel
@@ -245,8 +245,8 @@ With the screen-pointer extension,
 there are situations where it must create a current screen before
 the unextended library does.
 The \fBnew_prescr\fP function is used internally to handle these cases.
-It is also provided as an entrypoint to allow applications to customize
-the library initialization.
+It is also provided to allow applications to customize library
+initialization.
 .\" ***************************************************************************
 .SH NOTES
 This extension introduces some new names:

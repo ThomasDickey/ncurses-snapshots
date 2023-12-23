@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_driver.3x,v 1.53 2023/11/25 13:58:47 tom Exp $
-.TH form_driver 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: form_driver.3x,v 1.54 2023/12/23 16:08:25 tom Exp $
+.TH form_driver 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -67,7 +67,7 @@ returned by \fBget_wch\fP(3X).
 The type must be passed as well,
 to enable the library to determine whether the parameter
 is a wide character or a request.
-.SS Form-driver requests
+.SS "Form Driver Requests"
 The form driver requests are as follows:
 .PP
 .TS
@@ -139,7 +139,7 @@ If the second argument is a printable character, the driver places it
 in the current position in the current field.
 If it is one of the forms
 requests listed above, that request is executed.
-.SS Field validation
+.SS "Field Validation"
 The form library makes updates to the window associated
 with form fields rather than directly to the field buffers.
 .PP
@@ -166,7 +166,7 @@ In each case, the move fails if the field is invalid.
 If the modified field is valid, the form driver copies the modified
 data from the window associated with the field
 to the field buffer.
-.SS Mouse handling
+.SS "Mouse Handling"
 If the second argument is the KEY_MOUSE special key, the associated
 mouse event is translated into one of the above pre-defined requests.
 Currently only clicks in the user window (e.g., inside the form display
@@ -213,7 +213,7 @@ into a request was done, \fBform_driver\fP returns the result of this request.
 If you clicked outside the user window
 or the mouse event could not be translated
 into a form request an \fBE_REQUEST_DENIED\fP is returned.
-.SS Application-defined commands
+.SS "Application-defined Commands"
 If the second argument is neither printable nor one of the above
 pre-defined form requests, the driver assumes it is an application-specific
 command and returns \fBE_UNKNOWN_COMMAND\fP.  Application-defined commands

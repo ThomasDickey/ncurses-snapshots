@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_threads.3x,v 1.50 2023/12/16 20:32:22 tom Exp $
-.TH curs_threads 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_threads.3x,v 1.51 2023/12/23 16:22:25 tom Exp $
+.TH curs_threads 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -122,7 +122,7 @@ Other global variables are not modifiable.
 .PP
 The \fBuse_window\fP and \fBuse_screen\fP functions provide
 coarse-grained mutexes for their respective \fI\%WINDOW\fP and
-\fI\%SCREEN\fP parameters;
+\fISCREEN\fP parameters;
 they call a user-supplied function,
 pass it a \fIdata\fP parameter,
 and return the value from the user-supplied function to the application.

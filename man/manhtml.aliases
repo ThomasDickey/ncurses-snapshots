@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.29 2023/12/18 00:27:56 tom Exp $
+# $Id: manhtml.aliases,v 1.30 2023/12/23 21:21:06 tom Exp $
 #***************************************************************************
 # Copyright 2019-2022,2023 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -57,6 +57,7 @@ inch(3X)		curs_inch(3X)
 infocmp(1)		infocmp(1M)
 initscr(3X)		curs_initscr(3X)
 is_scrollok(3X)		curs_opaque(3X)
+keyname(3X)		curs_util(3X)
 keypad(3X)		curs_inopts(3X)
 longname(3X)		curs_termattrs(3X)
 meta(3X)		curs_inopts(3X)
@@ -89,7 +90,10 @@ wadd_wch(3X)		curs_add_wch(3X)
 waddch(3X)		curs_addch(3X)
 waddstr(3X)		curs_addstr(3X)
 waddwstr(3X)		curs_addwstr(3X)
+wattr_set(3X)		curs_attr(3X)
+wattrset(3X)		curs_attr(3X)
 wbkgdset(3X)		curs_bkgd(3X)
+wbkgrndset(3X)		curs_bkgrnd(3X)
 wget_wch(3X)		curs_get_wch(3X)
 wgetch(3X)		curs_getch(3X)
 wgetstr(3X)		curs_getstr(3X)

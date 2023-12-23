@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.59 2023/12/17 23:56:04 tom Exp @
+  * @Id: curs_initscr.3x,v 1.60 2023/12/23 16:27:25 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2023-12-17 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2023-12-17 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -87,7 +87,7 @@
        use <STRONG>newterm</STRONG>.
 
        The  routine  <STRONG>newterm</STRONG>  should  be  called  once  for each terminal.  It
-       returns a variable of  type  <STRONG>SCREEN</STRONG>  <STRONG>*</STRONG>  which  should  be  saved  as  a
+       returns a variable of  type  <EM>SCREEN</EM>  <EM>*</EM>  which  should  be  saved  as  a
        reference to that terminal.  <STRONG>newterm</STRONG>'s arguments are
 
        <STRONG>o</STRONG>   the <EM>type</EM> of the terminal to be used in place of <STRONG>$TERM</STRONG>,
@@ -99,8 +99,8 @@
        If the <EM>type</EM> parameter is <STRONG>NULL</STRONG>, <STRONG>$TERM</STRONG> will be used.
 
        The  file  descriptor  of the output stream is passed to <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>,
-       which returns a pointer to  a  <STRONG>TERMINAL</STRONG>  structure.   <STRONG>newterm</STRONG>'s  return
-       value holds a pointer to the <STRONG>TERMINAL</STRONG> structure.
+       which returns a pointer to  a  <EM>TERMINAL</EM>  structure.   <STRONG>newterm</STRONG>'s  return
+       value holds a pointer to the <EM>TERMINAL</EM> structure.
 
 
 </PRE><H3><a name="h3-endwin">endwin</a></H3><PRE>
@@ -139,14 +139,14 @@
        The  <STRONG>set_term</STRONG>  routine  is  used to switch between different terminals.
        The screen  reference  <EM>new</EM>  becomes  the  new  current  terminal.   The
        previous terminal is returned by the routine.  This is the only routine
-       which manipulates <STRONG>SCREEN</STRONG> pointers; all other routines affect  only  the
+       which manipulates <EM>SCREEN</EM> pointers; all other routines affect  only  the
        current terminal.
 
 
 </PRE><H3><a name="h3-delscreen">delscreen</a></H3><PRE>
-       The  <STRONG>delscreen</STRONG>  routine  frees  storage associated with the <STRONG>SCREEN</STRONG> data
+       The  <STRONG>delscreen</STRONG>  routine  frees  storage associated with the <EM>SCREEN</EM> data
        structure.  The <STRONG>endwin</STRONG> routine does not do this, so <STRONG>delscreen</STRONG> should be
-       called after <STRONG>endwin</STRONG> if a particular <STRONG>SCREEN</STRONG> is no longer needed.
+       called after <STRONG>endwin</STRONG> if a particular <EM>SCREEN</EM> is no longer needed.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -191,17 +191,17 @@
        redundant to check the return value of <STRONG>initscr</STRONG> in XSI Curses.
 
        Calling  <STRONG>endwin</STRONG>  does not dispose of the memory allocated in <STRONG>initscr</STRONG> or
-       <STRONG>newterm</STRONG>.  Deleting a <STRONG>SCREEN</STRONG> provides a way to do this:
+       <STRONG>newterm</STRONG>.  Deleting a <EM>SCREEN</EM> provides a way to do this:
 
-       <STRONG>o</STRONG>   X/Open Curses does not say what happens to <STRONG>WINDOW</STRONG>s  when  <STRONG>delscreen</STRONG>
-           "frees  storage  associated  with  the  <STRONG>SCREEN</STRONG>"  nor  does the SVr4
+       <STRONG>o</STRONG>   X/Open Curses does not say what happens to <EM>WINDOW</EM>s  when  <STRONG>delscreen</STRONG>
+           "frees  storage  associated  with  the  <EM>SCREEN</EM>"  nor  does the SVr4
            documentation help, adding that it should be called after <STRONG>endwin</STRONG> if
-           a <STRONG>SCREEN</STRONG> is no longer needed.
+           a <EM>SCREEN</EM> is no longer needed.
 
-       <STRONG>o</STRONG>   However,  <STRONG>WINDOW</STRONG>s are implicitly associated with a <STRONG>SCREEN</STRONG>.  so that
+       <STRONG>o</STRONG>   However,  <EM>WINDOW</EM>s are implicitly associated with a <EM>SCREEN</EM>.  so that
            it is reasonable to expect <STRONG>delscreen</STRONG> to deal with these.
 
-       <STRONG>o</STRONG>   SVr4 curses deletes  the  standard  <STRONG>WINDOW</STRONG>  structures  <STRONG>stdscr</STRONG>  and
+       <STRONG>o</STRONG>   SVr4 curses deletes  the  standard  <EM>WINDOW</EM>  structures  <STRONG>stdscr</STRONG>  and
            <STRONG>curscr</STRONG>  as  well  as a work area <STRONG>newscr</STRONG>.  SVr4 curses ignores other
            windows.
 
@@ -210,12 +210,12 @@
            windows when <STRONG>delscreen</STRONG> is called.
 
        <STRONG>o</STRONG>   NetBSD copied this feature of <EM>ncurses</EM> in  2001.   PDCurses  follows
-           the SVr4 model, deleting only the standard <STRONG>WINDOW</STRONG> structures.
+           the SVr4 model, deleting only the standard <EM>WINDOW</EM> structures.
 
 
 </PRE><H3><a name="h3-High-level-versus-Low-level">High-level versus Low-level</a></H3><PRE>
        Different  implementations  may  disagree  regarding  the level of some
-       functions.  For example, <STRONG>SCREEN</STRONG>  (returned  by  <STRONG>newterm</STRONG>)  and  <STRONG>TERMINAL</STRONG>
+       functions.  For example, <EM>SCREEN</EM>  (returned  by  <STRONG>newterm</STRONG>)  and  <EM>TERMINAL</EM>
        (returned  by  <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>)  hold  file  descriptors  for  the output
        stream.  If an application switches screens using <STRONG>set_term</STRONG>, or switches
        terminals using <STRONG><A HREF="curs_terminfo.3x.html">set_curterm(3x)</A></STRONG>, applications which use the output file
@@ -224,12 +224,12 @@
 
        For example
 
-       <STRONG>o</STRONG>   NetBSD's  <STRONG><A HREF="curs_termattrs.3x.html">baudrate(3x)</A></STRONG>  function  uses  the descriptor in <STRONG>TERMINAL</STRONG>.
-           <EM>ncurses</EM> and SVr4 use the descriptor in <STRONG>SCREEN</STRONG>.
+       <STRONG>o</STRONG>   NetBSD's  <STRONG><A HREF="curs_termattrs.3x.html">baudrate(3x)</A></STRONG>  function  uses  the descriptor in <EM>TERMINAL</EM>.
+           <EM>ncurses</EM> and SVr4 use the descriptor in <EM>SCREEN</EM>.
 
-       <STRONG>o</STRONG>   NetBSD and <EM>ncurses</EM> use the descriptor in <STRONG>TERMINAL</STRONG> for terminal  I/O
+       <STRONG>o</STRONG>   NetBSD and <EM>ncurses</EM> use the descriptor in <EM>TERMINAL</EM> for terminal  I/O
            modes,  e.g.,  <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>,  <STRONG><A HREF="curs_kernel.3x.html">def_prog_mode(3x)</A></STRONG>.  SVr4 curses
-           uses the descriptor in <STRONG>SCREEN</STRONG>.
+           uses the descriptor in <EM>SCREEN</EM>.
 
    <STRONG>Unset</STRONG> <EM>TERM</EM> <STRONG>Variable</STRONG>
        If the <EM>TERM</EM> variable is  missing  or  empty,  <STRONG>initscr</STRONG>  uses  the  value
@@ -262,14 +262,14 @@
             The handler <EM>attempts</EM> to cleanup the screen on exit.   Although  it
             <EM>usually</EM> works as expected, there are limitations:
 
-            <STRONG>o</STRONG>   Walking  the  <STRONG>SCREEN</STRONG> list is unsafe, since all list management
+            <STRONG>o</STRONG>   Walking  the  <EM>SCREEN</EM> list is unsafe, since all list management
                 is done without any signal blocking.
 
             <STRONG>o</STRONG>   On systems which  have  <STRONG>REENTRANT</STRONG>  turned  on,  <STRONG>set_term</STRONG>  uses
                 functions which could deadlock or misbehave in other ways.
 
-            <STRONG>o</STRONG>   <STRONG>endwin</STRONG> calls other functions, many of which use stdio or other
-                library functions which are clearly unsafe.
+            <STRONG>o</STRONG>   <STRONG>endwin</STRONG>  calls  other  functions, many of which use <STRONG>stdio(3)</STRONG> or
+                other library functions which are clearly unsafe.
 
        <STRONG>SIGTERM</STRONG>
             This uses the same handler as <STRONG>SIGINT</STRONG>, with the  same  limitations.
@@ -299,7 +299,7 @@
 
 
 
-ncurses 6.4                       2023-12-17                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.30 2023/11/25 13:58:47 tom Exp $
-.TH curs_get_wch 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.31 2023/12/23 16:35:10 tom Exp $
+.TH curs_get_wch 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -180,10 +180,10 @@ at the same time.
 Depending on the state of the tty driver when each character
 is typed, the program may produce undesirable results.
 .PP
-All of these symbols except
+All of these functions except
 \fB\%wget_wch\fP and
 \fB\%unget_wch\fP
-may be available as macros.
+may be implemented as macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO

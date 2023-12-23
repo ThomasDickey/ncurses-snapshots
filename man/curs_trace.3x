@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.41 2023/12/16 20:50:14 tom Exp $
-.TH curs_trace 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_trace.3x,v 1.42 2023/12/23 16:08:25 tom Exp $
+.TH curs_trace 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -127,7 +127,7 @@ When the trace mask is nonzero,
 If the file already exists, no tracing is done.
 .bP
 If tracing is not available, \fBcurses_trace\fP returns zero (0).
-.SS Trace Parameter
+.SS "Trace Parameter"
 The trace parameter is formed by OR'ing
 values from the list of \fBTRACE_\fIxxx\fR definitions in \fB<curses.h>\fR.
 These include:
@@ -211,7 +211,7 @@ use_env,
 use_extended_names,
 use_tioctl
 .RE
-.SS Command-line Utilities
+.SS "Command-line Utilities"
 The command-line utilities such as \fBtic\fP(1) provide a verbose option
 which extends the set of messages written using the \fBcurses_trace\fP function.
 Both of these (\fB\-v\fP and \fBcurses_trace\fP)

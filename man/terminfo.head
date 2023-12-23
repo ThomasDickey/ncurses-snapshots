@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.57 2023/12/18 01:15:58 tom Exp $
-.TH terminfo 5 2023-12-17 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.59 2023/12/23 23:44:58 tom Exp $
+.TH terminfo 5 2023-12-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -77,7 +77,7 @@ specifying padding requirements and initialization sequences.
 .PP
 This manual describes \fI\%ncurses\fP
 version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
-.SS Terminfo Entry Syntax
+.SS "\fIterminfo\fP Entry Syntax"
 Entries in
 .I terminfo
 consist of a sequence of fields:
@@ -156,7 +156,7 @@ _
 .TE
 .PP
 For more on terminal naming conventions, see the \fBterm\fP(7) manual page.
-.SS Terminfo Capabilities Syntax
+.SS "\fIterminfo\fP Capabilities Syntax"
 The terminfo entry consists of several \fIcapabilities\fP,
 i.e., features that the terminal has,
 or methods for exercising the terminal's features.
@@ -185,7 +185,7 @@ Any capability can be \fIcanceled\fP,
 i.e., suppressed from the terminal entry,
 by following its name with \*(``@\*(''
 rather than a capability value.
-.SS Similar Terminals
+.SS "Similar Terminals"
 If there are two very similar terminals, one (the variant) can be defined as
 being just like the other (the base) with certain exceptions.
 In the
@@ -220,6 +220,6 @@ user preferences.
 An entry included via \fBuse\fP can contain canceled capabilities,
 which have the same effect as if those cancels were inline in the
 using terminal entry.
-.SS Predefined Capabilities
+.SS "Predefined Capabilities"
 .\" Head of terminfo man page ends here
 .ps -1

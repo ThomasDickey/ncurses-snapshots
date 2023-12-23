@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.75 2023/12/16 21:19:37 tom Exp @
+  * @Id: curs_addch.3x,v 1.76 2023/12/23 16:27:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_addch 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -66,11 +66,11 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
-</PRE><H3><a name="h3-Adding-characters">Adding characters</a></H3><PRE>
+</PRE><H3><a name="h3-Adding-Characters">Adding Characters</a></H3><PRE>
        The <STRONG>addch</STRONG>, <STRONG>waddch</STRONG>, <STRONG>mvaddch</STRONG> and <STRONG>mvwaddch</STRONG> routines put the  character  <EM>ch</EM>
        into  the  given  window  at its current window position, which is then
-       advanced.  They are  analogous  to  <STRONG>putchar(3)</STRONG>  in  <STRONG>stdio(3)</STRONG>.   If  the
-       advance is at the right margin:
+       advanced.  They are analogous to the standard C  library's  <STRONG>putchar(3)</STRONG>.
+       If the advance is at the right margin:
 
        <STRONG>o</STRONG>   The cursor automatically wraps to the beginning of the next line.
 
@@ -119,7 +119,7 @@
        OR'ed into characters.
 
 
-</PRE><H3><a name="h3-Echoing-characters">Echoing characters</a></H3><PRE>
+</PRE><H3><a name="h3-Echoing-Characters">Echoing Characters</a></H3><PRE>
        The  <STRONG>echochar</STRONG>  and <STRONG>wechochar</STRONG> routines are equivalent to a call to <STRONG>addch</STRONG>
        followed by a call to <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>, or a call to <STRONG>waddch</STRONG>  followed  by  a
        call  to <STRONG>wrefresh</STRONG>.  The knowledge that only a single character is being
@@ -308,7 +308,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -316,8 +316,8 @@ ncurses 6.4                       2023-12-16                    <STRONG><A HREF=
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-Adding-characters">Adding characters</a></li>
-<li><a href="#h3-Echoing-characters">Echoing characters</a></li>
+<li><a href="#h3-Adding-Characters">Adding Characters</a></li>
+<li><a href="#h3-Echoing-Characters">Echoing Characters</a></li>
 <li><a href="#h3-Line-Graphics">Line Graphics</a></li>
 </ul>
 </li>

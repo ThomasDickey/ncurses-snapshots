@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.91 2023/12/16 20:32:22 tom Exp $
-.TH curs_util 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_util.3x,v 1.92 2023/12/23 16:24:15 tom Exp $
+.TH curs_util 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -246,7 +246,7 @@ data.
 It returns a pointer to the new window.
 There are a few caveats:
 .bP
-the data written is a copy of the \fBWINDOW\fP structure,
+the data written is a copy of the \fI\%WINDOW\fP structure,
 and its associated character cells.
 The format differs between the wide-character (\fI\%ncursesw\fP) and
 non-wide (\fI\%ncurses\fP) libraries.
@@ -347,7 +347,7 @@ the University of California, Berkeley (in 1982)
 and were later (in 1988) incorporated into SVr4.
 Oddly, there are no such functions in the 4.3BSD curses sources.
 .bP
-Most implementations simply dump the binary \fBWINDOW\fP structure to the file.
+Most implementations simply dump the binary \fI\%WINDOW\fP structure to the file.
 These include SVr4 curses, NetBSD and PDCurses,
 as well as older \fI\%ncurses\fP versions.
 This implementation

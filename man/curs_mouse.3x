@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.82 2023/12/16 21:08:16 tom Exp $
-.TH curs_mouse 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.83 2023/12/23 20:37:56 tom Exp $
+.TH curs_mouse 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,7 +106,7 @@ current screen's mouse event mask.
 As a side effect, setting a zero mousemask may turn off the mouse pointer;
 setting a nonzero mask may turn it on.
 Whether this happens is device-dependent.
-.SS Mouse events
+.SS "Mouse Events"
 Here are the mouse event type masks which may be defined:
 .PP
 .TS
@@ -261,29 +261,14 @@ returns the previous interval value, unless
 the terminal was not initialized.
 In that case, it returns the maximum interval value (166).
 .SH NOTES
-The feature macro \fB\%NCURSES_MOUSE_VERSION\fP is provided so the preprocessor
-can be used to test whether these features are present.
-If the interface is changed, the value of \fB\%NCURSES_MOUSE_VERSION\fP will be
-incremented.
-These values for \fB\%NCURSES_MOUSE_VERSION\fP may be
-specified when configuring \fI\%ncurses\fP:
-.RS 3
-.TP 3
-1
-has definitions for reserved events.
-The mask uses 28 bits.
-.TP 3
-2
-adds definitions for button 5,
-removes the definitions for reserved events.
-The mask uses 29 bits.
-.RE
-.PP
 The order of the \fB\%MEVENT\fP structure members is not guaranteed.
 Additional fields may be added to the structure in the future.
 .PP
-Under \fI\%ncurses\fP, these calls are implemented using either
-xterm's built-in mouse-tracking API or
+Under
+.I \%ncurses,
+these calls are implemented using either
+.IR \%xterm 's
+built-in mouse-tracking API or
 platform-specific drivers including
 .RS 3
 .bP
@@ -299,17 +284,25 @@ mouse events will not be visible to
 \fI\%ncurses\fP (and the \fB\%mousemask\fP function will always
 return \fB0\fP).
 .PP
-If the terminfo entry contains a \fBXM\fP string,
-this is used in the xterm mouse driver to control the
+If the
+.I \%term\%info
+entry contains a \fBXM\fP string,
+this is used in the
+.I \%xterm
+mouse driver to control the
 way the terminal is initialized for mouse operation.
 The default, if \fBXM\fP is not found,
-corresponds to private mode 1000 of xterm:
+corresponds to private mode 1000 of
+.I \%xterm:
 .PP
 .RS 3
 \eE[?1000%?%p1%{1}%=%th%el%;
 .RE
 .PP
-The mouse driver also recognizes a newer xterm private mode 1006, e.g.,
+The mouse driver also recognizes a newer
+.I \%xterm
+private mode 1006,
+e.g.,
 .PP
 .RS 3
 \eE[?1006;1000%?%p1%{1}%=%th%el%;
@@ -323,19 +316,58 @@ for use with touch screens (which may be pressure-sensitive) or with
 The \fB\%ALL_MOUSE_EVENTS\fP class does not
 include \fB\%REPORT_MOUSE_POSITION\fP.
 They are distinct.
-For example, in xterm,
+For example,
+in
+.I \%xterm,
 wheel/scrolling mice send position reports as a sequence of
 presses of buttons 4 or 5 without matching button-releases.
+.SH EXTENSIONS
+These functions were designed for
+\fB\%ncurses\fP(3X),
+and are not found in SVr4
+.IR curses ,
+4.4BSD
+.IR curses ,
+or any other previous curses implementation.
+(SVr4
+.I curses
+did have a
+.I \%getmouse
+function,
+which took no argument and returned a different type.)
 .SH PORTABILITY
-These calls were designed for \fI\%ncurses\fP,
-and are not found in SVr4 \fIcurses\fP,
-4.4BSD \fIcurses\fP, or any other previous version of \fIcurses\fP.
+Applications employing the
+.I \%ncurses
+mouse extension should condition its use on the visibility of the
+.B \%NCURSES_MOUSE_VERSION
+preprocessor macro.
+When the interface changes,
+the macro's value increments.
+Multiple versions are available when
+.I \%ncurses
+is configured;
+see section \*(``ALTERNATE CONFIGURATIONS\*('' of \fB\%ncurses\fP(3X).
+The following values may be specified.
+.RS 3
+.TP 3
+1
+has definitions for reserved events.
+The mask uses 28 bits.
+.TP 3
+2
+adds definitions for button 5,
+removes the definitions for reserved events.
+The mask uses 29 bits.
+.RE
 .PP
-SVr4 \fIcurses\fP had support for the mouse in a variant of \fBxterm\fP(1).
-It is mentioned in a few places, but with no supporting documentation:
+SVr4
+.I curses
+had support for the mouse in a variant of \fI\%xterm\fP(1).
+It is mentioned in a few places,
+with little supporting documentation.
 .bP
-the \*(``libcurses\*('' manual page lists functions for this feature
-which are prototyped in \fBcurses.h\fP:
+Its \*(``libcurses\*('' manual page lists functions for this feature
+prototyped in \fI\%curses.h\fP.
 .PP
 .RS 8
 .EX
@@ -349,7 +381,7 @@ extern unsigned long getmouse(void), getbmap(void);
 .EE
 .RE
 .bP
-the \*(``terminfo\*('' manual page lists capabilities for the feature
+Its \*(``terminfo\*('' manual page lists capabilities for the feature.
 .PP
 .RS 8
 .EX
@@ -361,56 +393,81 @@ req_mouse_pos     reqmp   RQ       Request mouse position report
 .EE
 .RE
 .bP
-the interface made assumptions (as does \fI\%ncurses\fP)
-about the escape sequences
-sent to and received from the terminal.
+The interface made assumptions
+(as does
+.IR \%ncurses )
+about the escape sequences sent to and received from the terminal.
 .IP
-For instance
-the SVr4 \fIcurses\fP library used the \fB\%get_mouse\fP capability to tell the
-terminal which mouse button events it should send,
+For instance,
+the SVr4
+.I curses
+library used the \fB\%get_mouse\fP capability to tell the terminal which
+mouse button events it should send,
 passing the mouse-button bit mask to the terminal.
 Also, it could ask the terminal
 where the mouse was using the \fB\%req_mouse_pos\fP capability.
 .IP
-Those features required a terminal which had been modified
-to work with \fIcurses\fP.
-They were not part of the X Consortium's xterm.
+Those features required a terminal program that had been modified
+to work with SVr4
+.I curses.
+They were not part of the X Consortium's
+.I \%xterm.
 .PP
-When developing the xterm mouse support for \fI\%ncurses\fP in September
-1995,
+When developing the
+.I \%xterm
+mouse support for
+.I \%ncurses
+in September 1995,
 Eric Raymond was uninterested in using the same interface due to its
 lack of documentation.
 Later, in 1998, Mark Hesseling provided support in
-PDCurses 2.3 using the SVr4 interface.
-PDCurses, however, does not use video terminals,
+.I \%PDCurses
+2.3 using the SVr4 interface.
+.I \%PDCurses,
+however,
+does not use video terminals,
 making it unnecessary to be concerned about compatibility with the
 escape sequences.
 .SH BUGS
-Mouse events from \fI\%xterm\fP are \fInot\fP ignored in cooked mode if
-they have been enabled by \fB\%mousemask\fP.
+Mouse events from
+.I \%xterm
+are
+.I not
+ignored in cooked mode if they have been enabled by \fB\%mousemask\fP.
 Instead,
-the \fI\%xterm\fP mouse report sequence appears in the string read.
+the
+.I \%xterm
+mouse report sequence appears in the string read.
 .PP
-Mouse event reports from \fI\%xterm\fP are not detected correctly in
-a window with keypad application mode disabled,
+Mouse event reports from
+.I \%xterm
+are not detected correctly in a window with keypad application mode
+disabled,
 since they are interpreted as a variety of function key.
-Set the the terminal's \fI\%terminfo\fP capability \fB\%kmous\fP to
-\*(``\eE[M\*(''
-(the beginning of the response from \fI\%xterm\fP for mouse clicks).
+Set the terminal's
+.I \%term\%info
+capability \fB\%kmous\fP to \*(``\eE[M\*(''
+(the beginning of the response from
+.I \%xterm
+for mouse clicks).
 Other values of \fB\%kmous\fP are permitted under the same assumption,
 that is,
 the report begins with that sequence.
 .PP
 Because there are no standard response sequences that serve to identify
-terminals supporting the \fI\%xterm\fP mouse protocol,
-\fI\%ncurses\fP assumes that if \fB\%kmous\fP is defined in the terminal
-description,
+terminals supporting the
+.I \%xterm
+mouse protocol,
+.I \%ncurses
+assumes that if \fB\%kmous\fP is defined in the terminal description,
 or if the terminal type's primary name or aliases contain the string
 \%\*(``xterm\*('',
 then the terminal may send mouse events.
 The \fB\%kmous\fP capability is checked first,
-allowing use of newer \fI\%xterm\fP mouse protocols such as its private
-mode 1006.
+allowing use of newer
+.I \%xterm
+mouse protocols,
+such as its private mode 1006.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_inopts\fP(3X),

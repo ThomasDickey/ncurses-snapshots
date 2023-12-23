@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.123 2023/12/16 21:11:53 tom Exp $
-.TH curs_terminfo 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.124 2023/12/23 17:34:39 tom Exp $
+.TH curs_terminfo 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -111,6 +111,9 @@
 \fI/* extensions */
 \fBchar *tiparm_s(int \fIexpected\fP, int \fImask\fP, const char *\fIstr\fP, ...);
 \fBint tiscan_s(int *\fIexpected\fP, int *\fImask\fP, const char *\fIstr\fP);
+.PP
+\fI/* deprecated */
+\fBint setterm(const char *\fIterm\fP);
 .fi
 .SH DESCRIPTION
 These low-level routines must be called by programs that have to deal
@@ -244,7 +247,7 @@ which uses all the defaults and sends the output to \fBstdout\fP.
 .\" ***************************************************************************
 .SS "The Terminal State"
 The \fBsetupterm\fP routine stores its information about the terminal
-in a \fBTERMINAL\fP structure pointed to by the global variable \fBcur_term\fP.
+in a \fI\%TERMINAL\fP structure pointed to by the global variable \fBcur_term\fP.
 If it detects an error,
 or decides that the terminal is unsuitable (hardcopy or generic),
 it discards this information,
@@ -339,14 +342,14 @@ which happens to share this function name with the \fIterminfo\fP interface.
 \fIaffcnt\fP is the number of lines affected, or 1 if
 not applicable.
 .bP
-\fIputc\fP is a \fBputchar\fP-like routine to which
+\fIputc\fP is a \fI\%putchar\fP-like function to which
 the characters are passed, one at a time.
 .IP
 If \fBtputs\fP processes a time-delay,
 it uses the \fBdelay_output\fP(3X) function,
 routing any resulting padding characters through this function.
 .PP
-The \fBputp\fR routine calls \fBtputs(\fIstr\fB, 1, putchar)\fR.
+The \fBputp\fR routine calls \fBtputs(\fIstr\fB, 1, \%putchar)\fR.
 The output of \fBputp\fP always goes to \fBstdout\fP, rather than
 the \fIfiledes\fP specified in \fBsetupterm\fP.
 .PP
@@ -354,10 +357,10 @@ The \fBvidputs\fP routine displays the string on the terminal in the
 video attribute mode \fIattrs\fP, which is any combination of the
 attributes listed in \fBcurses\fP(3X).
 The characters are passed to
-the \fBputchar\fP-like routine \fIputc\fP.
+the \fI\%putchar\fP-like function \fIputc\fP.
 .PP
 The \fBvidattr\fP routine is like the \fBvidputs\fP routine, except
-that it outputs through \fBputchar\fP.
+that it outputs through \fI\%putchar\fP.
 .PP
 The \fBvid_attr\fP and \fBvid_puts\fP routines correspond
 to vidattr and vidputs, respectively.
@@ -464,7 +467,7 @@ See \fBterminfo\fP(5) for details.
 to improve performance,
 \fI\%ncurses\fP 6.3 caches the result of analyzing terminfo
 strings for their parameter types.
-That is stored as a binary tree referenced from the \fBTERMINAL\fP structure.
+That is stored as a binary tree referenced from the \fI\%TERMINAL\fP structure.
 .PP
 The higher-level \fBinitscr\fP and \fBnewterm\fP functions use \fBsetupterm\fP.
 Normally they do not free this memory, but it is possible to do that using
@@ -512,42 +515,75 @@ of the output function \fIputc\fP.
 .RE
 .\" ***************************************************************************
 .SH NOTES
-X/Open notes that \fBvidattr\fP and \fBvidputs\fP may be macros.
+.\" See X/Open Curses Issue 4, Version 2, pp. 227-234.
+.\" See X/Open Curses Issue 7, pp. 311-318.
+According to X/Open Curses,
+any of the \fIenhanced curses\fP functions may be implemented as macros.
+The term \*(``enhanced\*('' refers to features not found in SVr4 curses.
+.PP
+\fB\%ncurses\fP uses macros
+.bP
+for functions which return values via their parameters,
+.bP
+to support obsolete features,
+.bP
+to reuse functions,
+e.g., those that move the cursor before another operation, and
+.bP
+a few special cases.
+.PP
+The \fB\%vid_puts\fP function in \fB\%ncurses\fP is a special case.
+It was originally implemented based on a draft of X/Open Curses,
+as a macro,
+before other parts of the \fB\%ncurses\fP wide-character API were developed.
 .\" ***************************************************************************
 .SH EXTENSIONS
 The functions marked as extensions were designed for
 \fB\%ncurses\fP(3X),
-and are not found in SVr4 curses, 4.4BSD curses,
-or any other previous version of curses.
+and are not found in SVr4
+.IR curses ,
+4.4BSD
+.IR curses ,
+or any other previous curses implementation.
 .\" ***************************************************************************
 .SH PORTABILITY
-The function \fBsetterm\fP is not described by X/Open and must
-be considered non-portable.
+\fBsetterm\fP is not described by X/Open and must be considered
+non-portable.
 All other functions are as described by X/Open.
 .SS "Compatibility Macros"
 This implementation provides a few macros for compatibility with systems
-before SVr4 (see \fIHISTORY\fP).
-Those include
-\fBcrmode\fP,
-\fBfixterm\fP,
-\fBgettmode\fP,
-\fBnocrmode\fP,
-\fBresetterm\fP,
-\fBsaveterm\fP, and
-\fBsetterm\fP.
+before SVr4
+(see section \*(``HISTORY\*('' below).
+They include
+\fB\%Bcrmode\fP,
+\fB\%Bfixterm\fP,
+\fB\%Bgettmode\fP,
+\fB\%Bnocrmode\fP,
+\fB\%Bresetterm\fP,
+\fB\%Bsaveterm\fP, and
+\fB\%Bsetterm\fP.
 .PP
-In SVr4, those are found in \fB<curses.h>\fP,
-but except for \fBsetterm\fP, are likewise macros.
-The one function, \fBsetterm\fP, is mentioned in the manual page.
-The manual page notes that the \fBsetterm\fP routine
-was replaced by \fB\%setupterm\fP, stating that the call
-.IP
-\fBsetupterm(\fIterm\fB, 1, (int *)0)\fR
-.PP
+In SVr4,
+these are found in
+.IR \%curses.h ,
+but except for \fB\%setterm\fP,
+are likewise macros.
+The one function,
+\fB\%setterm\fP,
+is mentioned in the manual page.
+It further notes that \fB\%setterm\fP was replaced by \fB\%setupterm\fP,
+stating that the call
+.RS
+.EX
+setupterm(\fIterm\fB, 1, (int *)0)\fP
+.EE
+.RE
 provides the same functionality as \fBsetterm(\fIterm\fB)\fR,
-and is not recommended for new programs.
-This implementation provides each of those symbols
-as macros for BSD compatibility.
+discouraging the latter for new programs.
+.I \%ncurses
+implements each of these symbols as macros for BSD
+.I curses
+compatibility.
 .SS "Legacy Data"
 \fBsetupterm\fP copies the terminal name to the array \fBttytype\fP.
 This is not part of X/Open Curses, but is assumed by some applications.
@@ -664,7 +700,7 @@ X/Open notes that after calling \fBmvcur\fP, the curses state may not match the
 actual terminal state, and that an application should touch and refresh
 the window before resuming normal curses calls.
 Both \fI\%ncurses\fP and System V Release 4 curses implement \fBmvcur\fP
-using the SCREEN data allocated in either \fBinitscr\fP or
+using the \fISCREEN\fP data allocated in either \fBinitscr\fP or
 \fBnewterm\fP.
 So though it is documented as a terminfo function,
 \fBmvcur\fP is really a curses function which is not well specified.
@@ -686,7 +722,8 @@ fixterm	restore tty to \*(``in curses\*('' state
 gettmode	establish current tty modes
 mvcur	low level cursor motion
 putp	T{
-utility function that uses \fBtputs\fP to send characters via \fBputchar\fP.
+utility function that uses \fBtputs\fP to send characters via
+\fI\%putchar\fP.
 T}
 resetterm	set tty modes to \*(``out of curses\*('' state
 resetty	reset tty flags to stored value
@@ -696,7 +733,7 @@ setterm	establish terminal with given type
 setupterm	establish terminal with given type
 tparm	instantiate a string expression with parameters
 tputs	apply padding information to a string
-vidattr	like \fBvidputs\fP, but outputs through \fBputchar\fP
+vidattr	like \fBvidputs\fP, but outputs through \fIputchar\fP
 vidputs	T{
 output a string to put terminal in a specified video attribute mode
 T}
@@ -722,7 +759,7 @@ T}
 .TE
 .PP
 Early terminfo programs obtained capability values from the
-\fBTERMINAL\fP structure initialized by \fBsetupterm\fP.
+\fI\%TERMINAL\fP structure initialized by \fBsetupterm\fP.
 .PP
 SVr3 extended terminfo by adding functions to retrieve capability values
 (like the termcap interface),
@@ -766,7 +803,7 @@ SVr3 introduced the functions for switching between terminal
 descriptions, e.g., \fBset_curterm\fP.
 Some of that was incremental improvements to the SVr2 library:
 .bP
-The \fBTERMINAL\fP type definition was introduced in SVr3.01,
+The \fI\%TERMINAL\fP type definition was introduced in SVr3.01,
 for the \fBterm\fP structure provided in SVr2.
 .bP
 The various global variables such as \fBboolnames\fP were mentioned

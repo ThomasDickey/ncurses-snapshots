@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insch.3x,v 1.34 2023/12/16 21:09:11 tom Exp $
-.TH curs_insch 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_insch.3x,v 1.36 2023/12/23 16:03:24 tom Exp $
+.TH curs_insch 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -47,39 +47,61 @@
 insert a \fIcurses\fR character in a window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>
+\fB#include <curses.h>\fP
 .PP
 \fBint insch(chtype \fIch\fP);
 \fBint winsch(WINDOW *\fIwin\fP, chtype \fIch\fP);
-.PP
 \fBint mvinsch(int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
 \fBint mvwinsch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
 .fi
 .SH DESCRIPTION
-These routines insert the character \fIch\fP before the character under the
-cursor.
-All characters to the right of the cursor are moved one space to the
-right, with the possibility of the rightmost character on the line being lost.
-The insertion operation does not change the cursor position.
-.SH RETURN VALUE
-These routines return the integer \fBERR\fP upon failure and an \fBOK\fP
-(SVr4 specifies only
-\*(``an integer value other than \fBERR\fP\*('')
-upon successful completion.
+These functions insert the
+.I curses
+character
+.I ch
+at the cursor in the specified window
+.I win
+(or
+.BR \%stdscr ).
+The character previously at the cursor and any to its right move one
+cell to the right;
+the rightmost character on the line is discarded.
+The cursor does not advance.
+.SH "RETURN VALUE"
+These functions return \fBOK\fP on success and \fBERR\fP on failure.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions taking a
+.I \%WINDOW
+pointer argument fail if the pointer is
+.BR NULL .
+.PP
+Functions prefixed with \*(``mv\*('' first perform cursor movement using
+\fB\%wmove\fP and fail if the position
+.RI ( y ,
+.IR x )
+is outside the window.
 .SH NOTES
-These routines do not necessarily imply use of a hardware insert character
-feature.
+A terminal's
+.B \%insert_character
+.RB ( ich1 )
+capability
+is not necessarily employed.
 .PP
-Note that \fBinsch\fP, \fBmvinsch\fP, and \fBmvwinsch\fP may be macros.
+\fB\%insch\fP,
+\fB\%mvinsch\fP,
+and
+\fB\%mvwinsch\fP
+may be implemented as macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
-.SH SEE ALSO
-\fB\%curses\fP(3X)
+X/Open Curses, Issue 4, describes these functions.
 .PP
-Comparable functions in the wide-character (ncursesw) library are
-described in
-\fB\%curs_ins_wch\fP(3X).
+SVr4 describes successful return values only as
+\*(``an integer value other than \fBERR\fP\*(''.
+.SH "SEE ALSO"
+\fB\%curs_ins_wch\fP(3X) describes comparable functions in the
+wide-character
+.I curses
+configuration.
+.PP
+\fB\%curses\fP(3X),
+\fB\%terminfo\fP(5)

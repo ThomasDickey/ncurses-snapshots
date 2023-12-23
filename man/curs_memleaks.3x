@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_memleaks.3x,v 1.32 2023/12/16 20:32:22 tom Exp $
-.TH curs_memleaks 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_memleaks.3x,v 1.33 2023/12/23 16:22:08 tom Exp $
+.TH curs_memleaks 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -114,7 +114,7 @@ In any implementation of X/Open Curses, an application can free part
 of the memory allocated by curses:
 .bP
 The portable part of \fB\%exit_curses\fP can be freed using \fB\%delscreen\fP,
-passing the \fBSCREEN*\fP pointer returned by \fB\%newterm\fP.
+passing the \fISCREEN\fP pointer returned by \fB\%newterm\fP.
 .IP
 In some implementations, there is a global variable \fBsp\fP
 which could be used, e.g., if the screen were only initialized

@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_legacy.3x,v 1.29 2023/10/21 10:28:36 tom Exp $
-.TH curs_legacy 3X 2023-10-21 "ncurses 6.4" "Library calls"
+.\" $Id: curs_legacy.3x,v 1.30 2023/12/23 16:40:10 tom Exp $
+.TH curs_legacy 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -97,13 +108,23 @@ Except as noted,
 these functions return an integer,
 or \fBERR\fP if the window parameter is null.
 .SH NOTES
-All of these interfaces are provided as macros and functions.
-The macros are suppressed (and only the functions provided)
-when \fB\%NCURSES_OPAQUE\fP is defined.
-The standard forms such as \fB\%getyx\fP must be implemented as macros,
-and (in this implementation) are defined in terms of the functions
-described here,
-to avoid reliance on internal details of the \fB\%WINDOW\fP structure.
+All of these interfaces are implemented as macros and functions.
+The macros are suppressed
+(and only the functions provided)
+in an \*(``opaque\*(''
+.I \%ncurses
+build,
+which defines the preprocessor symbol
+.BR \%NCURSES_OPAQUE .
+See section \*(``ALTERNATE CONFIGURATIONS\*('' in \fB\%ncurses\fP(3X).
+.PP
+The standard forms such as \fB\%getyx\fP
+.I must
+be implemented as macros,
+and
+(in this implementation)
+are defined in terms of the functions described here,
+to avoid reliance on internal details of the \fI\%WINDOW\fP structure.
 .SH PORTABILITY
 These functions were supported on Version 7, BSD or System V implementations.
 None of those implementations checked the window parameter.

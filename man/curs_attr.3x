@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.92 2023/12/16 21:07:24 tom Exp $
-.TH curs_attr 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.93 2023/12/23 16:08:25 tom Exp $
+.TH curs_attr 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -127,7 +127,7 @@ when erasing portions of the window.
 See \fBcurs_bkgd\fP(3X) for functions which modify the attributes used for
 erasing and clearing.
 .\" ---------------------------------------------------------------------------
-.SS Window attributes
+.SS "Window Attributes"
 There are two sets of functions:
 .bP
 functions for manipulating the window attributes and color:
@@ -148,7 +148,7 @@ Use \fBattr_off\fP and \fBwattr_off\fP to turn off window attributes,
 again values OR'd together in \fIattr\fP,
 without affecting other attributes.
 .\" ---------------------------------------------------------------------------
-.SS Legacy window attributes
+.SS "Legacy Window Attributes"
 The X/Open window attribute routines which \fIset\fP or \fIget\fP,
 turn \fIon\fP or \fIoff\fP
 are extensions of older routines
@@ -206,7 +206,7 @@ in X/Open Curses,
 although \fI\%ncurses\fP provides \fB\%getattrs\fP
 (see \fB\%curs_legacy\fP(3X)).
 .\" ---------------------------------------------------------------------------
-.SS Change character rendition
+.SS "Change Character Rendition"
 The routine \fBchgat\fP changes the attributes of a given number of characters
 starting at the current cursor location of \fBstdscr\fP.
 It does not update
@@ -221,7 +221,7 @@ In these functions,
 the color \fIpair\fP argument is a color pair index
 (as in the first argument of \fBinit_pair\fP, see \fBcurs_color\fP(3X)).
 .\" ---------------------------------------------------------------------------
-.SS Change window color
+.SS "Change Window Color"
 The routine \fBcolor_set\fP sets the current color of the given window to the
 foreground/background combination described by the color \fIpair\fP parameter.
 .\" ---------------------------------------------------------------------------

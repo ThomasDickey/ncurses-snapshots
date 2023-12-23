@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scanw.3x,v 1.44 2023/12/17 22:50:40 tom Exp $
-.TH curs_scanw 3X 2023-12-17 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scanw.3x,v 1.47 2023/12/23 14:41:50 tom Exp $
+.TH curs_scanw 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -140,7 +140,7 @@ and specified \fB\%vw_scanw\fP using the \fI\%stdarg.h\fP interface.
 .bP
 X/Open Curses, Issue 5, Draft 2
 (December 2007) marked \fB\%vwscanw\fP (along with
-\fB\%vwscanw\fP and the termcap interface) as withdrawn.
+\fB\%vwscanw\fP and the \fItermcap\fP interface) as withdrawn.
 After incorporating review comments,
 this became
 X/Open Curses, Issue 7 (2009).
@@ -220,10 +220,10 @@ SVr3 (1987) added
 \fB\%mvwscanw\fP, stating
 .RS
 .PP
-These routines correspond to \fIscanf\fP(3S),
+\*(``[t]hese routines correspond to \fIscanf\fP(3S),
 as do their arguments and return values.
 \fB\%wgetstr\fP() is called on the window,
-and the resulting line is used as input for the scan.
+and the resulting line is used as input for the scan.\*(''
 .RE
 .PP
 SVr3 also implemented \fB\%vwscanw\fP,

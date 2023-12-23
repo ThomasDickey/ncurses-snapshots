@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.35 2023/12/16 21:05:52 tom Exp $
-.TH curs_variables 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_variables.3x,v 1.40 2023/12/23 23:10:13 tom Exp $
+.TH curs_variables 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -53,20 +53,21 @@
 \fI\%chtype\fP,
 \fI\%cchar_t\fP,
 \fI\%attr_t\fP,
+\fI\%SCREEN\fP,
 \fI\%WINDOW\fP,
 \fB\%TRUE\fP,
 \fB\%FALSE\fP,
 \fB\%ERR\fP,
 \fB\%OK\fP,
+\fB\%curscr\fP,
+\fB\%newscr\fP,
+\fB\%stdscr\fP,
 \fB\%COLORS\fP,
 \fB\%COLOR_PAIRS\fP,
 \fB\%COLS\fP,
-\fB\%ESCDELAY\fP,
 \fB\%LINES\fP,
-\fB\%TABSIZE\fP,
-\fB\%curscr\fP,
-\fB\%newscr\fP,
-\fB\%stdscr\fP \-
+\fB\%ESCDELAY\fP,
+\fB\%TABSIZE\fP \-
 \fIcurses\fR data types, constants, and global variables
 .SH SYNOPSIS
 .nf
@@ -77,6 +78,7 @@
 \fBtypedef \fI/*\fP .\|.\|. \fI*/\fP chtype;
 \fBtypedef \fI/*\fP .\|.\|. \fI*/\fP cchar_t;
 \fBtypedef \fI/*\fP .\|.\|. \fI*/\fP attr_t;
+\fBtypedef \fI/*\fP .\|.\|. \fI*/\fP SCREEN;
 \fBtypedef \fI/*\fP .\|.\|. \fI*/\fP WINDOW;
 .PP
 \fI/* constants */
@@ -87,12 +89,13 @@
 \fBconst \fI/*\fP .\|.\|. \fI*/\fP OK;
 .PP
 \fI/* variables */
-\fBint COLOR_PAIRS;
 \fBint COLORS;
+\fBint COLOR_PAIRS;
 \fBint COLS;
 \fBint LINES;
 \fBWINDOW * curscr;
 \fBWINDOW * stdscr;
+.PP
 \fI/* extensions */
 \fBint ESCDELAY;
 \fBint TABSIZE;
@@ -111,16 +114,24 @@ that provide read-only access to the library's state.
 In either case,
 applications should treat them as read-only to avoid
 confusing the library.
-.SS \fIbool\fP, TRUE, FALSE
-X/Open Issue 4 \fIcurses\fP (1996) preceded the ISO C99 and ISO C++98
-standards,
-each of which also defined a Boolean data type.
-The \fIcurses\fP library requires an integral type \fIbool\fP and
-constants \fBTRUE\fP and \fBFALSE\fP to store its two possible values.
+.SH "CONSTANTS"
+.SS "TRUE, FALSE"
+The \fIcurses\fP library defines \fBTRUE\fP and \fBFALSE\fP
+to represent the values of the Boolean data type.
 .SS ERR, OK
 \fIcurses\fP and \fIterminfo\fP routines frequently return these
 constant integral values indicating failure and success,
 respectively.
+.SH "PREDEFINED TYPES"
+.SS \fIbool\fP
+X/Open Issue 4 \fIcurses\fP (1996) preceded the ISO C99 and ISO C++98
+standards,
+each of which also defined a Boolean data type.
+The \fIcurses\fP library requires an integral type \fIbool\fP.
+.PP
+\fB\%ncurses\fP' configure script attempts to discover the
+data type used by the system's C and C++ compilers,
+to reuse for the \fIcurses\fP \fIbool\fP.
 .SS \fIchtype\fP
 The \fI\%chtype\fP integral type combines a
 (\*(``narrow\*('',
@@ -151,30 +162,59 @@ for example,
 \fB\%attr_on\fP(3X),
 and
 \fB\%in_wch\fP(3X).
-.SS COLOR_PAIRS
-Once \fIcurses\fP is initialized,
-\fB\%COLOR_PAIRS\fP
-contains the number of color pairs supported by the terminal.
-Often,
-its value is the product \fB\%COLORS\fP \(mu \fB\%COLORS\fP,
-but this is not always true.
-.bP
-A few terminals use HLS colors,
-ignoring this rule;
+.SS \fISCREEN\fP
+.I curses
+manages a terminal device with this structure type;
+see \fB\%initscr\fP(3X).
+.SS "\fIWINDOW\fP"
+.I curses
+represents rectangular portions of the terminal screen with the
+.I \%WINDOW
+structure type;
+see subsection \*(``Overview\*('' of \fB\%ncurses\fP(3X).
+.SH "VARIABLES"
+.SS "curscr, stdscr, newscr"
+The library records updates to the terminal screen in a window named
+\fB\%curscr\fP.
+This object is referred to as the \*(``physical screen\*('' in
+\fB\%curs_refresh\fP(3X) and
+\fB\%curs_outopts\fP(3X).
+.PP
+\fI\%ncurses\fP collects pending updates to the terminal screen in a
+window named \fB\%newscr\fP.
+This object is referred to as the \*(``virtual screen\*('' in the
+\fB\%curs_kernel\fP(3X),
+\fB\%curs_refresh\fP(3X),
 and
-.bP
-terminals supporting a large number of colors are limited by the number
-of color pairs that a \fIsigned short\fP value can represent.
+\fB\%curs_outopts\fP(3X).
+When the screen is refreshed,
+\fIcurses\fP determines a minimal set of updates using the terminal's
+capabilities to make \fB\%curscr\fP look like \fB\%newscr\fP.
+.PP
+Once \fIcurses\fP is initialized,
+it creates a window named \fB\%stdscr\fP.
+It is the same size as the terminal screen and is the default window
+used by routines that do not take a parameter identifying one.
+Many \fIcurses\fP functions use this window.
 .SS COLORS
 Once \fIcurses\fP is initialized,
 \fB\%COLORS\fP
-contains the number of colors supported by the terminal.
-.SS COLS
+contains the number of colors supported by the terminal;
+see \fB\%curs_color\fP(3X).
+.SS COLOR_PAIRS
 Once \fIcurses\fP is initialized,
-\fB\%COLS\fP
-contains the screen's width in character cells;
+\fB\%COLOR_PAIRS\fP
+contains the number of color pairs supported by the terminal;
+see \fB\%curs_color\fP(3X).
+.SS "COLS, LINES"
+Once \fIcurses\fP is initialized,
+.B \%COLS
+and
+.B LINES
+contain the screen's width and height in character cells,
+respectively;
 that is,
-the number of columns.
+the number of columns and lines.
 .SS ESCDELAY
 For \fIcurses\fP to distinguish an escape character corresponding to a
 user's press of an \*(``Escape\*('' key on the input device from one
@@ -184,41 +224,10 @@ the library waits to see if another key event occurs after the escape
 character.
 \fB\%ESCDELAY\fP
 stores this interval in milliseconds.
-.SS LINES
-Once \fIcurses\fP is initialized,
-\fB\%LINES\fP
-contains the screen's height in character cells;
-that is,
-the number of lines.
 .SS TABSIZE
 The \fIcurses\fP library converts a tab character to this number of
 spaces as it adds a tab to a window;
 see \fB\%curs_addch\fP(3X).
-.SS curscr
-\fIcurses\fP records updates to the terminal screen in a \fI\%WINDOW\fP
-structure named \fB\%curscr\fP.
-.PP
-This object is referred to as the \*(``physical screen\*('' in
-\fB\%curs_refresh\fP(3X) and
-\fB\%curs_outopts\fP(3X).
-.SS newscr
-\fI\%ncurses\fP collects pending updates to the terminal screen in a
-\fI\%WINDOW\fP structure named \fB\%newscr\fP.
-.PP
-This object is referred to as the \*(``virtual screen\*('' in the
-\fB\%curs_kernel\fP(3X),
-\fB\%curs_refresh\fP(3X),
-and
-\fB\%curs_outopts\fP(3X).
-When the screen is refreshed,
-\fIcurses\fP determines a minimal set of updates using the terminal's
-capabilities to make \fB\%curscr\fP look like \fB\%newscr\fP.
-.SS stdscr
-Once \fIcurses\fP is initialized,
-it creates a \fI\%WINDOW\fP structure named \fB\%stdscr\fP.
-It is the same size as the terminal screen and is the default window
-used by routines that do not take a parameter identifying one.
-Many \fIcurses\fP functions use this window.
 .SH NOTES
 Either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X) initializes
 \fIcurses\fP.
@@ -234,18 +243,20 @@ and \fB\%ESCDELAY\fP.
 .PP
 X/Open Curses describes \fB\%curscr\fP only as \*(``an internal data
 structure\*('';
-SVID gave more details,
+SVr4 gave more details,
 noting its use \*(``for certain low-level operations like clearing and
 redrawing a screen containing garbage\*(''.
+.\" SVID 4, Volume 3, p. 408
 Neither specified its interaction with the rest of the interface beyond
 use as an argument to \fB\%clearok\fP(3X) and \fB\%wrefresh\fP(3X).
 .PP
 \fB\%newscr\fP is a feature of SVr4 \fIcurses\fP.
-When refreshing the screen, this window is used as a working area
-for combining the standard screen \fB\%stdscr\fP with any other windows
-which the application may have created with \fB\%newwin\fP(3X).
-When the updated \fB\%newscr\fP is complete,
-\fIcurses\fP updates \fB\%curscr\fP to match \fB\%newscr\fP.
+When refreshing the screen,
+it is used as a working area for combining the standard window
+\fB\%stdscr\fP with any others the application may have created with
+\fB\%newwin\fP(3X).
+When the update of \fB\%newscr\fP is complete,
+\fIcurses\fP modifies \fB\%curscr\fP to match \fB\%newscr\fP.
 .PP
 \fB\%TABSIZE\fP is a feature of SVr4 \fIcurses\fP.
 .bP
@@ -294,6 +305,7 @@ most users have decided either to override the value,
 or to rely upon its default.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
+\fB\%curs_color\fP(3X),
 \fB\%curs_opaque\fP(3X),
 \fB\%curs_terminfo\fP(3X),
 \fB\%curs_threads\fP(3X),

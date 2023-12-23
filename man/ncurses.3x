@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.187 2023/12/17 23:44:14 tom Exp $
-.TH ncurses 3X 2023-12-17 "ncurses 6.4" "Library calls"
+.\" $Id: ncurses.3x,v 1.189 2023/12/23 16:32:37 tom Exp $
+.TH ncurses 3X 2023-12-23 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,7 +106,7 @@ the names \fB\-lcurses\fP and \fB\-lcurses_g\fP.)
 The ncurses_g library generates trace logs
 (in a file called \*(``trace\*('' in the current directory)
 that describe curses actions.
-See also the section on \fBALTERNATE CONFIGURATIONS\fP.
+See section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .PP
 The \fI\%ncurses\fP package supports: overall screen, window and pad
 manipulation; output to windows and pads; reading terminal input; control over
@@ -268,15 +268,16 @@ or in color on terminals that support such display enhancements.
 See \fB\%curs_attr\fP(3X).
 .PP
 .I curses
-predefines symbols for a small set of line graphics characters,
-corresponding to the VT100 line drawing set.
+predefines constants for a small set of line-drawing and other graphics
+corresponding to the DEC Alternate Character Set (ACS),
+a feature of VT100 and other terminals.
 See
 \fB\%waddch\fP(3X) and
 \fB\%wadd_wch\fP(3X).
 .PP
 .I curses
 is implemented using the operating system's terminal driver;
-keystroke events are not received as scan codes but as byte sequences.
+keystroke events are received not as scan codes but as byte sequences.
 Graphical keycaps
 (alphanumeric and punctuation keys,
 and the space)
@@ -443,7 +444,7 @@ or the constant
 .BR \%WEOF ,
 analogously to the
 .IR int -sized
-character manipulation functions of ISO C and their constant
+character manipulation functions of ISO C and its constant
 .BR \%EOF .
 .RE
 .IP
@@ -1179,7 +1180,8 @@ It does not modify the buffering of the standard output.
 The reason for the change was to make the behavior for interrupts and
 other signals more robust.
 One drawback is that certain nonconventional programs would mix
-ordinary stdio calls with \fI\%ncurses\fP calls and (usually) work.
+ordinary \fI\%stdio\fP(3) calls with \fI\%ncurses\fP calls and (usually)
+work.
 This is no longer possible since \fI\%ncurses\fP is not using
 the buffered standard output but its own output (to the same file descriptor).
 As a special case, the low-level calls such as \fBputp\fP still use the
@@ -1386,12 +1388,19 @@ setgid permissions:
 $TERMINFO, $TERMINFO_DIRS, $TERMPATH, as well as $HOME.
 .EE
 .RE
-.SH ALTERNATE CONFIGURATIONS
-Several different configurations are possible,
-depending on the configure script options used when building
-\fI\%ncurses\fP.
-There are a few main options whose effects are visible to the applications
-developer using \fI\%ncurses\fP:
+.SH "ALTERNATE CONFIGURATIONS"
+Many different
+.I \%ncurses
+configurations are possible,
+determined by the options given to the
+.I \%configure
+script when building the library.
+Run the script with the
+.B \-\-help
+option to peruse them all.
+A few are of particular significance to the application developer
+employing
+.I \%ncurses.
 .TP 5
 \-\-disable\-overwrite
 The standard include for \fI\%ncurses\fP is as noted in \fBSYNOPSIS\fP:
@@ -1593,19 +1602,19 @@ A small number of local differences
 (that is,
 individual differences between the XSI Curses and \fI\%ncurses\fP calls)
 are described in \fBPORTABILITY\fP sections of the library man pages.
-.SS Error checking
+.SS "Error Checking"
 In many cases, X/Open Curses is vague about error conditions,
 omitting some of the SVr4 documentation.
 .PP
 Unlike other implementations, this one checks parameters such as pointers
-to WINDOW structures to ensure they are not null.
+to \fI\%WINDOW\fP structures to ensure they are not null.
 The main reason for providing this behavior is to guard against programmer
 error.
 The standard interface does not provide a way for the library
 to tell an application which of several possible errors were detected.
 Relying on this (or some other) extension will adversely affect the
 portability of curses applications.
-.SS Extensions versus portability
+.SS "Extensions Versus Portability"
 Most of the extensions provided by \fI\%ncurses\fP have not been
 standardized.
 Some have been incorporated into other implementations, such as
@@ -1629,7 +1638,7 @@ See the \fBcurs_print\fP(3X) manual page for details.
 The routine \fBwresize\fP is not part of XPG4, nor is it present in SVr4.
 See the \fBwresize\fP(3X) manual page for details.
 .bP
-The WINDOW structure's internal details can be hidden from application
+The \fI\%WINDOW\fP structure's internal details can be hidden from application
 programs.
 See \fBcurs_opaque\fP(3X) for the discussion of \fBis_scrollok\fP, etc.
 .bP
@@ -1640,7 +1649,7 @@ See \fBcurs_threads\fP(3X) for details.
 This implementation can also be configured to provide a set of functions which
 improve the ability to manage multiple screens.
 See \fBcurs_sp_funcs\fP(3X) for details.
-.SS Padding differences
+.SS "Padding Differences"
 In historic curses versions, delays embedded in the capabilities \fBcr\fP,
 \fBind\fP, \fBcub1\fP, \fBff\fP and \fBtab\fP activated corresponding delay
 bits in the Unix tty driver.
@@ -1648,7 +1657,7 @@ In this implementation, all padding is done by sending NUL bytes.
 This method is slightly more expensive, but narrows the interface
 to the Unix kernel significantly and increases the package's portability
 correspondingly.
-.SS Header files
+.SS "Header Files"
 The header file \fI\%curses.h\fP itself includes the header files
 \fI\%stdio.h\fP and \fI\%unctrl.h\fP.
 .PP

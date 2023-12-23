@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.92 2023/12/16 21:07:24 tom Exp @
+  * @Id: curs_attr.3x,v 1.93 2023/12/23 16:08:25 tom Exp @
   * ---------------------------------------------------------------------------
   * ---------------------------------------------------------------------------
   * ---------------------------------------------------------------------------
@@ -50,12 +50,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_attr 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2023-12-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -121,7 +121,7 @@
        attributes used for erasing and clearing.
 
 
-</PRE><H3><a name="h3-Window-attributes">Window attributes</a></H3><PRE>
+</PRE><H3><a name="h3-Window-Attributes">Window Attributes</a></H3><PRE>
        There are two sets of functions:
 
        <STRONG>o</STRONG>   functions   for  manipulating  the  window  attributes  and  color:
@@ -141,7 +141,7 @@
        together in <EM>attr</EM>, without affecting other attributes.
 
 
-</PRE><H3><a name="h3-Legacy-window-attributes">Legacy window attributes</a></H3><PRE>
+</PRE><H3><a name="h3-Legacy-Window-Attributes">Legacy Window Attributes</a></H3><PRE>
        The  X/Open  window attribute routines which <EM>set</EM> or <EM>get</EM>, turn <EM>on</EM> or <EM>off</EM>
        are extensions of older routines which assume that color pairs are OR'd
        into  the attribute parameter.  These newer routines use similar names,
@@ -182,7 +182,7 @@
        although <EM>ncurses</EM> provides <STRONG>getattrs</STRONG> (see <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>).
 
 
-</PRE><H3><a name="h3-Change-character-rendition">Change character rendition</a></H3><PRE>
+</PRE><H3><a name="h3-Change-Character-Rendition">Change Character Rendition</a></H3><PRE>
        The  routine  <STRONG>chgat</STRONG>  changes  the  attributes  of  a  given  number  of
        characters  starting at the current cursor location of <STRONG>stdscr</STRONG>.  It does
        not update the cursor and does not perform wrapping.  A character count
@@ -195,7 +195,7 @@
        in the first argument of <STRONG>init_pair</STRONG>, see <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>).
 
 
-</PRE><H3><a name="h3-Change-window-color">Change window color</a></H3><PRE>
+</PRE><H3><a name="h3-Change-Window-Color">Change Window Color</a></H3><PRE>
        The routine <STRONG>color_set</STRONG> sets the current color of the given window to the
        foreground/background  combination  described   by   the   color   <EM>pair</EM>
        parameter.
@@ -511,7 +511,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.4                       2023-12-23                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -519,10 +519,10 @@ ncurses 6.4                       2023-12-16                     <STRONG><A HREF
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-Window-attributes">Window attributes</a></li>
-<li><a href="#h3-Legacy-window-attributes">Legacy window attributes</a></li>
-<li><a href="#h3-Change-character-rendition">Change character rendition</a></li>
-<li><a href="#h3-Change-window-color">Change window color</a></li>
+<li><a href="#h3-Window-Attributes">Window Attributes</a></li>
+<li><a href="#h3-Legacy-Window-Attributes">Legacy Window Attributes</a></li>
+<li><a href="#h3-Change-Character-Rendition">Change Character Rendition</a></li>
+<li><a href="#h3-Change-Window-Color">Change Window Color</a></li>
 <li><a href="#h3-Standout">Standout</a></li>
 <li><a href="#h3-Video-Attributes">Video Attributes</a></li>
 </ul>

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.78 2023/12/16 20:32:22 tom Exp $
-.TH @TSET@ 1 2023-12-16 "ncurses 6.4" "User commands"
+.\" $Id: tset.1,v 1.79 2023/12/23 16:20:07 tom Exp $
+.TH @TSET@ 1 2023-12-23 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -57,7 +57,7 @@ initialize or reset terminal state
 .br
 \fB@RESET@\fP [\fB\-IQVcqrsw\fP] [\fB\-\fP] [\fB\-e\fP \fIch\fP] [\fB\-i\fP \fIch\fP] [\fB\-k\fP \fIch\fP] [\fB\-m\fP \fImapping\fP] [\fIterminal-type\fP]
 .SH DESCRIPTION
-.SS tset - initialization
+.SS "\fItset\fP \(em initialization"
 This program initializes terminals.
 .PP
 First, \fB@TSET@\fP retrieves the current terminal mode settings
@@ -81,12 +81,12 @@ This determination is done as follows, using the first terminal type found.
 .PP
 1. The \fBterminal\fP argument specified on the command line.
 .PP
-2. The value of the \fITERM\fP environmental variable.
+2. The value of the \fITERM\fP environment variable.
 .PP
 3. (BSD systems only.) The terminal type associated with the standard
 error output device in the \fI/etc/ttys\fP file.
 (On System\ V hosts and systems using that convention,
-\fBgetty\fP(1) does this job by setting
+\fI\%getty\fP(8) does this job by setting
 \fITERM\fP according to the type passed to it by \fI\%/etc/inittab\fP.)
 .PP
 4. The default terminal type, \*(``unknown\*('',
@@ -129,7 +129,7 @@ and \fB@TSET@\fP waits one second (in case a hardware reset was issued).
 Finally, if the erase, interrupt and line kill characters have changed,
 or are not set to their default values, their values are displayed to the
 standard error output.
-.SS reset - reinitialization
+.SS "\fIreset\fP \(em reinitialization"
 When invoked as \fB@RESET@\fP, \fB@TSET@\fP sets the terminal
 modes to \*(``sane\*('' values:
 .bP
@@ -164,11 +164,13 @@ This is done using the \fB\-s\fP option.
 .PP
 When the \fB\-s\fP option is specified, the commands to enter the information
 into the shell's environment are written to the standard output.
-If the \fISHELL\fP environmental variable ends in \*(``csh\*('',
+If the \fISHELL\fP environment variable ends in \*(``csh\*('',
 the commands
-are for \fBcsh\fP, otherwise, they are for \fBsh\fP(1).
-Note, the \fBcsh\fP commands set and unset the shell variable
-\fBnoglob\fP, leaving it unset.
+are for \fIcsh\fP(1),
+otherwise,
+they are for \fIsh\fP(1).
+The \fIcsh\fP commands set and unset the shell variable \fBnoglob\fP,
+leaving it unset.
 The following line in the \fB.login\fP
 or \fB.profile\fP files will initialize the environment correctly:
 .sp
@@ -177,7 +179,7 @@ or \fB.profile\fP files will initialize the environment correctly:
 .SS "Terminal Type Mapping"
 When the terminal is not hardwired into the system (or the current
 system information is incorrect) the terminal type derived from the
-\fI/etc/ttys\fP file or the \fITERM\fP environmental variable is often
+\fI/etc/ttys\fP file or the \fITERM\fP environment variable is often
 something generic like \fBnetwork\fP, \fBdialup\fP, or \fBunknown\fP.
 When \fB@TSET@\fP is used in a startup script it is often desirable to
 provide information about the type of terminal used on such ports.
@@ -234,8 +236,8 @@ terminal.
 No whitespace characters are permitted in the \fB\-m\fP option argument.
 Also, to avoid problems with meta-characters, it is suggested that the
 entire \fB\-m\fP option argument be placed within single quote characters,
-and that \fBcsh\fP users insert a backslash character (\*(``\e\*('') before
-any exclamation marks (\*(``!\*('').
+and that \fIcsh\fP users insert a backslash character (\*(``\e\*('')
+before any exclamation marks (\*(``!\*('').
 .SH OPTIONS
 The options are as follows:
 .TP 5
@@ -295,8 +297,8 @@ If neither \fB\-c\fP or \fB\-w\fP is given, both options are assumed.
 The \fB@TSET@\fP command uses these environment variables:
 .TP 5
 .I SHELL
-tells \fB@TSET@\fP whether to initialize \fITERM\fP using \fBsh\fP(1) or
-\fBcsh\fP(1) syntax.
+tells \fB@TSET@\fP whether to initialize \fITERM\fP using \fIsh\fP(1) or
+\fIcsh\fP(1) syntax.
 .TP 5
 .I TERM
 Denotes your terminal type.
@@ -330,8 +332,8 @@ is always an alias for \fBtset\fP.
 The \fB\%@TSET@\fP utility provides backward compatibility with BSD
 environments;
 under most modern Unices,
-\fI\%/etc/inittab\fP and \fBgetty\fP(1) can set \fITERM\fP appropriately
-for each dial-up line,
+\fI\%/etc/inittab\fP and \fI\%getty\fP(8) can set \fITERM\fP
+appropriately for each dial-up line,
 obviating what was \fB\%@TSET@\fP's most important use.
 This implementation behaves like 4.4BSD \fBtset\fP,
 with a few exceptions we shall consider now.

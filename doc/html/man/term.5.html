@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: term.5,v 1.68 2023/12/16 20:32:22 tom Exp @
+  * @Id: term.5,v 1.69 2023/12/23 16:08:25 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>term 5 2023-12-16 ncurses 6.4 File formats</TITLE>
+<TITLE>term 5 2023-12-23 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">term 5 2023-12-16 ncurses 6.4 File formats</H1>
+<H1 class="no-header">term 5 2023-12-23 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="term.5.html">term(5)</A></STRONG>                          File formats                          <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 
@@ -57,7 +57,7 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
-</PRE><H3><a name="h3-STORAGE-LOCATION">STORAGE LOCATION</a></H3><PRE>
+</PRE><H3><a name="h3-Storage-Location">Storage Location</a></H3><PRE>
        Compiled   terminfo   descriptions   are  placed  under  the  directory
        <STRONG>/usr/share/terminfo</STRONG>.  Two configurations are supported  (when  building
        the <EM>ncurses</EM> libraries):
@@ -87,7 +87,7 @@
             database otherwise.
 
 
-</PRE><H3><a name="h3-LEGACY-STORAGE-FORMAT">LEGACY STORAGE FORMAT</a></H3><PRE>
+</PRE><H3><a name="h3-Legacy-Storage-Format">Legacy Storage Format</a></H3><PRE>
        The format has been chosen so that it will be the same on all hardware.
        An 8 or more bit  byte  is  assumed,  but  no  assumptions  about  byte
        ordering or sign extension are made.
@@ -186,7 +186,7 @@
        uninterpreted form.
 
 
-</PRE><H3><a name="h3-EXTENDED-STORAGE-FORMAT">EXTENDED STORAGE FORMAT</a></H3><PRE>
+</PRE><H3><a name="h3-Extended-Storage-Format">Extended Storage Format</a></H3><PRE>
        The previous section describes the conventional terminfo binary format.
        With  some  minor variations of the offsets (see PORTABILITY), the same
        binary format is used in all modern Unix systems.  Each system  uses  a
@@ -234,7 +234,7 @@
        names with members of a <STRONG>TERMTYPE</STRONG> structure.
 
 
-</PRE><H3><a name="h3-EXTENDED-NUMBER-FORMAT">EXTENDED NUMBER FORMAT</a></H3><PRE>
+</PRE><H3><a name="h3-Extended-Number-Format">Extended Number Format</a></H3><PRE>
        On occasion, 16-bit signed integers are not large enough.  With <EM>ncurses</EM>
        6.1,  a new format was introduced by making a few changes to the legacy
        format:
@@ -270,7 +270,7 @@
        the lists of boolean, number, and string capabilities.
 
 
-</PRE><H3><a name="h3-Binary-format">Binary format</a></H3><PRE>
+</PRE><H3><a name="h3-Binary-Format">Binary Format</a></H3><PRE>
        X/Open  Curses  does  not  specify  a format for the terminfo database.
        System V curses used a directory-tree of binary files, one per terminal
        description.
@@ -292,7 +292,7 @@
        different configuration options.
 
 
-</PRE><H3><a name="h3-Magic-codes">Magic codes</a></H3><PRE>
+</PRE><H3><a name="h3-Magic-Codes">Magic Codes</a></H3><PRE>
        The  magic  number  in a binary terminfo file is the first 16-bits (two
        bytes).  Besides making it more reliable for the library to check  that
        a  file  is  terminfo,  utilities such as <STRONG>file(1)</STRONG> also use that to tell
@@ -301,15 +301,14 @@
        uses 01036 as a continuation of that sequence,  but  with  a  different
        high-order byte to avoid confusion.
 
-
-</PRE><H3><a name="h3-The-TERMTYPE-structure">The TERMTYPE structure</a></H3><PRE>
+   <STRONG>The</STRONG> <EM>TERMTYPE</EM> <STRONG>Structure</STRONG>
        Direct  access  to  the  <STRONG>TERMTYPE</STRONG>  structure  is  provided  for  legacy
        applications.  Portable  applications  should  use  the  <STRONG>tigetflag</STRONG>  and
        related  functions  described in <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG> for reading terminal
        capabilities.
 
 
-</PRE><H3><a name="h3-Mixed-case-terminal-names">Mixed-case terminal names</a></H3><PRE>
+</PRE><H3><a name="h3-Mixed-case-Terminal-Names">Mixed-case Terminal Names</a></H3><PRE>
        A small number of terminal descriptions  use  uppercase  characters  in
        their  names.   If  the  underlying  filesystem  ignores the difference
        between  uppercase  and  lowercase,  <EM>ncurses</EM>  represents   the   "first
@@ -400,7 +399,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
+ncurses 6.4                       2023-12-23                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -408,20 +407,19 @@ ncurses 6.4                       2023-12-16                           <STRONG><
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-STORAGE-LOCATION">STORAGE LOCATION</a></li>
-<li><a href="#h3-LEGACY-STORAGE-FORMAT">LEGACY STORAGE FORMAT</a></li>
-<li><a href="#h3-EXTENDED-STORAGE-FORMAT">EXTENDED STORAGE FORMAT</a></li>
-<li><a href="#h3-EXTENDED-NUMBER-FORMAT">EXTENDED NUMBER FORMAT</a></li>
+<li><a href="#h3-Storage-Location">Storage Location</a></li>
+<li><a href="#h3-Legacy-Storage-Format">Legacy Storage Format</a></li>
+<li><a href="#h3-Extended-Storage-Format">Extended Storage Format</a></li>
+<li><a href="#h3-Extended-Number-Format">Extended Number Format</a></li>
 </ul>
 </li>
 <li><a href="#h2-FILES">FILES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-setupterm">setupterm</a></li>
-<li><a href="#h3-Binary-format">Binary format</a></li>
-<li><a href="#h3-Magic-codes">Magic codes</a></li>
-<li><a href="#h3-The-TERMTYPE-structure">The TERMTYPE structure</a></li>
-<li><a href="#h3-Mixed-case-terminal-names">Mixed-case terminal names</a></li>
+<li><a href="#h3-Binary-Format">Binary Format</a></li>
+<li><a href="#h3-Magic-Codes">Magic Codes</a></li>
+<li><a href="#h3-Mixed-case-Terminal-Names">Mixed-case Terminal Names</a></li>
 <li><a href="#h3-Limits">Limits</a></li>
 </ul>
 </li>
