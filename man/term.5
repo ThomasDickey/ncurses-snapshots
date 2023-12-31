@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.69 2023/12/23 16:08:25 tom Exp $
-.TH term 5 2023-12-23 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.70 2023/12/30 21:36:32 tom Exp $
+.TH term 5 2023-12-30 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -111,7 +111,7 @@ a) \fIheader\fP,
 .TP 3
 b) \fIterminal names\fP,
 .TP 3
-c) \fIboolean flags\fP,
+c) \fIBoolean flags\fP,
 .TP 3
 d) \fInumbers\fP,
 .TP 3
@@ -130,7 +130,7 @@ These integers are
 .TP 5
 (2) the size, in bytes, of the \fIterminal names\fP section;
 .TP 5
-(3) the number of bytes in the \fIboolean flags\fP section;
+(3) the number of bytes in the \fIBoolean flags\fP section;
 .TP 5
 (4) the number of short integers in the \fInumbers\fP section;
 .TP 5
@@ -140,7 +140,7 @@ These integers are
 .RE
 .PP
 The capabilities in the
-\fIboolean flags\fP,
+\fIBoolean flags\fP,
 \fInumbers\fP, and
 \fIstrings\fP
 sections are in the same order as the file <term.h>.
@@ -168,14 +168,14 @@ If a capability is absent from this terminal,
 .IP
 The integer value \-1 is represented by two bytes 0377, 0377.
 .br
-Absent boolean values are represented by the byte 0 (false).
+Absent Boolean values are represented by the byte 0 (false).
 .bP
 If a capability has been canceled from this terminal,
 @TIC@ stores a \-2 in the corresponding table.
 .IP
 The integer value \-2 is represented by two bytes 0377, 0376.
 .br
-The boolean value \-2 is represented by the byte 0376.
+The Boolean value \-2 is represented by the byte 0376.
 .br
 .bP
 Other negative values are illegal.
@@ -187,11 +187,11 @@ separated by the \*(``|\*('' character.
 The \fIterminal names\fP section is terminated
 with an \s-1ASCII NUL\s+1 character.
 .PP
-The \fIboolean flags\fP section has one byte for each flag.
+The \fIBoolean flags\fP section has one byte for each flag.
 Boolean capabilities are either 1 or 0 (true or false)
 according to whether the terminal supports the given capability or not.
 .PP
-Between the \fIboolean flags\fP section and the \fInumber\fP section,
+Between the \fIBoolean flags\fP section and the \fInumber\fP section,
 a null byte will be inserted, if necessary,
 to ensure that the \fInumber\fP section begins on an even byte
 This is a relic of the PDP\-11's word-addressed architecture,
@@ -199,7 +199,7 @@ originally designed to avoid traps induced
 by addressing a word on an odd byte boundary.
 All short integers are aligned on a short word boundary.
 .PP
-The \fInumbers\fP section is similar to the \fIboolean flags\fP section.
+The \fInumbers\fP section is similar to the \fIBoolean flags\fP section.
 Each capability takes up two bytes,
 and is stored as a little-endian short integer.
 .PP
@@ -219,7 +219,7 @@ stored intact in uninterpreted form.
 The previous section describes the conventional terminfo binary format.
 With some minor variations of the offsets (see PORTABILITY),
 the same binary format is used in all modern Unix systems.
-Each system uses a predefined set of boolean, number or string capabilities.
+Each system uses a predefined set of Boolean, number or string capabilities.
 .PP
 The \fI\%ncurses\fP libraries and applications support
 extended terminfo binary format,
@@ -236,7 +236,7 @@ First, it reads the extended header (5 short integers):
 .RS 5
 .TP 5
 (1)
-count of extended boolean capabilities
+count of extended Boolean capabilities
 .TP 5
 (2)
 count of extended numeric capabilities
@@ -261,7 +261,7 @@ capabilities in the same order as the header information.
 .PP
 The extended string table contains values for string capabilities.
 After the end of these values, it contains the names for each of
-the extended capabilities in order, e.g., booleans, then numbers and
+the extended capabilities in order, e.g., Booleans, then numbers and
 finally strings.
 .PP
 By storing terminal descriptions in this way,
@@ -314,7 +314,7 @@ The routine
 must be prepared for both possibilities \-
 this is why the numbers and sizes are included.
 Also, new capabilities must always be added at the end of the lists
-of boolean, number, and string capabilities.
+of Boolean, number, and string capabilities.
 .SS "Binary Format"
 X/Open Curses does not specify a format for the terminfo database.
 System V curses used a directory-tree of binary files,

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scr_dump.3x,v 1.36 2023/12/16 21:10:18 tom Exp $
-.TH curs_scr_dump 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scr_dump.3x,v 1.37 2023/12/30 21:34:11 tom Exp $
+.TH curs_scr_dump 3X 2023-12-30 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -60,55 +60,88 @@ read/write a \fIcurses\fR screen from/to a file
 \fBint scr_set(const char *\fIfilename\fP);
 .fi
 .SH DESCRIPTION
+.I curses
+provides applications the ability to write the contents of the screen
+to a file and read them back.
+To read/write a window
+(rather than the whole screen)
+from/to a file,
+use \fB\%getwin\fP(3X) and
+\fB\%putwin\fP(3X),
+respectively.
 .SS scr_dump
-The \fBscr_dump\fP routine dumps the current contents
-of the \fIvirtual screen\fP
-to the file \fIfilename\fP.
+\fB\%scr_dump\fP writes to
+.I filename
+the contents of the virtual screen;
+see \fB\%curscr\fP(3X).
 .SS scr_restore
-The \fBscr_restore\fP routine sets the \fIvirtual screen\fP to the contents
-of \fIfilename\fP, which must have been written using \fBscr_dump\fP.
-The next call to \fBdoupdate\fP restores
-the \fIphysical screen\fP to the way it looked in the dump file.
+\fB\%scr_restore\fP updates the virtual screen to contain the contents
+of
+.I filename
+(if it was validly written with \fB\%scr_dump\fP).
+No refresh is performed;
+after performing any further desired updates,
+call \fB\%doupdate\fP(3X) or similar.
 .SS scr_init
-The \fBscr_init\fP routine reads in the contents of \fIfilename\fP and uses
-them to initialize the \fBcurses\fP data structures about what the terminal
-currently has on its screen.
-If the data is determined to be valid,
-\fBcurses\fP bases its next update of the screen on this information rather
-than clearing the screen and starting from scratch.
-\fBscr_init\fP is used
-after \fBinitscr\fP(3X) or a \fBsystem\fP(3) call to share
-the screen with another process which has done a \fBscr_dump\fP after its
-\fBendwin\fP(3X) call.
-The data is declared invalid
+\fB\%scr_init\fP reads
+.I filename,
+using it to initialize
+.I curses
+data structures describing the state of the terminal screen.
+If these data are valid,
+.I curses
+bases its next update of the screen on this information rather than
+clearing it and starting from scratch.
+.PP
+The data fail the validity check
 .bP
-if the terminfo capabilities \fBrmcup\fP and \fBnrrmc\fP exist, also
+if the terminal employs
+.I \%term\%info
+capabilities
+.B \%exit_ca_mode
+.RB ( \%rmcup )
+or
+.B \%non_rev_rmcup
+.RB ( \%nrrmc )
+are defined,
+or
 .bP
-if the terminal has been written to since the preceding \fBscr_dump\fP call.
+if
+.I curses
+knows that the terminal has been written to since the preceding
+\fB\%scr_dump\fP call.
+.PP
+\fB\%scr_init\fP could be used after \fB\%initscr\fP(3X) or
+\fB\%system\fP(3) to share the screen with another process that has
+done a \fBscr_dump\fP after \fB\%endwin\fP(3X).
 .SS scr_set
 The \fBscr_set\fP routine is a combination of \fBscr_restore\fP and
 \fBscr_init\fP.  It tells the program that the information in \fIfilename\fP is
 what is currently on the screen, and also what the program wants on the screen.
 This can be thought of as a screen inheritance function.
-.PP
-To read (write) a window from (to) a file, use the \fBgetwin\fP and
-\fBputwin\fP routines [see \fBcurs_util\fP(3X)].
 .SH RETURN VALUE
-These routines return the integer \fBERR\fP upon failure and \fBOK\fP
-upon success.
+These functions return \fBOK\fP on success and \fBERR\fP on failure.
 .PP
-X/Open defines no error conditions.
+X/Open defines no failure conditions.
 In this implementation,
-each will return an error if the file cannot be opened.
+each function fails if it cannot open
+.I filename.
 .SH NOTES
-Note that \fBscr_init\fP, \fBscr_set\fP, and \fBscr_restore\fP may be macros.
+\fB\%scr_init\fP,
+\fB\%scr_set\fP,
+and
+\fB\%scr_restore\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4,
-which adds \fI\%const\fP qualifiers to the arguments.
+X/Open Curses, Issue 4, describes these functions.
 .PP
-The SVr4 docs merely say under \fBscr_init\fP that the dump data is also
-considered invalid \*(``if the time-stamp of the tty is old\*('' but do
-not define \*(``old\*(''.
+.\" SVID 4, p. 529
+SVr4 omitted the
+.I \%const
+qualifiers.
+.PP
+SVr4 documentation describes \fB\%scr_init\fP such that the dump data is
+also considered invalid \*(``if the time-stamp of the tty is old\*(''
+but does not define \*(``old\*(''.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_initscr\fP(3X),

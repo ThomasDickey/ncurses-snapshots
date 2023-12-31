@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.hpux11,v 1.19 2023/10/14 21:50:28 tom Exp $
+# $Id: Caps.hpux11,v 1.20 2023/12/30 21:36:32 Branden.Robinson Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with HPUX 11.x's terminfo.
@@ -48,7 +48,7 @@
 #
 # Column 1: terminfo variable name
 # Column 2: terminfo capability name
-# Column 3: capability type (boolean, numeric, or string)
+# Column 3: capability type (Boolean, numeric, or string)
 # Column 4: termcap capability name
 # Column 5: KEY_xxx name, if any, `-' otherwise
 # Column 6: value for KEY_xxx name, if any, `-' otherwise
@@ -206,7 +206,7 @@
 #%indicates the \fIi\fP\uth\d parameter.
 #%
 #%.PP
-#% These are the boolean capabilities:
+#% These are the Boolean capabilities:
 #%
 #%.na
 #%.TS H
@@ -237,7 +237,7 @@ dest_tabs_magic_smso		xt	bool	xt	-	-	YBCGE	tabs destructive, magic so char (t106
 tilde_glitch			hz	bool	hz	-	-	YB-GE	cannot print ~'s (Hazeltine)
 transparent_underline		ul	bool	ul	-	-	YBCGE	underline character overstrikes
 xon_xoff			xon	bool	xo	-	-	YB---	terminal uses xon/xoff handshaking
-# end booleans for HPUX 9, 10 (non-color curses)
+# end Booleans for HPUX 9, 10 (non-color curses)
 needs_xon_xoff			nxon	bool	nx	-	-	-----	padding will not work, xon/xoff required
 prtr_silent			mc5i	bool	5i	-	-	-----	printer will not echo on screen
 hard_cursor			chts	bool	HC	-	-	-----	cursor is hard to see

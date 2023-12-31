@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.189 2023/12/23 16:32:37 tom Exp $
-.TH ncurses 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: ncurses.3x,v 1.192 2023/12/31 00:46:04 tom Exp $
+.TH ncurses 3X 2023-12-30 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -76,7 +76,7 @@ usage and interoperability with other \fIcurses\fP implementations.
 \*(``NOTES\*('' describes matters and caveats of which any user of the
 \fI\%ncurses\fP API should be aware,
 such as limitations on the size of an underlying integral type or the
-availability of a preprocessor macro for a function
+availability of a preprocessor macro exclusive of a function definition
 (which prevents its address from being taken).
 This section also describes implementation details that will be
 significant to the programmer but which are not standardized.
@@ -358,7 +358,9 @@ is the library in its \*(``non-wide\*('' configuration,
 handling only eight-bit characters.
 It stores a character combined with attributes in a
 .I \%chtype
-datum.
+datum,
+which is often an alias of
+.I int.
 .IP
 Attributes alone
 (with no corresponding character)
@@ -391,8 +393,8 @@ characters.
 corresponds to the non-wide configuration's
 .I \%chtype.
 It always a structure type,
-because it stores more data than can fit into an integer.
-A character code may be larger than can fit in a C
+because it stores more data than fits into an integral type.
+A character code may not be representable as a
 .I \%char,
 and moreover more than one character may occupy a cell
 (as with accent marks and other diacritics).
@@ -405,9 +407,8 @@ Attributes and color data are stored in separate fields of the
 structure,
 not combined as in
 .I \%chtype.
-.IP
-Each cell
-(row and column)
+.PP
+Each cell of a
 .I \%WINDOW
 is stored as a
 .I \%cchar_t.
@@ -424,18 +425,19 @@ depends on two data types standardized by ISO C95.
 stores a wide character.
 Like
 .I \%chtype,
-this may be an integer.
+it may be an alias of
+.I int.
 Depending on the character encoding,
 a wide character may be
 .I spacing,
 meaning that it occupies a character cell by itself and typically
-accompanies cursor advancement on input,
+accompanies cursor advancement,
 or
-.I combining,
+.I non-spacing,
 meaning that it occupies the same cell as a spacing character,
 is often regarded as a \*(``modifier\*('' of the base glyph with which
 it combines,
-and typically does not advance the cursor on input.
+and typically does not advance the cursor.
 .TP 9
 .I \%wint_t
 can store a
@@ -481,7 +483,7 @@ l l .
 \f(BIcurses\fP Function Name/Man Page
 _
 COLOR_PAIR/\fBcurs_color\fP(3X)
-PAIR_NUMBER/\fBcurs_attr\fP(3X)
+PAIR_NUMBER/\fBcurs_color\fP(3X)
 add_wch/\fBcurs_add_wch\fP(3X)
 add_wchnstr/\fBcurs_add_wchstr\fP(3X)
 add_wchstr/\fBcurs_add_wchstr\fP(3X)
@@ -946,44 +948,36 @@ additional sets of functions may be available:
 \fBcurs_trace\fP(3X) - curses debugging routines
 .RE
 .SH RETURN VALUE
-Routines that return an integer return \fBERR\fP upon failure and an
-integer value other than \fBERR\fP upon successful completion, unless
-otherwise noted in the routine descriptions.
-.PP
-As a general rule, routines check for null pointers passed as parameters,
-and handle this as an error.
-.PP
-All macros return the value of the \fBw\fP version, except \fBsetscrreg\fP,
-\fBwsetscrreg\fP, \fBgetyx\fP, \fBgetbegyx\fP, and \fBgetmaxyx\fP.
-The return values of
-\fBsetscrreg\fP,
-\fBwsetscrreg\fP,
-\fBgetyx\fP,
-\fBgetbegyx\fP, and
-\fBgetmaxyx\fP are undefined (i.e., these should not be used as the
-right-hand side of assignment statements).
+Unless otherwise noted,
+functions that return an integer return \fBOK\fP on success and
+\fBERR\fP on failure.
+Functions that return pointers return \fBNULL\fP on failure.
+Typically,
+.I \%ncurses
+treats a null pointer passed as a function parameter as a failure.
 .PP
 Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP and return an error if the position is outside the window,
+\fB\%wmove\fP and fail if the position is outside the window,
 or
 (for \*(``mvw\*('' functions)
 if the
 .I \%WINDOW
 pointer is null.
-Most \*(``mv\*(''-prefixed functions
-(except variadic functions such as \fB\%mvprintw\fP)
-are provided both as macros and functions.
-.PP
-Routines that return pointers return \fBNULL\fP on error.
 .SH ENVIRONMENT
 The following environment symbols are useful for customizing the
 runtime behavior of the \fI\%ncurses\fP library.
 The most important ones have been already discussed in detail.
 .SS \fICC\fP command-character
-When set, change occurrences of the command_character
-(i.e., the \fBcmdch\fP capability)
-of the loaded terminfo entries to the value of this variable.
-Very few terminfo entries provide this feature.
+When set,
+change the
+.B \%command_character
+.RB ( \%cmdch )
+capability value of loaded
+.I \%term\%info
+entries to the value of this variable.
+Very few
+.I \%term\%info
+entries provide this feature.
 .PP
 Because this name is also used in development environments to represent
 the C compiler's name,
@@ -1516,19 +1510,20 @@ when only low-level functions are needed.
 Those functions are described in these pages:
 .RS
 .bP
-\fBcurs_extend\fP(3X) \- miscellaneous curses extensions
+\fB\%curs_extend\fP(3X) \- miscellaneous \fIcurses\fP extensions
 .bP
-\fBcurs_inopts\fP(3X) \- \fBcurses\fP input options
+\fB\%curs_inopts\fP(3X) \- \fIcurses\fP input options
 .bP
-\fBcurs_kernel\fP(3X) \- low-level \fBcurses\fP routines
+\fB\%curs_kernel\fP(3X) \- low-level \fIcurses\fP routines
 .bP
-\fBcurs_termattrs\fP(3X) \- \fBcurses\fP environment query routines
+\fB\%curs_termattrs\fP(3X) \- \fIcurses\fP environment query routines
 .bP
-\fBcurs_termcap\fP(3X) \- \fBcurses\fP emulation of termcap
+\fB\%curs_termcap\fP(3X) \- \fIcurses\fP emulation of \fItermcap\fP
 .bP
-\fBcurs_terminfo\fP(3X) \- \fBcurses\fP interfaces to terminfo database
+\fB\%curs_terminfo\fP(3X) \- \fIcurses\fP interface to \fIterminfo\fP
+database
 .bP
-\fBcurs_util\fP(3X) \- miscellaneous \fBcurses\fP utility routines
+\fB\%curs_util\fP(3X) \- miscellaneous \fIcurses\fP utility routines
 .RE
 .TP 5
 \-\-with\-trace
@@ -1544,64 +1539,138 @@ tab stop initialization database
 .I \*d
 compiled terminal capability database
 .SH NOTES
-If standard output from a \fI\%ncurses\fP program is re-directed to
-something which is not a tty,
-screen updates will be directed to standard error.
-This was an undocumented feature of AT&T System V Release 3 curses.
+X/Open Curses permits most functions it specifies to be made available
+as macros as well.
+.\" See X/Open Curses Issue 4, Version 2, pp. 227-234.
+.\" See X/Open Curses Issue 7, pp. 311-318.
+\fI\%ncurses\fP does so
+.bP
+for functions that return values via their parameters,
+.bP
+to support obsolete features,
+.bP
+to reuse functions
+(for example,
+those that move the cursor before another operation),
+and
+.bP
+a few special cases.
+.PP
+If the standard output file descriptor of an
+.I \%ncurses
+program is redirected to something that is not a terminal device,
+the library writes screen updates to the standard error file descriptor.
+This was an undocumented feature of SVr3.
 .PP
 See subsection \*(``Header files\*('' below regarding symbols exposed by
 inclusion of \fI\%curses.h\fP.
 .SH EXTENSIONS
-The \fI\%ncurses\fP library can be compiled with an option
-(\fB\-DUSE_GETCAP\fP)
-that falls back to the old-style /etc/termcap file if the terminal setup code
-cannot find a terminfo entry corresponding to \fITERM\fP.
-Use of this feature is not recommended,
-as it essentially includes an entire termcap compiler in the
-\fI\%ncurses\fP startup code,
-at significant cost in core and startup cycles.
+.I \%ncurses
+enables an application to capture mouse events on certain terminals,
+including
+.I \%xterm;
+see \fB\%curs_mouse\fP(3X).
 .PP
-The \fI\%ncurses\fP library includes facilities for capturing mouse
-events on certain terminals
-(including xterm).
-See the \fBcurs_mouse\fP(3X)
-manual page for details.
+.I \%ncurses
+provides a means of responding to window resizing events,
+as when running in a GUI terminal emulator application such as
+.I \%xterm;
+see \fB\%resizeterm\fP(3X) and \fB\%wresize\fP(3X).
 .PP
-The \fI\%ncurses\fP library includes facilities for responding to window
-resizing events, e.g., when running in an xterm.
-See the \fBresizeterm\fP(3X)
-and \fBwresize\fP(3X) manual pages for details.
-In addition, the library may be configured with a \fBSIGWINCH\fP handler.
+.I \%ncurses
+allows an application to query the terminal for the presence of a wide
+variety of special keys;
+see \fB\%has_key\fP(3X).
 .PP
-The \fI\%ncurses\fP library extends the fixed set of function key
-capabilities of terminals by allowing the application designer to define
-additional key sequences at runtime.
-See the \fBdefine_key\fP(3X)
-\fBkey_defined\fP(3X),
-and \fBkeyok\fP(3X) manual pages for details.
+.I \%ncurses
+extends the fixed set of function key capabilities specified by X/Open
+Curses by allowing the application programmer to define additional key
+sequences at runtime;
+see
+\fB\%define_key\fP(3X),
+\fB\%key_defined\fP(3X),
+and
+\fB\%keyok\fP(3X).
 .PP
-The \fI\%ncurses\fP library can exploit the capabilities of terminals
-which implement the ISO\-6429 SGR 39 and SGR 49 controls,
+.I \%ncurses
+can exploit the capabilities of terminals implementing ISO\ 6429/ECMA-48
+SGR\ 39 and SGR\ 49 sequences,
 which allow an application to reset the terminal to its original
 foreground and background colors.
-From the users' perspective, the application is able to draw colored
-text on a background whose color is set independently, providing better
-control over color contrasts.
-See the \fBdefault_colors\fP(3X) manual page for details.
+From a user's perspective,
+the application is able to draw colored text on a background whose color
+is set independently,
+providing better control over color contrasts.
+See \fB\%default_colors\fP(3X).
 .PP
-The \fI\%ncurses\fP library includes a function for directing
-application output to a printer attached to the terminal device.
-See the \fBcurs_print\fP(3X) manual page for details.
+An
+.I \%ncurses
+application can choose to hide the internal details of
+.I \%WINDOW
+structures,
+instead using accessor functions such as
+\fB\%is_scrollok\fP(3X).
+.PP
+.I \%ncurses
+enables an application to direct application output to a printer
+attached to the terminal device;
+see \fB\%curs_print\fP(3X).
+.PP
+.I \%ncurses
+offers \fB\%slk_attr\fP(3X) as a counterpart of \fB\%attr_get\fP(3X) for
+soft-label key lines,
+and \fB\%extended_slk_color\fP(3X) as a form of \fB\%slk_color\fP(3X)
+that can gather color information from them when many colors are
+supported.
+.PP
+Some extensions are only available if
+.I \%ncurses
+is compiled to support them;
+see section \*(``ALTERNATE CONFIGURATIONS\*('' above.
+.bP
+Rudimentary support for multi-threaded applications may be available;
+see \fBcurs_threads\fP(3X).
+.bP
+Functions that ease the management of multiple screens can be exposed;
+see \fBcurs_sp_funcs\fP(3X).
+.bP
+The compiler option
+.B \%\-DUSE_GETCAP
+causes the library to fall back to reading
+.I \%/etc/termcap
+if the terminal setup code cannot find a
+.I \%term\%info
+entry corresponding to
+.I TERM.
+Use of this feature is not recommended,
+as it essentially includes an entire
+.I termcap
+compiler in the
+.I \%ncurses
+startup code,
+at a cost in memory usage and application launch latency.
+.PP
+.I \%PDCurses
+and NetBSD
+.I curses
+incorporate some
+.I \%ncurses
+extensions.
+Individual man pages indicate where this is the case.
 .SH PORTABILITY
-The \fI\%ncurses\fP library is intended to be BASE-level conformant with
-XSI Curses.
-The EXTENDED XSI Curses functionality
-(including color support) is supported.
+X/Open Curses defines two levels of conformance,
+\*(``base\*('' and \*(``enhanced\*(''.
+The latter includes several additional features,
+such as wide-character and color support.
+.I \%ncurses
+intends base-level conformance with X/Open Curses,
+and supports nearly all its enhanced features.
+.\" XXX: What's missing?  GBR counts untic(1), and that's all.
 .PP
-A small number of local differences
-(that is,
-individual differences between the XSI Curses and \fI\%ncurses\fP calls)
-are described in \fBPORTABILITY\fP sections of the library man pages.
+Differences between X/Open Curses and
+.I \%ncurses
+are documented in the \*(``PORTABILITY\*('' sections of applicable man
+pages.
 .SS "Error Checking"
 In many cases, X/Open Curses is vague about error conditions,
 omitting some of the SVr4 documentation.
@@ -1614,41 +1683,6 @@ The standard interface does not provide a way for the library
 to tell an application which of several possible errors were detected.
 Relying on this (or some other) extension will adversely affect the
 portability of curses applications.
-.SS "Extensions Versus Portability"
-Most of the extensions provided by \fI\%ncurses\fP have not been
-standardized.
-Some have been incorporated into other implementations, such as
-PDCurses or NetBSD curses.
-Here are a few to consider:
-.bP
-The routine \fBhas_key\fP is not part of XPG4, nor is it present in SVr4.
-See the \fBcurs_getch\fP(3X) manual page for details.
-.bP
-The routine \fBslk_attr\fP is not part of XPG4, nor is it present in SVr4.
-See the \fBcurs_slk\fP(3X) manual page for details.
-.bP
-The routines \fBgetmouse\fP, \fBmousemask\fP, \fBungetmouse\fP,
-\fBmouseinterval\fP, and \fBwenclose\fP relating to mouse interfacing are not
-part of XPG4, nor are they present in SVr4.
-See the \fBcurs_mouse\fP(3X) manual page for details.
-.bP
-The routine \fBmcprint\fP was not present in any previous curses implementation.
-See the \fBcurs_print\fP(3X) manual page for details.
-.bP
-The routine \fBwresize\fP is not part of XPG4, nor is it present in SVr4.
-See the \fBwresize\fP(3X) manual page for details.
-.bP
-The \fI\%WINDOW\fP structure's internal details can be hidden from application
-programs.
-See \fBcurs_opaque\fP(3X) for the discussion of \fBis_scrollok\fP, etc.
-.bP
-This implementation can be configured to provide rudimentary support
-for multi-threaded applications.
-See \fBcurs_threads\fP(3X) for details.
-.bP
-This implementation can also be configured to provide a set of functions which
-improve the ability to manage multiple screens.
-See \fBcurs_sp_funcs\fP(3X) for details.
 .SS "Padding Differences"
 In historic curses versions, delays embedded in the capabilities \fBcr\fP,
 \fBind\fP, \fBcub1\fP, \fBff\fP and \fBtab\fP activated corresponding delay

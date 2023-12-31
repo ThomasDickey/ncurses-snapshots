@@ -1,5 +1,5 @@
 <!--
-  $Id: announce.html.in,v 1.105 2023/12/02 21:45:06 tom Exp $
+  $Id: announce.html.in,v 1.106 2023/12/30 21:24:48 tom Exp $
   ****************************************************************************
   * Copyright 2018-2022,2023 Thomas E. Dickey                                *
   *                                                                          *
@@ -1136,10 +1136,11 @@
     </li>
 
     <li>
-      <p>The library meets the XSI requirement that every macro
-      entry point has a corresponding function which may be linked
-      (and will be prototype-checked) if the macro definition is
-      disabled with <code>#undef</code>.</p>
+      <p>The library meets the X/Open Curses requirement that every
+      function declared in a header file has a macro equivalent.
+      If the macro definition is disabled with <code>#undef</code>,
+      the function may be linked (and its calls will be checked
+      against the prototype).</p>
     </li>
 
     <li>

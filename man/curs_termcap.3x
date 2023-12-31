@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.80 2023/12/23 20:19:05 tom Exp $
-.TH curs_termcap 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.81 2023/12/30 21:27:22 tom Exp $
+.TH curs_termcap 3X 2023-12-30 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -415,7 +415,8 @@ refactored it,
 leaving the API unchanged.
 .PP
 Function prototypes were a feature of ANSI C (1989).
-Thus the library itself provided no header file declaring them.
+The library long antedated the standard and thus provided no header file
+declaring them.
 Nevertheless,
 the BSD sources included two different \fI\%termcap.h\fP header files
 over time.
@@ -434,7 +435,7 @@ One was used internally by \fBjove\fP(1) from 4.3BSD onward.
 .\"   https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD/usr/contrib/\
 .\"     jove/Makefile
 .\" --much too late for 2BSD (1979).
-It delcared global symbols for the \fItermcap\fP variables that it used.
+It declared global symbols for the \fItermcap\fP variables that it used.
 .bP
 The other appeared in 4.4BSD-Lite Release 2
 (June 1995)

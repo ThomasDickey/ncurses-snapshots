@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.103 2023/12/23 16:08:25 tom Exp $
-.TH @INFOCMP@ 1M 2023-12-23 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.104 2023/12/30 21:36:32 tom Exp $
+.TH @INFOCMP@ 1M 2023-12-30 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -87,7 +87,7 @@ x\
 terminfo entries, rewrite a \fBterminfo\fP description to take advantage of the
 \fBuse=\fP terminfo field, or print out a \fBterminfo\fP description from the
 binary file (\fBterm\fP) in a variety of formats.
-In all cases, the boolean
+In all cases, the Boolean
 fields will be printed first, followed by the numeric fields, followed by the
 string fields.
 .SS "Default Options"
@@ -104,7 +104,7 @@ for the other terminal's \fIterminal-types\fP.
 If a capability is defined for only one of the
 terminals, the value returned depends on the type of the capability:
 .bP
-\fBF\fP for missing boolean variables
+\fBF\fP for missing Boolean variables
 .bP
 \fBNULL\fP for missing integer or string variables
 .PP

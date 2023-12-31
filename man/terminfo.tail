@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.140 2023/12/23 16:23:35 tom Exp $
+.\" $Id: terminfo.tail,v 1.141 2023/12/30 21:36:32 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -46,7 +46,7 @@ When \fB\-x\fP is set,
 \fB@TIC@\fP treats unknown capabilities as user-defined.
 That is, if \fB@TIC@\fP encounters a capability name
 which it does not recognize,
-it infers its type (boolean, number or string) from the syntax
+it infers its type (Boolean, number or string) from the syntax
 and makes an extended table entry for that capability.
 The \fBuse_extended_names\fP(3X) function makes this information
 conditionally available to applications.
@@ -56,7 +56,7 @@ behavior to applications:
 User-defined capability strings whose name begins
 with \*(``k\*('' are treated as function keys.
 .bP
-The types (boolean, number, string) determined by \fB@TIC@\fP
+The types (Boolean, number, string) determined by \fB@TIC@\fP
 can be inferred by successful calls on \fBtigetflag\fP, etc.
 .bP
 If the capability name happens to be two characters,
@@ -68,7 +68,7 @@ in practice it has been limited to the capabilities defined by
 terminfo implementations.
 As a rule,
 user-defined capabilities intended for use by termcap applications should
-be limited to booleans and numbers to avoid running past the 1023 byte
+be limited to Booleans and numbers to avoid running past the 1023 byte
 limit assumed by termcap implementations and their applications.
 In particular, providing extended sets of function keys (past the 60
 numbered keys and the handful of special named keys) is best done using
@@ -883,7 +883,7 @@ or
 on many terminals without a true insert/delete line,
 and is often faster even on terminals with those features.
 .PP
-The boolean \fBnon_dest_scroll_region\fP should be set if each scrolling
+The Boolean \fBnon_dest_scroll_region\fP should be set if each scrolling
 window is effectively a view port on a screen-sized canvas.
 To test for
 this capability, create a scrolling region in the middle of the screen,
@@ -1536,7 +1536,7 @@ capability \fBwsl\fP.
 .PP
 A command to erase or blank the status line may be specified as \fBdsl\fP.
 .PP
-The boolean capability \fBeslok\fP specifies that escape sequences, tabs,
+The Boolean capability \fBeslok\fP specifies that escape sequences, tabs,
 etc., work ordinarily in the status line.
 .PP
 The \fI\%ncurses\fP implementation does not yet use any of these
@@ -1648,7 +1648,7 @@ The \fBoc\fP string resets all colors or color pairs to
 their default values for the terminal.
 Some terminals (including many PC
 terminal emulators) erase screen areas with the current background color rather
-than the power-up default background; these should have the boolean capability
+than the power-up default background; these should have the Boolean capability
 \fBbce\fP.
 .PP
 While the curses library works with \fIcolor pairs\fP
@@ -1730,7 +1730,7 @@ take a color number (0 to \fBcolors\fP \- 1)and three more parameters which
 describe the color.
 These three parameters default to being interpreted as RGB
 (Red, Green, Blue) values.
-If the boolean capability \fBhls\fP is present,
+If the Boolean capability \fBhls\fP is present,
 they are instead as HLS (Hue, Lightness, Saturation) indices.
 The ranges are
 terminal-dependent.

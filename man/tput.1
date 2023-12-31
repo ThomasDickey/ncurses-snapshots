@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.96 2023/12/23 20:55:36 tom Exp $
-.TH @TPUT@ 1 2023-12-23 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.97 2023/12/31 00:16:41 tom Exp $
+.TH @TPUT@ 1 2023-12-30 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -51,7 +51,8 @@
 \fB\%reset\fP \-
 initialize a terminal or query \fI\%term\%info\fP database
 .SH SYNOPSIS
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] \fIcap-code\fP [\fIparameter\fP .\|.\|.]
+\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP]
+{\fIcap-code\fP [\fIparameter\fP .\|.\|.\&]} .\|.\|.
 .PP
 \fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] [\fB\-x\fP] \fBclear\fP
 .PP
@@ -249,6 +250,18 @@ strings are, the \fIinitialization\fP strings will be output.
 Otherwise, \fBreset\fP acts identically to \fBinit\fP.
 .TP
 .B longname
+A terminfo entry begins with one or more names by which an
+application can refer to the entry,
+before the list of terminal capabilities.
+The names are separated by \*(``|\*('' characters.
+X/Open states that the last name is the \*(``long name\*(''
+and also that it may include blanks.
+.IP
+\fB\%@TIC@\fP warns if the last name does not include blanks,
+to accommodate old terminfo entries which treated
+the long name as an optional feature.
+The long name is often referred to as the description field.
+.IP
 If the terminal database is present and an entry for the user's terminal
 exists
 (see
@@ -259,7 +272,7 @@ above),
 (or \*(``long name\*('')
 to the standard output,
 without a trailing newline.
-See \fBterm\fP(5).
+See \fB\%term\%info\fP(5).
 .SS Aliases
 \fB@TPUT@\fP handles the \fBclear\fP, \fBinit\fP and \fBreset\fP
 commands specially:
@@ -645,12 +658,12 @@ moves the cursor to position
 and turns on bold
 (extra bright)
 mode.
-.IP
-The same sequence of commands can be combined using the OpenBSD feature:
-.IP
-.EX
-$ \fB@TPUT@ \fBclear\fP \fBcup 10 10\fP \fBbold\fP
-.EE
+.TP 5
+.B @TPUT@ clear cup 10 10 bold
+Perform the same actions as the foregoing
+.RB \%\[lq] @TPUT@
+.BR \-S \[rq]
+example.
 .SH SEE ALSO
 \fB\%@CLEAR@\fP(1),
 \fB\%stty\fP(1),

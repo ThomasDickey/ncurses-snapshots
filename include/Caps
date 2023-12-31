@@ -30,7 +30,7 @@
 # Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995
 #    and: Eric S. Raymond <esr@snark.thyrsus.com>
 #
-# $Id: Caps,v 1.49 2023/10/14 20:54:32 tom Exp $
+# $Id: Caps,v 1.50 2023/12/30 21:36:32 Branden.Robinson Exp $
 #
 # This is the master termcap/terminfo capability table.
 #
@@ -48,7 +48,7 @@
 #
 # Column 1: terminfo variable name
 # Column 2: terminfo capability name
-# Column 3: capability type (boolean, numeric, or string)
+# Column 3: capability type (Boolean, numeric, or string)
 # Column 4: termcap capability name
 # Column 5: KEY_xxx name, if any, `-' otherwise
 # Column 6: value for KEY_xxx name, if any, `-' otherwise
@@ -206,7 +206,7 @@
 #%indicates the \fIi\fP\uth\d parameter.
 #%
 #%.PP
-#% These are the boolean capabilities:
+#% These are the Boolean capabilities:
 #%
 #%.na
 #%.TS H

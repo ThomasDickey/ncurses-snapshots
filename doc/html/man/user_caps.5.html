@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: user_caps.5,v 1.43 2023/12/23 16:08:25 tom Exp @
+  * @Id: user_caps.5,v 1.44 2023/12/30 21:36:32 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>user_caps 5 2023-12-23 ncurses 6.4 File formats</TITLE>
+<TITLE>user_caps 5 2023-12-30 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">user_caps 5 2023-12-23 ncurses 6.4 File formats</H1>
+<H1 class="no-header">user_caps 5 2023-12-30 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>                     File formats                     <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 
@@ -66,7 +66,7 @@
        Single Unix Specification beginning in 1995.
 
        Most of the <EM>extensions</EM> in this fixed repertoire were additions  to  the
-       tables of boolean, numeric and string capabilities.  Rather than change
+       tables of Boolean, numeric and string capabilities.  Rather than change
        the meaning of an existing capability,  a  new  name  was  added.   The
        terminfo  database  uses  a  binary  format;  binary  compatibility was
        ensured by using a header which gave the number of items in the  tables
@@ -184,7 +184,7 @@
        terminfo  database  may  have  other extensions, <EM>ncurses</EM> makes explicit
        checks for these:
 
-          AX <EM>boolean</EM>, asserts that the terminal interprets SGR 39 and  SGR  49
+          AX <EM>Boolean</EM>, asserts that the terminal interprets SGR 39 and  SGR  49
              by  resetting  the foreground and background color, respectively,
              to the default.
 
@@ -196,13 +196,13 @@
 
              The command "<STRONG>tput</STRONG> <STRONG>clear</STRONG>" does the same thing.
 
-          NQ <EM>boolean</EM>, used to suppress a consistency  check  in  tic  for  the
+          NQ <EM>Boolean</EM>, used to suppress a consistency  check  in  tic  for  the
              <EM>ncurses</EM>  capabilities  in user6 through user9 (u6, u7, u8 and u9)
              which tell how to query the terminal's cursor  position  and  its
              device attributes.
 
           RGB
-             <EM>boolean</EM>,   <EM>number</EM>   <STRONG>or</STRONG>   <EM>string</EM>,   used   to   assert   that  the
+             <EM>Boolean</EM>,   <EM>number</EM>   <STRONG>or</STRONG>   <EM>string</EM>,   used   to   assert   that  the
              <STRONG>set_a_foreground</STRONG> and <STRONG>set_a_background</STRONG> capabilities correspond  to
              <EM>direct</EM>  <EM>colors</EM>,  using  an RGB (red/green/blue) convention.  This
              capability  allows   the   <STRONG>color_content</STRONG>   function   to   return
@@ -211,7 +211,7 @@
 
              The capability type determines the values which <EM>ncurses</EM> sees:
 
-             <EM>boolean</EM>
+             <EM>Boolean</EM>
                 implies that the number of bits for red, green  and  blue  are
                 the  same.   Using  the maximum number of colors, <EM>ncurses</EM> adds
                 two, divides that sum by three, and assigns the result to red,
@@ -224,7 +224,7 @@
              <EM>number</EM>
                 tells  <EM>ncurses</EM>  what result to add to red, green and blue.  If
                 <EM>ncurses</EM> runs out of bits, blue (and green) lose just as in the
-                <EM>boolean</EM> case.
+                <EM>Boolean</EM> case.
 
              <EM>string</EM>
                 explicitly  list  the  number  of bits used for red, green and
@@ -396,7 +396,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                      <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
+ncurses 6.4                       2023-12-30                      <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

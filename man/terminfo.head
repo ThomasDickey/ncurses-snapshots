@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.59 2023/12/23 23:44:58 tom Exp $
-.TH terminfo 5 2023-12-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.60 2023/12/30 22:21:45 tom Exp $
+.TH terminfo 5 2023-12-30 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -163,10 +163,10 @@ or methods for exercising the terminal's features.
 .PP
 After the first field (giving the name(s) of the terminal entry),
 there should be one or more \fIcapability\fP fields.
-These are boolean, numeric or string names with corresponding values:
+These are Boolean, numeric or string names with corresponding values:
 .bP
 Boolean capabilities are true when present, false when absent.
-There is no explicit value for boolean capabilities.
+There is no explicit value for Boolean capabilities.
 .bP
 Numeric capabilities have a \*(``#\*('' following the name,
 then an unsigned decimal integer value.
