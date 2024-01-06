@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.92 2023/12/23 16:24:15 tom Exp @
+  * @Id: curs_util.3x,v 1.95 2024/01/05 21:46:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2024-01-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -105,7 +105,7 @@
        character parameter are ignored.
 
 
-</PRE><H3><a name="h3-keyname_key_name">keyname/key_name</a></H3><PRE>
+</PRE><H3><a name="h3-keyname_key_name">keyname, key_name</a></H3><PRE>
        The <STRONG>keyname</STRONG> routine returns a character string corresponding to the key
        <EM>c</EM>.  Key codes are different from character codes.
 
@@ -129,7 +129,7 @@
        <STRONG>o</STRONG>   <STRONG>key_name</STRONG> does not return the name of a function key.
 
 
-</PRE><H3><a name="h3-filter_nofilter">filter/nofilter</a></H3><PRE>
+</PRE><H3><a name="h3-filter_nofilter">filter, nofilter</a></H3><PRE>
        The  <STRONG>filter</STRONG>  routine, if used, must be called before <STRONG>initscr</STRONG> or <STRONG>newterm</STRONG>
        are called.  Calling <STRONG>filter</STRONG> causes these changes in initialization:
 
@@ -202,7 +202,7 @@
                                      operating system calls to obtain size.
 
 
-</PRE><H3><a name="h3-putwin_getwin">putwin/getwin</a></H3><PRE>
+</PRE><H3><a name="h3-putwin_getwin">putwin, getwin</a></H3><PRE>
        The <STRONG>putwin</STRONG> routine writes all data associated with window (or pad)  <EM>win</EM>
        into  the  file  to  which <EM>filep</EM> points.  This information can be later
        retrieved using the <STRONG>getwin</STRONG> function.
@@ -297,7 +297,7 @@
        the library.
 
 
-</PRE><H3><a name="h3-nofilter_use_tioctl">nofilter/use_tioctl</a></H3><PRE>
+</PRE><H3><a name="h3-nofilter_use_tioctl">nofilter, use_tioctl</a></H3><PRE>
        The  <STRONG>nofilter</STRONG>  and  <STRONG>use_tioctl</STRONG>  routines are specific to <EM>ncurses</EM>.  They
        were not supported on Version 7, BSD or System V  implementations.   It
        is  recommended  that  any  code  depending  on  <EM>ncurses</EM>  extensions be
@@ -331,7 +331,7 @@
            file written using mixed schemes may not be successful.
 
 
-</PRE><H3><a name="h3-unctrl_wunctrl">unctrl/wunctrl</a></H3><PRE>
+</PRE><H3><a name="h3-unctrl_wunctrl">unctrl, wunctrl</a></H3><PRE>
        The  XSI Curses standard, Issue 4 describes these functions.  It states
        that <STRONG>unctrl</STRONG> and <STRONG>wunctrl</STRONG> will return a null pointer if unsuccessful, but
        does  not  define any error conditions.  This implementation checks for
@@ -377,7 +377,7 @@
        behavior of SVr4 curses.  Other implementations may not do that.
 
 
-</PRE><H3><a name="h3-use_env_use_tioctl">use_env/use_tioctl</a></H3><PRE>
+</PRE><H3><a name="h3-use_env_use_tioctl">use_env, use_tioctl</a></H3><PRE>
        If  <EM>ncurses</EM>  is  configured  to provide the sp-functions extension, the
        state of <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> may be  updated  before  creating  each
        <EM>screen</EM>  rather  than  once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).  This feature of
@@ -391,7 +391,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2024-01-05                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -400,11 +400,11 @@ ncurses 6.4                       2023-12-23                     <STRONG><A HREF
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
 <li><a href="#h3-unctrl">unctrl</a></li>
-<li><a href="#h3-keyname_key_name">keyname/key_name</a></li>
-<li><a href="#h3-filter_nofilter">filter/nofilter</a></li>
+<li><a href="#h3-keyname_key_name">keyname, key_name</a></li>
+<li><a href="#h3-filter_nofilter">filter, nofilter</a></li>
 <li><a href="#h3-use_env">use_env</a></li>
 <li><a href="#h3-use_tioctl">use_tioctl</a></li>
-<li><a href="#h3-putwin_getwin">putwin/getwin</a></li>
+<li><a href="#h3-putwin_getwin">putwin, getwin</a></li>
 <li><a href="#h3-delay_output">delay_output</a></li>
 <li><a href="#h3-flushinp">flushinp</a></li>
 </ul>
@@ -415,10 +415,10 @@ ncurses 6.4                       2023-12-23                     <STRONG><A HREF
 <li><a href="#h3-filter">filter</a></li>
 <li><a href="#h3-delay_output-padding">delay_output padding</a></li>
 <li><a href="#h3-keyname">keyname</a></li>
-<li><a href="#h3-nofilter_use_tioctl">nofilter/use_tioctl</a></li>
+<li><a href="#h3-nofilter_use_tioctl">nofilter, use_tioctl</a></li>
 <li><a href="#h3-putwin_getwin-file-format">putwin/getwin file-format</a></li>
-<li><a href="#h3-unctrl_wunctrl">unctrl/wunctrl</a></li>
-<li><a href="#h3-use_env_use_tioctl">use_env/use_tioctl</a></li>
+<li><a href="#h3-unctrl_wunctrl">unctrl, wunctrl</a></li>
+<li><a href="#h3-use_env_use_tioctl">use_env, use_tioctl</a></li>
 </ul>
 </li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

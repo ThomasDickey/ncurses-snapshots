@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2018-2022,2023 Thomas E. Dickey                                  #
+# Copyright 2018-2023,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.1586 2023/12/30 11:24:34 tom Exp $
+# $Id: dist.mk,v 1.1591 2024/01/06 11:19:36 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -38,7 +38,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 6
 NCURSES_MINOR = 4
-NCURSES_PATCH = 20231230
+NCURSES_PATCH = 20240106
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -63,7 +63,7 @@ GNATHTML= gnathtml
 # would remove some text.  The man program on Redhat 6.1 appears to work with
 # man2html if we set the top/bottom margins to 6 (the default is 7).  Newer
 # versions of 'man' leave no margin (and make it harder to sync with pages).
-MAN2HTML= man2html -botm=0 -topm=0 -cgiurl '$$title.$$section$$subsection.html' -index
+MAN2HTML= man2html -botm=0 -topm=0 -cgiurl '$$title.$$section$$subsection.html' -index -mixsecs
 
 ALL	= ANNOUNCE doc/html/announce.html doc/ncurses-intro.doc doc/hackguide.doc manhtml adahtml
 
@@ -124,9 +124,10 @@ manhtml:
 	@echo 's/<I>/<EM>/g'         >> subst.tmp
 	@echo 's/<\/I>/<\/EM>/g'     >> subst.tmp
 	@misc/csort < subst.tmp | uniq > subst.sed
-	@echo '/<\/TITLE>/a\' >> subst.sed
-	@echo '<link rel="author" href="mailto:bug-ncurses@gnu.org">\' >> subst.sed
-	#@rm -f subst.tmp
+	@echo 's%[_-]*_-[_-]*%_%g'   >> subst.sed
+	@echo '/<\/TITLE>/a\\'       >> subst.sed
+	@echo '<link rel="author" href="mailto:bug-ncurses@gnu.org">\\' >> subst.sed
+	@rm -f subst.tmp
 	@for f in man/*.[0-9]* ; do \
 	   m=`basename $$f` ;\
 	   T=`$${EGREP-grep -E} '^.TH' $$f|sed -e 's/^.TH //' -e s'/"//g' -e 's/[ 	]\+$$//'` ; \
@@ -152,7 +153,7 @@ manhtml:
 		   sed -e 's/"curses.3x.html"/"ncurses.3x.html"/g' \
 	   >> doc/html/man/$$g ;\
 	done
-	#@rm -f subst.sed
+	@rm -f subst.sed
 
 #
 # Please note that this target can only be properly built if the build of the

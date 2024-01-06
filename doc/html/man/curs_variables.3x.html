@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_variables.3x,v 1.40 2023/12/23 23:10:13 tom Exp @
+  * @Id: curs_variables.3x,v 1.43 2024/01/05 21:46:58 tom Exp @
   * SVID 4, Volume 3, p. 408
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -35,12 +35,12 @@
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_variables 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_variables 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_variables 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_variables 3x 2024-01-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
@@ -98,12 +98,12 @@
 
 </PRE><H2><a name="h2-CONSTANTS">CONSTANTS</a></H2><PRE>
 
-</PRE><H3><a name="h3-TRUE_-FALSE">TRUE, FALSE</a></H3><PRE>
+</PRE><H3><a name="h3-TRUE_FALSE">TRUE, FALSE</a></H3><PRE>
        The <EM>curses</EM> library defines <STRONG>TRUE</STRONG> and <STRONG>FALSE</STRONG> to represent  the  values  of
        the Boolean data type.
 
 
-</PRE><H3><a name="h3-ERR_-OK">ERR, OK</a></H3><PRE>
+</PRE><H3><a name="h3-ERR_OK">ERR, OK</a></H3><PRE>
        <EM>curses</EM>  and <EM>terminfo</EM> routines frequently return these constant integral
        values indicating failure and success, respectively.
 
@@ -126,7 +126,7 @@
        example, <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG>, and <STRONG><A HREF="curs_inch.3x.html">inch(3x)</A></STRONG>.
 
 
-</PRE><H3><a name="h3-cchar_t_-attr_t"><EM>cchar_t,</EM> attr_t</a></H3><PRE>
+</PRE><H3><a name="h3-cchar_t_attr_t"><EM>cchar_t,</EM> attr_t</a></H3><PRE>
        <EM>chtype</EM> is too small for the standard C library's  wide-character  type,
        <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>.   <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  is a type that can accommodate an <EM>attr</EM><STRONG>_</STRONG><EM>t</EM> and enough
        wide characters to store what  Unicode  terms  a  <EM>grapheme</EM>  <EM>cluster</EM>  (a
@@ -148,7 +148,7 @@
 
 </PRE><H2><a name="h2-VARIABLES">VARIABLES</a></H2><PRE>
 
-</PRE><H3><a name="h3-curscr_-stdscr_-newscr">curscr, stdscr, newscr</a></H3><PRE>
+</PRE><H3><a name="h3-curscr_stdscr_newscr">curscr, stdscr, newscr</a></H3><PRE>
        The library records updates to the terminal screen in  a  window  named
        <STRONG>curscr</STRONG>.   This  object  is  referred  to  as  the  "physical screen" in
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG> and <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>.
@@ -175,7 +175,7 @@
        pairs supported by the terminal; see <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>.
 
 
-</PRE><H3><a name="h3-COLS_-LINES">COLS, LINES</a></H3><PRE>
+</PRE><H3><a name="h3-COLS_LINES">COLS, LINES</a></H3><PRE>
        Once  <EM>curses</EM>  is initialized, <STRONG>COLS</STRONG> and <STRONG>LINES</STRONG> contain the screen's width
        and height in character cells, respectively; that  is,  the  number  of
        columns and lines.
@@ -263,7 +263,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
+ncurses 6.4                       2024-01-05                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -272,25 +272,25 @@ ncurses 6.4                       2023-12-23                <STRONG><A HREF="cur
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-CONSTANTS">CONSTANTS</a>
 <ul>
-<li><a href="#h3-TRUE_-FALSE">TRUE, FALSE</a></li>
-<li><a href="#h3-ERR_-OK">ERR, OK</a></li>
+<li><a href="#h3-TRUE_FALSE">TRUE, FALSE</a></li>
+<li><a href="#h3-ERR_OK">ERR, OK</a></li>
 </ul>
 </li>
 <li><a href="#h2-PREDEFINED-TYPES">PREDEFINED TYPES</a>
 <ul>
 <li><a href="#h3-bool">bool</a></li>
 <li><a href="#h3-chtype">chtype</a></li>
-<li><a href="#h3-cchar_t_-attr_t">cchar_t, attr_t</a></li>
+<li><a href="#h3-cchar_t_attr_t">cchar_t, attr_t</a></li>
 <li><a href="#h3-SCREEN">SCREEN</a></li>
 <li><a href="#h3-WINDOW">WINDOW</a></li>
 </ul>
 </li>
 <li><a href="#h2-VARIABLES">VARIABLES</a>
 <ul>
-<li><a href="#h3-curscr_-stdscr_-newscr">curscr, stdscr, newscr</a></li>
+<li><a href="#h3-curscr_stdscr_newscr">curscr, stdscr, newscr</a></li>
 <li><a href="#h3-COLORS">COLORS</a></li>
 <li><a href="#h3-COLOR_PAIRS">COLOR_PAIRS</a></li>
-<li><a href="#h3-COLS_-LINES">COLS, LINES</a></li>
+<li><a href="#h3-COLS_LINES">COLS, LINES</a></li>
 <li><a href="#h3-ESCDELAY">ESCDELAY</a></li>
 <li><a href="#h3-TABSIZE">TABSIZE</a></li>
 </ul>

@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2010,2016 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_refresh.3x,v 1.39 2023/12/16 21:09:11 tom Exp @
+  * @Id: curs_refresh.3x,v 1.42 2024/01/05 21:46:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_refresh 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_refresh 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_refresh 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_refresh 3x 2024-01-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 
@@ -65,7 +65,7 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
-</PRE><H3><a name="h3-refresh_wrefresh">refresh/wrefresh</a></H3><PRE>
+</PRE><H3><a name="h3-refresh_wrefresh">refresh, wrefresh</a></H3><PRE>
        The <STRONG>refresh</STRONG> and <STRONG>wrefresh</STRONG> routines (or <STRONG>wnoutrefresh</STRONG> and  <STRONG>doupdate</STRONG>)  must
        be  called  to  get  actual  output  to the terminal, as other routines
        merely manipulate data structures.  The  routine  <STRONG>wrefresh</STRONG>  copies  the
@@ -76,7 +76,7 @@
        the cursor for that window.
 
 
-</PRE><H3><a name="h3-wnoutrefresh_doupdate">wnoutrefresh/doupdate</a></H3><PRE>
+</PRE><H3><a name="h3-wnoutrefresh_doupdate">wnoutrefresh, doupdate</a></H3><PRE>
        The <STRONG>wnoutrefresh</STRONG> and <STRONG>doupdate</STRONG> routines allow multiple updates with more
        efficiency  than  <STRONG>wrefresh</STRONG>  alone.   In  addition  to  all  the  window
        structures,  <STRONG>curses</STRONG> keeps two data structures representing the terminal
@@ -115,7 +115,7 @@
        <STRONG>PORTABILITY</STRONG> below for a warning about exploiting this behavior.)
 
 
-</PRE><H3><a name="h3-wredrawln_redrawwin">wredrawln/redrawwin</a></H3><PRE>
+</PRE><H3><a name="h3-wredrawln_redrawwin">wredrawln, redrawwin</a></H3><PRE>
        The <STRONG>wredrawln</STRONG> routine indicates to <STRONG>curses</STRONG> that some  screen  lines  are
        corrupted  and  should  be  thrown away before anything is written over
        them.  It touches the indicated  lines  (marking  them  changed).   The
@@ -159,7 +159,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                  <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
+ncurses 6.4                       2024-01-05                  <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -167,9 +167,9 @@ ncurses 6.4                       2023-12-16                  <STRONG><A HREF="c
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-refresh_wrefresh">refresh/wrefresh</a></li>
-<li><a href="#h3-wnoutrefresh_doupdate">wnoutrefresh/doupdate</a></li>
-<li><a href="#h3-wredrawln_redrawwin">wredrawln/redrawwin</a></li>
+<li><a href="#h3-refresh_wrefresh">refresh, wrefresh</a></li>
+<li><a href="#h3-wnoutrefresh_doupdate">wnoutrefresh, doupdate</a></li>
+<li><a href="#h3-wredrawln_redrawwin">wredrawln, redrawwin</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.50 2023/12/16 21:18:02 tom Exp $
-.TH curs_pad 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_pad.3x,v 1.53 2024/01/05 21:46:58 tom Exp $
+.TH curs_pad 3X 2024-01-05 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -97,7 +97,7 @@ affect both windows.
 During the use of this routine, it will often be
 necessary to call \fB\%touchwin\fP or \fB\%touchline\fP on \fIorig\fP before
 calling \fB\%prefresh\fP.
-.SS prefresh, pnoutrefresh
+.SS "prefresh, pnoutrefresh"
 The \fB\%prefresh\fP and \fB\%pnoutrefresh\fP routines are analogous to
 \fB\%wrefresh\fP and \fB\%wnoutrefresh\fP except that they relate to pads instead
 of windows.

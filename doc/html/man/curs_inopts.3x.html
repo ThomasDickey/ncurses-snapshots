@@ -100,7 +100,7 @@
        desired.
 
 
-</PRE><H3><a name="h3-cbreak_-nocbreak">cbreak, nocbreak</a></H3><PRE>
+</PRE><H3><a name="h3-cbreak_nocbreak">cbreak, nocbreak</a></H3><PRE>
        Normally,  the terminal driver buffers typed characters until a newline
        or  carriage  return  is  typed.   The  <STRONG>cbreak</STRONG>  routine  disables  line
        buffering  and  erase/kill  character-processing  (interrupt  and  flow
@@ -115,7 +115,7 @@
        discussion of how these routines interact with <STRONG>echo</STRONG> and <STRONG>noecho</STRONG>.]
 
 
-</PRE><H3><a name="h3-echo_-noecho">echo, noecho</a></H3><PRE>
+</PRE><H3><a name="h3-echo_noecho">echo, noecho</a></H3><PRE>
        The <STRONG>echo</STRONG> and <STRONG>noecho</STRONG> routines control whether characters  typed  by  the
        user  are  echoed  by  <STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG>  as  they  are  typed.  Echoing by the
        terminal driver is always disabled, but  initially  <STRONG>getch</STRONG>  is  in  echo
@@ -170,7 +170,7 @@
        called and <STRONG>rmm</STRONG> is sent when <STRONG>meta</STRONG>(<EM>win</EM>, <STRONG>FALSE</STRONG>) is called.
 
 
-</PRE><H3><a name="h3-nl_-nonl">nl, nonl</a></H3><PRE>
+</PRE><H3><a name="h3-nl_nonl">nl, nonl</a></H3><PRE>
        The  <STRONG>nl</STRONG> and <STRONG>nonl</STRONG> routines control whether the underlying display device
        translates the return key into newline on input.
 
@@ -189,7 +189,7 @@
        user.
 
 
-</PRE><H3><a name="h3-raw_-noraw">raw, noraw</a></H3><PRE>
+</PRE><H3><a name="h3-raw_noraw">raw, noraw</a></H3><PRE>
        The <STRONG>raw</STRONG> and <STRONG>noraw</STRONG> routines place the terminal into or out of raw  mode.
        Raw  mode  is  similar  to  <STRONG>cbreak</STRONG>  mode,  in that characters typed are
        immediately passed through to the user program.   The  differences  are
@@ -199,7 +199,7 @@
        terminal driver that are not set by <EM>curses.</EM>
 
 
-</PRE><H3><a name="h3-qiflush_-nqiflush">qiflush, nqiflush</a></H3><PRE>
+</PRE><H3><a name="h3-qiflush_nqiflush">qiflush, nqiflush</a></H3><PRE>
        When the <STRONG>noqiflush</STRONG> routine is used, normal flush of  input  and  output
        queues  associated  with the <STRONG>INTR</STRONG>, <STRONG>QUIT</STRONG> and <STRONG>SUSP</STRONG> characters will not be
        done [see <STRONG>termios(3)</STRONG>].  When <STRONG>qiflush</STRONG> is  called,  the  queues  will  be
@@ -208,7 +208,7 @@
        the interrupt had not occurred, after the handler exits.
 
 
-</PRE><H3><a name="h3-timeout_-wtimeout">timeout, wtimeout</a></H3><PRE>
+</PRE><H3><a name="h3-timeout_wtimeout">timeout, wtimeout</a></H3><PRE>
        The <STRONG>timeout</STRONG> and <STRONG>wtimeout</STRONG> routines set blocking or non-blocking read for
        a given window.  If <EM>delay</EM> is negative, a blocking read is  used  (i.e.,
        waits  indefinitely  for input).  If <EM>delay</EM> is zero, then a non-blocking
@@ -345,18 +345,18 @@ ncurses 6.4                       2023-12-23                   <STRONG><A HREF="
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-cbreak_-nocbreak">cbreak, nocbreak</a></li>
-<li><a href="#h3-echo_-noecho">echo, noecho</a></li>
+<li><a href="#h3-cbreak_nocbreak">cbreak, nocbreak</a></li>
+<li><a href="#h3-echo_noecho">echo, noecho</a></li>
 <li><a href="#h3-halfdelay">halfdelay</a></li>
 <li><a href="#h3-intrflush">intrflush</a></li>
 <li><a href="#h3-keypad">keypad</a></li>
 <li><a href="#h3-meta">meta</a></li>
-<li><a href="#h3-nl_-nonl">nl, nonl</a></li>
+<li><a href="#h3-nl_nonl">nl, nonl</a></li>
 <li><a href="#h3-nodelay">nodelay</a></li>
 <li><a href="#h3-notimeout">notimeout</a></li>
-<li><a href="#h3-raw_-noraw">raw, noraw</a></li>
-<li><a href="#h3-qiflush_-nqiflush">qiflush, nqiflush</a></li>
-<li><a href="#h3-timeout_-wtimeout">timeout, wtimeout</a></li>
+<li><a href="#h3-raw_noraw">raw, noraw</a></li>
+<li><a href="#h3-qiflush_nqiflush">qiflush, nqiflush</a></li>
+<li><a href="#h3-timeout_wtimeout">timeout, wtimeout</a></li>
 <li><a href="#h3-typeahead">typeahead</a></li>
 </ul>
 </li>

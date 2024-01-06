@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_hook.3x,v 1.31 2023/11/25 13:58:47 tom Exp $
-.TH form_hook 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: form_hook.3x,v 1.34 2024/01/05 21:46:58 tom Exp $
+.TH form_hook 3X 2024-01-05 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_hook\fP \-
 set hooks for automatic invocation by applications
@@ -51,7 +51,7 @@ set hooks for automatic invocation by applications
 .SH DESCRIPTION
 These functions make it possible to set hook functions to be called at various
 points in the automatic processing of input event codes by \fBform_driver\fP.
-.SS set_field_init\fP
+.SS set_field_init
 sets a hook to be called at form-post time
 and each time the selected field changes (after the change).
 .SS field_init

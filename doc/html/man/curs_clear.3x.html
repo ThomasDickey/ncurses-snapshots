@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2010,2016 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_clear.3x,v 1.41 2023/12/16 21:09:11 tom Exp @
+  * @Id: curs_clear.3x,v 1.44 2024/01/05 21:46:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_clear 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_clear 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_clear 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_clear 3x 2024-01-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 
@@ -69,7 +69,7 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
-</PRE><H3><a name="h3-erase_werase">erase/werase</a></H3><PRE>
+</PRE><H3><a name="h3-erase_werase">erase, werase</a></H3><PRE>
        The <STRONG>erase</STRONG> and <STRONG>werase</STRONG> routines copy blanks  to  every  position  in  the
        window, clearing the screen.
 
@@ -77,20 +77,20 @@
        by <STRONG><A HREF="curs_bkgd.3x.html">wbkgdset(3x)</A></STRONG>) merged into them.
 
 
-</PRE><H3><a name="h3-clear_wclear">clear/wclear</a></H3><PRE>
+</PRE><H3><a name="h3-clear_wclear">clear, wclear</a></H3><PRE>
        The <STRONG>clear</STRONG> and <STRONG>wclear</STRONG> routines are like <STRONG>erase</STRONG> and <STRONG>werase</STRONG>, but they  also
        call  <STRONG><A HREF="curs_outopts.3x.html">clearok(3x)</A></STRONG>, so that the screen is cleared completely on the next
        call to <STRONG>wrefresh</STRONG> for that window and repainted from scratch.
 
 
-</PRE><H3><a name="h3-clrtobot_wclrtobot">clrtobot/wclrtobot</a></H3><PRE>
+</PRE><H3><a name="h3-clrtobot_wclrtobot">clrtobot, wclrtobot</a></H3><PRE>
        The <STRONG>clrtobot</STRONG> and <STRONG>wclrtobot</STRONG> routines erase from the cursor to the end of
        screen.   That is, they erase all lines below the cursor in the window.
        Also, the current line to  the  right  of  the  cursor,  inclusive,  is
        erased.
 
 
-</PRE><H3><a name="h3-clrtoeol_wclrtoeol">clrtoeol/wclrtoeol</a></H3><PRE>
+</PRE><H3><a name="h3-clrtoeol_wclrtoeol">clrtoeol, wclrtoeol</a></H3><PRE>
        The <STRONG>clrtoeol</STRONG> and <STRONG>wclrtoeol</STRONG> routines erase the current line to the right
        of the cursor, inclusive, to the end of the current line.
 
@@ -138,7 +138,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
+ncurses 6.4                       2024-01-05                    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -146,10 +146,10 @@ ncurses 6.4                       2023-12-16                    <STRONG><A HREF=
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-erase_werase">erase/werase</a></li>
-<li><a href="#h3-clear_wclear">clear/wclear</a></li>
-<li><a href="#h3-clrtobot_wclrtobot">clrtobot/wclrtobot</a></li>
-<li><a href="#h3-clrtoeol_wclrtoeol">clrtoeol/wclrtoeol</a></li>
+<li><a href="#h3-erase_werase">erase, werase</a></li>
+<li><a href="#h3-clear_wclear">clear, wclear</a></li>
+<li><a href="#h3-clrtobot_wclrtobot">clrtobot, wclrtobot</a></li>
+<li><a href="#h3-clrtoeol_wclrtoeol">clrtoeol, wclrtoeol</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>

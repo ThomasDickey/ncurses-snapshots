@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.50 2023/12/16 20:32:22 tom Exp $
-.TH curs_kernel 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.53 2024/01/05 21:46:58 tom Exp $
+.TH curs_kernel 3X 2024-01-05 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -81,7 +81,7 @@ low-level \fIcurses\fR routines
 The following routines give low-level access
 to various \fBcurses\fP capabilities.
 These routines typically are used inside library routines.
-.SS def_prog_mode, def_shell_mode
+.SS "def_prog_mode, def_shell_mode"
 The \fBdef_prog_mode\fP and \fBdef_shell_mode\fP routines save the
 current terminal modes as the \*(``program\*(''
 (in \fBcurses\fP) or \*(``shell\*(''
@@ -90,14 +90,14 @@ current terminal modes as the \*(``program\*(''
 This is done automatically by \fBinitscr\fP.
 There is one such save area for each screen context
 allocated by \fBnewterm\fP.
-.SS reset_prog_mode, reset_shell_mode
+.SS "reset_prog_mode, reset_shell_mode"
 The \fBreset_prog_mode\fP and \fBreset_shell_mode\fP routines restore
 the terminal to \*(``program\*('' (in \fBcurses\fP) or \*(``shell\*('' (out of
 \fBcurses\fP) state.
 These are done automatically by \fBendwin\fP(3X) and,
 after an \fBendwin\fP, by \fBdoupdate\fP,
 so they normally are not called.
-.SS resetty, savetty
+.SS "resetty, savetty"
 The \fBresetty\fP and \fBsavetty\fP routines save and restore the
 state of the terminal modes.
 \fBsavetty\fP saves the current state in

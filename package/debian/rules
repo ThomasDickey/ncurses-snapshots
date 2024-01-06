@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-# $Id: rules,v 1.49 2023/10/16 23:06:26 tom Exp $
+# $Id: rules,v 1.52 2024/01/05 23:34:30 tom Exp $
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -222,7 +222,7 @@ install-ncurses6-doc-stamp: build-ncurses6-stamp
 
 	touch $@
 
-HTML_DESTDIR=$(NCURSES6_DIR)-doc-html/usr/share/ncurses6-doc-html
+HTML_DESTDIR=$(NCURSES6_DIR)-doc-html/usr/share/doc/ncurses6-doc-html
 install-ncurses6-doc-html-stamp: build-ncurses6-stamp
 	dh_testdir
 	dh_testroot
@@ -231,6 +231,8 @@ install-ncurses6-doc-html-stamp: build-ncurses6-stamp
 
 	cd doc/html && find * -type d | sort | xargs -I{} mkdir -p -v $(HTML_DESTDIR)/{}
 	cd doc/html && find * -type f -name '*.html' | sort | xargs -I{} install -m 644 -p -v -T {} $(HTML_DESTDIR)/{}
+	find $(HTML_DESTDIR) -type d -empty -delete -print
+	find $(HTML_DESTDIR) -type d -empty -delete -print
 
 	touch $@
 

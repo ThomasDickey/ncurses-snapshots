@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.50 2023/12/16 20:32:22 tom Exp @
+  * @Id: curs_kernel.3x,v 1.53 2024/01/05 21:46:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2023-12-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2023-12-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2024-01-05 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -78,7 +78,7 @@
        routines.
 
 
-</PRE><H3><a name="h3-def_prog_mode_-def_shell_mode">def_prog_mode, def_shell_mode</a></H3><PRE>
+</PRE><H3><a name="h3-def_prog_mode_def_shell_mode">def_prog_mode, def_shell_mode</a></H3><PRE>
        The <STRONG>def_prog_mode</STRONG> and <STRONG>def_shell_mode</STRONG> routines save the current terminal
        modes as the "program" (in <STRONG>curses</STRONG>) or "shell" (not in <STRONG>curses</STRONG>) state for
        use by the <STRONG>reset_prog_mode</STRONG> and <STRONG>reset_shell_mode</STRONG> routines.  This is done
@@ -86,14 +86,14 @@
        context allocated by <STRONG>newterm</STRONG>.
 
 
-</PRE><H3><a name="h3-reset_prog_mode_-reset_shell_mode">reset_prog_mode, reset_shell_mode</a></H3><PRE>
+</PRE><H3><a name="h3-reset_prog_mode_reset_shell_mode">reset_prog_mode, reset_shell_mode</a></H3><PRE>
        The  <STRONG>reset_prog_mode</STRONG> and <STRONG>reset_shell_mode</STRONG> routines restore the terminal
        to "program" (in <STRONG>curses</STRONG>) or "shell" (out of <STRONG>curses</STRONG>) state.   These  are
        done  automatically by <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG> and, after an <STRONG>endwin</STRONG>, by <STRONG>doupdate</STRONG>, so
        they normally are not called.
 
 
-</PRE><H3><a name="h3-resetty_-savetty">resetty, savetty</a></H3><PRE>
+</PRE><H3><a name="h3-resetty_savetty">resetty, savetty</a></H3><PRE>
        The <STRONG>resetty</STRONG> and <STRONG>savetty</STRONG> routines save and  restore  the  state  of  the
        terminal  modes.   <STRONG>savetty</STRONG>  saves  the  current  state  in a buffer and
        <STRONG>resetty</STRONG> restores the state to what it was at the last call to <STRONG>savetty</STRONG>.
@@ -209,7 +209,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.4                       2024-01-05                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -217,9 +217,9 @@ ncurses 6.4                       2023-12-16                   <STRONG><A HREF="
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
-<li><a href="#h3-def_prog_mode_-def_shell_mode">def_prog_mode, def_shell_mode</a></li>
-<li><a href="#h3-reset_prog_mode_-reset_shell_mode">reset_prog_mode, reset_shell_mode</a></li>
-<li><a href="#h3-resetty_-savetty">resetty, savetty</a></li>
+<li><a href="#h3-def_prog_mode_def_shell_mode">def_prog_mode, def_shell_mode</a></li>
+<li><a href="#h3-reset_prog_mode_reset_shell_mode">reset_prog_mode, reset_shell_mode</a></li>
+<li><a href="#h3-resetty_savetty">resetty, savetty</a></li>
 <li><a href="#h3-getsyx">getsyx</a></li>
 <li><a href="#h3-setsyx">setsyx</a></li>
 <li><a href="#h3-ripoffline">ripoffline</a></li>
