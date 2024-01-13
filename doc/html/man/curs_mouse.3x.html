@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.83 2023/12/23 20:37:56 tom Exp @
+  * @Id: curs_mouse.3x,v 1.86 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-01-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -108,44 +108,44 @@
        Here are the mouse event type masks which may be defined:
 
        <STRONG>Name</STRONG>                     <STRONG>Description</STRONG>
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON1_PRESSED</STRONG>          mouse button 1 down
        <STRONG>BUTTON1_RELEASED</STRONG>         mouse button 1 up
        <STRONG>BUTTON1_CLICKED</STRONG>          mouse button 1 clicked
 
        <STRONG>BUTTON1_DOUBLE_CLICKED</STRONG>   mouse button 1 double clicked
        <STRONG>BUTTON1_TRIPLE_CLICKED</STRONG>   mouse button 1 triple clicked
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON2_PRESSED</STRONG>          mouse button 2 down
        <STRONG>BUTTON2_RELEASED</STRONG>         mouse button 2 up
        <STRONG>BUTTON2_CLICKED</STRONG>          mouse button 2 clicked
        <STRONG>BUTTON2_DOUBLE_CLICKED</STRONG>   mouse button 2 double clicked
        <STRONG>BUTTON2_TRIPLE_CLICKED</STRONG>   mouse button 2 triple clicked
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON3_PRESSED</STRONG>          mouse button 3 down
        <STRONG>BUTTON3_RELEASED</STRONG>         mouse button 3 up
        <STRONG>BUTTON3_CLICKED</STRONG>          mouse button 3 clicked
        <STRONG>BUTTON3_DOUBLE_CLICKED</STRONG>   mouse button 3 double clicked
        <STRONG>BUTTON3_TRIPLE_CLICKED</STRONG>   mouse button 3 triple clicked
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON4_PRESSED</STRONG>          mouse button 4 down
        <STRONG>BUTTON4_RELEASED</STRONG>         mouse button 4 up
        <STRONG>BUTTON4_CLICKED</STRONG>          mouse button 4 clicked
        <STRONG>BUTTON4_DOUBLE_CLICKED</STRONG>   mouse button 4 double clicked
        <STRONG>BUTTON4_TRIPLE_CLICKED</STRONG>   mouse button 4 triple clicked
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON5_PRESSED</STRONG>          mouse button 5 down
        <STRONG>BUTTON5_RELEASED</STRONG>         mouse button 5 up
        <STRONG>BUTTON5_CLICKED</STRONG>          mouse button 5 clicked
        <STRONG>BUTTON5_DOUBLE_CLICKED</STRONG>   mouse button 5 double clicked
        <STRONG>BUTTON5_TRIPLE_CLICKED</STRONG>   mouse button 5 triple clicked
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
        <STRONG>BUTTON_SHIFT</STRONG>             shift was down during button state change
        <STRONG>BUTTON_CTRL</STRONG>              control was down during button state change
        <STRONG>BUTTON_ALT</STRONG>               alt was down during button state change
        <STRONG>ALL_MOUSE_EVENTS</STRONG>         report all button state changes
        <STRONG>REPORT_MOUSE_POSITION</STRONG>    report mouse movement
-       ---------------------------------------------------------------------
+       ------------------------------------------------------------------------
 
 
 </PRE><H3><a name="h3-getmouse">getmouse</a></H3><PRE>
@@ -325,11 +325,11 @@
 
        <STRONG>o</STRONG>   Its "terminfo" manual page lists capabilities for the feature.
 
-               buttons           btns    BT       Number of buttons on the mouse
-               get_mouse         getm    Gm       Curses should get button events
-               key_mouse         kmous   Km       0631, Mouse event has occurred
-               mouse_info        minfo   Mi       Mouse status information
-               req_mouse_pos     reqmp   RQ       Request mouse position report
+               <STRONG>buttons</STRONG>         <STRONG>btns</STRONG>    <STRONG>BT</STRONG>   Number of buttons on the mouse
+               <STRONG>get_mouse</STRONG>       <STRONG>getm</STRONG>    <STRONG>Gm</STRONG>   Curses should get button events
+               <STRONG>key_mouse</STRONG>       <STRONG>kmous</STRONG>   <STRONG>Km</STRONG>   0631, Mouse event has occurred
+               <STRONG>mouse_info</STRONG>      <STRONG>minfo</STRONG>   <STRONG>Mi</STRONG>   Mouse status information
+               <STRONG>req_mouse_pos</STRONG>   <STRONG>reqmp</STRONG>   <STRONG>RQ</STRONG>   Request mouse position report
 
        <STRONG>o</STRONG>   The  interface  made assumptions (as does <EM>ncurses</EM>) about the escape
            sequences sent to and received from the terminal.
@@ -378,7 +378,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2024-01-13                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

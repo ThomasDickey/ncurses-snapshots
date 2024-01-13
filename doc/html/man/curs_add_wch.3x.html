@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+  * Copyright 2019-2023,2024 Thomas E. Dickey                                *
   * Copyright 2001-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.50 2023/12/23 16:08:25 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.53 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2024-01-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -111,78 +111,79 @@
        lines  and  other  frequently  used  special characters.  These symbols
        correspond to the same VT100 line-drawing set as <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>.
 
-       <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>    <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
-       <STRONG>Name</STRONG>              <STRONG>Default</STRONG>    <STRONG>Default</STRONG>   <STRONG>char</STRONG>    <STRONG>Name</STRONG>
+                       <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>
 
+
+       <STRONG>ACS</STRONG> <STRONG>Name</STRONG>        <STRONG>Default</STRONG>   <STRONG>Default</STRONG>   <STRONG>Char</STRONG>   <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>
        ------------------------------------------------------------------------
-       WACS_BLOCK        0x25ae     #         0       solid square block
-       WACS_BOARD        0x2592     #         h       board of squares
-       WACS_BTEE         0x2534     +         v       bottom tee
-       WACS_BULLET       0x00b7     o         ~       bullet
-       WACS_CKBOARD      0x2592     :         a       checker board (stipple)
-       WACS_DARROW       0x2193     v         .       arrow pointing down
-       WACS_DEGREE       0x00b0     '         f       degree symbol
-       WACS_DIAMOND      0x25c6     +         `       diamond
-       WACS_GEQUAL       0x2265     &gt;         &gt;       greater-than-or-equal-to
-       WACS_HLINE        0x2500     -         q       horizontal line
-       WACS_LANTERN      0x2603     #         i       lantern symbol
-       WACS_LARROW       0x2190     &lt;         ,       arrow pointing left
-       WACS_LEQUAL       0x2264     &lt;         y       less-than-or-equal-to
-       WACS_LLCORNER     0x2514     +         m       lower left-hand corner
-       WACS_LRCORNER     0x2518     +         j       lower right-hand corner
-       WACS_LTEE         0x2524     +         t       left tee
-       WACS_NEQUAL       0x2260     !         |       not-equal
-       WACS_PI           0x03c0     *         {       greek pi
-       WACS_PLMINUS      0x00b1     #         g       plus/minus
-       WACS_PLUS         0x253c     +         n       plus
-       WACS_RARROW       0x2192     &gt;         +       arrow pointing right
-       WACS_RTEE         0x251c     +         u       right tee
-       WACS_S1           0x23ba     -         o       scan line 1
-       WACS_S3           0x23bb     -         p       scan line 3
-       WACS_S7           0x23bc     -         r       scan line 7
-       WACS_S9           0x23bd     _         s       scan line 9
-       WACS_STERLING     0x00a3     f         }       pound-sterling symbol
-       WACS_TTEE         0x252c     +         w       top tee
-       WACS_UARROW       0x2191     ^         -       arrow pointing up
-       WACS_ULCORNER     0x250c     +         l       upper left-hand corner
-       WACS_URCORNER     0x2510     +         k       upper right-hand corner
-       WACS_VLINE        0x2502     |         x       vertical line
+       <STRONG>WACS_BLOCK</STRONG>      0x25ae    #         0      solid square block
+       <STRONG>WACS_BOARD</STRONG>      0x2592    #         h      board of squares
+       <STRONG>WACS_BTEE</STRONG>       0x2534    +         v      bottom tee
+       <STRONG>WACS_BULLET</STRONG>     0x00b7    o         ~      bullet
+       <STRONG>WACS_CKBOARD</STRONG>    0x2592    :         a      checker board (stipple)
+       <STRONG>WACS_DARROW</STRONG>     0x2193    v         .      arrow pointing down
+       <STRONG>WACS_DEGREE</STRONG>     0x00b0    '         f      degree symbol
+       <STRONG>WACS_DIAMOND</STRONG>    0x25c6    +         `      diamond
+       <STRONG>WACS_GEQUAL</STRONG>     0x2265    &gt;         &gt;      greater-than-or-equal-to
+       <STRONG>WACS_HLINE</STRONG>      0x2500    -         q      horizontal line
+       <STRONG>WACS_LANTERN</STRONG>    0x2603    #         i      lantern symbol
+       <STRONG>WACS_LARROW</STRONG>     0x2190    &lt;         ,      arrow pointing left
+       <STRONG>WACS_LEQUAL</STRONG>     0x2264    &lt;         y      less-than-or-equal-to
+       <STRONG>WACS_LLCORNER</STRONG>   0x2514    +         m      lower left-hand corner
+       <STRONG>WACS_LRCORNER</STRONG>   0x2518    +         j      lower right-hand corner
+       <STRONG>WACS_LTEE</STRONG>       0x2524    +         t      left tee
+       <STRONG>WACS_NEQUAL</STRONG>     0x2260    !         |      not-equal
+       <STRONG>WACS_PI</STRONG>         0x03c0    *         {      greek pi
+       <STRONG>WACS_PLMINUS</STRONG>    0x00b1    #         g      plus/minus
+       <STRONG>WACS_PLUS</STRONG>       0x253c    +         n      plus
+       <STRONG>WACS_RARROW</STRONG>     0x2192    &gt;         +      arrow pointing right
+       <STRONG>WACS_RTEE</STRONG>       0x251c    +         u      right tee
+       <STRONG>WACS_S1</STRONG>         0x23ba    -         o      scan line 1
+       <STRONG>WACS_S3</STRONG>         0x23bb    -         p      scan line 3
+       <STRONG>WACS_S7</STRONG>         0x23bc    -         r      scan line 7
+       <STRONG>WACS_S9</STRONG>         0x23bd    _         s      scan line 9
+       <STRONG>WACS_STERLING</STRONG>   0x00a3    f         }      pound-sterling symbol
+       <STRONG>WACS_TTEE</STRONG>       0x252c    +         w      top tee
+       <STRONG>WACS_UARROW</STRONG>     0x2191    ^         -      arrow pointing up
+       <STRONG>WACS_ULCORNER</STRONG>   0x250c    +         l      upper left-hand corner
+       <STRONG>WACS_URCORNER</STRONG>   0x2510    +         k      upper right-hand corner
+       <STRONG>WACS_VLINE</STRONG>      0x2502    |         x      vertical line
 
        The wide-character configuration of <EM>ncurses</EM> also  defines  symbols  for
        thick lines (<STRONG>acsc</STRONG> "J" to "V"):
 
-       <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
-       <STRONG>Name</STRONG>              <STRONG>Default</STRONG>   <STRONG>Default</STRONG>   <STRONG>char</STRONG>    <STRONG>Name</STRONG>
-       -----------------------------------------------------------------------
-       WACS_T_BTEE       0x253b    +         V       thick tee pointing up
-       WACS_T_HLINE      0x2501    -         Q       thick horizontal line
-       WACS_T_LLCORNER   0x2517    +         M       thick lower left corner
-       WACS_T_LRCORNER   0x251b    +         J       thick lower right corner
-       WACS_T_LTEE       0x252b    +         T       thick tee pointing right
-       WACS_T_PLUS       0x254b    +         N       thick large plus
-       WACS_T_RTEE       0x2523    +         U       thick tee pointing left
-       WACS_T_TTEE       0x2533    +         W       thick tee pointing down
-       WACS_T_ULCORNER   0x250f    +         L       thick upper left corner
-       WACS_T_URCORNER   0x2513    +         K       thick upper right corner
-       WACS_T_VLINE      0x2503    |         X       thick vertical line
+                         <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>
+       <STRONG>ACS</STRONG> <STRONG>Name</STRONG>          <STRONG>Default</STRONG>   <STRONG>Default</STRONG>   <STRONG>Char</STRONG>   <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>
+       ------------------------------------------------------------------------
+       <STRONG>WACS_T_BTEE</STRONG>       0x253b    +         V      thick tee pointing up
+       <STRONG>WACS_T_HLINE</STRONG>      0x2501    -         Q      thick horizontal line
+       <STRONG>WACS_T_LLCORNER</STRONG>   0x2517    +         M      thick lower left corner
+       <STRONG>WACS_T_LRCORNER</STRONG>   0x251b    +         J      thick lower right corner
+       <STRONG>WACS_T_LTEE</STRONG>       0x252b    +         T      thick tee pointing right
+       <STRONG>WACS_T_PLUS</STRONG>       0x254b    +         N      thick large plus
+       <STRONG>WACS_T_RTEE</STRONG>       0x2523    +         U      thick tee pointing left
+       <STRONG>WACS_T_TTEE</STRONG>       0x2533    +         W      thick tee pointing down
+       <STRONG>WACS_T_ULCORNER</STRONG>   0x250f    +         L      thick upper left corner
+       <STRONG>WACS_T_URCORNER</STRONG>   0x2513    +         K      thick upper right corner
+       <STRONG>WACS_T_VLINE</STRONG>      0x2503    |         X      thick vertical line
 
        and for double-lines (<STRONG>acsc</STRONG> "A" to "I"):
 
-       <STRONG>ACS</STRONG>               <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>    <STRONG>Glyph</STRONG>
-       <STRONG>Name</STRONG>              <STRONG>Default</STRONG>   <STRONG>Default</STRONG>   <STRONG>char</STRONG>    <STRONG>Name</STRONG>
+                         <STRONG>Unicode</STRONG>   <STRONG>ASCII</STRONG>     <STRONG>acsc</STRONG>
+       <STRONG>ACS</STRONG> <STRONG>Name</STRONG>          <STRONG>Default</STRONG>   <STRONG>Default</STRONG>   <STRONG>Char</STRONG>   <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>
        ------------------------------------------------------------------------
-       WACS_D_BTEE       0x2569    +         H       double tee pointing up
-       WACS_D_HLINE      0x2550    -         R       double horizontal line
-       WACS_D_LLCORNER   0x255a    +         D       double lower left corner
-       WACS_D_LRCORNER   0x255d    +         A       double lower right corner
-       WACS_D_LTEE       0x2560    +         F       double tee pointing right
-       WACS_D_PLUS       0x256c    +         E       double large plus
-       WACS_D_RTEE       0x2563    +         G       double tee pointing left
-       WACS_D_TTEE       0x2566    +         I       double tee pointing down
+       <STRONG>WACS_D_BTEE</STRONG>       0x2569    +         H      double tee pointing up
+       <STRONG>WACS_D_HLINE</STRONG>      0x2550    -         R      double horizontal line
+       <STRONG>WACS_D_LLCORNER</STRONG>   0x255a    +         D      double lower left corner
+       <STRONG>WACS_D_LRCORNER</STRONG>   0x255d    +         A      double lower right corner
+       <STRONG>WACS_D_LTEE</STRONG>       0x2560    +         F      double tee pointing right
+       <STRONG>WACS_D_PLUS</STRONG>       0x256c    +         E      double large plus
+       <STRONG>WACS_D_RTEE</STRONG>       0x2563    +         G      double tee pointing left
 
-       WACS_D_ULCORNER   0x2554    +         C       double upper left corner
-       WACS_D_URCORNER   0x2557    +         B       double upper right corner
-       WACS_D_VLINE      0x2551    |         Y       double vertical line
+       <STRONG>WACS_D_TTEE</STRONG>       0x2566    +         I      double tee pointing down
+       <STRONG>WACS_D_ULCORNER</STRONG>   0x2554    +         C      double upper left corner
+       <STRONG>WACS_D_URCORNER</STRONG>   0x2557    +         B      double upper right corner
+       <STRONG>WACS_D_VLINE</STRONG>      0x2551    |         Y      double vertical line
 
        Unicode's  descriptions  for  these  characters  differs  slightly from
        <EM>ncurses</EM>, by introducing the term "light"  (along  with  less  important
@@ -320,7 +321,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.4                       2024-01-13                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

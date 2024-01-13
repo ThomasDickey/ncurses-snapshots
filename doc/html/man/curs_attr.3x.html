@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,34 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.93 2023/12/23 16:08:25 tom Exp @
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
-  * ---------------------------------------------------------------------------
+  * @Id: curs_attr.3x,v 1.96 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_attr 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2024-01-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -222,7 +207,7 @@
               <STRONG>Name</STRONG>           <STRONG>Description</STRONG>
               -----------------------------------------------------------------
               <STRONG>A_NORMAL</STRONG>       Normal display (no highlight)
-              <STRONG>A_STANDOUT</STRONG>     Best highlighting mode of the terminal.
+              <STRONG>A_STANDOUT</STRONG>     Best highlighting mode of the terminal
               <STRONG>A_UNDERLINE</STRONG>    Underlining
               <STRONG>A_REVERSE</STRONG>      Reverse video
               <STRONG>A_BLINK</STRONG>        Blinking
@@ -239,7 +224,7 @@
        (which also support the attributes recognized by <STRONG>attron</STRONG>, etc.):
 
               <STRONG>Name</STRONG>            <STRONG>Description</STRONG>
-              -----------------------------------------
+              -----------------------------------------------------------------
               <STRONG>WA_HORIZONTAL</STRONG>   Horizontal highlight
               <STRONG>WA_LEFT</STRONG>         Left highlight
               <STRONG>WA_LOW</STRONG>          Low highlight
@@ -340,9 +325,9 @@
        the newer set of names:
 
               <STRONG>Name</STRONG>            <STRONG>Description</STRONG>
-              ------------------------------------------------------------
+              -----------------------------------------------------------------
               <STRONG>WA_NORMAL</STRONG>       Normal display (no highlight)
-              <STRONG>WA_STANDOUT</STRONG>     Best highlighting mode of the terminal.
+              <STRONG>WA_STANDOUT</STRONG>     Best highlighting mode of the terminal
               <STRONG>WA_UNDERLINE</STRONG>    Underlining
               <STRONG>WA_REVERSE</STRONG>      Reverse video
               <STRONG>WA_BLINK</STRONG>        Blinking
@@ -436,19 +421,20 @@
        alternate  character  set implementation.  A 32-bit library can be used
        on a 64-bit system, but not necessarily the reverse.
 
-              <STRONG>Year</STRONG>   <STRONG>System</STRONG>        <STRONG>Arch</STRONG>    <STRONG>Color</STRONG>   <STRONG>Char</STRONG>   <STRONG>Notes</STRONG>
-              ----------------------------------------------------------------
-              1992   Solaris 5.2   32      6       17     SVr4 curses
-              1992   HP-UX 9       32      no      8      SVr2 curses
-              1992   AIX 3.2       32      no      23     SVr2 curses
-              1994   OSF/1 r3      32      no      23     SVr2 curses
-              1995   HP-UX 10.00   32      6       16     SVr3 "curses_colr"
-              1995   HP-UX 10.00   32      6       8      SVr4, X/Open curses
-              1995   Solaris 5.4   32/64   7       16     X/Open curses
-              1996   AIX 4.2       32      7       16     X/Open curses
-              1996   OSF/1 r4      32      6       16     X/Open curses
-              1997   HP-UX 11.00   32      6       8      X/Open curses
-              2000   U/Win         32/64   7/31    16     uses <STRONG>chtype</STRONG>
+                                     <STRONG>Bits</STRONG>
+       <STRONG>Year</STRONG>  <STRONG>System</STRONG>        <STRONG>Arch</STRONG>   <STRONG>Color</STRONG>  <STRONG>Char</STRONG>  <STRONG>Notes</STRONG>
+       ------------------------------------------------------------------------
+       1992  Solaris 5.2   32     6      17    SVr4 <EM>curses</EM>
+       1992  HP-UX 9       32     no     8     SVr2 <EM>curses</EM>
+       1992  AIX 3.2       32     no     23    SVr2 <EM>curses</EM>
+       1994  OSF/1 r3      32     no     23    SVr2 <EM>curses</EM>
+       1995  HP-UX 10.00   32     6      16    SVr3 <EM>curses</EM><STRONG>_</STRONG><EM>colr</EM>
+       1995  HP-UX 10.00   32     6      8     SVr4, X/Open <EM>curses</EM>
+       1995  Solaris 5.4   32/64  7      16    X/Open <EM>curses</EM>
+       1996  AIX 4.2       32     7      16    X/Open <EM>curses</EM>
+       1996  OSF/1 r4      32     6      16    X/Open <EM>curses</EM>
+       1997  HP-UX 11.00   32     6      8     X/Open <EM>curses</EM>
+       2000  U/Win         32/64  7/31   16    uses <EM>chtype</EM>
 
        Notes:
 
@@ -511,7 +497,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.4                       2024-01-13                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

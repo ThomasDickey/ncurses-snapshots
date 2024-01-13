@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2019-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,24 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: toe.1m,v 1.59 2023/12/16 21:01:59 tom Exp @
-  * toe -a | grep -E '^(xterm|vt)'
-  * The next row overruns the line length on DWB nroff (65n).
-  * toe -as | grep -E '(^-+&gt;|:.(xterm|vt))'
-  * The next row overruns the line length on DWB nroff (65n).
-  * The next row overruns the line length on DWB nroff (65n).
+  * @Id: toe.1m,v 1.62 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>toe 1m 2023-12-16 ncurses 6.4 User commands</TITLE>
+<TITLE>toe 1m 2024-01-13 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">toe 1m 2023-12-16 ncurses 6.4 User commands</H1>
+<H1 class="no-header">toe 1m 2024-01-13 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>                          User commands                         <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 
@@ -123,11 +118,13 @@
               compiled terminal description database
 
 
-</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+</PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        <STRONG>toe</STRONG>  is  not provided by other implementations.  There is no applicable
        X/Open or POSIX standard for it.
 
-       It replaces a <STRONG>-T</STRONG> option that  was  briefly  supported  by  the  <EM>ncurses</EM>
+
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       <STRONG>toe</STRONG> replaces a <STRONG>-T</STRONG> option that was  briefly  supported  by  the  <EM>ncurses</EM>
        <STRONG>infocmp</STRONG> utility in 1995.
 
        The <STRONG>-a</STRONG> and <STRONG>-s</STRONG> options were added in 2006 and 2011, respectively.
@@ -153,14 +150,15 @@
            xterm-r6        xterm X11R6 version
            xterm-r5        xterm R5 version
            xterm-mono      monochrome xterm
-           xterm           xterm terminal emulator (X Window System)
+           xterm           xterm terminal emulator (X Window
+                           System)
            vt220           dec vt220
            vt102           dec vt102
            vt100           dec vt100 (w/advanced video)
            vt52            dec vt52
            ...
 
-       Use  the  <STRONG>-a</STRONG>  and  <STRONG>-s</STRONG>  options  together  to  show  where each terminal
+       Use the <STRONG>-a</STRONG>  and  <STRONG>-s</STRONG>  options  together  to  show  where  each  terminal
        description was found.
 
            --&gt; /etc/terminfo
@@ -171,14 +169,16 @@
            --*---: vt102           dec vt102
            --*---: vt220           dec vt220
            --*---: vt52            dec vt52
-           --*---: xterm           xterm terminal emulator (X Window System)
+           --*---: xterm           xterm terminal emulator (X
+                                   Window System)
            --*---: xterm-256color  xterm with 256 colors
            --*---: xterm-color     generic color xterm
            --*---: xterm-mono      monochrome xterm
            --*---: xterm-r5        xterm R5 version
            --*---: xterm-r6        xterm X11R6 version
            --*---: xterm-vt220     xterm emulating vt220
-           --*---: xterm-xfree86   xterm terminal emulator (XFree86)
+           --*---: xterm-xfree86   xterm terminal emulator
+                                   (XFree86)
            ...
 
 
@@ -188,7 +188,7 @@
 
 
 
-ncurses 6.4                       2023-12-16                           <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
+ncurses 6.4                       2024-01-13                           <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -197,6 +197,7 @@ ncurses 6.4                       2023-12-16                           <STRONG><
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#h2-OPTIONS">OPTIONS</a></li>
 <li><a href="#h2-FILES">FILES</a></li>
+<li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-EXAMPLES">EXAMPLES</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,17 +28,20 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.104 2023/12/30 21:36:32 tom Exp $
-.TH @INFOCMP@ 1M 2023-12-30 "ncurses 6.4" "User commands"
+.\" $Id: infocmp.1m,v 1.107 2024/01/13 22:05:39 tom Exp $
+.TH @INFOCMP@ 1M 2024-01-13 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
+.ds '  \(aq
 .\}
 .el \{\
 .ie t .ds `` ``
 .el   .ds `` ""
 .ie t .ds '' ''
 .el   .ds '' ""
+.ie t .ds '  \(aq
+.el   .ds '  '
 .\}
 .
 .de bP
@@ -147,13 +150,13 @@ The \fB\-I\fP, \fB\-L\fP, and \fB\-C\fP options will produce
 a source listing for each terminal named.
 .PP
 .TS
-center tab(/) ;
-l l .
-\fB\-I\fP/use the \fBterminfo\fP names
-\fB\-L\fP/use the long C variable name listed in <\fBterm.h\fP>
-\fB\-C\fP/use the \fBtermcap\fP names
-\fB\-r\fP/when using \fB\-C\fP, put out all capabilities in \fBtermcap\fP form
-\fB\-K\fP/modifies the \fB\-C\fP option, improving BSD-compatibility.
+center;
+Lb L.
+\-I	use \fIterminfo\fP capability codes
+\-L	use \*(``long\*('' capability names
+\-C	use \fItermcap\fP capability codes
+\-r	with \fB\-C\fP, include nonstandard capabilities
+\-K	with \fB\-C\fP, improve BSD compatibility
 .TE
 .PP
 If no \fIterminal-types\fP are given,
@@ -210,17 +213,23 @@ Some common \fBterminfo\fP parameter sequences, their \fBtermcap\fP
 equivalents, and some terminal types which commonly have such sequences, are:
 .PP
 .TS
-center tab(/) ;
-l c l
-l l l.
-\fBterminfo/termcap\fP/Representative Terminals
-=
-\fB%p1%c/%.\fP/adm
-\fB%p1%d/%d\fP/hp, ANSI standard, vt100
-\fB%p1%'x'%+%c/%+x\fP/concept
-\fB%i/%i\fPq/ANSI standard, vt100
-\fB%p1%?%'x'%>%t%p1%'y'%+%;/%>xy\fP/concept
-\fB%p2\fP is printed before \fB%p1/%r\fP/hp
+center;
+Lf(BI) Lf(BI) L
+Lb     Lb     L.
+terminfo	termcap	Terminal Types
+_
+.\" ansi-m cup (adm3a has other stuff in between, more like concept)
+%p1%c	%.	ansi\-m
+.\" ansi cub, vt100 cub
+%p1%d	%d	ansi, vt100
+.\" vt52 cup (via vt52-basic)
+%p1%\*' \*'%+%c	%+x	vt52
+.\" ansi cup, vt100 cup
+%i	%iq	ansi, vt100
+.\" annarbor4080 cup
+%p1%?%\*'x\*'%>%t%p1%\*'y\*'%+%;	%>xy	annarbor4080
+.\" hpgeneric cup
+%p2\fR\|.\|.\|.\|\fP%p1	%r	hpgeneric
 .TE
 .SS "Use= Option [\-u]"
 The \fB\-u\fP option produces a \fBterminfo\fP source description of the first
@@ -379,44 +388,43 @@ Here is a list of the DEC/ANSI
 special sequences recognized:
 .PP
 .TS
-center tab(/) ;
-l l
-l l.
-Action/Meaning
-=
-RIS/full reset
-SC/save cursor
-RC/restore cursor
-LL/home-down
-RSR/reset scroll region
-=
-DECSTR/soft reset (VT320)
-S7C1T/7-bit controls (VT220)
-=
-ISO DEC G0/enable DEC graphics for G0
-ISO UK G0/enable UK chars for G0
-ISO US G0/enable US chars for G0
-ISO DEC G1/enable DEC graphics for G1
-ISO UK G1/enable UK chars for G1
-ISO US G1/enable US chars for G1
-=
-DECPAM/application keypad mode
-DECPNM/normal keypad mode
-DECANSI/enter ANSI mode
-=
-ECMA[+\-]AM/keyboard action mode
-ECMA[+\-]IRM/insert replace mode
-ECMA[+\-]SRM/send receive mode
-ECMA[+\-]LNM/linefeed mode
-=
-DEC[+\-]CKM/application cursor keys
-DEC[+\-]ANM/set VT52 mode
-DEC[+\-]COLM/132-column mode
-DEC[+\-]SCLM/smooth scroll
-DEC[+\-]SCNM/reverse video mode
-DEC[+\-]OM/origin mode
-DEC[+\-]AWM/wraparound mode
-DEC[+\-]ARM/auto-repeat mode
+center;
+L L.
+Action	Meaning
+_
+RIS	full reset
+SC	save cursor
+RC	restore cursor
+LL	home-down
+RSR	reset scroll region
+_
+DECSTR	soft reset (VT320)
+S7C1T	7-bit controls (VT220)
+_
+ISO DEC G0	enable DEC graphics for G0
+ISO UK G0	enable UK chars for G0
+ISO US G0	enable US chars for G0
+ISO DEC G1	enable DEC graphics for G1
+ISO UK G1	enable UK chars for G1
+ISO US G1	enable US chars for G1
+_
+DECPAM	application keypad mode
+DECPNM	normal keypad mode
+DECANSI	enter ANSI mode
+_
+ECMA[+\-]AM	keyboard action mode
+ECMA[+\-]IRM	insert replace mode
+ECMA[+\-]SRM	send receive mode
+ECMA[+\-]LNM	linefeed mode
+_
+DEC[+\-]CKM	application cursor keys
+DEC[+\-]ANM	set VT52 mode
+DEC[+\-]COLM	132-column mode
+DEC[+\-]SCLM	smooth scroll
+DEC[+\-]SCNM	reverse video mode
+DEC[+\-]OM	origin mode
+DEC[+\-]AWM	wraparound mode
+DEC[+\-]ARM	auto-repeat mode
 .TE
 .sp
 It also recognizes a SGR action corresponding to ANSI/ISO 6429/ECMA Set

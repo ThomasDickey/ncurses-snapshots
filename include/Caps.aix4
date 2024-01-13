@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019-2021,2023 Thomas E. Dickey                                  #
+# Copyright 2019-2023,2024 Thomas E. Dickey                                  #
 # Copyright 2001-2015,2016 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.aix4,v 1.22 2023/12/30 21:36:32 Branden.Robinson Exp $
+# $Id: Caps.aix4,v 1.24 2024/01/13 22:05:39 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with AIX 4.x's terminfo.
@@ -204,18 +204,16 @@
 #%.TP
 #%(#\d\fIi\fP\u)
 #%indicates the \fIi\fP\uth\d parameter.
-#%
+#%.
 #%.PP
-#% These are the Boolean capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBBooleans	name	Code\fR
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Boolean Capability Name	TI	TC	Description
+#%_
 auto_left_margin		bw	bool	bw	-	-	YB-G-	cub1 wraps from column 0 to last column
 auto_right_margin		am	bool	am	-	-	YBCGE	terminal has automatic margins
 no_esc_ctlc			xsb	bool	xb	-	-	YBCG-	beehive (f1=escape, f2=ctrl C)
@@ -254,18 +252,16 @@ semi_auto_right_margin		sam	bool	YE	-	-	-----	printing in last column causes cr
 cpi_changes_res			cpix	bool	YF	-	-	-----	changing character pitch changes resolution
 lpi_changes_res			lpix	bool	YG	-	-	-----	changing line pitch changes resolution
 #%.TE
-#%.ad
-#%
-#%These are the numeric capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBNumeric	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Numeric Capability Name	TI	TC	Description
+#%_
 columns				cols	num	co	-	-	YBCGE	number of columns in a line
 init_tabs			it	num	it	-	-	YB-G-	tabs initially every # spaces
 lines				lines	num	li	-	-	YBCGE	number of lines on screen or page
@@ -284,20 +280,21 @@ max_colors			colors	num	Co	-	-	-----	maximum number of colors on screen
 max_pairs			pairs	num	pa	-	-	-----	maximum number of color-pairs on the screen
 no_color_video			ncv	num	NC	-	-	-----	video attributes that cannot be used with colors
 #%.TE
-#%.ad
-#%
+#%.PP
+#%.
 #%The following numeric capabilities are present in the SVr4.0 term structure,
 #%but are not yet documented in the man page.
 #%They came in with SVr4's printer support.
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBNumeric	name	Code\fR
+#%.
+#%.PP
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Numeric Capability Name	TI	TC	Description
+#%_
 buffer_capacity			bufsz	num	Ya	-	-	-----	numbers of bytes buffered before printing
 dot_vert_spacing		spinv	num	Yb	-	-	-----	spacing of pins vertically in pins per inch
 dot_horz_spacing		spinh	num	Yc	-	-	-----	spacing of dots horizontally in dots per inch
@@ -316,18 +313,16 @@ buttons				btns	num	BT	-	-	-----	number of buttons on mouse
 bit_image_entwining		bitwin	num	Yo	-	-	-----	number of passes for each bit-image row
 bit_image_type			bitype	num	Yp	-	-	-----	type of bit-image device
 #%.TE
-#%.ad
-#%
-#%These are the string capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBString	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%String Capability Name	TI	TC	Description
+#%_
 back_tab			cbt	str	bt	-		-	YBCGE	back tab (P)
 bell				bel	str	bl	-		-	YB-GE	audible signal (bell) (P)
 carriage_return			cr	str	cr	-		-	YBCGE	carriage return (P*) (P*)
@@ -795,19 +790,20 @@ superscript_characters		supcs	str	Zv	-		-	-----	List of superscriptable characte
 these_cause_cr			docr	str	Zw	-		-	-----	Printing any of these characters causes CR
 zero_motion			zerom	str	Zx	-		-	-----	No motion for subsequent character
 #%.TE
-#%.ad
-#%
+#%.PP
+#%.
 #%The following string capabilities are present in the SVr4.0 term structure,
 #%but were originally not documented in the man page.
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw18.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBString	name	Code\fR
+#%.
+#%.PP
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%String Capability Name	TI	TC	Description
+#%_
 char_set_names			csnm	str	Zy	-		-	-----	Produce #1'th item from list of character set names
 key_mouse			kmous	str	Km	KEY_MOUSE	0631	-----	Mouse event has occurred
 mouse_info			minfo	str	Mi	-		-	-----	Mouse status information
@@ -844,9 +840,8 @@ pc_term_options			pctrm	str	S6	-		-	-----	PC terminal options
 scancode_escape			scesc	str	S7	-		-	-----	Escape for scancode emulation
 alt_scancode_esc		scesa	str	S8	-		-	-----	Alternate escape for scancode emulation
 #%.TE
-#%.ad
-#%
-#%.in .8i
+#%.PP
+#%.
 #%The XSI Curses standard added these hardcopy capabilities.
 #%They were used in some post-4.1 versions of System V curses,
 #%e.g., Solaris 2.5 and IRIX 6.x.
@@ -855,15 +850,16 @@ alt_scancode_esc		scesa	str	S8	-		-	-----	Alternate escape for scancode emulatio
 #%If your compiled terminfo entries use these,
 #%they may not be binary-compatible with System V terminfo
 #%entries after SVr4.1; beware!
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBString	name	Code\fR
+#%.
+#%.PP
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%String Capability Name	TI	TC	Description
+#%_
 #enter_horizontal_hl_mode	ehhlm	str	Xh	-		-	-----	Enter horizontal highlight mode
 #enter_left_hl_mode		elhlm	str	Xl	-		-	-----	Enter left highlight mode
 #enter_low_hl_mode		elohlm	str	Xo	-		-	-----	Enter low highlight mode
@@ -873,7 +869,6 @@ alt_scancode_esc		scesa	str	S8	-		-	-----	Alternate escape for scancode emulatio
 #set_a_attributes		sgr1	str	sA	-		-	-----	Define second set of video attributes #1-#6
 set_pglen_inch			slength	str	YI	-		-	-----	Set page length to #1 hundredth of an inch (some implementations use sL for termcap).
 #%.TE
-#%.ad
 #
 # The magic token below tells the tic compiler-generator code that all the caps
 # past it should be ignored (not written out) when dumping terminfo objects. It

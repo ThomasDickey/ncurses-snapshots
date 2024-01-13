@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2019-2021,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 2001-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.50 2023/12/23 16:08:25 tom Exp $
-.TH curs_add_wch 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.53 2024/01/13 22:05:39 tom Exp $
+.TH curs_add_wch 3X 2024-01-13 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -125,89 +125,159 @@ These symbols correspond to the same VT100 line-drawing set as
 \fB\%addch\fP(3X).
 .PP
 .TS
-l l l l l
-l l l l l
-_ _ _ _ _
-lw(1.5i) lw5 lw5 lw5 lw20.
-\fBACS\fP	\fBUnicode\fP	\fBASCII\fP	\fBacsc\fP	\fBGlyph\fP
-\fBName\fP	\fBDefault\fP	\fBDefault\fP	\fBchar\fP	\fBName\fP
-WACS_BLOCK	0x25ae 	#	0	solid square block
-WACS_BOARD	0x2592 	#	h	board of squares
-WACS_BTEE	0x2534 	+	v	bottom tee
-WACS_BULLET	0x00b7 	o	~	bullet
-WACS_CKBOARD	0x2592 	:	a	checker board (stipple)
-WACS_DARROW	0x2193 	v	.	arrow pointing down
-WACS_DEGREE	0x00b0 	'	f	degree symbol
-WACS_DIAMOND	0x25c6 	+	\(ga	diamond
-WACS_GEQUAL	0x2265 	>	>	greater-than-or-equal-to
-WACS_HLINE	0x2500 	\-	q	horizontal line
-WACS_LANTERN	0x2603 	#	i	lantern symbol
-WACS_LARROW	0x2190 	<	,	arrow pointing left
-WACS_LEQUAL	0x2264 	<	y	less-than-or-equal-to
-WACS_LLCORNER	0x2514 	+	m	lower left-hand corner
-WACS_LRCORNER	0x2518 	+	j	lower right-hand corner
-WACS_LTEE	0x2524 	+	t	left tee
-WACS_NEQUAL	0x2260 	!	|	not-equal
-WACS_PI	0x03c0 	*	{	greek pi
-WACS_PLMINUS	0x00b1 	#	g	plus/minus
-WACS_PLUS	0x253c 	+	n	plus
-WACS_RARROW	0x2192 	>	+	arrow pointing right
-WACS_RTEE	0x251c 	+	u	right tee
-WACS_S1	0x23ba 	\-	o	scan line 1
-WACS_S3	0x23bb 	\-	p	scan line 3
-WACS_S7	0x23bc 	\-	r	scan line 7
-WACS_S9	0x23bd 	\&_	s	scan line 9
-WACS_STERLING	0x00a3 	f	}	pound-sterling symbol
-WACS_TTEE	0x252c 	+	w	top tee
-WACS_UARROW	0x2191  	^	\-	arrow pointing up
-WACS_ULCORNER	0x250c 	+	l	upper left-hand corner
-WACS_URCORNER	0x2510 	+	k	upper right-hand corner
-WACS_VLINE	0x2502 	|	x	vertical line
+Lb Lb Lb Lb Lb
+Lb Lb Lb Lb Lb
+Lb L  L  L  Lx.
+\&	Unicode	ASCII	acsc	\&
+ACS Name	Default	Default	Char	Glyph Name
+_
+WACS_BLOCK	0x25ae	#	0	T{
+solid square block
+T}
+WACS_BOARD	0x2592	#	h	board of squares
+WACS_BTEE	0x2534	+	v	bottom tee
+WACS_BULLET	0x00b7	o	~	bullet
+WACS_CKBOARD	0x2592	:	a	T{
+checker board (stipple)
+T}
+WACS_DARROW	0x2193	v	.	T{
+arrow pointing down
+T}
+WACS_DEGREE	0x00b0	'	f	degree symbol
+WACS_DIAMOND	0x25c6	+	\(ga	diamond
+WACS_GEQUAL	0x2265	>	>	T{
+greater-than-or-equal-to
+T}
+WACS_HLINE	0x2500	\-	q	horizontal line
+WACS_LANTERN	0x2603	#	i	lantern symbol
+WACS_LARROW	0x2190	<	,	T{
+arrow pointing left
+T}
+WACS_LEQUAL	0x2264	<	y	T{
+less-than-or-equal-to
+T}
+WACS_LLCORNER	0x2514	+	m	T{
+lower left-hand corner
+T}
+WACS_LRCORNER	0x2518	+	j	T{
+lower right-hand corner
+T}
+WACS_LTEE	0x2524	+	t	left tee
+WACS_NEQUAL	0x2260	!	|	not-equal
+WACS_PI	0x03c0	*	{	greek pi
+WACS_PLMINUS	0x00b1	#	g	plus/minus
+WACS_PLUS	0x253c	+	n	plus
+WACS_RARROW	0x2192	>	+	T{
+arrow pointing right
+T}
+WACS_RTEE	0x251c	+	u	right tee
+WACS_S1	0x23ba	\-	o	scan line 1
+WACS_S3	0x23bb	\-	p	scan line 3
+WACS_S7	0x23bc	\-	r	scan line 7
+WACS_S9	0x23bd	\&_	s	scan line 9
+WACS_STERLING	0x00a3	f	}	T{
+pound-sterling symbol
+T}
+WACS_TTEE	0x252c	+	w	top tee
+WACS_UARROW	0x2191 	^	\-	T{
+arrow pointing up
+T}
+WACS_ULCORNER	0x250c	+	l	T{
+upper left-hand corner
+T}
+WACS_URCORNER	0x2510	+	k	T{
+upper right-hand corner
+T}
+WACS_VLINE	0x2502	|	x	vertical line
 .TE
 .PP
 The wide-character configuration of \fI\%ncurses\fP also defines symbols
 for thick lines (\fBacsc\fP \*(``J\*('' to \*(``V\*(''):
 .PP
 .TS
-l l l l l
-l l l l l
-_ _ _ _ _
-lw(1.5i) lw5 lw5 lw5 lw20.
-\fBACS\fP	\fBUnicode\fP	\fBASCII\fP	\fBacsc\fP	\fBGlyph\fP
-\fBName\fP	\fBDefault\fP	\fBDefault\fP	\fBchar\fP	\fBName\fP
-WACS_T_BTEE	0x253b	+	V	thick tee pointing up
-WACS_T_HLINE	0x2501	-	Q	thick horizontal line
-WACS_T_LLCORNER	0x2517	+	M	thick lower left corner
-WACS_T_LRCORNER	0x251b	+	J	thick lower right corner
-WACS_T_LTEE	0x252b	+	T	thick tee pointing right
-WACS_T_PLUS	0x254b	+	N	thick large plus
-WACS_T_RTEE	0x2523	+	U	thick tee pointing left
-WACS_T_TTEE	0x2533	+	W	thick tee pointing down
-WACS_T_ULCORNER	0x250f	+	L	thick upper left corner
-WACS_T_URCORNER	0x2513	+	K	thick upper right corner
-WACS_T_VLINE	0x2503	|	X	thick vertical line
+Lb Lb Lb Lb Lb
+Lb Lb Lb Lb Lb
+Lb L  L  L  Lx.
+\&	Unicode	ASCII	acsc	\&
+ACS Name	Default	Default	Char	Glyph Name
+_
+WACS_T_BTEE	0x253b	+	V	T{
+thick tee pointing up
+T}
+WACS_T_HLINE	0x2501	-	Q	T{
+thick horizontal line
+T}
+WACS_T_LLCORNER	0x2517	+	M	T{
+thick lower left corner
+T}
+WACS_T_LRCORNER	0x251b	+	J	T{
+thick lower right corner
+T}
+WACS_T_LTEE	0x252b	+	T	T{
+thick tee pointing right
+T}
+WACS_T_PLUS	0x254b	+	N	T{
+thick large plus
+T}
+WACS_T_RTEE	0x2523	+	U	T{
+thick tee pointing left
+T}
+WACS_T_TTEE	0x2533	+	W	T{
+thick tee pointing down
+T}
+WACS_T_ULCORNER	0x250f	+	L	T{
+thick upper left corner
+T}
+WACS_T_URCORNER	0x2513	+	K	T{
+thick upper right corner
+T}
+WACS_T_VLINE	0x2503	|	X	T{
+thick vertical line
+T}
 .TE
 .PP
 and for double-lines (\fBacsc\fP \*(``A\*('' to \*(``I\*(''):
 .PP
 .TS
-l l l l l
-l l l l l
-_ _ _ _ _
-lw(1.5i) lw5 lw5 lw5 lw20.
-\fBACS\fP	\fBUnicode\fP	\fBASCII\fP	\fBacsc\fP	\fBGlyph\fP
-\fBName\fP	\fBDefault\fP	\fBDefault\fP	\fBchar\fP	\fBName\fP
-WACS_D_BTEE	0x2569	+	H	double tee pointing up
-WACS_D_HLINE	0x2550	-	R	double horizontal line
-WACS_D_LLCORNER	0x255a	+	D	double lower left corner
-WACS_D_LRCORNER	0x255d	+	A	double lower right corner
-WACS_D_LTEE	0x2560	+	F	double tee pointing right
-WACS_D_PLUS	0x256c	+	E	double large plus
-WACS_D_RTEE	0x2563	+	G	double tee pointing left
-WACS_D_TTEE	0x2566	+	I	double tee pointing down
-WACS_D_ULCORNER	0x2554	+	C	double upper left corner
-WACS_D_URCORNER	0x2557	+	B	double upper right corner
-WACS_D_VLINE	0x2551	|	Y	double vertical line
+Lb Lb Lb Lb Lb
+Lb Lb Lb Lb Lb
+Lb L  L  L  Lx.
+\&	Unicode	ASCII	acsc	\&
+ACS Name	Default	Default	Char	Glyph Name
+_
+WACS_D_BTEE	0x2569	+	H	T{
+double tee pointing up
+T}
+WACS_D_HLINE	0x2550	-	R	T{
+double horizontal line
+T}
+WACS_D_LLCORNER	0x255a	+	D	T{
+double lower left corner
+T}
+WACS_D_LRCORNER	0x255d	+	A	T{
+double lower right corner
+T}
+WACS_D_LTEE	0x2560	+	F	T{
+double tee pointing right
+T}
+WACS_D_PLUS	0x256c	+	E	T{
+double large plus
+T}
+WACS_D_RTEE	0x2563	+	G	T{
+double tee pointing left
+T}
+WACS_D_TTEE	0x2566	+	I	T{
+double tee pointing down
+T}
+WACS_D_ULCORNER	0x2554	+	C	T{
+double upper left corner
+T}
+WACS_D_URCORNER	0x2557	+	B	T{
+double upper right corner
+T}
+WACS_D_VLINE	0x2551	|	Y	T{
+double vertical line
+T}
 .TE
 .PP
 Unicode's descriptions for these characters differs slightly from

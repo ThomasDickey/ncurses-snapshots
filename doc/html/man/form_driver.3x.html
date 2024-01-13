@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: form_driver.3x,v 1.54 2023/12/23 16:08:25 tom Exp @
+  * @Id: form_driver.3x,v 1.57 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>form_driver 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>form_driver 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">form_driver 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">form_driver 3x 2024-01-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="form_driver.3x.html">form_driver(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="form_driver.3x.html">form_driver(3x)</A></STRONG>
 
@@ -88,66 +88,66 @@
        The form driver requests are as follows:
 
        <STRONG>Name</STRONG>               <STRONG>Description</STRONG>
-       ---------------------------------------------------------------------
-       REQ_BEG_FIELD      Move to the beginning of the field.
-       REQ_BEG_LINE       Move to the beginning of the line.
-       REQ_CLR_EOF        Clear to end of field from cursor.
-       REQ_CLR_EOL        Clear to end of line from cursor.
-       REQ_CLR_FIELD      Clear the entire field.
-       REQ_DEL_CHAR       Delete character at the cursor.
-       REQ_DEL_LINE       Delete line at the cursor.
-       REQ_DEL_PREV       Delete character before the cursor.
-       REQ_DEL_WORD       Delete blank-delimited word at the cursor.
-       REQ_DOWN_CHAR      Move down in the field.
-       REQ_DOWN_FIELD     Move down to a field.
-       REQ_END_FIELD      Move to the end of the field.
-       REQ_END_LINE       Move to the end of the line.
-       REQ_FIRST_FIELD    Move to the first field.
-       REQ_FIRST_PAGE     Move to the first page.
-       REQ_INS_CHAR       Insert a blank at the cursor.
-       REQ_INS_LINE       Insert a blank line at the cursor.
-       REQ_INS_MODE       Enter insert mode.
-       REQ_LAST_FIELD     Move to the last field.
-       REQ_LAST_PAGE      Move to the last field.
-       REQ_LEFT_CHAR      Move left in the field.
-       REQ_LEFT_FIELD     Move left to a field.
-       REQ_NEW_LINE       Insert or overlay a new line.
-       REQ_NEXT_CHAR      Move to the next char.
+       ------------------------------------------------------------------------
+       <STRONG>REQ_BEG_FIELD</STRONG>      Move to beginning of field.
+       <STRONG>REQ_BEG_LINE</STRONG>       Move to beginning of the line.
+       <STRONG>REQ_CLR_EOF</STRONG>        Clear to end of field from cursor.
+       <STRONG>REQ_CLR_EOL</STRONG>        Clear to end of line from cursor.
+       <STRONG>REQ_CLR_FIELD</STRONG>      Clear the entire field.
+       <STRONG>REQ_DEL_CHAR</STRONG>       Delete character at the cursor.
+       <STRONG>REQ_DEL_LINE</STRONG>       Delete line at the cursor.
+       <STRONG>REQ_DEL_PREV</STRONG>       Delete character before the cursor.
+       <STRONG>REQ_DEL_WORD</STRONG>       Delete blank-delimited word at cursor.
+       <STRONG>REQ_DOWN_CHAR</STRONG>      Move down in field.
+       <STRONG>REQ_DOWN_FIELD</STRONG>     Move down to a field.
+       <STRONG>REQ_END_FIELD</STRONG>      Move to the end of field.
+       <STRONG>REQ_END_LINE</STRONG>       Move to the end of the line.
+       <STRONG>REQ_FIRST_FIELD</STRONG>    Move to the first field.
+       <STRONG>REQ_FIRST_PAGE</STRONG>     Move to the first page.
+       <STRONG>REQ_INS_CHAR</STRONG>       Insert a blank at the cursor.
+       <STRONG>REQ_INS_LINE</STRONG>       Insert a blank line at the cursor.
+       <STRONG>REQ_INS_MODE</STRONG>       Enter insert mode.
+       <STRONG>REQ_LAST_FIELD</STRONG>     Move to the last field.
+       <STRONG>REQ_LAST_PAGE</STRONG>      Move to the last field.
+       <STRONG>REQ_LEFT_CHAR</STRONG>      Move left in field.
+       <STRONG>REQ_LEFT_FIELD</STRONG>     Move left to a field.
+       <STRONG>REQ_NEW_LINE</STRONG>       Insert or overlay a new line.
+       <STRONG>REQ_NEXT_CHAR</STRONG>      Move to the next char.
 
-       REQ_NEXT_CHOICE    Display next field choice.
-       REQ_NEXT_FIELD     Move to the next field.
-       REQ_NEXT_LINE      Move to the next line.
-       REQ_NEXT_PAGE      Move to the next page.
-       REQ_NEXT_PAGE      Move to the next page.
-       REQ_NEXT_WORD      Move to the next word.
-       REQ_OVL_MODE       Enter overlay mode.
-       REQ_PREV_CHAR      Move to the previous char.
-       REQ_PREV_CHOICE    Display previous field choice.
-       REQ_PREV_FIELD     Move to the previous field.
-       REQ_PREV_LINE      Move to the previous line.
-       REQ_PREV_PAGE      Move to the previous page.
-       REQ_PREV_WORD      Move to the previous word.
-       REQ_RIGHT_CHAR     Move right in the field.
-       REQ_RIGHT_FIELD    Move right to a field.
-       REQ_SCR_BCHAR      Scroll the field backward a character.
-       REQ_SCR_BHPAGE     Scroll the field backward half a page.
-       REQ_SCR_BLINE      Scroll the field backward a line.
-       REQ_SCR_BPAGE      Scroll the field backward a page.
-       REQ_SCR_FCHAR      Scroll the field forward a character.
-       REQ_SCR_FHPAGE     Scroll the field forward half a page.
-       REQ_SCR_FLINE      Scroll the field forward a line.
-       REQ_SCR_FPAGE      Scroll the field forward a page.
-       REQ_SCR_HBHALF     Horizontal scroll the field backward half a line.
-       REQ_SCR_HBLINE     Horizontal scroll the field backward a line.
-       REQ_SCR_HFHALF     Horizontal scroll the field forward half a line.
-       REQ_SCR_HFLINE     Horizontal scroll the field forward a line.
-       REQ_SFIRST_FIELD   Move to the sorted first field.
-       REQ_SLAST_FIELD    Move to the sorted last field.
-       REQ_SNEXT_FIELD    Move to the sorted next field.
-       REQ_SPREV_FIELD    Move to the sorted previous field.
-       REQ_UP_CHAR        Move up in the field.
-       REQ_UP_FIELD       Move up to a field.
-       REQ_VALIDATION     Validate field.
+       <STRONG>REQ_NEXT_CHOICE</STRONG>    Display next field choice.
+       <STRONG>REQ_NEXT_FIELD</STRONG>     Move to the next field.
+       <STRONG>REQ_NEXT_LINE</STRONG>      Move to the next line.
+       <STRONG>REQ_NEXT_PAGE</STRONG>      Move to the next page.
+       <STRONG>REQ_NEXT_PAGE</STRONG>      Move to the next page.
+       <STRONG>REQ_NEXT_WORD</STRONG>      Move to the next word.
+       <STRONG>REQ_OVL_MODE</STRONG>       Enter overlay mode.
+       <STRONG>REQ_PREV_CHAR</STRONG>      Move to the previous char.
+       <STRONG>REQ_PREV_CHOICE</STRONG>    Display previous field choice.
+       <STRONG>REQ_PREV_FIELD</STRONG>     Move to the previous field.
+       <STRONG>REQ_PREV_LINE</STRONG>      Move to the previous line.
+       <STRONG>REQ_PREV_PAGE</STRONG>      Move to the previous page.
+       <STRONG>REQ_PREV_WORD</STRONG>      Move to the previous word.
+       <STRONG>REQ_RIGHT_CHAR</STRONG>     Move right in field.
+       <STRONG>REQ_RIGHT_FIELD</STRONG>    Move right to a field.
+       <STRONG>REQ_SCR_BCHAR</STRONG>      Scroll field backward 1 character.
+       <STRONG>REQ_SCR_BHPAGE</STRONG>     Scroll field backward 1/2 page.
+       <STRONG>REQ_SCR_BLINE</STRONG>      Scroll field backward 1 line.
+       <STRONG>REQ_SCR_BPAGE</STRONG>      Scroll field backward 1 page.
+       <STRONG>REQ_SCR_FCHAR</STRONG>      Scroll field forward 1 character.
+       <STRONG>REQ_SCR_FHPAGE</STRONG>     Scroll field forward 1/2 page.
+       <STRONG>REQ_SCR_FLINE</STRONG>      Scroll field forward 1 line.
+       <STRONG>REQ_SCR_FPAGE</STRONG>      Scroll field forward 1 page.
+       <STRONG>REQ_SCR_HBHALF</STRONG>     Horizontal scroll field backward 1/2 line.
+       <STRONG>REQ_SCR_HBLINE</STRONG>     Horizontal scroll field backward 1 line.
+       <STRONG>REQ_SCR_HFHALF</STRONG>     Horizontal scroll field forward 1/2 line.
+       <STRONG>REQ_SCR_HFLINE</STRONG>     Horizontal scroll field forward 1 line.
+       <STRONG>REQ_SFIRST_FIELD</STRONG>   Move to the sorted first field.
+       <STRONG>REQ_SLAST_FIELD</STRONG>    Move to the sorted last field.
+       <STRONG>REQ_SNEXT_FIELD</STRONG>    Move to the sorted next field.
+       <STRONG>REQ_SPREV_FIELD</STRONG>    Move to the sorted previous field.
+       <STRONG>REQ_UP_CHAR</STRONG>        Move up in field.
+       <STRONG>REQ_UP_FIELD</STRONG>       Move up to a field.
+       <STRONG>REQ_VALIDATION</STRONG>     Validate field.
 
        If  the  second argument is a printable character, the driver places it
        in the current position in the current field.  If  it  is  one  of  the
@@ -275,7 +275,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                   <STRONG><A HREF="form_driver.3x.html">form_driver(3x)</A></STRONG>
+ncurses 6.4                       2024-01-13                   <STRONG><A HREF="form_driver.3x.html">form_driver(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

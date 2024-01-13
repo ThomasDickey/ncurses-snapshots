@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.141 2023/12/30 21:36:32 tom Exp $
+.\" $Id: terminfo.tail,v 1.143 2024/01/13 22:05:39 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1551,44 +1551,44 @@ This alternate character set may be specified by the \fBacsc\fP capability.
 .PP
 .TS
 center;
-lb lb lb lb lb.
-\&	\&	ASCII	acsc	acsc
-Glyph Name	ACS Name	Fallback	Symbol	Value
+Lb  Cb  S  L   Lb
+Lb2 Lb2 Lb Lb1 S
+Lb  L   C  Lb  Lx.
+\&	acsc	\&	\&
+ACS Name	Value	Symbol	ASCII Fallback / Glyph Name
 _
-.T&
-l  lb l  l  l .
-arrow pointing right	ACS_RARROW	>	+	0x2b
-arrow pointing left	ACS_LARROW	<	,	0x2c
-arrow pointing up	ACS_UARROW	\*^	\-	0x2d
-arrow pointing down	ACS_DARROW	v	.	0x2e
-solid square block	ACS_BLOCK	#	0	0x30
-diamond         	ACS_DIAMOND	+	\(ga	0x60
-checker board (stipple)	ACS_CKBOARD	:	a	0x61
-degree symbol   	ACS_DEGREE	\e	f	0x66
-plus/minus      	ACS_PLMINUS	#	g	0x67
-board of squares	ACS_BOARD	#	h	0x68
-lantern symbol  	ACS_LANTERN	#	i	0x69
-lower right corner	ACS_LRCORNER	+	j	0x6a
-upper right corner	ACS_URCORNER	+	k	0x6b
-upper left corner	ACS_ULCORNER	+	l	0x6c
-lower left corner	ACS_LLCORNER	+	m	0x6d
-large plus or crossover	ACS_PLUS	+	n	0x6e
-scan line 1     	ACS_S1  	\*~	o	0x6f
-scan line 3     	ACS_S3  	\-	p	0x70
-horizontal line 	ACS_HLINE	\-	q	0x71
-scan line 7     	ACS_S7  	\-	r	0x72
-scan line 9     	ACS_S9  	\&_	s	0x73
-tee pointing right	ACS_LTEE	+	t	0x74
-tee pointing left	ACS_RTEE	+	u	0x75
-tee pointing up 	ACS_BTEE	+	v	0x76
-tee pointing down	ACS_TTEE	+	w	0x77
-vertical line   	ACS_VLINE	|	x	0x78
-less-than-or-equal-to	ACS_LEQUAL	<	y	0x79
-greater-than-or-equal-to	ACS_GEQUAL	>	z	0x7a
-greek pi        	ACS_PI	*	{	0x7b
-not-equal       	ACS_NEQUAL	!	|	0x7c
-UK pound sign        	ACS_STERLING	f	}	0x7d
-bullet          	ACS_BULLET	o	\*~	0x7e
+ACS_RARROW	0x2b	+	>	arrow pointing right
+ACS_LARROW	0x2c	,	<	arrow pointing left
+ACS_UARROW	0x2d	\-	\*^	arrow pointing up
+ACS_DARROW	0x2e	.	v	arrow pointing down
+ACS_BLOCK	0x30	0	#	solid square block
+ACS_DIAMOND	0x60	\(ga	+	diamond
+ACS_CKBOARD	0x61	a	:	checker board (stipple)
+ACS_DEGREE	0x66	f	\e	degree symbol
+ACS_PLMINUS	0x67	g	#	plus/minus
+ACS_BOARD	0x68	h	#	board of squares
+ACS_LANTERN	0x69	i	#	lantern symbol
+ACS_LRCORNER	0x6a	j	+	lower right corner
+ACS_URCORNER	0x6b	k	+	upper right corner
+ACS_ULCORNER	0x6c	l	+	upper left corner
+ACS_LLCORNER	0x6d	m	+	lower left corner
+ACS_PLUS	0x6e	n	+	large plus or crossover
+ACS_S1	0x6f	o	\*~	scan line 1
+ACS_S3	0x70	p	\-	scan line 3
+ACS_HLINE	0x71	q	\-	horizontal line
+ACS_S7	0x72	r	\-	scan line 7
+ACS_S9	0x73	s	\&_	scan line 9
+ACS_LTEE	0x74	t	+	tee pointing right
+ACS_RTEE	0x75	u	+	tee pointing left
+ACS_BTEE	0x76	v	+	tee pointing up
+ACS_TTEE	0x77	w	+	tee pointing down
+ACS_VLINE	0x78	x	|	vertical line
+ACS_LEQUAL	0x79	y	<	less-than-or-equal-to
+ACS_GEQUAL	0x7a	z	>	greater-than-or-equal-to
+ACS_PI	0x7b	{	*	greek pi
+ACS_NEQUAL	0x7c	|	!	not-equal
+ACS_STERLING	0x7d	}	f	UK pound sign
+ACS_BULLET	0x7e	\*~	o	bullet
 .TE
 .PP
 A few notes apply to the table itself:

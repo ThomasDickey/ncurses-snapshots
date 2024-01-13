@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019-2021,2023 Thomas E. Dickey                                  #
+# Copyright 2019-2023,2024 Thomas E. Dickey                                  #
 # Copyright 2002-2015,2016 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.osf1r5,v 1.18 2023/12/30 21:36:32 Branden.Robinson Exp $
+# $Id: Caps.osf1r5,v 1.20 2024/01/13 22:05:39 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with OSF/1 version 5 (Tru64) terminfo.
@@ -204,18 +204,16 @@
 #%.TP
 #%(#\d\fIi\fP\u)
 #%indicates the \fIi\fP\uth\d parameter.
-#%
+#%.
 #%.PP
-#% These are the Boolean capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBBooleans	name	Code\fR
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Boolean Capability Name	TI	TC	Description
+#%_
 auto_left_margin		bw	bool	bw	-	-	YB-G-	cub1 wraps from column 0 to last column
 auto_right_margin		am	bool	am	-	-	YBCGE	terminal has automatic margins
 no_esc_ctlc			xsb	bool	xb	-	-	YBCG-	beehive (f1=escape, f2=ctrl C)
@@ -254,18 +252,16 @@ prtr_silent			mc5i	bool	5i	-	-	-----	printer will not echo on screen
 row_addr_glitch			xvpa	bool	YD	-	-	-----	only positive motion for vpa/mvpa caps
 semi_auto_right_margin		sam	bool	YE	-	-	-----	printing in last column causes cr
 #%.TE
-#%.ad
-#%
-#%These are the numeric capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBNumeric	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Numeric Capability Name	TI	TC	Description
+#%_
 columns				cols	num	co	-	-	YBCGE	number of columns in a line
 init_tabs			it	num	it	-	-	YB-G-	tabs initially every # spaces
 lines				lines	num	li	-	-	YBCGE	number of lines on screen or page
@@ -300,18 +296,16 @@ output_res_vert_inch		orvi	num	Yl	-	-	-----	vertical resolution in units per inc
 print_rate			cps	num	Ym	-	-	-----	print rate in characters per second
 wide_char_size			widcs	num	Yn	-	-	-----	character step size when in double wide mode
 #%.TE
-#%.ad
-#%
-#%These are the string capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBString	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%String Capability Name	TI	TC	Description
+#%_
 back_tab			cbt	str	bt	-		-	YBCGE	back tab (P)
 bell				bel	str	bl	-		-	YB-GE	audible signal (bell) (P)
 carriage_return			cr	str	cr	-		-	YBCGE	carriage return (P*) (P*)

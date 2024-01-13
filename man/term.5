@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2021,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.5,v 1.70 2023/12/30 21:36:32 tom Exp $
-.TH term 5 2023-12-30 "ncurses 6.4" "File formats"
+.\" $Id: term.5,v 1.73 2024/01/13 22:05:39 tom Exp $
+.TH term 5 2024-01-13 "ncurses 6.4" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -393,7 +393,6 @@ but was limited to a virtual memory page's 4096 bytes.
 As an example, here is a description for the Lear-Siegler
 ADM\-3, a popular though rather stupid early terminal:
 .PP
-.RS 4
 .EX
 adm3a|lsi adm3a,
         am,
@@ -402,14 +401,13 @@ adm3a|lsi adm3a,
         cuf1=\*^L, cup=\eE=%p1%{32}%+%c%p2%{32}%+%c, cuu1=\*^K,
         home=\*^\*^, ind=\*^J,
 .EE
-.RE
 .PP
 and a hexadecimal dump of the compiled terminal description:
 .PP
-.ie n .in -2n
-.el   .in +4n
+.if t .in +4n
+.ft \*(CW
 .TS
-lp-1f(\*(CW).
+Lp-1.
 0000  1a 01 10 00 02 00 03 00  82 00 31 00 61 64 6d 33  ........ ..1.adm3
 0010  61 7c 6c 73 69 20 61 64  6d 33 61 00 00 01 50 00  a|lsi ad m3a...P.
 0020  ff ff 18 00 ff ff 00 00  02 00 ff ff ff ff 04 00  ........ ........
@@ -433,6 +431,7 @@ lp-1f(\*(CW).
 0140  25 70 32 25 7b 33 32 7d  25 2b 25 63 00 0a 00 1e  %p2%{32} %+%c....
 0150  00 08 00 0c 00 0b 00 0a  00                       ........ .
 .TE
+.ft
 .in
 .SH AUTHORS
 Thomas E. Dickey

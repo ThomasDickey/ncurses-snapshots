@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: infocmp.1m,v 1.104 2023/12/30 21:36:32 tom Exp @
+  * @Id: infocmp.1m,v 1.107 2024/01/13 22:05:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>infocmp 1m 2023-12-30 ncurses 6.4 User commands</TITLE>
+<TITLE>infocmp 1m 2024-01-13 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">infocmp 1m 2023-12-30 ncurses 6.4 User commands</H1>
+<H1 class="no-header">infocmp 1m 2024-01-13 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>                      User commands                     <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 
@@ -119,11 +119,11 @@
        The <STRONG>-I</STRONG>, <STRONG>-L</STRONG>, and <STRONG>-C</STRONG> options will  produce  a  source  listing  for  each
        terminal named.
 
-            <STRONG>-I</STRONG>   use the <STRONG>terminfo</STRONG> names
-            <STRONG>-L</STRONG>   use the long C variable name listed in &lt;<STRONG>term.h</STRONG>&gt;
-            <STRONG>-C</STRONG>   use the <STRONG>termcap</STRONG> names
-            <STRONG>-r</STRONG>   when using <STRONG>-C</STRONG>, put out all capabilities in <STRONG>termcap</STRONG> form
-            <STRONG>-K</STRONG>   modifies the <STRONG>-C</STRONG> option, improving BSD-compatibility.
+                   <STRONG>-I</STRONG>   use <EM>terminfo</EM> capability codes
+                   <STRONG>-L</STRONG>   use "long" capability names
+                   <STRONG>-C</STRONG>   use <EM>termcap</EM> capability codes
+                   <STRONG>-r</STRONG>   with <STRONG>-C</STRONG>, include nonstandard capabilities
+                   <STRONG>-K</STRONG>   with <STRONG>-C</STRONG>, improve BSD compatibility
 
        If  no  <EM>terminal-types</EM> are given, the environment variable <EM>TERM</EM> will be
        used for the terminal name.
@@ -168,14 +168,14 @@
        Some  common  <STRONG>terminfo</STRONG>  parameter sequences, their <STRONG>termcap</STRONG> equivalents,
        and some terminal types which commonly have such sequences, are:
 
-           <STRONG>terminfo</STRONG>                    <STRONG>termcap</STRONG>   Representative Terminals
-           ---------------------------------------------------------------
-           <STRONG>%p1%c</STRONG>                       <STRONG>%.</STRONG>        adm
-           <STRONG>%p1%d</STRONG>                       <STRONG>%d</STRONG>        hp, ANSI standard, vt100
-           <STRONG>%p1%'x'%+%c</STRONG>                 <STRONG>%+x</STRONG>       concept
-           <STRONG>%i</STRONG>                          <STRONG>%i</STRONG>q       ANSI standard, vt100
-           <STRONG>%p1%?%'x'%&gt;%t%p1%'y'%+%;</STRONG>    <STRONG>%&gt;xy</STRONG>      concept
-           <STRONG>%p2</STRONG> is printed before <STRONG>%p1</STRONG>   <STRONG>%r</STRONG>        hp
+                 <STRONG><EM>terminfo</EM></STRONG>                   <STRONG><EM>termcap</EM></STRONG>   Terminal Types
+                 ----------------------------------------------------
+                 <STRONG>%p1%c</STRONG>                      <STRONG>%.</STRONG>        ansi-m
+                 <STRONG>%p1%d</STRONG>                      <STRONG>%d</STRONG>        ansi, vt100
+                 <STRONG>%p1%'</STRONG> <STRONG>'%+%c</STRONG>                <STRONG>%+x</STRONG>       vt52
+                 <STRONG>%i</STRONG>                         <STRONG>%iq</STRONG>       ansi, vt100
+                 <STRONG>%p1%?%'x'%&gt;%t%p1%'y'%+%;</STRONG>   <STRONG>%&gt;xy</STRONG>      annarbor4080
+                 <STRONG>%p2</STRONG>...<STRONG>%p1</STRONG>                  <STRONG>%r</STRONG>        hpgeneric
 
 
 </PRE><H3><a name="h3-Use_Option_u_">Use= Option [-u]</a></H3><PRE>
@@ -531,7 +531,7 @@
 
 
 
-ncurses 6.4                       2023-12-30                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
+ncurses 6.4                       2024-01-13                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

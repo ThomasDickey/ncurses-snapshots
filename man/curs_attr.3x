@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.93 2023/12/23 16:08:25 tom Exp $
-.TH curs_attr 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_attr.3x,v 1.96 2024/01/13 22:05:39 tom Exp $
+.TH curs_attr 3X 2024-01-13 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -247,23 +247,27 @@ characters passed to \fBaddch\fP (see \fBcurs_addch\fP(3X)).
 .ne 15
 .RS
 .TS
-l l
-_ _ _
-l l .
-\fBName\fP	\fBDescription\fP
-\fBA_NORMAL\fP	Normal display (no highlight)
-\fBA_STANDOUT\fP	Best highlighting mode of the terminal.
-\fBA_UNDERLINE\fP	Underlining
-\fBA_REVERSE\fP	Reverse video
-\fBA_BLINK\fP	Blinking
-\fBA_DIM\fP	Half bright
-\fBA_BOLD\fP	Extra bright or bold
-\fBA_PROTECT\fP	Protected mode
-\fBA_INVIS\fP	Invisible or blank mode
-\fBA_ALTCHARSET\fP	Alternate character set
-\fBA_ITALIC\fP	Italics (non-X/Open extension)
-\fBA_CHARTEXT\fP	Bit-mask to extract a character
-\fBA_COLOR\fP	Bit-mask to extract a color (legacy routines)
+Lb Lb
+Lb Lx.
+Name	Description
+_
+A_NORMAL	Normal display (no highlight)
+A_STANDOUT	T{
+Best highlighting mode of the terminal
+T}
+A_UNDERLINE	Underlining
+A_REVERSE	Reverse video
+A_BLINK	Blinking
+A_DIM	Half bright
+A_BOLD	Extra bright or bold
+A_PROTECT	Protected mode
+A_INVIS	Invisible or blank mode
+A_ALTCHARSET	Alternate character set
+A_ITALIC	Italics (non-X/Open extension)
+A_CHARTEXT	Bit-mask to extract a character
+A_COLOR	T{
+Bit-mask to extract a color (legacy routines)
+T}
 .TE
 .RE
 .PP
@@ -272,16 +276,16 @@ These video attributes are supported by \fBattr_on\fP and related functions
 .PP
 .RS
 .TS
-l l
-_ _ _
-l l .
-\fBName\fP	\fBDescription\fP
-\fBWA_HORIZONTAL\fP	Horizontal highlight
-\fBWA_LEFT\fP	Left highlight
-\fBWA_LOW\fP	Low highlight
-\fBWA_RIGHT\fP	Right highlight
-\fBWA_TOP\fP	Top highlight
-\fBWA_VERTICAL\fP	Vertical highlight
+Lb Lb
+Lb Lx.
+Name	Description
+_
+WA_HORIZONTAL	Horizontal highlight
+WA_LEFT	Left highlight
+WA_LOW	Low highlight
+WA_RIGHT	Right highlight
+WA_TOP	Top highlight
+WA_VERTICAL	Vertical highlight
 .TE
 .RE
 .PP
@@ -390,18 +394,20 @@ The older macros have direct counterparts in the newer set of names:
 .RS
 .ne 9
 .TS
-l l
-_ _ _
-l l .
-\fBName\fP	\fBDescription\fP
-\fBWA_NORMAL\fP	Normal display (no highlight)
-\fBWA_STANDOUT\fP	Best highlighting mode of the terminal.
-\fBWA_UNDERLINE\fP	Underlining
-\fBWA_REVERSE\fP	Reverse video
-\fBWA_BLINK\fP	Blinking
-\fBWA_DIM\fP	Half bright
-\fBWA_BOLD\fP	Extra bright or bold
-\fBWA_ALTCHARSET\fP	Alternate character set
+Lb Lb
+Lb Lx.
+Name	Description
+_
+WA_NORMAL	Normal display (no highlight)
+WA_STANDOUT	T{
+Best highlighting mode of the terminal
+T}
+WA_UNDERLINE	Underlining
+WA_REVERSE	Reverse video
+WA_BLINK	Blinking
+WA_DIM	Half bright
+WA_BOLD	Extra bright or bold
+WA_ALTCHARSET	Alternate character set
 .TE
 .RE
 .PP
@@ -504,25 +510,25 @@ as well as clues such as the alternate character set implementation.
 A 32-bit library can be used on a 64-bit system,
 but not necessarily the reverse.
 .PP
-.RS
 .TS
-l l l l l l
-_ _ _ _ _ _
-l l l l l l .
-\fBYear\fP	\fBSystem\fP	\fBArch\fP	\fBColor\fP	\fBChar\fP	\fBNotes\fP
-1992	Solaris 5.2	32	6	17	SVr4 curses
-1992	HP-UX 9	32	no	8	SVr2 curses
-1992	AIX 3.2	32	no	23	SVr2 curses
-1994	OSF/1 r3	32	no	23	SVr2 curses
-1995	HP-UX 10.00	32	6	16	SVr3 \*(``curses_colr\*(''
-1995	HP-UX 10.00	32	6	8	SVr4, X/Open curses
-1995	Solaris 5.4	32/64	7	16	X/Open curses
-1996	AIX 4.2	32	7	16	X/Open curses
-1996	OSF/1 r4	32	6	16	X/Open curses
-1997	HP-UX 11.00	32	6	8	X/Open curses
-2000	U/Win	32/64	7/31	16	uses \fBchtype\fP
+Lb  Lb Lb  Cb  S   Lb
+Lb2 Lb Lb2 Lbz Lb2 Lb
+L   L  L   L   L   Lx.
+\&	\&	\&	Bits	\&
+Year	System	Arch	Color	Char	Notes
+_
+1992	Solaris 5.2	32	6	17	SVr4 \fIcurses\fP
+1992	HP-UX 9	32	no	8	SVr2 \fIcurses\fP
+1992	AIX 3.2	32	no	23	SVr2 \fIcurses\fP
+1994	OSF/1 r3	32	no	23	SVr2 \fIcurses\fP
+1995	HP-UX 10.00	32	6	16	SVr3 \fIcurses_colr\fP
+1995	HP-UX 10.00	32	6	8	SVr4, X/Open \fIcurses\fP
+1995	Solaris 5.4	32/64	7	16	X/Open \fIcurses\fP
+1996	AIX 4.2	32	7	16	X/Open \fIcurses\fP
+1996	OSF/1 r4	32	6	16	X/Open \fIcurses\fP
+1997	HP-UX 11.00	32	6	8	X/Open \fIcurses\fP
+2000	U/Win	32/64	7/31	16	uses \fIchtype\fP
 .TE
-.RE
 .PP
 Notes:
 .RS 3

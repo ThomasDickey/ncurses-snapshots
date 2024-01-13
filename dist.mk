@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.1591 2024/01/06 11:19:36 tom Exp $
+# $Id: dist.mk,v 1.1593 2024/01/13 21:07:51 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -38,7 +38,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 6
 NCURSES_MINOR = 4
-NCURSES_PATCH = 20240106
+NCURSES_PATCH = 20240113
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -135,8 +135,9 @@ manhtml:
 	   if [ -f doc/html/$$g ]; then chmod +w doc/html/$$g; fi;\
 	   echo "Converting $$m to HTML" ;\
 	   echo '<!--' > doc/html/man/$$g ;\
-	   $${EGREP-grep -E} '^.\\"[^#]' $$f | \
-	   	sed	-e 's/\$$/@/g' \
+		sed	-e '/^\.[a-zA-Z]/,99999d' $$f | \
+		$${EGREP-grep -E} '^.\\"[^#]' | \
+		sed	-e 's/\$$/@/g' \
 			-e 's/^.../  */' \
 			-e 's/</\&lt;/g' \
 			-e 's/>/\&gt;/g' \

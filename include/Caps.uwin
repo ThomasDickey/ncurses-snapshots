@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019-2021,2023 Thomas E. Dickey                                  #
+# Copyright 2019-2023,2024 Thomas E. Dickey                                  #
 # Copyright 2001-2015,2016 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.uwin,v 1.17 2023/12/30 21:36:32 Branden.Robinson Exp $
+# $Id: Caps.uwin,v 1.19 2024/01/13 22:05:39 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with U/Win's terminfo.
@@ -204,18 +204,16 @@
 #%.TP
 #%(#\d\fIi\fP\u)
 #%indicates the \fIi\fP\uth\d parameter.
-#%
+#%.
 #%.PP
-#% These are the Boolean capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBBooleans	name	Code\fR
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Boolean Capability Name	TI	TC	Description
+#%_
 auto_left_margin		bw	bool	bw	-	-	YB-G-	cub1 wraps from column 0 to last column
 auto_right_margin		am	bool	am	-	-	YBCGE	terminal has automatic margins
 no_esc_ctlc			xsb	bool	xb	-	-	YBCG-	beehive (f1=escape, f2=ctrl C)
@@ -247,18 +245,16 @@ back_color_erase		bce	bool	ut	-	-	-----	screen erased with background color
 can_change			ccc	bool	cc	-	-	-----	terminal can re-define existing colors
 hue_lightness_saturation	hls	bool	hl	-	-	-----	terminal uses only HLS color notation (Tektronix)
 #%.TE
-#%.ad
-#%
-#%These are the numeric capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBNumeric	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%Numeric Capability Name	TI	TC	Description
+#%_
 columns				cols	num	co	-	-	YBCGE	number of columns in a line
 init_tabs			it	num	it	-	-	YB-G-	tabs initially every # spaces
 lines				lines	num	li	-	-	YBCGE	number of lines on screen or page
@@ -278,24 +274,16 @@ max_colors			colors	num	Co	-	-	-----	maximum number of colors on screen
 max_pairs			pairs	num	pa	-	-	-----	maximum number of color-pairs on the screen
 no_color_video			ncv	num	NC	-	-	-----	video attributes that cannot be used with colors
 #%.TE
-#%.ad
-#%
-#%The following numeric capabilities are present in the SVr4.0 term structure,
-#%but are not yet documented in the man page.
-#%They came in with SVr4's printer support.
-#%
-#%.na
-#%
-#%These are the string capabilities:
-#%
-#%.na
-#%.TS H
-#%center expand;
-#%c l l c
-#%c l l c
-#%lw25 lw6 lw2 lw20.
-#%\fBVariable	Cap-	TCap	Description\fR
-#%\fBString	name	Code\fR
+#%.PP
+#%.
+#%.TS
+#%center;
+#%Lb Cb S  Lb
+#%Lb Lb Lb Lb
+#%Lb Lb Lb Lx.
+#%\&	Code	\&
+#%String Capability Name	TI	TC	Description
+#%_
 back_tab			cbt	str	bt	-		-	YBCGE	back tab (P)
 bell				bel	str	bl	-		-	YB-GE	audible signal (bell) (P)
 carriage_return			cr	str	cr	-		-	YBCGE	carriage return (P*) (P*)
@@ -595,7 +583,6 @@ set_background			setb	str	Sb	-		-	-----	Set background color #1
 set_color_pair			scp	str	sp	-		-	-----	Set current color pair to #1
 set_foreground			setf	str	Sf	-		-	-----	Set foreground color #1
 #%.TE
-#%.ad
 #%
 # The magic token below tells the tic compiler-generator code that all the caps
 # past it should be ignored (not written out) when dumping terminfo objects. It

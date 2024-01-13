@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.59 2023/12/16 21:01:59 tom Exp $
-.TH @TOE@ 1M 2023-12-16 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.62 2024/01/13 22:05:39 tom Exp $
+.TH @TOE@ 1M 2024-01-13 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -142,11 +142,11 @@ with this program and exits with a successful status.
 .TP
 .I \*d
 compiled terminal description database
-.SH HISTORY
+.SH PORTABILITY
 \fB\%@TOE@\fP is not provided by other implementations.
 There is no applicable X/Open or POSIX standard for it.
-.PP
-It replaces a \fB\-T\fP option that was briefly supported by
+.SH HISTORY
+\fB\%@TOE@\fP replaces a \fB\-T\fP option that was briefly supported by
 the \fI\%ncurses\fP \fB\%infocmp\fP utility in 1995.
 .PP
 The \fB\-a\fP and \fB\-s\fP options were added in 2006 and 2011,
@@ -176,8 +176,10 @@ xterm\-256color	xterm with 256 colors
 xterm\-r6	xterm X11R6 version
 xterm\-r5	xterm R5 version
 xterm\-mono	monochrome xterm
-.\" The next row overruns the line length on DWB nroff (65n).
-xterm	xterm terminal emulator (X Window System)
+xterm	T{
+.ad l
+xterm terminal emulator (X Window System)
+T}
 vt220	dec vt220
 vt102	dec vt102
 vt100	dec vt100 (w/advanced video)
@@ -205,16 +207,20 @@ lf(\*(CW)1 lf(\*(CW)2 lf(\*(CW).
 \-\-*\-\-\-:	vt102	dec vt102
 \-\-*\-\-\-:	vt220	dec vt220
 \-\-*\-\-\-:	vt52	dec vt52
-.\" The next row overruns the line length on DWB nroff (65n).
-\-\-*\-\-\-:	xterm	xterm terminal emulator (X Window System)
+\-\-*\-\-\-:	xterm	T{
+.ad l
+xterm terminal emulator (X Window System)
+T}
 \-\-*\-\-\-:	xterm\-256color	xterm with 256 colors
 \-\-*\-\-\-:	xterm\-color	generic color xterm
 \-\-*\-\-\-:	xterm\-mono	monochrome xterm
 \-\-*\-\-\-:	xterm\-r5	xterm R5 version
 \-\-*\-\-\-:	xterm\-r6	xterm X11R6 version
 \-\-*\-\-\-:	xterm\-vt220	xterm emulating vt220
-.\" The next row overruns the line length on DWB nroff (65n).
-\-\-*\-\-\-:	xterm\-xfree86	xterm terminal emulator (XFree86)
+\-\-*\-\-\-:	xterm\-xfree86	T{
+.ad l
+xterm terminal emulator (XFree86)
+T}
 .T&
 l.
 \&.\|.\|.

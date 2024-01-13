@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_driver.3x,v 1.54 2023/12/23 16:08:25 tom Exp $
-.TH form_driver 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: form_driver.3x,v 1.57 2024/01/13 22:05:39 tom Exp $
+.TH form_driver 3X 2024-01-13 "ncurses 6.4" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -71,22 +71,22 @@ is a wide character or a request.
 The form driver requests are as follows:
 .PP
 .TS
-l l
-_ _
-l l.
-\fBName\fP	\fBDescription\fP
-REQ_BEG_FIELD	Move to the beginning of the field.
-REQ_BEG_LINE	Move to the beginning of the line.
+Lb Lb
+Lb Lx.
+Name	Description
+_
+REQ_BEG_FIELD	Move to beginning of field.
+REQ_BEG_LINE	Move to beginning of the line.
 REQ_CLR_EOF	Clear to end of field from cursor.
 REQ_CLR_EOL	Clear to end of line from cursor.
 REQ_CLR_FIELD	Clear the entire field.
 REQ_DEL_CHAR	Delete character at the cursor.
 REQ_DEL_LINE	Delete line at the cursor.
 REQ_DEL_PREV	Delete character before the cursor.
-REQ_DEL_WORD	Delete blank-delimited word at the cursor.
-REQ_DOWN_CHAR	Move down in the field.
+REQ_DEL_WORD	Delete blank-delimited word at cursor.
+REQ_DOWN_CHAR	Move down in field.
 REQ_DOWN_FIELD	Move down to a field.
-REQ_END_FIELD	Move to the end of the field.
+REQ_END_FIELD	Move to the end of field.
 REQ_END_LINE	Move to the end of the line.
 REQ_FIRST_FIELD	Move to the first field.
 REQ_FIRST_PAGE	Move to the first page.
@@ -95,7 +95,7 @@ REQ_INS_LINE	Insert a blank line at the cursor.
 REQ_INS_MODE	Enter insert mode.
 REQ_LAST_FIELD	Move to the last field.
 REQ_LAST_PAGE	Move to the last field.
-REQ_LEFT_CHAR	Move left in the field.
+REQ_LEFT_CHAR	Move left in field.
 REQ_LEFT_FIELD	Move left to a field.
 REQ_NEW_LINE	Insert or overlay a new line.
 REQ_NEXT_CHAR	Move to the next char.
@@ -112,25 +112,25 @@ REQ_PREV_FIELD	Move to the previous field.
 REQ_PREV_LINE	Move to the previous line.
 REQ_PREV_PAGE	Move to the previous page.
 REQ_PREV_WORD	Move to the previous word.
-REQ_RIGHT_CHAR	Move right in the field.
+REQ_RIGHT_CHAR	Move right in field.
 REQ_RIGHT_FIELD	Move right to a field.
-REQ_SCR_BCHAR	Scroll the field backward a character.
-REQ_SCR_BHPAGE	Scroll the field backward half a page.
-REQ_SCR_BLINE	Scroll the field backward a line.
-REQ_SCR_BPAGE	Scroll the field backward a page.
-REQ_SCR_FCHAR	Scroll the field forward a character.
-REQ_SCR_FHPAGE	Scroll the field forward half a page.
-REQ_SCR_FLINE	Scroll the field forward a line.
-REQ_SCR_FPAGE	Scroll the field forward a page.
-REQ_SCR_HBHALF	Horizontal scroll the field backward half a line.
-REQ_SCR_HBLINE	Horizontal scroll the field backward a line.
-REQ_SCR_HFHALF	Horizontal scroll the field forward half a line.
-REQ_SCR_HFLINE	Horizontal scroll the field forward a line.
+REQ_SCR_BCHAR	Scroll field backward 1 character.
+REQ_SCR_BHPAGE	Scroll field backward \(12 page.
+REQ_SCR_BLINE	Scroll field backward 1 line.
+REQ_SCR_BPAGE	Scroll field backward 1 page.
+REQ_SCR_FCHAR	Scroll field forward 1 character.
+REQ_SCR_FHPAGE	Scroll field forward \(12 page.
+REQ_SCR_FLINE	Scroll field forward 1 line.
+REQ_SCR_FPAGE	Scroll field forward 1 page.
+REQ_SCR_HBHALF	Horizontal scroll field backward \(12 line.
+REQ_SCR_HBLINE	Horizontal scroll field backward 1 line.
+REQ_SCR_HFHALF	Horizontal scroll field forward \(12 line.
+REQ_SCR_HFLINE	Horizontal scroll field forward 1 line.
 REQ_SFIRST_FIELD	Move to the sorted first field.
 REQ_SLAST_FIELD	Move to the sorted last field.
 REQ_SNEXT_FIELD	Move to the sorted next field.
 REQ_SPREV_FIELD	Move to the sorted previous field.
-REQ_UP_CHAR	Move up in the field.
+REQ_UP_CHAR	Move up in field.
 REQ_UP_FIELD	Move up to a field.
 REQ_VALIDATION	Validate field.
 .TE

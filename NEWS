@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4062 2024/01/06 23:40:56 tom Exp $
+-- $Id: NEWS,v 1.4064 2024/01/13 22:02:10 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240113
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ modify dist.mk to avoid passing developer's comments in manpages into
+	  the generated html documentation.
+	+ use ansi+local, ansi+local1, ansi+pp, ansi+rca, ansi+rca2, ansi+sgr
+	  to trim -TD
+	+ restore padding for wy520* and vt320-k311 (report by Sven Joachim).
 
 20240106
 	+ use ansi+arrows, ansi+apparrows, ansi+csr, ansi+erase, ansi+idc,

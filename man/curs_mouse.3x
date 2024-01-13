@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.83 2023/12/23 20:37:56 tom Exp $
-.TH curs_mouse 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.86 2024/01/13 22:05:39 tom Exp $
+.TH curs_mouse 3X 2024-01-13 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -110,10 +110,10 @@ Whether this happens is device-dependent.
 Here are the mouse event type masks which may be defined:
 .PP
 .TS
-lB lB
-lB l .
+Lb Lb
+Lb Lx.
 Name	Description
-_
+=
 BUTTON1_PRESSED	mouse button 1 down
 BUTTON1_RELEASED	mouse button 1 up
 BUTTON1_CLICKED	mouse button 1 clicked
@@ -144,9 +144,15 @@ BUTTON5_CLICKED	mouse button 5 clicked
 BUTTON5_DOUBLE_CLICKED	mouse button 5 double clicked
 BUTTON5_TRIPLE_CLICKED	mouse button 5 triple clicked
 _
-BUTTON_SHIFT	shift was down during button state change
-BUTTON_CTRL	control was down during button state change
-BUTTON_ALT	alt was down during button state change
+BUTTON_SHIFT	T{
+shift was down during button state change
+T}
+BUTTON_CTRL	T{
+control was down during button state change
+T}
+BUTTON_ALT	T{
+alt was down during button state change
+T}
 ALL_MOUSE_EVENTS	report all button state changes
 REPORT_MOUSE_POSITION	report mouse movement
 _
@@ -382,15 +388,28 @@ extern unsigned long getmouse(void), getbmap(void);
 .RE
 .bP
 Its \*(``terminfo\*('' manual page lists capabilities for the feature.
-.PP
+.\" These don't appear in in the SVID 4th edition, Volume 3,
+.\" terminfo(TI_ENV) man page.  They can be found in, e.g., the "z/OS
+.\" V1R1.0 C Curses" book, Chapter 17, pp. 179-186 (PDF 213-220).
 .RS 8
-.EX
-buttons           btns    BT       Number of buttons on the mouse
-get_mouse         getm    Gm       Curses should get button events
-key_mouse         kmous   Km       0631, Mouse event has occurred
-mouse_info        minfo   Mi       Mouse status information
-req_mouse_pos     reqmp   RQ       Request mouse position report
-.EE
+.TS
+Lb Lb Lb Lx.
+buttons	btns	BT	T{
+Number of buttons on the mouse
+T}
+get_mouse	getm	Gm	T{
+Curses should get button events
+T}
+key_mouse	kmous	Km	T{
+0631, Mouse event has occurred
+T}
+mouse_info	minfo	Mi	T{
+Mouse status information
+T}
+req_mouse_pos	reqmp	RQ	T{
+Request mouse position report
+T}
+.TE
 .RE
 .bP
 The interface made assumptions
