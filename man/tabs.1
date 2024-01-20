@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.52 2023/12/23 16:08:25 tom Exp $
-.TH @TABS@ 1 2023-12-23 "ncurses 6.4" "User commands"
+.\" $Id: tabs.1,v 1.54 2024/01/20 16:54:03 tom Exp $
+.TH @TABS@ 1 2024-01-20 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -192,53 +192,75 @@ UNIVAC 1100 Assembler
 .br
 1,12,20,44
 .SS Margins
-A few terminals provide the capability for changing their left/right margins.
-The @TABS@ program has an option to use this feature:
+A few terminals expose a means of changing their left and right margins.
+\fB@TABS@\fP supports this feature with an option.
 .TP 5
 .BI +m \ margin
 The effect depends on whether the terminal has the margin capabilities:
 .RS
 .bP
 If the terminal provides the capability for setting the left margin,
-@TABS@ uses this, and adjusts the available width for tab-stops.
+\fB@TABS@\fP uses this,
+and adjusts the available tab stop widths.
 .bP
 If the terminal does not provide the margin capabilities,
-@TABS@ imitates the effect, putting the tab stops at the appropriate
-place on each line.
-The terminal's left-margin is not modified.
+\fB@TABS@\fP imitates their effect,
+putting tab stops at appropriate places on each line.
+The terminal's left margin is not modified.
 .RE
 .IP
-If the \fImargin\fP parameter is omitted, the default is 10.
-Use \fB+m0\fP to reset the left margin,
-i.e., to the left edge of the terminal's display.
-Before setting a left-margin,
-@TABS@ resets the margin to reduce problems which might arise
-on moving the cursor before the current left-margin.
+If the
+.I margin
+parameter is omitted,
+the default is 10.
+Use
+.B +m0
+to reset the left margin,
+that is,
+to make it the left edge of the terminal's display.
+Before setting a left margin,
+\fB@TABS@\fP resets the margin to reduce problems that might arise
+from moving the cursor to the left of the current left margin.
 .PP
-When setting or resetting the left-margin,
-@TABS@ may reset the right-margin.
+When setting or resetting the left margin,
+\fB@TABS@\fP may also reset the right margin.
 .SH FILES
 .TP
 .I @DATADIR@/tabset
 tab stop initialization database
 .SH PORTABILITY
-\fIIEEE Std 1003.1/The Open Group Base Specifications Issue 7\fP (POSIX.1-2008)
-describes a \fBtabs\fP utility.
-However
+IEEE Std 1003.1/The Open Group Base Specifications Issue 7
+(POSIX.1-2008)
+describes a
+.B tabs
+utility.
+However,
 .bP
-This standard describes a \fB+m\fP option, to set a terminal's left-margin.
+this standard describes a
+.B +m
+option to set a terminal's left margin.
 Very few of the entries in the terminal database provide the
-\fBsmgl\fP (\fBset_left_margin\fP) or
-\fBsmglp\fP (\fBset_left_margin_parm\fP)
-capability needed to support the feature.
+.B \%set_left_margin
+.RB ( smgl )
+or
+.B \%set_left_margin_parm
+.RB \%( smglp )
+capabilities needed to support the feature.
 .bP
 There is no counterpart in X/Open Curses Issue 7 for this utility,
 unlike \fB@TPUT@\fP(1).
 .PP
-The \fB\-d\fP (debug) and \fB\-n\fP (no-op) options are extensions not provided
-by other implementations.
+The
+.B \-d
+(debug) and
+.B \-n
+(no-op) options are
+.I \%ncurses
+extensions not provided by other implementations.
 .SH HISTORY
-A \fBtabs\fP utility appeared in PWB/Unix 1.0 (1977).
+A
+.B tabs
+utility appeared in PWB/Unix 1.0 (1977).
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1/sys/source/s2/\
 .\"   tabs.c
 A reduced version shipped in Seventh Edition Unix
@@ -252,8 +274,11 @@ it supported a \*(``\-n\*('' option to set the first tab stop at the
 left margin.
 That option is not documented by POSIX.
 .PP
-The PWB/Unix \fBtabs\fP utility returned in System III (1980),
-and used built-in tables rather than the terminal database,
+The PWB/Unix
+.B tabs
+utility returned in System III (1980),
+and used built-in tables,
+rather than the terminal database,
 to support a half-dozen hardcopy terminal (printer) types.
 It also had built-in logic to support setting the left margin,
 as well as a feature for copying the tab settings from a file.
@@ -263,50 +288,69 @@ such as SVr4,
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=SysVR4/cmd/tabs/tabs.c
 added support for the terminal database,
 but retained the tables to support the printers.
-In an earlier development effort,
-the tab stop initialization provided by \fBtset\fP(1) (1982),
-and incorporated into \fBtput\fP(1) uses the terminal database,
+By this time,
+System\ V
+.B tput
+had incorporated the tab stop initialization feature of BSD's
+.B tset
+from 1982,
+but employed the
+.I \%term\%info
+database to do so.
 .PP
-The \fB+m\fP option was documented in the POSIX
-Base Specifications Issue 5
+The
+.B +m
+option was documented in the POSIX Base Specifications Issue 5
 (Unix98, 1997),
 then omitted in Issue 6
 (Unix03, 2004)
 without express motivation,
 though an introductory comment
-\fI\*(``and optionally adjusts the margin\*(''\fP remains,
+\*(``and optionally adjusts the margin\*('' remains,
 overlooked in the removal.
-The \fBtabs\fP utility documented in Issues 6 and later has no mechanism
-for setting margins.
-The \fB+m\fP option in
+The
+.B tabs
+utility documented in Issues 6 and later has no mechanism for setting
+margins.
+The
+.B +m
+option in
 .I \%ncurses
-\fBtabs\fP differs from the SVr4 feature by using terminal capabilities
-rather than built-in tables.
+\fB\%@TABS@\fP differs from the SVr4 feature by using terminal
+capabilities rather than built-in tables.
 .PP
 POSIX documents no limit on the number of tab stops.
 Other implementations impose one;
-the limit is 20 in PWB/Unix's \fBtabs\fP utility.
+the limit is 20 in PWB/Unix's
+.B tabs
+utility.
 While some terminals may not accept an arbitrary number of tab stops,
 .I \%ncurses
-\fBtabs\fP attempts to set tab stops up to the right margin if the list
-thereof is sufficiently long.
+\fB\%@TABS@\fP attempts to set tab stops up to the right margin if the
+list thereof is sufficiently long.
 .PP
-The \*(``Rationale\*('' section of the Issue 6 \fBtabs\fP reference page
+The \*(``Rationale\*('' section of the Issue 6
+.B tabs
+reference page
 .\" https://pubs.opengroup.org/onlinepubs/009604499/utilities/tabs.html
-details how the committee considered redesigning the \fBtabs\fP and
-\fBtput\fP utilities,
+details how the committee considered redesigning the
+.B tabs
+and
+.B tput
+utilities,
 without settling on an improved solution.
 It claims that
-.RS 5
 .PP
-no known historical version of tabs supports the capability of setting
-arbitrary tab stops.
+.RS 4
+\*(``no known historical version of
+.I tabs
+supports the capability of setting arbitrary tab stops.\*(''
 .RE
 .PP
-Nevertheless,
-the feature described in subsection \*(``Explicit Lists\*('' above was
+The feature described in subsection \*(``Explicit Lists\*('' above was
 implemented in PWB/Unix,
-and permits the setting of abitrary tab stops.
+.\" see URL above
+and permitted the setting of abitrary tab stops nevertheless.
 .SH SEE ALSO
 \fB\%@INFOCMP@\fP(1M),
 \fB\%@TSET@\fP(1),

@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <EM>ncurses</EM> version 6.4 (patch 20240113).
+       This manual describes <EM>ncurses</EM> version 6.4 (patch 20240120).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -247,661 +247,656 @@
 
        (#<EM>i</EM>)   indicates the <EM>i</EM>th parameter.
 
-                                     <STRONG>Code</STRONG>
-       <STRONG>Boolean</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>    <STRONG>TI</STRONG>      <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
+                                      <STRONG>Code</STRONG>
+       <STRONG>Boolean</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>    <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
 
-       <STRONG>auto_left_margin</STRONG>           <STRONG>bw</STRONG>      <STRONG>bw</STRONG>   cub1 wraps from column 0 to
-                                               last column
-       <STRONG>auto_right_margin</STRONG>          <STRONG>am</STRONG>      <STRONG>am</STRONG>   terminal has automatic margins
-       <STRONG>no_esc_ctlc</STRONG>                <STRONG>xsb</STRONG>     <STRONG>xb</STRONG>   beehive (f1=escape, f2=ctrl C)
-       <STRONG>ceol_standout_glitch</STRONG>       <STRONG>xhp</STRONG>     <STRONG>xs</STRONG>   standout not erased by
-                                               overwriting (hp)
-       <STRONG>eat_newline_glitch</STRONG>         <STRONG>xenl</STRONG>    <STRONG>xn</STRONG>   newline ignored after 80 cols
-                                               (concept)
-       <STRONG>erase_overstrike</STRONG>           <STRONG>eo</STRONG>      <STRONG>eo</STRONG>   can erase overstrikes with a
-                                               blank
-       <STRONG>generic_type</STRONG>               <STRONG>gn</STRONG>      <STRONG>gn</STRONG>   generic line type
-       <STRONG>hard_copy</STRONG>                  <STRONG>hc</STRONG>      <STRONG>hc</STRONG>   hardcopy terminal
-       <STRONG>has_meta_key</STRONG>               <STRONG>km</STRONG>      <STRONG>km</STRONG>   Has a meta key (i.e., sets 8th-
-                                               bit)
-       <STRONG>has_status_line</STRONG>            <STRONG>hs</STRONG>      <STRONG>hs</STRONG>   has extra status line
-       <STRONG>insert_null_glitch</STRONG>         <STRONG>in</STRONG>      <STRONG>in</STRONG>   insert mode distinguishes nulls
-       <STRONG>memory_above</STRONG>               <STRONG>da</STRONG>      <STRONG>da</STRONG>   display may be retained above
-                                               the screen
-       <STRONG>memory_below</STRONG>               <STRONG>db</STRONG>      <STRONG>db</STRONG>   display may be retained below
-                                               the screen
-       <STRONG>move_insert_mode</STRONG>           <STRONG>mir</STRONG>     <STRONG>mi</STRONG>   safe to move while in insert
-                                               mode
-       <STRONG>move_standout_mode</STRONG>         <STRONG>msgr</STRONG>    <STRONG>ms</STRONG>   safe to move while in standout
-                                               mode
-       <STRONG>over_strike</STRONG>                <STRONG>os</STRONG>      <STRONG>os</STRONG>   terminal can overstrike
-       <STRONG>status_line_esc_ok</STRONG>         <STRONG>eslok</STRONG>   <STRONG>es</STRONG>   escape can be used on the
-                                               status line
-       <STRONG>dest_tabs_magic_smso</STRONG>       <STRONG>xt</STRONG>      <STRONG>xt</STRONG>   tabs destructive, magic so char
-                                               (t1061)
-       <STRONG>tilde_glitch</STRONG>               <STRONG>hz</STRONG>      <STRONG>hz</STRONG>   cannot print ~'s (Hazeltine)
-       <STRONG>transparent_underline</STRONG>      <STRONG>ul</STRONG>      <STRONG>ul</STRONG>   underline character overstrikes
-       <STRONG>xon_xoff</STRONG>                   <STRONG>xon</STRONG>     <STRONG>xo</STRONG>   terminal uses xon/xoff
-                                               handshaking
-       <STRONG>needs_xon_xoff</STRONG>             <STRONG>nxon</STRONG>    <STRONG>nx</STRONG>   padding will not work, xon/xoff
-                                               required
-       <STRONG>prtr_silent</STRONG>                <STRONG>mc5i</STRONG>    <STRONG>5i</STRONG>   printer will not echo on screen
-       <STRONG>hard_cursor</STRONG>                <STRONG>chts</STRONG>    <STRONG>HC</STRONG>   cursor is hard to see
-       <STRONG>non_rev_rmcup</STRONG>              <STRONG>nrrmc</STRONG>   <STRONG>NR</STRONG>   smcup does not reverse rmcup
-       <STRONG>no_pad_char</STRONG>                <STRONG>npc</STRONG>     <STRONG>NP</STRONG>   pad character does not exist
-       <STRONG>non_dest_scroll_region</STRONG>     <STRONG>ndscr</STRONG>   <STRONG>ND</STRONG>   scrolling region is non-
-                                               destructive
-       <STRONG>can_change</STRONG>                 <STRONG>ccc</STRONG>     <STRONG>cc</STRONG>   terminal can re-define existing
-                                               colors
-       <STRONG>back_color_erase</STRONG>           <STRONG>bce</STRONG>     <STRONG>ut</STRONG>   screen erased with background
-                                               color
-       <STRONG>hue_lightness_saturation</STRONG>   <STRONG>hls</STRONG>     <STRONG>hl</STRONG>   terminal uses only HLS color
-                                               notation (Tektronix)
-       <STRONG>col_addr_glitch</STRONG>            <STRONG>xhpa</STRONG>    <STRONG>YA</STRONG>   only positive motion for
-                                               hpa/mhpa caps
-       <STRONG>cr_cancels_micro_mode</STRONG>      <STRONG>crxm</STRONG>    <STRONG>YB</STRONG>   using cr turns off micro mode
-       <STRONG>has_print_wheel</STRONG>            <STRONG>daisy</STRONG>   <STRONG>YC</STRONG>   printer needs operator to
-                                               change character set
-       <STRONG>row_addr_glitch</STRONG>            <STRONG>xvpa</STRONG>    <STRONG>YD</STRONG>   only positive motion for
-                                               vpa/mvpa caps
-       <STRONG>semi_auto_right_margin</STRONG>     <STRONG>sam</STRONG>     <STRONG>YE</STRONG>   printing in last column causes
-                                               cr
-       <STRONG>cpi_changes_res</STRONG>            <STRONG>cpix</STRONG>    <STRONG>YF</STRONG>   changing character pitch
-                                               changes resolution
-       <STRONG>lpi_changes_res</STRONG>            <STRONG>lpix</STRONG>    <STRONG>YG</STRONG>   changing line pitch changes
-                                               resolution
-
-                                    <STRONG>Code</STRONG>
-       <STRONG>Numeric</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>   <STRONG>TI</STRONG>       <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
-       ------------------------------------------------------------------------
-       <STRONG>columns</STRONG>                   <STRONG>cols</STRONG>     <STRONG>co</STRONG>   number of columns in a line
-
-       <STRONG>init_tabs</STRONG>                 <STRONG>it</STRONG>       <STRONG>it</STRONG>   tabs initially every # spaces
-       <STRONG>lines</STRONG>                     <STRONG>lines</STRONG>    <STRONG>li</STRONG>   number of lines on screen or
-                                               page
-       <STRONG>lines_of_memory</STRONG>           <STRONG>lm</STRONG>       <STRONG>lm</STRONG>   lines of memory if &gt; line. 0
-                                               means varies
-       <STRONG>magic_cookie_glitch</STRONG>       <STRONG>xmc</STRONG>      <STRONG>sg</STRONG>   number of blank characters left
-                                               by smso or rmso
-       <STRONG>padding_baud_rate</STRONG>         <STRONG>pb</STRONG>       <STRONG>pb</STRONG>   lowest baud rate where padding
-                                               needed
-       <STRONG>virtual_terminal</STRONG>          <STRONG>vt</STRONG>       <STRONG>vt</STRONG>   virtual terminal number
-                                               (CB/unix)
-       <STRONG>width_status_line</STRONG>         <STRONG>wsl</STRONG>      <STRONG>ws</STRONG>   number of columns in status
-                                               line
-       <STRONG>num_labels</STRONG>                <STRONG>nlab</STRONG>     <STRONG>Nl</STRONG>   number of labels on screen
-       <STRONG>label_height</STRONG>              <STRONG>lh</STRONG>       <STRONG>lh</STRONG>   rows in each label
-       <STRONG>label_width</STRONG>               <STRONG>lw</STRONG>       <STRONG>lw</STRONG>   columns in each label
-       <STRONG>max_attributes</STRONG>            <STRONG>ma</STRONG>       <STRONG>ma</STRONG>   maximum combined attributes
-                                               terminal can handle
-       <STRONG>maximum_windows</STRONG>           <STRONG>wnum</STRONG>     <STRONG>MW</STRONG>   maximum number of definable
-                                               windows
-       <STRONG>max_colors</STRONG>                <STRONG>colors</STRONG>   <STRONG>Co</STRONG>   maximum number of colors on
-                                               screen
-       <STRONG>max_pairs</STRONG>                 <STRONG>pairs</STRONG>    <STRONG>pa</STRONG>   maximum number of color-pairs
-                                               on the screen
-       <STRONG>no_color_video</STRONG>            <STRONG>ncv</STRONG>      <STRONG>NC</STRONG>   video attributes that cannot be
-                                               used with colors
-
-       The following numeric capabilities  are  present  in  the  SVr4.0  term
-       structure,  but  are  not yet documented in the man page.  They came in
-       with SVr4's printer support.
-
-                                    <STRONG>Code</STRONG>
-       <STRONG>Numeric</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>   <STRONG>TI</STRONG>       <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
-       ------------------------------------------------------------------------
-       <STRONG>buffer_capacity</STRONG>           <STRONG>bufsz</STRONG>    <STRONG>Ya</STRONG>   numbers of bytes buffered
-                                               before printing
-       <STRONG>dot_vert_spacing</STRONG>          <STRONG>spinv</STRONG>    <STRONG>Yb</STRONG>   spacing of pins vertically in
-                                               pins per inch
-       <STRONG>dot_horz_spacing</STRONG>          <STRONG>spinh</STRONG>    <STRONG>Yc</STRONG>   spacing of dots horizontally in
-                                               dots per inch
-       <STRONG>max_micro_address</STRONG>         <STRONG>maddr</STRONG>    <STRONG>Yd</STRONG>   maximum value in
-                                               micro_..._address
-       <STRONG>max_micro_jump</STRONG>            <STRONG>mjump</STRONG>    <STRONG>Ye</STRONG>   maximum value in parm_..._micro
-       <STRONG>micro_col_size</STRONG>            <STRONG>mcs</STRONG>      <STRONG>Yf</STRONG>   character step size when in
-                                               micro mode
-       <STRONG>micro_line_size</STRONG>           <STRONG>mls</STRONG>      <STRONG>Yg</STRONG>   line step size when in micro
-                                               mode
-       <STRONG>number_of_pins</STRONG>            <STRONG>npins</STRONG>    <STRONG>Yh</STRONG>   numbers of pins in print-head
-       <STRONG>output_res_char</STRONG>           <STRONG>orc</STRONG>      <STRONG>Yi</STRONG>   horizontal resolution in units
-                                               per line
-       <STRONG>output_res_line</STRONG>           <STRONG>orl</STRONG>      <STRONG>Yj</STRONG>   vertical resolution in units
-                                               per line
-       <STRONG>output_res_horz_inch</STRONG>      <STRONG>orhi</STRONG>     <STRONG>Yk</STRONG>   horizontal resolution in units
-                                               per inch
-       <STRONG>output_res_vert_inch</STRONG>      <STRONG>orvi</STRONG>     <STRONG>Yl</STRONG>   vertical resolution in units
-                                               per inch
-       <STRONG>print_rate</STRONG>                <STRONG>cps</STRONG>      <STRONG>Ym</STRONG>   print rate in characters per
-                                               second
-       <STRONG>wide_char_size</STRONG>            <STRONG>widcs</STRONG>    <STRONG>Yn</STRONG>   character step size when in
-                                               double wide mode
-       <STRONG>buttons</STRONG>                   <STRONG>btns</STRONG>     <STRONG>BT</STRONG>   number of buttons on mouse
-       <STRONG>bit_image_entwining</STRONG>       <STRONG>bitwin</STRONG>   <STRONG>Yo</STRONG>   number of passes for each bit-
-                                               image row
-       <STRONG>bit_image_type</STRONG>            <STRONG>bitype</STRONG>   <STRONG>Yp</STRONG>   type of bit-image device
+       <STRONG>auto_left_margin</STRONG>           <STRONG>bw</STRONG>        <STRONG>bw</STRONG>  cub1 wraps from column 0 to
+                                                last column
+       <STRONG>auto_right_margin</STRONG>          <STRONG>am</STRONG>        <STRONG>am</STRONG>  terminal has automatic margins
+       <STRONG>no_esc_ctlc</STRONG>                <STRONG>xsb</STRONG>       <STRONG>xb</STRONG>  beehive (f1=escape, f2=ctrl C)
+       <STRONG>ceol_standout_glitch</STRONG>       <STRONG>xhp</STRONG>       <STRONG>xs</STRONG>  standout not erased by
+                                                overwriting (hp)
+       <STRONG>eat_newline_glitch</STRONG>         <STRONG>xenl</STRONG>      <STRONG>xn</STRONG>  newline ignored after 80 cols
+                                                (concept)
+       <STRONG>erase_overstrike</STRONG>           <STRONG>eo</STRONG>        <STRONG>eo</STRONG>  can erase overstrikes with a
+                                                blank
+       <STRONG>generic_type</STRONG>               <STRONG>gn</STRONG>        <STRONG>gn</STRONG>  generic line type
+       <STRONG>hard_copy</STRONG>                  <STRONG>hc</STRONG>        <STRONG>hc</STRONG>  hardcopy terminal
+       <STRONG>has_meta_key</STRONG>               <STRONG>km</STRONG>        <STRONG>km</STRONG>  Has a meta key (i.e., sets
+                                                8th-bit)
+       <STRONG>has_status_line</STRONG>            <STRONG>hs</STRONG>        <STRONG>hs</STRONG>  has extra status line
+       <STRONG>insert_null_glitch</STRONG>         <STRONG>in</STRONG>        <STRONG>in</STRONG>  insert mode distinguishes
+                                                nulls
+       <STRONG>memory_above</STRONG>               <STRONG>da</STRONG>        <STRONG>da</STRONG>  display may be retained above
+                                                the screen
+       <STRONG>memory_below</STRONG>               <STRONG>db</STRONG>        <STRONG>db</STRONG>  display may be retained below
+                                                the screen
+       <STRONG>move_insert_mode</STRONG>           <STRONG>mir</STRONG>       <STRONG>mi</STRONG>  safe to move while in insert
+                                                mode
+       <STRONG>move_standout_mode</STRONG>         <STRONG>msgr</STRONG>      <STRONG>ms</STRONG>  safe to move while in standout
+                                                mode
+       <STRONG>over_strike</STRONG>                <STRONG>os</STRONG>        <STRONG>os</STRONG>  terminal can overstrike
+       <STRONG>status_line_esc_ok</STRONG>         <STRONG>eslok</STRONG>     <STRONG>es</STRONG>  escape can be used on the
+                                                status line
+       <STRONG>dest_tabs_magic_smso</STRONG>       <STRONG>xt</STRONG>        <STRONG>xt</STRONG>  tabs destructive, magic so
+                                                char (t1061)
+       <STRONG>tilde_glitch</STRONG>               <STRONG>hz</STRONG>        <STRONG>hz</STRONG>  cannot print ~'s (Hazeltine)
+       <STRONG>transparent_underline</STRONG>      <STRONG>ul</STRONG>        <STRONG>ul</STRONG>  underline character
+                                                overstrikes
+       <STRONG>xon_xoff</STRONG>                   <STRONG>xon</STRONG>       <STRONG>xo</STRONG>  terminal uses xon/xoff
+                                                handshaking
+       <STRONG>needs_xon_xoff</STRONG>             <STRONG>nxon</STRONG>      <STRONG>nx</STRONG>  padding will not work,
+                                                xon/xoff required
+       <STRONG>prtr_silent</STRONG>                <STRONG>mc5i</STRONG>      <STRONG>5i</STRONG>  printer will not echo on
+                                                screen
+       <STRONG>hard_cursor</STRONG>                <STRONG>chts</STRONG>      <STRONG>HC</STRONG>  cursor is hard to see
+       <STRONG>non_rev_rmcup</STRONG>              <STRONG>nrrmc</STRONG>     <STRONG>NR</STRONG>  smcup does not reverse rmcup
+       <STRONG>no_pad_char</STRONG>                <STRONG>npc</STRONG>       <STRONG>NP</STRONG>  pad character does not exist
+       <STRONG>non_dest_scroll_region</STRONG>     <STRONG>ndscr</STRONG>     <STRONG>ND</STRONG>  scrolling region is non-
+                                                destructive
+       <STRONG>can_change</STRONG>                 <STRONG>ccc</STRONG>       <STRONG>cc</STRONG>  terminal can re-define
+                                                existing colors
+       <STRONG>back_color_erase</STRONG>           <STRONG>bce</STRONG>       <STRONG>ut</STRONG>  screen erased with background
+                                                color
+       <STRONG>hue_lightness_saturation</STRONG>   <STRONG>hls</STRONG>       <STRONG>hl</STRONG>  terminal uses only HLS color
+                                                notation (Tektronix)
+       <STRONG>col_addr_glitch</STRONG>            <STRONG>xhpa</STRONG>      <STRONG>YA</STRONG>  only positive motion for
+                                                hpa/mhpa caps
+       <STRONG>cr_cancels_micro_mode</STRONG>      <STRONG>crxm</STRONG>      <STRONG>YB</STRONG>  using cr turns off micro mode
+       <STRONG>has_print_wheel</STRONG>            <STRONG>daisy</STRONG>     <STRONG>YC</STRONG>  printer needs operator to
+                                                change character set
+       <STRONG>row_addr_glitch</STRONG>            <STRONG>xvpa</STRONG>      <STRONG>YD</STRONG>  only positive motion for
+                                                vpa/mvpa caps
+       <STRONG>semi_auto_right_margin</STRONG>     <STRONG>sam</STRONG>       <STRONG>YE</STRONG>  printing in last column causes
+                                                cr
+       <STRONG>cpi_changes_res</STRONG>            <STRONG>cpix</STRONG>      <STRONG>YF</STRONG>  changing character pitch
+                                                changes resolution
+       <STRONG>lpi_changes_res</STRONG>            <STRONG>lpix</STRONG>      <STRONG>YG</STRONG>  changing line pitch changes
+                                                resolution
 
                                       <STRONG>Code</STRONG>
 
-       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>      <STRONG>TI</STRONG>       <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
+       <STRONG>Numeric</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>    <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
-       <STRONG>back_tab</STRONG>                    <STRONG>cbt</STRONG>      <STRONG>bt</STRONG>   back tab (P)
-       <STRONG>bell</STRONG>                        <STRONG>bel</STRONG>      <STRONG>bl</STRONG>   audible signal (bell) (P)
-       <STRONG>carriage_return</STRONG>             <STRONG>cr</STRONG>       <STRONG>cr</STRONG>   carriage return (P*) (P*)
-       <STRONG>change_scroll_region</STRONG>        <STRONG>csr</STRONG>      <STRONG>cs</STRONG>   change region to line #1 to
-                                                 line #2 (P)
-       <STRONG>clear_all_tabs</STRONG>              <STRONG>tbc</STRONG>      <STRONG>ct</STRONG>   clear all tab stops (P)
-       <STRONG>clear_screen</STRONG>                <STRONG>clear</STRONG>    <STRONG>cl</STRONG>   clear screen and home cursor
-                                                 (P*)
-       <STRONG>clr_eol</STRONG>                     <STRONG>el</STRONG>       <STRONG>ce</STRONG>   clear to end of line (P)
-       <STRONG>clr_eos</STRONG>                     <STRONG>ed</STRONG>       <STRONG>cd</STRONG>   clear to end of screen (P*)
-       <STRONG>column_address</STRONG>              <STRONG>hpa</STRONG>      <STRONG>ch</STRONG>   horizontal position #1,
-                                                 absolute (P)
-       <STRONG>command_character</STRONG>           <STRONG>cmdch</STRONG>    <STRONG>CC</STRONG>   terminal settable cmd
-                                                 character in prototype !?
-       <STRONG>cursor_address</STRONG>              <STRONG>cup</STRONG>      <STRONG>cm</STRONG>   move to row #1 columns #2
-       <STRONG>cursor_down</STRONG>                 <STRONG>cud1</STRONG>     <STRONG>do</STRONG>   down one line
-       <STRONG>cursor_home</STRONG>                 <STRONG>home</STRONG>     <STRONG>ho</STRONG>   home cursor (if no cup)
-       <STRONG>cursor_invisible</STRONG>            <STRONG>civis</STRONG>    <STRONG>vi</STRONG>   make cursor invisible
-       <STRONG>cursor_left</STRONG>                 <STRONG>cub1</STRONG>     <STRONG>le</STRONG>   move left one space
-       <STRONG>cursor_mem_address</STRONG>          <STRONG>mrcup</STRONG>    <STRONG>CM</STRONG>   memory relative cursor
-                                                 addressing, move to row #1
-                                                 columns #2
-       <STRONG>cursor_normal</STRONG>               <STRONG>cnorm</STRONG>    <STRONG>ve</STRONG>   make cursor appear normal
-                                                 (undo civis/cvvis)
-       <STRONG>cursor_right</STRONG>                <STRONG>cuf1</STRONG>     <STRONG>nd</STRONG>   non-destructive space (move
-                                                 right one space)
-       <STRONG>cursor_to_ll</STRONG>                <STRONG>ll</STRONG>       <STRONG>ll</STRONG>   last line, first column (if
-                                                 no cup)
-       <STRONG>cursor_up</STRONG>                   <STRONG>cuu1</STRONG>     <STRONG>up</STRONG>   up one line
-       <STRONG>cursor_visible</STRONG>              <STRONG>cvvis</STRONG>    <STRONG>vs</STRONG>   make cursor very visible
-       <STRONG>delete_character</STRONG>            <STRONG>dch1</STRONG>     <STRONG>dc</STRONG>   delete character (P*)
-       <STRONG>delete_line</STRONG>                 <STRONG>dl1</STRONG>      <STRONG>dl</STRONG>   delete line (P*)
-       <STRONG>dis_status_line</STRONG>             <STRONG>dsl</STRONG>      <STRONG>ds</STRONG>   disable status line
-       <STRONG>down_half_line</STRONG>              <STRONG>hd</STRONG>       <STRONG>hd</STRONG>   half a line down
-       <STRONG>enter_alt_charset_mode</STRONG>      <STRONG>smacs</STRONG>    <STRONG>as</STRONG>   start alternate character set
-                                                 (P)
-       <STRONG>enter_blink_mode</STRONG>            <STRONG>blink</STRONG>    <STRONG>mb</STRONG>   turn on blinking
-       <STRONG>enter_bold_mode</STRONG>             <STRONG>bold</STRONG>     <STRONG>md</STRONG>   turn on bold (extra bright)
-                                                 mode
-       <STRONG>enter_ca_mode</STRONG>               <STRONG>smcup</STRONG>    <STRONG>ti</STRONG>   string to start programs
-                                                 using cup
-       <STRONG>enter_delete_mode</STRONG>           <STRONG>smdc</STRONG>     <STRONG>dm</STRONG>   enter delete mode
-       <STRONG>enter_dim_mode</STRONG>              <STRONG>dim</STRONG>      <STRONG>mh</STRONG>   turn on half-bright mode
-       <STRONG>enter_insert_mode</STRONG>           <STRONG>smir</STRONG>     <STRONG>im</STRONG>   enter insert mode
-       <STRONG>enter_secure_mode</STRONG>           <STRONG>invis</STRONG>    <STRONG>mk</STRONG>   turn on blank mode
-                                                 (characters invisible)
-       <STRONG>enter_protected_mode</STRONG>        <STRONG>prot</STRONG>     <STRONG>mp</STRONG>   turn on protected mode
-       <STRONG>enter_reverse_mode</STRONG>          <STRONG>rev</STRONG>      <STRONG>mr</STRONG>   turn on reverse video mode
-       <STRONG>enter_standout_mode</STRONG>         <STRONG>smso</STRONG>     <STRONG>so</STRONG>   begin standout mode
-       <STRONG>enter_underline_mode</STRONG>        <STRONG>smul</STRONG>     <STRONG>us</STRONG>   begin underline mode
-       <STRONG>erase_chars</STRONG>                 <STRONG>ech</STRONG>      <STRONG>ec</STRONG>   erase #1 characters (P)
-       <STRONG>exit_alt_charset_mode</STRONG>       <STRONG>rmacs</STRONG>    <STRONG>ae</STRONG>   end alternate character set
-                                                 (P)
-       <STRONG>exit_attribute_mode</STRONG>         <STRONG>sgr0</STRONG>     <STRONG>me</STRONG>   turn off all attributes
-       <STRONG>exit_ca_mode</STRONG>                <STRONG>rmcup</STRONG>    <STRONG>te</STRONG>   strings to end programs using
-                                                 cup
-       <STRONG>exit_delete_mode</STRONG>            <STRONG>rmdc</STRONG>     <STRONG>ed</STRONG>   end delete mode
-       <STRONG>exit_insert_mode</STRONG>            <STRONG>rmir</STRONG>     <STRONG>ei</STRONG>   exit insert mode
-       <STRONG>exit_standout_mode</STRONG>          <STRONG>rmso</STRONG>     <STRONG>se</STRONG>   exit standout mode
-       <STRONG>exit_underline_mode</STRONG>         <STRONG>rmul</STRONG>     <STRONG>ue</STRONG>   exit underline mode
-       <STRONG>flash_screen</STRONG>                <STRONG>flash</STRONG>    <STRONG>vb</STRONG>   visible bell (may not move
-                                                 cursor)
+       <STRONG>columns</STRONG>                    <STRONG>cols</STRONG>      <STRONG>co</STRONG>  number of columns in a line
+       <STRONG>init_tabs</STRONG>                  <STRONG>it</STRONG>        <STRONG>it</STRONG>  tabs initially every # spaces
+       <STRONG>lines</STRONG>                      <STRONG>lines</STRONG>     <STRONG>li</STRONG>  number of lines on screen or
+                                                page
+       <STRONG>lines_of_memory</STRONG>            <STRONG>lm</STRONG>        <STRONG>lm</STRONG>  lines of memory if &gt; line. 0
+                                                means varies
+       <STRONG>magic_cookie_glitch</STRONG>        <STRONG>xmc</STRONG>       <STRONG>sg</STRONG>  number of blank characters
+                                                left by smso or rmso
+       <STRONG>padding_baud_rate</STRONG>          <STRONG>pb</STRONG>        <STRONG>pb</STRONG>  lowest baud rate where padding
+                                                needed
+       <STRONG>virtual_terminal</STRONG>           <STRONG>vt</STRONG>        <STRONG>vt</STRONG>  virtual terminal number
+                                                (CB/unix)
+       <STRONG>width_status_line</STRONG>          <STRONG>wsl</STRONG>       <STRONG>ws</STRONG>  number of columns in status
+                                                line
+       <STRONG>num_labels</STRONG>                 <STRONG>nlab</STRONG>      <STRONG>Nl</STRONG>  number of labels on screen
+       <STRONG>label_height</STRONG>               <STRONG>lh</STRONG>        <STRONG>lh</STRONG>  rows in each label
+       <STRONG>label_width</STRONG>                <STRONG>lw</STRONG>        <STRONG>lw</STRONG>  columns in each label
+       <STRONG>max_attributes</STRONG>             <STRONG>ma</STRONG>        <STRONG>ma</STRONG>  maximum combined attributes
+                                                terminal can handle
+       <STRONG>maximum_windows</STRONG>            <STRONG>wnum</STRONG>      <STRONG>MW</STRONG>  maximum number of definable
+                                                windows
+       <STRONG>max_colors</STRONG>                 <STRONG>colors</STRONG>    <STRONG>Co</STRONG>  maximum number of colors on
+                                                screen
+       <STRONG>max_pairs</STRONG>                  <STRONG>pairs</STRONG>     <STRONG>pa</STRONG>  maximum number of color-pairs
+                                                on the screen
+       <STRONG>no_color_video</STRONG>             <STRONG>ncv</STRONG>       <STRONG>NC</STRONG>  video attributes that cannot
+                                                be used with colors
 
+       The  following  numeric  capabilities  are  present  in the SVr4.0 term
+       structure, but are not yet documented in the man page.   They  came  in
+       with SVr4's printer support.
 
-       <STRONG>form_feed</STRONG>                   <STRONG>ff</STRONG>       <STRONG>ff</STRONG>   hardcopy terminal page eject
-                                                 (P*)
-       <STRONG>from_status_line</STRONG>            <STRONG>fsl</STRONG>      <STRONG>fs</STRONG>   return from status line
-       <STRONG>init_1string</STRONG>                <STRONG>is1</STRONG>      <STRONG>i1</STRONG>   initialization string
-       <STRONG>init_2string</STRONG>                <STRONG>is2</STRONG>      <STRONG>is</STRONG>   initialization string
-       <STRONG>init_3string</STRONG>                <STRONG>is3</STRONG>      <STRONG>i3</STRONG>   initialization string
-       <STRONG>init_file</STRONG>                   <STRONG>if</STRONG>       <STRONG>if</STRONG>   name of initialization file
-       <STRONG>insert_character</STRONG>            <STRONG>ich1</STRONG>     <STRONG>ic</STRONG>   insert character (P)
-       <STRONG>insert_line</STRONG>                 <STRONG>il1</STRONG>      <STRONG>al</STRONG>   insert line (P*)
-       <STRONG>insert_padding</STRONG>              <STRONG>ip</STRONG>       <STRONG>ip</STRONG>   insert padding after inserted
-                                                 character
-       <STRONG>key_backspace</STRONG>               <STRONG>kbs</STRONG>      <STRONG>kb</STRONG>   backspace key
-       <STRONG>key_catab</STRONG>                   <STRONG>ktbc</STRONG>     <STRONG>ka</STRONG>   clear-all-tabs key
-       <STRONG>key_clear</STRONG>                   <STRONG>kclr</STRONG>     <STRONG>kC</STRONG>   clear-screen or erase key
-       <STRONG>key_ctab</STRONG>                    <STRONG>kctab</STRONG>    <STRONG>kt</STRONG>   clear-tab key
-       <STRONG>key_dc</STRONG>                      <STRONG>kdch1</STRONG>    <STRONG>kD</STRONG>   delete-character key
-       <STRONG>key_dl</STRONG>                      <STRONG>kdl1</STRONG>     <STRONG>kL</STRONG>   delete-line key
-       <STRONG>key_down</STRONG>                    <STRONG>kcud1</STRONG>    <STRONG>kd</STRONG>   down-arrow key
-       <STRONG>key_eic</STRONG>                     <STRONG>krmir</STRONG>    <STRONG>kM</STRONG>   sent by rmir or smir in
-                                                 insert mode
-       <STRONG>key_eol</STRONG>                     <STRONG>kel</STRONG>      <STRONG>kE</STRONG>   clear-to-end-of-line key
-       <STRONG>key_eos</STRONG>                     <STRONG>ked</STRONG>      <STRONG>kS</STRONG>   clear-to-end-of-screen key
-       <STRONG>key_f0</STRONG>                      <STRONG>kf0</STRONG>      <STRONG>k0</STRONG>   F0 function key
-       <STRONG>key_f1</STRONG>                      <STRONG>kf1</STRONG>      <STRONG>k1</STRONG>   F1 function key
-       <STRONG>key_f10</STRONG>                     <STRONG>kf10</STRONG>     <STRONG>k;</STRONG>   F10 function key
-       <STRONG>key_f2</STRONG>                      <STRONG>kf2</STRONG>      <STRONG>k2</STRONG>   F2 function key
-       <STRONG>key_f3</STRONG>                      <STRONG>kf3</STRONG>      <STRONG>k3</STRONG>   F3 function key
-       <STRONG>key_f4</STRONG>                      <STRONG>kf4</STRONG>      <STRONG>k4</STRONG>   F4 function key
-       <STRONG>key_f5</STRONG>                      <STRONG>kf5</STRONG>      <STRONG>k5</STRONG>   F5 function key
-       <STRONG>key_f6</STRONG>                      <STRONG>kf6</STRONG>      <STRONG>k6</STRONG>   F6 function key
-       <STRONG>key_f7</STRONG>                      <STRONG>kf7</STRONG>      <STRONG>k7</STRONG>   F7 function key
-       <STRONG>key_f8</STRONG>                      <STRONG>kf8</STRONG>      <STRONG>k8</STRONG>   F8 function key
-       <STRONG>key_f9</STRONG>                      <STRONG>kf9</STRONG>      <STRONG>k9</STRONG>   F9 function key
-       <STRONG>key_home</STRONG>                    <STRONG>khome</STRONG>    <STRONG>kh</STRONG>   home key
-       <STRONG>key_ic</STRONG>                      <STRONG>kich1</STRONG>    <STRONG>kI</STRONG>   insert-character key
-       <STRONG>key_il</STRONG>                      <STRONG>kil1</STRONG>     <STRONG>kA</STRONG>   insert-line key
-       <STRONG>key_left</STRONG>                    <STRONG>kcub1</STRONG>    <STRONG>kl</STRONG>   left-arrow key
-       <STRONG>key_ll</STRONG>                      <STRONG>kll</STRONG>      <STRONG>kH</STRONG>   lower-left key (home down)
-       <STRONG>key_npage</STRONG>                   <STRONG>knp</STRONG>      <STRONG>kN</STRONG>   next-page key
-       <STRONG>key_ppage</STRONG>                   <STRONG>kpp</STRONG>      <STRONG>kP</STRONG>   previous-page key
-       <STRONG>key_right</STRONG>                   <STRONG>kcuf1</STRONG>    <STRONG>kr</STRONG>   right-arrow key
-       <STRONG>key_sf</STRONG>                      <STRONG>kind</STRONG>     <STRONG>kF</STRONG>   scroll-forward key
-       <STRONG>key_sr</STRONG>                      <STRONG>kri</STRONG>      <STRONG>kR</STRONG>   scroll-backward key
-       <STRONG>key_stab</STRONG>                    <STRONG>khts</STRONG>     <STRONG>kT</STRONG>   set-tab key
-       <STRONG>key_up</STRONG>                      <STRONG>kcuu1</STRONG>    <STRONG>ku</STRONG>   up-arrow key
-       <STRONG>keypad_local</STRONG>                <STRONG>rmkx</STRONG>     <STRONG>ke</STRONG>   leave keyboard transmit mode
-       <STRONG>keypad_xmit</STRONG>                 <STRONG>smkx</STRONG>     <STRONG>ks</STRONG>   enter keyboard transmit mode
-       <STRONG>lab_f0</STRONG>                      <STRONG>lf0</STRONG>      <STRONG>l0</STRONG>   label on function key f0 if
-                                                 not f0
-       <STRONG>lab_f1</STRONG>                      <STRONG>lf1</STRONG>      <STRONG>l1</STRONG>   label on function key f1 if
-                                                 not f1
-       <STRONG>lab_f10</STRONG>                     <STRONG>lf10</STRONG>     <STRONG>la</STRONG>   label on function key f10 if
-                                                 not f10
-       <STRONG>lab_f2</STRONG>                      <STRONG>lf2</STRONG>      <STRONG>l2</STRONG>   label on function key f2 if
-                                                 not f2
-       <STRONG>lab_f3</STRONG>                      <STRONG>lf3</STRONG>      <STRONG>l3</STRONG>   label on function key f3 if
-                                                 not f3
-       <STRONG>lab_f4</STRONG>                      <STRONG>lf4</STRONG>      <STRONG>l4</STRONG>   label on function key f4 if
-                                                 not f4
-       <STRONG>lab_f5</STRONG>                      <STRONG>lf5</STRONG>      <STRONG>l5</STRONG>   label on function key f5 if
-                                                 not f5
-       <STRONG>lab_f6</STRONG>                      <STRONG>lf6</STRONG>      <STRONG>l6</STRONG>   label on function key f6 if
-                                                 not f6
-       <STRONG>lab_f7</STRONG>                      <STRONG>lf7</STRONG>      <STRONG>l7</STRONG>   label on function key f7 if
-                                                 not f7
+                                      <STRONG>Code</STRONG>
+       <STRONG>Numeric</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>    <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
+       ------------------------------------------------------------------------
+       <STRONG>buffer_capacity</STRONG>            <STRONG>bufsz</STRONG>     <STRONG>Ya</STRONG>  numbers of bytes buffered
+                                                before printing
+       <STRONG>dot_vert_spacing</STRONG>           <STRONG>spinv</STRONG>     <STRONG>Yb</STRONG>  spacing of pins vertically in
+                                                pins per inch
+       <STRONG>dot_horz_spacing</STRONG>           <STRONG>spinh</STRONG>     <STRONG>Yc</STRONG>  spacing of dots horizontally
+                                                in dots per inch
+       <STRONG>max_micro_address</STRONG>          <STRONG>maddr</STRONG>     <STRONG>Yd</STRONG>  maximum value in
+                                                micro_..._address
+       <STRONG>max_micro_jump</STRONG>             <STRONG>mjump</STRONG>     <STRONG>Ye</STRONG>  maximum value in
+                                                parm_..._micro
+       <STRONG>micro_col_size</STRONG>             <STRONG>mcs</STRONG>       <STRONG>Yf</STRONG>  character step size when in
+                                                micro mode
+       <STRONG>micro_line_size</STRONG>            <STRONG>mls</STRONG>       <STRONG>Yg</STRONG>  line step size when in micro
+                                                mode
+       <STRONG>number_of_pins</STRONG>             <STRONG>npins</STRONG>     <STRONG>Yh</STRONG>  numbers of pins in print-head
+       <STRONG>output_res_char</STRONG>            <STRONG>orc</STRONG>       <STRONG>Yi</STRONG>  horizontal resolution in units
+                                                per line
+       <STRONG>output_res_line</STRONG>            <STRONG>orl</STRONG>       <STRONG>Yj</STRONG>  vertical resolution in units
+                                                per line
+       <STRONG>output_res_horz_inch</STRONG>       <STRONG>orhi</STRONG>      <STRONG>Yk</STRONG>  horizontal resolution in units
+                                                per inch
+       <STRONG>output_res_vert_inch</STRONG>       <STRONG>orvi</STRONG>      <STRONG>Yl</STRONG>  vertical resolution in units
+                                                per inch
+       <STRONG>print_rate</STRONG>                 <STRONG>cps</STRONG>       <STRONG>Ym</STRONG>  print rate in characters per
+                                                second
+       <STRONG>wide_char_size</STRONG>             <STRONG>widcs</STRONG>     <STRONG>Yn</STRONG>  character step size when in
+                                                double wide mode
+       <STRONG>buttons</STRONG>                    <STRONG>btns</STRONG>      <STRONG>BT</STRONG>  number of buttons on mouse
 
-       <STRONG>lab_f8</STRONG>                      <STRONG>lf8</STRONG>      <STRONG>l8</STRONG>   label on function key f8 if
-                                                 not f8
-       <STRONG>lab_f9</STRONG>                      <STRONG>lf9</STRONG>      <STRONG>l9</STRONG>   label on function key f9 if
-                                                 not f9
-       <STRONG>meta_off</STRONG>                    <STRONG>rmm</STRONG>      <STRONG>mo</STRONG>   turn off meta mode
-       <STRONG>meta_on</STRONG>                     <STRONG>smm</STRONG>      <STRONG>mm</STRONG>   turn on meta mode (8th-bit
-                                                 on)
-       <STRONG>newline</STRONG>                     <STRONG>nel</STRONG>      <STRONG>nw</STRONG>   newline (behave like cr
-                                                 followed by lf)
-       <STRONG>pad_char</STRONG>                    <STRONG>pad</STRONG>      <STRONG>pc</STRONG>   padding char (instead of
-                                                 null)
-       <STRONG>parm_dch</STRONG>                    <STRONG>dch</STRONG>      <STRONG>DC</STRONG>   delete #1 characters (P*)
-       <STRONG>parm_delete_line</STRONG>            <STRONG>dl</STRONG>       <STRONG>DL</STRONG>   delete #1 lines (P*)
-       <STRONG>parm_down_cursor</STRONG>            <STRONG>cud</STRONG>      <STRONG>DO</STRONG>   down #1 lines (P*)
-       <STRONG>parm_ich</STRONG>                    <STRONG>ich</STRONG>      <STRONG>IC</STRONG>   insert #1 characters (P*)
-       <STRONG>parm_index</STRONG>                  <STRONG>indn</STRONG>     <STRONG>SF</STRONG>   scroll forward #1 lines (P)
-       <STRONG>parm_insert_line</STRONG>            <STRONG>il</STRONG>       <STRONG>AL</STRONG>   insert #1 lines (P*)
-       <STRONG>parm_left_cursor</STRONG>            <STRONG>cub</STRONG>      <STRONG>LE</STRONG>   move #1 characters to the
-                                                 left (P)
-       <STRONG>parm_right_cursor</STRONG>           <STRONG>cuf</STRONG>      <STRONG>RI</STRONG>   move #1 characters to the
-                                                 right (P*)
-       <STRONG>parm_rindex</STRONG>                 <STRONG>rin</STRONG>      <STRONG>SR</STRONG>   scroll back #1 lines (P)
-       <STRONG>parm_up_cursor</STRONG>              <STRONG>cuu</STRONG>      <STRONG>UP</STRONG>   up #1 lines (P*)
-       <STRONG>pkey_key</STRONG>                    <STRONG>pfkey</STRONG>    <STRONG>pk</STRONG>   program function key #1 to
-                                                 type string #2
-       <STRONG>pkey_local</STRONG>                  <STRONG>pfloc</STRONG>    <STRONG>pl</STRONG>   program function key #1 to
-                                                 execute string #2
-       <STRONG>pkey_xmit</STRONG>                   <STRONG>pfx</STRONG>      <STRONG>px</STRONG>   program function key #1 to
-                                                 transmit string #2
-       <STRONG>print_screen</STRONG>                <STRONG>mc0</STRONG>      <STRONG>ps</STRONG>   print contents of screen
-       <STRONG>prtr_off</STRONG>                    <STRONG>mc4</STRONG>      <STRONG>pf</STRONG>   turn off printer
-       <STRONG>prtr_on</STRONG>                     <STRONG>mc5</STRONG>      <STRONG>po</STRONG>   turn on printer
-       <STRONG>repeat_char</STRONG>                 <STRONG>rep</STRONG>      <STRONG>rp</STRONG>   repeat char #1 #2 times (P*)
-       <STRONG>reset_1string</STRONG>               <STRONG>rs1</STRONG>      <STRONG>r1</STRONG>   reset string
-       <STRONG>reset_2string</STRONG>               <STRONG>rs2</STRONG>      <STRONG>r2</STRONG>   reset string
-       <STRONG>reset_3string</STRONG>               <STRONG>rs3</STRONG>      <STRONG>r3</STRONG>   reset string
-       <STRONG>reset_file</STRONG>                  <STRONG>rf</STRONG>       <STRONG>rf</STRONG>   name of reset file
-       <STRONG>restore_cursor</STRONG>              <STRONG>rc</STRONG>       <STRONG>rc</STRONG>   restore cursor to position of
-                                                 last save_cursor
-       <STRONG>row_address</STRONG>                 <STRONG>vpa</STRONG>      <STRONG>cv</STRONG>   vertical position #1 absolute
-                                                 (P)
-       <STRONG>save_cursor</STRONG>                 <STRONG>sc</STRONG>       <STRONG>sc</STRONG>   save current cursor position
-                                                 (P)
-       <STRONG>scroll_forward</STRONG>              <STRONG>ind</STRONG>      <STRONG>sf</STRONG>   scroll text up (P)
-       <STRONG>scroll_reverse</STRONG>              <STRONG>ri</STRONG>       <STRONG>sr</STRONG>   scroll text down (P)
-       <STRONG>set_attributes</STRONG>              <STRONG>sgr</STRONG>      <STRONG>sa</STRONG>   define video attributes #1-#9
-                                                 (PG9)
-       <STRONG>set_tab</STRONG>                     <STRONG>hts</STRONG>      <STRONG>st</STRONG>   set a tab in every row,
-                                                 current columns
-       <STRONG>set_window</STRONG>                  <STRONG>wind</STRONG>     <STRONG>wi</STRONG>   current window is lines #1-#2
-                                                 cols #3-#4
-       <STRONG>tab</STRONG>                         <STRONG>ht</STRONG>       <STRONG>ta</STRONG>   tab to next 8-space hardware
-                                                 tab stop
-       <STRONG>to_status_line</STRONG>              <STRONG>tsl</STRONG>      <STRONG>ts</STRONG>   move to status line, column
-                                                 #1
-       <STRONG>underline_char</STRONG>              <STRONG>uc</STRONG>       <STRONG>uc</STRONG>   underline char and move past
-                                                 it
-       <STRONG>up_half_line</STRONG>                <STRONG>hu</STRONG>       <STRONG>hu</STRONG>   half a line up
-       <STRONG>init_prog</STRONG>                   <STRONG>iprog</STRONG>    <STRONG>iP</STRONG>   path name of program for
-                                                 initialization
-       <STRONG>key_a1</STRONG>                      <STRONG>ka1</STRONG>      <STRONG>K1</STRONG>   upper left of keypad
-       <STRONG>key_a3</STRONG>                      <STRONG>ka3</STRONG>      <STRONG>K3</STRONG>   upper right of keypad
-       <STRONG>key_b2</STRONG>                      <STRONG>kb2</STRONG>      <STRONG>K2</STRONG>   center of keypad
-       <STRONG>key_c1</STRONG>                      <STRONG>kc1</STRONG>      <STRONG>K4</STRONG>   lower left of keypad
-       <STRONG>key_c3</STRONG>                      <STRONG>kc3</STRONG>      <STRONG>K5</STRONG>   lower right of keypad
+       <STRONG>bit_image_entwining</STRONG>        <STRONG>bitwin</STRONG>    <STRONG>Yo</STRONG>  number of passes for each bit-
+                                                image row
+       <STRONG>bit_image_type</STRONG>             <STRONG>bitype</STRONG>    <STRONG>Yp</STRONG>  type of bit-image device
 
-       <STRONG>prtr_non</STRONG>                    <STRONG>mc5p</STRONG>     <STRONG>pO</STRONG>   turn on printer for #1 bytes
-       <STRONG>char_padding</STRONG>                <STRONG>rmp</STRONG>      <STRONG>rP</STRONG>   like ip but when in insert
-                                                 mode
-       <STRONG>acs_chars</STRONG>                   <STRONG>acsc</STRONG>     <STRONG>ac</STRONG>   graphics charset pairs, based
-                                                 on vt100
-       <STRONG>plab_norm</STRONG>                   <STRONG>pln</STRONG>      <STRONG>pn</STRONG>   program label #1 to show
-                                                 string #2
-       <STRONG>key_btab</STRONG>                    <STRONG>kcbt</STRONG>     <STRONG>kB</STRONG>   back-tab key
-       <STRONG>enter_xon_mode</STRONG>              <STRONG>smxon</STRONG>    <STRONG>SX</STRONG>   turn on xon/xoff handshaking
-       <STRONG>exit_xon_mode</STRONG>               <STRONG>rmxon</STRONG>    <STRONG>RX</STRONG>   turn off xon/xoff handshaking
-       <STRONG>enter_am_mode</STRONG>               <STRONG>smam</STRONG>     <STRONG>SA</STRONG>   turn on automatic margins
-       <STRONG>exit_am_mode</STRONG>                <STRONG>rmam</STRONG>     <STRONG>RA</STRONG>   turn off automatic margins
-       <STRONG>xon_character</STRONG>               <STRONG>xonc</STRONG>     <STRONG>XN</STRONG>   XON character
-       <STRONG>xoff_character</STRONG>              <STRONG>xoffc</STRONG>    <STRONG>XF</STRONG>   XOFF character
-       <STRONG>ena_acs</STRONG>                     <STRONG>enacs</STRONG>    <STRONG>eA</STRONG>   enable alternate char set
-       <STRONG>label_on</STRONG>                    <STRONG>smln</STRONG>     <STRONG>LO</STRONG>   turn on soft labels
-       <STRONG>label_off</STRONG>                   <STRONG>rmln</STRONG>     <STRONG>LF</STRONG>   turn off soft labels
-       <STRONG>key_beg</STRONG>                     <STRONG>kbeg</STRONG>     <STRONG>@1</STRONG>   begin key
-       <STRONG>key_cancel</STRONG>                  <STRONG>kcan</STRONG>     <STRONG>@2</STRONG>   cancel key
-       <STRONG>key_close</STRONG>                   <STRONG>kclo</STRONG>     <STRONG>@3</STRONG>   close key
-       <STRONG>key_command</STRONG>                 <STRONG>kcmd</STRONG>     <STRONG>@4</STRONG>   command key
-       <STRONG>key_copy</STRONG>                    <STRONG>kcpy</STRONG>     <STRONG>@5</STRONG>   copy key
-       <STRONG>key_create</STRONG>                  <STRONG>kcrt</STRONG>     <STRONG>@6</STRONG>   create key
-       <STRONG>key_end</STRONG>                     <STRONG>kend</STRONG>     <STRONG>@7</STRONG>   end key
-       <STRONG>key_enter</STRONG>                   <STRONG>kent</STRONG>     <STRONG>@8</STRONG>   enter/send key
-       <STRONG>key_exit</STRONG>                    <STRONG>kext</STRONG>     <STRONG>@9</STRONG>   exit key
-       <STRONG>key_find</STRONG>                    <STRONG>kfnd</STRONG>     <STRONG>@0</STRONG>   find key
-       <STRONG>key_help</STRONG>                    <STRONG>khlp</STRONG>     <STRONG>%1</STRONG>   help key
-       <STRONG>key_mark</STRONG>                    <STRONG>kmrk</STRONG>     <STRONG>%2</STRONG>   mark key
-       <STRONG>key_message</STRONG>                 <STRONG>kmsg</STRONG>     <STRONG>%3</STRONG>   message key
-       <STRONG>key_move</STRONG>                    <STRONG>kmov</STRONG>     <STRONG>%4</STRONG>   move key
-       <STRONG>key_next</STRONG>                    <STRONG>knxt</STRONG>     <STRONG>%5</STRONG>   next key
-       <STRONG>key_open</STRONG>                    <STRONG>kopn</STRONG>     <STRONG>%6</STRONG>   open key
-       <STRONG>key_options</STRONG>                 <STRONG>kopt</STRONG>     <STRONG>%7</STRONG>   options key
-       <STRONG>key_previous</STRONG>                <STRONG>kprv</STRONG>     <STRONG>%8</STRONG>   previous key
-       <STRONG>key_print</STRONG>                   <STRONG>kprt</STRONG>     <STRONG>%9</STRONG>   print key
-       <STRONG>key_redo</STRONG>                    <STRONG>krdo</STRONG>     <STRONG>%0</STRONG>   redo key
-       <STRONG>key_reference</STRONG>               <STRONG>kref</STRONG>     <STRONG>&amp;1</STRONG>   reference key
-       <STRONG>key_refresh</STRONG>                 <STRONG>krfr</STRONG>     <STRONG>&amp;2</STRONG>   refresh key
-       <STRONG>key_replace</STRONG>                 <STRONG>krpl</STRONG>     <STRONG>&amp;3</STRONG>   replace key
-       <STRONG>key_restart</STRONG>                 <STRONG>krst</STRONG>     <STRONG>&amp;4</STRONG>   restart key
-       <STRONG>key_resume</STRONG>                  <STRONG>kres</STRONG>     <STRONG>&amp;5</STRONG>   resume key
-       <STRONG>key_save</STRONG>                    <STRONG>ksav</STRONG>     <STRONG>&amp;6</STRONG>   save key
-       <STRONG>key_suspend</STRONG>                 <STRONG>kspd</STRONG>     <STRONG>&amp;7</STRONG>   suspend key
-       <STRONG>key_undo</STRONG>                    <STRONG>kund</STRONG>     <STRONG>&amp;8</STRONG>   undo key
-       <STRONG>key_sbeg</STRONG>                    <STRONG>kBEG</STRONG>     <STRONG>&amp;9</STRONG>   shifted begin key
-       <STRONG>key_scancel</STRONG>                 <STRONG>kCAN</STRONG>     <STRONG>&amp;0</STRONG>   shifted cancel key
-       <STRONG>key_scommand</STRONG>                <STRONG>kCMD</STRONG>     <STRONG>*1</STRONG>   shifted command key
-       <STRONG>key_scopy</STRONG>                   <STRONG>kCPY</STRONG>     <STRONG>*2</STRONG>   shifted copy key
-       <STRONG>key_screate</STRONG>                 <STRONG>kCRT</STRONG>     <STRONG>*3</STRONG>   shifted create key
-       <STRONG>key_sdc</STRONG>                     <STRONG>kDC</STRONG>      <STRONG>*4</STRONG>   shifted delete-character key
-       <STRONG>key_sdl</STRONG>                     <STRONG>kDL</STRONG>      <STRONG>*5</STRONG>   shifted delete-line key
-       <STRONG>key_select</STRONG>                  <STRONG>kslt</STRONG>     <STRONG>*6</STRONG>   select key
-       <STRONG>key_send</STRONG>                    <STRONG>kEND</STRONG>     <STRONG>*7</STRONG>   shifted end key
-       <STRONG>key_seol</STRONG>                    <STRONG>kEOL</STRONG>     <STRONG>*8</STRONG>   shifted clear-to-end-of-line
-                                                 key
-       <STRONG>key_sexit</STRONG>                   <STRONG>kEXT</STRONG>     <STRONG>*9</STRONG>   shifted exit key
-       <STRONG>key_sfind</STRONG>                   <STRONG>kFND</STRONG>     <STRONG>*0</STRONG>   shifted find key
-       <STRONG>key_shelp</STRONG>                   <STRONG>kHLP</STRONG>     <STRONG>#1</STRONG>   shifted help key
-       <STRONG>key_shome</STRONG>                   <STRONG>kHOM</STRONG>     <STRONG>#2</STRONG>   shifted home key
-       <STRONG>key_sic</STRONG>                     <STRONG>kIC</STRONG>      <STRONG>#3</STRONG>   shifted insert-character key
-       <STRONG>key_sleft</STRONG>                   <STRONG>kLFT</STRONG>     <STRONG>#4</STRONG>   shifted left-arrow key
-       <STRONG>key_smessage</STRONG>                <STRONG>kMSG</STRONG>     <STRONG>%a</STRONG>   shifted message key
-       <STRONG>key_smove</STRONG>                   <STRONG>kMOV</STRONG>     <STRONG>%b</STRONG>   shifted move key
-       <STRONG>key_snext</STRONG>                   <STRONG>kNXT</STRONG>     <STRONG>%c</STRONG>   shifted next key
+                                      <STRONG>Code</STRONG>
+       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
+       ------------------------------------------------------------------------
+       <STRONG>back_tab</STRONG>                   <STRONG>cbt</STRONG>       <STRONG>bt</STRONG>  back tab (P)
+       <STRONG>bell</STRONG>                       <STRONG>bel</STRONG>       <STRONG>bl</STRONG>  audible signal (bell) (P)
+       <STRONG>carriage_return</STRONG>            <STRONG>cr</STRONG>        <STRONG>cr</STRONG>  carriage return (P*) (P*)
+       <STRONG>change_scroll_region</STRONG>       <STRONG>csr</STRONG>       <STRONG>cs</STRONG>  change region to line #1 to
+                                                line #2 (P)
+       <STRONG>clear_all_tabs</STRONG>             <STRONG>tbc</STRONG>       <STRONG>ct</STRONG>  clear all tab stops (P)
+       <STRONG>clear_screen</STRONG>               <STRONG>clear</STRONG>     <STRONG>cl</STRONG>  clear screen and home cursor
+                                                (P*)
+       <STRONG>clr_eol</STRONG>                    <STRONG>el</STRONG>        <STRONG>ce</STRONG>  clear to end of line (P)
+       <STRONG>clr_eos</STRONG>                    <STRONG>ed</STRONG>        <STRONG>cd</STRONG>  clear to end of screen (P*)
+       <STRONG>column_address</STRONG>             <STRONG>hpa</STRONG>       <STRONG>ch</STRONG>  horizontal position #1,
+                                                absolute (P)
+       <STRONG>command_character</STRONG>          <STRONG>cmdch</STRONG>     <STRONG>CC</STRONG>  terminal settable cmd
+                                                character in prototype !?
+       <STRONG>cursor_address</STRONG>             <STRONG>cup</STRONG>       <STRONG>cm</STRONG>  move to row #1 columns #2
+       <STRONG>cursor_down</STRONG>                <STRONG>cud1</STRONG>      <STRONG>do</STRONG>  down one line
+       <STRONG>cursor_home</STRONG>                <STRONG>home</STRONG>      <STRONG>ho</STRONG>  home cursor (if no cup)
+       <STRONG>cursor_invisible</STRONG>           <STRONG>civis</STRONG>     <STRONG>vi</STRONG>  make cursor invisible
+       <STRONG>cursor_left</STRONG>                <STRONG>cub1</STRONG>      <STRONG>le</STRONG>  move left one space
+       <STRONG>cursor_mem_address</STRONG>         <STRONG>mrcup</STRONG>     <STRONG>CM</STRONG>  memory relative cursor
+                                                addressing, move to row #1
+                                                columns #2
+       <STRONG>cursor_normal</STRONG>              <STRONG>cnorm</STRONG>     <STRONG>ve</STRONG>  make cursor appear normal
+                                                (undo civis/cvvis)
+       <STRONG>cursor_right</STRONG>               <STRONG>cuf1</STRONG>      <STRONG>nd</STRONG>  non-destructive space (move
+                                                right one space)
+       <STRONG>cursor_to_ll</STRONG>               <STRONG>ll</STRONG>        <STRONG>ll</STRONG>  last line, first column (if no
+                                                cup)
+       <STRONG>cursor_up</STRONG>                  <STRONG>cuu1</STRONG>      <STRONG>up</STRONG>  up one line
+       <STRONG>cursor_visible</STRONG>             <STRONG>cvvis</STRONG>     <STRONG>vs</STRONG>  make cursor very visible
+       <STRONG>delete_character</STRONG>           <STRONG>dch1</STRONG>      <STRONG>dc</STRONG>  delete character (P*)
+       <STRONG>delete_line</STRONG>                <STRONG>dl1</STRONG>       <STRONG>dl</STRONG>  delete line (P*)
+       <STRONG>dis_status_line</STRONG>            <STRONG>dsl</STRONG>       <STRONG>ds</STRONG>  disable status line
+       <STRONG>down_half_line</STRONG>             <STRONG>hd</STRONG>        <STRONG>hd</STRONG>  half a line down
+       <STRONG>enter_alt_charset_mode</STRONG>     <STRONG>smacs</STRONG>     <STRONG>as</STRONG>  start alternate character set
+                                                (P)
+       <STRONG>enter_blink_mode</STRONG>           <STRONG>blink</STRONG>     <STRONG>mb</STRONG>  turn on blinking
+       <STRONG>enter_bold_mode</STRONG>            <STRONG>bold</STRONG>      <STRONG>md</STRONG>  turn on bold (extra bright)
+                                                mode
+       <STRONG>enter_ca_mode</STRONG>              <STRONG>smcup</STRONG>     <STRONG>ti</STRONG>  string to start programs using
+                                                cup
+       <STRONG>enter_delete_mode</STRONG>          <STRONG>smdc</STRONG>      <STRONG>dm</STRONG>  enter delete mode
+       <STRONG>enter_dim_mode</STRONG>             <STRONG>dim</STRONG>       <STRONG>mh</STRONG>  turn on half-bright mode
+       <STRONG>enter_insert_mode</STRONG>          <STRONG>smir</STRONG>      <STRONG>im</STRONG>  enter insert mode
+       <STRONG>enter_secure_mode</STRONG>          <STRONG>invis</STRONG>     <STRONG>mk</STRONG>  turn on blank mode (characters
+                                                invisible)
+       <STRONG>enter_protected_mode</STRONG>       <STRONG>prot</STRONG>      <STRONG>mp</STRONG>  turn on protected mode
+       <STRONG>enter_reverse_mode</STRONG>         <STRONG>rev</STRONG>       <STRONG>mr</STRONG>  turn on reverse video mode
+       <STRONG>enter_standout_mode</STRONG>        <STRONG>smso</STRONG>      <STRONG>so</STRONG>  begin standout mode
+       <STRONG>enter_underline_mode</STRONG>       <STRONG>smul</STRONG>      <STRONG>us</STRONG>  begin underline mode
+       <STRONG>erase_chars</STRONG>                <STRONG>ech</STRONG>       <STRONG>ec</STRONG>  erase #1 characters (P)
+       <STRONG>exit_alt_charset_mode</STRONG>      <STRONG>rmacs</STRONG>     <STRONG>ae</STRONG>  end alternate character set
+                                                (P)
+       <STRONG>exit_attribute_mode</STRONG>        <STRONG>sgr0</STRONG>      <STRONG>me</STRONG>  turn off all attributes
+       <STRONG>exit_ca_mode</STRONG>               <STRONG>rmcup</STRONG>     <STRONG>te</STRONG>  strings to end programs using
+                                                cup
+       <STRONG>exit_delete_mode</STRONG>           <STRONG>rmdc</STRONG>      <STRONG>ed</STRONG>  end delete mode
+       <STRONG>exit_insert_mode</STRONG>           <STRONG>rmir</STRONG>      <STRONG>ei</STRONG>  exit insert mode
 
-       <STRONG>key_soptions</STRONG>                <STRONG>kOPT</STRONG>     <STRONG>%d</STRONG>   shifted options key
-       <STRONG>key_sprevious</STRONG>               <STRONG>kPRV</STRONG>     <STRONG>%e</STRONG>   shifted previous key
-       <STRONG>key_sprint</STRONG>                  <STRONG>kPRT</STRONG>     <STRONG>%f</STRONG>   shifted print key
-       <STRONG>key_sredo</STRONG>                   <STRONG>kRDO</STRONG>     <STRONG>%g</STRONG>   shifted redo key
-       <STRONG>key_sreplace</STRONG>                <STRONG>kRPL</STRONG>     <STRONG>%h</STRONG>   shifted replace key
-       <STRONG>key_sright</STRONG>                  <STRONG>kRIT</STRONG>     <STRONG>%i</STRONG>   shifted right-arrow key
-       <STRONG>key_srsume</STRONG>                  <STRONG>kRES</STRONG>     <STRONG>%j</STRONG>   shifted resume key
-       <STRONG>key_ssave</STRONG>                   <STRONG>kSAV</STRONG>     <STRONG>!1</STRONG>   shifted save key
-       <STRONG>key_ssuspend</STRONG>                <STRONG>kSPD</STRONG>     <STRONG>!2</STRONG>   shifted suspend key
-       <STRONG>key_sundo</STRONG>                   <STRONG>kUND</STRONG>     <STRONG>!3</STRONG>   shifted undo key
-       <STRONG>req_for_input</STRONG>               <STRONG>rfi</STRONG>      <STRONG>RF</STRONG>   send next input char (for
-                                                 ptys)
-       <STRONG>key_f11</STRONG>                     <STRONG>kf11</STRONG>     <STRONG>F1</STRONG>   F11 function key
-       <STRONG>key_f12</STRONG>                     <STRONG>kf12</STRONG>     <STRONG>F2</STRONG>   F12 function key
-       <STRONG>key_f13</STRONG>                     <STRONG>kf13</STRONG>     <STRONG>F3</STRONG>   F13 function key
-       <STRONG>key_f14</STRONG>                     <STRONG>kf14</STRONG>     <STRONG>F4</STRONG>   F14 function key
-       <STRONG>key_f15</STRONG>                     <STRONG>kf15</STRONG>     <STRONG>F5</STRONG>   F15 function key
-       <STRONG>key_f16</STRONG>                     <STRONG>kf16</STRONG>     <STRONG>F6</STRONG>   F16 function key
-       <STRONG>key_f17</STRONG>                     <STRONG>kf17</STRONG>     <STRONG>F7</STRONG>   F17 function key
-       <STRONG>key_f18</STRONG>                     <STRONG>kf18</STRONG>     <STRONG>F8</STRONG>   F18 function key
-       <STRONG>key_f19</STRONG>                     <STRONG>kf19</STRONG>     <STRONG>F9</STRONG>   F19 function key
-       <STRONG>key_f20</STRONG>                     <STRONG>kf20</STRONG>     <STRONG>FA</STRONG>   F20 function key
-       <STRONG>key_f21</STRONG>                     <STRONG>kf21</STRONG>     <STRONG>FB</STRONG>   F21 function key
-       <STRONG>key_f22</STRONG>                     <STRONG>kf22</STRONG>     <STRONG>FC</STRONG>   F22 function key
-       <STRONG>key_f23</STRONG>                     <STRONG>kf23</STRONG>     <STRONG>FD</STRONG>   F23 function key
-       <STRONG>key_f24</STRONG>                     <STRONG>kf24</STRONG>     <STRONG>FE</STRONG>   F24 function key
-       <STRONG>key_f25</STRONG>                     <STRONG>kf25</STRONG>     <STRONG>FF</STRONG>   F25 function key
-       <STRONG>key_f26</STRONG>                     <STRONG>kf26</STRONG>     <STRONG>FG</STRONG>   F26 function key
-       <STRONG>key_f27</STRONG>                     <STRONG>kf27</STRONG>     <STRONG>FH</STRONG>   F27 function key
-       <STRONG>key_f28</STRONG>                     <STRONG>kf28</STRONG>     <STRONG>FI</STRONG>   F28 function key
-       <STRONG>key_f29</STRONG>                     <STRONG>kf29</STRONG>     <STRONG>FJ</STRONG>   F29 function key
-       <STRONG>key_f30</STRONG>                     <STRONG>kf30</STRONG>     <STRONG>FK</STRONG>   F30 function key
-       <STRONG>key_f31</STRONG>                     <STRONG>kf31</STRONG>     <STRONG>FL</STRONG>   F31 function key
-       <STRONG>key_f32</STRONG>                     <STRONG>kf32</STRONG>     <STRONG>FM</STRONG>   F32 function key
-       <STRONG>key_f33</STRONG>                     <STRONG>kf33</STRONG>     <STRONG>FN</STRONG>   F33 function key
-       <STRONG>key_f34</STRONG>                     <STRONG>kf34</STRONG>     <STRONG>FO</STRONG>   F34 function key
-       <STRONG>key_f35</STRONG>                     <STRONG>kf35</STRONG>     <STRONG>FP</STRONG>   F35 function key
-       <STRONG>key_f36</STRONG>                     <STRONG>kf36</STRONG>     <STRONG>FQ</STRONG>   F36 function key
-       <STRONG>key_f37</STRONG>                     <STRONG>kf37</STRONG>     <STRONG>FR</STRONG>   F37 function key
-       <STRONG>key_f38</STRONG>                     <STRONG>kf38</STRONG>     <STRONG>FS</STRONG>   F38 function key
-       <STRONG>key_f39</STRONG>                     <STRONG>kf39</STRONG>     <STRONG>FT</STRONG>   F39 function key
-       <STRONG>key_f40</STRONG>                     <STRONG>kf40</STRONG>     <STRONG>FU</STRONG>   F40 function key
-       <STRONG>key_f41</STRONG>                     <STRONG>kf41</STRONG>     <STRONG>FV</STRONG>   F41 function key
-       <STRONG>key_f42</STRONG>                     <STRONG>kf42</STRONG>     <STRONG>FW</STRONG>   F42 function key
-       <STRONG>key_f43</STRONG>                     <STRONG>kf43</STRONG>     <STRONG>FX</STRONG>   F43 function key
-       <STRONG>key_f44</STRONG>                     <STRONG>kf44</STRONG>     <STRONG>FY</STRONG>   F44 function key
-       <STRONG>key_f45</STRONG>                     <STRONG>kf45</STRONG>     <STRONG>FZ</STRONG>   F45 function key
-       <STRONG>key_f46</STRONG>                     <STRONG>kf46</STRONG>     <STRONG>Fa</STRONG>   F46 function key
-       <STRONG>key_f47</STRONG>                     <STRONG>kf47</STRONG>     <STRONG>Fb</STRONG>   F47 function key
-       <STRONG>key_f48</STRONG>                     <STRONG>kf48</STRONG>     <STRONG>Fc</STRONG>   F48 function key
-       <STRONG>key_f49</STRONG>                     <STRONG>kf49</STRONG>     <STRONG>Fd</STRONG>   F49 function key
-       <STRONG>key_f50</STRONG>                     <STRONG>kf50</STRONG>     <STRONG>Fe</STRONG>   F50 function key
-       <STRONG>key_f51</STRONG>                     <STRONG>kf51</STRONG>     <STRONG>Ff</STRONG>   F51 function key
-       <STRONG>key_f52</STRONG>                     <STRONG>kf52</STRONG>     <STRONG>Fg</STRONG>   F52 function key
-       <STRONG>key_f53</STRONG>                     <STRONG>kf53</STRONG>     <STRONG>Fh</STRONG>   F53 function key
-       <STRONG>key_f54</STRONG>                     <STRONG>kf54</STRONG>     <STRONG>Fi</STRONG>   F54 function key
-       <STRONG>key_f55</STRONG>                     <STRONG>kf55</STRONG>     <STRONG>Fj</STRONG>   F55 function key
-       <STRONG>key_f56</STRONG>                     <STRONG>kf56</STRONG>     <STRONG>Fk</STRONG>   F56 function key
-       <STRONG>key_f57</STRONG>                     <STRONG>kf57</STRONG>     <STRONG>Fl</STRONG>   F57 function key
-       <STRONG>key_f58</STRONG>                     <STRONG>kf58</STRONG>     <STRONG>Fm</STRONG>   F58 function key
-       <STRONG>key_f59</STRONG>                     <STRONG>kf59</STRONG>     <STRONG>Fn</STRONG>   F59 function key
-       <STRONG>key_f60</STRONG>                     <STRONG>kf60</STRONG>     <STRONG>Fo</STRONG>   F60 function key
-       <STRONG>key_f61</STRONG>                     <STRONG>kf61</STRONG>     <STRONG>Fp</STRONG>   F61 function key
-       <STRONG>key_f62</STRONG>                     <STRONG>kf62</STRONG>     <STRONG>Fq</STRONG>   F62 function key
-       <STRONG>key_f63</STRONG>                     <STRONG>kf63</STRONG>     <STRONG>Fr</STRONG>   F63 function key
+       <STRONG>exit_standout_mode</STRONG>         <STRONG>rmso</STRONG>      <STRONG>se</STRONG>  exit standout mode
+       <STRONG>exit_underline_mode</STRONG>        <STRONG>rmul</STRONG>      <STRONG>ue</STRONG>  exit underline mode
+       <STRONG>flash_screen</STRONG>               <STRONG>flash</STRONG>     <STRONG>vb</STRONG>  visible bell (may not move
+                                                cursor)
+       <STRONG>form_feed</STRONG>                  <STRONG>ff</STRONG>        <STRONG>ff</STRONG>  hardcopy terminal page eject
+                                                (P*)
+       <STRONG>from_status_line</STRONG>           <STRONG>fsl</STRONG>       <STRONG>fs</STRONG>  return from status line
+       <STRONG>init_1string</STRONG>               <STRONG>is1</STRONG>       <STRONG>i1</STRONG>  initialization string
+       <STRONG>init_2string</STRONG>               <STRONG>is2</STRONG>       <STRONG>is</STRONG>  initialization string
+       <STRONG>init_3string</STRONG>               <STRONG>is3</STRONG>       <STRONG>i3</STRONG>  initialization string
+       <STRONG>init_file</STRONG>                  <STRONG>if</STRONG>        <STRONG>if</STRONG>  name of initialization file
+       <STRONG>insert_character</STRONG>           <STRONG>ich1</STRONG>      <STRONG>ic</STRONG>  insert character (P)
+       <STRONG>insert_line</STRONG>                <STRONG>il1</STRONG>       <STRONG>al</STRONG>  insert line (P*)
+       <STRONG>insert_padding</STRONG>             <STRONG>ip</STRONG>        <STRONG>ip</STRONG>  insert padding after inserted
+                                                character
+       <STRONG>key_backspace</STRONG>              <STRONG>kbs</STRONG>       <STRONG>kb</STRONG>  backspace key
+       <STRONG>key_catab</STRONG>                  <STRONG>ktbc</STRONG>      <STRONG>ka</STRONG>  clear-all-tabs key
+       <STRONG>key_clear</STRONG>                  <STRONG>kclr</STRONG>      <STRONG>kC</STRONG>  clear-screen or erase key
+       <STRONG>key_ctab</STRONG>                   <STRONG>kctab</STRONG>     <STRONG>kt</STRONG>  clear-tab key
+       <STRONG>key_dc</STRONG>                     <STRONG>kdch1</STRONG>     <STRONG>kD</STRONG>  delete-character key
+       <STRONG>key_dl</STRONG>                     <STRONG>kdl1</STRONG>      <STRONG>kL</STRONG>  delete-line key
+       <STRONG>key_down</STRONG>                   <STRONG>kcud1</STRONG>     <STRONG>kd</STRONG>  down-arrow key
+       <STRONG>key_eic</STRONG>                    <STRONG>krmir</STRONG>     <STRONG>kM</STRONG>  sent by rmir or smir in insert
+                                                mode
+       <STRONG>key_eol</STRONG>                    <STRONG>kel</STRONG>       <STRONG>kE</STRONG>  clear-to-end-of-line key
+       <STRONG>key_eos</STRONG>                    <STRONG>ked</STRONG>       <STRONG>kS</STRONG>  clear-to-end-of-screen key
+       <STRONG>key_f0</STRONG>                     <STRONG>kf0</STRONG>       <STRONG>k0</STRONG>  F0 function key
+       <STRONG>key_f1</STRONG>                     <STRONG>kf1</STRONG>       <STRONG>k1</STRONG>  F1 function key
+       <STRONG>key_f10</STRONG>                    <STRONG>kf10</STRONG>      <STRONG>k;</STRONG>  F10 function key
+       <STRONG>key_f2</STRONG>                     <STRONG>kf2</STRONG>       <STRONG>k2</STRONG>  F2 function key
+       <STRONG>key_f3</STRONG>                     <STRONG>kf3</STRONG>       <STRONG>k3</STRONG>  F3 function key
+       <STRONG>key_f4</STRONG>                     <STRONG>kf4</STRONG>       <STRONG>k4</STRONG>  F4 function key
+       <STRONG>key_f5</STRONG>                     <STRONG>kf5</STRONG>       <STRONG>k5</STRONG>  F5 function key
+       <STRONG>key_f6</STRONG>                     <STRONG>kf6</STRONG>       <STRONG>k6</STRONG>  F6 function key
+       <STRONG>key_f7</STRONG>                     <STRONG>kf7</STRONG>       <STRONG>k7</STRONG>  F7 function key
+       <STRONG>key_f8</STRONG>                     <STRONG>kf8</STRONG>       <STRONG>k8</STRONG>  F8 function key
+       <STRONG>key_f9</STRONG>                     <STRONG>kf9</STRONG>       <STRONG>k9</STRONG>  F9 function key
+       <STRONG>key_home</STRONG>                   <STRONG>khome</STRONG>     <STRONG>kh</STRONG>  home key
+       <STRONG>key_ic</STRONG>                     <STRONG>kich1</STRONG>     <STRONG>kI</STRONG>  insert-character key
+       <STRONG>key_il</STRONG>                     <STRONG>kil1</STRONG>      <STRONG>kA</STRONG>  insert-line key
+       <STRONG>key_left</STRONG>                   <STRONG>kcub1</STRONG>     <STRONG>kl</STRONG>  left-arrow key
+       <STRONG>key_ll</STRONG>                     <STRONG>kll</STRONG>       <STRONG>kH</STRONG>  lower-left key (home down)
+       <STRONG>key_npage</STRONG>                  <STRONG>knp</STRONG>       <STRONG>kN</STRONG>  next-page key
+       <STRONG>key_ppage</STRONG>                  <STRONG>kpp</STRONG>       <STRONG>kP</STRONG>  previous-page key
+       <STRONG>key_right</STRONG>                  <STRONG>kcuf1</STRONG>     <STRONG>kr</STRONG>  right-arrow key
+       <STRONG>key_sf</STRONG>                     <STRONG>kind</STRONG>      <STRONG>kF</STRONG>  scroll-forward key
+       <STRONG>key_sr</STRONG>                     <STRONG>kri</STRONG>       <STRONG>kR</STRONG>  scroll-backward key
+       <STRONG>key_stab</STRONG>                   <STRONG>khts</STRONG>      <STRONG>kT</STRONG>  set-tab key
+       <STRONG>key_up</STRONG>                     <STRONG>kcuu1</STRONG>     <STRONG>ku</STRONG>  up-arrow key
+       <STRONG>keypad_local</STRONG>               <STRONG>rmkx</STRONG>      <STRONG>ke</STRONG>  leave keyboard transmit mode
+       <STRONG>keypad_xmit</STRONG>                <STRONG>smkx</STRONG>      <STRONG>ks</STRONG>  enter keyboard transmit mode
+       <STRONG>lab_f0</STRONG>                     <STRONG>lf0</STRONG>       <STRONG>l0</STRONG>  label on function key f0 if
+                                                not f0
+       <STRONG>lab_f1</STRONG>                     <STRONG>lf1</STRONG>       <STRONG>l1</STRONG>  label on function key f1 if
+                                                not f1
+       <STRONG>lab_f10</STRONG>                    <STRONG>lf10</STRONG>      <STRONG>la</STRONG>  label on function key f10 if
+                                                not f10
+       <STRONG>lab_f2</STRONG>                     <STRONG>lf2</STRONG>       <STRONG>l2</STRONG>  label on function key f2 if
+                                                not f2
+       <STRONG>lab_f3</STRONG>                     <STRONG>lf3</STRONG>       <STRONG>l3</STRONG>  label on function key f3 if
+                                                not f3
+       <STRONG>lab_f4</STRONG>                     <STRONG>lf4</STRONG>       <STRONG>l4</STRONG>  label on function key f4 if
+                                                not f4
+       <STRONG>lab_f5</STRONG>                     <STRONG>lf5</STRONG>       <STRONG>l5</STRONG>  label on function key f5 if
+                                                not f5
 
-       <STRONG>clr_bol</STRONG>                     <STRONG>el1</STRONG>      <STRONG>cb</STRONG>   Clear to beginning of line
-       <STRONG>clear_margins</STRONG>               <STRONG>mgc</STRONG>      <STRONG>MC</STRONG>   clear right and left soft
-                                                 margins
-       <STRONG>set_left_margin</STRONG>             <STRONG>smgl</STRONG>     <STRONG>ML</STRONG>   set left soft margin at
-                                                 current column. (ML is not in
-                                                 BSD termcap).
-       <STRONG>set_right_margin</STRONG>            <STRONG>smgr</STRONG>     <STRONG>MR</STRONG>   set right soft margin at
-                                                 current column
-       <STRONG>label_format</STRONG>                <STRONG>fln</STRONG>      <STRONG>Lf</STRONG>   label format
-       <STRONG>set_clock</STRONG>                   <STRONG>sclk</STRONG>     <STRONG>SC</STRONG>   set clock, #1 hrs #2 mins #3
-                                                 secs
-       <STRONG>display_clock</STRONG>               <STRONG>dclk</STRONG>     <STRONG>DK</STRONG>   display clock
-       <STRONG>remove_clock</STRONG>                <STRONG>rmclk</STRONG>    <STRONG>RC</STRONG>   remove clock
-       <STRONG>create_window</STRONG>               <STRONG>cwin</STRONG>     <STRONG>CW</STRONG>   define a window #1 from #2,#3
-                                                 to #4,#5
-       <STRONG>goto_window</STRONG>                 <STRONG>wingo</STRONG>    <STRONG>WG</STRONG>   go to window #1
-       <STRONG>hangup</STRONG>                      <STRONG>hup</STRONG>      <STRONG>HU</STRONG>   hang-up phone
-       <STRONG>dial_phone</STRONG>                  <STRONG>dial</STRONG>     <STRONG>DI</STRONG>   dial number #1
-       <STRONG>quick_dial</STRONG>                  <STRONG>qdial</STRONG>    <STRONG>QD</STRONG>   dial number #1 without
-                                                 checking
-       <STRONG>tone</STRONG>                        <STRONG>tone</STRONG>     <STRONG>TO</STRONG>   select touch tone dialing
-       <STRONG>pulse</STRONG>                       <STRONG>pulse</STRONG>    <STRONG>PU</STRONG>   select pulse dialing
-       <STRONG>flash_hook</STRONG>                  <STRONG>hook</STRONG>     <STRONG>fh</STRONG>   flash switch hook
-       <STRONG>fixed_pause</STRONG>                 <STRONG>pause</STRONG>    <STRONG>PA</STRONG>   pause for 2-3 seconds
-       <STRONG>wait_tone</STRONG>                   <STRONG>wait</STRONG>     <STRONG>WA</STRONG>   wait for dial-tone
-       <STRONG>user0</STRONG>                       <STRONG>u0</STRONG>       <STRONG>u0</STRONG>   User string #0
-       <STRONG>user1</STRONG>                       <STRONG>u1</STRONG>       <STRONG>u1</STRONG>   User string #1
-       <STRONG>user2</STRONG>                       <STRONG>u2</STRONG>       <STRONG>u2</STRONG>   User string #2
-       <STRONG>user3</STRONG>                       <STRONG>u3</STRONG>       <STRONG>u3</STRONG>   User string #3
-       <STRONG>user4</STRONG>                       <STRONG>u4</STRONG>       <STRONG>u4</STRONG>   User string #4
-       <STRONG>user5</STRONG>                       <STRONG>u5</STRONG>       <STRONG>u5</STRONG>   User string #5
-       <STRONG>user6</STRONG>                       <STRONG>u6</STRONG>       <STRONG>u6</STRONG>   User string #6
-       <STRONG>user7</STRONG>                       <STRONG>u7</STRONG>       <STRONG>u7</STRONG>   User string #7
-       <STRONG>user8</STRONG>                       <STRONG>u8</STRONG>       <STRONG>u8</STRONG>   User string #8
-       <STRONG>user9</STRONG>                       <STRONG>u9</STRONG>       <STRONG>u9</STRONG>   User string #9
-       <STRONG>orig_pair</STRONG>                   <STRONG>op</STRONG>       <STRONG>op</STRONG>   Set default pair to its
-                                                 original value
-       <STRONG>orig_colors</STRONG>                 <STRONG>oc</STRONG>       <STRONG>oc</STRONG>   Set all color pairs to the
-                                                 original ones
-       <STRONG>initialize_color</STRONG>            <STRONG>initc</STRONG>    <STRONG>Ic</STRONG>   initialize color #1 to
-                                                 (#2,#3,#4)
-       <STRONG>initialize_pair</STRONG>             <STRONG>initp</STRONG>    <STRONG>Ip</STRONG>   Initialize color pair #1 to
-                                                 fg=(#2,#3,#4), bg=(#5,#6,#7)
-       <STRONG>set_color_pair</STRONG>              <STRONG>scp</STRONG>      <STRONG>sp</STRONG>   Set current color pair to #1
-       <STRONG>set_foreground</STRONG>              <STRONG>setf</STRONG>     <STRONG>Sf</STRONG>   Set foreground color #1
-       <STRONG>set_background</STRONG>              <STRONG>setb</STRONG>     <STRONG>Sb</STRONG>   Set background color #1
-       <STRONG>change_char_pitch</STRONG>           <STRONG>cpi</STRONG>      <STRONG>ZA</STRONG>   Change number of characters
-                                                 per inch to #1
-       <STRONG>change_line_pitch</STRONG>           <STRONG>lpi</STRONG>      <STRONG>ZB</STRONG>   Change number of lines per
-                                                 inch to #1
-       <STRONG>change_res_horz</STRONG>             <STRONG>chr</STRONG>      <STRONG>ZC</STRONG>   Change horizontal resolution
-                                                 to #1
-       <STRONG>change_res_vert</STRONG>             <STRONG>cvr</STRONG>      <STRONG>ZD</STRONG>   Change vertical resolution to
-                                                 #1
-       <STRONG>define_char</STRONG>                 <STRONG>defc</STRONG>     <STRONG>ZE</STRONG>   Define a character #1, #2
-                                                 dots wide, descender #3
-       <STRONG>enter_doublewide_mode</STRONG>       <STRONG>swidm</STRONG>    <STRONG>ZF</STRONG>   Enter double-wide mode
-       <STRONG>enter_draft_quality</STRONG>         <STRONG>sdrfq</STRONG>    <STRONG>ZG</STRONG>   Enter draft-quality mode
-       <STRONG>enter_italics_mode</STRONG>          <STRONG>sitm</STRONG>     <STRONG>ZH</STRONG>   Enter italic mode
-       <STRONG>enter_leftward_mode</STRONG>         <STRONG>slm</STRONG>      <STRONG>ZI</STRONG>   Start leftward carriage
-                                                 motion
-       <STRONG>enter_micro_mode</STRONG>            <STRONG>smicm</STRONG>    <STRONG>ZJ</STRONG>   Start micro-motion mode
-       <STRONG>enter_near_letter_quality</STRONG>   <STRONG>snlq</STRONG>     <STRONG>ZK</STRONG>   Enter NLQ mode
-       <STRONG>enter_normal_quality</STRONG>        <STRONG>snrmq</STRONG>    <STRONG>ZL</STRONG>   Enter normal-quality mode
-       <STRONG>enter_shadow_mode</STRONG>           <STRONG>sshm</STRONG>     <STRONG>ZM</STRONG>   Enter shadow-print mode
+       <STRONG>lab_f6</STRONG>                     <STRONG>lf6</STRONG>       <STRONG>l6</STRONG>  label on function key f6 if
+                                                not f6
+       <STRONG>lab_f7</STRONG>                     <STRONG>lf7</STRONG>       <STRONG>l7</STRONG>  label on function key f7 if
+                                                not f7
+       <STRONG>lab_f8</STRONG>                     <STRONG>lf8</STRONG>       <STRONG>l8</STRONG>  label on function key f8 if
+                                                not f8
+       <STRONG>lab_f9</STRONG>                     <STRONG>lf9</STRONG>       <STRONG>l9</STRONG>  label on function key f9 if
+                                                not f9
+       <STRONG>meta_off</STRONG>                   <STRONG>rmm</STRONG>       <STRONG>mo</STRONG>  turn off meta mode
+       <STRONG>meta_on</STRONG>                    <STRONG>smm</STRONG>       <STRONG>mm</STRONG>  turn on meta mode (8th-bit on)
+       <STRONG>newline</STRONG>                    <STRONG>nel</STRONG>       <STRONG>nw</STRONG>  newline (behave like cr
+                                                followed by lf)
+       <STRONG>pad_char</STRONG>                   <STRONG>pad</STRONG>       <STRONG>pc</STRONG>  padding char (instead of null)
+       <STRONG>parm_dch</STRONG>                   <STRONG>dch</STRONG>       <STRONG>DC</STRONG>  delete #1 characters (P*)
+       <STRONG>parm_delete_line</STRONG>           <STRONG>dl</STRONG>        <STRONG>DL</STRONG>  delete #1 lines (P*)
+       <STRONG>parm_down_cursor</STRONG>           <STRONG>cud</STRONG>       <STRONG>DO</STRONG>  down #1 lines (P*)
+       <STRONG>parm_ich</STRONG>                   <STRONG>ich</STRONG>       <STRONG>IC</STRONG>  insert #1 characters (P*)
+       <STRONG>parm_index</STRONG>                 <STRONG>indn</STRONG>      <STRONG>SF</STRONG>  scroll forward #1 lines (P)
+       <STRONG>parm_insert_line</STRONG>           <STRONG>il</STRONG>        <STRONG>AL</STRONG>  insert #1 lines (P*)
+       <STRONG>parm_left_cursor</STRONG>           <STRONG>cub</STRONG>       <STRONG>LE</STRONG>  move #1 characters to the left
+                                                (P)
+       <STRONG>parm_right_cursor</STRONG>          <STRONG>cuf</STRONG>       <STRONG>RI</STRONG>  move #1 characters to the
+                                                right (P*)
+       <STRONG>parm_rindex</STRONG>                <STRONG>rin</STRONG>       <STRONG>SR</STRONG>  scroll back #1 lines (P)
+       <STRONG>parm_up_cursor</STRONG>             <STRONG>cuu</STRONG>       <STRONG>UP</STRONG>  up #1 lines (P*)
+       <STRONG>pkey_key</STRONG>                   <STRONG>pfkey</STRONG>     <STRONG>pk</STRONG>  program function key #1 to
+                                                type string #2
+       <STRONG>pkey_local</STRONG>                 <STRONG>pfloc</STRONG>     <STRONG>pl</STRONG>  program function key #1 to
+                                                execute string #2
+       <STRONG>pkey_xmit</STRONG>                  <STRONG>pfx</STRONG>       <STRONG>px</STRONG>  program function key #1 to
+                                                transmit string #2
+       <STRONG>print_screen</STRONG>               <STRONG>mc0</STRONG>       <STRONG>ps</STRONG>  print contents of screen
+       <STRONG>prtr_off</STRONG>                   <STRONG>mc4</STRONG>       <STRONG>pf</STRONG>  turn off printer
+       <STRONG>prtr_on</STRONG>                    <STRONG>mc5</STRONG>       <STRONG>po</STRONG>  turn on printer
+       <STRONG>repeat_char</STRONG>                <STRONG>rep</STRONG>       <STRONG>rp</STRONG>  repeat char #1 #2 times (P*)
+       <STRONG>reset_1string</STRONG>              <STRONG>rs1</STRONG>       <STRONG>r1</STRONG>  reset string
+       <STRONG>reset_2string</STRONG>              <STRONG>rs2</STRONG>       <STRONG>r2</STRONG>  reset string
+       <STRONG>reset_3string</STRONG>              <STRONG>rs3</STRONG>       <STRONG>r3</STRONG>  reset string
+       <STRONG>reset_file</STRONG>                 <STRONG>rf</STRONG>        <STRONG>rf</STRONG>  name of reset file
+       <STRONG>restore_cursor</STRONG>             <STRONG>rc</STRONG>        <STRONG>rc</STRONG>  restore cursor to position of
+                                                last save_cursor
+       <STRONG>row_address</STRONG>                <STRONG>vpa</STRONG>       <STRONG>cv</STRONG>  vertical position #1 absolute
+                                                (P)
+       <STRONG>save_cursor</STRONG>                <STRONG>sc</STRONG>        <STRONG>sc</STRONG>  save current cursor position
+                                                (P)
+       <STRONG>scroll_forward</STRONG>             <STRONG>ind</STRONG>       <STRONG>sf</STRONG>  scroll text up (P)
+       <STRONG>scroll_reverse</STRONG>             <STRONG>ri</STRONG>        <STRONG>sr</STRONG>  scroll text down (P)
+       <STRONG>set_attributes</STRONG>             <STRONG>sgr</STRONG>       <STRONG>sa</STRONG>  define video attributes #1-#9
+                                                (PG9)
+       <STRONG>set_tab</STRONG>                    <STRONG>hts</STRONG>       <STRONG>st</STRONG>  set a tab in every row,
+                                                current columns
+       <STRONG>set_window</STRONG>                 <STRONG>wind</STRONG>      <STRONG>wi</STRONG>  current window is lines #1-#2
+                                                cols #3-#4
+       <STRONG>tab</STRONG>                        <STRONG>ht</STRONG>        <STRONG>ta</STRONG>  tab to next 8-space hardware
+                                                tab stop
+       <STRONG>to_status_line</STRONG>             <STRONG>tsl</STRONG>       <STRONG>ts</STRONG>  move to status line, column #1
+       <STRONG>underline_char</STRONG>             <STRONG>uc</STRONG>        <STRONG>uc</STRONG>  underline char and move past
+                                                it
+       <STRONG>up_half_line</STRONG>               <STRONG>hu</STRONG>        <STRONG>hu</STRONG>  half a line up
+       <STRONG>init_prog</STRONG>                  <STRONG>iprog</STRONG>     <STRONG>iP</STRONG>  path name of program for
+                                                initialization
+       <STRONG>key_a1</STRONG>                     <STRONG>ka1</STRONG>       <STRONG>K1</STRONG>  upper left of keypad
+       <STRONG>key_a3</STRONG>                     <STRONG>ka3</STRONG>       <STRONG>K3</STRONG>  upper right of keypad
+       <STRONG>key_b2</STRONG>                     <STRONG>kb2</STRONG>       <STRONG>K2</STRONG>  center of keypad
+       <STRONG>key_c1</STRONG>                     <STRONG>kc1</STRONG>       <STRONG>K4</STRONG>  lower left of keypad
 
-       <STRONG>enter_subscript_mode</STRONG>        <STRONG>ssubm</STRONG>    <STRONG>ZN</STRONG>   Enter subscript mode
-       <STRONG>enter_superscript_mode</STRONG>      <STRONG>ssupm</STRONG>    <STRONG>ZO</STRONG>   Enter superscript mode
-       <STRONG>enter_upward_mode</STRONG>           <STRONG>sum</STRONG>      <STRONG>ZP</STRONG>   Start upward carriage motion
-       <STRONG>exit_doublewide_mode</STRONG>        <STRONG>rwidm</STRONG>    <STRONG>ZQ</STRONG>   End double-wide mode
-       <STRONG>exit_italics_mode</STRONG>           <STRONG>ritm</STRONG>     <STRONG>ZR</STRONG>   End italic mode
-       <STRONG>exit_leftward_mode</STRONG>          <STRONG>rlm</STRONG>      <STRONG>ZS</STRONG>   End left-motion mode
-       <STRONG>exit_micro_mode</STRONG>             <STRONG>rmicm</STRONG>    <STRONG>ZT</STRONG>   End micro-motion mode
-       <STRONG>exit_shadow_mode</STRONG>            <STRONG>rshm</STRONG>     <STRONG>ZU</STRONG>   End shadow-print mode
-       <STRONG>exit_subscript_mode</STRONG>         <STRONG>rsubm</STRONG>    <STRONG>ZV</STRONG>   End subscript mode
-       <STRONG>exit_superscript_mode</STRONG>       <STRONG>rsupm</STRONG>    <STRONG>ZW</STRONG>   End superscript mode
-       <STRONG>exit_upward_mode</STRONG>            <STRONG>rum</STRONG>      <STRONG>ZX</STRONG>   End reverse character motion
-       <STRONG>micro_column_address</STRONG>        <STRONG>mhpa</STRONG>     <STRONG>ZY</STRONG>   Like column_address in micro
-                                                 mode
-       <STRONG>micro_down</STRONG>                  <STRONG>mcud1</STRONG>    <STRONG>ZZ</STRONG>   Like cursor_down in micro
-                                                 mode
-       <STRONG>micro_left</STRONG>                  <STRONG>mcub1</STRONG>    <STRONG>Za</STRONG>   Like cursor_left in micro
-                                                 mode
-       <STRONG>micro_right</STRONG>                 <STRONG>mcuf1</STRONG>    <STRONG>Zb</STRONG>   Like cursor_right in micro
-                                                 mode
-       <STRONG>micro_row_address</STRONG>           <STRONG>mvpa</STRONG>     <STRONG>Zc</STRONG>   Like row_address #1 in micro
-                                                 mode
-       <STRONG>micro_up</STRONG>                    <STRONG>mcuu1</STRONG>    <STRONG>Zd</STRONG>   Like cursor_up in micro mode
-       <STRONG>order_of_pins</STRONG>               <STRONG>porder</STRONG>   <STRONG>Ze</STRONG>   Match software bits to print-
-                                                 head pins
-       <STRONG>parm_down_micro</STRONG>             <STRONG>mcud</STRONG>     <STRONG>Zf</STRONG>   Like parm_down_cursor in
-                                                 micro mode
-       <STRONG>parm_left_micro</STRONG>             <STRONG>mcub</STRONG>     <STRONG>Zg</STRONG>   Like parm_left_cursor in
-                                                 micro mode
-       <STRONG>parm_right_micro</STRONG>            <STRONG>mcuf</STRONG>     <STRONG>Zh</STRONG>   Like parm_right_cursor in
-                                                 micro mode
-       <STRONG>parm_up_micro</STRONG>               <STRONG>mcuu</STRONG>     <STRONG>Zi</STRONG>   Like parm_up_cursor in micro
-                                                 mode
-       <STRONG>select_char_set</STRONG>             <STRONG>scs</STRONG>      <STRONG>Zj</STRONG>   Select character set, #1
-       <STRONG>set_bottom_margin</STRONG>           <STRONG>smgb</STRONG>     <STRONG>Zk</STRONG>   Set bottom margin at current
-                                                 line
-       <STRONG>set_bottom_margin_parm</STRONG>      <STRONG>smgbp</STRONG>    <STRONG>Zl</STRONG>   Set bottom margin at line #1
-                                                 or (if smgtp is not given) #2
-                                                 lines from bottom
-       <STRONG>set_left_margin_parm</STRONG>        <STRONG>smglp</STRONG>    <STRONG>Zm</STRONG>   Set left (right) margin at
-                                                 column #1
-       <STRONG>set_right_margin_parm</STRONG>       <STRONG>smgrp</STRONG>    <STRONG>Zn</STRONG>   Set right margin at column #1
-       <STRONG>set_top_margin</STRONG>              <STRONG>smgt</STRONG>     <STRONG>Zo</STRONG>   Set top margin at current
-                                                 line
-       <STRONG>set_top_margin_parm</STRONG>         <STRONG>smgtp</STRONG>    <STRONG>Zp</STRONG>   Set top (bottom) margin at
-                                                 row #1
-       <STRONG>start_bit_image</STRONG>             <STRONG>sbim</STRONG>     <STRONG>Zq</STRONG>   Start printing bit image
-                                                 graphics
-       <STRONG>start_char_set_def</STRONG>          <STRONG>scsd</STRONG>     <STRONG>Zr</STRONG>   Start character set
-                                                 definition #1, with #2
-                                                 characters in the set
-       <STRONG>stop_bit_image</STRONG>              <STRONG>rbim</STRONG>     <STRONG>Zs</STRONG>   Stop printing bit image
-                                                 graphics
-       <STRONG>stop_char_set_def</STRONG>           <STRONG>rcsd</STRONG>     <STRONG>Zt</STRONG>   End definition of character
-                                                 set #1
-       <STRONG>subscript_characters</STRONG>        <STRONG>subcs</STRONG>    <STRONG>Zu</STRONG>   List of subscriptable
-                                                 characters
-       <STRONG>superscript_characters</STRONG>      <STRONG>supcs</STRONG>    <STRONG>Zv</STRONG>   List of superscriptable
-                                                 characters
-       <STRONG>these_cause_cr</STRONG>              <STRONG>docr</STRONG>     <STRONG>Zw</STRONG>   Printing any of these
-                                                 characters causes CR
-       <STRONG>zero_motion</STRONG>                 <STRONG>zerom</STRONG>    <STRONG>Zx</STRONG>   No motion for subsequent
-                                                 character
+       <STRONG>key_c3</STRONG>                     <STRONG>kc3</STRONG>       <STRONG>K5</STRONG>  lower right of keypad
+       <STRONG>prtr_non</STRONG>                   <STRONG>mc5p</STRONG>      <STRONG>pO</STRONG>  turn on printer for #1 bytes
+       <STRONG>char_padding</STRONG>               <STRONG>rmp</STRONG>       <STRONG>rP</STRONG>  like ip but when in insert
+                                                mode
+       <STRONG>acs_chars</STRONG>                  <STRONG>acsc</STRONG>      <STRONG>ac</STRONG>  graphics charset pairs, based
+                                                on vt100
+       <STRONG>plab_norm</STRONG>                  <STRONG>pln</STRONG>       <STRONG>pn</STRONG>  program label #1 to show
+                                                string #2
+       <STRONG>key_btab</STRONG>                   <STRONG>kcbt</STRONG>      <STRONG>kB</STRONG>  back-tab key
+       <STRONG>enter_xon_mode</STRONG>             <STRONG>smxon</STRONG>     <STRONG>SX</STRONG>  turn on xon/xoff handshaking
+       <STRONG>exit_xon_mode</STRONG>              <STRONG>rmxon</STRONG>     <STRONG>RX</STRONG>  turn off xon/xoff handshaking
+       <STRONG>enter_am_mode</STRONG>              <STRONG>smam</STRONG>      <STRONG>SA</STRONG>  turn on automatic margins
+       <STRONG>exit_am_mode</STRONG>               <STRONG>rmam</STRONG>      <STRONG>RA</STRONG>  turn off automatic margins
+       <STRONG>xon_character</STRONG>              <STRONG>xonc</STRONG>      <STRONG>XN</STRONG>  XON character
+       <STRONG>xoff_character</STRONG>             <STRONG>xoffc</STRONG>     <STRONG>XF</STRONG>  XOFF character
+       <STRONG>ena_acs</STRONG>                    <STRONG>enacs</STRONG>     <STRONG>eA</STRONG>  enable alternate char set
+       <STRONG>label_on</STRONG>                   <STRONG>smln</STRONG>      <STRONG>LO</STRONG>  turn on soft labels
+       <STRONG>label_off</STRONG>                  <STRONG>rmln</STRONG>      <STRONG>LF</STRONG>  turn off soft labels
+       <STRONG>key_beg</STRONG>                    <STRONG>kbeg</STRONG>      <STRONG>@1</STRONG>  begin key
+       <STRONG>key_cancel</STRONG>                 <STRONG>kcan</STRONG>      <STRONG>@2</STRONG>  cancel key
+       <STRONG>key_close</STRONG>                  <STRONG>kclo</STRONG>      <STRONG>@3</STRONG>  close key
+       <STRONG>key_command</STRONG>                <STRONG>kcmd</STRONG>      <STRONG>@4</STRONG>  command key
+       <STRONG>key_copy</STRONG>                   <STRONG>kcpy</STRONG>      <STRONG>@5</STRONG>  copy key
+       <STRONG>key_create</STRONG>                 <STRONG>kcrt</STRONG>      <STRONG>@6</STRONG>  create key
+       <STRONG>key_end</STRONG>                    <STRONG>kend</STRONG>      <STRONG>@7</STRONG>  end key
+       <STRONG>key_enter</STRONG>                  <STRONG>kent</STRONG>      <STRONG>@8</STRONG>  enter/send key
+       <STRONG>key_exit</STRONG>                   <STRONG>kext</STRONG>      <STRONG>@9</STRONG>  exit key
+       <STRONG>key_find</STRONG>                   <STRONG>kfnd</STRONG>      <STRONG>@0</STRONG>  find key
+       <STRONG>key_help</STRONG>                   <STRONG>khlp</STRONG>      <STRONG>%1</STRONG>  help key
+       <STRONG>key_mark</STRONG>                   <STRONG>kmrk</STRONG>      <STRONG>%2</STRONG>  mark key
+       <STRONG>key_message</STRONG>                <STRONG>kmsg</STRONG>      <STRONG>%3</STRONG>  message key
+       <STRONG>key_move</STRONG>                   <STRONG>kmov</STRONG>      <STRONG>%4</STRONG>  move key
+       <STRONG>key_next</STRONG>                   <STRONG>knxt</STRONG>      <STRONG>%5</STRONG>  next key
+       <STRONG>key_open</STRONG>                   <STRONG>kopn</STRONG>      <STRONG>%6</STRONG>  open key
+       <STRONG>key_options</STRONG>                <STRONG>kopt</STRONG>      <STRONG>%7</STRONG>  options key
+       <STRONG>key_previous</STRONG>               <STRONG>kprv</STRONG>      <STRONG>%8</STRONG>  previous key
+       <STRONG>key_print</STRONG>                  <STRONG>kprt</STRONG>      <STRONG>%9</STRONG>  print key
+       <STRONG>key_redo</STRONG>                   <STRONG>krdo</STRONG>      <STRONG>%0</STRONG>  redo key
+       <STRONG>key_reference</STRONG>              <STRONG>kref</STRONG>      <STRONG>&amp;1</STRONG>  reference key
+       <STRONG>key_refresh</STRONG>                <STRONG>krfr</STRONG>      <STRONG>&amp;2</STRONG>  refresh key
+       <STRONG>key_replace</STRONG>                <STRONG>krpl</STRONG>      <STRONG>&amp;3</STRONG>  replace key
+       <STRONG>key_restart</STRONG>                <STRONG>krst</STRONG>      <STRONG>&amp;4</STRONG>  restart key
+       <STRONG>key_resume</STRONG>                 <STRONG>kres</STRONG>      <STRONG>&amp;5</STRONG>  resume key
+       <STRONG>key_save</STRONG>                   <STRONG>ksav</STRONG>      <STRONG>&amp;6</STRONG>  save key
+       <STRONG>key_suspend</STRONG>                <STRONG>kspd</STRONG>      <STRONG>&amp;7</STRONG>  suspend key
+       <STRONG>key_undo</STRONG>                   <STRONG>kund</STRONG>      <STRONG>&amp;8</STRONG>  undo key
+       <STRONG>key_sbeg</STRONG>                   <STRONG>kBEG</STRONG>      <STRONG>&amp;9</STRONG>  shifted begin key
+       <STRONG>key_scancel</STRONG>                <STRONG>kCAN</STRONG>      <STRONG>&amp;0</STRONG>  shifted cancel key
+       <STRONG>key_scommand</STRONG>               <STRONG>kCMD</STRONG>      <STRONG>*1</STRONG>  shifted command key
+       <STRONG>key_scopy</STRONG>                  <STRONG>kCPY</STRONG>      <STRONG>*2</STRONG>  shifted copy key
+       <STRONG>key_screate</STRONG>                <STRONG>kCRT</STRONG>      <STRONG>*3</STRONG>  shifted create key
+       <STRONG>key_sdc</STRONG>                    <STRONG>kDC</STRONG>       <STRONG>*4</STRONG>  shifted delete-character key
+       <STRONG>key_sdl</STRONG>                    <STRONG>kDL</STRONG>       <STRONG>*5</STRONG>  shifted delete-line key
+       <STRONG>key_select</STRONG>                 <STRONG>kslt</STRONG>      <STRONG>*6</STRONG>  select key
+       <STRONG>key_send</STRONG>                   <STRONG>kEND</STRONG>      <STRONG>*7</STRONG>  shifted end key
+       <STRONG>key_seol</STRONG>                   <STRONG>kEOL</STRONG>      <STRONG>*8</STRONG>  shifted clear-to-end-of-line
+                                                key
+       <STRONG>key_sexit</STRONG>                  <STRONG>kEXT</STRONG>      <STRONG>*9</STRONG>  shifted exit key
+       <STRONG>key_sfind</STRONG>                  <STRONG>kFND</STRONG>      <STRONG>*0</STRONG>  shifted find key
+       <STRONG>key_shelp</STRONG>                  <STRONG>kHLP</STRONG>      <STRONG>#1</STRONG>  shifted help key
+       <STRONG>key_shome</STRONG>                  <STRONG>kHOM</STRONG>      <STRONG>#2</STRONG>  shifted home key
+       <STRONG>key_sic</STRONG>                    <STRONG>kIC</STRONG>       <STRONG>#3</STRONG>  shifted insert-character key
+       <STRONG>key_sleft</STRONG>                  <STRONG>kLFT</STRONG>      <STRONG>#4</STRONG>  shifted left-arrow key
+       <STRONG>key_smessage</STRONG>               <STRONG>kMSG</STRONG>      <STRONG>%a</STRONG>  shifted message key
+       <STRONG>key_smove</STRONG>                  <STRONG>kMOV</STRONG>      <STRONG>%b</STRONG>  shifted move key
 
-       The following string  capabilities  are  present  in  the  SVr4.0  term
+       <STRONG>key_snext</STRONG>                  <STRONG>kNXT</STRONG>      <STRONG>%c</STRONG>  shifted next key
+       <STRONG>key_soptions</STRONG>               <STRONG>kOPT</STRONG>      <STRONG>%d</STRONG>  shifted options key
+       <STRONG>key_sprevious</STRONG>              <STRONG>kPRV</STRONG>      <STRONG>%e</STRONG>  shifted previous key
+       <STRONG>key_sprint</STRONG>                 <STRONG>kPRT</STRONG>      <STRONG>%f</STRONG>  shifted print key
+       <STRONG>key_sredo</STRONG>                  <STRONG>kRDO</STRONG>      <STRONG>%g</STRONG>  shifted redo key
+       <STRONG>key_sreplace</STRONG>               <STRONG>kRPL</STRONG>      <STRONG>%h</STRONG>  shifted replace key
+       <STRONG>key_sright</STRONG>                 <STRONG>kRIT</STRONG>      <STRONG>%i</STRONG>  shifted right-arrow key
+       <STRONG>key_srsume</STRONG>                 <STRONG>kRES</STRONG>      <STRONG>%j</STRONG>  shifted resume key
+       <STRONG>key_ssave</STRONG>                  <STRONG>kSAV</STRONG>      <STRONG>!1</STRONG>  shifted save key
+       <STRONG>key_ssuspend</STRONG>               <STRONG>kSPD</STRONG>      <STRONG>!2</STRONG>  shifted suspend key
+       <STRONG>key_sundo</STRONG>                  <STRONG>kUND</STRONG>      <STRONG>!3</STRONG>  shifted undo key
+       <STRONG>req_for_input</STRONG>              <STRONG>rfi</STRONG>       <STRONG>RF</STRONG>  send next input char (for
+                                                ptys)
+       <STRONG>key_f11</STRONG>                    <STRONG>kf11</STRONG>      <STRONG>F1</STRONG>  F11 function key
+       <STRONG>key_f12</STRONG>                    <STRONG>kf12</STRONG>      <STRONG>F2</STRONG>  F12 function key
+       <STRONG>key_f13</STRONG>                    <STRONG>kf13</STRONG>      <STRONG>F3</STRONG>  F13 function key
+       <STRONG>key_f14</STRONG>                    <STRONG>kf14</STRONG>      <STRONG>F4</STRONG>  F14 function key
+       <STRONG>key_f15</STRONG>                    <STRONG>kf15</STRONG>      <STRONG>F5</STRONG>  F15 function key
+       <STRONG>key_f16</STRONG>                    <STRONG>kf16</STRONG>      <STRONG>F6</STRONG>  F16 function key
+       <STRONG>key_f17</STRONG>                    <STRONG>kf17</STRONG>      <STRONG>F7</STRONG>  F17 function key
+       <STRONG>key_f18</STRONG>                    <STRONG>kf18</STRONG>      <STRONG>F8</STRONG>  F18 function key
+       <STRONG>key_f19</STRONG>                    <STRONG>kf19</STRONG>      <STRONG>F9</STRONG>  F19 function key
+       <STRONG>key_f20</STRONG>                    <STRONG>kf20</STRONG>      <STRONG>FA</STRONG>  F20 function key
+       <STRONG>key_f21</STRONG>                    <STRONG>kf21</STRONG>      <STRONG>FB</STRONG>  F21 function key
+       <STRONG>key_f22</STRONG>                    <STRONG>kf22</STRONG>      <STRONG>FC</STRONG>  F22 function key
+       <STRONG>key_f23</STRONG>                    <STRONG>kf23</STRONG>      <STRONG>FD</STRONG>  F23 function key
+       <STRONG>key_f24</STRONG>                    <STRONG>kf24</STRONG>      <STRONG>FE</STRONG>  F24 function key
+       <STRONG>key_f25</STRONG>                    <STRONG>kf25</STRONG>      <STRONG>FF</STRONG>  F25 function key
+       <STRONG>key_f26</STRONG>                    <STRONG>kf26</STRONG>      <STRONG>FG</STRONG>  F26 function key
+       <STRONG>key_f27</STRONG>                    <STRONG>kf27</STRONG>      <STRONG>FH</STRONG>  F27 function key
+       <STRONG>key_f28</STRONG>                    <STRONG>kf28</STRONG>      <STRONG>FI</STRONG>  F28 function key
+       <STRONG>key_f29</STRONG>                    <STRONG>kf29</STRONG>      <STRONG>FJ</STRONG>  F29 function key
+       <STRONG>key_f30</STRONG>                    <STRONG>kf30</STRONG>      <STRONG>FK</STRONG>  F30 function key
+       <STRONG>key_f31</STRONG>                    <STRONG>kf31</STRONG>      <STRONG>FL</STRONG>  F31 function key
+       <STRONG>key_f32</STRONG>                    <STRONG>kf32</STRONG>      <STRONG>FM</STRONG>  F32 function key
+       <STRONG>key_f33</STRONG>                    <STRONG>kf33</STRONG>      <STRONG>FN</STRONG>  F33 function key
+       <STRONG>key_f34</STRONG>                    <STRONG>kf34</STRONG>      <STRONG>FO</STRONG>  F34 function key
+       <STRONG>key_f35</STRONG>                    <STRONG>kf35</STRONG>      <STRONG>FP</STRONG>  F35 function key
+       <STRONG>key_f36</STRONG>                    <STRONG>kf36</STRONG>      <STRONG>FQ</STRONG>  F36 function key
+       <STRONG>key_f37</STRONG>                    <STRONG>kf37</STRONG>      <STRONG>FR</STRONG>  F37 function key
+       <STRONG>key_f38</STRONG>                    <STRONG>kf38</STRONG>      <STRONG>FS</STRONG>  F38 function key
+       <STRONG>key_f39</STRONG>                    <STRONG>kf39</STRONG>      <STRONG>FT</STRONG>  F39 function key
+       <STRONG>key_f40</STRONG>                    <STRONG>kf40</STRONG>      <STRONG>FU</STRONG>  F40 function key
+       <STRONG>key_f41</STRONG>                    <STRONG>kf41</STRONG>      <STRONG>FV</STRONG>  F41 function key
+       <STRONG>key_f42</STRONG>                    <STRONG>kf42</STRONG>      <STRONG>FW</STRONG>  F42 function key
+       <STRONG>key_f43</STRONG>                    <STRONG>kf43</STRONG>      <STRONG>FX</STRONG>  F43 function key
+       <STRONG>key_f44</STRONG>                    <STRONG>kf44</STRONG>      <STRONG>FY</STRONG>  F44 function key
+       <STRONG>key_f45</STRONG>                    <STRONG>kf45</STRONG>      <STRONG>FZ</STRONG>  F45 function key
+       <STRONG>key_f46</STRONG>                    <STRONG>kf46</STRONG>      <STRONG>Fa</STRONG>  F46 function key
+       <STRONG>key_f47</STRONG>                    <STRONG>kf47</STRONG>      <STRONG>Fb</STRONG>  F47 function key
+       <STRONG>key_f48</STRONG>                    <STRONG>kf48</STRONG>      <STRONG>Fc</STRONG>  F48 function key
+       <STRONG>key_f49</STRONG>                    <STRONG>kf49</STRONG>      <STRONG>Fd</STRONG>  F49 function key
+       <STRONG>key_f50</STRONG>                    <STRONG>kf50</STRONG>      <STRONG>Fe</STRONG>  F50 function key
+       <STRONG>key_f51</STRONG>                    <STRONG>kf51</STRONG>      <STRONG>Ff</STRONG>  F51 function key
+       <STRONG>key_f52</STRONG>                    <STRONG>kf52</STRONG>      <STRONG>Fg</STRONG>  F52 function key
+       <STRONG>key_f53</STRONG>                    <STRONG>kf53</STRONG>      <STRONG>Fh</STRONG>  F53 function key
+       <STRONG>key_f54</STRONG>                    <STRONG>kf54</STRONG>      <STRONG>Fi</STRONG>  F54 function key
+       <STRONG>key_f55</STRONG>                    <STRONG>kf55</STRONG>      <STRONG>Fj</STRONG>  F55 function key
+       <STRONG>key_f56</STRONG>                    <STRONG>kf56</STRONG>      <STRONG>Fk</STRONG>  F56 function key
+       <STRONG>key_f57</STRONG>                    <STRONG>kf57</STRONG>      <STRONG>Fl</STRONG>  F57 function key
+       <STRONG>key_f58</STRONG>                    <STRONG>kf58</STRONG>      <STRONG>Fm</STRONG>  F58 function key
+       <STRONG>key_f59</STRONG>                    <STRONG>kf59</STRONG>      <STRONG>Fn</STRONG>  F59 function key
+       <STRONG>key_f60</STRONG>                    <STRONG>kf60</STRONG>      <STRONG>Fo</STRONG>  F60 function key
+       <STRONG>key_f61</STRONG>                    <STRONG>kf61</STRONG>      <STRONG>Fp</STRONG>  F61 function key
+       <STRONG>key_f62</STRONG>                    <STRONG>kf62</STRONG>      <STRONG>Fq</STRONG>  F62 function key
+
+       <STRONG>key_f63</STRONG>                    <STRONG>kf63</STRONG>      <STRONG>Fr</STRONG>  F63 function key
+       <STRONG>clr_bol</STRONG>                    <STRONG>el1</STRONG>       <STRONG>cb</STRONG>  Clear to beginning of line
+       <STRONG>clear_margins</STRONG>              <STRONG>mgc</STRONG>       <STRONG>MC</STRONG>  clear right and left soft
+                                                margins
+       <STRONG>set_left_margin</STRONG>            <STRONG>smgl</STRONG>      <STRONG>ML</STRONG>  set left soft margin at
+                                                current column.  (ML is not in
+                                                BSD termcap).
+       <STRONG>set_right_margin</STRONG>           <STRONG>smgr</STRONG>      <STRONG>MR</STRONG>  set right soft margin at
+                                                current column
+       <STRONG>label_format</STRONG>               <STRONG>fln</STRONG>       <STRONG>Lf</STRONG>  label format
+       <STRONG>set_clock</STRONG>                  <STRONG>sclk</STRONG>      <STRONG>SC</STRONG>  set clock, #1 hrs #2 mins #3
+                                                secs
+       <STRONG>display_clock</STRONG>              <STRONG>dclk</STRONG>      <STRONG>DK</STRONG>  display clock
+       <STRONG>remove_clock</STRONG>               <STRONG>rmclk</STRONG>     <STRONG>RC</STRONG>  remove clock
+       <STRONG>create_window</STRONG>              <STRONG>cwin</STRONG>      <STRONG>CW</STRONG>  define a window #1 from #2,#3
+                                                to #4,#5
+       <STRONG>goto_window</STRONG>                <STRONG>wingo</STRONG>     <STRONG>WG</STRONG>  go to window #1
+       <STRONG>hangup</STRONG>                     <STRONG>hup</STRONG>       <STRONG>HU</STRONG>  hang-up phone
+       <STRONG>dial_phone</STRONG>                 <STRONG>dial</STRONG>      <STRONG>DI</STRONG>  dial number #1
+       <STRONG>quick_dial</STRONG>                 <STRONG>qdial</STRONG>     <STRONG>QD</STRONG>  dial number #1 without
+                                                checking
+       <STRONG>tone</STRONG>                       <STRONG>tone</STRONG>      <STRONG>TO</STRONG>  select touch tone dialing
+       <STRONG>pulse</STRONG>                      <STRONG>pulse</STRONG>     <STRONG>PU</STRONG>  select pulse dialing
+       <STRONG>flash_hook</STRONG>                 <STRONG>hook</STRONG>      <STRONG>fh</STRONG>  flash switch hook
+       <STRONG>fixed_pause</STRONG>                <STRONG>pause</STRONG>     <STRONG>PA</STRONG>  pause for 2-3 seconds
+       <STRONG>wait_tone</STRONG>                  <STRONG>wait</STRONG>      <STRONG>WA</STRONG>  wait for dial-tone
+       <STRONG>user0</STRONG>                      <STRONG>u0</STRONG>        <STRONG>u0</STRONG>  User string #0
+       <STRONG>user1</STRONG>                      <STRONG>u1</STRONG>        <STRONG>u1</STRONG>  User string #1
+       <STRONG>user2</STRONG>                      <STRONG>u2</STRONG>        <STRONG>u2</STRONG>  User string #2
+       <STRONG>user3</STRONG>                      <STRONG>u3</STRONG>        <STRONG>u3</STRONG>  User string #3
+       <STRONG>user4</STRONG>                      <STRONG>u4</STRONG>        <STRONG>u4</STRONG>  User string #4
+       <STRONG>user5</STRONG>                      <STRONG>u5</STRONG>        <STRONG>u5</STRONG>  User string #5
+       <STRONG>user6</STRONG>                      <STRONG>u6</STRONG>        <STRONG>u6</STRONG>  User string #6
+       <STRONG>user7</STRONG>                      <STRONG>u7</STRONG>        <STRONG>u7</STRONG>  User string #7
+       <STRONG>user8</STRONG>                      <STRONG>u8</STRONG>        <STRONG>u8</STRONG>  User string #8
+       <STRONG>user9</STRONG>                      <STRONG>u9</STRONG>        <STRONG>u9</STRONG>  User string #9
+       <STRONG>orig_pair</STRONG>                  <STRONG>op</STRONG>        <STRONG>op</STRONG>  Set default pair to its
+                                                original value
+       <STRONG>orig_colors</STRONG>                <STRONG>oc</STRONG>        <STRONG>oc</STRONG>  Set all color pairs to the
+                                                original ones
+       <STRONG>initialize_color</STRONG>           <STRONG>initc</STRONG>     <STRONG>Ic</STRONG>  initialize color #1 to
+                                                (#2,#3,#4)
+       <STRONG>initialize_pair</STRONG>            <STRONG>initp</STRONG>     <STRONG>Ip</STRONG>  Initialize color pair #1 to
+                                                fg=(#2,#3,#4), bg=(#5,#6,#7)
+       <STRONG>set_color_pair</STRONG>             <STRONG>scp</STRONG>       <STRONG>sp</STRONG>  Set current color pair to #1
+       <STRONG>set_foreground</STRONG>             <STRONG>setf</STRONG>      <STRONG>Sf</STRONG>  Set foreground color #1
+       <STRONG>set_background</STRONG>             <STRONG>setb</STRONG>      <STRONG>Sb</STRONG>  Set background color #1
+       <STRONG>change_char_pitch</STRONG>          <STRONG>cpi</STRONG>       <STRONG>ZA</STRONG>  Change number of characters
+                                                per inch to #1
+       <STRONG>change_line_pitch</STRONG>          <STRONG>lpi</STRONG>       <STRONG>ZB</STRONG>  Change number of lines per
+                                                inch to #1
+       <STRONG>change_res_horz</STRONG>            <STRONG>chr</STRONG>       <STRONG>ZC</STRONG>  Change horizontal resolution
+                                                to #1
+       <STRONG>change_res_vert</STRONG>            <STRONG>cvr</STRONG>       <STRONG>ZD</STRONG>  Change vertical resolution to
+                                                #1
+       <STRONG>define_char</STRONG>                <STRONG>defc</STRONG>      <STRONG>ZE</STRONG>  Define a character #1, #2 dots
+                                                wide, descender #3
+       <STRONG>enter_doublewide_mode</STRONG>      <STRONG>swidm</STRONG>     <STRONG>ZF</STRONG>  Enter double-wide mode
+       <STRONG>enter_draft_quality</STRONG>        <STRONG>sdrfq</STRONG>     <STRONG>ZG</STRONG>  Enter draft-quality mode
+       <STRONG>enter_italics_mode</STRONG>         <STRONG>sitm</STRONG>      <STRONG>ZH</STRONG>  Enter italic mode
+       <STRONG>enter_leftward_mode</STRONG>        <STRONG>slm</STRONG>       <STRONG>ZI</STRONG>  Start leftward carriage motion
+       <STRONG>enter_micro_mode</STRONG>           <STRONG>smicm</STRONG>     <STRONG>ZJ</STRONG>  Start micro-motion mode
+       <STRONG>enter_near_letter_quality</STRONG>  <STRONG>snlq</STRONG>      <STRONG>ZK</STRONG>  Enter NLQ mode
+       <STRONG>enter_normal_quality</STRONG>       <STRONG>snrmq</STRONG>     <STRONG>ZL</STRONG>  Enter normal-quality mode
+       <STRONG>enter_shadow_mode</STRONG>          <STRONG>sshm</STRONG>      <STRONG>ZM</STRONG>  Enter shadow-print mode
+
+       <STRONG>enter_subscript_mode</STRONG>       <STRONG>ssubm</STRONG>     <STRONG>ZN</STRONG>  Enter subscript mode
+       <STRONG>enter_superscript_mode</STRONG>     <STRONG>ssupm</STRONG>     <STRONG>ZO</STRONG>  Enter superscript mode
+       <STRONG>enter_upward_mode</STRONG>          <STRONG>sum</STRONG>       <STRONG>ZP</STRONG>  Start upward carriage motion
+       <STRONG>exit_doublewide_mode</STRONG>       <STRONG>rwidm</STRONG>     <STRONG>ZQ</STRONG>  End double-wide mode
+       <STRONG>exit_italics_mode</STRONG>          <STRONG>ritm</STRONG>      <STRONG>ZR</STRONG>  End italic mode
+       <STRONG>exit_leftward_mode</STRONG>         <STRONG>rlm</STRONG>       <STRONG>ZS</STRONG>  End left-motion mode
+       <STRONG>exit_micro_mode</STRONG>            <STRONG>rmicm</STRONG>     <STRONG>ZT</STRONG>  End micro-motion mode
+       <STRONG>exit_shadow_mode</STRONG>           <STRONG>rshm</STRONG>      <STRONG>ZU</STRONG>  End shadow-print mode
+       <STRONG>exit_subscript_mode</STRONG>        <STRONG>rsubm</STRONG>     <STRONG>ZV</STRONG>  End subscript mode
+       <STRONG>exit_superscript_mode</STRONG>      <STRONG>rsupm</STRONG>     <STRONG>ZW</STRONG>  End superscript mode
+       <STRONG>exit_upward_mode</STRONG>           <STRONG>rum</STRONG>       <STRONG>ZX</STRONG>  End reverse character motion
+       <STRONG>micro_column_address</STRONG>       <STRONG>mhpa</STRONG>      <STRONG>ZY</STRONG>  Like column_address in micro
+                                                mode
+       <STRONG>micro_down</STRONG>                 <STRONG>mcud1</STRONG>     <STRONG>ZZ</STRONG>  Like cursor_down in micro mode
+       <STRONG>micro_left</STRONG>                 <STRONG>mcub1</STRONG>     <STRONG>Za</STRONG>  Like cursor_left in micro mode
+       <STRONG>micro_right</STRONG>                <STRONG>mcuf1</STRONG>     <STRONG>Zb</STRONG>  Like cursor_right in micro
+                                                mode
+       <STRONG>micro_row_address</STRONG>          <STRONG>mvpa</STRONG>      <STRONG>Zc</STRONG>  Like row_address #1 in micro
+                                                mode
+       <STRONG>micro_up</STRONG>                   <STRONG>mcuu1</STRONG>     <STRONG>Zd</STRONG>  Like cursor_up in micro mode
+       <STRONG>order_of_pins</STRONG>              <STRONG>porder</STRONG>    <STRONG>Ze</STRONG>  Match software bits to print-
+                                                head pins
+       <STRONG>parm_down_micro</STRONG>            <STRONG>mcud</STRONG>      <STRONG>Zf</STRONG>  Like parm_down_cursor in micro
+                                                mode
+       <STRONG>parm_left_micro</STRONG>            <STRONG>mcub</STRONG>      <STRONG>Zg</STRONG>  Like parm_left_cursor in micro
+                                                mode
+       <STRONG>parm_right_micro</STRONG>           <STRONG>mcuf</STRONG>      <STRONG>Zh</STRONG>  Like parm_right_cursor in
+                                                micro mode
+       <STRONG>parm_up_micro</STRONG>              <STRONG>mcuu</STRONG>      <STRONG>Zi</STRONG>  Like parm_up_cursor in micro
+                                                mode
+       <STRONG>select_char_set</STRONG>            <STRONG>scs</STRONG>       <STRONG>Zj</STRONG>  Select character set, #1
+       <STRONG>set_bottom_margin</STRONG>          <STRONG>smgb</STRONG>      <STRONG>Zk</STRONG>  Set bottom margin at current
+                                                line
+       <STRONG>set_bottom_margin_parm</STRONG>     <STRONG>smgbp</STRONG>     <STRONG>Zl</STRONG>  Set bottom margin at line #1
+                                                or (if smgtp is not given) #2
+                                                lines from bottom
+       <STRONG>set_left_margin_parm</STRONG>       <STRONG>smglp</STRONG>     <STRONG>Zm</STRONG>  Set left (right) margin at
+                                                column #1
+       <STRONG>set_right_margin_parm</STRONG>      <STRONG>smgrp</STRONG>     <STRONG>Zn</STRONG>  Set right margin at column #1
+       <STRONG>set_top_margin</STRONG>             <STRONG>smgt</STRONG>      <STRONG>Zo</STRONG>  Set top margin at current line
+       <STRONG>set_top_margin_parm</STRONG>        <STRONG>smgtp</STRONG>     <STRONG>Zp</STRONG>  Set top (bottom) margin at row
+                                                #1
+       <STRONG>start_bit_image</STRONG>            <STRONG>sbim</STRONG>      <STRONG>Zq</STRONG>  Start printing bit image
+                                                graphics
+       <STRONG>start_char_set_def</STRONG>         <STRONG>scsd</STRONG>      <STRONG>Zr</STRONG>  Start character set definition
+                                                #1, with #2 characters in the
+                                                set
+       <STRONG>stop_bit_image</STRONG>             <STRONG>rbim</STRONG>      <STRONG>Zs</STRONG>  Stop printing bit image
+                                                graphics
+       <STRONG>stop_char_set_def</STRONG>          <STRONG>rcsd</STRONG>      <STRONG>Zt</STRONG>  End definition of character
+                                                set #1
+       <STRONG>subscript_characters</STRONG>       <STRONG>subcs</STRONG>     <STRONG>Zu</STRONG>  List of subscriptable
+                                                characters
+       <STRONG>superscript_characters</STRONG>     <STRONG>supcs</STRONG>     <STRONG>Zv</STRONG>  List of superscriptable
+                                                characters
+       <STRONG>these_cause_cr</STRONG>             <STRONG>docr</STRONG>      <STRONG>Zw</STRONG>  Printing any of these
+                                                characters causes CR
+       <STRONG>zero_motion</STRONG>                <STRONG>zerom</STRONG>     <STRONG>Zx</STRONG>  No motion for subsequent
+                                                character
+
+       The  following  string  capabilities  are  present  in  the SVr4.0 term
        structure, but were originally not documented in the man page.
 
-                                       <STRONG>Code</STRONG>
-       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>      <STRONG>TI</STRONG>         <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
+                                      <STRONG>Code</STRONG>
+
+
+       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
-       <STRONG>char_set_names</STRONG>              <STRONG>csnm</STRONG>       <STRONG>Zy</STRONG>   Produce #1'th item from
-                                                   list of character set names
-       <STRONG>key_mouse</STRONG>                   <STRONG>kmous</STRONG>      <STRONG>Km</STRONG>   Mouse event has occurred
-       <STRONG>mouse_info</STRONG>                  <STRONG>minfo</STRONG>      <STRONG>Mi</STRONG>   Mouse status information
-       <STRONG>req_mouse_pos</STRONG>               <STRONG>reqmp</STRONG>      <STRONG>RQ</STRONG>   Request mouse position
-       <STRONG>get_mouse</STRONG>                   <STRONG>getm</STRONG>       <STRONG>Gm</STRONG>   Curses should get button
-                                                   events, parameter #1 not
-                                                   documented.
-       <STRONG>set_a_foreground</STRONG>            <STRONG>setaf</STRONG>      <STRONG>AF</STRONG>   Set foreground color to #1,
-                                                   using ANSI escape
-       <STRONG>set_a_background</STRONG>            <STRONG>setab</STRONG>      <STRONG>AB</STRONG>   Set background color to #1,
-                                                   using ANSI escape
-       <STRONG>pkey_plab</STRONG>                   <STRONG>pfxl</STRONG>       <STRONG>xl</STRONG>   Program function key #1 to
-                                                   type string #2 and show
-                                                   string #3
-       <STRONG>device_type</STRONG>                 <STRONG>devt</STRONG>       <STRONG>dv</STRONG>   Indicate language, codeset
-                                                   support
-       <STRONG>code_set_init</STRONG>               <STRONG>csin</STRONG>       <STRONG>ci</STRONG>   Init sequence for multiple
-                                                   codesets
-       <STRONG>set0_des_seq</STRONG>                <STRONG>s0ds</STRONG>       <STRONG>s0</STRONG>   Shift to codeset 0 (EUC set
-                                                   0, ASCII)
-       <STRONG>set1_des_seq</STRONG>                <STRONG>s1ds</STRONG>       <STRONG>s1</STRONG>   Shift to codeset 1
-       <STRONG>set2_des_seq</STRONG>                <STRONG>s2ds</STRONG>       <STRONG>s2</STRONG>   Shift to codeset 2
-       <STRONG>set3_des_seq</STRONG>                <STRONG>s3ds</STRONG>       <STRONG>s3</STRONG>   Shift to codeset 3
-       <STRONG>set_lr_margin</STRONG>               <STRONG>smglr</STRONG>      <STRONG>ML</STRONG>   Set both left and right
-                                                   margins to #1, #2.  (ML is
-                                                   not in BSD termcap).
-       <STRONG>set_tb_margin</STRONG>               <STRONG>smgtb</STRONG>      <STRONG>MT</STRONG>   Sets both top and bottom
-                                                   margins to #1, #2
-       <STRONG>bit_image_repeat</STRONG>            <STRONG>birep</STRONG>      <STRONG>Xy</STRONG>   Repeat bit image cell #1 #2
-                                                   times
-       <STRONG>bit_image_newline</STRONG>           <STRONG>binel</STRONG>      <STRONG>Zz</STRONG>   Move to next row of the bit
-                                                   image
-       <STRONG>bit_image_carriage_return</STRONG>   <STRONG>bicr</STRONG>       <STRONG>Yv</STRONG>   Move to beginning of same
-                                                   row
-       <STRONG>color_names</STRONG>                 <STRONG>colornm</STRONG>    <STRONG>Yw</STRONG>   Give name for color #1
-       <STRONG>define_bit_image_region</STRONG>     <STRONG>defbi</STRONG>      <STRONG>Yx</STRONG>   Define rectangular bit
-                                                   image region
-       <STRONG>end_bit_image_region</STRONG>        <STRONG>endbi</STRONG>      <STRONG>Yy</STRONG>   End a bit-image region
-       <STRONG>set_color_band</STRONG>              <STRONG>setcolor</STRONG>   <STRONG>Yz</STRONG>   Change to ribbon color #1
-       <STRONG>set_page_length</STRONG>             <STRONG>slines</STRONG>     <STRONG>YZ</STRONG>   Set page length to #1 lines
-       <STRONG>display_pc_char</STRONG>             <STRONG>dispc</STRONG>      <STRONG>S1</STRONG>   Display PC character #1
-       <STRONG>enter_pc_charset_mode</STRONG>       <STRONG>smpch</STRONG>      <STRONG>S2</STRONG>   Enter PC character display
-                                                   mode
-       <STRONG>exit_pc_charset_mode</STRONG>        <STRONG>rmpch</STRONG>      <STRONG>S3</STRONG>   Exit PC character display
-                                                   mode
-       <STRONG>enter_scancode_mode</STRONG>         <STRONG>smsc</STRONG>       <STRONG>S4</STRONG>   Enter PC scancode mode
-       <STRONG>exit_scancode_mode</STRONG>          <STRONG>rmsc</STRONG>       <STRONG>S5</STRONG>   Exit PC scancode mode
-       <STRONG>pc_term_options</STRONG>             <STRONG>pctrm</STRONG>      <STRONG>S6</STRONG>   PC terminal options
-       <STRONG>scancode_escape</STRONG>             <STRONG>scesc</STRONG>      <STRONG>S7</STRONG>   Escape for scancode
-                                                   emulation
-       <STRONG>alt_scancode_esc</STRONG>            <STRONG>scesa</STRONG>      <STRONG>S8</STRONG>   Alternate escape for
-                                                   scancode emulation
+       <STRONG>char_set_names</STRONG>             <STRONG>csnm</STRONG>      <STRONG>Zy</STRONG>  Produce #1'th item from list
+                                                of character set names
+       <STRONG>key_mouse</STRONG>                  <STRONG>kmous</STRONG>     <STRONG>Km</STRONG>  Mouse event has occurred
+       <STRONG>mouse_info</STRONG>                 <STRONG>minfo</STRONG>     <STRONG>Mi</STRONG>  Mouse status information
+       <STRONG>req_mouse_pos</STRONG>              <STRONG>reqmp</STRONG>     <STRONG>RQ</STRONG>  Request mouse position
+       <STRONG>get_mouse</STRONG>                  <STRONG>getm</STRONG>      <STRONG>Gm</STRONG>  Curses should get button
+                                                events, parameter #1 not
+                                                documented.
+       <STRONG>set_a_foreground</STRONG>           <STRONG>setaf</STRONG>     <STRONG>AF</STRONG>  Set foreground color to #1,
+                                                using ANSI escape
+       <STRONG>set_a_background</STRONG>           <STRONG>setab</STRONG>     <STRONG>AB</STRONG>  Set background color to #1,
+                                                using ANSI escape
+       <STRONG>pkey_plab</STRONG>                  <STRONG>pfxl</STRONG>      <STRONG>xl</STRONG>  Program function key #1 to
+                                                type string #2 and show string
+                                                #3
+       <STRONG>device_type</STRONG>                <STRONG>devt</STRONG>      <STRONG>dv</STRONG>  Indicate language, codeset
+                                                support
+       <STRONG>code_set_init</STRONG>              <STRONG>csin</STRONG>      <STRONG>ci</STRONG>  Init sequence for multiple
+                                                codesets
+       <STRONG>set0_des_seq</STRONG>               <STRONG>s0ds</STRONG>      <STRONG>s0</STRONG>  Shift to codeset 0 (EUC set 0,
+                                                ASCII)
+       <STRONG>set1_des_seq</STRONG>               <STRONG>s1ds</STRONG>      <STRONG>s1</STRONG>  Shift to codeset 1
+       <STRONG>set2_des_seq</STRONG>               <STRONG>s2ds</STRONG>      <STRONG>s2</STRONG>  Shift to codeset 2
+       <STRONG>set3_des_seq</STRONG>               <STRONG>s3ds</STRONG>      <STRONG>s3</STRONG>  Shift to codeset 3
+       <STRONG>set_lr_margin</STRONG>              <STRONG>smglr</STRONG>     <STRONG>ML</STRONG>  Set both left and right
+                                                margins to #1, #2.  (ML is not
+                                                in BSD termcap).
+       <STRONG>set_tb_margin</STRONG>              <STRONG>smgtb</STRONG>     <STRONG>MT</STRONG>  Sets both top and bottom
+                                                margins to #1, #2
+       <STRONG>bit_image_repeat</STRONG>           <STRONG>birep</STRONG>     <STRONG>Xy</STRONG>  Repeat bit image cell #1 #2
+                                                times
+       <STRONG>bit_image_newline</STRONG>          <STRONG>binel</STRONG>     <STRONG>Zz</STRONG>  Move to next row of the bit
+                                                image
+       <STRONG>bit_image_carriage_return</STRONG>  <STRONG>bicr</STRONG>      <STRONG>Yv</STRONG>  Move to beginning of same row
+       <STRONG>color_names</STRONG>                <STRONG>colornm</STRONG>   <STRONG>Yw</STRONG>  Give name for color #1
+       <STRONG>define_bit_image_region</STRONG>    <STRONG>defbi</STRONG>     <STRONG>Yx</STRONG>  Define rectangular bit image
+                                                region
+       <STRONG>end_bit_image_region</STRONG>       <STRONG>endbi</STRONG>     <STRONG>Yy</STRONG>  End a bit-image region
+       <STRONG>set_color_band</STRONG>             <STRONG>setcolor</STRONG>  <STRONG>Yz</STRONG>  Change to ribbon color #1
+       <STRONG>set_page_length</STRONG>            <STRONG>slines</STRONG>    <STRONG>YZ</STRONG>  Set page length to #1 lines
+       <STRONG>display_pc_char</STRONG>            <STRONG>dispc</STRONG>     <STRONG>S1</STRONG>  Display PC character #1
+       <STRONG>enter_pc_charset_mode</STRONG>      <STRONG>smpch</STRONG>     <STRONG>S2</STRONG>  Enter PC character display
+                                                mode
+       <STRONG>exit_pc_charset_mode</STRONG>       <STRONG>rmpch</STRONG>     <STRONG>S3</STRONG>  Exit PC character display mode
+       <STRONG>enter_scancode_mode</STRONG>        <STRONG>smsc</STRONG>      <STRONG>S4</STRONG>  Enter PC scancode mode
+       <STRONG>exit_scancode_mode</STRONG>         <STRONG>rmsc</STRONG>      <STRONG>S5</STRONG>  Exit PC scancode mode
+       <STRONG>pc_term_options</STRONG>            <STRONG>pctrm</STRONG>     <STRONG>S6</STRONG>  PC terminal options
+       <STRONG>scancode_escape</STRONG>            <STRONG>scesc</STRONG>     <STRONG>S7</STRONG>  Escape for scancode emulation
+       <STRONG>alt_scancode_esc</STRONG>           <STRONG>scesa</STRONG>     <STRONG>S8</STRONG>  Alternate escape for scancode
+                                                emulation
 
        The XSI Curses standard added these hardcopy capabilities.   They  were
        used  in  some  post-4.1 versions of System V curses, e.g., Solaris 2.5
@@ -911,22 +906,22 @@
        binary-compatible with System V terminfo entries after SVr4.1; beware!
 
                                       <STRONG>Code</STRONG>
-
-       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>   <STRONG>Description</STRONG>
+       <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
-       <STRONG>enter_horizontal_hl_mode</STRONG>   <STRONG>ehhlm</STRONG>     <STRONG>Xh</STRONG>   Enter horizontal highlight
-                                                 mode
-       <STRONG>enter_left_hl_mode</STRONG>         <STRONG>elhlm</STRONG>     <STRONG>Xl</STRONG>   Enter left highlight mode
-       <STRONG>enter_low_hl_mode</STRONG>          <STRONG>elohlm</STRONG>    <STRONG>Xo</STRONG>   Enter low highlight mode
-       <STRONG>enter_right_hl_mode</STRONG>        <STRONG>erhlm</STRONG>     <STRONG>Xr</STRONG>   Enter right highlight mode
-       <STRONG>enter_top_hl_mode</STRONG>          <STRONG>ethlm</STRONG>     <STRONG>Xt</STRONG>   Enter top highlight mode
-       <STRONG>enter_vertical_hl_mode</STRONG>     <STRONG>evhlm</STRONG>     <STRONG>Xv</STRONG>   Enter vertical highlight mode
-       <STRONG>set_a_attributes</STRONG>           <STRONG>sgr1</STRONG>      <STRONG>sA</STRONG>   Define second set of video
-                                                 attributes #1-#6
-       <STRONG>set_pglen_inch</STRONG>             <STRONG>slength</STRONG>   <STRONG>YI</STRONG>   Set page length to #1
-                                                 hundredth of an inch (some
-                                                 implementations use sL for
-                                                 termcap).
+       <STRONG>enter_horizontal_hl_mode</STRONG>   <STRONG>ehhlm</STRONG>     <STRONG>Xh</STRONG>  Enter horizontal highlight
+                                                mode
+
+       <STRONG>enter_left_hl_mode</STRONG>         <STRONG>elhlm</STRONG>     <STRONG>Xl</STRONG>  Enter left highlight mode
+       <STRONG>enter_low_hl_mode</STRONG>          <STRONG>elohlm</STRONG>    <STRONG>Xo</STRONG>  Enter low highlight mode
+       <STRONG>enter_right_hl_mode</STRONG>        <STRONG>erhlm</STRONG>     <STRONG>Xr</STRONG>  Enter right highlight mode
+       <STRONG>enter_top_hl_mode</STRONG>          <STRONG>ethlm</STRONG>     <STRONG>Xt</STRONG>  Enter top highlight mode
+       <STRONG>enter_vertical_hl_mode</STRONG>     <STRONG>evhlm</STRONG>     <STRONG>Xv</STRONG>  Enter vertical highlight mode
+       <STRONG>set_a_attributes</STRONG>           <STRONG>sgr1</STRONG>      <STRONG>sA</STRONG>  Define second set of video
+                                                attributes #1-#6
+       <STRONG>set_pglen_inch</STRONG>             <STRONG>slength</STRONG>   <STRONG>YI</STRONG>  Set page length to #1
+                                                hundredth of an inch (some
+                                                implementations use sL for
+                                                termcap).
 
 
 </PRE><H3><a name="h3-User-Defined-Capabilities">User-Defined Capabilities</a></H3><PRE>
@@ -2051,7 +2046,6 @@
        <STRONG>ACS_BOARD</STRONG>     0x68      h      <STRONG>#</STRONG>  board of squares
        <STRONG>ACS_LANTERN</STRONG>   0x69      i      <STRONG>#</STRONG>  lantern symbol
        <STRONG>ACS_LRCORNER</STRONG>  0x6a      j      <STRONG>+</STRONG>  lower right corner
-
        <STRONG>ACS_URCORNER</STRONG>  0x6b      k      <STRONG>+</STRONG>  upper right corner
        <STRONG>ACS_ULCORNER</STRONG>  0x6c      l      <STRONG>+</STRONG>  upper left corner
        <STRONG>ACS_LLCORNER</STRONG>  0x6d      m      <STRONG>+</STRONG>  lower left corner
@@ -2221,6 +2215,7 @@
                         <STRONG>A_LOW</STRONG>          11      2048    <STRONG>sgr1</STRONG>
                         <STRONG>A_RIGHT</STRONG>        12      4096    <STRONG>sgr1</STRONG>
                         <STRONG>A_TOP</STRONG>          13      8192    <STRONG>sgr1</STRONG>
+
                         <STRONG>A_VERTICAL</STRONG>     14     16384    <STRONG>sgr1</STRONG>
                         <STRONG>A_ITALIC</STRONG>       15     32768    <STRONG>sitm</STRONG>
 

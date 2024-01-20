@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4064 2024/01/13 22:02:10 tom Exp $
+-- $Id: NEWS,v 1.4069 2024/01/20 19:46:10 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240120
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ amend discussion of aliases in tput.1
+	+ use ansi+sgrbold, ansi+sgrdim, ansi+sgrso, ansi+sgrul, ansi+tabs
+	  ecma+color, ecma+sgr, vt100+4bsd, vt100+pfkeys, vt220+pcedit
+	  xterm+256color, xterm+acs, xterm+nopcfkeys, xterm+pcf2 to trim -TD
+	+ modify configure scripts/makefiles to omit KEY_RESIZE if the
+	  corresponding SIGWINCH feature is disabled.
 
 20240113
 	+ improve formatting/style of manpages (patches by Branden Robinson).

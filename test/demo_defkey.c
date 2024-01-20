@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_defkey.c,v 1.34 2023/06/24 15:37:17 tom Exp $
+ * $Id: demo_defkey.c,v 1.35 2024/01/20 20:46:12 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -148,11 +148,7 @@ really_define_key(WINDOW *win, const char *new_string, int code)
     }
     log_last_line(win);
 
-    if (vis_string != 0) {
-	free(vis_string);
-	vis_string = 0;
-    }
-
+    free(vis_string);
     vis_string = visible(new_string);
     if ((rc = key_defined(new_string)) > 0) {
 	wprintw(win, "%s was bound to %s\n", vis_string, keyname(rc));

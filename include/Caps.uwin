@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.uwin,v 1.19 2024/01/13 22:05:39 tom Exp $
+# $Id: Caps.uwin,v 1.20 2024/01/20 16:51:41 Branden.Robinson Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with U/Win's terminfo.
@@ -153,6 +153,23 @@
 # to buy space for non-essentials Emacs is still using.  Capabilities high
 # on that hit list: rc, sc, uc.
 #
+# FORMATTING THE TABLES
+#
+# We manually specify a (minimum) column width for the capability name
+# and terminfo code columns in the tables to achieve a consistent
+# arrangement; as used here, tbl(1) cannot know the width required by
+# one table's data while formatting another's.
+#
+# The longest capability names (C variable) is
+# "hue_lightness_saturation" (24n), and the longest terminfo code is
+# "colornm" (7n).
+#
+# The tables are a tight fit on traditional man(7) implementations that
+# use a line length of 65n, and the "Description" column has little room
+# within which the formatter can make breaking or adjustment decisions.
+# Words like "micro_..._address" and "parm_..._micro" don't break.
+# Reducing the inter-column gaps to 2 ens gives them enough room.  --GBR
+#
 #############################################################################
 #
 # STANDARD CAPABILITIES
@@ -208,9 +225,9 @@
 #%.PP
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 #%\&	Code	\&
 #%Boolean Capability Name	TI	TC	Description
 #%_
@@ -249,9 +266,9 @@ hue_lightness_saturation	hls	bool	hl	-	-	-----	terminal uses only HLS color nota
 #%.
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 #%\&	Code	\&
 #%Numeric Capability Name	TI	TC	Description
 #%_
@@ -278,9 +295,9 @@ no_color_video			ncv	num	NC	-	-	-----	video attributes that cannot be used with 
 #%.
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 #%\&	Code	\&
 #%String Capability Name	TI	TC	Description
 #%_

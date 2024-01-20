@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_hook.3x,v 1.34 2024/01/05 21:46:58 tom Exp $
-.TH form_hook 3X 2024-01-05 "ncurses 6.4" "Library calls"
+.\" $Id: form_hook.3x,v 1.35 2024/01/20 18:12:04 tom Exp $
+.TH form_hook 3X 2024-01-20 "ncurses 6.4" "Library calls"
 .SH NAME
 \fBform_hook\fP \-
 set hooks for automatic invocation by applications
@@ -72,7 +72,7 @@ if any (\fBNULL\fP if there is no such hook).
 .SS set_form_term
 sets a hook to be called at form-unpost time
 and just before a page change once it is posted.
-.SS form_init
+.SS form_term
 returns the current form term hook, if any (\fBNULL\fP if there is no such
 hook).
 .SH RETURN VALUE

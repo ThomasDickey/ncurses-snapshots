@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.62 2024/01/13 22:05:39 tom Exp $
-.TH @TOE@ 1M 2024-01-13 "ncurses 6.4" "User commands"
+.\" $Id: toe.1m,v 1.64 2024/01/20 16:51:21 tom Exp $
+.TH @TOE@ 1M 2024-01-20 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -167,8 +167,9 @@ terminal database directories named in the \fI\%TERMINFO\fP and
 .RS 4
 .PP
 .\" toe -a | grep -E '^(xterm|vt)'
+.ft \*(CW
 .TS
-Lf(\*(CW)2 Lf(\*(CW).
+L2 Lx.
 xterm\-color	generic color xterm
 xterm\-xfree86	xterm terminal emulator (XFree86)
 xterm\-vt220	xterm emulating vt220
@@ -188,6 +189,7 @@ vt52	dec vt52
 L.
 \&.\|.\|.
 .TE
+.ft
 .RE
 .PP
 Use the \fB\-a\fP and \fB\-s\fP options together to show where each
@@ -195,14 +197,15 @@ terminal description was found.
 .RS 4
 .PP
 .\" toe -as | grep -E '(^-+>|:.(xterm|vt))'
+.ft \*(CW
 .TS
-lf(\*(CW).
+Lx.
 \-\-> /etc/terminfo
 \-\-\-\-> /lib/terminfo
 \-\-\-\-\-\-> /usr/share/terminfo
 .TE
 .TS
-lf(\*(CW)1 lf(\*(CW)2 lf(\*(CW).
+L1 L2 Lx.
 \-\-*\-\-\-:	vt100	dec vt100 (w/advanced video)
 \-\-*\-\-\-:	vt102	dec vt102
 \-\-*\-\-\-:	vt220	dec vt220
@@ -222,9 +225,10 @@ T}
 xterm terminal emulator (XFree86)
 T}
 .T&
-l.
+L.
 \&.\|.\|.
 .TE
+.ft
 .RE
 .SH SEE ALSO
 \fB\%@CAPTOINFO@\fP(1M),

@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019-2021,2022 Thomas E. Dickey                                  #
+# Copyright 2019-2022,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2015,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -30,7 +30,7 @@
 #  Author:  Juergen Pfeifer, 1996
 #     and:  Thomas E. Dickey, 1997
 #
-#  $Id: Makefile.in,v 1.101 2022/12/03 19:45:12 Nicolas.Boulenguez Exp $
+#  $Id: Makefile.in,v 1.103 2024/01/19 16:51:56 tom Exp $
 #
 .SUFFIXES:
 
@@ -183,7 +183,8 @@ $(ADA_SRCDIR)/$(ABASE)_constants.ads: $(PROG_GENERATE)
 	$(WRAPPER) "$(GENERATE) $@"
 ################################################################################
 $(ADA_SRCDIR)/$(ABASE).ads: 	$(srcdir)/$(ABASE).ads.m4 \
-				$(srcdir)/normal.m4
+				$(srcdir)/normal.m4 \
+				options.m4
 	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
 	$(srcdir)/$(ABASE).ads.m4 |\
 	$(DEL_ADAMODE) >$@
@@ -284,6 +285,7 @@ mostlyclean ::
 	-rm -f a.out core $(PROG_GENERATE) *.o
 
 clean :: mostlyclean
+	-rm -f options.m4
 	-rm -f $(GEN_TARGETS) instab.tmp *.ad[bs] *.html *.ali *.tmp
 
 distclean :: clean
@@ -293,6 +295,15 @@ distclean :: clean
 realclean :: distclean
 
 HTML_DIR = @ADAHTML_DIR@
+
+options.m4 :
+	$(SHELL) -c "if [ @cf_cv_enable_sigwinch@ = 0 ]; \
+		then \
+			dashes='   --'; \
+		else \
+			dashes='';\
+		fi; \
+		echo \"define(OPT_KEY_RESIZE,\\\`\$$dashes')dnl\" > $@"
 
 instab.tmp : table.m4 $(GEN_SRC)
 	@rm -f $@

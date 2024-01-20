@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.osf1r5,v 1.20 2024/01/13 22:05:39 tom Exp $
+# $Id: Caps.osf1r5,v 1.21 2024/01/20 16:51:41 Branden.Robinson Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with OSF/1 version 5 (Tru64) terminfo.
@@ -153,6 +153,23 @@
 # to buy space for non-essentials Emacs is still using.  Capabilities high
 # on that hit list: rc, sc, uc.
 #
+# FORMATTING THE TABLES
+#
+# We manually specify a (minimum) column width for the capability name
+# and terminfo code columns in the tables to achieve a consistent
+# arrangement; as used here, tbl(1) cannot know the width required by
+# one table's data while formatting another's.
+#
+# The longest capability names (C variables) are
+# "enter_near_letter_quality" and "bit_image_carriage_return" (tied at
+# 25n), and the longest terminfo code is "setcolor" (8n).
+#
+# The tables are a tight fit on traditional man(7) implementations that
+# use a line length of 65n, and the "Description" column has little room
+# within which the formatter can make breaking or adjustment decisions.
+# Words like "micro_..._address" and "parm_..._micro" don't break.
+# Reducing the inter-column gaps to 2 ens gives them enough room.  --GBR
+#
 #############################################################################
 #
 # STANDARD CAPABILITIES
@@ -208,9 +225,9 @@
 #%.PP
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(25n)2 Lbw(8n)2 Lb2 Lx.
 #%\&	Code	\&
 #%Boolean Capability Name	TI	TC	Description
 #%_
@@ -256,9 +273,9 @@ semi_auto_right_margin		sam	bool	YE	-	-	-----	printing in last column causes cr
 #%.
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(25n)2 Lbw(8n)2 Lb2 Lx.
 #%\&	Code	\&
 #%Numeric Capability Name	TI	TC	Description
 #%_
@@ -300,9 +317,9 @@ wide_char_size			widcs	num	Yn	-	-	-----	character step size when in double wide 
 #%.
 #%.TS
 #%center;
-#%Lb Cb S  Lb
-#%Lb Lb Lb Lb
-#%Lb Lb Lb Lx.
+#%Lb        Cb       S   Lb
+#%Lb        Lb       Lb  Lb
+#%Lbw(25n)2 Lbw(8n)2 Lb2 Lx.
 #%\&	Code	\&
 #%String Capability Name	TI	TC	Description
 #%_

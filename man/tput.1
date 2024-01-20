@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.102 2024/01/13 22:47:16 tom Exp $
-.TH @TPUT@ 1 2024-01-13 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.105 2024/01/20 19:41:02 tom Exp $
+.TH @TPUT@ 1 2024-01-20 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -47,9 +47,7 @@
 ..
 .ds d @TERMINFO@
 .SH NAME
-\fB\%@TPUT@\fP,
-\fB\%init\fP,
-\fB\%reset\fP \-
+\fB\%@TPUT@\fP \-
 initialize a terminal, exercise its capabilities, or query \fI\%term\%info\fP database
 .SH SYNOPSIS
 \fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP]
@@ -277,16 +275,23 @@ executing a link named
 .B \%reset
 that points to \fB\%@TPUT@\fP has the same effect as
 .RB \%\*(`` "@TPUT@ \%reset" \*(''.
-(The \fB\%@TSET@\fP(1) utility also treats a link named
-.B \%reset
-specially.)
 .PP
-If \fB\%@TPUT@\fP is invoked by a link named
-.BR \%init ,
-this has the same effect as
-.RB \%\*(`` "@TPUT@ init" \*(''.
-Such a link is seldom employed because another program of that name
-is in widespread use.
+This feature was introduced by
+.I \%ncurses
+5.2 in 2000.
+It is rarely used:
+.TP
+.B \%clear
+is a separate program,
+which is both smaller and more frequently executed.
+.TP
+.B init
+has the same name as another program in widespread use.
+.TP
+.B \%reset
+is provided
+by the \fB\%@TSET@\fP(1) utility (also via a link named
+.BR \%reset ")."
 .SS "Terminal Size"
 Besides the pseudo-capabilities
 (such as
@@ -410,7 +415,7 @@ _
 4	some operands not interpreted
 .TE
 .SH ENVIRONMENT
-\fB@TPUT@\fP command reads one environment variable.
+\fB@TPUT@\fP reads one environment variable.
 .TP 8n \" "TERM" + 2n + adjustment for PDF
 .I TERM
 denotes the terminal type.
@@ -637,9 +642,9 @@ operands.
 .bP
 A few platforms such as FreeBSD recognize
 .I termcap
-names rather than
+codes rather than
 .I \%term\%info
-capability names in their respective
+capability codes in their respective
 .B tput
 commands.
 Since 2010,
@@ -647,13 +652,13 @@ NetBSD's
 .B tput
 uses
 .I \%term\%info
-names.
+codes.
 Before that,
 it
 (like FreeBSD)
 recognized
 .I termcap
-names.
+codes.
 .IP
 Beginning in 2021,
 FreeBSD uses
@@ -800,7 +805,7 @@ because he had only
 available,
 it accepted
 .I termcap
-names for other capabilities.
+codes for other capabilities.
 Also,
 Bostic's BSD
 .B tput

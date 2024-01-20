@@ -1,4 +1,4 @@
-/* $Id*/
+/* $Id: curses.events,v 1.4 2024/01/19 09:24:17 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in

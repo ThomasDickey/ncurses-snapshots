@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2022,2023 Thomas E. Dickey                                *
+dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.773 2023/12/03 11:07:25 tom Exp $
+dnl $Id: configure.in,v 1.774 2024/01/19 11:22:46 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.773 $)
+AC_REVISION($Revision: 1.774 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1288,7 +1288,14 @@ AC_ARG_ENABLE(sigwinch,
 	[with_sigwinch=$enableval],
 	[with_sigwinch=$with_ext_funcs])
 AC_MSG_RESULT($with_sigwinch)
-test "x$with_sigwinch" = xyes && AC_DEFINE(USE_SIGWINCH,1,[Define to 1 to compile with SIGWINCH handler])
+if test "x$with_sigwinch" = xyes
+then
+	AC_DEFINE(USE_SIGWINCH,1,[Define to 1 to compile with SIGWINCH handler])
+	cf_cv_enable_sigwinch=1
+else
+	cf_cv_enable_sigwinch=0
+fi
+AC_SUBST(cf_cv_enable_sigwinch)
 
 ###   use option --enable-tcap-names to allow user to define new capabilities
 AC_MSG_CHECKING(if you want user-definable terminal capabilities like termcap)

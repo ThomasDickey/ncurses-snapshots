@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.281 2023/08/12 14:20:15 tom Exp $ */
+/* $Id: curses.h.in,v 1.282 2024/01/19 11:50:07 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -64,6 +64,7 @@
  NCURSES_OSPEED_COMPAT
  NCURSES_PATHSEP
  NCURSES_REENTRANT
+ NCURSES_SIGWINCH
  */
 
 #define CURSES 1
@@ -168,6 +169,19 @@
  */
 #ifndef NCURSES_REENTRANT
 #define NCURSES_REENTRANT @cf_cv_enable_reentrant@
+#endif
+
+/*
+ * KEY_RESIZE is an extended feature that relies upon the SIGWINCH handler
+ * in ncurses.
+ */
+#if @NCURSES_EXT_FUNCS@
+#ifndef NCURSES_SIGWINCH
+#define NCURSES_SIGWINCH @cf_cv_enable_sigwinch@
+#endif
+#else
+#undef NCURSES_SIGWINCH
+#define NCURSES_SIGWINCH 0
 #endif
 
 /*
