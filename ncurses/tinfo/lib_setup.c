@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.230 2023/11/04 21:02:27 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.231 2024/02/04 00:09:34 tom Exp $")
 
 /****************************************************************************
  *
@@ -707,22 +707,27 @@ _nc_get_locale(void)
 NCURSES_EXPORT(int)
 _nc_unicode_locale(void)
 {
-    int result = 0;
+    static bool initialized = FALSE;
+    static int result = 0;
+
+    if (!initialized) {
 #if defined(_NC_WINDOWS) && USE_WIDEC_SUPPORT
-    result = 1;
+	result = 1;
 #elif HAVE_LANGINFO_CODESET
-    char *env = nl_langinfo(CODESET);
-    result = !strcmp(env, "UTF-8");
-    T(("_nc_unicode_locale(%s) ->%d", env, result));
+	char *env = nl_langinfo(CODESET);
+	result = !strcmp(env, "UTF-8");
+	T(("_nc_unicode_locale(%s) ->%d", env, result));
 #else
-    char *env = _nc_get_locale();
-    if (env != 0) {
-	if (strstr(env, ".UTF-8") != 0) {
-	    result = 1;
-	    T(("_nc_unicode_locale(%s) ->%d", env, result));
+	char *env = _nc_get_locale();
+	if (env != 0) {
+	    if (strstr(env, ".UTF-8") != 0) {
+		result = 1;
+		T(("_nc_unicode_locale(%s) ->%d", env, result));
+	    }
 	}
-    }
 #endif
+	initialized = TRUE;
+    }
     return result;
 }
 
