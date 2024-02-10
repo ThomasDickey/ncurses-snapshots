@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.217 2023/11/11 00:23:26 tom Exp $ */
+/* $Id: test.priv.h,v 1.218 2024/02/10 14:40:03 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -752,25 +752,27 @@ extern int optind;
 ," -V       show version of curses"
 
 #if HAVE_CURSES_VERSION
-#define format_version(buffer) strcpy(buffer, curses_version())
+#define format_version(buffer, size) strcpy(buffer, curses_version())
 #elif defined(NCURSES_VERSION_MAJOR) && defined(NCURSES_VERSION_MINOR) && defined(NCURSES_VERSION_PATCH)
-#define format_version(buffer) sprintf(buffer, "ncurses %d.%d.%d", \
-	NCURSES_VERSION_MAJOR, \
-	NCURSES_VERSION_MINOR, \
-	NCURSES_VERSION_PATCH)
+#define format_version(buffer, size) \
+	_nc_SPRINTF(buffer, _nc_SLIMIT(size) "ncurses %d.%d.%d", \
+		    NCURSES_VERSION_MAJOR, \
+		    NCURSES_VERSION_MINOR, \
+		    NCURSES_VERSION_PATCH)
 #else
-#define format_version(buffer) strcpy(buffer, "ncurses-examples")
+#define format_version(buffer, size) strcpy(buffer, "ncurses-examples")
 #endif
 
 #define VERSION_COMMON() \
 static char *version_common(char **argv) { \
 	char *base = argv[0]; \
 	char *part = strrchr(base, '/'); \
-	char *result = malloc(strlen(base) + 80); \
+	size_t need = strlen(base) + 80; \
+	char *result = malloc(need); \
 	if (result != NULL) { \
 	    if (part++ == NULL) part = base; \
-	    sprintf(result, "%.20s: ", part); \
-	    format_version(result + strlen(result)); \
+	    _nc_SPRINTF(result, _nc_SLIMIT(need) "%.20s: ", part); \
+	    format_version(result + strlen(result), need - strlen(result)); \
 	} \
 	return result; \
 } \
@@ -1112,14 +1114,14 @@ extern int TABSIZE;
 #if HAVE_CLOCK_GETTIME
 # define GetClockTime(t) clock_gettime(CLOCK_REALTIME, t)
 # define TimeType struct timespec
-# define TimeScale 1000000000L		/* 1e9 */
+# define TimeScale 1000000000L	/* 1e9 */
 # define ElapsedSeconds(b,e) \
 	    (double) (((e)->tv_sec - (b)->tv_sec) \
 		    + ((e)->tv_nsec - (b)->tv_nsec) / TimeScale)
 #elif HAVE_GETTIMEOFDAY
 # define GetClockTime(t) gettimeofday(t, 0)
 # define TimeType struct timeval
-# define TimeScale 1000000L		/* 1e6 */
+# define TimeScale 1000000L	/* 1e6 */
 # define ElapsedSeconds(b,e) \
 	    (double) (((e)->tv_sec - (b)->tv_sec) \
 		    + ((e)->tv_usec - (b)->tv_usec) / TimeScale)

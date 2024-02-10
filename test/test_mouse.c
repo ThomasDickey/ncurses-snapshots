@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2022,2023 Thomas E. Dickey                                     *
+ * Copyright 2022-2023,2024 Thomas E. Dickey                                *
  * Copyright 2022 Leonid S. Usov <leonid.s.usov at gmail.com>               *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.28 2023/04/16 17:36:47 tom Exp $
+ * $Id: test_mouse.c,v 1.29 2024/02/10 14:39:40 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -152,6 +152,7 @@ main(int argc, char *argv[])
     int interval = 0;
     int ch;
     MEVENT event;
+    size_t my_len;
     char *my_environ = NULL;
     const char *term_format = "TERM=%s";
 
@@ -164,9 +165,10 @@ main(int argc, char *argv[])
 	    rawmode = TRUE;
 	    break;
 	case 'T':
-	    my_environ = malloc(strlen(term_format) + strlen(optarg));
+	    my_len = strlen(term_format) + strlen(optarg) + 1;
+	    my_environ = malloc(my_len);
 	    if (my_environ != NULL) {
-		sprintf(my_environ, term_format, optarg);
+		_nc_SPRINTF(my_environ, _nc_SLIMIT(my_len) term_format, optarg);
 		putenv(my_environ);
 	    }
 	    break;

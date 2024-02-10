@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.133 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.134 2024/02/10 15:52:11 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -404,7 +404,7 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
     ENTRY *qp, *rp, *lastread = 0;
     bool keepgoing;
     unsigned i, j;
-    int unresolved, total_unresolved, multiples;
+    int total_unresolved, multiples;
 
     DEBUG(2, (T_CALLED("_nc_resolve_uses2")));
 
@@ -444,7 +444,6 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
     total_unresolved = 0;
     _nc_curr_col = -1;
     for_entry_list(qp) {
-	unresolved = 0;
 	for (i = 0; i < qp->nuses; i++) {
 	    bool foundit;
 	    char *child = _nc_first_name(qp->tterm.term_names);
@@ -513,7 +512,6 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 
 	    /* no good, mark this one unresolvable and complain */
 	    if (!foundit) {
-		unresolved++;
 		total_unresolved++;
 
 		_nc_curr_line = (int) lookline;
