@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1137 $
-#	$Date: 2024/01/27 21:52:22 $
+#	$Revision: 1.1141 $
+#	$Date: 2024/02/11 20:09:01 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5017,13 +5017,23 @@ xterm+nopcfkeys|fragment without PC-style fkeys,
 	kf42=\E[63~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~,
 	kf8=\E[19~, kf9=\E[20~,
 
+vt100+noapp|fragment with cursor keys in normal mode,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	use=vt100+noapp+pc,
+
 xterm+noapp|fragment with cursor keys in normal mode,
 	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[F,
 	khome=\E[H,
 
 xterm+app|fragment with cursor keys in application mode,
-	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kend=\EOF,
-	khome=\EOH,
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
+	use=xterm+app+pc,
+
+vt100+noapp+pc|fragment for noapp pc-style home/end,
+	kend=\E[F, khome=\E[H,
+
+xterm+app+pc|fragment for app pc-style home/end,
+	kend=\EOF, khome=\EOH,
 #
 # The "PC-style" modifier scheme was introduced in xterm patch #94 (1999/3/27)
 # and revised in xterm patch #167 (2002/8/24).  Some other terminal emulators
@@ -5148,6 +5158,10 @@ xterm+pce2|fragment with modifyCursorKeys:2 editing-keys,
 
 xterm+edit|fragment for 6-key editing-keypad,
 	use=xterm+pc+edit, use=vt220+pcedit,
+
+xterm+decedit|fragment for vt220 6-key editing-keypad,
+	kdch1=\E[3~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~,
+	use=xterm+vt+edit,
 
 xterm+pc+edit|fragment for pc-style editing keypad,
 	kend=\E[4~, khome=\E[1~,
@@ -27483,5 +27497,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  hp+pfk+cr, klone+acs, klone+color, klone+sgr, ncr160wy50+pp
 #	  to trim -TD
 #	+ NetBSD-related fixes for x68k and wsvt52 (patch by Thomas Klausner)
+#
+# 2024-02-11
+#	+ add vt100+noapp, vt100+noapp+pc, xterm+app+pc, xterm+decedit from
+#	  xterm #389 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.77 2023/12/23 16:36:18 tom Exp $
-.TH curs_getch 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_getch.3x,v 1.78 2024/02/17 19:27:03 tom Exp $
+.TH curs_getch 3X 2024-02-17 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -311,10 +311,15 @@ if there is no more room in the FIFO.
 .TP
 \fBwgetch\fP
 returns \fBERR\fP
+.RS
+.bP
 if the window pointer is null, or
+.bP
 if its timeout expires without having any data, or
+.bP
 if the execution was interrupted by a signal (\fBerrno\fP will be set to
 \fBEINTR\fP).
+.RE
 .RE
 .PP
 Functions with a \*(``mv\*('' prefix first perform a cursor movement using

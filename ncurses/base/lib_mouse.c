@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.199 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.200 2024/02/17 21:13:01 tom Exp $")
 
 #include <tic.h>
 
@@ -776,7 +776,7 @@ _nc_mouse_init(SCREEN *sp)
 {
     bool result = FALSE;
 
-    T((T_CALLED("_nc_mouse_init(%p)"), (void *)sp));
+    T((T_CALLED("_nc_mouse_init(%p)"), (void *) sp));
 
     if (sp != 0) {
 	if (!sp->_mouse_initialized) {
@@ -1990,10 +1990,24 @@ wenclose(const WINDOW *win, int y, int x)
 
     if (win != 0) {
 	y -= win->_yoffset;
-	result = ((win->_begy <= y &&
-		   win->_begx <= x &&
-		   (win->_begx + win->_maxx) >= x &&
-		   (win->_begy + win->_maxy) >= y) ? TRUE : FALSE);
+	if (IS_PAD(win)) {
+	    if (win->_pad._pad_y >= 0 &&
+		win->_pad._pad_x >= 0 &&
+		win->_pad._pad_top >= 0 &&
+		win->_pad._pad_left >= 0 &&
+		win->_pad._pad_right >= 0 &&
+		win->_pad._pad_bottom >= 0) {
+		result = ((win->_pad._pad_top <= y &&
+			   win->_pad._pad_left <= x &&
+			   win->_pad._pad_right >= x &&
+			   win->_pad._pad_bottom >= y) ? TRUE : FALSE);
+	    }
+	} else {
+	    result = ((win->_begy <= y &&
+		       win->_begx <= x &&
+		       (win->_begx + win->_maxx) >= x &&
+		       (win->_begy + win->_maxy) >= y) ? TRUE : FALSE);
+	}
     }
     returnBool(result);
 }
@@ -2062,6 +2076,7 @@ wmouse_trafo(const WINDOW *win, int *pY, int *pX, bool to_screen)
 	int y = *pY;
 	int x = *pX;
 
+	T(("transform input %d,%d", y, x));
 	if (to_screen) {
 	    y += win->_begy + win->_yoffset;
 	    x += win->_begx;
@@ -2077,6 +2092,7 @@ wmouse_trafo(const WINDOW *win, int *pY, int *pX, bool to_screen)
 	if (result) {
 	    *pX = x;
 	    *pY = y;
+	    T(("output transform %d,%d", y, x));
 	}
     }
     returnBool(result);

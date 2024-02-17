@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.77 2023/12/23 16:36:18 tom Exp @
+  * @Id: curs_getch.3x,v 1.78 2024/02/17 19:27:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-02-17 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-02-17 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -290,60 +290,65 @@
                returns <STRONG>ERR</STRONG> if there is no more room in the FIFO.
 
           <STRONG>wgetch</STRONG>
-               returns <STRONG>ERR</STRONG> if the window pointer is null, or  if  its  timeout
-               expires  without  having  any  data,  or  if  the execution was
-               interrupted by a signal (<STRONG>errno</STRONG> will be set to <STRONG>EINTR</STRONG>).
+               returns <STRONG>ERR</STRONG>
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
+               <STRONG>o</STRONG>   if the window pointer is null, or
+
+               <STRONG>o</STRONG>   if its timeout expires without having any data, or
+
+               <STRONG>o</STRONG>   if the execution was interrupted by a signal (<STRONG>errno</STRONG> will be
+                   set to <STRONG>EINTR</STRONG>).
+
+       Functions  with  a  "mv"  prefix  first perform a cursor movement using
        <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
        the window pointer is null.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Use of the escape key by a programmer for a single  character  function
-       is  discouraged, as it will cause a delay of up to one second while the
+       Use  of  the escape key by a programmer for a single character function
+       is discouraged, as it will cause a delay of up to one second while  the
        keypad code looks for a following function-key sequence.
 
-       Some keys may  be  the  same  as  commonly  used  control  keys,  e.g.,
+       Some  keys  may  be  the  same  as  commonly  used  control keys, e.g.,
        <STRONG>KEY_ENTER</STRONG>  versus  control/M,  <STRONG>KEY_BACKSPACE</STRONG>  versus  control/H.   Some
        curses implementations may differ according to whether they treat these
-       control  keys  specially (and ignore the terminfo), or use the terminfo
-       definitions.  <EM>ncurses</EM> uses the terminfo definition.  If  it  says  that
-       <STRONG>KEY_ENTER</STRONG>  is  control/M,  <STRONG>getch</STRONG>  will  return <STRONG>KEY_ENTER</STRONG> when you press
+       control keys specially (and ignore the terminfo), or use  the  terminfo
+       definitions.   <EM>ncurses</EM>  uses  the terminfo definition.  If it says that
+       <STRONG>KEY_ENTER</STRONG> is control/M, <STRONG>getch</STRONG> will  return  <STRONG>KEY_ENTER</STRONG>  when  you  press
        control/M.
 
-       Generally, <STRONG>KEY_ENTER</STRONG> denotes the character(s) sent by the <EM>Enter</EM> key  on
+       Generally,  <STRONG>KEY_ENTER</STRONG> denotes the character(s) sent by the <EM>Enter</EM> key on
        the numeric keypad:
 
        <STRONG>o</STRONG>   the terminal description lists the most useful keys,
 
-       <STRONG>o</STRONG>   the  <EM>Enter</EM>  key  on  the regular keyboard is already handled by the
+       <STRONG>o</STRONG>   the <EM>Enter</EM> key on the regular keyboard is  already  handled  by  the
            standard ASCII characters for carriage-return and line-feed,
 
        <STRONG>o</STRONG>   depending on whether <STRONG>nl</STRONG> or <STRONG>nonl</STRONG> was called, pressing "Enter" on the
-           regular  keyboard may return either a carriage-return or line-feed,
+           regular keyboard may return either a carriage-return or  line-feed,
            and finally
 
        <STRONG>o</STRONG>   "Enter or send" is the standard description for this key.
 
-       When  using  <STRONG>getch</STRONG>,  <STRONG>wgetch</STRONG>,  <STRONG>mvgetch</STRONG>,  or  <STRONG>mvwgetch</STRONG>,   nocbreak   mode
-       (<STRONG>nocbreak</STRONG>)  and  echo  mode (<STRONG>echo</STRONG>) should not be used at the same time.
-       Depending on the state of the tty driver when each character is  typed,
+       When   using   <STRONG>getch</STRONG>,  <STRONG>wgetch</STRONG>,  <STRONG>mvgetch</STRONG>,  or  <STRONG>mvwgetch</STRONG>,  nocbreak  mode
+       (<STRONG>nocbreak</STRONG>) and echo mode (<STRONG>echo</STRONG>) should not be used at  the  same  time.
+       Depending  on the state of the tty driver when each character is typed,
        the program may produce undesirable results.
 
        Note that <STRONG>getch</STRONG>, <STRONG>mvgetch</STRONG>, and <STRONG>mvwgetch</STRONG> may be macros.
 
-       Historically,  the  set  of  keypad  macros  was largely defined by the
-       extremely function-key-rich keyboard of the AT&amp;T  7300,  aka  3B1,  aka
-       Safari  4.   Modern personal computers usually have only a small subset
-       of these.  IBM PC-style consoles typically  support  little  more  than
-       <STRONG>KEY_UP</STRONG>,  <STRONG>KEY_DOWN</STRONG>,  <STRONG>KEY_LEFT</STRONG>,  <STRONG>KEY_RIGHT</STRONG>, <STRONG>KEY_HOME</STRONG>, <STRONG>KEY_END</STRONG>, <STRONG>KEY_NPAGE</STRONG>,
-       <STRONG>KEY_PPAGE</STRONG>, and function keys 1 through 12.   The  Ins  key  is  usually
+       Historically, the set of keypad  macros  was  largely  defined  by  the
+       extremely  function-key-rich  keyboard  of  the AT&amp;T 7300, aka 3B1, aka
+       Safari 4.  Modern personal computers usually have only a  small  subset
+       of  these.   IBM  PC-style  consoles typically support little more than
+       <STRONG>KEY_UP</STRONG>, <STRONG>KEY_DOWN</STRONG>, <STRONG>KEY_LEFT</STRONG>, <STRONG>KEY_RIGHT</STRONG>,  <STRONG>KEY_HOME</STRONG>,  <STRONG>KEY_END</STRONG>,  <STRONG>KEY_NPAGE</STRONG>,
+       <STRONG>KEY_PPAGE</STRONG>,  and  function  keys  1  through 12.  The Ins key is usually
        mapped to <STRONG>KEY_IC</STRONG>.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       <STRONG>has_key</STRONG>  was designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and is not found in SVr4 <EM>curses</EM>,
+       <STRONG>has_key</STRONG> was designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and is not found in SVr4  <EM>curses</EM>,
        4.4BSD <EM>curses</EM>, or any other previous curses implementation.
 
 
@@ -351,35 +356,35 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       X/Open  Curses,  Issue  4, Version 2, describes <STRONG>getch</STRONG>, <STRONG>wgetch</STRONG>, <STRONG>mvgetch</STRONG>,
-       <STRONG>mvwgetch</STRONG>, and <STRONG>ungetch</STRONG>.  They read  single-byte  characters  only.   The
-       standard  specifies  that  they return <STRONG>ERR</STRONG> on failure, but describes no
+       X/Open Curses, Issue 4, Version 2, describes  <STRONG>getch</STRONG>,  <STRONG>wgetch</STRONG>,  <STRONG>mvgetch</STRONG>,
+       <STRONG>mvwgetch</STRONG>,  and  <STRONG>ungetch</STRONG>.   They  read single-byte characters only.  The
+       standard specifies that they return <STRONG>ERR</STRONG> on failure,  but  describes  no
        failure conditions.
 
-       The echo behavior of these functions on  input  of  <STRONG>KEY_</STRONG>  or  backspace
-       characters   was   not  specified  in  the  SVr4  documentation.   This
+       The  echo  behavior  of  these  functions on input of <STRONG>KEY_</STRONG> or backspace
+       characters  was  not  specified  in  the  SVr4   documentation.    This
        description is adapted from X/Open Curses.
 
        The behavior of <STRONG>getch</STRONG> and friends in the presence of signal handlers is
        unspecified  in  the  SVr4  documentation  and  X/Open  Curses.   Under
-       historical curses implementations, it varied depending on  whether  the
-       operating  system's  dispatch  of  a  signal  to a handler interrupts a
-       <STRONG>read(2)</STRONG> call in progress or not, and  also  (in  some  implementations)
+       historical  curses  implementations, it varied depending on whether the
+       operating system's dispatch of a  signal  to  a  handler  interrupts  a
+       <STRONG>read(2)</STRONG>  call  in  progress  or not, and also (in some implementations)
        whether an input timeout or non-blocking mode has been set.
 
        <STRONG>KEY_MOUSE</STRONG> is mentioned in X/Open Curses, along with a few related <EM>term-</EM>
-       <EM>info</EM> capabilities, but no higher-level functions use the feature.   The
+       <EM>info</EM>  capabilities, but no higher-level functions use the feature.  The
        implementation in <EM>ncurses</EM> is an extension.
 
-       <STRONG>KEY_RESIZE</STRONG>  is  an  extension  first  implemented  for <EM>ncurses.</EM>  NetBSD
+       <STRONG>KEY_RESIZE</STRONG> is an  extension  first  implemented  for  <EM>ncurses.</EM>   NetBSD
        <EM>curses</EM> later added this extension.
 
-       Programmers concerned about portability should be prepared  for  either
-       of  two  cases: (a) signal receipt does not interrupt <STRONG>getch</STRONG>; (b) signal
-       receipt interrupts <STRONG>getch</STRONG> and causes it to return <STRONG>ERR</STRONG> with <STRONG>errno</STRONG> set  to
+       Programmers  concerned  about portability should be prepared for either
+       of two cases: (a) signal receipt does not interrupt <STRONG>getch</STRONG>;  (b)  signal
+       receipt  interrupts <STRONG>getch</STRONG> and causes it to return <STRONG>ERR</STRONG> with <STRONG>errno</STRONG> set to
        <STRONG>EINTR</STRONG>.
 
-       The  <STRONG>has_key</STRONG> function is unique to <EM>ncurses</EM>.  We recommend that any code
+       The <STRONG>has_key</STRONG> function is unique to <EM>ncurses</EM>.  We recommend that any  code
        using it be conditionalized on the <STRONG>NCURSES_VERSION</STRONG> feature macro.
 
 
@@ -387,12 +392,12 @@
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>,     <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,
        <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>
 
-       Comparable  functions  in  the  wide-character  (ncursesw)  library are
+       Comparable functions  in  the  wide-character  (ncursesw)  library  are
        described in <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>.
 
 
 
-ncurses 6.4                       2023-12-23                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.4                       2024-02-17                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

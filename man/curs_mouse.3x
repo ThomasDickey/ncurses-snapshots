@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.86 2024/01/13 22:05:39 tom Exp $
-.TH curs_mouse 3X 2024-01-13 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.89 2024/02/17 21:43:03 tom Exp $
+.TH curs_mouse 3X 2024-02-17 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -184,34 +184,41 @@ character-cell coordinates is enclosed by a given window, returning \fBTRUE\fP
 if it is and \fBFALSE\fP otherwise.
 It is useful for determining what subset of
 the screen windows enclose the location of a mouse event.
+.PP
+If the parameter is a pad,
+\fB\%wenclose\fP uses the most recent screen coordinates used for
+this pad in
+\fP\%prefresh\fP(3X) or
+\fP\%pnoutrefresh\fP(3X).
 .SS wmouse_trafo
 The \fB\%wmouse_trafo\fP function transforms a given pair of coordinates
 from \fB\%stdscr\fP-relative coordinates
 to coordinates relative to the given window or vice versa.
 The resulting \fB\%stdscr\fP-relative coordinates are not always
-identical to window-relative coordinates due to the mechanism to reserve
+identical to screen coordinates due to the mechanism to reserve
 lines on top or bottom of the screen for other purposes
 (see the \fB\%ripoffline\fP and \fB\%slk_init\fP(3X) calls, for example).
 .bP
 If the parameter \fIto_screen\fP is \fBTRUE\fP, the pointers
 \fIpY, pX\fP must reference the coordinates of a location
 inside the window \fIwin\fP.
-They are converted to window-relative coordinates and returned
+They are converted to \fB\%stdscr\fP-relative coordinates and returned
 through the pointers.
 If the conversion was successful, the function returns \fBTRUE\fP.
-.bP
+.IP
 If one of the parameters was \fBNULL\fP or the location is
 not inside the window, \fBFALSE\fP is returned.
 .bP
 If \fIto_screen\fP is
-\fBFALSE\fP, the pointers \fIpY, pX\fP must reference window-relative
-coordinates.
-They are converted to \fB\%stdscr\fP-relative coordinates if the
+\fBFALSE\fP, the pointers \fIpY, pX\fP must reference
+\fB\%stdscr\fP-relative coordinates.
+They are converted to window-relative coordinates if the
 window \fIwin\fP encloses this point.
 In this case the function returns \fBTRUE\fP.
-.bP
+.IP
 If one of the parameters is \fBNULL\fP or the point is not inside the
 window, \fBFALSE\fP is returned.
+.PP
 The referenced coordinates
 are only replaced by the converted coordinates if the transformation was
 successful.
@@ -220,19 +227,32 @@ The \fB\%mouse_trafo\fP function performs the same translation
 as \fB\%wmouse_trafo\fP,
 using \fB\%stdscr\fP for \fIwin\fP.
 .SS mouseinterval
-The \fB\%mouseinterval\fP function sets the maximum time (in thousands of a
-second) that can elapse between press and release events for them to
-be recognized as a click.
-Use \fB\%mouseinterval(0)\fP to disable click resolution.
+The \fB\%mouseinterval\fP function sets the maximum time
+(in thousands of a second)
+that can elapse between press and release events for them to
+be resolved as a click.
+.PP
+Calling \fB\%mouseinterval(0)\fP disables click resolution.
+When ncurses detects a mouse event,
+it awaits further input activity up to this interval,
+and then checks for a subsequent mouse event which can be combined
+with the first event.
+If the timeout expires without input activity
+(which would happen with a zero interval),
+then no click resolution will occur.
+.PP
 This function returns the previous interval value.
 Use \fB\%mouseinterval(\-1)\fP to obtain the interval without altering it.
-The default is one sixth of a second.
+.PP
+The mouse interval is set to one sixth of a second
+when the corresponding screen is initialized,
+e.g., in \fBinitscr\fP(3X) or \fBsetupterm\fP(3X).
 .SS has_mouse
 The \fB\%has_mouse\fP function returns \fBTRUE\fP if the mouse driver
 has been successfully initialized,
 and \fBFALSE\fP otherwise.
 .PP
-Note that mouse events will be ignored when input is in cooked mode, and will
+Mouse events are ignored when input is in cooked mode, and
 cause an error beep when cooked mode is being simulated in a window by a
 function such as \fB\%getstr\fP that expects a linefeed for input-loop
 termination.
@@ -491,5 +511,6 @@ such as its private mode 1006.
 \fB\%curses\fP(3X),
 \fB\%curs_inopts\fP(3X),
 \fB\%curs_kernel\fP(3X),
+\fB\%curs_pad\fP(3X),
 \fB\%curs_slk\fP(3X),
 \fB\%curs_variables\fP(3X)

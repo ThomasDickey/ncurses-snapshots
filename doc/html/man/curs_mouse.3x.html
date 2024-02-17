@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.86 2024/01/13 22:05:39 tom Exp @
+  * @Id: curs_mouse.3x,v 1.89 2024/02/17 21:43:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-02-17 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-01-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-02-17 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -174,33 +174,37 @@
        <STRONG>TRUE</STRONG>  if  it is and <STRONG>FALSE</STRONG> otherwise.  It is useful for determining what
        subset of the screen windows enclose the location of a mouse event.
 
+       If the parameter is  a  pad,  <STRONG>wenclose</STRONG>  uses  the  most  recent  screen
+       coordinates used for this pad in <STRONG><A HREF="curs_pad.3x.html">prefresh(3x)</A></STRONG> or <STRONG><A HREF="curs_pad.3x.html">pnoutrefresh(3x)</A></STRONG>.
+
 
 </PRE><H3><a name="h3-wmouse_trafo">wmouse_trafo</a></H3><PRE>
-       The <STRONG>wmouse_trafo</STRONG> function transforms a given pair of  coordinates  from
+       The  <STRONG>wmouse_trafo</STRONG>  function transforms a given pair of coordinates from
        <STRONG>stdscr</STRONG>-relative coordinates to coordinates relative to the given window
-       or vice versa.   The  resulting  <STRONG>stdscr</STRONG>-relative  coordinates  are  not
-       always identical to window-relative coordinates due to the mechanism to
-       reserve lines on top or bottom of the screen for  other  purposes  (see
-       the <STRONG>ripoffline</STRONG> and <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG> calls, for example).
+       or  vice  versa.   The  resulting  <STRONG>stdscr</STRONG>-relative  coordinates are not
+       always identical to screen coordinates due to the mechanism to  reserve
+       lines  on  top  or  bottom  of  the  screen for other purposes (see the
+       <STRONG>ripoffline</STRONG> and <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG> calls, for example).
 
-       <STRONG>o</STRONG>   If  the  parameter  <EM>to</EM><STRONG>_</STRONG><EM>screen</EM>  is  <STRONG>TRUE</STRONG>,  the  pointers <EM>pY,</EM> <EM>pX</EM> must
-           reference the coordinates of a  location  inside  the  window  <EM>win</EM>.
-           They  are  converted  to  window-relative  coordinates and returned
-           through the  pointers.   If  the  conversion  was  successful,  the
+       <STRONG>o</STRONG>   If the parameter <EM>to</EM><STRONG>_</STRONG><EM>screen</EM>  is  <STRONG>TRUE</STRONG>,  the  pointers  <EM>pY,</EM>  <EM>pX</EM>  must
+           reference  the  coordinates  of  a  location inside the window <EM>win</EM>.
+           They are converted  to  <STRONG>stdscr</STRONG>-relative  coordinates  and  returned
+           through  the  pointers.   If  the  conversion  was  successful, the
            function returns <STRONG>TRUE</STRONG>.
 
-       <STRONG>o</STRONG>   If one of the parameters was <STRONG>NULL</STRONG> or the location is not inside the
+           If one of the parameters was <STRONG>NULL</STRONG> or the location is not inside the
            window, <STRONG>FALSE</STRONG> is returned.
 
-       <STRONG>o</STRONG>   If <EM>to</EM><STRONG>_</STRONG><EM>screen</EM> is <STRONG>FALSE</STRONG>, the pointers <EM>pY,</EM> <EM>pX</EM> must  reference  window-
-           relative   coordinates.   They  are  converted  to  <STRONG>stdscr</STRONG>-relative
-           coordinates if the window <EM>win</EM> encloses this point.   In  this  case
+       <STRONG>o</STRONG>   If   <EM>to</EM><STRONG>_</STRONG><EM>screen</EM>  is  <STRONG>FALSE</STRONG>,  the  pointers  <EM>pY,</EM>  <EM>pX</EM>  must  reference
+           <STRONG>stdscr</STRONG>-relative coordinates.  They are converted to window-relative
+           coordinates  if  the  window <EM>win</EM> encloses this point.  In this case
            the function returns <STRONG>TRUE</STRONG>.
 
-       <STRONG>o</STRONG>   If  one  of  the  parameters is <STRONG>NULL</STRONG> or the point is not inside the
-           window, <STRONG>FALSE</STRONG> is returned.  The  referenced  coordinates  are  only
-           replaced  by  the  converted  coordinates if the transformation was
-           successful.
+           If one of the parameters is <STRONG>NULL</STRONG> or the point  is  not  inside  the
+           window, <STRONG>FALSE</STRONG> is returned.
+
+       The   referenced   coordinates  are  only  replaced  by  the  converted
+       coordinates if the transformation was successful.
 
 
 </PRE><H3><a name="h3-mouse_trafo">mouse_trafo</a></H3><PRE>
@@ -211,20 +215,31 @@
 </PRE><H3><a name="h3-mouseinterval">mouseinterval</a></H3><PRE>
        The  <STRONG>mouseinterval</STRONG>  function  sets  the maximum time (in thousands of a
        second) that can elapse between press and release events for them to be
-       recognized   as   a  click.   Use  <STRONG>mouseinterval(0)</STRONG>  to  disable  click
-       resolution.  This function returns the previous  interval  value.   Use
-       <STRONG>mouseinterval(-1)</STRONG>  to  obtain  the  interval  without altering it.  The
-       default is one sixth of a second.
+       resolved as a click.
+
+       Calling  <STRONG>mouseinterval(0)</STRONG>  disables  click  resolution.   When  ncurses
+       detects a mouse event, it awaits further  input  activity  up  to  this
+       interval,  and  then  checks  for a subsequent mouse event which can be
+       combined with the first event.  If the timeout  expires  without  input
+       activity  (which  would  happen  with  a  zero interval), then no click
+       resolution will occur.
+
+       This   function   returns   the   previous   interval    value.     Use
+       <STRONG>mouseinterval(-1)</STRONG> to obtain the interval without altering it.
+
+       The  mouse  interval  is  set  to  one  sixth  of  a  second  when  the
+       corresponding  screen  is  initialized,   e.g.,   in   <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>   or
+       <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>.
 
 
 </PRE><H3><a name="h3-has_mouse">has_mouse</a></H3><PRE>
-       The <STRONG>has_mouse</STRONG> function returns  <STRONG>TRUE</STRONG>  if  the  mouse  driver  has  been
+       The  <STRONG>has_mouse</STRONG>  function  returns  <STRONG>TRUE</STRONG>  if  the  mouse driver has been
        successfully initialized, and <STRONG>FALSE</STRONG> otherwise.
 
-       Note  that  mouse  events will be ignored when input is in cooked mode,
-       and will cause an error beep when cooked mode is being simulated  in  a
-       window  by a function such as <STRONG>getstr</STRONG> that expects a linefeed for input-
-       loop termination.
+       Mouse events are ignored when input is in cooked  mode,  and  cause  an
+       error  beep  when  cooked  mode  is  being  simulated  in a window by a
+       function  such  as  <STRONG>getstr</STRONG>  that  expects  a  linefeed  for  input-loop
+       termination.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -247,16 +262,16 @@
 
        <STRONG>mousemask</STRONG> returns the mask of reportable events.
 
-       <STRONG>mouseinterval</STRONG>  returns the previous interval value, unless the terminal
-       was not initialized.  In that case, it  returns  the  maximum  interval
+       <STRONG>mouseinterval</STRONG> returns the previous interval value, unless the  terminal
+       was  not  initialized.   In  that case, it returns the maximum interval
        value (166).
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The   order   of  the  <STRONG>MEVENT</STRONG>  structure  members  is  not  guaranteed.
+       The  order  of  the  <STRONG>MEVENT</STRONG>  structure  members  is   not   guaranteed.
        Additional fields may be added to the structure in the future.
 
-       Under <EM>ncurses,</EM> these calls are implemented using either <EM>xterm</EM>'s  built-
+       Under  <EM>ncurses,</EM> these calls are implemented using either <EM>xterm</EM>'s built-
        in mouse-tracking API or platform-specific drivers including
 
           <STRONG>o</STRONG>   Alessandro Rubini's gpm server
@@ -268,9 +283,9 @@
        If you are using an unsupported configuration, mouse events will not be
        visible to <EM>ncurses</EM> (and the <STRONG>mousemask</STRONG> function will always return <STRONG>0</STRONG>).
 
-       If the <EM>terminfo</EM> entry contains a <STRONG>XM</STRONG> string, this is used in  the  <EM>xterm</EM>
-       mouse  driver  to control the way the terminal is initialized for mouse
-       operation.  The default, if <STRONG>XM</STRONG> is not  found,  corresponds  to  private
+       If  the  <EM>terminfo</EM> entry contains a <STRONG>XM</STRONG> string, this is used in the <EM>xterm</EM>
+       mouse driver to control the way the terminal is initialized  for  mouse
+       operation.   The  default,  if  <STRONG>XM</STRONG> is not found, corresponds to private
        mode 1000 of <EM>xterm:</EM>
 
           \E[?1000%?%p1%{1}%=%th%el%;
@@ -279,40 +294,40 @@
 
           \E[?1006;1000%?%p1%{1}%=%th%el%;
 
-       The  <EM>z</EM>  member  in  the  event  structure is not presently used.  It is
-       intended for use with touch screens (which may  be  pressure-sensitive)
+       The <EM>z</EM> member in the event structure  is  not  presently  used.   It  is
+       intended  for  use with touch screens (which may be pressure-sensitive)
        or with 3D-mice/trackballs/power gloves.
 
-       The  <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include <STRONG>REPORT_MOUSE_POSITION</STRONG>.
-       They are distinct.  For example, in <EM>xterm,</EM>  wheel/scrolling  mice  send
-       position  reports  as  a  sequence of presses of buttons 4 or 5 without
+       The <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include  <STRONG>REPORT_MOUSE_POSITION</STRONG>.
+       They  are  distinct.   For example, in <EM>xterm,</EM> wheel/scrolling mice send
+       position reports as a sequence of presses of buttons  4  or  5  without
        matching button-releases.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       These functions were designed for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and  are  not  found  in
-       SVr4   <EM>curses</EM>,   4.4BSD   <EM>curses</EM>,   or   any   other   previous  curses
-       implementation.  (SVr4 <EM>curses</EM> did have a <EM>getmouse</EM> function, which  took
+       These  functions  were  designed  for <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>, and are not found in
+       SVr4  <EM>curses</EM>,   4.4BSD   <EM>curses</EM>,   or   any   other   previous   curses
+       implementation.   (SVr4 <EM>curses</EM> did have a <EM>getmouse</EM> function, which took
        no argument and returned a different type.)
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        Applications employing the <EM>ncurses</EM> mouse extension should condition its
-       use on the visibility of the <STRONG>NCURSES_MOUSE_VERSION</STRONG> preprocessor  macro.
-       When  the  interface  changes,  the macro's value increments.  Multiple
-       versions  are  available  when  <EM>ncurses</EM>  is  configured;  see   section
+       use  on the visibility of the <STRONG>NCURSES_MOUSE_VERSION</STRONG> preprocessor macro.
+       When the interface changes, the  macro's  value  increments.   Multiple
+       versions   are  available  when  <EM>ncurses</EM>  is  configured;  see  section
        "ALTERNATE CONFIGURATIONS" of <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.  The following values may be
        specified.
 
           1  has definitions for reserved events.  The mask uses 28 bits.
 
-          2  adds definitions  for  button  5,  removes  the  definitions  for
+          2  adds  definitions  for  button  5,  removes  the  definitions for
              reserved events.  The mask uses 29 bits.
 
-       SVr4  <EM>curses</EM> had support for the mouse in a variant of <STRONG>xterm(1)</STRONG>.  It is
+       SVr4 <EM>curses</EM> had support for the mouse in a variant of <STRONG>xterm(1)</STRONG>.  It  is
        mentioned in a few places, with little supporting documentation.
 
-       <STRONG>o</STRONG>   Its "libcurses"  manual  page  lists  functions  for  this  feature
+       <STRONG>o</STRONG>   Its  "libcurses"  manual  page  lists  functions  for  this feature
            prototyped in <EM>curses.h</EM>.
 
                extern int mouse_set(long int);
@@ -331,54 +346,54 @@
                <STRONG>mouse_info</STRONG>      <STRONG>minfo</STRONG>   <STRONG>Mi</STRONG>   Mouse status information
                <STRONG>req_mouse_pos</STRONG>   <STRONG>reqmp</STRONG>   <STRONG>RQ</STRONG>   Request mouse position report
 
-       <STRONG>o</STRONG>   The  interface  made assumptions (as does <EM>ncurses</EM>) about the escape
+       <STRONG>o</STRONG>   The interface made assumptions (as does <EM>ncurses</EM>) about  the  escape
            sequences sent to and received from the terminal.
 
            For instance, the SVr4 <EM>curses</EM> library used the <STRONG>get_mouse</STRONG> capability
-           to  tell  the  terminal  which  mouse button events it should send,
-           passing the mouse-button bit mask to the terminal.  Also, it  could
-           ask  the  terminal  where  the  mouse  was  using the <STRONG>req_mouse_pos</STRONG>
+           to tell the terminal which mouse  button  events  it  should  send,
+           passing  the mouse-button bit mask to the terminal.  Also, it could
+           ask the terminal  where  the  mouse  was  using  the  <STRONG>req_mouse_pos</STRONG>
            capability.
 
-           Those features required a terminal program that had  been  modified
+           Those  features  required a terminal program that had been modified
            to work with SVr4 <EM>curses.</EM>  They were not part of the X Consortium's
            <EM>xterm.</EM>
 
-       When developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September  1995,
-       Eric  Raymond  was  uninterested in using the same interface due to its
+       When  developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September 1995,
+       Eric Raymond was uninterested in using the same interface  due  to  its
        lack of documentation.  Later, in 1998, Mark Hesseling provided support
-       in  <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses,</EM> however, does not
-       use video terminals,  making  it  unnecessary  to  be  concerned  about
+       in <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses,</EM> however, does  not
+       use  video  terminals,  making  it  unnecessary  to  be concerned about
        compatibility with the escape sequences.
 
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
-       Mouse  events  from  <EM>xterm</EM>  are <EM>not</EM> ignored in cooked mode if they have
-       been enabled by <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM>  mouse  report  sequence
+       Mouse events from <EM>xterm</EM> are <EM>not</EM> ignored in cooked  mode  if  they  have
+       been  enabled  by  <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM> mouse report sequence
        appears in the string read.
 
-       Mouse  event  reports from <EM>xterm</EM> are not detected correctly in a window
-       with keypad application mode disabled, since they are interpreted as  a
-       variety  of function key.  Set the terminal's <EM>terminfo</EM> capability <STRONG>kmous</STRONG>
-       to "\E[M" (the beginning of the response from <EM>xterm</EM> for mouse  clicks).
+       Mouse event reports from <EM>xterm</EM> are not detected correctly in  a  window
+       with  keypad application mode disabled, since they are interpreted as a
+       variety of function key.  Set the terminal's <EM>terminfo</EM> capability  <STRONG>kmous</STRONG>
+       to  "\E[M" (the beginning of the response from <EM>xterm</EM> for mouse clicks).
        Other values of <STRONG>kmous</STRONG> are permitted under the same assumption, that is,
        the report begins with that sequence.
 
        Because there are no standard response sequences that serve to identify
-       terminals  supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that if
+       terminals supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that  if
        <STRONG>kmous</STRONG> is defined in the terminal description, or if the terminal type's
-       primary  name  or aliases contain the string "xterm", then the terminal
+       primary name or aliases contain the string "xterm", then  the  terminal
        may send mouse events.  The <STRONG>kmous</STRONG> capability is checked first, allowing
        use of newer <EM>xterm</EM> mouse protocols, such as its private mode 1006.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>,     <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>,     <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2024-01-13                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2024-02-17                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
