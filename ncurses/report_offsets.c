@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,14 +31,17 @@
  *  Author: Thomas E. Dickey                                                *
  ****************************************************************************/
 
+#define NEW_PAIR_INTERNAL 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: report_offsets.c,v 1.23 2023/09/23 16:47:57 tom Exp $")
+MODULE_ID("$Id: report_offsets.c,v 1.28 2024/02/24 15:59:09 tom Exp $")
 
 #define show_size(type) \
 	flag = 0; \
 	last = 0; \
 	printf("%5lu   " #type "\n", (unsigned long)sizeof(type))
+#define show_name(name) \
+	printf("%5lu   " #name "\n", (unsigned long)(name))
 #define show_offset(type,member) \
 	next = (unsigned long)offsetof(type,member); \
 	if (last > next) \
@@ -111,9 +114,28 @@ main(void)
 #if USE_WIDEC_SUPPORT
     show_size(cchar_t);
 #endif
+    show_size(color_t);
+    show_size(colorpair_t);
     show_size(mmask_t);
+    show_size(rgb_bits_t);
     show_size(MEVENT);
     show_size(NCURSES_BOOL);
+    show_size(TRIES);
+
+    printf("\n");
+    printf("Sizes of buffers/arrays:\n");
+#if USE_WIDEC_SUPPORT
+    show_name(CCHARW_MAX);
+#endif
+    show_name(EV_MAX);
+    show_name(FIFO_SIZE);
+    show_name(NAMESIZE);
+    show_name(MB_LEN_MAX);
+    show_name(PATH_MAX);
+#ifdef TRACE
+    show_name(TRACECHR_BUF);
+    show_name(TRACEMSE_MAX);
+#endif
 
     printf("\n");
     show_size(SCREEN);
@@ -222,6 +244,7 @@ main(void)
 #endif
     show_WIDECH(NCURSES_GLOBALS, key_name);
     show_TRACES(NCURSES_GLOBALS, trace_opened);
+    show_TRACES(NCURSES_GLOBALS, trace_level);
     show_MLEAKS(NCURSES_GLOBALS, leak_checking);
 
     printf("\n");

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.53 2024/01/05 21:46:58 tom Exp $
-.TH curs_kernel 3X 2024-01-05 "ncurses 6.4" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.54 2024/02/24 19:57:34 tom Exp $
+.TH curs_kernel 3X 2024-02-24 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -135,7 +135,7 @@ most use \fBwmove\fP instead.
 The \fBripoffline\fP routine provides access to the same facility that
 \fBslk_init\fP [see \fBcurs_slk\fP(3X)] uses to reduce the size of the
 screen.
-\fBripoffline\fP must be called before \fBinitscr\fP or
+\fB\%ripoffline\fP must be called before \fBinitscr\fP or
 \fBnewterm\fP is called, to prepare these initial actions:
 .bP
 If \fIline\fP is positive, a line is removed from the top of \fBstdscr\fP.

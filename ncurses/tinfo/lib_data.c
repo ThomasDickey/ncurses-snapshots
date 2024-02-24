@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.87 2022/07/09 22:03:21 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.89 2024/02/24 18:11:38 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -196,7 +196,6 @@ NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals = {
 #endif
 #ifdef TRACE
     FALSE,			/* trace_opened */
-    CHARS_0s,			/* trace_fname */
     0,				/* trace_level */
     NULL,			/* trace_fp */
     -1,				/* trace_fd */

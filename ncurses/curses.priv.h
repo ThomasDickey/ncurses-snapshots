@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.677 2023/11/10 15:11:11 tom Exp $
+ * $Id: curses.priv.h,v 1.685 2024/02/24 18:46:40 tom Exp $
  *
  *	curses.priv.h
  *
@@ -72,12 +72,6 @@ extern "C" {
 #include <unistd.h>
 #endif
 
-#if HAVE_LIMITS_H
-# include <limits.h>
-#elif HAVE_SYS_PARAM_H
-# include <sys/param.h>
-#endif
-
 #include <assert.h>
 #include <stdio.h>
 
@@ -87,16 +81,6 @@ extern "C" {
 #  ifndef EILSEQ
 #    define EILSEQ 47
 #  endif
-#endif
-
-#ifndef PATH_MAX
-# if defined(_POSIX_PATH_MAX)
-#  define PATH_MAX _POSIX_PATH_MAX
-# elif defined(MAXPATHLEN)
-#  define PATH_MAX MAXPATHLEN
-# else
-#  define PATH_MAX 255	/* the Posix minimum path-size */
-# endif
 #endif
 
 #if DECL_ERRNO
@@ -921,6 +905,7 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
  * string is less than 80 columns, but this buffer size is an absolute
  * limit.
  */
+#define TRACECHR_BUF	40
 #define TRACEMSE_MAX	(80 + (5 * 10) + (32 * 15))
 #define TRACEMSE_FMT	"id %2d  at (%2d, %2d, %2d) state %4lx = {" /* } */
 
@@ -1251,7 +1236,7 @@ typedef struct screen {
 #endif
 
 #ifdef TRACE
-	char		tracechr_buf[40];
+	char		tracechr_buf[TRACECHR_BUF];
 	char		tracemse_buf[TRACEMSE_MAX];
 #if USE_REENTRANT
 	long		_outchars;
@@ -1378,10 +1363,6 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 
 #define TR_PUTC(c)	TR(TRACE_CHARPUT, ("PUTC %#x", UChar(c)))
 
-#ifndef MB_LEN_MAX
-#define MB_LEN_MAX 16	/* should be >= MB_CUR_MAX, but that may be a function */
-#endif
-
 #if USE_WIDEC_SUPPORT /* { */
 /* true if the status/errno indicate an illegal multibyte sequence */
 #define isEILSEQ(status) (((size_t)status == (size_t)-1) && (errno == EILSEQ))
@@ -1394,7 +1375,20 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define NulColor	/* nothing */
 #endif
 
-#define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
+#if CCHARW_MAX > 6
+#define NulChar		0,0,0,0,0
+#elif CCHARW_MAX > 5
+#define NulChar		0,0,0,0		/* ncurses7 */
+#elif CCHARW_MAX > 4
+#define NulChar		0,0,0		/* ncurses6 */
+#elif CCHARW_MAX > 3
+#define NulChar		0,0
+#elif CCHARW_MAX > 2
+#define NulChar		0
+#else
+#define NulChar		/* nothing */
+#endif
+
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
 
@@ -1405,16 +1399,12 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
 #define NewChar(ch)	NewChar2(ChCharOf(ch), ChAttrOf(ch))
 
-#if CCHARW_MAX == 5
+#if CCHARW_MAX > 1
 #define CharEq(a,b)	(((a).attr == (b).attr) \
-		       && (a).chars[0] == (b).chars[0] \
-		       && (a).chars[1] == (b).chars[1] \
-		       && (a).chars[2] == (b).chars[2] \
-		       && (a).chars[3] == (b).chars[3] \
-		       && (a).chars[4] == (b).chars[4] \
+			 && !memcmp((a).chars, \
+				    (b).chars, \
+				    CCHARW_MAX * sizeof((b).chars[0])) \
 			if_EXT_COLORS(&& (a).ext_color == (b).ext_color))
-#elif CCHARW_MAX > 0
-#error Inconsistent values for CCHARW_MAX
 #else
 #define CharEq(a,b)	(!memcmp(&(a), &(b), sizeof(a)))
 #endif

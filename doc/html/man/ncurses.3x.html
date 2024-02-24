@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.197 2024/01/13 20:30:39 tom Exp @
+  * @Id: ncurses.3x,v 1.200 2024/02/24 20:03:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-02-24 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-01-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-02-24 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -60,7 +60,7 @@
        method of updating  character  screens  with  reasonable  optimization.
        This  implementation  is  "new  curses"  (<EM>ncurses</EM>)  and is the approved
        replacement for 4.4BSD classic curses,  which  has  been  discontinued.
-       This describes <EM>ncurses</EM> version 6.4 (patch 20240217).
+       This describes <EM>ncurses</EM> version 6.4 (patch 20240224).
 
        The  <EM>ncurses</EM>  library emulates the curses library of System V Release 4
        Unix ("SVr4"), and XPG4 (X/Open Portability Guide) curses  (also  known
@@ -117,7 +117,7 @@
        If  the  locale is not initialized, the library assumes that characters
        are printable as in ISO-8859-1, to work with certain  legacy  programs.
        You  should  initialize  the locale and not rely on specific details of
-       the library when the locale has not been setup.
+       the library when the locale has not been set up.
 
        The function <STRONG>initscr</STRONG> or  <STRONG>newterm</STRONG>  must  be  called  to  initialize  the
        library  before  any  of  the other routines that deal with windows and
@@ -816,9 +816,9 @@
 </PRE><H3><a name="h3-BAUDRATE"><EM>BAUDRATE</EM></a></H3><PRE>
        The  debugging  library  checks  this  environment  variable  when  the
        application  has  redirected  output to a file.  The variable's numeric
-       value is used for the baudrate.  If no value  is  found,  <EM>ncurses</EM>  uses
+       value is used for the baud rate.  If no value is  found,  <EM>ncurses</EM>  uses
        9600.  This allows testers to construct repeatable test-cases that take
-       into account costs that depend on baudrate.
+       into account costs that depend on baud rate.
 
 
 </PRE><H3><a name="h3-COLUMNS"><EM>COLUMNS</EM></a></H3><PRE>
@@ -1499,7 +1499,7 @@
 
 
 
-ncurses 6.4                       2024-01-13                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.4                       2024-02-24                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

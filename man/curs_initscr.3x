@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.60 2023/12/23 16:27:25 tom Exp $
-.TH curs_initscr 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.62 2024/02/24 20:03:50 tom Exp $
+.TH curs_initscr 3X 2024-02-24 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -244,7 +244,8 @@ which normally corresponds to a terminal entry with the \fIgeneric\fP
 (\fIgn\fP) capability.
 Generic entries are detected by \fBsetupterm\fP(3X)
 and cannot be used for full-screen operation.
-Other implementations may handle a missing/empty \fITERM\fP variable differently.
+Other implementations may handle
+a missing/empty \fITERM\fP variable differently.
 .SS "Signal Handlers"
 Quoting from X/Open Curses Issue 7, section 3.1.1:
 .RS 5
@@ -270,7 +271,7 @@ Applications which must handle these signals should set up the corresponding
 handlers \fIafter\fP initializing the library:
 .TP 5
 .B SIGINT
-The handler \fIattempts\fP to cleanup the screen on exit.
+The handler \fIattempts\fP to clean up the screen on exit.
 Although it \fIusually\fP works as expected, there are limitations:
 .RS 5
 .bP

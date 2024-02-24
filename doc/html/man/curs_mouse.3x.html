@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.89 2024/02/17 21:43:03 tom Exp @
+  * @Id: curs_mouse.3x,v 1.92 2024/02/24 19:54:30 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-02-17 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-02-24 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-02-17 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-02-24 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -99,7 +99,7 @@
        <STRONG>o</STRONG>   If <EM>oldmask</EM> is non-<STRONG>NULL</STRONG>, this function fills the indicated  location
            with the previous value of the current screen's mouse event mask.
 
-       As  a  side  effect,  setting  a  zero mousemask may turn off the mouse
+       As  a  side  effect,  setting  a zero mouse mask may turn off the mouse
        pointer; setting a nonzero mask may turn it on.  Whether  this  happens
        is device-dependent.
 
@@ -184,7 +184,7 @@
        or  vice  versa.   The  resulting  <STRONG>stdscr</STRONG>-relative  coordinates are not
        always identical to screen coordinates due to the mechanism to  reserve
        lines  on  top  or  bottom  of  the  screen for other purposes (see the
-       <STRONG>ripoffline</STRONG> and <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG> calls, for example).
+       <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG> and <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG> calls, for example).
 
        <STRONG>o</STRONG>   If the parameter <EM>to</EM><STRONG>_</STRONG><EM>screen</EM>  is  <STRONG>TRUE</STRONG>,  the  pointers  <EM>pY,</EM>  <EM>pX</EM>  must
            reference  the  coordinates  of  a  location inside the window <EM>win</EM>.
@@ -215,9 +215,11 @@
 </PRE><H3><a name="h3-mouseinterval">mouseinterval</a></H3><PRE>
        The  <STRONG>mouseinterval</STRONG>  function  sets  the maximum time (in thousands of a
        second) that can elapse between press and release events for them to be
-       resolved as a click.
+       resolved  as  a <EM>click.</EM>  An application might interpret button press and
+       release events separated by more than the mouse  interval  as  a  "long
+       press", or, with motion, as a "drag".
 
-       Calling  <STRONG>mouseinterval(0)</STRONG>  disables  click  resolution.   When  ncurses
+       Calling  <STRONG>mouseinterval(0)</STRONG>  disables  click  resolution.   When  <EM>ncurses</EM>
        detects a mouse event, it awaits further  input  activity  up  to  this
        interval,  and  then  checks  for a subsequent mouse event which can be
        combined with the first event.  If the timeout  expires  without  input
@@ -393,7 +395,7 @@
 
 
 
-ncurses 6.4                       2024-02-17                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2024-02-24                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

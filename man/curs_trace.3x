@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 2000-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.42 2023/12/23 16:08:25 tom Exp $
-.TH curs_trace 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_trace.3x,v 1.44 2024/02/24 20:01:11 tom Exp $
+.TH curs_trace 3X 2024-02-24 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -196,21 +196,23 @@ The specific names are used as a guideline.
 These functions check the \fI\%NCURSES_TRACE\fP environment variable,
 to set the tracing feature as if \fBcurses_trace\fP was called:
 .RS 4
+.na
 .PP
-filter,
-initscr,
-new_prescr,
-newterm,
-nofilter,
-restartterm,
-ripoffline,
-setupterm,
-slk_init,
-tgetent,
-use_env,
-use_extended_names,
-use_tioctl
+\fB\%filter\fP,
+\fB\%initscr\fP,
+\fB\%new_prescr\fP,
+\fB\%newterm\fP,
+\fB\%nofilter\fP,
+\fB\%restartterm\fP,
+\fB\%ripoffline\fP,
+\fB\%setupterm\fP,
+\fB\%slk_init\fP,
+\fB\%tgetent\fP,
+\fB\%use_env\fP,
+\fB\%use_extended_names\fP,
+\fB\%use_tioctl\fP
 .RE
+.ad
 .SS "Command-line Utilities"
 The command-line utilities such as \fBtic\fP(1) provide a verbose option
 which extends the set of messages written using the \fBcurses_trace\fP function.

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.89 2024/02/17 21:43:03 tom Exp $
-.TH curs_mouse 3X 2024-02-17 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.92 2024/02/24 19:54:30 tom Exp $
+.TH curs_mouse 3X 2024-02-24 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -103,7 +103,7 @@ If \fIoldmask\fP is non-\fBNULL\fP,
 this function fills the indicated location with the previous value of the
 current screen's mouse event mask.
 .PP
-As a side effect, setting a zero mousemask may turn off the mouse pointer;
+As a side effect, setting a zero mouse mask may turn off the mouse pointer;
 setting a nonzero mask may turn it on.
 Whether this happens is device-dependent.
 .SS "Mouse Events"
@@ -188,8 +188,8 @@ the screen windows enclose the location of a mouse event.
 If the parameter is a pad,
 \fB\%wenclose\fP uses the most recent screen coordinates used for
 this pad in
-\fP\%prefresh\fP(3X) or
-\fP\%pnoutrefresh\fP(3X).
+\fB\%prefresh\fP(3X) or
+\fB\%pnoutrefresh\fP(3X).
 .SS wmouse_trafo
 The \fB\%wmouse_trafo\fP function transforms a given pair of coordinates
 from \fB\%stdscr\fP-relative coordinates
@@ -197,7 +197,7 @@ to coordinates relative to the given window or vice versa.
 The resulting \fB\%stdscr\fP-relative coordinates are not always
 identical to screen coordinates due to the mechanism to reserve
 lines on top or bottom of the screen for other purposes
-(see the \fB\%ripoffline\fP and \fB\%slk_init\fP(3X) calls, for example).
+(see the \fB\%ripoffline\fP(3X) and \fB\%slk_init\fP(3X) calls, for example).
 .bP
 If the parameter \fIto_screen\fP is \fBTRUE\fP, the pointers
 \fIpY, pX\fP must reference the coordinates of a location
@@ -230,10 +230,18 @@ using \fB\%stdscr\fP for \fIwin\fP.
 The \fB\%mouseinterval\fP function sets the maximum time
 (in thousands of a second)
 that can elapse between press and release events for them to
-be resolved as a click.
+be resolved as a
+.I click.
+An application might interpret button press and release events separated
+by more than the mouse interval as a \*(``long press\*('',
+or,
+with motion,
+as a \*(``drag\*(''.
 .PP
 Calling \fB\%mouseinterval(0)\fP disables click resolution.
-When ncurses detects a mouse event,
+When
+.I \%ncurses
+detects a mouse event,
 it awaits further input activity up to this interval,
 and then checks for a subsequent mouse event which can be combined
 with the first event.

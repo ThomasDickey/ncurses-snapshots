@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.103 2023/05/28 14:39:10 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.106 2024/02/24 18:28:19 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -89,7 +89,6 @@ NCURSES_EXPORT_VAR(long) _nc_outchars = 0;
 #define MyFP		_nc_globals.trace_fp
 #define MyFD		_nc_globals.trace_fd
 #define MyInit		_nc_globals.trace_opened
-#define MyPath		_nc_globals.trace_fname
 #define MyLevel		_nc_globals.trace_level
 #define MyNested	_nc_globals.nested_tracef
 #endif /* TRACE */
@@ -141,22 +140,15 @@ curses_trace(unsigned tracelevel)
 	if (MyFD >= 0) {
 	    MyFP = fdopen(MyFD, BIN_W);
 	} else {
-	    if (MyPath[0] == '\0') {
-		size_t size = sizeof(MyPath) - 12;
-		if (getcwd(MyPath, size) == 0) {
-		    perror("curses: Can't get working directory");
-		    exit(EXIT_FAILURE);
-		}
-		MyPath[size] = '\0';
-		assert(strlen(MyPath) <= size);
-		_nc_STRCAT(MyPath, "/trace", sizeof(MyPath));
-		if (_nc_is_dir_path(MyPath)) {
-		    _nc_STRCAT(MyPath, ".log", sizeof(MyPath));
-		}
+	    char myFile[80];
+
+	    _nc_STRCPY(myFile, "trace", sizeof(myFile));
+	    if (_nc_is_dir_path(myFile)) {
+		_nc_STRCAT(myFile, ".log", sizeof(myFile));
 	    }
 #define SAFE_MODE (O_CREAT | O_EXCL | O_RDWR)
-	    if (_nc_access(MyPath, W_OK) < 0
-		|| (MyFD = safe_open3(MyPath, SAFE_MODE, 0600)) < 0
+	    if (_nc_access(myFile, W_OK) < 0
+		|| (MyFD = safe_open3(myFile, SAFE_MODE, 0600)) < 0
 		|| (MyFP = fdopen(MyFD, BIN_W)) == 0) {
 		;		/* EMPTY */
 	    }
