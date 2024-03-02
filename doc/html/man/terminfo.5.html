@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <EM>ncurses</EM> version 6.4 (patch 20240224).
+       This manual describes <EM>ncurses</EM> version 6.4 (patch 20240302).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -471,6 +471,7 @@
        <STRONG>key_dc</STRONG>                     <STRONG>kdch1</STRONG>     <STRONG>kD</STRONG>  delete-character key
        <STRONG>key_dl</STRONG>                     <STRONG>kdl1</STRONG>      <STRONG>kL</STRONG>  delete-line key
        <STRONG>key_down</STRONG>                   <STRONG>kcud1</STRONG>     <STRONG>kd</STRONG>  down-arrow key
+
        <STRONG>key_eic</STRONG>                    <STRONG>krmir</STRONG>     <STRONG>kM</STRONG>  sent by rmir or smir in insert
                                                 mode
        <STRONG>key_eol</STRONG>                    <STRONG>kel</STRONG>       <STRONG>kE</STRONG>  clear-to-end-of-line key
@@ -512,9 +513,10 @@
                                                 not f3
        <STRONG>lab_f4</STRONG>                     <STRONG>lf4</STRONG>       <STRONG>l4</STRONG>  label on function key f4 if
                                                 not f4
+
+
        <STRONG>lab_f5</STRONG>                     <STRONG>lf5</STRONG>       <STRONG>l5</STRONG>  label on function key f5 if
                                                 not f5
-
        <STRONG>lab_f6</STRONG>                     <STRONG>lf6</STRONG>       <STRONG>l6</STRONG>  label on function key f6 if
                                                 not f6
        <STRONG>lab_f7</STRONG>                     <STRONG>lf7</STRONG>       <STRONG>l7</STRONG>  label on function key f7 if
@@ -552,6 +554,7 @@
        <STRONG>repeat_char</STRONG>                <STRONG>rep</STRONG>       <STRONG>rp</STRONG>  repeat char #1 #2 times (P*)
        <STRONG>reset_1string</STRONG>              <STRONG>rs1</STRONG>       <STRONG>r1</STRONG>  reset string
        <STRONG>reset_2string</STRONG>              <STRONG>rs2</STRONG>       <STRONG>r2</STRONG>  reset string
+
        <STRONG>reset_3string</STRONG>              <STRONG>rs3</STRONG>       <STRONG>r3</STRONG>  reset string
        <STRONG>reset_file</STRONG>                 <STRONG>rf</STRONG>        <STRONG>rf</STRONG>  name of reset file
        <STRONG>restore_cursor</STRONG>             <STRONG>rc</STRONG>        <STRONG>rc</STRONG>  restore cursor to position of
@@ -577,10 +580,10 @@
        <STRONG>init_prog</STRONG>                  <STRONG>iprog</STRONG>     <STRONG>iP</STRONG>  path name of program for
                                                 initialization
        <STRONG>key_a1</STRONG>                     <STRONG>ka1</STRONG>       <STRONG>K1</STRONG>  upper left of keypad
+
        <STRONG>key_a3</STRONG>                     <STRONG>ka3</STRONG>       <STRONG>K3</STRONG>  upper right of keypad
        <STRONG>key_b2</STRONG>                     <STRONG>kb2</STRONG>       <STRONG>K2</STRONG>  center of keypad
        <STRONG>key_c1</STRONG>                     <STRONG>kc1</STRONG>       <STRONG>K4</STRONG>  lower left of keypad
-
        <STRONG>key_c3</STRONG>                     <STRONG>kc3</STRONG>       <STRONG>K5</STRONG>  lower right of keypad
        <STRONG>prtr_non</STRONG>                   <STRONG>mc5p</STRONG>      <STRONG>pO</STRONG>  turn on printer for #1 bytes
        <STRONG>char_padding</STRONG>               <STRONG>rmp</STRONG>       <STRONG>rP</STRONG>  like ip but when in insert
@@ -627,6 +630,7 @@
        <STRONG>key_save</STRONG>                   <STRONG>ksav</STRONG>      <STRONG>&amp;6</STRONG>  save key
        <STRONG>key_suspend</STRONG>                <STRONG>kspd</STRONG>      <STRONG>&amp;7</STRONG>  suspend key
        <STRONG>key_undo</STRONG>                   <STRONG>kund</STRONG>      <STRONG>&amp;8</STRONG>  undo key
+
        <STRONG>key_sbeg</STRONG>                   <STRONG>kBEG</STRONG>      <STRONG>&amp;9</STRONG>  shifted begin key
        <STRONG>key_scancel</STRONG>                <STRONG>kCAN</STRONG>      <STRONG>&amp;0</STRONG>  shifted cancel key
        <STRONG>key_scommand</STRONG>               <STRONG>kCMD</STRONG>      <STRONG>*1</STRONG>  shifted command key
@@ -642,11 +646,11 @@
        <STRONG>key_sfind</STRONG>                  <STRONG>kFND</STRONG>      <STRONG>*0</STRONG>  shifted find key
        <STRONG>key_shelp</STRONG>                  <STRONG>kHLP</STRONG>      <STRONG>#1</STRONG>  shifted help key
        <STRONG>key_shome</STRONG>                  <STRONG>kHOM</STRONG>      <STRONG>#2</STRONG>  shifted home key
+
        <STRONG>key_sic</STRONG>                    <STRONG>kIC</STRONG>       <STRONG>#3</STRONG>  shifted insert-character key
        <STRONG>key_sleft</STRONG>                  <STRONG>kLFT</STRONG>      <STRONG>#4</STRONG>  shifted left-arrow key
        <STRONG>key_smessage</STRONG>               <STRONG>kMSG</STRONG>      <STRONG>%a</STRONG>  shifted message key
        <STRONG>key_smove</STRONG>                  <STRONG>kMOV</STRONG>      <STRONG>%b</STRONG>  shifted move key
-
        <STRONG>key_snext</STRONG>                  <STRONG>kNXT</STRONG>      <STRONG>%c</STRONG>  shifted next key
        <STRONG>key_soptions</STRONG>               <STRONG>kOPT</STRONG>      <STRONG>%d</STRONG>  shifted options key
        <STRONG>key_sprevious</STRONG>              <STRONG>kPRV</STRONG>      <STRONG>%e</STRONG>  shifted previous key
@@ -692,6 +696,7 @@
        <STRONG>key_f40</STRONG>                    <STRONG>kf40</STRONG>      <STRONG>FU</STRONG>  F40 function key
        <STRONG>key_f41</STRONG>                    <STRONG>kf41</STRONG>      <STRONG>FV</STRONG>  F41 function key
        <STRONG>key_f42</STRONG>                    <STRONG>kf42</STRONG>      <STRONG>FW</STRONG>  F42 function key
+
        <STRONG>key_f43</STRONG>                    <STRONG>kf43</STRONG>      <STRONG>FX</STRONG>  F43 function key
        <STRONG>key_f44</STRONG>                    <STRONG>kf44</STRONG>      <STRONG>FY</STRONG>  F44 function key
        <STRONG>key_f45</STRONG>                    <STRONG>kf45</STRONG>      <STRONG>FZ</STRONG>  F45 function key
@@ -707,12 +712,12 @@
        <STRONG>key_f55</STRONG>                    <STRONG>kf55</STRONG>      <STRONG>Fj</STRONG>  F55 function key
        <STRONG>key_f56</STRONG>                    <STRONG>kf56</STRONG>      <STRONG>Fk</STRONG>  F56 function key
        <STRONG>key_f57</STRONG>                    <STRONG>kf57</STRONG>      <STRONG>Fl</STRONG>  F57 function key
+
        <STRONG>key_f58</STRONG>                    <STRONG>kf58</STRONG>      <STRONG>Fm</STRONG>  F58 function key
        <STRONG>key_f59</STRONG>                    <STRONG>kf59</STRONG>      <STRONG>Fn</STRONG>  F59 function key
        <STRONG>key_f60</STRONG>                    <STRONG>kf60</STRONG>      <STRONG>Fo</STRONG>  F60 function key
        <STRONG>key_f61</STRONG>                    <STRONG>kf61</STRONG>      <STRONG>Fp</STRONG>  F61 function key
        <STRONG>key_f62</STRONG>                    <STRONG>kf62</STRONG>      <STRONG>Fq</STRONG>  F62 function key
-
        <STRONG>key_f63</STRONG>                    <STRONG>kf63</STRONG>      <STRONG>Fr</STRONG>  F63 function key
        <STRONG>clr_bol</STRONG>                    <STRONG>el1</STRONG>       <STRONG>cb</STRONG>  Clear to beginning of line
        <STRONG>clear_margins</STRONG>              <STRONG>mgc</STRONG>       <STRONG>MC</STRONG>  clear right and left soft
@@ -771,14 +776,15 @@
        <STRONG>define_char</STRONG>                <STRONG>defc</STRONG>      <STRONG>ZE</STRONG>  Define a character #1, #2 dots
                                                 wide, descender #3
        <STRONG>enter_doublewide_mode</STRONG>      <STRONG>swidm</STRONG>     <STRONG>ZF</STRONG>  Enter double-wide mode
+
        <STRONG>enter_draft_quality</STRONG>        <STRONG>sdrfq</STRONG>     <STRONG>ZG</STRONG>  Enter draft-quality mode
+
        <STRONG>enter_italics_mode</STRONG>         <STRONG>sitm</STRONG>      <STRONG>ZH</STRONG>  Enter italic mode
        <STRONG>enter_leftward_mode</STRONG>        <STRONG>slm</STRONG>       <STRONG>ZI</STRONG>  Start leftward carriage motion
        <STRONG>enter_micro_mode</STRONG>           <STRONG>smicm</STRONG>     <STRONG>ZJ</STRONG>  Start micro-motion mode
        <STRONG>enter_near_letter_quality</STRONG>  <STRONG>snlq</STRONG>      <STRONG>ZK</STRONG>  Enter NLQ mode
        <STRONG>enter_normal_quality</STRONG>       <STRONG>snrmq</STRONG>     <STRONG>ZL</STRONG>  Enter normal-quality mode
        <STRONG>enter_shadow_mode</STRONG>          <STRONG>sshm</STRONG>      <STRONG>ZM</STRONG>  Enter shadow-print mode
-
        <STRONG>enter_subscript_mode</STRONG>       <STRONG>ssubm</STRONG>     <STRONG>ZN</STRONG>  Enter subscript mode
        <STRONG>enter_superscript_mode</STRONG>     <STRONG>ssupm</STRONG>     <STRONG>ZO</STRONG>  Enter superscript mode
        <STRONG>enter_upward_mode</STRONG>          <STRONG>sum</STRONG>       <STRONG>ZP</STRONG>  Start upward carriage motion
@@ -843,8 +849,6 @@
        structure, but were originally not documented in the man page.
 
                                       <STRONG>Code</STRONG>
-
-
        <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
        <STRONG>char_set_names</STRONG>             <STRONG>csnm</STRONG>      <STRONG>Zy</STRONG>  Produce #1'th item from list
@@ -906,11 +910,11 @@
        binary-compatible with System V terminfo entries after SVr4.1; beware!
 
                                       <STRONG>Code</STRONG>
+
        <STRONG>String</STRONG> <STRONG>Capability</STRONG> <STRONG>Name</STRONG>     <STRONG>TI</STRONG>        <STRONG>TC</STRONG>  <STRONG>Description</STRONG>
        ------------------------------------------------------------------------
        <STRONG>enter_horizontal_hl_mode</STRONG>   <STRONG>ehhlm</STRONG>     <STRONG>Xh</STRONG>  Enter horizontal highlight
                                                 mode
-
        <STRONG>enter_left_hl_mode</STRONG>         <STRONG>elhlm</STRONG>     <STRONG>Xl</STRONG>  Enter left highlight mode
        <STRONG>enter_low_hl_mode</STRONG>          <STRONG>elohlm</STRONG>    <STRONG>Xo</STRONG>  Enter low highlight mode
        <STRONG>enter_right_hl_mode</STRONG>        <STRONG>erhlm</STRONG>     <STRONG>Xr</STRONG>  Enter right highlight mode
@@ -2046,6 +2050,7 @@
        <STRONG>ACS_BOARD</STRONG>     0x68      h      <STRONG>#</STRONG>  board of squares
        <STRONG>ACS_LANTERN</STRONG>   0x69      i      <STRONG>#</STRONG>  lantern symbol
        <STRONG>ACS_LRCORNER</STRONG>  0x6a      j      <STRONG>+</STRONG>  lower right corner
+
        <STRONG>ACS_URCORNER</STRONG>  0x6b      k      <STRONG>+</STRONG>  upper right corner
        <STRONG>ACS_ULCORNER</STRONG>  0x6c      l      <STRONG>+</STRONG>  upper left corner
        <STRONG>ACS_LLCORNER</STRONG>  0x6d      m      <STRONG>+</STRONG>  lower left corner
@@ -2215,7 +2220,6 @@
                         <STRONG>A_LOW</STRONG>          11      2048    <STRONG>sgr1</STRONG>
                         <STRONG>A_RIGHT</STRONG>        12      4096    <STRONG>sgr1</STRONG>
                         <STRONG>A_TOP</STRONG>          13      8192    <STRONG>sgr1</STRONG>
-
                         <STRONG>A_VERTICAL</STRONG>     14     16384    <STRONG>sgr1</STRONG>
                         <STRONG>A_ITALIC</STRONG>       15     32768    <STRONG>sitm</STRONG>
 

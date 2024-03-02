@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.324 2023/11/04 19:43:43 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.325 2024/03/02 19:33:22 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -704,7 +704,7 @@ main(int argc, char *argv[])
     bool forceresolve = FALSE;	/* force resolution */
     bool limited = TRUE;
     char *tversion = (char *) NULL;
-    const char *source_file = "terminfo";
+    const char *source_file;
     char *outdir = (char *) NULL;
     bool check_only = FALSE;
     bool suppress_untranslatable = FALSE;

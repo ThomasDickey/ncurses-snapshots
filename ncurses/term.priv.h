@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /*
- * $Id: term.priv.h,v 1.12 2024/02/24 18:11:38 tom Exp $
+ * $Id: term.priv.h,v 1.13 2024/03/02 20:43:06 tom Exp $
  *
  *	term.priv.h
  *
@@ -73,7 +73,7 @@ extern "C" {
  * If not properly configured to use the system's limits.h, we get gcc's
  * fallback for limits.h which sets MB_LEN_MAX to 1, which is never correct.
  */
-#if defined(MB_LEN_MAX) && (MB_LEN_MAX < 6)
+#if !HAVE_CONSISTENT_MB_LEN_MAX
 #undef MB_LEN_MAX
 #endif
 

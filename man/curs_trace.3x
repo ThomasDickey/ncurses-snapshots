@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.44 2024/02/24 20:01:11 tom Exp $
-.TH curs_trace 3X 2024-02-24 "ncurses 6.4" "Library calls"
+.\" $Id: curs_trace.3x,v 1.45 2024/03/02 16:34:00 tom Exp $
+.TH curs_trace 3X 2024-03-02 "ncurses 6.4" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -44,6 +44,17 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
+.de dS \" Start unfilled display.
+.nr aD \n(.j
+.na
+..
+.
+.de dE \" End unfilled display.
+.ad \n(.j
+.rr aD
+..
+.
 .SH NAME
 \fB\%curses_trace\fP,
 \fB\%trace\fP,
@@ -192,27 +203,6 @@ Some tracing features are enabled whenever the \fBcurses_trace\fP parameter
 is nonzero.
 Some features overlap.
 The specific names are used as a guideline.
-.SS Initialization
-These functions check the \fI\%NCURSES_TRACE\fP environment variable,
-to set the tracing feature as if \fBcurses_trace\fP was called:
-.RS 4
-.na
-.PP
-\fB\%filter\fP,
-\fB\%initscr\fP,
-\fB\%new_prescr\fP,
-\fB\%newterm\fP,
-\fB\%nofilter\fP,
-\fB\%restartterm\fP,
-\fB\%ripoffline\fP,
-\fB\%setupterm\fP,
-\fB\%slk_init\fP,
-\fB\%tgetent\fP,
-\fB\%use_env\fP,
-\fB\%use_extended_names\fP,
-\fB\%use_tioctl\fP
-.RE
-.ad
 .SS "Command-line Utilities"
 The command-line utilities such as \fBtic\fP(1) provide a verbose option
 which extends the set of messages written using the \fBcurses_trace\fP function.
@@ -235,6 +225,30 @@ and fewer diagnostics are provided by the command-line utilities.
 .SH RETURN VALUE
 Routines which return a value are designed to be used as parameters
 to the \fB_tracef\fP routine.
+.SH ENVIRONMENT
+.SS NCURSES_TRACE
+A positive integral value stored in this variable causes the following
+functions to enable the tracing feature as if
+.B \%curses_trace
+were called.
+.PP
+.dS
+.RS 4
+\fB\%filter\fP,
+\fB\%initscr\fP,
+\fB\%new_prescr\fP,
+\fB\%newterm\fP,
+\fB\%nofilter\fP,
+\fB\%restartterm\fP,
+\fB\%ripoffline\fP,
+\fB\%setupterm\fP,
+\fB\%slk_init\fP,
+\fB\%tgetent\fP,
+\fB\%use_env\fP,
+\fB\%use_extended_names\fP,
+\fB\%use_tioctl\fP
+.RE
+.dE
 .SH PORTABILITY
 These functions are not part of the XSI interface.
 Some other curses implementations are known to

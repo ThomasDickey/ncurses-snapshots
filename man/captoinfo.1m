@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2016 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.58 2023/12/23 16:28:31 tom Exp $
-.TH @CAPTOINFO@ 1M 2023-12-23 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.59 2024/03/02 16:34:25 tom Exp $
+.TH @CAPTOINFO@ 1M 2024-03-02 "ncurses 6.4" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -90,9 +90,10 @@ It issues a diagnostic to the standard error stream for each,
 inviting the user to check that it has not mistakenly translated an
 unknown or mistyped capability name.
 .PP
+.\" DWB 3.3 tbl requires the two junk "L" specifiers in the first row.
 .TS
 center;
-Cb S
+Cb S  L  L
 Cb Cb Cb Cb
 Cb Cb C  Lb.
 Name

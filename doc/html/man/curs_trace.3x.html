@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_trace.3x,v 1.44 2024/02/24 20:01:11 tom Exp @
+  * @Id: curs_trace.3x,v 1.45 2024/03/02 16:34:00 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_trace 3x 2024-02-24 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_trace 3x 2024-03-02 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_trace 3x 2024-02-24 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_trace 3x 2024-03-02 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 
@@ -183,22 +183,13 @@
        guideline.
 
 
-</PRE><H3><a name="h3-Initialization">Initialization</a></H3><PRE>
-       These  functions  check  the <EM>NCURSES</EM><STRONG>_</STRONG><EM>TRACE</EM> environment variable, to set
-       the tracing feature as if <STRONG>curses_trace</STRONG> was called:
-
-           <STRONG>filter</STRONG>, <STRONG>initscr</STRONG>, <STRONG>new_prescr</STRONG>, <STRONG>newterm</STRONG>, <STRONG>nofilter</STRONG>, <STRONG>restartterm</STRONG>,
-           <STRONG>ripoffline</STRONG>, <STRONG>setupterm</STRONG>, <STRONG>slk_init</STRONG>, <STRONG>tgetent</STRONG>, <STRONG>use_env</STRONG>,
-           <STRONG>use_extended_names</STRONG>, <STRONG>use_tioctl</STRONG>
-
-
 </PRE><H3><a name="h3-Command-line-Utilities">Command-line Utilities</a></H3><PRE>
-       The command-line utilities such as  <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>  provide  a  verbose  option
-       which  extends  the  set  of  messages  written  using the <STRONG>curses_trace</STRONG>
-       function.  Both of these (<STRONG>-v</STRONG> and <STRONG>curses_trace</STRONG>) use  the  same  variable
+       The  command-line  utilities  such  as  <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG> provide a verbose option
+       which extends the  set  of  messages  written  using  the  <STRONG>curses_trace</STRONG>
+       function.   Both  of  these (<STRONG>-v</STRONG> and <STRONG>curses_trace</STRONG>) use the same variable
        (<STRONG>_nc_tracing</STRONG>), which determines the messages which are written.
 
-       Because  the  command-line  utilities may call initialization functions
+       Because the command-line utilities may  call  initialization  functions
        such  as  <STRONG>setupterm</STRONG>,  <STRONG>tgetent</STRONG>  or  <STRONG>use_extended_names</STRONG>,  some  of  their
        debugging output may be directed to the <EM>trace</EM> file if the <EM>NCURSES</EM><STRONG>_</STRONG><EM>TRACE</EM>
        environment variable is set:
@@ -207,13 +198,24 @@
 
        <STRONG>o</STRONG>   messages produced by the underlying library are written to <EM>trace</EM>.
 
-       If <EM>ncurses</EM> is built without tracing, none of the latter  are  produced,
+       If  <EM>ncurses</EM>  is built without tracing, none of the latter are produced,
        and fewer diagnostics are provided by the command-line utilities.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Routines  which return a value are designed to be used as parameters to
+       Routines which return a value are designed to be used as parameters  to
        the <STRONG>_tracef</STRONG> routine.
+
+
+</PRE><H2><a name="h2-ENVIRONMENT">ENVIRONMENT</a></H2><PRE>
+
+</PRE><H3><a name="h3-NCURSES_TRACE">NCURSES_TRACE</a></H3><PRE>
+       A  positive integral value stored in this variable causes the following
+       functions to enable the tracing feature as if <STRONG>curses_trace</STRONG> were called.
+
+           <STRONG>filter</STRONG>, <STRONG>initscr</STRONG>, <STRONG>new_prescr</STRONG>, <STRONG>newterm</STRONG>, <STRONG>nofilter</STRONG>, <STRONG>restartterm</STRONG>,
+           <STRONG>ripoffline</STRONG>, <STRONG>setupterm</STRONG>, <STRONG>slk_init</STRONG>, <STRONG>tgetent</STRONG>, <STRONG>use_env</STRONG>,
+           <STRONG>use_extended_names</STRONG>, <STRONG>use_tioctl</STRONG>
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -259,7 +261,7 @@
 
 
 
-ncurses 6.4                       2024-02-24                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
+ncurses 6.4                       2024-03-02                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -269,11 +271,15 @@ ncurses 6.4                       2024-02-24                    <STRONG><A HREF=
 <ul>
 <li><a href="#h3-Functions">Functions</a></li>
 <li><a href="#h3-Trace-Parameter">Trace Parameter</a></li>
-<li><a href="#h3-Initialization">Initialization</a></li>
 <li><a href="#h3-Command-line-Utilities">Command-line Utilities</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-ENVIRONMENT">ENVIRONMENT</a>
+<ul>
+<li><a href="#h3-NCURSES_TRACE">NCURSES_TRACE</a></li>
+</ul>
+</li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>

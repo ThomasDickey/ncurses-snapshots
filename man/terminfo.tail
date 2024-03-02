@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.143 2024/01/13 22:05:39 tom Exp $
+.\" $Id: terminfo.tail,v 1.144 2024/03/02 14:36:39 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1695,6 +1695,8 @@ magenta	COLOR_MAGENTA	5	max,	0,	max
 cyan	COLOR_CYAN	6	0,	max,	max
 white	COLOR_WHITE	7	max,	max,	max
 .TE
+.br
+.if t .ne 6v
 .PP
 The argument values of \fBsetf\fP/\fBsetb\fP historically correspond to
 a different mapping, i.e.,

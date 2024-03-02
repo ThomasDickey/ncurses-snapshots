@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.231 2024/02/04 00:09:34 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.232 2024/03/02 19:42:13 tom Exp $")
 
 /****************************************************************************
  *
@@ -384,8 +384,8 @@ _nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
 	&& is_expected(user7, "6n")
 	&& is_expected(user6, "%i%d;%dR")
 	&& GET_TTY(fd, &saved) == OK) {
-	int current_y, current_x;
-	int updated_y, updated_x;
+	int current_y = -1, current_x = -1;
+	int updated_y = -1, updated_x = -1;
 	TTY alter = saved;
 
 	alter.c_lflag &= (unsigned) ~(ECHO | ICANON | ISIG | IEXTEN);

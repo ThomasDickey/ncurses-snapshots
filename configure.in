@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.774 2024/01/19 11:22:46 tom Exp $
+dnl $Id: configure.in,v 1.775 2024/03/02 20:22:33 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.774 $)
+AC_REVISION($Revision: 1.775 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1831,12 +1831,10 @@ getuid \
 issetugid \
 localeconv \
 poll \
-putenv \
 remove \
 select \
 setbuf \
 setbuffer \
-setenv \
 setfsuid \
 setvbuf \
 sigaction \
@@ -1894,6 +1892,7 @@ CF_TYPE_SIGACTION
 CF_SIZECHANGE
 CF_FUNC_MEMMOVE
 CF_FUNC_POLL
+CF_MB_LEN_MAX
 CF_VA_COPY
 AC_FUNC_VFORK
 CF_FOPEN_BIN_R

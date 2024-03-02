@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #include <transform.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tput.c,v 1.102 2023/04/08 16:26:36 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.103 2024/03/02 13:22:26 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 
@@ -283,7 +283,7 @@ tput_cmd(int fd, TTY * settings, int argc, char **argv, int *used)
 	    provided = 0;
 	    for (narg = 1; narg < argc; ++narg) {
 		char *ending = NULL;
-		long check = strtol(argv[narg], &ending, 10);
+		long check = strtol(argv[narg], &ending, 0);
 		if (check < 0 || ending == argv[narg] || *ending != '\0')
 		    break;
 		provided = narg;

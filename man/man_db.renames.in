@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.69 2024/01/05 21:46:58 tom Exp $
+# $Id: man_db.renames.in,v 1.70 2024/03/02 14:23:26 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -220,10 +220,13 @@ newterm.3x			newterm.3ncurses
 newwin.3x			newwin.3ncurses
 nodelay.3x			nodelay.3ncurses
 notimeout.3x			notimeout.3ncurses
+pnoutrefresh.3x			pnoutrefresh.3ncurses
+prefresh.3x			prefresh.3ncurses
 putwin.3x			putwin.3ncurses
 refresh.3x			refresh.3ncurses
 reset_shell_mode.3x		reset_shell_mode.3ncurses
 restartterm.3x			restartterm.3ncurses
+ripoffline.3x			ripoffline.3ncurses
 scrollok.3x			scrollok.3ncurses
 set_curterm.3x			set_curterm.3ncurses
 set_term.3x			set_term.3nses

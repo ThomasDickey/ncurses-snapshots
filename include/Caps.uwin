@@ -29,7 +29,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.uwin,v 1.20 2024/01/20 16:51:41 Branden.Robinson Exp $
+# $Id: Caps.uwin,v 1.21 2024/03/02 14:35:19 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with U/Win's terminfo.
@@ -363,6 +363,10 @@ key_ctab			kctab	str	kt	KEY_CTAB	0525	-B-G-*	clear-tab key
 key_dc				kdch1	str	kD	KEY_DC		0512	YB-G-	delete-character key
 key_dl				kdl1	str	kL	KEY_DL		0510	-B-G-*	delete-line key
 key_down			kcud1	str	kd	KEY_DOWN	0402	YBCGE	down-arrow key
+#%.TE
+#%.TS
+#%center;
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 key_eic				krmir	str	kM	KEY_EIC		0514	-B-G-*	sent by rmir or smir in insert mode
 key_eol				kel	str	kE	KEY_EOL		0517	-B-G-*	clear-to-end-of-line key
 key_eos				ked	str	kS	KEY_EOS		0516	-B-G-*	clear-to-end-of-screen key
@@ -425,6 +429,10 @@ prtr_on				mc5	str	po	-		-	-B-G-*	turn on printer
 repeat_char			rep	str	rp	-		-	YB-GE	repeat char #1 #2 times (P*)
 reset_1string			rs1	str	r1	-		-	-B---	reset string
 reset_2string			rs2	str	r2	-		-	-B---	reset string
+#%.TE
+#%.TS
+#%center;
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 reset_3string			rs3	str	r3	-		-	-B---	reset string
 reset_file			rf	str	rf	-		-	-B---	name of reset file
 restore_cursor			rc	str	rc	-		-	YBCG-	restore cursor to position of last save_cursor
@@ -491,6 +499,10 @@ key_resume			kres	str	&5	KEY_RESUME	0570	-----	resume key
 key_save			ksav	str	&6	KEY_SAVE	0571	-----	save key
 key_suspend			kspd	str	&7	KEY_SUSPEND	0627	-----	suspend key
 key_undo			kund	str	&8	KEY_UNDO	0630	-----	undo key
+#%.TE
+#%.TS
+#%center;
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 key_sbeg			kBEG	str	&9	KEY_SBEG	0572	-----	shifted begin key
 key_scancel			kCAN	str	&0	KEY_SCANCEL	0573	-----	shifted cancel key
 key_scommand			kCMD	str	*1	KEY_SCOMMAND	0574	-----	shifted command key
@@ -553,6 +565,10 @@ key_f39				kf39	str	FT	KEY_F(39)	-	----E	F39 function key
 key_f40				kf40	str	FU	KEY_F(40)	-	----E	F40 function key
 key_f41				kf41	str	FV	KEY_F(41)	-	----E	F41 function key
 key_f42				kf42	str	FW	KEY_F(42)	-	----E	F42 function key
+#%.TE
+#%.TS
+#%center;
+#%Lbw(24n)2 Lbw(7n)2 Lb2 Lx.
 key_f43				kf43	str	FX	KEY_F(43)	-	----E	F43 function key
 key_f44				kf44	str	FY	KEY_F(44)	-	----E	F44 function key
 key_f45				kf45	str	FZ	KEY_F(45)	-	----E	F45 function key
