@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.37 2023/11/18 21:18:55 tom Exp $
-.TH curs_addstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.41 2024/03/23 20:38:57 tom Exp $
+.TH curs_addstr 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -59,50 +59,79 @@ add a string to a \fIcurses\fR window and advance the cursor
 \fB#include <curses.h>
 .PP
 \fBint addstr(const char *\fIstr\fP);
-\fBint addnstr(const char *\fIstr\fP, int \fIn\fP);
-\fBint waddstr(WINDOW *\fIwin\fP, const char *\fIstr\fP);
-\fBint waddnstr(WINDOW *\fIwin\fP, const char *\fIstr\fP, int \fIn\fP);
-.PP
 \fBint mvaddstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
-\fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
 \fBint mvwaddstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
+\fBint waddstr(WINDOW *\fIwin\fP, const char *\fIstr\fP);
+.PP
+\fBint addnstr(const char *\fIstr\fP, int \fIn\fP);
+\fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
 \fBint mvwaddnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
+\fBint waddnstr(WINDOW *\fIwin\fP, const char *\fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
-These functions write the (null-terminated) character string
-\fIstr\fP on the given window.
-It is similar to calling \fBwaddch\fP once for each byte in the string.
+.B waddstr
+writes the characters of the (null-terminated) string
+.I str
+to the window
+.IR win .
+Its process is similar to calling \fB\%waddch\fP(3X) for each
+.I char
+in
+.IR str .
+Control characters are processed as in \fB\%waddch\fP(3X).
 .PP
-The \fImv\fP functions perform cursor movement once, before writing any
-characters.
-Thereafter, the cursor is advanced as a side-effect of writing to the window.
+.B waddnstr
+writes at most
+.I n
+characters,
+or until a terminating null character occurs in
+.IR str .
+If
+.I n
+is \-1,
+.B
+.B waddnstr
+writes the entire string.
 .PP
-The four functions with \fIn\fP as the last argument
-write at most \fIn\fP bytes,
-or until a terminating null is reached.
-If \fIn\fP is \-1, then the entire string will be added.
+\fB\%ncurses\fP(3X) describes the variants of these functions.
 .SH RETURN VALUE
-All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
 .PP
-X/Open does not define any error conditions.
-This implementation returns an error
+X/Open Curses does not specify any error conditions.
+.I \%ncurses
+returns an error
 .bP
-if the window pointer is null or
+if the window pointer is
+.BR NULL ,
 .bP
-if the string pointer is null or
+if the string pointer is
+.BR NULL ,
+or
 .bP
-if the corresponding calls to \fBwaddch\fP return an error.
+if an internal \fB\%waddch\fP(3X) call returns an error.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions with a \*(``mv\*('' prefix first perform cursor movement using
+\fB\%wmove\fP(3X) and fail if the position is outside the window,
+or
+(for \*(``mvw\*('' functions)
+if the
+.I \%WINDOW
+pointer is null.
 .SH NOTES
 All of these functions except \fBwaddnstr\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+X/Open Curses,
+Issue 4 describes these functions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),
-\fB\%curs_addchstr\fP(3X),
-\fB\%curs_addwstr\fP(3X),
-\fB\%curs_add_wchstr\fP(3X)
+\fB\%curs_addchstr\fP(3X)
+.PP
+\fB\%curs_addwstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).

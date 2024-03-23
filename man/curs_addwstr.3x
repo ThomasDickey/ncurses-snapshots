@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.29 2023/11/18 21:18:55 tom Exp $
-.TH curs_addwstr 3X 2023-11-18 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.33 2024/03/23 20:38:57 tom Exp $
+.TH curs_addwstr 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -59,59 +59,90 @@ add a wide-character string to a \fIcurses\fR window and advance the cursor
 \fB#include <curses.h>
 .PP
 \fBint addwstr(const wchar_t *\fIwstr\fP);
-\fBint addnwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint waddwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
-\fBint waddnwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
-.PP
 \fBint mvaddwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
-\fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
 \fBint mvwaddwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
+\fBint waddwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
+.PP
+\fBint addnwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
 \fBint mvwaddnwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint waddnwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
-These functions write the characters of the
-(null-terminated) \fBwchar_t\fP character string
-\fIwstr\fP on the given window.
-It is similar to constructing a \fBcchar_t\fP for
-each \fBwchar_t\fR in the string,
-then calling \fBwadd_wch\fP(3X) for the resulting \fBcchar_t\fP:
+.B waddwstr
+writes the characters of the (wide-null-terminated) wide-character
+string
+.I wstr
+to the window
+.IR win .
+Its process is similar to constructing a
+.I cchar_t
+for each
+.I wchar_t
+in
+.IR wstr ,
+then calling \fB\%wadd_wch\fP(3X) with the resulting
+.IR cchar_t .
 .bP
-spacing and non-spacing characters in the string
-are processed one at a time, and
+Spacing and non-spacing characters in the string
+are processed one at a time,
+and
 .bP
-control characters are processed as in \fBwaddch\fP(3X).
+control characters are processed as in \fB\%wadd_wch\fP(3X).
 .PP
-The \fImv\fP functions perform cursor movement once, before writing any
-characters.
-Thereafter, the cursor is advanced as a side-effect of writing to the window.
+.B waddnwstr
+writes at most
+.I n
+wide characters,
+or until a terminating wide null character occurs in
+.IR wstr .
+If
+.I n
+is \-1,
+.B
+.B waddnwstr
+writes the entire wide string.
 .PP
-The four functions with \fIn\fP as the last argument
-write at most \fIn\fP \fBwchar_t\fP characters,
-or until a terminating null is reached.
-If \fIn\fP is \-1, then the entire string will be added.
+\fB\%ncurses\fP(3X) describes the variants of these functions.
 .SH RETURN VALUE
-All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
 .PP
-X/Open does not define any error conditions.
-This implementation returns an error
+X/Open Curses does not specify any error conditions.
+.I \%ncurses
+returns an error
 .bP
-if the window pointer is null or
+if the window pointer is
+.BR NULL ,
 .bP
-if the string pointer is null or
+if the string pointer is
+.BR NULL ,
+or
 .bP
-if the corresponding calls to \fBwadd_wch\fP return an error.
+if an internal \fB\%wadd_wch\fP(3X) call returns an error.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions with a \*(``mv\*('' prefix first perform cursor movement using
+\fB\%wmove\fP(3X) and fail if the position is outside the window,
+or
+(for \*(``mvw\*('' functions)
+if the
+.I \%WINDOW
+pointer is null.
 .SH NOTES
-All of these functions except \fBwaddnwstr\fP may be macros.
+All of these functions except
+.B waddnwstr
+may be implemented as macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+X/Open Curses,
+Issue 4 describes these functions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
-\fB\%curs_addch\fP(3X),
-\fB\%curs_addchstr\fP(3X),
-\fB\%curs_addstr\fP(3X),
 \fB\%curs_add_wch\fP(3X),
 \fB\%curs_add_wchstr\fP(3X)
+.PP
+\fB\%curs_addstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its non-wide-character configuration.

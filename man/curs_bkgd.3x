@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.55 2023/12/23 16:35:10 tom Exp $
-.TH curs_bkgd 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.59 2024/03/23 19:58:58 tom Exp $
+.TH curs_bkgd 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -208,9 +208,9 @@ written to the screen during the refresh.
 Neither X/Open Curses nor the SVr4 manual pages detail how the rendition
 of characters on the screen updates when \fB\%bkgd\fP or \fB\%wbkgd\fP
 changes the background character.
-.I \%ncurses,
+.IR \%ncurses ,
 like SVr4
-.I curses,
+.IR curses ,
 does not
 (in its non-\*(``wide\*('' configuration)
 store the background and window attribute contributions to each
@@ -218,7 +218,7 @@ character cell separately.
 .SH SEE ALSO
 \fB\%curs_bkgrnd\fP(3X) describes the corresponding functions in the
 \*(``wide\*('' configuration of
-.I \%ncurses.
+.IR \%ncurses .
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),

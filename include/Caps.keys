@@ -30,7 +30,7 @@
 # Author: Thomas Dickey
 #    and: Ilya Zakharevich
 #
-# $Id: Caps.keys,v 1.23 2024/03/02 14:35:19 tom Exp $
+# $Id: Caps.keys,v 1.24 2024/03/16 15:26:09 Branden.Robinson Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is illustrates an experimental extension to describe alt-, shift- and
@@ -177,53 +177,72 @@
 #
 # STANDARD CAPABILITIES
 #
-#%The following is a complete table of the capabilities included in a
-#%terminfo description block and available to terminfo-using code.
-#%In each line of the table,
+#%Tables of capabilities
+#%.I \%ncurses
+#%recognizes in a
+#%.I \%term\%info
+#%terminal type description and available to
+#%.IR \%term\%info -using
+#%code follow.
 #%.bP
-#%The \fBvariable\fR is the name by which the programmer (at the terminfo level)
-#%accesses the capability.
+#%The capability name identifies the symbol by which the programmer
+#%using the
+#%.I \%term\%info
+#%API accesses the capability.
 #%.bP
-#%The \fBcapname\fR (\fICap-name\fP)
-#%is the short name used in the text of the database,
-#%and is used by a person updating the database.
+#%The TI
+#%.RI ( \%term\%info )
+#%code is the short name used by a person composing or updating a
+#%terminal type entry.
 #%.IP
-#%Whenever possible, capnames are chosen to be the same as or similar to
-#%the ANSI X3.64-1979 standard (now superseded by ECMA-48, which uses
-#%identical or very similar names).
+#%Whenever possible,
+#%these codes are the same as or similar to those of the ANSI X3.64-1979
+#%standard
+#%(now superseded by ECMA-48,
+#%which uses identical or very similar names).
 #%Semantics are also intended to match those of the specification.
 #%.IP
-#%Capability names have no hard length limit, but an informal limit of 5
-#%characters has been adopted to keep them short and to allow the tabs in
-#%the source file
-#%.B Caps
+#%.I \%term\%info
+#%codes have no hard length limit,
+#%but
+#%.I \%ncurses
+#%maintains an informal one of 5 characters to keep them short and to
+#%allow the tabs in the source file
+#%.I Caps
 #%to line up nicely.
+#%(Some standard codes exceed this limit regardless.)
 #%.bP
-#%The \fBtermcap\fP (\fITcap\fP) code is the old capability name
-#%(some capabilities are new, and have names which termcap did not originate).
+#%The TC
+#%.RI ( \%term\%cap )
+#%code is that used by the corresponding API of
+#%.I \%ncurses.
+#%(Some capabilities are new,
+#%and have names that BSD
+#%.I \%term\%cap
+#%did not originate.)
 #%.bP
-#%Finally, the \fBdescription\fP field attempts to convey the semantics of the
-#%capability.
+#%The description field attempts to convey the capability's semantics.
 #%.PP
-#%You may find some codes in the description field:
+#%The description field employs a handful of notations.
 #%.TP
-#%(P)
-#%indicates that padding may be specified
+#%.B (P)
+#%indicates that padding may be specified.
 #%.TP
-#%#[1-9]
-#%in the description field indicates that the string is passed
-#%through \fBtparm\fP(3X) with parameters as given (#\fIi\fP).
+#%.B (P*)
+#%indicates that padding may vary in proportion to the number of output
+#%lines affected.
+#%.TP
+#%.BI # i
+#%indicates the
+#%.IR i th
+#%parameter of a string capability;
+#%the programmer should pass the string to \fB\%tparm\fP(3X) with the
+#%parameters listed.
 #%.IP
-#%If no parameters are listed in the description,
-#%passing the string through \fBtparm\fP(3X) may give unexpected results,
-#%e.g., if it contains percent (%%) signs.
-#%.TP
-#%(P*)
-#%indicates that padding may vary in proportion to the number of
-#%lines affected
-#%.TP
-#%(#\d\fIi\fP\u)
-#%indicates the \fIi\fP\uth\d parameter.
+#%If the description lists no parameters,
+#%passing the string to \fB\%tparm\fP(3X) may produce unexpected
+#%behavior,
+#%for instance if the string contains percent signs.
 #%.
 #%.PP
 #%.TS

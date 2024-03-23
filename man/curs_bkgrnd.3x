@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 2002-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.36 2023/12/23 16:35:10 tom Exp $
-.TH curs_bkgrnd 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_bkgrnd.3x,v 1.40 2024/03/23 19:59:45 tom Exp $
+.TH curs_bkgrnd 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -171,7 +171,7 @@ upon failure and
 .B OK
 upon success.
 In
-.I \%ncurses,
+.IR \%ncurses ,
 failure occurs if
 .bP
 a
@@ -192,7 +192,7 @@ is null.
 may be implemented as macros.
 .PP
 Unlike their counterparts in the non-\*(``wide\*('' configuration of
-.I \%ncurses,
+.IR \%ncurses ,
 \fB\%getbkgrnd\fP and \fB\%wgetbkgrnd\fP supply the background character
 and attribute in a modifiable
 .I \%cchar_t
@@ -204,11 +204,11 @@ It specifies no error conditions for them.
 .PP
 X/Open Curses does not provide details of how the rendition is updated.
 This implementation follows the approach used in SVr4
-.I curses.
+.IR curses .
 .SH SEE ALSO
 \fB\%curs_bkgd\fP(3X) describes the corresponding functions in the
 non-\*(``wide\*('' configuration of
-.I \%ncurses.
+.IR \%ncurses .
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_add_wch\fP(3X),

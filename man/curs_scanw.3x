@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scanw.3x,v 1.47 2023/12/23 14:41:50 tom Exp $
-.TH curs_scanw 3X 2023-12-23 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scanw.3x,v 1.51 2024/03/23 20:41:15 tom Exp $
+.TH curs_scanw 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -97,7 +97,7 @@ upon failure and otherwise a count of successful conversions;
 this quantity may be zero.
 .PP
 In
-.I \%ncurses,
+.IR \%ncurses ,
 failure occurs if \fI\%vsscanf\fP(3) returns
 \fBEOF\fP,
 or if the window pointer
@@ -162,7 +162,7 @@ this may have been an editorial solecism introduced by X/Open,
 rather than an intentional change.
 .bP
 This implementation retains compatibility with SVr4
-.I curses.
+.IR curses .
 As of 2018,
 NetBSD
 .I curses
@@ -202,7 +202,7 @@ In 1991
 and after the C standard was published),
 other developers updated the library,
 using \fI\%stdarg.h\fP internally in 4.4BSD
-.I curses.
+.IR curses .
 Even with this improvement,
 BSD
 .I curses

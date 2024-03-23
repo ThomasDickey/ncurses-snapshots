@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.70 2024/03/02 14:23:26 tom Exp $
+# $Id: man_db.renames.in,v 1.72 2024/03/23 18:05:08 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -180,7 +180,9 @@ attron.3x			attron.3ncurses
 baudrate.3x			baudrate.3ncurses
 bkgd.3x				bkgd.3ncurses
 bkgrnd.3x			bkgrnd.3ncurses
+cbreak.3x			cbreak.3ncurses
 clearok.3x			clearok.3ncurses
+clrtoeol.3x			clrtoeol.3ncurses
 curs_set.3x			curs_set.3ncurses
 curscr.3x			curscr.3ncurses
 def_prog_mode.3x		def_prog_mode.3ncurses
@@ -190,6 +192,7 @@ delay_output.3x			delay_output.3ncurses
 delscreen.3x			delscreen.3ncurses
 derwin.3x			derwin.3ncurses
 doupdate.3x			doupdate.3ncurses
+echo.3x				echo.3ncurses
 endwin.3x			endwin.3ncurses
 extended_slk_color.3x		extended_slk_color.3ncurses
 filter.3x			filter.3ncurses
@@ -199,6 +202,7 @@ getattr.3x			getattr.3ncurses
 getcchar.3x			getcchar.3ncurses
 getch.3x			getch.3ncurses
 getwin.3x			getwin.3ncurses
+halfdelay.3x			halfdelay.3ncurses
 has_key.3x			has_key.3ncurses
 idcok.3x			idcok.3ncurses
 idlok.3x			idlok.3ncurses
@@ -218,11 +222,15 @@ mvwin.3x			mvwin.3ncurses
 newpad.3x			newpad.3ncurses
 newterm.3x			newterm.3ncurses
 newwin.3x			newwin.3ncurses
+nl.3x				nl.3ncurses
+nocbreak.3x			nocbreak.3ncurses
 nodelay.3x			nodelay.3ncurses
+nonl.3x				nonl.3ncurses
 notimeout.3x			notimeout.3ncurses
 pnoutrefresh.3x			pnoutrefresh.3ncurses
 prefresh.3x			prefresh.3ncurses
 putwin.3x			putwin.3ncurses
+raw.3x				raw.3ncurses
 refresh.3x			refresh.3ncurses
 reset_shell_mode.3x		reset_shell_mode.3ncurses
 restartterm.3x			restartterm.3ncurses
@@ -257,9 +265,13 @@ wattr_set.3x			wattr_set.3ncurses
 wattrset.3x			wattrset.3ncurses
 wbkgdset.3x			wbkgdset.3ncurses
 wbkgrndset.3x			wbkgrndset.3ncurses
+wdelch.3x			wdelch.3ncurses
+wecho_wchar.3x			wecho_wchar.3ncurses
+wechochar.3x			wechochar.3ncurses
 wget_wch.3x			wget_wch.3ncurses
 wgetch.3x			wgetch.3ncurses
 wgetstr.3x			wgetstr.3ncurses
+winch.3x			winch.3ncurses
 wins_wch.3x			wins_wch.3ncurses
 winsch.3x			winsch.3ncurses
 wmove.3x			wmove.3ncurses

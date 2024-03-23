@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_touch.3x,v 1.42 2023/11/25 14:08:05 tom Exp @
+  * @Id: curs_touch.3x,v 1.44 2024/03/16 15:49:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_touch 3x 2023-11-25 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_touch 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_touch 3x 2023-11-25 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_touch 3x 2024-03-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 
@@ -93,23 +93,24 @@
        other than <STRONG>ERR</STRONG> upon successful completion, unless  otherwise  noted  in
        the preceding routine descriptions.
 
-       X/Open does not define any error conditions.  In this implementation
+       X/Open   Curses  does  not  specify  any  error  conditions.   In  this
+       implementation
 
           <STRONG>is_linetouched</STRONG>
-               returns  an error if the window pointer is null, or if the line
+               returns an error if the window pointer is null, or if the  line
                number is outside the window.
 
                The constant <STRONG>ERR</STRONG> is distinct from <STRONG>TRUE</STRONG> and <STRONG>FALSE</STRONG>, which are the
-               normal  return  values  of this function.  Because the function
+               normal return values of this function.   Because  the  function
                returns a <STRONG>bool</STRONG>, returning <STRONG>ERR</STRONG> (which is neither <STRONG>TRUE</STRONG> nor <STRONG>FALSE</STRONG>)
                may not be supported by the compiler.
 
-               To  provide  error-checking  and also match the X/Open function
+               To provide error-checking and also match  the  X/Open  function
                prototype, the <STRONG>ERR</STRONG> is provided by a macro named <STRONG>is_linetouched</STRONG>.
                The actual function returns <STRONG>FALSE</STRONG> when it detects an error.
 
           <STRONG>wtouchln</STRONG>
-               returns  an error if the window pointer is null, or if the line
+               returns an error if the window pointer is null, or if the  line
                number is outside the window.
 
 
@@ -118,10 +119,10 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions were introduced by SVr4.   The  Solaris  <EM>curses</EM>  header
+       These  functions  were  introduced  by SVr4.  The Solaris <EM>curses</EM> header
        file, for instance, defines both an actual function and macro for each.
-       The macros give the same result as the actual functions.   SVr4  <EM>curses</EM>
-       does  not check the window parameter <EM>win</EM> to ensure that it is not <STRONG>NULL</STRONG>;
+       The  macros  give the same result as the actual functions.  SVr4 <EM>curses</EM>
+       does not check the window parameter <EM>win</EM> to ensure that it is not  <STRONG>NULL</STRONG>;
        otherwise this implementation behaves the same as SVr4.
 
        The XSI Curses standard, Issue 4 describes these functions, but defines
@@ -133,7 +134,7 @@
 
 
 
-ncurses 6.4                       2023-11-25                    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
+ncurses 6.4                       2024-03-16                    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.92 2024/02/24 19:54:30 tom Exp $
-.TH curs_mouse 3X 2024-02-24 "ncurses 6.4" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.96 2024/03/23 20:38:57 tom Exp $
+.TH curs_mouse 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -231,7 +231,7 @@ The \fB\%mouseinterval\fP function sets the maximum time
 (in thousands of a second)
 that can elapse between press and release events for them to
 be resolved as a
-.I click.
+.IR click .
 An application might interpret button press and release events separated
 by more than the mouse interval as a \*(``long press\*('',
 or,
@@ -299,7 +299,7 @@ The order of the \fB\%MEVENT\fP structure members is not guaranteed.
 Additional fields may be added to the structure in the future.
 .PP
 Under
-.I \%ncurses,
+.IR \%ncurses ,
 these calls are implemented using either
 .IR \%xterm 's
 built-in mouse-tracking API or
@@ -352,7 +352,7 @@ include \fB\%REPORT_MOUSE_POSITION\fP.
 They are distinct.
 For example,
 in
-.I \%xterm,
+.IR \%xterm ,
 wheel/scrolling mice send position reports as a sequence of
 presses of buttons 4 or 5 without matching button-releases.
 .SH EXTENSIONS
@@ -456,9 +456,9 @@ where the mouse was using the \fB\%req_mouse_pos\fP capability.
 .IP
 Those features required a terminal program that had been modified
 to work with SVr4
-.I curses.
+.IR curses .
 They were not part of the X Consortium's
-.I \%xterm.
+.IR \%xterm .
 .PP
 When developing the
 .I \%xterm
@@ -470,7 +470,7 @@ lack of documentation.
 Later, in 1998, Mark Hesseling provided support in
 .I \%PDCurses
 2.3 using the SVr4 interface.
-.I \%PDCurses,
+.IR \%PDCurses ,
 however,
 does not use video terminals,
 making it unnecessary to be concerned about compatibility with the

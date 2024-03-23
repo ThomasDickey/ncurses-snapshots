@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.56 2024/01/05 21:46:58 tom Exp $
-.TH curs_outopts 3X 2024-01-05 "ncurses 6.4" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.58 2024/03/16 15:49:18 tom Exp $
+.TH curs_outopts 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -143,7 +143,7 @@ and \fBERR\fP upon failure.
 All other routines that return an integer always
 return \fBOK\fP.
 .PP
-X/Open Curses does not define any error conditions.
+X/Open Curses does not specify any error conditions.
 .PP
 In this implementation,
 .bP
@@ -153,7 +153,7 @@ will return an error if the window pointer is null
 \fBwsetscrreg\fP
 returns an error if the scrolling region limits extend outside the window.
 .PP
-X/Open does not define any error conditions.
+X/Open Curses does not specify any error conditions.
 This implementation returns an error
 if the window pointer is null.
 .SH NOTES

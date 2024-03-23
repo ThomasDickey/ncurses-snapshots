@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2006,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.36 2023/12/16 22:52:35 tom Exp $
-.TH curs_scroll 3X 2023-12-16 "ncurses 6.4" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.40 2024/03/23 20:41:15 tom Exp $
+.TH curs_scroll 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -76,14 +76,14 @@ see \fB\%curscr\fP(3X).
 \fB\%scrl\fP and \fB\%wscrl\fP scroll
 .B \%stdscr
 or the specified window up or down depending on the sign of
-.I n.
+.IR n .
 .bP
 For positive
-.I n,
+.IR n ,
 line \fIi\fP+\fIn\fP becomes \fIi\fP (scrolling up);
 .bP
 for negative
-.I n,
+.IR n ,
 line \fIi\fP-\fIn\fP becomes \fIi\fP (scrolling down).
 .PP
 The cursor does not move.

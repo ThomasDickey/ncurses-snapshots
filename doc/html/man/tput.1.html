@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.105 2024/01/20 19:41:02 tom Exp @
+  * @Id: tput.1,v 1.109 2024/03/23 20:42:29 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2024-01-20 ncurses 6.4 User commands</TITLE>
+<TITLE>tput 1 2024-03-23 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2024-01-20 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tput 1 2024-03-23 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -76,13 +76,13 @@
        <EM>code</EM>.
 
        <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG> discusses terminal capabilities at length  and  presents  a
-       complete list of <EM>cap-codes.</EM>
+       complete list of <EM>cap-codes</EM>.
 
        When   retrieving  capability  values,  the  result  depends  upon  the
        capability's type.
 
        Boolean  <STRONG>tput</STRONG> sets its exit status to <STRONG>0</STRONG> if the terminal possesses  <EM>cap-</EM>
-                <EM>code,</EM> and <STRONG>1</STRONG> if it does not.
+                <EM>code</EM>, and <STRONG>1</STRONG> if it does not.
 
        numeric  <STRONG>tput</STRONG>  writes  <EM>cap-code</EM>'s  decimal value to the standard output
                 stream if defined (<STRONG>-1</STRONG> if it is not) followed by a newline.
@@ -96,7 +96,7 @@
 
 
 </PRE><H3><a name="h3-Operands">Operands</a></H3><PRE>
-       Generally,  an  operand  is  a  <EM>cap-code,</EM>  a  capability  code from the
+       Generally,  an  operand  is  a  <EM>cap-code</EM>,  a  capability  code from the
        terminal database, or a parameter thereto.  Three others are  specially
        recognized by <STRONG>tput</STRONG>: <STRONG>init</STRONG>, <STRONG>reset</STRONG>, and <STRONG>longname</STRONG>.  Although these resemble
        capability codes, they in fact receive special handling; we  term  them
@@ -233,7 +233,7 @@
            generally  works,  unless  the connection is via a serial line that
            does not support "NAWS": negotiations about window size.
 
-       <STRONG>o</STRONG>   Finally, it inspects the environment variables <EM>LINES</EM>  and  <EM>COLUMNS,</EM>
+       <STRONG>o</STRONG>   Finally, it inspects the environment variables <EM>LINES</EM>  and  <EM>COLUMNS</EM>,
            which may override the terminal size.
 
        If  the  <STRONG>-T</STRONG>  option is given, <STRONG>tput</STRONG> ignores the environment variables by
@@ -254,7 +254,7 @@
                 parameters in its input to decide how to interpret  them,  and
                 whether to use <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>.
 
-       <STRONG>-T</STRONG> <EM>type</EM>  indicates  the  terminal's  <EM>type.</EM>   Normally  this  option  is
+       <STRONG>-T</STRONG> <EM>type</EM>  indicates  the  terminal's  <EM>type</EM>.   Normally  this  option  is
                 unnecessary,  because  a  default  is  taken  from  the   <EM>TERM</EM>
                 environment variable.  If specified, the environment variables
                 <EM>LINES</EM> and <EM>COLUMNS</EM> are also ignored.
@@ -338,7 +338,7 @@
            While  more reliable than System V's utility, a portability problem
            is introduced by this analysis.  An OpenBSD developer  adapted  the
            internal  library  function  from <EM>ncurses</EM> to port NetBSD's <EM>termcap</EM>-
-           based <STRONG>tput</STRONG> to <EM>terminfo,</EM> and modified it to interpret multiple  <EM>cap-</EM>
+           based <STRONG>tput</STRONG> to <EM>terminfo</EM>, and modified it to interpret multiple  <EM>cap-</EM>
            <EM>codes</EM>  (and parameters) on the command line.  Portable applications
            should not rely upon this feature; <EM>ncurses</EM>  offers  it  to  support
            applications written specifically for OpenBSD.
@@ -349,11 +349,11 @@
        assumes the <EM>terminfo</EM> code.
 
        <STRONG>o</STRONG>   The <EM>cap-code</EM> <STRONG>dl</STRONG> means <STRONG>delete_line</STRONG> to <EM>termcap</EM>  but  <STRONG>parm_delete_line</STRONG>
-           to <EM>terminfo.</EM>  <EM>termcap</EM> uses the code <STRONG>DL</STRONG> for <STRONG>parm_delete_line</STRONG>.  <EM>term-</EM>
+           to <EM>terminfo</EM>.  <EM>termcap</EM> uses the code <STRONG>DL</STRONG> for <STRONG>parm_delete_line</STRONG>.  <EM>term-</EM>
            <EM>info</EM> uses the code <STRONG>dch1</STRONG> for <STRONG>delete_line</STRONG>.
 
        <STRONG>o</STRONG>   The <EM>cap-code</EM> <STRONG>ed</STRONG> means <STRONG>exit_delete_mode</STRONG> to <EM>termcap</EM>  but  <STRONG>clr_eos</STRONG>  to
-           <EM>terminfo.</EM>  <EM>termcap</EM> uses the code <STRONG>cd</STRONG> for <STRONG>clr_eos</STRONG>.  <EM>terminfo</EM> uses the
+           <EM>terminfo</EM>.  <EM>termcap</EM> uses the code <STRONG>cd</STRONG> for <STRONG>clr_eos</STRONG>.  <EM>terminfo</EM> uses the
            code <STRONG>rmdc</STRONG> for <STRONG>exit_delete_mode</STRONG>.
 
        The  <STRONG>longname</STRONG>  operand,  <STRONG>-S</STRONG>  option,  and  the   parameter-substitution
@@ -366,7 +366,7 @@
        (POSIX.1-2008)  documents  only the <STRONG>clear</STRONG>, <STRONG>init</STRONG>, and <STRONG>reset</STRONG> operands.  A
        few observations of interest arise from that selection.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM> supports <STRONG>clear</STRONG> as it does any other standard <EM>cap-code.</EM>  The
+       <STRONG>o</STRONG>   <EM>ncurses</EM> supports <STRONG>clear</STRONG> as it does any other standard <EM>cap-code</EM>.  The
            others   (<STRONG>init</STRONG>   and   <STRONG>longname</STRONG>)  do  not  correspond  to  terminal
            capabilities.
 
@@ -395,8 +395,8 @@
            terminal capability database.
 
        <STRONG>o</STRONG>   While it is certainly possible to  write  a  <STRONG>tput</STRONG>  program  without
-           using  <EM>curses,</EM>  no  system  with a <EM>curses</EM> implementation provides a
-           <STRONG>tput</STRONG> utility that does not also support standard <EM>cap-codes.</EM>
+           using  <EM>curses</EM>,  no  system  with a <EM>curses</EM> implementation provides a
+           <STRONG>tput</STRONG> utility that does not also support standard <EM>cap-codes</EM>.
 
        X/Open  Curses  Issue  7  (2009)  is  the  first  version  to  document
        utilities.  However that part of X/Open Curses does not follow existing
@@ -413,7 +413,7 @@
            (unsigned) exit status.
 
        The various System V implementations (AIX, HP-UX, Solaris) use the same
-       exit statuses as <EM>ncurses.</EM>
+       exit statuses as <EM>ncurses</EM>.
 
        NetBSD  <EM>curses</EM>  documents  exit  statuses  that  correspond  to neither
        <EM>ncurses</EM> nor X/Open Curses.
@@ -555,7 +555,7 @@
 
 
 
-ncurses 6.4                       2024-01-20                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.4                       2024-03-23                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

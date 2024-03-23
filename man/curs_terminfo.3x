@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.130 2024/02/24 20:04:09 tom Exp $
-.TH curs_terminfo 3X 2024-02-24 "ncurses 6.4" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.134 2024/03/23 20:41:15 tom Exp $
+.TH curs_terminfo 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -228,7 +228,7 @@ initializing the
 .I \%term\%info
 structures,
 but does not set up the output virtualization structures used by
-.I curses.
+.IR curses .
 Its parameters follow.
 .RS 3
 .TP 5
@@ -250,9 +250,9 @@ terminal,
 passing an output
 .I stream
 rather than a
-.I descriptor.
+.IR descriptor .
 In
-.I curses,
+.IR curses ,
 the two are the same because \fB\%newterm\fP calls \fB\%setupterm\fP,
 passing the file descriptor derived from its output stream parameter.
 .TP 5
@@ -267,7 +267,7 @@ then \fB\%setupterm\fP returns
 or
 .B ERR
 and stores a status value in the integer pointed to by
-.I errret.
+.IR errret .
 A return value of
 .B OK
 combined with status of
@@ -350,13 +350,13 @@ If it is called for different terminal types,
 capabilities.
 .PP
 \fB\%set_curterm\fP sets \fB\%cur_term\fP to
-.I \%nterm,
+.IR \%nterm ,
 and makes all of the
 .I \%term\%info
 Boolean,
 numeric,
 and string variables use the values from
-.I \%nterm.
+.IR \%nterm .
 It returns the old value of \fB\%cur_term\fP.
 .PP
 \fB\%del_curterm\fP frees the space pointed to by
@@ -389,7 +389,7 @@ and then restores the bits.
 \fB\%tparm\fP instantiates the string
 .I str
 with parameters
-.I pi.
+.IR pi .
 A pointer is returned to the result of
 .I str
 with the parameters applied.
@@ -503,12 +503,12 @@ specified in \fB\%setupterm\fP.
 .PP
 \fB\%vidputs\fP displays the string on the terminal in the video
 attribute mode
-.I attrs,
+.IR attrs ,
 which is any combination of the attributes listed in \fB\%curses\fP(3X).
 The characters are passed to the
 .IR \%putchar -like
 function
-.I putc.
+.IR putc .
 .PP
 \fB\%vidattr\fP is like \fB\%vidputs\fP,
 except that it outputs through \fI\%putchar\fP(3).
@@ -525,14 +525,14 @@ They use multiple parameters to represent the character attributes and
 color;
 namely,
 .bP
-.I \%attrs,
+.IR \%attrs ,
 of type
-.I \%attr_t,
+.IR \%attr_t ,
 for the attributes and
 .bP
-.I pair,
+.IR pair ,
 of type
-.I short,
+.IR short ,
 for the color pair number.
 .PP
 Use the attribute constants prefixed with
@@ -573,7 +573,7 @@ because System\ V did this
 and \fB\%tigetstr\fP return the value of the capability corresponding to
 the
 .I \%term\%info
-.I cap-code,
+.IR cap-code ,
 such as
 .BR xenl ,
 passed to them.
@@ -686,7 +686,7 @@ but it is possible to do that using the \fB\%delscreen\fP(3X) function.
 .SH RETURN VALUE
 X/Open Curses defines no failure conditions.
 In
-.I \%ncurses,
+.IR \%ncurses ,
 .TP 5
 .B del_curtem
 fails if its terminal parameter is null.
@@ -739,7 +739,7 @@ is also provided in the non-wide-character configuration.
 .\" ********************************************************************
 .SH EXTENSIONS
 The functions marked as extensions were designed for
-.I \%ncurses,
+.IR \%ncurses ,
 and are not found in SVr4
 .IR curses ,
 4.4BSD
@@ -752,7 +752,7 @@ implementation.
 allows
 .I opts
 to be a pointer to
-.I int,
+.IR int ,
 which overrides the
 .I pair
 .RI ( short )
@@ -804,7 +804,7 @@ but is assumed by some applications.
 .PP
 Other implementions may not declare the capability name arrays.
 Some provide them without declaring them.
-X/Open does not specify them.
+X/Open Curses does not specify them.
 .PP
 Extended terminal capability names,
 as defined by
@@ -826,7 +826,7 @@ did not allow a reliable way to clean up on receiving
 .PP
 The current version (ncurses6)
 uses output buffers managed directly by
-.I \%ncurses.
+.IR \%ncurses .
 Some of the low-level functions described in this manual page write
 to the standard output.
 They are not signal-safe.
@@ -846,7 +846,7 @@ X/Open Curses uses
 less effectively than a later design might,
 in some cases applying it needlessly to values are already constant,
 and in most cases overlooking parameters which normally would use
-.I \%const.
+.IR \%const .
 Using constant parameters for functions which do not use
 .I \%const
 may prevent the program from compiling.
@@ -939,7 +939,7 @@ the windows console driver by checking if \fB$TERM\fP is set to
 .SS "Other Portability Issues"
 In SVr4,
 \fB\%set_curterm\fP returns an
-.I int,
+.IR int ,
 .B OK
 or
 .BR ERR .

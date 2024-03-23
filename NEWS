@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4091 2024/03/09 22:33:41 tom Exp $
+-- $Id: NEWS,v 1.4097 2024/03/23 10:33:40 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,6 +46,15 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20240323
+	+ modify tput/tset reset feature to avoid 1-second sleep if running in
+	  a pseudo-terminal.
+	+ modify check-size feature to avoid using it in a pseudoterminal
+	  (cf: 20231016)
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ trim a space after some "-R" options, fixing builds for applications
+	  built using clang and ncurses on Solaris.
+
 20240309
 	+ modify xgterm to work around line-drawing bug -TD
 	+ use CSI 3J in vte-2017 (report by Sven Joachim)
@@ -58,7 +67,7 @@ it is not possible to add this information.
 	+ update config.guess, config.sub
 
 20240224
-	+ improve man/curs_mouse.3x style (Brandon Robinson, Sven Joachim).
+	+ improve man/curs_mouse.3x style (Branden Robinson, Sven Joachim).
 	+ provide for CCHARW_MAX greater than 1
 	+ eliminate use of PATH_MAX in lib_trace.c
 	+ work around misconfiguration of MacPorts gcc13, which exposes invalid

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.105 2024/01/20 19:41:02 tom Exp $
-.TH @TPUT@ 1 2024-01-20 "ncurses 6.4" "User commands"
+.\" $Id: tput.1,v 1.109 2024/03/23 20:42:29 tom Exp $
+.TH @TPUT@ 1 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -79,7 +79,7 @@ Terminal capabilities are accessed by
 .PP
 \fB\%terminfo\fP(5) discusses terminal capabilities at length
 and presents a complete list of
-.I cap-codes.
+.IR cap-codes .
 .PP
 When retrieving capability values,
 the result depends upon the capability's type.
@@ -88,7 +88,7 @@ Boolean
 \fB\%@TPUT@\fP sets its exit status to
 .B 0
 if the terminal possesses
-.I cap-code,
+.IR cap-code ,
 and
 .B 1
 if it does not.
@@ -114,7 +114,7 @@ see section \*(``EXIT STATUS\*('' below.
 .SS Operands
 Generally,
 an operand is a
-.I cap-code,
+.IR cap-code ,
 a capability code from the terminal database,
 or a parameter thereto.
 Three others are specially recognized by \fB\%@TPUT@\fP:
@@ -319,7 +319,7 @@ Finally,
 it inspects the environment variables
 .I LINES
 and
-.I \%COLUMNS,
+.IR \%COLUMNS ,
 which may override the terminal size.
 .PP
 If the
@@ -357,7 +357,7 @@ and whether to use \fB\%tparm\fP(3X).
 .TP
 .BI \-T\  type
 indicates the terminal's
-.I type.
+.IR type .
 Normally this option is unnecessary,
 because a default is taken from the
 .I TERM
@@ -514,7 +514,7 @@ to port NetBSD's
 .IR termcap -based
 .B tput
 to
-.I \%term\%info,
+.IR \%term\%info ,
 and modified it to interpret multiple
 .I cap-codes
 (and parameters)
@@ -556,7 +556,7 @@ to
 but
 .B \%parm_delete_line
 to
-.I \%term\%info.
+.IR \%term\%info .
 .I termcap
 uses the code
 .B DL
@@ -578,7 +578,7 @@ to
 but
 .B \%clr_eos
 to
-.I \%term\%info.
+.IR \%term\%info .
 .I termcap
 uses the code
 .B cd
@@ -623,7 +623,7 @@ A few observations of interest arise from that selection.
 supports
 .B clear
 as it does any other standard
-.I cap-code.
+.IR cap-code .
 The others
 .RB ( init
 and
@@ -693,13 +693,13 @@ X/Open Curses and the terminal capability database.
 While it is certainly possible to write a
 .B tput
 program without using
-.I curses,
+.IR curses ,
 no system with a
 .I curses
 implementation provides a
 .B tput
 utility that does not also support standard
-.I cap-codes.
+.IR cap-codes .
 .PP
 X/Open Curses Issue 7 (2009) is the first version to document utilities.
 However that part of X/Open Curses does not follow existing practice
@@ -729,7 +729,7 @@ The various System\ V implementations
 HP-UX,
 Solaris)
 use the same exit statuses as
-.I \%ncurses.
+.IR \%ncurses .
 .PP
 NetBSD
 .I curses

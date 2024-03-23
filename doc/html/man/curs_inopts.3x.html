@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.60 2023/12/23 16:36:18 tom Exp @
+  * @Id: curs_inopts.3x,v 1.64 2024/03/23 20:38:57 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2024-03-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -164,7 +164,7 @@
        this  is  equivalent,  under  POSIX,  to  setting  the  CS8 flag on the
        terminal.  To force 7 bits to be  returned,  invoke  <STRONG>meta</STRONG>(<EM>win</EM>,  <STRONG>FALSE</STRONG>);
        this  is  equivalent,  under  POSIX,  to  setting  the  CS7 flag on the
-       terminal.  The  window  argument,  <EM>win,</EM>  is  always  ignored.   If  the
+       terminal.  The  window  argument,  <EM>win</EM>,  is  always  ignored.   If  the
        terminfo  capabilities <STRONG>smm</STRONG> (meta_on) and <STRONG>rmm</STRONG> (meta_off) are defined for
        the terminal, <STRONG>smm</STRONG> is sent to  the  terminal  when  <STRONG>meta</STRONG>(<EM>win</EM>,  <STRONG>TRUE</STRONG>)  is
        called and <STRONG>rmm</STRONG> is sent when <STRONG>meta</STRONG>(<EM>win</EM>, <STRONG>FALSE</STRONG>) is called.
@@ -196,7 +196,7 @@
        that  in  raw  mode,  the  interrupt,  quit,  suspend, and flow control
        characters are all passed through uninterpreted, instead of  generating
        a  signal.   The behavior of the BREAK key depends on other bits in the
-       terminal driver that are not set by <EM>curses.</EM>
+       terminal driver that are not set by <EM>curses</EM>.
 
 
 </PRE><H3><a name="h3-qiflush_nqiflush">qiflush, nqiflush</a></H3><PRE>
@@ -237,10 +237,10 @@
        completion,  unless  otherwise   noted   in   the   preceding   routine
        descriptions.
 
-       X/Open  does  not define any error conditions.  In this implementation,
-       functions with a window parameter will return an error if it  is  null.
-       Any  function  will  also  return  an  error  if  the  terminal was not
-       initialized.  Also,
+       X/Open   Curses  does  not  specify  any  error  conditions.   In  this
+       implementation, functions with a window parameter will return an  error
+       if  it is null.  Any function will also return an error if the terminal
+       was not initialized.  Also,
 
           <STRONG>halfdelay</STRONG>
                returns an error if its parameter is outside the range 1..255.
@@ -325,7 +325,7 @@
        Most <EM>curses</EM> implementations (including <EM>ncurses</EM>) load key definitions in
        the  order  defined  by the array of string capability names.  The last
        key to be loaded determines the keycode which  will  be  returned.   In
-       <EM>ncurses,</EM>  you  may  also  have extended capabilities interpreted as key
+       <EM>ncurses</EM>,  you  may  also  have extended capabilities interpreted as key
        definitions.  These are loaded after the  predefined  keys,  and  if  a
        capability's  value  is the same as a previously-loaded key definition,
        the later definition is the one used.
@@ -337,7 +337,7 @@
 
 
 
-ncurses 6.4                       2023-12-23                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.4                       2024-03-23                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addchstr.3x,v 1.38 2023/11/25 14:01:49 tom Exp $
-.TH curs_addchstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_addchstr.3x,v 1.40 2024/03/16 15:37:51 tom Exp $
+.TH curs_addchstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,7 +96,7 @@ rather than wrapping it around to the new line.
 .SH RETURN VALUE
 All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
 .PP
-X/Open does not define any error conditions.
+X/Open Curses does not specify any error conditions.
 This implementation returns an error
 .bP
 if the \fIwin\fP parameter is null or
@@ -113,6 +113,9 @@ These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),
-\fB\%curs_addstr\fP(3X),
-\fB\%curs_addwstr\fP(3X),
-\fB\%curs_add_wchstr\fP(3X)
+\fB\%curs_addstr\fP(3X)
+.PP
+\fB\%curs_add_wchstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).

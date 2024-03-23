@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_refresh.3x,v 1.42 2024/01/05 21:46:58 tom Exp @
+  * @Id: curs_refresh.3x,v 1.44 2024/03/16 15:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_refresh 3x 2024-01-05 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_refresh 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_refresh 3x 2024-01-05 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_refresh 3x 2024-03-16 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 
@@ -127,14 +127,15 @@
        specifies only "an integer  value  other  than  <STRONG>ERR</STRONG>")  upon  successful
        completion.
 
-       X/Open does not define any error conditions.  In this implementation
+       X/Open   Curses  does  not  specify  any  error  conditions.   In  this
+       implementation
 
           <STRONG>wnoutrefresh</STRONG>
-               returns  an  error  if  the  window  pointer is null, or if the
+               returns an error if the window  pointer  is  null,  or  if  the
                window is really a pad.
 
           <STRONG>wredrawln</STRONG>
-               returns an error if the associated call to <STRONG>touchln</STRONG>  returns  an
+               returns  an  error if the associated call to <STRONG>touchln</STRONG> returns an
                error.
 
 
@@ -145,12 +146,12 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        The XSI Curses standard, Issue 4 describes these functions.
 
-       Whether  <STRONG>wnoutrefresh</STRONG>  copies to the virtual screen the entire contents
+       Whether <STRONG>wnoutrefresh</STRONG> copies to the virtual screen the  entire  contents
        of a window or just its changed portions has never been well-documented
-       in  historic  curses  versions (including SVr4).  It might be unwise to
-       rely on either behavior in programs that might have to be  linked  with
+       in historic curses versions (including SVr4).  It might  be  unwise  to
+       rely  on  either behavior in programs that might have to be linked with
        other curses implementations.  Instead, you can do an explicit <STRONG>touchwin</STRONG>
-       before the <STRONG>wnoutrefresh</STRONG>  call  to  guarantee  an  entire-contents  copy
+       before  the  <STRONG>wnoutrefresh</STRONG>  call  to  guarantee  an entire-contents copy
        anywhere.
 
 
@@ -159,7 +160,7 @@
 
 
 
-ncurses 6.4                       2024-01-05                  <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
+ncurses 6.4                       2024-03-16                  <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

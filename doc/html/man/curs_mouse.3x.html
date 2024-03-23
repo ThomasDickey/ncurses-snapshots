@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.92 2024/02/24 19:54:30 tom Exp @
+  * @Id: curs_mouse.3x,v 1.96 2024/03/23 20:38:57 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-02-24 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-02-24 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-03-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -215,7 +215,7 @@
 </PRE><H3><a name="h3-mouseinterval">mouseinterval</a></H3><PRE>
        The  <STRONG>mouseinterval</STRONG>  function  sets  the maximum time (in thousands of a
        second) that can elapse between press and release events for them to be
-       resolved  as  a <EM>click.</EM>  An application might interpret button press and
+       resolved  as  a <EM>click</EM>.  An application might interpret button press and
        release events separated by more than the mouse  interval  as  a  "long
        press", or, with motion, as a "drag".
 
@@ -273,7 +273,7 @@
        The  order  of  the  <STRONG>MEVENT</STRONG>  structure  members  is   not   guaranteed.
        Additional fields may be added to the structure in the future.
 
-       Under  <EM>ncurses,</EM> these calls are implemented using either <EM>xterm</EM>'s built-
+       Under  <EM>ncurses</EM>, these calls are implemented using either <EM>xterm</EM>'s built-
        in mouse-tracking API or platform-specific drivers including
 
           <STRONG>o</STRONG>   Alessandro Rubini's gpm server
@@ -301,7 +301,7 @@
        or with 3D-mice/trackballs/power gloves.
 
        The <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include  <STRONG>REPORT_MOUSE_POSITION</STRONG>.
-       They  are  distinct.   For example, in <EM>xterm,</EM> wheel/scrolling mice send
+       They  are  distinct.   For example, in <EM>xterm</EM>, wheel/scrolling mice send
        position reports as a sequence of presses of buttons  4  or  5  without
        matching button-releases.
 
@@ -358,13 +358,13 @@
            capability.
 
            Those  features  required a terminal program that had been modified
-           to work with SVr4 <EM>curses.</EM>  They were not part of the X Consortium's
-           <EM>xterm.</EM>
+           to work with SVr4 <EM>curses</EM>.  They were not part of the X Consortium's
+           <EM>xterm</EM>.
 
        When  developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September 1995,
        Eric Raymond was uninterested in using the same interface  due  to  its
        lack of documentation.  Later, in 1998, Mark Hesseling provided support
-       in <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses,</EM> however, does  not
+       in <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses</EM>, however, does  not
        use  video  terminals,  making  it  unnecessary  to  be concerned about
        compatibility with the escape sequences.
 
@@ -395,7 +395,7 @@
 
 
 
-ncurses 6.4                       2024-02-24                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2024-03-23                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

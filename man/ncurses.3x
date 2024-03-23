@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.200 2024/02/24 20:03:50 tom Exp $
-.TH ncurses 3X 2024-02-24 "ncurses 6.4" "Library calls"
+.\" $Id: ncurses.3x,v 1.204 2024/03/23 20:42:29 tom Exp $
+.TH ncurses 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -55,20 +55,49 @@ character-cell terminal interface with optimized output
 \fB#include <curses.h>
 .fi
 .SH DESCRIPTION
-The \fI\%ncurses\fP library routines give the user a
-terminal-independent method of updating character screens with
-reasonable optimization.
-This implementation is \*(``new curses\*('' (\fI\%ncurses\fP) and
-is the approved replacement for
-4.4BSD classic curses, which has been discontinued.
+The \*(``new curses\*('' library offers the programmer a
+terminal-independent means of reading keyboard and mouse input and
+updating character-cell terminals with output optimized to minimize
+screen updates.
+.I \%ncurses
+replaces the
+.I curses
+libraries from
+System V Release 4 Unix (\*(``SVr4\*('')
+and
+4.4BSD Unix,
+the development of which ceased in the 1990s.
 This describes \fI\%ncurses\fP
 version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
 .PP
-The \fI\%ncurses\fP library emulates the curses library of
-System V Release 4 Unix (\*(``SVr4\*(''),
-and XPG4 (X/Open Portability Guide) curses (also known as XSI curses).
-XSI stands for X/Open System Interfaces Extension.
-The \fI\%ncurses\fP library is freely redistributable in source form.
+.I \%ncurses
+permits control of the terminal screen's contents;
+abstraction and subdivision thereof with
+.I windows
+and
+.IR pads ;
+the reading of terminal input;
+control of terminal input and output options;
+environment query routines;
+color manipulation;
+the definition and use of
+.I "soft label"
+keys;
+.I \%term\%info
+capabilities;
+a
+.I \%term\%cap
+compatibility interface;
+and access to low-level terminal-manipulation routines.
+.PP
+.I \%ncurses
+implements the standard interface described by
+X/Open Curses Issue\ 7.
+In many behavioral details not standardized by X/Open,
+.I \%ncurses
+emulates the
+.I curses
+library of SVr4 and provides numerous useful extensions.
 .PP
 \fI\%ncurses\fP man pages employ several sections to clarify matters of
 usage and interoperability with other \fIcurses\fP implementations.
@@ -107,12 +136,6 @@ The ncurses_g library generates trace logs
 (in a file called \*(``trace\*('' in the current directory)
 that describe curses actions.
 See section \*(``ALTERNATE CONFIGURATIONS\*('' below.
-.PP
-The \fI\%ncurses\fP package supports: overall screen, window and pad
-manipulation; output to windows and pads; reading terminal input; control over
-terminal and \fBcurses\fP input and output options; environment query
-routines; color manipulation; use of soft label keys; terminfo capabilities;
-and access to low-level terminal-manipulation routines.
 .SS Initialization
 The library uses the locale which the calling program has initialized.
 That is normally done with \fBsetlocale\fP(3):
@@ -205,7 +228,7 @@ window-addressing functions feature names prefixed
 see below)
 with \*(``w\*('';
 these allow the user to specify a pointer to a
-.I \%WINDOW.
+.IR \%WINDOW .
 Counterparts not thus prefixed
 (or infixed)
 affect \fB\%stdscr\fP.
@@ -360,7 +383,7 @@ It stores a character combined with attributes in a
 .I \%chtype
 datum,
 which is often an alias of
-.I int.
+.IR int .
 .IP
 Attributes alone
 (with no corresponding character)
@@ -375,7 +398,7 @@ they are represented as an integral bit mask.
 Each cell of a
 .I \%WINDOW
 is stored as a
-.I \%chtype.
+.IR \%chtype .
 .TP 10
 .I \%ncursesw
 is the library in its \*(``wide\*('' configuration,
@@ -391,27 +414,27 @@ characters.
 .TP 9 \" "cchar_t" + 2n
 .I \%cchar_t
 corresponds to the non-wide configuration's
-.I \%chtype.
+.IR \%chtype .
 It always a structure type,
 because it stores more data than fits into an integral type.
 A character code may not be representable as a
-.I \%char,
+.IR \%char ,
 and moreover more than one character may occupy a cell
 (as with accent marks and other diacritics).
 Each character is of type
-.I \%wchar_t;
+.IR \%wchar_t ;
 a complex character contains one spacing character and zero or more
 non-spacing characters
 (see below).
 Attributes and color data are stored in separate fields of the
 structure,
 not combined as in
-.I \%chtype.
+.IR \%chtype .
 .PP
 Each cell of a
 .I \%WINDOW
 is stored as a
-.I \%cchar_t.
+.IR \%cchar_t .
 .PP
 The \fB\%setcchar\fP(3X) and \fB\%getcchar\fP(3X)
 functions store and retrieve the data from a
@@ -424,16 +447,16 @@ depends on two data types standardized by ISO C95.
 .I \%wchar_t
 stores a wide character.
 Like
-.I \%chtype,
+.IR \%chtype ,
 it may be an alias of
-.I int.
+.IR int .
 Depending on the character encoding,
 a wide character may be
-.I spacing,
+.IR spacing ,
 meaning that it occupies a character cell by itself and typically
 accompanies cursor advancement,
 or
-.I non-spacing,
+.IR non-spacing ,
 meaning that it occupies the same cell as a spacing character,
 is often regarded as a \*(``modifier\*('' of the base glyph with which
 it combines,
@@ -1211,7 +1234,7 @@ For example
 # VT100 shift\-in/shift\-out, with corresponding font.
 linux\-vt100|linux console with VT100 line\-graphics,
         U8#0, use=linux,
-
+\&
 # uxterm with vt100Graphics resource set to false
 xterm\-utf8|xterm relying on UTF\-8 line\-graphics,
         U8#1, use=xterm,
@@ -1395,7 +1418,7 @@ Run the script with the
 option to peruse them all.
 A few are of particular significance to the application developer
 employing
-.I \%ncurses.
+.IR \%ncurses .
 .TP 5
 \-\-disable\-overwrite
 The standard include for \fI\%ncurses\fP is as noted in \fBSYNOPSIS\fP:
@@ -1569,13 +1592,13 @@ inclusion of \fI\%curses.h\fP.
 .I \%ncurses
 enables an application to capture mouse events on certain terminals,
 including
-.I \%xterm;
+.IR \%xterm ;
 see \fB\%curs_mouse\fP(3X).
 .PP
 .I \%ncurses
 provides a means of responding to window resizing events,
 as when running in a GUI terminal emulator application such as
-.I \%xterm;
+.IR \%xterm ;
 see \fB\%resizeterm\fP(3X) and \fB\%wresize\fP(3X).
 .PP
 .I \%ncurses
@@ -1642,7 +1665,7 @@ causes the library to fall back to reading
 if the terminal setup code cannot find a
 .I \%term\%info
 entry corresponding to
-.I TERM.
+.IR TERM .
 Use of this feature is not recommended,
 as it essentially includes an entire
 .I termcap

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.53 2024/01/13 22:05:39 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.57 2024/03/23 19:58:15 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2024-01-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2024-01-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2024-03-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -200,8 +200,8 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        All routines return the integer <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> on success.
 
-       X/Open does not  define  any  error  conditions.   This  implementation
-       returns an error
+       X/Open  Curses  does  not   specify   any   error   conditions.    This
+       implementation returns an error
 
        <STRONG>o</STRONG>   if the window pointer is null or
 
@@ -244,9 +244,9 @@
            misdefined  symbols  are the arrows and other symbols which are not
            used for line-drawing.
 
-       X/Open Curses does not define symbols for thick- or double-lines.  SVr4
-       curses  implementations  defined their line-drawing symbols in terms of
-       intermediate  symbols.   This  implementation  extends  those  symbols,
+       X/Open Curses does not specify  symbols  for  thick-  or  double-lines.
+       SVr4 curses implementations defined their line-drawing symbols in terms
+       of intermediate symbols.  This implementation  extends  those  symbols,
        providing new definitions which are not in the SVr4 implementations.
 
        Not  all  Unicode-capable  terminals  provide  support  for VT100-style
@@ -315,13 +315,19 @@
        active (base) spacing character.
 
 
+</PRE><H3><a name="h3-TABSIZE">TABSIZE</a></H3><PRE>
+       The <STRONG>TABSIZE</STRONG> variable is implemented  in  SVr4  and  other  versions  of
+       <EM>curses</EM>, but is not specified by X/Open Curses (see <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>).
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,      <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG>putwc(3)</STRONG>
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,   <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>,  <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,  <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>,   <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG>putwc(3)</STRONG>
 
 
 
-ncurses 6.4                       2024-01-13                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.4                       2024-03-23                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -340,6 +346,7 @@ ncurses 6.4                       2024-01-13                  <STRONG><A HREF="c
 <ul>
 <li><a href="#h3-WACS-Symbols">WACS Symbols</a></li>
 <li><a href="#h3-Complex-Characters">Complex Characters</a></li>
+<li><a href="#h3-TABSIZE">TABSIZE</a></li>
 </ul>
 </li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>

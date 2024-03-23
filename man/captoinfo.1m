@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.59 2024/03/02 16:34:25 tom Exp $
-.TH @CAPTOINFO@ 1M 2024-03-02 "ncurses 6.4" "User commands"
+.\" $Id: captoinfo.1m,v 1.63 2024/03/23 20:37:25 tom Exp $
+.TH @CAPTOINFO@ 1M 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,7 +66,7 @@ and extracts only the entry for the terminal named in the environment
 variable \fITERM\fP from it.
 If the environment variable \fI\%TERMCAP\fP is not set,
 \fB\%@CAPTOINFO@\fP reads
-.I \%/etc/termcap.
+.IR \%/etc/termcap .
 .PP
 This utility is implemented as a link to \fB\%@TIC@\fP(1M),
 with the latter's
@@ -216,7 +216,7 @@ SVr4 systems provide \fB\%captoinfo\fP as a separate application from
 Its
 .B \-v
 option does not accept a trace level argument
-.I n;
+.IR n ;
 repeat
 .B \-v
 .I n

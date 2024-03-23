@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   * Copyright 2002-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgrnd.3x,v 1.36 2023/12/23 16:35:10 tom Exp @
+  * @Id: curs_bkgrnd.3x,v 1.40 2024/03/23 19:59:45 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgrnd 3x 2023-12-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_bkgrnd 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgrnd 3x 2023-12-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_bkgrnd 3x 2024-03-23 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 
@@ -146,7 +146,7 @@
        <STRONG>bkgrndset</STRONG> and <STRONG>wbkgrndset</STRONG> do not return a value.
 
        The other functions return <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG>  upon  success.   In
-       <EM>ncurses,</EM> failure occurs if
+       <EM>ncurses</EM>, failure occurs if
 
        <STRONG>o</STRONG>   a <EM>WINDOW</EM> pointer <EM>win</EM> is null, or
 
@@ -156,7 +156,7 @@
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <STRONG>bkgrnd</STRONG>, <STRONG>bkgrndset</STRONG>, and <STRONG>getbkgrnd</STRONG> may be implemented as macros.
 
-       Unlike  their  counterparts in the non-"wide" configuration of <EM>ncurses,</EM>
+       Unlike  their  counterparts in the non-"wide" configuration of <EM>ncurses</EM>,
        <STRONG>getbkgrnd</STRONG> and <STRONG>wgetbkgrnd</STRONG> supply the background character and  attribute
        in a modifiable <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> parameter, not as the return value.
 
@@ -166,18 +166,18 @@
        error conditions for them.
 
        X/Open Curses does not provide details of how the rendition is updated.
-       This implementation follows the approach used in SVr4 <EM>curses.</EM>
+       This implementation follows the approach used in SVr4 <EM>curses</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>  describes  the corresponding functions in the non-"wide"
-       configuration of <EM>ncurses.</EM>
+       configuration of <EM>ncurses</EM>.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2023-12-23                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
+ncurses 6.4                       2024-03-23                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2022,2023 Thomas E. Dickey                                *
+.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.32 2023/11/25 14:01:49 tom Exp $
-.TH curs_add_wchstr 3X 2023-11-25 "ncurses 6.4" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.34 2024/03/16 19:44:53 tom Exp $
+.TH curs_add_wchstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -102,7 +102,7 @@ the remaining columns are filled with the background character and rendition.
 .SH RETURN VALUE
 All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
 .PP
-X/Open does not define any error conditions.
+X/Open Curses does not specify any error conditions.
 This implementation returns an error
 .bP
 if the \fIwin\fP parameter is null or
