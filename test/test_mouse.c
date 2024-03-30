@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.29 2024/02/10 14:39:40 tom Exp $
+ * $Id: test_mouse.c,v 1.31 2024/03/30 20:45:31 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -35,38 +35,23 @@
 
 static int logoffset = 0;
 
-static int
+static void
 raw_loop(void)
 {
-    struct termios tty;
-    struct termios old;
     char *xtermcap;
 
-    tcgetattr(0, &old);
-#if HAVE_CFMAKERAW
-    cfmakeraw(&tty);
-#else
-    tty = old;
-    tty.c_iflag &= (unsigned) (~(IGNBRK | BRKINT | PARMRK | ISTRIP
-				 | INLCR | IGNCR | ICRNL | IXON));
-    tty.c_oflag &= (unsigned) (~OPOST);
-    tty.c_lflag &= (unsigned) (~(ECHO | ECHONL | ICANON | ISIG | IEXTEN));
-    tty.c_cflag &= (unsigned) (~(CSIZE | PARENB));
-    tty.c_cflag |= CS8;
-    tcsetattr(0, TCSANOW, &tty);
-#endif
+    printf("Entering raw mode. Ctrl-c to quit.\n");
 
-    setupterm(NULL, 0, 0);
+    newterm(NULL, stdout, stdin);
+    raw();
     xtermcap = tigetstr("XM");
     if (!VALID_STRING(xtermcap)) {
 	fprintf(stderr, "couldn't get XM terminfo");
-	return 1;
+	return;
     }
 
     putp(tgoto(xtermcap, 1, 1));
     fflush(stdout);
-
-    tcsetattr(0, TCSANOW, &tty);
 
     while (1) {
 	int c = getc(stdin);
@@ -87,8 +72,7 @@ raw_loop(void)
 
     putp(tgoto(xtermcap, 0, 0));
     fflush(stdout);
-    tcsetattr(0, TCSANOW, &old);
-    return 0;
+    noraw();
 }
 
 static void logw(const char *fmt, ...) GCC_PRINTFLIKE(1, 2);
@@ -117,78 +101,9 @@ logw(const char *fmt, ...)
 }
 
 static void
-usage(int ok)
+cooked_loop(char *my_environ, int interval)
 {
-    static const char *msg[] =
-    {
-	"Usage: test_mouse [options]"
-	,""
-	,"Test mouse events.  These examples for $TERM demonstrate xterm"
-	,"features:"
-	,"    xterm"
-	,"    xterm-1002"
-	,"    xterm-1003"
-	,""
-	,USAGE_COMMON
-	,"Options:"
-	," -r       show raw input stream, injecting a new line before every ESC"
-	," -i n     set mouse interval to n; default is 0 (no double-clicks)"
-	," -T term  use terminal description other than $TERM"
-    };
-    unsigned n;
-    for (n = 0; n < sizeof(msg) / sizeof(char *); ++n) {
-	fprintf(stderr, "%s\n", msg[n]);
-    }
-    ExitProgram(ok ? EXIT_SUCCESS : EXIT_FAILURE);
-}
-/* *INDENT-OFF* */
-VERSION_COMMON()
-/* *INDENT-ON* */
-
-int
-main(int argc, char *argv[])
-{
-    bool rawmode = FALSE;
-    int interval = 0;
-    int ch;
     MEVENT event;
-    size_t my_len;
-    char *my_environ = NULL;
-    const char *term_format = "TERM=%s";
-
-    while ((ch = getopt(argc, argv, OPTS_COMMON "i:rT:")) != -1) {
-	switch (ch) {
-	case 'i':
-	    interval = atoi(optarg);
-	    break;
-	case 'r':
-	    rawmode = TRUE;
-	    break;
-	case 'T':
-	    my_len = strlen(term_format) + strlen(optarg) + 1;
-	    my_environ = malloc(my_len);
-	    if (my_environ != NULL) {
-		_nc_SPRINTF(my_environ, _nc_SLIMIT(my_len) term_format, optarg);
-		putenv(my_environ);
-	    }
-	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
-	default:
-	    usage(ch == OPTS_USAGE);
-	    /* NOTREACHED */
-	}
-    }
-    if (optind < argc) {
-	usage(FALSE);
-	ExitProgram(EXIT_FAILURE);
-    }
-
-    if (rawmode) {
-	printf("Entering raw mode. Ctrl-c to quit.\n");
-	return raw_loop();
-    }
 
     initscr();
     noecho();
@@ -281,6 +196,82 @@ main(int argc, char *argv[])
     }
   end:
     endwin();
+}
+
+static void
+usage(int ok)
+{
+    static const char *msg[] =
+    {
+	"Usage: test_mouse [options]"
+	,""
+	,"Test mouse events.  These examples for $TERM demonstrate xterm"
+	,"features:"
+	,"    xterm"
+	,"    xterm-1002"
+	,"    xterm-1003"
+	,""
+	,USAGE_COMMON
+	,"Options:"
+	," -r       show raw input stream, injecting a new line before every ESC"
+	," -i n     set mouse interval to n; default is 0 (no double-clicks)"
+	," -T term  use terminal description other than $TERM"
+    };
+    unsigned n;
+    for (n = 0; n < sizeof(msg) / sizeof(char *); ++n) {
+	fprintf(stderr, "%s\n", msg[n]);
+    }
+    ExitProgram(ok ? EXIT_SUCCESS : EXIT_FAILURE);
+}
+/* *INDENT-OFF* */
+VERSION_COMMON()
+/* *INDENT-ON* */
+
+int
+main(int argc, char *argv[])
+{
+    bool rawmode = FALSE;
+    int interval = 0;
+    int ch;
+    size_t my_len;
+    char *my_environ = NULL;
+    const char *term_format = "TERM=%s";
+
+    while ((ch = getopt(argc, argv, OPTS_COMMON "i:rT:")) != -1) {
+	switch (ch) {
+	case 'i':
+	    interval = atoi(optarg);
+	    break;
+	case 'r':
+	    rawmode = TRUE;
+	    break;
+	case 'T':
+	    my_len = strlen(term_format) + strlen(optarg) + 1;
+	    my_environ = malloc(my_len);
+	    if (my_environ != NULL) {
+		_nc_SPRINTF(my_environ, _nc_SLIMIT(my_len) term_format, optarg);
+		putenv(my_environ);
+	    }
+	    break;
+	case OPTS_VERSION:
+	    show_version(argv);
+	    ExitProgram(EXIT_SUCCESS);
+	default:
+	    usage(ch == OPTS_USAGE);
+	    /* NOTREACHED */
+	}
+    }
+    if (optind < argc) {
+	usage(FALSE);
+	ExitProgram(EXIT_FAILURE);
+    }
+
+    if (rawmode) {
+	raw_loop();
+    } else {
+	cooked_loop(my_environ, interval);
+    }
+
     ExitProgram(EXIT_SUCCESS);
 }
 #else

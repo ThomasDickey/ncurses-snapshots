@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1065 2024/03/12 23:45:44 tom Exp $
+dnl $Id: aclocal.m4,v 1.1069 2024/03/30 22:15:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -5681,7 +5681,7 @@ AC_SUBST(MAKE_UPPER_TAGS)
 AC_SUBST(MAKE_LOWER_TAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MANPAGE_FORMAT version: 18 updated: 2023/05/19 18:35:02
+dnl CF_MANPAGE_FORMAT version: 19 updated: 2024/03/30 08:27:40
 dnl -----------------
 dnl Option to allow user to override automatic configuration of manpage format.
 dnl There are several special cases:
@@ -5799,6 +5799,7 @@ cf_manpage_format=no
 cf_manpage_inboth=no
 cf_manpage_so_strip=
 cf_manpage_compress=
+cf_manpage_coptions=
 
 for cf_item in $MANPAGE_FORMAT
 do
@@ -5818,6 +5819,7 @@ case "$cf_item" in
 (gzip)
 	cf_manpage_so_strip="gz"
 	cf_manpage_compress=gzip
+	cf_manpage_coptions=-n
 	;;
 (bzip2)
 	cf_manpage_so_strip="bz2"
@@ -5834,6 +5836,7 @@ AC_SUBST(cf_manpage_format)
 AC_SUBST(cf_manpage_inboth)
 AC_SUBST(cf_manpage_so_strip)
 AC_SUBST(cf_manpage_compress)
+AC_SUBST(cf_manpage_coptions)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -5963,7 +5966,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 58 updated: 2023/07/28 20:13:29
+dnl CF_MAN_PAGES version: 59 updated: 2024/03/30 08:27:40
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -6237,7 +6240,7 @@ CF_EOF
 if test -n "$cf_manpage_compress" ; then
 cat >>$cf_edit_man <<CF_EOF
 						if test -n "$cf_manpage_so_strip" ; then
-							"$cf_manpage_compress" -f \$TMP
+							"$cf_manpage_compress" $cf_manpage_coptions -f \$TMP
 							mv \$TMP.$cf_manpage_so_strip \$TMP
 						fi
 CF_EOF
@@ -7420,7 +7423,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 110 updated: 2024/03/12 19:44:02
+dnl CF_SHARED_OPTS version: 111 updated: 2024/03/29 20:08:49
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -7896,9 +7899,9 @@ CF_EOF
 			done
 			CFLAGS="$cf_save_CFLAGS"
 			CC_SHARED_OPTS=$cf_shared_opts
-			MK_SHARED_LIB='${CC} ${LDFLAGS} ${CFLAGS} -dy -G -h '$cf_cv_shared_soname' -o $[@]'
+			MK_SHARED_LIB='${CC} ${LDFLAGS} ${CFLAGS} -dy -G -Wl,-h,'$cf_cv_shared_soname' -o $[@]'
 		else
-			MK_SHARED_LIB='${CC} ${LDFLAGS} ${CFLAGS} -shared -dy -G -h '$cf_cv_shared_soname' -o $[@]'
+			MK_SHARED_LIB='${CC} ${LDFLAGS} ${CFLAGS} -shared -dy -G -Wl,-h,'$cf_cv_shared_soname' -o $[@]'
 		fi
 		;;
 	(sysv5uw7*|unix_sv*)

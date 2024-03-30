@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2023 Thomas E. Dickey                                     *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.29 2023/09/09 23:14:48 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.30 2024/03/30 15:54:17 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -151,7 +151,6 @@ NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
 #ifdef TERMIOS
 	buf.c_lflag &= (unsigned) ~ICANON;
 	buf.c_iflag &= (unsigned) ~ICRNL;
-	buf.c_lflag |= ISIG;
 	buf.c_cc[VMIN] = 1;
 	buf.c_cc[VTIME] = 0;
 #elif defined(EXP_WIN32_DRIVER)
