@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.44 2024/03/16 15:35:01 tom Exp $
-.TH curs_get_wstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.46 2024/04/13 22:14:06 tom Exp $
+.TH curs_get_wstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -216,6 +216,9 @@ while others (PDCurses) do not allow this.
 NetBSD 7 curses imitates \fI\%ncurses\fP 6.1 in this regard,
 treating a \fB\-1\fP as an indefinite number of characters.
 .SH SEE ALSO
+\fB\%curs_getstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its non-wide-character configuration.
+.PP
 \fB\%curses\fP(3X),
-\fB\%curs_getstr\fP(3X),
 \fB\%curs_get_wch\fP(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termattrs.3x,v 1.36 2024/03/16 15:35:01 tom Exp $
-.TH curs_termattrs 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termattrs.3x,v 1.38 2024/04/13 22:16:39 tom Exp $
+.TH curs_termattrs 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%baudrate\fP,
 \fB\%erasechar\fP,
@@ -71,7 +71,7 @@ The \fBerasewchar\fP routine stores the current erase character
 in the location referenced by \fIch\fP.
 If no erase character has been defined, the routine fails
 and the location referenced by \fIch\fP is not changed.
-.SS "has_is, has_il"
+.SS "has_ic, has_il"
 The \fBhas_ic\fP routine is true if the terminal has insert- and delete-
 character capabilities.
 .PP

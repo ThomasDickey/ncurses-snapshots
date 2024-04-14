@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.64 2024/03/23 20:38:57 tom Exp @
+  * @Id: curs_inopts.3x,v 1.66 2024/04/13 22:20:29 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2024-03-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2024-04-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -331,13 +331,25 @@
        the later definition is the one used.
 
 
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       Formerly, <EM>ncurses</EM> used  <STRONG>nl</STRONG>  and  <STRONG>nonl</STRONG>  to  control  the  conversion  of
+       newlines  to  carriage  return/line  feed  on  output as well as input.
+       X/Open Curses documents the use of  these  functions  only  for  input.
+       This  difference arose from converting the <EM>pcurses</EM> source (1986), which
+       used <STRONG>ioctl(2)</STRONG> calls and the <EM>sgttyb</EM> structure,  to  <EM>termios</EM>  (the  POSIX
+       terminal  API).   In  the former, both input and output were controlled
+       via a single option <STRONG>CRMOD</STRONG>, while the latter separates  these  features.
+       Because  that  conversion  interferes with output optimization, <EM>ncurses</EM>
+       6.2 (2020) amended <STRONG>nl</STRONG> and <STRONG>nonl</STRONG> to eliminate their effect on output.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
        <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG>termios(3)</STRONG>
 
 
 
-ncurses 6.4                       2024-03-23                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.4                       2024-04-13                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -364,6 +376,7 @@ ncurses 6.4                       2024-03-23                   <STRONG><A HREF="
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

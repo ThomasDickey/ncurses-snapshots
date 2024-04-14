@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.58 2024/03/16 15:49:18 tom Exp $
-.TH curs_outopts 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.60 2024/04/13 22:23:57 tom Exp $
+.TH curs_outopts 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -152,10 +152,6 @@ will return an error if the window pointer is null
 .bP
 \fBwsetscrreg\fP
 returns an error if the scrolling region limits extend outside the window.
-.PP
-X/Open Curses does not specify any error conditions.
-This implementation returns an error
-if the window pointer is null.
 .SH NOTES
 Note that
 \fBclearok\fP,
@@ -168,20 +164,6 @@ The \fBimmedok\fP routine is useful for windows that are used as terminal
 emulators.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
-.PP
-From the outset,
-\fI\%ncurses\fP used \fBnl\fP/\fBnonl\fP to control the conversion of
-newlines to carriage return/line-feed on output as well as input.
-XSI Curses documents only the use of these functions for input.
-This difference arose from converting the \fIpcurses\fP source
-(which used \fBioctl\fP calls with the \fBsgttyb\fP structure)
-to termios (i.e., the POSIX terminal interface).
-In the former, both input and output were controlled via a single
-option \fBCRMOD\fP,
-while the latter separates these features.
-Because that conversion interferes with output optimization,
-\fBnl\fP/\fBnonl\fP were amended after \fI\%ncurses\fP 6.2
-to eliminate their effect on output.
 .PP
 Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fP by saying
@@ -199,6 +181,13 @@ The XSI Curses standard does not mention that the cursor should be
 made invisible as a side-effect of \fBleaveok\fP.
 SVr4 curses documentation does this, but the code does not.
 Use \fBcurs_set\fP to make the cursor invisible.
+.SH HISTORY
+.I \%ncurses
+formerly treated \fBnl\fP(3X) and \fBnonl\fP(3X) as both input
+.I and
+output options,
+but no longer;
+see \fB\%curs_inopts\fP(3X).
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),

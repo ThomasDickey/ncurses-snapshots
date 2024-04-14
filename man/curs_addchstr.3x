@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addchstr.3x,v 1.40 2024/03/16 15:37:51 tom Exp $
-.TH curs_addchstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addchstr.3x,v 1.42 2024/04/13 22:21:16 tom Exp $
+.TH curs_addchstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -59,13 +59,13 @@ add a \fIcurses\fR character string to a window
 \fB#include <curses.h>
 .PP
 \fBint addchstr(const chtype *\fIchstr\fP);
-\fBint addchnstr(const chtype *\fIchstr\fP, int \fIn\fP);
 \fBint waddchstr(WINDOW *\fIwin\fP, const chtype *\fIchstr\fP);
-\fBint waddchnstr(WINDOW *\fIwin\fP, const chtype *\fIchstr\fP, int \fIn\fP);
-.PP
 \fBint mvaddchstr(int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP);
-\fBint mvaddchnstr(int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP, int \fIn\fP);
 \fBint mvwaddchstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP);
+.PP
+\fBint addchnstr(const chtype *\fIchstr\fP, int \fIn\fP);
+\fBint waddchnstr(WINDOW *\fIwin\fP, const chtype *\fIchstr\fP, int \fIn\fP);
+\fBint mvaddchnstr(int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP, int \fIn\fP);
 \fBint mvwaddchnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
@@ -111,11 +111,11 @@ All functions except \fBwaddchnstr\fP may be macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
-\fB\%curses\fP(3X),
-\fB\%curs_addch\fP(3X),
-\fB\%curs_addstr\fP(3X)
-.PP
 \fB\%curs_add_wchstr\fP(3X) describes comparable functions of the
 .I \%ncurses
 library in its wide-character configuration
 .RI ( \%ncursesw ).
+.PP
+\fB\%curses\fP(3X),
+\fB\%curs_addch\fP(3X),
+\fB\%curs_addstr\fP(3X)

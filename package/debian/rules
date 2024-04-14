@@ -1,8 +1,15 @@
 #!/usr/bin/make -f
-# $Id: rules,v 1.52 2024/01/05 23:34:30 tom Exp $
+# $Id: rules,v 1.53 2024/04/08 15:31:32 tom Exp $
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+
+SHELL = /bin/bash
+DPKG_EXPORT_BUILDFLAGS = 1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+include /usr/share/dpkg/buildflags.mk
 
 # packages
 PACKAGES.indep = ncurses6-doc ncurses6-doc-html
@@ -25,10 +32,7 @@ MYDATA=/usr/local/ncurses/share/terminfo
 NORMAL_DIR=$(CURDIR)/debian/ncurses$(MY_ABI)
 THREAD_DIR=$(CURDIR)/debian/ncursest$(MY_ABI)
 
-CFLAGS   = $(shell dpkg-buildflags --get CFLAGS) $(CC_NORMAL)
-CXXFLAGS = $(shell dpkg-buildflags --get CXXFLAGS)
-CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
-LDFLAGS  = $(shell dpkg-buildflags --get LDFLAGS)
+CFLAGS   += $(CC_NORMAL)
 
 ifneq ($(MY_DIR),/usr)
 	RPATH_ENV = RPATH_LIST=../lib:$(LIBDIR)

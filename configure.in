@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.776 2024/03/17 00:08:03 tom Exp $
+dnl $Id: configure.in,v 1.779 2024/04/10 08:04:00 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.776 $)
+AC_REVISION($Revision: 1.779 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1406,9 +1406,9 @@ AC_SUBST(cf_cv_enable_opaque)
 AC_SUBST(NCURSES_SIZE_T)
 
 AC_MSG_CHECKING(whether curses library structures should be opaque)
-CF_ARG_ENABLE(opaque-curses,
+CF_ARG_DISABLE(opaque-curses,
 	[  --disable-opaque-curses do not make WINDOW, etc., structures opaque],
-	[enable_opaque_curses=yes],[
+	[enable_opaque_curses=no],[
 	 test "$cf_cv_enable_reentrant" = 1 && enable_opaque_curses=yes
 	 test "$cf_cv_enable_reentrant" = 1 || enable_opaque_curses=$cf_dft_opaque_curses
 	])
@@ -1419,21 +1419,21 @@ test "$enable_opaque_curses" = no && \
 AC_MSG_ERROR(reentrant configuration requires opaque library)
 
 AC_MSG_CHECKING(whether form library structures should be opaque)
-AC_ARG_ENABLE(opaque-form,
+CF_ARG_DISABLE(opaque-form,
 	[  --disable-opaque-form   do not make form library structures opaque],
-	[enable_opaque_form=yes],[enable_opaque_form=$cf_dft_opaque_curses])
+	[enable_opaque_form=no],[enable_opaque_form=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_form)
 
 AC_MSG_CHECKING(whether menu library structures should be opaque)
-AC_ARG_ENABLE(opaque-menu,
+CF_ARG_DISABLE(opaque-menu,
 	[  --disable-opaque-menu   do not make menu library structures opaque],
-	[enable_opaque_menu=yes],[enable_opaque_menu=$cf_dft_opaque_curses])
+	[enable_opaque_menu=no],[enable_opaque_menu=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_menu)
 
 AC_MSG_CHECKING(whether panel library structures should be opaque)
-AC_ARG_ENABLE(opaque-panel,
+CF_ARG_DISABLE(opaque-panel,
 	[  --disable-opaque-panel  do not make panel library structures opaque],
-	[enable_opaque_panel=yes],[enable_opaque_panel=$cf_dft_opaque_curses])
+	[enable_opaque_panel=no],[enable_opaque_panel=$cf_dft_opaque_curses])
 AC_MSG_RESULT($enable_opaque_panel)
 
 NCURSES_OPAQUE=0;		test "$enable_opaque_curses" = yes && NCURSES_OPAQUE=1

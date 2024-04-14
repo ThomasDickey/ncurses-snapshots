@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.45 2024/03/16 15:35:01 tom Exp $
-.TH curs_variables 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.47 2024/04/13 22:37:35 tom Exp $
+.TH curs_variables 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -216,14 +216,21 @@ respectively;
 that is,
 the number of columns and lines.
 .SS ESCDELAY
-For \fIcurses\fP to distinguish an escape character corresponding to a
-user's press of an \*(``Escape\*('' key on the input device from one
-included in a control sequence used by a cursor movement or function
-key,
-the library waits to see if another key event occurs after the escape
-character.
-\fB\%ESCDELAY\fP
+For
+.I curses
+to distinguish the ESC character resulting from a user's press of the
+\*(``Escape\*('' key on the input device from one beginning an
+.I "escape sequence"
+(as commonly produced by function keys),
+it waits after the escape character to see if further characters are
+available on the input stream within a short interval.
+.B \%ESCDELAY
 stores this interval in milliseconds.
+.PP
+If \fB\%keypad\fP(3X) is disabled for the
+.I curses
+window receiving input,
+a program must disambiguate escape sequences itself.
 .SS TABSIZE
 The \fIcurses\fP library converts a tab character to this number of
 spaces as it adds a tab to a window;
@@ -232,9 +239,14 @@ see \fB\%curs_addch\fP(3X).
 Either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X) initializes
 \fIcurses\fP.
 .PP
-If \fI\%ncurses\fP is configured to provide separate \fIcurses\fP and
-\fIterminfo\fP libraries,
-most of these variables reside in the \fIcurses\fP library.
+If
+.I \%ncurses
+is configured to provide separate
+.I curses
+and
+.I \%tinfo
+libraries,
+most of these variables reside in the former.
 .SH PORTABILITY
 The X/Open Curses standard documents all of the foregoing types and
 symbols except for \fB\%newscr\fP,

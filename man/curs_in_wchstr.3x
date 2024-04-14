@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wchstr.3x,v 1.34 2024/03/16 15:35:01 tom Exp $
-.TH curs_in_wchstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wchstr.3x,v 1.36 2024/04/13 22:21:16 tom Exp $
+.TH curs_in_wchstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -59,13 +59,13 @@ get a \fIcurses\fR complex character string from a window
 \fB#include <curses.h>
 .PP
 \fBint in_wchstr(cchar_t *\fIwchstr\fP);
-\fBint in_wchnstr(cchar_t *\fIwchstr\fP, int \fIn\fP);
 \fBint win_wchstr(WINDOW *\fIwin\fP, cchar_t *\fIwchstr\fP);
-\fBint win_wchnstr(WINDOW *\fIwin\fP, cchar_t *\fIwchstr\fP, int \fIn\fP);
-.PP
 \fBint mvin_wchstr(int \fIy\fP, int \fIx\fP, cchar_t *\fIwchstr\fP);
-\fBint mvin_wchnstr(int \fIy\fP, int \fIx\fP, cchar_t *\fIwchstr\fP, int \fIn\fP);
 \fBint mvwin_wchstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t *\fIwchstr\fP);
+.PP
+\fBint in_wchnstr(cchar_t *\fIwchstr\fP, int \fIn\fP);
+\fBint win_wchnstr(WINDOW *\fIwin\fP, cchar_t *\fIwchstr\fP, int \fIn\fP);
+\fBint mvin_wchnstr(int \fIy\fP, int \fIx\fP, cchar_t *\fIwchstr\fP, int \fIn\fP);
 \fBint mvwin_wchnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t *\fIwchstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
@@ -121,8 +121,10 @@ The XSI Curses defines no error conditions.
 This implementation checks for null pointers,
 returning \fBERR\fP in that case.
 .SH SEE ALSO
+\fB\%curs_inchstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its non-wide-character configuration.
+.PP
 \fB\%curses\fP(3X),
-\fB\%curs_inchstr\fP(3X),
-\fB\%curs_instr\fP(3X),
 \fB\%curs_inwstr\fP(3X),
 \fB\%curs_in_wch\fP(3X)

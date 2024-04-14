@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.64 2024/03/23 20:38:57 tom Exp $
-.TH curs_inopts 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.66 2024/04/13 22:20:29 tom Exp $
+.TH curs_inopts 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -514,6 +514,37 @@ These are loaded after the predefined keys,
 and if a capability's value is the same as a previously-loaded
 key definition,
 the later definition is the one used.
+.SH HISTORY
+Formerly,
+.I \%ncurses
+used
+.B \%nl
+and
+.B \%nonl
+to control the conversion of newlines to carriage return/line feed
+on output as well as input.
+X/Open Curses documents the use of these functions only for input.
+This difference arose from converting the
+.I \%pcurses
+source (1986),
+which used
+\fI\%ioctl\fP(2) calls and the
+.I \%sgttyb
+structure,
+to
+.I \%termios
+(the POSIX terminal API).
+In the former,
+both input and output were controlled via a single option
+.BR \%CRMOD ,
+while the latter separates these features.
+Because that conversion interferes with output optimization,
+.I \%ncurses
+6.2 (2020) amended
+.B \%nl
+and
+.B \%nonl
+to eliminate their effect on output.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_getch\fP(3X),

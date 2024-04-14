@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.233 2024/03/16 23:39:28 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.235 2024/04/13 20:35:14 tom Exp $")
 
 /****************************************************************************
  *
@@ -362,17 +362,15 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 }
 
 static bool
-set_position(TERMINAL *termp, int fd, int row, int col)
+set_position(NCURSES_SP_DCLx TERMINAL *termp, int row, int col)
 {
     bool result = FALSE;
     char *actual = TIPARM_2(cursor_address, row, col);
-    T(("set_position %d,%d", row, col));
-    if (actual != NULL) {
-	size_t want = strlen(actual);
-	int have = (int) write(fd, actual, want);	/* FIXME - padding */
-	result = ((int) want == have);
-    }
-    return result;
+    T((T_CALLED("set_position %d,%d)"), row, col));
+    if (NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx "set_position", actual) == OK)
+	result = TRUE;
+    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    returnBool(result);
 }
 
 /*
@@ -392,15 +390,13 @@ set_position(TERMINAL *termp, int fd, int row, int col)
  * So we do a simple check to exclude pseudo-terminals.
  */
 static void
-_nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
+_nc_check_screensize(NCURSES_SP_DCLx TERMINAL *termp, int *linep, int *colp)
 {
     int fd = termp->Filedes;
     TTY saved;
     const char *name;
 
-    if (NC_ISATTY(fd)
-	&& (name = ttyname(fd)) != NULL
-	&& strncmp(name, "/dev/pts/", 9)
+    if (IsRealTty(fd, name)
 	&& VALID_STRING(cursor_address)
 	&& is_expected(user7, "6n")
 	&& (is_expected(user6, "%i%d;%dR") ||
@@ -410,6 +406,14 @@ _nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
 	int updated_y = -1, updated_x = -1;
 	TTY alter = saved;
 
+#if NCURSES_SP_FUNCS
+	if (sp == NULL) {
+	    sp = new_prescr();
+	    sp->_term = termp;
+	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);
+	}
+#endif
+
 	T(("checking screensize of %s", name));
 	alter.c_lflag &= (unsigned) ~(ECHO | ICANON | ISIG | IEXTEN);
 	alter.c_iflag &= (unsigned) ~(IXON | BRKINT | PARMRK);
@@ -418,11 +422,11 @@ _nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
 	SET_TTY(fd, &alter);
 
 	if (get_position(termp, fd, &current_y, &current_x)
-	    && set_position(termp, fd, 9999, 9999)
+	    && set_position(NCURSES_SP_ARGx termp, 9999, 9999)
 	    && get_position(termp, fd, &updated_y, &updated_x)) {
 	    *linep = updated_y;
 	    *colp = updated_x;
-	    set_position(termp, fd, current_y, current_x);
+	    set_position(NCURSES_SP_ARGx termp, current_y, current_x);
 	}
 	/* restore tty modes */
 	SET_TTY(fd, &saved);
@@ -431,7 +435,7 @@ _nc_check_screensize(TERMINAL *termp, int *linep, int *colp)
     _nc_default_screensize(termp, linep, colp);
 }
 #else /* !USE_CHECK_SIZE */
-#define _nc_check_screensize(termp, linep, colp)	/* nothing */
+#define _nc_check_screensize(sp, termp, linep, colp)	/* nothing */
 #endif
 #endif /* !(defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)) */
 
@@ -506,7 +510,7 @@ _nc_get_screensize(SCREEN *sp,
 #endif
 #if HAVE_SIZECHANGE
 	/* try asking the OS */
-	if (NC_ISATTY(cur_term->Filedes)) {
+	if (!NC_ISATTY(cur_term->Filedes)) {
 	    STRUCT_WINSIZE size;
 
 	    errno = 0;
@@ -557,7 +561,7 @@ _nc_get_screensize(SCREEN *sp,
 
 	    _nc_default_screensize(termp, linep, colp);
 	} else {
-	    _nc_check_screensize(termp, linep, colp);
+	    _nc_check_screensize(NCURSES_SP_ARGx termp, linep, colp);
 	}
 
 	/*
@@ -573,7 +577,7 @@ _nc_get_screensize(SCREEN *sp,
 	OldNumber(termp, columns) = (short) (*colp);
 #endif
     } else {
-	_nc_check_screensize(termp, linep, colp);
+	_nc_check_screensize(NCURSES_SP_ARGx termp, linep, colp);
     }
 
     T(("screen size is %dx%d", *linep, *colp));

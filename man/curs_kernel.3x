@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.56 2024/03/16 15:35:01 tom Exp $
-.TH curs_kernel 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.58 2024/04/13 22:19:08 tom Exp $
+.TH curs_kernel 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -132,9 +132,9 @@ at the beginning, do its manipulation of its own windows, do a
 Few applications will use this feature,
 most use \fBwmove\fP instead.
 .SS ripoffline
-The \fBripoffline\fP routine provides access to the same facility that
-\fBslk_init\fP [see \fBcurs_slk\fP(3X)] uses to reduce the size of the
-screen.
+.B \%ripoffline
+provides access to the same facility that \fB\%slk_init\fP(3X) uses to
+reduce the size of the screen.
 \fB\%ripoffline\fP must be called before \fBinitscr\fP or
 \fBnewterm\fP is called, to prepare these initial actions:
 .bP
@@ -166,8 +166,13 @@ If the terminal supports the \fIvisibility\fP requested,
 the previous \fIcursor\fP state is returned;
 otherwise, \fBERR\fP is returned.
 .SS napms
-The \fBnapms\fP routine is used to sleep for \fIms\fP milliseconds.
-If the value of \fIms\fP exceeds 30,000
+.B \%napms
+sleeps for
+.I ms
+milliseconds.
+If
+.I ms
+exceeds 30,000
 (thirty seconds),
 it is capped at that value.
 .SH RETURN VALUE

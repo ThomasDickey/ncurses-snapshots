@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.54 2024/03/16 15:35:01 tom Exp $
-.TH curs_getstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.56 2024/04/13 22:14:06 tom Exp $
+.TH curs_getstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -288,6 +288,11 @@ Starting in 2021
 rather than \fBnoraw\fP and \fBcbreak\fP for better compatibility with
 SVr4-curses, e.g., allowing one to enter a \fB^C\fP into the buffer.
 .SH SEE ALSO
+\fB\%curs_get_wstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_getch\fP(3X),
 \fB\%curs_termattrs\fP(3X),

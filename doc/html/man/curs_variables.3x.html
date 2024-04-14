@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_variables.3x,v 1.45 2024/03/16 15:35:01 tom Exp @
+  * @Id: curs_variables.3x,v 1.47 2024/04/13 22:37:35 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_variables 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_variables 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_variables 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_variables 3x 2024-04-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
@@ -181,11 +181,15 @@
 
 
 </PRE><H3><a name="h3-ESCDELAY">ESCDELAY</a></H3><PRE>
-       For <EM>curses</EM> to distinguish an escape character corresponding to a user's
-       press of an "Escape" key on the input device from  one  included  in  a
-       control sequence used by a cursor movement or function key, the library
-       waits to see if another key event occurs after  the  escape  character.
-       <STRONG>ESCDELAY</STRONG> stores this interval in milliseconds.
+       For  <EM>curses</EM>  to  distinguish  the ESC character resulting from a user's
+       press of the "Escape" key on the input device  from  one  beginning  an
+       <EM>escape</EM> <EM>sequence</EM> (as commonly produced by function keys), it waits after
+       the escape character to see if further characters are available on  the
+       input stream within a short interval.  <STRONG>ESCDELAY</STRONG> stores this interval in
+       milliseconds.
+
+       If <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is disabled for the  <EM>curses</EM>  window  receiving  input,  a
+       program must disambiguate escape sequences itself.
 
 
 </PRE><H3><a name="h3-TABSIZE">TABSIZE</a></H3><PRE>
@@ -196,8 +200,8 @@
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        Either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG> initializes <EM>curses</EM>.
 
-       If <EM>ncurses</EM> is  configured  to  provide  separate  <EM>curses</EM>  and  <EM>terminfo</EM>
-       libraries, most of these variables reside in the <EM>curses</EM> library.
+       If  <EM>ncurses</EM>  is  configured  to  provide  separate  <EM>curses</EM>  and   <EM>tinfo</EM>
+       libraries, most of these variables reside in the former.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -262,7 +266,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
+ncurses 6.4                       2024-04-13                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

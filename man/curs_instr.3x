@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.46 2024/03/16 15:35:01 tom Exp $
-.TH curs_instr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.48 2024/04/13 22:14:06 tom Exp $
+.TH curs_instr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -118,8 +118,11 @@ The \fI\%ncurses\fP library extends the XSI description by allowing a
 negative value for \fIn\fP.
 In this case, the functions return the string ending at the right margin.
 .SH SEE ALSO
+\fB\%curs_ins_wstr\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_inch\fP(3X),
-\fB\%curs_inchstr\fP(3X),
-\fB\%curs_inwstr\fP(3X),
-\fB\%curs_in_wchstr\fP(3X)
+\fB\%curs_inchstr\fP(3X)

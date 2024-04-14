@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2016,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
 #include <sys/ptem.h>
 #endif
 
-MODULE_ID("$Id: reset_cmd.c,v 1.35 2023/11/05 00:02:37 tom Exp $")
+MODULE_ID("$Id: reset_cmd.c,v 1.37 2024/04/08 17:29:34 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -677,7 +677,7 @@ print_tty_chars(TTY * old_settings, TTY * new_settings)
  * size was set.
  */
 void
-set_window_size(int fd, short *high, short *wide)
+set_window_size(int fd, NCURSES_INT2 *high, NCURSES_INT2 *wide)
 {
     STRUCT_WINSIZE win;
     (void) ioctl(fd, IOCTL_GET_WINSIZE, &win);

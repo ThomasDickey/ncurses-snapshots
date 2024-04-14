@@ -1,4 +1,4 @@
-# $Id: manhtml.externs,v 1.22 2024/03/16 20:46:05 tom Exp $
+# $Id: manhtml.externs,v 1.24 2024/04/14 00:15:03 tom Exp $
 # Items in this list will not be linked by man2html
 #***************************************************************************
 # Copyright 2019-2023,2024 Thomas E. Dickey                                *
@@ -59,7 +59,10 @@ resize(1)
 scanf(3)
 scanf(3S)
 screen(1)
+setbuf(3)
+setgid(2)
 setlocale(3)
+setuid(2)
 sh(1)
 sscanf(3)
 stdio(3)

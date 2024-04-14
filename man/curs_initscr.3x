@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.64 2024/03/16 15:35:01 tom Exp $
-.TH curs_initscr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.66 2024/04/13 22:18:11 tom Exp $
+.TH curs_initscr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -177,7 +177,7 @@ returns no error.
 These functions were described in the XSI Curses standard, Issue 4.
 As of 2015, the current document is X/Open Curses, Issue 7.
 .SS Differences
-X/Open specifies that portable applications must not
+X/Open Curses specifies that portable applications must not
 call \fBinitscr\fP more than once:
 .bP
 The portable way to use \fBinitscr\fP is once only,

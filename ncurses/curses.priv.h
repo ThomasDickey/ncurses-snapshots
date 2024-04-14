@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.685 2024/02/24 18:46:40 tom Exp $
+ * $Id: curses.priv.h,v 1.686 2024/04/13 18:59:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2529,6 +2529,14 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #else
 #define NC_ISATTY(fd) isatty(fd)
 #endif
+
+/*
+ * Perhaps not "real" but possibly not "fake".
+ */
+#define IsRealTty(fd,value) \
+	(NC_ISATTY(fd) \
+	 && (value = ttyname(fd)) != NULL \
+	 && strncmp(value, "/dev/pts/", 9))
 
 #ifdef USE_TERM_DRIVER
 #  define IsTermInfo(sp)       ((TCBOf(sp) != 0) && ((TCBOf(sp)->drv->isTerminfo)))

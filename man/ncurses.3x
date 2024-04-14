@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.204 2024/03/23 20:42:29 tom Exp $
-.TH ncurses 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.207 2024/04/14 00:34:00 tom Exp $
+.TH ncurses 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -84,11 +84,12 @@ the definition and use of
 .I "soft label"
 keys;
 .I \%term\%info
-capabilities;
+capability access;
 a
-.I \%term\%cap
+.I termcap
 compatibility interface;
-and access to low-level terminal-manipulation routines.
+and an abstraction of the system's API for manipulating the terminal
+(such as \fI\%termios\fP(3)).
 .PP
 .I \%ncurses
 implements the standard interface described by
@@ -99,90 +100,123 @@ emulates the
 .I curses
 library of SVr4 and provides numerous useful extensions.
 .PP
-\fI\%ncurses\fP man pages employ several sections to clarify matters of
-usage and interoperability with other \fIcurses\fP implementations.
+.I \%ncurses
+man pages employ several sections to clarify matters of usage and
+interoperability with other
+.I curses
+implementations.
 .bP
-\*(``NOTES\*('' describes matters and caveats of which any user of the
-\fI\%ncurses\fP API should be aware,
+\*(``NOTES\*('' describes issues and caveats of which any user of the
+.I \%ncurses
+API should be aware,
 such as limitations on the size of an underlying integral type or the
 availability of a preprocessor macro exclusive of a function definition
 (which prevents its address from being taken).
 This section also describes implementation details that will be
 significant to the programmer but which are not standardized.
 .bP
-\*(``EXTENSIONS\*('' presents \fI\%ncurses\fP innovations beyond the
-X/Open Curses standard and/or the SVr4 \fIcurses\fP implementation.
-They are termed \fIextensions\fP to indicate that they cannot be
-implemented solely by using the library API, but require access to the
-library's internal state.
+\*(``EXTENSIONS\*('' presents
+.I \%ncurses
+innovations beyond the X/Open Curses standard and/or the SVr4
+.I curses
+implementation.
+They are termed
+.I extensions
+to indicate that they cannot be implemented solely by using the library
+API,
+but require access to the library's internal state.
 .bP
 \*(``PORTABILITY\*('' discusses matters
 (beyond the exercise of extensions)
-that should be considered when writing to a \fIcurses\fP standard,
-or to multiple implementations.
+that should be considered when writing to a
+.I curses
+standard,
+or for multiple implementations.
 .bP
-\*(``HISTORY\*('' examines points of detail in \fI\%ncurses\fP and other
-\fIcurses\fP implementations over the decades of their development,
+\*(``HISTORY\*('' examines points of detail in
+.I \%ncurses
+and other
+.I curses
+implementations over the decades of their development,
 particularly where precedent or inertia have frustrated better design
 (and,
 in a few cases,
 where such inertia has been overcome).
 .PP
-A program using these routines must be linked with the \fB\-lncurses\fP option,
-or (if it has been generated) with the debugging library \fB\-lncurses_g\fP.
-(Your system integrator may also have installed these libraries under
-the names \fB\-lcurses\fP and \fB\-lcurses_g\fP.)
-The ncurses_g library generates trace logs
-(in a file called \*(``trace\*('' in the current directory)
-that describe curses actions.
+A
+.I curses
+application must be linked with the library;
+use the
+.B \-lncurses
+option to your compiler or linker.
+A debugging version of the library may be available;
+if so,
+link with it using
+.BR \-lncurses_g .
+(Your system integrator may have installed these libraries such that you
+can use the options
+.B \-lcurses
+and
+.BR \-lcurses_g ,
+respectively.)
+The
+.I \%ncurses_g
+library generates trace logs
+(in a file called
+.I \%trace
+in the current directory)
+that describe
+.I \%ncurses
+actions.
 See section \*(``ALTERNATE CONFIGURATIONS\*('' below.
-.SS Initialization
-The library uses the locale which the calling program has initialized.
-That is normally done with \fBsetlocale\fP(3):
+.SS "Application Structure"
+A
+.I curses
+application uses information from the system locale;
+\fI\%setlocale\fP(3) prepares it for
+.I curses
+library calls.
 .PP
 .RS 4
 .EX
-\fBsetlocale(LC_ALL, "");\fP
+setlocale(LC_ALL, "");
 .EE
 .RE
 .PP
-If the locale is not initialized,
-the library assumes that characters are printable as in ISO\-8859\-1,
+If the locale is not thus initialized,
+the library assumes that characters are printable as in ISO\ 8859-1,
 to work with certain legacy programs.
-You should initialize the locale and not rely on specific details of
-the library when the locale has not been set up.
+You should initialize the locale;
+do not expect consistent behavior from the library when the locale has
+not been set up.
 .PP
-The function \fBinitscr\fP or \fBnewterm\fP
-must be called to initialize the library
-before any of the other routines that deal with windows
-and screens are used.
-The routine \fBendwin\fP(3X) must be called before exiting.
+\fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)
+must be called to initialize
+.I curses
+before use of any functions that deal with windows and screens.
 .PP
-To get character-at-a-time input without echoing (most
-interactive, screen oriented programs want this), the following
-sequence should be used:
-.PP
-.RS 4
-.EX
-\fBinitscr(); cbreak(); noecho();\fP
-.EE
-.RE
-.PP
-Most programs would additionally use the sequence:
+To get character-at-a-time input without echoing\(emmost interactive,
+screen-oriented programs want this\(emuse the following sequence.
 .PP
 .RS 4
 .EX
-\fBintrflush(stdscr, FALSE);\fP
-\fBkeypad(stdscr, TRUE);\fP
+initscr(); cbreak(); noecho();
 .EE
 .RE
 .PP
-Before a \fBcurses\fP program is run, the tab stops of the terminal
-should be set and its initialization strings, if defined, must be output.
-This can be done by executing the \fB@TPUT@ init\fP command
-after the shell environment variable \fITERM\fP has been exported.
-(The BSD-style \fB\%@TSET@\fP(1) utility also performs this function.)
-See subsection \*(``Tabs and Initialization\*('' of \fBterminfo\fP(5).
+Most applications perform further setup as follows.
+.PP
+.RS 4
+.EX
+intrflush(stdscr, FALSE);
+keypad(stdscr, TRUE);
+.EE
+.RE
+.PP
+A
+.I curses
+program then often enters an event loop of some sort.
+Call \fB\%endwin\fP(3X) before exiting.
 .SS Overview
 A
 .I curses
@@ -197,20 +231,23 @@ addressed by row and column coordinates
 .RI ( y ,
 .IR x ),
 with the upper left corner as (0, 0).
-A window called \fB\%stdscr\fP,
+A window called
+.BR \%stdscr ,
 the same size as the terminal screen,
 is always available.
 Create others with \fB\%newwin\fP(3X).
 .PP
 A
 .I curses
-library does not manage overlapping windows.
-(See \fBpanel\fP(3X) if you desire this.)
-You can either use \fB\%stdscr\fP to manage one screen-filling window,
+library does not manage overlapping windows
+(but see below).
+You can either use
+.B \%stdscr
+to manage one screen-filling window,
 or tile the screen into non-overlapping windows and not use
-\fB\%stdscr\fP at all.
-Mixing the two approaches will result in unpredictable,
-and undesired,
+.B \%stdscr
+at all.
+Mixing the two approaches will result in unpredictable and undesired
 effects.
 .PP
 Functions permit manipulation of a window and the
@@ -218,45 +255,14 @@ Functions permit manipulation of a window and the
 identifying the cell within it at which the next output operation will
 occur.
 Among those,
-the most basic are \fBmove\fP(3X) and \fB\%addch\fP(3X):
+the most basic are \fB\%move\fP(3X) and \fB\%addch\fP(3X):
 these place the cursor and write a character to
 .BR \%stdscr ,
 respectively.
-As a rule,
-window-addressing functions feature names prefixed
-(or infixed,
-see below)
-with \*(``w\*('';
-these allow the user to specify a pointer to a
-.IR \%WINDOW .
-Counterparts not thus prefixed
-(or infixed)
-affect \fB\%stdscr\fP.
-Because moving the cursor prior to another operation is so common,
-.I curses
-generally also provides functions with a \*(``mv\*('' prefix as a
-convenience.
-Thus,
-the library defines all of
-\fB\%addch\fP,
-\fB\%waddch\fP,
-\fB\%mvaddch\fP,
-and
-\fB\%mvwaddch\fP.
-When both prefixes are present,
-the order of arguments is a
-.I \%WINDOW
-pointer first,
-then a
-.I y
-and
-.I x
-coordinate pair.
 .PP
-Updating the terminal screen with every
-.I curses
-call can cause unpleasant flicker or inefficient use of the
-communications channel to the device.
+Frequent changes to the terminal screen can cause unpleasant flicker or
+inefficient use of the communication channel to the device,
+so the library does not generally update it automatically.
 Therefore,
 after using
 .I curses
@@ -264,7 +270,7 @@ functions to accumulate a set of desired updates that make sense to
 present together,
 call \fB\%refresh\fP(3X) to tell the library to make the user's screen
 look like \fBstdscr\fP.
-.I \%ncurses
+The library
 .\" X/Open Curses Issue 7 assumes some optimization will be done, but
 .\" does not mandate it in any way.
 .I optimizes
@@ -278,7 +284,9 @@ a feature of every standard
 .I curses
 implementation.
 .PP
-Special windows called \fIpads\fP may also be manipulated.
+Special windows called
+.I pads
+may also be manipulated.
 These are windows that are not constrained to the size of the terminal
 screen and whose contents need not be completely displayed.
 See \fB\%curs_pad\fP(3X).
@@ -291,12 +299,10 @@ or in color on terminals that support such display enhancements.
 See \fB\%curs_attr\fP(3X).
 .PP
 .I curses
-predefines constants for a small set of line-drawing and other graphics
+predefines constants for a small set of forms-drawing graphics
 corresponding to the DEC Alternate Character Set (ACS),
 a feature of VT100 and other terminals.
-See
-\fB\%waddch\fP(3X) and
-\fB\%wadd_wch\fP(3X).
+See \fB\%waddch\fP(3X).
 .PP
 .I curses
 is implemented using the operating system's terminal driver;
@@ -317,7 +323,13 @@ appears as a control character or a multibyte
 translates these into unique
 .I "key codes."
 See \fB\%getch\fP(3X).
-.SS "Effects of GUIs and Environment Variables"
+.PP
+.I \%ncurses
+provides reimplementations of the SVr4 \fBpanel\fP(3X), \fBform\fP(3X),
+and \fBmenu\fP(3X) libraries to ease construction of user interfaces
+with
+.IR curses .
+.SS "Initialization"
 The selection of an appropriate value of
 .I TERM
 in the process environment is essential to correct
@@ -330,7 +342,20 @@ A well-configured system selects a correct
 value automatically;
 \fB\%tset\fP(1) may assist with troubleshooting exotic situations.
 .PP
-If the environment variables \fILINES\fP and \fI\%COLUMNS\fP are set,
+If you change the terminal type,
+export the
+.I TERM
+environment variable in the shell,
+then run \fB\%tset\fP(1) or the
+.RB \*(`` "@TPUT@ init" \*(''
+command.
+See subsection \*(``Tabs and Initialization\*('' of \fB\%terminfo\fP(5).
+.PP
+If the environment variables
+.I \%LINES
+and
+.I \%COLUMNS
+are set,
 or if the
 .I curses
 program is executing in a graphical windowing environment,
@@ -341,23 +366,35 @@ An
 extension supports resizable terminals;
 see \fB\%wresize\fP(3X).
 .PP
-If the environment variable \fI\%TERMINFO\fP is defined,
+If the environment variable
+.I \%TERMINFO
+is defined,
 a
 .I curses
 program checks first for a terminal type description in the location it
 identifies.
 .I \%TERMINFO
 is useful for developing experimental type descriptions or when write
-permission to \fI\*d\fP is not available.
+permission to
+.I \%\*d
+is not available.
 .PP
 See section \*(``ENVIRONMENT\*('' below.
 .SS "Naming Conventions"
-Many
 .I curses
-functions have two or more versions.
-Those prefixed with \*(``w\*('' require a window argument.
+offers many functions in variant forms using a regular set of
+alternatives to the name of an elemental one.
+Those prefixed with \*(``w\*('' require a
+.I \%WINDOW
+pointer argument;
+those with a \*(``mv\*('' prefix first perform cursor movement using
+\fB\%wmove\fP(3X);
+a \*(``mvw\*('' prefix indicates both.
+The \*(``w\*('' function is typically the elemental one;
+the removal of this prefix usually indicates operation on
+.BR \%stdscr .
+.PP
 Four functions prefixed with \*(``p\*('' require a pad argument.
-Those without a prefix generally operate on \fB\%stdscr\fP.
 .PP
 In function synopses,
 .I \%ncurses
@@ -367,8 +404,8 @@ man pages apply the following names to parameters.
 center;
 Li L.
 bf	\fIbool\fP (\fBTRUE\fP or \fBFALSE\fP)
-win	pointer to \fIWINDOW\fP
-pad	pointer to \fIWINDOW\fP that is a pad
+win	pointer to a \fIWINDOW\fP
+pad	pointer to a \fIWINDOW\fP that is a pad
 .TE
 .SS "Wide and Non-wide Character Configurations"
 This manual page describes functions that appear in any configuration
@@ -416,7 +453,7 @@ characters.
 corresponds to the non-wide configuration's
 .IR \%chtype .
 It always a structure type,
-because it stores more data than fits into an integral type.
+because it stores more data than fit into a standard scalar type.
 A character code may not be representable as a
 .IR \%char ,
 and moreover more than one character may occupy a cell
@@ -436,10 +473,10 @@ Each cell of a
 is stored as a
 .IR \%cchar_t .
 .PP
-The \fB\%setcchar\fP(3X) and \fB\%getcchar\fP(3X)
-functions store and retrieve the data from a
+\fB\%setcchar\fP(3X) and \fB\%getcchar\fP(3X)
+store and retrieve
 .I \%cchar_t
-structure.
+data.
 The wide library API of
 .I \%ncurses
 depends on two data types standardized by ISO C95.
@@ -482,13 +519,19 @@ where a non-wide function name contains \*(``ch\*('' or \*(``str\*('',
 prefix it with \*(``_w\*('' to obtain the wide counterpart.
 For example,
 \fB\%waddch\fP becomes \fB\%wadd_wch\fP.
+(Exceptions that add only \*(``w\*('' comprise
+.BR \%addwstr ,
+.BR \%inwstr ,
+and their variants.)
 .IP
 This convention is inapplicable to some non-wide function names,
 so other transformations are used for the wide configuration:
-in the window background management functions,
-\*(``bkgd\*('' becomes \*(``bkgrnd\*('';
+the window background management function \*(``bkgd\*('' becomes
+\*(``bkgrnd\*('';
 the window border-drawing and -clearing functions are suffixed with
-\*(``_set\*(''.
+\*(``_set\*('';
+and character attribute manipulation functions like
+\*(``attron\*('' become \*(``attr_on\*(''.
 .\"
 .SS "Function Name Index"
 The following table lists the
@@ -497,7 +540,7 @@ functions provided in the non-wide and wide APIs and the corresponding
 man pages that describe them.
 Those flagged with \*(``*\*(''
 are
-.IR \%ncurses -specific,
+.IR \%ncurses "-specific,"
 neither described by X/Open Curses nor present in SVr4.
 .PP
 .TS
@@ -578,6 +621,7 @@ find_pair/\fBnew_pair\fP(3X)*
 flash/\fBcurs_beep\fP(3X)
 flushinp/\fBcurs_util\fP(3X)
 free_pair/\fBnew_pair\fP(3X)*
+get_escdelay/\fBcurs_threads\fP(3X)*
 get_wch/\fBcurs_get_wch\fP(3X)
 get_wstr/\fBcurs_get_wstr\fP(3X)
 getattrs/\fBcurs_attr\fP(3X)
@@ -802,6 +846,8 @@ scrl/\fBcurs_scroll\fP(3X)
 scroll/\fBcurs_scroll\fP(3X)
 scrollok/\fBcurs_outopts\fP(3X)
 set_curterm/\fBcurs_terminfo\fP(3X)
+set_escdelay/\fBcurs_threads\fP(3X)*
+set_tabsize/\fBcurs_threads\fP(3X)*
 set_term/\fBcurs_initscr\fP(3X)
 setcchar/\fBcurs_getcchar\fP(3X)
 setscrreg/\fBcurs_outopts\fP(3X)
@@ -861,7 +907,9 @@ use_default_colors/\fBdefault_colors\fP(3X)*
 use_env/\fBcurs_util\fP(3X)
 use_extended_names/\fBcurs_extend\fP(3X)*
 use_legacy_coding/\fBlegacy_coding\fP(3X)*
+use_screen/\fBcurs_threads\fP(3X)*
 use_tioctl/\fBcurs_util\fP(3X)*
+use_window/\fBcurs_threads\fP(3X)*
 vid_attr/\fBcurs_terminfo\fP(3X)
 vid_puts/\fBcurs_terminfo\fP(3X)
 vidattr/\fBcurs_terminfo\fP(3X)
@@ -958,275 +1006,401 @@ wvline/\fBcurs_border\fP(3X)
 wvline_set/\fBcurs_border_set\fP(3X)
 .TE
 .PP
-Depending on the configuration,
-additional sets of functions may be available:
-.RS 3
-.TP 5
-\fBcurs_memleaks\fP(3X) - curses memory-leak checking
-.TP 5
-\fBcurs_sp_funcs\fP(3X) - curses screen-pointer extension
-.TP 5
-\fBcurs_threads\fP(3X) - curses thread support
-.TP 5
-\fBcurs_trace\fP(3X) - curses debugging routines
-.RE
+.IR \%ncurses 's
+.I "screen-pointer extension"
+adds additional functions corresponding to many of the above,
+each with an \*(``_sp\*('' suffix;
+see \fBcurs_sp_funcs\fP(3X).
+.PP
+The availability of some extensions is configurable when
+.I \%ncurses
+is compiled;
+see sections \*(``ALTERNATE CONFIGURATIONS\*('' and \*(``EXTENSIONS\*(''
+below.
 .SH RETURN VALUE
 Unless otherwise noted,
-functions that return an integer return \fBOK\fP on success and
-\fBERR\fP on failure.
-Functions that return pointers return \fBNULL\fP on failure.
+functions that return an integer return
+.B OK
+on success and
+.B ERR
+on failure.
+Functions that return pointers return
+.B NULL
+on failure.
 Typically,
 .I \%ncurses
 treats a null pointer passed as a function parameter as a failure.
-.PP
 Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP and fail if the position is outside the window,
-or
-(for \*(``mvw\*('' functions)
-if the
-.I \%WINDOW
-pointer is null.
+\fB\%wmove\fP(3X) and fail if the position is outside the window.
 .SH ENVIRONMENT
-The following environment symbols are useful for customizing the
-runtime behavior of the \fI\%ncurses\fP library.
-The most important ones have been already discussed in detail.
+The following symbols from the process environment customize the
+runtime behavior of
+.I \%ncurses
+applications.
+The library may be configured to disregard the variables
+.IR \%TERMINFO ,
+.IR \%TERMINFO_DIRS ,
+.IR \%TERMPATH ,
+and
+.IR HOME ,
+if the user is the superuser (root),
+or the application uses \fI\%setuid\fP(2) or \fI\%setgid\fP(2).
+.SS "\fIBAUDRATE\fP"
+The debugging library checks this variable when the application has
+redirected output to a file.
+Its integral value is used for the baud rate.
+If that value is absent or invalid,
+.I \%ncurses
+uses 9600.
+This feature allows testers to construct repeatable test cases
+that take into account optimization decisions that depend on baud rate.
 .SS "\fICC\fP (command character)"
 When set,
-change the
+the
 .B \%command_character
 .RB ( \%cmdch )
 capability value of loaded
 .I \%term\%info
-entries to the value of this variable.
+entries changes to the value of this variable.
 Very few
 .I \%term\%info
 entries provide this feature.
 .PP
 Because this name is also used in development environments to represent
 the C compiler's name,
-\fI\%ncurses\fP ignores it if it does not happen to be a single
-character.
-.SS "\fIBAUDRATE\fP"
-The debugging library checks this environment variable when the application
-has redirected output to a file.
-The variable's numeric value is used for the baud rate.
-If no value is found, \fI\%ncurses\fP uses 9600.
-This allows testers to construct repeatable test-cases
-that take into account costs that depend on baud rate.
+.I \%ncurses
+ignores its value if it is not one character in length.
 .SS "\fICOLUMNS\fP"
-Specify the width of the screen in characters.
+This variable specifies the width of the screen in characters.
 Applications running in a windowing environment usually are able to
 obtain the width of the window in which they are executing.
-If neither the \fI\%COLUMNS\fP value
-nor the terminal's screen size is available,
-\fI\%ncurses\fP uses the size which may be specified in the terminfo
-database
-(i.e., the \fBcols\fP capability).
+If
+.I \%COLUMNS
+is not defined and the terminal's screen size is not available from the
+terminal driver,
+.I \%ncurses
+uses the size specified by the
+.B \%columns
+.RB ( \%cols )
+capability of the terminal type's entry in the
+.I \%term\%info
+database,
+if any.
 .PP
-It is important that your application use a correct size for the screen.
-This is not always possible because your application may be
-running on a host which does not honor NAWS (Negotiations About Window
-Size), or because you are temporarily running as another user.
-However,
-setting \fI\%COLUMNS\fP and/or \fILINES\fP overrides the library's use
-of the screen size obtained from the operating system.
+It is important that your application use the correct screen size.
+Automatic detection thereof is not always possible because an
+application may be running on a host that does not honor NAWS
+(Negotiations About Window Size)
+or as a different user ID than the owner of the terminal device file.
+Setting
+.I \%COLUMNS
+and/or
+.I \%LINES
+overrides the library's use of the screen size obtained from the
+operating system.
 .PP
-Either \fI\%COLUMNS\fP or \fILINES\fP symbols may be specified
-independently.
-This is mainly useful to circumvent legacy misfeatures of terminal descriptions,
-e.g., xterm which commonly specifies a 65 line screen.
-For best results, \fBlines\fP and \fBcols\fP should not be specified in
-a terminal description for terminals which are run as emulations.
+The
+.I \%COLUMNS
+and
+.I \%LINES
+variables may be specified independently.
+This property is useful to circumvent misfeatures of legacy terminal
+type descriptions;
+\fI\%xterm\fP(1) descriptions specifying 65 lines were once notorious.
+For best results,
+avoid specifying
+.B cols
+and
+.B lines
+capability codes in
+.I \%term\%info
+descriptions of terminal emulators.
 .PP
-Use the \fBuse_env\fP function to disable all use of external environment
-(but not including system calls) to determine the screen size.
-Use the \fBuse_tioctl\fP function to update \fI\%COLUMNS\fP or
-\fILINES\fP to match the screen size obtained from system calls or the
-terminal database.
+\fBuse_env\fP(3X) can disable use of the process environment
+in determining the screen size.
+\fBuse_tioctl\fP(3X) can update
+.I \%COLUMNS
+and
+.I \%LINES
+to match the screen size obtained from system calls or the terminal
+database.
 .SS "\fIESCDELAY\fP"
-Specifies the total time,
-in milliseconds,
-for which \fI\%ncurses\fP will await a character sequence,
-e.g.,
-a function key.
-The default value, 1000 milliseconds, is enough for most uses.
-However, it is made a variable to accommodate unusual applications.
+For
+.I curses
+to distinguish the ESC character resulting from a user's press of the
+\*(``Escape\*('' key on the input device from one beginning an
+.I "escape sequence"
+(as commonly produced by function keys),
+it waits after receiving the escape character to see if further
+characters are available on the input stream within a short interval.
+A global variable
+.B \%ESCDELAY
+stores this interval in milliseconds.
+The default value of 1000
+(one second)
+is adequate for most uses.
+This environment variable overrides it.
 .PP
 The most common instance where you may wish to change this value
-is to work with slow hosts, e.g., running on a network.
-If the host cannot read characters rapidly enough, it will have the same
-effect as if the terminal did not send characters rapidly enough.
-The library will still see a timeout.
+is to work with a remote host over a slow communication channel.
+If the host running a
+.I curses
+application does not receive the characters of an escape sequence in a
+timely manner,
+the library can interpret them as multiple key stroke events.
 .PP
-Note that xterm mouse events are built up from character sequences
-received from the xterm.
-If your application makes heavy use of multiple-clicking, you may
-wish to lengthen this default value because the timeout applies
-to the composed multi-click event as well as the individual clicks.
+\fI\%xterm\fP(1) mouse events are a form of escape sequence;
+therefore,
+if your application makes heavy use of multiple-clicking,
+you may wish to lengthen the default value because the delay applies
+to the composite multi-click event as well as the individual clicks.
 .PP
-In addition to the environment variable,
-this implementation provides a global variable with the same name.
-Portable applications should not rely upon the presence of \fB\%ESCDELAY\fP
+Portable applications should not rely upon the presence of
+.B \%ESCDELAY
 in either form,
 but setting the environment variable rather than the global variable
 does not create problems when compiling an application.
+.PP
+If \fB\%keypad\fP(3X) is disabled for the
+.I curses
+window receiving input,
+a program must disambiguate escape sequences itself.
 .SS "\fIHOME\fP"
-Tells \fI\%ncurses\fP where your home directory is.
-That is where it may read and write auxiliary terminal descriptions:
-.PP
-.RS 4
-.EX
-$HOME/.termcap
-$HOME/.terminfo
-.EE
-.RE
+.I \%ncurses
+may read and write auxiliary terminal descriptions in
+.I \%.termcap
+and
+.I \%.terminfo
+files in the user's home directory.
 .SS "\fILINES\fP"
-Like \fI\%COLUMNS\fP, specify the height of the screen in characters.
-See \fI\%COLUMNS\fP for a detailed description.
+This counterpart to
+.I \%COLUMNS
+specifies the height of the screen in characters.
+The corresponding
+.I \%term\%info
+capability and code is
+.BR \%lines .
+See the description of the
+.I \%COLUMNS
+variable above.
 .SS "\fIMOUSE_BUTTONS_123\fP"
-This applies only to the OS/2 EMX port.
-It specifies the order of buttons on the mouse.
-OS/2 numbers a 3-button mouse inconsistently from other
-platforms:
-.PP
-.RS 4
-.EX
-1 = left
-2 = right
-3 = middle.
-.EE
-.RE
-.PP
-This variable lets you customize the mouse.
-The variable must be three numeric digits 1\-3 in any order, e.g., 123 or 321.
-If it is not specified, \fI\%ncurses\fP uses 132.
+(OS/2 EMX port only)
+OS/2 numbers a three-button mouse inconsistently with other platforms,
+such that 1 is the left button,
+2 the right,
+and 3 the middle.
+This variable customizes the mouse button numbering.
+Its value must be three digits 1\-3 in any order.
+By default,
+.I \%ncurses
+assumes a numbering of \*(``132\*(''.
 .SS "\fINCURSES_ASSUMED_COLORS\fP"
-Override the compiled-in assumption that the
-terminal's default colors are white-on-black
-(see \fBdefault_colors\fP(3X)).
-You may set the foreground and background color values with this environment
-variable by proving a 2-element list: foreground,background.
-For example, to tell \fI\%ncurses\fP to not assume anything
-about the colors, set this to "\-1,\-1".
-To make it green-on-black, set it to "2,0".
-Any positive value from zero to the terminfo \fBmax_colors\fP value is allowed.
+If set,
+this variable overrides the
+.I \%ncurses
+library's compiled-in assumption that the terminal's default colors are
+white on black;
+see \fB\%default_colors\fP(3X).
+Set the foreground and background color values with this environment
+variable by assigning it two integer values separated by a comma,
+indicating foregound and background color numbers,
+respectively.
+.PP
+For example,
+to tell
+.I \%ncurses
+not to assume anything about the colors,
+use a value of \*(``\-1,\-1\*(''.
+To make the default color scheme green on black,
+use \*(``2,0\*(''.
+.I \%ncurses
+accepts integral values from \-1 up to the value of the
+.I \%term\%info
+.B \%max_colors
+.RB ( colors )
+capability.
 .SS "\fINCURSES_CONSOLE2\fP"
-This applies only to the MinGW port of \fI\%ncurses\fP.
-.PP
-The \fBConsole2\fP program's handling of the Microsoft Console API call
-\fBCreateConsoleScreenBuffer\fP is defective.
-Applications which use this will hang.
-However, it is possible to simulate the action of this call by
-mapping coordinates,
+(MinGW port only)
+The
+.I \%Console2
+.\" https://www.hanselman.com/blog/console2-a-better-windows-command-prompt
+program defectively handles the Microsoft Console API call
+.IR \%Create\%Console\%Screen\%Buffer .
+Applications that use it will hang.
+However,
+it is possible to simulate the action of this call by mapping
+coordinates,
 explicitly saving and restoring the original screen contents.
-Setting the environment variable \fBNCGDB\fP has the same effect.
+Setting the environment variable
+.I \%NCGDB
+has the same effect.
 .SS "\fINCURSES_GPM_TERMS\fP"
-This applies only to \fI\%ncurses\fP configured to use the GPM
-interface.
-.PP
-If present,
-the environment variable is a list of one or more terminal names
-against which the \fITERM\fP environment variable is matched.
-Setting it to an empty value disables the GPM interface;
-using the built-in support for xterm, etc.
-.PP
-If the environment variable is absent,
-\fI\%ncurses\fP will attempt to open GPM if \fITERM\fP contains
-\*(``linux\*(''.
+(Linux only)
+When
+.I \%ncurses
+is configured to use the GPM interface,
+this variable may list one or more terminal names
+against which the
+.I TERM
+variable
+(see below)
+is matched.
+An empty value disables the GPM interface,
+using
+.IR \%ncurses 's
+built-in support for \fIxterm\fP(1) mouse protocols instead.
+If the variable is absent,
+.I \%ncurses
+attempts to open GPM if
+.I TERM
+contains \*(``linux\*(''.
 .SS "\fINCURSES_NO_HARD_TABS\fP"
-\fI\%ncurses\fP may use tabs as part of cursor movement optimization.
+.I \%ncurses
+may use tab characters in cursor movement optimization.
 In some cases,
-your terminal driver may not handle these properly.
+your terminal driver may not handle them properly.
 Set this environment variable to any value to disable the feature.
-You can also adjust your \fBstty\fP(1) settings to avoid the problem.
+You can also adjust your \fI\%stty\fP(1) settings to avoid the problem.
 .SS "\fINCURSES_NO_MAGIC_COOKIE\fP"
-Some terminals use a magic-cookie feature which requires special handling
-to make highlighting and other video attributes display properly.
-You can suppress the highlighting entirely for these terminals by
-setting this environment variable to any value.
+Many terminals store video attributes as a property of a character cell,
+as
+.I curses
+does.
+Historically,
+some recorded changes in video attributes as data that logically
+.I occupies
+character cells on the display,
+switching attributes on or off,
+similarly to tags in a markup language;
+these are termed \*(``magic cookies\*('',
+and must be subsequently overprinted.
+If the
+.I \%term\%info
+entry for your terminal type does not adequately describe its handling
+of magic cookies,
+set this variable to any value to instruct
+.I \%ncurses
+to disable attributes entirely.
 .SS "\fINCURSES_NO_PADDING\fP"
-Most of the terminal descriptions in the terminfo database are written
-for real \*(``hardware\*('' terminals.
-Many people use terminal emulators
-which run in a windowing environment and use curses-based applications.
-Terminal emulators can duplicate
-all of the important aspects of a hardware terminal, but they do not
-have the same limitations.
-The chief limitation of a hardware terminal from the standpoint
-of your application is the management of dataflow, i.e., timing.
+Most terminal type descriptions in the
+.I \%term\%info
+database detail hardware devices.
+Many people use
+.IR curses -based
+applications in terminal emulator programs that run in a windowing
+environment.
+These programs can duplicate all of the important features of a hardware
+terminal,
+but often lack their limitations.
+Chief among these absent drawbacks is the problem of data flow
+management;
+that is,
+limiting the speed of communication to what the hardware could handle.
 Unless a hardware terminal is interfaced into a terminal concentrator
 (which does flow control),
-it (or your application) must manage dataflow, preventing overruns.
-The cheapest solution (no hardware cost)
-is for your program to do this by pausing after
-operations that the terminal does slowly, such as clearing the display.
+an application must manage flow control itself to prevent overruns and
+data loss.
 .PP
-As a result, many terminal descriptions (including the vt100)
-have delay times embedded.
-You may wish to use these descriptions,
-but not want to pay the performance penalty.
-.PP
-Set the \fI\%NCURSES_NO_PADDING\fP environment variable
-to disable all but mandatory padding.
-Mandatory padding is used as a part of special control
-sequences such as \fBflash\fP.
+A solution that comes at no hardware cost is for an application to pause
+after directing a terminal to execute an operation that it performs
+slowly,
+such as clearing the display.
+Many terminal type descriptions,
+including that for the VT100,
+embed delay specifications in capabilities.
+You may wish to use these temrinal descriptions without paying the
+performance penalty.
+Set
+.I \%NCURSES_NO_PADDING
+to any value to disable all but mandatory padding.
+Mandatory padding is used by such terminal capabilities as
+.B \%flash_screen
+.RB ( flash ).
 .SS "\fINCURSES_NO_SETBUF\fP"
-This setting is obsolete.
-Before changes
-.RS 3
-.bP
-started with 5.9 patch 20120825
-and
-.bP
-continued
-though 5.9 patch 20130126
-.RE
-.PP
-\fI\%ncurses\fP enabled buffered output during terminal initialization.
-This was done (as in SVr4 curses) for performance reasons.
-For testing purposes, both of \fI\%ncurses\fP and certain applications,
+(Obsolete)
+Prior to internal changes developed in
+.I \%ncurses
+5.9
+(patches 20120825 through 20130126),
+the library used \fI\%setbuf\fP(3) to enable fully buffered output when
+initializing the terminal.
+This was done,
+as in SVr4
+.IR curses ,
+to increase performance.
+For testing purposes,
+both of
+.I \%ncurses
+and of certain applications,
 this feature was made optional.
-Setting the \fI\%NCURSES_NO_SETBUF\fP variable
-disabled output buffering, leaving the output in the original (usually
-line buffered) mode.
+Setting this variable disabled output buffering,
+leaving the output stream in the original
+(usually line-buffered)
+mode.
 .PP
-In the current implementation,
-\fI\%ncurses\fP performs its own buffering and does not require this
-workaround.
-It does not modify the buffering of the standard output.
+Nowadays,
+.I \%ncurses
+performs its own buffering and does not require this workaround;
+it does not modify the buffering of the standard output stream.
+This approach makes signal handling,
+as for interrupts,
+more robust.
+A drawback is that certain unconventional programs mixed
+\fI\%stdio\fP(3) calls with
+.I \%ncurses
+calls and (usually)
+got the behavior they expected.
+This is no longer the case;
+.I \%ncurses
+does not write to the standard output file descriptor through a
+.IR stdio -buffered
+stream.
 .PP
-The reason for the change was to make the behavior for interrupts and
-other signals more robust.
-One drawback is that certain nonconventional programs would mix
-ordinary \fI\%stdio\fP(3) calls with \fI\%ncurses\fP calls and (usually)
-work.
-This is no longer possible since \fI\%ncurses\fP is not using
-the buffered standard output but its own output (to the same file descriptor).
-As a special case, the low-level calls such as \fBputp\fP still use the
-standard output.
-But high-level curses calls do not.
+As a special case,
+low-level API calls such as \fB\%putp\fP(3X) still use the
+standard output stream.
+High-level
+.I curses
+calls such as \fB\%printw\fP(3X) do not.
 .SS "\fINCURSES_NO_UTF8_ACS\fP"
-During initialization, the \fI\%ncurses\fP library
-checks for special cases where VT100 line-drawing (and the corresponding
-alternate character set capabilities) described in the terminfo are known
-to be missing.
-Specifically, when running in a UTF\-8 locale,
-the Linux console emulator and the GNU screen program ignore these.
-\fI\%ncurses checks the \fITERM\fP environment variable for these.
-For other special cases, you should set this environment variable.
-Doing this tells \fI\%ncurses\fP to use Unicode values which correspond
-to the VT100 line-drawing glyphs.
-That works for the special cases cited,
-and is likely to work for terminal emulators.
+At initialization,
+.I \%ncurses
+inspects the
+.I TERM
+environment variable for special cases where VT100 forms-drawing
+characters
+(and the corresponding alternate character set
+.I \%term\%info
+capabilities)
+are known to be unsupported by terminal types that otherwise claim VT100
+compatibility.
+Specifically,
+when running in a UTF-8 locale,
+the Linux virtual console device and the GNU \fI\%screen\fP(1)
+program ignore them.
+Set this variable to a nonzero value to instruct
+.I \%ncurses
+that the terminal's ACS support is broken;
+the library then outputs Unicode code points that correspond to the
+forms-drawing
+characters.
+Set it to zero
+(or a non-integer)
+to disable the special check for terminal type names matching
+\*(``linux\*('' or \*(``screen\*('',
+directing
+.I \%ncurses
+to assume that the ACS feature works if the terminal type description
+advertises it.
 .PP
-When setting this variable, you should set it to a nonzero value.
-Setting it to zero (or to a nonnumber)
-disables the special check for \*(``linux\*('' and \*(``screen\*(''.
-.PP
-As an alternative to the environment variable,
-\fI\%ncurses\fP checks for an extended terminfo capability \fBU8\fP.
-This is a numeric capability which can be compiled using \fB@TIC@\ \-x\fP.
-For example
+As an alternative to use of this variable,
+.I \%ncurses
+checks for an extended
+.I \%term\%info
+numeric capability \fBU8\fP
+that can be compiled using
+.RB \*(`` "@TIC@ \-x" \*(''.
+Examples follow.
 .PP
 .RS 3
 .EX
@@ -1241,23 +1415,18 @@ xterm\-utf8|xterm relying on UTF\-8 line\-graphics,
 .EE
 .RE
 .PP
-The name \*(``U8\*('' is chosen to be two characters,
-to permit it to be used by applications that use \fI\%ncurses\fP'
-termcap interface.
+The two-character name \*(``U8\*('' was chosen to permit its use via
+.IR \%ncurses 's
+.I termcap
+interface.
 .SS "\fINCURSES_TRACE\fP"
-During initialization, the \fI\%ncurses\fP debugging library
-checks the \fI\%NCURSES_TRACE\fP environment variable.
-If it is defined,
-to a numeric value,
-\fI\%ncurses\fP calls the \fBtrace\fP function,
-using that value as the argument.
-.PP
-The argument values, which are defined in \fBcurses.h\fP, provide several
-types of information.
-When running with traces enabled, your application will write the
-file \fBtrace\fP to the current directory.
-.PP
-See \fBcurs_trace\fP(3X) for more information.
+At initialization,
+.I \%ncurses
+(in its debugging configuration)
+checks for this variable's presence.
+If defined with an integral value,
+the library calls \fB\%curses_trace\fP(3X) with that value as the
+argument.
 .SS "\fITERM\fP"
 Denotes your terminal type.
 Each terminal type is distinct, though many are similar.
@@ -1396,16 +1565,6 @@ If the \fI\%TERMPATH\fP environment variable is not set,
 .RE
 .PP
 in that order.
-.PP
-The library may be configured to disregard the following variables when the
-current user is the superuser (root), or if the application uses setuid or
-setgid permissions:
-.PP
-.RS 4
-.EX
-$TERMINFO, $TERMINFO_DIRS, $TERMPATH, as well as $HOME.
-.EE
-.RE
 .SH "ALTERNATE CONFIGURATIONS"
 Many different
 .I \%ncurses
@@ -1650,13 +1809,22 @@ supported.
 Some extensions are only available if
 .I \%ncurses
 is compiled to support them;
-see section \*(``ALTERNATE CONFIGURATIONS\*('' above.
+section \*(``ALTERNATE CONFIGURATIONS\*('' describes how.
 .bP
 Rudimentary support for multi-threaded applications may be available;
 see \fBcurs_threads\fP(3X).
 .bP
 Functions that ease the management of multiple screens can be exposed;
 see \fBcurs_sp_funcs\fP(3X).
+.bP
+To aid applications to debug their memory usage,
+.I ncurses
+optionally offers functions to more aggressively free memory it
+dynamically allocates itself;
+see \fBcurs_memleaks\fP(3X).
+.bP
+The library facilitates auditing and troubleshooting of its behavior;
+see \fBcurs_trace\fP(3X).
 .bP
 The compiler option
 .B \%\-DUSE_GETCAP

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.83 2024/03/23 20:38:57 tom Exp $
-.TH curs_getch 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.85 2024/04/13 22:18:51 tom Exp $
+.TH curs_getch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -227,8 +227,8 @@ a user of a
 .I curses
 application may experience a delay after pressing ESC while
 .I curses
-disambiguates the input.
-See section \*(``EXTENSIONS\*('' below.
+disambiguates the input;
+see section \*(``EXTENSIONS\*('' below.
 If the window is in \*(``no time-out\*('' mode,
 the timer does not expire;
 it is an infinite
@@ -672,6 +672,11 @@ NetBSD
 had added them along with
 .BR \%KEY_MOUSE .
 .SH SEE ALSO
+\fB\%curs_get_wch\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),
 \fB\%curs_inopts\fP(3X),
@@ -682,11 +687,6 @@ had added them along with
 \fB\%curs_variables\fP(3X),
 \fB\%resizeterm\fP(3X),
 \fB\%ascii\fP(7)
-.PP
-\fB\%curs_get_wch\fP(3X) describes comparable functions of the
-.I \%ncurses
-library in its wide-character configuration
-.RI ( \%ncursesw ).
 .PP
 ECMA-6 \*(``7-bit coded Character Set\*(''
 \%<https://\*:ecma\-international\*:.org/\

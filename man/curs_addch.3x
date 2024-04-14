@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.81 2024/03/23 20:38:57 tom Exp $
-.TH curs_addch 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.83 2024/04/13 22:23:35 tom Exp $
+.TH curs_addch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -111,7 +111,9 @@ of the window.
 .bP
 Line feed does a \fB\%clrtoeol\fP(3X),
 then moves the cursor to the left margin on the next line of the window,
-scrolling the window if the cursor was already on the last line.
+and if \fB\%scrollok\fP(3X) is enabled for
+.IR win ,
+scrolls the window if the cursor was already on the last line.
 .bP
 Tab advances the cursor to the next tab stop
 (possibly on the next line);
@@ -126,41 +128,20 @@ If
 is any other nonprintable character,
 it is drawn in printable form,
 using the same convention as \fB\%unctrl\fP(3X).
-.bP
-.B \%waddch
-displays control characters in
-.BI \*^ X
-notation.
-.bP
-Character codes above 127 are either meta characters
-(if the screen has not been initialized,
-or if \fB\%meta\fP(3X) has been called with a
-.B TRUE
-.I bf
-parameter)
-that render in
-.BI M\- X
-notation,
-or they display as themselves.
-In the latter case,
-the values may not be printable;
-.\" XXX: The following claim could be clearer.
-this follows the X/Open specification.
 .PP
 Calling \fB\%winch\fP(3X) on the location of a nonprintable character
 does not return the character itself,
 but its \fB\%unctrl\fP(3X) representation.
 .PP
-Video attributes can be combined with a character argument passed to
-.B \%waddch
-by logical-ORing them into the character.
-(Thus,
-text,
-including attributes,
-can be copied from one place to another using \fB\%winch\fP(3X) and
+.I ch
+may contain rendering and/or color attributes,
+and others can be combined with the parameter
+by logically \*(``or\*(''ing with it.
+(A character with its attributes can be copied from place to place
+using \fB\%winch\fP(3X) and
 .BR \%waddch .)
 See \fB\%curs_attr\fP(3X) for values of predefined video attribute
-constants that can be usefully OR'ed with characters.
+constants that can be usefully \*(``or\*(''ed with characters.
 .SS "Echoing Characters"
 .B \%echochar
 and
@@ -262,7 +243,6 @@ See section \*(``PORTABILITY\*('' below regarding the use of
 .B \%waddch
 with multibyte characters.
 .PP
-If \fB\%scrollok\fP(3X) is not enabled,
 .B \%waddch
 can successfully write a character at the bottom right location of the
 window.
@@ -270,6 +250,7 @@ However,
 .I \%ncurses
 returns
 .B ERR
+if \fB\%scrollok\fP(3X) is not enabled in that event,
 because it is not possible to wrap to a new line.
 .PP
 Functions with a \*(``mv\*('' prefix first perform cursor movement using
@@ -370,7 +351,9 @@ many publicly available
 .I \%term\%info
 entries include
 .B \%acsc
-strings in which their key characters (pryz{|}) are embedded,
+strings in which their key characters
+.BR ( pryz{|} )
+are embedded,
 and a second-hand list of their character descriptions has come to
 light.
 The
@@ -422,9 +405,8 @@ In
 .IR \%ncurses ,
 .I \%chtype
 holds an eight-bit character.
-But
-.I \%ncurses
-allows a multibyte character to be passed in a succession of calls to
+But the library allows a multibyte character to be passed in a
+succession of calls to
 .BR \%waddch .
 Other implementations do not;
 a
@@ -442,12 +424,12 @@ and checks whether the latest call continues a multibyte sequence.
 When a character is
 .IR complete ,
 .I \%ncurses
-displays the character and advances the window's current location.
+displays the character and advances the cursor.
 .PP
 If the calling application interrupts the succession of bytes in
-a multibyte character sequence by moving the current location
-(for example,
-with \fB\%wmove\fP(3X)),
+a multibyte character sequence by changing the current location\(emfor
+example,
+with \fB\%wmove\fP(3X)\(em\c
 .I \%ncurses
 discards the incomplete character.
 .PP
@@ -473,6 +455,11 @@ variable,
 but X/Open Curses does not specify it
 (see \fB\%curs_variables\fP(3X)).
 .SH SEE ALSO
+\fB\%curs_add_wch\fP(3X) describes comparable functions of the
+.I \%ncurses
+library in its wide-character configuration
+.RI ( \%ncursesw ).
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_addchstr\fP(3X),
 \fB\%curs_addstr\fP(3X),
@@ -483,8 +470,3 @@ but X/Open Curses does not specify it
 \fB\%curs_refresh\fP(3X),
 \fB\%curs_variables\fP(3X),
 \fB\%putchar\fP(3)
-.PP
-\fB\%curs_add_wch\fP(3X) describes comparable functions of the
-.I \%ncurses
-library in its wide-character configuration
-.RI ( \%ncursesw ).

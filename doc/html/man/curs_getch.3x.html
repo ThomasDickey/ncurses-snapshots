@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.83 2024/03/23 20:38:57 tom Exp @
+  * @Id: curs_getch.3x,v 1.85 2024/04/13 22:18:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2024-03-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-04-13 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -141,10 +141,10 @@
        otherwise, it returns the function key code corresponding to the unique
        sequence defined by the terminal.  Consequently, a  user  of  a  <EM>curses</EM>
        application  may  experience  a  delay  after pressing ESC while <EM>curses</EM>
-       disambiguates the input.   See  section  "EXTENSIONS"  below.   If  the
-       window  is  in  "no time-out" mode, the timer does not expire; it is an
-       infinite (or very large) value.  See <STRONG><A HREF="notimeout.3x.html">notimeout(3x)</A></STRONG>.   Because  function
-       key  sequences usually begin with an escape character, the terminal may
+       disambiguates the input; see section "EXTENSIONS" below.  If the window
+       is  in "no time-out" mode, the timer does not expire; it is an infinite
+       (or very  large)  value.   See  <STRONG><A HREF="notimeout.3x.html">notimeout(3x)</A></STRONG>.   Because  function  key
+       sequences  usually  begin  with  an  escape character, the terminal may
        appear to hang in no time-out mode after  the  user  has  pressed  ESC.
        Generally, further typing "awakens" <EM>curses</EM>.
 
@@ -407,12 +407,12 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
-       <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>, <STRONG>ascii(7)</STRONG>
-
        <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
        in its wide-character configuration (<EM>ncursesw</EM>).
+
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
+       <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>, <STRONG>ascii(7)</STRONG>
 
        ECMA-6 "7-bit  coded  Character  Set"  &lt;https://ecma-international.org/
        publications-and-standards/standards/ecma-6/&gt;
@@ -422,7 +422,7 @@
 
 
 
-ncurses 6.4                       2024-03-23                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.4                       2024-04-13                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

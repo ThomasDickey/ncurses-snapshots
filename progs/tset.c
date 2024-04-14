@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.132 2024/03/17 00:15:54 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.134 2024/04/13 18:59:53 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -882,9 +882,7 @@ main(int argc, char **argv)
 
 		    (void) putc('\r', stderr);
 		    (void) fflush(stderr);
-		    if (isatty(my_fd)
-			&& (name = ttyname(my_fd)) != NULL
-			&& strncmp(name, "/dev/pts/", 9)) {
+		    if (IsRealTty(my_fd, name)) {
 			(void) napms(1000);	/* Settle the terminal. */
 		    }
 		}

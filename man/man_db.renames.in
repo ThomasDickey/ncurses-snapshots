@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.72 2024/03/23 18:05:08 tom Exp $
+# $Id: man_db.renames.in,v 1.73 2024/04/13 23:39:11 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -185,6 +185,7 @@ clearok.3x			clearok.3ncurses
 clrtoeol.3x			clrtoeol.3ncurses
 curs_set.3x			curs_set.3ncurses
 curscr.3x			curscr.3ncurses
+curses_trace.3x			curses_trace.3ncurses
 def_prog_mode.3x		def_prog_mode.3ncurses
 def_shell_mode.3x		def_shell_mode.3ncurses
 del_curterm.3x			del_curterm.3ncurses
@@ -229,6 +230,8 @@ nonl.3x				nonl.3ncurses
 notimeout.3x			notimeout.3ncurses
 pnoutrefresh.3x			pnoutrefresh.3ncurses
 prefresh.3x			prefresh.3ncurses
+printw.3x			printw.3ncurses
+putp.3x			putp.3ncurses
 putwin.3x			putwin.3ncurses
 raw.3x				raw.3ncurses
 refresh.3x			refresh.3ncurses
@@ -249,13 +252,17 @@ subwin.3x			subwin.3ncurses
 syncok.3x			syncok.3ncurses
 terminfo.3x			terminfo.3ncurses
 tigetstr.3x			tigetstr.3ncurses
+touchline.3x			touchline.3ncurses
+touchwin.3x			touchwin.3ncurses
 tparm.3x			tparm.3ncurses
 tputs.3x			tputs.3ncurses
+trace.3x			trace.3ncurses
 unctrl.3x			unctrl.3ncurses
 use_default_colors.3x		use_default_colors.3ncurses
 use_env.3x			use_env.3ncurses
 use_extended_names.3x		use_extended_names.3ncurses
 use_legacy_coding.3x		use_legacy_coding.3ncurses
+use_tioctl.3x			use_tioctl.3ncurses
 vidputs.3x			vidputs.3ncurses
 wadd_wch.3x			wadd_wch.3ncurses
 waddch.3x			waddch.3ncurses
