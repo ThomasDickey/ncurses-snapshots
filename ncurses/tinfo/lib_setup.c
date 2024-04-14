@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.235 2024/04/13 20:35:14 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.239 2024/04/14 17:03:40 tom Exp $")
 
 /****************************************************************************
  *
@@ -364,12 +364,25 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 static bool
 set_position(NCURSES_SP_DCLx TERMINAL *termp, int row, int col)
 {
-    bool result = FALSE;
+    bool result;
     char *actual = TIPARM_2(cursor_address, row, col);
     T((T_CALLED("set_position %d,%d)"), row, col));
-    if (NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx "set_position", actual) == OK)
-	result = TRUE;
+#if NCURSES_SP_FUNCS
+    result = (NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx "set_position",
+					 actual) == OK);
     NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+#else
+    /* This does not support padding because without sp-funcs, we have only
+     * the interface using stdio, but we are not guaranteed that Filedes
+     * is the same as fileno(stdout).
+     */
+    result = FALSE;
+    if (actual != NULL) {
+	size_t want = strlen(actual);
+	int have = (int) write(termp->Filedes, actual, want);
+	result = ((int) want == have);
+    }
+#endif
     returnBool(result);
 }
 
@@ -390,11 +403,11 @@ set_position(NCURSES_SP_DCLx TERMINAL *termp, int row, int col)
  * So we do a simple check to exclude pseudo-terminals.
  */
 static void
-_nc_check_screensize(NCURSES_SP_DCLx TERMINAL *termp, int *linep, int *colp)
+_nc_check_screensize(SCREEN *sp, TERMINAL *termp, int *linep, int *colp)
 {
     int fd = termp->Filedes;
     TTY saved;
-    const char *name;
+    const char *name = NULL;
 
     if (IsRealTty(fd, name)
 	&& VALID_STRING(cursor_address)
@@ -412,9 +425,11 @@ _nc_check_screensize(NCURSES_SP_DCLx TERMINAL *termp, int *linep, int *colp)
 	    sp->_term = termp;
 	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);
 	}
+#else
+	(void) sp;
 #endif
 
-	T(("checking screensize of %s", name));
+	T(("trying CPR (u7/u6) with %s", name));
 	alter.c_lflag &= (unsigned) ~(ECHO | ICANON | ISIG | IEXTEN);
 	alter.c_iflag &= (unsigned) ~(IXON | BRKINT | PARMRK);
 	alter.c_cc[VMIN] = 0;
@@ -430,6 +445,9 @@ _nc_check_screensize(NCURSES_SP_DCLx TERMINAL *termp, int *linep, int *colp)
 	}
 	/* restore tty modes */
 	SET_TTY(fd, &saved);
+    } else {
+	T(("NOT trying CPR with fd %d (%s): %s",
+	   fd, NonNull(name), NC_ISATTY(fd) ? "tty" : "not a tty"));
     }
 
     _nc_default_screensize(termp, linep, colp);
@@ -510,7 +528,7 @@ _nc_get_screensize(SCREEN *sp,
 #endif
 #if HAVE_SIZECHANGE
 	/* try asking the OS */
-	if (!NC_ISATTY(cur_term->Filedes)) {
+	if (NC_ISATTY(cur_term->Filedes)) {
 	    STRUCT_WINSIZE size;
 
 	    errno = 0;
@@ -561,7 +579,7 @@ _nc_get_screensize(SCREEN *sp,
 
 	    _nc_default_screensize(termp, linep, colp);
 	} else {
-	    _nc_check_screensize(NCURSES_SP_ARGx termp, linep, colp);
+	    _nc_check_screensize(sp, termp, linep, colp);
 	}
 
 	/*
@@ -577,7 +595,7 @@ _nc_get_screensize(SCREEN *sp,
 	OldNumber(termp, columns) = (short) (*colp);
 #endif
     } else {
-	_nc_check_screensize(NCURSES_SP_ARGx termp, linep, colp);
+	_nc_check_screensize(sp, termp, linep, colp);
     }
 
     T(("screen size is %dx%d", *linep, *colp));
