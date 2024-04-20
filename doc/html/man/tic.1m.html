@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tic.1m,v 1.110 2024/04/27 17:57:06 tom Exp @
+  * @Id: tic.1m,v 1.108 2024/03/16 15:35:01 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tic 1m 2024-04-27 ncurses 6.5 User commands</TITLE>
+<TITLE>tic 1m 2024-03-16 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tic 1m 2024-04-27 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tic 1m 2024-03-16 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>                          User commands                         <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>
 
@@ -256,63 +256,63 @@
               translating   from   terminfo   to    termcap,    untranslatable
               capabilities are commented-out.
 
-       <STRONG>-U</STRONG>     tells  <STRONG>tic</STRONG> to not post-process the data after parsing the source
-              file.  Normally, it infers data which  is  commonly  missing  in
-              older terminfo data, or in termcaps.
+       <STRONG>-U</STRONG>   tells  <STRONG>tic</STRONG>  to  not post-process the data after parsing the source
+            file.  Normally, it infers data which is commonly missing in older
+            terminfo data, or in termcaps.
 
-       <STRONG>-V</STRONG>     reports  the  version of <EM>ncurses</EM> which was used in this program,
-              and exits.
+       <STRONG>-V</STRONG>   reports the version of <EM>ncurses</EM> which was used in this program, and
+            exits.
 
-       <STRONG>-v</STRONG><EM>n</EM>    specifies that (verbose) output be  written  to  standard  error
-              trace information showing <STRONG>tic</STRONG>'s progress.
+       <STRONG>-v</STRONG><EM>n</EM>  specifies that (verbose) output be written to standard error trace
+            information showing <STRONG>tic</STRONG>'s progress.
 
-              The  optional  parameter  <EM>n</EM>  is a number from 1 to 9, inclusive,
-              indicating the desired level of detail of information.
+            The  optional  parameter  <EM>n</EM>  is  a  number from 1 to 9, inclusive,
+            indicating the desired level of detail of information.
 
-              <STRONG>o</STRONG>   If <EM>ncurses</EM> is built without tracing  support,  the  optional
-                  parameter is ignored.
+            <STRONG>o</STRONG>   If <EM>ncurses</EM> is built  without  tracing  support,  the  optional
+                parameter is ignored.
 
-              <STRONG>o</STRONG>   If <EM>n</EM> is omitted, the default level is 1.
+            <STRONG>o</STRONG>   If <EM>n</EM> is omitted, the default level is 1.
 
-              <STRONG>o</STRONG>   If <EM>n</EM> is specified and greater than 1, the level of detail is
-                  increased,  and  the  output  is   written   (with   tracing
-                  information) to the "trace" file.
+            <STRONG>o</STRONG>   If  <EM>n</EM>  is specified and greater than 1, the level of detail is
+                increased,  and  the   output   is   written   (with   tracing
+                information) to the "trace" file.
 
-              The debug flag levels are as follows:
+            The debug flag levels are as follows:
 
-              1   Names of files created and linked
+            1   Names of files created and linked
 
-              2   Information related to the "use" facility
+            2   Information related to the "use" facility
 
-              3   Statistics from the hashing algorithm
+            3   Statistics from the hashing algorithm
 
-              4   Details of extended capabilities
+            4   Details of extended capabilities
 
-              5   (unused)
+            5   (unused)
 
-              6   (unused)
+            6   (unused)
 
-              7   Entries into the string-table
+            7   Entries into the string-table
 
-              8   List of tokens encountered by scanner
+            8   List of tokens encountered by scanner
 
-              9   All values computed in construction of the hash table
+            9   All values computed in construction of the hash table
 
-       <STRONG>-W</STRONG>     By  itself,  the  <STRONG>-w</STRONG>  option  will  not force long strings to be
-              wrapped.  Use the <STRONG>-W</STRONG> option to do this.
+       <STRONG>-W</STRONG>   By  itself,  the  <STRONG>-w</STRONG>  option  will  not  force  long strings to be
+            wrapped.  Use the <STRONG>-W</STRONG> option to do this.
 
-              If you specify both <STRONG>-f</STRONG> and <STRONG>-W</STRONG> options,  the  latter  is  ignored
-              when <STRONG>-f</STRONG> has already split the line.
+            If you specify both <STRONG>-f</STRONG> and <STRONG>-W</STRONG> options, the latter is ignored  when
+            <STRONG>-f</STRONG> has already split the line.
 
-       <STRONG>-w</STRONG><EM>n</EM>    specifies  the  width of the output.  The parameter is optional.
-              If it is omitted, it defaults to 60.
+       <STRONG>-w</STRONG><EM>n</EM>  specifies the width of the output.  The parameter is optional.  If
+            it is omitted, it defaults to 60.
 
-       <STRONG>-x</STRONG>     Treat unknown capabilities as user-defined  (see  <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>).
-              That  is,  if  you  supply  a capability name which <STRONG>tic</STRONG> does not
-              recognize, it will infer its type (Boolean,  number  or  string)
-              from  the  syntax  and  make  an  extended table entry for that.
-              User-defined capability strings whose name begins with  "k"  are
-              treated as function keys.
+       <STRONG>-x</STRONG>   Treat unknown capabilities  as  user-defined  (see  <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>).
+            That  is,  if  you  supply  a  capability  name which <STRONG>tic</STRONG> does not
+            recognize, it will infer its type (Boolean, number or string) from
+            the  syntax  and  make  an  extended  table entry for that.  User-
+            defined capability strings whose name begins with "k" are  treated
+            as function keys.
 
 
 </PRE><H3><a name="h3-Parameters">Parameters</a></H3><PRE>
@@ -482,7 +482,7 @@
 
 
 
-ncurses 6.5                       2024-04-27                           <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>
+ncurses 6.4                       2024-03-16                           <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

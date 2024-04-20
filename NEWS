@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4114 2024/04/27 18:00:35 tom Exp $
+-- $Id: NEWS,v 1.4111 2024/04/20 21:37:56 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,11 +45,6 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
-
-20240427 6.5 release for upload to ftp.gnu.org
-	+ update announcement
-	+ fixes/corrections for manpages (patches by Branden Robinson).
-	+ fix redefinition of CASTxPTR, for legacy Unix.
 
 20240420
 	+ improve formatting/style of manpages (patches by Branden Robinson).
@@ -124,7 +119,7 @@ it is not possible to add this information.
 	+ use xterm+nopcfkeys, vt52-basic, dec+pp, dec+sl, vt52+arrows,
 	  hp+pfk+cr, klone+acs, klone+color, klone+sgr, ncr160wy50+pp
 	  to trim -TD
-	+ NetBSD-related fixes for x68k and wsvt25 (patch by Thomas Klausner)
+	+ NetBSD-related fixes for x68k and wsvt52 (patch by Thomas Klausner)
 
 20240120
 	+ improve formatting/style of manpages (patches by Branden Robinson).

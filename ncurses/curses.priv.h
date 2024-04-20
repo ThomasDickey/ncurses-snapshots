@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.687 2024/04/23 22:28:25 tom Exp $
+ * $Id: curses.priv.h,v 1.686 2024/04/13 18:59:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -135,7 +135,6 @@ extern int errno;
 
 #ifndef PRIxPTR
 # define PRIxPTR	"lx"
-# undef CASTxPTR
 # define CASTxPTR(n)    (long)(void*)(n)
 #endif
 

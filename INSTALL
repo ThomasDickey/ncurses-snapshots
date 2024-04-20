@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2018-2023,2024 Thomas E. Dickey                                 --
+-- Copyright 2018-2022,2023 Thomas E. Dickey                                 --
 -- Copyright 1998-2017,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.254 2024/04/27 14:21:05 tom Exp $
+-- $Id: INSTALL,v 1.253 2023/11/03 20:55:47 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1451,7 +1451,7 @@ COMPATIBILITY WITH OLDER RELEASES:
     you may encounter when building a system with different versions of
     ncurses:
 
-    6.5 (Apt 27, 2024)
+    6.5 (TBD; not stable; in development)
 	Interface changes:
 
 	+ the WINDOW structure and some related internal data types declared
@@ -1460,25 +1460,6 @@ COMPATIBILITY WITH OLDER RELEASES:
 	  from their corresponding header files have been made opqaue by
 	  default; and
 	+ support for wide characters is now enabled by default.
-
-	Added extensions:
-
-	+ is_cbreak, is_echo, is_nl, and is_raw, as well as "_sp" variants
-
-	+ tiparm_s and tiscan_s
-
-	Added internal functions (other than "_sp" variants):
-
-	+ _nc_env_access
-
-	Removed internal functions:
-
-	+ none
-
-	Modified internal functions:
-
-	+ These now pass a const parameter: _nc_delink_entry, _nc_str_copy,
-	  and _nc_trans_string
 
     6.4 (Dec 31, 2022)
 	Interface changes:

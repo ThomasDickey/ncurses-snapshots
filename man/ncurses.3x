@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.214 2024/04/27 17:55:43 tom Exp $
-.TH ncurses 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.210 2024/04/20 21:24:19 tom Exp $
+.TH ncurses 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -1325,7 +1325,7 @@ such as clearing the display.
 Many terminal type descriptions,
 including that for the VT100,
 embed delay specifications in capabilities.
-You may wish to use these terminal descriptions without paying the
+You may wish to use these temrinal descriptions without paying the
 performance penalty.
 Set
 .I \%NCURSES_NO_PADDING
@@ -1942,8 +1942,8 @@ The latter includes several additional features,
 such as wide-character and color support.
 .I \%ncurses
 intends base-level conformance with X/Open Curses,
-and supports all features of its enhanced level
-except the \fB\%untic\fP utility.
+and supports nearly all features of its enhanced level.
+.\" XXX: What's missing?  GBR counts untic(1), and that's all.
 .PP
 Differences between X/Open Curses and
 .I \%ncurses

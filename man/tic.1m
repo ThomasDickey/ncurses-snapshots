@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.110 2024/04/27 17:57:06 tom Exp $
-.TH @TIC@ 1M 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tic.1m,v 1.108 2024/03/16 15:35:01 tom Exp $
+.TH @TIC@ 1M 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -324,7 +324,7 @@ descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 tells \fB@TIC@\fP to discard commented-out capabilities.
 Normally when translating from terminfo to termcap,
 untranslatable capabilities are commented-out.
-.TP
+.TP 5
 \fB\-U\fP
 tells \fB@TIC@\fP to not post-process the data after parsing the source file.
 Normally, it infers data which is commonly missing in older terminfo data,

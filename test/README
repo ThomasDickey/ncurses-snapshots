@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2018-2023,2024 Thomas E. Dickey                                 --
+-- Copyright 2018-2022,2023 Thomas E. Dickey                                 --
 -- Copyright 1998-2017,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: README,v 1.82 2024/04/27 18:35:01 tom Exp $
+-- $Id: README,v 1.80 2023/11/25 21:17:30 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are used to test and demonstrate ncurses.
@@ -557,7 +557,7 @@ new_prescr			test: sp_tinfo
 newpad				test: ncurses padview popup_msg testcurs
 newpad_sp			lib: ncurses
 newscr				lib: ncurses
-newterm				test: demo_altkeys demo_new_pair ditto dots_mvcur extended_color filter foldkeys gdc key_names keynames redraw test_delwin test_endwin test_mouse test_setupterm test_termattrs
+newterm				test: demo_altkeys demo_new_pair ditto dots_mvcur extended_color filter foldkeys gdc key_names keynames redraw test_delwin test_endwin test_setupterm test_termattrs
 newterm_sp			-
 newwin				test: cardfile chgat clip_printw demo_defkey demo_forms demo_keyok demo_menus demo_panels ditto firstlast inch_wide inchs ins_wide insdelln inserts knight movewindow ncurses newdemo popup_msg redraw test_add_wchstr test_addchstr test_addstr test_addwstr test_delwin test_get_wstr test_getstr test_instr test_inwstr test_opaque testcurs view xmas
 newwin_sp			lib: ncurses
@@ -574,7 +574,7 @@ nonl				test: bs demo_forms dup_field hashtest move_field movewindow ncurses pad
 nonl_sp				lib: ncurses
 noqiflush			-
 noqiflush_sp			test: sp_tinfo
-noraw				test: demo_forms demo_menus dup_field move_field ncurses test_mouse testcurs
+noraw				test: demo_forms demo_menus dup_field move_field ncurses testcurs
 noraw_sp			test: sp_tinfo
 notimeout			test: ncurses test_opaque
 numcodes			test: demo_termcap test_arrays progs: dump_entry
@@ -595,7 +595,7 @@ putp_sp				test: sp_tinfo
 putwin				test: ncurses
 qiflush				-
 qiflush_sp			test: sp_tinfo
-raw				test: demo_forms dup_field move_field ncurses redraw test_mouse testcurs
+raw				test: demo_forms dup_field move_field ncurses redraw testcurs
 raw_sp				test: sp_tinfo
 redrawwin			test: combine padview redraw view
 refresh				test: blue bs color_content demo_defkey demo_forms demo_keyok demo_menus demo_panels demo_tabs dots_curses dots_mvcur dots_xcurses dup_field echochar filter firstlast form_driver_w gdc hanoi hashtest lrtest move_field movewindow ncurses pair_content picsmap savescreen tclock test_delwin test_endwin test_mouse testcurs view xmas
@@ -637,7 +637,7 @@ set_tabsize_sp			test: sp_tinfo
 set_term			lib: ncurses
 setcchar			test: back_ground combine demo_new_pair demo_panels ins_wide ncurses picsmap savescreen test_add_wchstr test_addwstr
 setscrreg			test: view
-setupterm			test: demo_terminfo dots list_keys sp_tinfo test_setupterm test_sgr test_termattrs test_tparm test_vid_puts test_vidputs progs: clear tabs tput tset
+setupterm			test: demo_terminfo dots list_keys sp_tinfo test_mouse test_setupterm test_sgr test_termattrs test_tparm test_vid_puts test_vidputs progs: clear tabs tput tset
 slk_attr			-
 slk_attr_off			-
 slk_attr_on			-
