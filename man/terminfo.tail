@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.144 2024/03/02 14:36:39 tom Exp $
+.\" $Id: terminfo.tail,v 1.148 2024/04/20 21:24:19 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -892,7 +892,7 @@ and do \fBri\fP followed by \fBdl1\fP or \fBind\fP.
 If the data scrolled
 off the bottom of the region by the \fBri\fP re-appears, then scrolling
 is non-destructive.
-System V and XSI Curses expect that \fBind\fP, \fBri\fP,
+System V and X/Open Curses expect that \fBind\fP, \fBri\fP,
 \fBindn\fP, and \fBrin\fP will simulate destructive scrolling; their
 documentation cautions you not to define \fBcsr\fP unless this is true.
 This \fBcurses\fP implementation is more liberal and will do explicit erases
@@ -914,7 +914,7 @@ or that scrolling back with \fBri\fP may bring down non-blank lines.
 .SS "Insert/Delete Character"
 There are two basic kinds of intelligent terminals with respect to
 insert/delete character which can be described using
-.I terminfo.
+.IR terminfo .
 The most common insert/delete character operations affect only the characters
 on the current line and shift characters off the end of the line rigidly.
 Other terminals, such as the Concept 100 and the Perkin Elmer Owl, make
@@ -1008,7 +1008,7 @@ to delete a single character,
 with one parameter,
 .IR n ,
 to delete
-.I n characters,
+.IR n "characters,"
 and delete mode by giving \fBsmdc\fP and \fBrmdc\fP
 to enter and exit delete mode (any mode the terminal needs to be placed
 in for
@@ -2045,7 +2045,7 @@ See
 the \fBInsert/Delete Character\fP subsection above.
 .PP
 The parameter substitutions for \fBset_clock\fP and \fBdisplay_clock\fP are
-not documented in SVr4 or the XSI Curses standard.
+not documented in SVr4 or X/Open Curses.
 They are deduced from the
 documentation for the AT&T 505 terminal.
 .PP
@@ -2064,7 +2064,7 @@ If italics should work with colors,
 then the \fBncv\fP value must be specified, even if it is zero.
 .PP
 Different commercial ports of \fI\%terminfo\fP and \fIcurses\fP support
-different subsets of XSI Curses and
+different subsets of X/Open Curses and
 (in some cases)
 different extensions.
 Here is a summary,
@@ -2110,7 +2110,7 @@ At least two implementations of \fI\%terminfo\fP
 diverged from those of other System V Unices after SVr1,
 adding extension capabilities to the string table that
 (in the binary format)
-collide with subsequent System V and XSI Curses extensions.
+collide with subsequent System V and X/Open Curses extensions.
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on \fIpcurses\fP by Pavel Curtis.

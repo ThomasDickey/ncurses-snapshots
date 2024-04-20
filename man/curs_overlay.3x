@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.41 2024/03/16 15:35:01 tom Exp $
-.TH curs_overlay 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_overlay.3x,v 1.43 2024/04/20 21:20:07 tom Exp $
+.TH curs_overlay 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -88,7 +88,7 @@ if some part of the window would be placed off-screen.
 .SH NOTES
 Note that \fBoverlay\fP and \fBoverwrite\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4,
+These functions are described in X/Open Curses, Issue 4,
 which adds \fI\%const\fP qualifiers to the arguments.
 It further specifies their behavior in the presence of characters
 with multibyte renditions (not yet supported in this implementation).

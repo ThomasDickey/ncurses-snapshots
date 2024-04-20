@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.44 2024/03/16 15:49:58 tom Exp $
-.TH curs_touch 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_touch.3x,v 1.47 2024/04/20 21:20:07 tom Exp $
+.TH curs_touch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -88,7 +88,7 @@ In this implementation
 \fBis_linetouched\fP
 returns an error
 if the window pointer is null, or
-if the line number is outside the window.
+if the line number is outside the window boundaries.
 .IP
 The constant \fBERR\fP is distinct from \fBTRUE\fP and \fBFALSE\fP,
 which are the normal return values of this function.
@@ -103,7 +103,7 @@ The actual function returns \fBFALSE\fP when it detects an error.
 \fBwtouchln\fP
 returns an error
 if the window pointer is null, or
-if the line number is outside the window.
+if the line number is outside the window boundaries.
 .RE
 .SH NOTES
 All of these routines except \fB\%wtouchln\fP may be macros.
@@ -116,7 +116,7 @@ SVr4 \fIcurses\fP does not check the window parameter \fIwin\fP to ensure
 that it is not \fBNULL\fP;
 otherwise this implementation behaves the same as SVr4.
 .PP
-The XSI Curses standard, Issue 4 describes these functions,
+X/Open Curses, Issue 4 describes these functions,
 but defines no error conditions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),

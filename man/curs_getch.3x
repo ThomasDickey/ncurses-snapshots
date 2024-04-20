@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.85 2024/04/13 22:18:51 tom Exp $
-.TH curs_getch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.87 2024/04/20 19:18:18 tom Exp $
+.TH curs_getch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -67,11 +67,11 @@ get (or push back) characters from \fIcurses\fR terminal keyboard
 .B int mvgetch(int \fIy\fP, int \fIx\fP);
 .B int mvwgetch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
-.B int ungetch(int \fIch\fP);
+.B int ungetch(int \fIc\fP);
 .PP
 .\" XXX: Move has_key into its own page like define_key and key_defined?
 \fI/* extension */\fP
-.B int has_key(int \fIch\fP);
+.B int has_key(int \fIc\fP);
 .fi
 .SH DESCRIPTION
 .SS "Reading Characters"
@@ -116,13 +116,13 @@ If \fB\%echo\fP(3X) has been called,
 and the window is not a pad,
 .I curses
 writes the returned character
-.I ch
+.I c
 to the window
 (at the cursor position)
 per the following rules.
 .bP
 If
-.I ch
+.I c
 matches the terminal's erase character,
 the cursor moves leftward one position
 and the new position is erased
@@ -136,7 +136,7 @@ are handled the same way.
 .bP
 .I curses
 writes any other
-.I ch
+.I c
 to the window,
 as with \fB\%wechochar\fP(3X).
 .bP
@@ -147,12 +147,10 @@ calls
 .BR \%wrefresh .
 .PP
 If
-.I ch
+.I c
 is a carriage return and \fBnl\fP(3X) has been called,
 .B \%wgetch
-returns the character code for newline
-(line feed)
-instead.
+returns the character code for line feed instead.
 .SS "Keypad Mode"
 To
 .IR curses ,
@@ -192,7 +190,7 @@ character codes.
 In
 .IR \%ncurses ,
 .I "user-defined function keys"
-are configured with \fBdefine_key\fP(3X);
+are configured with \fB\%define_key\fP(3X);
 they have no names,
 but are also expected to have values outside the range of eight-bit
 codes.
@@ -244,7 +242,7 @@ further typing \*(``awakens\*(''
 .SS "Ungetting Characters"
 .B \%ungetch
 places
-.I ch
+.I c
 into the input queue to be returned by the next call to
 .BR \%wgetch .
 A single input queue serves all windows.
@@ -264,7 +262,7 @@ Not all of these are necessarily supported on any particular terminal.
 The naming convention may seem obscure,
 with some apparent misspellings
 (such as \*(``RSUME\*('' for \*(``resume\*('');
-The names correspond to the
+the names correspond to the
 .I \%term\%info
 capability names for the keys,
 and were standardized before the IBM PC/AT keyboard layout achieved a
@@ -378,7 +376,7 @@ KEY_SUNDO	Shifted undo key
 .TE
 .RE
 .PP
-The keypad is arranged as follows.
+Many keyboards feature a nine-key directional pad.
 .PP
 .RS
 .TS
@@ -390,29 +388,29 @@ C1	down	C3
 .TE
 .RE
 .sp
-Two of these symbols do
+Two of the symbols in the list above do
 .I not
-correspond to a real key.
+correspond to a physical key.
 .bP
 .B \%wgetch
 returns
-.B \%KEY_RESIZE
-(even if the window's keypad mode is disabled)
+.BR \%KEY_RESIZE ,
+even if the window's keypad mode is disabled,
 when
 .I \%ncurses
-detects the
+handles a
 .B \%SIGWINCH
 signal;
-see \fBinitscr\fP(3X) and \fBresizeterm\fP(3X).
+see \fB\%initscr\fP(3X) and \fB\%resizeterm\fP(3X).
 .bP
 .B \%wgetch
 returns
 .B \%KEY_MOUSE
 to indicate that a mouse event is pending collection;
-see \fBcurs_mouse\fP(3X).
+see \fB\%curs_mouse\fP(3X).
 Receipt of this code requires a window's keypad mode to be enabled,
 because to interpret mouse input
-(as with with \fIxterm\fP(1)'s mouse prototocol),
+(as with with \fI\%xterm\fP(1)'s mouse prototocol),
 .I \%ncurses
 must read an escape sequence,
 as with a function key.
@@ -420,21 +418,32 @@ as with a function key.
 In
 .IR \%ncurses ,
 .B \%has_key
-takes a key code value from the above list,
-and returns a Boolean value indicating the terminal's recognition of it.
+returns a Boolean value indicating whether the terminal type recognizes
+its parameter as a key code value.
 See also
-\fBdefine_key\fP(3X) and \fBkey_defined\fP(3X).
+\fB\%define_key\fP(3X) and \fB\%key_defined\fP(3X).
 .SH RETURN VALUE
-.B \%wgetch
-returns
+Except for
+.BR \%has_key ,
+these functions return
+.B OK
+on success and
 .B ERR
-if
-.bP
-the
+on failure.
+.PP
+Functions taking a
 .I \%WINDOW
-pointer is
-.BR NULL ,
-or
+pointer argument fail if the pointer is
+.BR NULL .
+.PP
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
+.PP
+.B \%wgetch
+also fails if
 .bP
 its timeout expires without any data arriving,
 or
@@ -445,20 +454,8 @@ in which case
 is set to
 .BR \%EINTR .
 .PP
-Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP(3X) and fail if the position is outside the window,
-or
-(for \*(``mvw\*('' functions)
-if the
-.I win
-parameter is a null pointer.
-.PP
 .B \%ungetch
-returns
-.B OK
-on success and
-.B ERR
-if there is no more room in the input queue.
+fails if there is no more room in the input queue.
 .PP
 .B \%has_key
 returns
@@ -503,16 +500,18 @@ others treat such control characters specially.
 distinguishes the Enter keys in the alphabetic and numeric keypad
 sections of a keyboard because (most) terminals do.
 .B \%KEY_ENTER
-refers to the key on the (numeric) keypad and,
+refers to the key on the numeric keypad and,
 like other function keys,
-is reliably recognized only if the window's keypad mode is enabled.
+and is reliably recognized only if the window's keypad mode is enabled.
 .bP
 The
 .I \%term\%info
 .B \%key_enter
 .RB ( kent )
-capability describes the character (sequence) sent by the terminal's
-keypad Enter key.
+capability describes the character (sequence) sent by the Enter key of
+a terminal's numeric
+(or similar)
+keypad.
 .bP
 \*(``Enter or send\*('' is X/Open Curses's description of this key.
 .PP
@@ -547,8 +546,8 @@ function-key-rich keyboard of the AT&T 7300
 (also known variously as the \*(``3B1\*('', \*(``Safari 4\*('', and
 \*(``UNIX PC\*(''),
 a 1985 machine.
-Today's computer keyboards are based on the IBM PC/AT keyboard and tend
-to have fewer.
+Today's computer keyboards are based that of the IBM PC/AT and tend to
+have fewer.
 A
 .I curses
 application can expect such a keyboard to transmit key codes
@@ -604,7 +603,8 @@ extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
 .PP
-X/Open Curses, Issue 4, describes
+X/Open Curses,
+Issue 4 describes
 \fB\%getch\fP,
 \fB\%wgetch\fP,
 \fB\%mvgetch\fP,
@@ -629,7 +629,7 @@ In historical
 .I curses
 implementations,
 it varied depending on whether the operating system's dispatch of a
-signal to a handler interrupts a \fIread\fP(2) call in progress or not,
+signal to a handler interrupting a \fIread\fP(2) call in progress,
 and also
 (in some implementations)
 whether an input timeout or non-blocking mode has been set.

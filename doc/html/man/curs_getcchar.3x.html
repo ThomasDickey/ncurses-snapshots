@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getcchar.3x,v 1.47 2024/04/13 22:08:22 tom Exp @
+  * @Id: curs_getcchar.3x,v 1.49 2024/04/20 18:55:09 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getcchar 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_getcchar 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getcchar 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_getcchar 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
 
@@ -55,15 +55,15 @@
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
        <STRONG>int</STRONG> <STRONG>getcchar(</STRONG>
-               <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wcval</EM><STRONG>,</STRONG>
-               <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>,</STRONG>
+               <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>,</STRONG>
+               <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>,</STRONG>
                <STRONG>attr_t</STRONG> <STRONG>*</STRONG><EM>attrs</EM><STRONG>,</STRONG>
                <STRONG>short</STRONG> <STRONG>*</STRONG><EM>color</EM><STRONG>_</STRONG><EM>pair</EM><STRONG>,</STRONG>
                <STRONG>void</STRONG> <STRONG>*</STRONG><EM>opts</EM> <STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>setcchar(</STRONG>
-               <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wcval</EM><STRONG>,</STRONG>
-               <STRONG>const</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>,</STRONG>
+               <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>,</STRONG>
+               <STRONG>const</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>,</STRONG>
                <STRONG>const</STRONG> <STRONG>attr_t</STRONG> <EM>attrs</EM><STRONG>,</STRONG>
                <STRONG>short</STRONG> <EM>color</EM><STRONG>_</STRONG><EM>pair</EM><STRONG>,</STRONG>
                <STRONG>const</STRONG> <STRONG>void</STRONG> <STRONG>*</STRONG><EM>opts</EM> <STRONG>);</STRONG>
@@ -73,34 +73,34 @@
 
 </PRE><H3><a name="h3-getcchar">getcchar</a></H3><PRE>
        The <STRONG>getcchar</STRONG> function gets a wide-character string and rendition from a
-       <STRONG>cchar_t</STRONG>  argument.   When  <EM>wch</EM>  is  not  a  null  pointer, the <STRONG>getcchar</STRONG>
-       function does the following:
+       <STRONG>cchar_t</STRONG> argument.  When <EM>wc</EM> is not a null pointer, the <STRONG>getcchar</STRONG> function
+       does the following:
 
-       <STRONG>o</STRONG>   Extracts information from a <STRONG>cchar_t</STRONG> value <EM>wcval</EM>
+       <STRONG>o</STRONG>   Extracts information from a <STRONG>cchar_t</STRONG> value <EM>wch</EM>
 
        <STRONG>o</STRONG>   Stores the character attributes in the location pointed to by <EM>attrs</EM>
 
        <STRONG>o</STRONG>   Stores the color pair in the location pointed to by <EM>color</EM><STRONG>_</STRONG><EM>pair</EM>
 
-       <STRONG>o</STRONG>   Stores the wide-character string, characters referenced  by  <EM>wcval</EM>,
-           into the array pointed to by <EM>wch</EM>.
+       <STRONG>o</STRONG>   Stores the wide-character string,  characters  referenced  by  <EM>wch</EM>,
+           into the array pointed to by <EM>wc</EM>.
 
-       When <EM>wch</EM> is a null pointer, the <STRONG>getcchar</STRONG> function does the following:
+       When <EM>wc</EM> is a null pointer, the <STRONG>getcchar</STRONG> function does the following:
 
-       <STRONG>o</STRONG>   Obtains the number of wide characters pointed to by <EM>wcval</EM>
+       <STRONG>o</STRONG>   Obtains the number of wide characters pointed to by <EM>wch</EM>
 
        <STRONG>o</STRONG>   Does not change the data referenced by <EM>attrs</EM> or <EM>color</EM><STRONG>_</STRONG><EM>pair</EM>
 
 
 </PRE><H3><a name="h3-setcchar">setcchar</a></H3><PRE>
-       The  <STRONG>setcchar</STRONG>  function initializes the location pointed to by <EM>wcval</EM> by
+       The  <STRONG>setcchar</STRONG>  function  initializes  the location pointed to by <EM>wch</EM> by
        using:
 
        <STRONG>o</STRONG>   The character attributes in <EM>attrs</EM>
 
        <STRONG>o</STRONG>   The color pair in <EM>color</EM><STRONG>_</STRONG><EM>pair</EM>
 
-       <STRONG>o</STRONG>   The wide-character string pointed to by <EM>wch</EM>.  The  string  must  be
+       <STRONG>o</STRONG>   The wide-character string pointed to by <EM>wc</EM>.   The  string  must  be
            L'\0' terminated, contain at most one spacing character, which must
            be the first.
 
@@ -112,10 +112,10 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       When <EM>wch</EM> is a  null  pointer,  <STRONG>getcchar</STRONG>  returns  the  number  of  wide
-       characters referenced by <EM>wcval</EM>, including one for a trailing null.
+       When <EM>wc</EM> is  a  null  pointer,  <STRONG>getcchar</STRONG>  returns  the  number  of  wide
+       characters referenced by <EM>wch</EM>, including one for a trailing null.
 
-       When  <EM>wch</EM>  is  not  a null pointer, <STRONG>getcchar</STRONG> returns <STRONG>OK</STRONG> upon successful
+       When  <EM>wc</EM>  is  not  a  null pointer, <STRONG>getcchar</STRONG> returns <STRONG>OK</STRONG> upon successful
        completion, and <STRONG>ERR</STRONG> otherwise.
 
        Upon successful completion, <STRONG>setcchar</STRONG> returns <STRONG>OK</STRONG>.  Otherwise, it returns
@@ -123,9 +123,9 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The <EM>wcval</EM> argument may be a value generated by a call to <STRONG>setcchar</STRONG> or by
-       a function that has a <STRONG>cchar_t</STRONG> output argument.  If <EM>wcval</EM> is constructed
-       by any other means, the effect is unspecified.
+       The <EM>wch</EM> argument may be a value generated by a call to <STRONG>setcchar</STRONG> or by a
+       function that has a <STRONG>cchar_t</STRONG> output argument.  If <EM>wch</EM> is constructed  by
+       any other means, the effect is unspecified.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
@@ -196,7 +196,7 @@
 
 
 
-ncurses 6.4                       2024-04-13                 <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                 <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

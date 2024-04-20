@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.48 2024/03/16 15:35:01 tom Exp $
-.TH curs_sp_funcs 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.50 2024/04/20 18:56:31 tom Exp $
+.TH curs_sp_funcs 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -63,7 +63,7 @@
 \fBint echo_sp(SCREEN* \fIsp\fP);
 \fBint endwin_sp(SCREEN* \fIsp\fP);
 \fBchar erasechar_sp(SCREEN* \fIsp\fP);
-\fBint erasewchar_sp(SCREEN* \fIsp\fP, wchar_t *\fIch\fP);
+\fBint erasewchar_sp(SCREEN* \fIsp\fP, wchar_t *\fIwc\fP);
 \fBint extended_color_content_sp(SCREEN * \fIsp\fP, int \fIcolor\fP, int * \fIr\fP, int * \fIg\fP, int * \fIb\fP);
 \fBint extended_pair_content_sp(SCREEN* \fIsp\fP, int \fIpair\fP, int * \fIfg\fP, int * \fIbg\fP);
 \fBint extended_slk_color_sp(SCREEN* \fIsp\fP, int \fIpair\fP);
@@ -81,7 +81,7 @@
 .PP
 \fBbool has_ic_sp(SCREEN* \fIsp\fP);
 \fBbool has_il_sp(SCREEN* \fIsp\fP);
-\fBint has_key_sp(SCREEN* \fIsp\fP, int \fIch\fP);
+\fBint has_key_sp(SCREEN* \fIsp\fP, int \fIc\fP);
 \fBbool has_mouse_sp(SCREEN* \fIsp\fP);
 \fBint init_color_sp(SCREEN* \fIsp\fP, short \fIcolor\fP, short \fIr\fP, short \fIg\fP, short \fIb\fP);
 \fBint init_extended_color_sp(SCREEN* \fIsp\fP, int \fIcolor\fP, int \fIr\fP, int \fIg\fP, int \fIb\fP);
@@ -101,7 +101,7 @@
 \fBint keyok_sp(SCREEN* \fIsp\fP, int \fIkeycode\fP, bool \fIenable\fP);
 \fBchar killchar_sp(SCREEN* \fIsp\fP);
 .PP
-\fBint killwchar_sp(SCREEN* \fIsp\fP, wchar_t *\fIch\fP);
+\fBint killwchar_sp(SCREEN* \fIsp\fP, wchar_t *\fIwc\fP);
 \fBchar* longname_sp(SCREEN* \fIsp\fP);
 \fBint mcprint_sp(SCREEN* \fIsp\fP, char *\fIdata\fP, int \fIlen\fP);
 \fBint mouseinterval_sp(SCREEN* \fIsp\fP, int \fIerval\fP);
@@ -159,8 +159,8 @@
 \fBchtype termattrs_sp(SCREEN* \fIsp\fP);
 \fBchar* termname_sp(SCREEN* \fIsp\fP);
 \fBint typeahead_sp(SCREEN* \fIsp\fP, int \fIfd\fP);
-\fBint unget_wch_sp(SCREEN* \fIsp\fP, const wchar_t \fIwch\fP);
-\fBint ungetch_sp(SCREEN* \fIsp\fP, int \fIch\fP);
+\fBint unget_wch_sp(SCREEN* \fIsp\fP, const wchar_t \fIwc\fP);
+\fBint ungetch_sp(SCREEN* \fIsp\fP, int \fIc\fP);
 \fBint ungetmouse_sp(SCREEN* \fIsp\fP, MEVENT* \fIevent\fP);
 \fBint use_default_colors_sp(SCREEN* \fIsp\fP);
 \fBvoid use_env_sp(SCREEN* \fIsp\fP, bool \fIbf\fP);
@@ -171,7 +171,7 @@
 \fBint vid_puts_sp(SCREEN* \fIsp\fP, attr_t \fIattrs\fP, short \fIpair\fP, void * \fIopts\fP, NCURSES_SP_OUTC \fIputc\fP);
 \fBint vidattr_sp(SCREEN* \fIsp\fP, chtype \fIattrs\fP);
 \fBint vidputs_sp(SCREEN* \fIsp\fP, chtype \fIattrs\fP, NCURSES_SP_OUTC \fIputc\fP);
-\fBwchar_t* wunctrl_sp(SCREEN* \fIsp\fP, cchar_t *\fIch\fP);
+\fBwchar_t* wunctrl_sp(SCREEN* \fIsp\fP, cchar_t *\fIwch\fP);
 .PP
 \fB#include <form.h>
 .PP
@@ -208,7 +208,7 @@
 .PP
 \fB#include <unctrl.h>
 .PP
-\fBNCURSES_CONST char* unctrl_sp(SCREEN* \fIsp\fP, chtype \fIc\fP);
+\fBNCURSES_CONST char* unctrl_sp(SCREEN* \fIsp\fP, chtype \fIch\fP);
 .fi
 .SH DESCRIPTION
 This implementation can be configured to provide a set of functions which

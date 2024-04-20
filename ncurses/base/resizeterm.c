@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.52 2021/10/23 17:12:33 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.53 2024/04/20 21:54:14 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -409,8 +409,8 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 #ifdef USE_TERM_DRIVER
 	    CallDriver_2(SP_PARM, td_setsize, ToLines, ToCols);
 #else
-	    lines = (NCURSES_SIZE_T) ToLines;
-	    columns = (NCURSES_SIZE_T) ToCols;
+	    lines = (NCURSES_INT2) ToLines;
+	    columns = (NCURSES_INT2) ToCols;
 #endif
 
 	    SP_PARM->_lines_avail = (NCURSES_SIZE_T) (ToLines - was_stolen);

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.36 2024/04/13 22:21:16 tom Exp $
-.TH curs_add_wchstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.39 2024/04/20 21:20:07 tom Exp $
+.TH curs_add_wchstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -109,13 +109,15 @@ if the \fIwin\fP parameter is null or
 .bP
 if the \fIwchstr\fP parameter is null.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 All functions except \fBwadd_wchnstr\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .SH SEE ALSO
 \fB\%curs_addchstr\fP(3X) describes comparable functions of the
 .I \%ncurses

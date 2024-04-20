@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.96 2024/03/23 20:38:57 tom Exp $
-.TH curs_mouse 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.98 2024/04/20 19:02:07 tom Exp $
+.TH curs_mouse 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -69,16 +69,17 @@ get mouse events in \fIcurses\fR
 .PP
 \fBbool has_mouse(void);
 .PP
+\fBmmask_t mousemask(mmask_t \fInewmask\fP, mmask_t *\fIoldmask\fP);
+.PP
 \fBint getmouse(MEVENT *\fIevent\fP);
 \fBint ungetmouse(MEVENT *\fIevent\fP);
-.PP
-\fBmmask_t mousemask(mmask_t \fInewmask\fP, mmask_t *\fIoldmask\fP);
 .PP
 \fBbool wenclose(const WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
 \fBbool mouse_trafo(int* \fIpY\fP, int* \fIpX\fP, bool \fIto_screen\fP);
 \fBbool wmouse_trafo(const WINDOW* \fIwin\fP,
-                  \fBint* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);\fR
+.ti +18n \" "bool wmouse_trafo("
+\fBint* \fIpY\fB, int* \fIpX\fB, bool \fIto_screen\fB);
 .PP
 \fBint mouseinterval(int \fIerval\fB);\fR
 .fi
@@ -87,6 +88,15 @@ These functions provide an interface to mouse events from
 \fB\%ncurses\fP(3X).
 Mouse events are represented by \fB\%KEY_MOUSE\fP
 pseudo-key values in the \fB\%wgetch\fP(3X) input stream.
+.SS has_mouse
+The \fB\%has_mouse\fP function returns \fBTRUE\fP if the mouse driver
+has been successfully initialized,
+and \fBFALSE\fP otherwise.
+.PP
+Mouse events are ignored when input is in cooked mode, and
+cause an error beep when cooked mode is being simulated in a window by a
+function such as \fB\%getstr\fP that expects a linefeed for input-loop
+termination.
 .SS mousemask
 To make mouse events visible, use the \fB\%mousemask\fP function.
 This sets the mouse events to be reported.
@@ -255,15 +265,6 @@ Use \fB\%mouseinterval(\-1)\fP to obtain the interval without altering it.
 The mouse interval is set to one sixth of a second
 when the corresponding screen is initialized,
 e.g., in \fBinitscr\fP(3X) or \fBsetupterm\fP(3X).
-.SS has_mouse
-The \fB\%has_mouse\fP function returns \fBTRUE\fP if the mouse driver
-has been successfully initialized,
-and \fBFALSE\fP otherwise.
-.PP
-Mouse events are ignored when input is in cooked mode, and
-cause an error beep when cooked mode is being simulated in a window by a
-function such as \fB\%getstr\fP that expects a linefeed for input-loop
-termination.
 .SH RETURN VALUE
 \fB\%has_mouse\fP,
 \fB\%wenclose\fP,

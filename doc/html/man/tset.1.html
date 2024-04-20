@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tset.1,v 1.81 2024/03/16 15:35:01 tom Exp @
+  * @Id: tset.1,v 1.83 2024/04/20 19:09:08 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tset 1 2024-03-16 ncurses 6.4 User commands</TITLE>
+<TITLE>tset 1 2024-04-20 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tset 1 2024-03-16 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tset 1 2024-04-20 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
 
@@ -354,15 +354,15 @@
            be from the operating system, the  <EM>LINES</EM>  and  <EM>COLUMNS</EM>  environment
            variables or the terminal description.
 
-       Obtaining  the  window  size from the terminal description is common to
-       both implementations, but considered obsolescent.  Its  only  practical
-       use is for hardware terminals.  Generally speaking, a window size would
-       be unset only if there were some problem obtaining the value  from  the
-       operating  system  (and  <STRONG>setupterm</STRONG> would still fail).  For that reason,
-       the <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables may be useful  for  working
-       around  window-size  problems.   Those  have  the  drawback that if the
-       window is resized, those variables must be recomputed  and  reassigned.
-       To do this more easily, use the <STRONG>resize(1)</STRONG> program.
+       Obtaining  the window size from a terminal's type description is common
+       to  both  implementations,  but  considered  obsolescent.    Its   only
+       practical  use  is  for hardware terminals.  Generally, the window size
+       will remain uninitialized only if there were a  problem  obtaining  the
+       value  from the operating system (and <STRONG>setupterm</STRONG> would still fail).  The
+       <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables may thus be useful for  working
+       around  window-size  problems, but have the drawback that if the window
+       is resized, their  values  must  be  recomputed  and  reassigned.   The
+       <STRONG>resize(1)</STRONG> program distributed with <STRONG>xterm(1)</STRONG> assists this activity.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -393,7 +393,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                           <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
+ncurses 6.4                       2024-04-20                           <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

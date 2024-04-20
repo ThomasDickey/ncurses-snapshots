@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scanw.3x,v 1.51 2024/03/23 20:41:15 tom Exp $
-.TH curs_scanw 3X 2024-03-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scanw.3x,v 1.53 2024/04/20 19:18:18 tom Exp $
+.TH curs_scanw 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -104,9 +104,11 @@ or if the window pointer
 .I win
 is null.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement
-using \fB\%wmove\fP,
-and fail if the position is outside the window.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 No wide character counterpart functions are defined by the
 \*(``wide\*(''
@@ -124,7 +126,8 @@ respectively.
 implements \fI\%vsscanf\fP(3) internally if it is unavailable when the
 library is configured.
 .SH PORTABILITY
-X/Open Curses, Issue 4, describes these functions.
+X/Open Curses,
+Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 .I \%ncurses
@@ -133,13 +136,15 @@ legacy applications.
 However,
 the latter is obsolete.
 .bP
-X/Open Curses, Issue 4, Version 2 (1996),
+X/Open Curses,
+Issue 4 Version 2 (1996),
 marked \fB\%vwscanw\fP as requiring \fI\%varargs.h\fP and
 \*(``TO BE WITHDRAWN\*('',
 and specified \fB\%vw_scanw\fP using the \fI\%stdarg.h\fP interface.
 .bP
-X/Open Curses, Issue 5, Draft 2
-(December 2007) marked \fB\%vwscanw\fP (along with
+X/Open Curses,
+Issue 5,
+Draft 2 (December 2007) marked \fB\%vwscanw\fP (along with
 \fB\%vwscanw\fP and the \fItermcap\fP interface) as withdrawn.
 After incorporating review comments,
 this became

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_clear.3x,v 1.46 2024/03/16 15:35:01 tom Exp $
-.TH curs_clear 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_clear.3x,v 1.48 2024/04/20 21:20:07 tom Exp $
+.TH curs_clear 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -104,7 +104,7 @@ if the cursor position is about to wrap.
 Note that \fBerase\fP, \fBwerase\fP, \fBclear\fP, \fBwclear\fP,
 \fBclrtobot\fP, and \fBclrtoeol\fP may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .PP
 The SVr4.0 manual says that these functions could return
 \*(``or a non-negative integer if \fB\%immedok\fP is set\*('',

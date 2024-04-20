@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.111 2024/04/13 22:09:53 tom Exp $
-.TH @TPUT@ 1 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.113 2024/04/20 19:58:50 tom Exp $
+.TH @TPUT@ 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -129,8 +129,13 @@ we term them \*(``pseudo-capabilities\*(''.
 .I cap-code
 indicates a capability from the terminal database.
 .IP
-If the capability is of string type and takes parameters,
-the arguments following the capability will be used as its parameters.
+If
+.I cap-code
+is of string type and takes parameters,
+\fB\%@TPUT@\fP interprets arguments following
+.I cap-code
+as the parameters,
+up to the (fixed) quantity the capability requires.
 .IP
 Most parameters are numeric.
 Only a few terminal capabilities require string parameters;

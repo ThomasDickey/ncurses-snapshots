@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wch.3x,v 1.28 2024/04/13 22:14:06 tom Exp $
-.TH curs_in_wch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wch.3x,v 1.31 2024/04/20 21:20:07 tom Exp $
+.TH curs_in_wch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -49,30 +49,32 @@ get a \fIcurses\fR complex character from a window
 .nf
 \fB#include <curses.h>
 .PP
-\fBint in_wch(cchar_t *\fIwcval\fP);
-\fBint win_wch(WINDOW *\fIwin\fP, cchar_t *\fIwcval\fP);
+\fBint in_wch(cchar_t *\fIwch\fP);
+\fBint win_wch(WINDOW *\fIwin\fP, cchar_t *\fIwch\fP);
 .PP
-\fBint mvin_wch(int \fIy\fP, int \fIx\fP, cchar_t *\fIwcval\fP);
-\fBint mvwin_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t *\fIwcval\fP);
+\fBint mvin_wch(int \fIy\fP, int \fIx\fP, cchar_t *\fIwch\fP);
+\fBint mvwin_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t *\fIwch\fP);
 .fi
 .SH DESCRIPTION
 These functions extract the complex character and rendition from
 the current position in the named window into the \fBcchar_t\fP object
-referenced by wcval.
+referenced by wch.
 .SH RETURN VALUE
-No errors are defined in the XSI Curses standard.
+No errors are defined in X/Open Curses.
 This implementation checks for null pointers, returns \fBERR\fP in that case.
 Also, the \fImv\fP routines check for error moving the cursor,
 returning \fBERR\fP in that case.
 Otherwise they return \fBOK\fP.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 Note that all of these routines may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .SH SEE ALSO
 \fB\%curs_inch\fP(3X) describes comparable functions of the
 .I \%ncurses

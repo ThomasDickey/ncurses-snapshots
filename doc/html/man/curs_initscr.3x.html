@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.66 2024/04/13 22:18:11 tom Exp @
+  * @Id: curs_initscr.3x,v 1.69 2024/04/20 21:24:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -173,8 +173,8 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions were described in the XSI Curses standard, Issue 4.  As
-       of 2015, the current document is X/Open Curses, Issue 7.
+       These functions were described in X/Open Curses, Issue 4.  As of  2015,
+       the current document is X/Open Curses, Issue 7.
 
 
 </PRE><H3><a name="h3-Differences">Differences</a></H3><PRE>
@@ -188,7 +188,7 @@
 
        Old versions of curses, e.g., BSD 4.4, would return a null pointer from
        <STRONG>initscr</STRONG> when an error is detected, rather than exiting.  It is safe but
-       redundant to check the return value of <STRONG>initscr</STRONG> in XSI Curses.
+       redundant to check the return value of <STRONG>initscr</STRONG> in X/Open Curses.
 
        Calling  <STRONG>endwin</STRONG>  does not dispose of the memory allocated in <STRONG>initscr</STRONG> or
        <STRONG>newterm</STRONG>.  Deleting a <EM>SCREEN</EM> provides a way to do this:
@@ -299,7 +299,7 @@
 
 
 
-ncurses 6.4                       2024-04-13                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

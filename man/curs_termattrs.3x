@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termattrs.3x,v 1.38 2024/04/13 22:16:39 tom Exp $
-.TH curs_termattrs 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termattrs.3x,v 1.41 2024/04/20 21:20:07 tom Exp $
+.TH curs_termattrs 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%baudrate\fP,
 \fB\%erasechar\fP,
@@ -48,11 +48,11 @@
 .PP
 \fBint baudrate(void);
 \fBchar erasechar(void);
-\fBint erasewchar(wchar_t *\fIch\fP);
+\fBint erasewchar(wchar_t *\fIwc\fP);
 \fBbool has_ic(void);
 \fBbool has_il(void);
 \fBchar killchar(void);
-\fBint killwchar(wchar_t *\fIch\fP);
+\fBint killwchar(wchar_t *\fIwc\fP);
 \fBchar *longname(void);
 \fBattr_t term_attrs(void);
 \fBchtype termattrs(void);
@@ -68,9 +68,9 @@ integer.
 The \fBerasechar\fP routine returns the user's current erase character.
 .PP
 The \fBerasewchar\fP routine stores the current erase character
-in the location referenced by \fIch\fP.
+in the location referenced by \fIwc\fP.
 If no erase character has been defined, the routine fails
-and the location referenced by \fIch\fP is not changed.
+and the location referenced by \fIwc\fP is not changed.
 .SS "has_ic, has_il"
 The \fBhas_ic\fP routine is true if the terminal has insert- and delete-
 character capabilities.
@@ -84,9 +84,9 @@ scrolling using \fBscrollok\fP(3X).
 The \fBkillchar\fP routine returns the user's current line kill character.
 .PP
 The \fBkillwchar\fP routine stores the current line-kill character
-in the location referenced by \fIch\fP.
+in the location referenced by \fIwc\fP.
 If no line-kill character has been defined,
-the routine fails and the location referenced by \fIch\fP is not changed.
+the routine fails and the location referenced by \fIwc\fP is not changed.
 .SS longname
 The \fBlongname\fP routine returns a pointer to a static area
 containing a verbose description of the current terminal.
@@ -118,7 +118,7 @@ completion.
 .SH NOTES
 Note that \fBtermattrs\fP may be a macro.
 .SH PORTABILITY
-The XSI Curses standard, Issue 4 describes these functions.
+X/Open Curses, Issue 4 describes these functions.
 It changes the
 return type of \fBtermattrs\fP to the new type \fBattr_t\fP.
 Most versions of curses truncate the result returned by \fBtermname\fP to

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.44 2024/03/16 15:49:39 tom Exp $
-.TH curs_refresh 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.46 2024/04/20 21:20:07 tom Exp $
+.TH curs_refresh 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -149,7 +149,7 @@ if the associated call to \fBtouchln\fP returns an error.
 .SH NOTES
 Note that \fBrefresh\fP and \fBredrawwin\fP may be macros.
 .SH PORTABILITY
-The XSI Curses standard, Issue 4 describes these functions.
+X/Open Curses, Issue 4 describes these functions.
 .PP
 Whether \fBwnoutrefresh\fP copies to the virtual screen the entire contents
 of a window or just its changed portions has never been well-documented in

@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.19 2023/09/17 08:26:33 tom Exp $
+# $Id: manlinks.sed,v 1.20 2024/04/20 22:25:36 tom Exp $
 ##############################################################################
 # Copyright 2020-2021,2023 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
@@ -84,6 +84,7 @@ s/ /\
 #
 # Finally, remove the parameter list, which begins with a '('.
 /^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
+/^\.ti/d
 /^[^(]*$/d
 # reduce
 #	.B "int add_wch( const cchar_t *\fIwch\fB );"

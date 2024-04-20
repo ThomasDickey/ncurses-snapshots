@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.58 2024/04/13 22:19:08 tom Exp $
-.TH curs_kernel 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.61 2024/04/20 21:24:19 tom Exp $
+.TH curs_kernel 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -210,8 +210,8 @@ There is no way for \fI\%ncurses\fP to determine the initial cursor
 state to restore that.
 .SH PORTABILITY
 The \fIvirtual screen\fP functions \fBsetsyx\fP and \fBgetsyx\fP
-are not described in the XSI Curses standard, Issue 4.
-All other functions are as described in XSI Curses.
+are not described in X/Open Curses, Issue 4.
+All other functions are as described in X/Open Curses.
 .PP
 The SVr4 documentation describes \fBsetsyx\fP and \fBgetsyx\fP
 as having return type int.

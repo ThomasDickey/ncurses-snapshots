@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.83 2024/04/13 22:23:35 tom Exp @
+  * @Id: curs_addch.3x,v 1.85 2024/04/20 19:03:47 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_addch 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -183,9 +183,8 @@
        enabled  in  that  event,  because  it is not possible to wrap to a new
        line.
 
-       Functions with a  "mv"  prefix  first  perform  cursor  movement  using
-       <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG> and fail if the position is outside the window, or (for "mvw"
-       functions) if the <EM>WINDOW</EM> pointer is null.
+       Functions prefixed with "mv" first perform cursor movement and fail  if
+       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -193,9 +192,14 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
-       error  conditions  for  them.  The defaults specified for forms-drawing
-       characters apply in the POSIX locale.
+       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
+       error conditions for them.
+
+       SVr4 <EM>curses</EM> describes a successful return value  only  as  "an  integer
+       value other than <STRONG>ERR</STRONG>".
+
+       The  defaults specified for forms-drawing characters apply in the POSIX
+       locale.
 
 
 </PRE><H3><a name="h3-ACS-Symbols">ACS Symbols</a></H3><PRE>
@@ -296,7 +300,7 @@
 
 
 
-ncurses 6.4                       2024-04-13                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

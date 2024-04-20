@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.83 2024/03/16 15:35:01 tom Exp $
-.TH curs_termcap 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.85 2024/04/20 19:13:12 tom Exp $
+.TH curs_termcap 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -115,7 +115,7 @@ as do other \fItermcap\fP implementations conforming to portions of
 X/Open Curses now withdrawn.
 The BSD \fItermcap\fP library would store a copy of the terminal type
 description in the area referenced by this pointer.
-\fI\%ncurses\fP stores terminal type descriptions in compiled form,
+\fI\%term\%info\fP stores terminal type descriptions in compiled form,
 which is not the same thing.
 .bP
 The meanings of the return values differ.
@@ -493,8 +493,8 @@ be aware that it is returned in \fI\%term\%info\fP notation,
 not the older and not-quite-compatible \fItermcap\fP notation.
 This does not cause problems if all you do with it is call \fB\%tgoto\fP
 or \fB\%tparm\fP,
-which both expand \fI\%term\%info\fP-style strings as \fI\%term\%info\fP
-does.
+which both parametrically expand \fI\%term\%info\fP-style string
+capabilities as \fI\%term\%info\fP does.
 (If
 .I \%ncurses
 is configured to support \fItermcap,\fP

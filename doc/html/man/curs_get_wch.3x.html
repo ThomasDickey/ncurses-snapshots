@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_get_wch.3x,v 1.38 2024/04/13 22:14:06 tom Exp @
+  * @Id: curs_get_wch.3x,v 1.40 2024/04/20 19:23:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_get_wch 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_get_wch 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_get_wch 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_get_wch 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 
@@ -59,7 +59,7 @@
        <STRONG>int</STRONG> <STRONG>mvget_wch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>wint_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvwget_wch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>wint_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>unget_wch(const</STRONG> <STRONG>wchar_t</STRONG> <EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>unget_wch(const</STRONG> <STRONG>wchar_t</STRONG> <EM>wc</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -119,9 +119,8 @@
        <STRONG>o</STRONG>   execution  was  interrupted by a signal, in which case <STRONG>errno</STRONG> is set
            to <STRONG>EINTR</STRONG>.
 
-       Functions with a  "mv"  prefix  first  perform  cursor  movement  using
-       <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG> and fail if the position is outside the window, or (for "mvw"
-       functions) if the <EM>win</EM> parameter is a null pointer.
+       Functions prefixed with "mv" first perform cursor movement and fail  if
+       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
        <STRONG>unget_wch</STRONG> returns <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> if there is no more room in the
        input queue.
@@ -133,14 +132,14 @@
        All of these functions except <STRONG>wget_wch</STRONG> and <STRONG>unget_wch</STRONG> may be implemented
        as macros.
 
-       Unlike <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>, <STRONG>wget_wch</STRONG> and its variants store  the  value  of  the
-       input  character  in  an additional <EM>wch</EM> parameter instead of the return
+       Unlike  <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>,  <STRONG>wget_wch</STRONG>  and  its variants store the value of the
+       input character in an additional <EM>wch</EM> parameter instead  of  the  return
        value.
 
-       Unlike  <STRONG>ungetch</STRONG>,  <STRONG>unget_wch</STRONG>  cannot  distinguish  function  key   codes
-       <STRONG>wget_wch</STRONG>   from  conventional  character  codes.   An  application  can
+       Unlike   <STRONG>ungetch</STRONG>,  <STRONG>unget_wch</STRONG>  cannot  distinguish  function  key  codes
+       <STRONG>wget_wch</STRONG>  from  conventional  character  codes.   An  application   can
        overcome this limitation by pushing function key codes with <STRONG>ungetch</STRONG> and
-       subsequently  checking  the  return  value of <STRONG>wget_wch</STRONG> for a match with
+       subsequently checking the return value of <STRONG>wget_wch</STRONG>  for  a  match  with
        <STRONG>KEY_CODE_YES</STRONG>.
 
 
@@ -152,10 +151,10 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       X/Open  Curses,  Issue  4,  describes these functions.  It specifies no
+       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
        error conditions for them.
 
-       See the "PORTABILITY" section of <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> regarding  the  interaction
+       See  the  "PORTABILITY" section of <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> regarding the interaction
        of <STRONG>wget_wch</STRONG> with signal handlers.
 
 
@@ -163,12 +162,12 @@
        <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG> describes comparable functions of the <EM>ncurses</EM> library in
        its non-wide-character configuration.
 
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>,    <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>,    <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,    <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2024-04-13                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tabs.1,v 1.57 2024/03/16 15:35:01 tom Exp @
+  * @Id: tabs.1,v 1.59 2024/04/20 19:08:15 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tabs 1 2024-03-16 ncurses 6.4 User commands</TITLE>
+<TITLE>tabs 1 2024-04-20 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tabs 1 2024-03-16 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tabs 1 2024-04-20 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 
@@ -214,43 +214,42 @@
        A <STRONG>tabs</STRONG> utility appeared in PWB/Unix  1.0  (1977).   A  reduced  version
        shipped  in  Seventh  Edition  Unix (early 1979) and in 3BSD (later the
        same year); it supported a "-n" option to set the first tab stop at the
-       left margin.  That option is not documented by POSIX.
+       left margin.  That option is not specified by POSIX.
 
        The  PWB/Unix  <STRONG>tabs</STRONG>  utility  returned  in  System III (1980), and used
-       built-in tables, rather than the terminal database, to support a  half-
-       dozen hardcopy terminal (printer) types.  It also had built-in logic to
-       support setting the left margin, as well as a feature for  copying  the
-       tab settings from a file.
+       built-in tables to support a  half-dozen  hardcopy  terminal  (printer)
+       types.   It  also had logic to support setting the left margin, as well
+       as a feature for copying the tab settings from a file.
 
-       Versions  of  the program in later releases of AT&amp;T Unix, such as SVr4,
-       added support for the terminal database, but  retained  the  tables  to
+       Versions of the program in later releases of AT&amp;T Unix, such  as  SVr4,
+       added  support  for  the  terminal database, but retained the tables to
        support the printers.  By this time, System V <STRONG>tput</STRONG> had incorporated the
-       tab stop initialization feature of BSD's <STRONG>tset</STRONG> from 1982,  but  employed
+       tab  stop  initialization feature of BSD's <STRONG>tset</STRONG> from 1982, but employed
        the <EM>terminfo</EM> database to do so.
 
-       The  <STRONG>+m</STRONG>  option was documented in the POSIX Base Specifications Issue 5
-       (Unix98, 1997), then omitted in Issue 6 (Unix03, 2004) without  express
-       motivation,  though an introductory comment "and optionally adjusts the
-       margin"  remains,  overlooked  in  the  removal.   The   <STRONG>tabs</STRONG>   utility
-       documented  in Issues 6 and later has no mechanism for setting margins.
-       The <STRONG>+m</STRONG> option in <EM>ncurses</EM> <STRONG>tabs</STRONG> differs from the SVr4  feature  by  using
+       The <STRONG>+m</STRONG> option was documented in the POSIX Base Specifications  Issue  5
+       (Unix98,  1997), then omitted in Issue 6 (Unix03, 2004) without express
+       motivation, though an introductory comment "and optionally adjusts  the
+       margin"   remains,   overlooked  in  the  removal.   The  <STRONG>tabs</STRONG>  utility
+       documented in Issues 6 and later has no mechanism for setting  margins.
+       The  <STRONG>+m</STRONG>  option  in <EM>ncurses</EM> <STRONG>tabs</STRONG> differs from the SVr4 feature by using
        terminal capabilities rather than built-in tables.
 
-       POSIX   documents   no  limit  on  the  number  of  tab  stops.   Other
+       POSIX  documents  no  limit  on  the  number  of  tab   stops.    Other
        implementations impose one; the limit is 20 in PWB/Unix's <STRONG>tabs</STRONG> utility.
-       While  some  terminals may not accept an arbitrary number of tab stops,
-       <EM>ncurses</EM> <STRONG>tabs</STRONG> attempts to set tab stops up to the right  margin  if  the
+       While some terminals may not accept an arbitrary number of  tab  stops,
+       <EM>ncurses</EM>  <STRONG>tabs</STRONG>  attempts  to set tab stops up to the right margin if the
        list thereof is sufficiently long.
 
-       The  "Rationale" section of the Issue 6 <STRONG>tabs</STRONG> reference page details how
-       the committee considered  redesigning  the  <STRONG>tabs</STRONG>  and  <STRONG>tput</STRONG>  utilities,
+       The "Rationale" section of the Issue 6 <STRONG>tabs</STRONG> reference page details  how
+       the  committee  considered  redesigning  the  <STRONG>tabs</STRONG>  and <STRONG>tput</STRONG> utilities,
        without settling on an improved solution.  It claims that
 
-           "no  known  historical  version  of <EM>tabs</EM> supports the capability of
+           "no known historical version of <EM>tabs</EM>  supports  the  capability  of
            setting arbitrary tab stops."
 
-       The  feature  described  in  subsection  "Explicit  Lists"  above   was
-       implemented  in  PWB/Unix,  and  permitted  the setting of abitrary tab
+       The   feature  described  in  subsection  "Explicit  Lists"  above  was
+       implemented in PWB/Unix, and permitted  the  setting  of  abitrary  tab
        stops nevertheless.
 
 
@@ -259,7 +258,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
+ncurses 6.4                       2024-04-20                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

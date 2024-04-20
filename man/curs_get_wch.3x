@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.38 2024/04/13 22:14:06 tom Exp $
-.TH curs_get_wch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.40 2024/04/20 19:23:03 tom Exp $
+.TH curs_get_wch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -60,7 +60,7 @@ get (or push back) a wide character from \fIcurses\fR terminal keyboard
 \fBint mvget_wch(int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
 \fBint mvwget_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
 .PP
-\fBint unget_wch(const wchar_t \fIwch\fP);
+\fBint unget_wch(const wchar_t \fIwc\fP);
 .fi
 .SH DESCRIPTION
 .SS "Reading Characters"
@@ -190,13 +190,11 @@ in which case
 is set to
 .BR \%EINTR .
 .PP
-Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP(3X) and fail if the position is outside the window,
-or
-(for \*(``mvw\*('' functions)
-if the
-.I win
-parameter is a null pointer.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .PP
 .B \%unget_wch
 returns
@@ -241,7 +239,8 @@ extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
 .PP
-X/Open Curses, Issue 4, describes these functions.
+X/Open Curses,
+Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 See the \*(``PORTABILITY\*('' section of \fB\%wgetch\fP(3X) regarding

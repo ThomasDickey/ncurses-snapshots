@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_sp_funcs.3x,v 1.48 2024/03/16 15:35:01 tom Exp @
+  * @Id: curs_sp_funcs.3x,v 1.50 2024/04/20 18:56:31 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_sp_funcs 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_sp_funcs 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_sp_funcs 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_sp_funcs 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
 
@@ -70,7 +70,7 @@
        <STRONG>int</STRONG> <STRONG>echo_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>endwin_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>erasechar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>erasewchar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>erasewchar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>extended_color_content_sp(SCREEN</STRONG> <STRONG>*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>r</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>g</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>extended_pair_content_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>fg</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>bg</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>extended_slk_color_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>pair</EM><STRONG>);</STRONG>
@@ -88,7 +88,7 @@
 
        <STRONG>bool</STRONG> <STRONG>has_ic_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>bool</STRONG> <STRONG>has_il_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>has_key_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>has_key_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>c</EM><STRONG>);</STRONG>
        <STRONG>bool</STRONG> <STRONG>has_mouse_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>init_color_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>r</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>g</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>b</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>init_extended_color_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>color</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>r</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>g</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>b</EM><STRONG>);</STRONG>
@@ -108,7 +108,7 @@
        <STRONG>int</STRONG> <STRONG>keyok_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>keycode</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>enable</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>killchar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>killwchar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>killwchar_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>);</STRONG>
        <STRONG>char*</STRONG> <STRONG>longname_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mcprint_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>data</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>len</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mouseinterval_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>erval</EM><STRONG>);</STRONG>
@@ -166,8 +166,8 @@
        <STRONG>chtype</STRONG> <STRONG>termattrs_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>char*</STRONG> <STRONG>termname_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>typeahead_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>fd</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>unget_wch_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>wchar_t</STRONG> <EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>ungetch_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>unget_wch_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>wchar_t</STRONG> <EM>wc</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>ungetch_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>c</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>ungetmouse_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>MEVENT*</STRONG> <EM>event</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>use_default_colors_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>);</STRONG>
        <STRONG>void</STRONG> <STRONG>use_env_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
@@ -178,7 +178,7 @@
        <STRONG>int</STRONG> <STRONG>vid_puts_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>attr_t</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>void</STRONG> <STRONG>*</STRONG> <EM>opts</EM><STRONG>,</STRONG> <STRONG>NCURSES_SP_OUTC</STRONG> <EM>putc</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>vidattr_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>attrs</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>vidputs_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>NCURSES_SP_OUTC</STRONG> <EM>putc</EM><STRONG>);</STRONG>
-       <STRONG>wchar_t*</STRONG> <STRONG>wunctrl_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>wchar_t*</STRONG> <STRONG>wunctrl_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
 
        <STRONG>#include</STRONG> <STRONG>&lt;form.h&gt;</STRONG>
 
@@ -215,7 +215,7 @@
 
        <STRONG>#include</STRONG> <STRONG>&lt;unctrl.h&gt;</STRONG>
 
-       <STRONG>NCURSES_CONST</STRONG> <STRONG>char*</STRONG> <STRONG>unctrl_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>c</EM><STRONG>);</STRONG>
+       <STRONG>NCURSES_CONST</STRONG> <STRONG>char*</STRONG> <STRONG>unctrl_sp(SCREEN*</STRONG> <EM>sp</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>ch</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -294,7 +294,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                 <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

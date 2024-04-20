@@ -1,4 +1,4 @@
-# $Id: manhtml.externs,v 1.24 2024/04/14 00:15:03 tom Exp $
+# $Id: manhtml.externs,v 1.25 2024/04/20 19:26:05 tom Exp $
 # Items in this list will not be linked by man2html
 #***************************************************************************
 # Copyright 2019-2023,2024 Thomas E. Dickey                                *
@@ -48,6 +48,7 @@ mutt(1)
 nvi(1)
 od(1)
 ioctl(2)
+isprint(3)
 printf(3)
 profile(5)
 putc(3)

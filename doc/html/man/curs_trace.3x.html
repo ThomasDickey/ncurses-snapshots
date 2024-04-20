@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_trace.3x,v 1.47 2024/03/16 15:35:01 tom Exp @
+  * @Id: curs_trace.3x,v 1.50 2024/04/20 21:24:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_trace 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_trace 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_trace 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_trace 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 
@@ -55,7 +55,7 @@
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>unsigned</STRONG> <STRONG>curses_trace(const</STRONG> <STRONG>unsigned</STRONG> <EM>param</EM><STRONG>);</STRONG>
+       <STRONG>unsigned</STRONG> <STRONG>curses_trace(const</STRONG> <STRONG>unsigned</STRONG> <EM>trace-mask</EM><STRONG>);</STRONG>
 
        <STRONG>void</STRONG> <STRONG>_tracef(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>format</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
 
@@ -63,7 +63,7 @@
        <STRONG>char</STRONG> <STRONG>*_traceattr2(int</STRONG> <EM>buffer</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>ch</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*_tracecchar_t(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>string</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*_tracecchar_t2(int</STRONG> <EM>buffer</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>string</EM><STRONG>);</STRONG>
-       <STRONG>char</STRONG> <STRONG>*_tracechar(int</STRONG> <EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*_tracechar(int</STRONG> <EM>c</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*_tracechtype(chtype</STRONG> <EM>ch</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*_tracechtype2(int</STRONG> <EM>buffer</EM><STRONG>,</STRONG> <STRONG>chtype</STRONG> <EM>ch</EM><STRONG>);</STRONG>
 
@@ -72,7 +72,7 @@
        <STRONG>char</STRONG> <STRONG>*_tracemouse(const</STRONG> <STRONG>MEVENT</STRONG> <STRONG>*</STRONG><EM>event</EM><STRONG>);</STRONG>
 
        <EM>/*</EM> <EM>deprecated</EM> <EM>*/</EM>
-       <STRONG>void</STRONG> <STRONG>trace(const</STRONG> <STRONG>unsigned</STRONG> <STRONG>int</STRONG> <EM>param</EM><STRONG>);</STRONG>
+       <STRONG>void</STRONG> <STRONG>trace(const</STRONG> <STRONG>unsigned</STRONG> <STRONG>int</STRONG> <EM>trace-mask</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -219,9 +219,9 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions are not part of the XSI interface.  Some  other  curses
-       implementations  are  known  to have similar features, but they are not
-       compatible with <EM>ncurses</EM>:
+       These functions are not part of  the  X/Open  Curses  interface.   Some
+       other  curses  implementations  are known to have similar features, but
+       they are not compatible with <EM>ncurses</EM>:
 
        <STRONG>o</STRONG>   SVr4 provided <STRONG>traceon</STRONG> and <STRONG>traceoff</STRONG>, to  control  whether  debugging
            information  was  written to the "trace" file.  While the functions
@@ -261,7 +261,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                    <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

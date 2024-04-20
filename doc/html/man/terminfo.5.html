@@ -32,19 +32,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.63 2024/01/13 23:07:27 tom Exp @
+  * @Id: terminfo.head,v 1.65 2024/04/20 21:14:00 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>terminfo 5 2024-01-13 ncurses 6.4 File formats</TITLE>
+<TITLE>terminfo 5 2024-04-20 ncurses 6.4 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">terminfo 5 2024-01-13 ncurses 6.4 File formats</H1>
+<H1 class="no-header">terminfo 5 2024-04-20 ncurses 6.4 File formats</H1>
 <PRE>
 <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>                      File formats                      <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This manual describes <EM>ncurses</EM> version 6.4 (patch 20240413).
+       This document describes <EM>ncurses</EM> version 6.4 (patch 20240420).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -225,8 +225,8 @@
            codes exceed this limit regardless.)
 
        <STRONG>o</STRONG>   The  TC  (<EM>termcap</EM>)  code  is  that used by the corresponding API of
-           <EM>ncurses.</EM>  (Some capabilities are new, and have names that BSD <EM>term-</EM>
-           <EM>cap</EM> did not originate.)
+           <EM>ncurses</EM>.  (Some capabilities are  new,  and  have  names  that  BSD
+           <EM>termcap</EM> did not originate.)
 
        <STRONG>o</STRONG>   The   description   field   attempts  to  convey  the  capability's
            semantics.
@@ -723,8 +723,8 @@
        <STRONG>clear_margins</STRONG>              <STRONG>mgc</STRONG>       <STRONG>MC</STRONG>  clear right and left soft
                                                 margins
        <STRONG>set_left_margin</STRONG>            <STRONG>smgl</STRONG>      <STRONG>ML</STRONG>  set left soft margin at
-                                                current column.  (ML is not in
-                                                BSD termcap).
+                                                current column (not in BSD
+                                                <EM>termcap</EM>)
        <STRONG>set_right_margin</STRONG>           <STRONG>smgr</STRONG>      <STRONG>MR</STRONG>  set right soft margin at
                                                 current column
        <STRONG>label_format</STRONG>               <STRONG>fln</STRONG>       <STRONG>Lf</STRONG>  label format
@@ -1585,7 +1585,7 @@
        screen, write something to the bottom line, move the cursor to the  top
        of  the region, and do <STRONG>ri</STRONG> followed by <STRONG>dl1</STRONG> or <STRONG>ind</STRONG>.  If the data scrolled
        off the bottom of the region by the <STRONG>ri</STRONG> re-appears,  then  scrolling  is
-       non-destructive.   System  V  and XSI Curses expect that <STRONG>ind</STRONG>, <STRONG>ri</STRONG>, <STRONG>indn</STRONG>,
+       non-destructive.  System V and X/Open Curses expect that <STRONG>ind</STRONG>, <STRONG>ri</STRONG>, <STRONG>indn</STRONG>,
        and  <STRONG>rin</STRONG>  will  simulate  destructive  scrolling;  their  documentation
        cautions  you  not  to  define  <STRONG>csr</STRONG>  unless  this is true.  This <STRONG>curses</STRONG>
        implementation is more  liberal  and  will  do  explicit  erases  after
@@ -1605,7 +1605,7 @@
 
 </PRE><H3><a name="h3-Insert_Delete-Character">Insert/Delete Character</a></H3><PRE>
        There are two basic kinds of  intelligent  terminals  with  respect  to
-       insert/delete  character  which  can  be described using <EM>terminfo.</EM>  The
+       insert/delete  character  which  can  be described using <EM>terminfo</EM>.  The
        most  common  insert/delete  character  operations  affect   only   the
        characters  on the current line and shift characters off the end of the
        line rigidly.  Other terminals, such as the Concept 100 and the  Perkin
@@ -1672,9 +1672,9 @@
        works.
 
        Finally,  you  can  specify <STRONG>dch1</STRONG> to delete a single character, <STRONG>dch</STRONG> with
-       one parameter, <EM>n</EM>, to delete <EM>n</EM> <EM>characters,</EM> and  delete  mode  by  giving
-       <STRONG>smdc</STRONG>  and  <STRONG>rmdc</STRONG>  to  enter  and exit delete mode (any mode the terminal
-       needs to be placed in for <STRONG>dch1</STRONG> to work).
+       one parameter, <EM>n</EM>, to delete <EM>n</EM>characters, and delete mode by giving <STRONG>smdc</STRONG>
+       and  <STRONG>rmdc</STRONG> to enter and exit delete mode (any mode the terminal needs to
+       be placed in for <STRONG>dch1</STRONG> to work).
 
        A command to erase <EM>n</EM> characters  (equivalent  to  outputting  <EM>n</EM>  blanks
        without moving the cursor) can be given as <STRONG>ech</STRONG> with one parameter.
@@ -2426,8 +2426,8 @@
        the <STRONG>Insert/Delete</STRONG> <STRONG>Character</STRONG> subsection above.
 
        The parameter substitutions for <STRONG>set_clock</STRONG>  and  <STRONG>display_clock</STRONG>  are  not
-       documented  in  SVr4 or the XSI Curses standard.  They are deduced from
-       the documentation for the AT&amp;T 505 terminal.
+       documented  in  SVr4  or  X/Open  Curses.   They  are  deduced from the
+       documentation for the AT&amp;T 505 terminal.
 
        Be careful assigning the <STRONG>kmous</STRONG> capability.  The <EM>ncurses</EM>  library  wants
        to  interpret  it as <STRONG>KEY_MOUSE</STRONG>, for use by terminals and emulators like
@@ -2442,9 +2442,9 @@
        specified, even if it is zero.
 
        Different commercial ports of <EM>terminfo</EM>  and  <EM>curses</EM>  support  different
-       subsets  of  XSI Curses and (in some cases) different extensions.  Here
-       is a summary, accurate as of October 1995, after which  the  commercial
-       Unix market contracted and lost diversity.
+       subsets  of  X/Open  Curses  and  (in some cases) different extensions.
+       Here is a summary,  accurate  as  of  October  1995,  after  which  the
+       commercial Unix market contracted and lost diversity.
 
        <STRONG>o</STRONG>   SVr4, Solaris, and <EM>ncurses</EM> support all SVr4 capabilities.
 
@@ -2471,7 +2471,7 @@
        between  commercial  Unix  systems.   At  least  two implementations of
        <EM>terminfo</EM> (those of HP-UX and AIX) diverged from those of other System V
        Unices  after  SVr1,  adding extension capabilities to the string table
-       that (in the binary format) collide with subsequent System  V  and  XSI
+       that (in the binary format) collide with subsequent System V and X/Open
        Curses extensions.
 
 
@@ -2487,7 +2487,7 @@
 
 
 
-ncurses 6.4                       2024-01-13                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
+ncurses 6.4                       2024-04-20                       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

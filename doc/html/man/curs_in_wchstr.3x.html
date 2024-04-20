@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_in_wchstr.3x,v 1.36 2024/04/13 22:21:16 tom Exp @
+  * @Id: curs_in_wchstr.3x,v 1.39 2024/04/20 21:24:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_in_wchstr 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_in_wchstr 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_in_wchstr 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_in_wchstr 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 
@@ -92,34 +92,33 @@
 
        <STRONG>o</STRONG>   if the <EM>wchstr</EM> parameter is null.
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
-       <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
-       the window pointer is null.
+       Functions prefixed with "mv" first perform cursor movement and fail  if
+       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        All routines except <STRONG>win_wchnstr</STRONG> may be macros.
 
-       Reading a line that overflows the  array  pointed  to  by  <EM>wchstr</EM>  with
-       <STRONG>in_wchstr</STRONG>,  <STRONG>mvin_wchstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>  or  <STRONG>win_wchstr</STRONG> causes undefined
-       results.    Therefore,   the   use   of    <STRONG>in_wchnstr</STRONG>,    <STRONG>mvin_wchnstr</STRONG>,
+       Reading  a  line  that  overflows  the  array pointed to by <EM>wchstr</EM> with
+       <STRONG>in_wchstr</STRONG>, <STRONG>mvin_wchstr</STRONG>, <STRONG>mvwin_wchstr</STRONG>  or  <STRONG>win_wchstr</STRONG>  causes  undefined
+       results.     Therefore,    the   use   of   <STRONG>in_wchnstr</STRONG>,   <STRONG>mvin_wchnstr</STRONG>,
        <STRONG>mvwin_wchnstr</STRONG>, or <STRONG>win_wchnstr</STRONG> is recommended.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       The XSI Curses defines no error conditions.  This implementation checks
+       X/Open Curses defines no error conditions.  This implementation  checks
        for null pointers, returning <STRONG>ERR</STRONG> in that case.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG> describes comparable functions of the <EM>ncurses</EM>  library
+       <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
        in its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>, <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2024-04-13                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

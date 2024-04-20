@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.48 2024/04/13 22:14:06 tom Exp $
-.TH curs_instr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.51 2024/04/20 21:24:19 tom Exp $
+.TH curs_instr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -89,9 +89,11 @@ if the \fIwin\fP parameter is null or
 .bP
 if the \fIchstr\fP parameter is null.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 All routines except \fBwinnstr\fP may be macros.
 .PP
@@ -114,7 +116,7 @@ is recommended.
 SVr4 does not
 document whether a length limit includes or excludes the trailing NUL.
 .PP
-The \fI\%ncurses\fP library extends the XSI description by allowing a
+The \fI\%ncurses\fP library extends the X/Open Curses description by allowing a
 negative value for \fIn\fP.
 In this case, the functions return the string ending at the right margin.
 .SH SEE ALSO

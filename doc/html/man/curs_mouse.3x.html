@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.96 2024/03/23 20:38:57 tom Exp @
+  * @Id: curs_mouse.3x,v 1.98 2024/04/20 19:02:07 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-03-23 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-03-23 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -65,10 +65,10 @@
 
        <STRONG>bool</STRONG> <STRONG>has_mouse(void);</STRONG>
 
+       <STRONG>mmask_t</STRONG> <STRONG>mousemask(mmask_t</STRONG> <EM>newmask</EM><STRONG>,</STRONG> <STRONG>mmask_t</STRONG> <STRONG>*</STRONG><EM>oldmask</EM><STRONG>);</STRONG>
+
        <STRONG>int</STRONG> <STRONG>getmouse(MEVENT</STRONG> <STRONG>*</STRONG><EM>event</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>ungetmouse(MEVENT</STRONG> <STRONG>*</STRONG><EM>event</EM><STRONG>);</STRONG>
-
-       <STRONG>mmask_t</STRONG> <STRONG>mousemask(mmask_t</STRONG> <EM>newmask</EM><STRONG>,</STRONG> <STRONG>mmask_t</STRONG> <STRONG>*</STRONG><EM>oldmask</EM><STRONG>);</STRONG>
 
        <STRONG>bool</STRONG> <STRONG>wenclose(const</STRONG> <STRONG>WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
@@ -83,6 +83,16 @@
        These functions provide an interface to mouse events from  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.
        Mouse  events  are  represented  by  <STRONG>KEY_MOUSE</STRONG> pseudo-key values in the
        <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> input stream.
+
+
+</PRE><H3><a name="h3-has_mouse">has_mouse</a></H3><PRE>
+       The <STRONG>has_mouse</STRONG> function returns  <STRONG>TRUE</STRONG>  if  the  mouse  driver  has  been
+       successfully initialized, and <STRONG>FALSE</STRONG> otherwise.
+
+       Mouse  events  are  ignored  when input is in cooked mode, and cause an
+       error beep when cooked mode  is  being  simulated  in  a  window  by  a
+       function  such  as  <STRONG>getstr</STRONG>  that  expects  a  linefeed  for  input-loop
+       termination.
 
 
 </PRE><H3><a name="h3-mousemask">mousemask</a></H3><PRE>
@@ -112,7 +122,6 @@
        <STRONG>BUTTON1_PRESSED</STRONG>          mouse button 1 down
        <STRONG>BUTTON1_RELEASED</STRONG>         mouse button 1 up
        <STRONG>BUTTON1_CLICKED</STRONG>          mouse button 1 clicked
-
        <STRONG>BUTTON1_DOUBLE_CLICKED</STRONG>   mouse button 1 double clicked
        <STRONG>BUTTON1_TRIPLE_CLICKED</STRONG>   mouse button 1 triple clicked
        ------------------------------------------------------------------------
@@ -232,16 +241,6 @@
        The  mouse  interval  is  set  to  one  sixth  of  a  second  when  the
        corresponding  screen  is  initialized,   e.g.,   in   <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>   or
        <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>.
-
-
-</PRE><H3><a name="h3-has_mouse">has_mouse</a></H3><PRE>
-       The  <STRONG>has_mouse</STRONG>  function  returns  <STRONG>TRUE</STRONG>  if  the  mouse driver has been
-       successfully initialized, and <STRONG>FALSE</STRONG> otherwise.
-
-       Mouse events are ignored when input is in cooked  mode,  and  cause  an
-       error  beep  when  cooked  mode  is  being  simulated  in a window by a
-       function  such  as  <STRONG>getstr</STRONG>  that  expects  a  linefeed  for  input-loop
-       termination.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -395,7 +394,7 @@
 
 
 
-ncurses 6.4                       2024-03-23                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -403,6 +402,7 @@ ncurses 6.4                       2024-03-23                    <STRONG><A HREF=
 <li><a href="#h2-SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
+<li><a href="#h3-has_mouse">has_mouse</a></li>
 <li><a href="#h3-mousemask">mousemask</a></li>
 <li><a href="#h3-Mouse-Events">Mouse Events</a></li>
 <li><a href="#h3-getmouse">getmouse</a></li>
@@ -411,7 +411,6 @@ ncurses 6.4                       2024-03-23                    <STRONG><A HREF=
 <li><a href="#h3-wmouse_trafo">wmouse_trafo</a></li>
 <li><a href="#h3-mouse_trafo">mouse_trafo</a></li>
 <li><a href="#h3-mouseinterval">mouseinterval</a></li>
-<li><a href="#h3-has_mouse">has_mouse</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>

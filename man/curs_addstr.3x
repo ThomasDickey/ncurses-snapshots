@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.43 2024/04/13 22:14:06 tom Exp $
-.TH curs_addstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.45 2024/04/20 19:18:18 tom Exp $
+.TH curs_addstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -114,13 +114,11 @@ or
 .bP
 if an internal \fB\%waddch\fP(3X) call returns an error.
 .PP
-Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP(3X) and fail if the position is outside the window,
-or
-(for \*(``mvw\*('' functions)
-if the
-.I \%WINDOW
-pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 All of these functions except \fBwaddnstr\fP may be macros.
 .SH PORTABILITY

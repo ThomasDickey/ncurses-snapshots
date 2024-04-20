@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.111 2024/04/13 22:09:53 tom Exp @
+  * @Id: tput.1,v 1.113 2024/04/20 19:58:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2024-04-13 ncurses 6.4 User commands</TITLE>
+<TITLE>tput 1 2024-04-20 ncurses 6.4 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2024-04-13 ncurses 6.4 User commands</H1>
+<H1 class="no-header">tput 1 2024-04-20 ncurses 6.4 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -104,9 +104,9 @@
 
        <EM>cap-code</EM>   indicates a capability from the terminal database.
 
-                  If  the  capability  is of string type and takes parameters,
-                  the arguments following the capability will be used  as  its
-                  parameters.
+                  If  <EM>cap-code</EM>  is  of  string type and takes parameters, <STRONG>tput</STRONG>
+                  interprets arguments following <EM>cap-code</EM> as  the  parameters,
+                  up to the (fixed) quantity the capability requires.
 
                   Most   parameters   are   numeric.    Only  a  few  terminal
                   capabilities require string parameters; <STRONG>tput</STRONG> uses a table to
@@ -555,7 +555,7 @@
 
 
 
-ncurses 6.4                       2024-04-13                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.4                       2024-04-20                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

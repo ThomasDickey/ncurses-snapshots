@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.83 2024/03/16 15:35:01 tom Exp @
+  * @Id: curs_termcap.3x,v 1.85 2024/04/20 19:13:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -94,7 +94,7 @@
               implementations conforming to  portions  of  X/Open  Curses  now
               withdrawn.   The  BSD  <EM>termcap</EM> library would store a copy of the
               terminal  type  description  in  the  area  referenced  by  this
-              pointer.   <EM>ncurses</EM> stores terminal type descriptions in compiled
+              pointer.  <EM>terminfo</EM> stores terminal type descriptions in compiled
               form, which is not the same thing.
 
           <STRONG>o</STRONG>   The meanings of the  return  values  differ.   The  BSD  <EM>termcap</EM>
@@ -333,11 +333,11 @@
        parameterized string capability, be aware that it is returned in  <EM>term-</EM>
        <EM>info</EM> notation, not the older and not-quite-compatible <EM>termcap</EM> notation.
        This does not cause problems if all you do with it  is  call  <STRONG>tgoto</STRONG>  or
-       <STRONG>tparm</STRONG>,  which both expand <EM>terminfo</EM>-style strings as <EM>terminfo</EM> does.  (If
-       <EM>ncurses</EM> is configured to support  <EM>termcap,</EM>  <STRONG>tgoto</STRONG>  checks  whether  the
-       string  is  <EM>terminfo</EM>-style  by  looking  for "<STRONG>%p</STRONG>" parameters or "<STRONG>&lt;</STRONG>...<STRONG>&gt;</STRONG>"
-       delays, and invokes a <EM>termcap</EM>-style parser if the string appears not to
-       use <EM>terminfo</EM> syntax.)
+       <STRONG>tparm</STRONG>,   which   both   parametrically   expand  <EM>terminfo</EM>-style  string
+       capabilities as <EM>terminfo</EM> does.  (If <EM>ncurses</EM> is  configured  to  support
+       <EM>termcap,</EM>  <STRONG>tgoto</STRONG>  checks whether the string is <EM>terminfo</EM>-style by looking
+       for "<STRONG>%p</STRONG>" parameters or "<STRONG>&lt;</STRONG>...<STRONG>&gt;</STRONG>"  delays,  and  invokes  a  <EM>termcap</EM>-style
+       parser if the string appears not to use <EM>terminfo</EM> syntax.)
 
        Because  <EM>terminfo</EM>'s  syntax  for padding in string capabilities differs
        from <EM>termcap</EM>'s, users can be surprised.
@@ -369,7 +369,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

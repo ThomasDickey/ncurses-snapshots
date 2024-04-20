@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.99 2024/03/16 15:38:33 tom Exp @
+  * @Id: curs_attr.3x,v 1.103 2024/04/20 21:24:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_attr 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -253,74 +253,73 @@
        <STRONG>o</STRONG>   does  not  return an error if either of the parameters of <STRONG>wattr_get</STRONG>
            used for retrieving attribute or color pair values is <STRONG>NULL</STRONG>.
 
-       Functions with a "mv" prefix first  perform  a  cursor  movement  using
-       <STRONG>wmove</STRONG>, and return an error if the position is outside the window, or if
-       the window pointer is null.
+       Functions prefixed with "mv" first perform cursor movement and fail  if
+       the position (<EM>y</EM>, <EM>x</EM>)
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        These functions may be macros:
 
-              <STRONG>attroff</STRONG>, <STRONG>wattroff</STRONG>, <STRONG>attron</STRONG>, <STRONG>wattron</STRONG>, <STRONG>attrset</STRONG>, <STRONG>wattrset</STRONG>,  <STRONG>standend</STRONG>
+              <STRONG>attroff</STRONG>,  <STRONG>wattroff</STRONG>, <STRONG>attron</STRONG>, <STRONG>wattron</STRONG>, <STRONG>attrset</STRONG>, <STRONG>wattrset</STRONG>, <STRONG>standend</STRONG>
               and <STRONG>standout</STRONG>.
 
-       Color  pair  values can only be OR'd with attributes if the pair number
+       Color pair values can only be OR'd with attributes if the  pair  number
        is less than 256.  The alternate functions such as <STRONG>color_set</STRONG> can pass a
        color pair value directly.  However, <EM>ncurses</EM> ABI 4 and 5 simply OR this
-       value within the alternate functions.  You must use <EM>ncurses</EM>  ABI  6  to
+       value  within  the  alternate functions.  You must use <EM>ncurses</EM> ABI 6 to
        support more than 256 color pairs.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
        This implementation provides the <STRONG>A_ITALIC</STRONG> attribute for terminals which
-       have  the  <STRONG>enter_italics_mode</STRONG>  (<STRONG>sitm</STRONG>)  and   <STRONG>exit_italics_mode</STRONG>   (<STRONG>ritm</STRONG>)
-       capabilities.   Italics are not mentioned in X/Open Curses.  Unlike the
-       other video attributes, <STRONG>A_ITALIC</STRONG> is  unrelated  to  the  <STRONG>set_attributes</STRONG>
-       capabilities.    This   implementation   makes   the   assumption  that
+       have   the   <STRONG>enter_italics_mode</STRONG>  (<STRONG>sitm</STRONG>)  and  <STRONG>exit_italics_mode</STRONG>  (<STRONG>ritm</STRONG>)
+       capabilities.  Italics are not mentioned in X/Open Curses.  Unlike  the
+       other  video  attributes,  <STRONG>A_ITALIC</STRONG>  is unrelated to the <STRONG>set_attributes</STRONG>
+       capabilities.   This   implementation   makes   the   assumption   that
        <STRONG>exit_attribute_mode</STRONG> may also reset italics.
 
-       Each of the functions added by XSI Curses has a parameter  <EM>opts</EM>,  which
-       X/Open  Curses  still  (after  more  than  twenty  years)  documents as
+       Each  of  the functions added by XSI Curses has a parameter <EM>opts</EM>, which
+       X/Open Curses  still  (after  more  than  twenty  years)  documents  as
        reserved  for  future  use,  saying  that  it  should  be  <STRONG>NULL</STRONG>.   This
-       implementation  uses  that  parameter  in ABI 6 for the functions which
+       implementation uses that parameter in ABI 6  for  the  functions  which
        have a color pair parameter to support <EM>extended</EM> <EM>color</EM> <EM>pairs</EM>:
 
        <STRONG>o</STRONG>   For functions which modify the color, e.g., <STRONG>wattr_set</STRONG> and <STRONG>wattr_on</STRONG>,
-           if  <EM>opts</EM>  is set it is treated as a pointer to <STRONG>int</STRONG>, and used to set
+           if <EM>opts</EM> is set it is treated as a pointer to <STRONG>int</STRONG>, and used  to  set
            the color pair instead of the <STRONG>short</STRONG> <EM>pair</EM> parameter.
 
        <STRONG>o</STRONG>   For functions which retrieve the color, e.g., <STRONG>wattr_get</STRONG>, if <EM>opts</EM> is
-           set  it  is  treated  as a pointer to <STRONG>int</STRONG>, and used to retrieve the
-           color pair as an <STRONG>int</STRONG> value, in addition to retrieving  it  via  the
+           set it is treated as a pointer to <STRONG>int</STRONG>, and  used  to  retrieve  the
+           color  pair  as  an <STRONG>int</STRONG> value, in addition to retrieving it via the
            standard pointer to <STRONG>short</STRONG> parameter.
 
-       <STRONG>o</STRONG>   For  functions which turn attributes off, e.g., <STRONG>wattr_off</STRONG>, the <EM>opts</EM>
+       <STRONG>o</STRONG>   For functions which turn attributes off, e.g., <STRONG>wattr_off</STRONG>, the  <EM>opts</EM>
            parameter is ignored except except to check that it is <STRONG>NULL</STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions are described in the XSI Curses standard, Issue 4.  The
-       standard  defined  the dedicated type for highlights, <STRONG>attr_t</STRONG>, which was
-       not defined in SVr4 curses.  The functions taking <STRONG>attr_t</STRONG> arguments were
-       not supported under SVr4.
+       These  functions are described in X/Open Curses, Issue 4.  The standard
+       defined the dedicated  type  for  highlights,  <STRONG>attr_t</STRONG>,  which  was  not
+       defined in SVr4 curses.  The functions taking <STRONG>attr_t</STRONG> arguments were not
+       supported under SVr4.
 
        Very old versions of this library did not force an update of the screen
-       when changing the attributes.  Use <STRONG>touchwin</STRONG>  to  force  the  screen  to
+       when  changing  the  attributes.   Use  <STRONG>touchwin</STRONG> to force the screen to
        match the updated attributes.
 
-       The  XSI  Curses standard states that whether the traditional functions
-       <STRONG>attron</STRONG>/<STRONG>attroff</STRONG>/<STRONG>attrset</STRONG> can manipulate attributes  other  than  <STRONG>A_BLINK</STRONG>,
-       <STRONG>A_BOLD</STRONG>,  <STRONG>A_DIM</STRONG>, <STRONG>A_REVERSE</STRONG>, <STRONG>A_STANDOUT</STRONG>, or <STRONG>A_UNDERLINE</STRONG> is "unspecified".
-       Under this implementation as  well  as  SVr4  curses,  these  functions
-       correctly  manipulate all other highlights (specifically, <STRONG>A_ALTCHARSET</STRONG>,
+       X/Open  Curses  states   that   whether   the   traditional   functions
+       <STRONG>attron</STRONG>/<STRONG>attroff</STRONG>/<STRONG>attrset</STRONG>  can  manipulate  attributes other than <STRONG>A_BLINK</STRONG>,
+       <STRONG>A_BOLD</STRONG>, <STRONG>A_DIM</STRONG>, <STRONG>A_REVERSE</STRONG>, <STRONG>A_STANDOUT</STRONG>, or <STRONG>A_UNDERLINE</STRONG> is  "unspecified".
+       Under  this  implementation  as  well  as  SVr4 curses, these functions
+       correctly manipulate all other highlights (specifically,  <STRONG>A_ALTCHARSET</STRONG>,
        <STRONG>A_PROTECT</STRONG>, and <STRONG>A_INVIS</STRONG>).
 
-       XSI Curses added these entry points:
+       X/Open Curses added these entry points:
 
               <STRONG>attr_get</STRONG>,  <STRONG>attr_on</STRONG>,  <STRONG>attr_off</STRONG>,  <STRONG>attr_set</STRONG>,  <STRONG>wattr_on</STRONG>,  <STRONG>wattr_off</STRONG>,
               <STRONG>wattr_get</STRONG>, <STRONG>wattr_set</STRONG>
 
-       The  new  functions are intended to work with a new series of highlight
+       The new functions are intended to work with a new series  of  highlight
        macros prefixed with <STRONG>WA_</STRONG>.  The older macros have direct counterparts in
        the newer set of names:
 
@@ -336,11 +335,12 @@
 
               <STRONG>WA_ALTCHARSET</STRONG>   Alternate character set
 
-       XSI  curses  does not assign values to these symbols, nor does it state
-       whether or not they are related to the similarly-named A_NORMAL, etc.:
+       X/Open Curses does not assign values to  these  symbols,  nor  does  it
+       state  whether or not they are related to the similarly-named A_NORMAL,
+       etc.:
 
-       <STRONG>o</STRONG>   The XSI curses standard specifies that each pair  of  corresponding
-           <STRONG>A_</STRONG>  and  <STRONG>WA_</STRONG>-using functions operates on the same current-highlight
+       <STRONG>o</STRONG>   X/Open Curses specifies that each  pair  of  corresponding  <STRONG>A_</STRONG>  and
+           <STRONG>WA_</STRONG>-using   functions   operates   on  the  same  current-highlight
            information.
 
        <STRONG>o</STRONG>   However, in some  implementations,  those  symbols  have  unrelated
@@ -364,7 +364,7 @@
            This is consistent with SVr4 curses; X/Open Curses does not specify
            this.
 
-       The  XSI  standard  extended  conformance  level  adds  new  highlights
+       The  X/Open  Curses  extended  conformance  level  adds  new highlights
        <STRONG>A_HORIZONTAL</STRONG>,  <STRONG>A_LEFT</STRONG>,   <STRONG>A_LOW</STRONG>,   <STRONG>A_RIGHT</STRONG>,   <STRONG>A_TOP</STRONG>,   <STRONG>A_VERTICAL</STRONG>   (and
        corresponding  <STRONG>WA_</STRONG>  macros  for  each).   As  of  August 2013, no known
        terminal provides these highlights (i.e., via the <STRONG>sgr1</STRONG> capability).
@@ -497,7 +497,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

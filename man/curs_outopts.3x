@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.60 2024/04/13 22:23:57 tom Exp $
-.TH curs_outopts 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.64 2024/04/20 21:24:19 tom Exp $
+.TH curs_outopts 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -151,7 +151,8 @@ those functions that have a window pointer
 will return an error if the window pointer is null
 .bP
 \fBwsetscrreg\fP
-returns an error if the scrolling region limits extend outside the window.
+returns an error if the scrolling region limits extend outside the
+window boundaries.
 .SH NOTES
 Note that
 \fBclearok\fP,
@@ -163,7 +164,7 @@ Note that
 The \fBimmedok\fP routine is useful for windows that are used as terminal
 emulators.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .PP
 Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fP by saying
@@ -173,11 +174,11 @@ This will not work under \fI\%ncurses\fP.
 Earlier System V curses implementations specified that with \fBscrollok\fP
 enabled, any window modification triggering a scroll also forced a physical
 refresh.
-XSI Curses does not require this, and \fI\%ncurses\fP avoids doing
+X/Open Curses does not require this, and \fI\%ncurses\fP avoids doing
 it to perform better vertical-motion optimization at \fBwrefresh\fP
 time.
 .PP
-The XSI Curses standard does not mention that the cursor should be
+X/Open Curses does not mention that the cursor should be
 made invisible as a side-effect of \fBleaveok\fP.
 SVr4 curses documentation does this, but the code does not.
 Use \fBcurs_set\fP to make the cursor invisible.

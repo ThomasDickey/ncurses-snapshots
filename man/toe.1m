@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.66 2024/03/16 15:35:01 tom Exp $
-.TH @TOE@ 1M 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: toe.1m,v 1.68 2024/04/20 18:59:26 tom Exp $
+.TH @TOE@ 1M 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -85,10 +85,13 @@ lists entries from all terminal database directories that \fIterminfo\fP
 would search,
 instead of only the first that it finds.
 .IP
-If the \fB\-s\fP option is also given,
-\fB\%@TOE@\fP adds a column to the report,
-showing (like \fB\%conflict\fP(1)) which entries belong to a given
-terminal database.
+If
+.B \-s
+is also given,
+\fB\%@TOE@\fP
+additionally reports,
+like \fI\%conflict\fP(1),
+which entries correspond to a given terminal database.
 An \*(``*\*('' marks entries that differ,
 and \*(``+\*('' marks equivalent entries.
 .IP

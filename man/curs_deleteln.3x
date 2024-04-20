@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_deleteln.3x,v 1.36 2024/03/16 15:35:01 tom Exp $
-.TH curs_deleteln 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_deleteln.3x,v 1.38 2024/04/20 21:20:07 tom Exp $
+.TH curs_deleteln 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,7 +96,7 @@ terminal.
 In fact, they will not use hardware line delete/insert unless
 \fBidlok(..., TRUE)\fP has been set on the current window.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 The
 standard specifies that they return \fBERR\fP on failure, but specifies no
 error conditions.

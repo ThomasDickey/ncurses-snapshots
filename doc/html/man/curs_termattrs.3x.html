@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termattrs.3x,v 1.38 2024/04/13 22:16:39 tom Exp @
+  * @Id: curs_termattrs.3x,v 1.41 2024/04/20 21:20:07 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termattrs 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_termattrs 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termattrs 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_termattrs 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
 
@@ -57,11 +57,11 @@
 
        <STRONG>int</STRONG> <STRONG>baudrate(void);</STRONG>
        <STRONG>char</STRONG> <STRONG>erasechar(void);</STRONG>
-       <STRONG>int</STRONG> <STRONG>erasewchar(wchar_t</STRONG> <STRONG>*</STRONG><EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>erasewchar(wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>);</STRONG>
        <STRONG>bool</STRONG> <STRONG>has_ic(void);</STRONG>
        <STRONG>bool</STRONG> <STRONG>has_il(void);</STRONG>
        <STRONG>char</STRONG> <STRONG>killchar(void);</STRONG>
-       <STRONG>int</STRONG> <STRONG>killwchar(wchar_t</STRONG> <STRONG>*</STRONG><EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>killwchar(wchar_t</STRONG> <STRONG>*</STRONG><EM>wc</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*longname(void);</STRONG>
        <STRONG>attr_t</STRONG> <STRONG>term_attrs(void);</STRONG>
        <STRONG>chtype</STRONG> <STRONG>termattrs(void);</STRONG>
@@ -80,8 +80,8 @@
        The <STRONG>erasechar</STRONG> routine returns the user's current erase character.
 
        The  <STRONG>erasewchar</STRONG>  routine  stores  the  current  erase  character in the
-       location referenced by <EM>ch</EM>.  If no erase character has been defined, the
-       routine fails and the location referenced by <EM>ch</EM> is not changed.
+       location referenced by <EM>wc</EM>.  If no erase character has been defined, the
+       routine fails and the location referenced by <EM>wc</EM> is not changed.
 
 
 </PRE><H3><a name="h3-has_ic_has_il">has_ic, has_il</a></H3><PRE>
@@ -98,8 +98,8 @@
        The <STRONG>killchar</STRONG> routine returns the user's current line kill character.
 
        The  <STRONG>killwchar</STRONG>  routine  stores  the current line-kill character in the
-       location referenced by <EM>ch</EM>.  If no line-kill character has been defined,
-       the routine fails and the location referenced by <EM>ch</EM> is not changed.
+       location referenced by <EM>wc</EM>.  If no line-kill character has been defined,
+       the routine fails and the location referenced by <EM>wc</EM> is not changed.
 
 
 </PRE><H3><a name="h3-longname">longname</a></H3><PRE>
@@ -139,8 +139,8 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       The XSI Curses standard, Issue 4 describes these functions.  It changes
-       the return type of <STRONG>termattrs</STRONG> to the new type <STRONG>attr_t</STRONG>.  Most versions  of
+       X/Open  Curses,  Issue  4  describes  these  functions.  It changes the
+       return type of <STRONG>termattrs</STRONG> to the new  type  <STRONG>attr_t</STRONG>.   Most  versions  of
        curses truncate the result returned by <STRONG>termname</STRONG> to 14 characters.
 
 
@@ -149,7 +149,7 @@
 
 
 
-ncurses 6.4                       2024-04-13                <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

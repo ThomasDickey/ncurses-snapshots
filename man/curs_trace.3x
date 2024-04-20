@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.47 2024/03/16 15:35:01 tom Exp $
-.TH curs_trace 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_trace.3x,v 1.50 2024/04/20 21:24:19 tom Exp $
+.TH curs_trace 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -74,7 +74,7 @@
 .nf
 \fB#include <curses.h>
 .PP
-\fBunsigned curses_trace(const unsigned \fIparam\fP);
+\fBunsigned curses_trace(const unsigned \fItrace-mask\fP);
 .PP
 \fBvoid _tracef(const char *\fIformat\fP, ...);
 .PP
@@ -82,7 +82,7 @@
 \fBchar *_traceattr2(int \fIbuffer\fP, chtype \fIch\fP);
 \fBchar *_tracecchar_t(const cchar_t *\fIstring\fP);
 \fBchar *_tracecchar_t2(int \fIbuffer\fP, const cchar_t *\fIstring\fP);
-\fBchar *_tracechar(int \fIch\fP);
+\fBchar *_tracechar(int \fIc\fP);
 \fBchar *_tracechtype(chtype \fIch\fP);
 \fBchar *_tracechtype2(int \fIbuffer\fP, chtype \fIch\fP);
 .PP
@@ -91,7 +91,7 @@
 \fBchar *_tracemouse(const MEVENT *\fIevent\fP);
 .PP
 \fI/* deprecated */\fP
-\fBvoid trace(const unsigned int \fIparam\fP);
+\fBvoid trace(const unsigned int \fItrace-mask\fP);
 .fi
 .SH DESCRIPTION
 The \fIcurses trace\fP routines are used for debugging the
@@ -250,7 +250,7 @@ were called.
 .RE
 .dE
 .SH PORTABILITY
-These functions are not part of the XSI interface.
+These functions are not part of the X/Open Curses interface.
 Some other curses implementations are known to
 have similar features,
 but they are not compatible with \fI\%ncurses\fP:

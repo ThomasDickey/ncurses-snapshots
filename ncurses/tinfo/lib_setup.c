@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.239 2024/04/14 17:03:40 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.240 2024/04/20 17:04:05 tom Exp $")
 
 /****************************************************************************
  *
@@ -490,7 +490,7 @@ _nc_get_screensize(SCREEN *sp,
     bool useEnv = _nc_prescreen.use_env;
     bool useTioctl = _nc_prescreen.use_tioctl;
 
-    T((T_CALLED("_nc_get_screensize (%p)"), sp));
+    T((T_CALLED("_nc_get_screensize (%p)"), (void *) sp));
 #ifdef EXP_WIN32_DRIVER
     /* If we are here, then Windows console is used in terminfo mode.
        We need to figure out the size using the console API

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: MKada_config.in,v 1.32 2023/12/16 21:42:53 tom Exp $
-.TH adacurses@USE_CFG_SUFFIX@\-config 1 2023-12-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: MKada_config.in,v 1.34 2024/04/20 21:13:27 tom Exp $
+.TH adacurses@USE_CFG_SUFFIX@\-config 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ds C adacurses@USE_CFG_SUFFIX@\-config
 .ie \n(.g \{\
 .ds `` \(lq
@@ -43,6 +43,19 @@
 .ie t .ds '  \(aq
 .el   .ds '  '
 .\}
+.
+.\" Fix broken EX/EE macros on DWB troff.
+.\" Detect it: only DWB sets up a `)Y` register.
+.if !\n(.g .if \n()Y \{\
+.\" Revert the undesired changes to indentation.
+.am EX
+.in -5n
+..
+.am EE
+.in +5n
+..
+.\}
+.
 .SH NAME
 \fB\%adacurses@USE_CFG_SUFFIX@\-config\fP \-
 configuration helper for \fI@ADA_LIBNAME@\fP libraries
@@ -82,7 +95,7 @@ Consider a program using \fI@ADA_LIBNAME@\fP to write the message
 user to press the \*(``q\*('' key before exiting.
 Populate a file \fIhello.adb\fP with the following.
 .PP
-.RS 4
+.if \n(LL>67n .RS 4
 .EX
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 
@@ -115,7 +128,7 @@ begin
    End_Windows;
 end Hello;
 .EE
-.RE
+.if \n(LL>67n .RE
 .ne 2
 .PP
 Then, using

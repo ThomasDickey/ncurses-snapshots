@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border_set.3x,v 1.33 2024/03/16 15:35:01 tom Exp $
-.TH curs_border_set 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border_set.3x,v 1.36 2024/04/20 21:20:07 tom Exp $
+.TH curs_border_set 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -179,9 +179,11 @@ Otherwise, they return
 .PP
 Functions using a window parameter return an error if it is null.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 Note that
 \fBborder_set\fP,
@@ -193,7 +195,7 @@ Note that
 \fBvline_set\fP
 may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_add_wch\fP(3X),

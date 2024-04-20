@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.66 2024/04/13 22:18:11 tom Exp $
-.TH curs_initscr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.69 2024/04/20 21:24:19 tom Exp $
+.TH curs_initscr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -174,7 +174,7 @@ i.e.,
 \fBset_term\fP
 returns no error.
 .SH PORTABILITY
-These functions were described in the XSI Curses standard, Issue 4.
+These functions were described in X/Open Curses, Issue 4.
 As of 2015, the current document is X/Open Curses, Issue 7.
 .SS Differences
 X/Open Curses specifies that portable applications must not
@@ -189,7 +189,7 @@ This implementation allows using \fBinitscr\fP after \fBendwin\fP.
 Old versions of curses, e.g., BSD 4.4, would return a null pointer
 from \fBinitscr\fP when an error is detected, rather than exiting.
 It is safe but redundant to check the return value of \fBinitscr\fP
-in XSI Curses.
+in X/Open Curses.
 .PP
 Calling \fBendwin\fP does not dispose of the memory allocated in \fBinitscr\fP
 or \fBnewterm\fP.

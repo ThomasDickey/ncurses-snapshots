@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.99 2024/03/16 15:38:33 tom Exp $
-.TH curs_attr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.103 2024/04/20 21:24:19 tom Exp $
+.TH curs_attr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -308,9 +308,10 @@ for \fBwcolor_set\fP is outside the range 0..COLOR_PAIRS\-1.
 does not return an error if either of the parameters of \fBwattr_get\fP
 used for retrieving attribute or color pair values is \fBNULL\fP.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
 .\" ---------------------------------------------------------------------------
 .SH NOTES
 These functions may be macros:
@@ -362,7 +363,7 @@ the \fIopts\fP parameter is ignored except
 except to check that it is \fBNULL\fP.
 .\" ---------------------------------------------------------------------------
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 The standard defined the dedicated type for highlights,
 \fBattr_t\fP, which was not defined in SVr4 curses.
 The functions taking \fBattr_t\fP arguments were not supported under SVr4.
@@ -371,7 +372,7 @@ Very old versions of this library did not force an update of the screen
 when changing the attributes.
 Use \fBtouchwin\fP to force the screen to match the updated attributes.
 .PP
-The XSI Curses standard states that whether the traditional functions
+X/Open Curses states that whether the traditional functions
 \fBattron\fP/\fBattroff\fP/\fBattrset\fP can manipulate attributes other than
 \fBA_BLINK\fP, \fBA_BOLD\fP, \fBA_DIM\fP, \fBA_REVERSE\fP, \fBA_STANDOUT\fP, or
 \fBA_UNDERLINE\fP is \*(``unspecified\*(''.
@@ -379,7 +380,7 @@ Under this implementation as well as
 SVr4 curses, these functions correctly manipulate all other highlights
 (specifically, \fBA_ALTCHARSET\fP, \fBA_PROTECT\fP, and \fBA_INVIS\fP).
 .PP
-XSI Curses added these entry points:
+X/Open Curses added these entry points:
 .sp
 .RS
 \fBattr_get\fP, \fBattr_on\fP,
@@ -411,11 +412,11 @@ WA_ALTCHARSET	Alternate character set
 .TE
 .RE
 .PP
-XSI curses does not assign values to these symbols,
+X/Open Curses does not assign values to these symbols,
 nor does it state whether or not they are related to the
 similarly-named A_NORMAL, etc.:
 .bP
-The XSI curses standard specifies that each pair of corresponding \fBA_\fP
+X/Open Curses specifies that each pair of corresponding \fBA_\fP
 and \fBWA_\fP-using functions operates on the same current-highlight
 information.
 .bP
@@ -445,7 +446,7 @@ no change is made to the window's color.
 This is consistent with SVr4 curses;
 X/Open Curses does not specify this.
 .PP
-The XSI standard extended conformance level adds new highlights
+The X/Open Curses extended conformance level adds new highlights
 \fBA_HORIZONTAL\fP, \fBA_LEFT\fP, \fBA_LOW\fP, \fBA_RIGHT\fP, \fBA_TOP\fP,
 \fBA_VERTICAL\fP (and corresponding \fBWA_\fP macros for each).
 As of August 2013,

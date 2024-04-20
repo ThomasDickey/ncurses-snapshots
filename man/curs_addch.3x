@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.83 2024/04/13 22:23:35 tom Exp $
-.TH curs_addch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.85 2024/04/20 19:03:47 tom Exp $
+.TH curs_addch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,7 +58,7 @@
 \fB\%mvwaddch\fP,
 \fB\%echochar\fP,
 \fB\%wechochar\fP \-
-add a \fIcurses\fR character to a window and advance the cursor
+add a \fIcurses\fP character to a window and advance the cursor
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
@@ -253,13 +253,11 @@ returns
 if \fB\%scrollok\fP(3X) is not enabled in that event,
 because it is not possible to wrap to a new line.
 .PP
-Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP(3X) and fail if the position is outside the window,
-or
-(for \*(``mvw\*('' functions)
-if the
-.I \%WINDOW
-pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 .BR \%addch ,
 .BR \%mvaddch ,
@@ -271,6 +269,13 @@ may be implemented as macros.
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
+.PP
+SVr4
+.I curses
+describes a successful return value only as
+\*(``an integer value other than
+.BR ERR \*(''.
+.PP
 The defaults specified for forms-drawing characters apply in the POSIX
 locale.
 .SS "ACS Symbols"

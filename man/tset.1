@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.81 2024/03/16 15:35:01 tom Exp $
-.TH @TSET@ 1 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.83 2024/04/20 19:09:08 tom Exp $
+.TH @TSET@ 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -396,18 +396,20 @@ the operating system,
 the \fILINES\fP and \fICOLUMNS\fP environment variables or
 the terminal description.
 .PP
-Obtaining the window size from the terminal description is common to
-both implementations, but considered obsolescent.
+Obtaining the window size from a terminal's type description is common
+to both implementations,
+but considered obsolescent.
 Its only practical use is for hardware terminals.
-Generally speaking, a window size would be unset only if there were
-some problem obtaining the value from the operating system
-(and \fBsetupterm\fP would still fail).
-For that reason,
-the \fILINES\fP and \fI\%COLUMNS\fP environment variables
-may be useful for working around window-size problems.
-Those have the drawback that if the window is resized,
-those variables must be recomputed and reassigned.
-To do this more easily, use the \fBresize\fP(1) program.
+Generally,
+the window size will remain uninitialized only if there were a problem
+obtaining the value from the operating system
+(and \fB\%setupterm\fP would still fail).
+The \fILINES\fP and \fI\%COLUMNS\fP environment variables
+may thus be useful for working around window-size problems,
+but have the drawback that if the window is resized,
+their values must be recomputed and reassigned.
+The \fI\%resize\fP(1) program distributed with
+\fI\%xterm\fP(1) assists this activity.
 .SH HISTORY
 A \fB\%reset\fP command written by Kurt Shoens appeared in 1BSD
 (March 1978).

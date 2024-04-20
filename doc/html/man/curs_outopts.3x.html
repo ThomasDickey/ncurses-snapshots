@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_outopts.3x,v 1.60 2024/04/13 22:23:57 tom Exp @
+  * @Id: curs_outopts.3x,v 1.64 2024/04/20 21:24:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_outopts 3x 2024-04-13 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_outopts 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_outopts 3x 2024-04-13 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_outopts 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 
@@ -156,7 +156,7 @@
            the window pointer is null
 
        <STRONG>o</STRONG>   <STRONG>wsetscrreg</STRONG>  returns  an error if the scrolling region limits extend
-           outside the window.
+           outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -168,7 +168,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions are described in the XSI Curses standard, Issue 4.
+       These functions are described in X/Open Curses, Issue 4.
 
        Some historic curses implementations had, as an  undocumented  feature,
        the  ability  to  do  the  equivalent  of  <STRONG>clearok(...,</STRONG>  <STRONG>1)</STRONG>  by  saying
@@ -176,28 +176,27 @@
 
        Earlier System V curses implementations specified  that  with  <STRONG>scrollok</STRONG>
        enabled,  any  window  modification  triggering  a scroll also forced a
-       physical refresh.  XSI Curses does not require this, and <EM>ncurses</EM> avoids
-       doing  it  to  perform  better vertical-motion optimization at <STRONG>wrefresh</STRONG>
-       time.
+       physical refresh.  X/Open Curses does not  require  this,  and  <EM>ncurses</EM>
+       avoids  doing  it  to  perform  better  vertical-motion optimization at
+       <STRONG>wrefresh</STRONG> time.
 
-       The XSI Curses standard does not mention that the cursor should be made
-       invisible  as a side-effect of <STRONG>leaveok</STRONG>.  SVr4 curses documentation does
-       this, but  the  code  does  not.   Use  <STRONG>curs_set</STRONG>  to  make  the  cursor
-       invisible.
+       X/Open Curses does not mention that the cursor should be made invisible
+       as  a side-effect of <STRONG>leaveok</STRONG>.  SVr4 curses documentation does this, but
+       the code does not.  Use <STRONG>curs_set</STRONG> to make the cursor invisible.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       <EM>ncurses</EM>  formerly  treated <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG> and <STRONG><A HREF="curs_inopts.3x.html">nonl(3x)</A></STRONG> as both input <EM>and</EM> output
+       <EM>ncurses</EM> formerly treated <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG> and <STRONG><A HREF="curs_inopts.3x.html">nonl(3x)</A></STRONG> as both input  <EM>and</EM>  output
        options, but no longer; see <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,    <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
 
 
-ncurses 6.4                       2024-04-13                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inchstr.3x,v 1.42 2024/03/16 15:35:01 tom Exp $
-.TH curs_inchstr 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inchstr.3x,v 1.45 2024/04/20 21:20:07 tom Exp $
+.TH curs_inchstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -94,9 +94,11 @@ if the \fIwin\fP parameter is null or
 .bP
 if the \fIchstr\fP parameter is null.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 All routines except \fBwinchnstr\fP may be macros.
 .PP
@@ -121,7 +123,7 @@ Therefore, the use of
 \fBwinchnstr\fP
 is recommended.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 It is no
 more specific than the SVr4 documentation on the trailing 0.
 It does specify

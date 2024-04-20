@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.207 2024/04/14 00:34:00 tom Exp $
-.TH ncurses 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.210 2024/04/20 21:24:19 tom Exp $
+.TH ncurses 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -44,6 +44,14 @@
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
+..
+.
+.\" Add supplementary paragraph tag on its own line after TP.
+.\" Adapted from TQ (which would produce mandoc warnings).
+.de tQ
+.  br
+.  ns
+.  TP
 ..
 .
 .ds d @TERMINFO@
@@ -67,8 +75,10 @@ System V Release 4 Unix (\*(``SVr4\*('')
 and
 4.4BSD Unix,
 the development of which ceased in the 1990s.
-This describes \fI\%ncurses\fP
-version @NCURSES_MAJOR@.@NCURSES_MINOR@ (patch @NCURSES_PATCH@).
+This document describes
+.I \%ncurses
+version @NCURSES_MAJOR@.@NCURSES_MINOR@
+(patch @NCURSES_PATCH@).
 .PP
 .I \%ncurses
 permits control of the terminal screen's contents;
@@ -404,6 +414,10 @@ man pages apply the following names to parameters.
 center;
 Li L.
 bf	\fIbool\fP (\fBTRUE\fP or \fBFALSE\fP)
+c	a \fIchar\fP or \fIint\fP
+ch	a \fIchtype\fP
+wc	a \fIwchar_t\fP or \fIwint_t\fP
+wch	a \fIcchar_t\fP
 win	pointer to a \fIWINDOW\fP
 pad	pointer to a \fIWINDOW\fP that is a pad
 .TE
@@ -1030,8 +1044,11 @@ on failure.
 Typically,
 .I \%ncurses
 treats a null pointer passed as a function parameter as a failure.
-Functions with a \*(``mv\*('' prefix first perform cursor movement using
-\fB\%wmove\fP(3X) and fail if the position is outside the window.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH ENVIRONMENT
 The following symbols from the process environment customize the
 runtime behavior of
@@ -1428,142 +1445,206 @@ If defined with an integral value,
 the library calls \fB\%curses_trace\fP(3X) with that value as the
 argument.
 .SS "\fITERM\fP"
-Denotes your terminal type.
-Each terminal type is distinct, though many are similar.
+The
+.I TERM
+variable denotes the terminal type.
+Each is distinct,
+though many are similar.
+It is commonly set by terminal emulators to help applications find a
+workable terminal description.
+Some choose a popular approximation such as \*(``ansi\*('',
+\*(``vt100\*('', or \*(``xterm\*('' rather than an exact fit to their
+capabilities.
+Not infrequently,
+an application will have problems with that approach;
+for example,
+a key stroke may not operate correctly,
+or produce no effect but seeming garbage characters on the screen.
 .PP
-\fITERM\fP is commonly set by terminal emulators to help
-applications find a workable terminal description.
-Some of those choose a popular approximation, e.g.,
-\*(``ansi\*('', \*(``vt100\*('', \*(``xterm\*('' rather than an exact fit.
-Not infrequently, your application will have problems with that approach,
-e.g., incorrect function-key definitions.
-.PP
-If you set \fITERM\fP in your environment,
-it has no effect on the operation of the terminal emulator.
-It only affects the way applications work within the terminal.
-Likewise, as a general rule (\fBxterm\fP(1) being a rare exception),
-terminal emulators which allow you to
-specify \fITERM\fP as a parameter or configuration value do
-not change their behavior to match that setting.
+Setting
+.I TERM
+has no effect on hardware operation;
+it affects the way applications communicate with the terminal.
+Likewise,
+as a general rule
+(\fIxterm\fP(1) being a rare exception),
+terminal emulators that allow you to specify
+.I TERM
+as a parameter or configuration value do not change their behavior to
+match that setting.
 .SS "\fITERMCAP\fP"
-If the \fI\%ncurses\fP library has been configured with \fItermcap\fP
-support, \fI\%ncurses\fP will check for a terminal's description in
-termcap form if it is not available in the terminfo database.
-.PP
-The \fI\%TERMCAP\fP environment variable contains
-either a terminal description (with newlines stripped out),
-or a file name telling where the information denoted by
-the \fITERM\fP environment variable exists.
-In either case, setting it directs \fI\%ncurses\fP to ignore
-the usual place for this information, e.g., /etc/termcap.
+If
+.I \%ncurses
+is configured with
+.I termcap
+support,
+it checks for a terminal type description in
+.I termcap
+format if one in
+.I \%term\%info
+format is not available.
+Setting this variable directs
+.I \%ncurses
+to ignore the usual
+.I termcap
+database location,
+.IR \%/etc/termcap ;
+see
+.I \%TERMPATH
+below.
+.I \%TERMCAP
+should contain either a terminal description
+(with newlines stripped out),
+or a file name indicating where the information required by the
+.I TERM
+environment variable is stored.
 .SS "\fITERMINFO\fP"
-\fI\%ncurses\fP can be configured to read from multiple terminal
-databases.
-The \fI\%TERMINFO\fP variable overrides the location for
-the default terminal database.
-Terminal descriptions (in terminal format) are stored in terminal databases:
+.I \%ncurses
+can be configured to read terminal type description databases in various
+locations using different formats.
+This variable overrides the default location.
 .bP
-Normally these are stored in a directory tree,
-using subdirectories named by the first letter of the terminal names therein.
-.IP
-This is the scheme used in System V, which legacy Unix systems use,
-and the \fI\%TERMINFO\fP variable is used by \fIcurses\fP applications
-on those
-systems to override the default location of the terminal database.
-.IP \(bu 4
-If \fI\%ncurses\fP is built to use hashed databases,
-then each entry in this list may be the path of a hashed database file, e.g.,
-.RS 4
-.PP
-.RS 4
-.EX
-/usr/share/terminfo.db
-.EE
-.RE
-.PP
+Descriptions in
+.I \%term\%info
+format are normally stored in a directory tree using subdirectories
+named by the common first letters of the terminal types named therein.
+This is the scheme used in System\ V.
+.bP
+If
+.I \%ncurses
+is configured to use hashed databases,
+then
+.I \%TERM\%INFO
+may name its location,
+such as
+.IR \%/usr/share/terminfo.db ,
 rather than
+.IR \%/usr/share/terminfo/ .
 .PP
-.RS 4
-.EX
-/usr/share/terminfo/
-.EE
-.RE
-.PP
-The hashed database uses less disk-space and is a little faster than the
+The hashed database uses less disk space and is a little faster than the
 directory tree.
 However,
 some applications assume the existence of the directory tree,
-reading it directly
-rather than using the terminfo library calls.
-.RE
+and read it directly
+rather than using the
+.I \%term\%info
+API.
 .bP
-If \fI\%ncurses\fP is built with a support for reading termcap files
-directly, then an entry in this list may be the path of a termcap file.
-.IP \(bu 4
-If the \fI\%TERMINFO\fP variable begins with
-\*(``hex:\*('' or \*(``b64:\*('',
-\fI\%ncurses\fP uses the remainder of that variable as a compiled
-terminal description.
-You might produce the base64 format using \fBinfocmp\fP(1M):
+If
+.I \%ncurses
+is configured with
+.I termcap
+support,
+this variable may contain the location of a
+.I \%termcap
+file.
+.bP
+If the value of
+.I \%TERM\%INFO
+begins with \*(``hex:\*('' or \*(``b64:\*('',
+.I \%ncurses
+uses the remainder of the value as a compiled
+.I \%term\%info
+description.
+You might produce the base64 format using \fB\%infocmp\fP(1M).
 .RS 4
-.PP
-.RS 4
+.IP
 .EX
-TERMINFO="$(infocmp \-0 \-Q2 \-q)"
+TERMINFO=$(infocmp \-0 \-Q2 \-q)
 export TERMINFO
 .EE
 .RE
+.IP
+The compiled description is used only if it corresponds to the terminal
+type identified by
+.IR TERM .
 .PP
-The compiled description is used if it corresponds to the terminal identified
-by the \fITERM\fP variable.
-.RE
-.PP
-Setting \fI\%TERMINFO\fP is the simplest,
-but not the only way to set location of the default terminal database.
-The complete list of database locations in order follows:
+Setting
+.I \%TERM\%INFO
+is the simplest,
+but not the only,
+way to direct
+.I \%ncurses
+to a terminal database.
+The search path is as follows.
+.bP
+the last terminal database to which the running
+.I \%ncurses
+application wrote,
+if any
+.bP
+the location specified by the
+.I \%TERM\%INFO
+environment variable
+.bP
+.I $HOME/.terminfo
+.bP
+locations listed in the
+.I \%TERMINFO_DIRS
+environment variable
+.ds td \" empty
+.if !'@TERMINFO_DIRS@'no default value' .as td @TERMINFO_DIRS@
+.if !'@TERMINFO@\*(td'' \{\
+.bP
+location(s) configured and compiled into
+.I \%ncurses
 .RS 3
+.if !'\*(td'' \{\
 .bP
-the last terminal database to which \fI\%ncurses\fP wrote,
-if any, is searched first
+.I \%@TERMINFO_DIRS@
+.\}
+.if !'@TERMINFO'' .if !'\*(td'@TERMINFO@' \{\
 .bP
-the location specified by the \fI\%TERMINFO\fP environment variable
-.bP
-$HOME/.terminfo
-.bP
-locations listed in the \fI\%TERMINFO_DIRS\fP environment variable
-.bP
-one or more locations whose names are configured and compiled into the
-\fI\%ncurses\fP library, i.e.,
-.RS 3
-.bP
-@TERMINFO_DIRS@ (corresponding to the \fI\%TERMINFO_DIRS\fP variable)
-.bP
-@TERMINFO@ (corresponding to the \fITERMINFO\fP variable)
-.RE
+.I \%@TERMINFO@
+.\}
+.\}
 .RE
 .SS "\fITERMINFO_DIRS\fP"
-Specifies a list of locations to search for terminal descriptions.
-Each location in the list is a terminal database as described in
-the section on the \fI\%TERMINFO\fP variable.
-The list is separated by colons (i.e., ":") on Unix, semicolons on OS/2 EMX.
-.PP
-There is no corresponding feature in System V terminfo;
-it is an extension developed for \fI\%ncurses\fP.
+This variable specifies a list of locations,
+akin to
+.IR PATH ,
+in which
+.I \%ncurses
+searches for the terminal type descriptions described by
+.I \%TERMINFO
+above.
+The list items are separated by colons on Unix
+and semicolons on OS/2 EMX.
+System\ V
+.I \%term\%info
+lacks a corresponding feature;
+.I \%TERMINFO_DIRS
+is an
+.I \%ncurses
+extension.
 .SS "\fITERMPATH\fP"
-If \fI\%TERMCAP\fP does not hold a file name then \fI\%ncurses\fP checks
-the \fI\%TERMPATH\fP environment variable.
-This is a list of filenames separated by spaces or colons (i.e., ":") on Unix,
-semicolons on OS/2 EMX.
+If
+.I \%TERMCAP
+does not hold a terminal type description or file name,
+then
+.I \%ncurses
+checks the contents of
+.IR \%TERMPATH ,
+a list of locations,
+akin to
+.IR PATH ,
+in which it searches for
+.I termcap
+terminal type descriptions.
+The list items are separated by colons on Unix
+and semicolons on OS/2 EMX.
 .PP
-If the \fI\%TERMPATH\fP environment variable is not set,
-\fI\%ncurses\fP looks in the files
-.PP
-.RS 4
-.EX
-/etc/termcap, /usr/share/misc/termcap and $HOME/.termcap,
-.EE
-.RE
-.PP
+If both
+.I \%TERMCAP
+and
+.I \%TERMPATH
+are unset or invalid,
+.I \%ncurses
+searches for the files
+.IR \%/etc/termcap ,
+.IR \%/usr/share/misc/termcap ,
+and
+.IR \%$HOME/.termcap ,
 in that order.
 .SH "ALTERNATE CONFIGURATIONS"
 Many different
@@ -1579,7 +1660,7 @@ A few are of particular significance to the application developer
 employing
 .IR \%ncurses .
 .TP 5
-\-\-disable\-overwrite
+.B \-\-disable\-overwrite
 The standard include for \fI\%ncurses\fP is as noted in \fBSYNOPSIS\fP:
 .RS 5
 .PP
@@ -1605,7 +1686,7 @@ It also omits a symbolic link which would allow you to use \fB\-lcurses\fP
 to build executables.
 .RE
 .TP 5
-\-\-enable\-widec
+.B \-\-enable\-widec
 The configure script renames the library and
 (if the \fB\-\-disable\-overwrite\fP option is used)
 puts the header files in a different subdirectory.
@@ -1630,7 +1711,8 @@ you link with
 You must also enable the wide-character features in the header file
 when compiling for the wide-character library
 to use the extended (wide-character) functions.
-The symbol which enables these features has changed since XSI Curses, Issue 4:
+The symbol which enables these features has changed
+since X/Open Curses, Issue 4:
 .bP
 Originally, the wide-character feature required the symbol
 \fB_XOPEN_SOURCE_EXTENDED\fP
@@ -1659,7 +1741,7 @@ to allow applications to be built using either library
 from the same set of headers.
 .RE
 .TP 5
-\-\-with\-pthread
+.B \-\-with\-pthread
 The configure script renames the library.
 All of the library names have a \*(``t\*('' appended to them
 (before any \*(``w\*('' added by \fB\-\-enable\-widec\fP).
@@ -1669,20 +1751,20 @@ allow read-only access.
 At the same time, setter-functions are provided to set these values.
 Some applications (very few) may require changes to work with this convention.
 .TP 5
-\-\-with\-shared
-.TP
-\-\-with\-normal
-.TP
-\-\-with\-debug
-.TP
-\-\-with\-profile
+.B \-\-with\-shared
+.tQ
+.B \-\-with\-normal
+.tQ
+.B \-\-with\-debug
+.tQ
+.B \-\-with\-profile
 The shared and normal (static) library names differ by their suffixes,
 e.g., \fBlibncurses.so\fP and \fBlibncurses.a\fP.
 The debug and profiling libraries add a \*(``_g\*(''
 and a \*(``_p\*('' to the root names respectively,
 e.g., \fBlibncurses_g.a\fP and \fBlibncurses_p.a\fP.
 .TP 5
-\-\-with\-termlib
+.B \-\-with\-termlib
 Low-level functions which do not depend upon whether the library
 supports wide-characters, are provided in the tinfo library.
 .IP
@@ -1709,7 +1791,7 @@ database
 \fB\%curs_util\fP(3X) \- miscellaneous \fIcurses\fP utility routines
 .RE
 .TP 5
-\-\-with\-trace
+.B \-\-with\-trace
 The \fBtrace\fP function normally resides in the debug library,
 but it is sometimes useful to configure this in the shared library.
 Configure scripts should check for the function's existence rather
@@ -1743,15 +1825,15 @@ If the standard output file descriptor of an
 .I \%ncurses
 program is redirected to something that is not a terminal device,
 the library writes screen updates to the standard error file descriptor.
-This was an undocumented feature of SVr3.
+This was an undocumented feature of SVr3
+.IR curses .
 .PP
-See subsection \*(``Header files\*('' below regarding symbols exposed by
+See subsection \*(``Header Files\*('' below regarding symbols exposed by
 inclusion of \fI\%curses.h\fP.
 .SH EXTENSIONS
 .I \%ncurses
 enables an application to capture mouse events on certain terminals,
-including
-.IR \%xterm ;
+including \fI\%xterm\fP(1);
 see \fB\%curs_mouse\fP(3X).
 .PP
 .I \%ncurses
@@ -1768,10 +1850,11 @@ see \fB\%has_key\fP(3X).
 .I \%ncurses
 extends the fixed set of function key capabilities specified by X/Open
 Curses by allowing the application programmer to define additional key
-sequences at runtime;
+events at runtime;
 see
 \fB\%define_key\fP(3X),
 \fB\%key_defined\fP(3X),
+\fB\%keybound\fP(3X),
 and
 \fB\%keyok\fP(3X).
 .PP
@@ -1788,9 +1871,9 @@ See \fB\%default_colors\fP(3X).
 .PP
 An
 .I \%ncurses
-application can choose to hide the internal details of
+application can eschew knowledge of
 .I \%WINDOW
-structures,
+structure internals,
 instead using accessor functions such as
 \fB\%is_scrollok\fP(3X).
 .PP
@@ -1806,7 +1889,10 @@ and \fB\%extended_slk_color\fP(3X) as a form of \fB\%slk_color\fP(3X)
 that can gather color information from them when many colors are
 supported.
 .PP
-Some extensions are only available if
+Some extensions are available only if
+.I \%ncurses
+permits modification of \fB\%unctrl\fP(3X)'s behavior;
+see \fB\%use_legacy_coding\fP(3X).
 .I \%ncurses
 is compiled to support them;
 section \*(``ALTERNATE CONFIGURATIONS\*('' describes how.
@@ -1856,7 +1942,7 @@ The latter includes several additional features,
 such as wide-character and color support.
 .I \%ncurses
 intends base-level conformance with X/Open Curses,
-and supports nearly all its enhanced features.
+and supports nearly all features of its enhanced level.
 .\" XXX: What's missing?  GBR counts untic(1), and that's all.
 .PP
 Differences between X/Open Curses and
@@ -1867,125 +1953,308 @@ pages.
 In many cases, X/Open Curses is vague about error conditions,
 omitting some of the SVr4 documentation.
 .PP
-Unlike other implementations, this one checks parameters such as pointers
-to \fI\%WINDOW\fP structures to ensure they are not null.
-The main reason for providing this behavior is to guard against programmer
-error.
+Unlike other implementations,
+.I \%ncurses
+checks pointer parameters,
+such as those to
+.I \%WINDOW
+structures,
+to ensure that they are not null.
+This is done primarily to guard against programmer error.
 The standard interface does not provide a way for the library
-to tell an application which of several possible errors were detected.
-Relying on this (or some other) extension will adversely affect the
-portability of curses applications.
+to tell an application which of several possible errors occurred.
+Relying on this
+(or some other)
+extension adversely affects the portability of
+.I curses
+applications.
 .SS "Padding Differences"
-In historic curses versions, delays embedded in the capabilities \fBcr\fP,
-\fBind\fP, \fBcub1\fP, \fBff\fP and \fBtab\fP activated corresponding delay
-bits in the Unix tty driver.
-In this implementation, all padding is done by sending NUL bytes.
-This method is slightly more expensive, but narrows the interface
-to the Unix kernel significantly and increases the package's portability
-correspondingly.
+In historical
+.I curses
+implementations,
+delays embedded in the
+.I \%term\%info
+capabilities
+.B \%carriage_return
+.RB ( cr ),
+.B \%scroll_forward
+.RB ( ind ),
+.B \%cursor_left
+.RB ( cub1 ),
+.B \%form_feed
+.RB ( ff ),
+and
+.B \%tab
+.RB ( ht )
+activated corresponding delay bits in the Unix terminal driver.
+.I \%ncurses
+performs all padding by sending NUL bytes to the device.
+This method is slightly more expensive,
+but narrows the interface to the Unix kernel significantly and
+correspondingly increases the package's portability.
 .SS "Header Files"
-The header file \fI\%curses.h\fP itself includes the header files
-\fI\%stdio.h\fP and \fI\%unctrl.h\fP.
+The header file
+.I \%curses.h
+itself includes the header files
+.I \%stdio.h
+and
+.IR \%unctrl.h .
 .PP
 X/Open Curses has more to say,
-but does not finish the story:
 .RS 4
 .PP
-The inclusion of <curses.h> may make visible all symbols
-from the headers <stdio.h>, <term.h>, <termios.h>, and <wchar.h>.
+The inclusion of
+.I \%curses.h
+may make visible all symbols from the headers
+.IR \%stdio.h ,
+.IR \%term.h ,
+.IR \%termios.h ,
+and
+.IR \%wchar.h .
 .RE
 .PP
-Here is a more complete story:
+but does not finish the story.
+A more complete account follows.
 .bP
-Starting with BSD curses, all implementations have included <stdio.h>.
+Starting with 4BSD
+.I curses
+(1980)
+all implementations have provided a
+.I \%curses.h
+file.
 .IP
-BSD curses included <curses.h> and <unctrl.h> from an internal header
-file
-.I \%curses.ext
-(\*(``ext\*('' abbreviated \*(``externs\*('').
+BSD
+.I curses
+code included
+.I \%curses.h
+and
+.I \%unctrl.h
+from an internal header file
+.IR \%curses.ext ,
+where
+\*(``ext\*('' abbreviated \*(``externs\*(''.
 .IP
-BSD curses used <stdio.h> internally (for \fBprintw\fP and \fBscanw\fP),
-but nothing in <curses.h> itself relied upon <stdio.h>.
+The implementations of
+.I \%printw
+and
+.I \%scanw
+used undocumented internal functions of the standard I/O library
+.RI ( _doprnt
+and
+.IR _doscan ),
+but nothing in
+.I \%curses.h
+itself relied upon
+.IR \%stdio.h .
 .bP
-SVr2 curses added \fBnewterm\fP(3X), which relies upon <stdio.h>.
-That is, the function prototype uses \fBFILE\fP.
+SVr2
+.I curses
+added
+.IR \%newterm ,
+which relies upon
+.I \%stdio.h
+because its function prototype employs the
+.I FILE
+type.
 .IP
-SVr4 curses added \fBputwin\fP and \fBgetwin\fP, which also use <stdio.h>.
+SVr4
+.I curses
+added
+.I \%putwin
+and
+.IR \%getwin ,
+which also use
+.IR \%stdio.h .
 .IP
-X/Open Curses documents all three of these functions.
+X/Open Curses specifies all three of these functions.
 .IP
-SVr4 curses and X/Open Curses do not require the developer to
-include <stdio.h> before including <curses.h>.
-Both document curses showing <curses.h> as the only required header.
+SVr4
+.I curses
+and X/Open Curses do not require the developer to include
+.I \%stdio.h
+before
+.IR \%curses.h .
+Both document use of
+.I curses
+as requiring only
+.IR \%curses.h .
 .IP
-As a result, standard <curses.h> will always include <stdio.h>.
+As a result,
+standard
+.I \%curses.h
+always includes
+.IR \%stdio.h .
 .bP
-X/Open Curses is inconsistent with respect to SVr4 regarding <unctrl.h>.
+X/Open Curses and SVr4
+.I curses
+are inconsistent with respect to
+.IR \%unctrl.h .
 .IP
 As noted in \fBcurs_util\fP(3X),
-\fI\%ncurses\fP includes <unctrl.h> from <curses.h>
-(like SVr4).
+.I \%ncurses
+includes
+.I \%unctrl.h
+from
+.I \%curses.h
+(as SVr4 does).
 .bP
-X/Open's comments about <term.h> and <termios.h> may refer to HP-UX and AIX:
+X/Open Curses's comments about
+.I \%term.h
+and
+.I \%termios.h
+may refer to HP-UX and AIX.
 .IP
-HP-UX curses includes <term.h> from <curses.h>
-to declare \fBsetupterm\fP in curses.h,
-but \fI\%ncurses\fP (and Solaris curses) do not.
+HP-UX
+.I curses
+includes
+.I \%term.h
+from
+.I \%curses.h
+to declare
+.I \%setupterm
+in
+.IR \%curses.h ,
+but
+.I \%ncurses
+and Solaris
+.I curses
+do not.
 .IP
-AIX curses includes <term.h> and <termios.h>.
-Again, \fI\%ncurses\fP (and Solaris curses) do not.
+AIX
+.I curses
+includes
+.I \%term.h
+and
+.IR \% termios.h .
+Again,
+.I \%ncurses
+and Solaris
+.I curses
+do not.
 .bP
-X/Open says that <curses.h> \fImay\fP include <term.h>,
-but there is no requirement that it do that.
+X/Open Curses says that
+.I \%curses.h
+.B may
+include
+.IR \%term.h ,
+but does not require it to do so.
 .IP
-Some programs use functions declared in both <curses.h> and <term.h>,
-and must include both headers in the same module.
-Very old versions of AIX curses required including <curses.h>
-before including <term.h>.
+Some programs use functions declared in both
+.I \%curses.h
+and
+.IR \%term.h ,
+and must include both header files in the same module.
+Very old versions of AIX
+.I curses
+required inclusion of
+.I \%curses.h
+before
+.IR \%term.h .
 .IP
-Because \fI\%ncurses\fP header files include the headers needed to
-define datatypes used in the headers,
-\fI\%ncurses\fP header files can be included in any order.
-But for portability, you should include <curses.h> before <term.h>.
+The header files supplied by
+.I \%ncurses
+include the standard library headers required for its declarations,
+so
+.IR \%ncurses 's
+own header files can be included in any order.
+But for portability,
+you should include
+.I \%curses.h
+before
+.IR \%term.h .
 .bP
-X/Open Curses says \fI"may make visible"\fP
-because including a header file does not necessarily make all symbols
-in it visible (there are ifdef's to consider).
+X/Open Curses says \*(``may make visible\*('' because including a header
+file does not necessarily make visible all of the symbols in it
+(consider
+.B \%#ifdef
+and similar).
 .IP
-For instance, in \fI\%ncurses\fP <wchar.h> \fImay\fP be included if
-the proper symbol is defined, and if \fI\%ncurses\fP is configured for
-wide-character support.
-If the header is included, its symbols may be made visible.
-That depends on the value used for \fB_XOPEN_SOURCE\fP
+For instance,
+.IR \%ncurses 's
+.I \%curses.h
+.B may \" bold to contrast with preceding italic
+include
+.I \%wchar.h
+if the proper symbol is defined,
+and if
+.I \%ncurses
+is configured for wide-character support.
+If
+.I \%wchar.h
+is included,
+its symbols
+.B may \" bold for consistency in this paragraph
+be made visible depending on the value of the
+.B _XOPEN_SOURCE
 feature test macro.
 .bP
-X/Open Curses documents one required header,
-in a special case: <stdarg.h> before <curses.h> to prototype
-the \fBvw_printw\fP and \fBvw_scanw\fP functions
+X/Open Curses mandates an application's inclusion of one standard C
+library header in a special case:
+.I \%stdarg.h
+before
+.I \%curses.h
+to prototype the functions
+.I \%vw_printw
+and
+.I \%vw_scanw
 (as well as the obsolete
-the \fBvwprintw\fP and \fBvwscanw\fP functions).
-Each of those uses a \fBva_list\fP parameter.
+.I \%vwprintw
+and
+.IR \%vwscanw ).
+Each of these takes a variadic argument list,
+a
+.I \%va_list
+parameter,
+like that of \fI\%printf\fP(3).
 .IP
-The two obsolete functions were introduced in SVr3.
-The other functions were introduced in X/Open Curses.
-In between, SVr4 curses provided for the possibility that
-an application might include either <varargs.h> or <stdarg.h>.
-Initially, that was done by using \fBvoid*\fP for the \fBva_list\fP
-parameter.
-Later, a special type (defined in <stdio.h>) was introduced,
-to allow for compiler type-checking.
-That special type is always available,
-because <stdio.h> is always included by <curses.h>.
-.IP
-None of the X/Open Curses implementations require an application
-to include <stdarg.h> before <curses.h> because they either
-have allowed for a special type,
+SVr3
+.I curses
+introduced
+the two obsolete functions,
+and X/Open Curses the others.
+In between,
+SVr4
+.I curses
+provided for the possibility that an application might include either
+.I \%varargs.h
 or
-(like \fI\%ncurses\fP)
-include <stdarg.h> directly to provide a portable interface.
+.IR \%stdarg.h .
+These represented contrasting approaches to handling variadic
+argument lists.
+The older interface,
+.IR \%varargs.h ,
+used a pointer to
+.I char \" V7, 32V, System III, 3BSD
+for variadic functions'
+.I \%va_list
+parameter.
+Later,
+the list acquired its own standard data type,
+.IR \%va_list ,
+defined in
+.IR \%stdarg.h ,
+empowering the compiler to check the types of a function call's actual
+parameters against the formal ones declared in its prototype.
+.IP
+No conforming implementations of X/Open Curses require an application
+to include
+.I \%stdarg.h
+before
+.I \%curses.h
+because they either have allowed for a special type,
+or,
+like
+.IR \%ncurses ,
+they include
+.I \%stdarg.h
+themselves to provide a portable interface.
 .SH AUTHORS
-Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
-Based on \fIpcurses\fP by Pavel Curtis.
+Zeyd M. Ben-Halim,
+Eric S. Raymond,
+Thomas E. Dickey.
+Based on
+.I \%pcurses
+by Pavel Curtis.
 .SH SEE ALSO
 \fB\%curs_variables\fP(3X),
 \fB\%terminfo\fP(5),

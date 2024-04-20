@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.98 2024/03/16 15:50:09 tom Exp $
-.TH curs_util 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.101 2024/04/20 21:20:07 tom Exp $
+.TH curs_util 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -63,11 +63,11 @@ miscellaneous \fIcurses\fR utility routines
 .nf
 \fB#include <curses.h>
 .PP
-\fBconst char *unctrl(chtype \fIc\fP);
-\fBwchar_t *wunctrl(cchar_t *\fIc\fP);
+\fBconst char *unctrl(chtype \fIch\fP);
+\fBwchar_t *wunctrl(cchar_t *\fIwch\fP);
 .PP
 \fBconst char *keyname(int \fIc\fP);
-\fBconst char *key_name(wchar_t \fIw\fP);
+\fBconst char *key_name(wchar_t \fIwc\fP);
 .PP
 \fBvoid filter(void);
 .PP
@@ -86,7 +86,7 @@ miscellaneous \fIcurses\fR utility routines
 .SH DESCRIPTION
 .SS unctrl
 The \fBunctrl\fP routine returns a character string which is a printable
-representation of the character \fIc\fP:
+representation of the character \fIch\fP:
 .bP
 Printable characters are displayed as themselves,
 e.g., a one-character string containing the key.
@@ -106,7 +106,7 @@ In the latter case, the values may not be printable;
 this follows the X/Open specification.
 .PP
 The corresponding \fBwunctrl\fP returns a printable representation of
-a complex character \fIc\fP.
+a complex character \fIwch\fP.
 .PP
 In both \fBunctrl\fP and \fBwunctrl\fP the attributes and color associated
 with the character parameter are ignored.
@@ -302,7 +302,7 @@ returns an error if the associated \fBfwrite\fP calls return an error.
 .SS filter
 The SVr4 documentation describes the action of \fBfilter\fP only in the vaguest
 terms.
-The description here is adapted from the XSI Curses standard (which
+The description here is adapted from X/Open Curses (which
 erroneously fails to describe the disabling of \fBcuu\fP).
 .SS "delay_output padding"
 The limitation to 30 seconds
@@ -364,7 +364,7 @@ Doing that can run into problems mixing block- and buffered-I/O.
 This implementation reduces the problem on writes by flushing the output.
 However, reading from a file written using mixed schemes may not be successful.
 .SS "unctrl, wunctrl"
-The XSI Curses standard, Issue 4 describes these functions.
+X/Open Curses, Issue 4 describes these functions.
 It states that \fBunctrl\fP and \fBwunctrl\fP will return a null pointer if
 unsuccessful, but does not define any error conditions.
 This implementation checks for three cases:

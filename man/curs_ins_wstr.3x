@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.34 2024/04/13 22:14:06 tom Exp $
-.TH curs_ins_wstr 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.38 2024/04/20 21:23:08 tom Exp $
+.TH curs_ins_wstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -98,18 +98,20 @@ if the \fIwstr\fP parameter is null or
 .bP
 if the \fBwins_wch\fP function returns an error.
 .PP
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP(3X), and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .SH NOTES
 All but \fBwins_nwstr\fP may be macros.
 .PP
 If the first character in the string is a non-spacing character, these
 functions will fail.
-XSI does not define what will happen if a non-spacing character follows
-a control character.
+X/Open Curses does not define what will happen
+if a non-spacing character follows a control character.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4,
+These functions are described in X/Open Curses, Issue 4,
 which adds \fI\%const\fP qualifiers to the arguments.
 .PP
 X/Open states that the entire string is inserted if \fIn\fP is less than 1.

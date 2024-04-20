@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_beep.3x,v 1.27 2024/03/16 15:35:01 tom Exp $
-.TH curs_beep 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_beep.3x,v 1.29 2024/04/20 21:20:07 tom Exp $
+.TH curs_beep 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%beep\fP,
 \fB\%flash\fP \-
@@ -57,7 +57,7 @@ These routines return \fBOK\fP if they succeed in beeping or flashing,
 SVr4's beep and flash routines always returned \fBOK\fP, so it was not
 possible to tell when the beep or flash failed.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 Like SVr4, it specifies that they always return \fBOK\fP.
 .SH SEE ALSO
 \fB\%curses\fP(3X)

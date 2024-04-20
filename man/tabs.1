@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.57 2024/03/16 15:35:01 tom Exp $
-.TH @TABS@ 1 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tabs.1,v 1.59 2024/04/20 19:08:15 tom Exp $
+.TH @TABS@ 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -272,15 +272,14 @@ and in 3BSD
 (later the same year);
 it supported a \*(``\-n\*('' option to set the first tab stop at the
 left margin.
-That option is not documented by POSIX.
+That option is not specified by POSIX.
 .PP
 The PWB/Unix
 .B tabs
 utility returned in System III (1980),
-and used built-in tables,
-rather than the terminal database,
+and used built-in tables
 to support a half-dozen hardcopy terminal (printer) types.
-It also had built-in logic to support setting the left margin,
+It also had logic to support setting the left margin,
 as well as a feature for copying the tab settings from a file.
 .PP
 Versions of the program in later releases of AT&T Unix,

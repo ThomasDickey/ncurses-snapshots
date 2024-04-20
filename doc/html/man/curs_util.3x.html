@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.98 2024/03/16 15:50:09 tom Exp @
+  * @Id: curs_util.3x,v 1.101 2024/04/20 21:20:07 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2024-03-16 ncurses 6.4 Library calls</TITLE>
+<TITLE>curs_util 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2024-03-16 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2024-04-20 ncurses 6.4 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -56,11 +56,11 @@
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*unctrl(chtype</STRONG> <EM>c</EM><STRONG>);</STRONG>
-       <STRONG>wchar_t</STRONG> <STRONG>*wunctrl(cchar_t</STRONG> <STRONG>*</STRONG><EM>c</EM><STRONG>);</STRONG>
+       <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*unctrl(chtype</STRONG> <EM>ch</EM><STRONG>);</STRONG>
+       <STRONG>wchar_t</STRONG> <STRONG>*wunctrl(cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
 
        <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*keyname(int</STRONG> <EM>c</EM><STRONG>);</STRONG>
-       <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*key_name(wchar_t</STRONG> <EM>w</EM><STRONG>);</STRONG>
+       <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*key_name(wchar_t</STRONG> <EM>wc</EM><STRONG>);</STRONG>
 
        <STRONG>void</STRONG> <STRONG>filter(void);</STRONG>
 
@@ -81,7 +81,7 @@
 
 </PRE><H3><a name="h3-unctrl">unctrl</a></H3><PRE>
        The  <STRONG>unctrl</STRONG>  routine  returns  a  character string which is a printable
-       representation of the character <EM>c</EM>:
+       representation of the character <EM>ch</EM>:
 
        <STRONG>o</STRONG>   Printable characters are displayed  as  themselves,  e.g.,  a  one-
            character string containing the key.
@@ -99,7 +99,7 @@
            this follows the X/Open specification.
 
        The  corresponding  <STRONG>wunctrl</STRONG>  returns  a  printable  representation of a
-       complex character <EM>c</EM>.
+       complex character <EM>wch</EM>.
 
        In both <STRONG>unctrl</STRONG> and <STRONG>wunctrl</STRONG> the attributes and color associated with the
        character parameter are ignored.
@@ -269,8 +269,8 @@
 
 </PRE><H3><a name="h3-filter">filter</a></H3><PRE>
        The  SVr4  documentation  describes  the  action  of <STRONG>filter</STRONG> only in the
-       vaguest terms.  The description here is adapted  from  the  XSI  Curses
-       standard (which erroneously fails to describe the disabling of <STRONG>cuu</STRONG>).
+       vaguest terms.  The description here  is  adapted  from  X/Open  Curses
+       (which erroneously fails to describe the disabling of <STRONG>cuu</STRONG>).
 
 
 </PRE><H3><a name="h3-delay_output-padding">delay_output padding</a></H3><PRE>
@@ -333,10 +333,10 @@
 
 
 </PRE><H3><a name="h3-unctrl_wunctrl">unctrl, wunctrl</a></H3><PRE>
-       The XSI Curses standard, Issue 4 describes these functions.  It  states
-       that <STRONG>unctrl</STRONG> and <STRONG>wunctrl</STRONG> will return a null pointer if unsuccessful, but
-       does not define any error conditions.  This implementation  checks  for
-       three cases:
+       X/Open Curses, Issue 4  describes  these  functions.   It  states  that
+       <STRONG>unctrl</STRONG> and <STRONG>wunctrl</STRONG> will return a null pointer if unsuccessful, but does
+       not define any error conditions.  This implementation checks for  three
+       cases:
 
        <STRONG>o</STRONG>   the  parameter  is  a  7-bit  US-ASCII code.  This is the case that
            X/Open Curses documented.
@@ -392,7 +392,7 @@
 
 
 
-ncurses 6.4                       2024-03-16                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.4                       2024-04-20                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

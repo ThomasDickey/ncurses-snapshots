@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.131 2023/09/16 16:28:36 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.132 2024/04/20 17:58:51 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -384,7 +384,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 		       sizeof(buffer) - 1);
 	    data.size = name_size + 1;
 
-	    total_size += data.size;
+	    total_size += (int) data.size;
 	    total_parts++;
 	    _nc_db_put(capdb, &key, &data);
 
@@ -400,7 +400,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 		key.data = ptr;
 		key.size = strlen(ptr);
 
-		total_size += data.size;
+		total_size += (int) data.size;
 		total_parts++;
 		_nc_db_put(capdb, &key, &data);
 	    }

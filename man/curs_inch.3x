@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.48 2024/04/13 22:14:06 tom Exp $
-.TH curs_inch 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inch.3x,v 1.51 2024/04/20 21:20:07 tom Exp $
+.TH curs_inch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -83,9 +83,11 @@ A_ATTRIBUTES	Extract attributes
 A_COLOR	Extract color pair information
 .TE
 .SH RETURN VALUE
-Functions with a \*(``mv\*('' prefix first perform a cursor movement using
-\fBwmove\fP, and return an error if the position is outside the window,
-or if the window pointer is null.
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x )
+is outside the window boundaries.
 .PP
 The \fBwinch\fP function does not return an error if the window contains
 characters larger than 8-bits (255).
@@ -93,7 +95,7 @@ Only the low-order 8 bits of the character are used by \fBwinch\fP.
 .SH NOTES
 Note that all of these routines may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+These functions are described in X/Open Curses, Issue 4.
 .PP
 Very old systems (before standardization) provide a different function
 with the same name:
