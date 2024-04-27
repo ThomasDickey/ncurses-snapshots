@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.103 2024/04/20 21:24:19 tom Exp $
-.TH curs_attr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.105 2024/04/27 17:54:42 tom Exp $
+.TH curs_attr 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -312,6 +312,7 @@ Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
 .RI ( y ,
 .IR x )
+is outside the window boundaries.
 .\" ---------------------------------------------------------------------------
 .SH NOTES
 These functions may be macros:

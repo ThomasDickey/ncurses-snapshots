@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.83 2024/04/20 19:09:08 tom Exp $
-.TH @TSET@ 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.85 2024/04/27 17:57:47 tom Exp $
+.TH @TSET@ 1 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -391,7 +391,7 @@ to set the window size if \fBtset\fP is not able to obtain the window
 size from the operating system.
 .bP
 In \fI\%ncurses\fP, \fB@TSET@\fP obtains the window size using
-\fBsetupterm\fP, which may be from
+\fB\%setupterm\fP(3X), which may be from
 the operating system,
 the \fILINES\fP and \fICOLUMNS\fP environment variables or
 the terminal description.

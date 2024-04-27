@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.210 2024/04/20 21:24:19 tom Exp @
+  * @Id: ncurses.3x,v 1.214 2024/04/27 17:55:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-04-20 ncurses 6.4 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-04-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-04-20 ncurses 6.4 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-04-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        terminals  with  output  optimized to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.4 (patch 20240420).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20240427).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; the reading of terminal
@@ -973,7 +973,7 @@
        pause after directing a  terminal  to  execute  an  operation  that  it
        performs  slowly,  such  as  clearing  the display.  Many terminal type
        descriptions, including that for the VT100, embed delay  specifications
-       in  capabilities.   You  may  wish  to  use these temrinal descriptions
+       in  capabilities.   You  may  wish  to  use these terminal descriptions
        without paying the performance penalty.  Set <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>PADDING</EM> to  any
        value  to disable all but mandatory padding.  Mandatory padding is used
        by such terminal capabilities as <STRONG>flash_screen</STRONG> (<STRONG>flash</STRONG>).
@@ -1342,126 +1342,127 @@
        X/Open Curses defines two levels of conformance, "base" and "enhanced".
        The latter includes several additional features, such as wide-character
        and color support.  <EM>ncurses</EM> intends base-level conformance with  X/Open
-       Curses, and supports nearly all features of its enhanced level.
+       Curses,  and  supports  all  features  of its enhanced level except the
+       <STRONG>untic</STRONG> utility.
 
-       Differences  between  X/Open  Curses  and <EM>ncurses</EM> are documented in the
+       Differences between X/Open Curses and <EM>ncurses</EM>  are  documented  in  the
        "PORTABILITY" sections of applicable man pages.
 
 
 </PRE><H3><a name="h3-Error-Checking">Error Checking</a></H3><PRE>
-       In many cases, X/Open Curses is vague about error conditions,  omitting
+       In  many cases, X/Open Curses is vague about error conditions, omitting
        some of the SVr4 documentation.
 
-       Unlike  other  implementations, <EM>ncurses</EM> checks pointer parameters, such
-       as those to <EM>WINDOW</EM> structures, to ensure that they are not null.   This
-       is  done  primarily  to  guard  against programmer error.  The standard
+       Unlike other implementations, <EM>ncurses</EM> checks pointer  parameters,  such
+       as  those to <EM>WINDOW</EM> structures, to ensure that they are not null.  This
+       is done primarily to guard  against  programmer  error.   The  standard
        interface does not provide a way for the library to tell an application
-       which  of  several  possible errors occurred.  Relying on this (or some
-       other)  extension  adversely  affects   the   portability   of   <EM>curses</EM>
+       which of several possible errors occurred.  Relying on  this  (or  some
+       other)   extension   adversely   affects   the  portability  of  <EM>curses</EM>
        applications.
 
 
 </PRE><H3><a name="h3-Padding-Differences">Padding Differences</a></H3><PRE>
-       In  historical  <EM>curses</EM> implementations, delays embedded in the <EM>terminfo</EM>
-       capabilities <STRONG>carriage_return</STRONG> (<STRONG>cr</STRONG>),  <STRONG>scroll_forward</STRONG>  (<STRONG>ind</STRONG>),  <STRONG>cursor_left</STRONG>
+       In historical <EM>curses</EM> implementations, delays embedded in  the  <EM>terminfo</EM>
+       capabilities  <STRONG>carriage_return</STRONG>  (<STRONG>cr</STRONG>),  <STRONG>scroll_forward</STRONG> (<STRONG>ind</STRONG>), <STRONG>cursor_left</STRONG>
        (<STRONG>cub1</STRONG>), <STRONG>form_feed</STRONG> (<STRONG>ff</STRONG>), and <STRONG>tab</STRONG> (<STRONG>ht</STRONG>) activated corresponding delay bits
-       in the Unix terminal driver.  <EM>ncurses</EM> performs all padding  by  sending
-       NUL  bytes  to the device.  This method is slightly more expensive, but
-       narrows  the  interface  to   the   Unix   kernel   significantly   and
+       in  the  Unix terminal driver.  <EM>ncurses</EM> performs all padding by sending
+       NUL bytes to the device.  This method is slightly more  expensive,  but
+       narrows   the   interface   to   the   Unix  kernel  significantly  and
        correspondingly increases the package's portability.
 
 
 </PRE><H3><a name="h3-Header-Files">Header Files</a></H3><PRE>
-       The  header  file <EM>curses.h</EM> itself includes the header files <EM>stdio.h</EM> and
+       The header file <EM>curses.h</EM> itself includes the header files  <EM>stdio.h</EM>  and
        <EM>unctrl.h</EM>.
 
        X/Open Curses has more to say,
 
-           The inclusion of <EM>curses.h</EM> may make visible  all  symbols  from  the
+           The  inclusion  of  <EM>curses.h</EM>  may make visible all symbols from the
            headers <EM>stdio.h</EM>, <EM>term.h</EM>, <EM>termios.h</EM>, and <EM>wchar.h</EM>.
 
        but does not finish the story.  A more complete account follows.
 
-       <STRONG>o</STRONG>   Starting  with 4BSD <EM>curses</EM> (1980) all implementations have provided
+       <STRONG>o</STRONG>   Starting with 4BSD <EM>curses</EM> (1980) all implementations have  provided
            a <EM>curses.h</EM> file.
 
-           BSD <EM>curses</EM> code included <EM>curses.h</EM> and  <EM>unctrl.h</EM>  from  an  internal
+           BSD  <EM>curses</EM>  code  included  <EM>curses.h</EM> and <EM>unctrl.h</EM> from an internal
            header file <EM>curses.ext</EM>, where "ext" abbreviated "externs".
 
-           The  implementations of <EM>printw</EM> and <EM>scanw</EM> used undocumented internal
-           functions of the standard I/O library (<STRONG>_</STRONG><EM>doprnt</EM>  and  <STRONG>_</STRONG><EM>doscan</EM>),  but
+           The implementations of <EM>printw</EM> and <EM>scanw</EM> used undocumented  internal
+           functions  of  the  standard I/O library (<STRONG>_</STRONG><EM>doprnt</EM> and <STRONG>_</STRONG><EM>doscan</EM>), but
            nothing in <EM>curses.h</EM> itself relied upon <EM>stdio.h</EM>.
 
-       <STRONG>o</STRONG>   SVr2  <EM>curses</EM>  added  <EM>newterm</EM>, which relies upon <EM>stdio.h</EM> because its
+       <STRONG>o</STRONG>   SVr2 <EM>curses</EM> added <EM>newterm</EM>, which relies upon  <EM>stdio.h</EM>  because  its
            function prototype employs the <EM>FILE</EM> type.
 
            SVr4 <EM>curses</EM> added <EM>putwin</EM> and <EM>getwin</EM>, which also use <EM>stdio.h</EM>.
 
            X/Open Curses specifies all three of these functions.
 
-           SVr4 <EM>curses</EM> and X/Open Curses  do  not  require  the  developer  to
-           include  <EM>stdio.h</EM>  before  <EM>curses.h</EM>.  Both document use of <EM>curses</EM> as
+           SVr4  <EM>curses</EM>  and  X/Open  Curses  do  not require the developer to
+           include <EM>stdio.h</EM> before <EM>curses.h</EM>.  Both document use  of  <EM>curses</EM>  as
            requiring only <EM>curses.h</EM>.
 
            As a result, standard <EM>curses.h</EM> always includes <EM>stdio.h</EM>.
 
-       <STRONG>o</STRONG>   X/Open Curses and SVr4 <EM>curses</EM>  are  inconsistent  with  respect  to
+       <STRONG>o</STRONG>   X/Open  Curses  and  SVr4  <EM>curses</EM>  are inconsistent with respect to
            <EM>unctrl.h</EM>.
 
-           As  noted in <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>, <EM>ncurses</EM> includes <EM>unctrl.h</EM> from <EM>curses.h</EM>
+           As noted in <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>, <EM>ncurses</EM> includes <EM>unctrl.h</EM> from  <EM>curses.h</EM>
            (as SVr4 does).
 
-       <STRONG>o</STRONG>   X/Open Curses's comments about <EM>term.h</EM> and <EM>termios.h</EM>  may  refer  to
+       <STRONG>o</STRONG>   X/Open  Curses's  comments  about <EM>term.h</EM> and <EM>termios.h</EM> may refer to
            HP-UX and AIX.
 
-           HP-UX  <EM>curses</EM> includes <EM>term.h</EM> from <EM>curses.h</EM> to declare <EM>setupterm</EM> in
+           HP-UX <EM>curses</EM> includes <EM>term.h</EM> from <EM>curses.h</EM> to declare <EM>setupterm</EM>  in
            <EM>curses.h</EM>, but <EM>ncurses</EM> and Solaris <EM>curses</EM> do not.
 
-           AIX <EM>curses</EM> includes  <EM>term.h</EM>  and  termios.h<EM>.</EM>   Again,  <EM>ncurses</EM>  and
+           AIX  <EM>curses</EM>  includes  <EM>term.h</EM>  and  termios.h<EM>.</EM>   Again, <EM>ncurses</EM> and
            Solaris <EM>curses</EM> do not.
 
-       <STRONG>o</STRONG>   X/Open  Curses  says that <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>term.h</EM>, but does not
+       <STRONG>o</STRONG>   X/Open Curses says that <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>term.h</EM>, but  does  not
            require it to do so.
 
-           Some programs use functions declared in both <EM>curses.h</EM>  and  <EM>term.h</EM>,
-           and  must  include  both header files in the same module.  Very old
-           versions of  AIX  <EM>curses</EM>  required  inclusion  of  <EM>curses.h</EM>  before
+           Some  programs  use functions declared in both <EM>curses.h</EM> and <EM>term.h</EM>,
+           and must include both header files in the same  module.   Very  old
+           versions  of  AIX  <EM>curses</EM>  required  inclusion  of  <EM>curses.h</EM> before
            <EM>term.h</EM>.
 
-           The  header  files supplied by <EM>ncurses</EM> include the standard library
-           headers required for its  declarations,  so  <EM>ncurses</EM>'s  own  header
-           files  can  be  included  in  any  order.  But for portability, you
+           The header files supplied by <EM>ncurses</EM> include the  standard  library
+           headers  required  for  its  declarations,  so <EM>ncurses</EM>'s own header
+           files can be included in  any  order.   But  for  portability,  you
            should include <EM>curses.h</EM> before <EM>term.h</EM>.
 
-       <STRONG>o</STRONG>   X/Open Curses says "may make visible" because  including  a  header
-           file  does  not  necessarily  make visible all of the symbols in it
+       <STRONG>o</STRONG>   X/Open  Curses  says  "may make visible" because including a header
+           file does not necessarily make visible all of  the  symbols  in  it
            (consider <STRONG>#ifdef</STRONG> and similar).
 
-           For instance, <EM>ncurses</EM>'s <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>wchar.h</EM> if the  proper
-           symbol  is defined, and if <EM>ncurses</EM> is configured for wide-character
-           support.  If <EM>wchar.h</EM> is included, its symbols <STRONG>may</STRONG> be  made  visible
+           For  instance, <EM>ncurses</EM>'s <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>wchar.h</EM> if the proper
+           symbol is defined, and if <EM>ncurses</EM> is configured for  wide-character
+           support.   If  <EM>wchar.h</EM> is included, its symbols <STRONG>may</STRONG> be made visible
            depending on the value of the <STRONG>_XOPEN_SOURCE</STRONG> feature test macro.
 
        <STRONG>o</STRONG>   X/Open Curses mandates an application's inclusion of one standard C
-           library header in a  special  case:  <EM>stdarg.h</EM>  before  <EM>curses.h</EM>  to
-           prototype  the  functions  <EM>vw</EM><STRONG>_</STRONG><EM>printw</EM>  and  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM> (as well as the
-           obsolete <EM>vwprintw</EM> and <EM>vwscanw</EM>).  Each of  these  takes  a  variadic
+           library  header  in  a  special  case:  <EM>stdarg.h</EM> before <EM>curses.h</EM> to
+           prototype the functions <EM>vw</EM><STRONG>_</STRONG><EM>printw</EM> and  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM>  (as  well  as  the
+           obsolete  <EM>vwprintw</EM>  and  <EM>vwscanw</EM>).   Each of these takes a variadic
            argument list, a <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter, like that of <STRONG>printf(3)</STRONG>.
 
-           SVr3  <EM>curses</EM>  introduced  the  two  obsolete  functions, and X/Open
-           Curses the others.   In  between,  SVr4  <EM>curses</EM>  provided  for  the
-           possibility  that  an application might include either <EM>varargs.h</EM> or
-           <EM>stdarg.h</EM>.  These represented  contrasting  approaches  to  handling
-           variadic  argument  lists.   The older interface, <EM>varargs.h</EM>, used a
-           pointer to <EM>char</EM> for variadic functions' <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter.   Later,
-           the  list  acquired its own standard data type, <EM>va</EM><STRONG>_</STRONG><EM>list</EM>, defined in
-           <EM>stdarg.h</EM>, empowering the compiler to check the types of a  function
-           call's  actual  parameters  against the formal ones declared in its
+           SVr3 <EM>curses</EM> introduced  the  two  obsolete  functions,  and  X/Open
+           Curses  the  others.   In  between,  SVr4  <EM>curses</EM>  provided for the
+           possibility that an application might include either  <EM>varargs.h</EM>  or
+           <EM>stdarg.h</EM>.   These  represented  contrasting  approaches to handling
+           variadic argument lists.  The older interface,  <EM>varargs.h</EM>,  used  a
+           pointer  to <EM>char</EM> for variadic functions' <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter.  Later,
+           the list acquired its own standard data type, <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,  defined  in
+           <EM>stdarg.h</EM>,  empowering the compiler to check the types of a function
+           call's actual parameters against the formal ones  declared  in  its
            prototype.
 
-           No  conforming  implementations  of  X/Open   Curses   require   an
+           No   conforming   implementations   of  X/Open  Curses  require  an
            application to include <EM>stdarg.h</EM> before <EM>curses.h</EM> because they either
-           have allowed for a special type, or,  like  <EM>ncurses</EM>,  they  include
+           have  allowed  for  a  special type, or, like <EM>ncurses</EM>, they include
            <EM>stdarg.h</EM> themselves to provide a portable interface.
 
 
@@ -1475,7 +1476,7 @@
 
 
 
-ncurses 6.4                       2024-04-20                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-04-27                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
