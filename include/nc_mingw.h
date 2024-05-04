@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_mingw.h,v 1.10 2023/02/25 19:59:24 tom Exp $ */
+/* $Id: nc_mingw.h,v 1.12 2024/05/04 19:16:38 tom Exp $ */
 
 #ifndef NC_MINGW_H
 #define NC_MINGW_H 1
@@ -58,6 +58,8 @@
 #include <winsock2.h>		/* for struct timeval */
 #endif
 
+#include <stdint.h>		/* for uint32_t */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -77,7 +79,7 @@ NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
 
 #undef wcwidth
 #define wcwidth(ucs) _nc_wcwidth((wchar_t)(ucs))
-NCURSES_EXPORT(int) _nc_wcwidth(wchar_t);
+NCURSES_EXPORT(int) _nc_wcwidth(uint32_t);
 
 #ifdef __cplusplus
 }

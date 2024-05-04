@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.687 2024/04/23 22:28:25 tom Exp $
+ * $Id: curses.priv.h,v 1.688 2024/05/04 18:30:25 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2250,7 +2250,7 @@ extern int __MINGW_NOTHROW _nc_mblen(const char *, size_t);
 
 #if defined(_NC_WINDOWS) || defined(_NC_MINGW)
 /* see wcwidth.c */
-extern NCURSES_EXPORT(int) mk_wcwidth(wchar_t);
+extern NCURSES_EXPORT(int) mk_wcwidth(uint32_t);
 #define wcwidth(ucs) _nc_wcwidth(ucs)
 #endif
 

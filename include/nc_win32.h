@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.10 2023/02/25 20:09:23 tom Exp $ */
+/* $Id: nc_win32.h,v 1.12 2024/05/04 19:17:03 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -73,6 +73,8 @@
 #include <winsock2.h>		/* for struct timeval */
 #endif
 
+#include <stdint.h>		/* for uint32_t */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,7 +89,7 @@ extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
 
 #undef wcwidth
 #define wcwidth(ucs)  _nc_wcwidth((wchar_t)(ucs))
-extern NCURSES_EXPORT(int)    _nc_wcwidth(wchar_t);
+extern NCURSES_EXPORT(int)    _nc_wcwidth(uint32_t);
 
 #ifdef EVENTLIST_2nd /* test.priv.h just needs the preceding */
 
