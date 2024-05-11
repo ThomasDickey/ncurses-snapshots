@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.214 2024/04/27 17:55:43 tom Exp $
-.TH ncurses 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.215 2024/05/11 20:39:53 tom Exp $
+.TH ncurses 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -54,7 +54,6 @@
 .  TP
 ..
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB\%ncurses\fP \-
 character-cell terminal interface with optimized output
@@ -86,15 +85,16 @@ abstraction and subdivision thereof with
 .I windows
 and
 .IR pads ;
-the reading of terminal input;
+acquisition of keyboard and mouse events;
 control of terminal input and output options;
-environment query routines;
-color manipulation;
+selection of color and rendering attributes
+(such as bold or underline);
 the definition and use of
 .I "soft label"
 keys;
+access to the
 .I \%term\%info
-capability access;
+terminal capability database;
 a
 .I termcap
 compatibility interface;
@@ -102,8 +102,7 @@ and an abstraction of the system's API for manipulating the terminal
 (such as \fI\%termios\fP(3)).
 .PP
 .I \%ncurses
-implements the standard interface described by
-X/Open Curses Issue\ 7.
+implements the interface described by X/Open Curses Issue\ 7.
 In many behavioral details not standardized by X/Open,
 .I \%ncurses
 emulates the
@@ -272,7 +271,7 @@ respectively.
 .PP
 Frequent changes to the terminal screen can cause unpleasant flicker or
 inefficient use of the communication channel to the device,
-so the library does not generally update it automatically.
+so as a rule the library does not update it automatically.
 Therefore,
 after using
 .I curses
@@ -284,7 +283,7 @@ The library
 .\" X/Open Curses Issue 7 assumes some optimization will be done, but
 .\" does not mandate it in any way.
 .I optimizes
-its output by computing a minimal number of operations to mutate the
+its output by computing a minimal volume of operations to mutate the
 screen from its state at the previous refresh to the new one.
 Effective optimization demands accurate information about the terminal
 device:
@@ -297,26 +296,28 @@ implementation.
 Special windows called
 .I pads
 may also be manipulated.
-These are windows that are not constrained to the size of the terminal
-screen and whose contents need not be completely displayed.
+These are not constrained to the size of the terminal screen and their
+contents need not be completely displayed.
 See \fB\%curs_pad\fP(3X).
 .PP
-In addition to drawing characters on the screen,
-rendering attributes and colors may be supported,
-causing the characters to show up in such modes as underlined,
-in reverse video,
-or in color on terminals that support such display enhancements.
+Many terminals support configuration of character cell foreground and
+background colors as well as rendering
+.I attributes ,
+which cause characters to show up in such modes as
+boldfaced,
+underlined,
+or in reverse video.
 See \fB\%curs_attr\fP(3X).
 .PP
 .I curses
 predefines constants for a small set of forms-drawing graphics
 corresponding to the DEC Alternate Character Set (ACS),
 a feature of VT100 and other terminals.
-See \fB\%waddch\fP(3X).
+See \fB\%addch\fP(3X).
 .PP
 .I curses
 is implemented using the operating system's terminal driver;
-keystroke events are received not as scan codes but as byte sequences.
+key events are received not as scan codes but as byte sequences.
 Graphical keycaps
 (alphanumeric and punctuation keys,
 and the space)
@@ -330,13 +331,14 @@ and function keys,
 appears as a control character or a multibyte
 .I "escape sequence."
 .I curses
-translates these into unique
+translates the latter into unique
 .I "key codes."
 See \fB\%getch\fP(3X).
 .PP
 .I \%ncurses
 provides reimplementations of the SVr4 \fBpanel\fP(3X), \fBform\fP(3X),
-and \fBmenu\fP(3X) libraries to ease construction of user interfaces
+and \fBmenu\fP(3X) libraries;
+they permit overlapping windows and ease construction of user interfaces
 with
 .IR curses .
 .SS "Initialization"
@@ -353,9 +355,9 @@ value automatically;
 \fB\%tset\fP(1) may assist with troubleshooting exotic situations.
 .PP
 If you change the terminal type,
-export the
+export the shell's
 .I TERM
-environment variable in the shell,
+variable,
 then run \fB\%tset\fP(1) or the
 .RB \*(`` "@TPUT@ init" \*(''
 command.
@@ -384,9 +386,8 @@ a
 program checks first for a terminal type description in the location it
 identifies.
 .I \%TERMINFO
-is useful for developing experimental type descriptions or when write
-permission to
-.I \%\*d
+is useful for developing type descriptions or when write permission to
+.I \%@TERMINFO@
 is not available.
 .PP
 See section \*(``ENVIRONMENT\*('' below.
@@ -413,7 +414,7 @@ man pages apply the following names to parameters.
 .TS
 center;
 Li L.
-bf	\fIbool\fP (\fBTRUE\fP or \fBFALSE\fP)
+bf	a \fIbool\fP (\fBTRUE\fP or \fBFALSE\fP)
 c	a \fIchar\fP or \fIint\fP
 ch	a \fIchtype\fP
 wc	a \fIwchar_t\fP or \fIwint_t\fP
@@ -422,21 +423,33 @@ win	pointer to a \fIWINDOW\fP
 pad	pointer to a \fIWINDOW\fP that is a pad
 .TE
 .SS "Wide and Non-wide Character Configurations"
-This manual page describes functions that appear in any configuration
-of the library.
+This man page primarily surveys functions that appear in any
+configuration of the library.
 There are two common configurations;
 see section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .TP 10 \" "ncursesw" + 2n
 .I \%ncurses
 is the library in its \*(``non-wide\*('' configuration,
 handling only eight-bit characters.
-It stores a character combined with attributes in a
+It stores a character combined with attributes and a color pair in a
 .I \%chtype
 datum,
 which is often an alias of
 .IR int .
+A string of
+.I curses
+characters is similar to a C
+.I char
+string;
+a
+.I chtype
+string ends with an integral
+.BR 0 ","
+the null
+.I curses
+character.
 .IP
-Attributes alone
+Attributes and a color pair selection
 (with no corresponding character)
 can be stored in variables of
 .I \%chtype
@@ -444,7 +457,7 @@ or
 .I \%attr_t
 type.
 In either case,
-they are represented as an integral bit mask.
+they are accessed via an integral bit mask.
 .IP
 Each cell of a
 .I \%WINDOW
@@ -477,9 +490,14 @@ Each character is of type
 a complex character contains one spacing character and zero or more
 non-spacing characters
 (see below).
-Attributes and color data are stored in separate fields of the
-structure,
-not combined as in
+A string of complex characters ends with a
+.I \%cchar_t
+whose
+.I \%wchar_t
+member is the null wide character.
+Attributes and a color pair selection are stored in separate fields of
+the structure,
+not combined into an integer as in
 .IR \%chtype .
 .PP
 Each cell of a
@@ -1033,11 +1051,12 @@ see sections \*(``ALTERNATE CONFIGURATIONS\*('' and \*(``EXTENSIONS\*(''
 below.
 .SH RETURN VALUE
 Unless otherwise noted,
-functions that return an integer return
+functions that return integers return the constants
 .B OK
 on success and
 .B ERR
-on failure.
+on failure;
+see \fB\%curs_variables\fP(3X).
 Functions that return pointers return
 .B NULL
 on failure.
@@ -1069,7 +1088,7 @@ Its integral value is used for the baud rate.
 If that value is absent or invalid,
 .I \%ncurses
 uses 9600.
-This feature allows testers to construct repeatable test cases
+This feature allows developers to construct repeatable test cases
 that take into account optimization decisions that depend on baud rate.
 .SS "\fICC\fP (command character)"
 When set,
@@ -1256,7 +1275,7 @@ has the same effect.
 When
 .I \%ncurses
 is configured to use the GPM interface,
-this variable may list one or more terminal names
+this variable may list one or more terminal type names
 against which the
 .I TERM
 variable
@@ -1265,7 +1284,7 @@ is matched.
 An empty value disables the GPM interface,
 using
 .IR \%ncurses 's
-built-in support for \fIxterm\fP(1) mouse protocols instead.
+built-in support for \fI\%xterm\fP(1) mouse protocols instead.
 If the variable is absent,
 .I \%ncurses
 attempts to open GPM if
@@ -1315,8 +1334,8 @@ that is,
 limiting the speed of communication to what the hardware could handle.
 Unless a hardware terminal is interfaced into a terminal concentrator
 (which does flow control),
-an application must manage flow control itself to prevent overruns and
-data loss.
+an application must manage flow itself to prevent overruns and data
+loss.
 .PP
 A solution that comes at no hardware cost is for an application to pause
 after directing a terminal to execute an operation that it performs
@@ -1588,7 +1607,7 @@ environment variable
 .bP
 location(s) configured and compiled into
 .I \%ncurses
-.RS 3
+.RS
 .if !'\*(td'' \{\
 .bP
 .I \%@TERMINFO_DIRS@
@@ -1661,29 +1680,49 @@ employing
 .IR \%ncurses .
 .TP 5
 .B \-\-disable\-overwrite
-The standard include for \fI\%ncurses\fP is as noted in \fBSYNOPSIS\fP:
+The standard C preprocessor inclusion for the
+.I curses
+library is as follows.
 .RS 5
 .PP
 .RS 4
 .EX
-\fB#include <curses.h>\fP
+.\" The dummy character prevents undesired rewriting of the next line on
+.\" installation of the man page.
+\fB#\&include <curses.h>\fP
 .EE
 .RE
 .PP
-This option is used to avoid filename conflicts when \fI\%ncurses\fP
-is not the main implementation of curses of the computer.
-If \fI\%ncurses\fP is installed disabling overwrite,
-it puts its headers in a subdirectory,
-e.g.,
+This option is used to avoid file name conflicts between
+.I \%ncurses
+and an existing
+.I curses
+installation on the system.
+If
+.I \%ncurses
+is installed disabling overwrite,
+it puts its header files in a subdirectory.
+Here is an example.
 .PP
 .RS 4
 .EX
-\fB#include <ncurses/curses.h>\fP
+.\" The dummy character prevents undesired rewriting of the next line on
+.\" installation of the man page.
+\fB#\&include <ncurses/curses.h>\fP
 .EE
 .RE
 .PP
-It also omits a symbolic link which would allow you to use \fB\-lcurses\fP
-to build executables.
+Installation also omits a symbolic link that would cause the compiler's
+.B \-lcurses
+option to link object files with
+.I \%ncurses
+instead of the system
+.I curses
+library.
+.PP
+The directory used by this configuration of
+.I \%ncurses
+is shown in section \*(``SYNOPSIS\*('' above.
 .RE
 .TP 5
 .B \-\-enable\-widec
@@ -1801,7 +1840,7 @@ than assuming it is always in the debug library.
 .I @DATADIR@/tabset
 tab stop initialization database
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal capability database
 .SH NOTES
 X/Open Curses permits most functions it specifies to be made available
@@ -1819,7 +1858,7 @@ to reuse functions
 those that move the cursor before another operation),
 and
 .bP
-a few special cases.
+in a few special cases.
 .PP
 If the standard output file descriptor of an
 .I \%ncurses
@@ -1878,8 +1917,8 @@ instead using accessor functions such as
 \fB\%is_scrollok\fP(3X).
 .PP
 .I \%ncurses
-enables an application to direct application output to a printer
-attached to the terminal device;
+enables an application to direct its output to a printer attached to the
+terminal device;
 see \fB\%curs_print\fP(3X).
 .PP
 .I \%ncurses
@@ -1896,25 +1935,31 @@ see \fB\%use_legacy_coding\fP(3X).
 .I \%ncurses
 is compiled to support them;
 section \*(``ALTERNATE CONFIGURATIONS\*('' describes how.
-.bP
+.PP
+.I \%ncurses
+permits modification of \fB\%unctrl\fP(3X)'s behavior;
+see \fB\%use_legacy_coding\fP(3X).
+.PP
 Rudimentary support for multi-threaded applications may be available;
 see \fBcurs_threads\fP(3X).
-.bP
+.PP
 Functions that ease the management of multiple screens can be exposed;
 see \fBcurs_sp_funcs\fP(3X).
-.bP
+.PP
 To aid applications to debug their memory usage,
-.I ncurses
+.I \%ncurses
 optionally offers functions to more aggressively free memory it
 dynamically allocates itself;
 see \fBcurs_memleaks\fP(3X).
-.bP
+.PP
 The library facilitates auditing and troubleshooting of its behavior;
 see \fBcurs_trace\fP(3X).
-.bP
-The compiler option
+.PP
+Compiling
+.I \%ncurses
+with the option
 .B \%\-DUSE_GETCAP
-causes the library to fall back to reading
+causes it to fall back to reading
 .I \%/etc/termcap
 if the terminal setup code cannot find a
 .I \%term\%info
@@ -1963,11 +2008,10 @@ to ensure that they are not null.
 This is done primarily to guard against programmer error.
 The standard interface does not provide a way for the library
 to tell an application which of several possible errors occurred.
-Relying on this
-(or some other)
-extension adversely affects the portability of
-.I curses
-applications.
+An application that relies on
+.I \%ncurses
+to check its function parameters for validity limits its portability and
+robustness.
 .SS "Padding Differences"
 In historical
 .I curses
@@ -2125,7 +2169,7 @@ AIX
 includes
 .I \%term.h
 and
-.IR \% termios.h .
+.IR \%termios.h .
 Again,
 .I \%ncurses
 and Solaris

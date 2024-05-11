@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.148 2024/04/20 21:24:19 tom Exp $
+.\" $Id: terminfo.tail,v 1.149 2024/05/11 20:28:54 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -277,14 +277,14 @@ as a list of colon-separated pathnames of terminal databases to be searched.
 .IP
 An empty pathname (i.e., if the variable begins or ends
 with a colon, or contains adjacent colons)
-is interpreted as the system location \fI\*d\fP.
+is interpreted as the system location \fI@TERMINFO@\fP.
 .bP
 Finally, \fI\%ncurses\fP searches these compiled-in locations:
 .RS
 .bP
 a list of directories (@TERMINFO_DIRS@), and
 .bP
-the system terminfo directory, \fI\*d\fP
+the system terminfo directory, \fI@TERMINFO@\fP
 .RE
 .PP
 The \fBTERMINFO\fP variable can contain a terminal description instead
@@ -2019,7 +2019,7 @@ The \-c (check) option also checks resolved (after tc
 expansion) lengths.
 .SH FILES
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database directory
 .SH EXTENSIONS
 Searching for terminal descriptions in

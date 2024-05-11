@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.58 2024/04/20 19:18:18 tom Exp $
-.TH curs_getstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.59 2024/05/11 20:39:53 tom Exp $
+.TH curs_getstr 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -199,7 +199,7 @@ present but not documented in SVr4.
 .PP
 X/Open Curses, Issue 5 (2007) stated that these functions
 \*(``read at most \fIn\fP bytes\*(''
-but did not state whether the terminating NUL is counted in that limit.
+but did not state whether the terminating NUL counted toward that limit.
 X/Open Curses, Issue 7 (2009) changed that to say they
 \*(``read at most \fIn\fP\-1 bytes\*(''
 to allow for the terminating NUL.

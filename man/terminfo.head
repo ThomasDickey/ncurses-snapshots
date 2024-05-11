@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.65 2024/04/20 21:14:00 tom Exp $
-.TH terminfo 5 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.66 2024/05/11 20:39:53 tom Exp $
+.TH terminfo 5 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -51,12 +51,11 @@
 .el    .IP \(bu 2
 ..
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB\%terminfo\fP \-
 terminal capability database
 .SH SYNOPSIS
-\*d/*/*
+@TERMINFO@/*/*
 .SH DESCRIPTION
 .I Terminfo
 is a database describing terminals,

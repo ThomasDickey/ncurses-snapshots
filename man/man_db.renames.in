@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.73 2024/04/13 23:39:11 tom Exp $
+# $Id: man_db.renames.in,v 1.74 2024/05/11 20:30:32 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -251,6 +251,7 @@ start_color.3x			start_color.3ncurses
 subwin.3x			subwin.3ncurses
 syncok.3x			syncok.3ncurses
 terminfo.3x			terminfo.3ncurses
+tigetflag.3x			tigetflag.3ncurses
 tigetstr.3x			tigetstr.3ncurses
 touchline.3x			touchline.3ncurses
 touchwin.3x			touchwin.3ncurses
@@ -266,6 +267,8 @@ use_tioctl.3x			use_tioctl.3ncurses
 vidputs.3x			vidputs.3ncurses
 wadd_wch.3x			wadd_wch.3ncurses
 waddch.3x			waddch.3ncurses
+waddnstr.3x			waddnstr.3ncurses
+waddnwstr.3x			waddnwstr.3ncurses
 waddstr.3x			waddstr.3ncurses
 waddwstr.3x			waddwstr.3ncurses
 wattr_set.3x			wattr_set.3ncurses
@@ -286,6 +289,7 @@ wnoutrefresh.3x			wnoutrefresh.3ncurses
 wrefresh.3x			wrefresh.3ncurses
 wsetscrreg.3x			wsetscrreg.3ncurses
 wtimeout.3x			wtimeout.3ncurses
+wunctrl.3x			wunctrl.3ncurses
 #
 # Other:
 getty.8				getty.8

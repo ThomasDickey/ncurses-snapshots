@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.40 2024/04/20 19:23:03 tom Exp $
-.TH curs_get_wch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.41 2024/05/11 20:39:53 tom Exp $
+.TH curs_get_wch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -65,12 +65,10 @@ get (or push back) a wide character from \fIcurses\fR terminal keyboard
 .SH DESCRIPTION
 .SS "Reading Characters"
 .B \%wget_wch
-gathers a key stroke
-.I wch
-from the terminal keyboard associated with a
+gathers a key event from the terminal keyboard associated with a
 .I curses
 window
-.IR win ,
+.IR win ","
 returning
 .B OK
 if a wide character is read,
@@ -84,11 +82,13 @@ if no key event is available.
 When input is pending,
 .B \%wget_wch
 stores an integer
-identifying the key stroke in
-.IR wch ;
+identifying the key event in
+.IR wch ";"
 for alphanumeric and punctuation keys,
 this value corresponds to the character encoding used by the terminal.
-Use of the control key as a modifier often results in a distinct code.
+Use of the control key as a modifier,
+by holding it down while pressing and releasing another key,
+often results in a distinct code.
 The behavior of other keys depends on whether
 .I win
 is in keypad mode;
@@ -99,7 +99,7 @@ If no input is pending,
 then if the no-delay flag is set in the window
 (see \fB\%nodelay\fP(3X)),
 the function returns
-.BR ERR ;
+.BR ERR ";"
 otherwise,
 .I curses
 waits until the terminal has input.
@@ -112,7 +112,7 @@ it occurs when the next newline is read.
 If \fB\%halfdelay\fP(3X)
 has been called,
 .I curses
-waits until a character is typed or the specified delay elapses.
+waits until input is available or the specified delay elapses.
 .PP
 If \fB\%echo\fP(3X) has been called,
 and the window is not a pad,
@@ -142,19 +142,20 @@ writes any other
 to the window,
 as with \fB\%wecho_wchar\fP(3X).
 .bP
-If the window has been moved or modified since the last call to
+If the window
+.I win
+has been moved or modified since the last call to
 \fB\%wrefresh\fP(3X),
 .I curses
 calls
-.BR \%wrefresh .
+.B \%wrefresh
+on it.
 .PP
 If
 .I wch
 is a carriage return and \fBnl\fP(3X) has been called,
 .B \%wgetch
-stores the the character code for newline
-(line feed)
-in
+stores the the character code for line feed in
 .I wch
 instead.
 .SS "Ungetting Characters"
@@ -162,8 +163,8 @@ instead.
 places
 .I wch
 into the input queue to be returned by the next call to
-.BR \%wget_wch .
-A single input queue serves all windows.
+.BR \%wget_wch "."
+A single input queue serves all windows associated with the terminal.
 .SH RETURN VALUE
 .B \%wget_wch
 returns
@@ -178,7 +179,7 @@ if
 the
 .I \%WINDOW
 pointer is
-.BR NULL ,
+.BR NULL ","
 or
 .bP
 its timeout expires without any data arriving,
@@ -188,12 +189,12 @@ execution was interrupted by a signal,
 in which case
 .B \%errno
 is set to
-.BR \%EINTR .
+.BR \%EINTR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
 .RI ( y ,
-.IR x )
+.IR x ")"
 is outside the window boundaries.
 .PP
 .B \%unget_wch
@@ -218,18 +219,16 @@ and its variants store the value of the input character in an additional
 parameter instead of the return value.
 .PP
 Unlike
-.BR \%ungetch ,
+.BR \%ungetch ","
 .B \%unget_wch
-cannot distinguish function key codes
-.B \%wget_wch
-from conventional character codes.
+cannot distinguish function key codes from conventional character codes.
 An application can overcome this limitation by pushing function key
 codes with
 .B \%ungetch
 and subsequently checking the return value of
 .B \%wget_wch
 for a match with
-.BR \%KEY_CODE_YES .
+.BR \%KEY_CODE_YES "."
 .SH EXTENSIONS
 See the \*(``EXTENSIONS\*('' section of \fB\%wgetch\fP(3X).
 .SH PORTABILITY

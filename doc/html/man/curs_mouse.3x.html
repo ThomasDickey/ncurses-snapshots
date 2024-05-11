@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.98 2024/04/20 19:02:07 tom Exp @
+  * @Id: curs_mouse.3x,v 1.99 2024/05/11 20:39:53 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-04-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-04-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-05-11 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -373,12 +373,12 @@
        been  enabled  by  <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM> mouse report sequence
        appears in the string read.
 
-       Mouse event reports from <EM>xterm</EM> are not detected correctly in  a  window
-       with  keypad application mode disabled, since they are interpreted as a
-       variety of function key.  Set the terminal's <EM>terminfo</EM> capability  <STRONG>kmous</STRONG>
-       to  "\E[M" (the beginning of the response from <EM>xterm</EM> for mouse clicks).
-       Other values of <STRONG>kmous</STRONG> are permitted under the same assumption, that is,
-       the report begins with that sequence.
+       An <EM>ncurses</EM> window must enable <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  to  correctly  receive  mouse
+       event  reports  from  <EM>xterm</EM>  since they are encoded like function keys.
+       Set the terminal's <EM>terminfo</EM> capability <STRONG>kmous</STRONG> to "\E[M"  (the  beginning
+       of  the  response  from <EM>xterm</EM> for mouse clicks).  Other values of <STRONG>kmous</STRONG>
+       are permitted under the same assumption, that  is,  the  report  begins
+       with that sequence.
 
        Because there are no standard response sequences that serve to identify
        terminals supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that  if
@@ -394,7 +394,7 @@
 
 
 
-ncurses 6.5                       2024-04-20                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.5                       2024-05-11                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

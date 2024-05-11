@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.240 2024/04/20 17:04:05 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.241 2024/05/11 19:07:34 tom Exp $")
 
 /****************************************************************************
  *
@@ -569,11 +569,11 @@ _nc_get_screensize(SCREEN *sp,
 	     * variable.
 	     */
 	    if ((value = _nc_getenv_num("LINES")) > 0) {
-		*linep = value;
+		*linep = Min(value, MAX_ENV_LINES);
 		T(("screen size: environment LINES = %d", *linep));
 	    }
 	    if ((value = _nc_getenv_num("COLUMNS")) > 0) {
-		*colp = value;
+		*colp = Min(value, MAX_ENV_COLUMNS);
 		T(("screen size: environment COLUMNS = %d", *colp));
 	    }
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.74 2023/09/16 10:44:33 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.75 2024/05/11 19:20:44 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -504,11 +504,11 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 	     * variable.
 	     */
 	    if ((value = _nc_getenv_num("LINES")) > 0) {
-		*linep = value;
+		*linep = Min(value, MAX_ENV_LINES);
 		T(("screen size: environment LINES = %d", *linep));
 	    }
 	    if ((value = _nc_getenv_num("COLUMNS")) > 0) {
-		*colp = value;
+		*colp = Min(value, MAX_ENV_COLUMNS);
 		T(("screen size: environment COLUMNS = %d", *colp));
 	    }
 	}

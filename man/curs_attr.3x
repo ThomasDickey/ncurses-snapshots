@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.105 2024/04/27 17:54:42 tom Exp $
-.TH curs_attr 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.106 2024/05/11 20:39:53 tom Exp $
+.TH curs_attr 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -270,6 +270,16 @@ Bit-mask to extract a color (legacy routines)
 T}
 .TE
 .RE
+.PP
+You can thus use
+.B \%A_CHARTEXT
+to extract the character from a
+.IR chtype ","
+.B \%A_ATTRIBUTES
+to obtain its rendering attributes,
+and
+.B \%A_COLOR
+to find the color pair it uses.
 .PP
 These video attributes are supported by \fBattr_on\fP and related functions
 (which also support the attributes recognized by \fBattron\fP, etc.):

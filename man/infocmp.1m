@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.109 2024/03/16 15:35:01 tom Exp $
-.TH @INFOCMP@ 1M 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.110 2024/05/11 20:39:53 tom Exp $
+.TH @INFOCMP@ 1M 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -49,7 +49,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB@INFOCMP@\fP \-
 compare or print out \fIterminfo\fP descriptions
@@ -584,7 +583,7 @@ These are extensions to the terminfo repertoire which can be loaded
 using the \fB\-x\fP option of \fB@TIC@\fP.
 .SH FILES
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database
 .SH EXTENSIONS
 The

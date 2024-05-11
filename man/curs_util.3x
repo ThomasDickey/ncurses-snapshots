@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.101 2024/04/20 21:20:07 tom Exp $
-.TH curs_util 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.102 2024/05/11 20:39:53 tom Exp $
+.TH curs_util 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -71,7 +71,7 @@ miscellaneous \fIcurses\fR utility routines
 .PP
 \fBvoid filter(void);
 .PP
-\fBvoid use_env(bool \fIf\fP);
+\fBvoid use_env(bool \fIbf\fP);
 .PP
 \fBint putwin(WINDOW *\fIwin\fP, FILE *\fIfilep\fP);
 \fBWINDOW *getwin(FILE *\fIfilep\fP);
@@ -81,7 +81,7 @@ miscellaneous \fIcurses\fR utility routines
 .PP
 \fI/* extensions */
 \fBvoid nofilter(void);
-\fBvoid use_tioctl(bool \fIf\fP);
+\fBvoid use_tioctl(bool \fIbf\fP);
 .fi
 .SH DESCRIPTION
 .SS unctrl
@@ -217,7 +217,6 @@ lB lB lx.
 use_env	use_tioctl	Summary
 _
 TRUE	FALSE	T{
-This is the default behavior.
 \fI\%ncurses\fP uses operating system calls
 unless overridden by \fILINES\fP or \fI\%COLUMNS\fP environment
 variables;

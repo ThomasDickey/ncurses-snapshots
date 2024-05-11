@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.105 2024/04/27 17:54:42 tom Exp @
+  * @Id: curs_attr.3x,v 1.106 2024/05/11 20:39:53 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2024-04-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_attr 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2024-04-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2024-05-11 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -220,6 +220,10 @@
               <STRONG>A_CHARTEXT</STRONG>     Bit-mask to extract a character
               <STRONG>A_COLOR</STRONG>        Bit-mask to extract a color (legacy routines)
 
+       You can thus use <STRONG>A_CHARTEXT</STRONG> to extract the  character  from  a  <EM>chtype</EM>,
+       <STRONG>A_ATTRIBUTES</STRONG>  to  obtain  its rendering attributes, and <STRONG>A_COLOR</STRONG> to find
+       the color pair it uses.
+
        These video attributes are supported by <STRONG>attr_on</STRONG> and  related  functions
        (which also support the attributes recognized by <STRONG>attron</STRONG>, etc.):
 
@@ -332,7 +336,6 @@
               <STRONG>WA_BLINK</STRONG>        Blinking
               <STRONG>WA_DIM</STRONG>          Half bright
               <STRONG>WA_BOLD</STRONG>         Extra bright or bold
-
               <STRONG>WA_ALTCHARSET</STRONG>   Alternate character set
 
        X/Open Curses does not assign values to  these  symbols,  nor  does  it
@@ -497,7 +500,7 @@
 
 
 
-ncurses 6.5                       2024-04-27                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.5                       2024-05-11                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

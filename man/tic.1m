@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.110 2024/04/27 17:57:06 tom Exp $
-.TH @TIC@ 1M 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tic.1m,v 1.111 2024/05/11 20:39:53 tom Exp $
+.TH @TIC@ 1M 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,7 +45,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB\%@TIC@\fP \-
 compile terminal descriptions for \fIterminfo\fR or \fItermcap\fR
@@ -109,7 +108,8 @@ In either case (directory or hashed database),
 For a directory, this would be the \*(``terminfo\*('' leaf,
 versus a "terminfo.db" file.
 .PP
-The results are normally placed in the system terminfo database \fB\*d\fP.
+The results are normally placed
+in the system terminfo database \fB@TERMINFO@\fP.
 The compiled terminal description can be placed
 in a different terminfo database.
 There are two ways to achieve this:
@@ -119,7 +119,7 @@ using the \fB\-o\fP option,
 or by setting the variable \fI\%TERMINFO\fP
 in your shell environment to a valid database location.
 .bP
-Secondly, if \fB@TIC@\fP cannot write in \fI\*d\fP
+Secondly, if \fB@TIC@\fP cannot write in \fI@TERMINFO@\fP
 or the location specified using your \fI\%TERMINFO\fP variable,
 it looks for the directory \fI$HOME/.terminfo\fP
 (or hashed database \fI$HOME/.terminfo.db)\fP;
@@ -135,7 +135,7 @@ directories listed in the \fI\%TERMINFO_DIRS\fP environment variable,
 .bP
 a compiled-in list of directories (@TERMINFO_DIRS@), and
 .bP
-the system terminfo database (\fI\*d\fP).
+the system terminfo database (\fI@TERMINFO@\fP).
 .PP
 The \fIFetching Compiled Descriptions\fP section in the \fBterminfo\fR(5)
 manual goes into further detail.
@@ -419,7 +419,7 @@ The exception is the \fBuse\fP capability.
 .PP
 When a \fBuse\fP=\fIentry\fP\-\fIname\fP field is discovered in a
 terminal entry currently being compiled, \fB@TIC@\fP reads in the binary
-from \fB\*d\fP to complete the entry.
+from \fB@TERMINFO@\fP to complete the entry.
 (Entries created from
 \fIfile\fP will be used first.
 \fB@TIC@\fP duplicates the capabilities in
@@ -443,7 +443,7 @@ will be truncated to the maximum alias length
 and a warning message will be printed.
 .SH FILES
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database
 .SH NOTES
 There is some evidence that historic \fB@TIC@\fP implementations treated

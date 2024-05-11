@@ -27,29 +27,29 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.64 2024/04/20 21:24:19 tom Exp $
-.TH curs_outopts 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.65 2024/05/11 20:39:53 tom Exp $
+.TH curs_outopts 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
 .SH NAME
 \fB\%clearok\fP,
-\fB\%idlok\fP,
 \fB\%idcok\fP,
+\fB\%idlok\fP,
 \fB\%immedok\fP,
 \fB\%leaveok\fP,
+\fB\%scrollok\fP,
 \fB\%setscrreg\fP,
-\fB\%wsetscrreg\fP,
-\fB\%scrollok\fP \-
+\fB\%wsetscrreg\fP \-
 set \fIcurses\fR output options
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
 \fBint clearok(WINDOW *\fIwin\fP, bool \fIbf\fP);
-\fBint idlok(WINDOW *\fIwin\fP, bool \fIbf\fP);
 \fBvoid idcok(WINDOW *\fIwin\fP, bool \fIbf\fP);
+\fBint idlok(WINDOW *\fIwin\fP, bool \fIbf\fP);
 \fBvoid immedok(WINDOW *\fIwin\fP, bool \fIbf\fP);
 \fBint leaveok(WINDOW *\fIwin\fP, bool \fIbf\fP);
 \fBint scrollok(WINDOW *\fIwin\fP, bool \fIbf\fP);
@@ -72,6 +72,13 @@ If
 the \fIwin\fP argument to \fBclearok\fP is the global variable \fBcurscr\fP,
 the next call to \fBwrefresh\fP with any window causes the screen to be cleared
 and repainted from scratch.
+.SS idcok
+If \fBidcok\fP is called with \fBFALSE\fP as second argument, \fBcurses\fP
+no longer considers using the hardware insert/delete character feature of
+terminals so equipped.
+Use of character insert/delete is enabled by default.
+Calling \fBidcok\fP with \fBTRUE\fP as second argument re-enables use
+of character insertion and deletion.
 .SS idlok
 If \fBidlok\fP is called with \fBTRUE\fP as second argument, \fBcurses\fP
 considers using the hardware insert/delete line feature of terminals so
@@ -85,13 +92,6 @@ disabled by default because insert/delete line tends to be visually annoying
 when used in applications where it is not really needed.
 If insert/delete line
 cannot be used, \fBcurses\fP redraws the changed portions of all lines.
-.SS idcok
-If \fBidcok\fP is called with \fBFALSE\fP as second argument, \fBcurses\fP
-no longer considers using the hardware insert/delete character feature of
-terminals so equipped.
-Use of character insert/delete is enabled by default.
-Calling \fBidcok\fP with \fBTRUE\fP as second argument re-enables use
-of character insertion and deletion.
 .SS immedok
 If \fBimmedok\fP is called with \fBTRUE\fP as second argument,
 any change in the window image,
@@ -119,7 +119,7 @@ line.
 If enabled, (\fIbf\fP is \fBTRUE\fP), the window is scrolled up one line
 (Note that to get the physical scrolling effect on the terminal, it is
 also necessary to call \fBidlok\fP).
-.SS  "setscrreg, wsetscrreg"
+.SS "setscrreg, wsetscrreg"
 The \fBsetscrreg\fP and \fBwsetscrreg\fP routines allow the application
 programmer to set a software scrolling region in a window.
 The \fItop\fP and

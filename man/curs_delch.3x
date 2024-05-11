@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_delch.3x,v 1.34 2024/04/20 19:24:14 tom Exp $
-.TH curs_delch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_delch.3x,v 1.35 2024/05/11 20:39:53 tom Exp $
+.TH curs_delch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,19 +58,17 @@ delete a character from a \fIcurses\fR window
 .B \%wdelch
 deletes the character at the cursor position in
 .IR win .
-\fB\%ncurses\fP(3X) describes the variants of this function.
-.PP
-.B \%wdelch
-moves all characters to the right of the cursor on the same line to the
-left one position and replaces the contents of the rightmost position on
-the line with the window's blank character;
+It moves all characters to the right of the cursor on the same line to
+the left one position and replaces the contents of the rightmost
+position on the line with the window's blank character;
 see \fB\%bkgd\fP(3X)
-(wide-character API users may consult \fB\%bkgrnd\fP(3X) instead).
+(wide-character API users: \fB\%bkgrnd\fP(3X)).
 The cursor position does not change
 (after moving to
 .RI ( y ,
 .IR x ),
 if specified).
+\fB\%ncurses\fP(3X) describes the variants of this function.
 .SH RETURN VALUE
 These functions return
 .B OK
@@ -103,6 +101,7 @@ is not necessarily employed.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+It specifies no error conditions for them.
 .PP
 SVr4
 .I curses

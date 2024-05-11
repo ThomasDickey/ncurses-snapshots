@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.68 2024/04/20 18:59:26 tom Exp $
-.TH @TOE@ 1M 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: toe.1m,v 1.69 2024/05/11 20:39:53 tom Exp $
+.TH @TOE@ 1M 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,7 +50,6 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ds d @TERMINFO@
 .SH NAME
 \fB\%@TOE@\fP \-
 list table of entries of \fIterminfo\fR terminal types
@@ -143,7 +142,7 @@ reports the version of \fI\%ncurses\fP associated
 with this program and exits with a successful status.
 .SH FILES
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database
 .SH PORTABILITY
 \fB\%@TOE@\fP is not provided by other implementations.

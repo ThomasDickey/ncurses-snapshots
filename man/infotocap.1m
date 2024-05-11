@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infotocap.1m,v 1.41 2024/03/16 15:35:01 tom Exp $
-.TH @INFOTOCAP@ 1M 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infotocap.1m,v 1.42 2024/05/11 20:39:53 tom Exp $
+.TH @INFOTOCAP@ 1M 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -40,7 +40,6 @@
 .el   .ds '' ""
 .\}
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB\%@INFOTOCAP@\fP \-
 convert a \fI\%terminfo\fR description into a \fI\%termcap\fR description
@@ -78,7 +77,7 @@ The \fB\-V\fP option reports the version of \fI\%ncurses\fP associated
 with this program and exits with a successful status.
 .SH FILES
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database
 .SH PORTABILITY
 None of X/Open Curses,

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.62 2024/04/20 21:20:07 tom Exp $
-.TH curs_add_wch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.63 2024/05/11 21:31:45 tom Exp $
+.TH curs_add_wch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -52,7 +52,7 @@
 \fB\%mvwadd_wch\fP,
 \fB\%echo_wchar\fP,
 \fB\%wecho_wchar\fP \-
-add a \fIcurses\fR complex character to a window and advance the cursor
+add a \fIcurses\fR complex character to a window, possibly advancing the cursor
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
@@ -66,70 +66,143 @@ add a \fIcurses\fR complex character to a window and advance the cursor
 \fBint wecho_wchar(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
 .fi
 .SH DESCRIPTION
-.SS add_wch
-The
-\fBadd_wch\fP,
-\fBwadd_wch\fP,
-\fBmvadd_wch\fP, and
-\fBmvwadd_wch\fP
-functions put the complex character \fIwch\fP into the given
-window at its current position,
-which is then advanced.
-These functions perform
-wrapping and special-character processing as follows:
+.SS wadd_wch
+.B \%wadd_wch
+writes the complex character
+.I wch
+to the window
+.IR win ","
+then may advance the cursor position,
+analogously to the standard C library's \fI\%putwchar\fP(3).
+\fB\%ncurses\fP(3X) describes the variants of this function.
+.PP
+Much behavior depends on whether the wide characters in
+.I wch
+are spacing or non-spacing;
+see subsection \*(``Complex Characters\*('' below.
 .bP
-If \fIwch\fP refers to a spacing character,
-then any previous character at that location is removed.
-A new character specified by \fIwch\fP is
-placed at that location with rendition specified by \fIwch\fP.
-The cursor then advances after this spacing character,
-to prepare for writing the next character on the screen.
-.IP
-The newly added spacing character is the base of the active complex character.
-Subsequent non-spacing characters can be combined with this base
-until another spacing character is written to the screen,
-or the cursor is moved, e.g., using \fBwmove\fP.
+If
+.I wch
+contains a spacing character,
+then any character at the cursor is first removed.
+The complex character
+.IR wch ","
+with its attributes and color pair identifier,
+becomes the
+.I base
+of the
+.IR "active complex character" "."
 .bP
-If \fIwch\fP refers to a non-spacing character,
-it is appended to the active complex character,
-retaining the previous characters at that location.
-The rendition specified by \fIwch\fP is ignored.
-.IP
-The cursor is not advanced after adding a non-spacing character.
-Subsequent calls to add non-spacing characters will update the same position.
+If
+.I wch
+contains only non-spacing characters,
+.\" XXX: see wadd_wch_literal (the beginning of the array may be nonspacing)
+they are combined with the active complex character.
+.I curses
+ignores its attributes and color pair identifier,
+and does not advance the cursor.
+.PP
+Further non-spacing characters added with
+.B \%wadd_wch
+are not written at the new cursor position but combine with the active
+complex character until another spacing character is written to the
+window or the cursor is moved.
+.PP
+If advancement occurs at the right margin,
 .bP
-If the character part of \fIwch\fP is
-a tab, newline, backspace or other control character,
-the window is updated and the cursor moves as if \fBaddch\fP were called.
-.SS echo_wchar
-The \fBecho_wchar\fP
-function is functionally equivalent to a call to
-\fBadd_wch\fP
-followed by a call to
-\fB\%refresh\fP(3X).
-Similarly, the
-\fBwecho_wchar\fP
-is functionally equivalent to a call to
-\fBwadd_wch\fP
-followed by a call to
-\fBwrefresh\fP.
-The knowledge
-that only a single character is being output is taken into consideration and,
-for non-control characters, a considerable performance gain might be seen
-by using the *\fBecho\fP* functions instead of their equivalents.
-.SS "Line Graphics"
-Like \fB\%addch\fP(3X),
-\fBaddch_wch\fP accepts symbols which make it simple to draw lines and other
-frequently used special characters.
-These symbols correspond to the same VT100 line-drawing set as
-\fB\%addch\fP(3X).
+the cursor automatically wraps to the beginning of the next line,
+then,
+.bP
+if it was at the bottom of the scrolling region,
+and if \fB\%scrollok\fP(3X) is enabled for
+.IR win ,
+the scrolling region scrolls up one line.
+.PP
+If
+.I wch
+is a
+backspace,
+carriage return,
+line feed,
+or
+tab,
+the cursor moves appropriately within the window.
+.bP
+Backspace moves the cursor one character left;
+at the left margin of a window,
+it does nothing.
+.bP
+Carriage return moves the cursor to the left margin on the current line
+of the window.
+.bP
+Line feed does a \fB\%clrtoeol\fP(3X),
+then advances as if from the right margin.
+.bP
+Tab advances the cursor to the next tab stop
+(possibly on the next line);
+these are placed at every eighth column by default.
+Alter the tab interval with the
+.B \%TABSIZE
+extension;
+see \fB\%curs_variables\fP(3X).
+.PP
+If
+.I wch
+is any other nonprintable character,
+it is drawn in printable form using the same convention as
+\fB\%wunctrl\fP(3X).
+.PP
+Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
+does not return the character itself,
+but its \fB\%wunctrl\fP(3X) representation.
+.SS wecho_wchar
+.B \%echo_wchar
+and
+.B \%wecho_wchar
+are equivalent to calling
+.RB \%( w ) add_wch
+followed by
+.RB \%( w ) refresh .
+.I curses
+interprets these functions as a hint that only a single (complex)
+character is being output;
+for non-control characters,
+a considerable performance gain may be enjoyed by employing them.
+.\" TODO: Combine the following with the "Line Drawing" subsection of
+.\" terminfo(5) and replace this with a cross reference there.
+.SS "Forms-Drawing Characters"
+.I curses
+defines macros starting with
+.B \%WACS_
+that can be used with
+.B \%wadd_wch
+to write line-drawing and other special characters to the screen.
+.I \%ncurses
+terms these
+.I "forms-drawing characters."
+The ACS default listed below is used if the
+.B \%acs_chars
+.RB ( \%acsc )
+.I \%term\%info
+capability does not define a terminal-specific replacement for it,
+or if the terminal and locale configuration requires Unicode to access
+these characters but the library is unable to use Unicode.
+The \*(``acsc char\*('' column corresponds to how the characters are
+specified in the
+.B \%acs_chars
+.RB ( \%acsc )
+string capability,
+and the characters in it may appear on the screen if the terminal type's
+database entry incorrectly advertises ACS support.
+The name \*(``ACS\*('' originates in the Alternate Character Set feature
+of the DEC VT100 terminal.
 .PP
 .TS
 Lb Lb Lb Lb Lb
 Lb Lb Lb Lb Lb
 Lb L  L  L  Lx.
-\&	Unicode	ASCII	acsc	\&
-ACS Name	Default	Default	Char	Glyph Name
+\&	Unicode	ACS	acsc	\&
+Symbol	Default	Default	char	Glyph Name
 _
 WACS_BLOCK	0x25ae	#	0	T{
 solid square block
@@ -291,26 +364,29 @@ U+2501 BOX DRAWINGS HEAVY HORIZONTAL
 .bP
 U+2550 BOX DRAWINGS DOUBLE HORIZONTAL
 .SH RETURN VALUE
-All routines return the integer \fBERR\fP upon failure and \fBOK\fP on success.
-.PP
-X/Open Curses does not specify any error conditions.
-This implementation returns an error
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
+In
+.IR \%ncurses ,
+.B \%wadd_wch
+returns
+.B ERR
+if
 .bP
-if the window pointer is null or
+.I win
+is
+.BR NULL ","
 .bP
-if it is not possible to add a complete character in the window.
-.PP
-The latter may be due to different causes:
+wrapping to a new line is impossible because \fB\%scrollok\fP(3X) has
+not been called on
+.I win
+when writing to its bottom right location is attempted,
+or
 .bP
-If \fB\%scrollok\fP(3X) is not enabled,
-writing a character at the lower right margin succeeds.
-However,
-an error is returned because it is not possible to wrap to a new line.
-.bP
-If an error is detected when converting a multibyte character to a sequence
-of bytes,
-or if it is not possible to add all of the resulting bytes in the window,
-an error is returned.
+it is not possible to add a complete character at the cursor position.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -318,16 +394,32 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-Note that
-\fBadd_wch\fP,
-\fBmvadd_wch\fP,
-\fBmvwadd_wch\fP, and
-\fBecho_wchar\fP
-may be macros.
+.BR add_wch ","
+.BR mvadd_wch ","
+.BR mvwadd_wch ","
+and
+.B echo_wchar
+may be implemented as macros.
+.SH EXTENSIONS
+.SS TABSIZE
+The
+.B TABSIZE
+variable is implemented in SVr4 and other versions of
+.IR curses ,
+but is not specified by X/Open Curses
+(see \fBcurs_variables\fP(3X)).
 .SH PORTABILITY
 These functions are described in X/Open Curses, Issue 4.
-The defaults specified for line-drawing characters apply in the POSIX locale.
-.SS "WACS Symbols"
+It specifies no error conditions for them.
+.PP
+SVr4
+.I curses
+describes a successful return value only as
+\*(``an integer value other than
+.BR ERR \*(''.
+.PP
+The defaults specified for forms-drawing characters apply in the POSIX
+locale.
 X/Open Curses makes it clear that the WACS_ symbols should be defined as
 a pointer to \fBcchar_t\fP data, e.g., in the discussion of \fBborder_set\fP.
 A few implementations are problematic:
@@ -406,32 +498,32 @@ Others have suggested these alternatives:
 \[u256C] U+256C (forms double vertical and horizontal), and
 \[u2612] U+2612 (ballot box with x).
 .SS "Complex Characters"
-The complex character type \fBcchar_t\fR
-can store more than one wide character (\fBwchar_t\fR).
-The X/Open Curses description does not mention this possibility,
-describing only the cases where \fIwch\fP is a spacing character
-or a non-spacing character.
+The complex character type
+.I \%cchar_t
+can store more than one wide character
+.RI ( \%wchar_t ).
+X/Open Curses does not mention this possibility,
+specifying behavior only where
+.I wch
+is a single character,
+either spacing or non-spacing.
 .PP
-This implementation assumes that \fIwch\fP is constructed using
-\fB\%setcchar\fP(3X), and in turn that the result
+.I \%ncurses
+assumes that
+.I wch
+is constructed using \fB\%setcchar\fP(3X),
+and in turn that the result
 .bP
-contains at most one spacing character in the beginning of its list of wide
-characters,
-and zero or more non-spacing characters
+contains at most one spacing character at the beginning of its list of
+wide characters,
+and zero or more non-spacing characters,
 or
 .bP
-may hold one non-spacing character.
+holds one non-spacing character.
 .PP
 In the latter case,
-\fI\%ncurses\fP adds the non-spacing character to the active
-(base) spacing character.
-.SS TABSIZE
-The
-.B TABSIZE
-variable is implemented in SVr4 and other versions of
-.IR curses ,
-but is not specified by X/Open Curses
-(see \fBcurs_variables\fP(3X)).
+.I \%ncurses
+adds the non-spacing character to the active complex character.
 .SH SEE ALSO
 \fB\%curs_addch\fP(3X) describes comparable functions of the
 .I \%ncurses

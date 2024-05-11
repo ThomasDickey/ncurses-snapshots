@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.85 2024/04/27 17:57:47 tom Exp $
-.TH @TSET@ 1 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.86 2024/05/11 20:39:53 tom Exp $
+.TH @TSET@ 1 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -47,7 +47,6 @@
 .el    .IP \(bu 2
 ..
 .
-.ds d @TERMINFO@
 .SH NAME
 \fB\%@TSET@\fP,
 \fB\%@RESET@\fP \-
@@ -314,7 +313,7 @@ for the terminal description.
 .I /etc/ttys
 system port name to terminal type mapping database (BSD versions only).
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database directory
 .SH PORTABILITY
 Neither IEEE Std 1003.1/The Open Group Base Specifications Issue 7

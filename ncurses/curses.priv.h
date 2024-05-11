@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.688 2024/05/04 18:30:25 tom Exp $
+ * $Id: curses.priv.h,v 1.689 2024/05/11 19:05:45 tom Exp $
  *
  *	curses.priv.h
  *
@@ -875,6 +875,12 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
  * numbers in legacy terminfo.
  */
 #define MAX_DELAY_MSECS 30000
+
+/*
+ * Limit screen dimensions read from environment variables.
+ */
+#define MAX_ENV_LINES	512
+#define MAX_ENV_COLUMNS	512
 
 /*
  * When converting from terminfo to termcap, check for cases where we can trim

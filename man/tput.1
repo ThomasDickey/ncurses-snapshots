@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.113 2024/04/20 19:58:50 tom Exp $
-.TH @TPUT@ 1 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.114 2024/05/11 20:39:53 tom Exp $
+.TH @TPUT@ 1 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,7 +45,6 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
-.ds d @TERMINFO@
 .SH NAME
 \fB\%@TPUT@\fP \-
 initialize a terminal, exercise its capabilities, or query \fI\%term\%info\fP database
@@ -434,7 +433,7 @@ option overrides its value.
 .I @DATADIR@/tabset
 tab stop initialization database
 .TP
-.I \*d
+.I @TERMINFO@
 compiled terminal description database
 .SH PORTABILITY
 Over time
