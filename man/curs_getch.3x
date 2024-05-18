@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.88 2024/05/11 20:39:53 tom Exp $
-.TH curs_getch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.91 2024/05/18 20:23:57 tom Exp $
+.TH curs_getch 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -417,7 +417,7 @@ to indicate that a mouse event is pending collection;
 see \fB\%curs_mouse\fP(3X).
 Receipt of this code requires a window's keypad mode to be enabled,
 because to interpret mouse input
-(as with with \fI\%xterm\fP(1)'s mouse prototocol),
+(as with with \fI\%xterm\fP(1)'s mouse protocol),
 .I \%ncurses
 must read an escape sequence,
 as with a function key.
@@ -489,9 +489,9 @@ may be the same as
 or
 .BR \*^? "."
 .\" as with pccon+keys or vt320
-Consult the terminal's
+Consult the
 .I \%term\%info
-entry to determine whether this is the case;
+entry for the terminal type to determine whether this is the case;
 see \fB\%infocmp\fP(1).
 Some
 .I curses

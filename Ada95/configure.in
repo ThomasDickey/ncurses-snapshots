@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2022,2023 Thomas E. Dickey                                *
+dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
 dnl Copyright 2010-2016,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: configure.in,v 1.91 2023/02/18 23:21:29 tom Exp $
+dnl $Id: configure.in,v 1.92 2024/05/18 14:31:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210509)
-AC_REVISION($Revision: 1.91 $)
+AC_REVISION($Revision: 1.92 $)
 AC_INIT(gen/gen.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -59,7 +59,7 @@ cf_user_CFLAGS="$CFLAGS"
 CF_CFG_DEFAULTS
 
 ###	Checks for programs.
-CF_PROG_CC(gnatgcc gcc cc)
+CF_WITH_ADA
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 CF_PROG_CC_C_O(CC,[$CFLAGS $CPPFLAGS])
@@ -455,7 +455,6 @@ cf_with_ada=yes
 dnl Check for availability of GNU Ada Translator (GNAT).
 dnl At the moment we support no other Ada95 compiler.
 if test "$cf_with_ada" != "no" ; then
-	CF_PROG_GNAT
 	if test	"$cf_cv_prog_gnat_correct" = yes; then
 		CF_FIXUP_ADAFLAGS
 

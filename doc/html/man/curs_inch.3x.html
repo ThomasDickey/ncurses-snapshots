@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inch.3x,v 1.52 2024/05/11 20:39:53 tom Exp @
+  * @Id: curs_inch.3x,v 1.54 2024/05/18 20:07:52 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inch 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inch 3x 2024-05-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inch 3x 2024-05-11 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inch 3x 2024-05-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 
@@ -55,68 +55,77 @@
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
        <STRONG>chtype</STRONG> <STRONG>inch(void);</STRONG>
-       <STRONG>chtype</STRONG> <STRONG>winch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>);</STRONG>
+       <STRONG>chtype</STRONG> <STRONG>winch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>);</STRONG>
        <STRONG>chtype</STRONG> <STRONG>mvinch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
-       <STRONG>chtype</STRONG> <STRONG>mvwinch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
+       <STRONG>chtype</STRONG> <STRONG>mvwinch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       <STRONG>winch</STRONG>  returns the <EM>curses</EM> character, including rendering attributes and
-       color pair identifier, at  the  cursor  position  in  the  window  <EM>win</EM>.
-       Subsection  "Video  Attributes"  of  <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG> explains how to extract
-       these data from a <EM>chtype</EM>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants  of  this
-       function.
+       <STRONG>winch</STRONG>  returns the <EM>curses</EM> character, including its attributes and color
+       pair identifier, at the cursor position in the window <EM>win</EM>.   Subsection
+       "Video  Attributes"  of  <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG>  explains how to extract these data
+       from a <EM>chtype</EM>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of this function.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Functions  prefixed with "mv" first perform cursor movement and fail if
-       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
+       These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       These functions do not return an error if the window comprises cells of
-       <EM>curses</EM>  complex characters (that is, they contain characters with codes
-       wider than eight bits, or greater  than  255  as  an  unsigned  decimal
-       integer).   They  instead  extract  only  the  low-order  eight bits of
-       character data in the cell.
+       In <EM>ncurses</EM>, <STRONG>winch</STRONG> returns <STRONG>ERR</STRONG> if <EM>win</EM> is <STRONG>NULL</STRONG>.
+
+       Functions prefixed with "mv" first perform cursor movement and fail  if
+       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <STRONG>inch</STRONG>, <STRONG>mvinch</STRONG>, and <STRONG>mvwinch</STRONG> may be implemented as macros.
 
+       These  functions do not return an error if the window contains cells of
+       <EM>curses</EM> complex characters; that is, if  they  contain  characters  with
+       codes wider than eight bits (or greater than 255 as an unsigned decimal
+       integer).  They instead extract only the low-order eight  bits  of  the
+       character code from the cell.
+
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
+       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
        error conditions for them.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       <STRONG>winch</STRONG>  was  implemented  in  the original 4BSD <EM>curses</EM> library (November
-       1980).  It returned only the character code (as an  integer)  with  the
-       "standout"  attribute bit (the only one it supported) cleared.  Because
-       7-bit ASCII was the only character  encoding  supported,  4BSD's  <STRONG>winch</STRONG>
-       returned a <EM>char</EM> type.
+       The original <EM>curses</EM> in 4BSD (1980) defined <EM>winch</EM> as a  macro  accessing
+       the  <EM>WINDOW</EM>  structure member representing character cell data, at that
+       time a <EM>char</EM>, containing  only  a  7-bit  ASCII  character  code  and  a
+       "standout" attribute bit, the only one the library supported.
 
-       System V  <EM>curses</EM>  (1983)  permitted  several rendering attributes to be
-       combined with a character in a window.   Reflecting  this  improvement,
-       <STRONG>winch</STRONG>  returned  an <EM>int</EM> in SVr3.2 (1988) and switched to <EM>chtype</EM> in SVr4
-       (1989).
+       SVr2  <EM>curses</EM> (1984) extended this approach, widening the character code
+       to eight bits and permitting several attributes to be combined with  it
+       by  storing  them  together  in  a  <EM>chtype</EM>, an alias of <EM>unsigned</EM> <EM>short</EM>.
+       Because a macro was used, its value was not type-checked as a  function
+       return  value  could have been.  Goodheart documented SVr3 (1987) <EM>winch</EM>
+       as returning an  <EM>int</EM>.   SVr3.1's  (1987)  <EM>chtype</EM>  became  an  alias  of
+       <EM>unsigned</EM>  <EM>long</EM>,  using  16 bits for the character code and widening the
+       type in practical terms to 32 bits, as 64-bit Unix systems were not yet
+       in wide use, and fixed-width integral types would not be standard until
+       ISO C99.  SVr3.2 (1988) added a 6-bit color pair  identifier  alongside
+       the attributes.
 
        X/Open Curses does not specify the sizes of the character code or color
-       pair  identifier,  nor  the  quantity  of  rendering attribute bits, in
-       <EM>chtype</EM>; these are implementation-dependent.  <EM>ncurses</EM>  uses  eight  bits
-       for  the  character  code.   An application requiring a wider character
-       type, for instance to handle Unicode,  should  use  the  wide-character
+       pair identifier, nor the quantity of attribute bits, in  <EM>chtype</EM>;  these
+       are   implementation-dependent.    <EM>ncurses</EM>  uses  eight  bits  for  the
+       character code.  An application requiring a wider character  type,  for
+       instance   to   represent   Unicode,   should  use  the  wide-character
        counterparts of these functions.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>  describes  comparable functions of the <EM>ncurses</EM> library
+       <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG> describes comparable functions of the  <EM>ncurses</EM>  library
        in its wide-character configuration (<EM>ncursesw</EM>).
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-05-11                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
+ncurses 6.5                       2024-05-18                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

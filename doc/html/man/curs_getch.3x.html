@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.88 2024/05/11 20:39:53 tom Exp @
+  * @Id: curs_getch.3x,v 1.91 2024/05/18 20:23:57 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-05-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2024-05-11 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-05-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -288,7 +288,7 @@
        <STRONG>o</STRONG>   <STRONG>wgetch</STRONG>  returns <STRONG>KEY_MOUSE</STRONG> to indicate that a mouse event is pending
            collection; see <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>.  Receipt of this  code  requires  a
            window's  keypad  mode  to  be  enabled, because to interpret mouse
-           input (as with with <STRONG>xterm(1)</STRONG>'s mouse prototocol), <EM>ncurses</EM> must read
+           input (as with with <STRONG>xterm(1)</STRONG>'s mouse protocol), <EM>ncurses</EM>  must  read
            an escape sequence, as with a function key.
 
 
@@ -326,10 +326,10 @@
 
        Some key strokes are indistinguishable  from  control  characters;  for
        example,  <STRONG>KEY_ENTER</STRONG> may be the same as <STRONG>^M</STRONG>, and <STRONG>KEY_BACKSPACE</STRONG> may be the
-       same as <STRONG>^H</STRONG> or <STRONG>^?</STRONG>.  Consult the terminal's <EM>terminfo</EM> entry  to  determine
-       whether this is the case; see <STRONG><A HREF="infocmp.1m.html">infocmp(1)</A></STRONG>.  Some <EM>curses</EM> implementations,
-       including <EM>ncurses</EM>, honor the <EM>terminfo</EM>  key  definitions;  others  treat
-       such control characters specially.
+       same as <STRONG>^H</STRONG> or <STRONG>^?</STRONG>.  Consult the <EM>terminfo</EM> entry for the terminal type  to
+       determine  whether  this  is  the  case;  see  <STRONG><A HREF="infocmp.1m.html">infocmp(1)</A></STRONG>.  Some <EM>curses</EM>
+       implementations, including <EM>ncurses</EM>, honor the <EM>terminfo</EM> key definitions;
+       others treat such control characters specially.
 
        <EM>curses</EM>  distinguishes  the  Enter  keys  in  the alphabetic and numeric
        keypad sections of a keyboard because (most) terminals  do.   <STRONG>KEY_ENTER</STRONG>
@@ -426,7 +426,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.5                       2024-05-18                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

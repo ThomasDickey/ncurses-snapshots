@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1069 2024/03/30 22:15:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.1071 2024/05/18 19:49:14 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -741,7 +741,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 11 updated: 2022/12/04 15:40:08
+dnl CF_BUILD_CC version: 12 updated: 2024/03/17 09:17:26
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -841,9 +841,9 @@ else
 	: ${BUILD_CC:='${CC}'}
 	: ${BUILD_CPP:='${CPP}'}
 	: ${BUILD_CFLAGS:='${CFLAGS}'}
-	: ${BUILD_CPPFLAGS:='${CPPFLAGS}'}
+	: ${BUILD_CPPFLAGS:='ifelse([$1],,'${CPPFLAGS}',[$1])'}
 	: ${BUILD_LDFLAGS:='${LDFLAGS}'}
-	: ${BUILD_LIBS:='${LIBS}'}
+	: ${BUILD_LIBS:='ifelse([$2],,'${LIBS}',[$2])'}
 	: ${BUILD_EXEEXT:='$x'}
 	: ${BUILD_OBJEXT:='o'}
 fi
@@ -2623,19 +2623,36 @@ else
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_GETTIME version: 2 updated: 2023/02/25 08:45:56
+dnl CF_FUNC_GETTIME version: 3 updated: 2024/05/11 13:40:02
 dnl ---------------
 dnl Check for gettimeofday or clock_gettime.  In 2023, the former is still more
 dnl widely supported, but "deprecated" (2008), so we will use the latter if it
 dnl is available, to reduce compiler warnings.
 AC_DEFUN([CF_FUNC_GETTIME],[
-AC_CACHE_CHECK(for clock_gettime,cf_cv_func_clock_gettime,[
-		AC_TRY_LINK([#include <time.h>],
+cf_save_libs="$LIBS"
+AC_CHECK_FUNC(clock_gettime,
+	cf_cv_test_clock_gettime=yes,
+	AC_CHECK_LIB(rt, clock_gettime,
+		[LIBS="-lrt $LIBS"
+		 cf_cv_test_clock_gettime=yes],
+		 cf_cv_test_clock_gettime=no))
+
+if test "$cf_cv_test_clock_gettime" = yes ; then
+AC_CACHE_CHECK(if clock_gettime links,cf_cv_func_clock_gettime,[
+		AC_TRY_LINK([
+$ac_includes_default
+#include <time.h>
+		],
 		[struct timespec ts;
-		int rc = clock_gettime(CLOCK_REALTIME, &ts); (void) rc; (void)ts],
+		int rc = clock_gettime(CLOCK_REALTIME, &ts)
+			   + clock_gettime(CLOCK_MONOTONIC, &ts);
+		 (void) rc; (void)ts],
 		[cf_cv_func_clock_gettime=yes],
 		[cf_cv_func_clock_gettime=no])
 ])
+else
+	cf_cv_func_clock_gettime=no
+fi
 
 if test "$cf_cv_func_clock_gettime" = yes
 then
@@ -8999,6 +9016,56 @@ ifelse($1,,,[
 $1_ABI=$cf_cv_abi_version
 ])
 cf_cv_abi_default=$cf_cv_abi_version
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_ADA version: 1 updated: 2024/05/18 13:55:23
+dnl -----------
+dnl Check for the Ada compiler (unless requested to not do this), which causes
+dnl a further check for a C compiler which can work with the Ada compiler.
+AC_DEFUN([CF_WITH_ADA],[
+AC_ARG_WITH(ada,
+	[  --without-ada           suppress check for Ada compiler],
+	[cf_with_ada=$withval],
+	[cf_with_ada=yes])
+
+cf_prog_cc="gcc cc"
+if test "x$cf_with_ada" = xyes
+then
+	CF_PROG_GNAT
+	if test	"x$cf_cv_prog_gnat_correct" = xyes; then
+		# gcc's developers chose to deprecate gnatgcc before making gprconfig
+		# work.  They replaced gnatgcc in gcc 13 with a script which spits out
+		# a warning offering advice which could never work.
+		#
+		# Here is a workaround.
+		AC_PATH_PROG(cf_cv_path_gnatgcc,gnatgcc,no)
+		if test "$cf_cv_path_gnatgcc" != no
+		then
+			AC_MSG_CHECKING(for improvement) 
+			cf_file_gnatgcc=`file -L "$cf_cv_path_gnatgcc" 2>/dev/null`
+			case "x$cf_file_gnatgcc" in
+			(*script*)
+				cf_cv_path_gnatgcc=`sh -x "$cf_cv_path_gnatgcc" --version 2>&1 | grep -w exec | sed -e 's/^[[ 	]]*+[[ 	]]*//' -e 's/exec[[ 	]]//' -e 's/ .*//'`
+				;;
+			(*)
+				cf_cv_path_gnatgcc=no
+				;;
+			esac
+			AC_MSG_RESULT($cf_cv_path_gnatgcc)
+			test "$cf_cv_path_gnatgcc" = no && cf_cv_path_gnatgcc=gnatgcc
+			cf_prog_cc="$cf_cv_path_gnatgcc $cf_prog_cc"
+		fi
+	fi
+fi
+case "$cf_prog_cc" in
+(*/*)
+	CC="$cf_prog_cc"
+	AC_SUBST(CC)
+	;;
+(*)
+	CF_PROG_CC($cf_prog_cc)
+	;;
+esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_WITH_ADA_COMPILER version: 3 updated: 2023/10/28 11:59:01

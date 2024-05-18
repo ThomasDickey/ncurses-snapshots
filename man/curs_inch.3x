@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.52 2024/05/11 20:39:53 tom Exp $
-.TH curs_inch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inch.3x,v 1.54 2024/05/18 20:07:52 tom Exp $
+.TH curs_inch 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -56,16 +56,16 @@ get a \fIcurses\fR character from a window
 \fB#include <curses.h>
 .PP
 \fBchtype inch(void);
-\fBchtype winch(WINDOW *\fIwin\fP);
+\fBchtype winch(WINDOW * \fIwin\fP);
 \fBchtype mvinch(int \fIy\fP, int \fIx\fP);
-\fBchtype mvwinch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBchtype mvwinch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 .fi
 .SH DESCRIPTION
 .B \%winch
 returns the
 .I curses
 character,
-including rendering attributes and color pair identifier,
+including its attributes and color pair identifier,
 at the cursor position in the window
 .IR win "."
 Subsection \*(``Video Attributes\*('' of \fB\%attron\fP(3X) explains
@@ -73,73 +73,104 @@ how to extract these data from a
 .IR chtype "."
 \fB\%ncurses\fP(3X) describes the variants of this function.
 .SH RETURN VALUE
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
+.PP
+In
+.IR \%ncurses ","
+.B \%winch
+returns
+.B ERR
+if
+.I win
+is
+.BR NULL "."
+.PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
 .RI ( y ,
 .IR x )
 is outside the window boundaries.
-.PP
-These functions do not return an error if the window comprises cells of
-.I curses
-complex characters
-(that is,
-they contain characters with codes wider than eight bits,
-or greater than 255 as an unsigned decimal integer).
-They instead extract only the low-order eight bits of character data
-in the cell.
 .SH NOTES
 .BR \%inch ,
 .BR \%mvinch ,
 and
 .B \%mvwinch
 may be implemented as macros.
+.PP
+These functions do not return an error if the window contains cells of
+.I curses
+complex characters;
+that is,
+if they contain characters with codes wider than eight bits
+(or greater than 255 as an unsigned decimal integer).
+They instead extract only the low-order eight bits of the character code
+from the cell.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
 .SH HISTORY
-.B \%winch
-was implemented in the original 4BSD
+The original
 .I curses
-library
-(November 1980).
-It returned only the character code
-(as an integer)
-with the \*(``standout\*(`` attribute bit
-(the only one it supported)
-cleared.
-Because 7-bit ASCII was the only character encoding supported,
-4BSD's
-.B \%winch
-returned a
-.I char
-type.
-.\" Through macros, it directly accessed a `char` structure member.
+in 4BSD (1980) defined
+.I \%winch
+as a macro accessing the
+.I \%WINDOW
+structure member representing character cell data,
+at that time a
+.IR char ","
+containing only a 7-bit ASCII character code
+and a \*(``standout\*(`` attribute bit,
+the only one the library supported.
 .PP
-System\ V
+SVr2
 .I curses
-(1983) permitted several rendering attributes to be combined with a
-character in a window.
-Reflecting this improvement,
-.B \%winch
-.\" XXX: possibly returned a `short` in SVr1 through SVr3 --GBR
-returned an
-.I int
-in SVr3.2 (1988)
-and switched to
-.I chtype
-in SVr4 (1989).
+(1984)
+extended this approach,
+widening the character code to eight bits
+and permitting several attributes to be combined with it
+by storing them together in a
+.IR \%chtype ","
+an alias of
+.IR "unsigned short" "."
+.\" ...indirectly through a preprocessor macro named CHTYPE, encouraging
+.\" builders to change the typedef to `char` or `long` as desired.  More
+.\" innocent times with respect to ABI compatibility concerns... --GBR
+Because a macro was used,
+its value was not type-checked
+as a function return value could have been.
+Goodheart documented SVr3 (1987)
+.I \%winch
+as returning an
+.IR int "."
+.\" ...but the implementation remained unchanged.
+SVr3.1's (1987)
+.I \%chtype
+became an alias of
+.IR "unsigned long" ","
+using 16 bits for the character code and
+widening the type in practical terms to 32 bits,
+as 64-bit Unix systems were not yet in wide use,
+and fixed-width integral types would not be standard until ISO C99.
+.\" Cray's UNICOS was 1985 (how many shops had Crays?).  DEC OSF/1 for
+.\" the Alpha arrived in 1993.  --GBR
+SVr3.2 (1988)
+added a 6-bit color pair identifier alongside the attributes.
 .PP
 X/Open Curses does not specify the sizes of the character code or
 color pair identifier,
-nor the quantity of rendering attribute bits,
+nor the quantity of attribute bits,
 in
 .IR chtype ";"
 these are implementation-dependent.
 .I \%ncurses
 uses eight bits for the character code.
 An application requiring a wider character type,
-for instance to handle Unicode,
+for instance to represent Unicode,
 should use the wide-character counterparts of these functions.
 .SH SEE ALSO
 \fB\%curs_in_wch\fP(3X) describes comparable functions of the

@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.221 2024/01/19 18:27:20 tom Exp $
+dnl $Id: aclocal.m4,v 1.222 2024/05/18 18:08:04 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -1685,19 +1685,36 @@ rm -f core])
 test "$cf_cv_func_curses_version" = yes && AC_DEFINE(HAVE_CURSES_VERSION,1,[Define to 1 if we have curses_version function])
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_GETTIME version: 2 updated: 2023/02/25 08:45:56
+dnl CF_FUNC_GETTIME version: 3 updated: 2024/05/11 13:40:02
 dnl ---------------
 dnl Check for gettimeofday or clock_gettime.  In 2023, the former is still more
 dnl widely supported, but "deprecated" (2008), so we will use the latter if it
 dnl is available, to reduce compiler warnings.
 AC_DEFUN([CF_FUNC_GETTIME],[
-AC_CACHE_CHECK(for clock_gettime,cf_cv_func_clock_gettime,[
-		AC_TRY_LINK([#include <time.h>],
+cf_save_libs="$LIBS"
+AC_CHECK_FUNC(clock_gettime,
+	cf_cv_test_clock_gettime=yes,
+	AC_CHECK_LIB(rt, clock_gettime,
+		[LIBS="-lrt $LIBS"
+		 cf_cv_test_clock_gettime=yes],
+		 cf_cv_test_clock_gettime=no))
+
+if test "$cf_cv_test_clock_gettime" = yes ; then
+AC_CACHE_CHECK(if clock_gettime links,cf_cv_func_clock_gettime,[
+		AC_TRY_LINK([
+$ac_includes_default
+#include <time.h>
+		],
 		[struct timespec ts;
-		int rc = clock_gettime(CLOCK_REALTIME, &ts); (void) rc; (void)ts],
+		int rc = clock_gettime(CLOCK_REALTIME, &ts)
+			   + clock_gettime(CLOCK_MONOTONIC, &ts);
+		 (void) rc; (void)ts],
 		[cf_cv_func_clock_gettime=yes],
 		[cf_cv_func_clock_gettime=no])
 ])
+else
+	cf_cv_func_clock_gettime=no
+fi
 
 if test "$cf_cv_func_clock_gettime" = yes
 then
