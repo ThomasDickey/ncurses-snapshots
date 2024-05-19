@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: configure.in,v 1.92 2024/05/18 14:31:03 tom Exp $
+dnl $Id: configure.in,v 1.93 2024/05/19 09:12:05 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210509)
-AC_REVISION($Revision: 1.92 $)
+AC_REVISION($Revision: 1.93 $)
 AC_INIT(gen/gen.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -410,7 +410,7 @@ AC_MSG_RESULT($cf_with_trace)
 
 if test "$cf_with_trace" = yes ; then
 	ADA_TRACE=TRUE
-	CF_ADD_CFLAGS(-DTRACE)
+	AC_DEFINE(TRACE,1,[Define to 1 if we have support trace functions])
 else
 	ADA_TRACE=FALSE
 fi
