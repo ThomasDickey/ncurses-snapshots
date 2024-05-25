@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.102 2024/05/11 20:39:53 tom Exp $
-.TH curs_util 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.104 2024/05/25 20:10:58 tom Exp $
+.TH curs_util 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -292,10 +292,15 @@ In this implementation
 .RS 3
 .TP 5
 \fBflushinp\fP
-returns an error if the terminal was not initialized.
+returns
+.B ERR
+if the terminal was not initialized.
 .TP 5
 \fBputwin\fP
-returns an error if the associated \fBfwrite\fP calls return an error.
+returns
+.B ERR
+if the associated \fBfwrite\fP calls return
+.BR ERR "."
 .RE
 .SH PORTABILITY
 .SS filter

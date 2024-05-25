@@ -34,7 +34,7 @@
 #define NEW_PAIR_INTERNAL 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: report_offsets.c,v 1.28 2024/02/24 15:59:09 tom Exp $")
+MODULE_ID("$Id: report_offsets.c,v 1.29 2024/05/25 23:00:26 tom Exp $")
 
 #define show_size(type) \
 	flag = 0; \
@@ -183,7 +183,9 @@ main(void)
     show_REENTR(SCREEN, _ttytype);
     show_SPFUNC(SCREEN, use_tioctl);
     show_WIDECH(SCREEN, _screen_acs_fix);
+#if NCURSES_EXT_FUNCS && NCURSES_EXT_COLORS
     show_COLORS(SCREEN, _ordered_pairs);
+#endif
     show_TRACES(SCREEN, tracechr_buf);
 
     printf("\n");

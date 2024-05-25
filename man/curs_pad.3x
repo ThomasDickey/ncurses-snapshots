@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.61 2024/04/27 17:55:43 tom Exp $
-.TH curs_pad 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_pad.3x,v 1.63 2024/05/25 20:10:58 tom Exp $
+.TH curs_pad 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -182,21 +182,26 @@ In this implementation
 .RS 3
 .TP 5
 \fB\%prefresh\fP and \fB\%pnoutrefresh\fP
-return an error
+return
+.B ERR
 if the window pointer is null, or
 if the window is not really a pad or
 if the area to refresh extends off-screen or
 if the minimum coordinates are greater than the maximum.
 .TP 5
 \fBpechochar\fP
-returns an error
+returns
+.B ERR
 if the window is not really a pad, and the associated call
-to \fB\%wechochar\fP returns an error.
+to \fB\%wechochar\fP returns
+.BR ERR "."
 .TP 5
 \fBpecho_wchar\fP
-returns an error
+returns
+.B ERR
 if the window is not really a pad, and the associated call
-to \fB\%wecho_wchar\fP returns an error.
+to \fB\%wecho_wchar\fP returns
+.BR ERR "."
 .RE
 .SH NOTES
 \fB\%pechochar\fP may be a macro.

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.51 2024/04/20 21:24:19 tom Exp $
-.TH curs_instr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.53 2024/05/25 20:10:58 tom Exp $
+.TH curs_instr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -83,7 +83,8 @@ All of the functions return \fBERR\fP upon failure,
 or the number of characters actually read into the string.
 .PP
 X/Open Curses defines no error conditions.
-This implementation returns an error
+This implementation returns
+.B ERR
 .bP
 if the \fIwin\fP parameter is null or
 .bP

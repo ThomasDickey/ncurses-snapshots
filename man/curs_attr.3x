@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.106 2024/05/11 20:39:53 tom Exp $
-.TH curs_attr 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.108 2024/05/25 20:10:58 tom Exp $
+.TH curs_attr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -310,12 +310,16 @@ X/Open Curses does not specify any error conditions.
 .PP
 This implementation
 .bP
-returns an error if the window pointer is null.
+returns
+.B ERR
+if the window pointer is null.
 .bP
-returns an error if the color pair parameter
+returns
+.B ERR
+if the color pair parameter
 for \fBwcolor_set\fP is outside the range 0..COLOR_PAIRS\-1.
 .bP
-does not return an error if either of the parameters of \fBwattr_get\fP
+does not fail if either of the parameters of \fBwattr_get\fP
 used for retrieving attribute or color pair values is \fBNULL\fP.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and

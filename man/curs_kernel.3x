@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.61 2024/04/20 21:24:19 tom Exp $
-.TH curs_kernel 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.63 2024/05/25 21:13:56 tom Exp $
+.TH curs_kernel 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -53,9 +53,10 @@
 \fB\%savetty\fP,
 \fB\%getsyx\fP,
 \fB\%setsyx\fP,
-\fB\%ripoffline\fP,
 \fB\%curs_set\fP,
-\fB\%napms\fP \-
+\fB\%mvcur\fP,
+\fB\%napms\fP,
+\fB\%ripoffline\fP \-
 low-level \fIcurses\fR routines
 .SH SYNOPSIS
 .nf
@@ -73,9 +74,10 @@ low-level \fIcurses\fR routines
 \fBvoid getsyx(int \fIy\fP, int \fIx\fP);
 \fBvoid setsyx(int \fIy\fP, int \fIx\fP);
 .PP
-\fBint ripoffline(int \fIline\fP, int (*\fIinit\fP)(WINDOW *, int));
 \fBint curs_set(int \fIvisibility\fP);
+\fBint mvcur(int \fIoldrow\fP, int \fIoldcol\fP, int \fInewrow\fP, int \fInewcol\fP);
 \fBint napms(int \fIms\fP);
+\fBint ripoffline(int \fIline\fP, int (*\fIinit\fP)(WINDOW *, int));
 .fi
 .SH DESCRIPTION
 The following routines give low-level access
@@ -131,6 +133,55 @@ at the beginning, do its manipulation of its own windows, do a
 .PP
 Few applications will use this feature,
 most use \fBwmove\fP instead.
+.SS curs_set
+The \fBcurs_set\fP routine sets the cursor state to invisible,
+normal, or very visible for \fBvisibility\fP equal to \fB0\fP,
+\fB1\fP, or \fB2\fP respectively.
+If the terminal supports the \fIvisibility\fP requested,
+the previous \fIcursor\fP state is returned;
+otherwise, \fBERR\fP is returned.
+.SS mvcur
+.B \%mvcur
+provides low-level cursor motion.
+It takes effect immediately,
+rather than at the next refresh.
+Unlike the other low-level output functions,
+which either write to the standard output stream
+or are passed a function pointer to perform output,
+.B \%mvcur
+uses a file descriptor derived from the output stream parameter of
+\fB\%newterm\fP(3X).
+.PP
+One application of
+.B \%mvcur
+accompanies the temporary use of another program to write to the
+terminal screen.
+For example,
+first call \fB\%refresh\fP(3X) to ensure that the screen and the
+library's model of it is up to date;
+then call
+.BR \%reset_shell_mode ";"
+write to the screen with the external application;
+call
+.BR \%reset_prog_mode ";"
+and finally call
+.B \%mvcur
+to set the cursor's location to where
+.I \%curses
+thinks it is,
+since the library has no knowledge of how the external application
+moved it.
+.\" https://lists.gnu.org/archive/html/bug-ncurses/2016-10/msg00002.html
+.SS napms
+.B \%napms
+sleeps for
+.I ms
+milliseconds.
+If
+.I ms
+exceeds 30,000
+(thirty seconds),
+it is capped at that value.
 .SS ripoffline
 .B \%ripoffline
 provides access to the same facility that \fB\%slk_init\fP(3X) uses to
@@ -158,23 +209,6 @@ It is allowable to call \fBwnoutrefresh\fP during the initialization routine.
 .PP
 \fBripoffline\fP can be called up to five times before calling \fBinitscr\fP or
 \fBnewterm\fP.
-.SS curs_set
-The \fBcurs_set\fP routine sets the cursor state to invisible,
-normal, or very visible for \fBvisibility\fP equal to \fB0\fP,
-\fB1\fP, or \fB2\fP respectively.
-If the terminal supports the \fIvisibility\fP requested,
-the previous \fIcursor\fP state is returned;
-otherwise, \fBERR\fP is returned.
-.SS napms
-.B \%napms
-sleeps for
-.I ms
-milliseconds.
-If
-.I ms
-exceeds 30,000
-(thirty seconds),
-it is capped at that value.
 .SH RETURN VALUE
 Except for \fBcurs_set\fP, these routines always return \fBOK\fP.
 .PP
@@ -186,12 +220,15 @@ X/Open defines no error conditions.
 In this implementation
 .TP 5
 \fBdef_prog_mode\fP, \fBdef_shell_mode\fP, \fBreset_prog_mode\fP, \fBreset_shell_mode\fP
-return an error
+return
+.B ERR
 if the terminal was not initialized, or
 if the I/O call to obtain the terminal settings fails.
 .TP 5
 \fBripoffline\fP
-returns an error if the maximum number of ripped-off lines
+returns
+.B ERR
+if the maximum number of ripped-off lines
 exceeds the maximum (5).
 .SH NOTES
 Note that \fBgetsyx\fP is a macro, so \fB&\fP is not necessary before
@@ -208,6 +245,23 @@ has been called to make the cursor other than normal, i.e., either
 invisible or very visible.
 There is no way for \fI\%ncurses\fP to determine the initial cursor
 state to restore that.
+.SH EXTENSIONS
+In
+.IR \%ncurses ","
+.B \%mvcur
+accepts
+.B \-1
+for either or both old coordinates.
+This value tells
+.I \%ncurses
+that the old location is unknown,
+and that it must use only absolute motion,
+as with the
+.B \%cursor_address
+.RB ( cup )
+capability,
+rather than the least costly combination of absolute and relative
+motion.
 .SH PORTABILITY
 The \fIvirtual screen\fP functions \fBsetsyx\fP and \fBgetsyx\fP
 are not described in X/Open Curses, Issue 4.
@@ -217,6 +271,31 @@ The SVr4 documentation describes \fBsetsyx\fP and \fBgetsyx\fP
 as having return type int.
 This is misleading, as they are macros with no documented semantics
 for the return value.
+.PP
+X/Open Curses notes:
+.RS
+.PP
+\*(``After use of
+.IR \%mvcur "(),"
+the model Curses maintains of the state of the terminal might not
+match the actual state of the terminal.
+An application should touch and refresh the window before
+resuming conventional use of Curses.\*(''
+.RE
+.PP
+Both
+.I \%ncurses
+and SVr4
+.I curses
+implement
+.B \%mvcur
+using the
+.I SCREEN
+data allocated in either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X).
+X/Open Curses states that the old location must be given for
+.B \%mvcur
+to accommodate terminals that lack absolute cursor positioning.
+.\" X/Open Curses Issue 7, p. 161
 .PP
 If interrupted, \fI\%ncurses\fP restarts \fBnapms\fP.
 That, and the limitation to 30 seconds,

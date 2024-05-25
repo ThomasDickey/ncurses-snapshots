@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.100 2024/04/20 21:24:19 tom Exp $
-.TH curs_color 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.102 2024/05/25 20:10:58 tom Exp $
+.TH curs_color 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -455,7 +455,9 @@ Specific functions make additional checks:
 .RS 3
 .TP 5
 \fB\%init_color\fP
-returns an error if the terminal does not support
+returns
+.B ERR
+if the terminal does not support
 this feature, e.g., if the \fB\%initialize_color\fP capability is absent
 from the terminal description.
 .TP 5

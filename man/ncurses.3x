@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.217 2024/05/18 20:02:27 tom Exp $
-.TH ncurses 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.219 2024/05/25 20:57:45 tom Exp $
+.TH ncurses 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -213,11 +213,11 @@ initscr(); cbreak(); noecho();
 .EE
 .RE
 .PP
-Most applications perform further setup as follows.
+Most applications would perform further setup as follows.
 .PP
 .RS 4
 .EX
-intrflush(stdscr, FALSE);
+noqiflush();
 keypad(stdscr, TRUE);
 .EE
 .RE
@@ -301,9 +301,9 @@ contents need not be completely displayed.
 See \fB\%curs_pad\fP(3X).
 .PP
 Many terminals support configuration of character cell foreground and
-background colors as well as rendering
+background colors as well as
 .IR attributes ","
-which cause characters to show up in such modes as
+which cause characters to render in such modes as
 boldfaced,
 underlined,
 or in reverse video.
@@ -331,9 +331,9 @@ and function keys,
 appears as a control character or a multibyte
 .I "escape sequence."
 .I curses
-translates the latter into unique
+can translate the latter into unique
 .I "key codes."
-See \fB\%getch\fP(3X).
+See \fB\%keypad\fP(3X) and \fB\%getch\fP(3X).
 .PP
 .I \%ncurses
 provides reimplementations of the SVr4 \fBpanel\fP(3X), \fBform\fP(3X),
@@ -1140,6 +1140,8 @@ The
 and
 .I \%LINES
 variables may be specified independently.
+.I \%ncurses
+enforces an upper limit of 512 on each when reading the value.
 This property is useful to circumvent misfeatures of legacy terminal
 type descriptions;
 \fI\%xterm\fP(1) descriptions specifying 65 lines were once notorious.
@@ -1175,7 +1177,11 @@ stores this interval in milliseconds.
 The default value of 1000
 (one second)
 is adequate for most uses.
-This environment variable overrides it.
+This environment variable overrides it;
+.I \%ncurses
+enforces an upper limit of 30,000
+(30 seconds)
+when reading the value.
 .PP
 The most common instance where you may wish to change this value
 is to work with a remote host over a slow communication channel.
@@ -1275,7 +1281,11 @@ has the same effect.
 When
 .I \%ncurses
 is configured to use the GPM interface,
-this variable may list one or more terminal type names
+this variable may list one or more terminal type names,
+delimited by vertical bars
+.RB ( | )
+or colons
+.RB ( : ),
 against which the
 .I TERM
 variable
@@ -1928,14 +1938,6 @@ and \fB\%extended_slk_color\fP(3X) as a form of \fB\%slk_color\fP(3X)
 that can gather color information from them when many colors are
 supported.
 .PP
-Some extensions are available only if
-.I \%ncurses
-permits modification of \fB\%unctrl\fP(3X)'s behavior;
-see \fB\%use_legacy_coding\fP(3X).
-.I \%ncurses
-is compiled to support them;
-section \*(``ALTERNATE CONFIGURATIONS\*('' describes how.
-.PP
 .I \%ncurses
 permits modification of \fB\%unctrl\fP(3X)'s behavior;
 see \fB\%use_legacy_coding\fP(3X).
@@ -2060,10 +2062,10 @@ and
 but does not finish the story.
 A more complete account follows.
 .bP
-Starting with 4BSD
-.I curses
-(1980)
-all implementations have provided a
+The first
+.IR curses ","
+in 4BSD,
+provided a
 .I \%curses.h
 file.
 .IP

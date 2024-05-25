@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.86 2024/05/11 20:39:53 tom Exp $
-.TH curs_addch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.88 2024/05/25 21:13:32 tom Exp $
+.TH curs_addch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -167,7 +167,7 @@ terms these
 .I "forms-drawing characters."
 The ACS default listed below is used if the
 .B \%acs_chars
-.RB ( \%acsc )
+.RB \%( acsc )
 .I \%term\%info
 capability does not define a terminal-specific replacement for it,
 or if the terminal and locale configuration requires Unicode to access
@@ -175,13 +175,15 @@ these characters but the library is unable to use Unicode.
 The \*(``acsc char\*('' column corresponds to how the characters are
 specified in the
 .B \%acs_chars
-.RB ( \%acsc )
+.RB \%( acsc )
 string capability,
 and the characters in it may appear on the screen if the terminal type's
 database entry incorrectly advertises ACS support.
 The name \*(``ACS\*('' originates in the Alternate Character Set feature
 of the DEC VT100 terminal.
-.PP
+.br
+.ie t .ne 4v
+.el   .ne 5v
 .TS
 Lb Lb Lb Lb
 Lb Lb Lb Lb

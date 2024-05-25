@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.45 2024/04/20 19:18:18 tom Exp $
-.TH curs_addstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.47 2024/05/25 20:45:40 tom Exp $
+.TH curs_addstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -101,18 +101,23 @@ on success and
 .B ERR
 on failure.
 .PP
-X/Open Curses does not specify any error conditions.
-.I \%ncurses
-returns an error
+In
+.IR \%ncurses ","
+they return
+.B ERR
+if
 .bP
-if the window pointer is
-.BR NULL ,
+.I win
+is
+.BR NULL ","
 .bP
-if the string pointer is
-.BR NULL ,
+.I str
+is
+.BR NULL ","
 or
 .bP
-if an internal \fB\%waddch\fP(3X) call returns an error.
+an internal \fB\%waddch\fP(3X) call returns
+.BR ERR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -124,6 +129,7 @@ All of these functions except \fBwaddnstr\fP may be macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+It specifies no error conditions for them.
 .SH SEE ALSO
 \fB\%curs_addwstr\fP(3X) describes comparable functions of the
 .I \%ncurses

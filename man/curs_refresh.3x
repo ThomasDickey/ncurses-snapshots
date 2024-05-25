@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.46 2024/04/20 21:20:07 tom Exp $
-.TH curs_refresh 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.48 2024/05/25 20:10:58 tom Exp $
+.TH curs_refresh 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -138,13 +138,16 @@ In this implementation
 .RS 3
 .TP 5
 \fBwnoutrefresh\fP
-returns an error
+returns
+.B ERR
 if the window pointer is null, or
 if the window is really a pad.
 .TP 5
 \fBwredrawln\fP
-returns an error
-if the associated call to \fBtouchln\fP returns an error.
+return
+.B ERR
+if the associated call to \fBtouchln\fP returns
+.BR ERR "."
 .RE
 .SH NOTES
 Note that \fBrefresh\fP and \fBredrawwin\fP may be macros.

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.91 2024/05/18 20:23:57 tom Exp $
-.TH curs_getch 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.93 2024/05/25 20:57:17 tom Exp $
+.TH curs_getch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -161,7 +161,7 @@ To
 .IR curses ","
 key strokes not from the alphabetic section of the keyboard
 (those corresponding to the ECMA-6 character set\(emsee
-\fIascii\fP(7)\(emoptionally modified by either the control or shift
+\fI\%ascii\fP(7)\(emoptionally modified by either the control or shift
 keys)
 are treated as
 .I function
@@ -548,11 +548,11 @@ with \fB\%echo\fP(3X) and neither \fB\%cbreak\fP(3X) nor \fB\%raw\fP(3X)
 is not well-defined.
 .PP
 Historically,
-the list of key code macros above was influenced by the
-function-key-rich keyboard of the AT&T 7300
+the list of key code macros above was influenced by the keyboard of the
+AT&T 7300
 (also known variously as the \*(``3B1\*('', \*(``Safari 4\*('', and
 \*(``UNIX PC\*(''),
-a 1985 machine.
+a 1985 machine rich in function keys.
 Today's computer keyboards are based that of the IBM PC/AT and tend to
 have fewer.
 A
@@ -597,7 +597,8 @@ with ESC typed by the user;
 see
 \fB\%curs_variables\fP(3X).
 .PP
-\fB\%has_key\fP was designed for
+.B \%has_key
+was designed for
 .IR \%ncurses ","
 and is not found in SVr4
 .IR curses ","
@@ -613,14 +614,9 @@ extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
 .PP
+Except as noted in section \*(``EXTENSIONS\*('' above,
 X/Open Curses,
-Issue 4 describes
-\fB\%getch\fP,
-\fB\%wgetch\fP,
-\fB\%mvgetch\fP,
-\fB\%mvwgetch\fP,
-and
-\fB\%ungetch\fP.
+Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 .B \%wgetch
@@ -682,6 +678,14 @@ NetBSD
 had added them along with
 .BR \%KEY_MOUSE "."
 .SH SEE ALSO
+ECMA-6 \*(``7-bit coded Character Set\*(''
+\%<https://\*:ecma\-international\*:.org/\
+\*:publications\-and\-standards/\*:standards/\*:ecma\-6/>
+.PP
+ECMA-48 \*(``Control Functions for Coded Character Sets\*(''
+\%<https://\*:ecma\-international\*:.org/\
+\*:publications\-and\-standards/\*:standards/\*:ecma\-48/>
+.PP
 \fB\%curs_get_wch\fP(3X) describes comparable functions of the
 .I \%ncurses
 library in its wide-character configuration
@@ -697,11 +701,3 @@ library in its wide-character configuration
 \fB\%curs_variables\fP(3X),
 \fB\%resizeterm\fP(3X),
 \fB\%ascii\fP(7)
-.PP
-ECMA-6 \*(``7-bit coded Character Set\*(''
-\%<https://\*:ecma\-international\*:.org/\
-\*:publications\-and\-standards/\*:standards/\*:ecma\-6/>
-.PP
-ECMA-48 \*(``Control Functions for Coded Character Sets\*(''
-\%<https://\*:ecma\-international\*:.org/\
-\*:publications\-and\-standards/\*:standards/\*:ecma\-48/>

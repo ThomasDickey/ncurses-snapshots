@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inchstr.3x,v 1.45 2024/04/20 21:20:07 tom Exp $
-.TH curs_inchstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inchstr.3x,v 1.47 2024/05/25 20:10:58 tom Exp $
+.TH curs_inchstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -88,7 +88,8 @@ other than \fBERR\fP upon successful completion (the number of characters
 retrieved, exclusive of the trailing 0).
 .PP
 X/Open Curses defines no error conditions.
-This implementation returns an error
+This implementation returns
+.B ERR
 .bP
 if the \fIwin\fP parameter is null or
 .bP

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.54 2024/05/18 20:07:52 tom Exp $
-.TH curs_inch 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inch.3x,v 1.56 2024/05/25 20:10:58 tom Exp $
+.TH curs_inch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -101,7 +101,7 @@ and
 .B \%mvwinch
 may be implemented as macros.
 .PP
-These functions do not return an error if the window contains cells of
+These functions do not fail if the window contains cells of
 .I curses
 complex characters;
 that is,

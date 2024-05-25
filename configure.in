@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.781 2024/05/18 19:42:53 tom Exp $
+dnl $Id: configure.in,v 1.782 2024/05/25 23:05:44 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.781 $)
+AC_REVISION($Revision: 1.782 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1151,8 +1151,9 @@ if test "x$with_ext_funcs" = xyes ; then
 	AC_DEFINE(HAVE_USE_WINDOW,1,[Define to 1 to enable use_window() function in test-programs])
 	AC_DEFINE(HAVE_WRESIZE,1,[Define to 1 to enable wresize() function in test-programs])
 	GENERATED_EXT_FUNCS=generated
-	test "x$with_ext_funcs" = xyes || cf_dft_ext_spfuncs=no
 else
+	cf_dft_ext_spfuncs=no
+	cf_dft_ext_colors=no
 	NCURSES_EXT_FUNCS=0
 	GENERATED_EXT_FUNCS=
 fi

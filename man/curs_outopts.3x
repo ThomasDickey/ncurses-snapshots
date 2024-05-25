@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.65 2024/05/11 20:39:53 tom Exp $
-.TH curs_outopts 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.67 2024/05/25 20:10:58 tom Exp $
+.TH curs_outopts 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -148,10 +148,14 @@ X/Open Curses does not specify any error conditions.
 In this implementation,
 .bP
 those functions that have a window pointer
-will return an error if the window pointer is null
+will return
+.B ERR
+if the window pointer is null
 .bP
 \fBwsetscrreg\fP
-returns an error if the scrolling region limits extend outside the
+returns
+.B ERR
+if the scrolling region limits extend outside the
 window boundaries.
 .SH NOTES
 Note that

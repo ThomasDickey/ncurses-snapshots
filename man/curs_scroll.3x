@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.43 2024/04/20 18:54:36 tom Exp $
-.TH curs_scroll 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.45 2024/05/25 20:16:27 tom Exp $
+.TH curs_scroll 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -48,18 +48,19 @@
 \fB\%scroll\fP,
 \fB\%scrl\fP,
 \fB\%wscrl\fP \-
-scroll a \fIcurses\fR window
+scroll a \fIcurses\fP window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint scroll(WINDOW *\fIwin\fP);
+\fBint scroll(WINDOW * \fIwin\fP);
 .PP
 \fBint scrl(int \fIn\fP);
-\fBint wscrl(WINDOW *\fIwin\fP, int \fIn\fP);
+\fBint wscrl(WINDOW * \fIwin\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
-\fBscroll\fP scrolls the given window up one line.
+.B scroll
+scrolls the given window up one line.
 That is,
 every visible line we might number
 .I i
@@ -73,18 +74,29 @@ if the scrolling region of the window is the entire screen,
 the physical screen may be scrolled at the same time;
 see \fB\%curscr\fP(3X).
 .PP
-\fB\%scrl\fP and \fB\%wscrl\fP scroll
+.B \%scrl
+and
+.B \%wscrl
+scroll
 .B \%stdscr
 or the specified window up or down depending on the sign of
-.IR n .
+.IR n "."
 .bP
 For positive
-.IR n ,
-line \fIi\fP+\fIn\fP becomes \fIi\fP (scrolling up);
+.IR n ","
+line
+.IR i + n
+becomes
+.I i
+(scrolling up);
 .bP
 for negative
-.IR n ,
-line \fIi\fP-\fIn\fP becomes \fIi\fP (scrolling down).
+.IR n ","
+line
+.IR i \- n
+becomes
+.I i
+(scrolling down).
 .PP
 The cursor does not move.
 These functions perform no operation unless scrolling is enabled for the
@@ -97,26 +109,39 @@ upon failure and
 upon success.
 .PP
 .I \%ncurses
-returns \fBERR\fP if scrolling is not enabled in the window,
+returns
+.B ERR
+if scrolling is not enabled in the window,
 for example with \fB\%scrollok\fP(3X),
 or if the
 .I \%WINDOW
 pointer is null.
 .SH NOTES
-Unusually,
-there is no \fB\%wscroll\fP function;
-\fBscroll\fP behaves as one would expect \fB\%wscroll\fP to,
-accepting a \fI\%WINDOW\fP pointer argument.
+.B \%scrl
+and
+.B \%wscrl
+may be implemented as macros.
 .PP
-\fB\%scrl\fP and \fB\%scroll\fP may be implemented as macros.
+Unusually,
+there is no
+.B \%wscroll
+function;
+.B scroll
+behaves as one would expect
+.B \%wscroll
+to,
+accepting a
+.I \%WINDOW
+pointer argument.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
 It defines no error conditions.
 .PP
 SVr4 specifies only
-\*(``an integer value other than \fBERR\fP\*('' as a successful return
-value.
+\*(``an integer value other than
+.BR ERR \*(''
+as a successful return value.
 .PP
 SVr4 indicates that the optimization of physically scrolling immediately
 if the scroll region is the entire screen \*(``is\*('' performed,

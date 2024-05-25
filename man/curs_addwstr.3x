@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.37 2024/04/20 19:18:18 tom Exp $
-.TH curs_addwstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.39 2024/05/25 20:10:58 tom Exp $
+.TH curs_addwstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -113,7 +113,8 @@ on failure.
 .PP
 X/Open Curses does not specify any error conditions.
 .I \%ncurses
-returns an error
+returns
+.B ERR
 .bP
 if the window pointer is
 .BR NULL ,

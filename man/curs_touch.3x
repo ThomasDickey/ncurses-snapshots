@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.47 2024/04/20 21:20:07 tom Exp $
-.TH curs_touch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_touch.3x,v 1.49 2024/05/25 20:10:58 tom Exp $
+.TH curs_touch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -86,7 +86,8 @@ In this implementation
 .RS 3
 .TP 5
 \fBis_linetouched\fP
-returns an error
+returns
+.B ERR
 if the window pointer is null, or
 if the line number is outside the window boundaries.
 .IP
@@ -101,7 +102,8 @@ the \fBERR\fP is provided by a macro named \fB\%is_linetouched\fP.
 The actual function returns \fBFALSE\fP when it detects an error.
 .TP 5
 \fBwtouchln\fP
-returns an error
+returns
+.B ERR
 if the window pointer is null, or
 if the line number is outside the window boundaries.
 .RE

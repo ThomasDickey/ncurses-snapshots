@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.136 2024/04/14 00:14:40 tom Exp $
-.TH curs_terminfo 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.138 2024/05/25 21:02:40 tom Exp $
+.TH curs_terminfo 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -48,7 +48,6 @@
 .
 .SH NAME
 \fB\%del_curterm\fP,
-\fB\%mvcur\fP,
 \fB\%putp\fP,
 \fB\%restartterm\fP,
 \fB\%set_curterm\fP,
@@ -99,8 +98,6 @@
 \fBint vidattr(chtype \fIattrs\fP);
 \fBint vid_puts(attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP, int (*\fIputc\fP)(int));
 \fBint vid_attr(attr_t \fIattrs\fP, short \fIpair\fP, void *\fIopts\fP);
-.PP
-\fBint mvcur(int \fIoldrow\fP, int \fIoldcol\fP, int \fInewrow\fP, int \fInewcol\fP);
 .PP
 \fBint tigetflag(const char *\fIcap-code\fP);
 \fBint tigetnum(const char *\fIcap-code\fP);
@@ -463,17 +460,9 @@ The
 parameter must be a
 .I \%term\%info
 string variable or the return value of
-\fB\%tparm\fP,
-\fB\%tiparm\fP,
-\fB\%tgetstr\fP,
-or \fB\%tgoto\fP.
-.IP
-The \fB\%tgetstr\fP and \fB\%tgoto\fP functions are part of the
-.I termcap
-interface,
-which happens to share these function names with the
-.I \%term\%info
-API.
+.B \%tparm
+or
+.BR \%tiparm "."
 .bP
 .I affcnt
 is the number of lines affected,
@@ -548,21 +537,11 @@ argument for future use,
 saying that applications must provide a null pointer for that argument;
 but see section \*(``EXTENSIONS\*('' below.
 .PP
-\fB\%mvcur\fP provides low-level cursor motion.
-It takes effect immediately
-(rather than at the next refresh).
-Unlike the other low-level output functions,
-which either write to the standard output or pass an output function
-parameter,
-\fB\%mvcur\fP uses an output file descriptor derived from
-the output stream parameter of \fB\%newterm\fP(3X).
-.PP
-While \fB\%putp\fP and \fB\%mvcur\fP are low-level functions that do not
-use high-level
+While \fB\%putp\fP is a low-level function that does not use high-level
 .I curses
 state,
 .I \%ncurses
-declares them in
+declares it in
 .I \%curses.h
 because System\ V did this
 (see section \*(``HISTORY\*('' below).
@@ -696,7 +675,8 @@ calls \fB\%tputs\fP,
 returning the same error codes.
 .TP 5
 .B restartterm
-fails if the associated call to \fB\%setupterm\fP returns an error.
+fails if the associated call to \fB\%setupterm\fP returns
+.BR ERR "."
 .TP 5
 .B setupterm
 fails if it cannot allocate enough memory,
@@ -908,7 +888,9 @@ capabilities use string parameters
 the ones used for programmable function keys).
 .IP
 The \fI\%ncurses\fP library checks usage of these capabilities,
-and returns an error if the capability mishandles string parameters.
+and returns
+.B ERR
+if the capability mishandles string parameters.
 But it cannot check if a calling program provides strings in the right
 places for the \fB\%tparm\fP calls.
 .IP
@@ -959,45 +941,6 @@ or
 from \fB\%tputs\fP.
 It instead returns the length of the string,
 and does no error checking.
-.PP
-X/Open Curses notes that after calling \fB\%mvcur\fP,
-the
-.I curses
-state may not match the actual terminal state,
-and that an application should touch and refresh the window before
-resuming normal
-.I curses
-calls.
-Both
-.I \%ncurses
-and SVr4
-.I curses
-implement \fB\%mvcur\fP using the
-.I SCREEN
-data allocated in either \fB\%initscr\fP or \fB\%newterm\fP.
-So though it is documented as a
-.I \%term\%info
-function,
-\fB\%mvcur\fP is really a
-.I curses
-function that is not well specified.
-.PP
-X/Open Curses states that the old location must be given for
-\fB\%mvcur\fP to accommodate terminals that lack absolute cursor
-positioning.
-.\" X/Open Curses Issue 7, p. 161
-.I \%ncurses
-allows the caller to use \-1 for either or both old coordinates.
-The \-1 tells
-.I \%ncurses
-that the old location is unknown,
-and that it must use only absolute motion,
-as with the
-.B \%cursor_address
-.RB ( cup )
-capability,
-rather than the least costly combination of absolute and relative
-motion.
 .\" ********************************************************************
 .SH HISTORY
 SVr2 (1984) introduced the

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.101 2024/05/18 20:03:51 tom Exp $
-.TH curs_mouse 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.103 2024/05/25 20:10:58 tom Exp $
+.TH curs_mouse 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -286,7 +286,9 @@ a mouse event was detected that does not match the mask,
 .bP
 or if no more events remain in the queue.
 .PP
-\fB\%ungetmouse\fP returns an error if the event queue is full.
+\fB\%ungetmouse\fP returns
+.B ERR
+if the event queue is full.
 .PP
 \fB\%mousemask\fP
 returns the mask of reportable events.

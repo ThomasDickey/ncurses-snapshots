@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.49 2024/04/20 21:20:07 tom Exp $
-.TH curs_border 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border.3x,v 1.51 2024/05/25 20:10:58 tom Exp $
+.TH curs_border 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -142,7 +142,8 @@ The SVr4.0 manual says
 but this appears to be an error.
 .PP
 X/Open Curses does not specify any error conditions.
-This implementation returns an error
+This implementation returns
+.B ERR
 if the window pointer is null.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and

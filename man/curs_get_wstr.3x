@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.48 2024/04/20 19:18:18 tom Exp $
-.TH curs_get_wstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.50 2024/05/25 20:10:58 tom Exp $
+.TH curs_get_wstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -137,7 +137,8 @@ If unsuccessful, they return \fBERR\fP.
 X/Open defines no error conditions.
 .PP
 In this implementation,
-these functions return an error
+these functions return
+.B ERR
 .bP
 if the window pointer is null,
 .bP

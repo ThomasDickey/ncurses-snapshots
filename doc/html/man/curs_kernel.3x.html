@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.61 2024/04/20 21:24:19 tom Exp @
+  * @Id: curs_kernel.3x,v 1.63 2024/05/25 21:13:56 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2024-04-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2024-04-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2024-05-25 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -48,8 +48,8 @@
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>def_prog_mode</STRONG>,   <STRONG>def_shell_mode</STRONG>,   <STRONG>reset_prog_mode</STRONG>,   <STRONG>reset_shell_mode</STRONG>,
-       <STRONG>resetty</STRONG>, <STRONG>savetty</STRONG>, <STRONG>getsyx</STRONG>, <STRONG>setsyx</STRONG>, <STRONG>ripoffline</STRONG>, <STRONG>curs_set</STRONG>,  <STRONG>napms</STRONG>  -  low-
-       level <EM>curses</EM> routines
+       <STRONG>resetty</STRONG>, <STRONG>savetty</STRONG>, <STRONG>getsyx</STRONG>, <STRONG>setsyx</STRONG>, <STRONG>curs_set</STRONG>, <STRONG>mvcur</STRONG>, <STRONG>napms</STRONG>, <STRONG>ripoffline</STRONG>  -
+       low-level <EM>curses</EM> routines
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -67,9 +67,10 @@
        <STRONG>void</STRONG> <STRONG>getsyx(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
        <STRONG>void</STRONG> <STRONG>setsyx(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>ripoffline(int</STRONG> <EM>line</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG><EM>init</EM><STRONG>)(WINDOW</STRONG> <STRONG>*,</STRONG> <STRONG>int));</STRONG>
        <STRONG>int</STRONG> <STRONG>curs_set(int</STRONG> <EM>visibility</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvcur(int</STRONG> <EM>oldrow</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>oldcol</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>newrow</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>newcol</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>napms(int</STRONG> <EM>ms</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>ripoffline(int</STRONG> <EM>line</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG><EM>init</EM><STRONG>)(WINDOW</STRONG> <STRONG>*,</STRONG> <STRONG>int));</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -121,6 +122,34 @@
        Few applications will use this feature, most use <STRONG>wmove</STRONG> instead.
 
 
+</PRE><H3><a name="h3-curs_set">curs_set</a></H3><PRE>
+       The <STRONG>curs_set</STRONG> routine sets the cursor state  to  invisible,  normal,  or
+       very  visible  for <STRONG>visibility</STRONG> equal to <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG> respectively.  If the
+       terminal supports the <EM>visibility</EM> requested, the previous  <EM>cursor</EM>  state
+       is returned; otherwise, <STRONG>ERR</STRONG> is returned.
+
+
+</PRE><H3><a name="h3-mvcur">mvcur</a></H3><PRE>
+       <STRONG>mvcur</STRONG>  provides  low-level cursor motion.  It takes effect immediately,
+       rather than at the next refresh.  Unlike  the  other  low-level  output
+       functions,  which  either  write  to  the standard output stream or are
+       passed a  function  pointer  to  perform  output,  <STRONG>mvcur</STRONG>  uses  a  file
+       descriptor derived from the output stream parameter of <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.
+
+       One  application  of  <STRONG>mvcur</STRONG>  accompanies  the  temporary use of another
+       program to write to the  terminal  screen.   For  example,  first  call
+       <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>  to ensure that the screen and the library's model of it is
+       up to date; then call <STRONG>reset_shell_mode</STRONG>; write to the  screen  with  the
+       external  application;  call <STRONG>reset_prog_mode</STRONG>; and finally call <STRONG>mvcur</STRONG> to
+       set the cursor's location to where  <EM>curses</EM>  thinks  it  is,  since  the
+       library has no knowledge of how the external application moved it.
+
+
+</PRE><H3><a name="h3-napms">napms</a></H3><PRE>
+       <STRONG>napms</STRONG>  sleeps  for  <EM>ms</EM>  milliseconds.   If  <EM>ms</EM>  exceeds  30,000 (thirty
+       seconds), it is capped at that value.
+
+
 </PRE><H3><a name="h3-ripoffline">ripoffline</a></H3><PRE>
        <STRONG>ripoffline</STRONG> provides access to the same facility that <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>  uses
        to  reduce  the  size  of the screen.  <STRONG>ripoffline</STRONG> must be called before
@@ -146,18 +175,6 @@
        <STRONG>newterm</STRONG>.
 
 
-</PRE><H3><a name="h3-curs_set">curs_set</a></H3><PRE>
-       The  <STRONG>curs_set</STRONG>  routine  sets  the cursor state to invisible, normal, or
-       very visible for <STRONG>visibility</STRONG> equal to <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG> respectively.   If  the
-       terminal  supports  the <EM>visibility</EM> requested, the previous <EM>cursor</EM> state
-       is returned; otherwise, <STRONG>ERR</STRONG> is returned.
-
-
-</PRE><H3><a name="h3-napms">napms</a></H3><PRE>
-       <STRONG>napms</STRONG> sleeps  for  <EM>ms</EM>  milliseconds.   If  <EM>ms</EM>  exceeds  30,000  (thirty
-       seconds), it is capped at that value.
-
-
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Except for <STRONG>curs_set</STRONG>, these routines always return <STRONG>OK</STRONG>.
 
@@ -167,12 +184,12 @@
        X/Open defines no error conditions.  In this implementation
 
        <STRONG>def_prog_mode</STRONG>, <STRONG>def_shell_mode</STRONG>, <STRONG>reset_prog_mode</STRONG>, <STRONG>reset_shell_mode</STRONG>
-            return an error if the terminal was not initialized, or if the I/O
-            call to obtain the terminal settings fails.
+            return <STRONG>ERR</STRONG> if the terminal was not initialized, or if the I/O call
+            to obtain the terminal settings fails.
 
        <STRONG>ripoffline</STRONG>
-            returns an error if the maximum number of ripped-off lines exceeds
-            the maximum (5).
+            returns  <STRONG>ERR</STRONG> if the maximum number of ripped-off lines exceeds the
+            maximum (5).
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -189,6 +206,14 @@
        cursor state to restore that.
 
 
+</PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
+       In <EM>ncurses</EM>, <STRONG>mvcur</STRONG> accepts <STRONG>-1</STRONG> for either or both old coordinates.   This
+       value  tells <EM>ncurses</EM> that the old location is unknown, and that it must
+       use only absolute motion, as with the <STRONG>cursor_address</STRONG> (<STRONG>cup</STRONG>)  capability,
+       rather  than  the  least  costly  combination  of absolute and relative
+       motion.
+
+
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        The <EM>virtual</EM> <EM>screen</EM> functions <STRONG>setsyx</STRONG> and <STRONG>getsyx</STRONG>  are  not  described  in
        X/Open Curses, Issue 4.  All other functions are as described in X/Open
@@ -197,6 +222,18 @@
        The SVr4 documentation describes <STRONG>setsyx</STRONG> and  <STRONG>getsyx</STRONG>  as  having  return
        type  int.   This  is misleading, as they are macros with no documented
        semantics for the return value.
+
+       X/Open Curses notes:
+
+              "After use of <EM>mvcur</EM>(), the model Curses maintains of  the  state
+              of  the  terminal  might  not  match  the  actual  state  of the
+              terminal.  An application should touch and  refresh  the  window
+              before resuming conventional use of Curses."
+
+       Both  <EM>ncurses</EM>  and  SVr4  <EM>curses</EM>  implement <STRONG>mvcur</STRONG> using the <EM>SCREEN</EM> data
+       allocated in either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open  Curses  states
+       that  the old location must be given for <STRONG>mvcur</STRONG> to accommodate terminals
+       that lack absolute cursor positioning.
 
        If interrupted, <EM>ncurses</EM> restarts <STRONG>napms</STRONG>.  That, and the limitation to 30
        seconds, are different from other implementations.
@@ -208,7 +245,7 @@
 
 
 
-ncurses 6.5                       2024-04-20                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.5                       2024-05-25                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -221,13 +258,15 @@ ncurses 6.5                       2024-04-20                   <STRONG><A HREF="
 <li><a href="#h3-resetty_savetty">resetty, savetty</a></li>
 <li><a href="#h3-getsyx">getsyx</a></li>
 <li><a href="#h3-setsyx">setsyx</a></li>
-<li><a href="#h3-ripoffline">ripoffline</a></li>
 <li><a href="#h3-curs_set">curs_set</a></li>
+<li><a href="#h3-mvcur">mvcur</a></li>
 <li><a href="#h3-napms">napms</a></li>
+<li><a href="#h3-ripoffline">ripoffline</a></li>
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
+<li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>

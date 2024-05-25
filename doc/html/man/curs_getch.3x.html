@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.91 2024/05/18 20:23:57 tom Exp @
+  * @Id: curs_getch.3x,v 1.93 2024/05/25 20:57:17 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2024-05-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2024-05-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-05-25 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -357,8 +357,8 @@
        well-defined.
 
        Historically, the list of key code macros above was influenced  by  the
-       function-key-rich  keyboard  of  the AT&amp;T 7300 (also known variously as
-       the "3B1", "Safari  4",  and  "UNIX  PC"),  a  1985  machine.   Today's
+       keyboard  of  the AT&amp;T 7300 (also known variously as the "3B1", "Safari
+       4", and "UNIX PC"), a 1985 machine  rich  in  function  keys.   Today's
        computer  keyboards  are  based  that of the IBM PC/AT and tend to have
        fewer.  A <EM>curses</EM> application can expect such a keyboard to transmit key
        codes   <STRONG>KEY_UP</STRONG>,   <STRONG>KEY_DOWN</STRONG>,  <STRONG>KEY_LEFT</STRONG>,  <STRONG>KEY_RIGHT</STRONG>,  <STRONG>KEY_HOME</STRONG>,  <STRONG>KEY_END</STRONG>,
@@ -382,8 +382,8 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       X/Open Curses, Issue 4 describes <STRONG>getch</STRONG>, <STRONG>wgetch</STRONG>, <STRONG>mvgetch</STRONG>, <STRONG>mvwgetch</STRONG>,  and
-       <STRONG>ungetch</STRONG>.  It specifies no error conditions for them.
+       Except as noted in section "EXTENSIONS" above, X/Open Curses,  Issue  4
+       describes these functions.  It specifies no error conditions for them.
 
        <STRONG>wgetch</STRONG> reads only single-byte characters.
 
@@ -411,6 +411,12 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
+       ECMA-6  "7-bit  coded  Character  Set" &lt;https://ecma-international.org/
+       publications-and-standards/standards/ecma-6/&gt;
+
+       ECMA-48  "Control  Functions  for  Coded  Character   Sets"   &lt;https://
+       ecma-international.org/publications-and-standards/standards/ecma-48/&gt;
+
        <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
        in its wide-character configuration (<EM>ncursesw</EM>).
 
@@ -418,15 +424,9 @@
        <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>, <STRONG>ascii(7)</STRONG>
 
-       ECMA-6 "7-bit  coded  Character  Set"  &lt;https://ecma-international.org/
-       publications-and-standards/standards/ecma-6/&gt;
-
-       ECMA-48   "Control   Functions  for  Coded  Character  Sets"  &lt;https://
-       ecma-international.org/publications-and-standards/standards/ecma-48/&gt;
 
 
-
-ncurses 6.5                       2024-05-18                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.5                       2024-05-25                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

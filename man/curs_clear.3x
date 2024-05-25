@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_clear.3x,v 1.48 2024/04/20 21:20:07 tom Exp $
-.TH curs_clear 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_clear.3x,v 1.50 2024/05/25 20:10:58 tom Exp $
+.TH curs_clear 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,7 +96,9 @@ All routines return the integer \fBOK\fP on success and \fBERR\fP on failure.
 X/Open defines no error conditions.
 In this implementation,
 .bP
-functions using a window pointer parameter return an error if it is null
+functions using a window pointer parameter return
+.B ERR
+if it is null
 .bP
 \fBwclrtoeol\fP returns an error
 if the cursor position is about to wrap.

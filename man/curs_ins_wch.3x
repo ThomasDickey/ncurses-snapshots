@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wch.3x,v 1.30 2024/04/20 19:18:18 tom Exp $
-.TH curs_ins_wch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wch.3x,v 1.32 2024/05/25 20:16:27 tom Exp $
+.TH curs_ins_wch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -81,17 +81,17 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-A terminal's
-.B \%insert_character
-.RB ( ich1 )
-capability
-is not necessarily employed.
-.PP
 \fB\%ins_wch\fP,
 \fB\%mvins_wch\fP,
 and
 \fB\%mvwins_wch\fP
 may be implemented as macros.
+.PP
+A terminal's
+.B \%insert_character
+.RB ( ich1 )
+capability
+is not necessarily employed.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.51 2024/04/20 21:20:07 tom Exp $
-.TH curs_insstr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.53 2024/05/25 20:10:58 tom Exp $
+.TH curs_insstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -89,13 +89,15 @@ Special characters are handled as in \fBwaddch\fP(3X).
 All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
 .PP
 X/Open Curses does not specify any error conditions.
-This implementation returns an error
+This implementation returns
+.B ERR
 .bP
 if the \fIwin\fP parameter is null or
 .bP
 if the \fIstr\fP parameter is null or
 .bP
-the \fBwinsch\fP(3X) function returns an error.
+the \fBwinsch\fP(3X) function returns
+.BR ERR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position

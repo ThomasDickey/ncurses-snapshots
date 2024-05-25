@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.150 2023/09/16 16:39:15 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.151 2024/05/25 23:10:42 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -529,7 +529,7 @@ _nc_reserve_pairs(SCREEN *sp, int want)
     if (sp->_color_pairs == 0) {
 	TYPE_CALLOC(colorpair_t, have, sp->_color_pairs);
     } else if (have > sp->_pair_alloc) {
-#if NCURSES_EXT_COLORS
+#if NCURSES_EXT_COLORS && NCURSES_EXT_FUNCS
 	colorpair_t *next;
 
 	if ((next = typeCalloc(colorpair_t, have)) == 0)
@@ -1081,7 +1081,7 @@ _nc_do_color(int old_pair, int pair, int reverse, NCURSES_OUTC outc)
 }
 #endif
 
-#if NCURSES_EXT_COLORS
+#if NCURSES_EXT_COLORS && NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(init_extended_pair) (NCURSES_SP_DCLx int pair, int f, int b)
 {

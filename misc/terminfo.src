@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1143 $
-#	$Date: 2024/03/09 20:01:40 $
+#	$Revision: 1.1144 $
+#	$Date: 2024/05/25 19:34:27 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3652,12 +3652,62 @@ iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 	use=vt100+pfkeys, use=xterm+alt47, use=xterm+sl-twm,
 	use=xterm+x11mouse, use=xterm+256setaf, use=vt220+cvis,
 
-# iTerm2 3.0.15
+# iTerm2
 #
 # https://iterm2.com/
 # https://github.com/gnachman/iTerm2
 # ~/Library/Preferences/com.googlecode.iterm2.plist
 # "iTerm" stalled in 2009.  A different set of developers began "iTerm2".
+#
+# iTerm2 3.5.0
+#
+# NOTES:
+# with esctest:
+#	365 tests passed, 196 known bugs, 2 tests fail intermittently
+#	the known bugs include several of the cursor-movement tests 
+#	the ED, EL tests include those failing intermittently
+#	DECCOLM, DECERA, DECSED, DECSERA and SPA do not work
+#	most of the DECRPM, DECRQSS reports fail
+# with vttest:
+#	reports primary DA as VT420
+#	VT420 rectangular operations, as well as DECBI/DEVFI work with margins
+#	SRM does not work
+#	DECSED, and SPA do not work
+#	REP and SD work, SL/SR/SU do not work
+# with tack:
+#	status-line does not work
+#
+# The default settings have blinking-text and keypad-application mode disabled.
+# Enabling the latter make it half-working (numlock sends an escape character).
+# About half of the modified function-keys are untestable due to preassigned
+# features.
+#
+# iTerm2 3.5.0 comes with a 4-year-old copy of xterm's terminfo (June 2020),
+# which is modified:
+# + xterm-nrc and xterm+pcfN are removed
+# + the developer made changes to adapt it to the 16-year-old version of
+#   ncurses bundled with MacOS, i.e., changing the mouse protocol to the
+#   legacy X11 format and reducing the number of colors to 32k (in more than
+#   one place).  In the former case, the developer was confused about why that
+#   was necessary.  In the latter, the developer clearly misunderstood how the
+#   tools work.
+# + vt420+lrmm is modified, removing smglr and corrupting mgc (again, developer
+#   confusion).
+# + the developer added a couple of features, misnaming them as "xterm" blocks:
+#   + a copy of kitty+setal renamed to xterm+setulc (and Setulc) is added, but
+#     the feature is first mentioned in iTerm2 changes in May 2020, while
+#     it is first mention in kitty changes in December 2016.
+#   + Smulx is added
+#
+# iTerm2 3.4.0
+#
+# NOTES:
+# with esctest:
+#	293 tests pass, 270 tests fail
+# with tack:
+#	minor improvements which do not alter the terminfo
+#
+# iTerm2 3.0.15
 #
 # NOTES:
 # with vttest:
@@ -3696,17 +3746,18 @@ iTerm2.app|iterm2|terminal emulator for Mac OS X,
 	rs2=\E[!p\E[?3;4l\E[4l\E>\E[?1000l,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
-	kDN3=\E\E[B, kDN4=\E[1;10B, kDN5=\E[1;5B, kDN6=\E[1;6B,
-	kEND3=\E[1;9F, kEND4=\E[1;10F, kEND6=\E[1;6F,
-	kEND7=\E[1;13F, kEND8=\E[1;14F, kHOM3=\E[1;9H,
-	kHOM4=\E[1;10H, kHOM6=\E[1;6H, kHOM7=\E[1;13H,
-	kHOM8=\E[1;14H, kLFT3=\E\E[D, kLFT4=\E[1;10D,
-	kLFT5=\E[1;5D, kLFT6=\E[1;6D, kNXT3=\E\E[6~,
-	kPRV3=\E\E[5~, kRIT3=\E\E[C, kRIT4=\E[1;10C,
-	kRIT5=\E[1;5C, kRIT6=\E[1;6C, kUP3=\E\E[A, kUP4=\E[1;10A,
-	kUP5=\E[1;5A, kUP6=\E[1;6A, use=ecma+index,
-	use=xterm+alt+title, use=ecma+italics, use=iterm,
-	use=bracketed+paste,
+	Smulx=\E[4:%p1%dm, kDN3=\E\E[B, kDN4=\E[1;10B,
+	kDN5=\E[1;5B, kDN6=\E[1;6B, kEND3=\E[1;9F,
+	kEND4=\E[1;10F, kEND6=\E[1;6F, kEND7=\E[1;13F,
+	kEND8=\E[1;14F, kHOM3=\E[1;9H, kHOM4=\E[1;10H,
+	kHOM6=\E[1;6H, kHOM7=\E[1;13H, kHOM8=\E[1;14H,
+	kLFT3=\E\E[D, kLFT4=\E[1;10D, kLFT5=\E[1;5D,
+	kLFT6=\E[1;6D, kNXT3=\E\E[6~, kPRV3=\E\E[5~,
+	kRIT3=\E\E[C, kRIT4=\E[1;10C, kRIT5=\E[1;5C,
+	kRIT6=\E[1;6C, kUP3=\E\E[A, kUP4=\E[1;10A, kUP5=\E[1;5A,
+	kUP6=\E[1;6A, use=ecma+index, use=xterm+alt+title,
+	use=ecma+italics, use=iterm, use=bracketed+paste,
+	use=kitty+setal,
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
@@ -27509,5 +27560,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2024-03-09
 #	+ modify xgterm to work around line-drawing bug -TD
 #	+ use CSI 3J in vte-2017 (report by Sven Joachim)
+#
+# 2024-05-25
+#	+ review/update iTerm2 for 3.5.0 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

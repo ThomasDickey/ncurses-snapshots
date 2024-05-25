@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.36 2024/05/11 21:52:17 tom Exp $
+# $Id: manhtml.aliases,v 1.37 2024/05/25 22:40:43 tom Exp $
 #***************************************************************************
 # Copyright 2019-2023,2024 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -125,6 +125,7 @@ wdelch(3X)		curs_delch(3X)
 wecho_wchar(3X)		curs_add_wch(3X)
 wechochar(3X)		curs_addch(3X)
 wget_wch(3X)		curs_get_wch(3X)
+wget_wstr(3X)		curs_get_wstr(3X)
 wgetch(3X)		curs_getch(3X)
 wgetstr(3X)		curs_getstr(3X)
 win_wch(3X)		curs_in_wch(3X)

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.71 2024/04/20 18:54:36 tom Exp $
-.TH curs_slk 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_slk.3x,v 1.73 2024/05/25 20:10:58 tom Exp $
+.TH curs_slk 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -228,32 +228,38 @@ In this implementation
 returns the attribute used for the soft keys.
 .TP 5
 \fBslk_attroff\fP, \fBslk_attron\fP, \fBslk_clear\fP, \fBslk_noutrefresh\fP, \fBslk_refresh\fP, \fBslk_touch\fP
-return an error
+return
+.B ERR
 if the terminal or the softkeys were not initialized.
 .TP 5
 \fBslk_attrset\fP
-returns an error
+returns
+.B ERR
 if the terminal or the softkeys were not initialized.
 .TP 5
 \fBslk_attr_set\fP
-returns an error
+returns
+.B ERR
 if the terminal or the softkeys were not initialized, or
 the color pair is outside the range 0..\fBCOLOR_PAIRS\fP\-1.
 .TP 5
 \fBslk_color\fP
-returns an error
+returns
+.B ERR
 if the terminal or the softkeys were not initialized, or
 the color pair is outside the range 0..\fBCOLOR_PAIRS\fP\-1.
 .TP 5
 \fBslk_init\fP
-returns an error
+returns
+.B ERR
 if the format parameter is outside the range 0..3.
 .TP 5
 \fBslk_label\fP
 returns \fBNULL\fP on error.
 .TP 5
 \fBslk_set\fP
-returns an error
+returns
+.B ERR
 if the terminal or the softkeys were not initialized, or
 the \fIlabnum\fP parameter is outside the range of label counts, or
 if the format parameter is outside the range 0..2, or if
@@ -332,7 +338,8 @@ Finally, if there is no \fBfln\fP capability,
 If \fB\%slk_start\fP is given a non-null \fIgp\fP,
 it copies the \fIng\fP elements of the group of soft-keys, up to 16.
 .IP
-If there are more than 16 elements, \fB\%slk_start\fP returns an error.
+If there are more than 16 elements, \fB\%slk_start\fP returns
+.BR ERR "."
 .bP
 The format codes \fB2\fP and \fB3\fP for \fB\%slk_init\fP
 were added by \fI\%ncurses\fP in 1996.

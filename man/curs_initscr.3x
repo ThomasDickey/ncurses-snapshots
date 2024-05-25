@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.69 2024/04/20 21:24:19 tom Exp $
-.TH curs_initscr 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.71 2024/05/25 20:10:58 tom Exp $
+.TH curs_initscr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -155,18 +155,23 @@ Routines that return pointers always return \fBNULL\fP on error.
 X/Open defines no error conditions.
 In this implementation
 .bP
-\fBendwin\fP returns an error if
+\fBendwin\fP returns
+.B ERR
+if
 .RS
 .bP
 the terminal was not initialized, or
 .bP
 \fBendwin\fP is called more than once without updating the screen, or
 .bP
-\fBreset_shell_mode\fP(3X) returns an error.
+\fBreset_shell_mode\fP(3X) return
+.BR ERR "."
 .RE
 .bP
 \fBnewterm\fP
-returns an error if it cannot allocate the data structures for the screen,
+returns
+.B ERR
+if it cannot allocate the data structures for the screen,
 or for the top-level windows within the screen,
 i.e.,
 \fBcurscr\fP, \fBnewscr\fP, or \fBstdscr\fP.

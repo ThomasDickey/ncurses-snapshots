@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.30 2024/03/30 15:54:17 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.31 2024/05/25 20:18:20 Branden.Robinson Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -179,10 +179,6 @@ cbreak(void)
 }
 #endif
 
-/*
- * Note:
- * this implementation may be wrong.  See the comment under intrflush().
- */
 NCURSES_EXPORT(void)
 NCURSES_SP_NAME(qiflush) (NCURSES_SP_DCL0)
 {
@@ -349,11 +345,7 @@ noqiflush(void)
 #endif
 
 /*
- * This call does the same thing as the qiflush()/noqiflush() pair.  We know
- * for certain that SVr3 intrflush() tweaks the NOFLSH bit; on the other hand,
- * the match (in the SVr4 man pages) between the language describing NOFLSH in
- * termio(7) and the language describing qiflush()/noqiflush() in
- * curs_inopts(3x) is too exact to be coincidence.
+ * This call does the same thing as the qiflush()/noqiflush() pair.
  */
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(intrflush) (NCURSES_SP_DCLx WINDOW *win GCC_UNUSED, bool flag)

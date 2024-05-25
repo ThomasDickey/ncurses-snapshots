@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.43 2024/04/20 21:20:07 tom Exp $
-.TH curs_overlay 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_overlay.3x,v 1.45 2024/05/25 20:10:58 tom Exp $
+.TH curs_overlay 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -82,7 +82,8 @@ upon successful completion.
 X/Open defines no error conditions.
 In this implementation,
 \fBcopywin\fP,
-\fBoverlay\fP and \fBoverwrite\fP return an error
+\fBoverlay\fP and \fBoverwrite\fP return
+.B ERR
 if either of the window pointers are null, or
 if some part of the window would be placed off-screen.
 .SH NOTES

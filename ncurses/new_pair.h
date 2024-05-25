@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 /*
  * Common type definitions and macros for new_pair.c, lib_color.c
  *
- * $Id: new_pair.h,v 1.13 2021/09/24 17:52:01 tom Exp $
+ * $Id: new_pair.h,v 1.14 2024/05/25 23:10:33 tom Exp $
  */
 
 #ifndef NEW_PAIR_H
@@ -113,7 +113,7 @@ colorpair_t;
 #define ValidPair(sp,pair) \
     ((sp != 0) && (pair >= 0) && (pair < sp->_pair_limit) && sp->_coloron)
 
-#if NCURSES_EXT_COLORS
+#if NCURSES_EXT_FUNCS && NCURSES_EXT_COLORS
 extern NCURSES_EXPORT(void)     _nc_copy_pairs(SCREEN*, colorpair_t*, colorpair_t*, int);
 extern NCURSES_EXPORT(void)     _nc_free_ordered_pairs(SCREEN*);
 extern NCURSES_EXPORT(void)     _nc_reset_color_pair(SCREEN*, int, colorpair_t*);

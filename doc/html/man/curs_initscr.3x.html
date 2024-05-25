@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.69 2024/04/20 21:24:19 tom Exp @
+  * @Id: curs_initscr.3x,v 1.71 2024/05/25 20:10:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2024-04-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2024-04-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2024-05-25 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -157,17 +157,17 @@
 
        X/Open defines no error conditions.  In this implementation
 
-       <STRONG>o</STRONG>   <STRONG>endwin</STRONG> returns an error if
+       <STRONG>o</STRONG>   <STRONG>endwin</STRONG> returns <STRONG>ERR</STRONG> if
 
            <STRONG>o</STRONG>   the terminal was not initialized, or
 
            <STRONG>o</STRONG>   <STRONG>endwin</STRONG> is called more than once without updating the screen, or
 
-           <STRONG>o</STRONG>   <STRONG><A HREF="curs_kernel.3x.html">reset_shell_mode(3x)</A></STRONG> returns an error.
+           <STRONG>o</STRONG>   <STRONG><A HREF="curs_kernel.3x.html">reset_shell_mode(3x)</A></STRONG> return <STRONG>ERR</STRONG>.
 
-       <STRONG>o</STRONG>   <STRONG>newterm</STRONG> returns an error if it cannot allocate the data  structures
-           for  the  screen,  or  for the top-level windows within the screen,
-           i.e., <STRONG>curscr</STRONG>, <STRONG>newscr</STRONG>, or <STRONG>stdscr</STRONG>.
+       <STRONG>o</STRONG>   <STRONG>newterm</STRONG> returns <STRONG>ERR</STRONG> if it cannot allocate the data  structures  for
+           the  screen,  or for the top-level windows within the screen, i.e.,
+           <STRONG>curscr</STRONG>, <STRONG>newscr</STRONG>, or <STRONG>stdscr</STRONG>.
 
        <STRONG>o</STRONG>   <STRONG>set_term</STRONG> returns no error.
 
@@ -299,7 +299,7 @@
 
 
 
-ncurses 6.5                       2024-04-20                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.5                       2024-05-25                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
