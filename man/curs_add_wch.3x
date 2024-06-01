@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.65 2024/05/25 21:13:15 tom Exp $
-.TH curs_add_wch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.67 2024/06/01 22:29:08 tom Exp $
+.TH curs_add_wch 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -151,10 +151,14 @@ If
 is any other nonprintable character,
 it is drawn in printable form using the same convention as
 \fB\%wunctrl\fP(3X).
-.PP
 Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
 does not return the character itself,
 but its \fB\%wunctrl\fP(3X) representation.
+.PP
+A
+.I \%cchar_t
+can be copied from place to place using \fB\%win_wch\fP(3X) and
+.BR \%wadd_wch "."
 .SS wecho_wchar
 .B \%echo_wchar
 and
@@ -196,7 +200,7 @@ and the characters in it may appear on the screen if the terminal type's
 database entry incorrectly advertises ACS support.
 The name \*(``ACS\*('' originates in the Alternate Character Set feature
 of the DEC VT100 terminal.
-.br
+.PP
 .ie t .ne 4v
 .el   .ne 5v
 .TS
@@ -414,12 +418,6 @@ but is not specified by X/Open Curses
 These functions are described in X/Open Curses, Issue 4.
 It specifies no error conditions for them.
 .PP
-SVr4
-.I curses
-describes a successful return value only as
-\*(``an integer value other than
-.BR ERR \*(''.
-.PP
 The defaults specified for forms-drawing characters apply in the POSIX
 locale.
 X/Open Curses makes it clear that the WACS_ symbols should be defined as
@@ -503,7 +501,7 @@ Others have suggested these alternatives:
 The complex character type
 .I \%cchar_t
 can store more than one wide character
-.RI ( \%wchar_t ).
+.RI \%( wchar_t ).
 X/Open Curses does not mention this possibility,
 specifying behavior only where
 .I wch
@@ -526,6 +524,27 @@ holds one non-spacing character.
 In the latter case,
 .I \%ncurses
 adds the non-spacing character to the active complex character.
+.SH HISTORY
+These functions were initially specified by X/Open Curses,
+Issue 4.
+The System\ V Interface Definition,
+Version 4 (1995),
+specified functions named
+.I \%waddwch
+and
+.I \%wechowchar
+(and the usual variants).
+These were later additions to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+They differed from X/Open's
+.I \%wadd_wch
+and
+.I \%wecho_wchar
+in that they each took an argument of type
+.I \%wchar_t
+instead of
+.IR \%cchar_t "."
 .SH SEE ALSO
 \fB\%curs_addch\fP(3X) describes comparable functions of the
 .I \%ncurses

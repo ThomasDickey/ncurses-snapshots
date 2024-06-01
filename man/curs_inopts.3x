@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.68 2024/05/25 20:41:48 tom Exp $
-.TH curs_inopts 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.70 2024/06/01 22:28:41 tom Exp $
+.TH curs_inopts 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -410,7 +410,7 @@ depends on terminal driver configuration parameters that
 .I curses
 does not handle.
 .B \%noraw
-exits raw mode.
+returns the terminal to normal (\*(``cooked\*('') mode.
 .\"
 .SS "timeout, wtimeout"
 .B \%wtimeout
@@ -678,20 +678,19 @@ also defines keys for the capabilities whose names begin with
 Corresponding key codes are generated and
 (depending on previous loads of terminal descriptions)
 may differ from one execution of a program to the next.
-The generated keycodes are recognized by the \fB\%keyname\fP(3X)
-function
-(which then returns a name beginning with \*(``k\*('' denoting the
+The generated key codes are recognized by \fB\%keyname\fP(3X),
+which then returns a name beginning with \*(``k\*('' denoting the
 .I \%term\%info
 capability name rather than \*(``K\*('',
 used for
 .I curses
-key names).
+key names.
 On the other hand,
 an application can use \fB\%define_key\fP(3X) to bind
 a specific key to a string of the programmer's choice.
-This feature enables an application to check for an extended
-capability's presence with \fB\%tigetstr\fP(3X),
-and reassign the keycode to match its own needs.
+This feature enables an application to check for its presence
+with \fB\%tigetstr\fP(3X),
+and reassign the key code to match its own needs.
 .PP
 Low-level applications can use \fB\%tigetstr\fP(3X) to obtain the
 definition of any string capability.

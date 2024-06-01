@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.71 2024/05/25 20:10:58 tom Exp $
-.TH curs_initscr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.73 2024/06/01 22:38:43 tom Exp $
+.TH curs_initscr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -308,10 +308,23 @@ It also updates the saved terminal modes with
 This handles the window-size changes which were ignored in
 the standardization efforts.
 The handler sets a (signal-safe) variable
-which is later tested in \fB\%wgetch\fP(3X).
-If \fBkeypad\fP has been enabled for the corresponding window,
-\fBwgetch\fP returns the key symbol \fBKEY_RESIZE\fP.
-At the same time, \fBwgetch\fP calls \fBresizeterm\fP to adjust the
+that is later tested by \fB\%wgetch\fP(3X) and \fB\%wget_wch\fP(3X):
+.RS
+.bP
+.B \%wgetch
+returns the key code
+.BR \%KEY_RESIZE "."
+.bP
+.B \%wget_wch
+returns
+.B \%KEY_CODE_YES
+and sets its
+.I wch
+parameter to
+.BR \%KEY_RESIZE "."
+.RE
+.IP
+At the same time, \fI\%ncurses\fP calls \fBresizeterm\fP to adjust the
 standard screen \fBstdscr\fP,
 and update other data such as \fBLINES\fP and \fBCOLS\fP.
 .SH SEE ALSO

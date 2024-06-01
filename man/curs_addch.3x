@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.88 2024/05/25 21:13:32 tom Exp $
-.TH curs_addch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.90 2024/06/01 22:29:08 tom Exp $
+.TH curs_addch 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -127,7 +127,6 @@ If
 is any other nonprintable character,
 it is drawn in printable form using the same convention as
 \fB\%unctrl\fP(3X).
-.PP
 Calling \fB\%winch\fP(3X) on the location of a nonprintable character
 does not return the character itself,
 but its \fB\%unctrl\fP(3X) representation.
@@ -135,11 +134,12 @@ but its \fB\%unctrl\fP(3X) representation.
 The object or expression
 .I ch
 may contain attributes and/or a color pair identifier.
-(A character with its attributes can be copied from place to place
-using \fB\%winch\fP(3X) and
+(A
+.I \%chtype
+can be copied from place to place using \fB\%winch\fP(3X) and
 .BR \%waddch .)
-See \fB\%curs_attr\fP(3X) for values of predefined video attribute
-constants that can be usefully \*(``or\*(''ed with characters.
+See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
+usefully \*(``or\*(''ed with characters.
 .SS wechochar
 .B \%echochar
 and
@@ -181,7 +181,7 @@ and the characters in it may appear on the screen if the terminal type's
 database entry incorrectly advertises ACS support.
 The name \*(``ACS\*('' originates in the Alternate Character Set feature
 of the DEC VT100 terminal.
-.br
+.PP
 .ie t .ne 4v
 .el   .ne 5v
 .TS
@@ -252,14 +252,15 @@ it is not possible to add a complete character at the cursor position.
 .PP
 The last may be due to different causes:
 .bP
-conversion of a multibyte character to a byte sequence can fail,
+conversion of a wide character to a multibyte character sequence can
+fail,
 or
 .bP
-at least one of the bytes resulting from conversion from a multibyte
-sequence cannot be added to the window.
+at least one of the bytes resulting from wide character conversion to a
+multibyte character sequence cannot be added to the window.
 See section \*(``PORTABILITY\*('' below regarding the use of
 .B \%waddch
-with multibyte characters.
+with wide characters.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -359,7 +360,7 @@ its
 description uses lowercase i.
 .PP
 Some ACS symbols
-.RB ( \%ACS_S3 ,
+.RB \%( ACS_S3 ,
 .BR \%ACS_S7 ,
 .BR \%ACS_LEQUAL ,
 .BR \%ACS_GEQUAL ,
@@ -368,6 +369,9 @@ Some ACS symbols
 and
 .BR \%ACS_STERLING )
 were not documented in any publicly released System\ V.
+.\" And did not exist yet as late as SVr4.
+.\" https://github.com/ryanwoodsmall/oldsysv/blob/master/\
+.\"   sysvr4/svr4/lib/xlibcurses/screen/curses.ed
 However,
 many publicly available
 .I \%term\%info
@@ -428,7 +432,7 @@ In
 .IR \%ncurses ,
 .I \%chtype
 holds an eight-bit character,
-but the library allows a multibyte character to be passed in a
+but the library allows a multibyte character sequence to be passed via a
 succession of calls to
 .BR \%waddch "."
 Other implementations do not;
@@ -442,7 +446,7 @@ Depending on the locale,
 .I \%ncurses
 inspects the byte passed in each
 .B \%waddch
-call and checks whether the latest call continues a multibyte sequence.
+call and checks whether the latest call continues a multibyte character.
 When a character is
 .IR complete ","
 .I \%ncurses
@@ -467,11 +471,20 @@ or \fB\%wadd_wch\fP(3X).
 If it cannot,
 use only
 \fB\%wadd_wch\fP(3X).
+.SH HISTORY
+The original
+.I curses
+in 4BSD (1980) introduced
+.IR \%waddch "."
+.PP
+SVr3 (1987)
+added
+.IR \%wechochar "."
 .SH SEE ALSO
 \fB\%curs_add_wch\fP(3X) describes comparable functions of the
 .I \%ncurses
 library in its wide-character configuration
-.RI ( \%ncursesw ).
+.RI \%( ncursesw ).
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_addchstr\fP(3X),

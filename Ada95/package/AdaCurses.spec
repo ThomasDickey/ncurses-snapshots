@@ -2,7 +2,7 @@ Summary: Ada95 binding for ncurses
 %define AppProgram AdaCurses
 %define AppVersion MAJOR.MINOR
 %define AppRelease YYYYMMDD
-# $Id: AdaCurses.spec,v 1.31 2022/12/18 00:08:17 tom Exp $
+# $Id: AdaCurses.spec,v 1.33 2024/06/01 22:51:57 tom Exp $
 Name: %{AppProgram}
 Version: %{AppVersion}
 Release: %{AppRelease}
@@ -69,6 +69,7 @@ INSTALL_PROGRAM='${INSTALL}' \
 		--disable-rpath-link \
 		--disable-echo \
 		--verbose \
+		--with-screen=ncursesw6dev \
 		--enable-warnings
 
 make

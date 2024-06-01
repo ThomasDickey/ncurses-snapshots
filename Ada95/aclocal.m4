@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.212 2024/05/18 19:51:00 tom Exp $
+dnl $Id: aclocal.m4,v 1.216 2024/06/01 21:38:29 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -900,67 +900,6 @@ if test "x$ifelse([$2],,CLANG_COMPILER,[$2])" = "xyes" ; then
 	done
 fi
 ])
-dnl ---------------------------------------------------------------------------
-dnl CF_CONST_X_STRING version: 8 updated: 2023/12/01 17:22:50
-dnl -----------------
-dnl The X11R4-X11R6 Xt specification uses an ambiguous String type for most
-dnl character-strings.
-dnl
-dnl It is ambiguous because the specification accommodated the pre-ANSI
-dnl compilers bundled by more than one vendor in lieu of providing a standard C
-dnl compiler other than by costly add-ons.  Because of this, the specification
-dnl did not take into account the use of const for telling the compiler that
-dnl string literals would be in readonly memory.
-dnl
-dnl As a workaround, one could (starting with X11R5) define XTSTRINGDEFINES, to
-dnl let the compiler decide how to represent Xt's strings which were #define'd.
-dnl That does not solve the problem of using the block of Xt's strings which
-dnl are compiled into the library (and is less efficient than one might want).
-dnl
-dnl Xt specification 7 introduces the _CONST_X_STRING symbol which is used both
-dnl when compiling the library and compiling using the library, to tell the
-dnl compiler that String is const.
-AC_DEFUN([CF_CONST_X_STRING],
-[
-AC_REQUIRE([AC_PATH_XTRA])
-
-CF_SAVE_XTRA_FLAGS([CF_CONST_X_STRING])
-
-AC_TRY_COMPILE(
-[
-#include <stdlib.h>
-#include <X11/Intrinsic.h>
-],
-[String foo = malloc(1); free((void*)foo)],[
-
-AC_CACHE_CHECK(for X11/Xt const-feature,cf_cv_const_x_string,[
-	AC_TRY_COMPILE(
-		[
-#undef  _CONST_X_STRING
-#define _CONST_X_STRING	/* X11R7.8 (perhaps) */
-#undef  XTSTRINGDEFINES	/* X11R5 and later */
-#include <stdlib.h>
-#include <X11/Intrinsic.h>
-		],[String foo = malloc(1); *foo = 0],[
-			cf_cv_const_x_string=no
-		],[
-			cf_cv_const_x_string=yes
-		])
-])
-
-CF_RESTORE_XTRA_FLAGS([CF_CONST_X_STRING])
-
-case "$cf_cv_const_x_string" in
-(no)
-	CF_APPEND_TEXT(CPPFLAGS,-DXTSTRINGDEFINES)
-	;;
-(*)
-	CF_APPEND_TEXT(CPPFLAGS,-D_CONST_X_STRING)
-	;;
-esac
-
-])
-])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_CONST_X_STRING version: 8 updated: 2023/12/01 17:22:50
 dnl -----------------
@@ -2938,7 +2877,7 @@ AC_DEFUN([CF_MSG_LOG],[
 echo "${as_me:-configure}:__oline__: testing $* ..." 1>&AC_FD_CC
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_ADDON version: 6 updated: 2021/01/04 19:33:05
+dnl CF_NCURSES_ADDON version: 7 updated: 2024/06/01 17:37:13
 dnl ----------------
 dnl Configure an ncurses add-on, built outside the ncurses tree.
 AC_DEFUN([CF_NCURSES_ADDON],[
@@ -2946,18 +2885,29 @@ AC_REQUIRE([CF_NCURSES_CONFIG])
 
 AC_PROVIDE([CF_SUBST_NCURSES_VERSION])
 
-AC_MSG_CHECKING(if you want wide-character code)
-AC_ARG_ENABLE(widec,
-	[  --enable-widec          compile with wide-char/UTF-8 code],
-	[with_widec=$enableval],
-	[with_widec=no])
-AC_MSG_RESULT($with_widec)
-if test "$with_widec" = yes ; then
+AC_MSG_CHECKING(for specified curses library type)
+AC_ARG_WITH(screen,
+	[  --with-screen=XXX       use specified curses-libraries],
+	[cf_cv_screen=$withval],
+	[cf_cv_screen=ncurses])
+
+case $cf_cv_screen in
+(curses|curses_*)
+	CF_CURSES_CONFIG
+	;;
+(ncursesw*)
 	CF_UTF8_LIB
-	CF_NCURSES_CONFIG(ncursesw)
-else
-	CF_NCURSES_CONFIG(ncurses)
-fi
+	CF_NCURSES_CONFIG($cf_cv_screen)
+	;;
+(ncurses*)
+	CF_NCURSES_CONFIG($cf_cv_screen)
+	;;
+(*)
+	AC_MSG_ERROR(unexpected screen-value: $cf_cv_screen)
+	;;
+esac
+
+AC_SUBST(cf_cv_screen)
 
 if test "$NCURSES_CONFIG_PKG" != none ; then
 	cf_version=`$PKG_CONFIG --modversion $NCURSES_CONFIG_PKG 2>/dev/null`
@@ -3026,6 +2976,14 @@ AC_SUBST(cf_cv_builtin_bool)
 AC_SUBST(cf_cv_header_stdbool_h)
 AC_SUBST(cf_cv_type_of_bool)dnl
 
+AC_CACHE_CHECK(if KEY_RESIZE is supported,cf_cv_curses_resizes,[
+	AC_TRY_COMPILE([#include <${cf_cv_ncurses_header:-curses.h}>],
+		[int key = KEY_RESIZE; (void)key],
+		cf_cv_curses_resizes=yes,
+		cf_cv_curses_resizes=no)])
+cf_cv_enable_sigwinch=0
+test "$cf_cv_curses_resizes" = yes && cf_cv_enable_sigwinch=1
+AC_SUBST(cf_cv_enable_sigwinch)
 ])
 dnl ---------------------------------------------------------------------------
 dnl CF_NCURSES_CC_CHECK version: 6 updated: 2023/02/18 17:47:58

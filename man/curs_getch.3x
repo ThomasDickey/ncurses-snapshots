@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.93 2024/05/25 20:57:17 tom Exp $
-.TH curs_getch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.95 2024/06/01 22:29:08 tom Exp $
+.TH curs_getch 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -229,7 +229,7 @@ defined by the terminal.
 Consequently,
 a user of a
 .I curses
-application may experience a delay after they escape key is pressed
+application may experience a delay after the escape key is pressed
 while
 .I curses
 disambiguates the input;
@@ -470,6 +470,12 @@ returns
 or
 .BR FALSE "."
 .SH NOTES
+.BR \%getch ","
+.BR \%mvgetch ","
+and
+.B \%mvwgetch
+may be implemented as macros.
+.PP
 .I curses
 discourages assignment of the ESC key to a discrete function by the
 programmer because the library requires a delay while it awaits the
@@ -553,8 +559,8 @@ AT&T 7300
 (also known variously as the \*(``3B1\*('', \*(``Safari 4\*('', and
 \*(``UNIX PC\*(''),
 a 1985 machine rich in function keys.
-Today's computer keyboards are based that of the IBM PC/AT and tend to
-have fewer.
+Today's computer keyboards are based on that of the IBM PC/AT
+and tend to have fewer.
 A
 .I curses
 application can expect such a keyboard to transmit key codes
@@ -577,12 +583,6 @@ and
 for 1 \(<=
 .I n
 \(<= 12.
-.PP
-.BR \%getch ","
-.BR \%mvgetch ","
-and
-.B \%mvwgetch
-may be implemented as macros.
 .SH EXTENSIONS
 In
 .IR \%ncurses ","
@@ -639,8 +639,9 @@ signal to a handler interrupted a \fIread\fP(2) call in progress,
 and also
 (in some implementations)
 whether an input timeout or non-blocking mode had been set.
-Programmers concerned about portability should be prepared for either of
-two cases:
+A portable
+.I curses
+application prepares for two cases:
 (a) signal receipt does not interrupt
 .BR \%wgetch ";"
 or
@@ -689,7 +690,7 @@ ECMA-48 \*(``Control Functions for Coded Character Sets\*(''
 \fB\%curs_get_wch\fP(3X) describes comparable functions of the
 .I \%ncurses
 library in its wide-character configuration
-.RI ( \%ncursesw ).
+.RI \%( ncursesw ).
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_addch\fP(3X),

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.88 2024/05/25 21:13:32 tom Exp @
+  * @Id: curs_addch.3x,v 1.90 2024/06/01 22:29:08 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addch 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2024-06-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -98,16 +98,14 @@
            <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
        If <EM>ch</EM> is any other nonprintable character, it  is  drawn  in  printable
-       form using the same convention as <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>.
+       form using the same convention as <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>.  Calling <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> on the
+       location of a nonprintable character  does  not  return  the  character
+       itself, but its <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG> representation.
 
-       Calling  <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> on the location of a nonprintable character does not
-       return the character itself, but its <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG> representation.
-
-       The object or expression <EM>ch</EM> may contain attributes and/or a color  pair
-       identifier.   (A character with its attributes can be copied from place
-       to place using <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> and <STRONG>waddch</STRONG>.)  See <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG> for values  of
-       predefined  video  attribute constants that can be usefully "or"ed with
-       characters.
+       The  object or expression <EM>ch</EM> may contain attributes and/or a color pair
+       identifier.  (A  <EM>chtype</EM>  can  be  copied  from  place  to  place  using
+       <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG>  and  <STRONG>waddch</STRONG>.)   See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for values of predefined
+       constants that can be usefully "or"ed with characters.
 
 
 </PRE><H3><a name="h3-wechochar">wechochar</a></H3><PRE>
@@ -184,14 +182,15 @@
 
        The last may be due to different causes:
 
-       <STRONG>o</STRONG>   conversion of a multibyte character to a byte sequence can fail, or
+       <STRONG>o</STRONG>   conversion  of  a  wide character to a multibyte character sequence
+           can fail, or
 
-       <STRONG>o</STRONG>   at  least  one  of  the  bytes  resulting  from  conversion  from a
-           multibyte sequence cannot be added  to  the  window.   See  section
-           "PORTABILITY"  below  regarding  the  use  of <STRONG>waddch</STRONG> with multibyte
-           characters.
+       <STRONG>o</STRONG>   at least one of the bytes resulting from wide character  conversion
+           to  a  multibyte  character sequence cannot be added to the window.
+           See section "PORTABILITY" below regarding the use  of  <STRONG>waddch</STRONG>  with
+           wide characters.
 
-       Functions prefixed with "mv" first perform cursor movement and fail  if
+       Functions  prefixed with "mv" first perform cursor movement and fail if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
@@ -202,18 +201,18 @@
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
 
 </PRE><H3><a name="h3-TABSIZE">TABSIZE</a></H3><PRE>
-       SVr4  and  other versions of <EM>curses</EM> implement the <STRONG>TABSIZE</STRONG> variable, but
+       SVr4 and other versions of <EM>curses</EM> implement the <STRONG>TABSIZE</STRONG>  variable,  but
        X/Open Curses does not specify it; see <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
+       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
        error conditions for them.
 
-       SVr4  <EM>curses</EM>  describes  a  successful return value only as "an integer
+       SVr4 <EM>curses</EM> describes a successful return value  only  as  "an  integer
        value other than <STRONG>ERR</STRONG>".
 
-       The defaults specified for forms-drawing characters apply in the  POSIX
+       The  defaults specified for forms-drawing characters apply in the POSIX
        locale.
 
 
@@ -222,72 +221,73 @@
 
        Some implementations are problematic.
 
-       <STRONG>o</STRONG>   Solaris  <EM>curses</EM>, for example, defines the ACS symbols as constants;
+       <STRONG>o</STRONG>   Solaris <EM>curses</EM>, for example, defines the ACS symbols as  constants;
            others define them as elements of an array.
 
-           This implementation uses an array, <STRONG>acs_map</STRONG>,  as  did  SVr4  <EM>curses</EM>.
+           This  implementation  uses  an  array, <STRONG>acs_map</STRONG>, as did SVr4 <EM>curses</EM>.
            NetBSD also uses an array, actually named <STRONG>_acs_char</STRONG>, with a <STRONG>#define</STRONG>
            for compatibility.
 
-       <STRONG>o</STRONG>   HP-UX <EM>curses</EM> equates some of the  <STRONG>ACS_</STRONG>  symbols  to  the  analogous
-           <STRONG>WACS_</STRONG>  symbols  as  if  the  <STRONG>ACS_</STRONG> symbols were wide characters (see
-           <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>).  The  misdefined  symbols  are  the  arrows  and
+       <STRONG>o</STRONG>   HP-UX  <EM>curses</EM>  equates  some  of  the <STRONG>ACS_</STRONG> symbols to the analogous
+           <STRONG>WACS_</STRONG> symbols as if the <STRONG>ACS_</STRONG>  symbols  were  wide  characters  (see
+           <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>).   The  misdefined  symbols  are  the  arrows and
            others that are not used for line drawing.
 
-       <STRONG>o</STRONG>   X/Open  Curses  (Issues  2 through 7) has a typographical error for
-           the <STRONG>ACS_LANTERN</STRONG> symbol, equating  its  "VT100+  Character"  to  "I"
-           (capital  I),  while  the  header  files  for SVr4 <EM>curses</EM> and other
+       <STRONG>o</STRONG>   X/Open Curses (Issues 2 through 7) has a  typographical  error  for
+           the  <STRONG>ACS_LANTERN</STRONG>  symbol,  equating  its  "VT100+ Character" to "I"
+           (capital I), while the header  files  for  SVr4  <EM>curses</EM>  and  other
            implementations use "i" (small i).
 
-           None of the terminal descriptions on Unix platforms  use  uppercase
-           I,  except  for  Solaris  (in  its  <EM>terminfo</EM>  entry  for <STRONG>screen(1)</STRONG>,
-           apparently based on the X/Open documentation around 1995).  On  the
-           other  hand,  its <STRONG>gs6300</STRONG> (AT&amp;T PC6300 with EMOTS Terminal Emulator)
+           None  of  the terminal descriptions on Unix platforms use uppercase
+           I, except  for  Solaris  (in  its  <EM>terminfo</EM>  entry  for  <STRONG>screen(1)</STRONG>,
+           apparently  based on the X/Open documentation around 1995).  On the
+           other hand, its <STRONG>gs6300</STRONG> (AT&amp;T PC6300 with EMOTS  Terminal  Emulator)
            description uses lowercase i.
 
-       Some ACS  symbols  (<STRONG>ACS_S3</STRONG>,  <STRONG>ACS_S7</STRONG>,  <STRONG>ACS_LEQUAL</STRONG>,  <STRONG>ACS_GEQUAL</STRONG>,  <STRONG>ACS_PI</STRONG>,
-       <STRONG>ACS_NEQUAL</STRONG>,  and  <STRONG>ACS_STERLING</STRONG>)  were  not  documented  in any publicly
-       released System V.  However, many publicly available  <EM>terminfo</EM>  entries
-       include  <STRONG>acsc</STRONG>  capabilities in which their key characters (<STRONG>pryz{|}</STRONG>) are
-       embedded, and a second-hand list of their  character  descriptions  has
-       come  to light.  The <EM>ncurses</EM> developers invented ACS-prefixed names for
+       Some  ACS  symbols  (<STRONG>ACS_S3</STRONG>,  <STRONG>ACS_S7</STRONG>,  <STRONG>ACS_LEQUAL</STRONG>,  <STRONG>ACS_GEQUAL</STRONG>, <STRONG>ACS_PI</STRONG>,
+       <STRONG>ACS_NEQUAL</STRONG>, and <STRONG>ACS_STERLING</STRONG>)  were  not  documented  in  any  publicly
+       released  System V.   However, many publicly available <EM>terminfo</EM> entries
+       include <STRONG>acsc</STRONG> capabilities in which their key characters  (<STRONG>pryz{|}</STRONG>)  are
+       embedded,  and  a  second-hand list of their character descriptions has
+       come to light.  The <EM>ncurses</EM> developers invented ACS-prefixed names  for
        them.
 
        The <EM>displayed</EM> values of <STRONG>ACS_</STRONG> constants depend on
 
        <STRONG>o</STRONG>   the  <EM>ncurses</EM>  ABI--for  example,  wide-character  versus  non-wide-
-           character  configurations  (the  former  is  capable  of displaying
+           character configurations  (the  former  is  capable  of  displaying
            Unicode while the latter is not), and
 
        <STRONG>o</STRONG>   whether the locale uses UTF-8 encoding.
 
-       In certain cases, the  terminal  is  unable  to  display  forms-drawing
-       characters   <EM>except</EM>   by   using  UTF-8;  see  the  discussion  of  the
+       In  certain  cases,  the  terminal  is  unable to display forms-drawing
+       characters  <EM>except</EM>  by  using  UTF-8;  see  the   discussion   of   the
        <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>UTF8</EM><STRONG>_</STRONG><EM>ACS</EM> environment variable in <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.
 
 
 </PRE><H3><a name="h3-Character-Set">Character Set</a></H3><PRE>
-       X/Open Curses assumes that the parameter passed to  <STRONG>waddch</STRONG>  contains  a
-       single  character.   That  character may have been more than eight bits
-       wide in an SVr3 or SVr4 implementation, but X/Open  Curses  leaves  the
-       width  of  a non-wide character code unspecified.  The standard further
-       does not specify the internal structure of a <EM>chtype</EM>, though the use  of
-       bit  operations  to  combine  the  character code with attributes and a
+       X/Open  Curses  assumes  that the parameter passed to <STRONG>waddch</STRONG> contains a
+       single character.  That character may have been more  than  eight  bits
+       wide  in  an  SVr3 or SVr4 implementation, but X/Open Curses leaves the
+       width of a non-wide character code unspecified.  The  standard  further
+       does  not specify the internal structure of a <EM>chtype</EM>, though the use of
+       bit operations to combine the character  code  with  attributes  and  a
        color pair identifier into a <EM>chtype</EM> for passage to <STRONG>waddch</STRONG> is common.  A
        portable application uses only the macros discussed in <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG> to
        manipulate a <EM>chtype</EM>.
 
        In <EM>ncurses</EM>, <EM>chtype</EM> holds an eight-bit character, but the library allows
-       a  multibyte character to be passed in a succession of calls to <STRONG>waddch</STRONG>.
-       Other implementations do not;  a  <STRONG>waddch</STRONG>  call  transmits  exactly  one
-       character,  which  may  be  rendered  in  one  or more screen locations
-       depending on whether it is printable (see  <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>).   Depending  on
-       the  locale,  <EM>ncurses</EM>  inspects the byte passed in each <STRONG>waddch</STRONG> call and
-       checks whether the latest call continues a multibyte sequence.  When  a
-       character  is <EM>complete</EM>, <EM>ncurses</EM> displays the character and advances the
-       cursor.  If the calling application interrupts the succession of  bytes
-       in a multibyte character sequence by changing the current location--for
-       example, with <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG>--<EM>ncurses</EM> discards the incomplete character.
+       a multibyte character sequence to be passed via a succession  of  calls
+       to  <STRONG>waddch</STRONG>.   Other  implementations  do  not;  a <STRONG>waddch</STRONG> call transmits
+       exactly one character, which may be rendered  in  one  or  more  screen
+       locations  depending  on  whether  it  is  printable  (see <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>).
+       Depending on the locale, <EM>ncurses</EM>  inspects  the  byte  passed  in  each
+       <STRONG>waddch</STRONG>  call  and  checks whether the latest call continues a multibyte
+       character.   When  a  character  is  <EM>complete</EM>,  <EM>ncurses</EM>  displays   the
+       character   and  advances  the  cursor.   If  the  calling  application
+       interrupts the succession of bytes in a multibyte character sequence by
+       changing  the  current  location--for  example, with <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG>--<EM>ncurses</EM>
+       discards the incomplete character.
 
        For  portability  to  other  implementations,  do  not  rely  upon  the
        foregoing  behavior.  Check whether a character can be represented as a
@@ -296,6 +296,12 @@
        <STRONG>o</STRONG>   If it can, call either <STRONG>waddch</STRONG> or <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
 
        <STRONG>o</STRONG>   If it cannot, use only <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
+
+
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       The original <EM>curses</EM> in 4BSD (1980) introduced <EM>waddch</EM>.
+
+       SVr3 (1987) added <EM>wechochar</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -308,7 +314,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.5                       2024-06-01                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -334,6 +340,7 @@ ncurses 6.5                       2024-05-25                    <STRONG><A HREF=
 <li><a href="#h3-Character-Set">Character Set</a></li>
 </ul>
 </li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

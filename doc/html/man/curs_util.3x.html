@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.104 2024/05/25 20:10:58 tom Exp @
+  * @Id: curs_util.3x,v 1.106 2024/06/01 22:28:18 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_util 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2024-06-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -121,7 +121,7 @@
            implementations return rather than null.
 
        The   corresponding  <STRONG>key_name</STRONG>  returns  a  multibyte  character  string
-       corresponding  to  the  wide-character  value  <EM>w</EM>.   The  two  functions
+       corresponding to  the  wide-character  value  <EM>wc</EM>.   The  two  functions
        (<STRONG>keyname</STRONG> and <STRONG>key_name</STRONG>) do not return the same set of strings:
 
        <STRONG>o</STRONG>   <STRONG>keyname</STRONG> returns null where <STRONG>key_name</STRONG> would display a meta character.
@@ -287,13 +287,13 @@
 </PRE><H3><a name="h3-keyname">keyname</a></H3><PRE>
        The <STRONG>keyname</STRONG> function  may  return  the  names  of  user-defined  string
        capabilities  which are defined in the terminfo entry via the <STRONG>-x</STRONG> option
-       of <STRONG>tic</STRONG>.  This implementation automatically assigns at run-time keycodes
-       to  user-defined  strings  which begin with "k".  The keycodes start at
-       KEY_MAX, but are not guaranteed to be the same value for different runs
-       because  user-defined  codes  are merged from all terminal descriptions
-       which have been loaded.  The <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>  function  controls
-       whether  this  data  is loaded when the terminal description is read by
-       the library.
+       of <STRONG>tic</STRONG>.  This implementation  automatically  assigns  at  run-time  key
+       codes  to  user-defined  strings  which  begin with "k".  The key codes
+       start at KEY_MAX, but are not guaranteed  to  be  the  same  value  for
+       different  runs because user-defined codes are merged from all terminal
+       descriptions  which  have  been  loaded.   The   <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>
+       function  controls  whether  this  data  is  loaded  when  the terminal
+       description is read by the library.
 
 
 </PRE><H3><a name="h3-nofilter_use_tioctl">nofilter, use_tioctl</a></H3><PRE>
@@ -390,7 +390,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.5                       2024-06-01                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

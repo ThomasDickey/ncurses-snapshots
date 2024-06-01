@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.39 2024/05/25 20:10:58 tom Exp $
-.TH curs_addwstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.41 2024/06/01 22:30:17 tom Exp $
+.TH curs_addwstr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -111,19 +111,23 @@ on success and
 .B ERR
 on failure.
 .PP
-X/Open Curses does not specify any error conditions.
-.I \%ncurses
-returns
+In
+.IR \%ncurses ","
+they return
 .B ERR
+if
 .bP
-if the window pointer is
-.BR NULL ,
+.I win
+is
+.BR NULL ","
 .bP
-if the string pointer is
-.BR NULL ,
+.I wstr
+is
+.BR NULL ","
 or
 .bP
-if an internal \fB\%wadd_wch\fP(3X) call returns an error.
+an internal \fB\%wadd_wch\fP(3X) call returns
+.BR ERR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position

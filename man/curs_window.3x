@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.50 2024/05/25 20:43:47 tom Exp $
-.TH curs_window 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_window.3x,v 1.52 2024/06/01 22:29:08 tom Exp $
+.TH curs_window 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%newwin\fP,
 \fB\%delwin\fP,
@@ -254,7 +254,7 @@ It simply returned
 when asked to delete a subwindow.
 Solaris X/Open
 .I curses
-.RI ( \%xcurses )
+.RI \%( xcurses )
 does not make even that check,
 and will delete a parent window that still has subwindows.
 .I \%PDCurses

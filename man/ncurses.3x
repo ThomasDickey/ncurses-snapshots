@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.219 2024/05/25 20:57:45 tom Exp $
-.TH ncurses 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.221 2024/06/01 22:29:08 tom Exp $
+.TH ncurses 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -265,7 +265,7 @@ identifying the cell within it at which the next output operation will
 occur.
 Among those,
 the most basic are \fB\%move\fP(3X) and \fB\%addch\fP(3X):
-these place the cursor and write a character to
+these place the cursor within and write a character to
 .BR \%stdscr ,
 respectively.
 .PP
@@ -410,6 +410,7 @@ Four functions prefixed with \*(``p\*('' require a pad argument.
 In function synopses,
 .I \%ncurses
 man pages apply the following names to parameters.
+We introduce the character types in the next subsection.
 .PP
 .TS
 center;
@@ -470,17 +471,35 @@ which handles character encodings requiring a larger data type than
 .I \%char
 (a byte-sized type)
 can represent.
-It adds about one third more calls using additional data types that
-can store such
-.I multibyte
-characters.
+It provides additional functions that complement those in
+the non-wide library where the size of the underlying character type is
+significant.
+A somewhat regular naming convention relates many of the wide variants
+to their non-wide counterparts;
+where a non-wide function name contains \*(``ch\*('' or \*(``str\*('',
+prefix it with \*(``_w\*('' to obtain the wide counterpart.
+For example,
+\fB\%waddch\fP becomes \fB\%wadd_wch\fP.
+(Exceptions that add only \*(``w\*('' comprise
+.BR \%addwstr ,
+.BR \%inwstr ,
+and their variants.)
+.IP
+This convention is inapplicable to some non-wide function names,
+so other transformations are used for the wide configuration:
+the window background management function \*(``bkgd\*('' becomes
+\*(``bkgrnd\*('';
+the window border-drawing and -clearing functions are suffixed with
+\*(``_set\*('';
+and character attribute manipulation functions like
+\*(``attron\*('' become \*(``attr_on\*(''.
 .RS 10 \" same as foregoing tag width
 .TP 9 \" "cchar_t" + 2n
 .I \%cchar_t
 corresponds to the non-wide configuration's
 .IR \%chtype .
-It always a structure type,
-because it stores more data than fit into a standard scalar type.
+It is a structure type
+because it requires more storage than fits into a standard scalar type.
 A character code may not be representable as a
 .IR \%char ,
 and moreover more than one character may occupy a cell
@@ -541,29 +560,6 @@ analogously to the
 character manipulation functions of ISO C and its constant
 .BR \%EOF .
 .RE
-.IP
-The wide library provides additional functions that complement those in
-the non-wide library where the size of the underlying character type is
-significant.
-A somewhat regular naming convention relates many of the wide variants
-to their non-wide counterparts;
-where a non-wide function name contains \*(``ch\*('' or \*(``str\*('',
-prefix it with \*(``_w\*('' to obtain the wide counterpart.
-For example,
-\fB\%waddch\fP becomes \fB\%wadd_wch\fP.
-(Exceptions that add only \*(``w\*('' comprise
-.BR \%addwstr ,
-.BR \%inwstr ,
-and their variants.)
-.IP
-This convention is inapplicable to some non-wide function names,
-so other transformations are used for the wide configuration:
-the window background management function \*(``bkgd\*('' becomes
-\*(``bkgrnd\*('';
-the window border-drawing and -clearing functions are suffixed with
-\*(``_set\*('';
-and character attribute manipulation functions like
-\*(``attron\*('' become \*(``attr_on\*(''.
 .\"
 .SS "Function Name Index"
 The following table lists the
@@ -761,7 +757,7 @@ mvaddnwstr/\fBcurs_addwstr\fP(3X)
 mvaddstr/\fBcurs_addstr\fP(3X)
 mvaddwstr/\fBcurs_addwstr\fP(3X)
 mvchgat/\fBcurs_attr\fP(3X)
-mvcur/\fBcurs_terminfo\fP(3X)
+mvcur/\fBcurs_kernel\fP(3X)
 mvdelch/\fBcurs_delch\fP(3X)
 mvderwin/\fBcurs_window\fP(3X)
 mvget_wch/\fBcurs_get_wch\fP(3X)
@@ -1094,7 +1090,7 @@ that take into account optimization decisions that depend on baud rate.
 When set,
 the
 .B \%command_character
-.RB ( \%cmdch )
+.RB \%( cmdch )
 capability value of loaded
 .I \%term\%info
 entries changes to the value of this variable.
@@ -1102,8 +1098,8 @@ Very few
 .I \%term\%info
 entries provide this feature.
 .PP
-Because this name is also used in development environments to represent
-the C compiler's name,
+Because this name is also used in development environments to store the
+C compiler's name,
 .I \%ncurses
 ignores its value if it is not one character in length.
 .SS "\fICOLUMNS\fP"
@@ -1117,7 +1113,7 @@ terminal driver,
 .I \%ncurses
 uses the size specified by the
 .B \%columns
-.RB ( \%cols )
+.RB \%( cols )
 capability of the terminal type's entry in the
 .I \%term\%info
 database,

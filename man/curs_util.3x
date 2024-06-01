@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.104 2024/05/25 20:10:58 tom Exp $
-.TH curs_util 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.106 2024/06/01 22:28:18 tom Exp $
+.TH curs_util 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -128,7 +128,7 @@ which some implementations return rather than null.
 .LP
 The corresponding \fBkey_name\fP returns
 a multibyte character string corresponding
-to the wide-character value \fIw\fP.
+to the wide-character value \fIwc\fP.
 The two functions (\fBkeyname\fP and \fBkey_name\fP)
 do not return the same set of strings:
 .bP
@@ -323,9 +323,9 @@ Neither limits the delay.
 The \fBkeyname\fP function may return the names of user-defined
 string capabilities which are defined in the terminfo entry via the \fB\-x\fP
 option of \fB@TIC@\fP.
-This implementation automatically assigns at run-time keycodes to
+This implementation automatically assigns at run-time key codes to
 user-defined strings which begin with \*(``k\*(''.
-The keycodes start at KEY_MAX, but are not guaranteed to be
+The key codes start at KEY_MAX, but are not guaranteed to be
 the same value for different runs because user-defined codes are
 merged from all terminal descriptions which have been loaded.
 The \fBuse_extended_names\fP(3X) function controls whether this data is

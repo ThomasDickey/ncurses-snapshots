@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.219 2024/05/25 20:57:45 tom Exp @
+  * @Id: ncurses.3x,v 1.221 2024/06/01 22:29:08 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-06-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        terminals  with  output  optimized to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20240525).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20240601).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -157,7 +157,7 @@
        Functions permit manipulation of a window and  the  <EM>cursor</EM>  identifying
        the  cell  within  it  at  which  the next output operation will occur.
        Among those, the most basic are <STRONG><A HREF="curs_move.3x.html">move(3x)</A></STRONG> and <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>: these place the
-       cursor and write a character to <STRONG>stdscr</STRONG>, respectively.
+       cursor within and write a character to <STRONG>stdscr</STRONG>, respectively.
 
        Frequent changes to the terminal screen can cause unpleasant flicker or
        inefficient use of the communication channel to the  device,  so  as  a
@@ -232,7 +232,7 @@
        Four functions prefixed with "p" require a pad argument.
 
        In  function  synopses,  <EM>ncurses</EM> man pages apply the following names to
-       parameters.
+       parameters.  We introduce the character types in the next subsection.
 
                        <EM>bf</EM>    a <EM>bool</EM> (<STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>)
                        <EM>c</EM>     a <EM>char</EM> or <EM>int</EM>
@@ -264,13 +264,27 @@
 
        <EM>ncursesw</EM>  is the library in its  "wide"  configuration,  which  handles
                  character encodings requiring a larger data type than <EM>char</EM> (a
-                 byte-sized type) can represent.  It adds about one third more
-                 calls  using  additional  data  types  that  can  store  such
-                 <EM>multibyte</EM> characters.
+                 byte-sized  type)  can  represent.   It  provides  additional
+                 functions that complement those in the non-wide library where
+                 the size of the underlying character type is significant.   A
+                 somewhat  regular  naming convention relates many of the wide
+                 variants to their non-wide  counterparts;  where  a  non-wide
+                 function  name contains "ch" or "str", prefix it with "_w" to
+                 obtain the wide counterpart.   For  example,  <STRONG>waddch</STRONG>  becomes
+                 <STRONG>wadd_wch</STRONG>.   (Exceptions  that  add only "w" comprise <STRONG>addwstr</STRONG>,
+                 <STRONG>inwstr</STRONG>, and their variants.)
+
+                 This convention is inapplicable  to  some  non-wide  function
+                 names,  so  other  transformations  are  used  for  the  wide
+                 configuration:  the  window  background  management  function
+                 "bkgd"   becomes  "bkgrnd";  the  window  border-drawing  and
+                 -clearing functions are suffixed with "_set";  and  character
+                 attribute   manipulation   functions   like  "attron"  become
+                 "attr_on".
 
                  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  corresponds to the non-wide configuration's  <EM>chtype</EM>.
-                          It  always  a structure type, because it stores more
-                          data than  fit  into  a  standard  scalar  type.   A
+                          It  is  a  structure  type  because it requires more
+                          storage than fits into a standard  scalar  type.   A
                           character  code  may not be representable as a <EM>char</EM>,
                           and moreover more than one character  may  occupy  a
                           cell  (as  with  accent marks and other diacritics).
@@ -302,24 +316,6 @@
                  <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can   store   a   <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or  the  constant  <STRONG>WEOF</STRONG>,
                           analogously to the <EM>int</EM>-sized character  manipulation
                           functions of ISO C and its constant <STRONG>EOF</STRONG>.
-
-                 The   wide   library   provides   additional  functions  that
-                 complement those in the non-wide library where  the  size  of
-                 the  underlying  character  type  is significant.  A somewhat
-                 regular naming convention relates many of the  wide  variants
-                 to  their  non-wide  counterparts;  where a non-wide function
-                 name contains "ch" or "str", prefix it with  "_w"  to  obtain
-                 the  wide counterpart.  For example, <STRONG>waddch</STRONG> becomes <STRONG>wadd_wch</STRONG>.
-                 (Exceptions that add only "w" comprise <STRONG>addwstr</STRONG>,  <STRONG>inwstr</STRONG>,  and
-                 their variants.)
-
-                 This  convention  is  inapplicable  to some non-wide function
-                 names,  so  other  transformations  are  used  for  the  wide
-                 configuration:  the  window  background  management  function
-                 "bkgd"  becomes  "bkgrnd";  the  window  border-drawing   and
-                 -clearing  functions  are suffixed with "_set"; and character
-                 attribute  manipulation  functions   like   "attron"   become
-                 "attr_on".
 
 
 </PRE><H3><a name="h3-Function-Name-Index">Function Name Index</a></H3><PRE>
@@ -382,11 +378,11 @@
                     delch                    <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
                     deleteln                 <STRONG><A HREF="curs_deleteln.3x.html">curs_deleteln(3x)</A></STRONG>
                     delscreen                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
-
                     delwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     derwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     doupdate                 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
                     dupwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+
                     echo                     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
                     echo_wchar               <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
                     echochar                 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
@@ -449,11 +445,11 @@
                     inchstr                  <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
                     init_color               <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
                     init_extended_color      <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>*
-
                     init_extended_pair       <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>*
                     init_pair                <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
                     initscr                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
                     innstr                   <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
+
                     innwstr                  <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
                     ins_nwstr                <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
                     ins_wch                  <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
@@ -513,14 +509,14 @@
                     mvaddstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     mvaddwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
                     mvchgat                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-                    mvcur                    <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+                    mvcur                    <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
                     mvdelch                  <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
                     mvderwin                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
-
                     mvget_wch                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
                     mvget_wstr               <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
                     mvgetch                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
                     mvgetn_wstr              <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
+
                     mvgetnstr                <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
                     mvgetstr                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
                     mvhline                  <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -583,11 +579,11 @@
                     mvwinstr                 <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
                     mvwinwstr                <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
                     mvwprintw                <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
-
                     mvwscanw                 <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
                     mvwvline                 <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
                     mvwvline_set             <STRONG><A HREF="curs_border_set.3x.html">curs_border_set(3x)</A></STRONG>
                     napms                    <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+
                     newpad                   <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
                     newterm                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
                     newwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
@@ -650,11 +646,11 @@
                     slk_color                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_init                 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_label                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
-
                     slk_noutrefresh          <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_refresh              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_restore              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_set                  <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
+
                     slk_touch                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_wset                 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     standend                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -717,11 +713,11 @@
                     waddnwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
                     waddstr                  <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     waddwstr                 <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
-
                     wattr_get                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattr_off                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattr_on                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattr_set                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+
                     wattroff                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattron                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattrset                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -784,11 +780,11 @@
                     wscrl                    <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
                     wsetscrreg               <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
                     wstandend                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-
                     wstandout                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wsyncdown                <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     wsyncup                  <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     wtimeout                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+
                     wtouchln                 <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
                     wunctrl                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
                     wvline                   <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -833,9 +829,9 @@
        <EM>terminfo</EM> entries changes to the value of this variable.  Very few <EM>term-</EM>
        <EM>info</EM> entries provide this feature.
 
-       Because this name is also used in development environments to represent
-       the C compiler's name, <EM>ncurses</EM> ignores its  value  if  it  is  not  one
-       character in length.
+       Because this name is also used in development environments to store the
+       C compiler's name, <EM>ncurses</EM> ignores its value if it is not one character
+       in length.
 
 
 </PRE><H3><a name="h3-COLUMNS"><EM>COLUMNS</EM></a></H3><PRE>
@@ -1489,7 +1485,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-06-01                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -75,7 +75,7 @@ config-$(NCURSES_PKG)-stamp:
 
 	cd t/ncurses6; $(configure) \
 		--datadir=\$${datarootdir}/$(NCURSES_PKG) \
-		--with-screen=ncursesw6
+		--with-screen=ncurses6
 
 	touch $@
 
@@ -87,7 +87,7 @@ config-$(NCURSEST_PKG)-stamp:
 
 	cd t/ncursest6; $(configure) \
 		--datadir=\$${datarootdir}/$(NCURSEST_PKG) \
-		--with-screen=ncursestw6
+		--with-screen=ncursest6
 
 	touch $@
 

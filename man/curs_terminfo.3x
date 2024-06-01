@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.138 2024/05/25 21:02:40 tom Exp $
-.TH curs_terminfo 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.140 2024/06/01 22:29:08 tom Exp $
+.TH curs_terminfo 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -681,7 +681,7 @@ fails if the associated call to \fB\%setupterm\fP returns
 .B setupterm
 fails if it cannot allocate enough memory,
 or create the initial windows
-.RB ( \%stdscr ,
+.RB \%( stdscr ,
 .BR \%curscr ,
 and
 .BR \%newscr )
