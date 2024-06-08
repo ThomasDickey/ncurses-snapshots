@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.63 2024/06/01 22:29:08 tom Exp $
-.TH curs_getstr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.65 2024/06/08 21:04:32 tom Exp $
+.TH curs_getstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -177,11 +177,9 @@ The use of
 \fBwgetnstr\fP,
 respectively, is recommended.
 .SH PORTABILITY
-These functions are described in The Single Unix Specification, Version 2.
-No error conditions are defined.
-.PP
-This implementation returns \fBERR\fP if the window pointer is null,
-or if the lower-level \fBwgetch\fP(3X) call returns an \fBERR\fP.
+X/Open Curses,
+Issue 4 describes these functions.
+It specifies no error conditions for them.
 .PP
 SVr3 and early SVr4 curses implementations did not reject function keys;
 the SVr4.0 documentation claimed that \*(``special keys\*(''

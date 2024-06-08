@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.73 2024/06/01 22:38:43 tom Exp $
-.TH curs_initscr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.75 2024/06/08 20:34:23 tom Exp $
+.TH curs_initscr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -308,7 +308,7 @@ It also updates the saved terminal modes with
 This handles the window-size changes which were ignored in
 the standardization efforts.
 The handler sets a (signal-safe) variable
-that is later tested by \fB\%wgetch\fP(3X) and \fB\%wget_wch\fP(3X):
+that is later tested by \fB\%wgetch\fP(3X) and \fB\%wget_wch\fP(3X).
 .RS
 .bP
 .B \%wgetch

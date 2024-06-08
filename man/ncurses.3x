@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.221 2024/06/01 22:29:08 tom Exp $
-.TH ncurses 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.223 2024/06/08 20:45:43 tom Exp $
+.TH ncurses 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -236,7 +236,7 @@ data structure.
 A
 .I window
 is a rectangular grid of character cells,
-addressed by row and column coordinates
+addressed by line and column coordinates
 .RI ( y ,
 .IR x ),
 with the upper left corner as (0, 0).
@@ -261,8 +261,7 @@ effects.
 .PP
 Functions permit manipulation of a window and the
 .I cursor
-identifying the cell within it at which the next output operation will
-occur.
+identifying the cell within it at which the next operation will occur.
 Among those,
 the most basic are \fB\%move\fP(3X) and \fB\%addch\fP(3X):
 these place the cursor within and write a character to
@@ -464,6 +463,17 @@ Each cell of a
 .I \%WINDOW
 is stored as a
 .IR \%chtype .
+X/Open Curses does not specify the sizes of the character code or
+color pair identifier,
+nor the quantity of attribute bits,
+in
+.IR chtype ";"
+these are implementation-dependent.
+.I \%ncurses
+uses eight bits for the character code.
+An application requiring a wider character type,
+for instance to represent Unicode,
+should use the wide-character API.
 .TP 10
 .I \%ncursesw
 is the library in its \*(``wide\*('' configuration,
@@ -484,6 +494,12 @@ For example,
 .BR \%addwstr ,
 .BR \%inwstr ,
 and their variants.)
+.\" This is because they operate on "plain" wide-character strings
+.\" (`wchar_t*`) and not curses complex character strings (`cchar_t*`).
+.\" SVID 4 did specify functions like `addwch()` and `inswch()` that
+.\" operated on `chtype`s assuming that they were wide enough for a
+.\" `wchar_t` plus attribute and color pair bits; X/Open Curses did not
+.\" standardize these.
 .IP
 This convention is inapplicable to some non-wide function names,
 so other transformations are used for the wide configuration:
@@ -499,7 +515,7 @@ and character attribute manipulation functions like
 corresponds to the non-wide configuration's
 .IR \%chtype .
 It is a structure type
-because it requires more storage than fits into a standard scalar type.
+because it requires more storage than a standard scalar type offers.
 A character code may not be representable as a
 .IR \%char ,
 and moreover more than one character may occupy a cell

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.49 2024/03/16 15:35:01 tom Exp $
-.TH user_caps 5 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: user_caps.5,v 1.51 2024/06/08 21:01:53 tom Exp $
+.TH user_caps 5 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,7 +58,12 @@ Before \fI\%ncurses\fP 5.0,
 terminfo databases used a \fIfixed repertoire\fP of terminal
 capabilities designed for the SVr2 terminal database in 1984,
 and extended in stages through SVr4 (1989),
-and standardized in the Single Unix Specification beginning in 1995.
+and standardized in X/Open Curses starting in 1995.
+.\" That date is a surmise based on the capability list appearing in
+.\" Issue 4, Version 2 (1996).  That list is not in man page format in
+.\" the standard, so lacks a "HISTORY" section.  However, `tigetstr()`
+.\" and `tputs()` are identified in the same document as new to Issue 4,
+.\" so GBR conjectures that the list came in at the same time.
 .PP
 Most of the \fIextensions\fP in this fixed repertoire were additions
 to the tables of Boolean, numeric and string capabilities.

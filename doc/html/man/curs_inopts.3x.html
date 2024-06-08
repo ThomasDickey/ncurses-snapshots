@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.70 2024/06/01 22:28:41 tom Exp @
+  * @Id: curs_inopts.3x,v 1.73 2024/06/08 23:24:17 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2024-06-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2024-06-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -127,8 +127,8 @@
        <STRONG>echo</STRONG> and <STRONG>noecho</STRONG> determine whether characters  typed  by  the  user  are
        written to the <EM>curses</EM> window by the input character reading function as
        they are typed.  <EM>curses</EM>  always  disables  the  terminal  driver's  own
-       echoing.   By  default, a <EM>curses</EM> window has its echo flag set.  Authors
-       of most interactive programs prefer  to  do  their  own  echoing  in  a
+       echoing.  By default, a <EM>curses</EM> screen's echo option is set.  Authors of
+       most  interactive  programs  prefer  to  do  their  own  echoing  in  a
        controlled  area  of  the  screen,  or not to echo at all, so they call
        <STRONG>noecho</STRONG>.   The  man  page  for  the  input  character  reading  function
        discusses how <STRONG>echo</STRONG> and <STRONG>noecho</STRONG> interact with <STRONG>cbreak</STRONG> and <STRONG>nocbreak</STRONG>.
@@ -176,9 +176,11 @@
 
 </PRE><H3><a name="h3-nl_nonl">nl, nonl</a></H3><PRE>
        Initially,  whether  the  terminal  reports a carriage return using the
-       character code for a line feed depends  on  the  configuration  of  the
-       terminal driver; see <STRONG>termios(3)</STRONG>.  <STRONG>nl</STRONG> configures the terminal to perform
-       this translation.  <STRONG>nonl</STRONG> disables it.
+       character code for a line feed in cbreak or raw modes  depends  on  the
+       configuration  of  the  terminal driver; see <STRONG>termios(3)</STRONG>.  <STRONG>nl</STRONG> configures
+       the terminal to perform this translation.  <STRONG>nonl</STRONG> disables it.  In normal
+       (or  "cooked")  mode,  the  terminal  driver always translates carriage
+       returns to line feeds.
 
 
 </PRE><H3><a name="h3-nodelay">nodelay</a></H3><PRE>
@@ -289,9 +291,9 @@
 
        In each case, the function returns
 
-       <STRONG>1</STRONG>    if the flag is set,
+       <STRONG>1</STRONG>    if the option is set,
 
-       <STRONG>0</STRONG>    if the flag is reset, or
+       <STRONG>0</STRONG>    if the option is reset, or
 
        <STRONG>-1</STRONG>   if the library is not initialized.
 
@@ -376,11 +378,11 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
-       <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>, <STRONG>termios(3)</STRONG>
+       <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG>termios(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.
 
 
 
-ncurses 6.5                       2024-06-01                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2024-06-08                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -41,7 +41,7 @@ configure-stamp:
 		--disable-rpath-link \
 		--with-shared \
 		--with-ada-sharedlib \
-		--with-screen=ncurses6 \
+		--with-screen=ncursesw6td \
 		--without-pkg-config
 
 	touch configure-stamp

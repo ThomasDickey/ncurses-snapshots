@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.41 2024/05/11 20:39:53 tom Exp $
-.TH curs_get_wch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.43 2024/06/08 20:25:25 tom Exp $
+.TH curs_get_wch 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,9 +106,14 @@ waits until the terminal has input.
 If \fB\%cbreak\fP(3X)
 has been called,
 this happens after one character is read.
-If \fB\%nocbreak\fP(3X)
+If \fB\%nocbreak\fP(3X) or \fB\%noraw\fP(3X)
 has been called,
 it occurs when the next newline is read.
+(Because the terminal's normal or \*(``cooked\*('' mode
+is line-buffered,
+multiple
+.B \%wget_wch
+calls may then be necessary to empty the input queue.)
 If \fB\%halfdelay\fP(3X)
 has been called,
 .I curses
@@ -117,15 +122,15 @@ waits until input is available or the specified delay elapses.
 If \fB\%echo\fP(3X) has been called,
 and the window is not a pad,
 .I curses
-writes
-.I wch
+writes the wide character
+from the input queue
 to the window
 (at the cursor position)
 per the following rules.
 .bP
-If
-.I wch
-matches the terminal's erase character,
+If the wide character
+matches the terminal's erase character
+(see \fB\%erasewchar\fP(3X)),
 the cursor moves leftward one position
 and the new position is erased
 as if \fB\%wmove\fP(3X) and then \fB\%wdelch\fP(3X) were called.
@@ -138,7 +143,7 @@ are handled the same way.
 .bP
 .I curses
 writes any other
-.I wch
+wide character
 to the window,
 as with \fB\%wecho_wchar\fP(3X).
 .bP
@@ -151,18 +156,17 @@ calls
 .B \%wrefresh
 on it.
 .PP
-If
-.I wch
+If the wide character
 is a carriage return and \fBnl\fP(3X) has been called,
 .B \%wgetch
-stores the the character code for line feed in
+stores the the wide character code for line feed in
 .I wch
 instead.
 .SS "Ungetting Characters"
 .B \%unget_wch
 places
-.I wch
-into the input queue to be returned by the next call to
+.I wc
+into the input queue to be retrieved by the next call to
 .BR \%wget_wch "."
 A single input queue serves all windows associated with the terminal.
 .SH RETURN VALUE

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_inwstr.c,v 1.9 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_inwstr.c,v 1.10 2024/06/08 21:22:24 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnwstr(WINDOW *win, wchar_t *wstr, int n)
@@ -93,22 +93,15 @@ winnwstr(WINDOW *win, wchar_t *wstr, int n)
     returnCode(count);
 }
 
-/*
- * X/Open says winwstr() returns OK if not ERR.  If that is not a blunder, it
- * must have a null termination on the string (see above).  Unlike winnstr(),
- * it does not define what happens for a negative count with winnwstr().
- */
 NCURSES_EXPORT(int)
 winwstr(WINDOW *win, wchar_t *wstr)
 {
-    int result = OK;
+    int result = ERR;
 
     T((T_CALLED("winwstr(%p,%p)"), (void *) win, (void *) wstr));
-    if (win == 0) {
-	result = ERR;
-    } else if (winnwstr(win, wstr,
-			CCHARW_MAX * (win->_maxx - win->_curx + 1)) == ERR) {
-	result = ERR;
+    if (win != 0) {
+	result = winnwstr(win, wstr,
+			  CCHARW_MAX * (win->_maxx - win->_curx + 1));
     }
     returnCode(result);
 }

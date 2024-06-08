@@ -21,7 +21,7 @@ CC_STRICT = $(CC_NORMAL) -W -Wbad-function-cast -Wcast-align -Wcast-qual -Wmissi
 TARGET    = i686-w64-mingw32
 MINGW_BIN = /usr/bin
 MINGW_TOP = /usr/$(TARGET)
-MINGW_TMP = $(CURDIR)/debian/mingw32-ncurses$(MY_ABI)
+MINGW_TMP = $(CURDIR)/debian/mingw32-ncurses$(MY_ABI)td
 
 CFLAGS = $(CC_NORMAL)
 
@@ -83,7 +83,7 @@ configure-stamp:
 		--target=$(TARGET) \
 		--prefix=$(MINGW_TOP) \
 		--with-build-cc=$(BUILD_CC) \
-		--with-pc-suffix=$(MY_ABI) \
+		--with-pc-suffix=$(MY_ABI)td \
 		--with-pkg-config-libdir=/usr/$(TARGET)/lib/pkgconfig \
 		$(CONFIG_OPTIONS)
 

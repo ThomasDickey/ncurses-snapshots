@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This document describes <EM>ncurses</EM> version 6.5 (patch 20240601).
+       This document describes <EM>ncurses</EM> version 6.5 (patch 20240608).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -1186,9 +1186,9 @@
        printing terminal, with no soft copy unit, give it both <STRONG>hc</STRONG> and <STRONG>os</STRONG>.  (<STRONG>os</STRONG>
        applies  to  storage scope terminals, such as TEKTRONIX 4010 series, as
        well as hard copy and APL terminals.)  If there is a code to  move  the
-       cursor to the left edge of the current row, give this as <STRONG>cr</STRONG>.  (Normally
-       this will be carriage return,  control/M.)   If  there  is  a  code  to
-       produce an audible signal (bell, beep, etc) give this as <STRONG>bel</STRONG>.
+       cursor  to  the  left  edge  of  the  current  line,  give  this as <STRONG>cr</STRONG>.
+       (Normally this will be carriage return, control/M.)  If there is a code
+       to produce an audible signal (bell, beep, etc) give this as <STRONG>bel</STRONG>.
 
        If there is a code to move the cursor one position to the left (such as
        backspace) that capability should be given as <STRONG>cub1</STRONG>.   Similarly,  codes
@@ -1217,7 +1217,7 @@
        the  screen when text is output, but this does not necessarily apply to
        a <STRONG>cuf1</STRONG> from the last column.  The only local motion  which  is  defined
        from  the  left  edge is if <STRONG>bw</STRONG> is given, then a <STRONG>cub1</STRONG> from the left edge
-       will move to the right edge of the previous row.  If <STRONG>bw</STRONG> is  not  given,
+       will move to the right edge of the previous line.  If <STRONG>bw</STRONG> is not  given,
        the  effect  is undefined.  This is useful for drawing a box around the
        edge of the screen, for example.  If the terminal has switch selectable
        automatic  margins,  the <EM>terminfo</EM> file usually assumes that this is on;
@@ -1244,8 +1244,8 @@
        Cursor  addressing  and  other  strings  requiring  parameters  in  the
        terminal are described  by  a  parameterized  string  capability,  with
        <EM>printf</EM>-like  escapes  such  as  <EM>%x</EM>  in it.  For example, to address the
-       cursor, the <STRONG>cup</STRONG> capability is given, using two parameters: the row  and
-       column  to  address  to.   (Rows and columns are numbered from zero and
+       cursor, the <STRONG>cup</STRONG> capability is given, using two parameters: the line and
+       column  to  address  to.  (Lines and columns are numbered from zero and
        refer to the physical screen visible to the user,  not  to  any  unseen
        memory.)   If  the terminal has memory relative cursor addressing, that
        can be indicated by <STRONG>mrcup</STRONG>.
@@ -1365,14 +1365,14 @@
        order.  That is, to get x-5 one  would  use  "%gx%{5}%-".   <STRONG>%P</STRONG>  and  <STRONG>%g</STRONG>
        variables are persistent across escape-string evaluations.
 
-       Consider  the HP2645, which, to get to row 3 and column 12, needs to be
-       sent \E&amp;a12c03Y padded for 6 milliseconds.  The order of the  rows  and
-       columns  is  inverted  here,  and the row and column are printed as two
+       Consider the HP2645, which, to get to line 3 and column 12, needs to be
+       sent \E&amp;a12c03Y padded for 6 milliseconds.  The order of the lines  and
+       columns  is  inverted here, and the lines and column are printed as two
        digits.  The corresponding terminal description is expressed thus:
               cup=\E&amp;a%p2%dc%p1%dY$&lt;6&gt;,
 
-       The Microterm ACT-IV needs the current row and column sent preceded  by
-       a <STRONG>^T</STRONG>, with the row and column simply encoded in binary,
+       The Microterm ACT-IV needs the current line and column sent preceded by
+       a <STRONG>^T</STRONG>, with the line and column simply encoded in binary,
               cup=^T%p1%c%p2%c
 
        Terminals  which  use  "%c"  need  to  be  able to backspace the cursor
@@ -1382,7 +1382,7 @@
        with  terminfo  set tty modes so that tabs are never expanded, so \t is
        safe to send.  This turns out to be essential for the Ann Arbor 4080.)
 
-       A final example is the LSI ADM-3a, which uses row and column offset  by
+       A final example is the LSI ADM-3a, which uses line and column offset by
        a blank character, thus
               cup=\E=%p1%' '%+%c%p2%' '%+%c
 
@@ -1404,8 +1404,8 @@
        corner of the screen, not of memory.  (Thus, the  \EH  sequence  on  HP
        terminals cannot be used for <STRONG>home</STRONG>.)
 
-       If the terminal has row or column absolute cursor addressing, these can
-       be given as single  parameter  capabilities  <STRONG>hpa</STRONG>  (horizontal  position
+       If  the  terminal  has line or column absolute cursor addressing, these
+       can be given as single parameter capabilities <STRONG>hpa</STRONG> (horizontal  position
        absolute)  and  <STRONG>vpa</STRONG>  (vertical position absolute).  Sometimes these are
        shorter than the more general  two  parameter  sequence  (as  with  the
        hp2645)   and  can  be  used  in  preference  to  <STRONG>cup</STRONG>.   If  there  are
@@ -1443,7 +1443,7 @@
                line position, and
 
            <STRONG>o</STRONG>   parameterized  capabilities  for setting the top, bottom, left,
-               right margins given the number of rows or columns.
+               right margins given the number of lines or columns.
 
        In practice, the categorization into "terminal" and  "printer"  is  not
        suitable:
@@ -1948,7 +1948,7 @@
 
        If there are commands to set and clear tab stops, they can be given  as
        <STRONG>tbc</STRONG> (clear all tab stops) and <STRONG>hts</STRONG> (set a tab stop in the current column
-       of every row).  If a more complex sequence is needed to  set  the  tabs
+       of every line).  If a more complex sequence is needed to set  the  tabs
        than can be described by this, the sequence can be placed in <STRONG>is2</STRONG> or <STRONG>if</STRONG>.
 
        The  <STRONG>tput</STRONG>  <STRONG>reset</STRONG>  command uses the same capability strings as the <STRONG>reset</STRONG>

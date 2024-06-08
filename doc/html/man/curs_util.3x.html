@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.106 2024/06/01 22:28:18 tom Exp @
+  * @Id: curs_util.3x,v 1.108 2024/06/08 22:38:18 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_util 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2024-06-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2024-06-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -80,7 +80,7 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
 </PRE><H3><a name="h3-unctrl">unctrl</a></H3><PRE>
-       The  <STRONG>unctrl</STRONG>  routine  returns  a  character string which is a printable
+       The   <STRONG>unctrl</STRONG>   routine  returns  a  character  string  as  a  printable
        representation of the character <EM>ch</EM>:
 
        <STRONG>o</STRONG>   Printable characters are displayed  as  themselves,  e.g.,  a  one-
@@ -186,7 +186,7 @@
            from the terminal database.
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> re-fetches the value of the environment variables  so  that
-           it is still the environment variables which set the screen size.
+           it is still the environment variables that set the screen size.
 
        The <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> routines combine as follows.
 
@@ -221,7 +221,7 @@
 
        <STRONG>o</STRONG>   the window's character cells contain the color pair <EM>value</EM>, but  not
            the  actual  color  <EM>numbers</EM>.   If cells in the retrieved window use
-           color pairs which have not been created in  the  application  using
+           color pairs that have not been created  in  the  application  using
            <STRONG>init_pair</STRONG>, they will not be colored when the window is refreshed.
 
 
@@ -260,7 +260,7 @@
                returns <STRONG>ERR</STRONG> if the terminal was not initialized.
 
           <STRONG>putwin</STRONG>
-               returns <STRONG>ERR</STRONG> if the associated <STRONG>fwrite</STRONG> calls return <STRONG>ERR</STRONG>.
+               returns <STRONG>ERR</STRONG> if the associated <STRONG>write(2)</STRONG> calls return <STRONG>ERR</STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -286,12 +286,12 @@
 
 </PRE><H3><a name="h3-keyname">keyname</a></H3><PRE>
        The <STRONG>keyname</STRONG> function  may  return  the  names  of  user-defined  string
-       capabilities  which are defined in the terminfo entry via the <STRONG>-x</STRONG> option
+       capabilities  that  are defined in the terminfo entry via the <STRONG>-x</STRONG> option
        of <STRONG>tic</STRONG>.  This implementation  automatically  assigns  at  run-time  key
-       codes  to  user-defined  strings  which  begin with "k".  The key codes
-       start at KEY_MAX, but are not guaranteed  to  be  the  same  value  for
-       different  runs because user-defined codes are merged from all terminal
-       descriptions  which  have  been  loaded.   The   <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>
+       codes to user-defined strings that begin with "k".  The key codes start
+       at KEY_MAX, but are not guaranteed to be the same value  for  different
+       runs   because   user-defined   codes  are  merged  from  all  terminal
+       descriptions  that  have  been  loaded.    The   <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>
        function  controls  whether  this  data  is  loaded  when  the terminal
        description is read by the library.
 
@@ -321,13 +321,13 @@
            older <EM>ncurses</EM> versions.  This implementation (as well as the X/Open
            variant of Solaris curses, dated 1995) uses textual dumps.
 
-           The implementations which  use  binary  dumps  use  block-I/O  (the
-           <STRONG>fwrite</STRONG>  and  <STRONG>fread</STRONG>  functions).   Those  that use textual dumps use
-           buffered-I/O.  A few applications may happen to write extra data in
-           the  file  using these functions.  Doing that can run into problems
-           mixing block- and buffered-I/O.  This  implementation  reduces  the
-           problem  on writes by flushing the output.  However, reading from a
-           file written using mixed schemes may not be successful.
+           The implementations that use binary dumps use  block-I/O  (<STRONG>write(2)</STRONG>
+           and <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use buffered-
+           I/O.  A few applications may happen to write extra data in the file
+           using  these  functions.   Doing  that can run into problems mixing
+           block- and buffered-I/O.  This implementation reduces  the  problem
+           on  writes  by  flushing  the output.  However, reading from a file
+           written using mixed schemes may not be successful.
 
 
 </PRE><H3><a name="h3-unctrl_wunctrl">unctrl, wunctrl</a></H3><PRE>
@@ -390,7 +390,7 @@
 
 
 
-ncurses 6.5                       2024-06-01                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.5                       2024-06-08                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

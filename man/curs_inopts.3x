@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.70 2024/06/01 22:28:41 tom Exp $
-.TH curs_inopts 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.73 2024/06/08 23:24:17 tom Exp $
+.TH curs_inopts 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -188,7 +188,7 @@ always disables the terminal driver's own echoing.
 By default,
 a
 .I curses
-window has its echo flag set.
+screen's echo option is set.
 Authors of most interactive programs prefer
 to do their own echoing in a controlled area of the screen,
 or not to echo at all,
@@ -320,12 +320,15 @@ to the terminal.
 Initially,
 whether the terminal reports a carriage return
 using the character code for a line feed
+in cbreak or raw modes
 depends on the configuration of the terminal driver;
 see \fI\%termios\fP(3).
 .B nl
 configures the terminal to perform this translation.
 .B nonl
 disables it.
+In normal (or \*(``cooked\*('') mode,
+the terminal driver always translates carriage returns to line feeds.
 .\"
 .SS nodelay
 .B \%nodelay
@@ -559,9 +562,9 @@ follow historical practice in that they attempt to restore normal
 (\*(``cooked\*('') mode from raw and cbreak modes,
 respectively.
 Mixing
-.BR raw / \%noraw
+.BR \%raw / noraw
 calls with
-.BR cbreak / \%nocbreak
+.BR \%cbreak / nocbreak
 calls leads to terminal driver control states that are hard to predict
 or understand;
 doing so is not recommended.
@@ -591,10 +594,10 @@ In each case,
 the function returns
 .TP 5 \" "-1" + 2n tag separation + 1n fudge for typesetters like grops
 .B 1
-if the flag is set,
+if the option is set,
 .TP
 .B 0
-if the flag is reset,
+if the option is reset,
 or
 .TP
 .B \-1
@@ -807,5 +810,5 @@ to eliminate their effect on output.
 \fB\%curs_initscr\fP(3X),
 \fB\%curs_util\fP(3X),
 \fB\%define_key\fP(3X),
-\fB\%term_variables\fP(3X),
-\fB\%termios\fP(3)
+\fB\%termios\fP(3),
+\fB\%term_variables\fP(3X).

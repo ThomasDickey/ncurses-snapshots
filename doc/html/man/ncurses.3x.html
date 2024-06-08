@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.221 2024/06/01 22:29:08 tom Exp @
+  * @Id: ncurses.3x,v 1.223 2024/06/08 20:45:43 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-06-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-06-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-06-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        terminals  with  output  optimized to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20240601).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20240608).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -143,7 +143,7 @@
 </PRE><H3><a name="h3-Overview">Overview</a></H3><PRE>
        A  <EM>curses</EM>  library abstracts the terminal screen by representing all or
        part of it as a <EM>WINDOW</EM> data structure.  A <EM>window</EM> is a rectangular  grid
-       of  character  cells,  addressed  by row and column coordinates (<EM>y</EM>, <EM>x</EM>),
+       of  character  cells,  addressed by line and column coordinates (<EM>y</EM>, <EM>x</EM>),
        with the upper left corner as (0, 0).  A window called <STRONG>stdscr</STRONG>, the same
        size  as  the terminal screen, is always available.  Create others with
        <STRONG><A HREF="curs_window.3x.html">newwin(3x)</A></STRONG>.
@@ -155,8 +155,8 @@
        effects.
 
        Functions permit manipulation of a window and  the  <EM>cursor</EM>  identifying
-       the  cell  within  it  at  which  the next output operation will occur.
-       Among those, the most basic are <STRONG><A HREF="curs_move.3x.html">move(3x)</A></STRONG> and <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>: these place the
+       the  cell  within  it  at  which  the next operation will occur.  Among
+       those, the most basic are  <STRONG><A HREF="curs_move.3x.html">move(3x)</A></STRONG>  and  <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>:  these  place  the
        cursor within and write a character to <STRONG>stdscr</STRONG>, respectively.
 
        Frequent changes to the terminal screen can cause unpleasant flicker or
@@ -260,7 +260,13 @@
                  type.   In either case, they are accessed via an integral bit
                  mask.
 
-                 Each cell of a <EM>WINDOW</EM> is stored as a <EM>chtype</EM>.
+                 Each cell of a <EM>WINDOW</EM> is stored as a <EM>chtype</EM>.   X/Open  Curses
+                 does  not  specify  the  sizes of the character code or color
+                 pair identifier, nor  the  quantity  of  attribute  bits,  in
+                 <EM>chtype</EM>;  these  are  implementation-dependent.   <EM>ncurses</EM> uses
+                 eight bits for the character code.  An application  requiring
+                 a  wider  character  type, for instance to represent Unicode,
+                 should use the wide-character API.
 
        <EM>ncursesw</EM>  is the library in its  "wide"  configuration,  which  handles
                  character encodings requiring a larger data type than <EM>char</EM> (a
@@ -284,7 +290,7 @@
 
                  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  corresponds to the non-wide configuration's  <EM>chtype</EM>.
                           It  is  a  structure  type  because it requires more
-                          storage than fits into a standard  scalar  type.   A
+                          storage than  a  standard  scalar  type  offers.   A
                           character  code  may not be representable as a <EM>char</EM>,
                           and moreover more than one character  may  occupy  a
                           cell  (as  with  accent marks and other diacritics).
@@ -374,6 +380,7 @@
                     def_shell_mode           <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
                     define_key               <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>*
                     del_curterm              <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+
                     delay_output             <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
                     delch                    <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
                     deleteln                 <STRONG><A HREF="curs_deleteln.3x.html">curs_deleteln(3x)</A></STRONG>
@@ -382,7 +389,6 @@
                     derwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     doupdate                 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
                     dupwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
-
                     echo                     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
                     echo_wchar               <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
                     echochar                 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
@@ -440,6 +446,7 @@
                     in_wch                   <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
                     in_wchnstr               <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
                     in_wchstr                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
+
                     inch                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
                     inchnstr                 <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
                     inchstr                  <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
@@ -449,7 +456,6 @@
                     init_pair                <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
                     initscr                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
                     innstr                   <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
-
                     innwstr                  <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
                     ins_nwstr                <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
                     ins_wch                  <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
@@ -506,6 +512,7 @@
                     mvaddchstr               <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
                     mvaddnstr                <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     mvaddnwstr               <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
+
                     mvaddstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     mvaddwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
                     mvchgat                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -516,7 +523,6 @@
                     mvget_wstr               <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
                     mvgetch                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
                     mvgetn_wstr              <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
-
                     mvgetnstr                <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
                     mvgetstr                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
                     mvhline                  <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -572,6 +578,7 @@
                     mvwinnwstr               <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
                     mvwins_nwstr             <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
                     mvwins_wch               <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
+
                     mvwins_wstr              <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
                     mvwinsch                 <STRONG><A HREF="curs_insch.3x.html">curs_insch(3x)</A></STRONG>
                     mvwinsnstr               <STRONG><A HREF="curs_insstr.3x.html">curs_insstr(3x)</A></STRONG>
@@ -583,7 +590,6 @@
                     mvwvline                 <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
                     mvwvline_set             <STRONG><A HREF="curs_border_set.3x.html">curs_border_set(3x)</A></STRONG>
                     napms                    <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
-
                     newpad                   <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
                     newterm                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
                     newwin                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
@@ -638,6 +644,7 @@
                     slk_attr                 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>*
                     slk_attr_off             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_attr_on              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
+
                     slk_attr_set             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_attroff              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_attron               <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
@@ -650,7 +657,6 @@
                     slk_refresh              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_restore              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_set                  <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
-
                     slk_touch                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_wset                 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     standend                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -704,6 +710,7 @@
                     vwprintw                 <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
                     vwscanw                  <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
                     wadd_wch                 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+
                     wadd_wchnstr             <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
                     wadd_wchstr              <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
                     waddch                   <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
@@ -717,7 +724,6 @@
                     wattr_off                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattr_on                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattr_set                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-
                     wattroff                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattron                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     wattrset                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -770,6 +776,7 @@
                     winstr                   <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
                     winwstr                  <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
                     wmouse_trafo             <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
+
                     wmove                    <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>
                     wnoutrefresh             <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
                     wprintw                  <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
@@ -784,7 +791,6 @@
                     wsyncdown                <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     wsyncup                  <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
                     wtimeout                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
-
                     wtouchln                 <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
                     wunctrl                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
                     wvline                   <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -1485,7 +1491,7 @@
 
 
 
-ncurses 6.5                       2024-06-01                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-06-08                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

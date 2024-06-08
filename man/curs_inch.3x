@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.58 2024/06/01 22:29:08 tom Exp $
-.TH curs_inch 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inch.3x,v 1.60 2024/06/08 20:45:43 tom Exp $
+.TH curs_inch 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -160,18 +160,6 @@ and fixed-width integral types would not be standard until ISO C99.
 .\" the Alpha arrived in 1993.  --GBR
 SVr3.2 (1988)
 added a 6-bit color pair identifier alongside the attributes.
-.PP
-X/Open Curses does not specify the sizes of the character code or
-color pair identifier,
-nor the quantity of attribute bits,
-in
-.IR chtype ";"
-these are implementation-dependent.
-.I \%ncurses
-uses eight bits for the character code.
-An application requiring a wider character type,
-for instance to represent Unicode,
-should use the wide-character counterparts of these functions.
 .SH SEE ALSO
 \fB\%curs_in_wch\fP(3X) describes comparable functions of the
 .I \%ncurses

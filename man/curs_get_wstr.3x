@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.50 2024/05/25 20:10:58 tom Exp $
-.TH curs_get_wstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.52 2024/06/08 21:01:53 tom Exp $
+.TH curs_get_wstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -178,8 +178,9 @@ respectively, is recommended.
 These functions cannot return \fBKEY_\fP values because there
 is no way to distinguish a \fBKEY_\fP value from a valid \fBwchar_t\fP value.
 .SH PORTABILITY
-These functions are described in The Single Unix Specification, Version 2.
-No error conditions are defined.
+X/Open Curses,
+Issue 4 describes these functions.
+It specifies no error conditions for them.
 .PP
 This implementation returns \fBERR\fP if the window pointer is null,
 or if the lower-level \fBwget_wch\fP call returns an \fBERR\fP.

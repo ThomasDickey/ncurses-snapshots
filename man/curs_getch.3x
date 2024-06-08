@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.95 2024/06/01 22:29:08 tom Exp $
-.TH curs_getch 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.97 2024/06/08 20:26:46 tom Exp $
+.TH curs_getch 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,9 +106,14 @@ waits until the terminal has input.
 If \fB\%cbreak\fP(3X)
 has been called,
 this happens after one character is read.
-If \fB\%nocbreak\fP(3X)
+If \fB\%nocbreak\fP(3X) or \fB\%noraw\fP(3X)
 has been called,
 it occurs when the next newline is read.
+(Because the terminal's normal or \*(``cooked\*('' mode
+is line-buffered,
+multiple
+.B \%wgetch
+calls may then be necessary to empty the input queue.)
 If \fB\%halfdelay\fP(3X)
 has been called,
 .I curses
@@ -125,7 +130,8 @@ per the following rules.
 .bP
 If
 .I c
-matches the terminal's erase character,
+matches the terminal's erase character
+(see \fB\%erasechar\fP(3X)),
 the cursor moves leftward one position
 and the new position is erased
 as if \fB\%wmove\fP(3X) and then \fB\%wdelch\fP(3X) were called.
@@ -403,11 +409,13 @@ correspond to a physical key.
 returns
 .BR \%KEY_RESIZE ","
 even if the window's keypad mode is disabled,
-when
+if
 .I \%ncurses
-handles a
+has handled a
 .B \%SIGWINCH
-signal;
+signal since
+.B \%wgetch
+was called;
 see \fB\%initscr\fP(3X) and \fB\%resizeterm\fP(3X).
 .bP
 .B \%wgetch
@@ -624,13 +632,14 @@ reads only single-byte characters.
 .PP
 The echo behavior of these functions on input of
 .B KEY_
-or backspace characters was not specified in the SVr4 documentation.
-This description is adapted from X/Open Curses.
+or backspace characters is not documented in SVr4
+.IR curses "."
 .PP
 The behavior of
 .B \%wgetch
-in the presence of signal handlers is unspecified in the SVr4
-documentation and X/Open Curses.
+in the presence of signal handlers is not documented in SVr4
+.I curses
+and is unspecified by X/Open Curses.
 In historical
 .I curses
 implementations,

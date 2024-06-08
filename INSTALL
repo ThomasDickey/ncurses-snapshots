@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.255 2024/05/04 15:54:00 tom Exp $
+-- $Id: INSTALL,v 1.256 2024/06/08 21:06:02 Branden.Robinson Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -550,8 +550,8 @@ CONFIGURE OPTIONS:
 	problem.
 
     --enable-bsdpad
-	Recognize BSD-style prefix padding.  Some ancient BSD programs (such as
-	nethack) call tputs("50") to implement delays.
+	Recognize BSD-style prefix padding.  Some programs written using
+	the BSD curses API use tputs("50") to implement delays.
 
     --enable-check-size
 	Compile-in feature to detect screensize for terminals which do not

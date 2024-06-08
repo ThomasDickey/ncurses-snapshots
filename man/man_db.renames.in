@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.75 2024/05/25 20:26:02 tom Exp $
+# $Id: man_db.renames.in,v 1.76 2024/06/08 20:52:35 Branden.Robinson Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -195,6 +195,8 @@ derwin.3x			derwin.3ncurses
 doupdate.3x			doupdate.3ncurses
 echo.3x				echo.3ncurses
 endwin.3x			endwin.3ncurses
+erasechar.3x			erasechar.3ncurses
+erasewchar.3x			erasewchar.3ncurses
 extended_slk_color.3x		extended_slk_color.3ncurses
 filter.3x			filter.3ncurses
 flushinp.3x			flushinp.3ncurses
@@ -203,6 +205,7 @@ getattr.3x			getattr.3ncurses
 getcchar.3x			getcchar.3ncurses
 getch.3x			getch.3ncurses
 getwin.3x			getwin.3ncurses
+getyx.3x			getyx.3ncurses
 halfdelay.3x			halfdelay.3ncurses
 has_key.3x			has_key.3ncurses
 idcok.3x			idcok.3ncurses
@@ -227,6 +230,7 @@ nl.3x				nl.3ncurses
 nocbreak.3x			nocbreak.3ncurses
 nodelay.3x			nodelay.3ncurses
 nonl.3x				nonl.3ncurses
+noraw.3x			noraw.3ncurses
 notimeout.3x			notimeout.3ncurses
 pnoutrefresh.3x			pnoutrefresh.3ncurses
 prefresh.3x			prefresh.3ncurses

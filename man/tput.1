@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.114 2024/05/11 20:39:53 tom Exp $
-.TH @TPUT@ 1 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.116 2024/06/08 20:50:34 tom Exp $
+.TH @TPUT@ 1 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -49,20 +49,20 @@
 \fB\%@TPUT@\fP \-
 initialize a terminal, exercise its capabilities, or query \fI\%term\%info\fP database
 .SH SYNOPSIS
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP]
+\fB@TPUT@\fP [\fB\-v\fP] [\fB\-T\fP \fIterminal-type\fP]
 {\fIcap-code\fP [\fIparameter\fP .\|.\|.\&]} .\|.\|.
 .PP
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] [\fB\-x\fP] \fBclear\fP
+\fB@TPUT@\fP [\fB\-v\fP] [\fB\-T\fP \fIterminal-type\fP] [\fB\-x\fP] \fBclear\fP
 .PP
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] \fBinit\fP
+\fB@TPUT@\fP [\fB\-v\fP] [\fB\-T\fP \fIterminal-type\fP] \fBinit\fP
 .PP
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] \fB\%reset\fP
+\fB@TPUT@\fP [\fB\-v\fP] [\fB\-T\fP \fIterminal-type\fP] \fB\%reset\fP
 .PP
-\fB@TPUT@\fP [\fB\-T\fP \fIterminal-type\fP] \fB\%longname\fP
+\fB@TPUT@\fP [\fB\-v\fP] [\fB\-T\fP \fIterminal-type\fP] \fB\%longname\fP
 .PP
-\fB@TPUT@ \-S\fP
+\fB@TPUT@\fP [\fB\-v\fP] \fB\-S\fP
 .PP
-\fB@TPUT@ \-V\fP
+\fB@TPUT@\fP [\fB\-v\fP] \fB\-V\fP
 .SH DESCRIPTION
 \fB\%@TPUT@\fP uses the
 .I \%term\%info
@@ -372,6 +372,10 @@ the environment variables
 and
 .I \%COLUMNS
 are also ignored.
+.TP
+.B \-v
+causes \fB\%@TPUT@\fP to operate verbosely,
+reporting warnings.
 .TP
 .B \-V
 reports the version of
@@ -913,7 +917,7 @@ environment variable.
 Set cursor to normal visibility.
 .TP
 .B "@TPUT@ home"
-Move the cursor to row 0,
+Move the cursor to line 0,
 column 0:
 the upper left corner of the screen,
 usually known as the \*(``home\*('' cursor position.
@@ -950,7 +954,7 @@ printf "${strong}Username:${normal} "
 Indicate via exit status whether the terminal is a hard copy device.
 .TP
 .B "@TPUT@ cup 23 4"
-Move the cursor to row 23,
+Move the cursor to line 23,
 column 4.
 .TP
 .B "@TPUT@ cup"

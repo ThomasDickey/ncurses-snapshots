@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.149 2024/05/11 20:28:54 tom Exp $
+.\" $Id: terminfo.tail,v 1.150 2024/06/08 20:42:50 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -348,7 +348,7 @@ and
 applies to storage scope terminals, such as \s-1TEKTRONIX\s+1 4010
 series, as well as hard copy and APL terminals.)
 If there is a code to move the cursor to the left edge of the current
-row, give this as
+line, give this as
 .BR cr .
 (Normally this will be carriage return, control/M.)
 If there is a code to produce an audible signal (bell, beep, etc)
@@ -412,7 +412,7 @@ The only local motion which is defined from the left edge is if
 .B bw
 is given, then a
 .B cub1
-from the left edge will move to the right edge of the previous row.
+from the left edge will move to the right edge of the previous line.
 If
 .B bw
 is not given, the effect is undefined.
@@ -462,8 +462,8 @@ with \fIprintf\fP-like escapes such as \fI%x\fP in it.
 For example, to address the cursor, the
 .B cup
 capability is given, using two parameters:
-the row and column to address to.
-(Rows and columns are numbered from zero and refer to the
+the line and column to address to.
+(Lines and columns are numbered from zero and refer to the
 physical screen visible to the user, not to any unseen memory.)
 If the terminal has memory relative cursor addressing,
 that can be indicated by
@@ -608,17 +608,17 @@ That is, to get x\-5 one would use \*(``%gx%{5}%\-\*(''.
 \fB%P\fP and \fB%g\fP variables are
 persistent across escape-string evaluations.
 .PP
-Consider the HP2645, which, to get to row 3 and column 12, needs
+Consider the HP2645, which, to get to line 3 and column 12, needs
 to be sent \eE&a12c03Y padded for 6 milliseconds.
-The order of the rows and columns is inverted here,
-and the row and column are printed as two digits.
+The order of the lines and columns is inverted here,
+and the lines and column are printed as two digits.
 The corresponding terminal description is expressed thus:
 .RS
 cup=\eE&a%p2%dc%p1%dY$<6>,
 .RE
 .PP
-The Microterm \s-1ACT-IV\s0 needs the current row and column sent
-preceded by a \fB\*^T\fP, with the row and column simply encoded in binary,
+The Microterm \s-1ACT-IV\s0 needs the current line and column sent
+preceded by a \fB\*^T\fP, with the line and column simply encoded in binary,
 .RS
 cup=\*^T%p1%c%p2%c
 .RE
@@ -632,7 +632,7 @@ This is necessary because it is not always safe to transmit \fB\en\fP
 tabs are never expanded, so \et is safe to send.
 This turns out to be essential for the Ann Arbor 4080.)
 .PP
-A final example is the \s-1LSI ADM\s0-3a, which uses row and column
+A final example is the \s-1LSI ADM\s0-3a, which uses line and column
 offset by a blank character, thus
 .RS
 cup=\eE=%p1%\*' \*'%+%c%p2%\*' \*'%+%c
@@ -656,7 +656,7 @@ to the top left corner of the screen, not of memory.
 (Thus, the \eEH sequence on HP terminals cannot be used for
 .BR home .)
 .PP
-If the terminal has row or column absolute cursor addressing,
+If the terminal has line or column absolute cursor addressing,
 these can be given as single parameter capabilities
 .B hpa
 (horizontal position absolute)
@@ -713,7 +713,7 @@ the ability to set a top and/or bottom margin using the current
 line position, and
 .bP
 parameterized capabilities for setting the top, bottom, left, right margins
-given the number of rows or columns.
+given the number of lines or columns.
 .RE
 .PP
 In practice, the categorization into \*(``terminal\*('' and \*(``printer\*(''
@@ -1446,7 +1446,7 @@ If there are commands to set and clear tab stops, they can be given as
 (clear all tab stops)
 and
 .B hts
-(set a tab stop in the current column of every row).
+(set a tab stop in the current column of every line).
 If a more complex sequence is needed to set the tabs than can be
 described by this, the sequence can be placed in
 .B is2

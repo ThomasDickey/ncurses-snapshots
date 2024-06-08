@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.114 2024/05/11 20:39:53 tom Exp @
+  * @Id: tput.1,v 1.116 2024/06/08 20:50:34 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2024-05-11 ncurses 6.5 User commands</TITLE>
+<TITLE>tput 1 2024-06-08 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2024-05-11 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tput 1 2024-06-08 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -53,19 +53,19 @@
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
-       <STRONG>tput</STRONG> [<STRONG>-T</STRONG> <EM>terminal-type</EM>] {<EM>cap-code</EM> [<EM>parameter</EM> ...]} ...
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] [<STRONG>-T</STRONG> <EM>terminal-type</EM>] {<EM>cap-code</EM> [<EM>parameter</EM> ...]} ...
 
-       <STRONG>tput</STRONG> [<STRONG>-T</STRONG> <EM>terminal-type</EM>] [<STRONG>-x</STRONG>] <STRONG>clear</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] [<STRONG>-T</STRONG> <EM>terminal-type</EM>] [<STRONG>-x</STRONG>] <STRONG>clear</STRONG>
 
-       <STRONG>tput</STRONG> [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>init</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>init</STRONG>
 
-       <STRONG>tput</STRONG> [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>reset</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>reset</STRONG>
 
-       <STRONG>tput</STRONG> [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>longname</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] [<STRONG>-T</STRONG> <EM>terminal-type</EM>] <STRONG>longname</STRONG>
 
-       <STRONG>tput</STRONG> <STRONG>-S</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] <STRONG>-S</STRONG>
 
-       <STRONG>tput</STRONG> <STRONG>-V</STRONG>
+       <STRONG>tput</STRONG> [<STRONG>-v</STRONG>] <STRONG>-V</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -258,6 +258,8 @@
                 unnecessary,  because  a  default  is  taken  from  the   <EM>TERM</EM>
                 environment variable.  If specified, the environment variables
                 <EM>LINES</EM> and <EM>COLUMNS</EM> are also ignored.
+
+       <STRONG>-v</STRONG>       causes <STRONG>tput</STRONG> to operate verbosely, reporting warnings.
 
        <STRONG>-V</STRONG>       reports the version of <EM>ncurses</EM> associated with <STRONG>tput</STRONG>, and exits
                 with a successful status.
@@ -498,8 +500,8 @@
               Set cursor to normal visibility.
 
        <STRONG>tput</STRONG> <STRONG>home</STRONG>
-              Move the cursor to row 0, column 0: the upper left corner of the
-              screen, usually known as the "home" cursor position.
+              Move the cursor to line 0, column 0: the upper  left  corner  of
+              the screen, usually known as the "home" cursor position.
 
        <STRONG>tput</STRONG> <STRONG>clear</STRONG>
               Clear  the  screen: write the <STRONG>clear_screen</STRONG> capability's value to
@@ -523,7 +525,7 @@
               device.
 
        <STRONG>tput</STRONG> <STRONG>cup</STRONG> <STRONG>23</STRONG> <STRONG>4</STRONG>
-              Move the cursor to row 23, column 4.
+              Move the cursor to line 23, column 4.
 
        <STRONG>tput</STRONG> <STRONG>cup</STRONG>
               Report  the  value  of the <STRONG>cursor_address</STRONG> (<STRONG>cup</STRONG>) capability (used
@@ -555,7 +557,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.5                       2024-06-08                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

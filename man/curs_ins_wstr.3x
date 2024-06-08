@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.40 2024/05/25 20:10:58 tom Exp $
-.TH curs_ins_wstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.42 2024/06/08 21:04:04 tom Exp $
+.TH curs_ins_wstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -87,17 +87,29 @@ If \fIn\fP is less than zero, the entire string is inserted
 .PP
 Special characters are handled as in \fBwadd_wch\fP(3X).
 .SH RETURN VALUE
-All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
 .PP
 X/Open Curses does not specify any error conditions.
-This implementation returns
+In
+.IR \%ncurses ","
+they return
 .B ERR
+if
 .bP
-if the \fIwin\fP parameter is null or
+.I win
+is
+.BR NULL ","
 .bP
-if the \fIwstr\fP parameter is null or
+.I wstr
+is
+.BR NULL ","
+or
 .bP
-if the \fBwins_wch\fP function returns
+an internal \fB\%wins_wch\fP(3X) call returns
 .BR ERR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
@@ -106,20 +118,32 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-All but \fBwins_nwstr\fP may be macros.
+All of these functions except
+.B \%wins_nwstr
+may be implemented as macros.
 .PP
-If the first character in the string is a non-spacing character, these
-functions will fail.
-X/Open Curses does not define what will happen
+If the first character in the string is a non-spacing character,
+these functions return
+.BR ERR "."
+X/Open Curses does not specify what happens
 if a non-spacing character follows a control character.
 .SH PORTABILITY
-These functions are described in X/Open Curses, Issue 4,
-which adds \fI\%const\fP qualifiers to the arguments.
+X/Open Curses,
+Issue 4 describes these functions.
+It specifies no error conditions for them.
 .PP
-X/Open states that the entire string is inserted if \fIn\fP is less than 1.
+Issue 4 states that the entire string is inserted if
+.I n
+is less than 1.
 This is probably an error,
 because it is inconsistent with other functions,
-and differs from the X/Open implementation on Solaris.
+and differs from the SVr4
+.I curses
+and Solaris
+.I xcurses
+implementations.
+Nevertheless,
+Issue 7 retains it.
 .SH SEE ALSO
 \fB\%curs_insstr\fP(3X) describes comparable functions of the
 .I \%ncurses

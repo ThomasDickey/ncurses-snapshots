@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getyx.3x,v 1.45 2024/05/11 20:39:53 tom Exp @
+  * @Id: curs_getyx.3x,v 1.47 2024/06/08 20:42:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getyx 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getyx 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getyx 3x 2024-05-11 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getyx 3x 2024-06-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
 
@@ -64,10 +64,10 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These macros obtain the cursor position and  bounds  information  of  a
        <EM>curses</EM> window <EM>win</EM>.  <STRONG>getyx</STRONG> stores <EM>win</EM>'s cursor position in the variables
-       <EM>y</EM> and <EM>x</EM>.  <STRONG>getmaxyx</STRONG> stores <EM>win</EM>'s maximum valid row and column numbers in
-       <EM>y</EM> and <EM>x</EM>, respectively.  <STRONG>getbegyx</STRONG> similarly stores the position of <EM>win</EM>'s
-       origin relative to that of the screen (for  <STRONG>stdscr</STRONG>,  these  coordinates
-       are always <STRONG>0</STRONG>).
+       <EM>y</EM> and <EM>x</EM>.  <STRONG>getmaxyx</STRONG> stores <EM>win</EM>'s maximum valid line and  column  numbers
+       in  <EM>y</EM>  and  <EM>x</EM>, respectively.  <STRONG>getbegyx</STRONG> similarly stores the position of
+       <EM>win</EM>'s origin  relative  to  that  of  the  screen  (for  <STRONG>stdscr</STRONG>,  these
+       coordinates are always <STRONG>0</STRONG>).
 
        If  <EM>win</EM>  is a subwindow (see <STRONG><A HREF="subwin.3x.html">subwin(3x)</A></STRONG>), the <STRONG>getparyx</STRONG> macro places the
        coordinates of its origin relative to its parent window into <EM>y</EM>  and  <EM>x</EM>,
@@ -109,7 +109,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                    <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
+ncurses 6.5                       2024-06-08                    <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

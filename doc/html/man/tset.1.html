@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tset.1,v 1.86 2024/05/11 20:39:53 tom Exp @
+  * @Id: tset.1,v 1.88 2024/06/08 20:51:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tset 1 2024-05-11 ncurses 6.5 User commands</TITLE>
+<TITLE>tset 1 2024-06-08 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tset 1 2024-05-11 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tset 1 2024-06-08 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
 
@@ -115,8 +115,10 @@
            kill characters (among many other things) are set
 
        <STRONG>o</STRONG>   unless   the   "<STRONG>-I</STRONG>"   option  is  enabled,  the  terminal  and  tab
-           <EM>initialization</EM> strings are sent to the standard error  output,  and
-           <STRONG>tset</STRONG> waits one second (in case a hardware reset was issued).
+           <EM>initialization</EM> strings are sent to the standard error output,  and,
+           if  the  terminal device does not appear to be a pseudoterminal (as
+           might be used by a  terminal  emulator  program),  <STRONG>tset</STRONG>  waits  one
+           second in case a hardware reset was issued.
 
        <STRONG>o</STRONG>   Finally,  if  the  erase,  interrupt  and line kill characters have
            changed, or are not set to their default values, their  values  are
@@ -393,7 +395,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                           <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
+ncurses 6.5                       2024-06-08                           <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

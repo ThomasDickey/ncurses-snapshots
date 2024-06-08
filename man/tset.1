@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.86 2024/05/11 20:39:53 tom Exp $
-.TH @TSET@ 1 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.88 2024/06/08 20:51:12 tom Exp $
+.TH @TSET@ 1 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -123,7 +123,10 @@ the backspace, interrupt and line kill characters
 unless the \*(``\fB\-I\fP\*('' option is enabled,
 the terminal
 and tab \fIinitialization\fP strings are sent to the standard error output,
-and \fB@TSET@\fP waits one second (in case a hardware reset was issued).
+and,
+if the terminal device does not appear to be a pseudoterminal
+(as might be used by a terminal emulator program),
+\fB@TSET@\fP waits one second in case a hardware reset was issued.
 .bP
 Finally, if the erase, interrupt and line kill characters have changed,
 or are not set to their default values, their values are displayed to the

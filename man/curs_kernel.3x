@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.63 2024/05/25 21:13:56 tom Exp $
-.TH curs_kernel 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.65 2024/06/08 21:00:58 tom Exp $
+.TH curs_kernel 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,33 +106,66 @@ state of the terminal modes.
 a buffer and \fBresetty\fP restores the state to what it was at the
 last call to \fBsavetty\fP.
 .SS getsyx
-The \fBgetsyx\fP routine returns the current coordinates
-of the \fIvirtual screen\fP cursor in \fIy\fP and \fIx\fP.
-If \fBleaveok\fP is currently \fBTRUE\fP, then
-\fB\-1\fP,\fB\-1\fP is returned.
-If lines have been removed from the top of the
-screen, using \fBripoffline\fP, \fIy\fP and \fIx\fP include these lines;
-therefore, \fIy\fP and \fIx\fP should be used only as arguments for
-\fBsetsyx\fP.
+.B \%getsyx
+stores the coordinates of virtual screen
+.RB \%( newscr )
+cursor in
+.I y
+and
+.IR x "."
+If
+.BR \%newscr 's
+\fB\%leaveok\fP(3X) output option is
+.BR TRUE ","
+.B \%getsyx
+stores
+.B \-1
+in both
+.I y
+and
+.IR x "."
+If lines have been removed from the top of the screen using
+.BR \%ripoffline ","
+.I y
+includes these lines;
+therefore,
+.I y
+and
+.I x
+populated by
+.B \%getsyx
+should be used only as arguments for
+.BR \%setsyx "."
 .PP
-Few applications will use this feature,
-most use \fBgetyx\fP instead.
+Few applications use this feature;
+most call \fB\%getyx\fP(3X) instead.
 .SS setsyx
-The \fBsetsyx\fP routine sets
-the \fIvirtual screen\fP cursor to \fIy\fP, \fIx\fP.
-If \fIy\fP and \fIx\fP are both \fB\-1\fP, then
-\fBleaveok\fP is set.
-The two routines \fBgetsyx\fP and \fBsetsyx\fP
-are designed to be used by a library routine, which manipulates
-\fBcurses\fP windows but does not want to change the current position
-of the program's cursor.
-The library routine would call \fBgetsyx\fP
-at the beginning, do its manipulation of its own windows, do a
-\fBwnoutrefresh\fP on its windows, call \fBsetsyx\fP, and then call
-\fBdoupdate\fP.
+.B \%setsyx
+sets the virtual screen
+.RB \%( newscr )
+cursor location to
+.RI ( y ,
+.IR x ")."
+.B "\%setsyx(\-1, \-1)"
+is equivalent to
+.BR "\%leaveok(newscr, TRUE)" "."
 .PP
-Few applications will use this feature,
-most use \fBwmove\fP instead.
+.B \%getsyx
+and
+.B \%setsyx
+are designed to be used by a function that manipulates
+.I curses
+windows but seeks to avoid changing the cursor position.
+Such a function would first call
+.BR \%getsyx ","
+modify its windows' content,
+call \fB\%wnoutrefresh\fP(3X) on them,
+call
+.BR \%setsyx ","
+then call \fB\%doupdate\fP(3X).
+.PP
+Few applications use this feature;
+most call \fB\%wmove\fP(3X) instead.
 .SS curs_set
 The \fBcurs_set\fP routine sets the cursor state to invisible,
 normal, or very visible for \fBvisibility\fP equal to \fB0\fP,
@@ -263,6 +296,12 @@ capability,
 rather than the least costly combination of absolute and relative
 motion.
 .SH PORTABILITY
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
+.PP
 The \fIvirtual screen\fP functions \fBsetsyx\fP and \fBgetsyx\fP
 are not described in X/Open Curses, Issue 4.
 All other functions are as described in X/Open Curses.

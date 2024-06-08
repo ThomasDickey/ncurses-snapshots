@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_get_wch.3x,v 1.41 2024/05/11 20:39:53 tom Exp @
+  * @Id: curs_get_wch.3x,v 1.43 2024/06/08 20:25:25 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_get_wch 3x 2024-05-11 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_get_wch 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_get_wch 3x 2024-05-11 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_get_wch 3x 2024-06-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 
@@ -81,31 +81,35 @@
        If  no input is pending, then if the no-delay flag is set in the window
        (see <STRONG><A HREF="nodelay.3x.html">nodelay(3x)</A></STRONG>), the function returns <STRONG>ERR</STRONG>;  otherwise,  <EM>curses</EM>  waits
        until  the  terminal  has  input.   If <STRONG><A HREF="curs_inopts.3x.html">cbreak(3x)</A></STRONG> has been called, this
-       happens after one character is read.  If <STRONG><A HREF="curs_inopts.3x.html">nocbreak(3x)</A></STRONG> has been  called,
-       it  occurs  when  the  next newline is read.  If <STRONG><A HREF="curs_inopts.3x.html">halfdelay(3x)</A></STRONG> has been
-       called, <EM>curses</EM> waits until input is available or  the  specified  delay
-       elapses.
+       happens after one character is read.  If <STRONG><A HREF="curs_inopts.3x.html">nocbreak(3x)</A></STRONG> or <STRONG><A HREF="curs_inopts.3x.html">noraw(3x)</A></STRONG>  has
+       been  called,  it  occurs  when the next newline is read.  (Because the
+       terminal's normal or "cooked" mode is line-buffered, multiple  <STRONG>wget_wch</STRONG>
+       calls   may   then   be  necessary  to  empty  the  input  queue.)   If
+       <STRONG><A HREF="curs_inopts.3x.html">halfdelay(3x)</A></STRONG> has been called, <EM>curses</EM> waits until input is available or
+       the specified delay elapses.
 
        If <STRONG><A HREF="curs_inopts.3x.html">echo(3x)</A></STRONG> has been called, and the window is not a pad, <EM>curses</EM> writes
-       <EM>wch</EM> to the window (at the cursor position) per the following rules.
+       the wide character from the input queue to the window  (at  the  cursor
+       position) per the following rules.
 
-       <STRONG>o</STRONG>   If <EM>wch</EM> matches the terminal's erase  character,  the  cursor  moves
-           leftward  one  position  and  the  new  position  is  erased  as if
-           <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG> and then  <STRONG><A HREF="curs_delch.3x.html">wdelch(3x)</A></STRONG>  were  called.   When  the  window's
-           keypad  mode is enabled (see below), <STRONG>KEY_LEFT</STRONG> and <STRONG>KEY_BACKSPACE</STRONG> are
-           handled the same way.
+       <STRONG>o</STRONG>   If  the  wide character matches the terminal's erase character (see
+           <STRONG><A HREF="curs_termattrs.3x.html">erasewchar(3x)</A></STRONG>), the cursor moves leftward one position and the new
+           position is erased as if <STRONG><A HREF="curs_move.3x.html">wmove(3x)</A></STRONG> and then <STRONG><A HREF="curs_delch.3x.html">wdelch(3x)</A></STRONG> were called.
+           When the window's keypad mode is enabled (see below), <STRONG>KEY_LEFT</STRONG>  and
+           <STRONG>KEY_BACKSPACE</STRONG> are handled the same way.
 
-       <STRONG>o</STRONG>   <EM>curses</EM> writes any other <EM>wch</EM> to the window, as with <STRONG><A HREF="curs_add_wch.3x.html">wecho_wchar(3x)</A></STRONG>.
+       <STRONG>o</STRONG>   <EM>curses</EM>  writes  any  other  wide  character  to the window, as with
+           <STRONG><A HREF="curs_add_wch.3x.html">wecho_wchar(3x)</A></STRONG>.
 
        <STRONG>o</STRONG>   If the window <EM>win</EM> has been moved or modified since the last call to
            <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>, <EM>curses</EM> calls <STRONG>wrefresh</STRONG> on it.
 
-       If  <EM>wch</EM>  is a carriage return and <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG> has been called, <STRONG>wgetch</STRONG> stores
-       the the character code for line feed in <EM>wch</EM> instead.
+       If  the wide character is a carriage return and <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG> has been called,
+       <STRONG>wgetch</STRONG> stores the the wide character code for line feed in <EM>wch</EM> instead.
 
 
 </PRE><H3><a name="h3-Ungetting-Characters">Ungetting Characters</a></H3><PRE>
-       <STRONG>unget_wch</STRONG> places <EM>wch</EM> into the input queue to be returned  by  the  next
+       <STRONG>unget_wch</STRONG> places <EM>wc</EM> into the input queue to be retrieved  by  the  next
        call  to  <STRONG>wget_wch</STRONG>.  A single input queue serves all windows associated
        with the terminal.
 
@@ -168,7 +172,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
+ncurses 6.5                       2024-06-08                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
