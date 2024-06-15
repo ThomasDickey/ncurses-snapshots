@@ -30,7 +30,7 @@
 #  Author:  Juergen Pfeifer, 1996
 #     and:  Thomas E. Dickey, 1997
 #
-#  $Id: Makefile.in,v 1.103 2024/01/19 16:51:56 tom Exp $
+#  $Id: Makefile.in,v 1.104 2024/06/15 14:56:14 tom Exp $
 #
 .SUFFIXES:
 
@@ -111,36 +111,37 @@ ABASE		= $(ALIB)-curses
 
 ADA_SRCDIR	= ../src
 
-GEN_TARGETS     = $(ADA_SRCDIR)/$(ABASE).ads         			\
-		  $(ADA_SRCDIR)/$(ABASE).adb         			\
-	          $(ADA_SRCDIR)/$(ABASE)-aux.ads   			\
-	          $(ADA_SRCDIR)/$(ABASE)-trace.ads   			\
-	          $(ADA_SRCDIR)/$(ABASE)-menus.ads   			\
-	          $(ADA_SRCDIR)/$(ABASE)-forms.ads   			\
-	          $(ADA_SRCDIR)/$(ABASE)-mouse.ads 			\
-	          $(ADA_SRCDIR)/$(ABASE)-panels.ads			\
-	          $(ADA_SRCDIR)/$(ABASE)-menus-menu_user_data.ads	\
-	          $(ADA_SRCDIR)/$(ABASE)-menus-item_user_data.ads	\
-	          $(ADA_SRCDIR)/$(ABASE)-forms-form_user_data.ads	\
-	          $(ADA_SRCDIR)/$(ABASE)-forms-field_types.ads		\
-	          $(ADA_SRCDIR)/$(ABASE)-forms-field_user_data.ads	\
-	          $(ADA_SRCDIR)/$(ABASE)-panels-user_data.ads           \
-                  $(ADA_SRCDIR)/$(ABASE)_constants.ads
+GEN_TARGETS     = options.m4						\
+		  $(ADA_SRCDIR)/$(ABASE).ads				\
+		  $(ADA_SRCDIR)/$(ABASE).adb				\
+		  $(ADA_SRCDIR)/$(ABASE)-aux.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-trace.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-menus.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-forms.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-mouse.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-panels.ads			\
+		  $(ADA_SRCDIR)/$(ABASE)-menus-menu_user_data.ads	\
+		  $(ADA_SRCDIR)/$(ABASE)-menus-item_user_data.ads	\
+		  $(ADA_SRCDIR)/$(ABASE)-forms-form_user_data.ads	\
+		  $(ADA_SRCDIR)/$(ABASE)-forms-field_types.ads		\
+		  $(ADA_SRCDIR)/$(ABASE)-forms-field_user_data.ads	\
+		  $(ADA_SRCDIR)/$(ABASE)-panels-user_data.ads		\
+		  $(ADA_SRCDIR)/$(ABASE)_constants.ads
 
 GEN_SRC		= $(srcdir)/$(ABASE).ads.m4				\
 		  $(srcdir)/$(ABASE).adb.m4				\
-	          $(srcdir)/$(ABASE)-aux.ads.m4 	  		\
-	          $(srcdir)/$(ABASE)-trace.ads.m4 	  		\
-	          $(srcdir)/$(ABASE)-menus.ads.m4 	  		\
-	          $(srcdir)/$(ABASE)-forms.ads.m4   			\
-	          $(srcdir)/$(ABASE)-mouse.ads.m4			\
-	          $(srcdir)/$(ABASE)-panels.ads.m4			\
-	          $(srcdir)/$(ABASE)-menus-menu_user_data.ads.m4	\
-	          $(srcdir)/$(ABASE)-menus-item_user_data.ads.m4	\
-	          $(srcdir)/$(ABASE)-forms-form_user_data.ads.m4	\
-	          $(srcdir)/$(ABASE)-forms-field_types.ads.m4		\
-	          $(srcdir)/$(ABASE)-forms-field_user_data.ads.m4	\
-	          $(srcdir)/$(ABASE)-panels-user_data.ads.m4
+		  $(srcdir)/$(ABASE)-aux.ads.m4				\
+		  $(srcdir)/$(ABASE)-trace.ads.m4			\
+		  $(srcdir)/$(ABASE)-menus.ads.m4			\
+		  $(srcdir)/$(ABASE)-forms.ads.m4			\
+		  $(srcdir)/$(ABASE)-mouse.ads.m4			\
+		  $(srcdir)/$(ABASE)-panels.ads.m4			\
+		  $(srcdir)/$(ABASE)-menus-menu_user_data.ads.m4	\
+		  $(srcdir)/$(ABASE)-menus-item_user_data.ads.m4	\
+		  $(srcdir)/$(ABASE)-forms-form_user_data.ads.m4	\
+		  $(srcdir)/$(ABASE)-forms-field_types.ads.m4		\
+		  $(srcdir)/$(ABASE)-forms-field_user_data.ads.m4	\
+		  $(srcdir)/$(ABASE)-panels-user_data.ads.m4
 
 ################################################################################
 
@@ -166,7 +167,10 @@ $(DESTDIR)$(bindir) :
 	mkdir -p $@
 
 install \
-install.libs :: $(DESTDIR)$(bindir) $(ADACURSES_CONFIG)
+install.libs :: \
+		$(GEN_TARGETS) \
+		$(DESTDIR)$(bindir) \
+		$(ADACURSES_CONFIG)
 	$(INSTALL_SCRIPT) $(ADACURSES_CONFIG) $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
 
 uninstall \

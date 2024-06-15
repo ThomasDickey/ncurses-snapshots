@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2005,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,10 +33,9 @@
  ****************************************************************************/
 
 #include "internal.h"
-#include "cursslk.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursslk.cc,v 1.21 2023/02/25 23:36:06 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.22 2024/06/15 21:07:30 tom Exp $")
 
 Soft_Label_Key_Set::Soft_Label_Key&
   Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)
