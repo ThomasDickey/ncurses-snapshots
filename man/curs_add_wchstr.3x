@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.40 2024/05/11 20:39:53 tom Exp $
-.TH curs_add_wchstr 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.42 2024/06/22 21:26:27 tom Exp $
+.TH curs_add_wchstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -139,6 +139,27 @@ may be implemented as macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+.SH HISTORY
+These functions were initially specified by X/Open Curses,
+Issue 4.
+The System\ V Interface Definition,
+Version 4 (1995),
+specified functions named
+.I \%waddwchstr
+and
+.I \%waddwchnstr
+(and the usual variants).
+These were later additions to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+They differed from X/Open's
+.I \%wadd_wchstr
+and
+.I \%wadd_wchnstr
+in that they each took an argument of type
+.I \%wchar_t
+instead of
+.IR \%cchar_t "."
 .SH SEE ALSO
 \fB\%curs_addchstr\fP(3X) describes comparable functions of the
 .I \%ncurses

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4139 2024/06/15 20:49:04 tom Exp $
+-- $Id: NEWS,v 1.4143 2024/06/22 22:59:44 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,16 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240622
+	+ improve test/gdc.c (patch by Branden Robinson).
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ adjust naming of mingw *-config scripts to match the pkg-config names
+	+ widen pattern in pc/*-config scripts to disallow more linker options
+	+ add --cflags-only-I and --cflags-only-other options to
+	  misc/ncurses-config.in
+	+ revert change to CF_BUILD_CC macro (report by Vassili Courzakis,
+	  cf: 20240518).
 
 20240615
 	+ improve formatting/style of manpages (patches by Branden Robinson).

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.49 2024/06/01 22:29:08 tom Exp $
-.TH curs_addstr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.51 2024/06/22 21:26:53 tom Exp $
+.TH curs_addstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -130,6 +130,21 @@ All of these functions except \fBwaddnstr\fP may be macros.
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
+.SH HISTORY
+4BSD (1980)
+.I curses
+introduced
+.I \%waddstr
+along with its variants,
+the latter defined as macros.
+.PP
+SVr3.1 (1987)
+added
+.I \%waddnstr
+(and its variants)
+redefining
+.I \%waddstr
+as a macro wrapping it.
 .SH SEE ALSO
 \fB\%curs_addwstr\fP(3X) describes comparable functions of the
 .I \%ncurses

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.63 2024/05/25 20:10:58 tom Exp $
-.TH curs_pad 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_pad.3x,v 1.65 2024/06/22 22:20:03 tom Exp $
+.TH curs_pad 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -87,7 +87,8 @@ or
 .B \%pnoutrefresh
 instead.
 .SS newpad
-\fB\%newpad\fP creates and returns a pointer to a new pad data structure
+.B \%newpad
+creates and returns a pointer to a new pad data structure
 with the given number of lines,
 .IR nlines ,
 and columns,
@@ -114,7 +115,7 @@ it is often necessary to call \fB\%touchwin\fP(3X) or
 before calling
 .BR \%prefresh .
 .SS "prefresh, pnoutrefresh"
-.B \%prefresh\fP
+.B \%prefresh
 and
 .B \%pnoutrefresh
 are analogous to \fB\%wrefresh\fP(3X) and \fB\%wnoutrefresh\fP(3X)
@@ -156,7 +157,7 @@ The location of the character
 written to the pad is used to populate the arguments to
 .BR \%prefresh .
 .SS pecho_wchar
-.B \%pecho_wchar\fP
+.B \%pecho_wchar
 is functionally equivalent to calling \fB\%wadd_wch\fP(3X) followed by
 .BR \%prefresh .
 It suggests to the
@@ -168,20 +169,28 @@ The location of the character
 written to the pad is used to populate the arguments to
 .BR \%prefresh .
 .SH RETURN VALUE
-Functions that return an integer return \fBERR\fP upon failure and
-\fBOK\fP
+Functions that return an integer return
+.B ERR
+upon failure and
+.B OK
 (SVr4 specifies only
-\*(``an integer value other than \fBERR\fP\*('')
+\*(``an integer value other than
+.BR ERR \*('')
 upon successful completion.
 .PP
-Functions that return pointers return \fBNULL\fP on error,
-and set \fB\%errno\fP to \fB\%ENOMEM\fP.
+Functions that return pointers return
+.B NULL
+on error,
+and set
+.I \%errno
+to
+.BR \%ENOMEM "."
 .PP
 X/Open Curses does not specify any error conditions.
 In this implementation
 .RS 3
 .TP 5
-\fB\%prefresh\fP and \fB\%pnoutrefresh\fP
+.BR prefresh\  and\  pnoutrefresh
 return
 .B ERR
 if the window pointer is null, or
@@ -189,24 +198,33 @@ if the window is not really a pad or
 if the area to refresh extends off-screen or
 if the minimum coordinates are greater than the maximum.
 .TP 5
-\fBpechochar\fP
+.B pechochar
 returns
 .B ERR
-if the window is not really a pad, and the associated call
-to \fB\%wechochar\fP returns
+if the window is not really a pad,
+and the associated call to
+.B \%wechochar
+returns
 .BR ERR "."
 .TP 5
-\fBpecho_wchar\fP
+.B pecho_wchar
 returns
 .B ERR
-if the window is not really a pad, and the associated call
-to \fB\%wecho_wchar\fP returns
+if the window is not really a pad,
+and the associated call to
+.B \%wecho_wchar
+returns
 .BR ERR "."
 .RE
 .SH NOTES
-\fB\%pechochar\fP may be a macro.
+.B \%pechochar
+may be a macro.
 .SH PORTABILITY
-BSD \fIcurses\fP has no \fIpad\fP feature.
+BSD
+.I curses
+has no
+.I pad
+feature.
 .PP
 SVr2 \fIcurses\fP (1986) provided the \fB\%newpad\fP and related functions,
 documenting them in a single line each.

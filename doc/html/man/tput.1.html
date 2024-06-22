@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.116 2024/06/08 20:50:34 tom Exp @
+  * @Id: tput.1,v 1.118 2024/06/22 21:28:35 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2024-06-08 ncurses 6.5 User commands</TITLE>
+<TITLE>tput 1 2024-06-22 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2024-06-08 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tput 1 2024-06-22 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -477,8 +477,10 @@
        As of <EM>ncurses</EM> 6.1,  the  "reset"  features  of  the  two  programs  are
        (mostly) the same.  Two minor differences remain.
 
-       <STRONG>o</STRONG>   The  <STRONG>tset</STRONG>  program  waits  one  second  when resetting, in case the
-           terminal happens to be a hardware device.
+       <STRONG>o</STRONG>   When  issuing  a  reset, the <STRONG>tset</STRONG> program checks whether the device
+           appears to be a pseudoterminal (as might  be  used  by  a  terminal
+           emulator program), and, if it does not, waits one second in case it
+           is communicating with a hardware terminal.
 
        <STRONG>o</STRONG>   The two programs  write  the  terminal  initialization  strings  to
            different  streams;  that  is, standard error for <STRONG>tset</STRONG> and standard
@@ -557,7 +559,7 @@
 
 
 
-ncurses 6.5                       2024-06-08                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.5                       2024-06-22                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: gdc.6,v 1.9 2024/06/15 15:16:34 tom Exp $
+.\" $Id: gdc.6,v 1.10 2024/06/22 21:31:03 tom Exp $
 .TH GDC 6 2024-06-15 ncurses-examples Games
 .ie \n(.g \{\
 .ds `` \(lq
@@ -41,42 +41,66 @@
 .\}
 .SH NAME
 gdc \-
-grand digital clock (curses)
+grand digital clock using
+.I curses
 .SH SYNOPSIS
-.B gdc \fP[\fIoptions\fP] [\fIn\fP]
+.B gdc
+.RB [ \-dns ]
+.RB [ \-t
+.IB hh : mm : ss\c
+]
+.RI [ count ]
 .SH DESCRIPTION
-.I Gdc
-runs a digital clock made of reverse-video blanks on a terminal screen.
-If the terminal supports color,
-the clock is drawn in red.
-You can make the clock stop, pause, or resume by pressing a \*(``q\*('',
-\*(``s\*('' or space, respectively.
+.I gdc
+uses
+.I curses
+to display a clock on the terminal.
+It constructs the digits from reverse-video blank characters.
+If the terminal type supports color,
+the digits are drawn in red.
+Make the clock stop,
+pause,
+or resume by typing \*(``q\*('',
+\*(``s\*('',
+or space,
+respectively.
+.PP
+Given a numeric operand,
+the clock
+stops after
+.I count
+seconds.
+Normally,
+.I gdc
+runs \*(``forever\*(''
+(at least 2 billion seconds).
 .SH OPTIONS
 .TP
 .B \-d
-use terminal's default colors for the background.
+uses the terminal's default background color.
 .TP
 .B \-n
-redirects input to /dev/null,
-making it ignore the stop/pause commands.
-You can still stop it by pressing the interrupt key.
+reads input from
+.IR \%/dev/null ,
+making
+.I gdc
+ignore the stop and pause commands.
+You can still stop it with a terminal interrupt.
 .TP
 .B \-s
-makes digits scroll as they change.
+scrolls the digits up as they change.
 When running on a fast display,
-the program breaks up the scrolling into subsecond repaints,
+the program breaks up the scrolling into sub-second redraws,
 making the operation appear smooth.
 .TP
-.B \-t \fIhh:mm:ss\fP
-specify starting time (default is \*(``now\*('').
-.PP
-With an optional numeric argument
-.I num
-it stops after
-.I num
-seconds.
-Normally it runs \*(``forever\*('' (counting down from 2 billion seconds).
+.BR \-t \ \c
+.IB hh : mm : ss
+uses the specified time instead of the current time.
 .SH AUTHORS
-Amos Shapir, modified for curses by John Lupien.
-.br
-Improvements for ncurses by Thomas Dickey.
+Amos Shapir,
+John Lupien
+(modifications for
+.IR curses ),
+Thomas Dickey
+(improvements for
+.IR \%ncurses )

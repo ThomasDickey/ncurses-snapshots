@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.73 2024/05/25 20:10:58 tom Exp $
-.TH curs_slk 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_slk.3x,v 1.75 2024/06/22 21:25:23 tom Exp $
+.TH curs_slk 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -135,9 +135,9 @@ helping the user to associate each label with its numbered function key.
 \fBLINES\fP and the vertical size of \fB\%stdscr\fP are further reduced.
 .SS Labels
 Populate the labels with normal strings
-(\fB\%slk_set\fP)
+\%(\fBslk_set\fP)
 or wide-character strings
-(\fB\%slk_wset\fP).
+\%(\fBslk_wset\fP).
 Each function takes three parameters.
 .TP 8 \" "labnum" + 2n
 .I labnum

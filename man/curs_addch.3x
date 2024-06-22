@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.92 2024/06/08 20:51:41 tom Exp $
-.TH curs_addch 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.94 2024/06/22 21:34:49 tom Exp $
+.TH curs_addch 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -284,6 +284,12 @@ variable,
 but X/Open Curses does not specify it;
 see \fB\%curs_variables\fP(3X).
 .SH PORTABILITY
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
+.PP
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
@@ -471,9 +477,9 @@ If it cannot,
 use only
 \fB\%wadd_wch\fP(3X).
 .SH HISTORY
-The original
+4BSD (1980)
 .I curses
-in 4BSD (1980) introduced
+introduced
 .IR \%waddch "."
 .PP
 SVr3 (1987)

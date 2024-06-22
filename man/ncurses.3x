@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.223 2024/06/08 20:45:43 tom Exp $
-.TH ncurses 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.225 2024/06/22 22:14:58 tom Exp $
+.TH ncurses 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -121,8 +121,8 @@ API should be aware,
 such as limitations on the size of an underlying integral type or the
 availability of a preprocessor macro exclusive of a function definition
 (which prevents its address from being taken).
-This section also describes implementation details that will be
-significant to the programmer but which are not standardized.
+This section also describes implementation details
+of significance to the programmer but which are not standardized.
 .bP
 \*(``EXTENSIONS\*('' presents
 .I \%ncurses
@@ -170,13 +170,12 @@ and
 respectively.)
 The
 .I \%ncurses_g
-library generates trace logs
-(in a file called
-.I \%trace
-in the current directory)
-that describe
+library logs events describing
 .I \%ncurses
-actions.
+actions
+to a file called
+.I \%trace
+in the current directory.
 See section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .SS "Application Structure"
 A
@@ -229,10 +228,27 @@ Call \fB\%endwin\fP(3X) before exiting.
 .SS Overview
 A
 .I curses
-library abstracts the terminal screen by representing all or part of it
-as a
+library abstracts the terminal with a
+.I \%SCREEN
+data structure,
+and represents all or part of its display
+with
 .I \%WINDOW
-data structure.
+structures.
+Distinct properties apply to each;
+for example,
+the
+.I "line discipline"
+of a typical Unix terminal driver
+is in one of three modes:
+raw,
+\%cbreak,
+or normal (\*(``cooked\*('').
+In
+.IR curses ","
+the line discipline is a property of the screen,
+applying identically to all windows associated with it.
+.PP
 A
 .I window
 is a rectangular grid of character cells,
@@ -1933,9 +1949,12 @@ See \fB\%default_colors\fP(3X).
 An
 .I \%ncurses
 application can eschew knowledge of
+.I \%SCREEN
+and
 .I \%WINDOW
 structure internals,
 instead using accessor functions such as
+\fB\%is_cbreak\fP(3X) and
 \fB\%is_scrollok\fP(3X).
 .PP
 .I \%ncurses
@@ -2002,7 +2021,9 @@ such as wide-character and color support.
 .I \%ncurses
 intends base-level conformance with X/Open Curses,
 and supports all features of its enhanced level
-except the \fB\%untic\fP utility.
+except the
+.I \%untic
+utility.
 .PP
 Differences between X/Open Curses and
 .I \%ncurses

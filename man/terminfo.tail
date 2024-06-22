@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.150 2024/06/08 20:42:50 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.151 2024/06/22 21:25:23 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -2076,7 +2076,7 @@ Solaris,
 and \fI\%ncurses\fP support all SVr4 capabilities.
 .bP
 IRIX supports the SVr4 set and adds one undocumented extended string
-capability (\fB\%set_pglen\fP).
+capability \%(\fBset_pglen\fP).
 .bP
 SVr1 and Ultrix support a restricted subset of \fI\%terminfo\fP
 capabilities.

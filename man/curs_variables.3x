@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.47 2024/04/13 22:37:35 tom Exp $
-.TH curs_variables 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.49 2024/06/22 21:25:23 tom Exp $
+.TH curs_variables 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -285,7 +285,7 @@ the physical screen with \fB\%mvcur\fP(3X).
 \fI\%ncurses\fP uses the value of \fB\%TABSIZE\fP only to update the
 virtual screen.
 It uses the terminal description's \*(``\fBit\fP\*(''
-(\fB\%init_tabs\fP) capability for computing hardware tabs
+\%(\fBinit_tabs\fP) capability for computing hardware tabs
 (that is,
 tab stops on the physical screen).
 .bP

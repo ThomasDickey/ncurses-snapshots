@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.57 2022/12/04 00:40:11 tom Exp $
+ * $Id: gdc.c,v 1.58 2024/06/22 22:27:52 tom Exp $
  */
 
 #include <test.priv.h>
@@ -60,6 +60,7 @@ static long older[6], next[6], newer[6], mask;
 static int sigtermed = 0;
 static bool redirected = FALSE;
 static bool hascolor = FALSE;
+static bool hascustomtime = FALSE;
 
 static void
 sighndl(int signo)
@@ -154,18 +155,19 @@ usage(int ok)
 {
     static const char *msg[] =
     {
-	"Usage: gdc [options] [count]"
+	"usage: gdc [-dns] -[t HH:MM:SS] [COUNT]"
+	,""
+	,"Display a digital clock, running indefinitely or for COUNT"
+	" seconds."
 	,""
 	,USAGE_COMMON
 	,"Options:"
 #if HAVE_USE_DEFAULT_COLORS
-	," -d       invoke use_default_colors"
+	," -d           uses the terminal's default background color"
 #endif
-	," -n       redirect input to /dev/null"
-	," -s       scroll each number into place, rather than flipping"
-	," -t TIME  specify starting time as hh:mm:ss (default is ``now'')"
-	,""
-	,"If you specify a count, gdc runs for that number of seconds"
+	," -n           reads input from /dev/null"
+	," -s           scrolls each digit into place"
+	," -t HH:MM:SS  starts clock at specified time"
     };
     unsigned j;
     for (j = 0; j < SIZEOF(msg); j++)
@@ -247,6 +249,7 @@ main(int argc, char *argv[])
 	    smooth = TRUE;
 	    break;
 	case 't':
+	    hascustomtime = TRUE;
 	    starts = parse_time(optarg);
 	    break;
 	case OPTS_VERSION:
@@ -399,14 +402,16 @@ main(int argc, char *argv[])
 	    }
 	}
 
-	/* this depends on the detailed format of ctime(3) */
-	_nc_STRNCPY(buf, ctime(&now), (size_t) 30);
-	{
-	    char *d2 = buf + 10;
-	    char *s2 = buf + 19;
-	    while ((*d2++ = *s2++) != '\0') ;
+	if (!hascustomtime) {
+	    /* this depends on the detailed format of ctime(3) */
+	    _nc_STRNCPY(buf, ctime(&now), (size_t) 30);
+	    {
+		char *d2 = buf + 10;
+		char *s2 = buf + 19;
+		while ((*d2++ = *s2++) != '\0') ;
+	    }
+	    MvAddStr(16, 30, buf);
 	}
-	MvAddStr(16, 30, buf);
 
 	move(6, 0);
 	drawbox(FALSE);

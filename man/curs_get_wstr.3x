@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.52 2024/06/08 21:01:53 tom Exp $
-.TH curs_get_wstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.54 2024/06/22 21:34:19 tom Exp $
+.TH curs_get_wstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,15 +58,15 @@ get a wide-character string from a \fIcurses\fR terminal keyboard
 .nf
 \fB#include <curses.h>
 .PP
-\fBint get_wstr(wint_t *\fIwstr\fP);
-\fBint getn_wstr(wint_t *\fIwstr\fP, int \fIn\fP);
-\fBint wget_wstr(WINDOW *\fIwin\fP, wint_t *\fIwstr\fP);
-\fBint wgetn_wstr(WINDOW *\fIwin\fP, wint_t *\fIwstr\fP, int \fIn\fP);
+\fBint get_wstr(wint_t * \fIwstr\fP);
+\fBint wget_wstr(WINDOW * \fIwin\fP, wint_t * \fIwstr\fP);
+\fBint mvget_wstr(int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP);
+\fBint mvwget_wstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP);
 .PP
-\fBint mvget_wstr(int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP);
-\fBint mvgetn_wstr(int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP, int \fIn\fP);
-\fBint mvwget_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP);
-\fBint mvwgetn_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwstr\fP, int \fIn\fP);
+\fBint getn_wstr(wint_t * \fIwstr\fP, int \fIn\fP);
+\fBint wgetn_wstr(WINDOW * \fIwin\fP, wint_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvgetn_wstr(int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvwgetn_wstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 The function

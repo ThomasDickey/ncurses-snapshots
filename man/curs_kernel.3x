@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.65 2024/06/08 21:00:58 tom Exp $
-.TH curs_kernel 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.67 2024/06/22 21:24:26 tom Exp $
+.TH curs_kernel 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -198,8 +198,10 @@ write to the screen with the external application;
 call
 .BR \%reset_prog_mode ";"
 and finally call
-.B \%mvcur
-to set the cursor's location to where
+.BR \%mvcur( ".\|.\|." ,
+.RB .\|.\|. ,
+.B \-1, \-1)
+to move the terminal cursor to where
 .I \%curses
 thinks it is,
 since the library has no knowledge of how the external application

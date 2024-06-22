@@ -1,5 +1,5 @@
 <!--
-  $Id: announce.html.in,v 1.107 2024/04/27 16:45:27 tom Exp $
+  $Id: announce.html.in,v 1.108 2024/06/22 22:17:40 tom Exp $
   ****************************************************************************
   * Copyright 2018-2023,2024 Thomas E. Dickey                                *
   *                                                                          *
@@ -324,8 +324,8 @@
     </li>
 
     <li>
-      <p>modify <code>delscreen</code> to limit the windows which
-      it creates to just those associated with the screen</p>
+      <p>modify <code>delscreen</code> to delete only windows associated
+      with the screen</p>
     </li>
 
     <li>
@@ -1116,8 +1116,8 @@
 
       <ul>
         <li>
-          <p>the panel library, supporting a stack of windows with
-          backing store</p>
+          <p>the panel library, permitting windows to stack and
+          overlap</p>
         </li>
 
         <li>

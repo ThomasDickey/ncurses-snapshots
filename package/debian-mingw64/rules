@@ -83,6 +83,7 @@ configure-stamp:
 		--target=$(TARGET) \
 		--prefix=$(MINGW_TOP) \
 		--with-build-cc=$(BUILD_CC) \
+		--with-config-suffix=td \
 		--with-pc-suffix=$(MY_ABI)td \
 		--with-pkg-config-libdir=/usr/$(TARGET)/lib/pkgconfig \
 		$(CONFIG_OPTIONS)

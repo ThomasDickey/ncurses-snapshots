@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.116 2024/06/08 20:50:34 tom Exp $
-.TH @TPUT@ 1 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.118 2024/06/22 21:28:35 tom Exp $
+.TH @TPUT@ 1 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -885,8 +885,13 @@ As of
 the \*(``reset\*('' features of the two programs are (mostly) the same.
 Two minor differences remain.
 .bP
-The \fB\%@TSET@\fP program waits one second when resetting,
-in case the terminal happens to be a hardware device.
+When issuing a reset,
+the \fB\%@TSET@\fP program
+checks whether the device appears to be a pseudoterminal
+(as might be used by a terminal emulator program),
+and,
+if it does not,
+waits one second in case it is communicating with a hardware terminal.
 .bP
 The two programs write the terminal initialization strings
 to different streams;

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.85 2024/04/20 19:13:12 tom Exp $
-.TH curs_termcap 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.87 2024/06/22 21:28:07 tom Exp $
+.TH curs_termcap 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -275,7 +275,7 @@ on error.
 Error conditions include:
 .bP
 uninitialized state
-(\fB\%tgetent\fP was not called successfully),
+\%(\fBtgetent\fP was not called successfully),
 .bP
 .I cap
 being a null pointer,
@@ -421,7 +421,7 @@ Nevertheless,
 the BSD sources included two different \fI\%termcap.h\fP header files
 over time.
 .bP
-One was used internally by \fBjove\fP(1) from 4.3BSD onward.
+One was used internally by \fIjove\fP(1) from 4.3BSD onward.
 .\" 2BSD became a branch retaining support for non-virtual memory
 .\" systems (such as the PDP-11) whereas most BSD development focused on
 .\" the VAX and other VM-enabled systems starting with 3BSD.
@@ -466,11 +466,11 @@ support the \fI\%readline\fP(3) library.
 \fI\%ncurses\fP 1.8.1
 (November 1993)
 provided a \fI\%termcap.h\fP file.
-It reflected influence from GNU \fItermcap\fP and \fBemacs\fP(1)
-(rather than \fBjove\fP(1)),
+It reflected influence from GNU \fItermcap\fP and \fI\%emacs\fP(1)
+(rather than \fIjove\fP(1)),
 providing the following interface:
 .bP
-global symbols used by \fIemacs\fP,
+global symbols used by \fI\%emacs\fP,
 .bP
 \fIconst\fP-qualified function prototypes,
 and
