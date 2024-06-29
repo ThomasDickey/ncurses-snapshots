@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.8 2023/11/11 00:29:10 tom Exp $
+ * $Id: dup_field.c,v 1.9 2024/06/29 17:45:32 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -62,7 +62,7 @@ static struct {
     { CTRL('W'),     REQ_NEXT_WORD,   "go to next word" },
     { CTRL('X'),     REQ_CLR_FIELD,   "clear field" },
     { CTRL('['),     MY_QUIT,         "exit form" },
-    { KEY_F(1),      MY_HELP,         "show this screen", },
+    { HELP_KEY_2,    MY_HELP,         "show this screen", },
     { KEY_BACKSPACE, REQ_DEL_PREV,    "delete previous character" },
     { KEY_BTAB,      REQ_PREV_FIELD,  "go to previous field" },
     { KEY_DOWN,      REQ_DOWN_CHAR,   "move down 1 character" },

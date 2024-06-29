@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 2006-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,15 +27,16 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: chgat.c,v 1.20 2022/12/10 23:31:31 tom Exp $
+ * $Id: chgat.c,v 1.21 2024/06/29 17:45:32 tom Exp $
  *
  * test-driver for chgat/wchgat/mvchgat/mvwchgat
  */
 
 #include <test.priv.h>
-#include <popup_msg.h>
 
 #if HAVE_CHGAT
+
+#include <popup_msg.h>
 
 #define SHOW(n) ((n) == ERR ? "ERR" : "OK")
 #define COLOR_DEFAULT (-1)

@@ -34,7 +34,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.58 2024/06/22 22:27:52 tom Exp $
+ * $Id: gdc.c,v 1.60 2024/06/29 19:59:06 tom Exp $
  */
 
 #include <test.priv.h>
@@ -150,24 +150,23 @@ set(int t, int n)
 	mask |= m;
 }
 
-static void
+static GCC_NORETURN void
 usage(int ok)
 {
     static const char *msg[] =
     {
 	"usage: gdc [-dns] -[t HH:MM:SS] [COUNT]"
 	,""
-	,"Display a digital clock, running indefinitely or for COUNT"
-	" seconds."
+	,"Display a digital clock, running indefinitely or for COUNT seconds."
 	,""
 	,USAGE_COMMON
 	,"Options:"
 #if HAVE_USE_DEFAULT_COLORS
-	," -d           uses the terminal's default background color"
+	," -d       uses the terminal's default background color"
 #endif
-	," -n           reads input from /dev/null"
-	," -s           scrolls each digit into place"
-	," -t HH:MM:SS  starts clock at specified time"
+	," -n       reads input from /dev/null"
+	," -s       scrolls each digit into place"
+	," -t TIME  specify starting time as hh:mm:ss (default is ``now'')"
     };
     unsigned j;
     for (j = 0; j < SIZEOF(msg); j++)
@@ -181,13 +180,38 @@ parse_time(const char *value)
     int hh, mm, ss;
     int check;
     time_t result;
-    char c;
+    char c = 0;
     struct tm *tm;
 
-    if (sscanf(value, "%d:%d:%d%c", &hh, &mm, &ss, &c) != 3) {
-	if (sscanf(value, "%02d%02d%02d%c", &hh, &mm, &ss, &c) != 3) {
-	    usage(FALSE);
+    switch (sscanf(value, "%d:%d:%d%c", &hh, &mm, &ss, &c)) {
+    default:
+	usage(FALSE);
+	/* NOTREACHED */
+    case 1:
+	if (strspn(value, "0123456789") >= 2) {
+	    switch (sscanf(value, "%02d%02d%02d%c", &hh, &mm, &ss, &c)) {
+	    default:
+		usage(FALSE);
+		/* NOTREACHED */
+	    case 1:
+		mm = 0;
+		/* FALLTHRU */
+	    case 2:
+		ss = 0;
+		/* FALLTHRU */
+	    case 3:
+		break;
+	    }
+	    break;
+	} else {
+	    mm = 0;
 	}
+	/* FALLTHRU */
+    case 2:
+	ss = 0;
+	/* FALLTHRU */
+    case 3:
+	break;
     }
 
     if ((hh < 0) || (hh >= 24) ||

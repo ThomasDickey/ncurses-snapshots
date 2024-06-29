@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.27 2022/12/04 00:40:11 tom Exp $
+ * $Id: demo_new_pair.c,v 1.28 2024/06/29 19:30:26 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -36,6 +36,7 @@
 #include <time.h>
 #include <popup_msg.h>
 
+#if HAVE_TIGETSTR
 #if HAVE_ALLOC_PAIR && USE_WIDEC_SUPPORT
 
 #include <sys/types.h>
@@ -391,11 +392,19 @@ main(int argc, char *argv[])
     ExitProgram(EXIT_SUCCESS);
 }
 
-#else
+#else /* !(HAVE_ALLOC_PAIR && USE_WIDEC_SUPPORT) */
 int
 main(void)
 {
     printf("This program requires the ncurses alloc_pair function\n");
     ExitProgram(EXIT_FAILURE);
 }
-#endif
+#endif /* HAVE_ALLOC_PAIR && USE_WIDEC_SUPPORT */
+#else /* !HAVE_TIGETSTR */
+int
+main(void)
+{
+    printf("This program requires the terminfo functions such as tigetstr\n");
+    ExitProgram(EXIT_FAILURE);
+}
+#endif /* HAVE_TIGETSTR */

@@ -43,30 +43,31 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.25 2023/10/21 11:12:44 tom Exp $")
+MODULE_ID("$Id: lib_delwin.c,v 1.26 2024/06/29 16:51:40 tom Exp $")
 
 static bool
 cannot_delete(WINDOW *win)
 {
     bool result = TRUE;
+    bool found = FALSE;
+    SCREEN *scan;
+    WINDOWLIST *p;
 
-    if (IS_PAD(win)) {
-	result = FALSE;
-    } else {
-	WINDOWLIST *p;
-#if NCURSES_SP_FUNCS && defined(USE_SP_WINDOWLIST)
-	SCREEN *sp = _nc_screen_of(win);
-#endif
-
-	for (each_window(SP_PARM, p)) {
+    for (each_screen(scan)) {
+	for (each_window(scan, p)) {
 	    if (&(p->win) == win) {
 		result = FALSE;
+		found = TRUE;
+		break;
 	    } else if (IS_SUBWIN(&(p->win))
 		       && p->win._parent == win) {
 		result = TRUE;
+		found = TRUE;
 		break;
 	    }
 	}
+	if (found)
+	    break;
     }
     return result;
 }

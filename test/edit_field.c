@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019,2020 Thomas E. Dickey                                     *
+ * Copyright 2019-2020,2024 Thomas E. Dickey                                *
  * Copyright 2003-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.c,v 1.31 2020/02/02 23:34:34 tom Exp $
+ * $Id: edit_field.c,v 1.32 2024/06/29 17:49:56 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the resulting length available as a
@@ -131,7 +131,7 @@ static struct {
 	CTRL(']'), MY_INS_MODE, "toggle REQ_INS_MODE/REQ_OVL_MODE",
     },
     {
-	KEY_F(1), MY_HELP, "show this screen",
+	HELP_KEY_2, MY_HELP, "show this screen",
     },
     {
 	KEY_BACKSPACE, REQ_DEL_PREV, "delete previous character"

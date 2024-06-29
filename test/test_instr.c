@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2022 Thomas E. Dickey                                     *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2007-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_instr.c,v 1.12 2022/12/10 23:58:01 tom Exp $
+ * $Id: test_instr.c,v 1.13 2024/06/29 18:42:53 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -44,6 +44,7 @@
  */
 
 #include <test.priv.h>
+#include <popup_msg.h>
 
 #define BASE_Y 6
 #define MAX_COLS 1024
@@ -66,6 +67,26 @@ showmore(WINDOW *win, int line, char *buffer)
     wmove(win, line, 0);
     wclrtoeol(win);
     show_1st(win, line, buffer);
+}
+
+static void
+show_help(WINDOW *win)
+{
+    static const char *msgs[] =
+    {
+	"Show file contents and a viewport from the variants of winstr."
+	,"Use h/j/k/l or arrow keys to move the viewport."
+	,""
+	,"Other commands:"
+	,"+     increases the buffer-size used."
+	,"-     decreases the buffer-size used."
+	,"w     opens new window on the next filename."
+	,"q     quits the current file/window."
+	,"?     shows this help-window"
+	,0
+    };
+
+    popup_msg(win, msgs);
 }
 
 static int
@@ -169,8 +190,15 @@ recursive_test(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	    }
 	    break;
 	case '+':
-	    ++limit;
+	    if (limit + 2 < MAX_COLS) {
+		++limit;
+	    } else {
+		beep();
+	    }
 	    break;
+	case HELP_KEY_1:
+	    show_help(txtwin);
+	    continue;
 	default:
 	    beep();
 	    break;
@@ -273,8 +301,10 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    if (optind + 1 > argc)
+    if (optind + 1 > argc) {
+	fprintf(stderr, "At least one text-file is needed\n");
 	usage(FALSE);
+    }
 
     initscr();
 

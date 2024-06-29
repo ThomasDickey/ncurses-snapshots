@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: popup_msg.c,v 1.11 2021/12/18 21:19:19 tom Exp $
+ * $Id: popup_msg.c,v 1.12 2024/06/29 18:34:58 tom Exp $
  *
  * Show a multi-line message in a window which may extend beyond the screen.
  *
@@ -83,7 +83,7 @@ popup_msg(WINDOW *parent, const char *const *msg)
 	if (width < check)
 	    width = check;
     }
-    length = n;
+    length = n + 2;
 
     if ((help = newwin(high, wide, y0, x0)) == 0)
 	return;
@@ -96,6 +96,7 @@ popup_msg(WINDOW *parent, const char *const *msg)
 
     keypad(data, TRUE);
 
+    waddstr(data, "Press ^[ or ^Q to exit this window.\n\n");
     for (n = 0; n < length; ++n) {
 	waddstr(data, msg[n]);
 	if ((n + 1) < length) {
