@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1073 2024/06/22 19:57:54 tom Exp $
+dnl $Id: aclocal.m4,v 1.1074 2024/07/06 18:27:53 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1411,7 +1411,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_LIBTOOL_VERSION version: 2 updated: 2021/05/01 16:24:34
+dnl CF_CHECK_LIBTOOL_VERSION version: 3 updated: 2024/06/12 04:19:01
 dnl ------------------------
 dnl Show the version of libtool
 dnl
@@ -1427,6 +1427,7 @@ then
 	AC_MSG_CHECKING(version of $LIBTOOL)
 	CF_LIBTOOL_VERSION
 	AC_MSG_RESULT($cf_cv_libtool_version)
+	ifdef([LT_PACKAGE_VERSION],,[
 	if test -n "$cf_cv_libtool_version"
 	then
 		cf_check_libtool_version=`$LIBTOOL --version 2>&1 | sed -e '/^$/d' -e 's,[[()]],...,g' -e 's,[[ ]],-,g' -e '2,$d'`
@@ -1440,6 +1441,7 @@ then
 	else
 		AC_MSG_ERROR(No version found for $LIBTOOL)
 	fi
+	])
 else
 	AC_MSG_ERROR(GNU libtool has not been found)
 fi
@@ -4584,9 +4586,12 @@ CF_SUBDIR_PATH($1,$2,lib)
 $1="$cf_library_path_list [$]$1"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIBTOOL_VERSION version: 1 updated: 2013/04/06 18:03:09
+dnl CF_LIBTOOL_VERSION version: 2 updated: 2024/06/12 04:19:01
 dnl ------------------
 AC_DEFUN([CF_LIBTOOL_VERSION],[
+ifdef([LT_PACKAGE_VERSION],[
+	cf_cv_libtool_version=LT_PACKAGE_VERSION
+],[
 if test -n "$LIBTOOL" && test "$LIBTOOL" != none
 then
 	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | sed -e '/^$/d' |sed -e '2,$d' -e 's/([[^)]]*)//g' -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
@@ -4594,6 +4599,7 @@ else
 	cf_cv_libtool_version=
 fi
 test -z "$cf_cv_libtool_version" && unset cf_cv_libtool_version
+])dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_LIB_PREFIX version: 14 updated: 2021/01/01 13:31:04
@@ -8804,7 +8810,7 @@ AC_DEFUN([CF_VERBOSE],
 CF_MSG_LOG([$1])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_VERSION_INFO version: 8 updated: 2021/01/01 13:31:04
+dnl CF_VERSION_INFO version: 9 updated: 2024/06/12 04:04:13
 dnl ---------------
 dnl Define several useful symbols derived from the VERSION file.  A separate
 dnl file is preferred to embedding the version numbers in various scripts.
@@ -8882,13 +8888,13 @@ AC_SUBST(VERSION_PATCH)
 dnl if a package name is given, define its corresponding version info.  We
 dnl need the package name to ensure that the defined symbols are unique.
 ifelse($1,,,[
-	cf_PACKAGE=$1
 	PACKAGE=ifelse($2,,$1,$2)
 	AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE",[Define to the package-name])
 	AC_SUBST(PACKAGE)
-	CF_UPPER(cf_PACKAGE,$cf_PACKAGE)
-	AC_DEFINE_UNQUOTED(${cf_PACKAGE}_VERSION,"${VERSION_MAJOR}.${VERSION_MINOR}")
-	AC_DEFINE_UNQUOTED(${cf_PACKAGE}_PATCHDATE,${VERSION_PATCH})
+	AH_TEMPLATE([AS_TR_CPP($1[_VERSION])],[version of package])
+	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_VERSION]),"${VERSION_MAJOR}.${VERSION_MINOR}")
+	AH_TEMPLATE([AS_TR_CPP($1[_PATCHDATE])],[patchdate of package])
+	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_PATCHDATE]),${VERSION_PATCH})
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------

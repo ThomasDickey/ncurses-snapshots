@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.222 2024/05/18 18:08:04 tom Exp $
+dnl $Id: aclocal.m4,v 1.223 2024/07/06 18:05:00 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -901,15 +901,22 @@ CF_CURSES_HEADER
 CF_TERM_HEADER
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_FUNCS version: 20 updated: 2020/12/31 20:19:42
+dnl CF_CURSES_FUNCS version: 21 updated: 2024/06/11 20:24:35
 dnl ---------------
 dnl Curses-functions are a little complicated, since a lot of them are macros.
+dnl
+dnl $1 is a list of functions to test
 AC_DEFUN([CF_CURSES_FUNCS],
 [
 AC_REQUIRE([CF_CURSES_CPPFLAGS])dnl
 AC_REQUIRE([CF_XOPEN_CURSES])
 AC_REQUIRE([CF_CURSES_TERM_H])
 AC_REQUIRE([CF_CURSES_UNCTRL_H])
+
+AC_FOREACH([AC_Func], [$1],
+  [AH_TEMPLATE(AS_TR_CPP(HAVE_[]AC_Func),
+               [Define if you have the `]AC_Func[' function.])])dnl
+
 for cf_func in $1
 do
 	CF_UPPER(cf_tr_func,$cf_func)
@@ -3076,13 +3083,12 @@ CF_UPPER(cf_nculib_ROOT,HAVE_LIB$cf_nculib_root)
 AC_DEFINE_UNQUOTED($cf_nculib_ROOT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_PTHREADS version: 2 updated: 2016/04/22 05:07:41
+dnl CF_NCURSES_PTHREADS version: 3 updated: 2024/07/06 13:57:42
 dnl -------------------
-dnl Use this followup check to ensure that we link with pthreads if ncurses
-dnl uses it.
+dnl Use this followup check, e.g., in CF_WITH_NCURSES_ETC, to ensure that we
+dnl link with pthreads if ncurses uses it.
 AC_DEFUN([CF_NCURSES_PTHREADS],[
-: ${cf_nculib_root:=ifelse($1,,ncurses,$1)}
-AC_CHECK_LIB($cf_nculib_root,_nc_init_pthreads,
+AC_CHECK_FUNC(_nc_init_pthreads,
 	cf_cv_ncurses_pthreads=yes,
 	cf_cv_ncurses_pthreads=no)
 if test "$cf_cv_ncurses_pthreads" = yes

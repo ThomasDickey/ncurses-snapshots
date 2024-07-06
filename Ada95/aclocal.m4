@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.216 2024/06/01 21:38:29 tom Exp $
+dnl $Id: aclocal.m4,v 1.217 2024/06/22 17:42:22 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -477,7 +477,7 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 12 updated: 2024/03/17 09:17:26
+dnl CF_BUILD_CC version: 13 updated: 2024/06/22 13:42:22
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -577,9 +577,9 @@ else
 	: ${BUILD_CC:='${CC}'}
 	: ${BUILD_CPP:='${CPP}'}
 	: ${BUILD_CFLAGS:='${CFLAGS}'}
-	: ${BUILD_CPPFLAGS:='ifelse([$1],,'${CPPFLAGS}',[$1])'}
+	: ${BUILD_CPPFLAGS:='${CPPFLAGS}'}
 	: ${BUILD_LDFLAGS:='${LDFLAGS}'}
-	: ${BUILD_LIBS:='ifelse([$2],,'${LIBS}',[$2])'}
+	: ${BUILD_LIBS:='${LIBS}'}
 	: ${BUILD_EXEEXT:='$x'}
 	: ${BUILD_OBJEXT:='o'}
 fi
