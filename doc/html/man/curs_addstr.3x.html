@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addstr.3x,v 1.51 2024/06/22 21:26:53 tom Exp @
+  * @Id: curs_addstr.3x,v 1.53 2024/07/20 20:49:44 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addstr 3x 2024-06-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addstr 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addstr 3x 2024-06-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addstr 3x 2024-07-20 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 
@@ -54,25 +54,23 @@
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>addstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvaddstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwaddstr(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>waddstr(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>addstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvaddstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwaddstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>waddstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>);</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>addnstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvaddnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwaddnstr(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>waddnstr(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>addnstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvaddnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwaddnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>waddnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        <STRONG>waddstr</STRONG> writes the characters of the (null-terminated)  string  <EM>str</EM>  to
-       the  window <EM>win</EM>.  Its process is similar to calling <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> for each
-       <EM>char</EM> in <EM>str</EM>.  Control characters are processed as in <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>.
+       the window <EM>win</EM>, as if by calling <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> for each <EM>char</EM> in <EM>str</EM>.
 
-       <STRONG>waddnstr</STRONG> writes at most <EM>n</EM>  characters,  or  until  a  terminating  null
-       character  occurs  in  <EM>str</EM>.   If  <EM>n</EM>  is  -1, <STRONG>waddnstr</STRONG> writes the entire
-       string.
+       <STRONG>waddnstr</STRONG>  is  similar,  but  writes  at most <EM>n</EM> characters.  If <EM>n</EM> is -1,
+       <STRONG>waddnstr</STRONG> writes the entire string.
 
        <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
 
@@ -117,7 +115,7 @@
 
 
 
-ncurses 6.5                       2024-06-22                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
+ncurses 6.5                       2024-07-20                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

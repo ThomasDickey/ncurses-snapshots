@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.97 2024/06/08 20:26:46 tom Exp $
-.TH curs_getch 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.99 2024/07/20 21:43:33 tom Exp $
+.TH curs_getch 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -438,27 +438,18 @@ its parameter as a key code value.
 See also
 \fB\%define_key\fP(3X) and \fB\%key_defined\fP(3X).
 .SH RETURN VALUE
-Except for
-.BR \%has_key ","
-these functions return
-.B OK
-on success and
+.B \%wgetch
+returns a key code identifying the key event as described above,
+which may include
+.B \%KEY_RESIZE
+or
+.B \%KEY_MOUSE
+indicating non-key events,
+or
 .B ERR
 on failure.
-.PP
-Functions taking a
-.I \%WINDOW
-pointer argument fail if the pointer is
-.BR NULL "."
-.PP
-Functions prefixed with \*(``mv\*('' first perform cursor movement and
-fail if the position
-.RI ( y ,
-.IR x ")"
-is outside the window boundaries.
-.PP
 .B \%wgetch
-also fails if
+fails if
 .bP
 its timeout expires without any data arriving,
 or
@@ -470,6 +461,12 @@ is set to
 .BR \%EINTR "."
 .PP
 .B \%ungetch
+returns
+.B OK
+on success and
+.B ERR
+on failure.
+.B \%ungetch
 fails if there is no more room in the input queue.
 .PP
 .B \%has_key
@@ -477,6 +474,17 @@ returns
 .B TRUE
 or
 .BR FALSE "."
+.PP
+Functions taking a
+.I \%WINDOW
+pointer argument fail if the pointer is
+.BR NULL "."
+.PP
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x ")"
+is outside the window boundaries.
 .SH NOTES
 .BR \%getch ","
 .BR \%mvgetch ","

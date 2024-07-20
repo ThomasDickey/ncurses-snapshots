@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_get_wch.3x,v 1.43 2024/06/08 20:25:25 tom Exp @
+  * @Id: curs_get_wch.3x,v 1.45 2024/07/20 21:43:33 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_get_wch 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_get_wch 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_get_wch 3x 2024-06-08 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_get_wch 3x 2024-07-20 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 
@@ -115,15 +115,15 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       <STRONG>wget_wch</STRONG> returns <STRONG>OK</STRONG> when it reads a  wide  character  and  <STRONG>KEY_CODE_YES</STRONG>
-       when it reads a function key code.  It returns <STRONG>ERR</STRONG> if
-
-       <STRONG>o</STRONG>   the <EM>WINDOW</EM> pointer is <STRONG>NULL</STRONG>, or
+       <STRONG>wget_wch</STRONG> returns <STRONG>OK</STRONG> when it reads a wide character,  <STRONG>KEY_CODE_YES</STRONG>  when
+       it reads a function key code, and <STRONG>ERR</STRONG> on failure.  <STRONG>wget_wch</STRONG> fails if
 
        <STRONG>o</STRONG>   its timeout expires without any data arriving, or
 
        <STRONG>o</STRONG>   execution  was  interrupted by a signal, in which case <STRONG>errno</STRONG> is set
            to <STRONG>EINTR</STRONG>.
+
+       Functions taking a <EM>WINDOW</EM> pointer argument fail if the pointer is <STRONG>NULL</STRONG>.
 
        Functions prefixed with "mv" first perform cursor movement and fail  if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
@@ -172,7 +172,7 @@
 
 
 
-ncurses 6.5                       2024-06-08                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
+ncurses 6.5                       2024-07-20                  <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

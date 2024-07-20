@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.782 2024/05/25 23:05:44 tom Exp $
+dnl $Id: configure.in,v 1.783 2024/07/20 23:46:58 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.782 $)
+AC_REVISION($Revision: 1.783 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -2431,6 +2431,7 @@ do
 done
 AC_MSG_RESULT($PKG_CFLAGS)
 AC_SUBST(PKG_CFLAGS)
+CF_GLOB_FULLPATH
 
 # AC_CHECK_SIZEOF demands a literal parameter, no variables.  So we do this.
 case "x$NCURSES_OSPEED" in

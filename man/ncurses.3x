@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.225 2024/06/22 22:14:58 tom Exp $
-.TH ncurses 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.227 2024/07/20 20:48:52 tom Exp $
+.TH ncurses 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -86,7 +86,6 @@ abstraction and subdivision thereof with
 and
 .IR pads ;
 acquisition of keyboard and mouse events;
-control of terminal input and output options;
 selection of color and rendering attributes
 (such as bold or underline);
 the definition and use of
@@ -528,7 +527,9 @@ and character attribute manipulation functions like
 .RS 10 \" same as foregoing tag width
 .TP 9 \" "cchar_t" + 2n
 .I \%cchar_t
-corresponds to the non-wide configuration's
+is a
+.I "curses complex character"
+and corresponds to the non-wide configuration's
 .IR \%chtype .
 It is a structure type
 because it requires more storage than a standard scalar type offers.
@@ -1117,7 +1118,8 @@ If that value is absent or invalid,
 .I \%ncurses
 uses 9600.
 This feature allows developers to construct repeatable test cases
-that take into account optimization decisions that depend on baud rate.
+that take into account optimization decisions that depend
+on the terminal's line speed.
 .SS "\fICC\fP (command character)"
 When set,
 the

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.97 2024/06/08 20:26:46 tom Exp @
+  * @Id: curs_getch.3x,v 1.99 2024/07/20 21:43:33 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2024-06-08 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-07-20 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -301,24 +301,24 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except  for  <STRONG>has_key</STRONG>,  these  functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on
-       failure.
-
-       Functions taking a <EM>WINDOW</EM> pointer argument fail if the pointer is <STRONG>NULL</STRONG>.
-
-       Functions prefixed with "mv" first perform cursor movement and fail  if
-       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
-
-       <STRONG>wgetch</STRONG> also fails if
+       <STRONG>wgetch</STRONG> returns a key code identifying the key event as described above,
+       which may include <STRONG>KEY_RESIZE</STRONG> or <STRONG>KEY_MOUSE</STRONG> indicating non-key events, or
+       <STRONG>ERR</STRONG> on failure.  <STRONG>wgetch</STRONG> fails if
 
        <STRONG>o</STRONG>   its timeout expires without any data arriving, or
 
        <STRONG>o</STRONG>   execution  was  interrupted by a signal, in which case <STRONG>errno</STRONG> is set
            to <STRONG>EINTR</STRONG>.
 
-       <STRONG>ungetch</STRONG> fails if there is no more room in the input queue.
+       <STRONG>ungetch</STRONG> returns <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on  failure.   <STRONG>ungetch</STRONG>  fails  if
+       there is no more room in the input queue.
 
        <STRONG>has_key</STRONG> returns <STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>.
+
+       Functions taking a <EM>WINDOW</EM> pointer argument fail if the pointer is <STRONG>NULL</STRONG>.
+
+       Functions  prefixed with "mv" first perform cursor movement and fail if
+       the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -427,7 +427,7 @@
 
 
 
-ncurses 6.5                       2024-06-08                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.5                       2024-07-20                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

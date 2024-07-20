@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_move.3x,v 1.40 2024/04/27 17:56:05 tom Exp @
+  * @Id: curs_move.3x,v 1.42 2024/07/20 20:54:08 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_move 3x 2024-04-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_move 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_move 3x 2024-04-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_move 3x 2024-07-20 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>
 
@@ -54,7 +54,7 @@
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
        <STRONG>int</STRONG> <STRONG>move(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wmove(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wmove(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -78,7 +78,8 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes these functions.
+       X/Open  Curses,  Issue 4 describes these functions.  4BSD (1980) <EM>curses</EM>
+       introduced <EM>wmove</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -86,7 +87,7 @@
 
 
 
-ncurses 6.5                       2024-04-27                     <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>
+ncurses 6.5                       2024-07-20                     <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

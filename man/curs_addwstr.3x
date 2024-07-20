@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.41 2024/06/01 22:30:17 tom Exp $
-.TH curs_addwstr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.43 2024/07/20 20:53:20 tom Exp $
+.TH curs_addwstr 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,15 +58,15 @@ add a wide-character string to a \fIcurses\fR window and advance the cursor
 .nf
 \fB#include <curses.h>
 .PP
-\fBint addwstr(const wchar_t *\fIwstr\fP);
-\fBint mvaddwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
-\fBint mvwaddwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
-\fBint waddwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
+\fBint addwstr(const wchar_t * \fIwstr\fP);
+\fBint mvaddwstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
+\fBint mvwaddwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
+\fBint waddwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP);
 .PP
-\fBint addnwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint mvwaddnwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint waddnwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint addnwstr(const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvwaddnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint waddnwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B waddwstr
@@ -74,8 +74,9 @@ writes the characters of the (wide-null-terminated) wide-character
 string
 .I wstr
 to the window
-.IR win .
-Its process is similar to constructing a
+.IR win ,
+as if by
+constructing a
 .I cchar_t
 for each
 .I wchar_t
@@ -83,19 +84,16 @@ in
 .IR wstr ,
 then calling \fB\%wadd_wch\fP(3X) with the resulting
 .IR cchar_t .
-.bP
-Spacing and non-spacing characters in the string
-are processed one at a time,
-and
-.bP
-control characters are processed as in \fB\%wadd_wch\fP(3X).
+.I curses
+processes spacing and non-spacing characters in
+.I wstr
+one at a time.
 .PP
 .B waddnwstr
-writes at most
+is similar,
+but writes at most
 .I n
-wide characters,
-or until a terminating wide null character occurs in
-.IR wstr .
+wide characters.
 If
 .I n
 is \-1,
@@ -141,6 +139,12 @@ may be implemented as macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+.SH HISTORY
+.I \%waddstr
+and
+.I \%waddnstr
+appeared late in SVr4 development (1995).
+.\" SVID 4, vol 3., p. 478
 .SH SEE ALSO
 \fB\%curs_addstr\fP(3X) describes comparable functions of the
 .I \%ncurses

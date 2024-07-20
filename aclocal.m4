@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1074 2024/07/06 18:27:53 tom Exp $
+dnl $Id: aclocal.m4,v 1.1078 2024/07/20 23:47:05 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3237,6 +3237,26 @@ fi
 if test "$cf_cv_getopt_header" = getopt.h ; then
 	AC_DEFINE(NEED_GETOPT_H,1,[Define to 1 if we must include getopt.h])
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GLOB_FULLPATH version: 1 updated: 2024/07/20 19:45:17
+dnl ----------------
+dnl Use this in case-statements to check for pathname syntax, i.e., absolute
+dnl pathnames.  The "x" is assumed since we provide an alternate form for DOS.
+AC_DEFUN([CF_GLOB_FULLPATH],[
+AC_REQUIRE([CF_WITH_SYSTYPE])dnl
+case "$cf_cv_system_name" in
+(cygwin*|msys*|mingw32*|mingw64|os2*)
+	GLOB_FULLPATH_ONLY='x/*|x[[a-zA-Z]]:[[\\/]]*'
+	GLOB_FULLPATH_ARGS='x/*\ |x[[a-zA-Z]]:[[\\/]]*\ '
+	;;
+(*)
+	GLOB_FULLPATH_ONLY='x/*'
+	GLOB_FULLPATH_ARGS='x/*\ '
+	;;
+esac
+AC_SUBST(GLOB_FULLPATH_ONLY)
+AC_SUBST(GLOB_FULLPATH_ARGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_GNATPREP_OPT_T version: 1 updated: 2014/08/02 18:37:25

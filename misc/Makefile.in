@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.79 2021/11/06 23:36:12 tom Exp $
+# $Id: Makefile.in,v 1.80 2024/07/20 17:47:13 tom Exp $
 ##############################################################################
-# Copyright 2018-2020,2021 Thomas E. Dickey                                  #
+# Copyright 2018-2021,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -148,7 +148,7 @@ install.libs :: $(DESTDIR)$(bindir) ncurses-config
 @MAKE_PC_FILES@install \
 @MAKE_PC_FILES@install.libs :: pc-files
 @MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(PKG_CONFIG_LIBDIR)" in \
-@MAKE_PC_FILES@		x/*) \
+@MAKE_PC_FILES@		@GLOB_FULLPATH_ONLY@) \
 @MAKE_PC_FILES@			mkdir -p $(DESTDIR)$(PKG_CONFIG_LIBDIR); \
 @MAKE_PC_FILES@			for name in $(PC_FILES); do \
 @MAKE_PC_FILES@				test -f $$name || continue; \
@@ -193,7 +193,7 @@ uninstall.data :
 uninstall.libs :
 	-rm -f $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)
 @MAKE_PC_FILES@	@$(SHELL) -c 'case x$(DESTDIR)$(PKG_CONFIG_LIBDIR) in \
-@MAKE_PC_FILES@	x/*) \
+@MAKE_PC_FILES@	@GLOB_FULLPATH_ONLY@) \
 @MAKE_PC_FILES@		for name in $(PC_FILES); do \
 @MAKE_PC_FILES@			test -f $$name || continue; \
 @MAKE_PC_FILES@			echo uninstalling $$name; \

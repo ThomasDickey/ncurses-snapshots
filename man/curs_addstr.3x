@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.51 2024/06/22 21:26:53 tom Exp $
-.TH curs_addstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.53 2024/07/20 20:49:44 tom Exp $
+.TH curs_addstr 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -58,34 +58,32 @@ add a string to a \fIcurses\fR window and advance the cursor
 .nf
 \fB#include <curses.h>
 .PP
-\fBint addstr(const char *\fIstr\fP);
-\fBint mvaddstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
-\fBint mvwaddstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
-\fBint waddstr(WINDOW *\fIwin\fP, const char *\fIstr\fP);
+\fBint addstr(const char * \fIstr\fP);
+\fBint mvaddstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
+\fBint mvwaddstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
+\fBint waddstr(WINDOW * \fIwin\fP, const char * \fIstr\fP);
 .PP
-\fBint addnstr(const char *\fIstr\fP, int \fIn\fP);
-\fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
-\fBint mvwaddnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
-\fBint waddnstr(WINDOW *\fIwin\fP, const char *\fIstr\fP, int \fIn\fP);
+\fBint addnstr(const char * \fIstr\fP, int \fIn\fP);
+\fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
+\fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
+\fBint waddnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B waddstr
 writes the characters of the (null-terminated) string
 .I str
 to the window
-.IR win .
-Its process is similar to calling \fB\%waddch\fP(3X) for each
+.IR win ,
+as if by calling \fB\%waddch\fP(3X) for each
 .I char
 in
 .IR str .
-Control characters are processed as in \fB\%waddch\fP(3X).
 .PP
 .B waddnstr
-writes at most
+is similar,
+but writes at most
 .I n
-characters,
-or until a terminating null character occurs in
-.IR str .
+characters.
 If
 .I n
 is \-1,

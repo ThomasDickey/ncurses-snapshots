@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.77 2024/06/22 22:20:56 tom Exp $
+# $Id: man_db.renames.in,v 1.78 2024/07/20 20:55:37 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -215,6 +215,7 @@ immedok.3x			immedok.3ncurses
 in_wch.3x			in_wch.3ncurses
 inch.3x				inch.3ncurses
 initscr.3x			initscr.3ncurses
+is_cbreak.3x			is_cbreak.3ncurses
 is_scrollok.3x			is_scrollok.3ncurses
 keyname.3x			keyname.3ncurses
 keypad.3x			keypad.3ncurses

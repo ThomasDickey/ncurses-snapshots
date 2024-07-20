@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_move.3x,v 1.40 2024/04/27 17:56:05 tom Exp $
-.TH curs_move 3X 2024-04-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_move.3x,v 1.42 2024/07/20 20:54:08 tom Exp $
+.TH curs_move 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%move\fP,
 \fB\%wmove\fP \-
@@ -38,7 +38,7 @@ move cursor in a \fIcurses\fR window
 \fB#include <curses.h>
 .PP
 \fBint move(int \fIy\fP, int \fIx\fP);
-\fBint wmove(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBint wmove(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 .fi
 .SH DESCRIPTION
 .B \%wmove
@@ -83,6 +83,10 @@ may be implemented as a macro.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+4BSD (1980)
+.I curses
+introduced
+.IR \%wmove "."
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_refresh\fP(3X)

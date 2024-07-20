@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.74 2023/09/16 16:27:44 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.75 2024/07/20 17:04:48 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -612,7 +612,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
     returnCode(result);
 }
 
-#ifdef __MING32__
+#ifdef __MINGW32__
 #define SysISATTY(fd) _isatty(fd)
 #else
 #define SysISATTY(fd) isatty(fd)
@@ -2064,14 +2064,13 @@ _nc_mingw_tcgetattr(int fd, struct termios *arg)
 int
 _nc_mingw_tcflush(int fd, int queue)
 {
-    TC_PROLOGUE(fd);
-    (void) term;
+    int code = ERR;
 
     if (_nc_mingw_isconsole(fd)) {
 	if (queue == TCIFLUSH) {
-	    BOOL b = FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
-	    if (!b)
-		return (int) GetLastError();
+	    code = (FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE))
+		    ? OK
+		    : (int) GetLastError());
 	}
     }
     return code;

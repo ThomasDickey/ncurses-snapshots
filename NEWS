@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4149 2024/07/13 20:44:30 tom Exp $
+-- $Id: NEWS,v 1.4151 2024/07/20 21:54:20 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240720
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ modify configure script and misc/Makefile to accept glob expressions
+	  that include Windows/DOS drive-letters (report by Eli Zaretskii).
+	+ fix misspelled ifdef and correct return-value of _nc_mingw_tcflush in
+	  win_driver.c (report/patch by Eli Zaretskii).
 
 20240713
 	+ modify misc/ncurses-config.in, improved match with pkg-config output.
