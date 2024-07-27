@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_refresh.3x,v 1.48 2024/05/25 20:10:58 tom Exp $
-.TH curs_refresh 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_refresh.3x,v 1.50 2024/07/27 19:55:45 tom Exp $
+.TH curs_refresh 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -133,7 +133,6 @@ These routines return the integer \fBERR\fP upon failure and \fBOK\fP
 \*(``an integer value other than \fBERR\fP\*('')
 upon successful completion.
 .PP
-X/Open Curses does not specify any error conditions.
 In this implementation
 .RS 3
 .TP 5
@@ -153,6 +152,7 @@ if the associated call to \fBtouchln\fP returns
 Note that \fBrefresh\fP and \fBredrawwin\fP may be macros.
 .SH PORTABILITY
 X/Open Curses, Issue 4 describes these functions.
+It specifies no error conditions for them.
 .PP
 Whether \fBwnoutrefresh\fP copies to the virtual screen the entire contents
 of a window or just its changed portions has never been well-documented in

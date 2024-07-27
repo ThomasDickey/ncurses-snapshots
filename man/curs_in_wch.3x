@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wch.3x,v 1.33 2024/05/18 20:19:38 tom Exp $
-.TH curs_in_wch 3X 2024-05-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wch.3x,v 1.35 2024/07/27 20:06:49 tom Exp $
+.TH curs_in_wch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -41,9 +41,9 @@
 .\}
 .SH NAME
 \fB\%in_wch\fP,
+\fB\%win_wch\fP,
 \fB\%mvin_wch\fP,
-\fB\%mvwin_wch\fP,
-\fB\%win_wch\fP \-
+\fB\%mvwin_wch\fP \-
 get a \fIcurses\fR complex character from a window
 .SH SYNOPSIS
 .nf
@@ -75,8 +75,7 @@ on failure.
 .PP
 In
 .IR \%ncurses ","
-.B \%win_wch
-returns
+they return
 .B ERR
 if
 .I win
@@ -105,6 +104,24 @@ parameter instead of the return value.
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
+.SH HISTORY
+These functions were initially specified by X/Open Curses,
+Issue 4.
+The System\ V Interface Definition,
+Version 4 (1995),
+specified a function named
+.I \%winwch
+(and the usual variants).
+.\" SVID 4, vol 3., p. 514
+This was a later addition to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+It differed from X/Open's later
+.I \%win_wch
+in that it returned a value of type
+.I \%chtype
+instead of
+.IR \%cchar_t "."
 .SH SEE ALSO
 \fB\%curs_inch\fP(3X) describes comparable functions of the
 .I \%ncurses

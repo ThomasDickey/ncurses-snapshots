@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.42 2024/06/22 21:26:27 tom Exp $
-.TH curs_add_wchstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.44 2024/07/27 20:05:18 tom Exp $
+.TH curs_add_wchstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,27 +46,27 @@
 ..
 .SH NAME
 \fB\%add_wchstr\fP,
-\fB\%add_wchnstr\fP,
 \fB\%wadd_wchstr\fP,
-\fB\%wadd_wchnstr\fP,
 \fB\%mvadd_wchstr\fP,
-\fB\%mvadd_wchnstr\fP,
 \fB\%mvwadd_wchstr\fP,
+\fB\%add_wchnstr\fP,
+\fB\%wadd_wchnstr\fP,
+\fB\%mvadd_wchnstr\fP,
 \fB\%mvwadd_wchnstr\fP \-
 add a \fIcurses\fR complex character string to a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint add_wchstr(const cchar_t *\fIwchstr\fP);
-\fBint wadd_wchstr(WINDOW * \fIwin\fP, const cchar_t *\fIwchstr\fP);
-\fBint mvadd_wchstr(int \fIy\fP, int \fIx\fP, const cchar_t *\fIwchstr\fP);
-\fBint mvwadd_wchstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t *\fIwchstr\fP);
+\fBint add_wchstr(const cchar_t * \fIwchstr\fP);
+\fBint wadd_wchstr(WINDOW *  \fIwin\fP, const cchar_t * \fIwchstr\fP);
+\fBint mvadd_wchstr(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP);
+\fBint mvwadd_wchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP);
 .PP
-\fBint add_wchnstr(const cchar_t *\fIwchstr\fP, int \fIn\fP);
-\fBint wadd_wchnstr(WINDOW * \fIwin\fP, const cchar_t *\fIwchstr\fP, int \fIn\fP);
-\fBint mvadd_wchnstr(int \fIy\fP, int \fIx\fP, const cchar_t *\fIwchstr\fP, int \fIn\fP);
-\fBint mvwadd_wchnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t *\fIwchstr\fP, int \fIn\fP);
+\fBint add_wchnstr(const cchar_t * \fIwchstr\fP, int \fIn\fP);
+\fBint wadd_wchnstr(WINDOW *  \fIwin\fP, const cchar_t * \fIwchstr\fP, int \fIn\fP);
+\fBint mvadd_wchnstr(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP, int \fIn\fP);
+\fBint mvwadd_wchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%wadd_wchstr
@@ -75,7 +75,7 @@ copies the string of complex characters
 to the window
 .IR win "."
 A null complex character terminates the string.
-If a complex character does completely fit at the end of the line,
+If a complex character does not completely fit at the end of the line,
 .I curses
 fills the remaining columns with the window background;
 see \fB\%bkgrnd\fP(3X).
@@ -112,9 +112,9 @@ on success and
 .B ERR
 on failure.
 .PP
-X/Open Curses does not specify any error conditions.
-.I \%ncurses
-returns
+In
+.IR \%ncurses ","
+they return
 .B ERR
 if
 .bP
@@ -139,6 +139,7 @@ may be implemented as macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+It specifies no error conditions for them.
 .SH HISTORY
 These functions were initially specified by X/Open Curses,
 Issue 4.
@@ -149,10 +150,11 @@ specified functions named
 and
 .I \%waddwchnstr
 (and the usual variants).
+.\" SVID 4, vol 3., p. 477
 These were later additions to
 .RI SVr4. x ,
 not appearing in the first SVr4 (1989).
-They differed from X/Open's
+They differed from X/Open's later
 .I \%wadd_wchstr
 and
 .I \%wadd_wchnstr

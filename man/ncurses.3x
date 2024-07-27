@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.227 2024/07/20 20:48:52 tom Exp $
-.TH ncurses 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.229 2024/07/27 20:10:07 tom Exp $
+.TH ncurses 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -446,7 +446,9 @@ see section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .I \%ncurses
 is the library in its \*(``non-wide\*('' configuration,
 handling only eight-bit characters.
-It stores a character combined with attributes and a color pair in a
+It stores a character combined with attributes
+and a color pair identifier
+in a
 .I \%chtype
 datum,
 which is often an alias of
@@ -464,7 +466,7 @@ the null
 .I curses
 character.
 .IP
-Attributes and a color pair selection
+Attributes and a color pair identifier
 (with no corresponding character)
 can be stored in variables of
 .I \%chtype
@@ -515,6 +517,10 @@ and their variants.)
 .\" operated on `chtype`s assuming that they were wide enough for a
 .\" `wchar_t` plus attribute and color pair bits; X/Open Curses did not
 .\" standardize these.
+Another exception is
+.B \%ins_nwstr
+and its variants,
+which is spelled thus instead of \*(``insn_wstr\*(''.
 .IP
 This convention is inapplicable to some non-wide function names,
 so other transformations are used for the wide configuration:
@@ -547,7 +553,7 @@ A string of complex characters ends with a
 whose
 .I \%wchar_t
 member is the null wide character.
-Attributes and a color pair selection are stored in separate fields of
+Attributes and a color pair identifier are stored in separate fields of
 the structure,
 not combined into an integer as in
 .IR \%chtype .

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.105 2023/04/28 20:58:54 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.106 2024/07/27 19:22:23 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -222,7 +222,6 @@ decode_attr(char *source, attr_t *target, int *color)
 	    source++;
 	    found = FALSE;
 	} else if (found) {
-	    size_t n;
 	    char *next = source;
 
 	    if (source[0] == GUTTER) {
@@ -241,6 +240,8 @@ decode_attr(char *source, attr_t *target, int *color)
 		*target |= pair;
 		*color = value;
 	    } else {
+		size_t n;
+
 		while (isalnum(UChar(*next))) {
 		    ++next;
 		}
@@ -304,7 +305,7 @@ decode_char(char *source, int *target)
 	if (limit) {
 	    *target = 0;
 	    while (limit-- > 0) {
-		char *find = strchr(digits, *source++);
+		const char *find = strchr(digits, *source++);
 		int ch = (find != 0) ? (int) (find - digits) : -1;
 		*target *= base;
 		if (ch >= 0 && ch < base) {
@@ -337,7 +338,7 @@ decode_chtype(char *source, chtype fillin, chtype *target)
 
 #if NCURSES_WIDECHAR
 static char *
-decode_cchar(char *source, cchar_t *fillin, cchar_t *target)
+decode_cchar(char *source, const cchar_t *fillin, cchar_t *target)
 {
     int color;
     attr_t attr = fillin->attr;
@@ -382,7 +383,7 @@ read_win(WINDOW *win, FILE *fp)
 
     memset(win, 0, sizeof(WINDOW));
     for (;;) {
-	char *name;
+	const char *name;
 	char *value;
 	char *txt = read_txt(fp);
 

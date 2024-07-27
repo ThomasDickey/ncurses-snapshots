@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.132 2024/04/20 17:58:51 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.133 2024/07/27 19:15:16 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -126,7 +126,7 @@ check_writeable(int code)
     static bool verified[sizeof(dirnames)];
 
     char dir[sizeof(LEAF_FMT)];
-    char *s = 0;
+    const char *s = 0;
 
     if (code == 0 || (s = (strchr) (dirnames, code)) == 0) {
 	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", code);
@@ -552,7 +552,7 @@ static size_t
 fake_write(char *dst,
 	   unsigned *offset,
 	   size_t limit,
-	   char *src,
+	   const char *src,
 	   size_t want,
 	   size_t size)
 {
@@ -658,7 +658,7 @@ convert_32bit(unsigned char *buf, NCURSES_INT2 *Numbers, size_t count)
 
 #if NCURSES_XNAMES
 static unsigned
-extended_Booleans(TERMTYPE2 *tp)
+extended_Booleans(const TERMTYPE2 *tp)
 {
     unsigned result = 0;
     unsigned i;
@@ -671,7 +671,7 @@ extended_Booleans(TERMTYPE2 *tp)
 }
 
 static unsigned
-extended_Numbers(TERMTYPE2 *tp)
+extended_Numbers(const TERMTYPE2 *tp)
 {
     unsigned result = 0;
     unsigned i;
@@ -684,7 +684,7 @@ extended_Numbers(TERMTYPE2 *tp)
 }
 
 static unsigned
-extended_Strings(TERMTYPE2 *tp)
+extended_Strings(const TERMTYPE2 *tp)
 {
     unsigned short result = 0;
     unsigned short i;
@@ -701,7 +701,7 @@ extended_Strings(TERMTYPE2 *tp)
  * clause - discard the unneeded data.
  */
 static bool
-extended_object(TERMTYPE2 *tp)
+extended_object(const TERMTYPE2 *tp)
 {
     bool result = FALSE;
 

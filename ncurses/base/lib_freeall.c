@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.76 2021/11/06 21:52:49 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.77 2024/07/27 19:22:23 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -87,7 +87,7 @@ NCURSES_SP_NAME(_nc_freeall) (NCURSES_SP_DCL0)
 #endif
 
 		for (each_window(SP_PARM, q)) {
-		    WINDOW *q_win = &(q->win);
+		    const WINDOW *q_win = &(q->win);
 
 #ifndef USE_SP_WINDOWLIST
 		    if (q->screen != SP_PARM)

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2012,2013 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.37 2023/09/30 10:42:42 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.38 2024/07/27 19:22:23 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -262,10 +262,9 @@ NCURSES_SP_NAME(_nc_printf_string) (NCURSES_SP_DCLx
 
 	if (my_buffer != NULL) {
 # if HAVE_VSNPRINTF
-	    /* SUSv2, 1997 */
-	    int used;
-
 	    do {
+		/* SUSv2, 1997 */
+		int used;
 		va_list ap2;
 
 		begin_va_copy(ap2, ap);

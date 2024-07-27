@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_instr.c,v 1.26 2023/06/03 12:37:04 tom Exp $")
+MODULE_ID("$Id: lib_instr.c,v 1.27 2024/07/27 19:22:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnstr(WINDOW *win, char *str, int n)
@@ -63,7 +63,7 @@ winnstr(WINDOW *win, char *str, int n)
 
 	for (; i < n;) {
 #if USE_WIDEC_SUPPORT
-	    cchar_t *cell = &(text[col]);
+	    const cchar_t *cell = &(text[col]);
 	    attr_t attrs;
 	    NCURSES_PAIRS_T pair;
 	    char *tmp;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.102 2021/09/04 10:29:15 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.103 2024/07/27 19:22:23 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)

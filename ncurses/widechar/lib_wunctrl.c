@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 2001-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,17 +36,18 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.17 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_wunctrl.c,v 1.18 2024/07/27 19:23:21 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 NCURSES_SP_NAME(wunctrl) (NCURSES_SP_DCLx cchar_t *wc)
 {
-    static wchar_t str[CCHARW_MAX + 1], *wsp;
+    static wchar_t str[CCHARW_MAX + 1];
     wchar_t *result;
 
     if (wc == 0) {
 	result = 0;
     } else if (SP_PARM != 0 && Charable(*wc)) {
+	wchar_t *wsp;
 	const char *p =
 	NCURSES_SP_NAME(unctrl) (NCURSES_SP_ARGx
 				 (unsigned) _nc_to_char((wint_t)CharOf(*wc)));

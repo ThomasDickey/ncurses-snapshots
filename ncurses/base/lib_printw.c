@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2019,2020 Thomas E. Dickey                                *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  * Copyright 1998-2012,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.28 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.29 2024/07/27 19:22:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 printw(const char *fmt, ...)
@@ -133,7 +133,7 @@ mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
 NCURSES_EXPORT(int)
 vwprintw(WINDOW *win, const char *fmt, va_list argp)
 {
-    char *buf;
+    const char *buf;
     int code = ERR;
 #if NCURSES_SP_FUNCS
     SCREEN *sp = _nc_screen_of(win);
@@ -151,7 +151,7 @@ vwprintw(WINDOW *win, const char *fmt, va_list argp)
 NCURSES_EXPORT(int)
 vw_printw(WINDOW *win, const char *fmt, va_list argp)
 {
-    char *buf;
+    const char *buf;
     int code = ERR;
 #if NCURSES_SP_FUNCS
     SCREEN *sp = _nc_screen_of(win);

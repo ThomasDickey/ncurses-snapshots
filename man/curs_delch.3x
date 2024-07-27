@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_delch.3x,v 1.35 2024/05/11 20:39:53 tom Exp $
-.TH curs_delch 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_delch.3x,v 1.37 2024/07/27 20:14:16 tom Exp $
+.TH curs_delch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,9 +50,9 @@ delete a character from a \fIcurses\fR window
 \fB#include <curses.h>
 .PP
 \fBint delch(void);
-\fBint wdelch(WINDOW *\fIwin\fP);
+\fBint wdelch(WINDOW * \fIwin\fP);
 \fBint mvdelch(int \fIy\fP, int \fIx\fP);
-\fBint mvwdelch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBint mvwdelch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 .fi
 .SH DESCRIPTION
 .B \%wdelch
@@ -76,10 +76,14 @@ on success and
 .B ERR
 on failure.
 .PP
-Functions taking a
-.I \%WINDOW
-pointer argument fail if the pointer is
-.BR NULL .
+In
+.IR \%ncurses ,
+they return
+.B ERR
+if
+.I win
+is
+.BR NULL "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -108,5 +112,8 @@ SVr4
 describes a successful return value only as
 \*(``an integer value other than
 .BR ERR \*(''.
+.SH HISTORY
+SVr2 (1984) introduced
+.IR \%delch "."
 .SH SEE ALSO
 \fB\%curses\fP(3X)

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2008,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,10 +43,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delwin.c,v 1.26 2024/06/29 16:51:40 tom Exp $")
+MODULE_ID("$Id: lib_delwin.c,v 1.28 2024/07/27 18:57:35 tom Exp $")
 
 static bool
-cannot_delete(WINDOW *win)
+cannot_delete(const WINDOW *win)
 {
     bool result = TRUE;
     bool found = FALSE;

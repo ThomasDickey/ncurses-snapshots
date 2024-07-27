@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.153 2023/11/04 19:28:41 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.154 2024/07/27 19:22:23 tom Exp $")
 
 /*
  *	char *
@@ -1099,7 +1099,7 @@ tparam_internal(TPARM_STATE *tps, const char *string, TPARM_DATA *data)
  * are parameterized accept only numeric parameters.
  */
 static bool
-check_string_caps(TPARM_DATA *data, const char *string)
+check_string_caps(const TPARM_DATA *data, const char *string)
 {
     bool result = FALSE;
 
@@ -1126,7 +1126,7 @@ check_string_caps(TPARM_DATA *data, const char *string)
 #endif
 #if NCURSES_XNAMES
 	else {
-	    char *check;
+	    const char *check;
 
 	    check = tigetstr("Cs");
 	    if (CHECK_CAP(check))
@@ -1354,7 +1354,7 @@ _nc_tiparm(int expected, const char *string, ...)
 	    }
 #if NCURSES_XNAMES
 	    else {
-		char *check;
+		const char *check;
 
 		check = tigetstr("xm");
 		if (CHECK_CAP(check)) {

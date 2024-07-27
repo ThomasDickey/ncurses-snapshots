@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2011,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,14 +42,14 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.39 2023/04/29 19:00:17 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.40 2024/07/27 19:22:23 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
  * or other character, and handles reverse wraparound.
  */
 static char *
-WipeOut(WINDOW *win, int y, int x, char *first, char *last, int echoed)
+WipeOut(WINDOW *win, int y, int x, const char *first, char *last, int echoed)
 {
     if (last > first) {
 	*--last = '\0';
@@ -81,7 +81,7 @@ wgetnstr_events(WINDOW *win,
     TTY_FLAGS save_flags;
     char erasec;
     char killc;
-    char *oldstr;
+    const char *oldstr;
     int ch;
     int y, x;
 

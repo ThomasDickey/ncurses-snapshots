@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.51 2023/09/09 23:15:53 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.52 2024/07/27 19:22:23 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -181,7 +181,7 @@ realign_data(TERMTYPE2 *to, char **ext_Names,
  * Returns the first index in ext_Names[] for the given token-type
  */
 static unsigned
-_nc_first_ext_name(TERMTYPE2 *tp, int token_type)
+_nc_first_ext_name(const TERMTYPE2 *tp, int token_type)
 {
     unsigned first;
 
@@ -206,7 +206,7 @@ _nc_first_ext_name(TERMTYPE2 *tp, int token_type)
  * Returns the last index in ext_Names[] for the given token-type
  */
 static unsigned
-_nc_last_ext_name(TERMTYPE2 *tp, int token_type)
+_nc_last_ext_name(const TERMTYPE2 *tp, int token_type)
 {
     unsigned last;
 
@@ -229,7 +229,7 @@ _nc_last_ext_name(TERMTYPE2 *tp, int token_type)
  * Lookup an entry from extended-names, returning -1 if not found
  */
 static int
-_nc_find_ext_name(TERMTYPE2 *tp, char *name, int token_type)
+_nc_find_ext_name(const TERMTYPE2 *tp, const char *name, int token_type)
 {
     unsigned j;
     unsigned first = _nc_first_ext_name(tp, token_type);
@@ -248,7 +248,7 @@ _nc_find_ext_name(TERMTYPE2 *tp, char *name, int token_type)
  * (e.g., Booleans[]).
  */
 static int
-_nc_ext_data_index(TERMTYPE2 *tp, int n, int token_type)
+_nc_ext_data_index(const TERMTYPE2 *tp, int n, int token_type)
 {
     switch (token_type) {
     case BOOLEAN:
@@ -271,7 +271,7 @@ _nc_ext_data_index(TERMTYPE2 *tp, int n, int token_type)
  * data.
  */
 static bool
-_nc_del_ext_name(TERMTYPE2 *tp, char *name, int token_type)
+_nc_del_ext_name(TERMTYPE2 *tp, const char *name, int token_type)
 {
     int first;
 

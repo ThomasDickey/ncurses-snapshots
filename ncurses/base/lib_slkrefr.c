@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2013,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.32 2021/09/04 10:54:35 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.33 2024/07/27 19:23:59 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels    InfoOf(SP_PARM).numlabels
@@ -58,7 +58,7 @@ MODULE_ID("$Id: lib_slkrefr.c,v 1.32 2021/09/04 10:54:35 tom Exp $")
 static void
 slk_paint_info(WINDOW *win)
 {
-    SCREEN *sp = _nc_screen_of(win);
+    const SCREEN *sp = _nc_screen_of(win);
 
     if (win && sp && (sp->slk_format == 4)) {
 	int i;

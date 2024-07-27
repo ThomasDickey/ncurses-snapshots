@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_pad.3x,v 1.65 2024/06/22 22:20:03 tom Exp @
+  * @Id: curs_pad.3x,v 1.67 2024/07/27 19:55:45 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_pad 3x 2024-06-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_pad 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_pad 3x 2024-06-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_pad 3x 2024-07-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 
@@ -136,20 +136,19 @@
        Functions  that  return pointers return <STRONG>NULL</STRONG> on error, and set <EM>errno</EM> to
        <STRONG>ENOMEM</STRONG>.
 
-       X/Open  Curses  does  not  specify  any  error  conditions.   In   this
-       implementation
+       In this implementation
 
           <STRONG>prefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>
-               return  <STRONG>ERR</STRONG>  if the window pointer is null, or if the window is
-               not really a pad or if the area to refresh  extends  off-screen
+               return <STRONG>ERR</STRONG> if the window pointer is null, or if the  window  is
+               not  really  a pad or if the area to refresh extends off-screen
                or if the minimum coordinates are greater than the maximum.
 
           <STRONG>pechochar</STRONG>
-               returns  <STRONG>ERR</STRONG>  if  the  window  is  not  really  a  pad, and the
+               returns <STRONG>ERR</STRONG> if  the  window  is  not  really  a  pad,  and  the
                associated call to <STRONG>wechochar</STRONG> returns <STRONG>ERR</STRONG>.
 
           <STRONG>pecho_wchar</STRONG>
-               returns <STRONG>ERR</STRONG> if  the  window  is  not  really  a  pad,  and  the
+               returns  <STRONG>ERR</STRONG>  if  the  window  is  not  really  a  pad, and the
                associated call to <STRONG>wecho_wchar</STRONG> returns <STRONG>ERR</STRONG>.
 
 
@@ -160,67 +159,67 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        BSD <EM>curses</EM> has no <EM>pad</EM> feature.
 
-       SVr2   <EM>curses</EM>   (1986)  provided  the  <STRONG>newpad</STRONG>  and  related  functions,
-       documenting them in a single line  each.   SVr3  (1987)  provided  more
+       SVr2  <EM>curses</EM>  (1986)  provided  the  <STRONG>newpad</STRONG>  and   related   functions,
+       documenting  them  in  a  single  line each.  SVr3 (1987) provided more
        extensive documentation.
 
-       The  documentation  does not explain the term <EM>pad</EM>.  However, the Apollo
+       The documentation does not explain the term <EM>pad</EM>.  However,  the  Apollo
        <EM>Aegis</EM> workstation operating system supported a graphical <EM>pad</EM> feature:
 
-       <STRONG>o</STRONG>   These graphical pads could  be  much  larger  than  the  computer's
+       <STRONG>o</STRONG>   These  graphical  pads  could  be  much  larger than the computer's
            display.
 
-       <STRONG>o</STRONG>   The  read-only  output  from  a  command  could be scrolled back to
+       <STRONG>o</STRONG>   The read-only output from a  command  could  be  scrolled  back  to
            inspect, and select text from the pad.
 
        The two uses may be related.
 
-       X/Open Curses, Issue 4 describes these functions,  without  significant
-       change  from the SVr3 documentation.  It describes no error conditions.
-       The  behavior  of  <STRONG>subpad</STRONG>  if  the  parent  window  is  not  a  pad  is
+       X/Open  Curses,  Issue 4 describes these functions, without significant
+       change from the SVr3 documentation.  It specifies no  error  conditions
+       for  them.  The behavior of <STRONG>subpad</STRONG> if the parent window is not a pad is
        undocumented, and is not checked by the vendor Unix implementations:
 
-       <STRONG>o</STRONG>   SVr4  <EM>curses</EM>  sets  a  flag in the <EM>WINDOW</EM> structure in <STRONG>newpad</STRONG> which
+       <STRONG>o</STRONG>   SVr4 <EM>curses</EM> sets a flag in the <EM>WINDOW</EM>  structure  in  <STRONG>newpad</STRONG>  which
            tells if the window is a <EM>pad</EM>.
 
-           However, it uses this information only in <STRONG>waddch</STRONG> (to decide  if  it
-           should  call  <STRONG>wrefresh</STRONG>)  and  <STRONG>wscrl</STRONG> (to avoid scrolling a pad), and
-           does not check in <STRONG>wrefresh</STRONG> to ensure  that  the  pad  is  refreshed
+           However,  it  uses this information only in <STRONG>waddch</STRONG> (to decide if it
+           should call <STRONG>wrefresh</STRONG>) and <STRONG>wscrl</STRONG> (to avoid  scrolling  a  pad),  and
+           does  not  check  in  <STRONG>wrefresh</STRONG>  to ensure that the pad is refreshed
            properly.
 
-       <STRONG>o</STRONG>   Solaris  <EM>xcurses</EM>  checks whether a window is a pad in <STRONG>wnoutrefresh</STRONG>,
+       <STRONG>o</STRONG>   Solaris <EM>xcurses</EM> checks whether a window is a pad  in  <STRONG>wnoutrefresh</STRONG>,
            returning <STRONG>ERR</STRONG> in that case.
 
-           However, it only sets the flag for subwindows if the parent  window
-           is  a  pad.   Its  <STRONG>newpad</STRONG>  function  does not set this information.
+           However,  it only sets the flag for subwindows if the parent window
+           is a pad.  Its <STRONG>newpad</STRONG>  function  does  not  set  this  information.
            Consequently, the check will never fail.
 
-           It makes no comparable check in <STRONG>pnoutrefresh</STRONG>, though  interestingly
-           enough,  a  comment  in  the  source code states that the lack of a
+           It  makes no comparable check in <STRONG>pnoutrefresh</STRONG>, though interestingly
+           enough, a comment in the source code states  that  the  lack  of  a
            check was an MKS extension.
 
-       <STRONG>o</STRONG>   NetBSD 7 <EM>curses</EM> sets a flag in the <EM>WINDOW</EM> structure for <STRONG>newpad</STRONG>  and
-           <STRONG>subpad</STRONG>,   using   this   to   help  with  the  distinction  between
+       <STRONG>o</STRONG>   NetBSD  7 <EM>curses</EM> sets a flag in the <EM>WINDOW</EM> structure for <STRONG>newpad</STRONG> and
+           <STRONG>subpad</STRONG>,  using  this  to  help   with   the   distinction   between
            <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>.
 
-           It does not check for the case where a subwindow is  created  in  a
+           It  does  not  check for the case where a subwindow is created in a
            pad using <STRONG>subwin</STRONG> or <STRONG>derwin</STRONG>.
 
-           The  <STRONG>dupwin</STRONG>  function  returns  a regular window when duplicating a
-           pad.  Likewise, <STRONG>getwin</STRONG> always returns a window, even if  the  saved
+           The <STRONG>dupwin</STRONG> function returns a regular  window  when  duplicating  a
+           pad.   Likewise,  <STRONG>getwin</STRONG> always returns a window, even if the saved
            data was from a pad.
 
        This implementation
 
        <STRONG>o</STRONG>   sets a flag in the <EM>WINDOW</EM> structure for <STRONG>newpad</STRONG> and <STRONG>subpad</STRONG>,
 
-       <STRONG>o</STRONG>   allows  a  <STRONG>subwin</STRONG>  or <STRONG>derwin</STRONG> call to succeed having a pad parent by
+       <STRONG>o</STRONG>   allows a <STRONG>subwin</STRONG> or <STRONG>derwin</STRONG> call to succeed having a  pad  parent  by
            forcing the subwindow to be a pad,
 
-       <STRONG>o</STRONG>   checks in both <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG> to  ensure  that  pads
+       <STRONG>o</STRONG>   checks  in  both  <STRONG>wnoutrefresh</STRONG> and <STRONG>pnoutrefresh</STRONG> to ensure that pads
            and windows are handled distinctly, and
 
-       <STRONG>o</STRONG>   ensures   that   <STRONG>dupwin</STRONG>   and  <STRONG>getwin</STRONG>  treat  pads  versus  windows
+       <STRONG>o</STRONG>   ensures  that  <STRONG>dupwin</STRONG>  and  <STRONG>getwin</STRONG>  treat   pads   versus   windows
            consistently.
 
 
@@ -229,7 +228,7 @@
 
 
 
-ncurses 6.5                       2024-06-22                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
+ncurses 6.5                       2024-07-27                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

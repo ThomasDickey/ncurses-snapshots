@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.53 2024/07/20 20:49:44 tom Exp $
-.TH curs_addstr 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.55 2024/07/27 19:48:04 tom Exp $
+.TH curs_addstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,12 +46,12 @@
 ..
 .SH NAME
 \fB\%addstr\fP,
-\fB\%addnstr\fP,
 \fB\%waddstr\fP,
-\fB\%waddnstr\fP,
 \fB\%mvaddstr\fP,
-\fB\%mvaddnstr\fP,
 \fB\%mvwaddstr\fP,
+\fB\%addnstr\fP,
+\fB\%waddnstr\fP,
+\fB\%mvaddnstr\fP,
 \fB\%mvwaddnstr\fP \-
 add a string to a \fIcurses\fR window and advance the cursor
 .SH SYNOPSIS
@@ -59,14 +59,14 @@ add a string to a \fIcurses\fR window and advance the cursor
 \fB#include <curses.h>
 .PP
 \fBint addstr(const char * \fIstr\fP);
+\fBint waddstr(WINDOW * \fIwin\fP, const char * \fIstr\fP);
 \fBint mvaddstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
 \fBint mvwaddstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
-\fBint waddstr(WINDOW * \fIwin\fP, const char * \fIstr\fP);
 .PP
 \fBint addnstr(const char * \fIstr\fP, int \fIn\fP);
+\fBint waddnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 \fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
 \fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
-\fBint waddnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B waddstr

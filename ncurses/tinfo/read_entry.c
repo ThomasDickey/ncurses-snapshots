@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.171 2023/09/16 16:30:34 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.173 2024/07/27 23:07:02 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -51,7 +51,7 @@ MODULE_ID("$Id: read_entry.c,v 1.171 2023/09/16 16:30:34 tom Exp $")
 #if NCURSES_USE_DATABASE
 #if NCURSES_EXT_NUMBERS
 static size_t
-convert_16bits(char *buf, NCURSES_INT2 *Numbers, int count)
+convert_16bits(const char *buf, NCURSES_INT2 *Numbers, int count)
 {
     int i;
     size_t j;
@@ -77,7 +77,7 @@ convert_16bits(char *buf, NCURSES_INT2 *Numbers, int count)
 }
 
 static size_t
-convert_32bits(char *buf, NCURSES_INT2 *Numbers, int count)
+convert_32bits(const char *buf, NCURSES_INT2 *Numbers, int count)
 {
     int i;
     size_t j;
@@ -98,7 +98,7 @@ convert_32bits(char *buf, NCURSES_INT2 *Numbers, int count)
 }
 #else
 static size_t
-convert_32bits(char *buf, NCURSES_INT2 *Numbers, int count)
+convert_32bits(const char *buf, NCURSES_INT2 *Numbers, int count)
 {
     int i, j;
     unsigned char ch;
@@ -122,7 +122,7 @@ convert_32bits(char *buf, NCURSES_INT2 *Numbers, int count)
 }
 
 static size_t
-convert_16bits(char *buf, NCURSES_INT2 *Numbers, int count)
+convert_16bits(const char *buf, NCURSES_INT2 *Numbers, int count)
 {
     int i;
     for (i = 0; i < count; i++) {
@@ -195,7 +195,7 @@ convert_strings(char *buf, char **Strings, int count, int size,
 }
 
 static int
-fake_read(char *src, int *offset, int limit, char *dst, unsigned want)
+fake_read(const char *src, int *offset, int limit, char *dst, unsigned want)
 {
     int have = (limit - *offset);
 
@@ -285,7 +285,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
     char buf[MAX_ENTRY_SIZE + 2];
     char *string_table;
     unsigned want, have;
-    size_t (*convert_numbers) (char *, NCURSES_INT2 *, int);
+    size_t (*convert_numbers) (const char *, NCURSES_INT2 *, int);
     int size_of_numbers;
     int max_entry_size = MAX_ENTRY_SIZE;
 
@@ -728,7 +728,7 @@ decode_hex(const char **source)
 static int
 decode_quickdump(char *target, const char *source)
 {
-    char *base = target;
+    const char *base = target;
     int result = 0;
 
     if (!strncmp(source, "b64:", (size_t) 4)) {

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 2002-2007,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_in_wchnstr.c,v 1.9 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_in_wchnstr.c,v 1.10 2024/07/27 19:23:21 tom Exp $")
 
 NCURSES_EXPORT(int)
 win_wchnstr(WINDOW *win, cchar_t *wchstr, int n)
@@ -50,7 +50,7 @@ win_wchnstr(WINDOW *win, cchar_t *wchstr, int n)
     T((T_CALLED("win_wchnstr(%p,%p,%d)"), (void *) win, (void *) wchstr, n));
     if (win != 0
 	&& wchstr != 0) {
-	NCURSES_CH_T *src;
+	const NCURSES_CH_T *src;
 	int row, col;
 	int j, k, limit;
 

@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1997
-  * @Id: keyok.3x,v 1.46 2024/06/15 19:49:39 tom Exp @
+  * @Id: keyok.3x,v 1.48 2024/07/27 19:42:31 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>keyok 3x 2024-06-15 ncurses 6.5 Library calls</TITLE>
+<TITLE>keyok 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">keyok 3x 2024-06-15 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">keyok 3x 2024-07-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>                        Library calls                       <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>
 
@@ -61,8 +61,8 @@
        The  <STRONG>keyok</STRONG>  <EM>ncurses</EM> extension permits a <EM>curses</EM> application to disable a
        function key <EM>key-code</EM> returned by <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> (wide-character API users:
        <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>).   Key  codes  that have been disabled can be re-enabled.
-       <EM>bf</EM> indicates the desired enablement status.   This  operation  is  more
-       fine-grained than calling <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>, which affects <EM>all</EM> function keys.
+       <EM>bf</EM> selects the desired enablement status.  This operation is more fine-
+       grained than calling <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>, which affects <EM>all</EM> function keys.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -85,7 +85,7 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       NetBSD <EM>curses</EM> since 2.0 (2004) supports <STRONG>keyok</STRONG>.
+       NetBSD <EM>curses</EM> since 2.0 (2004) supports <EM>keyok</EM>.
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
@@ -97,7 +97,7 @@
 
 
 
-ncurses 6.5                       2024-06-15                         <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>
+ncurses 6.5                       2024-07-27                         <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

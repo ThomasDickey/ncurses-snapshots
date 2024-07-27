@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wch.3x,v 1.32 2024/05/25 20:16:27 tom Exp $
-.TH curs_ins_wch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wch.3x,v 1.34 2024/07/27 20:05:18 tom Exp $
+.TH curs_ins_wch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -41,18 +41,18 @@
 .\}
 .SH NAME
 \fB\%ins_wch\fP,
+\fB\%wins_wch\fP,
 \fB\%mvins_wch\fP,
-\fB\%mvwins_wch\fP,
-\fB\%wins_wch\fP \-
+\fB\%mvwins_wch\fP \-
 insert a \fIcurses\fR complex character in a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fP
 .PP
-\fBint ins_wch(const cchar_t *\fIwch\fP);
-\fBint wins_wch(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
-\fBint mvins_wch(int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fP);
-\fBint mvwins_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fP);
+\fBint ins_wch(const cchar_t * \fIwch\fP);
+\fBint wins_wch(WINDOW * \fIwin\fP, const cchar_t * \fIwch\fP);
+\fBint mvins_wch(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
+\fBint mvwins_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
 .fi
 .SH DESCRIPTION
 These functions insert the
@@ -99,12 +99,23 @@ Issue 4 describes these functions.
 SVr4 describes successful return values only as
 \*(``an integer value other than \fBERR\fP\*(''.
 .SH HISTORY
-SVr4 (1989) implemented these functions under the names
-.BR inswch ,
-.BR winswch ,
-.BR mvinswch ,
-and
-.BR mvwinswch .
+These functions were initially specified by X/Open Curses,
+Issue 4.
+The System\ V Interface Definition,
+Version 4 (1995),
+specified a function named
+.I \%winswch
+(and the usual variants).
+.\" SVID 4, vol 3., p. 512
+This was a later addition to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+It differed from X/Open's later
+.I \%wins_wch
+in that it took an argument of type
+.I \%chtype
+instead of
+.IR \%cchar_t "."
 .SH "SEE ALSO"
 \fB\%curs_insch\fP(3X) describes comparable functions in the
 non-wide-character

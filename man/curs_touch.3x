@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.49 2024/05/25 20:10:58 tom Exp $
-.TH curs_touch 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_touch.3x,v 1.51 2024/07/27 19:55:45 tom Exp $
+.TH curs_touch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -81,7 +81,6 @@ All routines return the integer \fBERR\fP upon failure and an integer value
 other than \fBERR\fP upon successful completion, unless otherwise noted in the
 preceding routine descriptions.
 .PP
-X/Open Curses does not specify any error conditions.
 In this implementation
 .RS 3
 .TP 5
@@ -118,8 +117,8 @@ SVr4 \fIcurses\fP does not check the window parameter \fIwin\fP to ensure
 that it is not \fBNULL\fP;
 otherwise this implementation behaves the same as SVr4.
 .PP
-X/Open Curses, Issue 4 describes these functions,
-but defines no error conditions.
+X/Open Curses, Issue 4 describes these functions.
+It specifies no error conditions for them.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_refresh\fP(3X),

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.96 2024/07/20 21:42:38 tom Exp @
+  * @Id: curs_addch.3x,v 1.98 2024/07/27 20:08:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addch 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2024-07-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2024-07-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -295,9 +295,9 @@
        foregoing  behavior.  Check whether a character can be represented as a
        single byte in the current locale.
 
-       <STRONG>o</STRONG>   If it can, call either <STRONG>waddch</STRONG> or <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
+       <STRONG>o</STRONG>   If it can, call either <EM>waddch</EM> or <EM>wadd</EM><STRONG>_</STRONG><EM>wch</EM>.
 
-       <STRONG>o</STRONG>   If it cannot, use only <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>.
+       <STRONG>o</STRONG>   If it cannot, use only <EM>wadd</EM><STRONG>_</STRONG><EM>wch</EM>.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -316,7 +316,7 @@
 
 
 
-ncurses 6.5                       2024-07-20                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.5                       2024-07-27                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

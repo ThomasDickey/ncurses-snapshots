@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.55 2024/06/08 21:03:03 tom Exp $
-.TH curs_insstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.57 2024/07/27 20:07:59 tom Exp $
+.TH curs_insstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,57 +46,87 @@
 ..
 .SH NAME
 \fB\%insstr\fP,
-\fB\%insnstr\fP,
 \fB\%winsstr\fP,
-\fB\%winsnstr\fP,
 \fB\%mvinsstr\fP,
 \fB\%mvinsnstr\fP,
+\fB\%insnstr\fP,
+\fB\%winsnstr\fP,
 \fB\%mvwinsstr\fP,
 \fB\%mvwinsnstr\fP \-
 insert a string in a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
-\fBint insstr(const char *\fIstr\fP);
-\fBint insnstr(const char *\fIstr\fP, int \fIn\fP);
-\fBint winsstr(WINDOW *\fIwin\fP, const char *\fIstr\fP);
-\fBint winsnstr(WINDOW *\fIwin\fP, const char *\fIstr\fP, int \fIn\fP);
 .PP
-\fBint mvinsstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
-\fBint mvinsnstr(int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
-\fBint mvwinsstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP);
-\fBint mvwinsnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const char *\fIstr\fP, int \fIn\fP);
+\fBint insstr(const char * \fIstr\fP);
+\fBint winsstr(WINDOW * \fIwin\fP, const char * \fIstr\fP);
+\fBint mvinsstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
+\fBint mvwinsstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP);
+.PP
+\fBint insnstr(const char * \fIstr\fP, int \fIn\fP);
+\fBint winsnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
+\fBint mvinsnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
+\fBint mvwinsnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
-These routines insert a character string
-(as many characters as will fit on the line)
-before the character under the cursor,
-as if calling \fBwinsch\fP(3X).
-All characters to the right of the cursor are shifted right,
-with the possibility of the rightmost characters on the line being lost.
-No wrapping is performed.
-.PP
+.B \%winsstr
+inserts a string
+.I str
+before the character at the cursor in window
+.I win
+as if by calling \fBwinsch\fP(3X) for each
+.I char
+in
+.IR str "."
+No line wrapping is performed.
+Characters to the right of the cursor are shifted right;
+those at the right edge of the window may be lost.
+.B \%winsstr
+stops inserting if it would have to wrap to the next line to write the
+next
+.I \%char
+in
+.IR str "."
 The cursor position does not change
-(after moving to \fIy\fP, \fIx\fP, if specified).
-.PP
-The functions with \fIn\fP as the last argument
-insert a leading substring of at most \fIn\fP characters.
-If \fIn\fP is less than zero, the entire string is inserted
-(stopping on a NUL character).
-.PP
-Special characters are handled as in \fBwaddch\fP(3X).
+(after moving to
+.RI ( y ","
+.IR x "),"
+if specified).
+.B \%insnstr
+does the same,
+but inserts at most
+.I n
+characters,
+or as many as possible
+(up to the end of the line)
+if
+.I n
+is
+.BR \-1 "."
+\fB\%ncurses\fP(3X) describes the variants of these functions.
 .SH RETURN VALUE
-All functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
-.PP
-X/Open Curses does not specify any error conditions.
-This implementation returns
+These functions return
+.B OK
+on success and
 .B ERR
+on failure.
+.PP
+In
+.IR \%ncurses ","
+they return
+.B ERR
+if
 .bP
-if the \fIwin\fP parameter is null or
+.I win
+is
+.BR NULL ","
 .bP
-if the \fIstr\fP parameter is null or
+.I str
+is
+.BR NULL ","
+or
 .bP
-the \fBwinsch\fP(3X) function returns
+an internal \fBwinsch\fP(3X) call returns
 .BR ERR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
@@ -105,7 +135,9 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-All but \fBwinsnstr\fP may be macros.
+All of these functions except
+.B \%winsnstr
+may be implemented as macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
@@ -115,6 +147,7 @@ Issue 4 distinguished
 .B \%insnstr
 and
 .B \%winsnstr
+from the other functions documented above
 by stating they \*(``do not perform wrapping\*(''.
 This was probably an error,
 since it makes this group of functions inconsistent.
@@ -127,14 +160,22 @@ Issue 4 states that the entire string is inserted if
 .I n
 is less than 1.
 This is probably an error,
-because it is inconsistent with other functions,
+.\" ...copied from SVID 4, which made the same error; see p. 510.
+because it is inconsistent with other functions
+such as \fB\%waddstr\fP(3X),
 and differs from the SVr4
 .I curses
 and Solaris
 .I xcurses
 implementations.
 Nevertheless,
-Issue 7 retains it.
+Issue 7 retains the language.
+.SH HISTORY
+SVr3.1 (1987)
+introduced
+.I \%winsstr
+and
+.IR \%winsnstr "."
 .SH SEE ALSO
 \fB\%curs_ins_wstr\fP(3X) describes comparable functions of the
 .I \%ncurses

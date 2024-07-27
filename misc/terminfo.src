@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1144 $
-#	$Date: 2024/05/25 19:34:27 $
+#	$Revision: 1.1146 $
+#	$Date: 2024/07/27 16:58:08 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8022,6 +8022,16 @@ domterm|DomTerm web client,
 # "wezterm is a terminal emulator with support for modern features
 #  such as fonts with ligatures, hyperlinks, tabs and multiple windows."
 #
+# wezterm-20240203-110809-5046fc22 tested with MacOS
+# General:
+# + initial screensize is now 80x24
+# tack:
+# + no change
+# wraptest:
+# + erasures (EL, ED, DCH, ICH, ESC) do not cancel wrap
+# vttest:
+# + some of the problems with debris have been fixed
+#
 # wezterm-20230712_072601_f4abf8fd-1.fedora38.x86_64
 # tested with MacOS and Fedora 38/39.
 #
@@ -8068,9 +8078,30 @@ domterm|DomTerm web client,
 # + implements xterm normal, any-event and button-event mouse, none of the rest
 # + reports window size, none of the other window reports
 wezterm|Wez's Terminal Emulator,
-	km@, xenl@,
-	cvvis@, rmkx=\E[?1l, rmm@, smkx=\E[?1h, smm@,
-	use=xterm-256color,
+	am, bce, km, mir, msgr, npc, xenl,
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+	bel=^G, bold=\E[1m, cr=\r, cub1=^H, cud1=\n, ech=\E[%p1%dX,
+	el1=\E[1K, flash=\E[?5h$<100/>\E[?5l, ind=\n,
+	is2=\E[!p\E[?3;4l\E[4l\E>, kbs=^?, kcbt=\E[Z, kend=\EOF,
+	op=\E[39;49m, ri=\EM, rmacs=\E(B, rmam=\E[?7l,
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m,
+	rs1=\Ec\E]104\007, rs2=\E[!p\E[?3;4l\E[4l\E>,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
+	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
+	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smkx=\E[?1h\E=,
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?%[;0123456789]c,
+	u9=\E[c, Smol=\E[53m, Smulx=\E[4:%p1%dm,
+	xr=\EP>\\|WezTerm\\([1-9][0-9-]+\\)\E\\\\,
+	use=ansi+apparrows, use=ansi+csr, use=ansi+cup,
+	use=ansi+erase, use=ansi+idc, use=ansi+idl,
+	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
+	use=ansi+rep, use=ansi+sgrdim, use=bracketed+paste,
+	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
+	use=report+version, use=vt220+cvis,
+	use=xterm+256color2, use=xterm+alt1049,
+	use=xterm+focus, use=xterm+pcc2, use=xterm+pce2,
+	use=xterm+pcf2, use=xterm+sl-alt, use=xterm+sm+1006,
+	use=xterm+tmux,
 
 #### Contour
 # https://github.com/contour-terminal/contour
@@ -27563,5 +27594,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2024-05-25
 #	+ review/update iTerm2 for 3.5.0 -TD
+#
+# 2024-07-27
+#	+ modify wezterm, omitting its broken left/right margin feature (report
+#	  by Thayne McCombs) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

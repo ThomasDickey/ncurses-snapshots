@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.53 2024/04/20 21:54:14 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.55 2024/07/27 23:04:55 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -219,7 +219,7 @@ adjust_window(WINDOW *win, int ToLines, int ToCols, int stolen EXTRA_DCLS)
     int bottom = CurLines + _nc_screen_of(win)->_topstolen - stolen;
     int myLines = win->_maxy + 1;
     int myCols = win->_maxx + 1;
-    ripoff_t *rop = ripped_window(win);
+    const ripoff_t *rop = ripped_window(win);
 
     T((T_CALLED("adjust_window(%p,%d,%d)%s depth %d/%d currently %ldx%ld at %ld,%ld"),
        (void *) win, ToLines, ToCols,

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <wchar.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.38 2022/07/27 08:03:16 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.39 2024/07/27 19:22:23 tom Exp $")
 
 /*
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -119,7 +119,7 @@ getcchar(const cchar_t *wcval,
     } else
 #endif
     if (wcval != NULL) {
-	wchar_t *wp;
+	const wchar_t *wp;
 	int len;
 
 #if HAVE_WMEMCHR

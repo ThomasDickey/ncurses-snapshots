@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2020-2022,2023 Thomas E. Dickey                                *
+,* Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.122 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.123 2024/07/27 19:22:23 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -551,7 +551,7 @@ _nc_get_token(bool silent)
 			    ;
 			}
 			if (islower(UChar(*s))) {
-			    char *name = s;
+			    const char *name = s;
 			    while (isalnum(UChar(*s))) {
 				++s;
 			    }

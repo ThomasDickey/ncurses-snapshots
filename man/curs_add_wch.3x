@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.69 2024/07/20 21:42:38 tom Exp $
-.TH curs_add_wch 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.71 2024/07/27 20:05:18 tom Exp $
+.TH curs_add_wch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -534,10 +534,11 @@ specified functions named
 and
 .I \%wechowchar
 (and the usual variants).
+.\" SVID 4, vol 3., p. 475
 These were later additions to
 .RI SVr4. x ,
 not appearing in the first SVr4 (1989).
-They differed from X/Open's
+They differed from X/Open's later
 .I \%wadd_wch
 and
 .I \%wecho_wchar

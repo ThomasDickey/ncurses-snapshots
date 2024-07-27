@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.51 2024/05/25 20:10:58 tom Exp $
-.TH curs_border 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border.3x,v 1.53 2024/07/27 19:55:45 tom Exp $
+.TH curs_border 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -141,7 +141,6 @@ The SVr4.0 manual says
 \*(``or a non-negative integer if \fB\%immedok\fP is set\*('',
 but this appears to be an error.
 .PP
-X/Open Curses does not specify any error conditions.
 This implementation returns
 .B ERR
 if the window pointer is null.
@@ -158,6 +157,7 @@ is also true of SVr4 curses, though the fact is not documented).
 Note that \fBborder\fP and \fBbox\fP may be macros.
 .SH PORTABILITY
 These functions are described in X/Open Curses, Issue 4.
+It specifies no error conditions for them.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_outopts\fP(3X)

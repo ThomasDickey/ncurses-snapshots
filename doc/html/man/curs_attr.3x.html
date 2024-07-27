@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.108 2024/05/25 20:10:58 tom Exp @
+  * @Id: curs_attr.3x,v 1.110 2024/07/27 19:57:55 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_attr 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2024-07-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -132,8 +132,8 @@
        into  the attribute parameter.  These newer routines use similar names,
        because X/Open simply added an underscore (<STRONG>_</STRONG>) for the newer names.
 
-       The <STRONG>int</STRONG> datatype used in the legacy routines is treated as if it is the
-       same  size  as  <STRONG>chtype</STRONG>  (used by <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>).  It holds the common video
+       The <EM>int</EM> datatype used in the legacy routines is treated as if it is the
+       same  size  as  <EM>chtype</EM>  (used by <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>).  It holds the common video
        attributes (such as bold, reverse), as well as a few  bits  for  color.
        Those  bits  correspond  to  the  <STRONG>A_COLOR</STRONG> symbol.  The <STRONG>COLOR_PAIR</STRONG> macro
        provides a value which can be OR'd into the attribute  parameter.   For
@@ -148,20 +148,20 @@
        (8) bits, then <STRONG>COLOR_PAIR(</STRONG><EM>259</EM><STRONG>)</STRONG> is 4 (i.e., 259 is 4 more than the limit
        255).
 
-       The  <STRONG>PAIR_NUMBER</STRONG>  macro extracts a pair number from an <STRONG>int</STRONG> (or <STRONG>chtype</STRONG>).
+       The  <STRONG>PAIR_NUMBER</STRONG>  macro extracts a pair number from an <EM>int</EM> (or <EM>chtype</EM>).
        For example, the <EM>input</EM> and <EM>output</EM> values in these statements  would  be
        the same:
 
            int value = A_BOLD | COLOR_PAIR(<EM>input</EM>);
            int <EM>output</EM> = PAIR_NUMBER(value);
 
-       The  <STRONG>attrset</STRONG> routine is a legacy feature predating SVr4 curses but kept
-       in X/Open Curses  for  the  same  reason  that  SVr4  curses  kept  it:
+       The  <STRONG>attrset</STRONG> routine is a legacy feature predating SVr4 <EM>curses</EM> but kept
+       in X/Open Curses  for  the  same  reason  that  SVr4  <EM>curses</EM>  kept  it:
        compatibility.
 
        The  remaining  <STRONG>attr</STRONG>*  functions operate exactly like the corresponding
-       <STRONG>attr_</STRONG>* functions, except that they take arguments of  type  <STRONG>int</STRONG>  rather
-       than <STRONG>attr_t</STRONG>.
+       <STRONG>attr_</STRONG>* functions, except that they take arguments of  type  <EM>int</EM>  rather
+       than <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>.
 
        There  is  no  corresponding <STRONG>attrget</STRONG> function as such in X/Open Curses,
        although <EM>ncurses</EM> provides <STRONG>getattrs</STRONG> (see <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>).
@@ -243,19 +243,13 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       All routines return the integer <STRONG>OK</STRONG> on success, or <STRONG>ERR</STRONG> on failure.
+       These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       X/Open Curses does not specify any error conditions.
+       In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if <EM>win</EM> is <STRONG>NULL</STRONG>.
 
-       This implementation
+       <STRONG>wcolor_set</STRONG> returns <STRONG>ERR</STRONG> if <EM>pair</EM> is outside the range <STRONG>0</STRONG>..<STRONG>COLOR_PAIRS-1</STRONG>.
 
-       <STRONG>o</STRONG>   returns <STRONG>ERR</STRONG> if the window pointer is null.
-
-       <STRONG>o</STRONG>   returns <STRONG>ERR</STRONG> if the color pair parameter for <STRONG>wcolor_set</STRONG>  is  outside
-           the range 0..COLOR_PAIRS-1.
-
-       <STRONG>o</STRONG>   does  not  fail  if  either of the parameters of <STRONG>wattr_get</STRONG> used for
-           retrieving attribute or color pair values is <STRONG>NULL</STRONG>.
+       <STRONG>wattr_get</STRONG> does <EM>not</EM> fail if its <EM>attrs</EM> or <EM>pair</EM> parameter is <STRONG>NULL</STRONG>.
 
        Functions prefixed with "mv" first perform cursor movement and fail  if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
@@ -289,23 +283,25 @@
        have a color pair parameter to support <EM>extended</EM> <EM>color</EM> <EM>pairs</EM>:
 
        <STRONG>o</STRONG>   For functions which modify the color, e.g., <STRONG>wattr_set</STRONG> and <STRONG>wattr_on</STRONG>,
-           if <EM>opts</EM> is set it is treated as a pointer to <STRONG>int</STRONG>, and used  to  set
-           the color pair instead of the <STRONG>short</STRONG> <EM>pair</EM> parameter.
+           if <EM>opts</EM> is set it is treated as a pointer to <EM>int</EM>, and used  to  set
+           the color pair instead of the <EM>short</EM> <EM>pair</EM> parameter.
 
        <STRONG>o</STRONG>   For functions which retrieve the color, e.g., <STRONG>wattr_get</STRONG>, if <EM>opts</EM> is
-           set it is treated as a pointer to <STRONG>int</STRONG>, and  used  to  retrieve  the
-           color  pair  as  an <STRONG>int</STRONG> value, in addition to retrieving it via the
-           standard pointer to <STRONG>short</STRONG> parameter.
+           set it is treated as a pointer to <EM>int</EM>, and  used  to  retrieve  the
+           color  pair  as  an <EM>int</EM> value, in addition to retrieving it via the
+           standard pointer to <EM>short</EM> parameter.
 
        <STRONG>o</STRONG>   For functions which turn attributes off, e.g., <STRONG>wattr_off</STRONG>, the  <EM>opts</EM>
            parameter is ignored except except to check that it is <STRONG>NULL</STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  functions are described in X/Open Curses, Issue 4.  The standard
-       defined the dedicated  type  for  highlights,  <STRONG>attr_t</STRONG>,  which  was  not
-       defined in SVr4 curses.  The functions taking <STRONG>attr_t</STRONG> arguments were not
-       supported under SVr4.
+       These  functions are described in X/Open Curses, Issue 4.  It specifies
+       no error conditions for them.
+
+       The standard defined the dedicated type for highlights,  <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>,  which
+       was  not defined in SVr4 <EM>curses</EM>.  The functions taking <EM>attr</EM><STRONG>_</STRONG><EM>t</EM> arguments
+       were not supported under SVr4.
 
        Very old versions of this library did not force an update of the screen
        when  changing  the  attributes.   Use  <STRONG>touchwin</STRONG> to force the screen to
@@ -314,7 +310,7 @@
        X/Open  Curses  states   that   whether   the   traditional   functions
        <STRONG>attron</STRONG>/<STRONG>attroff</STRONG>/<STRONG>attrset</STRONG>  can  manipulate  attributes other than <STRONG>A_BLINK</STRONG>,
        <STRONG>A_BOLD</STRONG>, <STRONG>A_DIM</STRONG>, <STRONG>A_REVERSE</STRONG>, <STRONG>A_STANDOUT</STRONG>, or <STRONG>A_UNDERLINE</STRONG> is  "unspecified".
-       Under  this  implementation  as  well  as  SVr4 curses, these functions
+       Under  this  implementation  as  well  as  SVr4 <EM>curses</EM>, these functions
        correctly manipulate all other highlights (specifically,  <STRONG>A_ALTCHARSET</STRONG>,
        <STRONG>A_PROTECT</STRONG>, and <STRONG>A_INVIS</STRONG>).
 
@@ -336,6 +332,7 @@
               <STRONG>WA_BLINK</STRONG>        Blinking
               <STRONG>WA_DIM</STRONG>          Half bright
               <STRONG>WA_BOLD</STRONG>         Extra bright or bold
+
               <STRONG>WA_ALTCHARSET</STRONG>   Alternate character set
 
        X/Open Curses does not assign values to  these  symbols,  nor  does  it
@@ -349,22 +346,22 @@
        <STRONG>o</STRONG>   However, in some  implementations,  those  symbols  have  unrelated
            values.
 
-           For example, the Solaris <EM>xpg4</EM> (X/Open) curses declares <STRONG>attr_t</STRONG> to be
-           an unsigned short integer (16-bits), while  <STRONG>chtype</STRONG>  is  a  unsigned
+           For example, the Solaris <EM>xpg4</EM> (X/Open) <EM>curses</EM> declares <EM>attr</EM><STRONG>_</STRONG><EM>t</EM> to be
+           an unsigned short integer (16-bits), while  <EM>chtype</EM>  is  a  unsigned
            integer (32-bits).  The <STRONG>WA_</STRONG> symbols in this case are different from
            the <STRONG>A_</STRONG> symbols because they are used for a smaller  datatype  which
            does not represent <STRONG>A_CHARTEXT</STRONG> or <STRONG>A_COLOR</STRONG>.
 
            In this implementation (as in many others), the values happen to be
-           the same because it simplifies copying information  between  <STRONG>chtype</STRONG>
-           and <STRONG>cchar_t</STRONG> variables.
+           the same because it simplifies copying information  between  <EM>chtype</EM>
+           and <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> variables.
 
-       <STRONG>o</STRONG>   Because  <EM>ncurses</EM>'s  <STRONG>attr_t</STRONG>  can  hold  a color pair (in the <STRONG>A_COLOR</STRONG>
+       <STRONG>o</STRONG>   Because  <EM>ncurses</EM>'s  <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>  can  hold  a color pair (in the <STRONG>A_COLOR</STRONG>
            field), a call to <STRONG>wattr_on</STRONG>, <STRONG>wattr_off</STRONG>, or <STRONG>wattr_set</STRONG> may  alter  the
            window's  color.   If  the  color pair information in the attribute
            parameter is zero, no change is made to the window's color.
 
-           This is consistent with SVr4 curses; X/Open Curses does not specify
+           This is consistent with SVr4 <EM>curses</EM>; X/Open Curses does not specify
            this.
 
        The  X/Open  Curses  extended  conformance  level  adds  new highlights
@@ -374,23 +371,23 @@
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       X/Open Curses is largely based  on  SVr4  curses,  adding  support  for
+       X/Open Curses is largely based  on  SVr4  <EM>curses</EM>,  adding  support  for
        "wide-characters"  (not  specific  to  Unicode).   Some  of  the X/Open
-       differences from SVr4 curses address the way video  attributes  can  be
+       differences from SVr4 <EM>curses</EM> address the way video  attributes  can  be
        applied  to wide-characters.  But aside from that, <STRONG>attrset</STRONG> and <STRONG>attr_set</STRONG>
-       are similar.  SVr4 curses provided the basic features for  manipulating
-       video  attributes.  However, earlier versions of curses provided a part
+       are similar.  SVr4 <EM>curses</EM> provided the basic features for  manipulating
+       video  attributes.  However, earlier versions of <EM>curses</EM> provided a part
        of these features.
 
-       As seen in 2.8BSD, curses assumed 7-bit characters,  using  the  eighth
+       As seen in 2.8BSD, <EM>curses</EM> assumed 7-bit characters,  using  the  eighth
        bit  of  a byte to represent the <EM>standout</EM> feature (often implemented as
-       bold and/or reverse video).  The BSD curses library provided  functions
+       bold and/or reverse video).  The BSD <EM>curses</EM> library provided  functions
        <STRONG>standout</STRONG>  and  <STRONG>standend</STRONG> which were carried along into X/Open Curses due
        to their pervasive use in legacy applications.
 
        Some  terminals  in  the  1980s  could  support  a  variety  of   video
-       attributes,  although  the  BSD  curses  library  could do nothing with
-       those.  System V  (1983)  provided  an  improved  curses  library.   It
+       attributes,  although  the  BSD  <EM>curses</EM>  library  could do nothing with
+       those.  System V  (1983)  provided  an  improved  <EM>curses</EM>  library.   It
        defined  the <STRONG>A_</STRONG> symbols for use by applications to manipulate the other
        attributes.  There are few useful references for the chronology.
 
@@ -398,7 +395,7 @@
        commenting on several functions:
 
        <STRONG>o</STRONG>   the  <STRONG>attron</STRONG>,  <STRONG>attroff</STRONG>, <STRONG>attrset</STRONG> functions (and most of the functions
-           found in SVr4 but not in BSD curses) were introduced by System V,
+           found in SVr4 but not in BSD <EM>curses</EM>) were introduced by System V,
 
        <STRONG>o</STRONG>   the alternate character set feature with <STRONG>A_ALTCHARSET</STRONG> was added  in
            SVr2 and improved in SVr3 (by adding <STRONG>acs_map[]</STRONG>),
@@ -408,17 +405,17 @@
 
        <STRONG>o</STRONG>   pads, soft-keys were added in SVr3, and
 
-       Goodheart did not mention the background character or the <STRONG>cchar_t</STRONG> type.
+       Goodheart did not mention the background character or the <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> type.
        Those are respectively SVr4 and X/Open features.  He did mention the <STRONG>A_</STRONG>
        constants, but did not indicate their values.  Those were not the  same
        in different systems, even for those marked as System V.
 
        Different  Unix  systems  used  different  sizes  for the bit-fields in
-       <STRONG>chtype</STRONG> for <EM>characters</EM> and <EM>colors</EM>, and took into account  the  different
+       <EM>chtype</EM> for <EM>characters</EM> and <EM>colors</EM>, and took into account  the  different
        integer sizes (32-bit versus 64-bit).
 
        This  table  showing  the number of bits for <STRONG>A_COLOR</STRONG> and <STRONG>A_CHARTEXT</STRONG> was
-       gleaned from the curses header files for various operating systems  and
+       gleaned from the <EM>curses</EM> header files for various operating systems  and
        architectures.   The inferred architecture and notes reflect the format
        and size of the  defined  constants  as  well  as  clues  such  as  the
        alternate  character  set implementation.  A 32-bit library can be used
@@ -447,48 +444,48 @@
               in 1996.
 
           <STRONG>o</STRONG>   HP-UX  10.30 (1997) marked "curses_colr" obsolete.  That version
-              of curses was dropped with HP-UX 11.30 in 2006.
+              of <EM>curses</EM> was dropped with HP-UX 11.30 in 2006.
 
           Regarding OSF/1 (and Tru64),
 
-          <STRONG>o</STRONG>   These used 64-bit hardware.   Like  <EM>ncurses</EM>,  the  OSF/1  curses
+          <STRONG>o</STRONG>   These used 64-bit hardware.   Like  <EM>ncurses</EM>,  the  OSF/1  <EM>curses</EM>
               interface is not customized for 32-bit and 64-bit versions.
 
           <STRONG>o</STRONG>   Unlike  other  systems  which  evolved  from  AT&amp;T  code,  OSF/1
-              provided a new implementation for X/Open curses.
+              provided a new implementation for X/Open Curses.
 
           Regarding Solaris,
 
           <STRONG>o</STRONG>   The initial release of Solaris was in 1992.
 
-          <STRONG>o</STRONG>   The <EM>xpg4</EM> (X/Open) curses was developed by MKS from 1990 to 1995.
+          <STRONG>o</STRONG>   The <EM>xpg4</EM> (X/Open) Curses was developed by MKS from 1990 to 1995.
               Sun's copyright began in 1996.
 
-          <STRONG>o</STRONG>   Sun updated the X/Open curses interface after 64-bit support was
-              introduced  in  1997,  but  did  not  modify  the  SVr4   curses
+          <STRONG>o</STRONG>   Sun updated the X/Open Curses interface after 64-bit support was
+              introduced  in  1997,  but  did  not  modify  the  SVr4   <EM>curses</EM>
               interface.
 
           Regarding U/Win,
 
-          <STRONG>o</STRONG>   Development  of  the  curses  library  began in 1991, stopped in
+          <STRONG>o</STRONG>   Development  of  the  <EM>curses</EM>  library  began in 1991, stopped in
               2000.
 
           <STRONG>o</STRONG>   Color support was added in 1998.
 
-          <STRONG>o</STRONG>   The library uses only <STRONG>chtype</STRONG> (no <STRONG>cchar_t</STRONG>).
+          <STRONG>o</STRONG>   The library uses only <EM>chtype</EM> (no <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>).
 
-       Once X/Open curses was adopted in the mid-1990s, the  constraint  of  a
-       32-bit interface with many colors and wide-characters for <STRONG>chtype</STRONG> became
-       a moot point.  The <STRONG>cchar_t</STRONG> structure (whose size and  members  are  not
+       Once X/Open Curses was adopted in the mid-1990s, the  constraint  of  a
+       32-bit interface with many colors and wide-characters for <EM>chtype</EM> became
+       a moot point.  The <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> structure (whose size and  members  are  not
        specified in X/Open Curses) could be extended as needed.
 
        Other interfaces are rarely used now:
 
-       <STRONG>o</STRONG>   BSD  curses was improved slightly in 1993/1994 using Keith Bostic's
+       <STRONG>o</STRONG>   BSD  <EM>curses</EM> was improved slightly in 1993/1994 using Keith Bostic's
            modification to make the library 8-bit clean for <STRONG>nvi(1)</STRONG>.  He  moved
            <EM>standout</EM> attribute to a structure member.
 
-           The  resulting  4.4BSD curses was replaced by <EM>ncurses</EM> over the next
+           The  resulting  4.4BSD <EM>curses</EM> was replaced by <EM>ncurses</EM> over the next
            ten years.
 
        <STRONG>o</STRONG>   U/Win is rarely used now.
@@ -500,7 +497,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.5                       2024-07-27                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

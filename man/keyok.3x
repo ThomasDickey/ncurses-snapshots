@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1997
 .\"
-.\" $Id: keyok.3x,v 1.46 2024/06/15 19:49:39 tom Exp $
-.TH keyok 3X 2024-06-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: keyok.3x,v 1.48 2024/07/27 19:42:31 tom Exp $
+.TH keyok 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .
 .de bP
 .ie n  .IP \(bu 4
@@ -59,7 +59,7 @@ returned by \fB\%wgetch\fP(3X)
 \fB\%wget_wch\fP(3X)).
 Key codes that have been disabled can be re-enabled.
 .I bf
-indicates the desired enablement status.
+selects the desired enablement status.
 This operation is more fine-grained than calling \fB\%keypad\fP(3X),
 which affects
 .I all
@@ -100,7 +100,7 @@ preprocessor macro.
 NetBSD
 .I curses
 since 2.0 (2004) supports
-.BR \%keyok "."
+.IR \%keyok "."
 .SH AUTHORS
 Thomas Dickey
 .SH SEE ALSO

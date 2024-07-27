@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wstr.3x,v 1.42 2024/06/08 21:04:04 tom Exp $
-.TH curs_ins_wstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wstr.3x,v 1.44 2024/07/27 20:15:31 tom Exp $
+.TH curs_ins_wstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,46 +46,64 @@
 ..
 .SH NAME
 \fB\%ins_wstr\fP,
-\fB\%ins_nwstr\fP,
 \fB\%wins_wstr\fP,
-\fB\%wins_nwstr\fP,
 \fB\%mvins_wstr\fP,
-\fB\%mvins_nwstr\fP,
 \fB\%mvwins_wstr\fP,
+\fB\%ins_nwstr\fP,
+\fB\%wins_nwstr\fP,
+\fB\%mvins_nwstr\fP,
 \fB\%mvwins_nwstr\fP \-
 insert a wide-character string in a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint ins_wstr(const wchar_t *\fIwstr\fP);
-\fBint ins_nwstr(const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint wins_wstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP);
-\fBint wins_nwstr(WINDOW *\fIwin\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint ins_wstr(const wchar_t * \fIwstr\fP);
+\fBint wins_wstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP);
+\fBint mvins_wstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
+\fBint mvwins_wstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
 .PP
-\fBint mvins_wstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
-\fBint mvins_nwstr(int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
-\fBint mvwins_wstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP);
-\fBint mvwins_nwstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t *\fIwstr\fP, int \fIn\fP);
+\fBint ins_nwstr(const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint wins_nwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvins_nwstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvwins_nwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
-These routines insert a \fBwchar_t\fP character string
-(as many characters as will fit on the line)
-before the character under the cursor,
-as if calling \fBwins_wch\fP(3X).
-All characters to the right of the cursor are shifted right,
-with the possibility of the rightmost characters on the line being lost.
-No wrapping is performed.
-.PP
+.B \%wins_wstr
+inserts a wide-character string
+.I wstr
+before the character at the cursor in window
+.I win
+as if by calling \fBwins_wch\fP(3X) for each
+.I \%wchar_t
+in
+.IR wstr "."
+No line wrapping is performed.
+Characters to the right of the cursor are shifted right;
+those at the right edge of the window may be lost.
+.B \%wins_wstr
+stops inserting if it would have to wrap to the next line to write the
+next
+.I \%wchar_t
+in
+.IR wstr "."
 The cursor position does not change
-(after moving to \fIy\fP, \fIx\fP, if specified).
-.PP
-The functions with \fIn\fP as the last argument
-insert a leading substring of at most \fIn\fP \fBwchar_t\fP characters.
-If \fIn\fP is less than zero, the entire string is inserted
-(stopping on a L'\e0' character).
-.PP
-Special characters are handled as in \fBwadd_wch\fP(3X).
+(after moving to
+.RI ( y ","
+.IR x "),"
+if specified).
+.B \%wins_nwstr
+does the same,
+but inserts at most
+.I n
+characters,
+or as many as possible
+(up to the end of the line)
+if
+.I n
+is
+.BR \-1 "."
+\fB\%ncurses\fP(3X) describes the variants of these functions.
 .SH RETURN VALUE
 These functions return
 .B OK
@@ -93,7 +111,6 @@ on success and
 .B ERR
 on failure.
 .PP
-X/Open Curses does not specify any error conditions.
 In
 .IR \%ncurses ","
 they return
@@ -107,6 +124,10 @@ is
 .I wstr
 is
 .BR NULL ","
+.bP
+the first wide character in
+.I wstr
+is a non-spacing character,
 or
 .bP
 an internal \fB\%wins_wch\fP(3X) call returns
@@ -121,29 +142,53 @@ is outside the window boundaries.
 All of these functions except
 .B \%wins_nwstr
 may be implemented as macros.
-.PP
-If the first character in the string is a non-spacing character,
-these functions return
-.BR ERR "."
-X/Open Curses does not specify what happens
-if a non-spacing character follows a control character.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
+X/Open Curses does not specify what happens
+if a non-spacing character follows a control character.
+.PP
 Issue 4 states that the entire string is inserted if
 .I n
 is less than 1.
 This is probably an error,
-because it is inconsistent with other functions,
+.\" ...copied from SVID 4, which made the same error; see p. 513.
+because it is inconsistent with other functions
+such as \fB\%waddwstr\fP(3X),
 and differs from the SVr4
 .I curses
 and Solaris
 .I xcurses
 implementations.
 Nevertheless,
-Issue 7 retains it.
+Issue 7 retains the language.
+.SH HISTORY
+These functions were initially specified by X/Open Curses,
+Issue 4.
+The System\ V Interface Definition,
+Version 4 (1995),
+specified functions named
+.I \%winswstr
+and
+.I \%winsnwstr
+(and the usual variants).
+.\" SVID 4, vol 3., p. 513
+.\" The prototypes also identify the data type as `wchar`, not
+.\" `wchar_t`, but this may be an error since the "DESCRIPTION" section
+.\" consistently uses the latter. --GBR
+These were later additions to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+They differ from X/Open's later
+.I \%wins_wstr
+and
+.I \%wins_nwstr
+in that their
+.I wstr
+parameters are not
+.IR const -qualified .
 .SH SEE ALSO
 \fB\%curs_insstr\fP(3X) describes comparable functions of the
 .I \%ncurses

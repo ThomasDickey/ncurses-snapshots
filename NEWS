@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4151 2024/07/20 21:54:20 tom Exp $
+-- $Id: NEWS,v 1.4155 2024/07/27 20:13:00 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240727
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ fixes for compiler warnings/cppcheck.
+	+ modify wattron/wattroff calls in form/m_post.c to call wattr_on and
+	  wattr_off to omit cast used in the former for X/Open compatibility
+	  (patch by Bill Gray).
+	+ modify wezterm, omitting its broken left/right margin feature (report
+	  by Thayne McCombs) -TD
 
 20240720
 	+ improve formatting/style of manpages (patches by Branden Robinson).
@@ -401,7 +410,7 @@ it is not possible to add this information.
 	+ minor grammatical fix for manpages (Branden Robinson).
 
 20230729
-	+ improve manpages for wgetnstr() and wget_wnstr().
+	+ improve manpages for wgetnstr() and wget_nwstr().
 	+ modify MinGW configuration to provide for running in MSYS/MSYS2
 	  shells, assuming ConPTY support (patch by Pavel Fedin).
 	+ add assignment in CF_MAN_PAGES to fill in value for TERMINFO_DIRS in
@@ -10712,7 +10721,7 @@ it is not possible to add this information.
 	  wide-character structures (report by <George.R.Goffe@seagate.com>).
 	+ ensure that _XOPEN_SOURCE_EXTENDED is defined in curses.priv.h if
 	  compiling for wide-character configuration.
-	+ make addwnstr() handle non-spacing characters (patch by Sven
+	+ make addnwstr() handle non-spacing characters (patch by Sven
 	  Verdoolaege).
 
 20010630

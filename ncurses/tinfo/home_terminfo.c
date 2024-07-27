@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1998-2012,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: home_terminfo.c,v 1.17 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: home_terminfo.c,v 1.18 2024/07/27 19:23:21 tom Exp $")
 
 /* ncurses extension...fall back on user's private directory */
 
@@ -52,7 +52,7 @@ _nc_home_terminfo(void)
     if (use_terminfo_vars()) {
 
 	if (MyBuffer == 0) {
-	    char *home;
+	    const char *home;
 
 	    if ((home = getenv("HOME")) != 0) {
 		size_t want = (strlen(home) + sizeof(PRIVATE_INFO));

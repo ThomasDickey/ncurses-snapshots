@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.67 2024/05/25 20:10:58 tom Exp $
-.TH curs_outopts 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.69 2024/07/27 19:55:45 tom Exp $
+.TH curs_outopts 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -143,8 +143,6 @@ and \fBERR\fP upon failure.
 All other routines that return an integer always
 return \fBOK\fP.
 .PP
-X/Open Curses does not specify any error conditions.
-.PP
 In this implementation,
 .bP
 those functions that have a window pointer
@@ -169,6 +167,7 @@ The \fBimmedok\fP routine is useful for windows that are used as terminal
 emulators.
 .SH PORTABILITY
 These functions are described in X/Open Curses, Issue 4.
+It specifies no error conditions for them.
 .PP
 Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fP by saying

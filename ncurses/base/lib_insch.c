@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1998-2013,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.37 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.38 2024/07/27 19:23:21 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -90,7 +90,7 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
 		struct ldat *line = &(win->_line[win->_cury]);
 		NCURSES_CH_T *end = &(line->text[win->_curx]);
 		NCURSES_CH_T *temp1 = &(line->text[win->_maxx]);
-		NCURSES_CH_T *temp2 = temp1 - 1;
+		const NCURSES_CH_T *temp2 = temp1 - 1;
 
 		SetChar2(wch, ch);
 

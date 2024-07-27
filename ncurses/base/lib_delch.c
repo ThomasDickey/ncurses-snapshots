@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1998-2001,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delch.c,v 1.14 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_delch.c,v 1.15 2024/07/27 19:23:21 tom Exp $")
 
 NCURSES_EXPORT(int)
 wdelch(WINDOW *win)

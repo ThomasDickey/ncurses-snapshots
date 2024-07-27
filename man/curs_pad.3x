@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.65 2024/06/22 22:20:03 tom Exp $
-.TH curs_pad 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_pad.3x,v 1.67 2024/07/27 19:55:45 tom Exp $
+.TH curs_pad 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -186,7 +186,6 @@ and set
 to
 .BR \%ENOMEM "."
 .PP
-X/Open Curses does not specify any error conditions.
 In this implementation
 .RS 3
 .TP 5
@@ -243,7 +242,7 @@ The two uses may be related.
 .PP
 X/Open Curses, Issue 4 describes these functions,
 without significant change from the SVr3 documentation.
-It describes no error conditions.
+It specifies no error conditions for them.
 The behavior of \fB\%subpad\fP if the parent window is not
 a pad is undocumented,
 and is not checked by the vendor Unix implementations:

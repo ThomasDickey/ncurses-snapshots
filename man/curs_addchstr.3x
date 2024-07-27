@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addchstr.3x,v 1.48 2024/06/01 22:29:08 tom Exp $
-.TH curs_addchstr 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addchstr.3x,v 1.50 2024/07/27 20:05:41 tom Exp $
+.TH curs_addchstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,27 +46,27 @@
 ..
 .SH NAME
 \fB\%addchstr\fP,
-\fB\%addchnstr\fP,
 \fB\%waddchstr\fP,
-\fB\%waddchnstr\fP,
 \fB\%mvaddchstr\fP,
-\fB\%mvaddchnstr\fP,
 \fB\%mvwaddchstr\fP,
+\fB\%addchnstr\fP,
+\fB\%waddchnstr\fP,
+\fB\%mvaddchnstr\fP,
 \fB\%mvwaddchnstr\fP \-
 add a \fIcurses\fR character string to a window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint addchstr(const chtype *\fIchstr\fP);
-\fBint waddchstr(WINDOW *\fIwin\fP, const chtype *\fIchstr\fP);
-\fBint mvaddchstr(int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP);
-\fBint mvwaddchstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP);
+\fBint addchstr(const chtype * \fIchstr\fP);
+\fBint waddchstr(WINDOW * \fIwin\fP, const chtype * \fIchstr\fP);
+\fBint mvaddchstr(int \fIy\fP, int \fIx\fP, const chtype * \fIchstr\fP);
+\fBint mvwaddchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype * \fIchstr\fP);
 .PP
-\fBint addchnstr(const chtype *\fIchstr\fP, int \fIn\fP);
-\fBint waddchnstr(WINDOW *\fIwin\fP, const chtype *\fIchstr\fP, int \fIn\fP);
-\fBint mvaddchnstr(int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP, int \fIn\fP);
-\fBint mvwaddchnstr(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype *\fIchstr\fP, int \fIn\fP);
+\fBint addchnstr(const chtype * \fIchstr\fP, int \fIn\fP);
+\fBint waddchnstr(WINDOW * \fIwin\fP, const chtype * \fIchstr\fP, int \fIn\fP);
+\fBint mvaddchnstr(int \fIy\fP, int \fIx\fP, const chtype * \fIchstr\fP, int \fIn\fP);
+\fBint mvwaddchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype * \fIchstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%waddchstr
@@ -112,9 +112,9 @@ on success and
 .B ERR
 on failure.
 .PP
-X/Open Curses does not specify any error conditions.
-.I \%ncurses
-returns
+In
+.IR \%ncurses ","
+they return
 .B ERR
 if
 .bP
@@ -139,6 +139,13 @@ may be implemented as macros.
 .SH PORTABILITY
 X/Open Curses,
 Issue 4 describes these functions.
+It specifies no error conditions for them.
+.SH HISTORY
+SVr3.1 (1987)
+introduced
+.I \%waddchstr
+and
+.IR \%waddchnstr "."
 .SH SEE ALSO
 \fB\%curs_add_wchstr\fP(3X) describes comparable functions of the
 .I \%ncurses

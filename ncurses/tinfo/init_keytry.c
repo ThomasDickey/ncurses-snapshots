@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2023 Thomas E. Dickey                                     *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1999-2010,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.20 2023/09/16 12:55:01 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.21 2024/07/27 19:23:59 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -94,7 +94,7 @@ _nc_init_keytry(SCREEN *sp)
 	    TERMTYPE *tp = &(sp->_term->type);
 	    for (n = STRCOUNT; n < NUM_STRINGS(tp); ++n) {
 		const char *name = ExtStrname(tp, (int) n, strnames);
-		char *value = tp->Strings[n];
+		const char *value = tp->Strings[n];
 		if (name != 0
 		    && *name == 'k'
 		    && VALID_STRING(value)

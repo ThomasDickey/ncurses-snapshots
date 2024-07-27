@@ -40,13 +40,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_inwstr.c,v 1.10 2024/06/08 21:22:24 tom Exp $")
+MODULE_ID("$Id: lib_inwstr.c,v 1.11 2024/07/27 19:02:27 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnwstr(WINDOW *win, wchar_t *wstr, int n)
 {
     int count = 0;
-    cchar_t *text;
+    const cchar_t *text;
 
     T((T_CALLED("winnwstr(%p,%p,%d)"), (void *) win, (void *) wstr, n));
     if (wstr != 0) {

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2023 Thomas E. Dickey                                     *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 2001-2008,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: varargs.c,v 1.13 2023/06/24 13:41:46 tom Exp $")
+MODULE_ID("$Id: varargs.c,v 1.14 2024/07/27 19:23:59 tom Exp $")
 
 #ifdef TRACE
 
@@ -73,7 +73,7 @@ _nc_varargs(const char *fmt, va_list ap)
 
     while (*fmt != '\0') {
 	if (*fmt == '%') {
-	    char *pval = 0;	/* avoid const-cast */
+	    const char *pval = 0;	/* avoid const-cast */
 	    const char *sval = "";
 	    double fval = 0.0;
 	    int done = FALSE;

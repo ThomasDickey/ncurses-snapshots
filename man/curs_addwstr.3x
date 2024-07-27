@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addwstr.3x,v 1.43 2024/07/20 20:53:20 tom Exp $
-.TH curs_addwstr 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addwstr.3x,v 1.45 2024/07/27 20:05:18 tom Exp $
+.TH curs_addwstr 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,12 +46,12 @@
 ..
 .SH NAME
 \fB\%addwstr\fP,
-\fB\%addnwstr\fP,
 \fB\%waddwstr\fP,
-\fB\%waddnwstr\fP,
 \fB\%mvaddwstr\fP,
-\fB\%mvaddnwstr\fP,
 \fB\%mvwaddwstr\fP,
+\fB\%addnwstr\fP,
+\fB\%waddnwstr\fP,
+\fB\%mvaddnwstr\fP,
 \fB\%mvwaddnwstr\fP \-
 add a wide-character string to a \fIcurses\fR window and advance the cursor
 .SH SYNOPSIS
@@ -59,14 +59,14 @@ add a wide-character string to a \fIcurses\fR window and advance the cursor
 \fB#include <curses.h>
 .PP
 \fBint addwstr(const wchar_t * \fIwstr\fP);
+\fBint waddwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP);
 \fBint mvaddwstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
 \fBint mvwaddwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP);
-\fBint waddwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP);
 .PP
 \fBint addnwstr(const wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint waddnwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint mvaddnwstr(int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint mvwaddnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
-\fBint waddnwstr(WINDOW * \fIwin\fP, const wchar_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B waddwstr
@@ -140,11 +140,17 @@ may be implemented as macros.
 X/Open Curses,
 Issue 4 describes these functions.
 .SH HISTORY
-.I \%waddstr
+The System\ V Interface Definition,
+Version 4 (1995),
+specified
+.I \%waddwstr
 and
-.I \%waddnstr
-appeared late in SVr4 development (1995).
+.I \%waddnwstr
+(and the usual variants).
 .\" SVID 4, vol 3., p. 478
+These were later additions to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
 .SH SEE ALSO
 \fB\%curs_addstr\fP(3X) describes comparable functions of the
 .I \%ncurses

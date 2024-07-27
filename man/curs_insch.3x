@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insch.3x,v 1.40 2024/04/20 19:03:47 tom Exp $
-.TH curs_insch 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_insch.3x,v 1.42 2024/07/27 20:08:25 tom Exp $
+.TH curs_insch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,9 +50,9 @@ insert a \fIcurses\fP character in a window
 \fB#include <curses.h>\fP
 .PP
 \fBint insch(chtype \fIch\fP);
-\fBint winsch(WINDOW *\fIwin\fP, chtype \fIch\fP);
+\fBint winsch(WINDOW * \fIwin\fP, chtype \fIch\fP);
 \fBint mvinsch(int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
-\fBint mvwinsch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
+\fBint mvwinsch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, chtype \fIch\fP);
 .fi
 .SH DESCRIPTION
 These functions insert the
@@ -105,6 +105,9 @@ SVr4
 describes a successful return value only as
 \*(``an integer value other than
 .BR ERR \*(''.
+.SH HISTORY
+SVr2 (1984) introduced
+.IR \%winsch "."
 .SH "SEE ALSO"
 \fB\%curs_ins_wch\fP(3X) describes comparable functions in the
 wide-character

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,14 +40,15 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_print.c,v 1.31 2023/06/10 12:44:41 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.32 2024/07/27 19:22:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
 {
     int result;
-    char *mybuf = NULL, *switchon;
+    char *mybuf = NULL;
+    const char *switchon;
     size_t onsize, offsize;
     size_t need;
 

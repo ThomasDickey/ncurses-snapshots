@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.96 2024/07/20 21:42:38 tom Exp $
-.TH curs_addch 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.98 2024/07/27 20:08:58 tom Exp $
+.TH curs_addch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -470,12 +470,13 @@ current locale.
 .bP
 If it can,
 call either
-.B \%waddch
-or \fB\%wadd_wch\fP(3X).
+.I \%waddch
+or
+.IR \%wadd_wch "."
 .bP
 If it cannot,
 use only
-\fB\%wadd_wch\fP(3X).
+.IR \%wadd_wch "."
 .SH HISTORY
 4BSD (1980)
 .I curses

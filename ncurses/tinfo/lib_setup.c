@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.241 2024/05/11 19:07:34 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.242 2024/07/27 19:14:45 tom Exp $")
 
 /****************************************************************************
  *
@@ -362,10 +362,10 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 }
 
 static bool
-set_position(NCURSES_SP_DCLx TERMINAL *termp, int row, int col)
+set_position(NCURSES_SP_DCLx const TERMINAL *termp, int row, int col)
 {
     bool result;
-    char *actual = TIPARM_2(cursor_address, row, col);
+    const char *actual = TIPARM_2(cursor_address, row, col);
     T((T_CALLED("set_position %d,%d)"), row, col));
 #if NCURSES_SP_FUNCS
     result = (NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx "set_position",

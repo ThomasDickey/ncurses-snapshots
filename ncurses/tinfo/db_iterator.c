@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2006-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: db_iterator.c,v 1.50 2023/06/24 21:52:32 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.51 2024/07/27 19:22:23 tom Exp $")
 
 #define HaveTicDirectory _nc_globals.have_tic_directory
 #define KeepTicDirectory _nc_globals.keep_tic_directory
@@ -124,7 +124,7 @@ update_getenv(const char *name, DBDIRS which)
 
     if (which < dbdLAST) {
 	char *value;
-	char *cached_value = my_vars[which].value;
+	const char *cached_value = my_vars[which].value;
 	bool same_value;
 
 	if ((value = getenv(name)) != 0) {

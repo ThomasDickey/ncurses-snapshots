@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.112 2024/06/22 21:25:23 tom Exp $
-.TH curs_util 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.114 2024/07/27 19:55:45 tom Exp $
+.TH curs_util 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -310,7 +310,6 @@ upon successful completion.
 .PP
 Routines that return pointers return \fBNULL\fP on error.
 .PP
-X/Open Curses does not specify any error conditions.
 In this implementation
 .RS 3
 .TP 5
@@ -408,9 +407,9 @@ reading from a file written using mixed schemes may not be successful.
 .SS "unctrl, wunctrl"
 X/Open Curses,
 Issue 4 describes these functions.
+It specifies no error conditions for them.
 It states that \fBunctrl\fP and \fBwunctrl\fP will return a null pointer
-if unsuccessful,
-but does not define any error conditions.
+if unsuccessful.
 This implementation checks for three cases:
 .bP
 the parameter is a 7-bit US\-ASCII code.

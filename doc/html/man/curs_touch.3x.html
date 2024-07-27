@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_touch.3x,v 1.49 2024/05/25 20:10:58 tom Exp @
+  * @Id: curs_touch.3x,v 1.51 2024/07/27 19:55:45 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_touch 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_touch 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_touch 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_touch 3x 2024-07-27 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 
@@ -93,24 +93,23 @@
        other than <STRONG>ERR</STRONG> upon successful completion, unless  otherwise  noted  in
        the preceding routine descriptions.
 
-       X/Open   Curses  does  not  specify  any  error  conditions.   In  this
-       implementation
+       In this implementation
 
           <STRONG>is_linetouched</STRONG>
-               returns <STRONG>ERR</STRONG> if the window pointer  is  null,  or  if  the  line
+               returns  <STRONG>ERR</STRONG>  if  the  window  pointer  is null, or if the line
                number is outside the window boundaries.
 
                The constant <STRONG>ERR</STRONG> is distinct from <STRONG>TRUE</STRONG> and <STRONG>FALSE</STRONG>, which are the
-               normal return values of this function.   Because  the  function
+               normal  return  values  of this function.  Because the function
                returns a <STRONG>bool</STRONG>, returning <STRONG>ERR</STRONG> (which is neither <STRONG>TRUE</STRONG> nor <STRONG>FALSE</STRONG>)
                may not be supported by the compiler.
 
-               To provide error-checking and also match  the  X/Open  function
+               To  provide  error-checking  and also match the X/Open function
                prototype, the <STRONG>ERR</STRONG> is provided by a macro named <STRONG>is_linetouched</STRONG>.
                The actual function returns <STRONG>FALSE</STRONG> when it detects an error.
 
           <STRONG>wtouchln</STRONG>
-               returns <STRONG>ERR</STRONG> if the window pointer  is  null,  or  if  the  line
+               returns  <STRONG>ERR</STRONG>  if  the  window  pointer  is null, or if the line
                number is outside the window boundaries.
 
 
@@ -119,14 +118,14 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  functions  were  introduced  by SVr4.  The Solaris <EM>curses</EM> header
+       These functions were introduced by SVr4.   The  Solaris  <EM>curses</EM>  header
        file, for instance, defines both an actual function and macro for each.
-       The  macros  give the same result as the actual functions.  SVr4 <EM>curses</EM>
-       does not check the window parameter <EM>win</EM> to ensure that it is not  <STRONG>NULL</STRONG>;
+       The macros give the same result as the actual functions.   SVr4  <EM>curses</EM>
+       does  not check the window parameter <EM>win</EM> to ensure that it is not <STRONG>NULL</STRONG>;
        otherwise this implementation behaves the same as SVr4.
 
-       X/Open  Curses, Issue 4 describes these functions, but defines no error
-       conditions.
+       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
+       error conditions for them.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -134,7 +133,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
+ncurses 6.5                       2024-07-27                    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

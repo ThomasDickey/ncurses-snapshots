@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.89 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.90 2024/07/27 19:22:23 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
@@ -132,7 +132,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
 	    if (LAST_TRM != 0 && LAST_TRM != TerminalOf(SP_PARM)) {
-		TERMINAL *trm = LAST_TRM;
+		const TERMINAL *trm = LAST_TRM;
 		NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
 		    if (LAST_TRM == trm)

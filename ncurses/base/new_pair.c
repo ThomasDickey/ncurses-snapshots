@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -61,7 +61,7 @@
 
 #endif
 
-MODULE_ID("$Id: new_pair.c,v 1.23 2021/08/16 22:11:26 tom Exp $")
+MODULE_ID("$Id: new_pair.c,v 1.24 2024/07/27 19:22:23 tom Exp $")
 
 #if NCURSES_EXT_COLORS
 
@@ -151,7 +151,7 @@ _nc_find_color_pair(SCREEN *sp, int fg, int bg)
     if (sp != 0) {
 	void *pp;
 	if ((pp = tfind(&find, &sp->_ordered_pairs, compare_data)) != 0) {
-	    colorpair_t *temp = *(colorpair_t **) pp;
+	    const colorpair_t *temp = *(colorpair_t **) pp;
 	    result = (int) (temp - sp->_color_pairs);
 	}
     }
@@ -252,7 +252,7 @@ _nc_copy_pairs(SCREEN *sp, colorpair_t * target, colorpair_t * source, int lengt
 {
     int n;
     for (n = 0; n < length; ++n) {
-	void *find = tfind(source + n, &sp->_ordered_pairs, compare_data);
+	const void *find = tfind(source + n, &sp->_ordered_pairs, compare_data);
 	if (find != 0) {
 	    tdelete(source + n, &sp->_ordered_pairs, compare_data);
 	    tsearch(target + n, &sp->_ordered_pairs, compare_data);

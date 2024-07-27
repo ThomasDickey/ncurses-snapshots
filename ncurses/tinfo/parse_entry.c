@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.108 2023/04/24 22:32:33 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.109 2024/07/27 19:22:23 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -695,7 +695,7 @@ _nc_capcmp(const char *s, const char *t)
 }
 
 static void
-append_acs0(string_desc * dst, int code, char *src, size_t off)
+append_acs0(string_desc * dst, int code, const char *src, size_t off)
 {
     if (src != 0 && off < strlen(src)) {
 	char temp[3];
