@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1078 2024/07/20 23:47:05 tom Exp $
+dnl $Id: aclocal.m4,v 1.1087 2024/08/10 15:51:16 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3213,13 +3213,14 @@ rm -rf ./conftest*
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GETOPT_HEADER version: 8 updated: 2021/06/19 19:16:16
+dnl CF_GETOPT_HEADER version: 9 updated: 2024/08/10 10:30:39
 dnl ----------------
 dnl Check for getopt's variables which are commonly defined in stdlib.h,
 dnl unistd.h or (nonstandard) in getopt.h
 AC_DEFUN([CF_GETOPT_HEADER],
-[
-AC_HAVE_HEADERS(unistd.h getopt.h)
+[AC_REQUIRE([AC_HEADER_STDC])
+
+AC_CHECK_HEADERS(getopt.h)
 AC_CACHE_CHECK(for header declaring getopt variables,cf_cv_getopt_header,[
 cf_cv_getopt_header=none
 for cf_header in stdio.h stdlib.h unistd.h getopt.h
@@ -3239,7 +3240,7 @@ if test "$cf_cv_getopt_header" = getopt.h ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GLOB_FULLPATH version: 1 updated: 2024/07/20 19:45:17
+dnl CF_GLOB_FULLPATH version: 2 updated: 2024/08/03 12:34:02
 dnl ----------------
 dnl Use this in case-statements to check for pathname syntax, i.e., absolute
 dnl pathnames.  The "x" is assumed since we provide an alternate form for DOS.
@@ -3247,16 +3248,16 @@ AC_DEFUN([CF_GLOB_FULLPATH],[
 AC_REQUIRE([CF_WITH_SYSTYPE])dnl
 case "$cf_cv_system_name" in
 (cygwin*|msys*|mingw32*|mingw64|os2*)
-	GLOB_FULLPATH_ONLY='x/*|x[[a-zA-Z]]:[[\\/]]*'
-	GLOB_FULLPATH_ARGS='x/*\ |x[[a-zA-Z]]:[[\\/]]*\ '
+	GLOB_FULLPATH_POSIX='/*'
+	GLOB_FULLPATH_OTHER='[[a-zA-Z]]:[[\\/]]*'
 	;;
 (*)
-	GLOB_FULLPATH_ONLY='x/*'
-	GLOB_FULLPATH_ARGS='x/*\ '
+	GLOB_FULLPATH_POSIX='/*'
+	GLOB_FULLPATH_OTHER=$GLOB_FULLPATH_POSIX
 	;;
 esac
-AC_SUBST(GLOB_FULLPATH_ONLY)
-AC_SUBST(GLOB_FULLPATH_ARGS)
+AC_SUBST(GLOB_FULLPATH_POSIX)
+AC_SUBST(GLOB_FULLPATH_OTHER)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_GNATPREP_OPT_T version: 1 updated: 2014/08/02 18:37:25
@@ -4646,7 +4647,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 100 updated: 2023/06/03 15:17:30
+dnl CF_LIB_RULES version: 101 updated: 2024/08/03 13:08:58
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -4664,6 +4665,7 @@ dnl Note: Libs_To_Make is mixed case, since it is not a pure autoconf variable.
 AC_DEFUN([CF_LIB_RULES],
 [AC_REQUIRE([AC_PROG_FGREP])dnl
 AC_REQUIRE([CF_MAKE_PHONY])dnl
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
 
 cf_prefix=$LIB_PREFIX
 AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
@@ -5189,7 +5191,7 @@ CF_EOF
 if test "$WITH_CURSES_H" = yes; then
 	cat >>headers.sh <<CF_EOF
 case \$DST in
-(/*/include/*)
+($GLOB_FULLPATH_POSIX/include/*)
 	END=\`basename \$DST\`
 	for i in \`cat \$REF/../*/headers |${FGREP-fgrep} -v "#"\`
 	do
@@ -5206,7 +5208,7 @@ CF_EOF
 else
 	cat >>headers.sh <<CF_EOF
 case \$DST in
-(/*/include/*)
+($GLOB_FULLPATH_POSIX/include/*)
 	END=\`basename \$DST\`
 	for i in \`cat \$REF/../*/headers |${FGREP-fgrep} -v "#"\`
 	do
@@ -6677,35 +6679,35 @@ if test -n "$cf_path_prog" ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PATH_SYNTAX version: 18 updated: 2020/12/31 18:40:20
+dnl CF_PATH_SYNTAX version: 19 updated: 2024/08/03 13:08:58
 dnl --------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
 dnl result begins with 'NONE'.  This is necessary to work around autoconf's
 dnl delayed evaluation of those symbols.
 AC_DEFUN([CF_PATH_SYNTAX],[
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
+
 if test "x$prefix" != xNONE; then
 	cf_path_syntax="$prefix"
 else
 	cf_path_syntax="$ac_default_prefix"
 fi
 
-case ".[$]$1" in
-(.\[$]\(*\)*|.\'*\'*)
+case "x[$]$1" in
+(x\[$]\(*\)*|x\'*\'*)
 	;;
-(..|./*|.\\*)
+(x.|x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	;;
-(.[[a-zA-Z]]:[[\\/]]*) # OS/2 EMX
-	;;
-(.\[$]\{*prefix\}*|.\[$]\{*dir\}*)
+(x\[$]\{*prefix\}*|x\[$]\{*dir\}*)
 	eval $1="[$]$1"
-	case ".[$]$1" in
-	(.NONE/*)
+	case "x[$]$1" in
+	(xNONE/*)
 		$1=`echo "[$]$1" | sed -e s%NONE%$cf_path_syntax%`
 		;;
 	esac
 	;;
-(.no|.NONE/*)
+(xno|xNONE/*)
 	$1=`echo "[$]$1" | sed -e s%NONE%$cf_path_syntax%`
 	;;
 (*)
@@ -7094,15 +7096,16 @@ AC_SUBST(cf_ada_config_Ada)
 AC_SUBST(cf_ada_config_C)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_INSTALL version: 10 updated: 2021/01/04 19:33:05
+dnl CF_PROG_INSTALL version: 11 updated: 2024/08/03 13:08:58
 dnl ---------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
 dnl misc/tabset install won't work properly.  Usually this happens only when
 dnl using the fallback mkinstalldirs script
 AC_DEFUN([CF_PROG_INSTALL],
 [AC_PROG_INSTALL
-case $INSTALL in
-(/*)
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
+case x$INSTALL in
+(x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	;;
 (*)
 	CF_DIRNAME(cf_dir,$INSTALL)
@@ -8706,12 +8709,12 @@ AC_DEFUN([CF_UPPER],
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UTF8_LIB version: 10 updated: 2023/01/11 04:05:23
+dnl CF_UTF8_LIB version: 11 updated: 2024/08/10 10:23:45
 dnl -----------
 dnl Check for multibyte support, and if not found, utf8 compatibility library
 AC_DEFUN([CF_UTF8_LIB],
 [
-AC_HAVE_HEADERS(wchar.h)
+AC_CHECK_HEADERS(wchar.h)
 AC_CACHE_CHECK(for multibyte character support,cf_cv_utf8_lib,[
 	cf_save_LIBS="$LIBS"
 	AC_TRY_LINK([
@@ -9658,7 +9661,7 @@ if test "x$with_pcre2" != xno ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PKG_CONFIG_LIBDIR version: 23 updated: 2023/11/22 20:48:30
+dnl CF_WITH_PKG_CONFIG_LIBDIR version: 25 updated: 2024/08/03 13:34:29
 dnl -------------------------
 dnl Allow the choice of the pkg-config library directory to be overridden.
 dnl
@@ -9672,6 +9675,7 @@ dnl pkgconf (used with some systems such as FreeBSD in place of pkg-config)
 dnl optionally ignores $PKG_CONFIG_LIBDIR.  Very old versions of pkg-config,
 dnl e.g., Solaris 10 also do not recognize $PKG_CONFIG_LIBDIR.
 AC_DEFUN([CF_WITH_PKG_CONFIG_LIBDIR],[
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
 
 case "$PKG_CONFIG" in
 (no|none|yes)
@@ -9705,10 +9709,10 @@ case "x$cf_search_path" in
 	;;
 (x)
 	;;
-(x/*\ *)
+(x$GLOB_FULLPATH_POSIX\ *|x$GLOB_FULLPATH_OTHER\ *)
 	PKG_CONFIG_LIBDIR=
 	;;
-(x/*)
+(x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	PKG_CONFIG_LIBDIR="$cf_search_path"
 	AC_MSG_RESULT($PKG_CONFIG_LIBDIR)
 	cf_search_path=
@@ -9727,7 +9731,15 @@ case "x$cf_search_path" in
 			pkg-config \
 			pkgconf
 		do
-			cf_search_path=`"$PKG_CONFIG" --variable=pc_path "$cf_pkg_program" 2>/dev/null | tr : ' '`
+			cf_raw_search_path=`"$PKG_CONFIG" --variable=pc_path "$cf_pkg_program" 2>/dev/null`
+			case "$cf_raw_search_path" in
+			(*\\*)
+				cf_search_path=`echo "$cf_raw_search_path" | tr ';' ' ' | tr '\' '/'`
+				;;
+			(*/*)
+				cf_search_path=`echo "$cf_raw_search_path" | tr : ' '`
+				;;
+			esac
 			test -n "$cf_search_path" && break
 		done
 
@@ -9947,7 +9959,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 13 updated: 2023/12/03 09:24:04
+dnl CF_WITH_VERSIONED_SYMS version: 14 updated: 2024/08/03 12:34:02
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -9957,6 +9969,7 @@ dnl $1 = basename of the ".map" file (default $PACKAGE)
 AC_DEFUN([CF_WITH_VERSIONED_SYMS],
 [AC_REQUIRE([AC_PROG_FGREP])dnl
 AC_REQUIRE([AC_PROG_EGREP])dnl
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
 
 AC_MSG_CHECKING(if versioned-symbols file should be used)
 AC_ARG_WITH(versioned-syms,
@@ -9970,7 +9983,7 @@ case "x$with_versioned_syms" in
 	;;
 (xno)
 	;;
-(x/*)
+(x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	test -f "$with_versioned_syms" || AC_MSG_ERROR(expected a filename: $with_versioned_syms)
 	;;
 (*)

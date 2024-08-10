@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-on
 dnl
-dnl $Id: configure.in,v 1.174 2024/03/30 14:31:11 tom Exp $
+dnl $Id: configure.in,v 1.177 2024/08/10 14:11:56 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -48,12 +48,10 @@ AC_CONFIG_HEADER(ncurses_cfg.h:ncurses_tst.hin)
 
 CF_INHERIT_SCRIPT(config.guess)
 CF_INHERIT_SCRIPT(config.sub)
-CF_CHECK_CACHE
-
-AC_ARG_PROGRAM
 
 CF_HELP_MESSAGE(General Options:)
 
+CF_WITH_SYSTYPE
 AC_PROG_MAKE_SET
 CF_PROG_CC
 AC_C_INLINE
@@ -240,7 +238,6 @@ AC_CHECK_HEADERS( $cf_curses_headers )
 
 AC_HEADER_TIME
 AC_CHECK_HEADERS( \
-getopt.h \
 locale.h \
 math.h \
 stdarg.h \
@@ -248,7 +245,6 @@ sys/ioctl.h \
 sys/select.h \
 sys/time.h \
 termios.h \
-unistd.h \
 )
 
 CF_GETOPT_HEADER

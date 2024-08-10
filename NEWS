@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4155 2024/07/27 20:13:00 tom Exp $
+-- $Id: NEWS,v 1.4160 2024/08/10 09:45:21 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240810
+	+ modify misc/Makefile.in and misc/run_tic.in so that $DESTDIR is set
+	  and used only in the makefile.
+	+ modify CF_WITH_PKG_CONFIG_LIBDIR to allow for pkg-config using
+	  DOS/Windows pathname syntax (report by Eli Zaretskii).
+	+ improve glob-expressions in configure script
+	+ remove unused Get_Menu_Screen() macro from menu.priv.h
+	+ update config.guess, config.sub
 
 20240727
 	+ improve formatting/style of manpages (patches by Branden Robinson).

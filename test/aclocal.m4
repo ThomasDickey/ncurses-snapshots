@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.223 2024/07/06 18:05:00 tom Exp $
+dnl $Id: aclocal.m4,v 1.227 2024/08/10 14:31:42 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -2009,13 +2009,14 @@ rm -rf ./conftest*
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GETOPT_HEADER version: 8 updated: 2021/06/19 19:16:16
+dnl CF_GETOPT_HEADER version: 9 updated: 2024/08/10 10:30:39
 dnl ----------------
 dnl Check for getopt's variables which are commonly defined in stdlib.h,
 dnl unistd.h or (nonstandard) in getopt.h
 AC_DEFUN([CF_GETOPT_HEADER],
-[
-AC_HAVE_HEADERS(unistd.h getopt.h)
+[AC_REQUIRE([AC_HEADER_STDC])
+
+AC_CHECK_HEADERS(getopt.h)
 AC_CACHE_CHECK(for header declaring getopt variables,cf_cv_getopt_header,[
 cf_cv_getopt_header=none
 for cf_header in stdio.h stdlib.h unistd.h getopt.h
@@ -2033,6 +2034,26 @@ fi
 if test "$cf_cv_getopt_header" = getopt.h ; then
 	AC_DEFINE(NEED_GETOPT_H,1,[Define to 1 if we must include getopt.h])
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GLOB_FULLPATH version: 2 updated: 2024/08/03 12:34:02
+dnl ----------------
+dnl Use this in case-statements to check for pathname syntax, i.e., absolute
+dnl pathnames.  The "x" is assumed since we provide an alternate form for DOS.
+AC_DEFUN([CF_GLOB_FULLPATH],[
+AC_REQUIRE([CF_WITH_SYSTYPE])dnl
+case "$cf_cv_system_name" in
+(cygwin*|msys*|mingw32*|mingw64|os2*)
+	GLOB_FULLPATH_POSIX='/*'
+	GLOB_FULLPATH_OTHER='[[a-zA-Z]]:[[\\/]]*'
+	;;
+(*)
+	GLOB_FULLPATH_POSIX='/*'
+	GLOB_FULLPATH_OTHER=$GLOB_FULLPATH_POSIX
+	;;
+esac
+AC_SUBST(GLOB_FULLPATH_POSIX)
+AC_SUBST(GLOB_FULLPATH_OTHER)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_GNU_SOURCE version: 10 updated: 2018/12/10 20:09:41
@@ -3255,35 +3276,35 @@ case ".$with_cflags" in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PATH_SYNTAX version: 18 updated: 2020/12/31 18:40:20
+dnl CF_PATH_SYNTAX version: 19 updated: 2024/08/03 13:08:58
 dnl --------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
 dnl result begins with 'NONE'.  This is necessary to work around autoconf's
 dnl delayed evaluation of those symbols.
 AC_DEFUN([CF_PATH_SYNTAX],[
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
+
 if test "x$prefix" != xNONE; then
 	cf_path_syntax="$prefix"
 else
 	cf_path_syntax="$ac_default_prefix"
 fi
 
-case ".[$]$1" in
-(.\[$]\(*\)*|.\'*\'*)
+case "x[$]$1" in
+(x\[$]\(*\)*|x\'*\'*)
 	;;
-(..|./*|.\\*)
+(x.|x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	;;
-(.[[a-zA-Z]]:[[\\/]]*) # OS/2 EMX
-	;;
-(.\[$]\{*prefix\}*|.\[$]\{*dir\}*)
+(x\[$]\{*prefix\}*|x\[$]\{*dir\}*)
 	eval $1="[$]$1"
-	case ".[$]$1" in
-	(.NONE/*)
+	case "x[$]$1" in
+	(xNONE/*)
 		$1=`echo "[$]$1" | sed -e s%NONE%$cf_path_syntax%`
 		;;
 	esac
 	;;
-(.no|.NONE/*)
+(xno|xNONE/*)
 	$1=`echo "[$]$1" | sed -e s%NONE%$cf_path_syntax%`
 	;;
 (*)
@@ -3522,15 +3543,16 @@ CF_ACVERSION_CHECK(2.52,
 CF_CC_ENV_FLAGS
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_INSTALL version: 10 updated: 2021/01/04 19:33:05
+dnl CF_PROG_INSTALL version: 11 updated: 2024/08/03 13:08:58
 dnl ---------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
 dnl misc/tabset install won't work properly.  Usually this happens only when
 dnl using the fallback mkinstalldirs script
 AC_DEFUN([CF_PROG_INSTALL],
 [AC_PROG_INSTALL
-case $INSTALL in
-(/*)
+AC_REQUIRE([CF_GLOB_FULLPATH])dnl
+case x$INSTALL in
+(x$GLOB_FULLPATH_POSIX|x$GLOB_FULLPATH_OTHER)
 	;;
 (*)
 	CF_DIRNAME(cf_dir,$INSTALL)
@@ -4062,12 +4084,12 @@ AC_DEFUN([CF_UPPER],
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UTF8_LIB version: 10 updated: 2023/01/11 04:05:23
+dnl CF_UTF8_LIB version: 11 updated: 2024/08/10 10:23:45
 dnl -----------
 dnl Check for multibyte support, and if not found, utf8 compatibility library
 AC_DEFUN([CF_UTF8_LIB],
 [
-AC_HAVE_HEADERS(wchar.h)
+AC_CHECK_HEADERS(wchar.h)
 AC_CACHE_CHECK(for multibyte character support,cf_cv_utf8_lib,[
 	cf_save_LIBS="$LIBS"
 	AC_TRY_LINK([
@@ -4313,6 +4335,26 @@ then
 	AC_PATH_X
 	AC_PATH_XTRA
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_SYSTYPE version: 1 updated: 2013/01/26 16:26:12
+dnl ---------------
+dnl For testing, override the derived host system-type which is used to decide
+dnl things such as the linker commands used to build shared libraries.  This is
+dnl normally chosen automatically based on the type of system which you are
+dnl building on.  We use it for testing the configure script.
+dnl
+dnl This is different from the --host option: it is used only for testing parts
+dnl of the configure script which would not be reachable with --host since that
+dnl relies on the build environment being real, rather than mocked up.
+AC_DEFUN([CF_WITH_SYSTYPE],[
+CF_CHECK_CACHE([AC_CANONICAL_SYSTEM])
+AC_ARG_WITH(system-type,
+	[  --with-system-type=XXX  test: override derived host system-type],
+[AC_MSG_WARN(overriding system type to $withval)
+	cf_cv_system_name=$withval
+	host_os=$withval
+])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_WITH_VALGRIND version: 1 updated: 2006/12/14 18:00:21

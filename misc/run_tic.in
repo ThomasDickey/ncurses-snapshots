@@ -1,7 +1,7 @@
 #!@SHELL@
-# $Id: run_tic.in,v 1.40 2022/07/16 19:37:03 tom Exp $
+# $Id: run_tic.in,v 1.41 2024/08/04 14:50:26 tom Exp $
 ##############################################################################
-# Copyright 2019-2020,2022 Thomas E. Dickey                                  #
+# Copyright 2019-2022,2024 Thomas E. Dickey                                  #
 # Copyright 2000-2012,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -42,22 +42,25 @@ echo "** Building terminfo database, please wait..."
 # The script is designed to be run from the misc/Makefile as
 #	make install.data
 
-: "${suffix:=@EXEEXT@}"
-: "${DESTDIR:=@DESTDIR@}"
+# Symbols which are not overridden by misc/Makefile:
 : "${prefix:=@prefix@}"
 : "${exec_prefix:=@exec_prefix@}"
-: "${bindir:=@bindir@}"
 : "${top_srcdir:=@top_srcdir@}"
 : "${srcdir:=@srcdir@}"
 : "${datarootdir:=@datarootdir@}"
 : "${datadir:=@datadir@}"
-: "${TIC_PATH:=@TIC@}"
-: "${ticdir:=@TERMINFO@}"
-: "${source:=@TERMINFO_SRC@}"
-: "${cross_compiling:=no}"
-: "${ext_funcs:=@NCURSES_EXT_FUNCS@}"
+: "${cross_compiling:=@cross_compiling@}"
+: "${suffix:=@EXEEXT@}"
 
-test -z "${DESTDIR}" && DESTDIR=
+: "${ext_funcs:=@NCURSES_EXT_FUNCS@}"
+: "${tic_path:=@TIC@}"
+: "${ticdir:=@TERMINFO@}"
+: "${tic_source:=@TERMINFO_SRC@}"
+
+# Symbols which $DESTDIR and/or install-prefix may affect:
+: "${INSTALL_PREFIX:=$prefix}"
+: "${BINDIR:=@bindir@}"
+: "${TICDIR:=$ticdir}"
 
 # Allow tic to run either from the install-path, or from the build-directory.
 # Do not do this if we appear to be cross-compiling.  In that case, we rely
@@ -68,21 +71,21 @@ then
 	then
 		case "$PATH" in
 		\@PATH_SEPARATOR@*)
-			PATH="../progs@PATH_SEPARATOR@../lib@PATH_SEPARATOR@${DESTDIR}$bindir$PATH"
+			PATH="../progs@PATH_SEPARATOR@../lib@PATH_SEPARATOR@${BINDIR}$PATH"
 			;;
 		*)
-			PATH="../progs@PATH_SEPARATOR@../lib@PATH_SEPARATOR@${DESTDIR}$bindir@PATH_SEPARATOR@$PATH"
+			PATH="../progs@PATH_SEPARATOR@../lib@PATH_SEPARATOR@${BINDIR}@PATH_SEPARATOR@$PATH"
 			;;
 		esac
 		export PATH
 		if test @DFT_LWR_MODEL@ = shared
 		then
 			SHLIB="sh $srcdir/shlib"
-			TIC_PATH="$SHLIB tic"
+			tic_path="$SHLIB tic"
 		else
-			TIC_PATH="tic"
+			tic_path="tic"
 		fi
-	elif test "$TIC_PATH" = unknown
+	elif test "$tic_path" = unknown
 	then
 		echo "? no tic program found"
 		exit 1
@@ -106,7 +109,7 @@ export SHLIB_HOST
 
 # don't use user's TERMINFO variable
 unset TERMINFO_DIRS
-TERMINFO="${DESTDIR}$ticdir" ; export TERMINFO
+TERMINFO="$TICDIR" ; export TERMINFO
 umask 022
 
 # Construct the name of the old (obsolete) pathname, e.g., /usr/lib/terminfo.
@@ -134,7 +137,7 @@ fi
 
 if test "$ext_funcs" = 1 ; then
 cat <<EOF
-Running $TIC_PATH to install $TERMINFO ...
+Running $tic_path to install $TERMINFO ...
 
 	You may see messages regarding extended capabilities, e.g., AX.
 	These are extended terminal capabilities which are compiled
@@ -144,8 +147,8 @@ Running $TIC_PATH to install $TERMINFO ...
 	document, and install the terminfo without the -x option.
 
 EOF
-$TIC_PATH -V
-if ( $TIC_PATH -x -s -o "$TERMINFO" $source )
+$tic_path -V
+if ( $tic_path -x -s -o "$TERMINFO" $tic_source )
 then
 	echo "** built new $TERMINFO"
 else
@@ -154,7 +157,7 @@ else
 fi
 else
 cat <<EOF
-Running $TIC_PATH to install $TERMINFO ...
+Running $tic_path to install $TERMINFO ...
 
 	You may see messages regarding unknown capabilities, e.g., AX.
 	These are extended terminal capabilities which may be compiled
@@ -164,8 +167,8 @@ Running $TIC_PATH to install $TERMINFO ...
 	document, and install the terminfo without the -x option.
 
 EOF
-$TIC_PATH -V
-if ( $TIC_PATH -s -o "$TERMINFO" $source )
+$tic_path -V
+if ( $tic_path -s -o "$TERMINFO" $tic_source )
 then
 	echo "** built new $TERMINFO"
 else
@@ -192,7 +195,7 @@ if test "$TICDIR" != "$TERMINFO" ; then
 			echo "Otherwise, remove $TICDIR and link it to $TERMINFO."
 		fi
 	else
-		cd ${DESTDIR}$prefix || exit
+		cd ${INSTALL_PREFIX} || exit
 		# Construct a symbolic link that only assumes $ticdir has the
 		# same $prefix as the other installed directories.
 		RELATIVE=`echo $ticdir|sed -e 's%^'$prefix'/%%'`
