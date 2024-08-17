@@ -29,7 +29,7 @@
 #
 #  Author:  Juergen Pfeifer, 1996
 #
-#  $Id: Makefile.in,v 1.65 2024/06/15 15:13:11 tom Exp $
+#  $Id: Makefile.in,v 1.66 2024/08/10 17:56:19 tom Exp $
 #
 .SUFFIXES:
 
@@ -78,9 +78,9 @@ LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 RANLIB		= @RANLIB@
 ################################################################################
-BINDIR		= $(DESTDIR)$(bindir)
-DATADIR		= $(DESTDIR)$(datadir)
-LIBDIR		= $(DESTDIR)$(libdir)
+BINDIR		= $(DESTDIR)$(bindir@MERGE_PREFIX@)
+DATADIR		= $(DESTDIR)$(datadir@MERGE_PREFIX@)
+LIBDIR		= $(DESTDIR)$(libdir@MERGE_PREFIX@)
 
 MY_DATADIR	= $(DATADIR)/@ADA_LIBNAME@
 THIS_DATADIR	= $(datadir)/@ADA_LIBNAME@

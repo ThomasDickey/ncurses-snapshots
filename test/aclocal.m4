@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.227 2024/08/10 14:31:42 tom Exp $
+dnl $Id: aclocal.m4,v 1.228 2024/08/11 09:11:30 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -2388,6 +2388,40 @@ then
 	fi
 fi
 AC_SUBST(INSTALL_OPT_S)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_INSTALL_PREFIX version: 1 updated: 2024/08/10 20:16:32
+dnl -----------------
+dnl Special option for use by system-builders: the install-prefix is used to
+dnl adjust the location into which the actual install is done, so that an
+dnl archive can be built without modifying the host system's configuration.
+AC_DEFUN([CF_INSTALL_PREFIX],[
+AC_MSG_CHECKING(for an installation directory prefix)
+AC_ARG_WITH(install-prefix,
+	[  --with-install-prefix=DESTDIR use DESTDIR as installation directory prefix],
+	[case "x$withval" in
+	(xyes|xno)
+		;;
+	(*)	DESTDIR="$withval"
+		;;
+	esac])
+AC_MSG_RESULT([${DESTDIR:-(none)}])
+AC_SUBST(DESTDIR)
+
+AC_MSG_CHECKING(if installation directory prefix should be merged)
+CF_ARG_ENABLE(install-prefix,
+	[  --enable-install-prefix merge DESTDIR with installation prefix],
+	cf_install_prefix=yes,
+	cf_install_prefix=no)
+AC_MSG_RESULT($cf_install_prefix)
+
+if test "$cf_install_prefix" = yes ; then
+	MERGE_PREFIX=':$(prefix)%=%'
+else
+	MERGE_PREFIX=''
+fi
+
+AC_SUBST(MERGE_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_INTEL_COMPILER version: 9 updated: 2023/02/18 17:41:25

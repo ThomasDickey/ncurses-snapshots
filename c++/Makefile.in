@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.133 2021/07/03 18:53:57 tom Exp $
+# $Id: Makefile.in,v 1.135 2024/08/11 15:48:44 tom Exp $
 ##############################################################################
-# Copyright 2018-2020,2021 Thomas E. Dickey                                  #
+# Copyright 2018-2021,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2015,2016 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -54,7 +54,9 @@ libdir		= @libdir@
 includedir	= @includedir@
 includesubdir	= @includesubdir@
 
-INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
+INCLUDEDIR	= $(DESTDIR)$(includedir@MERGE_PREFIX@)$(includesubdir)
+BINDIR		= $(DESTDIR)$(bindir@MERGE_PREFIX@)
+LIBDIR		= $(DESTDIR)$(libdir@MERGE_PREFIX@)
 
 PACKAGE		= @PACKAGE@
 
@@ -191,7 +193,7 @@ sources :	$(AUTO_SRC)
 tags:
 	$(CTAGS) *.[h] *.cc
 
-$(DESTDIR)$(libdir) :
+$(LIBDIR) :
 	mkdir -p $@
 
 mostlyclean ::

@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: configure.in,v 1.93 2024/05/19 09:12:05 tom Exp $
+dnl $Id: configure.in,v 1.94 2024/08/11 00:22:07 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210509)
-AC_REVISION($Revision: 1.93 $)
+AC_REVISION($Revision: 1.94 $)
 AC_INIT(gen/gen.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -115,20 +115,7 @@ AC_CHECK_TOOL(AR, ar, ar)
 CF_AR_FLAGS
 CF_PATHSEP
 
-dnl Special option for use by system-builders: the install-prefix is used to
-dnl adjust the location into which the actual install is done, so that an
-dnl archive can be built without modifying the host system's configuration.
-AC_MSG_CHECKING(if you have specified an install-prefix)
-AC_ARG_WITH(install-prefix,
-	[  --with-install-prefix   prefixes actual install-location ($DESTDIR)],
-	[case "$withval" in
-	(yes|no)
-		;;
-	(*)	DESTDIR="$withval"
-		;;
-	esac])
-AC_MSG_RESULT($DESTDIR)
-AC_SUBST(DESTDIR)
+CF_INSTALL_PREFIX
 
 ###############################################################################
 CF_HELP_MESSAGE(Build-Tools Needed to Compile Temporary Applications for Cross-compiling:)

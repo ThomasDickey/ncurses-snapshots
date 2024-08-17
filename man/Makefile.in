@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.54 2022/10/22 16:36:40 tom Exp $
+# $Id: Makefile.in,v 1.55 2024/08/10 18:19:16 tom Exp $
 ##############################################################################
-# Copyright 2019-2021,2022 Thomas E. Dickey                                  #
+# Copyright 2019-2022,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2015 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -47,7 +47,8 @@ datadir		= @datadir@
 mandir		= @mandir@
 includesubdir	= @includesubdir@
 
-INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
+INCLUDEDIR	= $(DESTDIR)$(includedir@MERGE_PREFIX@)$(includesubdir)
+MANDIR		= $(DESTDIR)$(mandir@MERGE_PREFIX@)
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -72,12 +73,12 @@ sources :	terminfo.5
 depend :
 tags :
 
-$(DESTDIR)$(mandir) :
+$(MANDIR) :
 	mkdir -p $@
 
-EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 *-config.1 $(srcdir)/*.[0-9]*
+EDITARGS = $(MANDIR) $(srcdir) terminfo.5 *-config.1 $(srcdir)/*.[0-9]*
 
-install install.man : terminfo.5 $(DESTDIR)$(mandir)
+install install.man : terminfo.5 $(MANDIR)
 	$(SHELL) ../edit_man.sh normal installing $(EDITARGS)
 
 uninstall uninstall.man :

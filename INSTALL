@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.256 2024/06/08 21:06:02 Branden.Robinson Exp $
+-- $Id: INSTALL,v 1.257 2024/08/10 17:43:39 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -649,6 +649,12 @@ CONFIGURE OPTIONS:
 	this a standard feature except for the concern that the terminfo entry
 	may not be accurate, or that your stty settings have disabled the use
 	of tabs.
+
+    --enable-install-prefix
+	Extend the --with-install-prefix feature to replace the prefix value
+	with $DESTDIR rather than simply prepending $DESTDIR to install
+	pathnames.  This works with any "make" which supports AT&T style
+	variable substitution.
 
     --enable-interop
 	Compile-in experimental interop bindings.  These provide generic types

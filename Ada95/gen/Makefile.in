@@ -30,7 +30,7 @@
 #  Author:  Juergen Pfeifer, 1996
 #     and:  Thomas E. Dickey, 1997
 #
-#  $Id: Makefile.in,v 1.104 2024/06/15 14:56:14 tom Exp $
+#  $Id: Makefile.in,v 1.105 2024/08/10 17:55:15 tom Exp $
 #
 .SUFFIXES:
 
@@ -47,6 +47,8 @@ prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
 includedir	= @includedir@
+
+BINDIR		= $(DESTDIR)$(bindir@MERGE_PREFIX@)
 
 INSTALL		= @INSTALL@ @INSTALL_OPT_O@
 INSTALL_SCRIPT	= @INSTALL_SCRIPT@
@@ -163,19 +165,19 @@ libs :	$(GEN_TARGETS)
 
 sources:
 
-$(DESTDIR)$(bindir) :
+$(BINDIR) :
 	mkdir -p $@
 
 install \
 install.libs :: \
 		$(GEN_TARGETS) \
-		$(DESTDIR)$(bindir) \
+		$(BINDIR) \
 		$(ADACURSES_CONFIG)
-	$(INSTALL_SCRIPT) $(ADACURSES_CONFIG) $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
+	$(INSTALL_SCRIPT) $(ADACURSES_CONFIG) $(BINDIR)/$(ADACURSES_CONFIG)
 
 uninstall \
 uninstall.libs ::
-	-rm -f $(DESTDIR)$(bindir)/$(ADACURSES_CONFIG)
+	-rm -f $(BINDIR)/$(ADACURSES_CONFIG)
 
 $(PROG_GENERATE):  gen.o
 	@ECHO_LD@ $(LINK) $(CFLAGS_NORMAL) gen.o $(ACTUAL_LDFLAGS) -o $@

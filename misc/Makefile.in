@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.82 2024/08/04 14:49:08 tom Exp $
+# $Id: Makefile.in,v 1.83 2024/08/10 18:06:18 tom Exp $
 ##############################################################################
 # Copyright 2018-2021,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
@@ -61,7 +61,7 @@ datarootdir	= @datarootdir@
 datadir		= @datadir@
 includesubdir	= @includesubdir@
 
-INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
+INCLUDEDIR	= $(DESTDIR)$(includedir@MERGE_PREFIX@)$(includesubdir)
 
 tabsetdir	= $(datadir)/tabset
 ticdir		= @TERMINFO@
@@ -75,14 +75,16 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 
-BINDIR		= $(DESTDIR)$(bindir)
-DATADIR		= $(DESTDIR)$(datadir)
+BINDIR		= $(DESTDIR)$(bindir@MERGE_PREFIX@)
+DATADIR		= $(DESTDIR)$(datadir@MERGE_PREFIX@)
 
-@MAKE_DATABASE@INSTALL_PREFIX	= $(DESTDIR)$(prefix)
-@MAKE_DATABASE@LIBDIR		= $(DESTDIR)$(libdir)
-@MAKE_DATABASE@TICDIR		= $(DESTDIR)$(ticdir)
-@MAKE_DATABASE@TICFILE		= $(DESTDIR)$(ticfile)
-@MAKE_DATABASE@TABSETDIR	= $(DESTDIR)$(tabsetdir)
+@MAKE_DATABASE@INSTALL_PREFIX	= $(DESTDIR)$(prefix@MERGE_PREFIX@)
+@MAKE_DATABASE@LIBDIR		= $(DESTDIR)$(libdir@MERGE_PREFIX@)
+@MAKE_DATABASE@TICDIR		= $(DESTDIR)$(ticdir@MERGE_PREFIX@)
+@MAKE_DATABASE@TICFILE		= $(DESTDIR)$(ticfile@MERGE_PREFIX@)
+@MAKE_DATABASE@TABSETDIR	= $(DESTDIR)$(tabsetdir@MERGE_PREFIX@)
+
+@MAKE_PC_FILES@INSTALL_CONFIG	= $(DESTDIR)$(PKG_CONFIG_LIBDIR@MERGE_PREFIX@)
 
 ################################################################################
 
@@ -152,11 +154,11 @@ install.libs :: $(BINDIR) ncurses-config
 @MAKE_PC_FILES@install.libs :: pc-files
 @MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(PKG_CONFIG_LIBDIR)" in \
 @MAKE_PC_FILES@		x@GLOB_FULLPATH_POSIX@|x@GLOB_FULLPATH_OTHER@) \
-@MAKE_PC_FILES@			mkdir -p $(DESTDIR)$(PKG_CONFIG_LIBDIR); \
+@MAKE_PC_FILES@			mkdir -p $(INSTALL_CONFIG); \
 @MAKE_PC_FILES@			for name in $(PC_FILES); do \
 @MAKE_PC_FILES@				test -f $$name || continue; \
 @MAKE_PC_FILES@				echo installing $$name; \
-@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(DESTDIR)$(PKG_CONFIG_LIBDIR)/$$name; \
+@MAKE_PC_FILES@				$(INSTALL_DATA) $$name $(INSTALL_CONFIG)/$$name; \
 @MAKE_PC_FILES@			done \
 @MAKE_PC_FILES@			;; \
 @MAKE_PC_FILES@		*) \
@@ -197,12 +199,12 @@ uninstall.data :
 
 uninstall.libs :
 	-rm -f $(BINDIR)/$(NCURSES_CONFIG)
-@MAKE_PC_FILES@	@$(SHELL) -c 'case x$(DESTDIR)$(PKG_CONFIG_LIBDIR) in \
+@MAKE_PC_FILES@	@$(SHELL) -c 'case x$(INSTALL_CONFIG) in \
 @MAKE_PC_FILES@	x@GLOB_FULLPATH_POSIX@|x@GLOB_FULLPATH_OTHER@) \
 @MAKE_PC_FILES@		for name in $(PC_FILES); do \
 @MAKE_PC_FILES@			test -f $$name || continue; \
 @MAKE_PC_FILES@			echo uninstalling $$name; \
-@MAKE_PC_FILES@			rm -f $(DESTDIR)$(PKG_CONFIG_LIBDIR)/$$name; \
+@MAKE_PC_FILES@			rm -f $(INSTALL_CONFIG)/$$name; \
 @MAKE_PC_FILES@		done \
 @MAKE_PC_FILES@		;; \
 @MAKE_PC_FILES@	esac'

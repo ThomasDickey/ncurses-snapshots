@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1087 2024/08/10 15:51:16 tom Exp $
+dnl $Id: aclocal.m4,v 1.1088 2024/08/11 00:17:28 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4218,6 +4218,40 @@ fi
 AC_SUBST(INSTALL_OPT_S)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_INSTALL_PREFIX version: 1 updated: 2024/08/10 20:16:32
+dnl -----------------
+dnl Special option for use by system-builders: the install-prefix is used to
+dnl adjust the location into which the actual install is done, so that an
+dnl archive can be built without modifying the host system's configuration.
+AC_DEFUN([CF_INSTALL_PREFIX],[
+AC_MSG_CHECKING(for an installation directory prefix)
+AC_ARG_WITH(install-prefix,
+	[  --with-install-prefix=DESTDIR use DESTDIR as installation directory prefix],
+	[case "x$withval" in
+	(xyes|xno)
+		;;
+	(*)	DESTDIR="$withval"
+		;;
+	esac])
+AC_MSG_RESULT([${DESTDIR:-(none)}])
+AC_SUBST(DESTDIR)
+
+AC_MSG_CHECKING(if installation directory prefix should be merged)
+CF_ARG_ENABLE(install-prefix,
+	[  --enable-install-prefix merge DESTDIR with installation prefix],
+	cf_install_prefix=yes,
+	cf_install_prefix=no)
+AC_MSG_RESULT($cf_install_prefix)
+
+if test "$cf_install_prefix" = yes ; then
+	MERGE_PREFIX=':$(prefix)%=%'
+else
+	MERGE_PREFIX=''
+fi
+
+AC_SUBST(MERGE_PREFIX)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_INTEL_COMPILER version: 9 updated: 2023/02/18 17:41:25
 dnl -----------------
 dnl Check if the given compiler is really the Intel compiler for Linux.  It
@@ -5986,31 +6020,6 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MB_LEN_MAX version: 1 updated: 2024/03/02 15:45:10
-dnl -------------
-dnl Check if <limits.h> defines a usable MB_LEN_MAX.  That may be because it is
-dnl not defined, or it may be a bogus value.
-AC_DEFUN([CF_MB_LEN_MAX],[
-AC_CACHE_CHECK(if MB_LEN_MAX is usable,cf_cv_mb_len_max,[
-AC_TRY_COMPILE([
-$ac_includes_default
-#include <limits.h>],
-[
-#if defined(MB_LEN_MAX) && MB_LEN_MAX >= 6
-	${cf_cv_main_return:-return}(0);
-#else
-#error MB_LEN_MAX is not usable
-#endif
-],	[cf_cv_mb_len_max=yes],
-	[cf_cv_mb_len_max=no])])
-if test "$cf_cv_mb_len_max" = yes
-then
-	AC_DEFINE(HAVE_CONSISTENT_MB_LEN_MAX,1,[Define to 1 if MB_LEN_MAX is usable])
-else
-	AC_MSG_WARN(MB_LEN_MAX is missing/inconsistent in system headers)
-fi
-])dnl
-dnl ---------------------------------------------------------------------------
 dnl CF_MAN_PAGES version: 59 updated: 2024/03/30 08:27:40
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
@@ -6397,6 +6406,31 @@ then
 	AC_DEFINE(HAVE_MATH_FUNCS,1,[Define to 1 if math functions are available])
 fi
 ])
+dnl ---------------------------------------------------------------------------
+dnl CF_MB_LEN_MAX version: 1 updated: 2024/03/02 15:45:10
+dnl -------------
+dnl Check if <limits.h> defines a usable MB_LEN_MAX.  That may be because it is
+dnl not defined, or it may be a bogus value.
+AC_DEFUN([CF_MB_LEN_MAX],[
+AC_CACHE_CHECK(if MB_LEN_MAX is usable,cf_cv_mb_len_max,[
+AC_TRY_COMPILE([
+$ac_includes_default
+#include <limits.h>],
+[
+#if defined(MB_LEN_MAX) && MB_LEN_MAX >= 6
+	${cf_cv_main_return:-return}(0);
+#else
+#error MB_LEN_MAX is not usable
+#endif
+],	[cf_cv_mb_len_max=yes],
+	[cf_cv_mb_len_max=no])])
+if test "$cf_cv_mb_len_max" = yes
+then
+	AC_DEFINE(HAVE_CONSISTENT_MB_LEN_MAX,1,[Define to 1 if MB_LEN_MAX is usable])
+else
+	AC_MSG_WARN(MB_LEN_MAX is missing/inconsistent in system headers)
+fi
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_MIXEDCASE_FILENAMES version: 9 updated: 2021/01/01 16:53:59
 dnl ----------------------

@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1146 $
-#	$Date: 2024/07/27 16:58:08 $
+#	$Revision: 1.1149 $
+#	$Date: 2024/08/17 22:45:40 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -7903,7 +7903,15 @@ kitty+setal|set underline colors (nonstandard),
 
 #### Foot
 # https://codeberg.org/dnkl/foot/
-# Version 1.8.2
+# Version 1.18.1 2024/08/17
+#
+# vttest:
+#	device attributes list 28=rectangular editing
+#	supports rectangle operations, but problems with left/right margins
+#	reports window-size, but not icon or window label
+#	numeric keypad has no application-mode
+#
+# Version 1.8.2 2021/07/31
 #
 # This identifies as a VT220 with 4=sixel and 22=color, however:
 # tack:
@@ -7940,20 +7948,25 @@ foot+base|foot base fragment,
 	bel=^G, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n, dim=\E[2m,
 	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
 	flash=\E]555\E\\, ind=\n, is2=\E[!p\E[4l\E>, kbs=^?,
-	kcbt=\E[Z, oc=\E]104\E\\, op=\E[39;49m, ri=\EM,
-	rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m,
-	rs1=\Ec, rs2=\E[!p\E[4l\E>,
+	kcbt=\E[Z, nel=\EE, oc=\E]104\E\\, op=\E[39;49m, ri=\EM,
+	rmam=\E[?7l, rmkx=\E[?1l\E>, rmm=\E[?1036h\E[?1034l,
+	rmso=\E[27m, rmul=\E[24m, rs1=\Ec, rs2=\E[!p\E[4l\E>,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
-	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=, E3=\E[3J,
+	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=,
+	smm=\E[?1036l\E[?1034h, E3=\E[3J, Smulx=\E[4:%p1%dm,
+	rv=\E\\[>1;[0-9][0-9][0-9][0-9][0-9][0-9];0c,
+	xr=\EP>\\|foot\\([0-9]+\\.[0-9]+\\.[0-9]+(-[0-9]+-g[a-f[0-9]
+	   +)?\\)?\E\\\\,
 	use=att610+cvis, use=ansi+csr, use=ansi+cup,
 	use=ansi+enq, use=ansi+local, use=ansi+idc, use=ansi+idl,
 	use=ansi+rca2, use=ansi+rep, use=ansi+tabs,
 	use=ansi+sgrbold, use=ecma+index, use=ecma+italics,
-	use=ecma+strikeout, use=xterm+acs, use=xterm+alt+title,
-	use=xterm+pcfkeys, use=xterm+sm+1006, use=xterm+tmux2,
-	use=xterm+sl-alt, use=bracketed+paste,
-	use=report+version, use=xterm+focus,
+	use=ecma+strikeout, use=kitty+setal, use=xterm+acs,
+	use=xterm+alt+title, use=xterm+pcfkeys,
+	use=xterm+sm+1006, use=xterm+tmux2, use=xterm+sl-alt,
+	use=bracketed+paste, use=report+version,
+	use=xterm+focus,
 
 ######## WEB CLIENTS
 
@@ -7968,6 +7981,30 @@ foot+base|foot base fragment,
 #
 # it can connect to, and display in, a web browser, or as a standalone Qt
 # application.  Either way, it displays in the current desktop session.
+#
+# Testing AppImage for 3.2.0, on Fedora 40:
+# + appears to implement erase-display by painting a double-line on the screen,
+#   doesn't use full screen for ded though it sort-of works for vi.
+# + sets TERMINFO in its shell, and TERM=domterm-xterm which doesn't work when
+#   doing sudo.  According to the git log, that was April 1, 2023.  The VTE
+#   developers copied this feature (i.e., a partially workable private terminal
+#   database) in February 2024.
+# + the canonical name for the terminal description is still "domterm", and
+#   presumably the "domterm-xterm" alias is a workaround for hardcoded scripts
+#   that look for "xterm".
+# + almost all of the differences between ncurses's "domterm" and DomTerm's
+#   are additions, but (read further) most are untestable due to breakage in
+#   the program.
+# + DomTerm's updated terminal description says it implements italics, but
+# + hangs in tack when doing blink (just before testing italics)
+# + vttest, ncurses test-program also fare badly, e.g., due to improper line
+#   wrapping and/or inability to consistently clear the screen.
+#
+# The review of DomTerm 3.2.0 was prompted by noticing this page
+#     https://domterm.org/Wire-byte-protocol.html
+# which goes on at length for extensions which collide with a commonly-used
+# control for restoring a saved cursor position:
+#     CSI u     Restore cursor (SCORC, also ANSI.SYS).
 #
 # Testing current code (2019/07/06) with Fedora 30:
 # tack
@@ -27598,5 +27635,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2024-07-27
 #	+ modify wezterm, omitting its broken left/right margin feature (report
 #	  by Thayne McCombs) -TD
+#
+# 2024-08-17
+#	+ review/update foot for 1.18.1 -TD
+#	+ add a note about DomTerm 3.2.0 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

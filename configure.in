@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.783 2024/07/20 23:46:58 tom Exp $
+dnl $Id: configure.in,v 1.785 2024/08/17 13:44:13 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.783 $)
+AC_REVISION($Revision: 1.785 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -265,20 +265,7 @@ AC_CHECK_TOOL(AR, ar, ar)
 AC_CHECK_TOOL(NM, nm, nm)
 CF_AR_FLAGS
 
-dnl Special option for use by system-builders: the install-prefix is used to
-dnl adjust the location into which the actual install is done, so that an
-dnl archive can be built without modifying the host system's configuration.
-AC_MSG_CHECKING(for an installation directory prefix)
-AC_ARG_WITH(install-prefix,
-	[  --with-install-prefix=DESTDIR use DESTDIR as installation directory prefix],
-	[case "x$withval" in
-	(xyes|xno)
-		;;
-	(*)	DESTDIR="$withval"
-		;;
-	esac])
-AC_MSG_RESULT([${DESTDIR:-(none)}])
-AC_SUBST(DESTDIR)
+CF_INSTALL_PREFIX
 
 ###############################################################################
 CF_HELP_MESSAGE(Build-Tools Needed to Compile Temporary Applications for Cross-compiling:)
@@ -2553,6 +2540,8 @@ DFT_LWR_MODEL="$DFT_LWR_MODEL"
 ECHO_LD="$ECHO_LD"
 EXTRA_SUFFIX="$EXTRA_SUFFIX"
 FORM_NAME="$FORM_NAME"
+GLOB_FULLPATH_OTHER="$GLOB_FULLPATH_OTHER"
+GLOB_FULLPATH_POSIX="$GLOB_FULLPATH_POSIX"
 LDCONFIG="$LDCONFIG"
 LIBTOOL_VERSION="$LIBTOOL_VERSION"
 LIB_NAME="$LIB_NAME"

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.184 2024/01/19 12:00:00 tom Exp $
+# $Id: Makefile.in,v 1.185 2024/08/10 18:07:57 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -69,7 +69,9 @@ datarootdir	= @datarootdir@
 datadir		= @datadir@
 includesubdir	= @includesubdir@
 
-INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
+INCLUDEDIR	= $(DESTDIR)$(includedir@MERGE_PREFIX@)$(includesubdir)
+BINDIR		= $(DESTDIR)$(bindir@MERGE_PREFIX@)
+LIBDIR		= $(DESTDIR)$(libdir@MERGE_PREFIX@)
 
 PACKAGE		= @PACKAGE@
 
@@ -235,8 +237,8 @@ all libs ::	$(AUTO_SRC) ../lib $(LIBRARIES)
 
 sources:	$(AUTO_SRC)
 
-$(DESTDIR)$(bindir) \
-$(DESTDIR)$(libdir) :
+$(BINDIR) \
+$(LIBDIR) :
 	mkdir -p $@
 
 ../lib : ; mkdir $@

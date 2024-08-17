@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4160 2024/08/10 09:45:21 tom Exp $
+-- $Id: NEWS,v 1.4164 2024/08/17 22:54:38 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240817
+	+ review/update foot for 1.18.1 -TD
+	+ add a note about DomTerm 3.2.0 -TD
+	+ add new glob-expressions variables to list in config.status script
+	  (patch by Werner Fink).
+	+ add --enable-install-prefix to modify behavior of $DESTDIR to merge
+	  or replace the value set by --prefix (adapted from suggestion by
+	  Eli Zaretskii).
 
 20240810
 	+ modify misc/Makefile.in and misc/run_tic.in so that $DESTDIR is set
