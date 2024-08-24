@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2022 Thomas E. Dickey                                     *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2002-2006,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_keyok.c,v 1.9 2022/12/10 23:31:31 tom Exp $
+ * $Id: demo_keyok.c,v 1.10 2024/08/24 17:16:49 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23
@@ -93,6 +93,8 @@ main(int argc, char *argv[])
 
     while ((ch = wgetch(win)) != ERR) {
 	const char *name = keyname(ch);
+	if (ch == QUIT)
+	    break;
 	if (ch == ESCAPE && prior == ch)
 	    break;
 	prior = ch;

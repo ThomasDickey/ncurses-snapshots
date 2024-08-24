@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,11 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.163 2023/12/16 17:27:47 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.164 2024/08/24 22:57:24 tom Exp $")
+
+#ifndef ACTUAL_TIC
+#define ACTUAL_TIC "tic"
+#endif
 
 #define MAX_STRING	1024	/* maximum formatted string */
 
@@ -60,6 +64,9 @@ typedef char path[PATH_MAX];
 
 static ENTRY *entries;		/* terminfo entries */
 static int termcount;		/* count of terminal entries */
+
+static const char usage_string[] = \
+"Usage: %s [options] [-A directory] [-B directory] [termname...]";
 
 static bool limited = TRUE;	/* "-r" option is not set */
 static bool quiet = FALSE;
@@ -1216,7 +1223,6 @@ usage(void)
 #define DATA(s) s "\n"
     static const char head[] =
     {
-	DATA("Usage: infocmp [options] [-A directory] [-B directory] [termname...]")
 	DATA("")
 	DATA("Options:")
     };
@@ -1271,14 +1277,16 @@ usage(void)
     const size_t last = SIZEOF(options);
     const size_t left = (last + 1) / 2;
     size_t n;
+    FILE *fp = stderr;
 
-    fputs(head, stderr);
+    fprintf(fp, usage_string, _nc_progname);
+    fputs(head, fp);
     for (n = 0; n < left; n++) {
 	size_t m = n + left;
 	if (m < last)
-	    fprintf(stderr, "%-40.40s%s\n", options[n], options[m]);
+	    fprintf(fp, "%-40.40s%s\n", options[n], options[m]);
 	else
-	    fprintf(stderr, "%s\n", options[n]);
+	    fprintf(fp, "%s\n", options[n]);
     }
     ExitProgram(EXIT_FAILURE);
 }
@@ -1933,8 +1941,8 @@ main(int argc, char *argv[])
 				   tname[0]);
 		if (!quiet)
 		    (void)
-			printf("#\tReconstructed via infocmp from file: %s\n",
-			       tfile[0]);
+			printf("#\tReconstructed via %s from file: %s\n",
+			       _nc_progname, tfile[0]);
 		dump_entry(&entries[0].tterm,
 			   suppress_untranslatable,
 			   limited,
@@ -1980,7 +1988,8 @@ main(int argc, char *argv[])
     } else if (compare == C_USEALL) {
 	(void) fprintf(stderr, "Sorry, -u doesn't work with -F\n");
     } else if (compare == C_DEFAULT) {
-	(void) fprintf(stderr, "Use `tic -[CI] <file>' for this.\n");
+	(void) fprintf(stderr,
+		       "Use `" ACTUAL_TIC " -[CI] <file>' for this.\n");
     } else if (argc - optind != 2) {
 	(void) fprintf(stderr,
 		       "File comparison needs exactly two file arguments.\n");

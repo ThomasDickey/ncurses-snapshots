@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -39,7 +39,7 @@
 #include <progs.priv.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tabs.c,v 1.53 2023/11/04 20:46:09 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.54 2024/08/24 22:56:43 tom Exp $")
 
 static GCC_NORETURN void usage(void);
 
@@ -445,7 +445,6 @@ usage(void)
 #define DATA(s) s "\n"
     static const char msg[] =
     {
-	DATA("Usage: tabs [options] [tabstop-list]")
 	DATA("")
 	DATA("Options:")
 	DATA("  -0       reset tabs")
@@ -468,9 +467,11 @@ usage(void)
 	DATA("or 1,+10,+10 which is the same.")
     };
 #undef DATA
+    FILE *fp = stderr;
 
     fflush(stdout);
-    fputs(msg, stderr);
+    fprintf(fp, "Usage: %s [options] [tabstop-list]\n", _nc_progname);
+    fputs(msg, fp);
     ExitProgram(EXIT_FAILURE);
 }
 
