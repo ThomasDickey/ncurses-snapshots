@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 2008-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  * Author: Juergen Pfeifer, 2008-on                                         *
  ****************************************************************************/
 
-/* $Id: win32_curses.h,v 1.3 2021/06/17 21:26:02 tom Exp $ */
+/* $Id: win32_curses.h,v 1.4 2024/08/31 18:17:44 tom Exp $ */
 
 /*
  * This is the interface we use on Windows to mimic the control of the settings
@@ -67,9 +67,6 @@ extern NCURSES_EXPORT(int)   _nc_console_flush(void* handle);
 
 #undef sleep
 #define sleep(n) Sleep((n) * 1000)
-
-#undef gettimeofday
-#define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 
 #endif /* _NC_WIN32_CURSES_H */
 #endif /* _WIN32||_WIN64 */

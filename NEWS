@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4166 2024/08/24 20:11:44 tom Exp $
+-- $Id: NEWS,v 1.4169 2024/08/31 21:21:26 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,18 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240831
+	+ build-fix for a case in msys2 where gettimeofday() was available but
+	  the fallback was partly configured.
+	> patch by Rafael Kitover:
+	+ separate the _NC_WINDOWS platform macro into _NC_WINDOWS_NATIVE,
+	  for MinGW and other native Win32 support, and _NC_WINDOWS, to make
+	  some Win32 features available under the Cygwin runtime, in this case
+	  the term-driver.
+	+ make some minor adjustments to allow
+	      ./configure --enable-term-driver
+	  to also work on Cygwin platforms such as Cygwin and MSYS2.
 
 20240824
 	+ modify infocmp and tabs to use actual name in usage and header.

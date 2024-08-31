@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2023 Thomas E. Dickey                                     *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.28 2023/09/16 16:09:33 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.29 2024/08/31 15:55:00 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
@@ -78,7 +78,7 @@ NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 	    request = remaining;
 	}
     }
-#elif defined(_NC_WINDOWS)
+#elif defined(_NC_WINDOWS_NATIVE)
     Sleep((DWORD) ms);
 #else
     _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));

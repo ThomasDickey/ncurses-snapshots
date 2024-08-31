@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.133 2024/07/27 19:15:16 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.134 2024/08/31 10:46:01 Rafael.Kitover Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -200,7 +200,7 @@ make_db_root(const char *path)
 
 	if ((rc = stat(path, &statbuf)) == -1) {
 	    rc = mkdir(path
-#ifndef _NC_WINDOWS
+#ifndef _NC_WINDOWS_NATIVE
 		       ,0777
 #endif
 		);

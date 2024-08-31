@@ -31,15 +31,17 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.12 2024/05/04 19:17:03 tom Exp $ */
+/* $Id: nc_win32.h,v 1.13 2024/08/31 18:17:21 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
 
+#include <ncurses_cfg.h>
+
 #if defined(_WIN32) || defined(_WIN64)
 
-#ifndef _NC_WINDOWS
-#define _NC_WINDOWS
+#ifndef _NC_WINDOWS_NATIVE
+#define _NC_WINDOWS_NATIVE
 #endif
 
 #ifdef TERMIOS

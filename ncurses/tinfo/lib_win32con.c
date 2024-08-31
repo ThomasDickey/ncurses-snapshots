@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,9 +38,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.14 2023/08/05 20:44:38 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.15 2024/08/31 15:55:10 tom Exp $")
 
-#ifdef _NC_WINDOWS
+#if defined(_NC_WINDOWS)
 
 #ifdef _NC_MINGW
 #include <wchar.h>

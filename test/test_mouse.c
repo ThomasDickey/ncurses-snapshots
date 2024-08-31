@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.31 2024/03/30 20:45:31 tom Exp $
+ * $Id: test_mouse.c,v 1.32 2024/08/31 10:46:01 Rafael.Kitover Exp $
  *
  * Author: Leonid S Usov
  *
@@ -31,7 +31,7 @@
 
 #include <test.priv.h>
 
-#if defined(NCURSES_MOUSE_VERSION) && !defined(_NC_WINDOWS)
+#if defined(NCURSES_MOUSE_VERSION) && !defined(_NC_WINDOWS_NATIVE)
 
 static int logoffset = 0;
 

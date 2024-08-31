@@ -31,12 +31,14 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_mingw.h,v 1.12 2024/05/04 19:16:38 tom Exp $ */
+/* $Id: nc_mingw.h,v 1.13 2024/08/31 15:50:24 tom Exp $ */
 
 #ifndef NC_MINGW_H
 #define NC_MINGW_H 1
 
-#ifdef _WIN32
+#include <ncurses_cfg.h>
+
+#if defined(_WIN32) || defined(__MSYS__) || defined(__CYGWIN__)
 
 #ifdef WINVER
 #  if WINVER < 0x0501
@@ -85,6 +87,6 @@ NCURSES_EXPORT(int) _nc_wcwidth(uint32_t);
 }
 #endif
 
-#endif /* _WIN32 */
+#endif /* _WIN32|__MSYS__|__CYGWIN__ */
 
 #endif /* NC_MINGW_H */

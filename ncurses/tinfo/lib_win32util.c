@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,9 +34,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32util.c,v 1.4 2023/06/17 17:19:06 tom Exp $")
+MODULE_ID("$Id: lib_win32util.c,v 1.5 2024/08/31 15:55:16 tom Exp $")
 
-#ifdef _NC_WINDOWS
+#ifdef _NC_WINDOWS_NATIVE
 #include <io.h>
 
 #ifdef _NC_CHECK_MINTTY
@@ -131,4 +131,4 @@ _nc_gettimeofday(struct timeval *tv, void *tz GCC_UNUSED)
 }
 #endif // HAVE_GETTIMEOFDAY == 2
 
-#endif // _NC_WINDOWS
+#endif // _NC_WINDOWS_NATIVE

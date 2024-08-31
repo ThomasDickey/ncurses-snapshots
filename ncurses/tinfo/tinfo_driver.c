@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.75 2024/05/11 19:20:44 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.76 2024/08/31 10:46:01 Rafael.Kitover Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -1504,7 +1504,7 @@ typedef struct DriverEntry {
 
 static DRIVER_ENTRY DriverTable[] =
 {
-#ifdef _NC_WINDOWS
+#ifdef USE_WIN32CON_DRIVER
     {"win32console", &_nc_WIN_DRIVER},
 #endif
     {"tinfo", &_nc_TINFO_DRIVER}	/* must be last */

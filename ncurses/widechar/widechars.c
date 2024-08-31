@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  * Copyright 2012,2013 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,9 +31,9 @@
 
 #if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: widechars.c,v 1.9 2020/08/29 16:22:03 juergen Exp $")
+MODULE_ID("$Id: widechars.c,v 1.10 2024/08/31 15:55:27 tom Exp $")
 
-#if (defined(_NC_WINDOWS)) && !defined(_NC_MSC)
+#if defined(_NC_MINGW)
 /*
  * MinGW has wide-character functions, but they do not work correctly.
  */
@@ -148,6 +148,6 @@ _nc_wctomb(char *s, wchar_t wc)
     return result;
 }
 
-#endif /* _NC_WINDOWS */
+#endif /* _NC_MINGW */
 
 #endif /* USE_WIDEC_SUPPORT */

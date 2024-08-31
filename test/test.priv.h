@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.218 2024/02/10 14:40:03 tom Exp $ */
+/* $Id: test.priv.h,v 1.219 2024/08/31 10:46:01 Rafael.Kitover Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -1047,12 +1047,12 @@ extern int TABSIZE;
 #define EXIT_FAILURE 1
 #endif
 
-#undef _NC_WINDOWS
+#undef _NC_WINDOWS_NATIVE
 #if (defined(_WIN32) || defined(_WIN64))
-#define _NC_WINDOWS 1
+#define _NC_WINDOWS_NATIVE 1
 #endif
 
-#if defined(_NC_WINDOWS) || defined(USE_WIN32CON_DRIVER)
+#if defined(_NC_WINDOWS_NATIVE) || defined(USE_WIN32CON_DRIVER)
 
 #if defined(PDCURSES)
 #ifdef WINVER
@@ -1184,7 +1184,7 @@ extern char *_nc_strstr(const char *, const char *);
 #define InitAndCatch(init,handler) do { init; CATCHALL(handler); } while (0)
 #endif
 
-#if defined(_NC_WINDOWS) || defined(USE_WIN32CON_DRIVER)
+#if defined(_NC_WINDOWS_NATIVE) || defined(USE_WIN32CON_DRIVER)
 #define SetupAlarm(opt)	(void)opt
 #else
 #define SetupAlarm(opt)	if (opt) alarm((unsigned)opt)

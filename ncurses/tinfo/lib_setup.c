@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.242 2024/07/27 19:14:45 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.244 2024/08/31 21:15:54 tom Exp $")
 
 /****************************************************************************
  *
@@ -334,7 +334,6 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 	char *s;
 	char cc;
 	const char *skipped;
-	int scanned;
 
 	s = memset(buf, '\0', sizeof(buf));
 	do {
@@ -350,7 +349,7 @@ get_position(TERMINAL *termp, int fd, int *row, int *col)
 	cc = '\0';
 	if (skipped != buf
 	    && *skipped != '\0'
-	    && (scanned = sscanf(skip_csi(buf), "%d;%d%c", &y, &x, &cc)) == 3
+	    && sscanf(skip_csi(buf), "%d;%d%c", &y, &x, &cc) == 3
 	    && (cc == 'R')) {
 	    *row = y;
 	    *col = x;
@@ -759,7 +758,7 @@ _nc_unicode_locale(void)
     static int result = 0;
 
     if (!initialized) {
-#if defined(_NC_WINDOWS) && USE_WIDEC_SUPPORT
+#if defined(_NC_WINDOWS_NATIVE) && USE_WIDEC_SUPPORT
 	result = 1;
 #elif HAVE_LANGINFO_CODESET
 	char *env = nl_langinfo(CODESET);

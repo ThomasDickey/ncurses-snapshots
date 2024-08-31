@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_print.c,v 1.32 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.33 2024/08/31 10:46:01 Rafael.Kitover Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
@@ -98,7 +98,7 @@ NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
      * kernel will ship the contiguous clist items from the last write
      * immediately.
      */
-#ifndef _NC_WINDOWS
+#ifndef _NC_WINDOWS_NATIVE
     (void) sleep(0);
 #endif
     free(mybuf);

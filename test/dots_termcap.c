@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2013-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,14 +30,14 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_termcap.c,v 1.32 2023/02/25 18:11:21 tom Exp $
+ * $Id: dots_termcap.c,v 1.33 2024/08/31 15:55:46 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
 #define USE_TINFO
 #include <test.priv.h>
 
-#if !defined(_NC_WINDOWS)
+#if !defined(_NC_WINDOWS_NATIVE)
 #include <sys/time.h>
 #endif
 
@@ -162,7 +162,7 @@ static void
 my_napms(int ms)
 {
     if (ms > 0) {
-#if defined(_NC_WINDOWS)
+#if defined(_NC_WINDOWS_NATIVE)
 	Sleep((unsigned int) ms);
 #else
 	struct timeval data;

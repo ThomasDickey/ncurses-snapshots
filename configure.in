@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.785 2024/08/17 13:44:13 tom Exp $
+dnl $Id: configure.in,v 1.786 2024/08/31 10:46:01 Rafael.Kitover Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.785 $)
+AC_REVISION($Revision: 1.786 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -2075,7 +2075,7 @@ LIB_SUBSETS="${LIB_SUBSETS}base"
 if test "$with_term_driver" != no ; then
 	LIB_SUBSETS="${LIB_SUBSETS}+port_drivers"
 	case "$cf_cv_system_name" in
-	(*mingw32*|*mingw64*)
+	(*mingw32*|*mingw64*|*msys*|*cygwin*)
 		if test "x$with_exp_win32" = xyes ; then
 			LIB_SUBSETS="${LIB_SUBSETS}+port_tinfo+port_win32"
 		else
