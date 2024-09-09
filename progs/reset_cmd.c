@@ -547,6 +547,9 @@ send_init_strings(int fd GCC_UNUSED, TTY * old_settings)
 				  ? reset_2string
 				  : init_2string);
 
+	/* return to main buffer */
+	need_flush |= sent_string(exit_ca_mode);
+
 	if (VALID_STRING(clear_margins)) {
 	    need_flush |= sent_string(clear_margins);
 	}
