@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.99 2024/07/20 21:43:33 tom Exp @
+  * @Id: curs_getch.3x,v 1.101 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2024-07-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getch 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2024-07-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -49,16 +49,16 @@
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>getch</STRONG>, <STRONG>wgetch</STRONG>, <STRONG>mvgetch</STRONG>, <STRONG>mvwgetch</STRONG>, <STRONG>ungetch</STRONG>, <STRONG>has_key</STRONG> - get (or push back)
-       characters from <EM>curses</EM> terminal keyboard
+       characters from <EM>curses</EM> terminal keyboard buffer
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
        <STRONG>int</STRONG> <STRONG>getch(void);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wgetch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wgetch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvgetch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwgetch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwgetch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>ungetch(int</STRONG> <EM>c</EM><STRONG>);</STRONG>
 
@@ -367,16 +367,17 @@
        fewer.  A <EM>curses</EM> application can expect such a keyboard to transmit key
        codes   <STRONG>KEY_UP</STRONG>,   <STRONG>KEY_DOWN</STRONG>,  <STRONG>KEY_LEFT</STRONG>,  <STRONG>KEY_RIGHT</STRONG>,  <STRONG>KEY_HOME</STRONG>,  <STRONG>KEY_END</STRONG>,
        <STRONG>KEY_PPAGE</STRONG> (Page Up), <STRONG>KEY_NPAGE</STRONG> (Page  Down),  <STRONG>KEY_IC</STRONG>  (Insert),  <STRONG>KEY_DC</STRONG>
-       (Delete), and <STRONG>KEY_F(</STRONG><EM>n</EM><STRONG>)</STRONG> for 1 &lt;= <EM>n</EM> &lt;= 12.
+       (Delete), <STRONG>KEY_A1</STRONG>, <STRONG>KEY_A3</STRONG>, <STRONG>KEY_B2</STRONG>, <STRONG>KEY_C1</STRONG>, <STRONG>KEY_C3</STRONG>, and <STRONG>KEY_F(</STRONG><EM>n</EM><STRONG>)</STRONG> for 1 &lt;=
+       <EM>n</EM> &lt;= 12.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
        In <EM>ncurses</EM>, when a window's "no time-out" mode is <EM>not</EM> set, the <STRONG>ESCDELAY</STRONG>
-       variable configures the duration of the timer used  to  disambiguate  a
-       function  key character sequence from a series of key strokes beginning
+       variable  configures  the  duration of the timer used to disambiguate a
+       function key character sequence from a series of key strokes  beginning
        with ESC typed by the user; see <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
-       <STRONG>has_key</STRONG> was designed for <EM>ncurses</EM>, and is  not  found  in  SVr4  <EM>curses</EM>,
+       <STRONG>has_key</STRONG>  was  designed  for  <EM>ncurses</EM>,  and is not found in SVr4 <EM>curses</EM>,
        4.4BSD <EM>curses</EM>, or any other previous <EM>curses</EM> implementation.
 
 
@@ -384,50 +385,50 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       Except as noted in section "EXTENSIONS" above, X/Open Curses,  Issue  4
+       Except  as  noted in section "EXTENSIONS" above, X/Open Curses, Issue 4
        describes these functions.  It specifies no error conditions for them.
 
        <STRONG>wgetch</STRONG> reads only single-byte characters.
 
-       The  echo  behavior  of  these  functions on input of <STRONG>KEY_</STRONG> or backspace
+       The echo behavior of these functions on  input  of  <STRONG>KEY_</STRONG>  or  backspace
        characters is not documented in SVr4 <EM>curses</EM>.
 
-       The behavior of <STRONG>wgetch</STRONG> in  the  presence  of  signal  handlers  is  not
-       documented  in  SVr4  <EM>curses</EM>  and  is unspecified by X/Open Curses.  In
-       historical <EM>curses</EM> implementations, it varied depending on  whether  the
-       operating  system's  dispatch  of  a  signal to a handler interrupted a
+       The  behavior  of  <STRONG>wgetch</STRONG>  in  the  presence  of signal handlers is not
+       documented in SVr4 <EM>curses</EM> and is  unspecified  by  X/Open  Curses.   In
+       historical  <EM>curses</EM>  implementations, it varied depending on whether the
+       operating system's dispatch of a signal  to  a  handler  interrupted  a
        <STRONG>read(2)</STRONG> call in progress, and also (in some implementations) whether an
-       input  timeout  or  non-blocking  mode had been set.  A portable <EM>curses</EM>
-       application prepares  for  two  cases:  (a)  signal  receipt  does  not
+       input timeout or non-blocking mode had been  set.   A  portable  <EM>curses</EM>
+       application  prepares  for  two  cases:  (a)  signal  receipt  does not
        interrupt <STRONG>wgetch</STRONG>; or (b) signal receipt interrupts <STRONG>wgetch</STRONG> and causes it
        to return <STRONG>ERR</STRONG> with <STRONG>errno</STRONG> set to <STRONG>EINTR</STRONG>.
 
        <STRONG>KEY_MOUSE</STRONG> is mentioned in X/Open Curses, along with a few related <EM>term-</EM>
-       <EM>info</EM>  capabilities, but no higher-level functions use the feature.  The
+       <EM>info</EM> capabilities, but no higher-level functions use the feature.   The
        implementation in <EM>ncurses</EM> is an extension.
 
-       <STRONG>KEY_RESIZE</STRONG> and <STRONG>has_key</STRONG> are extensions first  implemented  for  <EM>ncurses</EM>.
+       <STRONG>KEY_RESIZE</STRONG>  and  <STRONG>has_key</STRONG>  are extensions first implemented for <EM>ncurses</EM>.
        By  2022,  <EM>PDCurses</EM>  and  NetBSD  <EM>curses</EM>  had  added  them  along  with
        <STRONG>KEY_MOUSE</STRONG>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       ECMA-6 "7-bit  coded  Character  Set"  &lt;https://ecma-international.org/
+       ECMA-6  "7-bit  coded  Character  Set" &lt;https://ecma-international.org/
        publications-and-standards/standards/ecma-6/&gt;
 
-       ECMA-48   "Control   Functions  for  Coded  Character  Sets"  &lt;https://
+       ECMA-48  "Control  Functions  for  Coded  Character   Sets"   &lt;https://
        ecma-international.org/publications-and-standards/standards/ecma-48/&gt;
 
-       <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG> describes comparable functions of the <EM>ncurses</EM>  library
+       <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
        in its wide-character configuration (<EM>ncursesw</EM>).
 
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>,  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>, <STRONG>ascii(7)</STRONG>
 
 
 
-ncurses 6.5                       2024-07-20                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

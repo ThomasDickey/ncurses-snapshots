@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1149 $
-#	$Date: 2024/08/17 22:45:40 $
+#	$Revision: 1.1150 $
+#	$Date: 2024/09/07 16:23:31 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3683,7 +3683,8 @@ iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 # features.
 #
 # iTerm2 3.5.0 comes with a 4-year-old copy of xterm's terminfo (June 2020),
-# which is modified:
+# which is modified, using the ncurses TERMINFO_DIRS variable to substitute
+# this locally:
 # + xterm-nrc and xterm+pcfN are removed
 # + the developer made changes to adapt it to the 16-year-old version of
 #   ncurses bundled with MacOS, i.e., changing the mouse protocol to the
@@ -7985,10 +7986,10 @@ foot+base|foot base fragment,
 # Testing AppImage for 3.2.0, on Fedora 40:
 # + appears to implement erase-display by painting a double-line on the screen,
 #   doesn't use full screen for ded though it sort-of works for vi.
-# + sets TERMINFO in its shell, and TERM=domterm-xterm which doesn't work when
-#   doing sudo.  According to the git log, that was April 1, 2023.  The VTE
-#   developers copied this feature (i.e., a partially workable private terminal
-#   database) in February 2024.
+# + sets TERMINFO in its shell (imitating iTerm2), and TERM=domterm-xterm which
+#   doesn't work when doing sudo.  According to the git log, that was April 1,
+#   2023.  The VTE developers copied the feature (i.e., a partially workable
+#   private terminal database) in February 2024.
 # + the canonical name for the terminal description is still "domterm", and
 #   presumably the "domterm-xterm" alias is a workaround for hardcoded scripts
 #   that look for "xterm".
@@ -27639,5 +27640,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2024-08-17
 #	+ review/update foot for 1.18.1 -TD
 #	+ add a note about DomTerm 3.2.0 -TD
+#
+# 2024-09-07
+#	+ update comments -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

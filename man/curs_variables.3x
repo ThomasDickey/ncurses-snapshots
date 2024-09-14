@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.49 2024/06/22 21:25:23 tom Exp $
-.TH curs_variables 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.51 2024/09/14 20:06:50 tom Exp $
+.TH curs_variables 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -47,6 +47,51 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
+.\" URL hyperlink support macros from groff's "an-ext.tmac"
+.
+.\" Save the automatic hyphenation mode.
+.\"
+.\" In AT&T troff, there was no register exposing the hyphenation mode,
+.\" and no way to save and restore it.  Set `mH` to a reasonable value
+.\" for your implementation and preference.
+.de mY
+.  ie !\\n(.g \
+.    nr mH 14
+.  el \
+.    do nr mH \\n[.hy] \" groff extension register
+..
+.
+.\" Prepare link text for mail/web hyperlinks.  `MT` and `UR` call this.
+.de mV
+.  ds mU \\$1\"
+..
+.
+.\" Emit hyperlink.  The optional argument supplies trailing punctuation
+.\" after link text.  `ME` and `UE` call this.
+.de mQ
+.  mY
+.  nh
+<\\*(mU>\\$1
+.  hy \\n(mH
+.  rm mU
+..
+.
+.\" Start URL.
+.\" .UR url
+.if !\n(.g \{\
+.de UR
+.  mV \\$1
+..
+.\}
+.
+.\" End URL.
+.\" .UE [punctuation]
+.if !\n(.g \{\
+.de UE
+.  mQ \\$1
+..
+.\}
 .
 .SH NAME
 \fI\%bool\fP,
@@ -316,6 +361,13 @@ Consequently,
 most users have decided either to override the value,
 or to rely upon its default.
 .SH SEE ALSO
+.na
+.UR https://\*:unicode\*:.org/\*:reports/\*:tr29/
+[UAX #29] \*(``Unicode Standard Annex #29: Unicode Text
+Segmentation\*(''
+.UE
+.ad
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_color\fP(3X),
 \fB\%curs_opaque\fP(3X),
@@ -323,7 +375,3 @@ or to rely upon its default.
 \fB\%curs_threads\fP(3X),
 \fB\%term_variables\fP(3X),
 \fB\%terminfo\fP(5)
-.PP
-[UAX #29] \*(``Unicode Standard Annex #29: Unicode Text
-Segmentation\*('';
-\%<https://\*:unicode\*:.org/\*:reports/\*:tr29/>

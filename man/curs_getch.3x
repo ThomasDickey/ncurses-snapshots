@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.99 2024/07/20 21:43:33 tom Exp $
-.TH curs_getch 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.101 2024/09/14 20:06:50 tom Exp $
+.TH curs_getch 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -57,15 +57,15 @@
 \fB\%mvwgetch\fP,
 \fB\%ungetch\fP,
 \fB\%has_key\fP \-
-get (or push back) characters from \fIcurses\fR terminal keyboard
+get (or push back) characters from \fIcurses\fR terminal keyboard buffer
 .SH SYNOPSIS
 .nf
 .B #include <curses.h>
 .PP
 .B int getch(void);
-.B int wgetch(WINDOW *\fIwin\fP);
+.B int wgetch(WINDOW * \fIwin\fP);
 .B int mvgetch(int \fIy\fP, int \fIx\fP);
-.B int mvwgetch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP);
+.B int mvwgetch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
 .B int ungetch(int \fIc\fP);
 .PP
@@ -594,6 +594,11 @@ application can expect such a keyboard to transmit key codes
 (Insert),
 .B \%KEY_DC
 (Delete),
+.BR \%KEY_A1 ","
+.BR \%KEY_A3 ","
+.BR \%KEY_B2 ","
+.BR \%KEY_C1 ","
+.BR \%KEY_C3 ","
 and
 .BI \%KEY_F( n )
 for 1 \(<=

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgrnd.3x,v 1.42 2024/04/20 18:54:36 tom Exp @
+  * @Id: curs_bkgrnd.3x,v 1.44 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgrnd 3x 2024-04-20 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_bkgrnd 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgrnd 3x 2024-04-20 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_bkgrnd 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 
@@ -65,15 +65,15 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       The  <EM>background</EM>  of  a  <EM>curses</EM>  window   (in   the   library's   "wide"
-       configuration)  is  a  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  combining  a  set  of  attributes  (see
-       <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>) with a complex character called the <EM>blank</EM> <EM>character.</EM>
+       The <EM>background</EM> of a <EM>curses</EM> window (in the library's wide configuration)
+       is a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> combining a set of attributes (see <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>) with the
+       window's blank character.
 
-       The blank character is a spacing character that  populates  a  window's
-       character  cells  when  their  contents are erased without replacement.
-       The background's attributes are combined with all non-blank  characters
-       written  to  the  window,  as  with  the  <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG> and <STRONG><A HREF="curs_ins_wch.3x.html">wins_wch(3x)</A></STRONG>
-       families of functions.
+       The <EM>blank</EM> <EM>character</EM> is a spacing complex  character  that  populates  a
+       window's  character  cells  when  their  contents  are  erased  without
+       replacement.  The background's attributes are combined  with  all  non-
+       blank  characters  written  to the window, as with the <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG> and
+       <STRONG><A HREF="curs_ins_wch.3x.html">wins_wch(3x)</A></STRONG> families of functions.
 
        The blank character and  attributes  of  the  background  combine  with
        characters  written  to  the window as described below.  The background
@@ -156,7 +156,7 @@
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <STRONG>bkgrnd</STRONG>, <STRONG>bkgrndset</STRONG>, and <STRONG>getbkgrnd</STRONG> may be implemented as macros.
 
-       Unlike  their  counterparts in the non-"wide" configuration of <EM>ncurses</EM>,
+       Unlike  their  counterparts  in  the non-wide configuration of <EM>ncurses</EM>,
        <STRONG>getbkgrnd</STRONG> and <STRONG>wgetbkgrnd</STRONG> supply the background character and  attribute
        in a modifiable <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> parameter, not as the return value.
 
@@ -170,14 +170,14 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>  describes  the corresponding functions in the non-"wide"
+       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>  describes  the  corresponding  functions in the non-wide
        configuration of <EM>ncurses</EM>.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-04-20                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

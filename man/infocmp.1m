@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.110 2024/05/11 20:39:53 tom Exp $
-.TH @INFOCMP@ 1M 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.112 2024/09/14 20:06:50 tom Exp $
+.TH @INFOCMP@ 1M 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -53,7 +53,10 @@
 \fB@INFOCMP@\fP \-
 compare or print out \fIterminfo\fP descriptions
 .SH SYNOPSIS
-\fB@INFOCMP@\fP [\fB\-\
+.na
+.HP
+.B @INFOCMP@
+.RB [ \-\
 1\
 c\
 C\
@@ -80,10 +83,24 @@ U\
 V\
 W\
 x\
-\fP]
-      [\fB\-v\fR \fIn\fR] [\fB\-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR] [\fB\-Q\fR \fIn\fR] [\fB\-R \fBsubset\fR]
-      [\fB\-w\fP\ \fIwidth\fP] [\fB\-A\fP\ \fIdirectory\fP] [\fB\-B\fP\ \fIdirectory\fP]
-      [\fIterminal-type\fP ...]
+]
+.RB [ \-A\ \c
+.IR directory ]
+.RB [ \-B\ \c
+.IR directory ]
+.RB [ \-Q\ \c
+.IR encoding ]
+.RB [ \-R\ \c
+.IR subset ]
+.RB [ \-s\ \c
+.IR key ]
+.RB [ \-v\ \c
+.IR level ]
+.RB [ \-w\ \c
+.IR width ]
+.RI [ \%terminal\%-type
+\&.\|.\|.\& ]
+.ad
 .SH DESCRIPTION
 \fB@INFOCMP@\fP can be used to compare a binary \fBterminfo\fP entry with other
 terminfo entries, rewrite a \fBterminfo\fP description to take advantage of the
@@ -111,7 +128,7 @@ terminals, the value returned depends on the type of the capability:
 \fBNULL\fP for missing integer or string variables
 .PP
 Use the \fB\-q\fP option to show the distinction between
-\fIabsent\fP and \fIcancelled\fP capabilities.
+\fIabsent\fP and \fIcanceled\fP capabilities.
 .PP
 These options produce a list which you can use to compare two
 or more terminal descriptions:
@@ -277,7 +294,7 @@ the compilation time, is specifying extra \fBuse=\fP fields that are
 superfluous.
 \fB@INFOCMP@\fP will flag any other \fIterminal-type use=\fP fields that
 were not needed.
-.SS "Changing Databases [\-A \fIdirectory\fR] [\-B \fIdirectory\fR]"
+.SS "Changing Databases [\-A \f(BIdirectory\fP] [\-B \f(BIdirectory\fP]"
 Like other \fI\%ncurses\fP utilities,
 \fB@INFOCMP@\fP looks for the terminal descriptions in several places.
 You can use the \fI\%TERMINFO\fP and \fI\%TERMINFO_DIRS\fP environment
@@ -478,7 +495,8 @@ Make the comparison listing shorter by omitting subheadings, and using
 \*(``\-\*('' for absent capabilities, \*(``@\*(''
 for canceled rather than \*(``NULL\*(''.
 .bP
-However, show differences between absent and cancelled capabilities.
+However,
+show differences between absent and canceled capabilities.
 .bP
 Omit the \*(``Reconstructed from\*('' comment for source listings.
 .RE
@@ -607,7 +625,8 @@ The
 \fB\-t\fP
 options are not supported in SVr4 curses.
 .PP
-SVr4 infocmp does not distinguish between absent and cancelled capabilities.
+SVr4
+infocmp does not distinguish between absent and canceled capabilities.
 Also, it shows missing integer capabilities as \fB\-1\fP
 (the internal value used to represent missing integers).
 This implementation shows those as \*(``NULL\*('',

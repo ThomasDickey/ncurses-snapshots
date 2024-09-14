@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.67 2024/06/22 21:24:26 tom Exp @
+  * @Id: curs_kernel.3x,v 1.70 2024/09/14 20:14:54 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2024-06-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2024-06-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -124,10 +124,10 @@
 
 
 </PRE><H3><a name="h3-curs_set">curs_set</a></H3><PRE>
-       The  <STRONG>curs_set</STRONG>  routine  sets  the cursor state to invisible, normal, or
-       very visible for <STRONG>visibility</STRONG> equal to <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG> respectively.   If  the
-       terminal  supports  the <EM>visibility</EM> requested, the previous <EM>cursor</EM> state
-       is returned; otherwise, <STRONG>ERR</STRONG> is returned.
+       <STRONG>curs_set</STRONG> adjusts the cursor visibility to "invisible", "visible", "very
+       visible", as its argument is <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG>, respectively.  It returns  the
+       previous  <EM>visibility</EM>  if  the  requested  one  is  supported,  and  <STRONG>ERR</STRONG>
+       otherwise.
 
 
 </PRE><H3><a name="h3-mvcur">mvcur</a></H3><PRE>
@@ -178,41 +178,44 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except for <STRONG>curs_set</STRONG>, these routines always return <STRONG>OK</STRONG>.
+       Except  for  <STRONG>curs_set</STRONG>,  these functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on
+       failure.
 
-       <STRONG>curs_set</STRONG>  returns  the  previous  cursor state, or <STRONG>ERR</STRONG> if the requested
-       <EM>visibility</EM> is not supported.
+       <STRONG>curs_set</STRONG> returns the previous cursor visibility, and returns <STRONG>ERR</STRONG> if the
+       terminal type does not support the requested <EM>visibility</EM>.
 
-       X/Open defines no error conditions.  In this implementation
+       <STRONG>napms</STRONG> always succeeds.
 
-       <STRONG>def_prog_mode</STRONG>, <STRONG>def_shell_mode</STRONG>, <STRONG>reset_prog_mode</STRONG>, <STRONG>reset_shell_mode</STRONG>
-            return <STRONG>ERR</STRONG> if the terminal was not initialized, or if the I/O call
-            to obtain the terminal settings fails.
+       <STRONG>mvcur</STRONG>  fails  if  the  position  (<EM>newrow</EM>, <EM>newcol</EM>) is outside the screen
+       boundaries.
 
-       <STRONG>ripoffline</STRONG>
-            returns  <STRONG>ERR</STRONG> if the maximum number of ripped-off lines exceeds the
-            maximum (5).
+       In <EM>ncurses</EM>,
+
+       <STRONG>o</STRONG>   <STRONG>def_prog_mode</STRONG>,      <STRONG>def_shell_mode</STRONG>,      <STRONG>reset_prog_mode</STRONG>,       and
+           <STRONG>reset_shell_mode</STRONG> return <STRONG>ERR</STRONG> if the terminal was not initialized, or
+           if the operating system's function for obtaining terminal  settings
+           fails.
+
+       <STRONG>o</STRONG>   <STRONG>ripoffline</STRONG>  returns  <STRONG>ERR</STRONG>  if the maximum number of ripped-off lines
+           exceeds the maximum (5).
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Note that <STRONG>getsyx</STRONG> is a macro, so <STRONG>&amp;</STRONG> is not necessary before the variables
-       <EM>y</EM> and <EM>x</EM>.
+       <STRONG>getsyx</STRONG> is a macro; use of  the  <STRONG>&amp;</STRONG>  operator  before  its  arguments  is
+       unnecessary.
 
-       Older  SVr4  man  pages  warn  that  the  return  value of <STRONG>curs_set</STRONG> "is
-       currently incorrect".  This implementation gets it right, but it may be
-       unwise to count on the correctness of the return value anywhere else.
-
-       Both <EM>ncurses</EM> and SVr4 will call <STRONG>curs_set</STRONG> in <STRONG>endwin</STRONG> if <STRONG>curs_set</STRONG> has been
-       called to make the cursor other than normal, i.e., either invisible  or
-       very  visible.   There  is  no way for <EM>ncurses</EM> to determine the initial
-       cursor state to restore that.
+       The  <STRONG>endwin</STRONG>  function of both <EM>ncurses</EM> and SVr4 <EM>curses</EM> calls <STRONG>curs_set</STRONG> if
+       the latter has previously been called to set the cursor visiblility  to
+       a  value  other than normal; that is, either invisible or very visible.
+       There is no way for <EM>ncurses</EM> to determine the initial cursor  visibility
+       to restore it.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       In <EM>ncurses</EM>, <STRONG>mvcur</STRONG> accepts <STRONG>-1</STRONG> for either or both old coordinates.   This
-       value  tells <EM>ncurses</EM> that the old location is unknown, and that it must
-       use only absolute motion, as with the <STRONG>cursor_address</STRONG> (<STRONG>cup</STRONG>)  capability,
-       rather  than  the  least  costly  combination  of absolute and relative
+       In  <EM>ncurses</EM>, <STRONG>mvcur</STRONG> accepts <STRONG>-1</STRONG> for either or both old coordinates.  This
+       value tells <EM>ncurses</EM> that the old location is unknown, and that it  must
+       use  only absolute motion, as with the <STRONG>cursor_address</STRONG> (<STRONG>cup</STRONG>) capability,
+       rather than the least  costly  combination  of  absolute  and  relative
        motion.
 
 
@@ -220,28 +223,37 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       The  <EM>virtual</EM>  <EM>screen</EM>  functions  <STRONG>setsyx</STRONG> and <STRONG>getsyx</STRONG> are not described in
-       X/Open Curses, Issue 4.  All other functions are as described in X/Open
-       Curses.
+       The <EM>virtual</EM> <EM>screen</EM> functions <EM>setsyx</EM> and <EM>getsyx</EM>  are  not  described  in
+       X/Open  Curses  Issue 4.   SVr4  documents each of them as returning an
+       <EM>int</EM>.  This is  misleading,  as  they  are  macros  with  no  documented
+       semantics for returning values.
 
-       The  SVr4  documentation  describes  <STRONG>setsyx</STRONG> and <STRONG>getsyx</STRONG> as having return
-       type int.  This is misleading, as they are macros  with  no  documented
-       semantics for the return value.
+       All other functions are as described in X/Open Curses.  It specifies no
+       error conditions for them, except as described for <EM>curs</EM><STRONG>_</STRONG><EM>set</EM> in  section
+       "RETURN VALUE" above.
+
+       Older  SVr4  man  pages  warn  that  the  return  value of <STRONG>curs_set</STRONG> "is
+       currently incorrect".  This implementation gets it right, but  counting
+       on its correctness anywhere else may be unwise.
+
+       X/Open  Curses specifies <EM>ripoffline</EM> as returning <STRONG>OK</STRONG> with no possibility
+       of failure ("[c]alls to <EM>ripoffline</EM> above this limit [five  lines]  have
+       no effect but report success").
 
        X/Open Curses notes:
 
-              "After  use  of <EM>mvcur</EM>(), the model Curses maintains of the state
-              of the  terminal  might  not  match  the  actual  state  of  the
-              terminal.   An  application  should touch and refresh the window
-              before resuming conventional use of Curses."
+              After use of <EM>mvcur</EM>(), the model Curses maintains of the state of
+              the terminal might not match the actual state of  the  terminal.
+              An  application  should  touch  and  refresh  the  window before
+              resuming conventional use of Curses.
 
-       Both <EM>ncurses</EM> and SVr4 <EM>curses</EM> implement  <STRONG>mvcur</STRONG>  using  the  <EM>SCREEN</EM>  data
+       Both <EM>ncurses</EM> and SVr4 <EM>curses</EM> implement <STRONG>mvcur</STRONG> using  the  <EM>SCREEN</EM>  object
        allocated  in  either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open Curses states
-       that the old location must be given for <STRONG>mvcur</STRONG> to accommodate  terminals
+       that the old location must be given for <EM>mvcur</EM> to accommodate  terminals
        that lack absolute cursor positioning.
 
-       If interrupted, <EM>ncurses</EM> restarts <STRONG>napms</STRONG>.  That, and the limitation to 30
-       seconds, are different from other implementations.
+       If  interrupted  by  a  signal,  <EM>ncurses</EM> restarts <EM>napms</EM>.  That, and the
+       limitation to 30 seconds, differ from other implementations.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -250,7 +262,7 @@
 
 
 
-ncurses 6.5                       2024-06-22                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

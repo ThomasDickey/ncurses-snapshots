@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_outopts.3x,v 1.69 2024/07/27 19:55:45 tom Exp @
+  * @Id: curs_outopts.3x,v 1.71 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_outopts 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_outopts 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_outopts 3x 2024-07-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_outopts 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 
@@ -166,22 +166,22 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These functions are described in X/Open Curses, Issue 4.  It  specifies
-       no error conditions for them.
+       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
+       error conditions for them.
 
-       Some  historic  curses implementations had, as an undocumented feature,
-       the  ability  to  do  the  equivalent  of  <STRONG>clearok(...,</STRONG>  <STRONG>1)</STRONG>  by  saying
-       <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under <EM>ncurses</EM>.
+       Some  historic  <EM>curses</EM> implementations, as an undocumented feature, did
+       the  equivalent  of  "<STRONG>clearok(</STRONG>...<STRONG>,</STRONG>   <STRONG>1)</STRONG>"   when   <STRONG>touchwin(stdstr)</STRONG>   or
+       <STRONG>clear(stdstr)</STRONG> were used.  This trick does not work with <EM>ncurses</EM>.
 
-       Earlier  System  V  curses implementations specified that with <STRONG>scrollok</STRONG>
+       Early  System V  <EM>curses</EM>  implementations  specified  that with <STRONG>scrollok</STRONG>
        enabled, any window modification triggering  a  scroll  also  forced  a
        physical  refresh.   X/Open  Curses  does not require this, and <EM>ncurses</EM>
-       avoids doing it  to  perform  better  vertical-motion  optimization  at
-       <STRONG>wrefresh</STRONG> time.
+       avoids  doing  so  to  better  optimize   vertical   motions   upon   a
+       <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>.
 
        X/Open Curses does not mention that the cursor should be made invisible
-       as a side-effect of <STRONG>leaveok</STRONG>.  SVr4 curses documentation does this,  but
-       the code does not.  Use <STRONG>curs_set</STRONG> to make the cursor invisible.
+       as a side-effect of <STRONG>leaveok</STRONG>.  SVr4 <EM>curses</EM> documentation notes this, but
+       the code neglects it.  Use <STRONG><A HREF="curs_kernel.3x.html">curs_set(3x)</A></STRONG> to make the cursor invisible.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -195,7 +195,7 @@
 
 
 
-ncurses 6.5                       2024-07-27                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

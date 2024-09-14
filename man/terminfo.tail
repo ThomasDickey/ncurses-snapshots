@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.151 2024/06/22 21:25:23 tom Exp $
+.\" $Id: terminfo.tail,v 1.152 2024/09/14 00:43:08 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -2059,7 +2059,7 @@ Portable applications must assume that numeric capabilities are
 signed 16-bit values.
 This includes the \fIno_color_video\fP (\fBncv\fP) capability.
 The 32768 mask value used for italics with \fBncv\fP can be confused with
-an absent or cancelled \fBncv\fP.
+an absent or canceled \fBncv\fP.
 If italics should work with colors,
 then the \fBncv\fP value must be specified, even if it is zero.
 .PP

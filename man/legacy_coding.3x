@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: legacy_coding.3x,v 1.30 2024/07/27 19:44:30 tom Exp $
-.TH legacy_coding 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: legacy_coding.3x,v 1.32 2024/09/14 20:06:50 tom Exp $
+.TH legacy_coding 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%use_legacy_coding\fP \-
 override \fIcurses\fR locale encoding checks
@@ -41,15 +41,18 @@ override \fIcurses\fR locale encoding checks
 \fBint use_legacy_coding(int \fIlevel\fP);
 .fi
 .SH DESCRIPTION
-.B \%use_legacy_coding
-is an extension to the
+.BR \%use_legacy_coding ","
+an
+.I \%ncurses
+extension to the
 .I curses
-library.
-It allows the caller to change the result of \fB\%unctrl\fP(3X),
+library,
+permits customiztion of \fB\%unctrl\fP(3X) behavior,
 suppressing \fI\%isprint\fP(3)-based checks within the library that
 would normally cause nonprinting characters to be rendered in visible
 form.
-The alteration affects only eight-bit characters.
+The alteration affects only byte-wide characters with the most
+significant bit set.
 .PP
 The
 .I level

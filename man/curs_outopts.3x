@@ -27,8 +27,19 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.69 2024/07/27 19:55:45 tom Exp $
-.TH curs_outopts 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.71 2024/09/14 20:06:50 tom Exp $
+.TH curs_outopts 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.ie \n(.g \{\
+.ds `` \(lq
+.ds '' \(rq
+.\}
+.el \{\
+.ie t .ds `` ``
+.el   .ds `` ""
+.ie t .ds '' ''
+.el   .ds '' ""
+.\}
+.
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -166,25 +177,45 @@ Note that
 The \fBimmedok\fP routine is useful for windows that are used as terminal
 emulators.
 .SH PORTABILITY
-These functions are described in X/Open Curses, Issue 4.
+X/Open Curses,
+Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
-Some historic curses implementations had, as an undocumented feature, the
-ability to do the equivalent of \fBclearok(..., 1)\fP by saying
-\fBtouchwin(stdscr)\fP or \fBclear(stdscr)\fP.
-This will not work under \fI\%ncurses\fP.
+Some historic
+.I curses
+implementations,
+as an undocumented feature,
+did the equivalent of
+.RB \*(`` \%clearok( .\|.\|. ", 1)" \*(''
+when
+.B \%touchwin(stdstr)
+or
+.B \%clear(stdstr)
+were used.
+This trick does not work with
+.IR \%ncurses .
 .PP
-Earlier System V curses implementations specified that with \fBscrollok\fP
-enabled, any window modification triggering a scroll also forced a physical
-refresh.
-X/Open Curses does not require this, and \fI\%ncurses\fP avoids doing
-it to perform better vertical-motion optimization at \fBwrefresh\fP
-time.
+Early System\ V
+.I curses
+implementations specified that with
+.B \%scrollok
+enabled,
+any window modification triggering a scroll
+also forced a physical refresh.
+X/Open Curses does not require this,
+and
+.I \%ncurses
+avoids doing so to better optimize vertical motions upon a
+\fB\%wrefresh\fP(3X).
 .PP
 X/Open Curses does not mention that the cursor should be
-made invisible as a side-effect of \fBleaveok\fP.
-SVr4 curses documentation does this, but the code does not.
-Use \fBcurs_set\fP to make the cursor invisible.
+made invisible as a side-effect of
+.BR \%leaveok .
+SVr4
+.I curses
+documentation notes this,
+but the code neglects it.
+Use \fB\%curs_set\fP(3X) to make the cursor invisible.
 .SH HISTORY
 .I \%ncurses
 formerly treated \fBnl\fP(3X) and \fBnonl\fP(3X) as both input

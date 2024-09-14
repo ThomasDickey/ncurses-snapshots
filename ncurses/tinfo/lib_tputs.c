@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.111 2023/09/16 16:05:15 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.113 2024/09/14 23:11:32 tom Exp $")
 
 NCURSES_EXPORT_VAR(char) PC = 0;              /* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;        /* used by termcap library */
@@ -150,12 +150,14 @@ NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_DCL0)
 		}
 	    }
 	} else if (SP_PARM->out_buffer == 0) {
-	    TR(TRACE_CHARPUT, ("flushing stdout"));
+	    TR(TRACE_CHARPUT, ("flushing stdout/stderr"));
 	    fflush(stdout);
+	    fflush(stderr);
 	}
     } else {
-	TR(TRACE_CHARPUT, ("flushing stdout"));
+	TR(TRACE_CHARPUT, ("flushing stdout/stderr"));
 	fflush(stdout);
+	fflush(stderr);
     }
     if (SP_PARM != 0)
 	SP_PARM->out_inuse = 0;

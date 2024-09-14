@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.142 2024/06/08 23:05:52 tom Exp $
-.TH curs_terminfo 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.144 2024/09/14 20:06:50 tom Exp $
+.TH curs_terminfo 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -330,57 +330,76 @@ which uses all the defaults and sends the output to
 .RE
 .\" ********************************************************************
 .SS "The Terminal State"
-\fB\%setupterm\fP stores its information about the terminal in a
+.B \%setupterm
+stores its information about the terminal in a
 .I \%TERMINAL
-structure pointed to by the global variable \fB\%cur_term\fP.
+structure pointed to by the global variable
+.BR \%cur_term "."
 If it detects an error,
 or decides that the terminal is unsuitable
 (hardcopy or generic),
 it discards this information,
-making it not available to applications.
+making it unavailable to applications.
 .PP
-If \fB\%setupterm\fP is called repeatedly for the same terminal type,
-it will reuse the information.
-It maintains only one copy of a given terminal's capabilities in memory.
-If it is called for different terminal types,
-\fB\%setupterm\fP allocates new storage for each set of terminal
-capabilities.
+If
+.B \%setupterm
+is called repeatedly for the same terminal type,
+it reuses the information.
+It maintains only one copy of a given type's capabilities in memory.
+If called for different types,
+.B \%setupterm
+allocates new storage for each set of terminal capabilities.
 .PP
-\fB\%set_curterm\fP sets \fB\%cur_term\fP to
-.IR \%nterm ,
-and makes all of the
+.B \%set_curterm
+sets
+.B \%cur_term
+to
+.IR \%nterm ","
+making all of the
 .I \%term\%info
 Boolean,
 numeric,
-and string variables use the values from
-.IR \%nterm .
-It returns the old value of \fB\%cur_term\fP.
+and string capabilities use the values from
+.IR \%nterm "."
+It returns the old value of
+.BR \%cur_term "."
 .PP
-\fB\%del_curterm\fP frees the space pointed to by
-.I \%oterm
-and makes it available for further use.
+.B \%del_curterm
+frees the memory pointed to by
+.BR \%oterm ","
+making it available for further use.
 If
-.I \%oterm
+.B \%oterm
 is
-the same as \fB\%cur_term\fP,
+the same as
+.BR \%cur_term ","
 references to any of the
 .I \%term\%info
 Boolean,
 numeric,
-and string variables thereafter may refer to invalid memory locations
-until another \fB\%setupterm\fP has been called.
+and string capabilities thereafter may refer to invalid memory locations
+until
+.B \%setupterm
+is called again.
 .PP
-\fB\%restartterm\fP is similar to \fB\%setupterm\fP and \fB\%initscr\fP,
-except that it is called after restoring memory to a previous state
+.B \%restartterm
+is similar to
+.BR \%setupterm ","
+but is intended for use after restoring program memory
+to a previous state
 (for example,
-when reloading a game saved as a core image dump).
-\fB\%restartterm\fP assumes that the windows and the input and output
-options are the same as when memory was saved,
-but the terminal type and baud rate may be different.
+when reloading an application that has been suspended from one terminal
+session and restored in another).
+.B \%restartterm
+assumes that the display dimensions
+and the input and output options are the same as when memory was saved,
+but the terminal type and line speed may differ.
 Accordingly,
-\fB\%restartterm\fP saves various terminal state bits,
-calls \fB\%setupterm\fP,
-and then restores the bits.
+.B \%restartterm
+saves relevant terminal state,
+calls
+.BR \%setupterm ","
+then restores that state.
 .\" ********************************************************************
 .SS "Formatting Output"
 \fB\%tparm\fP instantiates the string
@@ -922,15 +941,18 @@ the windows console driver by checking if \fB$TERM\fP is set to
 \*(``#win32con\*('' or an abbreviation of that string.
 .SS "Other Portability Issues"
 In SVr4,
-\fB\%set_curterm\fP returns an
-.IR int ,
+.I \%set_curterm
+returns an
+.IR int ","
 .B OK
 or
-.BR ERR .
+.BR ERR "."
 We have chosen to implement the X/Open Curses semantics.
 .PP
 In SVr4,
-the third argument of \fB\%tputs\fP has the type
+the third argument of
+.I \%tputs
+has the type
 .RB \*(`` "int (*putc)(char)" \*(''.
 .PP
 At least one implementation of X/Open Curses (Solaris) returns a value
@@ -938,7 +960,8 @@ other than
 .B OK
 or
 .B ERR
-from \fB\%tputs\fP.
+from
+.IR \%tputs "."
 It instead returns the length of the string,
 and does no error checking.
 .\" ********************************************************************

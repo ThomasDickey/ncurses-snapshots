@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.61 2024/06/22 22:15:32 tom Exp $
-.TH @TABS@ 1 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tabs.1,v 1.63 2024/09/14 20:06:50 tom Exp $
+.TH @TABS@ 1 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -78,7 +78,7 @@ you should either reset tab-stops to the standard interval
 .PP
 .RS 4
 .EX
-tabs \-8
+@TABS@ \-8
 .EE
 .RE
 .PP
@@ -128,8 +128,8 @@ They are separated by a comma or a blank, for example,
 .PP
 .RS 4
 .EX
-tabs 1,6,11,16,21
-tabs 1 6 11 16 21
+@TABS@ 1,6,11,16,21
+@TABS@ 1 6 11 16 21
 .EE
 .RE
 .PP
@@ -139,7 +139,7 @@ e.g.,
 .PP
 .RS 4
 .EX
-tabs 1,+5,+5,+5,+5
+@TABS@ 1,+5,+5,+5,+5
 .EE
 .RE
 .PP
@@ -229,10 +229,10 @@ When setting or resetting the left margin,
 .I @DATADIR@/tabset
 tab stop initialization database
 .SH PORTABILITY
-IEEE Std 1003.1/The Open Group Base Specifications Issue 7
+IEEE Std 1003.1/The Open Group Base Specifications Issue\ 7
 (POSIX.1-2008)
 describes a
-.B tabs
+.I tabs
 utility.
 However,
 .bP
@@ -247,8 +247,9 @@ or
 .RB \%( smglp )
 capabilities needed to support the feature.
 .bP
-There is no counterpart in X/Open Curses Issue 7 for this utility,
-unlike \fB@TPUT@\fP(1).
+Unlike \fB@TPUT@\fP(1),
+.I tabs
+has no specification in X/Open Curses Issue\ 7.
 .PP
 The
 .B \-d
@@ -259,7 +260,7 @@ The
 extensions not provided by other implementations.
 .SH HISTORY
 A
-.B tabs
+.I tabs
 utility appeared in PWB/Unix 1.0 (1977).
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=PWB1/sys/source/s2/\
 .\"   tabs.c
@@ -270,7 +271,7 @@ and in 3BSD
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=3BSD/usr/src/cmd/\
 .\"   tabs.c
 (later the same year);
-it supported a \*(``\-n\*('' option to set the first tab stop at the
+it supported an option \*(``\-n\*('' to set the first tab stop at the
 left margin.
 That option is not specified by POSIX.
 .PP
@@ -289,9 +290,9 @@ added support for the terminal database,
 but retained the tables to support the printers.
 By this time,
 System\ V
-.B tput
+.I tput
 had incorporated the tab stop initialization feature of BSD's
-.B tset
+.I tset
 from 1982,
 but employed the
 .I \%term\%info
@@ -308,20 +309,21 @@ though an introductory comment
 \*(``and optionally adjusts the margin\*('' remains,
 overlooked in the removal.
 The
-.B tabs
+.I tabs
 utility documented in Issues 6 and later has no mechanism for setting
 margins.
 The
 .B +m
 option in
 .I \%ncurses
-\fB\%@TABS@\fP differs from the SVr4 feature by using terminal
+.I tabs
+(\fB\%@TABS@\fP) differs from the SVr4 feature by using terminal
 capabilities rather than built-in tables.
 .PP
 POSIX documents no limit on the number of tab stops.
 Other implementations impose one;
 the limit is 20 in PWB/Unix's
-.B tabs
+.I tabs
 utility.
 While some terminals may not accept an arbitrary number of tab stops,
 .I \%ncurses
@@ -329,13 +331,13 @@ While some terminals may not accept an arbitrary number of tab stops,
 list thereof is sufficiently long.
 .PP
 The \*(``Rationale\*('' section of the Issue 6
-.B tabs
+.I tabs
 reference page
 .\" https://pubs.opengroup.org/onlinepubs/009604499/utilities/tabs.html
 details how the committee considered redesigning the
-.B tabs
+.I tabs
 and
-.B tput
+.I tput
 utilities,
 without settling on an improved solution.
 It claims that

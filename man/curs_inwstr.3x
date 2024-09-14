@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.45 2024/06/08 21:19:18 tom Exp $
-.TH curs_inwstr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.47 2024/09/14 20:06:50 tom Exp $
+.TH curs_inwstr 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -45,27 +45,27 @@
 ..
 .SH NAME
 \fB\%inwstr\fP,
-\fB\%innwstr\fP,
 \fB\%winwstr\fP,
-\fB\%winnwstr\fP,
 \fB\%mvinwstr\fP,
-\fB\%mvinnwstr\fP,
 \fB\%mvwinwstr\fP,
+\fB\%innwstr\fP,
+\fB\%winnwstr\fP,
+\fB\%mvinnwstr\fP,
 \fB\%mvwinnwstr\fP \-
 get a wide-character string from a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint inwstr(wchar_t *\ \fIwstr\fP);
-\fBint winwstr(WINDOW *\ \fIwin\fP, wchar_t *\ \fIwstr\fP);
-\fBint mvinwstr(int \fIy\fP, int \fIx\fP, wchar_t *\ \fIwstr\fP);
-\fBint mvwinwstr(WINDOW *\ \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t *\ \fIwstr\fP);
+\fBint inwstr(wchar_t * \fIwstr\fP);
+\fBint winwstr(WINDOW * \fIwin\fP, wchar_t * \fIwstr\fP);
+\fBint mvinwstr(int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP);
+\fBint mvwinwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP);
 .PP
-\fBint innwstr(wchar_t *\ \fIwstr\fP, int \fIn\fP);
-\fBint winnwstr(WINDOW *\ \fIwin\fP, wchar_t *\ \fIwstr\fP, int \fIn\fP);
-\fBint mvinnwstr(int \fIy\fP, int \fIx\fP, wchar_t *\ \fIwstr\fP, int \fIn\fP);
-\fBint mvwinnwstr(WINDOW *\ \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t *\ \fIwstr\fP, int \fIn\fP);
+\fBint innwstr(wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint winnwstr(WINDOW * \fIwin\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvinnwstr(int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvwinnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winwstr
@@ -86,7 +86,7 @@ associates with each character.
 does the same,
 but copies at most
 .I n
-characters from
+wide characters from
 .IR win "."
 An
 .I n

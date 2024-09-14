@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey
-  * @Id: legacy_coding.3x,v 1.30 2024/07/27 19:44:30 tom Exp @
+  * @Id: legacy_coding.3x,v 1.32 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>legacy_coding 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>legacy_coding 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">legacy_coding 3x 2024-07-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">legacy_coding 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>                Library calls               <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
 
@@ -58,11 +58,11 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       <STRONG>use_legacy_coding</STRONG> is an extension to the <EM>curses</EM> library.  It allows the
-       caller to change the result of <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>, suppressing <STRONG>isprint(3)</STRONG>-based
+       <STRONG>use_legacy_coding</STRONG>,  an <EM>ncurses</EM> extension to the <EM>curses</EM> library, permits
+       customiztion  of  <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>  behavior,  suppressing   <STRONG>isprint(3)</STRONG>-based
        checks  within  the  library  that  would  normally  cause  nonprinting
        characters to be rendered in visible form.  The alteration affects only
-       eight-bit characters.
+       byte-wide characters with the most significant bit set.
 
        The <EM>level</EM> parameter controls the result.
 
@@ -105,7 +105,7 @@
 
 
 
-ncurses 6.5                       2024-07-27                 <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                 <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

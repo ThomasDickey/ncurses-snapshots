@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inwstr.3x,v 1.45 2024/06/08 21:19:18 tom Exp @
+  * @Id: curs_inwstr.3x,v 1.47 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inwstr 3x 2024-06-08 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inwstr 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inwstr 3x 2024-06-08 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inwstr 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
 
@@ -47,7 +47,7 @@
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>inwstr</STRONG>,  <STRONG>innwstr</STRONG>,  <STRONG>winwstr</STRONG>,  <STRONG>winnwstr</STRONG>,  <STRONG>mvinwstr</STRONG>, <STRONG>mvinnwstr</STRONG>, <STRONG>mvwinwstr</STRONG>,
+       <STRONG>inwstr</STRONG>,  <STRONG>winwstr</STRONG>,  <STRONG>mvinwstr</STRONG>,  <STRONG>mvwinwstr</STRONG>,  <STRONG>innwstr</STRONG>, <STRONG>winnwstr</STRONG>, <STRONG>mvinnwstr</STRONG>,
        <STRONG>mvwinnwstr</STRONG> - get a wide-character string from a <EM>curses</EM> window
 
 
@@ -70,9 +70,9 @@
        starting  at the cursor and stopping at the end of the line, and stores
        it in <EM>wstr</EM>, terminating it with a wide null character and omitting  any
        attributes  and  color pair identifier that <EM>curses</EM> associates with each
-       character.  <STRONG>winnwstr</STRONG> does the same, but copies  at  most  <EM>n</EM>  characters
-       from  <EM>win</EM>.   An  <EM>n</EM>  of  <STRONG>-1</STRONG>  implies  no limit; <STRONG>winnwstr</STRONG> then works like
-       <STRONG>winwstr</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
+       character.   <STRONG>winnwstr</STRONG>  does  the  same,  but  copies  at  most  <EM>n</EM>  wide
+       characters  from <EM>win</EM>.  An <EM>n</EM> of <STRONG>-1</STRONG> implies no limit; <STRONG>winnwstr</STRONG> then works
+       like <STRONG>winwstr</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -135,7 +135,7 @@
 
 
 
-ncurses 6.5                       2024-06-08                   <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                   <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

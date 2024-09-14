@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.75 2024/06/15 19:49:39 tom Exp $
-.TH curs_inopts 3X 2024-06-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.77 2024/09/14 20:06:50 tom Exp $
+.TH curs_inopts 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -147,7 +147,7 @@ and flow control characters are unaffected)
 and makes characters typed by the user immediately available to the
 program.
 .B \%nocbreak
-returns the terminal to normal (\*(``cooked\*('') mode.
+restores the terminal's normal (\*(``cooked\*('') line discipline.
 .PP
 The state of the terminal is unknown to a
 .I curses
@@ -283,6 +283,7 @@ a window's keypad mode is off.
 Initially,
 whether the terminal returns 7- or 8-bit character codes on input
 depends on the configuration of the terminal driver;
+on POSIX systems,
 see \fI\%termios\fP(3).
 To force 8 bits to be returned,
 call
@@ -327,7 +328,7 @@ see \fI\%termios\fP(3).
 configures the terminal to perform this translation.
 .B nonl
 disables it.
-In normal (or \*(``cooked\*('') mode,
+Under its normal (\*(``cooked\*('') line discipline,
 the terminal driver always translates carriage returns to line feeds.
 .\"
 .SS nodelay
@@ -364,10 +365,8 @@ and
 configure the terminal driver's treatment of its input and output queues
 when it handles the interrupt,
 suspend,
-or quit characters in
-.I \%cbreak
-and \*(``cooked\*('' modes;
-on POSIX systems,
+or quit characters under the normal (\*(``cooked\*('')
+or cbreak line discplines on POSIX systems;
 see \fI\%termios\fP(3).
 The default behavior is inherited from the terminal driver settings.
 Calling
@@ -413,7 +412,7 @@ depends on terminal driver configuration parameters that
 .I curses
 does not handle.
 .B \%noraw
-returns the terminal to normal (\*(``cooked\*('') mode.
+restores the terminal's normal (\*(``cooked\*('') line discipline.
 .\"
 .SS "timeout, wtimeout"
 .B \%wtimeout
@@ -558,8 +557,9 @@ may be implemented as macros.
 .B \%noraw
 and
 .B \%nocbreak
-follow historical practice in that they attempt to restore normal
-(\*(``cooked\*('') mode from raw and cbreak modes,
+follow historical practice in that they attempt to restore
+the terminal's normal (\*(``cooked\*('') line discipline
+from raw and cbreak,
 respectively.
 Mixing
 .BR \%raw / noraw
@@ -642,7 +642,8 @@ call
 or
 .B \%noecho
 explicitly just after initialization,
-even if your program remains in normal (\*(``cooked\*('') mode.
+even if your program retains the terminal's normal (\*(``cooked\*('')
+line discipline.
 .PP
 X/Open Curses is ambiguous regarding whether
 .I raw

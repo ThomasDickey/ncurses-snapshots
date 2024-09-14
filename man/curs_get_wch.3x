@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.45 2024/07/20 21:43:33 tom Exp $
-.TH curs_get_wch 3X 2024-07-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.47 2024/09/14 20:06:50 tom Exp $
+.TH curs_get_wch 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,15 +50,15 @@
 \fB\%mvget_wch\fP,
 \fB\%mvwget_wch\fP,
 \fB\%unget_wch\fP \-
-get (or push back) a wide character from \fIcurses\fR terminal keyboard
+get (or push back) a wide character from \fIcurses\fR terminal keyboard buffer
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint get_wch(wint_t *\fIwch\fP);
-\fBint wget_wch(WINDOW *\fIwin\fP, wint_t *\fIwch\fP);
-\fBint mvget_wch(int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
-\fBint mvwget_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t *\fIwch\fP);
+\fBint get_wch(wint_t * \fIwch\fP);
+\fBint wget_wch(WINDOW * \fIwin\fP, wint_t * \fIwch\fP);
+\fBint mvget_wch(int \fIy\fP, int \fIx\fP, wint_t * \fIwch\fP);
+\fBint mvwget_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t * \fIwch\fP);
 .PP
 \fBint unget_wch(const wchar_t \fIwc\fP);
 .fi

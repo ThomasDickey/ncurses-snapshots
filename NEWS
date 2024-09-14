@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4169 2024/08/31 21:21:26 tom Exp $
+-- $Id: NEWS,v 1.4175 2024/09/14 23:14:09 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240914
+	+ modify _nc_flush() to also flush stderr to help the flash capability
+	  to work in bash (patch by Harm te Hennepe, cf: 20201128)
+	+ omit -g and -fXXX flags from CFLAGS in misc/ncurses-config.in
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ improve examples in NCURSES-Programming-HOWTO.html
+	+ update comments in terminfo.src -TD
 
 20240831
 	+ build-fix for a case in msys2 where gettimeofday() was available but
@@ -4387,7 +4395,7 @@ it is not possible to add this information.
 20140621
 	+ change shared-library suffix for AIX 5 and 6 to ".so", avoiding
 	  conflict with the static library (report by Ben Lentz).
-	+ document RPATH_LIST in INSTALLATION file, as part of workarounds for
+	+ document RPATH_LIST in INSTALL file, as part of workarounds for
 	  upgrading an ncurses library using the "--with-shared" option.
 	+ modify test/ncurses.c c/C tests to cycle through subsets of the
 	  total number of colors, to better illustrate 8/16/88/256-colors by

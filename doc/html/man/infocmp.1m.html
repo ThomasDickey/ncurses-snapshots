@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: infocmp.1m,v 1.110 2024/05/11 20:39:53 tom Exp @
+  * @Id: infocmp.1m,v 1.112 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>infocmp 1m 2024-05-11 ncurses 6.5 User commands</TITLE>
+<TITLE>infocmp 1m 2024-09-14 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">infocmp 1m 2024-05-11 ncurses 6.5 User commands</H1>
+<H1 class="no-header">infocmp 1m 2024-09-14 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>                      User commands                     <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 
@@ -52,10 +52,9 @@
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
-       <STRONG>infocmp</STRONG> [<STRONG>-1cCdDeEFgGiIKlLnpqrtTuUVWx</STRONG>]
-             [<STRONG>-v</STRONG> <EM>n</EM>] [<STRONG>-s</STRONG> <STRONG>d</STRONG>| <STRONG>i</STRONG>| <STRONG>l</STRONG>| <STRONG>c</STRONG>] [<STRONG>-Q</STRONG> <EM>n</EM>] [<STRONG>-R</STRONG> <STRONG>subset</STRONG>]
-             [<STRONG>-w</STRONG> <EM>width</EM>] [<STRONG>-A</STRONG> <EM>directory</EM>] [<STRONG>-B</STRONG> <EM>directory</EM>]
-             [<EM>terminal-type</EM> ...]
+       <STRONG>infocmp</STRONG> [<STRONG>-1cCdDeEFgGiIKlLnpqrtTuUVWx]</STRONG> [<STRONG>-A</STRONG> <EM>directory</EM>] [<STRONG>-B</STRONG> <EM>directory</EM>]
+              [<STRONG>-Q</STRONG> <EM>encoding</EM>] [<STRONG>-R</STRONG> <EM>subset</EM>] [<STRONG>-s</STRONG> <EM>key</EM>] [<STRONG>-v</STRONG> <EM>level</EM>] [<STRONG>-w</STRONG> <EM>width</EM>]
+              [<EM>terminal-type</EM> ... ]
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -84,7 +83,7 @@
 
        <STRONG>o</STRONG>   <STRONG>NULL</STRONG> for missing integer or string variables
 
-       Use the <STRONG>-q</STRONG> option to show the distinction between <EM>absent</EM> and  <EM>cancelled</EM>
+       Use the <STRONG>-q</STRONG> option to show the distinction between <EM>absent</EM>  and  <EM>canceled</EM>
        capabilities.
 
        These  options  produce a list which you can use to compare two or more
@@ -217,7 +216,7 @@
        are superfluous.  <STRONG>infocmp</STRONG> will flag any other <EM>terminal-type</EM> <EM>use=</EM> fields
        that were not needed.
 
-   <STRONG>Changing</STRONG> <STRONG>Databases</STRONG> <STRONG>[-A</STRONG> <EM>directory</EM>] [-B <EM>directory</EM>]
+   <STRONG>Changing</STRONG> <STRONG>Databases</STRONG> <STRONG>[-A</STRONG> <STRONG><EM>directory</EM></STRONG><STRONG>]</STRONG> <STRONG>[-B</STRONG> <STRONG><EM>directory</EM></STRONG><STRONG>]</STRONG>
        Like  other  <EM>ncurses</EM>  utilities,  <STRONG>infocmp</STRONG>  looks   for   the   terminal
        descriptions   in  several  places.   You  can  use  the  <EM>TERMINFO</EM>  and
        <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> environment variables to override the compiled-in default
@@ -313,10 +312,10 @@
                       LL            home-down
                       RSR           reset scroll region
                       -----------------------------------------
-
                       DECSTR        soft reset (VT320)
                       S7C1T         7-bit controls (VT220)
                       -----------------------------------------
+
                       ISO DEC G0    enable DEC graphics for G0
                       ISO UK G0     enable UK chars for G0
                       ISO US G0     enable US chars for G0
@@ -378,7 +377,7 @@
                 and using "-" for absent capabilities, "@" for canceled rather
                 than "NULL".
 
-            <STRONG>o</STRONG>   However,   show   differences  between  absent  and  cancelled
+            <STRONG>o</STRONG>   However,   show   differences   between  absent  and  canceled
                 capabilities.
 
             <STRONG>o</STRONG>   Omit the "Reconstructed from" comment for source listings.
@@ -472,7 +471,7 @@
        The <STRONG>-0</STRONG>, <STRONG>-1</STRONG>, <STRONG>-E</STRONG>, <STRONG>-F</STRONG>, <STRONG>-G</STRONG>, <STRONG>-Q</STRONG>, <STRONG>-R</STRONG>, <STRONG>-T</STRONG>, <STRONG>-V</STRONG>, <STRONG>-a</STRONG>, <STRONG>-e</STRONG>, <STRONG>-f</STRONG>, <STRONG>-g</STRONG>, <STRONG>-i</STRONG>, <STRONG>-l</STRONG>, <STRONG>-p</STRONG>,  <STRONG>-q</STRONG>
        and <STRONG>-t</STRONG> options are not supported in SVr4 curses.
 
-       SVr4   infocmp  does  not  distinguish  between  absent  and  cancelled
+       SVr4   infocmp   does  not  distinguish  between  absent  and  canceled
        capabilities.  Also, it shows missing integer capabilities as  <STRONG>-1</STRONG>  (the
        internal   value   used   to   represent   missing   integers).    This
        implementation shows those as  "NULL",  for  consistency  with  missing
@@ -531,7 +530,7 @@
 
 
 
-ncurses 6.5                       2024-05-11                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
+ncurses 6.5                       2024-09-14                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

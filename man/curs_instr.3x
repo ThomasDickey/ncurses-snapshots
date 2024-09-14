@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.57 2024/06/08 20:47:39 tom Exp $
-.TH curs_instr 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.59 2024/09/14 20:06:50 tom Exp $
+.TH curs_instr 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -46,27 +46,27 @@
 ..
 .SH NAME
 \fB\%instr\fP,
-\fB\%innstr\fP,
 \fB\%winstr\fP,
-\fB\%winnstr\fP,
 \fB\%mvinstr\fP,
-\fB\%mvinnstr\fP,
 \fB\%mvwinstr\fP,
+\fB\%innstr\fP,
+\fB\%winnstr\fP,
+\fB\%mvinnstr\fP,
 \fB\%mvwinnstr\fP \-
 get a string from a \fIcurses\fR window
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
 .PP
-\fBint instr(char *\ \fIstr\fP);
-\fBint winstr(WINDOW *\ \fIwin\fP, char *\ \fIstr\fP);
-\fBint mvinstr(int \fIy\fP, int \fIx\fP, char *\ \fIstr\fP);
-\fBint mvwinstr(WINDOW *\ \fIwin\fP, int \fIy\fP, int \fIx\fP, char *\ \fIstr\fP);
+\fBint instr(char * \fIstr\fP);
+\fBint winstr(WINDOW * \fIwin\fP, char * \fIstr\fP);
+\fBint mvinstr(int \fIy\fP, int \fIx\fP, char * \fIstr\fP);
+\fBint mvwinstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP);
 .PP
-\fBint innstr(char *\ \fIstr\fP, int \fIn\fP);
-\fBint winnstr(WINDOW *\ \fIwin\fP, char *\ \fIstr\fP, int \fIn\fP);
-\fBint mvinnstr(int \fIy\fP, int \fIx\fP, char *\ \fIstr\fP, int \fIn\fP);
-\fBint mvwinnstr(WINDOW *\ \fIwin\fP, int \fIy\fP, int \fIx\fP, char *\ \fIstr\fP, int \fIn\fP);
+\fBint innstr(char * \fIstr\fP, int \fIn\fP);
+\fBint winnstr(WINDOW * \fIwin\fP, char * \fIstr\fP, int \fIn\fP);
+\fBint mvinnstr(int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
+\fBint mvwinnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winstr

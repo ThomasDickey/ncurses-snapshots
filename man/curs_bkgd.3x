@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.61 2024/04/20 18:54:36 tom Exp $
-.TH curs_bkgd 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.63 2024/09/14 20:06:50 tom Exp $
+.TH curs_bkgd 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -69,7 +69,7 @@ The
 of a
 .I curses
 window
-(in the library's non-\*(``wide\*('' configuration)
+(in the library's non-wide configuration)
 is a
 .I \%chtype
 combining a set of attributes
@@ -213,12 +213,12 @@ changes the background character.
 like SVr4
 .IR curses ,
 does not
-(in its non-\*(``wide\*('' configuration)
+(in its non-wide configuration)
 store the background and window attribute contributions to each
 character cell separately.
 .SH SEE ALSO
 \fB\%curs_bkgrnd\fP(3X) describes the corresponding functions in the
-\*(``wide\*('' configuration of
+wide configuration of
 .IR \%ncurses .
 .PP
 \fB\%curses\fP(3X),

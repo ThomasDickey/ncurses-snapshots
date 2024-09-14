@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.42 2024/04/20 18:54:36 tom Exp $
-.TH curs_bkgrnd 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgrnd.3x,v 1.44 2024/09/14 20:06:50 tom Exp $
+.TH curs_bkgrnd 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -71,16 +71,17 @@ The
 of a
 .I curses
 window
-(in the library's \*(``wide\*('' configuration)
+(in the library's wide configuration)
 is a
 .I \%cchar_t
 combining a set of attributes
 (see \fB\%curs_attr\fP(3X))
-with a complex character called the
-.I "blank character."
+with the window's blank character.
 .PP
-The blank character is a spacing character that populates a window's
-character cells when their contents are erased without replacement.
+The
+.I "blank character"
+is a spacing complex character that populates a window's character cells
+when their contents are erased without replacement.
 The background's attributes are combined with all non-blank characters
 written to the window,
 as with the \fB\%wadd_wch\fP(3X) and \fB\%wins_wch\fP(3X) families of
@@ -191,7 +192,7 @@ is null.
 \fB\%getbkgrnd\fP
 may be implemented as macros.
 .PP
-Unlike their counterparts in the non-\*(``wide\*('' configuration of
+Unlike their counterparts in the non-wide configuration of
 .IR \%ncurses ,
 \fB\%getbkgrnd\fP and \fB\%wgetbkgrnd\fP supply the background character
 and attribute in a modifiable
@@ -208,7 +209,7 @@ This implementation follows the approach used in SVr4
 .IR curses .
 .SH SEE ALSO
 \fB\%curs_bkgd\fP(3X) describes the corresponding functions in the
-non-\*(``wide\*('' configuration of
+non-wide configuration of
 .IR \%ncurses .
 .PP
 \fB\%curses\fP(3X),

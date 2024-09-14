@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.87 2024/06/22 21:28:07 tom Exp $
-.TH curs_termcap 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.89 2024/09/14 20:06:50 tom Exp $
+.TH curs_termcap 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -44,6 +44,51 @@
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
 ..
+.
+.\" URL hyperlink support macros from groff's "an-ext.tmac"
+.
+.\" Save the automatic hyphenation mode.
+.\"
+.\" In AT&T troff, there was no register exposing the hyphenation mode,
+.\" and no way to save and restore it.  Set `mH` to a reasonable value
+.\" for your implementation and preference.
+.de mY
+.  ie !\\n(.g \
+.    nr mH 14
+.  el \
+.    do nr mH \\n[.hy] \" groff extension register
+..
+.
+.\" Prepare link text for mail/web hyperlinks.  `MT` and `UR` call this.
+.de mV
+.  ds mU \\$1\"
+..
+.
+.\" Emit hyperlink.  The optional argument supplies trailing punctuation
+.\" after link text.  `ME` and `UE` call this.
+.de mQ
+.  mY
+.  nh
+<\\*(mU>\\$1
+.  hy \\n(mH
+.  rm mU
+..
+.
+.\" Start URL.
+.\" .UR url
+.if !\n(.g \{\
+.de UR
+.  mV \\$1
+..
+.\}
+.
+.\" End URL.
+.\" .UE [punctuation]
+.if !\n(.g \{\
+.de UE
+.  mQ \\$1
+..
+.\}
 .
 .SH NAME
 \fB\%PC\fP,
@@ -302,96 +347,148 @@ and
 .SH PORTABILITY
 These functions are no longer standardized
 (and the variables never were);
-\fI\%ncurses\fP provides them to support legacy applications.
+.I \%ncurses
+provides them to support legacy applications.
 They should not be used in new programs.
 .SS Standards
 .bP
-X/Open Curses, Issue 4, Version 2 (1996),
+X/Open Curses,
+Issue 4,
+Version 2 (1996),
 describes these functions,
 marking them as
 \*(``TO BE WITHDRAWN\*(''.
 .bP
-X/Open Curses, Issue 7 (2009) marks the \fItermcap\fP interface
-(along with \fB\%vwprintw\fP and \fB\%vwscanw\fP) as withdrawn.
+X/Open Curses,
+Issue 7 (2009) withdrew the
+.I termcap
+interface
+(along with the
+.I \%vwprintw
+and
+.I \%vwscanw
+functions).
 .PP
 Neither X/Open Curses nor the SVr4 man pages documented the return
-values of \fB\%tgetent\fP correctly,
+values of
+.I \%tgetent
+correctly,
 though all three shown here were in fact returned ever since SVr1.
 In particular,
 an omission in the X/Open Curses specification has been misinterpreted
-to mean that \fB\%tgetent\fP returns \fBOK\fP or \fBERR\fP.
+to mean that
+.I \%tgetent
+returns
+.B OK
+or
+.BR ERR "."
 Because the purpose of these functions is to provide compatibility with
-the \fItermcap\fP library,
-that is a defect in X/Open Curses, Issue 4, Version 2
-rather than in \fI\%ncurses\fP.
-.SS "Compatibility with BSD \fItermcap\fP"
-Externally visible variables are provided for support of certain
-\fItermcap\fP applications.
+the
+.I termcap
+library,
+that is a defect in X/Open Curses,
+Issue 4,
+Version 2
+rather than in
+.IR \%ncurses "."
+.SS "Compatibility with BSD \f(BItermcap\fP"
+.I \%ncurses
+provides externally visible variables to support certain
+.I termcap
+applications.
 However,
 their correct usage is poorly documented;
 for example,
 it is unclear when reading and writing them is meaningful.
 In particular,
-some applications are reported to declare and/or modify \fB\%ospeed\fP.
+some applications are reported to declare and/or modify
+.BR \%ospeed "."
 .PP
-The constraint that only the first two characters of the \fIid\fP
-parameter are used escapes many application developers.
-The BSD \fItermcap\fP library did not require a trailing null character
-on the capability identifier passed to \fB\%tgetstr\fP,
-\fB\%tgetnum\fP,
+The constraint that only the first two characters of the
+.I id
+parameter are looked up in the terminal database
+escapes many application developers.
+The BSD
+.I termcap
+library did not require a trailing null character
+after the capability identifier passed to
+.IR \%tgetstr ","
+.IR \%tgetnum ","
 and
-\fB\%tgetflag\fP.
+.IR \%tgetflag "."
 .\" See <https://minnie.tuhs.org/cgi-bin/utree.pl?file=2BSD/src/\
 .\"   termlib/termcap.c>.
-Some applications thus assume that the \fItermcap\fP interface does not
-require the trailing null character for the capability identifier.
-.bP
+Some applications thus assume that the
+.I termcap
+interface does not require the trailing null character
+for the capability identifier.
+.PP
 .I \%ncurses
-disallows matches by the \fItermcap\fP interface against extended
-capability names that are longer than two characters;
+disallows matches by the
+.I termcap
+interface against extended capability names
+that are longer than two characters;
 see \fB\%user_caps\fP(5).
 .PP
-The BSD \fItermcap\fP function \fB\%tgetent\fP returns the text of a
-\fItermcap\fP entry in the buffer passed as an argument.
+The BSD
+.I termcap
+function
+.I \%tgetent
+returns the text of a
+.I termcap
+entry in the buffer passed as an argument.
 This library,
-like other \fI\%term\%info\fP implementations,
+like other
+.I \%term\%info
+implementations,
 does not store terminal type descriptions as text.
 It sets the buffer contents to a null-terminated string.
 .SS "Header File"
-This library includes a \fI\%termcap.h\fP header for compatibility with
-other implementations,
-but the header is rarely used because the other implementations are not
-strictly compatible.
+This library includes a
+.I \%termcap.h
+header file for compatibility with other implementations,
+but it is rarely used because the other implementations
+are not mutually compatible;
+see below.
 .SH HISTORY
 .\" See https://www.oreilly.com/openbook/opensources/book/kirkmck.html
 .\" for much BSD release history.
-Bill Joy originated a forerunner of \fItermcap\fP called
-\*(``ttycap\*('',
+Bill Joy originated a forerunner of
+.I termcap
+called \*(``ttycap\*('',
 dated September 1977,
 and released in 1BSD
 (March 1978).
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/s7/ttycap.c
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=1BSD/man7/ttycap.7
-It used many of the same function names as the later \fItermcap\fP,
+It used many of the same function names as the later
+.IR termcap ","
 such as
-\fB\%tgetent\fP,
-\fB\%tgetflag\fP,
-\fB\%tgetnum\fP,
+.IR \%tgetent ","
+.IR \%tgetflag ","
+.IR \%tgetnum ","
 and
-\fB\%tgetstr\fP.
+.IR \%tgetstr "."
 .PP
 A clear descendant,
-the \fItermlib\fP library,
+the
+.I termlib
+library,
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=2BSD/src/termlib/
 followed in 2BSD
 (May 1979),
-adding \fB\%tgoto\fP and \fB\%tputs\fP.
+adding
+.I \%tgoto
+and
+.IR \%tputs "."
 The former applied at that time only to cursor positioning capabilities,
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=2BSD/bin/etc/termcap
 thus the overly specific name.
 Little changed in 3BSD
 (late 1979)
-except the addition of test programs and a \fI\%termlib\fP man page,
+except the addition of test programs and a
+.I termlib
+man page,
 which documented the API shown in section \*(``SYNOPSIS\*('' above.
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=3BSD/usr/src/lib/\
 .\"   libtermlib/
@@ -400,7 +497,10 @@ which documented the API shown in section \*(``SYNOPSIS\*('' above.
 .PP
 4BSD
 (November 1980)
-renamed \fItermlib\fP to \fItermcap\fP
+renamed
+.I termlib
+to
+.I termcap
 .\" ...except in the source tree...
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/lib/\
 .\"   libtermlib/makefile
@@ -418,8 +518,9 @@ Function prototypes were a feature of ANSI C (1989).
 The library long antedated the standard and thus provided no header file
 declaring them.
 Nevertheless,
-the BSD sources included two different \fI\%termcap.h\fP header files
-over time.
+the BSD sources included two different
+.I \%termcap.h
+header files over time.
 .bP
 One was used internally by \fIjove\fP(1) from 4.3BSD onward.
 .\" 2BSD became a branch retaining support for non-virtual memory
@@ -435,55 +536,93 @@ One was used internally by \fIjove\fP(1) from 4.3BSD onward.
 .\"   https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD/usr/contrib/\
 .\"     jove/Makefile
 .\" --much too late for 2BSD (1979).
-It declared global symbols for the \fItermcap\fP variables that it used.
+It declared global symbols for the
+.I termcap
+variables that it used.
 .bP
 The other appeared in 4.4BSD-Lite Release 2
 (June 1995)
-as part of \fIlibedit\fP
-(also known as the \fI\%edit\%line\fP library).
+as part of
+.I libedit
+(also known as the
+.I \%edit\%line
+library).
 CSRG source history shows that this was added in mid-1992.
-The \fIlibedit\fP header file was used internally as a convenience for
-compiling the \fI\%edit\%line\fP library.
+The
+.I libedit
+header file was used internally as a convenience
+for compiling the
+.I \%edit\%line
+library.
 It declared function prototypes,
 but no global variables.
-This header file was added to NetBSD's \fItermcap\fP library in
-mid-1994.
+NetBSD's
+.I termcap
+library added this header file in mid-1994.
 .PP
 Meanwhile,
-GNU \fItermcap\fP began development in 1990.
-Its first release (1.0) in 1991 included a \fI\%termcap.h\fP header.
-Its second (1.1) in September 1992 modified the header to use
-\fIconst\fP for the function prototypes in the header where one would
-expect the parameters to be read-only.
-BSD \fItermcap\fP did not.
-The prototype for \fB\%tputs\fP also differed,
+GNU
+.I termcap
+began development in 1990.
+Its first release (1.0) in 1991 included a
+.I \%termcap.h
+header file.
+Its second (1.1) release in September 1992 modified the file to use
+.I const
+for the function prototypes in the header where one would
+expect parameters to be read-only.
+BSD
+.I termcap
+did not.
+The prototype for
+.I \%tputs
+also differed,
 but in that instance,
-it was \fIlibedit\fP that differed from BSD \fItermcap\fP.
+it was
+.I libedit
+that differed from BSD
+.IR termcap "."
 .PP
-GNU \fItermcap\fP 1.3 was bundled with \fIbash\fP(1) in mid-1993 to
-support the \fI\%readline\fP(3) library.
+GNU \fIbash\fP(1) has bundled GNU
+.I termcap
+1.3 since mid-1993 to support its \fI\%readline\fP(3) library,
+and continues to use it if configured to do so.
 .PP
-\fI\%ncurses\fP 1.8.1
+.I \%ncurses
+1.8.1
 (November 1993)
-provided a \fI\%termcap.h\fP file.
-It reflected influence from GNU \fItermcap\fP and \fI\%emacs\fP(1)
+provided a
+.I \%termcap.h
+file.
+It reflected influence from GNU
+.I termcap
+and \fI\%emacs\fP(1)
 (rather than \fIjove\fP(1)),
 providing the following interface:
 .bP
-global symbols used by \fI\%emacs\fP,
+global symbols used by
+.IR \%emacs ","
 .bP
-\fIconst\fP-qualified function prototypes,
+.IR const -qualified
+function prototypes,
 and
 .bP
-a prototype for \fBtparam\fP,
-a GNU \fItermcap\fP feature.
+a prototype for
+.IR tparam ","
+a GNU
+.I termcap
+feature.
 .PP
 Later
 (in mid-1996)
-the \fB\%tparam\fP function was removed from \fI\%ncurses\fP.
+the
+.I tparam
+function was removed from
+.IR \%ncurses "."
 Any two of the four implementations thus differ,
-and programs that intend to work with all \fItermcap\fP library
-interfaces must account for that fact.
+and programs that intend to work with all
+.I termcap
+library interfaces must account for that fact.
 .SH BUGS
 If you call \fB\%tgetstr\fP to fetch
 .B \%column_address
@@ -538,10 +677,14 @@ and modifies the data shared with,
 the \fItermcap\fP interface to accommodate the latter's limitation in
 this respect.
 .SH "SEE ALSO"
+.na
+.UR https://invisible\-island.net/ncurses/tctest.html
+\fITCTEST - A Termcap Test Utility\fP
+.UE
+.ad
+.PP
 \fB\%curses\fP(3X),
 \fB\%curs_terminfo\fP(3X),
 \fB\%putc\fP(3),
 \fB\%term_variables\fP(3X),
 \fB\%terminfo\fP(5)
-.PP
-https://invisible\-island.net/ncurses/tctest.html

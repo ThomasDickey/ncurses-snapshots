@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.229 2024/07/27 20:10:07 tom Exp @
+  * @Id: ncurses.3x,v 1.231 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-07-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -57,11 +57,11 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        The  "new  curses" library offers the programmer a terminal-independent
-       means of reading keyboard and mouse input and  updating  character-cell
-       terminals  with  output  optimized to minimize screen updates.  <EM>ncurses</EM>
+       means of reading keyboard and mouse input and writing to character-cell
+       displays  with  output  optimized  to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20240727).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20240914).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -122,7 +122,7 @@
        behavior from the library when the locale has not been set up.
 
        <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG> must be called to initialize  <EM>curses</EM>  before
-       use of any functions that deal with windows and screens.
+       use of any functions that access or manipulate windows or screens.
 
        To  get  character-at-a-time  input  without echoing--most interactive,
        screen-oriented programs want this--use the following sequence.
@@ -232,7 +232,7 @@
        The  "w"  function  is typically the elemental one; the removal of this
        prefix usually indicates operation on <STRONG>stdscr</STRONG>.
 
-       Four functions prefixed with "p" require a pad argument.
+       Four functions prefixed with "p" require a <EM>pad</EM> argument; see below.
 
        In function synopses, <EM>ncurses</EM> man pages apply the  following  names  to
        parameters.  We introduce the character types in the next subsection.
@@ -280,60 +280,59 @@
                  variants  to  their  non-wide  counterparts; where a non-wide
                  function name contains "ch" or "str", prefix it with "_w"  to
                  obtain  the  wide  counterpart.   For example, <STRONG>waddch</STRONG> becomes
-                 <STRONG>wadd_wch</STRONG>.  (Exceptions that add only  "w"  comprise  <STRONG>addwstr</STRONG>,
-                 <STRONG>inwstr</STRONG>,  and their variants.)  Another exception is <STRONG>ins_nwstr</STRONG>
-                 and  its  variants,  which  is  spelled   thus   instead   of
-                 "insn_wstr".
+                 <STRONG>wadd_wch</STRONG>.  Another exception is <STRONG>ins_nwstr</STRONG> (and its variants),
+                 spelled  thus  instead  of "insn_wstr".  (Exceptions that add
+                 only "w" comprise <STRONG>addwstr</STRONG>, <STRONG>inwstr</STRONG>, and their variants.)
 
-                 This  convention  is  inapplicable  to some non-wide function
+                 This convention is inapplicable  to  some  non-wide  function
                  names,  so  other  transformations  are  used  for  the  wide
                  configuration:  the  window  background  management  function
-                 "bkgd"  becomes  "bkgrnd";  the  window  border-drawing   and
-                 -clearing  functions  are suffixed with "_set"; and character
-                 attribute  manipulation  functions   like   "attron"   become
+                 "bkgd"   becomes  "bkgrnd";  the  window  border-drawing  and
+                 -clearing functions are suffixed with "_set";  and  character
+                 attribute   manipulation   functions   like  "attron"  become
                  "attr_on".
 
                  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  is a <EM>curses</EM> <EM>complex</EM> <EM>character</EM> and corresponds to the
-                          non-wide configuration's <EM>chtype</EM>.  It is a  structure
-                          type   because  it  requires  more  storage  than  a
-                          standard scalar type offers.  A character  code  may
-                          not  be  representable  as a <EM>char</EM>, and moreover more
+                          non-wide  configuration's <EM>chtype</EM>.  It is a structure
+                          type  because  it  requires  more  storage  than   a
+                          standard  scalar  type offers.  A character code may
+                          not be representable as a <EM>char</EM>,  and  moreover  more
                           than one character may occupy a cell (as with accent
-                          marks  and  other diacritics).  Each character is of
+                          marks and other diacritics).  Each character  is  of
                           type  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>;  a  complex  character  contains  one
                           spacing  character  and  zero  or  more  non-spacing
-                          characters  (see  below).   A  string   of   complex
-                          characters  ends with a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> whose <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> member
-                          is the null wide character.  Attributes and a  color
+                          characters   (see   below).   A  string  of  complex
+                          characters ends with a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> whose <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>  member
+                          is  the null wide character.  Attributes and a color
                           pair identifier are stored in separate fields of the
                           structure,  not  combined  into  an  integer  as  in
                           <EM>chtype</EM>.
 
                  Each cell of a <EM>WINDOW</EM> is stored as a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
 
-                 <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>  and  <STRONG><A HREF="curs_getcchar.3x.html">getcchar(3x)</A></STRONG>  store  and  retrieve <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>
-                 data.  The wide library API of <EM>ncurses</EM> depends  on  two  data
+                 <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG> and  <STRONG><A HREF="curs_getcchar.3x.html">getcchar(3x)</A></STRONG>  store  and  retrieve  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>
+                 data.   The  wide  library API of <EM>ncurses</EM> depends on two data
                  types standardized by ISO C95.
 
-                 <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>  stores  a wide character.  Like <EM>chtype</EM>, it may be an
-                          alias of <EM>int</EM>.  Depending on the character  encoding,
-                          a  wide  character  may  be <EM>spacing</EM>, meaning that it
-                          occupies a character cell by  itself  and  typically
-                          accompanies   cursor  advancement,  or  <EM>non-spacing</EM>,
-                          meaning that it occupies the same cell as a  spacing
-                          character,  is often regarded as a "modifier" of the
-                          base glyph with which  it  combines,  and  typically
+                 <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>  stores a wide character.  Like <EM>chtype</EM>, it may be  an
+                          alias  of <EM>int</EM>.  Depending on the character encoding,
+                          a wide character may be  <EM>spacing</EM>,  meaning  that  it
+                          occupies  a  character  cell by itself and typically
+                          accompanies  cursor  advancement,  or   <EM>non-spacing</EM>,
+                          meaning  that it occupies the same cell as a spacing
+                          character, is often regarded as a "modifier" of  the
+                          base  glyph  with  which  it combines, and typically
                           does not advance the cursor.
 
-                 <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can   store   a   <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or  the  constant  <STRONG>WEOF</STRONG>,
-                          analogously to the <EM>int</EM>-sized character  manipulation
+                 <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can  store  a  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or   the   constant   <STRONG>WEOF</STRONG>,
+                          analogously  to the <EM>int</EM>-sized character manipulation
                           functions of ISO C and its constant <STRONG>EOF</STRONG>.
 
 
 </PRE><H3><a name="h3-Function-Name-Index">Function Name Index</a></H3><PRE>
        The following table lists the <EM>curses</EM> functions provided in the non-wide
-       and wide APIs and the  corresponding  man  pages  that  describe  them.
-       Those  flagged  with  "*"  are  <EM>ncurses</EM>-specific,  neither described by
+       and  wide  APIs  and  the  corresponding  man pages that describe them.
+       Those flagged with  "*"  are  <EM>ncurses</EM>-specific,  neither  described  by
        X/Open Curses nor present in SVr4.
 
                     <STRONG><EM>curses</EM></STRONG> Function Name     Man Page
@@ -385,8 +384,8 @@
                     def_prog_mode            <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
                     def_shell_mode           <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
                     define_key               <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>*
-
                     del_curterm              <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+
                     delay_output             <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
                     delch                    <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
                     deleteln                 <STRONG><A HREF="curs_deleteln.3x.html">curs_deleteln(3x)</A></STRONG>
@@ -452,8 +451,8 @@
                     in_wch                   <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
                     in_wchnstr               <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
                     in_wchstr                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
-
                     inch                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
+
                     inchnstr                 <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
                     inchstr                  <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
                     init_color               <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
@@ -519,8 +518,8 @@
                     mvaddnstr                <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     mvaddnwstr               <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
                     mvaddstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
-
                     mvaddwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
+
                     mvchgat                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
                     mvcur                    <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
                     mvdelch                  <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
@@ -586,8 +585,8 @@
                     mvwins_wch               <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
                     mvwins_wstr              <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
                     mvwinsch                 <STRONG><A HREF="curs_insch.3x.html">curs_insch(3x)</A></STRONG>
-
                     mvwinsnstr               <STRONG><A HREF="curs_insstr.3x.html">curs_insstr(3x)</A></STRONG>
+
                     mvwinsstr                <STRONG><A HREF="curs_insstr.3x.html">curs_insstr(3x)</A></STRONG>
                     mvwinstr                 <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
                     mvwinwstr                <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
@@ -653,8 +652,8 @@
                     slk_attr_set             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_attroff              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_attron               <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
-
                     slk_attrset              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
+
                     slk_clear                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_color                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
                     slk_init                 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
@@ -720,8 +719,8 @@
                     wadd_wchstr              <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
                     waddch                   <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
                     waddchnstr               <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
-
                     waddchstr                <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
+
                     waddnstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
                     waddnwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
                     waddstr                  <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
@@ -787,8 +786,8 @@
                     wprintw                  <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
                     wredrawln                <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
                     wrefresh                 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
-
                     wresize                  <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>*
+
                     wscanw                   <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
                     wscrl                    <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
                     wsetscrreg               <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
@@ -802,43 +801,43 @@
                     wvline                   <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
                     wvline_set               <STRONG><A HREF="curs_border_set.3x.html">curs_border_set(3x)</A></STRONG>
 
-       <EM>ncurses</EM>'s   <EM>screen-pointer</EM>   <EM>extension</EM>   adds   additional    functions
-       corresponding  to  many  of  the  above, each with an "_sp" suffix; see
+       <EM>ncurses</EM>'s    <EM>screen-pointer</EM>   <EM>extension</EM>   adds   additional   functions
+       corresponding to many of the above, each  with  an  "_sp"  suffix;  see
        <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>.
 
-       The availability of some extensions is  configurable  when  <EM>ncurses</EM>  is
-       compiled;  see  sections  "ALTERNATE  CONFIGURATIONS"  and "EXTENSIONS"
+       The  availability  of  some  extensions is configurable when <EM>ncurses</EM> is
+       compiled; see  sections  "ALTERNATE  CONFIGURATIONS"  and  "EXTENSIONS"
        below.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Unless otherwise noted,  functions  that  return  integers  return  the
-       constants  <STRONG>OK</STRONG>  on  success  and <STRONG>ERR</STRONG> on failure; see <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
-       Functions that return pointers  return  <STRONG>NULL</STRONG>  on  failure.   Typically,
-       <EM>ncurses</EM>  treats  a  null  pointer  passed  as a function parameter as a
-       failure.  Functions prefixed with "mv" first  perform  cursor  movement
+       Unless  otherwise  noted,  functions  that  return  integers return the
+       constants <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG>  on  failure;  see  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
+       Functions  that  return  pointers  return  <STRONG>NULL</STRONG> on failure.  Typically,
+       <EM>ncurses</EM> treats a null pointer passed  as  a  function  parameter  as  a
+       failure.   Functions  prefixed  with "mv" first perform cursor movement
        and fail if the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-ENVIRONMENT">ENVIRONMENT</a></H2><PRE>
-       The  following  symbols  from  the  process  environment  customize the
-       runtime  behavior  of  <EM>ncurses</EM>  applications.   The  library   may   be
-       configured   to   disregard   the  variables  <EM>TERMINFO</EM>,  <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>,
-       <EM>TERMPATH</EM>, and <EM>HOME</EM>, if  the  user  is  the  superuser  (root),  or  the
+       The following  symbols  from  the  process  environment  customize  the
+       runtime   behavior   of  <EM>ncurses</EM>  applications.   The  library  may  be
+       configured  to  disregard  the   variables   <EM>TERMINFO</EM>,   <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>,
+       <EM>TERMPATH</EM>,  and  <EM>HOME</EM>,  if  the  user  is  the  superuser (root), or the
        application uses <STRONG>setuid(2)</STRONG> or <STRONG>setgid(2)</STRONG>.
 
 
 </PRE><H3><a name="h3-BAUDRATE"><EM>BAUDRATE</EM></a></H3><PRE>
-       The  debugging  library  checks  this variable when the application has
-       redirected output to a file.  Its integral value is used for  the  baud
-       rate.   If  that  value  is absent or invalid, <EM>ncurses</EM> uses 9600.  This
-       feature allows developers to construct repeatable test cases that  take
-       into  account optimization decisions that depend on the terminal's line
-       speed.
+       The debugging library checks this variable  when  the  application  has
+       redirected  output to a file.  <EM>ncurses</EM> interprets its integral value as
+       the terminal's line speed in bits per second.  If that value is  absent
+       or  invalid,  <EM>ncurses</EM>  uses  9600.   This  feature allows developers to
+       construct repeatable test cases that  take  into  account  optimization
+       decisions that depend on the terminal's line speed.
 
 
 </PRE><H3><a name="h3-CC-_command-character_"><EM>CC</EM> (command character)</a></H3><PRE>
-       When set, the <STRONG>command_character</STRONG>  (<STRONG>cmdch</STRONG>)  capability  value  of  loaded
+       When  set,  the  <STRONG>command_character</STRONG>  (<STRONG>cmdch</STRONG>)  capability value of loaded
        <EM>terminfo</EM> entries changes to the value of this variable.  Very few <EM>term-</EM>
        <EM>info</EM> entries provide this feature.
 
@@ -849,9 +848,10 @@
 
 </PRE><H3><a name="h3-COLUMNS"><EM>COLUMNS</EM></a></H3><PRE>
        This  variable  specifies  the  width  of  the  screen  in  characters.
-       Applications  running  in  a  windowing environment usually are able to
-       obtain the width of the window in which they are executing.  If <EM>COLUMNS</EM>
-       is not defined and the terminal's screen size is not available from the
+       Applications running in a windowing environment  usually  are  able  to
+       obtain  the  width  of the window in which they are executing.  <EM>ncurses</EM>
+       enforces an upper limit of 512 when reading the value.  If  <EM>COLUMNS</EM>  is
+       not  defined  and  the terminal's screen size is not available from the
        terminal driver, <EM>ncurses</EM> uses the size specified by the <STRONG>columns</STRONG>  (<STRONG>cols</STRONG>)
        capability  of  the  terminal type's entry in the <EM>terminfo</EM> database, if
        any.
@@ -864,177 +864,176 @@
        overrides  the  library's  use  of  the  screen  size obtained from the
        operating system.
 
-       The  <EM>COLUMNS</EM>  and  <EM>LINES</EM>  variables  may  be  specified  independently.
-       <EM>ncurses</EM>  enforces an upper limit of 512 on each when reading the value.
-       This property is useful to circumvent misfeatures  of  legacy  terminal
-       type  descriptions; <STRONG>xterm(1)</STRONG> descriptions specifying 65 lines were once
-       notorious.   For  best  results,  avoid  specifying  <STRONG>cols</STRONG>   and   <STRONG>lines</STRONG>
+       The <EM>COLUMNS</EM> and <EM>LINES</EM> variables may be specified  independently.   This
+       property  is  useful  to circumvent misfeatures of legacy terminal type
+       descriptions; <STRONG>xterm(1)</STRONG>  descriptions  specifying  65  lines  were  once
+       notorious.    For   best  results,  avoid  specifying  <STRONG>cols</STRONG>  and  <STRONG>lines</STRONG>
        capability codes in <EM>terminfo</EM> descriptions of terminal emulators.
 
-       <STRONG><A HREF="curs_util.3x.html">use_env(3x)</A></STRONG>  can  disable use of the process environment in determining
-       the screen size.  <STRONG><A HREF="curs_util.3x.html">use_tioctl(3x)</A></STRONG> can update <EM>COLUMNS</EM> and <EM>LINES</EM> to  match
+       <STRONG><A HREF="curs_util.3x.html">use_env(3x)</A></STRONG> can disable use of the process environment  in  determining
+       the  screen size.  <STRONG><A HREF="curs_util.3x.html">use_tioctl(3x)</A></STRONG> can update <EM>COLUMNS</EM> and <EM>LINES</EM> to match
        the screen size obtained from system calls or the terminal database.
 
 
 </PRE><H3><a name="h3-ESCDELAY"><EM>ESCDELAY</EM></a></H3><PRE>
-       For  <EM>curses</EM>  to  distinguish  the ESC character resulting from a user's
-       press of the "Escape" key on the input device  from  one  beginning  an
+       For <EM>curses</EM> to distinguish the ESC character  resulting  from  a  user's
+       press  of  the  "Escape"  key on the input device from one beginning an
        <EM>escape</EM> <EM>sequence</EM> (as commonly produced by function keys), it waits after
-       receiving the  escape  character  to  see  if  further  characters  are
-       available  on  the  input  stream  within  a  short interval.  A global
-       variable <STRONG>ESCDELAY</STRONG> stores this interval in  milliseconds.   The  default
+       receiving  the  escape  character  to  see  if  further  characters are
+       available on the input  stream  within  a  short  interval.   A  global
+       variable  <STRONG>ESCDELAY</STRONG>  stores  this interval in milliseconds.  The default
        value of 1000 (one second) is adequate for most uses.  This environment
-       variable overrides it; <EM>ncurses</EM> enforces an upper limit  of  30,000  (30
+       variable  overrides  it;  <EM>ncurses</EM> enforces an upper limit of 30,000 (30
        seconds) when reading the value.
 
-       The  most common instance where you may wish to change this value is to
+       The most common instance where you may wish to change this value is  to
        work with a remote host over a slow communication channel.  If the host
-       running  a  <EM>curses</EM>  application  does  not receive the characters of an
-       escape sequence in a timely manner, the library can interpret  them  as
+       running a <EM>curses</EM> application does not  receive  the  characters  of  an
+       escape  sequence  in a timely manner, the library can interpret them as
        multiple key stroke events.
 
        <STRONG>xterm(1)</STRONG> mouse events are a form of escape sequence; therefore, if your
-       application makes heavy use  of  multiple-clicking,  you  may  wish  to
-       lengthen  the  default value because the delay applies to the composite
+       application  makes  heavy  use  of  multiple-clicking,  you may wish to
+       lengthen the default value because the delay applies to  the  composite
        multi-click event as well as the individual clicks.
 
-       Portable applications should not rely upon the presence of <STRONG>ESCDELAY</STRONG>  in
-       either  form,  but  setting  the  environment  variable rather than the
+       Portable  applications should not rely upon the presence of <STRONG>ESCDELAY</STRONG> in
+       either form, but setting  the  environment  variable  rather  than  the
        global variable does not create problems when compiling an application.
 
-       If <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is disabled for the  <EM>curses</EM>  window  receiving  input,  a
+       If  <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  is  disabled  for  the <EM>curses</EM> window receiving input, a
        program must disambiguate escape sequences itself.
 
 
 </PRE><H3><a name="h3-HOME"><EM>HOME</EM></a></H3><PRE>
-       <EM>ncurses</EM>  may read and write auxiliary terminal descriptions in <EM>.termcap</EM>
+       <EM>ncurses</EM> may read and write auxiliary terminal descriptions in  <EM>.termcap</EM>
        and <EM>.terminfo</EM> files in the user's home directory.
 
 
 </PRE><H3><a name="h3-LINES"><EM>LINES</EM></a></H3><PRE>
-       This counterpart to <EM>COLUMNS</EM> specifies  the  height  of  the  screen  in
-       characters.   The  corresponding <EM>terminfo</EM> capability and code is <STRONG>lines</STRONG>.
+       This  counterpart  to  <EM>COLUMNS</EM>  specifies  the  height of the screen in
+       characters.  The corresponding <EM>terminfo</EM> capability and code  is  <STRONG>lines</STRONG>.
        See the description of the <EM>COLUMNS</EM> variable above.
 
 
 </PRE><H3><a name="h3-MOUSE_BUTTONS_123"><EM>MOUSE_BUTTONS_123</EM></a></H3><PRE>
-       (OS/2 EMX port only) OS/2 numbers a three-button  mouse  inconsistently
-       with  other platforms, such that 1 is the left button, 2 the right, and
-       3 the middle.  This variable customizes  the  mouse  button  numbering.
-       Its  value  must be three digits 1-3 in any order.  By default, <EM>ncurses</EM>
+       (OS/2  EMX  port only) OS/2 numbers a three-button mouse inconsistently
+       with other platforms, such that 1 is the left button, 2 the right,  and
+       3  the  middle.   This  variable customizes the mouse button numbering.
+       Its value must be three digits 1-3 in any order.  By  default,  <EM>ncurses</EM>
        assumes a numbering of "132".
 
 
 </PRE><H3><a name="h3-NCURSES_ASSUMED_COLORS"><EM>NCURSES_ASSUMED_COLORS</EM></a></H3><PRE>
-       If set, this  variable  overrides  the  <EM>ncurses</EM>  library's  compiled-in
-       assumption  that  the terminal's default colors are white on black; see
-       <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>.  Set the foreground  and  background  color  values
-       with  this  environment  variable  by  assigning  it two integer values
+       If  set,  this  variable  overrides  the  <EM>ncurses</EM> library's compiled-in
+       assumption that the terminal's default colors are white on  black;  see
+       <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>.   Set  the  foreground  and background color values
+       with this environment variable  by  assigning  it  two  integer  values
        separated  by  a  comma,  indicating  foregound  and  background  color
        numbers, respectively.
 
-       For  example,  to tell <EM>ncurses</EM> not to assume anything about the colors,
-       use a value of "-1,-1".  To make the  default  color  scheme  green  on
-       black,  use  "2,0".   <EM>ncurses</EM> accepts integral values from -1 up to the
+       For example, to tell <EM>ncurses</EM> not to assume anything about  the  colors,
+       use  a  value  of  "-1,-1".   To make the default color scheme green on
+       black, use "2,0".  <EM>ncurses</EM> accepts integral values from -1  up  to  the
        value of the <EM>terminfo</EM> <STRONG>max_colors</STRONG> (<STRONG>colors</STRONG>) capability.
 
 
 </PRE><H3><a name="h3-NCURSES_CONSOLE2"><EM>NCURSES_CONSOLE2</EM></a></H3><PRE>
-       (MinGW  port  only)  The  <EM>Console2</EM>  program  defectively  handles   the
-       Microsoft  Console  API  call  <EM>CreateConsoleScreenBuffer</EM>.  Applications
-       that use it will hang.  However, it is possible to simulate the  action
-       of  this  call  by mapping coordinates, explicitly saving and restoring
-       the original screen contents.  Setting the environment  variable  <EM>NCGDB</EM>
+       (MinGW   port  only)  The  <EM>Console2</EM>  program  defectively  handles  the
+       Microsoft Console  API  call  <EM>CreateConsoleScreenBuffer</EM>.   Applications
+       that  use it will hang.  However, it is possible to simulate the action
+       of this call by mapping coordinates, explicitly  saving  and  restoring
+       the  original  screen contents.  Setting the environment variable <EM>NCGDB</EM>
        has the same effect.
 
 
 </PRE><H3><a name="h3-NCURSES_GPM_TERMS"><EM>NCURSES_GPM_TERMS</EM></a></H3><PRE>
-       (Linux  only) When <EM>ncurses</EM> is configured to use the GPM interface, this
-       variable may list  one  or  more  terminal  type  names,  delimited  by
-       vertical  bars  (<STRONG>|</STRONG>) or colons (<STRONG>:</STRONG>), against which the <EM>TERM</EM> variable (see
-       below) is matched.  An empty value disables the  GPM  interface,  using
-       <EM>ncurses</EM>'s  built-in  support  for <STRONG>xterm(1)</STRONG> mouse protocols instead.  If
-       the variable is absent, <EM>ncurses</EM> attempts to open GPM if  <EM>TERM</EM>  contains
+       (Linux only) When <EM>ncurses</EM> is configured to use the GPM interface,  this
+       variable  may  list  one  or  more  terminal  type  names, delimited by
+       vertical bars (<STRONG>|</STRONG>) or colons (<STRONG>:</STRONG>), against which the <EM>TERM</EM>  variable  (see
+       below)  is  matched.   An empty value disables the GPM interface, using
+       <EM>ncurses</EM>'s built-in support for <STRONG>xterm(1)</STRONG> mouse  protocols  instead.   If
+       the  variable  is absent, <EM>ncurses</EM> attempts to open GPM if <EM>TERM</EM> contains
        "linux".
 
 
 </PRE><H3><a name="h3-NCURSES_NO_HARD_TABS"><EM>NCURSES_NO_HARD_TABS</EM></a></H3><PRE>
-       <EM>ncurses</EM>  may  use  tab  characters in cursor movement optimization.  In
-       some cases, your terminal driver may not  handle  them  properly.   Set
+       <EM>ncurses</EM> may use tab characters in  cursor  movement  optimization.   In
+       some  cases,  your  terminal  driver may not handle them properly.  Set
        this environment variable to any value to disable the feature.  You can
        also adjust your <STRONG>stty(1)</STRONG> settings to avoid the problem.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_MAGIC_COOKIE"><EM>NCURSES_NO_MAGIC_COOKIE</EM></a></H3><PRE>
-       Many terminals store video attributes as  a  property  of  a  character
-       cell,  as  <EM>curses</EM>  does.   Historically, some recorded changes in video
-       attributes as data that  logically  <EM>occupies</EM>  character  cells  on  the
-       display,  switching attributes on or off, similarly to tags in a markup
-       language; these are termed "magic cookies", and  must  be  subsequently
-       overprinted.   If  the  <EM>terminfo</EM>  entry for your terminal type does not
+       Many  terminals  store  video  attributes  as a property of a character
+       cell, as <EM>curses</EM> does.  Historically, some  recorded  changes  in  video
+       attributes  as  data  that  logically  <EM>occupies</EM>  character cells on the
+       display, switching attributes on or off, similarly to tags in a  markup
+       language;  these  are  termed "magic cookies", and must be subsequently
+       overprinted.  If the <EM>terminfo</EM> entry for your  terminal  type  does  not
        adequately describe its handling of magic cookies, set this variable to
        any value to instruct <EM>ncurses</EM> to disable attributes entirely.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_PADDING"><EM>NCURSES_NO_PADDING</EM></a></H3><PRE>
        Most  terminal  type  descriptions  in  the  <EM>terminfo</EM>  database  detail
-       hardware  devices.   Many  people  use  <EM>curses</EM>-based  applications   in
-       terminal  emulator programs that run in a windowing environment.  These
-       programs can duplicate all of the  important  features  of  a  hardware
-       terminal,  but  often lack their limitations.  Chief among these absent
+       hardware   devices.   Many  people  use  <EM>curses</EM>-based  applications  in
+       terminal emulator programs that run in a windowing environment.   These
+       programs  can  duplicate  all  of  the important features of a hardware
+       terminal, but often lack their limitations.  Chief among  these  absent
        drawbacks is the problem of data flow management; that is, limiting the
-       speed  of  communication  to  what the hardware could handle.  Unless a
-       hardware terminal is interfaced into  a  terminal  concentrator  (which
-       does  flow  control), an application must manage flow itself to prevent
+       speed of communication to what the hardware  could  handle.   Unless  a
+       hardware  terminal  is  interfaced  into a terminal concentrator (which
+       does flow control), an application must manage flow itself  to  prevent
        overruns and data loss.
 
-       A solution that comes at no hardware cost  is  for  an  application  to
-       pause  after  directing  a  terminal  to  execute  an operation that it
-       performs slowly, such as clearing  the  display.   Many  terminal  type
-       descriptions,  including that for the VT100, embed delay specifications
-       in capabilities.  You may  wish  to  use  these  terminal  descriptions
-       without  paying the performance penalty.  Set <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>PADDING</EM> to any
-       value to disable all but mandatory padding.  Mandatory padding is  used
+       A  solution  that  comes  at  no hardware cost is for an application to
+       pause after directing a  terminal  to  execute  an  operation  that  it
+       performs  slowly,  such  as  clearing  the display.  Many terminal type
+       descriptions, including that for the VT100, embed delay  specifications
+       in  capabilities.   You  may  wish  to  use these terminal descriptions
+       without paying the performance penalty.  Set <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>PADDING</EM> to  any
+       value  to disable all but mandatory padding.  Mandatory padding is used
        by such terminal capabilities as <STRONG>flash_screen</STRONG> (<STRONG>flash</STRONG>).
 
 
 </PRE><H3><a name="h3-NCURSES_NO_SETBUF"><EM>NCURSES_NO_SETBUF</EM></a></H3><PRE>
-       (Obsolete)  Prior to internal changes developed in <EM>ncurses</EM> 5.9 (patches
-       20120825 through 20130126), the library used <STRONG>setbuf(3)</STRONG> to enable  fully
-       buffered  output  when initializing the terminal.  This was done, as in
-       SVr4 <EM>curses</EM>, to increase performance.  For testing  purposes,  both  of
-       <EM>ncurses</EM>  and  of  certain applications, this feature was made optional.
-       Setting this variable disabled output  buffering,  leaving  the  output
+       (Obsolete) Prior to internal changes developed in <EM>ncurses</EM> 5.9  (patches
+       20120825  through 20130126), the library used <STRONG>setbuf(3)</STRONG> to enable fully
+       buffered output when initializing the terminal.  This was done,  as  in
+       SVr4  <EM>curses</EM>,  to  increase performance.  For testing purposes, both of
+       <EM>ncurses</EM> and of certain applications, this feature  was  made  optional.
+       Setting  this  variable  disabled  output buffering, leaving the output
        stream in the original (usually line-buffered) mode.
 
-       Nowadays,  <EM>ncurses</EM> performs its own buffering and does not require this
-       workaround; it does not modify the buffering  of  the  standard  output
-       stream.   This  approach makes signal handling, as for interrupts, more
-       robust.  A drawback  is  that  certain  unconventional  programs  mixed
-       <STRONG>stdio(3)</STRONG>  calls  with <EM>ncurses</EM> calls and (usually) got the behavior they
-       expected.  This is no longer the case; <EM>ncurses</EM> does not  write  to  the
+       Nowadays, <EM>ncurses</EM> performs its own buffering and does not require  this
+       workaround;  it  does  not  modify the buffering of the standard output
+       stream.  This approach makes signal handling, as for  interrupts,  more
+       robust.   A  drawback  is  that  certain  unconventional programs mixed
+       <STRONG>stdio(3)</STRONG> calls with <EM>ncurses</EM> calls and (usually) got the  behavior  they
+       expected.   This  is  no longer the case; <EM>ncurses</EM> does not write to the
        standard output file descriptor through a <EM>stdio</EM>-buffered stream.
 
-       As  a  special case, low-level API calls such as <STRONG><A HREF="curs_terminfo.3x.html">putp(3x)</A></STRONG> still use the
-       standard output stream.  High-level <EM>curses</EM> calls such as <STRONG><A HREF="curs_printw.3x.html">printw(3x)</A></STRONG>  do
+       As a special case, low-level API calls such as <STRONG><A HREF="curs_terminfo.3x.html">putp(3x)</A></STRONG> still  use  the
+       standard  output stream.  High-level <EM>curses</EM> calls such as <STRONG><A HREF="curs_printw.3x.html">printw(3x)</A></STRONG> do
        not.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_UTF8_ACS"><EM>NCURSES_NO_UTF8_ACS</EM></a></H3><PRE>
-       At  initialization,  <EM>ncurses</EM> inspects the <EM>TERM</EM> environment variable for
-       special  cases  where   VT100   forms-drawing   characters   (and   the
-       corresponding  alternate character set <EM>terminfo</EM> capabilities) are known
+       At initialization, <EM>ncurses</EM> inspects the <EM>TERM</EM> environment  variable  for
+       special   cases   where   VT100   forms-drawing   characters  (and  the
+       corresponding alternate character set <EM>terminfo</EM> capabilities) are  known
        to  be  unsupported  by  terminal  types  that  otherwise  claim  VT100
        compatibility.  Specifically, when running in a UTF-8 locale, the Linux
-       virtual console device and the GNU <STRONG>screen(1)</STRONG> program ignore them.   Set
+       virtual  console device and the GNU <STRONG>screen(1)</STRONG> program ignore them.  Set
        this  variable  to  a  nonzero  value  to  instruct  <EM>ncurses</EM>  that  the
        terminal's ACS support is broken; the library then outputs Unicode code
        points that correspond to the forms-drawing characters.  Set it to zero
        (or a non-integer) to disable the special check for terminal type names
-       matching  "linux" or "screen", directing <EM>ncurses</EM> to assume that the ACS
+       matching "linux" or "screen", directing <EM>ncurses</EM> to assume that the  ACS
        feature works if the terminal type description advertises it.
 
-       As an alternative to use  of  this  variable,  <EM>ncurses</EM>  checks  for  an
+       As  an  alternative  to  use  of  this  variable, <EM>ncurses</EM> checks for an
        extended <EM>terminfo</EM> numeric capability <STRONG>U8</STRONG> that can be compiled using "<STRONG>tic</STRONG>
        <STRONG>-x</STRONG>".  Examples follow.
 
@@ -1047,62 +1046,62 @@
           xterm-utf8|xterm relying on UTF-8 line-graphics,
                   U8#1, use=xterm,
 
-       The two-character name "U8" was chosen to permit its use via  <EM>ncurses</EM>'s
+       The  two-character name "U8" was chosen to permit its use via <EM>ncurses</EM>'s
        <EM>termcap</EM> interface.
 
 
 </PRE><H3><a name="h3-NCURSES_TRACE"><EM>NCURSES_TRACE</EM></a></H3><PRE>
-       At  initialization, <EM>ncurses</EM> (in its debugging configuration) checks for
-       this variable's presence.  If  defined  with  an  integral  value,  the
+       At initialization, <EM>ncurses</EM> (in its debugging configuration) checks  for
+       this  variable's  presence.   If  defined  with  an integral value, the
        library calls <STRONG><A HREF="curs_trace.3x.html">curses_trace(3x)</A></STRONG> with that value as the argument.
 
 
 </PRE><H3><a name="h3-TERM"><EM>TERM</EM></a></H3><PRE>
-       The  <EM>TERM</EM> variable denotes the terminal type.  Each is distinct, though
-       many are similar.  It is commonly set by  terminal  emulators  to  help
-       applications  find  a  workable  terminal  description.   Some choose a
-       popular approximation such as "ansi", "vt100", or "xterm"  rather  than
-       an  exact  fit to their capabilities.  Not infrequently, an application
-       will have problems with that approach; for example, a  key  stroke  may
-       not  operate  correctly,  or  produce  no  effect  but  seeming garbage
+       The <EM>TERM</EM> variable denotes the terminal type.  Each is distinct,  though
+       many  are  similar.   It  is commonly set by terminal emulators to help
+       applications find a  workable  terminal  description.   Some  choose  a
+       popular  approximation  such as "ansi", "vt100", or "xterm" rather than
+       an exact fit to their capabilities.  Not infrequently,  an  application
+       will  have  problems  with that approach; for example, a key stroke may
+       not operate  correctly,  or  produce  no  effect  but  seeming  garbage
        characters on the screen.
 
-       Setting <EM>TERM</EM> has no effect on hardware operation; it  affects  the  way
-       applications  communicate  with  the  terminal.  Likewise, as a general
-       rule (<STRONG>xterm(1)</STRONG> being a rare exception), terminal emulators  that  allow
+       Setting  <EM>TERM</EM>  has  no effect on hardware operation; it affects the way
+       applications communicate with the terminal.   Likewise,  as  a  general
+       rule  (<STRONG>xterm(1)</STRONG>  being a rare exception), terminal emulators that allow
        you to specify <EM>TERM</EM> as a parameter or configuration value do not change
        their behavior to match that setting.
 
 
 </PRE><H3><a name="h3-TERMCAP"><EM>TERMCAP</EM></a></H3><PRE>
        If <EM>ncurses</EM> is configured with <EM>termcap</EM> support, it checks for a terminal
-       type  description  in  <EM>termcap</EM>  format if one in <EM>terminfo</EM> format is not
-       available.  Setting this variable directs <EM>ncurses</EM> to ignore  the  usual
-       <EM>termcap</EM>  database  location, <EM>/etc/termcap</EM>; see <EM>TERMPATH</EM> below.  <EM>TERMCAP</EM>
-       should contain either a terminal description  (with  newlines  stripped
-       out),  or  a file name indicating where the information required by the
+       type description in <EM>termcap</EM> format if one in  <EM>terminfo</EM>  format  is  not
+       available.   Setting  this variable directs <EM>ncurses</EM> to ignore the usual
+       <EM>termcap</EM> database location, <EM>/etc/termcap</EM>; see <EM>TERMPATH</EM>  below.   <EM>TERMCAP</EM>
+       should  contain  either  a terminal description (with newlines stripped
+       out), or a file name indicating where the information required  by  the
        <EM>TERM</EM> environment variable is stored.
 
 
 </PRE><H3><a name="h3-TERMINFO"><EM>TERMINFO</EM></a></H3><PRE>
-       <EM>ncurses</EM> can be configured to read terminal type  description  databases
-       in  various locations using different formats.  This variable overrides
+       <EM>ncurses</EM>  can  be configured to read terminal type description databases
+       in various locations using different formats.  This variable  overrides
        the default location.
 
-       <STRONG>o</STRONG>   Descriptions in <EM>terminfo</EM> format are normally stored in a  directory
-           tree  using subdirectories named by the common first letters of the
+       <STRONG>o</STRONG>   Descriptions  in <EM>terminfo</EM> format are normally stored in a directory
+           tree using subdirectories named by the common first letters of  the
            terminal types named therein.  This is the scheme used in System V.
 
        <STRONG>o</STRONG>   If <EM>ncurses</EM> is configured to use hashed databases, then <EM>TERMINFO</EM> may
-           name  its  location,  such  as  <EM>/usr/share/terminfo.db</EM>, rather than
+           name its location,  such  as  <EM>/usr/share/terminfo.db</EM>,  rather  than
            <EM>/usr/share/terminfo/</EM>.
 
-       The hashed database uses less disk space and is a  little  faster  than
+       The  hashed  database  uses less disk space and is a little faster than
        the directory tree.  However, some applications assume the existence of
        the directory tree, and read it directly rather than using the <EM>terminfo</EM>
        API.
 
-       <STRONG>o</STRONG>   If  <EM>ncurses</EM>  is  configured with <EM>termcap</EM> support, this variable may
+       <STRONG>o</STRONG>   If <EM>ncurses</EM> is configured with <EM>termcap</EM> support,  this  variable  may
            contain the location of a <EM>termcap</EM> file.
 
        <STRONG>o</STRONG>   If the value of <EM>TERMINFO</EM> begins with "hex:" or "b64:", <EM>ncurses</EM> uses
@@ -1112,10 +1111,10 @@
                   TERMINFO=$(infocmp -0 -Q2 -q)
                   export TERMINFO
 
-           The compiled description is used only  if  it  corresponds  to  the
+           The  compiled  description  is  used  only if it corresponds to the
            terminal type identified by <EM>TERM</EM>.
 
-       Setting  <EM>TERMINFO</EM>  is  the  simplest,  but  not the only, way to direct
+       Setting <EM>TERMINFO</EM> is the simplest, but  not  the  only,  way  to  direct
        <EM>ncurses</EM> to a terminal database.  The search path is as follows.
 
        <STRONG>o</STRONG>   the last terminal database to which the running <EM>ncurses</EM> application
@@ -1133,16 +1132,16 @@
 
 
 </PRE><H3><a name="h3-TERMINFO_DIRS"><EM>TERMINFO_DIRS</EM></a></H3><PRE>
-       This  variable  specifies  a  list of locations, akin to <EM>PATH</EM>, in which
-       <EM>ncurses</EM> searches  for  the  terminal  type  descriptions  described  by
-       <EM>TERMINFO</EM>  above.   The  list  items are separated by colons on Unix and
-       semicolons on  OS/2  EMX.   System V  <EM>terminfo</EM>  lacks  a  corresponding
+       This variable specifies a list of locations, akin  to  <EM>PATH</EM>,  in  which
+       <EM>ncurses</EM>  searches  for  the  terminal  type  descriptions  described by
+       <EM>TERMINFO</EM> above.  The list items are separated by  colons  on  Unix  and
+       semicolons  on  OS/2  EMX.   System V  <EM>terminfo</EM>  lacks  a corresponding
        feature; <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> is an <EM>ncurses</EM> extension.
 
 
 </PRE><H3><a name="h3-TERMPATH"><EM>TERMPATH</EM></a></H3><PRE>
        If <EM>TERMCAP</EM> does not hold a terminal type description or file name, then
-       <EM>ncurses</EM> checks the contents of <EM>TERMPATH</EM>, a list of locations,  akin  to
+       <EM>ncurses</EM>  checks  the contents of <EM>TERMPATH</EM>, a list of locations, akin to
        <EM>PATH</EM>, in which it searches for <EM>termcap</EM> terminal type descriptions.  The
        list items are separated by colons on Unix and semicolons on OS/2 EMX.
 
@@ -1152,9 +1151,9 @@
 
 
 </PRE><H2><a name="h2-ALTERNATE-CONFIGURATIONS">ALTERNATE CONFIGURATIONS</a></H2><PRE>
-       Many different <EM>ncurses</EM> configurations are possible, determined  by  the
-       options  given  to the <EM>configure</EM> script when building the library.  Run
-       the script with the <STRONG>--help</STRONG> option to peruse them all.   A  few  are  of
+       Many  different  <EM>ncurses</EM> configurations are possible, determined by the
+       options given to the <EM>configure</EM> script when building the  library.   Run
+       the  script  with  the  <STRONG>--help</STRONG> option to peruse them all.  A few are of
        particular significance to the application developer employing <EM>ncurses</EM>.
 
        <STRONG>--disable-overwrite</STRONG>
@@ -1163,24 +1162,24 @@
 
                 <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-            This option is used to avoid file name conflicts  between  <EM>ncurses</EM>
-            and  an existing <EM>curses</EM> installation on the system.  If <EM>ncurses</EM> is
-            installed disabling overwrite, it  puts  its  header  files  in  a
+            This  option  is used to avoid file name conflicts between <EM>ncurses</EM>
+            and an existing <EM>curses</EM> installation on the system.  If <EM>ncurses</EM>  is
+            installed  disabling  overwrite,  it  puts  its  header files in a
             subdirectory.  Here is an example.
 
                 <STRONG>#include</STRONG> <STRONG>&lt;ncurses/curses.h&gt;</STRONG>
 
-            Installation  also  omits  a  symbolic  link  that would cause the
-            compiler's <STRONG>-lcurses</STRONG> option  to  link  object  files  with  <EM>ncurses</EM>
+            Installation also omits a  symbolic  link  that  would  cause  the
+            compiler's  <STRONG>-lcurses</STRONG>  option  to  link  object  files with <EM>ncurses</EM>
             instead of the system <EM>curses</EM> library.
 
-            The  directory  used  by this configuration of <EM>ncurses</EM> is shown in
+            The directory used by this configuration of <EM>ncurses</EM>  is  shown  in
             section "SYNOPSIS" above.
 
        <STRONG>--enable-widec</STRONG>
-            The  configure  script   renames   the   library   and   (if   the
-            <STRONG>--disable-overwrite</STRONG>  option  is  used)  puts the header files in a
-            different subdirectory.  All of  the  library  names  have  a  "w"
+            The   configure   script   renames   the   library   and  (if  the
+            <STRONG>--disable-overwrite</STRONG> option is used) puts the  header  files  in  a
+            different  subdirectory.   All  of  the  library  names have a "w"
             appended to them, i.e., instead of
 
                 <STRONG>-lncurses</STRONG>
@@ -1189,62 +1188,62 @@
 
                 <STRONG>-lncursesw</STRONG>
 
-            You  must  also  enable  the wide-character features in the header
-            file when compiling for the  wide-character  library  to  use  the
-            extended  (wide-character)  functions.   The  symbol which enables
+            You must also enable the wide-character  features  in  the  header
+            file  when  compiling  for  the  wide-character library to use the
+            extended (wide-character) functions.   The  symbol  which  enables
             these features has changed since X/Open Curses, Issue 4:
 
-            <STRONG>o</STRONG>   Originally, the wide-character  feature  required  the  symbol
+            <STRONG>o</STRONG>   Originally,  the  wide-character  feature  required the symbol
                 <STRONG>_XOPEN_SOURCE_EXTENDED</STRONG>  but  that  was  only  valid  for  XPG4
                 (1996).
 
-            <STRONG>o</STRONG>   Later, that was deemed conflicting with <STRONG>_XOPEN_SOURCE</STRONG>  defined
+            <STRONG>o</STRONG>   Later,  that was deemed conflicting with <STRONG>_XOPEN_SOURCE</STRONG> defined
                 to 500.
 
-            <STRONG>o</STRONG>   As  of  mid-2018,  none of the features in this implementation
-                require a <STRONG>_XOPEN_SOURCE</STRONG> feature greater  than  600.   However,
+            <STRONG>o</STRONG>   As of mid-2018, none of the features  in  this  implementation
+                require  a  <STRONG>_XOPEN_SOURCE</STRONG>  feature greater than 600.  However,
                 X/Open Curses, Issue 7 (2009) recommends defining it to 700.
 
-            <STRONG>o</STRONG>   Alternatively,   you   can  enable  the  feature  by  defining
-                <STRONG>NCURSES_WIDECHAR</STRONG> with the caveat that some other  header  file
-                than  <STRONG>curses.h</STRONG>  may require a specific value for <STRONG>_XOPEN_SOURCE</STRONG>
+            <STRONG>o</STRONG>   Alternatively,  you  can  enable  the  feature   by   defining
+                <STRONG>NCURSES_WIDECHAR</STRONG>  with  the caveat that some other header file
+                than <STRONG>curses.h</STRONG> may require a specific value  for  <STRONG>_XOPEN_SOURCE</STRONG>
                 (or a system-specific symbol).
 
-            The <EM>curses.h</EM> header file installed for the wide-character  library
-            is  designed  to be compatible with the non-wide library's header.
-            Only the size of the <EM>WINDOW</EM> structure  differs;  few  applications
+            The  <EM>curses.h</EM> header file installed for the wide-character library
+            is designed to be compatible with the non-wide  library's  header.
+            Only  the  size  of the <EM>WINDOW</EM> structure differs; few applications
             require more than pointers to <EM>WINDOW</EM>s.
 
             If  the  headers  are  installed  allowing  overwrite,  the  wide-
-            character library's headers should be  installed  last,  to  allow
+            character  library's  headers  should  be installed last, to allow
             applications to be built using either library from the same set of
             headers.
 
        <STRONG>--with-pthread</STRONG>
-            The configure script renames the  library.   All  of  the  library
-            names  have  a  "t"  appended  to  them  (before  any "w" added by
+            The  configure  script  renames  the  library.  All of the library
+            names have a "t"  appended  to  them  (before  any  "w"  added  by
             <STRONG>--enable-widec</STRONG>).
 
             The global variables such as <STRONG>LINES</STRONG> are replaced by macros to allow
             read-only access.  At the same time, setter-functions are provided
-            to set these values.  Some applications  (very  few)  may  require
+            to  set  these  values.   Some applications (very few) may require
             changes to work with this convention.
 
        <STRONG>--with-shared</STRONG>
        <STRONG>--with-normal</STRONG>
        <STRONG>--with-debug</STRONG>
        <STRONG>--with-profile</STRONG>
-            The  shared  and  normal  (static)  library  names differ by their
-            suffixes, e.g., <STRONG>libncurses.so</STRONG> and  <STRONG>libncurses.a</STRONG>.   The  debug  and
-            profiling  libraries  add  a  "_g"  and  a  "_p" to the root names
+            The shared and normal  (static)  library  names  differ  by  their
+            suffixes,  e.g.,  <STRONG>libncurses.so</STRONG>  and  <STRONG>libncurses.a</STRONG>.  The debug and
+            profiling libraries add a "_g"  and  a  "_p"  to  the  root  names
             respectively, e.g., <STRONG>libncurses_g.a</STRONG> and <STRONG>libncurses_p.a</STRONG>.
 
        <STRONG>--with-termlib</STRONG>
-            Low-level functions which do not depend upon whether  the  library
+            Low-level  functions  which do not depend upon whether the library
             supports wide-characters, are provided in the tinfo library.
 
-            By  doing  this, it is possible to share the tinfo library between
-            wide/normal configurations as well  as  reduce  the  size  of  the
+            By doing this, it is possible to share the tinfo  library  between
+            wide/normal  configurations  as  well  as  reduce  the size of the
             library when only low-level functions are needed.
 
             Those functions are described in these pages:
@@ -1264,8 +1263,8 @@
             <STRONG>o</STRONG>   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG> - miscellaneous <EM>curses</EM> utility routines
 
        <STRONG>--with-trace</STRONG>
-            The  <STRONG>trace</STRONG>  function normally resides in the debug library, but it
-            is sometimes useful to  configure  this  in  the  shared  library.
+            The <STRONG>trace</STRONG> function normally resides in the debug library,  but  it
+            is  sometimes  useful  to  configure  this  in the shared library.
             Configure scripts should check for the function's existence rather
             than assuming it is always in the debug library.
 
@@ -1279,213 +1278,213 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       X/Open Curses permits most functions it specifies to be made  available
+       X/Open  Curses permits most functions it specifies to be made available
        as macros as well.  <EM>ncurses</EM> does so
 
        <STRONG>o</STRONG>   for functions that return values via their parameters,
 
        <STRONG>o</STRONG>   to support obsolete features,
 
-       <STRONG>o</STRONG>   to  reuse functions (for example, those that move the cursor before
+       <STRONG>o</STRONG>   to reuse functions (for example, those that move the cursor  before
            another operation), and
 
        <STRONG>o</STRONG>   in a few special cases.
 
-       If the standard  output  file  descriptor  of  an  <EM>ncurses</EM>  program  is
-       redirected  to  something  that  is  not a terminal device, the library
-       writes screen updates to the standard error file descriptor.  This  was
+       If  the  standard  output  file  descriptor  of  an  <EM>ncurses</EM> program is
+       redirected to something that is not  a  terminal  device,  the  library
+       writes  screen updates to the standard error file descriptor.  This was
        an undocumented feature of SVr3 <EM>curses</EM>.
 
-       See  subsection  "Header  Files"  below  regarding  symbols  exposed by
+       See subsection  "Header  Files"  below  regarding  symbols  exposed  by
        inclusion of <EM>curses.h</EM>.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       <EM>ncurses</EM> enables an application  to  capture  mouse  events  on  certain
+       <EM>ncurses</EM>  enables  an  application  to  capture  mouse events on certain
        terminals, including <STRONG>xterm(1)</STRONG>; see <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>.
 
-       <EM>ncurses</EM>  provides  a  means of responding to window resizing events, as
-       when running in a GUI terminal emulator application such as <EM>xterm</EM>;  see
+       <EM>ncurses</EM> provides a means of responding to window  resizing  events,  as
+       when  running in a GUI terminal emulator application such as <EM>xterm</EM>; see
        <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG> and <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>.
 
        <EM>ncurses</EM> allows an application to query the terminal for the presence of
        a wide variety of special keys; see <STRONG><A HREF="curs_getch.3x.html">has_key(3x)</A></STRONG>.
 
        <EM>ncurses</EM> extends the fixed set of function key capabilities specified by
-       X/Open   Curses  by  allowing  the  application  programmer  to  define
-       additional key events at runtime; see <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>,  <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>,
+       X/Open  Curses  by  allowing  the  application  programmer  to   define
+       additional  key events at runtime; see <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>,
        <STRONG><A HREF="keybound.3x.html">keybound(3x)</A></STRONG>, and <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>.
 
-       <EM>ncurses</EM>   can   exploit  the  capabilities  of  terminals  implementing
-       ISO 6429/ECMA-48  SGR 39  and  SGR 49   sequences,   which   allow   an
-       application  to  reset  the  terminal  to  its  original foreground and
-       background colors.  From a user's perspective, the application is  able
-       to  draw colored text on a background whose color is set independently,
+       <EM>ncurses</EM>  can  exploit  the  capabilities  of   terminals   implementing
+       ISO 6429/ECMA-48   SGR 39   and   SGR 49   sequences,  which  allow  an
+       application to reset  the  terminal  to  its  original  foreground  and
+       background  colors.  From a user's perspective, the application is able
+       to draw colored text on a background whose color is set  independently,
        providing better control over color contrasts.  See <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>.
 
-       An <EM>ncurses</EM> application  can  eschew  knowledge  of  <EM>SCREEN</EM>  and  <EM>WINDOW</EM>
-       structure   internals,   instead   using  accessor  functions  such  as
+       An  <EM>ncurses</EM>  application  can  eschew  knowledge  of  <EM>SCREEN</EM> and <EM>WINDOW</EM>
+       structure  internals,  instead  using  accessor   functions   such   as
        <STRONG><A HREF="curs_inopts.3x.html">is_cbreak(3x)</A></STRONG> and <STRONG><A HREF="curs_opaque.3x.html">is_scrollok(3x)</A></STRONG>.
 
-       <EM>ncurses</EM> enables an application  to  direct  its  output  to  a  printer
+       <EM>ncurses</EM>  enables  an  application  to  direct  its  output to a printer
        attached to the terminal device; see <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>.
 
-       <EM>ncurses</EM>  offers <STRONG><A HREF="curs_slk.3x.html">slk_attr(3x)</A></STRONG> as a counterpart of <STRONG><A HREF="curs_attr.3x.html">attr_get(3x)</A></STRONG> for soft-
-       label key lines, and <STRONG><A HREF="curs_slk.3x.html">extended_slk_color(3x)</A></STRONG> as a form of  <STRONG><A HREF="curs_slk.3x.html">slk_color(3x)</A></STRONG>
-       that  can  gather  color  information  from  them  when many colors are
+       <EM>ncurses</EM> offers <STRONG><A HREF="curs_slk.3x.html">slk_attr(3x)</A></STRONG> as a counterpart of <STRONG><A HREF="curs_attr.3x.html">attr_get(3x)</A></STRONG> for  soft-
+       label  key lines, and <STRONG><A HREF="curs_slk.3x.html">extended_slk_color(3x)</A></STRONG> as a form of <STRONG><A HREF="curs_slk.3x.html">slk_color(3x)</A></STRONG>
+       that can gather color  information  from  them  when  many  colors  are
        supported.
 
-       <EM>ncurses</EM>   permits   modification   of   <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>'s   behavior;    see
+       <EM>ncurses</EM>    permits   modification   of   <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>'s   behavior;   see
        <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>.
 
-       Rudimentary  support  for multi-threaded applications may be available;
+       Rudimentary support for multi-threaded applications may  be  available;
        see <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>.
 
-       Functions that ease the management of multiple screens can be  exposed;
+       Functions  that ease the management of multiple screens can be exposed;
        see <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>.
 
-       To  aid  applications  to  debug their memory usage, <EM>ncurses</EM> optionally
-       offers functions  to  more  aggressively  free  memory  it  dynamically
+       To aid applications to debug their  memory  usage,  <EM>ncurses</EM>  optionally
+       offers  functions  to  more  aggressively  free  memory  it dynamically
        allocates itself; see <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>.
 
-       The  library  facilitates auditing and troubleshooting of its behavior;
+       The library facilitates auditing and troubleshooting of  its  behavior;
        see <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>.
 
-       Compiling <EM>ncurses</EM> with the option <STRONG>-DUSE_GETCAP</STRONG> causes it to  fall  back
-       to  reading <EM>/etc/termcap</EM> if the terminal setup code cannot find a <EM>term-</EM>
+       Compiling  <EM>ncurses</EM>  with the option <STRONG>-DUSE_GETCAP</STRONG> causes it to fall back
+       to reading <EM>/etc/termcap</EM> if the terminal setup code cannot find a  <EM>term-</EM>
        <EM>info</EM>  entry  corresponding  to  <EM>TERM</EM>.   Use  of  this  feature  is  not
-       recommended,  as  it essentially includes an entire <EM>termcap</EM> compiler in
-       the <EM>ncurses</EM> startup code, at a cost in  memory  usage  and  application
+       recommended, as it essentially includes an entire <EM>termcap</EM>  compiler  in
+       the  <EM>ncurses</EM>  startup  code,  at a cost in memory usage and application
        launch latency.
 
-       <EM>PDCurses</EM>   and  NetBSD  <EM>curses</EM>  incorporate  some  <EM>ncurses</EM>  extensions.
+       <EM>PDCurses</EM>  and  NetBSD  <EM>curses</EM>  incorporate  some  <EM>ncurses</EM>   extensions.
        Individual man pages indicate where this is the case.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        X/Open Curses defines two levels of conformance, "base" and "enhanced".
        The latter includes several additional features, such as wide-character
-       and color support.  <EM>ncurses</EM> intends base-level conformance with  X/Open
-       Curses,  and  supports  all  features  of its enhanced level except the
+       and  color support.  <EM>ncurses</EM> intends base-level conformance with X/Open
+       Curses, and supports all features of  its  enhanced  level  except  the
        <EM>untic</EM> utility.
 
-       Differences between X/Open Curses and <EM>ncurses</EM>  are  documented  in  the
+       Differences  between  X/Open  Curses  and <EM>ncurses</EM> are documented in the
        "PORTABILITY" sections of applicable man pages.
 
 
 </PRE><H3><a name="h3-Error-Checking">Error Checking</a></H3><PRE>
-       In  many cases, X/Open Curses is vague about error conditions, omitting
+       In many cases, X/Open Curses is vague about error conditions,  omitting
        some of the SVr4 documentation.
 
-       Unlike other implementations, <EM>ncurses</EM> checks pointer  parameters,  such
-       as  those to <EM>WINDOW</EM> structures, to ensure that they are not null.  This
-       is done primarily to guard  against  programmer  error.   The  standard
+       Unlike  other  implementations, <EM>ncurses</EM> checks pointer parameters, such
+       as those to <EM>WINDOW</EM> structures, to ensure that they are not null.   This
+       is  done  primarily  to  guard  against programmer error.  The standard
        interface does not provide a way for the library to tell an application
-       which of several possible errors occurred.  An application that  relies
-       on  <EM>ncurses</EM>  to  check  its function parameters for validity limits its
+       which  of several possible errors occurred.  An application that relies
+       on <EM>ncurses</EM> to check its function parameters  for  validity  limits  its
        portability and robustness.
 
 
 </PRE><H3><a name="h3-Padding-Differences">Padding Differences</a></H3><PRE>
-       In historical <EM>curses</EM> implementations, delays embedded in  the  <EM>terminfo</EM>
-       capabilities  <STRONG>carriage_return</STRONG>  (<STRONG>cr</STRONG>),  <STRONG>scroll_forward</STRONG> (<STRONG>ind</STRONG>), <STRONG>cursor_left</STRONG>
+       In  historical  <EM>curses</EM> implementations, delays embedded in the <EM>terminfo</EM>
+       capabilities <STRONG>carriage_return</STRONG> (<STRONG>cr</STRONG>),  <STRONG>scroll_forward</STRONG>  (<STRONG>ind</STRONG>),  <STRONG>cursor_left</STRONG>
        (<STRONG>cub1</STRONG>), <STRONG>form_feed</STRONG> (<STRONG>ff</STRONG>), and <STRONG>tab</STRONG> (<STRONG>ht</STRONG>) activated corresponding delay bits
-       in  the  Unix terminal driver.  <EM>ncurses</EM> performs all padding by sending
-       NUL bytes to the device.  This method is slightly more  expensive,  but
-       narrows   the   interface   to   the   Unix  kernel  significantly  and
+       in the Unix terminal driver.  <EM>ncurses</EM> performs all padding  by  sending
+       NUL  bytes  to the device.  This method is slightly more expensive, but
+       narrows  the  interface  to   the   Unix   kernel   significantly   and
        correspondingly increases the package's portability.
 
 
 </PRE><H3><a name="h3-Header-Files">Header Files</a></H3><PRE>
-       The header file <EM>curses.h</EM> itself includes the header files  <EM>stdio.h</EM>  and
+       The  header  file <EM>curses.h</EM> itself includes the header files <EM>stdio.h</EM> and
        <EM>unctrl.h</EM>.
 
        X/Open Curses has more to say,
 
-           The  inclusion  of  <EM>curses.h</EM>  may make visible all symbols from the
+           The inclusion of <EM>curses.h</EM> may make visible  all  symbols  from  the
            headers <EM>stdio.h</EM>, <EM>term.h</EM>, <EM>termios.h</EM>, and <EM>wchar.h</EM>.
 
        but does not finish the story.  A more complete account follows.
 
        <STRONG>o</STRONG>   The first <EM>curses</EM>, in 4BSD, provided a <EM>curses.h</EM> file.
 
-           BSD <EM>curses</EM> code included <EM>curses.h</EM> and  <EM>unctrl.h</EM>  from  an  internal
+           BSD  <EM>curses</EM>  code  included  <EM>curses.h</EM> and <EM>unctrl.h</EM> from an internal
            header file <EM>curses.ext</EM>, where "ext" abbreviated "externs".
 
-           The  implementations of <EM>printw</EM> and <EM>scanw</EM> used undocumented internal
-           functions of the standard I/O library (<STRONG>_</STRONG><EM>doprnt</EM>  and  <STRONG>_</STRONG><EM>doscan</EM>),  but
+           The implementations of <EM>printw</EM> and <EM>scanw</EM> used undocumented  internal
+           functions  of  the  standard I/O library (<STRONG>_</STRONG><EM>doprnt</EM> and <STRONG>_</STRONG><EM>doscan</EM>), but
            nothing in <EM>curses.h</EM> itself relied upon <EM>stdio.h</EM>.
 
-       <STRONG>o</STRONG>   SVr2  <EM>curses</EM>  added  <EM>newterm</EM>, which relies upon <EM>stdio.h</EM> because its
+       <STRONG>o</STRONG>   SVr2 <EM>curses</EM> added <EM>newterm</EM>, which relies upon  <EM>stdio.h</EM>  because  its
            function prototype employs the <EM>FILE</EM> type.
 
            SVr4 <EM>curses</EM> added <EM>putwin</EM> and <EM>getwin</EM>, which also use <EM>stdio.h</EM>.
 
            X/Open Curses specifies all three of these functions.
 
-           SVr4 <EM>curses</EM> and X/Open Curses  do  not  require  the  developer  to
-           include  <EM>stdio.h</EM>  before  <EM>curses.h</EM>.  Both document use of <EM>curses</EM> as
+           SVr4  <EM>curses</EM>  and  X/Open  Curses  do  not require the developer to
+           include <EM>stdio.h</EM> before <EM>curses.h</EM>.  Both document use  of  <EM>curses</EM>  as
            requiring only <EM>curses.h</EM>.
 
            As a result, standard <EM>curses.h</EM> always includes <EM>stdio.h</EM>.
 
-       <STRONG>o</STRONG>   X/Open Curses and SVr4 <EM>curses</EM>  are  inconsistent  with  respect  to
+       <STRONG>o</STRONG>   X/Open  Curses  and  SVr4  <EM>curses</EM>  are inconsistent with respect to
            <EM>unctrl.h</EM>.
 
-           As  noted in <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>, <EM>ncurses</EM> includes <EM>unctrl.h</EM> from <EM>curses.h</EM>
+           As noted in <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>, <EM>ncurses</EM> includes <EM>unctrl.h</EM> from  <EM>curses.h</EM>
            (as SVr4 does).
 
-       <STRONG>o</STRONG>   X/Open Curses's comments about <EM>term.h</EM> and <EM>termios.h</EM>  may  refer  to
+       <STRONG>o</STRONG>   X/Open  Curses's  comments  about <EM>term.h</EM> and <EM>termios.h</EM> may refer to
            HP-UX and AIX.
 
-           HP-UX  <EM>curses</EM> includes <EM>term.h</EM> from <EM>curses.h</EM> to declare <EM>setupterm</EM> in
+           HP-UX <EM>curses</EM> includes <EM>term.h</EM> from <EM>curses.h</EM> to declare <EM>setupterm</EM>  in
            <EM>curses.h</EM>, but <EM>ncurses</EM> and Solaris <EM>curses</EM> do not.
 
-           AIX <EM>curses</EM> includes  <EM>term.h</EM>  and  <EM>termios.h</EM>.   Again,  <EM>ncurses</EM>  and
+           AIX  <EM>curses</EM>  includes  <EM>term.h</EM>  and  <EM>termios.h</EM>.   Again, <EM>ncurses</EM> and
            Solaris <EM>curses</EM> do not.
 
-       <STRONG>o</STRONG>   X/Open  Curses  says that <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>term.h</EM>, but does not
+       <STRONG>o</STRONG>   X/Open Curses says that <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>term.h</EM>, but  does  not
            require it to do so.
 
-           Some programs use functions declared in both <EM>curses.h</EM>  and  <EM>term.h</EM>,
-           and  must  include  both header files in the same module.  Very old
-           versions of  AIX  <EM>curses</EM>  required  inclusion  of  <EM>curses.h</EM>  before
+           Some  programs  use functions declared in both <EM>curses.h</EM> and <EM>term.h</EM>,
+           and must include both header files in the same  module.   Very  old
+           versions  of  AIX  <EM>curses</EM>  required  inclusion  of  <EM>curses.h</EM> before
            <EM>term.h</EM>.
 
-           The  header  files supplied by <EM>ncurses</EM> include the standard library
-           headers required for its  declarations,  so  <EM>ncurses</EM>'s  own  header
-           files  can  be  included  in  any  order.  But for portability, you
-           should include <EM>curses.h</EM> before <EM>term.h</EM>.
+           The header files supplied by <EM>ncurses</EM> include the  standard  library
+           headers  required  for  its  declarations,  so <EM>ncurses</EM>'s own header
+           files can be included in any order.  For portability  even  to  old
+           AIX systems, include <EM>curses.h</EM> before <EM>term.h</EM>.
 
-       <STRONG>o</STRONG>   X/Open Curses says "may make visible" because  including  a  header
-           file  does  not  necessarily  make visible all of the symbols in it
+       <STRONG>o</STRONG>   X/Open  Curses  says  "may make visible" because including a header
+           file does not necessarily make visible all of  the  symbols  in  it
            (consider <STRONG>#ifdef</STRONG> and similar).
 
-           For instance, <EM>ncurses</EM>'s <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>wchar.h</EM> if the  proper
-           symbol  is defined, and if <EM>ncurses</EM> is configured for wide-character
-           support.  If <EM>wchar.h</EM> is included, its symbols <STRONG>may</STRONG> be  made  visible
+           For  instance, <EM>ncurses</EM>'s <EM>curses.h</EM> <STRONG>may</STRONG> include <EM>wchar.h</EM> if the proper
+           symbol is defined, and if <EM>ncurses</EM> is configured for  wide-character
+           support.   If  <EM>wchar.h</EM> is included, its symbols <STRONG>may</STRONG> be made visible
            depending on the value of the <STRONG>_XOPEN_SOURCE</STRONG> feature test macro.
 
        <STRONG>o</STRONG>   X/Open Curses mandates an application's inclusion of one standard C
-           library header in a  special  case:  <EM>stdarg.h</EM>  before  <EM>curses.h</EM>  to
-           prototype  the  functions  <EM>vw</EM><STRONG>_</STRONG><EM>printw</EM>  and  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM> (as well as the
-           obsolete <EM>vwprintw</EM> and <EM>vwscanw</EM>).  Each of  these  takes  a  variadic
+           library  header  in  a  special  case:  <EM>stdarg.h</EM> before <EM>curses.h</EM> to
+           prototype the functions <EM>vw</EM><STRONG>_</STRONG><EM>printw</EM> and  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM>  (as  well  as  the
+           obsolete  <EM>vwprintw</EM>  and  <EM>vwscanw</EM>).   Each of these takes a variadic
            argument list, a <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter, like that of <STRONG>printf(3)</STRONG>.
 
-           SVr3  <EM>curses</EM>  introduced  the  two  obsolete  functions, and X/Open
-           Curses the others.   In  between,  SVr4  <EM>curses</EM>  provided  for  the
-           possibility  that  an application might include either <EM>varargs.h</EM> or
-           <EM>stdarg.h</EM>.  These represented  contrasting  approaches  to  handling
-           variadic  argument  lists.   The older interface, <EM>varargs.h</EM>, used a
-           pointer to <EM>char</EM> for variadic functions' <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter.   Later,
-           the  list  acquired its own standard data type, <EM>va</EM><STRONG>_</STRONG><EM>list</EM>, defined in
-           <EM>stdarg.h</EM>, empowering the compiler to check the types of a  function
-           call's  actual  parameters  against the formal ones declared in its
+           SVr3 <EM>curses</EM> introduced  the  two  obsolete  functions,  and  X/Open
+           Curses  the  others.   In  between,  SVr4  <EM>curses</EM>  provided for the
+           possibility that an application might include either  <EM>varargs.h</EM>  or
+           <EM>stdarg.h</EM>.   These  represented  contrasting  approaches to handling
+           variadic argument lists.  The older interface,  <EM>varargs.h</EM>,  used  a
+           pointer  to <EM>char</EM> for variadic functions' <EM>va</EM><STRONG>_</STRONG><EM>list</EM> parameter.  Later,
+           the list acquired its own standard data type, <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,  defined  in
+           <EM>stdarg.h</EM>,  empowering the compiler to check the types of a function
+           call's actual parameters against the formal ones  declared  in  its
            prototype.
 
-           No  conforming  implementations  of  X/Open   Curses   require   an
+           No   conforming   implementations   of  X/Open  Curses  require  an
            application to include <EM>stdarg.h</EM> before <EM>curses.h</EM> because they either
-           have allowed for a special type, or,  like  <EM>ncurses</EM>,  they  include
+           have  allowed  for  a  special type, or, like <EM>ncurses</EM>, they include
            <EM>stdarg.h</EM> themselves to provide a portable interface.
 
 
@@ -1499,7 +1498,7 @@
 
 
 
-ncurses 6.5                       2024-07-27                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

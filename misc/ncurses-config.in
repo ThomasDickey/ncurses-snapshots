@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.54 2024/07/13 20:00:52 tom Exp $
+# $Id: ncurses-config.in,v 1.55 2024/09/14 22:16:56 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2024 Thomas E. Dickey                                  #
 # Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
@@ -208,7 +208,7 @@ while [ $# -gt 0 ]; do
 		for opt in $CFLAGS
 		do
 			case "x$opt" in
-			x-[OW]*)
+			x-[fgOW]*)
 				opt=
 				;;
 			esac
@@ -244,7 +244,7 @@ while [ $# -gt 0 ]; do
 		for opt in $CFLAGS
 		do
 			case "x$opt" in
-			x-[I]*|x-[OW]*)
+			x-[I]*|x-[fgOW]*)
 				opt=
 				;;
 			esac

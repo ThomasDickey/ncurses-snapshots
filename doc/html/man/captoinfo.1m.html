@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: captoinfo.1m,v 1.63 2024/03/23 20:37:25 tom Exp @
+  * @Id: captoinfo.1m,v 1.65 2024/09/14 00:39:51 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>captoinfo 1m 2024-03-23 ncurses 6.5 User commands</TITLE>
+<TITLE>captoinfo 1m 2024-09-13 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">captoinfo 1m 2024-03-23 ncurses 6.5 User commands</H1>
+<H1 class="no-header">captoinfo 1m 2024-09-13 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>                    User commands                   <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
 
@@ -77,12 +77,11 @@
 
 </PRE><H3><a name="h3-Translations-from-Nonstandard-Capabilities">Translations from Nonstandard Capabilities</a></H3><PRE>
        <STRONG>captoinfo</STRONG>  translates  some  obsolete,  nonstandard  capabilities  into
-       standard  (SVr4/XSI  Curses)  <EM>terminfo</EM>  capabilities.   It   issues   a
-       diagnostic  to the standard error stream for each, inviting the user to
-       check that it has not mistakenly  translated  an  unknown  or  mistyped
-       capability name.
+       standard <EM>terminfo</EM> capabilities.  It issues a diagnostic to the standard
+       error  stream  for  each,  inviting  the  user to check that it has not
+       mistakenly translated an unknown or mistyped capability name.
 
-                     <STRONG>Name</STRONG>
+                 <STRONG><EM>termcap</EM></STRONG> <STRONG>Code</STRONG>
               <STRONG>Obsolete</STRONG>   <STRONG>Standard</STRONG>    <STRONG>Origin</STRONG>      <STRONG><EM>terminfo</EM></STRONG> <STRONG>capability</STRONG>
               ---------------------------------------------------------
                  <STRONG>BO</STRONG>         <STRONG>mr</STRONG>        AT&amp;T      <STRONG>enter_reverse_mode</STRONG>
@@ -111,14 +110,14 @@
                  <STRONG>KE</STRONG>         <STRONG>F4</STRONG>      Tektronix   <STRONG>key_f14</STRONG>
                  <STRONG>KF</STRONG>         <STRONG>F5</STRONG>      Tektronix   <STRONG>key_f15</STRONG>
                  <STRONG>BC</STRONG>         <STRONG>Sb</STRONG>      Tektronix   <STRONG>set_background</STRONG>
-
                  <STRONG>FC</STRONG>         <STRONG>Sf</STRONG>      Tektronix   <STRONG>set_foreground</STRONG>
+
                  <STRONG>HS</STRONG>         <STRONG>mh</STRONG>        IRIX      <STRONG>enter_dim_mode</STRONG>
 
        XENIX <EM>termcap</EM> had a set of extension capabilities, corresponding to box
        drawing characters of CCSID ("code page") 437, as follows.
 
-                      <STRONG><EM>termcap</EM></STRONG> <STRONG>Name</STRONG>            <STRONG>Graphic</STRONG>
+                      <STRONG><EM>termcap</EM></STRONG> <STRONG>Code</STRONG>            <STRONG>Graphic</STRONG>
                       -----------------------------------------
                            <STRONG>G2</STRONG>        upper left corner
                            <STRONG>G3</STRONG>        lower left corner
@@ -144,27 +143,27 @@
                            <STRONG>Gc</STRONG>        double intersection
                            <STRONG>GG</STRONG>        ACS magic cookie count
 
-       <STRONG>captoinfo</STRONG> composes single-line capabilities into an  <STRONG>acsc</STRONG>  string,  and
+       <STRONG>captoinfo</STRONG>  composes  single-line  capabilities into an <STRONG>acsc</STRONG> string, and
        discards <STRONG>GG</STRONG> and double-line capabilities with a warning diagnostic.
 
-       IBM's  AIX  has  a  <EM>terminfo</EM> facility descended from SVr1 <EM>terminfo</EM>, but
-       which is incompatible with the SVr4 format.  <STRONG>captoinfo</STRONG>  translates  the
+       IBM's AIX has a <EM>terminfo</EM> facility descended  from  SVr1  <EM>terminfo</EM>,  but
+       which  is  incompatible with the SVr4 format.  <STRONG>captoinfo</STRONG> translates the
        following AIX extensions.
 
-                                     <STRONG>IBM</STRONG>    <STRONG>XSI</STRONG>
-                                    -------------
-                                    ksel    kslt
-                                    kbtab   kcbt
-                                    font0   s0ds
-                                    font1   s1ds
-                                    font2   s2ds
-                                    font3   s3ds
+                                    <STRONG>IBM</STRONG>    <STRONG>X/Open</STRONG>
+                                   ---------------
+                                   ksel    kslt
+                                   kbtab   kcbt
+                                   font0   s0ds
+                                   font1   s1ds
+                                   font2   s2ds
+                                   font3   s3ds
 
-       Additionally,  this  program  translates  the AIX <STRONG>box1</STRONG> capability to an
+       Additionally, this program translates the AIX  <STRONG>box1</STRONG>  capability  to  an
        <STRONG>acsc</STRONG> string.
 
-       The  HP-UX  <EM>terminfo</EM>  library   supports   two   nonstandard   <EM>terminfo</EM>
-       capabilities,  <STRONG>meml</STRONG>  (memory lock) and <STRONG>memu</STRONG> (memory unlock).  <STRONG>captoinfo</STRONG>
+       The   HP-UX   <EM>terminfo</EM>   library   supports  two  nonstandard  <EM>terminfo</EM>
+       capabilities, <STRONG>meml</STRONG> (memory lock) and <STRONG>memu</STRONG> (memory  unlock).   <STRONG>captoinfo</STRONG>
        discards these with a warning message.
 
 
@@ -174,11 +173,11 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 7 (2009) describes <STRONG>tic</STRONG>  briefly,  but  omits  this
+       X/Open  Curses,  Issue  7  (2009) describes <STRONG>tic</STRONG> briefly, but omits this
        program.
 
        SVr4 systems provide <STRONG>captoinfo</STRONG> as a separate application from <STRONG>tic</STRONG>.  Its
-       <STRONG>-v</STRONG> option does not accept a trace level argument <EM>n</EM>; repeat <STRONG>-v</STRONG>  <EM>n</EM>  times
+       <STRONG>-v</STRONG>  option  does not accept a trace level argument <EM>n</EM>; repeat <STRONG>-v</STRONG> <EM>n</EM> times
        instead.
 
        NetBSD does not provide this application.
@@ -194,7 +193,7 @@
 
 
 
-ncurses 6.5                       2024-03-23                     <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
+ncurses 6.5                       2024-09-13                     <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

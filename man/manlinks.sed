@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.21 2024/04/20 22:25:36 tom Exp $
+# $Id: manlinks.sed,v 1.22 2024/09/14 23:49:39 tom Exp $
 ##############################################################################
 # Copyright 2020-2023,2024 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
@@ -53,6 +53,7 @@ s/^[ 	][ 	]*//
 s/[ 	][ 	]*$//
 s/[ 	][ 	]*/ /g
 /^$/d
+/^[<>]/d
 #
 # convert ".SH" into a more manageable form
 s/\.SH[ 	][ 	]*/.SH_(/

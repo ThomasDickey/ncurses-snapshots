@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.52 2024/06/01 22:29:08 tom Exp $
-.TH curs_window 3X 2024-06-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_window.3x,v 1.54 2024/09/14 20:06:50 tom Exp $
+.TH curs_window 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%newwin\fP,
 \fB\%delwin\fP,
@@ -46,23 +46,23 @@ create and manipulate \fIcurses\fR windows
 .nf
 \fB#include <curses.h>
 .PP
-\fBWINDOW *newwin(
-      \fBint \fInlines\fB, int \fIncols\fB,\fR
-      \fBint \fIbegin_y\fB, int \fIbegin_x\fB);\fR
-\fBint delwin(WINDOW *\fIwin\fB);\fR
-\fBint mvwin(WINDOW *\fIwin\fB, int \fIy\fB, int \fIx\fB);\fR
-\fBWINDOW *subwin(WINDOW *\fIorig\fB,\fR
-      \fBint \fInlines\fB, int \fIncols\fB,\fR
-      \fBint \fIbegin_y\fB, int \fIbegin_x\fB);\fR
-\fBWINDOW *derwin(WINDOW *\fIorig\fB,\fR
-      \fBint \fInlines\fB, int \fIncols\fB,\fR
-      \fBint \fIbegin_y\fB, int \fIbegin_x\fB);\fR
-\fBint mvderwin(WINDOW *\fIwin\fB, int \fIpar_y\fB, int \fIpar_x\fB);\fR
-\fBWINDOW *dupwin(WINDOW *\fIwin\fB);\fR
-\fBvoid wsyncup(WINDOW *\fIwin\fB);\fR
-\fBint syncok(WINDOW *\fIwin\fB, bool \fIbf\fB);\fR
-\fBvoid wcursyncup(WINDOW *\fIwin\fB);\fR
-\fBvoid wsyncdown(WINDOW *\fIwin\fB);\fR
+\fBWINDOW * newwin(
+	int \fInlines\fP, int \fIncols\fP,
+	int \fIbegin_y\fP, int \fIbegin_x\fP);
+\fBint delwin(WINDOW * \fIwin\fP);
+\fBint mvwin(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
+\fBWINDOW * subwin(WINDOW * \fIorig\fP,
+	int \fInlines\fP, int \fIncols\fP,
+	int \fIbegin_y\fP, int \fIbegin_x\fP);
+\fBWINDOW * derwin(WINDOW * \fIorig\fP,
+	int \fInlines\fP, int \fIncols\fP,
+	int \fIbegin_y\fP, int \fIbegin_x\fP);
+\fBint mvderwin(WINDOW * \fIwin\fP, int \fIpar_y\fP, int \fIpar_x\fP);
+\fBWINDOW * dupwin(WINDOW * \fIwin\fP);
+\fBvoid wsyncup(WINDOW * \fIwin\fP);
+\fBint syncok(WINDOW * \fIwin\fP, bool \fIbf\fP);
+\fBvoid wcursyncup(WINDOW * \fIwin\fP);
+\fBvoid wsyncdown(WINDOW * \fIwin\fP);
 .fi
 .SH DESCRIPTION
 .SS newwin

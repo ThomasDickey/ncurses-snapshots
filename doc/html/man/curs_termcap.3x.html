@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.87 2024/06/22 21:28:07 tom Exp @
+  * @Id: curs_termcap.3x,v 1.89 2024/09/14 20:06:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2024-06-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2024-06-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2024-09-14 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -229,55 +229,55 @@
        <STRONG>o</STRONG>   X/Open   Curses,   Issue  4,  Version  2  (1996),  describes  these
            functions, marking them as "TO BE WITHDRAWN".
 
-       <STRONG>o</STRONG>   X/Open Curses, Issue 7 (2009) marks the  <EM>termcap</EM>  interface  (along
-           with <STRONG>vwprintw</STRONG> and <STRONG>vwscanw</STRONG>) as withdrawn.
+       <STRONG>o</STRONG>   X/Open Curses, Issue 7 (2009) withdrew the <EM>termcap</EM> interface (along
+           with the <EM>vwprintw</EM> and <EM>vwscanw</EM> functions).
 
        Neither  X/Open  Curses  nor  the  SVr4 man pages documented the return
-       values of <STRONG>tgetent</STRONG> correctly, though all three shown here were  in  fact
+       values of <EM>tgetent</EM> correctly, though all three shown here were  in  fact
        returned  ever  since  SVr1.   In particular, an omission in the X/Open
-       Curses specification has  been  misinterpreted  to  mean  that  <STRONG>tgetent</STRONG>
+       Curses specification has  been  misinterpreted  to  mean  that  <EM>tgetent</EM>
        returns  <STRONG>OK</STRONG>  or  <STRONG>ERR</STRONG>.   Because  the  purpose  of these functions is to
        provide compatibility with the <EM>termcap</EM> library, that  is  a  defect  in
        X/Open Curses, Issue 4, Version 2 rather than in <EM>ncurses</EM>.
 
-   <STRONG>Compatibility</STRONG> <STRONG>with</STRONG> <STRONG>BSD</STRONG> <EM>termcap</EM>
-       Externally  visible  variables  are  provided  for  support  of certain
+   <STRONG>Compatibility</STRONG> <STRONG>with</STRONG> <STRONG>BSD</STRONG> <STRONG><EM>termcap</EM></STRONG>
+       <EM>ncurses</EM>  provides  externally  visible  variables  to  support  certain
        <EM>termcap</EM>  applications.   However,  their  correct   usage   is   poorly
        documented; for example, it is unclear when reading and writing them is
        meaningful.  In particular, some applications are reported  to  declare
        and/or modify <STRONG>ospeed</STRONG>.
 
        The  constraint  that only the first two characters of the <EM>id</EM> parameter
-       are used escapes many application developers.  The BSD <EM>termcap</EM>  library
-       did  not require a trailing null character on the capability identifier
-       passed to <STRONG>tgetstr</STRONG>,  <STRONG>tgetnum</STRONG>,  and  <STRONG>tgetflag</STRONG>.   Some  applications  thus
-       assume  that  the  <EM>termcap</EM> interface does not require the trailing null
-       character for the capability identifier.
+       are looked  up  in  the  terminal  database  escapes  many  application
+       developers.   The  BSD  <EM>termcap</EM> library did not require a trailing null
+       character after the capability identifier passed to  <EM>tgetstr</EM>,  <EM>tgetnum</EM>,
+       and <EM>tgetflag</EM>.  Some applications thus assume that the <EM>termcap</EM> interface
+       does not  require  the  trailing  null  character  for  the  capability
+       identifier.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM> disallows matches by the <EM>termcap</EM> interface against extended
-           capability   names   that  are  longer  than  two  characters;  see
-           <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>.
+       <EM>ncurses</EM>  disallows  matches  by  the <EM>termcap</EM> interface against extended
+       capability names that are longer than two characters; see <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>.
 
-       The BSD <EM>termcap</EM> function <STRONG>tgetent</STRONG> returns the text of a <EM>termcap</EM> entry in
+       The BSD <EM>termcap</EM> function <EM>tgetent</EM> returns the text of a <EM>termcap</EM> entry in
        the  buffer  passed  as an argument.  This library, like other <EM>terminfo</EM>
        implementations, does not store terminal type descriptions as text.  It
        sets the buffer contents to a null-terminated string.
 
 
 </PRE><H3><a name="h3-Header-File">Header File</a></H3><PRE>
-       This  library  includes a <EM>termcap.h</EM> header for compatibility with other
-       implementations, but the  header  is  rarely  used  because  the  other
-       implementations are not strictly compatible.
+       This  library  includes  a <EM>termcap.h</EM> header file for compatibility with
+       other  implementations,  but  it  is  rarely  used  because  the  other
+       implementations are not mutually compatible; see below.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        Bill  Joy  originated  a  forerunner  of <EM>termcap</EM> called "ttycap", dated
        September 1977, and released in 1BSD (March 1978).  It used many of the
-       same  function  names  as the later <EM>termcap</EM>, such as <STRONG>tgetent</STRONG>, <STRONG>tgetflag</STRONG>,
-       <STRONG>tgetnum</STRONG>, and <STRONG>tgetstr</STRONG>.
+       same  function  names  as the later <EM>termcap</EM>, such as <EM>tgetent</EM>, <EM>tgetflag</EM>,
+       <EM>tgetnum</EM>, and <EM>tgetstr</EM>.
 
        A clear descendant, the <EM>termlib</EM> library, followed in 2BSD  (May  1979),
-       adding <STRONG>tgoto</STRONG> and <STRONG>tputs</STRONG>.  The former applied at that time only to cursor
+       adding <EM>tgoto</EM> and <EM>tputs</EM>.  The former applied at that time only to cursor
        positioning  capabilities,  thus  the  overly  specific  name.   Little
        changed  in 3BSD (late 1979) except the addition of test programs and a
        <EM>termlib</EM> man page, which documented the API shown in section  "SYNOPSIS"
@@ -300,18 +300,18 @@
            shows that this was added in mid-1992.  The <EM>libedit</EM> header file was
            used  internally  as  a  convenience  for  compiling  the  <EM>editline</EM>
            library.  It declared function prototypes, but no global variables.
-           This header file was added to NetBSD's <EM>termcap</EM> library in mid-1994.
+           NetBSD's <EM>termcap</EM> library added this header file in mid-1994.
 
        Meanwhile, GNU <EM>termcap</EM> began development in 1990.   Its  first  release
-       (1.0)  in  1991  included  a  <EM>termcap.h</EM>  header.   Its  second (1.1) in
-       September 1992 modified the  header  to  use  <EM>const</EM>  for  the  function
-       prototypes  in  the  header where one would expect the parameters to be
-       read-only.   BSD  <EM>termcap</EM>  did  not.   The  prototype  for  <STRONG>tputs</STRONG>  also
+       (1.0)  in  1991  included  a  <EM>termcap.h</EM>  header file.  Its second (1.1)
+       release in September 1992 modified  the  file  to  use  <EM>const</EM>  for  the
+       function  prototypes in the header where one would expect parameters to
+       be read-only.  BSD <EM>termcap</EM> did  not.   The  prototype  for  <EM>tputs</EM>  also
        differed,  but  in that instance, it was <EM>libedit</EM> that differed from BSD
        <EM>termcap</EM>.
 
-       GNU <EM>termcap</EM> 1.3 was bundled with <STRONG>bash(1)</STRONG> in  mid-1993  to  support  the
-       <STRONG>readline(3)</STRONG> library.
+       GNU <STRONG>bash(1)</STRONG> has bundled GNU <EM>termcap</EM> 1.3 since mid-1993 to  support  its
+       <STRONG>readline(3)</STRONG> library, and continues to use it if configured to do so.
 
        <EM>ncurses</EM>  1.8.1 (November 1993) provided a <EM>termcap.h</EM> file.  It reflected
        influence  from  GNU  <EM>termcap</EM>  and  <STRONG>emacs(1)</STRONG>  (rather  than   <STRONG>jove(1)</STRONG>),
@@ -321,9 +321,9 @@
 
        <STRONG>o</STRONG>   <EM>const</EM>-qualified function prototypes, and
 
-       <STRONG>o</STRONG>   a prototype for <STRONG>tparam</STRONG>, a GNU <EM>termcap</EM> feature.
+       <STRONG>o</STRONG>   a prototype for <EM>tparam</EM>, a GNU <EM>termcap</EM> feature.
 
-       Later  (in mid-1996) the <STRONG>tparam</STRONG> function was removed from <EM>ncurses</EM>.  Any
+       Later  (in mid-1996) the <EM>tparam</EM> function was removed from <EM>ncurses</EM>.  Any
        two of the four implementations thus differ, and programs  that  intend
        to work with all <EM>termcap</EM> library interfaces must account for that fact.
 
@@ -363,13 +363,14 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
+       <EM>TCTEST</EM> <EM>-</EM> <EM>A</EM> <EM>Termcap</EM> <EM>Test</EM> <EM>Utility</EM>
+       &lt;https://invisible-island.net/ncurses/tctest.html&gt;
+
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>, <STRONG>putc(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
-       https://invisible-island.net/ncurses/tctest.html
 
 
-
-ncurses 6.5                       2024-06-22                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.5                       2024-09-14                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
