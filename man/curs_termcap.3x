@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.89 2024/09/14 20:06:50 tom Exp $
-.TH curs_termcap 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.91 2024/09/21 18:00:03 tom Exp $
+.TH curs_termcap 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,9 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.ie \n(.g .ds : \:
+.el       .ds : \" empty
 .
 .de bP
 .ie n  .IP \(bu 4
@@ -505,7 +508,7 @@ to
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/lib/\
 .\"   libtermlib/makefile
 and added another test program.
-The library remained much the same though 4.3BSD
+The library remained much the same through 4.3BSD
 (June 1986).
 4.4BSD-Lite
 (June 1994)
@@ -677,11 +680,9 @@ and modifies the data shared with,
 the \fItermcap\fP interface to accommodate the latter's limitation in
 this respect.
 .SH "SEE ALSO"
-.na
-.UR https://invisible\-island.net/ncurses/tctest.html
-\fITCTEST - A Termcap Test Utility\fP
+.UR https://\*:invisible\-\*:island\*:.net/\*:ncurses/\*:tctest\*:.html
+.I "TCTEST \(em A Termcap Test Utility"
 .UE
-.ad
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_terminfo\fP(3X),

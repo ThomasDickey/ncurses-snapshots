@@ -1,4 +1,4 @@
-/* $Id: wcwidth.h,v 1.6 2024/05/04 18:44:25 tom Exp $ */
+/* $Id: wcwidth.h,v 1.7 2024/09/21 15:49:15 tom Exp $ */
 
 /*
  * Copyright 2002-2023,2024 by Thomas E. Dickey
@@ -124,6 +124,7 @@ extern "C" {
 #include <ncurses_dll.h>
 
 #include <wchar.h>
+#include <stdint.h>
 
 struct interval {
   unsigned long first;

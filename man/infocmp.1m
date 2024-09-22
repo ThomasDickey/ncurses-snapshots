@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.112 2024/09/14 20:06:50 tom Exp $
-.TH @INFOCMP@ 1M 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.114 2024/09/21 18:04:29 tom Exp $
+.TH @INFOCMP@ 1M 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -53,7 +53,6 @@
 \fB@INFOCMP@\fP \-
 compare or print out \fIterminfo\fP descriptions
 .SH SYNOPSIS
-.na
 .HP
 .B @INFOCMP@
 .RB [ \-\
@@ -100,7 +99,6 @@ x\
 .IR width ]
 .RI [ \%terminal\%-type
 \&.\|.\|.\& ]
-.ad
 .SH DESCRIPTION
 \fB@INFOCMP@\fP can be used to compare a binary \fBterminfo\fP entry with other
 terminfo entries, rewrite a \fBterminfo\fP description to take advantage of the
@@ -605,41 +603,58 @@ using the \fB\-x\fP option of \fB@TIC@\fP.
 compiled terminal description database
 .SH EXTENSIONS
 The
-\fB\-0\fP,
-\fB\-1\fP,
-\fB\-E\fP,
-\fB\-F\fP,
-\fB\-G\fP,
-\fB\-Q\fP,
-\fB\-R\fP,
-\fB\-T\fP,
-\fB\-V\fP,
-\fB\-a\fP,
-\fB\-e\fP,
-\fB\-f\fP,
-\fB\-g\fP,
-\fB\-i\fP,
-\fB\-l\fP,
-\fB\-p\fP,
-\fB\-q\fP and
-\fB\-t\fP
-options are not supported in SVr4 curses.
+.BR \-0 ","
+.BR \-1 ","
+.BR \-a ","
+.BR \-e ","
+.BR \-E ","
+.BR \-f ","
+.BR \-F ","
+.BR \-g ","
+.BR \-G ","
+.BR \-i ","
+.BR \-l ","
+.BR \-p ","
+.BR \-q ","
+.BR \-Q ","
+.BR \-R ","
+.BR \-t ","
+.BR \-T ","
+and
+.B \-V
+options are
+.I \%ncurses
+extensions.
+.SH PORTABILITY
+X/Open Curses, Issue 7 (2009) specifies
+.IR \%infocmp "."
+It does not mention options for producing descriptions in
+.I \%term\%cap
+format.
 .PP
 SVr4
-infocmp does not distinguish between absent and canceled capabilities.
-Also, it shows missing integer capabilities as \fB\-1\fP
-(the internal value used to represent missing integers).
-This implementation shows those as \*(``NULL\*('',
-for consistency with missing strings.
+.I \%infocmp
+does not distinguish between absent and canceled capabilities.
+It furthermore reports missing integer capabilities as
+.B \-1
+(its internal representation).
+.I \%ncurses
+shows these as \*(``NULL\*(''
+for consistency with missing string capabilities.
 .PP
-The \fB\-r\fP option's notion of \*(``termcap\*('' capabilities
-is System V Release 4's.
-Actual BSD curses versions will have a more restricted set.
-To see only the
-4.4BSD set, use \fB\-r\fP \fB\-RBSD\fP.
-.SH PORTABILITY
-X/Open Curses, Issue 7 (2009) provides a description of \fBinfocmp\fP.
-It does not mention the options used for converting to termcap format.
+The
+.B \-r
+option
+of
+.I \%ncurses
+.I \%infocmp
+uses SVr4's notion of of \*(``termcap\*('' capabilities.
+BSD
+.I curses
+had a more restricted set.
+To see only those present in 4.4BSD,
+use
+.RB \*(`` "\-r \-RBSD" \*(''.
 .SH HISTORY
 Although System V Release 2 provided a terminfo library,
 it had no documented tool for decompiling the terminal descriptions.

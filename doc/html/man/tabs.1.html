@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tabs.1,v 1.63 2024/09/14 20:06:50 tom Exp @
+  * @Id: tabs.1,v 1.65 2024/09/21 18:04:07 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tabs 1 2024-09-14 ncurses 6.5 User commands</TITLE>
+<TITLE>tabs 1 2024-09-21 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tabs 1 2024-09-14 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tabs 1 2024-09-21 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 
@@ -203,7 +203,7 @@
            the   <STRONG>set_left_margin</STRONG>   (<STRONG>smgl</STRONG>)   or   <STRONG>set_left_margin_parm</STRONG>  (<STRONG>smglp</STRONG>)
            capabilities needed to support the feature.
 
-       <STRONG>o</STRONG>   Unlike <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>, <EM>tabs</EM> has no specification in X/Open Curses Issue 7.
+       <STRONG>o</STRONG>   Unlike <EM>tput</EM>, <EM>tabs</EM> has no specification in X/Open Curses Issue 7.
 
        The <STRONG>-d</STRONG> (debug) and  <STRONG>-n</STRONG>  (no-op)  options  are  <EM>ncurses</EM>  extensions  not
        provided by other implementations.
@@ -215,7 +215,7 @@
        same  year);  it  supported an option "-n" to set the first tab stop at
        the left margin.  That option is not specified by POSIX.
 
-       The PWB/Unix <STRONG>tabs</STRONG> utility returned  in  System  III  (1980),  and  used
+       The PWB/Unix <EM>tabs</EM> utility returned  in  System  III  (1980),  and  used
        built-in  tables  to  support  a half-dozen hardcopy terminal (printer)
        types.  It also had logic to support setting the left margin,  as  well
        as a feature for copying the tab settings from a file.
@@ -231,14 +231,14 @@
        motivation,  though an introductory comment "and optionally adjusts the
        margin"  remains,  overlooked  in  the  removal.   The   <EM>tabs</EM>   utility
        documented  in Issues 6 and later has no mechanism for setting margins.
-       The <STRONG>+m</STRONG> option in <EM>ncurses</EM> <EM>tabs</EM> (<STRONG>tabs</STRONG>) differs from the SVr4  feature  by
-       using terminal capabilities rather than built-in tables.
+       The <STRONG>+m</STRONG> option in <EM>ncurses</EM>'s implementation differs from the SVr4 feature
+       by using terminal capabilities rather than built-in tables.
 
        POSIX   documents   no  limit  on  the  number  of  tab  stops.   Other
        implementations impose one; the limit is 20 in PWB/Unix's <EM>tabs</EM> utility.
        While  some  terminals may not accept an arbitrary number of tab stops,
-       <EM>ncurses</EM> <STRONG>tabs</STRONG> attempts to set tab stops up to the right  margin  if  the
-       list thereof is sufficiently long.
+       <EM>ncurses</EM> attempts to set tab stops up to the right margin  if  the  list
+       thereof is sufficiently long.
 
        The  "Rationale" section of the Issue 6 <EM>tabs</EM> reference page details how
        the committee considered  redesigning  the  <EM>tabs</EM>  and  <EM>tput</EM>  utilities,
@@ -257,7 +257,7 @@
 
 
 
-ncurses 6.5                       2024-09-14                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
+ncurses 6.5                       2024-09-21                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

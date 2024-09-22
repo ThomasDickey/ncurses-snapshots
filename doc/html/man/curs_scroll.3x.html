@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_scroll.3x,v 1.47 2024/09/14 20:06:50 tom Exp @
+  * @Id: curs_scroll.3x,v 1.49 2024/09/22 14:08:11 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_scroll 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_scroll 3x 2024-09-22 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_scroll 3x 2024-09-14 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_scroll 3x 2024-09-22 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
 
@@ -62,11 +62,11 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        <STRONG>scroll</STRONG>  scrolls  the  given window up one line.  That is, every visible
        line we might number <EM>i</EM> becomes line <EM>i</EM>-1.  The text of the top  line  in
-       the  window  disappears  and  the  bottom  line is populated with blank
-       characters; see <STRONG><A HREF="curs_bkgd.3x.html">bkgd(3x)</A></STRONG> (wide-character API users: <STRONG><A HREF="curs_bkgrnd.3x.html">bkgrnd(3x)</A></STRONG>).  As an
-       optimization,  if  the  scrolling  region  of  the window is the entire
-       screen, the physical screen may be  scrolled  at  the  same  time;  see
-       <STRONG><A HREF="curs_variables.3x.html">curscr(3x)</A></STRONG>.
+       the  window  disappears  and  the  bottom  line  is  populated with the
+       background  character;  see   <STRONG><A HREF="curs_bkgd.3x.html">bkgd(3x)</A></STRONG>   (wide-character   API   users:
+       <STRONG><A HREF="curs_bkgrnd.3x.html">bkgrnd(3x)</A></STRONG>).  As an optimization, if the scrolling region of the window
+       is the entire screen, the physical screen may be scrolled at  the  same
+       time; see <STRONG><A HREF="curs_variables.3x.html">curscr(3x)</A></STRONG>.
 
        <STRONG>scrl</STRONG> and <STRONG>wscrl</STRONG> scrolls the specified window <EM>win</EM> up or down per the sign
        of <EM>n</EM>.
@@ -108,8 +108,8 @@
        multiple scroll actions on the next update.
 
        Neither SVr4 <EM>curses</EM> nor X/Open Curses specify whether  these  functions
-       zero  the  attributes  or color pair identifier of the blank character.
-       In <EM>ncurses</EM>, they do not.
+       zero  the  attributes  or  color  pair  identifier  of  the  background
+       character.  In <EM>ncurses</EM>, they do not.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -117,7 +117,7 @@
 
 
 
-ncurses 6.5                       2024-09-14                   <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
+ncurses 6.5                       2024-09-22                   <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

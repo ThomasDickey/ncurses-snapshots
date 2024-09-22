@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.70 2024/09/14 20:14:54 tom Exp $
-.TH curs_kernel 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.72 2024/09/21 18:05:20 tom Exp $
+.TH curs_kernel 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -297,8 +297,8 @@ fails.
 .B \%ripoffline
 returns
 .B ERR
-if the maximum number of ripped-off lines
-exceeds the maximum (5).
+if the accumulated quantity of ripped-off lines
+would exceed the maximum (5).
 .SH NOTES
 .B \%getsyx
 is a macro;

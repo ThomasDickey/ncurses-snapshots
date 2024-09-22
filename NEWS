@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4175 2024/09/14 23:14:09 tom Exp $
+-- $Id: NEWS,v 1.4182 2024/09/22 20:50:07 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,20 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240922
+	+ add a few null-pointer checks in ncurses
+	+ improve test-driver in ncurses/link_test.c
+	+ restore background character in manpages as described in X/Open
+	  Curses section 3.3.6, and add option "-c" to test programs to
+	  illustrate a non-blank character in the window background property.
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ modify ncurses*-config to add -I option in --cflag where needed for
+	  --disable-overwrite to match ".pc" files.
+	+ disallow directories and block/character devices in safe-open.
+	+ amend scr_restore() and scr_init() to remove the target window only
+	  after validating the source window which will replace the target
+	  (report by Zixi Liu).
 
 20240914
 	+ modify _nc_flush() to also flush stderr to help the flash capability

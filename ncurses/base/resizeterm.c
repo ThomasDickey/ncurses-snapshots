@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.55 2024/07/27 23:04:55 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.56 2024/09/22 20:25:15 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -105,6 +105,7 @@ NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_DCLx int ToLines, int ToCols)
     T((T_CALLED("is_term_resized(%p, %d, %d)"), (void *) SP_PARM, ToLines, ToCols));
     returnCode(ToLines > 0
 	       && ToCols > 0
+	       && SP_PARM != NULL
 	       && (ToLines != screen_lines(SP_PARM)
 		   || ToCols != screen_columns(SP_PARM)));
 }
@@ -354,10 +355,10 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 
     T((T_CALLED("resize_term(%p,%d,%d) old(%d,%d)"),
        (void *) SP_PARM, ToLines, ToCols,
-       (SP_PARM == 0) ? -1 : screen_lines(SP_PARM),
-       (SP_PARM == 0) ? -1 : screen_columns(SP_PARM)));
+       (SP_PARM == NULL) ? -1 : screen_lines(SP_PARM),
+       (SP_PARM == NULL) ? -1 : screen_columns(SP_PARM)));
 
-    if (SP_PARM == 0 || ToLines <= 0 || ToCols <= 0) {
+    if (SP_PARM == NULL || ToLines <= 0 || ToCols <= 0) {
 	returnCode(ERR);
     }
 
@@ -473,10 +474,10 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 
     T((T_CALLED("resizeterm(%p, %d,%d) old(%d,%d)"),
        (void *) SP_PARM, ToLines, ToCols,
-       (SP_PARM == 0) ? -1 : screen_lines(SP_PARM),
-       (SP_PARM == 0) ? -1 : screen_columns(SP_PARM)));
+       (SP_PARM == NULL) ? -1 : screen_lines(SP_PARM),
+       (SP_PARM == NULL) ? -1 : screen_columns(SP_PARM)));
 
-    if (SP_PARM != 0 && ToLines > 0 && ToCols > 0) {
+    if (SP_PARM != NULL && ToLines > 0 && ToCols > 0) {
 	result = OK;
 	SP_PARM->_sig_winch = FALSE;
 

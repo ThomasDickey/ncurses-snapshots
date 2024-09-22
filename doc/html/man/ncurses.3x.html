@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.231 2024/09/14 20:06:50 tom Exp @
+  * @Id: ncurses.3x,v 1.233 2024/09/21 18:02:58 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-09-14 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-09-21 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        displays  with  output  optimized  to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20240914).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20240921).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -188,12 +188,12 @@
        VT100 and other terminals.  See <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG>.
 
        <EM>curses</EM> is implemented using the operating system's terminal driver; key
-       events are received not as scan codes but as byte sequences.  Graphical
-       keycaps  (alphanumeric  and punctuation keys, and the space) appear as-
-       is.  Everything else, including the tab, enter/return,  keypad,  arrow,
-       and function keys, appears as a control character or a multibyte <EM>escape</EM>
-       <EM>sequence.</EM>  <EM>curses</EM> can translate the latter into unique <EM>key</EM> <EM>codes.</EM>   See
-       <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> and <STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG>.
+       events are received not as scan  codes  but  as  byte  sequences.   The
+       driver  reports  graphical  keycaps (alphanumeric and punctuation keys,
+       and  the  space)  as-is.    Everything   else,   including   the   tab,
+       enter/return,  keypad, arrow, and function keys, appears to <EM>curses</EM> as a
+       control character or a multibyte <EM>escape</EM> <EM>sequence.</EM>  <EM>curses</EM> can translate
+       the latter into unique <EM>key</EM> <EM>codes.</EM>  See <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> and <STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG>.
 
        <EM>ncurses</EM> provides reimplementations of the SVr4 <STRONG><A HREF="panel.3x.html">panel(3x)</A></STRONG>, <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>, and
        <STRONG><A HREF="menu.3x.html">menu(3x)</A></STRONG>  libraries;  they  permit   overlapping   windows   and   ease
@@ -308,11 +308,11 @@
                           structure,  not  combined  into  an  integer  as  in
                           <EM>chtype</EM>.
 
-                 Each cell of a <EM>WINDOW</EM> is stored as a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
+                 Each cell of a <EM>WINDOW</EM> is stored as a  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.   <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>
+                 and <STRONG><A HREF="curs_getcchar.3x.html">getcchar(3x)</A></STRONG> store and retrieve <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> data.
 
-                 <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG> and  <STRONG><A HREF="curs_getcchar.3x.html">getcchar(3x)</A></STRONG>  store  and  retrieve  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>
-                 data.   The  wide  library API of <EM>ncurses</EM> depends on two data
-                 types standardized by ISO C95.
+                 The  wide  library  API  of <EM>ncurses</EM> depends on two data types
+                 standardized by ISO C95.
 
                  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>  stores a wide character.  Like <EM>chtype</EM>, it may be  an
                           alias  of <EM>int</EM>.  Depending on the character encoding,
@@ -324,9 +324,9 @@
                           base  glyph  with  which  it combines, and typically
                           does not advance the cursor.
 
-                 <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can  store  a  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or   the   constant   <STRONG>WEOF</STRONG>,
+                 <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>   can  store  a  <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>   or   the   constant   <EM>WEOF</EM>,
                           analogously  to the <EM>int</EM>-sized character manipulation
-                          functions of ISO C and its constant <STRONG>EOF</STRONG>.
+                          functions of ISO C and its constant <EM>EOF</EM>.
 
 
 </PRE><H3><a name="h3-Function-Name-Index">Function Name Index</a></H3><PRE>
@@ -1089,7 +1089,7 @@
        the default location.
 
        <STRONG>o</STRONG>   Descriptions  in <EM>terminfo</EM> format are normally stored in a directory
-           tree using subdirectories named by the common first letters of  the
+           tree using subdirectories named for the common first letters of the
            terminal types named therein.  This is the scheme used in System V.
 
        <STRONG>o</STRONG>   If <EM>ncurses</EM> is configured to use hashed databases, then <EM>TERMINFO</EM> may
@@ -1498,7 +1498,7 @@
 
 
 
-ncurses 6.5                       2024-09-14                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-09-21                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

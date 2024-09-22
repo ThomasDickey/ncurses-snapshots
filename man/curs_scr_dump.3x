@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scr_dump.3x,v 1.47 2024/06/08 20:33:56 tom Exp $
-.TH curs_scr_dump 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scr_dump.3x,v 1.49 2024/09/21 09:30:22 tom Exp $
+.TH curs_scr_dump 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -202,6 +202,19 @@ SVr4 documentation describes
 such that the dump data is also considered invalid
 \*(``if the time-stamp of the tty is old\*(''
 but does not define \*(``old\*(''.
+.PP
+As of 2024, PDCurses provides these functions.
+NetBSD curses does not provide these functions,
+although it provides \fB\%getwin\fP.
+.PP
+Other implementations of curses store the window in binary form.
+One drawback to binary form is that this makes the dump dependent upon
+the curses library's internal data structures.
+Rather than do that, ncurses stores the dump in textual form,
+allowing more flexible use of the data.
+For instance, SVr4 curses \fB\%scr_restore\fP requires that the
+dumped window have the same dimensions as the restored window.
+ncurses uses \fB\%wresize\fP to adjust the restored window size.
 .SH HISTORY
 SVr3 (1987) introduced
 .BR \%scr_dump ","
@@ -211,10 +224,13 @@ and
 SVr3.1 added
 .BR \%scr_set "."
 .SH SEE ALSO
+.na
 \fB\%curses\fP(3X),
 \fB\%curs_initscr\fP(3X),
 \fB\%curs_refresh\fP(3X),
 \fB\%curs_util\fP(3X),
 \fB\%system\fP(3),
 \fB\%scr_dump\fP(5),
-\fB\%terminfo\fP(5)
+\fB\%terminfo\fP(5),
+\fB\%wresize\fP(3X)
+.ad

@@ -2,10 +2,10 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.73 2022/10/01 13:14:20 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.74 2024/09/22 20:41:58 tom Exp $)
 #
 ##############################################################################
-# Copyright 2018-2021,2022 Thomas E. Dickey                                  #
+# Copyright 2018-2022,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -464,8 +464,11 @@ BEGIN		{
 		}
 END		{
 		if ( "$USE" != "generated" ) {
-			print "int main(void)"
-			print "{"
+			print  "static int link_test(int code)"
+			print  "{"
+			print  "  switch(code)"
+			print  "  {"
+			casenum = 1;
 			for (n = 1; n < start; ++n) {
 				value = calls[n];
 				if ( value !~ /P_POUNDC/ ) {
@@ -480,13 +483,15 @@ END		{
 					sub(/^/,"call_",value);
 					gsub(/ (a[0-9]|z) /, " 0 ", value);
 					gsub(/ int[ \t]*[(][^)]+[)][(][^)]+[)]/, "0", value);
-					printf "\t%s;\n", value;
+					printf "    case %d: %s; break;\n", casenum++, value;
 				} else {
 					print value;
 				}
 			}
-			print "	return 0;"
-			print "}"
+			print  "  default: return 0; /* case did not exist */"
+			print  "  }"
+			print  "  return 1; /* case exists */"
+			print  "}"
 		}
 		}
 EOF1
@@ -527,3 +532,34 @@ $preprocessor $TMP 2>/dev/null \
 	-e '/#ident/d' \
 	-e '/#line/d' \
 | sed -f $ED4
+
+# a simple test-driver checks one or all of the linkages
+if test "$USE" = "implemented"
+then
+cat <<"EOF"
+int main(int argc, char *argv[])
+{
+	int n;
+	int rc;
+	if (argc > 1)
+	{
+		rc = !link_test(atoi(argv[1]));
+	}
+	else
+	{
+		rc = 0;
+		for (n = 1; ; ++n)
+		{
+			printf("TEST %d\n", n);
+			fflush(stdout);
+			if (!link_test(n))
+			{
+				rc = 1;
+				break;
+			}
+		}
+	}
+	return rc;
+}
+EOF
+fi

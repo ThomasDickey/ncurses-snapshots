@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.47 2024/09/14 20:06:50 tom Exp $
-.TH curs_scroll 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.49 2024/09/22 14:08:11 tom Exp $
+.TH curs_scroll 3X 2024-09-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -67,7 +67,7 @@ every visible line we might number
 becomes line
 .IR i "\-1."
 The text of the top line in the window disappears and the bottom line
-is populated with blank characters;
+is populated with the background character;
 see \fB\%bkgd\fP(3X)
 (wide-character API users: \fB\%bkgrnd\fP(3X)).
 As an optimization,
@@ -158,7 +158,7 @@ actions on the next update.
 Neither SVr4
 .I curses
 nor X/Open Curses specify whether these functions zero the attributes or
-color pair identifier of the blank character.
+color pair identifier of the background character.
 In
 .IR \%ncurses ","
 they do not.

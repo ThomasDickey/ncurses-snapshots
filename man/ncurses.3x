@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.231 2024/09/14 20:06:50 tom Exp $
-.TH ncurses 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.233 2024/09/21 18:02:58 tom Exp $
+.TH ncurses 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -333,17 +333,19 @@ See \fB\%addch\fP(3X).
 .I curses
 is implemented using the operating system's terminal driver;
 key events are received not as scan codes but as byte sequences.
-Graphical keycaps
+The driver reports graphical keycaps
 (alphanumeric and punctuation keys,
 and the space)
-appear as-is.
+as-is.
 Everything else,
 including the tab,
 enter/return,
 keypad,
 arrow,
 and function keys,
-appears as a control character or a multibyte
+appears to
+.I curses
+as a control character or a multibyte
 .I "escape sequence."
 .I curses
 can translate the latter into unique
@@ -566,11 +568,11 @@ Each cell of a
 .I \%WINDOW
 is stored as a
 .IR \%cchar_t .
-.PP
 \fB\%setcchar\fP(3X) and \fB\%getcchar\fP(3X)
 store and retrieve
 .I \%cchar_t
 data.
+.PP
 The wide library API of
 .I \%ncurses
 depends on two data types standardized by ISO C95.
@@ -597,11 +599,11 @@ and typically does not advance the cursor.
 can store a
 .I \%wchar_t
 or the constant
-.BR \%WEOF ,
+.IR \%WEOF ,
 analogously to the
 .IR int -sized
 character manipulation functions of ISO C and its constant
-.BR \%EOF .
+.IR \%EOF .
 .RE
 .\"
 .SS "Function Name Index"
@@ -1578,7 +1580,7 @@ This variable overrides the default location.
 Descriptions in
 .I \%term\%info
 format are normally stored in a directory tree using subdirectories
-named by the common first letters of the terminal types named therein.
+named for the common first letters of the terminal types named therein.
 This is the scheme used in System\ V.
 .bP
 If

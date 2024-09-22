@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tabs.1,v 1.63 2024/09/14 20:06:50 tom Exp $
-.TH @TABS@ 1 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tabs.1,v 1.65 2024/09/21 18:04:07 tom Exp $
+.TH @TABS@ 1 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -247,7 +247,8 @@ or
 .RB \%( smglp )
 capabilities needed to support the feature.
 .bP
-Unlike \fB@TPUT@\fP(1),
+Unlike
+.IR tput ,
 .I tabs
 has no specification in X/Open Curses Issue\ 7.
 .PP
@@ -276,7 +277,7 @@ left margin.
 That option is not specified by POSIX.
 .PP
 The PWB/Unix
-.B tabs
+.I tabs
 utility returned in System III (1980),
 and used built-in tables
 to support a half-dozen hardcopy terminal (printer) types.
@@ -315,10 +316,10 @@ margins.
 The
 .B +m
 option in
-.I \%ncurses
-.I tabs
-(\fB\%@TABS@\fP) differs from the SVr4 feature by using terminal
-capabilities rather than built-in tables.
+.IR \%ncurses 's
+implementation
+differs from the SVr4 feature by using terminal capabilities
+rather than built-in tables.
 .PP
 POSIX documents no limit on the number of tab stops.
 Other implementations impose one;
@@ -327,8 +328,8 @@ the limit is 20 in PWB/Unix's
 utility.
 While some terminals may not accept an arbitrary number of tab stops,
 .I \%ncurses
-\fB\%@TABS@\fP attempts to set tab stops up to the right margin if the
-list thereof is sufficiently long.
+attempts to set tab stops up to the right margin
+if the list thereof is sufficiently long.
 .PP
 The \*(``Rationale\*('' section of the Issue 6
 .I tabs

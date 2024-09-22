@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.55 2024/09/14 22:16:56 tom Exp $
+# $Id: ncurses-config.in,v 1.56 2024/09/21 17:24:52 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2024 Thomas E. Dickey                                  #
 # Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
@@ -50,8 +50,6 @@ THIS="@LIB_NAME@@USE_LIB_SUFFIX@"
 TINFO_LIB="@TINFO_ARG_SUFFIX@"
 RPATH_LIST="@RPATH_LIST@"
 
-includesubdir="@includedir@/${THIS}"
-
 # Ensure that RPATH_LIST contains only absolute pathnames, if it is nonempty.
 # We cannot filter it out within the build-process since the variable is used
 # in some special cases of installation using a relative path.
@@ -80,11 +78,14 @@ fi
 # the headers to include like this:
 #	<ncurses@LIB_SUFFIX@/curses.h>
 if [ x@WITH_OVERWRITE@ = xno ]; then
+	includesubdir="@includedir@/${THIS}"
 	case $includedir in
 	$prefix/include/ncurses@LIB_SUFFIX@@EXTRA_SUFFIX@)
 		includedir=`echo "$includedir" | sed -e 's,/[^/]*$,,'`
 		;;
 	esac
+else
+	includesubdir="@includedir@"
 fi
 
 LIBS="@LIBS@"
@@ -95,20 +96,10 @@ else
 fi
 
 CFLAGS="@PKG_CFLAGS@"
-if [ "$includedir" != "/usr/include" ]; then
-	if [ "x@WITH_OVERWRITE@" = xno ]
-	then
-		[ -n "$CFLAGS" ] && CFLAGS="$CFLAGS "
-		CFLAGS="$CFLAGS -I${includesubdir}"
-	fi
-	[ -n "$CFLAGS" ] && CFLAGS="$CFLAGS "
-	CFLAGS="$CFLAGS-I${includedir}"
-	includetop=`echo "$includedir" | sed -e 's,/include/[^/]*$,/include,'`
-	[ "$includetop" = "/usr/include" ] && includetop="$includedir"
-	if [ "x$includetop" != "x$includedir" ]
-	then
-		[ -n "$CFLAGS" ] && CFLAGS="$CFLAGS "
-		CFLAGS="$CFLAGS-I$includetop"
+if [ "$includesubdir" != "/usr/include" ]; then
+	CFLAGS="$CFLAGS -I${includesubdir}"
+	if [ "$includedir" != "/usr/include" ]; then
+		[ x@WITH_OVERWRITE@ = xno ] && CFLAGS="$CFLAGS -I${includedir}"
 	fi
 fi
 

@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996
 .\"
-.\" $Id: wresize.3x,v 1.40 2024/07/27 20:08:58 tom Exp $
-.TH wresize 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: wresize.3x,v 1.42 2024/09/21 23:48:27 tom Exp $
+.TH wresize 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%wresize\fP \-
 resize a \fIcurses\fR window
@@ -55,9 +55,10 @@ and
 .IR columns "."
 If either dimension is larger than its current value,
 .I \%ncurses
-fills the expanded part of the window with the blank character
-configured by \fB\%wbkgdset\fP(3X)
-(wide-character API users: \fB\%wbkgrndset\fP(3X)).
+the expanded part of the window is filled with blanks merged with
+current background rendition
+(configured by \fB\%wbkgdset\fP(3X),
+or by wide-character API: \fB\%wbkgrndset\fP(3X)).
 .SH RETURN VALUE
 .B \%wresize
 returns

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.63 2024/09/14 20:06:50 tom Exp $
-.TH curs_bkgd 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.64 2024/09/22 18:16:03 tom Exp $
+.TH curs_bkgd 3X 2024-09-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -64,28 +64,31 @@ manipulate background of a \fIcurses\fR window of characters
 \fBchtype getbkgd(WINDOW *\fIwin\fP);
 .fi
 .SH DESCRIPTION
-The
-.I background
-of a
+Every
 .I curses
-window
-(in the library's non-wide configuration)
-is a
+window has a background property.
+In the library's non-wide configuration,
+this property is a
 .I \%chtype
-combining a set of attributes
-(see \fB\%curs_attr\fP(3X))
-with a character called the
-.I "blank character."
+which combines a set of attributes with the
+.I "background character"
+(see \fB\%curs_attr\fP(3X)).
+The background character is a spacing character.
 .PP
-The blank character is a spacing character that populates a window's
-character cells when their contents are erased without replacement.
-The background's attributes are combined with all non-blank characters
-written to the window,
+When erasing parts of the screen,
+.I curses
+fills the cells with the background character.
+.I curses
+also uses the window background when writing characters to the screen:
+.bP
+The attribute part of the background is combined with all
+non-blank characters that are written into the window,
 as with the \fB\%waddch\fP(3X) and \fB\%winsch\fP(3X) families of
 functions.
+.bP
+Both the character and attribute parts of the background are combined with
+blank characters that are written into the window.
 .PP
-The blank character and attributes of the background combine with
-characters written to the window as described below.
 The background becomes a property of the character and moves with it
 through any scrolling and insert/delete line/character operations.
 .PP
@@ -111,11 +114,11 @@ The library applies to following procedure to each cell in the window,
 whether or not it is blank.
 .bP
 .I \%ncurses
-first compares the cell's character to the previously specified blank
-character;
+first compares the cell's character to the previously specified
+background character;
 if they match,
 .I \%ncurses
-writes the new blank character to the cell.
+writes the new background character to the cell.
 .bP
 .I \%ncurses
 then checks if the cell uses color,
@@ -141,8 +144,12 @@ updates only the non-color attributes,
 first removing those that may have come from the current background,
 and then adding attributes from the new background.
 .PP
+If the new background's character is nonspacing,
 .I \%ncurses
-treats a background character value of zero (0) as a blank character.
+reuses the old background character,
+except for one special case:
+.I \%ncurses
+treats a background character value of zero (0) as a space.
 .PP
 If the terminal does not support color,
 or if color has not been initialized with \fB\%start_color\fP(3X),

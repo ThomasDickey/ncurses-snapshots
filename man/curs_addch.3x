@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.98 2024/07/27 20:08:58 tom Exp $
-.TH curs_addch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.100 2024/09/21 18:03:23 tom Exp $
+.TH curs_addch 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -149,8 +149,9 @@ are equivalent to calling
 followed by
 .RB \%( w ) refresh .
 .I curses
-interprets these functions as a hint that only a single character is
-being output;
+interprets these functions as a hint to its optimizer
+that only a single character cell in the window
+is being altered between refreshes;
 for non-control characters,
 a considerable performance gain may be enjoyed by employing them.
 .\" TODO: Combine the following with the "Line Drawing" subsection of

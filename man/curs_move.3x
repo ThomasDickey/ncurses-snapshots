@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_move.3x,v 1.44 2024/07/27 20:11:42 tom Exp $
-.TH curs_move 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_move.3x,v 1.46 2024/09/21 18:03:44 tom Exp $
+.TH curs_move 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -85,9 +85,9 @@ is outside the window boundaries.
 In
 .IR \%ncurses ,
 .B \%wmove
-fails if its
-.I \%WINDOW
-pointer argument is
+fails if
+.I win
+is
 .BR NULL .
 .SH NOTES
 .B \%move

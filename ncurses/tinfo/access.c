@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.37 2023/06/24 21:55:09 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.39 2024/09/21 15:12:56 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -247,6 +247,29 @@ _nc_env_access(void)
 }
 
 #ifndef USE_ROOT_ACCESS
+static int
+is_a_file(int fd)
+{
+    int result = FALSE;
+    if (fd >= 0) {
+	struct stat sb;
+	if (fstat(fd, &sb) == 0) {
+	    switch (sb.st_mode & S_IFMT) {
+	    case S_IFBLK:
+	    case S_IFCHR:
+	    case S_IFDIR:
+		/* disallow devices and directories */
+		break;
+	    default:
+		/* allow regular files, fifos and sockets */
+		result = TRUE;
+		break;
+	    }
+	}
+    }
+    return result;
+}
+
 /*
  * Limit privileges if possible; otherwise disallow access for updating files.
  */
@@ -263,6 +286,12 @@ _nc_safe_fopen(const char *path, const char *mode)
 	result = fopen(path, mode);
     }
 #endif
+    if (result != NULL) {
+	if (!is_a_file(fileno(result))) {
+	    fclose(result);
+	    result = NULL;
+	}
+    }
     return result;
 }
 
@@ -279,6 +308,12 @@ _nc_safe_open3(const char *path, int flags, mode_t mode)
 	result = open(path, flags, mode);
     }
 #endif
+    if (result >= 0) {
+	if (!is_a_file(result)) {
+	    close(result);
+	    result = -1;
+	}
+    }
     return result;
 }
 #endif /* USE_ROOT_ACCESS */

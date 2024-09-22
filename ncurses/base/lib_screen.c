@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.106 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.108 2024/09/22 20:20:36 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -960,7 +960,6 @@ replace_window(WINDOW *target, FILE *source)
 	}
     }
 #endif
-    delwin(target);
     return result;
 }
 
@@ -972,14 +971,17 @@ NCURSES_SP_NAME(scr_restore) (NCURSES_SP_DCLx const char *file)
 
     T((T_CALLED("scr_restore(%p,%s)"), (void *) SP_PARM, _nc_visbuf(file)));
 
-    if (_nc_access(file, R_OK) >= 0
+    if (SP_PARM != NULL
+	&& _nc_access(file, R_OK) >= 0
 	&& (fp = safe_fopen(file, BIN_R)) != 0) {
-	NewScreen(SP_PARM) = replace_window(NewScreen(SP_PARM), fp);
-#if !USE_REENTRANT
-	newscr = NewScreen(SP_PARM);
-#endif
+	WINDOW *my_newscr = replace_window(NewScreen(SP_PARM), fp);
 	(void) fclose(fp);
-	if (NewScreen(SP_PARM) != 0) {
+	if (my_newscr != NULL) {
+	    delwin(NewScreen(SP_PARM));
+	    NewScreen(SP_PARM) = my_newscr;
+#if !USE_REENTRANT
+	    newscr = my_newscr;
+#endif
 	    code = OK;
 	}
     }
@@ -1020,7 +1022,7 @@ NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
 
     T((T_CALLED("scr_init(%p,%s)"), (void *) SP_PARM, _nc_visbuf(file)));
 
-    if (SP_PARM != 0 &&
+    if (SP_PARM != NULL &&
 #ifdef USE_TERM_DRIVER
 	InfoOf(SP_PARM).caninit
 #else
@@ -1031,12 +1033,14 @@ NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
 
 	if (_nc_access(file, R_OK) >= 0
 	    && (fp = safe_fopen(file, BIN_R)) != 0) {
-	    CurScreen(SP_PARM) = replace_window(CurScreen(SP_PARM), fp);
-#if !USE_REENTRANT
-	    curscr = CurScreen(SP_PARM);
-#endif
+	    WINDOW *my_curscr = replace_window(CurScreen(SP_PARM), fp);
 	    (void) fclose(fp);
-	    if (CurScreen(SP_PARM) != 0) {
+	    if (my_curscr != NULL) {
+		delwin(CurScreen(SP_PARM));
+		CurScreen(SP_PARM) = my_curscr;
+#if !USE_REENTRANT
+		curscr = my_curscr;
+#endif
 		code = OK;
 	    }
 	}
@@ -1059,7 +1063,8 @@ NCURSES_SP_NAME(scr_set) (NCURSES_SP_DCLx const char *file)
 
     T((T_CALLED("scr_set(%p,%s)"), (void *) SP_PARM, _nc_visbuf(file)));
 
-    if (NCURSES_SP_NAME(scr_init) (NCURSES_SP_ARGx file) == OK) {
+    if (SP_PARM != NULL
+	&& NCURSES_SP_NAME(scr_init) (NCURSES_SP_ARGx file) == OK) {
 	delwin(NewScreen(SP_PARM));
 	NewScreen(SP_PARM) = dupwin(curscr);
 #if !USE_REENTRANT

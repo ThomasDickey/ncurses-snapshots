@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_deleteln.3x,v 1.40 2024/07/27 20:12:02 tom Exp $
-.TH curs_deleteln 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_deleteln.3x,v 1.41 2024/09/22 18:35:00 tom Exp $
+.TH curs_deleteln 3X 2024-09-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -69,15 +69,18 @@ all lines below it move up one line.
 .I curses
 then fills the bottom line of
 .I win
-with the blank character
+with the background character
 configured by \fB\%wbkgdset\fP(3X)
 (wide-character API users: \fB\%wbkgrndset\fP(3X)).
 The cursor position does not change.
 .PP
 .B \%winsertln
-inserts a line of blank characters above the line at the cursor in
-.IR win ;
-the content of the window's bottom line is lost.
+inserts a new, empty line of characters above the line at the cursor in
+.IR win ,
+shifting the existing lines down by one.
+The content of the window's bottom line is lost;
+.I curses
+fills the new line with the background character.
 The cursor position does not change.
 .PP
 .B \%winsdelln

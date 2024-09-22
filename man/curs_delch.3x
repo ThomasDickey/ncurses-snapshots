@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_delch.3x,v 1.37 2024/07/27 20:14:16 tom Exp $
-.TH curs_delch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_delch.3x,v 1.39 2024/09/21 23:43:41 tom Exp $
+.TH curs_delch 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -60,7 +60,7 @@ deletes the character at the cursor position in
 .IR win .
 It moves all characters to the right of the cursor on the same line to
 the left one position and replaces the contents of the rightmost
-position on the line with the window's blank character;
+position on the line with the window's background character;
 see \fB\%bkgd\fP(3X)
 (wide-character API users: \fB\%bkgrnd\fP(3X)).
 The cursor position does not change

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.152 2024/09/14 00:43:08 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.153 2024/09/21 17:54:42 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1629,8 +1629,8 @@ Tektronix-like
 terminals have a predefined set of \fIN\fP colors
 (where \fIN\fP is usually 8),
 and can set
-character-cell foreground and background characters independently, mixing them
-into \fIN\fP\ *\ \fIN\fP color pairs.
+character-cell foreground and background colors independently,
+mixing them into \fIN\fP\ *\ \fIN\fP color pairs.
 .bP
 On HP-like terminals, the user must set each color
 pair up separately (foreground and background are not independently settable).
