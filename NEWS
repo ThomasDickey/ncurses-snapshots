@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4182 2024/09/22 20:50:07 tom Exp $
+-- $Id: NEWS,v 1.4185 2024/09/28 20:27:44 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20240928
+	+ improve error-message from infocmp when a terminal entry cannot be
+	  opened (patch by Branden Robinson).
+	+ improve filtering of -L options in misc/gen-pkgconfig.in and in
+	  misc/ncurses-config.in
+	+ add check in wresize() for out-of-range dimensions (report by Peter
+	  Bierma). 
 
 20240922
 	+ add a few null-pointer checks in ncurses

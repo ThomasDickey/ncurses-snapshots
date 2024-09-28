@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.50 2021/10/23 22:57:27 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.51 2024/09/28 15:40:42 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 NCURSES_SP_NAME(newpad) (NCURSES_SP_DCLx int l, int c)
@@ -197,8 +197,8 @@ pnoutrefresh(WINDOW *win,
 #endif /* TRACE */
 #if USE_SCROLL_HINTS
     if (win->_pad._pad_y >= 0) {
-	displaced = pminrow - win->_pad._pad_y
-	    - (sminrow - win->_pad._pad_top);
+	displaced = ((pminrow - win->_pad._pad_y) -
+		     (sminrow - win->_pad._pad_top));
 	T(("pad being shifted by %d line(s)", displaced));
     } else
 	displaced = 0;

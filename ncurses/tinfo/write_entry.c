@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.134 2024/08/31 10:46:01 Rafael.Kitover Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.135 2024/09/28 17:31:09 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -153,8 +153,12 @@ make_db_path(char *dst, const char *src, size_t limit)
 	    rc = 0;
 	}
     } else {
-	if ((strlen(top) + strlen(src) + 6) <= limit) {
-	    _nc_SPRINTF(dst, _nc_SLIMIT(limit) "%s/%s", top, src);
+	size_t len_top = strlen(top);
+	size_t len_src = strlen(src);
+	if ((len_top + len_src + 6) <= limit) {
+	    _nc_SPRINTF(dst, _nc_SLIMIT(limit) "%.*s/%.*s",
+			(int) len_top, top,
+			(int) len_src, src);
 	    rc = 0;
 	}
     }

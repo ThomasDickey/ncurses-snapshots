@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.164 2024/08/24 22:57:24 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.165 2024/09/28 20:26:22 Branden.Robinson Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1878,10 +1878,32 @@ main(int argc, char *argv[])
 	    }
 
 	    if (status <= 0) {
-		(void) fprintf(stderr,
-			       "%s: couldn't open terminfo file %s.\n",
-			       _nc_progname,
-			       tfile[termcount]);
+		switch (status) {
+		case TGETENT_NO:
+		    (void) fprintf(stderr,
+				   "%s: error: no match in terminfo"
+				   " database for terminal type"
+				   " \"%s\"\n",
+				   _nc_progname,
+				   tname[termcount]);
+		    break;
+		case TGETENT_ERR:
+		    /*
+		     * Several database files might be checked; their
+		     * file names are not exposed via this API.  The
+		     * best we can do is report how the final one
+		     * attempted failed.  Also, tfile[termcount] is
+		     * deeply misleading when a hashed database is used.
+		     */
+		    (void) fprintf(stderr,
+				   "%s: error: unable to open terminfo"
+				   " database: %s\n",
+				   _nc_progname,
+				   strerror(errno));
+		    break;
+		default:
+		    assert(0 == "unhandled _nc_read_entry2 return");
+		}
 		MAIN_LEAKS();
 		ExitProgram(EXIT_FAILURE);
 	    }

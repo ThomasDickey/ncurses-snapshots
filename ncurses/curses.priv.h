@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.690 2024/08/31 10:46:01 Rafael.Kitover Exp $
+ * $Id: curses.priv.h,v 1.691 2024/09/28 15:35:01 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1549,6 +1549,8 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 	      ((w) != 0 && \
 		((x) >= 0 && (x) <= (w)->_maxx && \
 		 (y) >= 0 && (y) <= (w)->_maxy))
+
+#define OK_DIMENSION(n)	((NCURSES_SIZE_T)(n) == (n) && (n) > 0)
 
 #define CHANGED_CELL(line,col) \
 	if (line->firstchar == _NOCHANGE) \

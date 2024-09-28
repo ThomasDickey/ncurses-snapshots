@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: back_ground.c,v 1.11 2024/09/22 21:33:17 tom Exp $
+ * $Id: back_ground.c,v 1.12 2024/09/28 16:19:19 tom Exp $
  */
 
 #include <test.priv.h>
@@ -233,7 +233,7 @@ main(int argc, char *argv[])
 		    usage(FALSE);
 		fill_char = (wchar_t) value;
 	    } else {
-		fill_char = *optarg;
+		fill_char = (wchar_t) *optarg;
 	    }
 	    break;
 #if HAVE_USE_DEFAULT_COLORS

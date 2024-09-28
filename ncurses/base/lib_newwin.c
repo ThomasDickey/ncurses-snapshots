@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <stddef.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.76 2021/10/23 18:53:38 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.77 2024/09/28 15:55:56 tom Exp $")
 
 #define window_is(name) ((sp)->_##name == win)
 
@@ -255,13 +255,6 @@ subwin(WINDOW *w, int l, int c, int y, int x)
     returnWin(result);
 }
 
-static bool
-dimension_limit(int value)
-{
-    NCURSES_SIZE_T test = (NCURSES_SIZE_T) value;
-    return (test == value && value > 0);
-}
-
 NCURSES_EXPORT(WINDOW *)
 NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
 			      int num_lines,
@@ -281,7 +274,7 @@ NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
     if (SP_PARM == 0)
 	returnWin(0);
 
-    if (!dimension_limit(num_lines) || !dimension_limit(num_columns))
+    if (!OK_DIMENSION(num_lines) || !OK_DIMENSION(num_columns))
 	returnWin(0);
 
     if ((wp = typeCalloc(WINDOWLIST, 1)) == 0)

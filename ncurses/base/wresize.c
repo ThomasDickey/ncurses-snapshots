@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2010,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.43 2023/10/21 11:13:03 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.44 2024/09/28 15:56:07 tom Exp $")
 
 static int
 cleanup_lines(struct ldat *data, int length)
@@ -125,9 +125,11 @@ wresize(WINDOW *win, int ToLines, int ToCols)
     }
 #endif
 
-    if (!win || --ToLines < 0 || --ToCols < 0)
+    if (!win || !OK_DIMENSION(ToLines) || !OK_DIMENSION(ToCols))
 	returnCode(ERR);
 
+    ToLines--;
+    ToCols--;
     size_x = win->_maxx;
     size_y = win->_maxy;
 

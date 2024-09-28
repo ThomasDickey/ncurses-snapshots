@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.56 2024/09/21 17:24:52 tom Exp $
+# $Id: ncurses-config.in,v 1.57 2024/09/28 20:18:19 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2024 Thomas E. Dickey                                  #
 # Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
@@ -132,7 +132,7 @@ do
 		@LD_SEARCHPATH@) # skip standard libdir
 			if [ "$lib_check" = "$libdir" ]
 			then
-				lib_first=yes
+				lib_first=no
 				IFS_save="$IFS"
 				IFS='|'
 				LIBDIRS="@LD_SEARCHPATH@"
@@ -140,11 +140,11 @@ do
 				do
 					if [ -d "$lib_check" ]
 					then
-						if [ "$lib_check" != "$libdir" ]
+						if [ "$lib_check" = "$libdir" ]
 						then
-							lib_first=no
+							lib_first=yes
+							break
 						fi
-						break
 					fi
 				done
 				IFS="$IFS_save"
