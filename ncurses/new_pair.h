@@ -34,7 +34,7 @@
 /*
  * Common type definitions and macros for new_pair.c, lib_color.c
  *
- * $Id: new_pair.h,v 1.14 2024/05/25 23:10:33 tom Exp $
+ * $Id: new_pair.h,v 1.15 2024/10/05 20:57:47 tom Exp $
  */
 
 #ifndef NEW_PAIR_H
@@ -116,7 +116,7 @@ colorpair_t;
 #if NCURSES_EXT_FUNCS && NCURSES_EXT_COLORS
 extern NCURSES_EXPORT(void)     _nc_copy_pairs(SCREEN*, colorpair_t*, colorpair_t*, int);
 extern NCURSES_EXPORT(void)     _nc_free_ordered_pairs(SCREEN*);
-extern NCURSES_EXPORT(void)     _nc_reset_color_pair(SCREEN*, int, colorpair_t*);
+extern NCURSES_EXPORT(void)     _nc_reset_color_pair(SCREEN*, int, const colorpair_t*);
 extern NCURSES_EXPORT(void)     _nc_set_color_pair(SCREEN*, int, int);
 #else
 #define _nc_free_ordered_pairs(sp) /* nothing */

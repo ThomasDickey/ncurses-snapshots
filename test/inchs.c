@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 2007-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inchs.c,v 1.19 2022/12/11 00:01:39 tom Exp $
+ * $Id: inchs.c,v 1.20 2024/10/06 21:17:54 tom Exp $
  *
  * Author: Thomas E Dickey
  */
@@ -71,7 +71,7 @@ Quit(int ch)
 static int
 test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"Test input from screen using inch(), etc., in a moveable viewport.",
 	"",

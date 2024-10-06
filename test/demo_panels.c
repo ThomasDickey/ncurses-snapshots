@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 2003-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_panels.c,v 1.48 2022/12/04 00:40:11 tom Exp $
+ * $Id: demo_panels.c,v 1.50 2024/10/06 20:01:21 tom Exp $
  *
  * Demonstrate a variety of functions from the panel library.
  */
@@ -42,7 +42,7 @@
 #define TEMP_POS '>'
 
 typedef void (*InitPanel) (void);
-typedef void (*FillPanel) (PANEL *);
+typedef void (*FillPanel) (NCURSES_CONST PANEL *);
 
 static bool use_colors = FALSE;
 static bool unboxed = FALSE;
@@ -301,7 +301,7 @@ my_move_panel(PANEL **pans, int which, bool continuous)
 	int code;
 	int y0, x0;
 	int y1, x1;
-	WINDOW *win = panel_window(pans[which]);
+	NCURSES_CONST WINDOW *win = panel_window(pans[which]);
 	char also[80];
 
 	getbegyx(win, y0, x0);
@@ -368,7 +368,7 @@ init_panel(void)
 }
 
 static void
-fill_panel(PANEL *pan)
+fill_panel(NCURSES_CONST PANEL *pan)
 {
     WINDOW *win = panel_window(pan);
     const char *userptr = (const char *) panel_userptr(pan);
@@ -388,7 +388,7 @@ fill_panel(PANEL *pan)
 }
 
 static void
-fill_unboxed(PANEL *pan)
+fill_unboxed(NCURSES_CONST PANEL *pan)
 {
     WINDOW *win = panel_window(pan);
     const char *userptr = (const char *) panel_userptr(pan);
@@ -431,7 +431,7 @@ init_wide_panel(void)
 }
 
 static void
-fill_wide_panel(PANEL *pan)
+fill_wide_panel(NCURSES_CONST PANEL *pan)
 {
     WINDOW *win = panel_window(pan);
     int num = ((const char *) panel_userptr(pan))[1];
@@ -453,7 +453,7 @@ fill_wide_panel(PANEL *pan)
 #define MAX_PANELS 5
 
 static int
-which_panel(PANEL *px[MAX_PANELS + 1], PANEL *pan)
+which_panel(PANEL *px[MAX_PANELS + 1], NCURSES_CONST PANEL *pan)
 {
     int result = 0;
     int j;

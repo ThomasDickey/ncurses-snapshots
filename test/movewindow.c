@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2006-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.54 2023/05/27 20:13:10 tom Exp $
+ * $Id: movewindow.c,v 1.56 2024/10/06 18:44:26 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -135,7 +135,7 @@ tail_line(CONST_FMT char *fmt, ...)
  */
 static PAIR *
 selectcell(WINDOW *parent,
-	   WINDOW *child,
+	   NCURSES_CONST WINDOW *child,
 	   int uli, int ulj,
 	   int lri, int lrj,
 	   bool relative,
@@ -252,7 +252,7 @@ getwindow(WINDOW *parent, PAIR * ul, PAIR * lr)
     int max_col = (parent == stdscr) ? COL_MAX : getmaxx(parent);
     int min_line = (parent == stdscr) ? LINE_MIN : 0;
     int max_line = (parent == stdscr) ? LINE_MAX : getmaxy(parent);
-    PAIR *tmp;
+    NCURSES_CONST PAIR *tmp;
     bool result = FALSE;
 
     head_line("Use arrows to move cursor, anything else to mark corner 1");
@@ -346,7 +346,7 @@ window2num(const WINDOW *const win)
 }
 
 static WINDOW *
-parent_of(WINDOW *win)
+parent_of(NCURSES_CONST WINDOW *win)
 {
     WINDOW *result = 0;
     int n = window2num(win);
@@ -435,7 +435,7 @@ move_window(WINDOW *win, bool recur)
 	int max_col = top ? COL_MAX : getmaxx(parent);
 	int min_line = top ? LINE_MIN : 0;
 	int max_line = top ? LINE_MAX : getmaxy(parent);
-	PAIR *tmp;
+	NCURSES_CONST PAIR *tmp;
 	bool more;
 
 	head_line("Select new position for %swindow", top ? "" : "sub");
@@ -474,7 +474,7 @@ move_window(WINDOW *win, bool recur)
 }
 
 static void
-show_derwin(WINDOW *win)
+show_derwin(NCURSES_CONST WINDOW *win)
 {
     int pary, parx, maxy, maxx;
 
@@ -500,7 +500,7 @@ move_derwin(WINDOW *win)
 	int max_col = top ? COL_MAX : getmaxx(parent);
 	int min_line = top ? LINE_MIN : 0;
 	int max_line = top ? LINE_MAX : getmaxy(parent);
-	PAIR *tmp;
+	NCURSES_CONST PAIR *tmp;
 	bool more;
 
 	show_derwin(win);

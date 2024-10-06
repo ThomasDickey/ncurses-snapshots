@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.219 2024/08/31 10:46:01 Rafael.Kitover Exp $ */
+/* $Id: test.priv.h,v 1.220 2024/10/05 19:01:00 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -765,8 +765,8 @@ extern int optind;
 
 #define VERSION_COMMON() \
 static char *version_common(char **argv) { \
-	char *base = argv[0]; \
-	char *part = strrchr(base, '/'); \
+	const char *base = argv[0]; \
+	const char *part = strrchr(base, '/'); \
 	size_t need = strlen(base) + 80; \
 	char *result = malloc(need); \
 	if (result != NULL) { \
@@ -916,8 +916,8 @@ extern int TABSIZE;
  * Workaround in case getcchar() returns a positive value when the source
  * string produces only a L'\0'.
  */
-#define TEST_CCHAR(s, count, then_stmt, else_stmt) \
-	if ((count = getcchar(s, NULL, NULL, NULL, NULL)) > 0) { \
+#define TEST_CCHAR(s, then_stmt, else_stmt) \
+	if (getcchar(s, NULL, NULL, NULL, NULL) > 0) { \
 	    wchar_t test_wch[CCHARW_MAX + 2]; \
 	    attr_t test_attrs; \
 	    NCURSES_PAIRS_T test_pair; \

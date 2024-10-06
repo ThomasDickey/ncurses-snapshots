@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.145 2022/12/04 00:40:11 tom Exp $
+ * $Id: view.c,v 1.147 2024/10/06 21:08:05 tom Exp $
  */
 
 #include <test.priv.h>
@@ -93,8 +93,7 @@ ch_len(NCURSES_CH_T *src)
 
 #if USE_WIDEC_SUPPORT
     for (;;) {
-	int count;
-	TEST_CCHAR(src, count, {
+	TEST_CCHAR(src, {
 	    int len = wcwidth(test_wch[0]);
 	    result += (len > 0) ? len : 1;
 	    ++src;
@@ -186,12 +185,10 @@ show_all(const char *tag)
 	     */
 	    {
 		int j;
-		int width = 1;
+		int width;
 
 		for (j = actual = 0; j < shift; ++j) {
-		    int count;
-
-		    TEST_CCHAR(s + j, count, {
+		    TEST_CCHAR(s + j, {
 			width = wcwidth(test_wch[0]);
 		    }
 		    , {
@@ -294,7 +291,7 @@ read_file(const char *filename)
 
 #if USE_WIDEC_SUPPORT
     if (!memcmp("\357\273\277", my_blob, 3)) {
-	char *s = my_blob + 3;
+	const char *s = my_blob + 3;
 	char *d = my_blob;
 	Trace(("trim BOM"));
 	do {
@@ -329,7 +326,7 @@ read_file(const char *filename)
 	char *s;
 	int y, x;
 #if USE_WIDEC_SUPPORT
-	char *last = my_vec[k] + (int) strlen(my_vec[k]);
+	const char *last = my_vec[k] + (int) strlen(my_vec[k]);
 	wchar_t wch[2];
 	size_t rc;
 #ifndef state_unused
@@ -408,7 +405,7 @@ VERSION_COMMON()
 int
 main(int argc, char *argv[])
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"Commands:",
 	"  q,^Q,ESC       - quit this program",
@@ -659,7 +656,7 @@ main(int argc, char *argv[])
 	    beep();
 	    break;
 	}
-	if (c >= KEY_MIN || (c > 0 && !isdigit(c))) {
+	if (c >= KEY_MIN || (c > 0 && !isdigit(UChar(c)))) {
 	    got_number = FALSE;
 	    value = 0;
 	}

@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2011,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #include "cursesm.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesm.cc,v 1.27 2021/04/17 18:11:08 tom Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.28 2024/10/05 22:47:12 tom Exp $")
 
 NCursesMenuItem::~NCursesMenuItem() THROWS(NCursesException)
 {
@@ -168,7 +168,7 @@ NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
 void
 NCursesMenu::setDefaultAttributes()
 {
-  NCursesApplication* S = NCursesApplication::getApplication();
+  const NCursesApplication* S = NCursesApplication::getApplication();
   if (S) {
     ::set_menu_fore(menu, S->foregrounds());
     ::set_menu_back(menu, S->backgrounds());

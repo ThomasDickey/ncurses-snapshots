@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.108 2024/09/22 20:20:36 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.109 2024/10/05 20:47:44 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -943,7 +943,7 @@ putwin(WINDOW *win, FILE *filep)
  * Replace a window covering the whole screen, i.e., newscr or curscr.
  */
 static WINDOW *
-replace_window(WINDOW *target, FILE *source)
+replace_window(const WINDOW *target, FILE *source)
 {
     WINDOW *result = getwin(source);
 #if NCURSES_EXT_FUNCS

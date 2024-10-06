@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2005-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.65 2023/05/27 20:13:10 tom Exp $
+ * $Id: demo_termcap.c,v 1.70 2024/10/06 20:05:09 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -256,7 +256,7 @@ dumpit(NCURSES_CONST char *cap)
      * to hold all of the strings extracted from the terminal entry.
      */
     char area[1024], *ap = area;
-    char *str;
+    NCURSES_CONST char *str;
     int num;
 
     if ((str = tgetstr(cap, &ap)) != 0) {
@@ -289,7 +289,7 @@ dumpit(NCURSES_CONST char *cap)
 }
 
 static void
-brute_force(const char *name)
+brute_force(NCURSES_CONST char *name)
 {
     char buffer[1024];
 
@@ -369,7 +369,7 @@ demo_termcap(NCURSES_CONST char *name)
 #ifdef NCURSES_VERSION
 	if (x_opt && (my_blob == 0) && y_opt) {
 #if NCURSES_XNAMES
-	    TERMTYPE *term = (TERMTYPE *) cur_term;
+	    NCURSES_CONST TERMTYPE *term = (TERMTYPE *) cur_term;
 	    if (term != 0
 		&& ((NUM_BOOLEANS(term) != BOOLCOUNT)
 		    || (NUM_NUMBERS(term) != NUMCOUNT)
@@ -781,12 +781,12 @@ main(int argc, char *argv[])
 {
     int ch;
     int n;
-    char *name;
+    NCURSES_CONST char *name;
     bool a_opt = FALSE;
 #if defined(NCURSES_VERSION) || defined(HAVE_CURSES_DATA_OSPEED)
     bool v_opt = FALSE;
 #endif
-    char *input_name = 0;
+    NCURSES_CONST char *input_name = 0;
 
     int repeat;
     int r_opt = 1;
@@ -867,7 +867,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != 0) {
 		brute_force(name);
 	    } else {
-		static char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = "dumb";
 		brute_force(dumb);
 	    }
 	}
@@ -894,7 +894,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != 0) {
 		demo_termcap(name);
 	    } else {
-		static char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = "dumb";
 		demo_termcap(dumb);
 	    }
 	}

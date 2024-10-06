@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
  *****************************************************************************/
 
 /*
- * $Id: blue.c,v 1.55 2022/12/10 23:31:31 tom Exp $
+ * $Id: blue.c,v 1.56 2024/10/05 19:26:24 tom Exp $
  */
 
 #include <test.priv.h>
@@ -437,7 +437,7 @@ game_finished(int deal)
 static void
 use_pc_display(void)
 {
-    char *check = nl_langinfo(CODESET);
+    const char *check = nl_langinfo(CODESET);
     if (!strcmp(check, "UTF-8")) {
 #if USE_WIDEC_SUPPORT
 	suits = uglyphs;
@@ -448,8 +448,8 @@ use_pc_display(void)
 	    !strcmp(check, "CP437") ||
 	    !strcmp(check, "IBM850") ||
 	    !strcmp(check, "CP850")) {
-	    char *smacs = tigetstr("smacs");
-	    char *smpch = tigetstr("smpch");
+	    const char *smacs = tigetstr("smacs");
+	    const char *smpch = tigetstr("smpch");
 	    /*
 	     * The ncurses library makes this check to decide whether to allow
 	     * the alternate character set for the (normally) nonprinting codes.

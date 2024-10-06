@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_defkey.c,v 1.35 2024/01/20 20:46:12 tom Exp $
+ * $Id: demo_defkey.c,v 1.36 2024/10/05 18:20:04 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -199,7 +199,7 @@ duplicate(WINDOW *win, NCURSES_CONST char *name, int code)
 }
 
 static void
-redefine(WINDOW *win, char *string, int code)
+redefine(WINDOW *win, const char *string, int code)
 {
     really_define_key(win, string, code);
 }

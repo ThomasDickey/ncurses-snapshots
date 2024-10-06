@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2006-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: redraw.c,v 1.17 2022/12/10 22:28:50 tom Exp $
+ * $Id: redraw.c,v 1.18 2024/10/06 21:17:54 tom Exp $
  *
  * Demonstrate the redrawwin() and wredrawln() functions.
  * Thomas Dickey - 2006/11/4
@@ -61,7 +61,7 @@ trash(int beg_x, int max_x, int cur_x)
 static void
 test_redraw(WINDOW *win)
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"Commands:",
 	"  ^Q/ESC/q   - quit",

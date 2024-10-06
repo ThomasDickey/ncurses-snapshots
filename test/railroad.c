@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 2000-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.26 2022/12/11 00:12:13 tom Exp $
+ * $Id: railroad.c,v 1.27 2024/10/05 19:26:24 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -113,7 +113,7 @@ Underline(int flag)
 static void
 ShowSign(char *string)
 {
-    char *base = string;
+    const char *base = string;
     int first, last;
 
     if (moveit != 0) {

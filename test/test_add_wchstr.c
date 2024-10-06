@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_add_wchstr.c,v 1.34 2022/12/10 22:28:50 tom Exp $
+ * $Id: test_add_wchstr.c,v 1.35 2024/10/05 19:26:24 tom Exp $
  *
  * Demonstrate the waddwchstr() and wadd_wch functions.
  * Thomas Dickey - 2009/9/12
@@ -158,7 +158,7 @@ ChWStr(const wchar_t *source)
 }
 
 static void
-legend(WINDOW *win, int level, Options state, wchar_t *buffer, int length)
+legend(WINDOW *win, int level, Options state, const wchar_t *buffer, int length)
 {
     const char *showstate;
 

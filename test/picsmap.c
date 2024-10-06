@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2017,2018 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.149 2023/04/23 23:20:37 tom Exp $
+ * $Id: picsmap.c,v 1.150 2024/10/05 19:26:24 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -574,7 +574,7 @@ read_palette(const char *filename)
 	    _nc_STRCAT(full_name, filename, need);
 	    if (tries & 4) {
 		char *t = s;
-		char *tc;
+		const char *tc;
 		int num;
 		char chr;
 		int found = 0;
@@ -1374,8 +1374,8 @@ parse_img(const char *filename)
 		int r, g, b, nocolor;
 		float rf, gf, bf;
 		unsigned check;
-		char *t;
-		char *s = t = strchr(buffer, '#');
+		char *s = strchr(buffer, '#');
+		const char *t = s;
 		bool matched = FALSE;
 
 		if (s != 0) {
@@ -1492,7 +1492,7 @@ read_picture(const char *filename, char **data)
 #define fg_color(pics,n) (pics->fgcol[n].fgcol)
 
 static void
-dump_picture(PICS_HEAD * pics)
+dump_picture(const PICS_HEAD * pics)
 {
     int y, x;
 
@@ -1767,7 +1767,7 @@ main(int argc, char *argv[])
 #if USE_EXTENDED_COLORS
 	case 'x':
 	    {
-		char *s = optarg;
+		const char *s = optarg;
 		while (*s) {
 		    switch (*s++) {
 		    case 'p':

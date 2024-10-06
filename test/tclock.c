@@ -1,4 +1,4 @@
-/* $Id: tclock.c,v 1.48 2023/02/25 16:42:22 tom Exp $ */
+/* $Id: tclock.c,v 1.49 2024/10/05 18:47:56 tom Exp $ */
 
 #define NEED_TIME_H
 #include <test.priv.h>
@@ -145,7 +145,7 @@ main(int argc, char *argv[])
     int lastbeep = -1;
     bool odd = FALSE;
     time_t tim;
-    struct tm *t;
+    const struct tm *t;
     char szChar[20];
     char *text;
     short my_bg = COLOR_BLACK;

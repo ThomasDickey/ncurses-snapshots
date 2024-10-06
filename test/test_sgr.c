@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2015-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_sgr.c,v 1.22 2023/05/27 20:13:10 tom Exp $
+ * $Id: test_sgr.c,v 1.25 2024/10/06 21:05:50 tom Exp $
  *
  * A simple demo of the sgr/sgr0 terminal capabilities.
  */
@@ -142,10 +142,10 @@ free_dblist(void)
 #define MASK_REV  (1 << 2)
 
 static void
-dumpit(unsigned bits, unsigned ignore, const char *sgr, const char *sgr0)
+dumpit(unsigned bits, unsigned ignore, NCURSES_CONST char *sgr, NCURSES_CONST char *sgr0)
 {
-    static const char sample[] = "abcdefghijklm";
-    static char params[] = "SURBDBIPA";
+    static NCURSES_CONST char sample[] = "abcdefghijklm";
+    static NCURSES_CONST char params[] = "SURBDBIPA";
     unsigned n;
 
     printf("%4u ", bits);
@@ -177,12 +177,11 @@ one_bit(unsigned a, unsigned b)
 static void
 brute_force(const char *name)
 {
-    unsigned count;
-    char *my_sgr;
-    char *my_sgr0;
-    char *my_bold;
-    char *my_revs;
-    char *my_smso;
+    NCURSES_CONST char *my_sgr;
+    NCURSES_CONST char *my_sgr0;
+    NCURSES_CONST char *my_bold;
+    NCURSES_CONST char *my_revs;
+    NCURSES_CONST char *my_smso;
     char *my_name = strdup(name);
 
     if (db_list) {
@@ -219,6 +218,7 @@ brute_force(const char *name)
 	unsigned ignore = 0;
 	unsigned reason = 0;
 	unsigned repeat = 0;
+	unsigned count;
 	for (count = 0; count < MAXSGR; ++count) {
 	    values[count] = tparm(my_sgr,
 				  BITS2P(1),
@@ -334,7 +334,7 @@ int
 main(int argc, char *argv[])
 {
     int ch;
-    char *name;
+    const char *name;
 
     while ((ch = getopt(argc, argv, OPTS_COMMON "d:e:nq")) != -1) {
 	switch (ch) {
@@ -369,7 +369,7 @@ main(int argc, char *argv[])
     } else if ((name = getenv("TERM")) != 0) {
 	brute_force(name);
     } else {
-	static char dumb[] = "dumb";
+	static const char dumb[] = "dumb";
 	brute_force(dumb);
     }
 

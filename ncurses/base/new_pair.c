@@ -61,7 +61,7 @@
 
 #endif
 
-MODULE_ID("$Id: new_pair.c,v 1.24 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: new_pair.c,v 1.25 2024/10/05 20:51:29 tom Exp $")
 
 #if NCURSES_EXT_COLORS
 
@@ -193,7 +193,7 @@ _nc_free_ordered_pairs(SCREEN *sp)
  * pair table.
  */
 NCURSES_EXPORT(void)
-_nc_reset_color_pair(SCREEN *sp, int pair, colorpair_t * next)
+_nc_reset_color_pair(SCREEN *sp, int pair, const colorpair_t * next)
 {
     colorpair_t *last;
 

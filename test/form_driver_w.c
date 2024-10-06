@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2022 Thomas E. Dickey                                     *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2013-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: form_driver_w.c,v 1.17 2022/12/10 23:31:31 tom Exp $
+ * $Id: form_driver_w.c,v 1.18 2024/10/06 23:13:40 tom Exp $
  *
  * Test form_driver_w (int, int, wchar_t), a wide char aware
  * replacement of form_driver.
@@ -68,7 +68,7 @@ VERSION_COMMON()
 int
 main(int argc, char *argv[])
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"Commands:",
 	"  ^D,^Q,ESC           - quit program",

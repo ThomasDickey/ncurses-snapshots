@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.81 2023/09/16 16:30:40 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.82 2024/10/05 22:47:12 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -168,7 +168,7 @@ _nc_eventlist_timeout(_nc_eventlist * evl)
  * descriptors.
  */
 NCURSES_EXPORT(int)
-_nc_timed_wait(SCREEN *sp MAYBE_UNUSED,
+_nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
 	       int mode MAYBE_UNUSED,
 	       int milliseconds,
 	       int *timeleft

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: parse_rgb.h,v 1.5 2020/02/02 23:34:34 tom Exp $
+ * $Id: parse_rgb.h,v 1.6 2024/10/05 19:26:24 tom Exp $
  *
  * Sample implementation of ncurses RGB extension from user_caps(5).
  */
@@ -49,7 +49,7 @@ parse_rgb(int *r_max, int *g_max, int *b_max)
 	int bits;
 	int pwr2;
 	int r = 0, g = 0, b = 0;
-	char *data;
+	const char *data;
 	char ch;
 
 	for (max_bits = 0, pwr2 = 1;

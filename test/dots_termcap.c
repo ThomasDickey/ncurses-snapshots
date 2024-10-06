@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_termcap.c,v 1.33 2024/08/31 15:55:46 tom Exp $
+ * $Id: dots_termcap.c,v 1.35 2024/10/06 21:18:35 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -113,7 +113,7 @@ TPUTS_PROTO(outc, c)
 }
 
 static bool
-outs(char *s)
+outs(NCURSES_CONST char *s)
 {
     if (VALID_STRING(s)) {
 	tputs(s, 1, outc);
@@ -178,7 +178,7 @@ static int
 get_number(NCURSES_CONST char *cap, const char *env)
 {
     int result = tgetnum(cap);
-    char *value = env ? getenv(env) : 0;
+    const char *value = env ? getenv(env) : 0;
     if (value != 0 && *value != 0) {
 	char *next = 0;
 	long check = strtol(value, &next, 10);
@@ -229,7 +229,7 @@ main(int argc, char *argv[])
     double c;
     char buffer[1024];
     char area[1024];
-    char *name;
+    NCURSES_CONST char *name;
     size_t need;
     char *my_env;
 

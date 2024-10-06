@@ -6,7 +6,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.58 2023/05/28 14:23:34 tom Exp $
+ * $Id: testcurs.c,v 1.59 2024/10/05 19:17:19 tom Exp $
  */
 
 #include <test.priv.h>
@@ -245,7 +245,7 @@ inputTest(WINDOW *win)
 	wclrtobot(win);
 	if (c >= KEY_MIN)
 	    wprintw(win, "Key Pressed: %s", keyname(c));
-	else if (isprint(c))
+	else if (isprint(UChar(c)))
 	    wprintw(win, "Key Pressed: %c", c);
 	else
 	    wprintw(win, "Key Pressed: %s", unctrl(UChar(c)));
@@ -748,8 +748,8 @@ main(int argc, char *argv[])
 	keypad(stdscr, TRUE);
 	raw();
 	key = getch();
-	if (key < KEY_MIN && key > 0 && isalpha(key)) {
-	    if (islower(key))
+	if (key < KEY_MIN && key > 0 && isalpha(UChar(key))) {
+	    if (islower(UChar(key)))
 		key = toupper(key);
 	    for (n = 0; n < MAX_OPTIONS; ++n) {
 		if (key == command[n].text[0]) {

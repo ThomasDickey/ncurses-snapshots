@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.538 2023/11/11 01:23:59 tom Exp $
+$Id: ncurses.c,v 1.541 2024/10/06 20:18:59 tom Exp $
 
 ***************************************************************************/
 
@@ -273,7 +273,7 @@ wGetstring(WINDOW *win, char *buffer, int limit)
 	    ++x;
 	    break;
 	default:
-	    if (!isprint(ch) || ch >= KEY_MIN) {
+	    if (!isprint(UChar(ch)) || ch >= KEY_MIN) {
 		beep();
 	    } else if ((int) strlen(buffer) < limit) {
 		int j;
@@ -928,7 +928,7 @@ wgetch_test(unsigned level, WINDOW *win, int delay)
 		/* at least Solaris SVR4 curses breaks unctrl(128), etc. */
 		c2 &= 0x7f;
 #endif
-		if (isprint(c))
+		if (isprint(UChar(c)))
 		    (void) wprintw(win, "%c", UChar(c));
 		else if (c2 != UChar(c))
 		    (void) wprintw(win, "M-%s", unctrl(c2));
@@ -1693,7 +1693,7 @@ attr_test(bool recur GCC_UNUSED)
 	    chtype extras = (chtype) ac;
 
 	    if (UseColors) {
-		NCURSES_PAIRS_T pair = 0;
+		NCURSES_PAIRS_T pair;
 		if ((fg != COLOR_BLACK) || (bg != COLOR_BLACK)) {
 		    pair = 1;
 		    if (init_pair(pair, fg, bg) == ERR) {
@@ -2345,7 +2345,6 @@ color_test(bool recur GCC_UNUSED)
 	for (i = (NCURSES_PAIRS_T) (base_row * per_row); i < pairs_max; i++) {
 	    int row = grid_top + (i / per_row) - base_row;
 	    int col = (i % per_row + 1) * width;
-	    NCURSES_PAIRS_T pair = i;
 
 	    if ((i / per_row) > row_limit)
 		break;
@@ -2355,6 +2354,7 @@ color_test(bool recur GCC_UNUSED)
 	    if (row >= 0 && move(row, col) != ERR) {
 		NCURSES_COLOR_T fg = (NCURSES_COLOR_T) InxToFG(i);
 		NCURSES_COLOR_T bg = (NCURSES_COLOR_T) InxToBG(i);
+		NCURSES_PAIRS_T pair = i;
 
 		init_pair(pair, fg, bg);
 		attron(COLOR_PAIR(pair));
@@ -2517,7 +2517,7 @@ color_test(bool recur GCC_UNUSED)
 static int
 x_color_test(bool recur GCC_UNUSED)
 {
-    long i;
+    int i;
     int top = 0, width;
     int base_row = 0;
     int grid_top = top + 3;
@@ -2613,17 +2613,17 @@ x_color_test(bool recur GCC_UNUSED)
 	/* show color names/numbers across the top */
 	for (i = 0; i < per_row; i++) {
 	    show_color_name(top + 2,
-			    ((int) i + 1) * width,
-			    (int) i * zoom_size + MinColors,
+			    (i + 1) * width,
+			    i * zoom_size + MinColors,
 			    opt_wide,
 			    opt_zoom);
 	}
 
 	/* show a grid of colors, with color names/ numbers on the left */
 	for (i = (base_row * per_row); i < pairs_max; i++) {
-	    int row = grid_top + ((int) i / per_row) - base_row;
-	    int col = ((int) i % per_row + 1) * width;
-	    int pair = (int) i;
+	    int row = grid_top + (i / per_row) - base_row;
+	    int col = (i % per_row + 1) * width;
+	    int pair = i;
 
 	    if ((i / per_row) > row_limit)
 		break;
@@ -2828,7 +2828,7 @@ reset_all_colors(void)
 #define DecodeRGB(n) (NCURSES_COLOR_T) ((n * 1000) / 0xffff)
 
 static void
-init_all_colors(bool xterm_colors, char *palette_file)
+init_all_colors(bool xterm_colors, NCURSES_CONST char *palette_file)
 {
     NCURSES_PAIRS_T cp;
     all_colors = typeMalloc(RGB_DATA, (unsigned) MaxColors);
@@ -3317,7 +3317,7 @@ slk_test(bool recur GCC_UNUSED)
 {
     int c, fmt = 1;
     char buf[9];
-    char *s;
+    NCURSES_CONST char *s;
     attr_t attr = A_NORMAL;
     unsigned at_code = 0;
 #if HAVE_SLK_COLOR
@@ -3938,8 +3938,7 @@ merge_wide_attr(cchar_t *dst, const cchar_t *src, attr_t attr, NCURSES_PAIRS_T p
 
     *dst = *src;
     do {
-	int count;
-	TEST_CCHAR(src, count, {
+	TEST_CCHAR(src, {
 	    attr |= (test_attrs & A_ALTCHARSET);
 	    setcchar(dst, test_wch, attr, pair, NULL);
 	}, {
@@ -4810,7 +4809,8 @@ getwindow(void)
 /* Ask user for a window definition */
 {
     WINDOW *rwindow;
-    pair ul, lr, *tmp;
+    pair ul, lr;
+    NCURSES_CONST pair *tmp;
 
     move(0, 0);
     clrtoeol();
@@ -5014,7 +5014,8 @@ scroll_test(bool recur GCC_UNUSED)
 #if HAVE_WRESIZE
 	case CTRL('X'):	/* resize window */
 	    if (current) {
-		pair *tmp, ul, lr;
+		NCURSES_CONST pair *tmp;
+		pair ul, lr;
 		int mx, my;
 
 		move(0, 0);
@@ -5249,7 +5250,7 @@ init_panel(WINDOW *win)
 }
 
 static void
-fill_panel(PANEL *pan)
+fill_panel(NCURSES_CONST PANEL *pan)
 {
     WINDOW *win = panel_window(pan);
     const char *userptr = (const char *) panel_userptr(pan);
@@ -5286,7 +5287,7 @@ init_wide_panel(WINDOW *win)
 }
 
 static void
-fill_wide_panel(PANEL *pan)
+fill_wide_panel(NCURSES_CONST PANEL *pan)
 {
     WINDOW *win = panel_window(pan);
     const char *userptr = (const char *) panel_userptr(pan);
@@ -5336,7 +5337,7 @@ canned_panel(PANEL *px[MAX_PANELS + 1], NCURSES_CONST char *cmd)
 }
 
 static int
-demo_panels(void (*InitPanel) (WINDOW *), void (*FillPanel) (PANEL *))
+demo_panels(void (*InitPanel) (WINDOW *), void (*FillPanel) (NCURSES_CONST PANEL *))
 {
     int count;
     int itmp;
@@ -6246,7 +6247,8 @@ static int
 run_trace_menu(MENU * m)
 {
     ITEM **items;
-    ITEM *i, **p;
+    NCURSES_CONST ITEM *i;
+    ITEM **p;
 
     for (;;) {
 	bool changed = FALSE;
@@ -6424,7 +6426,7 @@ edit_secure(FIELD *me, int c)
 
     if (field_info(me, &rows, &cols, &frow, &fcol, &nrow, &nbuf) == E_OK
 	&& nbuf > 0) {
-	char *source = field_buffer(me, 1);
+	NCURSES_CONST char *source = field_buffer(me, 1);
 	size_t have = (source ? strlen(source) : 0) + 1;
 	size_t need = 80 + have;
 	char *temp = malloc(need);
@@ -6434,7 +6436,7 @@ edit_secure(FIELD *me, int c)
 	    _nc_STRNCPY(temp, source ? source : "", have + 1);
 	    len = (size_t) (char *) field_userptr(me);
 	    if (c <= KEY_MAX) {
-		if (isgraph(c) && (len + 1) < sizeof(temp)) {
+		if (isgraph(UChar(c)) && (len + 1) < sizeof(temp)) {
 		    temp[len++] = (char) c;
 		    temp[len] = 0;
 		    set_field_buffer(me, 1, temp);
@@ -6484,7 +6486,7 @@ edit_secure(FIELD *me, int c)
 }
 
 static int
-form_virtualize(FORM *f, WINDOW *w)
+form_virtualize(NCURSES_CONST FORM *f, WINDOW *w)
 {
     /* *INDENT-OFF* */
     static const struct {
@@ -6658,7 +6660,7 @@ CHAR_CHECK_CB(mi_char_check)
 static
 FIELDCHECK_CB(pw_field_check)
 {
-    char *s = field_buffer(fld, 0);
+    NCURSES_CONST char *s = field_buffer(fld, 0);
     int n;
 
     for (n = 0; s[n] != '\0'; ++n) {
@@ -6680,7 +6682,8 @@ static int
 form_test(bool recur GCC_UNUSED)
 {
     FORM *form;
-    FIELD *f[12], *secure;
+    FIELD *f[12];
+    NCURSES_CONST FIELD *secure;
     FIELDTYPE *fty_middle = new_fieldtype(mi_field_check, mi_char_check);
     FIELDTYPE *fty_passwd = new_fieldtype(pw_field_check, pw_char_check);
     int c;
@@ -7176,7 +7179,7 @@ overlap_test_3(WINDOW *a)
 }
 
 static void
-overlap_test_4(int flavor, WINDOW *a, WINDOW *b)
+overlap_test_4(int flavor, NCURSES_CONST WINDOW *a, WINDOW *b)
 {
     switch ((otCOPY) flavor) {
     case otCOPY_overwrite:
@@ -7899,7 +7902,7 @@ main(int argc, char *argv[])
     bool monochrome = FALSE;
 #if HAVE_COLOR_CONTENT
     bool xterm_colors = FALSE;
-    char *palette_file = 0;
+    NCURSES_CONST char *palette_file = 0;
 #endif
 
     setlocale(LC_ALL, "");

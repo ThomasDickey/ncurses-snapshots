@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2007-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2007
  *
- * $Id: dots_mvcur.c,v 1.31 2023/01/07 17:21:48 tom Exp $
+ * $Id: dots_mvcur.c,v 1.32 2024/10/06 21:17:54 tom Exp $
  *
  * A simple demo of the terminfo interface, and mvcur.
  */
@@ -62,7 +62,7 @@ TPUTS_PROTO(outc, c)
 }
 
 static bool
-outs(const char *s)
+outs(NCURSES_CONST char *s)
 {
     if (VALID_STRING(s)) {
 	tputs(s, 1, outc);

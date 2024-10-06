@@ -35,10 +35,10 @@
 #include "internal.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursslk.cc,v 1.22 2024/06/15 21:07:30 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.23 2024/10/05 19:36:22 tom Exp $")
 
 Soft_Label_Key_Set::Soft_Label_Key&
-  Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)
+  Soft_Label_Key_Set::Soft_Label_Key::operator=(const char *text)
 {
   delete[] label;
   size_t need = 1 + ::strlen(text);
@@ -111,11 +111,11 @@ int Soft_Label_Key_Set::labels() const {
 
 void Soft_Label_Key_Set::activate_label(int i, bool bf) {
   if (!b_attrInit) {
-    NCursesApplication* A = NCursesApplication::getApplication();
+    const NCursesApplication* A = NCursesApplication::getApplication();
     if (A) attrset(A->labels());
     b_attrInit = TRUE;
   }
-  Soft_Label_Key& K = (*this)[i];
+  const Soft_Label_Key& K = (*this)[i];
   if (ERR==::slk_set(K.num,bf?K.label:"",K.format))
     Error("slk_set");
   noutrefresh();
@@ -124,12 +124,12 @@ void Soft_Label_Key_Set::activate_label(int i, bool bf) {
 void Soft_Label_Key_Set::activate_labels(bool bf)
 {
   if (!b_attrInit) {
-    NCursesApplication* A = NCursesApplication::getApplication();
+    const NCursesApplication* A = NCursesApplication::getApplication();
     if (A) attrset(A->labels());
     b_attrInit = TRUE;
   }
   for(int i=1; i <= num_labels; i++) {
-    Soft_Label_Key& K = (*this)[i];
+    const Soft_Label_Key& K = (*this)[i];
     if (ERR==::slk_set(K.num,bf?K.label:"",K.format))
       Error("slk_set");
   }

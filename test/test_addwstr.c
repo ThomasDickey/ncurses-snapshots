@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_addwstr.c,v 1.22 2023/05/27 20:13:10 tom Exp $
+ * $Id: test_addwstr.c,v 1.23 2024/10/05 19:27:33 tom Exp $
  *
  * Demonstrate the waddwstr() and wadd_wch functions.
  * Thomas Dickey - 2009/9/12
@@ -82,7 +82,7 @@ static bool w_opt = FALSE;
 static int n_opt = -1;
 
 static void
-legend(WINDOW *win, int level, Options state, wchar_t *buffer, int length)
+legend(WINDOW *win, int level, Options state, const wchar_t *buffer, int length)
 {
     const char *showstate;
 

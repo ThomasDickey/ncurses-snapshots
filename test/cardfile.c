@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.51 2022/12/04 00:40:11 tom Exp $
+ * $Id: cardfile.c,v 1.52 2024/10/05 19:26:24 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -161,7 +161,7 @@ new_card(void)
 }
 
 static CARD *
-find_card(char *title)
+find_card(const char *title)
 {
     CARD *card;
 
@@ -173,7 +173,7 @@ find_card(char *title)
 }
 
 static void
-read_data(char *fname)
+read_data(const char *fname)
 {
     FILE *fp;
 
@@ -341,7 +341,7 @@ form_virtualize(WINDOW *w)
 }
 
 static FIELD **
-make_fields(CARD * p, int form_high, int form_wide)
+make_fields(const CARD * p, int form_high, int form_wide)
 {
     FIELD **f = typeCalloc(FIELD *, (size_t) 3);
 
@@ -385,7 +385,7 @@ free_form_fields(FIELD **f)
 /*******************************************************************************/
 
 static void
-cardfile(char *fname)
+cardfile(const char *fname)
 {
     WINDOW *win;
     CARD *p;

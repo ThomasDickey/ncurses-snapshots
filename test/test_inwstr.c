@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_inwstr.c,v 1.9 2024/06/29 18:40:02 tom Exp $
+ * $Id: test_inwstr.c,v 1.11 2024/10/06 23:15:38 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -59,13 +59,13 @@ Quit(int ch)
 }
 
 static void
-show_1st(WINDOW *win, int line, wchar_t *buffer)
+show_1st(WINDOW *win, int line, const wchar_t *buffer)
 {
     (void) mvwaddwstr(win, line, 5, buffer);
 }
 
 static void
-showmore(WINDOW *win, int line, wchar_t *buffer)
+showmore(WINDOW *win, int line, const wchar_t *buffer)
 {
     wmove(win, line, 0);
     wclrtoeol(win);
@@ -75,7 +75,7 @@ showmore(WINDOW *win, int line, wchar_t *buffer)
 static void
 show_help(WINDOW *win)
 {
-    static const char *msgs[] =
+    static NCURSES_CONST char *msgs[] =
     {
 	"Show file contents and a viewport from the variants of winwstr."
 	,"Use h/j/k/l or arrow keys to move the viewport."

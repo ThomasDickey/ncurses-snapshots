@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1999-2012,2013 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 
 #include <cursesw.h>
 
-MODULE_ID("$Id: cursespad.cc,v 1.18 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: cursespad.cc,v 1.19 2024/10/05 22:47:12 tom Exp $")
 
 NCursesPad::NCursesPad(int nlines, int ncols)
   : NCursesWindow(),
@@ -221,7 +221,7 @@ void NCursesPad::setSubWindow(NCursesWindow& sub)
 void NCursesFramedPad::OnOperation(int pad_req)
 {
   (void) pad_req;
-  NCursesWindow* W = Win();
+  const NCursesWindow* W = Win();
   NCursesWindow* W2 = getWindow();
 
   if ((static_cast<NCursesWindow*>(0) != W) && (static_cast<NCursesWindow*>(0) != W2)) {

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2022 Thomas E. Dickey                                     *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inserts.c,v 1.34 2022/12/10 22:28:50 tom Exp $
+ * $Id: inserts.c,v 1.35 2024/10/05 19:26:24 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -98,7 +98,7 @@ legend(WINDOW *win, int level, Options state, char *buffer, int length)
 }
 
 static int
-ColOf(char *buffer, int length, int margin)
+ColOf(const char *buffer, int length, int margin)
 {
     int n;
     int result;

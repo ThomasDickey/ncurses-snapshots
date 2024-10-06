@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 2008-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: insdelln.c,v 1.15 2022/12/10 23:31:31 tom Exp $
+ * $Id: insdelln.c,v 1.17 2024/10/06 21:08:52 tom Exp $
  *
  * test-driver for deleteln, wdeleteln, insdelln, winsdelln, insertln, winsertln
  */
@@ -160,7 +160,7 @@ reshow_status(WINDOW *win, STATUS * sp)
 }
 
 static void
-do_subwindow(WINDOW *win, STATUS * sp, void func(WINDOW *))
+do_subwindow(WINDOW *win, const STATUS * sp, void func(WINDOW *))
 {
     WINDOW *win1 = newwin(sp->y_max - 2, sp->x_max - 2,
 			  sp->y_beg + 1, sp->x_beg + 1);
@@ -204,7 +204,7 @@ init_status(WINDOW *win, STATUS * sp)
 static void
 show_help(WINDOW *win)
 {
-    static const char *table[] =
+    static NCURSES_CONST char *table[] =
     {
 	"Basic commands:"
 	,"Use h/j/k/l or arrow keys to move the cursor."

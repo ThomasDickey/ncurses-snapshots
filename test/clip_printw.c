@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: clip_printw.c,v 1.23 2023/09/30 19:57:44 tom Exp $
+ * $Id: clip_printw.c,v 1.25 2024/10/06 22:36:25 tom Exp $
  *
  * demonstrate how to use printw with/without wrapping.
  */
@@ -212,7 +212,7 @@ show_status(WINDOW *win, STATUS * sp)
 }
 
 static void
-do_subwindow(WINDOW *win, STATUS * sp, void func(WINDOW *))
+do_subwindow(WINDOW *win, const STATUS * sp, void func(WINDOW *))
 {
     WINDOW *win1 = newwin(sp->y_max - (2 * MARGIN),
 			  sp->x_max - (2 * MARGIN),
@@ -268,7 +268,7 @@ init_status(WINDOW *win, STATUS * sp)
 static void
 show_help(WINDOW *win)
 {
-    static const char *msgs[] =
+    static NCURSES_CONST char *msgs[] =
     {
 	"Basic commands:"
 	,"Use h/j/k/l or arrow keys to move the cursor."

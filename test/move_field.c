@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: move_field.c,v 1.16 2024/06/29 17:45:02 tom Exp $
+ * $Id: move_field.c,v 1.19 2024/10/06 21:12:35 tom Exp $
  *
  * Demonstrate move_field().
  */
@@ -146,27 +146,27 @@ erase_form(FORM *f)
 }
 
 static FieldAttrs *
-my_field_attrs(FIELD *f)
+my_field_attrs(NCURSES_CONST FIELD *f)
 {
     return (FieldAttrs *) field_userptr(f);
 }
 
 static int
-buffer_length(FIELD *f)
+buffer_length(NCURSES_CONST FIELD *f)
 {
     return my_field_attrs(f)->row_lengths[0];
 }
 
 static void
-set_buffer_length(FIELD *f, int length)
+set_buffer_length(NCURSES_CONST FIELD *f, int length)
 {
     my_field_attrs(f)->row_lengths[0] = length;
 }
 
 static int
-offset_in_field(FORM *form)
+offset_in_field(NCURSES_CONST FORM *form)
 {
-    FIELD *field = current_field(form);
+    NCURSES_CONST FIELD *field = current_field(form);
     int currow, curcol;
 
     form_getyx(form, currow, curcol);
@@ -245,7 +245,7 @@ my_edit_field(FORM *form, int *result)
 
 	default:
 	    modified = (ch < MIN_FORM_COMMAND
-			&& isprint(ch));
+			&& isprint(UChar(ch)));
 	    break;
 	}
 
@@ -275,9 +275,9 @@ copy_fields(FIELD **source, size_t length)
 
 /* display a status message to show what's happening */
 static void
-show_status(FORM *form, FIELD *field)
+show_status(NCURSES_CONST FORM *form, NCURSES_CONST FIELD *field)
 {
-    WINDOW *sub = form_sub(form);
+    NCURSES_CONST WINDOW *sub = form_sub(form);
     int currow, curcol;
 
     getyx(stdscr, currow, curcol);

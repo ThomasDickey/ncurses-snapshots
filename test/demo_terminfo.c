@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.57 2023/05/27 20:13:10 tom Exp $
+ * $Id: demo_terminfo.c,v 1.59 2024/10/06 21:16:43 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -253,7 +253,7 @@ dumpit(NCURSES_CONST char *cap, const char *show)
 #define LegalItem(c,n) (n)
 
 static void
-brute_force(const char *name)
+brute_force(NCURSES_CONST char *name)
 {
 #define MAX_FORCE 5		/* omit "colors", since CPU-time is a problem */
     static const char legal[] = "\
@@ -324,7 +324,7 @@ abcdefghijklmnopqrstuvwxyz_";
 #endif
 
 static void
-demo_terminfo(char *name)
+demo_terminfo(NCURSES_CONST char *name)
 {
     unsigned n;
     NCURSES_CONST char *cap;
@@ -366,7 +366,7 @@ demo_terminfo(char *name)
     if (x_opt && (my_blob == 0)) {
 	if (y_opt) {
 #if NCURSES_XNAMES
-	    TERMTYPE *term = (TERMTYPE *) cur_term;
+	    const TERMTYPE *term = (TERMTYPE *) cur_term;
 	    if (term != 0
 		&& ((NUM_BOOLEANS(term) != BOOLCOUNT)
 		    || (NUM_NUMBERS(term) != NUMCOUNT)
@@ -813,9 +813,9 @@ main(int argc, char *argv[])
     int ch;
     int n;
     int repeat;
-    char *name;
+    NCURSES_CONST char *name;
     int r_opt = 1;
-    char *input_name = 0;
+    const char *input_name = 0;
 
     while ((ch = getopt(argc, argv, OPTS_COMMON "abd:e:fi:nqr:sxy")) != -1) {
 	switch (ch) {
@@ -891,7 +891,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != 0) {
 		brute_force(name);
 	    } else {
-		static char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = "dumb";
 		brute_force(dumb);
 	    }
 	}
@@ -918,7 +918,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != 0) {
 		demo_terminfo(name);
 	    } else {
-		static char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = "dumb";
 		demo_terminfo(dumb);
 	    }
 	}

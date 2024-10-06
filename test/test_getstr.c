@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2022 Thomas E. Dickey                                     *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2007-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_getstr.c,v 1.16 2022/12/10 23:58:37 tom Exp $
+ * $Id: test_getstr.c,v 1.19 2024/10/06 22:36:46 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -76,7 +76,7 @@ Quit(int ch)
 }
 
 static int
-Remainder(WINDOW *txtwin)
+Remainder(NCURSES_CONST WINDOW *txtwin)
 {
     int result = getmaxx(txtwin) - getcurx(txtwin);
     return (result > 0) ? result : 0;
@@ -145,7 +145,7 @@ ShowFlavor(WINDOW *strwin, WINDOW *txtwin, int flavor, int limit)
 static int
 recursive_test(int level, char **argv, WINDOW *strwin)
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"Commands:",
 	"  q,^Q,ESC       - quit this program",

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2003-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.80 2023/05/27 20:13:10 tom Exp $
+ * $Id: demo_menus.c,v 1.82 2024/10/06 19:58:28 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -185,7 +185,7 @@ menu_virtualize(int c)
 }
 
 static int
-menu_getc(MENU * m)
+menu_getc(NCURSES_CONST MENU * m)
 {
     return wGetchar(menu_win(m));
 }
@@ -214,7 +214,7 @@ static void
 my_menu_init(MENU * menu)
 {
     Trace(("called MenuHook my_menu_init"));
-    mvwprintw(status, 2, 0, "menu_init %p", (void *) menu);
+    mvwprintw(status, 2, 0, "menu_init %p", (const void *) menu);
     wclrtoeol(status);
     wrefresh(status);
 }
@@ -223,7 +223,7 @@ static void
 my_menu_term(MENU * menu)
 {
     Trace(("called MenuHook my_menu_term"));
-    mvwprintw(status, 2, 0, "menu_term %p", (void *) menu);
+    mvwprintw(status, 2, 0, "menu_term %p", (const void *) menu);
     wclrtoeol(status);
     wrefresh(status);
 }
@@ -231,7 +231,7 @@ my_menu_term(MENU * menu)
 static void
 my_item_init(MENU * menu)
 {
-    ITEM *item = current_item(menu);
+    NCURSES_CONST ITEM *item = current_item(menu);
     const char *name = item_name(item);
 
     Trace(("called MenuHook my_item_init (%s)", name));
@@ -243,7 +243,7 @@ my_item_init(MENU * menu)
 static void
 my_item_term(MENU * menu)
 {
-    ITEM *item = current_item(menu);
+    NCURSES_CONST ITEM *item = current_item(menu);
     const char *name = item_name(item);
 
     Trace(("called MenuHook my_item_term (%s)", name));
@@ -348,7 +348,7 @@ menu_destroy(MENU * m, int itemsToo)
 
 /* force the given menu to appear */
 static void
-menu_display(MENU * m)
+menu_display(NCURSES_CONST MENU * m)
 {
     touchwin(menu_win(m));
     wrefresh(menu_win(m));
@@ -584,10 +584,10 @@ tracetrace(unsigned tlevel)
  * the others
  */
 static bool
-update_trace_menu(MENU * m)
+update_trace_menu(NCURSES_CONST MENU * m)
 {
     ITEM **items;
-    ITEM *i;
+    NCURSES_CONST ITEM *i;
     bool changed = FALSE;
 
     items = menu_items(m);
@@ -613,7 +613,7 @@ perform_trace_menu(int cmd)
     int result;
 
     for (ip = menu_items(mpTrace); *ip; ip++) {
-	MENU_DATA *td = (MENU_DATA *) item_userptr(*ip);
+	NCURSES_CONST MENU_DATA *td = (MENU_DATA *) item_userptr(*ip);
 	unsigned mask = td->mask;
 	if (mask == 0)
 	    set_item_value(*ip, _nc_tracing == 0);
@@ -628,7 +628,7 @@ perform_trace_menu(int cmd)
 	    unsigned newtrace = 0;
 	    for (ip = menu_items(mpTrace); *ip; ip++) {
 		if (item_value(*ip)) {
-		    MENU_DATA *td = (MENU_DATA *) item_userptr(*ip);
+		    NCURSES_CONST MENU_DATA *td = (MENU_DATA *) item_userptr(*ip);
 		    newtrace |= td->mask;
 		}
 	    }
@@ -718,7 +718,9 @@ build_menus(char *filename)
 }
 
 static int
-move_menu(MENU * menu, MENU * current, int by_y, int by_x)
+move_menu(NCURSES_CONST MENU * menu,
+	  NCURSES_CONST MENU * current,
+	  int by_y, int by_x)
 {
     WINDOW *top_win = menu_win(menu);
     WINDOW *sub_win = menu_sub(menu);
@@ -798,7 +800,7 @@ resize_menus(MENU * current)
 #endif /* defined(KEY_RESIZE) && NCURSES_EXT_FUNCS */
 
 static void
-show_status(int ch, MENU * menu)
+show_status(int ch, NCURSES_CONST MENU * menu)
 {
     wmove(status, 0, 0);
     wprintw(status, "key %s, menu %d, mark %s, match %s",
@@ -919,7 +921,7 @@ perform_menus(void)
 	wrefresh(menu_win(last_menu));
 	if (code == E_UNKNOWN_COMMAND
 	    || code == E_NOT_POSTED) {
-	    ITEM *item = current_item(last_menu);
+	    NCURSES_CONST ITEM *item = current_item(last_menu);
 	    MENU_DATA *td = (MENU_DATA *) item_userptr(item);
 	    td->func((int) td->mask);
 	}

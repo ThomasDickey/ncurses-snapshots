@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.79 2023/05/27 20:13:10 tom Exp $
+ * $Id: bs.c,v 1.80 2024/10/05 19:26:24 tom Exp $
  */
 
 #include <test.priv.h>
@@ -147,7 +147,7 @@ typedef struct {
     bool placed;		/* has it been placed on the board? */
 } ship_t;
 
-static bool checkplace(int b, ship_t * ss, int vis);
+static bool checkplace(int b, const ship_t * ss, int vis);
 
 #define SHIPIT(name, symbol, length) { name, 0, symbol, length, 0,0, 0, FALSE }
 
@@ -686,7 +686,7 @@ collidecheck(int b, int y, int x)
 }
 
 static bool
-checkplace(int b, ship_t * ss, int vis)
+checkplace(int b, const ship_t * ss, int vis)
 {
     int l, xend, yend;
 

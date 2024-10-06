@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 2006-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: savescreen.c,v 1.62 2022/12/10 23:23:27 tom Exp $
+ * $Id: savescreen.c,v 1.65 2024/10/06 21:10:09 tom Exp $
  *
  * Demonstrate save/restore functions from the curses library.
  * Thomas Dickey - 2007/7/14
@@ -96,7 +96,7 @@ cleanup(char *files[])
 }
 
 static int
-load_screen(char *filename)
+load_screen(NCURSES_CONST char *filename)
 {
     int result;
 
@@ -170,7 +170,7 @@ dump_screen(char **files, int color, int which, int last, bool use_colors)
 #if USE_WIDEC_SUPPORT
     cchar_t mycc;
 #endif
-    char *filename = files[which];
+    NCURSES_CONST char *filename = files[which];
     bool dumped = FALSE;
 
     if (filename != 0) {
@@ -216,7 +216,7 @@ dump_screen(char **files, int color, int which, int last, bool use_colors)
 static void
 editor_help(void)
 {
-    static const char *msgs[] =
+    static NCURSES_CONST char *msgs[] =
     {
 	"You are now in the screen-editor, which allows you to make some",
 	"lines on the screen, as well as save copies of the screen to a",
@@ -238,7 +238,7 @@ editor_help(void)
 static void
 replay_help(void)
 {
-    static const char *msgs[] =
+    static NCURSES_CONST char *msgs[] =
     {
 	"You are now in the screen-loader, which allows you to view",
 	"the dumped/restored screens.",
@@ -286,7 +286,7 @@ main(int argc, char *argv[])
     bool replaying = FALSE;
     bool done = FALSE;
     char **files;
-    char *fill_by = 0;
+    NCURSES_CONST char *fill_by = 0;
 #if USE_WIDEC_SUPPORT
     cchar_t mycc;
     static const wchar_t mywc[2] =

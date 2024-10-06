@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: popup_msg.c,v 1.12 2024/06/29 18:34:58 tom Exp $
+ * $Id: popup_msg.c,v 1.13 2024/10/06 21:07:01 tom Exp $
  *
  * Show a multi-line message in a window which may extend beyond the screen.
  *
@@ -62,7 +62,7 @@ end_popup(void)
  * Display a temporary window, e.g., to display a help-message.
  */
 void
-popup_msg(WINDOW *parent, const char *const *msg)
+popup_msg(WINDOW *parent, NCURSES_CONST char *const *msg)
 {
     int x0 = 4;
     int y0 = 2;
@@ -171,12 +171,12 @@ popup_msg(WINDOW *parent, const char *const *msg)
 void
 popup_msg2(WINDOW *parent, char **msg)
 {
-    popup_msg(parent, (const char *const *) msg);
+    popup_msg(parent, (NCURSES_CONST char *const *) msg);
 }
 
 #else
 void
-popup_msg(WINDOW *parent, const char *const *msg)
+popup_msg(WINDOW *parent, NCURSES_CONST char *const *msg)
 {
     (void) parent;
     (void) msg;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2018-2021,2024 Thomas E. Dickey                                *
  * Copyright 2011-2012,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: color_name.h,v 1.9 2021/04/24 23:25:29 tom Exp $
+ * $Id: color_name.h,v 1.10 2024/10/05 19:26:24 tom Exp $
  */
 
 #ifndef __COLORNAME_H
@@ -63,7 +63,6 @@ color_code(const char *color)
 {
     int result = 0;
     char *endp = 0;
-    size_t n;
 
     if ((result = (int) strtol(color, &endp, 0)) >= 0
 	&& (endp == 0 || *endp == 0)) {
@@ -71,6 +70,7 @@ color_code(const char *color)
     } else if (!strcmp(color, "default")) {
 	result = -1;
     } else {
+	size_t n;
 	for (n = 0; n < SIZEOF(the_color_names); ++n) {
 	    if (!strcmp(the_color_names[n], color)) {
 		result = (int) n;

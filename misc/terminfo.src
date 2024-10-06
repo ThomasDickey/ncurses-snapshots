@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1150 $
-#	$Date: 2024/09/07 16:23:31 $
+#	$Revision: 1.1153 $
+#	$Date: 2024/10/05 16:04:17 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8060,6 +8060,17 @@ domterm|DomTerm web client,
 # "wezterm is a terminal emulator with support for modern features
 #  such as fonts with ligatures, hyperlinks, tabs and multiple windows."
 #
+# The documentation bears mention.  It refers to the "ANSI" standard and
+# 	https://wezfurlong.org/wezterm/what-is-a-terminal.html#ansi-and-ecma-48
+# X3.64 (withdrawn long ago).  A related website
+#	https://github.com/wez/ecma48
+# states that ECMA-48 was issued in 1979 and not revised since.  Actually that
+# was the second revision; the fifth revision in 1991 is current.  The source
+# code refers to the second revision in a half-dozen places.  Further, there
+# are three times as many references to Wikipedia as to xterm's documentation.
+# The git commit comments in several instances hint at an incomplete reading
+# of the relevant standards.
+#
 # wezterm-20240203-110809-5046fc22 tested with MacOS
 # General:
 # + initial screensize is now 80x24
@@ -8094,7 +8105,7 @@ domterm|DomTerm web client,
 # + poor (doesn't copy anyone, most of the results are wrong)
 # vttest:
 # + DA is VT5xx with sixel, selective erase, user windows, color
-# + DA2 is VT220 version 277
+# + DA2 is VT220 version 277, perhaps a reference to xterm #277
 # + only the VT100 character set works, contrary to DA/DA2.
 # + no NRCS, either
 # + double-sized character work, with some debris
@@ -8136,7 +8147,7 @@ wezterm|Wez's Terminal Emulator,
 	use=ansi+rep, use=ansi+sgrdim, use=bracketed+paste,
 	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
 	use=report+version, use=vt220+cvis,
-	use=xterm+256color2, use=xterm+alt1049,
+	use=xterm+256color2, use=xterm+alt+title,
 	use=xterm+focus, use=xterm+pcc2, use=xterm+pce2,
 	use=xterm+pcf2, use=xterm+sl-alt, use=xterm+sm+1006,
 	use=xterm+tmux,
@@ -27642,6 +27653,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add a note about DomTerm 3.2.0 -TD
 #
 # 2024-09-07
+#	+ update comments -TD
+#
+# 2024-10-05
+#	+ use xterm+alt+title in wezterm -TD
 #	+ update comments -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.39 2023/11/11 01:00:03 tom Exp $
+ * $Id: test_tparm.c,v 1.42 2024/10/06 20:50:27 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -107,7 +107,7 @@ output_func(int ch)
 }
 
 static int
-isNumeric(char *source)
+isNumeric(NCURSES_CONST char *source)
 {
     char *next = 0;
     long value = strtol(source, &next, 0);
@@ -245,7 +245,7 @@ analyze_format(const char *format, int *mask, char **p_is_s)
 #define NS_9(fmt)	NS_8(fmt), NumStr(8)
 
 static void
-test_tparm(const char *name, const char *format, long *number, char **string)
+test_tparm(const char *name, NCURSES_CONST char *format, long *number, char **string)
 {
     char *use_strings[MAX_PARM];
     char *result = NULL;
@@ -527,7 +527,7 @@ main(int argc, char *argv[])
 	    }
 	} else {
 	    char *s = t_opt;
-	    char *t;
+	    NCURSES_CONST char *t;
 	    while ((t = strtok(s, ",")) != 0) {
 		s = 0;
 		if (len_terms + 2 >= max_terms) {
@@ -603,7 +603,7 @@ main(int argc, char *argv[])
 #if NCURSES_XNAMES
 	    len_caps = std_caps;
 	    if (cur_term) {
-		TERMTYPE *term = (TERMTYPE *) cur_term;
+		NCURSES_CONST TERMTYPE *term = (TERMTYPE *) cur_term;
 		for (n = STRCOUNT; n < NUM_STRINGS(term); ++n) {
 		    GrowArray(all_caps, max_caps, len_caps);
 		    GrowArray(cap_name, max_name, len_caps);

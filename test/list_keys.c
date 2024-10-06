@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2016,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: list_keys.c,v 1.33 2023/11/11 00:35:05 tom Exp $
+ * $Id: list_keys.c,v 1.34 2024/10/05 19:26:24 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -297,7 +297,7 @@ list_keys(TERMINAL **terms, int count)
 #if NCURSES_XNAMES
     if (x_opt) {
 	for (k = 0; k < count; ++k) {
-	    TERMTYPE *term;
+	    const TERMTYPE *term;
 	    set_curterm(terms[k]);
 	    term = (TERMTYPE *) cur_term;
 	    total += (size_t) (NUM_STRINGS(term) - STRCOUNT);
@@ -348,7 +348,7 @@ list_keys(TERMINAL **terms, int count)
 	widths1 = (int) strlen(modifier);
 
     for (k = 0; k < count; ++k) {
-	char *value;
+	const char *value;
 	set_curterm(terms[k]);
 	if ((value = termname()) == NULL)
 	    failed("termname");

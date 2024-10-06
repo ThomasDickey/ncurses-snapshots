@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.32 2024/08/31 10:46:01 Rafael.Kitover Exp $
+ * $Id: test_mouse.c,v 1.33 2024/10/05 18:47:56 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -38,7 +38,7 @@ static int logoffset = 0;
 static void
 raw_loop(void)
 {
-    char *xtermcap;
+    const char *xtermcap;
 
     printf("Entering raw mode. Ctrl-c to quit.\n");
 

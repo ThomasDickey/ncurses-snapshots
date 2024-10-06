@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2005,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #include "cursesf.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesf.cc,v 1.26 2021/04/17 18:11:08 tom Exp $")
+MODULE_ID("$Id: cursesf.cc,v 1.27 2024/10/05 22:47:12 tom Exp $")
 
 NCursesFormField::~NCursesFormField () THROWS(NCursesException)
 {
@@ -76,7 +76,7 @@ NCursesForm::mapFields(NCursesFormField* nfields[])
 
 void NCursesForm::setDefaultAttributes()
 {
-  NCursesApplication* S = NCursesApplication::getApplication();
+  const NCursesApplication* S = NCursesApplication::getApplication();
 
   int n = count();
   if (n > 0) {

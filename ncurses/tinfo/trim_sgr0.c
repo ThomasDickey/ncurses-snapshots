@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.23 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.24 2024/10/05 20:53:48 tom Exp $")
 
 #undef CUR
 #define CUR tp->
@@ -237,12 +237,10 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 
     if (PRESENT(exit_attribute_mode)
 	&& PRESENT(set_attributes)) {
-	bool found = FALSE;
 	char *on = set_attribute_9(tp, 1);
 	char *off = set_attribute_9(tp, 0);
 	char *end = strdup(exit_attribute_mode);
 	char *tmp;
-	size_t i, j, k;
 
 	TR(TRACE_DATABASE, ("checking if we can trim sgr0 based on sgr"));
 	TR(TRACE_DATABASE, ("sgr0       %s", _nc_visbuf(end)));
@@ -255,6 +253,9 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 	    FreeIfNeeded(off);
 	} else if (similar_sgr(off, end)
 		   && !similar_sgr(off, on)) {
+	    bool found = FALSE;
+	    size_t i, j, k;
+
 	    TR(TRACE_DATABASE, ("adjusting sgr(9:off) : %s", _nc_visbuf(off)));
 	    result = off;
 	    /*

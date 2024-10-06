@@ -34,7 +34,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.60 2024/06/29 19:59:06 tom Exp $
+ * $Id: gdc.c,v 1.62 2024/10/06 20:08:59 tom Exp $
  */
 
 #include <test.priv.h>
@@ -181,7 +181,7 @@ parse_time(const char *value)
     int check;
     time_t result;
     char c = 0;
-    struct tm *tm;
+    NCURSES_CONST struct tm *tm;
 
     switch (sscanf(value, "%d:%d:%d%c", &hh, &mm, &ss, &c)) {
     default:
@@ -243,7 +243,7 @@ int
 main(int argc, char *argv[])
 {
     time_t now;
-    struct tm *tm;
+    NCURSES_CONST struct tm *tm;
     long t, a;
     int i, j, s, k, ch;
     int count = 0;
@@ -293,7 +293,7 @@ main(int argc, char *argv[])
 
     InitAndCatch({
 	if (redirected) {
-	    char *name = getenv("TERM");
+	    NCURSES_CONST char *name = getenv("TERM");
 	    if (name == 0
 		|| newterm(name, ofp, ifp) == 0) {
 		fprintf(stderr, "cannot open terminal\n");
@@ -431,7 +431,7 @@ main(int argc, char *argv[])
 	    _nc_STRNCPY(buf, ctime(&now), (size_t) 30);
 	    {
 		char *d2 = buf + 10;
-		char *s2 = buf + 19;
+		NCURSES_CONST char *s2 = buf + 19;
 		while ((*d2++ = *s2++) != '\0') ;
 	    }
 	    MvAddStr(16, 30, buf);

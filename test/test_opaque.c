@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 2007-2008,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_opaque.c,v 1.15 2022/12/11 00:03:10 tom Exp $
+ * $Id: test_opaque.c,v 1.16 2024/10/05 19:27:33 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -157,13 +157,13 @@ test_opaque_syncok(WINDOW *win, int mode)
 }
 
 static int
-status_y(WINDOW *stswin, int cell)
+status_y(const WINDOW *stswin, int cell)
 {
     return (cell % getmaxy(stswin));
 }
 
 static int
-status_x(WINDOW *stswin, int cell)
+status_x(const WINDOW *stswin, int cell)
 {
     return (15 * (cell / getmaxy(stswin)));
 }

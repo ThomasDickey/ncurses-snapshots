@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.28 2024/06/29 19:30:26 tom Exp $
+ * $Id: demo_new_pair.c,v 1.29 2024/10/05 18:21:44 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -49,7 +49,7 @@
 static bool
 valid_cap(NCURSES_CONST char *name)
 {
-    char *value = tigetstr(name);
+    const char *value = tigetstr(name);
     return (value != 0 && value != (char *) -1) ? TRUE : FALSE;
 }
 

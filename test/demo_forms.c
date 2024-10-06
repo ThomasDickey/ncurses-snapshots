@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2003-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_forms.c,v 1.63 2023/11/11 00:29:53 tom Exp $
+ * $Id: demo_forms.c,v 1.67 2024/10/06 21:15:12 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -148,7 +148,7 @@ read_data(const char *filename)
 }
 
 static FIELD *
-make_label(const char *label, int frow, int fcol)
+make_label(NCURSES_CONST char *label, int frow, int fcol)
 {
     FIELD *f = new_field(1, (int) strlen(label), frow, fcol, 0, 0);
 
@@ -242,7 +242,7 @@ show_insert_mode(bool insert_mode)
 #define O_SELECTABLE (O_ACTIVE | O_VISIBLE)
 
 static FIELD *
-another_field(FORM *form, const FIELD *const field)
+another_field(NCURSES_CONST FORM *form, NCURSES_CONST FIELD *const field)
 {
     FIELD **f = form_fields(form);
     FIELD *result = 0;
@@ -306,9 +306,9 @@ my_form_driver(FORM *form, int c)
 }
 
 static void
-show_current_field(WINDOW *win, FORM *form)
+show_current_field(WINDOW *win, NCURSES_CONST FORM *form)
 {
-    FIELD *field;
+    NCURSES_CONST FIELD *field;
     int field_rows, field_cols, field_max;
     int currow, curcol;
 
@@ -325,7 +325,7 @@ show_current_field(WINDOW *win, FORM *form)
     waddch(win, '\n');
 
     if ((field = current_field(form)) != 0) {
-	FIELDTYPE *type;
+	NCURSES_CONST FIELDTYPE *type;
 	int nbuf;
 
 	wprintw(win, "Page %d%s, Field %d/%d%s:",
@@ -383,7 +383,7 @@ show_current_field(WINDOW *win, FORM *form)
 
 	waddstr(win, "\n");
 	for (nbuf = 0; nbuf <= 2; ++nbuf) {
-	    char *buffer;
+	    NCURSES_CONST char *buffer;
 	    if ((buffer = field_buffer(field, nbuf)) != 0) {
 		wprintw(win, "buffer %d:", nbuf);
 		(void) wattrset(win, A_REVERSE);
@@ -408,8 +408,8 @@ demo_forms(void)
     int c;
     unsigned n = 0;
     int pg;
-    const char *fname;
-    static const char *my_enum[] =
+    NCURSES_CONST char *fname;
+    static NCURSES_CONST char *my_enum[] =
     {"first", "second", "third", 0};
 
 #ifdef NCURSES_MOUSE_VERSION
@@ -515,7 +515,7 @@ demo_forms(void)
     f[n] = (FIELD *) 0;
 
     if ((form = new_form(f)) != 0) {
-	WINDOW *w;
+	NCURSES_CONST WINDOW *w;
 	WINDOW *also;
 	int finished = 0;
 

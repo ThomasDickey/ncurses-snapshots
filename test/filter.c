@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2019-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author:  Thomas E. Dickey 1998
  *
- * $Id: filter.c,v 1.38 2022/12/04 00:40:11 tom Exp $
+ * $Id: filter.c,v 1.39 2024/10/05 19:26:24 tom Exp $
  *
  * An example of the 'filter()' function in ncurses, this program prompts
  * for commands and executes them (like a command shell).  It illustrates
@@ -65,7 +65,7 @@ show_prompt(int underline, bool clocked)
     if (clocked) {
 	if (limit >= 3) {
 	    time_t now = time((time_t *) 0);
-	    struct tm *my = localtime(&now);
+	    const struct tm *my = localtime(&now);
 	    char buffer[80];
 	    int skip, y, x;
 	    int margin;
