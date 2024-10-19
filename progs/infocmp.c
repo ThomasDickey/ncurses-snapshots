@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.165 2024/09/28 20:26:22 Branden.Robinson Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.166 2024/10/19 21:43:11 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -132,7 +132,7 @@ failed(const char *s)
 }
 
 static void
-canonical_name(char *source, char *target)
+canonical_name(const char *source, char *target)
 /* extract the terminal type's primary name */
 {
     int limit = NAMESIZE;
@@ -214,8 +214,6 @@ use_predicate(unsigned type, PredIdx idx)
     switch (type) {
     case BOOLEAN:
 	{
-	    int is_set = FALSE;
-
 	    /*
 	     * This assumes that multiple use entries are supposed
 	     * to contribute the logical or of their boolean capabilities.
@@ -228,6 +226,8 @@ use_predicate(unsigned type, PredIdx idx)
 	     * recorded in the terminfo database.
 	     */
 	    if (idx < NUM_BOOLEANS(&(entries[0].tterm))) {
+		int is_set = FALSE;
+
 		for (ep = &entries[1]; ep < entries + termcount; ep++) {
 		    if (idx < NUM_BOOLEANS(&(ep->tterm))
 			&& (is_set = ep->tterm.Booleans[idx])) {
@@ -242,14 +242,14 @@ use_predicate(unsigned type, PredIdx idx)
 
     case NUMBER:
 	{
-	    int value = ABSENT_NUMERIC;
-
 	    /*
 	     * We take the semantics of multiple uses to be 'each
 	     * capability gets the first non-default value found
 	     * in the sequence of use entries'.
 	     */
 	    if (idx < NUM_NUMBERS(&(entries[0].tterm))) {
+		int value = ABSENT_NUMERIC;
+
 		for (ep = &entries[1]; ep < entries + termcount; ep++)
 		    if (idx < NUM_NUMBERS(&(ep->tterm))
 			&& VALID_NUMERIC(ep->tterm.Numbers[idx])) {
@@ -265,8 +265,8 @@ use_predicate(unsigned type, PredIdx idx)
 
     case STRING:
 	{
-	    char *termstr = entries[0].tterm.Strings[idx];
-	    char *usestr = ABSENT_STRING;
+	    const char *termstr = entries[0].tterm.Strings[idx];
+	    const char *usestr = ABSENT_STRING;
 
 	    /*
 	     * We take the semantics of multiple uses to be 'each
@@ -302,7 +302,7 @@ use_predicate(unsigned type, PredIdx idx)
 }
 
 static bool
-useeq(ENTRY * e1, ENTRY * e2)
+useeq(const ENTRY * e1, const ENTRY * e2)
 /* are the use references in two entries equivalent? */
 {
     unsigned i, j;
@@ -329,7 +329,7 @@ useeq(ENTRY * e1, ENTRY * e2)
 }
 
 static bool
-entryeq(TERMTYPE2 *t1, TERMTYPE2 *t2)
+entryeq(const TERMTYPE2 *t1, const TERMTYPE2 *t2)
 /* are two entries equivalent? */
 {
     unsigned i;
@@ -352,7 +352,7 @@ entryeq(TERMTYPE2 *t1, TERMTYPE2 *t2)
 #define TIC_EXPAND(result) _nc_tic_expand(result, outform==F_TERMINFO, numbers)
 
 static void
-print_uses(ENTRY * ep, FILE *fp)
+print_uses(const ENTRY * ep, FILE *fp)
 /* print an entry's use references */
 {
     if (!ep->nuses) {
@@ -404,7 +404,7 @@ dump_numeric(int val, char *buf)
 }
 
 static void
-dump_string(char *val, char *buf)
+dump_string(const char *val, char *buf)
 /* display the value of a string capability */
 {
     if (val == ABSENT_STRING)
@@ -479,13 +479,13 @@ static void
 compare_predicate(PredType type, PredIdx idx, const char *name)
 /* predicate function to use for entry difference reports */
 {
-    ENTRY *e1 = &entries[0];
-    ENTRY *e2 = &entries[1];
+    const ENTRY *e1 = &entries[0];
+    const ENTRY *e2 = &entries[1];
     char buf1[MAX_STRING];
     char buf2[MAX_STRING];
     int b1, b2;
     int n1, n2;
-    char *s1, *s2;
+    const char *s1, *s2;
     bool found;
     int extra = 1;
 
@@ -866,7 +866,7 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 
 	/* first, check other capabilities in this entry */
 	for (i = 0; i < STRCOUNT; i++) {
-	    char *cp = tp->Strings[i];
+	    const char *cp = tp->Strings[i];
 
 	    /* don't use function-key capabilities */
 	    if (strnames[i] == NULL)
@@ -1331,7 +1331,7 @@ string_variable(const char *type)
 
 /* dump C initializers for the terminal type */
 static void
-dump_initializers(TERMTYPE2 *term)
+dump_initializers(const TERMTYPE2 *term)
 {
     unsigned n;
     const char *str = 0;
@@ -1455,7 +1455,7 @@ dump_initializers(TERMTYPE2 *term)
 
 /* dump C initializers for the terminal type */
 static void
-dump_termtype(TERMTYPE2 *term)
+dump_termtype(const TERMTYPE2 *term)
 {
     (void) printf("\t%s\n\t\t%s,\n", L_CURL, name_initializer("alias"));
     (void) printf("\t\t(char *)0,\t/* pointer to string table */\n");

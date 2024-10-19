@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.103 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.104 2024/10/19 21:18:54 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -535,8 +535,7 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 static int
 bcd_expression(const char *str)
 {
-    /* leave this non-const for HPUX */
-    static char fmt[] = "%%p%c%%{10}%%/%%{16}%%*%%p%c%%{10}%%m%%+";
+    static const char fmt[] = "%%p%c%%{10}%%/%%{16}%%*%%p%c%%{10}%%m%%+";
     int len = 0;
     char ch1, ch2;
 

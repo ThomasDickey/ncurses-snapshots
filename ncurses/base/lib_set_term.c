@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,6 +47,10 @@
 #include <tic.h>
 #include <new_pair.h>
 
+#ifdef __DJGPP__
+#include <io.h>
+#endif
+
 #if USE_GPM_SUPPORT
 #ifdef HAVE_LIBDL
 /* use dynamic loader to avoid linkage dependency */
@@ -57,7 +61,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.184 2022/12/10 21:34:12 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.186 2024/10/19 19:41:09 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -423,7 +427,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 #ifdef __DJGPP__
     T(("setting output mode to binary"));
     fflush(output);
-    setmode(output, O_BINARY);
+    setmode(fileno(output), O_BINARY);
 #endif
 #if defined(EXP_WIN32_DRIVER)
     T(("setting output mode to binary"));

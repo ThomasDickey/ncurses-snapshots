@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.196 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.197 2024/10/19 22:00:53 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -725,7 +725,7 @@ indent_DYN(DYNBUF * buffer, int level)
  * given leading text.
  */
 static bool
-leading_DYN(DYNBUF * buffer, const char *leading)
+leading_DYN(const DYNBUF * buffer, const char *leading)
 {
     bool result = FALSE;
     size_t need = strlen(leading);
@@ -1118,7 +1118,7 @@ fmt_entry(TERMTYPE2 *tterm,
 			      : ((*srccap == 'k')
 				 ? 0
 				 : has_params(srccap, FALSE)));
-		char *cv = _nc_infotocap(name, srccap, params);
+		const char *cv = _nc_infotocap(name, srccap, params);
 
 		if (cv == 0) {
 		    if (outform == F_TCONVERR) {
@@ -1129,7 +1129,8 @@ fmt_entry(TERMTYPE2 *tterm,
 		    } else if (suppress_untranslatable) {
 			continue;
 		    } else {
-			char *s = srccap, *d = buffer;
+			const char *s = srccap;
+			char *d = buffer;
 			int need = 3 + (int) strlen(name);
 			while ((*d = *s++) != 0) {
 			    if ((d - buffer + 2) >= (int) sizeof(buffer)) {
@@ -1210,7 +1211,8 @@ fmt_entry(TERMTYPE2 *tterm,
 	    bool box_ok = TRUE;
 	    const char *acstrans = "lqkxjmwuvtn";
 	    const char *cp;
-	    char *tp, *sp, boxchars[11];
+	    const char *sp;
+	    char *tp, boxchars[11];
 
 	    tp = boxchars;
 	    for (cp = acstrans; *cp; cp++) {
@@ -1324,7 +1326,7 @@ kill_string(TERMTYPE2 *tterm, const char *const cap)
 }
 
 static char *
-find_string(TERMTYPE2 *tterm, char *name)
+find_string(TERMTYPE2 *tterm, const char *name)
 {
     PredIdx n;
     for (n = 0; n < NUM_STRINGS(tterm); ++n) {
@@ -1352,7 +1354,7 @@ kill_labels(TERMTYPE2 *tterm, int target)
     char name[20];
 
     for (n = 0; n <= 10; ++n) {
-	char *cap;
+	const char *cap;
 
 	_nc_SPRINTF(name, _nc_SLIMIT(sizeof(name)) "lf%d", n);
 	cap = find_string(tterm, name);
@@ -1379,7 +1381,7 @@ kill_fkeys(TERMTYPE2 *tterm, int target)
     char name[20];
 
     for (n = 60; n >= 0; --n) {
-	char *cap;
+	const char *cap;
 
 	_nc_SPRINTF(name, _nc_SLIMIT(sizeof(name)) "kf%d", n);
 	cap = find_string(tterm, name);
@@ -1444,7 +1446,7 @@ purged_acs(TERMTYPE2 *tterm)
 }
 
 static void
-encode_b64(char *target, char *source, unsigned state, int *saved)
+encode_b64(char *target, const char *source, unsigned state, int *saved)
 {
     /* RFC-4648 */
     static const char data[] =
@@ -1509,7 +1511,7 @@ dump_entry(TERMTYPE2 *tterm,
 		}
 	    }
 	    if (quickdump & 2) {
-		static char padding[] =
+		static const char padding[] =
 		{0, 0};
 		int value = 0;
 

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.82 2024/10/06 19:58:28 tom Exp $
+ * $Id: demo_menus.c,v 1.83 2024/10/19 21:53:57 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -755,7 +755,7 @@ move_menu(NCURSES_CONST MENU * menu,
  * Move the menus around on the screen, to test mvwin().
  */
 static void
-move_menus(MENU * current, int by_y, int by_x)
+move_menus(NCURSES_CONST MENU * current, int by_y, int by_x)
 {
     if (move_menu(mpBanner, current, by_y, by_x) != ERR) {
 	erase();

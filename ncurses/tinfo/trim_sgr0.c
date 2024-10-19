@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.24 2024/10/05 20:53:48 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.25 2024/10/19 21:18:18 tom Exp $")
 
 #undef CUR
 #define CUR tp->
@@ -254,7 +254,7 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 	} else if (similar_sgr(off, end)
 		   && !similar_sgr(off, on)) {
 	    bool found = FALSE;
-	    size_t i, j, k;
+	    size_t i, j;
 
 	    TR(TRACE_DATABASE, ("adjusting sgr(9:off) : %s", _nc_visbuf(off)));
 	    result = off;
@@ -262,6 +262,8 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 	     * If rmacs is a substring of sgr(0), remove that chunk.
 	     */
 	    if (PRESENT(exit_alt_charset_mode)) {
+		size_t k;
+
 		TR(TRACE_DATABASE, ("scan for rmacs %s", _nc_visbuf(exit_alt_charset_mode)));
 		j = strlen(off);
 		k = strlen(exit_alt_charset_mode);

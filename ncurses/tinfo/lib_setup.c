@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.244 2024/08/31 21:15:54 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.245 2024/10/19 21:17:36 tom Exp $")
 
 /****************************************************************************
  *
@@ -320,7 +320,7 @@ is_expected(const char *value, const char *expected)
 }
 
 static bool
-get_position(TERMINAL *termp, int fd, int *row, int *col)
+get_position(const TERMINAL *termp, int fd, int *row, int *col)
 {
     bool result = FALSE;
     size_t need = strlen(user7);

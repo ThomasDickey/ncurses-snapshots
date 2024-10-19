@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.135 2024/09/28 17:31:09 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.136 2024/10/19 21:19:32 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -125,12 +125,12 @@ check_writeable(int code)
     static const char dirnames[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     static bool verified[sizeof(dirnames)];
 
-    char dir[sizeof(LEAF_FMT)];
     const char *s = 0;
 
     if (code == 0 || (s = (strchr) (dirnames, code)) == 0) {
 	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", code);
     } else if (!verified[s - dirnames]) {
+	char dir[sizeof(LEAF_FMT)];
 	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
 	if (make_db_root(dir) < 0) {
 	    _nc_err_abort("%s/%s: permission denied", _nc_tic_dir(NULL), dir);

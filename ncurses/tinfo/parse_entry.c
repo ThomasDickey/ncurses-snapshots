@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.109 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.110 2024/10/19 21:22:04 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -707,7 +707,7 @@ append_acs0(string_desc * dst, int code, const char *src, size_t off)
 }
 
 static void
-append_acs(string_desc * dst, int code, char *src)
+append_acs(string_desc * dst, int code, const char *src)
 {
     if (VALID_STRING(src) && strlen(src) == 1) {
 	append_acs0(dst, code, src, 0);

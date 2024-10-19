@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.325 2024/03/02 19:33:22 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.326 2024/10/19 21:31:50 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -203,7 +203,8 @@ write_it(ENTRY * ep)
 {
     unsigned n;
     int ch;
-    char *s, *d, *t;
+    char *s, *d;
+    const char *t;
     char result[MAX_ENTRY_SIZE];
 
     /*
@@ -411,7 +412,6 @@ copy_input(FILE *source, const char *filename, char *alt_file)
     char my_altfile[PATH_MAX];
     FILE *result = 0;
     FILE *target;
-    int ch;
 
     if (alt_file == NULL)
 	alt_file = my_altfile;
@@ -423,7 +423,7 @@ copy_input(FILE *source, const char *filename, char *alt_file)
     } else {
 	clearerr(source);
 	for (;;) {
-	    ch = fgetc(source);
+	    int ch = fgetc(source);
 	    if (feof(source)) {
 		break;
 	    } else if (ferror(source)) {
@@ -1119,7 +1119,7 @@ main(int argc, char *argv[])
  * Check if the alternate character-set capabilities are consistent.
  */
 static void
-check_acs(TERMTYPE2 *tp)
+check_acs(const TERMTYPE2 *tp)
 {
     int vt100_smacs = 0;
     int vt100_rmacs = 0;
@@ -1332,7 +1332,7 @@ keypad_index(const char *string)
 
     if ((ch = keypad_final(string)) != '\0') {
 	const char *list = "PQRSwxymtuvlqrsPpn";	/* app-keypad except "Enter" */
-	char *test = (strchr) (list, ch);
+	const char *test = (strchr) (list, ch);
 	if (test != 0)
 	    result = (long) (test - list);
     }
@@ -1363,7 +1363,7 @@ check_ansi_cursor(char *list[4])
 	}
     }
     if (!repeated) {
-	char *up = list[1];
+	const char *up = list[1];
 	size_t prefix = (size_t) csi_length(up);
 	size_t suffix;
 
@@ -1410,7 +1410,7 @@ check_ansi_cursor(char *list[4])
 #define UNEXPECTED(name) if (PRESENT(name)) _nc_warning("unexpected " #name ", for %s", why)
 
 static void
-check_noaddress(TERMTYPE2 *tp, const char *why)
+check_noaddress(const TERMTYPE2 *tp, const char *why)
 {
     UNEXPECTED(column_address);
     UNEXPECTED(cursor_address);
@@ -1541,7 +1541,7 @@ check_cursor(TERMTYPE2 *tp)
  * is mapped inconsistently.
  */
 static void
-check_keypad(TERMTYPE2 *tp)
+check_keypad(const TERMTYPE2 *tp)
 {
     char show[80];
 
@@ -1727,7 +1727,7 @@ check_screen(TERMTYPE2 *tp)
 	bool have_kmouse = FALSE;
 	bool use_sgr_39_49 = FALSE;
 	const char *name_39_49 = "orig_pair or orig_colors";
-	char *name = _nc_first_name(tp->term_names);
+	const char *name = _nc_first_name(tp->term_names);
 	bool is_screen = !strncmp(name, "screen", 6);
 	bool screen_base = (is_screen
 			    && strchr(name, '.') == NULL);
@@ -1985,7 +1985,7 @@ line_capability(const char *name)
  * markers.
  */
 static void
-check_params(TERMTYPE2 *tp, const char *name, const char *value, int extended)
+check_params(const TERMTYPE2 *tp, const char *name, const char *value, int extended)
 {
     int expected = expected_params(name);
     int actual = 0;
@@ -2149,7 +2149,7 @@ skip_DECSCNM(const char *value, int *flag)
 }
 
 static void
-check_delays(TERMTYPE2 *tp, const char *name, const char *value)
+check_delays(const TERMTYPE2 *tp, const char *name, const char *value)
 {
     const char *p, *q;
     const char *first = 0;
@@ -2575,7 +2575,7 @@ static bool
 similar_sgr(int num, char *a, char *b)
 {
     char *base_a = a;
-    char *base_b = b;
+    const char *base_b = b;
     int delaying = 0;
 
     while (*b != 0) {
@@ -2631,7 +2631,7 @@ check_tparm_err(int num)
 }
 
 static char *
-check_sgr(TERMTYPE2 *tp, char *zero, int num, char *cap, const char *name)
+check_sgr(const TERMTYPE2 *tp, const char *zero, int num, char *cap, const char *name)
 {
     char *test;
 
@@ -2731,7 +2731,7 @@ get_fkey_list(TERMTYPE2 *tp)
 }
 
 static void
-show_fkey_name(NAME_VALUE * data)
+show_fkey_name(const NAME_VALUE * data)
 {
     if (data->keycode > 0) {
 	fprintf(stderr, " %s", keyname(data->keycode));
@@ -2909,7 +2909,7 @@ is_sgr_string(char *value)
  * Check if the given capability contains a given SGR attribute.
  */
 static void
-check_sgr_param(TERMTYPE2 *tp, int code, const char *name, char *value)
+check_sgr_param(TERMTYPE2 *tp, int code, const char *name, const char *const value)
 {
     if (VALID_STRING(value)) {
 	int ncv = ((code != 0) ? (1 << (code - 1)) : 0);
@@ -3111,7 +3111,7 @@ isValidEscape(const char *value, const char *expect)
 }
 
 static int
-guess_ANSI_VTxx(TERMTYPE2 *tp)
+guess_ANSI_VTxx(const TERMTYPE2 *tp)
 {
     int result = -1;
     int checks = 0;
@@ -3151,7 +3151,7 @@ guess_ANSI_VTxx(TERMTYPE2 *tp)
  */
 #if defined(user6) && defined(user7) && defined(user8) && defined(user9)
 static void
-check_user_6789(TERMTYPE2 *tp)
+check_user_6789(const TERMTYPE2 *tp)
 {
     /*
      * Check if the terminal is known to not 
@@ -3200,7 +3200,7 @@ check_termtype(TERMTYPE2 *tp, bool literal)
     check_conflict(tp);
 
     for_each_string(j, tp) {
-	char *a = tp->Strings[j];
+	const char *a = tp->Strings[j];
 	if (VALID_STRING(a)) {
 	    const char *name = ExtStrname(tp, (int) j, strnames);
 	    /*

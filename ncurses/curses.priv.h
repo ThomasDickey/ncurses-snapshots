@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.692 2024/10/05 21:01:50 tom Exp $
+ * $Id: curses.priv.h,v 1.694 2024/10/19 21:23:40 tom Exp $
  *
  *	curses.priv.h
  *
@@ -208,7 +208,7 @@ extern int errno;
  * the path separator in configure doesn't work properly. So, if building
  * for MinGW, we enforce the correct Windows PATH separator
  */
-#if defined(_NC_WINDOWS_NATIVE)
+#if defined(_NC_WINDOWS_NATIVE) || defined(__DJGPP__)
 #  ifdef NCURSES_PATHSEP
 #    undef NCURSES_PATHSEP
 #  endif
@@ -2059,7 +2059,7 @@ extern NCURSES_EXPORT(void) _nc_screen_resume (void);
 extern NCURSES_EXPORT(void) _nc_screen_wrap (void);
 
 /* lib_mouse.c */
-extern NCURSES_EXPORT(bool) _nc_has_mouse (SCREEN *);
+extern NCURSES_EXPORT(bool) _nc_has_mouse (const SCREEN *);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
@@ -2175,7 +2175,7 @@ extern NCURSES_EXPORT(int) _nc_trans_string (char *, const char *);
 extern NCURSES_EXPORT(void) _nc_init_termtype (TERMTYPE2 *const);
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, int, NCURSES_OUTC);
 extern NCURSES_EXPORT(void) _nc_flush (void);
-extern NCURSES_EXPORT(void) _nc_free_entry (ENTRY *, TERMTYPE2 *);
+extern NCURSES_EXPORT(void) _nc_free_entry (ENTRY *, const TERMTYPE2 *);
 extern NCURSES_EXPORT(void) _nc_freeall (void);
 extern NCURSES_EXPORT(void) _nc_hash_map (void);
 extern NCURSES_EXPORT(void) _nc_init_keytry (SCREEN *);

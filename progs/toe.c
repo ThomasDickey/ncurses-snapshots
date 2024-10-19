@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -45,7 +45,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.89 2023/07/01 17:04:46 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.90 2024/10/19 22:00:53 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -265,10 +265,10 @@ make_db_name(char *dst, const char *src, unsigned limit)
 typedef void (DescHook) (int /* db_index */ ,
 			 int /* db_limit */ ,
 			 const char * /* term_name */ ,
-			 TERMTYPE2 * /* term */ );
+			 const TERMTYPE2 * /* term */ );
 
 static const char *
-term_description(TERMTYPE2 *tp)
+term_description(const TERMTYPE2 *tp)
 {
     const char *desc;
 
@@ -283,7 +283,7 @@ term_description(TERMTYPE2 *tp)
 
 /* display a description for the type */
 static void
-deschook(int db_index, int db_limit, const char *term_name, TERMTYPE2 *tp)
+deschook(int db_index, int db_limit, const char *term_name, const TERMTYPE2 *tp)
 {
     (void) db_index;
     (void) db_limit;
@@ -307,7 +307,7 @@ string_sum(const char *value)
 }
 
 static unsigned long
-checksum_of(TERMTYPE2 *tp)
+checksum_of(const TERMTYPE2 *tp)
 {
     unsigned long result = string_sum(tp->term_names);
     unsigned i;
@@ -326,7 +326,7 @@ checksum_of(TERMTYPE2 *tp)
 
 /* collect data, to sort before display */
 static void
-sorthook(int db_index, int db_limit, const char *term_name, TERMTYPE2 *tp)
+sorthook(int db_index, int db_limit, const char *term_name, const TERMTYPE2 *tp)
 {
     TERMDATA *data = new_termdata();
 
@@ -385,7 +385,7 @@ show_termcap(int db_index, int db_limit, char *buffer, DescHook hook)
 
 #if NCURSES_USE_DATABASE
 static char *
-copy_entryname(DIRENT * src)
+copy_entryname(const DIRENT * src)
 {
     size_t len = NAMLEN(src);
     char *result = malloc(len + 1);
@@ -411,7 +411,7 @@ typelist(int eargc, char *eargv[],
 	if (_nc_is_dir_path(eargv[i])) {
 	    char *cwd_buf = 0;
 	    DIR *termdir;
-	    DIRENT *subdir;
+	    const DIRENT *subdir;
 
 	    if ((termdir = opendir(eargv[i])) == 0) {
 		(void) fflush(stdout);
@@ -428,7 +428,7 @@ typelist(int eargc, char *eargv[],
 		size_t cwd_len;
 		char *name_1;
 		DIR *entrydir;
-		DIRENT *entry;
+		const DIRENT *entry;
 
 		name_1 = copy_entryname(subdir);
 		if (isDotname(name_1)) {
@@ -605,7 +605,7 @@ main(int argc, char *argv[])
     bool direct_dependencies = FALSE;
     bool invert_dependencies = FALSE;
     bool header = FALSE;
-    char *report_file = 0;
+    const char *report_file = 0;
     int code;
     int this_opt, last_opt = '?';
     unsigned v_opt = 0;

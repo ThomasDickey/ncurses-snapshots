@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.200 2024/02/17 21:13:01 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.201 2024/10/19 21:03:19 tom Exp $")
 
 #include <tic.h>
 
@@ -1219,7 +1219,7 @@ typedef struct {
 } SGR_DATA;
 
 static bool
-read_SGR(SCREEN *sp, SGR_DATA * result)
+read_SGR(const SCREEN *sp, SGR_DATA * result)
 {
     char kbuf[80];		/* bigger than any possible mouse response */
     int grabbed = 0;
@@ -2042,7 +2042,7 @@ mouseinterval(int maxclick)
 /* This may be used by other routines to ask for the existence of mouse
    support */
 NCURSES_EXPORT(bool)
-_nc_has_mouse(SCREEN *sp)
+_nc_has_mouse(const SCREEN *sp)
 {
     return (((0 == sp) || (sp->_mouse_type == M_NONE)) ? FALSE : TRUE);
 }

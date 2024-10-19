@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.135 2024/04/20 22:20:41 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.136 2024/10/19 21:40:28 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -543,7 +543,7 @@ static const char *
 get_termcap_entry(int fd, char *userarg)
 {
     int errret;
-    char *p;
+    const char *p;
     const char *ttype;
 #if HAVE_PATH_TTYS
 #if HAVE_GETTTYNAM
@@ -676,7 +676,7 @@ static void
 obsolete(char **argv)
 {
     for (; *argv; ++argv) {
-	char *parm = argv[0];
+	const char *parm = argv[0];
 
 	if (parm[0] == '-' && parm[1] == '\0') {
 	    argv[0] = strdup("-q");

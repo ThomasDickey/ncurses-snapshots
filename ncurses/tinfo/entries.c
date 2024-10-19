@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: entries.c,v 1.36 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: entries.c,v 1.37 2024/10/19 21:23:31 tom Exp $")
 
 /****************************************************************************
  *
@@ -91,7 +91,7 @@ _nc_delink_entry(ENTRY * headp, const TERMTYPE2 *const tterm)
 }
 
 NCURSES_EXPORT(void)
-_nc_free_entry(ENTRY * headp, TERMTYPE2 *tterm)
+_nc_free_entry(ENTRY * headp, const TERMTYPE2 *tterm)
 /* free the allocated storage consumed by the given list entry */
 {
     ENTRY *ep;

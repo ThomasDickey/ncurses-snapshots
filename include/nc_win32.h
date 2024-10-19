@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.13 2024/08/31 18:17:21 tom Exp $ */
+/* $Id: nc_win32.h,v 1.14 2024/10/19 21:06:23 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -105,7 +105,7 @@ extern NCURSES_EXPORT(WORD)   _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(void)   _nc_console_selectActiveHandle(void);
 extern NCURSES_EXPORT(bool)   _nc_console_get_SBI(void);
 extern NCURSES_EXPORT(void)   _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info);
-extern NCURSES_EXPORT(int)    _nc_console_testmouse(SCREEN *,HANDLE,int EVENTLIST_2nd(_nc_eventlist*));
+extern NCURSES_EXPORT(int)    _nc_console_testmouse(const SCREEN *,HANDLE,int EVENTLIST_2nd(_nc_eventlist*));
 extern NCURSES_EXPORT(int)    _nc_console_keyok(int keycode,int flag);
 extern NCURSES_EXPORT(bool)   _nc_console_keyExist(int keycode);
 extern NCURSES_EXPORT(bool)   _nc_console_checkinit(bool initFlag, bool assumeTermInfo);

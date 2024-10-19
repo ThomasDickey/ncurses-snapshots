@@ -39,7 +39,7 @@
 #include <progs.priv.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tabs.c,v 1.54 2024/08/24 22:56:43 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.55 2024/10/19 21:45:18 tom Exp $")
 
 static GCC_NORETURN void usage(void);
 
@@ -78,7 +78,7 @@ ansi_clear_tabs(void)
 {
     bool result = FALSE;
     if (VALID_STRING(clear_all_tabs)) {
-	char *param = skip_csi(clear_all_tabs);
+	const char *param = skip_csi(clear_all_tabs);
 	if (!strcmp(param, "3g"))
 	    result = TRUE;
     }
@@ -86,7 +86,7 @@ ansi_clear_tabs(void)
 }
 
 static void
-do_tabs(int *tab_list)
+do_tabs(const int *tab_list)
 {
     int last = 1;
     int stop;
@@ -229,7 +229,7 @@ print_ruler(const int *const tab_list, const char *new_line)
  * ruler.
  */
 static void
-write_tabs(int *tab_list, const char *new_line)
+write_tabs(const int *tab_list, const char *new_line)
 {
     int stop;
 

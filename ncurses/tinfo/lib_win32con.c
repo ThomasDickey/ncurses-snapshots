@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.15 2024/08/31 15:55:10 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.16 2024/10/19 21:06:11 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -996,7 +996,7 @@ _nc_console_twait(
 
 NCURSES_EXPORT(int)
 _nc_console_testmouse(
-			 SCREEN *sp,
+			 const SCREEN *sp,
 			 HANDLE hdl,
 			 int delay
 			 EVENTLIST_2nd(_nc_eventlist * evl))
