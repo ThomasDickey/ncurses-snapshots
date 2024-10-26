@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1153 $
-#	$Date: 2024/10/05 16:04:17 $
+#	$Revision: 1.1155 $
+#	$Date: 2024/10/26 19:09:10 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4634,11 +4634,45 @@ winconsole|Windows 10 new console,
 	use=ansi+local, use=ecma+sgr, use=ecma+color,
 	use=vt220+cvis, use=vt220+pcedit, use=xterm+nopcfkeys,
 
-# Windows Terminal (Preview)
+# Windows Terminal
 # https://github.com/microsoft/terminal
+#
+# Version 1.21.2911.0
+# 2024-10-17
+#
+# - The "About" dialog has a pointer to the release notes, but that turns out
+#   to be for all branches.  This particular version (unlike those previously
+#   tested) happens to be a non-preview version.
+# - Windows Terminal #2958 has relevant discussion.
+#
+# tack:
+# - keypad escapes still do not work
+# - meta mode does not work
+# - when running tests, the screen maximized and did not resume normal size
+#
+# vttest:
+# - identifies as a VT100-level terminal supporting Greek and Turkish (not
+#   applicable to a VT100), horizontal scrolling () and DRCS (seems to work)
+# - left/right margins work
+# - DECSCUSR is okay except for mode 1
+# - SL/SR fail
+# - does not support XTVERSION
+# - some mouse controls work, but not highlight tracking and X10 compatibility
+# - mouse focus events appear - but not in the test-screen (like VTE).
+# - cursor position after alternate screen is correct for 1049, not otherwise
+# - window reporting does not work
+#
+# wraptest:
+# - DECRC does not restore wrap
+#
+# other:
+# - change history says it supports bracketed paste
+# - Greek and Turkish character sets work with GL, not GR
+# - source code says it implements OSC 52, as well as 12, 112, but not 104.
 #
 # Windows 10 22H2 (also Windows 11)
 # Version 1.16.10261.0
+# 2020-01-25
 #
 # - Windows Terminal #1553: "Feature Request:  Mouse/Touch/Pointer Bindings
 #   (like middle-click paste, right-click context menu, etc.)", compare to
@@ -4649,6 +4683,7 @@ winconsole|Windows 10 new console,
 #
 # Windows 10 21H1
 # Version 1.9.1942.0
+# 2021-07-13
 #
 # This has longstanding issues with CR/LF mapping, e.g.,
 # - first reported by Juergen Pfeifer August 13, 2020, with workaround
@@ -4698,6 +4733,7 @@ winconsole|Windows 10 new console,
 #
 # Windows 10 1903
 # Version 0.2.1831.0
+# 2019-07-02
 #
 # The task manager shows this as "OpenConsole.exe", which differs
 # from the "Windows Command Processor" used for the command-prompt.
@@ -4734,13 +4770,18 @@ winconsole|Windows 10 new console,
 # - color palette can be altered, but OSC 104 for resetting does not work
 # - crashed with a script used for testing NRCS.
 # - does not recognize either xterm+direct or xterm+indirect escapes.
-ms-terminal|Windows10 terminal,
+ms-terminal|Windows terminal,
+	use=xterm+256color, use=ms+terminal,
+ms-terminal-direct|Windows terminal with direct-colors,
+	use=xterm+direct, use=ms+terminal,
+ms+terminal|building block for Windows terminal,
 	npc,
-	cud1=\E[B, kcbt=\E[Z, rmkx=\E[?1l, rmm@, smkx=\E[?1h, smm@,
-	Cr@, Ms@, use=linux+kbs, use=xterm+256color,
-	use=xterm+pcfkeys, use=ansi+rep, use=xterm+sm+1006,
-	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
-	use=xterm-basic, use=xterm+tmux,
+	cud1=\E[B, kcbt=\E[Z, oc@, rmkx=\E[?1l, rmm@, smkx=\E[?1h,
+	smm@, rv=\E\\[>0;10;1c, use=linux+kbs,
+	use=bracketed+paste, use=xterm+pcfkeys, use=ansi+rep,
+	use=xterm+sm+1006, use=ecma+index, use=ecma+italics,
+	use=ecma+strikeout, use=vt420+lrmm, use=xterm-basic,
+	use=xterm+focus, use=xterm+tmux,
 
 #### Visual Studio
 # Visual Studio Code 1.45.0 uses xterm.js 12.8.1 (see https://xtermjs.org/).
@@ -27658,5 +27699,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2024-10-05
 #	+ use xterm+alt+title in wezterm -TD
 #	+ update comments -TD
+#
+# 2024-10-26
+#	+ update ms-terminal -TD
+#	+ add ms-terminal-direct -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
