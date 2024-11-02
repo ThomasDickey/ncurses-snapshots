@@ -61,7 +61,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.186 2024/10/19 19:41:09 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.187 2024/11/02 21:00:54 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -424,11 +424,6 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 #endif
 	T(("filter screensize %dx%d", slines, scolumns));
     }
-#ifdef __DJGPP__
-    T(("setting output mode to binary"));
-    fflush(output);
-    setmode(fileno(output), O_BINARY);
-#endif
 #if defined(EXP_WIN32_DRIVER)
     T(("setting output mode to binary"));
     fflush(output);
