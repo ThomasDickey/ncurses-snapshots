@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.326 2024/10/19 21:31:50 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.328 2024/11/09 23:03:26 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -517,8 +517,10 @@ make_namelist(char *src)
 	    }
 	    if (pass == 1) {
 		if ((dst = typeCalloc(char *, nn + 1)) == NULL)
-		      failed("make_namelist");
+		      failed("make_namelist (alloc)");
 		rewind(fp);
+		if (errno != 0)
+		      failed("make_namelist (rewind)");
 	    }
 	}
 	fclose(fp);

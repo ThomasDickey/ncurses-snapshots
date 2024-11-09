@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.221 2024/08/11 00:23:05 tom Exp $
+dnl $Id: aclocal.m4,v 1.222 2024/11/09 23:14:10 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4777,7 +4777,7 @@ weak_symbol(fopen);
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA version: 1 updated: 2024/05/18 13:55:23
+dnl CF_WITH_ADA version: 2 updated: 2024/11/09 18:07:29
 dnl -----------
 dnl Check for the Ada compiler (unless requested to not do this), which causes
 dnl a further check for a C compiler which can work with the Ada compiler.
@@ -4800,7 +4800,7 @@ then
 		AC_PATH_PROG(cf_cv_path_gnatgcc,gnatgcc,no)
 		if test "$cf_cv_path_gnatgcc" != no
 		then
-			AC_MSG_CHECKING(for improvement) 
+			AC_MSG_CHECKING(for improvement)
 			cf_file_gnatgcc=`file -L "$cf_cv_path_gnatgcc" 2>/dev/null`
 			case "x$cf_file_gnatgcc" in
 			(*script*)
@@ -5217,7 +5217,7 @@ AC_ARG_WITH(system-type,
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 67 updated: 2023/09/06 18:55:27
+dnl CF_XOPEN_SOURCE version: 68 updated: 2024/11/09 18:07:29
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -5279,6 +5279,9 @@ case "$host_os" in
 	;;
 (linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
 	CF_GNU_SOURCE($cf_XOPEN_SOURCE)
+	;;
+linux*musl)
+	cf_xopen_source="-D_BSD_SOURCE"
 	;;
 (minix*)
 	cf_xopen_source="-D_NETBSD_SOURCE" # POSIX.1-2001 features are ifdef'd with this...

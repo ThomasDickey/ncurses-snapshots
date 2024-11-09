@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.79 2023/09/15 08:16:12 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.80 2024/11/09 20:36:48 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -194,7 +194,10 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
     }
 
     TYPE_MALLOC(char, next_free, tp->str_table);
-    (void) memcpy(tp->str_table, stringbuf, next_free);
+    if (stringbuf == NULL)
+	(void) memset(tp->str_table, 0, next_free);
+    else
+	(void) memcpy(tp->str_table, stringbuf, next_free);
 
     tp->term_names = tp->str_table + n;
     for_each_string(i, &(ep->tterm)) {

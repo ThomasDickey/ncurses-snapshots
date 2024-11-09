@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.39 2024/09/21 15:12:56 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.40 2024/11/09 18:30:28 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -132,6 +132,7 @@ _nc_access(const char *path, int mode)
     int result;
 
     if (path == 0) {
+	errno = ENOENT;
 	result = -1;
     } else if (ACCESS(path, mode) < 0) {
 	if ((mode & W_OK) != 0
@@ -150,6 +151,7 @@ _nc_access(const char *path, int mode)
 
 	    result = ACCESS(head, R_OK | W_OK | X_OK);
 	} else {
+	    errno = EPERM;
 	    result = -1;
 	}
     } else {

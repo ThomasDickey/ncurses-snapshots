@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_panels.c,v 1.50 2024/10/06 20:01:21 tom Exp $
+ * $Id: demo_panels.c,v 1.51 2024/11/09 22:54:38 tom Exp $
  *
  * Demonstrate a variety of functions from the panel library.
  */
@@ -656,8 +656,9 @@ get_command(PANEL *px[MAX_PANELS + 1], char *buffer, int limit)
 	(void) wgetch(win);
     } else {
 	int c0 = 0;
-	for (;;) {
+	while (length < limit - 3) {
 	    int ch = wgetch(win);
+	    memset(buffer + length, 0, 3);
 	    if (ch == ERR || ch == QUIT || ch == ESCAPE) {
 		buffer[0] = '\0';
 		break;

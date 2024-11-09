@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.166 2024/10/19 21:43:11 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.167 2024/11/09 19:33:50 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1053,7 +1053,7 @@ file_comparison(int argc, char *argv[])
 
     for (n = 0; n < argc && n < MAXCOMPARE; n++) {
 	if (freopen(argv[n], "r", stdin) == 0)
-	    _nc_err_abort("Can't open %s", argv[n]);
+	    _nc_err_abort("Can't open %s: %s", argv[n], strerror(errno));
 
 #if NO_LEAKS
 	entered[n].head = _nc_head;

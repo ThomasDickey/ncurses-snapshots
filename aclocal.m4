@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1088 2024/08/11 00:17:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.1090 2024/11/09 23:12:47 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1750,7 +1750,7 @@ esac
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CPP_OVERRIDE version: 1 updated: 2022/08/20 16:07:10
+dnl CF_CPP_OVERRIDE version: 2 updated: 2024/11/09 18:07:29
 dnl ---------------
 dnl Check if the C++ compiler accepts the override keyword.  This is a C++-11
 dnl feature.
@@ -1765,7 +1765,7 @@ AC_CACHE_CHECK(if $CXX accepts override keyword,cf_cv_cpp_override,[
 class base
 {
 public:
-	virtual int foo(float x) = 0; 
+	virtual int foo(float x) = 0;
 };
 
 
@@ -9081,7 +9081,7 @@ $1_ABI=$cf_cv_abi_version
 cf_cv_abi_default=$cf_cv_abi_version
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_ADA version: 1 updated: 2024/05/18 13:55:23
+dnl CF_WITH_ADA version: 2 updated: 2024/11/09 18:07:29
 dnl -----------
 dnl Check for the Ada compiler (unless requested to not do this), which causes
 dnl a further check for a C compiler which can work with the Ada compiler.
@@ -9104,7 +9104,7 @@ then
 		AC_PATH_PROG(cf_cv_path_gnatgcc,gnatgcc,no)
 		if test "$cf_cv_path_gnatgcc" != no
 		then
-			AC_MSG_CHECKING(for improvement) 
+			AC_MSG_CHECKING(for improvement)
 			cf_file_gnatgcc=`file -L "$cf_cv_path_gnatgcc" 2>/dev/null`
 			case "x$cf_file_gnatgcc" in
 			(*script*)
@@ -10219,7 +10219,7 @@ fi
 AC_SUBST(no_x11_rgb)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 67 updated: 2023/09/06 18:55:27
+dnl CF_XOPEN_SOURCE version: 68 updated: 2024/11/09 18:07:29
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -10281,6 +10281,9 @@ case "$host_os" in
 	;;
 (linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
 	CF_GNU_SOURCE($cf_XOPEN_SOURCE)
+	;;
+linux*musl)
+	cf_xopen_source="-D_BSD_SOURCE"
 	;;
 (minix*)
 	cf_xopen_source="-D_NETBSD_SOURCE" # POSIX.1-2001 features are ifdef'd with this...

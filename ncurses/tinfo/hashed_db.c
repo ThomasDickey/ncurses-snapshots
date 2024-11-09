@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019,2020 Thomas E. Dickey                                     *
+ * Copyright 2019-2020,2024 Thomas E. Dickey                                *
  * Copyright 2006-2011,2013 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 
 #if USE_HASHED_DB
 
-MODULE_ID("$Id: hashed_db.c,v 1.19 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: hashed_db.c,v 1.20 2024/11/09 19:23:11 tom Exp $")
 
 #if HASHED_DB_API >= 2
 static DBC *cursor;
@@ -94,22 +94,25 @@ drop_connection(DB * db)
     }
 }
 
-static void
+static bool
 make_connection(DB * db, const char *path, bool modify)
 {
+    bool code = FALSE;
     MYCONN *p = typeCalloc(MYCONN, 1);
 
-    if (p != 0) {
-	p->db = db;
+    if (p != NULL) {
 	p->path = strdup(path);
-	p->modify = modify;
-	if (p->path != 0) {
+	if (p->path != NULL) {
+	    p->db = db;
+	    p->modify = modify;
 	    p->next = connections;
 	    connections = p;
+	    code = TRUE;
 	} else {
 	    free(p);
 	}
     }
+    return code;
 }
 
 /*
@@ -118,13 +121,13 @@ make_connection(DB * db, const char *path, bool modify)
 NCURSES_EXPORT(DB *)
 _nc_db_open(const char *path, bool modify)
 {
-    DB *result = 0;
+    DB *result = NULL;
     int code;
 
     if (connections == 0)
 	atexit(cleanup);
 
-    if ((result = find_connection(path, modify)) == 0) {
+    if ((result = find_connection(path, modify)) == NULL) {
 
 #if HASHED_DB_API >= 4
 	db_create(&result, NULL, 0);
@@ -135,7 +138,7 @@ _nc_db_open(const char *path, bool modify)
 				 DB_HASH,
 				 modify ? DB_CREATE : DB_RDONLY,
 				 0644)) != 0) {
-	    result = 0;
+	    result = NULL;
 	}
 #elif HASHED_DB_API >= 3
 	db_create(&result, NULL, 0);
@@ -145,7 +148,7 @@ _nc_db_open(const char *path, bool modify)
 				 DB_HASH,
 				 modify ? DB_CREATE : DB_RDONLY,
 				 0644)) != 0) {
-	    result = 0;
+	    result = NULL;
 	}
 #elif HASHED_DB_API >= 2
 	if ((code = db_open(path,
@@ -155,7 +158,7 @@ _nc_db_open(const char *path, bool modify)
 			    (DB_ENV *) 0,
 			    (DB_INFO *) 0,
 			    &result)) != 0) {
-	    result = 0;
+	    result = NULL;
 	}
 #else
 	if ((result = dbopen(path,
@@ -166,11 +169,11 @@ _nc_db_open(const char *path, bool modify)
 	    code = errno;
 	}
 #endif
-	if (result != 0) {
-	    make_connection(result, path, modify);
+	if (result != NULL && make_connection(result, path, modify)) {
 	    T(("opened %s", path));
 	} else {
-	    T(("cannot open %s: %s", path, strerror(code)));
+	    T(("cannot open %s: (errno %d) %s", path, code, strerror(code)));
+	    errno = code;
 	}
     }
     return result;

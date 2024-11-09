@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.29 2024/10/05 18:21:44 tom Exp $
+ * $Id: demo_new_pair.c,v 1.31 2024/11/09 20:43:56 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -205,7 +205,7 @@ main(int argc, char *argv[])
     wchar_t wch[2];
     time_t start = now();
     long total_cells = 0;
-    FILE *output = 0;
+    FILE *output = NULL;
 
     setlocale(LC_ALL, "");
 
@@ -245,7 +245,8 @@ main(int argc, char *argv[])
     }
     if (newterm(NULL, output, stdin) == 0) {
 	fprintf(stderr, "Cannot initialize terminal\n");
-	fclose(output);
+	if (output != NULL)
+	    fclose(output);
 	ExitProgram(EXIT_FAILURE);
     }
     (void) cbreak();		/* read chars without wait for \n */
@@ -384,7 +385,8 @@ main(int argc, char *argv[])
 	++current;
     }
     stop_curses();
-    fclose(output);
+    if (output != NULL)
+	fclose(output);
 
     printf("%.1f cells/second\n",
 	   (double) (total_cells) / (double) (now() - start));

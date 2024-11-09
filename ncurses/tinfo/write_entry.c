@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.136 2024/10/19 21:19:32 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.137 2024/11/09 19:24:01 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -86,17 +86,21 @@ write_file(char *filename, TERMTYPE2 *tp)
 	size_t actual;
 
 	if (fp == 0) {
-	    perror(filename);
-	    _nc_syserr_abort("cannot open %s/%s", _nc_tic_dir(0), filename);
+	    _nc_syserr_abort("cannot open %s/%s: (errno %d) %s",
+			     _nc_tic_dir(0),
+			     filename,
+			     errno,
+			     strerror(errno));
 	}
 
 	actual = fwrite(buffer, sizeof(char), (size_t) offset, fp);
 	if (actual != offset) {
 	    int myerr = ferror(fp) ? errno : 0;
 	    if (myerr) {
-		_nc_syserr_abort("error writing %s/%s: %s",
+		_nc_syserr_abort("error writing %s/%s: (errno %d) %s",
 				 _nc_tic_dir(NULL),
 				 filename,
+				 myerr,
 				 strerror(myerr));
 	    } else {
 		_nc_syserr_abort("error writing %s/%s: %u bytes vs actual %lu",
@@ -133,7 +137,11 @@ check_writeable(int code)
 	char dir[sizeof(LEAF_FMT)];
 	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
 	if (make_db_root(dir) < 0) {
-	    _nc_err_abort("%s/%s: permission denied", _nc_tic_dir(NULL), dir);
+	    _nc_err_abort("%s/%s: (errno %d) %s",
+			  _nc_tic_dir(NULL),
+			  dir,
+			  errno,
+			  strerror(errno));
 	} else {
 	    verified[s - dirnames] = TRUE;
 	}
@@ -211,6 +219,7 @@ make_db_root(const char *path)
 	} else if (_nc_access(path, R_OK | W_OK | X_OK) < 0) {
 	    rc = -1;		/* permission denied */
 	} else if (!(S_ISDIR(statbuf.st_mode))) {
+	    errno = ENOTDIR;
 	    rc = -1;		/* not a directory */
 	}
 #endif
@@ -248,8 +257,10 @@ _nc_set_writedir(const char *dir)
 	    }
 	}
 	if (!success) {
-	    _nc_err_abort("%s: permission denied (errno %d)",
-			  destination, errno);
+	    _nc_err_abort("%s: (errno %d) %s",
+			  destination,
+			  errno,
+			  strerror(errno));
 	}
     }
 

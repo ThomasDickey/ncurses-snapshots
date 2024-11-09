@@ -47,10 +47,6 @@
 #include <tic.h>
 #include <new_pair.h>
 
-#ifdef __DJGPP__
-#include <io.h>
-#endif
-
 #if USE_GPM_SUPPORT
 #ifdef HAVE_LIBDL
 /* use dynamic loader to avoid linkage dependency */
@@ -61,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.187 2024/11/02 21:00:54 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.188 2024/11/09 16:36:29 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors

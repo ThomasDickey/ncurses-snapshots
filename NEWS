@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4195 2024/11/02 21:08:17 tom Exp $
+-- $Id: NEWS,v 1.4199 2024/11/09 23:12:36 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20241109
+	+ work around musl header ifdef's (report by Urs Jansen, cf: Gentoo
+	  #920266).
+	+ improve error-reporting in write_entry.c (report by Changqing Li).
+	+ remove unused #include from DJGPP configuration (report by Stas
+	  Sergeev).
+	+ workaround/fix issues from clang-analyze
 
 20241102
 	+ remove djgpp-specific initialization to binary mode (report/patch by
