@@ -45,7 +45,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.90 2024/10/19 22:00:53 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.91 2024/11/23 20:09:23 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -436,7 +436,7 @@ typelist(int eargc, char *eargv[],
 		    continue;
 		}
 
-		cwd_len = NAMLEN(subdir) + strlen(eargv[i]) + 3;
+		cwd_len = strlen(name_1) + strlen(eargv[i]) + 3;
 		cwd_buf = typeRealloc(char, cwd_len, cwd_buf);
 		if (cwd_buf == 0)
 		    failed("realloc cwd_buf");

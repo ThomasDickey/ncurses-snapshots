@@ -48,7 +48,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.107 2024/08/31 10:48:22 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.108 2024/11/23 18:40:23 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -295,8 +295,8 @@ _tracef(const char *fmt, ...)
 }
 
 /* Trace 'bool' return-values */
-NCURSES_EXPORT(NCURSES_BOOL)
-_nc_retrace_bool(int code)
+NCURSES_EXPORT(bool)
+_nc_retrace_bool(bool code)
 {
     T((T_RETURN("%s"), code ? "TRUE" : "FALSE"));
     return code;

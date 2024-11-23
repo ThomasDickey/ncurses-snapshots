@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4199 2024/11/09 23:12:36 tom Exp $
+-- $Id: NEWS,v 1.4203 2024/11/23 22:57:05 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20241123
+	+ remove dependency on stdbool.h from configure script check for type
+	  of bool when C++ binding is omitted (report by Sam James).
+	+ compiler-warning fixes
 
 20241109
 	+ work around musl header ifdef's (report by Urs Jansen, cf: Gentoo

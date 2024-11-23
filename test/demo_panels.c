@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_panels.c,v 1.51 2024/11/09 22:54:38 tom Exp $
+ * $Id: demo_panels.c,v 1.52 2024/11/23 19:07:23 tom Exp $
  *
  * Demonstrate a variety of functions from the panel library.
  */
@@ -509,7 +509,7 @@ show_panels(PANEL *px[MAX_PANELS + 1])
     for (j = 1; j <= MAX_PANELS; ++j) {
 	table[j].valid = (px[j] != 0);
 	if (table[j].valid) {
-	    table[j].hidden = panel_hidden(px[j]);
+	    table[j].hidden = panel_hidden(px[j]) ? TRUE : FALSE;
 	    table[j].above = panel_above(px[j]);
 	    table[j].below = panel_below(px[j]);
 	}

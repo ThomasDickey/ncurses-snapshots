@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracechr.c,v 1.24 2024/02/04 00:11:35 tom Exp $")
+MODULE_ID("$Id: lib_tracechr.c,v 1.25 2024/11/23 19:50:34 tom Exp $")
 
 #ifdef TRACE
 
@@ -59,7 +59,7 @@ _nc_tracechar(SCREEN *sp, int ch)
 	if (name == 0 || *name == '\0')
 	    name = "NULL";
 	_nc_SPRINTF(MyBuffer, _nc_SLIMIT(MyBufSize)
-		    "'%.30s' = \\x%02x", name, ch);
+		    "'%.30s' = \\x%02x", name, UChar(ch));
     } else if (!is8bits(ch)
 	       || (_nc_unicode_locale() && !is7bits(ch))
 	       || !isprint(UChar(ch))) {

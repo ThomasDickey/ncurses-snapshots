@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.56 2024/09/22 20:25:15 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.57 2024/11/23 18:35:34 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -103,7 +103,7 @@ NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     T((T_CALLED("is_term_resized(%p, %d, %d)"), (void *) SP_PARM, ToLines, ToCols));
-    returnCode(ToLines > 0
+    returnBool(ToLines > 0
 	       && ToCols > 0
 	       && SP_PARM != NULL
 	       && (ToLines != screen_lines(SP_PARM)

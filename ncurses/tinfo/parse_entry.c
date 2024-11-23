@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.110 2024/10/19 21:22:04 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.111 2024/11/23 18:49:08 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -395,7 +395,7 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 	} else {
 	    /* normal token lookup */
 	    entry_ptr = _nc_find_entry(_nc_curr_token.tk_name,
-				       _nc_get_hash_table(_nc_syntax));
+				       _nc_get_hash_table(_nc_syntax == SYN_TERMCAP));
 
 	    /*
 	     * Our kluge to handle aliasing.  The reason it is done

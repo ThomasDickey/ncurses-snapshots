@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.123 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.124 2024/11/23 18:45:01 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -61,7 +61,7 @@ MODULE_ID("$Id: comp_scan.c,v 1.123 2024/07/27 19:22:23 tom Exp $")
 
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
-NCURSES_EXPORT_VAR (int) _nc_syntax = 0;         /* termcap or terminfo? */
+NCURSES_EXPORT_VAR (int) _nc_syntax = SYN_TERMINFO;  /* termcap or terminfo? */
 NCURSES_EXPORT_VAR (int) _nc_strict_bsd = 1;  /* ncurses extended termcap? */
 NCURSES_EXPORT_VAR (long) _nc_curr_file_pos = 0; /* file offset of current line */
 NCURSES_EXPORT_VAR (long) _nc_comment_start = 0; /* start of comment range before name */

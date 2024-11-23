@@ -49,7 +49,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.105 2024/05/11 19:06:59 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.106 2024/11/23 18:33:35 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -212,7 +212,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 	   TINFO_SETUP_TERM(&new_term, name,
 			    fileno(_ofp), &errret, FALSE) != ERR) {
 	int slk_format;
-	int filter_mode;
+	bool filter_mode;
 
 	_nc_set_screen(0);
 #ifdef USE_TERM_DRIVER

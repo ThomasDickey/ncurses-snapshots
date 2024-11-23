@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.167 2024/11/09 19:33:50 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.168 2024/11/23 19:54:44 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1344,7 +1344,7 @@ dump_initializers(const TERMTYPE2 *term)
 	    char buf[MAX_STRING], *sp, *tp;
 
 	    tp = buf;
-#define TP_LIMIT	((MAX_STRING - 5) - (size_t)(tp - buf))
+#define TP_LIMIT	((MAX_STRING - 6) - (size_t)(tp - buf))
 	    *tp++ = '"';
 	    for (sp = term->Strings[n];
 		 *sp != 0 && TP_LIMIT > 2;

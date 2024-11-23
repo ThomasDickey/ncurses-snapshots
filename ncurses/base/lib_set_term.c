@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.188 2024/11/09 16:36:29 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.189 2024/11/23 18:33:50 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -315,7 +315,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 				     int slines,
 				     int scolumns,
 				     FILE *output,
-				     int filtered,
+				     bool filtered,
 				     int slk_format)
 {
 #ifndef USE_TERM_DRIVER
@@ -766,7 +766,7 @@ NCURSES_EXPORT(int)
 _nc_setupscreen(int slines GCC_UNUSED,
 		int scolumns GCC_UNUSED,
 		FILE *output,
-		int filtered,
+		bool filtered,
 		int slk_format)
 {
     SCREEN *sp = 0;

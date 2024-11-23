@@ -47,7 +47,7 @@
 #include <transform.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tput.c,v 1.104 2024/04/20 22:20:51 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.105 2024/11/23 19:38:51 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 
@@ -182,8 +182,8 @@ tput_cmd(int fd, TTY * settings, int argc, char **argv, int *used)
 	    NCURSES_INT2 my_rows = lines;
 	    NCURSES_INT2 my_cols = columns;
 	    set_window_size(fd, &my_rows, &my_cols);
-	    lines = my_rows;
-	    columns = my_cols;
+	    lines = (short) my_rows;
+	    columns = (short) my_cols;
 	}
 #else
 	(void) fd;

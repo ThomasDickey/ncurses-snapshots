@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.151 2024/05/25 23:10:42 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.152 2024/11/23 18:27:25 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -776,7 +776,7 @@ init_color(NCURSES_COLOR_T color,
 NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(can_change_color) (NCURSES_SP_DCL)
 {
-    int result = FALSE;
+    bool result = FALSE;
 
     T((T_CALLED("can_change_color(%p)"), (void *) SP_PARM));
 
@@ -784,7 +784,7 @@ NCURSES_SP_NAME(can_change_color) (NCURSES_SP_DCL)
 	result = TRUE;
     }
 
-    returnCode(result);
+    returnBool(result);
 }
 
 #if NCURSES_SP_FUNCS
@@ -798,7 +798,7 @@ can_change_color(void)
 NCURSES_EXPORT(bool)
 NCURSES_SP_NAME(has_colors) (NCURSES_SP_DCL0)
 {
-    int code = FALSE;
+    bool code = FALSE;
 
     (void) SP_PARM;
     T((T_CALLED("has_colors(%p)"), (void *) SP_PARM));
@@ -814,7 +814,7 @@ NCURSES_SP_NAME(has_colors) (NCURSES_SP_DCL0)
 		     || set_color_pair)) ? TRUE : FALSE);
 #endif
     }
-    returnCode(code);
+    returnBool(code);
 }
 
 #if NCURSES_SP_FUNCS

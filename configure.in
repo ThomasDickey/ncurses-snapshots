@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.786 2024/08/31 10:46:01 Rafael.Kitover Exp $
+dnl $Id: configure.in,v 1.787 2024/11/23 22:52:31 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.786 $)
+AC_REVISION($Revision: 1.787 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1942,16 +1942,7 @@ else
 		cf_cv_type_of_bool=$NCURSES_BOOL
 		cf_cv_header_stdbool_h=0
 	else
-		if test "$cf_cv_header_stdbool_h" = 1 ; then
-			CF_BOOL_SIZE
-		else
-			AC_MSG_CHECKING(for fallback type of bool)
-			case "$host_cpu" in
-			(i?86)	cf_cv_type_of_bool=char	;;
-			(*)	cf_cv_type_of_bool=int	;;
-			esac
-			AC_MSG_RESULT($cf_cv_type_of_bool)
-		fi
+		CF_BOOL_SIZE
 	fi
 fi
 AC_SUBST(CXXLIBS)

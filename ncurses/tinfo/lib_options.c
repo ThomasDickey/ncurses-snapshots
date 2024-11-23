@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_options.c,v 1.83 2023/04/29 18:56:12 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.84 2024/11/23 19:17:25 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -330,7 +330,7 @@ _nc_putp_flush(const char *name, const char *value)
  * the terminal state _before_ switching modes.
  */
 NCURSES_EXPORT(int)
-_nc_keypad(SCREEN *sp, int flag)
+_nc_keypad(SCREEN *sp, bool flag)
 {
     int rc = ERR;
 

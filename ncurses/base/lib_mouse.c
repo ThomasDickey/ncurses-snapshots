@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.201 2024/10/19 21:03:19 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.202 2024/11/23 19:06:20 tom Exp $")
 
 #include <tic.h>
 
@@ -440,7 +440,7 @@ init_xterm_mouse(SCREEN *sp)
 #endif
 
 static void
-enable_xterm_mouse(SCREEN *sp, int enable)
+enable_xterm_mouse(SCREEN *sp, bool enable)
 {
     TPUTS_TRACE(enable
 		? "xterm mouse initialization"
@@ -455,7 +455,7 @@ enable_xterm_mouse(SCREEN *sp, int enable)
 
 #if defined(USE_TERM_DRIVER)
 static void
-enable_win32_mouse(SCREEN *sp, int enable)
+enable_win32_mouse(SCREEN *sp, bool enable)
 {
 #if defined(EXP_WIN32_DRIVER)
     enable_xterm_mouse(sp, enable);
@@ -485,7 +485,7 @@ allow_gpm_mouse(SCREEN *sp GCC_UNUSED)
 	const char *env = getenv("TERM");
 	if (list != 0) {
 	    if (env != 0) {
-		result = _nc_name_match(list, env, "|:");
+		result = _nc_name_match(list, env, "|:") ? TRUE : FALSE;
 	    }
 	} else {
 	    /* GPM checks the beginning of the $TERM variable to decide if it
@@ -796,7 +796,7 @@ _nc_mouse_init(SCREEN *sp)
 	}
 	result = sp->_mouse_initialized;
     }
-    returnCode(result);
+    returnBool(result);
 }
 
 /*
@@ -1404,7 +1404,7 @@ _nc_mouse_inline(SCREEN *sp)
 }
 
 static void
-mouse_activate(SCREEN *sp, int on)
+mouse_activate(SCREEN *sp, bool on)
 {
     T((T_CALLED("mouse_activate(%p,%s)"),
        (void *) SP_PARM, on ? "on" : "off"));
@@ -1422,7 +1422,7 @@ mouse_activate(SCREEN *sp, int on)
 #if NCURSES_EXT_FUNCS
 	    NCURSES_SP_NAME(keyok) (NCURSES_SP_ARGx KEY_MOUSE, on);
 #endif
-	    enable_xterm_mouse(sp, 1);
+	    enable_xterm_mouse(sp, TRUE);
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
@@ -1462,7 +1462,7 @@ mouse_activate(SCREEN *sp, int on)
 
 	switch (sp->_mouse_type) {
 	case M_XTERM:
-	    enable_xterm_mouse(sp, 0);
+	    enable_xterm_mouse(sp, FALSE);
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:

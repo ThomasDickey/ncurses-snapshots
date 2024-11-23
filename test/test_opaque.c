@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_opaque.c,v 1.16 2024/10/05 19:27:33 tom Exp $
+ * $Id: test_opaque.c,v 1.17 2024/11/23 19:10:23 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -79,7 +79,7 @@ static bool
 test_opaque_idcok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	idcok(win, mode);
+	idcok(win, (bool) mode);
     }
     return is_idcok(win);
 }
@@ -88,7 +88,7 @@ static bool
 test_opaque_idlok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	idlok(win, mode);
+	idlok(win, (bool) mode);
     }
     return is_idlok(win);
 }
@@ -97,7 +97,7 @@ static bool
 test_opaque_immedok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	immedok(win, mode);
+	immedok(win, (bool) mode);
     }
     return is_immedok(win);
 }
@@ -106,7 +106,7 @@ static bool
 test_opaque_keypad(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	keypad(win, mode);
+	keypad(win, (bool) mode);
     }
     return is_keypad(win);
 }
@@ -115,7 +115,7 @@ static bool
 test_opaque_leaveok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	leaveok(win, mode);
+	leaveok(win, (bool) mode);
     }
     return is_leaveok(win);
 }
@@ -124,7 +124,7 @@ static bool
 test_opaque_nodelay(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	nodelay(win, mode);
+	nodelay(win, (bool) mode);
     }
     return is_nodelay(win);
 }
@@ -133,7 +133,7 @@ static bool
 test_opaque_notimeout(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	notimeout(win, mode);
+	notimeout(win, (bool) mode);
     }
     return is_notimeout(win);
 }
@@ -142,7 +142,7 @@ static bool
 test_opaque_scrollok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	scrollok(win, mode);
+	scrollok(win, (bool) mode);
     }
     return is_scrollok(win);
 }
@@ -151,7 +151,7 @@ static bool
 test_opaque_syncok(WINDOW *win, int mode)
 {
     if (mode >= 0) {
-	syncok(win, mode);
+	syncok(win, (bool) mode);
     }
     return is_syncok(win);
 }

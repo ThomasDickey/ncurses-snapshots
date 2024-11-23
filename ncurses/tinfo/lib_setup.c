@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.245 2024/10/19 21:17:36 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.246 2024/11/23 18:32:54 tom Exp $")
 
 /****************************************************************************
  *
@@ -751,24 +751,24 @@ _nc_get_locale(void)
 /*
  * Check if we are running in a UTF-8 locale.
  */
-NCURSES_EXPORT(int)
+NCURSES_EXPORT(bool)
 _nc_unicode_locale(void)
 {
     static bool initialized = FALSE;
-    static int result = 0;
+    static bool result = FALSE;
 
     if (!initialized) {
 #if defined(_NC_WINDOWS_NATIVE) && USE_WIDEC_SUPPORT
-	result = 1;
+	result = TRUE;
 #elif HAVE_LANGINFO_CODESET
 	char *env = nl_langinfo(CODESET);
-	result = !strcmp(env, "UTF-8");
+	result = !strcmp(env, "UTF-8") ? TRUE : FALSE;
 	T(("_nc_unicode_locale(%s) ->%d", env, result));
 #else
 	char *env = _nc_get_locale();
 	if (env != 0) {
 	    if (strstr(env, ".UTF-8") != 0) {
-		result = 1;
+		result = TRUE;
 		T(("_nc_unicode_locale(%s) ->%d", env, result));
 	    }
 	}
