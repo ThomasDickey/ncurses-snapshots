@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_xcurses.c,v 1.30 2024/08/31 15:55:52 tom Exp $
+ * $Id: dots_xcurses.c,v 1.31 2024/11/30 17:41:18 tom Exp $
  *
  * A simple demo of the wide-curses interface used for comparison with termcap.
  */
@@ -120,7 +120,7 @@ usage(int ok)
 	,"Options:"
 	," -T TERM  override $TERM"
 #if HAVE_USE_DEFAULT_COLORS
-	," -d       invoke use_default_colors()"
+	," -d       invoke use_default_colors"
 #endif
 #if HAVE_USE_ENV
 	," -e       allow environment $LINES / $COLUMNS"

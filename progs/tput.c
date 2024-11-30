@@ -47,7 +47,7 @@
 #include <transform.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tput.c,v 1.105 2024/11/23 19:38:51 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.106 2024/11/30 21:47:34 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 
@@ -120,11 +120,11 @@ check_aliases(char *name, bool program)
     static char my_clear[] = "clear";
 
     char *result = name;
-    if ((is_init = same_program(name, program ? PROG_INIT : my_init)))
+    if ((is_init = same_program(name, program ? PROG_INIT : my_init)) == TRUE)
 	result = my_init;
-    if ((is_reset = same_program(name, program ? PROG_RESET : my_reset)))
+    if ((is_reset = same_program(name, program ? PROG_RESET : my_reset)) == TRUE)
 	result = my_reset;
-    if ((is_clear = same_program(name, program ? PROG_CLEAR : my_clear)))
+    if ((is_clear = same_program(name, program ? PROG_CLEAR : my_clear)) == TRUE)
 	result = my_clear;
     return result;
 }

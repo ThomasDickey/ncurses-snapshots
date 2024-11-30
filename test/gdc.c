@@ -34,7 +34,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.62 2024/10/06 20:08:59 tom Exp $
+ * $Id: gdc.c,v 1.63 2024/11/30 18:56:02 tom Exp $
  */
 
 #include <test.priv.h>
@@ -166,7 +166,7 @@ usage(int ok)
 #endif
 	," -n       reads input from /dev/null"
 	," -s       scrolls each digit into place"
-	," -t TIME  specify starting time as hh:mm:ss (default is ``now'')"
+	," -t TIME  specify starting time as hh:mm:ss (default is \"now\")"
     };
     unsigned j;
     for (j = 0; j < SIZEOF(msg); j++)

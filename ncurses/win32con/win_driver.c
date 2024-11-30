@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.75 2024/07/20 17:04:48 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.76 2024/11/28 00:17:49 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -96,7 +96,8 @@ static const LONG keylist[] =
     GenMap(VK_RIGHT,  KEY_RIGHT),
     GenMap(VK_DOWN,   KEY_DOWN),
     GenMap(VK_DELETE, KEY_DC),
-    GenMap(VK_INSERT, KEY_IC)
+    GenMap(VK_INSERT, KEY_IC),
+    GenMap(VK_TAB,    KEY_BTAB)
 };
 static const LONG ansi_keys[] =
 {
@@ -109,7 +110,8 @@ static const LONG ansi_keys[] =
     GenMap(VK_RIGHT,  'M'),
     GenMap(VK_DOWN,   'P'),
     GenMap(VK_DELETE, 'S'),
-    GenMap(VK_INSERT, 'R')
+    GenMap(VK_INSERT, 'R'),
+    GenMap(VK_TAB,    'Z')
 };
 /* *INDENT-ON* */
 #define N_INI ((int)array_length(keylist))
@@ -2153,6 +2155,11 @@ _nc_mingw_console_read(
 		    if (!(inp_rec.Event.KeyEvent.dwControlKeyState
 			  & (SHIFT_PRESSED | CONTROL_PRESSED))) {
 			*buf = KEY_BACKSPACE;
+		    }
+		} else if (vk == VK_TAB) {
+		    if ((inp_rec.Event.KeyEvent.dwControlKeyState
+			 & (SHIFT_PRESSED | CONTROL_PRESSED))) {
+			*buf = KEY_BTAB;
 		    }
 		}
 		break;

@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.70 2024/10/06 20:05:09 tom Exp $
+ * $Id: demo_termcap.c,v 1.72 2024/11/30 18:31:01 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -756,10 +756,10 @@ usage(int ok)
 	," -b       print boolean-capabilities"
 	," -d LIST  colon-separated list of databases to use"
 	," -e NAME  environment variable to set with -d option"
-	," -i NAME  terminal description to use as names for \"-a\" option, etc."
+	," -i NAME  terminal description to use as names for \"-a\" option"
 	," -n       print numeric-capabilities"
 	," -q       quiet (prints only counts)"
-	," -r COUNT repeat for given count"
+	," -r NUM   repeat tests NUM times"
 	," -s       print string-capabilities"
 	," -v       print termcap-variables"
 #ifdef NCURSES_VERSION

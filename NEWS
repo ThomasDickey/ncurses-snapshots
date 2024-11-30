@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4203 2024/11/23 22:57:05 tom Exp $
+-- $Id: NEWS,v 1.4207 2024/11/30 19:41:55 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20241130
+	+ improve configure check for lint program.
+	+ adjust options in test-programs to allow for consistent use of -c/-l
+	  for command/logging.
+	+ modify win_driver.c for MinGW to handle shift-tab and control-tab as
+	  back-tab (report by Axel Reinhold)
 
 20241123
 	+ remove dependency on stdbool.h from configure script check for type

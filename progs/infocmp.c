@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.168 2024/11/23 19:54:44 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.169 2024/11/30 21:29:41 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -835,7 +835,7 @@ lookup_params(const assoc * table, char *dst, char *src)
 		_nc_STRCAT(dst, ep, MAX_TERMINFO_LENGTH);
 	    _nc_STRCAT(dst, ";", MAX_TERMINFO_LENGTH);
 	} while
-	    ((ep = strtok((char *) 0, ";")));
+	    ((ep = strtok((char *) 0, ";")) != NULL);
 
 	dst[strlen(dst) - 1] = '\0';
 

@@ -35,7 +35,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.80 2024/10/05 19:26:24 tom Exp $
+ * $Id: bs.c,v 1.81 2024/11/30 16:47:02 tom Exp $
  */
 
 #include <test.priv.h>
@@ -1193,7 +1193,7 @@ usage(int ok)
 	,USAGE_COMMON
 	,"Options:"
 	," -b       play a blitz game"
-	," -c       ships may be adjacent"
+	," -p       ships may be packed/adjacent"
 	," -s       play a salvo game"
     };
     size_t n;
@@ -1212,7 +1212,7 @@ main(int argc, char *argv[])
 {
     int ch;
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "bcs")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "bps")) != -1) {
 	switch (ch) {
 	case 'b':
 	    blitz = 1;
@@ -1230,7 +1230,7 @@ main(int argc, char *argv[])
 		ExitProgram(EXIT_FAILURE);
 	    }
 	    break;
-	case 'c':
+	case 'p':
 	    closepack = 1;
 	    break;
 	case OPTS_VERSION:

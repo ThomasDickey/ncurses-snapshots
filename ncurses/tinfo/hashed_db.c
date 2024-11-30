@@ -37,7 +37,7 @@
 
 #if USE_HASHED_DB
 
-MODULE_ID("$Id: hashed_db.c,v 1.20 2024/11/09 19:23:11 tom Exp $")
+MODULE_ID("$Id: hashed_db.c,v 1.21 2024/11/30 21:16:41 tom Exp $")
 
 #if HASHED_DB_API >= 2
 static DBC *cursor;
@@ -167,6 +167,8 @@ _nc_db_open(const char *path, bool modify)
 			     DB_HASH,
 			     NULL)) == 0) {
 	    code = errno;
+	} else {
+	    code = 0;
 	}
 #endif
 	if (result != NULL && make_connection(result, path, modify)) {

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.83 2024/10/19 21:53:57 tom Exp $
+ * $Id: demo_menus.c,v 1.85 2024/11/30 18:52:09 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -991,7 +991,7 @@ usage(int ok)
 	," -H       rip-off header line (can repeat)"
 #endif
 #ifdef TRACE
-	," -t mask  specify default trace-level (may toggle with ^T)"
+	," -D mask  specify trace mask (may toggle with ^T)"
 #endif
     };
     size_t n;
@@ -1011,7 +1011,7 @@ main(int argc, char *argv[])
     setlocale(LC_ALL, "");
     START_TRACE();
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "FHt:")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "D:FH")) != -1) {
 	switch (ch) {
 #if HAVE_RIPOFFLINE
 	case 'F':
@@ -1022,7 +1022,7 @@ main(int argc, char *argv[])
 	    break;
 #endif /* HAVE_RIPOFFLINE */
 #ifdef TRACE
-	case 't':
+	case 'D':
 	    curses_trace((unsigned) strtoul(optarg, 0, 0));
 	    break;
 #endif

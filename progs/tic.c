@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.328 2024/11/09 23:03:26 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.329 2024/11/30 21:29:07 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -231,7 +231,7 @@ write_it(ENTRY * ep)
 			&& value > 0
 			&& value != '\\'	/* FIXME */
 			&& value < 127
-			&& isprint((int) value)) {
+			&& isprint(UChar(value))) {
 			*d++ = S_QUOTE;
 			*d++ = (char) value;
 			*d++ = S_QUOTE;
@@ -659,8 +659,8 @@ show_databases(const char *outdir)
 	tried = outdir;
     }
 
-    if ((outdir = _nc_home_terminfo())) {
-	if ((result = valid_db_path(outdir)) != 0) {
+    if ((outdir = _nc_home_terminfo()) != NULL) {
+	if ((result = valid_db_path(outdir)) != NULL) {
 	    printf("%s\n", result);
 	    free(result);
 	} else if (!specific) {
@@ -2025,7 +2025,7 @@ check_params(const TERMTYPE2 *tp, const char *name, const char *value, int exten
 		_nc_warning("expected character after %% in %s", name);
 		break;
 	    } else if (*s == 'p') {
-		if (*++s == '\0' || !isdigit((int) *s)) {
+		if (*++s == '\0' || !isdigit(UChar(*s))) {
 		    _nc_warning("expected digit after %%p in %s", name);
 		    return;
 		} else {

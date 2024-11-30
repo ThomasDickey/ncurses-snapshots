@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: savescreen.c,v 1.65 2024/10/06 21:10:09 tom Exp $
+ * $Id: savescreen.c,v 1.66 2024/11/30 18:48:40 tom Exp $
  *
  * Demonstrate save/restore functions from the curses library.
  * Thomas Dickey - 2007/7/14
@@ -261,7 +261,7 @@ usage(int ok)
 	,""
 	,USAGE_COMMON
 	,"Options:"
-	," -f file  fill/initialize screen using text from this file"
+	," -f FILE  fill/initialize screen using text from this file"
 	," -i       use scr_init/scr_restore rather than scr_set"
 	," -k       keep the restored dump-files rather than removing them"
 	," -r       replay the screen-dump files"

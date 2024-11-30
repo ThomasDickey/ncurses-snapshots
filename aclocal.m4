@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1090 2024/11/09 23:12:47 tom Exp $
+dnl $Id: aclocal.m4,v 1.1091 2024/11/30 19:41:19 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -7169,14 +7169,17 @@ fi
 AC_SUBST(LDCONFIG)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_LINT version: 5 updated: 2022/08/20 15:44:13
+dnl CF_PROG_LINT version: 7 updated: 2024/11/30 14:37:45
 dnl ------------
 AC_DEFUN([CF_PROG_LINT],
 [
 AC_CHECK_PROGS(LINT, lint cppcheck splint)
 case "x$LINT" in
+(xlint|x*/lint) # NetBSD 10
+	test -z "$LINT_OPTS" && LINT_OPTS="-chapbrxzgFS -v -Ac11"
+	;;
 (xcppcheck|x*/cppcheck)
-	test -z "$LINT_OPTS" && LINT_OPTS="--enable=all"
+	test -z "$LINT_OPTS" && LINT_OPTS="--enable=all -D__CPPCHECK__"
 	;;
 esac
 AC_SUBST(LINT_OPTS)

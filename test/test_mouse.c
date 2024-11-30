@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.33 2024/10/05 18:47:56 tom Exp $
+ * $Id: test_mouse.c,v 1.35 2024/11/30 18:46:48 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -214,8 +214,8 @@ usage(int ok)
 	,USAGE_COMMON
 	,"Options:"
 	," -r       show raw input stream, injecting a new line before every ESC"
-	," -i n     set mouse interval to n; default is 0 (no double-clicks)"
-	," -T term  use terminal description other than $TERM"
+	," -i NUM   set mouse interval to NUM; default is 0 (no double-clicks)"
+	," -T TERM  override $TERM"
     };
     unsigned n;
     for (n = 0; n < sizeof(msg) / sizeof(char *); ++n) {

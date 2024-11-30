@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.54 2023/05/27 20:13:10 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.55 2024/11/30 21:24:09 tom Exp $")
 
 #define NUM_VISBUFS 4
 
@@ -72,7 +72,7 @@ _nc_vischar(char *tp, unsigned c LIMIT_ARG)
     } else if (c == '"' || c == '\\') {
 	*tp++ = '\\';
 	*tp++ = (char) c;
-    } else if (is7bits((int) c) && (isgraph((int) c) || c == ' ')) {
+    } else if (is7bits(UChar(c)) && (isgraph(UChar(c)) || c == ' ')) {
 	*tp++ = (char) c;
     } else if (c == '\n') {
 	*tp++ = '\\';

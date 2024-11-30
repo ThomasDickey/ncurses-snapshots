@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.137 2024/11/23 19:39:01 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.138 2024/11/30 21:30:49 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -574,7 +574,7 @@ get_termcap_entry(int fd, char *userarg)
 	 * there's an /etc/ttys to look up device-to-type mappings in.
 	 * Try ttyname(3); check for dialup or other mapping.
 	 */
-	if ((t = getttynam(p))) {
+	if ((t = getttynam(p)) != NULL) {
 	    ttype = t->ty_type;
 	    goto map;
 	}

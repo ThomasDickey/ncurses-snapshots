@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.229 2024/11/09 23:15:41 tom Exp $
+dnl $Id: aclocal.m4,v 1.230 2024/11/30 19:43:11 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -3596,14 +3596,17 @@ case x$INSTALL in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_LINT version: 5 updated: 2022/08/20 15:44:13
+dnl CF_PROG_LINT version: 7 updated: 2024/11/30 14:37:45
 dnl ------------
 AC_DEFUN([CF_PROG_LINT],
 [
 AC_CHECK_PROGS(LINT, lint cppcheck splint)
 case "x$LINT" in
+(xlint|x*/lint) # NetBSD 10
+	test -z "$LINT_OPTS" && LINT_OPTS="-chapbrxzgFS -v -Ac11"
+	;;
 (xcppcheck|x*/cppcheck)
-	test -z "$LINT_OPTS" && LINT_OPTS="--enable=all"
+	test -z "$LINT_OPTS" && LINT_OPTS="--enable=all -D__CPPCHECK__"
 	;;
 esac
 AC_SUBST(LINT_OPTS)

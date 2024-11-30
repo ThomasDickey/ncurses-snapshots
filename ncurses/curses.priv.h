@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.695 2024/11/23 18:40:45 tom Exp $
+ * $Id: curses.priv.h,v 1.696 2024/11/30 21:32:44 tom Exp $
  *
  *	curses.priv.h
  *
@@ -59,7 +59,7 @@ extern "C" {
 #if USE_RCS_IDS
 #define MODULE_ID(id) static const char Ident[] = id;
 #else
-#define MODULE_ID(id) /*nothing*/
+#define MODULE_ID(id)		/* nothing */
 #endif
 
 #include <stddef.h>		/* for offsetof */

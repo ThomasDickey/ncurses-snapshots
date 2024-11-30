@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2022 Thomas E. Dickey                                *
+ * Copyright 2018-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.89 2022/12/24 20:46:49 tom Exp $
+  $Id: worm.c,v 1.93 2024/11/30 18:53:39 tom Exp $
 */
 
 #include <test.priv.h>
@@ -119,9 +119,6 @@ pthread_mutex_t pending_mutex;
 #define Locked(statement) statement
 #endif
 
-#ifdef TRACE
-static int generation, trace_start, trace_end;
-#endif /* TRACE */
 /* *INDENT-OFF* */
 static const struct options {
     int nopts;
@@ -463,11 +460,10 @@ usage(int ok)
 	," -d       invoke use_default_colors"
 #endif
 	," -f       fill screen with copies of \"WORM\" at start"
-	," -l <n>   set length of worms"
-	," -n <n>   set number of worms"
+	," -M NUM   set length of worms"
+	," -n NUM   set number of worms"
 	," -t       leave trail of \".\""
 #ifdef TRACE
-	," -T <start>,<end> set trace interval"
 	," -N       suppress cursor-movement optimization"
 #endif
     };
@@ -497,7 +493,7 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "dfl:n:tT:N")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "M:Ndfn:t")) != -1) {
 	switch (ch) {
 #if HAVE_USE_DEFAULT_COLORS
 	case 'd':
@@ -507,7 +503,7 @@ main(int argc, char *argv[])
 	case 'f':
 	    field = "WORM";
 	    break;
-	case 'l':
+	case 'M':
 	    if ((length = atoi(optarg)) < 2 || length > MAX_LENGTH) {
 		fprintf(stderr, "%s: Invalid length\n", *argv);
 		usage(FALSE);
@@ -523,10 +519,6 @@ main(int argc, char *argv[])
 	    trail = '.';
 	    break;
 #ifdef TRACE
-	case 'T':
-	    if (sscanf(optarg, "%d,%d", &trace_start, &trace_end) != 2)
-		usage(FALSE);
-	    break;
 	case 'N':
 	    _nc_optimize_enable ^= OPTIMIZE_ALL;	/* declared by ncurses */
 	    break;
@@ -631,19 +623,6 @@ main(int argc, char *argv[])
     while (!done) {
 	Locked(++sequence);
 	if ((ch = get_input()) > 0) {
-#ifdef TRACE
-	    if (trace_start || trace_end) {
-		if (generation == trace_start) {
-		    curses_trace(TRACE_CALLS);
-		    get_input();
-		} else if (generation == trace_end) {
-		    curses_trace(0);
-		    get_input();
-		}
-
-		generation++;
-	    }
-#endif
 
 #ifdef KEY_RESIZE
 	    if (ch == KEY_RESIZE) {

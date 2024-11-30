@@ -30,7 +30,7 @@
 /*
  * Author:  Thomas E. Dickey 1998
  *
- * $Id: filter.c,v 1.39 2024/10/05 19:26:24 tom Exp $
+ * $Id: filter.c,v 1.40 2024/11/30 16:49:53 tom Exp $
  *
  * An example of the 'filter()' function in ncurses, this program prompts
  * for commands and executes them (like a command shell).  It illustrates
@@ -310,7 +310,7 @@ usage(int ok)
 #ifdef NCURSES_VERSION
 	," -a       suppress xterm alternate-screen by amending smcup/rmcup"
 #endif
-	," -c       show current time on prompt line with \"Command\""
+	," -t       show current time on prompt line with \"Command\""
 #if HAVE_USE_DEFAULT_COLORS
 	," -d       invoke use_default_colors"
 #endif
@@ -335,7 +335,7 @@ main(int argc, char *argv[])
 #ifdef NCURSES_VERSION
     bool a_option = FALSE;
 #endif
-    bool c_option = FALSE;
+    bool t_option = FALSE;
 #if HAVE_USE_DEFAULT_COLORS
     bool d_option = FALSE;
 #endif
@@ -344,15 +344,15 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "adcip")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "adtip")) != -1) {
 	switch (ch) {
 #ifdef NCURSES_VERSION
 	case 'a':
 	    a_option = TRUE;
 	    break;
 #endif
-	case 'c':
-	    c_option = TRUE;
+	case 't':
+	    t_option = TRUE;
 	    break;
 #if HAVE_USE_DEFAULT_COLORS
 	case 'd':
@@ -408,7 +408,7 @@ main(int argc, char *argv[])
 
     for (;;) {
 	int code = new_command(buffer, sizeof(buffer) - 1,
-			       underline, c_option, p_option);
+			       underline, t_option, p_option);
 	if (code == ERR || *buffer == '\0')
 	    break;
 	reset_shell_mode();

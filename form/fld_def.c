@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2024 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.44 2021/03/27 23:49:53 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.45 2024/11/30 21:41:08 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -313,7 +313,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 	  size_t len;
 
 	  len = Total_Buffer_Size(New_Field);
-	  if ((New_Field->buf = (FIELD_CELL *)malloc(len)))
+	  if ((New_Field->buf = (FIELD_CELL *)malloc(len)) != NULL)
 	    {
 	      /* Prefill buffers with blanks and insert terminating zeroes
 	         between buffers */

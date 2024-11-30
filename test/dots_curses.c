@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 2014,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_curses.c,v 1.25 2023/01/07 17:21:48 tom Exp $
+ * $Id: dots_curses.c,v 1.26 2024/11/30 17:48:07 tom Exp $
  *
  * A simple demo of the curses interface used for comparison with termcap.
  */
@@ -97,7 +97,7 @@ usage(int ok)
 	,"Options:"
 	," -T TERM  override $TERM"
 #if HAVE_USE_DEFAULT_COLORS
-	," -d       invoke use_default_colors()"
+	," -d       invoke use_default_colors"
 #endif
 #if HAVE_USE_ENV
 	," -e       allow environment $LINES / $COLUMNS"

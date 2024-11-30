@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: list_keys.c,v 1.34 2024/10/05 19:26:24 tom Exp $
+ * $Id: list_keys.c,v 1.36 2024/11/30 18:07:01 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -440,9 +440,9 @@ usage(int ok)
 	,""
 	,USAGE_COMMON
 	,"Options:"
-	," -f       print full names"
+	," -f       print full terminfo names"
 	," -m       print modifier-column for shift/control keys"
-	," -t       print result as CSV table"
+	," -t       print the result as CSV table"
 #ifdef NCURSES_VERSION
 	," -x       print extended capabilities"
 #endif

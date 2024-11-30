@@ -52,7 +52,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.147 2024/10/06 21:08:05 tom Exp $
+ * $Id: view.c,v 1.149 2024/11/30 18:15:06 tom Exp $
  */
 
 #include <test.priv.h>
@@ -382,15 +382,15 @@ usage(int ok)
 	,""
 	,USAGE_COMMON
 	,"Options:"
-	," -c       use color if terminal supports it"
+	," -C       use color if terminal supports it"
 	," -i       ignore INT, QUIT, TERM signals"
 #if USE_WIDEC_SUPPORT
 	," -n       use waddch (bytes) rather then wadd_wch (wide-chars)"
 #endif
-	," -s       start in single-step mode, waiting for input"
+	," -s       start in single-step mode"
 #ifdef TRACE
 	," -t       trace screen updates"
-	," -T NUM   specify trace mask"
+	," -D NUM   specify trace mask"
 #endif
     };
     size_t n;
@@ -443,9 +443,9 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "cinstT:")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "CD:inst")) != -1) {
 	switch (ch) {
-	case 'c':
+	case 'C':
 	    try_color = TRUE;
 	    break;
 	case 'i':
@@ -460,7 +460,7 @@ main(int argc, char *argv[])
 	    single_step = TRUE;
 	    break;
 #ifdef TRACE
-	case 'T':
+	case 'D':
 	    {
 		char *next = 0;
 		int tvalue = (int) strtol(optarg, &next, 0);

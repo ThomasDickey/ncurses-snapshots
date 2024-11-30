@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.541 2024/10/06 20:18:59 tom Exp $
+$Id: ncurses.c,v 1.544 2024/11/30 18:54:06 tom Exp $
 
 ***************************************************************************/
 
@@ -7647,7 +7647,7 @@ usage(int ok)
 	," -E       call use_env(FALSE) to ignore $LINES and $COLUMNS"
 #endif
 #if USE_SOFTKEYS
-	," -e fmt   specify format for soft-keys test (e)"
+	," -e FMT   specify format for soft-keys test (e)"
 #endif
 #if HAVE_RIPOFFLINE
 	," -F       rip-off footer line (can repeat)"
@@ -7658,13 +7658,13 @@ usage(int ok)
 	," -p file  rgb values to use in 'd' rather than ncurses's builtin"
 #endif
 #if USE_LIBPANEL
-	," -s msec  specify nominal time for panel-demo (default: 1, to hold)"
+	," -s MSECS specify nominal time for panel-demo (default: 1, to hold)"
 #endif
 #if defined(NCURSES_VERSION_PATCH) && (NCURSES_VERSION_PATCH >= 20120714) && !defined(_NC_WINDOWS)
 	," -T       call use_tioctl(TRUE) to allow SIGWINCH to override environment"
 #endif
 #ifdef TRACE
-	," -t mask  specify default trace-level (may toggle with ^T)"
+	," -D mask  specify trace mask (may toggle with ^T)"
 #endif
 #if HAVE_COLOR_CONTENT
 	," -x       use xterm-compatible control for reading color palette"
@@ -7907,7 +7907,7 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "a:dEe:FHmp:s:Tt:x")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "D:EFHTa:de:mp:s:x")) != -1) {
 	switch (ch) {
 #ifdef NCURSES_VERSION_PATCH
 #if HAVE_USE_DEFAULT_COLORS
@@ -7971,7 +7971,7 @@ main(int argc, char *argv[])
 	    break;
 #endif
 #ifdef TRACE
-	case 't':
+	case 'D':
 	    save_trace = (unsigned) strtol(optarg, 0, 0);
 	    break;
 #endif

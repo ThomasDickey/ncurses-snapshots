@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.59 2024/10/06 21:16:43 tom Exp $
+ * $Id: demo_terminfo.c,v 1.61 2024/11/30 18:31:01 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -786,11 +786,11 @@ usage(int ok)
 	," -b       print boolean-capabilities"
 	," -d LIST  colon-separated list of databases to use"
 	," -e NAME  environment variable to set with -d option"
-	," -f       print full names"
+	," -f       print full terminfo names"
 	," -i NAME  terminal description to use as names for \"-a\" option"
 	," -n       print numeric-capabilities"
 	," -q       quiet (prints only counts)"
-	," -r COUNT repeat for given count"
+	," -r NUM   repeat tests NUM times"
 	," -s       print string-capabilities"
 #ifdef NCURSES_VERSION
 	," -x       print extended capabilities"

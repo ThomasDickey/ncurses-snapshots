@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.52 2024/10/05 19:26:24 tom Exp $
+ * $Id: cardfile.c,v 1.53 2024/11/30 16:47:59 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -558,7 +558,7 @@ usage(int ok)
 	,""
 	,USAGE_COMMON
 	,"Options:"
-	," -c       use color if terminal supports it"
+	," -C       use color if terminal supports it"
     };
     size_t n;
     for (n = 0; n < SIZEOF(msg); n++)
@@ -578,9 +578,9 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "c")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "C")) != -1) {
 	switch (ch) {
-	case 'c':
+	case 'C':
 	    try_color = TRUE;
 	    break;
 	case OPTS_VERSION:

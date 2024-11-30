@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.150 2024/10/05 19:26:24 tom Exp $
+ * $Id: picsmap.c,v 1.152 2024/11/30 21:39:57 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -494,7 +494,7 @@ usage(int ok)
 	," -d       invoke use_default_colors"
 #endif
 	," -L       add debugging information to logfile"
-	," -l FILE  write informational messages to FILE"
+	," -F FILE  write informational messages to FILE"
 	," -p FILE  color-palette file (default \"$TERM.dat\")"
 	," -q       less verbose"
 	," -r FILE  xpm uses X rgb color-names in FILE (default \"" RGB_PATH "\")"
@@ -948,6 +948,7 @@ parse_rgb(char **data)
     for (n = 0; data[n] != 0; ++n) {
 	if (strlen(t = data[n]) >= sizeof(buf) - 1)
 	    continue;
+	t = strcpy(buf, t);
 	if (*(s = skip_s(t)) == '!')
 	    continue;
 
@@ -1156,6 +1157,7 @@ parse_xpm(char **data)
     for (n = 0; data[n] != 0; ++n) {
 	if (strlen(s = data[n]) >= sizeof(buf) - 1)
 	    continue;
+	s = strcpy(buf, s);
 	switch (state) {
 	case 0:
 	    if (match_c(s, " /* XPM */ ")) {
@@ -1730,7 +1732,7 @@ main(int argc, char *argv[])
     const char *palette_path = 0;
     const char *rgb_path = RGB_PATH;
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "a:dLl:p:qr:s:x:")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "a:dLF:p:qr:s:x:")) != -1) {
 	switch (ch) {
 	case 'a':
 	    if (sscanf(optarg, "%lf%c", &aspect_ratio, &ignore_ch) != 1
@@ -1748,7 +1750,7 @@ main(int argc, char *argv[])
 	case 'L':
 	    debugging = TRUE;
 	    break;
-	case 'l':
+	case 'F':
 	    if ((logfp = fopen(optarg, "a")) == 0)
 		failed(optarg);
 	    break;
