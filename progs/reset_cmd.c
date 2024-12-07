@@ -53,7 +53,7 @@
 #include <sys/ptem.h>
 #endif
 
-MODULE_ID("$Id: reset_cmd.c,v 1.37 2024/04/08 17:29:34 tom Exp $")
+MODULE_ID("$Id: reset_cmd.c,v 1.38 2024/12/07 22:12:53 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -104,8 +104,8 @@ cat_file(char *file)
     char buf[BUFSIZ];
     bool sent = FALSE;
 
-    if (file != 0) {
-	if ((fp = safe_fopen(file, "r")) == 0)
+    if (file != NULL) {
+	if ((fp = safe_fopen(file, "r")) == NULL)
 	    failed(file);
 
 	while ((nr = fread(buf, sizeof(char), sizeof(buf), fp)) != 0) {
@@ -528,7 +528,7 @@ send_init_strings(int fd GCC_UNUSED, TTY * old_settings)
 
     (void) old_settings;
 #if TAB3
-    if (old_settings != 0 &&
+    if (old_settings != NULL &&
 	old_settings->c_oflag & (TAB3 | ONLCR | OCRNL | ONLRET)) {
 	old_settings->c_oflag &= (TAB3 | ONLCR | OCRNL | ONLRET);
 	SET_TTY(fd, old_settings);
@@ -539,11 +539,11 @@ send_init_strings(int fd GCC_UNUSED, TTY * old_settings)
 	    IGNORE_RC(system(init_prog));
 	}
 
-	need_flush |= sent_string((use_reset && (reset_1string != 0))
+	need_flush |= sent_string((use_reset && (reset_1string != NULL))
 				  ? reset_1string
 				  : init_1string);
 
-	need_flush |= sent_string((use_reset && (reset_2string != 0))
+	need_flush |= sent_string((use_reset && (reset_2string != NULL))
 				  ? reset_2string
 				  : init_2string);
 
@@ -584,7 +584,7 @@ send_init_strings(int fd GCC_UNUSED, TTY * old_settings)
 
 	need_flush |= cat_file((use_reset && reset_file) ? reset_file : init_file);
 
-	need_flush |= sent_string((use_reset && (reset_3string != 0))
+	need_flush |= sent_string((use_reset && (reset_3string != NULL))
 				  ? reset_3string
 				  : init_3string);
     }
@@ -629,7 +629,7 @@ show_tty_change(TTY * old_settings,
 	 */
     } else if (newer == 0177) {
 	(void) fprintf(stderr, "delete.\n");
-    } else if ((p = key_backspace) != 0
+    } else if ((p = key_backspace) != NULL
 	       && newer == (unsigned char) p[0]
 	       && p[1] == '\0') {
 	(void) fprintf(stderr, "backspace.\n");
@@ -655,7 +655,7 @@ reset_start(FILE *fp, bool is_reset, bool is_init)
 void
 reset_flush(void)
 {
-    if (my_file != 0)
+    if (my_file != NULL)
 	fflush(my_file);
 }
 

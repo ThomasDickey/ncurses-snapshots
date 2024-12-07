@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_addchstr.c,v 1.30 2024/10/05 19:26:24 tom Exp $
+ * $Id: test_addchstr.c,v 1.31 2024/12/07 22:41:11 tom Exp $
  *
  * Demonstrate the waddchstr() and waddch functions.
  * Thomas Dickey - 2009/9/12
@@ -82,7 +82,7 @@ ChLen(const char *source)
 
 	for (n = 0; n < result; ++n) {
 	    const char *s = unctrl(UChar(source[n]));
-	    if (s != 0) {
+	    if (s != NULL) {
 		adjust += (strlen(s) - 1);
 	    }
 	}
@@ -94,7 +94,7 @@ ChLen(const char *source)
 static chtype *
 ChStr(const char *source)
 {
-    if (source != 0) {
+    if (source != NULL) {
 	size_t need = ChLen(source) + 1;
 	int n = 0;
 
@@ -107,7 +107,7 @@ ChStr(const char *source)
 	do {
 	    const char *s;
 	    chtype ch = UChar(*source++);
-	    if (!pass_ctls && (s = unctrl(ch)) != 0) {
+	    if (!pass_ctls && (s = unctrl(ch)) != NULL) {
 		while (*s != '\0') {
 		    temp_buffer[n++] = UChar(*s++);
 		}
@@ -116,9 +116,9 @@ ChStr(const char *source)
 	    }
 	} while (source[0] != 0);
 	temp_buffer[n] = 0;
-    } else if (temp_buffer != 0) {
+    } else if (temp_buffer != NULL) {
 	free(temp_buffer);
-	temp_buffer = 0;
+	temp_buffer = NULL;
 	temp_length = 0;
     }
     return temp_buffer;
@@ -218,9 +218,9 @@ recursive_test(int level)
     int row2, col2;
     int length;
     char buffer[BUFSIZ];
-    WINDOW *look = 0;
-    WINDOW *work = 0;
-    WINDOW *show = 0;
+    WINDOW *look = NULL;
+    WINDOW *work = NULL;
+    WINDOW *show = NULL;
     int margin = (2 * MY_TABSIZE) - 1;
     Options option = (Options) ((unsigned) (m_opt
 					    ? oMove

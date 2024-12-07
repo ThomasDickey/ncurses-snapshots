@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: combine.c,v 1.25 2024/11/30 19:08:20 tom Exp $
+ * $Id: combine.c,v 1.26 2024/12/07 22:22:51 tom Exp $
  */
 
 #include <test.priv.h>
@@ -174,7 +174,7 @@ show_help(WINDOW *current)
 	++d;
     }
     popup_msg2(current, msgs);
-    for (s = 0; msgs[s] != 0; ++s) {
+    for (s = 0; msgs[s] != NULL; ++s) {
 	free(msgs[s]);
     }
     free(msgs);

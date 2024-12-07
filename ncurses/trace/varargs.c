@@ -35,7 +35,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: varargs.c,v 1.14 2024/07/27 19:23:59 tom Exp $")
+MODULE_ID("$Id: varargs.c,v 1.15 2024/12/07 18:00:11 tom Exp $")
 
 #ifdef TRACE
 
@@ -63,17 +63,17 @@ _nc_varargs(const char *fmt, va_list ap)
     const char *param;
     int n;
 
-    if (fmt == 0 || *fmt == '\0')
+    if (fmt == NULL || *fmt == '\0')
 	return NULL;
     if (MyLength == 0)
 	MyBuffer = typeMalloc(char, MyLength = BUFSIZ);
-    if (MyBuffer == 0)
+    if (MyBuffer == NULL)
 	return NULL;
     *MyBuffer = '\0';
 
     while (*fmt != '\0') {
 	if (*fmt == '%') {
-	    const char *pval = 0;	/* avoid const-cast */
+	    const char *pval = NULL;	/* avoid const-cast */
 	    const char *sval = "";
 	    double fval = 0.0;
 	    int done = FALSE;
@@ -169,7 +169,7 @@ _nc_varargs(const char *fmt, va_list ap)
 			}
 			MyLength += strlen(param) + 2;
 			MyBuffer = typeRealloc(char, MyLength, MyBuffer);
-			if (MyBuffer != 0) {
+			if (MyBuffer != NULL) {
 			    _nc_SPRINTF(MyBuffer + strlen(MyBuffer),
 					_nc_SLIMIT(MyLength - strlen(MyBuffer))
 					", %s", param);

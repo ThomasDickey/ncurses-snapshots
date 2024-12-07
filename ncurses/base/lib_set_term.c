@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.189 2024/11/23 18:33:50 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.190 2024/12/07 17:58:16 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -81,7 +81,7 @@ set_term(SCREEN *screenp)
     _nc_set_screen(screenp);
     newSP = screenp;
 
-    if (newSP != 0) {
+    if (newSP != NULL) {
 	TINFO_SET_CURTERM(newSP, newSP->_term);
 #if !USE_REENTRANT
 	curscr = CurScreen(newSP);
@@ -91,11 +91,11 @@ set_term(SCREEN *screenp)
 	COLOR_PAIRS = newSP->_pair_count;
 #endif
     } else {
-	TINFO_SET_CURTERM(oldSP, 0);
+	TINFO_SET_CURTERM(oldSP, NULL);
 #if !USE_REENTRANT
-	curscr = 0;
-	newscr = 0;
-	stdscr = 0;
+	curscr = NULL;
+	newscr = NULL;
+	stdscr = NULL;
 	COLORS = 0;
 	COLOR_PAIRS = 0;
 #endif
@@ -110,7 +110,7 @@ set_term(SCREEN *screenp)
 static void
 _nc_free_keytry(TRIES * kt)
 {
-    if (kt != 0) {
+    if (kt != NULL) {
 	_nc_free_keytry(kt->child);
 	_nc_free_keytry(kt->sibling);
 	free(kt);
@@ -120,7 +120,7 @@ _nc_free_keytry(TRIES * kt)
 static bool
 delink_screen(SCREEN *sp)
 {
-    SCREEN *last = 0;
+    SCREEN *last = NULL;
     SCREEN *temp;
     bool result = FALSE;
 
@@ -174,9 +174,9 @@ delscreen(SCREEN *sp)
 	    }
 	}
 
-	if (sp->_slk != 0) {
+	if (sp->_slk != NULL) {
 
-	    if (sp->_slk->ent != 0) {
+	    if (sp->_slk->ent != NULL) {
 		int i;
 
 		for (i = 0; i < sp->_slk->labcnt; ++i) {
@@ -186,14 +186,14 @@ delscreen(SCREEN *sp)
 		free(sp->_slk->ent);
 	    }
 	    free(sp->_slk);
-	    sp->_slk = 0;
+	    sp->_slk = NULL;
 	}
 
 	_nc_free_keytry(sp->_keytry);
-	sp->_keytry = 0;
+	sp->_keytry = NULL;
 
 	_nc_free_keytry(sp->_key_ok);
-	sp->_key_ok = 0;
+	sp->_key_ok = NULL;
 
 	FreeIfNeeded(sp->_current_attr);
 
@@ -232,17 +232,17 @@ delscreen(SCREEN *sp)
 	 */
 	if (is_current) {
 #if !USE_REENTRANT
-	    curscr = 0;
-	    newscr = 0;
-	    stdscr = 0;
+	    curscr = NULL;
+	    newscr = NULL;
+	    stdscr = NULL;
 	    COLORS = 0;
 	    COLOR_PAIRS = 0;
 #endif
-	    _nc_set_screen(0);
+	    _nc_set_screen(NULL);
 #if USE_WIDEC_SUPPORT
-	    if (SP == 0) {
+	    if (SP == NULL) {
 		FreeIfNeeded(_nc_wacs);
-		_nc_wacs = 0;
+		_nc_wacs = NULL;
 	    }
 #endif
 	} else {
@@ -303,7 +303,7 @@ extract_fgbg(const char *src, int *result)
 }
 #endif
 
-#define ReturnScreenError() do { _nc_set_screen(0); \
+#define ReturnScreenError() do { _nc_set_screen(NULL); \
                             returnCode(ERR); } while (0)
 
 /* OS-independent screen initializations */
@@ -357,7 +357,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     sp->_next_screen = _nc_screen_chain;
     _nc_screen_chain = sp;
 
-    if ((sp->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == 0) {
+    if ((sp->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == NULL) {
 	ReturnScreenError();
     }
 #else
@@ -437,7 +437,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 	_setmode(fileno(output), _O_BINARY);
 #endif
     sp->out_limit = (size_t) ((2 + slines) * (6 + scolumns));
-    if ((sp->out_buffer = malloc(sp->out_limit)) == 0)
+    if ((sp->out_buffer = malloc(sp->out_limit)) == NULL)
 	sp->out_limit = 0;
     sp->out_inuse = 0;
 
@@ -479,7 +479,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
      * Allow those assumed/default color assumptions to be overridden at
      * runtime:
      */
-    if ((env = getenv("NCURSES_ASSUMED_COLORS")) != 0) {
+    if ((env = getenv("NCURSES_ASSUMED_COLORS")) != NULL) {
 	int fg, bg;
 	char sep1, sep2;
 	int count = sscanf(env, "%d%c%d%c", &fg, &sep1, &bg, &sep2);
@@ -555,7 +555,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
      * in the environment, reset the support-flag.
      */
     if (magic_cookie_glitch >= 0) {
-	if (getenv("NCURSES_NO_MAGIC_COOKIE") != 0) {
+	if (getenv("NCURSES_NO_MAGIC_COOKIE") != NULL) {
 	    support_cookies = FALSE;
 	}
     }
@@ -633,10 +633,10 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_ARG);
 #if USE_WIDEC_SUPPORT
     sp->_screen_unicode = _nc_unicode_locale();
-    if (_nc_wacs == 0) {
+    if (_nc_wacs == NULL) {
 	_nc_init_wacs();
     }
-    if (_nc_wacs == 0) {
+    if (_nc_wacs == NULL) {
 	ReturnScreenError();
     }
 
@@ -644,7 +644,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 			   && _nc_locale_breaks_acs(sp->_term));
 #endif
     env = _nc_get_locale();
-    sp->_legacy_coding = ((env == 0)
+    sp->_legacy_coding = ((env == NULL)
 			  || !strcmp(env, "C")
 			  || !strcmp(env, "POSIX"));
     T(("legacy-coding %d", sp->_legacy_coding));
@@ -652,19 +652,19 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     sp->_nc_sp_idcok = TRUE;
     sp->_nc_sp_idlok = FALSE;
 
-    sp->oldhash = 0;
-    sp->newhash = 0;
+    sp->oldhash = NULL;
+    sp->newhash = NULL;
 
     T(("creating newscr"));
     NewScreen(sp) = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx slines, scolumns,
 					     0, 0);
-    if (NewScreen(sp) == 0) {
+    if (NewScreen(sp) == NULL) {
 	ReturnScreenError();
     }
     T(("creating curscr"));
     CurScreen(sp) = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx slines, scolumns,
 					     0, 0);
-    if (CurScreen(sp) == 0) {
+    if (CurScreen(sp) == NULL) {
 	ReturnScreenError();
     }
 #if !USE_REENTRANT
@@ -684,7 +684,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
      * unless we use the term-driver.
      */
 #ifndef USE_TERM_DRIVER
-    if (cur_term != 0 &&
+    if (cur_term != NULL &&
 	!memcmp(&cur_term->Ottyb, &null_TTY, sizeof(TTY)))
 #endif
     {
@@ -750,7 +750,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     assert((sp->_lines_avail + sp->_topstolen + bottom_stolen) == slines);
     if ((StdScreen(sp) = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx
 						  sp->_lines_avail,
-						  scolumns, 0, 0)) == 0) {
+						  scolumns, 0, 0)) == NULL) {
 	ReturnScreenError();
     }
     SET_LINES(sp->_lines_avail);
@@ -769,7 +769,7 @@ _nc_setupscreen(int slines GCC_UNUSED,
 		bool filtered,
 		int slk_format)
 {
-    SCREEN *sp = 0;
+    SCREEN *sp = NULL;
     int rc = NCURSES_SP_NAME(_nc_setupscreen) (&sp,
 					       slines,
 					       scolumns,
@@ -777,7 +777,7 @@ _nc_setupscreen(int slines GCC_UNUSED,
 					       filtered,
 					       slk_format);
     if (rc != OK)
-	_nc_set_screen(0);
+	_nc_set_screen(NULL);
     return rc;
 }
 #endif
@@ -800,13 +800,13 @@ NCURSES_SP_NAME(_nc_ripoffline) (NCURSES_SP_DCLx
        TR_FUNC_ARG(0, init)));
 
 #if NCURSES_SP_FUNCS
-    if (SP_PARM != 0 && SP_PARM->_prescreen)
+    if (SP_PARM != NULL && SP_PARM->_prescreen)
 #endif
     {
 	if (line == 0) {
 	    code = OK;
 	} else {
-	    if (safe_ripoff_sp == 0) {
+	    if (safe_ripoff_sp == NULL) {
 		safe_ripoff_sp = safe_ripoff_stack;
 	    }
 	    if (safe_ripoff_sp < safe_ripoff_stack + N_RIPS) {

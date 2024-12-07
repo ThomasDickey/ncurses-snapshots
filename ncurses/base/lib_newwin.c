@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <stddef.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.77 2024/09/28 15:55:56 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.78 2024/12/07 20:19:18 tom Exp $")
 
 #define window_is(name) ((sp)->_##name == win)
 
@@ -53,9 +53,9 @@ MODULE_ID("$Id: lib_newwin.c,v 1.77 2024/09/28 15:55:56 tom Exp $")
 		sp->_##name = 0
 #else
 #define remove_window(name) \
-		sp->_##name = 0; \
+		sp->_##name = NULL; \
 		if (win == name) \
-		    name = 0
+		    name = NULL
 #endif
 
 static void
@@ -64,7 +64,7 @@ remove_window_from_screen(WINDOW *win)
     SCREEN *sp;
 
 #ifdef USE_SP_WINDOWLIST
-    if ((sp = _nc_screen_of(win)) != 0) {
+    if ((sp = _nc_screen_of(win)) != NULL) {
 	if (window_is(curscr)) {
 	    remove_window(curscr);
 	} else if (window_is(stdscr)) {
@@ -99,17 +99,17 @@ _nc_freewin(WINDOW *win)
 
     T((T_CALLED("_nc_freewin(%p)"), (void *) win));
 
-    if (win != 0) {
+    if (win != NULL) {
 
 	if (_nc_nonsp_try_global(curses) == 0) {
 	    WINDOWLIST *p, *q;
 
-	    q = 0;
+	    q = NULL;
 	    for (each_window(sp, p)) {
 
 		if (&(p->win) == win) {
 		    remove_window_from_screen(win);
-		    if (q == 0)
+		    if (q == NULL)
 			WindowList(sp) = p->next;
 		    else
 			q->next = p->next;
@@ -150,8 +150,8 @@ NCURSES_SP_NAME(newwin) (NCURSES_SP_DCLx
 	|| begx < 0
 	|| num_lines < 0
 	|| num_columns < 0
-	|| SP_PARM == 0)
-	returnWin(0);
+	|| SP_PARM == NULL)
+	returnWin(NULL);
 
     if (num_lines == 0)
 	num_lines = SP_PARM->_lines_avail - begy;
@@ -160,14 +160,14 @@ NCURSES_SP_NAME(newwin) (NCURSES_SP_DCLx
 
     win = NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_ARGx
 					num_lines, num_columns, begy, begx, 0);
-    if (win == 0)
-	returnWin(0);
+    if (win == NULL)
+	returnWin(NULL);
 
     for (i = 0; i < num_lines; i++) {
 	win->_line[i].text = typeCalloc(NCURSES_CH_T, (unsigned) num_columns);
-	if (win->_line[i].text == 0) {
+	if (win->_line[i].text == NULL) {
 	    (void) _nc_freewin(win);
-	    returnWin(0);
+	    returnWin(NULL);
 	}
 	for (ptr = win->_line[i].text;
 	     ptr < win->_line[i].text + num_columns;
@@ -207,11 +207,14 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     /*
      * make sure window fits inside the original one
      */
-    if (begy < 0 || begx < 0 || orig == 0 || num_lines < 0 || num_columns < 0)
-	returnWin(0);
-    if (begy + num_lines > orig->_maxy + 1
+    if (begy < 0
+	|| begx < 0
+	|| orig == NULL
+	|| num_lines < 0
+	|| num_columns < 0
+	|| begy + num_lines > orig->_maxy + 1
 	|| begx + num_columns > orig->_maxx + 1)
-	returnWin(0);
+	returnWin(NULL);
 
     if (num_lines == 0)
 	num_lines = orig->_maxy + 1 - begy;
@@ -225,8 +228,8 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     win = NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_ARGx num_lines, num_columns,
 					orig->_begy + begy,
 					orig->_begx + begx, flags);
-    if (win == 0)
-	returnWin(0);
+    if (win == NULL)
+	returnWin(NULL);
 
     win->_pary = begy;
     win->_parx = begx;
@@ -244,10 +247,10 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
 NCURSES_EXPORT(WINDOW *)
 subwin(WINDOW *w, int l, int c, int y, int x)
 {
-    WINDOW *result = 0;
+    WINDOW *result = NULL;
 
     T((T_CALLED("subwin(%p, %d, %d, %d, %d)"), (void *) w, l, c, y, x));
-    if (w != 0) {
+    if (w != NULL) {
 	T(("parent has begy = %ld, begx = %ld", (long) w->_begy, (long) w->_begx));
 
 	result = derwin(w, l, c, y - w->_begy, x - w->_begx);
@@ -271,20 +274,20 @@ NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
     T((T_CALLED("_nc_makenew(%p,%d,%d,%d,%d)"),
        (void *) SP_PARM, num_lines, num_columns, begy, begx));
 
-    if (SP_PARM == 0)
-	returnWin(0);
+    if (SP_PARM == NULL)
+	returnWin(NULL);
 
     if (!OK_DIMENSION(num_lines) || !OK_DIMENSION(num_columns))
-	returnWin(0);
+	returnWin(NULL);
 
-    if ((wp = typeCalloc(WINDOWLIST, 1)) == 0)
-	returnWin(0);
+    if ((wp = typeCalloc(WINDOWLIST, 1)) == NULL)
+	returnWin(NULL);
 
     win = &(wp->win);
 
-    if ((win->_line = typeCalloc(struct ldat, ((unsigned) num_lines))) == 0) {
+    if ((win->_line = typeCalloc(struct ldat, ((unsigned) num_lines))) == NULL) {
 	free(wp);
-	returnWin(0);
+	returnWin(NULL);
     }
 
     _nc_nonsp_lock_global(curses);
@@ -315,7 +318,7 @@ NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
     win->_sync = 0;
     win->_parx = -1;
     win->_pary = -1;
-    win->_parent = 0;
+    win->_parent = NULL;
 
     win->_regtop = 0;
     win->_regbottom = (NCURSES_SIZE_T) (num_lines - 1);
@@ -382,18 +385,18 @@ NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
 NCURSES_EXPORT(WINDOW *)
 _nc_curscr_of(SCREEN *sp)
 {
-    return (sp == 0) ? NULL : CurScreen(sp);
+    return (sp == NULL) ? NULL : CurScreen(sp);
 }
 
 NCURSES_EXPORT(WINDOW *)
 _nc_newscr_of(SCREEN *sp)
 {
-    return (sp == 0) ? NULL : NewScreen(sp);
+    return (sp == NULL) ? NULL : NewScreen(sp);
 }
 
 NCURSES_EXPORT(WINDOW *)
 _nc_stdscr_of(SCREEN *sp)
 {
-    return (sp == 0) ? NULL : StdScreen(sp);
+    return (sp == NULL) ? NULL : StdScreen(sp);
 }
 #endif

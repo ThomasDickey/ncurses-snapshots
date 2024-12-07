@@ -44,7 +44,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.97 2024/07/27 19:08:04 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.98 2024/12/07 21:12:53 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -126,7 +126,7 @@ _traceattr2(int bufnum, chtype newmode)
 #undef DATA
     char *result = _nc_trace_buf(bufnum, (size_t) BUFSIZ);
 
-    if (result != 0) {
+    if (result != NULL) {
 	size_t n;
 	unsigned save_nc_tracing = _nc_tracing;
 
@@ -167,7 +167,7 @@ _traceattr2(int bufnum, chtype newmode)
 	    }
 	}
 	if (ChAttrOf(newmode) == A_NORMAL) {
-	    if (result != 0 && result[1] != '\0')
+	    if (result != NULL && result[1] != '\0')
 		(void) _nc_trace_bufcat(bufnum, "|");
 	    (void) _nc_trace_bufcat(bufnum, "A_NORMAL");
 	}
@@ -248,14 +248,14 @@ _nc_altcharset_name(attr_t attr, chtype ch)
     };
 #undef DATA
 
-    const char *result = 0;
+    const char *result = NULL;
 
 #if NCURSES_SP_FUNCS
     (void) sp;
 #endif
-    if (SP_PARM != 0 && (attr & A_ALTCHARSET) && (acs_chars != 0)) {
+    if (SP_PARM != NULL && (attr & A_ALTCHARSET) && (acs_chars != NULL)) {
 	char *cp;
-	const char *found = 0;
+	const char *found = NULL;
 
 	for (cp = acs_chars; cp[0] && cp[1]; cp += 2) {
 	    if (ChCharOf(UChar(cp[1])) == ChCharOf(ch)) {
@@ -264,7 +264,7 @@ _nc_altcharset_name(attr_t attr, chtype ch)
 	    }
 	}
 
-	if (found != 0) {
+	if (found != NULL) {
 	    size_t n;
 
 	    ch = ChCharOf(UChar(*found));
@@ -284,12 +284,12 @@ _tracechtype2(int bufnum, chtype ch)
 {
     char *result = _nc_trace_buf(bufnum, (size_t) BUFSIZ);
 
-    if (result != 0) {
+    if (result != NULL) {
 	const char *found;
 	attr_t attr = ChAttrOf(ch);
 
 	_nc_STRCPY(result, l_brace, TRACE_BUF_SIZE(bufnum));
-	if ((found = _nc_altcharset_name(attr, ch)) != 0) {
+	if ((found = _nc_altcharset_name(attr, ch)) != NULL) {
 	    (void) _nc_trace_bufcat(bufnum, found);
 	    attr &= ~A_ALTCHARSET;
 	} else
@@ -328,13 +328,13 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 {
     char *result = _nc_trace_buf(bufnum, (size_t) BUFSIZ);
 
-    if (result != 0) {
+    if (result != NULL) {
 	_nc_STRCPY(result, l_brace, TRACE_BUF_SIZE(bufnum));
-	if (ch != 0) {
+	if (ch != NULL) {
 	    const char *found;
 	    attr_t attr = AttrOfD(ch);
 
-	    if ((found = _nc_altcharset_name(attr, (chtype) CharOfD(ch))) != 0) {
+	    if ((found = _nc_altcharset_name(attr, (chtype) CharOfD(ch))) != NULL) {
 		(void) _nc_trace_bufcat(bufnum, found);
 		attr &= ~A_ALTCHARSET;
 	    } else if (isWidecExt(CHDEREF(ch))) {

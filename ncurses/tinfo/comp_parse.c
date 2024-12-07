@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.135 2024/07/27 19:15:16 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.136 2024/12/07 21:12:53 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -64,13 +64,13 @@ enqueue(ENTRY * ep)
     DEBUG(2, (T_CALLED("enqueue(ep=%p)"), (void *) ep));
 
     newp = _nc_copy_entry(ep);
-    if (newp == 0)
+    if (newp == NULL)
 	_nc_err_abort(MSG_NO_MEMORY);
 
     newp->last = _nc_tail;
     _nc_tail = newp;
 
-    newp->next = 0;
+    newp->next = NULL;
     if (newp->last)
 	newp->last->next = newp;
     DEBUG(2, (T_RETURN("")));
@@ -81,7 +81,7 @@ enqueue(ENTRY * ep)
 static char *
 force_bar(char *dst, char *src)
 {
-    if (strchr(src, '|') == 0) {
+    if (strchr(src, '|') == NULL) {
 	size_t len = strlen(src);
 	if (len > MAX_NAME_SIZE)
 	    len = MAX_NAME_SIZE;
@@ -91,7 +91,7 @@ force_bar(char *dst, char *src)
     }
     return src;
 }
-#define ForceBar(dst, src) ((strchr(src, '|') == 0) ? force_bar(dst, src) : src)
+#define ForceBar(dst, src) ((strchr(src, '|') == NULL) ? force_bar(dst, src) : src)
 
 #if NCURSES_USE_TERMCAP && NCURSES_XNAMES
 static char *
@@ -152,7 +152,7 @@ static char *
 name_ending(char *name)
 {
     if (*name == '\0') {
-	name = 0;
+	name = NULL;
     } else {
 	while (*name != '\0' && *name != '|')
 	    ++name;
@@ -403,7 +403,7 @@ NCURSES_EXPORT(int)
 _nc_resolve_uses2(bool fullresolve, bool literal)
 /* try to resolve all use capabilities */
 {
-    ENTRY *qp, *rp, *lastread = 0;
+    ENTRY *qp, *rp, *lastread = NULL;
     bool keepgoing;
     unsigned i, j;
     int total_unresolved, multiples;
@@ -452,7 +452,7 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 	    char *lookfor = qp->uses[i].name;
 	    long lookline = qp->uses[i].line;
 
-	    if (lookfor == 0)
+	    if (lookfor == NULL)
 		continue;
 
 	    foundit = FALSE;
@@ -518,7 +518,7 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 
 		_nc_curr_line = (int) lookline;
 		_nc_warning("resolution of use=%s failed", lookfor);
-		qp->uses[i].link = 0;
+		qp->uses[i].link = NULL;
 	    }
 	}
     }
@@ -758,7 +758,7 @@ _nc_leaks_tic(void)
     _nc_names_leaks();
     _nc_codes_leaks();
 #endif
-    _nc_tic_expand(0, FALSE, 0);
+    _nc_tic_expand(NULL, FALSE, 0);
     T((T_RETURN("")));
 }
 

@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_xcurses.c,v 1.31 2024/11/30 17:41:18 tom Exp $
+ * $Id: dots_xcurses.c,v 1.32 2024/12/07 22:32:11 tom Exp $
  *
  * A simple demo of the wide-curses interface used for comparison with termcap.
  */
@@ -202,7 +202,7 @@ main(int argc, char *argv[])
     }
 
     setlocale(LC_ALL, "");
-    srand((unsigned) time(0));
+    srand((unsigned) time(NULL));
 
     SetupAlarm(r_option);
     InitAndCatch(initscr(), onsig);

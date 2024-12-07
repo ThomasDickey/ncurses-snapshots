@@ -35,7 +35,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.81 2024/11/30 16:47:02 tom Exp $
+ * $Id: bs.c,v 1.82 2024/12/07 22:18:28 tom Exp $
  */
 
 #include <test.priv.h>
@@ -224,12 +224,12 @@ intro(void)
 {
     const char *tmpname;
 
-    srand((unsigned) (time(0L) + getpid()));	/* Kick the random number generator */
+    srand((unsigned) (time(NULL) + getpid()));	/* Kick the random number generator */
 
     InitAndCatch(initscr(), uninitgame);
 
-    if ((tmpname = getlogin()) != 0 &&
-	(your_name = strdup(tmpname)) != 0) {
+    if ((tmpname = getlogin()) != NULL &&
+	(your_name = strdup(tmpname)) != NULL) {
 	your_name[0] = (char) toupper(UChar(your_name[0]));
     } else {
 	your_name = strdup(dftname);
@@ -475,7 +475,7 @@ initgame(void)
 	} else if (c == FF) {
 	    (void) clearok(stdscr, TRUE);
 	    (void) refresh();
-	} else if (ss == 0) {
+	} else if (ss == NULL) {
 	    beep();		/* simple to verify, unlikely to happen */
 	} else if (c == 'r') {
 	    prompt(1, "Random-placing your %s", ss->name);
@@ -877,7 +877,7 @@ plyturn(void)
 	    m = " You'll pick up survivors from my %s, I hope...!";
 	    break;
 	}
-	if (m != 0) {
+	if (m != NULL) {
 	    (void) printw(m, ss->name);
 	}
 	(void) beep();

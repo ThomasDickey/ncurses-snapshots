@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.82 2024/10/05 22:47:12 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.83 2024/12/07 21:02:00 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -120,7 +120,7 @@ _nc_eventlist_timeout(_nc_eventlist * evl)
 {
     int event_delay = -1;
 
-    if (evl != 0) {
+    if (evl != NULL) {
 	int n;
 
 	for (n = 0; n < evl->count; ++n) {

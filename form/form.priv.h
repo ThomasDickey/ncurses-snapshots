@@ -31,7 +31,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.49 2024/02/24 12:17:31 tom Exp $ */
+/* $Id: form.priv.h,v 0.50 2024/12/07 21:57:21 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -93,11 +93,11 @@ extern FORM_EXPORT_VAR(FIELDTYPE *) _nc_Default_FieldType;
 
 /* If form is NULL replace form argument by default-form */
 #define Normalize_Form(form) \
-  ((form) = (form != 0) ? (form) : _nc_Default_Form)
+  ((form) = (form != NULL) ? (form) : _nc_Default_Form)
 
 /* If field is NULL replace field argument by default-field */
 #define Normalize_Field(field) \
-  ((field) = (field != 0) ? (field) : _nc_Default_Field)
+  ((field) = (field != NULL) ? (field) : _nc_Default_Field)
 
 #if NCURSES_SP_FUNCS
 #define Get_Form_Screen(form) \
@@ -260,7 +260,7 @@ extern FORM_EXPORT(Form_Hook)    _nc_retrace_form_hook (Form_Hook);
       int len; \
       int n; \
       wchar_t *list = _nc_Widen_String((char *)buffer, &len); \
-      if (list != 0) \
+      if (list != NULL) \
 	{ \
 	  result = TRUE; \
 	  for (n = 0; n < len; ++n) \

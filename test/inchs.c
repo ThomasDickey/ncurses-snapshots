@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inchs.c,v 1.20 2024/10/06 21:17:54 tom Exp $
+ * $Id: inchs.c,v 1.21 2024/12/07 22:32:11 tom Exp $
  *
  * Author: Thomas E Dickey
  */
@@ -80,17 +80,17 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	" h,j,k,l (and arrow-keys) - move viewport",
 	" w                        - recur to new window",
 	"                            for next input file",
-	0
+	NULL
     };
-    WINDOW *txtbox = 0;
-    WINDOW *txtwin = 0;
+    WINDOW *txtbox = NULL;
+    WINDOW *txtwin = NULL;
     FILE *fp;
     int ch, j;
     int txt_x = 0, txt_y = 0;
     int base_y;
     chtype text[MAX_COLS];
 
-    if (argv[level] == 0) {
+    if (argv[level] == NULL) {
 	beep();
 	return FALSE;
     }
@@ -109,7 +109,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	txtwin = stdscr;
 	base_y = BASE_Y;
     }
-    if (txtwin == 0)
+    if (txtwin == NULL)
 	failed("cannot create txtwin");
 
     keypad(txtwin, TRUE);	/* enable keyboard mapping */
@@ -120,7 +120,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
     txt_x = 0;
     wmove(txtwin, txt_y, txt_x);
 
-    if ((fp = fopen(argv[level], "r")) != 0) {
+    if ((fp = fopen(argv[level], "r")) != NULL) {
 	while ((j = fgetc(fp)) != EOF) {
 	    if (waddch(txtwin, UChar(j)) != OK) {
 		break;
@@ -165,7 +165,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	    break;
 	case 'w':
 	    test_inchs(level + 1, argv, chrwin, strwin);
-	    if (txtbox != 0) {
+	    if (txtbox != NULL) {
 		touchwin(txtbox);
 		wnoutrefresh(txtbox);
 	    } else {

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inch_wide.c,v 1.14 2024/10/06 23:14:31 tom Exp $
+ * $Id: inch_wide.c,v 1.15 2024/12/07 22:32:11 tom Exp $
  */
 /*
        int in_wch(cchar_t *wcval);
@@ -70,11 +70,11 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	" h,j,k,l (and arrow-keys) - move viewport",
 	" w                        - recur to new window",
 	"                            for next input file",
-	0
+	NULL
     };
 
-    WINDOW *txtbox = 0;
-    WINDOW *txtwin = 0;
+    WINDOW *txtbox = NULL;
+    WINDOW *txtwin = NULL;
     FILE *fp;
     int j;
     int txt_x = 0, txt_y = 0;
@@ -82,7 +82,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
     cchar_t ch;
     cchar_t text[MAX_COLS];
 
-    if (argv[level] == 0) {
+    if (argv[level] == NULL) {
 	beep();
 	return FALSE;
     }
@@ -110,7 +110,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
     txt_x = 0;
     wmove(txtwin, txt_y, txt_x);
 
-    if ((fp = fopen(argv[level], "r")) != 0) {
+    if ((fp = fopen(argv[level], "r")) != NULL) {
 	while ((j = fgetc(fp)) != EOF) {
 	    if (waddch(txtwin, UChar(j)) != OK) {
 		break;
@@ -155,7 +155,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	    break;
 	case 'w':
 	    test_inchs(level + 1, argv, chrwin, strwin);
-	    if (txtbox != 0) {
+	    if (txtbox != NULL) {
 		touchwin(txtbox);
 		wnoutrefresh(txtbox);
 	    } else {

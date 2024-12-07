@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.19 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.20 2024/12/07 18:00:11 tom Exp $")
 
 /* clone/adapt lib_addch.c */
 static const cchar_t blankchar = NewChar(BLANK_TEXT);
@@ -384,7 +384,7 @@ wadd_wch_nosync(WINDOW *win, cchar_t ch)
 	win->_flags &= ~_WRAPPED;
 	break;
     default:
-	if ((s = wunctrl(&ch)) != 0) {
+	if ((s = wunctrl(&ch)) != NULL) {
 	    while (*s) {
 		cchar_t sch;
 		SetChar(sch, *s++, AttrOf(ch));

@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.282 2024/01/19 11:50:07 tom Exp $ */
+/* $Id: curses.h.in,v 1.284 2024/12/07 17:14:44 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -125,10 +125,10 @@
  * doing so makes it incompatible with other implementations of X/Open Curses.
  */
 #undef  NCURSES_CONST
-#define NCURSES_CONST @NCURSES_CONST@
+#define NCURSES_CONST @NCURSES_CONST@	/* for old compilers */
 
 #undef NCURSES_INLINE
-#define NCURSES_INLINE @NCURSES_INLINE@
+#define NCURSES_INLINE @NCURSES_INLINE@	/* for old compilers */
 
 /*
  * The standard type used for color values, and for color-pairs.  The latter
@@ -833,7 +833,7 @@ extern NCURSES_EXPORT(int) vline (chtype, int);				/* generated */
 extern NCURSES_EXPORT(int) vwprintw (WINDOW *, const char *, va_list) GCC_DEPRECATED(use vw_printw)	/* implemented */
 		GCC_PRINTFLIKE(2,0);
 extern NCURSES_EXPORT(int) vw_printw (WINDOW *, const char *, va_list)	/* implemented */
-		GCC_PRINTFLIKE(2,0);	
+		GCC_PRINTFLIKE(2,0);
 extern NCURSES_EXPORT(int) vwscanw (WINDOW *, const char *, va_list) GCC_DEPRECATED(use vw_scanw)	/* implemented */
 		GCC_SCANFLIKE(2,0);
 extern NCURSES_EXPORT(int) vw_scanw (WINDOW *, const char *, va_list)	/* implemented */

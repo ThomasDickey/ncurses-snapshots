@@ -43,7 +43,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.55 2024/11/30 21:24:09 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.56 2024/12/07 21:12:53 tom Exp $")
 
 #define NUM_VISBUFS 4
 
@@ -109,11 +109,11 @@ _nc_vischar(char *tp, unsigned c LIMIT_ARG)
 static const char *
 _nc_visbuf2n(int bufnum, const char *buf, int len)
 {
-    const char *vbuf = 0;
+    const char *vbuf = NULL;
     char *tp;
     int count;
 
-    if (buf == 0)
+    if (buf == NULL)
 	return ("(null)");
     if (buf == CANCELLED_STRING)
 	return ("(cancelled)");
@@ -140,7 +140,7 @@ _nc_visbuf2n(int bufnum, const char *buf, int len)
 	}
     }
 #endif
-    if (tp != 0) {
+    if (tp != NULL) {
 	int c;
 
 	*tp++ = D_QUOTE;
@@ -196,7 +196,7 @@ _nc_viswbuf2n(int bufnum, const wchar_t *buf, int len)
     char *tp;
     int count;
 
-    if (buf == 0)
+    if (buf == NULL)
 	return ("(null)");
 
     if (len < 0)
@@ -212,7 +212,7 @@ _nc_viswbuf2n(int bufnum, const wchar_t *buf, int len)
 	vbuf = tp = mybuf[bufnum];
     }
 #endif
-    if (tp != 0) {
+    if (tp != NULL) {
 	wchar_t c;
 
 	*tp++ = D_QUOTE;
@@ -267,12 +267,12 @@ _nc_viswibuf(const wint_t *buf)
     }
     if (mylen < ++n) {
 	mylen = n + 80;
-	if (mybuf != 0)
+	if (mybuf != NULL)
 	    mybuf = typeRealloc(wchar_t, mylen, mybuf);
 	else
 	    mybuf = typeMalloc(wchar_t, mylen);
     }
-    if (mybuf != 0) {
+    if (mybuf != NULL) {
 	for (n = 0; buf[n] != 0; ++n) {
 	    mybuf[n] = (wchar_t) buf[n];
 	}
@@ -289,7 +289,7 @@ _nc_viscbuf2(int bufnum, const NCURSES_CH_T *buf, int len)
 {
     char *result = _nc_trace_buf(bufnum, (size_t) BUFSIZ);
 
-    if (result != 0) {
+    if (result != NULL) {
 	int first = 0;
 
 #if USE_WIDEC_SUPPORT
@@ -317,7 +317,7 @@ _nc_viscbuf2(int bufnum, const NCURSES_CH_T *buf, int len)
 	    for (j = first; j <= last; ++j) {
 		const char *found = _nc_altcharset_name(attr, (chtype)
 							CharOf(buf[j]));
-		if (found != 0) {
+		if (found != NULL) {
 		    (void) _nc_trace_bufcat(bufnum, found);
 		    attr &= ~A_ALTCHARSET;
 		} else

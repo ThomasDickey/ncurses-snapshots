@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: list_keys.c,v 1.36 2024/11/30 18:07:01 tom Exp $
+ * $Id: list_keys.c,v 1.37 2024/12/07 22:33:32 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -86,7 +86,7 @@ full_name(const char *name)
 {
     const char *result = name;
     int n;
-    for (n = 0; strnames[n] != 0; ++n) {
+    for (n = 0; strnames[n] != NULL; ++n) {
 	if (!strcmp(name, strnames[n])) {
 	    result = strfnames[n];
 	    break;
@@ -104,7 +104,7 @@ show_key(const char *name, bool show)
     if (show && t_opt)
 	fputc('"', stdout);
 
-    if (value != 0 && value != (char *) -1) {
+    if (value != NULL && value != (char *) -1) {
 	while (*value != 0) {
 	    char buffer[10];
 	    int ch = UChar(*value++);
@@ -356,7 +356,7 @@ list_keys(TERMINAL **terms, int count)
 	if (widths2 < check)
 	    widths2 = check;
     }
-    for (j = 0; Name(j) != 0; ++j) {
+    for (j = 0; Name(j) != NULL; ++j) {
 	if (valid_key(Name(j), terms, count)) {
 	    const char *label = f_opt ? full_name(Name(j)) : Name(j);
 	    check = (int) strlen(label);
@@ -399,7 +399,7 @@ list_keys(TERMINAL **terms, int count)
 
     widthsx = widths0 + ((count + 1) * widths2);
 
-    for (j = 0; Name(j) != 0; ++j) {
+    for (j = 0; Name(j) != NULL; ++j) {
 	if (j == 0 || (Type(j) != Type(j - 1)))
 	    draw_line(widthsx);
 	if (valid_key(Name(j), terms, count)) {
@@ -498,7 +498,7 @@ main(int argc, char *argv[])
 	int n;
 	for (n = optind; n < argc; ++n) {
 	    setupterm((NCURSES_CONST char *) argv[n], 1, &status);
-	    if (status > 0 && cur_term != 0) {
+	    if (status > 0 && cur_term != NULL) {
 		terms[found++] = cur_term;
 	    }
 	}

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_opaque.c,v 1.17 2024/11/23 19:10:23 tom Exp $
+ * $Id: test_opaque.c,v 1.18 2024/12/07 22:46:42 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -269,8 +269,8 @@ show_opaque(WINDOW *stswin, WINDOW *txtwin, bool before, int active)
 static int
 test_opaque(int level, char **argv, WINDOW *stswin)
 {
-    WINDOW *txtbox = 0;
-    WINDOW *txtwin = 0;
+    WINDOW *txtbox = NULL;
+    WINDOW *txtwin = NULL;
     FILE *fp;
     int ch;
     int txt_x = 0, txt_y = 0;
@@ -278,7 +278,7 @@ test_opaque(int level, char **argv, WINDOW *stswin)
     bool in_status = FALSE;
     int active = 0;
 
-    if (argv[level] == 0) {
+    if (argv[level] == NULL) {
 	beep();
 	return FALSE;
     }
@@ -306,7 +306,7 @@ test_opaque(int level, char **argv, WINDOW *stswin)
     txt_x = 0;
     wmove(txtwin, txt_y, txt_x);
 
-    if ((fp = fopen(argv[level], "r")) != 0) {
+    if ((fp = fopen(argv[level], "r")) != NULL) {
 	while ((ch = fgetc(fp)) != EOF) {
 	    if (waddch(txtwin, UChar(ch)) != OK) {
 		break;
@@ -393,7 +393,7 @@ test_opaque(int level, char **argv, WINDOW *stswin)
 		break;
 	    case 'w':
 		test_opaque(level + 1, argv, stswin);
-		if (txtbox != 0) {
+		if (txtbox != NULL) {
 		    touchwin(txtbox);
 		    wnoutrefresh(txtbox);
 		} else {

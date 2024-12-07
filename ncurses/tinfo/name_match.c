@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1998-2013,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.25 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.26 2024/12/07 21:24:18 tom Exp $")
 
 #define FirstName _nc_globals.first_name
 
@@ -60,17 +60,17 @@ NCURSES_EXPORT(char *)
 _nc_first_name(const char *const sp)
 {
 #if NO_LEAKS
-    if (sp == 0) {
-	if (FirstName != 0) {
+    if (sp == NULL) {
+	if (FirstName != NULL) {
 	    FreeAndNull(FirstName);
 	}
     } else
 #endif
     {
-	if (FirstName == 0)
+	if (FirstName == NULL)
 	    FirstName = typeMalloc(char, MAX_NAME_SIZE + 1);
 
-	if (FirstName != 0) {
+	if (FirstName != NULL) {
 	    unsigned n;
 	    const char *src = sp;
 #if NCURSES_USE_TERMCAP && NCURSES_XNAMES
@@ -95,7 +95,7 @@ _nc_name_match(const char *const namelst, const char *const name, const char *co
 {
     const char *s;
 
-    if ((s = namelst) != 0) {
+    if ((s = namelst) != NULL) {
 	while (*s != '\0') {
 	    const char *d, *t;
 	    int code, found;

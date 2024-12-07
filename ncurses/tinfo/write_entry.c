@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.137 2024/11/09 19:24:01 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.138 2024/12/07 21:13:36 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -82,12 +82,12 @@ write_file(char *filename, TERMTYPE2 *tp)
     } else {
 	FILE *fp = ((_nc_access(filename, W_OK) == 0)
 		    ? safe_fopen(filename, BIN_W)
-		    : 0);
+		    : NULL);
 	size_t actual;
 
-	if (fp == 0) {
+	if (fp == NULL) {
 	    _nc_syserr_abort("cannot open %s/%s: (errno %d) %s",
-			     _nc_tic_dir(0),
+			     _nc_tic_dir(NULL),
 			     filename,
 			     errno,
 			     strerror(errno));
@@ -129,9 +129,9 @@ check_writeable(int code)
     static const char dirnames[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     static bool verified[sizeof(dirnames)];
 
-    const char *s = 0;
+    const char *s = NULL;
 
-    if (code == 0 || (s = (strchr) (dirnames, code)) == 0) {
+    if (code == 0 || (s = (strchr) (dirnames, code)) == NULL) {
 	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", code);
     } else if (!verified[s - dirnames]) {
 	char dir[sizeof(LEAF_FMT)];

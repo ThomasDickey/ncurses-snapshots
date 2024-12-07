@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_arrays.c,v 1.14 2024/11/30 17:00:55 tom Exp $
+ * $Id: test_arrays.c,v 1.15 2024/12/07 22:46:42 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -66,7 +66,7 @@ dump_array(const char *name, NCURSES_CONST char *const *list)
     int n;
 
     printf("%s:\n", name);
-    for (n = 0; list[n] != 0; ++n) {
+    for (n = 0; list[n] != NULL; ++n) {
 	printf("%5d:%s\n", n, list[n]);
     }
 }

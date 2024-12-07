@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_in_wchnstr.c,v 1.10 2024/07/27 19:23:21 tom Exp $")
+MODULE_ID("$Id: lib_in_wchnstr.c,v 1.11 2024/12/07 18:03:14 tom Exp $")
 
 NCURSES_EXPORT(int)
 win_wchnstr(WINDOW *win, cchar_t *wchstr, int n)
@@ -48,8 +48,8 @@ win_wchnstr(WINDOW *win, cchar_t *wchstr, int n)
     int code = OK;
 
     T((T_CALLED("win_wchnstr(%p,%p,%d)"), (void *) win, (void *) wchstr, n));
-    if (win != 0
-	&& wchstr != 0) {
+    if (win != NULL
+	&& wchstr != NULL) {
 	const NCURSES_CH_T *src;
 	int row, col;
 	int j, k, limit;

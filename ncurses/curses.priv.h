@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.696 2024/11/30 21:32:44 tom Exp $
+ * $Id: curses.priv.h,v 1.697 2024/12/07 18:27:10 tom Exp $
  *
  *	curses.priv.h
  *
@@ -445,8 +445,8 @@ typedef union {
 #include <term.priv.h>
 #include <nc_termios.h>
 
-#define IsPreScreen(sp)      (((sp) != 0) && sp->_prescreen)
-#define HasTerminal(sp)      (((sp) != 0) && (0 != ((sp)->_term)))
+#define IsPreScreen(sp)      (((sp) != NULL) && sp->_prescreen)
+#define HasTerminal(sp)      (((sp) != NULL) && (NULL != ((sp)->_term)))
 #define IsValidScreen(sp)    (HasTerminal(sp) && !IsPreScreen(sp))
 
 #if USE_REENTRANT
@@ -1291,7 +1291,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define WINDOW_EXT(w,m) (((WINDOWLIST *)((void *)((char *)(w) - offsetof(WINDOWLIST, win))))->m)
 
 #ifdef USE_SP_WINDOWLIST
-#define SP_INIT_WINDOWLIST(sp)	WindowList(sp) = 0
+#define SP_INIT_WINDOWLIST(sp)	WindowList(sp) = NULL
 #else
 #define SP_INIT_WINDOWLIST(sp)	/* nothing */
 #endif
@@ -1308,7 +1308,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
     sp->_cursor            = -1;                \
     SP_INIT_WINDOWLIST(sp);                     \
     sp->_outch             = NCURSES_OUTC_FUNC; \
-    sp->jump               = 0                  \
+    sp->jump               = NULL               \
 
 /* usually in <limits.h> */
 #ifndef UCHAR_MAX
@@ -1546,7 +1546,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define CHANGED     -1
 
 #define LEGALYX(w, y, x) \
-	      ((w) != 0 && \
+	      ((w) != NULL && \
 		((x) >= 0 && (x) <= (w)->_maxx && \
 		 (y) >= 0 && (y) <= (w)->_maxy))
 
@@ -1579,12 +1579,12 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #include <nc_alloc.h>
 #include <nc_access.h>
 
-#define FreeIfNeeded(p)  if ((p) != 0) free(p)
+#define FreeIfNeeded(p)  if ((p) != NULL) free(p)
 
 /* FreeAndNull() is not a comma-separated expression because some compilers
  * do not accept a mixture of void with values.
  */
-#define FreeAndNull(p)   do { free(p); p = 0; } while (0)
+#define FreeAndNull(p)   do { free(p); p = NULL; } while (0)
 
 #ifdef EXP_OOM_TESTING
 extern NCURSES_EXPORT(void *)	_nc_oom_malloc(size_t size);
@@ -1606,21 +1606,21 @@ extern NCURSES_EXPORT(char *)	_nc_oom_strdup(const char *ptr);
 #define TYPE_MALLOC(type, size, name) \
 	do { \
 	    name = typeMalloc(type, size); \
-	    if (name == 0) \
+	    if (name == NULL) \
 		_nc_err_abort(MSG_NO_MEMORY); \
 	} while (0)
 
 #define TYPE_CALLOC(type, size, name) \
 	do { \
 	    name = typeCalloc(type, size); \
-	    if (name == 0) \
+	    if (name == NULL) \
 		_nc_err_abort(MSG_NO_MEMORY); \
 	} while (0)
 
 #define TYPE_REALLOC(type, size, name) \
 	do { \
 	    name = typeRealloc(type, size, name); \
-	    if (name == 0) \
+	    if (name == NULL) \
 		_nc_err_abort(MSG_NO_MEMORY); \
 	} while (0)
 
@@ -1652,8 +1652,8 @@ extern NCURSES_EXPORT(char *)	_nc_oom_strdup(const char *ptr);
 /*
  * Standardize/simplify common loops
  */
-#define each_screen(p) p = _nc_screen_chain; p != 0; p = (p)->_next_screen
-#define each_window(sp,p) p = WindowList(sp); p != 0; p = (p)->next
+#define each_screen(p) p = _nc_screen_chain; p != NULL; p = (p)->_next_screen
+#define each_window(sp,p) p = WindowList(sp); p != NULL; p = (p)->next
 #define each_ripoff(p) p = safe_ripoff_stack; (p - safe_ripoff_stack) < N_RIPS; ++p
 
 /*
@@ -1665,8 +1665,8 @@ extern NCURSES_EXPORT(char *)	_nc_oom_strdup(const char *ptr);
 #define T_CREATE(fmt) "create :" fmt
 #define T_RETURN(fmt) "return }" fmt
 
-#define NonNull(s)              ((s) != 0 ? s : "<null>")
-#define NonEmpty(s)             ((s) != 0 && *(s) != '\0')
+#define NonNull(s)              ((s) != NULL ? s : "<null>")
+#define NonEmpty(s)             ((s) != NULL && *(s) != '\0')
 
 #ifdef TRACE
 
@@ -1858,18 +1858,18 @@ extern	NCURSES_EXPORT(void) name (void); \
    TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
 #define DelCharCost(sp,count) \
-		((parm_dch != 0) \
+		((parm_dch != NULL) \
 		? sp->_dch_cost \
-		: ((delete_character != 0) \
+		: ((delete_character != NULL) \
 			? (sp->_dch1_cost * count) \
 			: INFINITY))
 
 #define InsCharCost(sp,count) \
-		((parm_ich != 0) \
+		((parm_ich != NULL) \
 		? sp->_ich_cost \
 		: ((enter_insert_mode && exit_insert_mode) \
 		  ? sp->_smir_cost + sp->_rmir_cost + (sp->_ip_cost * count) \
-		  : ((insert_character != 0) \
+		  : ((insert_character != NULL) \
 		    ? ((sp->_ich1_cost + sp->_ip_cost) * count) \
 		    : INFINITY)))
 
@@ -1956,7 +1956,7 @@ extern NCURSES_EXPORT(void) _nc_expanded (void);
 #endif
 
 #define save_ttytype(termp) \
-	if (TerminalType(termp).term_names != 0) { \
+	if (TerminalType(termp).term_names != NULL) { \
 	    _nc_STRNCPY(ttytype, \
 	    		TerminalType(termp).term_names, \
 			NAMESIZE - 1); \
@@ -2034,7 +2034,7 @@ extern NCURSES_EXPORT(void) _nc_reserve_pairs(SCREEN *, int);
 extern NCURSES_EXPORT(void) _nc_change_pair(SCREEN *, int);
 
 #define ReservePairs(sp,want) \
-	    if ((sp->_color_pairs == 0) || (want >= sp->_pair_alloc)) \
+	    if ((sp->_color_pairs == NULL) || (want >= sp->_pair_alloc)) \
 		_nc_reserve_pairs(sp, want)
 
 /* lib_getch.c */
@@ -2077,7 +2077,7 @@ extern NCURSES_EXPORT(SCREEN *) _nc_find_prescr(void);
 extern NCURSES_EXPORT(void)   _nc_forget_prescr(void);
 #else
 #define _nc_find_prescr()     _nc_prescreen.allocated
-#define _nc_forget_prescr()   _nc_prescreen.allocated = 0
+#define _nc_forget_prescr()   _nc_prescreen.allocated = NULL
 #endif
 
 /* lib_set_term.c */
@@ -2311,7 +2311,7 @@ extern NCURSES_EXPORT_VAR(int *) _nc_oldnums;
 
 #define USE_SETBUF_0 0
 
-#define NC_OUTPUT(sp) ((sp != 0 && sp->_ofp != 0) ? sp->_ofp : stdout)
+#define NC_OUTPUT(sp) ((sp != NULL && sp->_ofp != NULL) ? sp->_ofp : stdout)
 
 /*
  * On systems with a broken linker, define 'SP' as a function to force the
@@ -2385,7 +2385,7 @@ extern NCURSES_EXPORT(int) _nc_get_tty_mode(TTY *);
 #define SetSafeOutcWrapper(outc)	    \
     SCREEN* sp = CURRENT_SCREEN;            \
     struct screen outc_wrapper;		    \
-    if (sp==0) {                            \
+    if (sp == NULL) {                       \
 	sp = &outc_wrapper;                 \
 	memset(sp,0,sizeof(struct screen)); \
 	sp->_outch = _nc_outc_wrapper;      \
@@ -2579,7 +2579,7 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #  endif
 #else
 #  define IsTermInfo(sp)       TRUE
-#  define HasTInfoTerminal(sp) (0 != TerminalOf(sp))
+#  define HasTInfoTerminal(sp) (NULL != TerminalOf(sp))
 #  if defined(EXP_WIN32_DRIVER)
 #    define IsTermInfoOnConsole(sp) _nc_console_test(TerminalOf(sp)->Filedes)
 #  else

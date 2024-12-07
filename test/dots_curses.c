@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_curses.c,v 1.26 2024/11/30 17:48:07 tom Exp $
+ * $Id: dots_curses.c,v 1.27 2024/12/07 22:32:11 tom Exp $
  *
  * A simple demo of the curses interface used for comparison with termcap.
  */
@@ -170,7 +170,7 @@ main(int argc, char *argv[])
 	}
     }
 
-    srand((unsigned) time(0));
+    srand((unsigned) time(NULL));
 
     SetupAlarm(r_option);
     InitAndCatch(initscr(), onsig);

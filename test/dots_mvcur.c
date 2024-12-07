@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2007
  *
- * $Id: dots_mvcur.c,v 1.32 2024/10/06 21:17:54 tom Exp $
+ * $Id: dots_mvcur.c,v 1.33 2024/12/07 22:32:11 tom Exp $
  *
  * A simple demo of the terminfo interface, and mvcur.
  */
@@ -103,7 +103,7 @@ static int
 get_number(NCURSES_CONST char *cap, int map)
 {
     int result = map;
-    if (cap != 0) {
+    if (cap != NULL) {
 	int check = tigetnum(cap);
 	if (check > 0)
 	    result = check;
@@ -195,18 +195,18 @@ main(int argc, char *argv[])
     InitAndCatch((sp = newterm((char *) 0, stdout, stdin)), onsig);
     refresh();			/* needed with Solaris curses to cancel endwin */
 
-    if (sp == 0) {
+    if (sp == NULL) {
 	fprintf(stderr, "Cannot initialize terminal\n");
 	ExitProgram(EXIT_FAILURE);
     }
 
-    srand((unsigned) time(0));
+    srand((unsigned) time(NULL));
 
     outs(clear_screen);
     outs(cursor_home);
     outs(cursor_invisible);
 
-#define GetNumber(ln,sn) get_number(f_option ? #sn : 0, ln)
+#define GetNumber(ln,sn) get_number(f_option ? #sn : NULL, ln)
     my_colors = GetNumber(max_colors, colors);
     if (my_colors > 1) {
 	if (!VALID_STRING(set_a_foreground)

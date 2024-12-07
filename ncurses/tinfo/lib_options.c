@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_options.c,v 1.84 2024/11/23 19:17:25 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.85 2024/12/07 18:24:47 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -57,7 +57,7 @@ idlok(WINDOW *win, bool flag)
 
     if (win) {
 	SCREEN *sp = _nc_screen_of(win);
-	if (sp != 0
+	if (sp != NULL
 #ifdef USE_TERM_DRIVER
 	    && IsTermInfo(sp)
 #endif
@@ -158,14 +158,14 @@ NCURSES_EXPORT(int)
 meta(WINDOW *win GCC_UNUSED, bool flag)
 {
     int result = ERR;
-    SCREEN *sp = (win == 0) ? CURRENT_SCREEN : _nc_screen_of(win);
+    SCREEN *sp = (win == NULL) ? CURRENT_SCREEN : _nc_screen_of(win);
 
     /* Ok, we stay relaxed and don't signal an error if win is NULL */
     T((T_CALLED("meta(%p,%d)"), (void *) win, flag));
 
     /* Ok, we stay relaxed and don't signal an error if win is NULL */
 
-    if (sp != 0) {
+    if (sp != NULL) {
 	sp->_use_meta = flag;
 #ifdef USE_TERM_DRIVER
 	if (IsTermInfo(sp)) {
@@ -195,7 +195,7 @@ NCURSES_SP_NAME(curs_set) (NCURSES_SP_DCLx int vis)
     int code = ERR;
     T((T_CALLED("curs_set(%p,%d)"), (void *) SP_PARM, vis));
 
-    if (SP_PARM != 0 && vis >= 0 && vis <= 2) {
+    if (SP_PARM != NULL && vis >= 0 && vis <= 2) {
 	int cursor = SP_PARM->_cursor;
 	if (vis == cursor) {
 	    code = cursor;
@@ -269,7 +269,7 @@ typeahead(int fd)
 static int
 has_key_internal(int keycode, TRIES * tp)
 {
-    if (tp == 0)
+    if (tp == NULL)
 	return (FALSE);
     else if (tp->value == keycode)
 	return (TRUE);
@@ -290,7 +290,7 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(has_key) (NCURSES_SP_DCLx int keycode)
 {
     T((T_CALLED("has_key(%p,%d)"), (void *) SP_PARM, keycode));
-    returnCode(SP != 0 ? has_key_internal(keycode, SP_PARM->_keytry) : FALSE);
+    returnCode(SP != NULL ? has_key_internal(keycode, SP_PARM->_keytry) : FALSE);
 }
 
 #if NCURSES_SP_FUNCS
@@ -334,7 +334,7 @@ _nc_keypad(SCREEN *sp, bool flag)
 {
     int rc = ERR;
 
-    if (sp != 0) {
+    if (sp != NULL) {
 #ifdef USE_PTHREADS
 	/*
 	 * We might have this situation in a multithreaded application that

@@ -35,7 +35,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.34 2024/07/27 18:50:22 tom Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.35 2024/12/07 21:58:32 tom Exp $")
 
 typedef struct
   {
@@ -104,7 +104,7 @@ Generic_Enum_Type(void *arg)
 	      argp->kwds = typeMalloc(char *, cnt + 1);
 
 	      kp = kwds;
-	      if ((kptarget = argp->kwds) != 0)
+	      if ((kptarget = argp->kwds) != NULL)
 		{
 		  while (kp && (*kp))
 		    {
@@ -168,7 +168,7 @@ Copy_Enum_Type(const void *argp)
 	      char **kp = ap->kwds;
 	      result->kwds = typeMalloc(char *, 1 + ap->count);
 
-	      if ((kptarget = result->kwds) != 0)
+	      if ((kptarget = result->kwds) != NULL)
 		{
 		  while (kp && (*kp))
 		    {

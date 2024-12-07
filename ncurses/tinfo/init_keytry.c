@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.21 2024/07/27 19:23:59 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.22 2024/12/07 18:14:49 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -74,7 +74,7 @@ _nc_init_keytry(SCREEN *sp)
      * mouse_activate() (which will call keyok()) are first called.
      */
 
-    if (sp != 0) {
+    if (sp != NULL) {
 	unsigned n;
 
 	for (n = 0; _nc_tinfo_fkeys[n].code; n++) {
@@ -95,7 +95,7 @@ _nc_init_keytry(SCREEN *sp)
 	    for (n = STRCOUNT; n < NUM_STRINGS(tp); ++n) {
 		const char *name = ExtStrname(tp, (int) n, strnames);
 		const char *value = tp->Strings[n];
-		if (name != 0
+		if (name != NULL
 		    && *name == 'k'
 		    && VALID_STRING(value)
 		    && NCURSES_SP_NAME(key_defined) (NCURSES_SP_ARGx

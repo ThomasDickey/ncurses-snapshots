@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.80 2024/11/09 20:36:48 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.81 2024/12/07 21:12:53 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -104,7 +104,7 @@ _nc_copy_entry(ENTRY * oldp)
 NCURSES_EXPORT(char *)
 _nc_save_str(const char *string)
 {
-    char *result = 0;
+    char *result = NULL;
     size_t old_next_free = next_free;
 
     if (stringbuf != NULL) {
@@ -164,7 +164,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 	}
 
 	for (i = 0; i < nuses; i++) {
-	    if (ep->uses[i].name == 0) {
+	    if (ep->uses[i].name == NULL) {
 		ep->uses[i].name = _nc_save_str(ep->uses[i].name);
 	    }
 	}
@@ -187,7 +187,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
     }
 
     for (i = 0; i < nuses; i++) {
-	if (ep->uses[i].name == 0)
+	if (ep->uses[i].name == NULL)
 	    useoffsets[i] = ABSENT_OFFSET;
 	else
 	    useoffsets[i] = (int) (ep->uses[i].name - stringbuf);
@@ -237,7 +237,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 
     for (i = 0; i < nuses; i++) {
 	if (useoffsets[i] == ABSENT_OFFSET) {
-	    ep->uses[i].name = 0;
+	    ep->uses[i].name = NULL;
 	} else {
 	    ep->uses[i].name = strdup(tp->str_table + useoffsets[i]);
 	}
@@ -258,7 +258,7 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 #endif
     unsigned i;
 
-    if (source == 0 || from == 0 || target == 0 || to == 0)
+    if (source == NULL || from == NULL || target == NULL || to == NULL)
 	return;
 
 #if NCURSES_XNAMES

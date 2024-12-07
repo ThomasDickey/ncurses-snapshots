@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: color_content.c,v 1.21 2024/11/30 18:31:01 tom Exp $
+ * $Id: color_content.c,v 1.22 2024/12/07 22:22:51 tom Exp $
  */
 
 #define NEED_TIME_H
@@ -186,7 +186,7 @@ run_test(void)
 	my_color_t g;
 	my_color_t b;
 	if (ColorContent(color, &r, &g, &b) == OK) {
-	    if (expected != 0) {
+	    if (expected != NULL) {
 		if (r != expected[color].r)
 		    success = FALSE;
 		if (g != expected[color].g)

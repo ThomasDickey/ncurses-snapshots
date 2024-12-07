@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.61 2024/11/30 18:31:01 tom Exp $
+ * $Id: demo_terminfo.c,v 1.62 2024/12/07 22:27:13 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -141,17 +141,17 @@ make_dblist(void)
 static char *
 next_dbitem(void)
 {
-    char *result = 0;
+    char *result = NULL;
 
     if (db_list) {
-	if ((result = db_list[db_item]) == 0) {
+	if ((result = db_list[db_item]) == NULL) {
 	    db_item = 0;
 	    result = db_list[0];
 	} else {
 	    db_item++;
 	}
     }
-    if (result != 0)
+    if (result != NULL)
 	printf("** %s\n", result);
     return result;
 }
@@ -165,7 +165,7 @@ free_dblist(void)
 	for (n = 0; db_list[n]; ++n)
 	    free(db_list[n]);
 	free(db_list);
-	db_list = 0;
+	db_list = NULL;
     }
 }
 #endif
@@ -176,7 +176,7 @@ dumpit(NCURSES_CONST char *cap, const char *show)
     const char *str;
     int num;
 
-    if ((str = tigetstr(cap)) != 0 && (str != (char *) -1)) {
+    if ((str = tigetstr(cap)) != NULL && (str != (char *) -1)) {
 	total_values++;
 	total_s_values++;
 	if (!q_opt) {
@@ -339,7 +339,7 @@ demo_terminfo(NCURSES_CONST char *name)
     if (b_opt) {
 	for (n = 0;; ++n) {
 	    cap = my_boolcodes[n];
-	    if (cap == 0)
+	    if (cap == NULL)
 		break;
 	    dumpit(cap, fullname(bool, n));
 	}
@@ -348,7 +348,7 @@ demo_terminfo(NCURSES_CONST char *name)
     if (n_opt) {
 	for (n = 0;; ++n) {
 	    cap = my_numcodes[n];
-	    if (cap == 0)
+	    if (cap == NULL)
 		break;
 	    dumpit(cap, fullname(num, n));
 	}
@@ -357,17 +357,17 @@ demo_terminfo(NCURSES_CONST char *name)
     if (s_opt) {
 	for (n = 0;; ++n) {
 	    cap = my_strcodes[n];
-	    if (cap == 0)
+	    if (cap == NULL)
 		break;
 	    dumpit(cap, fullname(str, n));
 	}
     }
 #ifdef NCURSES_VERSION
-    if (x_opt && (my_blob == 0)) {
+    if (x_opt && (my_blob == NULL)) {
 	if (y_opt) {
 #if NCURSES_XNAMES
 	    const TERMTYPE *term = (TERMTYPE *) cur_term;
-	    if (term != 0
+	    if (term != NULL
 		&& ((NUM_BOOLEANS(term) != BOOLCOUNT)
 		    || (NUM_NUMBERS(term) != NUMCOUNT)
 		    || (NUM_STRINGS(term) != STRCOUNT))) {
@@ -455,16 +455,16 @@ parse_description(const char *input_name)
      * None of the arrays could be larger than the input-file, and since it
      * is small, just allocate the maximum for simplicity.
      */
-    if ((my_blob = malloc((size_t) sb.st_size + 1)) == 0 ||
-	(my_boolcodes = typeCalloc(char *, sb.st_size)) == 0 ||
-	  (my_numcodes = typeCalloc(char *, sb.st_size)) == 0 ||
-	  (my_numvalues = typeCalloc(char *, sb.st_size)) == 0 ||
-	  (my_strcodes = typeCalloc(char *, sb.st_size)) == 0 ||
-	  (my_strvalues = typeCalloc(char *, sb.st_size)) == 0) {
+    if ((my_blob = malloc((size_t) sb.st_size + 1)) == NULL ||
+	(my_boolcodes = typeCalloc(char *, sb.st_size)) == NULL ||
+	  (my_numcodes = typeCalloc(char *, sb.st_size)) == NULL ||
+	  (my_numvalues = typeCalloc(char *, sb.st_size)) == NULL ||
+	  (my_strcodes = typeCalloc(char *, sb.st_size)) == NULL ||
+	  (my_strvalues = typeCalloc(char *, sb.st_size)) == NULL) {
 	failed("cannot allocate memory for input-file");
     }
 
-    if ((fp = fopen(input_name, "r")) == 0) {
+    if ((fp = fopen(input_name, "r")) == NULL) {
 	failed("cannot open input-file");
     } else {
 	len = fread(my_blob, sizeof(char), (size_t) sb.st_size, fp);
@@ -704,11 +704,11 @@ parse_description(const char *input_name)
 	    break;
 	}
     }
-    my_boolcodes[count_bools] = 0;
-    my_numcodes[count_nums] = 0;
-    my_numvalues[count_nums] = 0;
-    my_strcodes[count_strs] = 0;
-    my_strvalues[count_strs] = 0;
+    my_boolcodes[count_bools] = NULL;
+    my_numcodes[count_nums] = NULL;
+    my_numvalues[count_nums] = NULL;
+    my_strcodes[count_strs] = NULL;
+    my_strvalues[count_strs] = NULL;
 
 #if 0
     printf("# bools:%d\n", (int) count_bools);
@@ -732,11 +732,11 @@ copy_code_list(NCURSES_CONST char *const *list)
     int pass;
     size_t count;
     size_t length = 1;
-    char **result = 0;
-    char *unused = 0;
+    char **result = NULL;
+    char *unused = NULL;
 
     for (pass = 0; pass < 2; ++pass) {
-	for (count = 0; list[count] != 0; ++count) {
+	for (count = 0; list[count] != NULL; ++count) {
 	    size_t chunk = strlen(list[count]) + 1;
 	    if (pass == 0) {
 		length += chunk;
@@ -750,7 +750,7 @@ copy_code_list(NCURSES_CONST char *const *list)
 	    char *blob = malloc(length);
 	    result = typeCalloc(char *, count + 1);
 	    unused = blob;
-	    if (blob == 0 || result == 0)
+	    if (blob == NULL || result == NULL)
 		failed("copy_code_list failed");
 	}
     }
@@ -815,7 +815,7 @@ main(int argc, char *argv[])
     int repeat;
     NCURSES_CONST char *name;
     int r_opt = 1;
-    const char *input_name = 0;
+    const char *input_name = NULL;
 
     while ((ch = getopt(argc, argv, OPTS_COMMON "abd:e:fi:nqr:sxy")) != -1) {
 	switch (ch) {
@@ -888,7 +888,7 @@ main(int argc, char *argv[])
 		for (n = optind; n < argc; ++n) {
 		    brute_force(argv[n]);
 		}
-	    } else if ((name = getenv("TERM")) != 0) {
+	    } else if ((name = getenv("TERM")) != NULL) {
 		brute_force(name);
 	    } else {
 		static NCURSES_CONST char dumb[] = "dumb";
@@ -896,7 +896,7 @@ main(int argc, char *argv[])
 	    }
 	}
     } else {
-	if (input_name != 0) {
+	if (input_name != NULL) {
 	    parse_description(input_name);
 	}
 #if USE_CODE_LISTS
@@ -915,7 +915,7 @@ main(int argc, char *argv[])
 		for (n = optind; n < argc; ++n) {
 		    demo_terminfo(argv[n]);
 		}
-	    } else if ((name = getenv("TERM")) != 0) {
+	    } else if ((name = getenv("TERM")) != NULL) {
 		demo_terminfo(name);
 	    } else {
 		static NCURSES_CONST char dumb[] = "dumb";
@@ -933,8 +933,8 @@ main(int argc, char *argv[])
 
 #if NO_LEAKS
     free_dblist();
-    if (input_name != 0) {
-	if (my_blob != 0) {
+    if (input_name != NULL) {
+	if (my_blob != NULL) {
 	    free(my_blob);
 	    free(my_boolcodes);
 	    free(my_numcodes);

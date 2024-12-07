@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.18 2024/07/27 19:23:21 tom Exp $")
+MODULE_ID("$Id: lib_wunctrl.c,v 1.19 2024/12/07 18:03:14 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 NCURSES_SP_NAME(wunctrl) (NCURSES_SP_DCLx cchar_t *wc)
@@ -44,9 +44,9 @@ NCURSES_SP_NAME(wunctrl) (NCURSES_SP_DCLx cchar_t *wc)
     static wchar_t str[CCHARW_MAX + 1];
     wchar_t *result;
 
-    if (wc == 0) {
-	result = 0;
-    } else if (SP_PARM != 0 && Charable(*wc)) {
+    if (wc == NULL) {
+	result = NULL;
+    } else if (SP_PARM != NULL && Charable(*wc)) {
 	wchar_t *wsp;
 	const char *p =
 	NCURSES_SP_NAME(unctrl) (NCURSES_SP_ARGx

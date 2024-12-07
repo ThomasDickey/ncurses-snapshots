@@ -29,7 +29,7 @@
 /*
  * clone of view.c, using pads
  *
- * $Id: padview.c,v 1.26 2024/11/30 18:14:46 tom Exp $
+ * $Id: padview.c,v 1.27 2024/12/07 22:40:19 tom Exp $
  */
 
 #include <test.priv.h>
@@ -124,7 +124,7 @@ read_file(const char *filename)
     size_t len;
     struct stat sb;
     char *my_blob;
-    char **my_vec = 0;
+    char **my_vec = NULL;
     WINDOW *my_pad;
 
     if (stat(filename, &sb) != 0
@@ -136,11 +136,11 @@ read_file(const char *filename)
 	failed("input is empty");
     }
 
-    if ((fp = fopen(filename, "r")) == 0) {
+    if ((fp = fopen(filename, "r")) == NULL) {
 	failed("cannot open input-file");
     }
 
-    if ((my_blob = malloc((size_t) sb.st_size + 1)) == 0) {
+    if ((my_blob = malloc((size_t) sb.st_size + 1)) == NULL) {
 	failed("cannot allocate memory for input-file");
     }
 
@@ -171,7 +171,7 @@ read_file(const char *filename)
 	}
 	num_lines = k;
 	if (pass == 0) {
-	    if (((my_vec = typeCalloc(char *, (size_t) k + 2)) == 0)) {
+	    if (((my_vec = typeCalloc(char *, (size_t) k + 2)) == NULL)) {
 		failed("cannot allocate line-vector #1");
 	    }
 	} else {
@@ -199,7 +199,7 @@ read_file(const char *filename)
     }
     width = (width + 1) * 5;
     my_pad = newpad(height, width);
-    if (my_pad == 0)
+    if (my_pad == NULL)
 	failed("cannot allocate pad workspace");
     if (try_color) {
 	wattrset(my_pad, COLOR_PAIR(my_pair));
@@ -301,7 +301,7 @@ main(int argc, char *argv[])
 	"  s              - use entered count for halfdelay() parameter",
 	"                 - if no entered count, stop nodelay()",
 	"  <space>        - begin nodelay()",
-	0
+	NULL
     };
 
     int ch;
@@ -337,9 +337,9 @@ main(int argc, char *argv[])
 #ifdef TRACE
 	case 'D':
 	    {
-		char *next = 0;
+		char *next = NULL;
 		int tvalue = (int) strtol(optarg, &next, 0);
-		if (tvalue < 0 || (next != 0 && *next != 0))
+		if (tvalue < 0 || (next != NULL && *next != 0))
 		    usage(FALSE);
 		curses_trace((unsigned) tvalue);
 	    }

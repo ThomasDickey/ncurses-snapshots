@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.138 2024/11/30 21:30:49 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.139 2024/12/07 22:14:46 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -185,19 +185,19 @@ askuser(const char *dflt)
 	    (void) fprintf(stderr, "Terminal type? ");
 	(void) fflush(stderr);
 
-	if (fgets(answer, sizeof(answer), stdin) == 0) {
-	    if (dflt == 0) {
+	if (fgets(answer, sizeof(answer), stdin) == NULL) {
+	    if (dflt == NULL) {
 		exit_error();
 		/* NOTREACHED */
 	    }
 	    return (dflt);
 	}
 
-	if ((p = strchr(answer, '\n')) != 0)
+	if ((p = strchr(answer, '\n')) != NULL)
 	    *p = '\0';
 	if (answer[0])
 	    return (answer);
-	if (dflt != 0)
+	if (dflt != NULL)
 	    return (dflt);
     }
 }
@@ -344,7 +344,7 @@ static const SPEEDS speeds[] =
 static int
 tbaudrate(char *rate)
 {
-    const SPEEDS *sp = 0;
+    const SPEEDS *sp = NULL;
     size_t n;
 
     /* The baudrate number can be preceded by a 'B', which is ignored. */
@@ -361,7 +361,7 @@ tbaudrate(char *rate)
 	    break;
 	}
     }
-    if (sp == 0)
+    if (sp == NULL)
 	err("unknown baud rate %s", rate);
     return (sp->speed);
 }
@@ -377,18 +377,18 @@ add_mapping(const char *port, char *arg)
     MAP *mapp;
     char *copy, *p;
     const char *termp;
-    char *base = 0;
+    char *base = NULL;
 
     copy = strdup(arg);
     mapp = typeMalloc(MAP, 1);
-    if (copy == 0 || mapp == 0)
+    if (copy == NULL || mapp == NULL)
 	failed("malloc");
 
     assert(copy != 0);
     assert(mapp != 0);
 
-    mapp->next = 0;
-    if (maplist == 0)
+    mapp->next = NULL;
+    if (maplist == NULL)
 	cur = maplist = mapp;
     else {
 	cur->next = mapp;
@@ -400,14 +400,14 @@ add_mapping(const char *port, char *arg)
 
     arg = strpbrk(arg, "><@=!:");
 
-    if (arg == 0) {		/* [?]term */
+    if (arg == NULL) {		/* [?]term */
 	mapp->type = mapp->porttype;
-	mapp->porttype = 0;
+	mapp->porttype = NULL;
 	goto done;
     }
 
     if (arg == mapp->porttype)	/* [><@=! baud]:term */
-	termp = mapp->porttype = 0;
+	termp = mapp->porttype = NULL;
     else
 	termp = base = arg;
 
@@ -442,7 +442,7 @@ add_mapping(const char *port, char *arg)
 	++arg;
     } else {			/* Optional baudrate. */
 	arg = strchr(p = arg, ':');
-	if (arg == 0)
+	if (arg == NULL)
 	    goto badmopt;
 	*arg++ = '\0';
 	mapp->speed = tbaudrate(p);
@@ -451,7 +451,7 @@ add_mapping(const char *port, char *arg)
     mapp->type = arg;
 
     /* Terminate porttype, if specified. */
-    if (termp != 0)
+    if (termp != NULL)
 	*base = '\0';
 
     /* If a NOT conditional, reverse the test. */
@@ -499,7 +499,7 @@ mapped(const char *type)
     int match;
 
     for (mapp = maplist; mapp; mapp = mapp->next)
-	if (mapp->porttype == 0 || !strcmp(mapp->porttype, type)) {
+	if (mapp->porttype == NULL || !strcmp(mapp->porttype, type)) {
 	    switch (mapp->conditional) {
 	    case 0:		/* No test specified. */
 		match = TRUE;
@@ -562,11 +562,11 @@ get_termcap_entry(int fd, char *userarg)
     }
 
     /* Try the environment. */
-    if ((ttype = getenv("TERM")) != 0)
+    if ((ttype = getenv("TERM")) != NULL)
 	goto map;
 
 #if HAVE_PATH_TTYS
-    if ((ttypath = ttyname(fd)) != 0) {
+    if ((ttypath = ttyname(fd)) != NULL) {
 	p = _nc_basename(ttypath);
 #if HAVE_GETTTYNAM
 	/*
@@ -616,14 +616,14 @@ get_termcap_entry(int fd, char *userarg)
      * by out of date stuff in the environment.
      */
   found:
-    if ((p = getenv("TERMCAP")) != 0 && !_nc_is_abs_path(p)) {
+    if ((p = getenv("TERMCAP")) != NULL && !_nc_is_abs_path(p)) {
 	/* 'unsetenv("TERMCAP")' is not portable.
 	 * The 'environ' array is better.
 	 */
 	int n;
-	for (n = 0; environ[n] != 0; n++) {
+	for (n = 0; environ[n] != NULL; n++) {
 	    if (!strncmp("TERMCAP=", environ[n], (size_t) 8)) {
-		while ((environ[n] = environ[n + 1]) != 0) {
+		while ((environ[n] = environ[n + 1]) != NULL) {
 		    n++;
 		}
 		break;
@@ -639,7 +639,7 @@ get_termcap_entry(int fd, char *userarg)
 	if (ttype[1] != '\0')
 	    ttype = askuser(ttype + 1);
 	else
-	    ttype = askuser(0);
+	    ttype = askuser(NULL);
     }
     /* Find the terminfo entry.  If it doesn't exist, ask the user. */
     while (setupterm((NCURSES_CONST char *) ttype, fd, &errret)
@@ -647,12 +647,12 @@ get_termcap_entry(int fd, char *userarg)
 	if (errret == 0) {
 	    (void) fprintf(stderr, "%s: unknown terminal type %s\n",
 			   _nc_progname, ttype);
-	    ttype = 0;
+	    ttype = NULL;
 	} else {
 	    (void) fprintf(stderr,
 			   "%s: can't initialize terminal type %s (error %d)\n",
 			   _nc_progname, ttype, errret);
-	    ttype = 0;
+	    ttype = NULL;
 	}
 	ttype = askuser(ttype);
     }
@@ -713,7 +713,7 @@ print_shell_commands(const char *ttype)
      * Figure out what shell we're using.  A hack, we look for an
      * environmental variable SHELL ending in "csh".
      */
-    if ((var = getenv("SHELL")) != 0
+    if ((var = getenv("SHELL")) != NULL
 	&& ((len = (int) strlen(leaf = _nc_basename(var))) >= 3)
 	&& !strcmp(leaf + len - 3, "csh"))
 	p = "set noglob;\nsetenv TERM %s;\nunset noglob;\n";
@@ -806,7 +806,7 @@ main(int argc, char **argv)
 	    tkillchar = arg_to_char();
 	    break;
 	case 'm':		/* map identifier to type */
-	    add_mapping(0, optarg);
+	    add_mapping(NULL, optarg);
 	    break;
 	case 'p':		/* OBSOLETE: map identifier to type */
 	    add_mapping("plugboard", optarg);

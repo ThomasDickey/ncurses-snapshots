@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.40 2024/11/09 18:30:28 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.41 2024/12/07 18:05:04 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -70,7 +70,7 @@ _nc_rootname(char *path)
     static char *temp;
     char *s;
 
-    if ((temp = strdup(result)) != 0)
+    if ((temp = strdup(result)) != NULL)
 	result = temp;
 #if !MIXEDCASE_FILENAMES
     for (s = result; *s != '\0'; ++s) {
@@ -97,7 +97,7 @@ _nc_is_abs_path(const char *path)
 #define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
 		  || (((s)[0] != 0) && ((s)[1] == ':')))
 #else
-#define is_pathname(s) ((s) != 0 && (s)[0] == '/')
+#define is_pathname(s) ((s) != NULL && (s)[0] == '/')
 #endif
     return is_pathname(path);
 }
@@ -113,7 +113,7 @@ _nc_pathlast(const char *path)
     if (test == 0)
 	test = strrchr(path, '\\');
 #endif
-    if (test == 0)
+    if (test == NULL)
 	test = path;
     else
 	test++;
@@ -131,7 +131,7 @@ _nc_access(const char *path, int mode)
 {
     int result;
 
-    if (path == 0) {
+    if (path == NULL) {
 	errno = ENOENT;
 	result = -1;
     } else if (ACCESS(path, mode) < 0) {
@@ -143,7 +143,7 @@ _nc_access(const char *path, int mode)
 
 	    _nc_STRCPY(head, path, sizeof(head));
 	    leaf = _nc_basename(head);
-	    if (leaf == 0)
+	    if (leaf == NULL)
 		leaf = head;
 	    *leaf = '\0';
 	    if (head == leaf)

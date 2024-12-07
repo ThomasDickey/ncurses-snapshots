@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.44 2024/09/28 15:56:07 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.45 2024/12/07 18:08:56 tom Exp $")
 
 static int
 cleanup_lines(struct ldat *data, int length)
@@ -109,7 +109,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 {
     int col, row, size_x, size_y;
     struct ldat *pline;
-    struct ldat *new_lines = 0;
+    struct ldat *new_lines = NULL;
 
 #ifdef TRACE
     T((T_CALLED("wresize(%p,%d,%d)"), (void *) win, ToLines, ToCols));
@@ -149,7 +149,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	}
 	pline = win->_parent->_line;
     } else {
-	pline = 0;
+	pline = NULL;
     }
 
     /*
@@ -158,7 +158,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
      * (at least temporarily) the array pointing to the individual lines.
      */
     new_lines = typeCalloc(struct ldat, (unsigned) (ToLines + 1));
-    if (new_lines == 0)
+    if (new_lines == NULL)
 	returnCode(ERR);
 
     /*
@@ -175,7 +175,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	    if (row <= size_y) {
 		if (ToCols != size_x) {
 		    s = typeMalloc(NCURSES_CH_T, (unsigned) ToCols + 1);
-		    if (s == 0)
+		    if (s == NULL)
 			returnCode(cleanup_lines(new_lines, row));
 		    for (col = 0; col <= ToCols; ++col) {
 			bool valid = (col <= size_x);
@@ -195,15 +195,15 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 		}
 	    } else {
 		s = typeMalloc(NCURSES_CH_T, (unsigned) ToCols + 1);
-		if (s == 0)
+		if (s == NULL)
 		    returnCode(cleanup_lines(new_lines, row));
 		for (col = 0; col <= ToCols; ++col)
 		    s[col] = win->_nc_bkgd;
 	    }
-	} else if (pline != 0 && pline[win->_pary + row].text != 0) {
+	} else if (pline != NULL && pline[win->_pary + row].text != NULL) {
 	    s = &pline[win->_pary + row].text[win->_parx];
 	} else {
-	    s = 0;
+	    s = NULL;
 	}
 
 	if_USE_SCROLL_HINTS(new_lines[row].oldindex = row);

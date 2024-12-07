@@ -49,7 +49,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.106 2024/11/23 18:33:35 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.107 2024/12/07 17:41:36 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -175,12 +175,12 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 			  FILE *ifp)
 {
     int errret;
-    SCREEN *result = 0;
+    SCREEN *result = NULL;
     SCREEN *current;
     TERMINAL *its_term;
     FILE *_ofp = ofp ? ofp : stdout;
     FILE *_ifp = ifp ? ifp : stdin;
-    TERMINAL *new_term = 0;
+    TERMINAL *new_term = NULL;
 
     START_TRACE();
     T((T_CALLED("newterm(%p, \"%s\", %p,%p)"),
@@ -191,7 +191,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 
 #if NCURSES_SP_FUNCS
     assert(SP_PARM != 0);
-    if (SP_PARM == 0)
+    if (SP_PARM == NULL)
 	returnSP(SP_PARM);
 #endif
 
@@ -199,7 +199,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
     _nc_lock_global(curses);
 
     current = CURRENT_SCREEN;
-    its_term = (current ? current->_term : 0);
+    its_term = (current ? current->_term : NULL);
 
 #if defined(EXP_WIN32_DRIVER)
     _setmode(fileno(_ifp), _O_BINARY);
@@ -214,7 +214,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 	int slk_format;
 	bool filter_mode;
 
-	_nc_set_screen(0);
+	_nc_set_screen(NULL);
 #ifdef USE_TERM_DRIVER
 	assert(new_term != 0);
 #endif
@@ -241,7 +241,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 						 filter_mode,
 						 slk_format) == ERR) {
 	    _nc_set_screen(current);
-	    result = 0;
+	    result = NULL;
 	} else {
 	    int value;
 	    int cols;
@@ -318,7 +318,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 
 	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);		/* sets a field in the screen structure */
 
-	    SP_PARM->_keytry = 0;
+	    SP_PARM->_keytry = NULL;
 
 	    /* compute movement costs so we can do better move optimization */
 #ifdef USE_TERM_DRIVER
@@ -333,7 +333,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 	     * properly if we remove rmso or rmul.  Curses applications
 	     * shouldn't be looking at this detail.
 	     */
-#define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
+#define SGR0_TEST(mode) (mode != NULL) && (exit_attribute_mode == NULL || strcmp(mode, exit_attribute_mode))
 	    SP_PARM->_use_rmso = SGR0_TEST(exit_standout_mode);
 	    SP_PARM->_use_rmul = SGR0_TEST(exit_underline_mode);
 #if USE_ITALIC

@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.169 2024/11/30 21:29:41 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.170 2024/12/07 22:10:45 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -694,7 +694,7 @@ compare_predicate(PredType type, PredIdx idx, const char *name)
 #define DATAX()        DATA("", "")
 
 typedef struct {
-    const char from[4];
+    const char from[8];
     const char to[12];
 } assoc;
 
@@ -812,10 +812,10 @@ same_param(const char *table, const char *param, size_t length)
 static char *
 lookup_params(const assoc * table, char *dst, char *src)
 {
-    char *result = 0;
+    char *result = NULL;
     const char *ep = strtok(src, ";");
 
-    if (ep != 0) {
+    if (ep != NULL) {
 	const assoc *ap;
 
 	do {
@@ -861,7 +861,7 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	int csi;
 	size_t len = 0;
 	size_t next;
-	const char *expansion = 0;
+	const char *expansion = NULL;
 	char buf3[MAX_TERMINFO_LENGTH];
 
 	/* first, check other capabilities in this entry */
@@ -1052,14 +1052,14 @@ file_comparison(int argc, char *argv[])
 	      FALSE, 0, 65535, itrace, FALSE, FALSE, FALSE);
 
     for (n = 0; n < argc && n < MAXCOMPARE; n++) {
-	if (freopen(argv[n], "r", stdin) == 0)
+	if (freopen(argv[n], "r", stdin) == NULL)
 	    _nc_err_abort("Can't open %s: %s", argv[n], strerror(errno));
 
 #if NO_LEAKS
 	entered[n].head = _nc_head;
 	entered[n].tail = _nc_tail;
 #endif
-	_nc_head = _nc_tail = 0;
+	_nc_head = _nc_tail = NULL;
 
 	/* parse entries out of the source file */
 	_nc_set_source(argv[n]);
@@ -1187,7 +1187,7 @@ file_comparison(int argc, char *argv[])
 
 		names[0] = name1;
 		names[1] = name2;
-		names[2] = 0;
+		names[2] = NULL;
 
 		entries[0] = *qp;
 		entries[1] = *rp;
@@ -1298,12 +1298,12 @@ any_initializer(const char *fmt, const char *type)
     static size_t need;
     char *s;
 
-    if (initializer == 0) {
+    if (initializer == NULL) {
 	need = (strlen(entries->tterm.term_names)
 		+ strlen(type)
 		+ strlen(fmt));
 	initializer = (char *) malloc(need + 1);
-	if (initializer == 0)
+	if (initializer == NULL)
 	    failed("any_initializer");
     }
 
@@ -1334,7 +1334,7 @@ static void
 dump_initializers(const TERMTYPE2 *term)
 {
     unsigned n;
-    const char *str = 0;
+    const char *str = NULL;
 
     printf("\nstatic char %s[] = \"%s\";\n\n",
 	   name_initializer("alias"), entries->tterm.term_names);
@@ -1496,10 +1496,10 @@ dump_termtype(const TERMTYPE2 *term)
 static int
 optarg_to_number(void)
 {
-    char *temp = 0;
+    char *temp = NULL;
     long value = strtol(optarg, &temp, 0);
 
-    if (temp == 0 || temp == optarg || *temp != 0) {
+    if (temp == NULL || temp == optarg || *temp != 0) {
 	fprintf(stderr, "Expected a number, not \"%s\"\n", optarg);
 	ExitProgram(EXIT_FAILURE);
     }
@@ -1511,7 +1511,7 @@ terminal_env(void)
 {
     char *terminal;
 
-    if ((terminal = getenv("TERM")) == 0) {
+    if ((terminal = getenv("TERM")) == NULL) {
 	(void) fprintf(stderr,
 		       "%s: environment variable TERM not set\n",
 		       _nc_progname);
@@ -1531,7 +1531,7 @@ show_databases(void)
     const char *path2;
 
     _nc_first_db(&state, &offset);
-    while ((path2 = _nc_next_db(&state, &offset)) != 0) {
+    while ((path2 = _nc_next_db(&state, &offset)) != NULL) {
 	printf("%s\n", path2);
     }
     _nc_last_db();
@@ -1559,8 +1559,8 @@ main(int argc, char *argv[])
 {
     /* Avoid "local data >32k" error with mwcc */
     /* Also avoid overflowing smaller stacks on systems like AmigaOS */
-    path *tfile = 0;
-    char **tname = 0;
+    path *tfile = NULL;
+    char **tname = NULL;
     size_t maxterms;
 
     char **myargv;
@@ -1576,7 +1576,7 @@ main(int argc, char *argv[])
     bool wrap_strings = FALSE;
 
     /* where is the terminfo database location going to default to? */
-    restdir = firstdir = 0;
+    restdir = firstdir = NULL;
 
 #if NCURSES_XNAMES
     use_extended_names(FALSE);
@@ -1587,7 +1587,7 @@ main(int argc, char *argv[])
 
     /* make sure we have enough space to add two terminal entries */
     myargv = typeCalloc(char *, (size_t) (argc + 3));
-    if (myargv == 0)
+    if (myargv == NULL)
 	failed("myargv");
 
     memcpy(myargv, argv, (sizeof(char *) * (size_t) argc));
@@ -1671,7 +1671,7 @@ main(int argc, char *argv[])
 	    outform = F_TERMINFO;
 	    if (sortmode == S_DEFAULT)
 		sortmode = S_VARIABLE;
-	    tversion = 0;
+	    tversion = NULL;
 	    break;
 
 	case 'i':
@@ -1712,7 +1712,7 @@ main(int argc, char *argv[])
 	    break;
 
 	case 'r':
-	    tversion = 0;
+	    tversion = NULL;
 	    break;
 
 	case 's':
@@ -1780,20 +1780,20 @@ main(int argc, char *argv[])
     }
 
     maxterms = (size_t) (argc + 2 - optind);
-    if ((tfile = typeMalloc(path, maxterms)) == 0)
+    if ((tfile = typeMalloc(path, maxterms)) == NULL)
 	failed("tfile");
-    if ((tname = typeCalloc(char *, maxterms)) == 0)
+    if ((tname = typeCalloc(char *, maxterms)) == NULL)
 	  failed("tname");
-    if ((entries = typeCalloc(ENTRY, maxterms)) == 0)
+    if ((entries = typeCalloc(ENTRY, maxterms)) == NULL)
 	failed("entries");
 #if NO_LEAKS
-    if ((entered = typeCalloc(ENTERED, maxterms)) == 0)
+    if ((entered = typeCalloc(ENTERED, maxterms)) == NULL)
 	failed("entered");
 #endif
 
-    if (tfile == 0
-	|| tname == 0
-	|| entries == 0) {
+    if (tfile == NULL
+	|| tname == NULL
+	|| entries == NULL) {
 	fprintf(stderr, "%s: not enough memory\n", _nc_progname);
 	ExitProgram(EXIT_FAILURE);
     }

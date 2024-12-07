@@ -1,4 +1,4 @@
-/* $Id: tclock.c,v 1.49 2024/10/05 18:47:56 tom Exp $ */
+/* $Id: tclock.c,v 1.50 2024/12/07 22:46:42 tom Exp $ */
 
 #define NEED_TIME_H
 #include <test.priv.h>
@@ -220,7 +220,7 @@ main(int argc, char *argv[])
     for (;;) {
 	napms(100);
 
-	tim = time(0);
+	tim = time(NULL);
 	t = localtime(&tim);
 
 	hours = (t->tm_hour + (t->tm_min / 60.0));

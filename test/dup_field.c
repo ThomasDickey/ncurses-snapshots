@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.11 2024/10/06 20:07:19 tom Exp $
+ * $Id: dup_field.c,v 1.12 2024/12/07 22:32:11 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -91,7 +91,7 @@ my_help_edit_field(void)
 	const char *code = keyname(commands[n].code);
 	size_t need = 5;
 #ifdef NCURSES_VERSION
-	if ((name = form_request_name(commands[n].result)) == 0)
+	if ((name = form_request_name(commands[n].result)) == NULL)
 #endif
 	    name = commands[n].help;
 	need = 5 + strlen(code) + strlen(name);
@@ -101,9 +101,9 @@ my_help_edit_field(void)
     }
     msgs[used++] =
 	strdup("Arrow keys move within a field as you would expect.");
-    msgs[used] = 0;
+    msgs[used] = NULL;
     popup_msg2(stdscr, msgs);
-    for (n = 0; msgs[n] != 0; ++n) {
+    for (n = 0; msgs[n] != NULL; ++n) {
 	free(msgs[n]);
     }
     free(msgs);
@@ -347,7 +347,7 @@ demo_forms(void)
 
     all_fields[n] = (FIELD *) 0;
 
-    if ((form = new_form(all_fields)) != 0) {
+    if ((form = new_form(all_fields)) != NULL) {
 	int finished = 0;
 
 	post_form(form);
@@ -369,7 +369,7 @@ demo_forms(void)
 
 	free_form(form);
     }
-    for (c = 0; all_fields[c] != 0; c++) {
+    for (c = 0; all_fields[c] != NULL; c++) {
 	free_edit_field(all_fields[c]);
 	free_field(all_fields[c]);
     }

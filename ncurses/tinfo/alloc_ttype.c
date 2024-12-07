@@ -43,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.52 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.53 2024/12/07 18:08:56 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -532,8 +532,8 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
     char *new_table;
     size_t new_table_size;
 #if NCURSES_EXT_NUMBERS
-    short *oldptr = 0;
-    int *newptr = 0;
+    short *oldptr = NULL;
+    int *newptr = NULL;
 #endif
 
     DEBUG(2, (T_CALLED("copy_termtype(dst=%p, src=%p, mode=%d)"), (void *)
@@ -594,7 +594,7 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
 	TYPE_MALLOC(int, NUM_NUMBERS(dst), newptr);
 	dst->Numbers = newptr;
     }
-    if ((mode == srcINT) && (oldptr != 0)) {
+    if ((mode == srcINT) && (oldptr != NULL)) {
 	DEBUG(2, ("...copy int ->short"));
 	for (i = 0; i < NUM_NUMBERS(dst); ++i) {
 	    if (src->Numbers[i] > MAX_OF_TYPE(short)) {
@@ -603,7 +603,7 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
 		oldptr[i] = (short) src->Numbers[i];
 	    }
 	}
-    } else if ((mode == dstINT) && (newptr != 0)) {
+    } else if ((mode == dstINT) && (newptr != NULL)) {
 	DEBUG(2, ("...copy short ->int"));
 	for (i = 0; i < NUM_NUMBERS(dst); ++i) {
 	    newptr[i] = ((const short *) (src->Numbers))[i];
@@ -672,7 +672,7 @@ copy_termtype(TERMTYPE2 *dst, const TERMTYPE2 *src, int mode)
 	    }
 	}
     } else {
-	dst->ext_Names = 0;
+	dst->ext_Names = NULL;
     }
 #endif
     (void) new_table_size;

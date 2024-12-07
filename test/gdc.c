@@ -34,7 +34,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.63 2024/11/30 18:56:02 tom Exp $
+ * $Id: gdc.c,v 1.64 2024/12/07 22:32:11 tom Exp $
  */
 
 #include <test.priv.h>
@@ -294,8 +294,8 @@ main(int argc, char *argv[])
     InitAndCatch({
 	if (redirected) {
 	    NCURSES_CONST char *name = getenv("TERM");
-	    if (name == 0
-		|| newterm(name, ofp, ifp) == 0) {
+	    if (name == NULL
+		|| newterm(name, ofp, ifp) == NULL) {
 		fprintf(stderr, "cannot open terminal\n");
 		ExitProgram(EXIT_FAILURE);
 	    }

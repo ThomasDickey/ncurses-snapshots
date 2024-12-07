@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.56 2024/10/06 18:44:26 tom Exp $
+ * $Id: movewindow.c,v 1.57 2024/12/07 22:33:32 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -149,7 +149,7 @@ selectcell(WINDOW *parent,
     res.y = uli;
     res.x = ulj;
 
-    if (child != 0) {
+    if (child != NULL) {
 	if (relative) {
 	    getparyx(child, i, j);
 	} else {
@@ -256,20 +256,20 @@ getwindow(WINDOW *parent, PAIR * ul, PAIR * lr)
     bool result = FALSE;
 
     head_line("Use arrows to move cursor, anything else to mark corner 1");
-    if ((tmp = selectcell(parent, 0,
+    if ((tmp = selectcell(parent, NULL,
 			  min_line, min_col,
 			  max_line, max_col,
 			  FALSE,
-			  (bool *) 0)) != 0) {
+			  (bool *) 0)) != NULL) {
 	*ul = *tmp;
 	MvWAddCh(parent, ul->y, ul->x, '*');
 
 	head_line("Use arrows to move cursor, anything else to mark corner 2");
-	if ((tmp = selectcell(parent, 0,
+	if ((tmp = selectcell(parent, NULL,
 			      ul->y, ul->x,
 			      max_line, max_col,
 			      FALSE,
-			      (bool *) 0)) != 0) {
+			      (bool *) 0)) != NULL) {
 	    *lr = *tmp;
 	    MvWAddCh(parent, lr->y, lr->x, '*');
 	    wmove(parent, lr->y, lr->x);
@@ -348,7 +348,7 @@ window2num(const WINDOW *const win)
 static WINDOW *
 parent_of(NCURSES_CONST WINDOW *win)
 {
-    WINDOW *result = 0;
+    WINDOW *result = NULL;
     int n = window2num(win);
     if (n >= 0)
 	result = all_windows[n].parent;
@@ -429,7 +429,7 @@ move_window(WINDOW *win, bool recur)
     WINDOW *parent = parent_of(win);
     bool result = FALSE;
 
-    if (parent != 0) {
+    if (parent != NULL) {
 	bool top = (parent == stdscr);
 	int min_col = top ? COL_MIN : 0;
 	int max_col = top ? COL_MAX : getmaxx(parent);
@@ -445,7 +445,7 @@ move_window(WINDOW *win, bool recur)
 				 min_line, min_col,
 				 max_line, max_col,
 				 FALSE,
-				 &more)) != 0) {
+				 &more)) != NULL) {
 	    int y0, x0;
 	    getbegyx(parent, y0, x0);
 	    /*
@@ -494,7 +494,7 @@ move_derwin(WINDOW *win)
     WINDOW *parent = parent_of(win);
     bool result = FALSE;
 
-    if (parent != 0) {
+    if (parent != NULL) {
 	bool top = (parent == stdscr);
 	int min_col = top ? COL_MIN : 0;
 	int max_col = top ? COL_MAX : getmaxx(parent);
@@ -509,7 +509,7 @@ move_derwin(WINDOW *win)
 				 min_line, min_col,
 				 max_line, max_col,
 				 TRUE,
-				 &more)) != 0) {
+				 &more)) != NULL) {
 	    if (mvderwin(win, tmp->y, tmp->x) != ERR) {
 		refresh_all(win);
 		doupdate();
@@ -577,16 +577,16 @@ static WINDOW *
 create_my_window(WINDOW *current)
 {
     PAIR ul, lr;
-    WINDOW *result = 0;
+    WINDOW *result = NULL;
 
     if (getwindow(stdscr, &ul, &lr)) {
 	result = newwin(lines_of(ul, lr), cols_of(ul, lr), pair_of(ul));
-	if (result != 0) {
+	if (result != NULL) {
 	    fill_window(result, 'c');
 	    add_window(stdscr, result);
 	}
     }
-    if (result == 0)
+    if (result == NULL)
 	result = current;
     return result;
 }
@@ -595,16 +595,16 @@ static WINDOW *
 create_my_derwin(WINDOW *parent)
 {
     PAIR ul, lr;
-    WINDOW *result = 0;
+    WINDOW *result = NULL;
 
     if (getwindow(parent, &ul, &lr)) {
 	result = derwin(parent, lines_of(ul, lr), cols_of(ul, lr), pair_of(ul));
-	if (result != 0) {
+	if (result != NULL) {
 	    fill_window(result, 'd');
 	    add_window(parent, result);
 	}
     }
-    if (result == 0)
+    if (result == NULL)
 	result = parent;
     return result;
 }
@@ -613,7 +613,7 @@ static WINDOW *
 create_my_subwin(WINDOW *parent)
 {
     PAIR ul, lr;
-    WINDOW *result = 0;
+    WINDOW *result = NULL;
 
     if (getwindow(parent, &ul, &lr)) {
 	result = subwin(parent,
@@ -621,12 +621,12 @@ create_my_subwin(WINDOW *parent)
 			cols_of(ul, lr),
 			ul.y + getbegy(parent),
 			ul.x + getbegx(parent));
-	if (result != 0) {
+	if (result != NULL) {
 	    fill_window(result, 's');
 	    add_window(parent, result);
 	}
     }
-    if (result == 0)
+    if (result == NULL)
 	result = parent;
     return result;
 }
@@ -718,7 +718,7 @@ main(int argc, char *argv[])
     nonl();
     intrflush(stdscr, FALSE);
 
-    add_window(0, current_win = stdscr);
+    add_window(NULL, current_win = stdscr);
 
 #ifdef NCURSES_MOUSE_VERSION
     (void) mousemask(BUTTON1_CLICKED, (mmask_t *) NULL);

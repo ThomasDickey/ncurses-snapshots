@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: pair_content.c,v 1.24 2024/11/30 18:31:01 tom Exp $
+ * $Id: pair_content.c,v 1.25 2024/12/07 22:45:15 tom Exp $
  */
 
 #define NEED_TIME_H
@@ -181,7 +181,7 @@ run_test(void)
 	my_color_t fg;
 	my_color_t bg;
 	if (PairContent(pair, &fg, &bg) == OK) {
-	    if (expected != 0) {
+	    if (expected != NULL) {
 		if (fg != expected[pair].fg)
 		    success = FALSE;
 		if (bg != expected[pair].bg)

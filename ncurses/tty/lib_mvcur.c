@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.161 2023/09/16 16:29:02 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.162 2024/12/07 20:06:49 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -222,7 +222,7 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_DCLx const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
-    if (cap == 0)
+    if (cap == NULL)
 	return (INFINITY);
     else {
 	const char *cp;
@@ -364,7 +364,7 @@ NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
     SP_PARM->_home_cost = CostOf(cursor_home, 0);
     SP_PARM->_ll_cost = CostOf(cursor_to_ll, 0);
 #if USE_HARD_TABS
-    if (getenv("NCURSES_NO_HARD_TABS") == 0
+    if (getenv("NCURSES_NO_HARD_TABS") == NULL
 	&& dest_tabs_magic_smso == 0
 	&& HasHardTabs()) {
 	SP_PARM->_ht_cost = CostOf(tab, 0);
@@ -461,12 +461,12 @@ NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
      * nested on the various terminals (vt100, xterm, etc.) which use this
      * feature.
      */
-    if (save_cursor != 0
-	&& enter_ca_mode != 0
-	&& strstr(enter_ca_mode, save_cursor) != 0) {
+    if (save_cursor != NULL
+	&& enter_ca_mode != NULL
+	&& strstr(enter_ca_mode, save_cursor) != NULL) {
 	T(("...suppressed sc/rc capability due to conflict with smcup/rmcup"));
-	save_cursor = 0;
-	restore_cursor = 0;
+	save_cursor = NULL;
+	restore_cursor = NULL;
     }
 
     /*
@@ -580,7 +580,7 @@ relative_move(NCURSES_SP_DCLx
     if (to_y != from_y) {
 	vcost = INFINITY;
 
-	if (row_address != 0
+	if (row_address != NULL
 	    && _nc_safe_strcat(target, TIPARM_1(row_address, to_y))) {
 	    vcost = SP_PARM->_vpa_cost;
 	}
@@ -984,7 +984,7 @@ _nc_real_mvcur(NCURSES_SP_DCLx
     TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("_nc_real_mvcur(%p,%d,%d,%d,%d)"),
 				  (void *) SP_PARM, yold, xold, ynew, xnew));
 
-    if (SP_PARM == 0) {
+    if (SP_PARM == NULL) {
 	code = ERR;
     } else if (yold == ynew && xold == xnew) {
 	code = OK;
@@ -1079,7 +1079,7 @@ NCURSES_SP_NAME(_nc_mvcur) (NCURSES_SP_DCLx
      * external calls.  Flush the output if the screen has not been
      * initialized, e.g., when used from low-level terminfo programs.
      */
-    if ((SP_PARM != 0) && (SP_PARM->_endwin == ewInitial))
+    if ((SP_PARM != NULL) && (SP_PARM->_endwin == ewInitial))
 	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
     return rc;
 }

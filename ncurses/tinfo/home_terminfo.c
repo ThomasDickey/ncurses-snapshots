@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: home_terminfo.c,v 1.18 2024/07/27 19:23:21 tom Exp $")
+MODULE_ID("$Id: home_terminfo.c,v 1.19 2024/12/07 18:14:49 tom Exp $")
 
 /* ncurses extension...fall back on user's private directory */
 
@@ -47,14 +47,14 @@ MODULE_ID("$Id: home_terminfo.c,v 1.18 2024/07/27 19:23:21 tom Exp $")
 NCURSES_EXPORT(char *)
 _nc_home_terminfo(void)
 {
-    char *result = 0;
+    char *result = NULL;
 #if USE_HOME_TERMINFO
     if (use_terminfo_vars()) {
 
-	if (MyBuffer == 0) {
+	if (MyBuffer == NULL) {
 	    const char *home;
 
-	    if ((home = getenv("HOME")) != 0) {
+	    if ((home = getenv("HOME")) != NULL) {
 		size_t want = (strlen(home) + sizeof(PRIVATE_INFO));
 		TYPE_MALLOC(char, want, MyBuffer);
 		_nc_SPRINTF(MyBuffer, _nc_SLIMIT(want) PRIVATE_INFO, home);

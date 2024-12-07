@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_print.c,v 1.33 2024/08/31 10:46:01 Rafael.Kitover Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.34 2024/12/07 18:05:04 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
@@ -72,8 +72,8 @@ NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
 
     need = onsize + (size_t) len + offsize;
 
-    if (switchon == 0
-	|| (mybuf = typeMalloc(char, need + 1)) == 0) {
+    if (switchon == NULL
+	|| (mybuf = typeMalloc(char, need + 1)) == NULL) {
 	free(mybuf);
 	errno = ENOMEM;
 	return (ERR);

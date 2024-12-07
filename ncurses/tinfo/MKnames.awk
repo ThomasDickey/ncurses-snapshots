@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2019,2020 Thomas E. Dickey                                       #
+# Copyright 2019-2020,2024 Thomas E. Dickey                                  #
 # Copyright 1998-2008,2009 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKnames.awk,v 1.24 2020/02/02 23:34:34 tom Exp $
+# $Id: MKnames.awk,v 1.25 2024/12/07 20:04:23 tom Exp $
 function large_item(value) {
 	result = sprintf("%d,", offset);
 	offset = offset + length(value) + 1;
@@ -111,7 +111,7 @@ END	{
 		print  "#if BROKEN_LINKER || USE_REENTRANT"
 		print  ""
 		if (bigstrings) {
-			printf "static const char _nc_name_blob[] = \n"
+			printf "static const char _nc_name_blob[] =\n"
 			printf "%s;\n", bigstr;
 			print_offsets("boolfnames", large_boolfnames);
 			print_offsets("boolnames", large_boolnames);

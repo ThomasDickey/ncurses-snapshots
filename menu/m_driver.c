@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.38 2024/07/27 18:14:20 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.39 2024/12/07 22:01:57 tom Exp $")
 
 /* Macros */
 
@@ -307,7 +307,7 @@ menu_driver(MENU *menu, int c)
 	  else
 	    {
 	      my_top_row += rdiff;
-	      while (rdiff-- > 0 && item != 0 && item->down != 0)
+	      while (rdiff-- > 0 && item != NULL && item->down != NULL)
 		item = item->down;
 	    }
 	  break;
@@ -320,7 +320,7 @@ menu_driver(MENU *menu, int c)
 	  else
 	    {
 	      my_top_row -= rdiff;
-	      while (rdiff-- > 0 && item != 0 && item->up != 0)
+	      while (rdiff-- > 0 && item != NULL && item->up != NULL)
 		item = item->up;
 	    }
 	  break;
@@ -548,7 +548,7 @@ menu_driver(MENU *menu, int c)
 	result = E_UNKNOWN_COMMAND;
     }
 
-  if (item == 0)
+  if (item == NULL)
     {
       result = E_BAD_STATE;
     }

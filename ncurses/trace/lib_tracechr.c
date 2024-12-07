@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracechr.c,v 1.25 2024/11/23 19:50:34 tom Exp $")
+MODULE_ID("$Id: lib_tracechr.c,v 1.26 2024/12/07 21:02:00 tom Exp $")
 
 #ifdef TRACE
 
@@ -50,13 +50,13 @@ NCURSES_EXPORT(char *)
 _nc_tracechar(SCREEN *sp, int ch)
 {
     NCURSES_CONST char *name;
-    char *MyBuffer = ((sp != 0)
+    char *MyBuffer = ((sp != NULL)
 		      ? sp->tracechr_buf
 		      : _nc_globals.tracechr_buf);
 
     if ((ch > KEY_MIN && !_nc_unicode_locale()) || ch < 0) {
 	name = safe_keyname(SP_PARM, ch);
-	if (name == 0 || *name == '\0')
+	if (name == NULL || *name == '\0')
 	    name = "NULL";
 	_nc_SPRINTF(MyBuffer, _nc_SLIMIT(MyBufSize)
 		    "'%.30s' = \\x%02x", name, UChar(ch));
@@ -72,7 +72,7 @@ _nc_tracechar(SCREEN *sp, int ch)
 		    "\\x%02x", ch);
     } else {
 	name = safe_unctrl(SP_PARM, (chtype) ch);
-	if (name == 0 || *name == 0)
+	if (name == NULL || *name == 0)
 	    name = "null";	/* shouldn't happen */
 	_nc_SPRINTF(MyBuffer, _nc_SLIMIT(MyBufSize)
 		    "'%.30s' = \\x%02x", name, ch);

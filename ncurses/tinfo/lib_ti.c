@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.34 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.35 2024/12/07 20:06:49 tom Exp $")
 
 #if 0
 static bool
@@ -63,7 +63,7 @@ NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx const char *str)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(str, BOOLEAN, FALSE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES
@@ -108,7 +108,7 @@ NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx const char *str)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(str, NUMBER, FALSE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES
@@ -155,7 +155,7 @@ NCURSES_SP_NAME(tigetstr) (NCURSES_SP_DCLx const char *str)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(str, STRING, FALSE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES

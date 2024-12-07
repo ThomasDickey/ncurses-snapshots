@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2022 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <SigAction.h>
 
-MODULE_ID("$Id: lib_tstp.c,v 1.54 2022/12/24 22:22:10 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.55 2024/12/07 20:06:49 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -159,7 +159,7 @@ handle_SIGTSTP(int dummy GCC_UNUSED)
      *
      * Don't do this if we're not in curses -
      */
-    if (sp != 0 && (sp->_endwin == ewRunning))
+    if (sp != NULL && (sp->_endwin == ewRunning))
 #if HAVE_TCGETPGRP
 	if (tcgetpgrp(STDIN_FILENO) == getpgrp())
 #endif
@@ -269,7 +269,7 @@ handle_SIGINT(int sig)
 	{
 	    SCREEN *scan;
 	    for (each_screen(scan)) {
-		if (scan->_ofp != 0
+		if (scan->_ofp != NULL
 		    && NC_ISATTY(fileno(scan->_ofp))) {
 		    scan->_outch = NCURSES_SP_NAME(_nc_outch);
 		}

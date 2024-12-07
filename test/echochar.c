@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2023 Thomas E. Dickey                                *
+ * Copyright 2019-2023,2024 Thomas E. Dickey                                *
  * Copyright 2006-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: echochar.c,v 1.26 2023/05/27 20:13:10 tom Exp $
+ * $Id: echochar.c,v 1.27 2024/12/07 23:03:07 tom Exp $
  *
  * Demonstrate the echochar function (compare to dots.c).
  * Thomas Dickey - 2006/11/4
@@ -108,7 +108,7 @@ main(int argc, char *argv[])
     double c;
     bool use_colors;
     bool opt_r = FALSE;
-    char *my_pairs = 0;
+    char *my_pairs = NULL;
     int last_fg = 0;
     int last_bg = 0;
 
@@ -134,10 +134,10 @@ main(int argc, char *argv[])
 	if (COLOR_PAIRS > 0) {
 	    my_pairs = typeCalloc(char, (size_t) COLOR_PAIRS);
 	}
-	use_colors = (my_pairs != 0);
+	use_colors = (my_pairs != NULL);
     }
 
-    srand((unsigned) time(0));
+    srand((unsigned) time(NULL));
 
     curs_set(0);
 

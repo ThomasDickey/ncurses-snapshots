@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_inwstr.c,v 1.11 2024/07/27 19:02:27 tom Exp $")
+MODULE_ID("$Id: lib_inwstr.c,v 1.12 2024/12/07 18:03:14 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnwstr(WINDOW *win, wchar_t *wstr, int n)
@@ -49,7 +49,7 @@ winnwstr(WINDOW *win, wchar_t *wstr, int n)
     const cchar_t *text;
 
     T((T_CALLED("winnwstr(%p,%p,%d)"), (void *) win, (void *) wstr, n));
-    if (wstr != 0) {
+    if (wstr != NULL) {
 	if (win) {
 	    int row, col;
 	    int last = 0;
@@ -99,7 +99,7 @@ winwstr(WINDOW *win, wchar_t *wstr)
     int result = ERR;
 
     T((T_CALLED("winwstr(%p,%p)"), (void *) win, (void *) wstr));
-    if (win != 0) {
+    if (win != NULL) {
 	result = winnwstr(win, wstr,
 			  CCHARW_MAX * (win->_maxx - win->_curx + 1));
     }

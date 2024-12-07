@@ -74,7 +74,7 @@ AUTHOR
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: hashmap.c,v 1.72 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.73 2024/12/07 17:18:07 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -311,10 +311,10 @@ NCURSES_SP_NAME(_nc_hash_map) (NCURSES_SP_DCL0)
 	}
     } else {
 	/* re-hash all */
-	if (oldhash(SP_PARM) == 0)
+	if (oldhash(SP_PARM) == NULL)
 	    oldhash(SP_PARM) = typeCalloc(unsigned long,
 					    (size_t) screen_lines(SP_PARM));
-	if (newhash(SP_PARM) == 0)
+	if (newhash(SP_PARM) == NULL)
 	    newhash(SP_PARM) = typeCalloc(unsigned long,
 					    (size_t) screen_lines(SP_PARM));
 	if (!oldhash(SP_PARM) || !newhash(SP_PARM)) {

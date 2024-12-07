@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: insdelln.c,v 1.17 2024/10/06 21:08:52 tom Exp $
+ * $Id: insdelln.c,v 1.18 2024/12/07 22:32:11 tom Exp $
  *
  * test-driver for deleteln, wdeleteln, insdelln, winsdelln, insertln, winsertln
  */
@@ -71,7 +71,7 @@ color_params(unsigned state, int *pair)
     };
     /* *INDENT-ON* */
 
-    const char *result = 0;
+    const char *result = NULL;
 
     if (has_colors()) {
 	static bool first = TRUE;
@@ -107,7 +107,7 @@ video_params(unsigned state, unsigned *attr)
     };
     /* *INDENT-ON* */
 
-    const char *result = 0;
+    const char *result = NULL;
 
     if (state < SIZEOF(table)) {
 	*attr = table[state].attr;
@@ -144,9 +144,9 @@ show_status(WINDOW *win, STATUS * sp)
     getyx(win, y, x);
     wmove(win, 0, 0);
     wprintw(win, "Count %d", sp->count);
-    if (sp->v_msg != 0)
+    if (sp->v_msg != NULL)
 	wprintw(win, " Video %s", sp->v_msg);
-    if (sp->c_msg != 0)
+    if (sp->c_msg != NULL)
 	wprintw(win, " Color %s", sp->c_msg);
     wclrtoeol(win);
     wmove(win, y, x);
@@ -165,10 +165,10 @@ do_subwindow(WINDOW *win, const STATUS * sp, void func(WINDOW *))
     WINDOW *win1 = newwin(sp->y_max - 2, sp->x_max - 2,
 			  sp->y_beg + 1, sp->x_beg + 1);
 
-    if (win1 != 0 && sp->y_max > 4 && sp->x_max > 4) {
+    if (win1 != NULL && sp->y_max > 4 && sp->x_max > 4) {
 	WINDOW *win2 = derwin(win1, sp->y_max - 4, sp->x_max - 4, 1, 1);
 
-	if (win2 != 0) {
+	if (win2 != NULL) {
 	    box(win1, 0, 0);
 	    wrefresh(win1);
 	    func(win2);
@@ -222,7 +222,7 @@ show_help(WINDOW *win)
 	,"q     quit"
 	,"=     resets count to zero."
 	,"?     shows this help-window"
-	,0
+	,NULL
     };
 
     popup_msg(win, table);
@@ -234,14 +234,14 @@ update_status(WINDOW *win, STATUS * sp)
     switch (sp->ch) {
     case ' ':			/* next test-iteration */
 	if (has_colors()) {
-	    if ((sp->c_msg = color_params(++(sp->c), &(sp->pair))) == 0) {
+	    if ((sp->c_msg = color_params(++(sp->c), &(sp->pair))) == NULL) {
 		sp->c_msg = color_params(sp->c = 0, &(sp->pair));
-		if ((sp->v_msg = video_params(++(sp->v), &(sp->attr))) == 0) {
+		if ((sp->v_msg = video_params(++(sp->v), &(sp->attr))) == NULL) {
 		    sp->v_msg = video_params(sp->v = 0, &(sp->attr));
 		}
 	    }
 	} else {
-	    if ((sp->v_msg = video_params(++(sp->v), &(sp->attr))) == 0) {
+	    if ((sp->v_msg = video_params(++(sp->v), &(sp->attr))) == NULL) {
 		sp->v_msg = video_params(sp->v = 0, &(sp->attr));
 	    }
 	}

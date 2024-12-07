@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.104 2024/10/19 21:18:54 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.105 2024/12/07 21:12:53 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -124,7 +124,7 @@ static char *
 init_string(void)
 /* initialize 'my_string', 'my_length' */
 {
-    if (my_string == 0)
+    if (my_string == NULL)
 	TYPE_MALLOC(char, my_length = 256, my_string);
 
     *my_string = '\0';
@@ -138,7 +138,7 @@ save_string(char *d, const char *const s)
     size_t need = have + strlen(s) + 2;
     if (need > my_length) {
 	my_string = (char *) _nc_doalloc(my_string, my_length = (need + need));
-	if (my_string == 0)
+	if (my_string == NULL)
 	    _nc_err_abort(MSG_NO_MEMORY);
 	d = my_string + have;
     }
@@ -313,8 +313,8 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
     dp = init_string();
 
     /* skip the initial padding (if we haven't been told not to) */
-    capstart = 0;
-    if (s == 0)
+    capstart = NULL;
+    if (s == NULL)
 	s = "";
     if (parameterized >= 0 && isdigit(UChar(*s)))
 	for (capstart = s; *s != '\0'; s++)
@@ -619,7 +619,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 {
     int seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     const char *padding;
-    const char *trimmed = 0;
+    const char *trimmed = NULL;
     int in0, in1, in2;
     char ch1 = 0, ch2 = 0;
     char *bufptr = init_string();
@@ -655,9 +655,9 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 
     for (; !syntax_error &&
 	 *str &&
-	 ((trimmed == 0) || (str < trimmed)); str++) {
+	 ((trimmed == NULL) || (str < trimmed)); str++) {
 	int c1, c2;
-	char *cp = 0;
+	char *cp = NULL;
 
 	if (str[0] == '^') {
 	    if (str[1] == '\0' || (str + 1) == trimmed) {
@@ -743,7 +743,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 				++myfix;
 			    }
 			}
-		    } else if (strchr("E\\nrtbf", xx1) == 0) {
+		    } else if (strchr("E\\nrtbf", xx1) == NULL) {
 			switch (xx1) {
 			case 'e':
 			    xx1 = 'E';
@@ -814,7 +814,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 		   && ((in0 == 4 && in1 == 10 && in2 == 48)
 		       || (in0 == 3 && in1 == 9 && in2 == 38))) {
 	    /* dumb-down an optimized case from xterm-256color for termcap */
-	    if ((str = strstr(str, ";m")) == 0)
+	    if ((str = strstr(str, ";m")) == NULL)
 		break;		/* cannot happen */
 	    ++str;
 	    if (in2 == 48) {
@@ -981,7 +981,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 	 * but that may not be the end of the string.
 	 */
 	assert(str != 0);
-	if (str == 0 || *str == '\0')
+	if (str == NULL || *str == '\0')
 	    break;
 
     }				/* endwhile (*str) */
@@ -1050,7 +1050,7 @@ main(int argc, char *argv[])
 NCURSES_EXPORT(void)
 _nc_captoinfo_leaks(void)
 {
-    if (my_string != 0) {
+    if (my_string != NULL) {
 	FreeAndNull(my_string);
     }
     my_length = 0;

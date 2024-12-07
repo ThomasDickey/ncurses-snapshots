@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_vidputs.c,v 1.16 2024/10/06 21:17:54 tom Exp $
+ * $Id: test_vidputs.c,v 1.17 2024/12/07 22:53:07 tom Exp $
  *
  * Demonstrate the vidputs and vidattr functions.
  * Thomas Dickey - 2013/01/12
@@ -63,7 +63,7 @@ outs(NCURSES_CONST char *s)
 static void
 cleanup(void)
 {
-    if (cur_term != 0) {
+    if (cur_term != NULL) {
 	outs(exit_attribute_mode);
 	if (!outs(orig_colors))
 	    outs(orig_pair);

@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.111 2024/11/23 18:49:08 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.112 2024/12/07 21:13:36 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -204,7 +204,7 @@ expected_type(const char *name, int token_type, bool silent)
 {
     struct user_table_entry const *entry = _nc_find_user_entry(name);
     bool result = TRUE;
-    if ((entry != 0) && (token_type != CANCEL)) {
+    if ((entry != NULL) && (token_type != CANCEL)) {
 	int have_type = (1 << token_type);
 	if (!(entry->ute_type & have_type)) {
 	    if (!silent)
@@ -332,7 +332,7 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 
     entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);
 
-    if (entryp->tterm.str_table == 0)
+    if (entryp->tterm.str_table == NULL)
 	returnDB(ERR);
 
     DEBUG(2, ("Starting '%s'", ptr));
@@ -350,7 +350,7 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
     _nc_set_type(name);
 
     /* check for overly-long names and aliases */
-    for (base = entryp->tterm.term_names; (ptr = strchr(base, '|')) != 0;
+    for (base = entryp->tterm.term_names; (ptr = strchr(base, '|')) != NULL;
 	 base = ptr + 1) {
 	if (ptr - base > MAX_ALIAS) {
 	    _nc_warning("%s `%.*s' may be too long",
@@ -459,7 +459,7 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 		if (expected_type(_nc_curr_token.tk_name, token_type, silent)) {
 		    if ((entry_ptr = _nc_extend_names(entryp,
 						      _nc_curr_token.tk_name,
-						      token_type)) != 0) {
+						      token_type)) != NULL) {
 			if (_nc_tracing >= DEBUG_LEVEL(1)) {
 			    _nc_warning("extended capability '%s'",
 					_nc_curr_token.tk_name);
@@ -629,7 +629,7 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 		 * have picked up defaults via translation.
 		 */
 		for (i = 0; i < entryp->nuses; i++) {
-		    if (entryp->uses[i].name != 0
+		    if (entryp->uses[i].name != NULL
 			&& !strchr(entryp->uses[i].name, '+'))
 			has_base_entry = TRUE;
 		}
@@ -697,7 +697,7 @@ _nc_capcmp(const char *s, const char *t)
 static void
 append_acs0(string_desc * dst, int code, const char *src, size_t off)
 {
-    if (src != 0 && off < strlen(src)) {
+    if (src != NULL && off < strlen(src)) {
 	char temp[3];
 	temp[0] = (char) code;
 	temp[1] = src[off];
@@ -929,15 +929,15 @@ postprocess_termcap(TERMTYPE2 *tp, bool has_base)
 
 	/* we're going to use this for a special case later */
 	dp = strchr(other_non_function_keys, 'i');
-	foundim = (dp != 0) && (dp[1] == 'm');
+	foundim = (dp != NULL) && (dp[1] == 'm');
 
 	/* look at each comma-separated capability in the ko string... */
 	for (base = other_non_function_keys;
-	     (cp = strchr(base, ',')) != 0;
+	     (cp = strchr(base, ',')) != NULL;
 	     base = cp + 1) {
 	    size_t len = (unsigned) (cp - base);
 	    size_t n;
-	    assoc const *ap = 0;
+	    assoc const *ap = NULL;
 
 	    for (n = 0; n < SIZEOF(ko_xlate); ++n) {
 		if (len == strlen(ko_xlate[n].from)
@@ -946,7 +946,7 @@ postprocess_termcap(TERMTYPE2 *tp, bool has_base)
 		    break;
 		}
 	    }
-	    if (ap == 0) {
+	    if (ap == NULL) {
 		_nc_warning("unknown capability `%.*s' in ko string",
 			    (int) len, base);
 		continue;
@@ -1143,7 +1143,7 @@ lookup_fullname(const char *find)
 	    return NOTFOUND;
 	}
 
-	for (count = 0; names[count] != 0; count++) {
+	for (count = 0; names[count] != NULL; count++) {
 	    if (!strcmp(names[count], find)) {
 		struct name_table_entry const *entry_ptr = _nc_get_table(FALSE);
 		while (entry_ptr->nte_type != state

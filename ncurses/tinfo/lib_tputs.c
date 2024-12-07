@@ -52,7 +52,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.113 2024/09/14 23:11:32 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.115 2024/12/07 21:04:53 tom Exp $")
 
 NCURSES_EXPORT_VAR(char) PC = 0;              /* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;        /* used by termcap library */
@@ -63,7 +63,7 @@ NCURSES_EXPORT_VAR(int) _nc_nulls_sent = 0;
 NCURSES_EXPORT(void)
 _nc_set_no_padding(SCREEN *sp)
 {
-    bool no_padding = (getenv("NCURSES_NO_PADDING") != 0);
+    bool no_padding = (getenv("NCURSES_NO_PADDING") != NULL);
 
     if (sp)
 	sp->_no_padding = no_padding;
@@ -124,7 +124,7 @@ NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_DCL0)
 {
     T((T_CALLED("_nc_flush(%p)"), (void *) SP_PARM));
-    if (SP_PARM != 0 && SP_PARM->_ofd >= 0) {
+    if (SP_PARM != NULL && SP_PARM->_ofd >= 0) {
 	TR(TRACE_CHARPUT, ("ofd:%d inuse:%lu buffer:%p",
 			   SP_PARM->_ofd,
 			   (unsigned long) SP_PARM->out_inuse,
@@ -149,7 +149,7 @@ NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_DCL0)
 		    break;	/* an error we can not recover from */
 		}
 	    }
-	} else if (SP_PARM->out_buffer == 0) {
+	} else if (SP_PARM->out_buffer == NULL) {
 	    TR(TRACE_CHARPUT, ("flushing stdout/stderr"));
 	    fflush(stdout);
 	    fflush(stderr);
@@ -159,7 +159,7 @@ NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_DCL0)
 	fflush(stdout);
 	fflush(stderr);
     }
-    if (SP_PARM != 0)
+    if (SP_PARM != NULL)
 	SP_PARM->out_inuse = 0;
     returnVoid;
 }
@@ -180,8 +180,8 @@ NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_DCLx int ch)
     COUNT_OUTCHARS(1);
 
     if (HasTInfoTerminal(SP_PARM)
-	&& SP_PARM != 0) {
-	if (SP_PARM->out_buffer != 0) {
+	&& SP_PARM != NULL) {
+	if (SP_PARM->out_buffer != NULL) {
 	    if (SP_PARM->out_inuse + 1 >= SP_PARM->out_limit)
 		NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
 	    SP_PARM->out_buffer[SP_PARM->out_inuse++] = (char) ch;
@@ -259,7 +259,7 @@ NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_DCLx
 {
     int rc = ERR;
 
-    if (string != 0) {
+    if (string != NULL) {
 	TPUTS_TRACE(name);
 	rc = NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
 				     string, 1, NCURSES_SP_NAME(_nc_outch));
@@ -314,10 +314,10 @@ NCURSES_SP_NAME(tputs) (NCURSES_SP_DCLx
     if (!VALID_STRING(string))
 	return ERR;
 
-    if (SP_PARM != 0 && HasTInfoTerminal(SP_PARM)) {
+    if (SP_PARM != NULL && HasTInfoTerminal(SP_PARM)) {
 	if (
 #if NCURSES_SP_FUNCS
-	       (SP_PARM != 0 && SP_PARM->_term == 0)
+	       (SP_PARM != NULL && SP_PARM->_term == NULL)
 #else
 	       cur_term == 0
 #endif
@@ -444,7 +444,7 @@ NCURSES_SP_NAME(tputs) (NCURSES_SP_DCLx
 NCURSES_EXPORT(int)
 _nc_outc_wrapper(SCREEN *sp, int c)
 {
-    if (0 == sp) {
+    if (NULL == sp) {
 	return fputc(c, stdout);
     } else {
 	return sp->jump(c);

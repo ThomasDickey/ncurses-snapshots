@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: entries.c,v 1.37 2024/10/19 21:23:31 tom Exp $")
+MODULE_ID("$Id: entries.c,v 1.38 2024/12/07 18:23:25 tom Exp $")
 
 /****************************************************************************
  *
@@ -61,8 +61,8 @@ MODULE_ID("$Id: entries.c,v 1.37 2024/10/19 21:23:31 tom Exp $")
  *	   _nc_head                _nc_tail
  */
 
-NCURSES_EXPORT_VAR(ENTRY *) _nc_head = 0;
-NCURSES_EXPORT_VAR(ENTRY *) _nc_tail = 0;
+NCURSES_EXPORT_VAR(ENTRY *) _nc_head = NULL;
+NCURSES_EXPORT_VAR(ENTRY *) _nc_tail = NULL;
 
 static ENTRY *
 _nc_delink_entry(ENTRY * headp, const TERMTYPE2 *const tterm)
@@ -70,12 +70,12 @@ _nc_delink_entry(ENTRY * headp, const TERMTYPE2 *const tterm)
 {
     ENTRY *ep, *last;
 
-    for (last = 0, ep = headp; ep != 0; last = ep, ep = ep->next) {
+    for (last = NULL, ep = headp; ep != NULL; last = ep, ep = ep->next) {
 	if (&(ep->tterm) == tterm) {
-	    if (last != 0) {
+	    if (last != NULL) {
 		last->next = ep->next;
 	    }
-	    if (ep->next != 0) {
+	    if (ep->next != NULL) {
 		ep->next->last = last;
 	    }
 	    if (ep == _nc_head) {
@@ -96,7 +96,7 @@ _nc_free_entry(ENTRY * headp, const TERMTYPE2 *tterm)
 {
     ENTRY *ep;
 
-    if ((ep = _nc_delink_entry(headp, tterm)) != 0) {
+    if ((ep = _nc_delink_entry(headp, tterm)) != NULL) {
 	free(ep);
     }
 }
@@ -107,7 +107,7 @@ _nc_free_entries(ENTRY * headp)
 {
     (void) headp;		/* unused - _nc_head is altered here! */
 
-    while (_nc_head != 0) {
+    while (_nc_head != NULL) {
 	_nc_free_termtype2(&(_nc_head->tterm));
     }
 }
@@ -141,7 +141,7 @@ _nc_leaks_tinfo(void)
     }
     _nc_unlock_global(screen);
 #endif
-    if (TerminalOf(CURRENT_SCREEN) != 0) {
+    if (TerminalOf(CURRENT_SCREEN) != NULL) {
 	del_curterm(TerminalOf(CURRENT_SCREEN));
     }
     _nc_forget_prescr();
@@ -149,8 +149,8 @@ _nc_leaks_tinfo(void)
     _nc_comp_captab_leaks();
     _nc_comp_userdefs_leaks();
     _nc_free_entries(_nc_head);
-    _nc_get_type(0);
-    _nc_first_name(0);
+    _nc_get_type(NULL);
+    _nc_first_name(NULL);
     _nc_db_iterator_leaks();
     _nc_keyname_leaks();
 #if BROKEN_LINKER || USE_REENTRANT
@@ -160,7 +160,7 @@ _nc_leaks_tinfo(void)
 #endif
     _nc_comp_error_leaks();
 
-    if ((s = _nc_home_terminfo()) != 0)
+    if ((s = _nc_home_terminfo()) != NULL)
 	free(s);
 
 #ifdef TRACE

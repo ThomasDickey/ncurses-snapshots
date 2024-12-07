@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_keyok.c,v 1.10 2024/08/24 17:16:49 tom Exp $
+ * $Id: demo_keyok.c,v 1.11 2024/12/07 22:22:51 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23
@@ -100,7 +100,7 @@ main(int argc, char *argv[])
 	prior = ch;
 	wprintw(win, "Keycode %d, name %s\n",
 		ch,
-		name != 0 ? name : "<null>");
+		name != NULL ? name : "<null>");
 	wclrtoeol(win);
 	wrefresh(win);
 	if (ch >= KEY_MIN) {

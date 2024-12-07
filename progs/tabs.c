@@ -39,7 +39,7 @@
 #include <progs.priv.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tabs.c,v 1.55 2024/10/19 21:45:18 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.56 2024/12/07 22:10:45 tom Exp $")
 
 static GCC_NORETURN void usage(void);
 
@@ -147,7 +147,7 @@ decode_tabs(const char *tab_list, int margin)
 			"%s: tab-stops are not in increasing order: %d %d\n",
 			_nc_progname, value, result[n - 1]);
 		free(result);
-		result = 0;
+		result = NULL;
 		break;
 	    }
 	    ++n;
@@ -159,7 +159,7 @@ decode_tabs(const char *tab_list, int margin)
 	}
     }
 
-    if (result != 0) {
+    if (result != NULL) {
 	/*
 	 * If there is only one value, then it is an option such as "-8".
 	 */
@@ -250,7 +250,7 @@ static char *
 trimmed_tab_list(const char *source)
 {
     char *result = strdup(source);
-    if (result != 0) {
+    if (result != NULL) {
 	int j, k, last;
 
 	for (j = k = last = 0; result[j] != 0; ++j) {
@@ -280,7 +280,7 @@ comma_is_needed(const char *source)
 {
     bool result = FALSE;
 
-    if (source != 0) {
+    if (source != NULL) {
 	size_t len = strlen(source);
 	if (len != 0)
 	    result = (source[len - 1] != ',');
@@ -303,7 +303,7 @@ add_to_tab_list(char **append, const char *value)
     char *result = *append;
     char *copied = trimmed_tab_list(value);
 
-    if (copied != 0 && *copied != '\0') {
+    if (copied != NULL && *copied != '\0') {
 	const char *comma = ",";
 	size_t need = 1 + strlen(copied);
 
@@ -313,15 +313,15 @@ add_to_tab_list(char **append, const char *value)
 	    comma = "";
 
 	need += strlen(comma);
-	if (*append != 0)
+	if (*append != NULL)
 	    need += strlen(*append);
 
 	result = malloc(need);
-	if (result == 0)
+	if (result == NULL)
 	    failed("add_to_tab_list");
 
 	*result = '\0';
-	if (*append != 0) {
+	if (*append != NULL) {
 	    _nc_STRCPY(result, *append, need);
 	    free(*append);
 	}
@@ -402,7 +402,7 @@ legal_tab_list(const char *tab_list)
 {
     bool result = TRUE;
 
-    if (tab_list != 0 && *tab_list != '\0') {
+    if (tab_list != NULL && *tab_list != '\0') {
 	if (comma_is_needed(tab_list)) {
 	    int n;
 
@@ -433,7 +433,7 @@ skip_list(char *value)
     while (*value != '\0' &&
 	   (isdigit(UChar(*value)) ||
 	    isspace(UChar(*value)) ||
-	    strchr("+,", UChar(*value)) != 0)) {
+	    strchr("+,", UChar(*value)) != NULL)) {
 	++value;
     }
     return value;
@@ -483,9 +483,9 @@ main(int argc, char *argv[])
     bool no_op = FALSE;
     bool change_tty = FALSE;
     int n, ch;
-    NCURSES_CONST char *term_name = 0;
-    char *append = 0;
-    const char *tab_list = 0;
+    NCURSES_CONST char *term_name = NULL;
+    char *append = NULL;
+    const char *tab_list = NULL;
     const char *new_line = "\n";
     int margin = -1;
     TTY tty_settings;
@@ -493,7 +493,7 @@ main(int argc, char *argv[])
 
     _nc_progname = _nc_rootname(argv[0]);
 
-    if ((term_name = getenv("TERM")) == 0)
+    if ((term_name = getenv("TERM")) == NULL)
 	term_name = "ansi+tabs";
 
     /* cannot use getopt, since some options are two-character */
@@ -617,11 +617,11 @@ main(int argc, char *argv[])
 	    }
 	    break;
 	default:
-	    if (append != 0) {
+	    if (append != NULL) {
 		if (tab_list != (const char *) append) {
 		    /* one of the predefined options was used */
 		    free(append);
-		    append = 0;
+		    append = NULL;
 		}
 	    }
 	    tab_list = add_to_tab_list(&append, option);
@@ -683,7 +683,7 @@ main(int argc, char *argv[])
 
 	list = decode_tabs(tab_list, margin);
 
-	if (list != 0) {
+	if (list != NULL) {
 	    if (!no_op)
 		do_tabs(list);
 	    if (debug) {
@@ -704,7 +704,7 @@ main(int argc, char *argv[])
 	}
 	rc = EXIT_SUCCESS;
     }
-    if (append != 0)
+    if (append != NULL)
 	free(append);
     ExitProgram(rc);
 }

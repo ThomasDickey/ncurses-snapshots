@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020 Thomas E. Dickey                                          *
+ * Copyright 2020,2024 Thomas E. Dickey                                     *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -84,7 +84,7 @@
 #undef USE_OLD_TTY
 #endif /* USE_OLD_TTY */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.45 2020/09/05 21:15:32 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.46 2024/12/07 20:05:08 tom Exp $")
 
 /*
  *	int
@@ -279,7 +279,7 @@ NCURSES_SP_NAME(baudrate) (NCURSES_SP_DCL0)
 #ifdef TRACE
     if (IsValidTIScreen(SP_PARM)
 	&& !NC_ISATTY(fileno((SP_PARM && SP_PARM->_ofp) ? SP_PARM->_ofp : stdout))
-	&& getenv("BAUDRATE") != 0) {
+	&& getenv("BAUDRATE") != NULL) {
 	int ret;
 	if ((ret = _nc_getenv_num("BAUDRATE")) <= 0)
 	    ret = 9600;

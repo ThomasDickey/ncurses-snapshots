@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_menus.c,v 1.85 2024/11/30 18:52:09 tom Exp $
+ * $Id: demo_menus.c,v 1.86 2024/12/07 22:27:13 tom Exp $
  *
  * Demonstrate a variety of functions from the menu library.
  * Thomas Dickey - 2005/4/9
@@ -311,9 +311,9 @@ static void
 menu_destroy(MENU * m, int itemsToo)
 {
     Trace(("menu_destroy %p", (void *) m));
-    if (m != 0) {
+    if (m != NULL) {
 	ITEM **items = menu_items(m);
-	const char *blob = 0;
+	const char *blob = NULL;
 	int count;
 
 	count = item_count(m);
@@ -335,7 +335,7 @@ menu_destroy(MENU * m, int itemsToo)
 	if (count > 0 && itemsToo) {
 	    if (itemsToo & 1) {
 		ITEM **ip = items;
-		if (ip != 0) {
+		if (ip != NULL) {
 		    while (*ip)
 			free_item(*ip++);
 		}
@@ -362,14 +362,14 @@ build_file_menu(MenuNo number)
     static MENU_DATA table[] =
     {
 	{"Exit", call_files, 0},
-	{(char *) 0, 0, 0}
+	{(char *) 0, NULL, 0}
     };
     static ITEM *items[SIZEOF(table)];
 
     ITEM **ip = items;
     int n;
 
-    for (n = 0; table[n].name != 0; ++n) {
+    for (n = 0; table[n].name != NULL; ++n) {
 	*ip = new_item(table[n].name, empty);
 	set_item_userptr(*ip, (void *) &table[n]);
 	++ip;
@@ -413,17 +413,17 @@ build_select_menu(MenuNo number, char *filename)
 	MY_DATA("Pumas"),
 	MY_DATA("Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs"),
 	MY_DATA("Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs, Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs"),
-	{(char *) 0, 0, 0}
+	{(char *) 0, NULL, 0}
     };
     static ITEM **items;
 
     ITEM **ip;
-    MENU_DATA *ap = 0;
-    MENU_DATA *myList = 0;
+    MENU_DATA *ap = NULL;
+    MENU_DATA *myList = NULL;
     int i;
     size_t count = 0;
 
-    if (filename != 0) {
+    if (filename != NULL) {
 	struct stat sb;
 	if (stat(filename, &sb) == 0
 	    && (sb.st_mode & S_IFMT) == S_IFREG
@@ -436,9 +436,9 @@ build_select_menu(MenuNo number, char *filename)
 	    Trace(("build_select_menu blob=%p, items=%p",
 		   (void *) blob,
 		   (void *) items));
-	    if (blob != 0 && list != 0) {
+	    if (blob != NULL && list != NULL) {
 		FILE *fp = fopen(filename, "r");
-		if (fp != 0) {
+		if (fp != NULL) {
 		    if (fread(blob, sizeof(char), size, fp) == size) {
 			bool mark = TRUE;
 			unsigned j, k;
@@ -456,7 +456,7 @@ build_select_menu(MenuNo number, char *filename)
 				blob[j] = ' ';	/* menu items are printable */
 			    }
 			}
-			list[k].name = 0;
+			list[k].name = NULL;
 			count = k;
 			ap = myList = list;
 		    }
@@ -464,28 +464,28 @@ build_select_menu(MenuNo number, char *filename)
 		}
 		loaded_file = TRUE;
 	    }
-	    if (ap == 0)
+	    if (ap == NULL)
 		free(items);
 	}
     }
-    if (ap == 0) {
+    if (ap == NULL) {
 	count = SIZEOF(table) - 1;
 	items = typeCalloc(ITEM *, count + 1);
 	ap = table;
     }
 
     ip = items;
-    for (i = 0; ap[i].name != 0; ++i) {
+    for (i = 0; ap[i].name != NULL; ++i) {
 	ap[i].func = call_select;
 	ap[i].mask = (unsigned) i;
 	*ip = new_item(ap[i].name, empty);
 	set_item_userptr(*ip, (void *) &table[i]);
 	++ip;
     }
-    *ip = 0;
+    *ip = NULL;
 
     mpSelect = menu_create(items, (int) count, 1, number);
-    if (myList != 0)
+    if (myList != NULL)
 	free(myList);
 }
 
@@ -527,7 +527,7 @@ static MENU_DATA t_tbl[] =
     T_TBL(TRACE_ATTRS),
     T_TBL(TRACE_MAXIMUM),
     {
-	(char *) 0, 0, 0
+	(char *) 0, NULL, 0
     }
 };
 
@@ -539,7 +539,7 @@ build_trace_menu(MenuNo number)
     ITEM **ip = items;
     int n;
 
-    for (n = 0; t_tbl[n].name != 0; n++) {
+    for (n = 0; t_tbl[n].name != NULL; n++) {
 	*ip = new_item(t_tbl[n].name, empty);
 	set_item_userptr(*ip, (void *) &t_tbl[n]);
 	++ip;
@@ -556,8 +556,8 @@ tracetrace(unsigned tlevel)
     static size_t need = 12;
     int n;
 
-    if (buf == 0) {
-	for (n = 0; t_tbl[n].name != 0; n++)
+    if (buf == NULL) {
+	for (n = 0; t_tbl[n].name != NULL; n++)
 	    need += strlen(t_tbl[n].name) + 2;
 	buf = typeMalloc(char, need);
 	if (!buf)
@@ -568,7 +568,7 @@ tracetrace(unsigned tlevel)
 	_nc_STRCAT(buf, t_tbl[0].name ? t_tbl[0].name : "", need);
 	_nc_STRCAT(buf, ", ", need);
     } else {
-	for (n = 1; t_tbl[n].name != 0; n++)
+	for (n = 1; t_tbl[n].name != NULL; n++)
 	    if ((tlevel & t_tbl[n].mask) == t_tbl[n].mask) {
 		_nc_STRCAT(buf, t_tbl[n].name, need);
 		_nc_STRCAT(buf, ", ", need);
@@ -595,7 +595,7 @@ update_trace_menu(NCURSES_CONST MENU * m)
     if (i == items[0]) {
 	if (item_value(i)) {
 	    ITEM **p;
-	    for (p = items + 1; *p != 0; p++)
+	    for (p = items + 1; *p != NULL; p++)
 		if (item_value(*p)) {
 		    set_item_value(*p, FALSE);
 		    changed = TRUE;
@@ -670,7 +670,7 @@ current_menu(void)
 	break;
 #endif
     default:
-	result = 0;
+	result = NULL;
 	break;
     }
     return result;
@@ -693,14 +693,14 @@ build_menus(char *filename)
 #ifdef TRACE
 	{"Trace", call_menus, 2},
 #endif
-	{(char *) 0, 0, 0}
+	{(char *) 0, NULL, 0}
     };
     static ITEM *items[SIZEOF(table)];
 
     ITEM **ip = items;
     int n;
 
-    for (n = 0; table[n].name != 0; ++n) {
+    for (n = 0; table[n].name != NULL; ++n) {
 	*ip = new_item(table[n].name, empty);
 	set_item_userptr(*ip, (void *) &table[n]);
 	++ip;
@@ -1023,7 +1023,7 @@ main(int argc, char *argv[])
 #endif /* HAVE_RIPOFFLINE */
 #ifdef TRACE
 	case 'D':
-	    curses_trace((unsigned) strtoul(optarg, 0, 0));
+	    curses_trace((unsigned) strtoul(optarg, NULL, 0));
 	    break;
 #endif
 	case OPTS_VERSION:
@@ -1046,7 +1046,7 @@ main(int argc, char *argv[])
 	init_pair(2, COLOR_BLUE, COLOR_WHITE);
     }
     status = newwin(3, COLS, LINES - 3, 0);
-    build_menus(argc > 1 ? argv[1] : 0);
+    build_menus(argc > 1 ? argv[1] : NULL);
     perform_menus();
     destroy_menus();
 

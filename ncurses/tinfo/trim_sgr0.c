@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.25 2024/10/19 21:18:18 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.26 2024/12/07 21:02:59 tom Exp $")
 
 #undef CUR
 #define CUR tp->
@@ -52,7 +52,7 @@ set_attribute_9(const TERMTYPE2 *tp, int flag)
     if (PRESENT(value))
 	result = strdup(value);
     else
-	result = 0;
+	result = NULL;
     return result;
 }
 
@@ -60,7 +60,7 @@ static int
 is_csi(const char *s)
 {
     int result = 0;
-    if (s != 0) {
+    if (s != NULL) {
 	if (UChar(s[0]) == CSI_CHR)
 	    result = 1;
 	else if (s[0] == ESC_CHR && s[1] == L_BLOCK)
@@ -101,7 +101,7 @@ skip_delay(const char *s)
 static bool
 rewrite_sgr(char *s, const char *attr)
 {
-    if (s != 0) {
+    if (s != NULL) {
 	if (PRESENT(attr)) {
 	    size_t len_s = strlen(s);
 	    size_t len_a = strlen(attr);
@@ -125,7 +125,7 @@ static bool
 similar_sgr(char *a, char *b)
 {
     bool result = FALSE;
-    if (a != 0 && b != 0) {
+    if (a != NULL && b != NULL) {
 	int csi_a = is_csi(a);
 	int csi_b = is_csi(b);
 	size_t len_a;
@@ -300,7 +300,7 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 		}
 	    }
 	    if (!found
-		&& (tmp = strstr(end, off)) != 0
+		&& (tmp = strstr(end, off)) != NULL
 		&& strcmp(end, off) != 0) {
 		i = (size_t) (tmp - end);
 		j = strlen(off);

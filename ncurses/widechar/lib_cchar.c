@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <wchar.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.39 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.40 2024/12/07 18:07:52 tom Exp $")
 
 /*
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -135,7 +135,7 @@ getcchar(const cchar_t *wcval,
 	     * If the value is not a null, return the length plus 1 for null.
 	     */
 	    code = (len < CCHARW_MAX) ? (len + 1) : CCHARW_MAX;
-	} else if (attrs == 0 || pair_arg == 0) {
+	} else if (attrs == NULL || pair_arg == NULL) {
 	    code = ERR;
 	} else if (len >= 0) {
 	    int color_pair;

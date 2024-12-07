@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.29 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.30 2024/12/07 17:44:59 tom Exp $")
 
 NCURSES_EXPORT(int)
 printw(const char *fmt, ...)
@@ -142,7 +142,7 @@ vwprintw(WINDOW *win, const char *fmt, va_list argp)
     T((T_CALLED("vwprintw(%p,%s,va_list)"), (void *) win, _nc_visbuf(fmt)));
 
     buf = NCURSES_SP_NAME(_nc_printf_string) (NCURSES_SP_ARGx fmt, argp);
-    if (buf != 0) {
+    if (buf != NULL) {
 	code = waddstr(win, buf);
     }
     returnCode(code);
@@ -160,7 +160,7 @@ vw_printw(WINDOW *win, const char *fmt, va_list argp)
     T((T_CALLED("vw_printw(%p,%s,va_list)"), (void *) win, _nc_visbuf(fmt)));
 
     buf = NCURSES_SP_NAME(_nc_printf_string) (NCURSES_SP_ARGx fmt, argp);
-    if (buf != 0) {
+    if (buf != NULL) {
 	code = waddstr(win, buf);
     }
     returnCode(code);

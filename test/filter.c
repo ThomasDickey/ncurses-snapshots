@@ -30,7 +30,7 @@
 /*
  * Author:  Thomas E. Dickey 1998
  *
- * $Id: filter.c,v 1.40 2024/11/30 16:49:53 tom Exp $
+ * $Id: filter.c,v 1.41 2024/12/07 22:40:19 tom Exp $
  *
  * An example of the 'filter()' function in ncurses, this program prompts
  * for commands and executes them (like a command shell).  It illustrates
@@ -264,12 +264,12 @@ new_command(char *buffer, int length, int underline, bool clocked, bool polled)
 /*
  * Cancel xterm's alternate-screen mode (from dialog -TD)
  */
-#define isprivate(s) ((s) != 0 && strstr(s, "\033[?") != 0)
+#define isprivate(s) ((s) != NULL && strstr(s, "\033[?") != NULL)
 static void
 cancel_altscreen(void)
 {
     if (isatty(fileno(stdout))
-	&& key_mouse != 0	/* xterm and kindred */
+	&& key_mouse != NULL	/* xterm and kindred */
 	&& isprivate(enter_ca_mode)
 	&& isprivate(exit_ca_mode)) {
 	/*
@@ -292,8 +292,8 @@ cancel_altscreen(void)
 	 * implementation of alternate-screen in rxvt, etc., which clear more
 	 * of the display than they should.
 	 */
-	enter_ca_mode = 0;
-	exit_ca_mode = 0;
+	enter_ca_mode = NULL;
+	exit_ca_mode = NULL;
     }
 }
 #endif
@@ -380,7 +380,7 @@ main(int argc, char *argv[])
     if (i_option) {
 	initscr();
     } else {
-	if (newterm((char *) 0, stdout, stdin) == 0) {
+	if (newterm((char *) 0, stdout, stdin) == NULL) {
 	    fprintf(stderr, "cannot initialize terminal\n");
 	    ExitProgram(EXIT_FAILURE);
 	}

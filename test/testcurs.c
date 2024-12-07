@@ -6,7 +6,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.59 2024/10/05 19:17:19 tom Exp $
+ * $Id: testcurs.c,v 1.60 2024/12/07 22:53:07 tom Exp $
  */
 
 #include <test.priv.h>
@@ -488,14 +488,14 @@ outputTest(WINDOW *win)
     *Buffer = 0;
     scanw("%s", Buffer);
 
-    if (TIGETSTR("cvvis", "vs") != 0) {
+    if (TIGETSTR("cvvis", "vs") != NULL) {
 	wclear(win);
 	curs_set(2);
 	MvWAddStr(win, 1, 1, "The cursor should appear as a block (visible)");
 	Continue(win);
     }
 
-    if (TIGETSTR("civis", "vi") != 0) {
+    if (TIGETSTR("civis", "vi") != NULL) {
 	wclear(win);
 	curs_set(0);
 	MvWAddStr(win, 1, 1,
@@ -503,7 +503,7 @@ outputTest(WINDOW *win)
 	Continue(win);
     }
 
-    if (TIGETSTR("cnorm", "ve") != 0) {
+    if (TIGETSTR("cnorm", "ve") != NULL) {
 	wclear(win);
 	curs_set(1);
 	MvWAddStr(win, 1, 1, "The cursor should be an underline (normal)");
@@ -592,7 +592,7 @@ padTest(WINDOW *dummy GCC_UNUSED)
 {
     WINDOW *pad;
 
-    if ((pad = newpad(50, 100)) != 0) {
+    if ((pad = newpad(50, 100)) != NULL) {
 	WINDOW *spad;
 
 	wattron(pad, A_REVERSE);
@@ -609,7 +609,7 @@ padTest(WINDOW *dummy GCC_UNUSED)
 	raw();
 	wgetch(pad);
 
-	if ((spad = subpad(pad, 12, 25, 6, 52)) != 0) {
+	if ((spad = subpad(pad, 12, 25, 6, 52)) != NULL) {
 	    MvWAddStr(spad, 2, 2, "This is a new subpad");
 	    box(spad, 0, 0);
 	    delwin(spad);

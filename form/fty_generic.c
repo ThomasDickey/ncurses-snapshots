@@ -35,7 +35,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_generic.c,v 1.16 2024/07/27 18:51:24 tom Exp $")
+MODULE_ID("$Id: fty_generic.c,v 1.17 2024/12/07 23:12:11 tom Exp $")
 
 /*
  * This is not a full implementation of a field type, but adds some
@@ -170,7 +170,10 @@ GenericArgument(const FIELDTYPE *typ,
 {
   TypeArgument *res = (TypeArgument *)0;
 
-  if (typ != 0 && (typ->status & _HAS_ARGS) != 0 && err != 0 && argiterator != 0)
+  if (typ != NULL
+      && (typ->status & _HAS_ARGS) != 0
+      && err != NULL
+      && argiterator != NULL)
     {
       if (typ->status & _LINKED_TYPE)
 	{
@@ -189,14 +192,14 @@ GenericArgument(const FIELDTYPE *typ,
       else
 	{
 	  assert(typ->genericarg != (void *)0);
-	  if (typ->genericarg == 0)
+	  if (typ->genericarg == NULL)
 	    *err += 1;
 	  else
 	    {
 	      void *argp;
 	      int valid = argiterator(&argp);
 
-	      if (valid == 0 || argp == 0 ||
+	      if (valid == 0 || argp == NULL ||
 		  !(res = (TypeArgument *)typ->genericarg(argp)))
 		{
 		  *err += 1;
@@ -282,7 +285,7 @@ _nc_form_cursor(const FORM *form, int *pRow, int *pCol)
   int code = E_SYSTEM_ERROR;
   WINDOW *res = (WINDOW *)0;
 
-  if (form != 0 && pRow != 0 && pCol != 0)
+  if (form != NULL && pRow != NULL && pCol != NULL)
     {
       *pRow = form->currow;
       *pCol = form->curcol;

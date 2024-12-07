@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2019,2020 Thomas E. Dickey                                *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.50 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.51 2024/12/07 20:05:08 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
@@ -81,7 +81,7 @@ NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
 {
     chtype *fake_map = acs_map;
-    chtype *real_map = SP_PARM != 0 ? SP_PARM->_acs_map : fake_map;
+    chtype *real_map = SP_PARM != NULL ? SP_PARM->_acs_map : fake_map;
     int j;
 
     T(("initializing ACS map"));
@@ -183,7 +183,7 @@ NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
      *
      * test/blue.c uses this feature.
      */
-#define PCH_KLUDGE(a,b) (a != 0 && b != 0 && !strcmp(a,b))
+#define PCH_KLUDGE(a,b) (a != NULL && b != NULL && !strcmp(a,b))
     if (PCH_KLUDGE(enter_pc_charset_mode, enter_alt_charset_mode) &&
 	PCH_KLUDGE(exit_pc_charset_mode, exit_alt_charset_mode)) {
 	size_t i;
@@ -191,7 +191,7 @@ NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
 	    if (real_map[i] == 0) {
 		real_map[i] = (chtype) i;
 		if (real_map != fake_map) {
-		    if (SP != 0)
+		    if (SP != NULL)
 			SP->_screen_acs_map[i] = TRUE;
 		}
 	    }
@@ -210,7 +210,7 @@ NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
 		   (int) i,
 		   _tracechar(UChar(acs_chars[i])),
 		   _tracechtype(real_map[UChar(acs_chars[i])])));
-		if (SP != 0) {
+		if (SP != NULL) {
 		    SP->_screen_acs_map[UChar(acs_chars[i])] = TRUE;
 		}
 	    }

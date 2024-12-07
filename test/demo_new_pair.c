@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.31 2024/11/09 20:43:56 tom Exp $
+ * $Id: demo_new_pair.c,v 1.32 2024/12/07 22:22:51 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -50,7 +50,7 @@ static bool
 valid_cap(NCURSES_CONST char *name)
 {
     const char *value = tigetstr(name);
-    return (value != 0 && value != (char *) -1) ? TRUE : FALSE;
+    return (value != NULL && value != (char *) -1) ? TRUE : FALSE;
 }
 
 static attr_t
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
 	"  ?      print this screen (exit on any character).",
 	"",
 	"To exit this program, press ^Q, ^[ or \"q\".",
-	0
+	NULL
     };
 
     bool done = FALSE;
@@ -243,7 +243,7 @@ main(int argc, char *argv[])
 	fprintf(stderr, "cannot open terminal for output\n");
 	ExitProgram(EXIT_FAILURE);
     }
-    if (newterm(NULL, output, stdin) == 0) {
+    if (newterm(NULL, output, stdin) == NULL) {
 	fprintf(stderr, "Cannot initialize terminal\n");
 	if (output != NULL)
 	    fclose(output);

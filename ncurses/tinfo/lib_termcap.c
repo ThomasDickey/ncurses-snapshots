@@ -49,10 +49,10 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.90 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.91 2024/12/07 18:26:04 tom Exp $")
 
-NCURSES_EXPORT_VAR(char *) UP = 0;
-NCURSES_EXPORT_VAR(char *) BC = 0;
+NCURSES_EXPORT_VAR(char *) UP = NULL;
+NCURSES_EXPORT_VAR(char *) BC = NULL;
 
 #define MyCache  _nc_globals.tgetent_cache
 #define CacheInx _nc_globals.tgetent_index
@@ -125,18 +125,18 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	bool same_result = (MyCache[n].last_used && MyCache[n].last_bufp == bufp);
 	if (same_result) {
 	    CacheInx = n;
-	    if (FIX_SGR0 != 0) {
+	    if (FIX_SGR0 != NULL) {
 		FreeAndNull(FIX_SGR0);
 	    }
 	    /*
 	     * Also free the terminfo data that we loaded (much bigger leak).
 	     */
-	    if (LAST_TRM != 0 && LAST_TRM != TerminalOf(SP_PARM)) {
+	    if (LAST_TRM != NULL && LAST_TRM != TerminalOf(SP_PARM)) {
 		const TERMINAL *trm = LAST_TRM;
 		NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
 		    if (LAST_TRM == trm)
-			LAST_TRM = 0;
+			LAST_TRM = NULL;
 		CacheInx = n;
 	    }
 	    found_cache = TRUE;
@@ -157,13 +157,13 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	LAST_TRM = TerminalOf(SP_PARM);
 	LAST_SEQ = ++CacheSeq;
     } else {
-	LAST_TRM = 0;
+	LAST_TRM = NULL;
     }
 
     PC = 0;
-    UP = 0;
-    BC = 0;
-    FIX_SGR0 = 0;		/* don't free it - application may still use */
+    UP = NULL;
+    BC = NULL;
+    FIX_SGR0 = NULL;		/* don't free it - application may still use */
 
     if (rc == 1) {
 
@@ -180,12 +180,12 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	    BC = backspace_if_not_bs;
 
 	if ((FIX_SGR0 = _nc_trim_sgr0(&TerminalType(TerminalOf(SP_PARM))))
-	    != 0) {
+	    != NULL) {
 	    if (!strcmp(FIX_SGR0, exit_attribute_mode)) {
 		if (FIX_SGR0 != exit_attribute_mode) {
 		    free(FIX_SGR0);
 		}
-		FIX_SGR0 = 0;
+		FIX_SGR0 = NULL;
 	    }
 	}
 	LAST_BUF = bufp;
@@ -246,7 +246,7 @@ NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx const char *id)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(id, BOOLEAN, TRUE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES
@@ -298,7 +298,7 @@ NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx const char *id)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(id, NUMBER, TRUE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES
@@ -350,7 +350,7 @@ NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx const char *id, char **area)
 	int j = -1;
 
 	entry_ptr = _nc_find_type_entry(id, STRING, TRUE);
-	if (entry_ptr != 0) {
+	if (entry_ptr != NULL) {
 	    j = entry_ptr->nte_index;
 	}
 #if NCURSES_XNAMES
@@ -371,12 +371,12 @@ NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx const char *id, char **area)
 	    /* setupterm forces canceled strings to null */
 	    if (VALID_STRING(result)) {
 		if (result == exit_attribute_mode
-		    && FIX_SGR0 != 0) {
+		    && FIX_SGR0 != NULL) {
 		    result = FIX_SGR0;
 		    TR(TRACE_DATABASE, ("altered to : %s", _nc_visbuf(result)));
 		}
-		if (area != 0
-		    && *area != 0) {
+		if (area != NULL
+		    && *area != NULL) {
 		    _nc_STRCPY(*area, result, 1024);
 		    result = *area;
 		    *area += strlen(*area) + 1;
@@ -401,13 +401,13 @@ tgetstr(const char *id, char **area)
 NCURSES_EXPORT(void)
 _nc_tgetent_leak(const TERMINAL *const termp)
 {
-    if (termp != 0) {
+    if (termp != NULL) {
 	int num;
 	for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx) {
 	    if (LAST_TRM == termp) {
 		FreeAndNull(FIX_SGR0);
-		if (LAST_TRM != 0) {
-		    LAST_TRM = 0;
+		if (LAST_TRM != NULL) {
+		    LAST_TRM = NULL;
 		}
 		break;
 	    }
@@ -420,7 +420,7 @@ _nc_tgetent_leaks(void)
 {
     int num;
     for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx) {
-	if (LAST_TRM != 0) {
+	if (LAST_TRM != NULL) {
 	    del_curterm(LAST_TRM);
 	    _nc_tgetent_leak(LAST_TRM);
 	}

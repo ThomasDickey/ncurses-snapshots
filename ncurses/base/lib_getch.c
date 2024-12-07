@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.147 2024/08/31 15:54:49 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.148 2024/12/07 17:40:33 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -414,7 +414,7 @@ recur_wgetnstr(WINDOW *win, char *buf)
     SCREEN *sp = _nc_screen_of(win);
     int rc;
 
-    if (sp != 0) {
+    if (sp != NULL) {
 #ifdef USE_PTHREADS
 	if (_nc_use_pthreads && sp != CURRENT_SCREEN) {
 	    SCREEN *save_SP;
@@ -457,7 +457,7 @@ _nc_wgetch(WINDOW *win,
     *result = 0;
 
     sp = _nc_screen_of(win);
-    if (win == 0 || sp == 0) {
+    if (win == NULL || sp == NULL) {
 	returnCode(ERR);
     }
 

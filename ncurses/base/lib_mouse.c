@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.202 2024/11/23 19:06:20 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.203 2024/12/07 17:40:33 tom Exp $")
 
 #include <tic.h>
 
@@ -391,7 +391,7 @@ init_xterm_mouse(SCREEN *sp)
     sp->_mouse_xtermcap = tigetstr("XM");
     if (VALID_STRING(sp->_mouse_xtermcap)) {
 	char *code = strstr(sp->_mouse_xtermcap, "[?");
-	if (code != 0) {
+	if (code != NULL) {
 	    code += 2;
 	    while ((*code >= '0') && (*code <= '9')) {
 		char *next = code;
@@ -761,7 +761,7 @@ initialize_mousetype(SCREEN *sp)
     /* we know how to recognize mouse events under "xterm" */
     if (NonEmpty(key_mouse)) {
 	init_xterm_mouse(sp);
-    } else if (strstr(SP_TERMTYPE term_names, "xterm") != 0) {
+    } else if (strstr(SP_TERMTYPE term_names, "xterm") != NULL) {
 	if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
 	    init_xterm_mouse(sp);
     }
@@ -778,7 +778,7 @@ _nc_mouse_init(SCREEN *sp)
 
     T((T_CALLED("_nc_mouse_init(%p)"), (void *) sp));
 
-    if (sp != 0) {
+    if (sp != NULL) {
 	if (!sp->_mouse_initialized) {
 	    int i;
 
@@ -1834,10 +1834,10 @@ NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 
     T((T_CALLED("getmouse(%p,%p)"), (void *) SP_PARM, (void *) aevent));
 
-    if ((aevent != 0) &&
-	(SP_PARM != 0) &&
+    if ((aevent != NULL) &&
+	(SP_PARM != NULL) &&
 	(SP_PARM->_mouse_type != M_NONE) &&
-	(eventp = SP_PARM->_mouse_eventp) != 0) {
+	(eventp = SP_PARM->_mouse_eventp) != NULL) {
 	/* compute the current-event pointer */
 	MEVENT *prev = PREV(eventp);
 
@@ -1890,9 +1890,9 @@ NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 
     T((T_CALLED("ungetmouse(%p,%p)"), (void *) SP_PARM, (void *) aevent));
 
-    if (aevent != 0 &&
-	SP_PARM != 0 &&
-	(eventp = SP_PARM->_mouse_eventp) != 0) {
+    if (aevent != NULL &&
+	SP_PARM != NULL &&
+	(eventp = SP_PARM->_mouse_eventp) != NULL) {
 
 	/* stick the given event in the next-free slot */
 	*eventp = *aevent;
@@ -1926,7 +1926,7 @@ NCURSES_SP_NAME(mousemask) (NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
        (unsigned long) newmask,
        (void *) oldmask));
 
-    if (SP_PARM != 0) {
+    if (SP_PARM != NULL) {
 	if (oldmask)
 	    *oldmask = SP_PARM->_mouse_mask;
 
@@ -1988,7 +1988,7 @@ wenclose(const WINDOW *win, int y, int x)
 
     T((T_CALLED("wenclose(%p,%d,%d)"), (const void *) win, y, x));
 
-    if (win != 0) {
+    if (win != NULL) {
 	y -= win->_yoffset;
 	if (IS_PAD(win)) {
 	    if (win->_pad._pad_y >= 0 &&
@@ -2020,7 +2020,7 @@ NCURSES_SP_NAME(mouseinterval) (NCURSES_SP_DCLx int maxclick)
 
     T((T_CALLED("mouseinterval(%p,%d)"), (void *) SP_PARM, maxclick));
 
-    if (SP_PARM != 0) {
+    if (SP_PARM != NULL) {
 	oldval = SP_PARM->_maxclick;
 	if (maxclick >= 0)
 	    SP_PARM->_maxclick = maxclick;
@@ -2044,7 +2044,7 @@ mouseinterval(int maxclick)
 NCURSES_EXPORT(bool)
 _nc_has_mouse(const SCREEN *sp)
 {
-    return (((0 == sp) || (sp->_mouse_type == M_NONE)) ? FALSE : TRUE);
+    return (((NULL == sp) || (sp->_mouse_type == M_NONE)) ? FALSE : TRUE);
 }
 
 NCURSES_EXPORT(bool)

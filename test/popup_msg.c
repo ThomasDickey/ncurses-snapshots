@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: popup_msg.c,v 1.14 2024/10/26 19:28:11 Stas.Sergeev Exp $
+ * $Id: popup_msg.c,v 1.15 2024/12/07 22:22:51 tom Exp $
  *
  * Show a multi-line message in a window which may extend beyond the screen.
  *
@@ -78,16 +78,16 @@ popup_msg(WINDOW *parent, NCURSES_CONST char *const *msg)
     int last_y;
     int ch = ERR;
 
-    for (n = 0; msg[n] != 0; ++n) {
+    for (n = 0; msg[n] != NULL; ++n) {
 	int check = (int) strlen(msg[n]);
 	if (width < check)
 	    width = check;
     }
     length = n;
 
-    if ((help = newwin(high, wide, y0, x0)) == 0)
+    if ((help = newwin(high, wide, y0, x0)) == NULL)
 	return;
-    if ((data = newpad(length + 2, width + 1)) == 0) {
+    if ((data = newpad(length + 2, width + 1)) == NULL) {
 	delwin(help);
 	return;
     }

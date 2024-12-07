@@ -33,7 +33,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.136 2024/07/27 18:49:18 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.137 2024/12/07 21:57:21 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -734,7 +734,7 @@ Field_Grown(FIELD *field, int amount)
 	    {
 	      WINDOW *new_window = newpad(field->drows, field->dcols);
 
-	      if (new_window != 0)
+	      if (new_window != NULL)
 		{
 		  assert(form != (FORM *)0);
 		  if (form->w)
@@ -802,7 +802,7 @@ static int
 Field_encloses(FIELD *field, int ry, int rx)
 {
   T((T_CALLED("Field_encloses(%p)"), (void *)field));
-  if (field != 0
+  if (field != NULL
       && field->frow <= ry
       && (field->frow + field->rows) > ry
       && field->fcol <= rx
@@ -1251,7 +1251,7 @@ Synchronize_Linked_Fields(FIELD *field)
     return (E_SYSTEM_ERROR);
 
   for (linked_field = field->link;
-       (linked_field != field) && (linked_field != 0);
+       (linked_field != field) && (linked_field != NULL);
        linked_field = linked_field->link)
     {
       int syncres;
@@ -1458,7 +1458,7 @@ _nc_Unset_Current_Field(FORM *form)
 	      werase(form->w);
 	      Perform_Justification(field, form->w);
 	      if (Field_Has_Option(field, O_DYNAMIC_JUSTIFY) &&
-		  (form->w->_parent == 0))
+		  (form->w->_parent == NULL))
 		{
 		  copywin(form->w,
 			  Get_Form_Window(form),
@@ -1480,7 +1480,7 @@ _nc_Unset_Current_Field(FORM *form)
     }
   delwin(form->w);
   form->w = (WINDOW *)0;
-  form->current = 0;
+  form->current = NULL;
 }
 
 /*---------------------------------------------------------------------------
@@ -4758,7 +4758,7 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
   int len;
 
 #if USE_WIDEC_SUPPORT
-  FIELD_CELL *widevalue = 0;
+  FIELD_CELL *widevalue = NULL;
 #endif
 
   T((T_CALLED("set_field_buffer(%p,%d,%s)"), (void *)field, buffer, _nc_visbuf(value)));
@@ -4807,7 +4807,7 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
   wclear(field->working);
   (void)mvwaddstr(field->working, 0, 0, value);
 
-  if ((widevalue = typeCalloc(FIELD_CELL, len + 1)) == 0)
+  if ((widevalue = typeCalloc(FIELD_CELL, len + 1)) == NULL)
     {
       RETURN(E_SYSTEM_ERROR);
     }
@@ -4869,7 +4869,7 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
 FORM_EXPORT(char *)
 field_buffer(const FIELD *field, int buffer)
 {
-  char *result = 0;
+  char *result = NULL;
 
   T((T_CALLED("field_buffer(%p,%d)"), (const void *)field, buffer));
 
@@ -4890,14 +4890,14 @@ field_buffer(const FIELD *field, int buffer)
 	      size_t next;
 
 	      init_mb(state);
-	      next = _nc_wcrtomb(0, data[n].chars[0], &state);
+	      next = _nc_wcrtomb(NULL, data[n].chars[0], &state);
 	      if (next > 0)
 		need += next;
 	    }
 	}
 
       /* allocate a place to store the expanded string */
-      if (field->expanded[buffer] != 0)
+      if (field->expanded[buffer] != NULL)
 	free(field->expanded[buffer]);
       field->expanded[buffer] = typeMalloc(char, need + 1);
 
@@ -4909,7 +4909,7 @@ field_buffer(const FIELD *field, int buffer)
        * contain embedded wide-character extensions).  Change the null-padding
        * to blanks as needed.
        */
-      if ((result = field->expanded[buffer]) != 0)
+      if ((result = field->expanded[buffer]) != NULL)
 	{
 	  wclear(field->working);
 	  wmove(field->working, 0, 0);
@@ -4937,7 +4937,7 @@ field_buffer(const FIELD *field, int buffer)
 FORM_EXPORT(wchar_t *)
 _nc_Widen_String(char *source, int *lengthp)
 {
-  wchar_t *result = 0;
+  wchar_t *result = NULL;
   wchar_t wch = 0;
   size_t given = strlen(source);
   size_t tries;
@@ -4999,7 +4999,7 @@ _nc_Widen_String(char *source, int *lengthp)
 	  result = typeCalloc(wchar_t, need);
 
 	  *lengthp = (int)need;
-	  if (result == 0)
+	  if (result == NULL)
 	    break;
 	}
     }

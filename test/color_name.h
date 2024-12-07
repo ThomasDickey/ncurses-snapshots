@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: color_name.h,v 1.10 2024/10/05 19:26:24 tom Exp $
+ * $Id: color_name.h,v 1.11 2024/12/07 22:17:24 tom Exp $
  */
 
 #ifndef __COLORNAME_H
@@ -62,10 +62,10 @@ static int
 color_code(const char *color)
 {
     int result = 0;
-    char *endp = 0;
+    char *endp = NULL;
 
     if ((result = (int) strtol(color, &endp, 0)) >= 0
-	&& (endp == 0 || *endp == 0)) {
+	&& (endp == NULL || *endp == 0)) {
 	;
     } else if (!strcmp(color, "default")) {
 	result = -1;
@@ -87,7 +87,7 @@ static const char *
 color_name(int color)
 {
     static char temp[20];
-    const char *result = 0;
+    const char *result = NULL;
 
     if (color >= (int) SIZEOF(the_color_names)) {
 	_nc_SPRINTF(temp, _nc_SLIMIT(sizeof(temp)) "%d", color);

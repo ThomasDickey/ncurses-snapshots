@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.143 2024/11/30 21:18:07 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.144 2024/12/07 17:18:07 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -451,14 +451,14 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
     if ((AttrOf(ch) & A_ALTCHARSET)
 	|| (
 #if USE_WIDEC_SUPPORT
-	       (sp != 0 && sp->_legacy_coding) &&
+	       (sp != NULL && sp->_legacy_coding) &&
 #endif
 	       s[1] == 0
 	)
 	|| (
 	       (isprint(UChar(t)) && !iscntrl(UChar(t)))
 #if USE_WIDEC_SUPPORT
-	       || ((sp == 0 || !sp->_legacy_coding) &&
+	       || ((sp == NULL || !sp->_legacy_coding) &&
 		   (WINDOW_EXT(win, addch_used)
 		    || !_nc_is_charable(CharOf(ch))))
 #endif

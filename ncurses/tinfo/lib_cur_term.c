@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2020-2021,2022 Thomas E. Dickey                                *
+,* Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>		/* VALID_STRING */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.49 2022/05/28 17:56:55 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.50 2024/12/07 20:05:08 tom Exp $")
 
 #undef CUR
 #define CUR TerminalType(termp).
@@ -74,7 +74,7 @@ NCURSES_PUBLIC_VAR(cur_term) (void)
 }
 
 #else
-NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
+NCURSES_EXPORT_VAR(TERMINAL *) cur_term = NULL;
 #endif
 
 NCURSES_EXPORT(TERMINAL *)
@@ -93,7 +93,7 @@ NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 #else
     cur_term = termp;
 #endif
-    if (termp != 0) {
+    if (termp != NULL) {
 #ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 	ospeed = (NCURSES_OSPEED) _nc_ospeed(termp->_baudrate);
@@ -134,7 +134,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 
     T((T_CALLED("del_curterm(%p, %p)"), (void *) SP_PARM, (void *) termp));
 
-    if (termp != 0) {
+    if (termp != NULL) {
 #ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 #endif
@@ -155,11 +155,11 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 #endif
 	_nc_free_termtype2(&TerminalType(termp));
 	if (termp == cur)
-	    NCURSES_SP_NAME(set_curterm) (NCURSES_SP_ARGx 0);
+	    NCURSES_SP_NAME(set_curterm) (NCURSES_SP_ARGx NULL);
 
 	FreeIfNeeded(termp->_termname);
 #if USE_HOME_TERMINFO
-	if (_nc_globals.home_terminfo != 0) {
+	if (_nc_globals.home_terminfo != NULL) {
 	    FreeAndNull(_nc_globals.home_terminfo);
 	}
 #endif

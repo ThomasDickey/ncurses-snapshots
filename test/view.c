@@ -52,7 +52,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.149 2024/11/30 18:15:06 tom Exp $
+ * $Id: view.c,v 1.150 2024/12/07 22:53:07 tom Exp $
  */
 
 #include <test.priv.h>
@@ -114,7 +114,7 @@ finish(int sig)
 {
     endwin();
 #if NO_LEAKS
-    if (vec_lines != 0) {
+    if (vec_lines != NULL) {
 	int n;
 	for (n = 0; n < num_lines; ++n) {
 	    free(vec_lines[n]);
@@ -172,7 +172,7 @@ show_all(const char *tag)
 	move(i, 0);
 	printw("%*d:", digits, actual);
 	clrtoeol();
-	if ((s = lptr[i - 1]) == 0) {
+	if ((s = lptr[i - 1]) == NULL) {
 	    continue;
 	}
 	len = ch_len(s);
@@ -233,7 +233,7 @@ read_file(const char *filename)
     size_t len;
     struct stat sb;
     char *my_blob;
-    char **my_vec = 0;
+    char **my_vec = NULL;
     WINDOW *my_win;
 
     if (stat(filename, &sb) != 0
@@ -245,11 +245,11 @@ read_file(const char *filename)
 	failed("input is empty");
     }
 
-    if ((fp = fopen(filename, "r")) == 0) {
+    if ((fp = fopen(filename, "r")) == NULL) {
 	failed("cannot open input-file");
     }
 
-    if ((my_blob = malloc((size_t) sb.st_size + 1)) == 0) {
+    if ((my_blob = malloc((size_t) sb.st_size + 1)) == NULL) {
 	failed("cannot allocate memory for input-file");
     }
 
@@ -280,7 +280,7 @@ read_file(const char *filename)
 	}
 	num_lines = k;
 	if (pass == 0) {
-	    if (((my_vec = typeCalloc(char *, (size_t) k + 2)) == 0)) {
+	    if (((my_vec = typeCalloc(char *, (size_t) k + 2)) == NULL)) {
 		failed("cannot allocate line-vector #1");
 	    }
 	} else {
@@ -307,11 +307,11 @@ read_file(const char *filename)
     }
     width = (width + 1) * 5;
     my_win = newwin(2, width, 0, 0);
-    if (my_win == 0) {
+    if (my_win == NULL) {
 	failed("cannot allocate temporary window");
     }
 
-    if ((vec_lines = typeCalloc(NCURSES_CH_T *, (size_t) num_lines + 2)) == 0) {
+    if ((vec_lines = typeCalloc(NCURSES_CH_T *, (size_t) num_lines + 2)) == NULL) {
 	failed("cannot allocate line-vector #2");
     }
 
@@ -358,7 +358,7 @@ read_file(const char *filename)
 	    x = width - 1;
 	wmove(my_win, 0, 0);
 	/* "x + 1" works with standard curses; some implementations are buggy */
-	if ((vec_lines[k] = typeCalloc(NCURSES_CH_T, x + width + 1)) == 0) {
+	if ((vec_lines[k] = typeCalloc(NCURSES_CH_T, x + width + 1)) == NULL) {
 	    failed("cannot allocate line-vector #3");
 	}
 #if USE_WIDEC_SUPPORT
@@ -427,7 +427,7 @@ main(int argc, char *argv[])
 	"  s              - use entered count for halfdelay() parameter",
 	"                 - if no entered count, stop nodelay()",
 	"  <space>        - begin nodelay()",
-	0
+	NULL
     };
 
     int ch;
@@ -462,9 +462,9 @@ main(int argc, char *argv[])
 #ifdef TRACE
 	case 'D':
 	    {
-		char *next = 0;
+		char *next = NULL;
 		int tvalue = (int) strtol(optarg, &next, 0);
-		if (tvalue < 0 || (next != 0 && *next != 0))
+		if (tvalue < 0 || (next != NULL && *next != 0))
 		    usage(FALSE);
 		curses_trace((unsigned) tvalue);
 	    }

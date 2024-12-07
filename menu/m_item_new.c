@@ -45,7 +45,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: m_item_new.c,v 1.39 2024/11/23 19:16:50 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.40 2024/12/07 22:01:57 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -63,13 +63,13 @@ Is_Printable_String(const char *s)
   bool result = TRUE;
 
 #if USE_WIDEC_SUPPORT
-  int count = (int)mbstowcs(0, s, 0);
-  wchar_t *temp = 0;
+  int count = (int)mbstowcs(NULL, s, 0);
+  wchar_t *temp = NULL;
 
   assert(s);
 
   if (count > 0
-      && (temp = typeCalloc(wchar_t, (2 + (unsigned)count))) != 0)
+      && (temp = typeCalloc(wchar_t, (2 + (unsigned)count))) != NULL)
     {
       int n;
 
@@ -231,7 +231,7 @@ set_menu_mark(MENU *menu, const char *mark)
 	  else
 	    {
 	      menu->mark = old_mark;
-	      menu->marklen = (short)((old_mark != 0) ? strlen(old_mark) : 0);
+	      menu->marklen = (short)((old_mark != NULL) ? strlen(old_mark) : 0);
 	      RETURN(E_SYSTEM_ERROR);
 	    }
 	}

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: savescreen.c,v 1.66 2024/11/30 18:48:40 tom Exp $
+ * $Id: savescreen.c,v 1.67 2024/12/07 22:46:42 tom Exp $
  *
  * Demonstrate save/restore functions from the curses library.
  * Thomas Dickey - 2007/7/14
@@ -89,7 +89,7 @@ cleanup(char *files[])
     if (!keep_dumps) {
 	int n;
 
-	for (n = 0; files[n] != 0; ++n) {
+	for (n = 0; files[n] != NULL; ++n) {
 	    unlink(files[n]);
 	}
     }
@@ -173,7 +173,7 @@ dump_screen(char **files, int color, int which, int last, bool use_colors)
     NCURSES_CONST char *filename = files[which];
     bool dumped = FALSE;
 
-    if (filename != 0) {
+    if (filename != NULL) {
 	dumped = TRUE;
 	show_what(color, ++which, last);
 	if (scr_dump(filename) == ERR) {
@@ -230,7 +230,7 @@ editor_help(void)
 	"   a           toggle between '#' and graphic symbol for drawing",
 	"   c           change color drawn by line to next in palette",
 	"   h,j,k,l or arrows to move around the screen, drawing",
-	0
+	NULL
     };
     popup_msg(stdscr, msgs);
 }
@@ -247,7 +247,7 @@ replay_help(void)
 	"   q           quit",
 	"   <space>     load the next screen",
 	"   <backspace> load the previous screen",
-	0
+	NULL
     };
     popup_msg(stdscr, msgs);
 }
@@ -286,7 +286,7 @@ main(int argc, char *argv[])
     bool replaying = FALSE;
     bool done = FALSE;
     char **files;
-    NCURSES_CONST char *fill_by = 0;
+    NCURSES_CONST char *fill_by = NULL;
 #if USE_WIDEC_SUPPORT
     cchar_t mycc;
     static const wchar_t mywc[2] =
@@ -366,7 +366,7 @@ main(int argc, char *argv[])
 	 * After that, use color pairs for constructing a test-pattern, e.g.,
 	 * imitating xterm's scripts.
 	 */
-	if (fill_by == 0) {
+	if (fill_by == NULL) {
 	    if (COLORS <= 256) {
 		for (n = 0; n < COLORS; ++n)
 		    init_pair((short) (n + MAX_ANSI), (short) n, (short) n);
@@ -407,7 +407,7 @@ main(int argc, char *argv[])
 	    }
 #endif
 	}
-	if ((fill_by == 0) && !replaying) {
+	if ((fill_by == NULL) && !replaying) {
 #if USE_WIDEC_SUPPORT
 	    int cube = 0;
 #endif
@@ -484,9 +484,9 @@ main(int argc, char *argv[])
 	}
     }
 
-    if (fill_by != 0) {
+    if (fill_by != NULL) {
 	FILE *fp = fopen(fill_by, "r");
-	if (fp != 0) {
+	if (fp != NULL) {
 	    bool filled = FALSE;
 	    move(1, 0);
 	    while ((ch = fgetc(fp)) != EOF) {
@@ -577,7 +577,7 @@ main(int argc, char *argv[])
 	int x = 0;
 	int color = 0;
 	int altchars = 0;
-	bool dirty = use_colors || (fill_by != 0);
+	bool dirty = use_colors || (fill_by != NULL);
 
 	while (!done) {
 	    switch (get_command(color, which, last)) {

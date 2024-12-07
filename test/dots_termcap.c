@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_termcap.c,v 1.35 2024/10/06 21:18:35 tom Exp $
+ * $Id: dots_termcap.c,v 1.37 2024/12/07 22:32:11 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -153,7 +153,7 @@ ranf(void)
 /*
  * napms is a curses function which happens to be usable without initializing
  * the screen, but if this program happened to be build with a "real" termcap
- * library, there is nothing like napms. 
+ * library, there is nothing like napms.
  */
 #if HAVE_NAPMS
 #define my_napms(ms) napms(ms)
@@ -178,9 +178,9 @@ static int
 get_number(NCURSES_CONST char *cap, const char *env)
 {
     int result = tgetnum(cap);
-    const char *value = env ? getenv(env) : 0;
-    if (value != 0 && *value != 0) {
-	char *next = 0;
+    const char *value = env ? getenv(env) : NULL;
+    if (value != NULL && *value != 0) {
+	char *next = NULL;
 	long check = strtol(value, &next, 10);
 	if (check > 0 && *next == '\0')
 	    result = (int) check;
@@ -263,12 +263,12 @@ main(int argc, char *argv[])
 	}
     }
 
-    if ((name = getenv("TERM")) == 0) {
+    if ((name = getenv("TERM")) == NULL) {
 	fprintf(stderr, "TERM is not set\n");
 	ExitProgram(EXIT_FAILURE);
     }
 
-    srand((unsigned) time(0));
+    srand((unsigned) time(NULL));
 
     SetupAlarm((unsigned) r_option);
     InitAndCatch(ch = tgetent(buffer, name), onsig);
@@ -285,7 +285,7 @@ main(int argc, char *argv[])
     }
 
     num_colors = tgetnum("Co");
-#define GetNumber(cap,env) get_number(cap, e_option ? env : 0)
+#define GetNumber(cap,env) get_number(cap, e_option ? env : NULL)
     num_lines = GetNumber("li", "LINES");
     num_columns = GetNumber("co", "COLUMNS");
 

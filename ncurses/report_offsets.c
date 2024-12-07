@@ -34,10 +34,10 @@
 #define NEW_PAIR_INTERNAL 1
 #include <curses.priv.h>
 
-MODULE_ID("$Id: report_offsets.c,v 1.29 2024/05/25 23:00:26 tom Exp $")
+MODULE_ID("$Id: report_offsets.c,v 1.30 2024/12/07 21:18:23 tom Exp $")
 
 #define show_size(type) \
-	flag = 0; \
+	flag = NULL; \
 	last = 0; \
 	printf("%5lu   " #type "\n", (unsigned long)sizeof(type))
 #define show_name(name) \
@@ -48,7 +48,7 @@ MODULE_ID("$Id: report_offsets.c,v 1.29 2024/05/25 23:00:26 tom Exp $")
 		printf("?? incorrect order for " #type "." #member "\n"); \
 	printf("%5lu %c " #type "." #member "\n", next, flag ? *flag : ' '); \
 	last = next; \
-	flag = 0
+	flag = NULL
 
 #if NCURSES_WIDECHAR && NCURSES_EXT_COLORS
 #define show_COLORS(type,member) { flag = "c"; show_offset(type,member); }
@@ -104,7 +104,7 @@ MODULE_ID("$Id: report_offsets.c,v 1.29 2024/05/25 23:00:26 tom Exp $")
 int
 main(void)
 {
-    const char *flag = 0;
+    const char *flag = NULL;
     unsigned long last, next;
 
     printf("Size/offsets of data structures:\n");

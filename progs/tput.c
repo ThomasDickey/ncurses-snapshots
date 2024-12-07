@@ -47,7 +47,7 @@
 #include <transform.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tput.c,v 1.106 2024/11/30 21:47:34 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.107 2024/12/07 22:12:53 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 
@@ -256,15 +256,15 @@ tput_cmd(int fd, TTY * settings, int argc, char **argv, int *used)
 	     */
 
 	    for (k = 1; (k < argc) && (k <= NUM_PARM); k++) {
-		char *tmp = 0;
+		char *tmp = NULL;
 		strings[k] = argv[k];
 		numbers[k] = strtol(argv[k], &tmp, 0);
-		if (tmp == 0 || *tmp != 0)
+		if (tmp == NULL || *tmp != 0)
 		    numbers[k] = 0;
 	    }
 	    for (k = argc; k <= NUM_PARM; k++) {
 		numbers[k] = 0;
-		strings[k] = 0;
+		strings[k] = NULL;
 	    }
 
 	    paramType = tparm_type(name);
@@ -342,7 +342,7 @@ tput_cmd(int fd, TTY * settings, int argc, char **argv, int *used)
 		/* FALLTHRU */
 	    default:
 		analyzed = _nc_tparm_analyze(NULL, s, p_is_s, &popcount);
-#define myParam(n) (p_is_s[n - 1] != 0 ? ((TPARM_ARG) strings[n]) : numbers[n])
+#define myParam(n) (p_is_s[n - 1] != NULL ? ((TPARM_ARG) strings[n]) : numbers[n])
 		s = TPARM_9(s,
 			    myParam(1),
 			    myParam(2),
@@ -440,7 +440,7 @@ main(int argc, char **argv)
 	argv += optind;
     }
 
-    if (term == 0 || *term == '\0')
+    if (term == NULL || *term == '\0')
 	quit(ErrUsage, "No value for $TERM and no -T specified");
 
     fd = save_tty_settings(&tty_settings, need_tty);
@@ -464,7 +464,7 @@ main(int argc, char **argv)
 	ExitProgram(code);
     }
 
-    while (fgets(buf, sizeof(buf), stdin) != 0) {
+    while (fgets(buf, sizeof(buf), stdin) != NULL) {
 	size_t need = strlen(buf);
 	char **argvec = typeCalloc(char *, need + 1);
 	char **argnow;

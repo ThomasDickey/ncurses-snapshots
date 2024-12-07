@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: redraw.c,v 1.18 2024/10/06 21:17:54 tom Exp $
+ * $Id: redraw.c,v 1.19 2024/12/07 22:46:42 tom Exp $
  *
  * Demonstrate the redrawwin() and wredrawln() functions.
  * Thomas Dickey - 2006/11/4
@@ -76,7 +76,7 @@ test_redraw(WINDOW *win)
 	"",
 	"Other control characters are added to the screen in printable form.",
 	"Other printable characters are added to the screen as is.",
-	0
+	NULL
     };
 
     WINDOW *win1;

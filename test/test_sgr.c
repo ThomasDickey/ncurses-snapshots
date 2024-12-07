@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_sgr.c,v 1.25 2024/10/06 21:05:50 tom Exp $
+ * $Id: test_sgr.c,v 1.26 2024/12/07 22:48:21 tom Exp $
  *
  * A simple demo of the sgr/sgr0 terminal capabilities.
  */
@@ -106,10 +106,10 @@ make_dblist(void)
 static char *
 next_dbitem(void)
 {
-    char *result = 0;
+    char *result = NULL;
 
     if (db_list) {
-	if ((result = db_list[db_item]) == 0) {
+	if ((result = db_list[db_item]) == NULL) {
 	    db_item = 0;
 	    result = db_list[0];
 	} else {
@@ -129,7 +129,7 @@ free_dblist(void)
 	for (n = 0; db_list[n]; ++n)
 	    free(db_list[n]);
 	free(db_list);
-	db_list = 0;
+	db_list = NULL;
     }
 }
 #endif
@@ -230,20 +230,20 @@ brute_force(const char *name)
 				  BITS2P(7),
 				  BITS2P(8),
 				  BITS2P(9));
-	    if (values[count] != 0) {
+	    if (values[count] != NULL) {
 		values[count] = strdup(values[count]);
 	    }
 	}
 	for (count = 0; count < MAXSGR; ++count) {
-	    if (values[count] != 0) {
+	    if (values[count] != NULL) {
 		for (j = count + 1; j < MAXSGR; ++j) {
-		    if (values[j] == 0)
+		    if (values[j] == NULL)
 			continue;
 		    if (strcmp(values[count], values[j]))
 			continue;
 		    if (one_bit(count, j)) {
 			free(values[j]);
-			values[j] = 0;
+			values[j] = NULL;
 		    }
 		}
 	    }
@@ -253,7 +253,7 @@ brute_force(const char *name)
 	    for (count = 0; count < MAXSGR; ++count) {
 		if ((count & mask) != 0)
 		    continue;
-		if (values[count] != 0 && values[count + mask] != 0) {
+		if (values[count] != NULL && values[count + mask] != NULL) {
 		    mask = 0;
 		    break;
 		}
@@ -272,14 +272,14 @@ brute_force(const char *name)
 	    }
 	}
 	for (count = 0; count < MAXSGR; ++count) {
-	    if (values[count] != 0) {
+	    if (values[count] != NULL) {
 		bool found = FALSE;
 		if ((repeat & MASK_SMSO) != 0
 		    && (count & MASK_SMSO) != 0) {
 		    found = TRUE;
 		} else {
 		    for (j = 0; j < count; ++j) {
-			if (values[j] != 0 && !strcmp(values[j], values[count])) {
+			if (values[j] != NULL && !strcmp(values[j], values[count])) {
 			    if ((repeat & MASK_SMSO) != 0
 				&& (j & MASK_SMSO) != 0
 				&& (count & reason) != 0) {
@@ -366,7 +366,7 @@ main(int argc, char *argv[])
 	for (n = optind; n < argc; ++n) {
 	    brute_force(argv[n]);
 	}
-    } else if ((name = getenv("TERM")) != 0) {
+    } else if ((name = getenv("TERM")) != NULL) {
 	brute_force(name);
     } else {
 	static const char dumb[] = "dumb";

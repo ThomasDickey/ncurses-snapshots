@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.c,v 1.32 2024/06/29 17:49:56 tom Exp $
+ * $Id: edit_field.c,v 1.33 2024/12/07 22:22:51 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the resulting length available as a
@@ -188,7 +188,7 @@ help_edit_field(void)
 	const char *code = keyname(commands[n].code);
 	size_t need = 5;
 #ifdef NCURSES_VERSION
-	if ((name = form_request_name(commands[n].result)) == 0)
+	if ((name = form_request_name(commands[n].result)) == NULL)
 #endif
 	    name = commands[n].help;
 	need = 5 + strlen(code) + strlen(name);
@@ -198,9 +198,9 @@ help_edit_field(void)
     }
     msgs[used++] =
 	strdup("Arrow keys move within a field as you would expect.");
-    msgs[used] = 0;
+    msgs[used] = NULL;
     popup_msg2(stdscr, msgs);
-    for (n = 0; msgs[n] != 0; ++n) {
+    for (n = 0; msgs[n] != NULL; ++n) {
 	free(msgs[n]);
     }
     free(msgs);
@@ -249,7 +249,7 @@ init_edit_field(FIELD *f, char *value)
 {
     char empty[1];
     FieldAttrs *ptr = field_attrs(f);
-    if (ptr == 0) {
+    if (ptr == NULL) {
 	int rows, cols, frow, fcol, nrow, nbuf;
 
 	ptr = typeCalloc(FieldAttrs, (size_t) 1);
@@ -259,7 +259,7 @@ init_edit_field(FIELD *f, char *value)
 	    ptr->row_lengths = typeCalloc(int, (size_t) nrow + 1);
 	}
     }
-    if (value == 0) {
+    if (value == NULL) {
 	value = empty;
 	*value = '\0';
     }
@@ -421,7 +421,7 @@ void
 free_edit_field(FIELD *f)
 {
     FieldAttrs *ptr = field_attrs(f);
-    if (ptr != 0) {
+    if (ptr != NULL) {
 	free(ptr->row_lengths);
 	free(ptr);
     }

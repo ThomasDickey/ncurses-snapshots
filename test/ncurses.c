@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.544 2024/11/30 18:54:06 tom Exp $
+$Id: ncurses.c,v 1.545 2024/12/07 23:22:39 tom Exp $
 
 ***************************************************************************/
 
@@ -121,23 +121,23 @@ static unsigned save_trace = TRACE_ORDINARY | TRACE_ICALLS | TRACE_CALLS;
 #endif
 
 #if HAVE_WCSRTOMBS
-#define count_wchars(src, len, state)      wcsrtombs(0,   &src, len, state)
-#define trans_wchars(dst, src, len, state) wcsrtombs(dst, &src, len, state)
+#define count_wchars(src, len, state)      wcsrtombs(NULL, &src, len, state)
+#define trans_wchars(dst, src, len, state) wcsrtombs(dst,  &src, len, state)
 #define reset_wchars(state) init_mb(state)
 #elif HAVE_WCSTOMBS && HAVE_MBTOWC && HAVE_MBLEN
-#define count_wchars(src, len, state)      wcstombs(0,   src, len)
-#define trans_wchars(dst, src, len, state) wcstombs(dst, src, len)
+#define count_wchars(src, len, state)      wcstombs(NULL, src, len)
+#define trans_wchars(dst, src, len, state) wcstombs(dst,  src, len)
 #define reset_wchars(state) IGNORE_RC(mblen(NULL, 0)), IGNORE_RC(mbtowc(NULL, NULL, 0))
 #define state_unused
 #endif
 
 #if HAVE_MBSRTOWCS
-#define count_mbytes(src, len, state)      mbsrtowcs(0,   &src, len, state)
-#define trans_mbytes(dst, src, len, state) mbsrtowcs(dst, &src, len, state)
+#define count_mbytes(src, len, state)      mbsrtowcs(NULL, &src, len, state)
+#define trans_mbytes(dst, src, len, state) mbsrtowcs(dst,  &src, len, state)
 #define reset_mbytes(state) init_mb(state)
 #elif HAVE_MBSTOWCS && HAVE_MBTOWC && HAVE_MBLEN
-#define count_mbytes(src, len, state)      mbstowcs(0,   src, len)
-#define trans_mbytes(dst, src, len, state) mbstowcs(dst, src, len)
+#define count_mbytes(src, len, state)      mbstowcs(NULL, src, len)
+#define trans_mbytes(dst, src, len, state) mbstowcs(dst,  src, len)
 #define reset_mbytes(state) IGNORE_RC(mblen(NULL, 0)), IGNORE_RC(mbtowc(NULL, NULL, 0))
 #define state_unused
 #endif
@@ -328,7 +328,7 @@ make_fullwidth_digit(cchar_t *target, int digit)
 
     source[0] = fullwidth_digit(digit + '0');
     source[1] = 0;
-    setcchar(target, source, A_NORMAL, 0, 0);
+    setcchar(target, source, A_NORMAL, 0, NULL);
 }
 #endif
 
@@ -683,7 +683,7 @@ wgetch_help(WINDOW *win, GetchFlags flags)
 	const char *msg = help[n];
 	int row = 1 + (int) (n % chk);
 	int col = (n >= chk) ? COLS / 2 : 0;
-	int flg = ((strstr(msg, "toggle") != 0)
+	int flg = ((strstr(msg, "toggle") != NULL)
 		   && (flags[UChar(*msg)] != FALSE));
 	if (*msg == '^' && ExitOnEscape())
 	    msg = "^[,^q -- quit";
@@ -717,16 +717,16 @@ typedef struct {
     WINDOW *frame;
 } WINSTACK;
 
-static WINSTACK *winstack = 0;
+static WINSTACK *winstack = NULL;
 static unsigned len_winstack = 0;
 
 static void
 forget_boxes(void)
 {
-    if (winstack != 0) {
+    if (winstack != NULL) {
 	free(winstack);
     }
-    winstack = 0;
+    winstack = NULL;
     len_winstack = 0;
 }
 
@@ -737,7 +737,7 @@ remember_boxes(unsigned level, WINDOW *txt_win, WINDOW *box_win)
 
     assert(level < (unsigned) COLS);
 
-    if (winstack == 0) {
+    if (winstack == NULL) {
 	len_winstack = 20;
 	winstack = typeMalloc(WINSTACK, len_winstack);
     } else if (need >= len_winstack) {
@@ -1030,7 +1030,7 @@ resize_wide_boxes(unsigned level, const WINDOW *const win)
 	high -= 2;
 	wide -= 2;
 	werase(winstack[n].text);
-	box_set(winstack[n].frame, 0, 0);
+	box_set(winstack[n].frame, NULL, NULL);
 	wnoutrefresh(winstack[n].frame);
 	wprintw(winstack[n].text,
 		"size %dx%d\n",
@@ -1048,7 +1048,7 @@ static char *
 wcstos(const wchar_t *src)
 {
     int need;
-    char *result = 0;
+    char *result = NULL;
     const wchar_t *tmp = src;
 #ifndef state_unused
     mbstate_t state;
@@ -1057,11 +1057,11 @@ wcstos(const wchar_t *src)
     reset_wchars(state);
     if ((need = (int) count_wchars(tmp, 0, &state)) > 0) {
 	unsigned have = (unsigned) need;
-	if ((result = typeCalloc(char, have + 1)) != 0) {
+	if ((result = typeCalloc(char, have + 1)) != NULL) {
 	    tmp = src;
 	    if (trans_wchars(result, tmp, have, &state) != have) {
 		free(result);
-		result = 0;
+		result = NULL;
 	    }
 	} else {
 	    failed("wcstos");
@@ -1124,7 +1124,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 		for (n = 0; (wchar_buf[n] = (wchar_t) wint_buf[n]) != 0; ++n) {
 		    ;
 		}
-		if ((temp = wcstos(wchar_buf)) != 0) {
+		if ((temp = wcstos(wchar_buf)) != NULL) {
 		    wprintw(win, "I saw %d characters:\n\t`%s'.",
 			    (int) wcslen(wchar_buf), temp);
 		    free(temp);
@@ -1161,7 +1161,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 		WINDOW *wb = newwin(high, wide, new_y, new_x);
 		WINDOW *wi = newwin(high - 2, wide - 2, new_y + 1, new_x + 1);
 
-		box_set(wb, 0, 0);
+		box_set(wb, NULL, NULL);
 		wrefresh(wb);
 		wmove(wi, 0, 0);
 		remember_boxes(level, wi, wb);
@@ -1614,7 +1614,7 @@ attr_getc(int *skip,
 		Repaint();
 		break;
 	    case HELP_KEY_1:
-		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != NULL) {
 		    box(helpwin, 0, 0);
 		    attr_legend(helpwin);
 		    wGetchar(helpwin);
@@ -1837,7 +1837,7 @@ set_wide_background(NCURSES_PAIRS_T pair)
 
     blank[0] = ' ';
     blank[1] = 0;
-    setcchar(&normal, blank, A_NORMAL, pair, 0);
+    setcchar(&normal, blank, A_NORMAL, pair, NULL);
     bkgrnd(&normal);
     bkgrndset(&normal);
 }
@@ -1854,7 +1854,7 @@ get_wide_background(void)
     if (getbkgrnd(&ch) != ERR) {
 	wchar_t wch[CCHARW_MAX];
 
-	if (getcchar(&ch, wch, &attr, &pair, 0) != ERR) {
+	if (getcchar(&ch, wch, &attr, &pair, NULL) != ERR) {
 	    result = attr;
 	}
     }
@@ -1895,17 +1895,17 @@ wide_show_attr(WINDOW *win,
 	    wchar_t fill[2];
 	    fill[0] = *s;
 	    fill[1] = L'\0';
-	    setcchar(&ch, fill, attr, pair, 0);
+	    setcchar(&ch, fill, attr, pair, NULL);
 	    (void) wadd_wch(win, &ch);
 	}
     } else {
 	attr_t old_attr = 0;
 	NCURSES_PAIRS_T old_pair = 0;
 
-	(void) (wattr_get) (win, &old_attr, &old_pair, 0);
-	(void) wattr_set(win, attr, pair, 0);
+	(void) (wattr_get) (win, &old_attr, &old_pair, NULL);
+	(void) wattr_set(win, attr, pair, NULL);
 	(void) waddwstr(win, wide_attr_test_string);
-	(void) wattr_set(win, old_attr, old_pair, 0);
+	(void) wattr_set(win, old_attr, old_pair, NULL);
     }
     if (skip)
 	printw("%*s", skip, " ");
@@ -1969,8 +1969,8 @@ wide_attr_getc(int *skip,
 		Repaint();
 		break;
 	    case HELP_KEY_1:
-		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
-		    box_set(helpwin, 0, 0);
+		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != NULL) {
+		    box_set(helpwin, NULL, NULL);
 		    attr_legend(helpwin);
 		    wGetchar(helpwin);
 		    delwin(helpwin);
@@ -2074,7 +2074,7 @@ x_attr_test(bool recur GCC_UNUSED)
 	    set_wide_background(pair);
 	    erase();
 
-	    box_set(stdscr, 0, 0);
+	    box_set(stdscr, NULL, NULL);
 	    MvAddStr(0, 20, "Character attribute test display");
 
 	    for (j = 0; j < my_size; ++j) {
@@ -2258,7 +2258,7 @@ color_test(bool recur GCC_UNUSED)
     int col_limit;
     int row_limit;
     int per_row;
-    char *numbered = 0;
+    char *numbered = NULL;
     const char *hello;
     bool done = FALSE;
     bool opt_acsc = FALSE;
@@ -2275,7 +2275,7 @@ color_test(bool recur GCC_UNUSED)
     }
 
     numbered = typeCalloc(char, COLS + 1);
-    done = ((COLS < 16) || (numbered == 0));
+    done = ((COLS < 16) || (numbered == NULL));
 
     /*
      * Because the number of colors is usually a power of two, we also use
@@ -2481,7 +2481,7 @@ color_test(bool recur GCC_UNUSED)
 	    }
 	    break;
 	case HELP_KEY_1:
-	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != NULL) {
 		box(helpwin, 0, 0);
 		color_legend(helpwin, FALSE);
 		wGetchar(helpwin);
@@ -2527,7 +2527,7 @@ x_color_test(bool recur GCC_UNUSED)
     int col_limit;
     int row_limit;
     int per_row;
-    char *numbered = 0;
+    char *numbered = NULL;
     const char *hello;
     bool done = FALSE;
     bool opt_acsc = FALSE;
@@ -2537,7 +2537,7 @@ x_color_test(bool recur GCC_UNUSED)
     bool opt_nums = FALSE;
     bool opt_xchr = FALSE;
     int opt_zoom = 0;
-    wchar_t *buffer = 0;
+    wchar_t *buffer = NULL;
     WINDOW *helpwin;
 
     if (!UseColors) {
@@ -2546,7 +2546,7 @@ x_color_test(bool recur GCC_UNUSED)
     }
     numbered = typeCalloc(char, COLS + 1);
     buffer = typeCalloc(wchar_t, COLS + 1);
-    done = ((COLS < 16) || (numbered == 0) || (buffer == 0));
+    done = ((COLS < 16) || (numbered == NULL) || (buffer == NULL));
 
     /*
      * Because the number of colors is usually a power of two, we also use
@@ -2765,7 +2765,7 @@ x_color_test(bool recur GCC_UNUSED)
 	    }
 	    break;
 	case HELP_KEY_1:
-	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != NULL) {
 		box(helpwin, 0, 0);
 		color_legend(helpwin, TRUE);
 		wGetchar(helpwin);
@@ -2875,14 +2875,14 @@ init_all_colors(bool xterm_colors, NCURSES_CONST char *palette_file)
 	}
 	reset_prog_mode();
     }
-    if (palette_file != 0) {
+    if (palette_file != NULL) {
 	FILE *fp = fopen(palette_file, "r");
-	if (fp != 0) {
+	if (fp != NULL) {
 	    char buffer[BUFSIZ];
 	    int red, green, blue;
 	    int scale = 1000;
 	    int c;
-	    while (fgets(buffer, sizeof(buffer), fp) != 0) {
+	    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		if (sscanf(buffer, "scale:%d", &c) == 1) {
 		    scale = c;
 		    if (scale < 100)
@@ -3387,7 +3387,7 @@ slk_test(bool recur GCC_UNUSED)
 	case '8':
 	    MvAddStr(SLK_WORK, 0, "Please enter the label value: ");
 	    _nc_STRCPY(buf, "", sizeof(buf));
-	    if ((s = slk_label(c - '0')) != 0) {
+	    if ((s = slk_label(c - '0')) != NULL) {
 		_nc_STRNCPY(buf, s, (size_t) 8);
 	    }
 	    wGetstring(stdscr, buf, 8);
@@ -3508,7 +3508,7 @@ x_slk_test(bool recur GCC_UNUSED)
 	case '8':
 	    MvAddStr(SLK_WORK, 0, "Please enter the label value: ");
 	    *buf = 0;
-	    if ((s = slk_label(c - '0')) != 0) {
+	    if ((s = slk_label(c - '0')) != NULL) {
 		char *temp = strdup(s);
 		size_t used = strlen(temp);
 		size_t want = SLKLEN;
@@ -3821,7 +3821,7 @@ acs_test(bool recur GCC_UNUSED)
     int c = 'a';
     int pagesize = 32;
     char *term = getenv("TERM");
-    const char *pch_kludge = ((term != 0 && strstr(term, "linux"))
+    const char *pch_kludge = ((term != NULL && strstr(term, "linux"))
 			      ? "p=PC, "
 			      : "");
     attr_t attr = A_NORMAL;
@@ -3831,7 +3831,7 @@ acs_test(bool recur GCC_UNUSED)
     int bg = COLOR_BLACK;
     unsigned at_code = 0;
     NCURSES_PAIRS_T pair = 0;
-    void (*last_show_acs) (int, attr_t, NCURSES_PAIRS_T) = 0;
+    void (*last_show_acs) (int, attr_t, NCURSES_PAIRS_T) = NULL;
     ATTR_TBL my_list[SIZEOF(attrs_to_test)];
     unsigned my_size = init_attr_list(my_list, termattrs());
 
@@ -3864,12 +3864,12 @@ acs_test(bool recur GCC_UNUSED)
 	case '2':
 	case '3':
 	    digit = (c - '0');
-	    last_show_acs = 0;
+	    last_show_acs = NULL;
 	    break;
 	case '-':
 	    if (digit > 0) {
 		--digit;
-		last_show_acs = 0;
+		last_show_acs = NULL;
 	    } else {
 		beep();
 	    }
@@ -3877,7 +3877,7 @@ acs_test(bool recur GCC_UNUSED)
 	case '+':
 	    if (digit < 3) {
 		++digit;
-		last_show_acs = 0;
+		last_show_acs = NULL;
 	    } else {
 		beep();
 	    }
@@ -3901,7 +3901,7 @@ acs_test(bool recur GCC_UNUSED)
 	}
 	if (pagesize != 32) {
 	    show_256_chars(repeat, attr, pair);
-	} else if (last_show_acs != 0) {
+	} else if (last_show_acs != NULL) {
 	    last_show_acs(repeat, attr, pair);
 	} else {
 	    show_upper_chars(digit * pagesize + 128, pagesize, repeat, attr, pair);
@@ -3941,8 +3941,8 @@ merge_wide_attr(cchar_t *dst, const cchar_t *src, attr_t attr, NCURSES_PAIRS_T p
 	TEST_CCHAR(src, {
 	    attr |= (test_attrs & A_ALTCHARSET);
 	    setcchar(dst, test_wch, attr, pair, NULL);
-	}, {
-	    ;
+	}
+	, {;
 	});
     } while (0);
     return dst;
@@ -3981,7 +3981,7 @@ show_paged_widechars(unsigned base,
 
 	memset(&codes, 0, sizeof(codes));
 	codes[0] = code;
-	setcchar(&temp, codes, attr, pair, 0);
+	setcchar(&temp, codes, attr, pair, NULL);
 	move(row, col);
 	if (wcwidth(code) == 0 && code != 0) {
 	    AddCh((chtype) space |
@@ -4020,7 +4020,7 @@ show_upper_widechars(unsigned first, int repeat, int space, attr_t attr, NCURSES
 
 	memset(&codes, 0, sizeof(codes));
 	codes[0] = code;
-	setcchar(&temp, codes, attr, pair, 0);
+	setcchar(&temp, codes, attr, pair, NULL);
 
 	do {
 	    int y, x;
@@ -4298,10 +4298,10 @@ show_2_wacs(int n, const char *name, const char *code, attr_t attr, NCURSES_PAIR
     char temp[80];
 
     MvPrintw(row, col, "%*s : ", COLS / 4, name);
-    (void) attr_set(attr, pair, 0);
+    (void) attr_set(attr, pair, NULL);
     _nc_STRNCPY(temp, code, 20);
     addstr(temp);
-    (void) attr_set(A_NORMAL, 0, 0);
+    (void) attr_set(A_NORMAL, 0, NULL);
     return n + 1;
 }
 
@@ -4373,7 +4373,7 @@ x_acs_test(bool recur GCC_UNUSED)
     int bg = COLOR_BLACK;
     unsigned at_code = 0;
     NCURSES_PAIRS_T pair = 0;
-    void (*last_show_wacs) (int, attr_t, NCURSES_PAIRS_T) = 0;
+    void (*last_show_wacs) (int, attr_t, NCURSES_PAIRS_T) = NULL;
     W_ATTR_TBL my_list[SIZEOF(w_attrs_to_test)];
     unsigned my_size = init_w_attr_list(my_list, term_attrs());
     char at_page[20];
@@ -4436,26 +4436,26 @@ x_acs_test(bool recur GCC_UNUSED)
 		    at_page[--len] = '\0';
 	    } else if (c < 256 && isdigit(c)) {
 		digit = (unsigned) (c - '0');
-		last_show_wacs = 0;
+		last_show_wacs = NULL;
 	    } else if (c == '+') {
 		++digit;
 		_nc_SPRINTF(at_page, _nc_SLIMIT(sizeof(at_page)) "%02x", digit);
-		last_show_wacs = 0;
+		last_show_wacs = NULL;
 	    } else if (c == '-' && digit > 0) {
 		--digit;
 		_nc_SPRINTF(at_page, _nc_SLIMIT(sizeof(at_page)) "%02x",
 			    UChar(digit));
-		last_show_wacs = 0;
+		last_show_wacs = NULL;
 	    } else if (c == '>' && repeat < (COLS / 4)) {
 		++repeat;
 	    } else if (c == '<' && repeat > 1) {
 		--repeat;
 	    } else if (c == '_') {
 		space = (space == ' ') ? '_' : ' ';
-		last_show_wacs = 0;
+		last_show_wacs = NULL;
 	    } else if (cycle_w_attr(c, &at_code, &attr, my_list, my_size)
 		       || cycle_colors(c, &fg, &bg, &pair)) {
-		if (last_show_wacs != 0)
+		if (last_show_wacs != NULL)
 		    break;
 	    } else {
 		beep();
@@ -4465,7 +4465,7 @@ x_acs_test(bool recur GCC_UNUSED)
 	}
 	if (pagesize != 32) {
 	    show_paged_widechars(digit, pagesize, repeat, space, attr, pair);
-	} else if (last_show_wacs != 0) {
+	} else if (last_show_wacs != NULL) {
 	    last_show_wacs(repeat, attr, pair);
 	} else {
 	    show_upper_widechars(digit * 32 + 128, repeat, space, attr, pair);
@@ -4615,7 +4615,7 @@ FRAME
 static WINDOW *
 frame_win(FRAME * curp)
 {
-    return (curp != 0) ? curp->wind : stdscr;
+    return (curp != NULL) ? curp->wind : stdscr;
 }
 
 /* We need to know if these flags are actually set, so don't look in FRAME.
@@ -4834,7 +4834,7 @@ getwindow(void)
     outerbox(ul, lr, TRUE);
     refresh();
 
-    if (rwindow != 0)
+    if (rwindow != NULL)
 	wrefresh(rwindow);
 
     move(0, 0);
@@ -4865,9 +4865,9 @@ newwin_move(FRAME * curp, int dy, int dx)
 static FRAME *
 delete_framed(FRAME * fp, bool showit)
 {
-    FRAME *np = 0;
+    FRAME *np = NULL;
 
-    if (fp != 0) {
+    if (fp != NULL) {
 	fp->last->next = fp->next;
 	fp->next->last = fp->last;
 
@@ -4905,7 +4905,7 @@ scroll_test(bool recur GCC_UNUSED)
 	transient((FRAME *) 0, (char *) 0);
 	switch (c) {
 	case CTRL('C'):
-	    if ((neww = typeCalloc(FRAME, (size_t) 1)) == 0) {
+	    if ((neww = typeCalloc(FRAME, (size_t) 1)) == NULL) {
 		failed("scroll_test");
 		goto breakout;
 	    }
@@ -4915,7 +4915,7 @@ scroll_test(bool recur GCC_UNUSED)
 		goto breakout;
 	    }
 
-	    if (current == 0) {	/* First element,  */
+	    if (current == NULL) {	/* First element,  */
 		neww->next = neww;	/*   so point it at itself */
 		neww->last = neww;
 	    } else {
@@ -4970,7 +4970,7 @@ scroll_test(bool recur GCC_UNUSED)
 
 #if HAVE_PUTWIN && HAVE_GETWIN
 	case CTRL('W'):	/* save and delete window */
-	    if ((current != 0) && (current == current->next)) {
+	    if ((current != NULL) && (current == current->next)) {
 		transient(current, "Will not save/delete ONLY window");
 		break;
 	    } else if ((fp = fopen(DUMPFILE, "w")) == (FILE *) 0) {
@@ -4991,13 +4991,13 @@ scroll_test(bool recur GCC_UNUSED)
 	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *) 0) {
 		transient(current, "Can't open screen dump file");
 	    } else {
-		if ((neww = typeCalloc(FRAME, (size_t) 1)) != 0) {
+		if ((neww = typeCalloc(FRAME, (size_t) 1)) != NULL) {
 
-		    neww->next = current ? current->next : 0;
+		    neww->next = current ? current->next : NULL;
 		    neww->last = current;
-		    if (neww->last != 0)
+		    if (neww->last != NULL)
 			neww->last->next = neww;
-		    if (neww->next != 0)
+		    if (neww->next != NULL)
 			neww->next->last = neww;
 
 		    neww->wind = getwin(fp);
@@ -5119,7 +5119,7 @@ scroll_test(bool recur GCC_UNUSED)
 	 && (c != ERR));
 
   breakout:
-    while (current != 0)
+    while (current != NULL)
 	current = delete_framed(current, FALSE);
 
     scrollok(stdscr, TRUE);	/* reset to driver's default */
@@ -5180,7 +5180,7 @@ saywhat(NCURSES_CONST char *text)
 {
     wmove(stdscr, LINES - 1, 0);
     wclrtoeol(stdscr);
-    if (text != 0 && *text != '\0') {
+    if (text != NULL && *text != '\0') {
 	waddstr(stdscr, text);
 	waddstr(stdscr, "; ");
     }
@@ -5194,10 +5194,10 @@ static PANEL *
 mkpanel(NCURSES_COLOR_T color, int rows, int cols, int tly, int tlx)
 {
     WINDOW *win;
-    PANEL *pan = 0;
+    PANEL *pan = NULL;
 
-    if ((win = newwin(rows, cols, tly, tlx)) != 0) {
-	if ((pan = new_panel(win)) == 0) {
+    if ((win = newwin(rows, cols, tly, tlx)) != NULL) {
+	if ((pan = new_panel(win)) == NULL) {
 	    delwin(win);
 	} else if (UseColors) {
 	    NCURSES_COLOR_T fg = (NCURSES_COLOR_T) ((color == COLOR_BLUE)
@@ -5337,7 +5337,8 @@ canned_panel(PANEL *px[MAX_PANELS + 1], NCURSES_CONST char *cmd)
 }
 
 static int
-demo_panels(void (*InitPanel) (WINDOW *), void (*FillPanel) (NCURSES_CONST PANEL *))
+demo_panels(void (*InitPanel) (WINDOW *),
+	    void (*FillPanel) (NCURSES_CONST PANEL *))
 {
     int count;
     int itmp;
@@ -5927,7 +5928,7 @@ pad_test(bool recur GCC_UNUSED)
 {
     WINDOW *panpad = newpad(PAD_HIGH, PAD_WIDE);
 
-    if (panpad == 0) {
+    if (panpad == NULL) {
 	Cannot("cannot create requested pad");
 	return ERR;
     }
@@ -5990,7 +5991,7 @@ flushinp_test(bool recur GCC_UNUSED)
     getbegyx(win, by, bx);
     sw = w / 3;
     sh = h / 3;
-    if ((subWin = subwin(win, sh, sw, by + h - sh - 2, bx + w - sw - 2)) == 0)
+    if ((subWin = subwin(win, sh, sw, by + h - sh - 2, bx + w - sw - 2)) == NULL)
 	return ERR;
 
 #ifdef A_COLOR
@@ -6138,7 +6139,7 @@ menu_test(bool recur GCC_UNUSED)
     refresh();
 
     for (ap = animals; *ap; ap++) {
-	if ((*ip = new_item(*ap, "")) != 0)
+	if ((*ip = new_item(*ap, "")) != NULL)
 	    ++ip;
     }
     *ip = (ITEM *) 0;
@@ -6216,8 +6217,8 @@ tracetrace(unsigned tlevel)
     static size_t need = 12;
     int n;
 
-    if (buf == 0) {
-	for (n = 0; t_tbl[n].name != 0; n++)
+    if (buf == NULL) {
+	for (n = 0; t_tbl[n].name != NULL; n++)
 	    need += strlen(t_tbl[n].name) + 2;
 	buf = typeMalloc(char, need);
 	if (!buf)
@@ -6228,7 +6229,7 @@ tracetrace(unsigned tlevel)
 	_nc_STRCAT(buf, t_tbl[0].name ? t_tbl[0].name : "", need);
 	_nc_STRCAT(buf, ", ", need);
     } else {
-	for (n = 1; t_tbl[n].name != 0; n++)
+	for (n = 1; t_tbl[n].name != NULL; n++)
 	    if ((tlevel & t_tbl[n].mask) == t_tbl[n].mask) {
 		_nc_STRCAT(buf, t_tbl[n].name, need);
 		_nc_STRCAT(buf, ", ", need);
@@ -6260,14 +6261,14 @@ run_trace_menu(MENU * m)
 	    i = current_item(m);
 	    if (i == items[0]) {
 		if (item_value(i)) {
-		    for (p = items + 1; *p != 0; p++)
+		    for (p = items + 1; *p != NULL; p++)
 			if (item_value(*p)) {
 			    set_item_value(*p, FALSE);
 			    changed = TRUE;
 			}
 		}
 	    } else {
-		for (p = items + 1; *p != 0; p++)
+		for (p = items + 1; *p != NULL; p++)
 		    if (item_value(*p)) {
 			set_item_value(items[0], FALSE);
 			changed = TRUE;
@@ -6300,8 +6301,8 @@ trace_set(bool recur GCC_UNUSED)
 
     refresh();
 
-    for (n = 0; t_tbl[n].name != 0; n++) {
-	if ((*ip = new_item(t_tbl[n].name, "")) != 0) {
+    for (n = 0; t_tbl[n].name != NULL; n++) {
+	if ((*ip = new_item(t_tbl[n].name, "")) != NULL) {
 	    ++ip;
 	}
     }
@@ -6431,7 +6432,7 @@ edit_secure(FIELD *me, int c)
 	size_t need = 80 + have;
 	char *temp = malloc(need);
 
-	if (temp != 0) {
+	if (temp != NULL) {
 	    size_t len;
 	    _nc_STRNCPY(temp, source ? source : "", have + 1);
 	    len = (size_t) (char *) field_userptr(me);
@@ -6735,7 +6736,7 @@ form_test(bool recur GCC_UNUSED)
     set_field_type(f[n - 1], fty_passwd);
     f[n] = (FIELD *) 0;
 
-    if ((form = new_form(f)) != 0) {
+    if ((form = new_form(f)) != NULL) {
 	WINDOW *w;
 	int finished = 0;
 
@@ -6764,7 +6765,7 @@ form_test(bool recur GCC_UNUSED)
 
 	free_form(form);
     }
-    for (c = 0; f[c] != 0; c++)
+    for (c = 0; f[c] != NULL; c++)
 	free_field(f[c]);
     free_fieldtype(fty_middle);
     free_fieldtype(fty_passwd);
@@ -6798,7 +6799,7 @@ make_overlap(int n)
     getmaxyx(stdscr, y, x);
     if (y < 23 || x < 80) {
 	Cannot("The screen is too small for this test");
-	result = 0;
+	result = NULL;
     } else {
 	int ymax = y - (overlap_HEAD + overlap_FOOT);
 	int high = ymax / 5;	/* equal-sized parts for cross */
@@ -7206,9 +7207,9 @@ overlap_test(bool recur GCC_UNUSED)
     int shift = 0, last_refresh = -1;
     int state, flavor[OVERLAP_FLAVORS];
 
-    if ((win1 = make_overlap(0)) == 0) {
+    if ((win1 = make_overlap(0)) == NULL) {
 	return ERR;
-    } else if ((win2 = make_overlap(1)) == 0) {
+    } else if ((win2 = make_overlap(1)) == NULL) {
 	delwin(win1);
 	return ERR;
     }
@@ -7406,9 +7407,9 @@ x_overlap_test(bool recur GCC_UNUSED)
     int shift = 0, last_refresh = -1;
     int state, flavor[OVERLAP_FLAVORS];
 
-    if ((win1 = make_overlap(0)) == 0) {
+    if ((win1 = make_overlap(0)) == NULL) {
 	return ERR;
-    } else if ((win2 = make_overlap(1)) == 0) {
+    } else if ((win2 = make_overlap(1)) == NULL) {
 	delwin(win1);
 	return ERR;
     }
@@ -7902,7 +7903,7 @@ main(int argc, char *argv[])
     bool monochrome = FALSE;
 #if HAVE_COLOR_CONTENT
     bool xterm_colors = FALSE;
-    NCURSES_CONST char *palette_file = 0;
+    NCURSES_CONST char *palette_file = NULL;
 #endif
 
     setlocale(LC_ALL, "");
@@ -7972,7 +7973,7 @@ main(int argc, char *argv[])
 #endif
 #ifdef TRACE
 	case 'D':
-	    save_trace = (unsigned) strtol(optarg, 0, 0);
+	    save_trace = (unsigned) strtol(optarg, NULL, 0);
 	    break;
 #endif
 #if HAVE_COLOR_CONTENT

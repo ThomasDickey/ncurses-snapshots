@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: rain.c,v 1.62 2024/10/06 21:09:00 tom Exp $
+ * $Id: rain.c,v 1.63 2024/12/07 22:46:42 tom Exp $
  */
 #include <test.priv.h>
 #include <popup_msg.h>
@@ -335,7 +335,7 @@ main(int argc, char *argv[])
 	" s          do single-step",
 	" <space>    undo single-step",
 	"",
-	0
+	NULL
     };
 
     bool done = FALSE;

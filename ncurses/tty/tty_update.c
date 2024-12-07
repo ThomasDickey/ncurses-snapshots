@@ -85,7 +85,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.316 2024/02/04 00:09:34 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.317 2024/12/07 18:00:11 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -262,7 +262,7 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 		|| (SP_PARM->_legacy_coding > 1 && CharOf(CHDEREF(ch)) >= 128)
 		|| (AttrOf(attr) & A_ALTCHARSET
 		    && ((CharOfD(ch) < ACS_LEN
-			 && SP_PARM->_acs_map != 0
+			 && SP_PARM->_acs_map != NULL
 			 && SP_PARM->_acs_map[CharOfD(ch)] != 0)
 			|| (CharOfD(ch) >= 128))))) {
 	    ;
@@ -275,7 +275,7 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 #endif
 
     if ((AttrOf(attr) & A_ALTCHARSET)
-	&& SP_PARM->_acs_map != 0
+	&& SP_PARM->_acs_map != NULL
 	&& ((CharOfD(ch) < ACS_LEN)
 #if !NCURSES_WCWIDTH_GRAPHICS
 	    || is_wacs_value(CharOfD(ch))
@@ -621,7 +621,7 @@ EmitRange(NCURSES_SP_DCLx const NCURSES_CH_T *ntext, int num)
 		} else {
 		    return 1;	/* cursor stays in the middle */
 		}
-	    } else if (repeat_char != 0 &&
+	    } else if (repeat_char != NULL &&
 #if BSD_TPUTS
 		       !isdigit(UChar(CharOf(ntext0))) &&
 #endif
@@ -643,7 +643,7 @@ EmitRange(NCURSES_SP_DCLx const NCURSES_CH_T *ntext, int num)
 		UpdateAttrs(SP_PARM, ntext0);
 		temp = ntext0;
 		if ((AttrOf(temp) & A_ALTCHARSET) &&
-		    SP_PARM->_acs_map != 0 &&
+		    SP_PARM->_acs_map != NULL &&
 		    (SP_PARM->_acs_map[CharOf(temp)] & A_CHARTEXT) != 0) {
 		    SetChar(temp,
 			    (SP_PARM->_acs_map[CharOf(ntext0)] & A_CHARTEXT),
@@ -745,7 +745,7 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 
     _nc_lock_global(update);
 
-    if (SP_PARM == 0) {
+    if (SP_PARM == NULL) {
 	_nc_unlock_global(update);
 	returnCode(ERR);
     }
@@ -762,7 +762,7 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
     if (SP_PARM == CURRENT_SCREEN) {
 #endif
 #define SyncScreens(internal,exported) \
-	if (internal == 0) internal = exported; \
+	if (internal == NULL) internal = exported; \
 	if (internal != exported) exported = internal
 
 	SyncScreens(CurScreen(SP_PARM), curscr);
@@ -773,9 +773,9 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 #endif
 #endif /* !USE_REENTRANT */
 
-    if (CurScreen(SP_PARM) == 0
-	|| NewScreen(SP_PARM) == 0
-	|| StdScreen(SP_PARM) == 0) {
+    if (CurScreen(SP_PARM) == NULL
+	|| NewScreen(SP_PARM) == NULL
+	|| StdScreen(SP_PARM) == NULL) {
 	_nc_unlock_global(update);
 	returnCode(ERR);
     }
@@ -1132,7 +1132,7 @@ static void
 ClrUpdate(NCURSES_SP_DCL0)
 {
     TR(TRACE_UPDATE, (T_CALLED("ClrUpdate")));
-    if (0 != SP_PARM) {
+    if (NULL != SP_PARM) {
 	int i;
 	NCURSES_CH_T blank = ClrBlank(NCURSES_SP_ARGx StdScreen(SP_PARM));
 	int nonempty = Min(screen_lines(SP_PARM),
@@ -1159,7 +1159,7 @@ ClrUpdate(NCURSES_SP_DCL0)
 static void
 ClrToEOL(NCURSES_SP_DCLx NCURSES_CH_T blank, int needclear)
 {
-    if (CurScreen(SP_PARM) != 0
+    if (CurScreen(SP_PARM) != NULL
 	&& SP_PARM->_cursrow >= 0) {
 	int j;
 
@@ -2223,7 +2223,7 @@ _nc_screen_init(void)
 NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 {
-    if (SP_PARM != 0) {
+    if (SP_PARM != NULL) {
 
 	UpdateAttrs(SP_PARM, normal);
 #if NCURSES_EXT_FUNCS
@@ -2265,7 +2265,7 @@ _nc_screen_wrap(void)
 NCURSES_EXPORT(void)
 NCURSES_SP_NAME(_nc_do_xmc_glitch) (NCURSES_SP_DCLx attr_t previous)
 {
-    if (SP_PARM != 0) {
+    if (SP_PARM != NULL) {
 	attr_t chg = XMC_CHANGES(previous ^ AttrOf(SCREEN_ATTRS(SP_PARM)));
 
 	while (chg != 0) {

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: ins_wide.c,v 1.31 2024/10/05 19:26:24 tom Exp $
+ * $Id: ins_wide.c,v 1.32 2024/12/07 22:32:11 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -225,9 +225,9 @@ test_inserts(int level)
     int row2, col2;
     int length;
     wchar_t buffer[BUFSIZ];
-    WINDOW *look = 0;
-    WINDOW *work = 0;
-    WINDOW *show = 0;
+    WINDOW *look = NULL;
+    WINDOW *work = NULL;
+    WINDOW *show = NULL;
     int margin = (2 * MY_TABSIZE) - 1;
     Options option = (Options) ((int) (m_opt ? oMove : oDefault)
 				| (int) ((w_opt || (level > 0))

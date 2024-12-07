@@ -37,7 +37,7 @@
  *****************************************************************************/
 
 /*
- * $Id: blue.c,v 1.56 2024/10/05 19:26:24 tom Exp $
+ * $Id: blue.c,v 1.57 2024/12/07 22:27:13 tom Exp $
  */
 
 #include <test.priv.h>
@@ -454,7 +454,7 @@ use_pc_display(void)
 	     * The ncurses library makes this check to decide whether to allow
 	     * the alternate character set for the (normally) nonprinting codes.
 	     */
-	    if (smacs != 0 && smpch != 0 && !strcmp(smacs, smpch)) {
+	    if (smacs != NULL && smpch != NULL && !strcmp(smacs, smpch)) {
 		suits = glyphs;
 	    }
 	}

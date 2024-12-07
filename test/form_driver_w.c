@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: form_driver_w.c,v 1.18 2024/10/06 23:13:40 tom Exp $
+ * $Id: form_driver_w.c,v 1.19 2024/12/07 22:32:11 tom Exp $
  *
  * Test form_driver_w (int, int, wchar_t), a wide char aware
  * replacement of form_driver.
@@ -74,7 +74,7 @@ main(int argc, char *argv[])
 	"  ^D,^Q,ESC           - quit program",
 	"  <Tab>,<Down>        - move to next field",
 	"  <BackTab>,<Up>      - move to previous field",
-	0
+	NULL
     };
 
 #define NUM_FIELDS 3

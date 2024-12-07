@@ -31,7 +31,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: mf_common.h,v 0.26 2024/11/30 21:41:20 tom Exp $ */
+/* $Id: mf_common.h,v 0.27 2024/12/07 22:01:18 tom Exp $ */
 
 /* Common internal header for menu and form library */
 
@@ -88,7 +88,7 @@ extern int errno;
 
 /* Call object hook */
 #define Call_Hook( object, handler ) \
-   if ( (object) != 0 && ((object)->handler) != (void *) 0 )\
+   if ( (object) != NULL && ((object)->handler) != (void *) 0 )\
    {\
 	SetStatus(object, _IN_DRIVER);\
 	(object)->handler(object);\
