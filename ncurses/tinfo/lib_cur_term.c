@@ -41,7 +41,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>		/* VALID_STRING */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.50 2024/12/07 20:05:08 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.51 2024/12/14 23:48:20 tom Exp $")
 
 #undef CUR
 #define CUR TerminalType(termp).
@@ -51,7 +51,7 @@ MODULE_ID("$Id: lib_cur_term.c,v 1.50 2024/12/07 20:05:08 tom Exp $")
 NCURSES_EXPORT(TERMINAL *)
 NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_DCL0)
 {
-    return ((0 != TerminalOf(SP_PARM)) ? TerminalOf(SP_PARM) : CurTerm);
+    return ((NULL != TerminalOf(SP_PARM)) ? TerminalOf(SP_PARM) : CurTerm);
 }
 
 #if NCURSES_SP_FUNCS

@@ -44,13 +44,13 @@
 #include <curses.priv.h>
 #include <stddef.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.78 2024/12/07 20:19:18 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.79 2024/12/14 23:50:18 tom Exp $")
 
 #define window_is(name) ((sp)->_##name == win)
 
 #if USE_REENTRANT
 #define remove_window(name) \
-		sp->_##name = 0
+		sp->_##name = NULL
 #else
 #define remove_window(name) \
 		sp->_##name = NULL; \

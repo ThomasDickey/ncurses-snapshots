@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.90 2024/12/07 18:23:25 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.92 2024/12/15 01:28:56 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -53,17 +53,17 @@ MODULE_ID("$Id: lib_data.c,v 1.90 2024/12/07 18:23:25 tom Exp $")
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(stdscr) (void)
 {
-    return CURRENT_SCREEN ? StdScreen(CURRENT_SCREEN) : 0;
+    return CURRENT_SCREEN ? StdScreen(CURRENT_SCREEN) : NULL;
 }
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(curscr) (void)
 {
-    return CURRENT_SCREEN ? CurScreen(CURRENT_SCREEN) : 0;
+    return CURRENT_SCREEN ? CurScreen(CURRENT_SCREEN) : NULL;
 }
 NCURSES_EXPORT(WINDOW *)
 NCURSES_PUBLIC_VAR(newscr) (void)
 {
-    return CURRENT_SCREEN ? NewScreen(CURRENT_SCREEN) : 0;
+    return CURRENT_SCREEN ? NewScreen(CURRENT_SCREEN) : NULL;
 }
 #else
 NCURSES_EXPORT_VAR(WINDOW *) stdscr = NULL;
@@ -162,7 +162,7 @@ NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals = {
 #endif /* HAVE_TSEARCH */
 
 #ifdef USE_TERM_DRIVER
-    0,				/* term_driver */
+    NULL,			/* term_driver */
 #endif
 
 #ifndef USE_SP_WINDOWLIST
@@ -272,7 +272,7 @@ NCURSES_EXPORT_VAR(NCURSES_PRESCREEN) _nc_prescreen = {
     0,				/* COLS */
     8,				/* TABSIZE */
     1000,			/* ESCDELAY */
-    0,				/* cur_term */
+    NULL,			/* cur_term */
 #endif
 #ifdef TRACE
 #if BROKEN_LINKER || USE_REENTRANT

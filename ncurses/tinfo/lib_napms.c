@@ -52,7 +52,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.29 2024/08/31 15:55:00 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.30 2024/12/14 23:57:01 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
@@ -81,7 +81,7 @@ NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 #elif defined(_NC_WINDOWS_NATIVE)
     Sleep((DWORD) ms);
 #else
-    _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));
+    _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
 #endif
 #endif /* !USE_TERM_DRIVER */
 

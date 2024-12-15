@@ -43,7 +43,7 @@
 
 #include <SigAction.h>
 
-MODULE_ID("$Id: lib_tstp.c,v 1.55 2024/12/07 20:06:49 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.57 2024/12/15 02:01:17 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1

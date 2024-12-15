@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.247 2024/12/07 20:21:01 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.248 2024/12/15 00:12:19 tom Exp $")
 
 /****************************************************************************
  *
@@ -115,7 +115,7 @@ NCURSES_PUBLIC_VAR(ttytype) (void)
 #if NCURSES_SP_FUNCS
     if (CURRENT_SCREEN) {
 	TERMINAL *termp = TerminalOf(CURRENT_SCREEN);
-	if (termp != 0) {
+	if (termp != NULL) {
 	    result = TerminalType(termp).term_names;
 	}
     }
@@ -475,7 +475,7 @@ _nc_get_screensize(SCREEN *sp,
     TCB->drv->td_size(TCB, linep, colp);
 
 #if USE_REENTRANT
-    if (sp != 0) {
+    if (sp != NULL) {
 	sp->_TABSIZE = my_tabsize;
     }
 #else
@@ -606,7 +606,7 @@ _nc_get_screensize(SCREEN *sp,
 	my_tabsize = 8;
 
 #if USE_REENTRANT
-    if (sp != 0)
+    if (sp != NULL)
 	sp->_TABSIZE = my_tabsize;
 #else
     TABSIZE = my_tabsize;
@@ -825,7 +825,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 		 int reuse)
 {
 #ifdef USE_TERM_DRIVER
-    TERMINAL_CONTROL_BLOCK *TCB = 0;
+    TERMINAL_CONTROL_BLOCK *TCB = NULL;
 #endif
     TERMINAL *termp;
     SCREEN *sp = NULL;
@@ -838,7 +838,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
     T((T_CALLED("_nc_setupterm_ex(%p,%s,%d,%p)"),
        (void *) tp, _nc_visbuf(tname), Filedes, (void *) errret));
 
-    if (tp == 0) {
+    if (tp == NULL) {
 	ret_error0(TGETENT_ERR,
 		   "Invalid parameter, internal error.\n");
     } else
@@ -916,8 +916,8 @@ TINFO_SETUP_TERM(TERMINAL **tp,
     } else {
 #ifdef USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *my_tcb;
-	termp = 0;
-	if ((my_tcb = typeCalloc(TERMINAL_CONTROL_BLOCK, 1)) != 0)
+	termp = NULL;
+	if ((my_tcb = typeCalloc(TERMINAL_CONTROL_BLOCK, 1)) != NULL)
 	    termp = &(my_tcb->term);
 #else
 	int status;
@@ -1076,10 +1076,10 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 NCURSES_EXPORT(SCREEN *)
 _nc_find_prescr(void)
 {
-    SCREEN *result = 0;
+    SCREEN *result = NULL;
     PRESCREEN_LIST *p;
     pthread_t id = GetThreadID();
-    for (p = _nc_prescreen.allocated; p != 0; p = p->next) {
+    for (p = _nc_prescreen.allocated; p != NULL; p = p->next) {
 	if (p->id == id) {
 	    result = p->sp;
 	    break;
@@ -1099,7 +1099,7 @@ _nc_forget_prescr(void)
     PRESCREEN_LIST *p, *q;
     pthread_t id = GetThreadID();
     _nc_lock_global(screen);
-    for (p = _nc_prescreen.allocated, q = 0; p != 0; q = p, p = p->next) {
+    for (p = _nc_prescreen.allocated, q = NULL; p != NULL; q = p, p = p->next) {
 	if (p->id == id) {
 	    if (q) {
 		q->next = p->next;
@@ -1136,7 +1136,7 @@ new_prescr(void)
 	if (sp != NULL) {
 #ifdef USE_PTHREADS
 	    PRESCREEN_LIST *p = typeCalloc(PRESCREEN_LIST, 1);
-	    if (p != 0) {
+	    if (p != NULL) {
 		p->id = GetThreadID();
 		p->sp = sp;
 		p->next = _nc_prescreen.allocated;
@@ -1180,14 +1180,14 @@ _nc_setupterm(const char *tname,
 	      int reuse)
 {
     int rc = ERR;
-    TERMINAL *termp = 0;
+    TERMINAL *termp = NULL;
 
     _nc_init_pthreads();
     _nc_lock_global(prescreen);
     START_TRACE();
     if (TINFO_SETUP_TERM(&termp, tname, Filedes, errret, reuse) == OK) {
 	_nc_forget_prescr();
-	if (NCURSES_SP_NAME(set_curterm) (CURRENT_SCREEN_PRE, termp) != 0) {
+	if (NCURSES_SP_NAME(set_curterm) (CURRENT_SCREEN_PRE, termp) != NULL) {
 	    rc = OK;
 	}
     }

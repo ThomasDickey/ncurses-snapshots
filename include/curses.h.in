@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.284 2024/12/07 17:14:44 tom Exp $ */
+/* $Id: curses.h.in,v 1.287 2024/12/14 23:49:34 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -296,7 +296,7 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 #include <stdbool.h>
 /* use whatever the C compiler decides bool really is */
 #define NCURSES_BOOL bool
-#else
+#elif !defined(__cplusplus) && !@cf_cv_builtin_bool@
 /* there is no predefined bool - use our own */
 #undef bool
 #define bool NCURSES_BOOL
@@ -311,7 +311,7 @@ extern "C" {
 #define NCURSES_CAST(type,value) (type)(value)
 #endif
 
-#define NCURSES_OK_ADDR(p) (0 != NCURSES_CAST(const void *, (p)))
+#define NCURSES_OK_ADDR(p) (NULL != NCURSES_CAST(const void *, (p)))
 
 /*
  * X/Open attributes.  In the ncurses implementation, they are identical to the

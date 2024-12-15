@@ -3,7 +3,7 @@
 Summary: shared libraries for terminal handling
 Name: mingw32-ncurses6
 Version: 6.5
-Release: 20241207
+Release: 20241214
 License: X11
 Group: Development/Libraries
 URL: https://invisible-island.net/ncurses/

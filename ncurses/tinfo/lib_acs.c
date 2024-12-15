@@ -40,14 +40,14 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.51 2024/12/07 20:05:08 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.52 2024/12/15 00:11:15 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
 NCURSES_EXPORT(chtype *)
 NCURSES_PUBLIC_VAR(acs_map) (void)
 {
-    if (MyBuffer == 0)
+    if (MyBuffer == NULL)
 	MyBuffer = typeCalloc(chtype, ACS_LEN);
     return MyBuffer;
 }
@@ -66,7 +66,7 @@ NCURSES_SP_NAME(_nc_acs_char) (NCURSES_SP_DCLx int c)
     chtype *map;
     if (c < 0 || c >= ACS_LEN)
 	return (chtype) 0;
-    map = (SP_PARM != 0) ? SP_PARM->_acs_map :
+    map = (SP_PARM != NULL) ? SP_PARM->_acs_map :
 #if BROKEN_LINKER || USE_REENTRANT
 	_nc_prescreen.real_acs_map
 #else

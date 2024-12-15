@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.697 2024/12/07 18:27:10 tom Exp $
+ * $Id: curses.priv.h,v 1.698 2024/12/15 00:04:23 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2568,8 +2568,8 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 	 && strncmp(value, "/dev/pts/", 9))
 
 #ifdef USE_TERM_DRIVER
-#  define IsTermInfo(sp)       ((TCBOf(sp) != 0) && ((TCBOf(sp)->drv->isTerminfo)))
-#  define HasTInfoTerminal(sp) ((0 != TerminalOf(sp)) && IsTermInfo(sp))
+#  define IsTermInfo(sp)       ((TCBOf(sp) != NULL) && ((TCBOf(sp)->drv->isTerminfo)))
+#  define HasTInfoTerminal(sp) ((NULL != TerminalOf(sp)) && IsTermInfo(sp))
 #  if defined(EXP_WIN32_DRIVER)
 #    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))
 #  elif defined(USE_WIN32CON_DRIVER)

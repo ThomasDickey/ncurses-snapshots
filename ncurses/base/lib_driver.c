@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2024 Thomas E. Dickey                                *
  * Copyright 2009-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_driver.c,v 1.9 2020/08/29 19:53:35 tom Exp $")
+MODULE_ID("$Id: lib_driver.c,v 1.10 2024/12/14 22:31:35 tom Exp $")
 
 #ifndef EXP_WIN32_DRIVER
 typedef struct DriverEntry {
@@ -56,7 +56,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
     int code = ERR;
     size_t i;
     TERM_DRIVER *res = (TERM_DRIVER *) 0;
-    TERM_DRIVER *use = 0;
+    TERM_DRIVER *use = NULL;
 
     T((T_CALLED("_nc_get_driver(%p, %s, %p)"),
        (void *) TCB, NonNull(name), (void *) errret));
@@ -72,7 +72,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
 	    }
 	}
     }
-    if (use != 0) {
+    if (use != NULL) {
 	TCB->drv = use;
 	code = OK;
     }
@@ -98,7 +98,7 @@ NCURSES_SP_NAME(_nc_mcprint) (SCREEN *sp, char *data, int len)
 {
     int code = ERR;
 
-    if (0 != TerminalOf(sp))
+    if (NULL != TerminalOf(sp))
 	code = CallDriver_2(sp, td_print, data, len);
     return (code);
 }

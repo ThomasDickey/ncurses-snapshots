@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4209 2024/12/07 23:51:39 tom Exp $
+-- $Id: NEWS,v 1.4212 2024/12/14 20:03:39 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20241214
+	+ avoid redefining bool in curses.h if the platform already supports
+	  that type (cf: 20241123).
+	+ move include <curses.h> from etip.h.in to cursesw.hh, to work around
+	  breakage in Apple's port of ncurses.
+	+ strict compiler-warning fixes for upcoming gcc15
 
 20241207
 	+ strict compiler-warning fixes for upcoming gcc15

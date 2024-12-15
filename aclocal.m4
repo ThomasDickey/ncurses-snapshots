@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1091 2024/11/30 19:41:19 tom Exp $
+dnl $Id: aclocal.m4,v 1.1096 2024/12/14 21:33:29 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -645,7 +645,7 @@ else	AC_MSG_RESULT(no)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_SIZE version: 20 updated: 2023/02/18 17:41:25
+dnl CF_BOOL_SIZE version: 21 updated: 2024/12/14 16:09:34
 dnl ------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it has been deprecated.
@@ -702,7 +702,7 @@ $ac_includes_default
 int main(void)
 {
 	FILE *fp = fopen("cf_test.out", "w");
-	if (fp != 0) {
+	if (fp != NULL) {
 		bool x = true;
 		if ((bool)(-x) >= 0)
 			fputs("unsigned ", fp);
@@ -741,7 +741,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 13 updated: 2024/06/22 13:42:22
+dnl CF_BUILD_CC version: 14 updated: 2024/12/14 11:58:01
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -819,7 +819,7 @@ if test "$cross_compiling" = yes ; then
 	AC_TRY_RUN([#include <stdio.h>
 		int main(int argc, char *argv[])
 		{
-			${cf_cv_main_return:-return}(argc < 0 || argv == 0 || argv[0] == 0);
+			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[0] == (void*)0);
 		}
 	],
 		cf_ok_build_cc=yes,
@@ -1196,7 +1196,7 @@ __attribute__ ((visibility("default"))) int somefunc() {return 42;}
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_GETENV version: 4 updated: 2023/12/03 10:18:09
+dnl CF_CHECK_GETENV version: 5 updated: 2024/12/14 16:09:34
 dnl ---------------
 dnl Check if repeated getenv calls return the same pointer, e.g., it does not
 dnl discard the previous pointer when returning a new one.
@@ -1248,7 +1248,7 @@ int main(void)
 	for (j = 0; environ[j]; ++j) {
 		mynames[j] = str_alloc(environ[j]);
 		equals = strchr(mynames[j], '=');
-		if (equals != 0) {
+		if (equals != NULL) {
 			*equals++ = '\\0';
 			myvalues[j] = str_alloc(equals);
 		} else {
@@ -1447,6 +1447,19 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_CHECK_TYPE2 version: 2 updated: 2024/12/14 16:33:06
+dnl --------------
+dnl CF_CHECK_TYPE version: 5 updated: 2024/12/14 16:09:34
+dnl -------------
+dnl Check if the given type can be declared via the given header.
+dnl $1 = the type to check
+dnl $2 = the header (i.e., not one of the default includes)
+AC_DEFUN([CF_CHECK_TYPE2],[
+	AC_CHECK_TYPES($1,,,[
+$ac_includes_default
+ifelse($2,,,[#include <$2>])])
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_CHECK_WCHAR_H version: 5 updated: 2023/12/03 09:21:34
 dnl ----------------
 dnl Check if wchar.h can be used, i.e., without defining _XOPEN_SOURCE_EXTENDED
@@ -1477,7 +1490,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_WCWIDTH_GRAPHICS version: 4 updated: 2023/12/03 10:17:07
+dnl CF_CHECK_WCWIDTH_GRAPHICS version: 5 updated: 2024/12/14 16:09:34
 dnl -------------------------
 dnl Most "modern" terminal emulators are based to some degree on VT100, and
 dnl should support line-drawing.  Even with Unicode.  There is a problem.
@@ -1596,8 +1609,8 @@ main(void)
 		setlocale(LC_ALL, "en_US.UTF-8") ||
 		setlocale(LC_ALL, "en_US.utf8") ||
 		setlocale(LC_ALL, "en_US.utf-8")) {
-		if ((fp = fopen("conftest.in", "r")) != 0) {
-			while (fgets(buffer, MY_LEN, fp) != 0) {
+		if ((fp = fopen("conftest.in", "r")) != NULL) {
+			while (fgets(buffer, MY_LEN, fp) != NULL) {
 				if (*buffer == '-') {
 					fprintf(stderr, "\\t%s", buffer);
 				} else if (sscanf(buffer, "%x %s", &value, notes) == 2) {
@@ -1689,7 +1702,7 @@ if test "x$ifelse([$2],,CLANG_COMPILER,[$2])" = "xyes" ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_CONST_X_STRING version: 8 updated: 2023/12/01 17:22:50
+dnl CF_CONST_X_STRING version: 9 updated: 2024/12/04 03:49:57
 dnl -----------------
 dnl The X11R4-X11R6 Xt specification uses an ambiguous String type for most
 dnl character-strings.
@@ -1716,7 +1729,7 @@ CF_SAVE_XTRA_FLAGS([CF_CONST_X_STRING])
 
 AC_TRY_COMPILE(
 [
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 ],
 [String foo = malloc(1); free((void*)foo)],[
@@ -1727,7 +1740,7 @@ AC_CACHE_CHECK(for X11/Xt const-feature,cf_cv_const_x_string,[
 #undef  _CONST_X_STRING
 #define _CONST_X_STRING	/* X11R7.8 (perhaps) */
 #undef  XTSTRINGDEFINES	/* X11R5 and later */
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 		],[String foo = malloc(1); *foo = 0],[
 			cf_cv_const_x_string=no
@@ -2536,7 +2549,7 @@ fi
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FOPEN_BIN_R version: 3 updated: 2023/01/05 18:05:46
+dnl CF_FOPEN_BIN_R version: 4 updated: 2024/12/14 16:09:34
 dnl --------------
 dnl Check if fopen works when the "b" (binary) flag is added to the mode
 dnl parameter.  POSIX ignores the "b", which c89 specified.  Some very old
@@ -2550,14 +2563,14 @@ int main(void)
 {
 	FILE *fp = fopen("conftest.tmp", "wb");
 	int rc = 0;
-	if (fp != 0) {
+	if (fp != NULL) {
 		int p, q;
 		for (p = 0; p < 256; ++p) {
 			fputc(p, fp);
 		}
 		fclose(fp);
 		fp = fopen("conftest.tmp", "rb");
-		if (fp != 0) {
+		if (fp != NULL) {
 			for (p = 0; p < 256; ++p) {
 				q = fgetc(fp);
 				if (q != p) {
@@ -2590,7 +2603,7 @@ unset ac_ct_$1
 unset $1
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_DLSYM version: 4 updated: 2015/09/12 14:46:44
+dnl CF_FUNC_DLSYM version: 5 updated: 2024/12/14 16:09:34
 dnl -------------
 dnl Test for dlsym() and related functions, as well as libdl.
 dnl
@@ -2610,9 +2623,12 @@ if test "$cf_have_dlsym" = yes ; then
 	test "$cf_have_libdl" = yes && { CF_ADD_LIB(dl) }
 
 	AC_MSG_CHECKING(whether able to link to dl*() functions)
-	AC_TRY_LINK([#include <dlfcn.h>],[
+	AC_TRY_LINK([
+	#include <stdio.h>
+	#include <dlfcn.h>
+	],[
 		void *obj;
-		if ((obj = dlopen("filename", 0)) != 0) {
+		if ((obj = dlopen("filename", 0)) != NULL) {
 			if (dlsym(obj, "symbolname") == 0) {
 			dlclose(obj);
 			}
@@ -2669,7 +2685,7 @@ AC_CHECK_LIB(bsd, gettimeofday,
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_GETTTYNAM version: 2 updated: 2023/01/05 18:06:28
+dnl CF_FUNC_GETTTYNAM version: 3 updated: 2024/12/14 16:09:34
 dnl -----------------
 dnl Check if the 4.3BSD function getttyname exists, as well as if <ttyent.h>
 dnl defines the _PATH_TTYS symbol.  If the corresponding file exists, but the
@@ -2706,7 +2722,7 @@ $ac_includes_default
 
 int main(void) {
 	FILE *fp = fopen(_PATH_TTYS, "r");
-	${cf_cv_main_return:-return} (fp == 0);
+	${cf_cv_main_return:-return} (fp == NULL);
 }],
 			[cf_cv_have_PATH_TTYS=yes],
 			[cf_cv_have_PATH_TTYS=no],
@@ -3099,7 +3115,7 @@ CF_INTEL_COMPILER(GCC,INTEL_COMPILER,CFLAGS)
 CF_CLANG_COMPILER(GCC,CLANG_COMPILER,CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 41 updated: 2021/01/01 16:53:59
+dnl CF_GCC_WARNINGS version: 42 updated: 2024/12/14 09:09:41
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -3125,7 +3141,7 @@ AC_REQUIRE([CF_GCC_VERSION])
 if test "x$have_x" = xyes; then CF_CONST_X_STRING fi
 cat > "conftest.$ac_ext" <<EOF
 #line __oline__ "${as_me:-configure}"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == (void*)0) ; }
 EOF
 if test "$INTEL_COMPILER" = yes
 then
@@ -3713,7 +3729,7 @@ if test "$GXX" = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GXX_WARNINGS version: 11 updated: 2021/01/08 16:50:55
+dnl CF_GXX_WARNINGS version: 12 updated: 2024/12/14 16:09:34
 dnl ---------------
 dnl Check if the compiler supports useful warning options.
 dnl
@@ -3745,7 +3761,7 @@ AC_LANG_CPLUSPLUS
 
 cat > conftest.$ac_ext <<EOF
 #line __oline__ "configure"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == (void*)0) ; }
 EOF
 
 if test "$INTEL_CPLUSPLUS" = yes
@@ -3876,7 +3892,7 @@ fi
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_HASHED_DB_LIBS version: 10 updated: 2021/01/02 17:09:14
+dnl CF_HASHED_DB_LIBS version: 11 updated: 2024/12/14 16:09:34
 dnl -----------------
 dnl Given that we have the header and version for hashed database, find the
 dnl library information.
@@ -3898,7 +3914,7 @@ $ac_includes_default
 	char *path = "/tmp/foo";
 #ifdef DB_VERSION_MAJOR
 #if DB_VERSION_MAJOR >= 4
-	DB *result = 0;
+	DB *result = NULL;
 	db_create(&result, NULL, 0);
 	result->open(result,
 		NULL,
@@ -3908,7 +3924,7 @@ $ac_includes_default
 		DB_CREATE,
 		0644);
 #elif DB_VERSION_MAJOR >= 3
-	DB *result = 0;
+	DB *result = NULL;
 	db_create(&result, NULL, 0);
 	result->open(result,
 		path,
@@ -3917,7 +3933,7 @@ $ac_includes_default
 		DB_CREATE,
 		0644);
 #elif DB_VERSION_MAJOR >= 2
-	DB *result = 0;
+	DB *result = NULL;
 	db_open(path,
 		DB_HASH,
 		DB_CREATE,
@@ -3933,7 +3949,7 @@ $ac_includes_default
 		     DB_HASH,
 		     0);
 #endif
-	${cf_cv_main_return:-return}(result != 0)
+	${cf_cv_main_return:-return}(result != NULL)
 ],[
 	if test -n "$cf_db_libs" ; then
 		cf_cv_hashed_db_libs=$cf_db_libs
@@ -5530,7 +5546,7 @@ AC_SUBST(BROKEN_LINKER)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_FUNCS version: 13 updated: 2023/12/03 09:24:04
+dnl CF_LINK_FUNCS version: 14 updated: 2024/12/14 16:09:34
 dnl -------------
 dnl Most Unix systems have both link and symlink, a few don't have symlink.
 dnl A few non-Unix systems implement symlink, but not link.
@@ -5565,7 +5581,7 @@ int main(void)
 	char dst[] = "conftest.chk";
 	struct stat src_sb, dst_sb;
 	FILE *fp = fopen(src, "w");
-	if (fp == 0) { fail = 3; } else {
+	if (fp == NULL) { fail = 3; } else {
 		fclose(fp); stat(src, &src_sb);
 		if ($cf_func(src, dst) < 0) {
 			fail = 1;
@@ -7208,7 +7224,7 @@ AC_MSG_RESULT($cf_prog_ln_sf)
 test "$cf_prog_ln_sf" = yes && LN_S="$LN_S -f"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_REGEX version: 18 updated: 2021/01/01 16:53:59
+dnl CF_REGEX version: 19 updated: 2024/12/14 16:09:34
 dnl --------
 dnl Attempt to determine if we've got one of the flavors of regular-expression
 dnl code that we can support.
@@ -7279,8 +7295,9 @@ case "$cf_regex_func" in
 	for cf_regex_hdr in regex.h
 	do
 		AC_TRY_LINK([#include <sys/types.h>
+#include <stdio.h>
 #include <$cf_regex_hdr>],[
-			regex_t *p = 0;
+			regex_t *p = NULL;
 			int x = regcomp(p, "", 0);
 			int y = regexec(p, "", 0, 0, 0);
 			(void)x;
@@ -7506,7 +7523,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 111 updated: 2024/03/29 20:08:49
+dnl CF_SHARED_OPTS version: 112 updated: 2024/12/14 16:09:34
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -8022,7 +8039,7 @@ cat > conftest.$ac_ext <<EOF
 int main(int argc, char *argv[[]])
 {
 	printf("hello\\n");
-	return (argv[[argc-1]] == 0) ;
+	return (argv[[argc-1]] == NULL) ;
 }
 EOF
 		cf_save_CFLAGS="$CFLAGS"
@@ -8654,7 +8671,7 @@ if test "$cf_cv_xopen_source" != no ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPEOF_CHTYPE version: 11 updated: 2023/01/05 17:57:59
+dnl CF_TYPEOF_CHTYPE version: 12 updated: 2024/12/14 16:09:34
 dnl ----------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
@@ -8670,7 +8687,7 @@ $ac_includes_default
 int main(void)
 {
 	FILE *fp = fopen("cf_test.out", "w");
-	if (fp != 0) {
+	if (fp != NULL) {
 		char *result = "long";
 		if (sizeof(unsigned long) > sizeof(unsigned int)) {
 			int n;

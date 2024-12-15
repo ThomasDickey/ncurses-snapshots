@@ -38,7 +38,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: entries.c,v 1.38 2024/12/07 18:23:25 tom Exp $")
+MODULE_ID("$Id: entries.c,v 1.39 2024/12/14 23:48:20 tom Exp $")
 
 /****************************************************************************
  *
@@ -133,7 +133,7 @@ _nc_leaks_tinfo(void)
     {
 	PRESCREEN_LIST *p;
 	pthread_t id = GetThreadID();
-	for (p = _nc_prescreen.allocated; p != 0; p = p->next) {
+	for (p = _nc_prescreen.allocated; p != NULL; p = p->next) {
 	    if (p->id == id && p->sp != CURRENT_SCREEN) {
 		FreeAndNull(p->sp);
 	    }

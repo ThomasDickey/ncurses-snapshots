@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.787 2024/11/23 22:52:31 tom Exp $
+dnl $Id: configure.in,v 1.788 2024/12/14 21:14:32 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.787 $)
+AC_REVISION($Revision: 1.788 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1871,6 +1871,10 @@ CF_MB_LEN_MAX
 CF_VA_COPY
 AC_FUNC_VFORK
 CF_FOPEN_BIN_R
+CF_CHECK_TYPE2(cc_t,termios.h)
+CF_CHECK_TYPE2(speed_t,termios.h)
+CF_CHECK_TYPE2(tcflag_t,termios.h)
+CF_CHECK_TYPE2(sigset_t,signal.h)
 
 # special check for test/ditto.c
 CF_FUNC_OPENPTY

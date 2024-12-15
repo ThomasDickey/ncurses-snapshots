@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.37 2024/12/07 21:24:18 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.38 2024/12/15 00:12:19 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
@@ -55,7 +55,7 @@ NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
     } else {
 
 #ifdef USE_TERM_DRIVER
-	if (SP_PARM != 0) {
+	if (SP_PARM != NULL) {
 	    result = CallDriver_2(SP_PARM, td_sgmode, FALSE, buf);
 	} else {
 	    result = ERR;

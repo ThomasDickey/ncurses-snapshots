@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_beep.c,v 1.19 2024/12/07 20:00:48 tom Exp $")
+MODULE_ID("$Id: lib_beep.c,v 1.20 2024/12/15 00:03:48 tom Exp $")
 
 /*
  *	beep()
@@ -65,7 +65,7 @@ NCURSES_SP_NAME(beep) (NCURSES_SP_DCL0)
     T((T_CALLED("beep(%p)"), (void *) SP_PARM));
 
 #ifdef USE_TERM_DRIVER
-    if (SP_PARM != 0)
+    if (SP_PARM != NULL)
 	res = CallDriver_1(SP_PARM, td_doBeepOrFlash, TRUE);
 #else
     /* FIXME: should make sure that we are not in altchar mode */

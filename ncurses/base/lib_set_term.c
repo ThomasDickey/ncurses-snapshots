@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.190 2024/12/07 17:58:16 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.191 2024/12/15 00:04:13 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -160,7 +160,7 @@ delscreen(SCREEN *sp)
 		 rop++) {
 		if (rop->win) {
 		    (void) delwin(rop->win);
-		    rop->win = 0;
+		    rop->win = NULL;
 		}
 	    }
 	}

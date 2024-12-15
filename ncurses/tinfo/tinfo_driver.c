@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.76 2024/08/31 10:46:01 Rafael.Kitover Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.77 2024/12/15 00:23:20 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -215,7 +215,7 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
      * _nc_setupscreen().  Do it now anyway, so we can initialize the
      * baudrate.
      */
-    if (sp == 0 && NC_ISATTY(termp->Filedes)) {
+    if (sp == NULL && NC_ISATTY(termp->Filedes)) {
 	get_baudrate(termp);
     }
 #if NCURSES_EXT_NUMBERS
@@ -323,7 +323,7 @@ drv_defaultcolors(TERMINAL_CONTROL_BLOCK * TCB, int fg, int bg)
     AssertTCB();
     SetSP();
 
-    if (sp != 0 && orig_pair && orig_colors && (initialize_pair != 0)) {
+    if (sp != NULL && orig_pair && orig_colors && (initialize_pair != NULL)) {
 #if NCURSES_EXT_FUNCS
 	sp->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
 	sp->_has_sgr_39_49 = (NCURSES_SP_NAME(tigetflag) (NCURSES_SP_ARGx
@@ -331,7 +331,7 @@ drv_defaultcolors(TERMINAL_CONTROL_BLOCK * TCB, int fg, int bg)
 			      == TRUE);
 	sp->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : fg;
 	sp->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : bg;
-	if (sp->_color_pairs != 0) {
+	if (sp->_color_pairs != NULL) {
 	    bool save = sp->_default_color;
 	    sp->_default_color = TRUE;
 	    NCURSES_SP_NAME(init_pair) (NCURSES_SP_ARGx
@@ -391,7 +391,7 @@ drv_rescol(TERMINAL_CONTROL_BLOCK * TCB)
     AssertTCB();
     SetSP();
 
-    if (orig_pair != 0) {
+    if (orig_pair != NULL) {
 	NCURSES_PUTP2("orig_pair", orig_pair);
 	result = TRUE;
     }
@@ -407,7 +407,7 @@ drv_rescolors(TERMINAL_CONTROL_BLOCK * TCB)
     AssertTCB();
     SetSP();
 
-    if (orig_colors != 0) {
+    if (orig_colors != NULL) {
 	NCURSES_PUTP2("orig_colors", orig_colors);
 	result = TRUE;
     }
@@ -470,7 +470,7 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 		errno = 0;
 		do {
 		    if (ioctl(termp->Filedes, IOCTL_WINSIZE, &size) >= 0) {
-			*linep = ((sp != 0 && sp->_filtered)
+			*linep = ((sp != NULL && sp->_filtered)
 				  ? 1
 				  : WINSIZE_ROWS(size));
 			*colp = WINSIZE_COLS(size);
@@ -489,7 +489,7 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 		/*
 		 * If environment variables are used, update them.
 		 */
-		if ((sp == 0 || !sp->_filtered) && _nc_getenv_num("LINES") > 0) {
+		if ((sp == NULL || !sp->_filtered) && _nc_getenv_num("LINES") > 0) {
 		    _nc_setenv_num("LINES", *linep);
 		}
 		if (_nc_getenv_num("COLUMNS") > 0) {
@@ -676,7 +676,7 @@ drv_release(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED)
 {
 }
 
-#  define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
+#  define SGR0_TEST(mode) (mode != NULL) && (exit_attribute_mode == NULL || strcmp(mode, exit_attribute_mode))
 
 static void
 drv_screen_init(SCREEN *sp)
@@ -791,7 +791,7 @@ static int
 default_fg(SCREEN *sp)
 {
 #if NCURSES_EXT_FUNCS
-    return (sp != 0) ? sp->_default_fg : COLOR_WHITE;
+    return (sp != NULL) ? sp->_default_fg : COLOR_WHITE;
 #else
     return COLOR_WHITE;
 #endif
@@ -801,7 +801,7 @@ static int
 default_bg(SCREEN *sp)
 {
 #if NCURSES_EXT_FUNCS
-    return sp != 0 ? sp->_default_bg : COLOR_BLACK;
+    return sp != NULL ? sp->_default_bg : COLOR_BLACK;
 #else
     return COLOR_BLACK;
 #endif
@@ -833,7 +833,7 @@ drv_do_color(TERMINAL_CONTROL_BLOCK * TCB,
     int old_fg, old_bg;
 
     AssertTCB();
-    if (sp == 0)
+    if (sp == NULL)
 	return;
 
     if (pair < 0 || pair >= COLOR_PAIRS) {
@@ -844,13 +844,13 @@ drv_do_color(TERMINAL_CONTROL_BLOCK * TCB,
 	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
 				    TIPARM_1(set_color_pair, pair), 1, outc);
 	    return;
-	} else if (sp != 0) {
+	} else if (sp != NULL) {
 	    _nc_pair_content(SP_PARM, pair, &fg, &bg);
 	}
     }
 
     if (old_pair >= 0
-	&& sp != 0
+	&& sp != NULL
 	&& _nc_pair_content(SP_PARM, old_pair, &old_fg, &old_bg) != ERR) {
 	if ((isDefaultColor(fg) && !isDefaultColor(old_fg))
 	    || (isDefaultColor(bg) && !isDefaultColor(old_bg))) {
@@ -921,10 +921,10 @@ drv_initmouse(TERMINAL_CONTROL_BLOCK * TCB)
     SetSP();
 
     /* we know how to recognize mouse events under "xterm" */
-    if (sp != 0) {
+    if (sp != NULL) {
 	if (NonEmpty(key_mouse)) {
 	    init_xterm_mouse(sp);
-	} else if (strstr(SP_TERMTYPE term_names, "xterm") != 0) {
+	} else if (strstr(SP_TERMTYPE term_names, "xterm") != NULL) {
 	    if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
 		init_xterm_mouse(sp);
 	}
@@ -1091,7 +1091,7 @@ drv_initacs(TERMINAL_CONTROL_BLOCK * TCB, chtype *real_map, chtype *fake_map)
      *
      * test/blue.c uses this feature.
      */
-#define PCH_KLUDGE(a,b) (a != 0 && b != 0 && !strcmp(a,b))
+#define PCH_KLUDGE(a,b) (a != NULL && b != NULL && !strcmp(a,b))
     if (PCH_KLUDGE(enter_pc_charset_mode, enter_alt_charset_mode) &&
 	PCH_KLUDGE(exit_pc_charset_mode, exit_alt_charset_mode)) {
 	size_t i;
@@ -1099,7 +1099,7 @@ drv_initacs(TERMINAL_CONTROL_BLOCK * TCB, chtype *real_map, chtype *fake_map)
 	    if (real_map[i] == 0) {
 		real_map[i] = (chtype) i;
 		if (real_map != fake_map) {
-		    if (sp != 0)
+		    if (sp != NULL)
 			sp->_screen_acs_map[i] = TRUE;
 		}
 	    }
@@ -1118,7 +1118,7 @@ drv_initacs(TERMINAL_CONTROL_BLOCK * TCB, chtype *real_map, chtype *fake_map)
 		   (int) i,
 		   _tracechar(UChar(acs_chars[i])),
 		   _tracechtype(real_map[UChar(acs_chars[i])])));
-		if (sp != 0) {
+		if (sp != NULL) {
 		    sp->_screen_acs_map[UChar(acs_chars[i])] = TRUE;
 		}
 	    }
@@ -1163,7 +1163,7 @@ _nc_cookie_init(SCREEN *sp)
     bool support_cookies = USE_XMC_SUPPORT;
     TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) (sp->_term);
 
-    if (sp == 0 || !ENSURE_TINFO(sp))
+    if (sp == NULL || !ENSURE_TINFO(sp))
 	return;
 
 #if USE_XMC_SUPPORT
@@ -1172,7 +1172,7 @@ _nc_cookie_init(SCREEN *sp)
      * in the environment, reset the support-flag.
      */
     if (magic_cookie_glitch >= 0) {
-	if (getenv("NCURSES_NO_MAGIC_COOKIE") != 0) {
+	if (getenv("NCURSES_NO_MAGIC_COOKIE") != NULL) {
 	    support_cookies = FALSE;
 	}
     }
@@ -1313,7 +1313,7 @@ drv_nap(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int ms)
 #elif defined(EXP_WIN32_DRIVER)
     Sleep((DWORD) ms);
 #else
-    _nc_timed_wait(0, 0, ms, (int *) 0 EVENTLIST_2nd(0));
+    _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
 #endif
     return OK;
 }
@@ -1380,7 +1380,7 @@ drv_keyok(TERMINAL_CONTROL_BLOCK * TCB, int c, int flag)
 	unsigned ch = (unsigned) c;
 	if (flag) {
 	    while ((s = _nc_expand_try(sp->_key_ok,
-				       ch, &count, (size_t) 0)) != 0) {
+				       ch, &count, (size_t) 0)) != NULL) {
 		if (_nc_remove_key(&(sp->_key_ok), ch)) {
 		    code = _nc_add_to_try(&(sp->_keytry), s, ch);
 		    free(s);
@@ -1393,7 +1393,7 @@ drv_keyok(TERMINAL_CONTROL_BLOCK * TCB, int c, int flag)
 	    }
 	} else {
 	    while ((s = _nc_expand_try(sp->_keytry,
-				       ch, &count, (size_t) 0)) != 0) {
+				       ch, &count, (size_t) 0)) != NULL) {
 		if (_nc_remove_key(&(sp->_keytry), ch)) {
 		    code = _nc_add_to_try(&(sp->_key_ok), s, ch);
 		    free(s);
@@ -1420,7 +1420,7 @@ drv_cursorSet(TERMINAL_CONTROL_BLOCK * TCB, int vis)
 
     T((T_CALLED("tinfo:drv_cursorSet(%p,%d)"), (void *) SP_PARM, vis));
 
-    if (SP_PARM != 0 && IsTermInfo(SP_PARM)) {
+    if (SP_PARM != NULL && IsTermInfo(SP_PARM)) {
 	switch (vis) {
 	case 2:
 	    code = NCURSES_PUTP2_FLUSH("cursor_visible", cursor_visible);

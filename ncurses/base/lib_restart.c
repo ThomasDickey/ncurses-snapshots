@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_restart.c,v 1.19 2024/12/07 20:03:37 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.20 2024/12/15 00:04:09 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(restartterm) (NCURSES_SP_DCLx
@@ -52,7 +52,7 @@ NCURSES_SP_NAME(restartterm) (NCURSES_SP_DCLx
 {
     int result;
 #ifdef USE_TERM_DRIVER
-    TERMINAL *new_term = 0;
+    TERMINAL *new_term = NULL;
 #endif
 
     START_TRACE();
