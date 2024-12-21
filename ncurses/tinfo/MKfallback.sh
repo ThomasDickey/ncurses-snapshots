@@ -27,7 +27,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKfallback.sh,v 1.27 2024/12/07 20:57:05 tom Exp $
+# $Id: MKfallback.sh,v 1.28 2024/12/21 18:45:15 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
@@ -95,7 +95,7 @@ EOF
 	for x in "$@"
 	do
 		echo "/* $x */"
-		"$infocmp_path" -E "$x" | sed -e 's/\<short\>/NCURSES_INT2/g'
+		"$infocmp_path" -E "$x" | sed -e 's/[ 	]short[ 	]/ NCURSES_INT2 /g'
 	done
 
 	cat <<EOF

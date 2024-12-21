@@ -4743,7 +4743,7 @@ else
 #include <stdio.h>
 		int main(int argc, char *argv[])
 		{
-			${cf_cv_main_return:-return}(argc < 0 || argv == 0 || argv[0] == 0);
+			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[0] == (void*)0);
 		}
 
 _ACEOF
@@ -12772,7 +12772,7 @@ cat > conftest.$ac_ext <<EOF
 int main(int argc, char *argv[])
 {
 	printf("hello\\n");
-	return (argv[argc-1] == 0) ;
+	return (argv[argc-1] == NULL) ;
 }
 EOF
 		cf_save_CFLAGS="$CFLAGS"
@@ -16299,7 +16299,7 @@ cat >"conftest.$ac_ext" <<_ACEOF
 #line 16299 "configure"
 #include "confdefs.h"
 
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 
 int
@@ -16336,7 +16336,7 @@ else
 #undef  _CONST_X_STRING
 #define _CONST_X_STRING	/* X11R7.8 (perhaps) */
 #undef  XTSTRINGDEFINES	/* X11R5 and later */
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 
 int

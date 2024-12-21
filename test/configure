@@ -22909,7 +22909,7 @@ cat >"conftest.$ac_ext" <<_ACEOF
 #line 22909 "configure"
 #include "confdefs.h"
 
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 
 int
@@ -22946,7 +22946,7 @@ else
 #undef  _CONST_X_STRING
 #define _CONST_X_STRING	/* X11R7.8 (perhaps) */
 #undef  XTSTRINGDEFINES	/* X11R5 and later */
-#include <stdlib.h>
+$ac_includes_default
 #include <X11/Intrinsic.h>
 
 int

@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.92 2024/12/15 01:28:56 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.93 2024/12/21 20:27:36 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -188,7 +188,7 @@ NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals = {
     0,				/* nested_tracef */
     0,				/* use_pthreads */
 #if USE_PTHREADS_EINTR
-    0,				/* read_thread */
+    (pthread_t)	0,		/* read_thread */
 #endif
 #endif
 #if USE_WIDEC_SUPPORT

@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.138 2024/12/07 21:13:36 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.139 2024/12/21 16:42:33 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -132,10 +132,10 @@ check_writeable(int code)
     const char *s = NULL;
 
     if (code == 0 || (s = (strchr) (dirnames, code)) == NULL) {
-	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", code);
+	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", UChar(code));
     } else if (!verified[s - dirnames]) {
 	char dir[sizeof(LEAF_FMT)];
-	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, code);
+	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, UChar(code));
 	if (make_db_root(dir) < 0) {
 	    _nc_err_abort("%s/%s: (errno %d) %s",
 			  _nc_tic_dir(NULL),
@@ -495,7 +495,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 
 	check_writeable(ptr[0]);
 	_nc_SPRINTF(linkname, _nc_SLIMIT(sizeof(linkname))
-		    LEAF_FMT "/%.*s", ptr[0],
+		    LEAF_FMT "/%.*s", UChar(ptr[0]),
 		    (int) sizeof(linkname) - (2 + LEAF_LEN), ptr);
 
 	if (strcmp(filename, linkname) == 0) {

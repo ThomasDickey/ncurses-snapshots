@@ -31,7 +31,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.50 2024/12/07 21:57:21 tom Exp $ */
+/* $Id: form.priv.h,v 0.51 2024/12/21 17:09:39 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -171,6 +171,9 @@ TypeArgument;
 #define is_blank(c) ((c)==C_BLANK)
 
 #define C_ZEROS '\0'
+
+#define MAX_DIGITS	64
+#define MaxDigits(n)	((n) > MAX_DIGITS ? MAX_DIGITS : ((n) > 0 ? (n) : 0))
 
 extern FORM_EXPORT(TypeArgument *) _nc_Make_Argument (const FIELDTYPE*, va_list*, int*);
 extern FORM_EXPORT(TypeArgument *) _nc_Copy_Argument (const FIELDTYPE*, const TypeArgument*, int*);

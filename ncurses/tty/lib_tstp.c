@@ -43,7 +43,7 @@
 
 #include <SigAction.h>
 
-MODULE_ID("$Id: lib_tstp.c,v 1.57 2024/12/15 02:01:17 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.58 2024/12/21 18:43:50 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -294,7 +294,7 @@ _nc_set_read_thread(bool enable)
 #  endif
 	    _nc_globals.read_thread = pthread_self();
     } else {
-	_nc_globals.read_thread = 0;
+	_nc_globals.read_thread = (pthread_t) 0;
     }
     _nc_unlock_global(curses);
 }
@@ -310,7 +310,7 @@ handle_SIGWINCH(int sig GCC_UNUSED)
     if (_nc_globals.read_thread) {
 	if (!pthread_equal(pthread_self(), _nc_globals.read_thread))
 	    pthread_kill(_nc_globals.read_thread, SIGWINCH);
-	_nc_globals.read_thread = 0;
+	_nc_globals.read_thread = (pthread_t) 0;
     }
 # endif
 }

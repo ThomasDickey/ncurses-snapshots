@@ -17892,7 +17892,7 @@ rm -f "conftest.$ac_objext" "conftest.$ac_ext"
  fi
 cat > "conftest.$ac_ext" <<EOF
 #line 17894 "${as_me:-configure}"
-int main(int argc, char *argv[]) { return (argv[argc-1] == (void*)0) ; }
+int main(int argc, char *argv[]) { return (argv[argc-1] == 0) ; }
 EOF
 if test "$INTEL_COMPILER" = yes
 then

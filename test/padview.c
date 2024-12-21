@@ -29,7 +29,7 @@
 /*
  * clone of view.c, using pads
  *
- * $Id: padview.c,v 1.27 2024/12/07 22:40:19 tom Exp $
+ * $Id: padview.c,v 1.28 2024/12/21 17:34:13 tom Exp $
  */
 
 #include <test.priv.h>
@@ -88,8 +88,9 @@ show_all(const char *tag, WINDOW *my_pad, int my_row)
     wattrset(stdscr, COLOR_PAIR(my_pair));
     clear();
 
+    i = (int) (sizeof(temp) - strlen(tag) - 8);
     _nc_SPRINTF(temp, _nc_SLIMIT(sizeof(temp))
-		"view %.*s", (int) strlen(tag), tag);
+		"view %.*s", i, tag);
     i = (int) strlen(temp);
     _nc_SPRINTF(temp + i, _nc_SLIMIT(sizeof(temp) - (size_t) i)
 		" %.*s", (int) sizeof(temp) - i - 2, fname);

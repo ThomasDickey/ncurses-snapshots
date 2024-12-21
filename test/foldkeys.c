@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey, 2006
  *
- * $Id: foldkeys.c,v 1.13 2024/12/07 23:03:07 tom Exp $
+ * $Id: foldkeys.c,v 1.14 2024/12/21 17:25:16 tom Exp $
  *
  * Demonstrate a method for altering key definitions at runtime.
  *
@@ -156,7 +156,7 @@ demo_foldkeys(void)
 		      final) == 3
 	    && *final != ';'
 	    && (need = strlen(info[j].value)) != 0
-	    && (value = strdup(info[j].value)) != NULL) {
+	    && (value = malloc(need + 8)) != NULL) {
 	    (void) need;	/* _nc_SLIMIT is normally nothing  */
 	    _nc_SPRINTF(value, _nc_SLIMIT(need) "\033[%d%c", first, *final);
 	    for (k = 0; k < info_len; ++k) {

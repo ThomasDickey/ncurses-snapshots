@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.32 2024/12/07 21:24:18 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.33 2024/12/21 16:39:29 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -79,14 +79,14 @@ MODULE_ID("$Id: lib_tracebits.c,v 1.32 2024/12/07 21:24:18 tom Exp $")
 #endif
 
 typedef struct {
-    unsigned int val;
+    unsigned long val;
     const char name[BITNAMELEN];
 } BITNAMES;
 
 #define TRACE_BUF_SIZE(num) (_nc_globals.tracebuf_ptr[num].size)
 
 static void
-lookup_bits(char *buf, const BITNAMES * table, const char *label, unsigned int val)
+lookup_bits(char *buf, const BITNAMES * table, const char *label, unsigned long val)
 {
     const BITNAMES *sp;
 

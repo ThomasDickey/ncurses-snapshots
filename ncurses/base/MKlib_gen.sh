@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.75 2024/12/07 21:50:24 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.76 2024/12/21 16:51:25 tom Exp $)
 #
 ##############################################################################
 # Copyright 2018-2022,2024 Thomas E. Dickey                                  #
@@ -191,6 +191,7 @@ cat >$ED4 <<EOF
 	s/\(((\)0\([ ]*!=[ ]*(const void\)/\1NULL\2/g
 	/returnCode(wborder_set/s,0,NULL,g
 	/returnWin/s,0,NULL,
+	/_parent/s,0,NULL,
 EOF
 else
 cat >$ED4 <<EOF

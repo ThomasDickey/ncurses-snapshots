@@ -32,11 +32,9 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.60 2024/12/14 19:08:22 tom Exp $
+// $Id: cursesw.h,v 1.61 2024/12/15 16:06:49 tom Exp $
 
-extern "C" {
-#  include   <curses.h>
-}
+#include <curses.h>
 
 #if defined(BUILDING_NCURSES_CXX)
 # define NCURSES_CXX_IMPEXP NCURSES_EXPORT_GENERAL_EXPORT
@@ -50,7 +48,6 @@ extern "C" {
 #define NCURSES_CXX_EXPORT_VAR(type) NCURSES_CXX_IMPEXP type
 
 #include <etip.h>
-#include <curses.h>
 
 /* SCO 3.2v4 curses.h includes term.h, which defines lines as a macro.
    Undefine it here, because NCursesWindow uses lines as a method.  */
