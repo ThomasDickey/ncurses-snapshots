@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.47 2024/05/25 20:52:38 tom Exp $
-.TH menu 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: menu.3x,v 1.49 2024/12/28 21:26:21 tom Exp $
+.TH menu 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -70,7 +70,9 @@ To use the \fBmenu\fP library, link with the options
 The \fBmenu\fP library maintains a default value for item attributes.
 You can
 get or set this default by calling the appropriate \fBget_\fP or \fBset_\fP
-routine with a \fBNULL\fP item pointer.
+routine with a
+.I NULL
+item pointer.
 Changing this default with a
 \fBset_\fP function affects future item creations, but does not change the
 rendering of items already created.
@@ -150,7 +152,9 @@ top_row   	\fBmitem_current\fP(3X)
 unpost_menu	\fBmenu_post\fP(3X)
 .TE
 .SH RETURN VALUE
-Routines that return pointers return \fBNULL\fP on error.
+Routines that return pointers return
+.I NULL
+on error.
 Routines that return
 an integer return one of the following error codes:
 .TP 5

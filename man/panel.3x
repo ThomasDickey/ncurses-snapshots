@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: panel.3x,v 1.65 2024/05/25 21:14:41 tom Exp $
-.TH panel 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: panel.3x,v 1.68 2024/12/28 21:26:21 tom Exp $
+.TH panel 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -215,8 +215,9 @@ Use this function and not \fB\%wrefresh\fP(3X) or
 but \fB\%doupdate\fP is the function responsible for updating
 the physical screen.
 .SH "RETURN VALUE"
-Each routine that returns a pointer returns \fBNULL\fP if an error
-occurs.
+Each routine that returns a pointer returns
+.I NULL
+if an error occurs.
 Each routine that returns an int value returns \fBOK\fP if it
 executes successfully and \fBERR\fP if not.
 .PP
@@ -263,9 +264,14 @@ Systems based on SVr4 source code,
 such as Solaris,
 provide this library.
 .bP
-\fI\%ncurses\fP (since version 0.6 in 1993)
-and \fIPDCurses\fP (since version 2.2 in 1995)
-provide a panel library whose common ancestor
+.I \%ncurses
+(since version 0.6 in 1993)
+and
+.I \%PDCurses
+(since version 2.2 in 1995)
+provide a
+.I panel
+library whose common ancestor
 is a public domain implementation by Warren Tucker
 published in \fIu386mon\fP 2.20 (1990).
 .IP

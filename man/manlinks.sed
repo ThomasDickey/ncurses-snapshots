@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.22 2024/09/14 23:49:39 tom Exp $
+# $Id: manlinks.sed,v 1.23 2024/12/28 21:36:50 Branden.Robinson Exp $
 ##############################################################################
 # Copyright 2020-2023,2024 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
@@ -30,9 +30,6 @@
 # Given a manpage (nroff) as input, writes a list of the names that are
 # listed in the "NAME" section, i.e., the names that we would like to use
 # as aliases for the manpage -T.Dickey
-#
-# workaround for manpages without a SYNOPSIS
-s/^\.\\"SH/.SH/
 #
 # eliminate formatting controls that get in the way
 /^'\\"/d
@@ -75,42 +72,8 @@ s/ /\
 /g
 }
 #
-# in ".SH SYNOPSIS"
-# For readability, the NAME section may not contain all function names, but we
-# still want to make aliases for those.  Do this by extracting names from the
-# list of function prototypes in the synopsis.
-#
-# Remove any line that does not contain a '(', since we only want functions. 
-# then strip off return-type of each function.
-#
-# Finally, remove the parameter list, which begins with a '('.
-/^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
-/^\.ti/d
-/^[^(]*$/d
-# reduce
-#	.B "int add_wch( const cchar_t *\fIwch\fB );"
-# to
-#	add_wch( const cchar_t *\fIwch\fB );"
-s/^\([^ (]* [^ (]* [*]*\)//g
-s/^\([^ (]* [*]*\)//g
-# trim blanks in case we have
-#	void (*) (FORM *) field_init(const FORM *form);
-s/) (/)(/g
-# reduce stuff like
-#	void (*)(FORM *) field_init(const FORM *form);
-# to
-#	field_init(const FORM *form);
-s/^\(([^)]*)\)\(([^)]*)\)*[ ]*//g
-# rename marker temporarily
-s/\.SH_(/.SH_/
-# kill lines with ");", and trim off beginning of argument list.
-s/[()].*//
-# rename marker back
-s/\.SH_/.SH_(/
-}
-#
-# delete ".SH DESCRIPTION" and following lines
-/^\.SH_(DESCRIPTION/,${
+# delete remainder of document
+/^\.SH_([^N]/,${
 d
 }
 #

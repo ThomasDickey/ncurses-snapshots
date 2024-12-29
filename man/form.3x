@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form.3x,v 1.56 2024/05/25 20:52:38 tom Exp $
-.TH form 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: form.3x,v 1.58 2024/12/28 21:26:21 tom Exp $
+.TH form 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -79,7 +79,9 @@ The \fBform\fP library maintains a default value for field attributes.
 You
 can get or set this default by calling the appropriate \fBset_\fP
 or retrieval
-routine with a \fBNULL\fP field pointer.
+routine with a
+.I NULL
+field pointer.
 Changing this default with a
 \fBset_\fP function affects future field creations, but does not change the
 rendering of fields already created.
@@ -173,7 +175,9 @@ unfocus_current_field	\fBform_page\fP(3X)*
 unpost_form	\fBform_post\fP(3X)
 .TE
 .SH RETURN VALUE
-Routines that return pointers return \fBNULL\fP on error,
+Routines that return pointers return
+.I NULL
+on error,
 and set \fBerrno\fP to the corresponding error-code returned by functions
 returning an integer.
 Routines that return

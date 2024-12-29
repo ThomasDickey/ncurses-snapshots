@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.118 2024/09/21 09:30:22 tom Exp @
+  * @Id: curs_util.3x,v 1.122 2024/12/28 21:51:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_util 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -251,7 +251,7 @@
        failure  and <STRONG>OK</STRONG> (SVr4 specifies only "an integer value other than <STRONG>ERR</STRONG>")
        upon successful completion.
 
-       Routines that return pointers return <STRONG>NULL</STRONG> on error.
+       Routines that return pointers return <EM>NULL</EM> on error.
 
        In this implementation
 
@@ -316,32 +316,33 @@
            in the 4.3BSD curses sources.
 
        <STRONG>o</STRONG>   Most implementations simply dump the binary <EM>WINDOW</EM> structure to the
-           file.   These  include SVr4 curses, NetBSD and PDCurses, as well as
-           older <EM>ncurses</EM> versions.  This implementation (as well as the X/Open
-           variant of Solaris curses, dated 1995) uses textual dumps.
+           file.   These  include SVr4 <EM>curses</EM>, NetBSD <EM>curses</EM>, and <EM>PDCurses</EM>, as
+           well as older <EM>ncurses</EM> versions.  This implementation  (as  well  as
+           the  X/Open  variant  of  Solaris  curses, dated 1995) uses textual
+           dumps.
 
-           The  implementations  that use binary dumps use block-I/O (<STRONG>write(2)</STRONG>
+           The implementations that use binary dumps use  block-I/O  (<STRONG>write(2)</STRONG>
            and <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use buffered-
            I/O.  A few applications may happen to write extra data in the file
-           using these functions.  Doing that can  run  into  problems  mixing
-           block-  and  buffered-I/O.  This implementation reduces the problem
-           on writes by flushing the output.  However,  reading  from  a  file
+           using  these  functions.   Doing  that can run into problems mixing
+           block- and buffered-I/O.  This implementation reduces  the  problem
+           on  writes  by  flushing  the output.  However, reading from a file
            written using mixed schemes may not be successful.
 
 
 </PRE><H3><a name="h3-unctrl_wunctrl">unctrl, wunctrl</a></H3><PRE>
-       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
-       error conditions for them.  It states  that  <STRONG>unctrl</STRONG>  and  <STRONG>wunctrl</STRONG>  will
-       return  a null pointer if unsuccessful.  This implementation checks for
+       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
+       error  conditions  for  them.   It  states that <STRONG>unctrl</STRONG> and <STRONG>wunctrl</STRONG> will
+       return a null pointer if unsuccessful.  This implementation checks  for
        three cases:
 
-       <STRONG>o</STRONG>   the parameter is a 7-bit US-ASCII code.   This  is  the  case  that
+       <STRONG>o</STRONG>   the  parameter  is  a  7-bit  US-ASCII code.  This is the case that
            X/Open Curses documented.
 
        <STRONG>o</STRONG>   the parameter is in the range 128-159, i.e., a C1 control code.  If
-           <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> has been called with a  <STRONG>2</STRONG>  parameter,  <STRONG>unctrl</STRONG>
-           returns  the  parameter,  i.e.,  a  one-character  string  with the
-           parameter as the first  character.   Otherwise,  it  returns  "~@",
+           <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>  has  been  called with a <STRONG>2</STRONG> parameter, <STRONG>unctrl</STRONG>
+           returns the  parameter,  i.e.,  a  one-character  string  with  the
+           parameter  as  the  first  character.   Otherwise, it returns "~@",
            "~A", etc., analogous to "^@", "^A", C0 controls.
 
            X/Open Curses does not document whether <STRONG>unctrl</STRONG> can be called before
@@ -352,33 +353,33 @@
            pointer.
 
        The strings returned by <STRONG>unctrl</STRONG> in this implementation are determined at
-       compile  time,  showing C1 controls from the upper-128 codes with a "~"
-       prefix  rather  than  "^".   Other   implementations   have   different
-       conventions.    For  example,  they  may  show  both  sets  of  control
-       characters with "^", and strip the parameter to 7 bits.   Or  they  may
-       ignore  C1  controls and treat all of the upper-128 codes as printable.
-       This implementation uses 8 bits but  does  not  modify  the  string  to
-       reflect  locale.   The <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> function allows the caller
+       compile time, showing C1 controls from the upper-128 codes with  a  "~"
+       prefix   rather   than   "^".   Other  implementations  have  different
+       conventions.   For  example,  they  may  show  both  sets  of   control
+       characters  with  "^",  and strip the parameter to 7 bits.  Or they may
+       ignore C1 controls and treat all of the upper-128 codes  as  printable.
+       This  implementation  uses  8  bits  but  does not modify the string to
+       reflect locale.  The <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> function allows  the  caller
        to change the output of <STRONG>unctrl</STRONG>.
 
-       Likewise, the <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG> function allows the caller to change the  output
-       of  <STRONG>keyname</STRONG>,  i.e.,  it  determines  whether to use the "M-" prefix for
-       "meta"   keys   (codes   in   the   range   128    to    255).     Both
-       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  curses  is
-       initialized.  X/Open Curses does not document the  treatment  of  codes
+       Likewise,  the <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG> function allows the caller to change the output
+       of <STRONG>keyname</STRONG>, i.e., it determines whether to  use  the  "M-"  prefix  for
+       "meta"    keys    (codes    in   the   range   128   to   255).    Both
+       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>  and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  curses   is
+       initialized.   X/Open  Curses  does not document the treatment of codes
        128 to 159.  When treating them as "meta" keys (or if <STRONG>keyname</STRONG> is called
-       before  initializing  curses),  this  implementation  returns   strings
+       before   initializing  curses),  this  implementation  returns  strings
        "M-^@", "M-^A", etc.
 
        X/Open Curses documents <STRONG>unctrl</STRONG> as declared in <STRONG>&lt;unctrl.h&gt;</STRONG>, which <EM>ncurses</EM>
-       does.  However, <EM>ncurses</EM>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>,  matching  the
+       does.   However,  <EM>ncurses</EM>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>, matching the
        behavior of SVr4 curses.  Other implementations may not do that.
 
 
 </PRE><H3><a name="h3-use_env_use_tioctl">use_env, use_tioctl</a></H3><PRE>
-       If  <EM>ncurses</EM>  is  configured  to provide the sp-functions extension, the
-       state of <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> may be  updated  before  creating  each
-       <EM>screen</EM>  rather  than  once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).  This feature of
+       If <EM>ncurses</EM> is configured to provide  the  sp-functions  extension,  the
+       state  of  <STRONG>use_env</STRONG>  and  <STRONG>use_tioctl</STRONG> may be updated before creating each
+       <EM>screen</EM> rather than once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).   This  feature  of
        <STRONG>use_env</STRONG> is not provided by other implementations of curses.
 
 
@@ -387,8 +388,8 @@
 
        SVr2 (1984) introduced <EM>delay</EM><STRONG>_</STRONG><EM>output</EM>, <EM>flushinp</EM>, and <EM>keyname</EM>.
 
-       SVr3 (1987) added <EM>filter</EM>.  Later that year, SVr3.1 brought  <EM>getwin</EM>  and
-       <EM>putwin</EM>,  reading  and writing window dumps with <STRONG>fread(3)</STRONG> and <STRONG>fwrite(3)</STRONG>,
+       SVr3  (1987)  added <EM>filter</EM>.  Later that year, SVr3.1 brought <EM>getwin</EM> and
+       <EM>putwin</EM>, reading and writing window dumps with <STRONG>fread(3)</STRONG>  and  <STRONG>fwrite(3)</STRONG>,
        respectively.
 
        SVr4 (1989) supplied <EM>use</EM><STRONG>_</STRONG><EM>env</EM>.
@@ -405,7 +406,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

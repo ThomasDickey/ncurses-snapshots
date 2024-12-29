@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.67 2024/06/22 22:20:56 tom Exp $
-.TH curs_getstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.71 2024/12/28 21:27:26 tom Exp $
+.TH curs_getstr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -158,7 +158,7 @@ if
 .bP
 .I win
 is
-.BR NULL ","
+.IR NULL ","
 or
 .bP
 if an internal
@@ -206,7 +206,7 @@ it also temporarily changes properties of the
 .I curses
 screen to permit simple editing of the input buffer.
 It saves the screen's state and then calls \fBnl\fP(3X) and,
-if the screen was in normal (\*(``cooked\*('') mode,
+if the screen was in canonical (\*(``cooked\*('') mode,
 \fB\%cbreak\fP(3X).
 Before returning,
 it restores the saved screen state.
@@ -304,7 +304,7 @@ some do not.
 .bP
 .I \%ncurses
 6.1 and
-.I PDCurses
+.I \%PDCurses
 do not count the null character toward the limit,
 while Solaris and NetBSD
 .I curses

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.114 2024/09/21 18:04:29 tom Exp $
-.TH @INFOCMP@ 1M 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.117 2024/12/28 21:36:19 tom Exp $
+.TH @INFOCMP@ 1M 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -100,65 +100,41 @@ x\
 .RI [ \%terminal\%-type
 \&.\|.\|.\& ]
 .SH DESCRIPTION
-\fB@INFOCMP@\fP can be used to compare a binary \fBterminfo\fP entry with other
-terminfo entries, rewrite a \fBterminfo\fP description to take advantage of the
-\fBuse=\fP terminfo field, or print out a \fBterminfo\fP description from the
-binary file (\fBterm\fP) in a variety of formats.
-In all cases, the Boolean
-fields will be printed first, followed by the numeric fields, followed by the
-string fields.
+.B @INFOCMP@
+reports a human-readable terminal type description
+from a compiled entry in the
+.I \%term\%info
+database in a variety of selectable formats,
+compares such entries to each other,
+and rewrites an entry to replace
+.RB \*(`` use \*(''
+expressions with the content of other entries by reference.
+A
+.I "\%term\%info entry"
+entry comprises
+a list of one or more terminal type identifiers,
+a human-readable description of the terminal type,
+and a list of terminal
+.I capabilities
+that characterize its programming interface.
+In all cases,
+the program reports
+Boolean-valued capabilities first,
+followed by numeric ones,
+and then string-valued capabilities.
 .SS "Default Options"
-If no options are specified and zero or one \fIterminal-types\fP are
-specified,
-the
-\fB\-I\fP option will be assumed.
-If more than one \fIterminal-type\fP is specified,
-the \fB\-d\fP option will be assumed.
-.SS "Comparison Options [\-d] [\-c] [\-n]"
-\fB@INFOCMP@\fP compares the \fBterminfo\fP description of the first terminal
-\fIterminal-type\fP with each of the descriptions given by the entries
-for the other terminal's \fIterminal-types\fP.
-If a capability is defined for only one of the
-terminals, the value returned depends on the type of the capability:
-.bP
-\fBF\fP for missing Boolean variables
-.bP
-\fBNULL\fP for missing integer or string variables
-.PP
-Use the \fB\-q\fP option to show the distinction between
-\fIabsent\fP and \fIcanceled\fP capabilities.
-.PP
-These options produce a list which you can use to compare two
-or more terminal descriptions:
-.TP 5
-\fB\-d\fP
-produces a list of each capability that is \fIdifferent\fP
-between two entries.
-Each item in the list shows \*(``:\*('' after the capability name,
-followed by the capability values, separated by a comma.
-.TP
-\fB\-c\fP
-produces a list of each capability that is \fIcommon\fP between
-two or more entries.
-Missing capabilities are ignored.
-Each item in the list shows \*(``=\*('' after the capability name,
-followed by the capability value.
-.IP
-The \fB\-u\fP option provides a related output,
-showing the first terminal description rewritten to use the second
-as a building block via the \*(``use=\*('' clause.
-.TP
-\fB\-n\fP
-produces a list of each capability that is in \fInone\fP of the given entries.
-Each item in the list shows \*(``!\*('' before the capability name.
-.IP
-Normally only the conventional capabilities are shown.
-Use the \fB\-x\fP option to add the BSD-compatibility
-capabilities (names prefixed with \*(``OT\*('').
-.IP
-If no \fIterminal-types\fP are given,
-\fB@INFOCMP@\fP uses the environment variable \fITERM\fP
-for each of the \fIterminal-types\fP.
+If no options are specified and zero or one
+.I terminal-types
+is specified,
+.B @INFOCMP@
+assumes the
+.B \-I
+option.
+If more than one is specified,
+the program
+assumes the
+.B \-d
+option.
 .SS "Source Listing Options [\-I] [\-L] [\-C] [\-r]"
 The \fB\-I\fP, \fB\-L\fP, and \fB\-C\fP options will produce
 a source listing for each terminal named.
@@ -245,6 +221,90 @@ _
 .\" hpgeneric cup
 %p2\fR\|.\|.\|.\|\fP%p1	%r	hpgeneric
 .TE
+.SS "Entry Comparison Options [-d] [-c] [-n]"
+Given
+.BR \-c ,
+.BR \-d ,
+or
+.BR \-n ,
+.B @INFOCMP@
+compares the
+.I \%term\%info
+description of the first specified
+.I terminal-type
+with those of each of the subsequent operands.
+If fewer
+.I terminal-types
+than required are specified,
+.B @INFOCMP@
+uses the environment variable
+.I TERM
+in their place.
+.PP
+If a capability is defined for only one terminal type,
+the value reported depends on the capability's type:
+.bP
+.B F
+for missing Boolean variables
+.bP
+.B NULL
+for missing integer or string variables
+.PP
+The
+.B \-c
+and
+.B \-d
+options report string capability values
+between \*(``\*'\*('' characters.
+Use the
+.B \-q
+option to distinguish
+.I absent
+and
+.I canceled
+capabilities;
+see \fB\%terminfo\fP(5).
+.PP
+The comparison option selects the form of report.
+.TP 5
+.B \-d
+lists each capability that
+.I differs
+between two entries.
+Each capability name is followed by \*(``:\*(''
+and comma-separated capability values,
+then a period.
+.TP
+.B \-c
+lists each capability that two entries have in
+.IR common "."
+.B @INFOCMP@
+ignores capabilities missing from either entry.
+Each capability name is followed by \*(``=\*('',
+a space,
+and the capability value,
+then a period.
+.IP
+If the
+.B \-u
+option is further specified,
+.B @INFOCMP@
+rewrites the description of the first type
+employing \*(``use=\*('' syntax
+to use the second as a building block.
+.TP
+.B \-n
+lists capabilities that are in
+.I none
+of the given entries.
+Each capability name is preceded by \*(``!\*(''
+and followed by a period.
+.IP
+Normally only conventional capabilities are shown.
+Use the
+.B \-x
+option to add BSD-compatibility capabilities
+(names prefixed with \*(``OT\*('').
 .SS "Use= Option [\-u]"
 The \fB\-u\fP option produces a \fBterminfo\fP source description of the first
 terminal \fIterminal-type\fP which is relative to the sum of the

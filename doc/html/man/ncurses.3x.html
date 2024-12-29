@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.233 2024/09/21 18:02:58 tom Exp @
+  * @Id: ncurses.3x,v 1.236 2024/12/28 21:27:26 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        displays  with  output  optimized  to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20240921).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20241228).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -143,8 +143,8 @@
        and represents all or part  of  its  display  with  <EM>WINDOW</EM>  structures.
        Distinct  properties apply to each; for example, the <EM>line</EM> <EM>discipline</EM> of
        a typical Unix terminal driver is in one of three modes:  raw,  cbreak,
-       or  normal ("cooked").  In <EM>curses</EM>, the line discipline is a property of
-       the screen, applying identically to all windows associated with it.
+       or  canonical ("cooked").  In <EM>curses</EM>, the line discipline is a property
+       of the screen, applying identically to all windows associated with it.
 
        A <EM>window</EM> is a rectangular grid of character cells,  addressed  by  line
        and column coordinates (<EM>y</EM>, <EM>x</EM>), with the upper left corner as (0, 0).  A
@@ -813,7 +813,7 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Unless  otherwise  noted,  functions  that  return  integers return the
        constants <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG>  on  failure;  see  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
-       Functions  that  return  pointers  return  <STRONG>NULL</STRONG> on failure.  Typically,
+       Functions  that  return  pointers  return  <EM>NULL</EM> on failure.  Typically,
        <EM>ncurses</EM> treats a null pointer passed  as  a  function  parameter  as  a
        failure.   Functions  prefixed  with "mv" first perform cursor movement
        and fail if the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
@@ -1498,7 +1498,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

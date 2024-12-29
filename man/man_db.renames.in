@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.78 2024/07/20 20:55:37 tom Exp $
+# $Id: man_db.renames.in,v 1.79 2024/12/28 21:30:24 Branden.Robinson Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -242,6 +242,7 @@ putp.3x			putp.3ncurses
 putwin.3x			putwin.3ncurses
 raw.3x				raw.3ncurses
 refresh.3x			refresh.3ncurses
+reset_prog_mode.3x		reset_prog_mode.3ncurses
 reset_shell_mode.3x		reset_shell_mode.3ncurses
 restartterm.3x			restartterm.3ncurses
 ripoffline.3x			ripoffline.3ncurses

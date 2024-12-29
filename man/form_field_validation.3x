@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_validation.3x,v 1.53 2024/03/16 15:35:01 tom Exp $
-.TH form_field_validation 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: form_field_validation.3x,v 1.55 2024/12/28 21:26:21 tom Exp $
+.TH form_field_validation 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -187,7 +187,9 @@ The address itself is not validated.
 This is an \fI\%ncurses\fP extension;
 this field type may not be available in other curses implementations.
 .SH RETURN VALUE
-The functions \fBfield_type\fP and \fBfield_arg\fP return \fBNULL\fP on error.
+The functions \fBfield_type\fP and \fBfield_arg\fP return
+.I NULL
+on error.
 The function \fBset_field_type\fP returns one of the following:
 .TP 5
 .B E_OK

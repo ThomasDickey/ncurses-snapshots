@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.103 2024/05/25 20:10:58 tom Exp $
-.TH curs_mouse 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.106 2024/12/28 21:27:26 tom Exp $
+.TH curs_mouse 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -93,10 +93,10 @@ The \fB\%has_mouse\fP function returns \fBTRUE\fP if the mouse driver
 has been successfully initialized,
 and \fBFALSE\fP otherwise.
 .PP
-Mouse events are ignored when input is in cooked mode, and
-cause an error beep when cooked mode is being simulated in a window by a
-function such as \fB\%getstr\fP that expects a linefeed for input-loop
-termination.
+Mouse events are ignored when input is in canonical (\*(``cooked\*('')
+mode, and cause an error beep when canonical mode is being simulated in
+a window by a function such as \fB\%getstr\fP that expects a linefeed
+for input-loop termination.
 .SS mousemask
 To make mouse events visible, use the \fB\%mousemask\fP function.
 This sets the mouse events to be reported.
@@ -109,7 +109,8 @@ If the screen has not been initialized,
 or if the terminal does not support mouse-events,
 this function returns 0.
 .bP
-If \fIoldmask\fP is non-\fBNULL\fP,
+If \fIoldmask\fP is
+.RI non- NULL ","
 this function fills the indicated location with the previous value of the
 current screen's mouse event mask.
 .PP
@@ -216,7 +217,9 @@ They are converted to \fB\%stdscr\fP-relative coordinates and returned
 through the pointers.
 If the conversion was successful, the function returns \fBTRUE\fP.
 .IP
-If one of the parameters was \fBNULL\fP or the location is
+If one of the parameters was
+.I NULL
+or the location is
 not inside the window, \fBFALSE\fP is returned.
 .bP
 If \fIto_screen\fP is
@@ -226,7 +229,9 @@ They are converted to window-relative coordinates if the
 window \fIwin\fP encloses this point.
 In this case the function returns \fBTRUE\fP.
 .IP
-If one of the parameters is \fBNULL\fP or the point is not inside the
+If one of the parameters is
+.I NULL
+or the point is not inside the
 window, \fBFALSE\fP is returned.
 .PP
 The referenced coordinates
@@ -483,7 +488,8 @@ Mouse events from
 .I \%xterm
 are
 .I not
-ignored in cooked mode if they have been enabled by \fB\%mousemask\fP.
+ignored in canonical mode if they have been enabled by
+\fB\%mousemask\fP.
 Instead,
 the
 .I \%xterm

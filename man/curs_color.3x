@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.102 2024/05/25 20:10:58 tom Exp $
-.TH curs_color 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.104 2024/12/28 21:18:35 tom Exp $
+.TH curs_color 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -551,9 +551,12 @@ in the \fB\%chtype\fP data type (denoted by \fB\%A_COLOR\fP).
 .PP
 Other implementations of curses had different limits:
 .bP
-PCCurses (1987-1990) provided for only eight (8) colors.
+.I \%PCCurses
+(1987-1990) provided for only eight (8) colors.
 .bP
-PDCurses (1992-present) inherited the 8-color limitation from PCCurses,
+.I \%PDCurses
+(1992-present) inherited the 8-color limitation from
+.IR \%PCCurses ,
 but changed this to 256 in version 2.5 (2001),
 along with changing \fB\%chtype\fP from 16-bits to 32-bits.
 .bP

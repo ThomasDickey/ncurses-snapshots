@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: infocmp.1m,v 1.114 2024/09/21 18:04:29 tom Exp @
+  * @Id: infocmp.1m,v 1.117 2024/12/28 21:36:19 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>infocmp 1m 2024-09-21 ncurses 6.5 User commands</TITLE>
+<TITLE>infocmp 1m 2024-12-28 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">infocmp 1m 2024-09-21 ncurses 6.5 User commands</H1>
+<H1 class="no-header">infocmp 1m 2024-12-28 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>                      User commands                     <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 
@@ -58,60 +58,22 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       <STRONG>infocmp</STRONG>  can  be  used  to  compare  a binary <STRONG>terminfo</STRONG> entry with other
-       terminfo entries, rewrite a <STRONG>terminfo</STRONG> description to take  advantage  of
-       the  <STRONG>use=</STRONG>  terminfo field, or print out a <STRONG>terminfo</STRONG> description from the
-       binary file (<STRONG>term</STRONG>) in a variety of formats.  In all cases, the  Boolean
-       fields  will be printed first, followed by the numeric fields, followed
-       by the string fields.
+       <STRONG>infocmp</STRONG>  reports  a  human-readable  terminal  type  description from a
+       compiled entry in the <EM>terminfo</EM> database  in  a  variety  of  selectable
+       formats,  compares such entries to each other, and rewrites an entry to
+       replace  "<STRONG>use</STRONG>"  expressions  with  the  content  of  other  entries  by
+       reference.   A  <EM>terminfo</EM>  <EM>entry</EM>  entry  comprises a list of one or more
+       terminal type identifiers, a human-readable description of the terminal
+       type,  and  a  list  of  terminal  <EM>capabilities</EM>  that  characterize its
+       programming interface.  In all  cases,  the  program  reports  Boolean-
+       valued  capabilities  first, followed by numeric ones, and then string-
+       valued capabilities.
 
 
 </PRE><H3><a name="h3-Default-Options">Default Options</a></H3><PRE>
-       If no  options  are  specified  and  zero  or  one  <EM>terminal-types</EM>  are
-       specified,  the  <STRONG>-I</STRONG> option will be assumed.  If more than one <EM>terminal-</EM>
-       <EM>type</EM> is specified, the <STRONG>-d</STRONG> option will be assumed.
-
-
-</PRE><H3><a name="h3-Comparison-Options_d_c_n_">Comparison Options [-d] [-c] [-n]</a></H3><PRE>
-       <STRONG>infocmp</STRONG>  compares  the  <STRONG>terminfo</STRONG>  description  of  the  first  terminal
-       <EM>terminal-type</EM>  with  each  of the descriptions given by the entries for
-       the other terminal's <EM>terminal-types</EM>.  If a capability  is  defined  for
-       only  one  of  the terminals, the value returned depends on the type of
-       the capability:
-
-       <STRONG>o</STRONG>   <STRONG>F</STRONG> for missing Boolean variables
-
-       <STRONG>o</STRONG>   <STRONG>NULL</STRONG> for missing integer or string variables
-
-       Use the <STRONG>-q</STRONG> option to show the distinction between <EM>absent</EM>  and  <EM>canceled</EM>
-       capabilities.
-
-       These  options  produce a list which you can use to compare two or more
-       terminal descriptions:
-
-       <STRONG>-d</STRONG>   produces a list of each capability that is <EM>different</EM>  between  two
-            entries.   Each  item  in  the list shows ":" after the capability
-            name, followed by the capability values, separated by a comma.
-
-       <STRONG>-c</STRONG>   produces a list of each capability that is <EM>common</EM> between  two  or
-            more entries.  Missing capabilities are ignored.  Each item in the
-            list  shows  "="  after  the  capability  name,  followed  by  the
-            capability value.
-
-            The  <STRONG>-u</STRONG>  option  provides  a  related  output,  showing  the first
-            terminal description rewritten to use the  second  as  a  building
-            block via the "use=" clause.
-
-       <STRONG>-n</STRONG>   produces  a  list  of each capability that is in <EM>none</EM> of the given
-            entries.  Each item in the list shows "!"  before  the  capability
-            name.
-
-            Normally only the conventional capabilities are shown.  Use the <STRONG>-x</STRONG>
-            option to add the BSD-compatibility capabilities  (names  prefixed
-            with "OT").
-
-            If  no  <EM>terminal-types</EM>  are  given,  <STRONG>infocmp</STRONG>  uses the environment
-            variable <EM>TERM</EM> for each of the <EM>terminal-types</EM>.
+       If  no  options  are  specified  and  zero  or  one  <EM>terminal-types</EM>  is
+       specified,  <STRONG>infocmp</STRONG>  assumes  the  <STRONG>-I</STRONG>  option.   If  more  than  one is
+       specified, the program assumes the <STRONG>-d</STRONG> option.
 
 
 </PRE><H3><a name="h3-Source-Listing-Options_I_L_C_r_">Source Listing Options [-I] [-L] [-C] [-r]</a></H3><PRE>
@@ -175,6 +137,46 @@
                  <STRONG>%i</STRONG>                         <STRONG>%iq</STRONG>       ansi, vt100
                  <STRONG>%p1%?%'x'%&gt;%t%p1%'y'%+%;</STRONG>   <STRONG>%&gt;xy</STRONG>      annarbor4080
                  <STRONG>%p2</STRONG>...<STRONG>%p1</STRONG>                  <STRONG>%r</STRONG>        hpgeneric
+
+
+</PRE><H3><a name="h3-Entry-Comparison-Options_d_c_n_">Entry Comparison Options [-d] [-c] [-n]</a></H3><PRE>
+       Given <STRONG>-c</STRONG>, <STRONG>-d</STRONG>, or <STRONG>-n</STRONG>, <STRONG>infocmp</STRONG> compares the <EM>terminfo</EM> description  of  the
+       first  specified  <EM>terminal-type</EM>  with  those  of each of the subsequent
+       operands.  If fewer <EM>terminal-types</EM> than required are specified, <STRONG>infocmp</STRONG>
+       uses the environment variable <EM>TERM</EM> in their place.
+
+       If  a  capability  is  defined  for  only  one terminal type, the value
+       reported depends on the capability's type:
+
+       <STRONG>o</STRONG>   <STRONG>F</STRONG> for missing Boolean variables
+
+       <STRONG>o</STRONG>   <STRONG>NULL</STRONG> for missing integer or string variables
+
+       The <STRONG>-c</STRONG> and <STRONG>-d</STRONG> options  report  string  capability  values  between  "'"
+       characters.   Use  the  <STRONG>-q</STRONG>  option  to  distinguish <EM>absent</EM> and <EM>canceled</EM>
+       capabilities; see <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.
+
+       The comparison option selects the form of report.
+
+       <STRONG>-d</STRONG>   lists each capability that  <EM>differs</EM>  between  two  entries.   Each
+            capability  name is followed by ":" and comma-separated capability
+            values, then a period.
+
+       <STRONG>-c</STRONG>   lists each capability that two entries have  in  <EM>common</EM>.   <STRONG>infocmp</STRONG>
+            ignores  capabilities  missing from either entry.  Each capability
+            name is followed by "=", a space, and the capability value, then a
+            period.
+
+            If  the  <STRONG>-u</STRONG>  option  is  further  specified,  <STRONG>infocmp</STRONG> rewrites the
+            description of the first type employing "use=" syntax to  use  the
+            second as a building block.
+
+       <STRONG>-n</STRONG>   lists  capabilities  that  are in <EM>none</EM> of the given entries.  Each
+            capability name is preceded by "!"  and followed by a period.
+
+            Normally only conventional capabilities are  shown.   Use  the  <STRONG>-x</STRONG>
+            option  to add BSD-compatibility capabilities (names prefixed with
+            "OT").
 
 
 </PRE><H3><a name="h3-Use_Option_u_">Use= Option [-u]</a></H3><PRE>
@@ -315,8 +317,8 @@
                       DECSTR        soft reset (VT320)
                       S7C1T         7-bit controls (VT220)
                       -----------------------------------------
-
                       ISO DEC G0    enable DEC graphics for G0
+
                       ISO UK G0     enable UK chars for G0
                       ISO US G0     enable US chars for G0
                       ISO DEC G1    enable DEC graphics for G1
@@ -529,7 +531,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
+ncurses 6.5                       2024-12-28                       <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -538,8 +540,8 @@ ncurses 6.5                       2024-09-21                       <STRONG><A HR
 <li><a href="#h2-DESCRIPTION">DESCRIPTION</a>
 <ul>
 <li><a href="#h3-Default-Options">Default Options</a></li>
-<li><a href="#h3-Comparison-Options_d_c_n_">Comparison Options [-d] [-c] [-n]</a></li>
 <li><a href="#h3-Source-Listing-Options_I_L_C_r_">Source Listing Options [-I] [-L] [-C] [-r]</a></li>
+<li><a href="#h3-Entry-Comparison-Options_d_c_n_">Entry Comparison Options [-d] [-c] [-n]</a></li>
 <li><a href="#h3-Use_Option_u_">Use= Option [-u]</a></li>
 <li><a href="#h3-Other-Options">Other Options</a></li>
 </ul>

@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1997
-  * @Id: define_key.3x,v 1.50 2024/07/27 19:43:41 tom Exp @
+  * @Id: define_key.3x,v 1.52 2024/12/28 21:26:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>define_key 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>define_key 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">define_key 3x 2024-07-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">define_key 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>
 
@@ -65,7 +65,7 @@
        binding  as  it  does  those  in  the  <EM>terminfo</EM>  database entry for the
        terminal type.
 
-       A <EM>definition</EM> of  <STRONG>NULL</STRONG>  removes  any  existing  binding  from  <EM>key-code</EM>.
+       A <EM>definition</EM> of  <EM>NULL</EM>  removes  any  existing  binding  from  <EM>key-code</EM>.
        Similarly,  a  non-positive  <EM>key-code</EM>  removes  an existing binding for
        <EM>definition</EM>, if any.
 
@@ -73,7 +73,7 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        <STRONG>define_key</STRONG> returns <STRONG>ERR</STRONG> if
 
-       <STRONG>o</STRONG>   <EM>definition</EM> is <STRONG>NULL</STRONG> and <EM>key-code</EM> is nonpositive, or
+       <STRONG>o</STRONG>   <EM>definition</EM> is <EM>NULL</EM> and <EM>key-code</EM> is nonpositive, or
 
        <STRONG>o</STRONG>   insufficient memory is available to bind <EM>definition</EM> to <EM>key-code</EM>.
 
@@ -100,7 +100,7 @@
 
 
 
-ncurses 6.5                       2024-07-27                    <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                    <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

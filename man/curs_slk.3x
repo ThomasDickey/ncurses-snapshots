@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.75 2024/06/22 21:25:23 tom Exp $
-.TH curs_slk 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_slk.3x,v 1.78 2024/12/28 21:26:21 tom Exp $
+.TH curs_slk 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -255,7 +255,9 @@ returns
 if the format parameter is outside the range 0..3.
 .TP 5
 \fBslk_label\fP
-returns \fBNULL\fP on error.
+returns
+.I NULL
+on error.
 .TP 5
 \fBslk_set\fP
 returns
@@ -343,7 +345,8 @@ If there are more than 16 elements, \fB\%slk_start\fP returns
 .bP
 The format codes \fB2\fP and \fB3\fP for \fB\%slk_init\fP
 were added by \fI\%ncurses\fP in 1996.
-PDCurses 2.4 added this feature in 2001.
+.I \%PDCurses
+2.4 added this feature in 2001.
 .PP
 The function \fB\%slk_attr\fP was added by \fI\%ncurses\fP in 1996.
 .PP

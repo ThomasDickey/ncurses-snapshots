@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This document describes <EM>ncurses</EM> version 6.5 (patch 20240921).
+       This document describes <EM>ncurses</EM> version 6.5 (patch 20241228).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -1382,8 +1382,8 @@
        with  terminfo  set tty modes so that tabs are never expanded, so \t is
        safe to send.  This turns out to be essential for the Ann Arbor 4080.)
 
-       A final example is the LSI ADM-3a, which uses line and column offset by
-       a blank character, thus
+       A final example is the LSI ADM-3A, which uses line and column offset by
+       a space, thus
               cup=\E=%p1%' '%+%c%p2%' '%+%c
 
        After  sending "\E=", this pushes the first parameter, pushes the ASCII

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.100 2024/09/21 18:03:23 tom Exp $
-.TH curs_addch 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.103 2024/12/28 21:26:21 tom Exp $
+.TH curs_addch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -140,6 +140,15 @@ can be copied from place to place using \fB\%winch\fP(3X) and
 .BR \%waddch .)
 See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
 usefully \*(``or\*(''ed with characters.
+A
+.I ch
+whose character component is a space,
+and whose only attribute is
+.BR \%A_NORMAL ,
+is a
+.IR "blank character" ","
+and therefore combines with the background character;
+see \fB\%curs_bkgd\fP(3X).
 .SS wechochar
 .B \%echochar
 and
@@ -241,7 +250,7 @@ if
 .bP
 .I win
 is
-.BR NULL ","
+.IR NULL ","
 .bP
 wrapping to a new line is impossible because \fB\%scrollok\fP(3X) has
 not been called on
@@ -497,6 +506,7 @@ library in its wide-character configuration
 \fB\%curs_addchstr\fP(3X),
 \fB\%curs_addstr\fP(3X),
 \fB\%curs_attr\fP(3X),
+\fB\%curs_bkgd\fP(3X),
 \fB\%curs_clear\fP(3X),
 \fB\%curs_inch\fP(3X),
 \fB\%curs_outopts\fP(3X),

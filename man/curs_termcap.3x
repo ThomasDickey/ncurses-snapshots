@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.91 2024/09/21 18:00:03 tom Exp $
-.TH curs_termcap 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.95 2024/12/28 21:28:49 tom Exp $
+.TH curs_termcap 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -115,12 +115,12 @@
 \fBchar * BC;
 \fB@NCURSES_OSPEED@ ospeed;
 .PP
-\fBint tgetent(char *\fIbp\fP, const char *\fIname\fP);
-\fBint tgetflag(const char *\fIid\fP);
-\fBint tgetnum(const char *\fIid\fP);
-\fBchar *tgetstr(const char *\fIid\fP, char **\fIarea\fP);
-\fBchar *tgoto(const char *\fIcap\fP, int \fIcol\fP, int \fIrow\fP);
-\fBint tputs(const char *\fIstr\fP, int \fIaffcnt\fP, int (*\fIputc\fP)(int));
+\fBint tgetent(char * \fIbp\fP, const char * \fIname\fP);
+\fBint tgetflag(const char * \fIid\fP);
+\fBint tgetnum(const char * \fIid\fP);
+\fBchar * tgetstr(const char * \fIid\fP, char ** \fIarea\fP);
+\fBchar * tgoto(const char * \fIcap\fP, int \fIcol\fP, int \fIrow\fP);
+\fBint tputs(const char * \fIstr\fP, int \fIaffcnt\fP, int (* \fIputc\fP)(int));
 .fi
 .SH DESCRIPTION
 .I \%ncurses
@@ -138,10 +138,10 @@ This must be done before calling any of the other functions.
 It returns
 .RS 3
 .TP 5 \" "-1" + 2n + adjust for PDF
-1
+.B 1
 on success,
 .TP
-0
+.B 0
 if there is no such entry
 (or if the matching entry describes a generic terminal,
 having too little information for
@@ -149,8 +149,10 @@ having too little information for
 applications to run),
 and
 .TP
-\-1
-if the \fI\%term\%info\fP database could not be found.
+.B \-1
+if the
+.I \%term\%info
+database could not be found.
 .RE
 .PP
 This implementation differs from those of historical \fItermcap\fP
@@ -185,7 +187,7 @@ or \-1 if it is not available.
 .PP
 \fB\%tgetstr\fP returns the string entry for \fIid\fP,
 or
-.B NULL
+.I NULL
 if it is not available.
 Use \fB\%tputs\fP to output the string returned.
 The
@@ -200,9 +202,9 @@ However,
 \fI\%ncurses\fP checks to ensure that
 .I area
 is not
-.BR NULL ,
+.IR NULL ","
 and also that the resulting buffer pointer is not
-.BR NULL .
+.IR NULL "."
 If either check fails,
 .I area
 is ignored.
@@ -264,20 +266,32 @@ availability.
 It can retrieve capabilities by either \fItermcap\fP or
 \fI\%term\%info\fP code.
 .SS "Global Variables"
-The variables
-\fBPC\fP,
-\fBUP\fP and
-\fBBC\fP
-are set by \fB\%tgetent\fP to the \fI\%term\%info\fP entry's data for
-\fB\%pad_char\fP,
-\fB\%cursor_up\fP and
-\fB\%backspace_if_not_bs\fP,
+.B \%tgetent
+sets the variables
+.BR PC ","
+.BR UP ","
+and
+.B BC
+to the
+.I \%term\%info
+entry's data for
+.BR \%pad_char ","
+.BR \%cursor_up ","
+and
+.BR \%backspace_if_not_bs ","
 respectively.
-\fBUP\fP is not used by \fI\%ncurses\fP.
-\fBPC\fP is used by \fB\%delay_output\fP(3X).
-\fBBC\fP is used by \fB\%tgoto\fP emulation.
-The variable \fB\%ospeed\fP is set by \fI\%ncurses\fP using a
-system-specific encoding to indicate the terminal's data rate.
+\fBUP\fP is not used by
+.IR \%ncurses "."
+.B PC
+is used by \fB\%delay_output\fP(3X).
+.B BC
+is used by
+.B \%tgoto
+emulation.
+.I \%ncurses
+assigns the variable
+.B \%ospeed
+a system-specific value to encode the terminal's data rate.
 .SS "Releasing Memory"
 The \fItermcap\fP functions provide no means of freeing memory,
 because legacy \fItermcap\fP implementations used only the buffer
@@ -318,7 +332,7 @@ and
 are documented above.
 .PP
 \fB\%tgoto\fP returns
-.B NULL
+.I NULL
 on error.
 Error conditions include:
 .bP

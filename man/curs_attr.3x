@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.113 2024/09/21 23:39:04 tom Exp $
-.TH curs_attr 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.115 2024/12/28 21:26:21 tom Exp $
+.TH curs_attr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -332,7 +332,7 @@ they return
 if
 .I win
 is
-.BR NULL "."
+.IR NULL "."
 .PP
 .B \%wcolor_set
 returns
@@ -350,7 +350,7 @@ fail if its
 or
 .I \%pair
 parameter is
-.BR NULL "."
+.IR NULL "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -390,7 +390,8 @@ This implementation makes the assumption that
 .PP
 Each of the functions added by XSI Curses has a parameter \fIopts\fP,
 which X/Open Curses still (after more than twenty years) documents
-as reserved for future use, saying that it should be \fBNULL\fP.
+as reserved for future use, saying that it should be
+.IR NULL "."
 This implementation uses that parameter in ABI 6 for the functions which
 have a color pair parameter to support \fIextended color pairs\fP:
 .bP
@@ -418,7 +419,8 @@ parameter.
 For functions which turn attributes off, e.g.,
 \fBwattr_off\fP,
 the \fIopts\fP parameter is ignored except
-except to check that it is \fBNULL\fP.
+except to check that it is
+.IR NULL "."
 .\" ---------------------------------------------------------------------------
 .SH PORTABILITY
 These functions are described in X/Open Curses, Issue 4.

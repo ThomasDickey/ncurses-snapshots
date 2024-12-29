@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.56 2024/03/16 15:35:01 tom Exp $
-.TH resizeterm 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: resizeterm.3x,v 1.58 2024/12/28 21:18:35 tom Exp $
+.TH resizeterm 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -170,8 +170,13 @@ resuming using \fB\%refresh\fP(3X).
 .PP
 Doing that clears the screen and is visually distracting.
 .PP
-This extension of \fI\%ncurses\fP was introduced in mid-1995.
-It was adopted in NetBSD \fIcurses\fP (2001) and PDCurses (2003).
+.I \%ncurses
+introduced this extension in mid-1995.
+NetBSD
+.I curses
+adopted it in 2001 and
+.I \%PDCurses
+in 2003.
 .SH AUTHORS
 Thomas Dickey (from an equivalent function written in 1988 for BSD \fIcurses\fP)
 .SH SEE ALSO

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.79 2024/09/21 18:05:49 tom Exp $
-.TH curs_inopts 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.82 2024/12/28 21:27:26 tom Exp $
+.TH curs_inopts 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -147,7 +147,7 @@ and flow control characters are unaffected)
 and makes characters typed by the user immediately available to the
 program.
 .B \%nocbreak
-restores the terminal's normal (\*(``cooked\*('') line discipline.
+restores the terminal's canonical (\*(``cooked\*('') line discipline.
 .PP
 The state of the terminal is unknown to a
 .I curses
@@ -328,7 +328,7 @@ see \fI\%termios\fP(3).
 configures the terminal to perform this translation.
 .B nonl
 disables it.
-Under its normal (\*(``cooked\*('') line discipline,
+Under its canonical (\*(``cooked\*('') line discipline,
 the terminal driver always translates carriage returns to line feeds.
 .\"
 .SS nodelay
@@ -365,7 +365,7 @@ and
 configure the terminal driver's treatment of its input and output queues
 when it handles the interrupt,
 suspend,
-or quit characters under the normal (\*(``cooked\*('')
+or quit characters under the canonical (\*(``cooked\*('')
 or cbreak line disciplines on POSIX systems;
 see \fI\%termios\fP(3).
 The default behavior is inherited from the terminal driver settings.
@@ -412,7 +412,7 @@ depends on terminal driver configuration parameters that
 .I curses
 does not handle.
 .B \%noraw
-restores the terminal's normal (\*(``cooked\*('') line discipline.
+restores the terminal's canonical (\*(``cooked\*('') line discipline.
 .\"
 .SS "timeout, wtimeout"
 .B \%wtimeout
@@ -515,7 +515,7 @@ the terminal is not initialized or
 .bP
 .I win
 is
-.B NULL
+.I NULL
 (except for
 .B \%intrflush
 and
@@ -558,7 +558,7 @@ may be implemented as macros.
 and
 .B \%nocbreak
 follow historical practice in that they attempt to restore
-the terminal's normal (\*(``cooked\*('') line discipline
+the terminal's canonical (\*(``cooked\*('') line discipline
 from raw and cbreak,
 respectively.
 Mixing
@@ -642,7 +642,7 @@ call
 or
 .B \%noecho
 explicitly just after initialization,
-even if your program retains the terminal's normal (\*(``cooked\*('')
+even if your program retains the terminal's canonical (\*(``cooked\*('')
 line discipline.
 .PP
 X/Open Curses is ambiguous regarding whether

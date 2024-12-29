@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.71 2024/07/27 20:05:18 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.74 2024/12/28 21:26:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2024-07-27 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2024-07-27 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -120,7 +120,11 @@
        itself, but its <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG> representation.
 
        A <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> can be copied from  place  to  place  using  <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG>  and
-       <STRONG>wadd_wch</STRONG>.
+       <STRONG>wadd_wch</STRONG>.   See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for values of predefined constants that
+       can be usefully "or"ed with  characters.   A  complex  character  whose
+       character  component  is  a  wide  space,  and  whose only attribute is
+       <STRONG>WA_NORMAL</STRONG>, is a  <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with  the
+       background character; see <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>.
 
 
 </PRE><H3><a name="h3-wecho_wchar">wecho_wchar</a></H3><PRE>
@@ -175,11 +179,11 @@
        <STRONG>WACS_S7</STRONG>         0x23bc    -         r      scan line 7
        <STRONG>WACS_S9</STRONG>         0x23bd    _         s      scan line 9
        <STRONG>WACS_STERLING</STRONG>   0x00a3    f         }      pound-sterling symbol
+
        <STRONG>WACS_TTEE</STRONG>       0x252c    +         w      top tee
        <STRONG>WACS_UARROW</STRONG>     0x2191    ^         -      arrow pointing up
        <STRONG>WACS_ULCORNER</STRONG>   0x250c    +         l      upper left-hand corner
        <STRONG>WACS_URCORNER</STRONG>   0x2510    +         k      upper right-hand corner
-
        <STRONG>WACS_VLINE</STRONG>      0x2502    |         x      vertical line
 
        The wide-character configuration of <EM>ncurses</EM> also  defines  symbols  for
@@ -233,7 +237,7 @@
        These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.   In  <EM>ncurses</EM>,
        <STRONG>wadd_wch</STRONG> returns <STRONG>ERR</STRONG> if
 
-       <STRONG>o</STRONG>   <EM>win</EM> is <STRONG>NULL</STRONG>,
+       <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM>,
 
        <STRONG>o</STRONG>   wrapping  to  a new line is impossible because <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> has not
            been called on <EM>win</EM> when writing to its  bottom  right  location  is
@@ -359,12 +363,12 @@
        its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>,   <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>,   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,  <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG>putwc(3)</STRONG>
+       <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>,  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,  <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG>putwc(3)</STRONG>
 
 
 
-ncurses 6.5                       2024-07-27                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

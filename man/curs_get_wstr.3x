@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.54 2024/06/22 21:34:19 tom Exp $
-.TH curs_get_wstr 3X 2024-06-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.56 2024/12/28 21:18:35 tom Exp $
+.TH curs_get_wstr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -214,8 +214,12 @@ X/Open Curses does not specify what happens if the length \fIn\fP is negative.
 For analogy with \fBwgetnstr\fP,
 \fI\%ncurses\fP 6.2 uses a limit (based on \fBLINE_MAX\fP).
 .bP
-Some other implementations (such as Solaris xcurses) do the same,
-while others (PDCurses) do not allow this.
+Some other implementations (such as Solaris
+.IR xcurses )
+do the same,
+while others
+.RI \%( PDCurses )
+do not allow this.
 .bP
 NetBSD 7 curses imitates \fI\%ncurses\fP 6.1 in this regard,
 treating a \fB\-1\fP as an indefinite number of characters.

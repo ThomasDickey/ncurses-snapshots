@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.113 2024/09/21 23:39:04 tom Exp @
+  * @Id: curs_attr.3x,v 1.115 2024/12/28 21:26:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_attr 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -245,11 +245,11 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if <EM>win</EM> is <STRONG>NULL</STRONG>.
+       In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if <EM>win</EM> is <EM>NULL</EM>.
 
        <STRONG>wcolor_set</STRONG> returns <STRONG>ERR</STRONG> if <EM>pair</EM> is outside the range <STRONG>0</STRONG>..<STRONG>COLOR_PAIRS-1</STRONG>.
 
-       <STRONG>wattr_get</STRONG> does <EM>not</EM> fail if its <EM>attrs</EM> or <EM>pair</EM> parameter is <STRONG>NULL</STRONG>.
+       <STRONG>wattr_get</STRONG> does <EM>not</EM> fail if its <EM>attrs</EM> or <EM>pair</EM> parameter is <EM>NULL</EM>.
 
        Functions prefixed with "mv" first perform cursor movement and fail  if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
@@ -278,7 +278,7 @@
 
        Each  of  the functions added by XSI Curses has a parameter <EM>opts</EM>, which
        X/Open Curses  still  (after  more  than  twenty  years)  documents  as
-       reserved  for  future  use,  saying  that  it  should  be  <STRONG>NULL</STRONG>.   This
+       reserved  for  future  use,  saying  that  it  should  be  <EM>NULL</EM>.   This
        implementation uses that parameter in ABI 6  for  the  functions  which
        have a color pair parameter to support <EM>extended</EM> <EM>color</EM> <EM>pairs</EM>:
 
@@ -292,7 +292,7 @@
            standard pointer to <EM>short</EM> parameter.
 
        <STRONG>o</STRONG>   For functions which turn attributes off, e.g., <STRONG>wattr_off</STRONG>, the  <EM>opts</EM>
-           parameter is ignored except except to check that it is <STRONG>NULL</STRONG>.
+           parameter is ignored except except to check that it is <EM>NULL</EM>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -497,7 +497,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.71 2024/07/27 20:05:18 tom Exp $
-.TH curs_add_wch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.74 2024/12/28 21:26:21 tom Exp $
+.TH curs_add_wch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,7 +96,8 @@ of the
 If
 .I wch
 contains only non-spacing characters,
-.\" XXX: see wadd_wch_literal (the beginning of the array may be nonspacing)
+.\" XXX: see wadd_wch_literal (the beginning of the array may be
+.\" nonspacing)
 they are combined with the active complex character.
 .I curses
 ignores its attributes and color pair identifier,
@@ -159,6 +160,15 @@ A
 .I \%cchar_t
 can be copied from place to place using \fB\%win_wch\fP(3X) and
 .BR \%wadd_wch "."
+See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
+usefully \*(``or\*(''ed with characters.
+A complex character whose character component is a wide space,
+and whose only attribute is
+.BR \%WA_NORMAL ,
+is a
+.IR "blank character" ","
+and therefore combines with the background character;
+see \fB\%curs_bkgrnd\fP(3X).
 .SS wecho_wchar
 .B \%echo_wchar
 and
@@ -384,7 +394,7 @@ if
 .bP
 .I win
 is
-.BR NULL ","
+.IR NULL ","
 .bP
 wrapping to a new line is impossible because \fB\%scrollok\fP(3X) has
 not been called on
@@ -555,6 +565,7 @@ library in its non-wide-character configuration.
 \fB\%curs_addwstr\fP(3X),
 \fB\%curs_add_wchstr\fP(3X),
 \fB\%curs_attr\fP(3X),
+\fB\%curs_bkgrnd\fP(3X),
 \fB\%curs_clear\fP(3X),
 \fB\%curs_getcchar\fP(3X),
 \fB\%curs_outopts\fP(3X),

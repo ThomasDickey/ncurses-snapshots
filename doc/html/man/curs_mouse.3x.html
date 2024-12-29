@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.103 2024/05/25 20:10:58 tom Exp @
+  * @Id: curs_mouse.3x,v 1.106 2024/12/28 21:27:26 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2024-05-25 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2024-05-25 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
@@ -89,10 +89,10 @@
        The <STRONG>has_mouse</STRONG> function returns  <STRONG>TRUE</STRONG>  if  the  mouse  driver  has  been
        successfully initialized, and <STRONG>FALSE</STRONG> otherwise.
 
-       Mouse  events  are  ignored  when input is in cooked mode, and cause an
-       error beep when cooked mode  is  being  simulated  in  a  window  by  a
-       function  such  as  <STRONG>getstr</STRONG>  that  expects  a  linefeed  for  input-loop
-       termination.
+       Mouse  events  are  ignored when input is in canonical ("cooked") mode,
+       and cause an error beep when canonical mode is  being  simulated  in  a
+       window  by a function such as <STRONG>getstr</STRONG> that expects a linefeed for input-
+       loop termination.
 
 
 </PRE><H3><a name="h3-mousemask">mousemask</a></H3><PRE>
@@ -106,7 +106,7 @@
            If the screen has not been initialized, or if the terminal does not
            support mouse-events, this function returns 0.
 
-       <STRONG>o</STRONG>   If <EM>oldmask</EM> is non-<STRONG>NULL</STRONG>, this function fills the indicated  location
+       <STRONG>o</STRONG>   If <EM>oldmask</EM> is non-<EM>NULL</EM>, this function fills the indicated  location
            with the previous value of the current screen's mouse event mask.
 
        As  a  side  effect,  setting  a zero mouse mask may turn off the mouse
@@ -201,7 +201,7 @@
            through  the  pointers.   If  the  conversion  was  successful, the
            function returns <STRONG>TRUE</STRONG>.
 
-           If one of the parameters was <STRONG>NULL</STRONG> or the location is not inside the
+           If one of the parameters was <EM>NULL</EM> or the location is not inside the
            window, <STRONG>FALSE</STRONG> is returned.
 
        <STRONG>o</STRONG>   If   <EM>to</EM><STRONG>_</STRONG><EM>screen</EM>  is  <STRONG>FALSE</STRONG>,  the  pointers  <EM>pY,</EM>  <EM>pX</EM>  must  reference
@@ -209,7 +209,7 @@
            coordinates  if  the  window <EM>win</EM> encloses this point.  In this case
            the function returns <STRONG>TRUE</STRONG>.
 
-           If one of the parameters is <STRONG>NULL</STRONG> or the point  is  not  inside  the
+           If one of the parameters is <EM>NULL</EM> or the point  is  not  inside  the
            window, <STRONG>FALSE</STRONG> is returned.
 
        The   referenced   coordinates  are  only  replaced  by  the  converted
@@ -369,7 +369,7 @@
 
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
-       Mouse events from <EM>xterm</EM> are <EM>not</EM> ignored in cooked  mode  if  they  have
+       Mouse events from <EM>xterm</EM> are <EM>not</EM> ignored in canonical mode if they  have
        been  enabled  by  <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM> mouse report sequence
        appears in the string read.
 
@@ -394,7 +394,7 @@
 
 
 
-ncurses 6.5                       2024-05-25                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.233 2024/09/21 18:02:58 tom Exp $
-.TH ncurses 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.236 2024/12/28 21:27:26 tom Exp $
+.TH ncurses 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -243,7 +243,7 @@ of a typical Unix terminal driver
 is in one of three modes:
 raw,
 \%cbreak,
-or normal (\*(``cooked\*('').
+or canonical (\*(``cooked\*('').
 In
 .IR curses ","
 the line discipline is a property of the screen,
@@ -1099,7 +1099,7 @@ on success and
 on failure;
 see \fB\%curs_variables\fP(3X).
 Functions that return pointers return
-.B NULL
+.I NULL
 on failure.
 Typically,
 .I \%ncurses

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termattrs.3x,v 1.42 2024/05/11 20:39:53 tom Exp $
-.TH curs_termattrs 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termattrs.3x,v 1.44 2024/12/28 21:26:21 tom Exp $
+.TH curs_termattrs 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%baudrate\fP,
 \fB\%erasechar\fP,
@@ -110,7 +110,9 @@ needs complete control over the appearance of the screen.
 .SS termname
 The \fBtermname\fP routine returns the terminal name used by \fBsetupterm\fP.
 .SH RETURN VALUE
-\fBlongname\fP and \fBtermname\fP return \fBNULL\fP on error.
+\fBlongname\fP and \fBtermname\fP return
+.I NULL
+on error.
 .PP
 Routines that return an integer return \fBERR\fP upon failure and \fBOK\fP
 (SVr4 only specifies "an integer value other than \fBERR\fP") upon successful

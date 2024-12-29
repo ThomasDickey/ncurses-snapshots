@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.287 2024/12/14 23:49:34 tom Exp $ */
+/* $Id: curses.h.in,v 1.288 2024/12/29 00:53:27 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -296,7 +296,7 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 #include <stdbool.h>
 /* use whatever the C compiler decides bool really is */
 #define NCURSES_BOOL bool
-#elif !defined(__cplusplus) && !@cf_cv_builtin_bool@
+#elif !defined(__cplusplus) && !@cf_cv_cc_bool_type@
 /* there is no predefined bool - use our own */
 #undef bool
 #define bool NCURSES_BOOL

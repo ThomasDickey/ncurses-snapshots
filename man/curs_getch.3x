@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.101 2024/09/14 20:06:50 tom Exp $
-.TH curs_getch 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.104 2024/12/28 21:27:26 tom Exp $
+.TH curs_getch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -109,7 +109,7 @@ this happens after one character is read.
 If \fB\%nocbreak\fP(3X) or \fB\%noraw\fP(3X)
 has been called,
 it occurs when the next newline is read.
-(Because the terminal's normal or \*(``cooked\*('' mode
+(Because the terminal's canonical or \*(``cooked\*('' mode
 is line-buffered,
 multiple
 .B \%wgetch
@@ -478,7 +478,7 @@ or
 Functions taking a
 .I \%WINDOW
 pointer argument fail if the pointer is
-.BR NULL "."
+.IR NULL "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -558,7 +558,7 @@ Depending on the terminal mode
 (raw,
 cbreak,
 or
-\*(``cooked\*(''),
+canonical),
 and whether \fB\%nl\fP(3X) or \fB\%nonl\fP(3X) has been called,
 .B \%wgetch
 may return either a carriage return or line feed upon an Enter or Return

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_touch.3x,v 1.51 2024/07/27 19:55:45 tom Exp $
-.TH curs_touch 3X 2024-07-27 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_touch.3x,v 1.53 2024/12/28 21:26:21 tom Exp $
+.TH curs_touch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%touchwin\fP,
 \fB\%touchline\fP,
@@ -114,7 +114,8 @@ The Solaris \fIcurses\fP header file,
 for instance, defines both an actual function and macro for each.
 The macros give the same result as the actual functions.
 SVr4 \fIcurses\fP does not check the window parameter \fIwin\fP to ensure
-that it is not \fBNULL\fP;
+that it is not
+.IR NULL ";"
 otherwise this implementation behaves the same as SVr4.
 .PP
 X/Open Curses, Issue 4 describes these functions.

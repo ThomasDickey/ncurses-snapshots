@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.88 2024/06/08 20:51:12 tom Exp $
-.TH @TSET@ 1 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.90 2024/12/28 21:27:26 tom Exp $
+.TH @TSET@ 1 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -135,7 +135,7 @@ standard error output.
 When invoked as \fB@RESET@\fP, \fB@TSET@\fP sets the terminal
 modes to \*(``sane\*('' values:
 .bP
-sets cooked and echo modes,
+sets canonical (\*(``cooked\*('') and echo modes,
 .bP
 turns off cbreak and raw modes,
 .bP

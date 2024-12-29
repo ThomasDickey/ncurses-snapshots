@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.120 2024/09/14 20:06:50 tom Exp $
-.TH @TPUT@ 1 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.122 2024/12/28 21:27:26 tom Exp $
+.TH @TPUT@ 1 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -216,7 +216,7 @@ A reset differs from initialization in two ways.
 \fB\%@TPUT@\fP sets the the terminal modes to a \*(``sane\*('' state,
 .RS
 .bP
-enabling cooked and echo modes,
+enabling canonical (\*(``cooked\*('') and echo modes,
 .bP
 disabling cbreak and raw modes,
 .bP

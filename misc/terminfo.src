@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1157 $
-#	$Date: 2024/11/02 20:48:46 $
+#	$Revision: 1.1160 $
+#	$Date: 2024/12/28 20:42:05 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -579,10 +579,9 @@ ansi77|ANSI 3.64 standard 1977 version,
 pcansi-m|pcansi-mono|ibm-pc terminal programs claiming to be ANSI (mono mode),
 	OTbs, am, mir, msgr,
 	cols#80, lines#24,
-	bel=^G, cr=\r, cup=\E[%i%p1%d;%p2%dH, dch1=\E[P, dl1=\E[M,
-	home=\E[H, ht=^I, il1=\E[L, ind=\n, use=ansi+arrows,
-	use=ansi+erase, use=ansi+inittabs, use=ansi+local1,
-	use=klone+sgr-dumb,
+	bel=^G, cr=\r, dch1=\E[P, dl1=\E[M, il1=\E[L, ind=\n,
+	use=ansi+arrows, use=ansi+cup, use=ansi+erase,
+	use=ansi+inittabs, use=ansi+local1, use=klone+sgr-dumb,
 
 pcansi-25-m|pcansi25m|ibm-pc terminal programs with 25 lines (mono mode),
 	lines#25, use=pcansi-m,
@@ -1150,8 +1149,7 @@ kon|kon2|Kanji ON Linux console,
 	am, bce, ccc, eo, eslok, hs, mir, msgr, xenl, xon,
 	it#8, ncv#18,
 	bel=^G, civis=\E[?25l, cnorm=\E[?25h, cr=\r, cub1=^H,
-	cud1=\n, cup=\E[%i%p1%d;%p2%dH, dim=\E[2m,
-	dsl=\E[?H\E[?E, el1=\E[1K, fsl=\E[?F, home=\E[H,
+	cud1=\n, dim=\E[2m, dsl=\E[?H\E[?E, el1=\E[1K, fsl=\E[?F,
 	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ind=\n,
 	initc=\E]P%p1%x%p2%02x%p3%02x%p4%02x, kb2=\E[G, kbs=^?,
 	kf1=\E[[A, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~,
@@ -1165,9 +1163,9 @@ kon|kon2|Kanji ON Linux console,
 	    %t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
 	sgr0=\E[0;10m, tbc=\E[3g, tsl=\E[?T, u8=\E[?6c,
 	vpa=\E[%i%p1%dd, use=ansi+arrows, use=ansi+csr,
-	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
-	use=ansi+local, use=ansi+sgrbold, use=ecma+sgr,
-	use=klone+color, use=vt220+pcedit,
+	use=ansi+cup, use=ansi+enq, use=ansi+erase, use=ansi+idc,
+	use=ansi+idl, use=ansi+local, use=ansi+sgrbold,
+	use=ecma+sgr, use=klone+color, use=vt220+pcedit,
 
 # release: 0.4.7 2005/05
 #
@@ -3858,15 +3856,15 @@ iTerm2.app|iterm2|terminal emulator for Mac OS X,
 xnuppc+basic|Darwin PowerPC console basic capabilities,
 	am, bce, mir, xenl, NQ,
 	it#8,
-	bold=\E[1m, cr=\r, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH,
-	dsl=\E]2;\007, el1=\E[1K, home=\E[H, ht=^I, hts=\EH, ind=\n,
-	kbs=^?, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
-	rev=\E[7m, ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>,
+	bold=\E[1m, cr=\r, dsl=\E]2;\007, el1=\E[1K, ht=^I, hts=\EH,
+	ind=\n, kbs=^?, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
+	kcuu1=\EOA, rev=\E[7m, ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m,
 	sgr0=\E[m, smam=\E[?7h, smkx=\E[?1h\E=, tbc=\E[3g,
-	use=ansi+csr, use=ansi+erase, use=ansi+local,
-	use=ansi+sgrso, use=ansi+sgrul, use=vt100+keypad,
+	use=ansi+csr, use=ansi+cup, use=ansi+erase,
+	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
+	use=vt100+keypad,
 
 xnuppc+c|Darwin PowerPC console ANSI color support,
 	ncv#32, use=klone+color,
@@ -4907,9 +4905,7 @@ xterm-r6|xterm X11R6 version,
 	cols#80, it#8, lines#24,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n,
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP,
-	dch1=\E[P, ed=\E[J, el=\E[K, enacs=\E)0, home=\E[H, ht=^I,
-	hts=\EH, ind=\n,
+	dch=\E[%p1%dP, dch1=\E[P, enacs=\E)0, ht=^I, hts=\EH, ind=\n,
 	is2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8,
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf1=\E[11~,
 	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~,
@@ -4920,9 +4916,10 @@ xterm-r6|xterm X11R6 version,
 	rev=\E[7m, ri=\EM, rmacs=^O, rmir=\E[4l, rmkx=\E[?1l\E>,
 	rs2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8,
 	sgr0=\E[m, smacs=^N, smir=\E[4h, smkx=\E[?1h\E=, tbc=\E[3g,
-	use=xterm+alt47, use=ansi+csr, use=ansi+idl,
-	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
-	use=vt220+vtedit, use=xterm+kbs, use=vt100+enq,
+	use=xterm+alt47, use=ansi+csr, use=ansi+cup,
+	use=ansi+erase, use=ansi+idl, use=ansi+local,
+	use=ansi+sgrso, use=ansi+sgrul, use=vt220+vtedit,
+	use=xterm+kbs, use=vt100+enq,
 
 xterm-old|antique xterm version,
 	use=xterm-r6,
@@ -8179,11 +8176,10 @@ wezterm|Wez's Terminal Emulator,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smkx=\E[?1h\E=,
-	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?%[;0123456789]c,
-	u9=\E[c, Smol=\E[53m, Smulx=\E[4:%p1%dm,
+	Smol=\E[53m, Smulx=\E[4:%p1%dm,
 	xr=\EP>\\|WezTerm\\([1-9][0-9-]+\\)\E\\\\,
 	use=ansi+apparrows, use=ansi+csr, use=ansi+cup,
-	use=ansi+erase, use=ansi+idc, use=ansi+idl,
+	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
 	use=ansi+rep, use=ansi+sgrdim, use=bracketed+paste,
 	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
@@ -8272,6 +8268,131 @@ contour|contour-latest|Contour Terminal Emulator,
 
 contour-direct|Contour terminal with direct colors,
 	use=xterm+direct, use=contour,
+
+#### Ghostty
+# https://github.com/ghostty-org/ghostty
+#
+# Its readme and manpage begin with a lot of hype, concluding with
+#
+#	While aiming for this ambitious goal, our first step is to make Ghostty
+#	one of the best fully standards compliant terminal emulator, remaining
+#	compatible with all existing shells and software while supporting all
+#	of the latest terminal innovations in the ecosystem.  You can use
+#	Ghostty as a drop-in replacement for your existing terminal emulator.
+#
+# However, it uses xterm as a standard:
+#
+#	We believe Ghostty is one of the most compliant terminal emulators
+#	available.  Terminal behavior is partially a de jure standard (i.e. 
+#	[ECMA-48](https://ecma-international.org/publications-and-standards/stand>
+#	but mostly a de facto standard as defined by popular terminal emulators
+#	worldwide.  Ghostty takes the approach that our behavior is defined by
+#	(1) standards, if available, (2) xterm, if the feature exists, (3)
+#	other popular terminals, in that order.  This defines what the Ghostty
+#	project views as a "standard."
+#
+# while xterm uses ECMA-48 and DEC 070 along with related documentation such as
+# the DEC terminal reference manuals.  xterm's documentation does not attempt
+# to duplicate those sources of information, so that developers should rely
+# upon both xterm's documentation and the published standards.
+#
+# Comments in ghostty's source code and commits demonstrate that the developers
+# study xterm's source code closer than xterm's documentation.  The quote above
+# is the only mention of ECMA-48.
+#
+# ghostty 1.0.0 tested with Arch Linux:
+# -------------
+# tack:
+# - does not implement blinking text
+# - does not implement meta mode (kmm).
+# - implements VT100-style alternate character set
+# - testing video-attributes unexpectedly clears the display before acsc
+# - italics and strike-out work
+# - function-keys mostly match; however because this client (unlike X11
+#   clients) does not work with a remote display, some (such as control/alt key
+#   combinations, and the shifted editing keys) are untestable because
+# - numeric keypad does not send VT100-style escapes
+# wraptest:
+# - matches xterm
+# vttest:
+# - ghostty hangs in more than one menu, making it impossible to test more than
+#   a small part of the program.  In particular, these are untestable:
+#	1. Test of cursor movements 
+#	2. Test of screen features
+#	4. Test of double-sized characters
+# - ghostty has tabs (imitating gnome-terminal); when closing a tab with a
+#   running process (e.g., a hung vttest), ghostty does not prompt about the 
+#   process to be killed.
+# - identifies as a "VT220 with color":
+#	<27> [ ? 6 2 ; 2 2 c
+# - although claiming to be a VT220, it does not support NRCS.  Actually, it
+#   fails the VT100 character set test as well.  This is a complete failure:
+#	3. Test of character sets
+# - it does not hang in this menu entry:
+#	8. Test of VT102 features (Insert/Delete Char/Line)
+#   although because it does not implement double-sized characters, most of
+#   that test counts as a failure.
+# - implements VT220 DECTCEM and ECH, but not SRM or DECSCA
+# - implements VT420 left/right margins
+# - does not implement VT420 rectangle operations
+# - does not implement 8-bit controls
+# - does implement ISO-6429 cursor-movement
+# - supports BCE partially: ED/EL work, but not ECH and indexing.
+# - does not support blinking text
+# - responds to XTVERSION
+# - responds to DECRPM controls, though many are "unknown"
+# - does not respond to most DECRQSS except for SGR, DECSCUSR, DECSTBM
+# - implements most of xterm mouse protocol except for
+#   - Mouse Highlight Tracking
+#   - DEC Locator Events
+# - some window reporting works:
+#   14 - size of text area in pixels
+#   16 - size of character in pixels
+#   18 - size of window in chars
+#   21 - report window label
+# - window-modifying does not work
+# - cursor position is incorrect after switching to/from alternate screen
+#
+# The developers set "Tc" in their terminal description to hint that it
+# supports direct-colors, but the feature did not work with this version -TD
+ghostty|Ghostty terminal emulator,
+	am, bce, km, mc5i, mir, msgr, npc, xenl, AX, XT,
+	cols#80, lines#24, pairs#0x7fff,
+	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
+	     yzz{{||}}~~,
+	bel=^G, bold=\E[1m, clear=\E[H\E[2J,
+	cnorm=\E[?12l\E[?25h, cr=\r, cub1=^H, cud1=\n,
+	cvvis=\E[?12;25h, dim=\E[2m, ech=\E[%p1%dX, el1=\E[1K,
+	flash=\E[?5h$<100/>\E[?5l, ind=\n, invis=\E[8m, kbs=^?,
+	kcbt=\E[Z, kend=\EOF, kent=\EOM, kf13=\E[1;2P,
+	kf14=\E[1;2Q, kf15=\E[1;2R, kf16=\E[1;2S, kf25=\E[1;5P,
+	kf26=\E[1;5Q, kf27=\E[1;5R, kf28=\E[1;5S, kf37=\E[1;6P,
+	kf38=\E[1;6Q, kf39=\E[1;6R, kf40=\E[1;6S, kf49=\E[1;3P,
+	kf50=\E[1;3Q, kf51=\E[1;3R, kf52=\E[1;3S, kf61=\E[1;4P,
+	kf62=\E[1;4Q, kf63=\E[1;4R, op=\E[39;49m, rev=\E[7m,
+	ri=\EM, rmam=\E[?7l, rmcup=\E[?1049l, rmkx=\E[?1l\E>,
+	rmso=\E[27m, rmul=\E[24m, rs1=\E]\E\\\Ec,
+	setab=\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;
+	      5;%p1%d%;m,
+	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5
+	      ;%p1%d%;m,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
+	    %t;7%;%?%p5%t;2%;%?%p7%t;8%;m,
+	sgr0=\E(B\E[m, smam=\E[?7h, smcup=\E[?1049h,
+	smkx=\E[?1h\E=, E3=\E[3J, Ms=\E]52;%p1%s;%p2%s\007,
+	Se=\E[2 q, Smulx=\E[4:%p1%dm, Ss=\E[%p1%d q,
+	xr=\EP>\\|ghostty [!-z]+\E\\, use=ansi+apparrows,
+	use=ansi+csr, use=ansi+cup, use=ansi+enq, use=ansi+erase,
+	use=ansi+idc, use=ansi+idl, use=ansi+inittabs,
+	use=ansi+local, use=ansi+local1, use=ansi+rca2,
+	use=ansi+rep, use=ansi+sgrso, use=ansi+sgrul,
+	use=ansi+tabs, use=ecma+index, use=ecma+italics,
+	use=ecma+strikeout, use=report+version, use=vt220+cvis,
+	use=xterm+256color2, use=xterm+acs,
+	use=xterm+alt+title, use=bracketed+paste,
+	use=kitty+setal, use=vt420+lrmm, use=xterm+focus,
+	use=xterm+pce2, use=xterm+pcc2, use=xterm+pcf0,
+	use=xterm+sm+1006, use=xterm+sl-twm,
 
 ######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
@@ -8940,9 +9061,8 @@ elks-vt52|ELKS VT52 console,
 	home=\EH, use=elks-glasstty,
 
 elks-ansi|ELKS ANSI console,
-	clear=\E[H\E[2J, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A,
-	el=\E[K, home=\E[H, use=ansi+local1, use=ansi+sgrso,
-	use=elks-glasstty,
+	clear=\E[H\E[2J, el=\E[K, use=ansi+cup, use=ansi+local1,
+	use=ansi+sgrso, use=elks-glasstty,
 
 # As a matter of fact, ELKS 0.0.83 on PCs defaults to ANSI emulation
 # instead of VT52, but the "elks" entry still refers to the latter.
@@ -9462,8 +9582,7 @@ cygwinB19|ANSI emulation for cygwin32,
 cygwin|ANSI emulation for Cygwin,
 	am, hs, mir, msgr, xon,
 	colors#8, it#8, pairs#64,
-	bel=^G, bold=\E[1m, cr=\r, cub=\E[%p1%dD, cub1=^H,
-	cup=\E[%i%p1%d;%p2%dH, el1=\E[1K, fsl=^G, home=\E[H, ht=^I,
+	bel=^G, bold=\E[1m, cr=\r, cub1=^H, el1=\E[1K, fsl=^G, ht=^I,
 	ind=\n, invis=\E[8m, kb2=\E[G, kf1=\E[[A, kf10=\E[21~,
 	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~,
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~,
@@ -9475,10 +9594,10 @@ cygwin|ANSI emulation for Cygwin,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p6%t;1%;%?%p7
 	    %t;8%;%?%p9%t;11%;m,
 	sgr0=\E[0;10m, smpch=\E[11m, smso=\E[7m, smul=\E[4m,
-	tsl=\E];, use=ansi+arrows, use=ansi+erase, use=ansi+idc,
-	use=ansi+idl, use=ansi+local, use=ansi+rca2,
-	use=vt220+pcedit, use=vt102+enq, use=klone+acs,
-	use=xterm+alt47,
+	tsl=\E];, use=ansi+arrows, use=ansi+cup, use=ansi+erase,
+	use=ansi+idc, use=ansi+idl, use=ansi+local,
+	use=ansi+rca2, use=vt220+pcedit, use=vt102+enq,
+	use=klone+acs, use=xterm+alt47,
 
 # I've supplied this so that you can help test new values and add other
 # features.  Cheers, earnie_boyd@yahoo.com.
@@ -9488,20 +9607,20 @@ cygwin|ANSI emulation for Cygwin,
 # this list, but DOES cause problems so it has been removed
 cygwinDBG|Debug Version for Cygwin,
 	am, eo, mir, msgr, xon,
-	cols#80, lines#24, ncv#3,
-	bel=^G, cr=\r, cup=\E[%i%p1%d;%p2%dH, dim=\E[2m, el1=\E[1K,
-	flash=\E[?5h$<200/>\E[?5l, home=\E[H, hpa=\E[%i%p1%dG,
-	ind=\n, kNXT=\E[6$, kPRV=\E[5$, kb2=\E[G, kcbt=\E[Z,
-	kf1=\E[[A, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~,
-	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~,
-	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\E[[B,
-	kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, kf6=\E[17~,
-	kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kspd=^Z,
-	nel=\r\n, op=\E[39;49m, rc=\E8, ri=\EM, rs1=\Ec\E]R, sc=\E7,
+	cols#80, lines#24,
+	bel=^G, cr=\r, dim=\E[2m, el1=\E[1K,
+	flash=\E[?5h$<200/>\E[?5l, hpa=\E[%i%p1%dG, ind=\n,
+	kNXT=\E[6$, kPRV=\E[5$, kb2=\E[G, kcbt=\E[Z, kf1=\E[[A,
+	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~,
+	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~,
+	kf18=\E[32~, kf19=\E[33~, kf2=\E[[B, kf20=\E[34~,
+	kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, kf6=\E[17~, kf7=\E[18~,
+	kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kspd=^Z, nel=\r\n,
+	op=\E[39;49m, rc=\E8, ri=\EM, rs1=\Ec\E]R, sc=\E7,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5
 	    %t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%;m,
 	sgr0=\E[0;10m, vpa=\E[%i%p1%dd, use=ansi+arrows,
-	use=ansi+erase, use=ansi+idc, use=ansi+idl,
+	use=ansi+cup, use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+sgrbold,
 	use=klone+acs, use=klone+color, use=vt220+pcedit,
 	use=vt220+cvis, use=vt102+enq,
@@ -14021,9 +14140,8 @@ att5410v1|att4410v1|tty5410v1|AT&T 4410/5410 80 columns - version 1,
 	cols#80, it#8, lh#2, lines#24, lw#8, nlab#8, wsl#80,
 	acsc=++\,\,--..00``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyz
 	     z{{||}}~~,
-	bel=^G, bold=\E[2;7m, cr=\r, cub1=^H, cuf1=\E[C,
-	cup=\E[%i%p1%d;%p2%dH, dch1=\E[P, dim=\E[2m, dl1=\E[M,
-	fsl=\E8, home=\E[H, ht=^I, ich1=\E[@, il1=\E[L, ind=\n,
+	bel=^G, bold=\E[2;7m, cr=\r, cub1=^H, dch1=\E[P, dim=\E[2m,
+	dl1=\E[M, fsl=\E8, ht=^I, ich1=\E[@, il1=\E[L, ind=\n,
 	is1=\E[?3l\E)0,
 	is3=\E[1;03q\s\s\sf1\s\s\s\s\s\s\s\s\s\s\s\EOP\E[2;03q\s\s
 	    \sf2\s\s\s\s\s\s\s\s\s\s\s\EOQ\E[3;03q\s\s\sf3\s\s\s\s
@@ -14042,8 +14160,8 @@ att5410v1|att4410v1|tty5410v1|AT&T 4410/5410 80 columns - version 1,
 	sgr=\E[0%?%p1%p5%|%p6%|%t;2%;%?%p2%t;4%;%?%p4%t;5%;%?%p3%p1
 	    %|%p6%|%t;7%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, tsl=\E7\E[25;%p1%{1}%+%dH,
-	use=ansi+arrows, use=ansi+csr, use=ansi+erase,
-	use=ansi+local1, use=ansi+sgrbold,
+	use=ansi+arrows, use=ansi+csr, use=ansi+cup,
+	use=ansi+erase, use=ansi+local1, use=ansi+sgrbold,
 
 att4410v1-w|att5410v1-w|tty5410v1-w|AT&T 4410/5410 132 columns - version 1,
 	cols#132, wsl#132,
@@ -15409,10 +15527,9 @@ aaa+unk|aaa-unk|Ann Arbor Ambassador (internal - don't use this directly),
 	OTbs, am, km, mc5i, mir, xon,
 	cols#80,
 	bel=^G, clear=\E[H\E[J$<156>, cr=\r, cub1=^H, cud1=^K,
-	cup=\E[%i%p1%d;%p2%dH, dch=\E[%p1%dP, dch1=\E[P, ed=\E[J,
-	el=\E[K$<5>, home=\E[H, hpa=\E[%p1%{1}%+%dG,
-	ich=\E[%p1%d@$<4*>, ich1=\E[@$<4>, il1=\E[L$<3>, ind=^K,
-	is1=\E[m\E7\E[H\E9\E8,
+	dch=\E[%p1%dP, dch1=\E[P, ed=\E[J, el=\E[K$<5>,
+	hpa=\E[%p1%{1}%+%dG, ich=\E[%p1%d@$<4*>, ich1=\E[@$<4>,
+	il1=\E[L$<3>, ind=^K, is1=\E[m\E7\E[H\E9\E8,
 	is3=\E[1Q\E[>20;30l\EP`+x~M\E\\, kcbt=\E[Z, kclr=\E[J,
 	kdch1=\E[P, kdl1=\E[M, kf1=\EOA, kf10=\EOJ, kf11=\EOK,
 	kf12=\EOL, kf13=\EOM, kf14=\EON, kf15=\EOO, kf16=\EOP,
@@ -15423,15 +15540,12 @@ aaa+unk|aaa-unk|Ann Arbor Ambassador (internal - don't use this directly),
 	mc5=\E[v, mc5p=\E[%p1%dv, rc=\E8,
 	rmkx=\EP`>y~[[J`8xy~[[A`4xy~[[D`6xy~[[C`2xy~[[B\E
 	     \\,
-	rmm=\E[>52l, sc=\E7,
-	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;
-	    %;%?%p7%t8;%;m,
-	sgr0=\E[m,
+	rmm=\E[>52l, sc=\E7, sgr0=\E[m,
 	smkx=\EP`>z~[[J`8xz~[[A`4xz~[[D`6xz~[[C`2xz~[[B\E
 	     \\,
 	smm=\E[>52h, vpa=\E[%p1%{1}%+%dd, use=ansi+arrows,
-	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
-	use=ansi+rep, use=ansi+sgrbold,
+	use=ansi+cup, use=ansi+idl, use=ansi+inittabs,
+	use=ansi+local, use=ansi+rep, use=ansi+sgrbold,
 
 aaa+rv|Ann Arbor Ambassador in reverse video,
 	blink=\E[5;7m, bold=\E[1;7m, invis=\E[7;8m,
@@ -20052,17 +20166,16 @@ uts30|Sperry UTS30 with cp/m@1R1,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\ER, clear=^L,
 	cnorm=\ES, cr=\r, csr=\EU%p1%{32}%+%c%p2%{32}%+%c,
-	cub1=^H, cud1=\E[B, cup=\E[%i%p1%d;%p2%dH, dch=\E[%p1%dP,
-	dch1=\EM, dl=\E[%p1%dM, dl1=\EL, ed=\E[J, el=\E[K, fsl=\r,
-	home=\E[H, ht=^I, ich=\E[%p1%d@, ich1=\EO, il=\E[%p1%dL,
+	cub1=^H, dch=\E[%p1%dP, dch1=\EM, dl=\E[%p1%dM, dl1=\EL,
+	fsl=\r, ht=^I, ich=\E[%p1%d@, ich1=\EO, il=\E[%p1%dL,
 	il1=\EN, ind=\n, indn=\E[%p1%dB, is2=\E[U 7\E[24;1H,
 	khome=\E[H, rc=\EX, rev=\E[7m,
 	rf=/usr/share/tabset/vt100, ri=\EI, rin=\E[%p1%dA,
 	rmacs=\Ed, rmam=\E[?7l,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\EW,
 	sgr0=\E[m, smacs=\EF, smam=\E[?7m, tsl=\E], uc=\EPB,
-	use=ansi+apparrows, use=ansi+local, use=ansi+sgrso,
-	use=ansi+sgrul,
+	use=ansi+apparrows, use=ansi+cup, use=ansi+erase,
+	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
 
 #### Tandem
 #
@@ -20782,18 +20895,16 @@ ibmpc|wy60-PC|wyse60-PC|IBM PC/XT running PC/IX,
 	cols#80, it#8, lines#24,
 	acsc=j\331k\277l\332m\300n\305q\304t\303u\264v\301w\302x
 	     \263,
-	bel=^G, clear=\Ec, cr=\r, cup=\E[%i%p1%d;%p2%dH,
-	ech=\E[%p1%dX, ed=\E[J, el=\E[K, home=\E[H,
-	hpa=\E[%i%p1%dG, ind=\E[S\E[B, indn=\E[%p1%dS\E[%p1%dB,
-	invis=\E[30;40m, kcbt=^], kdch1=^?, kend=\E[Y, kf1=\240,
-	kf10=\251, kf2=\241, kf3=\242, kf4=\243, kf5=\244, kf6=\245,
-	kf7=\246, kf8=\247, kf9=\250, kich1=\E[^H, knp=\E[U,
-	kpp=\E[V, ll=\E[24;1H, nel=\r, rev=\E[7m, ri=\E[T\E[A,
-	rin=\E[%p1%dT\E[%p1%dA,
+	bel=^G, clear=\Ec, cr=\r, ech=\E[%p1%dX, hpa=\E[%i%p1%dG,
+	ind=\E[S\E[B, indn=\E[%p1%dS\E[%p1%dB, invis=\E[30;40m,
+	kcbt=^], kdch1=^?, kend=\E[Y, kf1=\240, kf10=\251, kf2=\241,
+	kf3=\242, kf4=\243, kf5=\244, kf6=\245, kf7=\246, kf8=\247,
+	kf9=\250, kich1=\E[^H, knp=\E[U, kpp=\E[V, ll=\E[24;1H,
+	nel=\r, ri=\E[T\E[A, rin=\E[%p1%dT\E[%p1%dA,
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1
 	    %;%?%p7%t30;40%;m,
-	sgr0=\E[m, use=ansi+arrows, use=ansi+local,
-	use=ansi+sgrbold,
+	sgr0=\E[m, use=ansi+arrows, use=ansi+cup, use=ansi+erase,
+	use=ansi+local, use=ansi+sgrbold,
 
 #### Apple II
 #
@@ -23116,13 +23227,12 @@ graphos|graphos III,
 	am, mir,
 	cols#80, it#8, lines#24,
 	clear=\E[H\E[2J, cnorm=\Ez56;2;0;0z\Ez73z\Ez4;1;1z,
-	cr=\r, cub1=^H, cud=\E[%p1%dB, cup=\E[%i%p1%d;%p2%dH,
-	cvvis=\Ez4;2;1z\Ez56;2;80;24z, dch1=\E[P, ed=\E[J,
-	el=\E[K, home=\E[H, ht=^I, ind=\ED, kf1=\EOP, kf2=\EOQ,
-	kf3=\EOR, kf4=\EOS, nel=\r\ED, rc=\E8, ri=\EM, rmdc=\E[4l,
-	rmir=\E[4l, sc=\E7, sgr0=\E[m, smdc=\E[4h, smir=\E[4h,
-	use=ansi+arrows, use=ansi+idl, use=ansi+local,
-	use=ansi+sgrso,
+	cr=\r, cub1=^H, cvvis=\Ez4;2;1z\Ez56;2;80;24z, dch1=\E[P,
+	ht=^I, ind=\ED, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
+	nel=\r\ED, rc=\E8, ri=\EM, rmdc=\E[4l, rmir=\E[4l, sc=\E7,
+	sgr0=\E[m, smdc=\E[4h, smir=\E[4h, use=ansi+arrows,
+	use=ansi+cup, use=ansi+erase, use=ansi+idl,
+	use=ansi+local, use=ansi+sgrso,
 
 graphos-30|graphos III with 30 lines,
 	lines#30,
@@ -23324,9 +23434,8 @@ rca|RCA vp3301/vp3501,
 hirez100|Selanar HiREZ-100,
 	OTbs, OTpt, mir, msgr, xon,
 	OTkn#4, cols#80, it#8, lines#48, vt#3,
-	acsc=, bel=^G, blink=\E[5m, bold=\E[1m, cr=\r, cub=\E[%p1%dD,
-	cub1=^H, cud1=\n, cup=\E[%i%p1%d;%p2%dH, cuu1=\EM,
-	dch=\E[%p1%dP, dch1=\E[P, home=\E[H, ht=^I, hts=\EH,
+	acsc=, bel=^G, blink=\E[5m, bold=\E[1m, cr=\r, cub1=^H,
+	cud1=\n, cuu1=\EM, dch=\E[%p1%dP, dch1=\E[P, ht=^I, hts=\EH,
 	is2=\E<\E)0, kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
 	kcuu1=\EOA, kf0=\EOP, kf1=\EOQ, kf2=\EOR, kf3=\EOS, lf0=PF1,
 	lf1=PF2, lf2=PF3, lf3=PF4, ll=\E[48H, mc0=\E[i,
@@ -23335,8 +23444,8 @@ hirez100|Selanar HiREZ-100,
 	rs1=\030\E2\E<\E[4i\E[?4i\E[12h\E[2;4;20l\E[?0;7h\E[?1;3;6;1
 	    9l\E[r\E[m\E(B\017\E)0\E>,
 	sc=\E7, sgr0=\E[m, smacs=^N, smkx=\E[?1h\E=, tbc=\E[3g,
-	use=ansi+erase, use=ansi+idl, use=ansi+local,
-	use=ansi+sgrso, use=ansi+sgrul,
+	use=ansi+cup, use=ansi+erase, use=ansi+idl,
+	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
 
 hirez100-w|Selanar HiREZ-100 in 132-column mode,
 	cols#132, use=hirez100,
@@ -27729,5 +27838,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2024-11-02
 #	+ add extended-keys for djgpp 2.05 -TD
+#
+# 2024-12-28
+#	+ add ghostty -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

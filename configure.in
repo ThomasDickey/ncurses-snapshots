@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.788 2024/12/14 21:14:32 tom Exp $
+dnl $Id: configure.in,v 1.789 2024/12/29 00:50:56 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.788 $)
+AC_REVISION($Revision: 1.789 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1901,6 +1901,7 @@ fi
 
 # Just in case, check if the C compiler has a bool type.
 CF_BOOL_DECL(cf_cv_cc_bool_type)
+AC_SUBST(cf_cv_cc_bool_type)
 
 # Check for C++ compiler characteristics (and ensure that it's there!)
 if test -n "$CXX" ; then

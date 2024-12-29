@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.50 2024/04/20 21:24:19 tom Exp $
-.TH curs_trace 3X 2024-04-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_trace.3x,v 1.52 2024/12/28 21:18:35 tom Exp $
+.TH curs_trace 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -264,13 +264,15 @@ if \fBDEBUG\fP was defined when building the library.
 .IP
 The SVr4 tracing feature is undocumented.
 .bP
-PDCurses provides \fBtraceon\fP and \fBtraceoff\fP,
+.I \%PDCurses
+provides \fBtraceon\fP and \fBtraceoff\fP,
 which (like SVr4) are always available,
 and enable tracing
 to the \*(``trace\*('' file
 only when a debug-library is built.
 .IP
-PDCurses has a short description of these functions,
+.I \%PDCurses
+has a short description of these functions,
 with a note that they are not present in X/Open Curses,
 \fI\%ncurses\fP or NetBSD.
 It does not mention SVr4,

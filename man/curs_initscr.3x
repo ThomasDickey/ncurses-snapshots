@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.79 2024/09/21 17:59:36 tom Exp $
-.TH curs_initscr 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.81 2024/12/28 21:18:35 tom Exp $
+.TH curs_initscr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -363,7 +363,8 @@ using that information to delete those windows when \fB\%delscreen\fP is
 called.
 .bP
 NetBSD copied this feature of \fI\%ncurses\fP in 2001.
-PDCurses follows the SVr4 model,
+.I \%PDCurses
+follows the SVr4 model,
 deleting only the standard \fI\%WINDOW\fP structures.
 .SS "High-level versus Low-level"
 Different implementations may disagree regarding the level of some functions.

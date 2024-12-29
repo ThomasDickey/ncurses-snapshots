@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_scr_dump.3x,v 1.49 2024/09/21 09:30:22 tom Exp @
+  * @Id: curs_scr_dump.3x,v 1.51 2024/12/28 21:19:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_scr_dump 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_scr_dump 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_scr_dump 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_scr_dump 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
 
@@ -135,25 +135,24 @@
 
        SVr4 omitted the <EM>const</EM> qualifiers.
 
-       SVr4 documentation describes <STRONG>scr_init</STRONG> such that the dump data  is  also
+       SVr4 documentation describes <EM>scr</EM><STRONG>_</STRONG><EM>init</EM> such that the dump data  is  also
        considered  invalid  "if the time-stamp of the tty is old" but does not
        define "old".
 
-       As of 2024, PDCurses provides these functions.  NetBSD curses does  not
-       provide these functions, although it provides <STRONG>getwin</STRONG>.
+       As of 2024, <EM>PDCurses</EM> provides these functions.  NetBSD <EM>curses</EM> does not.
 
-       Other  implementations  of curses store the window in binary form.  One
-       drawback to binary form is that this makes the dump dependent upon  the
-       curses  library's  internal  data  structures.   Rather  than  do that,
-       ncurses stores the dump in textual form, allowing more flexible use  of
-       the  data.   For  instance,  SVr4  curses <STRONG>scr_restore</STRONG> requires that the
-       dumped window have the same dimensions as the restored window.  ncurses
-       uses <STRONG>wresize</STRONG> to adjust the restored window size.
+       Other implementations of <EM>curses</EM> store the window in binary form,  which
+       makes  the  dump  dependent  upon  the  <EM>curses</EM>  library's internal data
+       structures.  <EM>ncurses</EM> avoids  this  drawback  by  storing  the  dump  in
+       textual  form,  allowing  more flexible use of the data.  For instance,
+       the <EM>scr</EM><STRONG>_</STRONG><EM>restore</EM> of SVr4 <EM>curses</EM> requires that the dumped window have the
+       same  dimensions  as the restored window.  <EM>ncurses</EM> uses its <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>
+       extension to adjust the restored window size.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       SVr3  (1987)  introduced  <STRONG>scr_dump</STRONG>,  <STRONG>scr_init</STRONG>, and <STRONG>scr_restore</STRONG>.  SVr3.1
-       added <STRONG>scr_set</STRONG>.
+       SVr3 (1987) introduced <EM>scr</EM><STRONG>_</STRONG><EM>dump</EM>,  <EM>scr</EM><STRONG>_</STRONG><EM>init</EM>,  and  <EM>scr</EM><STRONG>_</STRONG><EM>restore</EM>.   SVr3.1
+       added <EM>scr</EM><STRONG>_</STRONG><EM>set</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -162,7 +161,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

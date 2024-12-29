@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_opaque.3x,v 1.43 2024/03/16 15:35:01 tom Exp $
-.TH curs_opaque 3X 2024-03-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_opaque.3x,v 1.45 2024/12/28 21:26:21 tom Exp $
+.TH curs_opaque 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -136,7 +136,9 @@ returns the delay timeout set by \fB\%wtimeout\fP(3X).
 .TP
 \fBwgetparent\fP
 returns the parent \fI\%WINDOW\fP pointer for subwindows,
-or \fBNULL\fP for windows having no parent.
+or
+.I NULL
+for windows having no parent.
 .TP
 \fBwgetscrreg\fP
 stores the the top and bottom rows for the scrolling margin set by

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgrnd.3x,v 1.46 2024/09/22 18:23:50 tom Exp $
-.TH curs_bkgrnd 3X 2024-09-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgrnd.3x,v 1.49 2024/12/28 21:26:21 tom Exp $
+.TH curs_bkgrnd 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -74,32 +74,37 @@ this property is a
 .I \%cchar_t
 which combines a set of attributes with the
 .I "background character"
-(see \fB\%curs_attr\fP(3X))
+(see \fB\%curs_attr\fP(3X)).
 The background character is a spacing character.
 .PP
 When erasing parts of the screen,
 .I curses
 fills the cells with the background character.
 .I curses
-also uses the window background when writing characters to the screen:
+also uses the window background when writing characters to the screen.
 .bP
-The attribute part of the background is combined with all
-non-blank characters that are written into the window,
+The attribute part of the background combines with all
+non-blank characters written into the window,
 as with the \fB\%wadd_wch\fP(3X) and \fB\%wins_wch\fP(3X) families of
 functions.
 .bP
-Both the character and attribute parts of the background are combined with
+Both the character and attribute parts of the background combine with
 blank characters that are written into the window.
 .PP
 The background becomes a property of the character and moves with it
 through any scrolling and insert/delete line/character operations.
 .PP
 To the extent possible on a given terminal,
-the attribute part of the background is displayed as the graphic
-rendition of the character put on the screen.
+.I curses
+displays the attributes of the background
+as the graphic rendition of the character put on the screen.
 .SS "bkgrnd, wbkgrnd"
-\fB\%bkgrnd\fP and \fB\%wbkgrnd\fP set the background property of
-\fB\%stdscr\fP or the specified window and then apply this setting to
+.B \%bkgrnd
+and
+.B \%wbkgrnd
+set the background property of
+.B \%stdscr
+or the specified window and then apply this setting to
 every character cell in that window.
 .bP
 The rendition of every character in the window changes to the new
@@ -111,7 +116,7 @@ it changes to the new background character.
 .I \%ncurses
 updates the rendition of each character cell by comparing the character,
 non-color attributes,
-and colors.
+and color pair selection.
 The library applies to following procedure to each cell in the window,
 whether or not it is blank.
 .bP
@@ -123,7 +128,7 @@ if they match,
 writes the new background character to the cell.
 .bP
 .I \%ncurses
-then checks if the cell uses color,
+then checks if the cell uses color;
 that is,
 its color pair value is nonzero.
 If not,
@@ -158,19 +163,33 @@ or if color has not been initialized with \fB\%start_color\fP(3X),
 .I \%ncurses
 ignores the new background character's color attribute.
 .SS "bkgrndset, wbkgrndset"
-\fB\%bkgrndset\fP and \fB\%wbkgrndset\fP manipulate the background of
-the applicable window,
-without updating the character cells as \fB\%bkgrnd\fP and
-\fB\%wbkgrnd\fP do;
+.B \%bkgrndset
+and
+.B \%wbkgrndset
+manipulate the background of the applicable window,
+without updating the character cells as
+.B \%bkgrnd
+and
+.B \%wbkgrnd
+do;
 only future writes reflect the updated background.
 .SS "getbkgrnd, wgetbkgrnd"
-The \fB\%getbkgrnd\fP and \fB\%wgetbkgrnd\fP functions obtain the
-background character and attribute pair of \fB\%stdscr\fP or the
-specified window and store it via the
+.B \%getbkgrnd
+and
+.B \%wgetbkgrnd
+respectively obtain
+.BR \%stdscr 's
+or the given window's background character,
+attributes,
+and color pair,
+and store it in their
 .I wch
-pointer.
+argument.
 .SH RETURN VALUE
-\fBbkgrndset\fP and \fBwbkgrndset\fP do not return a value.
+.B \%bkgrndset
+and
+.B \%wbkgrndset
+do not return a value.
 .PP
 The other functions return
 .B ERR
@@ -178,29 +197,30 @@ upon failure and
 .B OK
 upon success.
 In
-.IR \%ncurses ,
+.IR \%ncurses ","
 failure occurs if
 .bP
-a
-.I \%WINDOW
-pointer
 .I win
-is null, or
+is
+.IR NULL ","
+or
 .bP
-a
-.I \%cchar_t
-pointer
 .I wch
-is null.
+is
+.IR NULL "."
 .SH NOTES
-\fB\%bkgrnd\fP,
-\fB\%bkgrndset\fP, and
-\fB\%getbkgrnd\fP
+.BR \%bkgrnd ","
+.BR \%bkgrndset ","
+and
+.B \%getbkgrnd
 may be implemented as macros.
 .PP
 Unlike their counterparts in the non-wide configuration of
-.IR \%ncurses ,
-\fB\%getbkgrnd\fP and \fB\%wgetbkgrnd\fP supply the background character
+.IR \%ncurses ","
+.B \%getbkgrnd
+and
+.B \%wgetbkgrnd
+supply the background character
 and attribute in a modifiable
 .I \%cchar_t
 parameter,
@@ -211,12 +231,17 @@ Issue 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 X/Open Curses does not provide details of how the rendition is updated.
-This implementation follows the approach used in SVr4
-.IR curses .
+.I \%ncurses
+follows the approach used in SVr4
+.IR curses 's
+non-wide functions for manipulating the window background.
+.SH HISTORY
+These functions were initially specified by X/Open Curses,
+Issue 4.
 .SH SEE ALSO
 \fB\%curs_bkgd\fP(3X) describes the corresponding functions in the
 non-wide configuration of
-.IR \%ncurses .
+.IR \%ncurses "."
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_add_wch\fP(3X),

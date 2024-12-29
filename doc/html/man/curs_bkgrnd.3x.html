@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgrnd.3x,v 1.46 2024/09/22 18:23:50 tom Exp @
+  * @Id: curs_bkgrnd.3x,v 1.49 2024/12/28 21:26:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgrnd 3x 2024-09-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_bkgrnd 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgrnd 3x 2024-09-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_bkgrnd 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 
@@ -67,26 +67,26 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        Every <EM>curses</EM> window has a background property.  In the  library's  wide
        configuration,  this  property  is  a  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  which combines a set of
-       attributes  with  the  <EM>background</EM>  <EM>character</EM>  (see  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>)  The
+       attributes with the  <EM>background</EM>  <EM>character</EM>  (see  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>).   The
        background character is a spacing character.
 
        When  erasing  parts  of  the  screen,  <EM>curses</EM> fills the cells with the
        background character.  <EM>curses</EM> also  uses  the  window  background  when
-       writing characters to the screen:
+       writing characters to the screen.
 
-       <STRONG>o</STRONG>   The attribute part of the background is combined with all non-blank
-           characters  that  are  written  into  the  window,  as   with   the
-           <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG> and <STRONG><A HREF="curs_ins_wch.3x.html">wins_wch(3x)</A></STRONG> families of functions.
+       <STRONG>o</STRONG>   The  attribute  part  of the background combines with all non-blank
+           characters written into the window, as with  the  <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG>  and
+           <STRONG><A HREF="curs_ins_wch.3x.html">wins_wch(3x)</A></STRONG> families of functions.
 
-       <STRONG>o</STRONG>   Both  the  character  and  attribute  parts  of  the background are
-           combined with blank characters that are written into the window.
+       <STRONG>o</STRONG>   Both  the  character  and attribute parts of the background combine
+           with blank characters that are written into the window.
 
        The background becomes a property of the character and  moves  with  it
        through any scrolling and insert/delete line/character operations.
 
-       To  the  extent possible on a given terminal, the attribute part of the
-       background is displayed as the graphic rendition of the  character  put
-       on the screen.
+       To  the  extent  possible  on  a  given  terminal,  <EM>curses</EM> displays the
+       attributes of the background as the graphic rendition of the  character
+       put on the screen.
 
 
 </PRE><H3><a name="h3-bkgrnd_wbkgrnd">bkgrnd, wbkgrnd</a></H3><PRE>
@@ -101,15 +101,15 @@
            new background character.
 
        <EM>ncurses</EM>  updates  the rendition of each character cell by comparing the
-       character, non-color attributes, and colors.  The  library  applies  to
-       following  procedure  to  each cell in the window, whether or not it is
-       blank.
+       character, non-color attributes, and color pair selection.  The library
+       applies  to  following procedure to each cell in the window, whether or
+       not it is blank.
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> first compares  the  cell's  character  to  the  previously
            specified  background  character; if they match, <EM>ncurses</EM> writes the
            new background character to the cell.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM> then checks if the cell uses color, that is, its color pair
+       <STRONG>o</STRONG>   <EM>ncurses</EM> then checks if the cell uses color; that is, its color pair
            value  is  nonzero.   If not, it simply replaces the attributes and
            color  pair  in  the  cell  with  those  from  the  new  background
            character.
@@ -142,9 +142,9 @@
 
 
 </PRE><H3><a name="h3-getbkgrnd_wgetbkgrnd">getbkgrnd, wgetbkgrnd</a></H3><PRE>
-       The  <STRONG>getbkgrnd</STRONG> and <STRONG>wgetbkgrnd</STRONG> functions obtain the background character
-       and attribute pair of <STRONG>stdscr</STRONG> or the specified window and store  it  via
-       the <EM>wch</EM> pointer.
+       <STRONG>getbkgrnd</STRONG>  and  <STRONG>wgetbkgrnd</STRONG>  respectively  obtain  <STRONG>stdscr</STRONG>'s or the given
+       window's background character, attributes, and color pair, and store it
+       in their <EM>wch</EM> argument.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -153,9 +153,9 @@
        The  other  functions  return <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> upon success.  In
        <EM>ncurses</EM>, failure occurs if
 
-       <STRONG>o</STRONG>   a <EM>WINDOW</EM> pointer <EM>win</EM> is null, or
+       <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM>, or
 
-       <STRONG>o</STRONG>   a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> pointer <EM>wch</EM> is null.
+       <STRONG>o</STRONG>   <EM>wch</EM> is <EM>NULL</EM>.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
@@ -171,18 +171,23 @@
        error conditions for them.
 
        X/Open Curses does not provide details of how the rendition is updated.
-       This implementation follows the approach used in SVr4 <EM>curses</EM>.
+       <EM>ncurses</EM> follows the approach used in SVr4 <EM>curses</EM>'s  non-wide  functions
+       for manipulating the window background.
+
+
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       These functions were initially specified by X/Open Curses, Issue 4.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG> describes the corresponding  functions  in  the  non-wide
+       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>  describes  the  corresponding  functions in the non-wide
        configuration of <EM>ncurses</EM>.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-09-22                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -198,6 +203,7 @@ ncurses 6.5                       2024-09-22                   <STRONG><A HREF="
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

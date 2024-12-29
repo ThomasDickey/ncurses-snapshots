@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.91 2024/09/21 18:00:03 tom Exp @
+  * @Id: curs_termcap.3x,v 1.95 2024/12/28 21:28:49 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -60,12 +60,12 @@
        <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>BC;</STRONG>
        <STRONG>short</STRONG> <STRONG>ospeed;</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>tgetent(char</STRONG> <STRONG>*</STRONG><EM>bp</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>name</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>tgetflag(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>id</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>tgetnum(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>id</EM><STRONG>);</STRONG>
-       <STRONG>char</STRONG> <STRONG>*tgetstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>id</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>**</STRONG><EM>area</EM><STRONG>);</STRONG>
-       <STRONG>char</STRONG> <STRONG>*tgoto(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>cap</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>col</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>row</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>tputs(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG><EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>affcnt</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG><EM>putc</EM><STRONG>)(int));</STRONG>
+       <STRONG>int</STRONG> <STRONG>tgetent(char</STRONG> <STRONG>*</STRONG> <EM>bp</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>name</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>tgetflag(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>tgetnum(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tgetstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>**</STRONG> <EM>area</EM><STRONG>);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tgoto(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>cap</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>col</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>row</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>tputs(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>affcnt</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG> <EM>putc</EM><STRONG>)(int));</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -80,13 +80,13 @@
        <STRONG>tgetent</STRONG> loads the terminal database entry for <EM>name</EM>; see <STRONG><A HREF="term.7.html">term(7)</A></STRONG>.   This
        must be done before calling any of the other functions.  It returns
 
-          1    on success,
+          <STRONG>1</STRONG>    on success,
 
-          0    if there is no such entry (or if the matching entry describes a
+          <STRONG>0</STRONG>    if there is no such entry (or if the matching entry describes a
                generic terminal, having  too  little  information  for  <EM>curses</EM>
                applications to run), and
 
-          -1   if the <EM>terminfo</EM> database could not be found.
+          <STRONG>-1</STRONG>   if the <EM>terminfo</EM> database could not be found.
 
        This implementation differs from those of historical <EM>termcap</EM> libraries.
 
@@ -110,15 +110,15 @@
 
        <STRONG>tgetnum</STRONG> obtains the numeric entry for <EM>id</EM>, or -1 if it is not available.
 
-       <STRONG>tgetstr</STRONG>  returns  the  string  entry  for  <EM>id</EM>,  or  <STRONG>NULL</STRONG>  if  it is not
+       <STRONG>tgetstr</STRONG>  returns  the  string  entry  for  <EM>id</EM>,  or  <EM>NULL</EM>  if  it is not
        available.   Use  <STRONG>tputs</STRONG>  to  output  the  string  returned.   The  <EM>area</EM>
        parameter is used as follows.
 
           <STRONG>o</STRONG>   It is assumed to be the address of a pointer to a buffer managed
               by the calling application.
 
-          <STRONG>o</STRONG>   However, <EM>ncurses</EM> checks to ensure that <EM>area</EM>  is  not  <STRONG>NULL</STRONG>,  and
-              also  that  the resulting buffer pointer is not <STRONG>NULL</STRONG>.  If either
+          <STRONG>o</STRONG>   However, <EM>ncurses</EM> checks to ensure that <EM>area</EM>  is  not  <EM>NULL</EM>,  and
+              also  that  the resulting buffer pointer is not <EM>NULL</EM>.  If either
               check fails, <EM>area</EM> is ignored.
 
           <STRONG>o</STRONG>   If the checks succeed, <EM>ncurses</EM> also copies the return  value  to
@@ -167,11 +167,11 @@
 
 
 </PRE><H3><a name="h3-Global-Variables">Global Variables</a></H3><PRE>
-       The variables <STRONG>PC</STRONG>, <STRONG>UP</STRONG> and <STRONG>BC</STRONG> are set by <STRONG>tgetent</STRONG> to the <EM>terminfo</EM>  entry's
-       data for <STRONG>pad_char</STRONG>, <STRONG>cursor_up</STRONG> and <STRONG>backspace_if_not_bs</STRONG>, respectively.  <STRONG>UP</STRONG>
-       is not used by <EM>ncurses</EM>.  <STRONG>PC</STRONG> is used by <STRONG><A HREF="curs_util.3x.html">delay_output(3x)</A></STRONG>.  <STRONG>BC</STRONG> is used by
-       <STRONG>tgoto</STRONG> emulation.  The variable <STRONG>ospeed</STRONG> is set by <EM>ncurses</EM> using a system-
-       specific encoding to indicate the terminal's data rate.
+       <STRONG>tgetent</STRONG> sets the variables <STRONG>PC</STRONG>, <STRONG>UP</STRONG>, and <STRONG>BC</STRONG> to the <EM>terminfo</EM> entry's  data
+       for  <STRONG>pad_char</STRONG>, <STRONG>cursor_up</STRONG>, and <STRONG>backspace_if_not_bs</STRONG>, respectively.  <STRONG>UP</STRONG> is
+       not used by <EM>ncurses</EM>.  <STRONG>PC</STRONG> is used by <STRONG><A HREF="curs_util.3x.html">delay_output(3x)</A></STRONG>.  <STRONG>BC</STRONG>  is  used  by
+       <STRONG>tgoto</STRONG> emulation.  <EM>ncurses</EM> assigns the variable <STRONG>ospeed</STRONG> a system-specific
+       value to encode the terminal's data rate.
 
 
 </PRE><H3><a name="h3-Releasing-Memory">Releasing Memory</a></H3><PRE>
@@ -198,7 +198,7 @@
        The return values of  <STRONG>tgetent</STRONG>,  <STRONG>tgetflag</STRONG>,  <STRONG>tgetname</STRONG>,  and  <STRONG>tgetstr</STRONG>  are
        documented above.
 
-       <STRONG>tgoto</STRONG> returns <STRONG>NULL</STRONG> on error.  Error conditions include:
+       <STRONG>tgoto</STRONG> returns <EM>NULL</EM> on error.  Error conditions include:
 
        <STRONG>o</STRONG>   uninitialized state (<STRONG>tgetent</STRONG> was not called successfully),
 
@@ -371,7 +371,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

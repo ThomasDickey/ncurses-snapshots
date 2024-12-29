@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getstr.3x,v 1.67 2024/06/22 22:20:56 tom Exp @
+  * @Id: curs_getstr.3x,v 1.71 2024/12/28 21:27:26 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getstr 3x 2024-06-22 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getstr 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getstr 3x 2024-06-22 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getstr 3x 2024-12-28 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 
@@ -112,7 +112,7 @@
 
        In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if
 
-       <STRONG>o</STRONG>   <EM>win</EM> is <STRONG>NULL</STRONG>, or
+       <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM>, or
 
        <STRONG>o</STRONG>   if an internal <STRONG>wgetch</STRONG> call fails.
 
@@ -133,7 +133,7 @@
        While <STRONG>wgetnstr</STRONG> is conceptually a series of calls  to  <STRONG>wgetch</STRONG>,  it  also
        temporarily  changes  properties  of the <EM>curses</EM> screen to permit simple
        editing of the input buffer.  It saves  the  screen's  state  and  then
-       calls  <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG>  and,  if  the  screen  was  in  normal  ("cooked") mode,
+       calls  <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG>  and,  if  the  screen  was in canonical ("cooked") mode,
        <STRONG><A HREF="curs_inopts.3x.html">cbreak(3x)</A></STRONG>.  Before returning, it  restores  the  saved  screen  state.
        Other   implementations  differ  in  detail,  affecting  which  control
        characters they can accept in the  buffer;  see  section  "PORTABILITY"
@@ -258,7 +258,7 @@
 
 
 
-ncurses 6.5                       2024-06-22                   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
+ncurses 6.5                       2024-12-28                   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

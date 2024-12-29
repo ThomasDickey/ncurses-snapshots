@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.153 2024/09/21 17:54:42 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.154 2024/12/28 21:21:36 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -632,10 +632,13 @@ This is necessary because it is not always safe to transmit \fB\en\fP
 tabs are never expanded, so \et is safe to send.
 This turns out to be essential for the Ann Arbor 4080.)
 .PP
-A final example is the \s-1LSI ADM\s0-3a, which uses line and column
-offset by a blank character, thus
+A final example is the LSI ADM-3A,
+which uses line and column offset by a space,
+thus
 .RS
+.EX
 cup=\eE=%p1%\*' \*'%+%c%p2%\*' \*'%+%c
+.EE
 .RE
 .PP
 After sending \*(``\eE=\*('', this pushes the first parameter, pushes the

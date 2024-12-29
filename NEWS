@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4216 2024/12/21 20:43:26 tom Exp $
+-- $Id: NEWS,v 1.4220 2024/12/29 00:59:43 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20241228
+	+ correct conditional-compile for a case when the C compiler does not
+	  have a bool type.
+	+ add ghostty -TD
+	> patches by Branden Robinson:
+	+ add comments to generated term.h to hint the configure options used
+	+ use same subdir-convention for term.h, in configure script
+	+ improve formatting/style of manpages
 
 20241221
 	+ modify ncurses/tinfo/MKfallback.sh to work with MacOS sed, which
