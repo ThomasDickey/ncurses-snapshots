@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2006-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.57 2024/12/07 22:33:32 tom Exp $
+ * $Id: movewindow.c,v 1.58 2025/01/11 14:54:49 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -658,12 +658,16 @@ show_help(WINDOW *current)
 
     char **msgs = typeCalloc(char *, SIZEOF(help) + 1);
     size_t n;
+    size_t used;
 
-    for (n = 0; n < SIZEOF(help); ++n) {
+    for (n = used = 0; n < SIZEOF(help); ++n) {
 	size_t need = (21 + strlen(help[n].msg));
-	msgs[n] = typeMalloc(char, need);
-	_nc_SPRINTF(msgs[n], _nc_SLIMIT(need)
-		    "%-20s%s", keyname(help[n].key), help[n].msg);
+	char *msg = typeMalloc(char, need);
+	if (msg != NULL) {
+	    _nc_SPRINTF(msg, _nc_SLIMIT(need)
+			"%-20s%s", keyname(help[n].key), help[n].msg);
+	    msgs[used++] = msg;
+	}
     }
     popup_msg2(current, msgs);
     for (n = 0; n < SIZEOF(help); ++n) {

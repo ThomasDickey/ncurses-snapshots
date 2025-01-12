@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2006-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey, 2006
  *
- * $Id: foldkeys.c,v 1.14 2024/12/21 17:25:16 tom Exp $
+ * $Id: foldkeys.c,v 1.15 2025/01/11 14:54:49 tom Exp $
  *
  * Demonstrate a method for altering key definitions at runtime.
  *
@@ -155,6 +155,8 @@ demo_foldkeys(void)
 		      &second,
 		      final) == 3
 	    && *final != ';'
+	    && first >= 0
+	    && first < 1024
 	    && (need = strlen(info[j].value)) != 0
 	    && (value = malloc(need + 8)) != NULL) {
 	    (void) need;	/* _nc_SLIMIT is normally nothing  */

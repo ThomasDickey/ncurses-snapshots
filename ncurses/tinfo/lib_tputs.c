@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.115 2024/12/07 21:04:53 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.116 2025/01/12 00:41:56 tom Exp $")
 
 NCURSES_EXPORT_VAR(char) PC = 0;              /* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;        /* used by termcap library */
@@ -319,7 +319,7 @@ NCURSES_SP_NAME(tputs) (NCURSES_SP_DCLx
 #if NCURSES_SP_FUNCS
 	       (SP_PARM != NULL && SP_PARM->_term == NULL)
 #else
-	       cur_term == 0
+	       cur_term == NULL
 #endif
 	    ) {
 	    always_delay = FALSE;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2003-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.c,v 1.33 2024/12/07 22:22:51 tom Exp $
+ * $Id: edit_field.c,v 1.34 2025/01/11 14:54:49 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the resulting length available as a
@@ -193,8 +193,10 @@ help_edit_field(void)
 	    name = commands[n].help;
 	need = 5 + strlen(code) + strlen(name);
 	msg = typeMalloc(char, need);
-	_nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
-	msgs[used++] = msg;
+	if (msg != NULL) {
+	    _nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
+	    msgs[used++] = msg;
+	}
     }
     msgs[used++] =
 	strdup("Arrow keys move within a field as you would expect.");

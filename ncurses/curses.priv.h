@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.698 2024/12/15 00:04:23 tom Exp $
+ * $Id: curses.priv.h,v 1.699 2025/01/12 00:41:56 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2329,7 +2329,7 @@ extern NCURSES_EXPORT(void)     _nc_set_screen (SCREEN *);
 /* current screen is private data; avoid possible linking conflicts too */
 extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #define CURRENT_SCREEN SP
-#define _nc_alloc_screen()      ((SP = _nc_alloc_screen_sp()) != 0)
+#define _nc_alloc_screen()      ((SP = _nc_alloc_screen_sp()) != NULL)
 #define _nc_set_screen(sp)      SP = sp
 #endif
 

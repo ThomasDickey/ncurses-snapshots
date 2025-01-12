@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.112 2024/12/07 21:13:36 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.113 2025/01/11 20:19:34 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -379,10 +379,15 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 		_nc_warning("invalid name for use-clause \"%s\"",
 			    _nc_curr_token.tk_valstring);
 		continue;
-	    } else if (entryp->nuses >= MAX_USES) {
+	    } else if (entryp->nuses >= HARD_MAX_USES) {
 		_nc_warning("too many use-clauses, ignored \"%s\"",
 			    _nc_curr_token.tk_valstring);
 		continue;
+	    } else if (entryp->nuses >= WARN_MAX_USES) {
+		_nc_warning("possibly too many use-clauses (%d vs %d), \"%s\"",
+			    entryp->nuses,
+			    WARN_MAX_USES,
+			    _nc_curr_token.tk_valstring);
 	    }
 	    if ((saved = _nc_save_str(_nc_curr_token.tk_valstring)) != NULL) {
 		entryp->uses[entryp->nuses].name = saved;

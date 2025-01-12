@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2023 Thomas E. Dickey                                *
+ * Copyright 2018-2023,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.104 2023/06/24 21:53:16 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.105 2025/01/12 00:42:58 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -72,7 +72,7 @@ get_termpath(void)
 {
     const char *result;
 
-    if (!use_terminfo_vars() || (result = getenv("TERMPATH")) == 0)
+    if (!use_terminfo_vars() || (result = getenv("TERMPATH")) == NULL)
 	result = TERMPATH;
     TR(TRACE_DATABASE, ("TERMPATH is %s", result));
     return result;
@@ -720,7 +720,7 @@ get_tc_token(char **srcp, int *endp)
     int ch;
     bool found = FALSE;
     char *s, *base;
-    char *tok = 0;
+    char *tok = NULL;
 
     *endp = TRUE;
     for (s = base = *srcp; *s != '\0';) {
@@ -749,7 +749,7 @@ get_tc_token(char **srcp, int *endp)
     }
 
     /* malformed entry may end without a ':' */
-    if (tok == 0 && found) {
+    if (tok == NULL && found) {
 	tok = base;
     }
 
@@ -768,7 +768,7 @@ copy_tc_token(char *dst, const char *src, size_t len)
 	    continue;
 	}
 	if (--len == 0) {
-	    dst = 0;
+	    dst = NULL;
 	    break;
 	}
 	*dst++ = (char) ch;
@@ -813,13 +813,13 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     if (cp == NULL) {
 	_nc_safe_strcpy(&desc, get_termpath());
     } else if (!_nc_is_abs_path(cp)) {	/* TERMCAP holds an entry */
-	if ((termpath = get_termpath()) != 0) {
+	if ((termpath = get_termpath()) != NULL) {
 	    _nc_safe_strcat(&desc, termpath);
 	} else {
 	    char temp[PBUFSIZ];
 	    temp[0] = 0;
-	    if ((home = getenv("HOME")) != 0 && *home != '\0'
-		&& strchr(home, ' ') == 0
+	    if ((home = getenv("HOME")) != NULL && *home != '\0'
+		&& strchr(home, ' ') == NULL
 		&& strlen(home) < sizeof(temp) - 10) {	/* setup path */
 		_nc_SPRINTF(temp, _nc_SLIMIT(sizeof(temp))
 			    "%s/", home);	/* $HOME first */
@@ -850,7 +850,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	    }
 	}
     }
-    *fname = 0;			/* mark end of vector */
+    *fname = NULL;		/* mark end of vector */
 #if !HAVE_BSD_CGETENT
     (void) _nc_cgetset(0);
 #endif
@@ -875,7 +875,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 
 	pd = bp;
 	ps = dummy;
-	while (!endflag && (tok = get_tc_token(&ps, &endflag)) != 0) {
+	while (!endflag && (tok = get_tc_token(&ps, &endflag)) != NULL) {
 	    bool ignore = FALSE;
 
 	    for (n = 1; n < count; n++) {
@@ -889,7 +889,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	    if (ignore != TRUE) {
 		list[count++] = tok;
 		pd = copy_tc_token(pd, tok, (size_t) (TBUFSIZ - (2 + pd - bp)));
-		if (pd == 0) {
+		if (pd == NULL) {
 		    i = -1;
 		    break;
 		}
@@ -901,7 +901,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 
     FreeIfNeeded(dummy);
     FreeIfNeeded(the_source);
-    the_source = 0;
+    the_source = NULL;
 
     /* This is not related to the BSD cgetent(), but to fake up a suitable
      * filename for ncurses' error reporting.  (If we are not using BSD
@@ -917,7 +917,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	if (_nc_access(temp, R_OK) == 0) {
 	    _nc_safe_strcpy(&desc, pathvec[i]);
 	}
-	if ((the_source = strdup(temp)) != 0)
+	if ((the_source = strdup(temp)) != NULL)
 	    *sourcename = the_source;
 #else
 	if ((the_source = strdup(pathvec[i])) != 0)
@@ -966,7 +966,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
 #endif
 #if USE_GETCAP
     char *p, tc[TBUFSIZ];
-    char *tc_buf = 0;
+    char *tc_buf = NULL;
 #define MY_SIZE sizeof(tc) - 1
     int status;
     static char *source;
@@ -982,7 +982,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
 	return TGETENT_NO;
     }
 
-    if (use_terminfo_vars() && (p = getenv("TERMCAP")) != 0
+    if (use_terminfo_vars() && (p = getenv("TERMCAP")) != NULL
 	&& !_nc_is_abs_path(p) && _nc_name_match(p, tn, "|:")) {
 	/* TERMCAP holds a termcap entry */
 	tc_buf = strdup(p);
@@ -996,7 +996,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
 	_nc_set_source(source);
 	tc_buf = tc;
     }
-    if (tc_buf == 0)
+    if (tc_buf == NULL)
 	return (TGETENT_ERR);
     _nc_read_entry_source((FILE *) 0, tc_buf, FALSE, TRUE, NULLHOOK);
     if (tc_buf != tc)
@@ -1144,7 +1144,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
 	free(copied);
 #endif /* USE_GETCAP */
 
-    if (_nc_head == 0)
+    if (_nc_head == NULL)
 	return (TGETENT_ERR);
 
     /* resolve all use references */

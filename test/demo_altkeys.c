@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2005-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_altkeys.c,v 1.18 2024/12/07 23:02:27 tom Exp $
+ * $Id: demo_altkeys.c,v 1.19 2025/01/11 14:54:49 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2005/10/22
@@ -138,9 +138,11 @@ main(int argc, char *argv[])
 	if ((value = keybound(n, 0)) != NULL) {
 	    size_t need = strlen(value) + 2;
 	    char *temp = typeMalloc(char, need);
-	    _nc_SPRINTF(temp, _nc_SLIMIT(need) "\033%s", value);
-	    define_key(temp, n + MY_KEYS);
-	    free(temp);
+	    if (temp != NULL) {
+		_nc_SPRINTF(temp, _nc_SLIMIT(need) "\033%s", value);
+		define_key(temp, n + MY_KEYS);
+		free(temp);
+	    }
 	    free(value);
 	}
     }

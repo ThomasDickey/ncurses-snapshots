@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.136 2024/12/07 21:12:53 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.138 2025/01/12 00:36:01 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -99,7 +99,7 @@ skip_index(char *name)
 {
     char *bar = strchr(name, '|');
 
-    if (bar != 0 && (bar - name) == 2)
+    if (bar != NULL && (bar - name) == 2)
 	name = bar + 1;
 
     return name;
@@ -538,12 +538,18 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
      */
     if (fullresolve) {
 	do {
+	    bool attempts;
+	    bool progress;
 	    ENTRY merged;
 
+	    attempts = FALSE;
+	    progress = FALSE;
 	    keepgoing = FALSE;
 
 	    for_entry_list(qp) {
 		if (qp->nuses > 0) {
+		    attempts = TRUE;
+
 		    DEBUG(2, ("%s: attempting merge of %d entries",
 			      _nc_first_name(qp->tterm.term_names),
 			      qp->nuses));
@@ -599,15 +605,32 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 #endif
 		    qp->tterm = merged.tterm;
 		    _nc_wrap_entry(qp, TRUE);
+		    progress = TRUE;
 
 		    /*
-		     * We know every entry is resolvable because name resolution
-		     * didn't bomb.  So go back for another pass.
+		     * Every entry should be resolvable because name resolution
+		     * did not fail.  Continue if we have just made a change,
+		     * or another entry may be changeable.
 		     */
 		    /* FALLTHRU */
 		  incomplete:
 		    keepgoing = TRUE;
 		}
+	    }
+
+	    /*
+	     * If we went all the way through the list without making any
+	     * changes, while there were remaining use-linkages, something went
+	     * wrong.  Give up.
+	     */
+	    if (!progress && attempts) {
+		for_entry_list(qp) {
+		    for (i = 0; i < qp->nuses; ++i) {
+			_nc_warning("problem with use=%s", qp->uses[i].name);
+		    }
+		}
+		_nc_warning("merge failed, infinite loop");
+		return FALSE;
 	    }
 	} while
 	    (keepgoing);

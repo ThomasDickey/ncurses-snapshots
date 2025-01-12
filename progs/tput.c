@@ -47,7 +47,7 @@
 #include <transform.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tput.c,v 1.109 2025/01/05 00:10:46 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.110 2025/01/12 00:36:15 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 
@@ -219,7 +219,7 @@ tput_cmd(int fd, TTY * settings, int argc, char **argv, int *used)
 	    const struct name_table_entry *np;
 
 	    termcap = TRUE;
-	    if ((np = _nc_find_entry(name, _nc_get_hash_table(termcap))) != 0) {
+	    if ((np = _nc_find_entry(name, _nc_get_hash_table(termcap))) != NULL) {
 		switch (np->nte_type) {
 		case BOOLEAN:
 		    name = boolnames[np->nte_index];

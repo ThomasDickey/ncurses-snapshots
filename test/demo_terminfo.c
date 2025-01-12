@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.62 2024/12/07 22:27:13 tom Exp $
+ * $Id: demo_terminfo.c,v 1.63 2025/01/11 14:54:49 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -98,9 +98,12 @@ static long total_s_values;
 static char *
 make_dbitem(const char *const p, const char *const q)
 {
-    size_t need = strlen(e_opt) + 2 + (size_t) (p - q);
+    size_t diff = (size_t) (p - q);
+    size_t need = strlen(e_opt) + 2 + diff;
     char *result = malloc(need);
-    _nc_SPRINTF(result, _nc_SLIMIT(need) "%s=%.*s", e_opt, (int) (p - q), q);
+    if (result != NULL) {
+	_nc_SPRINTF(result, _nc_SLIMIT(need) "%s=%.*s", e_opt, (int) diff, q);
+    }
     return result;
 }
 

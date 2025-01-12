@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2006-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: db_iterator.c,v 1.52 2024/12/07 18:23:25 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.53 2025/01/12 00:41:56 tom Exp $")
 
 #define HaveTicDirectory _nc_globals.have_tic_directory
 #define KeepTicDirectory _nc_globals.keep_tic_directory
@@ -335,9 +335,9 @@ _nc_first_db(DBDIRS * state, int *offset)
 #if NCURSES_USE_TERMCAP
 	    values[dbdEnvOnce2] = cache_getenv("TERMCAP", dbdEnvOnce2);
 	    /* only use $TERMCAP if it is an absolute path */
-	    if (values[dbdEnvOnce2] != 0
+	    if (values[dbdEnvOnce2] != NULL
 		&& *values[dbdEnvOnce2] != '/') {
-		values[dbdEnvOnce2] = 0;
+		values[dbdEnvOnce2] = NULL;
 	    }
 	    values[dbdEnvList2] = cache_getenv("TERMPATH", dbdEnvList2);
 #endif /* NCURSES_USE_TERMCAP */

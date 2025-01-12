@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -45,7 +45,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.92 2024/12/07 22:12:53 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.94 2025/01/12 00:36:48 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -374,10 +374,10 @@ show_termcap(int db_index, int db_limit, char *buffer, DescHook hook)
 
     memset(&data, 0, sizeof(data));
     data.term_names = strmalloc(buffer);
-    while ((next = strtok(list, "|")) != 0) {
+    while ((next = strtok(list, "|")) != NULL) {
 	if (next != last)
 	    hook(db_index, db_limit, next, &data);
-	list = 0;
+	list = NULL;
     }
     free(data.term_names);
 }
@@ -502,7 +502,7 @@ typelist(int eargc, char *eargv[],
 		(void) printf("#\n#%s:\n#\n", eargv[i]);
 
 	    if (make_db_name(filename, eargv[i], sizeof(filename))) {
-		if ((capdbp = _nc_db_open(filename, FALSE)) != 0) {
+		if ((capdbp = _nc_db_open(filename, FALSE)) != NULL) {
 		    DBT key, data;
 		    int code;
 
@@ -536,13 +536,13 @@ typelist(int eargc, char *eargv[],
 #if HAVE_BSD_CGETENT
 	{
 	    CGETENT_CONST char *db_array[2];
-	    char *buffer = 0;
+	    char *buffer = NULL;
 
 	    if (verbosity)
 		(void) printf("#\n#%s:\n#\n", eargv[i]);
 
 	    db_array[0] = eargv[i];
-	    db_array[1] = 0;
+	    db_array[1] = NULL;
 
 	    if (cgetfirst(&buffer, db_array) > 0) {
 		if (is_termcap(buffer)) {

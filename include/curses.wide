@@ -1,4 +1,4 @@
-/* $Id: curses.wide,v 1.51 2021/05/22 20:28:29 tom Exp $ */
+/* $Id: curses.wide,v 1.52 2025/01/12 00:39:32 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in
@@ -240,7 +240,7 @@ extern NCURSES_EXPORT(wchar_t*) NCURSES_SP_NAME(wunctrl) (SCREEN*, cchar_t *);	/
 #define bkgrnd(c)			wbkgrnd(stdscr,(c))
 #define bkgrndset(c)			wbkgrndset(stdscr,(c))
 #define border_set(l,r,t,b,tl,tr,bl,br) wborder_set(stdscr,(l),(r),(t),(b),tl,tr,bl,br)
-#define box_set(w,v,h)			wborder_set((w),(v),(v),(h),(h),0,0,0,0)
+#define box_set(w,v,h)			wborder_set((w),(v),(v),(h),(h),NULL,NULL,NULL,NULL)
 #define echo_wchar(c)			wecho_wchar(stdscr,(c))
 #define get_wch(c)			wget_wch(stdscr,(c))
 #define get_wstr(t)			wget_wstr(stdscr,(t))

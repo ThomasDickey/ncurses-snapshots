@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.110 2024/12/07 17:46:49 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.112 2025/01/12 00:31:03 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -58,7 +58,7 @@ MODULE_ID("$Id: lib_screen.c,v 1.110 2024/12/07 17:46:49 tom Exp $")
 #define ARG_SLIMIT(name)	/* nothing */
 #endif
 
-#define CUR_SLIMIT _nc_SLIMIT(limit - (size_t) (target - base))
+#define CUR_SLIMIT _nc_SLIMIT(limit - (size_t) (target + 1 - base))
 #define TOP_SLIMIT _nc_SLIMIT(sizeof(buffer))
 
 /*
@@ -917,7 +917,7 @@ putwin(WINDOW *win, FILE *filep)
      * ncurses is compiled with wide-character support, and also may depend
      * on the version of ncurses, e.g., if the WINDOW structure is extended.
      */
-    if (win != 0) {
+    if (win != NULL) {
 	size_t len = (size_t) (win->_maxx + 1);
 	int y;
 

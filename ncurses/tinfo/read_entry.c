@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.174 2024/12/07 21:02:00 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.175 2025/01/11 23:52:18 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -797,13 +797,13 @@ _nc_read_tic_entry(char *filename,
     } else
 #if USE_HASHED_DB
 	if (make_db_filename(filename, limit, path)
-	    && (capdbp = _nc_db_open(filename, FALSE)) != 0) {
+	    && (capdbp = _nc_db_open(filename, FALSE)) != NULL) {
 
 	DBT key, data;
 	int reccnt = 0;
 	char *save = strdup(name);
 
-	if (save == 0)
+	if (save == NULL)
 	    returnDB(code);
 
 	memset(&key, 0, sizeof(key));

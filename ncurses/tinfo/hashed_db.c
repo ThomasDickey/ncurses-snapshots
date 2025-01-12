@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2006-2011,2013 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 
 #if USE_HASHED_DB
 
-MODULE_ID("$Id: hashed_db.c,v 1.21 2024/11/30 21:16:41 tom Exp $")
+MODULE_ID("$Id: hashed_db.c,v 1.22 2025/01/11 23:52:18 tom Exp $")
 
 #if HASHED_DB_API >= 2
 static DBC *cursor;
@@ -55,7 +55,7 @@ static MYCONN *connections;
 static void
 cleanup(void)
 {
-    while (connections != 0) {
+    while (connections != NULL) {
 	_nc_db_close(connections->db);
     }
 }
@@ -63,10 +63,10 @@ cleanup(void)
 static DB *
 find_connection(const char *path, bool modify)
 {
-    DB *result = 0;
+    DB *result = NULL;
     MYCONN *p;
 
-    for (p = connections; p != 0; p = p->next) {
+    for (p = connections; p != NULL; p = p->next) {
 	if (!strcmp(p->path, path) && p->modify == modify) {
 	    result = p->db;
 	    break;
@@ -81,9 +81,9 @@ drop_connection(DB * db)
 {
     MYCONN *p, *q;
 
-    for (p = connections, q = 0; p != 0; q = p, p = p->next) {
+    for (p = connections, q = NULL; p != NULL; q = p, p = p->next) {
 	if (p->db == db) {
-	    if (q != 0)
+	    if (q != NULL)
 		q->next = p->next;
 	    else
 		connections = p->next;
@@ -124,7 +124,7 @@ _nc_db_open(const char *path, bool modify)
     DB *result = NULL;
     int code;
 
-    if (connections == 0)
+    if (connections == NULL)
 	atexit(cleanup);
 
     if ((result = find_connection(path, modify)) == NULL) {
@@ -165,7 +165,7 @@ _nc_db_open(const char *path, bool modify)
 			     modify ? (O_CREAT | O_RDWR) : O_RDONLY,
 			     0644,
 			     DB_HASH,
-			     NULL)) == 0) {
+			     NULL)) == NULL) {
 	    code = errno;
 	} else {
 	    code = 0;

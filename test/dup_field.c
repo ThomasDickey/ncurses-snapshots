@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.12 2024/12/07 22:32:11 tom Exp $
+ * $Id: dup_field.c,v 1.13 2025/01/11 14:54:49 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -96,8 +96,10 @@ my_help_edit_field(void)
 	    name = commands[n].help;
 	need = 5 + strlen(code) + strlen(name);
 	msg = typeMalloc(char, need);
-	_nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
-	msgs[used++] = msg;
+	if (msg != NULL) {
+	    _nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
+	    msgs[used++] = msg;
+	}
     }
     msgs[used++] =
 	strdup("Arrow keys move within a field as you would expect.");

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.26 2024/12/07 21:24:18 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.27 2025/01/12 00:41:56 tom Exp $")
 
 #define FirstName _nc_globals.first_name
 
@@ -44,7 +44,7 @@ skip_index(const char *name)
 {
     if ((_nc_syntax == SYN_TERMCAP) && _nc_user_definable) {
 	const char *bar = strchr(name, '|');
-	if (bar != 0 && (bar - name) == 2)
+	if (bar != NULL && (bar - name) == 2)
 	    name = bar + 1;
     }
     return name;

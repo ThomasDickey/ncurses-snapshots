@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.331 2024/12/07 23:19:49 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.332 2025/01/11 23:52:18 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -601,7 +601,7 @@ valid_db_path(const char *nominal)
 	    || access(result, R_OK | W_OK) != 0) {
 	    DEBUG(1, ("...not a writable file"));
 	    free(result);
-	    result = 0;
+	    result = NULL;
 	}
 #else
 	if (!S_ISDIR(sb.st_mode)

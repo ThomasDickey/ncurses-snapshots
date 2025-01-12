@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.81 2024/12/07 21:12:53 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.82 2025/01/11 20:37:19 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -140,7 +140,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
     int offsets[MAX_ENTRY_SIZE / sizeof(short)];
-    int useoffsets[MAX_USES];
+    int useoffsets[HARD_MAX_USES];
     unsigned i, n;
     unsigned nuses;
     TERMTYPE2 *tp;
