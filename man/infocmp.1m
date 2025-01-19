@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.117 2024/12/28 21:36:19 tom Exp $
-.TH @INFOCMP@ 1M 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.122 2025/01/19 00:51:10 tom Exp $
+.TH @INFOCMP@ 1M 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -352,7 +352,7 @@ the compilation time, is specifying extra \fBuse=\fP fields that are
 superfluous.
 \fB@INFOCMP@\fP will flag any other \fIterminal-type use=\fP fields that
 were not needed.
-.SS "Changing Databases [\-A \f(BIdirectory\fP] [\-B \f(BIdirectory\fP]"
+.SS "Changing Databases [\-A \fIdirectory\fP] [\-B \fIdirectory\fP]"
 Like other \fI\%ncurses\fP utilities,
 \fB@INFOCMP@\fP looks for the terminal descriptions in several places.
 You can use the \fI\%TERMINFO\fP and \fI\%TERMINFO_DIRS\fP environment
@@ -686,7 +686,7 @@ options are
 .I \%ncurses
 extensions.
 .SH PORTABILITY
-X/Open Curses, Issue 7 (2009) specifies
+X/Open Curses Issue\ 7 (2009) specifies
 .IR \%infocmp "."
 It does not mention options for producing descriptions in
 .I \%term\%cap

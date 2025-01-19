@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2006,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.49 2024/09/22 14:08:11 tom Exp $
-.TH curs_scroll 3X 2024-09-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.55 2025/01/19 00:51:10 tom Exp $
+.TH curs_scroll 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -138,14 +138,12 @@ accepting a
 .I \%WINDOW
 pointer argument.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions.
-It defines no error conditions.
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
 .PP
-SVr4 specifies only
+SVr4 describes a successful return value only as
 \*(``an integer value other than
-.BR ERR \*(''
-as a successful return value.
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 531
 .PP
 SVr4 indicates that the optimization of physically scrolling immediately
 if the scroll region is the entire screen \*(``is\*('' performed,

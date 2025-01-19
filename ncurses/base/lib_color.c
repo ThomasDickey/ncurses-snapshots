@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.154 2024/12/14 23:49:54 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.155 2025/01/18 14:47:35 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -248,7 +248,7 @@ init_color_table(NCURSES_SP_DCL0)
 static bool
 init_direct_colors(NCURSES_SP_DCL0)
 {
-    static NCURSES_CONST char name[] = "RGB";
+    static NCURSES_CONST char name[] = UserCap(RGB);
 
     rgb_bits_t *result = &(SP_PARM->_direct_color);
 

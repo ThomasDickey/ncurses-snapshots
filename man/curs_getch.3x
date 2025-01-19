@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.104 2024/12/28 21:27:26 tom Exp $
-.TH curs_getch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.114 2025/01/19 00:49:39 tom Exp $
+.TH curs_getch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -103,7 +103,7 @@ the function returns
 otherwise,
 .I curses
 waits until the terminal has input.
-If \fB\%cbreak\fP(3X)
+If \fB\%cbreak\fP(3X) or \fB\%raw\fP(3X)
 has been called,
 this happens after one character is read.
 If \fB\%nocbreak\fP(3X) or \fB\%noraw\fP(3X)
@@ -258,7 +258,7 @@ places
 .I c
 into the input queue to be returned by the next call to
 .BR \%wgetch "."
-A single input queue serves all windows associated with the terminal.
+A single input queue serves all windows associated with the screen.
 .SS "Predefined Key Codes"
 The header file
 .I \%curses.h
@@ -456,9 +456,9 @@ or
 .bP
 execution was interrupted by a signal,
 in which case
-.B \%errno
+.I \%errno
 is set to
-.BR \%EINTR "."
+.IR \%EINTR "."
 .PP
 .B \%ungetch
 returns
@@ -604,6 +604,10 @@ and
 for 1 \(<=
 .I n
 \(<= 12.
+.\" Other numeric keypad keys from the DEC VT220 (specifically, the
+.\" LK201 commonly used with it) and IBM PC/AT keyboards -- the comma
+.\" (DEC); plus, star, and slash (PC); and zero, dot, and minus (both)
+.\" have no standard key capability codes.
 .SH EXTENSIONS
 In
 .IR \%ncurses ","
@@ -619,8 +623,9 @@ see
 \fB\%curs_variables\fP(3X).
 .PP
 .B \%has_key
-was designed for
-.IR \%ncurses ","
+is an
+.I \%ncurses
+extension,
 and is not found in SVr4
 .IR curses ","
 4.4BSD
@@ -636,9 +641,12 @@ extensions should condition their use on the visibility of the
 preprocessor macro.
 .PP
 Except as noted in section \*(``EXTENSIONS\*('' above,
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 494
 .PP
 .B \%wgetch
 reads only single-byte characters.

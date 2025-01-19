@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.51 2024/05/11 20:39:53 tom Exp $
-.TH curs_sp_funcs 3X 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.54 2025/01/19 00:51:10 tom Exp $
+.TH curs_sp_funcs 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -110,7 +110,7 @@
 \fBint napms_sp(SCREEN* \fIsp\fP, int \fIms\fP);
 \fBWINDOW* newpad_sp(SCREEN* \fIsp\fP, int \fInrows\fP, int \fIncols\fP);
 \fBSCREEN* new_prescr(void);
-\fBSCREEN* newterm_sp(SCREEN* \fIsp\fP, const char *\fItype\fP, FILE *\fIoutfd\fP, FILE *\fIinfd\fP);
+\fBSCREEN* newterm_sp(SCREEN* \fIsp\fP, const char *\fItype\fP, FILE *\fIoutf\fP, FILE *\fIinfd\fP);
 .PP
 \fBWINDOW* newwin_sp(SCREEN* \fIsp\fP, int \fInlines\fP, int \fIncols\fP, int \fIbegin_y\fP, int \fIbegin_x\fP);
 \fBint nl_sp(SCREEN* \fIsp\fP);

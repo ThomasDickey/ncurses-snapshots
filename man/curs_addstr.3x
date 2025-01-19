@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2019-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.57 2024/12/28 21:26:21 tom Exp $
-.TH curs_addstr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.65 2025/01/19 00:49:39 tom Exp $
+.TH curs_addstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,10 +66,11 @@ add a string to a \fIcurses\fR window and advance the cursor
 \fBint addnstr(const char * \fIstr\fP, int \fIn\fP);
 \fBint waddnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 \fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
-\fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
+\fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP,
+      int \fIn\fP);
 .fi
 .SH DESCRIPTION
-.B waddstr
+.B \%waddstr
 writes the characters of the (null-terminated) string
 .I str
 to the window
@@ -78,8 +79,7 @@ as if by calling \fB\%waddch\fP(3X) for each
 .I char
 in
 .IR str .
-.PP
-.B waddnstr
+.B \%waddnstr
 is similar,
 but writes at most
 .I n
@@ -87,10 +87,8 @@ characters.
 If
 .I n
 is \-1,
-.B
-.B waddnstr
+.B \%waddnstr
 writes the entire string.
-.PP
 \fB\%ncurses\fP(3X) describes the variants of these functions.
 .SH RETURN VALUE
 These functions return
@@ -123,11 +121,16 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-All of these functions except \fBwaddnstr\fP may be macros.
+All of these functions except
+.B \%waddnstr
+may be implemented as macros.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 474
 .SH HISTORY
 4BSD (1980)
 .I curses

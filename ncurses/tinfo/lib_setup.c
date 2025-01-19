@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.248 2024/12/15 00:12:19 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.249 2025/01/18 14:47:35 tom Exp $")
 
 /****************************************************************************
  *
@@ -797,7 +797,7 @@ _nc_locale_breaks_acs(TERMINAL *termp)
     T((T_CALLED("_nc_locale_breaks_acs:%d"), result));
     if (getenv(env_name) != NULL) {
 	result = _nc_getenv_num(env_name);
-    } else if ((value = tigetnum("U8")) >= 0) {
+    } else if ((value = tigetnum(UserCap(U8))) >= 0) {
 	result = value;		/* use extension feature */
     } else if ((env = getenv("TERM")) != NULL) {
 	if (strstr(env, "linux")) {

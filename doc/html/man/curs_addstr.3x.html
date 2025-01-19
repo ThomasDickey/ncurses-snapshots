@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2019-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addstr.3x,v 1.57 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_addstr.3x,v 1.65 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addstr 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addstr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addstr 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addstr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 
@@ -62,17 +62,16 @@
        <STRONG>int</STRONG> <STRONG>addnstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>waddnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvaddnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwaddnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwaddnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG>
+             <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        <STRONG>waddstr</STRONG> writes the characters of the (null-terminated)  string  <EM>str</EM>  to
-       the window <EM>win</EM>, as if by calling <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> for each <EM>char</EM> in <EM>str</EM>.
-
-       <STRONG>waddnstr</STRONG>  is  similar,  but  writes  at most <EM>n</EM> characters.  If <EM>n</EM> is -1,
-       <STRONG>waddnstr</STRONG> writes the entire string.
-
-       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
+       the  window  <EM>win</EM>,  as  if  by  calling <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG> for each <EM>char</EM> in <EM>str</EM>.
+       <STRONG>waddnstr</STRONG> is similar, but writes at most <EM>n</EM>  characters.   If  <EM>n</EM>  is  -1,
+       <STRONG>waddnstr</STRONG>  writes the entire string.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants
+       of these functions.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -91,16 +90,19 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       All of these functions except <STRONG>waddnstr</STRONG> may be macros.
+       All of these functions except <STRONG>waddnstr</STRONG> may be implemented as macros.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
-       error conditions for them.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
+
+       SVr4 describes a successful return value  only  as  "an  integer  value
+       other than <EM>ERR</EM>".
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       4BSD (1980) <EM>curses</EM> introduced <EM>waddstr</EM>  along  with  its  variants,  the
+       4BSD  (1980)  <EM>curses</EM>  introduced  <EM>waddstr</EM>  along with its variants, the
        latter defined as macros.
 
        SVr3.1 (1987) added <EM>waddnstr</EM> (and its variants) redefining <EM>waddstr</EM> as a
@@ -108,14 +110,14 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG> describes comparable functions of the <EM>ncurses</EM>  library
+       <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
        in its wide-character configuration (<EM>ncursesw</EM>).
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>, <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-12-28                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                   <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

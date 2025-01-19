@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_slk.3x,v 1.78 2024/12/28 21:26:21 tom Exp $
-.TH curs_slk 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_slk.3x,v 1.85 2025/01/19 00:51:10 tom Exp $
+.TH curs_slk 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -213,15 +213,14 @@ this implementation provides
 \fB\%extended_slk_color\fP,
 which accepts an \fIint\fP value of at least 32 bits.
 .SH RETURN VALUE
-Routines that return an integer return \fBERR\fP upon failure and
-\fBOK\fP
-(SVr4 specifies only
-\*(``an integer value other than \fBERR\fP\*('')
-upon successful completion.
+Functions that return integers return
+.B ERR
+upon failure and
+.B OK
+upon success.
 .PP
-X/Open Curses defines no error conditions.
-.PP
-In this implementation
+In
+.IR \%ncurses ","
 .RS 3
 .TP 5
 \fBslk_attr\fP
@@ -271,12 +270,15 @@ memory for the labels cannot be allocated.
 Most applications would use \fB\%slk_noutrefresh\fP because a
 \fB\%wrefresh\fP is likely to follow soon.
 .SH EXTENSIONS
-X/Open Curses documents the \fIopts\fP argument
-as reserved for future use,
-saying that it must be null.
-This implementation
-uses that parameter in ABI 6 for the functions which have a color pair
-parameter to support extended color pairs.
+X/Open Curses documents the
+.I opts
+argument as reserved for future use,
+saying that it must be a null pointer.
+The
+.IR \%ncurses\  6
+ABI uses it
+for the functions that accept a color pair parameter
+to support extended color pairs.
 .PP
 For functions which modify the color,
 e.g.,
@@ -285,9 +287,12 @@ if \fIopts\fP is set it is treated as a pointer to \fIint\fP,
 and used to set the color pair instead of the \fIshort\fP pair
 parameter.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions,
-with some differences from SVr4 \fIcurses\fP:
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 533
 .bP
 X/Open added functions like the SVr4 attribute-manipulation functions
 \fB\%slk_attron\fP,

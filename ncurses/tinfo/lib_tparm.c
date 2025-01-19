@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.155 2024/12/07 18:26:59 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.156 2025/01/18 14:47:35 tom Exp $")
 
 /*
  *	char *
@@ -1128,11 +1128,11 @@ check_string_caps(const TPARM_DATA *data, const char *string)
 	else {
 	    const char *check;
 
-	    check = tigetstr("Cs");
+	    check = tigetstr(UserCap(Cs));
 	    if (CHECK_CAP(check))
 		want_type = 1;	/* style #1 */
 
-	    check = tigetstr("Ms");
+	    check = tigetstr(UserCap(Ms));
 	    if (CHECK_CAP(check))
 		want_type = 3;	/* storage unit #1, content #2 */
 	}
@@ -1356,11 +1356,11 @@ _nc_tiparm(int expected, const char *string, ...)
 	    else {
 		const char *check;
 
-		check = tigetstr("xm");
+		check = tigetstr(UserCap(xm));
 		if (CHECK_CAP(check)) {
 		    needed = 3;
 		}
-		check = tigetstr("S0");
+		check = tigetstr(UserCap(S0));
 		if (CHECK_CAP(check)) {
 		    needed = 0;	/* used in screen-base */
 		}

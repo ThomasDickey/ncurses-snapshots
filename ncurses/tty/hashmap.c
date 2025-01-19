@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -74,7 +74,7 @@ AUTHOR
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: hashmap.c,v 1.73 2024/12/07 17:18:07 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.74 2025/01/12 10:51:43 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -532,7 +532,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    do {
 		oldnums[n++] = atoi(st);
 	    } while
-		((st = strtok((char *) NULL, " ")) != 0);
+		((st = strtok((char *) NULL, " ")) != NULL);
 	    break;
 
 	case 'n':		/* use following letters as text of new lines */

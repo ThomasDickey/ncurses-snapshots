@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.105 2024/12/07 21:12:53 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.106 2025/01/12 10:51:43 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -1028,7 +1028,7 @@ main(int argc, char *argv[])
 	char buf[BUFSIZ];
 
 	++curr_line;
-	if (fgets(buf, sizeof(buf), stdin) == 0)
+	if (fgets(buf, sizeof(buf), stdin) == NULL)
 	    break;
 	buf[strlen(buf) - 1] = '\0';
 	_nc_set_source(buf);

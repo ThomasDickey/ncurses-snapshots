@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2020-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_window.3x,v 1.57 2024/12/28 21:51:45 tom Exp @
+  * @Id: curs_window.3x,v 1.64 2025/01/19 00:51:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_window 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_window 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_window 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_window 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 
@@ -158,66 +158,60 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Routines that return an integer return the integer <STRONG>ERR</STRONG> upon failure and
-       <STRONG>OK</STRONG>  (SVr4  only  specifies  "an  integer  value  other  than <STRONG>ERR</STRONG>") upon
-       successful completion.
+       Functions that return integers return <STRONG>ERR</STRONG>  upon  failure  and  <STRONG>OK</STRONG>  upon
+       success.
 
-       Routines that return pointers return <EM>NULL</EM> on error.
+       Functions that return pointers return <EM>NULL</EM> on error.
 
-       X/Open defines no error conditions.  In this implementation
+       <EM>ncurses</EM> defines several error conditions.
 
-       <STRONG>delwin</STRONG>
-            returns <STRONG>ERR</STRONG> if the window pointer is null, or if the window is the
-            parent of another window.
+       <STRONG>o</STRONG>   <STRONG>delwin</STRONG> returns <STRONG>ERR</STRONG> if <EM>win</EM> is a null pointer, or if it is the parent
+           of another window.
 
-       <STRONG>derwin</STRONG>
-            returns <STRONG>ERR</STRONG> if the parent window pointer is null, or if any of its
-            ordinates or dimensions is negative, or if  the  resulting  window
-            does not fit inside the parent window.
+           <EM>ncurses</EM> maintains a list of windows, and checks  that  the  pointer
+           passed  to  <STRONG>delwin</STRONG>  is one that it created, returning <STRONG>ERR</STRONG> if it was
+           not.
 
-       <STRONG>dupwin</STRONG>
-            returns <STRONG>ERR</STRONG> if the window pointer is null.
+       <STRONG>o</STRONG>   <STRONG>derwin</STRONG> returns <STRONG>ERR</STRONG> if <EM>orig</EM> is a null pointer,  or  if  any  of  the
+           ordinate  or  dimension  arguments is negative, or if the resulting
+           window does not fit inside the parent window.
 
-            This  implementation  also maintains a list of windows, and checks
-            that the  pointer  passed  to  <STRONG>delwin</STRONG>  is  one  that  it  created,
-            returning an error if it was not..
+       <STRONG>o</STRONG>   <STRONG>dupwin</STRONG> returns <STRONG>ERR</STRONG> if <EM>win</EM> is a null pointer.
 
-       <STRONG>mvderwin</STRONG>
-            returns  <STRONG>ERR</STRONG> if the window pointer is null, or if some part of the
-            window would be placed off-screen.
+       <STRONG>o</STRONG>   <STRONG>mvderwin</STRONG> returns <STRONG>ERR</STRONG> if <EM>win</EM> is a null pointer, or if  any  part  of
+           the window would be placed off-screen.
 
-       <STRONG>mvwin</STRONG>
-            returns <STRONG>ERR</STRONG> if the window pointer is null, or  if  the  window  is
-            really  a  pad, or if some part of the window would be placed off-
-            screen.
+       <STRONG>o</STRONG>   <STRONG>mvwin</STRONG>  returns <STRONG>ERR</STRONG> if <EM>win</EM> is a null pointer, if <EM>win</EM> is a pad, or if
+           any part of the window would be placed off-screen.
 
-       <STRONG>newwin</STRONG>
-            will fail if either of its beginning ordinates is negative, or  if
-            either the number of lines or columns is negative.
+       <STRONG>o</STRONG>   <STRONG>newwin</STRONG> returns <STRONG>ERR</STRONG> if any of its arguments is negative.
 
-       <STRONG>syncok</STRONG>
-            returns <STRONG>ERR</STRONG> if the window pointer is null.
+       <STRONG>o</STRONG>   <STRONG>subwin</STRONG> returns <STRONG>ERR</STRONG> if <EM>orig</EM> is a null pointer,  or  if  any  of  the
+           ordinate  or  dimension  arguments is negative, or if the resulting
+           window does not fit inside the parent window.
 
-       <STRONG>subwin</STRONG>
-            returns <STRONG>ERR</STRONG> if the parent window pointer is null, or if any of its
-            ordinates or dimensions is negative, or if  the  resulting  window
-            does not fit inside the parent window.
+       <STRONG>o</STRONG>   <STRONG>syncok</STRONG> returns <STRONG>ERR</STRONG> if <EM>win</EM> is a null pointer.
 
-       The  functions  which return a window pointer may also fail if there is
-       insufficient memory for its data structures.  Any  of  these  functions
-       will fail if the screen has not been initialized, i.e., with <STRONG>initscr</STRONG> or
-       <STRONG>newterm</STRONG>.
+       Functions that return a window pointer fail if  memory  allocation  for
+       their data structures fails.
+
+       All of these functions fail if the screen has not been initialized; see
+       <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       If many small changes are made to the window, the <STRONG>wsyncup</STRONG> option  could
-       degrade performance.
+       <STRONG>syncok</STRONG> may be implemented as a macro.
 
-       Note that <STRONG>syncok</STRONG> may be a macro.
+       Calling <STRONG>syncup</STRONG> on a window and making many small changes  to  it  could
+       degrade performance.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes these functions.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for <EM>delwin</EM>, <EM>derwin</EM>, <EM>dupwin</EM>, <EM>newwin</EM>, <EM>mvderwin</EM>, or <EM>syncok</EM>.
+
+       For functions returning integers  (except  <EM>delwin</EM>),  SVr4  describes  a
+       successful return value only as "an integer value other than <EM>ERR</EM>".
 
        Regarding <EM>delwin</EM>, X/Open Curses states that
 
@@ -248,7 +242,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

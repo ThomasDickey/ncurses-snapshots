@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.236 2024/12/28 21:27:26 tom Exp $
-.TH ncurses 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.243 2025/01/19 00:51:10 tom Exp $
+.TH ncurses 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -392,7 +392,7 @@ the information obtained thence overrides that obtained by
 .IR \%term\%info .
 An
 .I \%ncurses
-extension supports resizable terminals;
+extension supports resizable terminal displays;
 see \fB\%wresize\fP(3X).
 .PP
 If the environment variable
@@ -442,6 +442,7 @@ wc	a \fIwchar_t\fP or \fIwint_t\fP
 wch	a \fIcchar_t\fP
 win	pointer to a \fIWINDOW\fP
 pad	pointer to a \fIWINDOW\fP that is a pad
+pair	a foreground/background color pair identifier
 .TE
 .SS "Wide and Non-wide Character Configurations"
 This man page primarily surveys functions that appear in any
@@ -619,7 +620,7 @@ neither described by X/Open Curses nor present in SVr4.
 .TS
 center tab(/);
 l l .
-\f(BIcurses\fP Function Name/Man Page
+\fIcurses\fP Function Name/Man Page
 _
 COLOR_PAIR/\fBcurs_color\fP(3X)
 PAIR_NUMBER/\fBcurs_color\fP(3X)
@@ -1807,7 +1808,7 @@ You must also enable the wide-character features in the header file
 when compiling for the wide-character library
 to use the extended (wide-character) functions.
 The symbol which enables these features has changed
-since X/Open Curses, Issue 4:
+since X/Open Curses Issue\ 4:
 .bP
 Originally, the wide-character feature required the symbol
 \fB_XOPEN_SOURCE_EXTENDED\fP
@@ -1818,7 +1819,7 @@ Later, that was deemed conflicting with \fB_XOPEN_SOURCE\fP defined to 500.
 As of mid-2018,
 none of the features in this implementation require a \fB_XOPEN_SOURCE\fP
 feature greater than 600.
-However, X/Open Curses, Issue 7 (2009) recommends defining it to 700.
+However, X/Open Curses Issue\ 7 (2009) recommends defining it to 700.
 .bP
 Alternatively, you can enable the feature by defining \fBNCURSES_WIDECHAR\fP
 with the caveat that some other header file than \fBcurses.h\fP

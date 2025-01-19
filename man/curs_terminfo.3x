@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.151 2024/12/28 21:32:56 tom Exp $
-.TH curs_terminfo 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.160 2025/01/19 00:51:10 tom Exp $
+.TH curs_terminfo 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -116,7 +116,9 @@
 \fBint setterm(const char * \fIterm\fP);
 .fi
 .SH DESCRIPTION
-These low-level functions must be called by programs that deal directly
+These lower-level functions of the
+.I curses
+standard must be called by programs that deal directly
 with the
 .I \%term\%info
 database to handle certain terminal capabilities,
@@ -211,7 +213,7 @@ initializing the
 .I \%term\%info
 structures,
 but does not set up the output virtualization structures used by
-.IR curses .
+.IR curses "."
 Its parameters follow.
 .RS 3
 .TP 5
@@ -233,9 +235,9 @@ terminal,
 passing an output
 .I stream
 rather than a
-.IR descriptor .
+.IR descriptor "."
 In
-.IR curses ,
+.IR curses ","
 the two are the same because \fB\%newterm\fP calls \fB\%setupterm\fP,
 passing the file descriptor derived from its output stream parameter.
 .TP 5
@@ -252,7 +254,7 @@ returns
 or
 .B ERR
 and stores a status value in the integer pointed to by
-.IR errret .
+.IR errret "."
 A return value of
 .B OK
 combined with status of
@@ -265,7 +267,7 @@ If
 .B ERR
 is returned,
 examine
-.I errret:
+.IR errret "."
 .RS
 .TP 5
 .B 1
@@ -313,7 +315,7 @@ setupterm((char *) NULL, 1, (int *) NULL);
 .RE
 .IP
 which uses all the defaults and sends the output to
-.IR stdout .
+.IR stdout "."
 .RE
 .\" ********************************************************************
 .SS "The Terminal State"
@@ -392,7 +394,7 @@ then restores that state.
 \fB\%tparm\fP instantiates the string
 .I str
 with parameters
-.IR pi .
+.IR pi "."
 A pointer is returned to the result of
 .I str
 with the parameters applied.
@@ -448,7 +450,7 @@ library would assume.
 .\" ********************************************************************
 .SS "Output Functions"
 String capabilities can contain
-.IR padding ,
+.IR padding ","
 a time delay
 (accommodating performance limitations of hardware terminals)
 expressed as \fB$<\fIn\fB>\fR,
@@ -492,19 +494,19 @@ routing any resulting padding characters through this function.
 .IB str ", 1, putchar)\c"
 \*(''.
 The output of \fB\%putp\fP always goes to
-.IR stdout ,
+.IR stdout ","
 rather than the
 .I \%file\%des
 specified in \fB\%setupterm\fP.
 .PP
 \fB\%vidputs\fP displays the string on the terminal in the video
 attribute mode
-.IR attrs ,
+.IR attrs ","
 which is any combination of the attributes listed in \fB\%curses\fP(3X).
 The characters are passed to the
 .IR \%putchar -like
 function
-.IR putc .
+.IR putc "."
 .PP
 \fB\%vidattr\fP is like \fB\%vidputs\fP,
 except that it outputs through \fI\%putchar\fP(3).
@@ -515,20 +517,20 @@ and
 correspond to
 .B \%vidattr
 and
-.BR \%vidputs ,
+.BR \%vidputs ","
 respectively.
 They use multiple parameters to represent the character attributes and
 color;
 namely,
 .bP
-.IR \%attrs ,
+.IR \%attrs ","
 of type
-.IR \%attr_t ,
+.IR \%attr_t ","
 for the attributes and
 .bP
-.IR pair ,
+.IR pair ","
 of type
-.IR short ,
+.IR short ","
 for the color pair number.
 .PP
 Use the attribute constants prefixed with
@@ -536,7 +538,7 @@ Use the attribute constants prefixed with
 with
 .B \%vid_attr
 and
-.BR \%vid_puts .
+.BR \%vid_puts "."
 .PP
 X/Open Curses reserves the
 .I opts
@@ -544,24 +546,29 @@ argument for future use,
 saying that applications must provide a null pointer for that argument;
 but see section \*(``EXTENSIONS\*('' below.
 .PP
-While \fB\%putp\fP is a low-level function that does not use high-level
+While
+.B \%putp
+is a lower-level function
+that does not use higher-level
 .I curses
 state,
 .I \%ncurses
 declares it in
 .I \%curses.h
-because System\ V did this
+because System\ V did so
 (see section \*(``HISTORY\*('' below).
 .\" ********************************************************************
 .SS "Terminal Capability Functions"
-\fB\%tigetflag\fP,
-\fB\%tigetnum\fP,
-and \fB\%tigetstr\fP return the value of the capability corresponding to
+.BR \%tigetflag ","
+.BR \%tigetnum ","
+and
+.B \%tigetstr
+return the value of the capability corresponding to
 the
 .I \%term\%info
-.IR cap-code ,
+.IR cap-code ","
 such as
-.BR xenl ,
+.BR xenl ","
 passed to them.
 The
 .I cap-code
@@ -570,7 +577,8 @@ in the \*(``Predefined Capabilities\*('' section of \fB\%terminfo\fP(5).
 .PP
 These functions return special values to denote errors.
 .PP
-\fB\%tigetflag\fP returns
+.B \%tigetflag
+returns
 .TP
 .B \-1
 if
@@ -581,7 +589,8 @@ or
 .B 0
 if it is canceled or absent from the terminal description.
 .PP
-\fB\%tigetnum\fP returns
+.B \%tigetnum
+returns
 .TP
 .B \-2
 if
@@ -592,7 +601,8 @@ or
 .B \-1
 if it is canceled or absent from the terminal description.
 .PP
-\fB\%tigetstr\fP returns
+.B \%tigetstr
+returns
 .TP
 .B "(char *)\-1"
 if
@@ -669,9 +679,14 @@ Normally they do not free this memory,
 but it is possible to do that using the \fB\%delscreen\fP(3X) function.
 .\" ********************************************************************
 .SH RETURN VALUE
-X/Open Curses defines no failure conditions.
+Functions that return integers return
+.B ERR
+upon failure and
+.B OK
+upon success.
+.PP
 In
-.IR \%ncurses ,
+.IR \%ncurses ","
 .TP 5
 .B del_curtem
 fails if its terminal parameter is null.
@@ -688,9 +703,9 @@ fails if the associated call to \fB\%setupterm\fP returns
 fails if it cannot allocate enough memory,
 or create the initial windows
 .RB \%( stdscr ,
-.BR \%curscr ,
+.BR \%curscr ","
 and
-.BR \%newscr ).
+.BR \%newscr ")."
 Other error conditions are documented above.
 .TP 5
 .B tparm
@@ -724,12 +739,12 @@ and unlike the other wide-character functions,
 is also provided in the non-wide-character configuration.
 .\" ********************************************************************
 .SH EXTENSIONS
-The functions marked as extensions were designed for
-.IR \%ncurses ,
+The functions marked as extensions originated in
+.IR \%ncurses ","
 and are not found in SVr4
-.IR curses ,
+.IR curses ","
 4.4BSD
-.IR curses ,
+.IR curses ","
 or any other previous
 .I curses
 implementation.
@@ -738,16 +753,23 @@ implementation.
 allows
 .I opts
 to be a pointer to
-.IR int ,
+.IR int ","
 which overrides the
 .I pair
 .RI ( short )
 argument.
 .\" ********************************************************************
 .SH PORTABILITY
-.I \%setterm
-is not described by X/Open and must be considered non-portable.
-All other functions are as described by X/Open.
+Except for
+.IR \%setterm ","
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.PP
+SVr4 describes a successful return value
+except where \*(``otherwise noted\*(''
+as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 539
 .SS "Header Files"
 On legacy
 .I curses
@@ -757,30 +779,27 @@ include
 and
 .I \%term.h
 in that order
-to get the definitions for these strings,
-numbers,
-and flags.
+to make visible the definitions of the string arrays
+storing the capability names and codes.
 .SS "Compatibility Macros"
-This implementation provides a few macros for compatibility with systems
-before SVr4
+.I \%ncurses
+implements a few macros for early System\ V
+.I curses
+compatibility
 (see section \*(``HISTORY\*('' below).
 They include
-.IR \%Bcrmode ","
-.IR \%Bfixterm ","
-.IR \%Bgettmode ","
-.IR \%Bnocrmode ","
-.IR \%Bresetterm ","
-.IR \%Bsaveterm ","
-and"
-.IR \%Bsetterm "."
-.I \%ncurses
-implements each of these symbols as macros for BSD
-.I curses
-compatibility.
+.IR \%crmode ","
+.IR \%fixterm ","
+.IR \%gettmode ","
+.IR \%nocrmode ","
+.IR \%resetterm ","
+.IR \%saveterm ","
+and
+.IR \%setterm "."
 .PP
 In SVr4,
 these are found in
-.IR \%curses.h ,
+.IR \%curses.h ","
 but except for
 .IR \%setterm ","
 are likewise macros.
@@ -794,13 +813,13 @@ was replaced by
 stating that the call
 .RS
 .EX
-.BI setupterm( term ", 1, (int *)0)"
+.RI setupterm( term ", 1, (int *)0)"
 .EE
 .RE
 provides the same functionality as
 .RS
 .EX
-.BI setterm( term )
+.RI setterm( term )
 .EE
 .RE
 and discouraging the latter for new programs.
@@ -808,7 +827,7 @@ and discouraging the latter for new programs.
 .I \%setupterm
 copies the terminal name to the array
 .IR \%ttytype "."
-This is not part of X/Open Curses,
+This behavior is not specified by X/Open Curses,
 but is assumed by some applications.
 .PP
 Other implementions may not declare the capability name arrays.
@@ -828,28 +847,31 @@ from
 .I \%initscr
 or
 .I \%newterm
-uses buffered I/O,
-and would write to the corresponding stream.
+used buffered I/O,
+and wrote to the corresponding
+.I stdio
+stream.
 In addition to the limitation that the terminal was left in
 block-buffered mode on exit
 (like System\ V
-.IR curses ),
+.IR curses "),"
 it was problematic because
 .I \%ncurses
 did not allow a reliable way to clean up on receiving
-.BR SIGTSTP .
+.IR SIGTSTP "."
 .PP
 .I \%ncurses
 .RI 6. x
 uses output buffers managed directly by
-.IR \%ncurses .
-Some of the low-level functions described in this manual page write
-to the standard output.
-They are not signal-safe.
-The high-level functions in
+.IR \%ncurses "."
+The lower-level functions described here
+that write to the terminal device
+do so via the standard output stream;
+they thus are not signal-safe.
+The higher-level functions in
 .I \%ncurses
-employ alternate versions of these functions using the more reliable
-buffering scheme.
+employ alternate versions of these functions
+using a more reliable buffering scheme.
 .SS "Function Prototypes"
 The X/Open Curses prototypes are based on the SVr4
 .I curses
@@ -863,7 +885,7 @@ less effectively than a later design might,
 sometimes applying it needlessly to values that are already constant,
 and in most cases overlooking parameters that normally would benefit
 from
-.IR \%const .
+.IR \%const "."
 Passing
 .IR \%const -qualified
 parameters to functions that do not declare them
@@ -873,7 +895,8 @@ On the other hand,
 \*(``writable strings\*('' are an obsolescent C language feature.
 .IP
 As an extension,
-this implementation can be configured to change the function prototypes
+.I \%ncurses
+can be configured to change the function prototypes
 to use the
 .I \%const
 keyword.
@@ -886,13 +909,14 @@ X/Open Curses prototypes
 with a fixed number of parameters,
 rather than a variable argument list.
 .IP
-This implementation uses a variable argument list,
+.I \%ncurses
+uses a variable argument list,
 but can be configured to use the fixed-parameter list.
 Portable applications should provide nine parameters after the format;
 zeroes are fine for this purpose.
 .IP
 In response to review comments by Thomas E. Dickey,
-X/Open Curses Issue 7 proposed the
+X/Open Curses Issue\ 7 proposed the
 .I \%tiparm
 function in mid-2009.
 .IP
@@ -923,7 +947,7 @@ That approach dates to the mid-1980s,
 before C was standardized.
 Since ANSI\ C (1989),
 C language standards do not require a pointer to fit in a
-.IR long ).
+.IR long ")."
 .bP
 Providing the right number of parameters for a variadic function
 such as
@@ -941,7 +965,7 @@ The
 .I \%ncurses
 library checks usage of these capabilities,
 and returns
-.B ERR
+.I ERR
 if the capability mishandles string parameters.
 But it cannot check if a calling program provides strings in the right
 places for the
@@ -960,7 +984,7 @@ is configured to use the terminal driver,
 .\" XXX: as opposed to the Unix terminal driver, termio(s)?
 as with the MinGW port,
 .bP
-.B \%setupterm
+.I \%setupterm
 interprets a missing/empty
 .I TERM
 variable as the special value \*(``unknown\*(''.
@@ -977,7 +1001,7 @@ capability,
 while the latter does not.
 A generic terminal is unsuitable for full-screen applications.
 .bP
-.B \%setupterm
+.I \%setupterm
 allows explicit use of the Microsoft Windows console driver by checking
 whether the
 .I TERM
@@ -988,9 +1012,9 @@ In SVr4,
 .I \%set_curterm
 returns an
 .IR int ","
-.B OK
+.I OK
 or
-.BR ERR "."
+.IR ERR "."
 We have chosen to implement the X/Open Curses semantics.
 .PP
 In SVr4,
@@ -1003,9 +1027,9 @@ At least one implementation of X/Open Curses
 (Solaris
 .IR \%xcurses ")"
 returns a value other than
-.B OK
+.I OK
 or
-.B ERR
+.I ERR
 from
 .IR \%tputs "."
 It instead returns the length of the string,

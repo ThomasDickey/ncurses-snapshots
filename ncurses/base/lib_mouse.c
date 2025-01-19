@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.203 2024/12/07 17:40:33 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.205 2025/01/18 15:01:47 tom Exp $")
 
 #include <tic.h>
 
@@ -388,7 +388,7 @@ init_xterm_mouse(SCREEN *sp)
 {
     sp->_mouse_type = M_XTERM;
     sp->_mouse_format = MF_X10;
-    sp->_mouse_xtermcap = tigetstr("XM");
+    sp->_mouse_xtermcap = tigetstr(UserCap(XM));
     if (VALID_STRING(sp->_mouse_xtermcap)) {
 	char *code = strstr(sp->_mouse_xtermcap, "[?");
 	if (code != NULL) {
@@ -417,7 +417,7 @@ init_xterm_mouse(SCREEN *sp)
 	    }
 	}
     } else {
-	int code = tigetnum("XM");
+	int code = tigetnum(UserCap(XM));
 	switch (code) {
 #ifdef EXP_XTERM_1005
 	case 1005:

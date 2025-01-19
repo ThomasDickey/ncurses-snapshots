@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.71 2024/09/14 20:06:50 tom Exp $
-.TH curs_outopts 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.78 2025/01/19 00:51:10 tom Exp $
+.TH curs_outopts 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -167,18 +167,18 @@ returns
 if the scrolling region limits extend outside the
 window boundaries.
 .SH NOTES
-Note that
-\fBclearok\fP,
-\fBleaveok\fP,
-\fBscrollok\fP,
-\fBidcok\fP, and
-\fBsetscrreg\fP may be macros.
+.BR \%clearok ","
+.BR \%leaveok ","
+.BR \%scrollok ","
+.BR \%idcok ","
+and
+.B \%setscrreg
+may be implemented as macros.
 .PP
 The \fBimmedok\fP routine is useful for windows that are used as terminal
 emulators.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 Some historic
@@ -198,7 +198,7 @@ This trick does not work with
 Early System\ V
 .I curses
 implementations specified that with
-.B \%scrollok
+.I \%scrollok
 enabled,
 any window modification triggering a scroll
 also forced a physical refresh.
@@ -206,19 +206,42 @@ X/Open Curses does not require this,
 and
 .I \%ncurses
 avoids doing so to better optimize vertical motions upon a
-\fB\%wrefresh\fP(3X).
+.IR \%wrefresh "."
 .PP
 X/Open Curses does not mention that the cursor should be
 made invisible as a side-effect of
-.BR \%leaveok .
+.IR \%leaveok "."
 SVr4
 .I curses
 documentation notes this,
 but the code neglects it.
 Use \fB\%curs_set\fP(3X) to make the cursor invisible.
 .SH HISTORY
+4BSD (1980)
+.I curses
+introduced
+.IR \%clearok ","
+.IR \%leaveok ","
+and
+.IR \%scrollok "."
+.PP
+SVr2 (1984) supplied
+.IR \%idlok ","
+.IR \%setscrreg ","
+and
+.IR \%wsetscrreg "."
+.PP
+SVr3.1 (1987) implemented
+.I \%idcok
+and
+.IR \%immedok "."
+.PP
 .I \%ncurses
-formerly treated \fBnl\fP(3X) and \fBnonl\fP(3X) as both input
+formerly treated
+.I nl
+and
+.I nonl
+as both input
 .I and
 output options,
 but no longer;

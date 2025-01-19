@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.103 2024/12/28 21:26:21 tom Exp $
-.TH curs_addch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.113 2025/01/19 00:49:39 tom Exp $
+.TH curs_addch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -83,6 +83,17 @@ to the window
 then advances the cursor position,
 analogously to the standard C library's \fI\%putchar\fP(3).
 \fB\%ncurses\fP(3X) describes the variants of this function.
+.PP
+Construct a
+.I curses
+character
+from a
+.I char
+by assignment.
+Subsection \*(``Video Attributes\*('' of \fB\%attron\fP(3X) describes
+how to manipulate its attributes and color pair.
+(A color pair selection is not honored unless initialized;
+see \fB\%start_color\fP(3X).)
 .PP
 If advancement occurs at the right margin,
 .bP
@@ -156,7 +167,10 @@ and
 are equivalent to calling
 .RB \%( w ) addch
 followed by
-.RB \%( w ) refresh .
+.RB \%( w ) refresh
+on
+.B \%stdscr
+or the specified window.
 .I curses
 interprets these functions as a hint to its optimizer
 that only a single character cell in the window
@@ -171,7 +185,7 @@ defines macros starting with
 .B \%ACS_
 that can be used with
 .B \%waddch
-to write line-drawing and other special characters to the screen.
+to write line-drawing and other symbols to the screen.
 .I \%ncurses
 terms these
 .I "forms-drawing characters."
@@ -244,9 +258,15 @@ on failure.
 In
 .IR \%ncurses ,
 .B \%waddch
-returns
+and
+.B \%wechochar
+return
 .B ERR
 if
+.bP
+the
+.I curses
+screen has not been initialized,
 .bP
 .I win
 is
@@ -300,15 +320,12 @@ extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
 .PP
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .PP
-SVr4
-.I curses
-describes a successful return value only as
+SVr4 describes a successful return value only as
 \*(``an integer value other than
-.BR ERR \*(''.
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 472
 .PP
 The defaults specified for forms-drawing characters apply in the POSIX
 locale.
@@ -351,7 +368,7 @@ The misdefined symbols are the arrows and others that are not used for
 line drawing.
 .bP
 X/Open Curses
-(Issues 2 through 7)
+(Issues\ 2 through 7)
 has a typographical error
 for the
 .B \%ACS_LANTERN

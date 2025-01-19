@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.67 2024/12/28 21:26:21 tom Exp $
-.TH curs_bkgd 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.74 2025/01/19 00:49:39 tom Exp $
+.TH curs_bkgd 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,36 +66,46 @@ manipulate background of a \fIcurses\fR window of characters
 .SH DESCRIPTION
 Every
 .I curses
-window has a background property.
-In the library's non-wide configuration,
-this property is a
-.I \%chtype
-which combines a set of attributes with the
+window has a
 .I "background character"
-(see \fB\%curs_attr\fP(3X)).
-The background character is a spacing character.
+property:
+in the library's non-wide configuration,
+it is a
+.I curses
+character
+.RI \%( chtype )
+that combines a set of attributes
+(and,
+if colors are enabled,
+a color pair identifier)
+with a character code.
+When erasing
+(parts of)
+a window,
+.I curses
+replaces the erased cells with the background character.
 .PP
-When erasing parts of the screen,
 .I curses
-fills the cells with the background character.
-.I curses
-also uses the window background when writing characters to the screen.
+also uses the background character when writing characters to a
+populated window.
 .bP
-The attribute part of the background combines with all
-non-blank characters written into the window,
-as with the \fB\%waddch\fP(3X) and \fB\%winsch\fP(3X) families of
-functions.
+The attribute part of the background character combines with all
+non-blank character cells in the window,
+as populated by the \fB\%waddch\fP(3X) and \fB\%winsch\fP(3X)
+families of functions
+(and those that call them).
 .bP
-Both the character and attribute parts of the background combine with
-blank characters that are written into the window.
+Both the character code and attributes of the background character
+combine with blank character cells in the window.
 .PP
-The background becomes a property of the character and moves with it
-through any scrolling and insert/delete line/character operations.
-.PP
-To the extent possible on a given terminal,
+The background character's set of attributes becomes a property
+of the character cell
+and move with it through any scrolling
+and insert/delete line/character operations.
+To the extent possible on the terminal type,
 .I curses
-displays the attributes of the background
-as the graphic rendition of the character put on the screen.
+displays the attributes of the background character
+as the graphic rendition of a character cell on the display.
 .SS "bkgd, wbkgd"
 .B \%bkgd
 and
@@ -126,7 +136,7 @@ if they match,
 writes the new background character to the cell.
 .bP
 .I \%ncurses
-then checks if the cell uses color;
+then checks whether the cell uses color;
 that is,
 its color pair value is nonzero.
 If not,
@@ -149,17 +159,19 @@ updates only the non-color attributes,
 first removing those that may have come from the current background,
 and then adding attributes from the new background.
 .PP
-If the new background's character is nonspacing,
+If the new background's character is non-spacing
+(for example,
+if it is a control character),
 .I \%ncurses
 retains the existing background character,
 except for one special case:
 .I \%ncurses
-treats a background character value of zero (0) as a space.
+treats a background character code of zero (0) as a space.
 .PP
 If the terminal does not support color,
 or if color has not been initialized with \fB\%start_color\fP(3X),
 .I \%ncurses
-ignores the new background character's color attribute.
+ignores the new background character's color pair selection.
 .SS "bkgdset, wbkgdset"
 .B \%bkgdset
 and
@@ -181,7 +193,7 @@ and color pair as a
 .B \%bkgdset
 and
 .B \%wbkgdset
-do not return a value
+do not return a value.
 .PP
 Functions returning an
 .I int
@@ -194,10 +206,11 @@ In
 .IR \%ncurses ","
 failure occurs if
 .bP
-if the library has not been initialized,
+the
+.I curses
+screen has not been initialized,
 or
 .bP
-if
 .I win
 is
 .IR NULL "."
@@ -227,18 +240,17 @@ be a single-byte value.
 .IR \%ncurses ","
 like SVr4
 .IR curses ","
-checks to ensure that,
+checks to ensure that it is,
 and retains the existing background character if the check fails.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It indicates that
 .IR bkgd ","
 .IR wbkgd ","
 and
 .I getbkgd
 return
-.B ERR
+.I ERR
 on failure
 (in the case of the last,
 this value is cast to
@@ -252,24 +264,23 @@ says that
 and
 .I \%wbkgd
 return
-.B OK
+.I OK
 \*(``or a non-negative integer if
-.B \%immedok
+.I \%immedok() \" Courier roman in source
 is set\*('',
-which refers to the return value from
-.IR \%wrefresh() ","
-used to implement the immediate repainting.
-SVr4
-.IR curses 's
-.I \%wrefresh
-returns the number of characters
-written to the screen during the refresh;
-that of
-.I \%ncurses
-does not.
+referring to the return value from
+.IR \%wrefresh ","
+which in SVr4 returns a count of characters
+written to the window if its
+.I \%immedok
+property is set;
+.\" ...though its wrefresh() man page says nothing about immedok()...
+in
+.IR \%ncurses ","
+it does not.
 .PP
 Neither X/Open Curses nor the SVr4 manual pages detail how the rendition
-of characters on the screen updates when
+of characters in the window updates when
 .I \%bkgd
 or
 .I \%wbkgd

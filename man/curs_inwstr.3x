@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.49 2024/12/28 21:26:21 tom Exp $
-.TH curs_inwstr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.56 2025/01/19 00:51:10 tom Exp $
+.TH curs_inwstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -65,7 +65,8 @@ get a wide-character string from a \fIcurses\fR window
 \fBint innwstr(wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint winnwstr(WINDOW * \fIwin\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint mvinnwstr(int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
-\fBint mvwinnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
+\fBint mvwinnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP,
+      int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winwstr
@@ -88,10 +89,8 @@ but copies at most
 .I n
 wide characters from
 .IR win "."
-An
+A negative
 .I n
-of
-.B \-1
 implies no limit;
 .B \%winnwstr
 then works like
@@ -168,11 +167,9 @@ is recommended instead.
 .BR \%mvinnwstr ","
 and
 .BR \%mvwinnwstr "'s"
-treatment of
-.B \-1
-as a valid value of
+acceptance of negative
 .I n
-is an
+values is an
 .I \%ncurses
 extension.
 .SH PORTABILITY
@@ -182,8 +179,7 @@ extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
 .PP
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .PP
 Notwithstanding the foregoing,
@@ -221,6 +217,28 @@ and
 .BR \%mvwinstr "."
 .I \%ncurses
 regards this inconsistency as an error in the standard.
+.SH HISTORY
+The System\ V Interface Definition,
+Version 4 (1995),
+specified
+.I \%winwstr
+and
+.I \%winnwstr
+(and the usual variants).
+.\" SVID 4, vol 3., p. 516
+These were later additions to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+Their synopses described each function as taking
+an argument of type
+.RI pointer-to- char
+instead of
+.RI pointer-to- wchar_t ,
+despite describing them as \*(``returning the string of
+.I \%wchar_t
+in
+.IR str "\*(''."
+Presumably this was an error in the System\ V Interface Definition.
 .SH SEE ALSO
 \fB\%curs_instr\fP(3X) describes comparable functions of the
 .I \%ncurses

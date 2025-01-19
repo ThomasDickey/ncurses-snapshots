@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.163 2024/12/15 00:04:06 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.164 2025/01/12 10:51:43 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -948,8 +948,8 @@ onscreen_mvcur(NCURSES_SP_DCLx
   nonlocal:
 #if defined(MAIN) || defined(NCURSES_TEST)
     gettimeofday(&after, NULL);
-    diff = after.tv_usec - before.tv_usec
-	+ (after.tv_sec - before.tv_sec) * 1000000;
+    diff = (float) (after.tv_usec - before.tv_usec
+		    + (after.tv_sec - before.tv_sec) * 1000000);
     if (!profiling)
 	(void) fprintf(stderr,
 		       "onscreen: %d microsec, %f 28.8Kbps char-equivalents\n",
@@ -1227,7 +1227,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 
 	if (fputs("> ", stdout) == EOF)
 	    break;
-	if (fgets(buf, sizeof(buf), stdin) == 0)
+	if (fgets(buf, sizeof(buf), stdin) == NULL)
 	    break;
 
 #define PUTS(s)   (void) puts(s)
@@ -1307,7 +1307,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	} else if (buf[0] == 'i') {
 	    dump_init(NULL, F_TERMINFO, S_TERMINFO,
 		      FALSE, 70, 0, 0, FALSE, FALSE, 0);
-	    dump_entry(&TerminalType(cur_term), FALSE, TRUE, 0, 0);
+	    dump_entry(&TerminalType(cur_term), FALSE, TRUE, 0, NULL);
 	    putchar('\n');
 	} else if (buf[0] == 'o') {
 	    if (_nc_optimize_enable & OPTIMIZE_MVCUR) {

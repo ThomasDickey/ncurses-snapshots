@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_slk.3x,v 1.78 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_slk.3x,v 1.85 2025/01/19 00:51:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_slk 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_slk 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_slk 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_slk 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
 
@@ -163,34 +163,31 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Routines  that  return  an integer return <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> (SVr4
-       specifies only "an integer  value  other  than  <STRONG>ERR</STRONG>")  upon  successful
-       completion.
+       Functions  that  return  integers  return  <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> upon
+       success.
 
-       X/Open Curses defines no error conditions.
-
-       In this implementation
+       In <EM>ncurses</EM>,
 
           <STRONG>slk_attr</STRONG>
                returns the attribute used for the soft keys.
 
-          <STRONG>slk_attroff</STRONG>,  <STRONG>slk_attron</STRONG>,  <STRONG>slk_clear</STRONG>,  <STRONG>slk_noutrefresh</STRONG>, <STRONG>slk_refresh</STRONG>,
+          <STRONG>slk_attroff</STRONG>, <STRONG>slk_attron</STRONG>,  <STRONG>slk_clear</STRONG>,  <STRONG>slk_noutrefresh</STRONG>,  <STRONG>slk_refresh</STRONG>,
           <STRONG>slk_touch</STRONG>
-               return  <STRONG>ERR</STRONG>  if  the  terminal  or  the   softkeys   were   not
+               return   <STRONG>ERR</STRONG>   if   the  terminal  or  the  softkeys  were  not
                initialized.
 
           <STRONG>slk_attrset</STRONG>
-               returns   <STRONG>ERR</STRONG>   if  the  terminal  or  the  softkeys  were  not
+               returns  <STRONG>ERR</STRONG>  if  the  terminal  or  the  softkeys   were   not
                initialized.
 
           <STRONG>slk_attr_set</STRONG>
-               returns  <STRONG>ERR</STRONG>  if  the  terminal  or  the  softkeys   were   not
-               initialized,   or   the   color   pair  is  outside  the  range
+               returns   <STRONG>ERR</STRONG>   if  the  terminal  or  the  softkeys  were  not
+               initialized,  or  the  color  pair   is   outside   the   range
                0..<STRONG>COLOR_PAIRS</STRONG>-1.
 
           <STRONG>slk_color</STRONG>
-               returns  <STRONG>ERR</STRONG>  if  the  terminal  or  the  softkeys   were   not
-               initialized,   or   the   color   pair  is  outside  the  range
+               returns   <STRONG>ERR</STRONG>   if  the  terminal  or  the  softkeys  were  not
+               initialized,  or  the  color  pair   is   outside   the   range
                0..<STRONG>COLOR_PAIRS</STRONG>-1.
 
           <STRONG>slk_init</STRONG>
@@ -200,31 +197,34 @@
                returns <EM>NULL</EM> on error.
 
           <STRONG>slk_set</STRONG>
-               returns  <STRONG>ERR</STRONG>  if  the  terminal  or  the  softkeys   were   not
-               initialized,  or  the  <EM>labnum</EM> parameter is outside the range of
-               label counts, or if the format parameter is outside  the  range
+               returns   <STRONG>ERR</STRONG>   if  the  terminal  or  the  softkeys  were  not
+               initialized, or the <EM>labnum</EM> parameter is outside  the  range  of
+               label  counts,  or if the format parameter is outside the range
                0..2, or if memory for the labels cannot be allocated.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Most  applications  would  use  <STRONG>slk_noutrefresh</STRONG>  because  a <STRONG>wrefresh</STRONG> is
+       Most applications would  use  <STRONG>slk_noutrefresh</STRONG>  because  a  <STRONG>wrefresh</STRONG>  is
        likely to follow soon.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       X/Open Curses documents the <EM>opts</EM> argument as reserved for  future  use,
-       saying  that  it must be null.  This implementation uses that parameter
-       in ABI 6 for the functions which have a color pair parameter to support
-       extended color pairs.
+       X/Open  Curses  documents the <EM>opts</EM> argument as reserved for future use,
+       saying that it must be a null pointer.  The <EM>ncurses</EM> 6 ABI uses  it  for
+       the  functions  that  accept a color pair parameter to support extended
+       color pairs.
 
-       For  functions  which  modify the color, e.g., <STRONG>slk_attr_set</STRONG>, if <EM>opts</EM> is
-       set it is treated as a pointer to <EM>int</EM>, and used to set the  color  pair
+       For functions which modify the color, e.g., <STRONG>slk_attr_set</STRONG>,  if  <EM>opts</EM>  is
+       set  it  is treated as a pointer to <EM>int</EM>, and used to set the color pair
        instead of the <EM>short</EM> pair parameter.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes these functions, with some differences
-       from SVr4 <EM>curses</EM>:
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
+
+       SVr4  describes  a  successful  return  value only as "an integer value
+       other than <EM>ERR</EM>".
 
        <STRONG>o</STRONG>   X/Open  added  functions  like  the   SVr4   attribute-manipulation
            functions  <STRONG>slk_attron</STRONG>,  <STRONG>slk_attroff</STRONG>, and <STRONG>slk_attrset</STRONG>, but which use
@@ -312,7 +312,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                      <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                      <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

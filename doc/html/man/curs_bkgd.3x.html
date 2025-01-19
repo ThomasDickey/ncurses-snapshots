@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgd.3x,v 1.67 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_bkgd.3x,v 1.74 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgd 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_bkgd 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgd 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_bkgd 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
 
@@ -64,28 +64,28 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       Every <EM>curses</EM> window has a background property.  In the  library's  non-
-       wide  configuration,  this property is a <EM>chtype</EM> which combines a set of
-       attributes with the  <EM>background</EM>  <EM>character</EM>  (see  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>).   The
-       background character is a spacing character.
+       Every <EM>curses</EM>  window  has  a  <EM>background</EM>  <EM>character</EM>  property:  in  the
+       library's  non-wide  configuration,  it  is a <EM>curses</EM> character (<EM>chtype</EM>)
+       that combines a set of attributes (and, if colors are enabled, a  color
+       pair  identifier)  with  a  character  code.  When erasing (parts of) a
+       window, <EM>curses</EM> replaces the erased cells with the background character.
 
-       When  erasing  parts  of  the  screen,  <EM>curses</EM> fills the cells with the
-       background character.  <EM>curses</EM> also  uses  the  window  background  when
-       writing characters to the screen.
+       <EM>curses</EM> also uses the background character when writing characters to  a
+       populated window.
 
-       <STRONG>o</STRONG>   The  attribute  part  of the background combines with all non-blank
-           characters written into the window,  as  with  the  <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>  and
-           <STRONG><A HREF="curs_insch.3x.html">winsch(3x)</A></STRONG> families of functions.
+       <STRONG>o</STRONG>   The  attribute  part  of the background character combines with all
+           non-blank character cells  in  the  window,  as  populated  by  the
+           <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>  and  <STRONG><A HREF="curs_insch.3x.html">winsch(3x)</A></STRONG>  families  of functions (and those that
+           call them).
 
-       <STRONG>o</STRONG>   Both  the  character  and attribute parts of the background combine
-           with blank characters that are written into the window.
+       <STRONG>o</STRONG>   Both the character code and attributes of the background  character
+           combine with blank character cells in the window.
 
-       The background becomes a property of the character and  moves  with  it
-       through any scrolling and insert/delete line/character operations.
-
-       To  the  extent  possible  on  a  given  terminal,  <EM>curses</EM> displays the
-       attributes of the background as the graphic rendition of the  character
-       put on the screen.
+       The  background character's set of attributes becomes a property of the
+       character cell and move with it through any scrolling and insert/delete
+       line/character  operations.   To  the  extent  possible on the terminal
+       type, <EM>curses</EM> displays the attributes of the background character as the
+       graphic rendition of a character cell on the display.
 
 
 </PRE><H3><a name="h3-bkgd_wbkgd">bkgd, wbkgd</a></H3><PRE>
@@ -108,9 +108,9 @@
            specified  background  character; if they match, <EM>ncurses</EM> writes the
            new background character to the cell.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM> then checks if the cell uses color; that is, its color pair
-           value  is  nonzero.   If not, it simply replaces the attributes and
-           color  pair  in  the  cell  with  those  from  the  new  background
+       <STRONG>o</STRONG>   <EM>ncurses</EM> then checks whether the cell uses color; that is, its color
+           pair  value  is nonzero.  If not, it simply replaces the attributes
+           and color pair in the cell  with  those  from  the  new  background
            character.
 
        <STRONG>o</STRONG>   If  the  cell  uses color, and its background color matches that of
@@ -125,65 +125,66 @@
            the current background, and then adding  attributes  from  the  new
            background.
 
-       If  the  new  background's character is nonspacing, <EM>ncurses</EM> retains the
-       existing background character, except for  one  special  case:  <EM>ncurses</EM>
-       treats a background character value of zero (0) as a space.
+       If the new background's character is non-spacing (for example, if it is
+       a  control  character),  <EM>ncurses</EM>  retains   the   existing   background
+       character,  except  for  one  special case: <EM>ncurses</EM> treats a background
+       character code of zero (0) as a space.
 
-       If  the  terminal  does  not  support  color,  or if color has not been
-       initialized with <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>, <EM>ncurses</EM> ignores  the  new  background
-       character's color attribute.
+       If the terminal does not support  color,  or  if  color  has  not  been
+       initialized  with  <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>,  <EM>ncurses</EM> ignores the new background
+       character's color pair selection.
 
 
 </PRE><H3><a name="h3-bkgdset_wbkgdset">bkgdset, wbkgdset</a></H3><PRE>
-       <STRONG>bkgdset</STRONG>  and  <STRONG>wbkgdset</STRONG>  manipulate  the  background  of  the applicable
+       <STRONG>bkgdset</STRONG> and  <STRONG>wbkgdset</STRONG>  manipulate  the  background  of  the  applicable
        window, without updating the character cells as <STRONG>bkgd</STRONG> and <STRONG>wbkgd</STRONG> do; only
        future writes reflect the updated background.
 
 
 </PRE><H3><a name="h3-getbkgd">getbkgd</a></H3><PRE>
-       <STRONG>getbkgd</STRONG>  returns  the  given window's background character, attributes,
+       <STRONG>getbkgd</STRONG> returns the given window's  background  character,  attributes,
        and color pair as a <EM>chtype</EM>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       <STRONG>bkgdset</STRONG> and <STRONG>wbkgdset</STRONG> do not return a value
+       <STRONG>bkgdset</STRONG> and <STRONG>wbkgdset</STRONG> do not return a value.
 
        Functions returning an <EM>int</EM> return <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> upon success.
        In <EM>ncurses</EM>, failure occurs if
 
-       <STRONG>o</STRONG>   if the library has not been initialized, or
+       <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized, or
 
-       <STRONG>o</STRONG>   if <EM>win</EM> is <EM>NULL</EM>.
+       <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM>.
 
        <STRONG>getbkgd</STRONG>'s return value is as described above.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Unusually,  there is no <STRONG>wgetbkgd</STRONG> function; <STRONG>getbkgd</STRONG> behaves as one would
+       Unusually, there is no <STRONG>wgetbkgd</STRONG> function; <STRONG>getbkgd</STRONG> behaves as one  would
        expect <STRONG>wgetbkgd</STRONG> to, accepting a <EM>WINDOW</EM> pointer argument.
 
        <STRONG>bkgd</STRONG> and <STRONG>bkgdset</STRONG> may be implemented as macros.
 
-       X/Open Curses mentions that the character part of the  background  must
-       be  a  single-byte  value.  <EM>ncurses</EM>, like SVr4 <EM>curses</EM>, checks to ensure
-       that, and retains the existing background character if the check fails.
+       X/Open  Curses  mentions that the character part of the background must
+       be a single-byte value.  <EM>ncurses</EM>, like SVr4 <EM>curses</EM>,  checks  to  ensure
+       that  it is, and retains the existing background character if the check
+       fails.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes these functions.   It  indicates  that
-       <EM>bkgd</EM>,  <EM>wbkgd</EM>,  and  <EM>getbkgd</EM>  return  <STRONG>ERR</STRONG> on failure (in the case of the
+       X/Open Curses Issue 4 describes these  functions.   It  indicates  that
+       <EM>bkgd</EM>,  <EM>wbkgd</EM>,  and  <EM>getbkgd</EM>  return  <EM>ERR</EM> on failure (in the case of the
        last, this value is cast to <EM>chtype</EM>), but specifies no error  conditions
        for them.
 
-       SVr4  documentation  says  that  <EM>bkgd</EM>  and  <EM>wbkgd</EM>  return <STRONG>OK</STRONG> "or a non-
-       negative integer if <STRONG>immedok</STRONG> is set", which refers to the  return  value
-       from  <EM>wrefresh()</EM>,  used  to  implement  the immediate repainting.  SVr4
-       <EM>curses</EM>'s <EM>wrefresh</EM> returns the  number  of  characters  written  to  the
-       screen during the refresh; that of <EM>ncurses</EM> does not.
+       SVr4  documentation  says  that  <EM>bkgd</EM>  and  <EM>wbkgd</EM>  return <EM>OK</EM> "or a non-
+       negative integer if <EM>immedok()</EM> is set", referring to  the  return  value
+       from  <EM>wrefresh</EM>,  which in SVr4 returns a count of characters written to
+       the window if its <EM>immedok</EM> property is set; in <EM>ncurses</EM>, it does not.
 
-       Neither  X/Open  Curses  nor  the  SVr4  manual  pages  detail  how the
-       rendition of characters on  the  screen  updates  when  <EM>bkgd</EM>  or  <EM>wbkgd</EM>
-       changes  the background character.  <EM>ncurses</EM>, like SVr4 <EM>curses</EM>, does not
+       Neither X/Open  Curses  nor  the  SVr4  manual  pages  detail  how  the
+       rendition  of  characters  in  the  window  updates  when <EM>bkgd</EM> or <EM>wbkgd</EM>
+       changes the background character.  <EM>ncurses</EM>, like SVr4 <EM>curses</EM>, does  not
        (in  its  non-wide  configuration)  store  the  background  and  window
        attribute contributions to each character cell separately.
 
@@ -193,14 +194,14 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>  describes  the  corresponding  functions  in  the wide
+       <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG> describes  the  corresponding  functions  in  the  wide
        configuration of <EM>ncurses</EM>.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-12-28                     <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                     <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

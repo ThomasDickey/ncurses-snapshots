@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2019-2024,2025 Thomas E. Dickey                                *
   * Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wchstr.3x,v 1.46 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_add_wchstr.3x,v 1.52 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wchstr 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_add_wchstr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wchstr 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_add_wchstr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>              Library calls             <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
 
@@ -58,22 +58,26 @@
        <STRONG>int</STRONG> <STRONG>add_wchstr(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>wadd_wchstr(WINDOW</STRONG> <STRONG>*</STRONG>  <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvadd_wchstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwadd_wchstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwadd_wchstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG>
+             <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>add_wchnstr(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wadd_wchnstr(WINDOW</STRONG> <STRONG>*</STRONG>  <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvadd_wchnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwadd_wchnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wadd_wchnstr(WINDOW</STRONG> <STRONG>*</STRONG>  <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG>
+             <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvadd_wchnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG>
+             <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwadd_wchnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG>
+             <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wchstr</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        <STRONG>wadd_wchstr</STRONG>  copies  the  string  of  complex  characters <EM>wchstr</EM> to the
        window <EM>win</EM>.  A null complex character  terminates  the  string.   If  a
        complex  character  does  not  completely  fit  at the end of the line,
-       <EM>curses</EM> fills the remaining columns  with  the  window  background;  see
-       <STRONG><A HREF="curs_bkgrnd.3x.html">bkgrnd(3x)</A></STRONG>.    <STRONG>wadd_wchnstr</STRONG>  does  the  same,  but  copies  at  most  <EM>n</EM>
-       characters, or as many as possible if <EM>n</EM> is <STRONG>-1</STRONG>.   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>  describes
-       the variants of these functions.
+       <EM>curses</EM>  fills  its  remaining  cells  with  the   window's   background
+       character;  see  <STRONG><A HREF="curs_bkgrnd.3x.html">bkgrnd(3x)</A></STRONG>.  <STRONG>wadd_wchnstr</STRONG> does the same, but copies at
+       most <EM>n</EM> characters, or as many as possible  if  <EM>n</EM>  is  <STRONG>-1</STRONG>.   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+       describes the variants of these functions.
 
        Because  these  functions do not call <STRONG><A HREF="curs_add_wch.3x.html">wadd_wch(3x)</A></STRONG> internally, they are
        faster than <STRONG><A HREF="curs_addwstr.3x.html">waddwstr(3x)</A></STRONG> and <STRONG><A HREF="curs_addwstr.3x.html">waddnwstr(3x)</A></STRONG>.  On the other hand, they
@@ -109,17 +113,17 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open  Curses,  Issue  4  describes  these functions.  It specifies no
-       error conditions for them.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       These functions were initially specified by  X/Open  Curses,  Issue  4.
-       The   System V   Interface  Definition,  Version  4  (1995),  specified
-       functions named <EM>waddwchstr</EM> and <EM>waddwchnstr</EM> (and  the  usual  variants).
-       These  were  later additions to SVr4.<EM>x</EM>, not appearing in the first SVr4
-       (1989).  They differed from X/Open's later <EM>wadd</EM><STRONG>_</STRONG><EM>wchstr</EM> and <EM>wadd</EM><STRONG>_</STRONG><EM>wchnstr</EM>
-       in that they each took an argument of type <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> instead of <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
+       These functions were initially specified by X/Open Curses Issue 4.  The
+       System V  Interface  Definition  Version 4  (1995), specified functions
+       named <EM>waddwchstr</EM> and <EM>waddwchnstr</EM> (and the usual variants).  These  were
+       later  additions  to  SVr4.<EM>x</EM>,  not  appearing in the first SVr4 (1989).
+       They differed from X/Open's later <EM>wadd</EM><STRONG>_</STRONG><EM>wchstr</EM> and <EM>wadd</EM><STRONG>_</STRONG><EM>wchnstr</EM> in  that
+       they each took an argument of type <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> instead of <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -130,7 +134,7 @@
 
 
 
-ncurses 6.5                       2024-12-28               <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18               <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

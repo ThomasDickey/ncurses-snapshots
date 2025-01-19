@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.95 2024/12/28 21:28:49 tom Exp @
+  * @Id: curs_termcap.3x,v 1.103 2025/01/19 00:51:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -63,7 +63,7 @@
        <STRONG>int</STRONG> <STRONG>tgetent(char</STRONG> <STRONG>*</STRONG> <EM>bp</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>name</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>tgetflag(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>tgetnum(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>);</STRONG>
-       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tgetstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>**</STRONG> <EM>area</EM><STRONG>);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tgetstr(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>id</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>**</STRONG> <EM>sbuf</EM><STRONG>);</STRONG>
        <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tgoto(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>cap</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>col</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>row</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>tputs(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>affcnt</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG> <EM>putc</EM><STRONG>)(int));</STRONG>
 
@@ -90,18 +90,18 @@
 
        This implementation differs from those of historical <EM>termcap</EM> libraries.
 
-          <STRONG>o</STRONG>   <EM>ncurses</EM>  ignores  the  buffer  pointer  <EM>bp</EM>,  as do other <EM>termcap</EM>
-              implementations conforming to  portions  of  X/Open  Curses  now
-              withdrawn.   The  BSD  <EM>termcap</EM> library would store a copy of the
-              terminal  type  description  in  the  area  referenced  by  this
-              pointer.  <EM>terminfo</EM> stores terminal type descriptions in compiled
-              form, which is not the same thing.
+       <STRONG>o</STRONG>   <EM>ncurses</EM>  ignores  the  buffer  pointer  <EM>bp</EM>,  as  do  other  <EM>termcap</EM>
+           implementations  conforming  to  portions  of  X/Open  Curses   now
+           withdrawn.   The  BSD  <EM>termcap</EM>  library  would  store a copy of the
+           terminal type description in the buffer referenced by this pointer.
+           <EM>terminfo</EM>  stores terminal type descriptions in compiled form, which
+           is not the same thing.
 
-          <STRONG>o</STRONG>   The meanings of the  return  values  differ.   The  BSD  <EM>termcap</EM>
-              library  does  not  check  whether the terminal type description
-              includes the <STRONG>generic</STRONG> (<STRONG>gn</STRONG>) capability, nor whether  the  terminal
-              type  description  supports  an  addressable  cursor, a property
-              essential for any <EM>curses</EM> implementation to operate.
+       <STRONG>o</STRONG>   The meanings of the return values differ.  The BSD <EM>termcap</EM>  library
+           does  not  check whether the terminal type description includes the
+           <STRONG>generic</STRONG> (<STRONG>gn</STRONG>) capability, nor whether the terminal type  description
+           supports an addressable cursor, a property essential for any <EM>curses</EM>
+           implementation to operate.
 
 
 </PRE><H3><a name="h3-Retrieving-Capability-Values">Retrieving Capability Values</a></H3><PRE>
@@ -111,22 +111,22 @@
        <STRONG>tgetnum</STRONG> obtains the numeric entry for <EM>id</EM>, or -1 if it is not available.
 
        <STRONG>tgetstr</STRONG>  returns  the  string  entry  for  <EM>id</EM>,  or  <EM>NULL</EM>  if  it is not
-       available.   Use  <STRONG>tputs</STRONG>  to  output  the  string  returned.   The  <EM>area</EM>
+       available.   Use  <STRONG>tputs</STRONG>  to  output  the  string  returned.   The  <EM>sbuf</EM>
        parameter is used as follows.
 
-          <STRONG>o</STRONG>   It is assumed to be the address of a pointer to a buffer managed
-              by the calling application.
+       <STRONG>o</STRONG>   It is assumed to be the address of a pointer to a buffer managed by
+           the calling application.
 
-          <STRONG>o</STRONG>   However, <EM>ncurses</EM> checks to ensure that <EM>area</EM>  is  not  <EM>NULL</EM>,  and
-              also  that  the resulting buffer pointer is not <EM>NULL</EM>.  If either
-              check fails, <EM>area</EM> is ignored.
+       <STRONG>o</STRONG>   However, <EM>ncurses</EM> checks to ensure that <EM>sbuf</EM> is not <EM>NULL</EM>,  and  that
+           the  pointer  obtained  by dereferencing <EM>sbuf</EM> is also not <EM>NULL</EM>.  If
+           either check fails, <EM>ncurses</EM> ignores <EM>sbuf</EM>.
 
-          <STRONG>o</STRONG>   If the checks succeed, <EM>ncurses</EM> also copies the return  value  to
-              the  buffer  pointed to by <EM>area</EM>, and the library updates <EM>area</EM> to
-              point past the null character terminating this value.
+       <STRONG>o</STRONG>   If the checks succeed, <EM>ncurses</EM> also copies the return value to  the
+           buffer  pointed  to  by <EM>sbuf</EM>, and the library updates <EM>sbuf</EM> to point
+           past the null character terminating this value.
 
-          <STRONG>o</STRONG>   The return value itself is  an  address  in  the  terminal  type
-              description loaded into memory.
+       <STRONG>o</STRONG>   The return  value  itself  is  an  address  in  the  terminal  type
+           description loaded into memory.
 
 
 </PRE><H3><a name="h3-Applying-String-Capabilities">Applying String Capabilities</a></H3><PRE>
@@ -168,34 +168,35 @@
 
 </PRE><H3><a name="h3-Global-Variables">Global Variables</a></H3><PRE>
        <STRONG>tgetent</STRONG> sets the variables <STRONG>PC</STRONG>, <STRONG>UP</STRONG>, and <STRONG>BC</STRONG> to the <EM>terminfo</EM> entry's  data
-       for  <STRONG>pad_char</STRONG>, <STRONG>cursor_up</STRONG>, and <STRONG>backspace_if_not_bs</STRONG>, respectively.  <STRONG>UP</STRONG> is
-       not used by <EM>ncurses</EM>.  <STRONG>PC</STRONG> is used by <STRONG><A HREF="curs_util.3x.html">delay_output(3x)</A></STRONG>.  <STRONG>BC</STRONG>  is  used  by
-       <STRONG>tgoto</STRONG> emulation.  <EM>ncurses</EM> assigns the variable <STRONG>ospeed</STRONG> a system-specific
-       value to encode the terminal's data rate.
+       for  <STRONG>pad_char</STRONG>  (<STRONG>pad</STRONG>), <STRONG>cursor_up</STRONG> (<STRONG>cuu1</STRONG>), and <STRONG>backspace_if_not_bs</STRONG> (<STRONG>OTbs</STRONG>),
+       respectively.    <EM>ncurses</EM>   does    not    employ    <STRONG>cuu1</STRONG>    internally.
+       <STRONG><A HREF="curs_util.3x.html">delay_output(3x)</A></STRONG>  uses  <STRONG>pad</STRONG>,  while  <STRONG>tgoto</STRONG>  emulation uses the obsolete
+       <EM>termcap</EM> capability <STRONG>bs</STRONG>,  represented  in  <EM>ncurses</EM>  <EM>terminfo</EM>  as  "OTbs".
+       <EM>ncurses</EM>  assigns  the variable <STRONG>ospeed</STRONG> a system-specific value to encode
+       the terminal's data rate.
 
 
 </PRE><H3><a name="h3-Releasing-Memory">Releasing Memory</a></H3><PRE>
        The <EM>termcap</EM> functions provide  no  means  of  freeing  memory,  because
-       legacy  <EM>termcap</EM>  implementations used only the buffer areas provided by
-       the caller via <STRONG>tgetent</STRONG> and <STRONG>tgetstr</STRONG>.  Those buffers are unused in  <EM>term-</EM>
-       <EM>info</EM>.
+       legacy  <EM>termcap</EM>  implementations  used only the storage provided by the
+       caller via <STRONG>tgetent</STRONG> and <STRONG>tgetstr</STRONG>.  Those buffers are unused in <EM>terminfo</EM>.
 
-       By  contrast,  <EM>terminfo</EM>  allocates  memory.   It  uses <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG> to
-       obtain the data  used  by  <STRONG>tgetent</STRONG>  and  the  functions  that  retrieve
+       By contrast, <EM>terminfo</EM>  allocates  memory.   It  uses  <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>  to
+       obtain  the  data  used  by  <STRONG>tgetent</STRONG>  and  the  functions that retrieve
        capability values.  One could use
               del_curterm(cur_term);
-       to  free  this  memory,  but  there  is an additional complication with
+       to free this memory, but  there  is  an  additional  complication  with
        <EM>ncurses</EM>.  It uses a fixed-size pool of storage locations, one per value
        of the terminal name parameter given to <STRONG>tgetent</STRONG>.  The <STRONG>screen(1)</STRONG> program
        relies upon this arrangement to improve its performance.
 
-       An application that uses only the <EM>termcap</EM>  functions,  not  the  higher
-       level  <EM>curses</EM>  API,  could  release  the  memory using <STRONG><A HREF="curs_terminfo.3x.html">del_curterm(3x)</A></STRONG>,
+       An  application  that  uses only the <EM>termcap</EM> functions, not the higher-
+       level <EM>curses</EM> API,  could  release  the  memory  using  <STRONG><A HREF="curs_terminfo.3x.html">del_curterm(3x)</A></STRONG>,
        because the pool is freed using other functions; see <STRONG><A HREF="curs_memleaks.3x.html">curs_memleaks(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       The return values of  <STRONG>tgetent</STRONG>,  <STRONG>tgetflag</STRONG>,  <STRONG>tgetname</STRONG>,  and  <STRONG>tgetstr</STRONG>  are
+       The  return  values  of  <STRONG>tgetent</STRONG>,  <STRONG>tgetflag</STRONG>,  <STRONG>tgetname</STRONG>, and <STRONG>tgetstr</STRONG> are
        documented above.
 
        <STRONG>tgoto</STRONG> returns <EM>NULL</EM> on error.  Error conditions include:
@@ -206,7 +207,7 @@
 
        <STRONG>o</STRONG>   <EM>cap</EM> referring to a canceled capability,
 
-       <STRONG>o</STRONG>   <EM>cap</EM>  being  a  capability  with  string-valued  parameters (a <EM>term-</EM>
+       <STRONG>o</STRONG>   <EM>cap</EM> being a  capability  with  string-valued  parameters  (a  <EM>term-</EM>
            <EM>info</EM>-only feature), and
 
        <STRONG>o</STRONG>   <EM>cap</EM> being a capability with more than two parameters.
@@ -215,37 +216,32 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       <EM>ncurses</EM> compares only the first two characters of the <EM>id</EM>  parameter  of
+       <EM>ncurses</EM>  compares  only the first two characters of the <EM>id</EM> parameter of
        <STRONG>tgetflag</STRONG>, <STRONG>tgetnum</STRONG>, and <STRONG>tgetstr</STRONG> to the capability names in the database.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  functions  are  no  longer standardized (and the variables never
-       were); <EM>ncurses</EM> provides them  to  support  legacy  applications.   They
-       should not be used in new programs.
+       These functions are no longer standardized  (and  the  variables  never
+       were);  see  section "HISTORY" below.  <EM>ncurses</EM> provides them to support
+       legacy applications; they should not be used in new programs.
 
-
-</PRE><H3><a name="h3-Standards">Standards</a></H3><PRE>
-       <STRONG>o</STRONG>   X/Open   Curses,   Issue  4,  Version  2  (1996),  describes  these
-           functions, marking them as "TO BE WITHDRAWN".
-
-       <STRONG>o</STRONG>   X/Open Curses, Issue 7 (2009) withdrew the <EM>termcap</EM> interface (along
-           with the <EM>vwprintw</EM> and <EM>vwscanw</EM> functions).
+       SVr4 describes a successful return value  only  as  "an  integer  value
+       other than <EM>ERR</EM>".
 
        Neither  X/Open  Curses  nor  the  SVr4 man pages documented the return
        values of <EM>tgetent</EM> correctly, though all three shown here were  in  fact
        returned  ever  since  SVr1.   In particular, an omission in the X/Open
        Curses specification has  been  misinterpreted  to  mean  that  <EM>tgetent</EM>
-       returns  <STRONG>OK</STRONG>  or  <STRONG>ERR</STRONG>.   Because  the  purpose  of these functions is to
+       returns  <EM>OK</EM>  or  <EM>ERR</EM>.   Because  the  purpose  of these functions is to
        provide compatibility with the <EM>termcap</EM> library, that  is  a  defect  in
-       X/Open Curses, Issue 4, Version 2 rather than in <EM>ncurses</EM>.
+       X/Open Curses Issue 4 Version 2 rather than in <EM>ncurses</EM>.
 
-   <STRONG>Compatibility</STRONG> <STRONG>with</STRONG> <STRONG>BSD</STRONG> <STRONG><EM>termcap</EM></STRONG>
+   <STRONG>Compatibility</STRONG> <STRONG>with</STRONG> <STRONG>BSD</STRONG> <EM>termcap</EM>
        <EM>ncurses</EM>  provides  externally  visible  variables  to  support  certain
        <EM>termcap</EM>  applications.   However,  their  correct   usage   is   poorly
        documented; for example, it is unclear when reading and writing them is
        meaningful.  In particular, some applications are reported  to  declare
-       and/or modify <STRONG>ospeed</STRONG>.
+       and/or modify <EM>ospeed</EM>.
 
        The  constraint  that only the first two characters of the <EM>id</EM> parameter
        are looked  up  in  the  terminal  database  escapes  many  application
@@ -328,6 +324,12 @@
        two  of  the four implementations thus differ, and programs that intend
        to work with all <EM>termcap</EM> library interfaces must account for that fact.
 
+       X/Open Curses Issue 4, Version 2  (1996),  describes  these  functions,
+       marking them as "TO BE WITHDRAWN".
+
+       X/Open Curses Issue 7 (2009) withdrew the <EM>termcap</EM> interface (along with
+       the <EM>vwprintw</EM> and <EM>vwscanw</EM> functions).
+
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
        If  you  call  <STRONG>tgetstr</STRONG>  to  fetch  <STRONG>column_address</STRONG>  (<STRONG>ch</STRONG>)  or  any  other
@@ -371,7 +373,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -390,7 +392,6 @@ ncurses 6.5                       2024-12-28                  <STRONG><A HREF="c
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
-<li><a href="#h3-Standards">Standards</a></li>
 <li><a href="#h3-Header-File">Header File</a></li>
 </ul>
 </li>

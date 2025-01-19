@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.72 2024/09/21 18:05:20 tom Exp $
-.TH curs_kernel 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.75 2025/01/19 00:51:10 tom Exp $
+.TH curs_kernel 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -364,6 +364,14 @@ It specifies no error conditions for them,
 except as described for
 .I \%curs_set
 in section \*(``RETURN VALUE\*('' above.
+.PP
+The System\ V Interface Definition,
+Version 4 (1995),
+specified all of these functions except
+.I \%curs_set
+as returning
+.IR OK "."
+.\" SVID 4, vol 3., p. 518
 .PP
 Older SVr4 man pages warn that the return value of
 .B \%curs_set

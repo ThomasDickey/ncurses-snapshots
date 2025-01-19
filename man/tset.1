@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.90 2024/12/28 21:27:26 tom Exp $
-.TH @TSET@ 1 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tset.1,v 1.94 2025/01/19 00:51:54 tom Exp $
+.TH @TSET@ 1 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -141,7 +141,7 @@ turns off cbreak and raw modes,
 .bP
 turns on newline translation and
 .bP
-resets any unset special characters to their default values
+resets special input characters to their default values
 .PP
 before
 doing the terminal initialization described above.
@@ -319,9 +319,9 @@ system port name to terminal type mapping database (BSD versions only).
 .I @TERMINFO@
 compiled terminal description database directory
 .SH PORTABILITY
-Neither IEEE Std 1003.1/The Open Group Base Specifications Issue 7
+Neither IEEE Std 1003.1/The Open Group Base Specifications Issue\ 7
 (POSIX.1-2008) nor
-X/Open Curses Issue 7 documents \fB@TSET@\fP or \fB@RESET@\fP.
+X/Open Curses Issue\ 7 documents \fB@TSET@\fP or \fB@RESET@\fP.
 .PP
 The AT&T \fBtput\fP utility (AIX, HP-UX, Solaris)
 incorporated the terminal-mode manipulation as well as termcap-based features

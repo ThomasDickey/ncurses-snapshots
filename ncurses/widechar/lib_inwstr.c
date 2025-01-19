@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,13 +34,13 @@
 /*
 **	lib_inwstr.c
 **
-**	The routines winnwstr() and winwstr().
+**	The routine winnwstr().
 **
 */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_inwstr.c,v 1.12 2024/12/07 18:03:14 tom Exp $")
+MODULE_ID("$Id: lib_inwstr.c,v 1.14 2025/01/19 00:51:54 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnwstr(WINDOW *win, wchar_t *wstr, int n)
@@ -56,6 +56,9 @@ winnwstr(WINDOW *win, wchar_t *wstr, int n)
 	    bool done = FALSE;
 
 	    getyx(win, row, col);
+
+	    if (n < 0)
+		n = CCHARW_MAX * (win->_maxx - win->_curx + 1);
 
 	    text = win->_line[row].text;
 	    while (count < n && !done && count != ERR) {
@@ -91,17 +94,4 @@ winnwstr(WINDOW *win, wchar_t *wstr, int n)
 	}
     }
     returnCode(count);
-}
-
-NCURSES_EXPORT(int)
-winwstr(WINDOW *win, wchar_t *wstr)
-{
-    int result = ERR;
-
-    T((T_CALLED("winwstr(%p,%p)"), (void *) win, (void *) wstr));
-    if (win != NULL) {
-	result = winnwstr(win, wstr,
-			  CCHARW_MAX * (win->_maxx - win->_curx + 1));
-    }
-    returnCode(result);
 }

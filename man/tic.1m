@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.113 2024/09/14 20:06:50 tom Exp $
-.TH @TIC@ 1M 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tic.1m,v 1.117 2025/01/19 00:51:54 tom Exp $
+.TH @TIC@ 1M 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -520,13 +520,13 @@ System V does not compile entries to or read entries from your
 \fI$HOME/.terminfo\fP database unless \fI\%TERMINFO\fP is explicitly set
 to it.
 .SH PORTABILITY
-X/Open Curses, Issue 7 (2009) provides a brief description of \fBtic\fP.
+X/Open Curses Issue\ 7 (2009) provides a brief description of \fBtic\fP.
 It lists one option: \fB\-c\fP.
 The omission of \fB\-v\fP is unexpected.
 The change history states that the description is derived from Tru64.
 According to its manual pages, that system also supported the \fB\-v\fP option.
 .PP
-Shortly after Issue 7 was released, Tru64 was discontinued.
+Shortly after Issue\ 7 was released, Tru64 was discontinued.
 As of 2019, the surviving implementations of \fBtic\fP
 are SVr4 (AIX, HP-UX and Solaris),
 \fI\%ncurses\fP

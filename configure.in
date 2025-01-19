@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
+dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.789 2024/12/29 00:50:56 tom Exp $
+dnl $Id: configure.in,v 1.790 2025/01/18 11:20:02 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.789 $)
+AC_REVISION($Revision: 1.790 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -659,7 +659,7 @@ WHICH_XTERM=$with_xterm_new
 AC_SUBST(WHICH_XTERM)
 
 case $host_os in
-(*linux-gnu|*cygwin|*mingw32|*msys)
+(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl)
 	want_xterm_kbs=DEL
 	;;
 (*)

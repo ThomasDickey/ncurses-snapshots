@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scr_dump.3x,v 1.51 2024/12/28 21:19:39 tom Exp $
-.TH curs_scr_dump 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scr_dump.3x,v 1.55 2025/01/19 00:51:10 tom Exp $
+.TH curs_scr_dump 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -186,8 +186,7 @@ and
 .B \%scr_set
 may be implemented as macros.
 .SH PORTABILITY
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .\" Unusually, SVID 4 explicitly indicated "OK" as a possible return
 .\" value, rather than the "integer other than ERR" refrain (p. 529).

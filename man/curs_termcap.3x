@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.95 2024/12/28 21:28:49 tom Exp $
-.TH curs_termcap 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.103 2025/01/19 00:51:10 tom Exp $
+.TH curs_termcap 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -118,7 +118,7 @@
 \fBint tgetent(char * \fIbp\fP, const char * \fIname\fP);
 \fBint tgetflag(const char * \fIid\fP);
 \fBint tgetnum(const char * \fIid\fP);
-\fBchar * tgetstr(const char * \fIid\fP, char ** \fIarea\fP);
+\fBchar * tgetstr(const char * \fIid\fP, char ** \fIsbuf\fP);
 \fBchar * tgoto(const char * \fIcap\fP, int \fIcol\fP, int \fIrow\fP);
 \fBint tputs(const char * \fIstr\fP, int \fIaffcnt\fP, int (* \fIputc\fP)(int));
 .fi
@@ -157,14 +157,13 @@ database could not be found.
 .PP
 This implementation differs from those of historical \fItermcap\fP
 libraries.
-.RS 3
 .bP
 .I \%ncurses
 ignores the buffer pointer \fIbp\fP,
 as do other \fItermcap\fP implementations conforming to portions of
 X/Open Curses now withdrawn.
 The BSD \fItermcap\fP library would store a copy of the terminal type
-description in the area referenced by this pointer.
+description in the buffer referenced by this pointer.
 \fI\%term\%info\fP stores terminal type descriptions in compiled form,
 which is not the same thing.
 .bP
@@ -177,7 +176,6 @@ capability,
 nor whether the terminal type description supports an addressable
 cursor,
 a property essential for any \fIcurses\fP implementation to operate.
-.RE
 .SS "Retrieving Capability Values"
 \fB\%tgetflag\fP reports the Boolean entry for \fIid\fP,
 or zero if it is not available.
@@ -191,34 +189,36 @@ or
 if it is not available.
 Use \fB\%tputs\fP to output the string returned.
 The
-.I area
+.I sbuf
 parameter is used as follows.
-.RS 3
 .bP
 It is assumed to be the address of a pointer to a buffer managed by the
 calling application.
 .bP
 However,
-\fI\%ncurses\fP checks to ensure that
-.I area
+.I \%ncurses
+checks to ensure that
+.I sbuf
 is not
 .IR NULL ","
-and also that the resulting buffer pointer is not
+and that the pointer obtained by dereferencing
+.I sbuf
+is also not
 .IR NULL "."
 If either check fails,
-.I area
-is ignored.
+.I \%ncurses
+ignores
+.IR sbuf .
 .bP
 If the checks succeed,
 \fI\%ncurses\fP also copies the return value to the buffer pointed to by
-\fIarea\fP,
+\fIsbuf\fP,
 and the library updates
-.I area
+.I sbuf
 to point past the null character terminating this value.
 .bP
 The return value itself is an address in the terminal type description
 loaded into memory.
-.RE
 .SS "Applying String Capabilities"
 String capabilities can be parameterized;
 see subsection \*(``Parameterized Strings\*('' in  \fB\%terminfo\fP(5).
@@ -275,27 +275,39 @@ and
 to the
 .I \%term\%info
 entry's data for
-.BR \%pad_char ","
-.BR \%cursor_up ","
+.B \%pad_char
+.RB ( pad ),
+.B \%cursor_up
+.RB ( cuu1 ),
 and
-.BR \%backspace_if_not_bs ","
+.B \%backspace_if_not_bs
+.RB ( OTbs ),
 respectively.
-\fBUP\fP is not used by
-.IR \%ncurses "."
-.B PC
-is used by \fB\%delay_output\fP(3X).
-.B BC
-is used by
+.I \%ncurses
+does not employ
+.B cuu1
+internally.
+\fB\%delay_output\fP(3X)
+uses
+.BR pad ","
+while
 .B \%tgoto
-emulation.
+emulation uses the obsolete
+.I termcap
+capability
+.BR bs ","
+represented in
+.I \%ncurses
+.I \%term\%info
+as \*(``OTbs\*(''.
 .I \%ncurses
 assigns the variable
 .B \%ospeed
 a system-specific value to encode the terminal's data rate.
 .SS "Releasing Memory"
 The \fItermcap\fP functions provide no means of freeing memory,
-because legacy \fItermcap\fP implementations used only the buffer
-areas provided by the caller via \fB\%tgetent\fP and \fB\%tgetstr\fP.
+because legacy \fItermcap\fP implementations used only the storage
+provided by the caller via \fB\%tgetent\fP and \fB\%tgetstr\fP.
 Those buffers are unused in \fI\%term\%info\fP.
 .PP
 By contrast,
@@ -316,7 +328,7 @@ The \fIscreen\fP(1) program relies upon this arrangement to improve its
 performance.
 .PP
 An application that uses only the \fItermcap\fP functions,
-not the higher level
+not the higher-level
 .I \%curses
 API,
 could release the memory using \fB\%del_curterm\fP(3X),
@@ -364,27 +376,14 @@ and
 .SH PORTABILITY
 These functions are no longer standardized
 (and the variables never were);
+see section \*(``HISTORY\*('' below.
 .I \%ncurses
-provides them to support legacy applications.
-They should not be used in new programs.
-.SS Standards
-.bP
-X/Open Curses,
-Issue 4,
-Version 2 (1996),
-describes these functions,
-marking them as
-\*(``TO BE WITHDRAWN\*(''.
-.bP
-X/Open Curses,
-Issue 7 (2009) withdrew the
-.I termcap
-interface
-(along with the
-.I \%vwprintw
-and
-.I \%vwscanw
-functions).
+provides them to support legacy applications;
+they should not be used in new programs.
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 536
 .PP
 Neither X/Open Curses nor the SVr4 man pages documented the return
 values of
@@ -396,19 +395,17 @@ an omission in the X/Open Curses specification has been misinterpreted
 to mean that
 .I \%tgetent
 returns
-.B OK
+.I OK
 or
-.BR ERR "."
+.IR ERR "."
 Because the purpose of these functions is to provide compatibility with
 the
 .I termcap
 library,
-that is a defect in X/Open Curses,
-Issue 4,
-Version 2
+that is a defect in X/Open Curses Issue\ 4 Version\ 2
 rather than in
 .IR \%ncurses "."
-.SS "Compatibility with BSD \f(BItermcap\fP"
+.SS "Compatibility with BSD \fItermcap\fP"
 .I \%ncurses
 provides externally visible variables to support certain
 .I termcap
@@ -419,7 +416,7 @@ for example,
 it is unclear when reading and writing them is meaningful.
 In particular,
 some applications are reported to declare and/or modify
-.BR \%ospeed "."
+.IR \%ospeed "."
 .PP
 The constraint that only the first two characters of the
 .I id
@@ -640,6 +637,21 @@ Any two of the four implementations thus differ,
 and programs that intend to work with all
 .I termcap
 library interfaces must account for that fact.
+.PP
+X/Open Curses Issue\ 4,
+Version\ 2 (1996),
+describes these functions,
+marking them as
+\*(``TO BE WITHDRAWN\*(''.
+.PP
+X/Open Curses Issue\ 7 (2009) withdrew the
+.I termcap
+interface
+(along with the
+.I \%vwprintw
+and
+.I \%vwscanw
+functions).
 .SH BUGS
 If you call \fB\%tgetstr\fP to fetch
 .B \%column_address

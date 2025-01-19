@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2022-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2022-2024,2025 Thomas E. Dickey                                *
  * Copyright 2022 Leonid S. Usov <leonid.s.usov at gmail.com>               *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -22,7 +22,7 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.35 2024/11/30 18:46:48 tom Exp $
+ * $Id: test_mouse.c,v 1.36 2025/01/18 15:03:25 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -44,7 +44,7 @@ raw_loop(void)
 
     newterm(NULL, stdout, stdin);
     raw();
-    xtermcap = tigetstr("XM");
+    xtermcap = tigetstr(UserCap(XM));
     if (!VALID_STRING(xtermcap)) {
 	fprintf(stderr, "couldn't get XM terminfo");
 	return;

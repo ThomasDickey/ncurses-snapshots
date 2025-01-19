@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,17 +28,21 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.122 2024/12/28 21:51:21 tom Exp $
-.TH curs_util 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.134 2025/01/19 00:51:10 tom Exp $
+.TH curs_util 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
+.ds ^  \(ha
+.ds ~  \(ti
 .\}
 .el \{\
 .ie t .ds `` ``
 .el   .ds `` ""
 .ie t .ds '' ''
 .el   .ds '' ""
+.ds       ^  ^
+.ds       ~  ~
 .\}
 .
 .de bP
@@ -63,58 +67,83 @@ miscellaneous \fIcurses\fR utility routines
 .nf
 \fB#include <curses.h>
 .PP
-\fBconst char *unctrl(chtype \fIch\fP);
-\fBwchar_t *wunctrl(cchar_t *\fIwch\fP);
+\fBconst char * unctrl(chtype \fIch\fP);
+\fBwchar_t * wunctrl(cchar_t * \fIwch\fP);
 .PP
-\fBconst char *keyname(int \fIc\fP);
-\fBconst char *key_name(wchar_t \fIwc\fP);
+\fBconst char * keyname(int \fIc\fP);
+\fBconst char * key_name(wchar_t \fIwc\fP);
 .PP
 \fBvoid filter(void);
+\fI/* extension */
+\fBvoid nofilter(void);
 .PP
 \fBvoid use_env(bool \fIbf\fP);
+\fI/* extension */
+\fBvoid use_tioctl(bool \fIbf\fP);
 .PP
-\fBint putwin(WINDOW *\fIwin\fP, FILE *\fIfilep\fP);
-\fBWINDOW *getwin(FILE *\fIfilep\fP);
+\fBint putwin(WINDOW * \fIwin\fP, FILE * \fIfilep\fP);
+\fBWINDOW * getwin(FILE * \fIfilep\fP);
 .PP
 \fBint delay_output(int \fIms\fP);
-\fBint flushinp(void);
 .PP
-\fI/* extensions */
-\fBvoid nofilter(void);
-\fBvoid use_tioctl(bool \fIbf\fP);
+\fBint flushinp(void);
 .fi
 .SH DESCRIPTION
-.SS unctrl
-The \fBunctrl\fP routine returns a character string as a printable
-representation of the character \fIch\fP:
+.SS "unctrl, wunctrl"
+.B unctrl
+returns a null-terminated character string printably representing the
+.I curses
+character
+.IR ch ,
+often one that originated in keyboard input;
+see \fBgetch\fP(3X).
 .bP
-Printable characters are displayed as themselves,
-e.g.,
-a one-character string containing the key.
+Printable characters represent themselves as a one-character string.
 .bP
-Control characters are displayed in the \fB^\fIX\fR notation.
-.bP
-Printing characters are displayed as is.
+Control characters are expressed in
+.BI \*^ X
+notation,
+where
+.I X
+is the printable symbol of the control code's value plus 32
+in the ISO\ 646/\*(``ASCII\*('' character set.
 .bP
 DEL
-(character 127)
-is displayed as \fB^?\fP.
+(character code 127)
+is represented as
+.BR \*^? .
 .bP
-Values above 128 are either meta characters
-(if the screen has not been initialized,
-or if \fBmeta\fP(3X) has been called with a \fBTRUE\fP parameter),
-shown in the \fBM\-\fIX\fR notation,
-or are displayed as themselves.
-In the latter case,
-the values may not be printable;
-this follows the X/Open specification.
+A character code greater than 127 is represented in one of two ways.
+.IP
+If the screen has not been initialized or is in meta mode
+(see \fBmeta\fP(3X)),
+it is expressed in
+.BI M- X
+notation,
+where X
+is the representation of the code's value minus 128,
+as described above.
+.IP
+If the screen is not in meta mode,
+the character code is assumed to represent itself.
+It nevertheless may not be printable;
+this is the case for character codes 128-159 in ISO\ 8859 encodings.
+.IP
+.IR \%ncurses 's
+\fB\%use_legacy_coding\fP(3X)
+function configures
+.BR \%unctrl 's
+handling of these character codes.
 .PP
-The corresponding \fBwunctrl\fP returns a printable representation of
-a complex character \fIwch\fP.
+.B \%wunctrl
+returns a null-terminated wide-character string printably representing
+the
+.I curses
+complex character
+.IR wch .
 .PP
-In both \fBunctrl\fP and \fBwunctrl\fP the attributes
-and color associated
-with the character parameter are ignored.
+Both functions ignore the atributes and color pair selection
+of their argument.
 .SS "keyname, key_name"
 The \fBkeyname\fP routine returns a character string
 corresponding to the key \fIc\fP.
@@ -213,7 +242,7 @@ After \fBuse_tioctl\fP is called with \fBTRUE\fP as an argument,
 \fI\%ncurses\fP modifies the last step in its computation
 of screen size as follows:
 .bP
-checks if the \fILINES\fP and \fI\%COLUMNS\fP environment variables
+checks whether the \fILINES\fP and \fI\%COLUMNS\fP environment variables
 are set to a number greater than zero.
 .bP
 for each,
@@ -302,31 +331,45 @@ The \fBflushinp\fP routine throws away any typeahead
 that has been typed by the user
 and has not yet been read by the program.
 .SH RETURN VALUE
-Except for \fBflushinp\fP,
-routines that return an integer
-return \fBERR\fP upon failure and \fBOK\fP
-(SVr4 specifies only "an integer value other than \fBERR\fP")
-upon successful completion.
+Except for
+.BR \%flushinp ","
+functions that return integers return
+.B ERR
+upon failure and
+.B OK
+upon success.
 .PP
-Routines that return pointers return
+Functions that return pointers return
 .I NULL
 on error.
 .PP
-In this implementation
-.RS 3
-.TP 5
-\fBflushinp\fP
+In
+.IR \%ncurses ","
+.bP
+.B \%flushinp
 returns
 .B ERR
-if the terminal was not initialized.
-.TP 5
-\fBputwin\fP
+if the terminal was not initialized,
+and
+.bP
+.B \%putwin
 returns
 .B ERR
-if the associated \fIwrite\fP(2) calls return
+if its associated \fIwrite\fP(2) calls return
 .BR ERR "."
-.RE
+.SH NOTES
+.B \%wunctrl
+is part of
+.IR \%ncurses "'s"
+wide-character API,
+and is not available in its non-wide configuration.
 .SH PORTABILITY
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 542
 .SS filter
 The SVr4 documentation describes the action of \fBfilter\fP
 only in the vaguest terms.
@@ -411,8 +454,7 @@ output.
 However,
 reading from a file written using mixed schemes may not be successful.
 .SS "unctrl, wunctrl"
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 It states that \fBunctrl\fP and \fBwunctrl\fP will return a null pointer
 if unsuccessful.
@@ -518,7 +560,7 @@ respectively.
 SVr4 (1989) supplied
 .IR \%use_env "."
 .PP
-X/Open Curses Issue 4 (1995) specified
+X/Open Curses Issue\ 4 (1995) specified
 .I \%key_name
 and
 .IR \%wunctrl "."

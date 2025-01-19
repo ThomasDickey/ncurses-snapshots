@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_instr.3x,v 1.61 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_instr.3x,v 1.68 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_instr 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_instr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_instr 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_instr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
 
@@ -62,7 +62,8 @@
        <STRONG>int</STRONG> <STRONG>innstr(char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>winnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>mvinnstr(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwinnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwinnstr(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG>
+             <STRONG>int</STRONG> <EM>n</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
@@ -70,9 +71,9 @@
        cursor  and  stopping  at  the  end  of the line, and stores it in <EM>str</EM>,
        terminating it with a null character and omitting  any  attributes  and
        color  pair  identifier  that  <EM>curses</EM>  associates  with each character.
-       <STRONG>winnstr</STRONG> does the same, but copies at most <EM>n</EM> characters from <EM>win</EM>.  An  <EM>n</EM>
-       of  <STRONG>-1</STRONG>  implies  no limit; <STRONG>winnstr</STRONG> then works like <STRONG>winstr</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
-       describes the variants of these functions.
+       <STRONG>winnstr</STRONG> does the same, but copies at most <EM>n</EM>  characters  from  <EM>win</EM>.   A
+       negative   <EM>n</EM>   implies  no  limit;  <STRONG>winnstr</STRONG>  then  works  like  <STRONG>winstr</STRONG>.
+       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -98,16 +99,16 @@
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       <STRONG>innstr</STRONG>, <STRONG>winnstr</STRONG>, <STRONG>mvinnstr</STRONG>, and <STRONG>mvwinnstr</STRONG>'s treatment of <STRONG>-1</STRONG> as  a  valid
-       value of <EM>n</EM> is an <EM>ncurses</EM> extension.
+       <STRONG>innstr</STRONG>, <STRONG>winnstr</STRONG>, <STRONG>mvinnstr</STRONG>, and <STRONG>mvwinnstr</STRONG>'s  acceptance  of  negative  <EM>n</EM>
+       values is an <EM>ncurses</EM> extension.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
-       error conditions for them.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
 
        X/Open  Curses  Issues  4 and 7 both state that <STRONG>instr</STRONG>, <STRONG>winstr</STRONG>, <STRONG>mvinstr</STRONG>,
        and <STRONG>mvwinstr</STRONG> return <STRONG>OK</STRONG> rather than a character count.  This  is  likely
@@ -121,9 +122,11 @@
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> retains compatibility with System V <EM>curses</EM> behavior.
 
-       SVr4  documents no return values apart from <STRONG>OK</STRONG> and <STRONG>ERR</STRONG> for any of these
-       functions.  SVr4 does not document whether <EM>n</EM> counts the null terminator
-       that these functions write to <EM>str</EM>.
+       SVr4  describes  a  successful  return  value only as "an integer value
+       other than <EM>ERR</EM>".
+
+       SVr4 does not document whether <EM>n</EM> counts the null terminator that  these
+       functions write to <EM>str</EM>.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -138,7 +141,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                    <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                    <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.53 2024/09/21 18:01:56 tom Exp $
-.TH curs_variables 3X 2024-09-21 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.58 2025/01/19 00:51:10 tom Exp $
+.TH curs_variables 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -104,6 +104,7 @@
 \fB\%FALSE\fP,
 \fB\%ERR\fP,
 \fB\%OK\fP,
+\fB\%CCHARW_MAX\fP,
 \fB\%curscr\fP,
 \fB\%newscr\fP,
 \fB\%stdscr\fP,
@@ -133,6 +134,9 @@
 \fBconst \fI/*\fP .\|.\|. \fI*/\fP ERR;
 \fBconst \fI/*\fP .\|.\|. \fI*/\fP OK;
 .PP
+\fI/* extension */
+\fBconst \fI/*\fP .\|.\|. \fI*/\fP CCHARW_MAX;
+.PP
 \fI/* variables */
 \fBint COLORS;
 \fBint COLOR_PAIRS;
@@ -159,7 +163,7 @@ that provide read-only access to the library's state.
 In either case,
 applications should treat them as read-only to avoid
 confusing the library.
-.SH "CONSTANTS"
+.SH CONSTANTS
 .SS "TRUE, FALSE"
 The \fIcurses\fP library defines \fBTRUE\fP and \fBFALSE\fP
 to represent the values of the Boolean data type.
@@ -167,9 +171,20 @@ to represent the values of the Boolean data type.
 \fIcurses\fP and \fIterminfo\fP routines frequently return these
 constant integral values indicating failure and success,
 respectively.
+.SS CCHARW_MAX
+This integral value,
+an
+.I \%ncurses
+extension,
+contains the maximum number of
+.I \%wchar_t
+wide characters that can be stored in a
+.I curses
+complex character
+.IR \%cchar_t "."
 .SH "PREDEFINED TYPES"
 .SS "\fIbool\fP"
-X/Open Issue 4 \fIcurses\fP (1996) preceded the ISO C99 and ISO C++98
+X/Open Issue\ 4 \fIcurses\fP (1996) preceded the ISO C99 and ISO C++98
 standards,
 each of which also defined a Boolean data type.
 The \fIcurses\fP library requires an integral type \fIbool\fP.
@@ -218,7 +233,24 @@ represents rectangular portions of the terminal screen with the
 structure type;
 see subsection \*(``Overview\*('' of \fB\%ncurses\fP(3X).
 .SH "VARIABLES"
-.SS "curscr, stdscr, newscr"
+.SS "curscr, newscr, stdscr"
+When a
+.I curses
+application calls
+\fB\%initscr\fP(3X) or \fB\%newterm\fP(3X),
+the library creates a window named
+.B \%stdscr
+that is the same size as the terminal screen
+and is the implicit window used by functions
+that interact with a window
+but do not take a parameter identifying one;
+many
+.I curses
+functions use it.
+An application need not use
+.BR \%stdscr ";"
+it might prefer to tile the display into multiple windows instead.
+.PP
 The library records updates to the terminal screen in a window named
 \fB\%curscr\fP.
 This object is referred to as the \*(``physical screen\*('' in
@@ -235,12 +267,6 @@ and
 When the screen is refreshed,
 \fIcurses\fP determines a minimal set of updates using the terminal's
 capabilities to make \fB\%curscr\fP look like \fB\%newscr\fP.
-.PP
-Once \fIcurses\fP is initialized,
-it creates a window named \fB\%stdscr\fP.
-It is the same size as the terminal screen and is the default window
-used by routines that do not take a parameter identifying one.
-Many \fIcurses\fP functions use this window.
 .SS COLORS
 Once \fIcurses\fP is initialized,
 \fB\%COLORS\fP
@@ -291,12 +317,40 @@ is configured to provide separate
 and
 .I \%tinfo
 libraries,
-most of these variables reside in the former.
+most of these symbols reside in the former.
+The
+.B bool
+data type
+is used by both.
+.SH EXTENSIONS
+The
+.B \%CCHARW_MAX
+constant,
+and
+.BR \%ESCDELAY ","
+.BR \%TABSIZE ","
+and
+.B \%newscr
+variables,
+are
+extensions,
+the first of these originating in
+.\" Solaris xcurses calls it M_CCHAR_MAX.
+.IR \%ncurses "."
 .SH PORTABILITY
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
+.PP
 The X/Open Curses standard documents all of the foregoing types and
-symbols except for \fB\%newscr\fP,
-\fB\%TABSIZE\fP,
-and \fB\%ESCDELAY\fP.
+symbols except for
+.BR \%CCHARW_MAX ","
+.BR \%newscr ","
+.BR \%TABSIZE ","
+and
+.BR \%ESCDELAY "."
 .PP
 X/Open Curses describes \fB\%curscr\fP only as \*(``an internal data
 structure\*('';
@@ -365,6 +419,10 @@ or to rely upon its default.
 [UAX #29] \*(``Unicode Standard Annex #29: Unicode Text
 Segmentation\*(''
 .UE
+.PP
+\fB\%getcchar\fP(3X)
+further discusses
+.BR \%CCHARW_MAX "."
 .PP
 \fB\%curses\fP(3X),
 \fB\%curs_color\fP(3X),

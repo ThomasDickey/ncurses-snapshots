@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1999-2010,2016 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1999-on
 .\"
-.\" $Id: curs_extend.3x,v 1.51 2024/09/14 20:06:50 tom Exp $
-.TH curs_extend 3X 2024-09-14 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_extend.3x,v 1.54 2025/01/19 00:49:39 tom Exp $
+.TH curs_extend 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,12 +96,16 @@ The pointer returned by
 corresponds to statically allocated memory;
 do not attempt to \fIfree\fP(3) it.
 .SH EXTENSIONS
-These functions are \fB\%ncurses\fP(3X) extensions,
+These functions are
+.I \%ncurses
+extensions,
 and are not found in SVr4
 .IR curses ,
 4.4BSD
 .IR curses ,
-or any other previous curses implementation.
+or any other previous
+.I curses
+implementation.
 .SH PORTABILITY
 Applications employing
 .I \%ncurses

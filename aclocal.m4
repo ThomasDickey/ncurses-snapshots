@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
+dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1099 2024/12/28 21:40:09 tom Exp $
+dnl $Id: aclocal.m4,v 1.1100 2025/01/15 22:07:11 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -7372,6 +7372,30 @@ define([CF_REMOVE_LIB],
 $1=`echo "$2" | sed -e 's/-l$3[[ 	]]//g' -e 's/-l$3[$]//'`
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_REQUIRE_PKG version: 1 updated: 2025/01/10 19:55:54
+dnl --------------
+dnl Update $REQUIRE_PKG, which lists the known required packages for this
+dnl program.
+dnl
+dnl $1 = package(s) to require, e.g., in the generated ".pc" file
+define([CF_REQUIRE_PKG],
+[
+for cf_required in $1
+do
+	# check for duplicates
+	for cf_require_pkg in $REQUIRE_PKG
+	do
+		if test "$cf_required" = "$cf_require_pkg"
+		then
+			cf_required=
+			break
+		fi
+	done
+	test -n "$cf_required" && REQUIRE_PKG="$REQUIRE_PKG $cf_required"
+done
+AC_SUBST(REQUIRE_PKG)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_RESTORE_XTRA_FLAGS version: 1 updated: 2020/01/11 16:47:45
 dnl ---------------------
 dnl Restore flags saved in CF_SAVE_XTRA_FLAGS
@@ -8622,7 +8646,7 @@ top_builddir=ifelse($1,,`pwd`,$1)
 AC_SUBST(top_builddir)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_TRY_PKG_CONFIG version: 6 updated: 2020/12/31 10:54:15
+dnl CF_TRY_PKG_CONFIG version: 7 updated: 2025/01/10 19:55:54
 dnl -----------------
 dnl This is a simple wrapper to use for pkg-config, for libraries which may be
 dnl available in that form.
@@ -8639,6 +8663,7 @@ if test "$PKG_CONFIG" != none && "$PKG_CONFIG" --exists "$1"; then
 	cf_pkgconfig_libs="`$PKG_CONFIG --libs   "$1" 2>/dev/null`"
 	CF_VERBOSE(package $1 CFLAGS: $cf_pkgconfig_incs)
 	CF_VERBOSE(package $1 LIBS: $cf_pkgconfig_libs)
+	CF_REQUIRE_PKG($1)
 	CF_ADD_CFLAGS($cf_pkgconfig_incs)
 	CF_ADD_LIBS($cf_pkgconfig_libs)
 	ifelse([$2],,:,[$2])
@@ -8890,7 +8915,7 @@ AC_DEFUN([CF_VERBOSE],
 CF_MSG_LOG([$1])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_VERSION_INFO version: 9 updated: 2024/06/12 04:04:13
+dnl CF_VERSION_INFO version: 10 updated: 2025/01/10 19:55:54
 dnl ---------------
 dnl Define several useful symbols derived from the VERSION file.  A separate
 dnl file is preferred to embedding the version numbers in various scripts.
@@ -8968,8 +8993,10 @@ AC_SUBST(VERSION_PATCH)
 dnl if a package name is given, define its corresponding version info.  We
 dnl need the package name to ensure that the defined symbols are unique.
 ifelse($1,,,[
+	PROGRAM=$1
 	PACKAGE=ifelse($2,,$1,$2)
 	AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE",[Define to the package-name])
+	AC_SUBST(PROGRAM)
 	AC_SUBST(PACKAGE)
 	AH_TEMPLATE([AS_TR_CPP($1[_VERSION])],[version of package])
 	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_VERSION]),"${VERSION_MAJOR}.${VERSION_MINOR}")
@@ -10016,7 +10043,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 14 updated: 2024/08/03 12:34:02
+dnl CF_WITH_VERSIONED_SYMS version: 15 updated: 2025/01/15 17:07:11
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -10028,6 +10055,9 @@ AC_DEFUN([CF_WITH_VERSIONED_SYMS],
 AC_REQUIRE([AC_PROG_EGREP])dnl
 AC_REQUIRE([CF_GLOB_FULLPATH])dnl
 
+if test "$with_libtool" = "yes" ; then
+	:
+elif test "$with_shared" = "yes" ; then
 AC_MSG_CHECKING(if versioned-symbols file should be used)
 AC_ARG_WITH(versioned-syms,
 	[[  --with-versioned-syms[=MAP-FILE] version ELF shared library symbols per MAP-FILE]],
@@ -10150,6 +10180,8 @@ EOF
 		AC_MSG_RESULT($WILDCARD_SYMS)
 		rm -f conftest.*
 	fi
+fi
+
 fi
 AC_SUBST(RESULTING_SYMS)
 AC_SUBST(VERSIONED_SYMS)

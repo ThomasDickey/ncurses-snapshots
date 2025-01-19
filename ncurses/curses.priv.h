@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.699 2025/01/12 00:41:56 tom Exp $
+ * $Id: curses.priv.h,v 1.700 2025/01/18 14:41:58 tom Exp $
  *
  *	curses.priv.h
  *
@@ -366,6 +366,12 @@ typedef TRIES {
 #define D_QUOTE '"'
 
 #define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+
+/*
+ * To make them easier to find, user-defined capabilities used within ncurses
+ * should be tagged with this macro:
+ */
+#define UserCap(name) #name
 
 /*
  * Structure for palette tables

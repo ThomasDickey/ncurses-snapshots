@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -148,7 +148,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.59 2024/12/07 20:06:49 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.60 2025/01/12 10:51:43 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -371,7 +371,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	do {
 	    oldnums[n++] = atoi(st);
 	} while
-	    ((st = strtok((char *) NULL, " ")) != 0);
+	    ((st = strtok((char *) NULL, " ")) != NULL);
 
 	/* display it */
 	(void) fputs("Initial input:\n", stderr);

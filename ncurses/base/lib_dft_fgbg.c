@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.32 2024/12/07 20:00:48 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.33 2025/01/18 14:47:35 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -76,7 +76,7 @@ NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 	if ((orig_pair || orig_colors) && !initialize_pair) {
 
 	    SP_PARM->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
-	    SP_PARM->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
+	    SP_PARM->_has_sgr_39_49 = (tigetflag(UserCap(AX)) == TRUE);
 	    SP_PARM->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : fg;
 	    SP_PARM->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : bg;
 	    if (SP_PARM->_color_pairs != NULL) {

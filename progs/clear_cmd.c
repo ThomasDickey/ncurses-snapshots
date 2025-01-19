@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018,2020,2025 Thomas E. Dickey                                *
  * Copyright 2016,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 #define USE_LIBTINFO
 #include <clear_cmd.h>
 
-MODULE_ID("$Id: clear_cmd.c,v 1.5 2020/02/02 23:34:34 tom Exp $")
+MODULE_ID("$Id: clear_cmd.c,v 1.6 2025/01/18 14:51:58 tom Exp $")
 
 static int
 putch(int c)
@@ -52,7 +52,7 @@ clear_cmd(bool legacy)
     int retval = tputs(clear_screen, lines > 0 ? lines : 1, putch);
     if (!legacy) {
 	/* Clear the scrollback buffer if possible. */
-	char *E3 = tigetstr("E3");
+	char *E3 = tigetstr(UserCap(E3));
 	if (E3)
 	    (void) tputs(E3, lines > 0 ? lines : 1, putch);
     }

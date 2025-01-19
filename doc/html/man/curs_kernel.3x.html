@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.72 2024/09/21 18:05:20 tom Exp @
+  * @Id: curs_kernel.3x,v 1.75 2025/01/19 00:51:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2024-09-21 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2024-09-21 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -232,27 +232,30 @@
        error conditions for them, except as described for <EM>curs</EM><STRONG>_</STRONG><EM>set</EM> in  section
        "RETURN VALUE" above.
 
-       Older  SVr4  man  pages  warn  that  the  return  value of <STRONG>curs_set</STRONG> "is
-       currently incorrect".  This implementation gets it right, but  counting
+       The  System V  Interface Definition, Version 4 (1995), specified all of
+       these functions except <EM>curs</EM><STRONG>_</STRONG><EM>set</EM> as returning <EM>OK</EM>.
+
+       Older SVr4 man pages  warn  that  the  return  value  of  <STRONG>curs_set</STRONG>  "is
+       currently  incorrect".  This implementation gets it right, but counting
        on its correctness anywhere else may be unwise.
 
-       X/Open  Curses specifies <EM>ripoffline</EM> as returning <STRONG>OK</STRONG> with no possibility
-       of failure ("[c]alls to <EM>ripoffline</EM> above this limit [five  lines]  have
+       X/Open Curses specifies <EM>ripoffline</EM> as returning <STRONG>OK</STRONG> with no  possibility
+       of  failure  ("[c]alls to <EM>ripoffline</EM> above this limit [five lines] have
        no effect but report success").
 
        X/Open Curses notes:
 
               After use of <EM>mvcur</EM>(), the model Curses maintains of the state of
-              the terminal might not match the actual state of  the  terminal.
-              An  application  should  touch  and  refresh  the  window before
+              the  terminal  might not match the actual state of the terminal.
+              An application  should  touch  and  refresh  the  window  before
               resuming conventional use of Curses.
 
-       Both <EM>ncurses</EM> and SVr4 <EM>curses</EM> implement <STRONG>mvcur</STRONG> using  the  <EM>SCREEN</EM>  object
-       allocated  in  either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open Curses states
-       that the old location must be given for <EM>mvcur</EM> to accommodate  terminals
+       Both  <EM>ncurses</EM>  and  SVr4 <EM>curses</EM> implement <STRONG>mvcur</STRONG> using the <EM>SCREEN</EM> object
+       allocated in either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open  Curses  states
+       that  the old location must be given for <EM>mvcur</EM> to accommodate terminals
        that lack absolute cursor positioning.
 
-       If  interrupted  by  a  signal,  <EM>ncurses</EM> restarts <EM>napms</EM>.  That, and the
+       If interrupted by a signal, <EM>ncurses</EM>  restarts  <EM>napms</EM>.   That,  and  the
        limitation to 30 seconds, differ from other implementations.
 
 
@@ -262,7 +265,7 @@
 
 
 
-ncurses 6.5                       2024-09-21                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

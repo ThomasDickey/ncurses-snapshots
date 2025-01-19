@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2019-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2001-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.74 2024/12/28 21:26:21 tom Exp $
-.TH curs_add_wch 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.88 2025/01/19 00:49:39 tom Exp $
+.TH curs_add_wch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -68,7 +68,9 @@ add a \fIcurses\fR complex character to a window, possibly advancing the cursor
 .SH DESCRIPTION
 .SS wadd_wch
 .B \%wadd_wch
-writes the complex character
+writes the
+.I curses
+complex character
 .I wch
 to the window
 .IR win ","
@@ -76,6 +78,12 @@ then may advance the cursor position,
 analogously to the standard C library's \fI\%putwchar\fP(3).
 \fB\%ncurses\fP(3X) describes the variants of this function.
 .PP
+Construct a
+.I curses
+complex character
+from a
+.I wchar_t
+with \fB\%setcchar\fP(3X).
 Much behavior depends on whether the wide characters in
 .I wch
 are spacing or non-spacing;
@@ -162,7 +170,7 @@ can be copied from place to place using \fB\%win_wch\fP(3X) and
 .BR \%wadd_wch "."
 See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
 usefully \*(``or\*(''ed with characters.
-A complex character whose character component is a wide space,
+A complex character whose only character component is a wide space,
 and whose only attribute is
 .BR \%WA_NORMAL ,
 is a
@@ -176,7 +184,10 @@ and
 are equivalent to calling
 .RB \%( w ) add_wch
 followed by
-.RB \%( w ) refresh .
+.RB \%( w ) refresh
+on
+.B \%stdscr
+or the specified window.
 .I curses
 interprets these functions as a hint that only a single (complex)
 character is being output;
@@ -190,7 +201,7 @@ defines macros starting with
 .B \%WACS_
 that can be used with
 .B \%wadd_wch
-to write line-drawing and other special characters to the screen.
+to write line-drawing and other symbols to the screen.
 .I \%ncurses
 terms these
 .I "forms-drawing characters."
@@ -385,12 +396,19 @@ These functions return
 on success and
 .B ERR
 on failure.
+.PP
 In
 .IR \%ncurses ,
 .B \%wadd_wch
-returns
+and
+.B \%wecho_wchar
+return
 .B ERR
 if
+.bP
+the
+.I curses
+screen has not been initialized,
 .bP
 .I win
 is
@@ -425,7 +443,7 @@ variable is implemented in SVr4 and other versions of
 but is not specified by X/Open Curses
 (see \fBcurs_variables\fP(3X)).
 .SH PORTABILITY
-These functions are described in X/Open Curses, Issue 4.
+These functions are described in X/Open Curses Issue\ 4.
 It specifies no error conditions for them.
 .PP
 The defaults specified for forms-drawing characters apply in the POSIX
@@ -486,9 +504,9 @@ was intended.
 But there are several possibilities, all with problems.
 .IP
 Unicode 6.0 (2010) does provide two lantern symbols: U+1F383 and U+1F3EE.
-Those were not available in 2002, and are irrelevant since
-they lie outside the BMP and as a result are not generally available
-in terminals.
+Those were not available in 2002,
+and are irrelevant since they lie outside the Basic Multilingual Plane
+and as a result are unavailable on many terminals.
 They are not storm lanterns, in any case.
 .IP
 Most \fIstorm lanterns\fP have a tapering glass chimney
@@ -535,10 +553,10 @@ In the latter case,
 .I \%ncurses
 adds the non-spacing character to the active complex character.
 .SH HISTORY
-These functions were initially specified by X/Open Curses,
-Issue 4.
-The System\ V Interface Definition,
-Version 4 (1995),
+These functions were initially specified by X/Open Curses Issue\ 4
+(1995).
+The System\ V Interface Definition Version\ 4
+of the same year
 specified functions named
 .I \%waddwch
 and

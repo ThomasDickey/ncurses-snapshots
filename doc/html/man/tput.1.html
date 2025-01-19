@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.122 2024/12/28 21:27:26 tom Exp @
+  * @Id: tput.1,v 1.130 2025/01/19 00:51:54 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2024-12-28 ncurses 6.5 User commands</TITLE>
+<TITLE>tput 1 2025-01-18 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2024-12-28 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tput 1 2025-01-18 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -91,7 +91,7 @@
                 defined, without a trailing newline.
 
        Before  using  a value returned on the standard output, the application
-       should test <STRONG>tput</STRONG>'s exit status to be sure it is 0;  see  section  "EXIT
+       should test <STRONG>tput</STRONG> <STRONG>'s</STRONG> exit status to be sure it is 0; see  section  "EXIT
        STATUS" below.
 
 
@@ -172,7 +172,7 @@
 
                        <STRONG>o</STRONG>   enabling newline translation, and
 
-                       <STRONG>o</STRONG>   setting  any  unset  special  characters  to  their
+                       <STRONG>o</STRONG>   setting  any  special  input  characters  to  their
                            default values.
 
                   (2)  If any reset capabilities are defined for the  terminal
@@ -209,7 +209,7 @@
        operand.  For example, executing a link named <STRONG>reset</STRONG> that points to <STRONG>tput</STRONG>
        has the same effect as "<STRONG>tput</STRONG> <STRONG>reset</STRONG>".
 
-       This feature was introduced by <EM>ncurses</EM> 5.2 in 2000.  It is rarely used:
+       This feature was introduced by <EM>ncurses</EM> 5.2 in 2000.  It is rarely used.
 
        <STRONG>clear</STRONG>  is a separate program, which is both smaller and more frequently
               executed.
@@ -290,10 +290,15 @@
 
 
 </PRE><H2><a name="h2-ENVIRONMENT">ENVIRONMENT</a></H2><PRE>
-       <STRONG>tput</STRONG> reads one environment variable.
+       <STRONG>tput</STRONG> reads up to three environment variables if the <STRONG>-T</STRONG>  option  is  not
+       specified.
 
-       <EM>TERM</EM>    denotes the terminal type.  Each  terminal  type  is  distinct,
-               though many are similar.  The <STRONG>-T</STRONG> option overrides its value.
+       <EM>COLUMNS</EM>  specifies the width of the screen in characters.
+
+       <EM>LINES</EM>    specifies the height of the screen in characters.
+
+       <EM>TERM</EM>     denotes  the  terminal  type.  Each terminal type is distinct,
+                though many are similar.
 
 
 </PRE><H2><a name="h2-FILES">FILES</a></H2><PRE>
@@ -305,192 +310,192 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       Over  time  <EM>ncurses</EM>  <STRONG>tput</STRONG>  has  differed  from  that of System V in two
+       Over time <EM>ncurses</EM> <STRONG>tput</STRONG> has  differed  from  that  of  System V  in  two
        important respects, one now mostly historical.
 
-       <STRONG>o</STRONG>   "<STRONG>tput</STRONG> <EM>cap-code</EM>" writes to the standard output, which need not be  a
-           terminal  device.   However,  the operands that manipulate terminal
+       <STRONG>o</STRONG>   "<STRONG>tput</STRONG>  <EM>cap-code</EM>" writes to the standard output, which need not be a
+           terminal device.  However, the operands  that  manipulate  terminal
            modes might not use the standard output.
 
-           System V <STRONG>tput</STRONG>'s <STRONG>init</STRONG> and <STRONG>reset</STRONG>  operands  use  logic  from  4.1cBSD
-           <STRONG>tset</STRONG>,  manipulating  terminal  modes.   It  checks  the  same  file
-           descriptors (and <EM>/dev/tty</EM>) for association with a  terminal  device
-           as  <EM>ncurses</EM>  now does, and if none are, finally assumes a 1200 baud
+           System V  <EM>tput</EM>'s  <STRONG>init</STRONG>  and  <STRONG>reset</STRONG>  operands use logic from 4.1cBSD
+           <EM>tset</EM>,  manipulating  terminal  modes.   It  checks  the  same  file
+           descriptors  (and  <EM>/dev/tty</EM>) for association with a terminal device
+           as <EM>ncurses</EM> now does, and if none are, finally assumes a  1200  baud
            terminal.  When updating terminal modes, it ignores errors.
 
-           Until <EM>ncurses</EM> 6.1 (see  section  "HISTORY"  below),  <STRONG>tput</STRONG>  did  not
+           Until  <EM>ncurses</EM>  6.1  (see  section  "HISTORY"  below), <STRONG>tput</STRONG> did not
            modify  terminal  modes.   It  now  employs  a  scheme  similar  to
            System V, using functions shared with <STRONG>tset</STRONG> (and ultimately based on
-           4.4BSD  <STRONG>tset</STRONG>).  If it is not able to open a terminal (for instance,
+           4.4BSD <EM>tset</EM>).  If it is not able to open a terminal (for  instance,
            when run by <STRONG>cron(1)</STRONG>), <STRONG>tput</STRONG> exits with an error status.
 
-       <STRONG>o</STRONG>   System V <STRONG>tput</STRONG> assumes that  the  type  of  a  <EM>cap-code</EM>  operand  is
-           numeric  if all the characters of its value are decimal numbers; if
+       <STRONG>o</STRONG>   System V  <EM>tput</EM>  assumes  that  the  type  of  a <EM>cap-code</EM> operand is
+           numeric if all the characters of its value are decimal numbers;  if
            they are not, it treats <EM>cap-code</EM> as a string capability.
 
            Most implementations that provide support for <EM>cap-code</EM> operands use
-           the  <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>  function  to  expand its parameters.  That function
-           expects a mixture of numeric and string parameters, requiring  <STRONG>tput</STRONG>
+           the <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG> function to expand  its  parameters.   That  function
+           expects  a mixture of numeric and string parameters, requiring <STRONG>tput</STRONG>
            to know which type to use.
 
-           <EM>ncurses</EM>  <STRONG>tput</STRONG> uses a table to determine the parameter types for the
-           standard <EM>cap-code</EM> operands, and an  internal  function  to  analyze
+           <EM>ncurses</EM> <STRONG>tput</STRONG> uses a table to determine the parameter types for  the
+           standard  <EM>cap-code</EM>  operands,  and  an internal function to analyze
            nonstandard <EM>cap-code</EM> operands.
 
-           While  more reliable than System V's utility, a portability problem
-           is introduced by this analysis.  An OpenBSD developer  adapted  the
-           internal  library  function  from <EM>ncurses</EM> to port NetBSD's <EM>termcap</EM>-
-           based <STRONG>tput</STRONG> to <EM>terminfo</EM>, and modified it to interpret multiple  <EM>cap-</EM>
-           <EM>codes</EM>  (and parameters) on the command line.  Portable applications
-           should not rely upon this feature; <EM>ncurses</EM>  offers  it  to  support
+           While more reliable than System V's utility, a portability  problem
+           is  introduced  by this analysis.  An OpenBSD developer adapted the
+           internal library function from <EM>ncurses</EM> to  port  NetBSD's  <EM>termcap</EM>-
+           based  <EM>tput</EM> to <EM>terminfo</EM>, and modified it to interpret multiple <EM>cap-</EM>
+           <EM>codes</EM> (and parameters) on the command line.  Portable  applications
+           should  not  rely  upon  this feature; <EM>ncurses</EM> offers it to support
            applications written specifically for OpenBSD.
 
-       This  implementation,  unlike others, accepts both <EM>termcap</EM> and <EM>terminfo</EM>
-       <EM>cap-codes</EM> if <EM>termcap</EM> support is compiled in.  In  that  case,  however,
+       This implementation, unlike others, accepts both <EM>termcap</EM>  and  <EM>terminfo</EM>
+       <EM>cap-codes</EM>  if  <EM>termcap</EM>  support is compiled in.  In that case, however,
        the predefined <EM>termcap</EM> and <EM>terminfo</EM> codes have two ambiguities; <EM>ncurses</EM>
        assumes the <EM>terminfo</EM> code.
 
-       <STRONG>o</STRONG>   The <EM>cap-code</EM> <STRONG>dl</STRONG> means <STRONG>delete_line</STRONG> to <EM>termcap</EM>  but  <STRONG>parm_delete_line</STRONG>
+       <STRONG>o</STRONG>   The  <EM>cap-code</EM>  <STRONG>dl</STRONG> means <STRONG>delete_line</STRONG> to <EM>termcap</EM> but <STRONG>parm_delete_line</STRONG>
            to <EM>terminfo</EM>.  <EM>termcap</EM> uses the code <STRONG>DL</STRONG> for <STRONG>parm_delete_line</STRONG>.  <EM>term-</EM>
            <EM>info</EM> uses the code <STRONG>dl1</STRONG> for <STRONG>delete_line</STRONG>.
 
-       <STRONG>o</STRONG>   The <EM>cap-code</EM> <STRONG>ed</STRONG> means <STRONG>exit_delete_mode</STRONG> to <EM>termcap</EM>  but  <STRONG>clr_eos</STRONG>  to
+       <STRONG>o</STRONG>   The  <EM>cap-code</EM>  <STRONG>ed</STRONG>  means <STRONG>exit_delete_mode</STRONG> to <EM>termcap</EM> but <STRONG>clr_eos</STRONG> to
            <EM>terminfo</EM>.  <EM>termcap</EM> uses the code <STRONG>cd</STRONG> for <STRONG>clr_eos</STRONG>.  <EM>terminfo</EM> uses the
            code <STRONG>rmdc</STRONG> for <STRONG>exit_delete_mode</STRONG>.
 
-       The  <STRONG>longname</STRONG>  operand,  <STRONG>-S</STRONG>  option,  and  the   parameter-substitution
-       features  used in the <STRONG>cup</STRONG> example below, were not supported in AT&amp;T/USL
+       The   <STRONG>longname</STRONG>  operand,  <STRONG>-S</STRONG>  option,  and  the  parameter-substitution
+       features used in the <STRONG>cup</STRONG> example below, were not supported in  AT&amp;T/USL
        <EM>curses</EM> before SVr4 (1989).  Later, 4.3BSD-Reno (1990) added support for
        <STRONG>longname</STRONG>,  and  in  1994,  NetBSD  added  support  for  the  parameter-
        substitution features.
 
-       IEEE  Std  1003.1/The  Open   Group   Base   Specifications   Issue   7
-       (POSIX.1-2008)  documents  only the <STRONG>clear</STRONG>, <STRONG>init</STRONG>, and <STRONG>reset</STRONG> operands.  A
+       IEEE   Std   1003.1/The   Open   Group   Base   Specifications  Issue 7
+       (POSIX.1-2008) documents only the <STRONG>clear</STRONG>, <STRONG>init</STRONG>, and <STRONG>reset</STRONG>  operands.   A
        few observations of interest arise from that selection.
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> supports <STRONG>clear</STRONG> as it does any other standard <EM>cap-code</EM>.  The
-           others   (<STRONG>init</STRONG>   and   <STRONG>longname</STRONG>)  do  not  correspond  to  terminal
+           others  (<STRONG>init</STRONG>  and  <STRONG>longname</STRONG>)  do  not   correspond   to   terminal
            capabilities.
 
-       <STRONG>o</STRONG>   The <STRONG>tput</STRONG> on SVr4-based systems such as Solaris, IRIX64, and  HP-UX,
+       <STRONG>o</STRONG>   The  <EM>tput</EM> on SVr4-based systems such as Solaris, IRIX64, and HP-UX,
            as well as others such as AIX and Tru64, also support standard <EM>cap-</EM>
            <EM>code</EM> operands.
 
        <STRONG>o</STRONG>   A few platforms such as FreeBSD recognize <EM>termcap</EM> codes rather than
-           <EM>terminfo</EM> capability codes in their respective <STRONG>tput</STRONG> commands.  Since
-           2010, NetBSD's <STRONG>tput</STRONG> uses <EM>terminfo</EM> codes.   Before  that,  it  (like
+           <EM>terminfo</EM> capability codes in their respective <EM>tput</EM> commands.  Since
+           2010,  NetBSD's  <EM>tput</EM>  uses  <EM>terminfo</EM> codes.  Before that, it (like
            FreeBSD) recognized <EM>termcap</EM> codes.
 
-           Beginning  in  2021, FreeBSD uses <EM>ncurses</EM> <STRONG>tput</STRONG>, configured for both
+           Beginning in 2021, FreeBSD uses <EM>ncurses</EM> <STRONG>tput</STRONG>, configured  for  both
            <EM>terminfo</EM> (tested first) and <EM>termcap</EM> (as a fallback).
 
        Because (apparently) all <EM>certified</EM> Unix systems support the full set of
-       capability  codes,  the  reason  for  documenting only a few may not be
+       capability codes, the reason for documenting only  a  few  may  not  be
        apparent.
 
        <STRONG>o</STRONG>   X/Open Curses Issue 7 documents <STRONG>tput</STRONG> differently, with <EM>cap-code</EM> and
            the other features used in this implementation.
 
-       <STRONG>o</STRONG>   That  is,  there  are  two standards for <STRONG>tput</STRONG>: POSIX (a subset) and
-           X/Open Curses (the full implementation).  POSIX documents a  subset
-           to  avoid  the  complication  of  including  X/Open  Curses and the
+       <STRONG>o</STRONG>   That is, there are two standards for <EM>tput</EM>:  POSIX  (a  subset)  and
+           X/Open  Curses (the full implementation).  POSIX documents a subset
+           to avoid the  complication  of  including  X/Open  Curses  and  the
            terminal capability database.
 
-       <STRONG>o</STRONG>   While it is certainly possible to  write  a  <STRONG>tput</STRONG>  program  without
-           using  <EM>curses</EM>,  no  system  with a <EM>curses</EM> implementation provides a
-           <STRONG>tput</STRONG> utility that does not also support standard <EM>cap-codes</EM>.
+       <STRONG>o</STRONG>   While  it  is  certainly  possible  to write a <EM>tput</EM> program without
+           using <EM>curses</EM>, no system with a  <EM>curses</EM>  implementation  provides  a
+           <EM>tput</EM> utility that does not also support standard <EM>cap-codes</EM>.
 
-       X/Open  Curses  Issue  7  (2009)  is  the  first  version  to  document
+       X/Open   Curses  Issue 7  (2009)  is  the  first  version  to  document
        utilities.  However that part of X/Open Curses does not follow existing
        practice (that is, System V <EM>curses</EM> behavior).
 
-       <STRONG>o</STRONG>   It assigns exit status 4 to "invalid operand", which may  have  the
-           same  meaning  as  "unknown  capability".  For instance, the source
+       <STRONG>o</STRONG>   It  assigns  exit status 4 to "invalid operand", which may have the
+           same meaning as "unknown capability".   For  instance,  the  source
            code for Solaris <EM>xcurses</EM> uses the term "invalid" in this case.
 
-       <STRONG>o</STRONG>   It assigns exit status 255  to  a  numeric  variable  that  is  not
+       <STRONG>o</STRONG>   It  assigns  exit  status  255  to  a  numeric variable that is not
            specified in the <EM>terminfo</EM> database.  That likely is a documentation
-           error, mistaking  the  "-1"  written  to  the  standard  output  to
+           error,  mistaking  the  "-1"  written  to  the  standard  output to
            indicate an absent or canceled numeric capability for an (unsigned)
            exit status.
 
        The various System V implementations (AIX, HP-UX, Solaris) use the same
        exit statuses as <EM>ncurses</EM>.
 
-       NetBSD  <EM>curses</EM>  documents  exit  statuses  that  correspond  to neither
+       NetBSD <EM>curses</EM>  documents  exit  statuses  that  correspond  to  neither
        <EM>ncurses</EM> nor X/Open Curses.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       Bill Joy wrote a <STRONG>tput</STRONG> command during development  of  4BSD  in  October
-       1980.   This  initial version only cleared the screen, and did not ship
+       Bill  Joy  wrote  a  <EM>tput</EM> command during development of 4BSD in October
+       1980.  This initial version only cleared the screen, and did  not  ship
        with official distributions.
 
-       System V developed a different <STRONG>tput</STRONG> command.
+       System V developed a different <EM>tput</EM> command.
 
-       <STRONG>o</STRONG>   SVr2 (1984) provided a rudimentary <STRONG>tput</STRONG> that checked the  parameter
-           against  each  predefined capability and returned the corresponding
-           value.   This  version  of  <STRONG>tput</STRONG>  did   not   use   <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>   for
+       <STRONG>o</STRONG>   SVr2  (1984) provided a rudimentary <EM>tput</EM> that checked the parameter
+           against each predefined capability and returned  the  corresponding
+           value.    This   version   of   <EM>tput</EM>  did  not  use  <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>  for
            parameterized capabilities.
 
-       <STRONG>o</STRONG>   SVr3  (1987)  replaced  that  with  a  more extensive program whose
-           support for <STRONG>init</STRONG> and <STRONG>reset</STRONG> operands (more than  half  the  program)
-           incorporated the <STRONG>reset</STRONG> feature of BSD <STRONG>tset</STRONG> written by Eric Allman.
+       <STRONG>o</STRONG>   SVr3 (1987) replaced that  with  a  more  extensive  program  whose
+           support  for  <STRONG>init</STRONG>  and <STRONG>reset</STRONG> operands (more than half the program)
+           incorporated the <STRONG>reset</STRONG> feature of BSD <EM>tset</EM> written by Eric Allman.
 
-       <STRONG>o</STRONG>   SVr4  (1989)  added  color  initialization by using the <STRONG>orig_colors</STRONG>
+       <STRONG>o</STRONG>   SVr4 (1989) added color initialization  by  using  the  <STRONG>orig_colors</STRONG>
            (<STRONG>oc</STRONG>) and <STRONG>orig_pair</STRONG> (<STRONG>op</STRONG>) capabilities in its <STRONG>init</STRONG> logic.
 
-       Keith Bostic refactored BSD <STRONG>tput</STRONG> for shipment in  4.3BSD-Tahoe  (1988),
-       then  replaced  it  the  next  year  with a new implementation based on
-       System V <STRONG>tput</STRONG>.  Bostic's version  similarly  accepted  some  parameters
-       named  for  <EM>terminfo</EM>  (pseudo-)capabilities: <STRONG>clear</STRONG>, <STRONG>init</STRONG>, <STRONG>longname</STRONG>, and
-       <STRONG>reset</STRONG>.  However, because he had only  <EM>termcap</EM>  available,  it  accepted
-       <EM>termcap</EM>  codes for other capabilities.  Also, Bostic's BSD <STRONG>tput</STRONG> did not
-       modify the terminal modes as the earlier BSD <STRONG>tset</STRONG> had done.
+       Keith  Bostic  refactored BSD <EM>tput</EM> for shipment in 4.3BSD-Tahoe (1988),
+       then replaced it the next year  with  a  new  implementation  based  on
+       System V  <EM>tput</EM>.   Bostic's  version  similarly accepted some parameters
+       named for <EM>terminfo</EM> (pseudo-)capabilities: <STRONG>clear</STRONG>,  <STRONG>init</STRONG>,  <STRONG>longname</STRONG>,  and
+       <STRONG>reset</STRONG>.   However,  because  he  had only <EM>termcap</EM> available, it accepted
+       <EM>termcap</EM> codes for other capabilities.  Also, Bostic's BSD <EM>tput</EM> did  not
+       modify the terminal modes as the earlier BSD <EM>tset</EM> had done.
 
-       At the same time, Bostic added a shell script named "clear"  that  used
-       <STRONG>tput</STRONG>  to  clear the screen.  Both of these appeared in 4.4BSD, becoming
-       the "modern" BSD implementation of <STRONG>tput</STRONG>.
+       At  the  same time, Bostic added a shell script named "clear" that used
+       <EM>tput</EM> to clear the screen.  Both of these appeared in  4.4BSD,  becoming
+       the "modern" BSD implementation of <EM>tput</EM>.
 
-       The origin of <EM>ncurses</EM> <STRONG>tput</STRONG> lies outside both System V and BSD, in  Ross
-       Ridge's  <EM>mytinfo</EM>  package,  published  on <EM>comp.sources.unix</EM> in December
-       1992.  Ridge's program made more  sophisticated  use  of  the  terminal
-       capabilities than the BSD program.  Eric Raymond used that <STRONG>tput</STRONG> program
-       (and other parts of <EM>mytinfo</EM>) in <EM>ncurses</EM> in  June  1995.   Incorporating
-       the  portions dealing with terminal capabilities almost without change,
-       Raymond made improvements  to  the  way  command-line  parameters  were
+       The  origin of <EM>ncurses</EM> <STRONG>tput</STRONG> lies outside both System V and BSD, in Ross
+       Ridge's <EM>mytinfo</EM> package, published  on  <EM>comp.sources.unix</EM>  in  December
+       1992.   Ridge's  program  made  more  sophisticated use of the terminal
+       capabilities than the BSD program.  Eric Raymond used that <EM>tput</EM> program
+       (and  other  parts  of <EM>mytinfo</EM>) in <EM>ncurses</EM> in June 1995.  Incorporating
+       the portions dealing with terminal capabilities almost without  change,
+       Raymond  made  improvements  to  the  way  command-line parameters were
        handled.
 
        Before <EM>ncurses</EM> 6.1 (2018), its <STRONG>tset</STRONG> and <STRONG>tput</STRONG> utilities differed.
 
-       <STRONG>o</STRONG>   <STRONG>tset</STRONG>  was  more effective, resetting the terminal modes and special
-           characters.
+       <STRONG>o</STRONG>   <STRONG>tset</STRONG> was more effective, resetting the terminal's modes and special
+           input characters.
 
-       <STRONG>o</STRONG>   On the other hand, <STRONG>tset</STRONG>'s repertoire of terminal  capabilities  for
+       <STRONG>o</STRONG>   On  the  other hand, <STRONG>tset</STRONG>'s repertoire of terminal capabilities for
            resetting the terminal was more limited; it had only equivalents of
-           <STRONG>reset_1string</STRONG> (<STRONG>rs1</STRONG>), <STRONG>reset_2string</STRONG> (<STRONG>rs2</STRONG>), and <STRONG>reset_file</STRONG> (<STRONG>rf</STRONG>),  and
+           <STRONG>reset_1string</STRONG>  (<STRONG>rs1</STRONG>), <STRONG>reset_2string</STRONG> (<STRONG>rs2</STRONG>), and <STRONG>reset_file</STRONG> (<STRONG>rf</STRONG>), and
            not the tab stop and margin update features of <STRONG>tput</STRONG>.
 
-       The <STRONG>reset</STRONG> program is traditionally an alias for <STRONG>tset</STRONG> due to its ability
-       to reset terminal modes and special characters.
+       The <EM>reset</EM> program is traditionally an alias for <STRONG>tset</STRONG> due to its ability
+       to reset the terminal's modes and special input characters.
 
-       As of <EM>ncurses</EM> 6.1,  the  "reset"  features  of  the  two  programs  are
+       As  of  <EM>ncurses</EM>  6.1,  the  "reset"  features  of  the two programs are
        (mostly) the same.  Two minor differences remain.
 
-       <STRONG>o</STRONG>   When  issuing  a  reset, the <STRONG>tset</STRONG> program checks whether the device
-           appears to be a pseudoterminal (as might  be  used  by  a  terminal
+       <STRONG>o</STRONG>   When issuing a reset, the <STRONG>tset</STRONG> program checks  whether  the  device
+           appears  to  be  a  pseudoterminal  (as might be used by a terminal
            emulator program), and, if it does not, waits one second in case it
            is communicating with a hardware terminal.
 
-       <STRONG>o</STRONG>   The two programs  write  the  terminal  initialization  strings  to
-           different  streams;  that  is, standard error for <STRONG>tset</STRONG> and standard
+       <STRONG>o</STRONG>   The  two  programs  write  the  terminal  initialization strings to
+           different streams; that is, standard error for  <STRONG>tset</STRONG>  and  standard
            output for <STRONG>tput</STRONG>.
 
 
 </PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
        <STRONG>tput</STRONG> <STRONG>init</STRONG>
               Initialize the terminal according to the type of terminal in the
-              <EM>TERM</EM>  environment  variable.   If  the  system does not reliably
+              <EM>TERM</EM> environment variable.  If  the  system  does  not  reliably
               initialize the terminal upon login, this command can be included
               in <EM>$HOME/.profile</EM> after exporting the <EM>TERM</EM> environment variable.
 
@@ -502,11 +507,11 @@
               Set cursor to normal visibility.
 
        <STRONG>tput</STRONG> <STRONG>home</STRONG>
-              Move the cursor to line 0, column 0: the upper  left  corner  of
+              Move  the  cursor  to line 0, column 0: the upper left corner of
               the screen, usually known as the "home" cursor position.
 
        <STRONG>tput</STRONG> <STRONG>clear</STRONG>
-              Clear  the  screen: write the <STRONG>clear_screen</STRONG> capability's value to
+              Clear the screen: write the <STRONG>clear_screen</STRONG> capability's  value  to
               the standard output stream.
 
        <STRONG>tput</STRONG> <STRONG>cols</STRONG>
@@ -516,29 +521,29 @@
               Report the number of columns used by an ADM-3A terminal.
 
        <STRONG>strong=`tput</STRONG> <STRONG>smso`</STRONG> <STRONG>normal=`tput</STRONG> <STRONG>rmso`</STRONG>
-              Set shell variables to capability values: <STRONG>strong</STRONG> and <STRONG>normal</STRONG>,  to
-              begin  and  end,  respectively, stand-out mode for the terminal.
+              Set  shell variables to capability values: <STRONG>strong</STRONG> and <STRONG>normal</STRONG>, to
+              begin and end, respectively, stand-out mode  for  the  terminal.
               One might use these to present a prompt.
 
                      printf "${strong}Username:${normal} "
 
        <STRONG>tput</STRONG> <STRONG>hc</STRONG>
-              Indicate via exit status whether the terminal  is  a  hard  copy
+              Indicate  via  exit  status  whether the terminal is a hard copy
               device.
 
        <STRONG>tput</STRONG> <STRONG>cup</STRONG> <STRONG>23</STRONG> <STRONG>4</STRONG>
               Move the cursor to line 23, column 4.
 
        <STRONG>tput</STRONG> <STRONG>cup</STRONG>
-              Report  the  value  of the <STRONG>cursor_address</STRONG> (<STRONG>cup</STRONG>) capability (used
+              Report the value of the <STRONG>cursor_address</STRONG>  (<STRONG>cup</STRONG>)  capability  (used
               for cursor movement), with no parameters substituted.
 
        <STRONG>tput</STRONG> <STRONG>longname</STRONG>
-              Report the <EM>terminfo</EM> database's description of the terminal  type
+              Report  the <EM>terminfo</EM> database's description of the terminal type
               specified in the <EM>TERM</EM> environment variable.
 
        <STRONG>tput</STRONG> <STRONG>-S</STRONG>
-              Process  multiple capabilities.  The <STRONG>-S</STRONG> option can be profitably
+              Process multiple capabilities.  The <STRONG>-S</STRONG> option can be  profitably
               used with a shell "here document".
 
               $ <STRONG>tput</STRONG> <STRONG>-S</STRONG> <STRONG>&lt;&lt;!</STRONG>
@@ -547,7 +552,7 @@
               &gt; <STRONG>bold</STRONG>
               &gt; <STRONG>!</STRONG>
 
-              The foregoing clears the screen, moves the  cursor  to  position
+              The  foregoing  clears  the screen, moves the cursor to position
               (10, 10) and turns on bold (extra bright) mode.
 
        <STRONG>tput</STRONG> <STRONG>clear</STRONG> <STRONG>cup</STRONG> <STRONG>10</STRONG> <STRONG>10</STRONG> <STRONG>bold</STRONG>
@@ -559,7 +564,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.5                       2025-01-18                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

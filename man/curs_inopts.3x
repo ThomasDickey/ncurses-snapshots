@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.82 2024/12/28 21:27:26 tom Exp $
-.TH curs_inopts 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.89 2025/01/19 00:49:39 tom Exp $
+.TH curs_inopts 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -213,7 +213,7 @@ are immediately available to the program.
 However,
 after blocking for
 .I tenths
-tenths of seconds,
+tenth-seconds,
 an input character reading function returns
 .B ERR
 if no input is pending.
@@ -386,9 +386,9 @@ see
 below for a mitigation of this problem.
 You may want to call
 .B \%noqiflush
-in a signal handler
-if you want output to continue
-after the handler exits
+in a signal handler if,
+after the handler exits,
+you want output to continue
 as though the interrupt had not occurred.
 .\"
 .SS "raw, noraw"
@@ -511,12 +511,18 @@ the functions in the previous paragraph return
 .B ERR
 if
 .bP
-the terminal is not initialized or
+the library's
+.I \%TERMINAL
+structure for the device has not been initialized with
+\fB\%initscr\fP(3X),
+\fB\%newterm\fP(3X),
+or
+\fB\%setupterm\fP(3X),
+or
 .bP
 .I win
-is
-.I NULL
-(except for
+is a null pointer
+(except with
 .B \%intrflush
 and
 .BR meta ","
@@ -597,11 +603,13 @@ the function returns
 if the option is set,
 .TP
 .B 0
-if the option is reset,
+if the option is unset,
 or
 .TP
 .B \-1
-if the library is not initialized.
+if the library's
+.I \%TERMINAL
+structure for the device has not been initialized.
 .SH PORTABILITY
 Applications employing
 .I \%ncurses
@@ -610,15 +618,16 @@ extensions should condition their use on the visibility of the
 preprocessor macro.
 .PP
 Except as noted in section \*(``EXTENSIONS\*('' above,
-X/Open Curses,
-Issue 4 describes these functions.
+X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .PP
-SVr4
-.I curses
-describes a successful return value only as
+SVr4 describes a successful return value only as
 \*(``an integer value other than
-.BR ERR \*(''.
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 508
+.\" It continues "unless otherwise noted in the preceding routine
+.\" descriptions", but no notes otherwise are present; the man page
+.\" discusses getch()'s return value repeatedly, but never those of the
+.\" functions the page ostensibly documents.
 .PP
 .I \%ncurses
 follows X/Open Curses

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2019-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2000-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_trace.3x,v 1.52 2024/12/28 21:18:35 tom Exp $
-.TH curs_trace 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_trace.3x,v 1.55 2025/01/19 00:51:10 tom Exp $
+.TH curs_trace 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -139,7 +139,7 @@ If the file already exists, no tracing is done.
 .bP
 If tracing is not available, \fBcurses_trace\fP returns zero (0).
 .SS "Trace Parameter"
-The trace parameter is formed by OR'ing
+The trace parameter is formed by logically \*(``or\*(''-ing
 values from the list of \fBTRACE_\fIxxx\fR definitions in \fB<curses.h>\fR.
 These include:
 .TP 5

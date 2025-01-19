@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: parse_rgb.h,v 1.6 2024/10/05 19:26:24 tom Exp $
+ * $Id: parse_rgb.h,v 1.7 2025/01/18 15:03:33 tom Exp $
  *
  * Sample implementation of ncurses RGB extension from user_caps(5).
  */
@@ -58,13 +58,13 @@ parse_rgb(int *r_max, int *g_max, int *b_max)
 	    ;
 	}
 
-	if (tigetflag("RGB") > 0) {
+	if (tigetflag(UserCap(RGB)) > 0) {
 	    result = OK;
 	    r = g = b = (max_bits + 2) / 3;
-	} else if ((bits = tigetnum("RGB")) > 0) {
+	} else if ((bits = tigetnum(UserCap(RGB))) > 0) {
 	    result = OK;
 	    r = g = b = bits;
-	} else if ((data = tigetstr("RGB")) != ABSENT_STRING
+	} else if ((data = tigetstr(UserCap(RGB))) != ABSENT_STRING
 		   && data != CANCELLED_STRING
 		   && sscanf(data, "%d/%d/%d%c", &r, &g, &b, &ch) == 3) {
 	    result = OK;

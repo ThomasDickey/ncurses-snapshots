@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.103 2024/12/28 21:26:21 tom Exp @
+  * @Id: curs_addch.3x,v 1.113 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addch 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -71,67 +71,73 @@
        the   cursor   position,   analogously  to  the  standard  C  library's
        <STRONG>putchar(3)</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of this function.
 
+       Construct a <EM>curses</EM> character from a  <EM>char</EM>  by  assignment.   Subsection
+       "Video  Attributes"  of  <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG>  describes  how  to  manipulate its
+       attributes and color pair.  (A color  pair  selection  is  not  honored
+       unless initialized; see <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>.)
+
        If advancement occurs at the right margin,
 
-       <STRONG>o</STRONG>   the cursor automatically wraps to the beginning of the  next  line,
+       <STRONG>o</STRONG>   the  cursor  automatically wraps to the beginning of the next line,
            then,
 
-       <STRONG>o</STRONG>   if   it  was  at  the  bottom  of  the  scrolling  region,  and  if
-           <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is enabled for <EM>win</EM>, the scrolling  region  scrolls  up
+       <STRONG>o</STRONG>   if  it  was  at  the  bottom  of  the  scrolling  region,  and   if
+           <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>  is  enabled  for <EM>win</EM>, the scrolling region scrolls up
            one line.
 
-       If  <EM>ch</EM>  is  a backspace, carriage return, line feed, or tab, the cursor
+       If <EM>ch</EM> is a backspace, carriage return, line feed, or  tab,  the  cursor
        moves appropriately within the window.
 
-       <STRONG>o</STRONG>   Backspace moves the cursor one character left; at the  left  margin
+       <STRONG>o</STRONG>   Backspace  moves  the cursor one character left; at the left margin
            of a window, it does nothing.
 
-       <STRONG>o</STRONG>   Carriage  return  moves  the  cursor to the left margin on the same
+       <STRONG>o</STRONG>   Carriage return moves the cursor to the left  margin  on  the  same
            line of the window.
 
-       <STRONG>o</STRONG>   Line feed does a <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from  the  right
+       <STRONG>o</STRONG>   Line  feed  does a <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from the right
            margin.
 
-       <STRONG>o</STRONG>   Tab  advances the cursor to the next tab stop (possibly on the next
-           line); these are placed at every eighth column by  default.   Alter
-           the    tab    interval    with    the    <STRONG>TABSIZE</STRONG>   extension;   see
+       <STRONG>o</STRONG>   Tab advances the cursor to the next tab stop (possibly on the  next
+           line);  these  are placed at every eighth column by default.  Alter
+           the   tab   interval    with    the    <STRONG>TABSIZE</STRONG>    extension;    see
            <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
-       If <EM>ch</EM> is any other nonprintable character, it  is  drawn  in  printable
+       If  <EM>ch</EM>  is  any  other nonprintable character, it is drawn in printable
        form using the same convention as <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>.  Calling <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> on the
-       location of a nonprintable character  does  not  return  the  character
+       location  of  a  nonprintable  character  does not return the character
        itself, but its <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG> representation.
 
-       The  object or expression <EM>ch</EM> may contain attributes and/or a color pair
-       identifier.  (A  <EM>chtype</EM>  can  be  copied  from  place  to  place  using
-       <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG>  and  <STRONG>waddch</STRONG>.)   See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for values of predefined
-       constants that can be usefully "or"ed  with  characters.   A  <EM>ch</EM>  whose
-       character  component  is a space, and whose only attribute is <STRONG>A_NORMAL</STRONG>,
-       is a <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with  the  background
+       The object or expression <EM>ch</EM> may contain attributes and/or a color  pair
+       identifier.   (A  <EM>chtype</EM>  can  be  copied  from  place  to  place using
+       <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> and <STRONG>waddch</STRONG>.)  See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for  values  of  predefined
+       constants  that  can  be  usefully  "or"ed with characters.  A <EM>ch</EM> whose
+       character component is a space, and whose only attribute  is  <STRONG>A_NORMAL</STRONG>,
+       is  a  <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with the background
        character; see <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>.
 
 
 </PRE><H3><a name="h3-wechochar">wechochar</a></H3><PRE>
-       <STRONG>echochar</STRONG>  and  <STRONG>wechochar</STRONG> are equivalent to calling (<STRONG>w</STRONG>)<STRONG>addch</STRONG> followed by
-       (<STRONG>w</STRONG>)<STRONG>refresh</STRONG>.  <EM>curses</EM>  interprets  these  functions  as  a  hint  to  its
-       optimizer  that  only  a  single  character cell in the window is being
-       altered between refreshes; for non-control characters,  a  considerable
-       performance gain may be enjoyed by employing them.
+       <STRONG>echochar</STRONG> and <STRONG>wechochar</STRONG> are equivalent to calling (<STRONG>w</STRONG>)<STRONG>addch</STRONG>  followed  by
+       (<STRONG>w</STRONG>)<STRONG>refresh</STRONG>  on <STRONG>stdscr</STRONG> or the specified window.  <EM>curses</EM> interprets these
+       functions as a hint to its optimizer that only a single character  cell
+       in  the  window  is  being  altered  between refreshes; for non-control
+       characters, a considerable performance gain may be enjoyed by employing
+       them.
 
 
 </PRE><H3><a name="h3-Forms-Drawing-Characters">Forms-Drawing Characters</a></H3><PRE>
        <EM>curses</EM>  defines  macros starting with <STRONG>ACS_</STRONG> that can be used with <STRONG>waddch</STRONG>
-       to write line-drawing and  other  special  characters  to  the  screen.
-       <EM>ncurses</EM>  terms  these <EM>forms-drawing</EM> <EM>characters.</EM>  The ACS default listed
-       below is used if the <STRONG>acs_chars</STRONG>  (<STRONG>acsc</STRONG>)  <EM>terminfo</EM>  capability  does  not
-       define  a  terminal-specific replacement for it, or if the terminal and
-       locale configuration requires Unicode to access  these  characters  but
-       the  library  is  unable  to  use  Unicode.   The  "acsc  char"  column
-       corresponds to how the characters are specified in the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>)
-       string capability, and the characters in it may appear on the screen if
-       the terminal type's database entry incorrectly advertises ACS  support.
-       The name "ACS" originates in the Alternate Character Set feature of the
-       DEC VT100 terminal.
+       to write line-drawing and other symbols to the screen.   <EM>ncurses</EM>  terms
+       these  <EM>forms-drawing</EM>  <EM>characters.</EM>  The ACS default listed below is used
+       if the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>) <EM>terminfo</EM> capability does not define a terminal-
+       specific   replacement   for   it,   or  if  the  terminal  and  locale
+       configuration requires Unicode  to  access  these  characters  but  the
+       library  is  unable to use Unicode.  The "acsc char" column corresponds
+       to how the characters are specified  in  the  <STRONG>acs_chars</STRONG>  (<STRONG>acsc</STRONG>)  string
+       capability,  and  the  characters in it may appear on the screen if the
+       terminal type's database entry incorrectly advertises ACS support.  The
+       name "ACS" originates in the Alternate Character Set feature of the DEC
+       VT100 terminal.
 
                       <STRONG>ACS</STRONG>       <STRONG>acsc</STRONG>
        <STRONG>Symbol</STRONG>         <STRONG>Default</STRONG>   <STRONG>char</STRONG>   <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>
@@ -173,7 +179,9 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       In <EM>ncurses</EM>, <STRONG>waddch</STRONG> returns <STRONG>ERR</STRONG> if
+       In <EM>ncurses</EM>, <STRONG>waddch</STRONG> and <STRONG>wechochar</STRONG> return <STRONG>ERR</STRONG> if
+
+       <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized,
 
        <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM>,
 
@@ -213,11 +221,11 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
-       error conditions for them.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
 
-       SVr4  <EM>curses</EM>  describes  a  successful return value only as "an integer
-       value other than <STRONG>ERR</STRONG>".
+       SVr4  describes  a  successful  return  value only as "an integer value
+       other than <EM>ERR</EM>".
 
        The defaults specified for forms-drawing characters apply in the  POSIX
        locale.
@@ -320,7 +328,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

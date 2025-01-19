@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inchstr.3x,v 1.49 2024/12/28 21:26:21 tom Exp $
-.TH curs_inchstr 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inchstr.3x,v 1.56 2025/01/19 00:49:39 tom Exp $
+.TH curs_inchstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -81,8 +81,9 @@ a leading substring at most \fIn\fP characters long
 Transfer stops at the end of the current line, or when \fIn\fP characters have
 been stored at the location referenced by \fIchstr\fP.
 .PP
-Constants defined in \fB<curses.h>\fP can be used with the \fB&\fP (logical
-AND) operator to extract the character or the attribute alone from any position
+Constants defined in \fB<curses.h>\fP can be used with the \fB&\fP
+(logical \*(``and\*('')
+operator to extract the character or the attribute alone from any position
 in the \fIchstr\fP [see \fBcurs_inch\fP(3X)].
 .SH RETURN VALUE
 All routines return the integer \fBERR\fP upon failure and an integer value
@@ -103,12 +104,9 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-All routines except \fBwinchnstr\fP may be macros.
-.PP
-SVr4 does not
-document whether the result string is zero-terminated; it does not document
-whether a length limit argument includes any trailing 0; and it does not
-document the meaning of the return value.
+All of these functions except
+.B \%winchnstr
+may be implemented as macros.
 .PP
 Reading a line that overflows the array pointed to by
 \fIchstr\fP
@@ -126,11 +124,27 @@ Therefore, the use of
 \fBwinchnstr\fP
 is recommended.
 .SH PORTABILITY
-These functions are described in X/Open Curses, Issue 4.
-It is no
-more specific than the SVr4 documentation on the trailing 0.
-It does specify
-that the successful return of the functions is \fBOK\fP.
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+It characterizes the strings stored by these functions as containing
+\*(``at most
+.I n
+elements\*('' from a window,
+.\" X/Open Issue 4, Version 2, p. 113, PDF p. 133
+.\" Issue 7 doesn't change this wording at all.
+but does not specify whether the string stored by these functions is
+null-terminated.
+.PP
+SVr4 does not document whether it null-terminates the string it stores
+in
+.IR chstr ","
+and does not document whether a trailing null chracter counts toward the
+length limit
+.IR n "."
+.PP
+SVr4 describes a successful return value only as
+\*(``an integer value other than
+.IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 503
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_inch\fP(3X),

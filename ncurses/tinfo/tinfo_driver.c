@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.77 2024/12/15 00:23:20 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.78 2025/01/18 14:47:35 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -327,7 +327,7 @@ drv_defaultcolors(TERMINAL_CONTROL_BLOCK * TCB, int fg, int bg)
 #if NCURSES_EXT_FUNCS
 	sp->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
 	sp->_has_sgr_39_49 = (NCURSES_SP_NAME(tigetflag) (NCURSES_SP_ARGx
-							  "AX")
+							  UserCap(AX))
 			      == TRUE);
 	sp->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : fg;
 	sp->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : bg;
@@ -907,7 +907,7 @@ static void
 init_xterm_mouse(SCREEN *sp)
 {
     sp->_mouse_type = M_XTERM;
-    sp->_mouse_xtermcap = NCURSES_SP_NAME(tigetstr) (NCURSES_SP_ARGx "XM");
+    sp->_mouse_xtermcap = NCURSES_SP_NAME(tigetstr) (NCURSES_SP_ARGx UserCap(XM));
     if (!VALID_STRING(sp->_mouse_xtermcap))
 	sp->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
 }

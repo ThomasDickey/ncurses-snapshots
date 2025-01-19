@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2004-2011,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.20 2024/12/07 18:00:11 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.22 2025/01/19 00:51:54 tom Exp $")
 
 /* clone/adapt lib_addch.c */
 static const cchar_t blankchar = NewChar(BLANK_TEXT);
@@ -434,7 +434,7 @@ wecho_wchar(WINDOW *win, const cchar_t *wch)
 {
     int code = ERR;
 
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"),
+    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wecho_wchar(%p, %s)"),
 				      (void *) win,
 				      _tracecchar_t(wch)));
 

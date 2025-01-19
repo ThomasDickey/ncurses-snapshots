@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.82 2024/12/28 21:27:26 tom Exp @
+  * @Id: curs_inopts.3x,v 1.89 2025/01/19 00:49:39 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2024-12-28 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2024-12-28 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -137,10 +137,10 @@
 </PRE><H3><a name="h3-halfdelay">halfdelay</a></H3><PRE>
        <STRONG>halfdelay</STRONG>  configures  <EM>half-delay</EM> <EM>mode</EM>, which is similar to cbreak mode
        in that characters typed by the user are immediately available  to  the
-       program.   However,  after  blocking  for  <EM>tenths</EM> tenths of seconds, an
-       input character reading function returns <STRONG>ERR</STRONG> if no  input  is  pending.
-       The  value  of <EM>tenths</EM> must be between 1 and 255.  Use <STRONG>nocbreak</STRONG> to leave
-       half-delay mode.
+       program.   However,  after  blocking for <EM>tenths</EM> tenth-seconds, an input
+       character reading function returns <STRONG>ERR</STRONG> if no  input  is  pending.   The
+       value of <EM>tenths</EM> must be between 1 and 255.  Use <STRONG>nocbreak</STRONG> to leave half-
+       delay mode.
 
 
 </PRE><H3><a name="h3-intrflush">intrflush</a></H3><PRE>
@@ -211,8 +211,8 @@
        such flushing, but might frustrate impatient users on slow  connections
        if  a <EM>curses</EM> update of the screen is in progress when the event occurs;
        see <STRONG>typeahead</STRONG> below for a mitigation of this problem.  You may want  to
-       call <STRONG>noqiflush</STRONG> in a signal handler if you want output to continue after
-       the handler exits as though the interrupt had not occurred.
+       call  <STRONG>noqiflush</STRONG>  in  a  signal handler if, after the handler exits, you
+       want output to continue as though the interrupt had not occurred.
 
 
 </PRE><H3><a name="h3-raw_noraw">raw, noraw</a></H3><PRE>
@@ -256,14 +256,15 @@
 
        In <EM>ncurses</EM>, the functions in the previous paragraph return <STRONG>ERR</STRONG> if
 
-       <STRONG>o</STRONG>   the terminal is not initialized or
+       <STRONG>o</STRONG>   the library's <EM>TERMINAL</EM>  structure  for  the  device  has  not  been
+           initialized with <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>, <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>, or <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>, or
 
-       <STRONG>o</STRONG>   <EM>win</EM> is <EM>NULL</EM> (except  for  <STRONG>intrflush</STRONG>  and  <STRONG>meta</STRONG>,  which  ignore  its
-           value).
+       <STRONG>o</STRONG>   <EM>win</EM> is a null pointer (except with <STRONG>intrflush</STRONG> and <STRONG>meta</STRONG>, which ignore
+           its value).
 
        Further, <STRONG>halfdelay</STRONG> returns <STRONG>ERR</STRONG> if <EM>delay</EM> is outside the range 1..255.
 
-       See  section  "EXTENSIONS"  below  for  the return values of <STRONG>is_cbreak</STRONG>,
+       See section "EXTENSIONS" below for  the  return  values  of  <STRONG>is_cbreak</STRONG>,
        <STRONG>is_echo</STRONG>, <STRONG>is_nl</STRONG>, and <STRONG>is_raw</STRONG>.
 
 
@@ -271,15 +272,15 @@
        <STRONG>echo</STRONG>, <STRONG>noecho</STRONG>, <STRONG>halfdelay</STRONG>, <STRONG>intrflush</STRONG>, <STRONG>meta</STRONG>, <STRONG>nl</STRONG>, <STRONG>nonl</STRONG>, <STRONG>nodelay</STRONG>, <STRONG>notimeout</STRONG>,
        <STRONG>noqiflush</STRONG>, <STRONG>qiflush</STRONG>, <STRONG>timeout</STRONG>, and <STRONG>wtimeout</STRONG> may be implemented as macros.
 
-       <STRONG>noraw</STRONG>  and  <STRONG>nocbreak</STRONG> follow historical practice in that they attempt to
-       restore the terminal's canonical ("cooked") line  discipline  from  raw
-       and  cbreak, respectively.  Mixing <STRONG>raw</STRONG>/<STRONG>noraw</STRONG> calls with <STRONG>cbreak</STRONG>/<STRONG>nocbreak</STRONG>
-       calls leads to terminal driver control states that are hard to  predict
+       <STRONG>noraw</STRONG> and <STRONG>nocbreak</STRONG> follow historical practice in that they  attempt  to
+       restore  the  terminal's  canonical ("cooked") line discipline from raw
+       and cbreak, respectively.  Mixing <STRONG>raw</STRONG>/<STRONG>noraw</STRONG> calls with  <STRONG>cbreak</STRONG>/<STRONG>nocbreak</STRONG>
+       calls  leads to terminal driver control states that are hard to predict
        or understand; doing so is not recommended.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       <EM>ncurses</EM>  provides  four  "is_" functions corresponding to <STRONG>cbreak</STRONG>, <STRONG>echo</STRONG>,
+       <EM>ncurses</EM> provides four "is_" functions corresponding  to  <STRONG>cbreak</STRONG>,  <STRONG>echo</STRONG>,
        <STRONG>nl</STRONG>, and <STRONG>raw</STRONG>, permitting their states to be queried by the application.
 
                             <STRONG>Query</STRONG>       <STRONG>Set</STRONG>      <STRONG>Reset</STRONG>
@@ -293,20 +294,21 @@
 
        <STRONG>1</STRONG>    if the option is set,
 
-       <STRONG>0</STRONG>    if the option is reset, or
+       <STRONG>0</STRONG>    if the option is unset, or
 
-       <STRONG>-1</STRONG>   if the library is not initialized.
+       <STRONG>-1</STRONG>   if  the  library's  <EM>TERMINAL</EM> structure for the device has not been
+            initialized.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       Except  as  noted in section "EXTENSIONS" above, X/Open Curses, Issue 4
+       Except  as  noted  in section "EXTENSIONS" above, X/Open Curses Issue 4
        describes these functions.  It specifies no error conditions for them.
 
-       SVr4 <EM>curses</EM> describes a successful return value  only  as  "an  integer
-       value other than <STRONG>ERR</STRONG>".
+       SVr4 describes a successful return value  only  as  "an  integer  value
+       other than <EM>ERR</EM>".
 
        <EM>ncurses</EM>  follows  X/Open Curses and the historical practice of System V
        <EM>curses</EM>, clearing the terminal driver's "echo"  flag  when  initializing
@@ -382,7 +384,7 @@
 
 
 
-ncurses 6.5                       2024-12-28                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

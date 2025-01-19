@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
+dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
 dnl Copyright 2010-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.223 2024/12/21 15:29:41 tom Exp $
+dnl $Id: aclocal.m4,v 1.226 2025/01/11 00:55:54 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -962,6 +962,52 @@ esac
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_CURSES_CONFIG version: 2 updated: 2006/10/29 11:06:27
+dnl ----------------
+dnl Tie together the configure-script macros for curses.  It may be ncurses,
+dnl but unless asked, we do not make a special search for ncurses.  However,
+dnl still check for the ncurses version number, for use in other macros.
+AC_DEFUN([CF_CURSES_CONFIG],
+[
+CF_CURSES_CPPFLAGS
+CF_NCURSES_VERSION
+CF_CURSES_LIBS
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CURSES_CPPFLAGS version: 14 updated: 2021/01/02 09:31:20
+dnl ------------------
+dnl Look for the curses headers.
+AC_DEFUN([CF_CURSES_CPPFLAGS],[
+
+AC_CACHE_CHECK(for extra include directories,cf_cv_curses_incdir,[
+cf_cv_curses_incdir=no
+case "$host_os" in
+(hpux10.*)
+	if test "x$cf_cv_screen" = "xcurses_colr"
+	then
+		test -d /usr/include/curses_colr && \
+		cf_cv_curses_incdir="-I/usr/include/curses_colr"
+	fi
+	;;
+(sunos3*|sunos4*)
+	if test "x$cf_cv_screen" = "xcurses_5lib"
+	then
+		test -d /usr/5lib && \
+		test -d /usr/5include && \
+		cf_cv_curses_incdir="-I/usr/5include"
+	fi
+	;;
+esac
+])
+if test "$cf_cv_curses_incdir" != no
+then
+	CF_APPEND_TEXT(CPPFLAGS,$cf_cv_curses_incdir)
+fi
+
+CF_CURSES_HEADER
+CF_TERM_HEADER
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_CURSES_HEADER version: 6 updated: 2022/12/02 20:06:52
 dnl ----------------
 dnl Find a "curses" header file, e.g,. "curses.h", or one of the more common
@@ -987,6 +1033,136 @@ fi
 
 # cheat, to get the right #define's for HAVE_NCURSES_H, etc.
 AC_CHECK_HEADERS($cf_cv_ncurses_header)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CURSES_LIBS version: 45 updated: 2022/12/02 20:06:52
+dnl --------------
+dnl Look for the curses libraries.  Older curses implementations may require
+dnl termcap/termlib to be linked as well.  Call CF_CURSES_CPPFLAGS first.
+AC_DEFUN([CF_CURSES_LIBS],[
+
+AC_REQUIRE([CF_CURSES_CPPFLAGS])dnl
+AC_MSG_CHECKING(if we have identified curses libraries)
+AC_TRY_LINK([#include <${cf_cv_ncurses_header:-curses.h}>],
+	[initscr(); endwin()],
+	cf_result=yes,
+	cf_result=no)
+AC_MSG_RESULT($cf_result)
+
+if test "$cf_result" = no ; then
+case "$host_os" in
+(freebsd*)
+	AC_CHECK_LIB(mytinfo,tgoto,[CF_ADD_LIBS(-lmytinfo)])
+	;;
+(hpux10.*)
+	# Looking at HPUX 10.20, the Hcurses library is the oldest (1997), cur_colr
+	# next (1998), and xcurses "newer" (2000).  There is no header file for
+	# Hcurses; the subdirectory curses_colr has the headers (curses.h and
+	# term.h) for cur_colr
+	if test "x$cf_cv_screen" = "xcurses_colr"
+	then
+		AC_CHECK_LIB(cur_colr,initscr,[
+			CF_ADD_LIBS(-lcur_colr)
+			ac_cv_func_initscr=yes
+			],[
+		AC_CHECK_LIB(Hcurses,initscr,[
+			# HP's header uses __HP_CURSES, but user claims _HP_CURSES.
+			CF_ADD_LIBS(-lHcurses)
+			CF_APPEND_TEXT(CPPFLAGS,-D__HP_CURSES -D_HP_CURSES)
+			ac_cv_func_initscr=yes
+			])])
+	fi
+	;;
+(linux*)
+	case `arch 2>/dev/null` in
+	(x86_64)
+		if test -d /lib64
+		then
+			CF_ADD_LIBDIR(/lib64)
+		else
+			CF_ADD_LIBDIR(/lib)
+		fi
+		;;
+	(*)
+		CF_ADD_LIBDIR(/lib)
+		;;
+	esac
+	;;
+(sunos3*|sunos4*)
+	if test "x$cf_cv_screen" = "xcurses_5lib"
+	then
+		if test -d /usr/5lib ; then
+			CF_ADD_LIBDIR(/usr/5lib)
+			CF_ADD_LIBS(-lcurses -ltermcap)
+		fi
+	fi
+	ac_cv_func_initscr=yes
+	;;
+esac
+
+if test ".$ac_cv_func_initscr" != .yes ; then
+	cf_save_LIBS="$LIBS"
+
+	if test ".${cf_cv_ncurses_version:-no}" != .no
+	then
+		cf_check_list="ncurses curses cursesX"
+	else
+		cf_check_list="cursesX curses ncurses"
+	fi
+
+	# Check for library containing tgoto.  Do this before curses library
+	# because it may be needed to link the test-case for initscr.
+	if test "x$cf_term_lib" = x
+	then
+		AC_CHECK_FUNC(tgoto,[cf_term_lib=predefined],[
+			for cf_term_lib in $cf_check_list otermcap termcap tinfo termlib unknown
+			do
+				AC_CHECK_LIB($cf_term_lib,tgoto,[
+					: "${cf_nculib_root:=$cf_term_lib}"
+					break
+				])
+			done
+		])
+	fi
+
+	# Check for library containing initscr
+	test "$cf_term_lib" != predefined && test "$cf_term_lib" != unknown && LIBS="-l$cf_term_lib $cf_save_LIBS"
+	if test "x$cf_curs_lib" = x
+	then
+		for cf_curs_lib in $cf_check_list xcurses jcurses pdcurses unknown
+		do
+			LIBS="-l$cf_curs_lib $cf_save_LIBS"
+			if test "$cf_term_lib" = unknown || test "$cf_term_lib" = "$cf_curs_lib" ; then
+				AC_MSG_CHECKING(if we can link with $cf_curs_lib library)
+				AC_TRY_LINK([#include <${cf_cv_ncurses_header:-curses.h}>],
+					[initscr()],
+					[cf_result=yes],
+					[cf_result=no])
+				AC_MSG_RESULT($cf_result)
+				test "$cf_result" = yes && break
+			elif test "$cf_curs_lib" = "$cf_term_lib" ; then
+				cf_result=no
+			elif test "$cf_term_lib" != predefined ; then
+				AC_MSG_CHECKING(if we need both $cf_curs_lib and $cf_term_lib libraries)
+				AC_TRY_LINK([#include <${cf_cv_ncurses_header:-curses.h}>],
+					[initscr(); endwin();],
+					[cf_result=no],
+					[
+					LIBS="-l$cf_curs_lib -l$cf_term_lib $cf_save_LIBS"
+					AC_TRY_LINK([#include <${cf_cv_ncurses_header:-curses.h}>],
+						[initscr()],
+						[cf_result=yes],
+						[cf_result=error])
+					])
+				AC_MSG_RESULT($cf_result)
+				test "$cf_result" != error && break
+			fi
+		done
+	fi
+	test "$cf_curs_lib" = unknown && AC_MSG_ERROR(no curses library found)
+fi
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_DIRNAME version: 5 updated: 2020/12/31 20:19:42
@@ -3073,7 +3249,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 28 updated: 2021/08/28 15:20:37
+dnl CF_NCURSES_CONFIG version: 29 updated: 2025/01/10 19:55:54
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -3134,6 +3310,7 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 			;;
 		esac
 
+		CF_REQUIRE_PKG($cf_ncuconfig_root)
 		CF_APPEND_CFLAGS($cf_pkg_cflags)
 		CF_ADD_LIBS($cf_pkg_libs)
 
@@ -3975,6 +4152,30 @@ define([CF_REMOVE_LIB],
 [
 # remove $3 library from $2
 $1=`echo "$2" | sed -e 's/-l$3[[ 	]]//g' -e 's/-l$3[$]//'`
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_REQUIRE_PKG version: 1 updated: 2025/01/10 19:55:54
+dnl --------------
+dnl Update $REQUIRE_PKG, which lists the known required packages for this
+dnl program.
+dnl
+dnl $1 = package(s) to require, e.g., in the generated ".pc" file
+define([CF_REQUIRE_PKG],
+[
+for cf_required in $1
+do
+	# check for duplicates
+	for cf_require_pkg in $REQUIRE_PKG
+	do
+		if test "$cf_required" = "$cf_require_pkg"
+		then
+			cf_required=
+			break
+		fi
+	done
+	test -n "$cf_required" && REQUIRE_PKG="$REQUIRE_PKG $cf_required"
+done
+AC_SUBST(REQUIRE_PKG)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_RESTORE_XTRA_FLAGS version: 1 updated: 2020/01/11 16:47:45

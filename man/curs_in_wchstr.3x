@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2002-2012,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wchstr.3x,v 1.41 2024/05/25 20:10:58 tom Exp $
-.TH curs_in_wchstr 3X 2024-05-25 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wchstr.3x,v 1.46 2025/01/19 00:49:39 tom Exp $
+.TH curs_in_wchstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -79,8 +79,9 @@ a leading substring at most \fIn\fP characters long
 Transfer stops at the end of the current line, or when \fIn\fP characters have
 been stored at the location referenced by \fIwchstr\fP.
 .PP
-Constants defined in \fB<curses.h>\fP can be used with the \fB&\fP (logical
-AND) operator to extract the character or the attribute alone from any position
+Constants defined in \fB<curses.h>\fP can be used with the \fB&\fP
+(logical \*(``and\*('')
+operator to extract the character or the attribute alone from any position
 in the \fIwchstr\fP [see \fBgetcchar\fP(3X)].
 .SH RETURN VALUE
 Upon successful completion, these functions return
@@ -88,8 +89,8 @@ Upon successful completion, these functions return
 Otherwise, they return
 \fBERR\fP.
 .PP
-X/Open Curses defines no error conditions.
-This implementation returns
+.I \%ncurses
+returns
 .B ERR
 .bP
 if the \fIwin\fP parameter is null or
@@ -102,7 +103,9 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-All routines except \fBwin_wchnstr\fP may be macros.
+All of these functions except
+.B \%win_wchnstr
+may be implemented as macros.
 .PP
 Reading a line that overflows the array pointed to by
 \fIwchstr\fP
@@ -120,9 +123,26 @@ Therefore, the use of
 \fBwin_wchnstr\fP
 is recommended.
 .SH PORTABILITY
-X/Open Curses defines no error conditions.
-This implementation checks for null pointers,
-returning \fBERR\fP in that case.
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.SH HISTORY
+These functions were initially specified by X/Open Curses Issue\ 4
+(1995).
+The System\ V Interface Definition Version\ 4
+of the same year
+specified a function named
+.I \%winwchstr
+(and the usual variants).
+.\" SVID 4, vol 3., p. 515
+This was a later addition to
+.RI SVr4. x ,
+not appearing in the first SVr4 (1989).
+It differed from X/Open's later
+.I \%win_wchstr
+in that it took an argument of type
+.RI pointer-to- chtype
+instead of
+.RI pointer-to cchar_t .
 .SH SEE ALSO
 \fB\%curs_inchstr\fP(3X) describes comparable functions of the
 .I \%ncurses

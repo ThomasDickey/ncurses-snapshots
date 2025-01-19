@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.220 2024/10/05 19:01:00 tom Exp $ */
+/* $Id: test.priv.h,v 1.221 2025/01/18 15:07:25 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -851,6 +851,12 @@ extern "C" {
 #define _nc_SPRINTF             NCURSES_VOID (sprintf)
 #define _nc_SLIMIT(n)		/* nothing */
 #endif
+
+/*
+ * To make them easier to find, user-defined capabilities used within ncurses
+ * should be tagged with this macro:
+ */
+#define UserCap(name) #name
 
 /*
  * X/Open Curses does not define the arrays of terminfo/termcap names as SVr4

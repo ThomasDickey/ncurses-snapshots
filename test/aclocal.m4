@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2023,2024 Thomas E. Dickey                                *
+dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
 dnl Copyright 2003-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.231 2024/12/21 15:24:55 tom Exp $
+dnl $Id: aclocal.m4,v 1.232 2025/01/12 18:41:15 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -2788,7 +2788,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 28 updated: 2021/08/28 15:20:37
+dnl CF_NCURSES_CONFIG version: 29 updated: 2025/01/10 19:55:54
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -2849,6 +2849,7 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 			;;
 		esac
 
+		CF_REQUIRE_PKG($cf_ncuconfig_root)
 		CF_APPEND_CFLAGS($cf_pkg_cflags)
 		CF_ADD_LIBS($cf_pkg_libs)
 
@@ -3648,6 +3649,30 @@ $1=`echo "$2" | \
 		-e 's/-[[UD]]'"$3"'\(=[[^ 	]]*\)\?[$]//g'`
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_REQUIRE_PKG version: 1 updated: 2025/01/10 19:55:54
+dnl --------------
+dnl Update $REQUIRE_PKG, which lists the known required packages for this
+dnl program.
+dnl
+dnl $1 = package(s) to require, e.g., in the generated ".pc" file
+define([CF_REQUIRE_PKG],
+[
+for cf_required in $1
+do
+	# check for duplicates
+	for cf_require_pkg in $REQUIRE_PKG
+	do
+		if test "$cf_required" = "$cf_require_pkg"
+		then
+			cf_required=
+			break
+		fi
+	done
+	test -n "$cf_required" && REQUIRE_PKG="$REQUIRE_PKG $cf_required"
+done
+AC_SUBST(REQUIRE_PKG)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_RESTORE_XTRA_FLAGS version: 1 updated: 2020/01/11 16:47:45
 dnl ---------------------
 dnl Restore flags saved in CF_SAVE_XTRA_FLAGS
@@ -4060,7 +4085,7 @@ AC_DEFUN([CF_TRIM_X_LIBS],[
 	done
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_TRY_PKG_CONFIG version: 6 updated: 2020/12/31 10:54:15
+dnl CF_TRY_PKG_CONFIG version: 7 updated: 2025/01/10 19:55:54
 dnl -----------------
 dnl This is a simple wrapper to use for pkg-config, for libraries which may be
 dnl available in that form.
@@ -4077,6 +4102,7 @@ if test "$PKG_CONFIG" != none && "$PKG_CONFIG" --exists "$1"; then
 	cf_pkgconfig_libs="`$PKG_CONFIG --libs   "$1" 2>/dev/null`"
 	CF_VERBOSE(package $1 CFLAGS: $cf_pkgconfig_incs)
 	CF_VERBOSE(package $1 LIBS: $cf_pkgconfig_libs)
+	CF_REQUIRE_PKG($1)
 	CF_ADD_CFLAGS($cf_pkgconfig_incs)
 	CF_ADD_LIBS($cf_pkgconfig_libs)
 	ifelse([$2],,:,[$2])
@@ -4293,7 +4319,7 @@ AC_MSG_RESULT([$]$1)
 AC_SUBST($1)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_NCURSES_ETC version: 6 updated: 2023/01/16 10:10:06
+dnl CF_WITH_NCURSES_ETC version: 7 updated: 2025/01/12 13:41:15
 dnl -------------------
 dnl Use this macro for programs which use any variant of "curses", e.g.,
 dnl "ncurses", and "PDCurses".  Programs that can use curses and some unrelated
@@ -4344,7 +4370,7 @@ case $cf_cv_screen in
 (ncurses*)
 	CF_NCURSES_CONFIG($cf_cv_screen)
 	;;
-(pdcurses)
+(pdcurses*)
 	CF_PDCURSES_X11
 	;;
 (*)

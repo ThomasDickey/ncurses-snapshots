@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
   * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_outopts.3x,v 1.71 2024/09/14 20:06:50 tom Exp @
+  * @Id: curs_outopts.3x,v 1.78 2025/01/19 00:51:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_outopts 3x 2024-09-14 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_outopts 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_outopts 3x 2024-09-14 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_outopts 3x 2025-01-18 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 
@@ -158,7 +158,7 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       Note that <STRONG>clearok</STRONG>, <STRONG>leaveok</STRONG>,  <STRONG>scrollok</STRONG>,  <STRONG>idcok</STRONG>,  and  <STRONG>setscrreg</STRONG>  may  be
+       <STRONG>clearok</STRONG>, <STRONG>leaveok</STRONG>, <STRONG>scrollok</STRONG>, <STRONG>idcok</STRONG>, and <STRONG>setscrreg</STRONG> may be implemented  as
        macros.
 
        The  <STRONG>immedok</STRONG>  routine  is  useful for windows that are used as terminal
@@ -166,36 +166,41 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       X/Open Curses, Issue 4 describes  these  functions.   It  specifies  no
-       error conditions for them.
+       X/Open Curses Issue 4 describes these functions.  It specifies no error
+       conditions for them.
 
        Some  historic  <EM>curses</EM> implementations, as an undocumented feature, did
        the  equivalent  of  "<STRONG>clearok(</STRONG>...<STRONG>,</STRONG>   <STRONG>1)</STRONG>"   when   <STRONG>touchwin(stdstr)</STRONG>   or
        <STRONG>clear(stdstr)</STRONG> were used.  This trick does not work with <EM>ncurses</EM>.
 
-       Early  System V  <EM>curses</EM>  implementations  specified  that with <STRONG>scrollok</STRONG>
+       Early  System V  <EM>curses</EM>  implementations  specified  that with <EM>scrollok</EM>
        enabled, any window modification triggering  a  scroll  also  forced  a
        physical  refresh.   X/Open  Curses  does not require this, and <EM>ncurses</EM>
-       avoids  doing  so  to  better  optimize   vertical   motions   upon   a
-       <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>.
+       avoids doing so to better optimize vertical motions upon a <EM>wrefresh</EM>.
 
        X/Open Curses does not mention that the cursor should be made invisible
-       as a side-effect of <STRONG>leaveok</STRONG>.  SVr4 <EM>curses</EM> documentation notes this, but
+       as a side-effect of <EM>leaveok</EM>.  SVr4 <EM>curses</EM> documentation notes this, but
        the code neglects it.  Use <STRONG><A HREF="curs_kernel.3x.html">curs_set(3x)</A></STRONG> to make the cursor invisible.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       <EM>ncurses</EM>  formerly  treated <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG> and <STRONG><A HREF="curs_inopts.3x.html">nonl(3x)</A></STRONG> as both input <EM>and</EM> output
-       options, but no longer; see <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>.
+       4BSD (1980) <EM>curses</EM> introduced <EM>clearok</EM>, <EM>leaveok</EM>, and <EM>scrollok</EM>.
+
+       SVr2 (1984) supplied <EM>idlok</EM>, <EM>setscrreg</EM>, and <EM>wsetscrreg</EM>.
+
+       SVr3.1 (1987) implemented <EM>idcok</EM> and <EM>immedok</EM>.
+
+       <EM>ncurses</EM> formerly treated <EM>nl</EM> and <EM>nonl</EM> as both input <EM>and</EM> output  options,
+       but no longer; see <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,    <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2024-09-14                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
+ncurses 6.5                       2025-01-18                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

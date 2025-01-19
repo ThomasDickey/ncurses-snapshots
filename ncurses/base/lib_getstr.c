@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2011,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.40 2024/07/27 19:22:23 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.42 2025/01/19 00:51:54 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -85,7 +85,7 @@ wgetnstr_events(WINDOW *win,
     int ch;
     int y, x;
 
-    T((T_CALLED("wgetnstr(%p,%p,%d)"), (void *) win, (void *) str, maxlen));
+    T((T_CALLED("wgetnstr_events(%p,%p,%d)"), (void *) win, (void *) str, maxlen));
 
     if (!win || !str)
 	returnCode(ERR);
@@ -195,7 +195,7 @@ wgetnstr_events(WINDOW *win,
     if (ch == ERR)
 	returnCode(ch);
 
-    T(("wgetnstr returns %s", _nc_visbuf(oldstr)));
+    T(("wgetnstr_events returns %s", _nc_visbuf(oldstr)));
 
 #ifdef KEY_EVENT
     if (ch == KEY_EVENT)

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.154 2024/12/28 21:21:36 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.156 2025/01/19 00:51:10 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -186,7 +186,8 @@ respectively.
 X/Open Curses does not say what \*(``appropriate \fIx\fP\*('' might be.
 In practice, that is a printable ASCII graphic character.
 The special case \*(``\*^?\*('' is interpreted as DEL (127).
-In all other cases, the character value is AND'd with 0x1f,
+In all other cases,
+the character value is logically \*(``and\*(''-ed with 0x1f,
 mapping to ASCII control codes in the range 0 through 31.
 .PP
 Other escapes include
@@ -569,13 +570,15 @@ push strlen(pop)
 arithmetic (%m is \fImod\fP): \fIpush(pop() op pop())\fP
 .TP
 \fB%&\fP, \fB%|\fP, \fB%\*^\fP
-bit operations (AND, OR and exclusive-OR): \fIpush(pop() op pop())\fP
+bit operations
+(\*(``and\*('', \*(``or\*('' and exclusive \*(``or\*(''):
+\fIpush(pop() op pop())\fP
 .TP
 \fB%=\fP, \fB%>\fP, \fB%<\fP
 logical operations: \fIpush(pop() op pop())\fP
 .TP
 \fB%A\fP, \fB%O\fP
-logical AND and OR operations (for conditionals)
+logical \*(``and\*('' and \*(``or\*('' operations (for conditionals)
 .TP
 \fB%!\fP, \fB%\*~\fP
 unary operations (logical and bit complement): \fIpush(op pop())\fP

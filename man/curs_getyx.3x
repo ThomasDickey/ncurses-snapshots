@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2020-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2020-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2007,2010 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getyx.3x,v 1.47 2024/06/08 20:42:50 tom Exp $
-.TH curs_getyx 3X 2024-06-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getyx.3x,v 1.53 2025/01/19 00:49:39 tom Exp $
+.TH curs_getyx 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -109,22 +109,23 @@ An \*(``&\*('' operator is not necessary before the variables
 and
 .IR x "."
 .SH PORTABILITY
-These macros are described in X/Open Curses,
-Issue 4.
+These macros are described in X/Open Curses Issue\ 4.
 .PP
 .I \%ncurses
 also provides functions
-.BR \%getbegx ","
-.BR \%getbegy ","
-.BR \%getcurx ","
-.BR \%getcury ","
-.BR \%getmaxx ","
-.BR \%getmaxy ","
-.BR \%getparx ","
+.IR \%getbegy ","
+.IR \%getbegx ","
+.IR \%getcury ","
+.IR \%getcurx ","
+.IR \%getmaxy ","
+.IR \%getmaxx ","
+.IR \%getpary ","
 and
-.B \%getpary
-for compatibility with older versions of
-.IR curses ";"
+.I \%getparx
+for compatibility with System\ V
+.I curses
+that were not standardized;
+.\" even by SVID 4
 see \fB\%curs_legacy\fP(3X).
 .PP
 Although X/Open Curses does not address the issue,
@@ -140,20 +141,33 @@ they do not allow direct access to its members).
 .PP
 Besides the problem of opaque structures,
 the data stored in like-named members may not have values of the same
-meaning different implementations.
+meaning across different implementations.
 For example,
 the values of
-.B \%WINDOW._maxx
+.I \%WINDOW._maxx
 and
-.B \%WINDOW._maxy
+.I \%WINDOW._maxy
 in
 .I \%ncurses
 have long
 .\" (at least since its initial release, 1.8.1)
 differed by one from some other implementations.
 The
-.B \%getmaxyx
+.I \%getmaxyx
 macro hides this difference.
+.SH HISTORY
+4BSD (1980)
+.I curses
+introduced
+.IR \%getyx "."
+.PP
+SVr3 (1987)
+added
+.I \%getbegyx
+and
+.IR \%getmaxyx "."
+SVr3.1 later that year supplied
+.IR \%getparyx "."
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_legacy\fP(3X),
