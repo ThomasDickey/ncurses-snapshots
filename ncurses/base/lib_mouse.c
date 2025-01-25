@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.205 2025/01/18 15:01:47 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.206 2025/01/22 23:13:51 tom Exp $")
 
 #include <tic.h>
 
@@ -483,8 +483,8 @@ allow_gpm_mouse(SCREEN *sp GCC_UNUSED)
     if (NC_ISATTY(fileno(stdout))) {
 	const char *list = getenv("NCURSES_GPM_TERMS");
 	const char *env = getenv("TERM");
-	if (list != 0) {
-	    if (env != 0) {
+	if (list != NULL) {
+	    if (env != NULL) {
 		result = _nc_name_match(list, env, "|:") ? TRUE : FALSE;
 	    }
 	} else {
@@ -495,7 +495,7 @@ allow_gpm_mouse(SCREEN *sp GCC_UNUSED)
 	     * capability.  Perhaps that works for someone.  If so, they can
 	     * set the environment variable (above).
 	     */
-	    if (env != 0 && strstr(env, "linux") != 0) {
+	    if (env != NULL && strstr(env, "linux") != NULL) {
 		result = TRUE;
 	    }
 	}
@@ -507,7 +507,7 @@ allow_gpm_mouse(SCREEN *sp GCC_UNUSED)
 static void
 unload_gpm_library(SCREEN *sp)
 {
-    if (sp->_dlopen_gpm != 0) {
+    if (sp->_dlopen_gpm != NULL) {
 	T(("unload GPM library"));
 	sp->_mouse_gpm_loaded = FALSE;
 	sp->_mouse_fd = -1;
@@ -522,25 +522,25 @@ load_gpm_library(SCREEN *sp)
     /*
      * If we already had a successful dlopen, reuse it.
      */
-    if (sp->_dlopen_gpm != 0) {
+    if (sp->_dlopen_gpm != NULL) {
 	sp->_mouse_gpm_found = TRUE;
 	sp->_mouse_gpm_loaded = TRUE;
-    } else if ((sp->_dlopen_gpm = dlopen(LIBGPM_SONAME, my_RTLD)) != 0) {
+    } else if ((sp->_dlopen_gpm = dlopen(LIBGPM_SONAME, my_RTLD)) != NULL) {
 #if (defined(__GNUC__) && (__GNUC__ >= 5)) || defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
-	if (GET_DLSYM(gpm_fd) == 0 ||
-	    GET_DLSYM(Gpm_Open) == 0 ||
-	    GET_DLSYM(Gpm_Close) == 0 ||
-	    GET_DLSYM(Gpm_GetEvent) == 0) {
+	if (GET_DLSYM(gpm_fd) == NULL ||
+	    GET_DLSYM(Gpm_Open) == NULL ||
+	    GET_DLSYM(Gpm_Close) == NULL ||
+	    GET_DLSYM(Gpm_GetEvent) == NULL) {
 #if (defined(__GNUC__) && (__GNUC__ >= 5)) || defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
 	    T(("GPM initialization failed: %s", dlerror()));
 	    unload_gpm_library(sp);
 	    dlclose(sp->_dlopen_gpm);
-	    sp->_dlopen_gpm = 0;
+	    sp->_dlopen_gpm = NULL;
 	} else {
 	    sp->_mouse_gpm_found = TRUE;
 	    sp->_mouse_gpm_loaded = TRUE;

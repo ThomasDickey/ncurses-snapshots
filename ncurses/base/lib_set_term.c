@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.192 2025/01/12 00:41:56 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.193 2025/01/22 23:13:27 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -217,9 +217,9 @@ delscreen(SCREEN *sp)
 	}
 #if USE_GPM_SUPPORT
 #ifdef HAVE_LIBDL
-	if (sp->_dlopen_gpm != 0) {
+	if (sp->_dlopen_gpm != NULL) {
 	    dlclose(sp->_dlopen_gpm);
-	    sp->_dlopen_gpm = 0;
+	    sp->_dlopen_gpm = NULL;
 	}
 #endif
 #endif /* USE_GPM_SUPPORT */

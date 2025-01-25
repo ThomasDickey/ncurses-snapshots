@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.83 2024/12/07 21:02:00 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.84 2025/01/24 20:39:23 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -242,7 +242,7 @@ _nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
     if ((mode & TW_EVENT) && evl) {
 	if (fds == fd_list)
 	    fds = typeMalloc(struct pollfd, MIN_FDS + evl->count);
-	if (fds == 0)
+	if (fds == NULL)
 	    return TW_NONE;
     }
 #endif
