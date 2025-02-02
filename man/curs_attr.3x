@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.127 2025/01/19 00:49:39 tom Exp $
-.TH curs_attr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.133 2025/02/01 23:59:36 tom Exp $
+.TH curs_attr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -362,6 +362,7 @@ is outside the window boundaries.
 .BR \%chgat ","
 .BR \%mvchgat ","
 .BR \%mvwchgat ","
+.BR \%wchgat ","
 and
 .B \%color_set
 are part of
@@ -380,7 +381,7 @@ and
 .B \%standend
 may be implemented as macros.
 .PP
-Color pair values be logically \*(``or\*(''-ed with attributes
+Color pair values may be logically \*(``or\*(''-ed with attributes
 if the pair number is less than 256.
 The alternate functions such as \fBcolor_set\fP can pass a color pair
 value directly.
@@ -556,7 +557,6 @@ no known terminal provides these highlights
 .\" ---------------------------------------------------------------------------
 .SH HISTORY
 4BSD (1980)
-.I curses
 used a
 .I char
 to represent each cell of the terminal screen.
@@ -582,7 +582,8 @@ BSD
 .I curses
 could do nothing with them.
 .PP
-SVr2 (1984) provided an improved
+SVr2 (1984)
+provided an improved
 .I curses
 library,
 introducing
@@ -621,7 +622,7 @@ added the
 macro along with a color system;
 see \fBcurs_color\fP(3X).
 .PP
-X/Open Curses is largely based on SVr4
+X/Open Curses Issue\ 4 (1995) is largely based on SVr4
 .IR curses ","
 but recognized that the
 .I \%wchar_t
@@ -648,13 +649,11 @@ functions
 and
 .IR \%wattr_set "),"
 and some new
-.RI \%( color_set ,
-.IR \%wcolor_set ","
-.IR \%chgat ","
-.IR \%wchgat ","
-.IR \%mvchgat ","
+.RI \%( chgat
+and its variants,
+.IR \%color_set ","
 and
-.IR \%mvwchgat ")."
+.IR \%wcolor_set ")."
 .PP
 Different Unix systems used differently sized bit fields in
 .I \%chtype

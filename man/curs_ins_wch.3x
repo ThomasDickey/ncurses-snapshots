@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wch.3x,v 1.43 2025/01/19 00:49:39 tom Exp $
-.TH curs_ins_wch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wch.3x,v 1.46 2025/02/02 00:00:59 tom Exp $
+.TH curs_ins_wch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -72,8 +72,9 @@ These functions return \fBOK\fP on success and \fBERR\fP on failure.
 .PP
 Functions taking a
 .I \%WINDOW
-pointer argument fail if the pointer is
-.IR NULL .
+pointer argument fail if
+.I win
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -96,8 +97,7 @@ is not necessarily employed.
 X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.
 .SH HISTORY
-These functions were initially specified by X/Open Curses Issue\ 4
-(1995).
+X/Open Curses Issue\ 4 (1995) initially specified these functions.
 The System\ V Interface Definition Version\ 4
 of the same year
 specified a function named

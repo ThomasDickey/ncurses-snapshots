@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.68 2025/01/19 00:49:39 tom Exp $
-.TH curs_insstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.70 2025/02/01 22:53:03 tom Exp $
+.TH curs_insstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -173,8 +173,8 @@ This was probably an error,
 since it makes this group of functions inconsistent.
 No implementation of
 .I curses
-documents this inconsistency,
-and Issue\ 7 removed it.
+manifests this inconsistency,
+and Issue\ 7 removed the claim.
 .PP
 Issue\ 4 states that the entire string is inserted if
 .I n
@@ -196,7 +196,8 @@ SVr3.1 (1987)
 introduced
 .I \%winsstr
 and
-.IR \%winsnstr "."
+.I \%winsnstr
+and their variants.
 .SH SEE ALSO
 \fB\%curs_ins_wstr\fP(3X) describes comparable functions of the
 .I \%ncurses

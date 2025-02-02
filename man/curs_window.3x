@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.64 2025/01/19 00:51:10 tom Exp $
-.TH curs_window 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_window.3x,v 1.66 2025/02/02 00:04:58 tom Exp $
+.TH curs_window 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -61,17 +61,17 @@ create and manipulate \fIcurses\fR windows
 .nf
 \fB#include <curses.h>
 .PP
-\fBWINDOW * newwin(
-	int \fInlines\fP, int \fIncols\fP,
-	int \fIbegin_y\fP, int \fIbegin_x\fP);
+\fBWINDOW * newwin(\fR
+	\fBint \fInlines\fP, int \fIncols\fP,
+	\fBint \fIbegin_y\fP, int \fIbegin_x\fP);
 \fBint delwin(WINDOW * \fIwin\fP);
 \fBint mvwin(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 \fBWINDOW * subwin(WINDOW * \fIorig\fP,
-	int \fInlines\fP, int \fIncols\fP,
-	int \fIbegin_y\fP, int \fIbegin_x\fP);
+	\fBint \fInlines\fP, int \fIncols\fP,
+	\fBint \fIbegin_y\fP, int \fIbegin_x\fP);
 \fBWINDOW * derwin(WINDOW * \fIorig\fP,
-	int \fInlines\fP, int \fIncols\fP,
-	int \fIbegin_y\fP, int \fIbegin_x\fP);
+	\fBint \fInlines\fP, int \fIncols\fP,
+	\fBint \fIbegin_y\fP, int \fIbegin_x\fP);
 \fBint mvderwin(WINDOW * \fIwin\fP, int \fIpar_y\fP, int \fIpar_x\fP);
 \fBWINDOW * dupwin(WINDOW * \fIwin\fP);
 \fBvoid wsyncup(WINDOW * \fIwin\fP);

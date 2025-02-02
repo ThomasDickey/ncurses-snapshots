@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.164 2025/01/12 10:51:43 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.165 2025/02/01 21:53:19 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -1338,7 +1338,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	 * is winning.
 	 */
 	else if (sscanf(buf, "t %d", &n) == 1) {
-	    float cumtime = 0.0, perchar;
+	    double cumtime = 0.0, perchar;
 	    int speeds[] =
 	    {2400, 9600, 14400, 19200, 28800, 38400, 0};
 
@@ -1384,14 +1384,14 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 		 * transmission both. Transmission time is an estimate
 		 * assuming 9 bits/char, 8 bits + 1 stop bit.
 		 */
-		float totalest = cumtime + xmits * 9 * 1e6 / speeds[i];
+		double totalest = cumtime + (double) xmits * 9 * 1e6 / speeds[i];
 
 		/*
 		 * Per-character optimization overhead in character transmits
 		 * at the current speed.  Round this to the nearest integer
 		 * to figure COMPUTE_OVERHEAD for the speed.
 		 */
-		float overhead = speeds[i] * perchar / 1e6;
+		double overhead = speeds[i] * perchar / 1e6;
 
 		(void)
 		    printf("%6d bps: %3.2f char-xmits overhead; total estimated time %15.2f\n",

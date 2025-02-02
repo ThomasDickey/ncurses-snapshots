@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.46 2025/01/19 01:13:04 tom Exp $
+# $Id: manhtml.aliases,v 1.47 2025/02/02 00:58:13 tom Exp $
 #***************************************************************************
 # Copyright 2019-2024,2025 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -73,6 +73,7 @@ initscr(3X)		curs_initscr(3X)
 is_cbreak(3X)		curs_inopts(3X)
 is_scrollok(3X)		curs_opaque(3X)
 killchar(3X)		curs_termattrs(3X)
+killwchar(3X)		curs_termattrs(3X)
 keyname(3X)		curs_util(3X)
 keypad(3X)		curs_inopts(3X)
 longname(3X)		curs_termattrs(3X)

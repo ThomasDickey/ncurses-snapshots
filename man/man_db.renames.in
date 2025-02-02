@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.83 2025/01/19 01:00:28 tom Exp $
+# $Id: man_db.renames.in,v 1.84 2025/02/01 22:46:00 Branden.Robinson Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -221,6 +221,7 @@ is_scrollok.3x			is_scrollok.3ncurses
 keyname.3x			keyname.3ncurses
 keypad.3x			keypad.3ncurses
 killchar.3x			killchar.3ncurses
+killwchar.3x			killwchar.3ncurses
 leaveok.3x			leaveok.3ncurses
 longname.3x			longname.3ncurses
 meta.3x				meta.3ncurses

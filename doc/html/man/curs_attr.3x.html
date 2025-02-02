@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_attr.3x,v 1.127 2025/01/19 00:49:39 tom Exp @
+  * @Id: curs_attr.3x,v 1.133 2025/02/01 23:59:36 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_attr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_attr 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_attr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_attr 3x 2025-02-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
@@ -249,14 +249,14 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       <STRONG>attr_on</STRONG>,  <STRONG>attr_off</STRONG>,  <STRONG>attr_set</STRONG>, <STRONG>wattr_set</STRONG>, <STRONG>chgat</STRONG>, <STRONG>mvchgat</STRONG>, <STRONG>mvwchgat</STRONG>, and
-       <STRONG>color_set</STRONG> are  part  of  <EM>ncurses</EM>'s  wide-character  API,  and  are  not
-       available in its non-wide configuration.
+       <STRONG>attr_on</STRONG>,  <STRONG>attr_off</STRONG>,  <STRONG>attr_set</STRONG>,  <STRONG>wattr_set</STRONG>,  <STRONG>chgat</STRONG>,  <STRONG>mvchgat</STRONG>,  <STRONG>mvwchgat</STRONG>,
+       <STRONG>wchgat</STRONG>, and <STRONG>color_set</STRONG> are part of <EM>ncurses</EM>'s wide-character API, and are
+       not available in its non-wide configuration.
 
        <STRONG>attron</STRONG>,  <STRONG>wattron</STRONG>,  <STRONG>attroff</STRONG>,  <STRONG>wattroff</STRONG>, <STRONG>attrset</STRONG>, <STRONG>wattrset</STRONG>, <STRONG>standout</STRONG>, and
        <STRONG>standend</STRONG> may be implemented as macros.
 
-       Color pair values be logically "or"-ed  with  attributes  if  the  pair
+       Color pair values may be logically "or"-ed with attributes if the  pair
        number is less than 256.  The alternate functions such as <STRONG>color_set</STRONG> can
        pass a color pair value directly.  However, <EM>ncurses</EM> ABI 4 and 5  simply
        logically "or" this value within the alternate functions.  You must use
@@ -368,11 +368,11 @@
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       4BSD  (1980)  <EM>curses</EM> used a <EM>char</EM> to represent each cell of the terminal
-       screen.  It assumed 7-bit character codes, employing the eighth bit  of
-       a  byte  to  represent  a <EM>standout</EM> attribute (often implemented as bold
-       and/or reverse video).  It introduced  <EM>standout</EM>,  <EM>standend</EM>,  <EM>wstandout</EM>,
-       and   <EM>wstandend</EM>  functions  to  manipulate  this  bit.   Despite  their
+       4BSD  (1980) used a <EM>char</EM> to represent each cell of the terminal screen.
+       It assumed 7-bit character codes, employing the eighth bit of a byte to
+       represent  a  <EM>standout</EM>  attribute  (often  implemented  as  bold and/or
+       reverse video).   It  introduced  <EM>standout</EM>,  <EM>standend</EM>,  <EM>wstandout</EM>,  and
+       <EM>wstandend</EM>   functions   to   manipulate   this   bit.    Despite  their
        inflexibility, they carried over into System V  <EM>curses</EM>  and  ultimately
        X/Open Curses due to their pervasive use in legacy applications.  While
        some 1980s terminals supported  a  variety  of  video  attributes,  BSD
@@ -392,17 +392,17 @@
        SVr3.2 (1988) added the <EM>A</EM><STRONG>_</STRONG><EM>COLOR</EM> macro along with a  color  system;  see
        <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>.
 
-       X/Open  Curses is largely based on SVr4 <EM>curses</EM>, but recognized that the
-       <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> type of ISO C95 was intended to house only a  single  character
-       code,  not  a  sequence  of  codes combining with a base character, let
-       alone could it reliably offer room for a color pair  identifier  and  a
-       set  of  attribute bits with a potential for further growth -- thus the
-       standard invented the <EM>curses</EM>  complex  character  type  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  and  a
-       separate  type  <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>  for  storage  of attribute bits.  The new types
-       brought  along  several  new  functions  to   manipulate   them,   some
+       X/Open  Curses  Issue 4  (1995)  is  largely  based on SVr4 <EM>curses</EM>, but
+       recognized that the <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> type of ISO C95 was intended to house  only
+       a  single character code, not a sequence of codes combining with a base
+       character, let alone could it reliably offer  room  for  a  color  pair
+       identifier  and  a  set  of attribute bits with a potential for further
+       growth -- thus the standard invented the <EM>curses</EM> complex character  type
+       <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  and a separate type <EM>attr</EM><STRONG>_</STRONG><EM>t</EM> for storage of attribute bits.  The
+       new types brought along several new functions to manipulate them,  some
        corresponding  to  existing  <EM>chtype</EM>-based functions (<EM>attr</EM><STRONG>_</STRONG><EM>on</EM>, <EM>attr</EM><STRONG>_</STRONG><EM>off</EM>,
-       <EM>attr</EM><STRONG>_</STRONG><EM>set</EM>, <EM>wattr</EM><STRONG>_</STRONG><EM>on</EM>, <EM>wattr</EM><STRONG>_</STRONG><EM>off</EM>, and <EM>wattr</EM><STRONG>_</STRONG><EM>set</EM>), and some new (<EM>color</EM><STRONG>_</STRONG><EM>set</EM>,
-       <EM>wcolor</EM><STRONG>_</STRONG><EM>set</EM>, <EM>chgat</EM>, <EM>wchgat</EM>, <EM>mvchgat</EM>, and <EM>mvwchgat</EM>).
+       <EM>attr</EM><STRONG>_</STRONG><EM>set</EM>, <EM>wattr</EM><STRONG>_</STRONG><EM>on</EM>, <EM>wattr</EM><STRONG>_</STRONG><EM>off</EM>, and <EM>wattr</EM><STRONG>_</STRONG><EM>set</EM>), and some new (<EM>chgat</EM>  and
+       its variants, <EM>color</EM><STRONG>_</STRONG><EM>set</EM>, and <EM>wcolor</EM><STRONG>_</STRONG><EM>set</EM>).
 
        Different  Unix systems used differently sized bit fields in <EM>chtype</EM> for
        the character code and the color pair identifier, and took into account
@@ -493,7 +493,7 @@
 
 
 
-ncurses 6.5                       2025-01-18                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+ncurses 6.5                       2025-02-01                     <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

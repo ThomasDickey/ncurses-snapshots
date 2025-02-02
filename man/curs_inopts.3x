@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.89 2025/01/19 00:49:39 tom Exp $
-.TH curs_inopts 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.93 2025/02/02 00:02:25 tom Exp $
+.TH curs_inopts 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -111,7 +111,11 @@ get and set \fIcurses\fR terminal input options
 .I curses
 offers configurable parameters permitting an application to control the
 handling of input from the terminal.
-Some are global,
+Some,
+such as those affecting the terminal's
+.I mode
+or line discipline,
+are global,
 applying to all windows;
 others apply only to a specific window.
 The library does not automatically apply such parameters to new or
@@ -135,19 +139,25 @@ Normally,
 the terminal driver buffers typed characters,
 not delivering them to an application
 until a line feed or carriage return is typed.
+This canonical (\*(``cooked\*('') line discipline also supports
+software flow control,
+simple line editing functions
+(character and word erase,
+and whole-line erasure or \*(``kill\*(''),
+and job control.
 .B \%cbreak
 configures the terminal in
 .IR "cbreak mode" ","
 which disables line buffering
-and erase and kill character processing
-(the interrupt,
+and erase and kill character processing \(em
+the interrupt,
 quit,
 suspend,
-and flow control characters are unaffected)
+and flow control characters are unaffected \(em
 and makes characters typed by the user immediately available to the
 program.
 .B \%nocbreak
-restores the terminal's canonical (\*(``cooked\*('') line discipline.
+restores canonical (\*(``cooked\*('') mode.
 .PP
 The state of the terminal is unknown to a
 .I curses
@@ -299,9 +309,9 @@ call
 this is equivalent,
 on POSIX systems,
 to setting the CS7 flag on the terminal.
-The window argument,
-.IR win ,
-is always ignored.
+.I curses
+ignores the window argument
+.IR win "."
 If the
 .I \%term\%info
 string capabilities
@@ -371,8 +381,11 @@ see \fI\%termios\fP(3).
 The default behavior is inherited from the terminal driver settings.
 Calling
 .B \%qiflush
-configures the terminal to flush the queues when any of these events
-occurs,
+configures the terminal to
+.I flush
+the queues
+(discarding their contents)
+when any of these events occurs,
 giving the impression of faster response to user input,
 but making the library's model of the screen contents incorrect.
 Calling
@@ -424,12 +437,13 @@ uses blocking or non-blocking reads.
 If
 .I delay
 is negative,
-a blocking read is used,
+.I curses
+uses a blocking read,
 waiting indefinitely for input.
 If
 .I delay
 is zero,
-a non-blocking read is used;
+the read is non-blocking;
 an input character reading function returns
 .B ERR
 if no input is pending.
@@ -732,11 +746,9 @@ extended capabilities can be interpreted as key definitions.
 These are loaded after the predefined keys,
 and if a capability's value is the same as a previously loaded
 key definition,
-the later definition is the one used.
+the library uses the later definition.
 .SH HISTORY
-4BSD
-.I curses
-(1980)
+4BSD (1980)
 introduced
 .IR echo ","
 .IR \%noecho ","
@@ -746,7 +758,8 @@ introduced
 and
 .IR \%noraw "." \" also crmod and nocrmod, never standardized
 .PP
-SVr2 (1984) featured a new terminal driver,
+SVr2 (1984)
+featured a new terminal driver,
 extending the
 .I curses
 API to support it with

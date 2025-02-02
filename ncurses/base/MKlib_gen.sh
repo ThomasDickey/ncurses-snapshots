@@ -2,10 +2,10 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.77 2024/12/29 10:49:59 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.78 2025/02/01 22:09:10 tom Exp $)
 #
 ##############################################################################
-# Copyright 2018-2022,2024 Thomas E. Dickey                                  #
+# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -203,6 +203,8 @@ cat >$ED4 <<EOF
 	s/^\(.*\) \(.*\) (\(.*\))\$/\1 call_\2 (\3)/
 	}
 s/\([^_]\)NCURSES_SP_NAME___\([a-zA-Z][a-zA-Z_]*\)/\1NCURSES_SP_NAME(\2)/g
+/call_NCURSES_SP_NAME/s,(0,(NULL,
+/call\(_NCURSES_SP_NAME\)\?_*\(delscreen\|ripoffline\|set_term\|vidputs\|vid_puts\)/s,0),NULL),
 EOF
 fi
 
@@ -443,6 +445,7 @@ BEGIN		{
 		print " */"
 		print "#define NCURSES_ATTR_T int"
 		print "#include <ncurses_cfg.h>"
+		print "#include <stdbool.h>"
 		print ""
 		print "#undef NCURSES_NOMACROS	/* _this_ file uses macros */"
 		print "#define NCURSES_NOMACROS 1"
@@ -480,15 +483,30 @@ END		{
 					sub(/^[0-9a-zA-Z_]+ /,"",value);
 					sub(/^[*][ \t]*/,"",value);
 					gsub("struct[ \t]*[0-9a-zA-Z_]+[ \t]*[*]","",value);
+					arg_l = index(value, "(");
+					arg_r = index(value, ")");
+					if ( arg_l > 0 && arg_r > arg_l + 1 ) {
+						args = substr(value, arg_l + 1, arg_r - arg_l - 1);
+						gsub(/[0-9a-zA-Z_]+[ \t]*[*][ \t]*[0-9a-zA-Z_]+/,"NULL",args);
+						gsub(/ (bool|int|short|attr_t|chtype|wchar_t|NCURSES_BOOL|NCURSES_OUTC|NCURSES_OUTC_sp|va_list) /," ",args);
+						value = substr(value,0,arg_l) args substr(value,arg_r);
+					}
 					gsub(/[0-9a-zA-Z_]+[ \t]*[*][ \t]*/,"",value);
 					gsub(/ (const) /," ",value);
-					gsub(/ (int|short|attr_t|chtype|wchar_t|NCURSES_BOOL|NCURSES_OUTC|NCURSES_OUTC_sp|va_list) /," ",value);
+					gsub(/ (bool|int|short|attr_t|chtype|wchar_t|NCURSES_BOOL|NCURSES_OUTC|NCURSES_OUTC_sp|va_list) /," ",value);
 					gsub(/ void /,"",value);
 					sub(/^/,"call_",value);
 					gsub(/ (a[0-9]|z) /, " 0 ", value);
 					gsub(/ int[ \t]*[(][^)]+[)][(][^)]+[)]/, "0", value);
+					if ( index(value, "call_NCURSES_SP_NAME") > 0 ) {
+						sub("0","NULL", value);
+					}
 					printf "    case %d: %s; break;\n", casenum++, value;
 				} else {
+					if ( index(value, "call_NCURSES_SP_NAME") > 0 ) {
+						printf "/* FIXME %s */\n", value;
+						sub("0","NULL", value);
+					}
 					print value;
 				}
 			}

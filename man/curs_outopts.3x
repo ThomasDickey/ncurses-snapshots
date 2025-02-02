@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.78 2025/01/19 00:51:10 tom Exp $
-.TH curs_outopts 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.81 2025/02/01 22:49:13 tom Exp $
+.TH curs_outopts 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -218,20 +218,21 @@ but the code neglects it.
 Use \fB\%curs_set\fP(3X) to make the cursor invisible.
 .SH HISTORY
 4BSD (1980)
-.I curses
 introduced
 .IR \%clearok ","
 .IR \%leaveok ","
 and
 .IR \%scrollok "."
 .PP
-SVr2 (1984) supplied
+SVr2 (1984)
+supplied
 .IR \%idlok ","
 .IR \%setscrreg ","
 and
 .IR \%wsetscrreg "."
 .PP
-SVr3.1 (1987) implemented
+SVr3.1 (1987)
+implemented
 .I \%idcok
 and
 .IR \%immedok "."

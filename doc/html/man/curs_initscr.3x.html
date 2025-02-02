@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.86 2025/01/19 00:49:39 tom Exp @
+  * @Id: curs_initscr.3x,v 1.92 2025/02/02 00:01:55 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2025-02-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -143,7 +143,7 @@
 
        <STRONG>o</STRONG>   restores terminal modes (see <STRONG><A HREF="curs_kernel.3x.html">reset_shell_mode(3x)</A></STRONG>).
 
-       Calling <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG> or <STRONG><A HREF="curs_refresh.3x.html">doupdate(3x)</A></STRONG> after  a  temporary  escape  causes
+       Calling <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG> or <STRONG><A HREF="curs_refresh.3x.html">doupdate(3x)</A></STRONG> after a temporary suspension causes
        <EM>curses</EM> to resume managing the terminal.
 
 
@@ -187,7 +187,56 @@
            and <STRONG>stdscr</STRONG>.
 
        Functions  that  return  pointers  return  <EM>NULL</EM>  on error.  In <EM>ncurses</EM>,
-       <STRONG>set_term</STRONG> does not fail.
+       <STRONG>set_term</STRONG> does not fail, and <STRONG>initscr</STRONG> exits the application  if  it  does
+       not operate successfully.
+
+
+</PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
+       <EM>ncurses</EM>  establishes signal handlers when a function that initializes a
+       <EM>SCREEN</EM>, either <STRONG>initscr</STRONG> or <STRONG>newterm</STRONG>, is first called.  Applications  that
+       wish  to  handle  the  following signals themselves should set up their
+       corresponding handlers <EM>after</EM> initializing the screen.
+
+       <EM>SIGINT</EM> <EM>ncurses</EM>'s handler <EM>attempts</EM> to  clean  up  the  screen  on  exit.
+              Although it <EM>usually</EM> works as expected, there are limitations.
+
+              <STRONG>o</STRONG>   Walking the <EM>SCREEN</EM> list is unsafe, since all list management
+                  is done without any signal blocking.
+
+              <STRONG>o</STRONG>   When an application has been built with the <STRONG>_</STRONG><EM>REENTRANT</EM> macro
+                  defined  (and  corresponding  system support), <STRONG>set_term</STRONG> uses
+                  functions that could deadlock or misbehave in other ways.
+
+              <STRONG>o</STRONG>   <STRONG>endwin</STRONG> calls other functions, many of which use <STRONG>stdio(3)</STRONG>  or
+                  other library functions that are clearly unsafe.
+
+       <EM>SIGTERM</EM>
+              <EM>ncurses</EM>  uses  the  same  handler  as  for <EM>SIGINT</EM>, with the same
+              limitations.  It is not mentioned in X/Open Curses, but is  more
+              suitable  for  this  purpose  than  <EM>SIGQUIT</EM>  (which  is  used in
+              debugging).
+
+       <EM>SIGTSTP</EM>
+              <EM>ncurses</EM>'s handler manages the  terminal-generated  stop  signal,
+              used  in  job  control.   When  resuming  the  process,  <EM>ncurses</EM>
+              discards  pending  input  with  <STRONG><A HREF="curs_util.3x.html">flushinp(3x)</A></STRONG>  and  repaints  the
+              screen,  assuming  that it has been completely altered.  It also
+              updates the saved terminal modes with <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>.
+
+       <EM>SIGWINCH</EM>
+              <EM>ncurses</EM>  handles  changes  to  the  terminal's  window  size,  a
+              phenomenon  ignored  in  standardization  efforts.   It  sets  a
+              (signal-safe) variable that is later tested  by  <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>  and
+              <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>.
+
+              <STRONG>o</STRONG>   <STRONG>wgetch</STRONG> returns the key code <STRONG>KEY_RESIZE</STRONG>.
+
+              <STRONG>o</STRONG>   <STRONG>wget_wch</STRONG>  returns <STRONG>KEY_CODE_YES</STRONG> and sets its <EM>wch</EM> parameter to
+                  <STRONG>KEY_RESIZE</STRONG>.
+
+              At the same time, <EM>ncurses</EM> calls  <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>  to  adjust  the
+              standard  screen  <STRONG>stdscr</STRONG>,  and  update  global variables such as
+              <STRONG>LINES</STRONG> and <STRONG>COLS</STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -197,120 +246,80 @@
 
 </PRE><H3><a name="h3-Differences">Differences</a></H3><PRE>
        X/Open  Curses  specifies  that  portable  applications  must  not call
-       <STRONG>initscr</STRONG> more than once:
+       <EM>initscr</EM> more than once.
 
-       <STRONG>o</STRONG>   The portable way to use <STRONG>initscr</STRONG> is once only, using <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG>  to
-           restore the screen after <STRONG>endwin</STRONG>.
+       <STRONG>o</STRONG>   The portable way to use <EM>initscr</EM> is  once  only,  using  <EM>refresh</EM>  to
+           restore the screen after <EM>endwin</EM>.
 
-       <STRONG>o</STRONG>   This implementation allows using <STRONG>initscr</STRONG> after <STRONG>endwin</STRONG>.
+       <STRONG>o</STRONG>   <EM>ncurses</EM> permits use of <EM>initscr</EM> after <EM>endwin</EM>.
 
-       Old versions of curses, e.g., BSD 4.4, would return a null pointer from
-       <STRONG>initscr</STRONG> when an error is detected, rather than exiting.  It is safe but
-       redundant to check the return value of <STRONG>initscr</STRONG> in X/Open Curses.
+       <EM>initscr</EM>  in  BSD,  from  its inception (1980) through the Net/2 release
+       (1991) returned <EM>ERR</EM> cast to a <EM>WINDOW</EM> pointer when detecting  an  error.
+       4.4BSD  (1995)  instead  returned  a  null pointer.  Neither exited the
+       application.  It is safe but redundant to check  the  return  value  of
+       <EM>initscr</EM> in X/Open Curses.
 
-       Calling  <STRONG>endwin</STRONG>  does not dispose of the memory allocated in <STRONG>initscr</STRONG> or
-       <STRONG>newterm</STRONG>.  Deleting a <EM>SCREEN</EM> provides a way to do this:
+       Calling  <EM>endwin</EM>  does not dispose of the memory allocated by <EM>initscr</EM> or
+       <EM>newterm</EM>.  Deleting a <EM>SCREEN</EM> provides a way to do this.
 
-       <STRONG>o</STRONG>   X/Open Curses does not say what happens to <EM>WINDOW</EM>s  when  <STRONG>delscreen</STRONG>
+       <STRONG>o</STRONG>   X/Open Curses does not say what happens to <EM>WINDOW</EM>s  when  <EM>delscreen</EM>
            "frees  storage  associated  with  the  <EM>SCREEN</EM>"  nor  does the SVr4
-           documentation help, adding that it should be called after <STRONG>endwin</STRONG> if
+           documentation help, adding that it should be called after <EM>endwin</EM> if
            a <EM>SCREEN</EM> is no longer needed.
 
-       <STRONG>o</STRONG>   However,  <EM>WINDOW</EM>s are implicitly associated with a <EM>SCREEN</EM>.  so that
-           it is reasonable to expect <STRONG>delscreen</STRONG> to deal with these.
+       <STRONG>o</STRONG>   However,  <EM>WINDOW</EM>s are implicitly associated with a <EM>SCREEN</EM>, so it is
+           reasonable to expect <EM>delscreen</EM> to dispose of them.
 
-       <STRONG>o</STRONG>   SVr4 curses deletes  the  standard  <EM>WINDOW</EM>  structures  <STRONG>stdscr</STRONG>  and
-           <STRONG>curscr</STRONG>  as  well  as a work area <STRONG>newscr</STRONG>.  SVr4 curses ignores other
-           windows.
+       <STRONG>o</STRONG>   SVr4 deletes the standard <EM>WINDOW</EM> structures <EM>stdscr</EM>  and  <EM>curscr</EM>  as
+           well as a work area <EM>newscr</EM>.  It ignores other windows.
 
-       <STRONG>o</STRONG>   Since version 4.0 (1996), <EM>ncurses</EM> has  maintained  a  list  of  all
-           windows  for  each  screen,  using that information to delete those
-           windows when <STRONG>delscreen</STRONG> is called.
+       <STRONG>o</STRONG>   Since  version  4.0  (1996),  <EM>ncurses</EM>  has maintained a list of all
+           windows for each screen, using that  information  to  delete  those
+           windows when <EM>delscreen</EM> is called.
 
-       <STRONG>o</STRONG>   NetBSD copied this feature of <EM>ncurses</EM> in  2001.   <EM>PDCurses</EM>  follows
+       <STRONG>o</STRONG>   NetBSD  copied  this  feature of <EM>ncurses</EM> in 2001.  <EM>PDCurses</EM> follows
            the SVr4 model, deleting only the standard <EM>WINDOW</EM> structures.
 
 
 </PRE><H3><a name="h3-High-level-versus-Low-level">High-level versus Low-level</a></H3><PRE>
-       Different  implementations  may  disagree  regarding  the level of some
-       functions.  For example, <EM>SCREEN</EM>  (returned  by  <STRONG>newterm</STRONG>)  and  <EM>TERMINAL</EM>
-       (returned  by  <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>)  hold  file  descriptors  for  the output
-       stream.  If an application switches screens using <STRONG>set_term</STRONG>, or switches
+       Different implementations may disagree  regarding  the  level  of  some
+       functions.   For  example,  <EM>SCREEN</EM>  (returned  by <EM>newterm</EM>) and <EM>TERMINAL</EM>
+       (returned by  <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>)  hold  file  descriptors  for  the  output
+       stream.  If an application switches screens using <EM>set</EM><STRONG>_</STRONG><EM>term</EM>, or switches
        terminals using <STRONG><A HREF="curs_terminfo.3x.html">set_curterm(3x)</A></STRONG>, applications which use the output file
-       descriptor can have different behavior  depending  on  which  structure
+       descriptor  can  have  different  behavior depending on which structure
        holds the corresponding descriptor.
 
-       <STRONG>o</STRONG>   NetBSD's   <EM>baudrate</EM>  function  uses  the  descriptor  in  <EM>TERMINAL</EM>.
-           <EM>ncurses</EM> and SVr4 <EM>curses</EM> use the descriptor in <EM>SCREEN</EM>.
+       <STRONG>o</STRONG>   NetBSD's  <EM>baudrate</EM>  function  uses  the  descriptor  in   <EM>TERMINAL</EM>.
+           <EM>ncurses</EM> and SVr4 use the descriptor in <EM>SCREEN</EM>.
 
-       <STRONG>o</STRONG>   NetBSD and <EM>ncurses</EM> use the descriptor in <EM>TERMINAL</EM> for terminal  I/O
-           modes,  e.g.,  <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>,  <STRONG><A HREF="curs_kernel.3x.html">def_prog_mode(3x)</A></STRONG>.  SVr4 curses
-           uses the descriptor in <EM>SCREEN</EM>.
+       <STRONG>o</STRONG>   NetBSD  and <EM>ncurses</EM> use the descriptor in <EM>TERMINAL</EM> for terminal I/O
+           modes, e.g., <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>, <STRONG><A HREF="curs_kernel.3x.html">def_prog_mode(3x)</A></STRONG>.  SVr4 uses  the
+           descriptor in <EM>SCREEN</EM>.
 
    <STRONG>Unset</STRONG> <EM>TERM</EM> <STRONG>Variable</STRONG>
-       If the <EM>TERM</EM> variable is  missing  or  empty,  <STRONG>initscr</STRONG>  uses  the  value
-       "unknown",  which  normally  corresponds  to  a terminal entry with the
+       If  the  <EM>TERM</EM>  variable  is  missing  or  empty, <EM>initscr</EM> uses the value
+       "unknown", which normally corresponds to  a  terminal  entry  with  the
        <STRONG>generic</STRONG> (<STRONG>gn</STRONG>) capability.  Generic entries are detected by <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>
-       and  cannot  be  used for full-screen operation.  Other implementations
+       and cannot be used for full-screen  operation.   Other  implementations
        may handle a missing/empty <EM>TERM</EM> variable differently.
 
 
 </PRE><H3><a name="h3-Signal-Handlers">Signal Handlers</a></H3><PRE>
-       Quoting from X/Open Curses Issue 7, section 3.1.1:
+       Quoting X/Open Curses Issue 7, section 3.1.1:
 
-            Curses implementations may provide for  special  handling  of  the
-            SIGINT,  SIGQUIT,  and  SIGTSTP  signals  if  their disposition is
-            SIG_DFL at the time <EM>initscr</EM> is called...
+            Curses  implementations  may  provide  for special handling of the
+            SIGINT, SIGQUIT, and  SIGTSTP  signals  if  their  disposition  is
+            SIG_DFL at the time <EM>initscr</EM>() is called...
 
-            Any special handling for these signals may remain  in  effect  for
+            Any  special  handling  for these signals may remain in effect for
             the  life  of  the  process  or  until  the  process  changes  the
             disposition of the signal.
 
-            None of the Curses functions are required to be safe with  respect
+            None  of the Curses functions are required to be safe with respect
             to signals...
 
-       This  implementation establishes signal handlers during initialization,
-       e.g., <STRONG>initscr</STRONG> or <STRONG>newterm</STRONG>.  Applications which must handle these signals
-       should  set  up  the  corresponding  handlers  <EM>after</EM>  initializing  the
-       library:
-
-       <STRONG>SIGINT</STRONG>
-            The handler <EM>attempts</EM> to clean up the screen on exit.  Although  it
-            <EM>usually</EM> works as expected, there are limitations:
-
-            <STRONG>o</STRONG>   Walking  the  <EM>SCREEN</EM> list is unsafe, since all list management
-                is done without any signal blocking.
-
-            <STRONG>o</STRONG>   On systems which  have  <STRONG>REENTRANT</STRONG>  turned  on,  <STRONG>set_term</STRONG>  uses
-                functions which could deadlock or misbehave in other ways.
-
-            <STRONG>o</STRONG>   <STRONG>endwin</STRONG>  calls  other  functions, many of which use <STRONG>stdio(3)</STRONG> or
-                other library functions which are clearly unsafe.
-
-       <STRONG>SIGTERM</STRONG>
-            This uses the same handler as <STRONG>SIGINT</STRONG>, with the  same  limitations.
-            It  is  not  mentioned  in X/Open Curses, but is more suitable for
-            this purpose than <STRONG>SIGQUIT</STRONG> (which is used in debugging).
-
-       <STRONG>SIGTSTP</STRONG>
-            This handles the <EM>stop</EM> signal, used in job control.  When  resuming
-            the  process,  this  implementation  discards  pending  input with
-            <STRONG><A HREF="curs_util.3x.html">flushinp(3x)</A></STRONG>, and repaints the screen assuming that  it  has  been
-            completely altered.  It also updates the saved terminal modes with
-            <STRONG><A HREF="curs_kernel.3x.html">def_shell_mode(3x)</A></STRONG>.
-
-       <STRONG>SIGWINCH</STRONG>
-            This handles the window-size changes which  were  ignored  in  the
-            standardization   efforts.    The  handler  sets  a  (signal-safe)
-            variable that is later tested by <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> and <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>.
-
-            <STRONG>o</STRONG>   <STRONG>wgetch</STRONG> returns the key code <STRONG>KEY_RESIZE</STRONG>.
-
-            <STRONG>o</STRONG>   <STRONG>wget_wch</STRONG> returns <STRONG>KEY_CODE_YES</STRONG> and sets its  <EM>wch</EM>  parameter  to
-                <STRONG>KEY_RESIZE</STRONG>.
-
-            At  the same time, <EM>ncurses</EM> calls <STRONG>resizeterm</STRONG> to adjust the standard
-            screen <STRONG>stdscr</STRONG>, and update other data such as <STRONG>LINES</STRONG> and <STRONG>COLS</STRONG>.
+       Section "NOTES" above discusses <EM>ncurses</EM>'s signal handlers.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -319,7 +328,7 @@
 
 
 
-ncurses 6.5                       2025-01-18                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.5                       2025-02-01                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -336,6 +345,7 @@ ncurses 6.5                       2025-01-18                  <STRONG><A HREF="c
 </ul>
 </li>
 <li><a href="#h2-RETURN-VALUE">RETURN VALUE</a></li>
+<li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a>
 <ul>
 <li><a href="#h3-Differences">Differences</a></li>

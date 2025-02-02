@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getcchar.3x,v 1.53 2025/01/19 00:49:39 tom Exp $
-.TH curs_getcchar 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getcchar.3x,v 1.56 2025/02/01 23:46:11 tom Exp $
+.TH curs_getcchar 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds ' \(aq
 .\}
@@ -274,7 +274,7 @@ see below),
 attributes
 (at least 15 bits' worth,
 inferred from the count of specified
-.B WA_
+.I WA_
 constants),
 .\" See X/Open Curses Issue 7, p. 307.
 .bP
@@ -344,8 +344,7 @@ can be compiled with a different
 value;
 doing so alters the library's ABI.
 .SH HISTORY
-These functions were initially specified by X/Open Curses Issue\ 4
-(1995).
+X/Open Curses Issue\ 4 (1995) initially specified these functions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_attr\fP(3X),

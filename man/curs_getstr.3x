@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.80 2025/01/19 00:49:39 tom Exp $
-.TH curs_getstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.85 2025/02/01 22:49:13 tom Exp $
+.TH curs_getstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -289,8 +289,7 @@ as well as any special keys
 .PP
 without further detail.
 It lied.
-In fact,
-the \*(``character\*('' value
+The \*(``character\*('' value
 appended to the string
 by those implementations
 was predictable but not useful \(em
@@ -482,7 +481,6 @@ for better compatibility with SVr4
 .IR curses "."
 .SH HISTORY
 4BSD (1980)
-.I curses
 introduced
 .I \%wgetstr
 along with its variants.
@@ -492,11 +490,12 @@ added
 .IR \%wgetnstr ","
 but none of its variants.
 .PP
-X/Open Curses Issue\ 4 (1995) specified
+X/Open Curses Issue\ 4 (1995)
+specified
 .IR \%getnstr ","
-.IR \%mvwgetnstr ","
+.IR \%mvgetnstr ","
 and
-.IR \%mvgetnstr "."
+.IR \%mvwgetnstr "."
 .SH SEE ALSO
 \fB\%curs_get_wstr\fP(3X) describes comparable functions of the
 .I \%ncurses

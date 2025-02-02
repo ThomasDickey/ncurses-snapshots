@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.86 2025/01/19 00:49:39 tom Exp $
-.TH curs_initscr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.92 2025/02/02 00:01:55 tom Exp $
+.TH curs_initscr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -219,7 +219,7 @@ and
 restores terminal modes (see \fB\%reset_shell_mode\fP(3X)).
 .PP
 Calling \fB\%refresh\fP(3X) or \fB\%doupdate\fP(3X) after a
-temporary escape causes
+temporary suspension causes
 .I curses
 to resume managing the terminal.
 .SS isendwin
@@ -319,147 +319,80 @@ on error.
 In
 .IR \%ncurses ","
 .B \%set_term
-does not fail.
-.SH PORTABILITY
-X/Open Curses Issue\ 4 describes these functions.
-It specifies no error conditions for them.
-.SS Differences
-X/Open Curses specifies that portable applications must not
-call \fB\%initscr\fP more than once:
-.bP
-The portable way to use \fB\%initscr\fP is once only,
-using \fB\%refresh\fP(3X)
-to restore the screen after \fB\%endwin\fP.
-.bP
-This implementation allows using \fB\%initscr\fP after \fB\%endwin\fP.
-.PP
-Old versions of curses, e.g., BSD 4.4, would return a null pointer
-from \fB\%initscr\fP when an error is detected, rather than exiting.
-It is safe but redundant to check the return value of \fB\%initscr\fP
-in X/Open Curses.
-.PP
-Calling \fB\%endwin\fP does not dispose of the memory allocated in
-\fB\%initscr\fP or \fB\%newterm\fP.
-Deleting a \fISCREEN\fP provides a way to do this:
-.bP
-X/Open Curses does not say what happens to \fI\%WINDOW\fPs when
-\fB\%delscreen\fP
-\*(``frees storage associated with the \fISCREEN\fP\*(''
-nor does the SVr4 documentation help,
-adding that it should be called after \fB\%endwin\fP if a \fISCREEN\fP
-is no longer needed.
-.bP
-However, \fI\%WINDOW\fPs are implicitly associated with a \fISCREEN\fP.
-so that it is reasonable to expect \fB\%delscreen\fP to deal with these.
-.bP
-SVr4 curses deletes the standard \fI\%WINDOW\fP structures
-\fB\%stdscr\fP and \fB\%curscr\fP as well as a work area \fB\%newscr\fP.
-SVr4 curses ignores other windows.
-.bP
-Since version 4.0 (1996),
-\fI\%ncurses\fP has maintained a list of all windows for each screen,
-using that information to delete those windows when \fB\%delscreen\fP is
-called.
-.bP
-NetBSD copied this feature of \fI\%ncurses\fP in 2001.
-.I \%PDCurses
-follows the SVr4 model,
-deleting only the standard \fI\%WINDOW\fP structures.
-.SS "High-level versus Low-level"
-Different implementations may disagree regarding the level of some functions.
-For example, \fISCREEN\fP (returned by \fB\%newterm\fP) and
-\fI\%TERMINAL\fP (returned by \fB\%setupterm\fP(3X)) hold file
-descriptors for the output stream.
-If an application switches screens using \fB\%set_term\fR,
-or switches terminals using \fB\%set_curterm\fP(3X),
-applications which use the output file descriptor can have different
-behavior depending on which structure holds the corresponding descriptor.
-.bP
-NetBSD's
-.I \%baudrate
-function uses the descriptor in
-.IR \%TERMINAL "."
+does not fail,
+and
+.B \%initscr
+exits the application if it does not operate successfully.
+.SH NOTES
 .I \%ncurses
-and SVr4
-.I curses
-use the descriptor in
-.IR SCREEN "."
+establishes signal handlers when a function that initializes a
+.IR SCREEN ","
+either
+.B \%initscr
+or
+.BR \%newterm ","
+is first called.
+Applications that wish to handle the following signals themselves
+should set up their corresponding handlers
+.I after
+initializing the screen.
+.TP
+.I SIGINT
+.IR \%ncurses 's
+handler
+.I attempts
+to clean up the screen on exit.
+Although it
+.I usually
+works as expected,
+there are limitations.
+.RS
 .bP
-NetBSD and \fI\%ncurses\fP use the descriptor
-in \fI\%TERMINAL\fP
-for terminal I/O modes,
-e.g.,
-\fB\%def_shell_mode\fP(3X),
-\fB\%def_prog_mode\fP(3X).
-SVr4 curses uses the descriptor in \fISCREEN\fP.
-.SS "Unset \fITERM\fP Variable"
-If the \fITERM\fP variable is missing or empty, \fB\%initscr\fP uses the
-value \*(``unknown\*('',
-which normally corresponds to a terminal entry with the
-.B \%generic
-.RB ( gn )
-capability.
-Generic entries are detected by \fB\%setupterm\fP(3X)
-and cannot be used for full-screen operation.
-Other implementations may handle
-a missing/empty \fITERM\fP variable differently.
-.SS "Signal Handlers"
-Quoting from X/Open Curses Issue\ 7, section 3.1.1:
-.RS 5
-.PP
-Curses implementations may provide for special handling of the
-\%SIGINT,
-\%SIGQUIT,
-and \%SIGTSTP signals if their disposition is \%SIG_DFL at the time
-.I \%initscr
-is called.\|.\|.
-.PP
-Any special handling for these signals may remain in effect for the
-life of the process or until the process changes the disposition of
-the signal.
-.PP
-None of the Curses functions are required to be safe
-with respect to signals.\|.\|.
-.RE
-.PP
-This implementation establishes signal handlers during initialization,
-e.g., \fB\%initscr\fP or \fB\%newterm\fP.
-Applications which must handle these signals should set up the corresponding
-handlers \fIafter\fP initializing the library:
-.TP 5
-.B SIGINT
-The handler \fIattempts\fP to clean up the screen on exit.
-Although it \fIusually\fP works as expected, there are limitations:
-.RS 5
-.bP
-Walking the \fISCREEN\fP list is unsafe, since all list management
+Walking the
+.I SCREEN
+list is unsafe, since all list management
 is done without any signal blocking.
 .bP
-On systems which have \fB\%REENTRANT\fP turned on, \fB\%set_term\fP uses
-functions which could deadlock or misbehave in other ways.
+When an application has been built with the
+.I \%_REENTRANT
+macro defined
+(and corresponding system support),
+.B \%set_term
+uses functions that could deadlock or misbehave in other ways.
 .bP
-\fB\%endwin\fP calls other functions,
-many of which use \fI\%stdio\fP(3) or other library functions which are
+.B \%endwin
+calls other functions,
+many of which use \fI\%stdio\fP(3) or other library functions that are
 clearly unsafe.
 .RE
-.TP 5
-.B SIGTERM
-This uses the same handler as \fB\%SIGINT\fP, with the same limitations.
-It is not mentioned in X/Open Curses, but is more suitable for this
-purpose than \fB\%SIGQUIT\fP (which is used in debugging).
-.TP 5
-.B SIGTSTP
-This handles the \fIstop\fP signal, used in job control.
-When resuming the process, this implementation discards pending
-input with \fB\%flushinp\fP(3X), and repaints the screen
+.TP
+.I SIGTERM
+.I \%ncurses
+uses the same handler as for
+.IR \%SIGINT ","
+with the same limitations.
+It is not mentioned in X/Open Curses,
+but is more suitable for this purpose than
+.I \%SIGQUIT
+(which is used in debugging).
+.TP
+.I SIGTSTP
+.IR \%ncurses 's
+handler manages the terminal-generated stop signal,
+used in job control.
+When resuming the process,
+.I \%ncurses
+discards pending input with \fB\%flushinp\fP(3X)
+and repaints the screen,
 assuming that it has been completely altered.
 It also updates the saved terminal modes with
 \fB\%def_shell_mode\fP(3X).
-.TP 5
-.B SIGWINCH
-This handles the window-size changes which were ignored in
-the standardization efforts.
-The handler sets a (signal-safe) variable
+.TP
+.I SIGWINCH
+.I \%ncurses
+handles changes to the terminal's window size,
+a phenomenon ignored in standardization efforts.
+It sets a (signal-safe) variable
 that is later tested by \fB\%wgetch\fP(3X) and \fB\%wget_wch\fP(3X).
 .RS
 .bP
@@ -476,9 +409,186 @@ parameter to
 .BR \%KEY_RESIZE "."
 .RE
 .IP
-At the same time, \fI\%ncurses\fP calls \fB\%resizeterm\fP to adjust the
-standard screen \fB\%stdscr\fP,
-and update other data such as \fBLINES\fP and \fBCOLS\fP.
+At the same time,
+.I \%ncurses
+calls \fB\%resizeterm\fP(3X)
+to adjust the standard screen
+.BR \%stdscr ","
+and update global variables such as
+.B LINES
+and
+.BR COLS "."
+.SH PORTABILITY
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.SS Differences
+X/Open Curses specifies that portable applications must not
+call
+.I \%initscr
+more than once.
+.bP
+The portable way to use
+.I \%initscr
+is once only,
+using
+.I \%refresh
+to restore the screen after
+.IR \%endwin "."
+.bP
+.I \%ncurses
+permits use of
+.I \%initscr
+after
+.IR \%endwin "."
+.PP
+.I \%initscr
+in BSD,
+from its inception (1980) through the Net/2 release (1991) returned
+.I ERR
+cast to a
+.I \%WINDOW
+pointer when detecting an error.
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/lib/libcurses/initscr.c
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=Net2/usr/src/lib/libcurses/initscr.c
+4.4BSD (1995)
+instead returned a null pointer.
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.4BSD/usr/src/lib/libcurses/initscr.c
+Neither exited the application.
+It is safe but redundant to check the return value of
+.I \%initscr
+in X/Open Curses.
+.PP
+Calling
+.I \%endwin
+does not dispose of the memory allocated by
+.I \%initscr
+or
+.IR \%newterm "."
+Deleting a
+.I SCREEN
+provides a way to do this.
+.bP
+X/Open Curses does not say what happens to
+.IR \%WINDOW s
+when
+.I \%delscreen
+\*(``frees storage associated with the
+.IR SCREEN "\*(''"
+nor does the SVr4 documentation help,
+adding that it should be called after
+.I \%endwin
+if a
+.I SCREEN
+is no longer needed.
+.bP
+However,
+.IR \%WINDOW s
+are implicitly associated with a
+.IR SCREEN ","
+so it is reasonable to expect
+.I \%delscreen
+to dispose of them.
+.bP
+SVr4 deletes the standard
+.I \%WINDOW
+structures
+.I \%stdscr
+and
+.I \%curscr
+as well as a work area
+.IR \%newscr "."
+It ignores other windows.
+.bP
+Since version 4.0 (1996),
+.I \%ncurses
+has maintained a list of all windows for each screen,
+using that information to delete those windows when
+.I \%delscreen
+is
+called.
+.bP
+NetBSD copied this feature of
+.I \%ncurses
+in 2001.
+.I \%PDCurses
+follows the SVr4 model,
+deleting only the standard
+.I \%WINDOW
+structures.
+.SS "High-level versus Low-level"
+Different implementations may disagree regarding the level of some functions.
+For example,
+.I SCREEN
+(returned by
+.IR \%newterm ")"
+and
+.I \%TERMINAL
+(returned by \fB\%setupterm\fP(3X)) hold file
+descriptors for the output stream.
+If an application switches screens using
+.IR \%set_term ","
+or switches terminals using \fB\%set_curterm\fP(3X),
+applications which use the output file descriptor can have different
+behavior depending on which structure holds the corresponding descriptor.
+.bP
+NetBSD's
+.I \%baudrate
+function uses the descriptor in
+.IR \%TERMINAL "."
+.I \%ncurses
+and SVr4 use the descriptor in
+.IR SCREEN "."
+.bP
+NetBSD and
+.I \%ncurses
+use the descriptor
+in
+.I \%TERMINAL
+for terminal I/O modes,
+e.g.,
+\fB\%def_shell_mode\fP(3X),
+\fB\%def_prog_mode\fP(3X).
+SVr4 uses the descriptor in
+.IR SCREEN "."
+.SS "Unset \fITERM\fP Variable"
+If the
+.I TERM
+variable is missing or empty,
+.I \%initscr
+uses the value \*(``unknown\*('',
+which normally corresponds to a terminal entry with the
+.B \%generic
+.RB ( gn )
+capability.
+Generic entries are detected by \fB\%setupterm\fP(3X)
+and cannot be used for full-screen operation.
+Other implementations may handle
+a missing/empty
+.I TERM
+variable differently.
+.SS "Signal Handlers"
+Quoting X/Open Curses Issue\ 7,
+section 3.1.1:
+.RS 5
+.PP
+Curses implementations may provide for special handling of the
+\%SIGINT,
+\%SIGQUIT,
+and \%SIGTSTP signals if their disposition is \%SIG_DFL at the time
+.IR \%initscr ()
+is called.\|.\|.
+.PP
+Any special handling for these signals may remain in effect for the
+life of the process or until the process changes the disposition of
+the signal.
+.PP
+None of the Curses functions are required to be safe
+with respect to signals.\|.\|.
+.RE
+.PP
+Section \*(``NOTES\*('' above discusses
+.IR \%ncurses 's
+signal handlers.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_kernel\fP(3X),

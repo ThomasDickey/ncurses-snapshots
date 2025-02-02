@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.114 2025/01/19 00:49:39 tom Exp $
-.TH curs_getch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.117 2025/02/02 00:00:59 tom Exp $
+.TH curs_getch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -477,8 +477,9 @@ or
 .PP
 Functions taking a
 .I \%WINDOW
-pointer argument fail if the pointer is
-.IR NULL "."
+pointer argument fail if
+.I win
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -648,16 +649,16 @@ SVr4 describes a successful return value only as
 \*(``an integer value other than
 .IR ERR \*(''. \" Courier roman in source; SVID 4, vol. 3, p. 494
 .PP
-.B \%wgetch
+.I \%wgetch
 reads only single-byte characters.
 .PP
 The echo behavior of these functions on input of
-.B KEY_
+.I KEY_
 or backspace characters is not documented in SVr4
 .IR curses "."
 .PP
 The behavior of
-.B \%wgetch
+.I \%wgetch
 in the presence of signal handlers is not documented in SVr4
 .I curses
 and is unspecified by X/Open Curses.
@@ -673,18 +674,18 @@ A portable
 .I curses
 application prepares for two cases:
 (a) signal receipt does not interrupt
-.BR \%wgetch ";"
+.IR \%wgetch ";"
 or
 (b) signal receipt interrupts
-.B \%wgetch
+.I \%wgetch
 and causes it to return
-.B ERR
+.I ERR
 with
-.B \%errno
+.I \%errno
 set to
-.BR \%EINTR "."
+.IR \%EINTR "."
 .PP
-.B \%KEY_MOUSE
+.I \%KEY_MOUSE
 is mentioned in X/Open Curses,
 along with a few related
 .I \%term\%info
@@ -694,9 +695,9 @@ The implementation in
 .I \%ncurses
 is an extension.
 .PP
-.B \%KEY_RESIZE
+.I \%KEY_RESIZE
 and
-.B \%has_key
+.I \%has_key
 are extensions first implemented for
 .IR \%ncurses "."
 By 2022,
@@ -707,7 +708,7 @@ NetBSD
 .I curses
 .\" https://web.archive.org/web/20200923185647/https://man.netbsd.org/curses_input.3
 had added them along with
-.BR \%KEY_MOUSE "."
+.IR \%KEY_MOUSE "."
 .SH SEE ALSO
 ECMA-6 \*(``7-bit coded Character Set\*(''
 \%<https://\*:ecma\-international\*:.org/\

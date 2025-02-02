@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_get_wstr.3x,v 1.64 2025/01/19 00:49:39 tom Exp @
+  * @Id: curs_get_wstr.3x,v 1.68 2025/02/01 22:54:32 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_get_wstr 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_get_wstr 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_get_wstr 3x 2025-01-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_get_wstr 3x 2025-02-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
 
@@ -81,7 +81,7 @@
            <EM>WEOF</EM>);
 
        <STRONG>o</STRONG>   interprets   the   screen's   erase   and   kill   characters  (see
-           <STRONG><A HREF="curs_termattrs.3x.html">erasechar(3x)</A></STRONG> and <STRONG><A HREF="curs_termattrs.3x.html">killchar(3x)</A></STRONG>);
+           <STRONG><A HREF="curs_termattrs.3x.html">erasewchar(3x)</A></STRONG> and <STRONG><A HREF="curs_termattrs.3x.html">killwchar(3x)</A></STRONG>);
 
        <STRONG>o</STRONG>   recognizes function keys only if  the  screen's  keypad  option  is
            enabled (see <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>);
@@ -214,6 +214,16 @@
            into the buffer, for consistency with SVr4 <EM>curses</EM>'s <EM>wgetnstr</EM>.
 
 
+</PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
+       X/Open Curses Issue 4 (1995) initially specified these functions.   The
+       System V  Interface  Definition  Version 4  of  the same year specified
+       functions named <EM>wgetwstr</EM> and <EM>wgetnwstr</EM> (and the usual variants).  These
+       were later additions to SVr4.<EM>x</EM>, not appearing in the first SVr4 (1989).
+       Except in name, their declarations did not differ from  X/Open's  later
+       <EM>wget</EM><STRONG>_</STRONG><EM>wstr</EM>  and <EM>wgetn</EM><STRONG>_</STRONG><EM>wstr</EM> until X/Open Curses Issue 7 (2009) eventually
+       changed the type of the buffer argument to a pointer to <EM>wint</EM><STRONG>_</STRONG><EM>t</EM>.
+
+
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG> describes comparable functions of the  <EM>ncurses</EM>  library
        in its non-wide-character configuration.
@@ -222,7 +232,7 @@
 
 
 
-ncurses 6.5                       2025-01-18                 <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
+ncurses 6.5                       2025-02-01                 <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -233,6 +243,7 @@ ncurses 6.5                       2025-01-18                 <STRONG><A HREF="cu
 <li><a href="#h2-NOTES">NOTES</a></li>
 <li><a href="#h2-EXTENSIONS">EXTENSIONS</a></li>
 <li><a href="#h2-PORTABILITY">PORTABILITY</a></li>
+<li><a href="#h2-HISTORY">HISTORY</a></li>
 <li><a href="#h2-SEE-ALSO">SEE ALSO</a></li>
 </ul>
 </div>

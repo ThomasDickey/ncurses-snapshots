@@ -32,7 +32,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.53 2025/01/25 22:19:42 tom Exp $
+// $Id: etip.h.in,v 1.54 2025/02/02 00:20:44 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -40,6 +40,10 @@
 // These are substituted at configure/build time
 #ifndef HAVE_BUILTIN_H
 #define HAVE_BUILTIN_H 0
+#endif
+
+#ifndef HAVE_EXCEPTION
+#define HAVE_EXCEPTION 0
 #endif
 
 #ifndef HAVE_GXX_BUILTIN_H
@@ -52,6 +56,10 @@
 
 #ifndef HAVE_IOSTREAM
 #define HAVE_IOSTREAM 0
+#endif
+
+#ifndef HAVE_NEW
+#define HAVE_NEW 0
 #endif
 
 #ifndef HAVE_TYPEINFO
@@ -116,8 +124,10 @@
 #    endif
 #    undef exception
 #  endif
-#elif defined __CLANG
+#elif HAVE_EXCEPTION
 #  include <exception>
+#elif HAVE_NEW
+#  include <new>
 #elif defined (__SUNPRO_CC)
 #  include <generic.h>
 #endif

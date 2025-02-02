@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1100 2025/01/15 22:07:11 tom Exp $
+dnl $Id: aclocal.m4,v 1.1101 2025/02/02 00:10:44 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -600,7 +600,7 @@ AC_DEFUN([CF_AWK_BIG_PRINTF],
 dnl ---------------------------------------------------------------------------
 dnl CF_BOOL_DECL version: 9 updated: 2023/12/03 09:21:34
 dnl ------------
-dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
+dnl Test if 'bool' is a builtin type in the configured C/C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
 dnl 2.6.3 does, in anticipation of the ANSI C++ standard.
 dnl
@@ -613,14 +613,13 @@ AC_DEFUN([CF_BOOL_DECL],
 AC_MSG_CHECKING(if we should include stdbool.h)
 
 AC_CACHE_VAL(cf_cv_header_stdbool_h,[
-	AC_TRY_COMPILE([],[bool foo = false; (void)foo],
-		[cf_cv_header_stdbool_h=0],
-		[AC_TRY_COMPILE([
+	AC_TRY_COMPILE([
 #ifndef __BEOS__
 #include <stdbool.h>
 #endif
 ],[bool foo = false; (void)foo],
-			[cf_cv_header_stdbool_h=1],
+		[cf_cv_header_stdbool_h=1],
+		[AC_TRY_COMPILE([],[bool foo = false; (void)foo],
 			[cf_cv_header_stdbool_h=0])])])
 
 if test "$cf_cv_header_stdbool_h" = 1
@@ -636,8 +635,7 @@ AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 #include <sys/types.h>
 ],[bool x = false; (void)x],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
-		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])
-	])
+		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])])
 
 if test "$ifelse($1,,cf_cv_builtin_bool,[$1])" = 1
 then	AC_MSG_RESULT(yes)

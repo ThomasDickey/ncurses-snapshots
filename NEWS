@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4236 2025/01/25 21:30:09 tom Exp $
+-- $Id: NEWS,v 1.4239 2025/02/02 00:30:12 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250201
+	+ add <new> to the possible headers declaring the C++ std::bad_alloc
+	  (report by Carl Hansen).
+	+ modify check for stdbool.h to be more conservative in case the
+	  headers are used with a compiler other than that which was used to
+	  configure (Redhat #2342514).
+	+ improve MKlib_gen.sh handling of "bool" type, for building link_test
+	+ improve formatting/style of manpages (patches by Branden Robinson).
 
 20250125
 	+ improve error-handling in c++ binding (report by Mingjie Shen).

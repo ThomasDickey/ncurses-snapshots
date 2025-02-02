@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.134 2025/01/19 00:51:10 tom Exp $
-.TH curs_util 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.136 2025/02/01 22:49:13 tom Exp $
+.TH curs_util 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -534,19 +534,20 @@ This feature of \fBuse_env\fP
 is not provided by other implementations of curses.
 .SH HISTORY
 4BSD (1980)
-defined
-.I \%unctrl
-(as a macro,
+introduced
+.IR \%unctrl ","
+defining it as a macro
 in
-.IR \%unctrl.h ")."
+.IR \%unctrl.h "."
 .PP
-SVr2 (1984) introduced
+SVr2 (1984)
+added
 .IR \%delay_output ","
 .IR \%flushinp ","
 and
 .IR \%keyname "."
 .PP
-SVr3 (1987) added
+SVr3 (1987) supplied
 .IR \%filter "."
 Later that year,
 SVr3.1 brought

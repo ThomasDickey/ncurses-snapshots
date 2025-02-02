@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border_set.3x,v 1.43 2025/01/19 00:49:39 tom Exp $
-.TH curs_border_set 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border_set.3x,v 1.48 2025/02/02 00:04:21 tom Exp $
+.TH curs_border_set 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -56,46 +56,33 @@ draw borders and lines in a \fIcurses\fR window of wide characters
 .nf
 \fB#include <curses.h>
 .PP
-\fBint border_set(
-   \fBconst cchar_t *\fIls\fB, const cchar_t *\fIrs\fP,
-   \fBconst cchar_t *\fIts\fB, const cchar_t *\fIbs\fP,
-   \fBconst cchar_t *\fItl\fB, const cchar_t *\fItr\fP,
-   \fBconst cchar_t *\fIbl\fB, const cchar_t *\fIbr\fB);\fR
+\fBint border_set(const cchar_t *\fIls\fB, const cchar_t *\fIrs\fP,
+      \fBconst cchar_t *\fIts\fB, const cchar_t *\fIbs\fP,
+      \fBconst cchar_t *\fItl\fB, const cchar_t *\fItr\fP,
+      \fBconst cchar_t *\fIbl\fB, const cchar_t *\fIbr\fB);\fR
 .br
-\fBint wborder_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBconst cchar_t *\fIls\fB, const cchar_t *\fIrs\fP,
-   \fBconst cchar_t *\fIts\fB, const cchar_t *\fIbs\fP,
-   \fBconst cchar_t *\fItl\fB, const cchar_t *\fItr\fP,
-   \fBconst cchar_t *\fIbl\fB, const cchar_t *\fIbr\fB);\fR
-\fBint box_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBconst cchar_t *\fIverch\fP,
-   \fBconst cchar_t *\fIhorch\fB);\fR
-\fBint hline_set(\fP
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint whline_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvhline_set(\fP
-   \fBint \fIy\fB, int \fIx\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvwhline_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBint \fIy\fB, int \fIx\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint vline_set(\fP
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint wvline_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvvline_set(\fP
-   \fBint \fIy\fB, int \fIx\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvwvline_set(\fP
-   \fBWINDOW *\fIwin\fP,
-   \fBint \fIy\fB, int \fIx\fP,
-   \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
+\fBint wborder_set(\fBWINDOW *\fIwin\fP,
+      \fBconst cchar_t *\fIls\fB, const cchar_t *\fIrs\fP,
+      \fBconst cchar_t *\fIts\fB, const cchar_t *\fIbs\fP,
+      \fBconst cchar_t *\fItl\fB, const cchar_t *\fItr\fP,
+      \fBconst cchar_t *\fIbl\fB, const cchar_t *\fIbr\fB);\fR
+.PP
+\fBint box_set(\fBWINDOW *\fIwin\fP, \fBconst cchar_t *\fIverch\fP,
+      \fBconst cchar_t *\fIhorch\fB);\fR
+.PP
+\fBint hline_set(const cchar_t *\fIwch\fB, int \fIn\fB);\fR
+\fBint whline_set(WINDOW *\fIwin\fP, \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
+\fBint mvhline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR
+      \fBint \fIn\fB);\fR
+\fBint mvwhline_set(WINDOW *\fIwin\fP, \fBint \fIy\fB, int \fIx\fP,
+      \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
+.PP
+\fBint vline_set(const cchar_t *\fIwch\fB, int \fIn\fB);\fR
+\fBint wvline_set(WINDOW *\fIwin\fP, \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
+\fBint mvvline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR
+      \fBint \fIn\fB);\fR
+\fBint mvwvline_set(WINDOW *\fIwin\fP, \fBint \fIy\fB, int \fIx\fP,
+      \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
 .fi
 .SH DESCRIPTION
 The
@@ -197,7 +184,10 @@ and
 .B \%vline_set
 may be implemented as macros.
 .SH PORTABILITY
-These functions are described in X/Open Curses Issue\ 4.
+X/Open Curses Issue\ 4 describes these functions.
+It specifies no error conditions for them.
+.SH HISTORY
+X/Open Curses Issue\ 4 (1995) initially specified these functions.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_add_wch\fP(3X),

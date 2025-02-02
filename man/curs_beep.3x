@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_beep.3x,v 1.39 2025/01/19 00:49:39 tom Exp $
-.TH curs_beep 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_beep.3x,v 1.42 2025/02/01 23:46:11 tom Exp $
+.TH curs_beep 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .SH NAME
 \fB\%beep\fP,
 \fB\%flash\fP \-
@@ -97,13 +97,14 @@ It specifies no error conditions for them.
 On SVr4
 .IR curses ","
 they always return
-.BR OK ","
+.IR OK ","
 and X/Open Curses specifies them as doing so.
 .SH HISTORY
+SVr2 (1984)
+introduced
 .I beep
 and
-.I flash
-appeared in SVr2 (1984).
+.IR flash "."
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%terminfo\fP(5)

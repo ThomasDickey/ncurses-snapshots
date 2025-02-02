@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.59 2025/01/19 00:49:39 tom Exp $
-.TH curs_get_wch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.64 2025/02/02 00:01:24 tom Exp $
+.TH curs_get_wch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -193,8 +193,9 @@ is set to
 .PP
 Functions taking a
 .I \%WINDOW
-pointer argument fail if the pointer is
-.IR NULL "."
+pointer argument fail if
+.I win
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -248,17 +249,15 @@ It specifies no error conditions for them.
 .PP
 See the \*(``PORTABILITY\*('' section of \fB\%wgetch\fP(3X) regarding
 the interaction of
-.B \%wget_wch
+.I \%wget_wch
 with signal handlers.
 .SH HISTORY
-These functions were initially specified by X/Open Curses Issue\ 4
-(1995).
+X/Open Curses Issue\ 4 (1995) initially specified these functions.
 The System\ V Interface Definition Version\ 4
 of the same year
 specified functions named
 .I \%wgetwch
-(with the usual variants)
-and
+(with its variants)
 .IR \%ungetwch "."
 .\" SVID 4, vol 3., pp. 496-499
 These were later additions to
