@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.193 2025/01/22 23:13:27 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.195 2025/02/08 15:54:53 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -331,10 +331,13 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     T((T_CALLED("_nc_setupscreen(%d, %d, %p, %d, %d)"),
        slines, scolumns, (void *) output, filtered, slk_format));
 
-    assert(CURRENT_SCREEN == 0);	/* has been reset in newterm() ! */
+    /* CURRENT_SCREE is reset in newterm() */
+    if (CURRENT_SCREEN != NULL || slines <= 0 || scolumns <= 0)
+	returnCode(ERR);
 
 #if NCURSES_SP_FUNCS
-    assert(spp != 0);
+    if (spp == NULL)
+	returnCode(ERR);
     sp = *spp;
 
     if (!sp) {

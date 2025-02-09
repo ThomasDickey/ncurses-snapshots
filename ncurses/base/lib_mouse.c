@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.206 2025/01/22 23:13:51 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.207 2025/02/08 12:16:37 tom Exp $")
 
 #include <tic.h>
 
@@ -1114,7 +1114,7 @@ decode_xterm_X10(SCREEN *sp, MEVENT * eventp)
 			    sp->_ifd,
 #endif
 			    kbuf + grabbed, (size_t) (MAX_KBUF - (int) grabbed));
-	if (res == -1)
+	if (res < 0)
 	    break;
     }
     _nc_set_read_thread(FALSE);
@@ -1162,7 +1162,7 @@ decode_xterm_1005(SCREEN *sp, MEVENT * eventp)
 			    sp->_ifd,
 #endif
 			    (kbuf + grabbed), (size_t) 1);
-	if (res == -1)
+	if (res < 0)
 	    break;
 	grabbed += (size_t) res;
 	if (grabbed > 1) {
@@ -1240,7 +1240,7 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
 			    sp->_ifd,
 #endif
 			    (kbuf + grabbed), (size_t) 1);
-	if (res == -1)
+	if (res < 0)
 	    break;
 	if ((grabbed + MAX_KBUF) >= (int) sizeof(kbuf)) {
 	    result->nerror++;

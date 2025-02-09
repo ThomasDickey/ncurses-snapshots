@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 2007-2008,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_opaque.c,v 1.18 2024/12/07 22:46:42 tom Exp $
+ * $Id: test_opaque.c,v 1.19 2025/02/08 13:03:06 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -157,15 +157,33 @@ test_opaque_syncok(WINDOW *win, int mode)
 }
 
 static int
+height_of(const WINDOW *win)
+{
+    int result = getmaxy(win);
+    if (result <= 0)
+	result = 1;
+    return result;
+}
+
+static int
+width_of(const WINDOW *win)
+{
+    int result = getmaxx(win);
+    if (result <= 0)
+	result = 1;
+    return result;
+}
+
+static int
 status_y(const WINDOW *stswin, int cell)
 {
-    return (cell % getmaxy(stswin));
+    return (cell % height_of(stswin));
 }
 
 static int
 status_x(const WINDOW *stswin, int cell)
 {
-    return (15 * (cell / getmaxy(stswin)));
+    return (15 * (cell / height_of(stswin)));
 }
 
 static void
@@ -289,8 +307,8 @@ test_opaque(int level, char **argv, WINDOW *stswin)
 	wnoutrefresh(txtbox);
 
 	txtwin = derwin(txtbox,
-			getmaxy(txtbox) - 2,
-			getmaxx(txtbox) - 2,
+			height_of(txtbox) - 2,
+			width_of(txtbox) - 2,
 			1, 1);
 	base_y = 0;
     } else {
@@ -365,7 +383,7 @@ test_opaque(int level, char **argv, WINDOW *stswin)
 		break;
 	    case KEY_DOWN:
 	    case 'j':
-		if (txt_y < getmaxy(txtwin) - 1)
+		if (txt_y < height_of(txtwin) - 1)
 		    txt_y++;
 		else
 		    beep();
@@ -386,7 +404,7 @@ test_opaque(int level, char **argv, WINDOW *stswin)
 		break;
 	    case KEY_RIGHT:
 	    case 'l':
-		if (txt_x < getmaxx(txtwin) - 1)
+		if (txt_x < width_of(txtwin) - 1)
 		    txt_x++;
 		else
 		    beep();

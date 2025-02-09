@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1163 $
-#	$Date: 2025/01/04 21:02:11 $
+#	$Revision: 1.1170 $
+#	$Date: 2025/02/08 21:27:07 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -635,7 +635,7 @@ ansi-m|ansi-mono|ANSI X3.64-1979 terminal with ANSI.SYS compatible attributes,
 #	Parameter default value: Ps = 0
 #	With a parameter value not equal to 0, DA is used to identify the
 #	device which sends the DA.  The parameter value is a device type
-#	identification code according to a register which is to be established. 
+#	identification code according to a register which is to be established.
 #	If the parameter value is 0, DA is used to request an identifying DA
 #	from a device.
 #
@@ -3209,7 +3209,7 @@ tt|tkterm|Don Libes' tk text widget terminal emulator,
 #   my faulty memory, and the following online sources and references:
 #
 # [1] "Three Scotts and a Duane" by Simson L. Garfinkel
-# http://www.nextcomputers.org/NeXTfiles/Articles/NeXTWORLD/93.8/93.8.Dec.Community1.html
+# https://web.archive.org/web/20121019083801/http://www.nextcomputers.org/NeXTfiles/Articles/NeXTWORLD/93.8/93.8.Dec.Community1.html
 #
 # [2] NeXTSTEP entry from Wikipedia, the free encyclopedia
 # https://secure.wikimedia.org/wikipedia/en/wiki/Nextstep
@@ -3642,7 +3642,7 @@ iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 # NOTES:
 # with esctest:
 #	365 tests passed, 196 known bugs, 2 tests fail intermittently
-#	the known bugs include several of the cursor-movement tests 
+#	the known bugs include several of the cursor-movement tests
 #	the ED, EL tests include those failing intermittently
 #	DECCOLM, DECERA, DECSED, DECSERA and SPA do not work
 #	most of the DECRPM, DECRQSS reports fail
@@ -4023,7 +4023,7 @@ crt|crt-vt220|CRT 2.3 emulating VT220,
 #	TN3270, TVI910, TVI925, Wyse 50/60, and ANSI.
 # Changes:
 #	Added ANSI sc/rc and REP in 2019/12/17
-#	Added TVI910/ TVI925 in 2019/11/20	
+#	Added TVI910/ TVI925 in 2019/11/20
 #
 # Default:
 #	Emulate "Xterm", using "ANSI with 256color"
@@ -4088,8 +4088,8 @@ scrt|securecrt|SecureCRT emulating xterm-256color,
 #	TERM=xterm
 #
 # vttest:
-#	DA1: \E[?62;1;2;6;7;8;9;15;22c (VT200 with DRCS, UDK, NRCS) 
-#	DA2: \E[>1;10;0c 
+#	DA1: \E[?62;1;2;6;7;8;9;15;22c (VT200 with DRCS, UDK, NRCS)
+#	DA2: \E[>1;10;0c
 #	However:
 #	+ NRCS tests do not work
 #	+ DECUDK test fails
@@ -5706,7 +5706,7 @@ xterm-utf8|xterm with no VT100 line-drawing in UTF-8 mode,
 # c) fsl ends the escape sequence begun by tsl.  Printable characters between
 #    those (probably) will appear in the window title.  Nonprintable characters
 #    may cause the escape sequence to end with an error.
-# d) the BEL (^G or \007) used in the original title-as-statusline came from 
+# d) the BEL (^G or \007) used in the original title-as-statusline came from
 #    David J. MacKenzie's "pseudo-color" entry in 20 Apr 1995.  At that time
 #    xterm used BEL as the string-terminator rather than ST (\E\\).  Either
 #    BEL or ST has worked since xterm patch #28 in 1996, but most uses of
@@ -6029,7 +6029,7 @@ xterm-pcolor|xterm with color used for highlights and status line,
 #	http://nion.modprobe.de/blog/archives/569-colored-manpages.html
 #	(blog posting by Nico Golde, June 24 2007)
 # archive:
-#	https://web-beta.archive.org/web/20070921042430/http://nion.modprobe.de/mostlike.txt
+#	https://web.archive.org/web/20070921042430/http://nion.modprobe.de/mostlike.txt
 # The comment hints where it started, but there are differences:
 #	Reconstructed via infocmp from file: /usr/share/terminfo/x/xterm-pcolor
 mostlike|manpages with color looking like most,
@@ -6858,7 +6858,6 @@ rxvt+pcfkeys|rxvt fragment for PC-style fkeys,
 	use=vt220+vtedit, use=xterm+nopcfkeys,
 
 # rxvt was originally "xvt", first announced in April 1993:
-#	http://www.krsaborio.net/linux-desktops/research/1993/0416.html
 #------------------------------------------------------------------------------
 # Article: 567 of comp.os.linux.announce
 # Path: pavo.csi.cam.ac.uk!warwick!uknet!pipex!uunet!zaphod.mps.ohio-state.edu!
@@ -7060,7 +7059,7 @@ hpterm-color|HP X11 terminal emulator with color,
 # This article does not cover the HP 46020A keyboard that is used by the Model
 # 217 and 237 computers.  For information on this keyboard read the article,
 # "The Series 300 ITE as System Console" found in the manual, HP-UX Concepts
-# and Tutorials, Vol.  7. 
+# and Tutorials, Vol.  7.
 #
 # Possibly:
 # http://bitsavers.trailing-edge.com/pdf/hp/9000_hpux/1986/97089-90042_198608_HP-UX_Concepts_and_Tutorials.pdf
@@ -7304,7 +7303,27 @@ mgr-linux|Mgr window with Linux keyboard,
 # st.suckless.org
 
 st|stterm|aka simpleterm,
-	use=st-0.8,
+	use=st-0.8.5,
+
+# Reviewed 0.9.2 (Debian testing package "stterm"):
+# Inspected source, saw nothing to change in terminfo.
+#
+# Reviewed 0.8.5 (Debian stable package "stterm"):
+# In tack,
+#	sends nothing for control- and alt-modifiers to function-keys
+#	does not support application-mode for numeric keypad
+# In vttest,
+#	identifies as a VT102
+#	SRM, DECTCEM and ECH work, but not DECSCA
+#	incomplete DECSCUSR, shapes work but no blinking cursor
+#	SD and SL work, but not SL or SR
+#	supports normal, button-event and any-event mouse
+#	focus events are unreliable
+# Other:
+#	supports xterm OSC 12, but not 112, so Cs applies but not Cr
+#	OSC allows ST \E\\ in addition to \007
+st-0.8.5|simpleterm 0.8.5,
+	Cs=\E]12;%p1%s\007, use=ansi+rep, use=st-0.8,
 
 # Reviewed 0.8.2:
 # In tack,
@@ -7922,7 +7941,7 @@ kitty+setal|set underline colors (nonstandard),
 #	otherwise few reports, except cursor-position and mouse and some dtterm
 #	VT520 cursor-movement works, except for left/right margins
 #	supports xterm/DECSCUSR, though default case in vttest does not blink
-#		Send: <27> [ 0 <32> q 
+#		Send: <27> [ 0 <32> q
 #		Text: The cursor should be a blinking rectangle
 #	partial support for xterm mouse any-event mode and button-event mode:
 #	+ does not report focus-in/focus-out
@@ -8235,7 +8254,7 @@ contour-direct|Contour terminal with direct colors,
 # However, it uses xterm as a standard:
 #
 #	We believe Ghostty is one of the most compliant terminal emulators
-#	available.  Terminal behavior is partially a de jure standard (i.e. 
+#	available.  Terminal behavior is partially a de jure standard (i.e.
 #	[ECMA-48](https://ecma-international.org/publications-and-standards/stand>
 #	but mostly a de facto standard as defined by popular terminal emulators
 #	worldwide.  Ghostty takes the approach that our behavior is defined by
@@ -8251,6 +8270,45 @@ contour-direct|Contour terminal with direct colors,
 # Comments in ghostty's source code and commits demonstrate that the developers
 # study xterm's source code closer than xterm's documentation.  The quote above
 # is the only mention of ECMA-48.
+#
+# ghostty 1.1.0 tested with Arch Linux:
+# -------------
+# The issue with vttest is repaired.  Other issues remain.  The reader may not
+# have noticed, but the ghostty developers disallow direct bug reports.
+# Quoting the developers:
+#
+#	https://github.com/ghostty-org/ghostty/issues/3558
+#	Users are not allowed to create Issues directly in this repository - we
+#	ask that you create a Discussion first.
+#	...
+#	Any Discussion which clearly identifies a problem in Ghostty and can be
+#	confirmed or reproduced will be converted to an Issue by a maintainer,
+#	so as a user finding a valid problem you don't do any extra work
+#	anyway.  Thank you.
+#
+# As a direct consequence, details and attribution in those "Discussion" notes
+# may be omitted, as in this instance.
+#
+# https://web.archive.org/web/20250124124041/https://github.com/ghostty-org/ghostty/issues/2542
+# ghostty #2542 Publish ghostty terminfo to ncurses terminal database
+# Opened October 30, 2024, this terminal description is mentioned December 31.
+#
+# https://web.archive.org/web/20250115170223/https://github.com/ghostty-org/ghostty/issues/4523
+# ghostty #4523 Renderers (Metal and OpenGL) should clip terminal if terminal
+#		grid size mismatches physical window
+# Opened January 3, 2025, with a note
+#	The only known way to trigger this is DECCOLM, so it's low priority
+#	since almost nothing uses this.  But notably vtetest uses this and it
+#	makes it appear like we perform much worse than we do.
+#
+# Issue #4523 does not mention the bug report (nor, as in some other instances
+# refer obliquely to a discussion on "Discord").  vttest sends a DECCOLM to
+# ensure that the screen is not in 132-column mode.  That is the case for the
+# testing reported.  If ghostty were implementing DECCOLM correctly, it would
+# not have decided that the screensize changed.  The fix in #4523 is a
+# workaround masking other potential issues.
+#
+# By the way, that should be "vttest" (there is no such program as "vtetest").
 #
 # ghostty 1.0.0 tested with Arch Linux:
 # -------------
@@ -8269,11 +8327,11 @@ contour-direct|Contour terminal with direct colors,
 # vttest:
 # - ghostty hangs in more than one menu, making it impossible to test more than
 #   a small part of the program.  In particular, these are untestable:
-#	1. Test of cursor movements 
+#	1. Test of cursor movements
 #	2. Test of screen features
 #	4. Test of double-sized characters
 # - ghostty has tabs (imitating gnome-terminal); when closing a tab with a
-#   running process (e.g., a hung vttest), ghostty does not prompt about the 
+#   running process (e.g., a hung vttest), ghostty does not prompt about the
 #   process to be killed.
 # - identifies as a "VT220 with color":
 #	<27> [ ? 6 2 ; 2 2 c
@@ -9083,8 +9141,8 @@ sun-cgsix|sun-ss5|Sun SparcStation 5 console,
 # incomplete manual page.  Presumably the intent was to document features of
 # shelltool not in wscons:
 #
-#    https://manpages.ubuntu.com/manpages/bionic/en/man1/shelltool.1.html
-#    https://manpages.ubuntu.com/manpages/bionic/en/man1/cmdtool.1.html
+#    https://web.archive.org/web/20230608051050/manpages.ubuntu.com/manpages/bionic/en/man1/shelltool.1.html
+#    https://web.archive.org/web/20220520165933/manpages.ubuntu.com/manpages/bionic/en/man1/cmdtool.1.html
 #
 # The wscons manual page and the XView source show that it had no feature that
 # could be used in ncurses u6/u7/u8/u9 extensions.  Interesting, the XView
@@ -17946,7 +18004,7 @@ ha8686|Harris 8686,
 #
 # They're now (1998) a subsidiary of General Electric, operating under the
 # marque "GEC-Marconi Hazeltine" and doing military avionics.  Web page
-# at <http://www.gec.com/cpd/1ncpd.htm#1.55>.
+# at <https://web.archive.org/web/19990223214534/http://www.gec.com/cpd/1ncpd.htm#1.55>.
 #
 
 # Since <cuf1> is blank, when you want to erase something you
@@ -23465,8 +23523,8 @@ synertek|ktm|synertek380|Synertek KTM 3/80 tubeless terminal,
 # https://ub.fnwi.uva.nl/computermuseum/tab13215g.html
 #	This monochrome graphics terminal of TAB Products, California, is a DEC
 #	VT52/VT100/VT132 compatible alphanumeric terminal (TAB 132/15),
-#	factory-fitted with additional hardware for Tektronix 4010 emulation. 
-#	Also the terminal understands a selection of Tektronix 4027 commands. 
+#	factory-fitted with additional hardware for Tektronix 4010 emulation.
+#	Also the terminal understands a selection of Tektronix 4027 commands.
 tab132|tab|tab132-15|tab 132/15,
 	da, db,
 	OTdN@, lm#96,
@@ -27729,5 +27787,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ cleanup use-clauses -TD
 #	+ add linux+lockeys, xterm+r5+lockeys, xterm+r5+fkeys -TD
 #	+ add vt220+ufkeys, vt220+sfkeys
+#
+# 2025-02-03
+#	+ add note for ghostty 1.1.0 -TD
+#
+# 2025-02-08
+#	+ update st (report by Alexander Kashpir) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

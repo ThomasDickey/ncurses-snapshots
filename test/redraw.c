@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 2006-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: redraw.c,v 1.19 2024/12/07 22:46:42 tom Exp $
+ * $Id: redraw.c,v 1.20 2025/02/09 00:18:18 tom Exp $
  *
  * Demonstrate the redrawwin() and wredrawln() functions.
  * Thomas Dickey - 2006/11/4
@@ -85,7 +85,7 @@ test_redraw(WINDOW *win)
     int max_y, max_x;
     int beg_y, beg_x;
 
-    assert(win != 0);
+    assert(win != NULL);
 
     scrollok(win, TRUE);
     keypad(win, TRUE);

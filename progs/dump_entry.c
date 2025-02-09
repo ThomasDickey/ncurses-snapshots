@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.198 2024/12/07 22:06:39 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.199 2025/02/08 21:53:40 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -1209,10 +1209,10 @@ fmt_entry(TERMTYPE2 *tterm,
     } else if (tversion == V_AIX) {
 	if (VALID_STRING(acs_chars)) {
 	    bool box_ok = TRUE;
-	    const char *acstrans = "lqkxjmwuvtn";
+	    static const char acstrans[] = "lqkxjmwuvtn";
 	    const char *cp;
 	    const char *sp;
-	    char *tp, boxchars[11];
+	    char *tp, boxchars[sizeof(acstrans)];
 
 	    tp = boxchars;
 	    for (cp = acstrans; *cp; cp++) {
@@ -1224,7 +1224,7 @@ fmt_entry(TERMTYPE2 *tterm,
 		    break;
 		}
 	    }
-	    tp[0] = '\0';
+	    *tp = '\0';
 
 	    if (box_ok) {
 		char *tmp = _nc_tic_expand(boxchars,

@@ -32,7 +32,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.54 2025/02/02 00:20:44 tom Exp $
+// $Id: etip.h.in,v 1.55 2025/02/08 23:39:52 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -124,12 +124,15 @@
 #    endif
 #    undef exception
 #  endif
-#elif HAVE_EXCEPTION
-#  include <exception>
-#elif HAVE_NEW
-#  include <new>
 #elif defined (__SUNPRO_CC)
 #  include <generic.h>
+#endif
+
+#if HAVE_EXCEPTION
+# include <exception>
+#endif
+#if HAVE_NEW
+# include <new>
 #endif
 
 // This used to include <curses.h>, but Apple's configuration as of 2024

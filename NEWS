@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4239 2025/02/02 00:30:12 tom Exp $
+-- $Id: NEWS,v 1.4242 2025/02/08 23:54:37 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250208
+	+ change etip.h.in to include either/both of <new> and <exception>,
+	  needed for another old BSD.
+	+ update st (report by Alexander Kashpir) -TD
+	+ add note for ghostty 1.1.0 -TD
+	+ fix a few issues found with coverity.
 
 20250201
 	+ add <new> to the possible headers declaring the C++ std::bad_alloc

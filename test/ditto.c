@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey (1998-on)
  *
- * $Id: ditto.c,v 1.60 2024/12/07 23:02:27 tom Exp $
+ * $Id: ditto.c,v 1.61 2025/02/09 00:18:00 tom Exp $
  *
  * The program illustrates how to set up multiple screens from a single
  * program.
@@ -192,7 +192,7 @@ open_tty(char *path)
 	failed(path);
     printf("opened %s\n", path);
 #endif
-    assert(fp != 0);
+    assert(fp != NULL);
     return fp;
 }
 
@@ -432,7 +432,7 @@ main(int argc, char *argv[])
     if ((data = typeCalloc(DITTO, (size_t) argc)) == NULL)
 	failed("calloc data");
 
-    assert(data != 0);
+    assert(data != NULL);
 
     for (j = 0; j < argc; j++) {
 	open_screen(&data[j], argv, argc, j);

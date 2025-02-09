@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author:  Thomas E. Dickey 1998
  *
- * $Id: filter.c,v 1.41 2024/12/07 22:40:19 tom Exp $
+ * $Id: filter.c,v 1.42 2025/02/08 13:06:10 tom Exp $
  *
  * An example of the 'filter()' function in ncurses, this program prompts
  * for commands and executes them (like a command shell).  It illustrates
@@ -123,7 +123,7 @@ new_command(char *buffer, int length, int underline, bool clocked, bool polled)
 	    if (first) {
 		getyx(stdscr, y, x);
 		first = FALSE;
-	    } else {
+	    } else if (limit > 0) {
 		int left = 0;
 
 		/*
