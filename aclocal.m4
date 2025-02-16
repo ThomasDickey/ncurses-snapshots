@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1101 2025/02/02 00:10:44 tom Exp $
+dnl $Id: aclocal.m4,v 1.1102 2025/02/16 00:15:17 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -598,7 +598,7 @@ AC_DEFUN([CF_AWK_BIG_PRINTF],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_DECL version: 9 updated: 2023/12/03 09:21:34
+dnl CF_BOOL_DECL version: 10 updated: 2025/02/01 19:31:51
 dnl ------------
 dnl Test if 'bool' is a builtin type in the configured C/C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
@@ -6034,7 +6034,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 60 updated: 2024/12/28 16:38:35
+dnl CF_MAN_PAGES version: 61 updated: 2025/02/15 19:13:25
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -6236,7 +6236,7 @@ CF_EOF
 if test -n "$cf_manpage_compress" ; then
 cat >>$cf_edit_man <<CF_EOF
 	if test "\$verb" = installing ; then
-	if ( "$cf_manpage_compress" -f \$TMP )
+	if ( "$cf_manpage_compress" $cf_manpage_coptions -f \$TMP )
 	then
 		mv \$TMP.$cf_manpage_so_strip \$TMP
 	fi
@@ -10041,7 +10041,7 @@ CF_NO_LEAKS_OPTION(valgrind,
 	[USE_VALGRIND])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_VERSIONED_SYMS version: 15 updated: 2025/01/15 17:07:11
+dnl CF_WITH_VERSIONED_SYMS version: 16 updated: 2025/01/19 15:27:13
 dnl ----------------------
 dnl Use this when building shared library with ELF, to markup symbols with the
 dnl version identifier from the given input file.  Generally that identifier is
@@ -10090,11 +10090,13 @@ then
 		VERSIONED_SYMS="-Wl,--version-script,\${RESULTING_SYMS}"
 		MK_SHARED_LIB=`echo "$MK_SHARED_LIB" | sed -e "s%-Wl,%\\[$]{VERSIONED_SYMS} -Wl,%"`
 		CF_VERBOSE(MK_SHARED_LIB:  $MK_SHARED_LIB)
+		LIB_CREATE="[$]MK_SHARED_LIB"
 		;;
 	(*-dy\ *)
 		VERSIONED_SYMS="-Wl,-M,\${RESULTING_SYMS}"
 		MK_SHARED_LIB=`echo "$MK_SHARED_LIB" | sed -e "s%-dy%\\[$]{VERSIONED_SYMS} -dy%"`
 		CF_VERBOSE(MK_SHARED_LIB:  $MK_SHARED_LIB)
+		LIB_CREATE="[$]MK_SHARED_LIB"
 		;;
 	(*)
 		AC_MSG_WARN(this system does not support versioned-symbols)

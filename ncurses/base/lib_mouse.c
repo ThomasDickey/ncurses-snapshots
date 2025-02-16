@@ -44,7 +44,7 @@
  *	sysmouse (FreeBSD)
  *	special-purpose mouse interface for OS/2 EMX.
  *
- * Notes for implementors of new mouse-interface methods:
+ * Notes for implementers of new mouse-interface methods:
  *
  * The code is logically split into a lower level that accepts event reports
  * in a device-dependent format and an upper level that parses mouse gestures
@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.207 2025/02/08 12:16:37 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.208 2025/02/15 15:12:21 tom Exp $")
 
 #include <tic.h>
 

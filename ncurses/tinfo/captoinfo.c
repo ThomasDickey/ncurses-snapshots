@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.106 2025/01/12 10:51:43 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.107 2025/02/15 15:31:16 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -247,24 +247,24 @@ cvtchar(register const char *sp)
 }
 
 static void
-getparm(int parm, int n)
-/* push n copies of param on the terminfo stack if not already there */
+getparam(int parameter, int n)
+/* push n copies of parameter on the terminfo stack if not already there */
 {
     int nn;
 
     if (seenr) {
-	if (parm == 1)
-	    parm = 2;
-	else if (parm == 2)
-	    parm = 1;
+	if (parameter == 1)
+	    parameter = 2;
+	else if (parameter == 2)
+	    parameter = 1;
     }
 
     for (nn = 0; nn < n; ++nn) {
 	dp = save_string(dp, "%p");
-	dp = save_char(dp, '0' + parm);
+	dp = save_char(dp, '0' + parameter);
     }
 
-    if (onstack == parm) {
+    if (onstack == parameter) {
 	if (n > 1) {
 	    _nc_warning("string may not be optimal");
 	    dp = save_string(dp, "%Pa");
@@ -277,13 +277,13 @@ getparm(int parm, int n)
     if (onstack != 0)
 	push();
 
-    onstack = parm;
+    onstack = parameter;
 
-    if (seenn && parm < 3) {
+    if (seenn && parameter < 3) {
 	dp = save_string(dp, "%{96}%^");
     }
 
-    if (seenm && parm < 3) {
+    if (seenm && parameter < 3) {
 	dp = save_string(dp, "%{127}%^");
     }
 }
@@ -353,20 +353,20 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 		break;
 	    case '6':
 	    case 'B':
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%{10}%/%{16}%*");
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%{10}%m%+");
 		break;
 	    case '8':
 	    case 'D':
-		getparm(param, 2);
+		getparam(param, 2);
 		dp = save_string(dp, "%{2}%*%-");
 		break;
 	    case '>':
 		/* %?%{x}%>%t%{y}%+%; */
 		if (s[0] && s[1]) {
-		    getparm(param, 2);
+		    getparam(param, 2);
 		    dp = save_string(dp, "%?");
 		    s += cvtchar(s);
 		    dp = save_string(dp, "%>%t");
@@ -385,9 +385,9 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 		    int l;
 		    l = 2;
 		    if (*s != '=')
-			getparm(param, 1);
+			getparam(param, 1);
 		    if (s[1] == 'p') {
-			getparm(param + s[2] - '@', 1);
+			getparam(param + s[2] - '@', 1);
 			if (param != onstack) {
 			    pop();
 			    param--;
@@ -423,12 +423,12 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 		    s += l;
 		    break;
 		}
-		getparm(param, 1);
+		getparam(param, 1);
 		s += cvtchar(s);
 		dp = save_string(dp, "%+");
 		break;
 	    case '+':
-		getparm(param, 1);
+		getparam(param, 1);
 		s += cvtchar(s);
 		dp = save_string(dp, "%+%c");
 		pop();
@@ -436,22 +436,22 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 	    case 's':
 #ifdef WATERLOO
 		s += cvtchar(s);
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%-");
 #else
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%s");
 		pop();
 #endif /* WATERLOO */
 		break;
 	    case '-':
 		s += cvtchar(s);
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%-%c");
 		pop();
 		break;
 	    case '.':
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%c");
 		pop();
 		break;
@@ -467,18 +467,18 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 		goto invalid;
 	    case '2':
 	      see02:
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%2d");
 		pop();
 		break;
 	    case '3':
 	      see03:
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%3d");
 		pop();
 		break;
 	    case 'd':
-		getparm(param, 1);
+		getparam(param, 1);
 		dp = save_string(dp, "%d");
 		pop();
 		break;

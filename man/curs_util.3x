@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.136 2025/02/01 22:49:13 tom Exp $
-.TH curs_util 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.139 2025/02/15 18:38:01 tom Exp $
+.TH curs_util 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -142,7 +142,7 @@ the
 complex character
 .IR wch .
 .PP
-Both functions ignore the atributes and color pair selection
+Both functions ignore the attributes and color pair selection
 of their argument.
 .SS "keyname, key_name"
 The \fBkeyname\fP routine returns a character string
@@ -472,17 +472,17 @@ i.e.,
 a one-character string with
 the parameter as the first character.
 Otherwise,
-it returns \*(``~@\*('',
-\*(``~A\*('',
+it returns \*(``\*~@\*('',
+\*(``\*~A\*('',
 etc.,
-analogous to \*(``^@\*('',
-\*(``^A\*('',
+analogous to \*(``\*^@\*('',
+\*(``\*^A\*('',
 C0 controls.
 .IP
 X/Open Curses does not document whether \fBunctrl\fP can be called
 before initializing curses.
 This implementation permits that,
-and returns the \*(``~@\*('',
+and returns the \*(``\*~@\*('',
 etc.,
 values in that case.
 .bP
@@ -492,10 +492,10 @@ parameter values outside the 0 to 255 range.
 The strings returned by \fBunctrl\fP in this implementation
 are determined at compile time,
 showing C1 controls from the upper-128 codes
-with a \*(``~\*('' prefix rather than \*(``^\*(''.
+with a \*(``\*~\*('' prefix rather than \*(``\*^\*(''.
 Other implementations have different conventions.
 For example,
-they may show both sets of control characters with \*(``^\*('',
+they may show both sets of control characters with \*(``\*^\*('',
 and strip the parameter to 7 bits.
 Or they may ignore C1 controls and treat all of the upper-128 codes as
 printable.
@@ -515,8 +515,8 @@ curses is initialized.
 X/Open Curses does not document the treatment of codes 128 to 159.
 When treating them as \*(``meta\*('' keys
 (or if \fBkeyname\fP is called before initializing curses),
-this implementation returns strings \*(``M\-^@\*('',
-\*(``M\-^A\*('',
+this implementation returns strings \*(``M\-\*^@\*('',
+\*(``M\-\*^A\*('',
 etc.
 .PP
 X/Open Curses documents \fBunctrl\fP as declared in \fB<unctrl.h>\fP,

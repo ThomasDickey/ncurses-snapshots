@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.16 2024/10/19 21:06:11 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.17 2025/02/15 15:43:26 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -964,7 +964,7 @@ _nc_console_twait(
 			    continue;
 			    /* e.g., FOCUS_EVENT */
 			default:
-			    T(("twait:event Tyoe %d", inp_rec.EventType));
+			    T(("twait:event Type %d", inp_rec.EventType));
 			    CONSUME();
 			    _nc_console_selectActiveHandle();
 			    continue;

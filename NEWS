@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4242 2025/02/08 23:54:37 tom Exp $
+-- $Id: NEWS,v 1.4245 2025/02/16 00:19:24 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250215
+	+ add gzip option for suppressing filename/timestamp information to an
+	  overlooked case (cf: 20240330).
+	+ correct spelling errors found with codespell.
+	+ fix some typos in manpages (report by Sven Joachim)
+	+ amend change to lib_set_term.c to work with thread configuration
+	  (report by Rajeev Pillai, cf: 20250208).
 
 20250208
 	+ change etip.h.in to include either/both of <new> and <exception>,
@@ -106,7 +114,7 @@ it is not possible to add this information.
 20241221
 	+ modify ncurses/tinfo/MKfallback.sh to work with MacOS sed, which
 	  lacks BSD-style \< and \>
-	+ trim padding from sgr expresion used in trim_sgr0, to avoid copying
+	+ trim padding from sgr expression used in trim_sgr0, to avoid copying
 	  the padding into the resulting sgr0 (report by Rajeev Pillai).
 	+ strict compiler-warning fixes for upcoming gcc15
 

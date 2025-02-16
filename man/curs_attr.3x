@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.133 2025/02/01 23:59:36 tom Exp $
-.TH curs_attr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.136 2025/02/15 19:35:37 tom Exp $
+.TH curs_attr 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -286,7 +286,7 @@ A_INVIS	Invisible or blank mode
 A_ALTCHARSET	Alternate character set
 A_ITALIC	Italics (non-X/Open extension)
 A_ATTRIBUTES	Mask to extract character code
-A_CHARTEXT	Mask to extract atributes
+A_CHARTEXT	Mask to extract attributes
 A_COLOR	Mask to extract color pair identifier
 .TE
 .RE
@@ -433,8 +433,7 @@ parameter.
 .bP
 For functions which turn attributes off, e.g.,
 \fBwattr_off\fP,
-the \fIopts\fP parameter is ignored except
-except to check that it is
+the \fIopts\fP parameter is ignored except to check that it is
 .IR NULL "."
 .\" ---------------------------------------------------------------------------
 .SH PORTABILITY

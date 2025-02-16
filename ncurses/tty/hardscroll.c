@@ -107,7 +107,7 @@ be moved out of order.
 			THE ALGORITHM
 
 The scrolling is done in two passes. The first pass is from top to bottom
-scroling hunks UP. The second one is from bottom to top scrolling hunks DOWN.
+scrolling hunks UP. The second one is from bottom to top scrolling hunks DOWN.
 Obviously enough, no lines to be scrolled will be destroyed. (lav)
 
 HOW TO TEST THIS:
@@ -148,7 +148,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.60 2025/01/12 10:51:43 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.61 2025/02/15 15:12:54 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 

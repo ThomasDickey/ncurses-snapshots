@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.156 2025/01/18 14:47:35 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.157 2025/02/15 15:20:16 tom Exp $")
 
 /*
  *	char *
@@ -87,7 +87,7 @@ MODULE_ID("$Id: lib_tparm.c,v 1.156 2025/01/18 14:47:35 tom Exp $")
  *                     The ':' is used to avoid making %+ or %-
  *                     patterns (see below).
  *
- *	     %p[1-9]   push ith parm
+ *	     %p[1-9]   push ith param
  *	     %P[a-z]   set dynamic variable [a-z] to pop()
  *	     %g[a-z]   get dynamic variable [a-z] and push it
  *	     %P[A-Z]   set static variable [A-Z] to pop()
@@ -102,7 +102,7 @@ MODULE_ID("$Id: lib_tparm.c,v 1.156 2025/01/18 14:47:35 tom Exp $")
  *	     %= %> %<  logical operations: push(pop() op pop())
  *	     %A %O     logical and & or operations for conditionals
  *	     %! %~     unary operations push(op pop())
- *	     %i        add 1 to first two parms (for ANSI terminals)
+ *	     %i        add 1 to first two params (for ANSI terminals)
  *
  *	     %? expr %t thenpart %e elsepart %;
  *	               if-then-else, %e elsepart is optional.

@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1170 $
-#	$Date: 2025/02/08 21:27:07 $
+#	$Revision: 1.1171 $
+#	$Date: 2025/02/15 20:03:55 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1143,7 +1143,7 @@ linux-vt|Linux console using VT codes for graphics,
 # of the functionality), but does not recognize as many control sequences.
 # The program comes bundled with an old (circa 1998) copy of the Linux
 # console terminfo.  It recognizes some non-ANSI/VT100 sequences such as
-#	\E*	move cursor to home, as as \E[H
+#	\E*	move cursor to home, as \E[H
 #	\E,X	same as \E(X
 #	\EE	move cursor to beginning of row
 #	\E[y,xf	same as \E[y,xH
@@ -7669,7 +7669,7 @@ terminology-1.0.0|EFL-based terminal emulator (1.0.0),
 #	italics and crossed-out text work
 #	no meta mode
 # vttest -
-#	DA1 says this is a VT420 with with 132 columns, NRCS, horizontal scrolling
+#	DA1 says this is a VT420 with 132 columns, NRCS, horizontal scrolling
 #	DA2 says this is a VT510, version 33.7
 #	NRCS does not work, program hangs in the locking shift test.
 #	some of the VT420 rectangle operations work
@@ -10130,7 +10130,7 @@ hp262x|HP 262x terminals,
 # Due to severe 2621 braindamage, the only way to get the arrow keys to
 # transmit anything at all is to turn on the function key labels
 # with <smkx>, and even then the user has to hold down shift!
-# The default 2621 turns off the labels except when it has to to
+# The default 2621 turns off the labels except when it has to, to
 # enable the function keys. If your installation prefers labels
 # on all the time, or off all the time (at the "expense" of the
 # function keys), use 2621-nl or 2621-wl.
@@ -16090,7 +16090,7 @@ cdc756|CDC 756,
 # of the tab key to send an ESC.  The real ESC key is positioned way out
 # in right field.
 #
-# The termcap won't work in 132 column mode due to the way it it moves the
+# The termcap won't work in 132 column mode due to the way it moves the
 # cursor.  Termcap doesn't have the capability (as far as I could tell) to
 # handle the 721 in 132 column mode.
 #
@@ -17699,7 +17699,7 @@ f100-rv|freedom-rv|Liberty Freedom 100 in reverse video,
 # code for the down cursor key. When kcud1 is defined in terminfo
 # as ^V, the Control Character Quoting capability (^V in insert mode)
 # is lost! It cannot be remapped in vi because it is necessary to enter
-# a ^V to to quote the ^V that is being remapped!!!
+# a ^V to, to quote the ^V that is being remapped!!!
 #
 # f110/f200 users will have to decide whether
 # to lose the down cursor key or the quoting capability. We will opt
@@ -23585,7 +23585,7 @@ t1061f|Teleray 1061 with fast PROMs,
 # "Teleray Arpa Special", officially designated as
 # "Teleray Arpa network model 10" with "Special feature 720".
 # This is the new (1981) fast microcode updating the older "arpa" proms
-# (which gave meta-key and programmable-fxn keys).  720 is much much faster,
+# (which gave meta-key and programmable-fxn keys).  720 is much, much faster,
 # converts the keypad to programmable function keys, and has other goodies.
 # Standout mode is still broken (magic cookie, etc) so is suppressed as no
 # programs handle such lossage properly.
@@ -27793,5 +27793,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2025-02-08
 #	+ update st (report by Alexander Kashpir) -TD
+#
+# 2025-02-15
+#	+ minor fixes to comments (report by Sven Joachim) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.117 2025/02/02 00:00:59 tom Exp $
-.TH curs_getch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.119 2025/02/15 19:35:55 tom Exp $
+.TH curs_getch 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -425,7 +425,7 @@ to indicate that a mouse event is pending collection;
 see \fB\%curs_mouse\fP(3X).
 Receipt of this code requires a window's keypad mode to be enabled,
 because to interpret mouse input
-(as with with \fI\%xterm\fP(1)'s mouse protocol),
+(as with \fI\%xterm\fP(1)'s mouse protocol),
 .I \%ncurses
 must read an escape sequence,
 as with a function key.

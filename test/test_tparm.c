@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.43 2024/12/07 23:13:34 tom Exp $
+ * $Id: test_tparm.c,v 1.44 2025/02/15 15:42:37 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -634,7 +634,7 @@ main(int argc, char *argv[])
 	    }
 
 	    if (v_opt) {
-		printf("[%d:%d] %d paramerized cap%s * %ld test-case%s \"%s\"\n",
+		printf("[%d:%d] %d parameterized cap%s * %ld test-case%s \"%s\"\n",
 		       r_run + 1, r_opt,
 		       PLURAL(use_caps),
 		       PLURAL(use_parms),

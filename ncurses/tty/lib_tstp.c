@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <SigAction.h>
 
-MODULE_ID("$Id: lib_tstp.c,v 1.58 2024/12/21 18:43:50 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.59 2025/02/15 14:52:13 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -367,8 +367,8 @@ CatchIfDefault(int sig, void (*handler) (int))
 	result = FALSE;
     }
 #endif
-    T(("CatchIfDefault - will %scatch %s",
-       result ? "" : "not ", signal_name(sig)));
+    T(("CatchIfDefault - will%s catch %s",
+       result ? "" : " not", signal_name(sig)));
     return result;
 }
 

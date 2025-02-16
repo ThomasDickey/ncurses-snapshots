@@ -2,7 +2,7 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.48 2022/12/10 23:36:05 tom Exp $
+ * $Id: newdemo.c,v 1.49 2025/02/15 15:15:25 tom Exp $
  */
 
 #include <test.priv.h>
@@ -288,7 +288,7 @@ main(int argc, char *argv[])
 	set_colors(win, 2, COLOR_RED, COLOR_RED);
 	box(win, ACS_VLINE, ACS_HLINE);
 	wrefresh(win);
-	/* Do ramdom output of a character */
+	/* Do random output of a character */
 	use_colors(win, 1, A_NORMAL);
 	c = 'a';
 	for (i = 0; i < 5000; ++i) {
