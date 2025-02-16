@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4245 2025/02/16 00:19:24 tom Exp $
+-- $Id: NEWS,v 1.4248 2025/02/16 23:54:33 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250216
+	+ add limit-checks in alloc_entry.c and alloc_ttype.c to avoid indexing
+	  errors when using infocmp to compare all capabilities when processing
+	  a malformed terminfo binary which has a valid header (testcase by
+	  "Ekkosun").
 
 20250215
 	+ add gzip option for suppressing filename/timestamp information to an

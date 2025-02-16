@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.82 2025/01/11 20:37:19 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.83 2025/02/16 17:57:12 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -360,6 +360,8 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
     }
 #endif
     for_each_boolean(i, from) {
+	if (i >= NUM_BOOLEANS(to))
+	    break;
 	if (to->Booleans[i] != (NCURSES_SBOOL) CANCELLED_BOOLEAN) {
 	    int mergebool = from->Booleans[i];
 
@@ -371,6 +373,8 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
     }
 
     for_each_number(i, from) {
+	if (i >= NUM_NUMBERS(to))
+	    break;
 	if (to->Numbers[i] != CANCELLED_NUMERIC) {
 	    int mergenum = from->Numbers[i];
 
@@ -387,6 +391,8 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
      * we ever want to deallocate entries.
      */
     for_each_string(i, from) {
+	if (i >= NUM_STRINGS(to))
+	    break;
 	if (to->Strings[i] != CANCELLED_STRING) {
 	    char *mergestring = from->Strings[i];
 

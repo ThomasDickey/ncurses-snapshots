@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.53 2024/12/07 18:08:56 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.55 2025/02/16 18:31:37 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -231,13 +231,15 @@ _nc_last_ext_name(const TERMTYPE2 *tp, int token_type)
 static int
 _nc_find_ext_name(const TERMTYPE2 *tp, const char *name, int token_type)
 {
-    unsigned j;
-    unsigned first = _nc_first_ext_name(tp, token_type);
-    unsigned last = _nc_last_ext_name(tp, token_type);
+    if (name != NULL) {
+	unsigned j;
+	unsigned first = _nc_first_ext_name(tp, token_type);
+	unsigned last = _nc_last_ext_name(tp, token_type);
 
-    for (j = first; j < last; j++) {
-	if (!strcmp(name, tp->ext_Names[j])) {
-	    return (int) j;
+	for (j = first; j < last; j++) {
+	    if (!strcmp(name, tp->ext_Names[j])) {
+		return (int) j;
+	    }
 	}
     }
     return -1;
@@ -381,9 +383,12 @@ adjust_cancels(TERMTYPE2 *to, TERMTYPE2 *from)
 	      NonNull(to->term_names),
 	      NonNull(from->term_names)));
     for (j = first; j < last;) {
-	char *name = to->ext_Names[j];
+	char *name;
 	int j_str = to->num_Strings - first - to->ext_Strings;
 
+	if ((j + j_str) > NUM_STRINGS(to))
+	    break;
+	name = to->ext_Names[j];
 	if (to->Strings[j + j_str] == CANCELLED_STRING) {
 	    if (_nc_find_ext_name(from, to->ext_Names[j], BOOLEAN) >= 0) {
 		if (_nc_del_ext_name(to, name, STRING)
