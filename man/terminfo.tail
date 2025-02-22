@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.156 2025/01/19 00:51:10 tom Exp $
+.\" $Id: terminfo.tail,v 1.157 2025/02/17 23:55:31 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1014,7 +1014,7 @@ to delete a single character,
 with one parameter,
 .IR n ,
 to delete
-.IR n "characters,"
+.IR n " characters,"
 and delete mode by giving \fBsmdc\fP and \fBrmdc\fP
 to enter and exit delete mode (any mode the terminal needs to be placed
 in for

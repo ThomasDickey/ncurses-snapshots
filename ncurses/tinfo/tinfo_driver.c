@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.78 2025/01/18 14:47:35 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.79 2025/02/20 01:30:20 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -94,8 +94,8 @@ NCURSES_EXPORT_VAR(int) COLORS = 0;
 #endif
 
 #define TCBMAGIC NCDRV_MAGIC(NCDRV_TINFO)
-#define AssertTCB() assert(TCB!=0 && TCB->magic==TCBMAGIC)
-#define SetSP() assert(TCB->csp!=0); sp = TCB->csp; (void) sp
+#define AssertTCB() assert(TCB != NULL && TCB->magic == TCBMAGIC)
+#define SetSP() assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
 
 /*
  * This routine needs to do all the work to make curscr look
@@ -163,7 +163,7 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
     START_TRACE();
     T((T_CALLED("tinfo::drv_CanHandle(%p)"), (void *) TCB));
 
-    assert(TCB != 0 && tname != 0);
+    assert(TCB != NULL && tname != NULL);
     termp = (TERMINAL *) TCB;
     sp = TCB->csp;
     TCB->magic = TCBMAGIC;
@@ -545,7 +545,7 @@ static int
 drv_getsize(TERMINAL_CONTROL_BLOCK * TCB, int *l, int *c)
 {
     AssertTCB();
-    assert(l != 0 && c != 0);
+    assert(l != NULL && c != NULL);
     *l = lines;
     *c = columns;
     return OK;
@@ -1076,7 +1076,7 @@ drv_initacs(TERMINAL_CONTROL_BLOCK * TCB, chtype *real_map, chtype *fake_map)
     SCREEN *sp = TCB->csp;
 
     AssertTCB();
-    assert(sp != 0);
+    assert(sp != NULL);
     if (ena_acs != NULL) {
 	NCURSES_PUTP2("ena_acs", ena_acs);
     }
@@ -1516,12 +1516,12 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
     int code = ERR;
     size_t i;
     TERM_DRIVER *res = (TERM_DRIVER *) 0;
-    TERM_DRIVER *use = 0;
+    TERM_DRIVER *use = NULL;
 
     T((T_CALLED("_nc_get_driver(%p, %s, %p)"),
        (void *) TCB, NonNull(name), (void *) errret));
 
-    assert(TCB != 0);
+    assert(TCB != NULL);
 
     for (i = 0; i < SIZEOF(DriverTable); i++) {
 	res = DriverTable[i].driver;
@@ -1532,7 +1532,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
 	       If on Windows td_CanHandle returned FALSE although the terminal
 	       name is empty, we default to ms-terminal as tinfo TERM type.
 	     */
-	    if (name == 0 || *name == 0 || (strcmp(name, "unknown") == 0)) {
+	    if (name == NULL || *name == 0 || (strcmp(name, "unknown") == 0)) {
 		name = MS_TERMINAL;
 		T(("Set TERM=%s", name));
 	    }

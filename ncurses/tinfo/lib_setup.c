@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.249 2025/01/18 14:47:35 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.250 2025/02/20 01:31:35 tom Exp $")
 
 /****************************************************************************
  *
@@ -120,7 +120,7 @@ NCURSES_PUBLIC_VAR(ttytype) (void)
 	}
     }
 #else
-    if (cur_term != 0) {
+    if (cur_term != NULL) {
 	result = TerminalType(cur_term).term_names;
     }
 #endif
@@ -468,7 +468,7 @@ _nc_get_screensize(SCREEN *sp,
     TERMINAL_CONTROL_BLOCK *TCB;
     int my_tabsize;
 
-    assert(termp != 0 && linep != 0 && colp != 0);
+    assert(termp != NULL && linep != NULL && colp != NULL);
     TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 
     my_tabsize = TCB->info.tabsize;
@@ -627,7 +627,7 @@ _nc_update_screensize(SCREEN *sp)
     int old_lines;
     int old_cols;
 
-    assert(sp != 0);
+    assert(sp != NULL);
 
     CallDriver_2(sp, td_getsize, &old_lines, &old_cols);
 
@@ -767,8 +767,8 @@ _nc_unicode_locale(void)
 	T(("_nc_unicode_locale(%s) ->%d", env, result));
 #else
 	char *env = _nc_get_locale();
-	if (env != 0) {
-	    if (strstr(env, ".UTF-8") != 0) {
+	if (env != NULL) {
+	    if (strstr(env, ".UTF-8") != NULL) {
 		result = TRUE;
 		T(("_nc_unicode_locale(%s) ->%d", env, result));
 	    }

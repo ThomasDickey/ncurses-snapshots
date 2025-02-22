@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.93 2024/12/21 20:27:36 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.94 2025/02/20 01:02:09 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -97,7 +97,7 @@ _nc_alloc_screen(void)
 {
     my_screen = _nc_alloc_screen_sp();
     T(("_nc_alloc_screen_sp %p", my_screen));
-    return (my_screen != 0);
+    return (my_screen != NULL);
 }
 
 NCURSES_EXPORT(void)

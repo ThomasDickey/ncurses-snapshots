@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.113 2025/01/11 20:19:34 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.115 2025/02/20 09:11:49 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -492,8 +492,8 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 		 */
 		if (!strcmp("ma", _nc_curr_token.tk_name)) {
 		    entry_ptr = _nc_find_type_entry("ma", NUMBER,
-						    _nc_syntax != 0);
-		    assert(entry_ptr != 0);
+						    _nc_syntax != SYN_TERMINFO);
+		    assert(entry_ptr != NULL);
 		}
 	    } else if (entry_ptr->nte_type != token_type) {
 		/*
@@ -510,15 +510,15 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 		    && !strcmp("ma", _nc_curr_token.tk_name)) {
 		    /* tell max_attributes from arrow_key_map */
 		    entry_ptr = _nc_find_type_entry("ma", NUMBER,
-						    _nc_syntax != 0);
-		    assert(entry_ptr != 0);
+						    _nc_syntax != SYN_TERMINFO);
+		    assert(entry_ptr != NULL);
 
 		} else if (token_type == STRING
 			   && !strcmp("MT", _nc_curr_token.tk_name)) {
 		    /* map terminfo's string MT to MT */
 		    entry_ptr = _nc_find_type_entry("MT", STRING,
-						    _nc_syntax != 0);
-		    assert(entry_ptr != 0);
+						    _nc_syntax != SYN_TERMINFO);
+		    assert(entry_ptr != NULL);
 
 		} else if (token_type == BOOLEAN
 			   && entry_ptr->nte_type == STRING) {

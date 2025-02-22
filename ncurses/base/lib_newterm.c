@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.107 2024/12/07 17:41:36 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.108 2025/02/20 01:02:09 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -190,7 +190,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
        (void *) ifp));
 
 #if NCURSES_SP_FUNCS
-    assert(SP_PARM != 0);
+    assert(SP_PARM != NULL);
     if (SP_PARM == NULL)
 	returnSP(SP_PARM);
 #endif
@@ -216,7 +216,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 
 	_nc_set_screen(NULL);
 #ifdef USE_TERM_DRIVER
-	assert(new_term != 0);
+	assert(new_term != NULL);
 #endif
 
 #if NCURSES_SP_FUNCS
@@ -251,7 +251,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
 #elif !NCURSES_SP_FUNCS
 	    _nc_set_screen(CURRENT_SCREEN);
 #endif
-	    assert(SP_PARM != 0);
+	    assert(SP_PARM != NULL);
 	    cols = *(ptrCols(SP_PARM));
 #ifdef USE_TERM_DRIVER
 	    _nc_set_screen(SP_PARM);

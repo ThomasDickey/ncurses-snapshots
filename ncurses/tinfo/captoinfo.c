@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.107 2025/02/15 15:31:16 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.108 2025/02/20 00:48:11 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -980,7 +980,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 	 * 'str' always points to the end of what was scanned in this step,
 	 * but that may not be the end of the string.
 	 */
-	assert(str != 0);
+	assert(str != NULL);
 	if (str == NULL || *str == '\0')
 	    break;
 

@@ -1,10 +1,10 @@
 #!/bin/sh
-# $Id: MKterminfo.sh,v 1.20 2024/01/13 20:37:40 tom Exp $
+# $Id: MKterminfo.sh,v 1.21 2025/02/20 00:14:25 tom Exp $
 #
 # MKterminfo.sh -- generate terminfo.5 from Caps tabular data
 #
 #***************************************************************************
-# Copyright 2018-2020,2022 Thomas E. Dickey                                *
+# Copyright 2018-2024,2025 Thomas E. Dickey                                *
 # Copyright 1998-2003,2017 Free Software Foundation, Inc.                  *
 #                                                                          *
 # Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -76,6 +76,9 @@ trap 'code=$?; rm -f $sorted $temp $unsorted; exit $code' EXIT HUP INT QUIT TERM
 rm -f $sorted $temp $unsorted
 
 cat $caps | sed -n "\
+/^#%.TS/i.na
+/^#%.TE/a\
+.ad
 /%%-STOP-HERE-%%/q
 /^#%center/s, expand,,
 /^#%lw25/s, lw6 , lw7 ,
@@ -84,7 +87,6 @@ cat $caps | sed -n "\
 s/[	][	]*/	/g
 s/$/T}/
 s/	[A-Z0-9_()\-][A-Z0-9_()\-]*	[0-9\-][0-9\-]*	[Y\-][B\-][C\-][G\-][EK\-]\**	/	T{\\
-.ad l\
 /
 s/	bool	/	/p
 s/	num	/	/p
@@ -116,7 +118,7 @@ do
 done <$unsorted
 test $saved = yes && sort $temp >>$sorted
 
-sed -e 's/^\.\.$//' $sorted | tr "\005\006" "\012\134"
+sed -e 's/^\.\.$//' $sorted | tr "\005\006" "\012\134" | sed -e '/^$/d'
 
 sed	-e '/^center expand;/s, expand,,' \
 	-e '/^\.TS/,/^\\/s, lw[1-9][0-9]*\., l.,' \

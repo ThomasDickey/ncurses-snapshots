@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2012,2015 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.33 2024/12/21 16:39:29 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.34 2025/02/20 01:02:09 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -244,7 +244,7 @@ _nc_trace_ttymode(const TTY * tty)
     buf = _nc_trace_buf(0,
 			8 + sizeof(dwFlagsOut) +
 			8 + sizeof(dwFlagsIn));
-    if (buf != 0) {
+    if (buf != NULL) {
 	lookup_bits(buf, dwFlagsIn, "dwIn", tty->dwFlagIn);
 	lookup_bits(buf, dwFlagsOut, "dwOut", tty->dwFlagOut);
     }
@@ -284,7 +284,7 @@ _nc_trace_ttymode(const TTY * tty)
 
     buf = _nc_trace_buf(0,
 			8 + sizeof(cflags));
-    if (buf != 0) {
+    if (buf != NULL) {
 	if (tty->sg_flags & ALLCTRL) {
 	    lookup_bits(buf, cflags, "cflags", tty->sg_flags);
 	}

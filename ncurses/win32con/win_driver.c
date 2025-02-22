@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.76 2024/11/28 00:17:49 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.77 2025/02/20 01:19:43 tom Exp $")
 
 #define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
 
@@ -70,8 +70,8 @@ MODULE_ID("$Id: win_driver.c,v 1.76 2024/11/28 00:17:49 tom Exp $")
 static bool InitConsole(void);
 static bool okConsoleHandle(TERMINAL_CONTROL_BLOCK *);
 
-#define AssertTCB() assert(TCB != 0 && (TCB->magic == WINMAGIC))
-#define SetSP()     assert(TCB->csp != 0); sp = TCB->csp; (void) sp
+#define AssertTCB() assert(TCB != NULL && (TCB->magic == WINMAGIC))
+#define SetSP()     assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
 
@@ -519,7 +519,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	    };
 
 	    for (x = 0; x < Width; x++)
-		setcchar(&empty[x], blank, 0, 0, 0);
+		setcchar(&empty[x], blank, 0, 0, NULL);
 #else
 	    chtype *empty = TypeAlloca(chtype, Width);
 
@@ -629,13 +629,13 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 
     T((T_CALLED("win32con::wcon_CanHandle(%p)"), TCB));
 
-    assert((TCB != 0) && (tname != 0));
+    assert((TCB != NULL) && (tname != NULL));
 
     TCB->magic = WINMAGIC;
 
-    if (tname == 0 || *tname == 0)
+    if (tname == NULL || *tname == 0)
 	code = TRUE;
-    else if (tname != 0 && *tname == '#') {
+    else if (tname != NULL && *tname == '#') {
 	/*
 	 * Use "#" (a character which cannot begin a terminal's name) to
 	 * select specific driver from the table.
@@ -649,7 +649,7 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 		|| (strncmp(tname + 1, "win32con", n) == 0))) {
 	    code = TRUE;
 	}
-    } else if (tname != 0 && stricmp(tname, "unknown") == 0) {
+    } else if (tname != NULL && stricmp(tname, "unknown") == 0) {
 	code = TRUE;
     } else if (SysISATTY(TCB->term.Filedes)) {
 	code = TRUE;
@@ -1173,7 +1173,7 @@ read_screen_data(void)
 
     want = (size_t) (CON.save_size.X * CON.save_size.Y);
 
-    if ((CON.save_screen = malloc(want * sizeof(CHAR_INFO))) != 0) {
+    if ((CON.save_screen = malloc(want * sizeof(CHAR_INFO))) != NULL) {
 	bufferCoord.X = (SHORT) (CON.window_only ? CON.SBI.srWindow.Left : 0);
 	bufferCoord.Y = (SHORT) (CON.window_only ? CON.SBI.srWindow.Top : 0);
 
@@ -1449,7 +1449,7 @@ wcon_initacs(TERMINAL_CONTROL_BLOCK * TCB,
 
 	for (n = 0; n < SIZEOF(table); ++n) {
 	    real_map[table[n].acs_code] = (chtype) table[n].use_code | A_ALTCHARSET;
-	    if (sp != 0)
+	    if (sp != NULL)
 		sp->_screen_acs_map[table[n].acs_code] = TRUE;
 	}
     }
@@ -2000,9 +2000,9 @@ _nc_mingw_isconsole(int fd)
 
 #define TC_PROLOGUE(fd) \
     SCREEN *sp;                                               \
-    TERMINAL *term = 0;                                       \
+    TERMINAL *term = NULL;                                    \
     int code = ERR;                                           \
-    if (_nc_screen_chain == 0)                                \
+    if (_nc_screen_chain == NULL)                             \
         return 0;                                             \
     for (each_screen(sp)) {                                   \
         if (sp->_term && (sp->_term->Filedes == fd)) {        \
@@ -2010,7 +2010,7 @@ _nc_mingw_isconsole(int fd)
             break;                                            \
         }                                                     \
     }                                                         \
-    assert(term != 0)
+    assert(term != NULL)
 
 int
 _nc_mingw_tcsetattr(
@@ -2269,7 +2269,7 @@ InitConsole(void)
 static bool
 okConsoleHandle(TERMINAL_CONTROL_BLOCK * TCB)
 {
-    return ((TCB != 0) &&
+    return ((TCB != NULL) &&
 	    (TCB->magic == WINMAGIC) &&
 	    InitConsole());
 }

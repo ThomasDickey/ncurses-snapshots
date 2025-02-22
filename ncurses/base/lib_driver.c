@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2009-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_driver.c,v 1.10 2024/12/14 22:31:35 tom Exp $")
+MODULE_ID("$Id: lib_driver.c,v 1.11 2025/02/20 01:02:09 tom Exp $")
 
 #ifndef EXP_WIN32_DRIVER
 typedef struct DriverEntry {
@@ -61,7 +61,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
     T((T_CALLED("_nc_get_driver(%p, %s, %p)"),
        (void *) TCB, NonNull(name), (void *) errret));
 
-    assert(TCB != 0);
+    assert(TCB != NULL);
 
     for (i = 0; i < SIZEOF(DriverTable); i++) {
 	res = DriverTable[i].driver;

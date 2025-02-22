@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.41 2024/12/07 18:05:04 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.42 2025/02/20 01:02:09 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
@@ -78,7 +78,7 @@ _nc_rootname(char *path)
     }
 #endif
 #if defined(PROG_EXT)
-    if ((s = strrchr(result, '.')) != 0) {
+    if ((s = strrchr(result, '.')) != NULL) {
 	if (!strcmp(s, PROG_EXT))
 	    *s = '\0';
     }
@@ -94,7 +94,7 @@ NCURSES_EXPORT(bool)
 _nc_is_abs_path(const char *path)
 {
 #if defined(__EMX__) || defined(__DJGPP__)
-#define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
+#define is_pathname(s) ((((s) != NULL) && ((s)[0] == '/')) \
 		  || (((s)[0] != 0) && ((s)[1] == ':')))
 #else
 #define is_pathname(s) ((s) != NULL && (s)[0] == '/')
@@ -110,7 +110,7 @@ _nc_pathlast(const char *path)
 {
     const char *test = strrchr(path, '/');
 #ifdef __EMX__
-    if (test == 0)
+    if (test == NULL)
 	test = strrchr(path, '\\');
 #endif
     if (test == NULL)

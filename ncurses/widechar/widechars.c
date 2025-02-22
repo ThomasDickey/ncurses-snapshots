@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2012,2013 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
 
 #if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: widechars.c,v 1.10 2024/08/31 15:55:27 tom Exp $")
+MODULE_ID("$Id: widechars.c,v 1.11 2025/02/20 01:02:09 tom Exp $")
 
 #if defined(_NC_MINGW)
 /*
@@ -45,7 +45,7 @@ _nc_mbtowc(wchar_t *pwc, const char *s, size_t n)
     int count;
     int try;
 
-    if (s != 0 && n != 0) {
+    if (s != NULL && n != 0) {
 	/*
 	 * MultiByteToWideChar() can decide to return more than one
 	 * wide-character.  We want only one.  Ignore any trailing null, both
@@ -96,7 +96,7 @@ _nc_mblen(const char *s, size_t n)
     int count;
     wchar_t temp;
 
-    if (s != 0 && n != 0) {
+    if (s != NULL && n != 0) {
 	count = _nc_mbtowc(&temp, s, n);
 	if (count == 1) {
 	    int check = WideCharToMultiByte(CP_UTF8,

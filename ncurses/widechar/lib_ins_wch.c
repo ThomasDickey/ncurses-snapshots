@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.31 2024/12/07 18:03:14 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.32 2025/02/20 01:02:09 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -109,8 +109,7 @@ wins_nwstr(WINDOW *win, const wchar_t *wstr, int n)
        (void *) win, _nc_viswbufn(wstr, n), n));
 
     if (win != NULL
-	&& wstr != NULL
-	&& n != 0) {
+	&& wstr != NULL) {
 
 	if (n < 0) {
 	    n = INT_MAX;
