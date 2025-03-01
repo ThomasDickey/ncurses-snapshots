@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.119 2025/02/15 19:36:18 tom Exp $
-.TH curs_mouse 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.123 2025/03/01 21:33:30 tom Exp $
+.TH curs_mouse 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -149,7 +149,7 @@ The function returns an updated copy of
 indicating which of the specified mouse events can be reported.
 .IP
 If the screen is not initialized,
-or the terminal interface does report mouse events,
+or the terminal interface does not report mouse events,
 .B \%mousemask
 returns 0.
 .bP
@@ -661,7 +661,8 @@ Mouse events from
 .I \%xterm
 are
 .I not
-ignored in canonical mode if they have been enabled by
+ignored in canonical (\*(``cooked\*('') mode
+if they have been enabled by
 .BR \%mousemask "."
 Instead,
 the
@@ -685,9 +686,12 @@ to \*(``\eE[M\*(''
 for mouse clicks).
 Other values of
 .B \%key_mouse
-are permitted under the same assumption,
+are permitted under the same assumption \(em
 that is,
-the report begins with that sequence.
+a mouse report begins with the value of the
+.B \%key_mouse
+.RB ( \%kmous )
+string capability.
 .PP
 Because there are no standard response sequences that serve to identify
 terminals supporting the

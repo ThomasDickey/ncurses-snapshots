@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.122 2025/02/01 23:54:03 tom Exp $
-.TH curs_addch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.128 2025/03/01 21:16:45 tom Exp $
+.TH curs_addch 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -64,12 +64,12 @@ add a \fIcurses\fP character to a window and advance the cursor
 \fB#include <curses.h>
 .PP
 \fBint addch(const chtype \fIch\fP);
-\fBint waddch(WINDOW *\fIwin\fP, const chtype \fIch\fP);
+\fBint waddch(WINDOW * \fIwin\fP, const chtype \fIch\fP);
 \fBint mvaddch(int \fIy\fP, int \fIx\fP, const chtype \fIch\fP);
-\fBint mvwaddch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype \fIch\fP);
+\fBint mvwaddch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const chtype \fIch\fP);
 .PP
 \fBint echochar(const chtype \fIch\fP);
-\fBint wechochar(WINDOW *\fIwin\fP, const chtype \fIch\fP);
+\fBint wechochar(WINDOW * \fIwin\fP, const chtype \fIch\fP);
 .PP
 \fI/* (integer) constants */\fP
 /*\fI .\|.\|. */ \fBACS_BLOCK;\fR
@@ -130,15 +130,23 @@ how to manipulate its attributes and color pair.
 (A color pair selection is not honored unless initialized;
 see \fB\%start_color\fP(3X).)
 .PP
-If advancement occurs at the right margin,
-.bP
-the cursor automatically wraps to the beginning of the next line,
-then,
-.bP
-if it was at the bottom of the scrolling region,
-and if \fB\%scrollok\fP(3X) is enabled for
+If the cursor is not at the bottom of the scrolling region
+and advancement occurs at the right margin,
+the cursor automatically wraps to the beginning of the next line.
+.PP
+If the cursor is at the bottom of the scrolling region
+when advancement occurs at the right margin,
+and \fB\%scrollok\fP(3X) is enabled for
 .IR win ,
 the scrolling region scrolls up one line.
+Otherwise,
+advancement and scrolling do not occur,
+and
+.B \%waddch
+returns
+.BR ERR "."
+.\" Do we need to say something here about buggy terminals that might
+.\" scroll anyway?  xterm works fine...
 .PP
 If
 .I ch
@@ -229,8 +237,9 @@ The ACS default listed below is used if the
 .RB \%( acsc )
 .I \%term\%info
 capability does not define a terminal-specific replacement for it,
-or if the terminal and locale configuration requires Unicode to access
-these characters but the library is unable to use Unicode.
+or if the terminal type and locale configuration
+require Unicode to access these characters
+but the library is unable to use Unicode.
 The \*(``acsc char\*('' column corresponds to how the characters are
 specified in the
 .B \%acs_chars
@@ -292,10 +301,7 @@ on failure.
 .PP
 In
 .IR \%ncurses ,
-.B \%waddch
-and
-.B \%wechochar
-return
+they return
 .B ERR
 if
 .bP
@@ -313,7 +319,7 @@ wrapping to a new line is impossible because \fB\%scrollok\fP(3X) has
 not been called on
 .I win
 (or
-.BR stdscr ","
+.BR \%stdscr ","
 as applicable)
 when a write to its bottom right location is attempted,
 or
@@ -346,14 +352,14 @@ and
 may be implemented as macros.
 .SH EXTENSIONS
 The symbols
-.RI \%( ACS_S3 ","
+.IR \%ACS_S3 ","
 .IR \%ACS_S7 ","
 .IR \%ACS_LEQUAL ","
 .IR \%ACS_GEQUAL ","
 .IR \%ACS_PI ","
 .IR \%ACS_NEQUAL ","
 and
-.IR \%ACS_STERLING ")"
+.I \%ACS_STERLING
 were not documented in any publicly released System\ V
 .\" And did not exist yet as late as SVr4.
 .\" https://github.com/ryanwoodsmall/oldsysv/blob/master/\

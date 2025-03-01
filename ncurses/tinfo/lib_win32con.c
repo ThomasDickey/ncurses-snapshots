@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.17 2025/02/15 15:43:26 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.18 2025/03/01 14:26:14 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -887,8 +887,7 @@ _nc_console_twait(
 			goto end;
 		    } else {
 			DWORD n = 0;
-			INPUT_RECORD *pInpRec =
-			TypeAlloca(INPUT_RECORD, nRead);
+			MakeArray(pInpRec, INPUT_RECORD, nRead);
 			if (pInpRec != NULL) {
 			    DWORD i;
 			    BOOL f;

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.700 2025/01/18 14:41:58 tom Exp $
+ * $Id: curses.priv.h,v 1.701 2025/03/01 17:17:12 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2541,16 +2541,12 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #if defined(USE_WIN32CON_DRIVER)
 #include <nc_mingw.h>
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
-extern NCURSES_EXPORT(int)  _nc_mingw_isatty(int fd);
-extern NCURSES_EXPORT(int)  _nc_mingw_isconsole(int fd);
-extern NCURSES_EXPORT(int) _nc_mingw_console_read(
-    SCREEN *sp,
-    HANDLE  fd,
-    int *buf);
-extern NCURSES_EXPORT(int) _nc_mingw_testmouse(
-    SCREEN * sp,
-    HANDLE fd,
-    int delay EVENTLIST_2nd(_nc_eventlist*));
+extern NCURSES_EXPORT(int) _nc_mingw_console_read(SCREEN *sp, HANDLE fd, int *buf);
+extern NCURSES_EXPORT(int) _nc_mingw_isatty(int fd);
+extern NCURSES_EXPORT(int) _nc_mingw_isconsole(int fd);
+extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
+extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
+extern NCURSES_EXPORT(int) _nc_mingw_testmouse(SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
 #else
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;

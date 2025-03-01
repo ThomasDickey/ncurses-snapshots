@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.226 2025/01/11 00:55:54 tom Exp $
+dnl $Id: aclocal.m4,v 1.227 2025/02/23 01:57:36 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3200,11 +3200,6 @@ AC_SUBST(NCURSES_PATCH)
 dnl We need these values in the generated makefiles
 AC_SUBST(cf_cv_rel_version)
 AC_SUBST(cf_cv_abi_version)
-
-dnl FIXME - not needed for Ada95
-AC_SUBST(cf_cv_builtin_bool)
-AC_SUBST(cf_cv_header_stdbool_h)
-AC_SUBST(cf_cv_type_of_bool)dnl
 
 AC_CACHE_CHECK(if KEY_RESIZE is supported,cf_cv_curses_resizes,[
 	AC_TRY_COMPILE([#include <${cf_cv_ncurses_header:-curses.h}>],

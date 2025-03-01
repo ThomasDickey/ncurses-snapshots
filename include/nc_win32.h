@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2008-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.14 2024/10/19 21:06:23 tom Exp $ */
+/* $Id: nc_win32.h,v 1.15 2025/03/01 13:13:33 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -175,8 +175,6 @@ typedef struct {
 
 extern NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 #define WINCONSOLE _nc_CONSOLE
-
-#define TypeAlloca(type,count)(type*) _alloca(sizeof(type)*(size_t)(count))
 
 #endif /* EVENTLIST_2nd */
 

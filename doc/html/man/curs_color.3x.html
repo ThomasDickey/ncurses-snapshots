@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_color.3x,v 1.113 2025/01/19 00:49:39 tom Exp @
+  * @Id: curs_color.3x,v 1.116 2025/03/01 21:17:37 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_color 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_color 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_color 3x 2025-01-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_color 3x 2025-03-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
@@ -263,11 +263,21 @@
 
 
 </PRE><H3><a name="h3-has_colors">has_colors</a></H3><PRE>
-       The  <STRONG>has_colors</STRONG>  routine requires no arguments.  It returns <STRONG>TRUE</STRONG> if the
-       terminal can manipulate colors;  otherwise,  it  returns  <STRONG>FALSE</STRONG>.   This
-       routine   facilitates   writing   terminal-independent  programs.   For
-       example, a programmer can use it to decide whether to use color or some
-       other video attribute.
+       <STRONG>has_colors</STRONG> returns <STRONG>TRUE</STRONG> if the terminal supports colors and <STRONG>FALSE</STRONG> if it
+       does not.   <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>  or  <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>  must  be  called  first,  but
+       <STRONG>start_color</STRONG>  need  not  be.   An  application  might call <STRONG>has_colors</STRONG> to
+       decide whether to use color or a video attribute like <STRONG>A_BOLD</STRONG> to  render
+       text.
+
+       Color  support  in  <EM>curses</EM>  requires that the terminal type description
+       support the capabilities <STRONG>max_colors</STRONG> (<STRONG>colors</STRONG>),  <STRONG>max_pairs</STRONG>  (<STRONG>pairs</STRONG>),  and
+       any of
+
+       <STRONG>o</STRONG>   <STRONG>set_foreground</STRONG> (<STRONG>setf</STRONG>) and <STRONG>set_background</STRONG> (<STRONG>setb</STRONG>);
+
+       <STRONG>o</STRONG>   <STRONG>set_a_foreground</STRONG> (<STRONG>setaf</STRONG>) and <STRONG>set_a_background</STRONG> (<STRONG>setab</STRONG>); or
+
+       <STRONG>o</STRONG>   <STRONG>set_color_pair</STRONG> (<STRONG>scp</STRONG>).
 
 
 </PRE><H3><a name="h3-can_change_color">can_change_color</a></H3><PRE>
@@ -427,7 +437,7 @@
            <STRONG>o</STRONG>   color identifiers outside the range 0-<STRONG>COLORS</STRONG>-1  inclusive,  the
                default colors extension notwithstanding, or
 
-           <STRONG>o</STRONG>   color  pairs  identifiers  outside  the  range  0-<STRONG>COLOR_PAIRS</STRONG>-1
+           <STRONG>o</STRONG>   color   pair  identifiers  outside  the  range  0-<STRONG>COLOR_PAIRS</STRONG>-1
                inclusive.
 
 
@@ -445,10 +455,10 @@
        application to disregard unnecessary information.
 
        In <EM>ncurses</EM>, each screen has a color  activation  flag,  color  palette,
-       color pair table, and associated <STRONG>COLORS</STRONG> and <STRONG>COLOR_PAIRS</STRONG> values for each
-       screen; <STRONG>start_color</STRONG> affects only the  current  screen.   The  SVr4  and
-       X/Open  Curses  interface  was  not  really designed with this in mind;
-       historical implementations may use a single shared color palette.
+       color  pair  table,  and  associated  <STRONG>COLORS</STRONG>  and  <STRONG>COLOR_PAIRS</STRONG>  values;
+       <STRONG>start_color</STRONG> affects only the  current  screen.   The  SVr4  and  X/Open
+       Curses  interface was not really designed with this in mind; historical
+       implementations may use a single shared color palette.
 
        Setting an implicit background color via  a  color  pair  affects  only
        character  cells  that  a character write operation explicitly touches.
@@ -555,7 +565,7 @@
 
 
 
-ncurses 6.5                       2025-01-18                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
+ncurses 6.5                       2025-03-01                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

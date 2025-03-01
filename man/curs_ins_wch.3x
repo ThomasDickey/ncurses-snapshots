@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_ins_wch.3x,v 1.46 2025/02/02 00:00:59 tom Exp $
-.TH curs_ins_wch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_ins_wch.3x,v 1.48 2025/03/01 21:25:47 tom Exp $
+.TH curs_ins_wch 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,11 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.de bP
+.ie n  .IP \(bu 4
+.el    .IP \(bu 2
+..
 .SH NAME
 \fB\%ins_wch\fP,
 \fB\%wins_wch\fP,
@@ -52,27 +57,45 @@ insert a \fIcurses\fR complex character in a window
 \fBint ins_wch(const cchar_t * \fIwch\fP);
 \fBint wins_wch(WINDOW * \fIwin\fP, const cchar_t * \fIwch\fP);
 \fBint mvins_wch(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
-\fBint mvwins_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
+\fBint mvwins_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
+      const cchar_t * \fIwch\fP);
 .fi
 .SH DESCRIPTION
-These functions insert the
+.B \%wins_wch
+inserts the
 .I curses
 complex character
 .I wch
-at the cursor in the specified window
-.I win
-(or
-.BR \%stdscr ).
+at the cursor position in the window
+.IR win "."
 The character previously at the cursor and any to its right move one
 cell to the right;
-the rightmost character on the line is discarded.
-The cursor does not advance.
+the formerly rightmost character on the line is discarded.
+Unlike \fB\%add_wch\fP(3X),
+.B \%wins_wch
+does not advance the cursor.
+\fB\%ncurses\fP(3X) describes the variants of this function.
 .SH "RETURN VALUE"
-These functions return \fBOK\fP on success and \fBERR\fP on failure.
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
 .PP
-Functions taking a
+In
+.IR \%ncurses ,
+they return
+.B ERR
+if
+.bP
+the
+.I curses
+screen has not been initialized,
+and
+.bP
+(for functions taking a
 .I \%WINDOW
-pointer argument fail if
+pointer argument)
 .I win
 is a null pointer.
 .PP
@@ -82,17 +105,17 @@ fail if the position
 .IR x )
 is outside the window boundaries.
 .SH NOTES
-\fB\%ins_wch\fP,
-\fB\%mvins_wch\fP,
+.BR \%ins_wch ","
+.BR \%mvins_wch ","
 and
-\fB\%mvwins_wch\fP
+.B \%mvwins_wch
 may be implemented as macros.
 .PP
-A terminal's
+.I curses
+does not necessarily employ the terminal's
 .B \%insert_character
 .RB ( ich1 )
-capability
-is not necessarily employed.
+capability to achieve insertion.
 .SH PORTABILITY
 X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.

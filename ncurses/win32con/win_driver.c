@@ -57,9 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.77 2025/02/20 01:19:43 tom Exp $")
-
-#define TypeAlloca(type,count) (type*) _alloca(sizeof(type) * (size_t) (count))
+MODULE_ID("$Id: win_driver.c,v 1.81 2025/03/01 17:17:46 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 
@@ -264,7 +262,7 @@ static BOOL
 con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
 {
     int actual = 0;
-    CHAR_INFO *ci = TypeAlloca(CHAR_INFO, limit);
+    MakeArray(ci, CHAR_INFO, limit);
     COORD loc, siz;
     SMALL_RECT rec;
     int i;
@@ -313,7 +311,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
 static BOOL
 con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
 {
-    CHAR_INFO *ci = TypeAlloca(CHAR_INFO, n);
+    MakeArray(ci, CHAR_INFO, n);
     COORD loc, siz;
     SMALL_RECT rec;
     int i;
@@ -512,7 +510,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	if ((CurScreen(sp)->_clear || NewScreen(sp)->_clear)) {
 	    int x;
 #if USE_WIDEC_SUPPORT
-	    cchar_t *empty = TypeAlloca(cchar_t, Width);
+	    MakeArray(empty, cchar_t, Width);
 	    wchar_t blank[2] =
 	    {
 		L' ', L'\0'
@@ -521,7 +519,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	    for (x = 0; x < Width; x++)
 		setcchar(&empty[x], blank, 0, 0, NULL);
 #else
-	    chtype *empty = TypeAlloca(chtype, Width);
+	    MakeArray(empty, chtype, Width);
 
 	    for (x = 0; x < Width; x++)
 		empty[x] = ' ';
@@ -685,8 +683,8 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
     int max_cells = (high * wide);
     int i;
 
-    CHAR_INFO *this_screen = TypeAlloca(CHAR_INFO, max_cells);
-    CHAR_INFO *that_screen = TypeAlloca(CHAR_INFO, max_cells);
+    MakeArray(this_screen, CHAR_INFO, max_cells);
+    MakeArray(that_screen, CHAR_INFO, max_cells);
     COORD this_size;
     SMALL_RECT this_region;
     COORD bufferCoord;
@@ -1964,7 +1962,7 @@ IsConsoleHandle(HANDLE hdl)
      a test for mintty. This is called from the NC_ISATTY macro
      defined in curses.priv.h
  */
-int
+NCURSES_EXPORT(int)
 _nc_mingw_isatty(int fd)
 {
     int result = 0;
@@ -1985,7 +1983,7 @@ _nc_mingw_isatty(int fd)
      with the terminal escape sequences that are sent by
      terminfo.
  */
-int
+NCURSES_EXPORT(int)
 _nc_mingw_isconsole(int fd)
 {
     HANDLE hdl = get_handle(fd);
@@ -2012,7 +2010,7 @@ _nc_mingw_isconsole(int fd)
     }                                                         \
     assert(term != NULL)
 
-int
+NCURSES_EXPORT(int)
 _nc_mingw_tcsetattr(
 		       int fd,
 		       int optional_action GCC_UNUSED,
@@ -2051,7 +2049,7 @@ _nc_mingw_tcsetattr(
     return code;
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_mingw_tcgetattr(int fd, struct termios *arg)
 {
     TC_PROLOGUE(fd);
@@ -2063,7 +2061,7 @@ _nc_mingw_tcgetattr(int fd, struct termios *arg)
     return code;
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_mingw_tcflush(int fd, int queue)
 {
     int code = ERR;
@@ -2078,7 +2076,7 @@ _nc_mingw_tcflush(int fd, int queue)
     return code;
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_mingw_testmouse(
 		       SCREEN *sp,
 		       HANDLE fd,
@@ -2102,7 +2100,7 @@ _nc_mingw_testmouse(
     return rc;
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_mingw_console_read(
 			  SCREEN *sp,
 			  HANDLE fd,

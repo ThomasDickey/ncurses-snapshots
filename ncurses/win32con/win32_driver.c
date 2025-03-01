@@ -48,7 +48,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.5 2025/02/20 01:15:57 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.7 2025/03/01 14:26:14 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -171,7 +171,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB,
 	    int y, int x, cchar_t *str, int limit)
 {
     int actual = 0;
-    CHAR_INFO *ci = TypeAlloca(CHAR_INFO, limit);
+    MakeArray(ci, CHAR_INFO, limit);
     COORD loc, siz;
     SMALL_RECT rec;
     int i;
@@ -220,7 +220,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB,
 static BOOL
 con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
 {
-    CHAR_INFO *ci = TypeAlloca(CHAR_INFO, n);
+    MakeArray(ci, CHAR_INFO, n);
     COORD loc, siz;
     SMALL_RECT rec;
     int i;
@@ -415,7 +415,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	if ((CurScreen(sp)->_clear || NewScreen(sp)->_clear)) {
 	    int x;
 #if USE_WIDEC_SUPPORT
-	    cchar_t *empty = TypeAlloca(cchar_t, Width);
+	    MakeArray(empty, cchar_t, Width);
 	    wchar_t blank[2] =
 	    {
 		L' ', L'\0'
@@ -424,7 +424,7 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	    for (x = 0; x < Width; x++)
 		setcchar(&empty[x], blank, 0, 0, NULL);
 #else
-	    chtype *empty = TypeAlloca(chtype, Width);
+	    MakeArray(empty, chtype, Width);
 
 	    for (x = 0; x < Width; x++)
 		empty[x] = ' ';
@@ -589,8 +589,8 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
     int max_cells = (high * wide);
     int i;
 
-    CHAR_INFO *this_screen = TypeAlloca(CHAR_INFO, max_cells);
-    CHAR_INFO *that_screen = TypeAlloca(CHAR_INFO, max_cells);
+    MakeArray(this_screen, CHAR_INFO, max_cells);
+    MakeArray(that_screen, CHAR_INFO, max_cells);
     COORD this_size;
     SMALL_RECT this_region;
     COORD bufferCoord;

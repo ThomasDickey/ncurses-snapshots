@@ -1,6 +1,6 @@
-# $Id: ncurses_defs,v 1.113 2024/12/14 21:20:43 tom Exp $
+# $Id: ncurses_defs,v 1.116 2025/03/01 15:06:22 tom Exp $
 ##############################################################################
-# Copyright 2018-2023,2024 Thomas E. Dickey                                  #
+# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -42,6 +42,7 @@ DECL_ERRNO
 ETIP_NEEDS_MATH_H
 GCC_NORETURN	/* nothing */
 GCC_UNUSED	/* nothing */
+HAVE_ALLOCA_H
 HAVE_ALLOC_PAIR
 HAVE_ASSUME_DEFAULT_COLORS
 HAVE_BIG_CORE
@@ -112,6 +113,7 @@ HAVE_LINK
 HAVE_LOCALECONV
 HAVE_LOCALE_H
 HAVE_LONG_FILE_NAMES
+HAVE_MALLOC_H
 HAVE_MATH_FUNCS
 HAVE_MATH_H
 HAVE_MBLEN
@@ -275,6 +277,7 @@ USE_REENTRANT
 USE_SAFE_SPRINTF
 USE_SCROLL_HINTS
 USE_SIGWINCH
+USE_STDBOOL_H
 USE_STRING_HACKS
 USE_SYMLINKS
 USE_SYSMOUSE

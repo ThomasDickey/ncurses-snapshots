@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: MKterminfo.sh,v 1.21 2025/02/20 00:14:25 tom Exp $
+# $Id: MKterminfo.sh,v 1.22 2025/03/01 21:10:01 Branden.Robinson Exp $
 #
 # MKterminfo.sh -- generate terminfo.5 from Caps tabular data
 #
@@ -76,9 +76,6 @@ trap 'code=$?; rm -f $sorted $temp $unsorted; exit $code' EXIT HUP INT QUIT TERM
 rm -f $sorted $temp $unsorted
 
 cat $caps | sed -n "\
-/^#%.TS/i.na
-/^#%.TE/a\
-.ad
 /%%-STOP-HERE-%%/q
 /^#%center/s, expand,,
 /^#%lw25/s, lw6 , lw7 ,
@@ -87,6 +84,7 @@ cat $caps | sed -n "\
 s/[	][	]*/	/g
 s/$/T}/
 s/	[A-Z0-9_()\-][A-Z0-9_()\-]*	[0-9\-][0-9\-]*	[Y\-][B\-][C\-][G\-][EK\-]\**	/	T{\\
+.ad l\
 /
 s/	bool	/	/p
 s/	num	/	/p

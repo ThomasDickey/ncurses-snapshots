@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.791 2025/02/02 00:16:32 tom Exp $
+dnl $Id: configure.in,v 1.794 2025/03/01 15:05:13 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.791 $)
+AC_REVISION($Revision: 1.794 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1732,10 +1732,12 @@ CF_REGEX
 
 dnl These are some other potentially nonportable headers.
 AC_CHECK_HEADERS( \
+alloca.h \
 fcntl.h \
 getopt.h \
 limits.h \
 locale.h \
+malloc.h \
 math.h \
 poll.h \
 sys/auxv.h \
@@ -1901,7 +1903,14 @@ fi
 
 # Just in case, check if the C compiler has a bool type.
 CF_BOOL_DECL(cf_cv_cc_bool_type)
-AC_SUBST(cf_cv_cc_bool_type)
+if test "$cf_cv_cc_bool_type" = yes; then
+	USE_BUILTIN_BOOL=1
+else
+	USE_BUILTIN_BOOL=0
+fi
+AC_SUBST(USE_BUILTIN_BOOL)
+
+test "$cf_cv_header_stdbool_h" = yes && AC_DEFINE(USE_STDBOOL_H,1,[Define to 1 if we can include stdbool.h])
 
 # Check for C++ compiler characteristics (and ensure that it's there!)
 if test -n "$CXX" ; then
@@ -1932,7 +1941,7 @@ if test -n "$CXX" ; then
 	CF_CXX_AR_FLAGS
 else
 	cf_cxx_library=no
-	cf_cv_builtin_bool=1
+	cf_cv_builtin_bool=yes
 
 	# Just because we are not configuring against C++ right now does not
 	# mean that a user will not want to use C++.  Some distributors disable
@@ -1945,7 +1954,7 @@ else
 
 	if test "$NCURSES_BOOL" != auto ; then
 		cf_cv_type_of_bool=$NCURSES_BOOL
-		cf_cv_header_stdbool_h=0
+		USE_STDBOOL_H=0
 	else
 		CF_BOOL_SIZE
 	fi
@@ -1958,11 +1967,11 @@ AC_SUBST(CXXLIBS)
 # specify the type of bool in a configure-script option and postpone
 # integration with the C++ compiler provided that the types are compatible.
 USE_CXX_BOOL=1
-if test "$cf_cv_cc_bool_type" = 1
+if test "$USE_BUILTIN_BOOL" = 1
 then
 	# oops: C has a bool.  Unlikely, but C++ could differ.
 	USE_CXX_BOOL=0
-elif test "$cf_cv_builtin_bool" = 0
+elif test "$cf_cv_builtin_bool" = no
 then
 	# C++ has no bool
 	USE_CXX_BOOL=0

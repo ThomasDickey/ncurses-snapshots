@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.77 2025/02/15 15:13:55 tom Exp $
-.TH curs_kernel 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.80 2025/03/01 21:31:35 tom Exp $
+.TH curs_kernel 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -232,29 +232,61 @@ it is capped at that value.
 .B \%ripoffline
 provides access to the same facility that \fB\%slk_init\fP(3X) uses to
 reduce the size of the screen.
-\fB\%ripoffline\fP must be called before \fBinitscr\fP or
-\fBnewterm\fP is called, to prepare these initial actions:
+The application must call
+.B \%ripoffline
+before \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)
+so that the functions prepare a
+.B \%stdscr
+of the correct size.
 .bP
-If \fIline\fP is positive, a line is removed from the top of \fBstdscr\fP.
+If
+.I line
+is positive,
+.B \%ripoffline
+removes a line from the top of
+.BR \%stdscr "."
 .bP
-if \fIline\fP is negative, a line is removed from the bottom.
+If
+.I line
+is negative,
+.B \%ripoffline
+removes a line from the bottom of
+.BR \%stdscr "."
 .PP
-When the resulting initialization is done inside \fBinitscr\fP, the
-routine \fBinit\fP (supplied by the user) is called with two
-arguments:
+When
+.B \%initscr
+initializes
+.IR curses ","
+it calls the
+.I init
+function supplied to
+.B \%ripoffline
+by the application with two arguments:
 .bP
-a window pointer to the one-line window that has been
-allocated and
+a pointer to the one-line
+.I \%WINDOW
+that it allocates,
+and
 .bP
 an integer with the number of columns in the window.
 .PP
-Inside this initialization routine, the integer variables \fBLINES\fP
-and \fBCOLS\fP (defined in \fB<curses.h>\fP) are not guaranteed to be
-accurate and \fBwrefresh\fP or \fBdoupdate\fP must not be called.
-It is allowable to call \fBwnoutrefresh\fP during the initialization routine.
+Inside this
+.I init
+function,
+the values of the integer variables
+.B LINES
+and
+.B COLS
+(see \fB\%curs_variables\fP(3X))
+are not guaranteed to be reliable;
+it must not call \fB\%wrefresh\fP(3X) or \fB\%doupdate\fP(3X).
+A \fB\%wnoutrefresh\fP(3X) call is permissible.
 .PP
-\fBripoffline\fP can be called up to five times before calling \fBinitscr\fP or
-\fBnewterm\fP.
+.B \%ripoffline
+can be called up to five times before
+.B \%initscr
+or
+.BR \%newterm "."
 .SH RETURN VALUE
 Except for
 .BR \%curs_set ","
@@ -374,7 +406,7 @@ as returning
 .\" SVID 4, vol 3., p. 518
 .PP
 Older SVr4 man pages warn that the return value of
-.B \%curs_set
+.I \%curs_set
 \*(``is currently incorrect\*(''.
 This implementation gets it right,
 but counting on its correctness anywhere else may be unwise.
@@ -382,7 +414,7 @@ but counting on its correctness anywhere else may be unwise.
 X/Open Curses specifies
 .I \%ripoffline
 as returning
-.B OK
+.I OK
 with no possibility of failure
 (\*(``[c]alls to
 .I \%ripoffline
@@ -406,7 +438,7 @@ Both
 and SVr4
 .I curses
 implement
-.B \%mvcur
+.I \%mvcur
 using the
 .I SCREEN
 object allocated in either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X).

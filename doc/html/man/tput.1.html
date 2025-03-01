@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.132 2025/02/15 19:35:19 tom Exp @
+  * @Id: tput.1,v 1.135 2025/03/01 21:45:34 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2025-02-15 ncurses 6.5 User commands</TITLE>
+<TITLE>tput 1 2025-03-01 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2025-02-15 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tput 1 2025-03-01 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -76,7 +76,7 @@
        <EM>code</EM>.
 
        <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG> discusses terminal capabilities at length  and  presents  a
-       complete list of <EM>cap-codes</EM>.
+       complete list of standard <EM>cap-codes</EM>.
 
        When   retrieving  capability  values,  the  result  depends  upon  the
        capability's type.
@@ -445,17 +445,15 @@
        <STRONG>o</STRONG>   SVr4 (1989) added color initialization  by  using  the  <STRONG>orig_colors</STRONG>
            (<STRONG>oc</STRONG>) and <STRONG>orig_pair</STRONG> (<STRONG>op</STRONG>) capabilities in its <STRONG>init</STRONG> logic.
 
-       Keith  Bostic  refactored BSD <EM>tput</EM> for shipment in 4.3BSD-Tahoe (1988),
-       then replaced it the next year  with  a  new  implementation  based  on
-       System V  <EM>tput</EM>.   Bostic's  version  similarly accepted some parameters
-       named for <EM>terminfo</EM> (pseudo-)capabilities: <STRONG>clear</STRONG>,  <STRONG>init</STRONG>,  <STRONG>longname</STRONG>,  and
-       <STRONG>reset</STRONG>.   However,  because  he  had only <EM>termcap</EM> available, it accepted
-       <EM>termcap</EM> codes for other capabilities.  Also, Bostic's BSD <EM>tput</EM> did  not
-       modify the terminal modes as the earlier BSD <EM>tset</EM> had done.
-
-       At  the  same time, Bostic added a shell script named "clear" that used
-       <EM>tput</EM> to clear the screen.  Both of these appeared in  4.4BSD,  becoming
-       the "modern" BSD implementation of <EM>tput</EM>.
+       Keith  Bostic  refactored  BSD <EM>tput</EM> for shipment in 4.3BSD-Reno (1990),
+       making it follow the interface  of  System V  <EM>tput</EM>  by  accepting  some
+       parameters  named  for  <EM>terminfo</EM>  (pseudo-)capabilities:  <STRONG>clear</STRONG>,  <STRONG>init</STRONG>,
+       <STRONG>longname</STRONG>, and <STRONG>reset</STRONG>.  However, because he had only  <EM>termcap</EM>  available,
+       it  accepted  <EM>termcap</EM> codes for other capabilities.  Also, Bostic's BSD
+       <EM>tput</EM> did not modify the terminal modes as  the  earlier  BSD  <EM>tset</EM>  had
+       done.  At the same time, Bostic added a shell script named "clear" that
+       used  <EM>tput</EM>  to  clear  the  screen.   These  became  the  "modern"  BSD
+       implementation of <EM>tput</EM>.
 
        The  origin of <EM>ncurses</EM> <STRONG>tput</STRONG> lies outside both System V and BSD, in Ross
        Ridge's <EM>mytinfo</EM> package, published  on  <EM>comp.sources.unix</EM>  in  December
@@ -564,7 +562,7 @@
 
 
 
-ncurses 6.5                       2025-02-15                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.5                       2025-03-01                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

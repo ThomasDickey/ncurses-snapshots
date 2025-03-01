@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.84 2025/01/24 20:39:23 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.85 2025/03/01 17:07:19 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -273,7 +273,7 @@ _nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
     }
 #endif
 
-    result = poll(fds, (size_t) count, milliseconds);
+    result = (int) poll(fds, (size_t) count, milliseconds);
 
 #ifdef NCURSES_WGETCH_EVENTS
     if ((mode & TW_EVENT) && evl) {

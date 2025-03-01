@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1102 2025/02/16 00:15:17 tom Exp $
+dnl $Id: aclocal.m4,v 1.1104 2025/02/23 01:49:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -598,52 +598,25 @@ AC_DEFUN([CF_AWK_BIG_PRINTF],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_DECL version: 10 updated: 2025/02/01 19:31:51
+dnl CF_BOOL_DECL version: 11 updated: 2025/02/22 20:49:45
 dnl ------------
 dnl Test if 'bool' is a builtin type in the configured C/C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
 dnl 2.6.3 does, in anticipation of the ANSI C++ standard.
 dnl
-dnl Treat the configuration-variable specially here, since we're directly
-dnl substituting its value (i.e., 1/0).
-dnl
 dnl $1 is the shell variable to store the result in, if not $cv_cv_builtin_bool
 AC_DEFUN([CF_BOOL_DECL],
 [
-AC_MSG_CHECKING(if we should include stdbool.h)
-
-AC_CACHE_VAL(cf_cv_header_stdbool_h,[
+AC_REQUIRE([CF_C99_STDBOOL_H])
+AC_CACHE_CHECK(for builtin bool type, ifelse($1,,cf_cv_builtin_bool,[$1]),[
 	AC_TRY_COMPILE([
-#ifndef __BEOS__
-#include <stdbool.h>
-#endif
-],[bool foo = false; (void)foo],
-		[cf_cv_header_stdbool_h=1],
-		[AC_TRY_COMPILE([],[bool foo = false; (void)foo],
-			[cf_cv_header_stdbool_h=0])])])
-
-if test "$cf_cv_header_stdbool_h" = 1
-then	AC_MSG_RESULT(yes)
-else	AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING([for builtin bool type])
-
-AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
-	AC_TRY_COMPILE([
-#include <stdio.h>
-#include <sys/types.h>
+$ac_includes_default
 ],[bool x = false; (void)x],
-		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
-		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])])
-
-if test "$ifelse($1,,cf_cv_builtin_bool,[$1])" = 1
-then	AC_MSG_RESULT(yes)
-else	AC_MSG_RESULT(no)
-fi
+		[ifelse($1,,cf_cv_builtin_bool,[$1])=yes],
+		[ifelse($1,,cf_cv_builtin_bool,[$1])=no])])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_SIZE version: 21 updated: 2024/12/14 16:09:34
+dnl CF_BOOL_SIZE version: 22 updated: 2025/02/22 20:49:45
 dnl ------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it has been deprecated.
@@ -652,6 +625,7 @@ dnl If the current compiler is C rather than C++, we get the bool definition
 dnl from <stdbool.h>.
 AC_DEFUN([CF_BOOL_SIZE],
 [
+AC_REQUIRE([CF_C99_STDBOOL_H])
 AC_CHECK_SIZEOF(bool,,[
 $ac_includes_default
 
@@ -667,7 +641,7 @@ $ac_includes_default
 
 #else
 
-#if $cf_cv_header_stdbool_h
+#if $USE_STDBOOL_H
 #include <stdbool.h>
 #endif
 
@@ -691,7 +665,7 @@ $ac_includes_default
 
 #else
 
-#if $cf_cv_header_stdbool_h
+#if $USE_STDBOOL_H
 #include <stdbool.h>
 #endif
 
@@ -892,6 +866,27 @@ fi
 
 AC_SUBST(HAVE_STDNORETURN_H)
 AC_SUBST(STDC_NORETURN)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_C99_STDBOOL_H version: 1 updated: 2025/02/22 20:49:45
+dnl ----------------
+dnl Check if we can compile using <stdbool.h> and get a valid "bool" type.
+AC_DEFUN([CF_C99_STDBOOL_H],
+[
+AC_CACHE_CHECK(if we can include stdbool.h,cf_cv_header_stdbool_h,[
+	AC_TRY_COMPILE([
+$ac_includes_default
+#include <stdbool.h>
+],[bool foo = false; (void)foo],
+		[cf_cv_header_stdbool_h=yes],
+		[AC_TRY_COMPILE([],[bool foo = false; (void)foo],
+			[cf_cv_header_stdbool_h=no])])])
+
+if test "$cf_cv_header_stdbool_h" = yes
+then	USE_STDBOOL_H=1
+else	USE_STDBOOL_H=0
+fi
+AC_SUBST(USE_STDBOOL_H)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_CC_ENV_FLAGS version: 11 updated: 2023/02/20 11:15:46

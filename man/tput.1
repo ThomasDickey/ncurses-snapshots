@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.132 2025/02/15 19:35:19 tom Exp $
-.TH @TPUT@ 1 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.135 2025/03/01 21:45:34 tom Exp $
+.TH @TPUT@ 1 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -78,7 +78,7 @@ Terminal capabilities are accessed by
 .IR cap-code .
 .PP
 \fB\%terminfo\fP(5) discusses terminal capabilities at length
-and presents a complete list of
+and presents a complete list of standard
 .IR cap-codes .
 .PP
 When retrieving capability values,
@@ -845,11 +845,13 @@ logic.
 .PP
 Keith Bostic refactored BSD
 .I tput
-for shipment in 4.3BSD-Tahoe (1988),
-then replaced it the next year with a new implementation based on
-System\ V
-.IR tput .
-Bostic's version similarly accepted some parameters named for
+for shipment in 4.3BSD-Reno (1990),
+making it follow the interface of System\ V
+.I tput
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD-Reno/src/usr.bin/tput/tput.c
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=Net2/usr/src/usr.bin/tput/tput.c
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.4BSD/usr/src/usr.bin/tput/tput.c
+by accepting some parameters named for
 .I \%term\%info
 (pseudo-)capabilities:
 .BR clear ,
@@ -870,13 +872,12 @@ Bostic's BSD
 did not modify the terminal modes as the earlier BSD
 .I tset
 had done.
-.PP
 At the same time,
 Bostic added a shell script named \*(``clear\*('' that used
 .I tput
 to clear the screen.
-Both of these appeared in 4.4BSD,
-becoming the \*(``modern\*('' BSD implementation of
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD-Reno/src/usr.bin/tput/clear.sh
+These became the \*(``modern\*('' BSD implementation of
 .IR tput .
 .PP
 The origin of

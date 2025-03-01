@@ -71,7 +71,7 @@
        have, by specifying how to perform screen operations, and by specifying
        padding requirements and initialization sequences.
 
-       This document describes <EM>ncurses</EM> version 6.5 (patch 20250215).
+       This document describes <EM>ncurses</EM> version 6.5 (patch 20250301).
 
 
 </PRE><H3><a name="h3-terminfo-Entry-Syntax"><EM>terminfo</EM> Entry Syntax</a></H3><PRE>
@@ -1673,9 +1673,9 @@
        works.
 
        Finally, you can specify <STRONG>dch1</STRONG> to delete a single  character,  <STRONG>dch</STRONG>  with
-       one parameter, <EM>n</EM>, to delete <EM>n</EM>characters, and delete mode by giving <STRONG>smdc</STRONG>
-       and <STRONG>rmdc</STRONG> to enter and exit delete mode (any mode the terminal needs  to
-       be placed in for <STRONG>dch1</STRONG> to work).
+       one  parameter,  <EM>n</EM>,  to  delete <EM>n</EM> characters, and delete mode by giving
+       <STRONG>smdc</STRONG> and <STRONG>rmdc</STRONG> to enter and exit delete  mode  (any  mode  the  terminal
+       needs to be placed in for <STRONG>dch1</STRONG> to work).
 
        A  command  to  erase  <EM>n</EM>  characters (equivalent to outputting <EM>n</EM> blanks
        without moving the cursor) can be given as <STRONG>ech</STRONG> with one parameter.

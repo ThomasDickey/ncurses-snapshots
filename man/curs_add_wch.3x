@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.102 2025/02/01 23:54:03 tom Exp $
-.TH curs_add_wch 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.108 2025/03/01 21:16:45 tom Exp $
+.TH curs_add_wch 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -57,14 +57,14 @@ add a \fIcurses\fR complex character to a window, possibly advancing the cursor
 .nf
 \fB#include <curses.h>
 .PP
-\fBint add_wch(const cchar_t *\fIwch\fP);
-\fBint wadd_wch(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
-\fBint mvadd_wch(int \fIy\fP, int \fIx\fP, const cchar_t *\fIwch\fP);
-\fBint mvwadd_wch(WINDOW *\fIwin\fP, int \fIy\fP, int \fIx\fP,
-      const cchar_t *\fIwch\fP);
+\fBint add_wch(const cchar_t * \fIwch\fP);
+\fBint wadd_wch(WINDOW * \fIwin\fP, const cchar_t * \fIwch\fP);
+\fBint mvadd_wch(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
+\fBint mvwadd_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
+      const cchar_t * \fIwch\fP);
 .PP
-\fBint echo_wchar(const cchar_t *\fIwch\fP);
-\fBint wecho_wchar(WINDOW *\fIwin\fP, const cchar_t *\fIwch\fP);
+\fBint echo_wchar(const cchar_t * \fIwch\fP);
+\fBint wecho_wchar(WINDOW * \fIwin\fP, const cchar_t *\fIwch\fP);
 .PP
 \fI/* (integer) constants */\fP
 /*\fI .\|.\|. */ \fBWACS_BLOCK;\fR
@@ -177,15 +177,23 @@ are not written at the new cursor position but combine with the active
 complex character until another spacing character is written to the
 window or the cursor is moved.
 .PP
-If advancement occurs at the right margin,
-.bP
-the cursor automatically wraps to the beginning of the next line,
-then,
-.bP
-if it was at the bottom of the scrolling region,
-and if \fB\%scrollok\fP(3X) is enabled for
+If the cursor is not at the bottom of the scrolling region
+and advancement occurs at the right margin,
+the cursor automatically wraps to the beginning of the next line.
+.PP
+If the cursor is at the bottom of the scrolling region
+when advancement occurs at the right margin,
+and \fB\%scrollok\fP(3X) is enabled for
 .IR win ,
 the scrolling region scrolls up one line.
+Otherwise,
+advancement and scrolling do not occur,
+and
+.B \%waddch
+returns
+.BR ERR "."
+.\" Do we need to say something here about buggy terminals that might
+.\" scroll anyway?  xterm works fine...
 .PP
 If
 .I wch
@@ -270,8 +278,9 @@ The ACS default listed below is used if the
 .RB \%( acsc )
 .I \%term\%info
 capability does not define a terminal-specific replacement for it,
-or if the terminal and locale configuration requires Unicode to access
-these characters but the library is unable to use Unicode.
+or if the terminal type and locale configuration
+require Unicode to access these characters
+but the library is unable to use Unicode.
 The \*(``acsc char\*('' column corresponds to how the characters are
 specified in the
 .B \%acs_chars
@@ -470,10 +479,7 @@ on failure.
 .PP
 In
 .IR \%ncurses ,
-.B \%wadd_wch
-and
-.B \%wecho_wchar
-return
+they return
 .B ERR
 if
 .bP
@@ -491,7 +497,7 @@ wrapping to a new line is impossible because \fB\%scrollok\fP(3X) has
 not been called on
 .I win
 (or
-.BR stdscr ","
+.BR \%stdscr ","
 as applicable)
 when writing to its bottom right location is attempted,
 or
@@ -512,14 +518,14 @@ and
 may be implemented as macros.
 .SH EXTENSIONS
 The symbols
-.RI \%( WACS_S3 ","
+.IR \%WACS_S3 ","
 .IR \%WACS_S7 ","
 .IR \%WACS_LEQUAL ","
 .IR \%WACS_GEQUAL ","
 .IR \%WACS_PI ","
 .IR \%WACS_NEQUAL ","
 and
-.IR \%WACS_STERLING ")"
+.I \%WACS_STERLING
 are not standard.
 However,
 many publicly available

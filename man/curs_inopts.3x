@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.93 2025/02/02 00:02:25 tom Exp $
-.TH curs_inopts 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.96 2025/03/01 21:23:21 tom Exp $
+.TH curs_inopts 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -402,7 +402,7 @@ You may want to call
 in a signal handler if,
 after the handler exits,
 you want output to continue
-as though the interrupt had not occurred.
+as though the signal had not occurred.
 .\"
 .SS "raw, noraw"
 .B raw
@@ -467,10 +467,12 @@ on
 Normally,
 a
 .I curses
-library checks the terminal for input while updating the screen.
-If any is found,
-the update is postponed until the next \fB\%wrefresh\fP(3X) or
-\fB\%doupdate\fP(3X) call,
+library checks the terminal's input file descriptor for pending input
+with \fIpoll\fP(2) or \fI\%select\fP(2)
+while updating the screen;
+if it finds any,
+it postpones output
+until the next \fB\%wrefresh\fP(3X) or \fB\%doupdate\fP(3X) call,
 allowing faster response to user key strokes.
 The library tests the file descriptor corresponding to the
 .I FILE
@@ -588,6 +590,35 @@ calls with
 calls leads to terminal driver control states that are hard to predict
 or understand;
 doing so is not recommended.
+.PP
+.I curses
+documentation uses the terms \*(``delay\*('' and \*(``timeout\*(''
+freely to describe two related but distinct aspects of input handling,
+at the risk of confusing the user.
+The functions
+.BR \%halfdelay ","
+.BR \%nodelay ","
+.BR \%notimeout ","
+.BR \%timeout ","
+and
+.B \%wtimeout
+all configure whether the input character reading function
+\%(\fBgetch\fP(3X) or \fB\%get_wch\fP(3X))
+waits for keyboard input,
+and for how long.
+Only
+.B \%keypad
+configures whether that function waits for further input
+if the first character it reads is ESC.
+X/Open Curses affords no means of configuring
+the length of this second delay,
+but an AIX and
+.I \%ncurses
+extension,
+.BR \%ESCDELAY ,
+is available both as an environment variable and a global symbol
+permitting the application to do so;
+see \fB\%ncurses\fP(3X) and \fBcurs_variables\fP(3X).
 .SH EXTENSIONS
 .I \%ncurses
 provides four \*(``is_\*('' functions corresponding to
@@ -661,9 +692,9 @@ function turned it off as a side effect.
 .\" https://github.com/ryanwoodsmall/oldsysv/blob/master/sysv-pdp11_man/a_man/man7/termio.7
 For best portability,
 call
-.B echo
+.I echo
 or
-.B \%noecho
+.I \%noecho
 explicitly just after initialization,
 even if your program retains the terminal's canonical (\*(``cooked\*('')
 line discipline.
@@ -677,7 +708,7 @@ and
 .IR \%nonl "."
 BSD
 .I curses
-did turn off these translations;
+turned off these translations;
 System\ V
 .I curses
 did not.
@@ -692,8 +723,8 @@ When
 .B \%keypad
 is first enabled,
 .I \%ncurses
-loads the key definitions for the current terminal description.
-If the terminal description includes extended string capabilities,
+loads the key definitions for the current terminal type description.
+If that description includes extended string capabilities,
 for example,
 by using the
 .B \-x

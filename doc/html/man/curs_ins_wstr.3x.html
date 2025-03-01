@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_ins_wstr.3x,v 1.58 2025/02/01 22:54:32 tom Exp @
+  * @Id: curs_ins_wstr.3x,v 1.60 2025/03/01 21:30:14 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_ins_wstr 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_ins_wstr 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_ins_wstr 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_ins_wstr 3x 2025-03-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
 
@@ -76,8 +76,8 @@
        be  lost.   <STRONG>wins_wstr</STRONG>  stops  inserting if it would have to wrap to the
        next line to write the next <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> in <EM>wstr</EM>.  The cursor position  does
        not change (after moving to (<EM>y</EM>, <EM>x</EM>), if specified).  <STRONG>wins_nwstr</STRONG> does the
-       same, but inserts at most <EM>n</EM> characters, or as many as possible  (up  to
-       the  end  of  the  line)  if  <EM>n</EM> is negative.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the
+       same, but inserts at most <EM>n</EM> wide characters, or as many as possible (up
+       to  the  end  of the line) if <EM>n</EM> is negative.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the
        variants of these functions.
 
 
@@ -141,7 +141,7 @@
 
 
 
-ncurses 6.5                       2025-02-01                 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
+ncurses 6.5                       2025-03-01                 <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

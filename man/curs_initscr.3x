@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.92 2025/02/02 00:01:55 tom Exp $
-.TH curs_initscr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.95 2025/03/01 21:21:41 tom Exp $
+.TH curs_initscr 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -550,10 +550,10 @@ e.g.,
 \fB\%def_prog_mode\fP(3X).
 SVr4 uses the descriptor in
 .IR SCREEN "."
-.SS "Unset \fITERM\fP Variable"
+.SS "Unset \fITERM\fP Environment Variable"
 If the
 .I TERM
-variable is missing or empty,
+variable is not set in the environment or has an empty value,
 .I \%initscr
 uses the value \*(``unknown\*('',
 which normally corresponds to a terminal entry with the
@@ -563,7 +563,7 @@ capability.
 Generic entries are detected by \fB\%setupterm\fP(3X)
 and cannot be used for full-screen operation.
 Other implementations may handle
-a missing/empty
+a missing or empty
 .I TERM
 variable differently.
 .SS "Signal Handlers"
@@ -589,6 +589,24 @@ with respect to signals.\|.\|.
 Section \*(``NOTES\*('' above discusses
 .IR \%ncurses 's
 signal handlers.
+.SH HISTORY
+4BSD (1980)
+introduced
+.I \%initscr
+and
+.IR \%endwin "."
+.PP
+SVr2 (1984)
+added
+.I \%newterm
+and
+.IR \%set_term "."
+.PP
+SVr3.1 (1987)
+supplied
+.I \%delscreen
+and
+.IR \%isendwin "."
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_kernel\fP(3X),

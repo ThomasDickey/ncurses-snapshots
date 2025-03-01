@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.113 2025/01/19 00:49:39 tom Exp $
-.TH curs_color 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.116 2025/03/01 21:17:37 tom Exp $
+.TH curs_color 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -306,12 +306,48 @@ Color pair \fB0\fP is assumed to be white on black,
 but is actually whatever the terminal implements before color is initialized.
 It cannot be modified by the application.
 .SS has_colors
-The \fB\%has_colors\fP routine requires no arguments.
-It returns \fBTRUE\fP if
-the terminal can manipulate colors; otherwise, it returns \fBFALSE\fP.
-This routine facilitates writing terminal-independent programs.
-For example, a programmer can use it to decide
-whether to use color or some other video attribute.
+.B \%has_colors
+returns
+.B TRUE
+if the terminal supports colors and
+.B FALSE
+if it does not.
+\fB\%initscr\fP(3X) or \fB\%newterm\fP(3X) must be called first,
+but
+.B \%start_color
+need not be.
+An application might call
+.B \%has_colors
+to decide whether to use color
+or a video attribute like
+.B \%A_BOLD
+to render text.
+.PP
+Color support in
+.I curses
+requires that the terminal type description
+support the capabilities
+.B \%max_colors
+.RB \%( colors ),
+.B \%max_pairs
+.RB \%( pairs ),
+and any of
+.bP
+.B \%set_foreground
+.RB ( setf )
+and
+.B \%set_background
+.RB ( setb );
+.bP
+.B \%set_a_foreground
+.RB ( setaf )
+and
+.B \%set_a_background
+.RB ( setab );
+or
+.bP
+.B \%set_color_pair
+.RB ( scp ).
 .SS can_change_color
 The \fB\%can_change_color\fP routine requires no arguments.
 It returns \fBTRUE\fP if the terminal supports colors
@@ -511,7 +547,7 @@ inclusive,
 the default colors extension notwithstanding,
 or
 .bP
-color pairs identifiers outside the range
+color pair identifiers outside the range
 .RB \%0- COLOR_PAIRS \-1
 inclusive.
 .RE
@@ -549,7 +585,7 @@ and associated
 .B \%COLORS
 and
 .B \%COLOR_PAIRS
-values for each screen;
+values;
 .B \%start_color
 affects only the current screen.
 The SVr4 and X/Open Curses interface was not really designed

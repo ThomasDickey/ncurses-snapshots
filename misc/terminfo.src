@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1171 $
-#	$Date: 2025/02/15 20:03:55 $
+#	$Revision: 1.1175 $
+#	$Date: 2025/03/01 21:54:30 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3057,8 +3057,15 @@ vt510pcdos|DEC VT510 w/PC for DOS Merge,
 vt520|DEC VT520,
 	use=ansi+rca, use=vt420, use=ansi+tabs,
 
+vt520-w|DEC VT520 in wide mode,
+	cols#132, use=vt520,
+
 vt525|DEC VT525,
-	use=vt520,
+	colors#8, pairs#64,
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=vt520,
+
+vt525-w|DEC VT525 in wide mode,
+	cols#132, use=vt525,
 
 # I just got a brand new Boundless VT520 with that company's "ANSI 2011"
 # Keyboard, which replaces the old LK41R-AA keyboard.
@@ -27796,5 +27803,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2025-02-15
 #	+ minor fixes to comments (report by Sven Joachim) -TD
+#
+# 2025-03-01
+#	+ add color to vt525 (Branden Robinson)
+#	+ add vt520-w and vt525-w (Branden Robinson)
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

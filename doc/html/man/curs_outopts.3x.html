@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_outopts.3x,v 1.81 2025/02/01 22:49:13 tom Exp @
+  * @Id: curs_outopts.3x,v 1.89 2025/03/01 21:42:22 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_outopts 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_outopts 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_outopts 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_outopts 3x 2025-03-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 
@@ -54,56 +54,54 @@
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>clearok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
-       <STRONG>void</STRONG> <STRONG>idcok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>idlok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
-       <STRONG>void</STRONG> <STRONG>immedok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>leaveok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>scrollok(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>clearok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>void</STRONG> <STRONG>idcok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>idlok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>void</STRONG> <STRONG>immedok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>leaveok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>scrollok(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>bool</STRONG> <EM>bf</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>setscrreg(int</STRONG> <EM>top</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>bot</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wsetscrreg(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>top</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>bot</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wsetscrreg(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>top</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>bot</EM><STRONG>);</STRONG>
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       These routines set options that  change  the  style  of  output  within
-       <STRONG>curses</STRONG>.   All options are initially <STRONG>FALSE</STRONG>, unless otherwise stated.  It
-       is not necessary to turn these options off before calling <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG>.
+       These functions configure properties  of  <EM>curses</EM>  windows  that  affect
+       their  manner of output.  Boolean-valued properties are initially <STRONG>FALSE</STRONG>
+       except where noted.  <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG> resets any terminal modes corresponding
+       to  these  properties;  an  application  need not restore their initial
+       values.
 
 
 </PRE><H3><a name="h3-clearok">clearok</a></H3><PRE>
-       If <STRONG>clearok</STRONG> is called with <STRONG>TRUE</STRONG> as argument, the next call  to  <STRONG>wrefresh</STRONG>
-       with this window will clear the screen completely and redraw the entire
-       screen from scratch.  This is useful when the contents  of  the  screen
-       are  uncertain, or in some cases for a more pleasing visual effect.  If
-       the <EM>win</EM> argument to <STRONG>clearok</STRONG> is the global  variable  <STRONG>curscr</STRONG>,  the  next
-       call  to  <STRONG>wrefresh</STRONG>  with any window causes the screen to be cleared and
-       repainted from scratch.
+       Setting <EM>win</EM>'s <STRONG>clearok</STRONG> property to <STRONG>TRUE</STRONG> causes the next <STRONG>wrefresh</STRONG> call on
+       it  to clear the terminal screen and redraw it entirely.  This property
+       is useful to restore  the  contents  of  the  screen  (perhaps  because
+       another  process  has  written  to  the  terminal), or in some cases to
+       achieve  a  more  pleasing  visual  effect.   If  <EM>win</EM>  is  <STRONG>curscr</STRONG>  (see
+       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>),  the  next  <STRONG>wrefresh</STRONG> call on <EM>any</EM> window causes the
+       terminal screen to clear and redraw as  above.   <STRONG>wrefresh</STRONG>  resets  this
+       property to <STRONG>FALSE</STRONG>.
 
 
 </PRE><H3><a name="h3-idcok">idcok</a></H3><PRE>
-       If <STRONG>idcok</STRONG> is called with <STRONG>FALSE</STRONG> as  second  argument,  <STRONG>curses</STRONG>  no  longer
-       considers   using  the  hardware  insert/delete  character  feature  of
-       terminals so equipped.  Use of character insert/delete  is  enabled  by
-       default.   Calling <STRONG>idcok</STRONG> with <STRONG>TRUE</STRONG> as second argument re-enables use of
-       character insertion and deletion.
+       (This  property  defaults <STRONG>TRUE</STRONG>.)  Setting <EM>win</EM>'s <STRONG>idcok</STRONG> property to <STRONG>FALSE</STRONG>
+       prevents <EM>curses</EM> from using the insert/delete character capabilities  of
+       terminal types possessing them according to the <EM>terminfo</EM> database.
 
 
 </PRE><H3><a name="h3-idlok">idlok</a></H3><PRE>
-       If <STRONG>idlok</STRONG> is called with <STRONG>TRUE</STRONG> as second argument, <STRONG>curses</STRONG> considers using
-       the  hardware  insert/delete  line  feature  of  terminals so equipped.
-       Calling <STRONG>idlok</STRONG> with <STRONG>FALSE</STRONG>  as  second  argument  disables  use  of  line
-       insertion  and  deletion.   This  option  should be enabled only if the
-       application needs insert/delete line, for example, for a screen editor.
-       It  is  disabled  by  default  because  insert/delete  line tends to be
-       visually annoying when used in applications  where  it  is  not  really
-       needed.   If  insert/delete  line  cannot  be  used, <STRONG>curses</STRONG> redraws the
-       changed portions of all lines.
+       Setting  <EM>win</EM>'s  <STRONG>idlok</STRONG>  property to <STRONG>TRUE</STRONG> causes <EM>curses</EM> to consider using
+       the insert/delete line capabilities of terminal types  possessing  them
+       according  to  the  <EM>terminfo</EM>  database.   Enable  this  option  if  the
+       application explicitly requires these operations, as a full-screen text
+       editor  might;  otherwise  the  results may be visually annoying to the
+       user.
 
 
 </PRE><H3><a name="h3-immedok">immedok</a></H3><PRE>
        If <STRONG>immedok</STRONG> is called with <STRONG>TRUE</STRONG> as second argument, any  change  in  the
-       window  image,  such  as  the  ones caused by <STRONG>waddch,</STRONG> <STRONG>wclrtobot,</STRONG> <STRONG>wscrl</STRONG>,
+       window  image,  such  as  the  ones caused by <STRONG>waddch</STRONG>, <STRONG>wclrtobot</STRONG>, <STRONG>wscrl</STRONG>,
        etc., automatically causes a call to <STRONG>wrefresh</STRONG>.  However, it may degrade
        performance  considerably,  due to repeated calls to <STRONG>wrefresh</STRONG>.  Calling
        <STRONG>immedok</STRONG> with <STRONG>FALSE</STRONG> as second argument restores  the  default  behavior,
@@ -200,7 +198,7 @@
 
 
 
-ncurses 6.5                       2025-02-01                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
+ncurses 6.5                       2025-03-01                  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

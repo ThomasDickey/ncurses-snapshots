@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.102 2025/02/01 23:54:03 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.108 2025/03/01 21:16:45 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2025-03-01 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -55,14 +55,14 @@
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
        <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>add_wch(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wadd_wch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvadd_wch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>mvwadd_wch(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG>
-             <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>add_wch(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wadd_wch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvadd_wch(int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mvwadd_wch(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>,</STRONG>
+             <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wch</EM><STRONG>);</STRONG>
 
-       <STRONG>int</STRONG> <STRONG>echo_wchar(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>wecho_wchar(WINDOW</STRONG> <STRONG>*</STRONG><EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>echo_wchar(const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG> <EM>wch</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>wecho_wchar(WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>cchar_t</STRONG> <STRONG>*</STRONG><EM>wch</EM><STRONG>);</STRONG>
 
        <EM>/*</EM> <EM>(integer)</EM> <EM>constants</EM> <EM>*/</EM>
        /* <EM>...</EM> <EM>*/</EM> <STRONG>WACS_BLOCK;</STRONG>
@@ -150,14 +150,14 @@
        until another spacing character is written to the window or the  cursor
        is moved.
 
-       If advancement occurs at the right margin,
+       If  the  cursor  is  not  at  the  bottom  of  the scrolling region and
+       advancement occurs at the right margin, the cursor automatically  wraps
+       to the beginning of the next line.
 
-       <STRONG>o</STRONG>   the  cursor  automatically wraps to the beginning of the next line,
-           then,
-
-       <STRONG>o</STRONG>   if  it  was  at  the  bottom  of  the  scrolling  region,  and   if
-           <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG>  is  enabled  for <EM>win</EM>, the scrolling region scrolls up
-           one line.
+       If the cursor is at the bottom of the scrolling region when advancement
+       occurs at the right margin, and <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is enabled  for  <EM>win</EM>,  the
+       scrolling  region  scrolls  up  one  line.   Otherwise, advancement and
+       scrolling do not occur, and <STRONG>waddch</STRONG> returns <STRONG>ERR</STRONG>.
 
        If <EM>wch</EM> is a backspace, carriage return, line feed, or tab,  the  cursor
        moves appropriately within the window.
@@ -202,8 +202,8 @@
        <STRONG>wadd_wch</STRONG> to  write  line-drawing  and  other  symbols  to  the  screen.
        <EM>ncurses</EM>  terms  these <EM>forms-drawing</EM> <EM>characters.</EM>  The ACS default listed
        below is used if the <STRONG>acs_chars</STRONG>  (<STRONG>acsc</STRONG>)  <EM>terminfo</EM>  capability  does  not
-       define  a  terminal-specific replacement for it, or if the terminal and
-       locale configuration requires Unicode to access  these  characters  but
+       define  a terminal-specific replacement for it, or if the terminal type
+       and locale configuration require Unicode to access these characters but
        the  library  is  unable  to  use  Unicode.   The  "acsc  char"  column
        corresponds to how the characters are specified in the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>)
        string capability, and the characters in it may appear on the screen if
@@ -298,7 +298,7 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       In <EM>ncurses</EM>, <STRONG>wadd_wch</STRONG> and <STRONG>wecho_wchar</STRONG> return <STRONG>ERR</STRONG> if
+       In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if
 
        <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized,
 
@@ -322,8 +322,8 @@
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       The  symbols  (<EM>WACS</EM><STRONG>_</STRONG><EM>S3</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>S7</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>LEQUAL</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>GEQUAL</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>PI</EM>,
-       <EM>WACS</EM><STRONG>_</STRONG><EM>NEQUAL</EM>,  and  <EM>WACS</EM><STRONG>_</STRONG><EM>STERLING</EM>)  are  not  standard.   However,  many
+       The  symbols  <EM>WACS</EM><STRONG>_</STRONG><EM>S3</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>S7</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>LEQUAL</EM>,  <EM>WACS</EM><STRONG>_</STRONG><EM>GEQUAL</EM>,   <EM>WACS</EM><STRONG>_</STRONG><EM>PI</EM>,
+       <EM>WACS</EM><STRONG>_</STRONG><EM>NEQUAL</EM>,   and  <EM>WACS</EM><STRONG>_</STRONG><EM>STERLING</EM>  are  not  standard.   However,  many
        publicly  available   <EM>terminfo</EM>   entries   include   <EM>acs</EM><STRONG>_</STRONG><EM>chars</EM>   (<STRONG>acsc</STRONG>)
        capabilities  in which their key characters (<STRONG>pryz{|}</STRONG>) are embedded, and
        a second-hand list of their character descriptions has come  to  light.
@@ -449,7 +449,7 @@
 
 
 
-ncurses 6.5                       2025-02-01                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.5                       2025-03-01                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

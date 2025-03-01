@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getcchar.3x,v 1.56 2025/02/01 23:46:11 tom Exp $
-.TH curs_getcchar 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getcchar.3x,v 1.57 2025/02/23 13:48:31 tom Exp $
+.TH curs_getcchar 3X 2025-02-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds ' \(aq
 .\}
@@ -49,9 +49,9 @@ convert between a wide-character string and a \fIcurses\fR complex character
 .nf
 \fB#include <curses.h>
 .PP
-\fBint gettchar(const cchar_t * \fIwch\fP, wchar_t * \fIwc\fP,
+\fBint getcchar(const cchar_t * \fIwch\fP, wchar_t * \fIwc\fP,
       attr_t * \fIattrs\fP, short * \fIpair\fP, void * \fIopts\fP);
-\fBint settchar(cchar_t * \fIwch\fP, const wchar_t * \fIwc\fP,
+\fBint setcchar(cchar_t * \fIwch\fP, const wchar_t * \fIwc\fP,
       const attr_t \fIattrs\fP, short \fIpair\fP, const void * \fIopts\fP);
 .fi
 .SH DESCRIPTION

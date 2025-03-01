@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.56 2025/01/19 00:51:10 tom Exp $
-.TH curs_inwstr 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.60 2025/03/01 21:29:42 tom Exp $
+.TH curs_inwstr 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -101,8 +101,8 @@ On successful operation,
 these functions return the count of wide characters copied from
 .I win
 to
-.IR wstr "."
-They return
+.IR wstr ","
+or
 .B ERR
 upon failure.
 .BR \%innwstr ","
@@ -126,14 +126,19 @@ these functions return
 .B ERR
 if
 .bP
+the
+.I curses
+screen has not been initialized,
+.bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
 .I win
-is
-.I NULL
+is a null pointer,
 or
 .bP
 .I wstr
-is
-.IR NULL "."
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
@@ -146,7 +151,7 @@ All of these functions except
 may be implemented as macros.
 .PP
 Reading a line that overflows the array pointed to by
-.I str
+.I wstr
 with
 .BR \%inwstr ","
 .BR \%winwstr ","
@@ -184,11 +189,11 @@ It specifies no error conditions for them.
 .PP
 Notwithstanding the foregoing,
 X/Open Curses Issues 4 and 7 both state that
-.BR \%innwstr ","
-.BR \%winnwstr ","
-.BR \%mvinnwstr ","
+.IR \%innwstr ","
+.IR \%winnwstr ","
+.IR \%mvinnwstr ","
 and
-.B \%mvwinnwstr
+.I \%mvwinnwstr
 \*(``fail .\|.\|. [i]f the array is not large enough to contain any
 complete characters\*(''.
 Strictly interpreted,
@@ -198,23 +203,23 @@ than one character cell in
 .IR win "."
 .I \%ncurses
 reports any truncation with
-.BR ERR "."
+.IR ERR "."
 .PP
 X/Open Curses specifies
-.BR \%inwstr ","
-.BR \%winwstr ","
-.BR \%mvinwstr ","
+.IR \%inwstr ","
+.IR \%winwstr ","
+.IR \%mvinwstr ","
 and
-.B \%mvwinwstr
+.I \%mvwinwstr
 as returning
-.B OK
+.I OK
 rather than a (wide) character count,
 unlike their non-wide counterparts
-.BR \%instr ","
-.BR \%winstr ","
-.BR \%mvinstr ","
+.IR \%instr ","
+.IR \%winstr ","
+.IR \%mvinstr ","
 and
-.BR \%mvwinstr "."
+.IR \%mvwinstr "."
 .I \%ncurses
 regards this inconsistency as an error in the standard.
 .SH HISTORY
