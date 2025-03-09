@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -46,7 +46,7 @@
 #include <sys/termio.h>		/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.49 2024/12/07 20:00:48 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.52 2025/03/09 00:49:14 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 initscr(void)
@@ -70,7 +70,8 @@ initscr(void)
 	(void) VALID_TERM_ENV(env, "unknown");
 
 	if ((name = strdup(env)) == NULL) {
-	    fprintf(stderr, "Error opening allocating $TERM.\n");
+	    fprintf(stderr, "ncurses: cannot allocate %d bytes of"
+		    "memory for $TERM; exiting\n", (int) strlen(env));
 	    ExitProgram(EXIT_FAILURE);
 	}
 #ifdef __CYGWIN__
@@ -91,7 +92,8 @@ initscr(void)
 	}
 #endif
 	if (newterm(name, stdout, stdin) == NULL) {
-	    fprintf(stderr, "Error opening terminal: %s.\n", name);
+	    fprintf(stderr, "ncurses: cannot initialize terminal type"
+		    " ($TERM=\"%s\"); exiting\n", name);
 	    ExitProgram(EXIT_FAILURE);
 	}
 

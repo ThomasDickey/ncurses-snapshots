@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.95 2025/03/01 21:21:41 tom Exp $
-.TH curs_initscr 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.100 2025/03/08 23:07:43 tom Exp $
+.TH curs_initscr 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -129,9 +129,7 @@ arguments are
 the
 .I type
 of the associated terminal,
-or
-.I NULL
-to use the
+or a null pointer to use the
 .I TERM
 environment variable;
 .bP
@@ -275,12 +273,20 @@ when a particular
 structure
 is no longer needed.
 .SH RETURN VALUE
+.B \%delscreen
+returns no value.
 .B \%endwin
 returns
 .B OK
 on success and
 .B ERR
 on failure.
+.B \%isendwin
+returns
+.B TRUE
+or
+.B FALSE
+as described above.
 .PP
 In
 .IR \%ncurses ","
@@ -293,11 +299,10 @@ if
 .bP
 the terminal was not initialized,
 .bP
-.B \%endwin
-is called more than once without updating the screen,
+it is called more than once without updating the screen,
 or
 .bP
-\fB\%reset_shell_mode\fP(3X) returns
+its call of \fB\%reset_shell_mode\fP(3X) returns
 .BR ERR "."
 .RE
 .bP
@@ -306,16 +311,16 @@ returns
 .B ERR
 if it cannot allocate storage for the
 .I SCREEN
-data structure
-or the top-level windows thereof:
+structure
+or the
+.I WINDOW
+structures automatically associated with it:
 .BR \%curscr ","
 .BR \%newscr ","
 and
 .BR \%stdscr "."
 .PP
-Functions that return pointers return
-.I NULL
-on error.
+Functions that return pointers return null pointers on error.
 In
 .IR \%ncurses ","
 .B \%set_term

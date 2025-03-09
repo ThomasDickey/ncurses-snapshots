@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.18 2025/03/01 14:26:14 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.19 2025/03/08 14:20:11 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -632,7 +632,7 @@ Adjust(int milliseconds, int diff)
                      RIGHTMOST_BUTTON_PRESSED)
 
 static mmask_t
-decode_mouse(SCREEN *sp, int mask)
+decode_mouse(const SCREEN *sp, int mask)
 {
     mmask_t result = 0;
 
@@ -828,7 +828,7 @@ _nc_console_keyExist(int keycode)
 
 NCURSES_EXPORT(int)
 _nc_console_twait(
-		     SCREEN *sp,
+		     const SCREEN *sp,
 		     HANDLE hdl,
 		     int mode,
 		     int milliseconds,

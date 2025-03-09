@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.80 2025/03/01 21:31:35 tom Exp @
+  * @Id: curs_kernel.3x,v 1.84 2025/03/08 23:17:33 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2025-03-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2025-03-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2025-03-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -155,14 +155,14 @@
 </PRE><H3><a name="h3-ripoffline">ripoffline</a></H3><PRE>
        <STRONG>ripoffline</STRONG> provides access to the same facility that <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>  uses
        to reduce the size of the screen.  The application must call <STRONG>ripoffline</STRONG>
-       before <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>  so  that  the  functions  prepare  a
-       <STRONG>stdscr</STRONG> of the correct size.
+       before <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG> so that the latter functions  prepare
+       a <STRONG>stdscr</STRONG> of the correct size.
 
-       <STRONG>o</STRONG>   If  <EM>line</EM>  is  positive,  <STRONG>ripoffline</STRONG>  removes a line from the top of
-           <STRONG>stdscr</STRONG>.
+       <STRONG>o</STRONG>   If <EM>line</EM> is positive, <STRONG>ripoffline</STRONG> removes a line from the top of what
+           will become <STRONG>stdscr</STRONG>.
 
        <STRONG>o</STRONG>   If <EM>line</EM> is negative, <STRONG>ripoffline</STRONG> removes a line from the  bottom  of
-           <STRONG>stdscr</STRONG>.
+           what will become <STRONG>stdscr</STRONG>.
 
        When <STRONG>initscr</STRONG> initializes <EM>curses</EM>, it calls the <EM>init</EM> function supplied to
        <STRONG>ripoffline</STRONG> by the application with two arguments:
@@ -211,6 +211,16 @@
        value  other  than  normal;  that is, either invisible or very visible.
        There is no way for <EM>ncurses</EM> to determine the initial cursor  visibility
        to restore it.
+
+       While  the <EM>init</EM> function called by <STRONG>ripoffline</STRONG> is specified to return an
+       <EM>int</EM>, <EM>ncurses</EM> pays no attention to its return value.
+
+       If <STRONG>ripoffline</STRONG> cannot allocate memory for the required <EM>WINDOW</EM>  structure
+       backing  the  ripped-off  line,  it stores a null pointer to the <EM>WINDOW</EM>
+       pointer  argument  supplied  by  the  <EM>init</EM>  function  the   application
+       specifies.  The application must check this argument for validity after
+       calling <STRONG>initscr</STRONG> and prior  to  performing  <EM>curses</EM>  operations  on  that
+       window.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
@@ -267,7 +277,7 @@
 
 
 
-ncurses 6.5                       2025-03-01                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.5                       2025-03-08                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

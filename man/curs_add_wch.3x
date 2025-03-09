@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.108 2025/03/01 21:16:45 tom Exp $
-.TH curs_add_wch 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.110 2025/03/08 23:01:20 tom Exp $
+.TH curs_add_wch 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -185,6 +185,7 @@ If the cursor is at the bottom of the scrolling region
 when advancement occurs at the right margin,
 and \fB\%scrollok\fP(3X) is enabled for
 .IR win ,
+the cursor wraps as above and
 the scrolling region scrolls up one line.
 Otherwise,
 advancement and scrolling do not occur,
@@ -192,8 +193,9 @@ and
 .B \%waddch
 returns
 .BR ERR "."
-.\" Do we need to say something here about buggy terminals that might
-.\" scroll anyway?  xterm works fine...
+.\" Does writing to the bottom-right character cell of the screen work
+.\" when `scrollok()` is disabled and the terminal lacks `ich` and
+.\" `ich1` capabilities?
 .PP
 If
 .I wch

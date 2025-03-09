@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.96 2025/03/01 21:23:21 tom Exp @
+  * @Id: curs_inopts.3x,v 1.100 2025/03/08 23:09:30 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2025-03-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-03-08 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2025-03-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-03-08 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -153,15 +153,19 @@
 
 </PRE><H3><a name="h3-keypad">keypad</a></H3><PRE>
        <STRONG>keypad</STRONG> enables recognition of a terminal's function keys.   If  enabled
-       (<EM>bf</EM>  is  <STRONG>TRUE</STRONG>),  the  input  character reading function returns a value
-       representing the function key, such as <STRONG>KEY_LEFT</STRONG>.   (Wide-character  API
-       users:  <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>  returns <STRONG>KEY_CODE_YES</STRONG> to indicate the availability
-       of a function key code in its  <EM>wch</EM>  parameter.)   If  disabled  (<EM>bf</EM>  is
-       <STRONG>FALSE</STRONG>),  <EM>curses</EM>  does not treat function keys specially and the program
-       has to interpret escape sequences itself.  If the terminal's keypad can
-       be  turned on (made to transmit) and off (made to work locally), <STRONG>keypad</STRONG>
-       configures it consistently  with  the  <EM>bf</EM>  parameter.   By  default,  a
-       window's keypad mode is off.
+       (<EM>bf</EM>  is  <STRONG>TRUE</STRONG>) then when an input character reading function reads ESC,
+       it waits for further input corresponding to an escape sequence  defined
+       by  the terminal type description.  If a valid sequence is entered, the
+       input character reading  function  returns  a  value  representing  the
+       function   key,   such   as   <STRONG>KEY_LEFT</STRONG>.    (Wide-character  API  users:
+       <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG> returns <STRONG>KEY_CODE_YES</STRONG> to indicate  the  availability  of  a
+       function  key  code in its <EM>wch</EM> parameter.)  If the sequence is invalid,
+       the input character reading function returns only its  last  character.
+       If  disabled  (<EM>bf</EM>  is  <STRONG>FALSE</STRONG>),  <EM>curses</EM>  does  not  treat  function keys
+       specially and the program has to interpret escape sequences itself.  If
+       the terminal's keypad can be turned on (made to transmit) and off (made
+       to work  locally),  <STRONG>keypad</STRONG>  configures  it  consistently  with  the  <EM>bf</EM>
+       parameter.  By default, a window's keypad mode is off.
 
 
 </PRE><H3><a name="h3-meta">meta</a></H3><PRE>
@@ -198,8 +202,10 @@
        sets  a  timer  while  waiting  for the next character.  <STRONG>notimeout(</STRONG><EM>win</EM><STRONG>,</STRONG>
        <STRONG>TRUE)</STRONG>  disables  this  timer.   The  purpose  of  the  timeout  is   to
        distinguish  sequences produced by a function key from those typed by a
-       user.  To configure the timeout rather than disabling it, see  <STRONG>wtimeout</STRONG>
-       below.
+       user.  If this timer is disabled, <EM>curses</EM> waits forever  for  subsequent
+       keystrokes  until  it  determines  the  escape  sequence to be valid or
+       invalid.  To configure the timeout duration rather than  disabling  it,
+       see <STRONG>wtimeout</STRONG> below.
 
 
 </PRE><H3><a name="h3-qiflush_noqiflush">qiflush, noqiflush</a></H3><PRE>
@@ -243,8 +249,8 @@
 
 </PRE><H3><a name="h3-typeahead">typeahead</a></H3><PRE>
        Normally, a <EM>curses</EM> library checks the terminal's input file  descriptor
-       for  pending input with <STRONG>poll(2)</STRONG> or <STRONG>select(2)</STRONG> while updating the screen;
-       if it finds any, it postpones output until  the  next  <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>  or
+       for activity with <STRONG>poll(2)</STRONG> or <STRONG>select(2)</STRONG> while updating the screen; if it
+       finds  any,  it  postpones  output  until  the  next  <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>   or
        <STRONG><A HREF="curs_refresh.3x.html">doupdate(3x)</A></STRONG>  call,  allowing faster response to user key strokes.  The
        library tests the file descriptor  corresponding  to  the  <EM>FILE</EM>  stream
        pointer passed to <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG> (or <EM>stdin</EM> if <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> was called), for
@@ -285,15 +291,17 @@
 
        <EM>curses</EM>  documentation  uses  the  terms "delay" and "timeout" freely to
        describe two related but distinct aspects of  input  handling,  at  the
-       risk   of  confusing  the  user.   The  functions  <STRONG>halfdelay</STRONG>,  <STRONG>nodelay</STRONG>,
-       <STRONG>notimeout</STRONG>, <STRONG>timeout</STRONG>,  and  <STRONG>wtimeout</STRONG>  all  configure  whether  the  input
-       character   reading  function  (<STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG>  or  <STRONG><A HREF="curs_get_wch.3x.html">get_wch(3x)</A></STRONG>)  waits  for
-       keyboard input, and for how long.  Only <STRONG>keypad</STRONG> configures whether  that
-       function  waits  for  further  input if the first character it reads is
-       ESC.  X/Open Curses affords no means of configuring the length of  this
-       second  delay, but an AIX and <EM>ncurses</EM> extension, <STRONG>ESCDELAY</STRONG>, is available
-       both as an environment variable and  a  global  symbol  permitting  the
-       application to do so; see <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> and <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
+       risk of confusing the user.  The functions <STRONG>halfdelay</STRONG>, <STRONG>nodelay</STRONG>, <STRONG>timeout</STRONG>,
+       and <STRONG>wtimeout</STRONG> configure whether the  input  character  reading  function
+       (<STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG>  or  <STRONG><A HREF="curs_get_wch.3x.html">get_wch(3x)</A></STRONG>) waits for keyboard input to begin, and for
+       how long.  <STRONG>keypad</STRONG> configures whether that function  waits  for  further
+       input if the first character it reads is ESC.  Calling <STRONG>notimeout</STRONG>, which
+       has nothing to do  with  <STRONG>timeout</STRONG>  or  <STRONG>wtimeout</STRONG>,  makes  this  delay  in
+       expectation  of further keystrokes effectively infinite.  X/Open Curses
+       affords no means of otherwise configuring the  length  of  this  second
+       delay, but an AIX and <EM>ncurses</EM> extension, <STRONG>ESCDELAY</STRONG>, is available both as
+       an environment variable and a global symbol permitting the  application
+       to do so; see <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> and <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
@@ -401,7 +409,7 @@
 
 
 
-ncurses 6.5                       2025-03-01                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-03-08                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

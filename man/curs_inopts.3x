@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.96 2025/03/01 21:23:21 tom Exp $
-.TH curs_inopts 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.100 2025/03/08 23:09:30 tom Exp $
+.TH curs_inopts 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -260,9 +260,13 @@ If
 enabled
 .RI ( bf
 is
-.BR TRUE ),
-the input character reading function returns a value representing
-the function key,
+.BR TRUE ")"
+then when an input character reading function reads ESC,
+it waits for further input corresponding to an escape sequence
+defined by the terminal type description.
+If a valid sequence is entered,
+the input character reading function
+returns a value representing the function key,
 such as
 .BR KEY_LEFT "."
 (Wide-character API users:
@@ -271,6 +275,8 @@ such as
 to indicate the availability of a function key code in its
 .I wch
 parameter.)
+If the sequence is invalid,
+the input character reading function returns only its last character.
 If disabled
 .RI ( bf
 is
@@ -362,7 +368,11 @@ it sets a timer while waiting for the next character.
 disables this timer.
 The purpose of the timeout is to distinguish sequences produced by a
 function key from those typed by a user.
-To configure the timeout rather than disabling it,
+If this timer is disabled,
+.I curses
+waits forever for subsequent keystrokes
+until it determines the escape sequence to be valid or invalid.
+To configure the timeout duration rather than disabling it,
 see
 .B \%wtimeout
 below.
@@ -467,7 +477,7 @@ on
 Normally,
 a
 .I curses
-library checks the terminal's input file descriptor for pending input
+library checks the terminal's input file descriptor for activity
 with \fIpoll\fP(2) or \fI\%select\fP(2)
 while updating the screen;
 if it finds any,
@@ -598,19 +608,25 @@ at the risk of confusing the user.
 The functions
 .BR \%halfdelay ","
 .BR \%nodelay ","
-.BR \%notimeout ","
 .BR \%timeout ","
 and
 .B \%wtimeout
-all configure whether the input character reading function
+configure whether the input character reading function
 \%(\fBgetch\fP(3X) or \fB\%get_wch\fP(3X))
-waits for keyboard input,
+waits for keyboard input to begin,
 and for how long.
-Only
 .B \%keypad
 configures whether that function waits for further input
 if the first character it reads is ESC.
-X/Open Curses affords no means of configuring
+Calling
+.BR \%notimeout ","
+which has nothing to do with
+.B \%timeout
+or
+.BR \%wtimeout ","
+makes this delay in expectation of further keystrokes
+effectively infinite.
+X/Open Curses affords no means of otherwise configuring
 the length of this second delay,
 but an AIX and
 .I \%ncurses

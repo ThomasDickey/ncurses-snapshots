@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.80 2025/03/01 21:31:35 tom Exp $
-.TH curs_kernel 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.84 2025/03/08 23:17:33 tom Exp $
+.TH curs_kernel 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -235,7 +235,7 @@ reduce the size of the screen.
 The application must call
 .B \%ripoffline
 before \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)
-so that the functions prepare a
+so that the latter functions prepare a
 .B \%stdscr
 of the correct size.
 .bP
@@ -243,14 +243,14 @@ If
 .I line
 is positive,
 .B \%ripoffline
-removes a line from the top of
+removes a line from the top of what will become
 .BR \%stdscr "."
 .bP
 If
 .I line
 is negative,
 .B \%ripoffline
-removes a line from the bottom of
+removes a line from the bottom of what will become
 .BR \%stdscr "."
 .PP
 When
@@ -354,6 +354,31 @@ invisible or very visible.
 There is no way for
 .I \%ncurses
 to determine the initial cursor visibility to restore it.
+.PP
+While the
+.I init
+function called by
+.B \%ripoffline
+is specified to return an
+.IR int ","
+.I \%ncurses
+pays no attention to its return value.
+.PP
+If
+.B \%ripoffline
+cannot allocate memory for the required
+.I \%WINDOW
+structure backing the ripped-off line,
+it stores a null pointer to the
+.I \%WINDOW
+pointer argument supplied by the
+.I init
+function the application specifies.
+The application must check this argument for validity after calling
+.B \%initscr
+and prior to performing
+.I curses
+operations on that window.
 .SH EXTENSIONS
 In
 .IR \%ncurses ","

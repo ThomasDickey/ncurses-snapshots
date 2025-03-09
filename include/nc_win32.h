@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.15 2025/03/01 13:13:33 tom Exp $ */
+/* $Id: nc_win32.h,v 1.16 2025/03/08 14:21:17 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -100,7 +100,7 @@ extern NCURSES_EXPORT(HANDLE) _nc_console_handle(int fd);
 extern NCURSES_EXPORT(int)    _nc_console_isatty(int fd);
 extern NCURSES_EXPORT(int)    _nc_console_test(int fd);
 extern NCURSES_EXPORT(int)    _nc_console_read(SCREEN *sp,HANDLE hdl,int *buf);
-extern NCURSES_EXPORT(int)    _nc_console_twait(SCREEN *, HANDLE,int,int,int * EVENTLIST_2nd(_nc_eventlist * evl));
+extern NCURSES_EXPORT(int)    _nc_console_twait(const SCREEN *sp, HANDLE hdl,int mode,int msec,int *left EVENTLIST_2nd(_nc_eventlist * evl));
 extern NCURSES_EXPORT(WORD)   _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(void)   _nc_console_selectActiveHandle(void);
 extern NCURSES_EXPORT(bool)   _nc_console_get_SBI(void);

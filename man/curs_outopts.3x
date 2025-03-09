@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.89 2025/03/01 21:42:22 tom Exp $
-.TH curs_outopts 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.91 2025/03/08 23:19:30 tom Exp $
+.TH curs_outopts 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -142,23 +142,25 @@ If
 is called with
 .B TRUE
 as second argument,
-any change in the window image,
-such as the ones caused by
+changes to the window image,
+such as those caused by
 .BR \%waddch ","
 .BR \%wclrtobot ","
+or
 .BR \%wscrl ","
-etc., automatically causes a call to
+automatically cause a call to
 .BR wrefresh "."
-However, it may degrade performance considerably,
-due to repeated calls to
-.BR wrefresh "."
+However,
+doing so may degrade performance considerably
+when many such calls occur.
 Calling
 .B \%immedok
 with
 .B FALSE
 as second argument
 restores the default behavior,
-i.e., deferring screen updates until a refresh is needed.
+deferring screen updates until a refresh is needed
+or explicitly directed by the application.
 .SS leaveok
 Normally, the hardware cursor is left at the location of the window cursor
 being refreshed.
