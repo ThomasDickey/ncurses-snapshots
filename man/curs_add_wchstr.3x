@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.55 2025/02/01 22:57:57 tom Exp $
-.TH curs_add_wchstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.57 2025/03/15 20:41:04 tom Exp $
+.TH curs_add_wchstr 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -118,18 +118,21 @@ on failure.
 .PP
 In
 .IR \%ncurses ","
-they return
-.B ERR
-if
+these functions fail if
 .bP
-.I win
-is
-.I NULL
-or
+the
+.I curses
+screen has not been initialized,
 .bP
 .I wchstr
-is
-.IR NULL "."
+is a null pointer,
+or
+.bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
+.I win
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position

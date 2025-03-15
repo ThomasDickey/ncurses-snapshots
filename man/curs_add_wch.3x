@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.110 2025/03/08 23:01:20 tom Exp $
-.TH curs_add_wch 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.112 2025/03/15 20:38:41 tom Exp $
+.TH curs_add_wch 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -144,6 +144,20 @@ complex character
 from a
 .I wchar_t
 with \fB\%setcchar\fP(3X).
+A
+.I \%cchar_t
+can be copied from place to place using \fB\%win_wch\fP(3X) and
+.BR \%wadd_wch "."
+See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
+usefully \*(``or\*(''ed with characters.
+A complex character whose only character component is a wide space,
+and whose only attribute is
+.BR \%WA_NORMAL ,
+is a
+.IR "blank character" ","
+and therefore combines with the window's background character;
+see \fB\%curs_bkgrnd\fP(3X).
+.PP
 Much behavior depends on whether the wide characters in
 .I wch
 are spacing or non-spacing;
@@ -233,20 +247,6 @@ it is drawn in printable form using the same convention as
 Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
 does not return the character itself,
 but its \fB\%wunctrl\fP(3X) representation.
-.PP
-A
-.I \%cchar_t
-can be copied from place to place using \fB\%win_wch\fP(3X) and
-.BR \%wadd_wch "."
-See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
-usefully \*(``or\*(''ed with characters.
-A complex character whose only character component is a wide space,
-and whose only attribute is
-.BR \%WA_NORMAL ,
-is a
-.IR "blank character" ","
-and therefore combines with the background character;
-see \fB\%curs_bkgrnd\fP(3X).
 .SS wecho_wchar
 .B \%echo_wchar
 and
@@ -275,13 +275,14 @@ to write line-drawing and other symbols to the screen.
 .I \%ncurses
 terms these
 .I "forms-drawing characters."
-The ACS default listed below is used if the
+.I curses
+uses the ACS default listed below if the terminal type lacks the
 .B \%acs_chars
 .RB \%( acsc )
-.I \%term\%info
-capability does not define a terminal-specific replacement for it,
+capability;
+that capability does not define a replacement for the character;
 or if the terminal type and locale configuration
-require Unicode to access these characters
+require Unicode to access these characters,
 but the library is unable to use Unicode.
 The \*(``acsc char\*('' column corresponds to how the characters are
 specified in the
@@ -481,9 +482,7 @@ on failure.
 .PP
 In
 .IR \%ncurses ,
-they return
-.B ERR
-if
+these functions fail if
 .bP
 the
 .I curses
@@ -533,7 +532,7 @@ However,
 many publicly available
 .I \%term\%info
 entries include
-.I \%acs_chars
+.B \%acs_chars
 .RB \%( acsc )
 capabilities in which their key characters
 .RB ( pryz{|} )

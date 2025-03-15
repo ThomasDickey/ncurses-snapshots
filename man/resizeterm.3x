@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.58 2024/12/28 21:18:35 tom Exp $
-.TH resizeterm 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: resizeterm.3x,v 1.60 2025/03/15 21:12:18 tom Exp $
+.TH resizeterm 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -62,11 +62,17 @@ If the terminal is stretched,
 rows and/or columns can be added to existing windows.
 The added cells should match the current attributes of the windows.
 .PP
-If the calling program has not set up a handler for \fB\%SIGWINCH\fP
-when it initializes \fI\%ncurses\fP
-(e.g., using \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)),
-then \fI\%ncurses\fP sets a handler for \fB\%SIGWINCH\fP which notifies
-the library when a window-size event has occurred.
+If the application has not set up a handler for
+.I \%SIGWINCH
+when it initializes
+.I \%ncurses
+(by calling \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X)),
+then
+.I \%ncurses
+establishes a
+.I \%SIGWINCH
+handler that notifies the library
+when a window-resizing event has occurred.
 The library checks for this notification
 .bP
 when reading input data,

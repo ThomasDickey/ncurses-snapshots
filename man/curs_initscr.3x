@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.100 2025/03/08 23:07:43 tom Exp $
-.TH curs_initscr 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.102 2025/03/15 21:11:24 tom Exp $
+.TH curs_initscr 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -141,9 +141,9 @@ and
 an input stream
 .I inf
 connected to the terminal.
-It returns a variable of structure type
-.I SCREEN
-.BR * ","
+It returns a variable of
+.RI pointer-to- SCREEN
+type,
 which should be saved for later use with
 .B \%set_term
 and

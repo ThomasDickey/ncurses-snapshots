@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.100 2025/03/08 23:09:30 tom Exp $
-.TH curs_inopts 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.102 2025/03/15 21:11:52 tom Exp $
+.TH curs_inopts 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -264,7 +264,7 @@ is
 then when an input character reading function reads ESC,
 it waits for further input corresponding to an escape sequence
 defined by the terminal type description.
-If a valid sequence is entered,
+If a valid sequence populates the input stream,
 the input character reading function
 returns a value representing the function key,
 such as
@@ -372,10 +372,6 @@ If this timer is disabled,
 .I curses
 waits forever for subsequent keystrokes
 until it determines the escape sequence to be valid or invalid.
-To configure the timeout duration rather than disabling it,
-see
-.B \%wtimeout
-below.
 .\"
 .SS "qiflush, noqiflush"
 .\"
@@ -624,7 +620,7 @@ which has nothing to do with
 .B \%timeout
 or
 .BR \%wtimeout ","
-makes this delay in expectation of further keystrokes
+makes this delay in expectation of further characters
 effectively infinite.
 X/Open Curses affords no means of otherwise configuring
 the length of this second delay,
@@ -864,7 +860,7 @@ to
 .I \%termios
 (the POSIX terminal API).
 In the former,
-both input and output were controlled via a single option
+both input and output conversions were controlled via a single option
 \*(``CRMOD\*('',
 while the latter separates these features.
 Because that conversion interferes with output optimization,

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.119 2025/02/15 19:35:55 tom Exp $
-.TH curs_getch 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.121 2025/03/15 22:04:20 tom Exp $
+.TH curs_getch 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -221,35 +221,55 @@ from the beginning of a function key's character sequence without
 waiting to see if,
 and how soon,
 further input arrives.
-When
-.I curses
-reads such an ambiguous character,
-it sets a timer.
-If the remainder of the sequence does not arrive within the designated
-time,
+.bP
+If the escape sequence
+matches a string capability defining a function key
+for the terminal type
+(such as
+.B \%key_home
+.RB \%( khome )
+or
+.B \%key_up
+.RB \%( kuu1 )),
 .B \%wgetch
-returns the prefix character;
-otherwise,
-it returns the function key code corresponding to the unique sequence
+returns the function key code corresponding to the unique sequence
 defined by the terminal.
+.bP
+If the escape sequence matches no function keys
+defined for the terminal type,
+.B \%wgetch
+returns the code of the last
+(most recent)
+character it has read.
+.bP
+If
+.B \%wgetch
+cannot decide the validity of the input as a function key
+because it has not read enough characters to disambiguate it,
+the function waits until it has this information or the
+.IR "escape delay" ","
+configured by the global variable
+.I \%ESCDELAY
+(an extension;
+see section \*(``EXTENSIONS\*('' below)
+or the environment variable of the same name
+(see section \*(``ENVIRONMENT\*('' of \fB\%ncurses\fP(3X)),
+also an extension,
+elapses.
+.PP
 Consequently,
 a user of a
 .I curses
-application may experience a delay after the escape key is pressed
+application that employs keypad mode
+may experience a pause or \*(``hang\*(''
+after the escape key is pressed
 while
 .I curses
-disambiguates the input;
-see section \*(``EXTENSIONS\*('' below.
+collects sufficient characters to disambiguate the input.
 If the window is in \*(``no time-out\*('' mode,
-the timer does not expire;
-it is an infinite
-(or very large)
-value.
-See \fB\%notimeout\fP(3X).
-Because function key sequences usually begin with ESC,
-the terminal may appear to hang in no time-out mode after the user
-presses the escape key.
-Generally,
+the escape delay is effectively infinite;
+see \fB\%notimeout\fP(3X).
+In the event of such a pause,
 further typing \*(``awakens\*(''
 .IR curses "."
 .SS "Ungetting Characters"
@@ -290,6 +310,7 @@ Lb Lx.
 Symbol	Key name
 =
 KEY_BREAK	Break key
+.ne 4
 KEY_DOWN	Arrow keys
 KEY_UP	\^
 KEY_LEFT	\^
@@ -709,6 +730,16 @@ NetBSD
 .\" https://web.archive.org/web/20200923185647/https://man.netbsd.org/curses_input.3
 had added them along with
 .IR \%KEY_MOUSE "."
+.SH HISTORY
+4BSD (1980)
+introduced
+.I \%wgetch
+and its variants.
+.PP
+.I \%ncurses
+1.9.9g (1996)
+added
+.IR \%has_key "."
 .SH SEE ALSO
 ECMA-6 \*(``7-bit coded Character Set\*(''
 \%<https://\*:ecma\-international\*:.org/\

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.130 2025/03/08 23:01:20 tom Exp @
+  * @Id: curs_addch.3x,v 1.132 2025/03/15 20:40:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2025-03-08 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_addch 3x 2025-03-15 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2025-03-08 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2025-03-15 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -106,10 +106,18 @@
        the   cursor   position,   analogously  to  the  standard  C  library's
        <STRONG>putchar(3)</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of this function.
 
-       Construct a <EM>curses</EM> character from a  <EM>char</EM>  by  assignment.   Subsection
-       "Video  Attributes"  of  <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG>  describes  how  to  manipulate its
-       attributes and color pair.  (A color  pair  selection  is  not  honored
+       Construct a <EM>curses</EM> character from a <EM>char</EM>  by  assignment  or  typecast.
+       Subsection "Video Attributes" of <STRONG><A HREF="curs_attr.3x.html">attron(3x)</A></STRONG> describes how to manipulate
+       its attributes and color pair.  (A color pair selection is not  honored
        unless initialized; see <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>.)
+
+       The  object or expression <EM>ch</EM> may contain attributes and/or a color pair
+       identifier.  (A  <EM>chtype</EM>  can  be  copied  from  place  to  place  using
+       <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG>  and  <STRONG>waddch</STRONG>.)   See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for values of predefined
+       constants that can be usefully "or"ed  with  characters.   A  <EM>ch</EM>  whose
+       character  component  is a space, and whose only attribute is <STRONG>A_NORMAL</STRONG>,
+       is  a  <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with  the  window's
+       background character; see <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>.
 
        If  the  cursor  is  not  at  the  bottom  of  the scrolling region and
        advancement occurs at the right margin, the cursor automatically  wraps
@@ -143,14 +151,6 @@
        location of a nonprintable character  does  not  return  the  character
        itself, but its <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG> representation.
 
-       The  object or expression <EM>ch</EM> may contain attributes and/or a color pair
-       identifier.  (A  <EM>chtype</EM>  can  be  copied  from  place  to  place  using
-       <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG>  and  <STRONG>waddch</STRONG>.)   See  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>  for values of predefined
-       constants that can be usefully "or"ed  with  characters.   A  <EM>ch</EM>  whose
-       character  component  is a space, and whose only attribute is <STRONG>A_NORMAL</STRONG>,
-       is a <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with  the  background
-       character; see <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>.
-
 
 </PRE><H3><a name="h3-wechochar">wechochar</a></H3><PRE>
        <STRONG>echochar</STRONG>  and  <STRONG>wechochar</STRONG> are equivalent to calling (<STRONG>w</STRONG>)<STRONG>addch</STRONG> followed by
@@ -164,16 +164,16 @@
 </PRE><H3><a name="h3-Forms-Drawing-Characters">Forms-Drawing Characters</a></H3><PRE>
        <EM>curses</EM> defines macros starting with <STRONG>ACS_</STRONG> that can be used  with  <STRONG>waddch</STRONG>
        to  write  line-drawing and other symbols to the screen.  <EM>ncurses</EM> terms
-       these <EM>forms-drawing</EM> <EM>characters.</EM>  The ACS default listed below  is  used
-       if the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>) <EM>terminfo</EM> capability does not define a terminal-
-       specific replacement for  it,  or  if  the  terminal  type  and  locale
-       configuration  require  Unicode  to  access  these  characters  but the
-       library is unable to use Unicode.  The "acsc char"  column  corresponds
-       to  how  the  characters  are  specified in the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>) string
-       capability, and the characters in it may appear on the  screen  if  the
-       terminal type's database entry incorrectly advertises ACS support.  The
-       name "ACS" originates in the Alternate Character Set feature of the DEC
-       VT100 terminal.
+       these <EM>forms-drawing</EM> <EM>characters.</EM>  <EM>curses</EM> uses  the  ACS  default  listed
+       below  if the terminal type lacks the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>) capability; that
+       capability does not define a replacement for the character; or  if  the
+       terminal  type and locale configuration require Unicode to access these
+       characters, but the library is unable to use Unicode.  The "acsc  char"
+       column corresponds to how the characters are specified in the <STRONG>acs_chars</STRONG>
+       (<STRONG>acsc</STRONG>) string capability, and the characters in it may  appear  on  the
+       screen if the terminal type's database entry incorrectly advertises ACS
+       support.  The name "ACS" originates  in  the  Alternate  Character  Set
+       feature of the DEC VT100 terminal.
 
                       <STRONG>ACS</STRONG>       <STRONG>acsc</STRONG>
        <STRONG>Symbol</STRONG>         <STRONG>Default</STRONG>   <STRONG>char</STRONG>   <STRONG>Glyph</STRONG> <STRONG>Name</STRONG>
@@ -216,7 +216,7 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
-       In <EM>ncurses</EM>, they return <STRONG>ERR</STRONG> if
+       In <EM>ncurses</EM>, these functions fail if
 
        <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized,
 
@@ -252,7 +252,7 @@
        The symbols <EM>ACS</EM><STRONG>_</STRONG><EM>S3</EM>, <EM>ACS</EM><STRONG>_</STRONG><EM>S7</EM>, <EM>ACS</EM><STRONG>_</STRONG><EM>LEQUAL</EM>, <EM>ACS</EM><STRONG>_</STRONG><EM>GEQUAL</EM>, <EM>ACS</EM><STRONG>_</STRONG><EM>PI</EM>, <EM>ACS</EM><STRONG>_</STRONG><EM>NEQUAL</EM>,
        and  <EM>ACS</EM><STRONG>_</STRONG><EM>STERLING</EM> were not documented in any publicly released System V
        and are  not  standard.   However,  many  publicly  available  <EM>terminfo</EM>
-       entries  include  <EM>acs</EM><STRONG>_</STRONG><EM>chars</EM>  (<STRONG>acsc</STRONG>)  capabilities  in  which  their key
+       entries  include  <STRONG>acs_chars</STRONG>  (<STRONG>acsc</STRONG>)  capabilities  in  which  their key
        characters (<STRONG>pryz{|}</STRONG>) are embedded, and  a  second-hand  list  of  their
        character  descriptions  has  come  to  light.   The <EM>ncurses</EM> developers
        invented ACS-prefixed names for them.
@@ -365,7 +365,7 @@
 
 
 
-ncurses 6.5                       2025-03-08                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.5                       2025-03-15                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
