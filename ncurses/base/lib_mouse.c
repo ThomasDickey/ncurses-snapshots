@@ -85,7 +85,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.208 2025/02/15 15:12:21 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.209 2025/03/22 23:14:11 Daniel.Starke Exp $")
 
 #include <tic.h>
 
@@ -761,7 +761,8 @@ initialize_mousetype(SCREEN *sp)
     /* we know how to recognize mouse events under "xterm" */
     if (NonEmpty(key_mouse)) {
 	init_xterm_mouse(sp);
-    } else if (strstr(SP_TERMTYPE term_names, "xterm") != NULL) {
+    } else if (SP_TERMTYPE term_names != NULL
+	       && strstr(SP_TERMTYPE term_names, "xterm") != NULL) {
 	if (_nc_add_to_try(&(sp->_keytry), xterm_kmous, KEY_MOUSE) == OK)
 	    init_xterm_mouse(sp);
     }

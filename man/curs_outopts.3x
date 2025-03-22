@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.91 2025/03/08 23:19:30 tom Exp $
-.TH curs_outopts 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.93 2025/03/22 22:46:52 tom Exp $
+.TH curs_outopts 3X 2025-03-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -118,6 +118,9 @@ possessing them according to the
 .I \%term\%info
 database.
 .\" TODO: What's the historical rationale for the `idcok()` feature?
+.\" TED: Solaris SVr4 source uses this to bypass some logic which may not work
+.\" with terminals that use "magic cookies" (cells where the video attribute
+.\" changes and no actual character is stored).
 .SS idlok
 Setting
 .IR win 's
