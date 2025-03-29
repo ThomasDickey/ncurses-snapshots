@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h,v 1.16 2025/03/08 14:21:17 tom Exp $ */
+/* $Id: nc_win32.h,v 1.17 2025/03/29 16:45:33 Daniel.Starke Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -109,6 +109,7 @@ extern NCURSES_EXPORT(int)    _nc_console_testmouse(const SCREEN *,HANDLE,int EV
 extern NCURSES_EXPORT(int)    _nc_console_keyok(int keycode,int flag);
 extern NCURSES_EXPORT(bool)   _nc_console_keyExist(int keycode);
 extern NCURSES_EXPORT(bool)   _nc_console_checkinit(bool initFlag, bool assumeTermInfo);
+extern NCURSES_EXPORT(bool)   _nc_console_restore(void);
 extern NCURSES_EXPORT(int)    _nc_console_vt_supported(void);
 
 #ifdef _NC_CHECK_MINTTY

@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.79 2025/02/20 01:30:20 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.82 2025/03/29 19:28:44 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -489,7 +489,8 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 		/*
 		 * If environment variables are used, update them.
 		 */
-		if ((sp == NULL || !sp->_filtered) && _nc_getenv_num("LINES") > 0) {
+		if ((sp == NULL || !sp->_filtered)
+		    && _nc_getenv_num("LINES") > 0) {
 		    _nc_setenv_num("LINES", *linep);
 		}
 		if (_nc_getenv_num("COLUMNS") > 0) {
@@ -604,6 +605,8 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
     AssertTCB();
     sp = TCB->csp;
 
+    T((T_CALLED("tinfo:drv_mode(%p,%d,%d)"), (void *) sp, progFlag, defFlag));
+
     if (progFlag)		/* prog mode */
     {
 	if (defFlag) {
@@ -628,6 +631,10 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		    if (sp->_keypad_on)
 			_nc_keypad(sp, TRUE);
 		}
+#if defined(EXP_WIN32_DRIVER)
+		if (!WINCONSOLE.buffered)
+		    _nc_console_set_scrollback(FALSE, &WINCONSOLE.SBI);
+#endif
 		code = OK;
 	    }
 	}
@@ -656,9 +663,13 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		NCURSES_SP_NAME(_nc_flush) (sp);
 	    }
 	    code = drv_sgmode(TCB, TRUE, &(_term->Ottyb));
+#if defined(EXP_WIN32_DRIVER)
+	    if (!_nc_console_restore())
+		code = ERR;
+#endif
 	}
     }
-    return (code);
+    returnCode(code);
 }
 
 static void
@@ -1540,6 +1551,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
 #endif
 	if (strcmp(DriverTable[i].name, res->td_name(TCB)) == 0) {
 	    if (res->td_CanHandle(TCB, name, errret)) {
+		T(("matched driver %s with TERM=%s", DriverTable[i].name, name));
 		use = res;
 		break;
 	    }

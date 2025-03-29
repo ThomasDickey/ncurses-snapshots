@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1175 $
-#	$Date: 2025/03/01 21:54:30 $
+#	$Revision: 1.1176 $
+#	$Date: 2025/03/29 22:49:47 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4760,7 +4760,7 @@ ms+terminal|building block for Windows terminal,
 	use=bracketed+paste, use=xterm+pcfkeys, use=ansi+rep,
 	use=xterm+sm+1006, use=ecma+index, use=ecma+italics,
 	use=ecma+strikeout, use=vt420+lrmm, use=xterm-basic,
-	use=xterm+focus, use=xterm+tmux,
+	use=xterm+focus, use=xterm+tmux, use=xterm+sm+1003,
 
 #### Visual Studio
 # Visual Studio Code 1.45.0 uses xterm.js 12.8.1 (see https://xtermjs.org/).
@@ -27807,5 +27807,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2025-03-01
 #	+ add color to vt525 (Branden Robinson)
 #	+ add vt520-w and vt525-w (Branden Robinson)
+#
+# 2025-03-29
+#	+ add XM/xm to ms-terminal, to enable mouse with experimental Windows
+#	  driver -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

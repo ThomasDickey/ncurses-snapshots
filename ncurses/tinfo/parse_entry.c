@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.115 2025/02/20 09:11:49 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.116 2025/03/24 22:27:29 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -990,6 +990,8 @@ postprocess_termcap(TERMTYPE2 *tp, bool has_base)
 	    bp = tp->Strings[from_ptr->nte_index];
 	    if (VALID_STRING(bp)) {
 		for (dp = buf2; *bp; bp++) {
+		    if ((size_t) (dp - buf2) >= (sizeof(buf2) - sizeof(TERMTYPE2)))
+			  break;
 		    if (bp[0] == '$' && bp[1] == '<') {
 			while (*bp && *bp != '>') {
 			    ++bp;

@@ -57,7 +57,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.81 2025/03/01 17:17:46 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.82 2025/03/29 19:31:24 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 
@@ -1015,11 +1015,11 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
     TERMINAL *_term = (TERMINAL *) TCB;
     int code = ERR;
 
+    T((T_CALLED("win32con::wcon_mode(%p, prog=%d, def=%d)"),
+       TCB, progFlag, defFlag));
+
     if (okConsoleHandle(TCB)) {
 	sp = TCB->csp;
-
-	T((T_CALLED("win32con::wcon_mode(%p, prog=%d, def=%d)"),
-	   TCB, progFlag, defFlag));
 
 	CON.progMode = progFlag;
 	CON.lastOut = progFlag ? CON.hdl : CON.out;

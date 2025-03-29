@@ -48,7 +48,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.7 2025/03/01 14:26:14 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.8 2025/03/29 19:31:07 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -762,11 +762,11 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
     TERMINAL *_term = (TERMINAL *) TCB;
     int code = ERR;
 
+    T((T_CALLED("win32con::wcon_mode(%p, progFlag=%d, defFlag=%d)"),
+       TCB, progFlag, defFlag));
+
     if (validateConsoleHandle()) {
 	sp = TCB->csp;
-
-	T((T_CALLED("win32con::wcon_mode(%p, progFlag=%d, defFlag=%d)"),
-	   TCB, progFlag, defFlag));
 
 	WINCONSOLE.progMode = progFlag;
 	WINCONSOLE.lastOut = progFlag ? WINCONSOLE.hdl : WINCONSOLE.out;

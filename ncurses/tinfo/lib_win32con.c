@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.19 2025/03/08 14:20:11 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.21 2025/03/29 19:36:13 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -259,36 +259,20 @@ _nc_console_setmode(HANDLE hdl, const TTY * arg)
 	T(("lib_win32con:_nc_console_setmode %s", _nc_trace_ttymode(arg)));
 	if (hdl == WINCONSOLE.inp) {
 	    dwFlag = arg->dwFlagIn | ENABLE_MOUSE_INPUT | VT_FLAG_IN;
-	    if (WINCONSOLE.isTermInfoConsole)
-		dwFlag |= (VT_FLAG_IN);
-	    else
-		dwFlag &= (DWORD) ~ (VT_FLAG_IN);
 	    TRCTTYIN(dwFlag);
 	    SetConsoleMode(hdl, dwFlag);
 
 	    alt = OutHandle();
 	    dwFlag = arg->dwFlagOut;
-	    if (WINCONSOLE.isTermInfoConsole)
-		dwFlag |= (VT_FLAG_OUT);
-	    else
-		dwFlag |= (VT_FLAG_OUT);
 	    TRCTTYOUT(dwFlag);
 	    SetConsoleMode(alt, dwFlag);
 	} else {
 	    dwFlag = arg->dwFlagOut;
-	    if (WINCONSOLE.isTermInfoConsole)
-		dwFlag |= (VT_FLAG_OUT);
-	    else
-		dwFlag |= (VT_FLAG_OUT);
 	    TRCTTYOUT(dwFlag);
 	    SetConsoleMode(hdl, dwFlag);
 
 	    alt = WINCONSOLE.inp;
 	    dwFlag = arg->dwFlagIn | ENABLE_MOUSE_INPUT;
-	    if (WINCONSOLE.isTermInfoConsole)
-		dwFlag |= (VT_FLAG_IN);
-	    else
-		dwFlag &= (DWORD) ~ (VT_FLAG_IN);
 	    TRCTTYIN(dwFlag);
 	    SetConsoleMode(alt, dwFlag);
 	    T(("effective mode set %s", _nc_trace_ttymode(&TRCTTY)));
@@ -404,7 +388,6 @@ save_original_screen(void)
     return result;
 }
 
-#if 0
 static bool
 restore_original_screen(void)
 {
@@ -426,7 +409,7 @@ restore_original_screen(void)
 		     bufferCoord,
 		     &save_region)) {
 	result = TRUE;
-	mvcur(-1, -1, LINES - 2, 0);
+	SetConsoleCursorPosition(WINCONSOLE.hdl, WINCONSOLE.save_SBI.dwCursorPosition);
 	T(("... restore original screen contents ok %dx%d (%d,%d - %d,%d)",
 	   WINCONSOLE.save_size.Y,
 	   WINCONSOLE.save_size.X,
@@ -439,7 +422,6 @@ restore_original_screen(void)
     }
     return result;
 }
-#endif
 
 static bool
 read_screen_data(void)
@@ -1244,6 +1226,24 @@ _nc_console_checkinit(bool initFlag, bool assumeTermInfo)
 	    console_initialized = TRUE;
 	}
 	res = (WINCONSOLE.hdl != INVALID_HANDLE_VALUE);
+    }
+    returnBool(res);
+}
+
+NCURSES_EXPORT(bool)
+_nc_console_restore(void)
+{
+    bool res = FALSE;
+
+    T((T_CALLED("lib_win32con::_nc_console_restore")));
+    if (WINCONSOLE.hdl != INVALID_HANDLE_VALUE) {
+	res = TRUE;
+	if (!WINCONSOLE.buffered) {
+	    _nc_console_set_scrollback(TRUE, &WINCONSOLE.save_SBI);
+	    if (!restore_original_screen())
+		res = FALSE;
+	}
+	SetConsoleCursorInfo(WINCONSOLE.hdl, &WINCONSOLE.save_CI);
     }
     returnBool(res);
 }
