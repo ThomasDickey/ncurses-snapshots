@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1176 $
-#	$Date: 2025/03/29 22:49:47 $
+#	$Revision: 1.1180 $
+#	$Date: 2025/04/05 20:08:00 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1244,6 +1244,24 @@ bterm|bogl virtual terminal,
 	sgr0=\E[0m, smacs=^N, smso=\E[7m, smul=\E[4m,
 	use=ansi+arrows, use=linux+lockeys, use=linux+sfkeys,
 	use=vt220+pcedit, use=vt220+cvis, use=vt220+ufkeys,
+
+# https://lists.gnu.org/archive/html/bug-ncurses/2025-04/msg00014.html
+sclp|IBM s390 driver for Linux,
+	xon,
+	cols#80, lines#24,
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+	bel=^G, blink=\E[5m, cr=\r, cub1=^H, cud1=\n,
+	cup=\E[%i%p1%d;%p2%dH, dch=\E[%p1%dP, dch1=\E[P,
+	dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el1=\E[1K,
+	enacs=\E)0, ht=^I, ich=\E[%p1%d@, ind=\ED, is2=\Ec, kbs=^H,
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A,
+	kdch1=\E[3~, kf5=\E[E, nel=\EE, rc=\E8, rev=\E[7m, ri=\EM,
+	rmacs=\E(B$<4>, rmso=\E[27m, rmul=\E[24m, sc=\E7,
+	sgr=\E[0%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e
+	    \E(B%;$<2>,
+	sgr0=\E[m\E(B, smacs=\E(0$<2>, smso=\E[7m, smul=\E[4m,
+	use=klone+color, use=ansi+cpr, use=ansi+erase,
+	use=ansi+local, use=linux+sfkeys, use=vt220+ufkeys,
 
 #### Mach
 #
@@ -3060,9 +3078,13 @@ vt520|DEC VT520,
 vt520-w|DEC VT520 in wide mode,
 	cols#132, use=vt520,
 
+# See "4.7.5 Visual Attributes Control Functions" and
+# "Table 5–15 (Cont.) Visual Character Attribute Values"
+# in EK-VT520-RM
 vt525|DEC VT525,
 	colors#8, pairs#64,
-	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=vt520,
+	op=\E[39;49m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
+	use=vt520,
 
 vt525-w|DEC VT525 in wide mode,
 	cols#132, use=vt525,
@@ -8180,6 +8202,21 @@ wezterm|Wez's Terminal Emulator,
 # - cannot run, because the package is not signed.
 #
 # Fedora rawhide
+# contour-terminal-0.6.1.7494-2.fc42.x86_64
+# - most core dumps are finally gone, works when 3D acceleration is disabled.
+# - fails mir and related "in" tests in tack.
+# - function-keys do not match developer's version.
+# - sitm/ritm (italics) still do not work.
+# - private mode 12 (cursor) does not work.
+# - source code references Unicode values to a page which has none:
+#   https://vt100.net/docs/vt102-ug/chapter5.html#T5-13
+#   (actual source for this information is xterm)
+# - identifies as a VT525 with sixel graphics, UDK, rectangle editing and color.
+# - adds a control sequence to retrieve contents of entire screen.
+# - dumps core in vttest for rectangle editing
+# - UDK feature does not work
+# - fails vttest for REP, SL, SR, CBT, CHT, VPR
+# - sixel feature needs some work (most of my testcases do not work) -TD
 # contour-terminal-0.3.12.262-6.fc39.x86_64
 # - dumps core, cannot test
 #
@@ -8221,28 +8258,31 @@ wezterm|Wez's Terminal Emulator,
 #
 # Developer's terminfo (compiled-in) uses some extensions.
 contour|contour-latest|Contour Terminal Emulator,
-	am, bce, eslok, hs, km, mc5i, mir, msgr, npc, xenl, xvpa,
+	am, bce, mc5i, msgr, npc, xenl, xvpa, AX, XT,
 	cols#80, lines#24, pairs#0x7fff,
-	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n,
-	dim=\E[2m, dsl=\E[$~, ech=\E[%p1%dX, el1=\E[1K,
-	flash=\E[?5h$<100/>\E[?5l, fsl=\E[$}, hpa=\E[%i%p1%dG,
-	ind=\n, indn=\E[%p1%dS, invis=\E[8m, ka1=, ka3=, kbs=^?, kc1=,
-	kc3=, kcbt=\E[Z, kend=\EOF, khlp=, kmous=\E[M, kund=,
-	oc=\E]104\E\\, op=\E[39;49m, rev=\E[7m, ri=\EM,
-	rin=\E[%p1%dT, rmam=\E[?7l, rmkx=\E[?1l, rmso=\E[27m,
-	rmul=\E[24m, rs1=\E]\E\\\Ec,
-	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
-	    %t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
-	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h, smso=\E[7m,
-	smul=\E[4m, tsl=\E[2$~\E[1$}\E[H\E[2J, vpa=\E[%i%p1%dd,
+	bel=^G, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n, dim=\E[2m,
+	ech=\E[%p1%dX, el1=\E[1K, flash=\E[?5h$<100/>\E[?5l,
+	ind=\n, ka1=, ka3=, kbs=^?, kc1=, kc3=, kcbt=\E[Z, kend=\EOF,
+	kf13=\E[O2P, kf14=\E[O2Q, kf15=\E[O2R, kf16=\E[O2S,
+	kf25=\E[O5P, kf26=\E[O5Q, kf27=\E[O5R, kf28=\E[O5S,
+	kf37=\E[O6P, kf38=\E[O6Q, kf39=\E[O6R, kf40=\E[O6S,
+	kf49=\E[O3P, kf50=\E[O3Q, kf51=\E[O3R, kf52=\E[O3S,
+	kf61=\E[O4P, kf62=\E[O4Q, kf63=\E[O4R, khlp=, kmous=\E[M,
+	kund=, oc=\E]104\E\\, op=\E[39;49m, ri=\EM, rmam=\E[?7l,
+	rmkx=\E[?1l, rmso=\E[27m, rmul=\E[24m, rs1=\E]\E\\\Ec,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p5%t;2%;
+	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
+	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h,
 	Cs=\E]12;%p1%s\E\\, E3=\E[3J, Rmol=\E[55m, Se=\E[ q,
 	Smol=\E[53m, Smulx=\E[4:%p1%dm, Ss=\E[%p1%d q,
 	use=ansi+apparrows, use=ansi+cup, use=ansi+csr,
-	use=ansi+erase, use=ansi+idc, use=ansi+idl,
-	use=ansi+inittabs, use=ansi+local, use=ansi+rep,
-	use=att610+cvis, use=ecma+italics, use=ecma+strikeout,
+	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
+	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
+	use=ansi+sgrbold, use=bracketed+paste, use=dec+sl,
+	use=ecma+index, use=vt220+cvis, use=ecma+strikeout,
 	use=xterm+256color, use=xterm+acs, use=xterm+alt1049,
 	use=xterm+pcc2, use=xterm+pce2, use=xterm+pcf2,
+	use=report+version,
 
 contour-direct|Contour terminal with direct colors,
 	use=xterm+direct, use=contour,
@@ -19646,16 +19686,14 @@ ncr260wy325pp|NCR 2900/260 Wyse 325,
 	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"\Ee4\Ex@\E`9
 	    \Ee7$<100>,
 	kDC=\ER, kEND=\EY, kHOM=\E{, kNXT=\EK, kPRT=\E7, kPRV=\EJ,
-	kRIT=^L, ka1=^^, kb2=\EJ, kbs=^H, kc1=\ET, kc3=\EK, kcbt=\EI,
-	kcub1=^H, kcud1=\n, kcuf1=^L, kcuu1=^K, kdch1=\EW, kend=\ET,
-	kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r, kf12=^AK\r, kf13=^AL\r,
-	kf14=^AM\r, kf15=^AN\r, kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r,
-	kf19=^Ab\r, kf2=^AA\r, kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r,
-	kf23=^Af\r, kf24=^Ag\r, kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r,
-	kf28=^Ak\r, kf29=^Al\r, kf3=^AB\r, kf30=^Am\r, kf31=^An\r,
-	kf32=^Ao\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r,
-	kf8=^AG\r, kf9=^AH\r, khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ,
-	kprt=\EP, mc0=\EP, mc4=^T, mc5=^R,
+	kRIT=^L, ka1=^^, kb2=\EJ, kc1=\ET, kc3=\EK, kcbt=\EI, kcub1=^H,
+	kcud1=\n, kcuf1=^L, kcuu1=^K, kdch1=\EW, kend=\ET,
+	kf12=^AK\r, kf13=^AL\r, kf14=^AM\r, kf15=^AN\r, kf16=^AO\r,
+	kf17=^A`\r, kf18=^Aa\r, kf19=^Ab\r, kf20=^Ac\r, kf21=^Ad\r,
+	kf22=^Ae\r, kf23=^Af\r, kf24=^Ag\r, kf25=^Ah\r, kf26=^Ai\r,
+	kf27=^Aj\r, kf28=^Ak\r, kf29=^Al\r, kf30=^Am\r, kf31=^An\r,
+	kf32=^Ao\r, khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP,
+	mc0=\EP, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<10>,
 	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH\003\EcB0,
 	rmam=\Ed., rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20,
@@ -19670,7 +19708,8 @@ ncr260wy325pp|NCR 2900/260 Wyse 325,
 	     %t%{63}%e%p1%{15}%=%t%{56}%;\Edy%c11$<100>,
 	sgr0=\EG0\EcB0\EcD$<15>, smacs=\EH\002\EcB1, smam=\Ed/,
 	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0,
-	use=ncr260vp+sl,
+	use=ncr260vp+sl, use=tvi920b+fn, use=ansi+arrows,
+	use=ansi+apparrows,
 ncr260wy325wpp|NCR 2900/260 Wyse 325 wide mode,
 	cols#132,
 	cup=\Ea%i%p1%dR%p2%dC$<30>,
@@ -27811,5 +27850,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2025-03-29
 #	+ add XM/xm to ms-terminal, to enable mouse with experimental Windows
 #	  driver -TD
+#
+# 2025-04-03
+#	+ add sclp -TD
+#	+ add op to vt525 -TD
+#
+# 2025-0405
+#	+ update contour -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

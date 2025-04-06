@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_move.3x,v 1.61 2025/03/08 23:18:46 tom Exp $
-.TH curs_move 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_move.3x,v 1.63 2025/04/05 22:08:55 tom Exp $
+.TH curs_move 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,11 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.de bP
+.ie n  .IP \(bu 4
+.el    .IP \(bu 2
+..
 .SH NAME
 \fB\%move\fP,
 \fB\%wmove\fP \-
@@ -77,19 +82,24 @@ These functions return
 on success and
 .B ERR
 on failure.
-.PP
-They fail if the position
+In
+.IR \%ncurses ,
+these functions fail if
+.bP
+the
+.I curses
+screen has not been initialized,
+.bP
+(for
+.BR \%wmove ")"
+.I win
+is a null pointer,
+or
+.bP
+the position
 .RI ( y ,
 .IR x )
 is outside the window boundaries.
-.PP
-In
-.IR \%ncurses ,
-.B \%wmove
-fails if
-.I win
-is
-.IR NULL .
 .SH NOTES
 .B \%move
 may be implemented as a macro.

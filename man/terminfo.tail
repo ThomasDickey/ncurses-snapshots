@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.157 2025/02/17 23:55:31 tom Exp $
+.\" $Id: terminfo.tail,v 1.158 2025/04/05 21:56:26 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -87,6 +87,7 @@ The following entry, describing an ANSI-standard terminal, is representative
 of what a \fBterminfo\fP entry for a modern terminal typically looks like.
 .PP
 .EX
+.nf
 \s-2ansi|ansi/pc\-term compatible with color,
         am, mc5i, mir, msgr,
         colors#8, cols#80, it#8, lines#24, ncv#3, pairs#64,
@@ -117,6 +118,7 @@ of what a \fBterminfo\fP entry for a modern terminal typically looks like.
         sgr0=\eE[0;10m, smacs=\eE[11m, smpch=\eE[11m, smso=\eE[7m,
         smul=\eE[4m, tbc=\eE[3g, u6=\eE[%i%d;%dR, u7=\eE[6n,
         u8=\eE[?%[;0123456789]c, u9=\eE[c, vpa=\eE[%i%p1%dd,
+.fi
 .EE
 .PP
 Entries may continue onto multiple lines by placing white space at
@@ -449,11 +451,13 @@ Thus the model 33 teletype is described as
 while the Lear Siegler \s-1ADM-3\s0 is described as
 .PP
 .EX
+.nf
 .\".in -2
 \s-1adm3\||\|3\||\|lsi adm3,
         am, bel=\*^G, clear=\*^Z, cols#80, cr=\*^M, cub1=\*^H, cud1=\*^J,
         ind=\*^J, lines#24,\s+1
 .\".in +2
+.fi
 .EE
 .SS "Parameterized Strings"
 Cursor addressing and other strings requiring parameters
@@ -1146,8 +1150,10 @@ m	always	m
 Putting this all together into the sgr sequence gives:
 .PP
 .EX
+.nf
     sgr=\eE[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p4%t;5%;
         %?%p1%p3%|%t;7%;%?%p7%t;8%;m%?%p9%t\e016%e\e017%;,
+.fi
 .EE
 .PP
 Remember that if you specify sgr, you must also specify sgr0.

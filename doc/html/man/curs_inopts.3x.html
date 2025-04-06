@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.102 2025/03/15 21:11:52 tom Exp @
+  * @Id: curs_inopts.3x,v 1.104 2025/04/05 22:07:49 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2025-03-15 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2025-03-15 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-04-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -292,7 +292,7 @@
        describe  two  related  but  distinct aspects of input handling, at the
        risk of confusing the user.  The functions <STRONG>halfdelay</STRONG>, <STRONG>nodelay</STRONG>, <STRONG>timeout</STRONG>,
        and  <STRONG>wtimeout</STRONG>  configure  whether  the input character reading function
-       (<STRONG><A HREF="curs_getch.3x.html">getch(3x)</A></STRONG> or <STRONG><A HREF="curs_get_wch.3x.html">get_wch(3x)</A></STRONG>) waits for keyboard input to begin,  and  for
+       (<STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> or <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>) waits for keyboard input to begin, and for
        how  long.   <STRONG>keypad</STRONG>  configures whether that function waits for further
        input if the first character it reads is ESC.  Calling <STRONG>notimeout</STRONG>, which
        has  nothing  to  do  with  <STRONG>timeout</STRONG>  or  <STRONG>wtimeout</STRONG>,  makes this delay in
@@ -409,7 +409,7 @@
 
 
 
-ncurses 6.5                       2025-03-15                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-04-05                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_outopts.3x,v 1.93 2025/03/22 22:46:52 tom Exp $
-.TH curs_outopts 3X 2025-03-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_outopts.3x,v 1.98 2025/04/05 22:40:21 tom Exp $
+.TH curs_outopts 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -165,42 +165,47 @@ restores the default behavior,
 deferring screen updates until a refresh is needed
 or explicitly directed by the application.
 .SS leaveok
-Normally, the hardware cursor is left at the location of the window cursor
-being refreshed.
+Normally,
+.I curses
+leaves the hardware cursor at the library's cursor location
+of the window being refreshed.
 The
 .B \%leaveok
 option allows the cursor to be left
 wherever the update happens to leave it.
-It is useful for applications where
-the cursor is not used, since it reduces the need for cursor motions.
+It is useful for applications that do not employ a visible cursor,
+since it reduces the need for cursor motions.
 .SS scrollok
 The
 .B \%scrollok
-option controls what happens when the cursor of a window is
-moved off the edge of the window or scrolling region, either as a result of a
-newline action on the bottom line, or typing the last character of the last
-line.
-If disabled,
+option controls what happens when a window's cursor
+moves off the edge of the window or scrolling region,
+either as a result of a newline occurring on the bottom line,
+or writing to the last character of the last line.
+If disabled
 .RI ( bf
 is
 .BR FALSE "),"
-the cursor is left on the bottom
-line.
-If enabled,
+.I curses
+leaves the cursor on the bottom line of the window.
+If enabled
 .RI ( bf
 is
 .BR TRUE "),"
-the window is scrolled up one line
-(Note that to get the physical scrolling effect on the terminal, it is
-also necessary to call
+.I curses
+scrolls the window up one line.
+(To get the physical scrolling effect on the terminal,
+the application must also enable
 .BR idlok ")."
 .SS "setscrreg, wsetscrreg"
 The
-.B \%setscrreg
-and
 .B \%wsetscrreg
-routines allow the application
-programmer to set a software scrolling region in a window.
+and
+.B \%setscrreg
+functions allow the application
+to set a software scrolling region in the specified window or
+.BR \%stdscr ","
+respectively.
 The
 .I top
 and
@@ -208,20 +213,22 @@ and
 parameters
 are the line numbers of the top and bottom margin of the scrolling
 region.
-(Line 0 is the top line of the window.)  If this option and
+(Line 0 is the top line of the window.)
+If this option and
 .B scrollok
-are enabled, an attempt to move off the bottom margin line
-causes all lines in the scrolling region to scroll one line in the direction
-of the first line.
+are enabled,
+an attempt to move off the bottom margin line
+causes all lines in the scrolling region
+to scroll one line in the direction of the first line.
 Only the text of the window is scrolled.
-(Note that this
-has nothing to do with the use of a physical scrolling region capability in the
-terminal, like that in the VT100.
+(This process has nothing to do
+with the scrolling region capability of the terminal,
+as found in the DEC VT100.)
 If
 .B \%idlok
 is enabled and the terminal
-has either a scrolling region or insert/delete line capability, they will
-probably be used by the output routines.)
+has either a scrolling region or insert/delete line capability,
+they will probably be used by the output routines.)
 .SH RETURN VALUE
 The functions
 .B \%setscrreg
@@ -237,18 +244,27 @@ All other routines that return an integer always
 return
 .BR OK "."
 .PP
-In this implementation,
+In
+.IR \%ncurses ","
+these functions fail if
 .bP
-those functions that have a window pointer
-will return
-.B ERR
-if the window pointer is null
+the
+.I curses
+screen has not been initialized,
 .bP
-.B \%wsetscrreg
-returns
-.B ERR
-if the scrolling region limits extend outside the
-window boundaries.
+(for functions taking a
+.I \%WINDOW
+pointer argument)
+.I win
+is a null pointer,
+or
+.bP
+(for
+.B \%setscrreg
+and
+.BR \%wsetscrreg ")"
+the function is passed arguments describing a scrolling region
+with limits that extend outside the window boundaries.
 .SH NOTES
 .BR \%clearok ","
 .BR \%leaveok ","
@@ -257,6 +273,17 @@ window boundaries.
 and
 .B \%setscrreg
 may be implemented as macros.
+.PP
+Unlike the other functions described by this page,
+.B \%setscrreg
+does not accept a
+.RI pointer-to- WINDOW
+parameter,
+but operates on
+.BR stdscr "."
+Use
+.B \%wsetscrreg
+to configure the scrolling region of a selected window.
 .PP
 The
 .B \%immedok
@@ -298,8 +325,8 @@ made invisible as a side-effect of
 .IR \%leaveok "."
 SVr4
 .I curses
-documentation notes this,
-but the code neglects it.
+documentation notes this behavior,
+but the code neglects to implement it.
 Use \fB\%curs_set\fP(3X) to make the cursor invisible.
 .SH HISTORY
 4BSD (1980)

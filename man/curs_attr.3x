@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.136 2025/02/15 19:35:37 tom Exp $
-.TH curs_attr 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.138 2025/04/05 21:56:26 tom Exp $
+.TH curs_attr 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -174,8 +174,10 @@ then these calls produce similar results:
 .PP
 .RS 4
 .EX
+.nf
 attrset(A_BOLD | COLOR_PAIR(\fIpair\fP));
 attr_set(A_BOLD, \fIpair\fP, NULL);
+.fi
 .EE
 .RE
 .PP
@@ -197,8 +199,10 @@ would be the same:
 .PP
 .RS 4
 .EX
+.nf
 int value = A_BOLD | COLOR_PAIR(\fIinput\fP);
 int \fIoutput\fP = PAIR_NUMBER(value);
+.fi
 .EE
 .RE
 .PP

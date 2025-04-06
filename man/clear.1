@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: clear.1,v 1.51 2025/01/19 00:49:39 tom Exp $
-.TH @CLEAR@ 1 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: clear.1,v 1.53 2025/04/05 21:56:26 tom Exp $
+.TH @CLEAR@ 1 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -113,8 +113,10 @@ and replaced the \fBclear\fP program with a shell script that called
 .PP
 .RS 4
 .EX
+.nf
 /usr/bin/tput ${1:+\-T$1} clear 2> /dev/null
 exit
+.fi
 .EE
 .RE
 .PP

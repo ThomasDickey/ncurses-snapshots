@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.112 2025/03/15 20:38:41 tom Exp $
-.TH curs_add_wch 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.114 2025/04/05 21:58:37 tom Exp $
+.TH curs_add_wch 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -199,8 +199,8 @@ If the cursor is at the bottom of the scrolling region
 when advancement occurs at the right margin,
 and \fB\%scrollok\fP(3X) is enabled for
 .IR win ,
-the cursor wraps as above and
-the scrolling region scrolls up one line.
+the scrolling region scrolls up one line
+and the cursor wraps as above.
 Otherwise,
 advancement and scrolling do not occur,
 and

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.85 2025/02/01 22:49:13 tom Exp $
-.TH curs_getstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.89 2025/04/05 22:07:21 tom Exp $
+.TH curs_getstr 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -104,8 +104,8 @@ and
 the same as the erase character;
 and
 .bP
-discards function key inputs other than those treated as the erase
-character,
+discards function key inputs other than those
+treated as the erase or kill characters,
 calling \fBbeep\fP(3X).
 .PP
 The erase character replaces the character at the end of the buffer with
@@ -137,11 +137,12 @@ characters,
 aiding the application to avoid overrunning the buffer to which
 .I str
 points.
-An attempt to input more than
+.I curses
+ignores an attempt to input more than
 .I n
 characters
-(other than the terminating line feed or carriage return)
-is ignored with a beep.
+(other than the terminating line feed or carriage return),
+calling \fBbeep\fP(3X).
 If
 .I n
 is negative,
@@ -161,17 +162,24 @@ on success and
 on failure.
 .PP
 In
-.IR \%ncurses ","
-they return
-.B ERR
-if
+.IR \%ncurses ,
+these functions fail if
 .bP
+the
+.I curses
+screen has not been initialized,
+.bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
 .I win
-is
-.IR NULL ","
+is a null pointer,
+.bP
+.I str
+is a null pointer,
 or
 .bP
-if an internal \fB\%wgetch\fP(3X) call fails.
+an internal \fB\%wgetch\fP(3X) call fails.
 .PP
 Further,
 in

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.116 2025/03/01 21:17:37 tom Exp $
-.TH curs_color 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.118 2025/04/05 21:59:03 tom Exp $
+.TH curs_color 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -193,28 +193,36 @@ Those do not combine its parameter with a color pair.
 Consequently those calls use only the window attribute or
 the background character.
 .SH CONSTANTS
-In \fB\%<curses.h>\fP the following macros are defined.
-These are the standard colors (ISO-6429).
-\fIcurses\fP also assumes that \fB\%COLOR_BLACK\fP is the default
-background color for all terminals.
-.PP
-.nf
-      \fBCOLOR_BLACK\fP
-      \fBCOLOR_RED\fP
-      \fBCOLOR_GREEN\fP
-      \fBCOLOR_YELLOW\fP
-      \fBCOLOR_BLUE\fP
-      \fBCOLOR_MAGENTA\fP
-      \fBCOLOR_CYAN\fP
-      \fBCOLOR_WHITE\fP
-.fi
-.PP
-Some terminals support more than the eight (8) \*(``ANSI\*('' colors.
-There are no standard names for those additional colors.
+ISO\ 6429 and ECMA-48
+define eight standard colors
+(also known as \*(``ANSI\*('' colors).
+.I curses\.h
+defines object-like macros
+.BR \%COLOR_BLACK ","
+.BR \%COLOR_RED ","
+.BR \%COLOR_GREEN ","
+.BR \%COLOR_YELLOW ","
+.BR \%COLOR_BLUE ","
+.BR \%COLOR_MAGENTA ","
+.BR \%COLOR_CYAN ","
+and
+.B \%COLOR_WHITE
+accordingly.
+.I curses
+assumes that
+.B \%COLOR_BLACK
+is the default background color for all terminals.
+.I \%ncurses
+offers an extension to override that assumption;
+see \fB\%assume_default_colors\fP(3X).
+Some terminals support additional colors that lack standard names.
 .PP
 .B \%A_COLOR
-is a bit mask that extracts a color pair identifier from a
-.IR \%chtype "."
+is a bit mask that,
+when bitwise \*(``and\*(''-ed with a
+.IR \%chtype ","
+.\" XXX: and right-shifted by...?
+extracts its color pair identifier.
 .SH VARIABLES
 .SS COLORS
 is initialized by \fB\%start_color\fP to the maximum number of colors

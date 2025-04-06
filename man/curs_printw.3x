@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_printw.3x,v 1.57 2025/01/19 00:51:10 tom Exp $
-.TH curs_printw 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_printw.3x,v 1.60 2025/04/05 22:20:25 tom Exp $
+.TH curs_printw 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -143,58 +143,105 @@ X/Open Curses Issue\ 7 (2009).
 provides \fB\%vwprintw\fP,
 but marks it as deprecated.
 .SH HISTORY
-While \fB\%printw\fP was implemented in 4BSD
-(November 1980),
+4BSD (1980)
+introduced
+.I \%wprintw
+and its variants.
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/lib/\
 .\"   libcurses/printw.c
-it was unused until 4.2BSD
-(August 1983),
-which employed it for games.
-That early version of
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/src/lib/\
+.\"   libcurses/mvprintw.c
+It implemented all as functions,
+not macros;
+this initial distribution of
 .I curses
-preceded the ANSI C standard of 1989.
-It did not use \fI\%varargs.h\fP,
-though that had been available since Seventh Edition Unix (1979).
+preceded the ANSI C standard of 1989,
+prior to which a variadic macro facility was not widely available.
+.I \%printw
+went unused in Berkeley distributions until 4.1cBSD (1983),
+which employed it in games.
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.1cBSD/usr/src/\
+.\"   games/canfield.c
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.1cBSD/usr/src/\
+.\"   games/worm.c
+4BSD's
+.I \%wprintw
+did not use
+.IR \%varargs.h ","
+which had been available since Seventh Edition Unix (1979).
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=V7/usr/include/\
 .\"  varargs.h
 In 1991
 (a couple of years after SVr4 was generally available,
 and after the C standard was published),
 other developers updated the library,
-using \fI\%stdarg.h\fP internally in 4.4BSD
+using
+.I \%stdarg.h
+internally in 4.4BSD
 .IR curses .
 Even with this improvement,
 BSD
 .I curses
 did not use function prototypes
 (nor even declare functions)
-in \fI\%curses.h\fP until 1992.
+in
+.I \%curses.h
+until 1992.
 .PP
-SVr2 (1984) documented \fB\%printw\fP and \fB\%wprintw\fP tersely as
-\*(``printf on \fB\%stdscr\fP\*('' and
-\*(``printf on \fIwin\fP\*('',
+4BSD documented
+.I \%printw
+and
+.I \%wprintw
+tersely as \*(``printf on
+.IR \%stdscr "\*(''"
+and \*(``printf on
+.IR win "\*('',"
 respectively.
+.\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4BSD/usr/man/man3/\
+.\"  curses.3
 .PP
-SVr3 (1987) added \fB\%mvprintw\fP and \fB\%mvwprintw\fP,
-with a three-line summary asserting that they were analogous to
-\fI\%printf\fP(3),
+SVr3 summarized the functions in three lines,
+asserting that they were analogous to \fI\%printf\fP(3),
 explaining that the string that \fI\%printf\fP(3) would write to the
-standard output stream would instead be output using \fB\%waddstr\fP to
-the given window.
-SVr3 also implemented \fB\%vwprintw\fP,
-describing its third parameter as a \fI\%va_list\fP,
-defined in \fI\%varargs.h\fP,
-and referred the reader to the manual pages for \fI\%varargs\fP and
-\fI\%vprintf\fP for detailed descriptions.
+standard output stream would instead be output using
+.I \%waddstr
+to the given window.
+.\" GBR can't find a source to cite for this paraphrase,
+.\" even after checking
+.\" <https://github.com/ryanwoodsmall/oldsysv/tree/master>.
 .PP
-SVr4 (1989) introduced no new variations of \fI\%printw\fP,
-but provided for using either \fI\%varargs.h\fP or \fI\%stdarg.h\fP to
-define the \fI\%va_list\fP type.
+SVr3 added
+.IR \%vwprintw ","
+describing its third parameter as a
+.IR \%va_list ","
+defined in
+.IR \%varargs.h ","
+and referred the reader to the manual pages for
+.I \%varargs
+and
+.I \%vprintf
+for detailed descriptions.
+.PP
+SVr4 (1989) introduced no new variations of
+.IR \%printw ","
+but provided for using either
+.I \%varargs.h
+or
+.I \%stdarg.h
+to define the
+.I \%va_list
+type.
 .\" either header declares "va_list", but only one can be used
 .PP
 X/Open Curses Issue\ 4 (1995),
-defined \fB\%vw_printw\fP to replace \fB\%vwprintw\fP,
-stating that its \fI\%va_list\fP type is defined in \fI\%stdarg.h\fP.
+defined
+.I \%vw_printw
+to replace
+.IR \%vwprintw ","
+stating that its
+.I \%va_list
+type is defined in
+.IR \%stdarg.h "."
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_addstr\fP(3X),

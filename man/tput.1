@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.135 2025/03/01 21:45:34 tom Exp $
-.TH @TPUT@ 1 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.137 2025/04/05 21:56:26 tom Exp $
+.TH @TPUT@ 1 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -1050,11 +1050,13 @@ The
 option can be profitably used with a shell \*(``here document\*(''.
 .IP
 .EX
+.nf
 .RB $\  "@TPUT@ \-S <<!"
 .RB >\  clear
 .RB >\  "cup 10 10"
 .RB >\  bold
 .RB >\  !
+.fi
 .EE
 .IP
 The foregoing

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.58 2025/01/19 00:51:10 tom Exp $
-.TH curs_variables 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.62 2025/04/05 22:24:24 tom Exp $
+.TH curs_variables 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -240,7 +240,9 @@ application calls
 \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X),
 the library creates a window named
 .B \%stdscr
-that is the same size as the terminal screen
+that is the same size as the terminal screen,
+(minus any lines reserved by
+\fB\%ripoffline\fP(3X) or \fB\%slk_init\fP(3X))
 and is the implicit window used by functions
 that interact with a window
 but do not take a parameter identifying one;
@@ -287,14 +289,15 @@ respectively;
 that is,
 the number of columns and lines.
 .SS ESCDELAY
-For
+When reading key strokes from a window in keypad mode,
 .I curses
-to distinguish the ESC character resulting from a user's press of the
-\*(``Escape\*('' key on the input device from one beginning an
-.I "escape sequence"
-(as commonly produced by function keys),
-it waits after the escape character to see if further characters are
-available on the input stream within a short interval.
+distinguishes the ESC character resulting from a user's press of the
+\*(``Escape\*('' key on the input device
+from one beginning an escape sequence
+(commonly produced by function keys),
+by waiting after the escape character
+to see if further characters are available
+on the input stream within a short interval.
 .B \%ESCDELAY
 stores this interval in milliseconds.
 .PP
@@ -421,7 +424,9 @@ Segmentation\*(''
 .UE
 .PP
 \fB\%getcchar\fP(3X)
-further discusses
+further discusses the
+.I \%ncurses
+extension
 .BR \%CCHARW_MAX "."
 .PP
 \fB\%curses\fP(3X),

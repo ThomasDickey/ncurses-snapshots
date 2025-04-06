@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.123 2025/03/01 21:33:30 tom Exp $
-.TH curs_mouse 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.126 2025/04/05 22:08:22 tom Exp $
+.TH curs_mouse 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -120,9 +120,10 @@ member has exactly one bit set indicating the event type.
 .PP
 .I \%ncurses
 ignores mouse events when input is in canonical (\*(``cooked\*('') mode,
-and produces an error beep when canonical mode is simulated in a window
-by a function such as \fB\%getstr\fP(3X) that expects a linefeed to
-terminate its input loop.
+and produces an error beep when they occur
+while the library simulates canonical mode in a window,
+as with \fB\%getstr\fP(3X),
+which expects a line feed to terminate its input loop.
 .SS has_mouse
 The terminal type or operating system interface
 must support the encoding of mouse events.
@@ -372,20 +373,20 @@ or,
 with motion,
 as a \*(``drag\*(''.
 .PP
-Calling
-.B \%mouseinterval(0)
-disables click resolution.
 When
 .I \%ncurses
 detects a mouse event,
 it awaits further input activity up to this interval,
 and then checks for a subsequent mouse event which can be combined
 with the first event.
-If the timeout expires without input activity
-(which would happen with a zero interval),
+If the timeout expires without input activity,
 then no click resolution occurs.
+Calling
+.B \%mouseinterval(0)
+disables click resolution.
 .PP
-This function returns the previous interval value.
+.B \%mouseinterval
+returns the previous interval value.
 Use
 .B \%mouseinterval(\-1)
 to obtain the interval without altering it.
@@ -579,6 +580,7 @@ prototyped in
 .PP
 .RS 8
 .EX
+.nf
 extern int mouse_set(long int);
 extern int mouse_on(long int);
 extern int mouse_off(long int);
@@ -586,6 +588,7 @@ extern int request_mouse_pos(void);
 extern int map_button(unsigned long);
 extern void wmouse_position(WINDOW *, int *, int *);
 extern unsigned long getmouse(void), getbmap(void);
+.fi
 .EE
 .RE
 .bP

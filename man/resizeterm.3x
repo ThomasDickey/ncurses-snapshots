@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1996-on
 .\"
-.\" $Id: resizeterm.3x,v 1.60 2025/03/15 21:12:18 tom Exp $
-.TH resizeterm 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: resizeterm.3x,v 1.63 2025/04/05 22:26:38 tom Exp $
+.TH resizeterm 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .de bP
 .ie n  .IP \(bu 4
 .el    .IP \(bu 2
@@ -89,7 +89,6 @@ changed, it calls \fB\%resizeterm\fP to update its data structures.
 An application which establishes its own \fB\%SIGWINCH\fP handler
 can call \fB\%resizeterm\fP, but in that case, the library will not
 see \fB\%SIGWINCH\fP, and proper layout will rely upon the application.
-.SH FUNCTIONS
 .SS resizeterm
 The function \fB\%resizeterm\fP resizes the standard and current windows
 (i.e., \fB\%stdscr\fP and \fB\%curscr\fP)

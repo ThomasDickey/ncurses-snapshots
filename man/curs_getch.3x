@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.121 2025/03/15 22:04:20 tom Exp $
-.TH curs_getch 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.127 2025/04/05 22:04:30 tom Exp $
+.TH curs_getch 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -163,13 +163,16 @@ is a carriage return and \fBnl\fP(3X) has been called,
 .B \%wgetch
 returns the character code for line feed instead.
 .SS "Keypad Mode"
-To
-.IR curses ","
-key strokes not from the alphabetic section of the keyboard
-(those corresponding to the ECMA-6 character set\(emsee
-\fI\%ascii\fP(7)\(emoptionally modified by either the control or shift
-keys)
-are treated as
+Call \fB\%keypad\fP(3X) on a window to configure keypad mode
+when reading input from it.
+In
+.IR "keypad mode" ","
+.I curses
+treats key strokes not from the alphabetic section of the keyboard
+(those corresponding to the ECMA-6 character set \(em
+see \fI\%ascii\fP(7) \(em
+optionally modified by either the control or shift keys)
+as
 .I function
 keys.
 (In
@@ -178,14 +181,16 @@ the term \*(``function key\*('' includes but is not limited to keycaps
 engraved with \*(``F1\*('',
 \*(``PF1\*('',
 and so on.)
-If the window is in keypad mode,
-these produce a numeric code corresponding to the
+If a window is in keypad mode,
+.B \%wgetch
+translates these key strokes to a numeric code corresponding to the
 .B KEY_
-symbols listed in subsection \*(``Predefined Key Codes\*('' below;
-otherwise,
-they transmit a sequence of codes typically starting with the escape
-character,
-and which must be collected with multiple
+symbols listed in subsection \*(``Predefined Key Codes\*('' below.
+If a window is not in keypad mode,
+.B \%wgetch
+returns a sequence of codes
+typically starting with the escape character,
+which the application must collect individually with multiple
 .B \%wgetch
 calls.
 .bP
@@ -195,16 +200,16 @@ header file declares many
 .I "predefined function keys"
 whose names begin with
 .BR KEY_ ";"
-these object-like macros have values outside the range of eight-bit
-character codes.
+these object-like macros
+have integer values outside the range of eight-bit character codes.
 .bP
 In
 .IR \%ncurses ","
 .I "user-defined function keys"
 are configured with \fB\%define_key\fP(3X);
 they have no names,
-but are also expected to have values outside the range of eight-bit
-codes.
+but are also expected to
+have integer values outside the range of eight-bit character codes.
 .PP
 A variable intended to hold a function key code must thus be of type
 .I short
@@ -237,33 +242,34 @@ defined by the terminal.
 .bP
 If the escape sequence matches no function keys
 defined for the terminal type,
+call
 .B \%wgetch
-returns the code of the last
-(most recent)
-character it has read.
+repeatedly to obtain
+the codes of the individual characters of the sequence,
+in the order they occurred in the input.
 .bP
 If
 .B \%wgetch
 cannot decide the validity of the input as a function key
 because it has not read enough characters to disambiguate it,
 the function waits until it has this information or the
-.IR "escape delay" ","
-configured by the global variable
-.I \%ESCDELAY
-(an extension;
-see section \*(``EXTENSIONS\*('' below)
+.I "escape delay"
+elapses.
+Configure the escape delay
+with the global variable
+.IR \%ESCDELAY ","
+an extension
+(see section \*(``EXTENSIONS\*('' below),
 or the environment variable of the same name
 (see section \*(``ENVIRONMENT\*('' of \fB\%ncurses\fP(3X)),
-also an extension,
-elapses.
+also an extension.
 .PP
 Consequently,
 a user of a
 .I curses
 application that employs keypad mode
 may experience a pause or \*(``hang\*(''
-after the escape key is pressed
-while
+after pressing the escape key while
 .I curses
 collects sufficient characters to disambiguate the input.
 If the window is in \*(``no time-out\*('' mode,
@@ -471,8 +477,23 @@ or
 on failure.
 .B \%wgetch
 fails if
-.bP
 its timeout expires without any data arriving,
+which cannot happen if \fB\%nodelay\fP(3X) is in effect on the window.
+.PP
+In
+.IR \%ncurses ,
+.B \%wgetch
+also fails if
+.bP
+the
+.I curses
+screen has not been initialized,
+.bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
+.I win
+is a null pointer,
 or
 .bP
 execution was interrupted by a signal,
@@ -481,32 +502,35 @@ in which case
 is set to
 .IR \%EINTR "."
 .PP
+Functions prefixed with \*(``mv\*('' first perform cursor movement and
+fail if the position
+.RI ( y ,
+.IR x ")"
+is outside the window boundaries.
+.PP
 .B \%ungetch
 returns
 .B OK
 on success and
 .B ERR
 on failure.
+In
+.IR \%ncurses ,
 .B \%ungetch
-fails if there is no more room in the input queue.
+fails if
+.bP
+the
+.I curses
+screen has not been initialized,
+or
+.bP
+there is no more room in the input queue.
 .PP
 .B \%has_key
 returns
 .B TRUE
 or
 .BR FALSE "."
-.PP
-Functions taking a
-.I \%WINDOW
-pointer argument fail if
-.I win
-is a null pointer.
-.PP
-Functions prefixed with \*(``mv\*('' first perform cursor movement and
-fail if the position
-.RI ( y ,
-.IR x ")"
-is outside the window boundaries.
 .SH NOTES
 .BR \%getch ","
 .BR \%mvgetch ","
@@ -736,10 +760,15 @@ introduced
 .I \%wgetch
 and its variants.
 .PP
+SVr3 (1987)
+added
+.IR \%ungetch "."
+.PP
 .I \%ncurses
 1.9.9g (1996)
-added
-.IR \%has_key "."
+furnished the
+.I \%has_key
+extension.
 .SH SEE ALSO
 ECMA-6 \*(``7-bit coded Character Set\*(''
 \%<https://\*:ecma\-international\*:.org/\

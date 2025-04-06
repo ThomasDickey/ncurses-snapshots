@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.139 2025/02/15 18:38:01 tom Exp $
-.TH curs_util 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.141 2025/04/05 22:22:48 tom Exp $
+.TH curs_util 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -229,7 +229,8 @@ variables,
 using a value in those to override the results
 from the operating system or terminal database.
 .IP
-\fI\%curses\fP also updates the screen size in response to
+.I curses
+also updates the screen size in response to
 \fBSIGWINCH\fP,
 unless overridden by the \fILINES\fP or \fI\%COLUMNS\fP environment
 variables,
@@ -380,9 +381,13 @@ The limitation to 30 seconds
 and the use of \fBnapms\fP
 differ from other implementations.
 .bP
-SVr4 curses does not delay if no padding character is available.
+SVr4
+.I curses
+does not delay if no padding character is available.
 .bP
-NetBSD curses uses \fBnapms\fP when no padding character is available,
+NetBSD
+.I curses
+uses \fBnapms\fP when no padding character is available,
 but does not take timing into account when using the padding character.
 .PP
 Neither limits the delay.
@@ -427,9 +432,13 @@ and were later
 (in 1988)
 incorporated into SVr4.
 Oddly,
-there are no such functions in the 4.3BSD curses sources.
+there are no such functions in the 4.3BSD
+.I curses
+sources.
 .bP
-Most implementations simply dump the binary \fI\%WINDOW\fP structure
+Most implementations simply dump the binary
+.I \%WINDOW
+structure
 to the file.
 These include SVr4
 .IR curses ,
@@ -439,16 +448,19 @@ and
 .IR \%PDCurses ,
 as well as older \fI\%ncurses\fP versions.
 This implementation
-(as well as the X/Open variant of Solaris curses,
+(as well as
+.IR \%xcurses ","
+the X/Open variant of Solaris
+.IR curses ","
 dated 1995)
 uses textual dumps.
 .IP
-The implementations that use binary dumps use block-I/O
+The implementations that use binary dumps use block I/O
 (\fIwrite\fP(2) and \fIread\fP(2) functions).
-Those that use textual dumps use buffered-I/O.
+Those that use textual dumps use buffered I/O.
 A few applications may happen to write extra data in the file using
 these functions.
-Doing that can run into problems mixing block- and buffered-I/O.
+Doing that can run into problems mixing block and buffered I/O.
 This implementation reduces the problem on writes by flushing the
 output.
 However,
@@ -480,7 +492,8 @@ analogous to \*(``\*^@\*('',
 C0 controls.
 .IP
 X/Open Curses does not document whether \fBunctrl\fP can be called
-before initializing curses.
+before initializing
+.IR curses "."
 This implementation permits that,
 and returns the \*(``\*~@\*('',
 etc.,
@@ -511,10 +524,12 @@ i.e.,
 it determines whether to use the \*(``M\-\*('' prefix
 for \*(``meta\*('' keys (codes in the range 128 to 255).
 Both \fB\%use_legacy_coding\fP(3X) and \fBmeta\fP(3X) succeed only after
-curses is initialized.
+.I curses
+is initialized.
 X/Open Curses does not document the treatment of codes 128 to 159.
 When treating them as \*(``meta\*('' keys
-(or if \fBkeyname\fP is called before initializing curses),
+(or if \fBkeyname\fP is called before initializing
+.IR curses "),"
 this implementation returns strings \*(``M\-\*^@\*('',
 \*(``M\-\*^A\*('',
 etc.
@@ -523,7 +538,8 @@ X/Open Curses documents \fBunctrl\fP as declared in \fB<unctrl.h>\fP,
 which \fI\%ncurses\fP does.
 However,
 \fI\%ncurses\fP' \fB<curses.h>\fP includes \fB<unctrl.h>\fP,
-matching the behavior of SVr4 curses.
+matching the behavior of SVr4
+.IR curses "."
 Other implementations may not do that.
 .SS "use_env, use_tioctl"
 If \fI\%ncurses\fP is configured to provide the sp-functions extension,
@@ -531,7 +547,8 @@ the state of \fBuse_env\fP and \fBuse_tioctl\fP may be updated before
 creating each \fIscreen\fP rather than once only
 (\fBcurs_sp_funcs\fP(3X)).
 This feature of \fBuse_env\fP
-is not provided by other implementations of curses.
+is not provided by other implementations of
+.IR curses "."
 .SH HISTORY
 4BSD (1980)
 introduced
@@ -558,7 +575,7 @@ reading and writing window dumps
 with \fI\%fread\fP(3) and \fI\%fwrite\fP(3),
 respectively.
 .PP
-SVr4 (1989) supplied
+SVr4 (1989) furnished
 .IR \%use_env "."
 .PP
 X/Open Curses Issue\ 4 (1995) specified

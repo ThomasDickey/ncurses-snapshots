@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_delch.3x,v 1.47 2025/01/19 00:49:39 tom Exp $
-.TH curs_delch 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_delch.3x,v 1.49 2025/04/05 21:59:53 tom Exp $
+.TH curs_delch 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -39,6 +39,11 @@
 .ie t .ds '' ''
 .el   .ds '' ""
 .\}
+.
+.de bP
+.ie n  .IP \(bu 4
+.el    .IP \(bu 2
+..
 .SH NAME
 \fB\%delch\fP,
 \fB\%wdelch\fP,
@@ -78,12 +83,18 @@ on failure.
 .PP
 In
 .IR \%ncurses ,
-they return
-.B ERR
-if
+these functions fail if
+.bP
+the
+.I curses
+screen has not been initialized,
+or
+.bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
 .I win
-is
-.IR NULL "."
+is a null pointer.
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position

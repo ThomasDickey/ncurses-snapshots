@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.139 2025/02/15 18:38:01 tom Exp @
+  * @Id: curs_util.3x,v 1.141 2025/04/05 22:22:48 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2025-02-15 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_util 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2025-02-15 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2025-04-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 
@@ -292,9 +292,9 @@
        The  limitation  to  30  seconds and the use of <STRONG>napms</STRONG> differ from other
        implementations.
 
-       <STRONG>o</STRONG>   SVr4 curses does not delay if no padding character is available.
+       <STRONG>o</STRONG>   SVr4 <EM>curses</EM> does not delay if no padding character is available.
 
-       <STRONG>o</STRONG>   NetBSD curses uses <STRONG>napms</STRONG> when no padding  character  is  available,
+       <STRONG>o</STRONG>   NetBSD <EM>curses</EM> uses <STRONG>napms</STRONG> when no padding  character  is  available,
            but  does  not  take  timing  into  account  when using the padding
            character.
 
@@ -331,20 +331,20 @@
            source, the functions (along with <STRONG>scr_init</STRONG>, etc.)  originated  with
            the University of California, Berkeley (in 1982) and were later (in
            1988) incorporated into SVr4.  Oddly, there are no  such  functions
-           in the 4.3BSD curses sources.
+           in the 4.3BSD <EM>curses</EM> sources.
 
        <STRONG>o</STRONG>   Most implementations simply dump the binary <EM>WINDOW</EM> structure to the
            file.  These include SVr4 <EM>curses</EM>, NetBSD <EM>curses</EM>, and  <EM>PDCurses</EM>,  as
            well  as  older  <EM>ncurses</EM> versions.  This implementation (as well as
-           the X/Open variant of Solaris  curses,  dated  1995)  uses  textual
-           dumps.
+           <EM>xcurses</EM>, the X/Open variant of Solaris  <EM>curses</EM>,  dated  1995)  uses
+           textual dumps.
 
-           The  implementations  that use binary dumps use block-I/O (<STRONG>write(2)</STRONG>
-           and <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use buffered-
+           The  implementations  that use binary dumps use block I/O (<STRONG>write(2)</STRONG>
+           and <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use  buffered
            I/O.  A few applications may happen to write extra data in the file
            using these functions.  Doing that can  run  into  problems  mixing
-           block-  and  buffered-I/O.  This implementation reduces the problem
-           on writes by flushing the output.  However,  reading  from  a  file
+           block and buffered I/O.  This implementation reduces the problem on
+           writes by flushing  the  output.   However,  reading  from  a  file
            written using mixed schemes may not be successful.
 
 
@@ -364,7 +364,7 @@
            "~A", etc., analogous to "^@", "^A", C0 controls.
 
            X/Open Curses does not document whether <STRONG>unctrl</STRONG> can be called before
-           initializing curses.  This implementation permits that, and returns
+           initializing <EM>curses</EM>.  This implementation permits that, and returns
            the "~@", etc., values in that case.
 
        <STRONG>o</STRONG>   parameter values outside the 0 to 255 range.  <STRONG>unctrl</STRONG> returns a null
@@ -383,22 +383,22 @@
        Likewise, the <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG> function allows the caller to change the  output
        of  <STRONG>keyname</STRONG>,  i.e.,  it  determines  whether to use the "M-" prefix for
        "meta"   keys   (codes   in   the   range   128    to    255).     Both
-       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  curses  is
+       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  <EM>curses</EM>  is
        initialized.  X/Open Curses does not document the  treatment  of  codes
        128 to 159.  When treating them as "meta" keys (or if <STRONG>keyname</STRONG> is called
-       before  initializing  curses),  this  implementation  returns   strings
+       before  initializing  <EM>curses</EM>),  this  implementation  returns   strings
        "M-^@", "M-^A", etc.
 
        X/Open Curses documents <STRONG>unctrl</STRONG> as declared in <STRONG>&lt;unctrl.h&gt;</STRONG>, which <EM>ncurses</EM>
        does.  However, <EM>ncurses</EM>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>,  matching  the
-       behavior of SVr4 curses.  Other implementations may not do that.
+       behavior of SVr4 <EM>curses</EM>.  Other implementations may not do that.
 
 
 </PRE><H3><a name="h3-use_env_use_tioctl">use_env, use_tioctl</a></H3><PRE>
        If  <EM>ncurses</EM>  is  configured  to provide the sp-functions extension, the
        state of <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> may be  updated  before  creating  each
        <EM>screen</EM>  rather  than  once  only  (<STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).  This feature of
-       <STRONG>use_env</STRONG> is not provided by other implementations of curses.
+       <STRONG>use_env</STRONG> is not provided by other implementations of <EM>curses</EM>.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -410,7 +410,7 @@
        and  <EM>putwin</EM>,  reading  and  writing  window  dumps  with  <STRONG>fread(3)</STRONG>  and
        <STRONG>fwrite(3)</STRONG>, respectively.
 
-       SVr4 (1989) supplied <EM>use</EM><STRONG>_</STRONG><EM>env</EM>.
+       SVr4 (1989) furnished <EM>use</EM><STRONG>_</STRONG><EM>env</EM>.
 
        X/Open Curses Issue 4 (1995) specified <EM>key</EM><STRONG>_</STRONG><EM>name</EM> and <EM>wunctrl</EM>.
 
@@ -424,7 +424,7 @@
 
 
 
-ncurses 6.5                       2025-02-15                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.5                       2025-04-05                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

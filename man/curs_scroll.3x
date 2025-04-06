@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_scroll.3x,v 1.57 2025/02/02 00:02:49 tom Exp $
-.TH curs_scroll 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_scroll.3x,v 1.59 2025/04/05 22:20:39 tom Exp $
+.TH curs_scroll 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -122,6 +122,9 @@ the
 .I curses
 screen has not been initialized,
 .bP
+(for functions taking a
+.I \%WINDOW
+pointer argument)
 .I win
 is a null pointer,
 or

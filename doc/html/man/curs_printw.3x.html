@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_printw.3x,v 1.57 2025/01/19 00:51:10 tom Exp @
+  * @Id: curs_printw.3x,v 1.60 2025/04/05 22:20:25 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_printw 3x 2025-01-18 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_printw 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_printw 3x 2025-01-18 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_printw 3x 2025-04-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
 
@@ -114,31 +114,34 @@
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       While <STRONG>printw</STRONG> was implemented in 4BSD (November  1980),  it  was  unused
-       until  4.2BSD  (August  1983), which employed it for games.  That early
-       version of <EM>curses</EM> preceded the ANSI C standard of 1989.  It did not use
-       <EM>varargs.h</EM>,  though  that  had been available since Seventh Edition Unix
+       4BSD (1980) introduced <EM>wprintw</EM> and its variants.  It implemented all as
+       functions, not macros; this initial distribution of <EM>curses</EM> preceded the
+       ANSI C standard of 1989, prior to which a variadic macro  facility  was
+       not  widely  available.   <EM>printw</EM>  went unused in Berkeley distributions
+       until 4.1cBSD (1983), which employed it in games.  4BSD's  <EM>wprintw</EM>  did
+       not  use <EM>varargs.h</EM>, which had been available since Seventh Edition Unix
        (1979).  In 1991 (a couple of years after SVr4 was generally available,
        and  after  the C standard was published), other developers updated the
        library, using <EM>stdarg.h</EM> internally in 4.4BSD <EM>curses</EM>.   Even  with  this
        improvement,  BSD  <EM>curses</EM>  did  not  use  function prototypes (nor even
        declare functions) in <EM>curses.h</EM> until 1992.
 
-       SVr2 (1984) documented <STRONG>printw</STRONG> and <STRONG>wprintw</STRONG> tersely as "printf on <STRONG>stdscr</STRONG>"
-       and "printf on <EM>win</EM>", respectively.
+       4BSD documented <EM>printw</EM> and <EM>wprintw</EM> tersely as "printf  on  <EM>stdscr</EM>"  and
+       "printf on <EM>win</EM>", respectively.
 
-       SVr3  (1987)  added  <STRONG>mvprintw</STRONG>  and <STRONG>mvwprintw</STRONG>, with a three-line summary
-       asserting that they were analogous to <STRONG>printf(3)</STRONG>,  explaining  that  the
-       string  that  <STRONG>printf(3)</STRONG> would write to the standard output stream would
-       instead be output  using  <STRONG>waddstr</STRONG>  to  the  given  window.   SVr3  also
-       implemented  <STRONG>vwprintw</STRONG>,  describing  its  third  parameter as a <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,
-       defined in <EM>varargs.h</EM>, and referred the reader to the manual  pages  for
+       SVr3  summarized the functions in three lines, asserting that they were
+       analogous to <STRONG>printf(3)</STRONG>, explaining that the string that <STRONG>printf(3)</STRONG> would
+       write  to  the  standard  output  stream  would instead be output using
+       <EM>waddstr</EM> to the given window.
+
+       SVr3 added <EM>vwprintw</EM>, describing  its  third  parameter  as  a  <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,
+       defined  in  <EM>varargs.h</EM>, and referred the reader to the manual pages for
        <EM>varargs</EM> and <EM>vprintf</EM> for detailed descriptions.
 
-       SVr4  (1989)  introduced  no new variations of <EM>printw</EM>, but provided for
+       SVr4 (1989) introduced no new variations of <EM>printw</EM>,  but  provided  for
        using either <EM>varargs.h</EM> or <EM>stdarg.h</EM> to define the <EM>va</EM><STRONG>_</STRONG><EM>list</EM> type.
 
-       X/Open Curses Issue 4 (1995), defined <STRONG>vw_printw</STRONG>  to  replace  <STRONG>vwprintw</STRONG>,
+       X/Open  Curses  Issue 4  (1995), defined <EM>vw</EM><STRONG>_</STRONG><EM>printw</EM> to replace <EM>vwprintw</EM>,
        stating that its <EM>va</EM><STRONG>_</STRONG><EM>list</EM> type is defined in <EM>stdarg.h</EM>.
 
 
@@ -147,7 +150,7 @@
 
 
 
-ncurses 6.5                       2025-01-18                   <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
+ncurses 6.5                       2025-04-05                   <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
