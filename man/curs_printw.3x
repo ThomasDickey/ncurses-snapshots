@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_printw.3x,v 1.60 2025/04/05 22:20:25 tom Exp $
-.TH curs_printw 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_printw.3x,v 1.61 2025/04/19 23:28:38 tom Exp $
+.TH curs_printw 3X 2025-04-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -209,6 +209,19 @@ to the given window.
 .\" GBR can't find a source to cite for this paraphrase,
 .\" even after checking
 .\" <https://github.com/ryanwoodsmall/oldsysv/tree/master>.
+.\"
+.\" The indicated paraphrase is from page 432:
+.\" Unix System V Programmer's Reference Manual
+.\" Prentice-Hall
+.\" ISBN 0-13-940479-1
+.\" (bitsavers has 3rd printing from 1987)
+.\"
+.\" This lists mvprintw without detail, and printw as "printf on stdscr":
+.\" Unix Programmer's Manual
+.\" System Calls and Library Routines
+.\" CBS College Publishing's UNIX System Library
+.\" Holt, Rinehard and Winston, 1986
+.\" ISBN 0-03-009314-7
 .PP
 SVr3 added
 .IR \%vwprintw ","

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.114 2025/04/05 21:58:37 tom Exp $
-.TH curs_add_wch 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.115 2025/04/19 22:53:52 tom Exp $
+.TH curs_add_wch 3X 2025-04-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -191,26 +191,6 @@ are not written at the new cursor position but combine with the active
 complex character until another spacing character is written to the
 window or the cursor is moved.
 .PP
-If the cursor is not at the bottom of the scrolling region
-and advancement occurs at the right margin,
-the cursor automatically wraps to the beginning of the next line.
-.PP
-If the cursor is at the bottom of the scrolling region
-when advancement occurs at the right margin,
-and \fB\%scrollok\fP(3X) is enabled for
-.IR win ,
-the scrolling region scrolls up one line
-and the cursor wraps as above.
-Otherwise,
-advancement and scrolling do not occur,
-and
-.B \%waddch
-returns
-.BR ERR "."
-.\" Does writing to the bottom-right character cell of the screen work
-.\" when `scrollok()` is disabled and the terminal lacks `ich` and
-.\" `ich1` capabilities?
-.PP
 If
 .I wch
 is a
@@ -234,6 +214,7 @@ then advances as if from the right margin.
 Tab advances the cursor to the next tab stop
 (possibly on the next line);
 these are placed at every eighth column by default.
+.IP
 Alter the tab interval with the
 .B \%TABSIZE
 extension;
@@ -247,6 +228,53 @@ it is drawn in printable form using the same convention as
 Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
 does not return the character itself,
 but its \fB\%wunctrl\fP(3X) representation.
+.PP
+Adding spacing characters with \fB\%wadd_wch\fP
+causes it to wrap at the right margin of the window:
+.bP
+If the cursor is not at the bottom of the scrolling region
+and advancement occurs at the right margin,
+the cursor automatically wraps to the beginning of the next line.
+.bP
+If the cursor is at the bottom of the scrolling region
+when advancement occurs at the right margin,
+and \fB\%scrollok\fP(3X) is enabled for
+.IR win ,
+the scrolling region scrolls up one line
+and the cursor wraps as above.
+Otherwise,
+advancement and scrolling do not occur,
+and
+.B \%wadd_wch
+returns
+.BR ERR "."
+.PP
+A window's margins may coincide with the screen boundaries.
+This may be a problem when
+.I \%ncurses
+updates the screen to match the curses window.
+When their right and bottom margins coincide,
+.I \%ncurses
+uses different strategies to handle the variations of scrolling and wrapping
+at the lower-right corner
+by depending on the terminal capabilities:
+.bP
+If the terminal does not automatically wrap as characters
+are added at the right margin
+(i.e., auto right margins),
+.I \%ncurses
+writes the character directly.
+.bP
+If the terminal has auto right margins,
+but also has capabilities for turning auto margins off and on,
+.I \%ncurses
+turns the auto margin feature off temporarily
+when writing to the lower-right corner.
+.bP
+If the terminal has an insertion mode which can be turned off and on,
+.I \%ncurses
+writes the character just before the lower-right corner,
+and then inserts a character to push the update into the corner.
 .SS wecho_wchar
 .B \%echo_wchar
 and
