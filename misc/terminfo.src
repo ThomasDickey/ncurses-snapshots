@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1184 $
-#	$Date: 2025/04/12 21:05:39 $
+#	$Revision: 1.1186 $
+#	$Date: 2025/04/26 20:10:42 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1152,19 +1152,18 @@ linux-vt|Linux console using VT codes for graphics,
 kon|kon2|Kanji ON Linux console,
 	am, bce, ccc, eo, mir, msgr, xenl, xon,
 	it#8, ncv#18,
-	bel=^G, civis=\E[?25l, cnorm=\E[?25h, cr=\r, cub1=^H,
-	cud1=\n, dim=\E[2m, dsl=\E[?H\E[?E, el1=\E[1K, fsl=\E[?F,
-	ht=^I, hts=\EH, ind=\n,
+	bel=^G, cr=\r, cub1=^H, cud1=\n, dim=\E[2m, dsl=\E[?H\E[?E,
+	el1=\E[1K, fsl=\E[?F, ht=^I, hts=\EH, ind=\n,
 	initc=\E]P%p1%x%p2%02x%p3%02x%p4%02x, kb2=\E[G, kbs=^?,
 	khome=\E[1~, kspd=^Z, nel=\r\n, ri=\EM, rmso=\E[27m,
 	rmul=\E[24m, rs1=\Ec,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5
 	    %t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
 	sgr0=\E[0;10m, tbc=\E[3g, tsl=\E[?T, u8=\E[?6c,
-	use=ansi+arrows, use=ansi+csr, use=ansi+cup,
-	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
-	use=ansi+local, use=ansi+sgrbold, use=ansi+rca2,
-	use=dec+sl, use=ecma+sgr, use=klone+color,
+	use=vt220+cvis, use=ansi+arrows, use=ansi+csr,
+	use=ansi+cup, use=ansi+enq, use=ansi+erase, use=ansi+idc,
+	use=ansi+idl, use=ansi+local, use=ansi+sgrbold,
+	use=ansi+rca2, use=dec+sl, use=ecma+sgr, use=klone+color,
 	use=linux+lockeys, use=linux+sfkeys, use=vt220+ufkeys,
 	use=vt220+pcedit,
 
@@ -8658,8 +8657,7 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	ncv@, U8#1,
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
 	     yzz{{||}}~~,
-	blink=\E[5m, bold=\E[1m, civis=\E[?25l,
-	cnorm=\E[34h\E[?25h, cub1=^H, cud1=\n,
+	blink=\E[5m, bold=\E[1m, cub1=^H, cud1=\n,
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\EM, cvvis=\E[34l,
 	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, el1=\E[1K, flash=\Eg,
 	hpa=\E[%i%p1%dG, ich=\E[%p1%d@, indn=\E[%p1%dS, is2=\E)0,
@@ -8674,7 +8672,7 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
 	use=ecma+color, use=vt100+pf1-pf4, use=vt220+pcedit,
 	use=xterm+alt1049, use=xterm+kbs, use=vt100+enq,
-	use=vt100+4bsd, use=xterm+r5+fkeys,
+	use=vt100+4bsd, use=xterm+r5+fkeys, use=wyse+cvis,
 
 screen|VT 100/ANSI X3.64 virtual terminal,
 	use=screen4,
@@ -9322,6 +9320,42 @@ sun-color|Sun Microsystems Workstation console with color support (IA systems),
 	     %=%t3%e%p1%d%;m,
 	sgr=\E[0%?%p6%t;1%;%?%p1%p3%|%t;7%;m, use=ansi+local,
 	use=sun, use=klone+color,
+
+# These date from March 2017:
+# https://www.illumos.org/issues/10360 terminfo: sun-color has 256 colors
+# https://www.illumos.org/issues/10359 terminfo: add underline for sun-color
+#
+# https://www.illumos.org/issues/14919 tem: implement xenl
+# https://illumos.topicbox.com/groups/developer/T58d08b48578a674d-M491357a8bb9a7d39b114097f
+#
+# The developer chose to modify the existing "sun-color" (changing the number
+# of colors and color-pairs without adjusting setaf and setab) rather than
+# following the advice given in review to add a new terminal description.  As a
+# result, some ncurses applications will render color incorrectly, while a few
+# hard-coded applications may work as intended.
+#
+# These variants are based on reading the source code.
+# https://github.com/tsoome/illumos-gate/blob/loader/usr/src/boot/sys/boot/common/tem.c
+illumos|Illumos framebuffer console,
+	xenl,
+	blink=\E[5m, dim=\E[2m, rmam=\E[?7l, rmso=\E[27m,
+	rmul=\E[24m,
+	sgr=\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?
+	    %p4%t;5%;m,
+	sgr0=\E[0m, smam=\E[?7h, smul=\E[4m, use=ecma+index,
+	use=ansi+tabs, use=ansi+rca, use=vt220+cvis,
+	use=sun-color, use=ansi+apparrows,
+#
+# Referring to these as "sun-" is misleading, but close to the intent of the
+# developer -TD
+sun-16color|Illumos framebuffer console with 16 colors,
+	use=ibm+16color, use=illumos,
+
+sun-256color|Illumos framebuffer console with 256 colors,
+	use=xterm+256setaf, use=illumos,
+
+sun-direct|Illumos framebuffer console with direct-color,
+	use=xterm+indirect, use=illumos,
 
 #### Iris consoles
 #
@@ -13038,10 +13072,9 @@ wy99-ansi|Wyse WY-99GT in ANSI mode (int'l PC keyboard),
 	am, km, mir, msgr, xenl,
 	cols#80, it#8, lines#25, vt#3,
 	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx{{||}}~~,
-	bel=^G, cbt=\E[Z, civis=\E[?25l, clear=\E[H\E[J$<200>,
-	cnorm=\E[34h\E[?25h, cr=\r, cub=\E[%p1%dD$<1>,
-	cub1=\010$<1>, cud=\E[%p1%dB, cud1=\ED,
-	cuf=\E[%p1%dC$<1>, cuf1=\E[C$<1>,
+	bel=^G, cbt=\E[Z, clear=\E[H\E[J$<200>, cr=\r,
+	cub=\E[%p1%dD$<1>, cub1=\010$<1>, cud=\E[%p1%dB,
+	cud1=\ED, cuf=\E[%p1%dC$<1>, cuf1=\E[C$<1>,
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\EM,
 	cvvis=\E[34l\E[?25h, dim=\E[2m, ech=\E[%p1%dX,
 	ed=\E[J$<8*>, el=\E[K$<1>, el1=\E[1K$<1>, enacs=\E)0,
@@ -13063,7 +13096,12 @@ wy99-ansi|Wyse WY-99GT in ANSI mode (int'l PC keyboard),
 	sgr0=\E[m\017\E["q, smacs=^N, smam=\E[?7h, smir=\E[4h,
 	smkx=\E[?1h, vpa=\E[%i%p1%dd, use=ansi+csr, use=ansi+idl,
 	use=ansi+pp, use=ansi+sgrbold, use=vt100+pf1-pf4,
-	use=vt220+ufkeys,
+	use=vt220+ufkeys, use=wyse+cvis,
+
+# http://www.bitsavers.org/pdf/wyse/WY-99/880411-02A_WY-99GT_User_Manual_198703.pdf
+# "CSI 34 h" is WYULCURM, "Block cursor on" vs "Underline cursor on"
+wyse+cvis|Wyse cursor-mode,
+	civis=\E[?25l, cnorm=\E[34h\E[?25h,
 
 #   This is the american terminal. Here tabs work fine.
 # From: Francesco Potorti` <F.Potorti@cnuce.cnr.it>, 24 Aug 1998
@@ -13374,8 +13412,7 @@ wy85-8bit|wyse85-8bit|Wyse 85 in 8-bit mode,
 wy185|wyse185|Wyse 185,
 	hs, km, mir, xenl, xon,
 	wsl#80,
-	civis=\E[?25l, clear=\E[H\E[J$<40>,
-	cnorm=\E[34h\E[?25h, csr=\E[%i%p1%d;%p2%dr$<20>,
+	clear=\E[H\E[J$<40>, csr=\E[%i%p1%d;%p2%dr$<20>,
 	cub1=^H, cud1=\n, cup=\E[%i%p1%d;%p2%dH,
 	cvvis=\E[?25h\E[34l, dch=\E[%p1%dP$<3>, dch1=\E[P$<3>,
 	dim=\E[2m, dl=\E[%p1%dM$<2*>, dl1=\E[M$<2>,
@@ -13398,7 +13435,7 @@ wy185|wyse185|Wyse 185,
 	use=ansi+arrows, use=ansi+inittabs, use=ansi+local,
 	use=ansi+pp, use=ansi+sgrbold, use=decid+cpr,
 	use=vt100+4bsd, use=vt220+vtedit, use=vt220+keypad,
-	use=vt220+sfkeys, use=vt220+ufkeys,
+	use=vt220+sfkeys, use=vt220+ufkeys, use=wyse+cvis,
 #
 #	Wyse 185 with 24 data lines and top status (terminal status)
 wy185-24|wyse185-24|Wyse 185 with 24 data lines,
@@ -13546,8 +13583,7 @@ wy370-nk|Wyse 370 without function keys,
 	am, ccc, hs, mir, msgr, xenl, xon,
 	colors#64, cols#80, lines#24, ncv#48, pairs#64, wsl#80,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
-	bel=^G, civis=\E[?25l, clear=\E[H\E[J$<40>,
-	cnorm=\E[34h\E[?25h, cr=\r, cub1=^H, cud1=\n,
+	bel=^G, clear=\E[H\E[J$<40>, cr=\r, cub1=^H, cud1=\n,
 	cup=\E[%i%p1%d;%p2%dH$<1>, cvvis=\E[?25h\E[34l,
 	dch=\E[%p1%dP$<1*>, dch1=\E[P$<1>, dclk=\E[31h,
 	dim=\E[2m, dl=\E[%p1%dM$<2*>, dl1=\E[M$<2>, dsl=\E[40l,
@@ -13580,7 +13616,7 @@ wy370-nk|Wyse 370 without function keys,
 	u1=\E[?38l\E)0, u2=\E[92;52"p, u3=\E~B, u4=\E[92;76"p,
 	u5=\E%!1\E[90;1"p, vpa=\E[%i%p1%dd, use=ansi+csr,
 	use=ansi+inittabs, use=ansi+local, use=ansi+pp,
-	use=ansi+sgrbold, use=decid+cpr,
+	use=ansi+sgrbold, use=decid+cpr, use=wyse+cvis,
 #
 #	Function key set for the ASCII (wy-50 compatible) keyboard
 #	This is the default 370.
@@ -13700,11 +13736,11 @@ wy520|wyse520|Wyse 520,
 	am, hs, km, mir, xenl, xon,
 	cols#80, it#8, lines#24, wsl#80,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
-	bel=^G, civis=\E[?25l, clear=\E[H\E[J$<40>,
-	cnorm=\E[34h\E[?25h, cr=\r, csr=\E[%i%p1%d;%p2%dr$<20>,
-	cub1=^H, cud1=\n, cup=\E[%i%p1%d;%p2%dH,
-	cvvis=\E[?25h\E[34l, dch=\E[%p1%dP$<3>, dch1=\E[P$<30>,
-	dim=\E[2m, dl=\E[%p1%dM$<2*>, dl1=\E[M$<2>, dsl=\E[0$~,
+	bel=^G, clear=\E[H\E[J$<40>, cr=\r,
+	csr=\E[%i%p1%d;%p2%dr$<20>, cub1=^H, cud1=\n,
+	cup=\E[%i%p1%d;%p2%dH, cvvis=\E[?25h\E[34l,
+	dch=\E[%p1%dP$<3>, dch1=\E[P$<30>, dim=\E[2m,
+	dl=\E[%p1%dM$<2*>, dl1=\E[M$<2>, dsl=\E[0$~,
 	ech=\E[%p1%dX, ed=\E[J$<40>, el=\E[K, el1=\E[1K,
 	enacs=\E)0, fsl=\E[0$}, home=\E[H, hpa=\E[%i%p1%d`,
 	ich=\E[%p1%d@$<2>, il=\E[%p1%dL$<3*>, il1=\E[L$<3>,
@@ -13724,7 +13760,7 @@ wy520|wyse520|Wyse 520,
 	use=ansi+arrows, use=ansi+csr, use=ansi+local,
 	use=ansi+pp, use=ansi+sgrbold, use=ansi+tabs,
 	use=decid+cpr, use=vt220+vtedit, use=vt220+keypad,
-	use=vt220+sfkeys, use=vt220+ufkeys,
+	use=vt220+sfkeys, use=vt220+ufkeys, use=wyse+cvis,
 #
 #       Wyse 520 with 24 data lines and status (terminal status)
 wy520-24|wyse520-24|Wyse 520 with 24 data lines,
@@ -27912,5 +27948,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add pangoterm -TD
 #	+ add kf1 to kf5 to sclp (report by Werner Fink)
 #	+ add vt100+pf1-pf4 -TD
+#
+# 2025-04-26
+#	+ add illumos, sun-16color, sun-256color, sun-direct -TD
+#	+ add wyse+cvis -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

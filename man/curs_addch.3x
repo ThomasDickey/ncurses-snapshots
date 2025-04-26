@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.136 2025/04/19 22:53:46 tom Exp $
-.TH curs_addch 3X 2025-04-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.137 2025/04/26 19:57:22 tom Exp $
+.TH curs_addch 3X 2025-04-26 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -403,8 +403,66 @@ entries include
 capabilities in which their key characters
 .RB ( pryz{|} )
 are embedded,
-and a second-hand list of their character descriptions has come to
-light.
+and a second-hand list of their character descriptions has come to light,
+which identifies them as VT100 special characters.
+.PP
+The DEC Special Character and Line Drawing Set (VT100) is indexed by
+an ASCII character in the range 96 (`) to 126 (~).
+That index character is part of the definition for the curses
+.B \%ACS_
+symbols.
+The VT100 special characters can be categorized in three groups:
+.bP
+useful graphic symbols with a standard
+.B \%ACS_
+symbol,
+(e.g., the line-drawing symbols),
+.bP
+possibly useful characters (these non-standard symbols),
+.bP
+representations of control characters (e.g., newline and vertical tabulation).
+.PP
+A few
+.B \%ACS_
+symbols do not fit into DEC's VT100 scheme.
+The AT&T Teletype 5410v1 arrow symbols and
+.B \%ACS_BLOCK
+use indices outside the range 96 to 126.
+Two of the Teletype symbols use indices in that range,
+with different meaning versus the VT100:
+.bP
+.B \%ACS_BOARD
+corresponds to the VT100 symbol for newline
+.bP
+.B \%ACS_LANTERN
+corresponds to the VT100 symbol for vertical tabulation
+.PP
+AT&T defined
+.B \%ACS_
+names for the most useful graphic symbols,
+as well as for its own.
+Its header file commented:
+.sp
+.EX
+/*
+ * Standard alternate character set.  The current ACS world is evolving,
+ * so we support only a widely available subset: the line drawing characters
+ * from the VT100, plus a few from the Teletype 5410v1.  Eventually there
+ * may be support of more sophisticated ACS line drawing, such as that
+ * in the Teletype 5410, the HP line drawing set, and the like.  There may
+ * be support for some non line oriented characters as well.
+ *
+ * Line drawing ACS names are of the form ACS_trbl, where t is the top, r
+ * is the right, b is the bottom, and l is the left.  t, r, b, and l might
+ * be B (blank), S (single), D (double), or T (thick).  The subset defined
+ * here only uses B and S.
+ */
+.EE
+.PP
+Although these less-useful graphic symbols were not given names,
+they were used in
+.I \%terminfo
+entries.
 The
 .I \%ncurses
 developers invented ACS-prefixed names for them.

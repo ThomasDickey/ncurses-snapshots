@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4275 2025/04/19 23:31:31 tom Exp $
+-- $Id: NEWS,v 1.4277 2025/04/26 20:14:16 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250426
+	+ expand note on extensions in curs_addch.3x
+	+ add illumos, sun-16color, sun-256color, sun-direct -TD
+	+ add wyse+cvis -TD
 
 20250419
 	+ add note on scrolling and lower-right corner to waddch and wadd_wch
