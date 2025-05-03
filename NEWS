@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4277 2025/04/26 20:14:16 tom Exp $
+-- $Id: NEWS,v 1.4279 2025/05/03 22:02:34 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,19 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250503
+	+ update/correct some of the rv/xr strings, checked with tack -TD
+	+ use ansi+rca in sclp -TD
+	+ use vt220+pcedit in sclp (Werner Fink)
+	+ move some building blocks from illumos to sun-color, based on
+	  illumos source-history -TD
+	+ improve use-clauses: ansi+cup, ansi+idl1, ansi+rca, ansi+rca2,
+	  ansi+sgrso, ansi+sgrul -TD
+	+ add ecma+standout, ecma+underline -TD
+	+ add rv code for alacritty -TD
+	+ add rv/xr codes for contour, ghostty, iterm2, kitty, konsole,
+	  vscode, vte, wezterm -TD
 
 20250426
 	+ expand note on extensions in curs_addch.3x
