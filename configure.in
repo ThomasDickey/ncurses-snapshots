@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.794 2025/03/01 15:05:13 tom Exp $
+dnl $Id: configure.in,v 1.797 2025/05/17 20:38:51 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.794 $)
+AC_REVISION($Revision: 1.797 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1195,13 +1195,14 @@ fi
 AC_SUBST(NCURSES_CONST)
 
 ###   use option --enable-ext-colors to turn on use of colors beyond 16.
+NCURSES_EXT_COLORS=0
+NCURSES_RGB_COLORS=0
 AC_MSG_CHECKING(if you want to use extended colors)
 AC_ARG_ENABLE(ext-colors,
 	[  --enable-ext-colors     compile for 256-color support],
 	[with_ext_colors=$enableval],
 	[with_ext_colors=$cf_dft_ext_colors])
 AC_MSG_RESULT($with_ext_colors)
-NCURSES_EXT_COLORS=0
 if test "x$with_ext_colors" = xyes ; then
 	if test "x$with_widec" != xyes ; then
 		AC_MSG_WARN(This option applies only to wide-character library)
@@ -1214,8 +1215,20 @@ if test "x$with_ext_colors" = xyes ; then
 		AC_DEFINE(HAVE_INIT_EXTENDED_COLOR,1,[Define to 1 to enable init_extended_color() function in test-programs])
 		AC_DEFINE(HAVE_RESET_COLOR_PAIRS,1,[Define to 1 to enable reset_color_pairs() function in test-programs])
 	fi
+	###   use option --enable-rgb-color to extend support for direct-color
+	AC_MSG_CHECKING(if you want to extend support for direct color)
+	AC_ARG_ENABLE(ext-colors,
+		[  --enable-rgb-color      compile for extended direct-color],
+		[with_rgb_color=$enableval],
+		[with_rgb_color=$cf_dft_rgb_color])
+	AC_MSG_RESULT($with_rgb_color)
+	if test "x$with_rgb_color" = xyes ; then
+		NCURSES_RGB_COLORS=1
+		AC_DEFINE(NCURSES_RGB_COLORS,1,[Define to 1 to compile for extended direct-color support])
+	fi
 fi
 AC_SUBST(NCURSES_EXT_COLORS)
+AC_SUBST(NCURSES_RGB_COLORS)
 
 ###   use option --enable-ext-mouse to modify coding to support 5-button mice
 AC_MSG_CHECKING(if you want to use extended mouse encoding)
@@ -1564,6 +1577,11 @@ AC_MSG_RESULT($with_scroll_hints)
 test "x$with_scroll_hints" = xyes && AC_DEFINE(USE_SCROLL_HINTS,1,[Define to 1 to compile without scroll-hints code])
 fi
 
+case x$cf_cv_abi_default in
+(x[[789]])
+	NCURSES_WGETCH_EVENTS=0
+	;;
+(*)
 AC_MSG_CHECKING(if you want wgetch-events code)
 AC_ARG_ENABLE(wgetch-events,
 	[  --enable-wgetch-events  compile with wgetch-events code],
@@ -1576,6 +1594,7 @@ if test "x$with_wgetch_events" = xyes ; then
 else
 	NCURSES_WGETCH_EVENTS=0
 fi
+esac
 AC_SUBST(NCURSES_WGETCH_EVENTS)
 
 case "$cf_cv_system_name" in

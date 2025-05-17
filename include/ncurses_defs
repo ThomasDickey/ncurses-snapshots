@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.116 2025/03/01 15:06:22 tom Exp $
+# $Id: ncurses_defs,v 1.117 2025/05/17 22:22:40 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -248,6 +248,7 @@ NCURSES_EXT_PUTWIN
 NCURSES_NO_PADDING
 NCURSES_OSPEED_COMPAT
 NCURSES_PATHSEP	':'
+NCURSES_RGB_COLORS
 NCURSES_WIDECHAR
 NEED_PTEM_H
 NO_LEAKS

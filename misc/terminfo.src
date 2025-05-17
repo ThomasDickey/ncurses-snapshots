@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1193 $
-#	$Date: 2025/05/10 21:24:30 $
+#	$Revision: 1.1197 $
+#	$Date: 2025/05/17 15:47:19 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3526,7 +3526,8 @@ nsterm-bce|AppKit Terminal.app v71+/v100.1.8+ with Mac OS X version 10.3/10.4 (b
 # Earlier reports state that these differences also apply to OS X 10.7 (Lion),
 #	TERM_PROGRAM_VERSION=303
 nsterm-build309|Terminal.app in OS X 10.8,
-	use=xterm+256setaf, use=nsterm-bce,
+	use=bracketed+paste, use=xterm+256setaf,
+	use=nsterm-bce,
 
 # removed bogus kDC7 -TD
 nsterm-build326|Terminal.app in OS X 10.9,
@@ -4527,10 +4528,11 @@ rlogin-color,
 	xr=\EP>\\|RLogin\\(([1-9][.0-9]+)\\)\E\\\\,
 	use=ansi+apparrows, use=ansi+cup, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
-	use=ansi+sgrdim, use=ecma+index, use=ecma+italics,
-	use=ecma+strikeout, use=vt420+lrmm, use=decid+cpr,
-	use=report+da2, use=report+version, use=vt100+pf1-pf4,
-	use=vt220+pcedit, use=vt220+ufkeys, use=xterm+acs,
+	use=ansi+sgrdim, use=bracketed+paste, use=ecma+index,
+	use=ecma+italics, use=ecma+strikeout, use=vt420+lrmm,
+	use=decid+cpr, use=report+da2, use=report+version,
+	use=vt100+pf1-pf4, use=vt220+pcedit, use=vt220+ufkeys,
+	use=xterm+acs,
 
 #### Command prompt
 
@@ -7701,8 +7703,9 @@ terminology-0.6.1|EFL-based terminal emulator (0.6.1),
 	kLFT3=\E[1;3D, kLFT4=\E[1;4D, kLFT5=\E[1;5D,
 	kLFT6=\E[1;6D, kLFT7=\E[1;7D, kRIT3=\E[1;3C,
 	kRIT4=\E[1;4C, kRIT5=\E[1;5C, kRIT6=\E[1;6C,
-	kRIT7=\E[1;7C, kUP=\E[1;2A, use=ansi+enq, use=xterm+pcf0,
-	use=vt100, use=xterm+256setaf,
+	kRIT7=\E[1;7C, kUP=\E[1;2A, use=ansi+enq,
+	use=bracketed+paste, use=xterm+pcf0, use=vt100,
+	use=xterm+256setaf,
 
 # 2017-11-11:
 # Tested terminology 1.0.0
@@ -8722,10 +8725,10 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	E0=\E(B, S0=\E(%p1%c, use=ecma+underline,
 	use=ansi+apparrows, use=ansi+csr, use=ansi+erase,
 	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
-	use=ansi+rca2, use=ecma+color, use=vt100+pf1-pf4,
-	use=vt220+pcedit, use=xterm+alt1049, use=xterm+kbs,
-	use=vt100+enq, use=vt100+4bsd, use=xterm+r5+fkeys,
-	use=wyse+cvis,
+	use=ansi+rca2, use=bracketed+paste, use=ecma+color,
+	use=vt100+pf1-pf4, use=vt220+pcedit, use=xterm+alt1049,
+	use=xterm+kbs, use=vt100+enq, use=vt100+4bsd,
+	use=xterm+r5+fkeys, use=wyse+cvis,
 
 screen|VT 100/ANSI X3.64 virtual terminal,
 	use=screen4,
@@ -8954,19 +8957,17 @@ screen3|VT 100/ANSI X3.64 virtual terminal (old 3.x),
 screen4|VT 100/ANSI X3.64 virtual terminal (4.x),
 	use=ecma+index, use=screen-base,
 
-# As of December 2022, screen 5.0 has not been released.
-#
-# However,
+# screen 5.0 was released in August 2024.  As of May 2025, few systems use it.
 #
 #	https://savannah.gnu.org/bugs/?36676
 #
-# mentions a change to implement italics which should be in a version 5,
-# (implemented 2016-11-05, but merged 2017-07-09).  That does away with the
-# longstanding use of SGR 3 for standout, and interprets it as italics.
+# mentions a change to implement italics (implemented 2016-11-05, merged
+# 2017-07-09), this may do away with the longstanding use of SGR 3 for
+# standout, interpreting it as italics.
 #
-# The same development branch has some support for direct-colors, but none
-# of this has been documented.
-screen5|VT 100/ANSI X3.64 virtual terminal (someday),
+# This version has limited support for direct-colors, but does not use the
+# outer terminal's $TERM in deciding if or how to apply this.
+screen5|VT 100/ANSI X3.64 virtual terminal (5.x),
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
 	use=ecma+standout, use=ecma+italics, use=ecma+index,
@@ -27989,5 +27990,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add xr code for putty -TD
 #	+ update teraterm to 5.0 -TD
 #	+ add rlogin-color -TD
+#
+# 2025-05-17
+#	+ use bracketed+paste in nsterm, rlogin-color, screen, terminology -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4281 2025/05/10 23:07:14 tom Exp $
+-- $Id: NEWS,v 1.4283 2025/05/17 18:56:42 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250517
+	+ initial changes for some ABI 7 features:
+	  + disable wgetch-events
+	  + add feature for extending mouse-buttons
+	  + add feature for extending direct-color support
+	+ use bracketed+paste in nsterm, rlogin-color, screen, terminology -TD
 
 20250510
 	+ add rv/xr codes for domterm, mintty, mlterm -TD

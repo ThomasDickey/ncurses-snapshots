@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.701 2025/03/01 17:17:12 tom Exp $
+ * $Id: curses.priv.h,v 1.702 2025/05/17 20:43:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1408,6 +1408,12 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define NulColor	/* nothing */
 #endif
 
+#if NCURSES_RGB_COLORS
+#define NulDirect	, 0
+#else
+#define NulDirect	/* nothing */
+#endif
+
 #if CCHARW_MAX > 6
 #define NulChar		0,0,0,0,0
 #elif CCHARW_MAX > 5
@@ -1429,7 +1435,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define RemAttr(c,a)	AttrOf(c) &= ~((a) & A_ATTRIBUTES)
 #define SetAttr(c,a)	AttrOf(c) =   ((a) & A_ATTRIBUTES) | WidecExt(c)
 
-#define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
+#define NewChar2(c,a)	{ a, { c, NulChar } NulColor NulDirect }
 #define NewChar(ch)	NewChar2(ChCharOf(ch), ChAttrOf(ch))
 
 #if CCHARW_MAX > 1

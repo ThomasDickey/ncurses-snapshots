@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.545 2024/12/07 23:22:39 tom Exp $
+$Id: ncurses.c,v 1.548 2025/05/17 23:01:22 tom Exp $
 
 ***************************************************************************/
 
@@ -519,49 +519,47 @@ mouse_decode(MEVENT const *ep)
 		_nc_STRCAT(buf, s, sizeof(buf)); \
 		_nc_STRCAT(buf, ", ", sizeof(buf)); \
 	}
+#define MOUSE_ONE(b, m, s) \
+	SHOW(m, s "-" #b)
+#define MOUSE_ALL(b) do { \
+	MOUSE_ONE(b, NCURSES_MOUSE_MASK(b, NCURSES_BUTTON_RELEASED), "release"); \
+	MOUSE_ONE(b, NCURSES_MOUSE_MASK(b, NCURSES_BUTTON_PRESSED), "press"); \
+	MOUSE_ONE(b, NCURSES_MOUSE_MASK(b, NCURSES_BUTTON_CLICKED), "click"); \
+	MOUSE_ONE(b, NCURSES_MOUSE_MASK(b, NCURSES_DOUBLE_CLICKED), "doubleclick"); \
+	MOUSE_ONE(b, NCURSES_MOUSE_MASK(b, NCURSES_TRIPLE_CLICKED), "tripleclick"); \
+    } while (0)
 
-    SHOW(BUTTON1_RELEASED, "release-1");
-    SHOW(BUTTON1_PRESSED, "press-1");
-    SHOW(BUTTON1_CLICKED, "click-1");
-    SHOW(BUTTON1_DOUBLE_CLICKED, "doubleclick-1");
-    SHOW(BUTTON1_TRIPLE_CLICKED, "tripleclick-1");
+    MOUSE_ALL(1);
 #if NCURSES_MOUSE_VERSION == 1
-    SHOW(BUTTON1_RESERVED_EVENT, "reserved-1");
+    MOUSE_ONE(1, BUTTON1_RESERVED_EVENT, "reserved");
 #endif
 
-    SHOW(BUTTON2_RELEASED, "release-2");
-    SHOW(BUTTON2_PRESSED, "press-2");
-    SHOW(BUTTON2_CLICKED, "click-2");
-    SHOW(BUTTON2_DOUBLE_CLICKED, "doubleclick-2");
-    SHOW(BUTTON2_TRIPLE_CLICKED, "tripleclick-2");
+    MOUSE_ALL(2);
 #if NCURSES_MOUSE_VERSION == 1
-    SHOW(BUTTON2_RESERVED_EVENT, "reserved-2");
+    MOUSE_ONE(2, BUTTON2_RESERVED_EVENT, "reserved");
 #endif
 
-    SHOW(BUTTON3_RELEASED, "release-3");
-    SHOW(BUTTON3_PRESSED, "press-3");
-    SHOW(BUTTON3_CLICKED, "click-3");
-    SHOW(BUTTON3_DOUBLE_CLICKED, "doubleclick-3");
-    SHOW(BUTTON3_TRIPLE_CLICKED, "tripleclick-3");
+    MOUSE_ALL(3);
 #if NCURSES_MOUSE_VERSION == 1
-    SHOW(BUTTON3_RESERVED_EVENT, "reserved-3");
+    MOUSE_ONE(3, BUTTON3_RESERVED_EVENT, "reserved");
 #endif
 
-    SHOW(BUTTON4_RELEASED, "release-4");
-    SHOW(BUTTON4_PRESSED, "press-4");
-    SHOW(BUTTON4_CLICKED, "click-4");
-    SHOW(BUTTON4_DOUBLE_CLICKED, "doubleclick-4");
-    SHOW(BUTTON4_TRIPLE_CLICKED, "tripleclick-4");
+    MOUSE_ALL(4);
 #if NCURSES_MOUSE_VERSION == 1
-    SHOW(BUTTON4_RESERVED_EVENT, "reserved-4");
+    MOUSE_ONE(4, BUTTON4_RESERVED_EVENT, "reserved");
 #endif
 
-#if NCURSES_MOUSE_VERSION == 2
-    SHOW(BUTTON5_RELEASED, "release-5");
-    SHOW(BUTTON5_PRESSED, "press-5");
-    SHOW(BUTTON5_CLICKED, "click-5");
-    SHOW(BUTTON5_DOUBLE_CLICKED, "doubleclick-5");
-    SHOW(BUTTON5_TRIPLE_CLICKED, "tripleclick-5");
+#if NCURSES_MOUSE_VERSION >= 2
+    MOUSE_ALL(5);
+#endif
+
+#if NCURSES_MOUSE_VERSION >= 3
+    MOUSE_ALL(6);
+    MOUSE_ALL(7);
+    MOUSE_ALL(8);
+    MOUSE_ALL(9);
+    MOUSE_ALL(10);
+    MOUSE_ALL(11);
 #endif
 
     SHOW(BUTTON_CTRL, "ctrl");

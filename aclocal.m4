@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1104 2025/02/23 01:49:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.1105 2025/05/17 18:54:28 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -79,6 +79,7 @@ cf_dft_chtype=auto
 cf_dft_ext_colors=no
 cf_dft_ext_const=no
 cf_dft_ext_mouse=no
+cf_dft_ext_mouse2=no
 cf_dft_ext_putwin=no
 cf_dft_ext_spfuncs=no
 cf_dft_filter_syms=no
@@ -86,6 +87,7 @@ cf_dft_interop=no
 cf_dft_mmask_t=auto
 cf_dft_opaque_curses=no
 cf_dft_ordinate_type=short
+cf_dft_rgb_color=no
 cf_dft_signed_char=no
 cf_dft_tparm_arg=long
 cf_dft_widec=no
@@ -114,8 +116,10 @@ esac
 case x$cf_cv_abi_default in
 (x[[789]])
 	cf_dft_ccharw_max=6
+	cf_dft_ext_mouse2=yes
 	cf_dft_mmask_t=uint64_t
 	cf_dft_ordinate_type=int
+	cf_dft_rgb_color=yes
 	cf_dft_signed_char=yes
 	# also: remove the wgetch-events feature in ABI 7
 	;;
