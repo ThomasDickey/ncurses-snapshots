@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.294 2025/05/17 20:16:50 tom Exp $ */
+/* $Id: curses.h.in,v 1.295 2025/05/24 16:38:03 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -175,14 +175,14 @@
  * KEY_RESIZE is an extended feature that relies upon the SIGWINCH handler
  * in ncurses.
  */
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #ifndef NCURSES_SIGWINCH
 #define NCURSES_SIGWINCH @cf_cv_enable_sigwinch@
 #endif
 #else
 #undef NCURSES_SIGWINCH
 #define NCURSES_SIGWINCH 0
-#endif
+#endif /* NCURSES_EXT_FUNCS */
 
 /*
  * In certain environments, we must work around linker problems for data
@@ -939,7 +939,7 @@ extern NCURSES_EXPORT(int) getpary (const WINDOW *);			/* generated */
 /*
  * These functions are extensions - not in X/Open Curses.
  */
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #undef  NCURSES_EXT_FUNCS
 #define NCURSES_EXT_FUNCS @NCURSES_PATCH@
 typedef int (*NCURSES_WINDOW_CB)(WINDOW *, void *);
@@ -1002,15 +1002,15 @@ extern NCURSES_EXPORT(bool) is_syncok (const WINDOW *);		/* @GENERATED_EXT_FUNCS
 extern NCURSES_EXPORT(int) wgetdelay (const WINDOW *);		/* @GENERATED_EXT_FUNCS@ */
 extern NCURSES_EXPORT(int) wgetscrreg (const WINDOW *, int *, int *); /* @GENERATED_EXT_FUNCS@ */
 
-#else
+#else /* !NCURSES_EXT_FUNCS */
 #define curses_version() NCURSES_VERSION
-#endif
+#endif /* NCURSES_EXT_FUNCS */
 
 /*
  * Extra extension-functions, which pass a SCREEN pointer rather than using
  * a global variable SP.
  */
-#if @NCURSES_SP_FUNCS@
+#if @NCURSES_SP_FUNCS@	/* NCURSES_SP_FUNCS */
 #undef  NCURSES_SP_FUNCS
 #define NCURSES_SP_FUNCS @NCURSES_PATCH@
 #define NCURSES_SP_NAME(name) name##_sp
@@ -1094,7 +1094,7 @@ extern NCURSES_EXPORT(void) NCURSES_SP_NAME(use_env) (SCREEN*, bool); /* impleme
 extern NCURSES_EXPORT(void) NCURSES_SP_NAME(use_tioctl) (SCREEN*, bool); /* implemented:SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(vidattr) (SCREEN*, chtype);	/* implemented:SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(vidputs) (SCREEN*, chtype, NCURSES_SP_OUTC); /* implemented:SP_FUNC */
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(alloc_pair) (SCREEN*, int, int); /* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(assume_default_colors) (SCREEN*, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(define_key) (SCREEN*, const char *, int);	/* implemented:EXT_SP_FUNC */
@@ -1122,13 +1122,13 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_escdelay) (SCREEN*, int);	/* impl
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_tabsize) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_default_colors) (SCREEN*);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
-#endif
-#else
+#endif /* NCURSES_EXT_FUNCS */
+#else /* !NCURSES_SP_FUNCS */
 #undef  NCURSES_SP_FUNCS
 #define NCURSES_SP_FUNCS 0
 #define NCURSES_SP_NAME(name) name
 #define NCURSES_SP_OUTC NCURSES_OUTC
-#endif
+#endif /* NCURSES_SP_FUNCS */
 
 /* attributes */
 
@@ -1159,7 +1159,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 #define A_TOP		NCURSES_BITS(@cf_cv_1UL@,21)
 #define A_VERTICAL	NCURSES_BITS(@cf_cv_1UL@,22)
 
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #define A_ITALIC	NCURSES_BITS(@cf_cv_1UL@,23)	/* ncurses extension */
 #if @NCURSES_RGB_COLORS@	/* NCURSES_RGB_COLORS */
 #define A_FOREGROUND	NCURSES_BITS(@cf_cv_1UL@,17)	/* ncurses extension */
@@ -1453,7 +1453,7 @@ NCURSES_EXPORT(int) vsscanf(const char *, const char *, va_list);
 /*
  * These macros are extensions - not in X/Open Curses.
  */
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #if !NCURSES_OPAQUE
 #define is_cleared(win)		(NCURSES_OK_ADDR(win) ? (win)->_clear : FALSE)
 #define is_idcok(win)		(NCURSES_OK_ADDR(win) ? (win)->_idcok : FALSE)
@@ -1471,7 +1471,7 @@ NCURSES_EXPORT(int) vsscanf(const char *, const char *, va_list);
 #define wgetparent(win)		(NCURSES_OK_ADDR(win) ? (win)->_parent : 0)
 #define wgetscrreg(win,t,b)	(NCURSES_OK_ADDR(win) ? (*(t) = (win)->_regtop, *(b) = (win)->_regbottom, OK) : ERR)
 #endif
-#endif
+#endif /* NCURSES_EXT_FUNCS */
 
 /*
  * X/Open says this returns a bool; SVr4 also checked for out-of-range line.

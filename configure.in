@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.797 2025/05/17 20:38:51 tom Exp $
+dnl $Id: configure.in,v 1.798 2025/05/24 18:50:21 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.797 $)
+AC_REVISION($Revision: 1.798 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1217,7 +1217,7 @@ if test "x$with_ext_colors" = xyes ; then
 	fi
 	###   use option --enable-rgb-color to extend support for direct-color
 	AC_MSG_CHECKING(if you want to extend support for direct color)
-	AC_ARG_ENABLE(ext-colors,
+	AC_ARG_ENABLE(rgb-color,
 		[  --enable-rgb-color      compile for extended direct-color],
 		[with_rgb_color=$enableval],
 		[with_rgb_color=$cf_dft_rgb_color])
