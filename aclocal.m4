@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1105 2025/05/17 18:54:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.1106 2025/05/17 18:54:28 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -67,7 +67,7 @@ $ac_includes_default
 	fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ABI_DEFAULTS version: 5 updated: 2023/10/21 08:54:23
+dnl CF_ABI_DEFAULTS version: 6 updated: 2025/05/17 14:54:28
 dnl ---------------
 dnl Provide configure-script defaults for different ncurses ABIs.
 AC_DEFUN([CF_ABI_DEFAULTS],[

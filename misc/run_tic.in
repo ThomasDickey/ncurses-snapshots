@@ -1,7 +1,7 @@
 #!@SHELL@
-# $Id: run_tic.in,v 1.41 2024/08/04 14:50:26 tom Exp $
+# $Id: run_tic.in,v 1.42 2025/05/31 22:31:56 tom Exp $
 ##############################################################################
-# Copyright 2019-2022,2024 Thomas E. Dickey                                  #
+# Copyright 2019-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2012,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -62,12 +62,14 @@ echo "** Building terminfo database, please wait..."
 : "${BINDIR:=@bindir@}"
 : "${TICDIR:=$ticdir}"
 
+unset CDPATH
+
 # Allow tic to run either from the install-path, or from the build-directory.
 # Do not do this if we appear to be cross-compiling.  In that case, we rely
 # on the host's copy of tic to compile the terminfo database.
-if test "x$cross_compiling" = "xno"
+if test "$cross_compiling" = "no"
 then
-	if test -f ../progs/tic$suffix
+	if test -f ../progs/tic"$suffix"
 	then
 		case "$PATH" in
 		\@PATH_SEPARATOR@*)
@@ -148,7 +150,7 @@ Running $tic_path to install $TERMINFO ...
 
 EOF
 $tic_path -V
-if ( $tic_path -x -s -o "$TERMINFO" $tic_source )
+if ( $tic_path -x -s -o "$TERMINFO" "$tic_source" )
 then
 	echo "** built new $TERMINFO"
 else
@@ -168,7 +170,7 @@ Running $tic_path to install $TERMINFO ...
 
 EOF
 $tic_path -V
-if ( $tic_path -s -o "$TERMINFO" $tic_source )
+if ( $tic_path -s -o "$TERMINFO" "$tic_source" )
 then
 	echo "** built new $TERMINFO"
 else
@@ -195,18 +197,21 @@ if test "$TICDIR" != "$TERMINFO" ; then
 			echo "Otherwise, remove $TICDIR and link it to $TERMINFO."
 		fi
 	else
-		cd ${INSTALL_PREFIX} || exit
+		cd "${INSTALL_PREFIX}" || exit
 		# Construct a symbolic link that only assumes $ticdir has the
 		# same $prefix as the other installed directories.
-		RELATIVE=`echo $ticdir|sed -e 's%^'$prefix'/%%'`
-		if test "$RELATIVE" != "$ticdir" ; then
-			RELATIVE=../`echo $ticdir|sed -e 's%^'$prefix'/%%' -e 's%^/%%'`
+		SOURCE=`echo "$ticdir"|sed -e 's%^'"$prefix"'/%%'`
+		if test "$SOURCE" != "$ticdir" ; then
+			SOURCE=../`echo "$ticdir"|sed -e 's%^'"$prefix"'/%%' -e 's%^/%%'`
 		fi
-		if ( @LN_S@ "$RELATIVE" "$TICDIR" )
+		test -d lib || mkdir lib
+		cd lib || exit
+		TARGET=`pwd`/terminfo
+		if ( @LN_S@ "$SOURCE" terminfo )
 		then
-			echo "** sym-linked $TICDIR for compatibility"
+			echo "** sym-linked $TARGET for compatibility"
 		else
-			echo "** could not sym-link $TICDIR for compatibility"
+			echo "** could not sym-link $TARGET for compatibility"
 		fi
 	fi
 fi

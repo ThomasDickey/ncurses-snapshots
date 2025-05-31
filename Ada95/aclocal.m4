@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.227 2025/02/23 01:57:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.228 2025/02/23 01:57:36 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -3107,7 +3107,7 @@ AC_DEFUN([CF_MSG_LOG],[
 echo "${as_me:-configure}:__oline__: testing $* ..." 1>&AC_FD_CC
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_ADDON version: 7 updated: 2024/06/01 17:37:13
+dnl CF_NCURSES_ADDON version: 8 updated: 2025/02/22 20:57:36
 dnl ----------------
 dnl Configure an ncurses add-on, built outside the ncurses tree.
 AC_DEFUN([CF_NCURSES_ADDON],[

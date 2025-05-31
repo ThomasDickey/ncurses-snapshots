@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4286 2025/05/24 18:58:06 tom Exp $
+-- $Id: NEWS,v 1.4288 2025/05/31 22:33:49 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,10 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250531
+	+ improve logic in misc/run_tic.in for constructing symbolic link
+	  when $DESTDIR is set.
 
 20250524
 	+ correct option-name used in configure script, which resulted in size
