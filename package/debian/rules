@@ -1,13 +1,12 @@
 #!/usr/bin/make -f
-# $Id: rules,v 1.57 2024/06/08 17:51:52 tom Exp $
+# $Id: rules,v 1.58 2025/06/14 21:15:38 tom Exp $
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
 SHELL = /bin/bash
 DPKG_EXPORT_BUILDFLAGS = 1
-
-export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_BUILD_MAINT_OPTIONS := hardening=+all qa=+bug reproducible=+all
 
 include /usr/share/dpkg/buildflags.mk
 

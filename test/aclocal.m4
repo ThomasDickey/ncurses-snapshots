@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.232 2025/01/12 18:41:15 tom Exp $
+dnl $Id: aclocal.m4,v 1.233 2025/06/14 10:46:23 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -312,17 +312,51 @@ done
 ifelse($2,,LIBS,[$2])="$cf_add_libs"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ADD_LIB_AFTER version: 3 updated: 2013/07/09 21:27:22
+dnl CF_ADD_LIB_AFTER version: 4 updated: 2025/06/14 06:46:23
 dnl ----------------
 dnl Add a given library after another, e.g., following the one it satisfies a
 dnl dependency for.
 dnl
 dnl $1 = the first library
 dnl $2 = its dependency
+dnl $3 = variable to update (default $LIBS)
 AC_DEFUN([CF_ADD_LIB_AFTER],[
-CF_VERBOSE(...before $LIBS)
-LIBS=`echo "$LIBS" | sed -e "s/[[ 	]][[ 	]]*/ /g" -e "s%$1 %$1 $2 %" -e 's%  % %g'`
-CF_VERBOSE(...after  $LIBS)
+cf_add_libs="[$]ifelse($3,,LIBS,[$3])"
+CF_VERBOSE(...before $cf_add_libs)
+for cf_add_1lib in $2; do
+	# filter duplicates
+	cf_found_2lib=no
+	for cf_add_2lib in $cf_add_libs; do
+		if test "x$cf_add_1lib" = "x$cf_add_2lib"; then
+			cf_found_2lib=yes
+			break
+		fi
+	done
+	# if not a duplicate, find the dependent library
+	if test "$cf_found_2lib" = no
+	then
+		cf_found_2lib=no
+		cf_add_2libs=
+		for cf_add_2lib in $cf_add_libs
+		do
+			test -n "$cf_add_2libs" && cf_add_2libs="$cf_add_2libs "
+			cf_add_2libs="$cf_add_2libs$cf_add_2lib"
+			if test "x$cf_add_2lib" = "x$1"
+			then
+				cf_found_2lib=yes
+				cf_add_2libs="$cf_add_2libs $cf_add_1lib"
+			fi
+		done
+		if test "$cf_found_2lib" = yes
+		then
+			cf_add_libs="$cf_add_2libs"
+		else
+			CF_VERBOSE(...missed $1)
+		fi
+	fi
+done
+CF_VERBOSE(...after  $cf_add_libs)
+ifelse($3,,LIBS,[$3])="$cf_add_libs"
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_ADD_SUBDIR_PATH version: 5 updated: 2020/12/31 20:19:42
@@ -4739,7 +4773,7 @@ fi
 fi # cf_cv_posix_visible
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_X_ATHENA version: 25 updated: 2023/01/11 04:05:23
+dnl CF_X_ATHENA version: 26 updated: 2025/06/14 06:46:23
 dnl -----------
 dnl Check for Xaw (Athena) libraries
 dnl
@@ -4809,8 +4843,6 @@ if test "$PKG_CONFIG" != none ; then
 			CF_UPPER(cf_x_athena_LIBS,HAVE_LIB_$cf_x_athena)
 			AC_DEFINE_UNQUOTED($cf_x_athena_LIBS)
 
-			CF_TRIM_X_LIBS
-
 AC_CACHE_CHECK(for usable $cf_x_athena/Xmu package,cf_cv_xaw_compat,[
 AC_TRY_LINK([
 $ac_includes_default
@@ -4836,7 +4868,6 @@ int check = XmuCompareISOLatin1("big", "small");
 						],[
 							CF_ADD_LIB_AFTER($cf_first_lib,-lXmu)
 						])
-					CF_TRIM_X_LIBS
 					;;
 				esac
 			fi

@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2021-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2021-2022,2024 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: combine.c,v 1.26 2024/12/07 22:22:51 tom Exp $
+ * $Id: combine.c,v 1.27 2024/12/07 22:22:51 tom Exp $
  */
 
 #include <test.priv.h>

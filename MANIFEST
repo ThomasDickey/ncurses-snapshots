@@ -36,6 +36,8 @@
 ./Ada95/mk-pkg.awk
 ./Ada95/package/AdaCurses-doc.spec
 ./Ada95/package/AdaCurses.spec
+./Ada95/package/debian/adacurses.lintian-overrides
+./Ada95/package/debian/adacurses.triggers
 ./Ada95/package/debian/compat
 ./Ada95/package/debian/control
 ./Ada95/package/debian/copyright
@@ -1190,6 +1192,8 @@
 ./test/package/debian/control
 ./test/package/debian/copyright
 ./test/package/debian/docs
+./test/package/debian/ncurses-examples.lintian-overrides
+./test/package/debian/ncursest-examples.lintian-overrides
 ./test/package/debian/rules
 ./test/package/debian/source/format
 ./test/package/debian/watch

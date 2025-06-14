@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2023,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.125 2024/12/07 21:17:54 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.126 2024/12/07 21:17:54 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.

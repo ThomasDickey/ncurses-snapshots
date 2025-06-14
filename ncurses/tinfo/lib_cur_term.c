@@ -1,5 +1,5 @@
 /****************************************************************************
-,* Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2022,2024 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>		/* VALID_STRING */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.51 2024/12/14 23:48:20 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.52 2024/12/14 23:48:20 tom Exp $")
 
 #undef CUR
 #define CUR TerminalType(termp).
