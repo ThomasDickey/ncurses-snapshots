@@ -35,14 +35,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.34 2025/02/20 01:02:09 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.35 2025/06/21 14:24:25 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
-#endif
-
-#ifdef __EMX__
-#include <io.h>
 #endif
 
 /* may be undefined if we're using termio.h */

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2000,2009 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -45,11 +45,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_nl.c,v 1.15 2024/12/07 20:00:48 tom Exp $")
-
-#ifdef __EMX__
-#include <io.h>
-#endif
+MODULE_ID("$Id: lib_nl.c,v 1.16 2025/06/21 14:27:02 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(nl) (NCURSES_SP_DCL0)

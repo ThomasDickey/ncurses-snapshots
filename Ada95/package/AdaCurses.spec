@@ -2,11 +2,11 @@ Summary: Ada95 binding for ncurses
 %define AppProgram AdaCurses
 %define AppVersion MAJOR.MINOR
 %define AppRelease YYYYMMDD
-# $Id: AdaCurses.spec,v 1.34 2024/06/08 13:53:14 tom Exp $
+# $Id: AdaCurses.spec,v 1.36 2025/06/21 18:34:55 tom Exp $
 Name: %{AppProgram}
 Version: %{AppVersion}
 Release: %{AppRelease}
-License: MIT
+License: X11 License Distribution Modification Variant
 Group: Applications/Development
 URL: https://invisible-island.net/%{AppProgram}
 Source0: %{AppProgram}-%{AppRelease}.tgz
@@ -106,6 +106,9 @@ exit 0
 
 %changelog
 # each patch should add its ChangeLog entries here
+
+* RPM_DATE Thomas Dickey
+- testing ncurses MAJOR.MINOR.YYYYMMDD
 
 * Sat Dec 17 2022 Thomas Dickey
 - install sample programs in libexec

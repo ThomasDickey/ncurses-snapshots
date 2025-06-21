@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: make-tar.sh,v 1.22 2025/06/14 15:07:50 tom Exp $
+# $Id: make-tar.sh,v 1.23 2025/06/20 19:38:25 tom Exp $
 ##############################################################################
 # Copyright 2019-2022,2025 Thomas E. Dickey                                  #
 # Copyright 2010-2015,2017 Free Software Foundation, Inc.                    #
@@ -62,10 +62,12 @@ grep_patchdate() {
 # The rpm spec-file in the ncurses tree is a template.  Fill in the version
 # information from dist.mk
 edit_specfile() {
+	RPM_DATE=`date +'%a %b %d %Y' -d "$NCURSES_PATCH"`
 	sed \
 		-e "s/\\<MAJOR\\>/$NCURSES_MAJOR/g" \
 		-e "s/\\<MINOR\\>/$NCURSES_MINOR/g" \
-		-e "s/\\<YYYYMMDD\\>/$NCURSES_PATCH/g" "$1" >"$1.new"
+		-e "s/\\<YYYYMMDD\\>/$NCURSES_PATCH/g" \
+		-e "s/\\<RPM_DATE\\>/$RPM_DATE/g" "$1" >"$1.new"
 	chmod u+w "$1"
 	mv "$1.new" "$1"
 	same_timestamp "$1"
@@ -104,7 +106,7 @@ fi
 umask 022
 mkdir "$BUILD/$ROOTNAME"
 
-cp -p -r ./* "$BUILD/$ROOTNAME"/ || exit
+cp -p -r ./* "$BUILD/$ROOTNAME/" || exit
 
 # Add the config.* utility scripts from the top-level directory.
 for i in . ..

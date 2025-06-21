@@ -41,15 +41,6 @@
 
 #include <curses.priv.h>
 
-#ifdef _WIN32
-#include <tchar.h>
-#else
-#include <windows.h>
-#include <wchar.h>
-#endif
-
-#include <io.h>
-
 #define PSAPI_VERSION 2
 #include <psapi.h>
 
@@ -57,7 +48,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.82 2025/03/29 19:31:24 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.83 2025/06/21 14:25:02 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 

@@ -70,7 +70,6 @@
  */
 
 #ifdef __EMX__
-#  include <io.h>
 #  define  INCL_DOS
 #  define  INCL_VIO
 #  define  INCL_KBD
@@ -85,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.209 2025/03/22 23:14:11 Daniel.Starke Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.210 2025/06/21 14:24:38 tom Exp $")
 
 #include <tic.h>
 

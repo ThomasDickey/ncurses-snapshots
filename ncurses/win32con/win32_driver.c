@@ -38,17 +38,12 @@
  */
 
 #include <curses.priv.h>
+
 #ifdef _NC_WINDOWS
-#if (defined(__MINGW32__) || defined(__MINGW64__))
-#include <wchar.h>
-#else
-#include <tchar.h>
-#endif
-#include <io.h>
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.8 2025/03/29 19:31:07 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.9 2025/06/21 14:19:28 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0

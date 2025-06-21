@@ -3,11 +3,11 @@ Summary: AdaCurses - Ada95 binding documentation for ncurses
 %define AppVersion MAJOR.MINOR
 %define AppRelease YYYYMMDD
 %define AppPackage %{AppProgram}-doc
-# $Id: AdaCurses-doc.spec,v 1.8 2024/06/08 13:54:31 tom Exp $
+# $Id: AdaCurses-doc.spec,v 1.10 2025/06/21 18:34:55 tom Exp $
 Name: %{AppPackage}
 Version: %{AppVersion}
 Release: %{AppRelease}
-License: MIT
+License: X11 License Distribution Modification Variant
 Group: Applications/Development
 URL: https://invisible-island.net/%{AppProgram}
 Source0: %{AppProgram}-%{AppRelease}.tgz
@@ -50,6 +50,9 @@ exit 0
 
 %changelog
 # each patch should add its ChangeLog entries here
+
+* RPM_DATE Thomas Dickey
+- testing ncurses MAJOR.MINOR.YYYYMMDD
 
 * Sat Nov 16 2019 Thomas Dickey
 - modify clean-rule to work around Fedora NFS bugs.

@@ -38,17 +38,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.21 2025/03/29 19:36:13 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.22 2025/06/21 14:23:15 tom Exp $")
 
 #if defined(_NC_WINDOWS)
-
-#ifdef _NC_MINGW
-#include <wchar.h>
-#else
-#include <tchar.h>
-#endif
-
-#include <io.h>
 
 #if USE_WIDEC_SUPPORT
 #define write_screen WriteConsoleOutputW

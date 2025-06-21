@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.228 2025/02/23 01:57:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.229 2025/06/21 10:49:01 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2786,7 +2786,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_DATAONLY version: 15 updated: 2023/12/03 10:03:10
+dnl CF_LINK_DATAONLY version: 16 updated: 2025/06/21 06:49:01
 dnl ----------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
 dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
@@ -2802,10 +2802,10 @@ AC_CACHE_VAL(cf_cv_link_dataonly,[
 int	testdata[[3]] = { 123, 456, 789 };
 EOF
 	if AC_TRY_EVAL(ac_compile) ; then
-		mv conftest.o data.o && \
-		( $AR $ARFLAGS conftest.a data.o ) 2>&AC_FD_CC 1>/dev/null
+		mv conftest.$OBJEXT data.$OBJEXT && \
+		( $AR $ARFLAGS conftest.a data.$OBJEXT ) 2>&AC_FD_CC 1>/dev/null
 	fi
-	rm -f conftest.$ac_ext data.o
+	rm -f conftest.$ac_ext data.$OBJEXT
 	cat >conftest.$ac_ext <<EOF
 #line __oline__ "configure"
 extern int testfunc(void);
@@ -2825,10 +2825,10 @@ int	testfunc(void)
 #endif
 EOF
 	if AC_TRY_EVAL(ac_compile); then
-		mv conftest.o func.o && \
-		( $AR $ARFLAGS conftest.a func.o ) 2>&AC_FD_CC 1>/dev/null
+		mv conftest.$OBJEXT func.$OBJEXT && \
+		( $AR $ARFLAGS conftest.a func.$OBJEXT ) 2>&AC_FD_CC 1>/dev/null
 	fi
-	rm -f conftest.$ac_ext func.o
+	rm -f conftest.$ac_ext func.$OBJEXT
 	( eval $RANLIB conftest.a ) 2>&AC_FD_CC >/dev/null
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
@@ -4209,7 +4209,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 112 updated: 2024/12/14 16:09:34
+dnl CF_SHARED_OPTS version: 113 updated: 2025/06/21 06:49:01
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -4504,7 +4504,7 @@ CF_EOF
 				-L*)
 					ldopts+=("\`echo \"\[$]1\" | sed \"s/^-L/-LIBPATH:/\"\`")
 					;;
-				*.obj | *.o)
+				*.obj | *.$OBJEXT)
 					ldopts+=("\[$]1")
 					;;
 				-Wl,*)

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.702 2025/05/17 20:43:18 tom Exp $
+ * $Id: curses.priv.h,v 1.704 2025/06/21 20:42:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2516,6 +2516,20 @@ extern NCURSES_EXPORT(int)      TINFO_MVCUR(SCREEN*, int, int, int, int);
 
 #if defined(EXP_WIN32_DRIVER)
 #include <nc_win32.h>
+#endif
+
+#ifdef _NC_WINDOWS
+#if (defined(_NC_MINGW) || defined(__MINGW32__) || defined(__MINGW64__))
+#include <wchar.h>
+#else
+#include <tchar.h>
+#endif
+#include <io.h>
+#elif defined(_NC_WINDOWS_NATIVE)
+#include <io.h>
+#include <tchar.h>
+#elif defined(__EMX__)
+#include <io.h>
 #endif
 
 /*

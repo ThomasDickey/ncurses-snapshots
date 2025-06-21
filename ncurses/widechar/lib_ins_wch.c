@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.32 2025/02/20 01:02:09 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.34 2025/06/21 22:26:21 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -100,6 +100,14 @@ wins_wch(WINDOW *win, const cchar_t *wch)
     returnCode(code);
 }
 
+static int
+flush_wchars(WINDOW *win, wchar_t *wchars)
+{
+    cchar_t tmp_cchar;
+    (void) setcchar(&tmp_cchar, wchars, WA_NORMAL, (short) 0, (void *) 0);
+    return _nc_insert_wch(win, &tmp_cchar);
+}
+
 NCURSES_EXPORT(int)
 wins_nwstr(WINDOW *win, const wchar_t *wstr, int n)
 {
@@ -121,26 +129,36 @@ wins_nwstr(WINDOW *win, const wchar_t *wstr, int n)
 	    SCREEN *sp = _nc_screen_of(win);
 	    NCURSES_SIZE_T oy = win->_cury;
 	    NCURSES_SIZE_T ox = win->_curx;
+	    wchar_t tmp_wchars[1 + CCHARW_MAX];
+	    int num_wchars = 0;
 
 	    for (cp = wstr; ((cp - wstr) < n) && (*cp != L'\0'); cp++) {
 		int len = _nc_wacs_width(*cp);
 
-		if ((len >= 0 && len != 1) || !is7bits(*cp)) {
-		    cchar_t tmp_cchar;
-		    wchar_t tmp_wchar = *cp;
-		    memset(&tmp_cchar, 0, sizeof(tmp_cchar));
-		    (void) setcchar(&tmp_cchar,
-				    &tmp_wchar,
-				    WA_NORMAL,
-				    (short) 0,
-				    (void *) 0);
-		    code = _nc_insert_wch(win, &tmp_cchar);
-		} else {
+		if (is7bits(*cp) && len <= 0) {
+		    if (num_wchars) {
+			if ((code = flush_wchars(win, tmp_wchars)) != OK)
+			    break;
+			num_wchars = 0;
+		    }
 		    /* tabs, other ASCII stuff */
 		    code = _nc_insert_ch(sp, win, (chtype) (*cp));
+		} else {
+		    if (num_wchars > 0 && len > 0) {
+			if ((code = flush_wchars(win, tmp_wchars)) != OK)
+			    break;
+			num_wchars = 0;
+		    }
+		    if (num_wchars < CCHARW_MAX) {
+			tmp_wchars[num_wchars++] = *cp;
+			tmp_wchars[num_wchars] = L'\0';
+		    }
 		}
 		if (code != OK)
 		    break;
+	    }
+	    if (code == OK && num_wchars) {
+		code = flush_wchars(win, tmp_wchars);
 	    }
 
 	    win->_curx = ox;
