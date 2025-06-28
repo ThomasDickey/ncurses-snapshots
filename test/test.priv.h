@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.221 2025/01/18 15:07:25 tom Exp $ */
+/* $Id: test.priv.h,v 1.222 2025/06/28 22:43:32 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -752,7 +752,7 @@ extern int optind;
 ," -V       show version of curses"
 
 #if HAVE_CURSES_VERSION
-#define format_version(buffer, size) strcpy(buffer, curses_version())
+#define format_version(buffer, size) _nc_STRCPY(buffer, curses_version(), size)
 #elif defined(NCURSES_VERSION_MAJOR) && defined(NCURSES_VERSION_MINOR) && defined(NCURSES_VERSION_PATCH)
 #define format_version(buffer, size) \
 	_nc_SPRINTF(buffer, _nc_SLIMIT(size) "ncurses %d.%d.%d", \
@@ -760,7 +760,7 @@ extern int optind;
 		    NCURSES_VERSION_MINOR, \
 		    NCURSES_VERSION_PATCH)
 #else
-#define format_version(buffer, size) strcpy(buffer, "ncurses-examples")
+#define format_version(buffer, size) _nc_STRCPY(buffer, "ncurses-examples", size)
 #endif
 
 #define VERSION_COMMON() \

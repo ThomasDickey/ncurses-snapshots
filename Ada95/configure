@@ -13542,7 +13542,7 @@ CF_EOF
 				-L*)
 					ldopts+=("\`echo \"\$1\" | sed \"s/^-L/-LIBPATH:/\"\`")
 					;;
-				*.obj | *.o)
+				*.obj | *.$OBJEXT)
 					ldopts+=("\$1")
 					;;
 				-Wl,*)
@@ -18823,10 +18823,10 @@ EOF
   ac_status=$?
   echo "$as_me:18824: \$? = $ac_status" >&5
   (exit "$ac_status"); } ; then
-		mv conftest.o data.o && \
-		( $AR $ARFLAGS conftest.a data.o ) 2>&5 1>/dev/null
+		mv conftest.$OBJEXT data.$OBJEXT && \
+		( $AR $ARFLAGS conftest.a data.$OBJEXT ) 2>&5 1>/dev/null
 	fi
-	rm -f conftest.$ac_ext data.o
+	rm -f conftest.$ac_ext data.$OBJEXT
 	cat >conftest.$ac_ext <<EOF
 #line 18831 "configure"
 extern int testfunc(void);
@@ -18850,10 +18850,10 @@ EOF
   ac_status=$?
   echo "$as_me:18851: \$? = $ac_status" >&5
   (exit "$ac_status"); }; then
-		mv conftest.o func.o && \
-		( $AR $ARFLAGS conftest.a func.o ) 2>&5 1>/dev/null
+		mv conftest.$OBJEXT func.$OBJEXT && \
+		( $AR $ARFLAGS conftest.a func.$OBJEXT ) 2>&5 1>/dev/null
 	fi
-	rm -f conftest.$ac_ext func.o
+	rm -f conftest.$ac_ext func.$OBJEXT
 	( eval $RANLIB conftest.a ) 2>&5 >/dev/null
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"

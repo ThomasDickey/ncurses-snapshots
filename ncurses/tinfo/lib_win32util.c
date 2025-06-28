@@ -33,8 +33,9 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
+#include <tchar.h>
 
-MODULE_ID("$Id: lib_win32util.c,v 1.6 2025/06/21 14:27:43 tom Exp $")
+MODULE_ID("$Id: lib_win32util.c,v 1.7 2025/06/28 16:58:13 tom Exp $")
 
 #ifdef _NC_WINDOWS_NATIVE
 
