@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.104 2025/04/05 22:07:49 tom Exp $
-.TH curs_inopts 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.107 2025/07/05 12:55:10 tom Exp $
+.TH curs_inopts 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -629,7 +629,9 @@ but an AIX and
 extension,
 .BR \%ESCDELAY ,
 is available both as an environment variable and a global symbol
-permitting the application to do so;
+permitting the user and application,
+respectively,
+to do so;
 see \fB\%ncurses\fP(3X) and \fBcurs_variables\fP(3X).
 .SH EXTENSIONS
 .I \%ncurses
@@ -861,7 +863,7 @@ to
 (the POSIX terminal API).
 In the former,
 both input and output conversions were controlled via a single option
-\*(``CRMOD\*('',
+\%\*(``CRMOD\*('',
 while the latter separates these features.
 Because that conversion interferes with output optimization,
 .I \%ncurses

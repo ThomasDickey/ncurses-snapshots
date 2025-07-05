@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2006,2008 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: keynames.c,v 1.14 2024/12/07 23:00:37 tom Exp $
+ * $Id: keynames.c,v 1.15 2025/07/05 15:21:56 tom Exp $
  */
 
 #include <test.priv.h>
@@ -73,11 +73,8 @@ main(int argc, char *argv[])
 	case 's':
 	    do_setup = TRUE;
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

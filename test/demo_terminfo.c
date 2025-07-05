@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.63 2025/01/11 14:54:49 tom Exp $
+ * $Id: demo_terminfo.c,v 1.64 2025/07/05 15:11:35 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -864,11 +864,8 @@ main(int argc, char *argv[])
 	    x_opt = TRUE;
 	    break;
 #endif
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

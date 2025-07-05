@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2021-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2021-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: back_ground.c,v 1.14 2024/11/30 18:36:56 tom Exp $
+ * $Id: back_ground.c,v 1.15 2025/07/05 15:18:31 tom Exp $
  */
 
 #include <test.priv.h>
@@ -254,11 +254,8 @@ main(int argc, char *argv[])
 	case 'W':
 	    fill_char = decode_wchar(optarg);
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

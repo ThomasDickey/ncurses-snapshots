@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.137 2025/04/05 21:56:26 tom Exp $
-.TH @TPUT@ 1 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.139 2025/07/05 13:06:18 tom Exp $
+.TH @TPUT@ 1 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -78,8 +78,10 @@ Terminal capabilities are accessed by
 .IR cap-code .
 .PP
 \fB\%terminfo\fP(5) discusses terminal capabilities at length
-and presents a complete list of standard
+and presents a complete list of standardized
 .IR cap-codes .
+\fB\%user_caps\fP(5) presents other widely used
+but non-standard capabilities.
 .PP
 When retrieving capability values,
 the result depends upon the capability's type.
@@ -1077,4 +1079,5 @@ example.
 \fB\%@TABS@\fP(1),
 \fB\%@TSET@\fP(1),
 \fB\%curs_termcap\fP(3X),
-\fB\%terminfo\fP(5)
+\fB\%terminfo\fP(5),
+\fB\%user_caps\fP(5)

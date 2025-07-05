@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.118 2025/04/05 21:59:03 tom Exp $
-.TH curs_color 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.122 2025/07/05 12:45:50 tom Exp $
+.TH curs_color 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -171,9 +171,8 @@ pairs in an internal function called from \fB\%waddch\fP:
 .bP
 If the parameter passed to \fB\%waddch\fP is \fIblank\fP,
 and it uses the special color pair 0,
-.RS
-.bP
 \fIcurses\fP next checks the window attribute.
+.RS
 .bP
 If the window attribute does not use color pair 0,
 \fIcurses\fP uses the color pair from the window attribute.
@@ -611,7 +610,10 @@ of the 80486 era and earlier
 with CGA/EGA/VGA video.
 .bP
 .B \%COLOR_YELLOW
-is actually brown.
+was frequently converted,
+in the analog domain,
+to a shade of brown if the intensity bit was not set.
+.\" https://nerdlypleasures.blogspot.com/2023/03/the-saga-of-color-brown-in-early-years.html
 To get yellow,
 combine
 .B \%COLOR_YELLOW
@@ -690,8 +692,10 @@ if the terminal does not support changing colors.
 .I \%ncurses
 does neither.
 .SH HISTORY
-SVr3.2 (1987) introduced color support with all of the symbols in the
-synopsis above except those marked as extensions.
+SVr3.2 (1987) introduced color support to
+.I curses
+with all of the symbols
+in the synopsis above except those marked as extensions.
 It reserved color pair 0 as the terminal's initial,
 \*(``uncolored\*('' state,
 .\" "we assume that color 0 is always a default background.", SVr3.2

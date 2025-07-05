@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.93 2024/11/30 18:53:39 tom Exp $
+  $Id: worm.c,v 1.95 2025/07/05 15:11:35 tom Exp $
 */
 
 #include <test.priv.h>
@@ -97,7 +97,7 @@ typedef struct worm {
 static unsigned long sequence = 0;
 static bool quitting = FALSE;
 
-static WORM worm[MAX_WORMS];
+static WORM *worm;
 static int max_refs;
 static int **refs;
 static int last_x, last_y;
@@ -105,6 +105,8 @@ static int last_x, last_y;
 static const char *field;
 static int length = 16, number = 3;
 static chtype trail = ' ';
+static bool from_center = FALSE;
+static int max_iterations = -1;
 
 static unsigned pending;
 
@@ -118,7 +120,6 @@ pthread_mutex_t pending_mutex;
 #else
 #define Locked(statement) statement
 #endif
-
 /* *INDENT-OFF* */
 static const struct options {
     int nopts;
@@ -271,7 +272,9 @@ draw_worm(WINDOW *win, void *data)
     attrs = w->attrs | (is_pending ? A_REVERSE : 0);
 
     if ((x = w->xpos[h = w->head]) < 0) {
-	wmove(win, y = w->ypos[h] = last_y, x = w->xpos[h] = 0);
+	y = w->ypos[h] = (from_center ? (LINES / 2) : last_y);
+	x = w->xpos[h] = (from_center ? (COLS / 2) : 0);
+	wmove(win, y, x);
 	waddch(win, attrs);
 	refs[y][x]++;
     } else {
@@ -460,7 +463,9 @@ usage(int ok)
 	," -d       invoke use_default_colors"
 #endif
 	," -f       fill screen with copies of \"WORM\" at start"
+	," -i NUM   maximum iterations before exiting"
 	," -M NUM   set length of worms"
+	," -m       start worms from the middle of the screen"
 	," -n NUM   set number of worms"
 	," -t       leave trail of \".\""
 #ifdef TRACE
@@ -487,13 +492,14 @@ main(int argc, char *argv[])
     struct worm *w;
     int *ip;
     bool done = FALSE;
+    int iteration_count = 0;
 #if HAVE_USE_DEFAULT_COLORS
     bool opt_d = FALSE;
 #endif
 
     setlocale(LC_ALL, "");
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "M:Ndfn:t")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "M:Ndfi:mn:t")) != -1) {
 	switch (ch) {
 #if HAVE_USE_DEFAULT_COLORS
 	case 'd':
@@ -503,14 +509,24 @@ main(int argc, char *argv[])
 	case 'f':
 	    field = "WORM";
 	    break;
+	case 'i':
+	    if ((max_iterations = atoi(optarg)) < 1) {
+		fprintf(stderr, "%s: Invalid maximum iterations %d\n", *argv,
+			max_iterations);
+		usage(FALSE);
+	    }
+	    break;
 	case 'M':
 	    if ((length = atoi(optarg)) < 2 || length > MAX_LENGTH) {
 		fprintf(stderr, "%s: Invalid length\n", *argv);
 		usage(FALSE);
 	    }
 	    break;
+	case 'm':
+	    from_center = !from_center;
+	    break;
 	case 'n':
-	    if ((number = atoi(optarg)) < 1 || number > MAX_WORMS) {
+	    if ((number = atoi(optarg)) < 1) {
 		fprintf(stderr, "%s: Invalid number of worms\n", *argv);
 		usage(FALSE);
 	    }
@@ -523,11 +539,8 @@ main(int argc, char *argv[])
 	    _nc_optimize_enable ^= OPTIMIZE_ALL;	/* declared by ncurses */
 	    break;
 #endif /* TRACE */
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }
@@ -545,6 +558,11 @@ main(int argc, char *argv[])
     last_y = LINES - 1;
     last_x = COLS - 1;
 
+    worm = typeMalloc(WORM, (size_t) number);
+    if (worm == NULL) {
+	fprintf(stderr, "%s: not enough memory for %d worms\n", *argv, number);
+	ExitProgram(EXIT_FAILURE);
+    }
 #ifdef A_COLOR
     if (has_colors()) {
 	int bg = COLOR_BLACK;
@@ -647,7 +665,11 @@ main(int argc, char *argv[])
 	}
 
 	done = draw_all_worms();
-	napms(10);
+	if (max_iterations < 0) {
+	    napms(10);
+	} else if (iteration_count++ > max_iterations) {
+	    done = TRUE;
+	}
 	USING_WINDOW1(stdscr, wrefresh, safe_wrefresh);
     }
 

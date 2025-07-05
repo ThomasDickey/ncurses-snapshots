@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey (1998-on)
  *
- * $Id: ditto.c,v 1.61 2025/02/09 00:18:00 tom Exp $
+ * $Id: ditto.c,v 1.62 2025/07/05 15:11:35 tom Exp $
  *
  * The program illustrates how to set up multiple screens from a single
  * program.
@@ -420,11 +420,8 @@ main(int argc, char *argv[])
 
     while ((ch = getopt(argc, argv, OPTS_COMMON)) != -1) {
 	switch (ch) {
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

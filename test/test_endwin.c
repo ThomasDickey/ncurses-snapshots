@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2023,2024 Thomas E. Dickey                                     *
+ * Copyright 2023-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_endwin.c,v 1.4 2024/11/30 17:34:56 tom Exp $
+ * $Id: test_endwin.c,v 1.5 2025/07/05 15:21:56 tom Exp $
  */
 #include <test.priv.h>
 
@@ -91,11 +91,8 @@ main(int argc, char *argv[])
 	case 's':
 	    opt_s = TRUE;
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

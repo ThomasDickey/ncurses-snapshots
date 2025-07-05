@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.42 2024/11/30 18:54:40 tom Exp $
+ * $Id: hashtest.c,v 1.43 2025/07/05 15:21:56 tom Exp $
  */
 
 #include <test.priv.h>
@@ -218,11 +218,8 @@ main(int argc, char *argv[])
 	case 'x':
 	    extend_corner = TRUE;
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

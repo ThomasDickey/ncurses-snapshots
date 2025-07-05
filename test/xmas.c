@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.40 2024/12/07 22:53:07 tom Exp $
+ * $Id: xmas.c,v 1.41 2025/07/05 15:11:35 tom Exp $
  */
 #include <test.priv.h>
 
@@ -690,11 +690,8 @@ main(int argc, char *argv[])
 	case 'q':
 	    opt_q = TRUE;
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

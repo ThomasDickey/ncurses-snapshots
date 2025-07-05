@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: movewindow.c,v 1.58 2025/01/11 14:54:49 tom Exp $
+ * $Id: movewindow.c,v 1.59 2025/07/05 15:11:35 tom Exp $
  *
  * Demonstrate move functions for windows and derived windows from the curses
  * library.
@@ -705,11 +705,8 @@ main(int argc, char *argv[])
 
     while ((ch = getopt(argc, argv, OPTS_COMMON)) != -1) {
 	switch (ch) {
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

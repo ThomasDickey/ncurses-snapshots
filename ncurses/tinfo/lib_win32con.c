@@ -38,7 +38,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.22 2025/06/21 14:23:15 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.23 2025/07/05 12:36:24 Branden.Robinson Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -591,7 +591,7 @@ tdiff(FILETIME fstart, FILETIME fend)
 static int
 Adjust(int milliseconds, int diff)
 {
-    if (milliseconds != INFINITY) {
+    if (milliseconds != NC_INFINITY) {
 	milliseconds -= diff;
 	if (milliseconds < 0)
 	    milliseconds = 0;
@@ -832,7 +832,7 @@ _nc_console_twait(
 		      hdl, milliseconds, mode));
 
     if (milliseconds < 0)
-	milliseconds = INFINITY;
+	milliseconds = NC_INFINITY;
 
     memset(&inp_rec, 0, sizeof(inp_rec));
 

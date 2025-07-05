@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_opaque.c,v 1.19 2025/02/08 13:03:06 tom Exp $
+ * $Id: test_opaque.c,v 1.20 2025/07/05 15:11:35 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -501,11 +501,8 @@ main(int argc, char *argv[])
 
     while ((ch = getopt(argc, argv, OPTS_COMMON)) != -1) {
 	switch (ch) {
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

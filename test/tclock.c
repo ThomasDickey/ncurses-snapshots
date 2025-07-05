@@ -1,4 +1,4 @@
-/* $Id: tclock.c,v 1.51 2025/02/15 15:15:36 tom Exp $ */
+/* $Id: tclock.c,v 1.52 2025/07/05 15:11:35 tom Exp $ */
 
 #define NEED_TIME_H
 #include <test.priv.h>
@@ -161,11 +161,8 @@ main(int argc, char *argv[])
 	    d_option = TRUE;
 	    break;
 #endif
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

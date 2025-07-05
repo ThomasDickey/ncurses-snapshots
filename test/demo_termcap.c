@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.74 2025/01/11 14:54:49 tom Exp $
+ * $Id: demo_termcap.c,v 1.75 2025/07/05 15:11:35 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -840,11 +840,8 @@ main(int argc, char *argv[])
 	    break;
 #endif
 #endif
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

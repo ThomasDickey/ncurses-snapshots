@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: run_tic.in,v 1.42 2025/05/31 22:31:56 tom Exp $
+# $Id: run_tic.in,v 1.43 2025/07/05 20:40:18 tom Exp $
 ##############################################################################
 # Copyright 2019-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2012,2017 Free Software Foundation, Inc.                    #
@@ -178,6 +178,18 @@ else
 	exit 1
 fi
 fi
+
+# Check if we are using symbolic links, or just pretending.
+case "@LN_S@" in
+cp\ *)
+	TICDIR="$TERMINFO"
+	echo "** assuming we cannot make symbolic links to a directory"
+	;;
+*)
+	echo "** assuming we can make symbolic links to a directory"
+	;;
+esac
+
 
 # Make a symbolic link to provide compatibility with applications that expect
 # to find terminfo under /usr/lib.  That is, we'll _try_ to do that.  Not

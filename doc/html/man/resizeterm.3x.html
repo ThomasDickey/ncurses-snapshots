@@ -28,19 +28,19 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1996-on
-  * @Id: resizeterm.3x,v 1.63 2025/04/05 22:26:38 tom Exp @
+  * @Id: resizeterm.3x,v 1.65 2025/07/05 13:06:45 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>resizeterm 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>resizeterm 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">resizeterm 3x 2025-04-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">resizeterm 3x 2025-07-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>
 
@@ -89,8 +89,8 @@
        When the library has found that the terminal's window-size has changed,
        it calls <STRONG>resizeterm</STRONG> to update its data structures.
 
-       An application which establishes its  own  <STRONG>SIGWINCH</STRONG>  handler  can  call
-       <STRONG>resizeterm</STRONG>,  but  in  that case, the library will not see <STRONG>SIGWINCH</STRONG>, and
+       An application which establishes its  own  <EM>SIGWINCH</EM>  handler  can  call
+       <STRONG>resizeterm</STRONG>,  but  in  that case, the library will not see <EM>SIGWINCH</EM>, and
        proper layout will rely upon the application.
 
 
@@ -104,7 +104,7 @@
 </PRE><H3><a name="h3-resize_term">resize_term</a></H3><PRE>
        Most  of  the  work  for  <STRONG>resizeterm</STRONG>  is  done  by  the  inner function
        <STRONG>resize_term</STRONG>.  The outer function <STRONG>resizeterm</STRONG> adds  bookkeeping  for  the
-       <STRONG>SIGWINCH</STRONG>  handler,  as  well  as  repainting  the  soft-key  area  (see
+       <EM>SIGWINCH</EM>  handler,  as  well  as  repainting  the  soft-key  area  (see
        <STRONG><A HREF="curs_slk.3x.html">slk_touch(3x)</A></STRONG>).
 
        The <STRONG>resize_term</STRONG> function attempts to resize all  windows.   This  helps
@@ -138,13 +138,13 @@
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        While these functions are intended to  be  used  to  support  a  signal
-       handler  (i.e.,  for  <STRONG>SIGWINCH</STRONG>), care should be taken to avoid invoking
+       handler  (i.e.,  for  <EM>SIGWINCH</EM>), care should be taken to avoid invoking
        them in a context where <STRONG>malloc</STRONG> or <STRONG>realloc</STRONG> may  have  been  interrupted,
        since it uses those functions.
 
-       If <EM>ncurses</EM> is configured to supply its own <STRONG>SIGWINCH</STRONG> handler,
+       If <EM>ncurses</EM> is configured to supply its own <EM>SIGWINCH</EM> handler,
 
-       <STRONG>o</STRONG>   on receipt of a <STRONG>SIGWINCH</STRONG>, the handler sets a flag
+       <STRONG>o</STRONG>   on receipt of a <EM>SIGWINCH</EM>, the handler sets a flag
 
        <STRONG>o</STRONG>   which is tested in <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">doupdate(3x)</A></STRONG> and <STRONG><A HREF="curs_terminfo.3x.html">restartterm(3x)</A></STRONG>,
 
@@ -163,7 +163,7 @@
 
        If the environment variables <EM>LINES</EM> or <EM>COLUMNS</EM> are set,  this  overrides
        the  library's  use  of  the  window  size  obtained from the operating
-       system.  Thus, even if a <STRONG>SIGWINCH</STRONG> is received, no  screen  size  change
+       system.  Thus, even if a <EM>SIGWINCH</EM> is received, no  screen  size  change
        may be recorded.
 
 
@@ -190,7 +190,7 @@
 
 
 
-ncurses 6.5                       2025-04-05                    <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>
+ncurses 6.5                       2025-07-05                    <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

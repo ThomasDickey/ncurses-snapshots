@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.295 2025/05/24 16:38:03 tom Exp $ */
+/* $Id: curses.h.in,v 1.296 2025/07/05 12:39:32 Branden.Robinson Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -232,7 +232,7 @@
 #undef	NCURSES_CH_T
 #define NCURSES_CH_T @NCURSES_CH_T@
 
-#if @cf_cv_enable_lp64@ && defined(_LP64)
+#if @cf_cv_enable_lp64@ /* cf_cv_enable_lp64 */ && defined(_LP64)
 typedef unsigned chtype;
 typedef unsigned mmask_t;
 #else
@@ -296,7 +296,7 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 #include <stdbool.h>
 /* use whatever the C compiler decides bool really is */
 #define NCURSES_BOOL bool
-#elif !defined(__cplusplus) && !@USE_BUILTIN_BOOL@
+#elif !defined(__cplusplus) && !@USE_BUILTIN_BOOL@ /* USE_BUILTIN_BOOL */
 /* there is no predefined bool - use our own */
 #undef bool
 #define bool NCURSES_BOOL
@@ -351,7 +351,7 @@ extern "C" {
 
 /* line graphics */
 
-#if @BROKEN_LINKER@ || NCURSES_REENTRANT
+#if @BROKEN_LINKER@ /* BROKEN_LINKER */ || NCURSES_REENTRANT
 NCURSES_WRAPPED_VAR(chtype*, acs_map);
 #define acs_map NCURSES_PUBLIC_VAR(acs_map())
 #else
@@ -459,22 +459,22 @@ typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 
 #if NCURSES_WIDECHAR
 
-#if @NCURSES_LIBUTF8@
+#if @NCURSES_LIBUTF8@ /* NCURSES_LIBUTF8 */
 #ifdef mblen			/* libutf8.h defines it w/o undefining first */
 #undef mblen
 #endif
 #include <libutf8.h>
 #endif
 
-#if @NEED_WCHAR_H@
+#if @NEED_WCHAR_H@ /* NEED_WCHAR_H */
 #include <wchar.h>		/* ...to get mbstate_t, etc. */
 #endif
 
-#if @NCURSES_WCHAR_T@
+#if @NCURSES_WCHAR_T@ /* NCURSES_WCHAR_T */
 typedef unsigned short wchar_t@NCURSES_OK_WCHAR_T@;
 #endif
 
-#if @NCURSES_WINT_T@
+#if @NCURSES_WINT_T@ /* NCURSES_WINT_T */
 typedef unsigned int wint_t@NCURSES_OK_WCHAR_T@;
 #endif
 
@@ -552,7 +552,7 @@ struct _win_st
 
 	NCURSES_SIZE_T _yoffset; /* real begy is _begy + _yoffset */
 
-#if NCURSES_WIDECHAR
+#if NCURSES_WIDECHAR /* NCURSES_WIDECHAR */
 	cchar_t  _bkgrnd;	/* current background char/attribute pair */
 #if @NCURSES_EXT_COLORS@
 	int	_color;		/* current color-pair for non-space character */
@@ -1240,7 +1240,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 
 #if !NCURSES_OPAQUE
 #if NCURSES_WATTR_MACROS
-#if NCURSES_WIDECHAR && @NCURSES_EXT_COLORS@
+#if NCURSES_WIDECHAR && @NCURSES_EXT_COLORS@ /* NCURSES_EXT_COLORS */
 #define wattrset(win,at) \
 	(NCURSES_OK_ADDR(win) \
 	  ? ((win)->_color = NCURSES_CAST(int, PAIR_NUMBER(at)), \
@@ -1392,7 +1392,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 
 #if !NCURSES_OPAQUE
 #if NCURSES_WATTR_MACROS
-#if NCURSES_WIDECHAR && @NCURSES_EXT_COLORS@
+#if NCURSES_WIDECHAR && @NCURSES_EXT_COLORS@ /* NCURSES_EXT_COLORS */
 #define wattr_set(win,a,p,opts) \
 	(NCURSES_OK_ADDR(win) \
 	 ? ((void)((win)->_attrs = ((a) & ~A_COLOR), \
@@ -1412,7 +1412,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 		   : OK), \
 	    OK) \
 	 : ERR)
-#else /* !(NCURSES_WIDECHAR && NCURSES_EXE_COLORS) */
+#else /* !(NCURSES_WIDECHAR && NCURSES_EXT_COLORS) */
 #define wattr_set(win,a,p,opts) \
 	 (NCURSES_OK_ADDR(win) \
 	  ? ((void)((win)->_attrs = (((a) & ~A_COLOR) | \
@@ -1429,7 +1429,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 		   : OK), \
 	    OK) \
 	 : ERR)
-#endif /* (NCURSES_WIDECHAR && NCURSES_EXE_COLORS) */
+#endif /* (NCURSES_WIDECHAR && NCURSES_EXT_COLORS) */
 #endif /* NCURSES_WATTR_MACROS */
 #endif /* NCURSES_OPAQUE */
 
@@ -1445,7 +1445,7 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/*
 /*
  * Export fallback function for use in C++ binding.
  */
-#if !@HAVE_VSSCANF@
+#if !@HAVE_VSSCANF@ /* HAVE_VSSCANF */
 #define vsscanf(a,b,c) _nc_vsscanf(a,b,c)
 NCURSES_EXPORT(int) vsscanf(const char *, const char *, va_list);
 #endif

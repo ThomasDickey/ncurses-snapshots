@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.127 2025/04/05 22:04:30 tom Exp $
-.TH curs_getch 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.130 2025/07/05 13:06:45 tom Exp $
+.TH curs_getch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -86,6 +86,11 @@ When input is pending,
 .B \%wgetch
 returns an integer identifying the key event;
 for alphanumeric and punctuation keys,
+the space bar,
+and (usually) the Backspace,
+Tab,
+Return,
+and Escape keys,
 this value corresponds to the character encoding used by the terminal.
 Use of the control key as a modifier,
 by holding it down while pressing and releasing another key,
@@ -105,10 +110,14 @@ otherwise,
 waits until the terminal has input.
 If \fB\%cbreak\fP(3X) or \fB\%raw\fP(3X)
 has been called,
-this happens after one character is read.
+this happens after
+.I curses
+reads one key event.
 If \fB\%nocbreak\fP(3X) or \fB\%noraw\fP(3X)
 has been called,
-it occurs when the next newline is read.
+it occurs when
+.I curses
+reads a newline. \" "newline" because canonical mode normalizes NL/CR
 (Because the terminal's canonical or \*(``cooked\*('' mode
 is line-buffered,
 multiple
@@ -132,6 +141,7 @@ If
 .I c
 matches the terminal's erase character
 (see \fB\%erasechar\fP(3X)),
+and the cursor is not at the window's leftmost column,
 the cursor moves leftward one position
 and the new position is erased
 as if \fB\%wmove\fP(3X) and then \fB\%wdelch\fP(3X) were called.
@@ -186,10 +196,9 @@ If a window is in keypad mode,
 translates these key strokes to a numeric code corresponding to the
 .B KEY_
 symbols listed in subsection \*(``Predefined Key Codes\*('' below.
-If a window is not in keypad mode,
-.B \%wgetch
-returns a sequence of codes
-typically starting with the escape character,
+If the window is not in keypad mode,
+the input queue populates with
+the characters of the function key's escape sequence,
 which the application must collect individually with multiple
 .B \%wgetch
 calls.
@@ -257,7 +266,7 @@ the function waits until it has this information or the
 elapses.
 Configure the escape delay
 with the global variable
-.IR \%ESCDELAY ","
+.BR \%ESCDELAY ","
 an extension
 (see section \*(``EXTENSIONS\*('' below),
 or the environment variable of the same name
@@ -439,7 +448,7 @@ even if the window's keypad mode is disabled,
 if
 .I \%ncurses
 has handled a
-.B \%SIGWINCH
+.I \%SIGWINCH
 signal since
 .B \%wgetch
 was called;
@@ -497,9 +506,9 @@ is a null pointer,
 or
 .bP
 execution was interrupted by a signal,
-in which case
+in which case the library sets
 .I \%errno
-is set to
+to
 .IR \%EINTR "."
 .PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
@@ -720,7 +729,7 @@ A portable
 application prepares for two cases:
 (a) signal receipt does not interrupt
 .IR \%wgetch ";"
-or
+and
 (b) signal receipt interrupts
 .I \%wgetch
 and causes it to return

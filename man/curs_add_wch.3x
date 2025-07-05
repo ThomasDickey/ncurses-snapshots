@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.115 2025/04/19 22:53:52 tom Exp $
-.TH curs_add_wch 3X 2025-04-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.117 2025/07/05 12:43:18 tom Exp $
+.TH curs_add_wch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -223,7 +223,8 @@ see \fB\%curs_variables\fP(3X).
 If
 .I wch
 is any other nonprintable character,
-it is drawn in printable form using the same convention as
+.I curses
+draws it in printable form using the same convention as
 \fB\%wunctrl\fP(3X).
 Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
 does not return the character itself,

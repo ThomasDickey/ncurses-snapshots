@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.44 2025/02/15 15:42:37 tom Exp $
+ * $Id: test_tparm.c,v 1.45 2025/07/05 15:11:35 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -456,11 +456,8 @@ main(int argc, char *argv[])
 	case 'v':
 	    ++v_opt;
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

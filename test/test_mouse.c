@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.37 2025/06/07 19:13:02 tom Exp $
+ * $Id: test_mouse.c,v 1.38 2025/07/05 15:11:35 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -258,11 +258,8 @@ main(int argc, char *argv[])
 		putenv(my_environ);
 	    }
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

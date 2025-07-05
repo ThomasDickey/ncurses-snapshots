@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.252 2025/04/05 22:54:19 tom Exp @
+  * @Id: ncurses.3x,v 1.255 2025/07/05 12:42:14 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2025-04-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2025-07-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        displays  with  output  optimized  to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20250426).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20250705).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -250,8 +250,8 @@
 
 </PRE><H3><a name="h3-Wide-and-Non-wide-Character-Configurations">Wide and Non-wide Character Configurations</a></H3><PRE>
        This  man  page  primarily  surveys  functions  that  appear   in   any
-       configuration of the library.  There are two common configurations; see
-       section "ALTERNATE CONFIGURATIONS" below.
+       configuration of the library.  There are two common configurations; for
+       others, see section "ALTERNATE CONFIGURATIONS" below.
 
        <EM>ncurses</EM>   is the library in its "non-wide" configuration, handling only
                  eight-bit  characters.   It  stores a character combined with
@@ -938,44 +938,46 @@
        For example, to tell <EM>ncurses</EM> not to assume anything about  the  colors,
        use  a  value  of  "-1,-1".   To make the default color scheme green on
        black, use "2,0".  <EM>ncurses</EM> accepts integral values from -1  up  to  the
-       value of the <EM>terminfo</EM> <STRONG>max_colors</STRONG> (<STRONG>colors</STRONG>) capability.
+       value  of  the <EM>terminfo</EM> <STRONG>max_colors</STRONG> (<STRONG>colors</STRONG>) capability for the selected
+       terminal type.
 
 
 </PRE><H3><a name="h3-NCURSES_CONSOLE2"><EM>NCURSES_CONSOLE2</EM></a></H3><PRE>
-       (MinGW   port  only)  The  <EM>Console2</EM>  program  defectively  handles  the
-       Microsoft Console  API  call  <EM>CreateConsoleScreenBuffer</EM>.   Applications
-       that  use it will hang.  However, it is possible to simulate the action
-       of this call by mapping coordinates, explicitly  saving  and  restoring
-       the  original  screen contents.  Setting the environment variable <EM>NCGDB</EM>
+       (MinGW  port  only)  The  <EM>Console2</EM>  program  defectively  handles   the
+       Microsoft  Console  API  call  <EM>CreateConsoleScreenBuffer</EM>.  Applications
+       that use it will hang.  However, it is possible to simulate the  action
+       of  this  call  by mapping coordinates, explicitly saving and restoring
+       the original screen contents.  Setting the environment  variable  <EM>NCGDB</EM>
        has the same effect.
 
 
 </PRE><H3><a name="h3-NCURSES_GPM_TERMS"><EM>NCURSES_GPM_TERMS</EM></a></H3><PRE>
-       (Linux only) When <EM>ncurses</EM> is configured to use the GPM interface,  this
-       variable  may  list  one  or  more  terminal  type  names, delimited by
-       vertical bars (<STRONG>|</STRONG>) or colons (<STRONG>:</STRONG>), against which the <EM>TERM</EM>  variable  (see
-       below)  is  matched.   An empty value disables the GPM interface, using
-       <EM>ncurses</EM>'s built-in support for <STRONG>xterm(1)</STRONG> mouse  protocols  instead.   If
-       the  variable  is absent, <EM>ncurses</EM> attempts to open GPM if <EM>TERM</EM> contains
+       (Linux  only) When <EM>ncurses</EM> is configured to use the GPM interface, this
+       variable may list  one  or  more  terminal  type  names,  delimited  by
+       vertical  bars  (<STRONG>|</STRONG>) or colons (<STRONG>:</STRONG>), against which the <EM>TERM</EM> variable (see
+       below) is matched.  An empty value disables the  GPM  interface,  using
+       <EM>ncurses</EM>'s  built-in  support  for <STRONG>xterm(1)</STRONG> mouse protocols instead.  If
+       the variable is absent, <EM>ncurses</EM> attempts to open GPM if  <EM>TERM</EM>  contains
        "linux".
 
 
 </PRE><H3><a name="h3-NCURSES_NO_HARD_TABS"><EM>NCURSES_NO_HARD_TABS</EM></a></H3><PRE>
-       <EM>ncurses</EM> may use tab characters in  cursor  movement  optimization.   In
-       some  cases,  your  terminal  driver may not handle them properly.  Set
+       <EM>ncurses</EM>  may  use  tab  characters in cursor movement optimization.  In
+       some cases, your terminal driver may not  handle  them  properly.   Set
        this environment variable to any value to disable the feature.  You can
        also adjust your <STRONG>stty(1)</STRONG> settings to avoid the problem.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_MAGIC_COOKIE"><EM>NCURSES_NO_MAGIC_COOKIE</EM></a></H3><PRE>
-       Many  terminals  store  video  attributes  as a property of a character
-       cell, as <EM>curses</EM> does.  Historically, some  recorded  changes  in  video
-       attributes  as  data  that  logically  <EM>occupies</EM>  character cells on the
-       display, switching attributes on or off, similarly to tags in a  markup
-       language;  these  are  termed "magic cookies", and must be subsequently
-       overprinted.  If the <EM>terminfo</EM> entry for your  terminal  type  does  not
-       adequately describe its handling of magic cookies, set this variable to
-       any value to instruct <EM>ncurses</EM> to disable attributes entirely.
+       Many terminals store video attributes  as  properties  of  a  character
+       cell,  as  <EM>curses</EM>  does.   Historically, some recorded changes in video
+       attributes as data that  logically  <EM>occupied</EM>  character  cells  on  the
+       display,  switching attributes on or off, similarly to tags in a markup
+       language, which then had to be overprinted to depict the cells' desired
+       contents;  these are termed "magic cookies".  If the <EM>terminfo</EM> entry for
+       your terminal type does not adequately describe its handling  of  magic
+       cookies,  set this variable to any value to instruct <EM>ncurses</EM> to disable
+       attributes entirely.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_PADDING"><EM>NCURSES_NO_PADDING</EM></a></H3><PRE>
@@ -1244,12 +1246,12 @@
 
        <STRONG>--with-termlib</STRONG>
             This option configures <EM>ncurses</EM> to provide low-level functions that
-            do  not  depend  upon  wide-character  support  in a library names
+            do  not  depend  upon  wide-character  support  in a library named
             <EM>tinfo</EM>.
 
             This arrangement enables <EM>tinfo</EM> to be shared  between  <EM>ncurses</EM>  and
-            <EM>ncursesw</EM>  libraries  as well as application linking and/or loading
-            times when it requires only low-level functions.
+            <EM>ncursesw</EM>  libraries  and  reduces  an application's linking and/or
+            loading times when it requires only low-level functions.
 
             The following pages describe low-level <EM>curses</EM> functions.
 
@@ -1503,7 +1505,7 @@
 
 
 
-ncurses 6.5                       2025-04-05                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2025-07-05                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

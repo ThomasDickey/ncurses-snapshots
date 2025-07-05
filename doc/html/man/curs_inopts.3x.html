@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.104 2025/04/05 22:07:49 tom Exp @
+  * @Id: curs_inopts.3x,v 1.107 2025/07/05 12:55:10 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2025-04-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2025-04-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-07-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -299,12 +299,13 @@
        expectation of further characters effectively infinite.  X/Open  Curses
        affords  no  means  of  otherwise configuring the length of this second
        delay, but an AIX and <EM>ncurses</EM> extension, <STRONG>ESCDELAY</STRONG>, is available both as
-       an  environment variable and a global symbol permitting the application
-       to do so; see <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> and <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
+       an  environment  variable  and  a global symbol permitting the user and
+       application,   respectively,   to   do   so;   see   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>    and
+       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       <EM>ncurses</EM> provides four "is_" functions corresponding  to  <STRONG>cbreak</STRONG>,  <STRONG>echo</STRONG>,
+       <EM>ncurses</EM>  provides  four  "is_" functions corresponding to <STRONG>cbreak</STRONG>, <STRONG>echo</STRONG>,
        <STRONG>nl</STRONG>, and <STRONG>raw</STRONG>, permitting their states to be queried by the application.
 
                             <STRONG>Query</STRONG>       <STRONG>Set</STRONG>      <STRONG>Reset</STRONG>
@@ -320,7 +321,7 @@
 
        <STRONG>0</STRONG>    if the option is unset, or
 
-       <STRONG>-1</STRONG>   if  the  library's  <EM>TERMINAL</EM> structure for the device has not been
+       <STRONG>-1</STRONG>   if the library's <EM>TERMINAL</EM> structure for the device  has  not  been
             initialized.
 
 
@@ -328,52 +329,52 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       Except  as  noted  in section "EXTENSIONS" above, X/Open Curses Issue 4
+       Except as noted in section "EXTENSIONS" above,  X/Open  Curses  Issue 4
        describes these functions.  It specifies no error conditions for them.
 
-       SVr4 describes a successful return value  only  as  "an  integer  value
+       SVr4  describes  a  successful  return  value only as "an integer value
        other than <EM>ERR</EM>".
 
-       <EM>ncurses</EM>  follows  X/Open Curses and the historical practice of System V
-       <EM>curses</EM>, clearing the terminal driver's "echo"  flag  when  initializing
-       the  screen.  BSD <EM>curses</EM> did not, but its <EM>raw</EM> function turned it off as
-       a side effect.  For best portability, call <EM>echo</EM>  or  <EM>noecho</EM>  explicitly
-       just  after initialization, even if your program retains the terminal's
+       <EM>ncurses</EM> follows X/Open Curses and the historical practice  of  System V
+       <EM>curses</EM>,  clearing  the  terminal driver's "echo" flag when initializing
+       the screen.  BSD <EM>curses</EM> did not, but its <EM>raw</EM> function turned it off  as
+       a  side  effect.   For best portability, call <EM>echo</EM> or <EM>noecho</EM> explicitly
+       just after initialization, even if your program retains the  terminal's
        canonical ("cooked") line discipline.
 
-       X/Open Curses is ambiguous regarding whether  <EM>raw</EM>  should  disable  the
-       carriage  return and line feed translation feature controlled by <EM>nl</EM> and
-       <EM>nonl</EM>.  BSD <EM>curses</EM> turned off these translations;  System V  <EM>curses</EM>  did
-       not.   <EM>ncurses</EM>  does so, on the assumption that a programmer requesting
-       raw input wants a clean (ideally,  8-bit  clean)  connection  that  the
+       X/Open  Curses  is  ambiguous  regarding whether <EM>raw</EM> should disable the
+       carriage return and line feed translation feature controlled by <EM>nl</EM>  and
+       <EM>nonl</EM>.   BSD  <EM>curses</EM>  turned off these translations; System V <EM>curses</EM> did
+       not.  <EM>ncurses</EM> does so, on the assumption that a  programmer  requesting
+       raw  input  wants  a  clean  (ideally, 8-bit clean) connection that the
        operating system will not alter.
 
        When <STRONG>keypad</STRONG> is first enabled, <EM>ncurses</EM> loads the key definitions for the
        current  terminal  type  description.   If  that  description  includes
-       extended  string  capabilities,  for example, by using the <STRONG>-x</STRONG> option of
+       extended string capabilities, for example, by using the  <STRONG>-x</STRONG>  option  of
        <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>, then <EM>ncurses</EM> also defines keys for the capabilities whose names
-       begin  with  "k".  Corresponding key codes are generated and (depending
-       on previous  loads  of  terminal  descriptions)  may  differ  from  one
-       execution  of  a  program  to  the  next.   The generated key codes are
+       begin with "k".  Corresponding key codes are generated  and  (depending
+       on  previous  loads  of  terminal  descriptions)  may  differ  from one
+       execution of a program to  the  next.   The  generated  key  codes  are
        recognized by <STRONG><A HREF="curs_util.3x.html">keyname(3x)</A></STRONG>, which then returns a name beginning with "k"
-       denoting  the <EM>terminfo</EM> capability name rather than "K", used for <EM>curses</EM>
+       denoting the <EM>terminfo</EM> capability name rather than "K", used for  <EM>curses</EM>
        key names.  On the other hand, an application can use <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG> to
-       bind  a  specific  key  to  a  string of the programmer's choice.  This
-       feature  enables  an  application  to  check  for  its  presence   with
+       bind a specific key to a  string  of  the  programmer's  choice.   This
+       feature   enables  an  application  to  check  for  its  presence  with
        <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>, and reassign the key code to match its own needs.
 
        Low-level applications can use <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG> to obtain the definition of
-       any string capability.  <EM>curses</EM> applications  use  the  input  character
+       any  string  capability.   <EM>curses</EM>  applications use the input character
        reading function to obtain key codes from input and rely upon the order
-       in which the string capabilities are loaded.  Multiple  key  capability
-       strings  can  have  the  same  value,  but  the input character reading
-       function can report only one key  code.   Most  <EM>curses</EM>  implementations
-       (including  <EM>ncurses</EM>)  load  key definitions in the order they appear in
+       in  which  the string capabilities are loaded.  Multiple key capability
+       strings can have the  same  value,  but  the  input  character  reading
+       function  can  report  only  one key code.  Most <EM>curses</EM> implementations
+       (including <EM>ncurses</EM>) load key definitions in the order  they  appear  in
        the <STRONG>strfnames</STRONG> array of string capability names; see <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.
-       The  last  capability read using a particular definition determines the
-       key code to be reported.  In  <EM>ncurses</EM>,  extended  capabilities  can  be
-       interpreted  as key definitions.  These are loaded after the predefined
-       keys, and if a capability's value is the same as  a  previously  loaded
+       The last capability read using a particular definition  determines  the
+       key  code  to  be  reported.   In <EM>ncurses</EM>, extended capabilities can be
+       interpreted as key definitions.  These are loaded after the  predefined
+       keys,  and  if  a capability's value is the same as a previously loaded
        key definition, the library uses the later definition.
 
 
@@ -384,32 +385,32 @@
        support it with <EM>cbreak</EM>, <EM>nocbreak</EM>, <EM>intrflush</EM>, <EM>keypad</EM>, <EM>meta</EM>, <EM>nodelay</EM>, and
        <EM>typeahead</EM>.
 
-       SVr3  (1987)  added  <EM>halfdelay</EM>,  <EM>notimeout</EM>,  and <EM>wtimeout</EM>.  <EM>qiflush</EM> and
-       <EM>noqiflush</EM> appeared in SVr3.1 (1987), at which point <EM>intrflush</EM> became  a
-       wrapper  for  either  of these functions, depending on the value of its
+       SVr3 (1987) added <EM>halfdelay</EM>,  <EM>notimeout</EM>,  and  <EM>wtimeout</EM>.   <EM>qiflush</EM>  and
+       <EM>noqiflush</EM>  appeared in SVr3.1 (1987), at which point <EM>intrflush</EM> became a
+       wrapper for either of these functions, depending on the  value  of  its
        Boolean argument.  SVr3.1 also added <EM>timeout</EM>.
 
        <EM>ncurses</EM> 6.5 (2024) introduced <EM>is</EM><STRONG>_</STRONG><EM>cbreak</EM>, <EM>is</EM><STRONG>_</STRONG><EM>echo</EM>, <EM>is</EM><STRONG>_</STRONG><EM>nl</EM>, and <EM>is</EM><STRONG>_</STRONG><EM>raw</EM>.
 
-       Formerly, <EM>ncurses</EM> used  <EM>nl</EM>  and  <EM>nonl</EM>  to  control  the  conversion  of
-       newlines  to  carriage  return/line  feed  on  output as well as input.
-       X/Open Curses documents the use of  these  functions  only  for  input.
-       This  difference arose from converting the <EM>pcurses</EM> source (1986), which
-       used <STRONG>ioctl(2)</STRONG> calls and the <EM>sgttyb</EM> structure,  to  <EM>termios</EM>  (the  POSIX
-       terminal  API).   In the former, both input and output conversions were
-       controlled via a single option  "CRMOD",  while  the  latter  separates
-       these   features.   Because  that  conversion  interferes  with  output
+       Formerly,  <EM>ncurses</EM>  used  <EM>nl</EM>  and  <EM>nonl</EM>  to  control  the conversion of
+       newlines to carriage return/line feed  on  output  as  well  as  input.
+       X/Open  Curses  documents  the  use  of these functions only for input.
+       This difference arose from converting the <EM>pcurses</EM> source (1986),  which
+       used  <STRONG>ioctl(2)</STRONG>  calls  and  the <EM>sgttyb</EM> structure, to <EM>termios</EM> (the POSIX
+       terminal API).  In the former, both input and output  conversions  were
+       controlled  via  a  single  option  "CRMOD", while the latter separates
+       these  features.   Because  that  conversion  interferes  with   output
        optimization, <EM>ncurses</EM> 6.2 (2020) amended <EM>nl</EM> and <EM>nonl</EM> to eliminate their
        effect on output.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
        <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG>termios(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2025-04-05                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-07-05                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.154 2025/06/28 22:48:52 tom Exp $
+ * $Id: picsmap.c,v 1.155 2025/07/05 15:11:35 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -1788,11 +1788,8 @@ main(int argc, char *argv[])
 	    }
 	    break;
 #endif
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.62 2025/04/05 22:24:24 tom Exp $
-.TH curs_variables 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.65 2025/07/05 13:04:08 tom Exp $
+.TH curs_variables 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -189,7 +189,8 @@ standards,
 each of which also defined a Boolean data type.
 The \fIcurses\fP library requires an integral type \fIbool\fP.
 .PP
-\fB\%ncurses\fP' configure script attempts to discover the
+.IR \%ncurses 's
+configure script attempts to discover the
 data type used by the system's C and C++ compilers,
 to reuse for the \fIcurses\fP \fIbool\fP.
 .SS "\fIchtype\fP"
@@ -295,7 +296,7 @@ distinguishes the ESC character resulting from a user's press of the
 \*(``Escape\*('' key on the input device
 from one beginning an escape sequence
 (commonly produced by function keys),
-by waiting after the escape character
+by waiting after receiving the escape character
 to see if further characters are available
 on the input stream within a short interval.
 .B \%ESCDELAY
@@ -372,47 +373,82 @@ it is used as a working area for combining the standard window
 When the update of \fB\%newscr\fP is complete,
 \fIcurses\fP modifies \fB\%curscr\fP to match \fB\%newscr\fP.
 .PP
-\fB\%TABSIZE\fP is a feature of SVr4 \fIcurses\fP.
+.B \%TABSIZE
+is a feature of SVr4
+.IR curses "."
 .bP
-SVr4 initially sets \fB\%TABSIZE\fP from the terminal description's
-\fB\%init_tabs\fP capability.
+SVr4 initially sets
+.B \%TABSIZE
+from the terminal description's
+.B \%init_tabs
+.RB ( it )
+capability.
 After that,
-it can be altered by applications using SVr4 \fIcurses\fP.
+it can be altered by applications using SVr4
+.IR curses "."
 .bP
-SVr4 \fIcurses\fP uses the value of \fB\%TABSIZE\fP to compute the
-position of tab stops when updating both
+SVr4
+.I curses
+uses
+.BR \%TABSIZE 's
+value to compute the position of tab stops when updating both
 the virtual screen with \fB\%addch\fP(3X) and
 the physical screen with \fB\%mvcur\fP(3X).
 .bP
-\fI\%ncurses\fP uses the value of \fB\%TABSIZE\fP only to update the
-virtual screen.
-It uses the terminal description's \*(``\fBit\fP\*(''
-\%(\fBinit_tabs\fP) capability for computing hardware tabs
+In
+.IR \%ncurses ","
+.BR \%TABSIZE 's
+value affects only the virtual screen.
+The library uses the terminal type description's
+.B \%init_tabs
+.RB ( it )
+capability to compute hardware tabs
 (that is,
 tab stops on the physical screen).
 .bP
 Other implementations differ.
 For instance,
-NetBSD \fIcurses\fP allows \fB\%TABSIZE\fP to be set through an
-environment variable.
-\fI\%ncurses\fP does not.
+NetBSD
+.I curses
+allows
+.B \%TABSIZE
+to be set through an environment variable.
+.I \%ncurses
+does not.
 .IP
-NetBSD \fIcurses\fP does not support hardware tabs;
-it uses the \fB\%init_tabs\fP capability and the \fB\%TABSIZE\fP
-variable only for updating the virtual screen.
+NetBSD
+.I curses
+does not support hardware tabs;
+it uses the
+.B \%init_tabs
+.RB ( it )
+capability and the
+.B \%TABSIZE
+variable only to update the virtual screen.
 .PP
-\fB\%ESCDELAY\fP is a feature of AIX \fIcurses\fP.
+.B \%ESCDELAY
+is a feature of AIX
+.IR curses "."
 .bP
-In AIX,
-the units for \fB\%ESCDELAY\fP are \fIfifths\fP of milliseconds.
+AIX treats
+.BR \%ESCDELAY 's
+value as counting
+.I fifths
+of milliseconds.
 .bP
-The default value for AIX's \fB\%ESCDELAY\fP equals 0.1 seconds.
+AIX's default
+.B \%ESCDELAY
+equals 0.1 seconds.
 .bP
-AIX also enforces a limit of 10,000 seconds for \fB\%ESCDELAY\fP;
-\fI\%ncurses\fP does not enforce any upper limit.
+AIX also enforces a limit of 10,000 seconds for
+.BR \%ESCDELAY ";"
+.I \%ncurses
+does not enforce an upper limit.
 .PP
-\fI\%ncurses\fP has long used \fB\%ESCDELAY\fP with units of
-milliseconds,
+.I \%ncurses
+has long interpreted
+.B \%ESCDELAY
+as a count of milliseconds,
 making it impossible to be completely compatible with AIX.
 Consequently,
 most users have decided either to override the value,

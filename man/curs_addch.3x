@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.137 2025/04/26 19:57:22 tom Exp $
-.TH curs_addch 3X 2025-04-26 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.139 2025/07/05 12:43:18 tom Exp $
+.TH curs_addch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -181,7 +181,8 @@ see \fB\%curs_variables\fP(3X).
 If
 .I ch
 is any other nonprintable character,
-it is drawn in printable form using the same convention as
+.I curses
+draws it in printable form using the same convention as
 \fB\%unctrl\fP(3X).
 Calling \fB\%winch\fP(3X) on the location of a nonprintable character
 does not return the character itself,

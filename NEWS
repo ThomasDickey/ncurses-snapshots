@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4305 2025/06/28 22:47:22 tom Exp $
+-- $Id: NEWS,v 1.4310 2025/07/05 20:44:20 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,10 +46,21 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20250705
+	+ when installing the terminfo database, check if symbolic links are
+	  supported before attemping to link lib/terminfo from share/terminfo
+	  (report by Kirill Makurin).
+	+ modify configure check for MAKEFILES/MFLAGS to ignore existing value
+	  of these environment variables (report by Stas Sergeev).
+	+ reserve -c/-l options in test/*.c for command/logging like vttest.
+	+ add options to test/worm.c for benchmarking (Nibby Nebbulous)
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ improve readability of header-files (patches by Branden Robinson).
+
 20250628
 	+ fix a few compiler-warnings.
 	+ simplify include for wchar.h in Windows port by removing the platform
-	  ifdef's (report by Karl Knechtel).
+	  ifdef's (report by Kirill Makurin).
 	+ regen Ada95/configure (report by Sven Joachim).
 
 20250621

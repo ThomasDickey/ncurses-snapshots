@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.705 2025/06/28 17:42:24 tom Exp $
+ * $Id: curses.priv.h,v 1.707 2025/07/05 12:38:04 Branden.Robinson Exp $
  *
  *	curses.priv.h
  *
@@ -1874,7 +1874,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 		? sp->_dch_cost \
 		: ((delete_character != NULL) \
 			? (sp->_dch1_cost * count) \
-			: INFINITY))
+			: NC_INFINITY))
 
 #define InsCharCost(sp,count) \
 		((parm_ich != NULL) \
@@ -1883,7 +1883,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 		  ? sp->_smir_cost + sp->_rmir_cost + (sp->_ip_cost * count) \
 		  : ((insert_character != NULL) \
 		    ? ((sp->_ich1_cost + sp->_ip_cost) * count) \
-		    : INFINITY)))
+		    : NC_INFINITY)))
 
 #if USE_XMC_SUPPORT
 #define UpdateAttrs(sp,c) if (!SameAttrOf(SCREEN_ATTRS(sp), c)) { \
@@ -2055,8 +2055,12 @@ extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, int *, int EVENTLIST_2nd(_nc_eve
 /* lib_insch.c */
 extern NCURSES_EXPORT(int) _nc_insert_ch(SCREEN *, WINDOW *, chtype);
 
+/* lib_mouse.c */
+extern NCURSES_EXPORT(bool) _nc_has_mouse (const SCREEN *);
+
 /* lib_mvcur.c */
-#define INFINITY	1000000	/* cost: too high to use */
+#define NC_INFINITY	1000000	/* cost: too high to use */
+#define BAUDBYTE	9	/* 9 = 7 bits + 1 parity + 1 stop */
 
 extern NCURSES_EXPORT(int) _nc_mvcur(int yold, int xold, int ynew, int xnew);
 
@@ -2069,13 +2073,6 @@ extern NCURSES_EXPORT(int) _nc_scrolln (int, int, int, int);
 extern NCURSES_EXPORT(void) _nc_screen_init (void);
 extern NCURSES_EXPORT(void) _nc_screen_resume (void);
 extern NCURSES_EXPORT(void) _nc_screen_wrap (void);
-
-/* lib_mouse.c */
-extern NCURSES_EXPORT(bool) _nc_has_mouse (const SCREEN *);
-
-/* lib_mvcur.c */
-#define INFINITY	1000000	/* cost: too high to use */
-#define BAUDBYTE	9	/* 9 = 7 bits + 1 parity + 1 stop */
 
 /* lib_setup.c */
 extern NCURSES_EXPORT(char *) _nc_get_locale(void);

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.89 2025/04/05 22:07:21 tom Exp $
-.TH curs_getstr 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.92 2025/07/05 12:52:05 tom Exp $
+.TH curs_getstr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -108,9 +108,13 @@ discards function key inputs other than those
 treated as the erase or kill characters,
 calling \fBbeep\fP(3X).
 .PP
-The erase character replaces the character at the end of the buffer with
-a null character,
-while the kill character does the same for the entire buffer.
+If any characters have been written to the input buffer,
+the erase character replaces the character
+at the current position in the buffer
+with a null character,
+then decrements the position by one;
+the kill character does the same repeatedly,
+backtracking to the beginning of the buffer.
 .PP
 If the screen's echo option is enabled
 (see \fBecho\fP(3X)),
@@ -122,7 +126,10 @@ Further,
 .bP
 the erase character
 and its function key synonyms
-move the cursor to the left,
+move the cursor to the left
+(if not already where it was located when
+.B \%wgetstr
+was called)
 and
 .bP
 the kill character returns the cursor to where it was located when

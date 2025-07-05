@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.252 2025/04/05 22:54:19 tom Exp $
-.TH ncurses 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.255 2025/07/05 12:42:14 tom Exp $
+.TH ncurses 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -452,6 +452,7 @@ pair	a foreground/background color pair identifier
 This man page primarily surveys functions that appear in any
 configuration of the library.
 There are two common configurations;
+for others,
 see section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .TP 10 \" "ncursesw" + 2n
 .I \%ncurses
@@ -1311,7 +1312,7 @@ accepts integral values from \-1 up to the value of the
 .I \%term\%info
 .B \%max_colors
 .RB ( colors )
-capability.
+capability for the selected terminal type.
 .SS "\fINCURSES_CONSOLE2\fP"
 (MinGW port only)
 The
@@ -1359,18 +1360,18 @@ your terminal driver may not handle them properly.
 Set this environment variable to any value to disable the feature.
 You can also adjust your \fI\%stty\fP(1) settings to avoid the problem.
 .SS "\fINCURSES_NO_MAGIC_COOKIE\fP"
-Many terminals store video attributes as a property of a character cell,
+Many terminals store video attributes as properties of a character cell,
 as
 .I curses
 does.
 Historically,
 some recorded changes in video attributes as data that logically
-.I occupies
+.I occupied
 character cells on the display,
 switching attributes on or off,
-similarly to tags in a markup language;
-these are termed \*(``magic cookies\*('',
-and must be subsequently overprinted.
+similarly to tags in a markup language,
+which then had to be overprinted to depict the cells' desired contents;
+these are termed \*(``magic cookies\*(''.
 If the
 .I \%term\%info
 entry for your terminal type does not adequately describe its handling
@@ -1510,7 +1511,7 @@ linux\-vt100|linux console with VT100 line\-graphics,
 # uxterm with vt100Graphics resource set to false
 xterm\-utf8|xterm relying on UTF\-8 line\-graphics,
         U8#1, use=xterm,
-.nf
+.fi
 .EE
 .RE
 .PP
@@ -1908,7 +1909,7 @@ for example.
 This option configures
 .I \%ncurses
 to provide low-level functions that do not depend
-upon wide-character support in a library names
+upon wide-character support in a library named
 .IR \%tinfo "."
 .IP
 This arrangement enables
@@ -1917,7 +1918,8 @@ to be shared between
 .I \%ncurses
 and
 .I \%ncursesw
-libraries as well as application linking and/or loading times
+libraries
+and reduces an application's linking and/or loading times
 when it requires only low-level functions.
 .IP
 The following pages describe low-level

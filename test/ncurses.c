@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.548 2025/05/17 23:01:22 tom Exp $
+$Id: ncurses.c,v 1.549 2025/07/05 15:11:35 tom Exp $
 
 ***************************************************************************/
 
@@ -7979,11 +7979,8 @@ main(int argc, char *argv[])
 	    xterm_colors = TRUE;
 	    break;
 #endif
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

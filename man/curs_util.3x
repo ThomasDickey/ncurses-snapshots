@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.141 2025/04/05 22:22:48 tom Exp $
-.TH curs_util 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.143 2025/07/05 13:06:45 tom Exp $
+.TH curs_util 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -231,7 +231,7 @@ from the operating system or terminal database.
 .IP
 .I curses
 also updates the screen size in response to
-\fBSIGWINCH\fP,
+.IR \%SIGWINCH ","
 unless overridden by the \fILINES\fP or \fI\%COLUMNS\fP environment
 variables,
 .SS use_tioctl

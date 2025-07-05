@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.165 2025/02/01 21:53:19 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.166 2025/07/05 12:36:24 Branden.Robinson Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -223,7 +223,7 @@ NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_DCLx const char *const cap, int affcn
 /* compute the cost of a given operation */
 {
     if (cap == NULL)
-	return (INFINITY);
+	return (NC_INFINITY);
     else {
 	const char *cp;
 	float cum_cost = 0.0;
@@ -287,7 +287,7 @@ normalized_cost(NCURSES_SP_DCLx const char *const cap, int affcnt)
 /* compute the effective character-count for an operation (round up) */
 {
     int cost = NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_ARGx cap, affcnt);
-    if (cost != INFINITY)
+    if (cost != NC_INFINITY)
 	cost = (cost + SP_PARM->_char_padding - 1) / SP_PARM->_char_padding;
     return cost;
 }
@@ -370,8 +370,8 @@ NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
 	SP_PARM->_ht_cost = CostOf(tab, 0);
 	SP_PARM->_cbt_cost = CostOf(back_tab, 0);
     } else {
-	SP_PARM->_ht_cost = INFINITY;
-	SP_PARM->_cbt_cost = INFINITY;
+	SP_PARM->_ht_cost = NC_INFINITY;
+	SP_PARM->_cbt_cost = NC_INFINITY;
     }
 #endif /* USE_HARD_TABS */
     SP_PARM->_cub1_cost = CostOf(cursor_left, 0);
@@ -543,12 +543,12 @@ repeated_append(string_desc * target, int total, int num, int repeat, const char
 	    if (_nc_safe_strcat(target, src)) {
 		total += num;
 	    } else {
-		total = INFINITY;
+		total = NC_INFINITY;
 		break;
 	    }
 	}
     } else {
-	total = INFINITY;
+	total = NC_INFINITY;
     }
     return total;
 }
@@ -578,7 +578,7 @@ relative_move(NCURSES_SP_DCLx
     (void) _nc_str_copy(&save, target);
 
     if (to_y != from_y) {
-	vcost = INFINITY;
+	vcost = NC_INFINITY;
 
 	if (row_address != NULL
 	    && _nc_safe_strcat(target, TIPARM_1(row_address, to_y))) {
@@ -617,8 +617,8 @@ relative_move(NCURSES_SP_DCLx
 	    }
 	}
 
-	if (vcost == INFINITY)
-	    return (INFINITY);
+	if (vcost == NC_INFINITY)
+	    return (NC_INFINITY);
     }
 
     save = *target;
@@ -627,7 +627,7 @@ relative_move(NCURSES_SP_DCLx
 	char str[OPT_SIZE];
 	string_desc check;
 
-	hcost = INFINITY;
+	hcost = NC_INFINITY;
 
 	if (column_address
 	    && _nc_safe_strcat(_nc_str_copy(target, &save),
@@ -658,7 +658,7 @@ relative_move(NCURSES_SP_DCLx
 		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt) {
 			lhcost = repeated_append(&check, lhcost,
 						 SP_PARM->_ht_cost, 1, tab);
-			if (lhcost == INFINITY)
+			if (lhcost == NC_INFINITY)
 			    break;
 		    }
 
@@ -751,7 +751,7 @@ relative_move(NCURSES_SP_DCLx
 			lhcost = repeated_append(&check, lhcost,
 						 SP_PARM->_cbt_cost,
 						 1, back_tab);
-			if (lhcost == INFINITY)
+			if (lhcost == NC_INFINITY)
 			    break;
 		    }
 
@@ -770,8 +770,8 @@ relative_move(NCURSES_SP_DCLx
 	    }
 	}
 
-	if (hcost == INFINITY)
-	    return (INFINITY);
+	if (hcost == NC_INFINITY)
+	    return (NC_INFINITY);
     }
 
     return (vcost + hcost);
@@ -798,7 +798,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 {
     string_desc result;
     char buffer[OPT_SIZE];
-    int tactic = 0, newcost, usecost = INFINITY;
+    int tactic = 0, newcost, usecost = NC_INFINITY;
     int t5_cr_cost;
 
 #if defined(MAIN) || defined(NCURSES_TEST)
@@ -846,7 +846,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
 				     NullResult,
 				     yold, xold,
-				     ynew, xnew, ovw)) != INFINITY)
+				     ynew, xnew, ovw)) != NC_INFINITY)
 	&& newcost < usecost) {
 	tactic = 1;
 	usecost = newcost;
@@ -857,7 +857,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
 				     NullResult,
 				     yold, 0,
-				     ynew, xnew, ovw)) != INFINITY)
+				     ynew, xnew, ovw)) != NC_INFINITY)
 	&& SP_PARM->_cr_cost + newcost < usecost) {
 	tactic = 2;
 	usecost = SP_PARM->_cr_cost + newcost;
@@ -868,7 +868,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
 				     NullResult,
 				     0, 0,
-				     ynew, xnew, ovw)) != INFINITY)
+				     ynew, xnew, ovw)) != NC_INFINITY)
 	&& SP_PARM->_home_cost + newcost < usecost) {
 	tactic = 3;
 	usecost = SP_PARM->_home_cost + newcost;
@@ -879,7 +879,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
 				     NullResult,
 				     screen_lines(SP_PARM) - 1, 0,
-				     ynew, xnew, ovw)) != INFINITY)
+				     ynew, xnew, ovw)) != NC_INFINITY)
 	&& SP_PARM->_ll_cost + newcost < usecost) {
 	tactic = 4;
 	usecost = SP_PARM->_ll_cost + newcost;
@@ -895,7 +895,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 	&& ((newcost = relative_move(NCURSES_SP_ARGx
 				     NullResult,
 				     yold - 1, screen_columns(SP_PARM) - 1,
-				     ynew, xnew, ovw)) != INFINITY)
+				     ynew, xnew, ovw)) != NC_INFINITY)
 	&& t5_cr_cost + SP_PARM->_cub1_cost + newcost < usecost) {
 	tactic = 5;
 	usecost = t5_cr_cost + SP_PARM->_cub1_cost + newcost;
@@ -956,7 +956,7 @@ onscreen_mvcur(NCURSES_SP_DCLx
 		       (int) diff, diff / 288);
 #endif /* MAIN */
 
-    if (usecost != INFINITY) {
+    if (usecost != NC_INFINITY) {
 	TR(TRACE_MOVE, ("mvcur tactic %d", tactic));
 	TPUTS_TRACE("mvcur");
 	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx

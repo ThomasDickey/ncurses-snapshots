@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.126 2025/04/05 22:08:22 tom Exp $
-.TH curs_mouse 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.129 2025/07/05 12:57:40 tom Exp $
+.TH curs_mouse 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -122,7 +122,8 @@ member has exactly one bit set indicating the event type.
 ignores mouse events when input is in canonical (\*(``cooked\*('') mode,
 and produces an error beep when they occur
 while the library simulates canonical mode in a window,
-as with \fB\%getstr\fP(3X),
+as with \fB\%getstr\fP(3X)
+(wide-character API users: \fB\%get_wstr\fP(3X)),
 which expects a line feed to terminate its input loop.
 .SS has_mouse
 The terminal type or operating system interface
@@ -147,7 +148,8 @@ reports no mouse events.
 .bP
 The function returns an updated copy of
 .I new-mask
-indicating which of the specified mouse events can be reported.
+indicating which event types of interest
+are reportable by the terminal's mouse protocol.
 .IP
 If the screen is not initialized,
 or the terminal interface does not report mouse events,
@@ -218,11 +220,11 @@ REPORT_MOUSE_POSITION	report mouse movement
 _
 .TE
 .SS getmouse
-Once a class of mouse events has been made visible in a window,
+When a window is configured to report a non-empty set of event types,
 calling the input character reading function on that window may return
 .B \%KEY_MOUSE
-as an indicator that a mouse event is enqueued.
-To read the event data and pop the event off the queue,
+to indicate availability of an enqueued mouse event.
+To read the event data and remove it from the queue,
 call
 .BR \%getmouse ","
 which returns

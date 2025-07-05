@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.74 2025/03/01 21:29:42 tom Exp $
-.TH curs_instr 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.76 2025/07/05 12:55:50 tom Exp $
+.TH curs_instr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -101,16 +101,15 @@ then works like
 These functions return the count of characters copied from
 .I win
 to
-.IR str ","
+.I str
+(not counting the null terminator),
 or
 .B ERR
 upon failure.
 .PP
 In
 .IR \%ncurses ","
-these functions return
-.B ERR
-if
+these functions fail if
 .bP
 the
 .I curses

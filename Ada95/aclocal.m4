@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.229 2025/06/21 10:49:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.230 2025/07/05 20:20:37 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2854,16 +2854,18 @@ AC_SUBST(BROKEN_LINKER)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKEFLAGS version: 21 updated: 2021/09/04 06:47:34
+dnl CF_MAKEFLAGS version: 22 updated: 2025/07/05 16:17:37
 dnl ------------
 dnl Some 'make' programs support ${MAKEFLAGS}, some ${MFLAGS}, to pass 'make'
 dnl options to lower-levels.  It is very useful for "make -n" -- if we have it.
-dnl (GNU 'make' does both, something POSIX 'make', which happens to make the
-dnl ${MAKEFLAGS} variable incompatible because it adds the assignments :-)
+dnl POSIX accommodates both by pretending they are the same variable, adding
+dnl the behavior of the latter to the former.
 AC_DEFUN([CF_MAKEFLAGS],
 [AC_REQUIRE([AC_PROG_FGREP])dnl
 
 AC_CACHE_CHECK(for makeflags variable, cf_cv_makeflags,[
+	cf_save_makeflags="$MAKEFLAGS"; unset MAKEFLAGS
+	cf_save_mflags="$MFLAGS";       unset MFLAGS
 	cf_cv_makeflags=''
 	for cf_option in '-${MAKEFLAGS}' '${MFLAGS}'
 	do
@@ -2891,6 +2893,8 @@ CF_EOF
 			;;
 		esac
 	done
+	test -n "$cf_save_makeflags" && MAKEFLAGS="$cf_save_makeflags"
+	test -n "$cf_save_mflags"    && MFLAGS="$cf_save_mflags"
 	rm -f cf_makeflags.tmp
 ])
 

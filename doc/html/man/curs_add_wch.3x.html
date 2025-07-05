@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_add_wch.3x,v 1.115 2025/04/19 22:53:52 tom Exp @
+  * @Id: curs_add_wch.3x,v 1.117 2025/07/05 12:43:18 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_add_wch 3x 2025-04-19 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_add_wch 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_add_wch 3x 2025-04-19 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_add_wch 3x 2025-07-05 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
@@ -175,10 +175,10 @@
            Alter   the   tab   interval   with   the  <STRONG>TABSIZE</STRONG>  extension;  see
            <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
-       If <EM>wch</EM> is any other nonprintable character, it is  drawn  in  printable
-       form  using the same convention as <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG>.  Calling <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG> on
-       the location of a nonprintable character does not return the  character
-       itself, but its <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG> representation.
+       If <EM>wch</EM>  is  any  other  nonprintable  character,  <EM>curses</EM>  draws  it  in
+       printable  form  using  the  same  convention  as <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG>.  Calling
+       <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG> on the location of a nonprintable character does not return
+       the character itself, but its <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG> representation.
 
        Adding  spacing characters with <STRONG>wadd_wch</STRONG> causes it to wrap at the right
        margin of the window:
@@ -473,7 +473,7 @@
 
 
 
-ncurses 6.5                       2025-04-19                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
+ncurses 6.5                       2025-07-05                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

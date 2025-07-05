@@ -48,7 +48,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.83 2025/06/21 14:25:02 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.84 2025/07/05 12:36:24 Branden.Robinson Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 
@@ -1463,7 +1463,7 @@ tdiff(FILETIME fstart, FILETIME fend)
 static int
 Adjust(int milliseconds, int diff)
 {
-    if (milliseconds != INFINITY) {
+    if (milliseconds != NC_INFINITY) {
 	milliseconds -= diff;
 	if (milliseconds < 0)
 	    milliseconds = 0;
@@ -1544,7 +1544,7 @@ console_twait(
 		      milliseconds, mode));
 
     if (milliseconds < 0)
-	milliseconds = INFINITY;
+	milliseconds = NC_INFINITY;
 
     memset(&inp_rec, 0, sizeof(inp_rec));
 

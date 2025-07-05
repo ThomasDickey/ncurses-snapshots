@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.102 2025/03/15 21:11:24 tom Exp $
-.TH curs_initscr 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.105 2025/07/05 13:30:33 tom Exp $
+.TH curs_initscr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -141,7 +141,9 @@ and
 an input stream
 .I inf
 connected to the terminal.
-It returns a variable of
+.PP
+.B \%newterm
+returns a variable of
 .RI pointer-to- SCREEN
 type,
 which should be saved for later use with
@@ -198,11 +200,14 @@ or temporarily suspending
 management of the terminal.
 .BR \%endwin ":"
 .bP
+if \fB\%start_color\fP(3X) has been called,
 resets colors to correspond with the default color pair 0,
 .bP
 moves the cursor to the lower left-hand corner of the screen,
 .bP
-clears the remainder of the line so that it uses the default colors,
+clears the remainder of the line
+(if \fB\%start_color\fP(3X) has been called,
+it also restores the default color pair),
 .bP
 sets the cursor to normal visibility
 (see \fB\%curs_set\fP(3X)),
@@ -245,12 +250,13 @@ pointer previously returned by
 as an argument,
 and returns the previous one.
 .B \%set_term
-is the only
+is the only standard
 .I curses
 API function that manipulates
 .I SCREEN
 pointers;
-all others affect only the current terminal.
+all others affect only the current terminal
+(but see \fBcurs_sp_funcs\fP(3X)).
 .SS delscreen
 .B \%delscreen
 frees the storage backing the supplied
@@ -264,14 +270,12 @@ after a
 (possibly conditional or temporary)
 suspension;
 see \fB\%curs_kernel\fP(3X).
-Call
+Use
 .B \%delscreen
 after
 .B \%endwin
-when a particular
-.I SCREEN
-structure
-is no longer needed.
+when the application has no more need of a screen
+but will not soon exit.
 .SH RETURN VALUE
 .B \%delscreen
 returns no value.
@@ -303,7 +307,8 @@ it is called more than once without updating the screen,
 or
 .bP
 its call of \fB\%reset_shell_mode\fP(3X) returns
-.BR ERR "."
+.BR ERR ";"
+and
 .RE
 .bP
 .B \%newterm
@@ -418,7 +423,7 @@ At the same time,
 .I \%ncurses
 calls \fB\%resizeterm\fP(3X)
 to adjust the standard screen
-.BR \%stdscr ","
+.B \%stdscr
 and update global variables such as
 .B LINES
 and
@@ -487,8 +492,9 @@ if a
 is no longer needed.
 .bP
 However,
-.IR \%WINDOW s
-are implicitly associated with a
+every
+.I \%WINDOW
+is implicitly associated with a
 .IR SCREEN ","
 so it is reasonable to expect
 .I \%delscreen
@@ -519,9 +525,11 @@ in 2001.
 follows the SVr4 model,
 deleting only the standard
 .I \%WINDOW
-structures.
-.SS "High-level versus Low-level"
-Different implementations may disagree regarding the level of some functions.
+structures and
+.IR \%newscr "."
+.SS "High-level versus Low-level Functions"
+Implementations disagree
+regarding the level of abstraction applicable to a function or property.
 For example,
 .I SCREEN
 (returned by
@@ -533,8 +541,9 @@ descriptors for the output stream.
 If an application switches screens using
 .IR \%set_term ","
 or switches terminals using \fB\%set_curterm\fP(3X),
-applications which use the output file descriptor can have different
-behavior depending on which structure holds the corresponding descriptor.
+applications
+using the output file descriptor can behave differently
+depending on the structure holding the corresponding descriptor.
 .bP
 NetBSD's
 .I \%baudrate

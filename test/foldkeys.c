@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey, 2006
  *
- * $Id: foldkeys.c,v 1.15 2025/01/11 14:54:49 tom Exp $
+ * $Id: foldkeys.c,v 1.16 2025/07/05 15:11:35 tom Exp $
  *
  * Demonstrate a method for altering key definitions at runtime.
  *
@@ -223,11 +223,8 @@ main(int argc, char *argv[])
 
     while ((ch = getopt(argc, argv, OPTS_COMMON)) != -1) {
 	switch (ch) {
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }

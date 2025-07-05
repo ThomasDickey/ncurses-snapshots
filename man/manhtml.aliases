@@ -1,4 +1,4 @@
-# $Id: manhtml.aliases,v 1.47 2025/02/02 00:58:13 tom Exp $
+# $Id: manhtml.aliases,v 1.48 2025/07/05 13:28:49 tom Exp $
 #***************************************************************************
 # Copyright 2019-2024,2025 Thomas E. Dickey                                *
 # Copyright 2013,2017 Free Software Foundation, Inc.                       *
@@ -58,6 +58,7 @@ extended_slk_color(3X)	curs_slk(3X)
 filter(3X)		curs_util(3X)
 flushinp(3X)		curs_util(3X)
 get_wch(3X)		curs_get_wch(3X)
+get_wstr(3X)		curs_get_wstr(3X)
 getcchar(3X)		curs_getcchar(3X)
 getch(3X)		curs_getch(3X)
 getstr(3X)		curs_getstr(3X)
@@ -72,10 +73,10 @@ infocmp(1)		infocmp(1M)
 initscr(3X)		curs_initscr(3X)
 is_cbreak(3X)		curs_inopts(3X)
 is_scrollok(3X)		curs_opaque(3X)
-killchar(3X)		curs_termattrs(3X)
-killwchar(3X)		curs_termattrs(3X)
 keyname(3X)		curs_util(3X)
 keypad(3X)		curs_inopts(3X)
+killchar(3X)		curs_termattrs(3X)
+killwchar(3X)		curs_termattrs(3X)
 longname(3X)		curs_termattrs(3X)
 meta(3X)		curs_inopts(3X)
 move(3X)		curs_move(3X)

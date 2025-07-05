@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.222 2025/06/28 22:43:32 tom Exp $ */
+/* $Id: test.priv.h,v 1.224 2025/07/05 15:16:13 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -743,13 +743,25 @@ extern int optind;
 #define HELP_KEY_2	KEY_F(1)
 
 /* our "standard" options for getopt, needed for help2man */
+#define OPTS_COMMAND	'c'
+#define OPTS_LOGGING	'l'
 #define OPTS_USAGE	'h'
 #define OPTS_VERSION	'V'
-#define OPTS_COMMON	"hV"
+#define OPTS_COMMON	"c:l:hV"
 #define USAGE_COMMON	\
  "Common options:"\
 ," -h       show this message"\
 ," -V       show version of curses"
+
+/* reserve -c/-l for command/logging */
+#define CASE_COMMON \
+	case OPTS_COMMAND: \
+	case OPTS_LOGGING: \
+	    usage(ch == OPTS_USAGE); \
+	    ExitProgram(EXIT_FAILURE); \
+	case OPTS_VERSION: \
+	    show_version(argv); \
+	    ExitProgram(EXIT_SUCCESS)
 
 #if HAVE_CURSES_VERSION
 #define format_version(buffer, size) _nc_STRCPY(buffer, curses_version(), size)

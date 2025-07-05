@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_tabs.c,v 1.12 2024/11/30 18:47:39 tom Exp $
+ * $Id: demo_tabs.c,v 1.13 2025/07/05 15:21:56 tom Exp $
  *
  * A simple demo of tabs in curses.
  */
@@ -77,11 +77,8 @@ main(int argc, char *argv[])
 	case 't':
 	    curses_stops = atoi(optarg);
 	    break;
-	case OPTS_VERSION:
-	    show_version(argv);
-	    ExitProgram(EXIT_SUCCESS);
 	default:
-	    usage(ch == OPTS_USAGE);
+	    CASE_COMMON;
 	    /* NOTREACHED */
 	}
     }
