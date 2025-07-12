@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1108 2025/07/05 20:19:35 tom Exp $
+dnl $Id: aclocal.m4,v 1.1110 2025/07/12 16:15:49 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -8513,7 +8513,7 @@ dnl Some machines require _POSIX_SOURCE to completely define struct termios.
 AC_DEFUN([CF_STRUCT_TERMIOS],[
 AC_REQUIRE([CF_XOPEN_SOURCE])
 
-AC_CHECK_HEADERS( \
+AC_CHECK_HEADERS( sgtty.h \
 termio.h \
 termios.h \
 unistd.h \

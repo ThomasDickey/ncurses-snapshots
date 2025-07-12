@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.131 2024/08/10 18:19:56 tom Exp $
+# $Id: Makefile.in,v 1.132 2025/07/12 14:59:48 tom Exp $
 ##############################################################################
-# Copyright 2020-2021,2024 Thomas E. Dickey                                  #
+# Copyright 2020-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -38,6 +38,7 @@
 SHELL		= @SHELL@
 VPATH		= @srcdir@
 
+TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 @SET_MAKE@
 
 destdir		=
@@ -173,5 +174,11 @@ check::
 			$(CC) -c $(CFLAGS) $(CPPFLAGS) headers.c; \
 		done"
 	-@rm -f headers.*
+
+# These rules are used to allow "make -n" to work on a clean directory-tree
+../include/curses.h \
+../include/ncurses_def.h \
+../include/term.h :
+	( cd ../include && $(MAKE) $(TOP_MFLAGS) )
 
 # The rest is generated from the "programs" and "modules" files...

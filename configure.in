@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.798 2025/05/24 18:50:21 tom Exp $
+dnl $Id: configure.in,v 1.799 2025/07/12 16:43:47 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.798 $)
+AC_REVISION($Revision: 1.799 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -2372,9 +2372,10 @@ AC_DEFINE_UNQUOTED(NCURSES_PATHSEP,'$PATH_SEPARATOR',[Define to override ':' as 
 AC_DEFINE_UNQUOTED(NCURSES_VERSION_STRING, "${NCURSES_MAJOR}.${NCURSES_MINOR}.${NCURSES_PATCH}",[Define to 1 if machine has ample memory for tic])
 
 ### Define substitutions for header files to avoid name-pollution
-CF_SUBST_IF(["x$cf_cv_have_tcgetattr" = xyes], HAVE_TCGETATTR, 1, 0)
-CF_SUBST_IF(["x$ac_cv_header_stdint_h" = xyes], HAVE_STDINT_H, 1, 0)
-CF_SUBST_IF(["x$ac_cv_header_termio_h" = xyes], HAVE_TERMIO_H, 1, 0)
+CF_SUBST_IF(["x$cf_cv_have_tcgetattr" = xyes],   HAVE_TCGETATTR, 1, 0)
+CF_SUBST_IF(["x$ac_cv_header_stdint_h" = xyes],  HAVE_STDINT_H,  1, 0)
+CF_SUBST_IF(["x$ac_cv_header_sgtty_h" = xyes],   HAVE_SGTTY_H,   1, 0)
+CF_SUBST_IF(["x$ac_cv_header_termio_h" = xyes],  HAVE_TERMIO_H,  1, 0)
 CF_SUBST_IF(["x$ac_cv_header_termios_h" = xyes], HAVE_TERMIOS_H, 1, 0)
 
 ################################################################################
