@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4314 2025/07/12 22:55:35 tom Exp $
+-- $Id: NEWS,v 1.4317 2025/07/20 09:03:59 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,14 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250720
+	+ further improve readability of header-files
+	+ add a consistency-check for termio(s)/tty headers, to help with
+	  cross-compiles (report by Stas Sergeev).
+	+ remove some unused configure-macros
+	+ add xterm+keypad to pccon+base -TD
+	+ trim trailing blanks from a few files (report by Stas Sergeev).
 
 20250712
 	+ improve readability of term.h

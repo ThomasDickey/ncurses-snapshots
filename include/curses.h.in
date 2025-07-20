@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.296 2025/07/05 12:39:32 Branden.Robinson Exp $ */
+/* $Id: curses.h.in,v 1.297 2025/07/19 17:43:59 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -335,7 +335,7 @@ extern "C" {
 #define WA_TOP		A_TOP
 #define WA_VERTICAL	A_VERTICAL
 
-#if @NCURSES_EXT_FUNCS@
+#if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #define WA_ITALIC	A_ITALIC	/* ncurses extension */
 #endif
 
@@ -484,14 +484,14 @@ typedef unsigned int wint_t@NCURSES_OK_WCHAR_T@;
  * (spacing and nonspacing) do not fill the array, a null L'\0' follows.
  * Otherwise, a null is assumed to follow when extracting via getcchar().
  */
-#define CCHARW_MAX	@NCURSES_CCHARW_MAX@
+#define CCHARW_MAX @NCURSES_CCHARW_MAX@	/* NCURSES_CCHARW_MAX */
 typedef struct
 {
     attr_t	attr;
     wchar_t	chars[CCHARW_MAX];
 #if @NCURSES_EXT_COLORS@	/* NCURSES_EXT_COLORS */
 #undef NCURSES_EXT_COLORS
-#define NCURSES_EXT_COLORS @NCURSES_PATCH@
+#define NCURSES_EXT_COLORS @NCURSES_PATCH@	/* NCURSES_PATCH */
     int		ext_color;	/* color pair, must be more than 16-bits */
 #if @NCURSES_RGB_COLORS@	/* NCURSES_RGB_COLORS */
     int		rgb_color;	/* extra data for direct-color (rgb) */
@@ -554,7 +554,7 @@ struct _win_st
 
 #if NCURSES_WIDECHAR /* NCURSES_WIDECHAR */
 	cchar_t  _bkgrnd;	/* current background char/attribute pair */
-#if @NCURSES_EXT_COLORS@
+#if @NCURSES_EXT_COLORS@	/* NCURSES_EXT_COLORS */
 	int	_color;		/* current color-pair for non-space character */
 #endif
 #endif
@@ -941,7 +941,7 @@ extern NCURSES_EXPORT(int) getpary (const WINDOW *);			/* generated */
  */
 #if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
 #undef  NCURSES_EXT_FUNCS
-#define NCURSES_EXT_FUNCS @NCURSES_PATCH@
+#define NCURSES_EXT_FUNCS @NCURSES_PATCH@	/* NCURSES_PATCH */
 typedef int (*NCURSES_WINDOW_CB)(WINDOW *, void *);
 typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
 extern NCURSES_EXPORT(int) alloc_pair (int, int);
@@ -976,9 +976,9 @@ extern NCURSES_EXPORT(int) use_screen (SCREEN *, NCURSES_SCREEN_CB, void *);
 extern NCURSES_EXPORT(int) use_window (WINDOW *, NCURSES_WINDOW_CB, void *);
 extern NCURSES_EXPORT(int) wresize (WINDOW *, int, int);
 
-#if @NCURSES_XNAMES@
+#if @NCURSES_XNAMES@	/* NCURSES_XNAMES */
 #undef  NCURSES_XNAMES
-#define NCURSES_XNAMES @NCURSES_XNAMES@
+#define NCURSES_XNAMES @NCURSES_XNAMES@	/* NCURSES_XNAMES */
 extern NCURSES_EXPORT(int) use_extended_names (bool);
 #endif
 
@@ -1012,7 +1012,7 @@ extern NCURSES_EXPORT(int) wgetscrreg (const WINDOW *, int *, int *); /* @GENERA
  */
 #if @NCURSES_SP_FUNCS@	/* NCURSES_SP_FUNCS */
 #undef  NCURSES_SP_FUNCS
-#define NCURSES_SP_FUNCS @NCURSES_PATCH@
+#define NCURSES_SP_FUNCS @NCURSES_PATCH@	/* NCURSES_PATCH */
 #define NCURSES_SP_NAME(name) name##_sp
 
 /* Define the sp-funcs helper function */

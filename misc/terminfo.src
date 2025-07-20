@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1197 $
-#	$Date: 2025/05/17 15:47:19 $
+#	$Revision: 1.1198 $
+#	$Date: 2025/07/19 15:53:15 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1680,7 +1680,8 @@ iris-color|xwsh|IRIX ANSI with color,
 # Notes from testing with vttest:
 #	fails wrapping test
 #	no 8-bit controls
-#	identifies as vt200 with selective erase, but does not implement DECSCA
+#	DA1 says vt200 with selective erase, but does not implement DECSCA
+#	DA2 says vt320, has DECTABSR
 #	no vt52 mode
 #	also lacks these:
 #		ESC # 8	  DEC Screen Alignment Test (DECALN).
@@ -1708,8 +1709,8 @@ pccon+colors|ANSI colors for OpenBSD PC console,
 	bce,
 	ncv#2,
 	op=\E[49;39m, use=klone+color,
-# OpenBSD uses wscons,
-# + which does not implement DECSCNM or anything comparable, so it does not
+# OpenBSD uses wscons, "imported" from NetBSD in 2000.
+# + it does not implement DECSCNM or anything comparable, so it does not
 #   support flash.
 # + it renders underline using color.
 pccon+base|base capabilities for OpenBSD PC console,
@@ -1717,10 +1718,10 @@ pccon+base|base capabilities for OpenBSD PC console,
 	cols#80, it#8, lines#24,
 	bel=^G, cr=\r, cub1=^H, cud1=\n, dch=\E[%p1%dP, dch1=\E[P,
 	ech=\E[%p1%dX, el1=\E[1K, ht=^I, hts=\EH, ich=\E[%p1%d@,
-	ind=\ED, nel=\EE, ri=\EM, rmam=\E[?7l, rs2=\Ec, smam=\E[?7h,
-	smul=\E[4m, tbc=\E[3g, use=ecma+underline, use=ansi+cpr,
-	use=ansi+csr, use=ansi+cup, use=ansi+erase, use=ansi+idl,
-	use=ansi+local,
+	ich1=\E[@, ind=\ED, nel=\EE, ri=\EM, rmam=\E[?7l, rs2=\Ec,
+	smam=\E[?7h, smul=\E[4m, tbc=\E[3g, use=ecma+underline,
+	use=ansi+cpr, use=ansi+csr, use=ansi+cup, use=ansi+erase,
+	use=ansi+idl, use=ansi+local, use=xterm+keypad,
 
 pccon0-m|OpenBSD PC console without colors & with simple ASCII pseudographics,
 	use=pccon+sgr+acs0, use=pccon+base, use=pccon+keys,
@@ -27993,5 +27994,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2025-05-17
 #	+ use bracketed+paste in nsterm, rlogin-color, screen, terminology -TD
+#
+# 2025-07-19
+#	+ add xterm+keypad to pccon+base -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

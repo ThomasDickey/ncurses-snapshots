@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.799 2025/07/12 16:43:47 tom Exp $
+dnl $Id: configure.in,v 1.801 2025/07/19 16:53:38 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.799 $)
+AC_REVISION($Revision: 1.801 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -256,7 +256,6 @@ fi
 AC_PROG_MAKE_SET
 CF_MAKE_PHONY
 CF_MAKE_TAGS
-CF_MAKEFLAGS
 
 dnl These are standard among *NIX systems, but not when cross-compiling
 AC_CHECK_TOOL(RANLIB, ranlib, ':')
@@ -2377,6 +2376,20 @@ CF_SUBST_IF(["x$ac_cv_header_stdint_h" = xyes],  HAVE_STDINT_H,  1, 0)
 CF_SUBST_IF(["x$ac_cv_header_sgtty_h" = xyes],   HAVE_SGTTY_H,   1, 0)
 CF_SUBST_IF(["x$ac_cv_header_termio_h" = xyes],  HAVE_TERMIO_H,  1, 0)
 CF_SUBST_IF(["x$ac_cv_header_termios_h" = xyes], HAVE_TERMIOS_H, 1, 0)
+
+case "x${ac_cv_header_termios_h}${ac_cv_header_termio_h}${ac_cv_header_sgtty_h}${cf_cv_have_tcgetattr}" in
+(*yes*)
+	;;
+(*)
+	case "$cf_cv_system_name" in
+	(*mingw32*|*mingw64*|*-msvc*)
+		;;
+	(*)
+		AC_MSG_ERROR(No termio/termios/sgtty found)
+		;;
+	esac
+	;;
+esac
 
 ################################################################################
 test "x$use_database" = xyes && \

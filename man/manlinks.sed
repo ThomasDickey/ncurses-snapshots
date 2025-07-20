@@ -1,6 +1,6 @@
-# $Id: manlinks.sed,v 1.24 2024/12/29 11:34:59 tom Exp $
+# $Id: manlinks.sed,v 1.26 2025/07/13 09:08:38 tom Exp $
 ##############################################################################
-# Copyright 2020-2023,2024 Thomas E. Dickey                                  #
+# Copyright 2020-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -80,7 +80,7 @@ s/ /\
 # still want to make aliases for those.  Do this by extracting names from the
 # list of function prototypes in the synopsis.
 #
-# Remove any line that does not contain a '(', since we only want functions. 
+# Remove any line that does not contain a '(', since we only want functions.
 # then strip off return-type of each function.
 #
 # Finally, remove the parameter list, which begins with a '('.

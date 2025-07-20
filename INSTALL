@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2018-2023,2024 Thomas E. Dickey                                 --
+-- Copyright 2018-2024,2025 Thomas E. Dickey                                 --
 -- Copyright 1998-2017,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.258 2024/12/28 21:37:40 Branden.Robinson Exp $
+-- $Id: INSTALL,v 1.260 2025/07/13 09:08:38 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1189,11 +1189,11 @@ CONFIGURE OPTIONS:
     --with-pkg-config-libdir[=DIR]
 	If pkg-config was found, override the automatic check for its library
 	path.  The optional DIR value can be
-	
+
 	"auto", automatically use pkg-config's library directory, or
-	
+
 	"libdir", use a ${libdir}/pkgconfig (based on the configuration), or
-	
+
 	a directory path, i.e., beginning with "/".
 
 	The configure script allows only a single directory, because

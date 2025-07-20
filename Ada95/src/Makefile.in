@@ -29,7 +29,7 @@
 #
 #  Author:  Juergen Pfeifer, 1996
 #
-#  $Id: Makefile.in,v 1.100 2025/07/12 10:40:39 tom Exp $
+#  $Id: Makefile.in,v 1.101 2025/07/13 09:05:41 tom Exp $
 #
 .SUFFIXES:
 
@@ -37,7 +37,7 @@ SHELL		= @SHELL@
 VPATH		= @srcdir@
 THIS		= Makefile
 
-ADA_MFLAGS 	= 
+ADA_MFLAGS 	=
 @SET_MAKE@
 
 MODEL		= ../../@DFT_OBJ_SUBDIR@
