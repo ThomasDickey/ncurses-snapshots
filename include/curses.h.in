@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.297 2025/07/19 17:43:59 tom Exp $ */
+/* $Id: curses.h.in,v 1.298 2025/07/26 14:21:49 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -236,8 +236,8 @@
 typedef unsigned chtype;
 typedef unsigned mmask_t;
 #else
-typedef @cf_cv_typeof_chtype@ chtype;
-typedef @cf_cv_typeof_mmask_t@ mmask_t;
+typedef @cf_cv_typeof_chtype@ chtype;	/* cf_cv_typeof_chtype  */
+typedef @cf_cv_typeof_mmask_t@ mmask_t;	/* cf_cv_typeof_mmask_t */
 #endif
 
 /*

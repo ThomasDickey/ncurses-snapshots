@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.28 2025/05/17 20:32:15 tom Exp $ */
+/* $Id: curses.tail,v 1.29 2025/07/26 15:32:01 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in
@@ -8,9 +8,9 @@
 /* mouse interface */
 
 #if NCURSES_MOUSE_VERSION > 1
-#define NCURSES_MOUSE_MASK(b,m) ((m) << (((b) - 1) * 5))
+#define NCURSES_MOUSE_MASK(b,m) ((mmask_t)(m) << (((b) - 1) * 5))
 #else
-#define NCURSES_MOUSE_MASK(b,m) ((m) << (((b) - 1) * 6))
+#define NCURSES_MOUSE_MASK(b,m) ((mmask_t)(m) << (((b) - 1) * 6))
 #endif
 
 #define	NCURSES_BUTTON_RELEASED	001UL

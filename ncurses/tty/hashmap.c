@@ -74,7 +74,7 @@ AUTHOR
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: hashmap.c,v 1.74 2025/01/12 10:51:43 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.75 2025/07/26 19:48:34 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -503,7 +503,8 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     for (n = 0; n < screen_lines(sp); n++) {
 	reallines[n] = n;
 	oldnums[n] = _NEWINDEX;
-	CharOf(oldtext[n][0]) = CharOf(newtext[n][0]) = '.';
+	SetChar(oldtext[n][0], '.', A_NORMAL);
+	SetChar(newtext[n][0], '.', A_NORMAL);
     }
 
     if (NC_ISATTY(fileno(stdin)))
@@ -537,22 +538,22 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 
 	case 'n':		/* use following letters as text of new lines */
 	    for (n = 0; n < screen_lines(sp); n++)
-		CharOf(newtext[n][0]) = '.';
+		SetChar(newtext[n][0], '.', A_NORMAL);
 	    for (n = 0; n < screen_lines(sp); n++)
 		if (line[n + 1] == '\n')
 		    break;
 		else
-		    CharOf(newtext[n][0]) = line[n + 1];
+		    SetChar(newtext[n][0], line[n + 1], A_NORMAL);
 	    break;
 
 	case 'o':		/* use following letters as text of old lines */
 	    for (n = 0; n < screen_lines(sp); n++)
-		CharOf(oldtext[n][0]) = '.';
+		SetChar(oldtext[n][0], '.', A_NORMAL);
 	    for (n = 0; n < screen_lines(sp); n++)
 		if (line[n + 1] == '\n')
 		    break;
 		else
-		    CharOf(oldtext[n][0]) = line[n + 1];
+		    SetChar(oldtext[n][0], line[n + 1], A_NORMAL);
 	    break;
 
 	case 'd':		/* dump state of test arrays */

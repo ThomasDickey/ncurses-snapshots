@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.801 2025/07/19 16:53:38 tom Exp $
+dnl $Id: configure.in,v 1.803 2025/07/26 18:00:55 Cosima.Neidahl Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.801 $)
+AC_REVISION($Revision: 1.803 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -658,7 +658,7 @@ WHICH_XTERM=$with_xterm_new
 AC_SUBST(WHICH_XTERM)
 
 case $host_os in
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl)
+(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl)
 	want_xterm_kbs=DEL
 	;;
 (*)
@@ -1070,6 +1070,12 @@ CF_WITH_TYPE(mmask-t,
 	[  --with-mmask-t=TYPE     override type of mmask_t],
 	NCURSES_MMASK_T,
 	$cf_dft_mmask_t)
+
+###   option --enable-lp64 can give unexpected results
+if test "$cf_cv_enable_lp64" = 1 ; then
+	test -n "$with_chtype"  && test "$NCURSES_CHTYPE"  != unsigned && AC_MSG_WARN(option --enable-lp64 overrides --with-chtype)
+	test -n "$with_mmask_t" && test "$NCURSES_MMASK_T" != unsigned && AC_MSG_WARN(option --enable-lp64 overrides --with-mmask-t)
+fi
 
 ###   use option --with-ccharw-max to override CCHARW_MAX size
 AC_MSG_CHECKING(for size CCHARW_MAX)
