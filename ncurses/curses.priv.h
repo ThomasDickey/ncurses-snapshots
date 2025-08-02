@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.707 2025/07/05 12:38:04 Branden.Robinson Exp $
+ * $Id: curses.priv.h,v 1.708 2025/08/02 19:23:58 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2699,6 +2699,22 @@ extern NCURSES_EXPORT(NCURSES_CONST char *) _nc_unctrl (SCREEN *, chtype);
 extern NCURSES_EXPORT(int) _nc_conv_to_utf8(unsigned char *, unsigned, unsigned);
 extern NCURSES_EXPORT(int) _nc_conv_to_utf32(unsigned *, const char *, unsigned);
 #endif
+
+#ifdef _NC_WINDOWS
+#if USE_WIDEC_SUPPORT
+#define write_screen WriteConsoleOutputW
+#define read_screen  ReadConsoleOutputW
+#define read_keycode ReadConsoleInputW
+#define KeyEventChar KeyEvent.uChar.UnicodeChar
+#define CharInfoChar Char.UnicodeChar
+#else
+#define write_screen WriteConsoleOutput
+#define read_screen  ReadConsoleOutput
+#define read_keycode ReadConsoleInput
+#define KeyEventChar KeyEvent.uChar.AsciiChar
+#define CharInfoChar Char.AsciiChar
+#endif
+#endif /* _NC_WINDOWS */
 
 #ifdef __cplusplus
 }

@@ -43,7 +43,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.9 2025/06/21 14:19:28 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.10 2025/08/02 19:25:44 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -135,7 +135,7 @@ dump_screen(const char *fn, int ln)
 
 	for (i = save_region.Top; i <= save_region.Bottom; ++i) {
 	    for (j = save_region.Left; j <= save_region.Right; ++j) {
-		output[k++] = save_screen[ij++].Char.AsciiChar;
+		output[k++] = save_screen[ij++].CharInfoChar;
 	    }
 	    output[k++] = '\n';
 	}
@@ -180,7 +180,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB,
 	ch = str[i];
 	if (isWidecExt(ch))
 	    continue;
-	ci[actual].Char.UnicodeChar = CharOf(ch);
+	ci[actual].CharInfoChar = CharOf(ch);
 	ci[actual].Attributes = MapAttr(WINCONSOLE.SBI.wAttributes,
 					AttrOf(ch));
 	if (AttrOf(ch) & A_ALTCHARSET) {
@@ -189,9 +189,9 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB,
 		if (which > 0
 		    && which < ACS_LEN
 		    && CharOf(_nc_wacs[which]) != 0) {
-		    ci[actual].Char.UnicodeChar = CharOf(_nc_wacs[which]);
+		    ci[actual].CharInfoChar = CharOf(_nc_wacs[which]);
 		} else {
-		    ci[actual].Char.UnicodeChar = ' ';
+		    ci[actual].CharInfoChar = ' ';
 		}
 	    }
 	}
@@ -227,12 +227,12 @@ con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
 
     for (i = 0; i < n; i++) {
 	ch = str[i];
-	ci[i].Char.AsciiChar = ChCharOf(ch);
+	ci[i].CharInfoChar = ChCharOf(ch);
 	ci[i].Attributes = MapAttr(WINCONSOLE.SBI.wAttributes,
 				   ChAttrOf(ch));
 	if (ChAttrOf(ch) & A_ALTCHARSET) {
 	    if (sp->_acs_map)
-		ci[i].Char.AsciiChar =
+		ci[i].CharInfoChar =
 		ChCharOf(NCURSES_SP_NAME(_nc_acs_char) (sp, ChCharOf(ch)));
 	}
     }

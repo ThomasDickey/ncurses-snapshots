@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4319 2025/07/26 18:09:35 tom Exp $
+-- $Id: NEWS,v 1.4321 2025/08/02 20:43:03 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,10 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250802
+	+ fixes for reading Unicode characters in MinGW/Windows port (report by
+	  Axel Reinhold).
 
 20250726
 	+ modify configure script cases for $host_os, to accommodate 64-bit

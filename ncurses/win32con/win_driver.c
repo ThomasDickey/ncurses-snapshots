@@ -48,7 +48,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.84 2025/07/05 12:36:24 Branden.Robinson Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.88 2025/08/02 22:18:36 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 
@@ -66,13 +66,6 @@ static bool okConsoleHandle(TERMINAL_CONTROL_BLOCK *);
 
 #define AdjustY() (CON.buffered ? 0 : (int) CON.SBI.srWindow.Top)
 
-#if USE_WIDEC_SUPPORT
-#define write_screen WriteConsoleOutputW
-#define read_screen  ReadConsoleOutputW
-#else
-#define write_screen WriteConsoleOutput
-#define read_screen  ReadConsoleOutput
-#endif
 /* *INDENT-OFF* */
 static const LONG keylist[] =
 {
@@ -223,7 +216,7 @@ dump_screen(const char *fn, int ln)
 
 	for (i = save_region.Top; i <= save_region.Bottom; ++i) {
 	    for (j = save_region.Left; j <= save_region.Right; ++j) {
-		output[k++] = save_screen[ij++].Char.AsciiChar;
+		output[k++] = save_screen[ij++].CharInfoChar;
 	    }
 	    output[k++] = '\n';
 	}
@@ -267,7 +260,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
 	ch = str[i];
 	if (isWidecExt(ch))
 	    continue;
-	ci[actual].Char.UnicodeChar = CharOf(ch);
+	ci[actual].CharInfoChar = CharOf(ch);
 	ci[actual].Attributes = MapAttr(CON.SBI.wAttributes,
 					AttrOf(ch));
 	if (AttrOf(ch) & A_ALTCHARSET) {
@@ -276,9 +269,9 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
 		if (which > 0
 		    && which < ACS_LEN
 		    && CharOf(_nc_wacs[which]) != 0) {
-		    ci[actual].Char.UnicodeChar = CharOf(_nc_wacs[which]);
+		    ci[actual].CharInfoChar = CharOf(_nc_wacs[which]);
 		} else {
-		    ci[actual].Char.UnicodeChar = ' ';
+		    ci[actual].CharInfoChar = ' ';
 		}
 	    }
 	}
@@ -314,12 +307,12 @@ con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
 
     for (i = 0; i < n; i++) {
 	ch = str[i];
-	ci[i].Char.AsciiChar = ChCharOf(ch);
+	ci[i].CharInfoChar = ChCharOf(ch);
 	ci[i].Attributes = MapAttr(CON.SBI.wAttributes,
 				   ChAttrOf(ch));
 	if (ChAttrOf(ch) & A_ALTCHARSET) {
 	    if (sp->_acs_map)
-		ci[i].Char.AsciiChar =
+		ci[i].CharInfoChar =
 		ChCharOf(NCURSES_SP_NAME(_nc_acs_char) (sp, ChCharOf(ch)));
 	}
     }
@@ -1536,7 +1529,7 @@ console_twait(
     (void) evl;			/* TODO: implement wgetch-events */
 #endif
 
-#define CONSUME() ReadConsoleInput(fd,&inp_rec,1,&nRead)
+#define CONSUME() read_keycode(fd,&inp_rec,1,&nRead)
 
     assert(sp);
 
@@ -1568,7 +1561,7 @@ console_twait(
 			case KEY_EVENT:
 			    if (mode & TW_INPUT) {
 				WORD vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
-				char ch = inp_rec.Event.KeyEvent.uChar.AsciiChar;
+				WORD ch = inp_rec.Event.KeyEventChar;
 
 				if (inp_rec.Event.KeyEvent.bKeyDown) {
 				    if (0 == ch) {
@@ -2110,7 +2103,7 @@ _nc_mingw_console_read(
 
     T((T_CALLED("_nc_mingw_console_read(%p)"), sp));
 
-    while ((b = ReadConsoleInput(fd, &inp_rec, 1, &nRead))) {
+    while ((b = read_keycode(fd, &inp_rec, 1, &nRead))) {
 	if (b && nRead > 0) {
 	    if (rc < 0)
 		rc = 0;
@@ -2118,7 +2111,7 @@ _nc_mingw_console_read(
 	    if (inp_rec.EventType == KEY_EVENT) {
 		if (!inp_rec.Event.KeyEvent.bKeyDown)
 		    continue;
-		*buf = (int) inp_rec.Event.KeyEvent.uChar.AsciiChar;
+		*buf = (int) inp_rec.Event.KeyEventChar;
 		vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
 		/*
 		 * There are 24 virtual function-keys (defined in winuser.h),

@@ -38,17 +38,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.23 2025/07/05 12:36:24 Branden.Robinson Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.27 2025/08/02 22:22:24 tom Exp $")
 
 #if defined(_NC_WINDOWS)
-
-#if USE_WIDEC_SUPPORT
-#define write_screen WriteConsoleOutputW
-#define read_screen  ReadConsoleOutputW
-#else
-#define write_screen WriteConsoleOutput
-#define read_screen  ReadConsoleOutput
-#endif
 
 static bool read_screen_data(void);
 
@@ -824,7 +816,7 @@ _nc_console_twait(
 
 #define IGNORE_CTRL_KEYS (SHIFT_PRESSED|LEFT_ALT_PRESSED|RIGHT_ALT_PRESSED| \
                           LEFT_CTRL_PRESSED|RIGHT_CTRL_PRESSED)
-#define CONSUME() ReadConsoleInput(hdl, &inp_rec, 1, &nRead)
+#define CONSUME() read_keycode(hdl, &inp_rec, 1, &nRead)
 
     assert(sp);
 
@@ -900,10 +892,8 @@ _nc_console_twait(
 			switch (inp_rec.EventType) {
 			case KEY_EVENT:
 			    if (mode & TW_INPUT) {
-				WORD vk =
-				inp_rec.Event.KeyEvent.wVirtualKeyCode;
-				char ch =
-				inp_rec.Event.KeyEvent.uChar.AsciiChar;
+				WORD vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
+				WORD ch = inp_rec.Event.KeyEventChar;
 				T(("twait:event KEY_EVENT"));
 				T(("twait vk=%d, ch=%d, keydown=%d",
 				   vk, ch, inp_rec.Event.KeyEvent.bKeyDown));
@@ -1010,7 +1000,7 @@ _nc_console_read(
 
     T((T_CALLED("lib_win32con::_nc_console_read(%p)"), sp));
 
-    while ((b = ReadConsoleInput(hdl, &inp_rec, 1, &nRead))) {
+    while ((b = read_keycode(hdl, &inp_rec, 1, &nRead))) {
 	if (b && nRead > 0) {
 	    if (rc < 0)
 		rc = 0;
@@ -1018,7 +1008,7 @@ _nc_console_read(
 	    if (inp_rec.EventType == KEY_EVENT) {
 		if (!inp_rec.Event.KeyEvent.bKeyDown)
 		    continue;
-		*buf = (int) inp_rec.Event.KeyEvent.uChar.AsciiChar;
+		*buf = (int) inp_rec.Event.KeyEventChar;
 		vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
 		/*
 		 * There are 24 virtual function-keys, and typically
