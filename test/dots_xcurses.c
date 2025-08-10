@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: dots_xcurses.c,v 1.33 2025/07/05 15:21:56 tom Exp $
+ * $Id: dots_xcurses.c,v 1.34 2025/08/08 16:45:28 tom Exp $
  *
  * A simple demo of the wide-curses interface used for comparison with termcap.
  */
@@ -54,6 +54,7 @@
 
 static bool interrupted = FALSE;
 static long total_chars = 0;
+static long total_skips = 0;
 static time_t started;
 
 #if HAVE_ALLOC_PAIR
@@ -69,6 +70,8 @@ cleanup(void)
     fprintf(stderr, "\n\n%ld total cells, rate %.2f/sec\n",
 	    total_chars,
 	    ((double) (total_chars) / (double) (time((time_t *) 0) - started)));
+    if (total_skips)
+	fprintf(stderr, "%ld total skipped\n", total_skips);
 }
 
 static void
@@ -91,6 +94,7 @@ mypair(int fg, int bg)
 #if HAVE_ALLOC_PAIR
     if (x_option) {
 	result = alloc_pair(fg, bg);
+	assert(result < COLOR_PAIRS);
     } else
 #endif
     {
@@ -106,6 +110,8 @@ set_colors(int fg, int bg)
     int pair = mypair(fg, bg);
     if (pair > 0) {
 	(void) color_set((short) pair, NewPair(pair));
+    } else {
+	++total_skips;
     }
 }
 
@@ -225,6 +231,8 @@ main(int argc, char *argv[])
 		    pair = mypair(fg, bg);
 		    if (pair > 0) {
 			InitPair(pair, fg, bg);
+		    } else {
+			++total_skips;
 		    }
 		}
 	    }

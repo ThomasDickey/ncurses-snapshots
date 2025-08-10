@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.155 2025/01/18 14:47:35 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.156 2025/08/08 17:48:18 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -393,7 +393,9 @@ NCURSES_SP_NAME(start_color) (NCURSES_SP_DCL0)
 	     * If using default colors, allocate extra space in table to
 	     * allow for default-color as a component of a color-pair.
 	     */
-	    SP_PARM->_pair_limit += (1 + (2 * maxcolors));
+	    if (maxcolors < maxpairs) {
+		SP_PARM->_pair_limit += (1 + (2 * maxcolors));
+	    }
 #if !NCURSES_EXT_COLORS
 	    SP_PARM->_pair_limit = limit_PAIRS(SP_PARM->_pair_limit);
 #endif

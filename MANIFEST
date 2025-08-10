@@ -558,12 +558,11 @@
 ./include/headers
 ./include/nc_access.h
 ./include/nc_alloc.h
-./include/nc_mingw.h
 ./include/nc_panel.h
 ./include/nc_string.h
 ./include/nc_termios.h
 ./include/nc_tparm.h
-./include/nc_win32.h
+./include/nc_win32.h.in
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
 ./include/ncurses_dll.h.in

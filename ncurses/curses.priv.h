@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.708 2025/08/02 19:23:58 tom Exp $
+ * $Id: curses.priv.h,v 1.710 2025/08/10 00:13:33 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2285,12 +2285,6 @@ extern int __MINGW_NOTHROW _nc_mblen(const char *, size_t);
 
 #endif /* _NC_WINDOWS_NATIVE && !_NC_MSC */
 
-#if defined(_NC_WINDOWS_NATIVE) || defined(_NC_MINGW)
-/* see wcwidth.c */
-extern NCURSES_EXPORT(int) mk_wcwidth(uint32_t);
-#define wcwidth(ucs) _nc_wcwidth(ucs)
-#endif
-
 #if HAVE_MBTOWC && HAVE_MBLEN
 #define reset_mbytes(state) IGNORE_RC(mblen(NULL, (size_t) 0)), IGNORE_RC(mbtowc(NULL, NULL, (size_t) 0))
 #define count_mbytes(buffer,length,state) mblen(buffer,length)
@@ -2511,7 +2505,7 @@ extern NCURSES_EXPORT(int)      TINFO_MVCUR(SCREEN*, int, int, int, int);
 #define TINFO_MVCUR             NCURSES_SP_NAME(_nc_mvcur)
 #endif
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(USE_WIN32CON_DRIVER)
 #include <nc_win32.h>
 #endif
 
@@ -2555,7 +2549,6 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #else
 #ifdef USE_TERM_DRIVER
 #if defined(USE_WIN32CON_DRIVER)
-#include <nc_mingw.h>
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 extern NCURSES_EXPORT(int) _nc_mingw_console_read(SCREEN *sp, HANDLE fd, int *buf);
 extern NCURSES_EXPORT(int) _nc_mingw_isatty(int fd);

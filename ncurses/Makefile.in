@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.189 2025/07/12 14:41:48 tom Exp $
+# $Id: Makefile.in,v 1.191 2025/08/09 23:14:59 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -192,7 +192,6 @@ HEADER_DEPS	= @INTERNALS_HDR@ \
 	$(INCDIR)/nc_string.h \
 	$(INCDIR)/nc_termios.h \
 	$(INCDIR)/nc_tparm.h \
-	$(INCDIR)/nc_win32.h \
 	$(INCDIR)/term_entry.h \
 	$(srcdir)/curses.priv.h \
 	$(srcdir)/new_pair.h \

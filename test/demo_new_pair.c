@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.33 2025/07/05 15:21:56 tom Exp $
+ * $Id: demo_new_pair.c,v 1.34 2025/08/08 15:47:32 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -326,6 +326,7 @@ main(int argc, char *argv[])
 		my_pair = (use_init
 			   ? next_color(current)
 			   : make_color(current));
+		assert(my_pair < COLOR_PAIRS);
 	    }
 	} else {
 	    my_attrs = next_attr(current);

@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.117 2025/05/17 22:22:40 tom Exp $
+# $Id: ncurses_defs,v 1.118 2025/08/08 23:46:30 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -271,6 +271,7 @@ USE_HASHMAP
 USE_HOME_TERMINFO
 USE_LINKS
 USE_MY_MEMMOVE
+USE_NAMED_PIPES
 USE_OK_BCOPY
 USE_PTHREADS_EINTR
 USE_RCS_IDS

@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1114 2025/07/26 18:11:56 tom Exp $
+dnl $Id: aclocal.m4,v 1.1116 2025/08/09 00:45:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -482,7 +482,7 @@ dnl Allow user to enable a normally-off option.
 AC_DEFUN([CF_ARG_ENABLE],
 [CF_ARG_OPTION($1,[$2],[$3],[$4],no)])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_ARG_OPTION version: 5 updated: 2015/05/10 19:52:14
+dnl CF_ARG_OPTION version: 6 updated: 2025/08/05 04:09:09
 dnl -------------
 dnl Restricted form of AC_ARG_ENABLE that ensures user doesn't give bogus
 dnl values.
@@ -491,7 +491,7 @@ dnl Parameters:
 dnl $1 = option name
 dnl $2 = help-string
 dnl $3 = action to perform if option is not default
-dnl $4 = action if perform if option is default
+dnl $4 = action to perform if option is default
 dnl $5 = default option value (either 'yes' or 'no')
 AC_DEFUN([CF_ARG_OPTION],
 [AC_ARG_ENABLE([$1],[$2],[test "$enableval" != ifelse([$5],no,yes,no) && enableval=ifelse([$5],no,no,yes)
@@ -1444,10 +1444,30 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_TYPE2 version: 2 updated: 2024/12/14 16:33:06
+dnl CF_CHECK_NAMED_PIPES version: 1 updated: 2025/08/08 20:44:18
+dnl --------------------
+dnl Check for existence of Windows named-pipe functions, set cache variable
+dnl to reflect the result.
+AC_DEFUN([CF_CHECK_NAMED_PIPES],[
+AC_CACHE_CHECK(for named pipe functions,cf_cv_named_pipes,[
+	cf_save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS -DWINVER=0x0600 -DWIN32_LEAN_AND_MEAN"
+	AC_TRY_LINK([#include <windows.h>],
+	[
+		HANDLE handle = 0;
+		ULONG pPid = 0;
+		if (GetNamedPipeInfo(handle, NULL, NULL, NULL, NULL)) {
+			if (GetNamedPipeServerProcessId(handle, &pPid)) {
+				${cf_cv_main_return:-return} (0);
+			}
+		}
+	],[cf_cv_named_pipes=yes],[cf_cv_named_pipes=no])
+	CPPFLAGS="$cf_save_CPPFLAGS"
+])dnl
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CHECK_TYPE2 version: 3 updated: 2025/08/08 20:44:18
 dnl --------------
-dnl CF_CHECK_TYPE version: 5 updated: 2024/12/14 16:09:34
-dnl -------------
 dnl Check if the given type can be declared via the given header.
 dnl $1 = the type to check
 dnl $2 = the header (i.e., not one of the default includes)

@@ -40,7 +40,7 @@
  * as ^?. Printable characters are displayed as is.
  */
 
-/* $Id: unctrl.h.in,v 1.13 2025/07/19 17:46:04 tom Exp $ */
+/* $Id: unctrl.h.in,v 1.14 2025/08/08 23:19:21 tom Exp $ */
 
 #ifndef NCURSES_UNCTRL_H_incl
 #define NCURSES_UNCTRL_H_incl	1
@@ -55,10 +55,10 @@ extern "C" {
 #include <curses.h>
 
 #undef unctrl
-NCURSES_EXPORT(NCURSES_CONST char *) unctrl (chtype);
+extern NCURSES_EXPORT(NCURSES_CONST char *) unctrl (chtype);
 
 #if @NCURSES_SP_FUNCS@	/* NCURSES_SP_FUNCS */
-NCURSES_EXPORT(NCURSES_CONST char *) NCURSES_SP_NAME(unctrl) (SCREEN*, chtype);
+extern NCURSES_EXPORT(NCURSES_CONST char *) NCURSES_SP_NAME(unctrl) (SCREEN*, chtype);
 #endif
 
 #ifdef __cplusplus

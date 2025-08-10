@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4321 2025/08/02 20:43:03 tom Exp $
+-- $Id: NEWS,v 1.4324 2025/08/09 10:58:27 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250809
+	+ add configure check for Win32 named pipes feature, using that to make
+	  nc_mingw.h obsolete in favor of nc_win32.h
+	+ amend limit used in alloc_pair, by applying an adjustment for default
+	  colors only when the maximum number of color pairs is greater than
+	  the maximum number of colors (report by "Ingvix").
 
 20250802
 	+ fixes for reading Unicode characters in MinGW/Windows port (report by
