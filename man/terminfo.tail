@@ -27,64 +27,115 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.158 2025/04/05 21:56:26 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.161 2025/08/16 19:21:38 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
-The preceding section listed the \fIpredefined\fP capabilities.
-They deal with some special features for terminals no longer
-(or possibly never) produced.
-Occasionally there are special features of newer terminals which
-are awkward or impossible to represent by reusing the predefined
+The preceding section listed the
+.I standard
 capabilities.
+Some are esoteric,
+supporting functionality that terminal emulators do not implement,
+or may never have been realized in manufactured hardware.
+Occasionally,
+emulators have special features
+that are awkward or impossible to represent
+via standard capabilities.
 .PP
-\fI\%ncurses\fP addresses this limitation by allowing user-defined
-capabilities.
-The \fB@TIC@\fP and \fB@INFOCMP@\fP programs provide
-the \fB\-x\fP option for this purpose.
-When \fB\-x\fP is set,
-\fB@TIC@\fP treats unknown capabilities as user-defined.
-That is, if \fB@TIC@\fP encounters a capability name
-which it does not recognize,
-it infers its type (Boolean, number or string) from the syntax
+.I \%ncurses
+addresses this limitation by allowing user-defined capabilities.
+The
+.B \%@TIC@
+and
+.B \%@INFOCMP@
+programs provide an
+.B \-x
+option for this purpose.
+When
+.B \-x
+is used,
+.B \%@TIC@
+treats unknown capabilities as user-defined.
+That is,
+if
+.B \%@TIC@
+encounters a capability name
+that it does not recognize,
+the program infers the capability's type
+(Boolean,
+numeric,
+or
+string)
+from the syntax of the capability value
 and makes an extended table entry for that capability.
-The \fBuse_extended_names\fP(3X) function makes this information
+\fBuse_extended_names\fP(3X) makes this information
 conditionally available to applications.
-The \fI\%ncurses\fP library provides the data leaving most of the
-behavior to applications:
+.I \%ncurses
+library functions supply callers with capability data,
+the interpretation of which is mostly up to the application.
 .bP
-User-defined capability strings whose name begins
-with \*(``k\*('' are treated as function keys.
+.I \%ncurses
+treats user-defined string capabilities
+whose names begin with \*(``k\*(''
+as function keys.
 .bP
-The types (Boolean, number, string) determined by \fB@TIC@\fP
-can be inferred by successful calls on \fBtigetflag\fP, etc.
+Capability types
+(Boolean,
+numeric,
+or
+string)
+determined by
+.B \%@TIC@
+can be inferred by successful
+\fB\%tigetflag\fP(3X),
+\fB\%tigetnum\fP(3X),
+and
+\fB\%tigetstr\fP(3X)
+calls.
 .bP
 If the capability name happens to be two characters,
 the capability is also available through the termcap interface.
 .PP
-While termcap is said to be extensible because it does not use a predefined set
-of capabilities,
-in practice it has been limited to the capabilities defined by
-terminfo implementations.
+While
+.I termcap
+is said to be extensible because it mandates no capabilities,
+in practice it has been limited to those defined by
+.I \%term\%info
+implementations.
 As a rule,
-user-defined capabilities intended for use by termcap applications should
-be limited to Booleans and numbers to avoid running past the 1023 byte
-limit assumed by termcap implementations and their applications.
-In particular, providing extended sets of function keys (past the 60
-numbered keys and the handful of special named keys) is best done using
-the longer names available using terminfo.
+employ only user-defined capabilities of Boolean and numeric type
+with
+.I termcap
+applications to avoid overrunning the 1023 byte limit
+assumed by
+.I termcap
+implementations and their applications.
+Specifically,
+support for extended sets of function keys
+(past the 60 numbered keys and the handful of special named keys)
+is better achieved with longer names available via
+.IR \%term\%info "."
 .PP
-The \fI\%ncurses\fP library uses a few of these user-defined
-capabilities,
+The
+.I \%ncurses
+library uses a few of these user-defined capabilities,
 as described in \fBuser_caps\fR(5).
-Other user-defined capabilities (including function keys) are
-described in the terminal database, in the section on
-.I "NCURSES USER-DEFINABLE CAPABILITIES"
+For other user-defined capabilities,
+including function keys,
+consult the source form of the terminal database,
+.IR \%terminfo.src ","
+under the heading \*(``NCURSES USER-DEFINABLE CAPABILITIES\*(''.
 .
 .SS "A Sample Entry"
 .
-The following entry, describing an ANSI-standard terminal, is representative
-of what a \fBterminfo\fP entry for a modern terminal typically looks like.
+The following entry, describing an ANSI\ X3.64-
+(or ECMA-48-)
+-standard terminal
+(henceforth \*(``ANSI-standard\*('' for brevity),
+is representative
+of what a
+.I \%term\%info
+entry for a modern terminal typically looks like.
 .PP
 .EX
 .nf
@@ -1630,40 +1681,85 @@ as the corresponding graphic.
 Then read off the VT100/your terminal
 character pairs right to left in sequence; these become the ACSC string.
 .SS "Color Handling"
-The curses library functions \fBinit_pair\fP and \fBinit_color\fP
-manipulate the \fIcolor pairs\fP and \fIcolor values\fP discussed in this
-section
-(see \fBcurs_color\fP(3X) for details on these and related functions).
+The
+.I curses
+library functions
+.B \%init_pair
+and
+.B \%init_color
+manipulate the
+.I "color pairs"
+and
+.I colors
+(color values or indices,
+such as \*(``1=red\*('')
+discussed in this section
+(see \fB\%curs_color\fP(3X) for details on these and related functions).
 .PP
-Most color terminals are either \*(``Tektronix-like\*('' or \*(``HP-like\*('':
+Most color terminals are either \*(``Tektronix-like\*(''
+or \*(``HP-like\*(''
+in their approach to color management.
 .bP
-Tektronix-like
-terminals have a predefined set of \fIN\fP colors
-(where \fIN\fP is usually 8),
-and can set
+.I Tektronix-like
+terminals define a set of
+.I n
+colors
+(where
+.I n
+is usually 8),
+and can alter
 character-cell foreground and background colors independently,
-mixing them into \fIN\fP\ *\ \fIN\fP color pairs.
+mixing them into
+.IR n \(mu n
+color pairs.
+ANSI-standard terminals are Tektronix-like.
 .bP
-On HP-like terminals, the user must set each color
-pair up separately (foreground and background are not independently settable).
-Up to \fIM\fP color pairs may be set up from 2*\fIM\fP different colors.
-ANSI-compatible terminals are Tektronix-like.
+On
+.I HP-like
+terminals,
+the user must set up each color pair separately;
+foreground and background are not independently alterable.
+Up to
+.I m
+color pairs may be configured from
+.RI 2\(mu m
+different colors.
 .PP
-Some basic color capabilities are independent of the color method.
-The numeric
-capabilities \fBcolors\fP and \fBpairs\fP specify the maximum numbers of colors
-and color pairs that can be displayed simultaneously.
-The \fBop\fP (original
-pair) string resets foreground and background colors to their default values
-for the terminal.
-The \fBoc\fP string resets all colors or color pairs to
-their default values for the terminal.
-Some terminals (including many PC
-terminal emulators) erase screen areas with the current background color rather
-than the power-up default background; these should have the Boolean capability
-\fBbce\fP.
+Some basic color management capabilities
+are independent of the color encoding method.
+The numeric capabilities
+.B \%max_colors
+.RB ( \%colors )
+and
+.B \%max_pairs
+.RB ( \%pairs )
+specify the maximum numbers of colors
+and color pairs that the device can display simultaneously.
+The
+.B \%orig_pair
+.RB ( \%op )
+(\*(``original pair\*('')
+string capability
+resets foreground and background colors
+to their default values for the terminal.
+The
+.B \%orig_colors
+.RB ( \%oc )
+(\*(``original colors\*('')
+string capability
+resets all colors or color pairs
+to their default values for the terminal.
+Some terminal types
+(including many PC terminal emulators)
+erase screen areas with the current background color rather
+than the power-up default background;
+these should declare the Boolean capability
+.B \%back_color_erase
+.RB ( bce ).
 .PP
-While the curses library works with \fIcolor pairs\fP
+While the
+.I curses
+library works with \fIcolor pairs\fP
 (reflecting the inability of some devices to set foreground
 and background colors independently),
 there are separate capabilities for setting these features:

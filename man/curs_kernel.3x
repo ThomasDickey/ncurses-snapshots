@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_kernel.3x,v 1.84 2025/03/08 23:17:33 tom Exp $
-.TH curs_kernel 3X 2025-03-08 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_kernel.3x,v 1.89 2025/08/16 19:50:07 tom Exp $
+.TH curs_kernel 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -202,7 +202,7 @@ accompanies the temporary use of another program to write to the
 terminal screen.
 For example,
 first call \fB\%refresh\fP(3X) to ensure that the screen and the
-library's model of it is up to date;
+library's model of it are up to date;
 then call
 .BR \%reset_shell_mode ";"
 write to the screen with the external application;
@@ -227,7 +227,8 @@ If
 .I ms
 exceeds 30,000
 (thirty seconds),
-it is capped at that value.
+.I \%ncurses
+caps it at that value.
 .SS ripoffline
 .B \%ripoffline
 provides access to the same facility that \fB\%slk_init\fP(3X) uses to
@@ -354,6 +355,10 @@ invisible or very visible.
 There is no way for
 .I \%ncurses
 to determine the initial cursor visibility to restore it.
+.PP
+.I \%ncurses
+imposes a limit of 30 seconds on a delay requested of
+.BR \%napms .
 .PP
 While the
 .I init

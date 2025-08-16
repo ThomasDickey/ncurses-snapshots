@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.139 2025/07/05 12:43:18 tom Exp $
-.TH curs_addch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.142 2025/08/16 19:57:35 tom Exp $
+.TH curs_addch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -137,8 +137,9 @@ may contain attributes and/or a color pair identifier.
 .I \%chtype
 can be copied from place to place using \fB\%winch\fP(3X) and
 .BR \%waddch .)
-See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
-usefully \*(``or\*(''ed with characters.
+.I curses
+defines constants to aid the manipulation of character attributes;
+see \fB\%curs_attr\fP(3X).
 A
 .I ch
 whose character component is a space,
@@ -579,7 +580,7 @@ but X/Open Curses leaves the width of a non-wide character code
 unspecified.
 The standard further does not specify the internal structure of a
 .IR chtype ","
-though the use of bit operations to combine the character code with
+though the use of bitwise operators to combine the character code with
 attributes and a color pair identifier into a
 .I \%chtype
 for passage to

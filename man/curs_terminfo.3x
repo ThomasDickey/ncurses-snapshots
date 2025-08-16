@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.164 2025/04/05 22:21:02 tom Exp $
-.TH curs_terminfo 3X 2025-04-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.166 2025/08/16 19:11:47 tom Exp $
+.TH curs_terminfo 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -591,7 +591,7 @@ passed to them.
 The
 .I cap-code
 for each capability is given in the table column of that name
-in the \*(``Predefined Capabilities\*('' section of \fB\%terminfo\fP(5).
+in the \*(``Capabilities\*('' section of \fB\%terminfo\fP(5).
 .PP
 These functions return special values to denote errors.
 .PP
@@ -641,9 +641,9 @@ and
 .bP
 the long \fI\%term\%info\fP names (\*(``fnames\*('')
 .PP
-for each of the predefined
+for each standard
 .I \%term\%info
-variables:
+capability name.
 .PP
 .RS
 .nf

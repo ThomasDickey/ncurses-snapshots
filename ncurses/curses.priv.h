@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.710 2025/08/10 00:13:33 tom Exp $
+ * $Id: curses.priv.h,v 1.713 2025/08/16 14:40:02 tom Exp $
  *
  *	curses.priv.h
  *
@@ -403,6 +403,25 @@ typedef TRIES {
 
 #if !(defined(NCURSES_WGETCH_EVENTS) && defined(NEED_KEY_EVENT))
 #undef KEY_EVENT		/* reduce compiler-warnings with Visual C++ */
+#endif
+
+/*
+ * Macros to make additional parameter to implement wgetch_events()
+ */
+#ifdef NCURSES_WGETCH_EVENTS
+#define EVENTLIST_0th(param) param
+#define EVENTLIST_1st(param) param
+#define EVENTLIST_2nd(param) , param
+#define TWAIT_MASK (TW_ANY | TW_EVENT)
+#else
+#define EVENTLIST_0th(param) void
+#define EVENTLIST_1st(param) /* nothing */
+#define EVENTLIST_2nd(param) /* nothing */
+#define TWAIT_MASK TW_ANY
+#endif
+
+#if defined(USE_WIN32CON_DRIVER)
+#include <nc_win32.h>
 #endif
 
 typedef struct
@@ -1904,21 +1923,6 @@ extern	NCURSES_EXPORT(void) name (void); \
 			}
 #endif
 
-/*
- * Macros to make additional parameter to implement wgetch_events()
- */
-#ifdef NCURSES_WGETCH_EVENTS
-#define EVENTLIST_0th(param) param
-#define EVENTLIST_1st(param) param
-#define EVENTLIST_2nd(param) , param
-#define TWAIT_MASK (TW_ANY | TW_EVENT)
-#else
-#define EVENTLIST_0th(param) void
-#define EVENTLIST_1st(param) /* nothing */
-#define EVENTLIST_2nd(param) /* nothing */
-#define TWAIT_MASK TW_ANY
-#endif
-
 #if NCURSES_EXPANDED && NCURSES_EXT_FUNCS
 
 #undef  toggle_attr_on
@@ -2505,10 +2509,6 @@ extern NCURSES_EXPORT(int)      TINFO_MVCUR(SCREEN*, int, int, int, int);
 #define TINFO_MVCUR             NCURSES_SP_NAME(_nc_mvcur)
 #endif
 
-#if defined(USE_WIN32CON_DRIVER)
-#include <nc_win32.h>
-#endif
-
 #ifdef _NC_WINDOWS
 #if USE_WIDEC_SUPPORT
 #include <wchar.h>
@@ -2546,6 +2546,7 @@ extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 
 #ifdef EXP_WIN32_DRIVER
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
+extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #else
 #ifdef USE_TERM_DRIVER
 #if defined(USE_WIN32CON_DRIVER)

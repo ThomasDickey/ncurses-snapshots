@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.76 2025/07/05 12:55:50 tom Exp $
-.TH curs_instr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.80 2025/08/16 20:04:36 tom Exp $
+.TH curs_instr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -102,7 +102,7 @@ These functions return the count of characters copied from
 .I win
 to
 .I str
-(not counting the null terminator),
+(not including the null terminator),
 or
 .B ERR
 upon failure.
@@ -138,19 +138,14 @@ may be implemented as macros.
 Reading a line that overflows the array pointed to by
 .I str
 with
-.BR \%instr ","
-.BR \%winstr ","
-.BR \%mvinstr ","
-or
-.B \%mvwinstr
-causes undefined results.
-Use of
-.BR \%innstr ","
-.BR \%winnstr ","
-.BR \%mvinnstr ","
-and
-.B \%mvwinnstr
-is recommended instead.
+and its variants causes undefined results.
+Instead,
+use the
+.IR n -infixed
+functions with a positive
+.I n
+argument no larger than the size of the buffer backing
+.IR str "."
 .SH EXTENSIONS
 .BR \%innstr ","
 .BR \%winnstr ","
@@ -181,6 +176,8 @@ and
 return
 .I OK
 rather than a character count.
+.\" X/Open Issue 4, Version 2, p. 117, PDF p. 137
+.\" Issue 7 makes the same claim.
 This is likely an erratum.
 .bP
 SVr3.1 and SVr4 implemented

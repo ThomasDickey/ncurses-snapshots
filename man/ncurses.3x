@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.255 2025/07/05 12:42:14 tom Exp $
-.TH ncurses 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.268 2025/08/16 19:19:33 tom Exp $
+.TH ncurses 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -174,7 +174,7 @@ library logs events describing
 actions
 to a file called
 .I \%trace
-in the current directory.
+in the application's working directory at startup.
 See section \*(``ALTERNATE CONFIGURATIONS\*('' below.
 .SS "Application Structure"
 A
@@ -262,7 +262,7 @@ addressed by line and column coordinates
 with the upper left corner as (0, 0).
 A window called
 .BR \%stdscr ,
-the same size as the terminal screen,
+by default the same size as the terminal screen,
 is always available.
 Create others with \fB\%newwin\fP(3X).
 .PP
@@ -329,7 +329,8 @@ or in reverse video.
 See \fB\%curs_color\fP(3X) and \fB\%curs_attr\fP(3X).
 .PP
 .I curses
-predefines constants for a small set of forms-drawing graphics
+defines constants to simplify access
+to a small set of forms-drawing graphics
 corresponding to the DEC Alternate Character Set (ACS),
 a feature of VT100 and other terminals.
 See \fB\%addch\fP(3X).
@@ -1607,9 +1608,9 @@ rather than
 The hashed database uses less disk space and is a little faster than the
 directory tree.
 However,
-some applications assume the existence of the directory tree,
-and read it directly
-rather than using the
+some applications assume the existence of the directory tree
+and read it directly,
+ignoring the
 .I \%term\%info
 API.
 .bP
@@ -1747,6 +1748,11 @@ employing
 .IR \%ncurses .
 .TP 5
 .B \-\-disable\-overwrite
+Avoid file name conflicts between
+.I \%ncurses
+and an existing
+.I curses
+installation on the system.
 The standard C preprocessor inclusion for the
 .I curses
 library is as follows.
@@ -1762,11 +1768,6 @@ library is as follows.
 .EE
 .RE
 .PP
-This option is used to avoid file name conflicts between
-.I \%ncurses
-and an existing
-.I curses
-installation on the system.
 If
 .I \%ncurses
 is installed disabling overwrite,
@@ -1781,7 +1782,9 @@ Here is an example.
 .EE
 .RE
 .PP
-Installation also omits a symbolic link that would cause the compiler's
+With
+.BR \%\-\-disable\-overwrite ","
+installation also omits a symbolic link that would cause the compiler's
 .B \%\-lcurses
 option to link object files with
 .I \%ncurses
@@ -1795,49 +1798,64 @@ is shown in section \*(``SYNOPSIS\*('' above.
 .RE
 .TP 5
 .B \-\-enable\-widec
-The configure script renames the library and
-(if the
-.B \%\-\-disable\-overwrite
-option is used)
-puts the header files in a different subdirectory.
-All of the library names have a \*(``w\*('' appended to them,
-i.e., instead of
-.RS 5
-.PP
-.RS 4
-.EX
-.B \-lncurses
-.EE
-.RE
-.PP
-you link with
-.PP
-.RS 4
-.EX
-.B \-lncursesw
-.EE
-.RE
-.PP
-You must also enable the wide-character features in the header file
-when compiling for the wide-character library
+(default for ABI\ 6+ since 2023-10-21)
+Enable support for wide characters.
+The
+.I \%configure
+script renames the
+.I \%ncurses
+library
+(and the
+.I tinfo
+library,
+if
+.B \%\-\-with\-termlib
+is also specified),
+appending \*(``w\*(''.
+An application desirous of wide-character support then uses
+.B \%\-lncursesw
+(or
+.BR \%\-ltinfow )
+instead of
+.B \%\-lncurses
+(or
+.BR \%\-ltinfo )
+as its linker option.
+The
+.IR ncurses++ ","
+.IR panel ","
+.IR form ","
+and
+.I menu
+libraries are renamed similarly.
+.IP
+An application must also
+define certain C preprocessor symbols
+to enable wide-character features
+in
+.I curses
+header files
 to use the extended (wide-character) functions.
-The symbol which enables these features has changed
-since X/Open Curses Issue\ 4:
+The symbol that enables these features has changed
+since X/Open Curses Issue\ 4.
+.RS 5
 .bP
 Originally,
 the wide-character feature required the symbol
-.B \%_XOPEN_SOURCE_EXTENDED
+.I \%_XOPEN_SOURCE_EXTENDED
 but that was only valid for XPG4 (1996).
 .bP
 Later,
 that was deemed conflicting with an
-.B \%_XOPEN_SOURCE
+.I \%_XOPEN_SOURCE
 value of 500.
 .bP
 As of mid-2018,
-none of the features in this implementation require a
-.B \%_XOPEN_SOURCE
-feature greater than 600.
+no
+.I \%ncurses
+feature requires a
+.I \%_XOPEN_SOURCE
+value greater than 600.
 However,
 X/Open Curses Issue\ 7 (2009) recommends defining it to 700.
 .bP
@@ -1847,9 +1865,10 @@ you can enable the feature by defining
 with the caveat that some header file other than
 .I \%curses.h
 may require a specific value for
-.B \%_XOPEN_SOURCE
+.I \%_XOPEN_SOURCE
 (or a system-specific symbol).
-.PP
+.RE
+.IP
 The
 .I \%curses.h
 header file installed
@@ -1860,18 +1879,54 @@ Only the size of the
 structure differs;
 few applications require more than pointers to
 .IR \%WINDOW "."
-.PP
-If the headers are installed allowing overwrite,
+.\" XXX: What's different in term.h?
+.IP
+If
+.IR \%ncurses 's
+header files are installed allowing overwrite
+(the default,
+but see
+.B \%\-\-disable\-overwrite
+above),
 the wide-character library's headers should be installed last,
+.\" Isn't that the responsibility of ncurses's own makefiles? --GBR
 to allow applications to be built using either library
 from the same set of headers.
-.RE
 .TP 5
 .B \-\-with\-pthread
-The configure script renames the library.
-All of the library names have a \*(``t\*('' appended to them
+Enable support for for multi-threaded applications.
+The
+.I \%configure
+script renames the
+.I \%ncurses
+library
+(and the
+.I tinfo
+library,
+if
+.B \%\-\-with\-termlib
+is also specified),
+appending \*(``t\*(''
 (before any \*(``w\*('' added by
 .BR \%\-\-enable\-widec ).
+An application desirous of support for multiple threads of execution
+then uses,
+for example,
+.B \%\-lncursest
+(or
+.BR \%\-ltinfot )
+instead of
+.B \%\-lncurses
+(or
+.BR \%\-ltinfo )
+as its linker option.
+The
+.IR ncurses++ ","
+.IR panel ","
+.IR form ","
+and
+.I menu
+libraries are renamed similarly.
 .IP
 .I \%ncursest
 and
@@ -1892,42 +1947,60 @@ to work with this convention.
 .B \-\-with\-debug
 .tQ
 .B \-\-with\-profile
+Mandate compilation of the
+.I \%ncurses
+library
+(and the
+.I tinfo
+library,
+if
+.B \%\-\-with\-termlib
+is also specified)
+in the specified forms.
 The shared and normal (static) library names differ by their suffixes,
-e.g.,
+as with
 .I \%libncurses.so
 and
 .IR \%libncurses.a "."
-The debug and profiling libraries add a \*(``_g\*(''
+The debugging and profiling libraries add a \*(``_g\*(''
 and a \*(``_p\*('' to the roots of these respective names,
 forming
 .I \%libncurses_g.so
 and
 .IR \%libncurses_p.a ","
 for example.
+The
+.IR ncurses++ ","
+.IR panel ","
+.IR form ","
+and
+.I menu
+libraries are made available similarly.
 .TP 5
 .B \-\-with\-termlib
-This option configures
-.I \%ncurses
-to provide low-level functions that do not depend
-upon wide-character support in a library named
-.IR \%tinfo "."
-.IP
-This arrangement enables
-.I \%tinfo
-to be shared between
-.I \%ncurses
+Provide
+.IR \%ncurses 's
+lower-level terminal interface functions
+(those that do not depend
+on the
+.I \%SCREEN
 and
-.I \%ncursesw
-libraries
-and reduces an application's linking and/or loading times
-when it requires only low-level functions.
+.I \%WINDOW
+abstractions)
+in a library named
+.IR \%tinfo "."
+This arrangement reduces an application's linking and/or loading times
+when it does not require
+.IR curses 's
+higher-level features.
 .IP
-The following pages describe low-level
+The following pages document
 .I curses
-functions.
+functions provided by
+.IR \%tinfo "."
 .RS
 .bP
-\fB\%curs_extend\fP(3X) \- miscellaneous \fIcurses\fP extensions
+\fB\%curs_extend\fP(3X) \- miscellaneous \fIncurses\fP extensions
 .bP
 \fB\%curs_inopts\fP(3X) \- \fIcurses\fP input options
 .bP
@@ -1944,12 +2017,22 @@ database
 .RE
 .TP 5
 .B \-\-with\-trace
-The
-.B trace
-function normally resides in the debug library,
-but it is sometimes useful to expose it in the shared or static library.
-Configuration scripts should check for the function's existence rather
-than assuming it is confined to the debug library.
+Expose the \fBcurses_trace\fP(3X) function
+in the
+.I ncurses(w)
+shared and static libraries.
+Normally,
+it is available only in the debugging library.
+(If
+.B \-\-with\-termlib
+is also specified,
+.I tinfo(w)
+rather than
+.I ncurses(w)
+supplies the deprecated \fBtrace\fP(3X) function.)
+An application's configuration script should check
+for the function's existence
+rather than assuming its confinement to the debugging library.
 .SH FILES
 .TP
 .I @DATADIR@/tabset
@@ -1986,7 +2069,7 @@ See subsection \*(``Header Files\*('' below regarding symbols exposed by
 inclusion of \fI\%curses.h\fP.
 .SH EXTENSIONS
 .I \%ncurses
-enables an application to capture mouse events on certain terminals,
+enables an application to capture mouse events from certain terminals,
 including \fI\%xterm\fP(1);
 see \fB\%curs_mouse\fP(3X).
 .PP
@@ -2341,7 +2424,7 @@ is included,
 its symbols
 .B may \" bold for consistency in this paragraph
 be made visible depending on the value of the
-.B _XOPEN_SOURCE
+.I \%_XOPEN_SOURCE
 feature test macro.
 .bP
 X/Open Curses mandates an application's inclusion of one standard C

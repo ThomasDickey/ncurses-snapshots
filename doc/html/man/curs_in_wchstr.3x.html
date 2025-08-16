@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_in_wchstr.3x,v 1.48 2025/02/01 22:54:32 tom Exp @
+  * @Id: curs_in_wchstr.3x,v 1.51 2025/08/16 20:04:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_in_wchstr 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_in_wchstr 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_in_wchstr 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_in_wchstr 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 
@@ -82,8 +82,7 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Upon successful completion, these functions return <STRONG>OK</STRONG>.  Otherwise, they
-       return <STRONG>ERR</STRONG>.
+       These functions return <STRONG>OK</STRONG> on success and <STRONG>ERR</STRONG> on failure.
 
        <EM>ncurses</EM> returns <STRONG>ERR</STRONG>
 
@@ -91,17 +90,17 @@
 
        <STRONG>o</STRONG>   if the <EM>wchstr</EM> parameter is null.
 
-       Functions  prefixed with "mv" first perform cursor movement and fail if
+       Functions prefixed with "mv" first perform cursor movement and fail  if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        All of these functions except <STRONG>win_wchnstr</STRONG> may be implemented as macros.
 
-       Reading a line that overflows the  array  pointed  to  by  <EM>wchstr</EM>  with
-       <STRONG>in_wchstr</STRONG>,  <STRONG>mvin_wchstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>  or  <STRONG>win_wchstr</STRONG> causes undefined
-       results.    Therefore,   the   use   of    <STRONG>in_wchnstr</STRONG>,    <STRONG>mvin_wchnstr</STRONG>,
-       <STRONG>mvwin_wchnstr</STRONG>, or <STRONG>win_wchnstr</STRONG> is recommended.
+       Reading  a  line  that overflows the array pointed to by <EM>wchstr</EM> and its
+       variants  causes  undefined  results.   Instead,  use   the   <EM>n</EM>-infixed
+       functions  with  a  positive  <EM>n</EM> argument no larger than the size of the
+       buffer backing <EM>wchstr</EM>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -110,23 +109,23 @@
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       X/Open Curses Issue 4 (1995) initially specified these functions.   The
-       System V  Interface  Definition  Version 4 of the same year specified a
-       function named <EM>winwchstr</EM> (and the usual variants).  This  was  a  later
-       addition  to  SVr4.<EM>x</EM>,  not  appearing  in  the  first  SVr4 (1989).  It
-       differed from X/Open's later <EM>win</EM><STRONG>_</STRONG><EM>wchstr</EM> in that it took an argument  of
+       X/Open  Curses Issue 4 (1995) initially specified these functions.  The
+       System V Interface Definition Version 4 of the same  year  specified  a
+       function  named  <EM>winwchstr</EM>  (and the usual variants).  This was a later
+       addition to SVr4.<EM>x</EM>,  not  appearing  in  the  first  SVr4  (1989).   It
+       differed  from X/Open's later <EM>win</EM><STRONG>_</STRONG><EM>wchstr</EM> in that it took an argument of
        type pointer-to-<EM>chtype</EM> instead of pointer-to<EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>  describes comparable functions of the <EM>ncurses</EM> library
+       <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG> describes comparable functions of the <EM>ncurses</EM>  library
        in its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>, <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2025-02-01                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.107 2025/07/05 12:55:10 tom Exp @
+  * @Id: curs_inopts.3x,v 1.110 2025/08/16 19:57:59 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2025-07-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -373,9 +373,9 @@
        the <STRONG>strfnames</STRONG> array of string capability names; see <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.
        The last capability read using a particular definition  determines  the
        key  code  to  be  reported.   In <EM>ncurses</EM>, extended capabilities can be
-       interpreted as key definitions.  These are loaded after the  predefined
-       keys,  and  if  a capability's value is the same as a previously loaded
-       key definition, the library uses the later definition.
+       interpreted as key definitions.  The  library  loads  these  after  its
+       built-in  definitions,  and  if a capability's value is the same as one
+       previously loaded, the library uses the later definition.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -410,7 +410,7 @@
 
 
 
-ncurses 6.5                       2025-07-05                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

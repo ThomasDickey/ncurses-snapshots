@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.84 2025/02/01 22:46:00 Branden.Robinson Exp $
+# $Id: man_db.renames.in,v 1.87 2025/08/16 19:36:29 Branden.Robinson Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -184,6 +184,7 @@ bkgrnd.3x			bkgrnd.3ncurses
 cbreak.3x			cbreak.3ncurses
 clearok.3x			clearok.3ncurses
 clrtoeol.3x			clrtoeol.3ncurses
+color_content.3x		color_content.3ncurses
 curs_set.3x			curs_set.3ncurses
 curscr.3x			curscr.3ncurses
 curses_trace.3x			curses_trace.3ncurses
@@ -202,6 +203,7 @@ extended_slk_color.3x		extended_slk_color.3ncurses
 filter.3x			filter.3ncurses
 flushinp.3x			flushinp.3ncurses
 get_wch.3x			get_wch.3ncurses
+get_wstr.3x			get_wstr.3ncurses
 getattr.3x			getattr.3ncurses
 getcchar.3x			getcchar.3ncurses
 getch.3x			getch.3ncurses
@@ -215,6 +217,7 @@ idlok.3x			idlok.3ncurses
 immedok.3x			immedok.3ncurses
 in_wch.3x			in_wch.3ncurses
 inch.3x				inch.3ncurses
+init_color.3x			init_color.3ncurses
 initscr.3x			initscr.3ncurses
 is_cbreak.3x			is_cbreak.3ncurses
 is_scrollok.3x			is_scrollok.3ncurses
@@ -225,6 +228,7 @@ killwchar.3x			killwchar.3ncurses
 leaveok.3x			leaveok.3ncurses
 longname.3x			longname.3ncurses
 meta.3x				meta.3ncurses
+mousemask.3x			mousemask.3ncurses
 move.3x				move.3ncurses
 mvcur.3x			mvcur.3ncurses
 mvwin.3x			mvwin.3ncurses
@@ -262,6 +266,7 @@ subwin.3x			subwin.3ncurses
 syncok.3x			syncok.3ncurses
 terminfo.3x			terminfo.3ncurses
 tigetflag.3x			tigetflag.3ncurses
+tigetnum.3x			tigetnum.3ncurses
 tigetstr.3x			tigetstr.3ncurses
 touchline.3x			touchline.3ncurses
 touchwin.3x			touchwin.3ncurses

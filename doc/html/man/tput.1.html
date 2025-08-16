@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.139 2025/07/05 13:06:18 tom Exp @
+  * @Id: tput.1,v 1.143 2025/08/16 19:55:31 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>tput 1 2025-07-05 ncurses 6.5 User commands</TITLE>
+<TITLE>tput 1 2025-08-16 ncurses 6.5 User commands</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">tput 1 2025-07-05 ncurses 6.5 User commands</H1>
+<H1 class="no-header">tput 1 2025-08-16 ncurses 6.5 User commands</H1>
 <PRE>
 <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 
@@ -92,7 +92,7 @@
                 defined, without a trailing newline.
 
        Before using a value returned on the standard output,  the  application
-       should  test  <STRONG>tput</STRONG> <STRONG>'s</STRONG> exit status to be sure it is 0; see section "EXIT
+       should  test  <STRONG>tput</STRONG>'s  exit status to be sure it is 0; see section "EXIT
        STATUS" below.
 
 
@@ -351,9 +351,9 @@
            should not rely upon this feature; <EM>ncurses</EM>  offers  it  to  support
            applications written specifically for OpenBSD.
 
-       This  implementation,  unlike others, accepts both <EM>termcap</EM> and <EM>terminfo</EM>
-       <EM>cap-codes</EM> if <EM>termcap</EM> support is compiled in.  In  that  case,  however,
-       the predefined <EM>termcap</EM> and <EM>terminfo</EM> codes have two ambiguities; <EM>ncurses</EM>
+       <EM>ncurses</EM>'s  implementation  of <EM>tput</EM>, unlike others, accepts both <EM>termcap</EM>
+       and <EM>terminfo</EM> <EM>cap-codes</EM> if <EM>termcap</EM> support  is  compiled  in.   In  that
+       case, however, <EM>termcap</EM> and <EM>terminfo</EM> codes have two ambiguities; <EM>ncurses</EM>
        assumes the <EM>terminfo</EM> code.
 
        <STRONG>o</STRONG>   The <EM>cap-code</EM> <STRONG>dl</STRONG> means <STRONG>delete_line</STRONG> to <EM>termcap</EM>  but  <STRONG>parm_delete_line</STRONG>
@@ -435,9 +435,9 @@
        System V developed a different <EM>tput</EM> command.
 
        <STRONG>o</STRONG>   SVr2 (1984) provided a rudimentary <EM>tput</EM> that checked the  parameter
-           against  each  predefined capability and returned the corresponding
-           value.   This  version  of  <EM>tput</EM>  did   not   use   <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>   for
-           parameterized capabilities.
+           against  each capability name and returned the corresponding value.
+           This version of  <EM>tput</EM>  did  not  use  <STRONG><A HREF="curs_terminfo.3x.html">tparm(3x)</A></STRONG>  for  parameterized
+           capabilities.
 
        <STRONG>o</STRONG>   SVr3  (1987)  replaced  that  with  a  more extensive program whose
            support for <STRONG>init</STRONG> and <STRONG>reset</STRONG> operands (more than  half  the  program)
@@ -564,7 +564,7 @@
 
 
 
-ncurses 6.5                       2025-07-05                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
+ncurses 6.5                       2025-08-16                           <STRONG><A HREF="tput.1.html">tput(1)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

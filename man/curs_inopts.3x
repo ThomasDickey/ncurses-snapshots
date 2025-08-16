@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.107 2025/07/05 12:55:10 tom Exp $
-.TH curs_inopts 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.110 2025/08/16 19:57:59 tom Exp $
+.TH curs_inopts 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -632,7 +632,7 @@ is available both as an environment variable and a global symbol
 permitting the user and application,
 respectively,
 to do so;
-see \fB\%ncurses\fP(3X) and \fBcurs_variables\fP(3X).
+see \fB\%ncurses\fP(3X) and \fB\%curs_variables\fP(3X).
 .SH EXTENSIONS
 .I \%ncurses
 provides four \*(``is_\*('' functions corresponding to
@@ -788,9 +788,8 @@ key code to be reported.
 In
 .IR \%ncurses ,
 extended capabilities can be interpreted as key definitions.
-These are loaded after the predefined keys,
-and if a capability's value is the same as a previously loaded
-key definition,
+The library loads these after its built-in definitions,
+and if a capability's value is the same as one previously loaded,
 the library uses the later definition.
 .SH HISTORY
 4BSD (1980)

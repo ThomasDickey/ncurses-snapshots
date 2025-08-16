@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_kernel.3x,v 1.84 2025/03/08 23:17:33 tom Exp @
+  * @Id: curs_kernel.3x,v 1.89 2025/08/16 19:50:07 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_kernel 3x 2025-03-08 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_kernel 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_kernel 3x 2025-03-08 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_kernel 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
@@ -139,7 +139,7 @@
 
        One application of <STRONG>mvcur</STRONG>  accompanies  the  temporary  use  of  another
        program  to  write  to  the  terminal  screen.  For example, first call
-       <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG> to ensure that the screen and the library's model of it  is
+       <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG> to ensure that the screen and the library's model of it are
        up  to  date;  then call <STRONG>reset_shell_mode</STRONG>; write to the screen with the
        external application; call <STRONG>reset_prog_mode</STRONG>; and finally call <STRONG>mvcur(</STRONG>...<STRONG>,</STRONG>
        ...<STRONG>,</STRONG>  <STRONG>-1,</STRONG> <STRONG>-1)</STRONG> to move the terminal cursor to where <EM>curses</EM> thinks it is,
@@ -149,7 +149,7 @@
 
 </PRE><H3><a name="h3-napms">napms</a></H3><PRE>
        <STRONG>napms</STRONG>  sleeps  for  <EM>ms</EM>  milliseconds.   If  <EM>ms</EM>  exceeds  30,000 (thirty
-       seconds), it is capped at that value.
+       seconds), <EM>ncurses</EM> caps it at that value.
 
 
 </PRE><H3><a name="h3-ripoffline">ripoffline</a></H3><PRE>
@@ -211,6 +211,8 @@
        value  other  than  normal;  that is, either invisible or very visible.
        There is no way for <EM>ncurses</EM> to determine the initial cursor  visibility
        to restore it.
+
+       <EM>ncurses</EM> imposes a limit of 30 seconds on a delay requested of <STRONG>napms</STRONG>.
 
        While  the <EM>init</EM> function called by <STRONG>ripoffline</STRONG> is specified to return an
        <EM>int</EM>, <EM>ncurses</EM> pays no attention to its return value.
@@ -277,7 +279,7 @@
 
 
 
-ncurses 6.5                       2025-03-08                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

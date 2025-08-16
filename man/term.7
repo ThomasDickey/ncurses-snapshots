@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2011,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.7,v 1.49 2024/05/11 20:39:53 tom Exp $
-.TH term 7 2024-05-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" Miscellaneous
+.\" $Id: term.7,v 1.52 2025/08/16 20:08:21 tom Exp $
+.TH term 7 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" Miscellaneous
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -82,7 +82,7 @@ a custom entry incorporating options
 which you wish to override the system default type for your line.
 .PP
 Terminal type descriptions are stored as files of capability data underneath
-@TERMINFO@.
+.IR \%@TERMINFO@ "."
 To browse a list of all terminal names recognized by the system, do
 .sp
         @TOE@ | more
@@ -96,8 +96,9 @@ Invoke it as follows:
         @INFOCMP@ \fIentry_name\fP
 .sp
 where \fIentry_name\fP is the name of the type you wish to examine (and the
-name of its capability file the subdirectory of @TERMINFO@ named for its first
-letter).
+name of its capability file the subdirectory of
+.I \%@TERMINFO@
+named for its first letter).
 This command dumps a capability file in the text format described by
 \fBterminfo\fP(5).
 .PP

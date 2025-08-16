@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.117 2025/07/05 12:43:18 tom Exp $
-.TH curs_add_wch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.119 2025/08/16 19:11:47 tom Exp $
+.TH curs_add_wch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -148,8 +148,9 @@ A
 .I \%cchar_t
 can be copied from place to place using \fB\%win_wch\fP(3X) and
 .BR \%wadd_wch "."
-See \fB\%curs_attr\fP(3X) for values of predefined constants that can be
-usefully \*(``or\*(''ed with characters.
+.I curses
+defines constants to aid the manipulation of character attributes;
+see \fB\%curs_attr\fP(3X).
 A complex character whose only character component is a wide space,
 and whose only attribute is
 .BR \%WA_NORMAL ,

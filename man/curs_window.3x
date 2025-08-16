@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.66 2025/02/02 00:04:58 tom Exp $
-.TH curs_window 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_window.3x,v 1.69 2025/08/16 19:58:54 tom Exp $
+.TH curs_window 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -105,21 +105,23 @@ Regardless of the function used for creating a new window
 (e.g., \fBnewwin\fP, \fBsubwin\fP, \fBderwin\fP, \fBnewpad\fP),
 rather than a duplicate (with \fBdupwin\fP),
 all of the window modes are initialized to the default values.
-These functions set window modes after a window is created:
+The following functions set a window's modes after it is created:
 .RS
 .PP
-\fB\%idcok\fP
-\fB\%idlok\fP
-\fB\%immedok\fP
-\fB\%keypad\fP
-\fB\%leaveok\fP
-\fB\%nodelay\fP
-\fB\%scrollok\fP
-\fB\%setscrreg\fP
-\fB\%syncok\fP
-\fB\%wbkgdset\fP
-\fB\%wbkgrndset\fP and
-\fB\%wtimeout\fP.
+.BR \%idcok ","
+.BR \%idlok ","
+.BR \%immedok ","
+.BR \%keypad ","
+.BR \%leaveok ","
+.BR \%nodelay ","
+.BR \%notimeout ","
+.BR \%scrollok ","
+.BR \%setscrreg ","
+.BR \%syncok ","
+.BR \%wbkgdset ","
+.BR \%wbkgrndset ","
+and
+.BR \%wtimeout "."
 .RE
 .SS delwin
 Calling \fBdelwin\fP deletes the named window, freeing all memory

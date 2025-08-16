@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.57 2025/03/15 20:41:04 tom Exp $
-.TH curs_add_wchstr 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.59 2025/08/16 19:56:13 tom Exp $
+.TH curs_add_wchstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,6 +106,7 @@ or line feed characters specially;
 do not represent unprintable characters with \fB\%wunctrl\fP(3X);
 .bP
 do not update the cursor position to follow the last character written;
+and
 .bP
 truncate the string at the window's right margin,
 rather than wrapping it to the next line and potentially scrolling.

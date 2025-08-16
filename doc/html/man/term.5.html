@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: term.5,v 1.83 2025/04/05 22:26:47 tom Exp @
+  * @Id: term.5,v 1.85 2025/08/16 19:11:47 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>term 5 2025-04-05 ncurses 6.5 File formats</TITLE>
+<TITLE>term 5 2025-08-16 ncurses 6.5 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">term 5 2025-04-05 ncurses 6.5 File formats</H1>
+<H1 class="no-header">term 5 2025-08-16 ncurses 6.5 File formats</H1>
 <PRE>
 <STRONG><A HREF="term.5.html">term(5)</A></STRONG>                          File formats                          <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 
@@ -190,14 +190,14 @@
        The previous section describes the conventional <EM>terminfo</EM> binary format.
        With  some  minor variations of the offsets (see PORTABILITY), the same
        binary format is used in all modern Unix systems.  Each system  uses  a
-       predefined set of Boolean, number or string capabilities.
+       standard set of Boolean, numeric, or string capabilities.
 
        The <EM>ncurses</EM> libraries and applications support extended <EM>terminfo</EM> binary
        format, allowing users  to  define  capabilities  that  are  loaded  at
        runtime.   This  extension  is made possible by using the fact that the
        other implementations stop reading the <EM>terminfo</EM> data  when  they  reach
        the  end of the size given in the header.  <EM>ncurses</EM> checks the size, and
-       if it exceeds that due to  the  predefined  data,  continues  to  parse
+       if it  exceeds  that  specified  in  the  header,  continues  to  parse
        according to its own scheme.
 
        First, it reads the extended header (5 short integers):
@@ -397,7 +397,7 @@
 
 
 
-ncurses 6.5                       2025-04-05                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
+ncurses 6.5                       2025-08-16                           <STRONG><A HREF="term.5.html">term(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

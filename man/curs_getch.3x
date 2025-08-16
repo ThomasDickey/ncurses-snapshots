@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.130 2025/07/05 13:06:45 tom Exp $
-.TH curs_getch 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.132 2025/08/16 19:11:47 tom Exp $
+.TH curs_getch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -195,7 +195,7 @@ If a window is in keypad mode,
 .B \%wgetch
 translates these key strokes to a numeric code corresponding to the
 .B KEY_
-symbols listed in subsection \*(``Predefined Key Codes\*('' below.
+symbols listed in subsection \*(``Key Codes\*('' below.
 If the window is not in keypad mode,
 the input queue populates with
 the characters of the function key's escape sequence,
@@ -206,7 +206,7 @@ calls.
 The
 .I \%curses.h
 header file declares many
-.I "predefined function keys"
+.I "function keys"
 whose names begin with
 .BR KEY_ ";"
 these object-like macros
@@ -294,7 +294,7 @@ places
 into the input queue to be returned by the next call to
 .BR \%wgetch "."
 A single input queue serves all windows associated with the screen.
-.SS "Predefined Key Codes"
+.SS "Key Codes"
 The header file
 .I \%curses.h
 defines the following function key codes.

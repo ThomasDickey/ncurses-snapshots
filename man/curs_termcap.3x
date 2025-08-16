@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.105 2025/02/01 22:49:13 tom Exp $
-.TH curs_termcap 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_termcap.3x,v 1.107 2025/08/16 19:09:12 tom Exp $
+.TH curs_termcap 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -436,7 +436,6 @@ Some applications thus assume that the
 .I termcap
 interface does not require the trailing null character
 for the capability identifier.
-.PP
 .I \%ncurses
 disallows matches by the
 .I termcap
@@ -451,14 +450,15 @@ function
 returns the text of a
 .I termcap
 entry in the buffer passed as an argument.
-This library,
+.IR \%ncurses ","
 like other
 .I \%term\%info
 implementations,
 does not store terminal type descriptions as text.
 It sets the buffer contents to a null-terminated string.
 .SS "Header File"
-This library includes a
+.I \%ncurses
+includes a
 .I \%termcap.h
 header file for compatibility with other implementations,
 but it is rarely used because the other implementations
@@ -677,15 +677,14 @@ users can be surprised.
 .IP \(bu 4
 \fB\%tputs("50")\fP in a \fI\%term\%info\fP system transmits
 \*(``50\*('' rather than busy-waiting for 50 milliseconds.
-.IP \(bu 4
+.IP
 However,
 if \fI\%ncurses\fP is configured to support \fItermcap\fP,
 it may also have been configured to support BSD-style padding.
-.IP
 In that case,
 \fB\%tputs\fP inspects strings passed to it,
 looking for digits at the beginning of the string.
-.IP
+.IP \(bu 4
 \fB\%tputs("50")\fP in a \fItermcap\fP system may busy-wait for 50
 milliseconds rather than transmitting \*(``50\*(''.
 .PP
@@ -700,10 +699,10 @@ One consequence is that \fItermcap\fP applications assume that
 .RB ( sgr0 )
 capability)
 does not reset the alternate character set.
-\fI\%ncurses\fP checks for,
-and modifies the data shared with,
-the \fItermcap\fP interface to accommodate the latter's limitation in
-this respect.
+\fI\%ncurses\fP inspects the data shared with the
+.I termcap
+interface and modifies it as necessary
+to accommodate the latter's limitation in this respect.
 .SH "SEE ALSO"
 .UR https://\*:invisible\-\*:island\*:.net/\*:ncurses/\*:tctest\*:.html
 .I "TCTEST \(em A Termcap Test Utility"

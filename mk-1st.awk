@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.128 2024/08/11 09:04:32 tom Exp $
+# $Id: mk-1st.awk,v 1.129 2025/08/16 21:43:38 tom Exp $
 ##############################################################################
-# Copyright 2018-2023,2024 Thomas E. Dickey                                  #
+# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -368,10 +368,8 @@ BEGIN	{
 					found = 2;
 				}
 				if ( $2 == "c++" ) {
-					CC_NAME="CXX"
 					CC_FLAG="CXXFLAGS"
 				} else {
-					CC_NAME="CC"
 					CC_FLAG="CFLAGS"
 				}
 			}
@@ -491,7 +489,7 @@ END	{
 				} else {
 					which_list = "SHLIB_LIST";
 				}
-				printf "\tcd ../lib && $(LIBTOOL_LINK) $(%s) $(%s) \\\n", CC_NAME, CC_FLAG;
+				printf "\tcd ../lib && $(LIBTOOL_LINK) $(%s) \\\n", CC_FLAG;
 				printf "\t\t-o %s $(%s_OBJS:$o=.lo) \\\n", lib_name, OBJS;
 				printf "\t\t-rpath $(libdir) \\\n";
 				printf "\t\t%s $(NCURSES_MAJOR):$(NCURSES_MINOR) $(LT_UNDEF) $(%s) $(LDFLAGS)\n", libtool_version, which_list;

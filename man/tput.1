@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.139 2025/07/05 13:06:18 tom Exp $
-.TH @TPUT@ 1 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.143 2025/08/16 19:55:31 tom Exp $
+.TH @TPUT@ 1 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -114,7 +114,7 @@ without a trailing newline.
 .PP
 Before using a value returned on the standard output,
 the application should test
-.B \%@TPUT@ "'s"
+.BR \%@TPUT@ "'s"
 exit status
 to be sure it is 0;
 see section \*(``EXIT STATUS\*('' below.
@@ -583,7 +583,9 @@ Portable applications should not rely upon this feature;
 .I \%ncurses
 offers it to support applications written specifically for OpenBSD.
 .PP
-This implementation,
+.IR \%ncurses 's
+implementation of
+.IR tput ","\" generic
 unlike others,
 accepts both
 .I termcap
@@ -595,7 +597,6 @@ if
 support is compiled in.
 In that case,
 however,
-the predefined
 .I termcap
 and
 .I \%term\%info
@@ -814,7 +815,7 @@ command.
 SVr2 (1984) provided a rudimentary
 .I tput
 that checked the parameter against each
-predefined capability and returned the corresponding value.
+capability name and returned the corresponding value.
 This version of
 .I tput
 did not use \fB\%tparm\fP(3X) for parameterized capabilities.

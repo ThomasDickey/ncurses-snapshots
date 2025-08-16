@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_color.3x,v 1.122 2025/07/05 12:45:50 tom Exp @
+  * @Id: curs_color.3x,v 1.124 2025/08/16 20:00:37 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_color 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_color 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_color 3x 2025-07-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_color 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
@@ -459,22 +459,23 @@
        and earlier with CGA/EGA/VGA video.
 
        <STRONG>o</STRONG>   <STRONG>COLOR_YELLOW</STRONG>  was  frequently converted, in the analog domain, to a
-           shade of brown if the intensity bit was not set.   To  get  yellow,
-           combine <STRONG>COLOR_YELLOW</STRONG> with the <STRONG>A_BOLD</STRONG> attribute.
+           shade of brown if the intensity bit was not set.  To get yellow  on
+           such  devices,  one  would  combine  <STRONG>COLOR_YELLOW</STRONG>  with  the <STRONG>A_BOLD</STRONG>
+           attribute.
 
-       <STRONG>o</STRONG>   The  <STRONG>A_BLINK</STRONG> attribute should in theory make the background bright.
-           This often fails to work, and even VGA  controllers  for  which  it
-           mostly  works,  such as those from Paradise and compatibles, do the
+       <STRONG>o</STRONG>   The <STRONG>A_BLINK</STRONG> attribute should in theory make the background  bright.
+           This  often  fails  to  work, and even VGA controllers for which it
+           mostly works, such as those from Paradise and compatibles,  do  the
            wrong thing when you try to set a bright "yellow" background -- you
            get a blinking yellow foreground instead.
 
-       <STRONG>o</STRONG>   Color  RGB  values  are  not configurable on these devices (in text
+       <STRONG>o</STRONG>   Color RGB values are not configurable on  these  devices  (in  text
            mode).
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       The functions marked as extensions originated in <EM>ncurses</EM>, and  are  not
-       found  in  SVr4  <EM>curses</EM>,  4.4BSD  <EM>curses</EM>,  or any other previous <EM>curses</EM>
+       The  functions  marked as extensions originated in <EM>ncurses</EM>, and are not
+       found in SVr4 <EM>curses</EM>, 4.4BSD  <EM>curses</EM>,  or  any  other  previous  <EM>curses</EM>
        implementation.
 
 
@@ -485,78 +486,78 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       <EM>ncurses</EM> satisfies X/Open  Curses's  minimum  maximums  for  <EM>COLORS</EM>  and
+       <EM>ncurses</EM>  satisfies  X/Open  Curses's  minimum  maximums  for <EM>COLORS</EM> and
        <EM>COLOR</EM><STRONG>_</STRONG><EM>PAIRS</EM>.
 
-       X/Open  Curses  does  not  specify a limit for the number of colors and
+       X/Open Curses does not specify a limit for the  number  of  colors  and
        color pairs which a terminal can support.  However, in its use of <EM>short</EM>
-       for  the  parameters,  it carries over SVr4's implementation detail for
-       the compiled <EM>terminfo</EM>  database,  which  uses  signed  16-bit  numbers.
+       for the parameters, it carries over SVr4's  implementation  detail  for
+       the  compiled  <EM>terminfo</EM>  database,  which  uses  signed 16-bit numbers.
        <EM>ncurses</EM>  provides  extended  versions  of  the  functions  using  <EM>short</EM>
-       parameters,  allowing  applications  to  use  larger  color  and   pair
+       parameters,   allowing  applications  to  use  larger  color  and  pair
        identifiers.
 
-       SVr4  <EM>curses</EM> returns <EM>ERR</EM> from <EM>pair</EM><STRONG>_</STRONG><EM>content</EM> if its <EM>pair</EM> argument was not
-       initialized using <EM>init</EM><STRONG>_</STRONG><EM>pairs</EM>, and from <EM>color</EM><STRONG>_</STRONG><EM>content</EM>  if  the  terminal
+       SVr4 <EM>curses</EM> returns <EM>ERR</EM> from <EM>pair</EM><STRONG>_</STRONG><EM>content</EM> if its <EM>pair</EM> argument was  not
+       initialized  using  <EM>init</EM><STRONG>_</STRONG><EM>pairs</EM>,  and from <EM>color</EM><STRONG>_</STRONG><EM>content</EM> if the terminal
        does not support changing colors.  <EM>ncurses</EM> does neither.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       SVr3.2  (1987)  introduced  color  support  to  <EM>curses</EM>  with all of the
-       symbols in the synopsis above except those marked  as  extensions.   It
+       SVr3.2 (1987) introduced color  support  to  <EM>curses</EM>  with  all  of  the
+       symbols  in  the  synopsis above except those marked as extensions.  It
        reserved color pair 0 as the terminal's initial, "uncolored" state, and
-       limited the number of possible color pairs to  64,  because  the  color
+       limited  the  number  of  possible color pairs to 64, because the color
        pair datum was encoded in six bits of a <EM>chtype</EM>.
 
-       SVr4  made  only  internal changes, such as moving the storage of color
-       state from the <EM>SCREEN</EM> structure (pointed to  by  <EM>SP</EM>)  to  the  <EM>TERMINAL</EM>
+       SVr4 made only internal changes, such as moving the  storage  of  color
+       state  from  the  <EM>SCREEN</EM>  structure  (pointed to by <EM>SP</EM>) to the <EM>TERMINAL</EM>
        structure (pointed to by <EM>cur</EM><STRONG>_</STRONG><EM>term</EM>).
 
-       Other  <EM>curses</EM>  implementations impose different limits on the number of
+       Other <EM>curses</EM> implementations impose different limits on the  number  of
        colors and color pairs.
 
-       <STRONG>o</STRONG>   <EM>PCCurses</EM> (1987-1990) provided for  only  8  colors  (and  therefore
+       <STRONG>o</STRONG>   <EM>PCCurses</EM>  (1987-1990)  provided  for  only  8 colors (and therefore
            required at most 8x8 = 64 color pairs).
 
        <STRONG>o</STRONG>   <EM>PDCurses</EM>  (1992-present)  inherited  the  8-color  limitation  from
-           <EM>PCCurses</EM>, but changed this  to  256  in  version  2.5  (2001),  and
+           <EM>PCCurses</EM>,  but  changed  this  to  256  in  version 2.5 (2001), and
            widened its <EM>chtype</EM> from 16 to 32 bits.
 
        <STRONG>o</STRONG>   X/Open  Curses  (1992-present)  specified  a  new  structure  type,
-           <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>, to store the character code, attribute  flags,  and  color
-           pair  identifier,  allowing  an increased range of color pairs.  It
-           specifies a <EM>short</EM> as  storing  identifiers  for  colors  and  color
-           pairs,  limiting  portable  values  to 15 bits; negative values are
+           <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>,  to  store  the character code, attribute flags, and color
+           pair identifier, allowing an increased range of  color  pairs.   It
+           specifies  a  <EM>short</EM>  as  storing  identifiers  for colors and color
+           pairs, limiting portable values to 15  bits;  negative  values  are
            invalid in System V.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM> (1992-present), in its non-wide configuration, uses 8  bits
+       <STRONG>o</STRONG>   <EM>ncurses</EM>  (1992-present), in its non-wide configuration, uses 8 bits
            of <EM>chtype</EM> for the color pair identifier.
 
-           Version  5.3 (2002) offered a wide-character interface, but encoded
+           Version 5.3 (2002) offered a wide-character interface, but  encoded
            the color pair identifier with attributes in the character type.
 
-           Since version 6 (2015), <EM>ncurses</EM> uses a separate <EM>int</EM> for  the  color
-           pair  identifier  in  a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>, introducing extension functions to
-           manage the wider type.  When a color pair value  fits  in  8  bits,
+           Since  version  6 (2015), <EM>ncurses</EM> uses a separate <EM>int</EM> for the color
+           pair identifier in a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>, introducing  extension  functions  to
+           manage  the  wider  type.   When a color pair value fits in 8 bits,
            <EM>ncurses</EM> permits color pair data to be manipulated via the functions
-           taking <EM>chtype</EM> arguments, even  when  a  <EM>curses</EM>  window  uses  wide-
+           taking  <EM>chtype</EM>  arguments,  even  when  a  <EM>curses</EM> window uses wide-
            character cells.
 
-       <STRONG>o</STRONG>   NetBSD  <EM>curses</EM>  used 6 bits for the color pair identifier from 2000
-           (when it first added color support) until  2004.   At  that  point,
-           NetBSD  widened  the  color  pair  identifier to use 9 bits.  As of
-           2025, that size is unchanged.  Like <EM>ncurses</EM> before version  6,  the
-           NetBSD  color  pair  datum  is  stored  in  the attributes field of
+       <STRONG>o</STRONG>   NetBSD <EM>curses</EM> used 6 bits for the color pair identifier  from  2000
+           (when  it  first  added  color support) until 2004.  At that point,
+           NetBSD widened the color pair identifier to  use  9  bits.   As  of
+           2025,  that  size is unchanged.  Like <EM>ncurses</EM> before version 6, the
+           NetBSD color pair datum  is  stored  in  the  attributes  field  of
            <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>, limiting the number of color pairs.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,   <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2025-07-05                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

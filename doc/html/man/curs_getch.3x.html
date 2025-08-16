@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.130 2025/07/05 13:06:45 tom Exp @
+  * @Id: curs_getch.3x,v 1.132 2025/08/16 19:11:47 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_getch 3x 2025-07-05 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_getch 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_getch 3x 2025-07-05 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_getch 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 
@@ -121,14 +121,14 @@
        "function  key"  includes  but  is not limited to keycaps engraved with
        "F1", "PF1", and so on.)   If  a  window  is  in  keypad  mode,  <STRONG>wgetch</STRONG>
        translates  these  key  strokes  to a numeric code corresponding to the
-       <STRONG>KEY_</STRONG> symbols listed in subsection "Predefined Key Codes" below.  If the
-       window  is  not  in  keypad  mode,  the  input queue populates with the
-       characters of the function key's escape sequence, which the application
-       must collect individually with multiple <STRONG>wgetch</STRONG> calls.
+       <STRONG>KEY_</STRONG> symbols listed in subsection "Key Codes" below.  If the window  is
+       not  in  keypad  mode, the input queue populates with the characters of
+       the function key's escape sequence, which the application must  collect
+       individually with multiple <STRONG>wgetch</STRONG> calls.
 
-       <STRONG>o</STRONG>   The  <EM>curses.h</EM>  header  file  declares many <EM>predefined</EM> <EM>function</EM> <EM>keys</EM>
-           whose names begin with <STRONG>KEY_</STRONG>; these object-like macros have  integer
-           values outside the range of eight-bit character codes.
+       <STRONG>o</STRONG>   The  <EM>curses.h</EM>  header  file declares many <EM>function</EM> <EM>keys</EM> whose names
+           begin with <STRONG>KEY_</STRONG>;  these  object-like  macros  have  integer  values
+           outside the range of eight-bit character codes.
 
        <STRONG>o</STRONG>   In   <EM>ncurses</EM>,   <EM>user-defined</EM>  <EM>function</EM>  <EM>keys</EM>  are  configured  with
            <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>; they have no names, but are also expected  to  have
@@ -176,7 +176,7 @@
        screen.
 
 
-</PRE><H3><a name="h3-Predefined-Key-Codes">Predefined Key Codes</a></H3><PRE>
+</PRE><H3><a name="h3-Key-Codes">Key Codes</a></H3><PRE>
        The header file <EM>curses.h</EM> defines the following function key codes.
 
        <STRONG>o</STRONG>   Except for the special case of <STRONG>KEY_RESIZE</STRONG>, a window's  keypad  mode
@@ -465,7 +465,7 @@
 
 
 
-ncurses 6.5                       2025-07-05                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                    <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -476,7 +476,7 @@ ncurses 6.5                       2025-07-05                    <STRONG><A HREF=
 <li><a href="#h3-Reading-Characters">Reading Characters</a></li>
 <li><a href="#h3-Keypad-Mode">Keypad Mode</a></li>
 <li><a href="#h3-Ungetting-Characters">Ungetting Characters</a></li>
-<li><a href="#h3-Predefined-Key-Codes">Predefined Key Codes</a></li>
+<li><a href="#h3-Key-Codes">Key Codes</a></li>
 <li><a href="#h3-Testing-Key-Codes">Testing Key Codes</a></li>
 </ul>
 </li>

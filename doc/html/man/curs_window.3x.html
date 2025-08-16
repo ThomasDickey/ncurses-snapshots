@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_window.3x,v 1.66 2025/02/02 00:04:58 tom Exp @
+  * @Id: curs_window.3x,v 1.69 2025/08/16 19:58:54 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_window 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_window 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_window 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_window 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 
@@ -90,11 +90,11 @@
 
        Regardless of the function  used  for  creating  a  new  window  (e.g.,
        <STRONG>newwin</STRONG>, <STRONG>subwin</STRONG>, <STRONG>derwin</STRONG>, <STRONG>newpad</STRONG>), rather than a duplicate (with <STRONG>dupwin</STRONG>),
-       all of the window modes are initialized to the default  values.   These
-       functions set window modes after a window is created:
+       all of the window modes are initialized to  the  default  values.   The
+       following functions set a window's modes after it is created:
 
-              <STRONG>idcok</STRONG>  <STRONG>idlok</STRONG>  <STRONG>immedok</STRONG>  <STRONG>keypad</STRONG> <STRONG>leaveok</STRONG> <STRONG>nodelay</STRONG> <STRONG>scrollok</STRONG> <STRONG>setscrreg</STRONG>
-              <STRONG>syncok</STRONG> <STRONG>wbkgdset</STRONG> <STRONG>wbkgrndset</STRONG> and <STRONG>wtimeout</STRONG>.
+              <STRONG>idcok</STRONG>,  <STRONG>idlok</STRONG>,  <STRONG>immedok</STRONG>,  <STRONG>keypad</STRONG>,  <STRONG>leaveok</STRONG>,  <STRONG>nodelay</STRONG>, <STRONG>notimeout</STRONG>,
+              <STRONG>scrollok</STRONG>, <STRONG>setscrreg</STRONG>, <STRONG>syncok</STRONG>, <STRONG>wbkgdset</STRONG>, <STRONG>wbkgrndset</STRONG>, and <STRONG>wtimeout</STRONG>.
 
 
 </PRE><H3><a name="h3-delwin">delwin</a></H3><PRE>
@@ -242,7 +242,7 @@
 
 
 
-ncurses 6.5                       2025-02-01                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

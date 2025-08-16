@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wchstr.3x,v 1.48 2025/02/01 22:54:32 tom Exp $
-.TH curs_in_wchstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wchstr.3x,v 1.51 2025/08/16 20:04:12 tom Exp $
+.TH curs_in_wchstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -84,10 +84,11 @@ Constants defined in \fB<curses.h>\fP can be used with the \fB&\fP
 operator to extract the character or the attribute alone from any position
 in the \fIwchstr\fP [see \fBgetcchar\fP(3X)].
 .SH RETURN VALUE
-Upon successful completion, these functions return
-\fBOK\fP.
-Otherwise, they return
-\fBERR\fP.
+These functions return
+.B OK
+on success and
+.B ERR
+on failure.
 .PP
 .I \%ncurses
 returns
@@ -108,20 +109,15 @@ All of these functions except
 may be implemented as macros.
 .PP
 Reading a line that overflows the array pointed to by
-\fIwchstr\fP
-with
-\fBin_wchstr\fP,
-\fBmvin_wchstr\fP,
-\fBmvwin_wchstr\fP
-or
-\fBwin_wchstr\fP
-causes undefined results.
-Therefore, the use of
-\fBin_wchnstr\fP,
-\fBmvin_wchnstr\fP,
-\fBmvwin_wchnstr\fP, or
-\fBwin_wchnstr\fP
-is recommended.
+.I wchstr
+and its variants causes undefined results.
+Instead,
+use the
+.IR n -infixed
+functions with a positive
+.I n
+argument no larger than the size of the buffer backing
+.IR wchstr "."
 .SH PORTABILITY
 X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_termcap.3x,v 1.105 2025/02/01 22:49:13 tom Exp @
+  * @Id: curs_termcap.3x,v 1.107 2025/08/16 19:09:12 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_termcap 3x 2025-02-01 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_termcap 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_termcap 3x 2025-02-01 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_termcap 3x 2025-08-16 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
@@ -249,69 +249,68 @@
        character after the capability identifier passed to  <EM>tgetstr</EM>,  <EM>tgetnum</EM>,
        and <EM>tgetflag</EM>.  Some applications thus assume that the <EM>termcap</EM> interface
        does not  require  the  trailing  null  character  for  the  capability
-       identifier.
-
-       <EM>ncurses</EM>  disallows  matches  by  the <EM>termcap</EM> interface against extended
-       capability names that are longer than two characters; see <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>.
+       identifier.  <EM>ncurses</EM> disallows matches by the <EM>termcap</EM> interface against
+       extended capability names that are  longer  than  two  characters;  see
+       <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>.
 
        The BSD <EM>termcap</EM> function <EM>tgetent</EM> returns the text of a <EM>termcap</EM> entry in
-       the  buffer  passed  as an argument.  This library, like other <EM>terminfo</EM>
+       the buffer  passed  as  an  argument.   <EM>ncurses</EM>,  like  other  <EM>terminfo</EM>
        implementations, does not store terminal type descriptions as text.  It
        sets the buffer contents to a null-terminated string.
 
 
 </PRE><H3><a name="h3-Header-File">Header File</a></H3><PRE>
-       This  library  includes  a <EM>termcap.h</EM> header file for compatibility with
-       other  implementations,  but  it  is  rarely  used  because  the  other
+       <EM>ncurses</EM> includes a <EM>termcap.h</EM> header file for compatibility  with  other
+       implementations,   but   it   is   rarely   used   because   the  other
        implementations are not mutually compatible; see below.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       Bill  Joy  originated  a  forerunner  of <EM>termcap</EM> called "ttycap", dated
+       Bill Joy originated a forerunner  of  <EM>termcap</EM>  called  "ttycap",  dated
        September 1977, and released in 1BSD (March 1978).  It used many of the
-       same  function  names  as the later <EM>termcap</EM>, such as <EM>tgetent</EM>, <EM>tgetflag</EM>,
+       same function names as the later <EM>termcap</EM>, such  as  <EM>tgetent</EM>,  <EM>tgetflag</EM>,
        <EM>tgetnum</EM>, and <EM>tgetstr</EM>.
 
-       A clear descendant, the <EM>termlib</EM> library, followed in 2BSD  (May  1979),
+       A  clear  descendant, the <EM>termlib</EM> library, followed in 2BSD (May 1979),
        adding <EM>tgoto</EM> and <EM>tputs</EM>.  The former applied at that time only to cursor
        positioning  capabilities,  thus  the  overly  specific  name.   Little
-       changed  in 3BSD (late 1979) except the addition of test programs and a
-       <EM>termlib</EM> man page, which documented the API shown in section  "SYNOPSIS"
+       changed in 3BSD (late 1979) except the addition of test programs and  a
+       <EM>termlib</EM>  man page, which documented the API shown in section "SYNOPSIS"
        above.
 
-       4BSD  (November 1980) renamed <EM>termlib</EM> to <EM>termcap</EM> and added another test
-       program.  The library remained  much  the  same  through  4.3BSD  (June
-       1986).    4.4BSD-Lite  (June  1994)  refactored  it,  leaving  the  API
+       4BSD (November 1980) renamed <EM>termlib</EM> to <EM>termcap</EM> and added another  test
+       program.   The  library  remained  much  the  same through 4.3BSD (June
+       1986).   4.4BSD-Lite  (June  1994)  refactored  it,  leaving  the   API
        unchanged.
 
-       Function prototypes were a feature of ANSI C (1989).  The library  long
+       Function  prototypes were a feature of ANSI C (1989).  The library long
        antedated the standard and thus provided no header file declaring them.
-       Nevertheless, the BSD sources included two different  <EM>termcap.h</EM>  header
+       Nevertheless,  the  BSD sources included two different <EM>termcap.h</EM> header
        files over time.
 
        <STRONG>o</STRONG>   One was used internally by <STRONG>jove(1)</STRONG> from 4.3BSD onward.  It declared
            global symbols for the <EM>termcap</EM> variables that it used.
 
-       <STRONG>o</STRONG>   The other appeared in 4.4BSD-Lite Release 2 (June 1995) as part  of
-           <EM>libedit</EM>  (also known as the <EM>editline</EM> library).  CSRG source history
+       <STRONG>o</STRONG>   The  other appeared in 4.4BSD-Lite Release 2 (June 1995) as part of
+           <EM>libedit</EM> (also known as the <EM>editline</EM> library).  CSRG source  history
            shows that this was added in mid-1992.  The <EM>libedit</EM> header file was
            used  internally  as  a  convenience  for  compiling  the  <EM>editline</EM>
            library.  It declared function prototypes, but no global variables.
            NetBSD's <EM>termcap</EM> library added this header file in mid-1994.
 
-       Meanwhile,  GNU  <EM>termcap</EM>  began development in 1990.  Its first release
-       (1.0) in 1991 included a  <EM>termcap.h</EM>  header  file.   Its  second  (1.1)
-       release  in  September  1992  modified  the  file  to use <EM>const</EM> for the
-       function prototypes in the header where one would expect parameters  to
-       be  read-only.   BSD  <EM>termcap</EM>  did  not.   The prototype for <EM>tputs</EM> also
-       differed, but in that instance, it was <EM>libedit</EM> that differed  from  BSD
+       Meanwhile, GNU <EM>termcap</EM> began development in 1990.   Its  first  release
+       (1.0)  in  1991  included  a  <EM>termcap.h</EM>  header file.  Its second (1.1)
+       release in September 1992 modified  the  file  to  use  <EM>const</EM>  for  the
+       function  prototypes in the header where one would expect parameters to
+       be read-only.  BSD <EM>termcap</EM> did  not.   The  prototype  for  <EM>tputs</EM>  also
+       differed,  but  in that instance, it was <EM>libedit</EM> that differed from BSD
        <EM>termcap</EM>.
 
-       GNU  <STRONG>bash(1)</STRONG>  has bundled GNU <EM>termcap</EM> 1.3 since mid-1993 to support its
+       GNU <STRONG>bash(1)</STRONG> has bundled GNU <EM>termcap</EM> 1.3 since mid-1993 to  support  its
        <STRONG>readline(3)</STRONG> library, and continues to use it if configured to do so.
 
-       <EM>ncurses</EM> 1.8.1 (November 1993) provided a <EM>termcap.h</EM> file.  It  reflected
-       influence   from  GNU  <EM>termcap</EM>  and  <STRONG>emacs(1)</STRONG>  (rather  than  <STRONG>jove(1)</STRONG>),
+       <EM>ncurses</EM>  1.8.1 (November 1993) provided a <EM>termcap.h</EM> file.  It reflected
+       influence  from  GNU  <EM>termcap</EM>  and  <STRONG>emacs(1)</STRONG>  (rather  than   <STRONG>jove(1)</STRONG>),
        providing the following interface:
 
        <STRONG>o</STRONG>   global symbols used by <EM>emacs</EM>,
@@ -320,11 +319,11 @@
 
        <STRONG>o</STRONG>   a prototype for <EM>tparam</EM>, a GNU <EM>termcap</EM> feature.
 
-       Later (in mid-1996) the <EM>tparam</EM> function was removed from <EM>ncurses</EM>.   Any
-       two  of  the four implementations thus differ, and programs that intend
+       Later  (in mid-1996) the <EM>tparam</EM> function was removed from <EM>ncurses</EM>.  Any
+       two of the four implementations thus differ, and programs  that  intend
        to work with all <EM>termcap</EM> library interfaces must account for that fact.
 
-       X/Open Curses Issue 4, Version 2  (1996),  describes  these  functions,
+       X/Open  Curses  Issue 4,  Version 2  (1996), describes these functions,
        marking them as "TO BE WITHDRAWN".
 
        X/Open Curses Issue 7 (2009) withdrew the <EM>termcap</EM> interface (along with
@@ -333,36 +332,35 @@
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
        If  you  call  <STRONG>tgetstr</STRONG>  to  fetch  <STRONG>column_address</STRONG>  (<STRONG>ch</STRONG>)  or  any  other
-       parameterized  string capability, be aware that it is returned in <EM>term-</EM>
+       parameterized string capability, be aware that it is returned in  <EM>term-</EM>
        <EM>info</EM> notation, not the older and not-quite-compatible <EM>termcap</EM> notation.
-       This  does  not  cause  problems if all you do with it is call <STRONG>tgoto</STRONG> or
-       <STRONG>tparm</STRONG>,  which  both   parametrically   expand   <EM>terminfo</EM>-style   string
-       capabilities  as  <EM>terminfo</EM>  does.  (If <EM>ncurses</EM> is configured to support
-       <EM>termcap,</EM> <STRONG>tgoto</STRONG> checks whether the string is <EM>terminfo</EM>-style  by  looking
-       for  "<STRONG>%p</STRONG>"  parameters  or  "<STRONG>&lt;</STRONG>...<STRONG>&gt;</STRONG>"  delays, and invokes a <EM>termcap</EM>-style
+       This does not cause problems if all you do with it  is  call  <STRONG>tgoto</STRONG>  or
+       <STRONG>tparm</STRONG>,   which   both   parametrically   expand  <EM>terminfo</EM>-style  string
+       capabilities as <EM>terminfo</EM> does.  (If <EM>ncurses</EM> is  configured  to  support
+       <EM>termcap,</EM>  <STRONG>tgoto</STRONG>  checks whether the string is <EM>terminfo</EM>-style by looking
+       for "<STRONG>%p</STRONG>" parameters or "<STRONG>&lt;</STRONG>...<STRONG>&gt;</STRONG>"  delays,  and  invokes  a  <EM>termcap</EM>-style
        parser if the string appears not to use <EM>terminfo</EM> syntax.)
 
-       Because <EM>terminfo</EM>'s syntax for padding in  string  capabilities  differs
+       Because  <EM>terminfo</EM>'s  syntax  for padding in string capabilities differs
        from <EM>termcap</EM>'s, users can be surprised.
 
-       <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG>  in  a <EM>terminfo</EM> system transmits "50" rather than busy-
+       <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG> in a <EM>terminfo</EM> system transmits "50" rather  than  busy-
            waiting for 50 milliseconds.
 
-       <STRONG>o</STRONG>   However, if <EM>ncurses</EM> is configured to support <EM>termcap</EM>, it  may  also
-           have been configured to support BSD-style padding.
+           However,  if  <EM>ncurses</EM> is configured to support <EM>termcap</EM>, it may also
+           have been configured to support BSD-style padding.  In  that  case,
+           <STRONG>tputs</STRONG>  inspects  strings  passed  to  it, looking for digits at the
+           beginning of the string.
 
-           In  that  case,  <STRONG>tputs</STRONG>  inspects  strings passed to it, looking for
-           digits at the beginning of the string.
-
-           <STRONG>tputs("50")</STRONG> in a <EM>termcap</EM> system may busy-wait for  50  milliseconds
+       <STRONG>o</STRONG>   <STRONG>tputs("50")</STRONG> in a <EM>termcap</EM> system may busy-wait for  50  milliseconds
            rather than transmitting "50".
 
        <EM>termcap</EM>  has  nothing  analogous  to  <EM>terminfo</EM>'s  <STRONG>set_attributes</STRONG>  (<STRONG>sgr</STRONG>)
        capability.  One consequence is that <EM>termcap</EM> applications  assume  that
        "<STRONG>me</STRONG>"  (equivalent  to <EM>terminfo</EM>'s <STRONG>exit_attribute_mode</STRONG> (<STRONG>sgr0</STRONG>) capability)
-       does not reset the alternate character set.  <EM>ncurses</EM>  checks  for,  and
-       modifies the data shared with, the <EM>termcap</EM> interface to accommodate the
-       latter's limitation in this respect.
+       does not reset the alternate character set.  <EM>ncurses</EM> inspects the  data
+       shared  with  the  <EM>termcap</EM>  interface  and  modifies it as necessary to
+       accommodate the latter's limitation in this respect.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
@@ -373,7 +371,7 @@
 
 
 
-ncurses 6.5                       2025-02-01                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
+ncurses 6.5                       2025-08-16                  <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

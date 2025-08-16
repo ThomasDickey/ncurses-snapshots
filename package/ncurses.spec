@@ -1,7 +1,7 @@
 Summary: shared libraries for terminal handling
 Name: ncurses6
 Version: 6.5
-Release: 20250809
+Release: 20250816
 License: X11 License Distribution Modification Variant
 Group: Development/Libraries
 URL: https://invisible-island.net/ncurses/
@@ -134,8 +134,8 @@ rm -f test/ncurses
 
 %changelog
 
-* Fri Aug 08 2025 Thomas E. Dickey
-- testing ncurses 6.5-20250809
+* Sun Aug 10 2025 Thomas E. Dickey
+- testing ncurses 6.5-20250816
 
 * Sat Feb 25 2023 Thomas Dickey
 - amend URLs per rpmlint

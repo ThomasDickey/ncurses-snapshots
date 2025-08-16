@@ -31,14 +31,14 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h.in,v 1.4 2025/08/09 14:26:13 tom Exp $ */
+/* $Id: nc_win32.h.in,v 1.6 2025/08/16 15:08:18 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
 
 #include <ncurses_cfg.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(USE_WIN32CON_DRIVER)
 
 #if @USE_NAMED_PIPES@	/* USE_NAMED_PIPES */
 
@@ -95,6 +95,8 @@ extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
 #define wcwidth(ucs)  _nc_wcwidth((wchar_t)(ucs))
 extern NCURSES_EXPORT(int)    _nc_wcwidth(uint32_t);
 
+#ifdef CURSES_PRIV_H	/* test.priv.h just needs the preceding */
+
 #ifdef EVENTLIST_2nd /* test.priv.h just needs the preceding */
 
 extern NCURSES_EXPORT(void)   _nc_console_size(int* Lines, int* Cols);
@@ -117,6 +119,10 @@ extern NCURSES_EXPORT(int)    _nc_console_vt_supported(void);
 #ifdef _NC_CHECK_MINTTY
 extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #endif
+
+#endif /* EVENTLIST_2nd */
+
+#include <term.h>
 
 #undef VALID_TERM_ENV
 #define MS_TERMINAL "ms-terminal"
@@ -143,11 +149,6 @@ extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
   /* Flags to reset from RAW/CBREAK */
 #define CONMODE_NORAW    (ENABLE_PROCESSED_INPUT|ENABLE_LINE_INPUT)
 #define CONMODE_NOCBREAK (ENABLE_LINE_INPUT)
-
-
-#if defined(USE_TERM_DRIVER) && defined(USE_WIN32CON_DRIVER)
-extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
-#endif
 
 #define CON_NUMPAIRS 64
 typedef struct {
@@ -179,7 +180,7 @@ typedef struct {
 extern NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 #define WINCONSOLE _nc_CONSOLE
 
-#endif /* EVENTLIST_2nd */
+#endif /* CURSES_PRIV_H */
 
 #ifdef __cplusplus
 }

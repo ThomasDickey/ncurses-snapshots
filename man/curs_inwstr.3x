@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.60 2025/03/01 21:29:42 tom Exp $
-.TH curs_inwstr 3X 2025-03-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.64 2025/08/16 20:04:36 tom Exp $
+.TH curs_inwstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -101,7 +101,8 @@ On successful operation,
 these functions return the count of wide characters copied from
 .I win
 to
-.IR wstr ","
+.I wstr
+(not including the wide null terminator),
 or
 .B ERR
 upon failure.
@@ -152,20 +153,14 @@ may be implemented as macros.
 .PP
 Reading a line that overflows the array pointed to by
 .I wstr
-with
-.BR \%inwstr ","
-.BR \%winwstr ","
-.BR \%mvinwstr ","
-or
-.B \%mvwinwstr
-causes undefined results.
-Use of
-.BR \%innwstr ","
-.BR \%winnwstr ","
-.BR \%mvinnwstr ","
-and
-.B \%mvwinnwstr
-is recommended instead.
+and its variants causes undefined results.
+Instead,
+use the
+.IR n -infixed
+functions with a positive
+.I n
+argument no larger than the size of the buffer backing
+.IR wstr "."
 .SH EXTENSIONS
 .BR \%innwstr ","
 .BR \%winnwstr ","

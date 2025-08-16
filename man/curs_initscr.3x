@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.105 2025/07/05 13:30:33 tom Exp $
-.TH curs_initscr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.107 2025/08/16 19:05:50 tom Exp $
+.TH curs_initscr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -200,14 +200,15 @@ or temporarily suspending
 management of the terminal.
 .BR \%endwin ":"
 .bP
-if \fB\%start_color\fP(3X) has been called,
+(if \fB\%start_color\fP(3X) has been called)
 resets colors to correspond with the default color pair 0,
 .bP
 moves the cursor to the lower left-hand corner of the screen,
 .bP
-clears the remainder of the line
-(if \fB\%start_color\fP(3X) has been called,
-it also restores the default color pair),
+(if \fB\%start_color\fP(3X) has been called)
+restores the default color pair,
+.bP
+clears the remainder of the line,
 .bP
 sets the cursor to normal visibility
 (see \fB\%curs_set\fP(3X)),
