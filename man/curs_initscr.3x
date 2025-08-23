@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_initscr.3x,v 1.107 2025/08/16 19:05:50 tom Exp $
-.TH curs_initscr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_initscr.3x,v 1.112 2025/08/23 22:41:44 tom Exp $
+.TH curs_initscr 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -165,12 +165,13 @@ it returns to the application.
 .PP
 An application that needs to inspect a terminal type's capabilities,
 so that it can continue to run in a line-oriented mode
-if the terminal cannot support a screen-oriented program,
+if the terminal type does not support capabilities the application
+demands,
 would also use
 .BR \%newterm "."
 If at most one terminal connection is needed,
 the programmer could perform such a capability test,
-decide which mode in which to operate,
+decide the mode in which to operate,
 then call
 .B \%delscreen
 on the pointer returned by
@@ -201,14 +202,16 @@ management of the terminal.
 .BR \%endwin ":"
 .bP
 (if \fB\%start_color\fP(3X) has been called)
-resets colors to correspond with the default color pair 0,
+resets the terminal's foreground and background colors
+to correspond with those of color pair 0
+(the default pair),
 .bP
 moves the cursor to the lower left-hand corner of the screen,
 .bP
 (if \fB\%start_color\fP(3X) has been called)
 restores the default color pair,
 .bP
-clears the remainder of the line,
+clears the line,
 .bP
 sets the cursor to normal visibility
 (see \fB\%curs_set\fP(3X)),
@@ -230,9 +233,10 @@ to resume managing the terminal.
 .B \%isendwin
 returns
 .B TRUE
-if
+if \fB\%wrefresh\fP(3X)
+has not been called since the most recent
 .B \%endwin
-has been called without any subsequent calls to \fB\%wrefresh\fP(3X),
+call,
 and
 .B FALSE
 otherwise.
@@ -275,7 +279,7 @@ Use
 .B \%delscreen
 after
 .B \%endwin
-when the application has no more need of a screen
+when the application has no more need of a terminal device
 but will not soon exit.
 .SH RETURN VALUE
 .B \%delscreen

@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.110 2025/08/16 19:57:59 tom Exp @
+  * @Id: curs_inopts.3x,v 1.114 2025/08/23 22:44:31 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2025-08-23 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2025-08-16 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2025-08-23 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -163,9 +163,11 @@
        invalid, the input character reading function  returns  only  its  last
        character.   If  disabled (<EM>bf</EM> is <STRONG>FALSE</STRONG>), <EM>curses</EM> does not treat function
        keys specially and  the  program  has  to  interpret  escape  sequences
-       itself.   If  the terminal's keypad can be turned on (made to transmit)
-       and off (made to work locally), <STRONG>keypad</STRONG> configures it consistently  with
-       the <EM>bf</EM> parameter.  By default, a window's keypad mode is off.
+       itself.   If  the  terminal  type  description defines the <STRONG>keypad_local</STRONG>
+       (<STRONG>rmkx</STRONG>) and <STRONG>keypad_xmit</STRONG> (<STRONG>smkx</STRONG>) capabilities, enabling a window's  keypad
+       mode  sets the terminal's keypad to transmit, and disabling keypad mode
+       sets the terminal's keypad to work locally.   By  default,  a  window's
+       keypad mode is off.
 
 
 </PRE><H3><a name="h3-meta">meta</a></H3><PRE>
@@ -198,13 +200,15 @@
 
 
 </PRE><H3><a name="h3-notimeout">notimeout</a></H3><PRE>
-       When the input character reading function reads an  ESC  character,  it
-       sets  a  timer  while  waiting  for the next character.  <STRONG>notimeout(</STRONG><EM>win</EM><STRONG>,</STRONG>
-       <STRONG>TRUE)</STRONG>  disables  this  timer.   The  purpose  of  the  timeout  is   to
-       distinguish  sequences produced by a function key from those typed by a
-       user.  If this timer is disabled, <EM>curses</EM> waits forever  for  subsequent
-       keystrokes  until  it  determines  the  escape  sequence to be valid or
-       invalid.
+       When <STRONG>keypad</STRONG> has been called on a window and the input character reading
+       function  reads  an  ESC  character  from it, <EM>curses</EM> sets a timer while
+       waiting  for  the  next  character.   If  the  timer  elapses,   <EM>curses</EM>
+       interprets  the  ESC  as an explicit press of the terminal's Escape key
+       (or  equivalent).   <STRONG>notimeout(</STRONG><EM>win</EM><STRONG>,</STRONG>  <STRONG>TRUE)</STRONG>  disables  this  timer.   The
+       purpose  of  the  timeout  is  to  distinguish  sequences produced by a
+       function key from those typed by a user.  If this  timer  is  disabled,
+       <EM>curses</EM>  waits forever for subsequent keystrokes until it determines the
+       escape sequence to be valid or invalid.
 
 
 </PRE><H3><a name="h3-qiflush_noqiflush">qiflush, noqiflush</a></H3><PRE>
@@ -349,19 +353,21 @@
        raw  input  wants  a  clean  (ideally, 8-bit clean) connection that the
        operating system will not alter.
 
-       When <STRONG>keypad</STRONG> is first enabled, <EM>ncurses</EM> loads the key definitions for the
-       current  terminal  type  description.   If  that  description  includes
-       extended string capabilities, for example, by using the  <STRONG>-x</STRONG>  option  of
-       <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>, then <EM>ncurses</EM> also defines keys for the capabilities whose names
-       begin with "k".  Corresponding key codes are generated  and  (depending
-       on  previous  loads  of  terminal  descriptions)  may  differ  from one
-       execution of a program to  the  next.   The  generated  key  codes  are
-       recognized by <STRONG><A HREF="curs_util.3x.html">keyname(3x)</A></STRONG>, which then returns a name beginning with "k"
-       denoting the <EM>terminfo</EM> capability name rather than "K", used for  <EM>curses</EM>
-       key names.  On the other hand, an application can use <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG> to
-       bind a specific key to a  string  of  the  programmer's  choice.   This
-       feature   enables  an  application  to  check  for  its  presence  with
-       <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>, and reassign the key code to match its own needs.
+       When <STRONG>keypad</STRONG> is first enabled for a window, <EM>ncurses</EM> loads  the  standard
+       function  key  string capabilities for the terminal type description of
+       its screen; see the entries beginning with "key_" in  <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.   If
+       that description includes extended string capabilities, produced by the
+       <STRONG>-x</STRONG> option of <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>, for example, then <EM>ncurses</EM> also  defines  keys  for
+       the  capabilities  whose  codes  begin  with  "k".  <EM>ncurses</EM> generates a
+       numeric key code  for  each  such  extended  capability;  depending  on
+       previous loads of terminal type descriptions, these may differ from one
+       execution of  a  program  to  the  next.   <STRONG><A HREF="curs_util.3x.html">keyname(3x)</A></STRONG>  recognizes  the
+       generated  key codes and returns a name beginning with "k" denoting the
+       <EM>terminfo</EM> capability name rather than "KEY_", used for <EM>curses</EM> key names.
+       On  the  other  hand,  an  application can use <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG> to bind a
+       selected key to a string of  the  programmer's  choice.   This  feature
+       enables an application to check for its presence with <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>, and
+       reassign the numeric key code to match its own needs.
 
        Low-level applications can use <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG> to obtain the definition of
        any  string  capability.   <EM>curses</EM>  applications use the input character
@@ -374,8 +380,8 @@
        The last capability read using a particular definition  determines  the
        key  code  to  be  reported.   In <EM>ncurses</EM>, extended capabilities can be
        interpreted as key definitions.  The  library  loads  these  after  its
-       built-in  definitions,  and  if a capability's value is the same as one
-       previously loaded, the library uses the later definition.
+       built-in definitions, and if an extended capability's value is the same
+       as one previously loaded, the library uses the later definition.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
@@ -410,7 +416,7 @@
 
 
 
-ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.5                       2025-08-23                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

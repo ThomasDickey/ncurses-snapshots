@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_variables.3x,v 1.67 2025/08/16 19:11:47 tom Exp $
-.TH curs_variables 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_variables.3x,v 1.73 2025/08/23 23:02:32 tom Exp $
+.TH curs_variables 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -165,18 +165,26 @@ applications should treat them as read-only to avoid
 confusing the library.
 .SH CONSTANTS
 .SS "TRUE, FALSE"
-The \fIcurses\fP library defines \fBTRUE\fP and \fBFALSE\fP
+The
+.I curses
+library defines
+.B TRUE
+and
+.B FALSE
 to represent the values of the Boolean data type.
 .SS "ERR, OK"
-\fIcurses\fP and \fIterminfo\fP routines frequently return these
-constant integral values indicating failure and success,
+.I curses
+and
+.I \%term\%info
+functions frequently return these constant integral values
+indicating failure and success,
 respectively.
 .SS CCHARW_MAX
 This integral value,
 an
 .I \%ncurses
 extension,
-contains the maximum number of
+indicates the maximum number of
 .I \%wchar_t
 wide characters that can be stored in a
 .I curses
@@ -184,15 +192,20 @@ complex character
 .IR \%cchar_t "."
 .SH "DATA TYPES"
 .SS "\fIbool\fP"
-X/Open Issue\ 4 \fIcurses\fP (1996) preceded the ISO C99 and ISO C++98
+.I curses
+defines an integral type
+.IR bool "."
+X/Open Issue\ 4
+.I curses
+(1996) preceded the ISO\ C99 and ISO\ C++98
 standards,
-each of which also defined a Boolean data type.
-The \fIcurses\fP library requires an integral type \fIbool\fP.
+each of which also defined a Boolean data type of the same name.
 .PP
 .IR \%ncurses 's
 configure script attempts to discover the
 data type used by the system's C and C++ compilers,
-to reuse for the \fIcurses\fP \fIbool\fP.
+to reuse them as its own
+.IR bool "."
 .SS "\fIchtype\fP"
 The \fI\%chtype\fP integral type combines a
 (\*(``narrow\*('',
@@ -271,21 +284,27 @@ When the screen is refreshed,
 \fIcurses\fP determines a minimal set of updates using the terminal's
 capabilities to make \fB\%curscr\fP look like \fB\%newscr\fP.
 .SS COLORS
-Once \fIcurses\fP is initialized,
-\fB\%COLORS\fP
+Once a
+.I curses
+screen is initialized,
+.B \%COLORS
 contains the number of colors supported by the terminal;
 see \fB\%curs_color\fP(3X).
 .SS COLOR_PAIRS
-Once \fIcurses\fP is initialized,
-\fB\%COLOR_PAIRS\fP
+Once a
+.I curses
+screen is initialized,
+.B \%COLOR_PAIRS
 contains the number of color pairs supported by the terminal;
 see \fB\%curs_color\fP(3X).
 .SS "COLS, LINES"
-Once \fIcurses\fP is initialized,
+Once a
+.I curses
+screen is initialized,
 .B \%COLS
 and
 .B LINES
-contain the screen's width and height in character cells,
+contain its width and height in character cells,
 respectively;
 that is,
 the number of columns and lines.
@@ -311,8 +330,9 @@ The \fIcurses\fP library converts a tab character to this number of
 spaces as it adds a tab to a window;
 see \fB\%curs_addch\fP(3X).
 .SH NOTES
-Either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X) initializes
-\fIcurses\fP.
+Initialize a
+.I curses
+screen with either \fB\%initscr\fP(3X) or \fB\%newterm\fP(3X).
 .PP
 If
 .I \%ncurses
@@ -322,10 +342,9 @@ and
 .I \%tinfo
 libraries,
 most of these symbols reside in the former.
-The
+Both use the
 .B bool
-data type
-is used by both.
+data type.
 .SH EXTENSIONS
 The
 .B \%CCHARW_MAX

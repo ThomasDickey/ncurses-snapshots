@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.268 2025/08/16 19:19:33 tom Exp @
+  * @Id: ncurses.3x,v 1.278 2025/08/23 22:54:35 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>ncurses 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
+<TITLE>ncurses 3x 2025-08-23 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">ncurses 3x 2025-08-16 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">ncurses 3x 2025-08-23 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>                      Library calls                     <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 
@@ -61,7 +61,7 @@
        displays  with  output  optimized  to minimize screen updates.  <EM>ncurses</EM>
        replaces the <EM>curses</EM> libraries from System V Release 4 Unix ("SVr4") and
        4.4BSD  Unix,  the  development  of  which  ceased  in the 1990s.  This
-       document describes <EM>ncurses</EM> version 6.5 (patch 20250816).
+       document describes <EM>ncurses</EM> version 6.5 (patch 20250823).
 
        <EM>ncurses</EM> permits control of the terminal screen's contents;  abstraction
        and  subdivision thereof with <EM>windows</EM> and <EM>pads</EM>; acquisition of keyboard
@@ -296,9 +296,9 @@
                  "attr_on".
 
                  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  is a <EM>curses</EM> <EM>complex</EM> <EM>character</EM> and corresponds to the
-                          non-wide  configuration's <EM>chtype</EM>.  It is a structure
-                          type  because  it  requires  more  storage  than   a
-                          standard  scalar  type offers.  A character code may
+                          non-wide-character  configuration's <EM>chtype</EM>.  It is a
+                          structure type because it requires more storage than
+                          a standard scalar type offers.  A character code may
                           not be representable as a <EM>char</EM>,  and  moreover  more
                           than one character may occupy a cell (as with accent
                           marks and other diacritics).  Each character  is  of
@@ -817,31 +817,32 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        Unless otherwise noted,  functions  that  return  integers  return  the
        constants  <STRONG>OK</STRONG>  on  success  and <STRONG>ERR</STRONG> on failure; see <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
-       Functions that return pointers  return  <EM>NULL</EM>  on  failure.   Typically,
-       <EM>ncurses</EM>  treats  a  null  pointer  passed  as a function parameter as a
-       failure.  Functions prefixed with "mv" first  perform  cursor  movement
-       and fail if the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
+       Functions that return  pointers  return  a  null  pointer  on  failure.
+       Typically, <EM>ncurses</EM> treats a null pointer passed as a function parameter
+       as a failure.   Functions  prefixed  with  "mv"  first  perform  cursor
+       movement  and  fail  if  the  position  (<EM>y</EM>,  <EM>x</EM>)  is  outside the window
+       boundaries.
 
 
 </PRE><H2><a name="h2-ENVIRONMENT">ENVIRONMENT</a></H2><PRE>
-       The  following  symbols  from  the  process  environment  customize the
-       runtime  behavior  of  <EM>ncurses</EM>  applications.   The  library   may   be
-       configured   to   disregard   the  variables  <EM>TERMINFO</EM>,  <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>,
-       <EM>TERMPATH</EM>, and <EM>HOME</EM>, if  the  user  is  the  superuser  (root),  or  the
+       The following  symbols  from  the  process  environment  customize  the
+       runtime   behavior   of  <EM>ncurses</EM>  applications.   The  library  may  be
+       configured  to  disregard  the   variables   <EM>TERMINFO</EM>,   <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM>,
+       <EM>TERMPATH</EM>,  and  <EM>HOME</EM>,  if  the  user  is  the  superuser (root), or the
        application uses <STRONG>setuid(2)</STRONG> or <STRONG>setgid(2)</STRONG>.
 
 
 </PRE><H3><a name="h3-BAUDRATE"><EM>BAUDRATE</EM></a></H3><PRE>
-       The  debugging  library  checks  this variable when the application has
-       redirected output to a file.  <EM>ncurses</EM> interprets its integral value  as
-       the  terminal's line speed in bits per second.  If that value is absent
-       or invalid, <EM>ncurses</EM> uses  9600.   This  feature  allows  developers  to
-       construct  repeatable  test  cases  that take into account optimization
+       The debugging library checks this variable  when  the  application  has
+       redirected  output to a file.  <EM>ncurses</EM> interprets its integral value as
+       the terminal's line speed in bits per second.  If that value is  absent
+       or  invalid,  <EM>ncurses</EM>  uses  9600.   This  feature allows developers to
+       construct repeatable test cases that  take  into  account  optimization
        decisions that depend on the terminal's line speed.
 
 
 </PRE><H3><a name="h3-CC-_command-character_"><EM>CC</EM> (command character)</a></H3><PRE>
-       When set, the <STRONG>command_character</STRONG>  (<STRONG>cmdch</STRONG>)  capability  value  of  loaded
+       When  set,  the  <STRONG>command_character</STRONG>  (<STRONG>cmdch</STRONG>)  capability value of loaded
        <EM>terminfo</EM> entries changes to the value of this variable.  Very few <EM>term-</EM>
        <EM>info</EM> entries provide this feature.
 
@@ -851,96 +852,99 @@
 
 
 </PRE><H3><a name="h3-COLUMNS"><EM>COLUMNS</EM></a></H3><PRE>
-       This  variable  specifies  the  width  of  the  screen  in  characters.
-       Applications  running  in  a  windowing environment usually are able to
-       obtain the width of the window in which they  are  executing.   <EM>ncurses</EM>
-       enforces  an  upper limit of 512 when reading the value.  If <EM>COLUMNS</EM> is
-       not defined and the terminal's screen size is not  available  from  the
-       terminal  driver, <EM>ncurses</EM> uses the size specified by the <STRONG>columns</STRONG> (<STRONG>cols</STRONG>)
-       capability of the terminal type's entry in the  <EM>terminfo</EM>  database,  if
+       This  variable  specifies  the  width of the screen in character cells.
+       Applications running in a windowing environment  usually  are  able  to
+       obtain  the  width  of the window in which they are executing.  <EM>ncurses</EM>
+       enforces an upper limit of 512 when reading the value.  If  <EM>COLUMNS</EM>  is
+       not  defined  and  the terminal's screen size is not available from the
+       terminal driver, <EM>ncurses</EM> uses the size specified by the <STRONG>columns</STRONG>  (<STRONG>cols</STRONG>)
+       capability  of  the  terminal type's entry in the <EM>terminfo</EM> database, if
        any.
 
-       It  is  important  that  your  application use the correct screen size.
-       Automatic  detection  thereof  is  not  always  possible   because   an
-       application  may  be  running  on  a  host  that  does  not  honor NAWS
-       (Negotiations About Window Size) or as a different  user  ID  than  the
-       owner  of  the  terminal  device  file.   Setting  <EM>COLUMNS</EM> and/or <EM>LINES</EM>
-       overrides the library's use  of  the  screen  size  obtained  from  the
+       It is important that your application  use  the  correct  screen  size.
+       Automatic   detection   thereof  is  not  always  possible  because  an
+       application may  be  running  on  a  host  that  does  not  honor  NAWS
+       (Negotiations  About  Window  Size)  or as a different user ID than the
+       owner of the  terminal  device  file.   Setting  <EM>COLUMNS</EM>  and/or  <EM>LINES</EM>
+       overrides  the  library's  use  of  the  screen  size obtained from the
        operating system.
 
-       The  <EM>COLUMNS</EM>  and <EM>LINES</EM> variables may be specified independently.  This
-       property is useful to circumvent misfeatures of  legacy  terminal  type
-       descriptions;  <STRONG>xterm(1)</STRONG>  descriptions  specifying  65  lines  were once
-       notorious.   For  best  results,  avoid  specifying  <STRONG>cols</STRONG>   and   <STRONG>lines</STRONG>
+       The <EM>COLUMNS</EM> and <EM>LINES</EM> variables may be specified  independently.   This
+       property  is  useful  to circumvent misfeatures of legacy terminal type
+       descriptions; <STRONG>xterm(1)</STRONG>  descriptions  specifying  65  lines  were  once
+       notorious.    For   best  results,  avoid  specifying  <STRONG>cols</STRONG>  and  <STRONG>lines</STRONG>
        capability codes in <EM>terminfo</EM> descriptions of terminal emulators.
 
-       <STRONG><A HREF="curs_util.3x.html">use_env(3x)</A></STRONG>  can  disable use of the process environment in determining
-       the screen size.  <STRONG><A HREF="curs_util.3x.html">use_tioctl(3x)</A></STRONG> can update <EM>COLUMNS</EM> and <EM>LINES</EM> to  match
+       <STRONG><A HREF="curs_util.3x.html">use_env(3x)</A></STRONG> can disable use of the process environment  in  determining
+       the  screen size.  <STRONG><A HREF="curs_util.3x.html">use_tioctl(3x)</A></STRONG> can update <EM>COLUMNS</EM> and <EM>LINES</EM> to match
        the screen size obtained from system calls or the terminal database.
 
 
 </PRE><H3><a name="h3-ESCDELAY"><EM>ESCDELAY</EM></a></H3><PRE>
-       For  <EM>curses</EM>  to  distinguish  the ESC character resulting from a user's
-       press of the "Escape" key on the input device  from  one  beginning  an
+       For <EM>curses</EM> to distinguish the ESC character  resulting  from  a  user's
+       press  of  the  "Escape"  key on the input device from one beginning an
        <EM>escape</EM> <EM>sequence</EM> (as commonly produced by function keys), it waits after
-       receiving the  escape  character  to  see  if  further  characters  are
-       available  on  the  input  stream  within  a  short interval.  A global
-       variable <STRONG>ESCDELAY</STRONG> stores this interval in  milliseconds.   The  default
+       receiving  the  escape  character  to  see  if  further  characters are
+       available on the input  stream  within  a  short  interval.   A  global
+       variable  <STRONG>ESCDELAY</STRONG>  stores  this interval in milliseconds.  The default
        value of 1000 (one second) is adequate for most uses.  This environment
-       variable overrides it; <EM>ncurses</EM> enforces an upper limit  of  30,000  (30
+       variable  overrides  it;  <EM>ncurses</EM> enforces an upper limit of 30,000 (30
        seconds) when reading the value.
 
-       The  most common instance where you may wish to change this value is to
+       The most common instance where you may wish to change this value is  to
        work with a remote host over a slow communication channel.  If the host
-       running  a  <EM>curses</EM>  application  does  not receive the characters of an
-       escape sequence in a timely manner, the library can interpret  them  as
-       multiple key stroke events.
+       running a <EM>curses</EM> application does not  receive  the  characters  of  an
+       escape  sequence  in a timely manner, the library can interpret them as
+       multiple key stroke events.  Conversely, a fast typist on a low-latency
+       connection  who  happens  to  input  an ESC followed by characters that
+       match an escape sequence may experience confusing application behavior.
 
        <STRONG>xterm(1)</STRONG> mouse events are a form of escape sequence; therefore, if your
-       application makes heavy use  of  multiple-clicking,  you  may  wish  to
-       lengthen  the  default value because the delay applies to the composite
+       application  makes  heavy  use  of  multiple-clicking,  you may wish to
+       lengthen the default value because the delay applies to  the  composite
        multi-click event as well as the individual clicks.
 
-       Portable applications should not rely upon the presence of <STRONG>ESCDELAY</STRONG>  in
-       either  form,  but  setting  the  environment  variable rather than the
+       Portable  applications should not rely upon the presence of <STRONG>ESCDELAY</STRONG> in
+       either form, but setting  the  environment  variable  rather  than  the
        global variable does not create problems when compiling an application.
 
-       If <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is disabled for the  <EM>curses</EM>  window  receiving  input,  a
+       If  <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  is  disabled  for  the <EM>curses</EM> window receiving input, a
        program must disambiguate escape sequences itself.
 
 
 </PRE><H3><a name="h3-HOME"><EM>HOME</EM></a></H3><PRE>
-       <EM>ncurses</EM>  may read and write auxiliary terminal descriptions in <EM>.termcap</EM>
+       <EM>ncurses</EM> may read and write auxiliary terminal descriptions in  <EM>.termcap</EM>
        and <EM>.terminfo</EM> files in the user's home directory.
 
 
 </PRE><H3><a name="h3-LINES"><EM>LINES</EM></a></H3><PRE>
-       This counterpart to <EM>COLUMNS</EM> specifies  the  height  of  the  screen  in
-       characters.   The  corresponding <EM>terminfo</EM> capability and code is <STRONG>lines</STRONG>.
+       This  counterpart  to  <EM>COLUMNS</EM>  specifies  the  height of the screen in
+       characters.  The corresponding <EM>terminfo</EM> capability and code  is  <STRONG>lines</STRONG>.
        See the description of the <EM>COLUMNS</EM> variable above.
 
 
 </PRE><H3><a name="h3-MOUSE_BUTTONS_123"><EM>MOUSE_BUTTONS_123</EM></a></H3><PRE>
-       (OS/2 EMX port only) OS/2 numbers a three-button  mouse  inconsistently
-       with  other platforms, such that 1 is the left button, 2 the right, and
-       3 the middle.  This variable customizes  the  mouse  button  numbering.
-       Its  value  must be three digits 1-3 in any order.  By default, <EM>ncurses</EM>
+       (OS/2  EMX  port only) OS/2 numbers a three-button mouse inconsistently
+       with other platforms, such that 1 is the left button, 2 the right,  and
+       3  the  middle.   This  variable customizes the mouse button numbering.
+       Its value must be three digits 1-3 in any order.  By  default,  <EM>ncurses</EM>
        assumes a numbering of "132".
 
 
 </PRE><H3><a name="h3-NCURSES_ASSUMED_COLORS"><EM>NCURSES_ASSUMED_COLORS</EM></a></H3><PRE>
-       If set, this  variable  overrides  the  <EM>ncurses</EM>  library's  compiled-in
-       assumption  that  the terminal's default colors are white on black; see
-       <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>.  Set the foreground  and  background  color  values
-       with  this  environment  variable  by  assigning  it two integer values
+       If  set,  this  variable  overrides  the  <EM>ncurses</EM> library's compiled-in
+       assumption that the terminal's default colors are white on  black;  see
+       <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>.   Set  the  foreground  and background color values
+       with this environment variable  by  assigning  it  two  integer  values
        separated  by  a  comma,  indicating  foregound  and  background  color
        numbers, respectively.
 
-       For  example,  to tell <EM>ncurses</EM> not to assume anything about the colors,
-       use a value of "-1,-1".  To make the  default  color  scheme  green  on
-       black,  use  "2,0".   <EM>ncurses</EM> accepts integral values from -1 up to the
-       value of the <EM>terminfo</EM> <STRONG>max_colors</STRONG> (<STRONG>colors</STRONG>) capability for  the  selected
-       terminal type.
+       For example, to tell <EM>ncurses</EM> not to assume anything about  the  colors,
+       use  a  value  of  "-1,-1".   To make the default color scheme green on
+       black  on  a  terminal  that  uses  ANSI X3.64/ECMA-48/ISO 6429   color
+       assignments,  use "2,0".  <EM>ncurses</EM> accepts integral values from -1 up to
+       the value of  the  <EM>terminfo</EM>  <STRONG>max_colors</STRONG>  (<STRONG>colors</STRONG>)  capability  for  the
+       selected terminal type.
 
 
 </PRE><H3><a name="h3-NCURSES_CONSOLE2"><EM>NCURSES_CONSOLE2</EM></a></H3><PRE>
@@ -972,13 +976,13 @@
 </PRE><H3><a name="h3-NCURSES_NO_MAGIC_COOKIE"><EM>NCURSES_NO_MAGIC_COOKIE</EM></a></H3><PRE>
        Many  terminals  store  video  attributes  as properties of a character
        cell, as <EM>curses</EM> does.  Historically, some  recorded  changes  in  video
-       attributes  as  data  that  logically  <EM>occupied</EM>  character cells on the
-       display, switching attributes on or off, similarly to tags in a  markup
-       language, which then had to be overprinted to depict the cells' desired
-       contents; these are termed "magic cookies".  If the <EM>terminfo</EM> entry  for
-       your  terminal  type does not adequately describe its handling of magic
-       cookies, set this variable to any value to instruct <EM>ncurses</EM> to  disable
-       attributes entirely.
+       attributes  as  data  that logically (but invisibly) <EM>occupied</EM> character
+       cells on the display, switching attributes on or off, similarly to tags
+       in  a  markup  language, which then had to be overprinted to depict the
+       cells' desired contents; these are  termed  "magic  cookies".   If  the
+       <EM>terminfo</EM>  entry for your terminal type does not adequately describe its
+       handling of magic cookies, set this variable to any value  to  instruct
+       <EM>ncurses</EM> to disable attributes entirely.
 
 
 </PRE><H3><a name="h3-NCURSES_NO_PADDING"><EM>NCURSES_NO_PADDING</EM></a></H3><PRE>
@@ -994,31 +998,33 @@
        overruns and data loss.
 
        A solution that comes at no hardware cost  is  for  an  application  to
-       pause  after  directing  a  terminal  to  execute  an operation that it
-       performs slowly, such as clearing  the  display.   Many  terminal  type
-       descriptions,  including that for the VT100, embed delay specifications
-       in capabilities.  You may  wish  to  use  these  terminal  descriptions
-       without  paying the performance penalty.  Set <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>PADDING</EM> to any
-       value to disable all but mandatory padding.  Mandatory padding is  used
-       by such terminal capabilities as <STRONG>flash_screen</STRONG> (<STRONG>flash</STRONG>).
+       pause  transmission  after directing a terminal to execute an operation
+       that it performs slowly, such as clearing the display.   Many  terminal
+       type   descriptions,   including   that  for  the  VT100,  embed  delay
+       specifications in capabilities.  You may wish  to  use  these  terminal
+       descriptions    without    paying   the   performance   penalty.    Set
+       <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>PADDING</EM> to any value to disable all but  mandatory  padding.
+       Mandatory padding is used by such terminal capabilities as <STRONG>flash_screen</STRONG>
+       (<STRONG>flash</STRONG>).
 
 
 </PRE><H3><a name="h3-NCURSES_NO_SETBUF"><EM>NCURSES_NO_SETBUF</EM></a></H3><PRE>
-       (Obsolete)  Prior to internal changes developed in <EM>ncurses</EM> 5.9 (patches
-       20120825 through 20130126), the library used <STRONG>setbuf(3)</STRONG> to enable  fully
-       buffered  output  when initializing the terminal.  This was done, as in
-       SVr4 <EM>curses</EM>, to increase performance.  For testing  purposes,  both  of
-       <EM>ncurses</EM>  and  of  certain applications, this feature was made optional.
-       Setting this variable disabled output  buffering,  leaving  the  output
+       (Obsolete) Prior to internal changes developed in <EM>ncurses</EM> 5.9  (patches
+       20120825  through 20130126), the library used <STRONG>setbuf(3)</STRONG> to enable fully
+       buffered output when initializing the terminal.  This was done,  as  in
+       SVr4  <EM>curses</EM>,  to  increase performance.  For testing purposes, both of
+       <EM>ncurses</EM> and of certain applications, this feature  was  made  optional.
+       Setting  this  variable  disabled  output buffering, leaving the output
        stream in the original (usually line-buffered) mode.
 
-       Nowadays,  <EM>ncurses</EM> performs its own buffering and does not require this
-       workaround; it does not modify the buffering  of  the  standard  output
-       stream.   This  approach makes signal handling, as for interrupts, more
-       robust.  A drawback  is  that  certain  unconventional  programs  mixed
-       <STRONG>stdio(3)</STRONG>  calls  with <EM>ncurses</EM> calls and (usually) got the behavior they
-       expected.  This is no longer the case; <EM>ncurses</EM> does not  write  to  the
-       standard output file descriptor through a <EM>stdio</EM>-buffered stream.
+       Nowadays, <EM>ncurses</EM> performs its own buffering and does not require  this
+       workaround;  it  does  not  modify the buffering of the standard output
+       stream.  This  approach  makes  the  library's  handling  of  keyboard-
+       initiated   signals   more   robust.    A   drawback  is  that  certain
+       unconventional programs mixed <STRONG>stdio(3)</STRONG> calls  with  <EM>ncurses</EM>  calls  and
+       (usually)  got the behavior they expected.  This is no longer the case;
+       <EM>ncurses</EM> does not write to the standard output file descriptor through a
+       <EM>stdio</EM>-buffered stream.
 
        As  a  special case, low-level API calls such as <STRONG><A HREF="curs_terminfo.3x.html">putp(3x)</A></STRONG> still use the
        standard output stream.  High-level <EM>curses</EM> calls such as <STRONG><A HREF="curs_printw.3x.html">printw(3x)</A></STRONG>  do
@@ -1510,7 +1516,7 @@
 
 
 
-ncurses 6.5                       2025-08-16                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
+ncurses 6.5                       2025-08-23                       <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_bkgrnd.3x,v 1.58 2025/02/15 18:40:23 tom Exp @
+  * @Id: curs_bkgrnd.3x,v 1.60 2025/08/23 22:39:20 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_bkgrnd 3x 2025-02-15 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_bkgrnd 3x 2025-08-23 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_bkgrnd 3x 2025-02-15 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_bkgrnd 3x 2025-08-23 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 
@@ -164,9 +164,10 @@
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <STRONG>bkgrnd</STRONG>, <STRONG>bkgrndset</STRONG>, and <STRONG>getbkgrnd</STRONG> may be implemented as macros.
 
-       Unlike  their  counterparts  in  the non-wide configuration of <EM>ncurses</EM>,
-       <STRONG>getbkgrnd</STRONG> and <STRONG>wgetbkgrnd</STRONG> store the background character in a modifiable
-       <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> parameter, rather than supplying it as the return value.
+       Unlike  their  counterparts  in the non-wide-character configuration of
+       <EM>ncurses</EM>, <STRONG>getbkgrnd</STRONG> and <STRONG>wgetbkgrnd</STRONG> store the background character  in  a
+       modifiable  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  parameter,  rather than supplying it as the return
+       value.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
@@ -174,7 +175,7 @@
        conditions for them.
 
        X/Open Curses does not provide details of how the rendition is updated.
-       <EM>ncurses</EM>  follows  the approach used in SVr4 <EM>curses</EM>'s non-wide functions
+       <EM>ncurses</EM> follows the approach used in SVr4 <EM>curses</EM>'s  non-wide  functions
        for manipulating the window background.
 
 
@@ -183,14 +184,14 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG> describes the corresponding  functions  in  the  non-wide
-       configuration of <EM>ncurses</EM>.
+       <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>  describes  the  corresponding functions in the non-wide-
+       character configuration of <EM>ncurses</EM>.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
 
 
-ncurses 6.5                       2025-02-15                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
+ncurses 6.5                       2025-08-23                   <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

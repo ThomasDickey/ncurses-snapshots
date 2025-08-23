@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_initscr.3x,v 1.107 2025/08/16 19:05:50 tom Exp @
+  * @Id: curs_initscr.3x,v 1.112 2025/08/23 22:41:44 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_initscr 3x 2025-08-16 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_initscr 3x 2025-08-23 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_initscr 3x 2025-08-16 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_initscr 3x 2025-08-23 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 
@@ -114,11 +114,11 @@
 
        An application that needs to inspect a terminal type's capabilities, so
        that it can continue to run in a line-oriented  mode  if  the  terminal
-       cannot  support  a screen-oriented program, would also use <STRONG>newterm</STRONG>.  If
-       at most one terminal connection is needed, the programmer could perform
-       such  a  capability  test,  decide which mode in which to operate, then
-       call <STRONG>delscreen</STRONG> on the pointer returned by  <STRONG>newterm</STRONG>,  and  proceed  with
-       either <STRONG>initscr</STRONG> or a non-<EM>curses</EM> interface.
+       type  does not support capabilities the application demands, would also
+       use <STRONG>newterm</STRONG>.  If  at  most  one  terminal  connection  is  needed,  the
+       programmer  could  perform  such  a capability test, decide the mode in
+       which to operate, then  call  <STRONG>delscreen</STRONG>  on  the  pointer  returned  by
+       <STRONG>newterm</STRONG>, and proceed with either <STRONG>initscr</STRONG> or a non-<EM>curses</EM> interface.
 
 
 </PRE><H3><a name="h3-endwin">endwin</a></H3><PRE>
@@ -130,19 +130,20 @@
        A program should always call <STRONG>endwin</STRONG> before exiting the  application  or
        temporarily suspending <EM>curses</EM>'s management of the terminal.  <STRONG>endwin</STRONG>:
 
-       <STRONG>o</STRONG>   (if  <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>  has  been called) resets colors to correspond
-           with the default color pair 0,
+       <STRONG>o</STRONG>   (if   <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>   has  been  called)  resets  the  terminal's
+           foreground and background colors to correspond with those of  color
+           pair 0 (the default pair),
 
        <STRONG>o</STRONG>   moves the cursor to the lower left-hand corner of the screen,
 
-       <STRONG>o</STRONG>   (if <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG> has been called)  restores  the  default  color
+       <STRONG>o</STRONG>   (if  <STRONG><A HREF="curs_color.3x.html">start_color(3x)</A></STRONG>  has  been  called) restores the default color
            pair,
 
-       <STRONG>o</STRONG>   clears the remainder of the line,
+       <STRONG>o</STRONG>   clears the line,
 
        <STRONG>o</STRONG>   sets the cursor to normal visibility (see <STRONG><A HREF="curs_kernel.3x.html">curs_set(3x)</A></STRONG>),
 
-       <STRONG>o</STRONG>   if  applicable, stops cursor-addressing mode using the <STRONG>exit_ca_mode</STRONG>
+       <STRONG>o</STRONG>   if applicable, stops cursor-addressing mode using the  <STRONG>exit_ca_mode</STRONG>
            (<STRONG>rmcup</STRONG>) terminal capability, and
 
        <STRONG>o</STRONG>   restores terminal modes (see <STRONG><A HREF="curs_kernel.3x.html">reset_shell_mode(3x)</A></STRONG>).
@@ -152,25 +153,26 @@
 
 
 </PRE><H3><a name="h3-isendwin">isendwin</a></H3><PRE>
-       <STRONG>isendwin</STRONG>  returns <STRONG>TRUE</STRONG> if <STRONG>endwin</STRONG> has been called without any subsequent
-       calls to <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>, and <STRONG>FALSE</STRONG> otherwise.
+       <STRONG>isendwin</STRONG> returns <STRONG>TRUE</STRONG> if <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG> has not  been  called  since  the
+       most recent <STRONG>endwin</STRONG> call, and <STRONG>FALSE</STRONG> otherwise.
 
 
 </PRE><H3><a name="h3-set_term">set_term</a></H3><PRE>
        <STRONG>set_term</STRONG> re-orients the <EM>curses</EM> library's operations to another terminal
        when the application has arranged to manage more than one with <STRONG>newterm</STRONG>.
-       <STRONG>set_term</STRONG> expects a <EM>SCREEN</EM> pointer previously returned by <STRONG>newterm</STRONG> as  an
-       argument,  and returns the previous one.  <STRONG>set_term</STRONG> is the only standard
+       <STRONG>set_term</STRONG>  expects a <EM>SCREEN</EM> pointer previously returned by <STRONG>newterm</STRONG> as an
+       argument, and returns the previous one.  <STRONG>set_term</STRONG> is the only  standard
        <EM>curses</EM> API function that manipulates <EM>SCREEN</EM> pointers; all others affect
        only the current terminal (but see <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>).
 
 
 </PRE><H3><a name="h3-delscreen">delscreen</a></H3><PRE>
        <STRONG>delscreen</STRONG>  frees  the  storage  backing  the  supplied  <EM>SCREEN</EM>  pointer
-       argument.  <STRONG>endwin</STRONG> does not, so that an application can resume  managing
-       a  terminal  with  <EM>curses</EM>  after  a (possibly conditional or temporary)
-       suspension; see <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>.  Use <STRONG>delscreen</STRONG> after <STRONG>endwin</STRONG>  when  the
-       application has no more need of a screen but will not soon exit.
+       argument.   <STRONG>endwin</STRONG> does not, so that an application can resume managing
+       a terminal with <EM>curses</EM> after  a  (possibly  conditional  or  temporary)
+       suspension;  see  <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>.  Use <STRONG>delscreen</STRONG> after <STRONG>endwin</STRONG> when the
+       application has no more need of a terminal device  but  will  not  soon
+       exit.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
@@ -343,7 +345,7 @@
 
 
 
-ncurses 6.5                       2025-08-16                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+ncurses 6.5                       2025-08-23                  <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

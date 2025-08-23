@@ -38,39 +38,41 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.27 2025/08/02 22:22:24 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.29 2025/08/23 20:28:35 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
 static bool read_screen_data(void);
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
+/* *INDENT-OFF* */
 static const LONG keylist[] =
 {
-    GenMap(VK_PRIOR, KEY_PPAGE),
-    GenMap(VK_NEXT, KEY_NPAGE),
-    GenMap(VK_END, KEY_END),
-    GenMap(VK_HOME, KEY_HOME),
-    GenMap(VK_LEFT, KEY_LEFT),
-    GenMap(VK_UP, KEY_UP),
-    GenMap(VK_RIGHT, KEY_RIGHT),
-    GenMap(VK_DOWN, KEY_DOWN),
+    GenMap(VK_PRIOR,  KEY_PPAGE),
+    GenMap(VK_NEXT,   KEY_NPAGE),
+    GenMap(VK_END,    KEY_END),
+    GenMap(VK_HOME,   KEY_HOME),
+    GenMap(VK_LEFT,   KEY_LEFT),
+    GenMap(VK_UP,     KEY_UP),
+    GenMap(VK_RIGHT,  KEY_RIGHT),
+    GenMap(VK_DOWN,   KEY_DOWN),
     GenMap(VK_DELETE, KEY_DC),
     GenMap(VK_INSERT, KEY_IC)
 };
 static const LONG ansi_keys[] =
 {
-    GenMap(VK_PRIOR, 'I'),
-    GenMap(VK_NEXT, 'Q'),
-    GenMap(VK_END, 'O'),
-    GenMap(VK_HOME, 'H'),
-    GenMap(VK_LEFT, 'K'),
-    GenMap(VK_UP, 'H'),
-    GenMap(VK_RIGHT, 'M'),
-    GenMap(VK_DOWN, 'P'),
+    GenMap(VK_PRIOR,  'I'),
+    GenMap(VK_NEXT,   'Q'),
+    GenMap(VK_END,    'O'),
+    GenMap(VK_HOME,   'H'),
+    GenMap(VK_LEFT,   'K'),
+    GenMap(VK_UP,     'H'),
+    GenMap(VK_RIGHT,  'M'),
+    GenMap(VK_DOWN,   'P'),
     GenMap(VK_DELETE, 'S'),
     GenMap(VK_INSERT, 'R')
 };
+/* *INDENT-ON* */
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24

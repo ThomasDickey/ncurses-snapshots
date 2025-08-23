@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.119 2025/08/16 19:11:47 tom Exp $
-.TH curs_add_wch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.121 2025/08/23 22:39:51 tom Exp $
+.TH curs_add_wch 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -228,7 +228,7 @@ is any other nonprintable character,
 draws it in printable form using the same convention as
 \fB\%wunctrl\fP(3X).
 Calling \fB\%win_wch\fP(3X) on the location of a nonprintable character
-does not return the character itself,
+does not retrieve the character itself,
 but its \fB\%wunctrl\fP(3X) representation.
 .PP
 Adding spacing characters with \fB\%wadd_wch\fP

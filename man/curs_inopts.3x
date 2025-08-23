@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.110 2025/08/16 19:57:59 tom Exp $
-.TH curs_inopts 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.114 2025/08/23 22:44:31 tom Exp $
+.TH curs_inopts 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -284,14 +284,17 @@ is
 .I curses
 does not treat function keys specially and the program has to interpret
 escape sequences itself.
-If the terminal's keypad can be turned on
-(made to transmit)
-and off
-(made to work locally),
-.B \%keypad
-configures it consistently with the
-.I bf
-parameter.
+If the terminal type description defines the
+.B \%keypad_local
+.RB ( rmkx )
+and
+.B \%keypad_xmit
+.RB ( smkx )
+capabilities,
+enabling a window's keypad mode
+sets the terminal's keypad to transmit,
+and disabling keypad mode
+sets the terminal's keypad to work locally.
 By default,
 a window's keypad mode is off.
 .\"
@@ -361,8 +364,17 @@ is
 .BR FALSE ),
 the reading function does not return until it has input.
 .SS notimeout
-When the input character reading function reads an ESC character,
-it sets a timer while waiting for the next character.
+When
+.B \%keypad
+has been called on a window
+and the input character reading function reads an ESC character from it,
+.I curses
+sets a timer while waiting for the next character.
+If the timer elapses,
+.I curses
+interprets the ESC as an explicit press of the terminal's Escape key
+(or equivalent).
+.\" like Control+[
 .BI \%notimeout( win ,
 .B TRUE)
 disables this timer.
@@ -735,34 +747,37 @@ connection that the operating system will not alter.
 .PP
 When
 .B \%keypad
-is first enabled,
+is first enabled for a window,
 .I \%ncurses
-loads the key definitions for the current terminal type description.
+loads the standard function key string capabilities
+for the terminal type description of its screen;
+see the entries beginning with \*(``key_\*('' in \fB\%terminfo\fP(5).
 If that description includes extended string capabilities,
-for example,
-by using the
+produced by the
 .B \-x
 option of \fB\%@TIC@\fP(1),
+for example,
 then
 .I \%ncurses
-also defines keys for the capabilities whose names begin with
+also defines keys for the capabilities whose codes begin with
 \*(``k\*(''.
-Corresponding key codes are generated and
-(depending on previous loads of terminal descriptions)
-may differ from one execution of a program to the next.
-The generated key codes are recognized by \fB\%keyname\fP(3X),
-which then returns a name beginning with \*(``k\*('' denoting the
+.I \%ncurses
+generates a numeric key code for each such extended capability;
+depending on previous loads of terminal type descriptions,
+these may differ from one execution of a program to the next.
+\fB\%keyname\fP(3X) recognizes the generated key codes
+and returns a name beginning with \*(``k\*('' denoting the
 .I \%term\%info
-capability name rather than \*(``K\*('',
+capability name rather than \*(``KEY_\*('',
 used for
 .I curses
 key names.
 On the other hand,
 an application can use \fB\%define_key\fP(3X) to bind
-a specific key to a string of the programmer's choice.
+a selected key to a string of the programmer's choice.
 This feature enables an application to check for its presence
 with \fB\%tigetstr\fP(3X),
-and reassign the key code to match its own needs.
+and reassign the numeric key code to match its own needs.
 .PP
 Low-level applications can use \fB\%tigetstr\fP(3X) to obtain the
 definition of any string capability.
@@ -789,7 +804,8 @@ In
 .IR \%ncurses ,
 extended capabilities can be interpreted as key definitions.
 The library loads these after its built-in definitions,
-and if a capability's value is the same as one previously loaded,
+and if an extended capability's value
+is the same as one previously loaded,
 the library uses the later definition.
 .SH HISTORY
 4BSD (1980)

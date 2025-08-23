@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.121 2025/08/16 19:22:13 tom Exp $
-.TH @TIC@ 1M 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tic.1m,v 1.124 2025/08/23 23:01:05 tom Exp $
+.TH @TIC@ 1M 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -222,9 +222,16 @@ If the source is in
 .I termcap
 format,
 .B \%@TIC@
-accepts the two-character names required by
-.I \%ncurses
-ABI 6.
+accepts the 2-character names required by version 6.
+.\" TD added this comment in 2003, prompted by discussion with Don Libes.
+.\" Quoting from SunOS 4.1.3 termcap(5):
+.\"	Each  termcap  entry consist of a number of colon-separated (:) fields.
+.\"	The first field for each terminal lists the various names by  which  it
+.\"	is  known, separated by bar ( | ) characters.  The first name is always
+.\"	two characters long, and is used by older (version  6)  systems  (which
+.\"	store  the  terminal  type in a 16-bit word in a system-wide database).
+.\" Version 6 sounds like Unix version 6, but termcap was introduced a few
+.\" years later.  The SunOS manpage was based on material in 4.2BSD
 Otherwise these are ignored.
 .TP
 \fB\-C\fP

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.69 2025/08/16 19:58:54 tom Exp $
-.TH curs_window 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_window.3x,v 1.71 2025/08/23 22:50:00 tom Exp $
+.TH curs_window 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -182,9 +182,7 @@ upon failure and
 .B OK
 upon success.
 .PP
-Functions that return pointers return
-.I NULL
-on error.
+Functions that return pointers return a null pointer on failure.
 .PP
 .I \%ncurses
 defines several error conditions.

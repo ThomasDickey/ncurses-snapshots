@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.74 2025/01/19 00:49:39 tom Exp $
-.TH curs_bkgd 3X 2025-01-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_bkgd.3x,v 1.76 2025/08/23 22:39:20 tom Exp $
+.TH curs_bkgd 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -69,7 +69,7 @@ Every
 window has a
 .I "background character"
 property:
-in the library's non-wide configuration,
+in the library's non-wide-character configuration,
 it is a
 .I curses
 character
@@ -289,7 +289,7 @@ changes the background character.
 like SVr4
 .IR curses ","
 does not
-(in its non-wide configuration)
+(in its non-wide-character configuration)
 store the background and window attribute contributions to each
 character cell separately.
 .SH HISTORY

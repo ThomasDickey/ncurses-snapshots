@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.143 2025/07/05 13:06:45 tom Exp $
-.TH curs_util 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.146 2025/08/23 22:50:00 tom Exp $
+.TH curs_util 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -340,9 +340,7 @@ upon failure and
 .B OK
 upon success.
 .PP
-Functions that return pointers return
-.I NULL
-on error.
+Functions that return pointers return a null pointer on failure.
 .PP
 In
 .IR \%ncurses ","
@@ -363,7 +361,7 @@ if its associated \fIwrite\fP(2) calls return
 is part of
 .IR \%ncurses "'s"
 wide-character API,
-and is not available in its non-wide configuration.
+and is not available in its non-wide-character configuration.
 .SH PORTABILITY
 X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.

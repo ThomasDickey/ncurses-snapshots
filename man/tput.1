@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.143 2025/08/16 19:55:31 tom Exp $
-.TH @TPUT@ 1 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.147 2025/08/23 22:56:17 tom Exp $
+.TH @TPUT@ 1 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -75,11 +75,11 @@ to report a description of the current
 (or specified)
 terminal type.
 Terminal capabilities are accessed by
-.IR cap-code .
+.IR cap-code "."
 .PP
 \fB\%terminfo\fP(5) discusses terminal capabilities at length
 and presents a complete list of standardized
-.IR cap-codes .
+.IR cap-codes "."
 \fB\%user_caps\fP(5) presents other widely used
 but non-standard capabilities.
 .PP
@@ -91,7 +91,7 @@ Boolean
 sets its exit status to
 .B 0
 if the terminal possesses
-.IR cap-code ,
+.IR cap-code ","
 and
 .B 1
 if it does not.
@@ -114,22 +114,22 @@ without a trailing newline.
 .PP
 Before using a value returned on the standard output,
 the application should test
-.BR \%@TPUT@ "'s"
+.BR \%@TPUT@ 's
 exit status
 to be sure it is 0;
 see section \*(``EXIT STATUS\*('' below.
 .SS Operands
 Generally,
 an operand is a
-.IR cap-code ,
+.IR cap-code ","
 a capability code from the terminal database,
 or a parameter thereto.
 Three others are specially recognized by
 .BR \%@TPUT@ ":"
-.BR init ,
-.BR \%reset ,
+.BR init ","
+.BR \%reset ","
 and
-.BR \%longname .
+.BR \%longname "."
 Although these resemble capability codes,
 they in fact receive special handling;
 we term them \*(``pseudo-capabilities\*(''.
@@ -197,11 +197,6 @@ updates the operating system's notion of them.
 updates the terminal modes.
 .RS
 .bP
-Any delays specified in the entry
-(for example,
-when a newline is sent)
-are set in the terminal driver.
-.bP
 Tab expansion is turned on or off per the specification in the entry,
 and
 .bP
@@ -268,7 +263,8 @@ The names are separated by \*(``|\*('' characters.
 X/Open Curses terms the last name the \*(``long name\*('',
 and indicates that it may include blanks.
 .IP
-\fB\%@TIC@\fP warns if the last name does not include blanks,
+.B \%@TIC@
+warns if the last name does not include blanks,
 to accommodate old
 .I \%term\%info
 entries that treated the long name as an optional feature.
@@ -294,10 +290,10 @@ since the terminal modes are altered via \fI\%ioctl\fP(2).
 If
 .B \%@TPUT@
 is invoked via link with any of the names
-.BR clear ,
-.BR init ,
+.BR clear ","
+.BR init ","
 or
-.BR \%reset ,
+.BR \%reset ","
 it operates as if run with the corresponding (pseudo-)capability
 operand.
 For example,
@@ -323,7 +319,7 @@ has the same name as another program in widespread use.
 .B \%reset
 is provided
 by the \fB\%@TSET@\fP(1) utility (also via a link named
-.BR \%reset ")."
+.BR \%reset ).
 .SS "Terminal Size"
 Besides the pseudo-capabilities
 (such as
@@ -353,7 +349,7 @@ Finally,
 it inspects the environment variables
 .I LINES
 and
-.IR \%COLUMNS ,
+.IR \%COLUMNS ","
 which may override the terminal size.
 .PP
 If the
@@ -361,7 +357,7 @@ If the
 option is given,
 .B \%@TPUT@
 ignores the environment variables by calling
-.BR \%use_tioctl(TRUE) ,
+.BR \%use_tioctl(TRUE) ","
 relying upon the operating system
 (or,
 ultimately,
@@ -396,7 +392,7 @@ and whether to use \fB\%tparm\fP(3X).
 .TP
 .BI \-T\  type
 indicates the terminal's
-.IR type .
+.IR type "."
 Normally this option is unnecessary,
 because a default is taken from the
 .I TERM
@@ -507,11 +503,11 @@ System\ V
 and
 .B \%reset
 operands use logic from 4.1cBSD
-.IR tset ,
+.IR tset ","
 manipulating terminal modes.
 It checks the same file descriptors
 (and
-.IR \%/dev/tty )
+.IR \%/dev/tty ")"
 for association with a terminal device as
 .I \%ncurses
 now does,
@@ -574,7 +570,7 @@ to port NetBSD's
 .IR termcap -based
 .I tput
 to
-.IR \%term\%info ,
+.IR \%term\%info ","
 and modified it to interpret multiple
 .I cap-codes
 (and parameters)
@@ -617,17 +613,17 @@ to
 but
 .B \%parm_delete_line
 to
-.IR \%term\%info .
+.IR \%term\%info "."
 .I termcap
 uses the code
 .B DL
 for
-.BR \%parm_delete_line .
+.BR \%parm_delete_line "."
 .I \%term\%info
 uses the code
 .B dl1
 for
-.BR \%delete_line .
+.BR \%delete_line "."
 .bP
 The
 .I cap-code
@@ -639,17 +635,17 @@ to
 but
 .B \%clr_eos
 to
-.IR \%term\%info .
+.IR \%term\%info "."
 .I termcap
 uses the code
 .B cd
 for
-.BR \%clr_eos .
+.BR \%clr_eos "."
 .I \%term\%info
 uses the code
 .B rmdc
 for
-.BR \%exit_delete_mode .
+.BR \%exit_delete_mode "."
 .PP
 The
 .B \%longname
@@ -665,7 +661,7 @@ AT&T/USL
 before SVr4 (1989).
 Later,
 4.3BSD-Reno (1990) added support for
-.BR \%longname ,
+.BR \%longname ","
 .\" longname was added in October 1989.
 and in 1994,
 NetBSD added support for the parameter-substitution features.
@@ -673,8 +669,8 @@ NetBSD added support for the parameter-substitution features.
 IEEE Std 1003.1/The Open Group Base Specifications Issue\ 7
 (POSIX.1-2008)
 documents only the
-.BR clear ,
-.BR init ,
+.BR clear ","
+.BR init ","
 and
 .B \%reset
 operands.
@@ -684,11 +680,11 @@ A few observations of interest arise from that selection.
 supports
 .B clear
 as it does any other standard
-.IR cap-code .
+.IR cap-code "."
 The others
 .RB ( init
 and
-.BR \%longname )
+.BR \%longname ")"
 do not correspond to terminal capabilities.
 .bP
 The
@@ -724,7 +720,7 @@ codes.
 Beginning in 2021,
 FreeBSD uses
 .I \%ncurses
-.BR tput ,
+.BR tput ","
 configured for both
 .I \%term\%info
 (tested first)
@@ -746,7 +742,7 @@ and the other features used in this implementation.
 .bP
 That is,
 there are two standards for
-.IR tput :
+.IR tput ":"
 POSIX (a subset) and X/Open Curses (the full implementation).
 POSIX documents a subset to avoid the complication of including
 X/Open Curses and the terminal capability database.
@@ -754,13 +750,13 @@ X/Open Curses and the terminal capability database.
 While it is certainly possible to write a
 .I tput
 program without using
-.IR curses ,
+.IR curses ","
 no system with a
 .I curses
 implementation provides a
 .I tput
 utility that does not also support standard
-.IR cap-codes .
+.IR cap-codes "."
 .PP
 X/Open Curses Issue\ 7 (2009) is the first version to document utilities.
 However that part of X/Open Curses does not follow existing practice
@@ -790,7 +786,7 @@ The various System\ V implementations
 HP-UX,
 Solaris)
 use the same exit statuses as
-.IR \%ncurses .
+.IR \%ncurses "."
 .PP
 NetBSD
 .I curses
@@ -857,11 +853,11 @@ making it follow the interface of System\ V
 by accepting some parameters named for
 .I \%term\%info
 (pseudo-)capabilities:
-.BR clear ,
-.BR init ,
-.BR \%longname ,
+.BR clear ","
+.BR init ","
+.BR \%longname ","
 and
-.BR \%reset .
+.BR \%reset "."
 However,
 because he had only
 .I termcap
@@ -881,7 +877,7 @@ Bostic added a shell script named \*(``clear\*('' that used
 to clear the screen.
 .\" https://minnie.tuhs.org/cgi-bin/utree.pl?file=4.3BSD-Reno/src/usr.bin/tput/clear.sh
 These became the \*(``modern\*('' BSD implementation of
-.IR tput .
+.IR tput "."
 .PP
 The origin of
 .I \%ncurses
@@ -899,7 +895,7 @@ Eric Raymond used that
 .I tput
 program
 (and other parts of
-.IR \%mytinfo )
+.IR \%mytinfo ")"
 in
 .I \%ncurses
 in June 1995.
@@ -1012,7 +1008,7 @@ Report the number of columns used by an ADM-3A terminal.
 Set shell variables to capability values:
 .B strong
 and
-.BR normal ,
+.BR normal ","
 to begin and end,
 respectively,
 stand-out mode for the terminal.

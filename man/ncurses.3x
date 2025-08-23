@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.268 2025/08/16 19:19:33 tom Exp $
-.TH ncurses 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.278 2025/08/23 22:54:35 tom Exp $
+.TH ncurses 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -549,7 +549,7 @@ and character attribute manipulation functions like
 .I \%cchar_t
 is a
 .I "curses complex character"
-and corresponds to the non-wide configuration's
+and corresponds to the non-wide-character configuration's
 .IR \%chtype .
 It is a structure type
 because it requires more storage than a standard scalar type offers.
@@ -1107,9 +1107,7 @@ on success and
 .B ERR
 on failure;
 see \fB\%curs_variables\fP(3X).
-Functions that return pointers return
-.I NULL
-on failure.
+Functions that return pointers return a null pointer on failure.
 Typically,
 .I \%ncurses
 treats a null pointer passed as a function parameter as a failure.
@@ -1160,7 +1158,7 @@ C compiler's name,
 .I \%ncurses
 ignores its value if it is not one character in length.
 .SS "\fICOLUMNS\fP"
-This variable specifies the width of the screen in characters.
+This variable specifies the width of the screen in character cells.
 Applications running in a windowing environment usually are able to
 obtain the width of the window in which they are executing.
 .I \%ncurses
@@ -1243,6 +1241,10 @@ If the host running a
 application does not receive the characters of an escape sequence in a
 timely manner,
 the library can interpret them as multiple key stroke events.
+Conversely,
+a fast typist on a low-latency connection who happens to input an ESC
+followed by characters that match an escape sequence may experience
+confusing application behavior.
 .PP
 \fI\%xterm\fP(1) mouse events are a form of escape sequence;
 therefore,
@@ -1306,7 +1308,8 @@ to tell
 .I \%ncurses
 not to assume anything about the colors,
 use a value of \*(``\-1,\-1\*(''.
-To make the default color scheme green on black,
+To make the default color scheme green on black on a terminal
+that uses ANSI\ X3.64/ECMA-48/ISO\ 6429 color assignments,
 use \*(``2,0\*(''.
 .I \%ncurses
 accepts integral values from \-1 up to the value of the
@@ -1366,7 +1369,9 @@ as
 .I curses
 does.
 Historically,
-some recorded changes in video attributes as data that logically
+some recorded changes in video attributes as data
+that logically
+(but invisibly)
 .I occupied
 character cells on the display,
 switching attributes on or off,
@@ -1400,9 +1405,10 @@ Unless a hardware terminal is interfaced into a terminal concentrator
 an application must manage flow itself to prevent overruns and data
 loss.
 .PP
-A solution that comes at no hardware cost is for an application to pause
-after directing a terminal to execute an operation that it performs
-slowly,
+A solution that comes at no hardware cost
+is for an application to pause transmission
+after directing a terminal to execute an operation
+that it performs slowly,
 such as clearing the display.
 Many terminal type descriptions,
 including that for the VT100,
@@ -1441,8 +1447,7 @@ Nowadays,
 .I \%ncurses
 performs its own buffering and does not require this workaround;
 it does not modify the buffering of the standard output stream.
-This approach makes signal handling,
-as for interrupts,
+This approach makes the library's handling of keyboard-initiated signals
 more robust.
 A drawback is that certain unconventional programs mixed
 \fI\%stdio\fP(3) calls with

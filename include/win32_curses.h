@@ -31,7 +31,7 @@
  * Author: Juergen Pfeifer, 2008-on                                         *
  ****************************************************************************/
 
-/* $Id: win32_curses.h,v 1.5 2025/08/09 13:30:54 tom Exp $ */
+/* $Id: win32_curses.h,v 1.7 2025/08/23 17:06:56 tom Exp $ */
 
 /*
  * This is the interface we use on Windows to mimic the control of the settings
@@ -58,12 +58,6 @@ extern NCURSES_EXPORT(int)   _nc_console_flush(void* handle);
 /*
   A few definitions of Unix functions we need to emulate
 */
-#define SIGHUP  1
-#define SIGKILL 9
-
-#undef  getlogin
-#define getlogin() getenv("USERNAME")
-
 #undef  ttyname
 #define ttyname(fd) NULL
 

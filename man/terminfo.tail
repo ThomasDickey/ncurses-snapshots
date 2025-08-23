@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.161 2025/08/16 19:21:38 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.162 2025/08/23 22:54:58 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1359,38 +1359,61 @@ give them in \fBsmln\fP and \fBrmln\fP.
 \fBsmln\fP is normally output after one or more pln
 sequences to make sure that the change becomes visible.
 .SS "Tabs and Initialization"
-A few capabilities are used only for tabs:
+A few capabilities are used only to manage tab stops.
 .bP
-If the terminal has hardware tabs, the command to advance to the next
-tab stop can be given as
-.B ht
-(usually control/I).
+If the terminal has hardware tabs,
+specify the character sequence that advances to the next tab stop
+as the value of the
+.B tab
+.RB ( ht )
+string capability
+(usually Control+I).
 .bP
-A \*(``back-tab\*('' command which moves leftward to the preceding tab stop can
-be given as
-.BR cbt .
+Specify a character sequence that retreats
+(moves leftward)
+to the preceding tab stop
+as the value of the
+.B \%back_tab
+.RB ( cbt )
+string capability.
 .IP
-By convention, if the teletype modes indicate that tabs are being
-expanded by the computer rather than being sent to the terminal,
-programs should not use
-.B ht
+By convention,
+if the terminal modes are configured such that tabs are expanded
+by the host rather than terminal,
+applications should not employ the
+.B tab
+.RB ( ht )
 or
-.B cbt
-even if they are present, since the user may not have the tab stops
-properly set.
+.B \%back_tab
+.RB ( cbt )
+capabilities even if they are present,
+since the user may not have the tab stops properly set.
 .bP
-If the terminal has hardware tabs which are initially set every
+If the terminal has hardware tab stops that are set at every
 .I n
-spaces when the terminal is powered up,
-the numeric parameter
-.B it
-is given, showing the number of spaces the tabs are set to.
+character cells when the terminal is powered up,
+specify
+.I n
+as the value of the the numeric capability
+.B \%init_tabs
+.RB ( it )\c
+\&.
 .IP
-The \fBit\fP capability is normally used by the \fB@TSET@\fP
-command to determine whether to set the mode for hardware tab expansion,
-and whether to set the tab stops.
+The
+.B \%@TSET@
+and
+.RB \*(`` \%@TPUT@
+.BR init \*(''
+commands interpret the presence of the
+.B \%init_tabs
+.RB ( it )
+capability as implying that the terminal
+is responsible for tab stop expansion
+as well as an instruction to set the tab stops to its value.
 If the terminal has tab stops that can be saved in non-volatile memory,
-the terminfo description can assume that they are properly set.
+its
+.I \%term\%info
+type description can assume that they are properly set.
 .PP
 Other capabilities
 include

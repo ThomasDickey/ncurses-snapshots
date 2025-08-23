@@ -39,6 +39,7 @@
  * TODO - make it optional whether screen is restored or not when non-buffered
  */
 
+#define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
 #define PSAPI_VERSION 2
@@ -48,7 +49,7 @@
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-MODULE_ID("$Id: win_driver.c,v 1.88 2025/08/02 22:18:36 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.90 2025/08/23 20:31:46 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 
@@ -64,8 +65,7 @@ static bool okConsoleHandle(TERMINAL_CONTROL_BLOCK *);
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
 
-#define AdjustY() (CON.buffered ? 0 : (int) CON.SBI.srWindow.Top)
-
+#define AdjustY() (WINCONSOLE.buffered ? 0 : (int) WINCONSOLE.SBI.srWindow.Top)
 /* *INDENT-OFF* */
 static const LONG keylist[] =
 {
@@ -99,36 +99,13 @@ static const LONG ansi_keys[] =
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24
 #define MAPSIZE (FKEYS + N_INI)
-#define NUMPAIRS 64
+#define CON_NUMPAIRS 64
 
 /*   A process can only have a single console, so it is safe
      to maintain all the information about it in a single
      static structure.
  */
-static struct {
-    BOOL initialized;
-    BOOL buffered;
-    BOOL window_only;
-    BOOL progMode;
-    BOOL isTermInfoConsole;
-    HANDLE out;
-    HANDLE inp;
-    HANDLE hdl;
-    HANDLE lastOut;
-    int numButtons;
-    DWORD ansi_map[MAPSIZE];
-    DWORD map[MAPSIZE];
-    DWORD rmap[MAPSIZE];
-    WORD pairs[NUMPAIRS];
-    COORD origin;
-    CHAR_INFO *save_screen;
-    COORD save_size;
-    SMALL_RECT save_region;
-    CONSOLE_SCREEN_BUFFER_INFO SBI;
-    CONSOLE_SCREEN_BUFFER_INFO save_SBI;
-    CONSOLE_CURSOR_INFO save_CI;
-} CON;
-
+NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 static BOOL console_initialized = FALSE;
 
 static WORD
@@ -158,9 +135,9 @@ MapAttr(WORD res, attr_t ch)
 	int p;
 
 	p = PairNumber(ch);
-	if (p > 0 && p < NUMPAIRS) {
+	if (p > 0 && p < CON_NUMPAIRS) {
 	    WORD a;
-	    a = CON.pairs[p];
+	    a = WINCONSOLE.pairs[p];
 	    res = (WORD) ((res & 0xff00) | a);
 	}
     }
@@ -186,7 +163,8 @@ MapAttr(WORD res, attr_t ch)
 static void
 dump_screen(const char *fn, int ln)
 {
-    int max_cells = (CON.SBI.dwSize.Y * (1 + CON.SBI.dwSize.X)) + 1;
+    int max_cells = (WINCONSOLE.SBI.dwSize.Y *
+		     (1 + WINCONSOLE.SBI.dwSize.X)) + 1;
     char output[max_cells];
     CHAR_INFO save_screen[max_cells];
     COORD save_size;
@@ -195,17 +173,17 @@ dump_screen(const char *fn, int ln)
 
     T(("dump_screen %s@%d", fn, ln));
 
-    save_region.Top = CON.SBI.srWindow.Top;
-    save_region.Left = CON.SBI.srWindow.Left;
-    save_region.Bottom = CON.SBI.srWindow.Bottom;
-    save_region.Right = CON.SBI.srWindow.Right;
+    save_region.Top = WINCONSOLE.SBI.srWindow.Top;
+    save_region.Left = WINCONSOLE.SBI.srWindow.Left;
+    save_region.Bottom = WINCONSOLE.SBI.srWindow.Bottom;
+    save_region.Right = WINCONSOLE.SBI.srWindow.Right;
 
     save_size.X = (SHORT) (save_region.Right - save_region.Left + 1);
     save_size.Y = (SHORT) (save_region.Bottom - save_region.Top + 1);
 
     bufferCoord.X = bufferCoord.Y = 0;
 
-    if (read_screen(CON.hdl,
+    if (read_screen(WINCONSOLE.hdl,
 		    save_screen,
 		    save_size,
 		    bufferCoord,
@@ -243,7 +221,8 @@ dump_screen(const char *fn, int ln)
  * TODO: _nc_wacs should be part of sp.
  */
 static BOOL
-con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
+con_write16(TERMINAL_CONTROL_BLOCK * TCB,
+	    int y, int x, cchar_t *str, int limit)
 {
     int actual = 0;
     MakeArray(ci, CHAR_INFO, limit);
@@ -261,7 +240,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
 	if (isWidecExt(ch))
 	    continue;
 	ci[actual].CharInfoChar = CharOf(ch);
-	ci[actual].Attributes = MapAttr(CON.SBI.wAttributes,
+	ci[actual].Attributes = MapAttr(WINCONSOLE.SBI.wAttributes,
 					AttrOf(ch));
 	if (AttrOf(ch) & A_ALTCHARSET) {
 	    if (_nc_wacs) {
@@ -288,7 +267,7 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, cchar_t *str, int limit)
     rec.Right = (SHORT) (x + limit - 1);
     rec.Bottom = rec.Top;
 
-    return write_screen(CON.hdl, ci, siz, loc, &rec);
+    return write_screen(WINCONSOLE.hdl, ci, siz, loc, &rec);
 }
 #define con_write(tcb, y, x, str, n) con_write16(tcb, y, x, str, n)
 #else
@@ -308,12 +287,12 @@ con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
     for (i = 0; i < n; i++) {
 	ch = str[i];
 	ci[i].CharInfoChar = ChCharOf(ch);
-	ci[i].Attributes = MapAttr(CON.SBI.wAttributes,
+	ci[i].Attributes = MapAttr(WINCONSOLE.SBI.wAttributes,
 				   ChAttrOf(ch));
 	if (ChAttrOf(ch) & A_ALTCHARSET) {
 	    if (sp->_acs_map)
 		ci[i].CharInfoChar =
-		ChCharOf(NCURSES_SP_NAME(_nc_acs_char) (sp, ChCharOf(ch)));
+		    ChCharOf(NCURSES_SP_NAME(_nc_acs_char) (sp, ChCharOf(ch)));
 	}
     }
 
@@ -327,7 +306,7 @@ con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
     rec.Right = (short) (x + n - 1);
     rec.Bottom = rec.Top;
 
-    return write_screen(CON.hdl, ci, siz, loc, &rec);
+    return write_screen(WINCONSOLE.hdl, ci, siz, loc, &rec);
 }
 #define con_write(tcb, y, x, str, n) con_write8(tcb, y, x, str, n)
 #endif
@@ -347,7 +326,8 @@ find_end_of_change(SCREEN *sp, int row, int col)
 
     while (col <= newdat->lastchar) {
 #if USE_WIDEC_SUPPORT
-	if (isWidecExt(curdat->text[col]) || isWidecExt(newdat->text[col])) {
+	if (isWidecExt(curdat->text[col]) ||
+	    isWidecExt(newdat->text[col])) {
 	    result = col;
 	} else if (memcmp(&curdat->text[col],
 			  &newdat->text[col],
@@ -381,7 +361,8 @@ find_next_change(SCREEN *sp, int row, int col)
 
     while (++col <= newdat->lastchar) {
 #if USE_WIDEC_SUPPORT
-	if (isWidecExt(curdat->text[col]) != isWidecExt(newdat->text[col])) {
+	if (isWidecExt(curdat->text[col]) !=
+	    isWidecExt(newdat->text[col])) {
 	    result = col;
 	    break;
 	} else if (memcmp(&curdat->text[col],
@@ -402,21 +383,21 @@ find_next_change(SCREEN *sp, int row, int col)
 
 #define EndChange(first) \
 	find_end_of_change(sp, y, first)
-#define NextChange(last) \
+#define NextChange(last)                        \
 	find_next_change(sp, y, last)
 
 #endif /* EXP_OPTIMIZE */
 
-#define MARK_NOCHANGE(win,row) \
-		win->_line[row].firstchar = _NOCHANGE; \
-		win->_line[row].lastchar  = _NOCHANGE
+#define MARK_NOCHANGE(win,row)                 \
+    win->_line[row].firstchar = _NOCHANGE;     \
+    win->_line[row].lastchar  = _NOCHANGE
 
 static void
 selectActiveHandle(void)
 {
-    if (CON.lastOut != CON.hdl) {
-	CON.lastOut = CON.hdl;
-	SetConsoleActiveScreenBuffer(CON.lastOut);
+    if (WINCONSOLE.lastOut != WINCONSOLE.hdl) {
+	WINCONSOLE.lastOut = WINCONSOLE.hdl;
+	SetConsoleActiveScreenBuffer(WINCONSOLE.lastOut);
     }
 }
 
@@ -425,23 +406,26 @@ restore_original_screen(void)
 {
     COORD bufferCoord;
     bool result = FALSE;
-    SMALL_RECT save_region = CON.save_region;
+    SMALL_RECT save_region = WINCONSOLE.save_region;
 
-    T(("... restoring %s", CON.window_only ? "window" : "entire buffer"));
+    T(("... restoring %s", WINCONSOLE.window_only ?
+       "window" : "entire buffer"));
 
-    bufferCoord.X = (SHORT) (CON.window_only ? CON.SBI.srWindow.Left : 0);
-    bufferCoord.Y = (SHORT) (CON.window_only ? CON.SBI.srWindow.Top : 0);
+    bufferCoord.X = (SHORT) (WINCONSOLE.window_only ?
+			     WINCONSOLE.SBI.srWindow.Left : 0);
+    bufferCoord.Y = (SHORT) (WINCONSOLE.window_only ?
+			     WINCONSOLE.SBI.srWindow.Top : 0);
 
-    if (write_screen(CON.hdl,
-		     CON.save_screen,
-		     CON.save_size,
+    if (write_screen(WINCONSOLE.hdl,
+		     WINCONSOLE.save_screen,
+		     WINCONSOLE.save_size,
 		     bufferCoord,
 		     &save_region)) {
 	result = TRUE;
 	mvcur(-1, -1, LINES - 2, 0);
 	T(("... restore original screen contents ok %dx%d (%d,%d - %d,%d)",
-	   CON.save_size.Y,
-	   CON.save_size.X,
+	   WINCONSOLE.save_size.Y,
+	   WINCONSOLE.save_size.X,
 	   save_region.Top,
 	   save_region.Left,
 	   save_region.Bottom,
@@ -529,7 +513,8 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 		int x2;
 		int limit = NewScreen(sp)->_line[y].lastchar;
 		while ((x1 = EndChange(x0)) <= limit) {
-		    while ((x2 = NextChange(x1)) <= limit && x2 <= (x1 + 2)) {
+		    while ((x2 = NextChange(x1)) <=
+			   limit && x2 <= (x1 + 2)) {
 			x1 = x2;
 		    }
 		    n = x1 - x0 + 1;
@@ -556,7 +541,8 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 		if (n > 0) {
 		    memcpy(&CurScreen(sp)->_line[y].text[x0],
 			   &NewScreen(sp)->_line[y].text[x0],
-			   (size_t) n * sizeof(CurScreen(sp)->_line[y].text[x0]));
+			   (size_t) n *
+			   sizeof(CurScreen(sp)->_line[y].text[x0]));
 		    con_write(TCB,
 			      y,
 			      x0,
@@ -587,8 +573,10 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	    CurScreen(sp)->_cury = NewScreen(sp)->_cury;
 
 	    TCB->drv->td_hwcur(TCB,
-			       0, 0,
-			       CurScreen(sp)->_cury, CurScreen(sp)->_curx);
+			       0,
+			       0,
+			       CurScreen(sp)->_cury,
+			       CurScreen(sp)->_curx);
 	}
 	selectActiveHandle();
 	result = OK;
@@ -650,7 +638,7 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 
     if (!code) {
 	if (_nc_mingw_isconsole(0))
-	    CON.isTermInfoConsole = TRUE;
+	    WINCONSOLE.isTermInfoConsole = TRUE;
     }
     returnBool(code);
 }
@@ -662,8 +650,10 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
     SCREEN *sp;
     int res = ERR;
 
-    int high = (CON.SBI.srWindow.Bottom - CON.SBI.srWindow.Top + 1);
-    int wide = (CON.SBI.srWindow.Right - CON.SBI.srWindow.Left + 1);
+    int high = (WINCONSOLE.SBI.srWindow.Bottom -
+		WINCONSOLE.SBI.srWindow.Top + 1);
+    int wide = (WINCONSOLE.SBI.srWindow.Right -
+		WINCONSOLE.SBI.srWindow.Left + 1);
     int max_cells = (high * wide);
     int i;
 
@@ -675,10 +665,10 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
 
     if (okConsoleHandle(TCB)) {
 	SetSP();
-	this_region.Top = CON.SBI.srWindow.Top;
-	this_region.Left = CON.SBI.srWindow.Left;
-	this_region.Bottom = CON.SBI.srWindow.Bottom;
-	this_region.Right = CON.SBI.srWindow.Right;
+	this_region.Top = WINCONSOLE.SBI.srWindow.Top;
+	this_region.Left = WINCONSOLE.SBI.srWindow.Left;
+	this_region.Bottom = WINCONSOLE.SBI.srWindow.Bottom;
+	this_region.Right = WINCONSOLE.SBI.srWindow.Right;
 
 	this_size.X = (SHORT) wide;
 	this_size.Y = (SHORT) high;
@@ -687,7 +677,7 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
 	bufferCoord.Y = this_region.Top;
 
 	if (!beepFlag &&
-	    read_screen(CON.hdl,
+	    read_screen(WINCONSOLE.hdl,
 			this_screen,
 			this_size,
 			bufferCoord,
@@ -698,12 +688,15 @@ wcon_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB,
 		   sizeof(CHAR_INFO) * (size_t) max_cells);
 
 	    for (i = 0; i < max_cells; i++) {
-		that_screen[i].Attributes = RevAttr(that_screen[i].Attributes);
+		that_screen[i].Attributes =
+		    RevAttr(that_screen[i].Attributes);
 	    }
 
-	    write_screen(CON.hdl, that_screen, this_size, bufferCoord, &this_region);
+	    write_screen(WINCONSOLE.hdl, that_screen, this_size,
+			 bufferCoord, &this_region);
 	    Sleep(200);
-	    write_screen(CON.hdl, this_screen, this_size, bufferCoord, &this_region);
+	    write_screen(WINCONSOLE.hdl, this_screen, this_size,
+			 bufferCoord, &this_region);
 
 	} else {
 	    MessageBeep(MB_ICONWARNING);	/* MB_OK might be better */
@@ -744,28 +737,28 @@ static bool
 get_SBI(void)
 {
     bool rc = FALSE;
-    if (GetConsoleScreenBufferInfo(CON.hdl, &(CON.SBI))) {
+    if (GetConsoleScreenBufferInfo(WINCONSOLE.hdl, &(WINCONSOLE.SBI))) {
 	T(("GetConsoleScreenBufferInfo"));
 	T(("... buffer(X:%d Y:%d)",
-	   CON.SBI.dwSize.X,
-	   CON.SBI.dwSize.Y));
+	   WINCONSOLE.SBI.dwSize.X,
+	   WINCONSOLE.SBI.dwSize.Y));
 	T(("... window(X:%d Y:%d)",
-	   CON.SBI.dwMaximumWindowSize.X,
-	   CON.SBI.dwMaximumWindowSize.Y));
+	   WINCONSOLE.SBI.dwMaximumWindowSize.X,
+	   WINCONSOLE.SBI.dwMaximumWindowSize.Y));
 	T(("... cursor(X:%d Y:%d)",
-	   CON.SBI.dwCursorPosition.X,
-	   CON.SBI.dwCursorPosition.Y));
+	   WINCONSOLE.SBI.dwCursorPosition.X,
+	   WINCONSOLE.SBI.dwCursorPosition.Y));
 	T(("... display(Top:%d Bottom:%d Left:%d Right:%d)",
-	   CON.SBI.srWindow.Top,
-	   CON.SBI.srWindow.Bottom,
-	   CON.SBI.srWindow.Left,
-	   CON.SBI.srWindow.Right));
-	if (CON.buffered) {
-	    CON.origin.X = 0;
-	    CON.origin.Y = 0;
+	   WINCONSOLE.SBI.srWindow.Top,
+	   WINCONSOLE.SBI.srWindow.Bottom,
+	   WINCONSOLE.SBI.srWindow.Left,
+	   WINCONSOLE.SBI.srWindow.Right));
+	if (WINCONSOLE.buffered) {
+	    WINCONSOLE.origin.X = 0;
+	    WINCONSOLE.origin.Y = 0;
 	} else {
-	    CON.origin.X = CON.SBI.srWindow.Left;
-	    CON.origin.Y = CON.SBI.srWindow.Top;
+	    WINCONSOLE.origin.X = WINCONSOLE.SBI.srWindow.Left;
+	    WINCONSOLE.origin.Y = WINCONSOLE.SBI.srWindow.Top;
 	}
 	rc = TRUE;
     } else {
@@ -782,8 +775,8 @@ wcon_setcolor(TERMINAL_CONTROL_BLOCK * TCB,
 {
     if (okConsoleHandle(TCB)) {
 	WORD a = MapColor(fore, color);
-	a |= (WORD) ((CON.SBI.wAttributes) & (fore ? 0xfff8 : 0xff8f));
-	SetConsoleTextAttribute(CON.hdl, a);
+	a |= (WORD) ((WINCONSOLE.SBI.wAttributes) & (fore ? 0xfff8 : 0xff8f));
+	SetConsoleTextAttribute(WINCONSOLE.hdl, a);
 	get_SBI();
     }
 }
@@ -795,7 +788,7 @@ wcon_rescol(TERMINAL_CONTROL_BLOCK * TCB)
 
     if (okConsoleHandle(TCB)) {
 	WORD a = FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN;
-	SetConsoleTextAttribute(CON.hdl, a);
+	SetConsoleTextAttribute(WINCONSOLE.hdl, a);
 	get_SBI();
 	res = TRUE;
     }
@@ -824,14 +817,14 @@ wcon_size(TERMINAL_CONTROL_BLOCK * TCB, int *Lines, int *Cols)
     if (okConsoleHandle(TCB) &&
 	Lines != NULL &&
 	Cols != NULL) {
-	if (CON.buffered) {
-	    *Lines = (int) (CON.SBI.dwSize.Y);
-	    *Cols = (int) (CON.SBI.dwSize.X);
+	if (WINCONSOLE.buffered) {
+	    *Lines = (int) (WINCONSOLE.SBI.dwSize.Y);
+	    *Cols = (int) (WINCONSOLE.SBI.dwSize.X);
 	} else {
-	    *Lines = (int) (CON.SBI.srWindow.Bottom + 1 -
-			    CON.SBI.srWindow.Top);
-	    *Cols = (int) (CON.SBI.srWindow.Right + 1 -
-			   CON.SBI.srWindow.Left);
+	    *Lines = (int) (WINCONSOLE.SBI.srWindow.Bottom + 1 -
+			    WINCONSOLE.SBI.srWindow.Top);
+	    *Cols = (int) (WINCONSOLE.SBI.srWindow.Right + 1 -
+			   WINCONSOLE.SBI.srWindow.Left);
 	}
 	result = OK;
     }
@@ -861,7 +854,7 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
 	    iflag = buf->c_iflag;
 	    lflag = buf->c_lflag;
 
-	    GetConsoleMode(CON.inp, &dwFlag);
+	    GetConsoleMode(WINCONSOLE.inp, &dwFlag);
 
 	    if (lflag & ICANON)
 		dwFlag |= ENABLE_LINE_INPUT;
@@ -882,12 +875,12 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
 
 	    buf->c_iflag = iflag;
 	    buf->c_lflag = lflag;
-	    SetConsoleMode(CON.inp, dwFlag);
+	    SetConsoleMode(WINCONSOLE.inp, dwFlag);
 	    TCB->term.Nttyb = *buf;
 	} else {
 	    iflag = TCB->term.Nttyb.c_iflag;
 	    lflag = TCB->term.Nttyb.c_lflag;
-	    GetConsoleMode(CON.inp, &dwFlag);
+	    GetConsoleMode(WINCONSOLE.inp, &dwFlag);
 
 	    if (dwFlag & ENABLE_LINE_INPUT)
 		lflag |= ICANON;
@@ -944,9 +937,9 @@ set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
     if (normal) {
 	rect = info->srWindow;
 	coord = info->dwSize;
-	if (memcmp(info, &CON.SBI, sizeof(*info)) != 0) {
+	if (memcmp(info, &WINCONSOLE.SBI, sizeof(*info)) != 0) {
 	    changed = TRUE;
-	    CON.SBI = *info;
+	    WINCONSOLE.SBI = *info;
 	}
     } else {
 	int high = info->srWindow.Bottom - info->srWindow.Top + 1;
@@ -985,8 +978,8 @@ set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
 	T(("... rect %d,%d - %d,%d",
 	   rect.Top, rect.Left,
 	   rect.Bottom, rect.Right));
-	SetConsoleScreenBufferSize(CON.hdl, coord);	/* dwSize */
-	SetConsoleWindowInfo(CON.hdl, TRUE, &rect);	/* srWindow */
+	SetConsoleScreenBufferSize(WINCONSOLE.hdl, coord);	/* dwSize */
+	SetConsoleWindowInfo(WINCONSOLE.hdl, TRUE, &rect);	/* srWindow */
 	get_SBI();
     }
     returnVoid;
@@ -1005,9 +998,9 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
     if (okConsoleHandle(TCB)) {
 	sp = TCB->csp;
 
-	CON.progMode = progFlag;
-	CON.lastOut = progFlag ? CON.hdl : CON.out;
-	SetConsoleActiveScreenBuffer(CON.lastOut);
+	WINCONSOLE.progMode = progFlag;
+	WINCONSOLE.lastOut = progFlag ? WINCONSOLE.hdl : WINCONSOLE.out;
+	SetConsoleActiveScreenBuffer(WINCONSOLE.lastOut);
 
 	if (progFlag) /* prog mode */  {
 	    if (defFlag) {
@@ -1022,13 +1015,15 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 			if (sp->_keypad_on)
 			    _nc_keypad(sp, TRUE);
 		    }
-		    if (!CON.buffered) {
-			set_scrollback(FALSE, &CON.SBI);
+		    if (!WINCONSOLE.buffered) {
+			set_scrollback(FALSE, &WINCONSOLE.SBI);
 		    }
 		    code = OK;
 		}
 	    }
-	    T(("... buffered:%d, clear:%d", CON.buffered, CurScreen(sp)->_clear));
+	    T(("... buffered:%d, clear:%d",
+	       WINCONSOLE.buffered,
+	       CurScreen(sp)->_clear));
 	} else {		/* shell mode */
 	    if (defFlag) {
 		/* def_shell_mode */
@@ -1042,12 +1037,12 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		    NCURSES_SP_NAME(_nc_flush) (sp);
 		}
 		code = wcon_sgmode(TCB, TRUE, &(_term->Ottyb));
-		if (!CON.buffered) {
-		    set_scrollback(TRUE, &CON.save_SBI);
+		if (!WINCONSOLE.buffered) {
+		    set_scrollback(TRUE, &WINCONSOLE.save_SBI);
 		    if (!restore_original_screen())
 			code = ERR;
 		}
-		SetConsoleCursorInfo(CON.hdl, &CON.save_CI);
+		SetConsoleCursorInfo(WINCONSOLE.hdl, &WINCONSOLE.save_CI);
 	    }
 	}
 
@@ -1092,7 +1087,7 @@ MapKey(WORD vKey)
     int code = -1;
 
     res = bsearch(&key,
-		  CON.map,
+		  WINCONSOLE.map,
 		  (size_t) (N_INI + FKEYS),
 		  sizeof(keylist[0]),
 		  keycompare);
@@ -1115,7 +1110,7 @@ AnsiKey(WORD vKey)
     int code = -1;
 
     res = bsearch(&key,
-		  CON.ansi_map,
+		  WINCONSOLE.ansi_map,
 		  (size_t) (N_INI + FKEYS),
 		  sizeof(keylist[0]),
 		  keycompare);
@@ -1148,36 +1143,40 @@ read_screen_data(void)
     COORD bufferCoord;
     size_t want;
 
-    CON.save_size.X = (SHORT) (CON.save_region.Right
-			       - CON.save_region.Left + 1);
-    CON.save_size.Y = (SHORT) (CON.save_region.Bottom
-			       - CON.save_region.Top + 1);
+    WINCONSOLE.save_size.X = (SHORT) (WINCONSOLE.save_region.Right
+				      - WINCONSOLE.save_region.Left + 1);
+    WINCONSOLE.save_size.Y = (SHORT) (WINCONSOLE.save_region.Bottom
+				      - WINCONSOLE.save_region.Top + 1);
 
-    want = (size_t) (CON.save_size.X * CON.save_size.Y);
+    want = (size_t) (WINCONSOLE.save_size.X * WINCONSOLE.save_size.Y);
 
-    if ((CON.save_screen = malloc(want * sizeof(CHAR_INFO))) != NULL) {
-	bufferCoord.X = (SHORT) (CON.window_only ? CON.SBI.srWindow.Left : 0);
-	bufferCoord.Y = (SHORT) (CON.window_only ? CON.SBI.srWindow.Top : 0);
+    if ((WINCONSOLE.save_screen = malloc(want * sizeof(CHAR_INFO))) != NULL) {
+	bufferCoord.X = (SHORT) (WINCONSOLE.window_only
+				 ? WINCONSOLE.SBI.srWindow.Left
+				 : 0);
+	bufferCoord.Y = (SHORT) (WINCONSOLE.window_only
+				 ? WINCONSOLE.SBI.srWindow.Top
+				 : 0);
 
 	T(("... reading console %s %dx%d into %d,%d - %d,%d at %d,%d",
-	   CON.window_only ? "window" : "buffer",
-	   CON.save_size.Y, CON.save_size.X,
-	   CON.save_region.Top,
-	   CON.save_region.Left,
-	   CON.save_region.Bottom,
-	   CON.save_region.Right,
+	   WINCONSOLE.window_only ? "window" : "buffer",
+	   WINCONSOLE.save_size.Y, WINCONSOLE.save_size.X,
+	   WINCONSOLE.save_region.Top,
+	   WINCONSOLE.save_region.Left,
+	   WINCONSOLE.save_region.Bottom,
+	   WINCONSOLE.save_region.Right,
 	   bufferCoord.Y,
 	   bufferCoord.X));
 
-	if (read_screen(CON.hdl,
-			CON.save_screen,
-			CON.save_size,
+	if (read_screen(WINCONSOLE.hdl,
+			WINCONSOLE.save_screen,
+			WINCONSOLE.save_size,
 			bufferCoord,
-			&CON.save_region)) {
+			&WINCONSOLE.save_region)) {
 	    result = TRUE;
 	} else {
 	    T((" error %#lx", (unsigned long) GetLastError()));
-	    FreeAndNull(CON.save_screen);
+	    FreeAndNull(WINCONSOLE.save_screen);
 	}
     }
 
@@ -1196,21 +1195,21 @@ save_original_screen(void)
 {
     bool result = FALSE;
 
-    CON.save_region.Top = 0;
-    CON.save_region.Left = 0;
-    CON.save_region.Bottom = (SHORT) (CON.SBI.dwSize.Y - 1);
-    CON.save_region.Right = (SHORT) (CON.SBI.dwSize.X - 1);
+    WINCONSOLE.save_region.Top = 0;
+    WINCONSOLE.save_region.Left = 0;
+    WINCONSOLE.save_region.Bottom = (SHORT) (WINCONSOLE.SBI.dwSize.Y - 1);
+    WINCONSOLE.save_region.Right = (SHORT) (WINCONSOLE.SBI.dwSize.X - 1);
 
     if (read_screen_data()) {
 	result = TRUE;
     } else {
 
-	CON.save_region.Top = CON.SBI.srWindow.Top;
-	CON.save_region.Left = CON.SBI.srWindow.Left;
-	CON.save_region.Bottom = CON.SBI.srWindow.Bottom;
-	CON.save_region.Right = CON.SBI.srWindow.Right;
+	WINCONSOLE.save_region.Top = WINCONSOLE.SBI.srWindow.Top;
+	WINCONSOLE.save_region.Left = WINCONSOLE.SBI.srWindow.Left;
+	WINCONSOLE.save_region.Bottom = WINCONSOLE.SBI.srWindow.Bottom;
+	WINCONSOLE.save_region.Right = WINCONSOLE.SBI.srWindow.Right;
 
-	CON.window_only = TRUE;
+	WINCONSOLE.window_only = TRUE;
 
 	if (read_screen_data()) {
 	    result = TRUE;
@@ -1238,7 +1237,7 @@ wcon_init(TERMINAL_CONTROL_BLOCK * TCB)
 	TCB->info.hascolor = TRUE;
 	TCB->info.caninit = TRUE;
 
-	TCB->info.maxpairs = NUMPAIRS;
+	TCB->info.maxpairs = CON_NUMPAIRS;
 	TCB->info.maxcolors = 8;
 	TCB->info.numlabels = 0;
 	TCB->info.labelwidth = 0;
@@ -1246,7 +1245,7 @@ wcon_init(TERMINAL_CONTROL_BLOCK * TCB)
 	TCB->info.nocolorvideo = 1;
 	TCB->info.tabsize = 8;
 
-	TCB->info.numbuttons = CON.numButtons;
+	TCB->info.numbuttons = WINCONSOLE.numButtons;
 	TCB->info.defaultPalette = _nc_cga_palette;
 
     }
@@ -1264,9 +1263,9 @@ wcon_initpair(TERMINAL_CONTROL_BLOCK * TCB,
     if (okConsoleHandle(TCB)) {
 	SetSP();
 
-	if ((pair > 0) && (pair < NUMPAIRS) && (f >= 0) && (f < 8)
+	if ((pair > 0) && (pair < CON_NUMPAIRS) && (f >= 0) && (f < 8)
 	    && (b >= 0) && (b < 8)) {
-	    CON.pairs[pair] = MapColor(true, f) | MapColor(false, b);
+	    WINCONSOLE.pairs[pair] = MapColor(true, f) | MapColor(false, b);
 	}
     }
 }
@@ -1345,7 +1344,7 @@ wcon_mvcur(TERMINAL_CONTROL_BLOCK * TCB,
 	COORD loc;
 	loc.X = (short) x;
 	loc.Y = (short) (y + AdjustY());
-	SetConsoleCursorPosition(CON.hdl, loc);
+	SetConsoleCursorPosition(WINCONSOLE.hdl, loc);
 	ret = OK;
     }
     return ret;
@@ -1430,7 +1429,8 @@ wcon_initacs(TERMINAL_CONTROL_BLOCK * TCB,
 	SetSP();
 
 	for (n = 0; n < SIZEOF(table); ++n) {
-	    real_map[table[n].acs_code] = (chtype) table[n].use_code | A_ALTCHARSET;
+	    real_map[table[n].acs_code] =
+		(chtype) table[n].use_code | A_ALTCHARSET;
 	    if (sp != NULL)
 		sp->_screen_acs_map[table[n].acs_code] = TRUE;
 	}
@@ -1465,10 +1465,10 @@ Adjust(int milliseconds, int diff)
 }
 
 #define BUTTON_MASK (FROM_LEFT_1ST_BUTTON_PRESSED | \
-		     FROM_LEFT_2ND_BUTTON_PRESSED | \
-		     FROM_LEFT_3RD_BUTTON_PRESSED | \
-		     FROM_LEFT_4TH_BUTTON_PRESSED | \
-		     RIGHTMOST_BUTTON_PRESSED)
+                     FROM_LEFT_2ND_BUTTON_PRESSED | \
+                     FROM_LEFT_3RD_BUTTON_PRESSED | \
+                     FROM_LEFT_4TH_BUTTON_PRESSED | \
+                     RIGHTMOST_BUTTON_PRESSED)
 
 static mmask_t
 decode_mouse(SCREEN *sp, int mask)
@@ -1488,7 +1488,7 @@ decode_mouse(SCREEN *sp, int mask)
 	result |= BUTTON4_PRESSED;
 
     if (mask & RIGHTMOST_BUTTON_PRESSED) {
-	switch (CON.numButtons) {
+	switch (WINCONSOLE.numButtons) {
 	case 1:
 	    result |= BUTTON1_PRESSED;
 	    break;
@@ -1633,7 +1633,7 @@ wcon_twait(TERMINAL_CONTROL_BLOCK * TCB,
 	SetSP();
 
 	code = console_twait(sp,
-			     CON.inp,
+			     WINCONSOLE.inp,
 			     mode,
 			     milliseconds,
 			     timeleft EVENTLIST_2nd(evl));
@@ -1696,7 +1696,7 @@ wcon_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
     if (okConsoleHandle(TCB)) {
 	SetSP();
 
-	n = _nc_mingw_console_read(sp, CON.inp, buf);
+	n = _nc_mingw_console_read(sp, WINCONSOLE.inp, buf);
     }
     returnCode(n);
 }
@@ -1716,7 +1716,7 @@ wcon_cursorSet(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int mode)
 
     T((T_CALLED("win32con:wcon_cursorSet(%d)"), mode));
     if (okConsoleHandle(TCB)) {
-	CONSOLE_CURSOR_INFO this_CI = CON.save_CI;
+	CONSOLE_CURSOR_INFO this_CI = WINCONSOLE.save_CI;
 	switch (mode) {
 	case 0:
 	    this_CI.bVisible = FALSE;
@@ -1727,7 +1727,7 @@ wcon_cursorSet(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int mode)
 	    this_CI.dwSize = 100;
 	    break;
 	}
-	SetConsoleCursorInfo(CON.hdl, &this_CI);
+	SetConsoleCursorInfo(WINCONSOLE.hdl, &this_CI);
     }
     returnCode(res);
 }
@@ -1742,7 +1742,7 @@ wcon_kyExist(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int keycode)
 
     T((T_CALLED("win32con::wcon_kyExist(%d)"), keycode));
     res = bsearch(&key,
-		  CON.rmap,
+		  WINCONSOLE.rmap,
 		  (size_t) (N_INI + FKEYS),
 		  sizeof(keylist[0]),
 		  rkeycompare);
@@ -1792,7 +1792,7 @@ wcon_keyok(TERMINAL_CONTROL_BLOCK * TCB,
 
 	if (sp) {
 	    res = bsearch(&key,
-			  CON.rmap,
+			  WINCONSOLE.rmap,
 			  (size_t) (N_INI + FKEYS),
 			  sizeof(keylist[0]),
 			  rkeycompare);
@@ -1811,42 +1811,42 @@ wcon_keyok(TERMINAL_CONTROL_BLOCK * TCB,
 
 NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_WIN_DRIVER = {
     FALSE,
-	wcon_name,		/* Name */
-	wcon_CanHandle,		/* CanHandle */
-	wcon_init,		/* init */
-	wcon_release,		/* release */
-	wcon_size,		/* size */
-	wcon_sgmode,		/* sgmode */
-	wcon_conattr,		/* conattr */
-	wcon_mvcur,		/* hwcur */
-	wcon_mode,		/* mode */
-	wcon_rescol,		/* rescol */
-	wcon_rescolors,		/* rescolors */
-	wcon_setcolor,		/* color */
-	wcon_dobeepflash,	/* DoBeepFlash */
-	wcon_initpair,		/* initpair */
-	wcon_initcolor,		/* initcolor */
-	wcon_do_color,		/* docolor */
-	wcon_initmouse,		/* initmouse */
-	wcon_testmouse,		/* testmouse */
-	wcon_setfilter,		/* setfilter */
-	wcon_hwlabel,		/* hwlabel */
-	wcon_hwlabelOnOff,	/* hwlabelOnOff */
-	wcon_doupdate,		/* update */
+	wcon_name,		/* Name          */
+	wcon_CanHandle,		/* CanHandle     */
+	wcon_init,		/* init          */
+	wcon_release,		/* release       */
+	wcon_size,		/* size          */
+	wcon_sgmode,		/* sgmode        */
+	wcon_conattr,		/* conattr       */
+	wcon_mvcur,		/* hwcur         */
+	wcon_mode,		/* mode          */
+	wcon_rescol,		/* rescol        */
+	wcon_rescolors,		/* rescolors     */
+	wcon_setcolor,		/* color         */
+	wcon_dobeepflash,	/* DoBeepFlash   */
+	wcon_initpair,		/* initpair      */
+	wcon_initcolor,		/* initcolor     */
+	wcon_do_color,		/* docolor       */
+	wcon_initmouse,		/* initmouse     */
+	wcon_testmouse,		/* testmouse     */
+	wcon_setfilter,		/* setfilter     */
+	wcon_hwlabel,		/* hwlabel       */
+	wcon_hwlabelOnOff,	/* hwlabelOnOff  */
+	wcon_doupdate,		/* update        */
 	wcon_defaultcolors,	/* defaultcolors */
-	wcon_print,		/* print */
-	wcon_size,		/* getsize */
-	wcon_setsize,		/* setsize */
-	wcon_initacs,		/* initacs */
-	wcon_screen_init,	/* scinit */
-	wcon_wrap,		/* scexit */
-	wcon_twait,		/* twait */
-	wcon_read,		/* read */
-	wcon_nap,		/* nap */
-	wcon_kpad,		/* kpad */
-	wcon_keyok,		/* kyOk */
-	wcon_kyExist,		/* kyExist */
-	wcon_cursorSet		/* cursorSet */
+	wcon_print,		/* print         */
+	wcon_size,		/* getsize       */
+	wcon_setsize,		/* setsize       */
+	wcon_initacs,		/* initacs       */
+	wcon_screen_init,	/* scinit        */
+	wcon_wrap,		/* scexit        */
+	wcon_twait,		/* twait         */
+	wcon_read,		/* read          */
+	wcon_nap,		/* nap           */
+	wcon_kpad,		/* kpad          */
+	wcon_keyok,		/* kyOk          */
+	wcon_kyExist,		/* kyExist       */
+	wcon_cursorSet		/* cursorSet     */
 };
 
 /* --------------------------------------------------------- */
@@ -2171,81 +2171,85 @@ InitConsole(void)
 
 	START_TRACE();
 
+	WINCONSOLE.map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+	WINCONSOLE.rmap = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+	WINCONSOLE.ansi_map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+
 	for (i = 0; i < (N_INI + FKEYS); i++) {
 	    if (i < N_INI) {
-		CON.rmap[i] = CON.map[i] =
+		WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
 		    (DWORD) keylist[i];
-		CON.ansi_map[i] = (DWORD) ansi_keys[i];
+		WINCONSOLE.ansi_map[i] = (DWORD) ansi_keys[i];
 	    } else {
-		CON.rmap[i] = CON.map[i] =
+		WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
 		    (DWORD) GenMap((VK_F1 + (i - N_INI)),
 				   (KEY_F(1) + (i - N_INI)));
-		CON.ansi_map[i] =
+		WINCONSOLE.ansi_map[i] =
 		    (DWORD) GenMap((VK_F1 + (i - N_INI)),
 				   (';' + (i - N_INI)));
 	    }
 	}
-	qsort(CON.ansi_map,
+	qsort(WINCONSOLE.ansi_map,
 	      (size_t) (MAPSIZE),
 	      sizeof(keylist[0]),
 	      keycompare);
-	qsort(CON.map,
+	qsort(WINCONSOLE.map,
 	      (size_t) (MAPSIZE),
 	      sizeof(keylist[0]),
 	      keycompare);
-	qsort(CON.rmap,
+	qsort(WINCONSOLE.rmap,
 	      (size_t) (MAPSIZE),
 	      sizeof(keylist[0]),
 	      rkeycompare);
 
 	if (GetNumberOfConsoleMouseButtons(&num_buttons)) {
-	    CON.numButtons = (int) num_buttons;
+	    WINCONSOLE.numButtons = (int) num_buttons;
 	} else {
-	    CON.numButtons = 1;
+	    WINCONSOLE.numButtons = 1;
 	}
 
 	a = MapColor(true, COLOR_WHITE) | MapColor(false, COLOR_BLACK);
-	for (i = 0; i < NUMPAIRS; i++)
-	    CON.pairs[i] = a;
+	for (i = 0; i < CON_NUMPAIRS; i++)
+	    WINCONSOLE.pairs[i] = a;
 
 	b = AllocConsole();
 
 	if (!b)
 	    b = AttachConsole(ATTACH_PARENT_PROCESS);
 
-	CON.inp = GetDirectHandle("CONIN$", FILE_SHARE_READ);
-	CON.out = GetDirectHandle("CONOUT$", FILE_SHARE_WRITE);
+	WINCONSOLE.inp = GetDirectHandle("CONIN$", FILE_SHARE_READ);
+	WINCONSOLE.out = GetDirectHandle("CONOUT$", FILE_SHARE_WRITE);
 
 	if (getenv("NCGDB") || getenv("NCURSES_CONSOLE2")) {
 	    T(("... will not buffer console"));
 	    buffered = FALSE;
-	    CON.hdl = CON.out;
+	    WINCONSOLE.hdl = WINCONSOLE.out;
 	} else {
 	    T(("... creating console buffer"));
-	    CON.hdl = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE,
-						FILE_SHARE_READ | FILE_SHARE_WRITE,
-						NULL,
-						CONSOLE_TEXTMODE_BUFFER,
-						NULL);
+	    WINCONSOLE.hdl = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE,
+						       FILE_SHARE_READ | FILE_SHARE_WRITE,
+						       NULL,
+						       CONSOLE_TEXTMODE_BUFFER,
+						       NULL);
 	}
 
-	if (CON.hdl != INVALID_HANDLE_VALUE) {
-	    CON.buffered = buffered;
+	if (WINCONSOLE.hdl != INVALID_HANDLE_VALUE) {
+	    WINCONSOLE.buffered = buffered;
 	    get_SBI();
-	    CON.save_SBI = CON.SBI;
+	    WINCONSOLE.save_SBI = WINCONSOLE.SBI;
 	    if (!buffered) {
 		save_original_screen();
-		set_scrollback(FALSE, &CON.SBI);
+		set_scrollback(FALSE, &WINCONSOLE.SBI);
 	    }
-	    GetConsoleCursorInfo(CON.hdl, &CON.save_CI);
+	    GetConsoleCursorInfo(WINCONSOLE.hdl, &WINCONSOLE.save_CI);
 	    T(("... initial cursor is %svisible, %d%%",
-	       (CON.save_CI.bVisible ? "" : "not-"),
-	       (int) CON.save_CI.dwSize));
+	       (WINCONSOLE.save_CI.bVisible ? "" : "not-"),
+	       (int) WINCONSOLE.save_CI.dwSize));
 	}
 
 	console_initialized = TRUE;
     }
-    return (CON.hdl != INVALID_HANDLE_VALUE);
+    return (WINCONSOLE.hdl != INVALID_HANDLE_VALUE);
 }
 
 static bool
