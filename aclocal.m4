@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1116 2025/08/09 00:45:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.1118 2025/08/28 00:35:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -10248,6 +10248,58 @@ then
 	no_x11_rgb="#"
 fi
 AC_SUBST(no_x11_rgb)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_XTERM_KBS version: 2 updated: 2025/08/27 20:35:59
+dnl -----------------
+dnl Configure-option with platform-defaults for the "xterm+kbs" building block
+dnl in the terminfo file.
+dnl
+dnl The terminfo "kbs" value corresponds to "stty erase", and is conventionally
+dnl assigned to the key which has
+dnl
+dnl		a "Backspace" label and/or
+dnl		a backarrow symbol.
+dnl
+dnl See XTerm FAQ "Why doesn't my delete key work?"
+dnl		https://invisible-island.net/xterm/xterm.faq.html#xterm_erase
+AC_DEFUN([CF_WITH_XTERM_KBS],[
+case $host_os in
+(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl|openbsd*|darwin*)
+	want_xterm_kbs=DEL
+	;;
+(*)
+	want_xterm_kbs=BS
+	;;
+esac
+
+AC_MSG_CHECKING(if xterm backspace-key sends BS or DEL)
+AC_ARG_WITH(xterm-kbs,
+	[[  --with-xterm-kbs[=XXX]  specify if xterm backspace-key sends BS or DEL]],
+	[with_xterm_kbs=$withval],
+	[with_xterm_kbs=auto])
+case x$with_xterm_kbs in
+(xyes|xno|xBS|xbs|x8)
+	with_xterm_kbs=BS
+	;;
+(xDEL|xdel|x127)
+	with_xterm_kbs=DEL
+	;;
+(xauto)
+	with_xterm_kbs=$want_xterm_kbs
+	;;
+(*)
+	with_xterm_kbs=$withval
+	;;
+esac
+AC_MSG_RESULT($with_xterm_kbs)
+XTERM_KBS=$with_xterm_kbs
+AC_SUBST(XTERM_KBS)
+
+if test "x$with_xterm_kbs" != "x$want_xterm_kbs"
+then
+	AC_MSG_WARN([expected --with-xterm-kbs=$want_xterm_kbs for $host_os, have $with_xterm_kbs])
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_XOPEN_SOURCE version: 69 updated: 2025/07/26 14:09:49

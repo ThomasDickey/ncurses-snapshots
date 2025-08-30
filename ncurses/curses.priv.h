@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.713 2025/08/16 14:40:02 tom Exp $
+ * $Id: curses.priv.h,v 1.717 2025/08/30 22:47:12 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2551,9 +2551,7 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #ifdef USE_TERM_DRIVER
 #if defined(USE_WIN32CON_DRIVER)
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
-extern NCURSES_EXPORT(int) _nc_mingw_console_read(SCREEN *sp, HANDLE fd, int *buf);
 extern NCURSES_EXPORT(int) _nc_mingw_isatty(int fd);
-extern NCURSES_EXPORT(int) _nc_mingw_isconsole(int fd);
 extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
 extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
 extern NCURSES_EXPORT(int) _nc_mingw_testmouse(SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
@@ -2562,6 +2560,14 @@ extern NCURSES_EXPORT(int) _nc_mingw_testmouse(SCREEN *sp, HANDLE fd, int delay 
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #endif /* USE_TERM_DRIVER */
 #endif /* EXP_WIN32_DRIVER */
+
+#ifdef _NC_WINDOWS
+extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
+extern NCURSES_EXPORT(bool) _nc_console_get_SBI(void);
+extern NCURSES_EXPORT(int) _nc_console_read(SCREEN *sp, HANDLE fd, int *buf);
+extern NCURSES_EXPORT(int) _nc_console_test(int fd);
+extern NCURSES_EXPORT(void) _nc_console_size(int *Lines, int *Cols);
+#endif
 
 #if defined(USE_TERM_DRIVER) && defined(EXP_WIN32_DRIVER)
 #define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
@@ -2585,7 +2591,7 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #  if defined(EXP_WIN32_DRIVER)
 #    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))
 #  elif defined(USE_WIN32CON_DRIVER)
-#    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_mingw_isconsole(TerminalOf(sp)->Filedes))
+#    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))
 #  else
 #    define IsTermInfoOnConsole(sp) FALSE
 #  endif

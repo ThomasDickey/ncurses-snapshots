@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.150 2025/03/09 00:43:49 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.151 2025/08/30 19:12:05 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -317,9 +317,9 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 	} else
 # elif defined(_NC_WINDOWS_NATIVE)
 	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && IsCbreak(sp))
-	    n = _nc_mingw_console_read(sp,
-				       _nc_get_handle(sp->_ifd),
-				       &buf);
+	    n = _nc_console_read(sp,
+				 _nc_get_handle(sp->_ifd),
+				 &buf);
 	else
 # endif	/* EXP_WIN32_DRIVER */
 	    n = CallDriver_1(sp, td_read, &buf);

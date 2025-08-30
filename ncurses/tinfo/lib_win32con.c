@@ -36,13 +36,18 @@
  * TODO - GetMousePos(POINT * result) from ntconio.c
  */
 
+#define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.29 2025/08/23 20:28:35 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.30 2025/08/30 20:53:42 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
+#define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
+
+#if defined(EXP_WIN32_DRIVER)
 static bool read_screen_data(void);
+#endif
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
 /* *INDENT-OFF* */
@@ -59,6 +64,7 @@ static const LONG keylist[] =
     GenMap(VK_DELETE, KEY_DC),
     GenMap(VK_INSERT, KEY_IC)
 };
+#if defined(EXP_WIN32_DRIVER)
 static const LONG ansi_keys[] =
 {
     GenMap(VK_PRIOR,  'I'),
@@ -72,12 +78,14 @@ static const LONG ansi_keys[] =
     GenMap(VK_DELETE, 'S'),
     GenMap(VK_INSERT, 'R')
 };
+#endif
 /* *INDENT-ON* */
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24
 #define MAPSIZE (FKEYS + N_INI)
 
+#if defined(EXP_WIN32_DRIVER)
 /*   A process can only have a single console, so it is safe
      to maintain all the information about it in a single
      static structure.
@@ -120,6 +128,9 @@ _nc_console_vt_supported(void)
     }
     returnCode(res);
 }
+#else
+#define EnsureInit() /* nothing */
+#endif
 
 NCURSES_EXPORT(void)
 _nc_console_size(int *Lines, int *Cols)
@@ -138,6 +149,7 @@ _nc_console_size(int *Lines, int *Cols)
     }
 }
 
+#if defined(EXP_WIN32_DRIVER)
 /* Convert a file descriptor into a HANDLE
    That's not necessarily a console HANDLE
 */
@@ -321,6 +333,7 @@ _nc_console_flush(HANDLE hdl)
     }
     returnCode(code);
 }
+#endif
 
 NCURSES_EXPORT(WORD)
 _nc_console_MapColor(bool fore, int color)
@@ -337,6 +350,7 @@ _nc_console_MapColor(bool fore, int color)
     return (WORD) a;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 /*
  * Attempt to save the screen contents.  PDCurses does this if
  * PDC_RESTORE_SCREEN is set, giving the same visual appearance on
@@ -453,6 +467,7 @@ read_screen_data(void)
 
     return result;
 }
+#endif
 
 NCURSES_EXPORT(bool)
 _nc_console_get_SBI(void)
@@ -488,6 +503,7 @@ _nc_console_get_SBI(void)
     return rc;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 #define MIN_WIDE 80
 #define MIN_HIGH 24
 
@@ -565,7 +581,9 @@ _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
     }
     returnVoid;
 }
+#endif
 
+#if defined(EXP_WIN32_DRIVER)
 static ULONGLONG
 tdiff(FILETIME fstart, FILETIME fend)
 {
@@ -592,6 +610,7 @@ Adjust(int milliseconds, int diff)
     }
     return milliseconds;
 }
+#endif
 
 #define BUTTON_MASK (FROM_LEFT_1ST_BUTTON_PRESSED | \
                      FROM_LEFT_2ND_BUTTON_PRESSED | \
@@ -674,6 +693,7 @@ handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer)
     return result;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 static int
 rkeycompare(const void *el1, const void *el2)
 {
@@ -682,6 +702,7 @@ rkeycompare(const void *el1, const void *el2)
 
     return ((key1 < key2) ? -1 : ((key1 == key2) ? 0 : 1));
 }
+#endif
 
 static int
 keycompare(const void *el1, const void *el2)
@@ -744,6 +765,7 @@ AnsiKey(WORD vKey)
     return code;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(int)
 _nc_console_keyok(int keycode, int flag)
 {
@@ -982,6 +1004,7 @@ _nc_console_testmouse(
     }
     return rc;
 }
+#endif // EXP_WIN32_DRIVER
 
 NCURSES_EXPORT(int)
 _nc_console_read(
@@ -1033,6 +1056,16 @@ _nc_console_read(
 			ungetch('\0');
 			*buf = AnsiKey(vk);
 		    }
+		} else if (vk == VK_BACK) {
+		    if (!(inp_rec.Event.KeyEvent.dwControlKeyState
+			  & (SHIFT_PRESSED | CONTROL_PRESSED))) {
+			*buf = KEY_BACKSPACE;
+		    }
+		} else if (vk == VK_TAB) {
+		    if ((inp_rec.Event.KeyEvent.dwControlKeyState
+			 & (SHIFT_PRESSED | CONTROL_PRESSED))) {
+			*buf = KEY_BTAB;
+		    }
 		}
 		break;
 	    } else if (inp_rec.EventType == MOUSE_EVENT) {
@@ -1048,6 +1081,7 @@ _nc_console_read(
     returnCode(rc);
 }
 
+#if defined(EXP_WIN32_DRIVER)
 /*   Our replacement for the systems _isatty to include also
      a test for mintty. This is called from the NC_ISATTY macro
      defined in curses.priv.h
@@ -1231,5 +1265,7 @@ _nc_console_restore(void)
     }
     returnBool(res);
 }
+
+#endif // EXP_WIN32_DRIVER
 
 #endif // _NC_WINDOWS

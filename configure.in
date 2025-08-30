@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.807 2025/08/09 19:49:48 tom Exp $
+dnl $Id: configure.in,v 1.808 2025/08/27 08:18:27 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.807 $)
+AC_REVISION($Revision: 1.808 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -657,42 +657,7 @@ AC_MSG_RESULT($with_xterm_new)
 WHICH_XTERM=$with_xterm_new
 AC_SUBST(WHICH_XTERM)
 
-case $host_os in
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl)
-	want_xterm_kbs=DEL
-	;;
-(*)
-	want_xterm_kbs=BS
-	;;
-esac
-
-AC_MSG_CHECKING(if xterm backspace sends BS or DEL)
-AC_ARG_WITH(xterm-kbs,
-	[[  --with-xterm-kbs[=XXX]  specify if xterm backspace sends BS or DEL]],
-	[with_xterm_kbs=$withval],
-	[with_xterm_kbs=auto])
-case x$with_xterm_kbs in
-(xyes|xno|xBS|xbs|x8)
-	with_xterm_kbs=BS
-	;;
-(xDEL|xdel|x127)
-	with_xterm_kbs=DEL
-	;;
-(xauto)
-	with_xterm_kbs=$want_xterm_kbs
-	;;
-(*)
-	with_xterm_kbs=$withval
-	;;
-esac
-AC_MSG_RESULT($with_xterm_kbs)
-XTERM_KBS=$with_xterm_kbs
-AC_SUBST(XTERM_KBS)
-
-if test "x$with_xterm_kbs" != "x$want_xterm_kbs"
-then
-	AC_MSG_WARN([expected --with-xterm-kbs=$want_xterm_kbs for $host_os, have $with_xterm_kbs])
-fi
+CF_WITH_XTERM_KBS
 
 MAKE_TERMINFO=
 if test "$use_database" = no ; then
