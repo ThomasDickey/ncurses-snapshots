@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1118 2025/08/28 00:35:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.1119 2025/09/13 15:44:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1442,6 +1442,28 @@ then
 else
 	AC_MSG_ERROR(GNU libtool has not been found)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CHECK_MULTIUSER version: 1 updated: 2025/09/13 11:43:46
+dnl ------------------
+dnl Runtime features which check for root permissions apply only to multiuser
+dnl systems.  Check for single-user systems by inspecting /etc/passwd.
+AC_DEFUN([CF_CHECK_MULTIUSER],[
+AC_CACHE_CHECK(for conventional multiuser system,cf_cv_multiuser,[
+	cf_cv_multiuser=no
+	if test -f /etc/passwd
+	then
+		sed \
+			-e '/true$/d' \
+			-e '/false$/d' \
+			-e '/nologin$/d' \
+			-e '/^[[^:]]*:[[^:]]*:[[0-9]]:/d' \
+			-e '/^[[^:]]*:[[^:]]*:[[0-9]][[0-9]]:/d' \
+			-e '/:$/d' < /etc/passwd >conftest.tmp
+		test -s conftest.tmp && cf_cv_multiuser=yes
+		rm -f conftest.tmp
+	fi
+])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_CHECK_NAMED_PIPES version: 1 updated: 2025/08/08 20:44:18

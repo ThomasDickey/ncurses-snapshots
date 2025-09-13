@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4336 2025/08/30 21:02:17 tom Exp $
+-- $Id: NEWS,v 1.4341 2025/09/13 22:52:16 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,26 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20250913
+	+ update ncurses-howto.
+	+ modify MKfallback.sh to eliminate TERMINFO environment variable.
+	+ improve checks in run_tic.sh script, change some variable names to
+	  reduce packager confusion (report by Stas Sergeev).
+	+ disallow configure options which apply only to multiuser systems, to
+	  improve ports to single-user systems such as Haiku (report by Stas
+	  Sergeev).
+	+ update ncurses/wcwidth.c, for MinGW ports, from xterm.
+	+ correct _nc_to_char() for the case when wctob() is not found by
+	  configure script (report/patch by Benno Schulenberg).
+	> patches by Robin Haberkorn
+	  + modify handle_wheel case 2 to ignore the event as in case 1 for
+	    mouse version 1, since that corresponds to a button 6 or 7 event
+	    which is not supported with ABI 6.
+	  + use separate read/write pointers in the mouse event queue to work
+	    with too-close events for the click-detection to work reliably,
+	    and further improve that in case mouseinterval(0) is used to
+	    suppress click-detection.
 
 20250830
 	+ in-progress work to merge MinGW/Windows port.

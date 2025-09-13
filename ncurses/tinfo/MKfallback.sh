@@ -27,7 +27,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: MKfallback.sh,v 1.29 2025/03/29 22:48:05 tom Exp $
+# $Id: MKfallback.sh,v 1.30 2025/09/13 19:12:54 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
@@ -44,11 +44,11 @@ terminfo_src=$1
 shift
 
 tic_path=$1
-test -z "$tic_path" && tic_path=tic
+[ -z "$tic_path" ] && tic_path=tic
 shift
 
 infocmp_path=$1
-test -z "$infocmp_path" && infocmp_path=infocmp
+[ -z "$infocmp_path" ] && infocmp_path=infocmp
 shift
 
 case "$tic_path" in #(vi
@@ -59,17 +59,14 @@ case "$tic_path" in #(vi
 	;;
 esac
 
-if test $# != 0 ; then
-	tmp_info=tmp_info
+if [ $# != 0 ]; then
+	tmp_info=`pwd`/tmp_info
 	echo creating temporary terminfo directory... >&2
-
-	TERMINFO=`pwd`/$tmp_info
-	export TERMINFO
 
 	TERMINFO_DIRS=$TERMINFO:$terminfo_dir
 	export TERMINFO_DIRS
 
-	"$tic_path" -x "$terminfo_src" >&2
+	"$tic_path" -o "$tmp_info" -x "$terminfo_src" >&2
 else
 	tmp_info=
 fi
@@ -87,6 +84,8 @@ EOF
 
 if [ "$*" ]
 then
+	opt_info=
+	[ -n "$tmp_info" ] && opt_info="A$tmp_info"
 	cat <<EOF
 #include <tic.h>
 
@@ -95,7 +94,7 @@ EOF
 	for x in "$@"
 	do
 		echo "/* $x */"
-		"$infocmp_path" -x -E "$x" | sed -e 's/[ 	]short[ 	]/ NCURSES_INT2 /g'
+		"$infocmp_path" -x"$opt_info" -E "$x" | sed -e 's/[ 	]short[ 	]/ NCURSES_INT2 /g'
 	done
 
 	cat <<EOF
@@ -106,7 +105,7 @@ EOF
 	for x in "$@"
 	do
 		echo "$comma /* $x */"
-		"$infocmp_path" -x -e "$x"
+		"$infocmp_path" -x"$opt_info" -e "$x"
 		comma=","
 	done
 
@@ -161,7 +160,7 @@ _nc_fallback (const char *name)
 #endif
 EOF
 
-if test -n "$tmp_info" ; then
+if [ -n "$tmp_info" ] ; then
 	echo removing temporary terminfo directory... >&2
-	rm -rf $tmp_info
+	rm -rf "$tmp_info"
 fi

@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.210 2025/06/21 14:24:38 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.213 2025/09/13 19:56:44 tom Exp $")
 
 #include <tic.h>
 
@@ -786,7 +786,7 @@ _nc_mouse_init(SCREEN *sp)
 
 	    TR(MY_TRACE, ("set _mouse_initialized"));
 
-	    sp->_mouse_eventp = FirstEV(sp);
+	    sp->_mouse_readp = sp->_mouse_writep = FirstEV(sp);
 	    for (i = 0; i < EV_MAX; i++)
 		Invalidate(sp->_mouse_events + i);
 
@@ -806,7 +806,7 @@ _nc_mouse_init(SCREEN *sp)
 static bool
 _nc_mouse_event(SCREEN *sp)
 {
-    MEVENT *eventp = sp->_mouse_eventp;
+    MEVENT *eventp = sp->_mouse_writep;
     bool result = FALSE;
 
     (void) eventp;
@@ -874,7 +874,7 @@ _nc_mouse_event(SCREEN *sp)
 		eventp->z = 0;
 
 		/* bump the next-free pointer into the circular list */
-		sp->_mouse_eventp = NEXT(eventp);
+		sp->_mouse_writep = NEXT(eventp);
 		result = TRUE;
 		break;
 	    }
@@ -899,7 +899,7 @@ _nc_mouse_event(SCREEN *sp)
 	    }
 
 	    /* bump the next-free pointer into the circular list */
-	    sp->_mouse_eventp = eventp = NEXT(eventp);
+	    sp->_mouse_writep = eventp = NEXT(eventp);
 	    result = TRUE;
 	}
 	break;
@@ -921,7 +921,7 @@ _nc_mouse_event(SCREEN *sp)
 	    }
 
 	    /* bump the next-free pointer into the circular list */
-	    sp->_mouse_eventp = eventp = NEXT(eventp);
+	    sp->_mouse_writep = eventp = NEXT(eventp);
 	    result = TRUE;
 	}
 	break;
@@ -984,7 +984,12 @@ handle_wheel(SCREEN *sp, MEVENT * eventp, int button, int wheel)
 	}
 	break;
     case 2:
-	PRESS_POSITION(3);
+	if (wheel) {
+	    /* Ignore this event as it is not a true press of the button */
+	    eventp->bstate = REPORT_MOUSE_POSITION;
+	} else {
+	    PRESS_POSITION(3);
+	}
 	break;
     default:
 	/*
@@ -1355,7 +1360,7 @@ _nc_mouse_inline(SCREEN *sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
     bool result = FALSE;
-    MEVENT *eventp = sp->_mouse_eventp;
+    MEVENT *eventp = sp->_mouse_writep;
 
     TR(MY_TRACE, ("_nc_mouse_inline() called"));
 
@@ -1380,7 +1385,7 @@ _nc_mouse_inline(SCREEN *sp)
 	    (long) IndexEV(sp, eventp)));
 
 	/* bump the next-free pointer into the circular list */
-	sp->_mouse_eventp = NEXT(eventp);
+	sp->_mouse_writep = NEXT(eventp);
 
 	if (!result) {
 	    /* If this event is from a wheel-mouse, treat it like position
@@ -1501,7 +1506,7 @@ static bool
 _nc_mouse_parse(SCREEN *sp, int runcount)
 /* parse a run of atomic mouse events into a gesture */
 {
-    MEVENT *eventp = sp->_mouse_eventp;
+    MEVENT *eventp = sp->_mouse_writep;
     MEVENT *next, *ep;
     MEVENT *first_valid = NULL;
     MEVENT *first_invalid = NULL;
@@ -1511,6 +1516,10 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
     bool endLoop;
 
     TR(MY_TRACE, ("_nc_mouse_parse(%d) called", runcount));
+
+    if (!sp->_maxclick)
+	return sp->_mouse_readp && ValidEvent(sp->_mouse_readp) &&
+	    ((sp->_mouse_readp->bstate & sp->_mouse_mask) != 0);
 
     /*
      * When we enter this routine, the event list next-free pointer
@@ -1547,6 +1556,7 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
 	Invalidate(ep);
 	ep = NEXT(ep);
     }
+    assert(ep == sp->_mouse_readp);
 
 #ifdef TRACE
     if (USE_TRACEF(TRACE_IEVENT)) {
@@ -1723,7 +1733,7 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
     if (first_invalid == NULL) {
 	first_invalid = eventp;
     }
-    sp->_mouse_eventp = first_invalid;
+    sp->_mouse_writep = first_invalid;
 
 #ifdef TRACE
     if (first_valid != NULL) {
@@ -1830,36 +1840,34 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 {
     int result = ERR;
-    MEVENT *eventp;
+    MEVENT *readp;
 
     T((T_CALLED("getmouse(%p,%p)"), (void *) SP_PARM, (void *) aevent));
 
     if ((aevent != NULL) &&
 	(SP_PARM != NULL) &&
 	(SP_PARM->_mouse_type != M_NONE) &&
-	(eventp = SP_PARM->_mouse_eventp) != NULL) {
-	/* compute the current-event pointer */
-	MEVENT *prev = PREV(eventp);
-
+	(readp = SP_PARM->_mouse_readp) != NULL) {
 	/*
 	 * Discard events not matching mask (there could be still some if
 	 * _nc_mouse_parse was not called, e.g., when _nc_mouse_inline returns
 	 * false).
 	 */
-	while (ValidEvent(prev) && (!(prev->bstate & SP_PARM->_mouse_mask2))) {
-	    Invalidate(prev);
-	    prev = PREV(prev);
+	while (readp != SP_PARM->_mouse_writep &&
+	       (!ValidEvent(readp) || !(readp->bstate & SP_PARM->_mouse_mask2))) {
+	    Invalidate(readp);
+	    readp = NEXT(readp);
 	}
-	if (ValidEvent(prev)) {
+	if (readp != SP_PARM->_mouse_writep && ValidEvent(readp)) {
 	    /* copy the event we find there */
-	    *aevent = *prev;
+	    *aevent = *readp;
 
 	    TR(TRACE_IEVENT, ("getmouse: returning event %s from slot %ld",
-			      _nc_tracemouse(SP_PARM, prev),
-			      (long) IndexEV(SP_PARM, prev)));
+			      _nc_tracemouse(SP_PARM, readp),
+			      (long) IndexEV(SP_PARM, readp)));
 
-	    Invalidate(prev);	/* so the queue slot becomes free */
-	    SP_PARM->_mouse_eventp = prev;
+	    Invalidate(readp);	/* so the queue slot becomes free */
+	    SP_PARM->_mouse_readp = NEXT(readp);
 	    result = OK;
 	} else {
 	    /* Reset the provided event */
@@ -1892,13 +1900,13 @@ NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 
     if (aevent != NULL &&
 	SP_PARM != NULL &&
-	(eventp = SP_PARM->_mouse_eventp) != NULL) {
+	(eventp = SP_PARM->_mouse_writep) != NULL) {
 
 	/* stick the given event in the next-free slot */
 	*eventp = *aevent;
 
 	/* bump the next-free pointer into the circular list */
-	SP_PARM->_mouse_eventp = NEXT(eventp);
+	SP_PARM->_mouse_writep = NEXT(eventp);
 
 	/* push back the notification event on the keyboard queue */
 	result = NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx KEY_MOUSE);

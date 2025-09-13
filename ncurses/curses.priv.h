@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.717 2025/08/30 22:47:12 tom Exp $
+ * $Id: curses.priv.h,v 1.718 2025/09/13 19:55:59 Robin.Haberkorn Exp $
  *
  *	curses.priv.h
  *
@@ -1152,7 +1152,8 @@ typedef struct screen {
 	MouseFormat	_mouse_format;	/* type of xterm mouse protocol */
 	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
 	MEVENT		_mouse_events[EV_MAX];	/* hold the last mouse event seen */
-	MEVENT		*_mouse_eventp;	/* next free slot in event queue */
+	MEVENT		*_mouse_readp;	/* read pointer into event queue */
+	MEVENT		*_mouse_writep;	/* write pointer into event queue */
 
 	/*
 	 * These are data that support the proper handling of the panel stack on an
