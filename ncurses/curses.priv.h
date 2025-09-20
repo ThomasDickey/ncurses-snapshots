@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.718 2025/09/13 19:55:59 Robin.Haberkorn Exp $
+ * $Id: curses.priv.h,v 1.719 2025/09/20 20:30:37 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2552,6 +2552,7 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #ifdef USE_TERM_DRIVER
 #if defined(USE_WIN32CON_DRIVER)
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
+extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
 extern NCURSES_EXPORT(int) _nc_mingw_isatty(int fd);
 extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
 extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
@@ -2565,8 +2566,9 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #ifdef _NC_WINDOWS
 extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(bool) _nc_console_get_SBI(void);
-extern NCURSES_EXPORT(int) _nc_console_read(SCREEN *sp, HANDLE fd, int *buf);
-extern NCURSES_EXPORT(int) _nc_console_test(int fd);
+extern NCURSES_EXPORT(int)  _nc_console_read(SCREEN *sp, HANDLE fd, int *buf);
+extern NCURSES_EXPORT(void) _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info);
+extern NCURSES_EXPORT(int)  _nc_console_test(int fd);
 extern NCURSES_EXPORT(void) _nc_console_size(int *Lines, int *Cols);
 #endif
 

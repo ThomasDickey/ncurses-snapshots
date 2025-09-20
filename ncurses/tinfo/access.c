@@ -36,10 +36,12 @@
 #include <ctype.h>
 
 #ifndef USE_ROOT_ACCESS
-#if HAVE_SETFSUID
+#if HAVE_SETFSUID && HAVE_SYS_FSUID_H
 #include <sys/fsuid.h>
 #else
 #include <sys/stat.h>
+#undef HAVE_SETFSUID
+#define HAVE_SETFSUID 0		/* workaround for misconfigured system */
 #endif
 #endif
 
@@ -52,7 +54,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.42 2025/02/20 01:02:09 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.43 2025/09/15 07:56:59 tom Exp $")
 
 #define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 

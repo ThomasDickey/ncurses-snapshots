@@ -44,20 +44,19 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.94 2025/08/30 20:50:55 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.97 2025/09/20 20:58:36 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
 
-extern NCURSES_EXPORT(WORD)   _nc_console_MapColor(bool fore, int color);
+extern
+NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 
-static bool InitConsole(void);
-
 #define AssertTCB() assert(TCB != NULL && (TCB->magic == WINMAGIC))
 #define validateConsoleHandle() (AssertTCB(), console_initialized || \
-                                 InitConsole())
+                                 _nc_mingw_init())
 #define SetSP()     assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
@@ -78,20 +77,6 @@ static const LONG keylist[] =
     GenMap(VK_INSERT, KEY_IC),
     GenMap(VK_TAB,    KEY_BTAB)
 };
-static const LONG ansi_keys[] =
-{
-    GenMap(VK_PRIOR,  'I'),
-    GenMap(VK_NEXT,   'Q'),
-    GenMap(VK_END,    'O'),
-    GenMap(VK_HOME,   'H'),
-    GenMap(VK_LEFT,   'K'),
-    GenMap(VK_UP,     'H'),
-    GenMap(VK_RIGHT,  'M'),
-    GenMap(VK_DOWN,   'P'),
-    GenMap(VK_DELETE, 'S'),
-    GenMap(VK_INSERT, 'R'),
-    GenMap(VK_TAB,    'Z')
-};
 /* *INDENT-ON* */
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24
@@ -103,14 +88,14 @@ static const LONG ansi_keys[] =
      static structure.
  */
 NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
-static BOOL console_initialized = FALSE;
+     static BOOL console_initialized = FALSE;
 
 #define RevAttr(attr) (WORD) (((attr) & 0xff00) | \
 		      ((((attr) & 0x07) << 4) | \
 		       (((attr) & 0x70) >> 4)))
 
-static WORD
-MapAttr(WORD res, attr_t ch)
+     static WORD
+       MapAttr(WORD res, attr_t ch)
 {
     if (ch & A_COLOR) {
 	int p;
@@ -584,9 +569,9 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 
     TCB->magic = WINMAGIC;
 
-    if (tname == NULL || *tname == 0)
+    if (tname == NULL || *tname == 0) {
 	code = TRUE;
-    else if (tname != NULL && *tname == '#') {
+    } else if (tname != NULL && *tname == '#') {
 	/*
 	 * Use "#" (a character which cannot begin a terminal's name) to
 	 * select specific driver from the table.
@@ -851,84 +836,6 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
     returnCode(result);
 }
 
-#define MIN_WIDE 80
-#define MIN_HIGH 24
-
-/*
- * In "normal" mode, reset the buffer- and window-sizes back to their original values.
- */
-static void
-_nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
-{
-    SMALL_RECT rect;
-    COORD coord;
-    bool changed = FALSE;
-
-    T((T_CALLED("win32con::_nc_console_set_scrollback(%s)"),
-       (normal
-	? "normal"
-	: "application")));
-
-    T(("... SBI.srWindow %d,%d .. %d,%d",
-       info->srWindow.Top,
-       info->srWindow.Left,
-       info->srWindow.Bottom,
-       info->srWindow.Right));
-    T(("... SBI.dwSize %dx%d",
-       info->dwSize.Y,
-       info->dwSize.X));
-
-    if (normal) {
-	rect = info->srWindow;
-	coord = info->dwSize;
-	if (memcmp(info, &WINCONSOLE.SBI, sizeof(*info)) != 0) {
-	    changed = TRUE;
-	    WINCONSOLE.SBI = *info;
-	}
-    } else {
-	int high = info->srWindow.Bottom - info->srWindow.Top + 1;
-	int wide = info->srWindow.Right - info->srWindow.Left + 1;
-
-	if (high < MIN_HIGH) {
-	    T(("... height %d < %d", high, MIN_HIGH));
-	    high = MIN_HIGH;
-	    changed = TRUE;
-	}
-	if (wide < MIN_WIDE) {
-	    T(("... width %d < %d", wide, MIN_WIDE));
-	    wide = MIN_WIDE;
-	    changed = TRUE;
-	}
-
-	rect.Left =
-	    rect.Top = 0;
-	rect.Right = (SHORT) (wide - 1);
-	rect.Bottom = (SHORT) (high - 1);
-
-	coord.X = (SHORT) wide;
-	coord.Y = (SHORT) high;
-
-	if (info->dwSize.Y != high ||
-	    info->dwSize.X != wide ||
-	    info->srWindow.Top != 0 ||
-	    info->srWindow.Left != 0) {
-	    changed = TRUE;
-	}
-
-    }
-
-    if (changed) {
-	T(("... coord %d,%d", coord.Y, coord.X));
-	T(("... rect %d,%d - %d,%d",
-	   rect.Top, rect.Left,
-	   rect.Bottom, rect.Right));
-	SetConsoleScreenBufferSize(WINCONSOLE.hdl, coord);	/* dwSize */
-	SetConsoleWindowInfo(WINCONSOLE.hdl, TRUE, &rect);	/* srWindow */
-	_nc_console_get_SBI();
-    }
-    returnVoid;
-}
-
 static int
 wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 {
@@ -1056,90 +963,6 @@ wcon_release(TERMINAL_CONTROL_BLOCK * TCB)
     returnVoid;
 }
 
-static bool
-read_screen_data(void)
-{
-    bool result = FALSE;
-    COORD bufferCoord;
-    size_t want;
-
-    WINCONSOLE.save_size.X = (SHORT) (WINCONSOLE.save_region.Right
-				      - WINCONSOLE.save_region.Left + 1);
-    WINCONSOLE.save_size.Y = (SHORT) (WINCONSOLE.save_region.Bottom
-				      - WINCONSOLE.save_region.Top + 1);
-
-    want = (size_t) (WINCONSOLE.save_size.X * WINCONSOLE.save_size.Y);
-
-    if ((WINCONSOLE.save_screen = malloc(want * sizeof(CHAR_INFO))) != NULL) {
-	bufferCoord.X = (SHORT) (WINCONSOLE.window_only
-				 ? WINCONSOLE.SBI.srWindow.Left
-				 : 0);
-	bufferCoord.Y = (SHORT) (WINCONSOLE.window_only
-				 ? WINCONSOLE.SBI.srWindow.Top
-				 : 0);
-
-	T(("... reading console %s %dx%d into %d,%d - %d,%d at %d,%d",
-	   WINCONSOLE.window_only ? "window" : "buffer",
-	   WINCONSOLE.save_size.Y, WINCONSOLE.save_size.X,
-	   WINCONSOLE.save_region.Top,
-	   WINCONSOLE.save_region.Left,
-	   WINCONSOLE.save_region.Bottom,
-	   WINCONSOLE.save_region.Right,
-	   bufferCoord.Y,
-	   bufferCoord.X));
-
-	if (read_screen(WINCONSOLE.hdl,
-			WINCONSOLE.save_screen,
-			WINCONSOLE.save_size,
-			bufferCoord,
-			&WINCONSOLE.save_region)) {
-	    result = TRUE;
-	} else {
-	    T((" error %#lx", (unsigned long) GetLastError()));
-	    FreeAndNull(WINCONSOLE.save_screen);
-	}
-    }
-
-    return result;
-}
-
-/*
- * Attempt to save the screen contents.  PDCurses does this if
- * PDC_RESTORE_SCREEN is set, giving the same visual appearance on
- * restoration as if the library had allocated a console buffer.  MSDN
- * says that the data which can be read is limited to 64Kb (and may be
- * less).
- */
-static bool
-save_original_screen(void)
-{
-    bool result = FALSE;
-
-    WINCONSOLE.save_region.Top = 0;
-    WINCONSOLE.save_region.Left = 0;
-    WINCONSOLE.save_region.Bottom = (SHORT) (WINCONSOLE.SBI.dwSize.Y - 1);
-    WINCONSOLE.save_region.Right = (SHORT) (WINCONSOLE.SBI.dwSize.X - 1);
-
-    if (read_screen_data()) {
-	result = TRUE;
-    } else {
-
-	WINCONSOLE.save_region.Top = WINCONSOLE.SBI.srWindow.Top;
-	WINCONSOLE.save_region.Left = WINCONSOLE.SBI.srWindow.Left;
-	WINCONSOLE.save_region.Bottom = WINCONSOLE.SBI.srWindow.Bottom;
-	WINCONSOLE.save_region.Right = WINCONSOLE.SBI.srWindow.Right;
-
-	WINCONSOLE.window_only = TRUE;
-
-	if (read_screen_data()) {
-	    result = TRUE;
-	}
-    }
-
-    T(("... save original screen contents %s", result ? "ok" : "err"));
-    return result;
-}
-
 static void
 wcon_init(TERMINAL_CONTROL_BLOCK * TCB)
 {
@@ -1147,11 +970,11 @@ wcon_init(TERMINAL_CONTROL_BLOCK * TCB)
 
     AssertTCB();
 
-    if (TCB) {
-	if (!InitConsole()) {
-	    returnVoid;
-	}
+    if (!(console_initialized = _nc_mingw_init())) {
+	returnVoid;
+    }
 
+    if (TCB) {
 	TCB->info.initcolor = TRUE;
 	TCB->info.canchange = FALSE;
 	TCB->info.hascolor = TRUE;
@@ -1399,7 +1222,7 @@ Adjust(int milliseconds, int diff)
                      RIGHTMOST_BUTTON_PRESSED)
 
 static mmask_t
-decode_mouse(SCREEN *sp, int mask)
+decode_mouse(const SCREEN *sp, int mask)
 {
     mmask_t result = 0;
 
@@ -1437,8 +1260,8 @@ decode_mouse(SCREEN *sp, int mask)
 
 static int
 _nc_console_twait(
-		     SCREEN *sp,
-		     HANDLE fd,
+		     const SCREEN *sp,
+		     HANDLE hdl,
 		     int mode,
 		     int milliseconds,
 		     int *timeleft
@@ -1451,13 +1274,13 @@ _nc_console_twait(
     FILETIME fstart;
     FILETIME fend;
     int diff;
-    bool isImmed = (milliseconds == 0);
+    bool isNoDelay = (milliseconds == 0);
 
 #ifdef NCURSES_WGETCH_EVENTS
     (void) evl;			/* TODO: implement wgetch-events */
 #endif
 
-#define CONSUME() read_keycode(fd,&inp_rec,1,&nRead)
+#define CONSUME() read_keycode(hdl,&inp_rec,1,&nRead)
 
     assert(sp);
 
@@ -1471,19 +1294,19 @@ _nc_console_twait(
 
     while (true) {
 	GetSystemTimeAsFileTime(&fstart);
-	rc = WaitForSingleObject(fd, (DWORD) milliseconds);
+	rc = WaitForSingleObject(hdl, (DWORD) milliseconds);
 	GetSystemTimeAsFileTime(&fend);
 	diff = (int) tdiff(fstart, fend);
 	milliseconds = Adjust(milliseconds, diff);
 
-	if (!isImmed && milliseconds <= 0)
+	if (!isNoDelay && milliseconds <= 0)
 	    break;
 
 	if (rc == WAIT_OBJECT_0) {
 	    if (mode) {
-		b = GetNumberOfConsoleInputEvents(fd, &nRead);
+		b = GetNumberOfConsoleInputEvents(hdl, &nRead);
 		if (b && nRead > 0) {
-		    b = PeekConsoleInput(fd, &inp_rec, 1, &nRead);
+		    b = PeekConsoleInput(hdl, &inp_rec, 1, &nRead);
 		    if (b && nRead > 0) {
 			switch (inp_rec.EventType) {
 			case KEY_EVENT:
@@ -1901,103 +1724,4 @@ _nc_mingw_testmouse(
 			       EVENTLIST_2nd(evl));
     }
     return rc;
-}
-
-static bool
-InitConsole(void)
-{
-    {
-	/* initialize once, or not at all */
-	if (!console_initialized) {
-	    int i;
-	    DWORD num_buttons;
-	    WORD a;
-	    BOOL buffered = TRUE;
-	    BOOL b;
-
-	    START_TRACE();
-
-	    WINCONSOLE.map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
-	    WINCONSOLE.rmap = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
-	    WINCONSOLE.ansi_map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
-
-	    for (i = 0; i < (N_INI + FKEYS); i++) {
-		if (i < N_INI) {
-		    WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
-			(DWORD) keylist[i];
-		    WINCONSOLE.ansi_map[i] = (DWORD) ansi_keys[i];
-		} else {
-		    WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
-			(DWORD) GenMap((VK_F1 + (i - N_INI)),
-				       (KEY_F(1) + (i - N_INI)));
-		    WINCONSOLE.ansi_map[i] =
-			(DWORD) GenMap((VK_F1 + (i - N_INI)),
-				       (';' + (i - N_INI)));
-		}
-	    }
-	    qsort(WINCONSOLE.ansi_map,
-		  (size_t) (MAPSIZE),
-		  sizeof(keylist[0]),
-		  keycompare);
-	    qsort(WINCONSOLE.map,
-		  (size_t) (MAPSIZE),
-		  sizeof(keylist[0]),
-		  keycompare);
-	    qsort(WINCONSOLE.rmap,
-		  (size_t) (MAPSIZE),
-		  sizeof(keylist[0]),
-		  rkeycompare);
-
-	    if (GetNumberOfConsoleMouseButtons(&num_buttons)) {
-		WINCONSOLE.numButtons = (int) num_buttons;
-	    } else {
-		WINCONSOLE.numButtons = 1;
-	    }
-
-	    a = _nc_console_MapColor(true, COLOR_WHITE) |
-		_nc_console_MapColor(false, COLOR_BLACK);
-	    for (i = 0; i < CON_NUMPAIRS; i++)
-		WINCONSOLE.pairs[i] = a;
-
-	    {
-		b = AllocConsole();
-
-		if (!b)
-		    b = AttachConsole(ATTACH_PARENT_PROCESS);
-
-		WINCONSOLE.inp = GetDirectHandle("CONIN$", FILE_SHARE_READ);
-		WINCONSOLE.out = GetDirectHandle("CONOUT$", FILE_SHARE_WRITE);
-
-		if (getenv("NCGDB") || getenv("NCURSES_CONSOLE2")) {
-		    T(("... will not buffer console"));
-		    buffered = FALSE;
-		    WINCONSOLE.hdl = WINCONSOLE.out;
-		} else {
-		    T(("... creating console buffer"));
-		    WINCONSOLE.hdl = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE,
-							       FILE_SHARE_READ | FILE_SHARE_WRITE,
-							       NULL,
-							       CONSOLE_TEXTMODE_BUFFER,
-							       NULL);
-		}
-
-		if (WINCONSOLE.hdl != INVALID_HANDLE_VALUE) {
-		    WINCONSOLE.buffered = buffered;
-		    _nc_console_get_SBI();
-		    WINCONSOLE.save_SBI = WINCONSOLE.SBI;
-		    if (!buffered) {
-			save_original_screen();
-			_nc_console_set_scrollback(FALSE, &WINCONSOLE.SBI);
-		    }
-		    GetConsoleCursorInfo(WINCONSOLE.hdl, &WINCONSOLE.save_CI);
-		    T(("... initial cursor is %svisible, %d%%",
-		       (WINCONSOLE.save_CI.bVisible ? "" : "not-"),
-		       (int) WINCONSOLE.save_CI.dwSize));
-		}
-	    }
-
-	    console_initialized = TRUE;
-	}
-    }
-    return (WINCONSOLE.hdl != INVALID_HANDLE_VALUE);
 }

@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1119 2025/09/13 15:44:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.1122 2025/09/20 17:27:52 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2724,7 +2724,7 @@ AC_CHECK_LIB(bsd, gettimeofday,
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_GETTTYNAM version: 3 updated: 2024/12/14 16:09:34
+dnl CF_FUNC_GETTTYNAM version: 4 updated: 2025/09/20 13:27:11
 dnl -----------------
 dnl Check if the 4.3BSD function getttyname exists, as well as if <ttyent.h>
 dnl defines the _PATH_TTYS symbol.  If the corresponding file exists, but the
@@ -2756,7 +2756,6 @@ then
 	AC_CACHE_CHECK(if _PATH_TTYS file exists,cf_cv_have_PATH_TTYS,[
 		AC_TRY_RUN([
 $ac_includes_default
-
 #include <ttyent.h>
 
 int main(void) {
@@ -2777,7 +2776,7 @@ then
 		[struct ttyent *fp = getttynam("/dev/tty"); (void)fp],
 		[cf_cv_func_getttynam=yes],
 		[cf_cv_func_getttynam=no])])
-	test "$cf_cv_func_getttynam" = yes && AC_DEFINE(HAVE_GETTTYNAM)
+	test "$cf_cv_func_getttynam" = yes && AC_DEFINE(HAVE_GETTTYNAM,1,[define to 1 if the system has getttynam()])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -8911,7 +8910,7 @@ AC_DEFUN([CF_VERBOSE],
 CF_MSG_LOG([$1])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_VERSION_INFO version: 10 updated: 2025/01/10 19:55:54
+dnl CF_VERSION_INFO version: 11 updated: 2025/09/20 13:27:11
 dnl ---------------
 dnl Define several useful symbols derived from the VERSION file.  A separate
 dnl file is preferred to embedding the version numbers in various scripts.
@@ -8995,9 +8994,9 @@ ifelse($1,,,[
 	AC_SUBST(PROGRAM)
 	AC_SUBST(PACKAGE)
 	AH_TEMPLATE([AS_TR_CPP($1[_VERSION])],[version of package])
-	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_VERSION]),"${VERSION_MAJOR}.${VERSION_MINOR}")
+	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_VERSION]),"${VERSION_MAJOR}.${VERSION_MINOR}",[define to version of $1])
 	AH_TEMPLATE([AS_TR_CPP($1[_PATCHDATE])],[patchdate of package])
-	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_PATCHDATE]),${VERSION_PATCH})
+	AC_DEFINE_UNQUOTED(AS_TR_CPP($1[_PATCHDATE]),${VERSION_PATCH},[define to patchdate of $1])
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------

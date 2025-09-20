@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.118 2025/08/08 23:46:30 tom Exp $
+# $Id: ncurses_defs,v 1.119 2025/09/15 07:45:00 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -177,6 +177,7 @@ HAVE_SYMLINK
 HAVE_SYSCONF
 HAVE_SYS_AUXV_H
 HAVE_SYS_BSDTYPES_H
+HAVE_SYS_FSUID_H
 HAVE_SYS_IOCTL_H
 HAVE_SYS_PARAM_H
 HAVE_SYS_POLL_H

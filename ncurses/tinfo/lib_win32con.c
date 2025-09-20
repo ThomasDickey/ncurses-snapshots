@@ -39,15 +39,13 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.30 2025/08/30 20:53:42 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.31 2025/09/20 20:46:14 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
-#if defined(EXP_WIN32_DRIVER)
 static bool read_screen_data(void);
-#endif
 
 #define GenMap(vKey,key) MAKELONG(key, vKey)
 /* *INDENT-OFF* */
@@ -64,7 +62,6 @@ static const LONG keylist[] =
     GenMap(VK_DELETE, KEY_DC),
     GenMap(VK_INSERT, KEY_IC)
 };
-#if defined(EXP_WIN32_DRIVER)
 static const LONG ansi_keys[] =
 {
     GenMap(VK_PRIOR,  'I'),
@@ -78,12 +75,13 @@ static const LONG ansi_keys[] =
     GenMap(VK_DELETE, 'S'),
     GenMap(VK_INSERT, 'R')
 };
-#endif
 /* *INDENT-ON* */
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 #define N_INI ((int)array_length(keylist))
 #define FKEYS 24
 #define MAPSIZE (FKEYS + N_INI)
+
+static bool console_initialized = FALSE;
 
 #if defined(EXP_WIN32_DRIVER)
 /*   A process can only have a single console, so it is safe
@@ -91,7 +89,6 @@ static const LONG ansi_keys[] =
      static structure.
  */
 NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
-static bool console_initialized = FALSE;
 
 #define EnsureInit() (void)(console_initialized ? TRUE : _nc_console_checkinit(TRUE, TRUE))
 
@@ -129,7 +126,7 @@ _nc_console_vt_supported(void)
     returnCode(res);
 }
 #else
-#define EnsureInit() /* nothing */
+#define EnsureInit()		/* nothing */
 #endif
 
 NCURSES_EXPORT(void)
@@ -350,7 +347,6 @@ _nc_console_MapColor(bool fore, int color)
     return (WORD) a;
 }
 
-#if defined(EXP_WIN32_DRIVER)
 /*
  * Attempt to save the screen contents.  PDCurses does this if
  * PDC_RESTORE_SCREEN is set, giving the same visual appearance on
@@ -388,6 +384,7 @@ save_original_screen(void)
     return result;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 static bool
 restore_original_screen(void)
 {
@@ -422,6 +419,7 @@ restore_original_screen(void)
     }
     return result;
 }
+#endif
 
 static bool
 read_screen_data(void)
@@ -437,11 +435,13 @@ read_screen_data(void)
 
     want = (size_t) (WINCONSOLE.save_size.X * WINCONSOLE.save_size.Y);
 
-    if ((WINCONSOLE.save_screen = malloc(want * sizeof(CHAR_INFO))) != 0) {
-	bufferCoord.X = (SHORT) (WINCONSOLE.window_only ?
-				 WINCONSOLE.SBI.srWindow.Left : 0);
-	bufferCoord.Y = (SHORT) (WINCONSOLE.window_only ?
-				 WINCONSOLE.SBI.srWindow.Top : 0);
+    if ((WINCONSOLE.save_screen = malloc(want * sizeof(CHAR_INFO))) != NULL) {
+	bufferCoord.X = (SHORT) (WINCONSOLE.window_only
+				 ? WINCONSOLE.SBI.srWindow.Left
+				 : 0);
+	bufferCoord.Y = (SHORT) (WINCONSOLE.window_only
+				 ? WINCONSOLE.SBI.srWindow.Top
+				 : 0);
 
 	T(("... reading console %s %dx%d into %d,%d - %d,%d at %d,%d",
 	   WINCONSOLE.window_only ? "window" : "buffer",
@@ -467,7 +467,6 @@ read_screen_data(void)
 
     return result;
 }
-#endif
 
 NCURSES_EXPORT(bool)
 _nc_console_get_SBI(void)
@@ -503,7 +502,6 @@ _nc_console_get_SBI(void)
     return rc;
 }
 
-#if defined(EXP_WIN32_DRIVER)
 #define MIN_WIDE 80
 #define MIN_HIGH 24
 
@@ -581,7 +579,6 @@ _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
     }
     returnVoid;
 }
-#endif
 
 #if defined(EXP_WIN32_DRIVER)
 static ULONGLONG
@@ -693,7 +690,6 @@ handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer)
     return result;
 }
 
-#if defined(EXP_WIN32_DRIVER)
 static int
 rkeycompare(const void *el1, const void *el2)
 {
@@ -702,7 +698,6 @@ rkeycompare(const void *el1, const void *el2)
 
     return ((key1 < key2) ? -1 : ((key1 == key2) ? 0 : 1));
 }
-#endif
 
 static int
 keycompare(const void *el1, const void *el2)
@@ -1266,6 +1261,107 @@ _nc_console_restore(void)
     returnBool(res);
 }
 
+#else // !defined(EXP_WIN32_DRIVER)
+NCURSES_EXPORT(bool)
+_nc_mingw_init(void)
+{
+    {
+	/* initialize once, or not at all */
+	if (!console_initialized) {
+	    int i;
+	    DWORD num_buttons;
+	    WORD a;
+	    BOOL buffered = TRUE;
+	    BOOL b;
+
+	    START_TRACE();
+
+	    WINCONSOLE.map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+	    WINCONSOLE.rmap = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+	    WINCONSOLE.ansi_map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+
+	    for (i = 0; i < (N_INI + FKEYS); i++) {
+		if (i < N_INI) {
+		    WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
+			(DWORD) keylist[i];
+		    WINCONSOLE.ansi_map[i] = (DWORD) ansi_keys[i];
+		} else {
+		    WINCONSOLE.rmap[i] = WINCONSOLE.map[i] =
+			(DWORD) GenMap((VK_F1 + (i - N_INI)),
+				       (KEY_F(1) + (i - N_INI)));
+		    WINCONSOLE.ansi_map[i] =
+			(DWORD) GenMap((VK_F1 + (i - N_INI)),
+				       (';' + (i - N_INI)));
+		}
+	    }
+	    qsort(WINCONSOLE.ansi_map,
+		  (size_t) (MAPSIZE),
+		  sizeof(keylist[0]),
+		  keycompare);
+	    qsort(WINCONSOLE.map,
+		  (size_t) (MAPSIZE),
+		  sizeof(keylist[0]),
+		  keycompare);
+	    qsort(WINCONSOLE.rmap,
+		  (size_t) (MAPSIZE),
+		  sizeof(keylist[0]),
+		  rkeycompare);
+
+	    if (GetNumberOfConsoleMouseButtons(&num_buttons)) {
+		WINCONSOLE.numButtons = (int) num_buttons;
+	    } else {
+		WINCONSOLE.numButtons = 1;
+	    }
+
+	    a = _nc_console_MapColor(true, COLOR_WHITE) |
+		_nc_console_MapColor(false, COLOR_BLACK);
+	    for (i = 0; i < CON_NUMPAIRS; i++)
+		WINCONSOLE.pairs[i] = a;
+
+	    {
+		b = AllocConsole();
+
+		if (!b)
+		    b = AttachConsole(ATTACH_PARENT_PROCESS);
+
+		WINCONSOLE.inp = GetDirectHandle("CONIN$", FILE_SHARE_READ);
+		WINCONSOLE.out = GetDirectHandle("CONOUT$", FILE_SHARE_WRITE);
+
+		if (getenv("NCGDB") || getenv("NCURSES_CONSOLE2")) {
+		    T(("... will not buffer console"));
+		    buffered = FALSE;
+		    WINCONSOLE.hdl = WINCONSOLE.out;
+		} else {
+		    T(("... creating console buffer"));
+		    WINCONSOLE.hdl = CreateConsoleScreenBuffer(GENERIC_READ
+							       | GENERIC_WRITE,
+							       FILE_SHARE_READ
+							       | FILE_SHARE_WRITE,
+							       NULL,
+							       CONSOLE_TEXTMODE_BUFFER,
+							       NULL);
+		}
+
+		if (WINCONSOLE.hdl != INVALID_HANDLE_VALUE) {
+		    WINCONSOLE.buffered = buffered;
+		    _nc_console_get_SBI();
+		    WINCONSOLE.save_SBI = WINCONSOLE.SBI;
+		    if (!buffered) {
+			save_original_screen();
+			_nc_console_set_scrollback(FALSE, &WINCONSOLE.SBI);
+		    }
+		    GetConsoleCursorInfo(WINCONSOLE.hdl, &WINCONSOLE.save_CI);
+		    T(("... initial cursor is %svisible, %d%%",
+		       (WINCONSOLE.save_CI.bVisible ? "" : "not-"),
+		       (int) WINCONSOLE.save_CI.dwSize));
+		}
+	    }
+
+	    console_initialized = TRUE;
+	}
+    }
+    return (WINCONSOLE.hdl != INVALID_HANDLE_VALUE);
+}
 #endif // EXP_WIN32_DRIVER
 
 #endif // _NC_WINDOWS

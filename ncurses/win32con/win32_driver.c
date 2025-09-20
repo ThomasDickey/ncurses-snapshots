@@ -43,7 +43,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.11 2025/08/23 20:29:13 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.12 2025/09/20 21:00:34 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -746,9 +746,6 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
     }
     returnCode(result);
 }
-
-#define MIN_WIDE 80
-#define MIN_HIGH 24
 
 static int
 wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
