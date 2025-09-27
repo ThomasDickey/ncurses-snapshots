@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.719 2025/09/20 20:30:37 tom Exp $
+ * $Id: curses.priv.h,v 1.724 2025/09/27 20:42:25 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2553,10 +2553,8 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #if defined(USE_WIN32CON_DRIVER)
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
-extern NCURSES_EXPORT(int) _nc_mingw_isatty(int fd);
 extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
 extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
-extern NCURSES_EXPORT(int) _nc_mingw_testmouse(SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
 #else
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
@@ -2566,16 +2564,21 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #ifdef _NC_WINDOWS
 extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(bool) _nc_console_get_SBI(void);
+extern NCURSES_EXPORT(HANDLE) _nc_console_handle(int fd);
+extern NCURSES_EXPORT(int)  _nc_console_isatty(int fd);
+extern NCURSES_EXPORT(bool) _nc_console_keyExist(int keycode);
+extern NCURSES_EXPORT(int)  _nc_console_keyok(int keycode, int flag);
 extern NCURSES_EXPORT(int)  _nc_console_read(SCREEN *sp, HANDLE fd, int *buf);
+extern NCURSES_EXPORT(void) _nc_console_selectActiveHandle(void);
 extern NCURSES_EXPORT(void) _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info);
-extern NCURSES_EXPORT(int)  _nc_console_test(int fd);
 extern NCURSES_EXPORT(void) _nc_console_size(int *Lines, int *Cols);
+extern NCURSES_EXPORT(int)  _nc_console_test(int fd);
+extern NCURSES_EXPORT(int)  _nc_console_testmouse(const SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
+extern NCURSES_EXPORT(int)  _nc_console_twait(const SCREEN *sp, HANDLE hdl,int mode,int msec,int *left EVENTLIST_2nd(_nc_eventlist * evl));
 #endif
 
-#if defined(USE_TERM_DRIVER) && defined(EXP_WIN32_DRIVER)
+#if defined(USE_TERM_DRIVER) && (defined(EXP_WIN32_DRIVER) || defined(USE_WIN32CON_DRIVER))
 #define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
-#elif defined(USE_TERM_DRIVER) && defined(USE_WIN32CON_DRIVER)
-#define NC_ISATTY(fd) _nc_mingw_isatty(fd)
 #else
 #define NC_ISATTY(fd) isatty(fd)
 #endif

@@ -39,7 +39,7 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.31 2025/09/20 20:46:14 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.41 2025/09/27 20:57:28 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -146,7 +146,6 @@ _nc_console_size(int *Lines, int *Cols)
     }
 }
 
-#if defined(EXP_WIN32_DRIVER)
 /* Convert a file descriptor into a HANDLE
    That's not necessarily a console HANDLE
 */
@@ -207,6 +206,7 @@ _nc_console_selectActiveHandle(void)
     }
 }
 
+#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(HANDLE)
 _nc_console_fd2handle(int fd)
 {
@@ -580,7 +580,6 @@ _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info)
     returnVoid;
 }
 
-#if defined(EXP_WIN32_DRIVER)
 static ULONGLONG
 tdiff(FILETIME fstart, FILETIME fend)
 {
@@ -607,7 +606,6 @@ Adjust(int milliseconds, int diff)
     }
     return milliseconds;
 }
-#endif
 
 #define BUTTON_MASK (FROM_LEFT_1ST_BUTTON_PRESSED | \
                      FROM_LEFT_2ND_BUTTON_PRESSED | \
@@ -652,7 +650,9 @@ decode_mouse(const SCREEN *sp, int mask)
     return result;
 }
 
-#define AdjustY() (WINCONSOLE.buffered ? 0 : (int) WINCONSOLE.SBI.srWindow.Top)
+#define AdjustY() (WINCONSOLE.buffered \
+                   ? 0 \
+                   : (int) WINCONSOLE.SBI.srWindow.Top)
 
 static bool
 handle_mouse(SCREEN *sp, MOUSE_EVENT_RECORD mer)
@@ -760,7 +760,6 @@ AnsiKey(WORD vKey)
     return code;
 }
 
-#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(int)
 _nc_console_keyok(int keycode, int flag)
 {
@@ -822,7 +821,7 @@ _nc_console_twait(
 {
     INPUT_RECORD inp_rec;
     BOOL b;
-    DWORD nRead = 0, rc = (DWORD) (-1);
+    DWORD nRead = 0, rc = WAIT_FAILED;
     int code = 0;
     FILETIME fstart;
     FILETIME fend;
@@ -833,8 +832,9 @@ _nc_console_twait(
     (void) evl;			/* TODO: implement wgetch-events */
 #endif
 
-#define IGNORE_CTRL_KEYS (SHIFT_PRESSED|LEFT_ALT_PRESSED|RIGHT_ALT_PRESSED| \
-                          LEFT_CTRL_PRESSED|RIGHT_CTRL_PRESSED)
+#define IGNORE_CTRL_KEYS (SHIFT_PRESSED | \
+                          LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | \
+                          LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 #define CONSUME() read_keycode(hdl, &inp_rec, 1, &nRead)
 
     assert(sp);
@@ -913,9 +913,11 @@ _nc_console_twait(
 			    if (mode & TW_INPUT) {
 				WORD vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
 				WORD ch = inp_rec.Event.KeyEventChar;
+
 				T(("twait:event KEY_EVENT"));
 				T(("twait vk=%d, ch=%d, keydown=%d",
 				   vk, ch, inp_rec.Event.KeyEvent.bKeyDown));
+
 				if (inp_rec.Event.KeyEvent.bKeyDown) {
 				    T(("twait:event KeyDown"));
 				    if (!WINCONSOLE.isTermInfoConsole &&
@@ -999,7 +1001,6 @@ _nc_console_testmouse(
     }
     return rc;
 }
-#endif // EXP_WIN32_DRIVER
 
 NCURSES_EXPORT(int)
 _nc_console_read(
@@ -1076,7 +1077,6 @@ _nc_console_read(
     returnCode(rc);
 }
 
-#if defined(EXP_WIN32_DRIVER)
 /*   Our replacement for the systems _isatty to include also
      a test for mintty. This is called from the NC_ISATTY macro
      defined in curses.priv.h
@@ -1109,6 +1109,7 @@ _nc_console_isatty(int fd)
     returnCode(result);
 }
 
+#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(bool)
 _nc_console_checkinit(bool initFlag, bool assumeTermInfo)
 {

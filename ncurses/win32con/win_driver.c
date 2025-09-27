@@ -33,8 +33,6 @@
  ****************************************************************************/
 
 /*
- * TODO - GetMousePos(POINT * result) from ntconio.c
- * TODO - implement nodelay
  * TODO - improve screen-repainting performance, using implied wraparound to reduce write's
  * TODO - make it optional whether screen is restored or not when non-buffered
  */
@@ -44,13 +42,10 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.97 2025/09/20 20:58:36 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.112 2025/09/27 20:57:01 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
-
-extern
-NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 
 #define array_length(a) (sizeof(a)/sizeof(a[0]))
 
@@ -59,43 +54,23 @@ NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
                                  _nc_mingw_init())
 #define SetSP()     assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
 
-#define GenMap(vKey,key) MAKELONG(key, vKey)
-
-#define AdjustY() (WINCONSOLE.buffered ? 0 : (int) WINCONSOLE.SBI.srWindow.Top)
-/* *INDENT-OFF* */
-static const LONG keylist[] =
-{
-    GenMap(VK_PRIOR,  KEY_PPAGE),
-    GenMap(VK_NEXT,   KEY_NPAGE),
-    GenMap(VK_END,    KEY_END),
-    GenMap(VK_HOME,   KEY_HOME),
-    GenMap(VK_LEFT,   KEY_LEFT),
-    GenMap(VK_UP,     KEY_UP),
-    GenMap(VK_RIGHT,  KEY_RIGHT),
-    GenMap(VK_DOWN,   KEY_DOWN),
-    GenMap(VK_DELETE, KEY_DC),
-    GenMap(VK_INSERT, KEY_IC),
-    GenMap(VK_TAB,    KEY_BTAB)
-};
-/* *INDENT-ON* */
-#define N_INI ((int)array_length(keylist))
-#define FKEYS 24
-#define MAPSIZE (FKEYS + N_INI)
-#define CON_NUMPAIRS 64
+#define AdjustY() (WINCONSOLE.buffered \
+                   ? 0 \
+                   : (int) WINCONSOLE.SBI.srWindow.Top)
 
 /*   A process can only have a single console, so it is safe
      to maintain all the information about it in a single
      static structure.
  */
 NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
-     static BOOL console_initialized = FALSE;
+static BOOL console_initialized = FALSE;
 
 #define RevAttr(attr) (WORD) (((attr) & 0xff00) | \
 		      ((((attr) & 0x07) << 4) | \
 		       (((attr) & 0x70) >> 4)))
 
-     static WORD
-       MapAttr(WORD res, attr_t ch)
+static WORD
+MapAttr(WORD res, attr_t ch)
 {
     if (ch & A_COLOR) {
 	int p;
@@ -358,15 +333,6 @@ find_next_change(SCREEN *sp, int row, int col)
     win->_line[row].firstchar = _NOCHANGE;     \
     win->_line[row].lastchar  = _NOCHANGE
 
-static void
-_nc_console_selectActiveHandle(void)
-{
-    if (WINCONSOLE.lastOut != WINCONSOLE.hdl) {
-	WINCONSOLE.lastOut = WINCONSOLE.hdl;
-	SetConsoleActiveScreenBuffer(WINCONSOLE.lastOut);
-    }
-}
-
 static bool
 restore_original_screen(void)
 {
@@ -550,12 +516,6 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
     returnCode(result);
 }
 
-#ifdef __MINGW32__
-#define SysISATTY(fd) _isatty(fd)
-#else
-#define SysISATTY(fd) isatty(fd)
-#endif
-
 static bool
 wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 	       const char *tname,
@@ -587,7 +547,7 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 	}
     } else if (tname != NULL && stricmp(tname, "unknown") == 0) {
 	code = TRUE;
-    } else if (SysISATTY(TCB->term.Filedes)) {
+    } else if (_isatty(TCB->term.Filedes)) {
 	code = TRUE;
     }
 
@@ -910,47 +870,6 @@ wcon_wrap(SCREEN *sp GCC_UNUSED)
 {
 }
 
-static int
-rkeycompare(const void *el1, const void *el2)
-{
-    WORD key1 = (LOWORD((*((const LONG *) el1)))) & 0x7fff;
-    WORD key2 = (LOWORD((*((const LONG *) el2)))) & 0x7fff;
-
-    return ((key1 < key2) ? -1 : ((key1 == key2) ? 0 : 1));
-}
-
-static int
-keycompare(const void *el1, const void *el2)
-{
-    WORD key1 = HIWORD((*((const LONG *) el1)));
-    WORD key2 = HIWORD((*((const LONG *) el2)));
-
-    return ((key1 < key2) ? -1 : ((key1 == key2) ? 0 : 1));
-}
-
-static int
-MapKey(WORD vKey)
-{
-    WORD nKey = 0;
-    void *res;
-    LONG key = GenMap(vKey, 0);
-    int code = -1;
-
-    res = bsearch(&key,
-		  WINCONSOLE.map,
-		  (size_t) (N_INI + FKEYS),
-		  sizeof(keylist[0]),
-		  keycompare);
-    if (res) {
-	key = *((LONG *) res);
-	nKey = LOWORD(key);
-	code = (int) (nKey & 0x7fff);
-	if (nKey & 0x8000)
-	    code = -code;
-    }
-    return code;
-}
-
 static void
 wcon_release(TERMINAL_CONTROL_BLOCK * TCB)
 {
@@ -1188,188 +1107,6 @@ wcon_initacs(TERMINAL_CONTROL_BLOCK * TCB,
     }
 }
 
-static ULONGLONG
-tdiff(FILETIME fstart, FILETIME fend)
-{
-    ULARGE_INTEGER ustart;
-    ULARGE_INTEGER uend;
-    ULONGLONG diff;
-
-    ustart.LowPart = fstart.dwLowDateTime;
-    ustart.HighPart = fstart.dwHighDateTime;
-    uend.LowPart = fend.dwLowDateTime;
-    uend.HighPart = fend.dwHighDateTime;
-
-    diff = (uend.QuadPart - ustart.QuadPart) / 10000;
-    return diff;
-}
-
-static int
-Adjust(int milliseconds, int diff)
-{
-    if (milliseconds != NC_INFINITY) {
-	milliseconds -= diff;
-	if (milliseconds < 0)
-	    milliseconds = 0;
-    }
-    return milliseconds;
-}
-
-#define BUTTON_MASK (FROM_LEFT_1ST_BUTTON_PRESSED | \
-                     FROM_LEFT_2ND_BUTTON_PRESSED | \
-                     FROM_LEFT_3RD_BUTTON_PRESSED | \
-                     FROM_LEFT_4TH_BUTTON_PRESSED | \
-                     RIGHTMOST_BUTTON_PRESSED)
-
-static mmask_t
-decode_mouse(const SCREEN *sp, int mask)
-{
-    mmask_t result = 0;
-
-    (void) sp;
-    assert(sp && console_initialized);
-
-    if (mask & FROM_LEFT_1ST_BUTTON_PRESSED)
-	result |= BUTTON1_PRESSED;
-    if (mask & FROM_LEFT_2ND_BUTTON_PRESSED)
-	result |= BUTTON2_PRESSED;
-    if (mask & FROM_LEFT_3RD_BUTTON_PRESSED)
-	result |= BUTTON3_PRESSED;
-    if (mask & FROM_LEFT_4TH_BUTTON_PRESSED)
-	result |= BUTTON4_PRESSED;
-
-    if (mask & RIGHTMOST_BUTTON_PRESSED) {
-	switch (WINCONSOLE.numButtons) {
-	case 1:
-	    result |= BUTTON1_PRESSED;
-	    break;
-	case 2:
-	    result |= BUTTON2_PRESSED;
-	    break;
-	case 3:
-	    result |= BUTTON3_PRESSED;
-	    break;
-	case 4:
-	    result |= BUTTON4_PRESSED;
-	    break;
-	}
-    }
-
-    return result;
-}
-
-static int
-_nc_console_twait(
-		     const SCREEN *sp,
-		     HANDLE hdl,
-		     int mode,
-		     int milliseconds,
-		     int *timeleft
-		     EVENTLIST_2nd(_nc_eventlist * evl))
-{
-    INPUT_RECORD inp_rec;
-    BOOL b;
-    DWORD nRead = 0, rc = (DWORD) (-1);
-    int code = 0;
-    FILETIME fstart;
-    FILETIME fend;
-    int diff;
-    bool isNoDelay = (milliseconds == 0);
-
-#ifdef NCURSES_WGETCH_EVENTS
-    (void) evl;			/* TODO: implement wgetch-events */
-#endif
-
-#define CONSUME() read_keycode(hdl,&inp_rec,1,&nRead)
-
-    assert(sp);
-
-    TR(TRACE_IEVENT, ("start twait: %d milliseconds, mode: %d",
-		      milliseconds, mode));
-
-    if (milliseconds < 0)
-	milliseconds = NC_INFINITY;
-
-    memset(&inp_rec, 0, sizeof(inp_rec));
-
-    while (true) {
-	GetSystemTimeAsFileTime(&fstart);
-	rc = WaitForSingleObject(hdl, (DWORD) milliseconds);
-	GetSystemTimeAsFileTime(&fend);
-	diff = (int) tdiff(fstart, fend);
-	milliseconds = Adjust(milliseconds, diff);
-
-	if (!isNoDelay && milliseconds <= 0)
-	    break;
-
-	if (rc == WAIT_OBJECT_0) {
-	    if (mode) {
-		b = GetNumberOfConsoleInputEvents(hdl, &nRead);
-		if (b && nRead > 0) {
-		    b = PeekConsoleInput(hdl, &inp_rec, 1, &nRead);
-		    if (b && nRead > 0) {
-			switch (inp_rec.EventType) {
-			case KEY_EVENT:
-			    if (mode & TW_INPUT) {
-				WORD vk = inp_rec.Event.KeyEvent.wVirtualKeyCode;
-				WORD ch = inp_rec.Event.KeyEventChar;
-
-				if (inp_rec.Event.KeyEvent.bKeyDown) {
-				    if (0 == ch) {
-					int nKey = MapKey(vk);
-					if (nKey < 0) {
-					    CONSUME();
-					    continue;
-					}
-				    }
-				    code = TW_INPUT;
-				    goto end;
-				} else {
-				    CONSUME();
-				}
-			    }
-			    continue;
-			case MOUSE_EVENT:
-			    if (decode_mouse(sp,
-					     (inp_rec.Event.MouseEvent.dwButtonState
-					      & BUTTON_MASK)) == 0) {
-				CONSUME();
-			    } else if (mode & TW_MOUSE) {
-				code = TW_MOUSE;
-				goto end;
-			    }
-			    continue;
-			    /* e.g., FOCUS_EVENT */
-			default:
-			    CONSUME();
-			    _nc_console_selectActiveHandle();
-			    continue;
-			}
-		    }
-		}
-	    }
-	    continue;
-	} else {
-	    if (rc != WAIT_TIMEOUT) {
-		code = -1;
-		break;
-	    } else {
-		code = 0;
-		break;
-	    }
-	}
-    }
-  end:
-
-    TR(TRACE_IEVENT, ("end twait: returned %d (%d), remaining time %d msec",
-		      code, errno, milliseconds));
-
-    if (timeleft)
-	*timeleft = milliseconds;
-
-    return code;
-}
-
 static int
 wcon_twait(TERMINAL_CONTROL_BLOCK * TCB,
 	   int mode,
@@ -1443,24 +1180,11 @@ wcon_cursorSet(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int mode)
 static bool
 wcon_kyExist(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int keycode)
 {
-    WORD nKey;
-    void *res;
     bool found = FALSE;
-    LONG key = GenMap(0, (WORD) keycode);
 
     T((T_CALLED("win32con::wcon_kyExist(%d)"), keycode));
-    res = bsearch(&key,
-		  WINCONSOLE.rmap,
-		  (size_t) (N_INI + FKEYS),
-		  sizeof(keylist[0]),
-		  rkeycompare);
-    if (res) {
-	key = *((LONG *) res);
-	nKey = LOWORD(key);
-	if (!(nKey & 0x8000))
-	    found = TRUE;
-    }
-    returnCode(found);
+    found = _nc_console_keyExist(keycode);
+    returnBool(found);
 }
 
 static int
@@ -1488,30 +1212,13 @@ wcon_keyok(TERMINAL_CONTROL_BLOCK * TCB,
 {
     int code = ERR;
     SCREEN *sp;
-    WORD nKey;
-    WORD vKey;
-    void *res;
-    LONG key = GenMap(0, (WORD) keycode);
 
     T((T_CALLED("win32con::wcon_keyok(%p, %d, %d)"), TCB, keycode, flag));
 
     if (validateConsoleHandle()) {
 	SetSP();
-
 	if (sp) {
-	    res = bsearch(&key,
-			  WINCONSOLE.rmap,
-			  (size_t) (N_INI + FKEYS),
-			  sizeof(keylist[0]),
-			  rkeycompare);
-	    if (res) {
-		key = *((LONG *) res);
-		vKey = HIWORD(key);
-		nKey = (LOWORD(key)) & 0x7fff;
-		if (!flag)
-		    nKey |= 0x8000;
-		*(LONG *) res = GenMap(vKey, nKey);
-	    }
+	    code = _nc_console_keyok(keycode, flag);
 	}
     }
     returnCode(code);
@@ -1559,69 +1266,6 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_WIN_DRIVER = {
 
 /* --------------------------------------------------------- */
 
-static HANDLE
-get_handle(int fd)
-{
-    intptr_t value = _get_osfhandle(fd);
-    return (HANDLE) value;
-}
-
-/*   Borrowed from ansicon project.
-     Check whether or not an I/O handle is associated with
-     a Windows console.
-*/
-static BOOL
-IsConsoleHandle(HANDLE hdl)
-{
-    DWORD dwFlag = 0;
-    BOOL result;
-
-    if (!GetConsoleMode(hdl, &dwFlag)) {
-	result = (int) WriteConsoleA(hdl, NULL, 0, &dwFlag, NULL);
-    } else {
-	result = (int) (dwFlag & ENABLE_PROCESSED_OUTPUT);
-    }
-    return result;
-}
-
-/*   Our replacement for the systems _isatty to include also
-     a test for mintty. This is called from the NC_ISATTY macro
-     defined in curses.priv.h
- */
-NCURSES_EXPORT(int)
-_nc_mingw_isatty(int fd)
-{
-    int result = 0;
-
-    if (SysISATTY(fd)) {
-	result = 1;
-    } else {
-#if WINVER >= 0x0600
-	result = _nc_console_checkmintty(fd, NULL);
-#endif
-    }
-    return result;
-}
-
-/*   This is used when running in terminfo mode to discover,
-     whether or not the "terminal" is actually a Windows
-     Console. It is the responsibility of the console to deal
-     with the terminal escape sequences that are sent by
-     terminfo.
- */
-NCURSES_EXPORT(int)
-_nc_console_test(int fd)
-{
-    HANDLE hdl = get_handle(fd);
-    int code = 0;
-
-    T((T_CALLED("win32con::_nc_console_test(%d)"), fd));
-
-    code = (int) IsConsoleHandle(hdl);
-
-    returnCode(code);
-}
-
 #define TC_PROLOGUE(fd) \
     SCREEN *sp;                                               \
     TERMINAL *term = NULL;                                    \
@@ -1646,7 +1290,7 @@ _nc_mingw_tcsetattr(
 
     if (_nc_console_test(fd)) {
 	DWORD dwFlag = 0;
-	HANDLE ofd = get_handle(fd);
+	HANDLE ofd = _nc_console_handle(fd);
 	if (ofd != INVALID_HANDLE_VALUE) {
 	    if (arg) {
 		if (arg->c_lflag & ICANON)
@@ -1700,28 +1344,4 @@ _nc_mingw_tcflush(int fd, int queue)
 	}
     }
     return code;
-}
-
-NCURSES_EXPORT(int)
-_nc_mingw_testmouse(
-		       SCREEN *sp,
-		       HANDLE fd,
-		       int delay
-		       EVENTLIST_2nd(_nc_eventlist * evl))
-{
-    int rc = 0;
-
-    assert(sp);
-
-    if (sp->_drv_mouse_head < sp->_drv_mouse_tail) {
-	rc = TW_MOUSE;
-    } else {
-	rc = _nc_console_twait(sp,
-			       fd,
-			       TWAIT_MASK,
-			       delay,
-			       (int *) 0
-			       EVENTLIST_2nd(evl));
-    }
-    return rc;
 }

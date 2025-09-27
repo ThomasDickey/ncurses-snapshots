@@ -43,7 +43,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.12 2025/09/20 21:00:34 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.14 2025/09/27 20:58:55 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -55,19 +55,14 @@ static bool console_initialized = FALSE;
                                  (console_initialized=\
                                   _nc_console_checkinit(TRUE,FALSE)))
 #define SetSP() assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
-#define AdjustY() (WINCONSOLE.buffered ?\
-                   0 : (int) WINCONSOLE.SBI.srWindow.Top)
+
+#define AdjustY() (WINCONSOLE.buffered \
+                   ? 0 \
+                   : (int) WINCONSOLE.SBI.srWindow.Top)
+
 #define RevAttr(attr) (WORD) (((attr) & 0xff00) |   \
                               ((((attr) & 0x07) << 4) | \
                                (((attr) & 0x70) >> 4)))
-
-#if USE_WIDEC_SUPPORT
-#define write_screen WriteConsoleOutputW
-#define read_screen  ReadConsoleOutputW
-#else
-#define write_screen WriteConsoleOutput
-#define read_screen  ReadConsoleOutput
-#endif
 
 static WORD
 MapAttr(WORD res, attr_t ch)
@@ -532,7 +527,7 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
     if (tname == NULL || *tname == 0) {
 	if (!_nc_console_vt_supported())
 	    code = TRUE;
-    } else if (tname != 0 && *tname == '#') {
+    } else if (tname != NULL && *tname == '#') {
 	/*
 	 * Use "#" (a character which cannot begin a terminal's name) to
 	 * select specific driver from the table.
