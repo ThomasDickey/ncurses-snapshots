@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infotocap.1m,v 1.50 2025/07/05 13:04:38 tom Exp $
-.TH @INFOTOCAP@ 1M 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infotocap.1m,v 1.52 2025/10/04 20:10:32 tom Exp $
+.TH @INFOTOCAP@ 1M 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -96,10 +96,15 @@ associated with this program and exits with a successful status.
 .TP
 .I @TERMINFO@
 compiled terminal description database
+.SH EXTENSIONS
+This command is an
+.I \%ncurses
+extension.
 .SH PORTABILITY
-None of X/Open Curses Issue\ 7 (2009),
-SVr4,
-or NetBSD document this application.
+X/Open Curses Issue\ 7 (2009) does not specify this command.
+SVr4 and NetBSD
+.I curses
+do not implement it.
 .SH AUTHORS
 Eric S. Raymond <esr@snark.thyrsus.com>
 and

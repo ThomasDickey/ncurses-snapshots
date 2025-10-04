@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.129 2025/08/16 21:43:38 tom Exp $
+# $Id: mk-1st.awk,v 1.131 2025/10/04 20:34:43 Branden.Robinson Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
@@ -32,36 +32,35 @@
 #
 # Generate list of objects for a given model library
 # Variables:
-#	name		  (library name, e.g., "ncurses", "panel", "forms", "menus")
+#	name		  (library name, e.g., "ncurses", "panel", "form", "menu")
 #	traces		  ("all" or "DEBUG", to control whether tracing is compiled in)
 #	MODEL		  (e.g., "DEBUG", uppercase; toupper is not portable)
 #	CXX_MODEL	  (e.g., "DEBUG", uppercase)
 #	LIB_SUFFIX	  (e.g., "", "w", "t", "tw")
-#	USE_LIB_SUFFIX (e.g., "", "w", "t", "tw")
+#	ABI_SUFFIX	  (e.g., "", "w", "t", "tw")
 #	model		  (directory into which we compile, e.g., "obj")
 #	prefix		  (e.g., "lib", for Unix-style libraries)
 #	suffix		  (e.g., "_g.a", for debug libraries)
+#	o (object suffix) (e.g., ".o")
 #	subset		  ("none", "base", "base+ext_funcs" or "termlib", etc.)
 #	driver		  ("yes" or "no", depends on --enable-term-driver)
 #	ShlibVer	  ("rel", "abi" or "auto", to augment DoLinks variable)
-#	ShlibVerInfix ("yes" or "no", determines location of version #)
+#	ShlibVerInfix	  ("yes" or "no", determines location of version #)
 #	SymLink		  ("ln -s", etc)
 #	TermlibRoot	  ("tinfo" or other root for libterm.so)
-#	TermlibSuffix (".so" or other suffix for libterm.so)
+#	TermlibSuffix	  (".so" or other suffix for libterm.so)
 #	ReLink		  ("yes", or "no", flag to rebuild shared libs on install)
 #	ReRanlib	  ("yes", or "no", flag to rerun ranlib for installing static)
 #	DoLinks		  ("yes", "reverse" or "no", flag to add symbolic links)
 #	rmSoLocs	  ("yes" or "no", flag to add extra clean target)
 #	ldconfig	  (path for this tool, if used)
-#	make_phony    ("yes" if the make-program accepts ".PHONY" directive.
+#	make_phony	  ("yes" if the make-program accepts ".PHONY" directive.
 #	overwrite	  ("yes" or "no", flag to add link to libcurses.a
 #	depend		  (optional dependencies for all objects, e.g, ncurses_cfg.h)
 #	host		  (cross-compile host, if any)
-#	libtool_version (libtool "-version-info" or "-version-number")
+#	libtool_version	  (libtool "-version-info" or "-version-number")
 #
 # Notes:
-#	CLIXs nawk does not like underscores in command-line variable names.
-#	Mixed-case variable names are ok.
 #	HP-UX requires shared libraries to have executable permissions.
 #
 function is_ticlib() {
@@ -270,10 +269,10 @@ function in_subset(value) {
 		return index(check,value);
 	}
 function trim_suffix(value) {
-	if (USE_LIB_SUFFIX != "" && length(value) > length(USE_LIB_SUFFIX)) {
-		check = substr(value, 1 + length(value) - length(USE_LIB_SUFFIX));
-		if (check == USE_LIB_SUFFIX) {
-			value = substr(value, 1, length(value) - length(USE_LIB_SUFFIX));
+	if (ABI_SUFFIX != "" && length(value) > length(ABI_SUFFIX)) {
+		check = substr(value, 1 + length(value) - length(ABI_SUFFIX));
+		if (check == ABI_SUFFIX) {
+			value = substr(value, 1, length(value) - length(ABI_SUFFIX));
 		}
 	}
 	return value;
@@ -308,7 +307,7 @@ BEGIN	{
 					printf "#  MODEL:           %s\n", MODEL
 					printf "#  CXX_MODEL:       %s\n", CXX_MODEL
 					printf "#  LIB_SUFFIX:      %s\n", LIB_SUFFIX
-					printf "#  USE_LIB_SUFFIX:  %s\n", USE_LIB_SUFFIX
+					printf "#  ABI_SUFFIX:      %s\n", ABI_SUFFIX
 					printf "#  model:           %s\n", model
 					printf "#  prefix:          %s\n", prefix
 					printf "#  suffix:          %s\n", suffix
@@ -473,12 +472,12 @@ END	{
 			else if ( MODEL == "LIBTOOL" )
 			{
 				end_name = lib_name;
-				use_name = trim_suffix(TermlibRoot) USE_LIB_SUFFIX
+				use_name = trim_suffix(TermlibRoot) ABI_SUFFIX
 				printf "../lib/%s : \\\n", lib_name
 				if ( (name != use_name ) && ( index(name, "++") == 0 ) && ( index(name, "tic") == 1 || index(name, "ncurses") == 1 ) ) {
 					printf "\t\t../lib/lib%s.la \\\n", use_name;
 					if ( index(name, "tic") == 1 && index(TermlibRoot, "ncurses") != 1 ) {
-						printf "\t\t../lib/lib%s%s.la \\\n", "ncurses", USE_LIB_SUFFIX;
+						printf "\t\t../lib/lib%s%s.la \\\n", "ncurses", ABI_SUFFIX;
 					}
 				}
 				printf "\t\t$(%s_OBJS)\n", OBJS
@@ -502,7 +501,7 @@ END	{
 				print  "install.libs \\"
 				printf "install.%s :: \\\n", trim_suffix(name);
 				printf "\t\t$(LIBDIR) \\\n";
-				use_name = TermlibRoot USE_LIB_SUFFIX
+				use_name = TermlibRoot ABI_SUFFIX
 				if ( (name != use_name ) && ( index(name, "++") == 0 ) && ( index(name, "tic") == 1 || index(name, "ncurses") == 1 ) ) {
 					if ( trim_suffix(TermlibRoot) != trim_suffix(name) ) {
 						printf "\t\tinstall.%s \\\n", trim_suffix(TermlibRoot);

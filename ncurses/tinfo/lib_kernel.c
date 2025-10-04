@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_kernel.c,v 1.37 2024/12/07 20:05:08 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.38 2025/10/04 18:42:45 tom Exp $")
 
 #ifdef TERMIOS
 static int
@@ -151,12 +151,12 @@ killchar(void)
 static void
 flush_input(int fd)
 {
-#ifdef TERMIOS
+#if defined(TERMIOS) && !defined(_NC_WINDOWS)
     tcflush(fd, TCIFLUSH);
 #else /* !TERMIOS */
     errno = 0;
     do {
-#if defined(EXP_WIN32_DRIVER)
+#ifdef _NC_WINDOWS
 	_nc_console_flush(_nc_console_fd2handle(fd));
 #else
 	ioctl(fd, TIOCFLUSH, 0);

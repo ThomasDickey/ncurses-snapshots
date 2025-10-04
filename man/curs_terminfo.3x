@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.166 2025/08/16 19:11:47 tom Exp $
-.TH curs_terminfo 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.169 2025/10/04 21:02:30 tom Exp $
+.TH curs_terminfo 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -67,7 +67,6 @@
 \fIcurses\fR interfaces to \fI\%term\%info\fR database
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>
 \fB#include <term.h>
 .PP
 \fBTERMINAL * cur_term;
@@ -706,7 +705,7 @@ upon success.
 In
 .IR \%ncurses ","
 .TP 5
-.B del_curtem
+.B del_curterm
 fails if its terminal parameter is null.
 .TP 5
 .B putp
@@ -1056,6 +1055,14 @@ from
 .IR \%tputs "."
 It instead returns the length of the string,
 and does no error checking.
+.PP
+Very old versions of AIX
+.\" Can we be more specific?  Like, AIX 4.3.3 and earlier? --GBR
+.I curses
+required inclusion of
+.I \%curses.h
+before
+.IR \%term.h .
 .\" ********************************************************************
 .SH HISTORY
 SVr2 (1984) introduced the

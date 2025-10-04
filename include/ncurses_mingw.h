@@ -31,7 +31,7 @@
  * Author: Juergen Pfeifer, 2008-on                                         *
  ****************************************************************************/
 
-/* $Id: ncurses_mingw.h,v 1.8 2025/08/09 13:30:46 tom Exp $ */
+/* $Id: ncurses_mingw.h,v 1.9 2025/10/04 17:08:04 tom Exp $ */
 
 /*
  * This is a placeholder up to now and describes what needs to be implemented
@@ -67,18 +67,6 @@ struct termios
   speed_t	c_ispeed;
   speed_t	c_ospeed;
 };
-
-extern NCURSES_EXPORT(int)  _nc_mingw_tcsetattr(
-    int fd,
-    int optional_actions,
-    const struct termios* arg);
-extern NCURSES_EXPORT(int)  _nc_mingw_tcgetattr(
-    int fd,
-    struct termios* arg);
-extern NCURSES_EXPORT(int)  _nc_mingw_tcflush(
-    int fd,
-    int queue);
-extern NCURSES_EXPORT(void) _nc_set_term_driver(void* term);
 
 #endif /* _WIN32 */
 

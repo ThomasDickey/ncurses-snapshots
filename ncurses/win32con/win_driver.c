@@ -42,7 +42,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.112 2025/09/27 20:57:01 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.113 2025/10/04 16:42:46 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -1264,6 +1264,8 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_WIN_DRIVER = {
 	wcon_cursorSet		/* cursorSet     */
 };
 
+#ifdef _NCURSES_MINGW_H
+
 /* --------------------------------------------------------- */
 
 #define TC_PROLOGUE(fd) \
@@ -1280,6 +1282,7 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_WIN_DRIVER = {
     }                                                         \
     assert(term != NULL)
 
+/* replace by _nc_console_setmode */
 NCURSES_EXPORT(int)
 _nc_mingw_tcsetattr(
 		       int fd,
@@ -1319,6 +1322,7 @@ _nc_mingw_tcsetattr(
     return code;
 }
 
+/* replace by _nc_console_getmode */
 NCURSES_EXPORT(int)
 _nc_mingw_tcgetattr(int fd, struct termios *arg)
 {
@@ -1330,18 +1334,4 @@ _nc_mingw_tcgetattr(int fd, struct termios *arg)
     }
     return code;
 }
-
-NCURSES_EXPORT(int)
-_nc_mingw_tcflush(int fd, int queue)
-{
-    int code = ERR;
-
-    if (_nc_console_test(fd)) {
-	if (queue == TCIFLUSH) {
-	    code = (FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE))
-		    ? OK
-		    : (int) GetLastError());
-	}
-    }
-    return code;
-}
+#endif

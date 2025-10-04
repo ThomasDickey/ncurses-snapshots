@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.1689 2025/09/27 12:18:28 tom Exp $
+# $Id: dist.mk,v 1.1691 2025/10/04 22:24:26 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -38,7 +38,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 6
 NCURSES_MINOR = 5
-NCURSES_PATCH = 20250927
+NCURSES_PATCH = 20251004
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -97,7 +97,7 @@ doc/hackguide.doc: doc/html/hackguide.html
 # If that conflicts with the --without-manpage-renames, you can install those
 # in a different location using the --with-install-prefix option of the
 # configure script.
-MANPROG	= tbl | nroff -mandoc -rHY=0 -rLL=78n -rLT=78n -Tascii
+MANPROG	= tbl | nroff -c -mandoc -rHY=0 -rLL=78n -rLT=78n -Tascii
 
 manhtml:
 	@for f in doc/html/man/*.html; do \

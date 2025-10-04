@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.124 2025/08/23 23:01:05 tom Exp $
-.TH @TIC@ 1M 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tic.1m,v 1.126 2025/10/04 20:13:28 tom Exp $
+.TH @TIC@ 1M 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -639,20 +639,36 @@ description fields may be treated that way and check them for dangerous
 characters.
 .SH EXTENSIONS
 Unlike the SVr4
-.B \%@TIC@
-command, this implementation can actually
-compile termcap sources.
-In fact, entries in terminfo and termcap syntax can
-be mixed in a single source file.
+.I tic
+command,
+.I \%ncurses
+.I tic
+can compile
+.I termcap
+sources.
+In fact,
+entries in
+.I \%term\%info
+and
+.I termcap
+syntax can be mixed in a single source file.
 See \fBterminfo\fP(5) for the list of
-termcap names taken to be equivalent to terminfo names.
+.I termcap
+capability names
+.I \%ncurses
+.B \%@TIC@
+treats as equivalent to
+.I \%term\%info
+names.
 .PP
-The SVr4 manual pages are not clear on the resolution rules for \fBuse\fP
+The SVr4 man pages are not clear on the resolution rules for
+.RB \*(`` use \*(''
 capabilities.
 .IR ncurses 's
 .B \%@TIC@
-finds \fBuse\fP targets anywhere
-in the source file,
+finds
+.RB \*(`` use \*(''
+targets anywhere in the source file,
 or anywhere in the file tree rooted at the location in the
 .I \%TERMINFO
 environment variable
@@ -665,58 +681,83 @@ database
 (if it exists),
 or (finally) anywhere in the system's collection of compiled entries.
 .PP
-The error messages from this
+The error messages from
+.I \%ncurses
 .B \%@TIC@
-have the same format as GNU C
-error messages, and can be parsed by GNU Emacs's compile facility.
+have the same format as GNU C error messages,
+and can be parsed by GNU Emacs's \*(``compile\*('' facility.
 .PP
-Aside from \fB\-c\fP and \fB\-v\fP, options are not portable:
+Aside from
+.B \-c
+and
+.BR \-v ","
+options are not portable.
 .bP
 Most of
+.I \%ncurses
 .BR \%@TIC@ 's
-options
-are not supported by SVr4 \fBtic\fP:
-.sp
+options are not supported by SVr4
+.IR tic "."
+.PP
 .RS
-\fB\-0\fP
-\fB\-1\fP
-\fB\-C\fP
-\fB\-G\fP
-\fB\-I\fP
-\fB\-N\fP
-\fB\-R\fP
-\fB\-T\fP
-\fB\-V\fP
-\fB\-a\fP
-\fB\-e\fP
-\fB\-f\fP
-\fB\-g\fP
-\fB\-o\fP
-\fB\-r\fP
-\fB\-s\fP
-\fB\-t\fP
-\fB\-x\fP
+.B \-0
+.B \-1
+.B \-C
+.B \-G
+.B \-I
+.B \-N
+.B \-R
+.B \-T
+.B \-V
+.B \-a
+.B \-e
+.B \-f
+.B \-g
+.B \-o
+.B \-r
+.B \-s
+.B \-t
+.B \-x
 .RE
 .bP
-The NetBSD \fBtic\fP supports a few of the \fI\%ncurses\fP options
-.sp
+NetBSD
+.I tic
+supports a few of the
+.I \%ncurses
+.B \%@TIC@
+options.
+.PP
 .RS
-\fB\-a\fP
-\fB\-o\fP
-\fB\-x\fP
+.B \-a
+.B \-o
+.B \-x
 .RE
-.IP
-and adds \fB\-S\fP
-(a feature which does the same thing
-as
+.bP
+NetBSD
+.I tic
+also adds
+.BR \-S ","
+a feature which does the same thing as
+.I \%ncurses
 .BR \%@INFOCMP@ 's
-\fB\-e\fP and \fB\-E\fP options).
+.B \-e
+and
+.B \-E
+options.
 .PP
-The SVr4 \fB\-c\fP mode does not report bad \*(``use=\*('' links.
+SVr4
+.IR tic 's
+.B \-c
+mode does not report bad
+.RB \*(`` use \*(''
+links.
 .PP
-System V does not compile entries to or read entries from your
-\fI$HOME/.terminfo\fP database unless \fI\%TERMINFO\fP is explicitly set
-to it.
+SVr4 does not compile entries to
+or read entries from your
+.I \%$HOME/.terminfo
+database unless the
+.I \%TERMINFO
+environment variable is explicitly set to it.
 .SH PORTABILITY
 X/Open Curses Issue\ 7 (2009) provides a brief description of \fBtic\fP.
 It lists one option: \fB\-c\fP.

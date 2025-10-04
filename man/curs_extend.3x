@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1999-on
 .\"
-.\" $Id: curs_extend.3x,v 1.58 2025/08/16 19:03:34 tom Exp $
-.TH curs_extend 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_extend.3x,v 1.61 2025/10/04 22:17:28 tom Exp $
+.TH curs_extend 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,6 +106,10 @@ and are not found in SVr4
 or any other previous
 .I curses
 implementation.
+.PP
+NetBSD 9 added a \
+.B \%curses_version
+function which intentionally returns a string without version informat.
 .SH PORTABILITY
 Applications employing
 .I \%ncurses

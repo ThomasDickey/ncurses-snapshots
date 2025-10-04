@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018,2020 Thomas E. Dickey                                     *
+ * Copyright 2018-2020,2025 Thomas E. Dickey                                *
  * Copyright 2011-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  *  Author: Thomas E. Dickey                        2011                    *
  ****************************************************************************/
 
-/* $Id: nc_termios.h,v 1.8 2020/08/29 20:53:19 tom Exp $ */
+/* $Id: nc_termios.h,v 1.9 2025/10/04 18:42:32 tom Exp $ */
 
 #ifndef NC_TERMIOS_included
 #define NC_TERMIOS_included 1
@@ -151,10 +151,6 @@
 
 #ifndef tcgetattr
 #define tcgetattr(fd, arg) _nc_mingw_tcgetattr(fd, arg)
-#endif
-
-#ifndef tcflush
-#define tcflush(fd, queue) _nc_mingw_tcflush(fd, queue)
 #endif
 
 #undef  ttyname

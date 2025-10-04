@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.146 2025/08/23 22:50:00 tom Exp $
-.TH curs_util 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_util.3x,v 1.148 2025/10/04 20:48:42 tom Exp $
+.TH curs_util 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -532,10 +532,18 @@ this implementation returns strings \*(``M\-\*^@\*('',
 \*(``M\-\*^A\*('',
 etc.
 .PP
-X/Open Curses documents \fBunctrl\fP as declared in \fB<unctrl.h>\fP,
-which \fI\%ncurses\fP does.
+X/Open Curses documents
+.I \%unctrl
+as declared in
+.IR \%unctrl.h ","
+which
+.I \%ncurses
+does.
 However,
-\fI\%ncurses\fP' \fB<curses.h>\fP includes \fB<unctrl.h>\fP,
+.IR \%ncurses 's
+.I \%curses.h
+includes
+.IR \%unctrl.h ","
 matching the behavior of SVr4
 .IR curses "."
 Other implementations may not do that.

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.278 2025/08/23 22:54:35 tom Exp $
-.TH ncurses 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.284 2025/10/04 22:06:19 tom Exp $
+.TH ncurses 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -376,10 +376,9 @@ A well-configured system selects a correct
 value automatically;
 \fB\%tset\fP(1) may assist with troubleshooting exotic situations.
 .PP
-If you change the terminal type,
-export the shell's
-.I TERM
-variable,
+If you change the terminal type from a shell,
+export
+.I TERM ","
 then run \fB\%tset\fP(1) or the
 .RB \*(`` "@TPUT@ init" \*(''
 command.
@@ -1261,7 +1260,9 @@ does not create problems when compiling an application.
 If \fB\%keypad\fP(3X) is disabled for the
 .I curses
 window receiving input,
-a program must disambiguate escape sequences itself.
+.B \%ESCDELAY
+is irrelevant
+and a program must disambiguate escape sequences itself.
 .SS "\fIHOME\fP"
 .I \%ncurses
 may read and write auxiliary terminal descriptions in
@@ -1847,8 +1848,8 @@ since X/Open Curses Issue\ 4.
 .bP
 Originally,
 the wide-character feature required the symbol
-.I \%_XOPEN_SOURCE_EXTENDED
-but that was only valid for XPG4 (1996).
+.IR \%_XOPEN_SOURCE_EXTENDED ","
+but that was valid only for XPG4 (1996).
 .bP
 Later,
 that was deemed conflicting with an
@@ -1893,13 +1894,13 @@ header files are installed allowing overwrite
 but see
 .B \%\-\-disable\-overwrite
 above),
-the wide-character library's headers should be installed last,
-.\" Isn't that the responsibility of ncurses's own makefiles? --GBR
+the wide-character library's headers should be installed last
+by packaging systems and similar,
 to allow applications to be built using either library
 from the same set of headers.
 .TP 5
 .B \-\-with\-pthread
-Enable support for for multi-threaded applications.
+Enable support for multi-threaded applications.
 The
 .I \%configure
 script renames the
@@ -2388,12 +2389,6 @@ Some programs use functions declared in both
 and
 .IR \%term.h ,
 and must include both header files in the same module.
-Very old versions of AIX
-.I curses
-required inclusion of
-.I \%curses.h
-before
-.IR \%term.h .
 .IP
 The header files supplied by
 .I \%ncurses

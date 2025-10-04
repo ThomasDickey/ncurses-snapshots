@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.810 2025/09/15 07:45:00 tom Exp $
+dnl $Id: configure.in,v 1.812 2025/10/04 21:11:51 Branden.Robinson Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.810 $)
+AC_REVISION($Revision: 1.812 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1092,9 +1092,6 @@ AC_ARG_WITH(rcs-ids,
 	[with_rcs_ids=no])
 AC_MSG_RESULT($with_rcs_ids)
 test "x$with_rcs_ids" = xyes && AC_DEFINE(USE_RCS_IDS,1,[Define to 1 to compile-in RCS identifiers])
-
-###############################################################################
-CF_MAN_PAGES([ captoinfo clear infocmp infotocap reset tabs tic toe tput tset ])
 
 ###############################################################################
 CF_HELP_MESSAGE(Extensions:)
@@ -2168,7 +2165,7 @@ if test "x$with_dlsym" = xyes ; then
 fi
 
 USE_ARG_SUFFIX="${DFT_ARG_SUFFIX}${EXTRA_SUFFIX}"
-USE_LIB_SUFFIX="${LIB_SUFFIX}${EXTRA_SUFFIX}"
+ABI_SUFFIX="${LIB_SUFFIX}${EXTRA_SUFFIX}"
 USE_CFG_SUFFIX=${DFT_ARG_SUFFIX}${cf_cv_abi_version}
 if test -n "$EXTRA_SUFFIX" && test "x$EXTRA_SUFFIX" != "x${cf_cv_abi_version}"
 then
@@ -2176,13 +2173,13 @@ then
 fi
 AC_SUBST(USE_ARG_SUFFIX)
 AC_SUBST(USE_CFG_SUFFIX)
-AC_SUBST(USE_LIB_SUFFIX)
+AC_SUBST(ABI_SUFFIX)
 
 if test "$with_ticlib" != no ; then
 
 	if test "x$with_ticlib" != xyes ; then
 		TICS_NAME=$with_ticlib
-		TICS_SUFFIX="`echo "${DFT_LIB_SUFFIX}" |sed -e "s/^${USE_LIB_SUFFIX}//"`"
+		TICS_SUFFIX="`echo "${DFT_LIB_SUFFIX}" |sed -e "s/^${ABI_SUFFIX}//"`"
 		TICS_ARG_SUFFIX="${with_ticlib}`echo "${USE_ARG_SUFFIX}" |sed -e "s/^${LIB_SUFFIX}//"`"
 		TICS_DEP_SUFFIX="${with_ticlib}`echo "${DFT_DEP_SUFFIX}" |sed -e "s/^${LIB_SUFFIX}//"`"
 		TICS_LIB_SUFFIX="${with_ticlib}"
@@ -2190,7 +2187,7 @@ if test "$with_ticlib" != no ; then
 		TICS_SUFFIX=${DFT_LIB_SUFFIX}
 		TICS_ARG_SUFFIX="${TICS_NAME}${USE_ARG_SUFFIX}"
 		TICS_DEP_SUFFIX="${TICS_NAME}${DFT_DEP_SUFFIX}"
-		TICS_LIB_SUFFIX="${TICS_NAME}${USE_LIB_SUFFIX}"
+		TICS_LIB_SUFFIX="${TICS_NAME}${ABI_SUFFIX}"
 	fi
 	TICS_LDFLAGS="-L${LIB_DIR}"
 	TICS_LIBS="-l${TICS_ARG_SUFFIX}"
@@ -2209,7 +2206,7 @@ if test "$with_termlib" != no ; then
 
 	if test "x$with_termlib" != xyes ; then
 		TINFO_NAME=$with_termlib
-		TINFO_SUFFIX="`echo "${DFT_LIB_SUFFIX}" |sed -e "s/^${USE_LIB_SUFFIX}//"`"
+		TINFO_SUFFIX="`echo "${DFT_LIB_SUFFIX}" |sed -e "s/^${ABI_SUFFIX}//"`"
 		TINFO_ARG_SUFFIX="${with_termlib}`echo "${USE_ARG_SUFFIX}" |sed -e "s/^${LIB_SUFFIX}//"`"
 		TINFO_DEP_SUFFIX="${with_termlib}`echo "${DFT_DEP_SUFFIX}" |sed -e "s/^${LIB_SUFFIX}//"`"
 		TINFO_LIB_SUFFIX="${with_termlib}"
@@ -2217,7 +2214,7 @@ if test "$with_termlib" != no ; then
 		TINFO_SUFFIX=${DFT_LIB_SUFFIX}
 		TINFO_ARG_SUFFIX="${TINFO_NAME}${USE_ARG_SUFFIX}"
 		TINFO_DEP_SUFFIX="${TINFO_NAME}${DFT_DEP_SUFFIX}"
-		TINFO_LIB_SUFFIX="${TINFO_NAME}${USE_LIB_SUFFIX}"
+		TINFO_LIB_SUFFIX="${TINFO_NAME}${ABI_SUFFIX}"
 	fi
 
 	TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${TINFO_DEP_SUFFIX}"
@@ -2298,7 +2295,7 @@ if test "$with_overwrite" = no && \
  { test "x$includedir" = 'x${prefix}/include' || \
    test "x$includedir" = "x${prefix}/include"; }
 then
-	includesubdir="/ncurses${USE_LIB_SUFFIX}"
+	includesubdir="/ncurses${ABI_SUFFIX}"
 fi
 AC_MSG_RESULT(${includedir}${includesubdir})
 
@@ -2380,6 +2377,9 @@ case "x${ac_cv_header_termios_h}${ac_cv_header_termio_h}${ac_cv_header_sgtty_h}$
 	esac
 	;;
 esac
+
+###############################################################################
+CF_MAN_PAGES([ captoinfo clear infocmp infotocap reset tabs tic toe tput tset ])
 
 ################################################################################
 test "x$use_database" = xyes && \
@@ -2601,7 +2601,7 @@ TINFO_SUFFIX="$TINFO_SUFFIX"
 UNALTERED_SYMS="$UNALTERED_SYMS"
 USE_ARG_SUFFIX="$USE_ARG_SUFFIX"
 USE_CFG_SUFFIX="$USE_CFG_SUFFIX"
-USE_LIB_SUFFIX="$USE_LIB_SUFFIX"
+ABI_SUFFIX="$ABI_SUFFIX"
 USE_OLD_MAKERULES="$USE_OLD_MAKERULES"
 WILDCARD_SYMS="$WILDCARD_SYMS"
 WITH_CURSES_H="$with_curses_h"

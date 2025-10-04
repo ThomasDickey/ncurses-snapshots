@@ -31,7 +31,7 @@
  * Author: Juergen Pfeifer, 2008-on                                         *
  ****************************************************************************/
 
-/* $Id: win32_curses.h,v 1.7 2025/08/23 17:06:56 tom Exp $ */
+/* $Id: win32_curses.h,v 1.8 2025/10/04 18:54:44 tom Exp $ */
 
 /*
  * This is the interface we use on Windows to mimic the control of the settings
@@ -44,17 +44,6 @@
 #include <nc_win32.h>
 
 #if (defined(_WIN32) || defined(_WIN64))
-struct winconmode
-{
-  unsigned long dwFlagIn;
-  unsigned long dwFlagOut;
-};
-
-extern NCURSES_EXPORT(void*) _nc_console_fd2handle(int fd);
-extern NCURSES_EXPORT(int)   _nc_console_setmode(void* handle, const struct winconmode* arg);
-extern NCURSES_EXPORT(int)   _nc_console_getmode(void* handle, struct winconmode* arg);
-extern NCURSES_EXPORT(int)   _nc_console_flush(void* handle);
-
 /*
   A few definitions of Unix functions we need to emulate
 */

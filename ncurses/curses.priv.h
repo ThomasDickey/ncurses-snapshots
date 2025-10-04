@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.724 2025/09/27 20:42:25 tom Exp $
+ * $Id: curses.priv.h,v 1.726 2025/10/04 19:07:49 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2555,27 +2555,40 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
 extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
 extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
-#else
+extern NCURSES_EXPORT(int)  _nc_mingw_tcsetattr(int fd, int optional_actions, const struct termios* arg);
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #endif /* USE_TERM_DRIVER */
 #endif /* EXP_WIN32_DRIVER */
 
 #ifdef _NC_WINDOWS
+
+extern NCURSES_EXPORT(bool)  _nc_console_checkinit(bool initFlag, bool assumeTermInfo);
+extern NCURSES_EXPORT(void*) _nc_console_fd2handle(int fd);
+extern NCURSES_EXPORT(int)  _nc_console_setmode(void* handle, const struct winconmode* arg);
+extern NCURSES_EXPORT(int)  _nc_console_getmode(void* handle, struct winconmode* arg);
 extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
+extern NCURSES_EXPORT(int)  _nc_console_flush(void* handle);
 extern NCURSES_EXPORT(bool) _nc_console_get_SBI(void);
 extern NCURSES_EXPORT(HANDLE) _nc_console_handle(int fd);
 extern NCURSES_EXPORT(int)  _nc_console_isatty(int fd);
 extern NCURSES_EXPORT(bool) _nc_console_keyExist(int keycode);
 extern NCURSES_EXPORT(int)  _nc_console_keyok(int keycode, int flag);
 extern NCURSES_EXPORT(int)  _nc_console_read(SCREEN *sp, HANDLE fd, int *buf);
+extern NCURSES_EXPORT(bool) _nc_console_restore(void);
 extern NCURSES_EXPORT(void) _nc_console_selectActiveHandle(void);
 extern NCURSES_EXPORT(void) _nc_console_set_scrollback(bool normal, CONSOLE_SCREEN_BUFFER_INFO * info);
 extern NCURSES_EXPORT(void) _nc_console_size(int *Lines, int *Cols);
 extern NCURSES_EXPORT(int)  _nc_console_test(int fd);
 extern NCURSES_EXPORT(int)  _nc_console_testmouse(const SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
 extern NCURSES_EXPORT(int)  _nc_console_twait(const SCREEN *sp, HANDLE hdl,int mode,int msec,int *left EVENTLIST_2nd(_nc_eventlist * evl));
+extern NCURSES_EXPORT(int)  _nc_console_vt_supported(void);
+
+#ifdef _NC_CHECK_MINTTY
+extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #endif
+
+#endif /* _NC_WINDOWS */
 
 #if defined(USE_TERM_DRIVER) && (defined(EXP_WIN32_DRIVER) || defined(USE_WIN32CON_DRIVER))
 #define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))

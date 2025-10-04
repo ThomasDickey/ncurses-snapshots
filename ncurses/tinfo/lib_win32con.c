@@ -39,7 +39,7 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.41 2025/09/27 20:57:28 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.42 2025/10/04 18:19:06 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -206,7 +206,6 @@ _nc_console_selectActiveHandle(void)
     }
 }
 
-#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(HANDLE)
 _nc_console_fd2handle(int fd)
 {
@@ -217,6 +216,11 @@ _nc_console_fd2handle(int fd)
 	T(("lib_win32con:validateHandle %d -> WINCONSOLE.hdl", fd));
     } else if (hdl == WINCONSOLE.out) {
 	T(("lib_win32con:validateHandle %d -> WINCONSOLE.out", fd));
+    } else if (hdl == GetStdHandle(STD_INPUT_HANDLE)) {
+	T(("lib_win32con:validateHandle %d -> STD_INPUT_HANDLE", fd));
+	if (!WINCONSOLE.isTermInfoConsole && WINCONSOLE.progMode) {
+	    hdl = WINCONSOLE.inp;
+	}
     } else {
 	T(("lib_win32con:validateHandle %d maps to unknown HANDLE", fd));
 	hdl = INVALID_HANDLE_VALUE;
@@ -235,6 +239,7 @@ _nc_console_fd2handle(int fd)
     return hdl;
 }
 
+#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(int)
 _nc_console_setmode(HANDLE hdl, const TTY * arg)
 {
@@ -309,6 +314,7 @@ _nc_console_getmode(HANDLE hdl, TTY * arg)
     T(("lib_win32con:_nc_console_getmode %s", _nc_trace_ttymode(arg)));
     return (code);
 }
+#endif
 
 NCURSES_EXPORT(int)
 _nc_console_flush(HANDLE hdl)
@@ -330,7 +336,6 @@ _nc_console_flush(HANDLE hdl)
     }
     returnCode(code);
 }
-#endif
 
 NCURSES_EXPORT(WORD)
 _nc_console_MapColor(bool fore, int color)
