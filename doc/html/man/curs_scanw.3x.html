@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>scanw</STRONG>,  <STRONG>wscanw</STRONG>,  <STRONG>mvscanw</STRONG>,  <STRONG>mvwscanw</STRONG>, <STRONG>vwscanw</STRONG>, <STRONG>vw_scanw</STRONG> - read formatted
        input from a <EM>curses</EM> window
@@ -103,7 +101,7 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       <EM>ncurses</EM>  defines  <STRONG>vw_scanw</STRONG>  and  <STRONG>vwscanw</STRONG>  identically to support legacy
+       <EM>ncurses</EM> defines <STRONG>vw_scanw</STRONG> and  <STRONG>vwscanw</STRONG>  identically  to  support  legacy
        applications.  However, the latter is obsolete.
 
        <STRONG>o</STRONG>   X/Open Curses Issue 4 Version 2 (1996), marked <STRONG>vwscanw</STRONG> as requiring
@@ -112,7 +110,7 @@
 
        <STRONG>o</STRONG>   X/Open Curses Issue 5,  Draft  2  (December  2007)  marked  <STRONG>vwscanw</STRONG>
            (along with <STRONG>vwscanw</STRONG> and the <EM>termcap</EM> interface) as withdrawn.  After
-           incorporating review comments, this became  X/Open  Curses  Issue 7
+           incorporating  review  comments,  this became X/Open Curses Issue 7
            (2009).
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> provides <STRONG>vwscanw</STRONG>, but marks it as deprecated.
@@ -143,40 +141,38 @@
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        4BSD  (1980) introduced <EM>wscanw</EM> and its variants.  It implemented all as
        functions, not macros; this initial distribution of <EM>curses</EM> preceded the
-       ANSI  C  standard of 1989, prior to which a variadic macro facility was
-       not widely available.  <EM>scanw</EM>  went  unused  in  Berkeley  distributions
-       until  4.3BSD-Reno  (1990), which employed it in a game.  4BSD's <EM>wscanw</EM>
-       did not use <EM>varargs.h</EM>, which had been available since  Seventh  Edition
-       Unix  (1979).   In  1991  (a  couple  of years after SVr4 was generally
-       available, and after the C standard was  published),  other  developers
-       updated  the library, using <EM>stdarg.h</EM> internally in 4.4BSD <EM>curses</EM>.  Even
-       with this improvement, BSD <EM>curses</EM> did not use function prototypes  (nor
+       ANSI C standard of 1989, prior to which a variadic macro  facility  was
+       not  widely  available.   <EM>scanw</EM>  went  unused in Berkeley distributions
+       until 4.3BSD-Reno (1990), which employed it in a game.   4BSD's  <EM>wscanw</EM>
+       did  not  use <EM>varargs.h</EM>, which had been available since Seventh Edition
+       Unix (1979).  In 1991 (a couple  of  years  after  SVr4  was  generally
+       available,  and  after  the C standard was published), other developers
+       updated the library, using <EM>stdarg.h</EM> internally in 4.4BSD <EM>curses</EM>.   Even
+       with  this improvement, BSD <EM>curses</EM> did not use function prototypes (nor
        even declare functions) in <EM>curses.h</EM> until 1992.
 
-       4BSD  documented <EM>scanw</EM> and <EM>wscanw</EM> tersely as "scanf through <EM>stdscr</EM>" and
+       4BSD documented <EM>scanw</EM> and <EM>wscanw</EM> tersely as "scanf through <EM>stdscr</EM>"  and
        "scanf through <EM>win</EM>", respectively.  SVr3 (1987) stated
 
-              [t]hese routines correspond to <STRONG>scanf(3S)</STRONG>, as do their  arguments
-              and  return  values.  <EM>wgetstr</EM>() is called on the window, and the
+              [t]hese  routines correspond to <STRONG>scanf(3S)</STRONG>, as do their arguments
+              and return values.  <EM>wgetstr</EM>() is called on the window,  and  the
               resulting line is used as input for the scan.
 
-       SVr3 added <EM>vwscanw</EM>,  describing  its  third  parameter  as  a  <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,
-       defined  in  <EM>varargs.h</EM>, and referred the reader to the manual pages for
-       <EM>varargs</EM>  and  <EM>vprintf</EM>  for  detailed   descriptions.    (Because   SVr3
-       documentation  does  not mention <EM>vscanf</EM>, the reference to <EM>vprintf</EM> might
+       SVr3  added  <EM>vwscanw</EM>,  describing  its  third  parameter  as a <EM>va</EM><STRONG>_</STRONG><EM>list</EM>,
+       defined in <EM>varargs.h</EM>, and referred the reader to the manual  pages  for
+       <EM>varargs</EM>   and   <EM>vprintf</EM>   for  detailed  descriptions.   (Because  SVr3
+       documentation does not mention <EM>vscanf</EM>, the reference to  <EM>vprintf</EM>  might
        not be an error).
 
-       SVr4 (1989) introduced no new variations of  <EM>scanw</EM>,  but  provided  for
+       SVr4  (1989)  introduced  no  new variations of <EM>scanw</EM>, but provided for
        using either <EM>varargs.h</EM> or <EM>stdarg.h</EM> to define the <EM>va</EM><STRONG>_</STRONG><EM>list</EM> type.
 
-       X/Open  Curses  Issue 4  (1995)  defined  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM>  to replace <EM>vwscanw</EM>,
+       X/Open Curses Issue 4  (1995)  defined  <EM>vw</EM><STRONG>_</STRONG><EM>scanw</EM>  to  replace  <EM>vwscanw</EM>,
        stating that its <EM>va</EM><STRONG>_</STRONG><EM>list</EM> type is defined in <EM>stdarg.h</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>, <STRONG><A HREF="curs_printw.3x.html">curs_printw(3x)</A></STRONG>, <STRONG>scanf(3)</STRONG>, <STRONG>vscanf(3)</STRONG>
-
-
 
 ncurses 6.5                       2025-07-05                    <STRONG><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></STRONG>
 </PRE>

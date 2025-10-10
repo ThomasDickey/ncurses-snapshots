@@ -44,8 +44,6 @@
 <STRONG><A HREF="menu_format.3x.html">menu_format(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="menu_format.3x.html">menu_format(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>set_menu_format</STRONG>, <STRONG>menu_format</STRONG> - set and get menu sizes
 
@@ -59,17 +57,17 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        The function <STRONG>set_menu_format</STRONG> sets the maximum display size of the given
-       menu.  If this size is too small to display all menu  items,  the  menu
-       will  be  made  scrollable.   If  this  size  is  larger than the menus
-       subwindow and the subwindow is too small to  display  all  menu  items,
+       menu.   If  this  size is too small to display all menu items, the menu
+       will be made scrollable.   If  this  size  is  larger  than  the  menus
+       subwindow  and  the  subwindow  is too small to display all menu items,
        <STRONG>post_menu</STRONG> will fail.
 
-       The  default format is 16 rows, 1 column.  Calling <STRONG>set_menu_format</STRONG> with
-       a null menu pointer will change this default.  A  zero  row  or  column
-       argument  to  <STRONG>set_menu_format</STRONG> is interpreted as a request not to change
+       The default format is 16 rows, 1 column.  Calling <STRONG>set_menu_format</STRONG>  with
+       a  null  menu  pointer  will change this default.  A zero row or column
+       argument to <STRONG>set_menu_format</STRONG> is interpreted as a request not  to  change
        the current value.
 
-       The function <STRONG>menu_format</STRONG> returns the maximum-size constraints  for  the
+       The  function  <STRONG>menu_format</STRONG> returns the maximum-size constraints for the
        given menu into the storage addressed by <STRONG>rows</STRONG> and <STRONG>cols</STRONG>.
 
 
@@ -92,7 +90,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  emulate  the  System  V  menu  library.  They were not
+       These routines emulate the  System  V  menu  library.   They  were  not
        supported on Version 7 or BSD versions.
 
 
@@ -103,8 +101,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="menu.3x.html">menu(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-03-16                   <STRONG><A HREF="menu_format.3x.html">menu_format(3x)</A></STRONG>
 </PRE>

@@ -44,8 +44,6 @@
 <STRONG><A HREF="mitem_current.3x.html">mitem_current(3x)</A></STRONG>                Library calls               <STRONG><A HREF="mitem_current.3x.html">mitem_current(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>mitem_current</STRONG> - set and get current_menu_item
 
@@ -68,20 +66,20 @@
        current item in the given menu.
 
        The function <STRONG>set_top_row</STRONG> sets the top row of the menu to show the given
-       row (the top row is initially 0, and is reset to  this  value  whenever
-       the  <STRONG>O_ROWMAJOR</STRONG> option is toggled).  The item leftmost on the given row
-       becomes current.  The function <STRONG>top_row</STRONG> returns the number  of  the  top
+       row  (the  top  row is initially 0, and is reset to this value whenever
+       the <STRONG>O_ROWMAJOR</STRONG> option is toggled).  The item leftmost on the given  row
+       becomes  current.   The  function <STRONG>top_row</STRONG> returns the number of the top
        menu row being displayed.
 
-       The  function <STRONG>item_index</STRONG> returns the (zero-origin) index of <EM>item</EM> in the
+       The function <STRONG>item_index</STRONG> returns the (zero-origin) index of <EM>item</EM> in  the
        menu's item pointer list.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       <STRONG>current_item</STRONG> returns a pointer (which may be <EM>NULL</EM>).  It  does  not  set
+       <STRONG>current_item</STRONG>  returns  a  pointer (which may be <EM>NULL</EM>).  It does not set
        <STRONG>errno</STRONG>.
 
-       <STRONG>top_row</STRONG>  and  <STRONG>item_index</STRONG> return <STRONG>ERR</STRONG> (the general <STRONG>curses</STRONG> error value) if
+       <STRONG>top_row</STRONG> and <STRONG>item_index</STRONG> return <STRONG>ERR</STRONG> (the general <STRONG>curses</STRONG> error  value)  if
        their <EM>menu</EM> parameter is <EM>NULL</EM>.
 
        <STRONG>set_current_item</STRONG> and <STRONG>set_top_row</STRONG> return one of the following:
@@ -102,10 +100,10 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines emulate the  System  V  menu  library.   They  were  not
+       These  routines  emulate  the  System  V  menu  library.  They were not
        supported on Version 7 or BSD versions.
 
-       The   SVr4   menu  library  documentation  specifies  the  <STRONG>top_row</STRONG>  and
+       The  SVr4  menu  library  documentation  specifies  the   <STRONG>top_row</STRONG>   and
        <STRONG>index_item</STRONG> error value as -1 (which is the value of <STRONG>ERR</STRONG>).
 
 
@@ -116,8 +114,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="menu.3x.html">menu(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-12-28                 <STRONG><A HREF="mitem_current.3x.html">mitem_current(3x)</A></STRONG>
 </PRE>

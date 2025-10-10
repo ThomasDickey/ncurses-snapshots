@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>touchwin</STRONG>,     <STRONG>touchline</STRONG>,    <STRONG>untouchwin</STRONG>,    <STRONG>wtouchln</STRONG>,    <STRONG>is_linetouched</STRONG>,
        <STRONG>is_wintouched</STRONG> - control terminal output refresh in a <EM>curses</EM> window
@@ -69,10 +67,10 @@
        The  <STRONG>touchwin</STRONG>  and  <STRONG>touchline</STRONG>  routines  throw  away  all  optimization
        information  about  which  parts  of  the  window have been touched, by
        pretending that the entire window has been drawn on.  This is sometimes
-       necessary  when using overlapping windows, since a change to one window
-       affects the other window, but the records  of  which  lines  have  been
-       changed  in  the  other  window do not reflect the change.  The routine
-       <STRONG>touchline</STRONG> only pretends that <EM>count</EM> lines have been  changed,  beginning
+       necessary when using overlapping windows, since a change to one  window
+       affects  the  other  window,  but  the records of which lines have been
+       changed in the other window do not reflect  the  change.   The  routine
+       <STRONG>touchline</STRONG>  only  pretends that <EM>count</EM> lines have been changed, beginning
        with line <EM>start</EM>.
 
        The <STRONG>untouchwin</STRONG> routine marks all lines in the window as unchanged since
@@ -99,7 +97,7 @@
                number is outside the window boundaries.
 
                The constant <STRONG>ERR</STRONG> is distinct from <STRONG>TRUE</STRONG> and <STRONG>FALSE</STRONG>, which are the
-               normal return values of this function.   Because  the  function
+               normal  return  values  of this function.  Because the function
                returns a <STRONG>bool</STRONG>, returning <STRONG>ERR</STRONG> (which is neither <STRONG>TRUE</STRONG> nor <STRONG>FALSE</STRONG>)
                may not be supported by the compiler.
 
@@ -108,7 +106,7 @@
                The actual function returns <STRONG>FALSE</STRONG> when it detects an error.
 
           <STRONG>wtouchln</STRONG>
-               returns <STRONG>ERR</STRONG> if the window pointer  is  null,  or  if  the  line
+               returns  <STRONG>ERR</STRONG>  if  the  window  pointer  is null, or if the line
                number is outside the window boundaries.
 
 
@@ -129,14 +127,12 @@
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        SVr2 (1984) introduced <EM>touchwin</EM>,
 
-       SVr3   (1987)   added  <EM>touchline</EM>.   SVr3.1  later  that  year  supplied
+       SVr3  (1987)  added  <EM>touchline</EM>.   SVr3.1  later  that   year   supplied
        <EM>is</EM><STRONG>_</STRONG><EM>linetouched</EM>, <EM>is</EM><STRONG>_</STRONG><EM>wintouched</EM>, <EM>untouchwin</EM>, and <EM>wtouchln</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                    <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 </PRE>

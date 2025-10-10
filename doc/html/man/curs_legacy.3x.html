@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>getattrs</STRONG>,   <STRONG>getbegx</STRONG>,   <STRONG>getbegy</STRONG>,  <STRONG>getcurx</STRONG>,  <STRONG>getcury</STRONG>,  <STRONG>getmaxx</STRONG>,  <STRONG>getmaxy</STRONG>,
        <STRONG>getparx</STRONG>,  <STRONG>getpary</STRONG>  -  get  <EM>curses</EM>  cursor  and  window  coordinates  or
@@ -82,9 +80,9 @@
            fit into a <STRONG>chtype</STRONG>, so <STRONG>wattr_get</STRONG> is the only way to obtain the color
            information.
 
-           Because <STRONG>getattrs</STRONG> returns the attributes in a single  parameter,  it
-           would  not  be possible for an application to distinguish that from
-           <STRONG>ERR</STRONG> (a <EM>-1</EM>).  If the window  parameter  is  null,  <STRONG>getattrs</STRONG>  returns
+           Because  <STRONG>getattrs</STRONG>  returns the attributes in a single parameter, it
+           would not be possible for an application to distinguish  that  from
+           <STRONG>ERR</STRONG>  (a  <EM>-1</EM>).   If  the  window parameter is null, <STRONG>getattrs</STRONG> returns
            <STRONG>A_NORMAL</STRONG> (zero).
 
        <STRONG>o</STRONG>   The <STRONG>getbegy</STRONG> and <STRONG>getbegx</STRONG> functions return the same data as <STRONG>getbegyx</STRONG>.
@@ -97,24 +95,22 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except  as  noted,  these  functions  return  an integer, or <STRONG>ERR</STRONG> if the
+       Except as noted, these functions return  an  integer,  or  <STRONG>ERR</STRONG>  if  the
        window parameter is null.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  functions  were  supported  on  Version  7,  BSD  or  System   V
-       implementations.   None  of  those  implementations  checked the window
+       These   functions  were  supported  on  Version  7,  BSD  or  System  V
+       implementations.  None of  those  implementations  checked  the  window
        parameter.
 
-       The <STRONG>getattrs</STRONG> function and  macro  are  defined  to  return  a  (signed)
+       The  <STRONG>getattrs</STRONG>  function  and  macro  are  defined  to return a (signed)
        integer  for  compatibility  with  those  implementations  although  an
        unsigned type would have been more appropriate.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>, <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-02-15                   <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>
 </PRE>

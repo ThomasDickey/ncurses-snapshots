@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>inwstr</STRONG>,  <STRONG>winwstr</STRONG>,  <STRONG>mvinwstr</STRONG>,  <STRONG>mvwinwstr</STRONG>,  <STRONG>innwstr</STRONG>, <STRONG>winnwstr</STRONG>, <STRONG>mvinnwstr</STRONG>,
        <STRONG>mvwinnwstr</STRONG> - get a wide-character string from a <EM>curses</EM> window
@@ -119,10 +117,10 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       Notwithstanding the foregoing, X/Open Curses Issues 4 and 7 both  state
-       that  <EM>innwstr</EM>,  <EM>winnwstr</EM>,  <EM>mvinnwstr</EM>, and <EM>mvwinnwstr</EM> "fail ... [i]f the
+       Notwithstanding  the foregoing, X/Open Curses Issues 4 and 7 both state
+       that <EM>innwstr</EM>, <EM>winnwstr</EM>, <EM>mvinnwstr</EM>, and <EM>mvwinnwstr</EM> "fail  ...  [i]f  the
        array  is  not  large  enough  to  contain  any  complete  characters".
-       Strictly  interpreted,  this  means  that  a  caller of these functions
+       Strictly interpreted, this means  that  a  caller  of  these  functions
        cannot use their return values to detect truncation of a wide-character
        string  copied  from  more  than  one  character  cell in <EM>win</EM>.  <EM>ncurses</EM>
        reports any truncation with <EM>ERR</EM>.
@@ -148,8 +146,6 @@
        its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>, <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
 </PRE>

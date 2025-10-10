@@ -44,8 +44,6 @@
 <STRONG><A HREF="form_new.3x.html">form_new(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="form_new.3x.html">form_new(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>new_form</STRONG>, <STRONG>free_form</STRONG> - create and destroy forms
 
@@ -61,12 +59,12 @@
        The function <STRONG>new_form</STRONG> creates a new form connected to a specified field
        pointer array (which must be <EM>NULL</EM>-terminated).
 
-       The function <STRONG>free_form</STRONG> disconnects <EM>form</EM> from its field array and  frees
+       The  function <STRONG>free_form</STRONG> disconnects <EM>form</EM> from its field array and frees
        the storage allocated for the form.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       The  function  <STRONG>new_form</STRONG> returns <EM>NULL</EM> on error.  It sets <STRONG>errno</STRONG> according
+       The function <STRONG>new_form</STRONG> returns <EM>NULL</EM> on error.  It sets  <STRONG>errno</STRONG>  according
        to the function's success:
 
        <STRONG>E_OK</STRONG> The routine succeeded.
@@ -92,7 +90,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines emulate the System  V  forms  library.   They  were  not
+       These  routines  emulate  the  System  V  forms library.  They were not
        supported on Version 7 or BSD versions.
 
 
@@ -103,8 +101,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-12-28                      <STRONG><A HREF="form_new.3x.html">form_new(3x)</A></STRONG>
 </PRE>

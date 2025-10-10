@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <EM>bool</EM>,  <EM>chtype</EM>,  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>,  <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>, <EM>SCREEN</EM>, <EM>WINDOW</EM>, <STRONG>TRUE</STRONG>, <STRONG>FALSE</STRONG>, <STRONG>ERR</STRONG>, <STRONG>OK</STRONG>,
        <STRONG>CCHARW_MAX</STRONG>, <STRONG>curscr</STRONG>, <STRONG>newscr</STRONG>, <STRONG>stdscr</STRONG>, <STRONG>COLORS</STRONG>, <STRONG>COLOR_PAIRS</STRONG>,  <STRONG>COLS</STRONG>,  <STRONG>LINES</STRONG>,
@@ -158,26 +156,26 @@
 
 </PRE><H3><a name="h3-curscr_newscr_stdscr">curscr, newscr, stdscr</a></H3><PRE>
        When a <EM>curses</EM> application calls <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>, the library
-       creates  a  window  named  <STRONG>stdscr</STRONG> that is the same size as the terminal
-       screen, (minus any lines reserved by  <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG>  or  <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>)
-       and  is  the  implicit  window  used  by functions that interact with a
-       window but do  not  take  a  parameter  identifying  one;  many  <EM>curses</EM>
-       functions  use it.  An application need not use <STRONG>stdscr</STRONG>; it might prefer
+       creates a window named <STRONG>stdscr</STRONG> that is the same  size  as  the  terminal
+       screen,  (minus  any  lines reserved by <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG> or <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>)
+       and is the implicit window used  by  functions  that  interact  with  a
+       window  but  do  not  take  a  parameter  identifying  one; many <EM>curses</EM>
+       functions use it.  An application need not use <STRONG>stdscr</STRONG>; it might  prefer
        to tile the display into multiple windows instead.
 
-       The library records updates to the terminal screen in  a  window  named
-       <STRONG>curscr</STRONG>.   This  object  is  referred  to  as  the  "physical screen" in
+       The  library  records  updates to the terminal screen in a window named
+       <STRONG>curscr</STRONG>.  This object  is  referred  to  as  the  "physical  screen"  in
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG> and <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>.
 
-       <EM>ncurses</EM> collects pending updates to the terminal  screen  in  a  window
-       named  <STRONG>newscr</STRONG>.   This  object is referred to as the "virtual screen" in
-       the <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, and <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>.  When  the
-       screen  is  refreshed, <EM>curses</EM> determines a minimal set of updates using
+       <EM>ncurses</EM>  collects  pending  updates  to the terminal screen in a window
+       named <STRONG>newscr</STRONG>.  This object is referred to as the  "virtual  screen"  in
+       the  <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, and <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>.  When the
+       screen is refreshed, <EM>curses</EM> determines a minimal set of  updates  using
        the terminal's capabilities to make <STRONG>curscr</STRONG> look like <STRONG>newscr</STRONG>.
 
 
 </PRE><H3><a name="h3-COLORS">COLORS</a></H3><PRE>
-       Once a <EM>curses</EM> screen is initialized,  <STRONG>COLORS</STRONG>  contains  the  number  of
+       Once  a  <EM>curses</EM>  screen  is  initialized, <STRONG>COLORS</STRONG> contains the number of
        colors supported by the terminal; see <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>.
 
 
@@ -201,7 +199,7 @@
        input stream within a short interval.  <STRONG>ESCDELAY</STRONG> stores this interval in
        milliseconds.
 
-       If <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is disabled for the  <EM>curses</EM>  window  receiving  input,  a
+       If  <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  is  disabled  for  the <EM>curses</EM> window receiving input, a
        program must disambiguate escape sequences itself.
 
 
@@ -227,12 +225,12 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       The X/Open Curses standard documents all of  the  foregoing  types  and
+       The  X/Open  Curses  standard  documents all of the foregoing types and
        symbols except for <STRONG>CCHARW_MAX</STRONG>, <STRONG>newscr</STRONG>, <STRONG>TABSIZE</STRONG>, and <STRONG>ESCDELAY</STRONG>.
 
-       X/Open  Curses  describes  <STRONG>curscr</STRONG> only as "an internal data structure";
-       SVr4  gave  more  details,  noting  its  use  "for  certain   low-level
-       operations  like  clearing  and redrawing a screen containing garbage".
+       X/Open Curses describes <STRONG>curscr</STRONG> only as "an  internal  data  structure";
+       SVr4   gave  more  details,  noting  its  use  "for  certain  low-level
+       operations like clearing and redrawing a  screen  containing  garbage".
        Neither specified its interaction with the rest of the interface beyond
        use as an argument to <STRONG><A HREF="curs_outopts.3x.html">clearok(3x)</A></STRONG> and <STRONG><A HREF="curs_refresh.3x.html">wrefresh(3x)</A></STRONG>.
 
@@ -280,15 +278,12 @@
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       [UAX  #29]  "Unicode  Standard  Annex  #29:  Unicode Text Segmentation"
-       &lt;https://unicode.org/reports/tr29/&gt;
+       [UAX #29] "Unicode Standard Annex #29: Unicode Text Segmentation"
 
        <STRONG><A HREF="curs_getcchar.3x.html">getcchar(3x)</A></STRONG> further discusses the <EM>ncurses</EM> extension <STRONG>CCHARW_MAX</STRONG>.
 
-       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>,    <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>,    <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>,
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>,    <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>,   <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>,
        <STRONG><A HREF="curs_threads.3x.html">curs_threads(3x)</A></STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-23                <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 </PRE>

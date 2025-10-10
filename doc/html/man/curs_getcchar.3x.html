@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>getcchar</STRONG>,  <STRONG>setcchar</STRONG>  -  convert  between  a wide-character string and a
        <EM>curses</EM> complex character
@@ -85,17 +83,17 @@
 
 
 </PRE><H3><a name="h3-setcchar">setcchar</a></H3><PRE>
-       <STRONG>setcchar</STRONG> constructs a <EM>curses</EM> complex character <EM>wch</EM> from the  components
-       <EM>wc</EM>,  <EM>attrs</EM>, and <EM>pair</EM>.  The wide-character string <EM>wch</EM> must be terminated
-       with a null wide character <STRONG>L'\0'</STRONG> and must contain at most  one  spacing
-       character,  which,  if present, must be the first wide character in the
+       <STRONG>setcchar</STRONG>  constructs a <EM>curses</EM> complex character <EM>wch</EM> from the components
+       <EM>wc</EM>, <EM>attrs</EM>, and <EM>pair</EM>.  The wide-character string <EM>wch</EM> must be  terminated
+       with  a  null wide character <STRONG>L'\0'</STRONG> and must contain at most one spacing
+       character, which, if present, must be the first wide character  in  the
        string.
 
-       Up  to  <STRONG>CCHARW_MAX</STRONG> - 1   non-spacing   characters   may   follow   (see
-       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>).    <EM>ncurses</EM>   ignores  any  additional  non-spacing
+       Up   to   <STRONG>CCHARW_MAX</STRONG> - 1   non-spacing   characters   may  follow  (see
+       <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>).   <EM>ncurses</EM>  ignores  any   additional   non-spacing
        characters.
 
-       The string may contain a single control  character  instead.   In  that
+       The  string  may  contain  a single control character instead.  In that
        case, no non-spacing characters are allowed.
 
 
@@ -123,14 +121,14 @@
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <EM>wch</EM> may be a value stored by <STRONG>setcchar</STRONG> or another <EM>curses</EM> function with a
-       writable <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> argument.  If <EM>wch</EM> is constructed by any  other  means,
+       writable  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  argument.  If <EM>wch</EM> is constructed by any other means,
        the library's behavior is unspecified.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       X/Open  Curses  documents the <EM>opts</EM> argument as reserved for future use,
-       saying that it must be a null pointer.  The <EM>ncurses</EM> 6 ABI uses it  with
-       functions  that  have  a color pair parameter to support extended color
+       X/Open Curses documents the <EM>opts</EM> argument as reserved for  future  use,
+       saying  that it must be a null pointer.  The <EM>ncurses</EM> 6 ABI uses it with
+       functions that have a color pair parameter to  support  extended  color
        pairs.
 
        <STRONG>o</STRONG>   In functions that assign colors, such as <STRONG>setcchar</STRONG>, if <EM>opts</EM> is not a
@@ -148,35 +146,35 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       These  functions  are described in X/Open Curses Issue 4.  It specifies
+       These functions are described in X/Open Curses Issue 4.   It  specifies
        no error conditions for them.
 
-       X/Open Curses does not detail the  layout  of  the  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  structure,
+       X/Open  Curses  does  not  detail  the layout of the <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> structure,
        describing only its minimal required contents:
 
        <STRONG>o</STRONG>   a spacing wide character (<EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>),
 
        <STRONG>o</STRONG>   at least five non-spacing wide characters (<EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>; see below),
 
-       <STRONG>o</STRONG>   attributes  (at  least  15  bits' worth, inferred from the count of
+       <STRONG>o</STRONG>   attributes (at least 15 bits' worth, inferred  from  the  count  of
            specified <EM>WA</EM><STRONG>_</STRONG> constants),
 
-       <STRONG>o</STRONG>   a color pair identifier (at least 16 bits, inferred from the  <EM>short</EM>
+       <STRONG>o</STRONG>   a  color pair identifier (at least 16 bits, inferred from the <EM>short</EM>
            type used to encode it).
 
        Non-spacing characters are optional, in the sense that zero or more may
        be stored in a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.  XOpen/Curses specifies a limit:
 
            Implementations may limit the number of non-spacing characters that
-           can  be  associated with a spacing character, provided any limit is
+           can be associated with a spacing character, provided any  limit  is
            at least 5.
 
        Then-contemporary Unix implementations adhered to that limit.
 
-       <STRONG>o</STRONG>   AIX 4 and OSF/1 4 used the same declaration with a  single  spacing
+       <STRONG>o</STRONG>   AIX 4  and  OSF/1 4 used the same declaration with a single spacing
            wide character <EM>c</EM> and an array of 5 non-spacing wide characters <EM>z</EM>.
 
-       <STRONG>o</STRONG>   HP-UX 10  used  an opaque structure of 28 bytes, large enough for 6
+       <STRONG>o</STRONG>   HP-UX 10 used an opaque structure of 28 bytes, large enough  for  6
            <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> values.
 
        <STRONG>o</STRONG>   Solaris <EM>xcurses</EM> uses a single array of 6 <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> values.
@@ -203,8 +201,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>, <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>, <STRONG>wcwidth(3)</STRONG>
-
-
 
 ncurses 6.5                       2025-02-23                 <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
 </PRE>

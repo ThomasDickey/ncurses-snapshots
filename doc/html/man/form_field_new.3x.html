@@ -44,8 +44,6 @@
 <STRONG><A HREF="form_field_new.3x.html">form_field_new(3x)</A></STRONG>               Library calls              <STRONG><A HREF="form_field_new.3x.html">form_field_new(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>new_field</STRONG>,  <STRONG>dup_field</STRONG>, <STRONG>link_field</STRONG>, <STRONG>free_field</STRONG> - create and destroy form
        fields
@@ -74,14 +72,14 @@
        character, options, and user pointer) are copied.  Field status and the
        field page bit are not copied.
 
-       The  function  <STRONG>link_field</STRONG> acts like <STRONG>dup_field</STRONG>, but the new field shares
+       The function <STRONG>link_field</STRONG> acts like <STRONG>dup_field</STRONG>, but the new  field  shares
        buffers with its parent.  Attribute data is separate.
 
        The function <STRONG>free_field</STRONG> de-allocates storage associated with a field.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       The functions <STRONG>new_field</STRONG>, <STRONG>dup_field</STRONG>, <STRONG>link_field</STRONG> return  <EM>NULL</EM>  on  error.
+       The  functions  <STRONG>new_field</STRONG>,  <STRONG>dup_field</STRONG>, <STRONG>link_field</STRONG> return <EM>NULL</EM> on error.
        They set <STRONG>errno</STRONG> according to their success:
 
        <STRONG>E_OK</STRONG> The routine succeeded.
@@ -104,11 +102,11 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  emulate  the  System  V  forms library.  They were not
+       These routines emulate the System  V  forms  library.   They  were  not
        supported on Version 7 or BSD versions.
 
-       It may be unwise to count on the set of attributes copied by  <STRONG>dup_field</STRONG>
-       being  portable;  the  System  V  forms  library documents are not very
+       It  may be unwise to count on the set of attributes copied by <STRONG>dup_field</STRONG>
+       being portable; the System V  forms  library  documents  are  not  very
        explicit about what gets copied and what does not.
 
 
@@ -119,8 +117,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-12-28                <STRONG><A HREF="form_field_new.3x.html">form_field_new(3x)</A></STRONG>
 </PRE>

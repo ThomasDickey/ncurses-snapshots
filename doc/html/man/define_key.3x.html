@@ -45,8 +45,6 @@
 <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>define_key</STRONG> - define a <EM>curses</EM> function key code
 
@@ -59,14 +57,14 @@
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        The <STRONG>define_key</STRONG> <EM>ncurses</EM> extension permits a <EM>curses</EM> application to <EM>bind</EM> a
-       string <EM>definition</EM> to the function key <EM>key-code</EM> returned  by  <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>
-       (wide-character  API users: <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>) when <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is enabled in
-       a window and a function key is  pressed.   <EM>ncurses</EM>  interprets  such  a
-       binding  as  it  does  those  in  the  <EM>terminfo</EM>  database entry for the
+       string  <EM>definition</EM>  to the function key <EM>key-code</EM> returned by <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>
+       (wide-character API users: <STRONG><A HREF="curs_get_wch.3x.html">wget_wch(3x)</A></STRONG>) when <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> is enabled  in
+       a  window  and  a  function  key is pressed.  <EM>ncurses</EM> interprets such a
+       binding as it does  those  in  the  <EM>terminfo</EM>  database  entry  for  the
        terminal type.
 
-       A <EM>definition</EM> of  <EM>NULL</EM>  removes  any  existing  binding  from  <EM>key-code</EM>.
-       Similarly,  a  non-positive  <EM>key-code</EM>  removes  an existing binding for
+       A  <EM>definition</EM>  of  <EM>NULL</EM>  removes  any  existing  binding from <EM>key-code</EM>.
+       Similarly, a non-positive <EM>key-code</EM>  removes  an  existing  binding  for
        <EM>definition</EM>, if any.
 
 
@@ -97,8 +95,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="keybound.3x.html">keybound(3x)</A></STRONG>, <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>, <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-12-28                    <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>
 </PRE>

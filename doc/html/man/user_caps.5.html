@@ -45,8 +45,6 @@
 <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>                     File formats                     <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        user_caps - user-defined <EM>terminfo</EM> capability format
 
@@ -61,8 +59,8 @@
 
 </PRE><H3><a name="h3-Background">Background</a></H3><PRE>
        Prior to <EM>ncurses</EM> 5.0 (1999), <EM>terminfo</EM> databases used a <EM>fixed</EM> <EM>repertoire</EM>
-       of terminal capabilities designed for the  SVr2  terminal  database  in
-       1984,  added  to  in  stages  through  SVr4 (1989), and standardized in
+       of  terminal  capabilities  designed  for the SVr2 terminal database in
+       1984, added to in stages  through  SVr4  (1989),  and  standardized  in
        X/Open Curses starting in 1995.
 
        Most such additions to this fixed repertoire suppelmented the tables of
@@ -82,34 +80,34 @@
            engineering of compiled <EM>terminfo</EM> files to match the binary format.
 
        <STRONG>o</STRONG>   Lacking a standard for the binary format, most implementations copy
-           the  SVr2  binary format, which uses 16-bit signed integers, and is
+           the SVr2 binary format, which uses 16-bit signed integers,  and  is
            limited to 4096-byte entries.
 
-           The SVr2 format cannot  represent  very  large  numeric  capability
-           values,  nor  can it represent large numbers of key definitions, as
-           are  required  to  distinguish  multiple  modifier  keys  used   in
+           The  SVr2  format  cannot  represent  very large numeric capability
+           values, nor can it represent large numbers of key  definitions,  as
+           are   required  to  distinguish  multiple  modifier  keys  used  in
            combination with a function key.
 
        <STRONG>o</STRONG>   The tables of capability names differ between implementations.
 
-           Although  they  <EM>may</EM>  provide  all of the standard capability names,
-           each arranges its table entries differently because  some  features
-           were  added  as  needed, while others were added -- out of order --
+           Although they <EM>may</EM> provide all of  the  standard  capability  names,
+           each  arranges  its table entries differently because some features
+           were added as needed, while others were added -- out  of  order  --
            for X/Open Curses conformance.
 
            While  <EM>ncurses</EM>'s  capability  repertoire  is  closest  to  that  of
-           Solaris,  the  set of capabilities supported by each vendor's <EM>term-</EM>
-           <EM>info</EM> database differs from the list  published  by  X/Open  Curses.
-           <EM>ncurses</EM>  can  be  configured  with  tables  that match the terminal
-           databases for  AIX,  HP-UX,  or  OSF/1,  rather  than  the  default
+           Solaris, the set of capabilities supported by each  vendor's  <EM>term-</EM>
+           <EM>info</EM>  database  differs  from  the list published by X/Open Curses.
+           <EM>ncurses</EM> can be configured  with  tables  that  match  the  terminal
+           databases  for  AIX,  HP-UX,  or  OSF/1,  rather  than  the default
            Solaris-like configuration.
 
-       <STRONG>o</STRONG>   In  SVr4  <EM>curses</EM>  and  <EM>ncurses</EM>, the terminal database is defined at
-           compile time by interpolating a text file that lists the  different
+       <STRONG>o</STRONG>   In SVr4 <EM>curses</EM> and <EM>ncurses</EM>, the terminal  database  is  defined  at
+           compile  time by interpolating a text file that lists the different
            terminal capabilities.
 
-           In  principle, the text file can be extended, but doing so requires
-           recompiling and reinstalling the library.  The text  file  used  by
+           In principle, the text file can be extended, but doing so  requires
+           recompiling  and  reinstalling  the library.  The text file used by
            <EM>ncurses</EM> for terminal capabilities includes details of extensions to
            X/Open Curses  made  by  various  systems.   For  example,  <EM>ncurses</EM>
            supports   the   following   nonstandard   capabilities   in   each
@@ -125,22 +123,22 @@
                     (<STRONG>box1</STRONG>) box characters primary set
 
            The memory lock/unlock capabilities were included because they were
-           used  in the X11R6 terminal description for <STRONG>xterm(1)</STRONG>.  <STRONG>tic</STRONG> uses the
+           used in the X11R6 terminal description for <STRONG>xterm(1)</STRONG>.  <STRONG>tic</STRONG> uses  the
            <STRONG>box1</STRONG> capability to cope with terminal descriptions written for AIX.
 
-       During the 1990s, some application developers  were  reluctant  to  use
-       <EM>terminfo</EM>  in  spite  of  its  performance  (and  other) advantages over
+       During  the  1990s,  some  application developers were reluctant to use
+       <EM>terminfo</EM> in spite  of  its  performance  (and  other)  advantages  over
        <EM>termcap</EM>.
 
-       <STRONG>o</STRONG>   The fixed  repertoire  prevented  users  from  adding  support  for
-           terminal  features unanticipated by X/Open Curses (or required them
+       <STRONG>o</STRONG>   The  fixed  repertoire  prevented  users  from  adding  support for
+           terminal features unanticipated by X/Open Curses (or required  them
            to reuse existing capabilities as a workaround).
 
-       <STRONG>o</STRONG>   The limitation  to  16-bit  signed  integers  was  also  mentioned.
-           Because  <EM>termcap</EM>  stores everything as a string, it could represent
+       <STRONG>o</STRONG>   The  limitation  to  16-bit  signed  integers  was  also mentioned.
+           Because <EM>termcap</EM> stores everything as a string, it  could  represent
            larger numbers.
 
-       Although <EM>termcap</EM>'s extensibility was rarely used --  the  claimant  was
+       Although  <EM>termcap</EM>'s  extensibility  was rarely used -- the claimant was
        never an implementor who had actually exercised it -- the criticism had
        a  point.   <EM>ncurses</EM>  5.0  provided  a   way   to   detect   nonstandard
        capabilities,  to  determine  their  type,  and to optionally store and
@@ -175,22 +173,22 @@
            keypad-  or  function-keys)  depending  on  modifier  keys  (shift,
            control,  etc.).   While <EM>terminfo</EM> and <EM>termcap</EM> define a set of sixty
            function key names, to which a series of keys can be assigned, that
-           is  insufficient for more than a dozen keys multiplied by more than
-           a couple of modifier combinations.  The  <EM>ncurses</EM>  database  uses  a
+           is insufficient for more than a dozen keys multiplied by more  than
+           a  couple  of  modifier  combinations.  The <EM>ncurses</EM> database uses a
            convention based on <STRONG>xterm(1)</STRONG> to provide extended special-key names.
 
-           Fitting  that  into <EM>termcap</EM>'s limitation of 2-character names would
-           be pointless.  These extended keys are available  only  with  <EM>term-</EM>
+           Fitting that into <EM>termcap</EM>'s limitation of 2-character  names  would
+           be  pointless.   These  extended keys are available only with <EM>term-</EM>
            <EM>info</EM>.
 
 
 </PRE><H3><a name="h3-Recognized-Capabilities">Recognized Capabilities</a></H3><PRE>
-       The  <EM>ncurses</EM>  library  employs  user-definable capabilities.  While the
-       <EM>terminfo</EM> database may have other  extensions,  <EM>ncurses</EM>  makes  explicit
+       The <EM>ncurses</EM> library employs  user-definable  capabilities.   While  the
+       <EM>terminfo</EM>  database  may  have  other extensions, <EM>ncurses</EM> makes explicit
        checks for the following.
 
-          <STRONG>AX</STRONG> (Boolean)  asserts that the terminal interprets SGR 39 and SGR 49
-             by resetting the foreground and background colors,  respectively,
+          <STRONG>AX</STRONG> (Boolean) asserts that the terminal interprets SGR 39 and SGR  49
+             by  resetting the foreground and background colors, respectively,
              to the default.
 
              <STRONG>screen(1)</STRONG> recognizes this capability as well.
@@ -233,7 +231,7 @@
                 Boolean case.
 
              string
-                specify  the  quantity  of  bits used for red, green, and blue
+                specify the quantity of bits used for  red,  green,  and  blue
                 color channels as a slash-separated list of decimal integers.
 
              Because there are several RGB encodings in use, applications that
@@ -242,10 +240,10 @@
              <STRONG>RGB#1</STRONG> to represent the standard eight ANSI X3.64/ECMA-48/ISO 6429
              colors using one bit per color channel.
 
-          <STRONG>U8</STRONG> (numeric) asserts whether <EM>ncurses</EM> must  use  Unicode  values  for
-             line-drawing  characters, and that it should ignore the alternate
-             character set (ACS)  capabilities  when  the  locale  uses  UTF-8
-             encoding.   See  the discussion of <STRONG>NCURSES_NO_UTF8_ACS</STRONG> in section
+          <STRONG>U8</STRONG> (numeric)  asserts  whether  <EM>ncurses</EM>  must use Unicode values for
+             line-drawing characters, and that it should ignore the  alternate
+             character  set  (ACS)  capabilities  when  the  locale uses UTF-8
+             encoding.  See the discussion of <STRONG>NCURSES_NO_UTF8_ACS</STRONG>  in  section
              "ENVIRONMENT" of <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.
 
              Set this capability to a nonzero value to enable it.
@@ -270,12 +268,12 @@
              The  <STRONG>XM</STRONG>  capability  has a single numeric parameter.  If nonzero,
              the mouse  protocol  should  be  enabled.   If  zero,  the  mouse
              protocol should be disabled.  <EM>ncurses</EM> inspects this capability if
-             it is present, to see whether the 1006 protocol is used.  If  so,
+             it  is present, to see whether the 1006 protocol is used.  If so,
              it  expects  the  responses  to  use  the  SGR 1006  <EM>xterm</EM>  mouse
              protocol.
 
-             The <EM>xterm</EM> mouse protocol is used  by  other  terminal  emulators.
-             The  terminal database uses building blocks for the various <EM>xterm</EM>
+             The  <EM>xterm</EM>  mouse  protocol  is used by other terminal emulators.
+             The terminal database uses building blocks for the various  <EM>xterm</EM>
              mouse protocols usable in customized terminal descriptions.
 
              The terminal database building blocks for this mouse feature also
@@ -302,7 +300,7 @@
 
                <EM>p8</EM>   x-ordinate ending region
 
-             Here are  examples  from  the  terminal  database  for  the  most
+             Here  are  examples  from  the  terminal  database  for  the most
              commonly used <EM>xterm</EM> mouse protocols.
 
                xterm+x11mouse|X11 xterm mouse protocol,
@@ -321,20 +319,20 @@
 
 
 </PRE><H3><a name="h3-Extended-Key-Definitions">Extended Key Definitions</a></H3><PRE>
-       Several  terminals  provide  the  ability  to send distinct strings for
-       combinations of modified special keys.  There is no standard  for  what
+       Several terminals provide the ability  to  send  distinct  strings  for
+       combinations  of  modified special keys.  There is no standard for what
        those keys can send.
 
-       Since  1999,  <STRONG>xterm(1)</STRONG>  has  supported  <EM>shift</EM>,  <EM>control</EM>,  <EM>alt</EM>, and <EM>meta</EM>
-       modifiers which produce distinct special-key strings.   In  a  terminal
-       description,  <EM>ncurses</EM>  has  no special knowledge of the modifiers used.
-       Applications can use the <EM>naming</EM> <EM>convention</EM>  established  for  <EM>xterm</EM>  to
+       Since 1999, <STRONG>xterm(1)</STRONG>  has  supported  <EM>shift</EM>,  <EM>control</EM>,  <EM>alt</EM>,  and  <EM>meta</EM>
+       modifiers  which  produce  distinct special-key strings.  In a terminal
+       description, <EM>ncurses</EM> has no special knowledge of  the  modifiers  used.
+       Applications  can  use  the  <EM>naming</EM> <EM>convention</EM> established for <EM>xterm</EM> to
        find these special keys in the terminal description.
 
-       Starting  with  the  <EM>curses</EM> convention that capability codes describing
-       the input generated by a terminal's key caps begin with "k",  and  that
-       shifted  special  keys  use uppercase letters in their names, <EM>ncurses</EM>'s
-       terminal database defines the following names  and  codes  to  which  a
+       Starting with the <EM>curses</EM> convention that  capability  codes  describing
+       the  input  generated by a terminal's key caps begin with "k", and that
+       shifted special keys use uppercase letters in  their  names,  <EM>ncurses</EM>'s
+       terminal  database  defines  the  following  names and codes to which a
        suffix is added.
 
             <STRONG>Code</STRONG>   <STRONG>Description</STRONG>
@@ -349,8 +347,8 @@
             <STRONG>kRIT</STRONG>   shifted kcuf1 (cursor forward)
             <STRONG>kUP</STRONG>    shifted kcuu1 (cursor up)
 
-       Keycap  nomenclature on the Unix systems for which <EM>curses</EM> was developed
-       differs from today's ubiquitous descendants of the IBM  PC/AT  keyboard
+       Keycap nomenclature on the Unix systems for which <EM>curses</EM> was  developed
+       differs  from  today's ubiquitous descendants of the IBM PC/AT keyboard
        layout.  In the foregoing, interpret "backward" as "left", "forward" as
        "right", "next" as "page down", and "prev(ious)" as "page up".
 
@@ -407,8 +405,6 @@
 
        <EM>XTerm</EM> <EM>Control</EM> <EM>Sequences</EM> provides further information  on  the  <STRONG>xterm(1)</STRONG>
        features that are used in these extended capabilities.
-
-
 
 ncurses 6.5                       2025-08-16                      <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 </PRE>

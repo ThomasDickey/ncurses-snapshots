@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_overlay.3x.html">curs_overlay(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_overlay.3x.html">curs_overlay(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>overlay</STRONG>,  <STRONG>overwrite</STRONG>,  <STRONG>copywin</STRONG>  -  overlay <EM>curses</EM> windows and manipulate
        them
@@ -66,17 +64,17 @@
 </PRE><H3><a name="h3-overlay_overwrite">overlay, overwrite</a></H3><PRE>
        The <STRONG>overlay</STRONG> and <STRONG>overwrite</STRONG> routines overlay <EM>srcwin</EM>  on  top  of  <EM>dstwin</EM>.
        <EM>scrwin</EM> and <EM>dstwin</EM> are not required to be the same size; only text where
-       the two windows overlap is copied.  The difference is that  <STRONG>overlay</STRONG>  is
-       non-destructive   (blanks   are   not   copied)  whereas  <STRONG>overwrite</STRONG>  is
+       the  two  windows overlap is copied.  The difference is that <STRONG>overlay</STRONG> is
+       non-destructive  (blanks  are  not   copied)   whereas   <STRONG>overwrite</STRONG>   is
        destructive.
 
 
 </PRE><H3><a name="h3-copywin">copywin</a></H3><PRE>
-       The <STRONG>copywin</STRONG> routine provides a finer granularity of  control  over  the
+       The  <STRONG>copywin</STRONG>  routine  provides a finer granularity of control over the
        <STRONG>overlay</STRONG>  and  <STRONG>overwrite</STRONG>  routines.   As  in  the  <STRONG>prefresh</STRONG>  routine,  a
-       rectangle is specified in the destination  window,  (<EM>dminrow</EM>,  <EM>dmincol</EM>)
-       and  (<EM>dmaxrow</EM>,  <EM>dmaxcol</EM>),  and the upper-left-corner coordinates of the
-       source window, (<EM>sminrow</EM>, <EM>smincol</EM>).  If the argument  <EM>overlay</EM>  is  <STRONG>true</STRONG>,
+       rectangle  is  specified  in the destination window, (<EM>dminrow</EM>, <EM>dmincol</EM>)
+       and (<EM>dmaxrow</EM>, <EM>dmaxcol</EM>), and the upper-left-corner  coordinates  of  the
+       source  window,  (<EM>sminrow</EM>,  <EM>smincol</EM>).  If the argument <EM>overlay</EM> is <STRONG>true</STRONG>,
        then copying is non-destructive, as in <STRONG>overlay</STRONG>.
 
 
@@ -106,8 +104,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                  <STRONG><A HREF="curs_overlay.3x.html">curs_overlay(3x)</A></STRONG>
 </PRE>

@@ -45,8 +45,6 @@
 <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>inch</STRONG>, <STRONG>winch</STRONG>, <STRONG>mvinch</STRONG>, <STRONG>mvwinch</STRONG> - get a <EM>curses</EM> character from a window
 
@@ -92,31 +90,29 @@
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       The original <EM>curses</EM> in 4BSD (1980) defined <EM>winch</EM> as a  macro  accessing
-       the  <EM>WINDOW</EM>  structure member representing character cell data, at that
-       time a <EM>char</EM>, containing  only  a  7-bit  ASCII  character  code  and  a
+       The  original  <EM>curses</EM> in 4BSD (1980) defined <EM>winch</EM> as a macro accessing
+       the <EM>WINDOW</EM> structure member representing character cell data,  at  that
+       time  a  <EM>char</EM>,  containing  only  a  7-bit  ASCII  character code and a
        "standout" attribute bit, the only one the library supported.
 
-       SVr2  <EM>curses</EM> (1984) extended this approach, widening the character code
-       to eight bits and permitting several attributes to be combined with  it
-       by  storing  them  together  in  a  <EM>chtype</EM>, an alias of <EM>unsigned</EM> <EM>short</EM>.
-       Because a macro was used, its value was not type-checked as a  function
-       return  value  could have been.  Goodheart documented SVr3 (1987) <EM>winch</EM>
-       as returning an  <EM>int</EM>.   SVr3.1's  (1987)  <EM>chtype</EM>  became  an  alias  of
-       <EM>unsigned</EM>  <EM>long</EM>,  using  16 bits for the character code and widening the
+       SVr2 <EM>curses</EM> (1984) extended this approach, widening the character  code
+       to  eight bits and permitting several attributes to be combined with it
+       by storing them together in a  <EM>chtype</EM>,  an  alias  of  <EM>unsigned</EM>  <EM>short</EM>.
+       Because  a macro was used, its value was not type-checked as a function
+       return value could have been.  Goodheart documented SVr3  (1987)  <EM>winch</EM>
+       as  returning  an  <EM>int</EM>.   SVr3.1's  (1987)  <EM>chtype</EM>  became  an alias of
+       <EM>unsigned</EM> <EM>long</EM>, using 16 bits for the character code  and  widening  the
        type in practical terms to 32 bits, as 64-bit Unix systems were not yet
        in wide use, and fixed-width integral types would not be standard until
-       ISO C99.  SVr3.2 (1988) added a 6-bit color pair  identifier  alongside
+       ISO  C99.   SVr3.2 (1988) added a 6-bit color pair identifier alongside
        the attributes.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
-       <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>  describes  comparable functions of the <EM>ncurses</EM> library
+       <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG> describes comparable functions of the  <EM>ncurses</EM>  library
        in its wide-character configuration (<EM>ncursesw</EM>).
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-02-15                     <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
 </PRE>

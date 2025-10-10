@@ -44,8 +44,6 @@
 <STRONG><A HREF="form_fieldtype.3x.html">form_fieldtype(3x)</A></STRONG>               Library calls              <STRONG><A HREF="form_fieldtype.3x.html">form_fieldtype(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>form_fieldtype</STRONG> - define validation-field types
 
@@ -92,12 +90,12 @@
 
        <EM>char</EM><STRONG>_</STRONG><EM>check</EM>
             This function validates input characters as they are entered.  The
-            form library passes it the character to be checked and  a  pointer
+            form  library  passes it the character to be checked and a pointer
             to an argument-block structure.
 
 
 </PRE><H3><a name="h3-free_fieldtype">free_fieldtype</a></H3><PRE>
-       The  <STRONG>free_fieldtype</STRONG>  function  frees  the  space  allocated for a given
+       The <STRONG>free_fieldtype</STRONG> function frees  the  space  allocated  for  a  given
        validation type by <STRONG>new_fieldtype</STRONG>.
 
 
@@ -106,9 +104,9 @@
        functions with a field type:
 
        <EM>make</EM><STRONG>_</STRONG><EM>arg</EM>
-            This  function  is  automatically applied to the list of arguments
-            you give <STRONG>set_field_type</STRONG> when attaching validation to a field.   It
-            stores  the  arguments in an allocated argument-block object which
+            This function is automatically applied to the  list  of  arguments
+            you  give <STRONG>set_field_type</STRONG> when attaching validation to a field.  It
+            stores the arguments in an allocated argument-block  object  which
             is used when validating input.
 
        <EM>copy</EM><STRONG>_</STRONG><EM>arg</EM>
@@ -140,7 +138,7 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       The  pointer-valued  routines  return  NULL  on  error.  They set <STRONG>errno</STRONG>
+       The pointer-valued routines return  NULL  on  error.   They  set  <STRONG>errno</STRONG>
        according to their success:
 
        <STRONG>E_OK</STRONG> The routine succeeded.
@@ -169,7 +167,7 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines emulate the System  V  forms  library.   They  were  not
+       These  routines  emulate  the  System  V  forms library.  They were not
        supported on Version 7 or BSD versions.
 
 
@@ -180,8 +178,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>, <STRONG><A HREF="form_field_validation.3x.html">form_field_validation(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                <STRONG><A HREF="form_fieldtype.3x.html">form_fieldtype(3x)</A></STRONG>
 </PRE>

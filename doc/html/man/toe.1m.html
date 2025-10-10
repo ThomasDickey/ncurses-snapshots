@@ -45,8 +45,6 @@
 <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>                          User commands                         <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>toe</STRONG> - list table of entries of <EM>terminfo</EM> terminal types
 
@@ -91,25 +89,25 @@
                 source  or  <EM>termcap</EM>  database file.  The report summarizes the
                 "<STRONG>use</STRONG>"  (<EM>terminfo</EM>)  and  <STRONG>tc</STRONG>  (<EM>termcap</EM>)  relations:  each   line
                 comprises the primary name of a terminal type employing <STRONG>use</STRONG>/<STRONG>tc</STRONG>
-                capabilities, a colon, a  space-  and  tab-separated  list  of
+                capabilities,  a  colon,  a  space-  and tab-separated list of
                 primary names of terminal types thus named, and a newline.
 
-       <STRONG>-U</STRONG> <EM>file</EM>  lists  terminal  type reverse dependencies in <EM>file</EM>, a <EM>terminfo</EM>
-                entry source or <EM>termcap</EM> database file.  The report  summarizes
-                the  "<STRONG>use</STRONG>" (<EM>terminfo</EM>) and <STRONG>tc</STRONG> (<EM>termcap</EM>) reverse relations: each
-                line comprises the primary name of a terminal  type  occurring
-                in  <STRONG>use</STRONG>/<STRONG>tc</STRONG>  capabilities,  a colon, a space- and tab-separated
-                list of primary names of terminal types naming them thus,  and
+       <STRONG>-U</STRONG> <EM>file</EM>  lists terminal type reverse dependencies in <EM>file</EM>,  a  <EM>terminfo</EM>
+                entry  source or <EM>termcap</EM> database file.  The report summarizes
+                the "<STRONG>use</STRONG>" (<EM>terminfo</EM>) and <STRONG>tc</STRONG> (<EM>termcap</EM>) reverse relations:  each
+                line  comprises  the primary name of a terminal type occurring
+                in <STRONG>use</STRONG>/<STRONG>tc</STRONG> capabilities, a colon, a  space-  and  tab-separated
+                list  of primary names of terminal types naming them thus, and
                 a newline.
 
-       <STRONG>-v</STRONG> [<EM>n</EM>]   reports  verbose  status  information  to  the  standard error
+       <STRONG>-v</STRONG> [<EM>n</EM>]   reports verbose  status  information  to  the  standard  error
                 stream, showing <STRONG>toe</STRONG>'s progress.
 
-                The optional parameter <EM>n</EM>  is  an  integer  between  1  and  10
-                inclusive,  interpreted  as  for <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>.  If <EM>ncurses</EM> is built
+                The  optional  parameter  <EM>n</EM>  is  an  integer  between 1 and 10
+                inclusive, interpreted as for <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>.  If  <EM>ncurses</EM>  is  built
                 without tracing support, <EM>n</EM> is ignored.
 
-       <STRONG>-V</STRONG>       reports the version of <EM>ncurses</EM> associated  with  this  program
+       <STRONG>-V</STRONG>       reports  the  version  of <EM>ncurses</EM> associated with this program
                 and exits with a successful status.
 
 
@@ -119,12 +117,12 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       <STRONG>toe</STRONG>  is  not provided by other implementations.  There is no applicable
+       <STRONG>toe</STRONG> is not provided by other implementations.  There is  no  applicable
        X/Open or POSIX standard for it.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       <STRONG>toe</STRONG> replaces a <STRONG>-T</STRONG> option that was  briefly  supported  by  the  <EM>ncurses</EM>
+       <STRONG>toe</STRONG>  replaces  a  <STRONG>-T</STRONG>  option  that was briefly supported by the <EM>ncurses</EM>
        <STRONG>infocmp</STRONG> utility in 1995.
 
        The <STRONG>-a</STRONG> and <STRONG>-s</STRONG> options were added in 2006 and 2011, respectively.
@@ -139,8 +137,8 @@
 
 
 </PRE><H2><a name="h2-EXAMPLES">EXAMPLES</a></H2><PRE>
-       When  not  sorting with the <STRONG>-s</STRONG> option, the <STRONG>-a</STRONG> option reports all of the
-       names found in all of the terminal database directories  named  in  the
+       When not sorting with the <STRONG>-s</STRONG> option, the <STRONG>-a</STRONG> option reports all  of  the
+       names  found  in  all of the terminal database directories named in the
        <EM>TERMINFO</EM> and <EM>TERMINFO</EM><STRONG>_</STRONG><EM>DIRS</EM> environment variables.
 
            xterm-color     generic color xterm
@@ -157,13 +155,12 @@
            vt52            dec vt52
            ...
 
-       Use  the  <STRONG>-a</STRONG>  and  <STRONG>-s</STRONG>  options  together  to  show  where each terminal
+       Use the <STRONG>-a</STRONG>  and  <STRONG>-s</STRONG>  options  together  to  show  where  each  terminal
        description was found.
 
            --&gt; /etc/terminfo
            ----&gt; /lib/terminfo
            ------&gt; /usr/share/terminfo
-
            --*---: vt100           dec vt100 (w/advanced video)
            --*---: vt102           dec vt102
            --*---: vt220           dec vt220
@@ -182,8 +179,6 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="captoinfo.1m.html">captoinfo(1m)</A></STRONG>,   <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>,   <STRONG><A HREF="infotocap.1m.html">infotocap(1m)</A></STRONG>,   <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>,   <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,
        <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-02-15                           <STRONG><A HREF="toe.1m.html">toe(1m)</A></STRONG>
 </PRE>

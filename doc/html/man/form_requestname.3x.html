@@ -44,8 +44,6 @@
 <STRONG><A HREF="form_requestname.3x.html">form_requestname(3x)</A></STRONG>             Library calls            <STRONG><A HREF="form_requestname.3x.html">form_requestname(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>form_request_by_name</STRONG>, <STRONG>form_request_name</STRONG> - handle printable form request
        names
@@ -59,22 +57,22 @@
 
 
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
-       The function <STRONG>form_request_name</STRONG> returns the printable  name  of  a  form
-       request  code.  The function <STRONG>form_request_by_name</STRONG> searches in the name-
-       table for a request with the given name and returns its  request  code.
+       The  function  <STRONG>form_request_name</STRONG>  returns  the printable name of a form
+       request code.  The function <STRONG>form_request_by_name</STRONG> searches in the  name-
+       table  for  a request with the given name and returns its request code.
        Otherwise E_NO_MATCH is returned.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       <STRONG>form_request_name</STRONG>   returns   <EM>NULL</EM>   on   error   and   sets  <STRONG>errno</STRONG>  to
+       <STRONG>form_request_name</STRONG>  returns  <EM>NULL</EM>   on   error   and   sets   <STRONG>errno</STRONG>   to
        <STRONG>E_BAD_ARGUMENT</STRONG>.
 
-       <STRONG>form_request_by_name</STRONG> returns <STRONG>E_NO_MATCH</STRONG> on  error.   It  does  not  set
+       <STRONG>form_request_by_name</STRONG>  returns  <STRONG>E_NO_MATCH</STRONG>  on  error.   It does not set
        <STRONG>errno</STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  are  specific  to <EM>ncurses</EM>.  They were not supported on
+       These routines are specific to <EM>ncurses</EM>.  They  were  not  supported  on
        Version 7, BSD or System V implementations.  It is recommended that any
        code depending on them be conditioned using NCURSES_VERSION.
 
@@ -86,8 +84,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="form.3x.html">form(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-12-28              <STRONG><A HREF="form_requestname.3x.html">form_requestname(3x)</A></STRONG>
 </PRE>

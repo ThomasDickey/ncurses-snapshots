@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>slk_init</STRONG>,  <STRONG>slk_set</STRONG>,  <STRONG>slk_wset</STRONG>, <STRONG>slk_refresh</STRONG>, <STRONG>slk_noutrefresh</STRONG>, <STRONG>slk_label</STRONG>,
        <STRONG>slk_clear</STRONG>,    <STRONG>slk_restore</STRONG>,    <STRONG>slk_touch</STRONG>,    <STRONG>slk_attron</STRONG>,    <STRONG>slk_attrset</STRONG>,
@@ -108,14 +106,14 @@
 
        <STRONG>2</STRONG>  indicates the PC-like 4-4-4 mode.
 
-       <STRONG>3</STRONG>  is again the PC-like 4-4-4 mode, but in addition an  index  line  is
-          generated,  helping  the  user  to  associate  each  label  with its
-          numbered function key.  <STRONG>LINES</STRONG> and the vertical size  of  <STRONG>stdscr</STRONG>  are
+       <STRONG>3</STRONG>  is  again  the  PC-like 4-4-4 mode, but in addition an index line is
+          generated, helping  the  user  to  associate  each  label  with  its
+          numbered  function  key.   <STRONG>LINES</STRONG> and the vertical size of <STRONG>stdscr</STRONG> are
           further reduced.
 
 
 </PRE><H3><a name="h3-Labels">Labels</a></H3><PRE>
-       Populate  the  labels  with  normal strings (<STRONG>slk_set</STRONG>) or wide-character
+       Populate the labels with normal  strings  (<STRONG>slk_set</STRONG>)  or  wide-character
        strings (<STRONG>slk_wset</STRONG>).  Each function takes three parameters.
 
        <EM>labnum</EM>  is the label number, from <STRONG>1</STRONG> to <STRONG>8</STRONG> (12 if <EM>fmt</EM> in <STRONG>slk_init</STRONG> is <STRONG>2</STRONG> or
@@ -125,45 +123,45 @@
                in <STRONG>slk_init</STRONG> is <STRONG>2</STRONG> or <STRONG>3</STRONG>) characters in length.  A empty string or
                a null pointer sets up a blank label.
 
-       <EM>align</EM>   is  <STRONG>0</STRONG>,  <STRONG>1</STRONG>,  or <STRONG>2</STRONG>, aligning <EM>label</EM> to the left, center, or right,
+       <EM>align</EM>   is <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG>, aligning <EM>label</EM> to the left,  center,  or  right,
                respectively, within the 8 (5) character cells housing it.
 
-       <STRONG>slk_label</STRONG> obtains the string assigned to label number <EM>labnum</EM>, with  any
+       <STRONG>slk_label</STRONG>  obtains the string assigned to label number <EM>labnum</EM>, with any
        leading and trailing blanks stripped.
 
 
 </PRE><H3><a name="h3-Screen-Updates">Screen Updates</a></H3><PRE>
-       <STRONG>slk_refresh</STRONG>  and  <STRONG>slk_noutrefresh</STRONG>  affect  the  soft key label lines as
+       <STRONG>slk_refresh</STRONG> and <STRONG>slk_noutrefresh</STRONG> affect the  soft  key  label  lines  as
        <STRONG>wrefresh</STRONG> and <STRONG>wnoutrefresh</STRONG> do the <EM>curses</EM> window.
 
        The <STRONG>slk_clear</STRONG> routine clears the soft labels from the screen.
 
-       The <STRONG>slk_restore</STRONG> routine restores the soft labels to the screen after  a
+       The  <STRONG>slk_restore</STRONG> routine restores the soft labels to the screen after a
        <STRONG>slk_clear</STRONG> has been performed.
 
-       The  <STRONG>slk_touch</STRONG> routine forces all the soft labels to be output the next
+       The <STRONG>slk_touch</STRONG> routine forces all the soft labels to be output the  next
        time a <STRONG>slk_noutrefresh</STRONG> is performed.
 
 
 </PRE><H3><a name="h3-Video-Attributes">Video Attributes</a></H3><PRE>
-       The  <STRONG>slk_attron</STRONG>,  <STRONG>slk_attrset</STRONG>,  <STRONG>slk_attroff</STRONG>,  and   <STRONG>slk_attr</STRONG>   routines
-       correspond  to  <STRONG>attron</STRONG>,  <STRONG>attrset</STRONG>,  <STRONG>attroff</STRONG>, and <STRONG>attr_get</STRONG>, respectively.
-       They have an effect only if soft labels are  simulated  on  the  bottom
-       line  of  the  screen.   The  default  highlight for soft key labels is
+       The   <STRONG>slk_attron</STRONG>,   <STRONG>slk_attrset</STRONG>,  <STRONG>slk_attroff</STRONG>,  and  <STRONG>slk_attr</STRONG>  routines
+       correspond to <STRONG>attron</STRONG>, <STRONG>attrset</STRONG>,  <STRONG>attroff</STRONG>,  and  <STRONG>attr_get</STRONG>,  respectively.
+       They  have  an  effect  only if soft labels are simulated on the bottom
+       line of the screen.  The default  highlight  for  soft  key  labels  is
        <STRONG>A_STANDOUT</STRONG> (as in System V <EM>curses</EM>, which does not document this fact).
 
 
 </PRE><H3><a name="h3-Colors">Colors</a></H3><PRE>
-       The <STRONG>slk_color</STRONG> routine corresponds to <STRONG>color_set</STRONG>.  It has an effect  only
+       The  <STRONG>slk_color</STRONG> routine corresponds to <STRONG>color_set</STRONG>.  It has an effect only
        if soft labels are simulated on the bottom line of the screen.
 
-       Because  <STRONG>slk_color</STRONG>  accepts  only <EM>short</EM> (signed 16-bit integer) values,
-       this implementation provides <STRONG>extended_slk_color</STRONG>, which accepts  an  <EM>int</EM>
+       Because <STRONG>slk_color</STRONG> accepts only <EM>short</EM> (signed  16-bit  integer)  values,
+       this  implementation  provides <STRONG>extended_slk_color</STRONG>, which accepts an <EM>int</EM>
        value of at least 32 bits.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Functions  that  return  integers  return  <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> upon
+       Functions that return integers return <STRONG>ERR</STRONG>  upon  failure  and  <STRONG>OK</STRONG>  upon
        success.
 
        In <EM>ncurses</EM>,
@@ -171,7 +169,7 @@
           <STRONG>slk_attr</STRONG>
                returns the attribute used for the soft keys.
 
-          <STRONG>slk_attroff</STRONG>, <STRONG>slk_attron</STRONG>,  <STRONG>slk_clear</STRONG>,  <STRONG>slk_noutrefresh</STRONG>,  <STRONG>slk_refresh</STRONG>,
+          <STRONG>slk_attroff</STRONG>, <STRONG>slk_attron</STRONG>, <STRONG>slk_clear</STRONG>, <STRONG>slk_noutrefresh</STRONG>, <STRONG>slk_refresh</STRONG>,
           <STRONG>slk_touch</STRONG>
                return   <STRONG>ERR</STRONG>   if   the  terminal  or  the  softkeys  were  not
                initialized.
@@ -223,15 +221,15 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       SVr4  describes  a  successful  return  value only as "an integer value
+       SVr4 describes a successful return value  only  as  "an  integer  value
        other than <EM>ERR</EM>".
 
-       <STRONG>o</STRONG>   X/Open  added  functions  like  the   SVr4   attribute-manipulation
-           functions  <STRONG>slk_attron</STRONG>,  <STRONG>slk_attroff</STRONG>, and <STRONG>slk_attrset</STRONG>, but which use
-           <EM>attr</EM><STRONG>_</STRONG><EM>t</EM> parameters (rather than <EM>chtype</EM>), along with a reserved  <EM>opts</EM>
+       <STRONG>o</STRONG>   X/Open   added   functions  like  the  SVr4  attribute-manipulation
+           functions <STRONG>slk_attron</STRONG>, <STRONG>slk_attroff</STRONG>, and <STRONG>slk_attrset</STRONG>, but  which  use
+           <EM>attr</EM><STRONG>_</STRONG><EM>t</EM>  parameters (rather than <EM>chtype</EM>), along with a reserved <EM>opts</EM>
            parameter.
 
-           Two  of  these  new  functions  (unlike the SVr4 functions) have no
+           Two of these new functions (unlike  the  SVr4  functions)  have  no
            provision for color: <STRONG>slk_attr_on</STRONG> and <STRONG>slk_attr_off</STRONG>.
 
            The third function (<STRONG>slk_attr_set</STRONG>) has a color pair parameter.
@@ -240,7 +238,7 @@
 
        <STRONG>o</STRONG>   It added <STRONG>slk_color</STRONG>.
 
-       Although <STRONG>slk_start</STRONG> is declared in the <EM>curses</EM> header file,  it  was  not
+       Although  <STRONG>slk_start</STRONG>  is  declared in the <EM>curses</EM> header file, it was not
        documented by SVr4 other than its presence in a list of libtermlib.so.1
        symbols.  Reading the source code (i.e., Illumos):
 
@@ -274,7 +272,7 @@
 
        X/Open Curses does not specify a limit for the  number  of  colors  and
        color pairs which a terminal can support.  However, in its use of <EM>short</EM>
-       for the parameters, it carries over SVr4's  implementation  detail  for
+       for  the  parameters,  it carries over SVr4's implementation detail for
        the compiled terminfo database, which uses signed 16-bit numbers.  This
        implementation provides extended versions of those functions which  use
        <EM>int</EM>  parameters,  allowing  applications to use larger color- and pair-
@@ -309,8 +307,6 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,    <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,    <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,
        <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                      <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
 </PRE>

@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>getstr</STRONG>,  <STRONG>getnstr</STRONG>,  <STRONG>wgetstr</STRONG>,  <STRONG>wgetnstr</STRONG>,  <STRONG>mvgetstr</STRONG>, <STRONG>mvgetnstr</STRONG>, <STRONG>mvwgetstr</STRONG>,
        <STRONG>mvwgetnstr</STRONG> - read a character string from <EM>curses</EM> terminal keyboard
@@ -84,30 +82,30 @@
        <STRONG>o</STRONG>   treats the function keys <STRONG>KEY_LEFT</STRONG> and <STRONG>KEY_BACKSPACE</STRONG> the same as the
            erase character; and
 
-       <STRONG>o</STRONG>   discards  function key inputs other than those treated as the erase
+       <STRONG>o</STRONG>   discards function key inputs other than those treated as the  erase
            or kill characters, calling <STRONG><A HREF="curs_beep.3x.html">beep(3x)</A></STRONG>.
 
-       If any characters have been written to  the  input  buffer,  the  erase
-       character  replaces the character at the current position in the buffer
-       with a null character, then decrements the position by  one;  the  kill
-       character  does  the  same repeatedly, backtracking to the beginning of
+       If  any  characters  have  been  written to the input buffer, the erase
+       character replaces the character at the current position in the  buffer
+       with  a  null  character, then decrements the position by one; the kill
+       character does the same repeatedly, backtracking to  the  beginning  of
        the buffer.
 
-       If the screen's echo option is enabled (see <STRONG><A HREF="curs_inopts.3x.html">echo(3x)</A></STRONG>), <STRONG>wgetstr</STRONG>  updates
+       If  the screen's echo option is enabled (see <STRONG><A HREF="curs_inopts.3x.html">echo(3x)</A></STRONG>), <STRONG>wgetstr</STRONG> updates
        <EM>win</EM> with <STRONG><A HREF="curs_addch.3x.html">waddch(3x)</A></STRONG>.  Further,
 
-       <STRONG>o</STRONG>   the  erase  character and its function key synonyms move the cursor
-           to the left (if not already where it was located when  <STRONG>wgetstr</STRONG>  was
+       <STRONG>o</STRONG>   the erase character and its function key synonyms move  the  cursor
+           to  the  left (if not already where it was located when <STRONG>wgetstr</STRONG> was
            called) and
 
-       <STRONG>o</STRONG>   the  kill character returns the cursor to where it was located when
+       <STRONG>o</STRONG>   the kill character returns the cursor to where it was located  when
            <STRONG>wgetstr</STRONG> was called.
 
-       <STRONG>wgetnstr</STRONG> is similar,  but  reads  at  most  <EM>n</EM>  characters,  aiding  the
-       application  to  avoid  overrunning  the  buffer  to  which <EM>str</EM> points.
-       <EM>curses</EM> ignores an attempt to input more than <EM>n</EM> characters  (other  than
-       the  terminating line feed or carriage return), calling <STRONG><A HREF="curs_beep.3x.html">beep(3x)</A></STRONG>.  If <EM>n</EM>
-       is  negative,  <STRONG>wgetn_wstr</STRONG>  reads  up  to   <EM>LINE</EM><STRONG>_</STRONG><EM>MAX</EM>   characters   (see
+       <STRONG>wgetnstr</STRONG>  is  similar,  but  reads  at  most  <EM>n</EM>  characters, aiding the
+       application to avoid  overrunning  the  buffer  to  which  <EM>str</EM>  points.
+       <EM>curses</EM>  ignores  an attempt to input more than <EM>n</EM> characters (other than
+       the terminating line feed or carriage return), calling <STRONG><A HREF="curs_beep.3x.html">beep(3x)</A></STRONG>.  If  <EM>n</EM>
+       is   negative,   <STRONG>wgetn_wstr</STRONG>   reads  up  to  <EM>LINE</EM><STRONG>_</STRONG><EM>MAX</EM>  characters  (see
        <STRONG>sysconf(3)</STRONG>).
 
        <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the variants of these functions.
@@ -120,28 +118,28 @@
 
        <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized,
 
-       <STRONG>o</STRONG>   (for  functions  taking  a  <EM>WINDOW</EM>  pointer argument) <EM>win</EM> is a null
+       <STRONG>o</STRONG>   (for functions taking a <EM>WINDOW</EM> pointer  argument)  <EM>win</EM>  is  a  null
            pointer,
 
        <STRONG>o</STRONG>   <EM>str</EM> is a null pointer, or
 
        <STRONG>o</STRONG>   an internal <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG> call fails.
 
-       Further, in <EM>ncurses</EM>, these functions return <STRONG>KEY_RESIZE</STRONG>  if  a  <EM>SIGWINCH</EM>
+       Further,  in  <EM>ncurses</EM>,  these functions return <STRONG>KEY_RESIZE</STRONG> if a <EM>SIGWINCH</EM>
        event interrupts the function.
 
-       Functions  prefixed with "mv" first perform cursor movement and fail if
+       Functions prefixed with "mv" first perform cursor movement and fail  if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        All of these functions except <STRONG>wgetnstr</STRONG> may be implemented as macros.
 
-       Reading input that  overruns  the  buffer  pointed  to  by  <EM>str</EM>  causes
-       undefined   results.    Use   the  <STRONG>n</STRONG>-infixed  functions,  and  allocate
+       Reading  input  that  overruns  the  buffer  pointed  to  by <EM>str</EM> causes
+       undefined  results.   Use  the  <STRONG>n</STRONG>-infixed   functions,   and   allocate
        sufficient storage for <EM>str</EM> -- at least <EM>n</EM>+1 times <STRONG>sizeof(char)</STRONG>.
 
-       While these functions conceptually  implement  a  series  of  calls  to
+       While  these  functions  conceptually  implement  a  series of calls to
        <STRONG>wgetch</STRONG>, they also temporarily change properties of the <EM>curses</EM> screen to
        permit simple editing of the input buffer.   Each  function  saves  the
        screen's  state,  calls  <STRONG><A HREF="curs_inopts.3x.html">nl(3x)</A></STRONG>,  and,  if  the screen was in canonical
@@ -187,10 +185,10 @@
        Issue 7.)
 
        A draft of X/Open Curses Issue 5 (which never saw final release) stated
-       that these functions "read at most <EM>n</EM> bytes" but did not  state  whether
-       the  terminating  null  character  counted  toward  that limit.  X/Open
-       Curses Issue 7 changed that to say they "read at  most  <EM>n</EM>-1  bytes"  to
-       allow   for   the   terminating  null  character.   As  of  2018,  some
+       that  these  functions "read at most <EM>n</EM> bytes" but did not state whether
+       the terminating null  character  counted  toward  that  limit.   X/Open
+       Curses  Issue 7  changed  that  to say they "read at most <EM>n</EM>-1 bytes" to
+       allow  for  the  terminating  null  character.   As   of   2018,   some
        implementations count it, some do not.
 
        <STRONG>o</STRONG>   <EM>ncurses</EM> 6.1 and <EM>PDCurses</EM> do not count the null character toward the
@@ -236,7 +234,7 @@
        Implementations vary in their handling of input control characters.
 
        <STRONG>o</STRONG>   While they may enable the screen's echo option, some do not take it
-           out  of  raw  mode,  and  may  take  cbreak  mode into account when
+           out of raw mode,  and  may  take  cbreak  mode  into  account  when
            deciding whether to handle echoing within <EM>wgetnstr</EM> or to rely on it
            as a side effect of calling <EM>wgetch</EM>.
 
@@ -248,12 +246,12 @@
            Since 1995, <EM>ncurses</EM> has provided handlers for <EM>SIGINTR</EM>  and  <EM>SIGQUIT</EM>
            events,  which  are typically generated at the keyboard with <STRONG>^C</STRONG> and
            <STRONG>^\</STRONG> respectively.  In cbreak mode, those handlers catch a signal and
-           stop   the  program,  whereas  other  implementations  write  those
+           stop  the  program,  whereas  other  implementations  write   those
            characters into the buffer.
 
-       <STRONG>o</STRONG>   Starting with <EM>ncurses</EM> 6.3 (2021), <EM>wgetnstr</EM> preserves  raw  mode  if
-           the  screen  was  already  in that state, allowing one to enter the
-           characters the terminal interprets as  interrupt  and  quit  events
+       <STRONG>o</STRONG>   Starting  with  <EM>ncurses</EM>  6.3 (2021), <EM>wgetnstr</EM> preserves raw mode if
+           the screen was already in that state, allowing  one  to  enter  the
+           characters  the  terminal  interprets  as interrupt and quit events
            into the buffer, for better compatibility with SVr4 <EM>curses</EM>.
 
 
@@ -262,7 +260,7 @@
 
        SVr3.1 (1987) added <EM>wgetnstr</EM>, but none of its variants.
 
-       X/Open   Curses   Issue 4  (1995)  specified  <EM>getnstr</EM>,  <EM>mvgetnstr</EM>,  and
+       X/Open  Curses  Issue 4  (1995)  specified  <EM>getnstr</EM>,   <EM>mvgetnstr</EM>,   and
        <EM>mvwgetnstr</EM>.
 
 
@@ -272,8 +270,6 @@
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>,     <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,    <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,
        <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>,
-
-
 
 ncurses 6.5                       2025-07-05                   <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
 </PRE>

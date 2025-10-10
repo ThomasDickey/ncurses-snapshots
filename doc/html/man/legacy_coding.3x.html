@@ -45,8 +45,6 @@
 <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>                Library calls               <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>use_legacy_coding</STRONG> - override <EM>curses</EM> locale encoding checks
 
@@ -66,7 +64,7 @@
 
        The <EM>level</EM> parameter controls the result.
 
-              <STRONG>0</STRONG>    The   library  functions  normally,  rendering  nonprinting
+              <STRONG>0</STRONG>    The  library  functions  normally,  rendering   nonprinting
                    characters as described in <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>,
 
               <STRONG>1</STRONG>    the library ignores <EM>isprint</EM> for codes in the range 160-255.
@@ -77,8 +75,8 @@
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       If the <EM>curses</EM> screen has not been initialized, or the  <EM>level</EM>  parameter
-       is  out of range, <STRONG>use_legacy_coding</STRONG> returns <STRONG>ERR</STRONG>.  Otherwise, it returns
+       If  the  <EM>curses</EM> screen has not been initialized, or the <EM>level</EM> parameter
+       is out of range, <STRONG>use_legacy_coding</STRONG> returns <STRONG>ERR</STRONG>.  Otherwise, it  returns
        the previous level.
 
 
@@ -102,8 +100,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2024-09-14                 <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
 </PRE>

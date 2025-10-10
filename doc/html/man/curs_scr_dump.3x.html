@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>scr_dump</STRONG>,  <STRONG>scr_restore</STRONG>,  <STRONG>scr_init</STRONG>, <STRONG>scr_set</STRONG> - read/write a <EM>curses</EM> screen
        from/to a file
@@ -80,19 +78,19 @@
 
 
 </PRE><H3><a name="h3-scr_init">scr_init</a></H3><PRE>
-       <STRONG>scr_init</STRONG>  reads <EM>filename</EM>, using it to initialize <EM>curses</EM> data structures
-       describing the state of  the  terminal  screen.   <EM>curses</EM>  then,  if  it
-       decides  the  terminal  state  is  valid,  bases its next update of the
-       screen on this information rather than clearing it  and  starting  from
+       <STRONG>scr_init</STRONG> reads <EM>filename</EM>, using it to initialize <EM>curses</EM> data  structures
+       describing  the  state  of  the  terminal  screen.   <EM>curses</EM> then, if it
+       decides the terminal state is valid,  bases  its  next  update  of  the
+       screen  on  this  information rather than clearing it and starting from
        scratch.
 
-       <EM>curses</EM>  regards  the terminal as in an invalid state for computation of
+       <EM>curses</EM> regards the terminal as in an invalid state for  computation  of
        updates based on the contents of <EM>filename</EM> if
 
-       <STRONG>o</STRONG>   <EM>curses</EM> knows that the  terminal  has  been  written  to  since  the
+       <STRONG>o</STRONG>   <EM>curses</EM>  knows  that  the  terminal  has  been  written to since the
            preceding <STRONG>scr_dump</STRONG> call, or
 
-       <STRONG>o</STRONG>   the  terminal  type supports the <EM>terminfo</EM> capabilities <STRONG>exit_ca_mode</STRONG>
+       <STRONG>o</STRONG>   the terminal type supports the <EM>terminfo</EM>  capabilities  <STRONG>exit_ca_mode</STRONG>
            (<STRONG>rmcup</STRONG>) or <STRONG>non_rev_rmcup</STRONG> (<STRONG>nrrmc</STRONG>).
 
        Either of the foregoing conditions means that <EM>curses</EM> cannot assume that
@@ -135,16 +133,16 @@
 
        SVr4 omitted the <EM>const</EM> qualifiers.
 
-       SVr4 documentation describes <EM>scr</EM><STRONG>_</STRONG><EM>init</EM> such that the dump data  is  also
-       considered  invalid  "if the time-stamp of the tty is old" but does not
+       SVr4  documentation  describes <EM>scr</EM><STRONG>_</STRONG><EM>init</EM> such that the dump data is also
+       considered invalid "if the time-stamp of the tty is old" but  does  not
        define "old".
 
        As of 2024, <EM>PDCurses</EM> provides these functions.  NetBSD <EM>curses</EM> does not.
 
-       Other implementations of <EM>curses</EM> store the window in binary form,  which
-       makes  the  dump  dependent  upon  the  <EM>curses</EM>  library's internal data
-       structures.  <EM>ncurses</EM> avoids  this  drawback  by  storing  the  dump  in
-       textual  form,  allowing  more flexible use of the data.  For instance,
+       Other  implementations of <EM>curses</EM> store the window in binary form, which
+       makes the dump  dependent  upon  the  <EM>curses</EM>  library's  internal  data
+       structures.   <EM>ncurses</EM>  avoids  this  drawback  by  storing  the dump in
+       textual form, allowing more flexible use of the  data.   For  instance,
        the <EM>scr</EM><STRONG>_</STRONG><EM>restore</EM> of SVr4 <EM>curses</EM> requires that the dumped window have the
        same  dimensions  as the restored window.  <EM>ncurses</EM> uses its <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>
        extension to adjust the restored window size.
@@ -158,8 +156,6 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
        <STRONG>system(3)</STRONG>, <STRONG><A HREF="scr_dump.5.html">scr_dump(5)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>, <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
 </PRE>

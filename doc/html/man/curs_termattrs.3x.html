@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>baudrate</STRONG>,  <STRONG>erasechar</STRONG>,  <STRONG>erasewchar</STRONG>, <STRONG>has_ic</STRONG>, <STRONG>has_il</STRONG>, <STRONG>killchar</STRONG>, <STRONG>killwchar</STRONG>,
        <STRONG>longname</STRONG>, <STRONG>term_attrs</STRONG>,  <STRONG>termattrs</STRONG>,  <STRONG>termname</STRONG>  -  get  and  set  terminal
@@ -79,44 +77,44 @@
        <STRONG>erasechar</STRONG> returns the terminal's erase character.
 
        <STRONG>erasewchar</STRONG> stores the erase character in the location referenced by <EM>wc</EM>.
-       If  no  erase  character  has  been  defined, it fails and the location
+       If no erase character has been  defined,  it  fails  and  the  location
        referenced by <EM>wc</EM> is not changed.
 
 
 </PRE><H3><a name="h3-has_ic_has_il">has_ic, has_il</a></H3><PRE>
-       <STRONG>has_ic</STRONG> returns <STRONG>TRUE</STRONG> if the terminal has  insert-  and  delete-character
+       <STRONG>has_ic</STRONG>  returns  <STRONG>TRUE</STRONG>  if the terminal has insert- and delete-character
        capabilities.
 
-       <STRONG>has_il</STRONG>  returns  <STRONG>TRUE</STRONG>  if  the  terminal  has  insert-  and delete-line
-       capabilities, or can simulate them using scrolling regions.   It  might
-       be   used   to  determine  whether  it  would  be  appropriate  to  use
+       <STRONG>has_il</STRONG> returns  <STRONG>TRUE</STRONG>  if  the  terminal  has  insert-  and  delete-line
+       capabilities,  or  can simulate them using scrolling regions.  It might
+       be  used  to  determine  whether  it  would  be  appropriate   to   use
        <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> to turn on scrolling.
 
 
 </PRE><H3><a name="h3-killchar_killwchar">killchar, killwchar</a></H3><PRE>
        <STRONG>killchar</STRONG> returns the terminal's line kill character.
 
-       <STRONG>killwchar</STRONG> stores the line-kill character in the location referenced  by
-       <EM>wc</EM>.   If  no  line-kill  character  has  been defined, it fails and the
+       <STRONG>killwchar</STRONG>  stores the line-kill character in the location referenced by
+       <EM>wc</EM>.  If no line-kill character has  been  defined,  it  fails  and  the
        location referenced by <EM>wc</EM> is not changed.
 
 
 </PRE><H3><a name="h3-longname">longname</a></H3><PRE>
-       <STRONG>longname</STRONG> returns a pointer  to  static  storage  containing  a  verbose
-       description  of  the  terminal  being  managed  by <EM>curses</EM>.  The maximum
-       length of a verbose description is  128  characters.   The  storage  is
-       populated  only  after  <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>  or  <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>  is  called.  This
-       storage is overwritten by each call to  <STRONG>newterm</STRONG>  and  not  restored  by
-       <STRONG><A HREF="curs_initscr.3x.html">set_term(3x)</A></STRONG>,  so its contents should be saved between calls to <STRONG>initscr</STRONG>
+       <STRONG>longname</STRONG>  returns  a  pointer  to  static  storage containing a verbose
+       description of the terminal  being  managed  by  <EM>curses</EM>.   The  maximum
+       length  of  a  verbose  description  is 128 characters.  The storage is
+       populated only  after  <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>  or  <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>  is  called.   This
+       storage  is  overwritten  by  each  call to <STRONG>newterm</STRONG> and not restored by
+       <STRONG><A HREF="curs_initscr.3x.html">set_term(3x)</A></STRONG>, so its contents should be saved between calls to  <STRONG>initscr</STRONG>
        or <STRONG>newterm</STRONG> if <STRONG>longname</STRONG> is to be used with multiple terminals.
 
 
 </PRE><H3><a name="h3-termattrs_term_attrs">termattrs, term_attrs</a></H3><PRE>
-       If a given  terminal  does  not  support  a  video  attribute  that  an
+       If  a  given  terminal  does  not  support  a  video  attribute that an
        application program is trying to use, <EM>curses</EM> may substitute a different
        video attribute for it.  <STRONG>termattrs</STRONG> and <STRONG>term_attrs</STRONG> return a logical "or"
-       of  all  video  attributes  supported  by the terminal using <STRONG>A_</STRONG> and <STRONG>WA_</STRONG>
-       constants respectively.  This  information  is  useful  when  a  <EM>curses</EM>
+       of all video attributes supported by the  terminal  using  <STRONG>A_</STRONG>  and  <STRONG>WA_</STRONG>
+       constants  respectively.   This  information  is  useful  when a <EM>curses</EM>
        program needs complete control over the appearance of the screen.
 
 
@@ -127,13 +125,13 @@
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
        <STRONG>longname</STRONG> and <STRONG>termname</STRONG> return <EM>NULL</EM> on error.
 
-       Functions  that  return  an integer return <STRONG>ERR</STRONG> upon failure and <STRONG>OK</STRONG> upon
+       Functions that return an integer return <STRONG>ERR</STRONG> upon failure  and  <STRONG>OK</STRONG>  upon
        success.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       <STRONG>erasewchar</STRONG>, <STRONG>killwchar</STRONG>, and  <STRONG>term_attrs</STRONG>  are  part  of  <EM>ncurses</EM>'s  wide-
-       character   API,  and  are  not  available  in  its  non-wide-character
+       <STRONG>erasewchar</STRONG>,  <STRONG>killwchar</STRONG>,  and  <STRONG>term_attrs</STRONG>  are  part  of <EM>ncurses</EM>'s wide-
+       character  API,  and  are  not  available  in  its   non-wide-character
        configuration.
 
        <STRONG>termattrs</STRONG> may be implemented as a macro.
@@ -142,10 +140,10 @@
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        X/Open Curses Issue 4 describes these functions.
 
-       SVr4 describes a successful return value  only  as  "an  integer  value
+       SVr4  describes  a  successful  return  value only as "an integer value
        other than <EM>ERR</EM>".
 
-       Most  versions of <EM>curses</EM> truncate the string returned by <EM>termname</EM> to 14
+       Most versions of <EM>curses</EM> truncate the string returned by <EM>termname</EM> to  14
        characters.
 
 
@@ -157,14 +155,12 @@
        SVr3  (1987)  supplied  <EM>termname</EM>.   Later  that  year,  SVr3.1  brought
        <EM>termattrs</EM>.
 
-       X/Open  Curses  Issue 4  (1995)  specified  <EM>erasewchar</EM>,  <EM>killwchar</EM>, and
+       X/Open Curses  Issue 4  (1995)  specified  <EM>erasewchar</EM>,  <EM>killwchar</EM>,  and
        <EM>term</EM><STRONG>_</STRONG><EM>attrs</EM>.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-23                <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
 </PRE>

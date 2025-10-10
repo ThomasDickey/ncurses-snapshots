@@ -44,8 +44,6 @@
 <STRONG><A HREF="form_field_buffer.3x.html">form_field_buffer(3x)</A></STRONG>            Library calls           <STRONG><A HREF="form_field_buffer.3x.html">form_field_buffer(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>form_field_buffer</STRONG> - field buffer control
 
@@ -87,12 +85,12 @@
 
           <STRONG>o</STRONG>   Editing  operations  are  based on the <EM>window</EM> which displays the
               field, rather than a <EM>string</EM>.  The window contains only printable
-              characters,  and  is  filled  with  blanks.  If you want the raw
-              data, you must write your own routine that copies the value  out
+              characters, and is filled with blanks.   If  you  want  the  raw
+              data,  you must write your own routine that copies the value out
               of the buffer and removes the leading and trailing spaces.
 
-          <STRONG>o</STRONG>   Because  editing  operations change the content of the buffer to
-              correspond to the window, you should not rely on  using  buffers
+          <STRONG>o</STRONG>   Because editing operations change the content of the  buffer  to
+              correspond  to  the window, you should not rely on using buffers
               for long-term storage of form data.
 
        The function <STRONG>set_field_status</STRONG> sets the associated status flag of <EM>field</EM>;
@@ -133,11 +131,11 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These routines emulate the System  V  forms  library.   They  were  not
+       These  routines  emulate  the  System  V  forms library.  They were not
        supported on Version 7 or BSD versions.
 
-       The   <STRONG>set_max_field</STRONG>   function   checks   for   an   <EM>ncurses</EM>  extension
-       <STRONG>O_INPUT_FIELD</STRONG> which allows a dynamic field to shrink if the  new  limit
+       The  <STRONG>set_max_field</STRONG>   function   checks   for   an   <EM>ncurses</EM>   extension
+       <STRONG>O_INPUT_FIELD</STRONG>  which  allows a dynamic field to shrink if the new limit
        is smaller than the current field size.
 
 
@@ -149,8 +147,6 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG> and related pages whose names  begin  "form_"  for  detailed
        descriptions of the entry points.
-
-
 
 ncurses 6.5                       2024-12-28             <STRONG><A HREF="form_field_buffer.3x.html">form_field_buffer(3x)</A></STRONG>
 </PRE>

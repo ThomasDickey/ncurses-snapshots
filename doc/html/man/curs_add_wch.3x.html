@@ -45,8 +45,6 @@
 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>                 Library calls                <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>add_wch</STRONG>, <STRONG>wadd_wch</STRONG>, <STRONG>mvadd_wch</STRONG>, <STRONG>mvwadd_wch</STRONG>, <STRONG>echo_wchar</STRONG>, <STRONG>wecho_wchar</STRONG> - add
        a <EM>curses</EM> complex character to a window, possibly advancing the cursor
@@ -127,17 +125,17 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
 
 </PRE><H3><a name="h3-wadd_wch">wadd_wch</a></H3><PRE>
-       <STRONG>wadd_wch</STRONG> writes the <EM>curses</EM> complex character <EM>wch</EM>  to  the  window  <EM>win</EM>,
-       then  may  advance  the  cursor position, analogously to the standard C
-       library's <STRONG>putwchar(3)</STRONG>.  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>  describes  the  variants  of  this
+       <STRONG>wadd_wch</STRONG>  writes  the  <EM>curses</EM>  complex character <EM>wch</EM> to the window <EM>win</EM>,
+       then may advance the cursor position, analogously  to  the  standard  C
+       library's  <STRONG>putwchar(3)</STRONG>.   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>  describes  the  variants of this
        function.
 
-       Construct  a <EM>curses</EM> complex character from a <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> with <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>.
-       A <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM> can be copied from  place  to  place  using  <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG>  and
-       <STRONG>wadd_wch</STRONG>.    <EM>curses</EM>  defines  constants  to  aid  the  manipulation  of
-       character attributes; see <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>.   A  complex  character  whose
-       only  character  component is a wide space, and whose only attribute is
-       <STRONG>WA_NORMAL</STRONG>, is a  <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines  with  the
+       Construct a <EM>curses</EM> complex character from a <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> with  <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>.
+       A  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  can  be  copied  from  place to place using <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG> and
+       <STRONG>wadd_wch</STRONG>.   <EM>curses</EM>  defines  constants  to  aid  the  manipulation   of
+       character  attributes;  see  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>.   A complex character whose
+       only character component is a wide space, and whose only  attribute  is
+       <STRONG>WA_NORMAL</STRONG>,  is  a  <EM>blank</EM>  <EM>character</EM>,  and  therefore  combines with the
        window's background character; see <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>.
 
        Much behavior depends on whether the wide characters in <EM>wch</EM> are spacing
@@ -149,87 +147,87 @@
            <EM>active</EM> <EM>complex</EM> <EM>character</EM>.
 
        <STRONG>o</STRONG>   If <EM>wch</EM> contains only non-spacing characters, they are combined with
-           the active complex character.  <EM>curses</EM> ignores  its  attributes  and
+           the  active  complex  character.  <EM>curses</EM> ignores its attributes and
            color pair identifier, and does not advance the cursor.
 
-       Further  non-spacing  characters added with <STRONG>wadd_wch</STRONG> are not written at
-       the new cursor position but combine with the active  complex  character
-       until  another spacing character is written to the window or the cursor
+       Further non-spacing characters added with <STRONG>wadd_wch</STRONG> are not  written  at
+       the  new  cursor position but combine with the active complex character
+       until another spacing character is written to the window or the  cursor
        is moved.
 
-       If <EM>wch</EM> is a backspace, carriage return, line feed, or tab,  the  cursor
+       If  <EM>wch</EM>  is a backspace, carriage return, line feed, or tab, the cursor
        moves appropriately within the window.
 
-       <STRONG>o</STRONG>   Backspace  moves  the cursor one character left; at the left margin
+       <STRONG>o</STRONG>   Backspace moves the cursor one character left; at the  left  margin
            of a window, it does nothing.
 
-       <STRONG>o</STRONG>   Carriage return moves the cursor to the left  margin  on  the  same
+       <STRONG>o</STRONG>   Carriage  return  moves  the  cursor to the left margin on the same
            line of the window.
 
-       <STRONG>o</STRONG>   Line  feed  does a <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from the right
+       <STRONG>o</STRONG>   Line feed does a <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from  the  right
            margin.
 
-       <STRONG>o</STRONG>   Tab advances the cursor to the next tab stop (possibly on the  next
+       <STRONG>o</STRONG>   Tab  advances the cursor to the next tab stop (possibly on the next
            line); these are placed at every eighth column by default.
 
-           Alter   the   tab   interval   with   the  <STRONG>TABSIZE</STRONG>  extension;  see
+           Alter  the  tab  interval   with   the   <STRONG>TABSIZE</STRONG>   extension;   see
            <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
-       If <EM>wch</EM>  is  any  other  nonprintable  character,  <EM>curses</EM>  draws  it  in
-       printable  form  using  the  same  convention  as <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG>.  Calling
-       <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG> on the  location  of  a  nonprintable  character  does  not
+       If  <EM>wch</EM>  is  any  other  nonprintable  character,  <EM>curses</EM>  draws  it in
+       printable form using  the  same  convention  as  <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG>.   Calling
+       <STRONG><A HREF="curs_in_wch.3x.html">win_wch(3x)</A></STRONG>  on  the  location  of  a  nonprintable  character does not
        retrieve the character itself, but its <STRONG><A HREF="curs_util.3x.html">wunctrl(3x)</A></STRONG> representation.
 
-       Adding  spacing characters with <STRONG>wadd_wch</STRONG> causes it to wrap at the right
+       Adding spacing characters with <STRONG>wadd_wch</STRONG> causes it to wrap at the  right
        margin of the window:
 
-       <STRONG>o</STRONG>   If the cursor is not at the bottom  of  the  scrolling  region  and
-           advancement  occurs  at  the right margin, the cursor automatically
+       <STRONG>o</STRONG>   If  the  cursor  is  not  at the bottom of the scrolling region and
+           advancement occurs at the right margin,  the  cursor  automatically
            wraps to the beginning of the next line.
 
-       <STRONG>o</STRONG>   If the cursor is  at  the  bottom  of  the  scrolling  region  when
+       <STRONG>o</STRONG>   If  the  cursor  is  at  the  bottom  of  the scrolling region when
            advancement occurs at the right margin, and <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is enabled
            for <EM>win</EM>, the scrolling region scrolls up one line  and  the  cursor
            wraps as above.  Otherwise, advancement and scrolling do not occur,
            and <STRONG>wadd_wch</STRONG> returns <STRONG>ERR</STRONG>.
 
-       A window's margins may coincide with the screen boundaries.   This  may
-       be  a  problem  when  <EM>ncurses</EM>  updates  the  screen to match the curses
-       window.  When their right and bottom  margins  coincide,  <EM>ncurses</EM>  uses
+       A  window's  margins may coincide with the screen boundaries.  This may
+       be a problem when <EM>ncurses</EM>  updates  the  screen  to  match  the  curses
+       window.   When  their  right  and bottom margins coincide, <EM>ncurses</EM> uses
        different strategies to handle the variations of scrolling and wrapping
        at the lower-right corner by depending on the terminal capabilities:
 
        <STRONG>o</STRONG>   If the terminal does not automatically wrap as characters are added
-           at  the right margin (i.e., auto right margins), <EM>ncurses</EM> writes the
+           at the right margin (i.e., auto right margins), <EM>ncurses</EM> writes  the
            character directly.
 
-       <STRONG>o</STRONG>   If the terminal has auto right margins, but also  has  capabilities
-           for  turning auto margins off and on, <EM>ncurses</EM> turns the auto margin
+       <STRONG>o</STRONG>   If  the  terminal has auto right margins, but also has capabilities
+           for turning auto margins off and on, <EM>ncurses</EM> turns the auto  margin
            feature off temporarily when writing to the lower-right corner.
 
-       <STRONG>o</STRONG>   If the terminal has an insertion mode which can be turned  off  and
-           on,  <EM>ncurses</EM>  writes  the  character  just  before  the lower-right
-           corner, and then inserts a character to push the  update  into  the
+       <STRONG>o</STRONG>   If  the  terminal has an insertion mode which can be turned off and
+           on, <EM>ncurses</EM>  writes  the  character  just  before  the  lower-right
+           corner,  and  then  inserts a character to push the update into the
            corner.
 
 
 </PRE><H3><a name="h3-wecho_wchar">wecho_wchar</a></H3><PRE>
-       <STRONG>echo_wchar</STRONG>   and  <STRONG>wecho_wchar</STRONG>  are  equivalent  to  calling  (<STRONG>w</STRONG>)<STRONG>add_wch</STRONG>
-       followed by (<STRONG>w</STRONG>)<STRONG>refresh</STRONG> on  <STRONG>stdscr</STRONG>  or  the  specified  window.   <EM>curses</EM>
-       interprets  these  functions  as  a  hint  that only a single (complex)
-       character is being output; for non-control characters,  a  considerable
+       <STRONG>echo_wchar</STRONG>  and  <STRONG>wecho_wchar</STRONG>  are  equivalent  to  calling   (<STRONG>w</STRONG>)<STRONG>add_wch</STRONG>
+       followed  by  (<STRONG>w</STRONG>)<STRONG>refresh</STRONG>  on  <STRONG>stdscr</STRONG>  or  the specified window.  <EM>curses</EM>
+       interprets these functions as a  hint  that  only  a  single  (complex)
+       character  is  being output; for non-control characters, a considerable
        performance gain may be enjoyed by employing them.
 
 
 </PRE><H3><a name="h3-Forms-Drawing-Characters">Forms-Drawing Characters</a></H3><PRE>
-       <EM>curses</EM>  defines  macros  starting  with  <STRONG>WACS_</STRONG>  that  can  be used with
-       <STRONG>wadd_wch</STRONG> to  write  line-drawing  and  other  symbols  to  the  screen.
-       <EM>ncurses</EM>  terms  these  <EM>forms-drawing</EM>  <EM>characters.</EM>   <EM>curses</EM> uses the ACS
-       default listed below if the terminal type lacks  the  <STRONG>acs_chars</STRONG>  (<STRONG>acsc</STRONG>)
-       capability;  that  capability  does  not  define  a replacement for the
-       character; or if the terminal type  and  locale  configuration  require
-       Unicode  to  access  these characters, but the library is unable to use
-       Unicode.  The "acsc char" column corresponds to how the characters  are
+       <EM>curses</EM> defines macros  starting  with  <STRONG>WACS_</STRONG>  that  can  be  used  with
+       <STRONG>wadd_wch</STRONG>  to  write  line-drawing  and  other  symbols  to  the screen.
+       <EM>ncurses</EM> terms these <EM>forms-drawing</EM>  <EM>characters.</EM>   <EM>curses</EM>  uses  the  ACS
+       default  listed  below  if the terminal type lacks the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>)
+       capability; that capability does  not  define  a  replacement  for  the
+       character;  or  if  the  terminal type and locale configuration require
+       Unicode to access these characters, but the library is  unable  to  use
+       Unicode.   The "acsc char" column corresponds to how the characters are
        specified in the <STRONG>acs_chars</STRONG> (<STRONG>acsc</STRONG>) string capability, and the characters
        in it may appear on the screen if the terminal  type's  database  entry
        incorrectly  advertises  ACS support.  The name "ACS" originates in the
@@ -245,7 +243,6 @@
        <STRONG>WACS_CKBOARD</STRONG>    U+2592    :         a      checker board (stipple)
        <STRONG>WACS_DARROW</STRONG>     U+2193    v         .      arrow pointing down
        <STRONG>WACS_DEGREE</STRONG>     U+00b0    '         f      degree symbol
-
        <STRONG>WACS_DIAMOND</STRONG>    U+25c6    +         `      diamond
        <STRONG>WACS_GEQUAL</STRONG>     U+2265    &gt;         &gt;      greater-than-or-equal-to
        <STRONG>WACS_HLINE</STRONG>      U+2500    -         q      horizontal line
@@ -358,29 +355,29 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       These functions are described in X/Open Curses Issue 4.   It  specifies
+       These  functions  are described in X/Open Curses Issue 4.  It specifies
        no error conditions for them.
 
-       The  defaults specified for forms-drawing characters apply in the POSIX
-       locale.  X/Open Curses makes it clear that the WACS_ symbols should  be
-       defined  as  a  pointer  to  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  data,  e.g., in the discussion of
+       The defaults specified for forms-drawing characters apply in the  POSIX
+       locale.   X/Open Curses makes it clear that the WACS_ symbols should be
+       defined as a pointer to  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  data,  e.g.,  in  the  discussion  of
        <EM>border</EM><STRONG>_</STRONG><EM>set</EM>.  A few implementations are problematic:
 
        <STRONG>o</STRONG>   NetBSD <EM>curses</EM> defines the symbols as a <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM> within a <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>.
 
-       <STRONG>o</STRONG>   HP-UX <EM>curses</EM> equates some of the  <EM>ACS</EM><STRONG>_</STRONG>  symbols  to  the  analogous
-           <EM>WACS</EM><STRONG>_</STRONG>  symbols  as  if  the <EM>ACS</EM><STRONG>_</STRONG> symbols were wide characters.  The
-           misdefined symbols are the arrows and other symbols which  are  not
+       <STRONG>o</STRONG>   HP-UX  <EM>curses</EM>  equates  some  of  the <EM>ACS</EM><STRONG>_</STRONG> symbols to the analogous
+           <EM>WACS</EM><STRONG>_</STRONG> symbols as if the <EM>ACS</EM><STRONG>_</STRONG> symbols  were  wide  characters.   The
+           misdefined  symbols  are the arrows and other symbols which are not
            used for line-drawing.
 
-       X/Open  Curses  does  not  specify  symbols for thick- or double-lines.
+       X/Open Curses does not specify  symbols  for  thick-  or  double-lines.
        SVr4 <EM>curses</EM> implementations defined their line-drawing symbols in terms
        of  intermediate symbols.  <EM>ncurses</EM> extends those symbols, providing new
        definitions not found in SVr4 implementations.
 
        Not all  Unicode-capable  terminals  provide  support  for  VT100-style
        alternate character sets (i.e., the <EM>acsc</EM><STRONG>_</STRONG><EM>chars</EM> (<STRONG>acsc</STRONG>) capability), with
-       their corresponding line-drawing characters.   X/Open  Curses  did  not
+       their  corresponding  line-drawing  characters.   X/Open Curses did not
        address the aspect of integrating Unicode with line-drawing characters.
        Existing implementations of System V <EM>curses</EM> (AIX, HP-UX,  Solaris)  use
        only  the  <EM>acsc</EM><STRONG>_</STRONG><EM>chars</EM> (<STRONG>acsc</STRONG>) character-mapping to provide this feature.
@@ -391,7 +388,7 @@
 
        <EM>ncurses</EM>   uses   the  Unicode  values  instead  of  the  terminal  type
        description's <EM>acsc</EM><STRONG>_</STRONG><EM>chars</EM> (<STRONG>acsc</STRONG>) mapping as discussed in <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> for
-       the  environment  variable  <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>UTF8</EM><STRONG>_</STRONG><EM>ACS</EM>.   In contrast, for the
+       the environment variable <EM>NCURSES</EM><STRONG>_</STRONG><EM>NO</EM><STRONG>_</STRONG><EM>UTF8</EM><STRONG>_</STRONG><EM>ACS</EM>.   In  contrast,  for  the
        same cases, the line-drawing characters described in <STRONG><A HREF="curs_addch.3x.html">addch(3x)</A></STRONG> will use
        only the ASCII default values.
 
@@ -409,8 +406,8 @@
            Lacking documentation, most readers assume that a <EM>storm</EM> <EM>lantern</EM> was
            intended.  But there are several possibilities, all with problems.
 
-           Unicode  6.0  (2010)  does provide two lantern symbols: U+1F383 and
-           U+1F3EE.  Those were not available  in  2002,  and  are  irrelevant
+           Unicode 6.0 (2010) does provide two lantern  symbols:  U+1F383  and
+           U+1F3EE.   Those  were  not  available  in 2002, and are irrelevant
            since they lie outside the Basic Multilingual Plane and as a result
            are unavailable on many terminals.  They are not storm lanterns, in
            any case.
@@ -429,9 +426,9 @@
 
 
 </PRE><H3><a name="h3-Complex-Characters">Complex Characters</a></H3><PRE>
-       The  complex  character  type  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  can  store  more  than one wide
-       character (<EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>).  X/Open Curses does not mention this  possibility,
-       specifying  behavior  only  where  <EM>wch</EM>  is  a  single character, either
+       The complex character  type  <EM>cchar</EM><STRONG>_</STRONG><EM>t</EM>  can  store  more  than  one  wide
+       character  (<EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>).  X/Open Curses does not mention this possibility,
+       specifying behavior only  where  <EM>wch</EM>  is  a  single  character,  either
        spacing or non-spacing.
 
        <EM>ncurses</EM> assumes that <EM>wch</EM> is constructed using <STRONG><A HREF="curs_getcchar.3x.html">setcchar(3x)</A></STRONG>, and in turn
@@ -442,14 +439,14 @@
 
        <STRONG>o</STRONG>   holds one non-spacing character.
 
-       In the latter case, <EM>ncurses</EM>  adds  the  non-spacing  character  to  the
+       In  the  latter  case,  <EM>ncurses</EM>  adds  the non-spacing character to the
        active complex character.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       X/Open  Curses Issue 4 (1995) initially specified these functions.  The
+       X/Open Curses Issue 4 (1995) initially specified these functions.   The
        System V  Interface  Definition  (SVID)  Version 4  of  the  same  year
-       specified  functions named <EM>waddwch</EM> (and the usual variants), <EM>echowchar</EM>,
+       specified functions named <EM>waddwch</EM> (and the usual variants),  <EM>echowchar</EM>,
        and <EM>wechowchar</EM>.  These were later additions to SVr4.<EM>x</EM>, not appearing in
        the  first SVr4 (1989).  They differed from X/Open's later <EM>wadd</EM><STRONG>_</STRONG><EM>wch</EM> and
        <EM>wecho</EM><STRONG>_</STRONG><EM>wchar</EM> in that they each took an argument of type <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>  instead
@@ -468,10 +465,8 @@
        its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>,   <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>,   <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>,
-       <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>, <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,  <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>,  <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,
+       <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>,  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,  <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG>putwc(3)</STRONG>
-
-
 
 ncurses 6.5                       2025-08-23                  <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 </PRE>

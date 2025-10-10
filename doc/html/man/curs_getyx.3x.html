@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>getyx</STRONG>,  <STRONG>getparyx</STRONG>,  <STRONG>getbegyx</STRONG>,  <STRONG>getmaxyx</STRONG>  -  get <EM>curses</EM> cursor and window
        coordinates
@@ -64,13 +62,13 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        These macros obtain the cursor position and  bounds  information  of  a
        <EM>curses</EM> window <EM>win</EM>.  <STRONG>getyx</STRONG> stores <EM>win</EM>'s cursor position in the variables
-       <EM>y</EM> and <EM>x</EM>.  <STRONG>getmaxyx</STRONG> stores <EM>win</EM>'s maximum valid line and  column  numbers
-       in  <EM>y</EM>  and  <EM>x</EM>, respectively.  <STRONG>getbegyx</STRONG> similarly stores the position of
-       <EM>win</EM>'s origin  relative  to  that  of  the  screen  (for  <STRONG>stdscr</STRONG>,  these
+       <EM>y</EM>  and  <EM>x</EM>.  <STRONG>getmaxyx</STRONG> stores <EM>win</EM>'s maximum valid line and column numbers
+       in <EM>y</EM> and <EM>x</EM>, respectively.  <STRONG>getbegyx</STRONG> similarly stores  the  position  of
+       <EM>win</EM>'s  origin  relative  to  that  of  the  screen  (for  <STRONG>stdscr</STRONG>, these
        coordinates are always <STRONG>0</STRONG>).
 
-       If  <EM>win</EM>  is a subwindow (see <STRONG><A HREF="subwin.3x.html">subwin(3x)</A></STRONG>), the <STRONG>getparyx</STRONG> macro places the
-       coordinates of its origin relative to its parent window into <EM>y</EM>  and  <EM>x</EM>,
+       If <EM>win</EM> is a subwindow (see <STRONG><A HREF="subwin.3x.html">subwin(3x)</A></STRONG>), the <STRONG>getparyx</STRONG> macro  places  the
+       coordinates  of  its origin relative to its parent window into <EM>y</EM> and <EM>x</EM>,
        and <STRONG>-1</STRONG> into both if it is not.
 
 
@@ -92,9 +90,9 @@
        <EM>curses</EM> that were not standardized; see <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>.
 
        Although X/Open Curses does not address the issue, many implementations
-       expose members of the <EM>WINDOW</EM> structure containing values  corresponding
-       to   these   macros.    Do   not   rely  on  their  availability;  some
-       implementations make <EM>WINDOW</EM> opaque (that is, they do not  allow  direct
+       expose  members of the <EM>WINDOW</EM> structure containing values corresponding
+       to  these  macros.   Do  not   rely   on   their   availability;   some
+       implementations  make  <EM>WINDOW</EM> opaque (that is, they do not allow direct
        access to its members).
 
        Besides the problem of opaque structures, the data stored in like-named
@@ -113,8 +111,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_legacy.3x.html">curs_legacy(3x)</A></STRONG>, <STRONG><A HREF="curs_opaque.3x.html">curs_opaque(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-02-01                    <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
 </PRE>

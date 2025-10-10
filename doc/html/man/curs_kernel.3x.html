@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>def_prog_mode</STRONG>,   <STRONG>def_shell_mode</STRONG>,   <STRONG>reset_prog_mode</STRONG>,   <STRONG>reset_shell_mode</STRONG>,
        <STRONG>resetty</STRONG>, <STRONG>savetty</STRONG>, <STRONG>getsyx</STRONG>, <STRONG>setsyx</STRONG>, <STRONG>curs_set</STRONG>, <STRONG>mvcur</STRONG>, <STRONG>napms</STRONG>, <STRONG>ripoffline</STRONG>  -
@@ -83,39 +81,39 @@
        The <STRONG>def_prog_mode</STRONG> and <STRONG>def_shell_mode</STRONG> routines save the current terminal
        modes as the "program" (in <STRONG>curses</STRONG>) or "shell" (not in <STRONG>curses</STRONG>) state for
        use by the <STRONG>reset_prog_mode</STRONG> and <STRONG>reset_shell_mode</STRONG> routines.  This is done
-       automatically by <STRONG>initscr</STRONG>.  There is one such save area for each  screen
+       automatically  by <STRONG>initscr</STRONG>.  There is one such save area for each screen
        context allocated by <STRONG>newterm</STRONG>.
 
 
 </PRE><H3><a name="h3-reset_prog_mode_reset_shell_mode">reset_prog_mode, reset_shell_mode</a></H3><PRE>
-       The  <STRONG>reset_prog_mode</STRONG> and <STRONG>reset_shell_mode</STRONG> routines restore the terminal
-       to "program" (in <STRONG>curses</STRONG>) or "shell" (out of <STRONG>curses</STRONG>) state.   These  are
-       done  automatically by <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG> and, after an <STRONG>endwin</STRONG>, by <STRONG>doupdate</STRONG>, so
+       The <STRONG>reset_prog_mode</STRONG> and <STRONG>reset_shell_mode</STRONG> routines restore the  terminal
+       to  "program"  (in <STRONG>curses</STRONG>) or "shell" (out of <STRONG>curses</STRONG>) state.  These are
+       done automatically by <STRONG><A HREF="curs_initscr.3x.html">endwin(3x)</A></STRONG> and, after an <STRONG>endwin</STRONG>, by <STRONG>doupdate</STRONG>,  so
        they normally are not called.
 
 
 </PRE><H3><a name="h3-resetty_savetty">resetty, savetty</a></H3><PRE>
-       The <STRONG>resetty</STRONG> and <STRONG>savetty</STRONG> routines save and  restore  the  state  of  the
-       terminal  modes.   <STRONG>savetty</STRONG>  saves  the  current  state  in a buffer and
+       The  <STRONG>resetty</STRONG>  and  <STRONG>savetty</STRONG>  routines  save and restore the state of the
+       terminal modes.  <STRONG>savetty</STRONG> saves  the  current  state  in  a  buffer  and
        <STRONG>resetty</STRONG> restores the state to what it was at the last call to <STRONG>savetty</STRONG>.
 
 
 </PRE><H3><a name="h3-getsyx">getsyx</a></H3><PRE>
-       <STRONG>getsyx</STRONG> stores the coordinates of virtual screen (<STRONG>newscr</STRONG>)  cursor  in  <EM>y</EM>
+       <STRONG>getsyx</STRONG>  stores  the  coordinates of virtual screen (<STRONG>newscr</STRONG>) cursor in <EM>y</EM>
        and <EM>x</EM>.  If <STRONG>newscr</STRONG>'s <STRONG><A HREF="leaveok.3x.html">leaveok(3x)</A></STRONG> output option is <STRONG>TRUE</STRONG>, <STRONG>getsyx</STRONG> stores <STRONG>-1</STRONG>
        in both <EM>y</EM> and <EM>x</EM>.  If lines have been removed from the top of the screen
-       using  <STRONG>ripoffline</STRONG>, <EM>y</EM> includes these lines; therefore, <EM>y</EM> and <EM>x</EM> populated
+       using <STRONG>ripoffline</STRONG>, <EM>y</EM> includes these lines; therefore, <EM>y</EM> and <EM>x</EM>  populated
        by <STRONG>getsyx</STRONG> should be used only as arguments for <STRONG>setsyx</STRONG>.
 
        Few applications use this feature; most call <STRONG><A HREF="curs_getyx.3x.html">getyx(3x)</A></STRONG> instead.
 
 
 </PRE><H3><a name="h3-setsyx">setsyx</a></H3><PRE>
-       <STRONG>setsyx</STRONG> sets the virtual screen (<STRONG>newscr</STRONG>)  cursor  location  to  (<EM>y</EM>,  <EM>x</EM>).
+       <STRONG>setsyx</STRONG>  sets  the  virtual  screen  (<STRONG>newscr</STRONG>) cursor location to (<EM>y</EM>, <EM>x</EM>).
        <STRONG>setsyx(-1,</STRONG> <STRONG>-1)</STRONG> is equivalent to <STRONG>leaveok(newscr,</STRONG> <STRONG>TRUE)</STRONG>.
 
        <STRONG>getsyx</STRONG>  and  <STRONG>setsyx</STRONG>  are  designed  to  be  used  by  a  function  that
-       manipulates <EM>curses</EM> windows but  seeks  to  avoid  changing  the  cursor
+       manipulates  <EM>curses</EM>  windows  but  seeks  to  avoid changing the cursor
        position.  Such a function would first call <STRONG>getsyx</STRONG>, modify its windows'
        content,  call  <STRONG><A HREF="curs_refresh.3x.html">wnoutrefresh(3x)</A></STRONG>  on  them,  call  <STRONG>setsyx</STRONG>,  then   call
        <STRONG><A HREF="curs_refresh.3x.html">doupdate(3x)</A></STRONG>.
@@ -125,35 +123,35 @@
 
 </PRE><H3><a name="h3-curs_set">curs_set</a></H3><PRE>
        <STRONG>curs_set</STRONG> adjusts the cursor visibility to "invisible", "visible", "very
-       visible", as its argument is <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG>, respectively.  It returns  the
+       visible",  as its argument is <STRONG>0</STRONG>, <STRONG>1</STRONG>, or <STRONG>2</STRONG>, respectively.  It returns the
        previous  <EM>visibility</EM>  if  the  requested  one  is  supported,  and  <STRONG>ERR</STRONG>
        otherwise.
 
 
 </PRE><H3><a name="h3-mvcur">mvcur</a></H3><PRE>
-       <STRONG>mvcur</STRONG> provides low-level cursor motion.  It takes  effect  immediately,
-       rather  than  at  the  next refresh.  Unlike the other low-level output
-       functions, which either write to the  standard  output  stream  or  are
-       passed  a  function  pointer  to  perform  output,  <STRONG>mvcur</STRONG>  uses  a file
+       <STRONG>mvcur</STRONG>  provides  low-level cursor motion.  It takes effect immediately,
+       rather than at the next refresh.  Unlike  the  other  low-level  output
+       functions,  which  either  write  to  the standard output stream or are
+       passed a  function  pointer  to  perform  output,  <STRONG>mvcur</STRONG>  uses  a  file
        descriptor derived from the output stream parameter of <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.
 
-       One application of <STRONG>mvcur</STRONG>  accompanies  the  temporary  use  of  another
-       program  to  write  to  the  terminal  screen.  For example, first call
+       One  application  of  <STRONG>mvcur</STRONG>  accompanies  the  temporary use of another
+       program to write to the  terminal  screen.   For  example,  first  call
        <STRONG><A HREF="curs_refresh.3x.html">refresh(3x)</A></STRONG> to ensure that the screen and the library's model of it are
        up  to  date;  then call <STRONG>reset_shell_mode</STRONG>; write to the screen with the
        external application; call <STRONG>reset_prog_mode</STRONG>; and finally call <STRONG>mvcur(</STRONG>...<STRONG>,</STRONG>
-       ...<STRONG>,</STRONG>  <STRONG>-1,</STRONG> <STRONG>-1)</STRONG> to move the terminal cursor to where <EM>curses</EM> thinks it is,
-       since the library has no knowledge  of  how  the  external  application
+       ...<STRONG>,</STRONG> <STRONG>-1,</STRONG> <STRONG>-1)</STRONG> to move the terminal cursor to where <EM>curses</EM> thinks it  is,
+       since  the  library  has  no  knowledge of how the external application
        moved it.
 
 
 </PRE><H3><a name="h3-napms">napms</a></H3><PRE>
-       <STRONG>napms</STRONG>  sleeps  for  <EM>ms</EM>  milliseconds.   If  <EM>ms</EM>  exceeds  30,000 (thirty
+       <STRONG>napms</STRONG> sleeps  for  <EM>ms</EM>  milliseconds.   If  <EM>ms</EM>  exceeds  30,000  (thirty
        seconds), <EM>ncurses</EM> caps it at that value.
 
 
 </PRE><H3><a name="h3-ripoffline">ripoffline</a></H3><PRE>
-       <STRONG>ripoffline</STRONG> provides access to the same facility that <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>  uses
+       <STRONG>ripoffline</STRONG>  provides access to the same facility that <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG> uses
        to reduce the size of the screen.  The application must call <STRONG>ripoffline</STRONG>
        before <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG> so that the latter functions  prepare
        a <STRONG>stdscr</STRONG> of the correct size.
@@ -161,7 +159,7 @@
        <STRONG>o</STRONG>   If <EM>line</EM> is positive, <STRONG>ripoffline</STRONG> removes a line from the top of what
            will become <STRONG>stdscr</STRONG>.
 
-       <STRONG>o</STRONG>   If <EM>line</EM> is negative, <STRONG>ripoffline</STRONG> removes a line from the  bottom  of
+       <STRONG>o</STRONG>   If  <EM>line</EM>  is negative, <STRONG>ripoffline</STRONG> removes a line from the bottom of
            what will become <STRONG>stdscr</STRONG>.
 
        When <STRONG>initscr</STRONG> initializes <EM>curses</EM>, it calls the <EM>init</EM> function supplied to
@@ -188,12 +186,12 @@
 
        <STRONG>napms</STRONG> always succeeds.
 
-       <STRONG>mvcur</STRONG>  fails  if  the  position  (<EM>newrow</EM>, <EM>newcol</EM>) is outside the screen
+       <STRONG>mvcur</STRONG> fails if the position (<EM>newrow</EM>,  <EM>newcol</EM>)  is  outside  the  screen
        boundaries.
 
        In <EM>ncurses</EM>,
 
-       <STRONG>o</STRONG>   <STRONG>def_prog_mode</STRONG>,      <STRONG>def_shell_mode</STRONG>,      <STRONG>reset_prog_mode</STRONG>,       and
+       <STRONG>o</STRONG>   <STRONG>def_prog_mode</STRONG>,       <STRONG>def_shell_mode</STRONG>,      <STRONG>reset_prog_mode</STRONG>,      and
            <STRONG>reset_shell_mode</STRONG> return <STRONG>ERR</STRONG> if the terminal was not initialized, or
            if the operating system's function for obtaining terminal  settings
            fails.
@@ -208,18 +206,18 @@
 
        The  <STRONG>endwin</STRONG>  function of both <EM>ncurses</EM> and SVr4 <EM>curses</EM> calls <STRONG>curs_set</STRONG> if
        the latter has previously been called to set the cursor visibility to a
-       value  other  than  normal;  that is, either invisible or very visible.
-       There is no way for <EM>ncurses</EM> to determine the initial cursor  visibility
+       value other than normal; that is, either  invisible  or  very  visible.
+       There  is no way for <EM>ncurses</EM> to determine the initial cursor visibility
        to restore it.
 
        <EM>ncurses</EM> imposes a limit of 30 seconds on a delay requested of <STRONG>napms</STRONG>.
 
-       While  the <EM>init</EM> function called by <STRONG>ripoffline</STRONG> is specified to return an
+       While the <EM>init</EM> function called by <STRONG>ripoffline</STRONG> is specified to return  an
        <EM>int</EM>, <EM>ncurses</EM> pays no attention to its return value.
 
-       If <STRONG>ripoffline</STRONG> cannot allocate memory for the required <EM>WINDOW</EM>  structure
-       backing  the  ripped-off  line,  it stores a null pointer to the <EM>WINDOW</EM>
-       pointer  argument  supplied  by  the  <EM>init</EM>  function  the   application
+       If  <STRONG>ripoffline</STRONG> cannot allocate memory for the required <EM>WINDOW</EM> structure
+       backing the ripped-off line, it stores a null  pointer  to  the  <EM>WINDOW</EM>
+       pointer   argument  supplied  by  the  <EM>init</EM>  function  the  application
        specifies.  The application must check this argument for validity after
        calling <STRONG>initscr</STRONG> and prior  to  performing  <EM>curses</EM>  operations  on  that
        window.
@@ -237,9 +235,9 @@
        Applications employing <EM>ncurses</EM> extensions should condition their use on
        the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
-       The <EM>virtual</EM> <EM>screen</EM> functions <EM>setsyx</EM> and <EM>getsyx</EM>  are  not  described  in
-       X/Open  Curses  Issue 4.   SVr4  documents each of them as returning an
-       <EM>int</EM>.  This is  misleading,  as  they  are  macros  with  no  documented
+       The  <EM>virtual</EM>  <EM>screen</EM>  functions  <EM>setsyx</EM> and <EM>getsyx</EM> are not described in
+       X/Open Curses Issue 4.  SVr4 documents each of  them  as  returning  an
+       <EM>int</EM>.   This  is  misleading,  as  they  are  macros  with no documented
        semantics for returning values.
 
        All other functions are as described in X/Open Curses.  It specifies no
@@ -260,24 +258,22 @@
        X/Open Curses notes:
 
               After use of <EM>mvcur</EM>(), the model Curses maintains of the state of
-              the  terminal  might not match the actual state of the terminal.
-              An application  should  touch  and  refresh  the  window  before
+              the terminal might not match the actual state of  the  terminal.
+              An  application  should  touch  and  refresh  the  window before
               resuming conventional use of Curses.
 
-       Both  <EM>ncurses</EM>  and  SVr4 <EM>curses</EM> implement <EM>mvcur</EM> using the <EM>SCREEN</EM> object
-       allocated in either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open  Curses  states
-       that  the old location must be given for <EM>mvcur</EM> to accommodate terminals
+       Both <EM>ncurses</EM> and SVr4 <EM>curses</EM> implement <EM>mvcur</EM> using  the  <EM>SCREEN</EM>  object
+       allocated  in  either <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG> or <STRONG><A HREF="curs_initscr.3x.html">newterm(3x)</A></STRONG>.  X/Open Curses states
+       that the old location must be given for <EM>mvcur</EM> to accommodate  terminals
        that lack absolute cursor positioning.
 
-       If interrupted by a signal, <EM>ncurses</EM>  restarts  <EM>napms</EM>.   That,  and  the
+       If  interrupted  by  a  signal,  <EM>ncurses</EM> restarts <EM>napms</EM>.  That, and the
        limitation to 30 seconds, differ from other implementations.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,   <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,   <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,   <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>,
        <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>, <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-16                   <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
 </PRE>

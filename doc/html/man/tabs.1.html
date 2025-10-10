@@ -44,8 +44,6 @@
 <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>                          User commands                         <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>tabs</STRONG> - set terminal tab stops
 
@@ -180,7 +178,7 @@
                 on each line.  The terminal's left margin is not modified.
 
             If the <EM>margin</EM> parameter is omitted, the default is 10.  Use <STRONG>+m0</STRONG> to
-            reset the left margin, that is, to make it the left  edge  of  the
+            reset  the  left  margin, that is, to make it the left edge of the
             terminal's display.  Before setting a left margin, <STRONG>tabs</STRONG> resets the
             margin to reduce problems that might arise from moving the  cursor
             to the left of the current left margin.
@@ -223,39 +221,37 @@
        Versions  of  the program in later releases of AT&amp;T Unix, such as SVr4,
        added support for the terminal database, but  retained  the  tables  to
        support the printers.  By this time, System V <EM>tput</EM> had incorporated the
-       tab stop initialization feature of BSD's <EM>tset</EM> from 1982,  but  employed
+       tab  stop  initialization feature of BSD's <EM>tset</EM> from 1982, but employed
        the <EM>terminfo</EM> database to do so.
 
-       The  <STRONG>+m</STRONG>  option was documented in the POSIX Base Specifications Issue 5
-       (Unix98, 1997), then omitted in Issue 6 (Unix03, 2004) without  express
-       motivation,  though an introductory comment "and optionally adjusts the
-       margin"  remains,  overlooked  in  the  removal.   The   <EM>tabs</EM>   utility
-       documented  in Issues 6 and later has no mechanism for setting margins.
+       The <STRONG>+m</STRONG> option was documented in the POSIX Base  Specifications  Issue 5
+       (Unix98,  1997), then omitted in Issue 6 (Unix03, 2004) without express
+       motivation, though an introductory comment "and optionally adjusts  the
+       margin"   remains,   overlooked  in  the  removal.   The  <EM>tabs</EM>  utility
+       documented in Issues 6 and later has no mechanism for setting  margins.
        The <STRONG>+m</STRONG> option in <EM>ncurses</EM>'s implementation differs from the SVr4 feature
        by using terminal capabilities rather than built-in tables.
 
        POSIX   documents   no  limit  on  the  number  of  tab  stops.   Other
        implementations impose one; the limit is 20 in PWB/Unix's <EM>tabs</EM> utility.
-       While  some  terminals may not accept an arbitrary number of tab stops,
-       <EM>ncurses</EM> attempts to set tab stops up to the right margin  if  the  list
+       While some terminals may not accept an arbitrary number of  tab  stops,
+       <EM>ncurses</EM>  attempts  to  set tab stops up to the right margin if the list
        thereof is sufficiently long.
 
-       The  "Rationale" section of the Issue 6 <EM>tabs</EM> reference page details how
-       the committee considered  redesigning  the  <EM>tabs</EM>  and  <EM>tput</EM>  utilities,
+       The "Rationale" section of the Issue 6 <EM>tabs</EM> reference page details  how
+       the  committee  considered  redesigning  the  <EM>tabs</EM>  and <EM>tput</EM> utilities,
        without settling on an improved solution.  It claims that
 
-           no  known  historical  version  of  <EM>tabs</EM> supports the capability of
+           no known historical version of  <EM>tabs</EM>  supports  the  capability  of
            setting arbitrary tab stops.
 
-       The  feature  described  in  subsection  "Explicit  Lists"  above   was
-       implemented  in  PWB/Unix,  and  permitted the setting of arbitrary tab
+       The   feature  described  in  subsection  "Explicit  Lists"  above  was
+       implemented in PWB/Unix, and permitted the  setting  of  arbitrary  tab
        stops nevertheless.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>, <STRONG><A HREF="tset.1.html">tset(1)</A></STRONG>, <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-16                           <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>
 </PRE>

@@ -28,23 +28,21 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_util.3x,v 1.146 2025/08/23 22:50:00 tom Exp @
+  * @Id: curs_util.3x,v 1.148 2025/10/04 20:48:42 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_util 3x 2025-08-23 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_util 3x 2025-10-04 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_util 3x 2025-08-23 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_util 3x 2025-10-04 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>                    Library calls                   <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
-
-
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
@@ -102,16 +100,16 @@
            representation of the code's value minus 128, as described above.
 
            If the screen is not in meta mode, the character code is assumed to
-           represent itself.  It nevertheless may not be  printable;  this  is
+           represent  itself.   It  nevertheless may not be printable; this is
            the case for character codes 128-159 in ISO 8859 encodings.
 
-           <EM>ncurses</EM>'s   <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   function   configures  <STRONG>unctrl</STRONG>'s
+           <EM>ncurses</EM>'s  <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   function   configures   <STRONG>unctrl</STRONG>'s
            handling of these character codes.
 
        <STRONG>wunctrl</STRONG>  returns  a  null-terminated  wide-character  string  printably
        representing the <EM>curses</EM> complex character <EM>wch</EM>.
 
-       Both  functions ignore the attributes and color pair selection of their
+       Both functions ignore the attributes and color pair selection of  their
        argument.
 
 
@@ -183,81 +181,81 @@
 
 
 </PRE><H3><a name="h3-use_tioctl">use_tioctl</a></H3><PRE>
-       The  <STRONG>use_tioctl</STRONG>  routine,  if  used, should be called before <STRONG>initscr</STRONG> or
-       <STRONG>newterm</STRONG> are called (because those  compute  the  screen  size).   After
-       <STRONG>use_tioctl</STRONG>  is  called  with  <STRONG>TRUE</STRONG> as an argument, <EM>ncurses</EM> modifies the
+       The <STRONG>use_tioctl</STRONG> routine, if used, should be  called  before  <STRONG>initscr</STRONG>  or
+       <STRONG>newterm</STRONG>  are  called  (because  those  compute the screen size).  After
+       <STRONG>use_tioctl</STRONG> is called with <STRONG>TRUE</STRONG> as an  argument,  <EM>ncurses</EM>  modifies  the
        last step in its computation of screen size as follows:
 
-       <STRONG>o</STRONG>   checks whether the <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables are  set
+       <STRONG>o</STRONG>   checks  whether the <EM>LINES</EM> and <EM>COLUMNS</EM> environment variables are set
            to a number greater than zero.
 
-       <STRONG>o</STRONG>   for  each,  <EM>ncurses</EM>  updates the corresponding environment variable
-           with the value that it has obtained via operating  system  call  or
+       <STRONG>o</STRONG>   for each, <EM>ncurses</EM> updates the  corresponding  environment  variable
+           with  the  value  that it has obtained via operating system call or
            from the terminal database.
 
-       <STRONG>o</STRONG>   <EM>ncurses</EM>  re-fetches  the value of the environment variables so that
+       <STRONG>o</STRONG>   <EM>ncurses</EM> re-fetches the value of the environment variables  so  that
            it is still the environment variables that set the screen size.
 
        The <STRONG>use_env</STRONG> and <STRONG>use_tioctl</STRONG> routines combine as follows.
 
               <STRONG>use_env</STRONG>   <STRONG>use_tioctl</STRONG>   <STRONG>Summary</STRONG>
               -----------------------------------------------------------------
-              <STRONG>TRUE</STRONG>      <STRONG>FALSE</STRONG>        <EM>ncurses</EM>  uses  operating   system   calls
-                                     unless  overridden  by  <EM>LINES</EM>  or <EM>COLUMNS</EM>
+              <STRONG>TRUE</STRONG>      <STRONG>FALSE</STRONG>        <EM>ncurses</EM>   uses   operating  system  calls
+                                     unless overridden  by  <EM>LINES</EM>  or  <EM>COLUMNS</EM>
                                      environment variables; default.
-              <STRONG>TRUE</STRONG>      <STRONG>TRUE</STRONG>         <EM>ncurses</EM> updates <EM>LINES</EM> and  <EM>COLUMNS</EM>  based
+              <STRONG>TRUE</STRONG>      <STRONG>TRUE</STRONG>         <EM>ncurses</EM>  updates  <EM>LINES</EM> and <EM>COLUMNS</EM> based
                                      on operating system calls.
-              <STRONG>FALSE</STRONG>     <STRONG>TRUE</STRONG>         <EM>ncurses</EM>  ignores <EM>LINES</EM> and <EM>COLUMNS</EM>, using
+              <STRONG>FALSE</STRONG>     <STRONG>TRUE</STRONG>         <EM>ncurses</EM> ignores <EM>LINES</EM> and <EM>COLUMNS</EM>,  using
                                      operating system calls to obtain size.
 
 
 </PRE><H3><a name="h3-putwin_getwin">putwin, getwin</a></H3><PRE>
-       The <STRONG>putwin</STRONG> routine writes all data associated with window (or pad)  <EM>win</EM>
-       into  the  file  to  which <EM>filep</EM> points.  This information can be later
+       The  <STRONG>putwin</STRONG> routine writes all data associated with window (or pad) <EM>win</EM>
+       into the file to which <EM>filep</EM> points.  This  information  can  be  later
        retrieved using the <STRONG>getwin</STRONG> function.
 
-       The <STRONG>getwin</STRONG> routine reads window related data  stored  in  the  file  by
-       <STRONG>putwin</STRONG>.   The  routine  then creates and initializes a new window using
-       that data.  It returns a pointer to the new window.  There  are  a  few
+       The  <STRONG>getwin</STRONG>  routine  reads  window  related data stored in the file by
+       <STRONG>putwin</STRONG>.  The routine then creates and initializes a  new  window  using
+       that  data.   It  returns a pointer to the new window.  There are a few
        caveats:
 
-       <STRONG>o</STRONG>   the  data  written  is  a  copy  of  the  <EM>WINDOW</EM> structure, and its
-           associated character cells.  The format differs between  the  wide-
-           character  (<EM>ncursesw</EM>)  and  non-wide  (<EM>ncurses</EM>) libraries.  You can
+       <STRONG>o</STRONG>   the data written is  a  copy  of  the  <EM>WINDOW</EM>  structure,  and  its
+           associated  character  cells.  The format differs between the wide-
+           character (<EM>ncursesw</EM>) and non-wide  (<EM>ncurses</EM>)  libraries.   You  can
            transfer data between the two, however.
 
-       <STRONG>o</STRONG>   the retrieved window is always created as a  top-level  window  (or
+       <STRONG>o</STRONG>   the  retrieved  window  is always created as a top-level window (or
            pad), rather than a subwindow.
 
-       <STRONG>o</STRONG>   the  window's character cells contain the color pair <EM>value</EM>, but not
-           the actual color <EM>numbers</EM>.  If cells in  the  retrieved  window  use
-           color  pairs  that  have  not been created in the application using
+       <STRONG>o</STRONG>   the window's character cells contain the color pair <EM>value</EM>, but  not
+           the  actual  color  <EM>numbers</EM>.   If cells in the retrieved window use
+           color pairs that have not been created  in  the  application  using
            <STRONG>init_pair</STRONG>, they will not be colored when the window is refreshed.
 
 
 </PRE><H3><a name="h3-delay_output">delay_output</a></H3><PRE>
-       The <STRONG>delay_output</STRONG> routine inserts an <EM>ms</EM>  millisecond  pause  in  output.
-       Employ  this  function  judiciously  when terminal output uses padding,
-       because <EM>ncurses</EM>  transmits  null  characters  (consuming  CPU  and  I/O
-       resources)  instead  of  sleeping  and  requesting  resumption from the
+       The  <STRONG>delay_output</STRONG>  routine  inserts  an <EM>ms</EM> millisecond pause in output.
+       Employ this function judiciously when  terminal  output  uses  padding,
+       because  <EM>ncurses</EM>  transmits  null  characters  (consuming  CPU  and I/O
+       resources) instead of  sleeping  and  requesting  resumption  from  the
        operating system.  Padding is used unless:
 
        <STRONG>o</STRONG>   the terminal description has <STRONG>npc</STRONG> (<STRONG>no_pad_char</STRONG>) capability, or
 
        <STRONG>o</STRONG>   the environment variable <STRONG>NCURSES_NO_PADDING</STRONG> is set.
 
-       If padding is not in use, <EM>ncurses</EM> uses <STRONG>napms</STRONG> to perform the delay.   If
-       the  value  of <EM>ms</EM> exceeds 30,000 (thirty seconds), it is capped at that
+       If  padding is not in use, <EM>ncurses</EM> uses <STRONG>napms</STRONG> to perform the delay.  If
+       the value of <EM>ms</EM> exceeds 30,000 (thirty seconds), it is capped  at  that
        value.
 
 
 </PRE><H3><a name="h3-flushinp">flushinp</a></H3><PRE>
-       The <STRONG>flushinp</STRONG> routine throws away any typeahead that has been  typed  by
+       The  <STRONG>flushinp</STRONG>  routine throws away any typeahead that has been typed by
        the user and has not yet been read by the program.
 
 
 </PRE><H2><a name="h2-RETURN-VALUE">RETURN VALUE</a></H2><PRE>
-       Except  for  <STRONG>flushinp</STRONG>,  functions  that return integers return <STRONG>ERR</STRONG> upon
+       Except for <STRONG>flushinp</STRONG>, functions that return  integers  return  <STRONG>ERR</STRONG>  upon
        failure and <STRONG>OK</STRONG> upon success.
 
        Functions that return pointers return a null pointer on failure.
@@ -270,7 +268,7 @@
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       <STRONG>wunctrl</STRONG> is part of <EM>ncurses</EM>'s wide-character API, and is  not  available
+       <STRONG>wunctrl</STRONG>  is  part of <EM>ncurses</EM>'s wide-character API, and is not available
        in its non-wide-character configuration.
 
 
@@ -306,45 +304,45 @@
        capabilities  that  are defined in the terminfo entry via the <STRONG>-x</STRONG> option
        of <STRONG>tic</STRONG>.  This implementation  automatically  assigns  at  run-time  key
        codes to user-defined strings that begin with "k".  The key codes start
-       at KEY_MAX, but are not guaranteed to be the same value  for  different
-       runs   because   user-defined   codes  are  merged  from  all  terminal
-       descriptions  that  have  been  loaded.    The   <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>
-       function  controls  whether  this  data  is  loaded  when  the terminal
+       at  KEY_MAX,  but are not guaranteed to be the same value for different
+       runs  because  user-defined  codes  are  merged   from   all   terminal
+       descriptions   that   have  been  loaded.   The  <STRONG><A HREF="curs_extend.3x.html">use_extended_names(3x)</A></STRONG>
+       function controls  whether  this  data  is  loaded  when  the  terminal
        description is read by the library.
 
 
 </PRE><H3><a name="h3-nofilter_use_tioctl">nofilter, use_tioctl</a></H3><PRE>
-       The <STRONG>nofilter</STRONG> and <STRONG>use_tioctl</STRONG> routines are  specific  to  <EM>ncurses</EM>.   They
-       were  not  supported on Version 7, BSD or System V implementations.  It
-       is recommended  that  any  code  depending  on  <EM>ncurses</EM>  extensions  be
+       The  <STRONG>nofilter</STRONG>  and  <STRONG>use_tioctl</STRONG>  routines are specific to <EM>ncurses</EM>.  They
+       were not supported on Version 7, BSD or System V  implementations.   It
+       is  recommended  that  any  code  depending  on  <EM>ncurses</EM>  extensions be
        conditioned using <STRONG>NCURSES_VERSION</STRONG>.
 
 
 </PRE><H3><a name="h3-putwin_getwin-file-format">putwin/getwin file-format</a></H3><PRE>
        The <STRONG>putwin</STRONG> and <STRONG>getwin</STRONG> functions have several issues with portability:
 
-       <STRONG>o</STRONG>   The   files   written   and   read   by   these  functions  use  an
-           implementation-specific format.  Although the format is an  obvious
+       <STRONG>o</STRONG>   The  files  written  and   read   by   these   functions   use   an
+           implementation-specific  format.  Although the format is an obvious
            target for standardization, it has been overlooked.
 
-           Interestingly  enough,  according to the copyright dates in Solaris
-           source, the functions (along with <STRONG>scr_init</STRONG>, etc.)  originated  with
+           Interestingly enough, according to the copyright dates  in  Solaris
+           source,  the  functions (along with <STRONG>scr_init</STRONG>, etc.) originated with
            the University of California, Berkeley (in 1982) and were later (in
            1988) incorporated into SVr4.  Oddly, there are no  such  functions
            in the 4.3BSD <EM>curses</EM> sources.
 
        <STRONG>o</STRONG>   Most implementations simply dump the binary <EM>WINDOW</EM> structure to the
-           file.  These include SVr4 <EM>curses</EM>, NetBSD <EM>curses</EM>, and  <EM>PDCurses</EM>,  as
-           well  as  older  <EM>ncurses</EM> versions.  This implementation (as well as
-           <EM>xcurses</EM>, the X/Open variant of Solaris  <EM>curses</EM>,  dated  1995)  uses
+           file.   These  include SVr4 <EM>curses</EM>, NetBSD <EM>curses</EM>, and <EM>PDCurses</EM>, as
+           well as older <EM>ncurses</EM> versions.  This implementation  (as  well  as
+           <EM>xcurses</EM>,  the  X/Open  variant  of Solaris <EM>curses</EM>, dated 1995) uses
            textual dumps.
 
-           The  implementations  that use binary dumps use block I/O (<STRONG>write(2)</STRONG>
-           and <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use  buffered
+           The implementations that use binary dumps use block  I/O  (<STRONG>write(2)</STRONG>
+           and  <STRONG>read(2)</STRONG> functions).  Those that use textual dumps use buffered
            I/O.  A few applications may happen to write extra data in the file
            using these functions.  Doing that can  run  into  problems  mixing
            block and buffered I/O.  This implementation reduces the problem on
-           writes by flushing  the  output.   However,  reading  from  a  file
+           writes  by  flushing  the  output.   However,  reading  from a file
            written using mixed schemes may not be successful.
 
 
@@ -358,9 +356,9 @@
            X/Open Curses documented.
 
        <STRONG>o</STRONG>   the parameter is in the range 128-159, i.e., a C1 control code.  If
-           <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> has been called with a  <STRONG>2</STRONG>  parameter,  <STRONG>unctrl</STRONG>
-           returns  the  parameter,  i.e.,  a  one-character  string  with the
-           parameter as the first  character.   Otherwise,  it  returns  "~@",
+           <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>  has  been  called with a <STRONG>2</STRONG> parameter, <STRONG>unctrl</STRONG>
+           returns the  parameter,  i.e.,  a  one-character  string  with  the
+           parameter  as  the  first  character.   Otherwise, it returns "~@",
            "~A", etc., analogous to "^@", "^A", C0 controls.
 
            X/Open Curses does not document whether <STRONG>unctrl</STRONG> can be called before
@@ -371,26 +369,26 @@
            pointer.
 
        The strings returned by <STRONG>unctrl</STRONG> in this implementation are determined at
-       compile  time,  showing C1 controls from the upper-128 codes with a "~"
-       prefix  rather  than  "^".   Other   implementations   have   different
-       conventions.    For  example,  they  may  show  both  sets  of  control
-       characters with "^", and strip the parameter to 7 bits.   Or  they  may
-       ignore  C1  controls and treat all of the upper-128 codes as printable.
-       This implementation uses 8 bits but  does  not  modify  the  string  to
-       reflect  locale.   The <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> function allows the caller
+       compile time, showing C1 controls from the upper-128 codes with  a  "~"
+       prefix   rather   than   "^".   Other  implementations  have  different
+       conventions.   For  example,  they  may  show  both  sets  of   control
+       characters  with  "^",  and strip the parameter to 7 bits.  Or they may
+       ignore C1 controls and treat all of the upper-128 codes  as  printable.
+       This  implementation  uses  8  bits  but  does not modify the string to
+       reflect locale.  The <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG> function allows  the  caller
        to change the output of <STRONG>unctrl</STRONG>.
 
-       Likewise, the <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG> function allows the caller to change the  output
-       of  <STRONG>keyname</STRONG>,  i.e.,  it  determines  whether to use the "M-" prefix for
-       "meta"   keys   (codes   in   the   range   128    to    255).     Both
-       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>   and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  <EM>curses</EM>  is
-       initialized.  X/Open Curses does not document the  treatment  of  codes
+       Likewise,  the <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG> function allows the caller to change the output
+       of <STRONG>keyname</STRONG>, i.e., it determines whether to  use  the  "M-"  prefix  for
+       "meta"    keys    (codes    in   the   range   128   to   255).    Both
+       <STRONG><A HREF="legacy_coding.3x.html">use_legacy_coding(3x)</A></STRONG>  and  <STRONG><A HREF="curs_inopts.3x.html">meta(3x)</A></STRONG>  succeed  only  after  <EM>curses</EM>   is
+       initialized.   X/Open  Curses  does not document the treatment of codes
        128 to 159.  When treating them as "meta" keys (or if <STRONG>keyname</STRONG> is called
        before  initializing  <EM>curses</EM>),  this  implementation  returns   strings
        "M-^@", "M-^A", etc.
 
-       X/Open Curses documents <STRONG>unctrl</STRONG> as declared in <STRONG>&lt;unctrl.h&gt;</STRONG>, which <EM>ncurses</EM>
-       does.  However, <EM>ncurses</EM>' <STRONG>&lt;curses.h&gt;</STRONG> includes <STRONG>&lt;unctrl.h&gt;</STRONG>,  matching  the
+       X/Open  Curses  documents <EM>unctrl</EM> as declared in <EM>unctrl.h</EM>, which <EM>ncurses</EM>
+       does.  However, <EM>ncurses</EM>'s  <EM>curses.h</EM>  includes  <EM>unctrl.h</EM>,  matching  the
        behavior of SVr4 <EM>curses</EM>.  Other implementations may not do that.
 
 
@@ -422,9 +420,7 @@
        <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>, <STRONG><A HREF="curs_sp_funcs.3x.html">curs_sp_funcs(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,
        <STRONG><A HREF="legacy_coding.3x.html">legacy_coding(3x)</A></STRONG>
 
-
-
-ncurses 6.5                       2025-08-23                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+ncurses 6.5                       2025-10-04                     <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

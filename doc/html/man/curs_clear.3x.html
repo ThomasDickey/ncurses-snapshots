@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>erase</STRONG>,  <STRONG>werase</STRONG>, <STRONG>clear</STRONG>, <STRONG>wclear</STRONG>, <STRONG>clrtobot</STRONG>, <STRONG>wclrtobot</STRONG>, <STRONG>clrtoeol</STRONG>, <STRONG>wclrtoeol</STRONG>
        - clear all or part of a <EM>curses</EM> window
@@ -78,8 +76,8 @@
 
 
 </PRE><H3><a name="h3-clear_wclear">clear, wclear</a></H3><PRE>
-       The <STRONG>clear</STRONG> and <STRONG>wclear</STRONG> routines are like <STRONG>erase</STRONG> and <STRONG>werase</STRONG>, but they  also
-       call  <STRONG><A HREF="curs_outopts.3x.html">clearok(3x)</A></STRONG>, so that the screen is cleared completely on the next
+       The  <STRONG>clear</STRONG> and <STRONG>wclear</STRONG> routines are like <STRONG>erase</STRONG> and <STRONG>werase</STRONG>, but they also
+       call <STRONG><A HREF="curs_outopts.3x.html">clearok(3x)</A></STRONG>, so that the screen is cleared completely on the  next
        call to <STRONG>wrefresh</STRONG> for that window and repainted from scratch.
 
 
@@ -114,18 +112,18 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       SVr4 documentation says that these  functions  return  <EM>OK</EM>  "or  a  non-
-       negative  integer  if  <EM>immedok()</EM> is set", referring to the return value
-       from <EM>wrefresh</EM>, which in SVr4 returns a count of characters  written  to
+       SVr4  documentation  says  that  these  functions  return <EM>OK</EM> "or a non-
+       negative integer if <EM>immedok()</EM> is set", referring to  the  return  value
+       from  <EM>wrefresh</EM>,  which in SVr4 returns a count of characters written to
        the window if its <EM>immedok</EM> property is set; in <EM>ncurses</EM>, it does not.
 
-       Some  historic  curses implementations had, as an undocumented feature,
+       Some historic curses implementations had, as an  undocumented  feature,
        the  ability  to  do  the  equivalent  of  <STRONG>clearok(...,</STRONG>  <STRONG>1)</STRONG>  by  saying
        <STRONG>touchwin(stdscr)</STRONG> or <STRONG>clear(stdscr)</STRONG>.  This will not work under <EM>ncurses</EM>.
 
-       This  implementation,  and  others  such  as  Solaris, sets the current
-       position to 0,0 after erasing via <STRONG>werase</STRONG> and <STRONG>wclear</STRONG>.  That fact is  not
-       documented   in   other   implementations,  and  may  not  be  true  of
+       This implementation, and others  such  as  Solaris,  sets  the  current
+       position  to 0,0 after erasing via <STRONG>werase</STRONG> and <STRONG>wclear</STRONG>.  That fact is not
+       documented  in  other  implementations,  and  may  not   be   true   of
        implementations which were not derived from SVr4 source.
 
        Not obvious from the description, most implementations clear the screen
@@ -135,8 +133,6 @@
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-01-18                    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
 </PRE>

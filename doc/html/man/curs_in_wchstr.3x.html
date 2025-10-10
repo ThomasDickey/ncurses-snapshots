@@ -44,8 +44,6 @@
 <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>               Library calls              <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 
 
-
-
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>in_wchstr</STRONG>,    <STRONG>in_wchnstr</STRONG>,    <STRONG>win_wchstr</STRONG>,    <STRONG>win_wchnstr</STRONG>,   <STRONG>mvin_wchstr</STRONG>,
        <STRONG>mvin_wchnstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>,  <STRONG>mvwin_wchnstr</STRONG>  -  get  a  <EM>curses</EM>  complex
@@ -71,10 +69,10 @@
 </PRE><H2><a name="h2-DESCRIPTION">DESCRIPTION</a></H2><PRE>
        <STRONG>win_wchstr</STRONG>  extracts  a  <EM>curses</EM>  complex character string from a <EM>curses</EM>
        window <EM>win</EM>, starting at the cursor and stopping at the end of the line,
-       and  stores  it  in  <EM>wchstr</EM>,  terminating  it  with  a wide null <EM>curses</EM>
-       character.  <STRONG>win_wchnstr</STRONG> does the same, but  copies  at  most  <EM>n</EM>  <EM>curses</EM>
-       complex   characters   from  <EM>win</EM>.   A  negative  <EM>n</EM>  implies  no  limit;
-       <STRONG>win_wchnstr</STRONG> then works  like  <STRONG>win_wchstr</STRONG>.   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>  describes  the
+       and stores it in  <EM>wchstr</EM>,  terminating  it  with  a  wide  null  <EM>curses</EM>
+       character.   <STRONG>win_wchnstr</STRONG>  does  the  same,  but copies at most <EM>n</EM> <EM>curses</EM>
+       complex  characters  from  <EM>win</EM>.   A  negative  <EM>n</EM>  implies   no   limit;
+       <STRONG>win_wchnstr</STRONG>  then  works  like  <STRONG>win_wchstr</STRONG>.   <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> describes the
        variants of these functions.
 
 
@@ -85,21 +83,21 @@
 
        <STRONG>o</STRONG>   the <EM>curses</EM> screen has not been initialized,
 
-       <STRONG>o</STRONG>   (for  functions  taking  a  <EM>WINDOW</EM>  pointer argument) <EM>win</EM> is a null
+       <STRONG>o</STRONG>   (for functions taking a <EM>WINDOW</EM> pointer  argument)  <EM>win</EM>  is  a  null
            pointer, or
 
        <STRONG>o</STRONG>   <EM>wchstr</EM> is a null pointer.
 
-       Functions prefixed with "mv" first perform cursor movement and fail  if
+       Functions  prefixed with "mv" first perform cursor movement and fail if
        the position (<EM>y</EM>, <EM>x</EM>) is outside the window boundaries.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        All of these functions except <STRONG>win_wchnstr</STRONG> may be implemented as macros.
 
-       Reading  a  line  that overflows the array pointed to by <EM>wchstr</EM> and its
-       variants  causes  undefined  results.   Instead,  use   the   <EM>n</EM>-infixed
-       functions  with  a  positive  <EM>n</EM> argument no larger than the size of the
+       Reading a line that overflows the array pointed to by  <EM>wchstr</EM>  and  its
+       variants   causes   undefined  results.   Instead,  use  the  <EM>n</EM>-infixed
+       functions with a positive <EM>n</EM> argument no larger than  the  size  of  the
        buffer backing <EM>wchstr</EM>.
 
 
@@ -122,8 +120,6 @@
        in its non-wide-character configuration.
 
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>, <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
-
-
 
 ncurses 6.5                       2025-08-23                <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
 </PRE>
