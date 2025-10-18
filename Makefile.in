@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.49 2025/10/04 20:32:14 Branden.Robinson Exp $
+# $Id: Makefile.in,v 1.50 2025/10/18 13:33:46 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2014,2015 Free Software Foundation, Inc.                    #
@@ -35,11 +35,10 @@
 SHELL 		= @SHELL@
 VPATH		= @srcdir@
 
-DESTDIR		= @DESTDIR@
+@SET_MAKE@
+@SET_DESTDIR@
 RPATH_LIST	= @RPATH_LIST@
 TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
-
-@SET_MAKE@
 
 NCURSES_MAJOR	= @NCURSES_MAJOR@
 NCURSES_MINOR	= @NCURSES_MINOR@

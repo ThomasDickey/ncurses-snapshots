@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4353 2025/10/09 22:55:08 tom Exp $
+-- $Id: NEWS,v 1.4356 2025/10/18 15:49:43 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20251018
+	+ add check for build-time utilities, in case cross-compiling is setup
+	  with an invalid $BUILD_CC (prompted by discussion with Stas Sergeev).
+	+ modify configure-script and makefiles to make it easier to override
+	  the "--with-install-prefix" default with environment variable
+	  (report by Stas Sergeev).
 
 20251010
 	+ fix stray "\" in curs_extend.3x, regen html manpages.

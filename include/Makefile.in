@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.55 2025/08/08 23:27:31 tom Exp $
+# $Id: Makefile.in,v 1.56 2025/10/18 13:33:46 tom Exp $
 ##############################################################################
 # Copyright 2019-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2015 Free Software Foundation, Inc.                    #
@@ -44,7 +44,7 @@ SHELL		= @SHELL@
 VPATH		= @srcdir@
 THIS		= Makefile
 
-DESTDIR		= @DESTDIR@
+@SET_DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@

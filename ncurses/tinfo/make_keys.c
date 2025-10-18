@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2011,2015 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #define USE_TERMLIB 1
 #include <build.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.24 2024/12/07 20:06:49 tom Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.25 2025/10/18 15:41:07 tom Exp $")
 
 #include <names.c>
 
@@ -148,6 +148,9 @@ main(int argc, char *argv[])
 	"#endif /* _INIT_KEYTRY_H */",
 	NULL
     };
+
+    if (argc == 2 && !strcmp(argv[1], "-?"))
+	return EXIT_SUCCESS;
 
     write_list(stdout, prefix);
     if (argc > 1) {

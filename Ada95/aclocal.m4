@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.233 2025/09/28 20:56:33 tom Exp $
+dnl $Id: aclocal.m4,v 1.234 2025/10/18 15:16:34 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2441,7 +2441,7 @@ fi
 AC_SUBST(INSTALL_OPT_S)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_INSTALL_PREFIX version: 1 updated: 2024/08/10 20:16:32
+dnl CF_INSTALL_PREFIX version: 2 updated: 2025/10/18 11:14:21
 dnl -----------------
 dnl Special option for use by system-builders: the install-prefix is used to
 dnl adjust the location into which the actual install is done, so that an
@@ -2458,6 +2458,10 @@ AC_ARG_WITH(install-prefix,
 	esac])
 AC_MSG_RESULT([${DESTDIR:-(none)}])
 AC_SUBST(DESTDIR)
+
+SET_DESTDIR=
+test -n "$DESTDIR" && SET_DESTDIR="DESTDIR=$DESTDIR"
+AC_SUBST(SET_DESTDIR)
 
 AC_MSG_CHECKING(if installation directory prefix should be merged)
 CF_ARG_ENABLE(install-prefix,

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2009-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: make_hash.c,v 1.36 2024/12/07 20:51:15 tom Exp $")
+MODULE_ID("$Id: make_hash.c,v 1.37 2025/10/18 15:39:43 tom Exp $")
 
 /*
  *	_nc_make_hash_table()
@@ -247,9 +247,8 @@ int
 main(int argc, char **argv)
 {
     unsigned tablesize = CAPTABSIZE;
-    struct user_table_entry *name_table = typeCalloc(struct
-						     user_table_entry, tablesize);
-    HashValue *hash_table = typeCalloc(HashValue, HASHTABSIZE);
+    struct user_table_entry *name_table;
+    HashValue *hash_table;
     const char *root_name;
     int column = 0;
     int bigstring = 0;
@@ -263,6 +262,12 @@ main(int argc, char **argv)
     short BoolCount = 0;
     short NumCount = 0;
     short StrCount = 0;
+
+    if (argc == 2 && !strcmp(argv[1], "-?"))
+	return EXIT_SUCCESS;
+
+    name_table = typeCalloc(struct user_table_entry, tablesize);
+    hash_table = typeCalloc(HashValue, HASHTABSIZE);
 
     /* The first argument is the column-number (starting with 0).
      * The second is the root name of the tables to generate.

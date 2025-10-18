@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.132 2025/07/12 14:59:48 tom Exp $
+# $Id: Makefile.in,v 1.133 2025/10/18 16:08:41 tom Exp $
 ##############################################################################
 # Copyright 2020-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -38,8 +38,9 @@
 SHELL		= @SHELL@
 VPATH		= @srcdir@
 
-TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 @SET_MAKE@
+@SET_DESTDIR@
+TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 
 destdir		=
 x		= @EXEEXT@

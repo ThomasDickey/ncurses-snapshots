@@ -35,7 +35,7 @@
 
 /*
     Version Control
-    $Id: gen.c,v 1.80 2025/01/24 20:39:23 tom Exp $
+    $Id: gen.c,v 1.83 2025/10/18 22:16:10 tom Exp $
   --------------------------------------------------------------------------*/
 /*
   This program prints on its standard output the source for the
@@ -202,6 +202,10 @@ main(int argc, const char *argv[])
   if (argc == 3)
     {
       fp = fopen(argv[2], "wb");
+    }
+  else if (argc == 2 && !strcmp(argv[1], "-?"))
+    {
+      return EXIT_SUCCESS;
     }
   else if (argc == 2)
     {

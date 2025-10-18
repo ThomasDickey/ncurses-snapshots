@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.191 2025/08/09 23:14:59 tom Exp $
+# $Id: Makefile.in,v 1.193 2025/10/18 15:34:04 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -50,14 +50,14 @@ SHELL		= @SHELL@
 VPATH		= @srcdir@
 THIS		= Makefile
 
-TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 @SET_MAKE@
+@SET_DESTDIR@
+TOP_MFLAGS	= DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 
 x		= @EXEEXT@
 o		= .@OBJEXT@
 
 MODEL		= @DFT_LWR_MODEL@
-DESTDIR		= @DESTDIR@
 top_srcdir	= @top_srcdir@
 srcdir		= @srcdir@
 prefix		= @prefix@
@@ -259,17 +259,23 @@ make_keys$(BUILD_EXEEXT) : \
 		$(tinfo)/make_keys.c \
 		./names.c
 	$(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(tinfo)/make_keys.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
+	@./$@ "-?"
+	@echo "... made $@"
 
 make_hash$(BUILD_EXEEXT) : \
 		build.priv.h \
 		$(tinfo)/make_hash.c \
 		../include/hashsize.h
 	$(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(tinfo)/make_hash.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
+	@./$@ "-?"
+	@echo "... made $@"
 
 report_offsets$(BUILD_EXEEXT) : \
 		$(srcdir)/curses.priv.h \
 		$(srcdir)/report_offsets.c
 	$(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(srcdir)/report_offsets.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
+	@./$@ "-?"
+	@echo "... made $@"
 	./report_offsets$(BUILD_EXEEXT)
 
 ./expanded.c : $(srcdir)/curses.priv.h $(serial)/MKexpanded.sh

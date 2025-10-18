@@ -29,7 +29,7 @@
 #
 #  Author:  Juergen Pfeifer, 1996
 #
-#  $Id: Makefile.in,v 1.101 2025/07/13 09:05:41 tom Exp $
+#  $Id: Makefile.in,v 1.102 2025/10/18 13:35:27 tom Exp $
 #
 .SUFFIXES:
 
@@ -39,10 +39,9 @@ THIS		= Makefile
 
 ADA_MFLAGS 	=
 @SET_MAKE@
+@SET_DESTDIR@
 
 MODEL		= ../../@DFT_OBJ_SUBDIR@
-
-DESTDIR		= @DESTDIR@
 
 top_srcdir	= @top_srcdir@
 srcdir		= @srcdir@
