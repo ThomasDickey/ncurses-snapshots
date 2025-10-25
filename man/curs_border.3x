@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.63 2025/02/02 00:00:33 tom Exp $
-.TH curs_border 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border.3x,v 1.65 2025/10/20 23:42:24 tom Exp $
+.TH curs_border 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -150,6 +150,8 @@ is shorthand for
 .RB \%\*(`` wborder(\c
 .IB win ,
 .IB verch ,
+.IB verch ,
+.IB horch ,
 .IB horch ,
 .BR "0, 0, 0, 0)" "\*(''."
 .PP

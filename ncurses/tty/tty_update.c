@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -85,7 +85,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.317 2024/12/07 18:00:11 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.319 2025/10/25 23:40:17 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -256,8 +256,10 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 	 *    not checked.
 	 */
 	if (is8bits(CharOf(CHDEREF(ch)))
-	    && (!is7bits(CharOf(CHDEREF(ch))) && _nc_unicode_locale())
 	    && (isprint(CharOf(CHDEREF(ch)))
+#if USE_WIDEC_SUPPORT
+		|| iswprint((wint_t) CharOf(CHDEREF(ch)))
+#endif
 		|| (SP_PARM->_legacy_coding > 0 && CharOf(CHDEREF(ch)) >= 160)
 		|| (SP_PARM->_legacy_coding > 1 && CharOf(CHDEREF(ch)) >= 128)
 		|| (AttrOf(attr) & A_ALTCHARSET

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inwstr.3x,v 1.64 2025/08/16 20:04:36 tom Exp $
-.TH curs_inwstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inwstr.3x,v 1.66 2025/10/21 00:04:48 tom Exp $
+.TH curs_inwstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -65,8 +65,7 @@ get a wide-character string from a \fIcurses\fR window
 \fBint innwstr(wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint winnwstr(WINDOW * \fIwin\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
 \fBint mvinnwstr(int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
-\fBint mvwinnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP,
-      int \fIn\fP);
+\fBint mvwinnwstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wchar_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winwstr

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.69 2025/03/15 20:41:04 tom Exp $
-.TH curs_addstr 3X 2025-03-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addstr.3x,v 1.71 2025/10/21 00:09:34 tom Exp $
+.TH curs_addstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,8 +66,7 @@ add a string to a \fIcurses\fR window and advance the cursor
 \fBint addnstr(const char * \fIstr\fP, int \fIn\fP);
 \fBint waddnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 \fBint mvaddnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
-\fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP,
-      int \fIn\fP);
+\fBint mvwaddnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%waddstr

@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_in_wchstr.3x,v 1.54 2025/08/23 22:45:51 tom Exp $
-.TH curs_in_wchstr 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_in_wchstr.3x,v 1.56 2025/10/21 00:03:06 tom Exp $
+.TH curs_in_wchstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -61,14 +61,12 @@ get a \fIcurses\fR complex character string from a window
 \fBint in_wchstr(cchar_t * \fIwchstr\fP);
 \fBint win_wchstr(WINDOW * \fIwin\fP, cchar_t * \fIwchstr\fP);
 \fBint mvin_wchstr(int \fIy\fP, int \fIx\fP, cchar_t * \fIwchstr\fP);
-\fBint mvwin_wchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
-    cchar_t * \fIwchstr\fP);
+\fBint mvwin_wchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t * \fIwchstr\fP);
 .PP
 \fBint in_wchnstr(cchar_t * \fIwchstr\fP, int \fIn\fP);
 \fBint win_wchnstr(WINDOW * \fIwin\fP, cchar_t * \fIwchstr\fP, int \fIn\fP);
 \fBint mvin_wchnstr(int \fIy\fP, int \fIx\fP, cchar_t * \fIwchstr\fP, int \fIn\fP);
-\fBint mvwin_wchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
-    cchar_t * \fIwchstr\fP, int \fIn\fP)
+\fBint mvwin_wchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, cchar_t * \fIwchstr\fP, int \fIn\fP)
 .fi
 .SH DESCRIPTION
 .B \%win_wchstr

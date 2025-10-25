@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.121 2025/08/23 22:39:51 tom Exp $
-.TH curs_add_wch 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wch.3x,v 1.123 2025/10/21 00:03:48 tom Exp $
+.TH curs_add_wch 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -60,8 +60,7 @@ add a \fIcurses\fR complex character to a window, possibly advancing the cursor
 \fBint add_wch(const cchar_t * \fIwch\fP);
 \fBint wadd_wch(WINDOW * \fIwin\fP, const cchar_t * \fIwch\fP);
 \fBint mvadd_wch(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
-\fBint mvwadd_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
-      const cchar_t * \fIwch\fP);
+\fBint mvwadd_wch(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwch\fP);
 .PP
 \fBint echo_wchar(const cchar_t * \fIwch\fP);
 \fBint wecho_wchar(WINDOW * \fIwin\fP, const cchar_t *\fIwch\fP);

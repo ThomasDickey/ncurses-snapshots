@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.80 2025/10/18 13:34:10 tom Exp $
+# $Id: Makefile.in,v 1.81 2025/10/25 18:00:30 tom Exp $
 ##############################################################################
 # Copyright 2020-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2015,2018 Free Software Foundation, Inc.                    #
@@ -157,6 +157,9 @@ AUTO_SRC	= \
 all \
 libs \
 install ::	$(AUTO_SRC) $(LIBRARIES)
+
+check ::
+	@echo "no unit-test implemented"
 
 sources:	$(AUTO_SRC)
 

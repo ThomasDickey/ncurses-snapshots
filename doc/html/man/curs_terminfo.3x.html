@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_terminfo.3x,v 1.169 2025/10/04 21:02:30 tom Exp @
+  * @Id: curs_terminfo.3x,v 1.172 2025/10/20 23:51:47 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_terminfo 3x 2025-10-04 ncurses 6.5 Library calls</TITLE>
+<TITLE>curs_terminfo 3x 2025-10-20 ncurses 6.5 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_terminfo 3x 2025-10-04 ncurses 6.5 Library calls</H1>
+<H1 class="no-header">curs_terminfo 3x 2025-10-20 ncurses 6.5 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>                Library calls               <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 
@@ -52,6 +52,7 @@
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
+       <STRONG>#include</STRONG> <STRONG>&lt;curses.h&gt;</STRONG>
        <STRONG>#include</STRONG> <STRONG>&lt;term.h&gt;</STRONG>
 
        <STRONG>TERMINAL</STRONG> <STRONG>*</STRONG> <STRONG>cur_term;</STRONG>
@@ -69,8 +70,7 @@
        <STRONG>int</STRONG> <STRONG>setupterm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>term</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>filedes</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>errret</EM><STRONG>);</STRONG>
        <STRONG>TERMINAL</STRONG> <STRONG>*</STRONG> <STRONG>set_curterm(TERMINAL</STRONG> <STRONG>*</STRONG> <EM>nterm</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>del_curterm(TERMINAL</STRONG> <STRONG>*</STRONG> <EM>oterm</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>restartterm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>term</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>filedes</EM><STRONG>,</STRONG>
-             <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>errret</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>restartterm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>term</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>filedes</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>errret</EM><STRONG>);</STRONG>
 
        <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> ...<STRONG>);</STRONG>
             <EM>/*</EM> <EM>or</EM> <EM>*/</EM>
@@ -81,8 +81,7 @@
 
        <STRONG>int</STRONG> <STRONG>vidputs(chtype</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG> <EM>putc</EM><STRONG>)(int));</STRONG>
        <STRONG>int</STRONG> <STRONG>vidattr(chtype</STRONG> <EM>attrs</EM><STRONG>);</STRONG>
-       <STRONG>int</STRONG> <STRONG>vid_puts(attr_t</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>void</STRONG> <STRONG>*</STRONG> <EM>opts</EM><STRONG>,</STRONG>
-             <STRONG>int</STRONG> <STRONG>(*</STRONG> <EM>putc</EM><STRONG>)(int));</STRONG>
+       <STRONG>int</STRONG> <STRONG>vid_puts(attr_t</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>void</STRONG> <STRONG>*</STRONG> <EM>opts</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>(*</STRONG> <EM>putc</EM><STRONG>)(int));</STRONG>
        <STRONG>int</STRONG> <STRONG>vid_attr(attr_t</STRONG> <EM>attrs</EM><STRONG>,</STRONG> <STRONG>short</STRONG> <EM>pair</EM><STRONG>,</STRONG> <STRONG>void</STRONG> <STRONG>*</STRONG> <EM>opts</EM><STRONG>);</STRONG>
 
        <STRONG>int</STRONG> <STRONG>tigetflag(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>cap-code</EM><STRONG>);</STRONG>
@@ -92,8 +91,7 @@
        <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tiparm(const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> ...<STRONG>);</STRONG>
 
        <EM>/*</EM> <EM>extensions</EM> <EM>*/</EM>
-       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tiparm_s(int</STRONG> <EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>mask</EM><STRONG>,</STRONG>
-             <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
+       <STRONG>char</STRONG> <STRONG>*</STRONG> <STRONG>tiparm_s(int</STRONG> <EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>mask</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>,</STRONG> <STRONG>...);</STRONG>
        <STRONG>int</STRONG> <STRONG>tiscan_s(int</STRONG> <STRONG>*</STRONG> <EM>expected</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <STRONG>*</STRONG> <EM>mask</EM><STRONG>,</STRONG> <STRONG>const</STRONG> <STRONG>char</STRONG> <STRONG>*</STRONG> <EM>str</EM><STRONG>);</STRONG>
 
        <EM>/*</EM> <EM>deprecated</EM> <EM>*/</EM>
@@ -658,7 +656,7 @@
        <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>,  <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>,   <STRONG>putc(3)</STRONG>,   <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>,
        <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
-ncurses 6.5                       2025-10-04                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
+ncurses 6.5                       2025-10-20                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

@@ -901,6 +901,7 @@
 ./ncurses/llib-ltinfow
 ./ncurses/modules
 ./ncurses/new_pair.h
+./ncurses/report_ctype.c
 ./ncurses/report_hashing.c
 ./ncurses/report_offsets.c
 ./ncurses/term.priv.h

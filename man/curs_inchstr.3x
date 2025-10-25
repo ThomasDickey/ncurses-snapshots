@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inchstr.3x,v 1.63 2025/08/16 20:03:29 tom Exp $
-.TH curs_inchstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inchstr.3x,v 1.65 2025/10/21 00:05:02 tom Exp $
+.TH curs_inchstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,8 +66,7 @@ get a \fIcurses\fR character string from a window
 \fBint mvinchstr(int \fIy\fP, int \fIx\fP, chtype * \fIchstr\fP);
 \fBint mvinchnstr(int \fIy\fP, int \fIx\fP, chtype * \fIchstr\fP, int \fIn\fP);
 \fBint mvwinchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, chtype * \fIchstr\fP);
-\fBint mvwinchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, chtype * \fIchstr\fP,
-    int \fIn\fP);
+\fBint mvwinchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, chtype * \fIchstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winchstr

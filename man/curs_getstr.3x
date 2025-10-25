@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getstr.3x,v 1.92 2025/07/05 12:52:05 tom Exp $
-.TH curs_getstr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getstr.3x,v 1.94 2025/10/21 00:09:04 tom Exp $
+.TH curs_getstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -68,8 +68,7 @@ read a character string from \fIcurses\fR terminal keyboard
 \fBint getnstr(char * \fIstr\fP, int \fIn\fP);
 \fBint wgetnstr(WINDOW * \fIwin\fP, char * \fIstr\fP, int \fIn\fP);
 \fBint mvgetnstr(int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
-\fBint mvwgetnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP,
-      int \fIn\fP);
+\fBint mvwgetnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%wgetstr

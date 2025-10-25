@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.50 2025/10/18 13:33:46 tom Exp $
+# $Id: Makefile.in,v 1.51 2025/10/25 18:01:01 tom Exp $
 ##############################################################################
 # Copyright 2018-2022,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2014,2015 Free Software Foundation, Inc.                    #
@@ -114,13 +114,10 @@ preinstall :
 distclean \
 realclean ::
 
-check :
-	@ echo The test-programs are interactive
-
-
 # Put the common rules here so that we can easily construct the list of
 # directories to visit.
 all \
+check \
 clean \
 distclean \
 mostlyclean \

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.193 2025/10/18 15:34:04 tom Exp $
+# $Id: Makefile.in,v 1.194 2025/10/25 17:29:43 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -207,6 +207,7 @@ TEST_PROGS = \
 	hashmap$x \
 	lib_mvcur$x \
 	link_test$x \
+	report_ctype$x \
 	report_hashing$x
 
 LOCAL_LIBDIR	= @top_builddir@/lib
@@ -321,6 +322,7 @@ clean :: mostlyclean
 	-rm -f $(AUTO_SRC)
 	-rm -f make_keys$(BUILD_EXEEXT)
 	-rm -f make_hash$(BUILD_EXEEXT)
+	-rm -f report_ctype$(BUILD_EXEEXT)
 	-rm -f report_offsets$(BUILD_EXEEXT)
 	-rm -rf .libs *.dSYM *.map
 
@@ -364,10 +366,17 @@ link_test$x : ./link_test.c $(TEST_DEPS) \
 ../@DFT_OBJ_SUBDIR@/dump_entry$o:
 	( cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry$o )
 
+report_ctype$x : \
+		$(srcdir)/curses.priv.h \
+		$(srcdir)/report_ctype.c $(TEST_DEPS)
+	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_ctype.c $(TEST_LDFLAGS)
+	@echo "... made $@"
+	./report_ctype$x
+
 report_hashing$x : \
 		$(srcdir)/curses.priv.h \
 		$(srcdir)/report_hashing.c $(TEST_DEPS)
-	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) report_hashing.c $(TEST_LDFLAGS)
+	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_hashing.c $(TEST_LDFLAGS)
 
 # Verify that each header-file can be compiled without including another.
 @MAKE_PHONY@.PHONY :	check_headers

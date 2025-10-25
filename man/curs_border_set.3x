@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border_set.3x,v 1.48 2025/02/02 00:04:21 tom Exp $
-.TH curs_border_set 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_border_set.3x,v 1.50 2025/10/21 00:10:56 tom Exp $
+.TH curs_border_set 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -72,15 +72,13 @@ draw borders and lines in a \fIcurses\fR window of wide characters
 .PP
 \fBint hline_set(const cchar_t *\fIwch\fB, int \fIn\fB);\fR
 \fBint whline_set(WINDOW *\fIwin\fP, \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvhline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR
-      \fBint \fIn\fB);\fR
+\fBint mvhline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR \fBint \fIn\fB);\fR
 \fBint mvwhline_set(WINDOW *\fIwin\fP, \fBint \fIy\fB, int \fIx\fP,
       \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
 .PP
 \fBint vline_set(const cchar_t *\fIwch\fB, int \fIn\fB);\fR
 \fBint wvline_set(WINDOW *\fIwin\fP, \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
-\fBint mvvline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR
-      \fBint \fIn\fB);\fR
+\fBint mvvline_set(int \fIy\fB, int \fIx\fP, \fBconst cchar_t *\fIwch\fB,\fR \fBint \fIn\fB);\fR
 \fBint mvwvline_set(WINDOW *\fIwin\fP, \fBint \fIy\fB, int \fIx\fP,
       \fBconst cchar_t *\fIwch\fB, int \fIn\fB);\fR
 .fi

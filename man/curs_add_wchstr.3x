@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wchstr.3x,v 1.59 2025/08/16 19:56:13 tom Exp $
-.TH curs_add_wchstr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_add_wchstr.3x,v 1.61 2025/10/21 00:06:34 tom Exp $
+.TH curs_add_wchstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -61,14 +61,11 @@ add a \fIcurses\fR complex character string to a window
 \fBint add_wchstr(const cchar_t * \fIwchstr\fP);
 \fBint wadd_wchstr(WINDOW *  \fIwin\fP, const cchar_t * \fIwchstr\fP);
 \fBint mvadd_wchstr(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP);
-\fBint mvwadd_wchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
-      const cchar_t * \fIwchstr\fP);
+\fBint mvwadd_wchstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP);
 .PP
 \fBint add_wchnstr(const cchar_t * \fIwchstr\fP, int \fIn\fP);
-\fBint wadd_wchnstr(WINDOW *  \fIwin\fP, const cchar_t * \fIwchstr\fP,
-      int \fIn\fP);
-\fBint mvadd_wchnstr(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP,
-      int \fIn\fP);
+\fBint wadd_wchnstr(WINDOW *  \fIwin\fP, const cchar_t * \fIwchstr\fP, int \fIn\fP);
+\fBint mvadd_wchnstr(int \fIy\fP, int \fIx\fP, const cchar_t * \fIwchstr\fP, int \fIn\fP);
 \fBint mvwadd_wchnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP,
       const cchar_t * \fIwchstr\fP, int \fIn\fP);
 .fi

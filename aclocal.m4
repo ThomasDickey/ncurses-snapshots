@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1132 2025/10/18 15:16:02 tom Exp $
+dnl $Id: aclocal.m4,v 1.1133 2025/10/21 20:28:49 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -7152,7 +7152,7 @@ AC_SUBST(cf_ada_config_Ada)
 AC_SUBST(cf_ada_config_C)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_INSTALL version: 12 updated: 2025/09/28 16:56:33
+dnl CF_PROG_INSTALL version: 13 updated: 2025/10/21 16:28:49
 dnl ---------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
 dnl misc/tabset install won't work properly.  Usually this happens only when
@@ -7163,7 +7163,7 @@ AC_REQUIRE([CF_GLOB_FULLPATH])dnl
 if test "x$INSTALL" = "x./install-sh -c"; then
 	if test -f /usr/sbin/install ; then
 		case "$host_os" in
-		(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
+		(linux*gnu*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
 			INSTALL=/usr/sbin/install 
 			;;
 		esac
@@ -10288,7 +10288,7 @@ fi
 AC_SUBST(no_x11_rgb)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_XTERM_KBS version: 2 updated: 2025/08/27 20:35:59
+dnl CF_WITH_XTERM_KBS version: 3 updated: 2025/10/21 03:55:54
 dnl -----------------
 dnl Configure-option with platform-defaults for the "xterm+kbs" building block
 dnl in the terminfo file.
@@ -10303,7 +10303,7 @@ dnl See XTerm FAQ "Why doesn't my delete key work?"
 dnl		https://invisible-island.net/xterm/xterm.faq.html#xterm_erase
 AC_DEFUN([CF_WITH_XTERM_KBS],[
 case $host_os in
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl|openbsd*|darwin*)
+(linux*gnu*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc|linux*musl|openbsd*|darwin*)
 	want_xterm_kbs=DEL
 	;;
 (*)
@@ -10340,7 +10340,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 69 updated: 2025/07/26 14:09:49
+dnl CF_XOPEN_SOURCE version: 70 updated: 2025/10/21 16:27:38
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality,
@@ -10400,7 +10400,7 @@ case "$host_os" in
 	cf_xopen_source="-D_SGI_SOURCE"
 	cf_XOPEN_SOURCE=
 	;;
-(linux*gnu|linux*gnuabi64|linux*gnuabin32|linux*gnuabielfv*|linux*gnueabi|linux*gnueabihf|linux*gnux32|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
+(linux*gnu*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
 	CF_GNU_SOURCE($cf_XOPEN_SOURCE)
 	;;
 linux*musl)

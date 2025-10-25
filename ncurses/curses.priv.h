@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.726 2025/10/04 19:07:49 tom Exp $
+ * $Id: curses.priv.h,v 1.727 2025/10/25 21:12:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2553,9 +2553,11 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #if defined(USE_WIN32CON_DRIVER)
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
+#ifdef TERMIOS
 extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
 extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
 extern NCURSES_EXPORT(int)  _nc_mingw_tcsetattr(int fd, int optional_actions, const struct termios* arg);
+#endif
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #endif /* USE_TERM_DRIVER */

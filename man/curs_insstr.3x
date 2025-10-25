@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.70 2025/02/01 22:53:03 tom Exp $
-.TH curs_insstr 3X 2025-02-01 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_insstr.3x,v 1.72 2025/10/21 00:11:17 tom Exp $
+.TH curs_insstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,8 +66,7 @@ insert a string in a \fIcurses\fR window
 \fBint insnstr(const char * \fIstr\fP, int \fIn\fP);
 \fBint winsnstr(WINDOW * \fIwin\fP, const char * \fIstr\fP, int \fIn\fP);
 \fBint mvinsnstr(int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
-\fBint mvwinsnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP,
-      int \fIn\fP);
+\fBint mvwinsnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, const char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winsstr

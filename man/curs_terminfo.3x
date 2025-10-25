@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.169 2025/10/04 21:02:30 tom Exp $
-.TH curs_terminfo 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_terminfo.3x,v 1.172 2025/10/20 23:51:47 tom Exp $
+.TH curs_terminfo 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -67,6 +67,7 @@
 \fIcurses\fR interfaces to \fI\%term\%info\fR database
 .SH SYNOPSIS
 .nf
+\fB#include <curses.h>
 \fB#include <term.h>
 .PP
 \fBTERMINAL * cur_term;
@@ -84,8 +85,7 @@
 \fBint setupterm(const char * \fIterm\fP, int \fIfiledes\fP, int * \fIerrret\fP);
 \fBTERMINAL * set_curterm(TERMINAL * \fInterm\fP);
 \fBint del_curterm(TERMINAL * \fIoterm\fP);
-\fBint restartterm(const char * \fIterm\fP, int \fIfiledes\fP,
-      int * \fIerrret\fP);
+\fBint restartterm(const char * \fIterm\fP, int \fIfiledes\fP, int * \fIerrret\fP);
 .PP
 \fBchar * tparm(const char * \fIstr\fP, \fR.\|.\|.\fP);
 	\fI/* or */
@@ -96,8 +96,7 @@
 .PP
 \fBint vidputs(chtype \fIattrs\fP, int (* \fIputc\fP)(int));
 \fBint vidattr(chtype \fIattrs\fP);
-\fBint vid_puts(attr_t \fIattrs\fP, short \fIpair\fP, void * \fIopts\fP,
-      int (* \fIputc\fP)(int));
+\fBint vid_puts(attr_t \fIattrs\fP, short \fIpair\fP, void * \fIopts\fP, int (* \fIputc\fP)(int));
 \fBint vid_attr(attr_t \fIattrs\fP, short \fIpair\fP, void * \fIopts\fP);
 .PP
 \fBint tigetflag(const char * \fIcap-code\fP);
@@ -107,8 +106,7 @@
 \fBchar * tiparm(const char * \fIstr\fP, \fR.\|.\|.\fP);
 .PP
 \fI/* extensions */
-\fBchar * tiparm_s(int \fIexpected\fP, int \fImask\fP,
-      const char * \fIstr\fP, .\|.\|.);
+\fBchar * tiparm_s(int \fIexpected\fP, int \fImask\fP, const char * \fIstr\fP, .\|.\|.);
 \fBint tiscan_s(int * \fIexpected\fP, int * \fImask\fP, const char * \fIstr\fP);
 .PP
 \fI/* deprecated */

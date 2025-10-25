@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_instr.3x,v 1.80 2025/08/16 20:04:36 tom Exp $
-.TH curs_instr 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_instr.3x,v 1.82 2025/10/21 00:04:35 tom Exp $
+.TH curs_instr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -66,8 +66,7 @@ get a string from a \fIcurses\fR window
 \fBint innstr(char * \fIstr\fP, int \fIn\fP);
 \fBint winnstr(WINDOW * \fIwin\fP, char * \fIstr\fP, int \fIn\fP);
 \fBint mvinnstr(int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
-\fBint mvwinnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP,
-      int \fIn\fP);
+\fBint mvwinnstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, char * \fIstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%winstr

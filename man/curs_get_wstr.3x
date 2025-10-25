@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wstr.3x,v 1.77 2025/07/05 12:52:35 tom Exp $
-.TH curs_get_wstr 3X 2025-07-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wstr.3x,v 1.79 2025/10/21 00:08:50 tom Exp $
+.TH curs_get_wstr 3X 2025-10-20 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -68,8 +68,7 @@ read a wide-character string from a \fIcurses\fR terminal keyboard
 \fBint getn_wstr(wint_t * \fIwstr\fP, int \fIn\fP);
 \fBint wgetn_wstr(WINDOW * \fIwin\fP, wint_t * \fIwstr\fP, int \fIn\fP);
 \fBint mvgetn_wstr(int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP, int \fIn\fP);
-\fBint mvwgetn_wstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP,
-      int \fIn\fP);
+\fBint mvwgetn_wstr(WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP, wint_t * \fIwstr\fP, int \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B \%wget_wstr
