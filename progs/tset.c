@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.139 2024/12/07 22:14:46 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.141 2025/11/01 20:16:41 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -233,7 +233,7 @@ typedef struct speeds {
     int speed;
 } SPEEDS;
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 static const SPEEDS speeds[] =
 {
     {"0", 0}
@@ -851,7 +851,7 @@ main(int argc, char **argv)
     oldmode = mode;
 #ifdef TERMIOS
     ospeed = (NCURSES_OSPEED) cfgetospeed(&mode);
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
     ospeed = 0;
 #else
     ospeed = (NCURSES_OSPEED) mode.sg_ospeed;

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.727 2025/10/25 21:12:14 tom Exp $
+ * $Id: curses.priv.h,v 1.729 2025/11/01 20:22:42 tom Exp $
  *
  *	curses.priv.h
  *
@@ -420,7 +420,7 @@ typedef TRIES {
 #define TWAIT_MASK TW_ANY
 #endif
 
-#if defined(USE_WIN32CON_DRIVER)
+#if defined(_NC_WINDOWS)
 #include <nc_win32.h>
 #endif
 
@@ -1485,7 +1485,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #define PUTC(ch)	do { if(!isWidecExt(ch)) {				    \
 			if (Charable(ch)) {					    \
 			    TR_PUTC(CharOf(ch));				    \
-			    NCURSES_OUTC_FUNC (NCURSES_SP_ARGx CharOf(ch));	    \
+			    NCURSES_OUTC_FUNC (NCURSES_SP_ARGx (int) CharOf(ch));	    \
 			    COUNT_OUTCHARS(1);					    \
 			} else {						    \
 			    for (PUTC_i = 0; PUTC_i < CCHARW_MAX; ++PUTC_i) {	    \
@@ -1498,7 +1498,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 				if (PUTC_n <= 0) {				    \
 				    if (PUTC_ch && is8bits(PUTC_ch) && PUTC_i == 0) { \
 					TR_PUTC(CharOf(ch));			    \
-					NCURSES_OUTC_FUNC (NCURSES_SP_ARGx CharOf(ch)); \
+					NCURSES_OUTC_FUNC (NCURSES_SP_ARGx (int) CharOf(ch)); \
 				    }						    \
 				    break;					    \
 				} else {					    \

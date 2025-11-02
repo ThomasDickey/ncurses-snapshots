@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.549 2025/07/05 15:11:35 tom Exp $
+$Id: ncurses.c,v 1.550 2025/11/01 20:12:49 tom Exp $
 
 ***************************************************************************/
 
@@ -1189,7 +1189,7 @@ wget_wch_test(unsigned level, WINDOW *win, int delay)
 		    resize_wide_boxes(level, win);
 		}
 #endif
-		(void) waddstr(win, keyname((wchar_t) c));
+		(void) waddstr(win, keyname((int) c));
 	    } else {
 		(void) waddstr(win, key_name((wchar_t) c));
 		if (c < 256 && iscntrl(c)) {
@@ -1793,7 +1793,7 @@ static void
 wide_adjust_attr_string(int adjust)
 {
     wchar_t save = wide_attr_test_string[0];
-    int first = ((int) normal_wchar(save)) + adjust;
+    int first = ((int) normal_wchar((int) save)) + adjust;
 
     if (first >= ATTRSTRING_1ST) {
 	int j, k;

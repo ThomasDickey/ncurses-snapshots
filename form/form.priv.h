@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.51 2024/12/21 17:09:39 tom Exp $ */
+/* $Id: form.priv.h,v 0.52 2025/11/01 20:16:03 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -281,7 +281,7 @@ extern FORM_EXPORT(Form_Hook)    _nc_retrace_form_hook (Form_Hook);
 		  blank = TRUE; \
 		  result = (n + 1 >= width); \
 		} \
-	      else if (!ccheck(list[n], NULL)) \
+	      else if (!ccheck((int) list[n], NULL)) \
 		{ \
 		  result = FALSE; \
 		  break; \

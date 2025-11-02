@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h.in,v 1.11 2025/10/04 18:52:25 tom Exp $ */
+/* $Id: nc_win32.h.in,v 1.12 2025/11/01 10:41:54 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -50,8 +50,8 @@
 #error TERMIOS must not be defined on Windows
 #endif
 
-/* We no longer support WindowsXP.
-   Minimum requirement is Windows Vista or Server2008,
+/*
+   Minimum requirement for named pipes is Windows Vista or Server2008,
    aka Windows NT 6.0
 */
 #ifdef WINVER
@@ -69,35 +69,36 @@
 
 #include <windows.h>
 
+#else /* !USE_NAMED_PIPES */
+
+#ifdef WINVER
+#  if WINVER < 0x0501
+#    error WINVER must at least be 0x0501
+#  endif
+#else
+#  define WINVER 0x0501
+#endif
+
+#include <windows.h>
+
+#undef sleep
+#define sleep(n) Sleep((n) * 1000)
+
+#endif /* USE_NAMED_PIPES */
+
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>		/* for struct timeval */
 #endif
 
-#ifdef _NC_MSC
+#ifdef _MSC_VER
 #include <winsock2.h>		/* for struct timeval */
 #endif
 
 #include <stdint.h>		/* for uint32_t */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <ncurses_dll.h>
-
-#if !HAVE_CLOCK_GETTIME && !HAVE_GETTIMEOFDAY
-#undef HAVE_GETTIMEOFDAY
-#define HAVE_GETTIMEOFDAY 2
-extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
-#endif
-
-#undef wcwidth
-#define wcwidth(ucs)  _nc_wcwidth((wchar_t)(ucs))
-extern NCURSES_EXPORT(int)    _nc_wcwidth(uint32_t);
-
 #ifdef CURSES_PRIV_H	/* test.priv.h just needs the preceding */
-
 #include <term.h>
+#endif
 
 #undef VALID_TERM_ENV
 #define MS_TERMINAL "ms-terminal"
@@ -125,42 +126,13 @@ extern NCURSES_EXPORT(int)    _nc_wcwidth(uint32_t);
 #define CONMODE_NORAW    (ENABLE_PROCESSED_INPUT|ENABLE_LINE_INPUT)
 #define CONMODE_NOCBREAK (ENABLE_LINE_INPUT)
 
-#endif /* CURSES_PRIV_H */
-
-#ifdef __cplusplus
-}
-#endif
-
-#else /* !USE_NAMED_PIPES */
-
-#ifdef WINVER
-#  if WINVER < 0x0501
-#    error WINVER must at least be 0x0501
-#  endif
-#else
-#  define WINVER 0x0501
-#endif
-
-#include <windows.h>
-
-#undef sleep
-#define sleep(n) Sleep((n) * 1000)
-
-#if HAVE_SYS_TIME_H
-#include <sys/time.h>		/* for struct timeval */
-#endif
-
-#ifdef _MSC_VER
-#include <winsock2.h>		/* for struct timeval */
-#endif
-
-#include <stdint.h>		/* for uint32_t */
+#include <ncurses_dll.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <ncurses_dll.h>
+#if defined(CURSES_PRIV_H) || defined(TEST_PRIV_H)
 
 #if !HAVE_CLOCK_GETTIME && !HAVE_GETTIMEOFDAY
 extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
@@ -169,18 +141,12 @@ extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
 #define gettimeofday(tv,tz) _nc_gettimeofday(tv,tz)
 #endif
 
+#endif /* defined(CURSES_PRIV_H) || defined(TEST_PRIV_H) */
+
+#if !HAVE_WCWIDTH
 #undef wcwidth
 #define wcwidth(ucs) _nc_wcwidth((wchar_t)(ucs))
 extern NCURSES_EXPORT(int) _nc_wcwidth(uint32_t);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* USE_NAMED_PIPES */
-
-#ifdef __cplusplus
-extern "C" {
 #endif
 
 #ifdef TTY

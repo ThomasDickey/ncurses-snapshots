@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1133 2025/10/21 20:28:49 tom Exp $
+dnl $Id: aclocal.m4,v 1.1136 2025/11/01 22:55:14 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1486,6 +1486,45 @@ AC_CACHE_CHECK(for named pipe functions,cf_cv_named_pipes,[
 	],[cf_cv_named_pipes=yes],[cf_cv_named_pipes=no])
 	CPPFLAGS="$cf_save_CPPFLAGS"
 ])dnl
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_CHECK_TBL_X_OPTION version: 1 updated: 2025/11/01 18:43:38
+dnl ---------------------
+AC_DEFUN([CF_CHECK_TBL_X_OPTION],[
+AC_REQUIRE([CF_PROG_TBL])
+
+AC_CACHE_CHECK(if $NROFF_TBL supports 'x' column modifier,cf_cv_tbl_x_option_okay,[
+	if test "$cross_compiling" = yes ; then
+		cf_cv_tbl_x_option_okay=unknown
+	else
+		cf_cv_tbl_x_option_okay=no
+		cat > conftest <<-CF_EOF
+		.TS
+		L.
+		table cell
+		.TE
+		CF_EOF
+		if $NROFF_TBL < conftest > /dev/null 2>&1
+		then
+			cat > conftest <<-CF_EOF
+			.TS
+			Lx.
+			table cell
+			.TE
+			CF_EOF
+			if $NROFF_TBL < conftest > /dev/null 2>&1
+			then
+				cf_cv_tbl_x_option_okay=yes
+			fi
+		else
+			AC_MSG_ERROR([$NROFF_TBL not available.])
+		fi
+		rm -f conftest
+	fi
+])
+
+TBL_X_OPTION=$cf_cv_tbl_x_option_okay
+AC_SUBST(TBL_X_OPTION)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_CHECK_TYPE2 version: 3 updated: 2025/08/08 20:44:18
@@ -7237,6 +7276,14 @@ rm -f conf$$.dst conf$$src
 AC_MSG_RESULT($cf_prog_ln_sf)
 
 test "$cf_prog_ln_sf" = yes && LN_S="$LN_S -f"
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PROG_TBL version: 1 updated: 2025/11/01 18:43:38
+dnl -----------
+dnl Allow the "tbl" program to be configured.
+dnl "TBL" is too short, and likely to conflict.
+AC_DEFUN([CF_PROG_TBL],[
+AC_PATH_PROG(NROFF_TBL,tbl)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_REGEX version: 19 updated: 2024/12/14 16:09:34

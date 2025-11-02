@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.82 2025/03/29 19:28:44 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.83 2025/10/18 18:11:02 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -123,7 +123,7 @@ get_baudrate(TERMINAL *termp)
     if (GET_TTY(termp->Filedes, &termp->Nttyb) == OK) {
 #ifdef TERMIOS
 	termp->Nttyb.c_oflag &= (unsigned) (~OFLAGS_TABS);
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	/* noop */
 #else
 	termp->Nttyb.sg_flags &= (unsigned) (~XTABS);
@@ -135,7 +135,7 @@ get_baudrate(TERMINAL *termp)
 #else /* !USE_OLD_TTY */
 #ifdef TERMIOS
     my_ospeed = (NCURSES_OSPEED) cfgetospeed(&(termp->Nttyb));
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
     /* noop */
     my_ospeed = 0;
 #else
@@ -432,7 +432,7 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 	useTioctl = _nc_prescreen.use_tioctl;
     }
 
-#ifdef EXP_WIN32_DRIVER
+#ifdef _NC_WINDOWS
     /* If we are here, then Windows console is used in terminfo mode.
        We need to figure out the size using the console API
      */
@@ -617,7 +617,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 	    if ((drv_sgmode(TCB, FALSE, &(_term->Nttyb)) == OK)) {
 #ifdef TERMIOS
 		_term->Nttyb.c_oflag &= (unsigned) ~OFLAGS_TABS;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 		/* noop */
 #else
 		_term->Nttyb.sg_flags &= (unsigned) ~XTABS;
@@ -631,7 +631,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		    if (sp->_keypad_on)
 			_nc_keypad(sp, TRUE);
 		}
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 		if (!WINCONSOLE.buffered)
 		    _nc_console_set_scrollback(FALSE, &WINCONSOLE.SBI);
 #endif
@@ -648,7 +648,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 #ifdef TERMIOS
 		if (_term->Ottyb.c_oflag & OFLAGS_TABS)
 		    tab = back_tab = NULL;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 		/* noop */
 #else
 		if (_term->Ottyb.sg_flags & XTABS)
@@ -663,7 +663,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		NCURSES_SP_NAME(_nc_flush) (sp);
 	    }
 	    code = drv_sgmode(TCB, TRUE, &(_term->Ottyb));
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 	    if (!_nc_console_restore())
 		code = ERR;
 #endif
@@ -960,7 +960,7 @@ drv_testmouse(TERMINAL_CONTROL_BLOCK * TCB,
     } else
 #endif
     {
-#ifdef EXP_WIN32_DRIVER
+#ifdef _NC_WINDOWS
 	rc = _nc_console_testmouse(sp,
 				   _nc_console_handle(sp->_ifd),
 				   delay
@@ -1269,7 +1269,7 @@ drv_twait(TERMINAL_CONTROL_BLOCK * TCB,
 
     AssertTCB();
     SetSP();
-#ifdef EXP_WIN32_DRIVER
+#ifdef _NC_WINDOWS
     return _nc_console_twait(sp,
 			     _nc_console_handle(sp->_ifd),
 			     mode,
@@ -1285,7 +1285,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
 {
     SCREEN *sp;
     int n;
-#ifndef EXP_WIN32_DRIVER
+#ifndef _NC_WINDOWS
     unsigned char c2 = 0;
 #endif
 
@@ -1294,7 +1294,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
     SetSP();
 
     _nc_set_read_thread(TRUE);
-#ifdef EXP_WIN32_DRIVER
+#ifdef _NC_WINDOWS
     n = _nc_console_read(sp,
 			 _nc_console_handle(sp->_ifd),
 			 buf);
@@ -1302,7 +1302,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
     n = (int) read(sp->_ifd, &c2, (size_t) 1);
 #endif
     _nc_set_read_thread(FALSE);
-#ifndef EXP_WIN32_DRIVER
+#ifndef _NC_WINDOWS
     *buf = (int) c2;
 #endif
     return n;
@@ -1321,7 +1321,7 @@ drv_nap(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int ms)
 	    request = remaining;
 	}
     }
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
     Sleep((DWORD) ms);
 #else
     _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
@@ -1501,7 +1501,7 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_TINFO_DRIVER = {
 	drv_cursorSet		/* cursorSet */
 };
 
-#ifdef EXP_WIN32_DRIVER
+#ifdef _NC_WINDOWS
 /*
  * The terminfo driver is mandatory and must always be present.
  * So this is the natural place for the driver initialisation
@@ -1563,4 +1563,4 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
     }
     returnCode(code);
 }
-#endif /* EXP_WIN32_DRIVER */
+#endif /* _NC_WINDOWS */

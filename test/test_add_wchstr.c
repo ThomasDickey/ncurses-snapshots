@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_add_wchstr.c,v 1.37 2025/07/05 15:21:56 tom Exp $
+ * $Id: test_add_wchstr.c,v 1.38 2025/11/01 20:04:59 tom Exp $
  *
  * Demonstrate the waddwchstr() and wadd_wch functions.
  * Thomas Dickey - 2009/9/12
@@ -197,7 +197,7 @@ ColOf(const wchar_t *buffer, int length, int margin)
     int result;
 
     for (n = 0, result = margin + 1; n < length; ++n) {
-	int ch = buffer[n];
+	int ch = (int) buffer[n];
 	switch (ch) {
 	case '\n':
 	    /* actually newline should clear the remainder of the line

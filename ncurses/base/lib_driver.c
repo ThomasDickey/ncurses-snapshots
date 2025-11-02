@@ -34,51 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_driver.c,v 1.11 2025/02/20 01:02:09 tom Exp $")
-
-#ifndef EXP_WIN32_DRIVER
-typedef struct DriverEntry {
-    const char *name;
-    TERM_DRIVER *driver;
-} DRIVER_ENTRY;
-
-static DRIVER_ENTRY DriverTable[] =
-{
-#ifdef _WIN32
-    {"win32console", &_nc_WIN_DRIVER},
-#endif
-    {"tinfo", &_nc_TINFO_DRIVER}	/* must be last */
-};
-
-NCURSES_EXPORT(int)
-_nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
-{
-    int code = ERR;
-    size_t i;
-    TERM_DRIVER *res = (TERM_DRIVER *) 0;
-    TERM_DRIVER *use = NULL;
-
-    T((T_CALLED("_nc_get_driver(%p, %s, %p)"),
-       (void *) TCB, NonNull(name), (void *) errret));
-
-    assert(TCB != NULL);
-
-    for (i = 0; i < SIZEOF(DriverTable); i++) {
-	res = DriverTable[i].driver;
-	if (strcmp(DriverTable[i].name, res->td_name(TCB)) == 0) {
-	    if (res->td_CanHandle(TCB, name, errret)) {
-		use = res;
-		break;
-	    }
-	}
-    }
-    if (use != NULL) {
-	TCB->drv = use;
-	code = OK;
-    }
-    returnCode(code);
-}
-#endif /* !EXP_WIN32_DRIVER */
+MODULE_ID("$Id: lib_driver.c,v 1.12 2025/10/18 19:20:33 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(has_key) (SCREEN *sp, int keycode)

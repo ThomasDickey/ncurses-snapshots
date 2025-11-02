@@ -85,7 +85,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.319 2025/10/25 23:40:17 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.320 2025/11/01 20:02:10 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -285,7 +285,7 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 	)) {
 	int c8;
 	my_ch = CHDEREF(ch);	/* work around const param */
-	c8 = CharOf(my_ch);
+	c8 = (int) CharOf(my_ch);
 #if USE_WIDEC_SUPPORT
 	/*
 	 * This is crude & ugly, but works most of the time.  It checks if the
@@ -333,7 +333,7 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 	 * drawing flavors are integrated.
 	 */
 	if (AttrOf(attr) & A_ALTCHARSET) {
-	    int j = CharOfD(ch);
+	    int j = (int) CharOfD(ch);
 	    chtype temp = UChar(SP_PARM->_acs_map[j]);
 
 	    if (temp != 0) {

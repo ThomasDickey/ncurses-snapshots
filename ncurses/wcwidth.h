@@ -1,4 +1,4 @@
-/* $Id: wcwidth.h,v 1.9 2025/09/13 14:39:22 tom Exp $ */
+/* $Id: wcwidth.h,v 1.10 2025/10/31 23:10:59 tom Exp $ */
 
 /*
  * Copyright 2002-2024,2025 by Thomas E. Dickey
@@ -735,7 +735,7 @@ mk_wcwidth(uint32_t ucs)
 	if (Lookup(cmp, doublewidth)) {
 	    result = 2;
 	} else if (cmp >= 0xd800 && cmp <= 0xdfff) {
-#ifdef HAVE_WCWIDTH
+#if HAVE_WCWIDTH
 	    result = (wcwidth) (ucs);
 #else
 	    result = -1;

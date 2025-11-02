@@ -49,7 +49,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_kernel.c,v 1.38 2025/10/04 18:42:45 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.39 2025/10/18 17:58:27 tom Exp $")
 
 #ifdef TERMIOS
 static int
@@ -94,7 +94,7 @@ NCURSES_SP_NAME(erasechar) (NCURSES_SP_DCL0)
 	result = termp->Ottyb.c_cc[VERASE];
 	if (result == _nc_vdisable())
 	    result = ERR;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	result = ERR;
 #else
 	result = termp->Ottyb.sg_erase;
@@ -131,7 +131,7 @@ NCURSES_SP_NAME(killchar) (NCURSES_SP_DCL0)
 	result = termp->Ottyb.c_cc[VKILL];
 	if (result == _nc_vdisable())
 	    result = ERR;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	result = ERR;
 #else
 	result = termp->Ottyb.sg_kill;

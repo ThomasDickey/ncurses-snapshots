@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4360 2025/10/25 18:28:30 tom Exp $
+-- $Id: NEWS,v 1.4363 2025/11/02 00:38:01 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,8 +46,14 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20251101
+	+ adjust generated terminfo.5 to omit tbl "x" column modifier if that
+	  is unsupported, i.e., with old nroff/tbl (adapted from patch by
+	  Branden Robinson).
+	+ in-progress work to merge MinGW/Windows port.
+
 20251025
-	+ amend local-portability fix in tty_update.c (MidnightCommander #4799,
+	+ amend locale-portability fix in tty_update.c (MidnightCommander #4799,
 	  cf: 20240203).
 	+ add testing utility report_ctype
 	+ update configure macros, improving check for $host_os

@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.33 2025/06/21 14:27:09 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.34 2025/10/18 17:30:15 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -96,7 +96,7 @@ NCURSES_SP_NAME(raw) (NCURSES_SP_DCL0)
 	buf.c_iflag &= (unsigned) ~(COOKED_INPUT);
 	buf.c_cc[VMIN] = 1;
 	buf.c_cc[VTIME] = 0;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	buf.dwFlagIn &= (unsigned long) ~CONMODE_NORAW;
 #else
 	buf.sg_flags |= RAW;
@@ -152,7 +152,7 @@ NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
 	buf.c_iflag &= (unsigned) ~ICRNL;
 	buf.c_cc[VMIN] = 1;
 	buf.c_cc[VTIME] = 0;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	buf.dwFlagIn |= CONMODE_NORAW;
 	buf.dwFlagIn &= (unsigned long) ~CONMODE_NOCBREAK;
 #else
@@ -230,7 +230,7 @@ NCURSES_SP_NAME(noraw) (NCURSES_SP_DCL0)
 	buf.c_lflag |= ISIG | ICANON |
 	    (termp->Ottyb.c_lflag & IEXTEN);
 	buf.c_iflag |= COOKED_INPUT;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	buf.dwFlagIn |= CONMODE_NORAW;
 #else
 	buf.sg_flags &= ~(RAW | CBREAK);
@@ -284,7 +284,7 @@ NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
 #ifdef TERMIOS
 	buf.c_lflag |= ICANON;
 	buf.c_iflag |= ICRNL;
-#elif defined(EXP_WIN32_DRIVER)
+#elif defined(_NC_WINDOWS)
 	buf.dwFlagIn |= (CONMODE_NOCBREAK | CONMODE_NORAW);
 #else
 	buf.sg_flags &= ~CBREAK;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 2002-2011,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.27 2024/12/07 20:08:15 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.28 2025/11/01 20:16:24 tom Exp $")
 
 NCURSES_EXPORT(int)
 wget_wch(WINDOW *win, wint_t *result)
@@ -103,7 +103,7 @@ wget_wch(WINDOW *win, wint_t *result)
 			code = ERR;	/* the two calls should match */
 			safe_ungetch(SP_PARM, value);
 		    }
-		    value = wch;
+		    value = (int) wch;
 		    break;
 		}
 	    }

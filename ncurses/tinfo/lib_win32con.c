@@ -39,7 +39,7 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.42 2025/10/04 18:19:06 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.43 2025/10/18 19:18:29 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -83,7 +83,7 @@ static const LONG ansi_keys[] =
 
 static bool console_initialized = FALSE;
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 /*   A process can only have a single console, so it is safe
      to maintain all the information about it in a single
      static structure.
@@ -239,7 +239,7 @@ _nc_console_fd2handle(int fd)
     return hdl;
 }
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 NCURSES_EXPORT(int)
 _nc_console_setmode(HANDLE hdl, const TTY * arg)
 {
@@ -389,7 +389,7 @@ save_original_screen(void)
     return result;
 }
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
 static bool
 restore_original_screen(void)
 {
@@ -1114,7 +1114,6 @@ _nc_console_isatty(int fd)
     returnCode(result);
 }
 
-#if defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(bool)
 _nc_console_checkinit(bool initFlag, bool assumeTermInfo)
 {
@@ -1267,7 +1266,7 @@ _nc_console_restore(void)
     returnBool(res);
 }
 
-#else // !defined(EXP_WIN32_DRIVER)
+#if !defined(EXP_WIN32_DRIVER)
 NCURSES_EXPORT(bool)
 _nc_mingw_init(void)
 {

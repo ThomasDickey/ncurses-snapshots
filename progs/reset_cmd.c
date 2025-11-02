@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2025 Thomas E. Dickey                                *
  * Copyright 2016,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
 #include <sys/ptem.h>
 #endif
 
-MODULE_ID("$Id: reset_cmd.c,v 1.38 2024/12/07 22:12:53 tom Exp $")
+MODULE_ID("$Id: reset_cmd.c,v 1.40 2025/11/01 20:16:34 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -408,7 +408,7 @@ default_erase(void)
 void
 set_control_chars(TTY * tty_settings, int my_erase, int my_intr, int my_kill)
 {
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
     /* noop */
     (void) tty_settings;
     (void) my_erase;
@@ -442,7 +442,7 @@ set_control_chars(TTY * tty_settings, int my_erase, int my_intr, int my_kill)
 void
 set_conversions(TTY * tty_settings)
 {
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
     /* FIXME */
 #else
     set_flags(tty_settings->c_oflag, ONLCR);
@@ -605,7 +605,7 @@ show_tty_change(TTY * old_settings,
     unsigned older = 0, newer = 0;
     char *p;
 
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
     /* noop */
     (void) old_settings;
     (void) new_settings;
@@ -662,7 +662,7 @@ reset_flush(void)
 void
 print_tty_chars(TTY * old_settings, TTY * new_settings)
 {
-#if defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS)
     /* noop */
 #else
     show_tty_change(old_settings, new_settings, "Erase", VERASE, CERASE);

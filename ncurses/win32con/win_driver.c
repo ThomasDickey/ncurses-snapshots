@@ -42,7 +42,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.113 2025/10/04 16:42:46 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.114 2025/10/18 19:18:39 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -58,11 +58,6 @@ MODULE_ID("$Id: win_driver.c,v 1.113 2025/10/04 16:42:46 tom Exp $")
                    ? 0 \
                    : (int) WINCONSOLE.SBI.srWindow.Top)
 
-/*   A process can only have a single console, so it is safe
-     to maintain all the information about it in a single
-     static structure.
- */
-NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 static BOOL console_initialized = FALSE;
 
 #define RevAttr(attr) (WORD) (((attr) & 0xff00) | \
@@ -730,9 +725,6 @@ wcon_setsize(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED,
 static int
 wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
 {
-    DWORD dwFlag = 0;
-    tcflag_t iflag;
-    tcflag_t lflag;
     int result = ERR;
 
     T((T_CALLED("win32con::wcon_sgmode(TCB=(%p),setFlag=%d,TTY=(%p)"),
@@ -740,55 +732,10 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
     if (buf != NULL && validateConsoleHandle()) {
 
 	if (setFlag) {
-	    iflag = buf->c_iflag;
-	    lflag = buf->c_lflag;
-
-	    GetConsoleMode(WINCONSOLE.inp, &dwFlag);
-
-	    if (lflag & ICANON)
-		dwFlag |= ENABLE_LINE_INPUT;
-	    else
-		dwFlag &= (DWORD) (~ENABLE_LINE_INPUT);
-
-	    if (lflag & ECHO)
-		dwFlag |= ENABLE_ECHO_INPUT;
-	    else
-		dwFlag &= (DWORD) (~ENABLE_ECHO_INPUT);
-
-	    if (iflag & BRKINT)
-		dwFlag |= ENABLE_PROCESSED_INPUT;
-	    else
-		dwFlag &= (DWORD) (~ENABLE_PROCESSED_INPUT);
-
-	    dwFlag |= ENABLE_MOUSE_INPUT;
-
-	    buf->c_iflag = iflag;
-	    buf->c_lflag = lflag;
-	    SetConsoleMode(WINCONSOLE.inp, dwFlag);
+	    _nc_console_setmode(WINCONSOLE.hdl, buf);
 	    TCB->term.Nttyb = *buf;
 	} else {
-	    iflag = TCB->term.Nttyb.c_iflag;
-	    lflag = TCB->term.Nttyb.c_lflag;
-	    GetConsoleMode(WINCONSOLE.inp, &dwFlag);
-
-	    if (dwFlag & ENABLE_LINE_INPUT)
-		lflag |= ICANON;
-	    else
-		lflag &= (tcflag_t) (~ICANON);
-
-	    if (dwFlag & ENABLE_ECHO_INPUT)
-		lflag |= ECHO;
-	    else
-		lflag &= (tcflag_t) (~ECHO);
-
-	    if (dwFlag & ENABLE_PROCESSED_INPUT)
-		iflag |= BRKINT;
-	    else
-		iflag &= (tcflag_t) (~BRKINT);
-
-	    TCB->term.Nttyb.c_iflag = iflag;
-	    TCB->term.Nttyb.c_lflag = lflag;
-
+	    _nc_console_getmode(WINCONSOLE.hdl, &(TCB->term.Nttyb));
 	    *buf = TCB->term.Nttyb;
 	}
 	result = OK;
@@ -816,7 +763,6 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 	if (progFlag) /* prog mode */  {
 	    if (defFlag) {
 		if ((wcon_sgmode(TCB, FALSE, &(_term->Nttyb)) == OK)) {
-		    _term->Nttyb.c_oflag &= (tcflag_t) (~OFLAGS_TABS);
 		    code = OK;
 		}
 	    } else {

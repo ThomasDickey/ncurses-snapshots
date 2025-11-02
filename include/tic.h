@@ -34,7 +34,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.88 2025/08/08 23:19:43 tom Exp $
+ * $Id: tic.h,v 1.89 2025/11/01 20:09:35 tom Exp $
  *	tic.h - Global variables and structures for the terminfo compiler.
  */
 
@@ -236,12 +236,12 @@ struct user_table_entry
  */
 
 /* out-of-band values for representing absent capabilities */
-#define ABSENT_BOOLEAN		((signed char)-1)	/* 255 */
+#define ABSENT_BOOLEAN		((NCURSES_SBOOL)-1)	/* 255 */
 #define ABSENT_NUMERIC		(-1)
 #define ABSENT_STRING		(char *)0
 
 /* out-of-band values for representing cancels */
-#define CANCELLED_BOOLEAN	((signed char)-2)	/* 254 */
+#define CANCELLED_BOOLEAN	((NCURSES_SBOOL)-2)	/* 254 */
 #define CANCELLED_NUMERIC	(-2)
 #define CANCELLED_STRING	(char *)(-1)
 
