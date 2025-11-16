@@ -35,7 +35,7 @@
 
 /*
     Version Control
-    $Id: gen.c,v 1.83 2025/10/18 22:16:10 tom Exp $
+    $Id: gen.c,v 1.84 2025/11/12 00:49:19 Branden.Robinson Exp $
   --------------------------------------------------------------------------*/
 /*
   This program prints on its standard output the source for the
@@ -305,7 +305,7 @@ main(int argc, const char *argv[])
   PRINT_NAMED_CONSTANT(E_INVALID_FIELD);
   PRINT_NAMED_CONSTANT(E_CURRENT);
 
-  print_comment(fp, "Input key codes not defined in any ncurses manpage");
+  print_comment(fp, "Input key codes not defined in any ncurses man page");
   PRINT_NAMED_CONSTANT(KEY_MIN);
   PRINT_NAMED_CONSTANT(KEY_MAX);
 #ifdef KEY_CODE_YES

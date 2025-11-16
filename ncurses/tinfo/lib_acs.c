@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.52 2024/12/15 00:11:15 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.53 2025/11/15 15:55:08 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
@@ -258,7 +258,7 @@ _nc_init_acs(void)
 
 #if !NCURSES_WCWIDTH_GRAPHICS
 NCURSES_EXPORT(int)
-_nc_wacs_width(unsigned ch)
+_nc_wacs_width(wchar_t ch)
 {
     int result;
     switch (ch) {
@@ -318,7 +318,7 @@ _nc_wacs_width(unsigned ch)
 	result = 1;
 	break;
     default:
-	result = wcwidth(ch);
+	result = wcwidth((wchar_t) ch);
 	break;
     }
     return result;

@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.174 2025/04/05 19:14:18 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.175 2025/11/12 00:49:19 Branden.Robinson Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1241,7 +1241,7 @@ usage(void)
 	,"  -I    use terminfo-names"
 	,"  -K    use termcap-names and BSD syntax"
 	,"  -L    use long names"
-	,"  -R subset (see manpage)"
+	,"  -R subset (see man page)"
 	,"  -T    eliminate size limits (test)"
 	,"  -U    do not post-process entries"
 	,"  -V    print version"

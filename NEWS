@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4363 2025/11/02 00:38:01 tom Exp $
+-- $Id: NEWS,v 1.4369 2025/11/16 01:12:07 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20251115
+	+ check for special case of wcrtomb() converting a single byte code to
+	  a different single byte code, which glibc does for code 160 in the
+	  KOI8-R encoding (report by Yury V Zaytsev).
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ amend recent changes to mouse handling to avoid a case which caused
+	  a loop in wgetch until additional input is provided (htop #1769,
+	  cf: 20250913).
 
 20251101
 	+ adjust generated terminfo.5 to omit tbl "x" column modifier if that
@@ -747,7 +756,7 @@ it is not possible to add this information.
 	  modem (prompted by discussion with Werner Fink, Michal Suchanek,
 	  OpenSUSE #1201384, Debian #60377).
 	+ build-fixes for --with-caps variations.
-	+ correct a couple of section-references in INSTALL.
+	+ correct a couple of section references in INSTALL.
 
 20231028
 	+ move xterm focus mode 1004 from xterm+sm+1006 into xterm+focus as
@@ -11101,7 +11110,7 @@ it is not possible to add this information.
 	  (adapted from a patch by Ilya Zakharevich).
 	+ correct parameter types of vidputs() and vidattr() to agree with
 	  header files (report by William P Setzer).
-	+ fix typos in several man-pages (patch by William P Setzer).
+	+ fix typos in several man pages (patch by William P Setzer).
 	+ remove unneeded ifdef for __GNUG__ in CF_CPP_VSCAN_FUNC configure
 	  macro, which made ncurses C++ binding fail to build with other
 	  C++ compilers such as HPUX 11.x (report by Albert Chin-A-Young).
@@ -11633,7 +11642,7 @@ it is not possible to add this information.
 	  absolute pathname for the build tree's lib directory (prompted by
 	  discussion with Albert Chin-A-Young).
 	+ modify "make install.man" and "make uninstall.man" to include tack's
-	  man-page.
+	  man page.
 	+ various fixes for install scripts used to support configure --srcdir
 	  and --with-install-prefix (reported by Matthew Clarke
 	  <Matthew_Clarke@mindlink.bc.ca>).
@@ -11860,7 +11869,7 @@ it is not possible to add this information.
 
 20000708 5.1 release for upload to ftp.gnu.org
 	+ document configure options in INSTALL.
-	+ add man-page for ncurses trace functions.
+	+ add man page for ncurses trace functions.
 	+ correct return value shown in curs_touch.3x for is_linetouched() and
 	  is_wintouched(), in curs_initscr.3x for isendwin(), and in
 	  curs_termattr.3x for has_ic() and has_il().
@@ -12989,7 +12998,7 @@ it is not possible to add this information.
 	  running screen built with ncurses.
 	+ check if tmp_fp is opened in tic.c before closing it (patch by Pavel
 	  Roskin <pavel_roskin@geocities.com>).
-	+ correct several font specification typos in man-pages.
+	+ correct several font specification typos in man pages.
 
 981220
 	+ correct default value for BUILD_CC (reported by Larry Virden).
@@ -13338,7 +13347,7 @@ it is not possible to add this information.
 	+ modify init_pair so that if a color-pair is reinitialized, we will
 	  repaint the areas of the screen whose color changes, like SVr4 curses
 	  (reported by Christian Maurer <maurer@inf.fu-berlin.de>).
-	+ modify getsyx/setsyx macros to comply with SVr4 man-page which
+	+ modify getsyx/setsyx macros to comply with SVr4 man page which
 	  says that leaveok() affects their behavior (report by Darryl Miles,
 	  patch by Alexander V Lukyanov).
 
@@ -13351,7 +13360,7 @@ it is not possible to add this information.
 	+ implement tparm dynamic variables (reported by Xiaodan Tang).
 
 980613
-	+ update man-page for for wattr_set, wattr_get (cf:  980509)
+	+ update man page for wattr_set, wattr_get (cf:  980509)
 	+ correct limits in hashtest, which would cause nonprinting characters
 	  to be written to large screens.
 	+ correct configure script, when --without-cxx was specified:  the
@@ -13533,12 +13542,12 @@ it is not possible to add this information.
 	  option (patch by Jesse Thilo).
 	+ correct some places in configure script where $enableval was used
 	  rather than $withval (patch by Darryl Miles <dlm@g7led.demon.co.uk>).
-	+ modify some man-pages so no '.' or '..' falls between TH and SH
+	+ modify some man pages so no '.' or '..' falls between TH and SH
 	  macros, to accommodate man_db program (reported by Ian T. Zimmerman
 	  <itz@rahul.net>).
 	+ terminfo.src 10.2.1 downloaded from ESR's webpage (ESR).
 	> several changes by Juergen Pfeifer:
-	+ add copyright notices (and rcs id's) on remaining man-pages.
+	+ add copyright notices (and rcs id's) on remaining man pages.
 	+ corrected prototypes for slk_* functions, using chtype rather than
 	  attr_t.
 	+ implemented the wcolor_set() and slk_color() functions
@@ -13688,7 +13697,7 @@ it is not possible to add this information.
 	  implemented.
 	+ correct _tracef calls in _tracedump(), which did not separate format
 	  from parameters.
-	+ correct getopt string for tic "-o" option, and add it to man-page
+	+ correct getopt string for tic "-o" option, and add it to man page
 	  synopsis (reported by Darren Hiebert <darren@hmi.com>).
 	+ correct typo in panel/Makefile.in, reversed if-statement in scrolling
 	  optimization (Alexander V.  Lukyanov).
@@ -13775,7 +13784,7 @@ it is not possible to add this information.
 	+ resynchronizes the generated html manpages
 
 971213
-	+ additional fixes for man-pages section-references
+	+ additional fixes for man pages' section references
 	+ add (for debugging) a check for ich/ich1 conflict with smir/rmir
 	  to tic, etc.
 	+ remove hpa/vpa from rxvt terminal description because they are not
@@ -13787,7 +13796,7 @@ it is not possible to add this information.
 	+ modify protection when installing libraries to (normally) not
 	  executable.  HP-UX shared libraries are an exception.
 	+ add configure check for 'tack'.
-	+ implement script for renaming section-references in man-page install,
+	+ implement script for renaming section references in man page install,
 	  for Debian configuration.
 	+ add validity-check for SP in trace code in baudrate() (reported by
 	  Daniel Weaver).
@@ -14922,9 +14931,9 @@ it is not possible to add this information.
 970104
 	+ workaround defect in autoconf 2.12 (which terminates configuration
 	  if no C++ compiler is found) by adding an option --without-cxx.
-	+ modify several man-pages to use tbl, where .nf/.fi was used (reported
+	+ modify several man pages to use tbl, where .nf/.fi was used (reported
 	  by Jesse Thilo).
-	+ correct font-codes in some man-pages (patch by Jesse Thilo
+	+ correct font codes in some man pages (patch by Jesse Thilo
 	  <Jesse.Thilo@pobox.com>)
 	+ use configure script's knowledge of existence of g++ library for the
 	  c++ Makefile (reported by Paul Jackson).
@@ -15190,7 +15199,7 @@ it is not possible to add this information.
 	  simpler to construct tests (for double-check of _nc_hash_map tests).
 	+ correct ifdef's for c++ in curses.h
 	+ change default xterm type to xterm-x11r6.
-	+ correct quoting in configure that made man-pages installed with
+	+ correct quoting in configure that made man pages installed with
 	  $datadir instead of actual terminfo path.
 	+ correct whitespace in include/Caps, which caused kf11, clr_eol and
 	  clr_end to be omitted from terminfo.5
@@ -15402,7 +15411,7 @@ it is not possible to add this information.
 960707
 	+ rollback ESR's #305 change to terminfo.src (it breaks existing
 	  applications, e.g., 'less 290').
-	+ correct path of edit_man.sh, and fix typo that made all man-pages
+	+ correct path of edit_man.sh, and fix typo that made all man pages
 	  preformatted.
 	+ restore man/menu_requestname.3x omitted in Zeyd's resync (oops).
 	+ auto-configure the GCC_PRINTFLIKE/GCC_SCANFLIKE macros (reported by
@@ -15414,7 +15423,7 @@ it is not possible to add this information.
 	  descriptions.
 	+ work around autoconf bug, force $INSTALL to absolute path
 	  (reported by Zeyd).
-	+ modify man-page install for BSDI to install preformatted .0 files
+	+ modify man page install for BSDI to install preformatted .0 files
 	  (reported by David MacKenzie).
 	+ add/use gcc __attribute__ for printf and scanf in curses.h
 	+ added SGR attributes test-case to ncurses
@@ -15515,7 +15524,7 @@ it is not possible to add this information.
 	+ misc/ncurses-intro.html syntax fix (Kajiyama Tamito).
 
 960601	- snapshot
-	+ auto-configure man-page compression-format and renames for Debian.
+	+ auto-configure man page compression format and renames for Debian.
 	+ corrected several typos in curses.h.in (i.e., the mvXXXX macros).
 	+ re-order curses.priv.h for lint.
 	+ added rules for lintlib, lint

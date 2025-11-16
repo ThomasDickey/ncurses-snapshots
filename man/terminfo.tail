@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.162 2025/08/23 22:54:58 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.163 2025/11/12 01:01:34 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -805,8 +805,8 @@ These are the margin-related capabilities:
 .PP
 .TS
 center;
-lb lb
-lb l .
+Lb Lb
+Lb L .
 Name	Description
 _
 smgl	Set left margin at current column
@@ -1149,8 +1149,8 @@ For example, the DEC vt220 supports most of the modes:
 .PP
 .TS
 center;
-lb lb lb
-l  l  l .
+Lb Lb Lb
+L  L  L .
 tparm Parameter	Attribute	Escape Sequence
 _
 none	none	\eE[0m
@@ -1184,8 +1184,8 @@ Writing out the above sequences, along with their dependencies yields
 .ne 11
 .TS
 center;
-lb lb lb
-l  l  l .
+Lb Lb Lb
+L  L  L .
 Sequence	When to Output	terminfo Translation
 _
 \eE[0	always	\eE[0
@@ -1813,8 +1813,8 @@ space.
 .PP
 .TS
 center;
-cb cb cb cb s  s
-l  lb c  l1 l1 l .
+Cb Cb Cb Cb S  S
+L  Lb C  L1 L1 L .
 Color	#define 	Value	RGB
 _
 black	COLOR_BLACK	0	0,	0,	0
@@ -1834,8 +1834,8 @@ a different mapping, i.e.,
 .PP
 .TS
 center;
-cb cb cb cb s  s
-l  lb c  l1 l1 l .
+Cb Cb Cb Cb S  S
+L  Lb C  L1 L1 L .
 Color	#define 	Value	RGB
 _
 black	COLOR_BLACK	0	0,	0,	0
@@ -1886,8 +1886,8 @@ attributes understood by \fBcurses\fP is as follows:
 .PP
 .TS
 center;
-cb cb cb cb
-lb n  n  lb.
+Cb Cb Cb Cb
+Lb N  N  Lb.
 Attribute	Bit	Decimal	Set by
 _
 A_STANDOUT	0	1	sgr

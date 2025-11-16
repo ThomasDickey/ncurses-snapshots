@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2019-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2019-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 2010-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term_variables.3x,v 1.40 2024/12/28 21:35:10 tom Exp $
-.TH term_variables 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: term_variables.3x,v 1.44 2025/11/12 01:27:41 tom Exp $
+.TH term_variables 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -128,7 +128,7 @@ or
 interfaces,
 .B cur_term
 contains data describing the current terminal.
-It is also updated as a side-effect of \fBset_term\fP(3X) and
+It is also updated as a side effect of \fBset_term\fP(3X) and
 \fBdelscreen\fP(3X).
 .PP
 It is possible to save a value of
@@ -221,7 +221,7 @@ in
 the expressions
 .B tigetstr("key_dc")
 and
-\*(``\c \" `` string not reliable in a macro call on DWB/Heirloom nroffs
+\*(``\c\" `` string not reliable in a macro call on DWB/Heirloom nroffs
 .B "CUR Strings[59]\c"
 \*('' \" '' string not reliable in a macro call on DWB/Heirloom nroffs
 are equivalent.

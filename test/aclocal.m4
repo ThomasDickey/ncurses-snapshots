@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.238 2025/10/21 20:28:49 tom Exp $
+dnl $Id: aclocal.m4,v 1.241 2025/11/12 01:12:53 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -1410,7 +1410,7 @@ if test "$enable_rpath_hack" = yes ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_ENABLE_STRING_HACKS version: 6 updated: 2021/01/05 19:23:48
+dnl CF_ENABLE_STRING_HACKS version: 7 updated: 2025/11/11 20:09:36
 dnl ----------------------
 dnl On a few platforms, the compiler and/or loader nags with untruthful
 dnl comments stating that "most" uses of strcat/strcpy/sprintf are incorrect,
@@ -1421,10 +1421,10 @@ dnl functions versus the total of incorrect uses.  Samples of a few thousand
 dnl instances are meaningless compared to the hundreds of millions of lines of
 dnl existing C code.
 dnl
-dnl strlcat/strlcpy are (as of 2012) non-standard, and are available on some
+dnl strlcat/strlcpy are standard as of POSIX.1-2024, and are available on some
 dnl platforms, in implementations of varying quality.  Likewise, snprintf is
 dnl standard - but evolved through phases, and older implementations are likely
-dnl to yield surprising results, as documented in manpages on various systems.
+dnl to yield surprising results, as documented in man pages on various systems.
 AC_DEFUN([CF_ENABLE_STRING_HACKS],
 [
 AC_MSG_CHECKING(if you want to work around bogus compiler/loader warnings)
@@ -1480,7 +1480,7 @@ ifelse($2,yes,[CF_GCC_ATTRIBUTES])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FIND_LIBRARY version: 11 updated: 2021/01/02 09:31:20
+dnl CF_FIND_LIBRARY version: 12 updated: 2025/11/11 20:11:39
 dnl ---------------
 dnl Look for a non-standard library, given parameters for AC_TRY_LINK.  We
 dnl prefer a standard location, and use -L options only if we do not find the
@@ -1492,7 +1492,7 @@ dnl	$4 = code fragment to compile/link
 dnl	$5 = corresponding function-name
 dnl	$6 = flag, nonnull if failure should not cause an error-exit
 dnl
-dnl Sets the variable "$cf_libdir" as a side-effect, so we can see if we had
+dnl Sets the variable "$cf_libdir" as a side effect, so we can see if we had
 dnl to use a -L option.
 AC_DEFUN([CF_FIND_LIBRARY],
 [

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: MKterminfo.sh,v 1.26 2025/11/02 00:26:01 tom Exp $
+# $Id: MKterminfo.sh,v 1.28 2025/11/12 01:07:10 Branden.Robinson Exp $
 #
 # MKterminfo.sh -- generate terminfo.5 from Caps tabular data
 #
@@ -89,12 +89,8 @@ cat <<EOF
 .\\" Some man(1) programs recognize the token in the first-line comment
 .\\" as directing them to arrange such a pipeline.
 EOF
-if test "@TBL_X_OPTION@" = no
-then
-	sed -e "s/Lx/L/" "$head"
-else
-	cat "$head"
-fi
+
+cat "$head"
 
 cat >$pass1 <<EOF
 /%%-STOP-HERE-%%/q
@@ -105,7 +101,7 @@ cat >$pass1 <<EOF
 s/[	][	]*/	/g
 s/$/T}/
 s/	[A-Z0-9_()\-][A-Z0-9_()\-]*	[0-9\-][0-9\-]*	[Y\-][B\-][C\-][G\-][EK\-]\**	/	T{\\
-.ad l\
+.na\
 /
 s/	bool	/	/p
 s/	num	/	/p
@@ -113,7 +109,6 @@ s/	str	/	/p
 EOF
 
 echo 's/^$/../' > $pass2
-test "@TBL_X_OPTION@" = no && echo "s/Lx/L/g" >> $pass2
 
 sed -n -f $pass1 $caps | sed -f $pass2 | tr "\134" "\006" >$unsorted
 
@@ -148,6 +143,5 @@ cat > $pass3 << "EOF"
 /^center expand;/s, expand,,
 /^\.TS/,/^\\/s, lw[1-9][0-9]*\., l.,
 EOF
-test "@TBL_X_OPTION@" = no && echo "s/Lx/L/g" >> $pass3
 
 sed	-f $pass3 "$tail"

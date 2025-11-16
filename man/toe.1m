@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: toe.1m,v 1.72 2025/02/15 19:41:22 tom Exp $
-.TH @TOE@ 1M 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: toe.1m,v 1.75 2025/11/12 01:06:36 tom Exp $
+.TH @TOE@ 1M 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -171,7 +171,7 @@ terminal database directories named in the \fI\%TERMINFO\fP and
 .\" toe -a | grep -E '^(xterm|vt)'
 .ft \*(CW
 .TS
-L2 Lx.
+L2 Lw(32n)x.
 xterm\-color	generic color xterm
 xterm\-xfree86	xterm terminal emulator (XFree86)
 xterm\-vt220	xterm emulating vt220
@@ -180,7 +180,7 @@ xterm\-r6	xterm X11R6 version
 xterm\-r5	xterm R5 version
 xterm\-mono	monochrome xterm
 xterm	T{
-.ad l
+.na
 xterm terminal emulator (X Window System)
 T}
 vt220	dec vt220
@@ -201,19 +201,19 @@ terminal description was found.
 .\" toe -as | grep -E '(^-+>|:.(xterm|vt))'
 .ft \*(CW
 .TS
-Lx.
+Lw(31n)x.
 \-\-> /etc/terminfo
 \-\-\-\-> /lib/terminfo
 \-\-\-\-\-\-> /usr/share/terminfo
 .TE
 .TS
-L1 L2 Lx.
+L1 L2 Lw(31n)x.
 \-\-*\-\-\-:	vt100	dec vt100 (w/advanced video)
 \-\-*\-\-\-:	vt102	dec vt102
 \-\-*\-\-\-:	vt220	dec vt220
 \-\-*\-\-\-:	vt52	dec vt52
 \-\-*\-\-\-:	xterm	T{
-.ad l
+.na
 xterm terminal emulator (X Window System)
 T}
 \-\-*\-\-\-:	xterm\-256color	xterm with 256 colors
@@ -223,7 +223,7 @@ T}
 \-\-*\-\-\-:	xterm\-r6	xterm X11R6 version
 \-\-*\-\-\-:	xterm\-vt220	xterm emulating vt220
 \-\-*\-\-\-:	xterm\-xfree86	T{
-.ad l
+.na
 xterm terminal emulator (XFree86)
 T}
 .T&

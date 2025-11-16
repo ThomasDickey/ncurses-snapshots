@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.729 2025/11/01 20:22:42 tom Exp $
+ * $Id: curses.priv.h,v 1.731 2025/11/16 01:03:43 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1501,12 +1501,16 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 					NCURSES_OUTC_FUNC (NCURSES_SP_ARGx (int) CharOf(ch)); \
 				    }						    \
 				    break;					    \
-				} else {					    \
+				} else if (PUTC_n > 1 || !is8bits(PUTC_ch)) {	    \
 				    int PUTC_j;					    \
 				    for (PUTC_j = 0; PUTC_j < PUTC_n; ++PUTC_j) {   \
 					TR_PUTC(PUTC_buf[PUTC_j]);		    \
 					NCURSES_OUTC_FUNC (NCURSES_SP_ARGx PUTC_buf[PUTC_j]); \
 				    }						    \
+				} else {					    \
+				    PUTC_buf[0] = PUTC_ch;			    \
+				    TR_PUTC(PUTC_buf[0]);			    \
+				    NCURSES_OUTC_FUNC (NCURSES_SP_ARGx PUTC_buf[0]); \
 				}						    \
 			    }							    \
 			    COUNT_OUTCHARS(PUTC_i);				    \
@@ -1981,7 +1985,7 @@ extern NCURSES_EXPORT(void) _nc_expanded (void);
 	}
 
 #if !NCURSES_WCWIDTH_GRAPHICS
-extern NCURSES_EXPORT(int) _nc_wacs_width(unsigned);
+extern NCURSES_EXPORT(int) _nc_wacs_width(wchar_t);
 #else
 #define _nc_wacs_width(ch) wcwidth(ch)
 #endif

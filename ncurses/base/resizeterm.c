@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.58 2024/12/07 18:05:04 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.60 2025/11/12 01:27:41 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -344,7 +344,7 @@ increase_size(NCURSES_SP_DCLx int ToLines, int ToCols, int stolen EXTRA_DCLS)
 }
 
 /*
- * This function reallocates NCURSES window structures, with no side-effects
+ * This function reallocates NCURSES window structures, with no side effects
  * such as ungetch().
  */
 NCURSES_EXPORT(int)

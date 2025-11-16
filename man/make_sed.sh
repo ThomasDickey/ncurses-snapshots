@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: make_sed.sh,v 1.21 2025/03/01 22:00:48 tom Exp $
+# $Id: make_sed.sh,v 1.22 2025/11/12 00:52:57 Branden.Robinson Exp $
 ##############################################################################
 # Copyright 2020-2023,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2005,2017 Free Software Foundation, Inc.                    #
@@ -31,9 +31,9 @@
 #
 # Author: Thomas E. Dickey 1997
 #
-# Construct a sed-script to perform renaming within man-pages.  Originally
+# Construct a sed script to perform renaming within man pages.  Originally
 # written in much simpler form, this one accounts for the common cases of
-# section-names in man-pages.
+# section names in man pages.
 
 if test $# != 1 ; then
 	echo '? expected a single filename'

@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.284 2025/10/04 22:06:19 tom Exp $
-.TH ncurses 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.289 2025/11/12 01:01:34 tom Exp $
+.TH ncurses 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -160,12 +160,12 @@ option to your compiler or linker.
 A debugging version of the library may be available;
 if so,
 link with it using
-.BR \-lncurses_g .
+.BR \-lncurses_g "."
 (Your system integrator may have installed these libraries such that you
 can use the options
 .B \-lcurses
 and
-.BR \-lcurses_g ,
+.BR \-lcurses_g ","
 respectively.)
 The
 .I \%ncurses_g
@@ -257,11 +257,11 @@ A
 .I window
 is a rectangular grid of character cells,
 addressed by line and column coordinates
-.RI ( y ,
+.RI ( y ","
 .IR x ),
 with the upper left corner as (0, 0).
 A window called
-.BR \%stdscr ,
+.BR \%stdscr ","
 by default the same size as the terminal screen,
 is always available.
 Create others with \fB\%newwin\fP(3X).
@@ -285,7 +285,7 @@ identifying the cell within it at which the next operation will occur.
 Among those,
 the most basic are \fB\%move\fP(3X) and \fB\%addch\fP(3X):
 these place the cursor within and write a character to
-.BR \%stdscr ,
+.BR \%stdscr ","
 respectively.
 .PP
 Frequent changes to the terminal screen can cause unpleasant flicker or
@@ -362,7 +362,7 @@ provides reimplementations of the SVr4 \fBpanel\fP(3X), \fBform\fP(3X),
 and \fBmenu\fP(3X) libraries;
 they permit overlapping windows and ease construction of user interfaces
 with
-.IR curses .
+.IR curses "."
 .SS "Initialization"
 The selection of an appropriate value of
 .I TERM
@@ -378,7 +378,7 @@ value automatically;
 .PP
 If you change the terminal type from a shell,
 export
-.I TERM ","
+.IR TERM ","
 then run \fB\%tset\fP(1) or the
 .RB \*(`` "@TPUT@ init" \*(''
 command.
@@ -393,7 +393,7 @@ or if the
 .I curses
 program is executing in a graphical windowing environment,
 the information obtained thence overrides that obtained by
-.IR \%term\%info .
+.IR \%term\%info "."
 An
 .I \%ncurses
 extension supports resizable terminal displays;
@@ -424,7 +424,7 @@ those with a \*(``mv\*('' prefix first perform cursor movement using
 a \*(``mvw\*('' prefix indicates both.
 The \*(``w\*('' function is typically the elemental one;
 the removal of this prefix usually indicates operation on
-.BR \%stdscr .
+.BR \%stdscr "."
 .PP
 Four functions prefixed with \*(``p\*('' require a
 .I pad
@@ -464,7 +464,7 @@ in a
 .I \%chtype
 datum,
 which is often an alias of
-.IR int .
+.IR int "."
 A string of
 .I curses
 characters is similar to a C
@@ -492,7 +492,7 @@ they are accessed via an integral bit mask.
 stores each cell of a
 .I \%WINDOW
 as a
-.IR \%chtype .
+.IR \%chtype "."
 X/Open Curses does not specify the sizes of the character code or
 color pair identifier,
 nor the quantity of attribute bits,
@@ -525,8 +525,8 @@ An exception is
 (and its variants),
 spelled thus instead of \*(``insn_wstr\*(''.
 (Exceptions that add only \*(``w\*('' comprise
-.BR \%addwstr ,
-.BR \%inwstr ,
+.BR \%addwstr ","
+.BR \%inwstr ","
 and their variants.)
 .\" This is because they operate on "plain" wide-character strings
 .\" (`wchar_t*`) and not curses complex character strings (`cchar_t*`).
@@ -549,11 +549,11 @@ and character attribute manipulation functions like
 is a
 .I "curses complex character"
 and corresponds to the non-wide-character configuration's
-.IR \%chtype .
+.IR \%chtype "."
 It is a structure type
 because it requires more storage than a standard scalar type offers.
 A character code may not be representable as a
-.IR \%char ,
+.IR \%char ","
 and moreover more than one character may occupy a cell
 (as with accent marks and other diacritics).
 Each character is of type
@@ -569,13 +569,13 @@ member is the null wide character.
 Attributes and a color pair identifier are stored in separate fields of
 the structure,
 not combined into an integer as in
-.IR \%chtype .
+.IR \%chtype "."
 .PP
 .I \%ncurses
 stores each cell of a
 .I \%WINDOW
 as a
-.IR \%cchar_t .
+.IR \%cchar_t "."
 \fB\%setcchar\fP(3X) and \fB\%getcchar\fP(3X)
 store and retrieve
 .I \%cchar_t
@@ -588,16 +588,16 @@ depends on two data types standardized by ISO C95.
 .I \%wchar_t
 stores a wide character.
 Like
-.IR \%chtype ,
+.IR \%chtype ","
 it may be an alias of
-.IR int .
+.IR int "."
 Depending on the character encoding,
 a wide character may be
-.IR spacing ,
+.IR spacing ","
 meaning that it occupies a character cell by itself and typically
 accompanies cursor advancement,
 or
-.IR non-spacing ,
+.IR non-spacing ","
 meaning that it occupies the same cell as a spacing character,
 is often regarded as a \*(``modifier\*('' of the base glyph with which
 it combines,
@@ -607,11 +607,11 @@ and typically does not advance the cursor.
 can store a
 .I \%wchar_t
 or the constant
-.IR \%WEOF ,
+.IR \%WEOF ","
 analogously to the
 .IR int -sized
 character manipulation functions of ISO C and its constant
-.IR \%EOF .
+.IR \%EOF "."
 .RE
 .\"
 .SS "Function Name Index"
@@ -626,7 +626,7 @@ neither described by X/Open Curses nor present in SVr4.
 .PP
 .TS
 center tab(/);
-l l .
+L L.
 \fIcurses\fP Function Name/Man Page
 _
 COLOR_PAIR/\fBcurs_color\fP(3X)
@@ -1112,7 +1112,7 @@ Typically,
 treats a null pointer passed as a function parameter as a failure.
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
-.RI ( y ,
+.RI ( y ","
 .IR x )
 is outside the window boundaries.
 .SH ENVIRONMENT
@@ -1121,11 +1121,11 @@ runtime behavior of
 .I \%ncurses
 applications.
 The library may be configured to disregard the variables
-.IR \%TERMINFO ,
-.IR \%TERMINFO_DIRS ,
-.IR \%TERMPATH ,
+.IR \%TERMINFO ","
+.IR \%TERMINFO_DIRS ","
+.IR \%TERMPATH ","
 and
-.IR HOME ,
+.IR HOME ","
 if the user is the superuser (root),
 or the application uses \fI\%setuid\fP(2) or \fI\%setgid\fP(2).
 .SS "\fIBAUDRATE\fP"
@@ -1277,7 +1277,7 @@ specifies the height of the screen in characters.
 The corresponding
 .I \%term\%info
 capability and code is
-.BR \%lines .
+.BR \%lines "."
 See the description of the
 .I \%COLUMNS
 variable above.
@@ -1324,7 +1324,7 @@ The
 .I \%Console2
 .\" https://www.hanselman.com/blog/console2-a-better-windows-command-prompt
 program defectively handles the Microsoft Console API call
-.IR \%Create\%Console\%Screen\%Buffer .
+.IR \%Create\%Console\%Screen\%Buffer "."
 Applications that use it will hang.
 However,
 it is possible to simulate the action of this call by mapping
@@ -1432,7 +1432,7 @@ the library used \fI\%setbuf\fP(3) to enable fully buffered output when
 initializing the terminal.
 This was done,
 as in SVr4
-.IR curses ,
+.IR curses ","
 to increase performance.
 For testing purposes,
 both of
@@ -1607,9 +1607,9 @@ then
 .I \%TERM\%INFO
 may name its location,
 such as
-.IR \%/usr/share/terminfo.db ,
+.IR \%/usr/share/terminfo.db ","
 rather than
-.IR \%/usr/share/terminfo/ .
+.IR \%/usr/share/terminfo/ "."
 .PP
 The hashed database uses less disk space and is a little faster than the
 directory tree.
@@ -1650,7 +1650,7 @@ export TERMINFO
 .I \%ncurses
 uses the compiled description only if it corresponds
 to the terminal type identified by
-.IR TERM .
+.IR TERM "."
 .PP
 Setting
 .I \%TERM\%INFO
@@ -1695,7 +1695,7 @@ location(s) configured and compiled into
 .SS "\fITERMINFO_DIRS\fP"
 This variable specifies a list of locations,
 akin to
-.IR PATH ,
+.IR PATH ","
 in which
 .I \%ncurses
 searches for the terminal type descriptions described by
@@ -1717,10 +1717,10 @@ does not hold a terminal type description or file name,
 then
 .I \%ncurses
 checks the contents of
-.IR \%TERMPATH ,
+.IR \%TERMPATH ","
 a list of locations,
 akin to
-.IR PATH ,
+.IR PATH ","
 in which it searches for
 .I termcap
 terminal type descriptions.
@@ -1734,10 +1734,10 @@ and
 are unset or invalid,
 .I \%ncurses
 searches for the files
-.IR \%/etc/termcap ,
-.IR \%/usr/share/misc/termcap ,
+.IR \%/etc/termcap ","
+.IR \%/usr/share/misc/termcap ","
 and
-.IR \%$HOME/.termcap ,
+.IR \%$HOME/.termcap ","
 in that order.
 .SH "ALTERNATE CONFIGURATIONS"
 Many different
@@ -1751,7 +1751,7 @@ Run the script with the
 option to peruse them all.
 A few are of particular significance to the application developer
 employing
-.IR \%ncurses .
+.IR \%ncurses "."
 .TP 5
 .B \-\-disable\-overwrite
 Avoid file name conflicts between
@@ -2069,7 +2069,7 @@ If the standard output file descriptor of an
 program is redirected to something that is not a terminal device,
 the library writes screen updates to the standard error file descriptor.
 This was an undocumented feature of SVr3
-.IR curses .
+.IR curses "."
 .PP
 See subsection \*(``Header Files\*('' below regarding symbols exposed by
 inclusion of \fI\%curses.h\fP.
@@ -2163,7 +2163,7 @@ causes it to fall back to reading
 if the terminal setup code cannot find a
 .I \%term\%info
 entry corresponding to
-.IR TERM .
+.IR TERM "."
 Use of this feature is not recommended,
 as it essentially includes an entire
 .I termcap
@@ -2243,7 +2243,7 @@ The header file
 itself includes the header files
 .I \%stdio.h
 and
-.IR \%unctrl.h .
+.IR \%unctrl.h "."
 .PP
 X/Open Curses has more to say,
 .RS 4
@@ -2251,11 +2251,11 @@ X/Open Curses has more to say,
 The inclusion of
 .I \%curses.h
 may make visible all symbols from the headers
-.IR \%stdio.h ,
-.IR \%term.h ,
-.IR \%termios.h ,
+.IR \%stdio.h ","
+.IR \%term.h ","
+.IR \%termios.h ","
 and
-.IR \%wchar.h .
+.IR \%wchar.h "."
 .RE
 .PP
 but does not finish the story.
@@ -2275,7 +2275,7 @@ code included
 and
 .I \%unctrl.h
 from an internal header file
-.IR \%curses.ext ,
+.IR \%curses.ext ","
 where
 \*(``ext\*('' abbreviated \*(``externs\*(''.
 .IP
@@ -2290,12 +2290,12 @@ and
 but nothing in
 .I \%curses.h
 itself relied upon
-.IR \%stdio.h .
+.IR \%stdio.h "."
 .bP
 SVr2
 .I curses
 added
-.IR \%newterm ,
+.IR \%newterm ","
 which relies upon
 .I \%stdio.h
 because its function prototype employs the
@@ -2307,9 +2307,9 @@ SVr4
 added
 .I \%putwin
 and
-.IR \%getwin ,
+.IR \%getwin ","
 which also use
-.IR \%stdio.h .
+.IR \%stdio.h "."
 .IP
 X/Open Curses specifies all three of these functions.
 .IP
@@ -2318,22 +2318,22 @@ SVr4
 and X/Open Curses do not require the developer to include
 .I \%stdio.h
 before
-.IR \%curses.h .
+.IR \%curses.h "."
 Both document use of
 .I curses
 as requiring only
-.IR \%curses.h .
+.IR \%curses.h "."
 .IP
 As a result,
 standard
 .I \%curses.h
 always includes
-.IR \%stdio.h .
+.IR \%stdio.h "."
 .bP
 X/Open Curses and SVr4
 .I curses
 are inconsistent with respect to
-.IR \%unctrl.h .
+.IR \%unctrl.h "."
 .IP
 As noted in \fBcurs_util\fP(3X),
 .I \%ncurses
@@ -2358,7 +2358,7 @@ from
 to declare
 .I \%setupterm
 in
-.IR \%curses.h ,
+.IR \%curses.h ","
 but
 .I \%ncurses
 and Solaris
@@ -2370,7 +2370,7 @@ AIX
 includes
 .I \%term.h
 and
-.IR \%termios.h .
+.IR \%termios.h "."
 Again,
 .I \%ncurses
 and Solaris
@@ -2381,14 +2381,15 @@ X/Open Curses says that
 .I \%curses.h
 .B may
 include
-.IR \%term.h ,
+.IR \%term.h ","
 but does not require it to do so.
 .IP
 Some programs use functions declared in both
 .I \%curses.h
 and
-.IR \%term.h ,
-and must include both header files in the same module.
+.IR \%term.h ","
+and must include both header files in the same translation unit.
+.\" Is that true in ncurses?  Can we supply an example? --GBR
 .IP
 The header files supplied by
 .I \%ncurses
@@ -2400,7 +2401,7 @@ For portability even to old AIX systems,
 include
 .I \%curses.h
 before
-.IR \%term.h .
+.IR \%term.h "."
 .bP
 X/Open Curses says \*(``may make visible\*('' because including a header
 file does not necessarily make visible all of the symbols in it
@@ -2457,11 +2458,11 @@ SVr4
 provided for the possibility that an application might include either
 .I \%varargs.h
 or
-.IR \%stdarg.h .
+.IR \%stdarg.h "."
 These represented contrasting approaches to handling variadic
 argument lists.
 The older interface,
-.IR \%varargs.h ,
+.IR \%varargs.h ","
 used a pointer to
 .I char \" V7, 32V, System III, 3BSD
 for variadic functions'
@@ -2469,9 +2470,9 @@ for variadic functions'
 parameter.
 Later,
 the list acquired its own standard data type,
-.IR \%va_list ,
+.IR \%va_list ","
 defined in
-.IR \%stdarg.h ,
+.IR \%stdarg.h ","
 empowering the compiler to check the types of a function call's actual
 parameters against the formal ones declared in its prototype.
 .IP
@@ -2483,7 +2484,7 @@ before
 because they either have allowed for a special type,
 or,
 like
-.IR \%ncurses ,
+.IR \%ncurses ","
 they include
 .I \%stdarg.h
 themselves to provide a portable interface.

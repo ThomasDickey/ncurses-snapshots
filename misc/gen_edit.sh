@@ -30,8 +30,8 @@
 #
 # Author: Thomas E. Dickey
 #
-# $Id: gen_edit.sh,v 1.8 2025/06/14 15:10:44 tom Exp $
-# Generate a sed-script for converting the terminfo.src to the form which will
+# $Id: gen_edit.sh,v 1.9 2025/11/12 00:52:57 Branden.Robinson Exp $
+# Generate a sed script for converting the terminfo.src to the form which will
 # be installed.
 #
 # Assumes:

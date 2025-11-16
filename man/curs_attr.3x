@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_attr.3x,v 1.140 2025/08/23 22:39:20 tom Exp $
-.TH curs_attr 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_attr.3x,v 1.142 2025/11/12 01:05:49 tom Exp $
+.TH curs_attr 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -489,13 +489,11 @@ The older macros have direct counterparts in the newer set of names:
 .ne 9
 .TS
 Lb Lb
-Lb Lx.
+Lb L .
 Name	Description
 _
 WA_NORMAL	Normal display (no highlight)
-WA_STANDOUT	T{
-Best highlighting mode of the terminal
-T}
+WA_STANDOUT	Best highlighting mode available
 WA_UNDERLINE	Underlining
 WA_REVERSE	Reverse video
 WA_BLINK	Blinking

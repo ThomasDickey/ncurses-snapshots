@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.235 2025/10/21 20:28:49 tom Exp $
+dnl $Id: aclocal.m4,v 1.237 2025/11/12 01:12:06 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1270,7 +1270,7 @@ ifelse($2,yes,[CF_GCC_ATTRIBUTES])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FIND_LIBRARY version: 11 updated: 2021/01/02 09:31:20
+dnl CF_FIND_LIBRARY version: 12 updated: 2025/11/11 20:11:39
 dnl ---------------
 dnl Look for a non-standard library, given parameters for AC_TRY_LINK.  We
 dnl prefer a standard location, and use -L options only if we do not find the
@@ -1282,7 +1282,7 @@ dnl	$4 = code fragment to compile/link
 dnl	$5 = corresponding function-name
 dnl	$6 = flag, nonnull if failure should not cause an error-exit
 dnl
-dnl Sets the variable "$cf_libdir" as a side-effect, so we can see if we had
+dnl Sets the variable "$cf_libdir" as a side effect, so we can see if we had
 dnl to use a -L option.
 AC_DEFUN([CF_FIND_LIBRARY],
 [

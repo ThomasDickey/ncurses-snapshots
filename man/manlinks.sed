@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.26 2025/07/13 09:08:38 tom Exp $
+# $Id: manlinks.sed,v 1.27 2025/11/12 00:49:19 Branden.Robinson Exp $
 ##############################################################################
 # Copyright 2020-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2000-2003,2008 Free Software Foundation, Inc.                    #
@@ -27,11 +27,11 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# Given a manpage (nroff) as input, writes a list of the names that are
+# Given a man page (nroff) as input, writes a list of the names that are
 # listed in the "NAME" section, i.e., the names that we would like to use
-# as aliases for the manpage -T.Dickey
+# as aliases for the man page. -T.Dickey
 #
-# workaround for manpages without a SYNOPSIS
+# workaround for man pages without a SYNOPSIS
 s/^\.\\"SH/.SH/
 #
 # eliminate formatting controls that get in the way

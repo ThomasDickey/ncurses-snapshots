@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1198 $
-#	$Date: 2025/07/19 15:53:15 $
+#	$Revision: 1.1200 $
+#	$Date: 2025/11/12 00:52:57 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1534,8 +1534,8 @@ qansi-w|QNX ANSI for windows,
 #
 # klone+sgr-dumb is an error since the acsc does not match -TD
 #
-# In this description based on SCO's keyboard(HW) manpage list of default
-# function key values:
+# In this description based on SCO's keyboard(HW) man page list of
+# default function key values:
 #	F13-F24 are shifted F1-F12
 #	F25-F36 are control F1-F12
 #	F37-F48 are shift+control F1-F12
@@ -1655,7 +1655,7 @@ iris-ansi|iris-ansi-net|IRIS emulating 40 line ANSI terminal (almost VT100),
 iris-ansi-ap|IRIS ANSI in application-keypad mode,
 	is2=\E[?1l\E=\E[?7h, kent=\EOM, use=iris-ansi,
 
-# From the man-page, this is a quasi-vt100 emulator that runs on SGI's IRIX
+# From the man page, this is a quasi-vt100 emulator that runs on SGI's IRIX
 # (T.Dickey 98/1/24)
 iris-color|xwsh|IRIX ANSI with color,
 	ncv#33,
@@ -6101,7 +6101,7 @@ xterm-pcolor|xterm with color used for highlights and status line,
 #	https://web.archive.org/web/20070921042430/http://nion.modprobe.de/mostlike.txt
 # The comment hints where it started, but there are differences:
 #	Reconstructed via infocmp from file: /usr/share/terminfo/x/xterm-pcolor
-mostlike|manpages with color looking like most,
+mostlike|man pager with color looking like most,
 	OTbs@,
 	bold=\E[1m\E[31m,
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, kbs=^H,
@@ -8409,7 +8409,7 @@ contour-direct|Contour terminal with direct colors,
 #### Ghostty
 # https://github.com/ghostty-org/ghostty
 #
-# Its readme and manpage begin with a lot of hype, concluding with
+# Its readme and man page begin with a lot of hype, concluding with
 #
 #	While aiming for this ambitious goal, our first step is to make Ghostty
 #	one of the best fully standards compliant terminal emulator, remaining
@@ -8797,7 +8797,7 @@ screen.mlterm-256color|GNU Screen with mlterm using 256 colors,
 
 # ======================================================================
 
-# Read the fine manpage:
+# Read the fine man page:
 #       When  screen  tries  to  figure  out  a  terminal name for
 #       itself, it first looks for an entry named "screen.<term>",
 #       where  <term>  is the contents of your $TERM variable.  If
@@ -8805,7 +8805,7 @@ screen.mlterm-256color|GNU Screen with mlterm using 256 colors,
 #       if the terminal is wide (132 cols or more)).  If even this
 #       entry cannot be found, "vt100" is used as a substitute.
 #
-# Notwithstanding the manpage, screen uses its own notion of the termcap
+# Notwithstanding the man page, screen uses its own notion of the termcap
 # and some keys from "screen.<term>" are ignored.  Here is an entry which
 # covers those (tested with screen 4.00.02) -TD
 screen+fkeys|function-keys according to screen,
@@ -9008,7 +9008,7 @@ tmux-direct|tmux with direct-color indexing,
 # "xterm-256color" (hard-coded), which in its pretense that it is xterm, is
 # several years out of date.
 #
-# There is little documentation; the existing manpages amount to a quarter of
+# There is little documentation; the existing man pages amount to a quarter of
 # the length of mosh.org's heavily promotional website.  This entry is based
 # on testing, and reading the source-code.  For the latter, analysis is aided
 # by the developer's extensive use of hard-coded strings.
@@ -9341,11 +9341,11 @@ sun-type4|Sun Workstation console with type 4 keyboard,
 	kcuu1=\E[215z, use=sun-il,
 
 # Most of the current references to sun-color are from users wondering why this
-# is the default on install.  Details from reading the wscons manpage, adding
+# is the default on install.  Details from reading the wscons man page, adding
 # cub, etc., here (rather than in the base sun-il entry) since it is not clear
 # when those were added -TD (2005-05-28)
 #
-# According to wscons manpage, color is supported only on IA systems.
+# According to wscons man page, color is supported only on IA systems.
 # Sun's terminfo entry documents bold and smul/rmul capabilities, but wscons
 # does not list these.  It also sets ncv#3, however that corresponds to
 # underline and standout.
@@ -14120,7 +14120,7 @@ vt320-k311|DEC VT320 series as defined by kermit 3.11,
 # ^V^K%p1%c%p2%c%p3%c%p4%c%p5%c	-- scroll (p2,p3) to (p4,p5) down by p1 lines
 # ^V^L%p1%c%p2%c%p3%c		-- clear p2 lines and p3 cols w/attr %p1
 # ^V^M%p1%c%p2%c%p3%c%p4%c	-- fill p3 lines & p4 cols w/char p2+attr %p1
-# (^V^L and ^V^M set the current attribute as a side-effect.)
+# (^V^L and ^V^M set the current attribute as a side effect.)
 # ^V ^Y <a> [...] <c>	-- repeat pattern. <a> specifies the number of bytes
 #			   in the pattern, <c> the number of times the pattern
 #			   should be repeated. If either value is 0, no-op.
@@ -14215,7 +14215,7 @@ rbcomm-w|IBM PC with RBcomm in 132 column mode,
 # This line:
 #	cup=\376G%p2%c%p1%c
 # LOOKS like it will work, but sometimes only one of the two numbers is sent.
-# See the terminfo (5) manpage commented regarding 'Terminals which use "%c"'.
+# See the terminfo(5) man page commented regarding 'Terminals which use "%c"'.
 #
 # Alas, there is no cursor upline capability on this display.
 #
@@ -18569,8 +18569,8 @@ ibm8514-c|IBM 8514 color display with standout and underline,
 
 #
 # AIX entries.  IBM ships these with AIX 3.2.5.
-# -- added rc, sc based on manpage -TD
-# -- added rmacs, smacs based on manpage -TD
+# -- added rc, sc based on man page -TD
+# -- added rmacs, smacs based on man page -TD
 # Note that we could use ibm+16color, but that is not how IBM defines this one.
 aixterm|IBM Aixterm Terminal Emulator,
 	acsc=jjkkllmmnnqqttuuvvwwxx, bold=\E[1m, rc=\E8, ri@,
@@ -24073,7 +24073,7 @@ pc6300plus|AT&T 6300 plus,
 # programs expecting VT100 graphics will usually be disappointed. For this
 # reason I have disabled the smacs/rmacs sequences, but they could easily be
 # re-enabled. Here are the relevant control sequences (from the ESCAPE(7)
-# manpage), should you wish to do so:
+# man page), should you wish to do so:
 #
 # SGR10 - Select font 0 - ESC [ 10 m or SO
 # SGR11 - Select font 1 - ESC [ 11 m or SI
@@ -25518,7 +25518,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # SGR 39/49 reset the terminal's foreground and background colors to their
 # "default".
 #
-# XT is harder, since screen's manpage does not give more details.  For that,
+# XT is harder, since screen's man page does not give more details.  For that,
 # we must read screen's source-code.  For example, when XT is set, screen
 # assumes
 #
@@ -26458,7 +26458,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add mgterm, from NetBSD -TD
 #	* add alias sun-cgsix for sun-ss5 as per NetBSD
 #	* change cons25w to use rs2 for reset rather than rs1 -TD
-#	* add rc/sc to aixterm based on manpage -TD
+#	* add rc/sc to aixterm based on man page -TD
 #
 # 2000/5/13
 #	* remove ncv from xterm-16color, xterm-256color
@@ -26497,7 +26497,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* rename cygwin to cygwinB19, adapt newer entry from Earnie Boyd -TD
 #
 # 2000-12-16
-#	* improved scoansi, based on SCO man-page, and testing console,
+#	* improved scoansi, based on SCO man page, and testing console,
 #	  scoterm with tack -TD
 #
 # 2001-01-27

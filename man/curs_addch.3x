@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.142 2025/08/16 19:57:35 tom Exp $
-.TH curs_addch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.144 2025/11/12 01:04:12 tom Exp $
+.TH curs_addch 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -444,21 +444,25 @@ AT&T defined
 names for the most useful graphic symbols,
 as well as for its own.
 Its header file commented:
-.sp
+.PP
 .EX
+.nf
+.\" Fill at 65 columns in your editor.
 /*
- * Standard alternate character set.  The current ACS world is evolving,
- * so we support only a widely available subset: the line drawing characters
- * from the VT100, plus a few from the Teletype 5410v1.  Eventually there
- * may be support of more sophisticated ACS line drawing, such as that
- * in the Teletype 5410, the HP line drawing set, and the like.  There may
- * be support for some non line oriented characters as well.
+ * Standard alternate character set.  The current ACS world is
+ * evolving, so we support only a widely available subset: the
+ * line drawing characters from the VT100, plus a few from the
+ * Teletype 5410v1.  Eventually there may be support of more
+ * sophisticated ACS line drawing, such as that in the Teletype
+ * 5410, the HP line drawing set, and the like.  There may be
+ * support for some non line oriented characters as well.
  *
- * Line drawing ACS names are of the form ACS_trbl, where t is the top, r
- * is the right, b is the bottom, and l is the left.  t, r, b, and l might
- * be B (blank), S (single), D (double), or T (thick).  The subset defined
- * here only uses B and S.
+ * Line drawing ACS names are of the form ACS_trbl, where t is
+ * the top, r is the right, b is the bottom, and l is the left.
+ * t, r, b, and l might be B (blank), S (single), D (double), or
+ * T (thick).  The subset defined here only uses B and S.
  */
+.fi
 .EE
 .PP
 Although these less-useful graphic symbols were not given names,

@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.196 2025/02/15 12:55:53 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.197 2025/11/12 00:52:57 Branden.Robinson Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -457,7 +457,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 
     /*
      * Set our assumption of the terminal's default foreground and background
-     * colors.  The curs_color man-page states that we can assume that the
+     * colors.  The curs_color man page states that we can assume that the
      * background is black.  The origin of this assumption appears to be
      * terminals that displayed colored text, but no colored backgrounds, e.g.,
      * the first colored terminals around 1980.  More recent ones with better

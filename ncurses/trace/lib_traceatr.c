@@ -44,7 +44,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.99 2025/11/01 20:16:15 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.100 2025/11/16 00:50:40 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -371,7 +371,7 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 				    (unsigned long) ch->chars[PUTC_i]);
 			(void) _nc_trace_bufcat(bufnum, temp);
 			attr &= ~A_CHARTEXT;	/* ignore WidecExt(ch) */
-		    } else {
+		    } else if (PUTC_n > 1 || !is8bits(ch->chars[PUTC_i])) {
 			for (n = 0; n < PUTC_n; n++) {
 			    if (n)
 				(void) _nc_trace_bufcat(bufnum, ", ");
@@ -379,6 +379,11 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 						    _nc_tracechar(CURRENT_SCREEN,
 								  UChar(PUTC_buf[n])));
 			}
+		    } else {
+			char temp[2];
+			temp[0] = UChar(ch->chars[PUTC_i]);
+			temp[1] = 0;
+			(void) _nc_trace_bufcat(bufnum, temp);
 		    }
 		}
 		(void) _nc_trace_bufcat(bufnum, " }");

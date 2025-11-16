@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.213 2025/09/13 19:56:44 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.215 2025/11/15 13:52:49 tom Exp $")
 
 #include <tic.h>
 
@@ -1362,7 +1362,7 @@ _nc_mouse_inline(SCREEN *sp)
     bool result = FALSE;
     MEVENT *eventp = sp->_mouse_writep;
 
-    TR(MY_TRACE, ("_nc_mouse_inline() called"));
+    TR(MY_TRACE, (T_CALLED("_nc_mouse_inline(%p)"), (void *) sp));
 
     if (sp->_mouse_type == M_XTERM) {
 	switch (sp->_mouse_format) {
@@ -1405,7 +1405,7 @@ _nc_mouse_inline(SCREEN *sp)
 	}
     }
 
-    return (result);
+    returnCode(result);
 }
 
 static void
@@ -1515,11 +1515,14 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
     bool merge;
     bool endLoop;
 
-    TR(MY_TRACE, ("_nc_mouse_parse(%d) called", runcount));
+    TR(MY_TRACE, (T_CALLED("_nc_mouse_parse(%d)"), runcount));
 
-    if (!sp->_maxclick)
-	return sp->_mouse_readp && ValidEvent(sp->_mouse_readp) &&
-	    ((sp->_mouse_readp->bstate & sp->_mouse_mask) != 0);
+    if (!sp->_maxclick
+	&& sp->_mouse_readp != NULL
+	&& ValidEvent(sp->_mouse_readp)
+	&& ((sp->_mouse_readp->bstate & sp->_mouse_mask) != 0)) {
+	returnCode(1);
+    }
 
     /*
      * When we enter this routine, the event list next-free pointer
@@ -1756,7 +1759,7 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
 
     /* after all this, do we have a valid event? */
     ep = PREV(first_invalid);
-    return ValidEvent(ep) && ((ep->bstate & sp->_mouse_mask) != 0);
+    returnCode(ValidEvent(ep) && ((ep->bstate & sp->_mouse_mask) != 0));
 }
 
 static void

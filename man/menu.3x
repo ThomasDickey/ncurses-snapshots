@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
 .\" Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: menu.3x,v 1.49 2024/12/28 21:26:21 tom Exp $
-.TH menu 3X 2024-12-28 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: menu.3x,v 1.54 2025/11/12 01:27:41 tom Exp $
+.TH menu 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -83,48 +83,48 @@ The following table lists each \fBmenu\fP routine and the name of
 the manual page on which it is described.
 .PP
 .TS
-l l .
+L L.
 \fBcurses\fP Routine Name	Manual Page Name
-=
+_
 current_item	\fBmitem_current\fP(3X)
-free_item 	\fBmitem_new\fP(3X)
-free_menu 	\fBmenu_new\fP(3X)
+free_item	\fBmitem_new\fP(3X)
+free_menu	\fBmenu_new\fP(3X)
 item_count	\fBmenu_items\fP(3X)
 item_description	\fBmitem_name\fP(3X)
 item_index	\fBmitem_current\fP(3X)
-item_init 	\fBmenu_hook\fP(3X)
-item_name 	\fBmitem_name\fP(3X)
-item_opts 	\fBmitem_opts\fP(3X)
+item_init	\fBmenu_hook\fP(3X)
+item_name	\fBmitem_name\fP(3X)
+item_opts	\fBmitem_opts\fP(3X)
 item_opts_off	\fBmitem_opts\fP(3X)
 item_opts_on	\fBmitem_opts\fP(3X)
-item_term 	\fBmenu_hook\fP(3X)
+item_term	\fBmenu_hook\fP(3X)
 item_userptr	\fBmitem_userptr\fP(3X)
 item_value	\fBmitem_value\fP(3X)
 item_visible	\fBmitem_visible\fP(3X)
-menu_back 	\fBmenu_attributes\fP(3X)
+menu_back	\fBmenu_attributes\fP(3X)
 menu_driver	\fBmenu_driver\fP(3X)
-menu_fore 	\fBmenu_attributes\fP(3X)
+menu_fore	\fBmenu_attributes\fP(3X)
 menu_format	\fBmenu_format\fP(3X)
-menu_grey 	\fBmenu_attributes\fP(3X)
-menu_init 	\fBmenu_hook\fP(3X)
+menu_grey	\fBmenu_attributes\fP(3X)
+menu_init	\fBmenu_hook\fP(3X)
 menu_items	\fBmenu_items\fP(3X)
-menu_mark 	\fBmenu_mark\fP(3X)
-menu_opts 	\fBmenu_opts\fP(3X)
+menu_mark	\fBmenu_mark\fP(3X)
+menu_opts	\fBmenu_opts\fP(3X)
 menu_opts_off	\fBmenu_opts\fP(3X)
 menu_opts_on	\fBmenu_opts\fP(3X)
-menu_pad  	\fBmenu_attributes\fP(3X)
+menu_pad	\fBmenu_attributes\fP(3X)
 menu_pattern	\fBmenu_pattern\fP(3X)
 menu_request_by_name	\fBmenu_requestname\fP(3X)
 menu_request_name	\fBmenu_requestname\fP(3X)
 menu_spacing	\fBmenu_spacing\fP(3X)
-menu_sub  	\fBmenu_win\fP(3X)
-menu_term 	\fBmenu_hook\fP(3X)
+menu_sub	\fBmenu_win\fP(3X)
+menu_term	\fBmenu_hook\fP(3X)
 menu_userptr	\fBmenu_userptr\fP(3X)
-menu_win  	\fBmenu_win\fP(3X)
-new_item  	\fBmitem_new\fP(3X)
-new_menu  	\fBmenu_new\fP(3X)
+menu_win	\fBmenu_win\fP(3X)
+new_item	\fBmitem_new\fP(3X)
+new_menu	\fBmenu_new\fP(3X)
 pos_menu_cursor	\fBmenu_cursor\fP(3X)
-post_menu 	\fBmenu_post\fP(3X)
+post_menu	\fBmenu_post\fP(3X)
 scale_menu	\fBmenu_win\fP(3X)
 set_current_item	\fBmitem_current\fP(3X)
 set_item_init	\fBmenu_hook\fP(3X)
@@ -148,7 +148,7 @@ set_menu_term	\fBmenu_hook\fP(3X)
 set_menu_userptr	\fBmenu_userptr\fP(3X)
 set_menu_win	\fBmenu_win\fP(3X)
 set_top_row	\fBmitem_current\fP(3X)
-top_row   	\fBmitem_current\fP(3X)
+top_row	\fBmitem_current\fP(3X)
 unpost_menu	\fBmenu_post\fP(3X)
 .TE
 .SH RETURN VALUE

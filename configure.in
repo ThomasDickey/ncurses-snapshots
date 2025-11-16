@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.816 2025/11/01 23:10:52 tom Exp $
+dnl $Id: configure.in,v 1.817 2025/11/12 01:07:10 Branden.Robinson Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.816 $)
+AC_REVISION($Revision: 1.817 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -2380,7 +2380,6 @@ esac
 
 ###############################################################################
 CF_MAN_PAGES([ captoinfo clear infocmp infotocap reset tabs tic toe tput tset ])
-CF_CHECK_TBL_X_OPTION
 
 ################################################################################
 test "x$use_database" = xyes && \

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.35 2024/12/07 21:58:32 tom Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.36 2025/11/15 18:12:38 tom Exp $")
 
 typedef struct
   {
@@ -209,6 +209,7 @@ Free_Enum_Type(void *argp)
 	    }
 	  assert(cnt == ap->count);
 	  free(ap->kwds);
+	  (void) cnt;
 	}
       free(argp);
     }

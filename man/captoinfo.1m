@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: captoinfo.1m,v 1.73 2025/10/04 22:07:00 tom Exp $
-.TH @CAPTOINFO@ 1M 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: captoinfo.1m,v 1.77 2025/11/12 01:03:56 tom Exp $
+.TH @CAPTOINFO@ 1M 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -115,7 +115,9 @@ It issues a diagnostic to the standard error stream for each,
 inviting the user to check that it has not mistakenly translated an
 unknown or mistyped capability name.
 .PP
-.\" DWB 3.3 tbl requires the two junk "L" specifiers in the first row.
+.\" DWB 3.3 and Plan 9 tbl require the two junk "L" specifiers in the
+.\" first row description.  System V, GNU, and Heirloom Doctools tbl do
+.\" not; they "rectangularize" the table geometry.
 .TS
 center;
 Cb S  L  L
@@ -163,8 +165,8 @@ as follows.
 .PP
 .TS
 center;
-cb cb
-cb l .
+Cb Cb
+Cb L .
 \f(BItermcap\fP Code	Graphic
 _
 G2	upper left corner
@@ -218,8 +220,8 @@ translates the following AIX extensions.
 .PP
 .TS
 center;
-cb cb
-l  l .
+Cb Cb
+L  L .
 IBM	X/Open
 _
 ksel	kslt
@@ -247,7 +249,8 @@ capabilities:
 and
 .B \%memory_unlock
 .RB ( memu ).
-.B \%@CAPTOINFO@ discards these with a warning message.
+.B \%@CAPTOINFO@
+discards these with a warning message.
 .SH FILES
 .TP
 .I /etc/termcap

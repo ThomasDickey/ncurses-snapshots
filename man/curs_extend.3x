@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1999-on
 .\"
-.\" $Id: curs_extend.3x,v 1.63 2025/10/05 17:31:40 tom Exp $
-.TH curs_extend 3X 2025-10-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_extend.3x,v 1.67 2025/11/12 00:46:51 tom Exp $
+.TH curs_extend 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -106,16 +106,19 @@ and are not found in SVr4
 or any other previous
 .I curses
 implementation.
-.PP
-NetBSD 9 added a
-.B \%curses_version
-function which intentionally returns a string without version information.
 .SH PORTABILITY
 Applications employing
 .I \%ncurses
 extensions should condition their use on the visibility of the
 .B \%NCURSES_VERSION
 preprocessor macro.
+.PP
+NetBSD 9 added a
+.I \%curses_version
+function
+that intentionally returns a string devoid of version information.
+.\" See https://mail-index.netbsd.org/tech-userlevel/2019/08/27/\
+.\" msg012068.html and follow-up messages.
 .SH AUTHORS
 Thomas Dickey
 .SH SEE ALSO

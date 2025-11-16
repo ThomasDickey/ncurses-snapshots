@@ -28,17 +28,17 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.147 2025/08/23 22:56:17 tom Exp $
-.TH @TPUT@ 1 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: tput.1,v 1.149 2025/11/12 01:05:03 tom Exp $
+.TH @TPUT@ 1 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
 .\}
 .el \{\
 .ie t .ds `` ``
-.el   .ds `` ""
+.el   .ds `` ""\" cannot be used in quoted macro argument w/ AT&T troff
 .ie t .ds '' ''
-.el   .ds '' ""
+.el   .ds '' ""\" cannot be used in quoted macro argument w/ AT&T troff
 .\}
 .
 .de bP
@@ -279,9 +279,13 @@ See \fB\%terminfo\fP(5).
 .PP
 .I Note:
 Redirecting the output of
-.RB \%\*(`` "@TPUT@ init" \*(''
+\*(``\c
+.B "@TPUT@ init\c"
+\*(''
 or
-.RB \%\*(`` "@TPUT@ reset" \*(''
+\*(``\c
+.B "@TPUT@ reset\c"
+\*(''
 to a file will capture only part of their actions.
 Changes to the terminal modes are not affected by file descriptor
 redirection,
@@ -302,7 +306,9 @@ executing a link named
 that points to
 .B \%@TPUT@
 has the same effect as
-.RB \%\*(`` "@TPUT@ \%reset" \*(''.
+\%\*(``\c
+.B "@TPUT@ \%reset\c"
+\*(''.
 .PP
 This feature was introduced by
 .I \%ncurses
@@ -419,7 +425,9 @@ and exits with a successful status.
 .TP
 .B \-x
 prevents
-.RB \%\*(`` "@TPUT@ clear" \*(''
+\%\*(``\c
+.B "@TPUT@ clear\c"
+\*(''
 from attempting to clear the scrollback buffer.
 .SH EXIT STATUS
 Normally,
@@ -1068,7 +1076,9 @@ mode.
 .TP
 .B "@TPUT@ clear cup 10 10 bold"
 Perform the same actions as the foregoing
-.RB \%\*(`` "@TPUT@ \-S" \*(''
+\%\*(``\c
+.B "@TPUT@ \-S\c"
+\*(''
 example.
 .SH SEE ALSO
 \fB\%@CLEAR@\fP(1),

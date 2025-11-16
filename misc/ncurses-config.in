@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.60 2025/10/04 20:59:08 tom Exp $
+# $Id: ncurses-config.in,v 1.62 2025/11/12 00:56:49 Branden.Robinson Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
@@ -344,30 +344,30 @@ while [ $# -gt 0 ]; do
 Usage: `basename "$0"` [options]
 
 Options:
-  --prefix            echos the package-prefix of ${CURSES_LIB}
-  --exec-prefix       echos the executable-prefix of ${CURSES_LIB}
+  --prefix            echoes the package-prefix of ${CURSES_LIB}
+  --exec-prefix       echoes the executable-prefix of ${CURSES_LIB}
 
-  --cflags            echos the C compiler flags needed to compile for ${CURSES_LIB}
-  --cflags-only-I     echos only -I C compiler flags needed with ${CURSES_LIB}
-  --cflags-only-other echos only C compiler flags other than -I for ${CURSES_LIB}
-  --libs              echos the libraries needed to link with ${CURSES_LIB}
+  --cflags            echoes the C compiler flags needed to compile for ${CURSES_LIB}
+  --cflags-only-I     echoes only -I C compiler flags needed with ${CURSES_LIB}
+  --cflags-only-other echoes only C compiler flags other than -I for ${CURSES_LIB}
+  --libs              echoes the libraries needed to link with ${CURSES_LIB}
 
-  --libs-only-L       echos -L linker options (search path) for ${CURSES_LIB}
-  --libs-only-l       echos -l linker options (libraries) for ${CURSES_LIB}
-  --libs-only-other   echos linker options other than -L/-l
+  --libs-only-L       echoes -L linker options (search path) for ${CURSES_LIB}
+  --libs-only-l       echoes -l linker options (libraries) for ${CURSES_LIB}
+  --libs-only-other   echoes linker options other than -L/-l
 
-  --version           echos the release+patchdate version of ${CURSES_LIB}
-  --abi-version       echos the ABI version of ${CURSES_LIB}
-  --mouse-version     echos the mouse-interface version of ${CURSES_LIB}
+  --version           echoes the release+patchdate version of ${CURSES_LIB}
+  --abi-version       echoes the ABI version of ${CURSES_LIB}
+  --mouse-version     echoes the mouse-interface version of ${CURSES_LIB}
 
-  --bindir            echos the directory containing ${CURSES_LIB} programs
-  --datadir           echos the directory containing ${CURSES_LIB} data
-  --includedir        echos the directory containing ${CURSES_LIB} header files
-  --libdir            echos the directory containing ${CURSES_LIB} libraries
-  --mandir            echos the directory containing ${CURSES_LIB} manpages
-  --terminfo          echos the \$TERMINFO terminfo database path
-  --terminfo-dirs     echos the \$TERMINFO_DIRS directory list
-  --termpath          echos the \$TERMPATH termcap list
+  --bindir            echoes the directory containing ${CURSES_LIB} programs
+  --datadir           echoes the directory containing ${CURSES_LIB} data
+  --includedir        echoes the directory containing ${CURSES_LIB} header files
+  --libdir            echoes the directory containing ${CURSES_LIB} libraries
+  --mandir            echoes the directory containing ${CURSES_LIB} man pages
+  --terminfo          echoes the \$TERMINFO terminfo database path
+  --terminfo-dirs     echoes the \$TERMINFO_DIRS directory list
+  --termpath          echoes the \$TERMPATH termcap list
 
   --help              prints this message
 ENDHELP
