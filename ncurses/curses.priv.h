@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.731 2025/11/16 01:03:43 tom Exp $
+ * $Id: curses.priv.h,v 1.732 2025/11/16 16:08:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1508,7 +1508,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 					NCURSES_OUTC_FUNC (NCURSES_SP_ARGx PUTC_buf[PUTC_j]); \
 				    }						    \
 				} else {					    \
-				    PUTC_buf[0] = PUTC_ch;			    \
+				    PUTC_buf[0] = (char) PUTC_ch;			    \
 				    TR_PUTC(PUTC_buf[0]);			    \
 				    NCURSES_OUTC_FUNC (NCURSES_SP_ARGx PUTC_buf[0]); \
 				}						    \

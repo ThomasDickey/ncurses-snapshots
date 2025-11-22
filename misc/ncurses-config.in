@@ -1,5 +1,5 @@
 #!@SHELL@
-# $Id: ncurses-config.in,v 1.62 2025/11/12 00:56:49 Branden.Robinson Exp $
+# $Id: ncurses-config.in,v 1.63 2025/11/22 19:19:28 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 2006-2015,2017 Free Software Foundation, Inc.                    #
@@ -47,7 +47,7 @@ datadir="@datadir@"
 mandir="@mandir@"
 
 CURSES_LIB="@LIB_NAME@@ABI_SUFFIX@"
-TINFO_LIB="@TINFO_NAME@@ABI_SUFFIX@"
+TINFO_LIB="@TINFO_ARG_SUFFIX@"
 RPATH_LIST="@RPATH_LIST@"
 
 # Ensure that RPATH_LIST contains only absolute pathnames, if it is nonempty.

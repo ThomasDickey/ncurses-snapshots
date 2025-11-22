@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -1854,6 +1854,12 @@ int	wins_wstr(
 		const wchar_t *z)
 		{ return(*(int *)0); }
 
+#undef winwstr
+int	winwstr(
+		WINDOW	*a1,
+		wchar_t	*z)
+		{ return(*(int *)0); }
+
 #undef mouse_trafo
 NCURSES_BOOL mouse_trafo(
 		int	*a1,
@@ -3336,12 +3342,6 @@ int	winnwstr(
 		WINDOW	*win,
 		wchar_t	*wstr,
 		int	n)
-		{ return(*(int *)0); }
-
-#undef winwstr
-int	winwstr(
-		WINDOW	*win,
-		wchar_t	*wstr)
 		{ return(*(int *)0); }
 
 /* ./widechar/lib_key_name.c */

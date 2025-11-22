@@ -44,7 +44,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.100 2025/11/16 00:50:40 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.101 2025/11/16 16:08:54 tom Exp $")
 
 #define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
@@ -381,7 +381,7 @@ _tracecchar_t2(int bufnum, const cchar_t *ch)
 			}
 		    } else {
 			char temp[2];
-			temp[0] = UChar(ch->chars[PUTC_i]);
+			temp[0] = (char) ch->chars[PUTC_i];
 			temp[1] = 0;
 			(void) _nc_trace_bufcat(bufnum, temp);
 		    }

@@ -566,7 +566,6 @@
 ./include/ncurses_cfg.hin
 ./include/ncurses_defs
 ./include/ncurses_dll.h.in
-./include/ncurses_mingw.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
