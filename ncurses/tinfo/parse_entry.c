@@ -48,7 +48,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.116 2025/03/24 22:27:29 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.117 2025/11/23 20:25:15 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -554,7 +554,8 @@ _nc_parse_entry(ENTRY * entryp, int literal, bool silent)
 	    case CANCEL:
 		switch (entry_ptr->nte_type) {
 		case BOOLEAN:
-		    entryp->tterm.Booleans[entry_ptr->nte_index] = CANCELLED_BOOLEAN;
+		    entryp->tterm.Booleans[entry_ptr->nte_index] =
+			(NCURSES_SBOOL) CANCELLED_BOOLEAN;
 		    break;
 
 		case NUMBER:

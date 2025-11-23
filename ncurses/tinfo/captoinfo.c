@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.108 2025/02/20 00:48:11 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.109 2025/11/23 20:22:38 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -549,7 +549,7 @@ bcd_expression(const char *str)
 	    char buffer[80];
 	    int tst;
 	    _nc_SPRINTF(buffer, _nc_SLIMIT(sizeof(buffer)) fmt, ch1, ch2);
-	    tst = strlen(buffer) - 1;
+	    tst = (int) strlen(buffer) - 1;
 	    assert(len == tst);
 	}
 #endif

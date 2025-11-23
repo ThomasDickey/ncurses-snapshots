@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.94 2025/11/12 01:27:41 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.95 2025/11/23 18:57:18 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = NULL;
 NCURSES_EXPORT_VAR(char *) BC = NULL;
@@ -292,6 +292,8 @@ NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx const char *id)
     int result = ABSENT_NUMERIC;
 
     T((T_CALLED("tgetnum(%p, %s)"), (void *) SP_PARM, id));
+    assert(result < 0);
+
     if (HasTInfoTerminal(SP_PARM) && ValidCap(id)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
 	struct name_table_entry const *entry_ptr;

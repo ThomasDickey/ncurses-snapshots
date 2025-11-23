@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.35 2024/12/07 20:06:49 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.36 2025/11/23 18:58:04 tom Exp $")
 
 #if 0
 static bool
@@ -56,6 +56,7 @@ NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx const char *str)
     int result = ABSENT_BOOLEAN;
 
     T((T_CALLED("tigetflag(%p, %s)"), (void *) SP_PARM, str));
+    assert(result < 0);
 
     if (HasTInfoTerminal(SP_PARM)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
@@ -101,6 +102,7 @@ NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx const char *str)
     int result = CANCELLED_NUMERIC;	/* Solaris returns a -1 on error */
 
     T((T_CALLED("tigetnum(%p, %s)"), (void *) SP_PARM, str));
+    assert(result < 0);
 
     if (HasTInfoTerminal(SP_PARM)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
