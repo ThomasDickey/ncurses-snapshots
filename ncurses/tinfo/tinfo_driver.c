@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.83 2025/10/18 18:11:02 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.84 2025/11/29 23:45:48 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -161,7 +161,8 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
     SCREEN *sp;
 
     START_TRACE();
-    T((T_CALLED("tinfo::drv_CanHandle(%p)"), (void *) TCB));
+    T((T_CALLED("tinfo::drv_CanHandle(%p,%s,%p)"),
+       (void *) TCB, NonNull(tname), (void *) errret));
 
     assert(TCB != NULL && tname != NULL);
     termp = (TERMINAL *) TCB;

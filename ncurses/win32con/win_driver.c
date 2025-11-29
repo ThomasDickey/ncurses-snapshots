@@ -42,7 +42,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.114 2025/10/18 19:18:39 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.115 2025/11/29 23:45:48 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -518,9 +518,10 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 {
     bool code = FALSE;
 
-    T((T_CALLED("win32con::wcon_CanHandle(%p)"), TCB));
+    T((T_CALLED("win32con::wcon_CanHandle(%p,%s,%p)"),
+       (void *) TCB, NonNull(tname), (void *) errret));
 
-    assert((TCB != NULL) && (tname != NULL));
+    assert(TCB != NULL);
 
     TCB->magic = WINMAGIC;
 

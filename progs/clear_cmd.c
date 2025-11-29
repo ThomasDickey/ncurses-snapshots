@@ -38,7 +38,7 @@
 #define USE_LIBTINFO
 #include <clear_cmd.h>
 
-MODULE_ID("$Id: clear_cmd.c,v 1.6 2025/01/18 14:51:58 tom Exp $")
+MODULE_ID("$Id: clear_cmd.c,v 1.7 2025/11/29 19:34:33 tom Exp $")
 
 static int
 putch(int c)
@@ -53,7 +53,7 @@ clear_cmd(bool legacy)
     if (!legacy) {
 	/* Clear the scrollback buffer if possible. */
 	char *E3 = tigetstr(UserCap(E3));
-	if (E3)
+	if (VALID_STRING(E3))
 	    (void) tputs(E3, lines > 0 ? lines : 1, putch);
     }
     return retval;

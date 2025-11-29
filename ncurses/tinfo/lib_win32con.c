@@ -39,7 +39,7 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.43 2025/10/18 19:18:29 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.44 2025/11/29 21:45:49 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -225,9 +225,6 @@ _nc_console_fd2handle(int fd)
 	T(("lib_win32con:validateHandle %d maps to unknown HANDLE", fd));
 	hdl = INVALID_HANDLE_VALUE;
     }
-#if 1
-    assert(hdl != INVALID_HANDLE_VALUE);
-#endif
     if (hdl != INVALID_HANDLE_VALUE) {
 	if (hdl != WINCONSOLE.inp && (!WINCONSOLE.isTermInfoConsole && WINCONSOLE.progMode)) {
 	    if (hdl == WINCONSOLE.out && hdl != WINCONSOLE.hdl) {

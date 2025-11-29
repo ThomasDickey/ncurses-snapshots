@@ -85,7 +85,13 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.321 2025/11/15 15:59:13 tom Exp $")
+#if USE_WIDEC_SUPPORT
+#if HAVE_WCTYPE_H
+#include <wctype.h>
+#endif
+#endif
+
+MODULE_ID("$Id: tty_update.c,v 1.322 2025/11/29 19:03:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a

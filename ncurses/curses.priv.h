@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.732 2025/11/16 16:08:54 tom Exp $
+ * $Id: curses.priv.h,v 1.733 2025/11/29 16:17:08 tom Exp $
  *
  *	curses.priv.h
  *
@@ -90,7 +90,7 @@ extern int errno;
 /* Some Windows related defines */
 
 #undef _NC_WINDOWS
-#if (defined(_WIN32) || defined(_WIN64__) || defined(__MSYS__) || defined(__CYGWIN__))
+#if (defined(_WIN32) || defined(_WIN64__) || defined(__MSYS__))
 #define _NC_WINDOWS
 #else
 #undef EXP_WIN32_DRIVER
