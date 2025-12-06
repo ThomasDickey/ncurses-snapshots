@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.227 2025/08/23 17:05:52 tom Exp $ */
+/* $Id: test.priv.h,v 1.229 2025/12/06 21:21:06 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -183,6 +183,30 @@
 #define HAVE_MATH_H 0
 #endif
 
+#ifndef HAVE_MBLEN
+#define HAVE_MBLEN 0
+#endif
+
+#ifndef HAVE_MBRLEN
+#define HAVE_MBRLEN 0
+#endif
+
+#ifndef HAVE_MBRTOWC
+#define HAVE_MBRTOWC 0
+#endif
+
+#ifndef HAVE_MBSRTOWCS
+#define HAVE_MBSRTOWCS 0
+#endif
+
+#ifndef HAVE_MBSTOWCS
+#define HAVE_MBSTOWCS 0
+#endif
+
+#ifndef HAVE_MBTOWC
+#define HAVE_MBTOWC 0
+#endif
+
 #ifndef HAVE_MENU_H
 #define HAVE_MENU_H 0
 #endif
@@ -275,6 +299,10 @@
 #define HAVE_SYS_SELECT_H 0
 #endif
 
+#ifndef HAVE_SYS_TIME_SELECT
+#define HAVE_SYS_TIME_SELECT 0
+#endif
+
 #ifndef HAVE_TERMATTRS
 #define HAVE_TERMATTRS 0
 #endif
@@ -361,6 +389,18 @@
 
 #ifndef HAVE_VID_PUTS
 #define HAVE_VID_PUTS 0
+#endif
+
+#ifndef HAVE_WCSRTOMBS
+#define HAVE_WCSRTOMBS 0
+#endif
+
+#ifndef HAVE_WCSTOMBS
+#define HAVE_WCSTOMBS 0
+#endif
+
+#ifndef HAVE_WCWIDTH
+#define HAVE_WCWIDTH 0
 #endif
 
 #ifndef HAVE_WINSDELLN
