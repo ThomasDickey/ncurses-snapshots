@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4378 2025/12/06 21:23:53 tom Exp $
+-- $Id: NEWS,v 1.4382 2025/12/13 23:45:35 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20251213
+	+ in-progress work to merge MinGW/Windows port.
+	+ add a null-pointer check in tic -c option.
+	+ add a limit-check in infocmp -i option (report/example by Yixuan Cao).
 
 20251206
 	+ in-progress work to merge MinGW/Windows port.

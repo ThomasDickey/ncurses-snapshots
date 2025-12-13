@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.175 2025/11/12 00:49:19 Branden.Robinson Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.176 2025/12/10 21:17:26 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -847,7 +847,7 @@ lookup_params(const assoc * table, char *dst, char *src)
 static void
 analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 {
-    char buf2[MAX_TERMINFO_LENGTH];
+    char buf2[MAX_TERMINFO_LENGTH + 1];
     const char *sp;
     const assoc *ap;
     int tp_lines = tp->Numbers[2];
@@ -877,7 +877,8 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    if (VALID_STRING(cp) &&
 		cp[0] != '\0' &&
 		cp != cap) {
-		len = strlen(cp);
+		if ((len = strlen(cp)) > MAX_TERMINFO_LENGTH)
+		    len = MAX_TERMINFO_LENGTH;
 		_nc_STRNCPY(buf2, sp, len);
 		buf2[len] = '\0';
 

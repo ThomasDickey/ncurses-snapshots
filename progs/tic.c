@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.332 2025/01/11 23:52:18 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.333 2025/12/10 21:10:06 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -3276,9 +3276,9 @@ check_termtype(TERMTYPE2 *tp, bool literal)
 
 	_nc_tparm_err = 0;
 	if (PRESENT(exit_attribute_mode)) {
-	    zero = strdup(CHECK_SGR(0, exit_attribute_mode));
+	    zero = CHECK_SGR(0, exit_attribute_mode);
 	} else {
-	    zero = strdup(TIPARM_9(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+	    zero = TIPARM_9(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 	check_tparm_err(0);
 
@@ -3292,7 +3292,6 @@ check_termtype(TERMTYPE2 *tp, bool literal)
 	    CHECK_SGR(7, enter_secure_mode);
 	    CHECK_SGR(8, enter_protected_mode);
 	    CHECK_SGR(9, enter_alt_charset_mode);
-	    free(zero);
 	} else {
 	    _nc_warning("sgr(0) did not return a value");
 	}
