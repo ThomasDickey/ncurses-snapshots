@@ -43,7 +43,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.15 2025/11/29 23:45:48 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.16 2025/12/20 17:28:44 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -726,7 +726,7 @@ static int
 wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
 {
     int result = ERR;
-
+#if USE_WINCONMODE
     T((T_CALLED("win32con::wcon_sgmode(TCB=(%p),setFlag=%d,TTY=(%p)"),
        TCB, setFlag, buf));
     if (buf != NULL && validateConsoleHandle()) {
@@ -740,6 +740,11 @@ wcon_sgmode(TERMINAL_CONTROL_BLOCK * TCB, int setFlag, TTY * buf)
 	}
 	result = OK;
     }
+#else
+    (void) TCB;
+    (void) setFlag;
+    (void) buf;
+#endif /* USE_WINCONMODE */
     returnCode(result);
 }
 

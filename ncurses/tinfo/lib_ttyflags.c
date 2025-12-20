@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.38 2024/12/15 00:12:19 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.39 2025/12/14 15:38:45 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
@@ -156,7 +156,7 @@ NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_DCL0)
 #ifdef TERMIOS
 	    if (termp->Ottyb.c_oflag & OFLAGS_TABS)
 		tab = back_tab = NULL;
-#elif defined(EXP_WIN32_DRIVER)
+#elif USE_NAMED_PIPES
 	    /* noop */
 #else
 	    if (termp->Ottyb.sg_flags & XTABS)
@@ -195,7 +195,7 @@ NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_DCL0)
 	if (_nc_get_tty_mode(&termp->Nttyb) == OK) {
 #ifdef TERMIOS
 	    termp->Nttyb.c_oflag &= (unsigned) (~OFLAGS_TABS);
-#elif defined(EXP_WIN32_DRIVER)
+#elif USE_NAMED_PIPES
 	    /* noop */
 #else
 	    termp->Nttyb.sg_flags &= (unsigned) (~XTABS);

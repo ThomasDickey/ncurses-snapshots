@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.197 2025/11/12 00:52:57 Branden.Robinson Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.198 2025/12/14 10:52:57 tom Exp $")
 
 #ifdef USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -427,7 +427,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
 #endif
 	T(("filter screensize %dx%d", slines, scolumns));
     }
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
     T(("setting output mode to binary"));
     fflush(output);
     _setmode(fileno(output), _O_BINARY);
@@ -439,7 +439,7 @@ NCURSES_SP_NAME(_nc_setupscreen) (
     fflush(output);
     sp->_ofd = output ? fileno(output) : -1;
     sp->_ofp = output;
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
     if (output)
 	_setmode(fileno(output), _O_BINARY);
 #endif

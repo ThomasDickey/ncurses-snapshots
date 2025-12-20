@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.30 2025/12/13 22:36:34 tom Exp $
+ * $Id: railroad.c,v 1.31 2025/12/14 10:58:45 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -191,8 +191,8 @@ railroad(char **args)
     int z;
 
     if (name == NULL)
-#ifdef EXP_WIN32_DRIVER
-	name = MS_TERMINAL;
+#ifdef DEFAULT_TERM_ENV
+	name = DEFAULT_TERM_ENV;
 #else
 	name = "dumb";
 #endif

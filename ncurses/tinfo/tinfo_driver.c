@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.84 2025/11/29 23:45:48 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.86 2025/12/20 21:36:30 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -664,7 +664,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		NCURSES_SP_NAME(_nc_flush) (sp);
 	    }
 	    code = drv_sgmode(TCB, TRUE, &(_term->Ottyb));
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
 	    if (!_nc_console_restore())
 		code = ERR;
 #endif
@@ -1502,7 +1502,7 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_TINFO_DRIVER = {
 	drv_cursorSet		/* cursorSet */
 };
 
-#ifdef _NC_WINDOWS
+#ifdef USE_TERM_DRIVER
 /*
  * The terminfo driver is mandatory and must always be present.
  * So this is the natural place for the driver initialisation
@@ -1545,7 +1545,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
 	       name is empty, we default to ms-terminal as tinfo TERM type.
 	     */
 	    if (name == NULL || *name == 0 || (strcmp(name, "unknown") == 0)) {
-		name = MS_TERMINAL;
+		name = DEFAULT_TERM_ENV;
 		T(("Set TERM=%s", name));
 	    }
 	}
@@ -1564,4 +1564,4 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
     }
     returnCode(code);
 }
-#endif /* _NC_WINDOWS */
+#endif /* USE_TERM_DRIVER */

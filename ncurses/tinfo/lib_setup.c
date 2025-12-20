@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.250 2025/02/20 01:31:35 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.251 2025/12/14 10:57:56 tom Exp $")
 
 /****************************************************************************
  *
@@ -272,7 +272,7 @@ use_tioctl(bool f)
 }
 #endif
 
-#if !(defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER))
+#if !(defined(USE_TERM_DRIVER) || USE_NAMED_PIPES)
 static void
 _nc_default_screensize(TERMINAL *termp, int *linep, int *colp)
 {
@@ -454,7 +454,7 @@ _nc_check_screensize(SCREEN *sp, TERMINAL *termp, int *linep, int *colp)
 #else /* !USE_CHECK_SIZE */
 #define _nc_check_screensize(sp, termp, linep, colp)	/* nothing */
 #endif
-#endif /* !(defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)) */
+#endif /* !(defined(USE_TERM_DRIVER) || USE_NAMED_PIPES) */
 
 NCURSES_EXPORT(void)
 _nc_get_screensize(SCREEN *sp,
@@ -490,7 +490,7 @@ _nc_get_screensize(SCREEN *sp,
     bool useTioctl = _nc_prescreen.use_tioctl;
 
     T((T_CALLED("_nc_get_screensize (%p)"), (void *) sp));
-#ifdef EXP_WIN32_DRIVER
+#if USE_NAMED_PIPES
     /* If we are here, then Windows console is used in terminfo mode.
        We need to figure out the size using the console API
      */
@@ -850,7 +850,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 
     if (tname == NULL) {
 	tname = getenv("TERM");
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
 	if (!VALID_TERM_ENV(tname, NO_TERMINAL)) {
 	    T(("Failure with TERM=%s", NonNull(tname)));
 	    ret_error0(TGETENT_ERR, "TERM environment variable not set.\n");
@@ -881,7 +881,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
      */
     if (Filedes == STDOUT_FILENO && !NC_ISATTY(Filedes))
 	Filedes = STDERR_FILENO;
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
     if (Filedes != STDERR_FILENO && NC_ISATTY(Filedes))
 	_setmode(Filedes, _O_BINARY);
 #endif

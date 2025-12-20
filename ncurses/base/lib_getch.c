@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.152 2025/09/27 19:46:02 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.153 2025/12/14 10:52:57 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -145,7 +145,7 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
 #ifdef USE_TERM_DRIVER
     TERMINAL_CONTROL_BLOCK *TCB = TCBOf(sp);
     rc = TCBOf(sp)->drv->td_testmouse(TCBOf(sp), delay EVENTLIST_2nd(evl));
-# if defined(EXP_WIN32_DRIVER) || defined(_NC_WINDOWS_NATIVE)
+# if USE_NAMED_PIPES || defined(_NC_WINDOWS_NATIVE)
     /* if we emulate terminfo on console, we have to use the console routine */
     if (IsTermInfoOnConsole(sp)) {
 	rc = _nc_console_testmouse(sp,
@@ -162,7 +162,7 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 # endif
     {
-# if defined(EXP_WIN32_DRIVER)
+# if USE_NAMED_PIPES
 	rc = _nc_console_testmouse(sp,
 				   _nc_console_handle(sp->_ifd),
 				   delay
@@ -290,7 +290,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     {				/* Can block... */
 #if defined(USE_TERM_DRIVER)
 	int buf;
-# if defined(EXP_WIN32_DRIVER) || defined(_NC_WINDOWS_NATIVE)
+# if USE_NAMED_PIPES || defined(_NC_WINDOWS_NATIVE)
 	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && IsCbreak(sp)) {
 	    _nc_set_read_thread(TRUE);
 	    n = _nc_console_read(sp,
@@ -298,17 +298,17 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 				 &buf);
 	    _nc_set_read_thread(FALSE);
 	} else
-# endif	/* EXP_WIN32_DRIVER */
+# endif	/* USE_NAMED_PIPES */
 	    n = CallDriver_1(sp, td_read, &buf);
 	ch = buf;
 #else /* !USE_TERM_DRIVER */
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
 	int buf;
 #endif
 	unsigned char c2 = 0;
 
 	_nc_set_read_thread(TRUE);
-#if defined(EXP_WIN32_DRIVER)
+#if USE_NAMED_PIPES
 	n = _nc_console_read(sp,
 			     _nc_console_handle(sp->_ifd),
 			     &buf);

@@ -38,8 +38,13 @@
 
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
+#include <win32_curses.h>
 
-MODULE_ID("$Id: lib_win32con.c,v 1.44 2025/11/29 21:45:49 tom Exp $")
+#ifndef _O_BINARY
+#define _O_BINARY 0		/* FIXME: not defined in MSYS2 base */
+#endif
+
+MODULE_ID("$Id: lib_win32con.c,v 1.46 2025/12/20 22:27:50 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -110,10 +115,10 @@ _nc_console_vt_supported(void)
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
     GetVersionEx(&osvi);
-    T(("GetVersionEx returnedMajor=%ld, Minor=%ld, Build=%ld",
-       osvi.dwMajorVersion,
-       osvi.dwMinorVersion,
-       osvi.dwBuildNumber));
+    T(("GetVersionEx returnedMajor=%lu, Minor=%lu, Build=%lu",
+       (unsigned long) osvi.dwMajorVersion,
+       (unsigned long) osvi.dwMinorVersion,
+       (unsigned long) osvi.dwBuildNumber));
     if (osvi.dwMajorVersion >= REQUIRED_MAX_V) {
 	if (osvi.dwMajorVersion == REQUIRED_MAX_V) {
 	    if (((osvi.dwMinorVersion == REQUIRED_MIN_V) &&
@@ -236,7 +241,7 @@ _nc_console_fd2handle(int fd)
     return hdl;
 }
 
-#if defined(_NC_WINDOWS)
+#if defined(_NC_WINDOWS) && USE_WINCONMODE
 NCURSES_EXPORT(int)
 _nc_console_setmode(HANDLE hdl, const TTY * arg)
 {
@@ -311,7 +316,7 @@ _nc_console_getmode(HANDLE hdl, TTY * arg)
     T(("lib_win32con:_nc_console_getmode %s", _nc_trace_ttymode(arg)));
     return (code);
 }
-#endif
+#endif /* defined(_NC_WINDOWS) && USE_WINCONMODE */
 
 NCURSES_EXPORT(int)
 _nc_console_flush(HANDLE hdl)
@@ -868,7 +873,7 @@ _nc_console_twait(
 		    T(("twait:err GetNumberOfConsoleInputEvents"));
 		}
 		if (isNoDelay && b) {
-		    T(("twait: Events Available: %ld", nRead));
+		    T(("twait: Events Available: %lu", (unsigned long) nRead));
 		    if (nRead == 0) {
 			code = 0;
 			goto end;
@@ -972,7 +977,7 @@ _nc_console_twait(
   end:
 
     TR(TRACE_IEVENT, ("end twait: returned %d (%lu), remaining time %d msec",
-		      code, GetLastError(), milliseconds));
+		      code, (unsigned long) GetLastError(), milliseconds));
 
     if (timeleft)
 	*timeleft = milliseconds;
@@ -1079,6 +1084,7 @@ _nc_console_read(
     returnCode(rc);
 }
 
+#if defined(USE_TERM_DRIVER) && (USE_NAMED_PIPES || defined(USE_WIN32CON_DRIVER))
 /*   Our replacement for the systems _isatty to include also
      a test for mintty. This is called from the NC_ISATTY macro
      defined in curses.priv.h
@@ -1094,7 +1100,7 @@ _nc_console_isatty(int fd)
     int result = 0;
     T((T_CALLED("lib_win32con::_nc_console_isatty(%d"), fd));
 
-    if (_isatty(fd))
+    if (isatty(fd))
 	result = 1;
 #ifdef _NC_CHECK_MINTTY
     else {
@@ -1110,7 +1116,9 @@ _nc_console_isatty(int fd)
 #endif
     returnCode(result);
 }
+#endif /* defined(USE_TERM_DRIVER) && (USE_NAMED_PIPES || defined(USE_WIN32CON_DRIVER)) */
 
+#if USE_WINCONMODE
 NCURSES_EXPORT(bool)
 _nc_console_checkinit(bool initFlag, bool assumeTermInfo)
 {
@@ -1244,6 +1252,7 @@ _nc_console_checkinit(bool initFlag, bool assumeTermInfo)
     }
     returnBool(res);
 }
+#endif /* USE_WINCONMODE */
 
 NCURSES_EXPORT(bool)
 _nc_console_restore(void)
@@ -1263,7 +1272,7 @@ _nc_console_restore(void)
     returnBool(res);
 }
 
-#if !defined(EXP_WIN32_DRIVER)
+#if !USE_NAMED_PIPES
 NCURSES_EXPORT(bool)
 _nc_mingw_init(void)
 {
@@ -1364,6 +1373,6 @@ _nc_mingw_init(void)
     }
     return (WINCONSOLE.hdl != INVALID_HANDLE_VALUE);
 }
-#endif // EXP_WIN32_DRIVER
+#endif // USE_NAMED_PIPES
 
 #endif // _NC_WINDOWS

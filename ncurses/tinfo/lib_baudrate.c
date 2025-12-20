@@ -84,7 +84,7 @@
 #undef USE_OLD_TTY
 #endif /* USE_OLD_TTY */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.48 2025/10/18 17:56:35 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.49 2025/12/14 10:54:13 tom Exp $")
 
 /*
  *	int
@@ -189,7 +189,7 @@ static struct speed const speeds[] =
 #endif
 #endif
 };
-#endif /* !EXP_WIN32_DRIVER */
+#endif /* !USE_NAMED_PIPES */
 
 NCURSES_EXPORT(int)
 _nc_baudrate(int OSpeed)
@@ -237,7 +237,7 @@ _nc_baudrate(int OSpeed)
 #endif
     }
     return (result);
-#endif /* !EXP_WIN32_DRIVER */
+#endif /* !USE_NAMED_PIPES */
 }
 
 NCURSES_EXPORT(int)
@@ -305,7 +305,7 @@ NCURSES_SP_NAME(baudrate) (NCURSES_SP_DCL0)
     } else {
 	result = ERR;
     }
-#endif /* !EXP_WIN32_DRIVER */
+#endif /* !USE_NAMED_PIPES */
     returnCode(result);
 }
 

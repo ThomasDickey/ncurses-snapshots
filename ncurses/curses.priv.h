@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.733 2025/11/29 16:17:08 tom Exp $
+ * $Id: curses.priv.h,v 1.736 2025/12/20 22:21:27 tom Exp $
  *
  *	curses.priv.h
  *
@@ -92,8 +92,6 @@ extern int errno;
 #undef _NC_WINDOWS
 #if (defined(_WIN32) || defined(_WIN64__) || defined(__MSYS__))
 #define _NC_WINDOWS
-#else
-#undef EXP_WIN32_DRIVER
 #endif
 
 #undef _NC_CYGWIN
@@ -422,6 +420,12 @@ typedef TRIES {
 
 #if defined(_NC_WINDOWS)
 #include <nc_win32.h>
+#endif
+
+#if defined(USE_TERM_DRIVER) && defined(TERMIOS)
+#undef  USE_NAMED_PIPES
+#define USE_NAMED_PIPES 0
+#undef  USE_WIN32CON_DRIVER
 #endif
 
 typedef struct
@@ -1239,7 +1243,7 @@ typedef struct screen {
 	int		_sysmouse_new_buttons;
 #endif
 
-#if defined(USE_TERM_DRIVER) || defined(EXP_WIN32_DRIVER)
+#if defined(USE_TERM_DRIVER) || USE_NAMED_PIPES
 	MEVENT		_drv_mouse_fifo[FIFO_SIZE];
 	int		_drv_mouse_head;
 	int		_drv_mouse_tail;
@@ -2278,7 +2282,7 @@ extern NCURSES_EXPORT(int) _nc_eventlist_timeout(_nc_eventlist *);
  */
 #if USE_WIDEC_SUPPORT
 
-#if defined(_NC_WINDOWS_NATIVE) && !defined(_NC_MSC) && !defined(EXP_WIN32_DRIVER)
+#if defined(_NC_WINDOWS_NATIVE) && !defined(_NC_MSC) && !USE_NAMED_PIPES
 /*
  * MinGW has wide-character functions, but they do not work correctly.
  */
@@ -2549,7 +2553,7 @@ extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 	_nc_setupterm(name, fd, err, reuse)
 #endif /* !USE_TERM_DRIVER */
 
-#ifdef EXP_WIN32_DRIVER
+#if USE_NAMED_PIPES
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #else
@@ -2557,22 +2561,23 @@ extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 #if defined(USE_WIN32CON_DRIVER)
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
 extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
-#ifdef TERMIOS
-extern NCURSES_EXPORT(int) _nc_mingw_tcflush(int fd, int queue);
-extern NCURSES_EXPORT(int) _nc_mingw_tcgetattr(int fd, struct termios *arg);
-extern NCURSES_EXPORT(int)  _nc_mingw_tcsetattr(int fd, int optional_actions, const struct termios* arg);
-#endif
 #endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #endif /* USE_TERM_DRIVER */
-#endif /* EXP_WIN32_DRIVER */
+#endif /* USE_NAMED_PIPES */
 
 #ifdef _NC_WINDOWS
 
+#ifdef TERMIOS
+#define USE_WINCONMODE 0
+#else
+#define USE_WINCONMODE 1
+extern NCURSES_EXPORT(int)  _nc_console_setmode(void* handle, const ConsoleMode* arg);
+extern NCURSES_EXPORT(int)  _nc_console_getmode(void* handle, ConsoleMode* arg);
+#endif
+
 extern NCURSES_EXPORT(bool)  _nc_console_checkinit(bool initFlag, bool assumeTermInfo);
 extern NCURSES_EXPORT(void*) _nc_console_fd2handle(int fd);
-extern NCURSES_EXPORT(int)  _nc_console_setmode(void* handle, const struct winconmode* arg);
-extern NCURSES_EXPORT(int)  _nc_console_getmode(void* handle, struct winconmode* arg);
 extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(int)  _nc_console_flush(void* handle);
 extern NCURSES_EXPORT(bool) _nc_console_get_SBI(void);
@@ -2596,7 +2601,7 @@ extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 
 #endif /* _NC_WINDOWS */
 
-#if defined(USE_TERM_DRIVER) && (defined(EXP_WIN32_DRIVER) || defined(USE_WIN32CON_DRIVER))
+#if defined(USE_TERM_DRIVER) && (USE_NAMED_PIPES || defined(USE_WIN32CON_DRIVER))
 #define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
 #else
 #define NC_ISATTY(fd) isatty(fd)
@@ -2613,7 +2618,7 @@ extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #ifdef USE_TERM_DRIVER
 #  define IsTermInfo(sp)       ((TCBOf(sp) != NULL) && ((TCBOf(sp)->drv->isTerminfo)))
 #  define HasTInfoTerminal(sp) ((NULL != TerminalOf(sp)) && IsTermInfo(sp))
-#  if defined(EXP_WIN32_DRIVER)
+#  if USE_NAMED_PIPES
 #    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))
 #  elif defined(USE_WIN32CON_DRIVER)
 #    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))
@@ -2623,7 +2628,7 @@ extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #else
 #  define IsTermInfo(sp)       TRUE
 #  define HasTInfoTerminal(sp) (NULL != TerminalOf(sp))
-#  if defined(EXP_WIN32_DRIVER)
+#  if USE_NAMED_PIPES
 #    define IsTermInfoOnConsole(sp) _nc_console_test(TerminalOf(sp)->Filedes)
 #  else
 #    define IsTermInfoOnConsole(sp) FALSE

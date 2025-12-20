@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h.in,v 1.14 2025/12/13 22:32:27 tom Exp $ */
+/* $Id: nc_win32.h.in,v 1.17 2025/12/20 22:24:07 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -96,15 +96,11 @@
 
 #include <stdint.h>		/* for uint32_t */
 
-#ifdef CURSES_PRIV_H	/* test.priv.h just needs the preceding */
-#include <term.h>
-#endif
-
 /*
  * Allow for build-override, e.g., MinGW used "cygwin".
  */
-#ifndef MS_TERMINAL
-#define MS_TERMINAL "ms-terminal"
+#ifndef DEFAULT_TERM_ENV
+#define DEFAULT_TERM_ENV "ms-terminal"
 #endif
 
 #undef VALID_TERM_ENV
@@ -112,7 +108,7 @@
 	(term_env = (NonEmpty(term_env) \
 		      ? term_env \
 		      : (_nc_console_vt_supported() \
-		         ? MS_TERMINAL \
+		         ? DEFAULT_TERM_ENV \
 		         : no_terminal)), \
 	 NonEmpty(term_env))
 
@@ -155,7 +151,11 @@ extern NCURSES_EXPORT(int) _nc_gettimeofday(struct timeval *, void *);
 extern NCURSES_EXPORT(int) _nc_wcwidth(uint32_t);
 #endif
 
-#ifdef TTY
+typedef struct
+{
+    DWORD dwFlagIn;
+    DWORD dwFlagOut;
+} ConsoleMode;
 
 #define CON_NUMPAIRS 64
 typedef struct {
@@ -181,16 +181,18 @@ typedef struct {
     CONSOLE_SCREEN_BUFFER_INFO SBI;
     CONSOLE_SCREEN_BUFFER_INFO save_SBI;
     CONSOLE_CURSOR_INFO save_CI;
-    TTY originalMode;
+    ConsoleMode originalMode;
 } ConsoleInfo;
 
 extern NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 #define WINCONSOLE _nc_CONSOLE
 
-#endif /* TTY */
-
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef CURSES_PRIV_H	/* test.priv.h just needs the preceding */
+#include <term.h>
 #endif
 
 #endif /* _WIN32 || _WIN64 */

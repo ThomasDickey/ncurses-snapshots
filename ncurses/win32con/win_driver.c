@@ -42,7 +42,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.115 2025/11/29 23:45:48 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.116 2025/12/19 21:26:52 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -1210,75 +1210,3 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_WIN_DRIVER = {
 	wcon_kyExist,		/* kyExist       */
 	wcon_cursorSet		/* cursorSet     */
 };
-
-#ifdef _NCURSES_MINGW_H
-
-/* --------------------------------------------------------- */
-
-#define TC_PROLOGUE(fd) \
-    SCREEN *sp;                                               \
-    TERMINAL *term = NULL;                                    \
-    int code = ERR;                                           \
-    if (_nc_screen_chain == NULL)                             \
-        return 0;                                             \
-    for (each_screen(sp)) {                                   \
-        if (sp->_term && (sp->_term->Filedes == fd)) {        \
-            term = sp->_term;                                 \
-            break;                                            \
-        }                                                     \
-    }                                                         \
-    assert(term != NULL)
-
-/* replace by _nc_console_setmode */
-NCURSES_EXPORT(int)
-_nc_mingw_tcsetattr(
-		       int fd,
-		       int optional_action GCC_UNUSED,
-		       const struct termios *arg)
-{
-    TC_PROLOGUE(fd);
-
-    if (_nc_console_test(fd)) {
-	DWORD dwFlag = 0;
-	HANDLE ofd = _nc_console_handle(fd);
-	if (ofd != INVALID_HANDLE_VALUE) {
-	    if (arg) {
-		if (arg->c_lflag & ICANON)
-		    dwFlag |= ENABLE_LINE_INPUT;
-		else
-		    dwFlag = dwFlag & (DWORD) (~ENABLE_LINE_INPUT);
-
-		if (arg->c_lflag & ECHO)
-		    dwFlag = dwFlag | ENABLE_ECHO_INPUT;
-		else
-		    dwFlag = dwFlag & (DWORD) (~ENABLE_ECHO_INPUT);
-
-		if (arg->c_iflag & BRKINT)
-		    dwFlag |= ENABLE_PROCESSED_INPUT;
-		else
-		    dwFlag = dwFlag & (DWORD) (~ENABLE_PROCESSED_INPUT);
-	    }
-	    dwFlag |= ENABLE_MOUSE_INPUT;
-	    SetConsoleMode(ofd, dwFlag);
-	    code = OK;
-	}
-    }
-    if (arg)
-	term->Nttyb = *arg;
-
-    return code;
-}
-
-/* replace by _nc_console_getmode */
-NCURSES_EXPORT(int)
-_nc_mingw_tcgetattr(int fd, struct termios *arg)
-{
-    TC_PROLOGUE(fd);
-
-    if (_nc_console_test(fd)) {
-	if (arg)
-	    *arg = term->Nttyb;
-    }
-    return code;
-}
-#endif
