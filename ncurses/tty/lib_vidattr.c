@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -70,7 +70,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.80 2024/12/07 20:08:15 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.81 2025/12/27 12:41:23 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \
@@ -380,7 +380,7 @@ NCURSES_SP_NAME(termattrs) (NCURSES_SP_DCL0)
     T((T_CALLED("termattrs(%p)"), (void *) SP_PARM));
 
     if (HasTerminal(SP_PARM)) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	attrs = CallDriver(SP_PARM, td_conattr);
 #else /* ! USE_TERM_DRIVER */
 

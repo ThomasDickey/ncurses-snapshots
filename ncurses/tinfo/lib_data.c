@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.94 2025/02/20 01:02:09 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.95 2025/12/27 12:33:34 tom Exp $")
 
 /*
  * OS/2's native linker complains if we don't initialize public data when
@@ -161,7 +161,7 @@ NCURSES_EXPORT_VAR(NCURSES_GLOBALS) _nc_globals = {
     0,				/* count_tparm */
 #endif /* HAVE_TSEARCH */
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     NULL,			/* term_driver */
 #endif
 

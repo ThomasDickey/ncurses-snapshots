@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4384 2025/12/14 15:37:36 tom Exp $
+-- $Id: NEWS,v 1.4387 2025/12/26 23:34:01 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20251227
+	+ make win32_curses.h obsolete in favor of nc_win32.h
+	+ modify MinGW32 configuration to account for its use of Windows-style
+	  pathnames in filesystem checks.
+	+ replace --enable-exp-win32 option with --enable-named-pipes
 
 20251220
 	> in-progress work to merge MinGW/Windows port.

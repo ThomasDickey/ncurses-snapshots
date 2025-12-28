@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h.in,v 1.17 2025/12/20 22:24:07 tom Exp $ */
+/* $Id: nc_win32.h.in,v 1.19 2025/12/26 23:32:43 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -194,6 +194,18 @@ extern NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 #ifdef CURSES_PRIV_H	/* test.priv.h just needs the preceding */
 #include <term.h>
 #endif
+
+#if USE_DOS_PATHS
+NCURSES_EXPORT(const char *) _nc_to_dospath(const char *, char *);
+#define FixupPathname(path) \
+	char fixed_pathname[PATH_MAX]; \
+	path = _nc_to_dospath(path, fixed_pathname)
+#define FixupPathname2(path,buffer) \
+	path = _nc_to_dospath(path, buffer)
+#endif
+
+#undef  ttyname
+#define ttyname(fd) NULL
 
 #endif /* _WIN32 || _WIN64 */
 

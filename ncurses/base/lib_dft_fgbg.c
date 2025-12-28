@@ -38,7 +38,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.33 2025/01/18 14:47:35 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.34 2025/12/27 12:28:45 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -70,7 +70,7 @@ NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 
     T((T_CALLED("assume_default_colors(%p,%d,%d)"), (void *) SP_PARM, fg, bg));
     if (SP_PARM != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	code = CallDriver_2(SP_PARM, td_defaultcolors, fg, bg);
 #else
 	if ((orig_pair || orig_colors) && !initialize_pair) {

@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.39 2025/12/14 15:38:45 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.40 2025/12/27 12:33:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
@@ -54,7 +54,7 @@ NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
 	result = ERR;
     } else {
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	if (SP_PARM != NULL) {
 	    result = CallDriver_2(SP_PARM, td_sgmode, FALSE, buf);
 	} else {
@@ -102,7 +102,7 @@ NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_DCLx TTY * buf)
 	if (NULL == termp) {
 	    result = ERR;
 	} else {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	    result = CallDriver_2(SP_PARM, td_sgmode, TRUE, buf);
 #else
 	    for (;;) {
@@ -146,7 +146,7 @@ NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_DCL0)
        (void *) SP_PARM, (void *) termp));
 
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	rc = CallDriver_2(SP_PARM, td_mode, FALSE, TRUE);
 #else
 	/*
@@ -186,7 +186,7 @@ NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_DCL0)
     T((T_CALLED("def_prog_mode(%p) ->term %p"), (void *) SP_PARM, (void *) termp));
 
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	rc = CallDriver_2(SP_PARM, td_mode, TRUE, TRUE);
 #else
 	/*
@@ -224,7 +224,7 @@ NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_DCL0)
     T((T_CALLED("reset_prog_mode(%p) ->term %p"), (void *) SP_PARM, (void *) termp));
 
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	rc = CallDriver_2(SP_PARM, td_mode, TRUE, FALSE);
 #else
 	if (_nc_set_tty_mode(&termp->Nttyb) == OK) {
@@ -257,7 +257,7 @@ NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_DCL0)
        (void *) SP_PARM, (void *) termp));
 
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	rc = CallDriver_2(SP_PARM, td_mode, FALSE, FALSE);
 #else
 	if (SP_PARM) {

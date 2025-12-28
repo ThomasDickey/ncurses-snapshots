@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.216 2025/12/14 10:52:57 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.217 2025/12/27 12:31:03 tom Exp $")
 
 #include <tic.h>
 
@@ -379,7 +379,7 @@ handle_sysmouse(int sig GCC_UNUSED)
 }
 #endif /* USE_SYSMOUSE */
 
-#if !defined(USE_TERM_DRIVER) || USE_NAMED_PIPES
+#if !USE_TERM_DRIVER || USE_NAMED_PIPES
 #define xterm_kmous "\033[M"
 
 static void
@@ -452,7 +452,7 @@ enable_xterm_mouse(SCREEN *sp, bool enable)
     sp->_mouse_active = enable;
 }
 
-#if defined(USE_TERM_DRIVER)
+#if USE_TERM_DRIVER
 static void
 enable_win32_mouse(SCREEN *sp, bool enable)
 {
@@ -753,10 +753,10 @@ initialize_mousetype(SCREEN *sp)
     }
 #endif /* USE_SYSMOUSE */
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     CallDriver(sp, td_initmouse);
 #endif
-#if !defined(USE_TERM_DRIVER) || USE_NAMED_PIPES
+#if !USE_TERM_DRIVER || USE_NAMED_PIPES
     /* we know how to recognize mouse events under "xterm" */
     if (NonEmpty(key_mouse)) {
 	init_xterm_mouse(sp);
@@ -905,7 +905,7 @@ _nc_mouse_event(SCREEN *sp)
 	break;
 #endif /* USE_SYSMOUSE */
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     case M_TERM_DRIVER:
 	while (sp->_drv_mouse_head < sp->_drv_mouse_tail) {
 	    *eventp = sp->_drv_mouse_fifo[sp->_drv_mouse_head];
@@ -1443,7 +1443,7 @@ mouse_activate(SCREEN *sp, bool on)
 	    sp->_mouse_active = TRUE;
 	    break;
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	case M_TERM_DRIVER:
 	    enable_win32_mouse(sp, TRUE);
 	    break;
@@ -1480,7 +1480,7 @@ mouse_activate(SCREEN *sp, bool on)
 	    sp->_mouse_active = FALSE;
 	    break;
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	case M_TERM_DRIVER:
 	    enable_win32_mouse(sp, FALSE);
 	    break;
@@ -1785,7 +1785,7 @@ _nc_mouse_wrap(SCREEN *sp)
 	mouse_activate(sp, FALSE);
 	break;
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     case M_TERM_DRIVER:
 	mouse_activate(sp, FALSE);
 	break;
@@ -1822,7 +1822,7 @@ _nc_mouse_resume(SCREEN *sp)
 	break;
 #endif
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     case M_TERM_DRIVER:
 	mouse_activate(sp, TRUE);
 	break;

@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.86 2025/12/20 21:36:30 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.88 2025/12/27 12:33:34 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -123,7 +123,7 @@ get_baudrate(TERMINAL *termp)
     if (GET_TTY(termp->Filedes, &termp->Nttyb) == OK) {
 #ifdef TERMIOS
 	termp->Nttyb.c_oflag &= (unsigned) (~OFLAGS_TABS);
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
 	/* noop */
 #else
 	termp->Nttyb.sg_flags &= (unsigned) (~XTABS);
@@ -135,7 +135,7 @@ get_baudrate(TERMINAL *termp)
 #else /* !USE_OLD_TTY */
 #ifdef TERMIOS
     my_ospeed = (NCURSES_OSPEED) cfgetospeed(&(termp->Nttyb));
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
     /* noop */
     my_ospeed = 0;
 #else
@@ -433,7 +433,7 @@ drv_size(TERMINAL_CONTROL_BLOCK * TCB, int *linep, int *colp)
 	useTioctl = _nc_prescreen.use_tioctl;
     }
 
-#ifdef _NC_WINDOWS
+#ifdef USE_WIN32CON_DRIVER
     /* If we are here, then Windows console is used in terminfo mode.
        We need to figure out the size using the console API
      */
@@ -618,7 +618,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 	    if ((drv_sgmode(TCB, FALSE, &(_term->Nttyb)) == OK)) {
 #ifdef TERMIOS
 		_term->Nttyb.c_oflag &= (unsigned) ~OFLAGS_TABS;
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
 		/* noop */
 #else
 		_term->Nttyb.sg_flags &= (unsigned) ~XTABS;
@@ -632,7 +632,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		    if (sp->_keypad_on)
 			_nc_keypad(sp, TRUE);
 		}
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
 		if (!WINCONSOLE.buffered)
 		    _nc_console_set_scrollback(FALSE, &WINCONSOLE.SBI);
 #endif
@@ -649,7 +649,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 #ifdef TERMIOS
 		if (_term->Ottyb.c_oflag & OFLAGS_TABS)
 		    tab = back_tab = NULL;
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
 		/* noop */
 #else
 		if (_term->Ottyb.sg_flags & XTABS)
@@ -961,7 +961,7 @@ drv_testmouse(TERMINAL_CONTROL_BLOCK * TCB,
     } else
 #endif
     {
-#ifdef _NC_WINDOWS
+#if defined(USE_WIN32CON_DRIVER)
 	rc = _nc_console_testmouse(sp,
 				   _nc_console_handle(sp->_ifd),
 				   delay
@@ -1270,7 +1270,7 @@ drv_twait(TERMINAL_CONTROL_BLOCK * TCB,
 
     AssertTCB();
     SetSP();
-#ifdef _NC_WINDOWS
+#if defined(USE_WIN32CON_DRIVER)
     return _nc_console_twait(sp,
 			     _nc_console_handle(sp->_ifd),
 			     mode,
@@ -1286,7 +1286,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
 {
     SCREEN *sp;
     int n;
-#ifndef _NC_WINDOWS
+#if !defined(USE_WIN32CON_DRIVER)
     unsigned char c2 = 0;
 #endif
 
@@ -1295,7 +1295,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
     SetSP();
 
     _nc_set_read_thread(TRUE);
-#ifdef _NC_WINDOWS
+#if defined(USE_WIN32CON_DRIVER)
     n = _nc_console_read(sp,
 			 _nc_console_handle(sp->_ifd),
 			 buf);
@@ -1303,7 +1303,7 @@ drv_read(TERMINAL_CONTROL_BLOCK * TCB, int *buf)
     n = (int) read(sp->_ifd, &c2, (size_t) 1);
 #endif
     _nc_set_read_thread(FALSE);
-#ifndef _NC_WINDOWS
+#if !defined(USE_WIN32CON_DRIVER)
     *buf = (int) c2;
 #endif
     return n;
@@ -1322,7 +1322,7 @@ drv_nap(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int ms)
 	    request = remaining;
 	}
     }
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
     Sleep((DWORD) ms);
 #else
     _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
@@ -1502,7 +1502,7 @@ NCURSES_EXPORT_VAR (TERM_DRIVER) _nc_TINFO_DRIVER = {
 	drv_cursorSet		/* cursorSet */
 };
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 /*
  * The terminfo driver is mandatory and must always be present.
  * So this is the natural place for the driver initialisation
@@ -1537,7 +1537,7 @@ _nc_get_driver(TERMINAL_CONTROL_BLOCK * TCB, const char *name, int *errret)
 
     for (i = 0; i < SIZEOF(DriverTable); i++) {
 	res = DriverTable[i].driver;
-#ifdef _NC_WINDOWS
+#if defined(USE_WIN32CON_DRIVER)
 	if ((i + 1) == SIZEOF(DriverTable)) {
 	    /* For Windows >= 10.0.17763 Windows Console interface implements
 	       virtual Terminal functionality.

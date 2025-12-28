@@ -37,6 +37,7 @@ CONFIG_OPTIONS = \
 	--disable-overwrite \
 	--disable-termcap \
 	--enable-interop \
+	--enable-named-pipes \
 	--enable-opaque-curses \
 	--enable-opaque-form \
 	--enable-opaque-menu \

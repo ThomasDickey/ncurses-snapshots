@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_options.c,v 1.85 2024/12/07 18:24:47 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.86 2025/12/27 12:41:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -58,7 +58,7 @@ idlok(WINDOW *win, bool flag)
     if (win) {
 	SCREEN *sp = _nc_screen_of(win);
 	if (sp != NULL
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	    && IsTermInfo(sp)
 #endif
 	    ) {
@@ -167,7 +167,7 @@ meta(WINDOW *win GCC_UNUSED, bool flag)
 
     if (sp != NULL) {
 	sp->_use_meta = flag;
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	if (IsTermInfo(sp)) {
 	    if (flag) {
 		NCURSES_PUTP2("meta_on", meta_on);
@@ -200,7 +200,7 @@ NCURSES_SP_NAME(curs_set) (NCURSES_SP_DCLx int vis)
 	if (vis == cursor) {
 	    code = cursor;
 	} else {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	    code = CallDriver_1(SP_PARM, td_cursorSet, vis);
 #else
 	    if (IsValidTIScreen(SP_PARM)) {
@@ -278,7 +278,7 @@ has_key_internal(int keycode, TRIES * tp)
 		|| has_key_internal(keycode, tp->sibling));
 }
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 NCURSES_EXPORT(int)
 TINFO_HAS_KEY(SCREEN *sp, int keycode)
 {
@@ -354,7 +354,7 @@ _nc_keypad(SCREEN *sp, bool flag)
 	} else
 #endif
 	{
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	    rc = CallDriver_1(sp, td_kpad, flag);
 	    if (rc == OK)
 		sp->_keypad_on = flag;

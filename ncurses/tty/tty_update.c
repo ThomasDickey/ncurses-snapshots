@@ -91,7 +91,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tty_update.c,v 1.322 2025/11/29 19:03:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.323 2025/12/27 12:34:03 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1099,7 +1099,7 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
     returnCode(OK);
 }
 
-#if NCURSES_SP_FUNCS && !defined(USE_TERM_DRIVER)
+#if NCURSES_SP_FUNCS && !USE_TERM_DRIVER
 NCURSES_EXPORT(int)
 doupdate(void)
 {

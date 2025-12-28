@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.166 2025/07/05 12:36:24 Branden.Robinson Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.167 2025/12/27 12:34:03 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -1093,7 +1093,7 @@ _nc_mvcur(int yold, int xold,
 }
 #endif
 
-#if defined(USE_TERM_DRIVER)
+#if USE_TERM_DRIVER
 /*
  * The terminal driver does not support the external "mvcur()".
  */

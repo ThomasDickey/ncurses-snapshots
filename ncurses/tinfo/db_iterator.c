@@ -44,7 +44,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: db_iterator.c,v 1.53 2025/01/12 00:41:56 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.54 2025/12/25 18:19:46 tom Exp $")
 
 #define HaveTicDirectory _nc_globals.have_tic_directory
 #define KeepTicDirectory _nc_globals.keep_tic_directory
@@ -75,7 +75,7 @@ check_existence(const char *name, struct stat *sb)
 
     if (quick_prefix(name)) {
 	result = TRUE;
-    } else if (stat(name, sb) == 0
+    } else if (_nc_is_path_found(name, sb)
 	       && (S_ISDIR(sb->st_mode)
 		   || (S_ISREG(sb->st_mode) && sb->st_size))) {
 	result = TRUE;
@@ -84,7 +84,7 @@ check_existence(const char *name, struct stat *sb)
     else if (strlen(name) < PATH_MAX - sizeof(DBM_SUFFIX)) {
 	char temp[PATH_MAX];
 	_nc_SPRINTF(temp, _nc_SLIMIT(sizeof(temp)) "%s%s", name, DBM_SUFFIX);
-	if (stat(temp, sb) == 0 && S_ISREG(sb->st_mode) && sb->st_size) {
+	if (_nc_is_path_found(temp, sb) && S_ISREG(sb->st_mode) && sb->st_size) {
 	    result = TRUE;
 	}
     }

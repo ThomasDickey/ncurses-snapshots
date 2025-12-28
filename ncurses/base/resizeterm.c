@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.60 2025/11/12 01:27:41 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.61 2025/12/27 12:28:45 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -407,7 +407,7 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	    screen_lines(SP_PARM) = (NCURSES_SIZE_T) ToLines;
 	    screen_columns(SP_PARM) = (NCURSES_SIZE_T) ToCols;
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	    CallDriver_2(SP_PARM, td_setsize, ToLines, ToCols);
 #else
 	    lines = (NCURSES_INT2) ToLines;

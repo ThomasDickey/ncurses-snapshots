@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.818 2025/12/13 17:58:18 tom Exp $
+dnl $Id: configure.in,v 1.824 2025/12/27 00:12:13 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,9 +38,10 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.818 $)
-AC_INIT(ncurses/base/lib_initscr.c)
-AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
+AC_REVISION($Revision: 1.824 $)
+AC_INIT
+AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
+AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
 
 AC_DEFUN([AC_PATH_XTRA],[])dnl ignore dependencies on this
 
@@ -102,13 +103,13 @@ else
 		save_CPPFLAGS="$CPPFLAGS"
 		eval cf_includedir=${includedir}
 		CPPFLAGS="$CPPFLAGS -I${cf_includedir}"
-		AC_TRY_COMPILE([
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #include <stdlib.h>
 #include <stdio.h>
 ],
 		[
 		printf("Hello world!\n")
-		],
+		])],
 		[cf_cxx_works=yes],
 		[cf_cxx_works=no])
 		CPPFLAGS="$save_CPPFLAGS"
@@ -448,13 +449,13 @@ for model in $cf_list_models ; do
 		;;
 	(shared)
 		if test "$CC_SHARED_OPTS" = "unknown"; then
-			AC_ERROR(Shared libraries are not supported in this version)
+			AC_MSG_ERROR(Shared libraries are not supported in this version)
 		fi
 		# workaround for inept transition to PIE vs PIC...
 		AC_MSG_CHECKING(if current CFLAGS link properly)
-		AC_TRY_LINK(
+		AC_LINK_IFELSE([AC_LANG_PROGRAM(
 			[#include <stdio.h>],
-			[printf("Hello work\\n");],
+			[printf("Hello work\\n");])],
 			[cf_cflags_work=yes],
 			[cf_cflags_work=no])
 		AC_MSG_RESULT($cf_cflags_work)
@@ -743,14 +744,14 @@ NCURSES_USE_TERMCAP=0
 if test "x$with_termcap" != "xyes" ; then
 	if test "$use_database" = no ; then
 		if test -z "$with_fallback" ; then
-			AC_ERROR(You have disabled the database w/o specifying fallbacks)
+			AC_MSG_ERROR(You have disabled the database w/o specifying fallbacks)
 		fi
 	fi
 	AC_DEFINE(PURE_TERMINFO,1,[Define to 1 if we should support only terminfo])
 else
 
 	if test "$with_ticlib" != no ; then
-		AC_ERROR(Options --with-ticlib and --enable-termcap cannot be combined)
+		AC_MSG_ERROR(Options --with-ticlib and --enable-termcap cannot be combined)
 	fi
 
 	NCURSES_USE_TERMCAP=1
@@ -1144,11 +1145,20 @@ fi
 AC_SUBST(NCURSES_SP_FUNCS)
 AC_SUBST(GENERATED_SP_FUNCS)
 
+case "$cf_cv_system_name" in
+(*mingw32*|*mingw64*|*-msvc*)
+	cf_dft_term_driver=yes
+	;;
+(*)
+	cf_dft_term_driver=no
+	;;
+esac
+
 AC_MSG_CHECKING(if you want to build with terminal-driver)
 AC_ARG_ENABLE(term-driver,
 	[  --enable-term-driver    enable terminal-driver],
 	[with_term_driver=$enableval],
-	[with_term_driver=no])
+	[with_term_driver=$cf_dft_term_driver])
 AC_MSG_RESULT($with_term_driver)
 if test "x$with_term_driver" = xyes ; then
 	AC_DEFINE(USE_TERM_DRIVER,1,[Define to 1 to enable terminal-driver])
@@ -1278,6 +1288,44 @@ if test "x$with_tcap_names" = xyes; then
 	AC_DEFINE(NCURSES_XNAMES,1,[Define to 1 to compile with user-definable terminal capabilities])
 fi
 AC_SUBST(NCURSES_XNAMES)
+
+##############################################################################
+
+USE_NAMED_PIPES=0
+INTERNALS_HDR=
+
+case "$cf_cv_system_name" in
+(*mingw32*|*mingw64*|*-msvc*)
+	CF_CHECK_NAMED_PIPES
+	if test "$cf_cv_named_pipes" = yes; then
+		AC_MSG_CHECKING(if you want to use named pipes with -Windows driver)
+		AC_ARG_ENABLE(named-pipes,
+			[  --enable-named-pipes    use named pipes with Windows driver],
+			[with_named_pipes=$enableval],
+			[with_named_pipes=no])
+		AC_MSG_RESULT($with_named_pipes)
+	else
+		with_named_pipes=no
+	fi
+	if test "x$with_named_pipes" = xyes
+	then
+		AC_DEFINE(USE_NAMED_PIPES,1,[Define to 1 to use named pipes with win32 driver])
+		USE_NAMED_PIPES=1
+	fi
+	INTERNALS_HDR='../include/nc_win32.h'
+	# MinGW32 sets $WD to its directory.
+	if test -n "$WD"
+	then
+		if test -d "$WD"
+		then
+			AC_DEFINE(USE_DOS_PATHS,1,[Define to 1 to use DOS pathnames internally])
+		fi
+	fi
+	;;
+esac
+
+AC_SUBST(USE_NAMED_PIPES)
+AC_SUBST(INTERNALS_HDR)
 
 ##############################################################################
 CF_HELP_MESSAGE(Reentrant Code:)
@@ -1576,33 +1624,13 @@ fi
 esac
 AC_SUBST(NCURSES_WGETCH_EVENTS)
 
-USE_NAMED_PIPES=0
-INTERNALS_HDR=
-
 case "$cf_cv_system_name" in
 (*mingw32*|*mingw64*|*-msvc*)
-	CF_CHECK_NAMED_PIPES
-	if test "$cf_cv_named_pipes" = yes; then
-		AC_MSG_CHECKING(if you want to use named pipes with -Windows driver)
-		AC_ARG_ENABLE(exp-win32,
-			[  --enable-exp-win32      use named pipes with Windows driver],
-			[with_named_pipes=$enableval],
-			[with_named_pipes=no])
-		AC_MSG_RESULT($with_named_pipes)
-	else
-		with_named_pipes=no
-	fi
-	if test "x$with_named_pipes" = xyes
-	then
-		AC_DEFINE(USE_NAMED_PIPES,1,[Define to 1 to use named pipes with win32 driver])
-		USE_NAMED_PIPES=1
-	fi
-	INTERNALS_HDR='../include/nc_win32.h'
+	AC_ARG_ENABLE(exp-win32,
+		[  --enable-exp-win32      obsolete option for Windows driver],
+		[AC_MSG_WARN(The --enable-exp-win32 option is obsolete)])
 	;;
 esac
-
-AC_SUBST(USE_NAMED_PIPES)
-AC_SUBST(INTERNALS_HDR)
 
 ###############################################################################
 CF_HELP_MESSAGE(Testing/development Options:)
@@ -1765,7 +1793,7 @@ fi
 CF_SYS_TIME_SELECT
 
 ###	checks for compiler characteristics
-AC_LANG_C
+AC_LANG([C])
 AC_C_CONST
 CF_C_INLINE(NCURSES_INLINE,1200)
 CF_SIG_ATOMIC_T
@@ -1872,7 +1900,7 @@ CF_FUNC_MEMMOVE
 CF_FUNC_POLL
 CF_MB_LEN_MAX
 CF_VA_COPY
-AC_FUNC_VFORK
+AC_FUNC_FORK([])
 CF_FOPEN_BIN_R
 CF_CHECK_TYPE2(cc_t,termios.h)
 CF_CHECK_TYPE2(speed_t,termios.h)
@@ -1915,7 +1943,7 @@ test "$cf_cv_header_stdbool_h" = yes && AC_DEFINE(USE_STDBOOL_H,1,[Define to 1 i
 
 # Check for C++ compiler characteristics (and ensure that it's there!)
 if test -n "$CXX" ; then
-	AC_LANG_CPLUSPLUS
+	AC_LANG([C++])
 	CF_STDCPP_LIBRARY
 	CF_PROG_CC_C_O(CXX,[$CXXFLAGS $CPPFLAGS])
 
@@ -2081,13 +2109,16 @@ LIB_SUBSETS="${LIB_SUBSETS}base"
 if test "$with_term_driver" != no ; then
 	LIB_SUBSETS="${LIB_SUBSETS}+port_drivers"
 	case "$cf_cv_system_name" in
-	(*mingw32*|*mingw64*|*msys*|*cygwin*)
+	(*mingw32*|*mingw64*)
 		if test "x$with_named_pipes" = xyes ; then
 			LIB_SUBSETS="${LIB_SUBSETS}+port_tinfo+port_win32"
 		else
 			LIB_SUBSETS="${LIB_SUBSETS}+port_tinfo+port_win32con"
 		fi
 		CPPFLAGS="$CPPFLAGS -DUSE_WIN32CON_DRIVER"
+		;;
+	(*msys*|*cygwin*)
+		LIB_SUBSETS="${LIB_SUBSETS}+port_tinfo+port_msys2"
 		;;
 	(*)
 		LIB_SUBSETS="${LIB_SUBSETS}+port_tinfo"
@@ -2532,7 +2563,7 @@ AC_SUBST(PRIVATE_LIBS)
 # This is used for the *-config script and *.pc data files.
 CF_LD_SEARCHPATH
 
-AC_OUTPUT( \
+AC_CONFIG_FILES([\
 	include/MKterm.h.awk \
 	include/curses.head:include/curses.h.in \
 	include/ncurses_dll.h \
@@ -2542,7 +2573,8 @@ AC_OUTPUT( \
 	man/MKterminfo.tmp:man/MKterminfo.sh \
 	man/man_db.renames \
 	$SUB_MAKEFILES \
-	Makefile,[
+	Makefile])
+AC_CONFIG_COMMANDS([default],[
 if test "x$cf_with_tests" != xno ; then
 	CF_PRG_RULES(["$srcdir/test/mk-test.awk" INSTALL=no ECHO_LINK="$ECHO_LD"], test)
 fi
@@ -2635,5 +2667,7 @@ target="$target"
 verbose="$verbose"
 with_shared_cxx="$with_shared_cxx"
 
-],cat)dnl
+])
+AC_SETUP_DEFS([cat])
+AC_OUTPUT
 ${MAKE:-make} preinstall

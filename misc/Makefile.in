@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.87 2025/10/25 18:00:10 tom Exp $
+# $Id: Makefile.in,v 1.88 2025/12/25 22:26:15 tom Exp $
 ##############################################################################
 # Copyright 2018-2024,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
@@ -195,9 +195,9 @@ $(DATADIR) :
 uninstall : @MISC_UNINSTALL_DATA@ uninstall.libs
 
 uninstall.data :
-@MAKE_DATABASE@	-test -d $(TABSETDIR) && rm -rf $(TABSETDIR)
-@MAKE_DATABASE@	-test -d $(TICDIR) && rm -rf $(TICDIR)
-@MAKE_DATABASE@	-test -f $(TICFILE) && rm -f $(TICFILE)
+@MAKE_DATABASE@	-$(SHELL) -c 'if test -d $(TABSETDIR) ; then rm -rf $(TABSETDIR); fi'
+@MAKE_DATABASE@	-$(SHELL) -c 'if test -d $(TICDIR) ; then rm -rf $(TICDIR); fi'
+@MAKE_DATABASE@	-$(SHELL) -c 'if test -f $(TICFILE) ; then rm -f $(TICFILE); fi'
 
 uninstall.libs :
 	-rm -f $(BINDIR)/$(NCURSES_CONFIG)

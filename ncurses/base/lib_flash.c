@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_flash.c,v 1.16 2024/12/14 22:31:47 tom Exp $")
+MODULE_ID("$Id: lib_flash.c,v 1.17 2025/12/27 12:41:23 tom Exp $")
 
 /*
  *	flash()
@@ -63,7 +63,7 @@ NCURSES_SP_NAME(flash) (NCURSES_SP_DCL0)
     int res = ERR;
 
     T((T_CALLED("flash(%p)"), (void *) SP_PARM));
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     if (SP_PARM != NULL)
 	res = CallDriver_1(SP_PARM, td_doBeepOrFlash, FALSE);
 #else

@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.139 2025/12/13 12:45:26 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.141 2025/12/27 12:33:34 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -666,6 +666,9 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 		TerminalType(&fake_tm) = qp->tterm;
 		_nc_set_screen(&fake_sp);
 		set_curterm(&fake_tm);
+#if USE_TERM_DRIVER
+		((TERMINAL_CONTROL_BLOCK *) (CurTerm))->drv = &_nc_TINFO_DRIVER;
+#endif
 
 		_nc_check_termtype2(&qp->tterm, literal);
 

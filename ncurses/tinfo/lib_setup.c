@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.251 2025/12/14 10:57:56 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.252 2025/12/27 12:33:34 tom Exp $")
 
 /****************************************************************************
  *
@@ -272,7 +272,7 @@ use_tioctl(bool f)
 }
 #endif
 
-#if !(defined(USE_TERM_DRIVER) || USE_NAMED_PIPES)
+#if !(USE_TERM_DRIVER || USE_NAMED_PIPES)
 static void
 _nc_default_screensize(TERMINAL *termp, int *linep, int *colp)
 {
@@ -454,17 +454,17 @@ _nc_check_screensize(SCREEN *sp, TERMINAL *termp, int *linep, int *colp)
 #else /* !USE_CHECK_SIZE */
 #define _nc_check_screensize(sp, termp, linep, colp)	/* nothing */
 #endif
-#endif /* !(defined(USE_TERM_DRIVER) || USE_NAMED_PIPES) */
+#endif /* !(USE_TERM_DRIVER || USE_NAMED_PIPES) */
 
 NCURSES_EXPORT(void)
 _nc_get_screensize(SCREEN *sp,
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 		   TERMINAL *termp,
 #endif
 		   int *linep, int *colp)
 /* Obtain lines/columns values from the environment and/or terminfo entry */
 {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     TERMINAL_CONTROL_BLOCK *TCB;
     int my_tabsize;
 
@@ -623,7 +623,7 @@ _nc_update_screensize(SCREEN *sp)
     int new_lines;
     int new_cols;
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     int old_lines;
     int old_cols;
 
@@ -824,7 +824,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 		 int *errret,
 		 int reuse)
 {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     TERMINAL_CONTROL_BLOCK *TCB = NULL;
 #endif
     TERMINAL *termp;
@@ -834,7 +834,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 
     START_TRACE();
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     T((T_CALLED("_nc_setupterm_ex(%p,%s,%d,%p)"),
        (void *) tp, _nc_visbuf(tname), Filedes, (void *) errret));
 
@@ -855,7 +855,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	    T(("Failure with TERM=%s", NonNull(tname)));
 	    ret_error0(TGETENT_ERR, "TERM environment variable not set.\n");
 	}
-#elif defined(USE_TERM_DRIVER)
+#elif USE_TERM_DRIVER
 	if (!NonEmpty(tname))
 	    tname = "unknown";
 #else
@@ -910,11 +910,11 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	&& _nc_name_match(TerminalType(termp).term_names, myname, "|")) {
 	T(("reusing existing terminal information and mode-settings"));
 	code = OK;
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 #endif
     } else {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *my_tcb;
 	termp = NULL;
 	if ((my_tcb = typeCalloc(TERMINAL_CONTROL_BLOCK, 1)) != NULL)
@@ -948,7 +948,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 #endif /* HAVE_SYSCONF */
 	T(("using %d for getstr limit", _nc_globals.getstr_limit));
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	INIT_TERM_DRIVER();
 	/*
 	 * _nc_get_driver() will call td_CanHandle() for each driver, and win_driver
@@ -1027,7 +1027,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 #endif
     }
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     *tp = termp;
     NCURSES_SP_NAME(set_curterm) (sp, termp);
     TCB->drv->td_init(TCB);
@@ -1043,7 +1043,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
     if (errret)
 	*errret = TGETENT_YES;
 
-#ifndef USE_TERM_DRIVER
+#if !USE_TERM_DRIVER
     if (generic_type) {
 	/*
 	 * BSD 4.3's termcap contains mis-typed "gn" for wy99.  Do a sanity
@@ -1168,7 +1168,7 @@ new_prescr(void)
 }
 #endif
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 /*
  * This entrypoint is called from tgetent() to allow a special case of reusing
  * the same TERMINAL data (see comment).

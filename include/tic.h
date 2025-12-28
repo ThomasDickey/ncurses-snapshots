@@ -34,7 +34,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.90 2025/11/23 19:00:52 tom Exp $
+ * $Id: tic.h,v 1.91 2025/12/25 21:23:29 tom Exp $
  *	tic.h - Global variables and structures for the terminfo compiler.
  */
 
@@ -47,6 +47,7 @@ extern "C" {
 
 #include <ncurses_cfg.h>
 
+#include <sys/stat.h>
 #include <curses.h>	/* for the _tracef() prototype, ERR/OK, bool defs */
 
 /*
@@ -270,6 +271,7 @@ extern NCURSES_EXPORT(unsigned) _nc_pathlast (const char *);
 extern NCURSES_EXPORT(bool) _nc_is_abs_path (const char *);
 extern NCURSES_EXPORT(bool) _nc_is_dir_path (const char *);
 extern NCURSES_EXPORT(bool) _nc_is_file_path (const char *);
+extern NCURSES_EXPORT(bool) _nc_is_path_found (const char *, struct stat *);
 extern NCURSES_EXPORT(char *) _nc_basename (char *);
 extern NCURSES_EXPORT(char *) _nc_rootname (char *);
 

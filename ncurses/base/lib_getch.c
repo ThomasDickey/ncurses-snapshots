@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.153 2025/12/14 10:52:57 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.154 2025/12/27 12:28:45 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -142,7 +142,7 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
 {
     int rc;
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     TERMINAL_CONTROL_BLOCK *TCB = TCBOf(sp);
     rc = TCBOf(sp)->drv->td_testmouse(TCBOf(sp), delay EVENTLIST_2nd(evl));
 # if USE_NAMED_PIPES || defined(_NC_WINDOWS_NATIVE)
@@ -272,7 +272,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 	n = 1;
     } else
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	if ((sp->_mouse_type == M_TERM_DRIVER)
 	    && (sp->_drv_mouse_head < sp->_drv_mouse_tail)) {
 	sp->_mouse_event(sp);
@@ -288,7 +288,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 #endif
     {				/* Can block... */
-#if defined(USE_TERM_DRIVER)
+#if USE_TERM_DRIVER
 	int buf;
 # if USE_NAMED_PIPES || defined(_NC_WINDOWS_NATIVE)
 	if (NC_ISATTY(sp->_ifd) && IsTermInfoOnConsole(sp) && IsCbreak(sp)) {

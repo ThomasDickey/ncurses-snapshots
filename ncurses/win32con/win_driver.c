@@ -37,32 +37,30 @@
  * TODO - make it optional whether screen is restored or not when non-buffered
  */
 
-#define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win_driver.c,v 1.116 2025/12/19 21:26:52 tom Exp $")
+MODULE_ID("$Id: win_driver.c,v 1.118 2025/12/27 21:32:27 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
 
-#define array_length(a) (sizeof(a)/sizeof(a[0]))
-
 #define AssertTCB() assert(TCB != NULL && (TCB->magic == WINMAGIC))
 #define validateConsoleHandle() (AssertTCB(), console_initialized || \
-                                 _nc_mingw_init())
-#define SetSP()     assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
+                                 (console_initialized = \
+                                  _nc_console_checkinit(USE_NAMED_PIPES)))
+#define SetSP() assert(TCB->csp != NULL); sp = TCB->csp; (void) sp
 
 #define AdjustY() (WINCONSOLE.buffered \
                    ? 0 \
                    : (int) WINCONSOLE.SBI.srWindow.Top)
 
-static BOOL console_initialized = FALSE;
-
 #define RevAttr(attr) (WORD) (((attr) & 0xff00) | \
 		      ((((attr) & 0x07) << 4) | \
 		       (((attr) & 0x70) >> 4)))
+
+static bool console_initialized = FALSE;
 
 static WORD
 MapAttr(WORD res, attr_t ch)
@@ -836,7 +834,7 @@ wcon_init(TERMINAL_CONTROL_BLOCK * TCB)
 
     AssertTCB();
 
-    if (!(console_initialized = _nc_mingw_init())) {
+    if (!(console_initialized = _nc_console_checkinit(USE_NAMED_PIPES))) {
 	returnVoid;
     }
 

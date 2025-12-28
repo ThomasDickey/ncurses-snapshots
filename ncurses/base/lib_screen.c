@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.112 2025/01/12 00:31:03 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.113 2025/12/27 12:28:45 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -1023,7 +1023,7 @@ NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
     T((T_CALLED("scr_init(%p,%s)"), (void *) SP_PARM, _nc_visbuf(file)));
 
     if (SP_PARM != NULL &&
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	InfoOf(SP_PARM).caninit
 #else
 	!(exit_ca_mode && non_rev_rmcup)

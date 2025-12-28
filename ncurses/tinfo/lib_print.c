@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2011,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_print.c,v 1.34 2024/12/07 18:05:04 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.35 2025/12/27 12:41:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
@@ -105,7 +105,7 @@ NCURSES_SP_NAME(mcprint) (NCURSES_SP_DCLx char *data, int len)
     return (result);
 }
 
-#if NCURSES_SP_FUNCS && !defined(USE_TERM_DRIVER)
+#if NCURSES_SP_FUNCS && !USE_TERM_DRIVER
 NCURSES_EXPORT(int)
 mcprint(char *data, int len)
 {

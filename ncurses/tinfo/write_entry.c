@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.139 2024/12/21 16:42:33 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.144 2025/12/28 00:33:30 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -71,7 +71,7 @@ static int make_db_root(const char *);
 
 #if !USE_HASHED_DB
 static void
-write_file(char *filename, TERMTYPE2 *tp)
+write_file(const char *filename, TERMTYPE2 *tp)
 {
     char buffer[MAX_ENTRY_SIZE];
     unsigned limit = sizeof(buffer);
@@ -198,6 +198,7 @@ make_db_root(const char *path)
     int rc;
     char fullpath[PATH_MAX];
 
+    FixupPathname(path);
     if ((rc = make_db_path(fullpath, path, sizeof(fullpath))) == 0) {
 #if USE_HASHED_DB
 	DB *capdbp;
@@ -210,7 +211,8 @@ make_db_root(const char *path)
 #else
 	struct stat statbuf;
 
-	if ((rc = stat(path, &statbuf)) == -1) {
+	rc = 0;
+	if (!_nc_is_path_found(path, &statbuf)) {
 	    rc = mkdir(path
 #ifndef _NC_WINDOWS_NATIVE
 		       ,0777
@@ -271,6 +273,7 @@ _nc_set_writedir(const char *dir)
 #if USE_HASHED_DB
     make_db_path(actual, destination, sizeof(actual));
 #else
+    FixupPathname2(destination, actual);
     if (chdir(_nc_tic_dir(destination)) < 0
 	|| getcwd(actual, sizeof(actual)) == NULL)
 	_nc_err_abort("%s: not a directory", destination);
@@ -446,7 +449,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
      * so warn the user.
      */
     if (start_time > 0 &&
-	stat(filename, &statbuf) >= 0
+	_nc_is_path_found(filename, &statbuf)
 	&& statbuf.st_mtime >= start_time) {
 #if HAVE_LINK && !USE_SYMLINKS
 	/*
@@ -470,7 +473,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
     write_file(filename, tp);
 
     if (start_time == 0) {
-	if (stat(filename, &statbuf) == -1
+	if (!_nc_is_path_found(filename, &statbuf)
 	    || (start_time = statbuf.st_mtime) == 0) {
 	    _nc_syserr_abort("error obtaining time from %s/%s",
 			     _nc_tic_dir(NULL), filename);
@@ -502,7 +505,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 	    _nc_warning("self-synonym ignored");
 	}
 #if !LINK_TOUCHES
-	else if (stat(linkname, &statbuf) >= 0 &&
+	else if (_nc_is_path_found(linkname, &statbuf) &&
 		 statbuf.st_mtime < start_time) {
 	    _nc_warning("alias %s multiply defined.", ptr);
 	}

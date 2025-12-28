@@ -570,7 +570,6 @@
 ./include/termcap.h.in
 ./include/tic.h
 ./include/unctrl.h.in
-./include/win32_curses.h
 ./install-sh
 ./man/MKada_config.in
 ./man/MKncu_config.in

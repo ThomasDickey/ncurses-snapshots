@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.36 2025/10/18 18:10:04 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.37 2025/12/23 09:23:38 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -68,7 +68,7 @@ MODULE_ID("$Id: lib_tracebits.c,v 1.36 2025/10/18 18:10:04 tom Exp $")
 
 #ifdef TRACE
 
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
 #define BITNAMELEN 36
 #else
 #define BITNAMELEN 8
@@ -214,7 +214,7 @@ _nc_trace_ttymode(const TTY * tty)
 	if (tty->c_lflag & ALLLOCAL)
 	    lookup_bits(buf, lflags, "lflags", tty->c_lflag);
     }
-#elif defined(_NC_WINDOWS)
+#elif defined(USE_WIN32CON_DRIVER)
 #define DATA(name)        { name, { #name } }
     static const BITNAMES dwFlagsOut[] =
     {

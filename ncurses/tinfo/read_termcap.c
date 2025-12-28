@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.106 2025/02/20 01:27:42 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.107 2025/12/25 18:20:22 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -1085,7 +1085,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE2 *const tp)
 #if HAVE_LINK
     for (j = 0; j < filecount; j++) {
 	bool omit = FALSE;
-	if (stat(termpaths[j], &test_stat[j]) != 0
+	if (!_nc_is_path_found(termpaths[j], &test_stat[j])
 	    || !S_ISREG(test_stat[j].st_mode)) {
 	    omit = TRUE;
 	} else {

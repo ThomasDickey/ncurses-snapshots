@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.736 2025/12/20 22:21:27 tom Exp $
+ * $Id: curses.priv.h,v 1.741 2025/12/27 21:46:04 tom Exp $
  *
  *	curses.priv.h
  *
@@ -311,7 +311,7 @@ extern NCURSES_EXPORT(void *) _nc_memmove (void *, const void *, size_t);
 /*
  * Options for terminal drivers, etc...
  */
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 #define NO_TERMINAL "unknown"
 #define USE_SP_RIPOFF     1
 #define USE_SP_TERMTYPE   1
@@ -418,14 +418,21 @@ typedef TRIES {
 #define TWAIT_MASK TW_ANY
 #endif
 
-#if defined(_NC_WINDOWS)
-#include <nc_win32.h>
-#endif
+#include <term.priv.h>		/* defines TERMIOS via term.h */
 
-#if defined(USE_TERM_DRIVER) && defined(TERMIOS)
+#if USE_TERM_DRIVER
+#if defined(TERMIOS)
 #undef  USE_NAMED_PIPES
 #define USE_NAMED_PIPES 0
 #undef  USE_WIN32CON_DRIVER
+#elif defined(_NC_WINDOWS)
+#include <nc_win32.h>
+#endif /* TERMIOS */
+#endif /* USE_TERM_DRIVER */
+
+#ifndef FixupPathname
+#define FixupPathname(path) /* nothing */
+#define FixupPathname2(path,buffer) /* nothing */
 #endif
 
 typedef struct
@@ -471,7 +478,6 @@ typedef union {
 
 #include <nc_panel.h>
 
-#include <term.priv.h>
 #include <nc_termios.h>
 
 #define IsPreScreen(sp)      (((sp) != NULL) && sp->_prescreen)
@@ -839,7 +845,7 @@ typedef enum {
 #if USE_SYSMOUSE
 	,M_SYSMOUSE		/* FreeBSD sysmouse on console */
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	,M_TERM_DRIVER		/* Win32 console, etc */
 #endif
 } MouseType;
@@ -945,13 +951,16 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
  * The filesystem database normally uses a single-letter for the lower level
  * of directories.  Use a hexadecimal code for filesystems which do not
  * preserve mixed-case names.
+ *
+ * The leading "./" is used in _nc_to_dospath() to decide whether to prefix
+ * the converted path with the MinGW32 base directory.
  */
 #if MIXEDCASE_FILENAMES
-#define LEAF_FMT "%c"
-#define LEAF_LEN 1
+#define LEAF_FMT "./%c"
+#define LEAF_LEN 3
 #else
-#define LEAF_FMT "%02x"
-#define LEAF_LEN 2
+#define LEAF_FMT "./%02x"
+#define LEAF_LEN 4
 #endif
 
 /*
@@ -965,7 +974,7 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
 #define TRACEMSE_MAX	(80 + (5 * 10) + (32 * 15))
 #define TRACEMSE_FMT	"id %2d  at (%2d, %2d, %2d) state %4lx = {" /* } */
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 struct DriverTCB; /* Terminal Control Block forward declaration */
 #define INIT_TERM_DRIVER()	_nc_globals.term_driver = _nc_get_driver
 #else
@@ -1243,7 +1252,7 @@ typedef struct screen {
 	int		_sysmouse_new_buttons;
 #endif
 
-#if defined(USE_TERM_DRIVER) || USE_NAMED_PIPES
+#if USE_TERM_DRIVER || USE_NAMED_PIPES
 	MEVENT		_drv_mouse_fifo[FIFO_SIZE];
 	int		_drv_mouse_head;
 	int		_drv_mouse_tail;
@@ -2408,7 +2417,7 @@ extern NCURSES_EXPORT(int) _nc_get_tty_mode(TTY *);
     }\
     sp->jump = outc
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 
 typedef struct _termInfo
 {
@@ -2505,7 +2514,7 @@ extern NCURSES_EXPORT(void)     _nc_get_screensize_ex(SCREEN *, TERMINAL *, int 
  * Entrypoints which are actually provided in the terminal driver, which would
  * be an sp-name otherwise.
  */
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 #define TINFO_HAS_KEY           _nc_tinfo_has_key
 #define TINFO_DOUPDATE          _nc_tinfo_doupdate
 #define TINFO_MVCUR             _nc_tinfo_mvcur
@@ -2534,7 +2543,7 @@ extern NCURSES_EXPORT(int)      TINFO_MVCUR(SCREEN*, int, int, int, int);
 /*
  * Entrypoints using an extra parameter with the terminal driver.
  */
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, TERMINAL *, int *, int *);
 extern NCURSES_EXPORT(int)    _nc_setupterm_ex(TERMINAL **, const char *, int , int *, int);
 #define TINFO_GET_SIZE(sp, tp, lp, cp) \
@@ -2553,30 +2562,18 @@ extern NCURSES_EXPORT(void)   _nc_get_screensize(SCREEN *, int *, int *);
 	_nc_setupterm(name, fd, err, reuse)
 #endif /* !USE_TERM_DRIVER */
 
-#if USE_NAMED_PIPES
-extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
+#if USE_TERM_DRIVER
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
-#else
-#ifdef USE_TERM_DRIVER
-#if defined(USE_WIN32CON_DRIVER)
-extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_WIN_DRIVER;
-extern NCURSES_EXPORT(bool) _nc_mingw_init(void);
-#endif
 extern NCURSES_EXPORT_VAR(TERM_DRIVER) _nc_TINFO_DRIVER;
 #endif /* USE_TERM_DRIVER */
-#endif /* USE_NAMED_PIPES */
-
-#ifdef _NC_WINDOWS
 
 #ifdef TERMIOS
 #define USE_WINCONMODE 0
-#else
+#elif defined(USE_WIN32CON_DRIVER)
 #define USE_WINCONMODE 1
 extern NCURSES_EXPORT(int)  _nc_console_setmode(void* handle, const ConsoleMode* arg);
 extern NCURSES_EXPORT(int)  _nc_console_getmode(void* handle, ConsoleMode* arg);
-#endif
-
-extern NCURSES_EXPORT(bool)  _nc_console_checkinit(bool initFlag, bool assumeTermInfo);
+extern NCURSES_EXPORT(bool)  _nc_console_checkinit(bool assumeTermInfo);
 extern NCURSES_EXPORT(void*) _nc_console_fd2handle(int fd);
 extern NCURSES_EXPORT(WORD) _nc_console_MapColor(bool fore, int color);
 extern NCURSES_EXPORT(int)  _nc_console_flush(void* handle);
@@ -2599,9 +2596,11 @@ extern NCURSES_EXPORT(int)  _nc_console_vt_supported(void);
 extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #endif
 
-#endif /* _NC_WINDOWS */
+#else
+#error unsupported driver configuration
+#endif /* USE_WIN32CON_DRIVER */
 
-#if defined(USE_TERM_DRIVER) && (USE_NAMED_PIPES || defined(USE_WIN32CON_DRIVER))
+#if USE_TERM_DRIVER && defined(USE_WIN32CON_DRIVER)
 #define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
 #else
 #define NC_ISATTY(fd) isatty(fd)
@@ -2615,8 +2614,8 @@ extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 	 && (value = ttyname(fd)) != NULL \
 	 && strncmp(value, "/dev/pts/", 9))
 
-#ifdef USE_TERM_DRIVER
-#  define IsTermInfo(sp)       ((TCBOf(sp) != NULL) && ((TCBOf(sp)->drv->isTerminfo)))
+#if USE_TERM_DRIVER
+#  define IsTermInfo(sp)       ((TCBOf(sp) != NULL) && ((TCBOf(sp)->drv != NULL)) && ((TCBOf(sp)->drv->isTerminfo)))
 #  define HasTInfoTerminal(sp) ((NULL != TerminalOf(sp)) && IsTermInfo(sp))
 #  if USE_NAMED_PIPES
 #    define IsTermInfoOnConsole(sp) (IsTermInfo(sp) && _nc_console_test(TerminalOf(sp)->Filedes))

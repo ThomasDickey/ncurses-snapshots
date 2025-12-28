@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.95 2025/11/23 18:57:18 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.96 2025/12/27 12:33:34 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = NULL;
 NCURSES_EXPORT_VAR(char *) BC = NULL;
@@ -94,7 +94,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
     int rc = ERR;
     int n;
     bool found_cache = FALSE;
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     TERMINAL *termp = NULL;
 #endif
 
@@ -103,7 +103,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 
     TINFO_SETUP_TERM(&termp, name, STDOUT_FILENO, &rc, TRUE);
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
     if (termp == NULL ||
 	!((TERMINAL_CONTROL_BLOCK *) termp)->drv->isTerminfo)
 	returnCode(rc);

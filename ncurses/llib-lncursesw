@@ -3740,6 +3740,12 @@ NCURSES_BOOL _nc_is_file_path(
 		const char *path)
 		{ return(*(NCURSES_BOOL *)0); }
 
+#undef _nc_is_path_found
+NCURSES_BOOL _nc_is_path_found(
+		const char *path,
+		struct stat *sb)
+		{ return(*(NCURSES_BOOL *)0); }
+
 #undef _nc_env_access
 int	_nc_env_access(void)
 		{ return(*(int *)0); }

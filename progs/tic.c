@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.333 2025/12/10 21:10:06 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.334 2025/12/25 21:27:48 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -458,7 +458,7 @@ open_input(const char *filename, char *alt_file)
 
     if (!strcmp(filename, "-")) {
 	fp = copy_input(stdin, STDIN_NAME, alt_file);
-    } else if (stat(filename, &sb) == -1) {
+    } else if (!_nc_is_path_found(filename, &sb)) {
 	fprintf(stderr, "%s: cannot open '%s': %s\n", _nc_progname,
 		filename, strerror(errno));
 	ExitProgram(EXIT_FAILURE);
@@ -595,17 +595,17 @@ valid_db_path(const char *nominal)
 #endif
 
     DEBUG(1, ("** stat(%s)", result));
-    if (stat(result, &sb) >= 0) {
+    if (_nc_is_path_found(result, &sb)) {
 #if USE_HASHED_DB
 	if (!S_ISREG(sb.st_mode)
-	    || access(result, R_OK | W_OK) != 0) {
+	    || _nc_access(result, R_OK | W_OK) != 0) {
 	    DEBUG(1, ("...not a writable file"));
 	    free(result);
 	    result = NULL;
 	}
 #else
 	if (!S_ISDIR(sb.st_mode)
-	    || access(result, R_OK | W_OK | X_OK) != 0) {
+	    || _nc_access(result, R_OK | W_OK | X_OK) != 0) {
 	    DEBUG(1, ("...not a writable directory"));
 	    free(result);
 	    result = NULL;
@@ -619,7 +619,7 @@ valid_db_path(const char *nominal)
 	if (leaf) {
 	    char save = result[leaf];
 	    result[leaf] = 0;
-	    if (stat(result, &sb) >= 0
+	    if (_nc_is_path_found(result, &sb) 
 		&& S_ISDIR(sb.st_mode)
 		&& access(result, R_OK | W_OK | X_OK) == 0) {
 		result[leaf] = save;

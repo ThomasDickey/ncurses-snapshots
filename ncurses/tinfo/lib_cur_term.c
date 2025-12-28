@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>		/* VALID_STRING */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.52 2024/12/14 23:48:20 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.53 2025/12/27 12:41:23 tom Exp $")
 
 #undef CUR
 #define CUR TerminalType(termp).
@@ -94,7 +94,7 @@ NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
     cur_term = termp;
 #endif
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 	ospeed = (NCURSES_OSPEED) _nc_ospeed(termp->_baudrate);
 	if (TCB->drv &&
@@ -135,7 +135,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
     T((T_CALLED("del_curterm(%p, %p)"), (void *) SP_PARM, (void *) termp));
 
     if (termp != NULL) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 #endif
 	TERMINAL *cur = (
@@ -163,7 +163,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 	    FreeAndNull(_nc_globals.home_terminfo);
 	}
 #endif
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	if (TCB->drv)
 	    TCB->drv->td_release(TCB);
 #endif

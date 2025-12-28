@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.176 2025/12/10 21:17:26 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.177 2025/12/27 22:18:10 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1936,11 +1936,6 @@ main(int argc, char *argv[])
 
 	    if (directory) {
 #if NCURSES_USE_DATABASE
-#if MIXEDCASE_FILENAMES
-#define LEAF_FMT "%c"
-#else
-#define LEAF_FMT "%02x"
-#endif
 		_nc_SPRINTF(tfile[termcount],
 			    _nc_SLIMIT(sizeof(path))
 			    "%s/" LEAF_FMT "/%s",

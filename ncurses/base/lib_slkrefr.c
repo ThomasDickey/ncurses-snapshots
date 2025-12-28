@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2013,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,9 +44,9 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.34 2024/12/07 17:58:16 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.35 2025/12/27 12:41:23 tom Exp $")
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 #define NumLabels    InfoOf(SP_PARM).numlabels
 #else
 #define NumLabels    num_labels
@@ -97,7 +97,7 @@ slk_intern_refresh(SCREEN *sp)
 	if (slk->dirty || slk->ent[i].dirty) {
 	    if (slk->ent[i].visible) {
 		if (numlab > 0 && SLK_STDFMT(fmt)) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 		    CallDriver_2(sp, td_hwlabel, i + 1, slk->ent[i].form_text);
 #else
 		    if (i < num_labels) {
@@ -125,7 +125,7 @@ slk_intern_refresh(SCREEN *sp)
     slk->dirty = FALSE;
 
     if (numlab > 0) {
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 	CallDriver_1(sp, td_hwlabelOnOff, slk->hidden ? FALSE : TRUE);
 #else
 	if (slk->hidden) {

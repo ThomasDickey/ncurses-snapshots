@@ -39,13 +39,11 @@
 
 #include <progs.priv.h>
 
-#include <sys/stat.h>
-
 #if USE_HASHED_DB
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.94 2025/01/12 00:36:48 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.95 2025/12/25 21:54:15 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 

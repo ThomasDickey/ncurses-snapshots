@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2025 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 #define MaxColors      InfoOf(SP_PARM).maxcolors
 #else
 #define MaxColors      max_colors
@@ -61,7 +61,7 @@
 
 #endif
 
-MODULE_ID("$Id: new_pair.c,v 1.26 2024/12/07 18:05:04 tom Exp $")
+MODULE_ID("$Id: new_pair.c,v 1.27 2025/12/27 12:41:23 tom Exp $")
 
 #if NCURSES_EXT_COLORS
 

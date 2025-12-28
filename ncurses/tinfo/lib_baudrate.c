@@ -84,7 +84,7 @@
 #undef USE_OLD_TTY
 #endif /* USE_OLD_TTY */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.49 2025/12/14 10:54:13 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.50 2025/12/23 09:21:42 tom Exp $")
 
 /*
  *	int
@@ -99,7 +99,7 @@ struct speed {
     int actual_speed;		/* the actual speed */
 };
 
-#if !defined(_NC_WINDOWS)
+#if !defined(USE_WIN32CON_DRIVER)
 #define DATA(number) { B##number, number }
 
 static struct speed const speeds[] =
@@ -194,7 +194,7 @@ static struct speed const speeds[] =
 NCURSES_EXPORT(int)
 _nc_baudrate(int OSpeed)
 {
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
     /* On Windows this is a noop */
     (void) OSpeed;
     return (OK);
@@ -244,7 +244,7 @@ NCURSES_EXPORT(int)
 _nc_ospeed(int BaudRate)
 {
     int result = 1;
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
     (void) BaudRate;
 #else
     if (BaudRate >= 0) {
@@ -268,7 +268,7 @@ NCURSES_SP_NAME(baudrate) (NCURSES_SP_DCL0)
 
     T((T_CALLED("baudrate(%p)"), (void *) SP_PARM));
 
-#if defined(_NC_WINDOWS)
+#if defined(USE_WIN32CON_DRIVER)
     (void) SP_PARM;
     result = OK;
 #else

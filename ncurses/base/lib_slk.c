@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2025 Thomas E. Dickey                                *
  * Copyright 1998-2010,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,9 +48,9 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slk.c,v 1.51 2024/12/07 20:03:37 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.52 2025/12/27 12:41:23 tom Exp $")
 
-#ifdef USE_TERM_DRIVER
+#if USE_TERM_DRIVER
 #define NumLabels    InfoOf(SP_PARM).numlabels
 #define NoColorVideo InfoOf(SP_PARM).nocolorvideo
 #define LabelWidth   InfoOf(SP_PARM).labelwidth
