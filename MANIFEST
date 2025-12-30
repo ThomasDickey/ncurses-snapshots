@@ -1007,7 +1007,6 @@
 ./ncurses/win32con/gettimeofday.c
 ./ncurses/win32con/wcwidth.c
 ./ncurses/win32con/win32_driver.c
-./ncurses/win32con/win_driver.c
 ./package/debian-mingw/changelog
 ./package/debian-mingw/compat
 ./package/debian-mingw/control

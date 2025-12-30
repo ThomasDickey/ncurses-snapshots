@@ -1,4 +1,4 @@
-# $Id: modules,v 1.132 2025/12/26 23:52:11 tom Exp $
+# $Id: modules,v 1.133 2025/12/30 15:13:55 tom Exp $
 ##############################################################################
 # Copyright 2019-2020,2025 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2017 Free Software Foundation, Inc.                    #
@@ -249,7 +249,7 @@ lib_win32con	lib		$(tinfo)	$(HEADER_DEPS)
 lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 wcwidth		lib             $(win32con)	$(HEADER_DEPS)
 widechars	lib             $(wide)		$(HEADER_DEPS)
-win_driver	lib             $(win32con)	$(HEADER_DEPS)
+win32_driver	lib             $(win32con)	$(HEADER_DEPS)
 
 # MinGW-W64, using Console API and named pipes
 @ port_win32

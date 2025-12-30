@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.217 2025/12/27 12:31:03 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.219 2025/12/30 17:23:24 tom Exp $")
 
 #include <tic.h>
 
@@ -379,7 +379,7 @@ handle_sysmouse(int sig GCC_UNUSED)
 }
 #endif /* USE_SYSMOUSE */
 
-#if !USE_TERM_DRIVER || USE_NAMED_PIPES
+#if !defined(_NC_WINDOWS_NATIVE) || USE_NAMED_PIPES
 #define xterm_kmous "\033[M"
 
 static void
@@ -756,7 +756,7 @@ initialize_mousetype(SCREEN *sp)
 #if USE_TERM_DRIVER
     CallDriver(sp, td_initmouse);
 #endif
-#if !USE_TERM_DRIVER || USE_NAMED_PIPES
+#if !defined(_NC_WINDOWS_NATIVE) || USE_NAMED_PIPES
     /* we know how to recognize mouse events under "xterm" */
     if (NonEmpty(key_mouse)) {
 	init_xterm_mouse(sp);
@@ -1559,7 +1559,6 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
 	Invalidate(ep);
 	ep = NEXT(ep);
     }
-    assert(ep == sp->_mouse_readp);
 
 #ifdef TRACE
     if (USE_TRACEF(TRACE_IEVENT)) {

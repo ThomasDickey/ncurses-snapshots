@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.1706 2025/12/27 10:21:06 tom Exp $
+# $Id: dist.mk,v 1.1709 2025/12/30 20:31:32 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -37,8 +37,8 @@ SHELL = /bin/sh
 
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 6
-NCURSES_MINOR = 5
-NCURSES_PATCH = 20251227
+NCURSES_MINOR = 6
+NCURSES_PATCH = 20251230
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)

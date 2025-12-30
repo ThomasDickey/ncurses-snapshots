@@ -41,7 +41,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.18 2025/12/27 20:52:25 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.20 2025/12/30 19:34:50 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -543,6 +543,11 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
     } else if (tname != NULL && stricmp(tname, "unknown") == 0) {
 	code = TRUE;
     }
+#if !USE_NAMED_PIPES
+    else if (_isatty(TCB->term.Filedes)) {
+	code = TRUE;
+    }
+#endif
 
     /*
      * This is intentional, to avoid unnecessary breakage of applications

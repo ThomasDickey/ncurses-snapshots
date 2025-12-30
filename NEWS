@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4387 2025/12/26 23:34:01 tom Exp $
+-- $Id: NEWS,v 1.4390 2025/12/30 20:31:07 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20251230 6.6 release for upload to ftp.gnu.org
+	+ update announcement
+	+ corrected an ifdef needed for mouse support in MinGW/Windows
+	+ eliminate remaining duplicate code between MinGW/Windows drivers
 
 20251227
 	+ make win32_curses.h obsolete in favor of nc_win32.h
