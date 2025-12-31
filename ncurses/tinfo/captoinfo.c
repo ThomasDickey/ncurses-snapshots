@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.109 2025/11/23 20:22:38 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.110 2025/12/31 11:46:29 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -657,7 +657,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 	 *str &&
 	 ((trimmed == NULL) || (str < trimmed)); str++) {
 	int c1, c2;
-	char *cp = NULL;
+	const char *cp = NULL;
 
 	if (str[0] == '^') {
 	    if (str[1] == '\0' || (str + 1) == trimmed) {

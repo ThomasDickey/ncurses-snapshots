@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.219 2025/12/30 17:23:24 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.220 2025/12/31 11:45:37 tom Exp $")
 
 #include <tic.h>
 
@@ -389,11 +389,11 @@ init_xterm_mouse(SCREEN *sp)
     sp->_mouse_format = MF_X10;
     sp->_mouse_xtermcap = tigetstr(UserCap(XM));
     if (VALID_STRING(sp->_mouse_xtermcap)) {
-	char *code = strstr(sp->_mouse_xtermcap, "[?");
+	const char *code = strstr(sp->_mouse_xtermcap, "[?");
 	if (code != NULL) {
 	    code += 2;
 	    while ((*code >= '0') && (*code <= '9')) {
-		char *next = code;
+		const char *next = code;
 		while ((*next >= '0') && (*next <= '9')) {
 		    ++next;
 		}

@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.141 2025/12/27 12:33:34 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.142 2025/12/31 11:46:54 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -111,7 +111,7 @@ check_collisions(char *n1, char *n2, int counter)
 {
     const char *pstart;
     const char *qstart;
-    char *pend, *qend;
+    const char *pend, *qend;
     char nc1[NAMEBUFFER_SIZE];
     char nc2[NAMEBUFFER_SIZE];
 

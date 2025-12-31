@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.741 2025/12/27 21:46:04 tom Exp $
+ * $Id: curses.priv.h,v 1.742 2025/12/31 14:30:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -956,11 +956,14 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
  * the converted path with the MinGW32 base directory.
  */
 #if MIXEDCASE_FILENAMES
-#define LEAF_FMT "./%c"
-#define LEAF_LEN 3
-#else
+#define LEAF_FMT "%c"
+#define LEAF_LEN 1
+#elif USE_DOS_PATHS
 #define LEAF_FMT "./%02x"
 #define LEAF_LEN 4
+#else
+#define LEAF_FMT "%02x"
+#define LEAF_LEN 2
 #endif
 
 /*

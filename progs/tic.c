@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.334 2025/12/25 21:27:48 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.335 2025/12/31 12:03:37 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -619,7 +619,7 @@ valid_db_path(const char *nominal)
 	if (leaf) {
 	    char save = result[leaf];
 	    result[leaf] = 0;
-	    if (_nc_is_path_found(result, &sb) 
+	    if (_nc_is_path_found(result, &sb)
 		&& S_ISDIR(sb.st_mode)
 		&& access(result, R_OK | W_OK | X_OK) == 0) {
 		result[leaf] = save;
