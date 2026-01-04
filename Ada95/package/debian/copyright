@@ -4,7 +4,7 @@ Upstream-Contact: Thomas E. Dickey <dickey@invisible-island.net>
 Source: https://invisible-island.net/ncurses/Ada95.html
 
 Files: *
-Copyright: 2017-2024,2025 by Thomas E. Dickey
+Copyright: 2017-2025,2026 by Thomas E. Dickey
 Copyright: 1998-2016,2017 Free Software Foundation, Inc.
 License:   X11 License Distribution Modification Variant
  Permission is hereby granted, free of charge, to any person obtaining a

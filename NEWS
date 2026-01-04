@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright 2018-2024,2025 Thomas E. Dickey                                 --
+-- Copyright 2018-2025,2026 Thomas E. Dickey                                 --
 -- Copyright 1998-2017,2018 Free Software Foundation, Inc.                   --
 --                                                                           --
 -- Permission is hereby granted, free of charge, to any person obtaining a   --
@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4394 2025/12/31 14:34:19 tom Exp $
+-- $Id: NEWS,v 1.4398 2026/01/04 00:59:35 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260103
+	+ cancel ncv in putty (patch by Jakub Horky)
+	+ add NQ to list of user-definable capabilities in user_caps(5) (patch
+	  by Jakub Horky)
+	+ update ncurses/wcwidth.c, for MinGW ports, from xterm.
 
 20251231
 	+ amend fix for Windows-style pathnames to eliminate "./" in comment

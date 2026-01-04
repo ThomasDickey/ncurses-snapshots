@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.245 2025/12/25 23:50:50 tom Exp $
+dnl $Id: aclocal.m4,v 1.246 2025/12/27 18:03:23 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -2589,7 +2589,7 @@ CF_SUBDIR_PATH($1,$2,lib)
 $1="$cf_library_path_list [$]$1"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKE_PHONY version: 4 updated: 2025/12/24 12:27:29
+dnl CF_MAKE_PHONY version: 5 updated: 2025/12/27 13:03:23
 dnl -------------
 dnl Check if the make-program handles a ".PHONY" target, e.g,. a target which
 dnl acts as a placeholder.
@@ -2615,7 +2615,7 @@ dnl
 dnl + Version 3.8 of the dmake program in January 1992 also implemented this
 dnl   GNU make extension, but is less well known than the BSD make.
 AC_DEFUN([CF_MAKE_PHONY],[
-AC_CACHE_CHECK(for \".PHONY\" make-support, cf_cv_make_PHONY,[
+AC_CACHE_CHECK(for ".PHONY" make-support, cf_cv_make_PHONY,[
 	rm -rf conftest*
 	(
 		mkdir conftest || exit 1

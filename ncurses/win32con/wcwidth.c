@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                 
  * Copyright 2010 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,7 +28,7 @@
  ****************************************************************************/
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wcwidth.c,v 1.5 2024/05/04 18:31:39 tom Exp $")
+MODULE_ID("$Id: wcwidth.c,v 1.6 2026/01/03 11:43:50 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define mk_wcwidth(ucs)          _nc_wcwidth(ucs)
@@ -36,11 +36,21 @@ MODULE_ID("$Id: wcwidth.c,v 1.5 2024/05/04 18:31:39 tom Exp $")
 #define mk_wcwidth_cjk(ucs)      _nc_wcwidth_cjk(ucs)
 #define mk_wcswidth_cjk(pwcs, n) _nc_wcswidth_cjk(pwcs, n)
 
-NCURSES_EXPORT(void) mk_wcwidth_init(int);
+#include <stddef.h>
+
+typedef enum {
+    WcUnknown = 0
+    ,WcSoftHyphen = 1		/* soft-hyphen is spacing, e.g., Latin-1 */
+    ,WcPrivateFullwidth = 2	/* private-use codes can be fullwidth in CJK */
+    ,WcEmojiFullwidth = 4	/* Emojis are fullwidth */
+} WcModes;
+
+NCURSES_EXPORT(int) mk_wcwidth_init(int);
 NCURSES_EXPORT(int) mk_wcwidth(uint32_t);
 NCURSES_EXPORT(int) mk_wcswidth(const uint32_t *, size_t);
 NCURSES_EXPORT(int) mk_wcwidth_cjk(uint32_t);
 NCURSES_EXPORT(int) mk_wcswidth_cjk(const uint32_t *, size_t);
+NCURSES_EXPORT(int) mk_is_emoji(wchar_t ucs);
 
 #include <wcwidth.h>
 #else

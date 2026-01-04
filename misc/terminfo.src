@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1200 $
-#	$Date: 2025/11/12 00:52:57 $
+#	$Revision: 1.1202 $
+#	$Date: 2026/01/04 00:17:34 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4153,6 +4153,9 @@ absolute|Absolute Telnet emulating xterm,
 #### PuTTY
 # http://www.chiark.greenend.org.uk/~sgtatham/putty/
 #
+# PuTTY 0.83 (February 2025, tested 03 January 2026)
+#	verified that ncv#22 is no longer inaccurate
+#
 # PuTTY 0.78 (September 2020, tested 12 August 2023)
 # Testing with tack:
 #	implements cross-out text (shortly after 0.74)
@@ -4206,7 +4209,7 @@ absolute|Absolute Telnet emulating xterm,
 #	http://stackoverflow.com/questions/24613237/terminal-retains-bg-color-after-closing-vim-using-color-scheme-and-putty-256co/37869114#37869114
 putty|PuTTY terminal emulator,
 	am, bce, bw, ccc, mir, msgr, xenl, xon, XT,
-	it#8, ncv#22, U8#1,
+	it#8, ncv@, U8#1,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, cr=\r, cub1=^H, cud1=\ED, cuu1=\EM, dch=\E[%p1%dP,
 	dch1=\E[P,
@@ -25499,7 +25502,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	https://invisible-island.net/ncurses/ncurses-netbsd.html
 #
 # ncurses makes explicit checks for a few user-definable capabilities:  AX, E3,
-# RGB, U8, XM, which are documented in the user_caps(5) manual page.
+# NQ, RGB, U8, XM, which are documented in the user_caps(5) manual page.
 #
 #### SCREEN Extensions:
 #
@@ -27997,5 +28000,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2025-07-19
 #	+ add xterm+keypad to pccon+base -TD
+#
+# 2026-01-03
+#	+ cancel ncv in putty (patch by Jakub Horky)
+#	+ add NQ to list of user-definable capabilities in user_caps(5) (patch
+#	  by Jakub Horky)
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

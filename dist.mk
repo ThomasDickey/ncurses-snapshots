@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: dist.mk,v 1.1710 2025/12/31 11:41:10 tom Exp $
+# $Id: dist.mk,v 1.1712 2026/01/04 00:59:54 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -38,7 +38,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 6
 NCURSES_MINOR = 6
-NCURSES_PATCH = 20251231
+NCURSES_PATCH = 20260103
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)

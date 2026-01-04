@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1148 2025/12/25 23:44:16 tom Exp $
+dnl $Id: aclocal.m4,v 1.1149 2025/12/27 18:03:23 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -5699,7 +5699,7 @@ int main(void)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAKE_PHONY version: 4 updated: 2025/12/24 12:27:29
+dnl CF_MAKE_PHONY version: 5 updated: 2025/12/27 13:03:23
 dnl -------------
 dnl Check if the make-program handles a ".PHONY" target, e.g,. a target which
 dnl acts as a placeholder.
@@ -5725,7 +5725,7 @@ dnl
 dnl + Version 3.8 of the dmake program in January 1992 also implemented this
 dnl   GNU make extension, but is less well known than the BSD make.
 AC_DEFUN([CF_MAKE_PHONY],[
-AC_CACHE_CHECK(for \".PHONY\" make-support, cf_cv_make_PHONY,[
+AC_CACHE_CHECK(for ".PHONY" make-support, cf_cv_make_PHONY,[
 	rm -rf conftest*
 	(
 		mkdir conftest || exit 1
