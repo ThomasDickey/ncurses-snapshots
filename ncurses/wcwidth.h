@@ -1,4 +1,4 @@
-/* $Id: wcwidth.h,v 1.11 2026/01/03 11:44:47 tom Exp $ */
+/* $Id: wcwidth.h,v 1.12 2026/01/12 00:27:54 tom Exp $ */
 
 /*
  * Copyright 2002-2025,2026 by Thomas E. Dickey
@@ -113,8 +113,7 @@
  *-----------------------------------------------------------------------------
  */
 
-#ifndef _WCWIDTH_H_incl
-#define _WCWIDTH_H_incl 1
+#ifdef mk_wcwidth
 
 #ifdef TEST_DRIVER
 #include <stdio.h>
@@ -1196,4 +1195,4 @@ main(int argc, char **argv)
 }
 #endif /* TEST_DRIVER */
 
-#endif /* _WCWIDTH_H_incl 1 */
+#endif /* defined(mk_wcwidth) */

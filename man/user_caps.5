@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 2017 Free Software Foundation, Inc.                            *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: user_caps.5,v 1.60 2025/11/12 01:01:01 tom Exp $
-.TH user_caps 5 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: user_caps.5,v 1.64 2026/01/11 23:54:16 tom Exp $
+.TH user_caps 5 2026-01-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -545,6 +545,26 @@ mouse protocols.
              %?%p4%tM%em%;,
 .fi
 .EE
+.PP
+Some of these extended capabilities have parameters which
+\fI\%ncurses\fP may use in the
+.BR \%tparm ","
+.BR \%tiparm ","
+or
+.B \%tiparm_s
+functions.
+The \fI\%ncurses\fP library checks to ensure that
+both standard and extended capabilities have
+the expected number and type of parameters.
+The terminfo compiler \fI\%@TIC@\fP has similar checks for these extensions
+as well as for those which are used by other programs,
+which include
+.IR \%mintty ","
+.IR \%screen ","
+.IR \%tack ","
+.IR \%tmux ","
+.IR \%vim ", and"
+.IR \%xterm "."
 .
 .SS "Extended Key Definitions"
 Several terminals provide the ability to send distinct strings for

@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.194 2025/10/25 17:29:43 tom Exp $
+# $Id: Makefile.in,v 1.198 2026/01/14 08:52:45 tom Exp $
 ##############################################################################
-# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -201,14 +201,18 @@ TEST_DEPS	= ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 TEST_ARGS	= @LDFLAGS_STATIC@ @TEST_ARGS@ @LDFLAGS_SHARED@
 TEST_LDFLAGS	= @LD_MODEL@ $(TEST_ARGS) @LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 
+# Unlike the other test-programs, lib_mvcur uses internal functions which
+# are not exported when using versioned symbols, as well as objects from
+# the progs directory.
+TEST_INTERNALS	= lib_mvcur$x
+
 TEST_PROGS = \
 	captoinfo$x \
 	hardscroll$x \
 	hashmap$x \
-	lib_mvcur$x \
 	link_test$x \
 	report_ctype$x \
-	report_hashing$x
+	report_hashing$x @NO_SHARED@ $(TEST_INTERNALS)
 
 LOCAL_LIBDIR	= @top_builddir@/lib
 
@@ -342,12 +346,24 @@ realclean :: distclean
 # These rules build test-programs for the modules that have test-drivers
 @MAKE_PHONY@.PHONY :	test_progs
 test_progs : $(TEST_PROGS)
+test_clean :
+	-rm -f $(TEST_PROGS)
+
+CAPTOINFO_DEPS = \
+	../@DFT_OBJ_SUBDIR@/comp_scan$o
+
+MVCUR_DEPS =  \
+	../@DFT_OBJ_SUBDIR@/captoinfo$o \
+	../@DFT_OBJ_SUBDIR@/comp_expand$o \
+	../@DFT_OBJ_SUBDIR@/comp_scan$o \
+	../@DFT_OBJ_SUBDIR@/dump_entry$o \
+	../@DFT_OBJ_SUBDIR@/write_entry$o
 
 ./link_test.c : $(base)/MKlib_gen.sh ../include/curses.h
 	FGREP="@FGREP@" $(SHELL) -e $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" implemented <../include/curses.h >$@
 
-captoinfo$x : $(tinfo)/captoinfo.c $(TEST_DEPS)
-	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(tinfo)/captoinfo.c $(TEST_LDFLAGS)
+captoinfo$x : $(tinfo)/captoinfo.c $(CAPTOINFO_DEPS) $(TEST_DEPS)
+	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(tinfo)/captoinfo.c $(CAPTOINFO_DEPS) $(TEST_LDFLAGS)
 
 hardscroll$x : $(serial)/hardscroll.c $(TEST_DEPS)
 	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DSCROLLDEBUG $(serial)/hardscroll.c $(TEST_LDFLAGS)
@@ -355,13 +371,14 @@ hardscroll$x : $(serial)/hardscroll.c $(TEST_DEPS)
 hashmap$x : $(serial)/hashmap.c $(serial)/hardscroll.c $(TEST_DEPS)
 	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(serial)/hashmap.c $(serial)/hardscroll.c $(TEST_LDFLAGS)
 
-lib_mvcur$x : $(serial)/lib_mvcur.c $(TEST_DEPS) \
-		../@DFT_OBJ_SUBDIR@/dump_entry$o
-	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry$o $(TEST_LDFLAGS)
+lib_mvcur$x : $(serial)/lib_mvcur.c $(MVCUR_DEPS) $(TEST_DEPS) \
+		$(INCDIR)/tic.h \
+		$(srcdir)/../progs/dump_entry.h
+	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../../progs $(serial)/lib_mvcur.c $(MVCUR_DEPS) $(TEST_LDFLAGS)
 
 link_test$x : ./link_test.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/link_test$o
-	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) ../@DFT_OBJ_SUBDIR@/link_test$o $(TEST_LDFLAGS)
+	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) ../@DFT_OBJ_SUBDIR@/link_test$o $(TEST_LDFLAGS)
 
 ../@DFT_OBJ_SUBDIR@/dump_entry$o:
 	( cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry$o )
@@ -369,14 +386,14 @@ link_test$x : ./link_test.c $(TEST_DEPS) \
 report_ctype$x : \
 		$(srcdir)/curses.priv.h \
 		$(srcdir)/report_ctype.c $(TEST_DEPS)
-	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_ctype.c $(TEST_LDFLAGS)
+	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_ctype.c $(TEST_LDFLAGS)
 	@echo "... made $@"
 	./report_ctype$x
 
 report_hashing$x : \
 		$(srcdir)/curses.priv.h \
 		$(srcdir)/report_hashing.c $(TEST_DEPS)
-	@ECHO_LD@ $(CC) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_hashing.c $(TEST_LDFLAGS)
+	@ECHO_LD@ $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) $(srcdir)/report_hashing.c $(TEST_LDFLAGS)
 
 # Verify that each header-file can be compiled without including another.
 @MAKE_PHONY@.PHONY :	check_headers

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.229 2025/12/06 21:21:06 tom Exp $ */
+/* $Id: test.priv.h,v 1.230 2026/01/11 12:03:22 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -781,6 +781,10 @@ extern int optind;
 
 #define HELP_KEY_1	'?'
 #define HELP_KEY_2	KEY_F(1)
+
+#ifndef DEFAULT_TERM_ENV
+#define DEFAULT_TERM_ENV "dumb"
+#endif
 
 /* our "standard" options for getopt, needed for help2man */
 #define OPTS_COMMAND	'c'

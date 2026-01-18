@@ -2,10 +2,10 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.79 2025/02/23 01:55:06 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.80 2026/01/15 00:40:09 tom Exp $)
 #
 ##############################################################################
-# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -532,6 +532,53 @@ DECLARATIONS
 
 EOF
 
+# stack values:
+# 1 = constant-enabled
+# 0 = default enabled (either top-level or non-constant #if/#ifdef)
+# -1 = constant-disabled
+$AWK 'BEGIN{
+	level = 0;
+	stack[level] = 0;
+}
+/^#ifdef/{
+	stack[++level] = 0;
+	print;
+	next;
+}
+/^#elif/{
+	print;
+	next;
+}
+/^#if/{
+	level++;
+	sub("[ \t]/[*].*","");
+	if (match($0,"#if[ \t]*1$") > 0)
+		stack[level] = 1;
+	else if (match($0,"#if[ \t]*0$") > 0)
+		stack[level] = -1;
+	else
+		stack[level] = 0;
+	print;
+	next;
+}
+/^#else/{
+	if (stack[level] == 1) {
+		stack[level] = -1;
+	} else if (stack[level] == -1) {
+		stack[level] = 1;
+	}
+	print;
+	next;
+}
+/^#endif/{
+	--level;
+	print;
+	next;
+}
+{
+	if (stack[level] >= 0)
+		print;
+}' | \
 sed -n -f $ED1 \
 | sed -e 's/NCURSES_EXPORT(\(.*\)) \(.*\) (\(.*\))/\1 \2(\3)/' \
 | sed -f $ED2 \

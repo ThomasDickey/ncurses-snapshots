@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.742 2025/12/31 14:30:54 tom Exp $
+ * $Id: curses.priv.h,v 1.744 2026/01/13 08:51:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1835,6 +1835,8 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const NCURSES_CH_T *, int);
 #else /* !TRACE */
 
 #define START_TRACE() /* nothing */
+
+#define USE_TRACEF(mask) 0
 
 #define T(a)
 #define TR(n, a)

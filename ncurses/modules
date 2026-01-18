@@ -1,6 +1,6 @@
-# $Id: modules,v 1.133 2025/12/30 15:13:55 tom Exp $
+# $Id: modules,v 1.134 2026/01/14 01:21:25 tom Exp $
 ##############################################################################
-# Copyright 2019-2020,2025 Thomas E. Dickey                                  #
+# Copyright 2019-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -68,7 +68,7 @@ lib_isendwin	lib		$(base)		$(HEADER_DEPS)
 lib_leaveok	lib		$(base)		$(HEADER_DEPS)
 lib_mouse	lib		$(base)		$(HEADER_DEPS)	$(INCDIR)/tic.h
 lib_move	lib		$(base)		$(HEADER_DEPS)
-lib_mvcur	lib		$(serial)	$(HEADER_DEPS)	$(INCDIR)/tic.h $(srcdir)/../progs/dump_entry.h
+lib_mvcur	lib		$(serial)	$(HEADER_DEPS)
 lib_mvwin	lib		$(base)		$(HEADER_DEPS)
 lib_newterm	lib		$(base)		$(HEADER_DEPS)	$(INCDIR)/tic.h
 lib_newwin	lib		$(base)		$(HEADER_DEPS)

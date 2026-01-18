@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1202 $
-#	$Date: 2026/01/04 00:17:34 $
+#	$Revision: 1.1210 $
+#	$Date: 2026/01/17 23:45:14 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2435,15 +2435,15 @@ vt52+arrows|cursor keys for VT52,
 # terminfo guidelines.  That is a compromise used to assign the remaining
 # keys on the keypad to kf5-kf0, used on older systems with legacy termcap
 # support:
-vt100+keypad|DEC VT100 numeric keypad no fkeys,
+vt100+keypad-sco|DEC VT100 numeric keypad no fkeys,
 	ka1=\EOq, ka3=\EOs, kb2=\EOr, kc1=\EOp, kc3=\EOn,
 vt100+pf1-pf4|DEC VT100 PF1-PF4,
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS,
-vt100+pfkeys|DEC VT100 numeric keypad (kf1-kf4),
-	kent=\EOM, use=vt100+pf1-pf4, use=vt100+keypad,
-vt100+fnkeys|DEC VT100 numeric keypad (kf0-kf10),
+vt100+pfkeys-sco|DEC VT100 numeric keypad (kf1-kf4),
+	kent=\EOM, use=vt100+pf1-pf4, use=vt100+keypad-sco,
+vt100+fnkeys-sco|DEC VT100 numeric keypad (kf0-kf10),
 	kf0=\EOy, kf10=\EOx, kf5=\EOt, kf6=\EOu, kf7=\EOv, kf8=\EOl,
-	kf9=\EOw, use=vt100+pfkeys,
+	kf9=\EOw, use=vt100+pfkeys-sco,
 #
 # A better adaptation to modern keyboards such as the PC's, which have a dozen
 # function keys and the keypad 2,4,6,8 keys are labeled with arrows keys, is to
@@ -2455,20 +2455,22 @@ vt100+fnkeys|DEC VT100 numeric keypad (kf0-kf10),
 #  |_kf1__k1_|_kf2__k2_|_kf3__k3_|_kf4__k4_|
 #  |    7         8         9         -    |
 #  |   $Ow   |   $Ox   |   $Oy   |   $Om   |
-#  |_ka1__K1_|_________|_ka3__K3_|_________|
+#  |_ka1__K1_|_ka2_____|_ka3__K3_|_________|
 #  |    4    |    5    |    6    |    ,    |
 #  |   $Ot   |   $Ou   |   $Ov   |   $Ol   |
-#  |_________|_kb2__K2_|_________|_________|
+#  |_kb1_____|_kb2__K2_|_kb3_____|_________|
 #  |    1    |    2    |    3    |         |
 #  |   $Oq   |   $Or   |   $Os   |  enter  |
-#  |_kc1__K4_|_________|_kc3__K5_|  $OM    |
+#  |_kc1__K4_|_kc2_____|_kc3__K5_|  $OM    |
 #  |         0         |   .     |         |
 #  |        $Op        |  $On    |         |
 #  |___________________|_________|_kent_@8_|
 #
-vt220+keypad|DEC VT220 numeric keypad,
-	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, ka2=\EOx,
-	kb1=\EOt, kb3=\EOv, kc2=\EOr, use=vt100+pfkeys,
+# ka2, kb1, kb3 and kc2 are extended key capabilities which have no termcap
+# equivalent.
+vt100+keypad|vt220+keypad|DEC numeric keypad,
+	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, kent=\EOM,
+	ka2=\EOx, kb1=\EOt, kb3=\EOv, kc2=\EOr, use=vt100+pf1-pf4,
 #
 vt100+enq|ncurses extension for VT100-style ENQ,
 	u8=\E[?1;2c, use=ansi+enq,
@@ -2519,7 +2521,7 @@ vt100|vt100-am|DEC VT100 (w/advanced video),
 	    %;m%?%p9%t\016%e\017%;$<2>,
 	smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m$<2>,
 	use=ansi+csr, use=ansi+pp, use=decid+cpr, use=vt100+4bsd,
-	use=vt100+fnkeys,
+	use=vt100+fnkeys-sco,
 
 vt100+4bsd|DEC VT100 from 4.0BSD,
 	am, msgr,
@@ -2858,7 +2860,7 @@ vt320|vt300|DEC VT320 7 bit terminal,
 	use=ansi+csr, use=ansi+cup, use=ansi+enq, use=ansi+erase,
 	use=ansi+idl, use=ansi+local, use=ansi+sgrso,
 	use=ansi+sgrul, use=dec+pp, use=dec+sl, use=vt220+cvis,
-	use=vt220+keypad, use=vt220+sfkeys, use=vt220+ufkeys,
+	use=vt100+keypad, use=vt220+sfkeys, use=vt220+ufkeys,
 
 vt320-nam|vt300-nam|DEC VT320 7 bit terminal with no am to make SAS happy,
 	am@,
@@ -3090,10 +3092,10 @@ vt525-w|DEC VT525 in wide mode,
 #
 # In trying to get the function keys to work, I had to cobble my own
 # terminfo.src entry, since the existing vt520 entry doesn't include most of
-# the function keys.  If I blend the entries for "vt420f" and "vt220+keypad"
+# the function keys.  If I blend the entries for "vt420f" and "vt100+keypad"
 # I seem to get them all -Mike Gran
 vt520ansi|Boundless VT520 ANSI,
-	use=ansi+rca, use=vt420f, use=vt220+keypad,
+	use=ansi+rca, use=vt420f, use=vt100+keypad,
 	use=ansi+tabs,
 
 #### VT100 emulations
@@ -3357,7 +3359,7 @@ nsterm+7|AppKit Terminal.app v41+ basic capabilities w/ASCII charset,
 	sgr0=\E[m, smam=\E[?7h, smkx=\E[?1h\E=, tbc=\E[3g,
 	use=ansi+csr, use=ansi+cup, use=ansi+erase, use=ansi+idl,
 	use=ansi+local, use=ansi+sgrbold, use=vt100+enq,
-	use=vt100+pfkeys,
+	use=vt100+pfkeys-sco,
 
 nsterm+acs|AppKit Terminal.app v41+ basic capabilities w/VT100 alternate-charset,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
@@ -3651,9 +3653,9 @@ iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 	use=ansi+csr, use=ansi+enq, use=ansi+erase, use=ansi+idc,
 	use=ansi+idl, use=ansi+local, use=ansi+rca2,
 	use=ansi+sgrso, use=ansi+sgrul, use=vt100+4bsd,
-	use=vt100+keypad, use=vt100+pfkeys, use=xterm+r5+fkeys,
-	use=xterm+alt47, use=xterm+sl-twm, use=xterm+x11mouse,
-	use=xterm+256setaf, use=vt220+cvis,
+	use=vt100+keypad-sco, use=vt100+pfkeys-sco,
+	use=xterm+r5+fkeys, use=xterm+alt47, use=xterm+sl-twm,
+	use=xterm+x11mouse, use=xterm+256setaf, use=vt220+cvis,
 
 # iTerm2
 #
@@ -3871,7 +3873,7 @@ xnuppc+basic|Darwin PowerPC console basic capabilities,
 	sgr0=\E[m, smam=\E[?7h, smkx=\E[?1h\E=, tbc=\E[3g,
 	use=ansi+csr, use=ansi+cup, use=ansi+erase,
 	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
-	use=vt100+keypad,
+	use=vt100+keypad-sco,
 
 xnuppc+c|Darwin PowerPC console ANSI color support,
 	ncv#32, use=klone+color,
@@ -4241,8 +4243,7 @@ putty|PuTTY terminal emulator,
 	use=klone+color, use=klone+sgr, use=putty+cursor,
 	use=putty+fnkeys, use=report+da2, use=vt220+pcedit,
 	use=xterm+alt1049, use=vt102+enq, use=xterm+sm+1006,
-	use=xterm+sl, use=vt100+fnkeys, use=putty+keypad,
-	use=vt220+cvis,
+	use=xterm+sl, use=putty+keypad, use=vt220+cvis,
 
 # older versions (e.g., before 0.71) of PuTTY used a shift-modifier to toggle
 # between normal- and application-mode for the cursor-keys.  That was dropped,
@@ -4250,9 +4251,8 @@ putty|PuTTY terminal emulator,
 putty+cursor|PuTTY modified cursor-keys,
 	kDN5=\E[B, kLFT5=\E[D, kRIT5=\E[C, kUP5=\E[A,
 putty+keypad|PuTTY numeric keypad,
-	kp1=\EOq, kp2=\EOr, kp3=\EOs, kp4=\EOt, kp5=\EOu, kp6=\EOv,
-	kp7=\EOw, kp8=\EOx, kp9=\EOy, kpADD=\EOl, kpDIV=\EOQ,
-	kpDOT=\EOn, kpMUL=\EOR, kpNUM=\EOP, kpSUB=\EOS, kpZRO=\EOp,
+	kpADD=\EOl, kpDIV=\EOQ, kpDOT=\EOn, kpMUL=\EOR, kpNUM=\EOP,
+	kpSUB=\EOS, kpZRO=\EOp, use=vt100+keypad,
 
 vt100-putty|Reset PuTTY to pure VT100,
 	rs2=\E<\E["p\Ec\E[?3l\E]R\E[40"p\E[61"p\E[50;1;2"p,
@@ -5002,7 +5002,7 @@ xterm-xf86-v32|xterm terminal emulator (XFree86 3.2 Window System),
 	use=ansi+idc, use=ansi+idl, use=ansi+inittabs,
 	use=ansi+local, use=ansi+rca2, use=xterm+alt47,
 	use=xterm+kbs, use=vt100+enq, use=xterm+r5+fkeys,
-	use=ecma+color, use=vt220+cvis, use=vt220+keypad,
+	use=ecma+color, use=vt220+cvis, use=vt100+keypad,
 	use=vt220+pcedit, use=vt220+sfkeys,
 
 # This is the stock xterm entry supplied with XFree86 3.3, which uses VT100
@@ -5255,14 +5255,10 @@ xterm+pcf2|fragment with modifyFunctionKeys:2,
 	kf31=\E[18;5~, kf32=\E[19;5~, kf33=\E[20;5~,
 	kf34=\E[21;5~, kf35=\E[23;5~, kf36=\E[24;5~,
 	kf37=\E[1;6P, kf38=\E[1;6Q, kf39=\E[1;6R, kf40=\E[1;6S,
-	kf41=\E[15;6~, kf42=\E[17;6~, kf43=\E[18;6~,
-	kf44=\E[19;6~, kf45=\E[20;6~, kf46=\E[21;6~,
-	kf47=\E[23;6~, kf48=\E[24;6~, kf49=\E[1;3P, kf50=\E[1;3Q,
-	kf51=\E[1;3R, kf52=\E[1;3S, kf53=\E[15;3~, kf54=\E[17;3~,
-	kf55=\E[18;3~, kf56=\E[19;3~, kf57=\E[20;3~,
-	kf58=\E[21;3~, kf59=\E[23;3~, kf60=\E[24;3~,
-	kf61=\E[1;4P, kf62=\E[1;4Q, kf63=\E[1;4R,
-	use=vt100+pf1-pf4, use=xterm+nopcfkeys,
+	kf41=\E[15;6~, kf42=\E[17;6~, kf49=\E[1;3P, kf50=\E[1;3Q,
+	kf51=\E[1;3R, kf52=\E[1;3S, kf61=\E[1;4P, kf62=\E[1;4Q,
+	kf63=\E[1;4R, use=vt100+pf1-pf4, use=xterm+nopcfkeys,
+	use=xterm+pcf0,
 #
 # Chunks from xterm #230:
 xterm+pce2|fragment with modifyCursorKeys:2 editing-keys,
@@ -5349,7 +5345,7 @@ xterm+alt+title|xterm 90 and 251 features combined,
 xterm+keypad|xterm emulating VT100/VT220 numeric keypad,
 	kbeg=\EOE, kp5=\EOE, kpADD=\EOk, kpCMA=\EOl, kpDIV=\EOo,
 	kpDOT=\EOn, kpMUL=\EOj, kpSUB=\EOm, kpZRO=\EOp,
-	use=vt220+keypad,
+	use=vt100+keypad,
 #
 # Those chunks use the new-style (the xterm oldFunctionKeys resource is false).
 # Alternatively, the same scheme with old-style function keys as in xterm-r6
@@ -5735,7 +5731,7 @@ xterm-sco|xterm with SCO function keys,
 xterm-vt220|xterm emulating VT220,
 	npc,
 	kcbt=\E[Z, kend=\E[4~, khome=\E[1~, kmous=\E[M, nel=\EE,
-	use=xterm+app, use=xterm+edit, use=vt220+keypad,
+	use=xterm+app, use=xterm+edit, use=vt100+keypad,
 	use=ecma+italics, use=ecma+index, use=ansi+rep,
 	use=ecma+strikeout, use=vt220+sfkeys,
 	use=xterm+r5+fkeys, use=xterm+focus, use=xterm+sm+1006,
@@ -6072,7 +6068,7 @@ xtermm|xterm terminal emulator (monochrome),
 	tbc=\E[3g, use=ansi+apparrows, use=ansi+csr,
 	use=ansi+cup, use=ansi+erase, use=ansi+idl,
 	use=ansi+local, use=ansi+sgrso, use=decid+cpr,
-	use=vt100+fnkeys,
+	use=vt100+fnkeys-sco,
 
 xtermc|xterm terminal emulator (color),
 	ncv#7,
@@ -6137,7 +6133,7 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 	use=ecma+underline, use=ecma+standout,
 	use=xterm+r5+fkeys, use=ansi+apparrows, use=ansi+csr,
 	use=ansi+cup, use=ansi+idl, use=ansi+local,
-	use=decid+cpr, use=ecma+color, use=vt220+keypad,
+	use=decid+cpr, use=ecma+color, use=vt100+keypad,
 
 # The IRAF source has a terminfo using "xterm-r5", but line-drawing does not
 # work in that case.  This entry uses xterm+acs, to work around that problem.
@@ -6733,7 +6729,7 @@ mlterm3|multi lingual terminal emulator 3.x,
 	use=ecma+strikeout, use=xterm+app, use=xterm+pcf2,
 	use=xterm+pcc2, use=xterm+pce2, use=xterm+meta,
 	use=xterm+alt+title, use=xterm+sm+1006,
-	use=vt100+pfkeys, use=bracketed+paste, use=mlterm2,
+	use=vt100+pfkeys-sco, use=bracketed+paste, use=mlterm2,
 	use=report+version,
 
 # This is mlterm 2.9.3's mlterm.ti, with some additions/corrections -TD
@@ -6837,7 +6833,7 @@ rxvt-basic|rxvt terminal base (X Window System),
 	use=ecma+underline, use=ecma+standout, use=ansi+csr,
 	use=ansi+idl, use=ansi+local, use=xterm+alt47,
 	use=vt100+enq, use=vt100+4bsd, use=rxvt+pcfkeys,
-	use=vt220+cvis, use=vt220+keypad,
+	use=vt220+cvis, use=vt100+keypad,
 
 # Key Codes from rxvt reference:
 #
@@ -7267,7 +7263,7 @@ mvterm|vv100|SwitchTerm aka mvTERM,
 	    %;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smkx=\E[?1h\E=, smso=\E[7m, use=ansi+csr,
 	use=ansi+idl, use=ansi+local, use=ansi+sgrul,
-	use=xterm+alt47, use=vt100+fnkeys, use=vt100+4bsd,
+	use=xterm+alt47, use=vt100+fnkeys-sco, use=vt100+4bsd,
 	use=x10term+sl,
 
 #### MTERM
@@ -7496,7 +7492,7 @@ st-0.6|simpleterm 0.6,
 	use=ecma+standout, use=ansi+apparrows, use=ansi+csr,
 	use=ansi+enq, use=ansi+idl, use=ansi+inittabs,
 	use=ansi+local, use=ansi+rca2, use=ansi+sgrbold,
-	use=vt100+4bsd, use=vt100+pfkeys, use=vt220+pcedit,
+	use=vt100+4bsd, use=vt100+pfkeys-sco, use=vt220+pcedit,
 	use=ecma+index, use=xterm+alt1049, use=vt220+cvis,
 	use=xterm+sl, use=ecma+italics, use=ecma+strikeout,
 	use=bracketed+paste, use=xterm+pcf2,
@@ -8869,7 +8865,7 @@ screen.rxvt|screen in rxvt,
 	bw, XT,
 	cvvis@, flash@, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC,
 	kcuu1=\EOA, use=screen+fkeys, use=vt100+enq,
-	use=rxvt+pcfkeys, use=xterm+x11mouse, use=vt220+keypad,
+	use=rxvt+pcfkeys, use=xterm+x11mouse, use=vt100+keypad,
 	use=screen,
 screen.Eterm|screen in Eterm,
 	use=xterm+x11mouse, use=screen+fkeys, use=Eterm,
@@ -12496,7 +12492,7 @@ tvi9065|TeleVideo 9065,
 	dl=\E[%p1%dM, dl1=\ER, dsl=\E_30\r, ech=\E[%p1%d@, ed=\EY,
 	el=\ET, flash=\Eb$<15>\Ed, fsl=\r, home=^^, ht=^I, hts=\E1,
 	ich=\E[%p1%d@, if=/usr/share/tabset/stdcrt,
-	il=\E[%p1%dL, il1=\EE, ind=\n, invis=\EG1, ip=$<3>,
+	il=\E[%p1%dL, il1=\EE, ind=\n, ip=$<3>,
 	is1=\E"\E%\E'\E(\EG@\EO\EX\E[=5l\E[=6l\E[=7h\Ed\Er,
 	is2=\EF2\EG0\E\\L, is3=\E<\E[=4l\E[=8h, kHOM=\E\s\s\s,
 	kbs=^H, kcbt=\EI, kcub1=^H, kcud1=^V, kcuf1=^L, kcuu1=^K,
@@ -12508,10 +12504,10 @@ tvi9065|TeleVideo 9065,
 	pfloc=\E|%p1%{48}%+%c2%p2%s\031,
 	pfx=\E|%p1%{48}%+%c1%p2%s\031,
 	pln=\E_%p1%{63}%+%c%p2%s\r, prot=\E&,
-	rep=\E[%p2%db%p1%c, rev=\EG4,
-	rf=/usr/share/tabset/stdcrt, ri=\Ej, rmacs=\E%%,
-	rmam=\E[=7l, rmcup=\E.3\Er\E[1;25r\E[25;0H, rmdc=\0,
-	rmir=\Er, rmln=\E[4;1v, rmso=\EG0, rmul=\EG0, rmxon=^N,
+	rep=\E[%p2%db%p1%c, rf=/usr/share/tabset/stdcrt,
+	ri=\Ej, rmacs=\E%%, rmam=\E[=7l,
+	rmcup=\E.3\Er\E[1;25r\E[25;0H, rmdc=\0, rmir=\Er,
+	rmln=\E[4;1v, rmso=\EG0, rmxon=^N,
 	rs1=\EC\EDF\E[0;0v\E[8;1v\E[=65l,
 	rs2=\E.b\E[10;20v\E[14;1v\E[3;0v\E[7;0v\E[=11.h\E[=12.h\E[=1
 	    3.h\E[=14.h\E[=15l\E[=20h\E[=60l\E[=61h\E[=9l\E[=10l\E[=
@@ -12523,9 +12519,9 @@ tvi9065|TeleVideo 9065,
 	    %?%p5%t\EGp%;%?%p6%t\EG\,%;%?%p7%t\EG1%;%?%p8%t\E&%;%?
 	    %p9%t\E$%e\E%%%;,
 	sgr0=\EG0\E%, smacs=\E$, smam=\E=7h, smcup=\E.2, smdc=\Er,
-	smir=\Eq, smln=\E[4;2v, smso=\EGt, smul=\EG8, smxon=^O,
-	tbc=\E3, tsl=\E[4;1v\E_30, uc=\EG8\EG0, use=ansi+local,
-	use=ecma+index,
+	smir=\Eq, smln=\E[4;2v, smso=\EGt, smxon=^O, tbc=\E3,
+	tsl=\E[4;1v\E_30, uc=\EG8\EG0, use=adm+sgr,
+	use=ansi+local, use=ecma+index,
 
 #### Visual (vi)
 #
@@ -13327,7 +13323,7 @@ wy75|wyse75|Wyse 75,
 	smkx=\E[?1l\E[?7h\E=, smso=\E[1t\E[7m, smul=\E[2t\E[4m,
 	tsl=\E[>\,\001, use=ansi+arrows, use=ansi+cup,
 	use=ansi+local, use=ansi+pp, use=ansi+tabs,
-	use=decid+cpr, use=vt220+cvis, use=vt220+keypad,
+	use=decid+cpr, use=vt220+cvis, use=vt100+keypad,
 	use=vt220+sfkeys, use=vt220+ufkeys,
 #
 #	This terminal description uses the non-hidden attribute mode
@@ -13388,7 +13384,7 @@ wy85|wyse85|Wyse 85,
 	use=ansi+csr, use=ansi+inittabs, use=ansi+local,
 	use=ansi+pp, use=ansi+sgrbold, use=decid+cpr,
 	use=vt100+4bsd, use=vt220+vtedit, use=vt220+cvis,
-	use=vt220+keypad, use=vt220+sfkeys, use=vt220+ufkeys,
+	use=vt100+keypad, use=vt220+sfkeys, use=vt220+ufkeys,
 #
 #	Wyse 85 with visual bell.
 wy85-vb|wyse85-vb|Wyse 85 with visible bell,
@@ -13442,7 +13438,7 @@ wy85-8bit|wyse85-8bit|Wyse 85 in 8-bit mode,
 	tsl=\E[40h\E7\E[25;%i%p1%dH, use=ansi+csr,
 	use=ansi+inittabs, use=ansi+local, use=ansi+pp,
 	use=ansi+sgrbold, use=decid+cpr, use=vt100+4bsd,
-	use=vt100+pfkeys, use=vt220+cvis,
+	use=vt100+pfkeys-sco, use=vt220+cvis,
 #
 #	Wyse 185 emulating a VT320 7 bit mode.
 #
@@ -13479,7 +13475,7 @@ wy185|wyse185|Wyse 185,
 	use=ecma+underline, use=ecma+standout, use=ansi+arrows,
 	use=ansi+inittabs, use=ansi+local, use=ansi+pp,
 	use=ansi+sgrbold, use=decid+cpr, use=vt100+4bsd,
-	use=vt220+vtedit, use=vt220+keypad, use=vt220+sfkeys,
+	use=vt220+vtedit, use=vt100+keypad, use=vt220+sfkeys,
 	use=vt220+ufkeys, use=wyse+cvis,
 #
 #	Wyse 185 with 24 data lines and top status (terminal status)
@@ -13678,7 +13674,7 @@ wy370|wyse370|wy370-101k|Wyse 370 with 101 key keyboard,
 wy370-105k|Wyse 370 with 105 key keyboard,
 	kfnd=\E[1~, khlp=\E[28~, khome=\E[26~, lf1=PF1, lf2=PF2,
 	lf3=PF3, lf4=PF4, use=ansi+arrows, use=vt220+vtedit,
-	use=wy370-nk, use=vt220+keypad, use=vt220+sfkeys,
+	use=wy370-nk, use=vt100+keypad, use=vt220+sfkeys,
 	use=vt220+ufkeys,
 #
 #	Function key set for the PC compatible keyboard
@@ -13804,7 +13800,7 @@ wy520|wyse520|Wyse 520,
 	use=ecma+underline, use=ansi+arrows, use=ansi+csr,
 	use=ansi+cup, use=ansi+local, use=ansi+pp,
 	use=ansi+sgrbold, use=ansi+tabs, use=decid+cpr,
-	use=vt220+vtedit, use=vt220+keypad, use=vt220+sfkeys,
+	use=vt220+vtedit, use=vt100+keypad, use=vt220+sfkeys,
 	use=vt220+ufkeys, use=wyse+cvis,
 #
 #       Wyse 520 with 24 data lines and status (terminal status)
@@ -14345,7 +14341,7 @@ v5410|att5410 in terms of a VT100,
 	sgr0=\E[m\017$<2>, smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=,
 	smso=\E[1;7m$<2>, smul=\E[4m$<2>, tbc=\E[3g,
 	use=ansi+csr, use=ansi+idl1, use=decid+cpr,
-	use=vt100+fnkeys,
+	use=vt100+fnkeys-sco,
 
 #
 # Teletype Model 5420 -- A souped up 5410, with multiple windows,
@@ -17794,7 +17790,7 @@ ts100|ts100-sp|Falco ts100-sp,
 	rmkx=\E[?1l\E>,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, smam=\E[?7h,
 	smkx=\E[?1h\E=, use=ansi+csr, use=ansi+local,
-	use=decid+cpr, use=vt100+4bsd, use=vt100+fnkeys,
+	use=decid+cpr, use=vt100+4bsd, use=vt100+fnkeys-sco,
 
 ts100-ctxt|Falco ts-100 saving context,
 	rmcup=\E~_b, smcup=\E~_d\E[2J, use=ts100,
@@ -19576,7 +19572,7 @@ ncr260vppp|NCR 2900/260 viewpoint,
 	cup=\EY%p1%{32}%+%c%p2%{32}%+%c$<5>, cuu1=\032$<2>,
 	dch1=\EW$<2>, dim=\EGp, dl1=\El$<2>, ed=\Ek$<2>,
 	el=\EK$<2>, home=\036$<2>, ht=^I, hts=\E1, il1=\EM$<2>,
-	ind=\n$<2>, invis=\EG1,
+	ind=\n$<2>,
 	is2=\Ee6\E~%$<100>\E+\E`:\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0
 	    \EcC1\Ee7$<100>,
 	kDC=\El, kEND=\Ek, kHOM=^A, kPRT=\E7, kRIT=^F, ka1=^A, ka3=\EJ,
@@ -19591,12 +19587,12 @@ ncr260vppp|NCR 2900/260 viewpoint,
 	kf9=^B9\r, khome=^A, kich1=\Eq, knp=\EJ, kpp=\EJ, kprt=\EP,
 	ll=\001$<5>, mc0=\EP$<100>, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<5>,
-	nel=\037$<2>, rev=\EG4, ri=\Ej$<2>, rmacs=\EcB0\EH\003,
-	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20,
+	nel=\037$<2>, ri=\Ej$<2>, rmacs=\EcB0\EH\003, rmir=\Er,
+	rmxon=\Ec20,
 	rs2=\Ee6\E~%$<100>\E+\E`:\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0
 	    \EcC1\Ee7$<100>,
 	sgr0=\EG0\EH\003, smacs=\EcB1\EH\002, smir=\Eq,
-	smso=\EG4, smul=\EG8, smxon=\Ec21, use=ncr260vp+sl,
+	smxon=\Ec21, use=adm+sgr, use=ncr260vp+sl,
 
 ncr260vp+sl|NCR 2900/260 viewpoint with status-line,
 	hs,
@@ -19639,7 +19635,7 @@ ncr260vt100an|NCR 2900/260 VT100 with ANSI keyboard,
 	smkx=\E[?1h\E=, smso=\E[1;7m, tbc=\E[3g,
 	vpa=\E[%p1%dd$<40>, use=ansi+csr, use=ansi+sgrbold,
 	use=decid+cpr, use=vt220+vtedit, use=vt220+cvis,
-	use=vt220+keypad, use=ncr260vt+sl,
+	use=vt100+keypad, use=ncr260vt+sl,
 
 ncr260vt+sl|NCR 2900/260 VT100 status line,
 	hs,
@@ -19700,7 +19696,7 @@ ncr260vt200an|NCR 2900/260 VT200 with ANSI keyboard,
 	smir=\E[4h, smkx=\E[?1h\E=, tbc=\E[3g,
 	vpa=\E[%p1%dd$<40>, use=ecma+underline,
 	use=ecma+standout, use=ansi+sgrbold, use=decid+cpr,
-	use=vt220+vtedit, use=vt220+cvis, use=vt220+keypad,
+	use=vt220+vtedit, use=vt220+cvis, use=vt100+keypad,
 	use=ncr260vt+sl, use=vt220+sfkeys, use=vt220+ufkeys,
 
 ncr260vt200wan|NCR 2900/260 VT200 wide mode ANSI keyboard,
@@ -19755,7 +19751,7 @@ ncr260vt300an|NCR 2900/260 VT300 with ANSI keyboard,
 	smir=\E[4h, smkx=\E[?1h\E=, tbc=\E[3g,
 	vpa=\E[%p1%dd$<40>, use=ecma+underline,
 	use=ecma+standout, use=ansi+sgrbold, use=decid+cpr,
-	use=vt220+vtedit, use=vt220+cvis, use=vt220+keypad,
+	use=vt220+vtedit, use=vt220+cvis, use=vt100+keypad,
 	use=ncr260vt+sl, use=vt220+sfkeys, use=vt220+ufkeys,
 
 ncr260vt300wan|NCR 2900/260 VT300 wide mode ANSI keyboard,
@@ -19802,7 +19798,7 @@ ncr260wy325pp|NCR 2900/260 Wyse 325,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c$<10>, cuu1=\013$<5>,
 	cvvis=\E`5, dch1=\EW$<50>, dl1=\ER$<5>, ed=\Ey$<5>,
 	el=\Et$<5>, home=\036$<5>, ht=^I, hts=\E1, il1=\EE$<5>,
-	ind=\n$<5>, invis=\EG1,
+	ind=\n$<5>,
 	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"\Ee4\Ex@\E`9
 	    \Ee7$<100>,
 	kDC=\ER, kEND=\EY, kHOM=\E{, kNXT=\EK, kPRT=\E7, kPRV=\EJ,
@@ -19815,8 +19811,8 @@ ncr260wy325pp|NCR 2900/260 Wyse 325,
 	kf32=^Ao\r, khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP,
 	mc0=\EP, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<10>,
-	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH\003\EcB0,
-	rmam=\Ed., rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20,
+	nel=\037$<5>, ri=\Ej$<5>, rmacs=\EH\003\EcB0, rmam=\Ed.,
+	rmir=\Er, rmxon=\Ec20,
 	rs2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"\Ee4\Ex@\E`9
 	    \Ee7$<100>,
 	setb=\s,
@@ -19827,7 +19823,7 @@ ncr260wy325pp|NCR 2900/260 Wyse 325,
 	     %{60}%e%p1%{12}%=%t%{61}%e%p1%{13}%=%t%{62}%e%p1%{14}%=
 	     %t%{63}%e%p1%{15}%=%t%{56}%;\Edy%c11$<100>,
 	sgr0=\EG0\EcB0\EcD$<15>, smacs=\EH\002\EcB1, smam=\Ed/,
-	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0,
+	smir=\Eq, smso=\EGt, smxon=\Ec21, tbc=\E0, use=adm+sgr,
 	use=ncr260vp+sl, use=tvi920b+fn, use=ansi+arrows,
 	use=ansi+apparrows,
 ncr260wy325wpp|NCR 2900/260 Wyse 325 wide mode,
@@ -19901,7 +19897,7 @@ ncr260wy50+pp|NCR 2900/260 Wyse 50+,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c$<30>, cuu1=\013$<5>,
 	cvvis=\E`5, dch1=\EW$<50>, dim=\EGp, dl1=\ER$<5>,
 	ed=\EY$<5>, el=\ET$<5>, home=\036$<10>, ht=\011$<5>,
-	hts=\E1$<5>, il1=\EE$<5>, ind=\n$<5>, invis=\EG1,
+	hts=\E1$<5>, il1=\EE$<5>, ind=\n$<5>,
 	is2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	kDC=\ER, kEND=\EY, kHOM=\E{, kPRT=\E7, kRIT=^L, ka1=^^, kbs=^H,
@@ -19916,12 +19912,12 @@ ncr260wy50+pp|NCR 2900/260 Wyse 50+,
 	khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP,
 	mc0=\EP$<10>, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<10>,
-	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed.,
-	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20,
+	nel=\037$<5>, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed., rmir=\Er,
+	rmxon=\Ec20,
 	rs2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	sgr0=\EG0\EH\003$<15>, smacs=\EH^B, smam=\Ed/, smir=\Eq,
-	smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0$<5>,
+	smso=\EGt, smxon=\Ec21, tbc=\E0$<5>, use=adm+sgr,
 	use=ncr260vp+sl,
 ncr260wy50+wpp|NCR 2900/260 Wyse 50+ wide mode,
 	cols#132,
@@ -19940,7 +19936,7 @@ ncr260wy60pp|NCR 2900/260 Wyse 60,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c$<10>, cuu1=\013$<5>,
 	cvvis=\E`5, dch1=\EW$<50>, dl1=\ER$<5>, ed=\Ey$<5>,
 	el=\Et$<5>, home=\036$<25>, ht=\011$<15>, hts=\E1$<15>,
-	il1=\EE$<5>, ind=\n$<5>, invis=\EG1,
+	il1=\EE$<5>, ind=\n$<5>,
 	is2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	kDC=\ER, kEND=\EY, kHOM=\E{, kNXT=\EK, kPRT=\E7, kPRV=\EJ,
@@ -19955,13 +19951,13 @@ ncr260wy60pp|NCR 2900/260 Wyse 60,
 	kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, khome=^^,
 	kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP, mc0=\EP, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<30>,
-	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed.,
-	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20,
+	nel=\037$<5>, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed., rmir=\Er,
+	rmxon=\Ec20,
 	rs2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`:\E`@\E~!\E"
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	sgr0=\EG0\EcB0\EcD$<15>, smacs=\EH^B, smam=\Ed/,
-	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0$<15>,
-	use=ncr260vp+sl,
+	smir=\Eq, smso=\EGt, smxon=\Ec21, tbc=\E0$<15>,
+	use=adm+sgr, use=ncr260vp+sl,
 ncr260wy60wpp|NCR 2900/260 Wyse 60 wide mode,
 	cols#132,
 	cup=\Ea%i%p1%dR%p2%dC$<30>,
@@ -20197,10 +20193,10 @@ ndr9500-25-nl|NDR 9500 with 25 lines and no status line,
 ndr9500-mc|NDR 9500 with magic cookies (enables underline inverse video invisible and blink),
 	msgr@,
 	xmc#1,
-	blink=\EG2, invis=\EG1, rev=\EG4, rmso=\EG0, rmul=\EG0,
+	blink=\EG2, rmso=\EG0,
 	sgr=\E%%\E(%?%p5%p8%|%t\E)%;%?%p9%t\E$%;\EG%{48}%?%p7%t%{1}
 	    %+%;%?%p4%t%{2}%+%;%?%p3%p1%|%t%{4}%+%;%?%p2%t%{8}%+%;%c,
-	smso=\EG4, smul=\EG8, use=ndr9500,
+	smso=\EG4, use=ndr9500, use=adm+sgr,
 
 ndr9500-25-mc|NDR 500 with 25 lines and magic cookies,
 	lines#25, use=ndr9500-mc,
@@ -20534,7 +20530,7 @@ tek4105-30|Tektronix 4015 emulating 30 line VT100,
 	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, rmam=\E[?7l,
 	rmkx=\E[?1l\E>, rmso=\E[m$<2>, smam=\E[?7h,
 	smkx=\E[?1h\E=, use=ansi+csr, use=ansi+local,
-	use=vt100+4bsd, use=vt100+fnkeys,
+	use=vt100+4bsd, use=vt100+fnkeys-sco,
 
 # Tektronix 4105 from BRL
 # The following setup modes are assumed for normal operation:
@@ -24449,7 +24445,7 @@ xtalk|IBM PC with xtalk communication program (versions up to 3.4),
 	rmkx=\E[?1l\E>, rmso=\E[m\s,
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sgr0=\E[m,
 	smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m\s,
-	tbc=\E[3g, use=ansi+local, use=vt100+fnkeys,
+	tbc=\E[3g, use=ansi+local, use=vt100+fnkeys-sco,
 
 # The official PC terminal emulator program of the AT&T Product Centers.
 # Note - insert mode commented out - doesn't seem to work on AT&T PC.
@@ -25502,7 +25498,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	https://invisible-island.net/ncurses/ncurses-netbsd.html
 #
 # ncurses makes explicit checks for a few user-definable capabilities:  AX, E3,
-# NQ, RGB, U8, XM, which are documented in the user_caps(5) manual page.
+# NQ, RGB, U8, XM, xm, which are documented in the user_caps(5) manual page.
 #
 #### SCREEN Extensions:
 #
@@ -25578,11 +25574,36 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # These are the extended keys defined in this file:
 #
-# kDC3 kDC4 kDC5 kDC6 kDC7 kDN kDN3 kDN4 kDN5 kDN6 kDN7 kEND3 kEND4 kEND5 kEND6
-# kEND7 kHOM3 kHOM4 kHOM5 kHOM6 kHOM7 kIC3 kIC4 kIC5 kIC6 kIC7 kLFT3 kLFT4
-# kLFT5 kLFT6 kLFT7 kNXT3 kNXT4 kNXT5 kNXT6 kNXT7 kPRV3 kPRV4 kPRV5 kPRV6 kPRV7
-# kRIT3 kRIT4 kRIT5 kRIT6 kRIT7 kUP kUP3 kUP4 kUP5 kUP6 kUP7 kxIN kxOUT ka2 kb1
-# kb3 kc2
+#   alt_{A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z}  Alt + key
+#   kDC{3|4|5|6|7}                 modifier + delete-character
+#   kDN                            shifted cursor-down
+#   kDN{3|4|5|6|7}                 modifier + cursor-down
+#   kEND{3|4|5|6|7|8}              modifier + end
+#   kF{1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16}  shifted function-key
+#   kHOM{3|4|5|6|7|8}              modifier + home
+#   kIC{3|4|5|6|7}                 modifier + insert-character
+#   kLFT{3|4|5|6|7}                modifier + cursor-left
+#   kNXT{3|4|5|6|7}                modifier + next
+#   kPRV{3|4|5|6|7}                modifier + previous
+#   kRIT{3|4|5|6|7}                modifier + cursor-right
+#   kUP                            shifted cursor-up
+#   kUP{3|4|5|6|7}                 modifier + cursor-up
+#   ka2                            keypad key between ka1 and ka3
+#   kb1                            keypad key left of kb2
+#   kb3                            keypad key right of kb2
+#   kc2                            keypad key between kc1 and kc3
+#   kcbt{2}                        modifier + tab-key
+#   kp{1|2|3|4|5|6|7|8|9}          numbered keypad keys
+#   kpADD                          keypad "+"
+#   kpCMA                          keypad ","
+#   kpDIV                          keypad "/"
+#   kpDOT                          keypad "."
+#   kpMUL                          keypad "*"
+#   kpNUM                          keypad NumLock
+#   kpSUB                          keypad "-"
+#   kpZRO                          keypad "0"
+#   kxIN                           xterm focus-in
+#   kxOUT                          xterm focus-out
 #
 # Bracketed paste is described with these capabilities in vim:
 #
@@ -28005,5 +28026,15 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ cancel ncv in putty (patch by Jakub Horky)
 #	+ add NQ to list of user-definable capabilities in user_caps(5) (patch
 #	  by Jakub Horky)
+#
+# 2026-01-17
+#	+ provide a generated list of user-defined special keys (adapted from
+#	  patch by Jakub Horky) -TD
+#	+ rename vt100+keypad, etc., to vt100+keypad+sco, etc., to keep
+#	  historical blocks while providing for renaming of vt220+keypad as
+#	  vt100+keypad (prompted by patch by Jakub Horky) -TD
+#	+ use vt100+keypad instead of vt220+keypad (patch by Jakub Horky)
+#	+ use vt100+keypad in putty+keypad, replacing kpXX extension -TD
+#	+ remove vt100+fnkeys-sco from putty -TD 
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

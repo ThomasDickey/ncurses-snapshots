@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.299 2025/08/08 23:19:21 tom Exp $ */
+/* $Id: curses.h.in,v 1.300 2026/01/15 00:38:24 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -944,18 +944,10 @@ extern NCURSES_EXPORT(int) getpary (const WINDOW *);			/* generated */
 #define NCURSES_EXT_FUNCS @NCURSES_PATCH@	/* NCURSES_PATCH */
 typedef int (*NCURSES_WINDOW_CB)(WINDOW *, void *);
 typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
-extern NCURSES_EXPORT(int) alloc_pair (int, int);
 extern NCURSES_EXPORT(int) assume_default_colors (int, int);
 extern NCURSES_EXPORT(const char *) curses_version (void);
 extern NCURSES_EXPORT(int) define_key (const char *, int);
-extern NCURSES_EXPORT(int) extended_color_content(int, int *, int *, int *);
-extern NCURSES_EXPORT(int) extended_pair_content(int, int *, int *);
-extern NCURSES_EXPORT(int) extended_slk_color(int);
-extern NCURSES_EXPORT(int) find_pair (int, int);
-extern NCURSES_EXPORT(int) free_pair (int);
 extern NCURSES_EXPORT(int) get_escdelay (void);
-extern NCURSES_EXPORT(int) init_extended_color(int, int, int, int);
-extern NCURSES_EXPORT(int) init_extended_pair(int, int, int);
 extern NCURSES_EXPORT(int) is_cbreak(void);
 extern NCURSES_EXPORT(int) is_echo(void);
 extern NCURSES_EXPORT(int) is_nl(void);
@@ -965,7 +957,6 @@ extern NCURSES_EXPORT(int) key_defined (const char *);
 extern NCURSES_EXPORT(char *) keybound (int, int);
 extern NCURSES_EXPORT(int) keyok (int, bool);
 extern NCURSES_EXPORT(void) nofilter(void);
-extern NCURSES_EXPORT(void) reset_color_pairs (void);
 extern NCURSES_EXPORT(int) resize_term (int, int);
 extern NCURSES_EXPORT(int) resizeterm (int, int);
 extern NCURSES_EXPORT(int) set_escdelay (int);
@@ -975,6 +966,18 @@ extern NCURSES_EXPORT(int) use_legacy_coding (int);
 extern NCURSES_EXPORT(int) use_screen (SCREEN *, NCURSES_SCREEN_CB, void *);
 extern NCURSES_EXPORT(int) use_window (WINDOW *, NCURSES_WINDOW_CB, void *);
 extern NCURSES_EXPORT(int) wresize (WINDOW *, int, int);
+
+#if @NCURSES_EXT_COLORS@	/* NCURSES_EXT_COLORS */
+extern NCURSES_EXPORT(int) alloc_pair (int, int);
+extern NCURSES_EXPORT(int) extended_color_content(int, int *, int *, int *);
+extern NCURSES_EXPORT(int) extended_pair_content(int, int *, int *);
+extern NCURSES_EXPORT(int) extended_slk_color(int);
+extern NCURSES_EXPORT(int) find_pair (int, int);
+extern NCURSES_EXPORT(int) free_pair (int);
+extern NCURSES_EXPORT(int) init_extended_color(int, int, int, int);
+extern NCURSES_EXPORT(int) init_extended_pair(int, int, int);
+extern NCURSES_EXPORT(void) reset_color_pairs (void);
+#endif
 
 #if @NCURSES_XNAMES@	/* NCURSES_XNAMES */
 #undef  NCURSES_XNAMES
@@ -1095,17 +1098,9 @@ extern NCURSES_EXPORT(void) NCURSES_SP_NAME(use_tioctl) (SCREEN*, bool); /* impl
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(vidattr) (SCREEN*, chtype);	/* implemented:SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(vidputs) (SCREEN*, chtype, NCURSES_SP_OUTC); /* implemented:SP_FUNC */
 #if @NCURSES_EXT_FUNCS@	/* NCURSES_EXT_FUNCS */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(alloc_pair) (SCREEN*, int, int); /* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(assume_default_colors) (SCREEN*, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(define_key) (SCREEN*, const char *, int);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_color_content) (SCREEN*, int, int *, int *, int *);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_pair_content) (SCREEN*, int, int *, int *);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_slk_color) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(find_pair) (SCREEN*, int, int); /* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(free_pair) (SCREEN*, int); /* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(get_escdelay) (SCREEN*);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_extended_color) (SCREEN*, int, int, int, int);	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_extended_pair) (SCREEN*, int, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(is_cbreak) (SCREEN*);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(is_echo) (SCREEN*);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(is_nl) (SCREEN*);	/* implemented:EXT_SP_FUNC */
@@ -1115,13 +1110,25 @@ extern NCURSES_EXPORT(int) NCURSES_SP_NAME(key_defined) (SCREEN*, const char *);
 extern NCURSES_EXPORT(char *) NCURSES_SP_NAME(keybound) (SCREEN*, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(keyok) (SCREEN*, int, bool);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(void) NCURSES_SP_NAME(nofilter) (SCREEN*); /* implemented */	/* implemented:EXT_SP_FUNC */
-extern NCURSES_EXPORT(void) NCURSES_SP_NAME(reset_color_pairs) (SCREEN*); /* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(resize_term) (SCREEN*, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(resizeterm) (SCREEN*, int, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_escdelay) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(set_tabsize) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_default_colors) (SCREEN*);	/* implemented:EXT_SP_FUNC */
 extern NCURSES_EXPORT(int) NCURSES_SP_NAME(use_legacy_coding) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
+
+#if @NCURSES_EXT_COLORS@	/* NCURSES_EXT_COLORS */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(alloc_pair) (SCREEN*, int, int); /* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_color_content) (SCREEN*, int, int *, int *, int *);	/* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_pair_content) (SCREEN*, int, int *, int *);	/* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(extended_slk_color) (SCREEN*, int);	/* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(find_pair) (SCREEN*, int, int); /* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(free_pair) (SCREEN*, int); /* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_extended_color) (SCREEN*, int, int, int, int);	/* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(int) NCURSES_SP_NAME(init_extended_pair) (SCREEN*, int, int, int);	/* implemented:EXT_SP_FUNC */
+extern NCURSES_EXPORT(void) NCURSES_SP_NAME(reset_color_pairs) (SCREEN*); /* implemented:EXT_SP_FUNC */
+#endif /* NCURSES_EXT_COLORS */
+
 #endif /* NCURSES_EXT_FUNCS */
 #else /* !NCURSES_SP_FUNCS */
 #undef  NCURSES_SP_FUNCS

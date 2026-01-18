@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
+dnl Copyright 2018-2025,2026 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.824 2025/12/27 00:12:13 tom Exp $
+dnl $Id: configure.in,v 1.826 2026/01/14 08:51:49 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.824 $)
+AC_REVISION($Revision: 1.826 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -2559,6 +2559,15 @@ fi
 AC_SUBST(ADAGEN_LDFLAGS)
 AC_SUBST(CHECK_BUILD)
 AC_SUBST(PRIVATE_LIBS)
+
+# provide for commenting-out makefile rules building/using shared libraries
+if test "$DFT_LWR_MODEL" = normal
+then
+	NO_SHARED=
+else
+	NO_SHARED="#"
+fi
+AC_SUBST(NO_SHARED)
 
 # This is used for the *-config script and *.pc data files.
 CF_LD_SEARCHPATH

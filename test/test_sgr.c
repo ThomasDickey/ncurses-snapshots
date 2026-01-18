@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2015-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_sgr.c,v 1.28 2025/07/05 15:11:35 tom Exp $
+ * $Id: test_sgr.c,v 1.29 2026/01/11 12:03:22 tom Exp $
  *
  * A simple demo of the sgr/sgr0 terminal capabilities.
  */
@@ -369,7 +369,7 @@ main(int argc, char *argv[])
     } else if ((name = getenv("TERM")) != NULL) {
 	brute_force(name);
     } else {
-	static const char dumb[] = "dumb";
+	static const char dumb[] = DEFAULT_TERM_ENV;
 	brute_force(dumb);
     }
 

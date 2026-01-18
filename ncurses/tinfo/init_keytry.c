@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1999-2010,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.22 2024/12/07 18:14:49 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.24 2026/01/18 00:53:15 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -89,6 +89,8 @@ _nc_init_keytry(SCREEN *sp)
 	 * Add any of the extended strings to the tries if their name begins
 	 * with 'k', i.e., they follow the convention of other terminfo key
 	 * names.
+	 *
+	 * The "alt_" is a special case, for djgpp.
 	 */
 	{
 	    TERMTYPE *tp = &(sp->_term->type);
@@ -96,7 +98,7 @@ _nc_init_keytry(SCREEN *sp)
 		const char *name = ExtStrname(tp, (int) n, strnames);
 		const char *value = tp->Strings[n];
 		if (name != NULL
-		    && *name == 'k'
+		    && ((*name == 'k') || !strncmp(name, "alt_", 4))
 		    && VALID_STRING(value)
 		    && NCURSES_SP_NAME(key_defined) (NCURSES_SP_ARGx
 						     value) == 0) {

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 2015,2016 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_setupterm.c,v 1.19 2025/07/05 15:21:56 tom Exp $
+ * $Id: test_setupterm.c,v 1.20 2026/01/11 12:03:22 tom Exp $
  *
  * A simple demo of setupterm/restartterm.
  */
@@ -242,7 +242,7 @@ main(int argc, char *argv[])
 
     if (a_opt) {
 	static char predef[][12] =
-	{"vt100", "dumb", "lpr", "unknown", "none-such"};
+	{"vt100", DEFAULT_TERM_ENV, "lpr", "unknown", "none-such"};
 	if (optind < argc) {
 	    usage(FALSE);
 	}

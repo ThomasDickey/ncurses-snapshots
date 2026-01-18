@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2000-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.31 2025/12/14 10:58:45 tom Exp $
+ * $Id: railroad.c,v 1.32 2026/01/11 12:03:22 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -185,17 +185,13 @@ onsig(int n GCC_UNUSED)
 static void
 railroad(char **args)
 {
-    NCURSES_CONST char *name = getenv("TERM");
+    NCURSES_CONST char *name;
     char buffer[1024];
     char area[1024], *ap = area;
     int z;
 
-    if (name == NULL)
-#ifdef DEFAULT_TERM_ENV
+    if ((name = getenv("TERM")) == NULL)
 	name = DEFAULT_TERM_ENV;
-#else
-	name = "dumb";
-#endif
 
     InitAndCatch(z = tgetent(buffer, name), onsig);
     if (z >= 0) {

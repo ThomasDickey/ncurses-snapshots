@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_new_pair.c,v 1.34 2025/08/08 15:47:32 tom Exp $
+ * $Id: demo_new_pair.c,v 1.35 2026/01/10 20:36:29 tom Exp $
  *
  * Demonstrate the alloc_pair() function.
  */
@@ -167,7 +167,7 @@ VERSION_COMMON()
 int
 main(int argc, char *argv[])
 {
-    static const char *help[] =
+    static NCURSES_CONST char *help[] =
     {
 	"This program iterates over the possible color combinations,",
 	"allocating or initializing color pairs.  For best results,",

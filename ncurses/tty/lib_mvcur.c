@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.167 2025/12/27 12:34:03 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.168 2026/01/13 08:43:39 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -175,6 +175,29 @@ MODULE_ID("$Id: lib_mvcur.c,v 1.167 2025/12/27 12:34:03 tom Exp $")
 
 static bool profiling = FALSE;
 static float diff;
+
+#define tputs        TestTPUTS
+#define tputs_sp     TestTPUTS_sp
+#define putp         TestPUTP
+
+static unsigned long xmits;
+
+/* these override lib_tputs.c */
+static int
+NCURSES_SP_NAME(TestTPUTS)(NCURSES_SP_DCLx
+			   const char *string,
+			   int affcnt GCC_UNUSED,
+			   NCURSES_SP_OUTC outc)
+/* stub tputs() that dumps sequences in a visible form */
+{
+    (void) SP_PARM;
+    (void) outc;
+    if (profiling)
+	xmits += strlen(string);
+    else
+	(void) fputs(_nc_visbuf(string), stdout);
+    return (OK);
+}
 #endif /* MAIN */
 
 #undef NCURSES_OUTC_FUNC
@@ -1153,39 +1176,6 @@ NCURSES_EXPORT_VAR(int) _nc_optimize_enable = OPTIMIZE_ALL;
 #include <time.h>
 
 NCURSES_EXPORT_VAR(const char *) _nc_progname = "mvcur";
-
-static unsigned long xmits;
-
-/* these override lib_tputs.c */
-NCURSES_EXPORT(int)
-tputs(const char *string, int affcnt GCC_UNUSED, int (*outc) (int) GCC_UNUSED)
-/* stub tputs() that dumps sequences in a visible form */
-{
-    if (profiling)
-	xmits += strlen(string);
-    else
-	(void) fputs(_nc_visbuf(string), stdout);
-    return (OK);
-}
-
-NCURSES_EXPORT(int)
-putp(const char *string)
-{
-    return (tputs(string, 1, _nc_outch));
-}
-
-NCURSES_EXPORT(int)
-_nc_outch(int ch)
-{
-    putc(ch, stdout);
-    return OK;
-}
-
-NCURSES_EXPORT(int)
-delay_output(int ms GCC_UNUSED)
-{
-    return OK;
-}
 
 static char tname[PATH_MAX];
 

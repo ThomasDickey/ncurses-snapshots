@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2005-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.75 2025/07/05 15:11:35 tom Exp $
+ * $Id: demo_termcap.c,v 1.76 2026/01/11 12:03:22 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -867,7 +867,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != NULL) {
 		brute_force(name);
 	    } else {
-		static NCURSES_CONST char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = DEFAULT_TERM_ENV;
 		brute_force(dumb);
 	    }
 	}
@@ -894,7 +894,7 @@ main(int argc, char *argv[])
 	    } else if ((name = getenv("TERM")) != NULL) {
 		demo_termcap(name);
 	    } else {
-		static NCURSES_CONST char dumb[] = "dumb";
+		static NCURSES_CONST char dumb[] = DEFAULT_TERM_ENV;
 		demo_termcap(dumb);
 	    }
 	}
