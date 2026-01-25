@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
+dnl Copyright 2018-2025,2026 Thomas E. Dickey                                *
 dnl Copyright 2010-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.242 2025/12/27 18:03:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.243 2026/01/18 16:36:44 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -477,7 +477,7 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 14 updated: 2024/12/14 11:58:01
+dnl CF_BUILD_CC version: 15 updated: 2026/01/18 11:36:44
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -552,12 +552,12 @@ if test "$cross_compiling" = yes ; then
 	test "$cf_build_cppflags" = "#" && cf_build_cppflags=
 	ac_link='$BUILD_CC -o "conftest$ac_exeext" $BUILD_CFLAGS $cf_build_cppflags $BUILD_LDFLAGS "conftest.$ac_ext" $BUILD_LIBS >&AS_MESSAGE_LOG_FD'
 
-	AC_TRY_RUN([#include <stdio.h>
-		int main(int argc, char *argv[])
+	AC_RUN_IFELSE([AC_LANG_SOURCE([#include <stdio.h>
+		int main(int argc, char *argv[[]])
 		{
-			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[0] == (void*)0);
+			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[[0]] == (void*)0);
 		}
-	],
+	])],
 		cf_ok_build_cc=yes,
 		cf_ok_build_cc=no,
 		cf_ok_build_cc=unknown)
@@ -2793,7 +2793,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_DATAONLY version: 17 updated: 2025/12/24 12:27:29
+dnl CF_LINK_DATAONLY version: 18 updated: 2026/01/24 14:15:07
 dnl ----------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
 dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
@@ -2839,13 +2839,13 @@ EOF
 	( eval $RANLIB conftest.a ) 2>&AS_MESSAGE_LOG_FD >/dev/null
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 	extern int testfunc(void);
 	int main(void)
 	{
 		${cf_cv_main_return:-return} (!testfunc());
 	}
-	],
+	])],
 	[cf_cv_link_dataonly=yes],
 	[cf_cv_link_dataonly=no],
 	[cf_cv_link_dataonly=unknown])
@@ -3208,7 +3208,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 30 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_CONFIG version: 31 updated: 2026/01/18 10:40:15
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -3248,9 +3248,9 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 
 			AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
 				[initscr(); mousemask(0,0); tigetstr((char *)0);])],
-				[AC_TRY_RUN([#include <${cf_cv_ncurses_header:-curses.h}>
+				[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 					int main(void)
-					{ const char *xx = curses_version(); return (xx == 0); }],
+					{ const char *xx = curses_version(); return (xx == 0); }])],
 					[cf_test_ncuconfig=yes],
 					[cf_test_ncuconfig=no],
 					[cf_test_ncuconfig=maybe])],
@@ -3275,9 +3275,9 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
 			[initscr(); mousemask(0,0); tigetstr((char *)0);])],
-			[AC_TRY_RUN([#include <${cf_cv_ncurses_header:-curses.h}>
+			[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 				int main(void)
-				{ const char *xx = curses_version(); return (xx == 0); }],
+				{ const char *xx = curses_version(); return (xx == 0); }])],
 				[cf_have_ncuconfig=yes],
 				[cf_have_ncuconfig=no],
 				[cf_have_ncuconfig=maybe])],
@@ -3524,7 +3524,7 @@ CF_UPPER(cf_nculib_ROOT,HAVE_LIB$cf_nculib_root)
 AC_DEFINE_UNQUOTED($cf_nculib_ROOT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_VERSION version: 19 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_VERSION version: 20 updated: 2026/01/18 10:40:15
 dnl ------------------
 dnl Check for the version of ncurses, to aid in reporting bugs, etc.
 dnl Call CF_CURSES_CPPFLAGS first, or CF_NCURSES_CPPFLAGS.  We don't use
@@ -3536,7 +3536,7 @@ AC_CACHE_CHECK(for ncurses version, cf_cv_ncurses_version,[
 	cf_cv_ncurses_version=no
 	cf_tempfile=out$$
 	rm -f "$cf_tempfile"
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <${cf_cv_ncurses_header:-curses.h}>
@@ -3558,7 +3558,7 @@ int main(void)
 # endif
 #endif
 	${cf_cv_main_return:-return}(0);
-}],[
+}])],[
 	cf_cv_ncurses_version=`cat $cf_tempfile`],,[
 
 	# This will not work if the preprocessor splits the line after the

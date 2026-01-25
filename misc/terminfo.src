@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1210 $
-#	$Date: 2026/01/17 23:45:14 $
+#	$Revision: 1.1216 $
+#	$Date: 2026/01/25 00:46:12 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -483,6 +483,9 @@ ecma+underline|ECMA-48 underline,
 # Attribute control for ECMA-48-compatible terminals
 ecma+sgr|attribute capabilities for true ECMA-48 terminals,
 	use=ecma+underline, use=ecma+standout, use=klone+sgr8,
+
+ecma+overline|ECMA-48 overlined,
+	Rmol=\E[55m, Smol=\E[53m,
 
 ecma+strikeout|ECMA-48 strikeout/crossed-out,
 	rmxx=\E[29m, smxx=\E[9m,
@@ -2471,6 +2474,14 @@ vt100+fnkeys-sco|DEC VT100 numeric keypad (kf0-kf10),
 vt100+keypad|vt220+keypad|DEC numeric keypad,
 	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, kent=\EOM,
 	ka2=\EOx, kb1=\EOt, kb3=\EOv, kc2=\EOr, use=vt100+pf1-pf4,
+
+# PC keyboards typically have 12 function keys.  Some terminal emulators can
+# treat the top row of the numeric keypad as function keys.  For this special
+# case, it can be useful to give names to these keys on the top row of the
+# keypad, to distinguish them from F1-F4.
+vt100+keypad+emul|DEC VT100/VT220 numeric keypad with PF1-PF4 emulation,
+	kpDIV=\EOQ, kpMUL=\EOR, kpNUM=\EOP, kpSUB=\EOS,
+	use=vt100+keypad,
 #
 vt100+enq|ncurses extension for VT100-style ENQ,
 	u8=\E[?1;2c, use=ansi+enq,
@@ -3766,6 +3777,7 @@ iTerm2.app|iterm2|terminal emulator for Mac OS X,
 	use=report+version, use=report+da2,
 	use=xterm+alt+title, use=ecma+italics, use=iterm,
 	use=bracketed+paste, use=kitty+setal,
+	use=ecma+overline,
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
@@ -4156,7 +4168,7 @@ absolute|Absolute Telnet emulating xterm,
 # http://www.chiark.greenend.org.uk/~sgtatham/putty/
 #
 # PuTTY 0.83 (February 2025, tested 03 January 2026)
-#	verified that ncv#22 is no longer inaccurate
+#	verified that ncv#22 is no longer needed
 #
 # PuTTY 0.78 (September 2020, tested 12 August 2023)
 # Testing with tack:
@@ -4251,14 +4263,22 @@ putty|PuTTY terminal emulator,
 putty+cursor|PuTTY modified cursor-keys,
 	kDN5=\E[B, kLFT5=\E[D, kRIT5=\E[C, kUP5=\E[A,
 putty+keypad|PuTTY numeric keypad,
-	kpADD=\EOl, kpDIV=\EOQ, kpDOT=\EOn, kpMUL=\EOR, kpNUM=\EOP,
-	kpSUB=\EOS, kpZRO=\EOp, use=vt100+keypad,
+	kp1=\EOq, kp2=\EOr, kp3=\EOs, kp4=\EOt, kp5=\EOu, kp6=\EOv,
+	kp7=\EOw, kp8=\EOx, kp9=\EOy, kpADD=\EOl, kpDOT=\EOn,
+	kpZRO=\EOp, use=vt100+keypad+emul, use=vt100+keypad,
 
 vt100-putty|Reset PuTTY to pure VT100,
 	rs2=\E<\E["p\Ec\E[?3l\E]R\E[40"p\E[61"p\E[50;1;2"p,
 	use=vt100,
+
 putty-256color|PuTTY 0.58 with xterm 256-colors,
 	use=xterm+256setaf, use=putty,
+
+putty-direct|PuTTY terminal emulator with direct colors,
+	use=xterm+indirect, use=putty,
+putty-direct16|PuTTY terminal emulator with direct colors (16 indexed),
+	use=xterm+indirect16, use=putty,
+
 putty-noapp|putty with cursor keys in normal mode,
 	kLFT=\EOD, kRIT=\EOC, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C,
 	kcuu1=\E[A, kind=\EOB, kri=\EOA, rmkx=\E>, smkx=\E=,
@@ -4364,15 +4384,15 @@ mintty+common|shared capabilities for mintty,
 	kcbt=\E[Z, kent=\EOM, rmm@, rmpch=\E[10m,
 	rs1=\Ec\E]104\007, rshm=\E[22m, rsubm=\E[75m,
 	rsupm=\E[75m, smm@, smpch=\E[11m, sshm=\E[1:2m,
-	ssubm=\E[74m, ssupm=\E[73m, Rmol=\E[55m, Smol=\E[53m,
-	Smulx=\E[4:%p1%dm, blink2=\E[6m, norm=\E[22m,
-	opaq=\E[28m, rv=\E\\[>77;[0-9];0c, smul2=\E[21m,
+	ssubm=\E[74m, ssupm=\E[73m, Smulx=\E[4:%p1%dm,
+	blink2=\E[6m, norm=\E[22m, opaq=\E[28m,
+	rv=\E\\[>77;[0-9];0c, smul2=\E[21m,
 	xr=\EP>\\|mintty ([1-9][.0-9]+)\E\\\\, use=linux+kbs,
-	use=ansi+rep, use=ecma+strikeout, use=ecma+index,
-	use=mintty+keypad, use=vt420+lrmm, use=xterm+focus,
-	use=xterm+sm+1006, use=xterm+pcfkeys, use=xterm+tmux,
-	use=ecma+italics, use=xterm-basic, use=bracketed+paste,
-	use=report+version,
+	use=ansi+rep, use=ecma+overline, use=ecma+strikeout,
+	use=ecma+index, use=mintty+keypad, use=vt420+lrmm,
+	use=xterm+focus, use=xterm+sm+1006, use=xterm+pcfkeys,
+	use=xterm+tmux, use=ecma+italics, use=xterm-basic,
+	use=bracketed+paste, use=report+version,
 mintty+keypad|mintty special numeric keypad,
 	kbeg=\EOE, kpADD=\EOk, kpDIV=\EOo, kpMUL=\EOj, kpSUB=\EOm,
 
@@ -4818,10 +4838,10 @@ ms+terminal|building block for Windows terminal,
 	cud1=\E[B, kbeg=\EOE, kcbt=\E[Z, oc@, rmkx=\E[?1l, rmm@,
 	smkx=\E[?1h, smm@, rv=\E\\[>0;10;1c, use=linux+kbs,
 	use=bracketed+paste, use=xterm+pcfkeys, use=ansi+rep,
-	use=xterm+sm+1006, use=ecma+index, use=ecma+italics,
-	use=ecma+strikeout, use=report+da2, use=vt420+lrmm,
-	use=xterm-basic, use=xterm+focus, use=xterm+tmux,
-	use=xterm+sm+1003,
+	use=xterm+sm+1006, use=ecma+overline, use=ecma+index,
+	use=ecma+italics, use=ecma+strikeout, use=report+da2,
+	use=vt420+lrmm, use=xterm-basic, use=xterm+focus,
+	use=xterm+tmux, use=xterm+sm+1003,
 
 #### Visual Studio
 # Visual Studio Code 1.45.0 uses xterm.js 12.8.1 (see https://xtermjs.org/).
@@ -5584,6 +5604,16 @@ xterm+direct16|xterm with direct-color indexing (16-color building-block),
 	      %d%;%;m,
 	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%?%p1%{16}%<%t%p1%'R'%+%d%e38:
 	      2::%p1%{65536}%/%d:%p1%{256}%/%{255}%&%d:%p1%{255}%&%d
+	      %;%;m,
+	setb@, setf@, use=xterm+direct,
+
+xterm+indirect16|xterm with direct-color indexing (16-color old legacy b-b),
+	CO#16,
+	setab=\E[%?%p1%{8}%<%t4%p1%d%e%?%p1%{16}%<%t%p1%{92}%+%d%e48
+	      ;2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%d
+	      %;%;m,
+	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%?%p1%{16}%<%t%p1%'R'%+%d%e38;
+	      2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%d
 	      %;%;m,
 	setb@, setf@, use=xterm+direct,
 
@@ -6386,9 +6416,9 @@ vte-2018|VTE 0.51.2,
 	rep=%p1%c\E[%p2%{1}%-%db,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;
 	    8%;%?%p1%p3%|%t;7%;m%?%p9%t\016%e\017%;,
-	Rmol=\E[55m, Se=\E[1 q, Smol=\E[53m, Smulx=\E[4:%p1%dm,
-	use=xterm+alt+title, use=xterm+tmux, use=kitty+setal,
-	use=vte-2017,
+	Se=\E[1 q, Smulx=\E[4:%p1%dm, use=xterm+alt+title,
+	use=xterm+tmux, use=kitty+setal, use=vte-2017,
+	use=ecma+overline,
 
 # Summarizing as of March 2022, these terminfo-capabilities of xterm are
 # absent from VTE:
@@ -6496,7 +6526,7 @@ mgt|Multi GNOME Terminal,
 # or not is debatable).
 kvt|KDE terminal,
 	bce, km@,
-	kdch1=^?, kend=\E[F, khome=\E[H, use=linux+kbs,
+	kdch1=^?, use=linux+kbs, use=vt100+noapp+pc,
 	use=xterm-color,
 
 # Konsole 1.0.1 (2001/11/25)
@@ -6564,11 +6594,11 @@ konsole-base|KDE console window (common),
 	    %p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[0m\017, smam=\E[?7h, rv=\E\\[>1;115;0c,
 	xr=\EP>\\|Konsole ([1-9][.0-9])\E\\\\,
-	use=ecma+underline, use=ecma+standout, use=ansi+rca2,
-	use=ansi+sgrdim, use=ecma+index, use=xterm+focus,
-	use=xterm+sm+1006, use=ecma+strikeout,
-	use=ecma+italics, use=ecma+color, use=xterm-r6,
-	use=vt220+cvis, use=bracketed+paste,
+	use=ecma+overline, use=ecma+underline,
+	use=ecma+standout, use=ansi+rca2, use=ansi+sgrdim,
+	use=ecma+index, use=xterm+focus, use=xterm+sm+1006,
+	use=ecma+strikeout, use=ecma+italics, use=ecma+color,
+	use=xterm-r6, use=vt220+cvis, use=bracketed+paste,
 	use=report+version, use=xterm+pc+edit,
 
 # The keytab feature was introduced in 0.9.12 (February 2000) with "linux" and
@@ -8304,6 +8334,10 @@ wezterm|Wez's Terminal Emulator,
 	use=xterm+alt+title, use=xterm+focus, use=xterm+pcc2,
 	use=xterm+pce2, use=xterm+pcf2, use=xterm+sl-alt,
 	use=xterm+sm+1006, use=xterm+tmux,
+wezterm-direct|Wez's Terminal Emulator with direct colors,
+	use=xterm+direct, use=wezterm,
+wezterm-direct16|Wez's Terminal Emulator with direct colors (16 indexed),
+	use=xterm+direct16, use=wezterm,
 
 #### Contour
 # https://github.com/contour-terminal/contour
@@ -8389,18 +8423,18 @@ contour|contour-latest|Contour Terminal Emulator,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p5%t;2%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h,
-	Cs=\E]12;%p1%s\E\\, E3=\E[3J, Rmol=\E[55m, Se=\E[ q,
-	Smol=\E[53m, Smulx=\E[4:%p1%dm, Ss=\E[%p1%d q,
+	Cs=\E]12;%p1%s\E\\, E3=\E[3J, Se=\E[ q,
+	Smulx=\E[4:%p1%dm, Ss=\E[%p1%d q,
 	xr=\EP>\\|contour ([0-9]\\.[0-9]\\.[0-9])\E\\\\,
 	use=ecma+underline, use=ecma+standout,
 	use=ansi+apparrows, use=ansi+cup, use=ansi+csr,
 	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
 	use=ansi+sgrbold, use=bracketed+paste, use=dec+sl,
-	use=ecma+index, use=vt220+cvis, use=ecma+strikeout,
-	use=xterm+256color, use=xterm+acs, use=xterm+alt1049,
-	use=xterm+pcc2, use=xterm+pce2, use=xterm+pcf2,
-	use=report+version,
+	use=ecma+index, use=ecma+overline, use=vt220+cvis,
+	use=ecma+strikeout, use=xterm+256color, use=xterm+acs,
+	use=xterm+alt1049, use=xterm+pcc2, use=xterm+pce2,
+	use=xterm+pcf2, use=report+version,
 
 contour-direct|Contour terminal with direct colors,
 	use=xterm+direct, use=contour,
@@ -28036,5 +28070,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ use vt100+keypad instead of vt220+keypad (patch by Jakub Horky)
 #	+ use vt100+keypad in putty+keypad, replacing kpXX extension -TD
 #	+ remove vt100+fnkeys-sco from putty -TD 
+#
+# 2026-01-24
+#	+ add xterm+indirect16, vt100+keypad+emul, putty-direct,
+#	  putty-direct16, wezterm-direct, wezterm-direct16
+#	  (patch by Jakub Horky)
+#	+ add Smol/Rmol to ms-terminal, konsole, iTerm2 (report by Jared
+#	  Finder)
+#	+ add ecma+overline -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

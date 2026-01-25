@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4412 2026/01/18 00:54:25 tom Exp $
+-- $Id: NEWS,v 1.4414 2026/01/25 01:28:03 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,15 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260124
+	+ add xterm+indirect16, vt100+keypad+emul, putty-direct,
+	  putty-direct16, wezterm-direct, wezterm-direct16
+	  (patch by Jakub Horky)
+	+ add Smol/Rmol to ms-terminal, konsole, iTerm2 (report by Jared
+	  Finder)
+	+ add ecma+overline -TD
+	+ update configure macros
 
 20260117
 	+ add "alt_" to special key-prefix check for "djgpp" terminfo

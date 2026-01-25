@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.246 2025/12/27 18:03:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.248 2026/01/24 19:31:26 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -604,7 +604,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <stdio.h>],[printf("Hello world");])],
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_CURSES_LIB version: 5 updated: 2025/12/24 13:18:10
+dnl CF_CHECK_CURSES_LIB version: 6 updated: 2026/01/24 14:31:00
 dnl -------------------
 dnl $1 = nominal library name, used also for header lookup
 dnl $2 = suffix to append to library name
@@ -635,9 +635,9 @@ elif test "x${PKG_CONFIG:=none}" != xnone; then
 
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <$1.h>],
 			[(void) $3 ( ]ifelse([$4],,,[[$4]])[ );])],
-			[AC_TRY_RUN([#include <$1.h>
+			[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <$1.h>
 				int main(void)
-				{ (void) $3 ( ]ifelse([$4],,,[[$4]])[ ); return 0; }],
+				{ (void) $3 ( ]ifelse([$4],,,[[$4]])[ ); return 0; }])],
 				[cf_have_curses_lib=yes],
 				[cf_have_curses_lib=no],
 				[cf_have_curses_lib=maybe])],
@@ -813,7 +813,7 @@ done
 test "$cf_cv_curses_acs_map" != unknown && AC_DEFINE_UNQUOTED(CURSES_ACS_ARRAY,$cf_cv_curses_acs_map,[Define as needed to override ncurses prefix _nc_])
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_CHECK_DATA version: 10 updated: 2021/01/04 19:45:09
+dnl CF_CURSES_CHECK_DATA version: 12 updated: 2026/01/24 14:31:00
 dnl --------------------
 dnl Check if curses.h defines the given data/variable.
 dnl Use this after CF_NCURSES_CONFIG or CF_CURSES_CONFIG.
@@ -839,14 +839,14 @@ if test "$cf_result" = yes ; then
 else
 	AC_MSG_CHECKING(for data $cf_data in library)
 	# BSD linkers insist on making weak linkage, but resolve at runtime.
-	AC_TRY_RUN(CF__CURSES_HEAD
+	AC_RUN_IFELSE([AC_LANG_SOURCE(CF__CURSES_HEAD
 [
 extern char $cf_data;
 int main(void)
 {
 	]CF__CURSES_DATA(foo,$cf_data)[
 	${cf_cv_main_return:-return}(foo == 0);
-}],[cf_result=yes
+}])],[cf_result=yes
 ],[cf_result=no],[
 	# cross-compiling
 	AC_LINK_IFELSE([AC_LANG_PROGRAM(CF__CURSES_HEAD
@@ -1701,24 +1701,24 @@ fi
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_CURSES_VERSION version: 9 updated: 2023/01/05 18:06:10
+dnl CF_FUNC_CURSES_VERSION version: 10 updated: 2026/01/24 14:31:00
 dnl ----------------------
 dnl Solaris has a data item 'curses_version', which confuses AC_CHECK_FUNCS.
 dnl It's a character string "SVR4", not documented.
 AC_DEFUN([CF_FUNC_CURSES_VERSION],
 [
 AC_CACHE_CHECK(for function curses_version, cf_cv_func_curses_version,[
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <${cf_cv_ncurses_header:-curses.h}>
 
 int main(void)
 {
-	char temp[1024];
+	char temp[[1024]];
 	sprintf(temp, "%.999s\\n", curses_version());
 	${cf_cv_main_return:-return}(0);
-}]
+}])]
 ,[cf_cv_func_curses_version=yes]
 ,[cf_cv_func_curses_version=no]
 ,[cf_cv_func_curses_version=unknown])
@@ -2829,7 +2829,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 30 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_CONFIG version: 31 updated: 2026/01/18 10:40:15
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -2869,9 +2869,9 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 
 			AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
 				[initscr(); mousemask(0,0); tigetstr((char *)0);])],
-				[AC_TRY_RUN([#include <${cf_cv_ncurses_header:-curses.h}>
+				[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 					int main(void)
-					{ const char *xx = curses_version(); return (xx == 0); }],
+					{ const char *xx = curses_version(); return (xx == 0); }])],
 					[cf_test_ncuconfig=yes],
 					[cf_test_ncuconfig=no],
 					[cf_test_ncuconfig=maybe])],
@@ -2896,9 +2896,9 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
 			[initscr(); mousemask(0,0); tigetstr((char *)0);])],
-			[AC_TRY_RUN([#include <${cf_cv_ncurses_header:-curses.h}>
+			[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 				int main(void)
-				{ const char *xx = curses_version(); return (xx == 0); }],
+				{ const char *xx = curses_version(); return (xx == 0); }])],
 				[cf_have_ncuconfig=yes],
 				[cf_have_ncuconfig=no],
 				[cf_have_ncuconfig=maybe])],
@@ -3194,7 +3194,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_VERSION version: 19 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_VERSION version: 20 updated: 2026/01/18 10:40:15
 dnl ------------------
 dnl Check for the version of ncurses, to aid in reporting bugs, etc.
 dnl Call CF_CURSES_CPPFLAGS first, or CF_NCURSES_CPPFLAGS.  We don't use
@@ -3206,7 +3206,7 @@ AC_CACHE_CHECK(for ncurses version, cf_cv_ncurses_version,[
 	cf_cv_ncurses_version=no
 	cf_tempfile=out$$
 	rm -f "$cf_tempfile"
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <${cf_cv_ncurses_header:-curses.h}>
@@ -3228,7 +3228,7 @@ int main(void)
 # endif
 #endif
 	${cf_cv_main_return:-return}(0);
-}],[
+}])],[
 	cf_cv_ncurses_version=`cat $cf_tempfile`],,[
 
 	# This will not work if the preprocessor splits the line after the

@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
+dnl Copyright 2018-2025,2026 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1149 2025/12/27 18:03:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.1151 2026/01/24 19:16:57 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -620,7 +620,7 @@ $ac_includes_default
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=no])])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_SIZE version: 22 updated: 2025/02/22 20:49:45
+dnl CF_BOOL_SIZE version: 23 updated: 2026/01/24 14:15:07
 dnl ------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it has been deprecated.
@@ -654,7 +654,7 @@ $ac_includes_default
 
 AC_CACHE_CHECK(for type of bool, cf_cv_type_of_bool,[
 	rm -f cf_test.out
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #if defined(__cplusplus)
@@ -690,7 +690,7 @@ int main(void)
 	}
 	${cf_cv_main_return:-return}(0);
 }
-		],
+		])],
 		[cf_cv_type_of_bool=`cat cf_test.out`
 		 if test -z "$cf_cv_type_of_bool"; then
 		   cf_cv_type_of_bool=unknown
@@ -717,7 +717,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 14 updated: 2024/12/14 11:58:01
+dnl CF_BUILD_CC version: 15 updated: 2026/01/18 11:36:44
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -792,12 +792,12 @@ if test "$cross_compiling" = yes ; then
 	test "$cf_build_cppflags" = "#" && cf_build_cppflags=
 	ac_link='$BUILD_CC -o "conftest$ac_exeext" $BUILD_CFLAGS $cf_build_cppflags $BUILD_LDFLAGS "conftest.$ac_ext" $BUILD_LIBS >&AS_MESSAGE_LOG_FD'
 
-	AC_TRY_RUN([#include <stdio.h>
-		int main(int argc, char *argv[])
+	AC_RUN_IFELSE([AC_LANG_SOURCE([#include <stdio.h>
+		int main(int argc, char *argv[[]])
 		{
-			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[0] == (void*)0);
+			${cf_cv_main_return:-return}(argc < 0 || argv == (void*)0 || argv[[0]] == (void*)0);
 		}
-	],
+	])],
 		cf_ok_build_cc=yes,
 		cf_ok_build_cc=no,
 		cf_ok_build_cc=unknown)
@@ -1193,7 +1193,7 @@ __attribute__ ((visibility("default"))) int somefunc() {return 42;}
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_GETENV version: 5 updated: 2024/12/14 16:09:34
+dnl CF_CHECK_GETENV version: 6 updated: 2026/01/24 14:15:07
 dnl ---------------
 dnl Check if repeated getenv calls return the same pointer, e.g., it does not
 dnl discard the previous pointer when returning a new one.
@@ -1203,7 +1203,7 @@ AC_REQUIRE([CF_CHECK_ENVIRON])
 AC_CHECK_FUNC( getenv, ,, AC_MSG_ERROR(getenv not found) )
 AC_CHECK_FUNCS( putenv setenv strdup )
 AC_CACHE_CHECK(if getenv returns consistent values,cf_cv_consistent_getenv,[
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #if defined(HAVE_ENVIRON) && defined(DECL_ENVIRON) && !defined(environ)
@@ -1221,7 +1221,7 @@ static void set_value(const char *name, const char *value)
 #if defined(HAVE_SETENV)
 	setenv(name, value, 1);
 #elif defined(HAVE_PUTENV)
-	char buffer[1024];
+	char buffer[[1024]];
 	sprintf(buffer, "%s=%s", name, value);
 	putenv(str_alloc(buffer));
 #else
@@ -1236,26 +1236,26 @@ int main(void)
 	char **myvalues;
 	char **mypointer;
 	char *equals;
-	for (numenv = 0; environ[numenv]; ++numenv) ;
+	for (numenv = 0; environ[[numenv]]; ++numenv) ;
 	limit = numenv + 10;
 	mynames = (char **) calloc(limit + 1, sizeof(char *));
 	myvalues = (char **) calloc(limit + 1, sizeof(char *));
 	mypointer = (char **) calloc(limit + 1, sizeof(char *));
 #if defined(HAVE_ENVIRON)
-	for (j = 0; environ[j]; ++j) {
-		mynames[j] = str_alloc(environ[j]);
-		equals = strchr(mynames[j], '=');
+	for (j = 0; environ[[j]]; ++j) {
+		mynames[[j]] = str_alloc(environ[[j]]);
+		equals = strchr(mynames[[j]], '=');
 		if (equals != NULL) {
 			*equals++ = '\\0';
-			myvalues[j] = str_alloc(equals);
+			myvalues[[j]] = str_alloc(equals);
 		} else {
-			myvalues[j] = str_alloc("");
+			myvalues[[j]] = str_alloc("");
 		}
 	}
 #endif
 	for (j = numenv; j < limit; ++j) {
-		char name[80];
-		char value[80];
+		char name[[80]];
+		char value[[80]];
 		size_t found;
 		size_t k = 0;
 		do {
@@ -1263,38 +1263,38 @@ int main(void)
 			found = 0;
 			sprintf(name, "TERM%lu", (unsigned long) k);
 			for (jk = 0; jk < j; ++jk) {
-				if (!strcmp(name, mynames[jk])) {
+				if (!strcmp(name, mynames[[jk]])) {
 					found = 1;
 					++k;
 					break;
 				}
 			}
 		} while (found);
-		sprintf(value, "%lu:%p", (unsigned long) k, (void*)&mynames[j]);
+		sprintf(value, "%lu:%p", (unsigned long) k, (void*)&mynames[[j]]);
 		set_value(name, value);
-		mynames[j] = str_alloc(name);
-		myvalues[j] = str_alloc(value);
+		mynames[[j]] = str_alloc(name);
+		myvalues[[j]] = str_alloc(value);
 	}
 	for (pass = 0; pass < 3; ++pass) {
 		for (j = 0; j < limit; ++j) {
-			char *value = getenv(mynames[j]);
+			char *value = getenv(mynames[[j]]);
 			if (pass) {
 				if (value == 0) {
-					fprintf(stderr, "getenv returned null for %s\\n", mynames[j]);
+					fprintf(stderr, "getenv returned null for %s\\n", mynames[[j]]);
 					${cf_cv_main_return:-return}(1);
-				} else if (value != mypointer[j]) {
-					fprintf(stderr, "getenv returned different pointer for %s\\n", mynames[j]);
+				} else if (value != mypointer[[j]]) {
+					fprintf(stderr, "getenv returned different pointer for %s\\n", mynames[[j]]);
 					${cf_cv_main_return:-return}(1);
-				} else if (strcmp(value, myvalues[j])) {
-					fprintf(stderr, "getenv returned different value for %s\\n", mynames[j]);
+				} else if (strcmp(value, myvalues[[j]])) {
+					fprintf(stderr, "getenv returned different value for %s\\n", mynames[[j]]);
 					${cf_cv_main_return:-return}(1);
 				}
 			} else {
 				size_t k;
-				mypointer[j] = value;
+				mypointer[[j]] = value;
 				for (k = 0; k < j; ++k) {
-					if (mypointer[j] == mypointer[k]) {
-						fprintf(stderr, "getenv returned same pointer for %s and %s\\n", mynames[j], mynames[k]);
+					if (mypointer[[j]] == mypointer[[k]]) {
+						fprintf(stderr, "getenv returned same pointer for %s and %s\\n", mynames[[j]], mynames[[k]]);
 						${cf_cv_main_return:-return}(1);
 					}
 				}
@@ -1303,7 +1303,7 @@ int main(void)
 	}
 	${cf_cv_main_return:-return}(0);
 }
-],
+])],
 [cf_cv_consistent_getenv=yes],
 [cf_cv_consistent_getenv=no],
 [cf_cv_consistent_getenv=unknown])
@@ -1568,7 +1568,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_WCWIDTH_GRAPHICS version: 5 updated: 2024/12/14 16:09:34
+dnl CF_CHECK_WCWIDTH_GRAPHICS version: 6 updated: 2026/01/24 14:15:07
 dnl -------------------------
 dnl Most "modern" terminal emulators are based to some degree on VT100, and
 dnl should support line-drawing.  Even with Unicode.  There is a problem.
@@ -1665,7 +1665,7 @@ cat >conftest.in <<CF_EOF
 0x2551	vertical line
 0x256c	large plus or crossover
 CF_EOF
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <locale.h>
@@ -1678,8 +1678,8 @@ main(void)
 {
 	FILE *fp;
 	unsigned value;
-	char buffer[MY_LEN + 1];
-	char notes[MY_LEN + 1];
+	char buffer[[MY_LEN + 1]];
+	char notes[[MY_LEN + 1]];
 	int totals = 0;
 	int passed = 0;
 
@@ -1705,7 +1705,7 @@ main(void)
 	fprintf(stderr, "%d/%d passed wcwidth/graphics check\\n", passed, totals);
 	return (totals == passed) ? 0 : 1;
 }
-],
+])],
 [cf_cv_wcwidth_graphics=yes],
 [cf_cv_wcwidth_graphics=no],
 [cf_cv_wcwidth_graphics=unknown])
@@ -1841,7 +1841,7 @@ esac
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CPP_OVERRIDE version: 2 updated: 2024/11/09 18:07:29
+dnl CF_CPP_OVERRIDE version: 3 updated: 2026/01/24 14:15:07
 dnl ---------------
 dnl Check if the C++ compiler accepts the override keyword.  This is a C++-11
 dnl feature.
@@ -1851,7 +1851,7 @@ if test -n "$CXX"; then
 AC_CACHE_CHECK(if $CXX accepts override keyword,cf_cv_cpp_override,[
 	AC_LANG_SAVE
 	AC_LANG_CPLUSPLUS
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 
 class base
 {
@@ -1867,7 +1867,7 @@ public:
 };
 
 int main(void) { }
-],
+])],
 	[cf_cv_cpp_override=yes],
 	[cf_cv_cpp_override=no],
 	[cf_cv_cpp_override=unknown])
@@ -1877,7 +1877,7 @@ fi
 test "$cf_cv_cpp_override" = yes && AC_DEFINE(CPP_HAS_OVERRIDE,1,[Define to 1 if C++ has override keyword])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CPP_PARAM_INIT version: 7 updated: 2017/01/21 11:06:25
+dnl CF_CPP_PARAM_INIT version: 8 updated: 2026/01/24 14:15:07
 dnl -----------------
 dnl Check if the C++ compiler accepts duplicate parameter initialization.  This
 dnl is a late feature for the standard and is not in some recent compilers
@@ -1888,7 +1888,7 @@ if test -n "$CXX"; then
 AC_CACHE_CHECK(if $CXX accepts parameter initialization,cf_cv_cpp_param_init,[
 	AC_LANG_SAVE
 	AC_LANG_CPLUSPLUS
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 class TEST {
 private:
 	int value;
@@ -1902,7 +1902,7 @@ TEST::TEST(int x = 1)	// some compilers do not like second initializer
 	value = x;
 }
 int main(void) { }
-],
+])],
 	[cf_cv_cpp_param_init=yes],
 	[cf_cv_cpp_param_init=no],
 	[cf_cv_cpp_param_init=unknown])
@@ -2627,14 +2627,14 @@ fi
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FOPEN_BIN_R version: 4 updated: 2024/12/14 16:09:34
+dnl CF_FOPEN_BIN_R version: 5 updated: 2026/01/24 14:15:07
 dnl --------------
 dnl Check if fopen works when the "b" (binary) flag is added to the mode
 dnl parameter.  POSIX ignores the "b", which c89 specified.  Some very old
 dnl systems do not accept it.
 AC_DEFUN([CF_FOPEN_BIN_R],[
 AC_CACHE_CHECK(if fopen accepts explicit binary mode,cf_cv_fopen_bin_r,[
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 int main(void)
@@ -2664,7 +2664,7 @@ int main(void)
 	}
 	${cf_cv_main_return:-return} (rc);
 }
-],
+])],
 		[cf_cv_fopen_bin_r=yes],
 		[cf_cv_fopen_bin_r=no],
 		[cf_cv_fopen_bin_r=unknown])
@@ -2763,7 +2763,7 @@ AC_CHECK_LIB(bsd, gettimeofday,
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_GETTTYNAM version: 5 updated: 2025/12/24 12:27:29
+dnl CF_FUNC_GETTTYNAM version: 6 updated: 2026/01/24 14:15:07
 dnl -----------------
 dnl Check if the 4.3BSD function getttyname exists, as well as if <ttyent.h>
 dnl defines the _PATH_TTYS symbol.  If the corresponding file exists, but the
@@ -2793,14 +2793,14 @@ fi
 if test $cf_cv_PATH_TTYS != no
 then
 	AC_CACHE_CHECK(if _PATH_TTYS file exists,cf_cv_have_PATH_TTYS,[
-		AC_TRY_RUN([
+		AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 #include <ttyent.h>
 
 int main(void) {
 	FILE *fp = fopen(_PATH_TTYS, "r");
 	${cf_cv_main_return:-return} (fp == NULL);
-}],
+}])],
 			[cf_cv_have_PATH_TTYS=yes],
 			[cf_cv_have_PATH_TTYS=no],
 			[cf_cv_have_PATH_TTYS=unknown])])
@@ -2819,7 +2819,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_MEMMOVE version: 10 updated: 2023/01/05 18:51:28
+dnl CF_FUNC_MEMMOVE version: 11 updated: 2026/01/24 14:15:07
 dnl ---------------
 dnl Check for memmove, or a bcopy that can handle overlapping copy.  If neither
 dnl is found, add our own version of memmove to the list of objects.
@@ -2828,18 +2828,18 @@ AC_DEFUN([CF_FUNC_MEMMOVE],
 AC_CHECK_FUNC(memmove,,[
 AC_CHECK_FUNC(bcopy,[
 	AC_CACHE_CHECK(if bcopy does overlapping moves,cf_cv_good_bcopy,[
-		AC_TRY_RUN([
+		AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 int main(void) {
-	static char data[] = "abcdefghijklmnopqrstuwwxyz";
-	char temp[40];
+	static char data[[]] = "abcdefghijklmnopqrstuwwxyz";
+	char temp[[40]];
 	bcopy(data, temp, sizeof(data));
 	bcopy(temp+10, temp, 15);
 	bcopy(temp+5, temp+15, 10);
 	${cf_cv_main_return:-return} (strcmp(temp, "klmnopqrstuwwxypqrstuwwxyz"));
 }
-		],
+		])],
 		[cf_cv_good_bcopy=yes],
 		[cf_cv_good_bcopy=no],
 		[cf_cv_good_bcopy=unknown])
@@ -2852,13 +2852,13 @@ int main(void) {
 	fi
 ])])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_NANOSLEEP version: 6 updated: 2023/01/05 18:51:33
+dnl CF_FUNC_NANOSLEEP version: 7 updated: 2026/01/24 14:15:07
 dnl -----------------
 dnl Check for existence of workable nanosleep() function.  Some systems, e.g.,
 dnl AIX 4.x, provide a non-working version.
 AC_DEFUN([CF_FUNC_NANOSLEEP],[
 AC_CACHE_CHECK(if nanosleep really works,cf_cv_func_nanosleep,[
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <errno.h>
@@ -2879,7 +2879,7 @@ int main(void) {
 	code = nanosleep(&ts1, &ts2); /* on failure errno is ENOSYS. */
 	${cf_cv_main_return:-return}(code != 0);
 }
-],
+])],
 	[cf_cv_func_nanosleep=yes],
 	[cf_cv_func_nanosleep=no],
 	[cf_cv_func_nanosleep=unknown])])
@@ -2916,14 +2916,14 @@ AC_CACHE_CHECK(for openpty header,cf_cv_func_openpty,[
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_POLL version: 11 updated: 2023/01/05 18:51:40
+dnl CF_FUNC_POLL version: 12 updated: 2026/01/24 14:15:07
 dnl ------------
 dnl See if the poll function really works.  Some platforms have poll(), but
 dnl it does not work for terminals or files.
 AC_DEFUN([CF_FUNC_POLL],[
 tty >/dev/null 2>&1 || { AC_CHECK_FUNCS(posix_openpt) }
 AC_CACHE_CHECK(if poll really works,cf_cv_working_poll,[
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 #include <fcntl.h>
@@ -2971,7 +2971,7 @@ int main(void) {
 		}
 	}
 	${cf_cv_main_return:-return}(ret < 0);
-}],
+}])],
 	[cf_cv_working_poll=yes],
 	[cf_cv_working_poll=no],
 	[cf_cv_working_poll=unknown])])
@@ -5564,7 +5564,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_DATAONLY version: 17 updated: 2025/12/24 12:27:29
+dnl CF_LINK_DATAONLY version: 18 updated: 2026/01/24 14:15:07
 dnl ----------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
 dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
@@ -5610,13 +5610,13 @@ EOF
 	( eval $RANLIB conftest.a ) 2>&AS_MESSAGE_LOG_FD >/dev/null
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
-	AC_TRY_RUN([
+	AC_RUN_IFELSE([AC_LANG_SOURCE([
 	extern int testfunc(void);
 	int main(void)
 	{
 		${cf_cv_main_return:-return} (!testfunc());
 	}
-	],
+	])],
 	[cf_cv_link_dataonly=yes],
 	[cf_cv_link_dataonly=no],
 	[cf_cv_link_dataonly=unknown])
@@ -5632,7 +5632,7 @@ AC_SUBST(BROKEN_LINKER)
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LINK_FUNCS version: 14 updated: 2024/12/14 16:09:34
+dnl CF_LINK_FUNCS version: 15 updated: 2026/01/24 14:15:07
 dnl -------------
 dnl Most Unix systems have both link and symlink, a few don't have symlink.
 dnl A few non-Unix systems implement symlink, but not link.
@@ -5657,14 +5657,14 @@ else
 	AC_CACHE_CHECK(if link/symlink functions work,cf_cv_link_funcs,[
 		cf_cv_link_funcs=
 		for cf_func in link symlink ; do
-			AC_TRY_RUN([
+			AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 
 int main(void)
 {
 	int fail = 0;
-	char src[] = "conftest.tmp";
-	char dst[] = "conftest.chk";
+	char src[[]] = "conftest.tmp";
+	char dst[[]] = "conftest.chk";
 	struct stat src_sb, dst_sb;
 	FILE *fp = fopen(src, "w");
 	if (fp == NULL) { fail = 3; } else {
@@ -5686,7 +5686,7 @@ int main(void)
 #endif
 	${cf_cv_main_return:-return} (fail);
 }
-			],[
+			])],[
 			cf_cv_link_funcs="$cf_cv_link_funcs $cf_func"
 			eval 'ac_cv_func_'$cf_func'=yes'],[
 			eval 'ac_cv_func_'$cf_func'=no'],[
@@ -8773,7 +8773,7 @@ if test "$cf_cv_xopen_source" != no ; then
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_TYPEOF_CHTYPE version: 12 updated: 2024/12/14 16:09:34
+dnl CF_TYPEOF_CHTYPE version: 13 updated: 2026/01/24 14:15:07
 dnl ----------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
@@ -8783,7 +8783,7 @@ AC_DEFUN([CF_TYPEOF_CHTYPE],
 [
 AC_MSG_CHECKING([for type of chtype])
 AC_CACHE_VAL(cf_cv_typeof_chtype,[
-		AC_TRY_RUN([
+		AC_RUN_IFELSE([AC_LANG_SOURCE([
 $ac_includes_default
 #define WANT_BITS 31
 int main(void)
@@ -8813,7 +8813,7 @@ int main(void)
 	}
 	${cf_cv_main_return:-return}(0);
 }
-		],
+		])],
 		[cf_cv_typeof_chtype=`cat cf_test.out`],
 		[cf_cv_typeof_chtype=long],
 		[cf_cv_typeof_chtype=long])

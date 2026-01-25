@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.826 2026/01/14 08:51:49 tom Exp $
+dnl $Id: configure.in,v 1.827 2026/01/24 18:56:52 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.826 $)
+AC_REVISION($Revision: 1.827 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -702,16 +702,16 @@ AC_MSG_CHECKING(if big-core option selected)
 AC_ARG_ENABLE(big-core,
 	[  --disable-big-core      assume machine has little memory],
 	[with_big_core=$enableval],
-	[AC_TRY_RUN([
+	[AC_RUN_IFELSE([AC_LANG_SOURCE([
 #include <stdlib.h>
 #include <string.h>
 int main(void) {
 	unsigned long n = 6000000L;
 	char *s = malloc(n);
 	if (s != 0)
-		s[0] = s[n-1] = 0;
+		s[[0]] = s[[n-1]] = 0;
 	${cf_cv_main_return:-return}(s == 0);
-}],
+}])],
 	[with_big_core=yes],
 	[with_big_core=no],
 	[with_big_core=no])])
