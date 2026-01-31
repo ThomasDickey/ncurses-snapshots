@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.248 2026/01/24 19:31:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.249 2026/01/31 14:07:58 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -3619,7 +3619,7 @@ CF_ACVERSION_CHECK(2.52,
 CF_CC_ENV_FLAGS
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_INSTALL version: 13 updated: 2025/10/21 16:28:49
+dnl CF_PROG_INSTALL version: 14 updated: 2026/01/31 09:07:58
 dnl ---------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
 dnl misc/tabset install won't work properly.  Usually this happens only when
@@ -3631,7 +3631,7 @@ if test "x$INSTALL" = "x./install-sh -c"; then
 	if test -f /usr/sbin/install ; then
 		case "$host_os" in
 		(linux*gnu*|uclinux*|gnu*|mint*|k*bsd*-gnu|cygwin|msys|mingw*|linux*uclibc)
-			INSTALL=/usr/sbin/install 
+			INSTALL=/usr/sbin/install
 			;;
 		esac
 	fi

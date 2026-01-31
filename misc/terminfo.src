@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1216 $
-#	$Date: 2026/01/25 00:46:12 $
+#	$Revision: 1.1221 $
+#	$Date: 2026/01/31 21:33:33 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -484,6 +484,17 @@ ecma+underline|ECMA-48 underline,
 ecma+sgr|attribute capabilities for true ECMA-48 terminals,
 	use=ecma+underline, use=ecma+standout, use=klone+sgr8,
 
+# Although SGR 53/55 are listed in ECMA-48 (second edition, 1979), it was not
+# of interest to developers of terminal emulators until Thomas Wolff added it
+# to mintty July 31 2015 (36 years elapsed).  After that, other developers
+# copied the feature:
+#	Jul 16 2016 konsole (KDE #362171)
+#	Jul 31 2017 RLogin
+#	Nov 25 2017 mlterm
+#	Dec 11 2017 vte (GNOME #767115)
+#
+# Thomas Wolff suggested smol/rmol in June 2019, but by that point these names
+# had already been chosen for consistency with Smulx a month earlier.
 ecma+overline|ECMA-48 overlined,
 	Rmol=\E[55m, Smol=\E[53m,
 
@@ -4226,7 +4237,7 @@ putty|PuTTY terminal emulator,
 	it#8, ncv@, U8#1,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, cr=\r, cub1=^H, cud1=\ED, cuu1=\EM, dch=\E[%p1%dP,
-	dch1=\E[P,
+	dch1=\E[P, dim=\E[2m,
 	dispc=%?%p1%{8}%=%t\E%%G\342\227\230\E%%@%e%p1%{10}%=%t\E%%G
 	      \342\227\231\E%%@%e%p1%{12}%=%t\E%%G\342\231\0\E%%@%e
 	      %p1%{13}%=%t\E%%G\342\231\252\E%%@%e%p1%{14}%=%t\E%%G
@@ -4244,7 +4255,7 @@ putty|PuTTY terminal emulator,
 	rs2=\E<\E["p\E[50;6"p\Ec\E[?3l\E]R\E[?1000l,
 	s0ds=\E[10m, s1ds=\E[11m, s2ds=\E[12m,
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5
-	    %;m%?%p9%t\016%e\017%;,
+	    %;%?%p5%t;2%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h,
 	smkx=\E[?1h\E=, E3=\E[3J, rv=\E\\[>0;136;0c,
 	use=ecma+underline, use=ecma+standout,
@@ -4253,9 +4264,18 @@ putty|PuTTY terminal emulator,
 	use=ansi+tabs, use=ansi+rep, use=bracketed+paste,
 	use=ecma+index, use=ansi+rca2, use=ecma+strikeout,
 	use=klone+color, use=klone+sgr, use=putty+cursor,
-	use=putty+fnkeys, use=report+da2, use=vt220+pcedit,
-	use=xterm+alt1049, use=vt102+enq, use=xterm+sm+1006,
-	use=xterm+sl, use=putty+keypad, use=vt220+cvis,
+	use=putty+fnkeys, use=putty+3keys, use=report+da2,
+	use=vt220+pcedit, use=xterm+alt1049, use=vt102+enq,
+	use=xterm+sm+1006, use=xterm+sl, use=putty+keypad,
+	use=vt220+cvis,
+
+# Seen in testing PuTTY 0.83 with vttest, private-use utf-8:
+#	o^\^P	239, 156, 144	0xf710	Print Screen
+#	o^\^Q	239, 156, 145	0xf711	ScrollLock (shift)
+#	o^\^R	239, 156, 146	0xf712	Pause (shift)
+putty+3keys|PuTTY 3-keys,
+	kPause=\357\234\222, kPrint=\357\234\220,
+	kScroll=\357\234\221,
 
 # older versions (e.g., before 0.71) of PuTTY used a shift-modifier to toggle
 # between normal- and application-mode for the cursor-keys.  That was dropped,
@@ -5106,7 +5126,7 @@ xterm-p370|xterm patch #370,
 	use=ecma+index, use=ansi+rep, use=ecma+strikeout,
 	use=xterm+pcfkeys, use=xterm+nofkeys,
 	use=bracketed+paste, use=report+version,
-	use=xterm+focus,
+	use=xterm+focus, use=xterm+3keys,
 
 xterm-p371|xterm patch #371,
 	use=dec+sl, use=xterm-p370,
@@ -5382,6 +5402,16 @@ xterm+r6f2|xterm with oldFunctionKeys and modifyFunctionKeys:2,
 xterm+acs|ISO-2022 alternate character-switching for xterm,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	enacs@, rmacs=\E(B, smacs=\E(0,
+
+# Seen with XQuartz 1.20.1, xev says these are F13, F14, F15.  The ";2" denotes
+# the shift modifier.  mlterm, pterm, and vte imitate this behavior (konsole
+# ignores), and since other environments send nothing, the block can be used
+# for those without confusion.
+# 2026/01/31 -TD
+xterm+3keys|X11 3-keys,
+	kPause=\E[26;2~, kPrint=\E[25~, kPrint2=\E[25;2~,
+	kPrint3=\E[25;3~, kPrint4=\E[25;4~, kPrint5=\E[25;5~,
+	kPrint6=\E[25;6~, kPrint7=\E[25;7~, kScroll=\E[28;2~,
 
 # This chunk is used for building the VT220/Sun/PC keyboard variants.
 xterm-basic|modern xterm terminal emulator - common,
@@ -6431,7 +6461,7 @@ vte-2018|VTE 0.51.2,
 # - xterm's extension to clear scrollback
 vte-2022|VTE aka GNOME Terminal,
 	xr=\EP>\\|VTE\\(([0-9])\\)\E\\\\, use=report+version,
-	use=report+da2, use=vte-2018,
+	use=report+da2, use=vte-2018, use=xterm+3keys,
 
 vte|VTE aka GNOME Terminal,
 	use=vte-2022,
@@ -6760,7 +6790,7 @@ mlterm3|multi lingual terminal emulator 3.x,
 	use=xterm+pcc2, use=xterm+pce2, use=xterm+meta,
 	use=xterm+alt+title, use=xterm+sm+1006,
 	use=vt100+pfkeys-sco, use=bracketed+paste, use=mlterm2,
-	use=report+version,
+	use=report+version, use=xterm+3keys,
 
 # This is mlterm 2.9.3's mlterm.ti, with some additions/corrections -TD
 #
@@ -25619,7 +25649,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #   kLFT{3|4|5|6|7}                modifier + cursor-left
 #   kNXT{3|4|5|6|7}                modifier + next
 #   kPRV{3|4|5|6|7}                modifier + previous
+#   kPause                         pause/break
+#   kPrint                         print screen
+#   kPrint{2|3|4|5|6|7}            print screen
 #   kRIT{3|4|5|6|7}                modifier + cursor-right
+#   kScroll                        scroll lock
 #   kUP                            shifted cursor-up
 #   kUP{3|4|5|6|7}                 modifier + cursor-up
 #   ka2                            keypad key between ka1 and ka3
@@ -28078,5 +28112,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add Smol/Rmol to ms-terminal, konsole, iTerm2 (report by Jared
 #	  Finder)
 #	+ add ecma+overline -TD
+#
+# 2026-01-31
+#	+ add putty+3keys -TD
+#	+ add dim to putty -TD
+#	+ add xterm+3keys -TD
+#	+ add note explaining origin of ecma+overline -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
