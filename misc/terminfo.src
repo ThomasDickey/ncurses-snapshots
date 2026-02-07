@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1221 $
-#	$Date: 2026/01/31 21:33:33 $
+#	$Revision: 1.1223 $
+#	$Date: 2026/02/07 21:14:29 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2731,7 +2731,7 @@ vt220-base|DEC VT220 as emulated,
 	dch=\E[%p1%dP, dch1=\E[P, ech=\E[%p1%dX, el1=\E[1K,
 	enacs=\E)0, flash=\E[?5h$<200/>\E[?5l, ht=^I, hts=\EH,
 	ich=\E[%p1%d@, if=/usr/share/tabset/vt100, ind=\ED,
-	is2=\E[?7h\E[>\E[?1l\E F\E[?4l, kbs=^H, kcub1=\E[D,
+	is2=\E[?7h\E>\E[?1l\E F\E[?4l, kbs=^H, kcub1=\E[D,
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kf13=\E[25~,
 	kf14=\E[26~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~,
 	kf20=\E[34~, khlp=\E[28~, krdo=\E[29~, lf1=pf1, lf2=pf2,
@@ -13378,7 +13378,7 @@ wy75|wyse75|Wyse 75,
 	knp=\E[6~, kpp=\E[5~, kprt=\E[?5i, kslt=\E[4~, mc0=\E[0i,
 	rc=\E8, rev=\E[1t\E[7m, ri=\EM$<2>, rmacs=^O, rmam=\E[?7l,
 	rmir=\E[4l, rmkx=\E>, rmso=\E[m, rmul=\E[m,
-	rs1=\E[13l\E[3l\E!p, rs2=\E[35h\E[?3l$<80>, rs3=\E[?5l,
+	rs1=\E[13l\E[3l\E[!p, rs2=\E[35h\E[?3l$<80>, rs3=\E[?5l,
 	sc=\E7,
 	sgr=%?%p5%t\E[0t%;%?%p3%p1%|%t\E[1t%;%?%p2%t\E[2t%;%?%p4%t
 	    \E[3t%;%?%p1%p2%p3%p4%p5%|%|%|%|%t\E[7m%e\E[m%;%?%p9%t
@@ -13439,7 +13439,7 @@ wy85|wyse85|Wyse 85,
 	is2=\E[2;4;20;30l\E[?1;4;10;16l\E[12h\E[?7;8;25h$<16>,
 	is3=\E>\E(B\E)0\017\E[m, khlp=\E[28~, khome=\E[26~,
 	lf1=PF1, lf2=PF2, lf3=PF3, lf4=PF4, mc0=\E[0i, ri=\EM$<3>,
-	rmam=\E[?7l, rmir=\E[4l, rmkx=\E>, rs1=\E[13l\E[3l\E!p,
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E>, rs1=\E[13l\E[3l\E[!p,
 	rs2=\E[35h\E[?3l$<70>, rs3=\E[?5l,
 	sgr=\E[0%?%p2%t;4%;%?%p3%p1%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?
 	    %p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
@@ -13494,7 +13494,7 @@ wy85-8bit|wyse85-8bit|Wyse 85 in 8-bit mode,
 	kf9=\23320~, kfnd=\2331~, khlp=\23328~, khome=\23326~,
 	kich1=\2332~, knp=\2336~, kpp=\2335~, kslt=\2334~, lf1=PF1,
 	lf2=PF2, lf3=PF3, lf4=PF4, mc0=\E[0i, ri=\EM$<3>,
-	rmam=\E[?7l, rmir=\E[4l, rmkx=\E>, rs1=\E[13l\E[3l\E!p,
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E>, rs1=\E[13l\E[3l\E[!p,
 	rs2=\E[35h\E[?3l$<70>, rs3=\E[?5l,
 	sgr=\E[0%?%p2%t;4%;%?%p3%p1%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?
 	    %p6%t;1%;%?%p7%t;8%;+m%?%p9%t\016%e\017%;,
@@ -13710,7 +13710,7 @@ wy370-nk|Wyse 370 without function keys,
 	   \E[66;5;51w\E[66;6;61w\E[66;7;64w,
 	op=\E[m, ri=\EM$<2>, rmacs=^O, rmam=\E[?7l, rmclk=\E[31l,
 	rmcup=\E[ R, rmir=\E[4l, rmkx=\E>,
-	rs1=\E[13l\E[3l\E!p\E[?4i, rs2=\E[35h\E[?3l$<8>,
+	rs1=\E[13l\E[3l\E[!p\E[?4i, rs2=\E[35h\E[?3l$<8>,
 	rs3=\E[?5l, setb=\E[62;%p1%dw, setf=\E[61;%p1%dw,
 	sgr=\E[0%?%p2%t;4%;%?%p3%p1%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?
 	    %p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
@@ -28118,5 +28118,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add dim to putty -TD
 #	+ add xterm+3keys -TD
 #	+ add note explaining origin of ecma+overline -TD
+#
+# 2026-02-07
+#	+ correct DECKPNM in vt220 is2 (Aaro Koskinen)
+#	+ correct DECSTR in some Wyse terminfo entries -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.177 2025/12/27 22:18:10 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.179 2026/02/07 22:18:36 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -694,44 +694,63 @@ compare_predicate(PredType type, PredIdx idx, const char *name)
 #define DATAX()        DATA("", "")
 
 typedef struct {
-    const char from[8];
+    const char from[12];
     const char to[12];
 } assoc;
 
+/* *INDENT-OFF* */
 static const assoc std_caps[] =
 {
-    /* these are specified by X.364 and iBCS2 */
-    DATA("\033c", "RIS"),	/* full reset */
-    DATA("\0337", "SC"),	/* save cursor */
-    DATA("\0338", "RC"),	/* restore cursor */
-    DATA("\033[r", "RSR"),	/* not an X.364 mnemonic */
-    DATA("\033[m", "SGR0"),	/* not an X.364 mnemonic */
-    DATA("\033[2J", "ED2"),	/* clear page */
+    DATA("\016",    "SI"),		/* shift-in */
+    DATA("\017",    "SO"),		/* shift-out */
+    DATA("\033[H",  "HOME"),		/* move cursor to home */
+    DATA("\033[J",  "ED"),		/* clear screen */
+    DATA("\033E",   "NEL"),		/* next line */
+    DATA("\033H",   "HTS"),		/* horizontal tab set */
+    DATA("\033M",   "RI"),		/* reverse index */
+
+    /* these are specified by X3.64 and iBCS2 */
+    DATA("\033c",   "RIS"),		/* full reset */
+    DATA("\0337",   "SC"),		/* save cursor */
+    DATA("\0338",   "RC"),		/* restore cursor */
+    DATA("\033[r",  "RSR"),		/* not an X3.64 mnemonic */
+    DATA("\033[m",  "SGR0"),		/* not an X3.64 mnemonic */
+    DATA("\033[2J", "ED2"),		/* clear page */
 
     /* this group is specified by ISO 2022 */
-    DATA("\033(0", "ISO DEC G0"),	/* enable DEC graphics for G0 */
-    DATA("\033(A", "ISO UK G0"),	/* enable UK chars for G0 */
-    DATA("\033(B", "ISO US G0"),	/* enable US chars for G0 */
-    DATA("\033)0", "ISO DEC G1"),	/* enable DEC graphics for G1 */
-    DATA("\033)A", "ISO UK G1"),	/* enable UK chars for G1 */
-    DATA("\033)B", "ISO US G1"),	/* enable US chars for G1 */
+    DATA("\033(0",  "ISO DEC G0"),	/* enable DEC graphics for G0 */
+    DATA("\033(A",  "ISO UK G0"),	/* enable UK chars for G0 */
+    DATA("\033(B",  "ISO US G0"),	/* enable US chars for G0 */
+    DATA("\033)0",  "ISO DEC G1"),	/* enable DEC graphics for G1 */
+    DATA("\033)A",  "ISO UK G1"),	/* enable UK chars for G1 */
+    DATA("\033)B",  "ISO US G1"),	/* enable US chars for G1 */
 
     /* these are DEC private controls widely supported by emulators */
-    DATA("\033=", "DECPAM"),	/* application keypad mode */
-    DATA("\033>", "DECPNM"),	/* normal keypad mode */
-    DATA("\033<", "DECANSI"),	/* enter ANSI mode */
-    DATA("\033[!p", "DECSTR"),	/* soft reset */
-    DATA("\033 F", "S7C1T"),	/* 7-bit controls */
+    DATA("\033=",   "DECPAM"),		/* application keypad mode */
+    DATA("\033>",   "DECPNM"),		/* normal keypad mode */
+    DATA("\033<",   "DECANSI"),		/* enter ANSI mode */
+    DATA("\033[!p", "DECSTR"),		/* soft reset */
+    DATA("\033 F",  "S7C1T"),		/* 7-bit controls */
+    DATA("\033 G",  "S8C1T"),		/* 8-bit controls */
 
+    /* these are XTerm controls widely supported by emulators */
+    DATA("\033[22;0;0t",  "push title"),
+    DATA("\033[23;0;0t",  "pop title"),
     DATAX()
 };
+/* *INDENT-ON* */
 
 static const assoc std_modes[] =
 /* ECMA \E[ ... [hl] modes recognized by many emulators */
 {
+    DATA("1", "GATM"),		/* guarded area transfer mode */
     DATA("2", "AM"),		/* keyboard action mode */
+    DATA("3", "CRM"),		/* control representation mode */
     DATA("4", "IRM"),		/* insert/replace mode */
+    DATA("5", "STRM"),		/* status report transfer mode */
+    DATA("6", "ERM"),		/* erasure mode */
     DATA("12", "SRM"),		/* send/receive mode */
+    DATA("13", "FEAM"),		/* format effector action mode */
     DATA("20", "LNM"),		/* linefeed mode */
     DATAX()
 };
@@ -747,6 +766,12 @@ static const assoc private_modes[] =
     DATA("6", "OM"),		/* origin mode */
     DATA("7", "AWM"),		/* wraparound mode */
     DATA("8", "ARM"),		/* auto-repeat mode */
+    DATA("25", "TCEM"),		/* text cursor enable */
+    DATA("47", "NRCM"),		/* national replacement character mode */
+    DATA("67", "BKM"),		/* backarrow key mode */
+    DATA("1000", "X11MSE"),	/* XTerm: X11 mouse */
+    DATA("1034", "META"),	/* XTerm: meta/eightBitInput */
+    DATA("1049", "ALTSCRN"),	/* XTerm: alternate screen */
     DATAX()
 };
 
@@ -845,7 +870,7 @@ lookup_params(const assoc * table, char *dst, char *src)
 }
 
 static void
-analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
+analyze_string(const char *name, const char *cap, TERMTYPE2 *tp, int many)
 {
     char buf2[MAX_TERMINFO_LENGTH + 1];
     const char *sp;
@@ -854,13 +879,17 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 
     if (!VALID_STRING(cap))
 	return;
+    if (many)
+	putchar('\t');
     (void) printf("%s: ", name);
 
     for (sp = cap; *sp; sp++) {
 	int i;
 	int csi;
+	int final = '\0';
+	int private = 0;
 	size_t len = 0;
-	size_t next;
+	size_t next = 0;
 	const char *expansion = NULL;
 	char buf3[MAX_TERMINFO_LENGTH];
 
@@ -869,9 +898,9 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    const char *cp = tp->Strings[i];
 
 	    /* don't use function-key capabilities */
-	    if (strnames[i] == NULL)
+	    if (!VALID_STRING(strnames[i]))
 		continue;
-	    if (strnames[i][0] == 'k' && strnames[i][1] == 'f')
+	    if (is_fkey(strnames[i]))
 		continue;
 
 	    if (VALID_STRING(cp) &&
@@ -922,14 +951,28 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    }
 	}
 
-	/* now check for standard-mode sequences */
+	/* parse ECMA and DEC control sequences with numeric parameters */
+	csi = 0;
 	if (!expansion
 	    && (csi = skip_csi(sp)) != 0
-	    && (len = (strspn) (sp + csi, "0123456789;"))
-	    && (len < sizeof(buf3))
-	    && (next = (size_t) csi + len)
-	    && ((sp[next] == 'h') || (sp[next] == 'l'))) {
+	    && sp[csi] != '\0') {
+	    int adj = 0;
+	    if (strchr("<>=?", sp[csi])) {
+		private = sp[csi];
+	    }
+	    if (private)
+		adj = 1;
+	    len = (strspn) (sp + csi + adj, "0123456789;:");
+	    if (len < sizeof(buf3)) {
+		next = (size_t) (csi + adj) + len;
+		final = sp[next];
+	    }
+	}
 
+	/* now check for ECMA standard-mode sequences */
+	if (!expansion
+	    && !private
+	    && (final == 'h' || final == 'l')) {
 	    _nc_STRCPY(buf2,
 		       ((sp[next] == 'h')
 			? "ECMA+"
@@ -941,15 +984,10 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    expansion = lookup_params(std_modes, buf2, buf3);
 	}
 
-	/* now check for private-mode sequences */
+	/* now check for DEC private-mode sequences */
 	if (!expansion
-	    && (csi = skip_csi(sp)) != 0
-	    && sp[csi] == '?'
-	    && (len = (strspn) (sp + csi + 1, "0123456789;"))
-	    && (len < sizeof(buf3))
-	    && (next = (size_t) csi + 1 + len)
-	    && ((sp[next] == 'h') || (sp[next] == 'l'))) {
-
+	    && (private == '?')
+	    && (final == 'h' || final == 'l')) {
 	    _nc_STRCPY(buf2,
 		       ((sp[next] == 'h')
 			? "DEC+"
@@ -963,12 +1001,8 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 
 	/* now check for ECMA highlight sequences */
 	if (!expansion
-	    && (csi = skip_csi(sp)) != 0
-	    && (len = (strspn) (sp + csi, "0123456789;")) != 0
-	    && (len < sizeof(buf3))
-	    && (next = (size_t) csi + len)
-	    && sp[next] == 'm') {
-
+	    && !private
+	    && final == 'm') {
 	    _nc_STRCPY(buf2, "SGR:", sizeof(buf2));
 	    _nc_STRNCPY(buf3, sp + csi, len);
 	    buf3[len] = '\0';
@@ -977,19 +1011,11 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    expansion = lookup_params(ecma_highlights, buf2, buf3);
 	}
 
-	if (!expansion
-	    && (csi = skip_csi(sp)) != 0
-	    && sp[csi] == 'm') {
-	    len = (size_t) csi + 1;
-	    _nc_STRCPY(buf2, "SGR:", sizeof(buf2));
-	    _nc_STRCAT(buf2, ecma_highlights[0].to, sizeof(buf2));
-	    expansion = buf2;
-	}
-
 	/* now check for scroll region reset */
 	if (!expansion
-	    && (csi = skip_csi(sp)) != 0) {
-	    if (sp[csi] == 'r') {
+	    && !private
+	    && csi != 0) {
+	    if (final == 'r') {
 		expansion = "RSR";
 		len = 1;
 	    } else {
@@ -1001,35 +1027,88 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp)
 	    len += (size_t) csi;
 	}
 
-	/* now check for home-down */
+	/* now check for home and home-down */
 	if (!expansion
-	    && (csi = skip_csi(sp)) != 0) {
-	    _nc_SPRINTF(buf2, _nc_SLIMIT(sizeof(buf2)) "%d;1H", tp_lines);
-	    len = strlen(buf2);
-	    if (strncmp(buf2, sp + csi, len) == 0) {
-		expansion = "LL";
-	    } else {
-		_nc_SPRINTF(buf2, _nc_SLIMIT(sizeof(buf2)) "%dH", tp_lines);
-		len = strlen(buf2);
-		if (strncmp(buf2, sp + csi, len) == 0) {
+	    && !private
+	    && csi != 0
+	    && final == 'H') {
+	    int row, col;
+	    if (sp[csi] == final) {
+		expansion = "HOME";
+	    } else if (sscanf(sp + csi, "%dH", &row) == 1) {
+		if (row == 1) {
+		    expansion = "HOME";
+		} else if (row == tp_lines) {
+		    expansion = "LL";
+		}
+	    } else if (sscanf(sp + csi, "%d;%dH", &row, &col) == 2) {
+		if (col != 1) {
+		    expansion = NULL;
+		} else if (row == 1) {
+		    expansion = "HOME";
+		} else if (row == tp_lines) {
 		    expansion = "LL";
 		}
 	    }
-	    len += (size_t) csi;
+
+	}
+
+	/* now check for DEC set conformance level */
+	if (!expansion
+	    && !private
+	    && csi != 0
+	    && final == '"'
+	    && sp[next + 1] == 'p') {
+	    if (sp[csi] != '"') {
+		_nc_SPRINTF(buf2, _nc_SLIMIT(sizeof(buf2))
+			    "DECSCL %.*s", (int) (next - 2), sp + csi);
+		expansion = buf2;
+	    } else {
+		expansion = "DECSCL";
+	    }
+	    ++next;
 	}
 
 	/* now look at the expansion we got, if any */
 	if (expansion) {
 	    printf("{%s}", expansion);
-	    sp += len - 1;
+	    if (csi && final) {
+		sp += next;
+	    } else {
+		sp += len - 1;
+	    }
 	} else {
 	    /* couldn't match anything */
-	    buf2[0] = *sp;
-	    buf2[1] = '\0';
-	    fputs(TIC_EXPAND(buf2), stdout);
+	    if (!csi || !final) {
+		next = 1;
+	    }
+	    while (next-- != 0) {
+		buf2[0] = *sp++;
+		buf2[1] = '\0';
+		fputs(TIC_EXPAND(buf2), stdout);
+	    }
+	    --sp;
 	}
     }
     putchar('\n');
+}
+
+static void
+do_analysis(TERMTYPE2 *tp, int many)
+{
+#undef CUR
+#define CUR	tp->
+    analyze_string("is1", init_1string, tp, many);
+    analyze_string("is2", init_2string, tp, many);
+    analyze_string("is3", init_3string, tp, many);
+    analyze_string("rs1", reset_1string, tp, many);
+    analyze_string("rs2", reset_2string, tp, many);
+    analyze_string("rs3", reset_3string, tp, many);
+    analyze_string("smcup", enter_ca_mode, tp, many);
+    analyze_string("rmcup", exit_ca_mode, tp, many);
+    analyze_string("smkx", keypad_xmit, tp, many);
+    analyze_string("rmkx", keypad_local, tp, many);
+#undef CUR
 }
 
 /***************************************************************************
@@ -1907,7 +1986,7 @@ main(int argc, char *argv[])
 
     /* exactly one terminal name with no options means display it */
     /* exactly two terminal names with no options means do -d */
-    if (compare == C_DEFAULT) {
+    if (compare == C_DEFAULT && !init_analyze) {
 	switch (argc - optind) {
 	default:
 	    fprintf(stderr, "%s: too many names to compare\n", _nc_progname);
@@ -2024,19 +2103,11 @@ main(int argc, char *argv[])
 
 	/* analyze the init strings */
 	else if (init_analyze) {
-#undef CUR
-#define CUR	entries[0].tterm.
-	    analyze_string("is1", init_1string, &entries[0].tterm);
-	    analyze_string("is2", init_2string, &entries[0].tterm);
-	    analyze_string("is3", init_3string, &entries[0].tterm);
-	    analyze_string("rs1", reset_1string, &entries[0].tterm);
-	    analyze_string("rs2", reset_2string, &entries[0].tterm);
-	    analyze_string("rs3", reset_3string, &entries[0].tterm);
-	    analyze_string("smcup", enter_ca_mode, &entries[0].tterm);
-	    analyze_string("rmcup", exit_ca_mode, &entries[0].tterm);
-	    analyze_string("smkx", keypad_xmit, &entries[0].tterm);
-	    analyze_string("rmkx", keypad_local, &entries[0].tterm);
-#undef CUR
+	    for (c = 0; c < termcount; ++c) {
+		if (termcount > 1)
+		    printf("%s\n", tname[c]);
+		do_analysis(&entries[c].tterm, termcount > 1);
+	    }
 	} else {
 	    int i;
 	    int len;

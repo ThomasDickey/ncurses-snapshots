@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.199 2025/02/08 21:53:40 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.200 2026/02/07 13:27:57 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -1115,7 +1115,7 @@ fmt_entry(TERMTYPE2 *tterm,
 		char *srccap = _nc_tic_expand(capability, TRUE, numbers);
 		int params = ((i < (int) SIZEOF(parametrized))
 			      ? parametrized[i]
-			      : ((*srccap == 'k')
+			      : (is_fkey(srccap)
 				 ? 0
 				 : has_params(srccap, FALSE)));
 		const char *cv = _nc_infotocap(name, srccap, params);

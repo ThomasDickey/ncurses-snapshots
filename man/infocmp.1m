@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.128 2025/11/12 00:52:57 tom Exp $
-.TH @INFOCMP@ 1M 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
+.\" $Id: infocmp.1m,v 1.129 2026/02/07 22:02:29 tom Exp $
+.TH @INFOCMP@ 1M 2026-02-07 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "User commands"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -448,32 +448,53 @@ as well as those used for starting/stopping cursor-positioning mode
 (\fBsmcup\fP, \fBrmcup\fP) as well as starting/stopping keymap mode
 (\fBsmkx\fP, \fBrmkx\fP).
 .IP
-For each string, the
-code tries to analyze it into actions in terms of the other capabilities in the
-entry, certain X3.64/ISO 6429/ECMA\-48 capabilities, and certain DEC VT-series
-private modes (the set of recognized special sequences has been selected for
-completeness over the existing terminfo database).
+For each string,
+the code tries to analyze it into actions in terms of
+.RS
+.bP
+the other capabilities in the entry,
+.bP
+certain X3.64/ISO 6429/ECMA\-48 capabilities,
+.bP
+certain DEC VT-series private modes, and
+.bP
+certain XTerm control sequences.
+.RE
+.IP
+The set of recognized special sequences has been selected for
+completeness over the existing terminfo database.
 Each report line consists
-of the capability name, followed by a colon and space, followed by a printable
-expansion of the capability string with sections matching recognized actions
+of the capability name, followed by a colon and space,
+followed by a printable expansion of the capability string
+with sections matching recognized actions
 translated into {}-bracketed descriptions.
 .IP
-Here is a list of the DEC/ANSI
-special sequences recognized:
+Here is a list of the special sequences recognized:
 .PP
 .TS
 center;
 L L.
 Action	Meaning
 _
-RIS	full reset
-SC	save cursor
-RC	restore cursor
+ED	clear screen
+ED2	clear page
+HOME	move cursor to home
+HTS	horizontal tag set
 LL	home-down
+NEL	next line
+RC	restore cursor
+RI	reverse index
+RIS	full reset
 RSR	reset scroll region
+SC	save cursor
+SGR0	reset video attributes
+SI	shift-in
+SO	shift-out
 _
+DECSCL	set conformance level (VT220)
 DECSTR	soft reset (VT320)
 S7C1T	7-bit controls (VT220)
+S8C1T	8-bit controls (VT220)
 _
 ISO DEC G0	enable DEC graphics for G0
 ISO UK G0	enable UK chars for G0
@@ -486,9 +507,14 @@ DECPAM	application keypad mode
 DECPNM	normal keypad mode
 DECANSI	enter ANSI mode
 _
+ECMA[+\-]GATM	guarded area transfer mode
 ECMA[+\-]AM	keyboard action mode
+ECMA[+\-]CRM	control representation mode
 ECMA[+\-]IRM	insert replace mode
+ECMA[+\-]STRM	status report transfer mode
+ECMA[+\-]ERM	erasure mode
 ECMA[+\-]SRM	send receive mode
+ECMA[+\-]FEAM	format effector action mode
 ECMA[+\-]LNM	linefeed mode
 _
 DEC[+\-]CKM	application cursor keys
@@ -499,6 +525,15 @@ DEC[+\-]SCNM	reverse video mode
 DEC[+\-]OM	origin mode
 DEC[+\-]AWM	wraparound mode
 DEC[+\-]ARM	auto-repeat mode
+DEC[+\-]TCEM	text cursor enable
+DEC[+\-]NRCM	national replacement character mode
+DEC[+\-]BKM	backarrow key mode
+DEC[+\-]X11MSE	X11 mouse (XTerm)
+DEC[+\-]META	meta/eightBitInput (XTerm)
+DEC[+\-]ALTSCRN	alternate screen (XTerm)
+_
+push title	save icon and window title (XTerm)
+pop title	restore icon and window title (XTerm)
 .TE
 .sp
 It also recognizes a SGR action corresponding to ANSI/ISO 6429/ECMA Set

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.335 2025/12/31 12:03:37 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.338 2026/02/07 22:22:45 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -366,7 +366,7 @@ put_translate(int c)
 
 /* Returns a string, stripped of leading/trailing whitespace */
 static char *
-stripped(char *src)
+stripped(const char *src)
 {
     char *dst = NULL;
 
@@ -494,8 +494,8 @@ static char **
 make_namelist(char *src)
 {
     char **dst = NULL;
-
-    char *s, *base;
+    char *s;
+    const char *base;
     unsigned pass, n, nn;
     char buffer[BUFSIZ];
 
@@ -1762,7 +1762,7 @@ check_screen(TERMTYPE2 *tp)
 	} else if (have_XT && screen_base) {
 	    _nc_warning("screen's \"screen\" entries should not have XT set");
 	} else if (have_XT) {
-	    char *s;
+	    const char *s;
 
 	    if (!have_kmouse && is_screen) {
 		if (VALID_STRING(key_mouse)) {
@@ -1898,7 +1898,7 @@ static struct user_table_entry const *
 lookup_user_capability(const char *name)
 {
     struct user_table_entry const *result = NULL;
-    if (*name != 'k') {
+    if (!is_fkey(name)) {
 	result = _nc_find_user_entry(name);
     }
     return result;
@@ -2193,7 +2193,7 @@ check_delays(const TERMTYPE2 *tp, const char *name, const char *value)
 		if ((rc != 2) || (mark != NULL && (check_c != *mark)) || mixed) {
 		    _nc_warning("syntax error in %s delay '%.*s'", name,
 				(int) (q - base), base);
-		} else if (*name == 'k') {
+		} else if (is_fkey(name)) {
 		    _nc_warning("function-key %s has delay", name);
 		} else if (proportional && !line_capability(name)) {
 		    _nc_warning("non-line capability using proportional delay: %s", name);
@@ -2456,7 +2456,7 @@ check_infotocap(TERMTYPE2 *tp, int i, const char *value)
 	bool embedded;
 	int params = ((i < (int) SIZEOF(parametrized))
 		      ? parametrized[i]
-		      : ((*value == 'k')
+		      : (is_fkey(value)
 			 ? 0
 			 : has_params(value, FALSE)));
 
@@ -2720,7 +2720,7 @@ get_fkey_list(TERMTYPE2 *tp)
 #if NCURSES_XNAMES
     for (j = STRCOUNT; j < NUM_STRINGS(tp); ++j) {
 	const char *name = ExtStrname(tp, (int) j, strnames);
-	if (*name == 'k') {
+	if (is_fkey(name)) {
 	    result[used].keycode = -1;
 	    result[used].name = name;
 	    result[used].value = tp->Strings[j];
@@ -2998,7 +2998,7 @@ check_user_capability_type(const char *name, int actual)
 			name_of_type(actual),
 			name_of_type(expected)
 		);
-	} else if (*name != 'k') {
+	} else if (!is_fkey(name)) {
 	    _nc_warning("undocumented %s capability %s",
 			name_of_type(actual),
 			name);
@@ -3272,7 +3272,7 @@ check_termtype(TERMTYPE2 *tp, bool literal)
     ANDMISSING(clear_all_tabs, set_tab);
 
     if (PRESENT(set_attributes)) {
-	char *zero = NULL;
+	const char *zero = NULL;
 
 	_nc_tparm_err = 0;
 	if (PRESENT(exit_attribute_mode)) {

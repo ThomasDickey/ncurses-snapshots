@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4416 2026/01/31 21:41:20 tom Exp $
+-- $Id: NEWS,v 1.4418 2026/02/07 22:08:22 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,13 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260207
+	+ improve infocmp "-i" option, to make it easier to see unrecognized
+	  escape sequences in initialization strings, as well as extending the
+	  tables.
+	+ correct DECKPNM in vt220 is2 (Aaro Koskinen)
+	+ correct DECSTR in some Wyse terminfo entries -TD
 
 20260131
 	+ add putty+3keys -TD
