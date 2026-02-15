@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1223 $
-#	$Date: 2026/02/07 21:14:29 $
+#	$Revision: 1.1225 $
+#	$Date: 2026/02/15 00:49:50 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8777,12 +8777,12 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
 	     yzz{{||}}~~,
 	blink=\E[5m, bold=\E[1m, cub1=^H, cud1=\n,
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\EM, cvvis=\E[34l,
-	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, el1=\E[1K, flash=\Eg,
-	ich=\E[%p1%d@, indn=\E[%p1%dS, is2=\E)0, kbs=^?, kcbt=\E[Z,
-	khome=\E[1~, kmous=\E[M, nel=\EE, rev=\E[7m, ri=\EM,
-	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[23m,
-	rs2=\Ec\E[?1000l\E[?25h,
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, cvvis=\E[34l,
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, ech=\E[%p1%dX,
+	el1=\E[1K, flash=\Eg, ich=\E[%p1%d@, indn=\E[%p1%dS,
+	is2=\E)0, kbs=^?, kcbt=\E[Z, khome=\E[1~, kmous=\E[M,
+	nel=\EE, rev=\E[7m, ri=\EM, rmir=\E[4l, rmkx=\E[?1l\E>,
+	rmso=\E[23m, rs2=\Ec\E[?1000l\E[?25h,
 	sgr=\E[0%?%p6%t;1%;%?%p1%t;3%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;
 	    5%;%?%p5%t;2%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smir=\E[4h, smkx=\E[?1h\E=, smso=\E[3m,
@@ -8860,6 +8860,8 @@ screen.mlterm-256color|GNU Screen with mlterm using 256 colors,
 
 # ======================================================================
 
+# ======================================================================
+
 # Read the fine man page:
 #       When  screen  tries  to  figure  out  a  terminal name for
 #       itself, it first looks for an entry named "screen.<term>",
@@ -8898,15 +8900,27 @@ screen+italics|screen cannot support italics,
 #	xterm (-xfree86 or -r6) does not normally support kIC, kNXT and kPRV
 #	since the default translations override the built-in keycode
 #	translation.  They are suppressed here to show what is tested by tack.
-screen.xterm-xfree86|screen.xterm-new|screen customized for modern xterm,
-	bce@, bw,
-	invis@, kIC@, kNXT@, kPRV@, meml@, memu@, rep@,
+#
+# The "83" in the secondary response (rv) is the decimal value of 'S'.
+screen4.xterm-new|screen.xterm-xfree86|screen4 customized for modern xterm,
+	bce@, bw, km@, npc,
+	U8#1,
+	dim=\E[2m, invis@, kIC@, kNXT@, kPRV@, kcbt=\E[Z, meml@, memu@,
+	nel=\EE, rep@,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;%?%p4%t;5%;%?%p5%t;2%;m,
-	E3@, use=screen+italics, use=screen+fkeys,
+	E3@, RV=\E[>c, rv=\E\\[>83;4[0-9][0-9][0-9];0c,
+	use=screen+italics, use=screen+fkeys,
 	use=xterm+x11mouse, use=ecma+index, use=ansi+rep,
-	use=ecma+strikeout, use=xterm+pcfkeys,
-	use=xterm+nofkeys,
+	use=xterm+pcfkeys, use=xterm+focus, use=xterm+sm+1006,
+	use=xterm+keypad, use=xterm-basic,
+
+screen5.xterm-new|screen5 customized for modern xterm,
+	dim=\E[2m, RV=\E[>c, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
+	use=ecma+italics, use=screen.xterm-new,
+
+screen.xterm-new|screen customized for modern xterm,
+	use=screen4.xterm-new,
 
 # Don't use this, because not everyone has "screen.xterm-new":
 #:screen.xterm|screen for modern xterm,
@@ -9032,8 +9046,10 @@ screen4|VT 100/ANSI X3.64 virtual terminal (4.x),
 # This version has limited support for direct-colors, but does not use the
 # outer terminal's $TERM in deciding if or how to apply this.
 screen5|VT 100/ANSI X3.64 virtual terminal (5.x),
+	dim=\E[2m,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
+	RV=\E[>c, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
 	use=ecma+standout, use=ecma+italics, use=ecma+index,
 	use=screen-base,
 
@@ -13378,8 +13394,8 @@ wy75|wyse75|Wyse 75,
 	knp=\E[6~, kpp=\E[5~, kprt=\E[?5i, kslt=\E[4~, mc0=\E[0i,
 	rc=\E8, rev=\E[1t\E[7m, ri=\EM$<2>, rmacs=^O, rmam=\E[?7l,
 	rmir=\E[4l, rmkx=\E>, rmso=\E[m, rmul=\E[m,
-	rs1=\E[13l\E[3l\E[!p, rs2=\E[35h\E[?3l$<80>, rs3=\E[?5l,
-	sc=\E7,
+	rs1=\E[13l\E[3l\E[!p, rs2=\E[35h\E[?3l$<80>,
+	rs3=\E[?5l, sc=\E7,
 	sgr=%?%p5%t\E[0t%;%?%p3%p1%|%t\E[1t%;%?%p2%t\E[2t%;%?%p4%t
 	    \E[3t%;%?%p1%p2%p3%p4%p5%|%|%|%|%t\E[7m%e\E[m%;%?%p9%t
 	    \016%e\017%;,
@@ -28122,5 +28138,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2026-02-07
 #	+ correct DECKPNM in vt220 is2 (Aaro Koskinen)
 #	+ correct DECSTR in some Wyse terminfo entries -TD
+#
+# 2026-02-14
+#	+ add ech to screen terminfo (Debian #707308).
+#	+ review/update screen5, adding screen5.xterm-new and
+#	  screen4.xterm-new -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
