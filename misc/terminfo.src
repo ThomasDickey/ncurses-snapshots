@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1225 $
-#	$Date: 2026/02/15 00:49:50 $
+#	$Revision: 1.1231 $
+#	$Date: 2026/02/22 01:41:53 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3768,26 +3768,24 @@ iTerm2.app|iterm2|terminal emulator for Mac OS X,
 	kb2@, kc1@, kc3@, kent@, kf13=\E[1;2P, kf14=\E[1;2Q,
 	kf15=\E[1;2R, kf16=\E[1;2S, kf17=\E[15;2~, kf18=\E[17;2~,
 	kf19=\E[18;2~, kf20=\E[19;2~, kf21=\E[20;2~,
-	kf22=\E[21;2~, kf23=\E[23;2~, kf24=\E[24;2~,
-	kind=\E[1;2B, kri=\E[1;2A, nel=\EE, op=\E[39;49m,
-	rs2=\E[!p\E[?3;4l\E[4l\E>\E[?1000l,
+	kf22=\E[21;2~, kf23=\E[23;2~, kf24=\E[24;2~, nel=\EE,
+	op=\E[39;49m, rs2=\E[!p\E[?3;4l\E[4l\E>\E[?1000l,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
 	Smulx=\E[4:%p1%dm, kDN3=\E\E[B, kDN4=\E[1;10B,
-	kDN5=\E[1;5B, kDN6=\E[1;6B, kEND3=\E[1;9F,
-	kEND4=\E[1;10F, kEND6=\E[1;6F, kEND7=\E[1;13F,
-	kEND8=\E[1;14F, kHOM3=\E[1;9H, kHOM4=\E[1;10H,
-	kHOM6=\E[1;6H, kHOM7=\E[1;13H, kHOM8=\E[1;14H,
-	kLFT3=\E\E[D, kLFT4=\E[1;10D, kLFT5=\E[1;5D,
-	kLFT6=\E[1;6D, kNXT3=\E\E[6~, kPRV3=\E\E[5~,
-	kRIT3=\E\E[C, kRIT4=\E[1;10C, kRIT5=\E[1;5C,
-	kRIT6=\E[1;6C, kUP3=\E\E[A, kUP4=\E[1;10A, kUP5=\E[1;5A,
-	kUP6=\E[1;6A, rv=\E\\[>64;[1-6][0-9];0c, smxx=\E[9m,
-	xr=\EP>\\|iTerm2 ([1-9][.0-9])\E\\\\,
-	use=ecma+underline, use=ecma+standout, use=ecma+index,
-	use=report+version, use=report+da2,
-	use=xterm+alt+title, use=ecma+italics, use=iterm,
-	use=bracketed+paste, use=kitty+setal,
+	kEND3=\E[1;9F, kEND4=\E[1;10F, kEND6=\E[1;6F,
+	kEND7=\E[1;13F, kEND8=\E[1;14F, kHOM3=\E[1;9H,
+	kHOM4=\E[1;10H, kHOM6=\E[1;6H, kHOM7=\E[1;13H,
+	kHOM8=\E[1;14H, kLFT3=\E\E[D, kLFT4=\E[1;10D,
+	kNXT3=\E\E[6~, kPRV3=\E\E[5~, kRIT3=\E\E[C,
+	kRIT4=\E[1;10C, kUP3=\E\E[A, kUP4=\E[1;10A, kpDIV=\Eo,
+	kpMUL=\Ej, kpNUM=\E, kpSUB=\Em,
+	rv=\E\\[>64;[1-6][0-9];0c,
+	xr=\EP>\\|iTerm2 ([1-9][.0-9])\E\\\\, use=xterm+pcc2,
+	use=ecma+underline, use=ecma+strikeout,
+	use=ecma+standout, use=ecma+index, use=report+version,
+	use=report+da2, use=xterm+alt+title, use=ecma+italics,
+	use=iterm, use=bracketed+paste, use=kitty+setal,
 	use=ecma+overline,
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
@@ -6566,6 +6564,19 @@ kvt|KDE terminal,
 # simplify this entry (and point out why konsole isn't xterm), we base this on
 # xterm-r6.  The default keyboard appears to be 'linux'.
 #
+# Besides hardcoding $TERM (later 'xterm-256color', which is just as
+# inaccurate) the developer changed the control sequences in January 2000 to
+# pretend that it is xterm patch #115 (1999/9/18).  The changelog for that
+# stated (with the "recognition" applying to this detail):
+#	 7 Jan 2000
+#	- added unicode support. (see README.unicode)
+#	- added arbitrary long history buffers.
+#	- code adjustments to the provide linux console font.
+#	- added font directory to simply installation.
+#	- added recognition for ESC[>c
+#	- changed TERM=xterm-color
+# That "recognition" is unchanged more than 25 years later.
+#
 # Notes:
 # a) konsole implements several features from XFree86 xterm, though none of
 #    that is documented - except of course in its source code - apparently
@@ -6612,6 +6623,14 @@ kvt|KDE terminal,
 #
 # Re-enable "bel", since it is latent in the source-code even though KDE config
 # often hides the feature (2020/5/30)
+#
+# Updated for konsole 25.12.0 (late 2025):
+#    an update in 2022 changed the primary DA to assert that it is a VT220
+#    with 132-column and sixel support.  The former is untrue, and the
+#    latter is partly true (some images do not display).
+#
+#    numeric keypad does neither normal or application mode.
+#
 konsole-base|KDE console window (common),
 	bce, km@, npc, XT,
 	ncv@,
@@ -8905,19 +8924,18 @@ screen+italics|screen cannot support italics,
 screen4.xterm-new|screen.xterm-xfree86|screen4 customized for modern xterm,
 	bce@, bw, km@, npc,
 	U8#1,
-	dim=\E[2m, invis@, kIC@, kNXT@, kPRV@, kcbt=\E[Z, meml@, memu@,
-	nel=\EE, rep@,
+	invis@, kIC@, kNXT@, kPRV@, kcbt=\E[Z, meml@, memu@, nel=\EE, rep@,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;%?%p4%t;5%;%?%p5%t;2%;m,
-	E3@, RV=\E[>c, rv=\E\\[>83;4[0-9][0-9][0-9];0c,
+	E3@, rv=\E\\[>83;4[0-9][0-9][0-9];0c, use=report+da2,
 	use=screen+italics, use=screen+fkeys,
 	use=xterm+x11mouse, use=ecma+index, use=ansi+rep,
 	use=xterm+pcfkeys, use=xterm+focus, use=xterm+sm+1006,
 	use=xterm+keypad, use=xterm-basic,
 
 screen5.xterm-new|screen5 customized for modern xterm,
-	dim=\E[2m, RV=\E[>c, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
-	use=ecma+italics, use=screen.xterm-new,
+	rv=\E\\[>83;5[0-9][0-9][0-9];0c, use=ecma+italics,
+	use=screen.xterm-new,
 
 screen.xterm-new|screen customized for modern xterm,
 	use=screen4.xterm-new,
@@ -9029,19 +9047,27 @@ screen3|VT 100/ANSI X3.64 virtual terminal (old 3.x),
 	use=ansi+cup, use=ansi+erase, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=vt100+pf1-pf4,
 
-# screen 4.0 was released 2003-07-21, and as of March 2019, its terminfo file
-# was last updated in 2009 to include 256-color support.  The most recent
-# release is 4.6.2 (October 2017).
+# screen 4.0 was released 2003-07-21.  The most recent release of screen4 was
+# 4.9.1 (August 2013).
+#
+# Its terminfo file was last updated in 2009 to include 256-color support.
+#
+# Some additional features could be added to this entry, but the most useful
+# entries are the ones which are customized for different terminals, e.g.,
+# screen.xterm-new -- but see the discussion in
+#	https://invisible-island.net/gnu-patches/
 screen4|VT 100/ANSI X3.64 virtual terminal (4.x),
 	use=ecma+index, use=screen-base,
 
-# screen 5.0 was released in August 2024.  As of May 2025, few systems use it.
+# screen 5.0 was released in August 2024.  As of February 2026, a few systems
+# use it, but not Debian, Ubuntu or OpenSUSE.
 #
 #	https://savannah.gnu.org/bugs/?36676
 #
 # mentions a change to implement italics (implemented 2016-11-05, merged
-# 2017-07-09), this may do away with the longstanding use of SGR 3 for
-# standout, interpreting it as italics.
+# 2017-07-09), to do away with the longstanding use of SGR 3 for standout,
+# interpreting it as italics.  Because that changes a feature more than thirty
+# years old, it will take several years for the change to work reliably.
 #
 # This version has limited support for direct-colors, but does not use the
 # outer terminal's $TERM in deciding if or how to apply this.
@@ -13253,13 +13279,11 @@ wy99f|wy99fgt|wy-99fgt|Wyse WY-99GT (int'l PC keyboard),
 	    \^0\E`1\E`4\Ee.\E`:\Ee1\EG0\E(\Ed/\Ee4\Ed*\EO\E`I\Er\Ee"
 	    \EcD\024,
 	ka1=^^, ka3=\EJ, kbs=^H, kc1=\ET, kc3=\EK, kcbt=\EI, kcub1=^H,
-	kcud1=\n, kcuf1=^L, kcuu1=^K, kf1=^A@\r, kf10=^AI\r,
-	kf11=^AJ\r, kf12=^AK\r, kf13=^A`\r, kf14=^Aa\r, kf15=^Ab\r,
-	kf16=^Ac\r, kf17=^Ad\r, kf18=^Ae\r, kf19=^Af\r, kf2=^AA\r,
-	kf20=^Ag\r, kf21=^Ah\r, kf22=^Ai\r, kf23=^Aj\r, kf24=^Ak\r,
-	kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r,
-	kf8=^AG\r, kf9=^AH\r, kprt=\EP, mc0=\EP, mc4=^T, mc5=\Ed#,
-	nel=^_, prot=\E), rev=\EG4, ri=\Ej, rmacs=\EcD, rmam=\Ed.,
+	kcud1=\n, kcuf1=^L, kcuu1=^K, kf12=^AK\r, kf13=^A`\r,
+	kf14=^Aa\r, kf15=^Ab\r, kf16=^Ac\r, kf17=^Ad\r, kf18=^Ae\r,
+	kf19=^Af\r, kf20=^Ag\r, kf21=^Ah\r, kf22=^Ai\r, kf23=^Aj\r,
+	kf24=^Ak\r, kprt=\EP, mc0=\EP, mc4=^T, mc5=\Ed#, nel=^_,
+	prot=\E), rev=\EG4, ri=\Ej, rmacs=\EcD, rmam=\Ed.,
 	rmcup=\Ec21\Ec31, rmir=\Er, rmso=\EG0, rmxon=\Ec20\Ec30,
 	rs2=\Eu\E~4\Ee6\EC\EDF\Ec21\Ec31\Ec62\Ec72\Ee;\016\E'\EeL\E`
 	    9\E\^0\E`1\E`4\Ee.\E`:\Ee)\Ew\EwG\Ew0\Ee1\EG0\E(\Ed/
@@ -13268,7 +13292,8 @@ wy99f|wy99fgt|wy-99fgt|Wyse WY-99GT (int'l PC keyboard),
 	    %{2}%+%;%?%p5%t%{64}%+%;%?%p7%t%{1}%+%;%c%?%p8%t\E)%;%?
 	    %p9%t\EcE%e\EcD%;,
 	sgr0=\E(\EG0, smacs=\EcE, smam=\Ed/, smcup=\Ec20\Ec30,
-	smir=\Eq, smso=\EG4, smxon=\Ec21\Ec31, use=wyse+sl,
+	smir=\Eq, smso=\EG4, smxon=\Ec21\Ec31, use=tvi920b+fn,
+	use=wyse+sl,
 
 # This is the american terminal. Here tabs work.
 # From: Francesco Potorti` <F.Potorti@cnuce.cnr.it>, 24 Aug 1998
@@ -20236,28 +20261,24 @@ ncr7901|NCR 7901 model,
 # recognized:  if you type in "ESC !", the next (third) character is not
 # echoed, showing that the terminal was actually waiting for a parameter!
 ndr9500|nd9500|Newbury Data 9500,
-	am, bw, hs, mc5i, mir, msgr, ul, xon,
+	am, bw, hs, mc5i, mir, ul, xon,
 	cols#80, lines#24, wsl#79,
 	acsc=jDkClBmAnIqKtMuLvOwNxJ, bel=^G, cbt=\EI, civis=\E.0,
 	clear=\E;, cnorm=\E.1, cr=\r, cub1=^H, cud1=^V, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW,
-	dim=\E), dl1=\ER, dsl=\Eh, ed=\EY, el=\ET,
-	flash=\Eb$<50/>\Ed, fsl=\r, home=^^, ht=^I, hts=\E1,
-	ich1=\EQ, il1=\EE, ind=\n, is2=\Ew\E'\EDF\El\Er\EO,
-	kDC=\Er, kDL=\EO, kEOL=\Et, kIC=\Eq, kcbt=\EI, kclr=^Z,
-	kcub1=^H, kcud1=^V, kcuf1=^L, kcuu1=^K, kdch1=\EW, kdl1=\ER,
-	ked=\EY, kel=\ET, kent=\r, kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r,
-	kf12=^A`\r, kf13=^Aa\r, kf14=^Ab\r, kf15=^Ac\r, kf16=^Ad\r,
-	kf17=^Ae\r, kf18=^Af\r, kf19=^Ag\r, kf2=^AA\r, kf20=^Ah\r,
-	kf21=^Ai\r, kf22=^Aj\r, kf3=^AB\r, kf4=^AC\r, kf5=^AD\r,
-	kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, khome=^^,
-	kich1=\EQ, kil1=\EE, kprt=\EP, mc4=\Ea, mc5=\E`, nel=^_,
-	pfloc=\E|%{48}%p1%+%c2%p2%s\031,
+	dl1=\ER, dsl=\Eh, ed=\EY, el=\ET, flash=\Eb$<50/>\Ed, fsl=\r,
+	home=^^, ht=^I, hts=\E1, ich1=\EQ, il1=\EE, ind=\n,
+	is2=\Ew\E'\EDF\El\Er\EO, kDC=\Er, kDL=\EO, kEOL=\Et,
+	kIC=\Eq, kcbt=\EI, kclr=^Z, kcub1=^H, kcud1=^V, kcuf1=^L,
+	kcuu1=^K, kdch1=\EW, kdl1=\ER, ked=\EY, kel=\ET, kent=\r,
+	khome=^^, kich1=\EQ, kil1=\EE, kprt=\EP, mc4=\Ea, mc5=\E`,
+	nel=^_, pfloc=\E|%{48}%p1%+%c2%p2%s\031,
 	pfx=\E|%{48}%p1%+%c1%p2%s\031, prot=\E), ri=\Ej,
-	rmacs=\E%%, rmir=\Er, rmso=\E(, rmxon=^N,
+	rmacs=\E%%, rmir=\Er, rmxon=^N,
 	sgr=\EG0\E%%%%\E(%?%p1%p5%p8%|%|%t\E)%;%?%p9%t\E$%;,
-	sgr0=\EG0\E%%\E(, smacs=\E$, smir=\Eq, smso=\E), smxon=^O,
-	tbc=\E3, tsl=\Eg\Ef\011%p1%{32}%+%c, .kbs=^H,
+	sgr0=\EG0\E%%\E(, smacs=\E$, smir=\Eq, smxon=^O, tbc=\E3,
+	tsl=\Eg\Ef\011%p1%{32}%+%c, .kbs=^H, use=tvi912b+dim,
+	use=tvi920b+fn,
 
 ndr9500-nl|NDR 9500 with no status line,
 	hs@,
@@ -28143,5 +28164,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add ech to screen terminfo (Debian #707308).
 #	+ review/update screen5, adding screen5.xterm-new and
 #	  screen4.xterm-new -TD
+#
+# 2026-02-21
+#	+ correct strikeout for iterm2 -TD
+#	+ add some xterm-style modified special-keys to iterm2 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

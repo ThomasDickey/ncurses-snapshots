@@ -1,7 +1,7 @@
 Summary: Curses library with POSIX thread support.
 Name: ncursest6
 Version: 6.6
-Release: 20260214
+Release: 20260221
 License: X11 License Distribution Modification Variant
 Group: Development/Libraries
 Source: ncurses-%{version}-%{release}.tgz
@@ -142,8 +142,8 @@ exit 0
 
 %changelog
 
-* Sat Feb 14 2026 Thomas E. Dickey
-- testing ncurses 6.6-20260214
+* Sat Feb 21 2026 Thomas E. Dickey
+- testing ncurses 6.6-20260221
 
 * Tue Dec 24 2019 Thomas Dickey
 - drop custom CC_NORMAL warning flags because setting CFLAGS interferes with

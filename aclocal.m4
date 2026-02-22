@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1152 2026/01/31 14:07:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.1156 2026/02/22 01:36:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -7301,7 +7301,7 @@ AC_DEFUN([CF_PROG_TBL],[
 AC_PATH_PROG(NROFF_TBL,tbl)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_REGEX version: 20 updated: 2025/12/24 12:27:29
+dnl CF_REGEX version: 21 updated: 2026/02/21 20:35:24
 dnl --------
 dnl Attempt to determine if we've got one of the flavors of regular-expression
 dnl code that we can support.
@@ -7312,17 +7312,23 @@ cf_regex_func=no
 cf_regex_libs=
 case "$host_os" in
 (mingw*)
-	# -lsystre -ltre -lintl -liconv
-	AC_CHECK_LIB(systre,regcomp,[
-		AC_CHECK_LIB(iconv,libiconv_open,[CF_ADD_LIB(iconv)])
-		AC_CHECK_LIB(intl,libintl_gettext,[CF_ADD_LIB(intl)])
-		AC_CHECK_LIB(tre,tre_regcomp,[CF_ADD_LIB(tre)])
-		CF_ADD_LIB(systre)
-		cf_regex_func=regcomp
-	],[
-		AC_CHECK_LIB(gnurx,regcomp,[
-			CF_ADD_LIB(gnurx)
-			cf_regex_func=regcomp])
+	AC_CHECK_FUNC(regcomp,[cf_regex_func=regcomp],[
+		cf_regex_libs="systre gnurx"
+		for cf_regex_lib in $cf_regex_libs
+		do
+			AC_CHECK_LIB($cf_regex_lib,regcomp,[cf_regex_func=regcomp; break])
+		done
+		if test $cf_regex_func != no; then
+			case "$cf_regex_lib" in
+			(systre)
+				# -lsystre -ltre -lintl -liconv
+				AC_CHECK_LIB(iconv,libiconv_open,[CF_ADD_LIB(iconv)])
+				AC_CHECK_LIB(intl,libintl_gettext,[CF_ADD_LIB(intl)])
+				AC_CHECK_LIB(tre,tre_regcomp,[CF_ADD_LIB(tre)])
+				;;
+			esac
+			CF_ADD_LIB($cf_regex_lib)
+		fi
 	])
 	;;
 (*)
@@ -9773,7 +9779,7 @@ AC_ARG_WITH($2-path,
 	])
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PCRE2 version: 6 updated: 2021/08/11 20:35:34
+dnl CF_WITH_PCRE2 version: 7 updated: 2026/02/21 20:35:24
 dnl -------------
 dnl Add PCRE2 (Perl-compatible regular expressions v2) to the build if it is
 dnl available and the user requests it.  Assume the application will otherwise
@@ -9786,13 +9792,15 @@ AC_REQUIRE([CF_PKG_CONFIG])
 
 AC_MSG_CHECKING(if you want to use PCRE2 for regular-expressions)
 AC_ARG_WITH(pcre2,
-	[  --with-pcre2            use PCRE2 for regular-expressions])
+	[  --with-pcre2=[[XXX]]    use PCRE2 package XXX for regular-expressions])
 test -z "$with_pcre2" && with_pcre2=no
 AC_MSG_RESULT($with_pcre2)
 
 if test "x$with_pcre2" != xno ; then
+	cf_list_pcre2="libpcre2 libpcre2-posix libpcre"
+	test "x$with_pcre2" != xyes && cf_list_pcre2="$with_pcre2 $cf_lib_pcre2"
 	cf_with_pcre2_ok=no
-	for cf_with_pcre2 in libpcre2 libpcre2-posix libpcre
+	for cf_with_pcre2 in $cf_list_pcre2
 	do
 		CF_TRY_PKG_CONFIG($cf_with_pcre2,[cf_with_pcre2_ok=yes; break])
 	done

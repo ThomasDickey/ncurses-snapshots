@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2021,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.36 2025/03/01 15:02:06 tom Exp $ */
+/* $Id: nc_alloc.h,v 1.37 2026/02/21 20:41:13 tom Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
@@ -120,15 +120,11 @@ extern NCURSES_EXPORT(void) _nc_leaks_tinfo(void);
 
 /* provide for using VLAs if supported, otherwise assume alloca() */
 
-#ifndef __STDC_VERSION__
-#define __STDC_VERSION__ 0
-#endif
-
 #ifndef __STDC_NO_VLA__
 #define __STDC_NO_VLA__ 1
 #endif
 
-#if __STDC_VERSION__ >= 19901L && (__STDC_VERSION__ < 201000L || !__STDC_NO_VLA__)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 19901L && (__STDC_VERSION__ < 201000L || !__STDC_NO_VLA__))
 #define MakeArray(name,type,count) type name[count]
 #else
 #if HAVE_ALLOCA_H
