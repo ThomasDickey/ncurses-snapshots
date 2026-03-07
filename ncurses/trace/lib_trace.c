@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.109 2024/12/07 21:02:00 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.110 2026/03/07 18:00:16 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -181,7 +181,6 @@ curses_trace(unsigned tracelevel)
 	    }
 	}
 	SPECIAL_MASK(TRACE_MAXIMUM);
-	else
 	SPECIAL_MASK(TRACE_ORDINARY);
 
 	if (tracelevel > TRACE_MAXIMUM) {

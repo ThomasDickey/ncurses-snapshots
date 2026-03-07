@@ -31,7 +31,7 @@
  *  Author: Thomas E. Dickey                    1997-on                     *
  ****************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.64 2026/02/07 13:27:57 tom Exp $
+ * $Id: progs.priv.h,v 1.65 2026/03/04 21:16:25 tom Exp $
  *
  *	progs.priv.h
  *
@@ -135,5 +135,7 @@ extern int optind;
 #ifndef CUR
 #define CUR ((TERMTYPE *)(cur_term))->
 #endif
+
+#define isTerminfo(f)   ((f) == F_TERMINFO || (f) == F_VARIABLE)
 
 #endif /* PROGS_PRIV_H */

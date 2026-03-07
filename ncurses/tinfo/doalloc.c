@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2002,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,9 +40,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: doalloc.c,v 1.15 2024/12/07 20:05:08 tom Exp $")
+MODULE_ID("$Id: doalloc.c,v 1.16 2026/03/07 20:42:12 tom Exp $")
 
-void *
+NCURSES_EXPORT(void *)
 _nc_doalloc(void *oldp, size_t amount)
 {
     void *newp;

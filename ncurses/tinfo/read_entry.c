@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.175 2025/01/11 23:52:18 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.176 2026/03/07 17:49:54 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -517,13 +517,8 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 				    _nc_visbuf(ptr->Strings[i + STRCOUNT])));
 	    }
 	    TR(TRACE_DATABASE, ("Check table-size: %d/%d", check, ext_str_usage));
-#if 0
-	    /*
-	     * Phasing in a proper check will be done "later".
-	     */
 	    if (check != ext_str_usage)
 		returnDB(TGETENT_NO);
-#endif
 	}
 
 	if (need) {

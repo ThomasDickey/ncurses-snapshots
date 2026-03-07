@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.221 2026/03/01 21:45:32 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.222 2026/03/07 11:41:32 tom Exp $")
 
 #include <tic.h>
 
@@ -171,8 +171,11 @@ make an error
 
 #define ValidEvent(ep) ((ep)->id != INVALID_EVENT)
 #define Invalidate(ep) (ep)->id = INVALID_EVENT
+
+#ifdef TRACE
 static const MEVENT invalid_event =
 {INVALID_EVENT, 0, 0, 0, 0};
+#endif
 
 #if USE_GPM_SUPPORT
 

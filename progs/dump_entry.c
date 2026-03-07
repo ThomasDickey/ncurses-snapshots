@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.200 2026/02/07 13:27:57 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.201 2026/03/04 21:16:25 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -95,7 +95,7 @@ static int indent = 8;
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 #endif
 
-#define isObsolete(f,n) ((f == F_TERMINFO || f == F_VARIABLE) && (sortmode != S_VARIABLE) && OBSOLETE(n))
+#define isObsolete(f,n) (isTerminfo(f) && (sortmode != S_VARIABLE) && OBSOLETE(n))
 
 #if NCURSES_XNAMES
 #define BoolIndirect(j) ((j >= BOOLCOUNT) ? (j) : ((sortmode == S_NOSORT) ? j : bool_indirect[j]))
@@ -1167,14 +1167,12 @@ fmt_entry(TERMTYPE2 *tterm,
 		len += (int) strlen(capability) + 1;
 	    } else {
 		char *src = _nc_tic_expand(capability,
-					   outform == F_TERMINFO, numbers);
+					   isTerminfo(outform), numbers);
 
 		strcpy_DYN(&tmpbuf, NULL);
 		strcpy_DYN(&tmpbuf, name);
 		strcpy_DYN(&tmpbuf, "=");
-		if (pretty
-		    && (outform == F_TERMINFO
-			|| outform == F_VARIABLE)) {
+		if (pretty && isTerminfo(outform)) {
 		    fmt_complex(tterm, name, src, 1);
 		} else {
 		    strcpy_DYN(&tmpbuf, src);
@@ -1228,7 +1226,7 @@ fmt_entry(TERMTYPE2 *tterm,
 
 	    if (box_ok) {
 		char *tmp = _nc_tic_expand(boxchars,
-					   (outform == F_TERMINFO),
+					   isTerminfo(outform),
 					   numbers);
 		_nc_STRCPY(buffer, "box1=", sizeof(buffer));
 		while (*tmp != '\0') {

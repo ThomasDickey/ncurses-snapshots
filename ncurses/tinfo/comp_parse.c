@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.142 2025/12/31 11:46:54 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.143 2026/03/07 11:42:23 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -276,6 +276,8 @@ _nc_read_entry_source(FILE *fp, char *buf,
 #ifdef TRACE
     else if (!immediate)
 	DEBUG(2, ("no entries parsed"));
+#else
+    (void) immediate;
 #endif
 
     _nc_suppress_warnings = oldsuppress;

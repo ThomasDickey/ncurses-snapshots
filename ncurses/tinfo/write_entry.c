@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.144 2025/12/28 00:33:30 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.145 2026/03/06 09:06:49 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -132,7 +132,8 @@ check_writeable(int code)
     const char *s = NULL;
 
     if (code == 0 || (s = (strchr) (dirnames, code)) == NULL) {
-	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"", UChar(code));
+	_nc_err_abort("Illegal terminfo subdirectory \"" LEAF_FMT "\"",
+		      UChar(code));
     } else if (!verified[s - dirnames]) {
 	char dir[sizeof(LEAF_FMT)];
 	_nc_SPRINTF(dir, _nc_SLIMIT(sizeof(dir)) LEAF_FMT, UChar(code));

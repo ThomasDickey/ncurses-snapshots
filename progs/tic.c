@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.338 2026/02/07 22:22:45 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.339 2026/03/07 23:34:12 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -3191,6 +3191,13 @@ check_user_6789(const TERMTYPE2 *tp)
 #define check_user_6789(tp)	/* nothing */
 #endif
 
+#define PAIRED_USER_STRS(set, reset) \
+	do {  \
+	    char *set = tigetstr(#set);  \
+	    char *reset = tigetstr(#reset);  \
+	    PAIRED(set,reset);  \
+	} while (0)
+
 /* other sanity-checks (things that we don't want in the normal
  * logic that reads a terminfo entry)
  */
@@ -3352,6 +3359,15 @@ check_termtype(TERMTYPE2 *tp, bool literal)
 	      ("cannot write to lower-right"));
     }
 #endif
+    /*
+     * These are defined in Caps-ncurses
+     */
+    PAIRED_USER_STRS(Smol, Rmol);
+    PAIRED_USER_STRS(smxx, rmxx);
+    PAIRED_USER_STRS(BE, BD);
+    PAIRED_USER_STRS(PS, PE);
+    PAIRED_USER_STRS(RV, rv);
+    PAIRED_USER_STRS(XR, xr);
 
     /*
      * Some standard applications (e.g., vi) and some non-curses

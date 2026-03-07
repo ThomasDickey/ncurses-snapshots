@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.179 2026/02/07 22:18:36 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.180 2026/03/04 21:16:45 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -349,7 +349,7 @@ entryeq(const TERMTYPE2 *t1, const TERMTYPE2 *t2)
     return (TRUE);
 }
 
-#define TIC_EXPAND(result) _nc_tic_expand(result, outform==F_TERMINFO, numbers)
+#define TIC_EXPAND(result) _nc_tic_expand(result, isTerminfo(outform), numbers)
 
 static void
 print_uses(const ENTRY * ep, FILE *fp)
