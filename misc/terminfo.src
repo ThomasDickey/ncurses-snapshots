@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1231 $
-#	$Date: 2026/02/22 01:41:53 $
+#	$Revision: 1.1232 $
+#	$Date: 2026/03/14 22:37:57 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8270,7 +8270,7 @@ pangoterm|terminal using libvterm,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smir=\E[4h, smkx=\E[?1h,
-	rv=\E\\[>0;100;0c, use=ecma+underline,
+	RV=\E[>c, rv=\E\\[>0;100;0c, use=ecma+underline,
 	use=ecma+standout, use=ecma+index, use=ansi+rep,
 	use=ecma+strikeout, use=xterm+pcfkeys,
 	use=bracketed+paste, use=vt420+lrmm, use=xterm+focus,
@@ -8369,7 +8369,7 @@ wezterm|Wez's Terminal Emulator,
 	rs1=\Ec\E]104\007, rs2=\E[!p\E[?3;4l\E[4l\E>,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
-	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=, Smol=\E[53m,
+	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=,
 	Smulx=\E[4:%p1%dm, rv=\E\\[>1;277;0c,
 	xr=\EP>\\|WezTerm ([0-9]+)(-[[:xdigit:]]+)+\E\\\\,
 	use=ecma+underline, use=ecma+standout,
@@ -8377,9 +8377,9 @@ wezterm|Wez's Terminal Emulator,
 	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
 	use=ansi+rep, use=ansi+sgrdim, use=bracketed+paste,
-	use=ecma+index, use=ecma+italics, use=ecma+strikeout,
-	use=report+da2, use=report+version, use=vt220+cvis,
-	use=xterm+256color2, use=xterm+acs,
+	use=ecma+index, use=ecma+italics, use=ecma+overline,
+	use=ecma+strikeout, use=report+da2, use=report+version,
+	use=vt220+cvis, use=xterm+256color2, use=xterm+acs,
 	use=xterm+alt+title, use=xterm+focus, use=xterm+pcc2,
 	use=xterm+pce2, use=xterm+pcf2, use=xterm+sl-alt,
 	use=xterm+sm+1006, use=xterm+tmux,
@@ -28168,5 +28168,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2026-02-21
 #	+ correct strikeout for iterm2 -TD
 #	+ add some xterm-style modified special-keys to iterm2 -TD
+#
+# 2026-03-14
+#	+ fixes for pangoterm and wezterm, from tic warnings -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4430 2026/03/07 23:35:58 tom Exp $
+-- $Id: NEWS,v 1.4434 2026/03/14 22:39:14 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260314
+	+ fixes for pangoterm and wezterm, from tic warnings -TD
+	+ improve man page description of getmaxyx (report by Lucas Veltkamp).
+	+ add configure option --enable-conpty, and modify configure script to
+	  allow the low-level term-driver and conpty driver as part of termlib.
 
 20260307
 	+ add tic checks for pairs of user-caps strings which are listed in

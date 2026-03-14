@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.131 2025/10/04 20:34:43 Branden.Robinson Exp $
+# $Id: mk-1st.awk,v 1.132 2026/03/14 19:20:58 tom Exp $
 ##############################################################################
-# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -67,7 +67,7 @@ function is_ticlib() {
 		return ( subset ~ /^ticlib$/ );
 	}
 function is_termlib() {
-		return ( subset ~ /^(ticlib\+)?termlib((\+[^+ ]+)*\+[a-z_]+_tinfo)?$/ );
+		return ( subset ~ /^(ticlib\+)?termlib/ && subset !~ /base/ );
 	}
 # see lib_name
 function lib_name_of(a_name) {
