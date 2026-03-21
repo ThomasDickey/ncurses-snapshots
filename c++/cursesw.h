@@ -1,7 +1,7 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 // vile:cppmode
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -32,13 +32,12 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.62 2025/01/25 21:21:05 tom Exp $
+// $Id: cursesw.h,v 1.63 2026/03/21 19:40:07 tom Exp $
 
 #include <curses.h>
 
-#if defined(BUILDING_NCURSES_CXX)
-# define NCURSES_CXX_IMPEXP NCURSES_EXPORT_GENERAL_EXPORT
-#else
+#if !defined(BUILDING_NCURSES_CXX)
+# undef NCURSES_CXX_IMPEXP
 # define NCURSES_CXX_IMPEXP NCURSES_EXPORT_GENERAL_IMPORT
 #endif
 

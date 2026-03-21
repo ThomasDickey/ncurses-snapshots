@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.250 2026/01/31 14:07:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.251 2026/03/21 16:51:23 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -867,7 +867,7 @@ fi
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_CHECK_TYPE version: 5 updated: 2021/01/04 19:45:09
+dnl CF_CURSES_CHECK_TYPE version: 7 updated: 2026/03/21 12:50:37
 dnl --------------------
 dnl Check if curses.h defines the given type
 AC_DEFUN([CF_CURSES_CHECK_TYPE],
@@ -878,7 +878,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #define _XOPEN_SOURCE_EXTENDED
 #endif
 #include <${cf_cv_ncurses_header:-curses.h}>],[
-$1 foo
+$1 foo; (void) foo
 ])],cf_result=yes,cf_result=no)
 AC_MSG_RESULT($cf_result)
 if test "$cf_result" = yes ; then
@@ -3011,7 +3011,7 @@ AC_DEFINE(NCURSES,1,[Define to 1 if we are using ncurses headers/libraries])
 CF_NCURSES_VERSION
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_EXT_FUNCS version: 4 updated: 2012/10/06 16:39:58
+dnl CF_NCURSES_EXT_FUNCS version: 6 updated: 2026/03/21 12:50:37
 dnl --------------------
 dnl Since 2007/11/17, ncurses has defined NCURSES_EXT_FUNCS; earlier versions
 dnl may provide these functions.  Define the symbol if it is not defined, and
@@ -3022,7 +3022,8 @@ AC_CACHE_CHECK(for ncurses extended functions,cf_cv_ncurses_ext_funcs,[
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #include <${cf_cv_ncurses_header:-curses.h}>],
 [
-int x = NCURSES_EXT_FUNCS
+int x = NCURSES_EXT_FUNCS;
+	${cf_cv_main_return:-return}(x != 0);
 ])],[cf_cv_ncurses_ext_funcs=defined],[
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <${cf_cv_ncurses_header:-curses.h}>],
@@ -3274,19 +3275,21 @@ AC_MSG_RESULT($NCURSES_WRAP_PREFIX)
 AC_SUBST(NCURSES_WRAP_PREFIX)
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_NETBSD_FORM_H version: 2 updated: 2012/10/06 16:39:58
+dnl CF_NETBSD_FORM_H version: 4 updated: 2026/03/21 12:50:37
 dnl ----------------
 dnl Check for NetBSD's form.h, which is incompatible with SVr4 and ncurses.
 dnl Some workarounds are needed in client programs to allow them to compile.
 AC_DEFUN([CF_NETBSD_FORM_H],[
 AC_CACHE_CHECK(for NetBSD form.h,cf_cv_netbsd_form_h,[
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+$ac_includes_default
 #include <${cf_cv_ncurses_header:-curses.h}>
 #include <form.h>
 ],[
-	FORM *form;
+	FORM *form = calloc(1, sizeof(FORM));
 	int y = current_field(form)->cursor_ypos;
 	int x = current_field(form)->cursor_xpos;
+	(void) x; (void) y;
 ])],[cf_cv_netbsd_form_h=yes
 ],[cf_cv_netbsd_form_h=no])
 ])
@@ -3294,18 +3297,20 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 test "$cf_cv_netbsd_form_h" = yes && AC_DEFINE(HAVE_NETBSD_FORM_H,1,[Define to 1 if we appear to be using NetBSD form.h])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NETBSD_MENU_H version: 2 updated: 2012/10/06 16:39:58
+dnl CF_NETBSD_MENU_H version: 4 updated: 2026/03/21 12:50:37
 dnl ----------------
 dnl Check for NetBSD's menu.h, which is incompatible with SVr4 and ncurses.
 dnl Some workarounds are needed in client programs to allow them to compile.
 AC_DEFUN([CF_NETBSD_MENU_H],[
 AC_CACHE_CHECK(for NetBSD menu.h,cf_cv_netbsd_menu_h,[
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+$ac_includes_default
 #include <${cf_cv_ncurses_header:-curses.h}>
 #include <menu.h>
 ],[
-	MENU *menu;
+	MENU *menu = calloc(1, sizeof(MENU));
 	int y = menu->max_item_width;
+	(void) y;
 ])],[cf_cv_netbsd_menu_h=yes
 ],[cf_cv_netbsd_menu_h=no])
 ])

@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright 2018-2024,2025 Thomas E. Dickey                                *
+dnl Copyright 2018-2025,2026 Thomas E. Dickey                                *
 dnl Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-on
 dnl
-dnl $Id: configure.in,v 1.181 2025/12/25 23:53:19 tom Exp $
+dnl $Id: configure.in,v 1.182 2026/03/21 16:50:28 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -394,12 +394,12 @@ then
 
 		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #include <${cf_cv_ncurses_header:-curses.h}>],
-			[int x = _XPG5])],,
+			[int x = _XPG5; (void) x])],,
 			[cf_save_cppflags="$CPPFLAGS"
 			 CPPFLAGS="$CPPFLAGS -D_XPG5"
 			 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #include <${cf_cv_ncurses_header:-curses.h}>],
-				[int x = _XPG5])],
+				[int x = _XPG5; (void) x])],
 				[cf_define_xpg5=yes])
 			 CPPFLAGS="$cf_save_cppflags"])
 		AC_MSG_RESULT($cf_define_xpg5)

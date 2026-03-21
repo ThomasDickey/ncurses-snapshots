@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.830 2026/03/14 21:35:41 tom Exp $
+dnl $Id: configure.in,v 1.831 2026/03/21 15:53:11 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.830 $)
+AC_REVISION($Revision: 1.831 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -384,6 +384,11 @@ CF_PATHSEP
 # headers needed for checks...
 AC_CHECK_DECL(exit)
 AC_HEADER_DIRENT
+
+# Check to define _XOPEN_SOURCE "automatically"
+CPPFLAGS_before_XOPEN="$CPPFLAGS"
+CF_XOPEN_SOURCE(600)
+CPPFLAGS_after_XOPEN="$CPPFLAGS"
 
 ###############################################################################
 
@@ -881,11 +886,6 @@ NEED_WCHAR_H=0
 NCURSES_MBSTATE_T=0
 NCURSES_WCHAR_T=0
 NCURSES_WINT_T=0
-
-# Check to define _XOPEN_SOURCE "automatically"
-CPPFLAGS_before_XOPEN="$CPPFLAGS"
-CF_XOPEN_SOURCE(600)
-CPPFLAGS_after_XOPEN="$CPPFLAGS"
 
 # Work around breakage on OS X
 CF_SIGWINCH
