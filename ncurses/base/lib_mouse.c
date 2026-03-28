@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.222 2026/03/07 11:41:32 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.224 2026/03/28 23:12:54 tom Exp $")
 
 #include <tic.h>
 
@@ -828,7 +828,7 @@ _nc_mouse_event(SCREEN *sp)
 	{
 	    char kbuf[3];
 
-	    int i, res = read(M_FD(sp), &kbuf, 3);	/* Eat the prefix */
+	    int i, res = NC_READ(M_FD(sp), &kbuf, 3);	/* Eat the prefix */
 	    if (res != 3)
 		printf("Got %d chars instead of 3 for prefix.\n", res);
 	    for (i = 0; i < res; i++) {
@@ -1117,14 +1117,16 @@ decode_xterm_X10(SCREEN *sp, MEVENT * eventp)
     _nc_set_read_thread(TRUE);
     for (grabbed = 0; grabbed < MAX_KBUF; grabbed += (size_t) res) {
 
-	/* For VIO mouse we add extra bit 64 to disambiguate button-up. */
-	res = (int) read(
 #if USE_EMX_MOUSE
+	/* For VIO mouse we add extra bit 64 to disambiguate button-up. */
+	res = (int) NC_READ(
 			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-#else
-			    sp->_ifd,
-#endif
 			    kbuf + grabbed, (size_t) (MAX_KBUF - (int) grabbed));
+#else
+	res = (int) NC_READ(
+			    sp->_ifd,
+			    kbuf + grabbed, (size_t) (MAX_KBUF - (int) grabbed));
+#endif
 	if (res < 0)
 	    break;
     }
@@ -1166,13 +1168,15 @@ decode_xterm_1005(SCREEN *sp, MEVENT * eventp)
     for (grabbed = 0; grabbed < limit;) {
 	int res;
 
-	res = (int) read(
 #if USE_EMX_MOUSE
+	res = (int) NC_READ(
 			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-#else
-			    sp->_ifd,
-#endif
 			    (kbuf + grabbed), (size_t) 1);
+#else
+	res = (int) NC_READ(
+			    sp->_ifd,
+			    (kbuf + grabbed), (size_t) 1);
+#endif
 	if (res < 0)
 	    break;
 	grabbed += (size_t) res;
@@ -1244,13 +1248,15 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
     do {
 	int res;
 
-	res = (int) read(
 #if USE_EMX_MOUSE
+	res = (int) NC_READ(
 			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-#else
-			    sp->_ifd,
-#endif
 			    (kbuf + grabbed), (size_t) 1);
+#else
+	res = (int) NC_READ(
+			    sp->_ifd,
+			    (kbuf + grabbed), (size_t) 1);
+#endif
 	if (res < 0)
 	    break;
 	if ((grabbed + MAX_KBUF) >= (int) sizeof(kbuf)) {
@@ -1894,6 +1900,7 @@ NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 	    SP_PARM->_mouse_read++;
 	    result = OK;
 	} else {
+	    TR(TRACE_IEVENT, ("getmouse: no valid event in queue"));
 	    /* Reset the provided event */
 	    aevent->bstate = 0;
 	    Invalidate(aevent);

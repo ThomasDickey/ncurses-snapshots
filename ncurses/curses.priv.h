@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.745 2026/03/01 19:51:59 tom Exp $
+ * $Id: curses.priv.h,v 1.746 2026/03/28 19:24:13 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2601,14 +2601,22 @@ extern NCURSES_EXPORT(int)  _nc_console_vt_supported(void);
 extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
 #endif
 
+#elif defined(_NC_WINDOWS_NATIVE)
+
 #else
 #error unsupported driver configuration
 #endif /* USE_WIN32CON_DRIVER */
 
 #if USE_TERM_DRIVER && defined(USE_WIN32CON_DRIVER)
-#define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
+# define NC_ISATTY(fd) (0 != _nc_console_isatty(fd))
+# define NC_READ(fd, buf, count)	read(fd, buf, count)
 #else
-#define NC_ISATTY(fd) isatty(fd)
+# if defined(_NC_WINDOWS_NATIVE)
+#  define NC_READ(fd, buf, count)	WINCONPTY.read(fd,buf,count)
+# else
+#  define NC_READ(fd, buf, count)	read(fd, buf, count)
+# endif
+# define NC_ISATTY(fd)			isatty(fd)
 #endif
 
 /*

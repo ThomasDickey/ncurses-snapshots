@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.252 2025/12/27 12:33:34 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.253 2026/03/28 21:10:22 tom Exp $")
 
 /****************************************************************************
  *
@@ -1024,7 +1024,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);
 	}
 	code = OK;
-#endif
+#endif /* USE_TERM_DRIVER */
     }
 
 #if USE_TERM_DRIVER

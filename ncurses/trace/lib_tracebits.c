@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2015 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.37 2025/12/23 09:23:38 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.38 2026/03/28 20:22:56 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -68,7 +68,7 @@ MODULE_ID("$Id: lib_tracebits.c,v 1.37 2025/12/23 09:23:38 tom Exp $")
 
 #ifdef TRACE
 
-#if defined(USE_WIN32CON_DRIVER)
+#if defined(_NC_WINDOWS_NATIVE)
 #define BITNAMELEN 36
 #else
 #define BITNAMELEN 8
@@ -214,7 +214,7 @@ _nc_trace_ttymode(const TTY * tty)
 	if (tty->c_lflag & ALLLOCAL)
 	    lookup_bits(buf, lflags, "lflags", tty->c_lflag);
     }
-#elif defined(USE_WIN32CON_DRIVER)
+#elif defined(_NC_WINDOWS_NATIVE)
 #define DATA(name)        { name, { #name } }
     static const BITNAMES dwFlagsOut[] =
     {

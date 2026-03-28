@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.61 2025/12/27 12:28:45 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.63 2026/03/28 20:32:51 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -487,7 +487,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	    bool slk_visible = (SP_PARM != NULL
 				&& SP_PARM->_slk != NULL
 				&& !(SP_PARM->_slk->hidden));
-
+	    T(("resizeterm: check slk"));
 	    if (slk_visible) {
 		slk_clear();
 	    }
@@ -525,6 +525,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 #endif
 	}
 #if USE_SIGWINCH
+	T(("resizeterm: ungetch KEY_RESIZE"));
 	safe_ungetch(SP_PARM, KEY_RESIZE);	/* so application can know this */
 #endif
     }

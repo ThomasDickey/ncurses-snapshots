@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.154 2025/12/27 12:28:45 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.156 2026/03/28 19:51:59 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -162,7 +162,7 @@ check_mouse_activity(SCREEN *sp, int delay EVENTLIST_2nd(_nc_eventlist * evl))
     } else
 # endif
     {
-# if USE_NAMED_PIPES
+# if USE_TERM_DRIVER && USE_NAMED_PIPES
 	rc = _nc_console_testmouse(sp,
 				   _nc_console_handle(sp->_ifd),
 				   delay
@@ -302,19 +302,19 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 	    n = CallDriver_1(sp, td_read, &buf);
 	ch = buf;
 #else /* !USE_TERM_DRIVER */
-#if USE_NAMED_PIPES
+#if USE_TERM_DRIVER && USE_NAMED_PIPES
 	int buf;
 #endif
 	unsigned char c2 = 0;
 
 	_nc_set_read_thread(TRUE);
-#if USE_NAMED_PIPES
+#if USE_TERM_DRIVER && USE_NAMED_PIPES
 	n = _nc_console_read(sp,
 			     _nc_console_handle(sp->_ifd),
 			     &buf);
 	c2 = buf;
 #else
-	n = (int) read(sp->_ifd, &c2, (size_t) 1);
+	n = (int) NC_READ(sp->_ifd, &c2, (size_t) 1);
 #endif
 	_nc_set_read_thread(FALSE);
 	ch = c2;
@@ -441,6 +441,7 @@ _nc_wgetch(WINDOW *win,
     if (cooked_key_in_fifo()) {
 	recur_wrefresh(win);
 	*result = fifo_pull(sp);
+
 	returnCode(*result >= KEY_MIN ? KEY_CODE_YES : OK);
     }
 #ifdef NCURSES_WGETCH_EVENTS
@@ -673,6 +674,7 @@ wgetch(WINDOW *win)
 		      EVENTLIST_2nd((_nc_eventlist *) 0));
     if (code != ERR)
 	code = value;
+
     returnCode(code);
 }
 

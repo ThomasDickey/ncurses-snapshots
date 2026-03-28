@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.550 2025/11/01 20:12:49 tom Exp $
+$Id: ncurses.c,v 1.551 2026/03/28 23:02:07 tom Exp $
 
 ***************************************************************************/
 
@@ -215,9 +215,17 @@ wGetchar(WINDOW *win)
 	if (_nc_tracing)
 	    Trace(("TOGGLE-TRACING ON"));
     }
+    if (c == CTRL('D')) {
+	Trace(("FORCE EOF"));
+	close(0);		/* force an EOF-style error */
+	c = wgetch(win);
+    }
 #else
     c = wgetch(win);
 #endif
+    if (c < 0) {
+	failed("wGetchar");
+    }
     return c;
 }
 #define Getchar() wGetchar(stdscr)
@@ -349,9 +357,17 @@ wGet_wchar(WINDOW *win, wint_t *result)
 	if (_nc_tracing)
 	    Trace(("TOGGLE-TRACING ON"));
     }
+    if (c == OK && *result == CTRL('D')) {
+	Trace(("FORCE EOF"));
+	close(0);		/* force an EOF-style error */
+	c = wget_wch(win, result);
+    }
 #else
     c = wget_wch(win, result);
 #endif
+    if (c < 0) {
+	failed("wGet_wchar");
+    }
     return c;
 }
 #define Get_wchar(result) wGet_wchar(stdscr, result)

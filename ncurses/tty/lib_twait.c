@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.85 2025/03/01 17:07:19 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.86 2026/03/28 20:22:56 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -136,12 +136,6 @@ _nc_eventlist_timeout(_nc_eventlist * evl)
     return event_delay;
 }
 #endif /* NCURSES_WGETCH_EVENTS */
-
-#if (USE_FUNC_POLL || HAVE_SELECT)
-#  define MAYBE_UNUSED
-#else
-#  define MAYBE_UNUSED GCC_UNUSED
-#endif
 
 #if (USE_FUNC_POLL || HAVE_SELECT)
 #  define MAYBE_UNUSED

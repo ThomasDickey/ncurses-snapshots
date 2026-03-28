@@ -1,4 +1,4 @@
-# $Id: modules,v 1.134 2026/01/14 01:21:25 tom Exp $
+# $Id: modules,v 1.135 2026/03/28 10:58:05 tom Exp $
 ##############################################################################
 # Copyright 2019-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2017 Free Software Foundation, Inc.                    #
@@ -258,6 +258,11 @@ lib_win32con	lib		$(tinfo)	$(HEADER_DEPS)
 lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 wcwidth		lib             $(win32con)	$(HEADER_DEPS)
 win32_driver	lib             $(win32con)	$(HEADER_DEPS)
+
+# MinGW-W64 or Windows native, using ConPTY
+@ port_win32_conpty
+lib_win32conpty	lib		$(tinfo)	$(HEADER_DEPS)
+lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 
 @ port_tinfo
 tinfo_driver	lib		$(tinfo)	$(HEADER_DEPS)	$(INCDIR)/tic.h

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.110 2025/12/27 12:28:45 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.111 2026/03/28 20:22:11 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define NumLabels      InfoOf(SP_PARM).numlabels
@@ -88,7 +88,7 @@ _nc_initscr(NCURSES_SP_DCL0)
 	buf.c_oflag &= (unsigned) ~(ONLCR);
 #elif HAVE_SGTTY_H
 	buf.sg_flags &= ~(ECHO | CRMOD);
-#elif USE_NAMED_PIPES
+#elif USE_TERM_DRIVER && USE_NAMED_PIPES
 	buf.dwFlagIn = CONMODE_IN_DEFAULT;
 	buf.dwFlagOut = CONMODE_OUT_DEFAULT | VT_FLAG_OUT;
 	if (WINCONSOLE.isTermInfoConsole) {
@@ -201,7 +201,7 @@ NCURSES_SP_NAME(newterm) (NCURSES_SP_DCLx
     current = CURRENT_SCREEN;
     its_term = (current ? current->_term : NULL);
 
-#if USE_NAMED_PIPES
+#if USE_TERM_DRIVER && USE_NAMED_PIPES
     _setmode(fileno(_ifp), _O_BINARY);
     _setmode(fileno(_ofp), _O_BINARY);
 #endif
