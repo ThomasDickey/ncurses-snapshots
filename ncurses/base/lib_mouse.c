@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.224 2026/03/28 23:12:54 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.227 2026/04/04 22:08:17 tom Exp $")
 
 #include <tic.h>
 
@@ -320,6 +320,10 @@ mouse_server(unsigned long param)
     }
     DosExit(EXIT_THREAD, 0L);
 }
+
+#define Mouse_FD(sp) (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd
+#else
+#define Mouse_FD(sp) sp->_ifd
 
 #endif /* USE_EMX_MOUSE */
 
@@ -1117,16 +1121,8 @@ decode_xterm_X10(SCREEN *sp, MEVENT * eventp)
     _nc_set_read_thread(TRUE);
     for (grabbed = 0; grabbed < MAX_KBUF; grabbed += (size_t) res) {
 
-#if USE_EMX_MOUSE
-	/* For VIO mouse we add extra bit 64 to disambiguate button-up. */
-	res = (int) NC_READ(
-			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-			    kbuf + grabbed, (size_t) (MAX_KBUF - (int) grabbed));
-#else
-	res = (int) NC_READ(
-			    sp->_ifd,
-			    kbuf + grabbed, (size_t) (MAX_KBUF - (int) grabbed));
-#endif
+	res = (int) NC_READ(Mouse_FD(sp),
+			    kbuf + grabbed, (MAX_KBUF - (int) grabbed));
 	if (res < 0)
 	    break;
     }
@@ -1168,15 +1164,8 @@ decode_xterm_1005(SCREEN *sp, MEVENT * eventp)
     for (grabbed = 0; grabbed < limit;) {
 	int res;
 
-#if USE_EMX_MOUSE
-	res = (int) NC_READ(
-			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-			    (kbuf + grabbed), (size_t) 1);
-#else
-	res = (int) NC_READ(
-			    sp->_ifd,
-			    (kbuf + grabbed), (size_t) 1);
-#endif
+	res = (int) NC_READ(Mouse_FD(sp),
+			    (kbuf + grabbed), 1);
 	if (res < 0)
 	    break;
 	grabbed += (size_t) res;
@@ -1248,15 +1237,8 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
     do {
 	int res;
 
-#if USE_EMX_MOUSE
-	res = (int) NC_READ(
-			    (M_FD(sp) >= 0) ? M_FD(sp) : sp->_ifd,
-			    (kbuf + grabbed), (size_t) 1);
-#else
-	res = (int) NC_READ(
-			    sp->_ifd,
-			    (kbuf + grabbed), (size_t) 1);
-#endif
+	res = (int) NC_READ(Mouse_FD(sp),
+			    (kbuf + grabbed), 1);
 	if (res < 0)
 	    break;
 	if ((grabbed + MAX_KBUF) >= (int) sizeof(kbuf)) {
@@ -1525,6 +1507,7 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
     MEVENT *first_invalid = NULL;
     int n;
     int b;
+    int count_invalid;
     bool merge;
     bool endLoop;
 
@@ -1752,8 +1735,14 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
      * the index, but we are using indices because their order is easy to work
      * with.  The same issue applies to first_valid and _mouse_read.
      */
+    count_invalid = 0;
     while (!ValidEvent(EventAt(sp, sp->_mouse_read))) {
 	sp->_mouse_read++;
+	if (++count_invalid > EV_MAX) {
+	    sp->_mouse_read =
+		sp->_mouse_write = 0;
+	    break;
+	}
     }
     while (sp->_mouse_write > sp->_mouse_read + 1) {
 	if (!ValidEvent(EventAt(sp, sp->_mouse_write - 1))) {

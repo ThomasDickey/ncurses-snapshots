@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4440 2026/03/28 23:01:38 tom Exp $
+-- $Id: NEWS,v 1.4444 2026/04/04 22:00:02 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,16 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260404
+	+ use xterm+direct in konsole-direct, add several features to
+	  konsole (report by Xu Che)
+	+ use dec+sl in mintty (prompted by Thomas Wolff) -TD
+	+ add linux-alt1049 (report by Sebastien Hinderer) -TD
+	+ add a limit-check in _nc_mouse_parse in case there are no valid
+	  events (report by Giorgos Xou, cf: 20260301).
+	+ amend recent change to test/ncurses to check errno before deciding
+	  to exit.
 
 20260328
 	+ modify test/ncurses to close stdin when ^D is entered in the getch

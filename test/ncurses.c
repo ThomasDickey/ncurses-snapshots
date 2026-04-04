@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.551 2026/03/28 23:02:07 tom Exp $
+$Id: ncurses.c,v 1.553 2026/04/04 22:17:51 tom Exp $
 
 ***************************************************************************/
 
@@ -215,15 +215,15 @@ wGetchar(WINDOW *win)
 	if (_nc_tracing)
 	    Trace(("TOGGLE-TRACING ON"));
     }
+#else
+    c = wgetch(win);
+#endif
     if (c == CTRL('D')) {
 	Trace(("FORCE EOF"));
 	close(0);		/* force an EOF-style error */
 	c = wgetch(win);
     }
-#else
-    c = wgetch(win);
-#endif
-    if (c < 0) {
+    if (c < 0 && errno) {
 	failed("wGetchar");
     }
     return c;
@@ -365,7 +365,7 @@ wGet_wchar(WINDOW *win, wint_t *result)
 #else
     c = wget_wch(win, result);
 #endif
-    if (c < 0) {
+    if (c < 0 && errno) {
 	failed("wGet_wchar");
     }
     return c;
