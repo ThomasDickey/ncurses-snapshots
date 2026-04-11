@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1236 $
-#	$Date: 2026/04/04 21:58:09 $
+#	$Revision: 1.1237 $
+#	$Date: 2026/04/11 19:37:30 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5585,6 +5585,11 @@ mlterm-direct|mlterm with direct-color indexing,
 # This variant uses xterm's original semicolon-separated form for direct-color
 # subparameters, retained as a legacy building-block for terminals which
 # implemented that syntax.
+#
+# In KDE #107487 (2006), the patch submitter and the developer both saw
+# that xterm's original implementation should have used colons for the
+# subparameter separators, but chose not to correct this in konsole.  Until
+# mid-2022, konsole accepted only the nonstandard semicolon delimiters.
 xterm+indirect|xterm with direct-color indexing (old legacy building-block),
 	RGB,
 	colors#0x1000000, pairs#0x10000,
@@ -8944,8 +8949,8 @@ screen4.xterm-new|screen.xterm-xfree86|screen4 customized for modern xterm,
 	use=xterm+keypad, use=xterm-basic,
 
 screen5.xterm-new|screen5 customized for modern xterm,
-	rv=\E\\[>83;5[0-9][0-9][0-9];0c, use=ecma+italics,
-	use=screen.xterm-new,
+	rep@, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
+	use=ecma+italics, use=screen.xterm-new,
 
 screen.xterm-new|screen customized for modern xterm,
 	use=screen4.xterm-new,
@@ -8978,13 +8983,16 @@ screen.Eterm|screen in Eterm,
 screen.mrxvt|screen in mrxvt,
 	use=xterm+x11mouse, use=screen+fkeys, use=mrxvt,
 screen.vte|screen in any VTE-based terminal,
-	use=xterm+x11mouse, use=screen+italics,
+	bce@,
+	rep@, use=xterm+x11mouse, use=screen+italics,
 	use=screen+fkeys, use=no+brackets, use=vte,
 screen.gnome|screen in GNOME Terminal,
-	use=xterm+x11mouse, use=screen+italics,
+	bce@,
+	rep@, use=xterm+x11mouse, use=screen+italics,
 	use=screen+fkeys, use=no+brackets, use=gnome,
 screen.konsole|screen in KDE console window,
-	XR@, use=xterm+x11mouse, use=screen+italics,
+	bce@,
+	rep@, XR@, use=xterm+x11mouse, use=screen+italics,
 	use=screen+fkeys, use=no+brackets, use=konsole,
 # fix the backspace key
 screen.linux|screen.linux-s|screen in Linux console,
@@ -8992,11 +9000,13 @@ screen.linux|screen.linux-s|screen in Linux console,
 	kcbt@, use=linux+sfkeys, use=xterm+x11mouse,
 	use=screen+fkeys, use=screen,
 screen.mlterm|screen in mlterm,
-	XR@, use=xterm+x11mouse, use=screen+fkeys,
+	bce@,
+	rep@, XR@, use=xterm+x11mouse, use=screen+fkeys,
 	use=no+brackets, use=mlterm,
 screen.putty|screen in putty,
-	use=xterm+x11mouse, use=screen+fkeys, use=no+brackets,
-	use=putty,
+	bce@,
+	rep@, use=xterm+x11mouse, use=screen+fkeys,
+	use=no+brackets, use=putty,
 
 # The default "screen" entry is reasonably portable, but not optimal for the
 # most widely-used terminal emulators.  The "bce" capability is supported in
@@ -28191,5 +28201,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2026-04-04
 #	+ add linux-alt1049 (report by Sebastien Hinderer) -TD
+#
+# 2026-04-11
+#	+ cancel bce and rep in some screen.X's -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

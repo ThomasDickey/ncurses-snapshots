@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.86 2026/03/28 20:22:56 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.87 2026/04/11 19:58:42 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -283,8 +283,10 @@ _nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
 		&& (ev->data.fev.flags & _NC_EVENT_FILE_READABLE)) {
 		ev->data.fev.result = 0;
 		for (c = 0; c < count; c++)
-		    if (fds[c].fd == ev->data.fev.fd
-			&& fds[c].revents & POLLIN) {
+		    if (fds[count].revents & POLLNVAL) {
+			errno = EBADF;
+		    } else if (fds[c].fd == ev->data.fev.fd
+			       && fds[c].revents & POLLIN) {
 			ev->data.fev.result |= _NC_EVENT_FILE_READABLE;
 			evl->result_flags |= _NC_EVENT_FILE_READABLE;
 		    }
@@ -478,15 +480,21 @@ _nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
      * code everywhere.
      */
     if (result != 0) {
+	int valid_fds = result;
 	if (result > 0) {
 	    result = 0;
 #if USE_FUNC_POLL
 	    for (count = 0; count < MIN_FDS; count++) {
-		if ((mode & (1 << count))
-		    && (fds[count].revents & POLLIN)) {
+		if (fds[count].revents & POLLNVAL) {
+		    valid_fds--;
+		    errno = EBADF;
+		} else if ((mode & (1 << count))
+			   && (fds[count].revents & POLLIN)) {
 		    result |= (1 << count);
 		}
 	    }
+	    if (!valid_fds && milliseconds)
+		napms(milliseconds);
 #elif defined(__BEOS__)
 	    result = TW_INPUT;	/* redundant, but simple */
 #elif HAVE_SELECT
