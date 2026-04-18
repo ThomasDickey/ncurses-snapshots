@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+  * Copyright 2018-2025,2026 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,19 +27,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_pad.3x,v 1.81 2025/08/23 22:50:00 tom Exp @
+  * @Id: curs_pad.3x,v 1.82 2026/04/18 22:53:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_pad 3x 2025-08-23 ncurses 6.6 Library calls</TITLE>
+<TITLE>curs_pad 3x 2026-04-18 ncurses 6.6 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_pad 3x 2025-08-23 ncurses 6.6 Library calls</H1>
+<H1 class="no-header">curs_pad 3x 2026-04-18 ncurses 6.6 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>                     Library calls                    <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 
@@ -130,36 +130,35 @@
        Functions that return an integer return <STRONG>ERR</STRONG> upon failure  and  <STRONG>OK</STRONG>  upon
        successful completion.
 
-       Functions  that  return  pointers return a null pointer on failure, and
-       set <EM>errno</EM> to <STRONG>ENOMEM</STRONG>.
+       Functions that return pointers return a null pointer on failure.
 
        In this implementation
 
           <STRONG>prefresh</STRONG> and <STRONG>pnoutrefresh</STRONG>
-               return <STRONG>ERR</STRONG> if the window pointer is null, or if the  window  is
-               not  really  a pad or if the area to refresh extends off-screen
+               return  <STRONG>ERR</STRONG>  if the window pointer is null, or if the window is
+               not really a pad or if the area to refresh  extends  off-screen
                or if the minimum coordinates are greater than the maximum.
 
           <STRONG>pechochar</STRONG>
-               returns <STRONG>ERR</STRONG> if  the  window  is  not  really  a  pad,  and  the
+               returns  <STRONG>ERR</STRONG>  if  the  window  is  not  really  a  pad, and the
                associated call to <STRONG>wechochar</STRONG> returns <STRONG>ERR</STRONG>.
 
           <STRONG>pecho_wchar</STRONG>
-               returns  <STRONG>ERR</STRONG>  if  the  window  is  not  really  a  pad, and the
+               returns <STRONG>ERR</STRONG> if  the  window  is  not  really  a  pad,  and  the
                associated call to <STRONG>wecho_wchar</STRONG> returns <STRONG>ERR</STRONG>.
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
        <STRONG>pechochar</STRONG> may be implemented as a macro.
 
-       <EM>curses</EM> documentation is traditionally averse  to  motivating  the  term
-       "pad".   The  Apollo  Aegis  workstation  operating system (<EM>circa</EM> 1981)
+       <EM>curses</EM>  documentation  is  traditionally  averse to motivating the term
+       "pad".  The Apollo Aegis  workstation  operating  system  (<EM>circa</EM>  1981)
        supported a graphical pad feature.
 
-       <STRONG>o</STRONG>   These graphical pads could  be  much  larger  than  the  computer's
+       <STRONG>o</STRONG>   These  graphical  pads  could  be  much  larger than the computer's
            display.
 
-       <STRONG>o</STRONG>   The  read-only  output  from  a  command  could be scrolled back to
+       <STRONG>o</STRONG>   The read-only output from a  command  could  be  scrolled  back  to
            inspect and select text from the pad.
 
        The two uses may be related.
@@ -169,7 +168,7 @@
        X/Open Curses Issue 4 describes these functions.  It specifies no error
        conditions for them.
 
-       SVr4 describes a successful return value  only  as  "an  integer  value
+       SVr4  describes  a  successful  return  value only as "an integer value
        other than <EM>ERR</EM>".
 
        The  behavior  of  <EM>subpad</EM>  if  the  parent  window  is  not  a  pad  is
@@ -178,65 +177,65 @@
        <STRONG>o</STRONG>   SVr4 <EM>curses</EM>'s <EM>newpad</EM> sets a flag in the <EM>WINDOW</EM> structure indicating
            that the window is a pad.
 
-           However, it uses this information only in <EM>waddch</EM> (to decide  if  it
-           should  call  <EM>wrefresh</EM>)  and  <EM>wscrl</EM> (to avoid scrolling a pad); its
-           <EM>wrefresh</EM> does not check  it  to  ensure  that  a  pad  is  properly
+           However,  it  uses this information only in <EM>waddch</EM> (to decide if it
+           should call <EM>wrefresh</EM>) and <EM>wscrl</EM> (to avoid  scrolling  a  pad);  its
+           <EM>wrefresh</EM>  does  not  check  it  to  ensure  that  a pad is properly
            updated.
 
-       <STRONG>o</STRONG>   Solaris   <EM>xcurses</EM>   checks  whether  a  window  is  a  pad  in  its
+       <STRONG>o</STRONG>   Solaris  <EM>xcurses</EM>  checks  whether  a  window  is  a  pad   in   its
            <EM>wnoutrefresh</EM>, returning <EM>ERR</EM> in that case.
 
-           However, it sets the flag on subwindows only if the  parent  window
+           However,  it  sets the flag on subwindows only if the parent window
            is a pad.  Its <EM>newpad</EM> does not set this information.  Consequently,
            the check never fails.
 
-           It   makes   no   comparable   check   in  <EM>pnoutrefresh</EM>  --  though
-           interestingly enough, a comment in the source code states that  the
+           It  makes  no  comparable   check   in   <EM>pnoutrefresh</EM>   --   though
+           interestingly  enough, a comment in the source code states that the
            lack of a check was an MKS extension.
 
-       <STRONG>o</STRONG>   NetBSD 7  <EM>curses</EM> sets a flag in the <EM>WINDOW</EM> structure for <EM>newpad</EM> and
-           <EM>subpad</EM>, aiding  itself  to  distinguish  between  <EM>wnoutrefresh</EM>  and
+       <STRONG>o</STRONG>   NetBSD 7 <EM>curses</EM> sets a flag in the <EM>WINDOW</EM> structure for <EM>newpad</EM>  and
+           <EM>subpad</EM>,  aiding  itself  to  distinguish  between  <EM>wnoutrefresh</EM> and
            <EM>pnoutrefresh</EM>.
 
-           It  does  not  check for the case where a subwindow is created in a
+           It does not check for the case where a subwindow is  created  in  a
            pad using <EM>subwin</EM> or <EM>derwin</EM>.
 
-           Its <EM>dupwin</EM>  returns  a  regular  window  when  duplicating  a  pad.
-           Likewise,  its  <EM>getwin</EM>  always  returns a window, even if the saved
+           Its  <EM>dupwin</EM>  returns  a  regular  window  when  duplicating  a pad.
+           Likewise, its <EM>getwin</EM> always returns a window,  even  if  the  saved
            data was from a pad.
 
        <EM>ncurses</EM>:
 
        <STRONG>o</STRONG>   sets a flag in the <EM>WINDOW</EM> structure for <EM>newpad</EM> and <EM>subpad</EM>,
 
-       <STRONG>o</STRONG>   allows a <EM>subwin</EM> or <EM>derwin</EM> call to succeed having a  pad  parent  by
+       <STRONG>o</STRONG>   allows  a  <EM>subwin</EM>  or <EM>derwin</EM> call to succeed having a pad parent by
            forcing the subwindow to be a pad,
 
-       <STRONG>o</STRONG>   checks  in  both  <EM>wnoutrefresh</EM> and <EM>pnoutrefresh</EM> to ensure that pads
+       <STRONG>o</STRONG>   checks in both <EM>wnoutrefresh</EM> and <EM>pnoutrefresh</EM> to  ensure  that  pads
            and windows are handled distinctly, and
 
-       <STRONG>o</STRONG>   ensures  that  <EM>dupwin</EM>  and  <EM>getwin</EM>  treat   pads   versus   windows
+       <STRONG>o</STRONG>   ensures   that   <EM>dupwin</EM>   and  <EM>getwin</EM>  treat  pads  versus  windows
            consistently.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       SVr2  (1984) introduced <EM>newpad</EM>, <EM>prefresh</EM>, and <EM>pnoutrefresh</EM>, documenting
+       SVr2 (1984) introduced <EM>newpad</EM>, <EM>prefresh</EM>, and <EM>pnoutrefresh</EM>,  documenting
        them in a single line each.
 
-       SVr3 (1987) added <EM>subpad</EM> and <EM>pechochar</EM>,  and  provided  more  extensive
+       SVr3  (1987)  added  <EM>subpad</EM>  and <EM>pechochar</EM>, and provided more extensive
        documentation.
 
-       The  System V  Interface  Definition,  Version  4  (1995),  specified a
-       function named <EM>pechowchar</EM>.  This was a later addition  to  SVr4.<EM>x</EM>,  not
-       appearing  in  the  first  SVr4 (1989).  It differs from X/Open's later
-       <EM>pecho</EM><STRONG>_</STRONG><EM>wchar</EM> in that its <EM>wstr</EM>  parameter  was  a  <EM>chtype</EM>  instead  of  a
+       The System V  Interface  Definition,  Version  4  (1995),  specified  a
+       function  named  <EM>pechowchar</EM>.   This was a later addition to SVr4.<EM>x</EM>, not
+       appearing in the first SVr4 (1989).  It  differs  from  X/Open's  later
+       <EM>pecho</EM><STRONG>_</STRONG><EM>wchar</EM>  in  that  its  <EM>wstr</EM>  parameter  was  a <EM>chtype</EM> instead of a
        <EM>wchar</EM><STRONG>_</STRONG><EM>t</EM>, and was not <EM>const</EM>-qualified.
 
 
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>, <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
 
-ncurses 6.6                       2025-08-23                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
+ncurses 6.6                       2026-04-18                      <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

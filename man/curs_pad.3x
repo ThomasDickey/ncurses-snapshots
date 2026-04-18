@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_pad.3x,v 1.81 2025/08/23 22:50:00 tom Exp $
-.TH curs_pad 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_pad.3x,v 1.82 2026/04/18 22:53:21 tom Exp $
+.TH curs_pad 3X 2026-04-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -175,11 +175,7 @@ upon failure and
 .B OK
 upon successful completion.
 .PP
-Functions that return pointers return a null pointer on failure,
-and set
-.I \%errno
-to
-.BR \%ENOMEM "."
+Functions that return pointers return a null pointer on failure.
 .PP
 In this implementation
 .RS 3

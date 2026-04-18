@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.27 2024/12/21 20:15:26 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.28 2026/04/14 00:20:23 tom Exp $")
 
 #undef CUR
 #define CUR tp->
@@ -372,7 +372,7 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 		&& (tmp = strstr(end, off)) != NULL
 		&& strcmp(end, off) != 0) {
 		i = (size_t) (tmp - end);
-		j = strlen(off);
+		j = strlen(off) + i;
 		tmp = strdup(end);
 		chop_out(tmp, (unsigned) i, (unsigned) j);
 		free(off);

@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.145 2026/03/06 09:06:49 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.146 2026/04/13 23:51:48 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -879,7 +879,7 @@ _nc_write_object(TERMTYPE2 *tp, char *buffer, unsigned *offset, unsigned limit)
 				   offsets);
 	TRACE_OUT(("after extended string capabilities, nextfree=%d", nextfree));
 
-	if (tp->ext_Strings >= SIZEOF(offsets)) {
+	if (tp->ext_Strings + ext_total >= SIZEOF(offsets)) {
 	    return (ERR);
 	}
 

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_get_wch.3x,v 1.71 2025/08/16 19:11:47 tom Exp $
-.TH curs_get_wch 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_get_wch.3x,v 1.72 2026/04/18 22:59:29 tom Exp $
+.TH curs_get_wch 3X 2026-04-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -65,7 +65,7 @@ get (or push back) a wide character from \fIcurses\fR terminal keyboard buffer
 .SH DESCRIPTION
 .SS "Reading Characters"
 .B \%wget_wch
-gathers a key event from the terminal keyboard associated with a
+gathers a key event from the terminal input stream associated with a
 .I curses
 window
 .IR win ","
@@ -198,6 +198,12 @@ screen has not been initialized,
 pointer argument)
 .I win
 is a null pointer,
+.bP
+the terminal input stream is closed,
+in which case
+.I \%errno
+is set to
+.IR \%EBADF ","
 or
 .bP
 execution was interrupted by a signal,

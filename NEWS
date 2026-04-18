@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4446 2026/04/11 20:02:20 tom Exp $
+-- $Id: NEWS,v 1.4449 2026/04/18 23:04:43 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,16 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260418
+	+ note in manpage that wgetch/wget_wch consistently set errno to EBADF
+	  for poll/select configurations when the input is closed.
+	+ improve check in test/ncurses for errors by limiting it to the
+	  latest wgetch/wget_wch (cf: 20260404).
+	> fixes for problems found by Anthropic (report by David Korczynski):
+	+ correct a limit-check in _nc_write_object
+	+ correct a source-pointer in _nc_trim_sgr0
+	+ add limit-check in read_SGR
 
 20260411
 	+ if POLLNVAL is set in revents, set errno to EBADF to improve handling

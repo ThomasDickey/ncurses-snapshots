@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.227 2026/04/04 22:08:17 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.229 2026/04/18 00:14:14 tom Exp $")
 
 #include <tic.h>
 
@@ -1216,7 +1216,7 @@ decode_xterm_1005(SCREEN *sp, MEVENT * eventp)
 #define MAX_PARAMS 9
 
 typedef struct {
-    int nerror;			/* nonzero if there are unexpected chars */
+    int nerror;			/* true if there are unexpected chars */
     int nparam;			/* number of numeric parameters */
     int params[MAX_PARAMS];
     int final;			/* the final-character */
@@ -1242,7 +1242,7 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
 	if (res < 0)
 	    break;
 	if ((grabbed + MAX_KBUF) >= (int) sizeof(kbuf)) {
-	    result->nerror++;
+	    result->nerror = TRUE;
 	    break;
 	}
 	ch = UChar(kbuf[grabbed]);
@@ -1263,7 +1263,11 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
 		result->nparam = (now + 1);
 	    }
 	    marker = 0;
-	    result->params[now] = (result->params[now] * 10) + (ch - '0');
+	    if (now < MAX_PARAMS) {
+		result->params[now] = (result->params[now] * 10) + (ch - '0');
+	    } else {
+		result->nerror = TRUE;
+	    }
 	    break;
 	case ';':
 	    if (marker) {
@@ -1278,7 +1282,7 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
 		 * Technically other characters could be interspersed in the
 		 * response.  Ignore those for now.
 		 */
-		result->nerror++;
+		result->nerror = TRUE;
 		continue;
 	    } else if (isFinal(ch)) {
 		if (marker) {
@@ -1286,7 +1290,7 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
 		}
 		result->final = ch;
 	    } else {
-		result->nerror++;
+		result->nerror = TRUE;
 	    }
 	    break;
 	}
@@ -1297,7 +1301,7 @@ read_SGR(const SCREEN *sp, SGR_DATA * result)
     kbuf[++grabbed] = 0;
     TR(TRACE_IEVENT,
        ("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));
-    return (grabbed > 0) && (result->nerror == 0);
+    return (grabbed > 0) && !result->nerror;
 }
 
 static bool
@@ -1419,7 +1423,7 @@ mouse_activate(SCREEN *sp, bool on)
 	switch (sp->_mouse_type) {
 	case M_XTERM:
 #if NCURSES_EXT_FUNCS
-	    NCURSES_SP_NAME(keyok) (NCURSES_SP_ARGx KEY_MOUSE, on);
+	    NCURSES_SP_NAME(keyok)(NCURSES_SP_ARGx KEY_MOUSE, on);
 #endif
 	    enable_xterm_mouse(sp, TRUE);
 	    break;
@@ -1486,7 +1490,7 @@ mouse_activate(SCREEN *sp, bool on)
 	    break;
 	}
     }
-    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     returnVoid;
 }
 
@@ -1854,7 +1858,7 @@ _nc_mouse_resume(SCREEN *sp)
  **************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
+NCURSES_SP_NAME(getmouse)(NCURSES_SP_DCLx MEVENT * aevent)
 {
     int result = ERR;
 
@@ -1906,12 +1910,12 @@ NCURSES_SP_NAME(getmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 NCURSES_EXPORT(int)
 getmouse(MEVENT * aevent)
 {
-    return NCURSES_SP_NAME(getmouse) (CURRENT_SCREEN, aevent);
+    return NCURSES_SP_NAME(getmouse)(CURRENT_SCREEN, aevent);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
+NCURSES_SP_NAME(ungetmouse)(NCURSES_SP_DCLx MEVENT * aevent)
 {
     int result = ERR;
 
@@ -1928,7 +1932,7 @@ NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 	SP_PARM->_mouse_write++;
 
 	/* push back the notification event on the keyboard queue */
-	result = NCURSES_SP_NAME(ungetch) (NCURSES_SP_ARGx KEY_MOUSE);
+	result = NCURSES_SP_NAME(ungetch)(NCURSES_SP_ARGx KEY_MOUSE);
     }
     returnCode(result);
 }
@@ -1938,12 +1942,12 @@ NCURSES_SP_NAME(ungetmouse) (NCURSES_SP_DCLx MEVENT * aevent)
 NCURSES_EXPORT(int)
 ungetmouse(MEVENT * aevent)
 {
-    return NCURSES_SP_NAME(ungetmouse) (CURRENT_SCREEN, aevent);
+    return NCURSES_SP_NAME(ungetmouse)(CURRENT_SCREEN, aevent);
 }
 #endif
 
 NCURSES_EXPORT(mmask_t)
-NCURSES_SP_NAME(mousemask) (NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
+NCURSES_SP_NAME(mousemask)(NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
 /* set the mouse event mask */
 {
     mmask_t result = 0;
@@ -2003,7 +2007,7 @@ NCURSES_SP_NAME(mousemask) (NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
 NCURSES_EXPORT(mmask_t)
 mousemask(mmask_t newmask, mmask_t * oldmask)
 {
-    return NCURSES_SP_NAME(mousemask) (CURRENT_SCREEN, newmask, oldmask);
+    return NCURSES_SP_NAME(mousemask)(CURRENT_SCREEN, newmask, oldmask);
 }
 #endif
 
@@ -2040,7 +2044,7 @@ wenclose(const WINDOW *win, int y, int x)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(mouseinterval) (NCURSES_SP_DCLx int maxclick)
+NCURSES_SP_NAME(mouseinterval)(NCURSES_SP_DCLx int maxclick)
 /* set the maximum mouse interval within which to recognize a click */
 {
     int oldval;
@@ -2062,7 +2066,7 @@ NCURSES_SP_NAME(mouseinterval) (NCURSES_SP_DCLx int maxclick)
 NCURSES_EXPORT(int)
 mouseinterval(int maxclick)
 {
-    return NCURSES_SP_NAME(mouseinterval) (CURRENT_SCREEN, maxclick);
+    return NCURSES_SP_NAME(mouseinterval)(CURRENT_SCREEN, maxclick);
 }
 #endif
 
@@ -2075,7 +2079,7 @@ _nc_has_mouse(const SCREEN *sp)
 }
 
 NCURSES_EXPORT(bool)
-NCURSES_SP_NAME(has_mouse) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(has_mouse)(NCURSES_SP_DCL0)
 {
     return _nc_has_mouse(SP_PARM);
 }

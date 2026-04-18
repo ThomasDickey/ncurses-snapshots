@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.553 2026/04/04 22:17:51 tom Exp $
+$Id: ncurses.c,v 1.554 2026/04/18 14:44:07 tom Exp $
 
 ***************************************************************************/
 
@@ -202,6 +202,8 @@ static int
 wGetchar(WINDOW *win)
 {
     int c;
+
+    errno = 0;			/* ignore errors before this point */
 #ifdef TRACE
     while ((c = wgetch(win)) == CTRL('T')) {
 	if (_nc_tracing) {
@@ -344,6 +346,8 @@ static int
 wGet_wchar(WINDOW *win, wint_t *result)
 {
     int c;
+
+    errno = 0;			/* ignore errors before this point */
 #ifdef TRACE
     while ((c = wget_wch(win, result)) == CTRL('T')) {
 	if (_nc_tracing) {
