@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.55 2025/07/05 15:21:56 tom Exp $
+ * $Id: cardfile.c,v 1.56 2026/04/25 10:35:16 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -109,15 +109,17 @@ add_title(const char *title)
     }
 
     card = typeCalloc(CARD, (size_t) 1);
-    card->title = strdup(title);
-    card->content = strdup("");
+    if (card != NULL) {
+	card->title = strdup(title);
+	card->content = strdup("");
 
-    if (q == NULL) {
-	card->link = all_cards;
-	all_cards = card;
-    } else {
-	card->link = q->link;
-	q->link = card;
+	if (q == NULL) {
+	    card->link = all_cards;
+	    all_cards = card;
+	} else {
+	    card->link = q->link;
+	    q->link = card;
+	}
     }
 
     return card;
@@ -126,29 +128,33 @@ add_title(const char *title)
 static void
 add_content(CARD * card, const char *content)
 {
-    size_t total;
+    if (card != NULL && content != NULL) {
+	size_t total;
 
-    content = skip(content);
-    if ((total = strlen(content)) != 0) {
-	size_t offset;
+	content = skip(content);
+	if ((total = strlen(content)) != 0) {
+	    size_t offset;
 
-	if (card->content != NULL && (offset = strlen(card->content)) != 0) {
-	    total += 1 + offset;
-	    card->content = typeRealloc(char, total + 1, card->content);
-	    if (card->content) {
-		_nc_STRCPY(card->content + offset, " ", total + 1 - offset);
-		offset++;
+	    if (card->content != NULL && (offset = strlen(card->content)) != 0) {
+		total += 1 + offset;
+		card->content = typeRealloc(char, total + 1, card->content);
+		if (card->content) {
+		    _nc_STRCPY(card->content + offset, " ", total + 1 - offset);
+		    offset++;
+		}
+	    } else {
+		offset = 0;
+		if (card->content != NULL)
+		    free(card->content);
+		card->content = typeMalloc(char, total + 1);
 	    }
-	} else {
-	    offset = 0;
-	    if (card->content != NULL)
-		free(card->content);
-	    card->content = typeMalloc(char, total + 1);
+	    if (card->content)
+		_nc_STRCPY(card->content + offset, content, total + 1 - offset);
+	    else
+		failed("add_content");
 	}
-	if (card->content)
-	    _nc_STRCPY(card->content + offset, content, total + 1 - offset);
-	else
-	    failed("add_content");
+    } else {
+	failed("add_content");
     }
 }
 

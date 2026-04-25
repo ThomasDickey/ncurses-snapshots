@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4449 2026/04/18 23:04:43 tom Exp $
+-- $Id: NEWS,v 1.4452 2026/04/25 23:55:35 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,11 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260425
+	+ review screen4 vs screen5 -TD
+	+ review some XR/xr pairs -TD
+	+ fix a few gcc analyzer warnings.
 
 20260418
 	+ note in manpage that wgetch/wget_wch consistently set errno to EBADF

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2026,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.95 2025/07/05 15:11:35 tom Exp $
+  $Id: worm.c,v 1.96 2026/04/25 16:40:04 tom Exp $
 */
 
 #include <test.priv.h>
@@ -221,7 +221,6 @@ safe_wrefresh(WINDOW *w, void *data GCC_UNUSED)
 }
 #endif
 
-#ifdef KEY_RESIZE
 static void
 failed(const char *s)
 {
@@ -229,7 +228,6 @@ failed(const char *s)
     stop_curses();
     ExitProgram(EXIT_FAILURE);
 }
-#endif
 
 static void
 cleanup(void)
@@ -588,8 +586,12 @@ main(int argc, char *argv[])
 
     max_refs = LINES;
     refs = typeMalloc(int *, (size_t) max_refs);
+    if (refs == NULL)
+	failed("malloc");
     for (y = 0; y < max_refs; y++) {
 	refs[y] = typeMalloc(int, (size_t) COLS);
+	if (refs[y] == NULL)
+	    failed("malloc");
 	for (x = 0; x < COLS; x++) {
 	    refs[y][x] = 0;
 	}

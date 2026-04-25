@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2016,2017 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: list_keys.c,v 1.38 2025/07/05 15:21:56 tom Exp $
+ * $Id: list_keys.c,v 1.39 2026/04/25 16:43:16 tom Exp $
  *
  * Author: Thomas E Dickey
  *
@@ -305,6 +305,8 @@ list_keys(TERMINAL **terms, int count)
     }
 #endif
     list = typeCalloc(KEYNAMES, total + 1);
+    if (list == NULL)
+	failed("malloc");
     for (j = 0; strnames[j]; ++j) {
 	Type(j) = ktOther;
 	if (sscanf(strnames[j], "kf%d", &k) == 1) {
@@ -461,7 +463,7 @@ int
 main(int argc, char *argv[])
 {
     int ch;
-    TERMINAL **terms = typeCalloc(TERMINAL *, argc + 1);
+    TERMINAL **terms;
 
     while ((ch = getopt(argc, argv, OPTS_COMMON "fmtx")) != -1) {
 	switch (ch) {
@@ -489,6 +491,8 @@ main(int argc, char *argv[])
     use_extended_names(x_opt);
 #endif
 
+    if ((terms = typeCalloc(TERMINAL *, argc + 1)) == NULL)
+	  failed("malloc");
     if (optind < argc) {
 	int found = 0;
 	int status;

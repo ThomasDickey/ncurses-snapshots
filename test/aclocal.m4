@@ -27,7 +27,7 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl $Id: aclocal.m4,v 1.251 2026/03/21 16:51:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.252 2026/04/25 00:49:50 tom Exp $
 dnl
 dnl Author: Thomas E. Dickey
 dnl
@@ -1930,7 +1930,7 @@ CF_INTEL_COMPILER(GCC,INTEL_COMPILER,CFLAGS)
 CF_CLANG_COMPILER(GCC,CLANG_COMPILER,CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 45 updated: 2025/12/24 09:07:25
+dnl CF_GCC_WARNINGS version: 47 updated: 2026/04/12 14:38:24
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -1956,7 +1956,7 @@ AC_REQUIRE([CF_GCC_VERSION])
 if test "x$have_x" = xyes; then CF_CONST_X_STRING fi
 cat > "conftest.$ac_ext" <<EOF
 #line __oline__ "${as_me:-configure}"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == (char*)0) ; }
 EOF
 if test "$INTEL_COMPILER" = yes
 then
@@ -2829,7 +2829,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 31 updated: 2026/01/18 10:40:15
+dnl CF_NCURSES_CONFIG version: 33 updated: 2026/04/20 18:50:04
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -2868,10 +2868,10 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 			CF_ADD_LIBS($cf_pkg_libs)
 
 			AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-				[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+				[initscr(); mousemask(0,(mmask_t*)0); tigetstr((char *)0);])],
 				[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 					int main(void)
-					{ const char *xx = curses_version(); return (xx == 0); }])],
+					{ const char *xx = curses_version(); return (xx == (const char*)0); }])],
 					[cf_test_ncuconfig=yes],
 					[cf_test_ncuconfig=no],
 					[cf_test_ncuconfig=maybe])],
@@ -2895,10 +2895,10 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 		CF_ADD_LIBS($cf_pkg_libs)
 
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-			[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+			[initscr(); mousemask(0,(void*)0); tigetstr((char *)0);])],
 			[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 				int main(void)
-				{ const char *xx = curses_version(); return (xx == 0); }])],
+				{ const char *xx = curses_version(); return (xx == (const char*)0); }])],
 				[cf_have_ncuconfig=yes],
 				[cf_have_ncuconfig=no],
 				[cf_have_ncuconfig=maybe])],
@@ -3011,7 +3011,7 @@ AC_DEFINE(NCURSES,1,[Define to 1 if we are using ncurses headers/libraries])
 CF_NCURSES_VERSION
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_EXT_FUNCS version: 6 updated: 2026/03/21 12:50:37
+dnl CF_NCURSES_EXT_FUNCS version: 7 updated: 2026/04/08 16:54:46
 dnl --------------------
 dnl Since 2007/11/17, ncurses has defined NCURSES_EXT_FUNCS; earlier versions
 dnl may provide these functions.  Define the symbol if it is not defined, and
@@ -3039,7 +3039,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
 	(void) resizeterm (0, 0);
 	(void) use_default_colors ();
 	(void) use_extended_names (0);
-	(void) wresize (0, 0, 0);])],
+	(void) wresize (NULL, 0, 0);])],
 	[cf_cv_ncurses_ext_funcs=yes],
 	[cf_cv_ncurses_ext_funcs=no])
 ])
@@ -3113,7 +3113,7 @@ esac
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_LIBS version: 22 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_LIBS version: 23 updated: 2026/04/20 18:50:04
 dnl ---------------
 dnl Look for the ncurses library.  This is a little complicated on Linux,
 dnl because it may be linked with the gpm (general purpose mouse) library.
@@ -3171,7 +3171,7 @@ if test -n "$cf_ncurses_LIBS" ; then
 		fi
 	done
 	AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-		[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+		[initscr(); mousemask(0,(void*)0); tigetstr((char *)0);])],
 		[AC_MSG_RESULT(yes)],
 		[AC_MSG_RESULT(no)
 		 LIBS="$cf_ncurses_SAVE"])
@@ -4186,7 +4186,7 @@ AC_DEFUN([CF_UPPER],
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UTF8_LIB version: 12 updated: 2025/12/22 04:16:14
+dnl CF_UTF8_LIB version: 13 updated: 2026/04/19 10:06:00
 dnl -----------
 dnl Check for multibyte support, and if not found, utf8 compatibility library
 AC_DEFUN([CF_UTF8_LIB],
@@ -4199,10 +4199,10 @@ $ac_includes_default
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
-],[putwc(0,0);])],
+],[putwc(0,(FILE*)0);])],
 	[cf_cv_utf8_lib=yes],
 	[CF_FIND_LINKAGE([
-#include <libutf8.h>],[putwc(0,0);],utf8,
+#include <libutf8.h>],[putwc(0,(FILE*)0);],utf8,
 		[cf_cv_utf8_lib=add-on],
 		[cf_cv_utf8_lib=no])
 ])])
@@ -5006,7 +5006,7 @@ CF_TRY_PKG_CONFIG(Xext,,[
 		[CF_ADD_LIB(Xext)])])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_X_TOOLKIT version: 28 updated: 2025/12/15 04:04:20
+dnl CF_X_TOOLKIT version: 29 updated: 2026/04/08 04:26:01
 dnl ------------
 dnl Check for X Toolkit libraries
 AC_DEFUN([CF_X_TOOLKIT],
@@ -5062,7 +5062,7 @@ AC_CACHE_CHECK(for usable X Toolkit package,cf_cv_xt_ice_compat,[
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
 $ac_includes_default
 #include <X11/Shell.h>
-],[int num = IceConnectionNumber(0); (void) num
+],[int num = IceConnectionNumber(NULL); (void) num
 ])],[cf_cv_xt_ice_compat=yes],[cf_cv_xt_ice_compat=no])])
 
 	if test "$cf_cv_xt_ice_compat" = no

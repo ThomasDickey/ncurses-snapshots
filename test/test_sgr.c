@@ -30,14 +30,13 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_sgr.c,v 1.29 2026/01/11 12:03:22 tom Exp $
+ * $Id: test_sgr.c,v 1.30 2026/04/25 14:49:38 tom Exp $
  *
  * A simple demo of the sgr/sgr0 terminal capabilities.
  */
 #define USE_TINFO
 #include <test.priv.h>
 
-#if !HAVE_TIGETSTR
 static GCC_NORETURN void failed(const char *);
 
 static void
@@ -46,7 +45,6 @@ failed(const char *msg)
     fprintf(stderr, "%s\n", msg);
     ExitProgram(EXIT_FAILURE);
 }
-#endif
 
 #if HAVE_TIGETSTR
 
@@ -185,8 +183,10 @@ brute_force(const char *name)
     NCURSES_CONST char *my_bold;
     NCURSES_CONST char *my_revs;
     NCURSES_CONST char *my_smso;
-    char *my_name = strdup(name);
+    char *my_name;
 
+    if ((my_name = strdup(name)) == NULL)
+	failed("malloc");
     if (db_list) {
 	putenv(next_dbitem());
     }

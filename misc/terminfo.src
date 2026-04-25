@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1237 $
-#	$Date: 2026/04/11 19:37:30 $
+#	$Revision: 1.1243 $
+#	$Date: 2026/04/25 23:45:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5707,19 +5707,18 @@ xterm+tmux2|advanced xterm features used in tmux,
 #	CSI	\E [	\233
 #
 xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
-	OTbs, am, bce, km, mc5i, mir, msgr, npc, xenl, AX,
-	colors#8, cols#80, it#8, lines#24, pairs#64,
-	bel=^G, blink=\2335m, bold=\2331m, cbt=\233Z,
-	civis=\233?25l, clear=\233H\2332J,
-	cnorm=\233?25l\233?25h, cr=\r, csr=\233%i%p1%d;%p2%dr,
-	cub=\233%p1%dD, cub1=^H, cud=\233%p1%dB, cud1=\n,
+	OTbs, bce, km, mc5i, mir, npc, xenl, AX,
+	colors#8, pairs#64,
+	blink=\2335m, bold=\2331m, cbt=\233Z, civis=\233?25l,
+	clear=\233H\2332J, cnorm=\233?25l\233?25h,
+	csr=\233%i%p1%d;%p2%dr, cub=\233%p1%dD, cud=\233%p1%dB,
 	cuf=\233%p1%dC, cuf1=\233C, cup=\233%i%p1%d;%p2%dH,
 	cuu=\233%p1%dA, cuu1=\233A, cvvis=\233?12;25h,
 	dch=\233%p1%dP, dch1=\233P, dl=\233%p1%dM, dl1=\233M,
 	ech=\233%p1%dX, ed=\233J, el=\233K, el1=\2331K,
 	flash=\233?5h$<100/>\233?5l, home=\233H,
-	hpa=\233%i%p1%dG, ht=^I, hts=\210, ich=\233%p1%d@,
-	il=\233%p1%dL, il1=\233L, ind=\n, invis=\2338m,
+	hpa=\233%i%p1%dG, hts=\210, ich=\233%p1%d@,
+	il=\233%p1%dL, il1=\233L, invis=\2338m,
 	is2=\E[62"p\E\sG\233m\233?7h\E>\E7\233?1;3;4;6l\2334l\233r
 	    \E8,
 	ka1=\217w, ka3=\217u, kb2=\217y, kbeg=\217E, kc1=\217q,
@@ -5748,7 +5747,7 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	smir=\2334h, smkx=\233?1h\E=, smso=\2337m, smul=\2334m,
 	tbc=\2333g, u6=\233[%i%d;%dR, u8=\233[?%[;0123456789]c,
 	vpa=\233%i%p1%dd, use=ansi+enq, use=xterm+acs,
-	use=xterm+kbs,
+	use=xterm+kbs, use=vt100+4bsd,
 
 # Note: normally xterm supports modified function-keys as described in
 #	XTerm - "Other" modified keys
@@ -6818,7 +6817,7 @@ mlterm3|multi lingual terminal emulator 3.x,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;%?
 	    %p7%t;8%;m%?%p9%t\E(0%e\E(B%;,
 	rv=\E\\[>24;279;0c,
-	xr=\EP>\\|mlterm\\([0-9][.0-9](-.*)?\\)?\E\\\\,
+	xr=\EP>\\|mlterm\\([0-9][.0-9]+\\)\E\\\\,
 	use=ansi+enq, use=ansi+rep, use=ecma+italics,
 	use=ecma+strikeout, use=xterm+app, use=xterm+pcf2,
 	use=xterm+pcc2, use=xterm+pce2, use=xterm+meta,
@@ -8120,14 +8119,13 @@ foot-direct|foot with direct color indexing,
 	use=xterm+direct, use=foot+base,
 
 foot+base|foot base fragment,
-	am, bce, bw, mir, msgr, npc, xenl, AX, XT,
-	cols#80, it#8, lines#24,
-	bel=^G, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n, dim=\E[2m,
+	bce, bw, mir, npc, xenl, AX, XT,
+	clear=\E[H\E[2J, cub1=^H, cud1=\n, dim=\E[2m,
 	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
-	flash=\E]555\E\\, ind=\n, is2=\E[!p\E[4l\E>, kbs=^?,
-	kcbt=\E[Z, nel=\EE, oc=\E]104\E\\, op=\E[39;49m, ri=\EM,
-	rmam=\E[?7l, rmkx=\E[?1l\E>, rmm=\E[?1036h\E[?1034l,
-	rs1=\Ec, rs2=\E[!p\E[4l\E>,
+	flash=\E]555\E\\, is2=\E[!p\E[4l\E>, kbs=^?, kcbt=\E[Z,
+	nel=\EE, oc=\E]104\E\\, op=\E[39;49m, ri=\EM, rmam=\E[?7l,
+	rmkx=\E[?1l\E>, rmm=\E[?1036h\E[?1034l, rs1=\Ec,
+	rs2=\E[!p\E[4l\E>,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=,
@@ -8142,7 +8140,7 @@ foot+base|foot base fragment,
 	use=xterm+acs, use=xterm+alt+title, use=xterm+pcfkeys,
 	use=xterm+sm+1006, use=xterm+tmux2, use=xterm+sl-alt,
 	use=bracketed+paste, use=report+version,
-	use=xterm+focus,
+	use=xterm+focus, use=vt100+4bsd,
 
 ######## WEB CLIENTS
 
@@ -8274,14 +8272,14 @@ domterm|DomTerm web client,
 # - has italics
 # - has strike-out mode
 pangoterm|terminal using libvterm,
-	am, bce, mir, msgr, npc, xenl, AX, XT,
-	colors#8, cols#80, lines#24, pairs#64,
-	bel=^G, blink@, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n,
-	dch=\E[%p1%dP, dch1=\E[P, ech=\E[%p1%dX, ed=\E[J, el=\E[K,
-	el1=\E[1K, flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@,
-	ind=\n, invis@, is2=\E[!p, kbs=^?, kcbt=\E[Z, nel=\EE,
-	op=\E[39;49m, ri=\EM, rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l,
-	rs1=\Ec, rs2=\E[!p, setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
+	bce, mir, npc, xenl, AX, XT,
+	colors#8, pairs#64,
+	blink@, clear=\E[H\E[2J, cub1=^H, cud1=\n, dch=\E[%p1%dP,
+	dch1=\E[P, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
+	flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@, invis@,
+	is2=\E[!p, kbs=^?, kcbt=\E[Z, nel=\EE, op=\E[39;49m, ri=\EM,
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l, rs1=\Ec, rs2=\E[!p,
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smir=\E[4h, smkx=\E[?1h,
@@ -8293,7 +8291,7 @@ pangoterm|terminal using libvterm,
 	use=ansi+cup, use=ansi+enq, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
 	use=ansi+sgrbold, use=xterm+alt+title, use=att610+cvis,
-	use=xterm+acs,
+	use=xterm+acs, use=vt100+4bsd,
 
 pangoterm-256color|pangoterm with 256-colors,
 	use=xterm+256setaf2, use=pangoterm,
@@ -8824,9 +8822,19 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	use=ansi+apparrows, use=ansi+csr, use=ansi+erase,
 	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
 	use=ansi+rca2, use=bracketed+paste, use=ecma+color,
-	use=vt100+pf1-pf4, use=vt220+pcedit, use=xterm+alt1049,
-	use=xterm+kbs, use=vt100+enq, use=vt100+4bsd,
-	use=xterm+r5+fkeys, use=wyse+cvis,
+	use=ecma+index, use=vt100+pf1-pf4, use=vt220+pcedit,
+	use=xterm+alt1049, use=xterm+kbs, use=vt100+enq,
+	use=vt100+4bsd, use=xterm+r5+fkeys, use=wyse+cvis,
+
+screen4+da2|secondary device attributes for screen4,
+	rv=\E\\[>83;4[0-9][0-9][0-9];0c, use=report+da2,
+screen5+da2|secondary device attributes for screen5,
+	rv=\E\\[>83;5[0-9][0-9][0-9];0c, use=report+da2,
+
+# "screen" and "screen+da2" are simple, to make it easy to script.
+
+screen+da2|secondary device attributes for screen,
+	use=screen4+da2,
 
 screen|VT 100/ANSI X3.64 virtual terminal,
 	use=screen4,
@@ -8942,18 +8950,18 @@ screen4.xterm-new|screen.xterm-xfree86|screen4 customized for modern xterm,
 	invis@, kIC@, kNXT@, kPRV@, kcbt=\E[Z, meml@, memu@, nel=\EE, rep@,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;%?%p4%t;5%;%?%p5%t;2%;m,
-	E3@, rv=\E\\[>83;4[0-9][0-9][0-9];0c, use=report+da2,
-	use=screen+italics, use=screen+fkeys,
+	E3@, rv=\E\\[>83;4[0-9][0-9][0-9][0-9];0c,
+	use=report+da2, use=screen+italics, use=screen+fkeys,
 	use=xterm+x11mouse, use=ecma+index, use=ansi+rep,
 	use=xterm+pcfkeys, use=xterm+focus, use=xterm+sm+1006,
 	use=xterm+keypad, use=xterm-basic,
 
 screen5.xterm-new|screen5 customized for modern xterm,
-	rep@, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
-	use=ecma+italics, use=screen.xterm-new,
+	rep@, rv=\E\\[>83;5[0-9][0-9][0-9][0-9];0c,
+	use=ecma+italics, use=screen4.xterm-new,
 
 screen.xterm-new|screen customized for modern xterm,
-	use=screen4.xterm-new,
+	use=screen4.xterm-new, use=screen4+da2,
 
 # Don't use this, because not everyone has "screen.xterm-new":
 #:screen.xterm|screen for modern xterm,
@@ -8979,34 +8987,39 @@ screen.rxvt|screen in rxvt,
 	use=rxvt+pcfkeys, use=xterm+x11mouse, use=vt100+keypad,
 	use=screen,
 screen.Eterm|screen in Eterm,
-	use=xterm+x11mouse, use=screen+fkeys, use=Eterm,
+	use=xterm+x11mouse, use=screen+da2, use=screen+fkeys,
+	use=Eterm,
 screen.mrxvt|screen in mrxvt,
-	use=xterm+x11mouse, use=screen+fkeys, use=mrxvt,
+	use=xterm+x11mouse, use=screen+da2, use=screen+fkeys,
+	use=mrxvt,
 screen.vte|screen in any VTE-based terminal,
 	bce@,
-	rep@, use=xterm+x11mouse, use=screen+italics,
-	use=screen+fkeys, use=no+brackets, use=vte,
+	rep@, use=xterm+x11mouse, use=screen+da2,
+	use=screen+italics, use=screen+fkeys, use=no+brackets,
+	use=vte,
 screen.gnome|screen in GNOME Terminal,
 	bce@,
-	rep@, use=xterm+x11mouse, use=screen+italics,
-	use=screen+fkeys, use=no+brackets, use=gnome,
+	rep@, use=xterm+x11mouse, use=screen+da2,
+	use=screen+italics, use=screen+fkeys, use=no+brackets,
+	use=gnome,
 screen.konsole|screen in KDE console window,
 	bce@,
-	rep@, XR@, use=xterm+x11mouse, use=screen+italics,
-	use=screen+fkeys, use=no+brackets, use=konsole,
+	rep@, XR@, use=xterm+x11mouse, use=screen+da2,
+	use=screen+italics, use=screen+fkeys, use=no+brackets,
+	use=konsole,
 # fix the backspace key
 screen.linux|screen.linux-s|screen in Linux console,
 	bw,
-	kcbt@, use=linux+sfkeys, use=xterm+x11mouse,
-	use=screen+fkeys, use=screen,
+	kcbt@, use=screen+da2, use=linux+sfkeys,
+	use=xterm+x11mouse, use=screen+fkeys, use=screen,
 screen.mlterm|screen in mlterm,
 	bce@,
-	rep@, XR@, use=xterm+x11mouse, use=screen+fkeys,
-	use=no+brackets, use=mlterm,
+	rep@, XR@, use=xterm+x11mouse, use=screen+da2,
+	use=screen+fkeys, use=no+brackets, use=mlterm,
 screen.putty|screen in putty,
 	bce@,
-	rep@, use=xterm+x11mouse, use=screen+fkeys,
-	use=no+brackets, use=putty,
+	rep@, use=xterm+x11mouse, use=screen+da2,
+	use=screen+fkeys, use=no+brackets, use=putty,
 
 # The default "screen" entry is reasonably portable, but not optimal for the
 # most widely-used terminal emulators.  The "bce" capability is supported in
@@ -9077,7 +9090,7 @@ screen3|VT 100/ANSI X3.64 virtual terminal (old 3.x),
 # screen.xterm-new -- but see the discussion in
 #	https://invisible-island.net/gnu-patches/
 screen4|VT 100/ANSI X3.64 virtual terminal (4.x),
-	use=ecma+index, use=screen-base,
+	use=screen-base,
 
 # screen 5.0 was released in August 2024.  As of February 2026, a few systems
 # use it, but not Debian, Ubuntu or OpenSUSE.
@@ -9092,12 +9105,10 @@ screen4|VT 100/ANSI X3.64 virtual terminal (4.x),
 # This version has limited support for direct-colors, but does not use the
 # outer terminal's $TERM in deciding if or how to apply this.
 screen5|VT 100/ANSI X3.64 virtual terminal (5.x),
-	dim=\E[2m,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
-	RV=\E[>c, rv=\E\\[>83;5[0-9][0-9][0-9];0c,
 	use=ecma+standout, use=ecma+italics, use=ecma+index,
-	use=screen-base,
+	use=screen5+da2, use=screen-base,
 
 #### Tmux
 
@@ -9116,8 +9127,8 @@ tmux|tmux terminal multiplexer,
 	E3=\E[3J, Smulx=\E[4:%p1%dm, use=ecma+standout,
 	use=ecma+italics, use=ecma+strikeout, use=xterm+edit,
 	use=xterm+pcfkeys, use=xterm+sl, use=xterm+tmux,
-	use=screen, use=bracketed+paste, use=report+version,
-	use=xterm+focus,
+	use=screen-base, use=bracketed+paste,
+	use=report+version, use=xterm+focus,
 
 tmux-256color|tmux with 256 colors,
 	use=xterm+256setaf, use=tmux,
@@ -28204,5 +28215,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2026-04-11
 #	+ cancel bce and rep in some screen.X's -TD
+#
+# 2026-04-25
+#	+ review screen4 vs screen5 -TD
+#	+ review some XR/xr pairs -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

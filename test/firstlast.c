@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -30,7 +30,7 @@
  * This test was written by Alexander V. Lukyanov to demonstrate difference
  * between ncurses 4.1 and SVR4 curses
  *
- * $Id: firstlast.c,v 1.11 2025/07/05 15:21:56 tom Exp $
+ * $Id: firstlast.c,v 1.12 2026/04/25 16:40:04 tom Exp $
  */
 
 #include <test.priv.h>
@@ -42,24 +42,25 @@ fill(WINDOW *w, const char *str)
     int x0 = -1, y0 = -1;
     int x1, y1;
     int maxx, maxy, limit;
+    bool done = false;
 
     getmaxyx(w, maxy, maxx);
     wmove(w, 0, 0);
     limit = maxy * maxx;
 
-    for (;;) {
-	for (s = str; *s; s++) {
+    while (!done) {
+	for (s = str; *s && !done; s++) {
 	    getyx(w, y1, x1);
+	    /* waddch() should return ERR at the lower-right corner */
 	    if (waddch(w, UChar(*s)) == ERR
 		|| (x1 == x0 && y1 == y0)) {
-		wmove(w, 0, 0);
-		return;
-	    }
-	    /* waddch() should return ERR at the lower-right corner */
-	    if (--limit < 0) {
+		done = TRUE;
+	    } else if (--limit < 0) {
 		beep();
-		if (*str == '?')
-		    return;
+		if (*str == '?') {
+		    done = TRUE;
+		    continue;
+		}
 		napms(500);
 		wmove(w, maxy - 1, 0);
 		str = "?";
@@ -69,6 +70,7 @@ fill(WINDOW *w, const char *str)
 	    y0 = y1;
 	}
     }
+    wmove(w, 0, 0);
 }
 
 static void

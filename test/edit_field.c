@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2003-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: edit_field.c,v 1.34 2025/01/11 14:54:49 tom Exp $
+ * $Id: edit_field.c,v 1.35 2026/04/25 16:43:59 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the resulting length available as a
@@ -48,128 +48,57 @@ static struct {
     int result;
     const char *help;
 } commands[] = {
+    /* *INDENT-OFF* */
 
-    {
-	CTRL('A'), REQ_NEXT_CHOICE, ""
-    },
-    {
-	CTRL('B'), REQ_PREV_WORD, "go to previous word"
-    },
-    {
-	CTRL('C'), REQ_CLR_EOL, "clear to end of line"
-    },
-    {
-	CTRL('D'), REQ_DOWN_FIELD, "move downward to field"
-    },
-    {
-	CTRL('E'), REQ_END_FIELD, "go to end of field"
-    },
-    {
-	CTRL('F'), REQ_NEXT_PAGE, "go to next page"
-    },
-    {
-	CTRL('G'), REQ_DEL_WORD, "delete current word"
-    },
-    {
-	CTRL('H'), REQ_DEL_PREV, "delete previous character"
-    },
-    {
-	CTRL('I'), REQ_INS_CHAR, "insert character"
-    },
-    {
-	CTRL('K'), REQ_CLR_EOF, "clear to end of field"
-    },
-    {
-	CTRL('L'), REQ_LEFT_FIELD, "go to field to left"
-    },
-    {
-	CTRL('M'), REQ_NEW_LINE, "insert/overlay new line"
-    },
-    {
-	CTRL('N'), REQ_NEXT_FIELD, "go to next field"
-    },
-    {
-	CTRL('O'), REQ_INS_LINE, "insert blank line at cursor"
-    },
-    {
-	CTRL('P'), REQ_PREV_FIELD, "go to previous field"
-    },
-    {
-	CTRL('Q'), MY_QUIT, "exit form"
-    },
-    {
-	CTRL('R'), REQ_RIGHT_FIELD, "go to field to right"
-    },
-    {
-	CTRL('S'), REQ_BEG_FIELD, "go to beginning of field"
-    },
-    {
-	CTRL('T'), MY_EDT_MODE, "toggle O_EDIT mode, clear field status",
-    },
-    {
-	CTRL('U'), REQ_UP_FIELD, "move upward to field"
-    },
-    {
-	CTRL('V'), REQ_DEL_CHAR, "delete character"
-    },
-    {
-	CTRL('W'), REQ_NEXT_WORD, "go to next word"
-    },
-    {
-	CTRL('X'), REQ_CLR_FIELD, "clear field"
-    },
-    {
-	CTRL('Y'), REQ_DEL_LINE, "delete line"
-    },
-    {
-	CTRL('Z'), REQ_PREV_CHOICE, ""
-    },
-    {
-	CTRL('['), MY_QUIT, "exit form"
-    },
-    {
-	CTRL(']'), MY_INS_MODE, "toggle REQ_INS_MODE/REQ_OVL_MODE",
-    },
-    {
-	HELP_KEY_2, MY_HELP, "show this screen",
-    },
-    {
-	KEY_BACKSPACE, REQ_DEL_PREV, "delete previous character"
-    },
-    {
-	KEY_DOWN, REQ_DOWN_CHAR, "move down 1 character"
-    },
-    {
-	KEY_END, REQ_LAST_FIELD, "go to last field"
-    },
-    {
-	KEY_HOME, REQ_FIRST_FIELD, "go to first field"
-    },
-    {
-	KEY_LEFT, REQ_LEFT_CHAR, "move left 1 character"
-    },
-    {
-	KEY_LL, REQ_LAST_FIELD, "go to last field"
-    },
-    {
-	KEY_NEXT, REQ_NEXT_FIELD, "go to next field"
-    },
-    {
-	KEY_NPAGE, REQ_NEXT_PAGE, "go to next page"
-    },
-    {
-	KEY_PPAGE, REQ_PREV_PAGE, "go to previous page"
-    },
-    {
-	KEY_PREVIOUS, REQ_PREV_FIELD, "go to previous field"
-    },
-    {
-	KEY_RIGHT, REQ_RIGHT_CHAR, "move right 1 character"
-    },
-    {
-	KEY_UP, REQ_UP_CHAR, "move up 1 character"
-    }
+    { CTRL('A'),     REQ_NEXT_CHOICE,  "" },
+    { CTRL('B'),     REQ_PREV_WORD,    "go to previous word" },
+    { CTRL('C'),     REQ_CLR_EOL,      "clear to end of line" },
+    { CTRL('D'),     REQ_DOWN_FIELD,   "move downward to field" },
+    { CTRL('E'),     REQ_END_FIELD,    "go to end of field" },
+    { CTRL('F'),     REQ_NEXT_PAGE,    "go to next page" },
+    { CTRL('G'),     REQ_DEL_WORD,     "delete current word" },
+    { CTRL('H'),     REQ_DEL_PREV,     "delete previous character" },
+    { CTRL('I'),     REQ_INS_CHAR,     "insert character" },
+    { CTRL('K'),     REQ_CLR_EOF,      "clear to end of field" },
+    { CTRL('L'),     REQ_LEFT_FIELD,   "go to field to left" },
+    { CTRL('M'),     REQ_NEW_LINE,     "insert/overlay new line" },
+    { CTRL('N'),     REQ_NEXT_FIELD,   "go to next field" },
+    { CTRL('O'),     REQ_INS_LINE,     "insert blank line at cursor" },
+    { CTRL('P'),     REQ_PREV_FIELD,   "go to previous field" },
+    { CTRL('Q'),     MY_QUIT,          "exit form" },
+    { CTRL('R'),     REQ_RIGHT_FIELD,  "go to field to right" },
+    { CTRL('S'),     REQ_BEG_FIELD,    "go to beginning of field" },
+    { CTRL('T'),     MY_EDT_MODE,      "toggle O_EDIT mode, clear field status", },
+    { CTRL('U'),     REQ_UP_FIELD,     "move upward to field" },
+    { CTRL('V'),     REQ_DEL_CHAR,     "delete character" },
+    { CTRL('W'),     REQ_NEXT_WORD,    "go to next word" },
+    { CTRL('X'),     REQ_CLR_FIELD,    "clear field" },
+    { CTRL('Y'),     REQ_DEL_LINE,     "delete line" },
+    { CTRL('Z'),     REQ_PREV_CHOICE,  "" },
+    { CTRL('['),     MY_QUIT,          "exit form" },
+    { CTRL(']'),     MY_INS_MODE,      "toggle REQ_INS_MODE/REQ_OVL_MODE", },
+    { HELP_KEY_2,    MY_HELP,          "show this screen", },
+    { KEY_BACKSPACE, REQ_DEL_PREV,     "delete previous character" },
+    { KEY_DOWN,      REQ_DOWN_CHAR,    "move down 1 character" },
+    { KEY_END,       REQ_LAST_FIELD,   "go to last field" },
+    { KEY_HOME,      REQ_FIRST_FIELD,  "go to first field" },
+    { KEY_LEFT,      REQ_LEFT_CHAR,    "move left 1 character" },
+    { KEY_LL,        REQ_LAST_FIELD,   "go to last field" },
+    { KEY_NEXT,      REQ_NEXT_FIELD,   "go to next field" },
+    { KEY_NPAGE,     REQ_NEXT_PAGE,    "go to next page" },
+    { KEY_PPAGE,     REQ_PREV_PAGE,    "go to previous page" },
+    { KEY_PREVIOUS,  REQ_PREV_FIELD,   "go to previous field" },
+    { KEY_RIGHT,     REQ_RIGHT_CHAR,   "move right 1 character" },
+    { KEY_UP,        REQ_UP_CHAR,      "move up 1 character" }
+    /* *INDENT-ON* */
 };
+
+static void
+failed(const char *msg)
+{
+    perror(msg);
+    ExitProgram(EXIT_FAILURE);
+}
 
 /*
  * Display a temporary window listing the keystroke-commands we recognize.
@@ -179,8 +108,10 @@ help_edit_field(void)
 {
     int used = 0;
     unsigned n;
-    char **msgs = typeCalloc(char *, 3 + SIZEOF(commands));
+    char **msgs;
 
+    if ((msgs = typeCalloc(char *, 3 + SIZEOF(commands))) == NULL)
+	  failed("malloc");
     msgs[used++] = strdup("Defined form edit/traversal keys:");
     for (n = 0; n < SIZEOF(commands); ++n) {
 	char *msg;
@@ -255,6 +186,8 @@ init_edit_field(FIELD *f, char *value)
 	int rows, cols, frow, fcol, nrow, nbuf;
 
 	ptr = typeCalloc(FieldAttrs, (size_t) 1);
+	if (ptr == NULL)
+	    failed("malloc");
 	ptr->background = field_back(f);
 	if (field_info(f, &rows, &cols, &frow, &fcol, &nrow, &nbuf) == E_OK) {
 	    ptr->row_count = nrow;

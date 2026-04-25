@@ -1,6 +1,6 @@
-# $Id: MKkeyname.awk,v 1.53 2024/12/07 21:09:39 tom Exp $
+# $Id: MKkeyname.awk,v 1.54 2026/04/25 16:38:57 tom Exp $
 ##############################################################################
-# Copyright 2020,2024 Thomas E. Dickey                                       #
+# Copyright 2020-2024,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -127,7 +127,10 @@ END {
 	print "						_nc_STRCPY(p, \"^?\", P_LIMIT);"
 	print "					else"
 	print "						_nc_SPRINTF(p, _nc_SLIMIT(P_LIMIT) \"%c\", cc);"
+	print "#pragma GCC diagnostic push"
+	print "#pragma GCC diagnostic ignored \"-Wanalyzer-malloc-leak\""
 	print "					MyTable[c] = strdup(name);"
+	print "#pragma GCC diagnostic pop"
 	print "				}"
 	print "				result = MyTable[c];"
 	print "			}"

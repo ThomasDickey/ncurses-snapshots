@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,7 +28,7 @@
  ****************************************************************************/
 
 /*
- * $Id: sp_tinfo.c,v 1.31 2025/07/05 15:21:56 tom Exp $
+ * $Id: sp_tinfo.c,v 1.32 2026/04/25 16:40:04 tom Exp $
  *
  * TOTO: add option for non-sp-funcs interface
  */
@@ -52,6 +52,13 @@ typedef struct {
 static bool opt_n = FALSE;	/* true to suppress new_prescr */
 static bool opt_t = FALSE;	/* true to use termcap */
 
+static void
+failed(const char *msg)
+{
+    perror(msg);
+    ExitProgram(EXIT_FAILURE);
+}
+
 static int
 my_outc(SCREEN *sp, int ch)
 {
@@ -69,9 +76,11 @@ my_errc(SCREEN *sp, int ch)
 static MYDATA *
 initialize(const char *name, FILE *output)
 {
-    MYDATA *result = typeCalloc(MYDATA, 1);
+    MYDATA *result;
     int error;
 
+    if ((result = typeCalloc(MYDATA, 1)) == NULL)
+	failed("malloc");
     result->fp = output;
     result->name = name;
     result->outc = (fileno(output) == 1) ? my_outc : my_errc;

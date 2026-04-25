@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2021-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2021-2025,2026 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: combine.c,v 1.28 2025/07/05 15:21:56 tom Exp $
+ * $Id: combine.c,v 1.29 2026/04/25 10:37:08 tom Exp $
  */
 
 #include <test.priv.h>
@@ -39,6 +39,13 @@
 
 static int k_opt;
 static int r_opt;
+
+static void
+failed(const char *msg)
+{
+    perror(msg);
+    ExitProgram(EXIT_FAILURE);
+}
 
 static int
 next_char(int value)
@@ -158,16 +165,21 @@ show_help(WINDOW *current)
     };
     /* *INDENT-ON* */
 
-    char **msgs = typeCalloc(char *, SIZEOF(help) + 3);
+    char **msgs;
     size_t s;
     int d = 0;
 
-    msgs[d++] = strdup("Test diacritic combining-characters range "
-		       "U+0300..U+036F");
-    msgs[d++] = strdup("");
+    if ((msgs = typeCalloc(char *, SIZEOF(help) + 3)) == NULL
+	|| (msgs[d++] = strdup("Test diacritic combining-characters range "
+			       "U+0300..U+036F")) == NULL
+	|| (msgs[d++] = strdup("")) == NULL)
+	  failed("malloc");
     for (s = 0; s < SIZEOF(help); ++s) {
 	char *name = strdup(keyname(help[s].key));
-	size_t need = (11 + strlen(name) + strlen(help[s].msg));
+	size_t need;
+	if (name == NULL)
+	    failed("malloc");
+	need = (11 + strlen(name) + strlen(help[s].msg));
 	msgs[d] = typeMalloc(char, need);
 	_nc_SPRINTF(msgs[d], _nc_SLIMIT(need) "%-10s%s", name, help[s].msg);
 	free(name);

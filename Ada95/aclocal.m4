@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey
 dnl
-dnl $Id: aclocal.m4,v 1.244 2026/01/31 14:07:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.245 2026/04/25 00:48:02 tom Exp $
 dnl Macros used in NCURSES Ada95 auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1685,7 +1685,7 @@ CF_INTEL_COMPILER(GCC,INTEL_COMPILER,CFLAGS)
 CF_CLANG_COMPILER(GCC,CLANG_COMPILER,CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 45 updated: 2025/12/24 09:07:25
+dnl CF_GCC_WARNINGS version: 47 updated: 2026/04/12 14:38:24
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -1711,7 +1711,7 @@ AC_REQUIRE([CF_GCC_VERSION])
 if test "x$have_x" = xyes; then CF_CONST_X_STRING fi
 cat > "conftest.$ac_ext" <<EOF
 #line __oline__ "${as_me:-configure}"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == (char*)0) ; }
 EOF
 if test "$INTEL_COMPILER" = yes
 then
@@ -3208,7 +3208,7 @@ printf("old\\n");
 	,[$1=no])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_CONFIG version: 31 updated: 2026/01/18 10:40:15
+dnl CF_NCURSES_CONFIG version: 33 updated: 2026/04/20 18:50:04
 dnl -----------------
 dnl Tie together the configure-script macros for ncurses, preferring these in
 dnl order:
@@ -3247,10 +3247,10 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 			CF_ADD_LIBS($cf_pkg_libs)
 
 			AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-				[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+				[initscr(); mousemask(0,(mmask_t*)0); tigetstr((char *)0);])],
 				[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 					int main(void)
-					{ const char *xx = curses_version(); return (xx == 0); }])],
+					{ const char *xx = curses_version(); return (xx == (const char*)0); }])],
 					[cf_test_ncuconfig=yes],
 					[cf_test_ncuconfig=no],
 					[cf_test_ncuconfig=maybe])],
@@ -3274,10 +3274,10 @@ if test "x${PKG_CONFIG:=none}" != xnone; then
 		CF_ADD_LIBS($cf_pkg_libs)
 
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-			[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+			[initscr(); mousemask(0,(void*)0); tigetstr((char *)0);])],
 			[AC_RUN_IFELSE([AC_LANG_SOURCE([#include <${cf_cv_ncurses_header:-curses.h}>
 				int main(void)
-				{ const char *xx = curses_version(); return (xx == 0); }])],
+				{ const char *xx = curses_version(); return (xx == (const char*)0); }])],
 				[cf_have_ncuconfig=yes],
 				[cf_have_ncuconfig=no],
 				[cf_have_ncuconfig=maybe])],
@@ -3456,7 +3456,7 @@ esac
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_NCURSES_LIBS version: 22 updated: 2025/12/22 04:16:14
+dnl CF_NCURSES_LIBS version: 23 updated: 2026/04/20 18:50:04
 dnl ---------------
 dnl Look for the ncurses library.  This is a little complicated on Linux,
 dnl because it may be linked with the gpm (general purpose mouse) library.
@@ -3514,7 +3514,7 @@ if test -n "$cf_ncurses_LIBS" ; then
 		fi
 	done
 	AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <${cf_cv_ncurses_header:-curses.h}>],
-		[initscr(); mousemask(0,0); tigetstr((char *)0);])],
+		[initscr(); mousemask(0,(void*)0); tigetstr((char *)0);])],
 		[AC_MSG_RESULT(yes)],
 		[AC_MSG_RESULT(no)
 		 LIBS="$cf_ncurses_SAVE"])
@@ -4881,7 +4881,7 @@ AC_DEFUN([CF_UPPER],
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UTF8_LIB version: 12 updated: 2025/12/22 04:16:14
+dnl CF_UTF8_LIB version: 13 updated: 2026/04/19 10:06:00
 dnl -----------
 dnl Check for multibyte support, and if not found, utf8 compatibility library
 AC_DEFUN([CF_UTF8_LIB],
@@ -4894,10 +4894,10 @@ $ac_includes_default
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
-],[putwc(0,0);])],
+],[putwc(0,(FILE*)0);])],
 	[cf_cv_utf8_lib=yes],
 	[CF_FIND_LINKAGE([
-#include <libutf8.h>],[putwc(0,0);],utf8,
+#include <libutf8.h>],[putwc(0,(FILE*)0);],utf8,
 		[cf_cv_utf8_lib=add-on],
 		[cf_cv_utf8_lib=no])
 ])])
@@ -5324,7 +5324,7 @@ fi
 AC_SUBST(PKG_CONFIG_LIBDIR)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PTHREAD version: 8 updated: 2025/12/24 12:27:29
+dnl CF_WITH_PTHREAD version: 9 updated: 2026/04/08 16:35:56
 dnl ---------------
 dnl Check for POSIX thread library.
 AC_DEFUN([CF_WITH_PTHREAD],
@@ -5348,8 +5348,8 @@ if test "$with_pthread" != no ; then
 	    AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <pthread.h>
 ],[
-		int rc = pthread_create(0,0,0,0);
-		int r2 = pthread_mutexattr_settype(0, 0);
+		int rc = pthread_create(NULL,NULL,NULL,NULL);
+		int r2 = pthread_mutexattr_settype(NULL, 0);
 ])],[with_pthread=yes],[with_pthread=no])
 	    LIBS="$cf_save_LIBS"
 	    AC_MSG_RESULT($with_pthread)

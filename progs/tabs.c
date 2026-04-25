@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -39,7 +39,7 @@
 #include <progs.priv.h>
 #include <tty_settings.h>
 
-MODULE_ID("$Id: tabs.c,v 1.56 2024/12/07 22:10:45 tom Exp $")
+MODULE_ID("$Id: tabs.c,v 1.57 2026/04/25 10:39:00 tom Exp $")
 
 static GCC_NORETURN void usage(void);
 
@@ -573,9 +573,13 @@ main(int argc, char *argv[])
 		default:
 		    if (isdigit(UChar(*option))) {
 			char *copy = strdup(option);
-			*skip_list(copy) = '\0';
-			tab_list = copy;
-			option = skip_list(option) - 1;
+			if (copy != NULL) {
+			    *skip_list(copy) = '\0';
+			    tab_list = copy;
+			    option = skip_list(option) - 1;
+			} else {
+			    failed("option");
+			}
 		    } else {
 			usage();
 		    }
@@ -681,28 +685,30 @@ main(int argc, char *argv[])
 		margin = -1;
 	}
 
-	list = decode_tabs(tab_list, margin);
+	if (tab_list != NULL) {
+	    list = decode_tabs(tab_list, margin);
 
-	if (list != NULL) {
-	    if (!no_op)
-		do_tabs(list);
-	    if (debug) {
+	    if (list != NULL) {
+		if (!no_op)
+		    do_tabs(list);
+		if (debug) {
+		    fflush(stderr);
+		    printf("tabs %s%s", tab_list, new_line);
+		    print_ruler(list, new_line);
+		    write_tabs(list, new_line);
+		}
+		free(list);
+	    } else if (debug) {
 		fflush(stderr);
 		printf("tabs %s%s", tab_list, new_line);
-		print_ruler(list, new_line);
-		write_tabs(list, new_line);
 	    }
-	    free(list);
-	} else if (debug) {
-	    fflush(stderr);
-	    printf("tabs %s%s", tab_list, new_line);
-	}
-	if (!no_op) {
-	    if (change_tty) {
-		restore_tty_settings();
+	    if (!no_op) {
+		if (change_tty) {
+		    restore_tty_settings();
+		}
 	    }
+	    rc = EXIT_SUCCESS;
 	}
-	rc = EXIT_SUCCESS;
     }
     if (append != NULL)
 	free(append);

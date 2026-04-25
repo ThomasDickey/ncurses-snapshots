@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: clip_printw.c,v 1.27 2025/07/05 15:21:56 tom Exp $
+ * $Id: clip_printw.c,v 1.28 2026/04/25 16:40:04 tom Exp $
  *
  * demonstrate how to use printw with/without wrapping.
  */
@@ -40,10 +40,7 @@
 #define SHOW(n) ((n) == ERR ? "ERR" : "OK")
 #define COLOR_DEFAULT (-1)
 
-#define X_BASE 0
-#define Y_BASE 1
 #define MARGIN 1
-#define Y_TOP  (Y_BASE + MARGIN)
 
 typedef struct {
     unsigned c;
@@ -174,12 +171,11 @@ video_params(unsigned state, attr_t *attr)
 static void
 fill_window(WINDOW *win)
 {
-    int y_top = (win == stdscr) ? Y_BASE : MARGIN;
     int y, x;
     int y0 = -1, x0 = -1;
 
     getyx(win, y, x);
-    wmove(win, y_top, 0);
+    wmove(win, MARGIN, 0);
     while (waddstr(win, "0123456789 abcdefghijklmnopqrstuvwxyz ") != ERR) {
 	int y1, x1;
 	getyx(win, y1, x1);
@@ -223,7 +219,7 @@ do_subwindow(WINDOW *win, const STATUS * sp, void func(WINDOW *))
 	WINDOW *win2 = derwin(win1,
 			      sp->y_max - (2 * MARGIN) - 2,
 			      sp->x_max - (2 * MARGIN) - 2,
-			      (win == stdscr) ? Y_BASE : Y_BASE,
+			      MARGIN,
 			      MARGIN);
 
 	if (win2 != NULL) {
@@ -262,7 +258,7 @@ init_status(WINDOW *win, STATUS * sp)
     getbegyx(win, sp->y_beg, sp->x_beg);
     getmaxyx(win, sp->y_max, sp->x_max);
 
-    wmove(win, sp->y_val = Y_BASE, sp->x_val = 0);
+    wmove(win, sp->y_val = MARGIN, sp->x_val = 0);
 }
 
 static void
@@ -321,7 +317,7 @@ update_status(WINDOW *win, STATUS * sp)
 	break;
     case KEY_PPAGE:
     case CTRL('B'):
-	wmove(win, sp->y_val = Y_BASE, sp->x_val);
+	wmove(win, sp->y_val = MARGIN, sp->x_val);
 	break;
     case KEY_NPAGE:
     case CTRL('F'):
@@ -339,7 +335,7 @@ update_status(WINDOW *win, STATUS * sp)
 	break;
     case KEY_UP:
     case 'k':
-	if (sp->y_val > Y_BASE)
+	if (sp->y_val > MARGIN)
 	    wmove(win, --(sp->y_val), sp->x_val);
 	break;
     case KEY_RIGHT:

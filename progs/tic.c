@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.339 2026/03/07 23:34:12 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.340 2026/04/25 10:34:37 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -1222,7 +1222,8 @@ same_color(NCURSES_CONST char *oldcap, NCURSES_CONST char *newcap, int limit)
 	for (n = same = 0; n < limit; ++n) {
 	    char *oldvalue = safe_strdup(TIPARM_1(oldcap, n));
 	    char *newvalue = safe_strdup(TIPARM_1(newcap, n));
-	    same += !strcmp(oldvalue, newvalue);
+	    if (oldvalue != NULL && newvalue != NULL)
+		same += !strcmp(oldvalue, newvalue);
 	    free(oldvalue);
 	    free(newvalue);
 	}
@@ -2349,7 +2350,7 @@ parse_delay_value(const char *src, double *delays, int *always)
 	    break;
 	if (*src++ == '*') {
 	    star = 1;
-	} else {
+	} else if (always != NULL) {
 	    *always = 1;
 	}
     }

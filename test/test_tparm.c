@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: test_tparm.c,v 1.45 2025/07/05 15:11:35 tom Exp $
+ * $Id: test_tparm.c,v 1.46 2026/04/25 16:40:04 tom Exp $
  *
  * Exercise tparm/tiparm, either for all possible capabilities with fixed
  * parameters, or one capability with specific combinations of parameters.
@@ -505,6 +505,8 @@ main(int argc, char *argv[])
      * simplify scripting a check of the whole database.
      */
     old_term = strdup((old_term == NULL) ? "unknown" : old_term);
+    if (old_term == NULL)
+	failed("malloc");
     if (t_opt != NULL) {
 	if (!strcmp(t_opt, "-")) {
 	    char buffer[BUFSIZ];

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: move_field.c,v 1.22 2025/07/05 15:11:35 tom Exp $
+ * $Id: move_field.c,v 1.23 2026/04/25 16:43:03 tom Exp $
  *
  * Demonstrate move_field().
  */
@@ -78,12 +78,21 @@ static struct {
 /* *INDENT-ON* */
 
 static void
+failed(const char *msg)
+{
+    perror(msg);
+    ExitProgram(EXIT_FAILURE);
+}
+
+static void
 my_help_edit_field(void)
 {
     int used = 0;
     unsigned n;
-    char **msgs = typeCalloc(char *, 3 + SIZEOF(commands));
+    char **msgs;
 
+    if ((msgs = typeCalloc(char *, 3 + SIZEOF(commands))) == NULL)
+	  failed("malloc");
     msgs[used++] = strdup("Defined form edit/traversal keys:");
     for (n = 0; n < SIZEOF(commands); ++n) {
 	char *msg;

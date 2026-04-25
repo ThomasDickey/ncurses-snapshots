@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1157 2026/03/21 15:56:07 tom Exp $
+dnl $Id: aclocal.m4,v 1.1160 2026/04/25 17:45:15 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -2685,7 +2685,7 @@ unset ac_ct_$1
 unset $1
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_DLSYM version: 6 updated: 2025/12/24 12:27:29
+dnl CF_FUNC_DLSYM version: 7 updated: 2026/04/24 20:37:12
 dnl -------------
 dnl Test for dlsym() and related functions, as well as libdl.
 dnl
@@ -2711,7 +2711,7 @@ if test "$cf_have_dlsym" = yes ; then
 	],[
 		void *obj;
 		if ((obj = dlopen("filename", 0)) != NULL) {
-			if (dlsym(obj, "symbolname") == 0) {
+			if (dlsym(obj, "symbolname") == NULL) {
 			dlclose(obj);
 			}
 		}])],[
@@ -3197,7 +3197,7 @@ CF_INTEL_COMPILER(GCC,INTEL_COMPILER,CFLAGS)
 CF_CLANG_COMPILER(GCC,CLANG_COMPILER,CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 45 updated: 2025/12/24 09:07:25
+dnl CF_GCC_WARNINGS version: 47 updated: 2026/04/12 14:38:24
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -3223,7 +3223,7 @@ AC_REQUIRE([CF_GCC_VERSION])
 if test "x$have_x" = xyes; then CF_CONST_X_STRING fi
 cat > "conftest.$ac_ext" <<EOF
 #line __oline__ "${as_me:-configure}"
-int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == (char*)0) ; }
 EOF
 if test "$INTEL_COMPILER" = yes
 then
@@ -3813,7 +3813,7 @@ if test "$GXX" = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GXX_WARNINGS version: 14 updated: 2025/12/24 09:07:25
+dnl CF_GXX_WARNINGS version: 16 updated: 2026/04/25 13:44:18
 dnl ---------------
 dnl Check if the compiler supports useful warning options.
 dnl
@@ -7305,7 +7305,7 @@ AC_DEFUN([CF_PROG_TBL],[
 AC_PATH_PROG(NROFF_TBL,tbl)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_REGEX version: 21 updated: 2026/02/21 20:35:24
+dnl CF_REGEX version: 23 updated: 2026/04/24 20:37:12
 dnl --------
 dnl Attempt to determine if we've got one of the flavors of regular-expression
 dnl code that we can support.
@@ -7381,12 +7381,12 @@ case "$cf_regex_func" in
 (*)
 	for cf_regex_hdr in regex.h
 	do
-		AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <sys/types.h>
-#include <stdio.h>
+		AC_LINK_IFELSE([AC_LANG_PROGRAM([$ac_includes_default
 #include <$cf_regex_hdr>],[
-			regex_t *p = NULL;
+			regex_t *p = malloc(sizeof(*p));
+			regmatch_t *q = malloc(5 * sizeof(*q));
 			int x = regcomp(p, "", 0);
-			int y = regexec(p, "", 0, 0, 0);
+			int y = regexec(p, "", 5, q, 0);
 			(void)x;
 			(void)y;
 			regfree(p);
@@ -8875,7 +8875,7 @@ AC_DEFUN([CF_UPPER],
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_UTF8_LIB version: 12 updated: 2025/12/22 04:16:14
+dnl CF_UTF8_LIB version: 13 updated: 2026/04/19 10:06:00
 dnl -----------
 dnl Check for multibyte support, and if not found, utf8 compatibility library
 AC_DEFUN([CF_UTF8_LIB],
@@ -8888,10 +8888,10 @@ $ac_includes_default
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
-],[putwc(0,0);])],
+],[putwc(0,(FILE*)0);])],
 	[cf_cv_utf8_lib=yes],
 	[CF_FIND_LINKAGE([
-#include <libutf8.h>],[putwc(0,0);],utf8,
+#include <libutf8.h>],[putwc(0,(FILE*)0);],utf8,
 		[cf_cv_utf8_lib=add-on],
 		[cf_cv_utf8_lib=no])
 ])])
@@ -9982,7 +9982,7 @@ fi
 AC_SUBST(PKG_CONFIG_LIBDIR)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_PTHREAD version: 8 updated: 2025/12/24 12:27:29
+dnl CF_WITH_PTHREAD version: 9 updated: 2026/04/08 16:35:56
 dnl ---------------
 dnl Check for POSIX thread library.
 AC_DEFUN([CF_WITH_PTHREAD],
@@ -10006,8 +10006,8 @@ if test "$with_pthread" != no ; then
 	    AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <pthread.h>
 ],[
-		int rc = pthread_create(0,0,0,0);
-		int r2 = pthread_mutexattr_settype(0, 0);
+		int rc = pthread_create(NULL,NULL,NULL,NULL);
+		int r2 = pthread_mutexattr_settype(NULL, 0);
 ])],[with_pthread=yes],[with_pthread=no])
 	    LIBS="$cf_save_LIBS"
 	    AC_MSG_RESULT($with_pthread)

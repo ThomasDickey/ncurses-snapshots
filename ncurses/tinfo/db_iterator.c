@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2006-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: db_iterator.c,v 1.54 2025/12/25 18:19:46 tom Exp $")
+MODULE_ID("$Id: db_iterator.c,v 1.56 2026/04/25 14:58:45 tom Exp $")
 
 #define HaveTicDirectory _nc_globals.have_tic_directory
 #define KeepTicDirectory _nc_globals.keep_tic_directory
@@ -130,20 +130,18 @@ update_getenv(const char *name, DBDIRS which)
 	if ((value = getenv(name)) != NULL) {
 	    value = strdup(value);
 	}
-	same_value = ((value == NULL && cached_value == NULL) ||
-		      (value != NULL &&
-		       cached_value != NULL &&
-		       strcmp(value, cached_value) == 0));
+#define SafeS(s) ((s) != NULL) ? (s) : ""
+	same_value = !strcmp(SafeS(value), SafeS(cached_value));
 
 	/* Set variable name to enable checks in cache_expired(). */
 	my_vars[which].name = name;
 
-	if (!same_value) {
+	if (same_value) {
+	    free(value);
+	} else {
 	    FreeIfNeeded(my_vars[which].value);
 	    my_vars[which].value = value;
 	    result = TRUE;
-	} else {
-	    free(value);
 	}
     }
     return result;

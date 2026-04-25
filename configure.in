@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.831 2026/03/21 15:53:11 tom Exp $
+dnl $Id: configure.in,v 1.832 2026/04/24 22:21:48 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.831 $)
+AC_REVISION($Revision: 1.832 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -490,7 +490,7 @@ if test "$with_gpm" != no ; then
 			CF_VERBOSE(assuming soname for gpm is $with_gpm)
 			cf_cv_gpm_soname="$with_gpm"
 		else
-			CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open(0,0)) Gpm_Close();],gpm)
+			CF_LIB_SONAME([#include <gpm.h>],[if (Gpm_Open((void*)0,0)) Gpm_Close();],gpm)
 		fi
 		test "$cf_cv_gpm_soname" != "unknown" && AC_DEFINE_UNQUOTED(LIBGPM_SONAME,"$cf_cv_gpm_soname",[Define as needed to set the gpm share library soname])
 		SHLIB_LIST="-ldl $SHLIB_LIST"
@@ -708,14 +708,13 @@ AC_ARG_ENABLE(big-core,
 	[  --disable-big-core      assume machine has little memory],
 	[with_big_core=$enableval],
 	[AC_RUN_IFELSE([AC_LANG_SOURCE([
-#include <stdlib.h>
-#include <string.h>
+$ac_includes_default
 int main(void) {
 	unsigned long n = 6000000L;
-	char *s = malloc(n);
-	if (s != 0)
-		s[[0]] = s[[n-1]] = 0;
-	${cf_cv_main_return:-return}(s == 0);
+	char **s = malloc(n);
+	if (s != (char**)0)
+		s[[0]] = s[[n-1]] = (char*)0;
+	${cf_cv_main_return:-return}(s == (char**)0);
 }])],
 	[with_big_core=yes],
 	[with_big_core=no],

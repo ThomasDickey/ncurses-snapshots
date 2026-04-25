@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2021 Thomas E. Dickey                                     *
+ * Copyright 2020-2021,2026 Thomas E. Dickey                                *
  * Copyright 1998-2010,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.30 2021/03/27 23:49:58 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.31 2026/04/25 10:32:31 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -186,7 +186,7 @@ Connect_Fields(FORM *form, FIELD **fields)
     RETURN(E_BAD_ARGUMENT);
 
   /* allocate page structures */
-  if ((pg = typeMalloc(_PAGE, page_nr)) != (_PAGE *) 0)
+  if ((pg = typeCalloc(_PAGE, page_nr)) != (_PAGE *) 0)
     {
       T((T_CREATE("_PAGE %p"), (void *)pg));
       form->page = pg;
@@ -298,7 +298,7 @@ Associate_Fields(FORM *form, FIELD **fields)
 |                    E_SYSTEM_ERROR  - not enough memory
 +--------------------------------------------------------------------------*/
 FORM_EXPORT(FORM *)
-NCURSES_SP_NAME(new_form) (NCURSES_SP_DCLx FIELD **fields)
+NCURSES_SP_NAME(new_form)(NCURSES_SP_DCLx FIELD **fields)
 {
   int err = E_SYSTEM_ERROR;
   FORM *form = (FORM *)0;
@@ -349,7 +349,7 @@ NCURSES_SP_NAME(new_form) (NCURSES_SP_DCLx FIELD **fields)
 FORM_EXPORT(FORM *)
 new_form(FIELD **fields)
 {
-  return NCURSES_SP_NAME(new_form) (CURRENT_SCREEN, fields);
+  return NCURSES_SP_NAME(new_form)(CURRENT_SCREEN, fields);
 }
 #endif
 

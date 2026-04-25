@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 2005-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.28 2026/04/14 00:20:23 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.29 2026/04/14 00:20:23 tom Exp $")
 
 #undef CUR
 #define CUR tp->

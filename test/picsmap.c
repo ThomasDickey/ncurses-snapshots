@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2017,2018 Free Software Foundation, Inc.                       *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.155 2025/07/05 15:11:35 tom Exp $
+ * $Id: picsmap.c,v 1.156 2026/04/25 16:40:04 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -942,7 +942,8 @@ parse_rgb(char **data)
 
     for (need = 0; data[need] != NULL; ++need) ;
 
-    result = typeCalloc(RGB_NAME, need + 2);
+    if ((result = typeCalloc(RGB_NAME, need + 2)) == NULL)
+	failed("malloc");
     how_much.name += (sizeof(RGB_NAME) * (need + 2));
 
     for (n = 0; data[n] != NULL; ++n) {
