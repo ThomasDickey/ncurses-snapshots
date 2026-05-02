@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1243 $
-#	$Date: 2026/04/25 23:45:26 $
+#	$Revision: 1.1247 $
+#	$Date: 2026/05/02 22:42:21 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8074,6 +8074,58 @@ kitty+common|KovId's TTY common properties,
 kitty+setal|set underline colors (nonstandard),
 	setal=\E[58:2::%p1%{65536}%/%d:%p1%{256}%/%{255}%&%d:%p1
 	      %{255}%&%dm,
+
+#### Warp
+# https://github.com/warpdotdev/Warp
+#
+# The actual terminal emulator is a small fraction of the source code
+# (even the part under app/src/terminal is mostly not relevant to terminal
+# emulation, rather it is concerned with the "agentic" interface).
+#
+# Initially a little over 900,000 lines of rust source code, it grew to 1.25
+# million lines during the week after release.
+#
+# The Git repo lacks history before the public release in April 2026; comments
+# in the source code indicate that features were copied from several other
+# terminals, but the timeline, scope of copying, and motivation is obscured.
+#
+# Testing with vttest and tack:
+# + DA response is \E[?62c, asserting that it is a VT220.  It is not.
+#   For instance, it does not support DECSCA.
+# + DA2 response is \E[>0;95;0c, which is misattributed to iTerm2.
+#   That was from a 2017 comment in vim's source code, mentioning workarounds
+#   which some developers have used to pretend their programs are xterm.
+#   The corresponding code in iTerm2 was revised in 2020 to use a more
+#   elaborate workaround.
+# + ISO-6429 cursor-movement works
+# + xterm-style window reporting for sizes (chars, pixels) works
+# + none of the tab-stop tests in vttest work.
+# + the bce test for ECH/indexing fails.
+# + control-modifier does not work with function-keys, although shift- and alt-
+#   modifiers imitate xterm, so the "xterm+pcfkeys" block is incomplete.
+# + SD works, SU, SL, SR do not.
+# + no left/right margin
+# + no blinking text
+# + no cvvis, etc
+# + no flash
+# + no meta mode (an escape-prefix is not the same thing)
+# + no X11 mouse, but SGR mouse works
+# + no application keypad mode
+#
+# Other comments
+# + works only with specific shells (no bash, yes zsh)
+# + cursor-right does not work reliably
+# + sets TERM to xterm-256color, which is a poor match.
+# + supports XTVERSION, unlike alacritty
+warp|warp terminal,
+	bce@,
+	civis@, cnorm@, cvvis@, kcbt=\E[Z, RV=\E[>c, XR=\E[>0q,
+	rv=\E\\[>0;95;0c,
+	xr=\EP>\\|Warp\\(([[:alnum:]._]+)\\)\E\\\\,
+	use=ansi+rep, use=bracketed+paste, use=ecma+italics,
+	use=xterm+sm+1006, use=xterm+pcfkeys,
+	use=ecma+strikeout, use=xterm+tmux, use=xterm+256color,
+	use=xterm-basic,
 
 ######## WAYLAND CLIENTS
 
@@ -28219,5 +28271,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2026-04-25
 #	+ review screen4 vs screen5 -TD
 #	+ review some XR/xr pairs -TD
+#
+# 2026-05-02
+#	+ add warp -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

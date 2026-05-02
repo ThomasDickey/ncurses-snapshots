@@ -76,7 +76,7 @@
 #endif
 #undef CUR
 
-MODULE_ID("$Id: lib_twait.c,v 1.88 2026/04/18 22:18:52 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.89 2026/04/27 07:35:26 tom Exp $")
 
 /*
  * Returns an elapsed time, in milliseconds (if possible).
@@ -283,7 +283,7 @@ _nc_timed_wait(const SCREEN *sp MAYBE_UNUSED,
 		&& (ev->data.fev.flags & _NC_EVENT_FILE_READABLE)) {
 		ev->data.fev.result = 0;
 		for (c = 0; c < count; c++)
-		    if (fds[count].revents & POLLNVAL) {
+		    if (fds[c].revents & POLLNVAL) {
 			errno = EBADF;
 		    } else if (fds[c].fd == ev->data.fev.fd
 			       && fds[c].revents & POLLIN) {
