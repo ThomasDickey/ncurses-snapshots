@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1247 $
-#	$Date: 2026/05/02 22:42:21 $
+#	$Revision: 1.1250 $
+#	$Date: 2026/05/09 23:25:16 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5822,7 +5822,11 @@ xterm|xterm terminal emulator (X Window System),
 # This entry assumes that xterm's handling of VT100 SI/SO is disabled by
 # setting the vt100Graphics resource to false.
 xterm-utf8|xterm with no VT100 line-drawing in UTF-8 mode,
-	U8#1, use=xterm,
+	U8#1,
+	acsc@, enacs@, rmacs@,
+	sgr=\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?
+	    %p4%t;5%;%?%p7%t;8%;m,
+	sgr0=\E[m, smacs@, use=xterm,
 
 # These building-blocks allow access to the X titlebar and icon name as a
 # status line.  There are a few problems in using them in entries:
@@ -7944,6 +7948,21 @@ rio-direct|rio with direct-colors,
 #	http://lists.gnu.org/archive/html/bug-ncurses/2018-09/msg00005.html
 #	https://github.com/kovidgoyal/kitty/issues/879
 #
+# Version 0.46.1 (Debian testing)
+# Version 0.43.1 (Fedora rawhide)
+# Tested 2026/05/09
+# Notes:
+#	Generally kitty presents a nonstandard window size, e.g. 71x20.
+#	Its manual documents a keyboard resize window function which does
+#	not work in in either Fedora or Debian.  In the latter, the window
+#	manager can resize the window.
+#
+# vttest
+#	blink works
+# tack
+#	some modified function-keys, e.g., kf15 have changed.
+#	italics do not work with Fedora rawhide, work with Debian testing.
+#
 # Version 0.21.2 (June 28, 2021)
 # changes since 0.19.1
 # Notes:
@@ -8049,17 +8068,19 @@ kitty+common|KovId's TTY common properties,
 	cols#80, lines#24,
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
 	     yzz{{||}}~~,
-	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n,
-	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, ech=\E[%p1%dX,
-	ed=\E[J, el=\E[K, el1=\E[1K, flash=\E[?5h$<100/>\E[?5l,
-	ich=\E[%p1%d@, ind=\n, kBEG=\E[1;2E, kbeg=\EOE, kcbt=\E[Z,
-	op=\E[39;49m, rev=\E[7m, ri=\EM, rmacs=\E(B, rmam=\E[?7l,
-	rmir=\E[4l, rmkx=\E[?1l, rs1=\E]\E\\\Ec,
-	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
-	    %?%p1%p3%|%t;7%;m,
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cr=\r,
+	cub1=^H, cud1=\n, dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m,
+	dsl=\E]2;\E\\, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
+	flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@, ind=\n,
+	kBEG=\E[1;2E, kbeg=\EOE, kcbt=\E[Z, kf15=\E[13;2~,
+	kf27=\E[13;5~, kf39=\E[13;6~, kf51=\E[13;3~,
+	kf63=\E[13;4~, op=\E[39;49m, rev=\E[7m, ri=\EM, rmacs=\E(B,
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l, rs1=\E]\E\\\Ec,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
+	    %t;7%;%?%p4%t;5%;%?%p7%t;8%;%?%p5%t;2%;m,
 	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smir=\E[4h,
-	smkx=\E[?1h, Smulx=\E[4:%p1%dm,
-	rv=\E\\[>1;4[0-9][0-9][0-9];41c,
+	smkx=\E[?1h, Ms=\E]52;%p1%s;%p2%s\E\\, Se=\E[0 q,
+	Smulx=\E[4:%p1%dm, rv=\E\\[>1;4[0-9][0-9][0-9];41c,
 	xr=\EP>\\|kitty\\([0-9]+\\.[0-9]+\\.[0-9]+\\)\E\\
 	   \\,
 	use=ansi+csr, use=ansi+cup, use=ansi+enq, use=ansi+idl,
@@ -8119,7 +8140,7 @@ kitty+setal|set underline colors (nonstandard),
 # + supports XTVERSION, unlike alacritty
 warp|warp terminal,
 	bce@,
-	civis@, cnorm@, cvvis@, kcbt=\E[Z, RV=\E[>c, XR=\E[>0q,
+	civis@, cnorm@, cvvis@, kcbt=\E[Z, RV=\E[>c, XF@, XR=\E[>0q, XT@,
 	rv=\E\\[>0;95;0c,
 	xr=\EP>\\|Warp\\(([[:alnum:]._]+)\\)\E\\\\,
 	use=ansi+rep, use=bracketed+paste, use=ecma+italics,
@@ -8466,6 +8487,14 @@ wezterm-direct16|Wez's Terminal Emulator with direct colors (16 indexed),
 # - cannot run, because the package is not signed.
 #
 # Fedora rawhide
+# contour-terminal-0.6.3.8249-2.fc45.x86_64
+# - function keys match xterm
+# - passes vttest for SL, SR, CBT, CHT
+# - cursor position is incorrect in vttest alternate screen tests
+# - REP and VPR still do not work in vttest
+# - left/right margins do not work in vttest, but does not dump core
+# - sitm/ritm (italics) still do not work.
+# - no improvements are seen with sixels
 # contour-terminal-0.6.1.7494-2.fc42.x86_64
 # - most core dumps are finally gone, works when 3D acceleration is disabled.
 # - fails mir and related "in" tests in tack.
@@ -8527,13 +8556,8 @@ contour|contour-latest|Contour Terminal Emulator,
 	bel=^G, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n, dim=\E[2m,
 	ech=\E[%p1%dX, el1=\E[1K, flash=\E[?5h$<100/>\E[?5l,
 	ind=\n, ka1=, ka3=, kbs=^?, kc1=, kc3=, kcbt=\E[Z, kend=\EOF,
-	kf13=\E[O2P, kf14=\E[O2Q, kf15=\E[O2R, kf16=\E[O2S,
-	kf25=\E[O5P, kf26=\E[O5Q, kf27=\E[O5R, kf28=\E[O5S,
-	kf37=\E[O6P, kf38=\E[O6Q, kf39=\E[O6R, kf40=\E[O6S,
-	kf49=\E[O3P, kf50=\E[O3Q, kf51=\E[O3R, kf52=\E[O3S,
-	kf61=\E[O4P, kf62=\E[O4Q, kf63=\E[O4R, khlp=, kmous=\E[M,
-	kund=, oc=\E]104\E\\, op=\E[39;49m, ri=\EM, rmam=\E[?7l,
-	rmkx=\E[?1l, rs1=\E]\E\\\Ec,
+	khlp=, kmous=\E[M, kund=, oc=\E]104\E\\, op=\E[39;49m,
+	ri=\EM, rmam=\E[?7l, rmkx=\E[?1l, rs1=\E]\E\\\Ec,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p5%t;2%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h,
@@ -8545,10 +8569,10 @@ contour|contour-latest|Contour Terminal Emulator,
 	use=ansi+enq, use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
 	use=ansi+sgrbold, use=bracketed+paste, use=dec+sl,
-	use=ecma+index, use=ecma+overline, use=vt220+cvis,
-	use=ecma+strikeout, use=xterm+256color, use=xterm+acs,
-	use=xterm+alt1049, use=xterm+pcc2, use=xterm+pce2,
-	use=xterm+pcf2, use=report+version,
+	use=ecma+italics, use=ecma+index, use=ecma+overline,
+	use=vt220+cvis, use=ecma+strikeout, use=xterm+256color,
+	use=xterm+acs, use=xterm+alt1049, use=xterm+pcc2,
+	use=xterm+pce2, use=xterm+pcf2, use=report+version,
 
 contour-direct|Contour terminal with direct colors,
 	use=xterm+direct, use=contour,
@@ -8861,22 +8885,22 @@ screen-base|VT 100/ANSI X3.64 virtual terminal (base),
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
 	     yzz{{||}}~~,
 	blink=\E[5m, bold=\E[1m, cub1=^H, cud1=\n,
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, cvvis=\E[34l,
-	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, ech=\E[%p1%dX,
-	el1=\E[1K, flash=\Eg, ich=\E[%p1%d@, indn=\E[%p1%dS,
-	is2=\E)0, kbs=^?, kcbt=\E[Z, khome=\E[1~, kmous=\E[M,
-	nel=\EE, rev=\E[7m, ri=\EM, rmir=\E[4l, rmkx=\E[?1l\E>,
-	rmso=\E[23m, rs2=\Ec\E[?1000l\E[?25h,
+	cup=\E[%i%p1%d;%p2%dH, cvvis=\E[34l, dch=\E[%p1%dP,
+	dch1=\E[P, dim=\E[2m, ech=\E[%p1%dX, el1=\E[1K, flash=\Eg,
+	ich=\E[%p1%d@, is2=\E)0, kbs=^?, kcbt=\E[Z, khome=\E[1~,
+	kmous=\E[M, nel=\EE, rev=\E[7m, ri=\EM, rmir=\E[4l,
+	rmkx=\E[?1l\E>, rmso=\E[23m, rs2=\Ec\E[?1000l\E[?25h,
 	sgr=\E[0%?%p6%t;1%;%?%p1%t;3%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;
 	    5%;%?%p5%t;2%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smir=\E[4h, smkx=\E[?1h\E=, smso=\E[3m,
 	E0=\E(B, S0=\E(%p1%c, use=ecma+underline,
-	use=ansi+apparrows, use=ansi+csr, use=ansi+erase,
-	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
-	use=ansi+rca2, use=bracketed+paste, use=ecma+color,
-	use=ecma+index, use=vt100+pf1-pf4, use=vt220+pcedit,
-	use=xterm+alt1049, use=xterm+kbs, use=vt100+enq,
-	use=vt100+4bsd, use=xterm+r5+fkeys, use=wyse+cvis,
+	use=ansi+apparrows, use=ansi+cpr, use=ansi+csr,
+	use=ansi+erase, use=ansi+idl, use=ansi+inittabs,
+	use=ansi+local, use=ansi+rca2, use=bracketed+paste,
+	use=ecma+color, use=ecma+index, use=vt100+pf1-pf4,
+	use=vt220+pcedit, use=xterm+alt1049, use=xterm+kbs,
+	use=vt100+enq, use=vt100+4bsd, use=xterm+r5+fkeys,
+	use=wyse+cvis,
 
 screen4+da2|secondary device attributes for screen4,
 	rv=\E\\[>83;4[0-9][0-9][0-9];0c, use=report+da2,
@@ -28274,5 +28298,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2026-05-02
 #	+ add warp -TD
+#
+# 2026-05-09
+#	+ cancel XF, XT in warp -TD
+#	+ review kitty -TD
+#	+ review contour -TD
+#	+ eliminate vt100-style line drawing from xterm-utf8 -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

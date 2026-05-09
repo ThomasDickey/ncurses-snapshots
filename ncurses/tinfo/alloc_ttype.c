@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1999-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.55 2025/02/16 18:31:37 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.56 2026/05/09 16:18:18 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -394,7 +394,7 @@ adjust_cancels(TERMTYPE2 *to, TERMTYPE2 *from)
 		if (_nc_del_ext_name(to, name, STRING)
 		    || _nc_del_ext_name(to, name, NUMBER)) {
 		    k = _nc_ins_ext_name(to, name, BOOLEAN);
-		    to->Booleans[k] = FALSE;
+		    to->Booleans[k] = CANCELLED_BOOLEAN;
 		} else {
 		    j++;
 		}
