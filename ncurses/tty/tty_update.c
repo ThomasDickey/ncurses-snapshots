@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -91,7 +91,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tty_update.c,v 1.323 2025/12/27 12:34:03 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.324 2026/05/16 22:53:53 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -152,7 +152,7 @@ position_check(NCURSES_SP_DCLx int expected_y, int expected_x, const char *legen
     if (!_nc_tracing || (expected_y < 0 && expected_x < 0))
 	return;
 
-    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     memset(buf, '\0', sizeof(buf));
     NCURSES_PUTP2_FLUSH("cpr", "\033[6n");	/* only works on ANSI-compatibles */
     *(s = buf) = 0;
@@ -174,12 +174,12 @@ position_check(NCURSES_SP_DCLx int expected_y, int expected_x, const char *legen
 	if (expected_y < 0)
 	    expected_y = y - 1;
 	if (y - 1 != expected_y || x - 1 != expected_x) {
-	    NCURSES_SP_NAME(beep) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_2("\033[%d;%dH",
-					     expected_y + 1,
-					     expected_x + 1),
-				    1, NCURSES_SP_NAME(_nc_outch));
+	    NCURSES_SP_NAME(beep)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_2("\033[%d;%dH",
+					    expected_y + 1,
+					    expected_x + 1),
+				   1, NCURSES_SP_NAME(_nc_outch));
 	    _tracef("position seen (%d, %d) doesn't match expected one (%d, %d) in %s",
 		    y - 1, x - 1, expected_y, expected_x, legend);
 	} else {
@@ -425,7 +425,7 @@ check_pending(NCURSES_SP_DCL0)
     }
     if (have_pending) {
 	SP_PARM->_fifohold = 5;
-	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     }
     return FALSE;
 }
@@ -548,9 +548,9 @@ can_clear_with(NCURSES_SP_DCLx ARG_CH_T ch)
 	    return FALSE;
 	if ((pair = GetPair(CHDEREF(ch))) != 0) {
 	    NCURSES_COLOR_T fg, bg;
-	    if (NCURSES_SP_NAME(pair_content) (NCURSES_SP_ARGx
-					       (short) pair,
-					       &fg, &bg) == ERR
+	    if (NCURSES_SP_NAME(pair_content)(NCURSES_SP_ARGx
+					        (short) pair,
+					      &fg, &bg) == ERR
 		|| !(isDefaultColor(fg) && isDefaultColor(bg))) {
 		return FALSE;
 	    }
@@ -657,12 +657,12 @@ EmitRange(NCURSES_SP_DCLx const NCURSES_CH_T *ntext, int num)
 			    (SP_PARM->_acs_map[CharOf(ntext0)] & A_CHARTEXT),
 			    AttrOf(ntext0) | A_ALTCHARSET);
 		}
-		NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-					TIPARM_2(repeat_char,
-						 CharOf(temp),
-						 rep_count),
-					1,
-					NCURSES_SP_NAME(_nc_outch));
+		NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				       TIPARM_2(repeat_char,
+						CharOf(temp),
+						rep_count),
+				       1,
+				       NCURSES_SP_NAME(_nc_outch));
 		SP_PARM->_curscol += rep_count;
 
 		if (wrap_possible)
@@ -821,10 +821,10 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
     if (SP_PARM->_endwin == ewSuspend) {
 
 	T(("coming back from shell mode"));
-	NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(reset_prog_mode)(NCURSES_SP_ARG);
 
-	NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_ARG);
-	NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_mvcur_resume)(NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_screen_resume)(NCURSES_SP_ARG);
 	SP_PARM->_mouse_resume(SP_PARM);
 
 	SP_PARM->_endwin = ewRunning;
@@ -846,8 +846,9 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
      * guaranteed room for its cookie).  If not, nuke the added attributes out
      * of the span.
      */
+    _nc_cookie_updates(SP_PARM);
 #if USE_XMC_SUPPORT
-    if (magic_cookie_glitch > 0) {
+    if (SP_PARM->cookie_active) {
 	int j, k;
 	attr_t rattr = A_NORMAL;
 
@@ -1016,7 +1017,7 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 	nonempty = Min(screen_lines(SP_PARM), NewScreen(SP_PARM)->_maxy + 1);
 
 	if (SP_PARM->_scrolling) {
-	    NCURSES_SP_NAME(_nc_scroll_optimize) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(_nc_scroll_optimize)(NCURSES_SP_ARG);
 	}
 
 	nonempty = ClrBottom(NCURSES_SP_ARGx nonempty);
@@ -1077,11 +1078,11 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
      * past the current position.
      */
 #if USE_XMC_SUPPORT
-    if (magic_cookie_glitch != 0)
+    if (SP_PARM->cookie_active)
 #endif
 	UpdateAttrs(SP_PARM, normal);
 
-    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     WINDOW_ATTRS(CurScreen(SP_PARM)) = WINDOW_ATTRS(NewScreen(SP_PARM));
 
 #if USE_TRACE_TIMES
@@ -1217,10 +1218,10 @@ ClrToEOS(NCURSES_SP_DCLx NCURSES_CH_T blank)
 
     UpdateAttrs(SP_PARM, blank);
     TPUTS_TRACE("clr_eos");
-    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-			    clr_eos,
-			    screen_lines(SP_PARM) - row,
-			    NCURSES_SP_NAME(_nc_outch));
+    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			   clr_eos,
+			   screen_lines(SP_PARM) - row,
+			   NCURSES_SP_NAME(_nc_outch));
 
     while (col < screen_columns(SP_PARM))
 	CurScreen(SP_PARM)->_line[row].text[col++] = blank;
@@ -1385,7 +1386,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 	 * will work properly only once, since we may overwrite a cookie in a
 	 * following operation.
 	 */
-    } else if (magic_cookie_glitch > 0) {
+    } else if (SP_PARM->cookie_active) {
 	GoTo(NCURSES_SP_ARGx lineno, firstChar);
 	for (n = 0; n < screen_columns(SP_PARM); n++) {
 	    int m = n + magic_cookie_glitch;
@@ -1527,7 +1528,7 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
 	} else if ((nLastChar != oLastChar)
 		   && (!CharEq(newLine[nLastChar], oldLine[oLastChar])
 		       || !(SP_PARM->_nc_sp_idcok
-			    && NCURSES_SP_NAME(has_ic) (NCURSES_SP_ARG)))) {
+			    && NCURSES_SP_NAME(has_ic)(NCURSES_SP_ARG)))) {
 	    GoTo(NCURSES_SP_ARGx lineno, firstChar);
 	    if ((oLastChar - nLastChar) > SP_PARM->_el_cost) {
 		if (PutRange(NCURSES_SP_ARGx
@@ -1656,11 +1657,11 @@ ClearScreen(NCURSES_SP_DCLx NCURSES_CH_T blank)
 #if NCURSES_EXT_FUNCS
     if (SP_PARM->_coloron
 	&& !SP_PARM->_default_color) {
-	NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_ARGx
-				       (short) GET_SCREEN_PAIR(SP_PARM),
-				       0,
-				       FALSE,
-				       NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(_nc_do_color)(NCURSES_SP_ARGx
+				        (short) GET_SCREEN_PAIR(SP_PARM),
+				      0,
+				      FALSE,
+				      NCURSES_SP_NAME(_nc_outch));
 	if (!back_color_erase) {
 	    fast_clear = FALSE;
 	}
@@ -1681,10 +1682,10 @@ ClearScreen(NCURSES_SP_DCLx NCURSES_CH_T blank)
 	    GoTo(NCURSES_SP_ARGx 0, 0);
 	    UpdateAttrs(SP_PARM, blank);
 	    TPUTS_TRACE("clr_eos");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    clr_eos,
-				    screen_lines(SP_PARM),
-				    NCURSES_SP_NAME(_nc_outch));
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   clr_eos,
+				   screen_lines(SP_PARM),
+				   NCURSES_SP_NAME(_nc_outch));
 	} else if (clr_eol) {
 	    SP_PARM->_cursrow = SP_PARM->_curscol = -1;
 	    UpdateAttrs(SP_PARM, blank);
@@ -1731,10 +1732,10 @@ InsStr(NCURSES_SP_DCLx NCURSES_CH_T *line, int count)
     /* The order must match that of InsCharCost. */
     if (parm_ich) {
 	TPUTS_TRACE("parm_ich");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_ich, count),
-				1,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_ich, count),
+			       1,
+			       NCURSES_SP_NAME(_nc_outch));
 	while (count > 0) {
 	    PutAttrChar(NCURSES_SP_ARGx CHREF(*line));
 	    line++;
@@ -1784,10 +1785,10 @@ DelChar(NCURSES_SP_DCLx int count)
 
     if (parm_dch) {
 	TPUTS_TRACE("parm_dch");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_dch, count),
-				1,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_dch, count),
+			       1,
+			       NCURSES_SP_NAME(_nc_outch));
     } else {
 	int n;
 
@@ -1853,18 +1854,18 @@ scroll_csr_forward(NCURSES_SP_DCLx
 	GoTo(NCURSES_SP_ARGx bot, 0);
 	UpdateAttrs(SP_PARM, blank);
 	TPUTS_TRACE("parm_index");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_index, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_index, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else if (parm_delete_line && bot == maxy) {
 	GoTo(NCURSES_SP_ARGx top, 0);
 	UpdateAttrs(SP_PARM, blank);
 	TPUTS_TRACE("parm_delete_line");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_delete_line, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_delete_line, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else if (scroll_forward && top == miny && bot == maxy) {
 	GoTo(NCURSES_SP_ARGx bot, 0);
 	UpdateAttrs(SP_PARM, blank);
@@ -1918,18 +1919,18 @@ scroll_csr_backward(NCURSES_SP_DCLx
 	GoTo(NCURSES_SP_ARGx top, 0);
 	UpdateAttrs(SP_PARM, blank);
 	TPUTS_TRACE("parm_rindex");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_rindex, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_rindex, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else if (parm_insert_line && bot == maxy) {
 	GoTo(NCURSES_SP_ARGx top, 0);
 	UpdateAttrs(SP_PARM, blank);
 	TPUTS_TRACE("parm_insert_line");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_insert_line, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_insert_line, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else if (scroll_reverse && top == miny && bot == maxy) {
 	GoTo(NCURSES_SP_ARGx top, 0);
 	UpdateAttrs(SP_PARM, blank);
@@ -1974,10 +1975,10 @@ scroll_idl(NCURSES_SP_DCLx int n, int del, int ins, NCURSES_CH_T blank)
 	NCURSES_PUTP2("delete_line", delete_line);
     } else if (parm_delete_line) {
 	TPUTS_TRACE("parm_delete_line");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_delete_line, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_delete_line, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else {			/* if (delete_line) */
 	for (i = 0; i < n; i++) {
 	    NCURSES_PUTP2("delete_line", delete_line);
@@ -1990,10 +1991,10 @@ scroll_idl(NCURSES_SP_DCLx int n, int del, int ins, NCURSES_CH_T blank)
 	NCURSES_PUTP2("insert_line", insert_line);
     } else if (parm_insert_line) {
 	TPUTS_TRACE("parm_insert_line");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(parm_insert_line, n),
-				n,
-				NCURSES_SP_NAME(_nc_outch));
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(parm_insert_line, n),
+			       n,
+			       NCURSES_SP_NAME(_nc_outch));
     } else {			/* if (insert_line) */
 	for (i = 0; i < n; i++) {
 	    NCURSES_PUTP2("insert_line", insert_line);
@@ -2012,11 +2013,11 @@ scroll_idl(NCURSES_SP_DCLx int n, int del, int ins, NCURSES_CH_T blank)
  * save/restore cursor capabilities if the terminal has them.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
-			      int n,
-			      int top,
-			      int bot,
-			      int maxy)
+NCURSES_SP_NAME(_nc_scrolln)(NCURSES_SP_DCLx
+			     int n,
+			     int top,
+			     int bot,
+			     int maxy)
 /* scroll region from top to bot by n lines */
 {
     NCURSES_CH_T blank;
@@ -2036,7 +2037,7 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
     /*
      * If we scroll, we might remove a cookie.
      */
-    if (magic_cookie_glitch > 0) {
+    if (SP_PARM->cookie_active) {
 	return (ERR);
     }
 #endif
@@ -2142,7 +2143,7 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
 		      blank);
 
     /* shift hash values too - they can be reused */
-    NCURSES_SP_NAME(_nc_scroll_oldhash) (NCURSES_SP_ARGx n, top, bot);
+    NCURSES_SP_NAME(_nc_scroll_oldhash)(NCURSES_SP_ARGx n, top, bot);
 
     return (OK);
 }
@@ -2151,12 +2152,12 @@ NCURSES_SP_NAME(_nc_scrolln) (NCURSES_SP_DCLx
 NCURSES_EXPORT(int)
 _nc_scrolln(int n, int top, int bot, int maxy)
 {
-    return NCURSES_SP_NAME(_nc_scrolln) (CURRENT_SCREEN, n, top, bot, maxy);
+    return NCURSES_SP_NAME(_nc_scrolln)(CURRENT_SCREEN, n, top, bot, maxy);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_screen_resume)(NCURSES_SP_DCL0)
 {
     assert(SP_PARM);
 
@@ -2166,7 +2167,7 @@ NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_DCL0)
 
     /* reset color pairs and definitions */
     if (SP_PARM->_coloron || SP_PARM->_color_defs)
-	NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_reset_colors)(NCURSES_SP_ARG);
 
     /* restore user-defined colors, if any */
     if (SP_PARM->_color_defs < 0 && !SP_PARM->_direct_color.value) {
@@ -2209,27 +2210,27 @@ NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 _nc_screen_resume(void)
 {
-    NCURSES_SP_NAME(_nc_screen_resume) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_screen_resume)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_screen_init) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_screen_init)(NCURSES_SP_DCL0)
 {
-    NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_screen_resume)(NCURSES_SP_ARG);
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_screen_init(void)
 {
-    NCURSES_SP_NAME(_nc_screen_init) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_screen_init)(CURRENT_SCREEN);
 }
 #endif
 
 /* wrap up screen handling */
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_screen_wrap)(NCURSES_SP_DCL0)
 {
     if (SP_PARM != NULL) {
 
@@ -2239,11 +2240,11 @@ NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 	    && !SP_PARM->_default_color) {
 	    static const NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 	    SP_PARM->_default_color = TRUE;
-	    NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_ARGx
-					   -1,
-					   0,
-					   FALSE,
-					   NCURSES_SP_NAME(_nc_outch));
+	    NCURSES_SP_NAME(_nc_do_color)(NCURSES_SP_ARGx
+					  -1,
+					  0,
+					  FALSE,
+					  NCURSES_SP_NAME(_nc_outch));
 	    SP_PARM->_default_color = FALSE;
 
 	    TINFO_MVCUR(NCURSES_SP_ARGx
@@ -2256,7 +2257,7 @@ NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 	}
 #endif
 	if (SP_PARM->_color_defs) {
-	    NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(_nc_reset_colors)(NCURSES_SP_ARG);
 	}
     }
 }
@@ -2265,13 +2266,13 @@ NCURSES_SP_NAME(_nc_screen_wrap) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 _nc_screen_wrap(void)
 {
-    NCURSES_SP_NAME(_nc_screen_wrap) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_screen_wrap)(CURRENT_SCREEN);
 }
 #endif
 
 #if USE_XMC_SUPPORT
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_do_xmc_glitch) (NCURSES_SP_DCLx attr_t previous)
+NCURSES_SP_NAME(_nc_do_xmc_glitch)(NCURSES_SP_DCLx attr_t previous)
 {
     if (SP_PARM != NULL) {
 	attr_t chg = XMC_CHANGES(previous ^ AttrOf(SCREEN_ATTRS(SP_PARM)));
@@ -2293,7 +2294,7 @@ NCURSES_SP_NAME(_nc_do_xmc_glitch) (NCURSES_SP_DCLx attr_t previous)
 NCURSES_EXPORT(void)
 _nc_do_xmc_glitch(attr_t previous)
 {
-    NCURSES_SP_NAME(_nc_do_xmc_glitch) (CURRENT_SCREEN, previous);
+    NCURSES_SP_NAME(_nc_do_xmc_glitch)(CURRENT_SCREEN, previous);
 }
 #endif
 

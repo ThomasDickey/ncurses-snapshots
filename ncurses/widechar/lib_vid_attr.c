@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2026 Thomas E. Dickey                                *
  * Copyright 2002-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vid_attr.c,v 1.32 2024/12/07 20:08:59 tom Exp $")
+MODULE_ID("$Id: lib_vid_attr.c,v 1.33 2026/05/16 22:53:53 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \
@@ -74,11 +74,11 @@ MODULE_ID("$Id: lib_vid_attr.c,v 1.32 2024/12/07 20:08:59 tom Exp $")
 	mode |= (attr_t) ColorPair(pair)
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(vid_puts) (NCURSES_SP_DCLx
-			   attr_t newmode,
-			   NCURSES_PAIRS_T pair_arg,
-			   void *opts OPTIONAL_PAIR,
-			   NCURSES_SP_OUTC outc)
+NCURSES_SP_NAME(vid_puts)(NCURSES_SP_DCLx
+			  attr_t newmode,
+			  NCURSES_PAIRS_T pair_arg,
+			  void *opts OPTIONAL_PAIR,
+			  NCURSES_SP_OUTC outc)
 {
     int color_pair = pair_arg;
 #if NCURSES_EXT_COLORS
@@ -111,8 +111,7 @@ NCURSES_SP_NAME(vid_puts) (NCURSES_SP_DCLx
 		     _traceattr(previous_attr), previous_pair));
 
 #if !USE_XMC_SUPPORT
-    if ((SP_PARM != 0)
-	&& (magic_cookie_glitch > 0))
+    if ((SP_PARM != 0) && SP_PARM->cookie_active)
 	newmode &= ~(SP_PARM->_xmc_suppress);
 #endif
 
@@ -191,18 +190,18 @@ NCURSES_SP_NAME(vid_puts) (NCURSES_SP_DCLx
     } else if (set_attributes) {
 	if (turn_on || turn_off) {
 	    TPUTS_TRACE("set_attributes");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_9(set_attributes,
-					     (newmode & A_STANDOUT) != 0,
-					     (newmode & A_UNDERLINE) != 0,
-					     (newmode & A_REVERSE) != 0,
-					     (newmode & A_BLINK) != 0,
-					     (newmode & A_DIM) != 0,
-					     (newmode & A_BOLD) != 0,
-					     (newmode & A_INVIS) != 0,
-					     (newmode & A_PROTECT) != 0,
-					     (newmode & A_ALTCHARSET) != 0),
-				    1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_9(set_attributes,
+					      (newmode & A_STANDOUT) != 0,
+					      (newmode & A_UNDERLINE) != 0,
+					      (newmode & A_REVERSE) != 0,
+					      (newmode & A_BLINK) != 0,
+					      (newmode & A_DIM) != 0,
+					      (newmode & A_BOLD) != 0,
+					      (newmode & A_INVIS) != 0,
+					      (newmode & A_PROTECT) != 0,
+					      (newmode & A_ALTCHARSET) != 0),
+				   1, outc);
 	    previous_attr &= ALL_BUT_COLOR;
 	    previous_pair = 0;
 	}
@@ -284,7 +283,7 @@ NCURSES_SP_NAME(vid_puts) (NCURSES_SP_DCLx
     T((T_CALLED("vid_puts(%s,%d)"), _traceattr(newmode), color_pair));
     (void) opts;
     set_color(newmode, color_pair);
-    returnCode(NCURSES_SP_NAME(vidputs) (NCURSES_SP_ARGx newmode, outc));
+    returnCode(NCURSES_SP_NAME(vidputs)(NCURSES_SP_ARGx newmode, outc));
 #endif
 }
 
@@ -296,34 +295,34 @@ vid_puts(attr_t newmode,
 	 NCURSES_OUTC outc)
 {
     SetSafeOutcWrapper(outc);
-    return NCURSES_SP_NAME(vid_puts) (CURRENT_SCREEN,
-				      newmode,
-				      pair_arg,
-				      opts,
-				      _nc_outc_wrapper);
+    return NCURSES_SP_NAME(vid_puts)(CURRENT_SCREEN,
+				     newmode,
+				     pair_arg,
+				     opts,
+				     _nc_outc_wrapper);
 }
 #endif
 
 #undef vid_attr
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(vid_attr) (NCURSES_SP_DCLx
-			   attr_t newmode,
-			   NCURSES_PAIRS_T pair_arg,
-			   void *opts)
+NCURSES_SP_NAME(vid_attr)(NCURSES_SP_DCLx
+			  attr_t newmode,
+			  NCURSES_PAIRS_T pair_arg,
+			  void *opts)
 {
     T((T_CALLED("vid_attr(%s,%d)"), _traceattr(newmode), (int) pair_arg));
-    returnCode(NCURSES_SP_NAME(vid_puts) (NCURSES_SP_ARGx
-					  newmode,
-					  pair_arg,
-					  opts,
-					  NCURSES_SP_NAME(_nc_putchar)));
+    returnCode(NCURSES_SP_NAME(vid_puts)(NCURSES_SP_ARGx
+					 newmode,
+					 pair_arg,
+					 opts,
+					 NCURSES_SP_NAME(_nc_putchar)));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 vid_attr(attr_t newmode, NCURSES_PAIRS_T pair_arg, void *opts)
 {
-    return NCURSES_SP_NAME(vid_attr) (CURRENT_SCREEN, newmode, pair_arg, opts);
+    return NCURSES_SP_NAME(vid_attr)(CURRENT_SCREEN, newmode, pair_arg, opts);
 }
 #endif
 
@@ -332,13 +331,13 @@ vid_attr(attr_t newmode, NCURSES_PAIRS_T pair_arg, void *opts)
  * we can use termattrs() for part of the logic.
  */
 NCURSES_EXPORT(attr_t)
-NCURSES_SP_NAME(term_attrs) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(term_attrs)(NCURSES_SP_DCL0)
 {
     attr_t attrs = 0;
 
     T((T_CALLED("term_attrs()")));
     if (SP_PARM) {
-	attrs = NCURSES_SP_NAME(termattrs) (NCURSES_SP_ARG);
+	attrs = NCURSES_SP_NAME(termattrs)(NCURSES_SP_ARG);
 
 #if USE_WIDEC_SUPPORT && defined(enter_horizontal_hl_mode)
 	/* these are only supported for wide-character mode */
@@ -364,6 +363,6 @@ NCURSES_SP_NAME(term_attrs) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(attr_t)
 term_attrs(void)
 {
-    return NCURSES_SP_NAME(term_attrs) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(term_attrs)(CURRENT_SCREEN);
 }
 #endif

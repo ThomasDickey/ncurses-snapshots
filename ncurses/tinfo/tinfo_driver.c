@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.88 2025/12/27 12:33:34 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.90 2026/05/16 22:53:29 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -189,7 +189,7 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
     }
 
     if (status != TGETENT_YES) {
-	NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx termp);
+	NCURSES_SP_NAME(del_curterm)(NCURSES_SP_ARGx termp);
 	if (status == TGETENT_ERR) {
 	    ret_error0(status, "terminals database is inaccessible\n");
 	} else if (status == TGETENT_NO) {
@@ -267,18 +267,18 @@ drv_dobeepflash(TERMINAL_CONTROL_BLOCK * TCB, int beepFlag)
     if (beepFlag) {
 	if (bell) {
 	    res = NCURSES_PUTP2("bell", bell);
-	    NCURSES_SP_NAME(_nc_flush) (sp);
+	    NCURSES_SP_NAME(_nc_flush)(sp);
 	} else if (flash_screen) {
 	    res = NCURSES_PUTP2("flash_screen", flash_screen);
-	    NCURSES_SP_NAME(_nc_flush) (sp);
+	    NCURSES_SP_NAME(_nc_flush)(sp);
 	}
     } else {
 	if (flash_screen) {
 	    res = NCURSES_PUTP2("flash_screen", flash_screen);
-	    NCURSES_SP_NAME(_nc_flush) (sp);
+	    NCURSES_SP_NAME(_nc_flush)(sp);
 	} else if (bell) {
 	    res = NCURSES_PUTP2("bell", bell);
-	    NCURSES_SP_NAME(_nc_flush) (sp);
+	    NCURSES_SP_NAME(_nc_flush)(sp);
 	}
     }
     return res;
@@ -309,7 +309,7 @@ drv_print(TERMINAL_CONTROL_BLOCK * TCB, char *data, int len)
     AssertTCB();
     SetSP();
 #if NCURSES_EXT_FUNCS
-    return NCURSES_SP_NAME(mcprint) (TCB->csp, data, len);
+    return NCURSES_SP_NAME(mcprint)(TCB->csp, data, len);
 #else
     return ERR;
 #endif
@@ -327,18 +327,18 @@ drv_defaultcolors(TERMINAL_CONTROL_BLOCK * TCB, int fg, int bg)
     if (sp != NULL && orig_pair && orig_colors && (initialize_pair != NULL)) {
 #if NCURSES_EXT_FUNCS
 	sp->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
-	sp->_has_sgr_39_49 = (NCURSES_SP_NAME(tigetflag) (NCURSES_SP_ARGx
-							  UserCap(AX))
+	sp->_has_sgr_39_49 = (NCURSES_SP_NAME(tigetflag)(NCURSES_SP_ARGx
+							 UserCap(AX))
 			      == TRUE);
 	sp->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : fg;
 	sp->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : bg;
 	if (sp->_color_pairs != NULL) {
 	    bool save = sp->_default_color;
 	    sp->_default_color = TRUE;
-	    NCURSES_SP_NAME(init_pair) (NCURSES_SP_ARGx
-					0,
-					(short)fg,
-					(short)bg);
+	    NCURSES_SP_NAME(init_pair)(NCURSES_SP_ARGx
+				       0,
+				         (short) fg,
+				         (short) bg);
 	    sp->_default_color = save;
 	}
 #endif
@@ -361,24 +361,24 @@ drv_setcolor(TERMINAL_CONTROL_BLOCK * TCB,
     if (fore) {
 	if (set_a_foreground) {
 	    TPUTS_TRACE("set_a_foreground");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_a_foreground, color), 1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_a_foreground, color), 1, outc);
 	} else {
 	    TPUTS_TRACE("set_foreground");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_foreground,
-					     toggled_colors(color)), 1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_foreground,
+					    toggled_colors(color)), 1, outc);
 	}
     } else {
 	if (set_a_background) {
 	    TPUTS_TRACE("set_a_background");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_a_background, color), 1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_a_background, color), 1, outc);
 	} else {
 	    TPUTS_TRACE("set_background");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_background,
-					     toggled_colors(color)), 1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_background,
+					    toggled_colors(color)), 1, outc);
 	}
     }
 }
@@ -661,7 +661,7 @@ drv_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 	    /* reset_shell_mode */
 	    if (sp) {
 		_nc_keypad(sp, FALSE);
-		NCURSES_SP_NAME(_nc_flush) (sp);
+		NCURSES_SP_NAME(_nc_flush)(sp);
 	    }
 	    code = drv_sgmode(TCB, TRUE, &(_term->Ottyb));
 #if defined(USE_WIN32CON_DRIVER)
@@ -678,8 +678,8 @@ drv_wrap(SCREEN *sp)
 {
     if (sp) {
 	sp->_mouse_wrap(sp);
-	NCURSES_SP_NAME(_nc_screen_wrap) (sp);
-	NCURSES_SP_NAME(_nc_mvcur_wrap) (sp);	/* wrap up cursor addressing */
+	NCURSES_SP_NAME(_nc_screen_wrap)(sp);
+	NCURSES_SP_NAME(_nc_mvcur_wrap)(sp);	/* wrap up cursor addressing */
     }
 }
 
@@ -722,11 +722,11 @@ drv_screen_init(SCREEN *sp)
 			parm_delete_line ||
 			delete_line)));
 
-    NCURSES_SP_NAME(baudrate) (sp);
+    NCURSES_SP_NAME(baudrate)(sp);
 
-    NCURSES_SP_NAME(_nc_mvcur_init) (sp);
+    NCURSES_SP_NAME(_nc_mvcur_init)(sp);
     /* initialize terminal to a sane state */
-    NCURSES_SP_NAME(_nc_screen_init) (sp);
+    NCURSES_SP_NAME(_nc_screen_init)(sp);
 }
 
 static void
@@ -853,8 +853,8 @@ drv_do_color(TERMINAL_CONTROL_BLOCK * TCB,
     } else if (pair != 0) {
 	if (set_color_pair) {
 	    TPUTS_TRACE("set_color_pair");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_color_pair, pair), 1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_color_pair, pair), 1, outc);
 	    return;
 	} else if (sp != NULL) {
 	    _nc_pair_content(SP_PARM, pair, &fg, &bg);
@@ -875,11 +875,11 @@ drv_do_color(TERMINAL_CONTROL_BLOCK * TCB,
 	    if (sp->_has_sgr_39_49
 		&& isDefaultColor(old_bg)
 		&& !isDefaultColor(old_fg)) {
-		NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx "\033[39m", 1, outc);
+		NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx "\033[39m", 1, outc);
 	    } else if (sp->_has_sgr_39_49
 		       && isDefaultColor(old_fg)
 		       && !isDefaultColor(old_bg)) {
-		NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx "\033[49m", 1, outc);
+		NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx "\033[49m", 1, outc);
 	    } else
 #endif
 		drv_rescol(TCB);
@@ -919,7 +919,7 @@ static void
 init_xterm_mouse(SCREEN *sp)
 {
     sp->_mouse_type = M_XTERM;
-    sp->_mouse_xtermcap = NCURSES_SP_NAME(tigetstr) (NCURSES_SP_ARGx UserCap(XM));
+    sp->_mouse_xtermcap = NCURSES_SP_NAME(tigetstr)(NCURSES_SP_ARGx UserCap(XM));
     if (!VALID_STRING(sp->_mouse_xtermcap))
 	sp->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
 }
@@ -990,7 +990,7 @@ drv_mvcur(TERMINAL_CONTROL_BLOCK * TCB, int yold, int xold, int ynew, int xnew)
 {
     SCREEN *sp = TCB->csp;
     AssertTCB();
-    return NCURSES_SP_NAME(_nc_mvcur) (sp, yold, xold, ynew, xnew);
+    return NCURSES_SP_NAME(_nc_mvcur)(sp, yold, xold, ynew, xnew);
 }
 
 static void
@@ -1167,98 +1167,6 @@ drv_initacs(TERMINAL_CONTROL_BLOCK * TCB, chtype *real_map, chtype *fake_map)
 #endif /* TRACE */
 }
 
-#define ENSURE_TINFO(sp) (TCBOf(sp)->drv->isTerminfo)
-
-NCURSES_EXPORT(void)
-_nc_cookie_init(SCREEN *sp)
-{
-    bool support_cookies = USE_XMC_SUPPORT;
-    TERMINAL_CONTROL_BLOCK *TCB = (TERMINAL_CONTROL_BLOCK *) (sp->_term);
-
-    if (sp == NULL || !ENSURE_TINFO(sp))
-	return;
-
-#if USE_XMC_SUPPORT
-    /*
-     * If we have no magic-cookie support compiled-in, or if it is suppressed
-     * in the environment, reset the support-flag.
-     */
-    if (magic_cookie_glitch >= 0) {
-	if (getenv("NCURSES_NO_MAGIC_COOKIE") != NULL) {
-	    support_cookies = FALSE;
-	}
-    }
-#endif
-
-    if (!support_cookies && magic_cookie_glitch >= 0) {
-	T(("will disable attributes to work w/o magic cookies"));
-    }
-
-    if (magic_cookie_glitch > 0) {	/* tvi, wyse */
-
-	sp->_xmc_triggers = sp->_ok_attributes & XMC_CONFLICT;
-#if 0
-	/*
-	 * We "should" treat colors as an attribute.  The wyse350 (and its
-	 * clones) appear to be the only ones that have both colors and magic
-	 * cookies.
-	 */
-	if (has_colors()) {
-	    sp->_xmc_triggers |= A_COLOR;
-	}
-#endif
-	sp->_xmc_suppress = sp->_xmc_triggers & (chtype) ~(A_BOLD);
-
-	T(("magic cookie attributes %s", _traceattr(sp->_xmc_suppress)));
-	/*
-	 * Supporting line-drawing may be possible.  But make the regular
-	 * video attributes work first.
-	 */
-	acs_chars = ABSENT_STRING;
-	ena_acs = ABSENT_STRING;
-	enter_alt_charset_mode = ABSENT_STRING;
-	exit_alt_charset_mode = ABSENT_STRING;
-#if USE_XMC_SUPPORT
-	/*
-	 * To keep the cookie support simple, suppress all of the optimization
-	 * hooks except for clear_screen and the cursor addressing.
-	 */
-	if (support_cookies) {
-	    clr_eol = ABSENT_STRING;
-	    clr_eos = ABSENT_STRING;
-	    set_attributes = ABSENT_STRING;
-	}
-#endif
-    } else if (magic_cookie_glitch == 0) {	/* hpterm */
-    }
-
-    /*
-     * If magic cookies are not supported, cancel the strings that set
-     * video attributes.
-     */
-    if (!support_cookies && magic_cookie_glitch >= 0) {
-	magic_cookie_glitch = ABSENT_NUMERIC;
-	set_attributes = ABSENT_STRING;
-	enter_blink_mode = ABSENT_STRING;
-	enter_bold_mode = ABSENT_STRING;
-	enter_dim_mode = ABSENT_STRING;
-	enter_reverse_mode = ABSENT_STRING;
-	enter_standout_mode = ABSENT_STRING;
-	enter_underline_mode = ABSENT_STRING;
-    }
-
-    /* initialize normal acs before wide, since we use mapping in the latter */
-#if !USE_WIDEC_SUPPORT
-    if (_nc_unicode_locale() && _nc_locale_breaks_acs(sp->_term)) {
-	acs_chars = NULL;
-	ena_acs = NULL;
-	enter_alt_charset_mode = NULL;
-	exit_alt_charset_mode = NULL;
-	set_attributes = NULL;
-    }
-#endif
-}
-
 static int
 drv_twait(TERMINAL_CONTROL_BLOCK * TCB,
 	  int mode,
@@ -1346,7 +1254,7 @@ __nc_putp_flush(SCREEN *sp, const char *name, const char *value)
 {
     int rc = __nc_putp(sp, name, value);
     if (rc != ERR) {
-	NCURSES_SP_NAME(_nc_flush) (sp);
+	NCURSES_SP_NAME(_nc_flush)(sp);
     }
     return rc;
 }

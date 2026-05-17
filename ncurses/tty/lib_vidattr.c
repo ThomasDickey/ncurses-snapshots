@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -70,7 +70,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.81 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.82 2026/05/16 22:53:53 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \
@@ -107,9 +107,9 @@ MODULE_ID("$Id: lib_vidattr.c,v 1.81 2025/12/27 12:41:23 tom Exp $")
 #define PreviousAttr _nc_prescreen.previous_attr
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(vidputs) (NCURSES_SP_DCLx
-			  chtype newmode,
-			  NCURSES_SP_OUTC outc)
+NCURSES_SP_NAME(vidputs)(NCURSES_SP_DCLx
+			 chtype newmode,
+			 NCURSES_SP_OUTC outc)
 {
     attr_t turn_on, turn_off;
     int pair;
@@ -134,8 +134,7 @@ NCURSES_SP_NAME(vidputs) (NCURSES_SP_DCLx
 
     TR(TRACE_ATTRS, ("previous attribute was %s", _traceattr(PreviousAttr)));
 
-    if ((SP_PARM != NULL)
-	&& (magic_cookie_glitch > 0)) {
+    if ((SP_PARM != NULL) && SP_PARM->cookie_active) {
 #if USE_XMC_SUPPORT
 	static const chtype table[] =
 	{
@@ -258,18 +257,18 @@ NCURSES_SP_NAME(vidputs) (NCURSES_SP_DCLx
     } else if (set_attributes) {
 	if (turn_on || turn_off) {
 	    TPUTS_TRACE("set_attributes");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_9(set_attributes,
-					     (newmode & A_STANDOUT) != 0,
-					     (newmode & A_UNDERLINE) != 0,
-					     (newmode & A_REVERSE) != 0,
-					     (newmode & A_BLINK) != 0,
-					     (newmode & A_DIM) != 0,
-					     (newmode & A_BOLD) != 0,
-					     (newmode & A_INVIS) != 0,
-					     (newmode & A_PROTECT) != 0,
-					     (newmode & A_ALTCHARSET) != 0),
-				    1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_9(set_attributes,
+					      (newmode & A_STANDOUT) != 0,
+					      (newmode & A_UNDERLINE) != 0,
+					      (newmode & A_REVERSE) != 0,
+					      (newmode & A_BLINK) != 0,
+					      (newmode & A_DIM) != 0,
+					      (newmode & A_BOLD) != 0,
+					      (newmode & A_INVIS) != 0,
+					      (newmode & A_PROTECT) != 0,
+					      (newmode & A_ALTCHARSET) != 0),
+				   1, outc);
 	    PreviousAttr &= ALL_BUT_COLOR;
 	}
 #if USE_ITALIC
@@ -349,31 +348,31 @@ NCURSES_EXPORT(int)
 vidputs(chtype newmode, NCURSES_OUTC outc)
 {
     SetSafeOutcWrapper(outc);
-    return NCURSES_SP_NAME(vidputs) (CURRENT_SCREEN,
-				     newmode,
-				     _nc_outc_wrapper);
+    return NCURSES_SP_NAME(vidputs)(CURRENT_SCREEN,
+				    newmode,
+				    _nc_outc_wrapper);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(vidattr) (NCURSES_SP_DCLx chtype newmode)
+NCURSES_SP_NAME(vidattr)(NCURSES_SP_DCLx chtype newmode)
 {
     T((T_CALLED("vidattr(%p,%s)"), (void *) SP_PARM, _traceattr(newmode)));
-    returnCode(NCURSES_SP_NAME(vidputs) (NCURSES_SP_ARGx
-					 newmode,
-					 NCURSES_SP_NAME(_nc_putchar)));
+    returnCode(NCURSES_SP_NAME(vidputs)(NCURSES_SP_ARGx
+					newmode,
+					NCURSES_SP_NAME(_nc_putchar)));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 vidattr(chtype newmode)
 {
-    return NCURSES_SP_NAME(vidattr) (CURRENT_SCREEN, newmode);
+    return NCURSES_SP_NAME(vidattr)(CURRENT_SCREEN, newmode);
 }
 #endif
 
 NCURSES_EXPORT(chtype)
-NCURSES_SP_NAME(termattrs) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(termattrs)(NCURSES_SP_DCL0)
 {
     chtype attrs = A_NORMAL;
 
@@ -428,6 +427,6 @@ NCURSES_SP_NAME(termattrs) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(chtype)
 termattrs(void)
 {
-    return NCURSES_SP_NAME(termattrs) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(termattrs)(CURRENT_SCREEN);
 }
 #endif

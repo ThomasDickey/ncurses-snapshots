@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.156 2026/03/28 19:51:59 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.157 2026/05/16 15:19:20 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -407,7 +407,7 @@ recur_wgetnstr(WINDOW *win, char *buf)
 #endif
 	{
 	    sp->_called_wgetch = TRUE;
-	    rc = wgetnstr(win, buf, MAXCOLUMNS);
+	    rc = wgetnstr(win, buf, MAXCOLUMNS - 1);
 	    sp->_called_wgetch = FALSE;
 	}
     } else {

@@ -921,6 +921,7 @@
 ./ncurses/tinfo/comp_hash.c
 ./ncurses/tinfo/comp_parse.c
 ./ncurses/tinfo/comp_scan.c
+./ncurses/tinfo/cookie_caps.c
 ./ncurses/tinfo/db_iterator.c
 ./ncurses/tinfo/doalloc.c
 ./ncurses/tinfo/entries.c
@@ -975,6 +976,7 @@
 ./ncurses/trace/varargs.c
 ./ncurses/trace/visbuf.c
 ./ncurses/tty/MKexpanded.sh
+./ncurses/tty/cookie_updates.c
 ./ncurses/tty/hardscroll.c
 ./ncurses/tty/hashmap.c
 ./ncurses/tty/lib_mvcur.c

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.34 2025/06/21 22:26:21 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.35 2026/05/16 23:23:36 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -101,7 +101,7 @@ wins_wch(WINDOW *win, const cchar_t *wch)
 }
 
 static int
-flush_wchars(WINDOW *win, wchar_t *wchars)
+flush_wchars(WINDOW *win, const wchar_t *wchars)
 {
     cchar_t tmp_cchar;
     (void) setcchar(&tmp_cchar, wchars, WA_NORMAL, (short) 0, (void *) 0);

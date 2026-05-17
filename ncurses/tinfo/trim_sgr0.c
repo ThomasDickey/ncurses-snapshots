@@ -37,7 +37,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: trim_sgr0.c,v 1.29 2026/04/14 00:20:23 tom Exp $")
+MODULE_ID("$Id: trim_sgr0.c,v 1.30 2026/05/16 23:17:01 tom Exp $")
 
 #undef CUR
 #define CUR tp->
@@ -95,7 +95,7 @@ strip_padding(char *value)
 		break;
 	    ++s;
 	} else {
-	    char *d = NULL;
+	    const char *d = NULL;
 	    if (ch == '$')
 		d = skip_padding(s);
 	    if (d != NULL) {
@@ -373,10 +373,11 @@ _nc_trim_sgr0(TERMTYPE2 *tp)
 		&& strcmp(end, off) != 0) {
 		i = (size_t) (tmp - end);
 		j = strlen(off) + i;
-		tmp = strdup(end);
-		chop_out(tmp, (unsigned) i, (unsigned) j);
+		if ((tmp = strdup(end)) != NULL) {
+		    chop_out(tmp, (unsigned) i, (unsigned) j);
+		    result = tmp;
+		}
 		free(off);
-		result = tmp;
 	    }
 	    TR(TRACE_DATABASE, ("...adjusted sgr0 : %s", _nc_visbuf(result)));
 	    if (!strcmp(result, exit_attribute_mode)) {
