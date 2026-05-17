@@ -241,7 +241,7 @@ write_it(ENTRY * ep)
 	    }
 	    *d = 0;
 	    if (strlen(result) < strlen(s))
-		_nc_STRCPY(s, result, strlen(s) + 1);
+		_nc_STRCPY(s, result, strlen(result) + 1);
 	}
     }
 
