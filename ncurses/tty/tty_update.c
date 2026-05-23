@@ -91,7 +91,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tty_update.c,v 1.324 2026/05/16 22:53:53 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.325 2026/05/23 21:00:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -300,15 +300,15 @@ PutAttrChar(NCURSES_SP_DCLx CARG_CH_T ch)
 	 * normal one to be broken (by mis-design ;-).
 	 */
 	if (SP_PARM->_screen_unicode
-	    && _nc_wacs[CharOf(my_ch)].chars[0]) {
+	    && SP_PARM->_wacs_map[CharOf(my_ch)].chars[0]) {
 	    if (SP_PARM->_screen_acs_map[CharOf(my_ch)]) {
 		if (SP_PARM->_screen_acs_fix) {
 		    RemAttr(attr, A_ALTCHARSET);
-		    my_ch = _nc_wacs[CharOf(my_ch)];
+		    my_ch = SP_PARM->_wacs_map[CharOf(my_ch)];
 		}
 	    } else {
 		RemAttr(attr, A_ALTCHARSET);
-		my_ch = _nc_wacs[CharOf(my_ch)];
+		my_ch = SP_PARM->_wacs_map[CharOf(my_ch)];
 	    }
 #if !NCURSES_WCWIDTH_GRAPHICS
 	    if (!(AttrOf(attr) & A_ALTCHARSET)) {

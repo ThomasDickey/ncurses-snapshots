@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -32,9 +32,16 @@
  ****************************************************************************/
 /* LINTLIBRARY */
 
-/* ./tty/hardscroll.c */
+/* ./tty/cookie_updates.c */
 
 #include <curses.priv.h>
+
+#undef _nc_cookie_updates
+void	_nc_cookie_updates(
+		SCREEN	*sp)
+		{ /* void */ }
+
+/* ./tty/hardscroll.c */
 
 #undef _nc_oldnums
 int	*_nc_oldnums;
@@ -3446,7 +3453,8 @@ int	wvline_set(
 cchar_t	*_nc_wacs;
 
 #undef _nc_init_wacs
-void	_nc_init_wacs(void)
+void	_nc_init_wacs(
+		SCREEN	*sp)
 		{ /* void */ }
 
 /* ./widechar/lib_wunctrl.c */
@@ -3904,6 +3912,18 @@ const struct user_table_entry *_nc_get_userdefs_table(void)
 #undef _nc_get_hash_user
 const HashData *_nc_get_hash_user(void)
 		{ return(*(const HashData **)0); }
+
+/* ./tinfo/cookie_caps.c */
+
+#undef _nc_cookie_init
+void	_nc_cookie_init(
+		SCREEN	*sp)
+		{ /* void */ }
+
+#undef _nc_cookie_allowed
+NCURSES_BOOL _nc_cookie_allowed(
+		const SCREEN *sp)
+		{ return(*(NCURSES_BOOL *)0); }
 
 /* ./tinfo/db_iterator.c */
 

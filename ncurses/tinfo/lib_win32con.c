@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #define _O_BINARY 0		/* FIXME: not defined in MSYS2 base */
 #endif
 
-MODULE_ID("$Id: lib_win32con.c,v 1.50 2025/12/27 21:49:45 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.51 2026/05/23 22:20:52 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -850,7 +850,7 @@ _nc_console_twait(
 
     memset(&inp_rec, 0, sizeof(inp_rec));
 
-    while (true) {
+    while (TRUE) {
 	if (!isNoDelay) {
 	    GetSystemTimeAsFileTime(&fstart);
 	    rc = WaitForSingleObject(hdl, (DWORD) milliseconds);
@@ -1171,8 +1171,8 @@ _nc_console_checkinit(bool assumeTermInfo)
 	    WINCONSOLE.numButtons = 1;
 	}
 
-	a = _nc_console_MapColor(true, COLOR_WHITE) |
-	    _nc_console_MapColor(false, COLOR_BLACK);
+	a = _nc_console_MapColor(TRUE, COLOR_WHITE) |
+	    _nc_console_MapColor(FALSE, COLOR_BLACK);
 	for (i = 0; i < CON_NUMPAIRS; i++)
 	    WINCONSOLE.pairs[i] = a;
 

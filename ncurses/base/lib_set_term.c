@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.203 2026/05/16 22:30:07 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.205 2026/05/23 23:12:01 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -89,6 +89,7 @@ set_term(SCREEN *screenp)
 	stdscr = StdScreen(newSP);
 	COLORS = newSP->_color_count;
 	COLOR_PAIRS = newSP->_pair_count;
+	SetWacsMap(newSP->_wacs_map);
 #endif
     } else {
 	TINFO_SET_CURTERM(oldSP, NULL);
@@ -98,6 +99,7 @@ set_term(SCREEN *screenp)
 	stdscr = NULL;
 	COLORS = 0;
 	COLOR_PAIRS = 0;
+	SetWacsMap(NULL);
 #endif
     }
 
@@ -237,6 +239,7 @@ delscreen(SCREEN *sp)
 	    stdscr = NULL;
 	    COLORS = 0;
 	    COLOR_PAIRS = 0;
+	    SetWacsMap(NULL);
 #endif
 	    _nc_set_screen(NULL);
 #if USE_WIDEC_SUPPORT
@@ -554,7 +557,7 @@ NCURSES_SP_NAME(_nc_setupscreen)(
 #if USE_WIDEC_SUPPORT
     sp->_screen_unicode = _nc_unicode_locale();
     if (_nc_wacs == NULL) {
-	_nc_init_wacs();
+	_nc_init_wacs(sp);
     }
     if (_nc_wacs == NULL) {
 	ReturnScreenError();

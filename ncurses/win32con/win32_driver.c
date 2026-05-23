@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2008-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.20 2025/12/30 19:34:50 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.22 2026/05/23 22:19:19 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -152,7 +152,6 @@ dump_screen(const char *fn, int ln)
  * TODO: support surrogate pairs
  * TODO: support combining characters
  * TODO: support acsc
- * TODO: _nc_wacs should be part of sp.
  */
 static BOOL
 con_write16(TERMINAL_CONTROL_BLOCK * TCB,
@@ -177,12 +176,12 @@ con_write16(TERMINAL_CONTROL_BLOCK * TCB,
 	ci[actual].Attributes = MapAttr(WINCONSOLE.SBI.wAttributes,
 					AttrOf(ch));
 	if (AttrOf(ch) & A_ALTCHARSET) {
-	    if (_nc_wacs) {
+	    if (sp->_wacs_map) {
 		int which = CharOf(ch);
 		if (which > 0
 		    && which < ACS_LEN
-		    && CharOf(_nc_wacs[which]) != 0) {
-		    ci[actual].CharInfoChar = CharOf(_nc_wacs[which]);
+		    && CharOf(sp->_wacs_map[which]) != 0) {
+		    ci[actual].CharInfoChar = CharOf(sp->_wacs_map[which]);
 		} else {
 		    ci[actual].CharInfoChar = ' ';
 		}
@@ -226,7 +225,7 @@ con_write8(TERMINAL_CONTROL_BLOCK * TCB, int y, int x, chtype *str, int n)
 	if (ChAttrOf(ch) & A_ALTCHARSET) {
 	    if (sp->_acs_map)
 		ci[i].CharInfoChar =
-		    ChCharOf(NCURSES_SP_NAME(_nc_acs_char) (sp, ChCharOf(ch)));
+		    ChCharOf(NCURSES_SP_NAME(_nc_acs_char)(sp, ChCharOf(ch)));
 	}
     }
 
@@ -391,10 +390,10 @@ wcon_doupdate(TERMINAL_CONTROL_BLOCK * TCB)
 	if (SP_PARM->_endwin == ewSuspend) {
 
 	    T(("coming back from shell mode"));
-	    NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(reset_prog_mode)(NCURSES_SP_ARG);
 
-	    NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(_nc_screen_resume) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(_nc_mvcur_resume)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(_nc_screen_resume)(NCURSES_SP_ARG);
 	    SP_PARM->_mouse_resume(SP_PARM);
 
 	    SP_PARM->_endwin = ewRunning;
@@ -793,7 +792,7 @@ wcon_mode(TERMINAL_CONTROL_BLOCK * TCB, int progFlag, int defFlag)
 		/* reset_shell_mode */
 		if (sp) {
 		    _nc_keypad(sp, FALSE);
-		    NCURSES_SP_NAME(_nc_flush) (sp);
+		    NCURSES_SP_NAME(_nc_flush)(sp);
 		}
 		code = wcon_sgmode(TCB, TRUE, &(_term->Ottyb));
 		if (!WINCONSOLE.buffered) {
@@ -877,8 +876,8 @@ wcon_initpair(TERMINAL_CONTROL_BLOCK * TCB,
 	if ((pair > 0) && (pair < CON_NUMPAIRS) && (f >= 0) && (f < 8)
 	    && (b >= 0) && (b < 8)) {
 	    WINCONSOLE.pairs[pair] =
-		_nc_console_MapColor(true, f) |
-		_nc_console_MapColor(false, b);
+		_nc_console_MapColor(TRUE, f) |
+		_nc_console_MapColor(FALSE, b);
 	}
     }
 }

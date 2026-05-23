@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2020,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2026 Thomas E. Dickey                                *
  * Copyright 2002-2015,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,12 +33,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_wacs.c,v 1.21 2024/12/07 20:08:32 tom Exp $")
+MODULE_ID("$Id: lib_wacs.c,v 1.22 2026/05/23 21:09:49 tom Exp $")
 
 NCURSES_EXPORT_VAR(cchar_t) * _nc_wacs = NULL;
 
+#define SP_WACS	sp->_wacs_map
+
 NCURSES_EXPORT(void)
-_nc_init_wacs(void)
+_nc_init_wacs(SCREEN *sp)
 {
     /* *INDENT-OFF* */
     static const struct {
@@ -119,30 +121,33 @@ _nc_init_wacs(void)
     T(("initializing WIDE-ACS map (Unicode is%s active)",
        active ? "" : " not"));
 
-    if ((_nc_wacs = typeCalloc(cchar_t, ACS_LEN)) != NULL) {
-	unsigned n;
+    if (SP_WACS == NULL) {
+	if ((SP_WACS = typeCalloc(cchar_t, ACS_LEN)) != NULL) {
+	    unsigned n;
 
-	for (n = 0; n < SIZEOF(table); ++n) {
-	    unsigned m;
+	    for (n = 0; n < SIZEOF(table); ++n) {
+		unsigned m;
 #if NCURSES_WCWIDTH_GRAPHICS
-	    int wide = wcwidth((wchar_t) table[n].value[active]);
+		int wide = wcwidth((wchar_t) table[n].value[active]);
 #else
-	    int wide = 1;
+		int wide = 1;
 #endif
 
-	    m = table[n].map;
-	    if (active && (wide == 1)) {
-		SetChar(_nc_wacs[m], table[n].value[1], A_NORMAL);
-	    } else if (acs_map[m] & A_ALTCHARSET) {
-		SetChar(_nc_wacs[m], m, A_ALTCHARSET);
-	    } else {
-		SetChar(_nc_wacs[m], table[n].value[0], A_NORMAL);
-	    }
+		m = table[n].map;
+		if (active && (wide == 1)) {
+		    SetChar(SP_WACS[m], table[n].value[1], A_NORMAL);
+		} else if (acs_map[m] & A_ALTCHARSET) {
+		    SetChar(SP_WACS[m], m, A_ALTCHARSET);
+		} else {
+		    SetChar(SP_WACS[m], table[n].value[0], A_NORMAL);
+		}
 
-	    T(("#%d, width:%d SetChar(%c, %s) = %s",
-	       n, wide, m,
-	       _tracechar(table[n].value[active]),
-	       _tracecchar_t(&_nc_wacs[m])));
+		T(("#%d, width:%d SetChar(%c, %s) = %s",
+		   n, wide, m,
+		   _tracechar(table[n].value[active]),
+		   _tracecchar_t(&SP_WACS[m])));
+	    }
 	}
     }
+    _nc_wacs = SP_WACS;
 }

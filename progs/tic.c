@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.340 2026/04/25 10:34:37 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.341 2026/05/23 19:59:38 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -212,8 +212,10 @@ write_it(ENTRY * ep)
      * which is shorter and runs a little faster.
      */
     for (n = 0; n < STRCOUNT; n++) {
+	size_t limit;
 	s = ep->tterm.Strings[n];
 	if (VALID_STRING(s)
+	    && (limit = strlen(s)) < sizeof(result) - 1
 	    && strchr(s, L_BRACE) != NULL) {
 	    d = result;
 	    t = s;
@@ -228,10 +230,8 @@ write_it(ENTRY * ep)
 		    long value = strtol(t + 1, &v, 0);
 		    if (v != NULL
 			&& *v == R_BRACE
-			&& value > 0
-			&& value != '\\'	/* FIXME */
-			&& value < 127
-			&& isprint(UChar(value))) {
+			&& value >= 32
+			&& value < 127) {
 			*d++ = S_QUOTE;
 			*d++ = (char) value;
 			*d++ = S_QUOTE;
@@ -240,8 +240,9 @@ write_it(ENTRY * ep)
 		}
 	    }
 	    *d = 0;
-	    if (strlen(result) < strlen(s))
-		_nc_STRCPY(s, result, strlen(s) + 1);
+	    if ((size_t) (d - result) < limit) {
+		_nc_STRCPY(s, result, limit + 1);
+	    }
 	}
     }
 
