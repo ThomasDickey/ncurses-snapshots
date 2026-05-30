@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.90 2026/05/16 22:53:29 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.91 2026/05/30 22:57:16 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -1233,7 +1233,7 @@ drv_nap(TERMINAL_CONTROL_BLOCK * TCB GCC_UNUSED, int ms)
 #elif defined(USE_WIN32CON_DRIVER)
     Sleep((DWORD) ms);
 #else
-    _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
+    _nc_timed_wait(NULL, TW_NONE, ms, (int *) 0 EVENTLIST_2nd(NULL));
 #endif
     return OK;
 }

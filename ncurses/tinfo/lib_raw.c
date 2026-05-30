@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -50,7 +50,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.35 2025/12/23 09:22:35 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.36 2026/05/30 22:10:47 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>		/* needed for ISC */
@@ -78,7 +78,7 @@ MODULE_ID("$Id: lib_raw.c,v 1.35 2025/12/23 09:22:35 tom Exp $")
 #endif /* TRACE */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(raw) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(raw)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp;
@@ -101,7 +101,7 @@ NCURSES_SP_NAME(raw) (NCURSES_SP_DCL0)
 #else
 	buf.sg_flags |= RAW;
 #endif
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 #if USE_KLIBC_KBD
 	    KBDINFO kbdinfo;
@@ -129,12 +129,12 @@ NCURSES_SP_NAME(raw) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 raw(void)
 {
-    return NCURSES_SP_NAME(raw) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(raw)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(cbreak)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp;
@@ -158,7 +158,7 @@ NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
 #else
 	buf.sg_flags |= CBREAK;
 #endif
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 	    if (SP_PARM) {
 		IsCbreak(SP_PARM) = 1;
@@ -174,12 +174,12 @@ NCURSES_SP_NAME(cbreak) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 cbreak(void)
 {
-    return NCURSES_SP_NAME(cbreak) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(cbreak)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(qiflush) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(qiflush)(NCURSES_SP_DCL0)
 {
     TERMINAL *termp;
 
@@ -192,7 +192,7 @@ NCURSES_SP_NAME(qiflush) (NCURSES_SP_DCL0)
 	buf = termp->Nttyb;
 #ifdef TERMIOS
 	buf.c_lflag &= (unsigned) ~(NOFLSH);
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 #else
 	result = ERR;
 	/* FIXME */
@@ -208,12 +208,12 @@ NCURSES_SP_NAME(qiflush) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 qiflush(void)
 {
-    NCURSES_SP_NAME(qiflush) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(qiflush)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(noraw) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(noraw)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp;
@@ -235,7 +235,7 @@ NCURSES_SP_NAME(noraw) (NCURSES_SP_DCL0)
 #else
 	buf.sg_flags &= ~(RAW | CBREAK);
 #endif
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 #if USE_KLIBC_KBD
 	    KBDINFO kbdinfo;
@@ -263,12 +263,12 @@ NCURSES_SP_NAME(noraw) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 noraw(void)
 {
-    return NCURSES_SP_NAME(noraw) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(noraw)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(nocbreak)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp;
@@ -289,7 +289,7 @@ NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
 #else
 	buf.sg_flags &= ~CBREAK;
 #endif
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 	if (result == OK) {
 	    if (SP_PARM) {
 		IsCbreak(SP_PARM) = 0;
@@ -305,12 +305,12 @@ NCURSES_SP_NAME(nocbreak) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 nocbreak(void)
 {
-    return NCURSES_SP_NAME(nocbreak) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(nocbreak)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(noqiflush) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(noqiflush)(NCURSES_SP_DCL0)
 {
     TERMINAL *termp;
 
@@ -323,7 +323,7 @@ NCURSES_SP_NAME(noqiflush) (NCURSES_SP_DCL0)
 	buf = termp->Nttyb;
 #ifdef TERMIOS
 	buf.c_lflag |= NOFLSH;
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 #else
 	/* FIXME */
 	result = ERR;
@@ -339,7 +339,7 @@ NCURSES_SP_NAME(noqiflush) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 noqiflush(void)
 {
-    NCURSES_SP_NAME(noqiflush) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(noqiflush)(CURRENT_SCREEN);
 }
 #endif
 
@@ -347,7 +347,7 @@ noqiflush(void)
  * This call does the same thing as the qiflush()/noqiflush() pair.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(intrflush) (NCURSES_SP_DCLx WINDOW *win GCC_UNUSED, bool flag)
+NCURSES_SP_NAME(intrflush)(NCURSES_SP_DCLx WINDOW *win GCC_UNUSED, bool flag)
 {
     int result = ERR;
     TERMINAL *termp;
@@ -366,7 +366,7 @@ NCURSES_SP_NAME(intrflush) (NCURSES_SP_DCLx WINDOW *win GCC_UNUSED, bool flag)
 	    buf.c_lflag &= (unsigned) ~(NOFLSH);
 	else
 	    buf.c_lflag |= (NOFLSH);
-	result = NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx &buf);
+	result = NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx &buf);
 #else
 	/* FIXME */
 #endif
@@ -382,7 +382,7 @@ NCURSES_SP_NAME(intrflush) (NCURSES_SP_DCLx WINDOW *win GCC_UNUSED, bool flag)
 NCURSES_EXPORT(int)
 intrflush(WINDOW *win GCC_UNUSED, bool flag)
 {
-    return NCURSES_SP_NAME(intrflush) (CURRENT_SCREEN, win, flag);
+    return NCURSES_SP_NAME(intrflush)(CURRENT_SCREEN, win, flag);
 }
 #endif
 

@@ -37,8 +37,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-
-MODULE_ID("$Id: cookie_caps.c,v 1.4 2026/05/16 23:42:24 tom Exp $")
+MODULE_ID("$Id: cookie_caps.c,v 1.5 2026/05/30 21:17:29 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_cookie_init(SCREEN *sp)

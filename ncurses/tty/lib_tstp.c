@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 
 #include <SigAction.h>
 
-MODULE_ID("$Id: lib_tstp.c,v 1.59 2025/02/15 14:52:13 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.60 2026/05/30 22:10:47 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -163,7 +163,7 @@ handle_SIGTSTP(int dummy GCC_UNUSED)
 #if HAVE_TCGETPGRP
 	if (tcgetpgrp(STDIN_FILENO) == getpgrp())
 #endif
-	    NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(def_prog_mode)(NCURSES_SP_ARG);
 
     /*
      * Block window change and timer signals.  The latter
@@ -192,7 +192,7 @@ handle_SIGTSTP(int dummy GCC_UNUSED)
      * End window mode, which also resets the terminal state to the
      * original (pre-curses) modes.
      */
-    NCURSES_SP_NAME(endwin) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(endwin)(NCURSES_SP_ARG);
 
     /* Unblock SIGTSTP. */
     (void) sigemptyset(&mask);
@@ -219,19 +219,19 @@ handle_SIGTSTP(int dummy GCC_UNUSED)
 
     T(("SIGCONT received"));
     sigaction(SIGTSTP, &oact, NULL);
-    NCURSES_SP_NAME(flushinp) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(flushinp)(NCURSES_SP_ARG);
 
     /*
      * If the user modified the tty state while suspended, he wants
      * those changes to stick.  So save the new "default" terminal state.
      */
-    NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(def_shell_mode)(NCURSES_SP_ARG);
 
     /*
      * This relies on the fact that doupdate() will restore the
      * program-mode tty state, and issue enter_ca_mode if need be.
      */
-    NCURSES_SP_NAME(doupdate) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(doupdate)(NCURSES_SP_ARG);
 
     /* Reset the signals. */
     (void) sigprocmask(SIG_SETMASK, &omask, NULL);
@@ -274,7 +274,7 @@ handle_SIGINT(int sig)
 		    scan->_outch = NCURSES_SP_NAME(_nc_outch);
 		}
 		set_term(scan);
-		NCURSES_SP_NAME(endwin) (NCURSES_SP_ARG);
+		NCURSES_SP_NAME(endwin)(NCURSES_SP_ARG);
 		if (sp)
 		    sp->_endwin = ewInitial;	/* in case of reuse */
 	    }

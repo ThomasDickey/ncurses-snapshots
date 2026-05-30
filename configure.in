@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.832 2026/04/24 22:21:48 tom Exp $
+dnl $Id: configure.in,v 1.833 2026/05/30 19:20:26 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.832 $)
+AC_REVISION($Revision: 1.833 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -1239,6 +1239,15 @@ AC_ARG_ENABLE(ext-mouse,
 	[with_ext_mouse=$enableval],
 	[with_ext_mouse=$cf_dft_ext_mouse])
 AC_MSG_RESULT($with_ext_mouse)
+
+AC_MSG_CHECKING(if you want to use extension 2 for mouse encoding)
+AC_ARG_ENABLE(ext-mouse2,
+	[  --enable-ext-mouse2     compile for extension 2 for mouse-encoding],
+	[with_ext_mouse2=$enableval],
+	[with_ext_mouse2=$cf_dft_ext_mouse2])
+AC_MSG_RESULT($with_ext_mouse2)
+
+test "x$with_ext_mouse2" = xyes && with_ext_mouse=yes
 if test "x$with_ext_mouse" = xyes ; then
 	CF_NCURSES_ABI_6
 fi
@@ -1247,8 +1256,10 @@ if test $cf_cv_abi_default -le 5 ; then
 	NCURSES_MOUSE_VERSION=1
 elif test $cf_cv_abi_default -le 6 ; then
 	NCURSES_MOUSE_VERSION=2
-else
+elif test $with_ext_mouse2 = yes ; then
 	NCURSES_MOUSE_VERSION=3
+else
+	NCURSES_MOUSE_VERSION=2
 fi
 
 AC_SUBST(NCURSES_MOUSE_VERSION)

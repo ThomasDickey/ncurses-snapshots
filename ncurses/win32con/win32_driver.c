@@ -41,7 +41,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.22 2026/05/23 22:19:19 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.23 2026/05/30 20:48:17 tom Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -936,7 +936,7 @@ wcon_testmouse(TERMINAL_CONTROL_BLOCK * TCB,
     if (validateConsoleHandle()) {
 	SetSP();
 
-	if (sp->_drv_mouse_head < sp->_drv_mouse_tail) {
+	if (sp->_console_mouse_head < sp->_console_mouse_tail) {
 	    rc = TW_MOUSE;
 	} else {
 	    rc = TCBOf(sp)->drv->td_twait(TCBOf(sp),

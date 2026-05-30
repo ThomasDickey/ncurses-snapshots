@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2009,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,10 +34,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: define_key.c,v 1.24 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: define_key.c,v 1.25 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
+NCURSES_SP_NAME(define_key)(NCURSES_SP_DCLx const char *str, int keycode)
 {
     int code = ERR;
 
@@ -54,13 +54,13 @@ NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
 #endif
 
 	if (str != NULL) {
-	    NCURSES_SP_NAME(define_key) (NCURSES_SP_ARGx str, 0);
+	    NCURSES_SP_NAME(define_key)(NCURSES_SP_ARGx str, 0);
 	} else if (CallHasKey(keycode)) {
 	    while (_nc_remove_key(&(SP_PARM->_keytry), ukey))
 		code = OK;
 	}
 	if (str != NULL) {
-	    if (NCURSES_SP_NAME(key_defined) (NCURSES_SP_ARGx str) == 0) {
+	    if (NCURSES_SP_NAME(key_defined)(NCURSES_SP_ARGx str) == 0) {
 		if (_nc_add_to_try(&(SP_PARM->_keytry), str, ukey) == OK) {
 		    code = OK;
 		} else {
@@ -81,6 +81,6 @@ NCURSES_SP_NAME(define_key) (NCURSES_SP_DCLx const char *str, int keycode)
 NCURSES_EXPORT(int)
 define_key(const char *str, int keycode)
 {
-    return NCURSES_SP_NAME(define_key) (CURRENT_SCREEN, str, keycode);
+    return NCURSES_SP_NAME(define_key)(CURRENT_SCREEN, str, keycode);
 }
 #endif

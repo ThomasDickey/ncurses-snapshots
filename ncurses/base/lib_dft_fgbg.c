@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,24 +38,24 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.34 2025/12/27 12:28:45 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.35 2026/05/30 22:10:47 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
  * it is white on black.  This is an extension to XSI curses.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(use_default_colors) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(use_default_colors)(NCURSES_SP_DCL0)
 {
     T((T_CALLED("use_default_colors(%p)"), (void *) SP_PARM));
-    returnCode(NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_ARGx -1, -1));
+    returnCode(NCURSES_SP_NAME(assume_default_colors)(NCURSES_SP_ARGx -1, -1));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 use_default_colors(void)
 {
-    return NCURSES_SP_NAME(use_default_colors) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(use_default_colors)(CURRENT_SCREEN);
 }
 #endif
 
@@ -64,7 +64,7 @@ use_default_colors(void)
  * is something specific, possibly not white on black.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
+NCURSES_SP_NAME(assume_default_colors)(NCURSES_SP_DCLx int fg, int bg)
 {
     int code = ERR;
 
@@ -83,9 +83,9 @@ NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 		bool save = SP_PARM->_default_color;
 		SP_PARM->_assumed_color = TRUE;
 		SP_PARM->_default_color = TRUE;
-		NCURSES_SP_NAME(init_pair) (NCURSES_SP_ARGx 0,
-					    (short)fg,
-					    (short)bg);
+		NCURSES_SP_NAME(init_pair)(NCURSES_SP_ARGx 0,
+					     (short) fg,
+					     (short) bg);
 		SP_PARM->_default_color = save;
 	    }
 	    code = OK;
@@ -99,6 +99,6 @@ NCURSES_SP_NAME(assume_default_colors) (NCURSES_SP_DCLx int fg, int bg)
 NCURSES_EXPORT(int)
 assume_default_colors(int fg, int bg)
 {
-    return NCURSES_SP_NAME(assume_default_colors) (CURRENT_SCREEN, fg, bg);
+    return NCURSES_SP_NAME(assume_default_colors)(CURRENT_SCREEN, fg, bg);
 }
 #endif

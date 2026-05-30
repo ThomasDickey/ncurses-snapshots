@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,10 +43,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.29 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.30 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(endwin) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(endwin)(NCURSES_SP_DCL0)
 {
     int code = ERR;
 
@@ -68,7 +68,7 @@ NCURSES_SP_NAME(endwin) (NCURSES_SP_DCL0)
 #endif
 	    code = OK;
 	}
-	if (NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_ARG) == ERR)
+	if (NCURSES_SP_NAME(reset_shell_mode)(NCURSES_SP_ARG) == ERR)
 	    code = ERR;
     }
 
@@ -79,6 +79,6 @@ NCURSES_SP_NAME(endwin) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 endwin(void)
 {
-    return NCURSES_SP_NAME(endwin) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(endwin)(CURRENT_SCREEN);
 }
 #endif

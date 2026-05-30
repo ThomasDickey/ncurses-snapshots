@@ -84,7 +84,7 @@
 #undef USE_OLD_TTY
 #endif /* USE_OLD_TTY */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.51 2026/03/28 20:22:11 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.52 2026/05/30 21:17:40 tom Exp $")
 
 /*
  *	int
@@ -262,7 +262,7 @@ _nc_ospeed(int BaudRate)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(baudrate) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(baudrate)(NCURSES_SP_DCL0)
 {
     int result;
 
@@ -313,6 +313,6 @@ NCURSES_SP_NAME(baudrate) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 baudrate(void)
 {
-    return NCURSES_SP_NAME(baudrate) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(baudrate)(CURRENT_SCREEN);
 }
 #endif

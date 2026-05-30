@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.254 2026/03/28 21:10:22 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.255 2026/05/30 21:17:40 tom Exp $")
 
 /****************************************************************************
  *
@@ -171,7 +171,7 @@ NCURSES_EXPORT_VAR(int) TABSIZE = 8;
 
 #if NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(set_tabsize) (NCURSES_SP_DCLx int value)
+NCURSES_SP_NAME(set_tabsize)(NCURSES_SP_DCLx int value)
 {
     int code = OK;
     if (value <= 0) {
@@ -195,7 +195,7 @@ NCURSES_SP_NAME(set_tabsize) (NCURSES_SP_DCLx int value)
 NCURSES_EXPORT(int)
 set_tabsize(int value)
 {
-    return NCURSES_SP_NAME(set_tabsize) (CURRENT_SCREEN, value);
+    return NCURSES_SP_NAME(set_tabsize)(CURRENT_SCREEN, value);
 }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
@@ -223,7 +223,7 @@ _nc_handle_sigwinch(SCREEN *sp)
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(use_env) (NCURSES_SP_DCLx bool f)
+NCURSES_SP_NAME(use_env)(NCURSES_SP_DCLx bool f)
 {
     START_TRACE();
     T((T_CALLED("use_env(%p,%d)"), (void *) SP_PARM, (int) f));
@@ -238,7 +238,7 @@ NCURSES_SP_NAME(use_env) (NCURSES_SP_DCLx bool f)
 }
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(use_tioctl) (NCURSES_SP_DCLx bool f)
+NCURSES_SP_NAME(use_tioctl)(NCURSES_SP_DCLx bool f)
 {
     START_TRACE();
     T((T_CALLED("use_tioctl(%p,%d)"), (void *) SP_PARM, (int) f));
@@ -367,9 +367,9 @@ set_position(NCURSES_SP_DCLx const TERMINAL *termp, int row, int col)
     const char *actual = TIPARM_2(cursor_address, row, col);
     T((T_CALLED("set_position %d,%d)"), row, col));
 #if NCURSES_SP_FUNCS
-    result = (NCURSES_SP_NAME(_nc_putp) (NCURSES_SP_ARGx "set_position",
-					 actual) == OK);
-    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+    result = (NCURSES_SP_NAME(_nc_putp)(NCURSES_SP_ARGx "set_position",
+					actual) == OK);
+    NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
 #else
     /* This does not support padding because without sp-funcs, we have only
      * the interface using stdio, but we are not guaranteed that Filedes
@@ -422,7 +422,7 @@ _nc_check_screensize(SCREEN *sp, TERMINAL *termp, int *linep, int *colp)
 	if (sp == NULL) {
 	    sp = new_prescr();
 	    sp->_term = termp;
-	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(baudrate)(NCURSES_SP_ARG);
 	}
 #else
 	(void) sp;
@@ -1019,9 +1019,9 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	 * baudrate.  Also get the shell-mode so that erasechar() works.
 	 */
 	if (NC_ISATTY(Filedes)) {
-	    NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(def_shell_mode)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(def_prog_mode)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(baudrate)(NCURSES_SP_ARG);
 	}
 	code = OK;
 #endif /* USE_TERM_DRIVER */
@@ -1029,7 +1029,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 
 #if USE_TERM_DRIVER
     *tp = termp;
-    NCURSES_SP_NAME(set_curterm) (sp, termp);
+    NCURSES_SP_NAME(set_curterm)(sp, termp);
     TCB->drv->td_init(TCB);
 #else
     sp = SP;
@@ -1187,7 +1187,7 @@ _nc_setupterm(const char *tname,
     START_TRACE();
     if (TINFO_SETUP_TERM(&termp, tname, Filedes, errret, reuse) == OK) {
 	_nc_forget_prescr();
-	if (NCURSES_SP_NAME(set_curterm) (CURRENT_SCREEN_PRE, termp) != NULL) {
+	if (NCURSES_SP_NAME(set_curterm)(CURRENT_SCREEN_PRE, termp) != NULL) {
 	    rc = OK;
 	}
     }

@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.157 2026/05/16 15:19:20 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.159 2026/05/30 21:17:29 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -68,7 +68,7 @@ NCURSES_EXPORT_VAR(int) ESCDELAY = 1000;
 
 #if NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(set_escdelay) (NCURSES_SP_DCLx int value)
+NCURSES_SP_NAME(set_escdelay)(NCURSES_SP_DCLx int value)
 {
     int code = OK;
     if (value < 0) {
@@ -97,7 +97,7 @@ set_escdelay(int value)
 	code = ERR;
     } else {
 #if USE_REENTRANT
-	code = NCURSES_SP_NAME(set_escdelay) (CURRENT_SCREEN, value);
+	code = NCURSES_SP_NAME(set_escdelay)(CURRENT_SCREEN, value);
 #else
 	ESCDELAY = value;
 	code = OK;
@@ -110,7 +110,7 @@ set_escdelay(int value)
 
 #if NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(get_escdelay)(NCURSES_SP_DCL0)
 {
 #if !USE_REENTRANT
     (void) SP_PARM;
@@ -122,7 +122,7 @@ NCURSES_SP_NAME(get_escdelay) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 get_escdelay(void)
 {
-    return NCURSES_SP_NAME(get_escdelay) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(get_escdelay)(CURRENT_SCREEN);
 }
 #endif
 #endif /* NCURSES_EXT_FUNCS */
@@ -274,7 +274,7 @@ fifo_push(SCREEN *sp EVENTLIST_2nd(_nc_eventlist * evl))
 #endif
 #if USE_TERM_DRIVER
 	if ((sp->_mouse_type == M_TERM_DRIVER)
-	    && (sp->_drv_mouse_head < sp->_drv_mouse_tail)) {
+	    && (sp->_console_mouse_head < sp->_console_mouse_tail)) {
 	sp->_mouse_event(sp);
 	ch = KEY_MOUSE;
 	n = 1;

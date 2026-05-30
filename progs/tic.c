@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.341 2026/05/23 19:59:38 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.342 2026/05/30 19:40:42 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -230,8 +230,8 @@ write_it(ENTRY * ep)
 		    long value = strtol(t + 1, &v, 0);
 		    if (v != NULL
 			&& *v == R_BRACE
-			&& value >= 32
-			&& value < 127) {
+			&& value != 0
+			&& value < 256) {
 			*d++ = S_QUOTE;
 			*d++ = (char) value;
 			*d++ = S_QUOTE;

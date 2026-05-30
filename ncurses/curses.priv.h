@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.753 2026/05/23 23:10:49 tom Exp $
+ * $Id: curses.priv.h,v 1.755 2026/05/30 21:02:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -225,10 +225,10 @@ extern int errno;
 	CreateFile(TEXT(fileName), \
 		   GENERIC_READ | GENERIC_WRITE, \
 		   shareMode, \
-		   0, \
+		   NULL, \
 		   OPEN_EXISTING, \
 		   0, \
-		   0)
+		   NULL)
 #endif
 
 /*
@@ -1259,11 +1259,11 @@ typedef struct screen {
 #endif
 
 #if USE_TERM_DRIVER || USE_NAMED_PIPES
-	MEVENT		_drv_mouse_fifo[FIFO_SIZE];
-	int		_drv_mouse_head;
-	int		_drv_mouse_tail;
-	int		_drv_mouse_old_buttons;
-	int		_drv_mouse_new_buttons;
+	MEVENT		_console_mouse_fifo[FIFO_SIZE];
+	int		_console_mouse_head;
+	int		_console_mouse_tail;
+	int		_console_mouse_old_buttons;
+	int		_console_mouse_new_buttons;
 #endif
 	/*
 	 * This supports automatic resizing

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -46,7 +46,7 @@
 #include <sys/termio.h>		/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.52 2025/03/09 00:49:14 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.53 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 initscr(void)
@@ -99,7 +99,7 @@ initscr(void)
 
 	/* def_shell_mode - done in newterm/_nc_setupscreen */
 #if NCURSES_SP_FUNCS
-	NCURSES_SP_NAME(def_prog_mode) (CURRENT_SCREEN);
+	NCURSES_SP_NAME(def_prog_mode)(CURRENT_SCREEN);
 #else
 	def_prog_mode();
 #endif

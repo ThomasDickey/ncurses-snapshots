@@ -42,10 +42,10 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.41 2026/03/28 20:22:56 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.42 2026/05/30 21:17:40 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
+NCURSES_SP_NAME(_nc_get_tty_mode)(NCURSES_SP_DCLx TTY * buf)
 {
     TERMINAL *termp = TerminalOf(SP_PARM);
     int result = OK;
@@ -85,12 +85,12 @@ NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_DCLx TTY * buf)
 NCURSES_EXPORT(int)
 _nc_get_tty_mode(TTY * buf)
 {
-    return NCURSES_SP_NAME(_nc_get_tty_mode) (CURRENT_SCREEN, buf);
+    return NCURSES_SP_NAME(_nc_get_tty_mode)(CURRENT_SCREEN, buf);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_DCLx TTY * buf)
+NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_DCLx TTY * buf)
 {
     int result = OK;
 
@@ -132,12 +132,12 @@ NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_DCLx TTY * buf)
 NCURSES_EXPORT(int)
 _nc_set_tty_mode(TTY * buf)
 {
-    return NCURSES_SP_NAME(_nc_set_tty_mode) (CURRENT_SCREEN, buf);
+    return NCURSES_SP_NAME(_nc_set_tty_mode)(CURRENT_SCREEN, buf);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(def_shell_mode)(NCURSES_SP_DCL0)
 {
     int rc = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -171,12 +171,12 @@ NCURSES_SP_NAME(def_shell_mode) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 def_shell_mode(void)
 {
-    return NCURSES_SP_NAME(def_shell_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(def_shell_mode)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(def_prog_mode)(NCURSES_SP_DCL0)
 {
     int rc = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -207,12 +207,12 @@ NCURSES_SP_NAME(def_prog_mode) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 def_prog_mode(void)
 {
-    return NCURSES_SP_NAME(def_prog_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(def_prog_mode)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(reset_prog_mode)(NCURSES_SP_DCL0)
 {
     int rc = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -239,12 +239,12 @@ NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 reset_prog_mode(void)
 {
-    return NCURSES_SP_NAME(reset_prog_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(reset_prog_mode)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(reset_shell_mode)(NCURSES_SP_DCL0)
 {
     int rc = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -270,7 +270,7 @@ NCURSES_SP_NAME(reset_shell_mode) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 reset_shell_mode(void)
 {
-    return NCURSES_SP_NAME(reset_shell_mode) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(reset_shell_mode)(CURRENT_SCREEN);
 }
 #endif
 
@@ -296,31 +296,31 @@ saved_tty(NCURSES_SP_DCL0)
 */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(savetty) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(savetty)(NCURSES_SP_DCL0)
 {
     T((T_CALLED("savetty(%p)"), (void *) SP_PARM));
-    returnCode(NCURSES_SP_NAME(_nc_get_tty_mode) (NCURSES_SP_ARGx saved_tty(NCURSES_SP_ARG)));
+    returnCode(NCURSES_SP_NAME(_nc_get_tty_mode)(NCURSES_SP_ARGx saved_tty(NCURSES_SP_ARG)));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 savetty(void)
 {
-    return NCURSES_SP_NAME(savetty) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(savetty)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(resetty) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(resetty)(NCURSES_SP_DCL0)
 {
     T((T_CALLED("resetty(%p)"), (void *) SP_PARM));
-    returnCode(NCURSES_SP_NAME(_nc_set_tty_mode) (NCURSES_SP_ARGx saved_tty(NCURSES_SP_ARG)));
+    returnCode(NCURSES_SP_NAME(_nc_set_tty_mode)(NCURSES_SP_ARGx saved_tty(NCURSES_SP_ARG)));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 resetty(void)
 {
-    return NCURSES_SP_NAME(resetty) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(resetty)(CURRENT_SCREEN);
 }
 #endif

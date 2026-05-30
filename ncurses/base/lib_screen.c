@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.113 2025/12/27 12:28:45 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.114 2026/05/30 22:10:47 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -499,7 +499,7 @@ read_block(void *target, size_t length, FILE *fp)
 }
 
 NCURSES_EXPORT(WINDOW *)
-NCURSES_SP_NAME(getwin) (NCURSES_SP_DCLx FILE *filep)
+NCURSES_SP_NAME(getwin)(NCURSES_SP_DCLx FILE *filep)
 {
     WINDOW tmp, *nwin;
     bool old_format = FALSE;
@@ -542,13 +542,13 @@ NCURSES_SP_NAME(getwin) (NCURSES_SP_DCLx FILE *filep)
     }
 
     if (IS_PAD(&tmp)) {
-	nwin = NCURSES_SP_NAME(newpad) (NCURSES_SP_ARGx
-					tmp._maxy + 1,
-					tmp._maxx + 1);
+	nwin = NCURSES_SP_NAME(newpad)(NCURSES_SP_ARGx
+				       tmp._maxy + 1,
+				       tmp._maxx + 1);
     } else {
-	nwin = NCURSES_SP_NAME(newwin) (NCURSES_SP_ARGx
-					tmp._maxy + 1,
-					tmp._maxx + 1, 0, 0);
+	nwin = NCURSES_SP_NAME(newwin)(NCURSES_SP_ARGx
+				       tmp._maxy + 1,
+				       tmp._maxx + 1, 0, 0);
     }
 
     /*
@@ -647,7 +647,7 @@ NCURSES_SP_NAME(getwin) (NCURSES_SP_DCLx FILE *filep)
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE *filep)
 {
-    return NCURSES_SP_NAME(getwin) (CURRENT_SCREEN, filep);
+    return NCURSES_SP_NAME(getwin)(CURRENT_SCREEN, filep);
 }
 #endif
 
@@ -964,7 +964,7 @@ replace_window(const WINDOW *target, FILE *source)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(scr_restore) (NCURSES_SP_DCLx const char *file)
+NCURSES_SP_NAME(scr_restore)(NCURSES_SP_DCLx const char *file)
 {
     FILE *fp = NULL;
     int code = ERR;
@@ -992,7 +992,7 @@ NCURSES_SP_NAME(scr_restore) (NCURSES_SP_DCLx const char *file)
 NCURSES_EXPORT(int)
 scr_restore(const char *file)
 {
-    return NCURSES_SP_NAME(scr_restore) (CURRENT_SCREEN, file);
+    return NCURSES_SP_NAME(scr_restore)(CURRENT_SCREEN, file);
 }
 #endif
 
@@ -1016,7 +1016,7 @@ scr_dump(const char *file)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
+NCURSES_SP_NAME(scr_init)(NCURSES_SP_DCLx const char *file)
 {
     int code = ERR;
 
@@ -1052,19 +1052,19 @@ NCURSES_SP_NAME(scr_init) (NCURSES_SP_DCLx const char *file)
 NCURSES_EXPORT(int)
 scr_init(const char *file)
 {
-    return NCURSES_SP_NAME(scr_init) (CURRENT_SCREEN, file);
+    return NCURSES_SP_NAME(scr_init)(CURRENT_SCREEN, file);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(scr_set) (NCURSES_SP_DCLx const char *file)
+NCURSES_SP_NAME(scr_set)(NCURSES_SP_DCLx const char *file)
 {
     int code = ERR;
 
     T((T_CALLED("scr_set(%p,%s)"), (void *) SP_PARM, _nc_visbuf(file)));
 
     if (SP_PARM != NULL
-	&& NCURSES_SP_NAME(scr_init) (NCURSES_SP_ARGx file) == OK) {
+	&& NCURSES_SP_NAME(scr_init)(NCURSES_SP_ARGx file) == OK) {
 	delwin(NewScreen(SP_PARM));
 	NewScreen(SP_PARM) = dupwin(curscr);
 #if !USE_REENTRANT
@@ -1081,6 +1081,6 @@ NCURSES_SP_NAME(scr_set) (NCURSES_SP_DCLx const char *file)
 NCURSES_EXPORT(int)
 scr_set(const char *file)
 {
-    return NCURSES_SP_NAME(scr_set) (CURRENT_SCREEN, file);
+    return NCURSES_SP_NAME(scr_set)(CURRENT_SCREEN, file);
 }
 #endif

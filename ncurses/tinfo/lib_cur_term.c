@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -41,7 +41,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>		/* VALID_STRING */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.53 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.54 2026/05/30 22:10:47 tom Exp $")
 
 #undef CUR
 #define CUR TerminalType(termp).
@@ -49,7 +49,7 @@ MODULE_ID("$Id: lib_cur_term.c,v 1.53 2025/12/27 12:41:23 tom Exp $")
 #if USE_REENTRANT
 
 NCURSES_EXPORT(TERMINAL *)
-NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_get_cur_term)(NCURSES_SP_DCL0)
 {
     return ((NULL != TerminalOf(SP_PARM)) ? TerminalOf(SP_PARM) : CurTerm);
 }
@@ -59,7 +59,7 @@ NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(TERMINAL *)
 _nc_get_cur_term(void)
 {
-    return NCURSES_SP_NAME(_nc_get_cur_term) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(_nc_get_cur_term)(CURRENT_SCREEN);
 }
 #endif
 
@@ -67,9 +67,9 @@ NCURSES_EXPORT(TERMINAL *)
 NCURSES_PUBLIC_VAR(cur_term) (void)
 {
 #if NCURSES_SP_FUNCS
-    return NCURSES_SP_NAME(_nc_get_cur_term) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(_nc_get_cur_term)(CURRENT_SCREEN);
 #else
-    return NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_ARG);
+    return NCURSES_SP_NAME(_nc_get_cur_term)(NCURSES_SP_ARG);
 #endif
 }
 
@@ -78,7 +78,7 @@ NCURSES_EXPORT_VAR(TERMINAL *) cur_term = NULL;
 #endif
 
 NCURSES_EXPORT(TERMINAL *)
-NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
+NCURSES_SP_NAME(set_curterm)(NCURSES_SP_DCLx TERMINAL *termp)
 {
     TERMINAL *oldterm;
 
@@ -123,12 +123,12 @@ NCURSES_SP_NAME(set_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 NCURSES_EXPORT(TERMINAL *)
 set_curterm(TERMINAL *termp)
 {
-    return NCURSES_SP_NAME(set_curterm) (CURRENT_SCREEN, termp);
+    return NCURSES_SP_NAME(set_curterm)(CURRENT_SCREEN, termp);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
+NCURSES_SP_NAME(del_curterm)(NCURSES_SP_DCLx TERMINAL *termp)
 {
     int rc = ERR;
 
@@ -140,7 +140,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 #endif
 	TERMINAL *cur = (
 #if USE_REENTRANT
-			    NCURSES_SP_NAME(_nc_get_cur_term) (NCURSES_SP_ARG)
+			    NCURSES_SP_NAME(_nc_get_cur_term)(NCURSES_SP_ARG)
 #else
 			    cur_term
 #endif
@@ -155,7 +155,7 @@ NCURSES_SP_NAME(del_curterm) (NCURSES_SP_DCLx TERMINAL *termp)
 #endif
 	_nc_free_termtype2(&TerminalType(termp));
 	if (termp == cur)
-	    NCURSES_SP_NAME(set_curterm) (NCURSES_SP_ARGx NULL);
+	    NCURSES_SP_NAME(set_curterm)(NCURSES_SP_ARGx NULL);
 
 	FreeIfNeeded(termp->_termname);
 #if USE_HOME_TERMINFO
@@ -192,7 +192,7 @@ del_curterm(TERMINAL *termp)
     int rc;
 
     _nc_lock_global(curses);
-    rc = NCURSES_SP_NAME(del_curterm) (CURRENT_SCREEN, termp);
+    rc = NCURSES_SP_NAME(del_curterm)(CURRENT_SCREEN, termp);
     _nc_unlock_global(curses);
 
     return (rc);

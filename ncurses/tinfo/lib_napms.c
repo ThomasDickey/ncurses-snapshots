@@ -52,10 +52,10 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.34 2026/03/28 20:22:34 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.36 2026/05/30 22:56:46 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
+NCURSES_SP_NAME(napms)(NCURSES_SP_DCLx int ms)
 {
     T((T_CALLED("napms(%d)"), ms));
 
@@ -81,7 +81,7 @@ NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 #elif defined(_NC_WINDOWS_NATIVE)
     Sleep((DWORD) ms);
 #else
-    _nc_timed_wait(NULL, 0, ms, (int *) 0 EVENTLIST_2nd(NULL));
+    _nc_timed_wait(NULL, TW_NONE, ms, (int *) 0 EVENTLIST_2nd(NULL));
 #endif
 #endif /* !USE_TERM_DRIVER */
 
@@ -92,6 +92,6 @@ NCURSES_SP_NAME(napms) (NCURSES_SP_DCLx int ms)
 NCURSES_EXPORT(int)
 napms(int ms)
 {
-    return NCURSES_SP_NAME(napms) (CURRENT_SCREEN, ms);
+    return NCURSES_SP_NAME(napms)(CURRENT_SCREEN, ms);
 }
 #endif

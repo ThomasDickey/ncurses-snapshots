@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.63 2026/03/28 20:32:51 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.64 2026/05/30 21:17:40 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -100,7 +100,7 @@ show_window_sizes(const char *name)
  * structure's size.
  */
 NCURSES_EXPORT(bool)
-NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_DCLx int ToLines, int ToCols)
+NCURSES_SP_NAME(is_term_resized)(NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     T((T_CALLED("is_term_resized(%p, %d, %d)"), (void *) SP_PARM, ToLines, ToCols));
     returnBool(ToLines > 0
@@ -114,7 +114,7 @@ NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_DCLx int ToLines, int ToCols)
 NCURSES_EXPORT(bool)
 is_term_resized(int ToLines, int ToCols)
 {
-    return NCURSES_SP_NAME(is_term_resized) (CURRENT_SCREEN, ToLines, ToCols);
+    return NCURSES_SP_NAME(is_term_resized)(CURRENT_SCREEN, ToLines, ToCols);
 }
 #endif
 
@@ -348,7 +348,7 @@ increase_size(NCURSES_SP_DCLx int ToLines, int ToCols, int stolen EXTRA_DCLS)
  * such as ungetch().
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
+NCURSES_SP_NAME(resize_term)(NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     int result = OK EXTRA_ARGS;
     int was_stolen;
@@ -365,7 +365,7 @@ NCURSES_SP_NAME(resize_term) (NCURSES_SP_DCLx int ToLines, int ToCols)
     _nc_nonsp_lock_global(curses);
 
     was_stolen = (screen_lines(SP_PARM) - SP_PARM->_lines_avail);
-    if (NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_ARGx ToLines, ToCols)) {
+    if (NCURSES_SP_NAME(is_term_resized)(NCURSES_SP_ARGx ToLines, ToCols)) {
 	int myLines = CurLines = screen_lines(SP_PARM);
 	int myCols = CurCols = screen_columns(SP_PARM);
 
@@ -453,7 +453,7 @@ resize_term(int ToLines, int ToCols)
 {
     int res;
     _nc_sp_lock_global(curses);
-    res = NCURSES_SP_NAME(resize_term) (CURRENT_SCREEN, ToLines, ToCols);
+    res = NCURSES_SP_NAME(resize_term)(CURRENT_SCREEN, ToLines, ToCols);
     _nc_sp_unlock_global(curses);
     return (res);
 }
@@ -468,7 +468,7 @@ resize_term(int ToLines, int ToCols)
  * invoked directly from the signal handler.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
+NCURSES_SP_NAME(resizeterm)(NCURSES_SP_DCLx int ToLines, int ToCols)
 {
     int result = ERR;
 
@@ -481,7 +481,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 	result = OK;
 	SP_PARM->_sig_winch = FALSE;
 
-	if (NCURSES_SP_NAME(is_term_resized) (NCURSES_SP_ARGx ToLines, ToCols)) {
+	if (NCURSES_SP_NAME(is_term_resized)(NCURSES_SP_ARGx ToLines, ToCols)) {
 #if USE_SIGWINCH
 	    ripoff_t *rop;
 	    bool slk_visible = (SP_PARM != NULL
@@ -492,7 +492,7 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 		slk_clear();
 	    }
 #endif
-	    result = NCURSES_SP_NAME(resize_term) (NCURSES_SP_ARGx ToLines, ToCols);
+	    result = NCURSES_SP_NAME(resize_term)(NCURSES_SP_ARGx ToLines, ToCols);
 
 #if USE_SIGWINCH
 	    clearok(CurScreen(SP_PARM), TRUE);	/* screen contents are unknown */
@@ -518,9 +518,9 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 
 	    /* soft-keys are a special case: we _know_ how to repaint them */
 	    if (slk_visible) {
-		NCURSES_SP_NAME(slk_restore) (NCURSES_SP_ARG);
-		NCURSES_SP_NAME(slk_touch) (NCURSES_SP_ARG);
-		NCURSES_SP_NAME(slk_refresh) (NCURSES_SP_ARG);
+		NCURSES_SP_NAME(slk_restore)(NCURSES_SP_ARG);
+		NCURSES_SP_NAME(slk_touch)(NCURSES_SP_ARG);
+		NCURSES_SP_NAME(slk_refresh)(NCURSES_SP_ARG);
 	    }
 #endif
 	}
@@ -537,6 +537,6 @@ NCURSES_SP_NAME(resizeterm) (NCURSES_SP_DCLx int ToLines, int ToCols)
 NCURSES_EXPORT(int)
 resizeterm(int ToLines, int ToCols)
 {
-    return NCURSES_SP_NAME(resizeterm) (CURRENT_SCREEN, ToLines, ToCols);
+    return NCURSES_SP_NAME(resizeterm)(CURRENT_SCREEN, ToLines, ToCols);
 }
 #endif

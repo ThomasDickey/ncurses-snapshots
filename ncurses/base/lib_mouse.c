@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.229 2026/04/18 00:14:14 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.230 2026/05/30 20:48:17 tom Exp $")
 
 #include <tic.h>
 
@@ -919,15 +919,15 @@ _nc_mouse_event(SCREEN *sp)
 
 #if USE_TERM_DRIVER
     case M_TERM_DRIVER:
-	while (sp->_drv_mouse_head < sp->_drv_mouse_tail) {
+	while (sp->_console_mouse_head < sp->_console_mouse_tail) {
 	    /*
 	     * Point the fifo-head to the next possible location.  If there
 	     * are none, reset the indices.
 	     */
-	    sp->_drv_mouse_head += 1;
-	    if (sp->_drv_mouse_head == sp->_drv_mouse_tail) {
-		sp->_drv_mouse_tail = 0;
-		sp->_drv_mouse_head = 0;
+	    sp->_console_mouse_head += 1;
+	    if (sp->_console_mouse_head == sp->_console_mouse_tail) {
+		sp->_console_mouse_tail = 0;
+		sp->_console_mouse_head = 0;
 	    }
 
 	    /* bump the next-free pointer into the circular list */

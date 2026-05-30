@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.169 2026/03/06 09:08:25 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.170 2026/05/30 21:17:46 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -184,10 +184,10 @@ static unsigned long xmits;
 
 /* these override lib_tputs.c */
 static int
-NCURSES_SP_NAME(TestTPUTS) (NCURSES_SP_DCLx
-			    const char *string,
-			    int affcnt GCC_UNUSED,
-			    NCURSES_SP_OUTC outc)
+NCURSES_SP_NAME(TestTPUTS)(NCURSES_SP_DCLx
+			   const char *string,
+			   int affcnt GCC_UNUSED,
+			   NCURSES_SP_OUTC outc)
 /* stub tputs() that dumps sequences in a visible form */
 {
     (void) SP_PARM;
@@ -217,7 +217,7 @@ static int normalized_cost(NCURSES_SP_DCLx const char *const cap, int affcnt);
 static int
 trace_cost_of(NCURSES_SP_DCLx const char *capname, const char *cap, int affcnt)
 {
-    int result = NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_ARGx cap, affcnt);
+    int result = NCURSES_SP_NAME(_nc_msec_cost)(NCURSES_SP_ARGx cap, affcnt);
     TR(TRACE_CHARPUT | TRACE_MOVE,
        ("CostOf %s %d %s", capname, result, _nc_visbuf(cap)));
     return result;
@@ -242,7 +242,7 @@ trace_normalized_cost(NCURSES_SP_DCLx const char *capname, const char *cap, int 
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_DCLx const char *const cap, int affcnt)
+NCURSES_SP_NAME(_nc_msec_cost)(NCURSES_SP_DCLx const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
     if (cap == NULL)
@@ -301,7 +301,7 @@ NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_DCLx const char *const cap, int affcn
 NCURSES_EXPORT(int)
 _nc_msec_cost(const char *const cap, int affcnt)
 {
-    return NCURSES_SP_NAME(_nc_msec_cost) (CURRENT_SCREEN, cap, affcnt);
+    return NCURSES_SP_NAME(_nc_msec_cost)(CURRENT_SCREEN, cap, affcnt);
 }
 #endif
 
@@ -309,7 +309,7 @@ static int
 normalized_cost(NCURSES_SP_DCLx const char *const cap, int affcnt)
 /* compute the effective character-count for an operation (round up) */
 {
-    int cost = NCURSES_SP_NAME(_nc_msec_cost) (NCURSES_SP_ARGx cap, affcnt);
+    int cost = NCURSES_SP_NAME(_nc_msec_cost)(NCURSES_SP_ARGx cap, affcnt);
     if (cost != NC_INFINITY)
 	cost = (cost + SP_PARM->_char_padding - 1) / SP_PARM->_char_padding;
     return cost;
@@ -327,7 +327,7 @@ reset_scroll_region(NCURSES_SP_DCL0)
 }
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_mvcur_resume)(NCURSES_SP_DCL0)
 /* what to do at initialization time and after each shellout */
 {
     if (!SP_PARM || !IsTermInfo(SP_PARM))
@@ -354,7 +354,7 @@ NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_DCL0)
     if (SP_PARM->_cursor != -1) {
 	int cursor = SP_PARM->_cursor;
 	SP_PARM->_cursor = -1;
-	NCURSES_SP_NAME(curs_set) (NCURSES_SP_ARGx cursor);
+	NCURSES_SP_NAME(curs_set)(NCURSES_SP_ARGx cursor);
     }
 }
 
@@ -362,12 +362,12 @@ NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 _nc_mvcur_resume(void)
 {
-    NCURSES_SP_NAME(_nc_mvcur_resume) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_mvcur_resume)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_mvcur_init)(NCURSES_SP_DCL0)
 /* initialize the cost structure */
 {
     if (SP_PARM->_ofp && NC_ISATTY(fileno(SP_PARM->_ofp))) {
@@ -497,19 +497,19 @@ NCURSES_SP_NAME(_nc_mvcur_init) (NCURSES_SP_DCL0)
      * SCREEN's _endwin at window initialization time and let this be called by
      * doupdate's return-from-shellout code.
      */
-    NCURSES_SP_NAME(_nc_mvcur_resume) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_mvcur_resume)(NCURSES_SP_ARG);
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_mvcur_init(void)
 {
-    NCURSES_SP_NAME(_nc_mvcur_init) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_mvcur_init)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_mvcur_wrap) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_mvcur_wrap)(NCURSES_SP_DCL0)
 /* wrap up cursor-addressing mode */
 {
     if (!SP_PARM || !IsTermInfo(SP_PARM))
@@ -521,7 +521,7 @@ NCURSES_SP_NAME(_nc_mvcur_wrap) (NCURSES_SP_DCL0)
     /* set cursor to normal mode */
     if (SP_PARM->_cursor != -1) {
 	int cursor = SP_PARM->_cursor;
-	NCURSES_SP_NAME(curs_set) (NCURSES_SP_ARGx 1);
+	NCURSES_SP_NAME(curs_set)(NCURSES_SP_ARGx 1);
 	SP_PARM->_cursor = cursor;
     }
 
@@ -536,14 +536,14 @@ NCURSES_SP_NAME(_nc_mvcur_wrap) (NCURSES_SP_DCL0)
      * escape sequences that reset things as column positions.
      * Utter a \r to reset this invisibly.
      */
-    NCURSES_SP_NAME(_nc_outch) (NCURSES_SP_ARGx '\r');
+    NCURSES_SP_NAME(_nc_outch)(NCURSES_SP_ARGx '\r');
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(void)
 _nc_mvcur_wrap(void)
 {
-    NCURSES_SP_NAME(_nc_mvcur_wrap) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_mvcur_wrap)(CURRENT_SCREEN);
 }
 #endif
 
@@ -982,8 +982,8 @@ onscreen_mvcur(NCURSES_SP_DCLx
     if (usecost != NC_INFINITY) {
 	TR(TRACE_MOVE, ("mvcur tactic %d", tactic));
 	TPUTS_TRACE("mvcur");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				buffer, 1, myOutCh);
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       buffer, 1, myOutCh);
 	SP_PARM->_cursrow = ynew;
 	SP_PARM->_curscol = xnew;
 	return (OK);
@@ -1089,9 +1089,9 @@ _nc_real_mvcur(NCURSES_SP_DCLx
  * These entrypoints are used within the library.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_mvcur) (NCURSES_SP_DCLx
-			    int yold, int xold,
-			    int ynew, int xnew)
+NCURSES_SP_NAME(_nc_mvcur)(NCURSES_SP_DCLx
+			   int yold, int xold,
+			   int ynew, int xnew)
 {
     int rc;
     rc = _nc_real_mvcur(NCURSES_SP_ARGx yold, xold, ynew, xnew,
@@ -1103,7 +1103,7 @@ NCURSES_SP_NAME(_nc_mvcur) (NCURSES_SP_DCLx
      * initialized, e.g., when used from low-level terminfo programs.
      */
     if ((SP_PARM != NULL) && (SP_PARM->_endwin == ewInitial))
-	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     return rc;
 }
 
@@ -1112,7 +1112,7 @@ NCURSES_EXPORT(int)
 _nc_mvcur(int yold, int xold,
 	  int ynew, int xnew)
 {
-    return NCURSES_SP_NAME(_nc_mvcur) (CURRENT_SCREEN, yold, xold, ynew, xnew);
+    return NCURSES_SP_NAME(_nc_mvcur)(CURRENT_SCREEN, yold, xold, ynew, xnew);
 }
 #endif
 
@@ -1130,8 +1130,8 @@ TINFO_MVCUR(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew)
 			NCURSES_SP_NAME(_nc_outch),
 			TRUE);
     if ((SP_PARM != NULL) && (SP_PARM->_endwin == ewInitial))
-	NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
-    NCURSES_SP_NAME(_nc_flush) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
+    NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
     return rc;
 }
 
@@ -1141,8 +1141,8 @@ TINFO_MVCUR(NCURSES_SP_DCLx int yold, int xold, int ynew, int xnew)
  * These entrypoints support users of the library.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(mvcur) (NCURSES_SP_DCLx int yold, int xold, int ynew,
-			int xnew)
+NCURSES_SP_NAME(mvcur)(NCURSES_SP_DCLx int yold, int xold, int ynew,
+		       int xnew)
 {
     return _nc_real_mvcur(NCURSES_SP_ARGx
 			  yold, xold,
@@ -1155,7 +1155,7 @@ NCURSES_SP_NAME(mvcur) (NCURSES_SP_DCLx int yold, int xold, int ynew,
 NCURSES_EXPORT(int)
 mvcur(int yold, int xold, int ynew, int xnew)
 {
-    return NCURSES_SP_NAME(mvcur) (CURRENT_SCREEN, yold, xold, ynew, xnew);
+    return NCURSES_SP_NAME(mvcur)(CURRENT_SCREEN, yold, xold, ynew, xnew);
 }
 #endif
 #endif /* USE_TERM_DRIVER */

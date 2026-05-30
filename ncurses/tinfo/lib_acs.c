@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_acs.c,v 1.54 2025/12/27 12:33:34 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.55 2026/05/30 22:10:47 tom Exp $")
 
 #if BROKEN_LINKER || USE_REENTRANT
 #define MyBuffer _nc_prescreen.real_acs_map
@@ -61,7 +61,7 @@ NCURSES_EXPORT_VAR (chtype) acs_map[ACS_LEN] =
 
 #if USE_TERM_DRIVER
 NCURSES_EXPORT(chtype)
-NCURSES_SP_NAME(_nc_acs_char) (NCURSES_SP_DCLx int c)
+NCURSES_SP_NAME(_nc_acs_char)(NCURSES_SP_DCLx int c)
 {
     chtype *map;
     if (c < 0 || c >= ACS_LEN)
@@ -78,7 +78,7 @@ NCURSES_SP_NAME(_nc_acs_char) (NCURSES_SP_DCLx int c)
 #endif /* USE_TERM_DRIVER */
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_init_acs)(NCURSES_SP_DCL0)
 {
     chtype *fake_map = acs_map;
     chtype *real_map = SP_PARM != NULL ? SP_PARM->_acs_map : fake_map;
@@ -252,7 +252,7 @@ NCURSES_SP_NAME(_nc_init_acs) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(void)
 _nc_init_acs(void)
 {
-    NCURSES_SP_NAME(_nc_init_acs) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(_nc_init_acs)(CURRENT_SCREEN);
 }
 #endif
 

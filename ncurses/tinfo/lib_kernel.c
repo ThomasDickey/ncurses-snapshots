@@ -49,7 +49,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_kernel.c,v 1.41 2026/03/28 20:22:34 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.42 2026/05/30 21:17:40 tom Exp $")
 
 #ifdef TERMIOS
 static int
@@ -82,7 +82,7 @@ _nc_vdisable(void)
  */
 
 NCURSES_EXPORT(char)
-NCURSES_SP_NAME(erasechar) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(erasechar)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -107,7 +107,7 @@ NCURSES_SP_NAME(erasechar) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(char)
 erasechar(void)
 {
-    return NCURSES_SP_NAME(erasechar) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(erasechar)(CURRENT_SCREEN);
 }
 #endif
 
@@ -119,7 +119,7 @@ erasechar(void)
  */
 
 NCURSES_EXPORT(char)
-NCURSES_SP_NAME(killchar) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(killchar)(NCURSES_SP_DCL0)
 {
     int result = ERR;
     TERMINAL *termp = TerminalOf(SP_PARM);
@@ -144,7 +144,7 @@ NCURSES_SP_NAME(killchar) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(char)
 killchar(void)
 {
-    return NCURSES_SP_NAME(killchar) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(killchar)(CURRENT_SCREEN);
 }
 #endif
 
@@ -173,7 +173,7 @@ flush_input(int fd)
  */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(flushinp) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(flushinp)(NCURSES_SP_DCL0)
 {
     T((T_CALLED("flushinp(%p)"), (void *) SP_PARM));
 
@@ -196,6 +196,6 @@ NCURSES_SP_NAME(flushinp) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 flushinp(void)
 {
-    return NCURSES_SP_NAME(flushinp) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(flushinp)(CURRENT_SCREEN);
 }
 #endif

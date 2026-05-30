@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2015 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,13 +42,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_restart.c,v 1.21 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.22 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(restartterm) (NCURSES_SP_DCLx
-			      NCURSES_CONST char *termp,
-			      int filenum,
-			      int *errret)
+NCURSES_SP_NAME(restartterm)(NCURSES_SP_DCLx
+			     NCURSES_CONST char *termp,
+			     int filenum,
+			     int *errret)
 {
     int result;
 #if USE_TERM_DRIVER
@@ -71,28 +71,28 @@ NCURSES_SP_NAME(restartterm) (NCURSES_SP_DCLx
 	SP_PARM->_term = new_term;
 #endif
 	if (save_flags._echo) {
-	    NCURSES_SP_NAME(echo) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(echo)(NCURSES_SP_ARG);
 	} else {
-	    NCURSES_SP_NAME(noecho) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(noecho)(NCURSES_SP_ARG);
 	}
 
 	if (save_flags._cbreak) {
-	    NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(noraw) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(cbreak)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(noraw)(NCURSES_SP_ARG);
 	} else if (save_flags._raw) {
-	    NCURSES_SP_NAME(nocbreak) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(raw) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(nocbreak)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(raw)(NCURSES_SP_ARG);
 	} else {
-	    NCURSES_SP_NAME(nocbreak) (NCURSES_SP_ARG);
-	    NCURSES_SP_NAME(noraw) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(nocbreak)(NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(noraw)(NCURSES_SP_ARG);
 	}
 	if (save_flags._nl) {
-	    NCURSES_SP_NAME(nl) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(nl)(NCURSES_SP_ARG);
 	} else {
-	    NCURSES_SP_NAME(nonl) (NCURSES_SP_ARG);
+	    NCURSES_SP_NAME(nonl)(NCURSES_SP_ARG);
 	}
 
-	NCURSES_SP_NAME(reset_prog_mode) (NCURSES_SP_ARG);
+	NCURSES_SP_NAME(reset_prog_mode)(NCURSES_SP_ARG);
 
 #if USE_SIZECHANGE
 	_nc_update_screensize(SP_PARM);
@@ -110,6 +110,6 @@ NCURSES_EXPORT(int)
 restartterm(NCURSES_CONST char *termp, int filenum, int *errret)
 {
     START_TRACE();
-    return NCURSES_SP_NAME(restartterm) (CURRENT_SCREEN, termp, filenum, errret);
+    return NCURSES_SP_NAME(restartterm)(CURRENT_SCREEN, termp, filenum, errret);
 }
 #endif

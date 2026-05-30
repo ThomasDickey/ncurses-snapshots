@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.24 2026/01/18 00:53:15 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.25 2026/05/30 21:17:46 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -100,8 +100,8 @@ _nc_init_keytry(SCREEN *sp)
 		if (name != NULL
 		    && ((*name == 'k') || !strncmp(name, "alt_", 4))
 		    && VALID_STRING(value)
-		    && NCURSES_SP_NAME(key_defined) (NCURSES_SP_ARGx
-						     value) == 0) {
+		    && NCURSES_SP_NAME(key_defined)(NCURSES_SP_ARGx
+						    value) == 0) {
 		    (void) _nc_add_to_try(&(sp->_keytry),
 					  value,
 					  n - STRCOUNT + KEY_MAX);

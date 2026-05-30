@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2014,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_options.c,v 1.86 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.87 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -63,7 +63,7 @@ idlok(WINDOW *win, bool flag)
 #endif
 	    ) {
 	    sp->_nc_sp_idlok =
-		win->_idlok = (flag && (NCURSES_SP_NAME(has_il) (NCURSES_SP_ARG)
+		win->_idlok = (flag && (NCURSES_SP_NAME(has_il)(NCURSES_SP_ARG)
 					|| change_scroll_region));
 	    res = OK;
 	}
@@ -78,20 +78,20 @@ idcok(WINDOW *win, bool flag)
 
     if (win) {
 	SCREEN *sp = _nc_screen_of(win);
-	sp->_nc_sp_idcok = win->_idcok = (flag && NCURSES_SP_NAME(has_ic) (NCURSES_SP_ARG));
+	sp->_nc_sp_idcok = win->_idcok = (flag && NCURSES_SP_NAME(has_ic)(NCURSES_SP_ARG));
     }
     returnVoid;
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(halfdelay) (NCURSES_SP_DCLx int t)
+NCURSES_SP_NAME(halfdelay)(NCURSES_SP_DCLx int t)
 {
     T((T_CALLED("halfdelay(%p,%d)"), (void *) SP_PARM, t));
 
     if (t < 1 || t > 255 || !SP_PARM || !IsValidTIScreen(SP_PARM))
 	returnCode(ERR);
 
-    NCURSES_SP_NAME(cbreak) (NCURSES_SP_ARG);
+    NCURSES_SP_NAME(cbreak)(NCURSES_SP_ARG);
     IsCbreak(SP_PARM) = t + 1;
     returnCode(OK);
 }
@@ -100,7 +100,7 @@ NCURSES_SP_NAME(halfdelay) (NCURSES_SP_DCLx int t)
 NCURSES_EXPORT(int)
 halfdelay(int t)
 {
-    return NCURSES_SP_NAME(halfdelay) (CURRENT_SCREEN, t);
+    return NCURSES_SP_NAME(halfdelay)(CURRENT_SCREEN, t);
 }
 #endif
 
@@ -190,7 +190,7 @@ meta(WINDOW *win GCC_UNUSED, bool flag)
 /* curs_set() moved here to narrow the kernel interface */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(curs_set) (NCURSES_SP_DCLx int vis)
+NCURSES_SP_NAME(curs_set)(NCURSES_SP_DCLx int vis)
 {
     int code = ERR;
     T((T_CALLED("curs_set(%p,%d)"), (void *) SP_PARM, vis));
@@ -234,12 +234,12 @@ NCURSES_SP_NAME(curs_set) (NCURSES_SP_DCLx int vis)
 NCURSES_EXPORT(int)
 curs_set(int vis)
 {
-    return (NCURSES_SP_NAME(curs_set) (CURRENT_SCREEN, vis));
+    return (NCURSES_SP_NAME(curs_set)(CURRENT_SCREEN, vis));
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(typeahead) (NCURSES_SP_DCLx int fd)
+NCURSES_SP_NAME(typeahead)(NCURSES_SP_DCLx int fd)
 {
     T((T_CALLED("typeahead(%p, %d)"), (void *) SP_PARM, fd));
     if (SP_PARM && IsValidTIScreen(SP_PARM)) {
@@ -254,7 +254,7 @@ NCURSES_SP_NAME(typeahead) (NCURSES_SP_DCLx int fd)
 NCURSES_EXPORT(int)
 typeahead(int fd)
 {
-    return NCURSES_SP_NAME(typeahead) (CURRENT_SCREEN, fd);
+    return NCURSES_SP_NAME(typeahead)(CURRENT_SCREEN, fd);
 }
 #endif
 
@@ -287,7 +287,7 @@ TINFO_HAS_KEY(SCREEN *sp, int keycode)
 }
 #else
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(has_key) (NCURSES_SP_DCLx int keycode)
+NCURSES_SP_NAME(has_key)(NCURSES_SP_DCLx int keycode)
 {
     T((T_CALLED("has_key(%p,%d)"), (void *) SP_PARM, keycode));
     returnCode(SP != NULL ? has_key_internal(keycode, SP_PARM->_keytry) : FALSE);
@@ -297,15 +297,15 @@ NCURSES_SP_NAME(has_key) (NCURSES_SP_DCLx int keycode)
 NCURSES_EXPORT(int)
 has_key(int keycode)
 {
-    return NCURSES_SP_NAME(has_key) (CURRENT_SCREEN, keycode);
+    return NCURSES_SP_NAME(has_key)(CURRENT_SCREEN, keycode);
 }
 #endif
 #endif
 #endif /* NCURSES_EXT_FUNCS */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(_nc_putp_flush) (NCURSES_SP_DCLx
-				 const char *name, const char *value)
+NCURSES_SP_NAME(_nc_putp_flush)(NCURSES_SP_DCLx
+				const char *name, const char *value)
 {
     int rc = NCURSES_PUTP2(name, value);
     if (rc != ERR) {
@@ -318,7 +318,7 @@ NCURSES_SP_NAME(_nc_putp_flush) (NCURSES_SP_DCLx
 NCURSES_EXPORT(int)
 _nc_putp_flush(const char *name, const char *value)
 {
-    return NCURSES_SP_NAME(_nc_putp_flush) (CURRENT_SCREEN, name, value);
+    return NCURSES_SP_NAME(_nc_putp_flush)(CURRENT_SCREEN, name, value);
 }
 #endif
 

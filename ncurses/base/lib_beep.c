@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2013,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -47,7 +47,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_beep.c,v 1.21 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_beep.c,v 1.22 2026/05/30 22:10:47 tom Exp $")
 
 /*
  *	beep()
@@ -58,7 +58,7 @@ MODULE_ID("$Id: lib_beep.c,v 1.21 2025/12/27 12:41:23 tom Exp $")
  */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(beep) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(beep)(NCURSES_SP_DCL0)
 {
     int res = ERR;
 
@@ -86,6 +86,6 @@ NCURSES_SP_NAME(beep) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 beep(void)
 {
-    return NCURSES_SP_NAME(beep) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(beep)(CURRENT_SCREEN);
 }
 #endif

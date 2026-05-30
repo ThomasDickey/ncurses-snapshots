@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keyok.c,v 1.19 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: keyok.c,v 1.20 2026/05/30 22:10:47 tom Exp $")
 
 /*
  * Enable (or disable) ncurses' interpretation of a keycode by adding (or
@@ -47,7 +47,7 @@ MODULE_ID("$Id: keyok.c,v 1.19 2025/12/27 12:41:23 tom Exp $")
  */
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(keyok) (NCURSES_SP_DCLx int c, bool flag)
+NCURSES_SP_NAME(keyok)(NCURSES_SP_DCLx int c, bool flag)
 {
     int code = ERR;
 
@@ -98,6 +98,6 @@ NCURSES_SP_NAME(keyok) (NCURSES_SP_DCLx int c, bool flag)
 NCURSES_EXPORT(int)
 keyok(int c, bool flag)
 {
-    return NCURSES_SP_NAME(keyok) (CURRENT_SCREEN, c, flag);
+    return NCURSES_SP_NAME(keyok)(CURRENT_SCREEN, c, flag);
 }
 #endif

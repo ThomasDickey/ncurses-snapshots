@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2010,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_slk.c,v 1.52 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.53 2026/05/30 22:10:47 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define NumLabels    InfoOf(SP_PARM).numlabels
@@ -231,7 +231,7 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
  * Restore the soft labels on the screen.
  */
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(slk_restore) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(slk_restore)(NCURSES_SP_DCL0)
 {
     T((T_CALLED("slk_restore(%p)"), (void *) SP_PARM));
 
@@ -242,13 +242,13 @@ NCURSES_SP_NAME(slk_restore) (NCURSES_SP_DCL0)
     SP_PARM->_slk->hidden = FALSE;
     SP_PARM->_slk->dirty = TRUE;
 
-    returnCode(NCURSES_SP_NAME(slk_refresh) (NCURSES_SP_ARG));
+    returnCode(NCURSES_SP_NAME(slk_refresh)(NCURSES_SP_ARG));
 }
 
 #if NCURSES_SP_FUNCS
 NCURSES_EXPORT(int)
 slk_restore(void)
 {
-    return NCURSES_SP_NAME(slk_restore) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(slk_restore)(CURRENT_SCREEN);
 }
 #endif

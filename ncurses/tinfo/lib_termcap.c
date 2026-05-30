@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.96 2025/12/27 12:33:34 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.97 2026/05/30 22:10:47 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = NULL;
 NCURSES_EXPORT_VAR(char *) BC = NULL;
@@ -89,7 +89,7 @@ NCURSES_EXPORT_VAR(char *) BC = NULL;
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
+NCURSES_SP_NAME(tgetent)(NCURSES_SP_DCLx char *bufp, const char *name)
 {
     int rc = ERR;
     int n;
@@ -133,7 +133,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	     */
 	    if (LAST_TRM != NULL && LAST_TRM != TerminalOf(SP_PARM)) {
 		const TERMINAL *trm = LAST_TRM;
-		NCURSES_SP_NAME(del_curterm) (NCURSES_SP_ARGx LAST_TRM);
+		NCURSES_SP_NAME(del_curterm)(NCURSES_SP_ARGx LAST_TRM);
 		for (CacheInx = 0; CacheInx < TGETENT_MAX; ++CacheInx)
 		    if (LAST_TRM == trm)
 			LAST_TRM = NULL;
@@ -192,7 +192,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 	LAST_USE = TRUE;
 
 	SetNoPadding(SP_PARM);
-	(void) NCURSES_SP_NAME(baudrate) (NCURSES_SP_ARG);	/* sets ospeed as a side effect */
+	(void) NCURSES_SP_NAME(baudrate)(NCURSES_SP_ARG);	/* sets ospeed as a side effect */
 
 /* LINT_PREPRO
 #if 0*/
@@ -208,7 +208,7 @@ NCURSES_SP_NAME(tgetent) (NCURSES_SP_DCLx char *bufp, const char *name)
 NCURSES_EXPORT(int)
 tgetent(char *bufp, const char *name)
 {
-    return NCURSES_SP_NAME(tgetent) (CURRENT_SCREEN, bufp, name);
+    return NCURSES_SP_NAME(tgetent)(CURRENT_SCREEN, bufp, name);
 }
 #endif
 
@@ -235,7 +235,7 @@ same_tcname(const char *a, const char *b)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx const char *id)
+NCURSES_SP_NAME(tgetflag)(NCURSES_SP_DCLx const char *id)
 {
     int result = 0;		/* Solaris returns zero for missing flag */
 
@@ -273,7 +273,7 @@ NCURSES_SP_NAME(tgetflag) (NCURSES_SP_DCLx const char *id)
 NCURSES_EXPORT(int)
 tgetflag(const char *id)
 {
-    return NCURSES_SP_NAME(tgetflag) (CURRENT_SCREEN, id);
+    return NCURSES_SP_NAME(tgetflag)(CURRENT_SCREEN, id);
 }
 #endif
 
@@ -287,7 +287,7 @@ tgetflag(const char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx const char *id)
+NCURSES_SP_NAME(tgetnum)(NCURSES_SP_DCLx const char *id)
 {
     int result = ABSENT_NUMERIC;
 
@@ -327,7 +327,7 @@ NCURSES_SP_NAME(tgetnum) (NCURSES_SP_DCLx const char *id)
 NCURSES_EXPORT(int)
 tgetnum(const char *id)
 {
-    return NCURSES_SP_NAME(tgetnum) (CURRENT_SCREEN, id);
+    return NCURSES_SP_NAME(tgetnum)(CURRENT_SCREEN, id);
 }
 #endif
 
@@ -341,7 +341,7 @@ tgetnum(const char *id)
  ***************************************************************************/
 
 NCURSES_EXPORT(char *)
-NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx const char *id, char **area)
+NCURSES_SP_NAME(tgetstr)(NCURSES_SP_DCLx const char *id, char **area)
 {
     char *result = NULL;
 
@@ -393,7 +393,7 @@ NCURSES_SP_NAME(tgetstr) (NCURSES_SP_DCLx const char *id, char **area)
 NCURSES_EXPORT(char *)
 tgetstr(const char *id, char **area)
 {
-    return NCURSES_SP_NAME(tgetstr) (CURRENT_SCREEN, id, area);
+    return NCURSES_SP_NAME(tgetstr)(CURRENT_SCREEN, id, area);
 }
 #endif
 

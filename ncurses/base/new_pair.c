@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -61,7 +61,7 @@
 
 #endif
 
-MODULE_ID("$Id: new_pair.c,v 1.27 2025/12/27 12:41:23 tom Exp $")
+MODULE_ID("$Id: new_pair.c,v 1.28 2026/05/30 22:10:47 tom Exp $")
 
 #if NCURSES_EXT_COLORS
 
@@ -261,7 +261,7 @@ _nc_copy_pairs(SCREEN *sp, colorpair_t * target, colorpair_t * source, int lengt
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(alloc_pair) (NCURSES_SP_DCLx int fg, int bg)
+NCURSES_SP_NAME(alloc_pair)(NCURSES_SP_DCLx int fg, int bg)
 {
     int pair;
 
@@ -324,7 +324,7 @@ NCURSES_SP_NAME(alloc_pair) (NCURSES_SP_DCLx int fg, int bg)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(find_pair) (NCURSES_SP_DCLx int fg, int bg)
+NCURSES_SP_NAME(find_pair)(NCURSES_SP_DCLx int fg, int bg)
 {
     int pair;
 
@@ -334,7 +334,7 @@ NCURSES_SP_NAME(find_pair) (NCURSES_SP_DCLx int fg, int bg)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(free_pair) (NCURSES_SP_DCLx int pair)
+NCURSES_SP_NAME(free_pair)(NCURSES_SP_DCLx int pair)
 {
     int result = ERR;
     T((T_CALLED("free_pair(%d)"), pair));
@@ -356,19 +356,19 @@ NCURSES_SP_NAME(free_pair) (NCURSES_SP_DCLx int pair)
 NCURSES_EXPORT(int)
 alloc_pair(int f, int b)
 {
-    return NCURSES_SP_NAME(alloc_pair) (CURRENT_SCREEN, f, b);
+    return NCURSES_SP_NAME(alloc_pair)(CURRENT_SCREEN, f, b);
 }
 
 NCURSES_EXPORT(int)
 find_pair(int f, int b)
 {
-    return NCURSES_SP_NAME(find_pair) (CURRENT_SCREEN, f, b);
+    return NCURSES_SP_NAME(find_pair)(CURRENT_SCREEN, f, b);
 }
 
 NCURSES_EXPORT(int)
 free_pair(int pair)
 {
-    return NCURSES_SP_NAME(free_pair) (CURRENT_SCREEN, pair);
+    return NCURSES_SP_NAME(free_pair)(CURRENT_SCREEN, pair);
 }
 #endif
 

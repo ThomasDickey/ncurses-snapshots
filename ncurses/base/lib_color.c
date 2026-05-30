@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_color.c,v 1.157 2025/12/27 12:31:03 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.158 2026/05/30 22:10:47 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define CanChange      InfoOf(SP_PARM).canchange
@@ -186,14 +186,14 @@ set_background_color(NCURSES_SP_DCLx int bg, NCURSES_SP_OUTC outc)
 #else
     if (set_a_background) {
 	TPUTS_TRACE("set_a_background");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(set_a_background, bg),
-				1, outc);
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(set_a_background, bg),
+			       1, outc);
     } else {
 	TPUTS_TRACE("set_background");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(set_background, toggled_colors(bg)),
-				1, outc);
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(set_background, toggled_colors(bg)),
+			       1, outc);
     }
 #endif
 }
@@ -206,14 +206,14 @@ set_foreground_color(NCURSES_SP_DCLx int fg, NCURSES_SP_OUTC outc)
 #else
     if (set_a_foreground) {
 	TPUTS_TRACE("set_a_foreground");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(set_a_foreground, fg),
-				1, outc);
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(set_a_foreground, fg),
+			       1, outc);
     } else {
 	TPUTS_TRACE("set_foreground");
-	NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				TIPARM_1(set_foreground, toggled_colors(fg)),
-				1, outc);
+	NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+			       TIPARM_1(set_foreground, toggled_colors(fg)),
+			       1, outc);
     }
 #endif
 }
@@ -326,7 +326,7 @@ reset_color_pair(NCURSES_SP_DCL0)
  * someone has changed the color definitions.
  */
 NCURSES_EXPORT(bool)
-NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(_nc_reset_colors)(NCURSES_SP_DCL0)
 {
     int result = FALSE;
 
@@ -351,12 +351,12 @@ NCURSES_SP_NAME(_nc_reset_colors) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(bool)
 _nc_reset_colors(void)
 {
-    return NCURSES_SP_NAME(_nc_reset_colors) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(_nc_reset_colors)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(start_color) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(start_color)(NCURSES_SP_DCL0)
 {
     int result = ERR;
 
@@ -442,7 +442,7 @@ NCURSES_SP_NAME(start_color) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 start_color(void)
 {
-    return NCURSES_SP_NAME(start_color) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(start_color)(CURRENT_SCREEN);
 }
 #endif
 
@@ -512,7 +512,7 @@ _nc_change_pair(SCREEN *sp, int pair)
 	    }
 	}
 	if (changed)
-	    NCURSES_SP_NAME(_nc_make_oldhash) (NCURSES_SP_ARGx y);
+	    NCURSES_SP_NAME(_nc_make_oldhash)(NCURSES_SP_ARGx y);
     }
 }
 
@@ -686,10 +686,10 @@ _nc_init_pair(SCREEN *sp, int pair, int f, int b)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(init_pair) (NCURSES_SP_DCLx
-			    NCURSES_PAIRS_T pair,
-			    NCURSES_COLOR_T f,
-			    NCURSES_COLOR_T b)
+NCURSES_SP_NAME(init_pair)(NCURSES_SP_DCLx
+			   NCURSES_PAIRS_T pair,
+			   NCURSES_COLOR_T f,
+			   NCURSES_COLOR_T b)
 {
     return _nc_init_pair(SP_PARM, pair, f, b);
 }
@@ -698,7 +698,7 @@ NCURSES_SP_NAME(init_pair) (NCURSES_SP_DCLx
 NCURSES_EXPORT(int)
 init_pair(NCURSES_COLOR_T pair, NCURSES_COLOR_T f, NCURSES_COLOR_T b)
 {
-    return NCURSES_SP_NAME(init_pair) (CURRENT_SCREEN, pair, f, b);
+    return NCURSES_SP_NAME(init_pair)(CURRENT_SCREEN, pair, f, b);
 }
 #endif
 
@@ -755,11 +755,11 @@ _nc_init_color(SCREEN *sp, int color, int r, int g, int b)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(init_color) (NCURSES_SP_DCLx
-			     NCURSES_COLOR_T color,
-			     NCURSES_COLOR_T r,
-			     NCURSES_COLOR_T g,
-			     NCURSES_COLOR_T b)
+NCURSES_SP_NAME(init_color)(NCURSES_SP_DCLx
+			    NCURSES_COLOR_T color,
+			    NCURSES_COLOR_T r,
+			    NCURSES_COLOR_T g,
+			    NCURSES_COLOR_T b)
 {
     return _nc_init_color(SP_PARM, color, r, g, b);
 }
@@ -771,12 +771,12 @@ init_color(NCURSES_COLOR_T color,
 	   NCURSES_COLOR_T g,
 	   NCURSES_COLOR_T b)
 {
-    return NCURSES_SP_NAME(init_color) (CURRENT_SCREEN, color, r, g, b);
+    return NCURSES_SP_NAME(init_color)(CURRENT_SCREEN, color, r, g, b);
 }
 #endif
 
 NCURSES_EXPORT(bool)
-NCURSES_SP_NAME(can_change_color) (NCURSES_SP_DCL)
+NCURSES_SP_NAME(can_change_color)(NCURSES_SP_DCL)
 {
     bool result = FALSE;
 
@@ -793,12 +793,12 @@ NCURSES_SP_NAME(can_change_color) (NCURSES_SP_DCL)
 NCURSES_EXPORT(bool)
 can_change_color(void)
 {
-    return NCURSES_SP_NAME(can_change_color) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(can_change_color)(CURRENT_SCREEN);
 }
 #endif
 
 NCURSES_EXPORT(bool)
-NCURSES_SP_NAME(has_colors) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(has_colors)(NCURSES_SP_DCL0)
 {
     bool code = FALSE;
 
@@ -823,7 +823,7 @@ NCURSES_SP_NAME(has_colors) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(bool)
 has_colors(void)
 {
-    return NCURSES_SP_NAME(has_colors) (CURRENT_SCREEN);
+    return NCURSES_SP_NAME(has_colors)(CURRENT_SCREEN);
 }
 #endif
 
@@ -895,11 +895,11 @@ _nc_color_content(SCREEN *sp, int color, int *r, int *g, int *b)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(color_content) (NCURSES_SP_DCLx
-				NCURSES_COLOR_T color,
-				NCURSES_COLOR_T *r,
-				NCURSES_COLOR_T *g,
-				NCURSES_COLOR_T *b)
+NCURSES_SP_NAME(color_content)(NCURSES_SP_DCLx
+			       NCURSES_COLOR_T color,
+			       NCURSES_COLOR_T *r,
+			       NCURSES_COLOR_T *g,
+			       NCURSES_COLOR_T *b)
 {
     int my_r, my_g, my_b;
     int rc = _nc_color_content(SP_PARM, color, &my_r, &my_g, &my_b);
@@ -918,7 +918,7 @@ color_content(NCURSES_COLOR_T color,
 	      NCURSES_COLOR_T *g,
 	      NCURSES_COLOR_T *b)
 {
-    return NCURSES_SP_NAME(color_content) (CURRENT_SCREEN, color, r, g, b);
+    return NCURSES_SP_NAME(color_content)(CURRENT_SCREEN, color, r, g, b);
 }
 #endif
 
@@ -964,10 +964,10 @@ _nc_pair_content(SCREEN *sp, int pair, int *f, int *b)
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(pair_content) (NCURSES_SP_DCLx
-			       NCURSES_PAIRS_T pair,
-			       NCURSES_COLOR_T *f,
-			       NCURSES_COLOR_T *b)
+NCURSES_SP_NAME(pair_content)(NCURSES_SP_DCLx
+			      NCURSES_PAIRS_T pair,
+			      NCURSES_COLOR_T *f,
+			      NCURSES_COLOR_T *b)
 {
     int my_f, my_b;
     int rc = _nc_pair_content(SP_PARM, pair, &my_f, &my_b);
@@ -982,16 +982,16 @@ NCURSES_SP_NAME(pair_content) (NCURSES_SP_DCLx
 NCURSES_EXPORT(int)
 pair_content(NCURSES_COLOR_T pair, NCURSES_COLOR_T *f, NCURSES_COLOR_T *b)
 {
-    return NCURSES_SP_NAME(pair_content) (CURRENT_SCREEN, pair, f, b);
+    return NCURSES_SP_NAME(pair_content)(CURRENT_SCREEN, pair, f, b);
 }
 #endif
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_DCLx
-			       int old_pair,
-			       int pair,
-			       int reverse,
-			       NCURSES_SP_OUTC outc)
+NCURSES_SP_NAME(_nc_do_color)(NCURSES_SP_DCLx
+			      int old_pair,
+			      int pair,
+			      int reverse,
+			      NCURSES_SP_OUTC outc)
 {
 #if USE_TERM_DRIVER
     CallDriver_4(SP_PARM, td_docolor, old_pair, pair, reverse, outc);
@@ -1006,9 +1006,9 @@ NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_DCLx
     } else if (pair != 0) {
 	if (set_color_pair) {
 	    TPUTS_TRACE("set_color_pair");
-	    NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx
-				    TIPARM_1(set_color_pair, pair),
-				    1, outc);
+	    NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx
+				   TIPARM_1(set_color_pair, pair),
+				   1, outc);
 	    return;
 	} else if (SP_PARM != NULL) {
 	    if (_nc_pair_content(SP_PARM, pair, &fg, &bg) == ERR)
@@ -1030,11 +1030,11 @@ NCURSES_SP_NAME(_nc_do_color) (NCURSES_SP_DCLx
 	    if (SP_PARM->_has_sgr_39_49
 		&& isDefaultColor(old_bg)
 		&& !isDefaultColor(old_fg)) {
-		NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx "\033[39m", 1, outc);
+		NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx "\033[39m", 1, outc);
 	    } else if (SP_PARM->_has_sgr_39_49
 		       && isDefaultColor(old_fg)
 		       && !isDefaultColor(old_bg)) {
-		NCURSES_SP_NAME(tputs) (NCURSES_SP_ARGx "\033[49m", 1, outc);
+		NCURSES_SP_NAME(tputs)(NCURSES_SP_ARGx "\033[49m", 1, outc);
 	    } else
 #endif
 		reset_color_pair(NCURSES_SP_ARG);
@@ -1075,47 +1075,47 @@ NCURSES_EXPORT(void)
 _nc_do_color(int old_pair, int pair, int reverse, NCURSES_OUTC outc)
 {
     SetSafeOutcWrapper(outc);
-    NCURSES_SP_NAME(_nc_do_color) (CURRENT_SCREEN,
-				   old_pair,
-				   pair,
-				   reverse,
-				   _nc_outc_wrapper);
+    NCURSES_SP_NAME(_nc_do_color)(CURRENT_SCREEN,
+				  old_pair,
+				  pair,
+				  reverse,
+				  _nc_outc_wrapper);
 }
 #endif
 
 #if NCURSES_EXT_COLORS && NCURSES_EXT_FUNCS
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(init_extended_pair) (NCURSES_SP_DCLx int pair, int f, int b)
+NCURSES_SP_NAME(init_extended_pair)(NCURSES_SP_DCLx int pair, int f, int b)
 {
     return _nc_init_pair(SP_PARM, pair, f, b);
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(init_extended_color) (NCURSES_SP_DCLx
-				      int color,
-				      int r, int g, int b)
+NCURSES_SP_NAME(init_extended_color)(NCURSES_SP_DCLx
+				     int color,
+				     int r, int g, int b)
 {
     return _nc_init_color(SP_PARM, color, r, g, b);
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(extended_color_content) (NCURSES_SP_DCLx
-					 int color,
-					 int *r, int *g, int *b)
+NCURSES_SP_NAME(extended_color_content)(NCURSES_SP_DCLx
+					int color,
+					int *r, int *g, int *b)
 {
     return _nc_color_content(SP_PARM, color, r, g, b);
 }
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(extended_pair_content) (NCURSES_SP_DCLx
-					int pair,
-					int *f, int *b)
+NCURSES_SP_NAME(extended_pair_content)(NCURSES_SP_DCLx
+				       int pair,
+				       int *f, int *b)
 {
     return _nc_pair_content(SP_PARM, pair, f, b);
 }
 
 NCURSES_EXPORT(void)
-NCURSES_SP_NAME(reset_color_pairs) (NCURSES_SP_DCL0)
+NCURSES_SP_NAME(reset_color_pairs)(NCURSES_SP_DCL0)
 {
     if (SP_PARM != NULL) {
 	if (SP_PARM->_color_pairs) {
@@ -1134,35 +1134,35 @@ NCURSES_SP_NAME(reset_color_pairs) (NCURSES_SP_DCL0)
 NCURSES_EXPORT(int)
 init_extended_pair(int pair, int f, int b)
 {
-    return NCURSES_SP_NAME(init_extended_pair) (CURRENT_SCREEN, pair, f, b);
+    return NCURSES_SP_NAME(init_extended_pair)(CURRENT_SCREEN, pair, f, b);
 }
 
 NCURSES_EXPORT(int)
 init_extended_color(int color, int r, int g, int b)
 {
-    return NCURSES_SP_NAME(init_extended_color) (CURRENT_SCREEN,
-						 color,
-						 r, g, b);
+    return NCURSES_SP_NAME(init_extended_color)(CURRENT_SCREEN,
+						color,
+						r, g, b);
 }
 
 NCURSES_EXPORT(int)
 extended_color_content(int color, int *r, int *g, int *b)
 {
-    return NCURSES_SP_NAME(extended_color_content) (CURRENT_SCREEN,
-						    color,
-						    r, g, b);
+    return NCURSES_SP_NAME(extended_color_content)(CURRENT_SCREEN,
+						   color,
+						   r, g, b);
 }
 
 NCURSES_EXPORT(int)
 extended_pair_content(int pair, int *f, int *b)
 {
-    return NCURSES_SP_NAME(extended_pair_content) (CURRENT_SCREEN, pair, f, b);
+    return NCURSES_SP_NAME(extended_pair_content)(CURRENT_SCREEN, pair, f, b);
 }
 
 NCURSES_EXPORT(void)
 reset_color_pairs(void)
 {
-    NCURSES_SP_NAME(reset_color_pairs) (CURRENT_SCREEN);
+    NCURSES_SP_NAME(reset_color_pairs)(CURRENT_SCREEN);
 }
 #endif /* NCURSES_SP_FUNCS */
 #endif /* NCURSES_EXT_COLORS */

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4464 2026/05/23 21:28:46 tom Exp $
+-- $Id: NEWS,v 1.4468 2026/05/30 22:12:14 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,12 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260530
+	+ minor renaming, formatting to align with Juergen Pfeifer's fork.
+	+ add configure script check for --enable-ext-mouse2, to support ABI 7.
+	+ improve special case in tic for %{code} to allow any non-zero byte
+	  as the result %'char'
 
 20260523
 	+ modify _nc_wacs[] to make it per-screen (from Juergen Pfeifer's fork)

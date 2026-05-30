@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: INSTALL,v 1.265 2026/03/14 19:41:07 tom Exp $
+-- $Id: INSTALL,v 1.267 2026/05/30 19:39:15 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -384,12 +384,14 @@ CONFIGURE OPTIONS:
 
     --disable-lp64
 	The header files will ignore use of the _LP64 symbol to make chtype
-	and mmask_t types 32 bits (they may be long on 64-bit hosts, for
-	compatibility with older releases).
+	and mmask_t types 32 bits, for compatibility with older releases.
+	The default "unsigned" for these types may be long on 64-bit hosts.
 
 	NOTE: this is potentially an ABI change, depending on existing
 	packages.  The default for this option is "disabled" for ncurses
 	ABI 5, and "enabled" for ABI 6.
+
+	The --enable-ext-mouse2 option overrides the type used for mmask_t.
 
     --disable-macros
 	For testing, use functions rather than macros.  The program will run
@@ -564,7 +566,7 @@ CONFIGURE OPTIONS:
 	initialization, ncurses sets color pair 0 to match this.
 
     --enable-conpty
-    	Experimental (in-progress development).
+	Experimental (in-progress development).
 
 	This also turns on --enable-named-pipes by default.
 
@@ -613,6 +615,15 @@ CONFIGURE OPTIONS:
 	compatible with libncursesw 5.4.  None of the interfaces change, but
 	applications which have mouse mask mmask_t's must be recompiled.
 
+    --enable-ext-mouse2
+	Modify the encoding of mouse state to make room for 11 mouse buttons.
+	That allows one to use ncurses with extra buttons provided on some
+	a wheel mice with xterm or similar X terminal emulators.
+
+	NOTE: using this option will make libraries which are not binary-
+	compatible with ncursesw 6.x.  None of the interfaces change, but
+	applications which have mouse mask mmask_t's must be recompiled.
+
     --enable-ext-putwin
 	Modify the file-format written by putwin() to use printable text rather
 	than binary files, allowing getwin() to read screen dumps written by
@@ -622,7 +633,7 @@ CONFIGURE OPTIONS:
 	calling applications).
 
     --enable-fvisibility
-    	Use the gcc "-fvisibility=hidden" option to make symbols which are not
+	Use the gcc "-fvisibility=hidden" option to make symbols which are not
 	explicitly exported, "hidden".  Doing this may reduce the number of
 	symbols exported in the C++ binding; it should have less effect on the
 	C libraries when symbol-versioning is used.
@@ -1277,7 +1288,7 @@ CONFIGURE OPTIONS:
 	which you are building on.  We use it for testing the configure script.
 
     --with-strip-program=XXX
-    	When stripping executables during install, use the specified program
+	When stripping executables during install, use the specified program
 	rather than "strip".
 
     --with-sysmouse
@@ -1489,7 +1500,7 @@ COMPATIBILITY WITH OLDER RELEASES:
 
 	+ These now pass a const parameter:  _nc_has_mouse,
 	  _nc_reset_color_pair, _nc_free_entry, and _nc_timed_wait.
-	+ These now use a NCURSES_BOOL where an int was used: 
+	+ These now use a NCURSES_BOOL where an int was used:
 	  _nc_setupscreen, _nc_keypad, _nc_unicode_locale, and
 	  _nc_retrace_bool.
 
