@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1250 $
-#	$Date: 2026/05/09 23:25:16 $
+#	$Revision: 1.1251 $
+#	$Date: 2026/06/06 23:47:05 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1282,6 +1282,56 @@ sclp|IBM s390 driver for Linux,
 	use=ansi+arrows, use=ansi+cpr, use=ansi+erase,
 	use=ansi+local, use=ansi+rca, use=linux+sfkeys,
 	use=vt100+pf1-pf4, use=vt220+ufkeys, use=vt220+pcedit,
+
+# Name        : kmscon
+# Version     : 10.0.0
+# Kmscon is a simple terminal emulator based on linux kernel mode setting (KMS).
+# It is an attempt to replace the in-kernel VT implementation with a userspace
+# console.
+#
+# The terminal emulation is implemented in a related libtsm.
+#
+# vttest:
+# - identifies as a VT220 (according to secondary DA), but uses nonstandard
+#   primary DA
+#     \E[?60;1;6;9;15c
+#   i.e. (60 is nonstandard), and the features are
+#     1 = 132 columns
+#     6 = selective erase
+#     9 = national replacement character-sets
+#     15 = DEC technical set
+#   but it actually supports none of those features.
+# - supports VT100 line-drawing
+# - does not support DECALN, failing the ECH and alternate-screen tests.
+# - supports X10 and X11 normal mouse events
+# - supports CBT, CHA, CHT, VPA, CNL, CPL, VPR but not HPA, HPR
+# - implements REP in a nonstandard manner
+# - supports SD and SU
+# - freezes console on SL; does not implement SR
+# tack:
+# - flash does not work reliably
+kmscon|KMS Console,
+	am, bce, km, mir, msgr, xenl,
+	cols#80, lines#24, pairs#0x7fff,
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+	bel=^G, bold=\E[1m, civis=\E[?25l, clear=\E[H\E[2J,
+	cnorm=\E[?25h, cr=\r, csr=\E[%i%p1%d;%p2%dr, cub1=^H,
+	cud1=\n, dch=\E[%p1%dP, dch1=\E[P, ech=\E[%p1%dX, ed=\E[J,
+	el=\E[K, el1=\E[1K, flash=\E[?5h$<200/>\E[?5l,
+	ich=\E[%p1%d@, ich1=\E[@, ind=\n, kLFT=\E[1;2D,
+	kRIT=\E[1;2C, kbs=^?, kcbt=\E[Z, kf21=\E[23;2~,
+	kf22=\E[24;2~, kf5=\E[15~, kmous=\E[M, rc=\E8,
+	rep=%p1%c\E[%p2%{1}%-%db, rev=\E[7m, ri=\EM, rmacs=\E(B,
+	rmcup=\E[?1049l, rs2=\Ec, sc=\E7,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
+	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
+	sgr0=\E(B\E[m, smacs=\E(0, smcup=\E[?1049h, use=ansi+enq,
+	use=ansi+arrows, use=ansi+cup, use=ansi+idl,
+	use=ansi+local, use=ansi+rca2, use=ansi+tabs,
+	use=ecma+index, use=ecma+standout, use=ecma+underline,
+	use=report+da2, use=vt100+noapp, use=vt100+pf1-pf4,
+	use=vt220+pcedit, use=vt220+sfkeys, use=vt220+ufkeys,
+	use=xterm+256setaf,
 
 #### Mach
 #
@@ -20114,13 +20164,11 @@ ncr260wy50+pp|NCR 2900/260 Wyse 50+,
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	kDC=\ER, kEND=\EY, kHOM=\E{, kPRT=\E7, kRIT=^L, ka1=^^, kbs=^H,
 	kc1=\ET, kc3=\EK, kcbt=\EI, kcub1=^H, kcud1=\n, kcuf1=^L,
-	kcuu1=^K, kdch1=\EW, kend=\ET, kf1=^A@\r, kf10=^AI\r,
-	kf11=^AJ\r, kf12=^AK\r, kf13=^AL\r, kf14=^AM\r, kf15=^AN\r,
-	kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r, kf19=^Ab\r, kf2=^AA\r,
-	kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r, kf23=^Af\r, kf24=^Ag\r,
-	kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r, kf28=^Ak\r, kf29=^Al\r,
-	kf3=^AB\r, kf30=^Am\r, kf31=^An\r, kf32=^Ao\r, kf4=^AC\r,
-	kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r,
+	kcuu1=^K, kdch1=\EW, kend=\ET, kf12=^AK\r, kf13=^AL\r,
+	kf14=^AM\r, kf15=^AN\r, kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r,
+	kf19=^Ab\r, kf2=^AA\r, kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r,
+	kf23=^Af\r, kf24=^Ag\r, kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r,
+	kf28=^Ak\r, kf29=^Al\r, kf30=^Am\r, kf31=^An\r, kf32=^Ao\r,
 	khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP,
 	mc0=\EP$<10>, mc4=^T, mc5=^R,
 	mrcup=\Ew@%p1%{48}%+%c%p2%{32}%+%c%p3%{32}%+%c$<10>,
@@ -20130,7 +20178,7 @@ ncr260wy50+pp|NCR 2900/260 Wyse 50+,
 	    \Ee4\Ex@\E`9\Ee7$<100>,
 	sgr0=\EG0\EH\003$<15>, smacs=\EH^B, smam=\Ed/, smir=\Eq,
 	smso=\EGt, smxon=\Ec21, tbc=\E0$<5>, use=adm+sgr,
-	use=ncr260vp+sl,
+	use=ncr260vp+sl, use=tvi920b+fn,
 ncr260wy50+wpp|NCR 2900/260 Wyse 50+ wide mode,
 	cols#132,
 	cup=\Ea%i%p1%dR%p2%dC$<30>,
@@ -28304,5 +28352,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ review kitty -TD
 #	+ review contour -TD
 #	+ eliminate vt100-style line drawing from xterm-utf8 -TD
+#
+# 2026-06-06
+#	+ add kmscon (report by Jocelyn Falempe) -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
