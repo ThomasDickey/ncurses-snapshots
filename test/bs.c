@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.83 2025/07/05 15:21:56 tom Exp $
+ * $Id: bs.c,v 1.84 2026/06/06 09:59:40 tom Exp $
  */
 
 #include <test.priv.h>
@@ -1138,7 +1138,7 @@ static int
 playagain(void)
 {
     int j;
-    ship_t *ss;
+    const ship_t *ss;
 
     for (ss = cpuship; ss < cpuship + SHIPTYPES; ss++)
 	for (j = 0; j < ss->length; j++) {

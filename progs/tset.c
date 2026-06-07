@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -98,7 +98,7 @@
 char *ttyname(int fd);
 #endif
 
-MODULE_ID("$Id: tset.c,v 1.141 2025/11/01 20:16:41 tom Exp $")
+MODULE_ID("$Id: tset.c,v 1.142 2026/06/06 09:59:40 tom Exp $")
 
 #ifndef environ
 extern char **environ;
@@ -495,7 +495,7 @@ add_mapping(const char *port, char *arg)
 static const char *
 mapped(const char *type)
 {
-    MAP *mapp;
+    const MAP *mapp;
     int match;
 
     for (mapp = maplist; mapp; mapp = mapp->next)
@@ -540,7 +540,7 @@ mapped(const char *type)
  * its termcap entry.
  */
 static const char *
-get_termcap_entry(int fd, char *userarg)
+get_termcap_entry(int fd, const char *userarg)
 {
     int errret;
     const char *p;

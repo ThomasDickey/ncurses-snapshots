@@ -160,7 +160,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.170 2026/05/30 21:17:46 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.171 2026/06/06 09:59:40 tom Exp $")
 
 #define WANT_CHAR(sp, y, x) NewScreen(sp)->_line[y].text[x]	/* desired state */
 
@@ -1001,7 +1001,6 @@ _nc_real_mvcur(NCURSES_SP_DCLx
 	       NCURSES_SP_OUTC myOutCh,
 	       int ovw)
 {
-    NCURSES_CH_T oldattr;
     int code;
 
     TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("_nc_real_mvcur(%p,%d,%d,%d,%d)"),
@@ -1012,6 +1011,7 @@ _nc_real_mvcur(NCURSES_SP_DCLx
     } else if (yold == ynew && xold == xnew) {
 	code = OK;
     } else {
+	NCURSES_CH_T oldattr;
 
 	/*
 	 * Most work here is rounding for terminal boundaries getting the

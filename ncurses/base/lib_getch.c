@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.159 2026/05/30 21:17:29 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.160 2026/06/06 09:59:40 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -460,7 +460,8 @@ _nc_wgetch(WINDOW *win,
 	!IsRaw(sp) &&
 	!IsCbreak(sp) &&
 	!sp->_called_wgetch) {
-	char buf[MAXCOLUMNS], *bufp;
+	char buf[MAXCOLUMNS];
+	const char *bufp;
 
 	TR(TRACE_IEVENT, ("filling queue in cooked mode"));
 

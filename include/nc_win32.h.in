@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2008-2010,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -31,7 +31,7 @@
  * Author: Thomas Dickey, 2008-on                                           *
  ****************************************************************************/
 
-/* $Id: nc_win32.h.in,v 1.19 2025/12/26 23:32:43 tom Exp $ */
+/* $Id: nc_win32.h.in,v 1.21 2026/06/06 15:36:55 tom Exp $ */
 
 #ifndef NC_WIN32_H
 #define NC_WIN32_H 1
@@ -195,7 +195,8 @@ extern NCURSES_EXPORT_VAR(ConsoleInfo) _nc_CONSOLE;
 #include <term.h>
 #endif
 
-#if USE_DOS_PATHS
+#ifdef USE_DOS_PATHS
+#if USE_DOS_PATHS != 0
 NCURSES_EXPORT(const char *) _nc_to_dospath(const char *, char *);
 #define FixupPathname(path) \
 	char fixed_pathname[PATH_MAX]; \
@@ -203,6 +204,7 @@ NCURSES_EXPORT(const char *) _nc_to_dospath(const char *, char *);
 #define FixupPathname2(path,buffer) \
 	path = _nc_to_dospath(path, buffer)
 #endif
+#endif /* USE_DOS_PATHS */
 
 #undef  ttyname
 #define ttyname(fd) NULL

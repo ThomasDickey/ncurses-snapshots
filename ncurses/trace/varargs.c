@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 2001-2008,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -35,7 +35,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: varargs.c,v 1.16 2025/02/15 15:22:14 tom Exp $")
+MODULE_ID("$Id: varargs.c,v 1.17 2026/06/06 09:59:40 tom Exp $")
 
 #ifdef TRACE
 
@@ -60,7 +60,6 @@ NCURSES_EXPORT(char *)
 _nc_varargs(const char *fmt, va_list ap)
 {
     char buffer[BUFSIZ];
-    const char *value;
     int n;
 
     if (fmt == NULL || *fmt == '\0')
@@ -144,8 +143,8 @@ _nc_varargs(const char *fmt, va_list ap)
 		if (used != atUnknown && params < MAX_PARMS) {
 		    param[params++] = used;
 		    for (n = 0; n < params; ++n) {
+			const char *value = buffer;
 			used = param[n];
-			value = buffer;
 			switch (used) {
 			case atInteger:
 			    _nc_SPRINTF(buffer, _nc_SLIMIT(sizeof(buffer))

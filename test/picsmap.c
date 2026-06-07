@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: picsmap.c,v 1.156 2026/04/25 16:40:04 tom Exp $
+ * $Id: picsmap.c,v 1.157 2026/06/06 09:59:40 tom Exp $
  *
  * Author: Thomas E. Dickey
  *
@@ -573,13 +573,15 @@ read_palette(const char *filename)
 
 	    _nc_STRCAT(full_name, filename, need);
 	    if (tries & 4) {
-		char *t = s;
-		const char *tc;
+		const char *t = s;
 		int num;
 		char chr;
 		int found = 0;
+
 		while (*t != '\0') {
 		    if (*t == '-') {
+			const char *tc;
+
 			if (sscanf(t, "-%d%c", &num, &chr) == 2 &&
 			    chr == 'c' &&
 			    (tc = strchr(t, chr)) != NULL &&

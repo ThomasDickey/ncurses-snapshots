@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.144 2024/12/07 17:18:07 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.145 2026/06/06 09:59:40 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -124,7 +124,6 @@ newline_forces_scroll(const WINDOW *win, NCURSES_SIZE_T *ypos)
 
     if (*ypos >= win->_regtop && *ypos <= win->_regbottom) {
 	if (*ypos == win->_regbottom) {
-	    *ypos = win->_regbottom;
 	    result = TRUE;
 	} else if (*ypos < win->_maxy) {
 	    *ypos = (NCURSES_SIZE_T) (*ypos + 1);

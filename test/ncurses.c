@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.554 2026/04/18 14:44:07 tom Exp $
+$Id: ncurses.c,v 1.555 2026/06/06 09:59:40 tom Exp $
 
 ***************************************************************************/
 
@@ -1684,11 +1684,11 @@ attr_test(bool recur GCC_UNUSED)
     NCURSES_COLOR_T bg = COLOR_BLACK;
     NCURSES_COLOR_T tx = -1;
     int ac = 0;
-    WINDOW *my_wins[SIZEOF(attrs_to_test)];
     ATTR_TBL my_list[SIZEOF(attrs_to_test)];
     unsigned my_size = init_attr_list(my_list, termattrs());
 
     if (my_size > 1) {
+	WINDOW *my_wins[SIZEOF(attrs_to_test)];
 	unsigned j, k;
 
 	for (j = 0; j < my_size; ++j) {
@@ -2641,12 +2641,12 @@ x_color_test(bool recur GCC_UNUSED)
 	for (i = (base_row * per_row); i < pairs_max; i++) {
 	    int row = grid_top + (i / per_row) - base_row;
 	    int col = (i % per_row + 1) * width;
-	    int pair = i;
 
 	    if ((i / per_row) > row_limit)
 		break;
 
 	    if (row >= 0 && move(row, col) != ERR) {
+		int pair = i;
 		InitExtendedPair(pair, InxToFG(i), InxToBG(i));
 		(void) ExtendedColorSet(pair);
 		if (opt_acsc)
@@ -3461,7 +3461,7 @@ x_slk_test(bool recur GCC_UNUSED)
 {
     int c, fmt = 1;
     wchar_t buf[SLKLEN + 1];
-    char *s;
+    const char *s;
     attr_t attr = WA_NORMAL;
     unsigned at_code = 0;
     int fg = COLOR_BLACK;
@@ -3528,30 +3528,32 @@ x_slk_test(bool recur GCC_UNUSED)
 	    *buf = 0;
 	    if ((s = slk_label(c - '0')) != NULL) {
 		char *temp = strdup(s);
-		size_t used = strlen(temp);
+		size_t used = strlen(s);
 		size_t want = SLKLEN;
 #ifndef state_unused
 		mbstate_t state;
 #endif
 
 		buf[0] = L'\0';
-		while (want > 0 && used != 0) {
-		    size_t test;
-		    const char *base = s;
+		if (temp != NULL) {
+		    while (want > 0 && used != 0) {
+			size_t test;
+			const char *base = s;
 
-		    reset_mbytes(state);
-		    test = count_mbytes(base, 0, &state);
-		    if (test == (size_t) -1) {
-			temp[--used] = 0;
-		    } else if (test > want) {
-			temp[--used] = 0;
-		    } else {
 			reset_mbytes(state);
-			trans_mbytes(buf, base, want, &state);
-			break;
+			test = count_mbytes(base, 0, &state);
+			if (test == (size_t) -1) {
+			    temp[--used] = 0;
+			} else if (test > want) {
+			    temp[--used] = 0;
+			} else {
+			    reset_mbytes(state);
+			    trans_mbytes(buf, base, want, &state);
+			    break;
+			}
 		    }
+		    free(temp);
 		}
-		free(temp);
 	    }
 	    wGet_wstring(stdscr, buf, SLKLEN);
 	    slk_wset((c - '0'), buf, fmt);
@@ -3651,7 +3653,6 @@ show_upper_chars(int base, int pagesize, int repeat, attr_t attr, NCURSES_PAIRS_
     unsigned first = (unsigned) base;
     unsigned last = first + (unsigned) pagesize - 2;
     bool C1 = (first == 128);
-    int reply;
 
     erase();
     attron(A_BOLD);
@@ -3673,6 +3674,7 @@ show_upper_chars(int base, int pagesize, int repeat, attr_t attr, NCURSES_PAIRS_
 		nodelay(stdscr, TRUE);
 	    echochar(colored_chtype(code, attr, pair));
 	    if (C1) {
+		int reply;
 		/* (yes, this _is_ crude) */
 		while ((reply = Getchar()) != ERR) {
 		    AddCh(UChar(reply));

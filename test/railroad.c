@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey - 2000
  *
- * $Id: railroad.c,v 1.32 2026/01/11 12:03:22 tom Exp $
+ * $Id: railroad.c,v 1.33 2026/06/06 09:59:40 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -111,7 +111,7 @@ Underline(int flag)
 }
 
 static void
-ShowSign(char *string)
+ShowSign(const char *string)
 {
     const char *base = string;
     int first, last;

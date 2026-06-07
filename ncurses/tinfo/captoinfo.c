@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.110 2025/12/31 11:46:29 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.111 2026/06/06 09:59:40 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -624,7 +624,6 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
     char ch1 = 0, ch2 = 0;
     char *bufptr = init_string();
     char octal[4];
-    int len;
     int digits;
     bool syntax_error = FALSE;
     int myfix = 0;
@@ -657,6 +656,7 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
 	 *str &&
 	 ((trimmed == NULL) || (str < trimmed)); str++) {
 	int c1, c2;
+	int len;
 	const char *cp = NULL;
 
 	if (str[0] == '^') {

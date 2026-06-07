@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.126 2024/12/07 21:17:54 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.127 2026/06/06 09:59:40 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -483,9 +483,11 @@ _nc_get_token(bool silent)
 	    goto start_token;
 	}
 
-	if (tok_buf == NULL)
+	if (tok_buf == NULL) {
 	    tok_buf = typeMalloc(char, TOK_BUF_SIZE);
-
+	    if (tok_buf == NULL)
+		_nc_err_abort(MSG_NO_INPUTS);
+	}
 #ifdef TRACE
 	old_line = _nc_curr_line;
 	old_col = _nc_curr_col;
@@ -837,7 +839,6 @@ NCURSES_EXPORT(int)
 _nc_trans_string(char *ptr, const char *const last)
 {
     int count = 0;
-    int number = 0;
     int i, c;
     int last_ch = '\0';
     bool ignored = FALSE;
@@ -877,7 +878,7 @@ _nc_trans_string(char *ptr, const char *const last)
 		_nc_err_abort(MSG_NO_INPUTS);
 
 	    if (isoctal(c) || (strict_bsd && isdigit(c))) {
-		number = c - '0';
+		int number = c - '0';
 		for (i = 0; i < 2; i++) {
 		    c = next_char();
 		    if (c == EOF)

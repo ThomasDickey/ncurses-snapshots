@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_terminfo.c,v 1.65 2026/01/11 12:03:22 tom Exp $
+ * $Id: demo_terminfo.c,v 1.66 2026/06/06 09:59:40 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -264,7 +264,7 @@ brute_force(NCURSES_CONST char *name)
 ABCDEFGHIJKLMNOPQRSTUVWXYZ\
 abcdefghijklmnopqrstuvwxyz_";
     int length;
-    int j, k;
+    int j;
     bool carry;
     bool changed;
     char cap[MAX_FORCE + 1];
@@ -288,6 +288,8 @@ abcdefghijklmnopqrstuvwxyz_";
 	}
 
 	do {
+	    int k;
+
 	    changed = FALSE;
 	    /* copy digits to cap-name */
 	    for (j = 0; j < length; ++j) {

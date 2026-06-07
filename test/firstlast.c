@@ -30,7 +30,7 @@
  * This test was written by Alexander V. Lukyanov to demonstrate difference
  * between ncurses 4.1 and SVR4 curses
  *
- * $Id: firstlast.c,v 1.12 2026/04/25 16:40:04 tom Exp $
+ * $Id: firstlast.c,v 1.14 2026/06/06 12:38:20 tom Exp $
  */
 
 #include <test.priv.h>
@@ -40,9 +40,8 @@ fill(WINDOW *w, const char *str)
 {
     const char *s;
     int x0 = -1, y0 = -1;
-    int x1, y1;
     int maxx, maxy, limit;
-    bool done = false;
+    bool done = FALSE;
 
     getmaxyx(w, maxy, maxx);
     wmove(w, 0, 0);
@@ -50,6 +49,7 @@ fill(WINDOW *w, const char *str)
 
     while (!done) {
 	for (s = str; *s && !done; s++) {
+	    int x1, y1;
 	    getyx(w, y1, x1);
 	    /* waddch() should return ERR at the lower-right corner */
 	    if (waddch(w, UChar(*s)) == ERR

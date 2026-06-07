@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
  *****************************************************************************/
 
 /*
- * $Id: blue.c,v 1.58 2025/07/05 15:21:56 tom Exp $
+ * $Id: blue.c,v 1.59 2026/06/06 09:59:40 tom Exp $
  */
 
 #include <test.priv.h>
@@ -170,16 +170,16 @@ shuffle(int size)
 static void
 deal_cards(void)
 {
-    int card = 0, value, csuit, crank, suit, aces[4];
+    int card = 0, suit, aces[4];
 
     memset(aces, 0, sizeof(aces));
     for (suit = HEARTS; suit <= CLUBS; suit++) {
 	int ptr = freeptr[suit];
 	grid[ptr++] = NOCARD;	/* 1st card space is blank */
 	while ((ptr % GRID_WIDTH) != 0) {
-	    value = deck[card++];
-	    crank = value % SUIT_LENGTH;
-	    csuit = value / SUIT_LENGTH;
+	    int value = deck[card++];
+	    int crank = value % SUIT_LENGTH;
+	    int csuit = value / SUIT_LENGTH;
 	    if (crank == ACE)
 		aces[csuit] = ptr;
 	    grid[ptr++] = value;
@@ -300,12 +300,12 @@ play_game(void)
 {
     int dead = 0, i, j;
     char c;
-    int selection[4], card;
+    int selection[4];
 
     while (dead < 4) {
 	dead = 0;
 	for (i = 0; i < 4; i++) {
-	    card = grid[freeptr[i] - 1];
+	    int card = grid[freeptr[i] - 1];
 
 	    if (((card % SUIT_LENGTH) == KING)
 		||
@@ -389,12 +389,12 @@ play_game(void)
 static int
 collect_discards(void)
 {
-    int row, col, cardno = 0, gridno;
+    int row, col, cardno = 0;
 
     for (row = HEARTS; row <= CLUBS; row++) {
 	int finish = 0;
 	for (col = 1; col < GRID_WIDTH; col++) {
-	    gridno = row * GRID_WIDTH + col;
+	    int gridno = row * GRID_WIDTH + col;
 
 	    if ((grid[gridno] != (grid[gridno - 1] + 1)) && (finish == 0)) {
 		finish = 1;

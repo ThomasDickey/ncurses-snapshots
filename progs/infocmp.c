@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.181 2026/05/16 13:38:02 Daniel.Anderson Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.182 2026/06/06 09:59:40 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1515,7 +1515,8 @@ dump_initializers(const TERMTYPE2 *term)
 
     for_each_string(n, term) {
 	if (VALID_STRING(term->Strings[n])) {
-	    char buf[MAX_STRING], *sp, *tp;
+	    char buf[MAX_STRING], *tp;
+	    const char *sp;
 
 	    tp = buf;
 #define TP_LIMIT	((MAX_STRING - 6) - (size_t)(tp - buf))

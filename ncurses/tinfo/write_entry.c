@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.146 2026/04/13 23:51:48 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.147 2026/06/06 09:59:40 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -251,7 +251,7 @@ _nc_set_writedir(const char *dir)
 	bool success = FALSE;
 
 	if (!specific) {
-	    char *home = _nc_home_terminfo();
+	    const char *home = _nc_home_terminfo();
 
 	    if (home != NULL) {
 		destination = home;

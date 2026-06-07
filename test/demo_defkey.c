@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_defkey.c,v 1.38 2025/07/05 15:21:56 tom Exp $
+ * $Id: demo_defkey.c,v 1.39 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -179,7 +179,7 @@ really_define_key(WINDOW *win, const char *new_string, int code)
 static void
 duplicate(WINDOW *win, NCURSES_CONST char *name, int code)
 {
-    char *value = tigetstr(name);
+    const char *value = tigetstr(name);
 
     if (VALID_STRING(value)) {
 	const char *prefix = NULL;

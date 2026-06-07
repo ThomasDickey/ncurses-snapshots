@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 2009-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_addchstr.c,v 1.32 2025/07/05 15:21:56 tom Exp $
+ * $Id: test_addchstr.c,v 1.33 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate the waddchstr() and waddch functions.
  * Thomas Dickey - 2009/9/12
@@ -215,7 +215,6 @@ recursive_test(int level)
     int limit;
     int row = 1;
     int col;
-    int row2, col2;
     int length;
     char buffer[BUFSIZ];
     WINDOW *look = NULL;
@@ -290,6 +289,7 @@ recursive_test(int level)
     }
 
     while ((ch = read_linedata(work)) != ERR && !isQUIT(ch)) {
+
 	wmove(work, row, margin + 1);
 	switch (ch) {
 	case key_RECUR:
@@ -307,8 +307,11 @@ recursive_test(int level)
 
 	    doupdate();
 	    break;
+
 	case key_NEWLINE:
 	    if (row < limit) {
+		int row2, col2;
+
 		++row;
 		/* put the whole string in, all at once */
 		col2 = margin + 1;

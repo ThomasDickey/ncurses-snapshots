@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.83 2025/02/16 17:57:12 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.85 2026/06/06 12:42:43 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -249,8 +249,8 @@ NCURSES_EXPORT(void)
 _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 /* merge capabilities from `from' entry into `to' entry */
 {
-    TERMTYPE2 *to = &(target->tterm);
-    TERMTYPE2 *from = &(source->tterm);
+    TERMTYPE2 *to;
+    TERMTYPE2 *from;
 #if NCURSES_XNAMES
     TERMTYPE2 copy;
     size_t str_size, copy_size;
@@ -258,7 +258,13 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 #endif
     unsigned i;
 
-    if (source == NULL || from == NULL || target == NULL || to == NULL)
+    if (source == NULL || target == NULL)
+	return;
+
+    to = &(target->tterm);
+    from = &(source->tterm);
+
+    if (from == NULL || to == NULL)
 	return;
 
 #if NCURSES_XNAMES

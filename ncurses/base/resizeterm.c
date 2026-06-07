@@ -46,7 +46,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: resizeterm.c,v 1.64 2026/05/30 21:17:40 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.65 2026/06/06 09:59:40 tom Exp $")
 
 /*
  * If we're trying to be reentrant, do not want any local statics.
@@ -150,7 +150,7 @@ ripped_bottom(WINDOW *win)
     int result = 0;
 
     if (win != NULL) {
-	ripoff_t *rop;
+	const ripoff_t *rop;
 
 #ifdef USE_SP_RIPOFF
 	SCREEN *sp = _nc_screen_of(win);

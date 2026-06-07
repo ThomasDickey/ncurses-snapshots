@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.137 2024/12/07 21:57:21 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.138 2026/06/06 09:59:40 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -335,7 +335,7 @@ cell_width(WINDOW *win, int y, int x)
 
   if (LEGALYX(win, y, x))
     {
-      cchar_t *data = &(win->_line[y].text[x]);
+      const cchar_t *data = &(win->_line[y].text[x]);
 
       if (isWidecExt(CHDEREF(data)))
 	{
@@ -1822,7 +1822,7 @@ static int
 IFN_End_Of_Field(FORM *form)
 {
   FIELD *field = form->current;
-  FIELD_CELL *pos;
+  const FIELD_CELL *pos;
 
   T((T_CALLED("IFN_End_Of_Field(%p)"), (void *)form));
   Synchronize_Buffer(form);
@@ -1870,7 +1870,7 @@ static int
 IFN_End_Of_Line(FORM *form)
 {
   const FIELD *field = form->current;
-  FIELD_CELL *pos;
+  const FIELD_CELL *pos;
   FIELD_CELL *bp;
 
   T((T_CALLED("IFN_End_Of_Line(%p)"), (void *)form));

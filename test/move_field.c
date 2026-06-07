@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: move_field.c,v 1.23 2026/04/25 16:43:03 tom Exp $
+ * $Id: move_field.c,v 1.24 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate move_field().
  */
@@ -280,7 +280,8 @@ static FIELD **
 copy_fields(FIELD **source, size_t length)
 {
     FIELD **target = typeCalloc(FIELD *, length + 1);
-    memcpy(target, source, length * sizeof(FIELD *));
+    if (target != NULL)
+	memcpy(target, source, length * sizeof(FIELD *));
     return target;
 }
 

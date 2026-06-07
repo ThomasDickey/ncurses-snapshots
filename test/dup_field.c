@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.14 2025/07/05 15:11:35 tom Exp $
+ * $Id: dup_field.c,v 1.15 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -84,31 +84,33 @@ my_help_edit_field(void)
     unsigned n;
     char **msgs = typeCalloc(char *, 3 + SIZEOF(commands));
 
-    msgs[used++] = strdup("Defined form edit/traversal keys:");
-    for (n = 0; n < SIZEOF(commands); ++n) {
-	char *msg;
-	const char *name;
-	const char *code = keyname(commands[n].code);
-	size_t need = 5;
+    if (msgs != NULL) {
+	msgs[used++] = strdup("Defined form edit/traversal keys:");
+	for (n = 0; n < SIZEOF(commands); ++n) {
+	    char *msg;
+	    const char *name;
+	    const char *code = keyname(commands[n].code);
+	    size_t need = 5;
 #ifdef NCURSES_VERSION
-	if ((name = form_request_name(commands[n].result)) == NULL)
+	    if ((name = form_request_name(commands[n].result)) == NULL)
 #endif
-	    name = commands[n].help;
-	need = 5 + strlen(code) + strlen(name);
-	msg = typeMalloc(char, need);
-	if (msg != NULL) {
-	    _nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
-	    msgs[used++] = msg;
+		name = commands[n].help;
+	    need = 5 + strlen(code) + strlen(name);
+	    msg = typeMalloc(char, need);
+	    if (msg != NULL) {
+		_nc_SPRINTF(msg, _nc_SLIMIT(need) "%s -- %s", code, name);
+		msgs[used++] = msg;
+	    }
 	}
+	msgs[used++] =
+	    strdup("Arrow keys move within a field as you would expect.");
+	msgs[used] = NULL;
+	popup_msg2(stdscr, msgs);
+	for (n = 0; msgs[n] != NULL; ++n) {
+	    free(msgs[n]);
+	}
+	free(msgs);
     }
-    msgs[used++] =
-	strdup("Arrow keys move within a field as you would expect.");
-    msgs[used] = NULL;
-    popup_msg2(stdscr, msgs);
-    for (n = 0; msgs[n] != NULL; ++n) {
-	free(msgs[n]);
-    }
-    free(msgs);
 }
 
 static FIELD *

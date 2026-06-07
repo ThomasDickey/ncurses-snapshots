@@ -20693,7 +20693,7 @@ int main(void)
 		for (j = 0; j < limit; ++j) {
 			char *value = getenv(mynames[j]);
 			if (pass) {
-				if (value == 0) {
+				if (value == (char *)0) {
 					fprintf(stderr, "getenv returned null for %s\\n", mynames[j]);
 					${cf_cv_main_return:-return}(1);
 				} else if (value != mypointer[j]) {

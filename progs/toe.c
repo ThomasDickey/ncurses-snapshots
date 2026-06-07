@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2013,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -43,7 +43,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.95 2025/12/25 21:54:15 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.96 2026/06/06 09:59:40 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -672,7 +672,7 @@ main(int argc, char *argv[])
 
     /* maybe we want a direct-dependency listing? */
     if (direct_dependencies) {
-	ENTRY *qp;
+	const ENTRY *qp;
 
 	for_entry_list(qp) {
 	    if (qp->nuses) {
@@ -690,7 +690,7 @@ main(int argc, char *argv[])
 
     /* maybe we want a reverse-dependency listing? */
     if (invert_dependencies) {
-	ENTRY *qp, *rp;
+	const ENTRY *qp, *rp;
 
 	for_entry_list(qp) {
 	    int matchcount = 0;

@@ -1,6 +1,6 @@
-# $Id: MKunctrl.awk,v 1.31 2024/12/07 21:06:39 tom Exp $
+# $Id: MKunctrl.awk,v 1.32 2026/06/06 09:59:40 tom Exp $
 ##############################################################################
-# Copyright 2020,2024 Thomas E. Dickey                                       #
+# Copyright 2020-2024,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2012,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -154,7 +154,6 @@ END	{
 		printf "\t\t\tresult = %s_c1[check - 128];\n", stringname;
 		print  "\t\telse"
 		print  "\t\tif ((check >= 160)"
-		print  "\t\t && (check < 256)"
 		print  "\t\t && !_nc_unicode_locale()"
 		print  "\t\t && ((sp != NULL)"
 		print  "\t\t  && ((sp->_legacy_coding > 0)"

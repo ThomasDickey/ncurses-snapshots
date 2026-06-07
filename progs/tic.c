@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.342 2026/05/30 19:40:42 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.343 2026/06/06 09:59:40 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -202,9 +202,6 @@ static void
 write_it(ENTRY * ep)
 {
     unsigned n;
-    int ch;
-    char *s, *d;
-    const char *t;
     char result[MAX_ENTRY_SIZE];
 
     /*
@@ -213,12 +210,13 @@ write_it(ENTRY * ep)
      */
     for (n = 0; n < STRCOUNT; n++) {
 	size_t limit;
-	s = ep->tterm.Strings[n];
+	char *s = ep->tterm.Strings[n];
 	if (VALID_STRING(s)
 	    && (limit = strlen(s)) < sizeof(result) - 1
 	    && strchr(s, L_BRACE) != NULL) {
-	    d = result;
-	    t = s;
+	    int ch;
+	    char *d = result;
+	    const char *t = s;
 	    while ((ch = *t++) != 0) {
 		*d++ = (char) ch;
 		if (ch == '\\') {
@@ -3195,8 +3193,8 @@ check_user_6789(const TERMTYPE2 *tp)
 
 #define PAIRED_USER_STRS(set, reset) \
 	do {  \
-	    char *set = tigetstr(#set);  \
-	    char *reset = tigetstr(#reset);  \
+	    const char *set = tigetstr(#set);  \
+	    const char *reset = tigetstr(#reset);  \
 	    PAIRED(set,reset);  \
 	} while (0)
 

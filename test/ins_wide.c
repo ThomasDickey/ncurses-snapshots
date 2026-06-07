@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 2002-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: ins_wide.c,v 1.34 2025/11/01 20:03:42 tom Exp $
+ * $Id: ins_wide.c,v 1.35 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -222,7 +222,6 @@ test_inserts(int level)
     int limit;
     int row = 1;
     int col;
-    int row2, col2;
     int length;
     wchar_t buffer[BUFSIZ];
     WINDOW *look = NULL;
@@ -291,6 +290,7 @@ test_inserts(int level)
     }
 
     while ((ch = read_linedata(work)) != ERR && !isQUIT(ch)) {
+
 	wmove(work, row, margin + 1);
 	switch (ch) {
 	case key_RECUR:
@@ -308,8 +308,11 @@ test_inserts(int level)
 
 	    doupdate();
 	    break;
+
 	case key_NEWLINE:
 	    if (row < limit) {
+		int row2, col2;
+
 		++row;
 		/* put the whole string in, all at once */
 		col2 = margin + 1;

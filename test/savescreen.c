@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2006-2017,2018 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: savescreen.c,v 1.68 2025/07/05 15:21:56 tom Exp $
+ * $Id: savescreen.c,v 1.69 2026/06/06 09:59:40 tom Exp $
  *
  * Demonstrate save/restore functions from the curses library.
  * Thomas Dickey - 2007/7/14
@@ -84,7 +84,7 @@ setup_next(void)
 }
 
 static void
-cleanup(char *files[])
+cleanup(char *const *files)
 {
     if (!keep_dumps) {
 	int n;
@@ -165,7 +165,7 @@ get_command(int color, int which, int last)
 }
 
 static int
-dump_screen(char **files, int color, int which, int last, bool use_colors)
+dump_screen(char *const *files, int color, int which, int last, bool use_colors)
 {
 #if USE_WIDEC_SUPPORT
     cchar_t mycc;

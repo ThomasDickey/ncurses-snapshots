@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 2004-2011,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.22 2025/01/19 00:51:54 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.23 2026/06/06 09:59:40 tom Exp $")
 
 /* clone/adapt lib_addch.c */
 static const cchar_t blankchar = NewChar(BLANK_TEXT);
@@ -120,7 +120,6 @@ newline_forces_scroll(const WINDOW *win, NCURSES_SIZE_T *ypos)
     bool result = FALSE;
 
     if (*ypos >= win->_regtop && *ypos == win->_regbottom) {
-	*ypos = win->_regbottom;
 	result = TRUE;
     } else {
 	*ypos = (NCURSES_SIZE_T) (*ypos + 1);

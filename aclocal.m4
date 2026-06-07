@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1160 2026/04/25 17:45:15 tom Exp $
+dnl $Id: aclocal.m4,v 1.1161 2026/06/06 09:54:13 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1193,7 +1193,7 @@ __attribute__ ((visibility("default"))) int somefunc() {return 42;}
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_GETENV version: 7 updated: 2026/03/21 11:55:05
+dnl CF_CHECK_GETENV version: 8 updated: 2026/06/06 05:53:46
 dnl ---------------
 dnl Check if repeated getenv calls return the same pointer, e.g., it does not
 dnl discard the previous pointer when returning a new one.
@@ -1283,7 +1283,7 @@ int main(void)
 		for (j = 0; j < limit; ++j) {
 			char *value = getenv(mynames[[j]]);
 			if (pass) {
-				if (value == 0) {
+				if (value == (char *)0) {
 					fprintf(stderr, "getenv returned null for %s\\n", mynames[[j]]);
 					${cf_cv_main_return:-return}(1);
 				} else if (value != mypointer[[j]]) {

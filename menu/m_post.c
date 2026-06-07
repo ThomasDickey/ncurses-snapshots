@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2010,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.41 2024/07/27 18:08:59 tom Exp $")
+MODULE_ID("$Id: m_post.c,v 1.42 2026/06/06 09:59:40 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -68,7 +68,7 @@ _nc_Post_Item(const MENU *menu, const ITEM *item)
      - or it has a selection value
    */
   wattr_on(menu->win, menu->back, NULL);
-  if (item->value || (item == menu->curitem))
+  if (item != NULL && (item->value || (item == menu->curitem)))
     {
       if (menu->marklen)
 	{

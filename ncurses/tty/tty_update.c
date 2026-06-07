@@ -91,7 +91,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tty_update.c,v 1.325 2026/05/23 21:00:18 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.326 2026/06/06 09:59:40 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1332,13 +1332,10 @@ TransformLine(NCURSES_SP_DCLx int const lineno)
      * they are equivalent.
      */
     if (SP_PARM->_coloron) {
-	int oldPair;
-	int newPair;
-
 	for (n = 0; n < screen_columns(SP_PARM); n++) {
 	    if (!CharEq(newLine[n], oldLine[n])) {
-		oldPair = GetPair(oldLine[n]);
-		newPair = GetPair(newLine[n]);
+		int oldPair = GetPair(oldLine[n]);
+		int newPair = GetPair(newLine[n]);
 		if (oldPair != newPair
 		    && unColor(oldLine[n]) == unColor(newLine[n])) {
 		    if (oldPair < SP_PARM->_pair_alloc
