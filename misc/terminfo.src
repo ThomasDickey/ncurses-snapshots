@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1251 $
-#	$Date: 2026/06/06 23:47:05 $
+#	$Revision: 1.1252 $
+#	$Date: 2026/06/08 23:43:34 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1308,10 +1308,8 @@ sclp|IBM s390 driver for Linux,
 # - implements REP in a nonstandard manner
 # - supports SD and SU
 # - freezes console on SL; does not implement SR
-# tack:
-# - flash does not work reliably
 kmscon|KMS Console,
-	am, bce, km, mir, msgr, xenl,
+	am, bce, km, mir, msgr, npc, xenl,
 	cols#80, lines#24, pairs#0x7fff,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, bold=\E[1m, civis=\E[?25l, clear=\E[H\E[2J,
@@ -28355,5 +28353,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2026-06-06
 #	+ add kmscon (report by Jocelyn Falempe) -TD
+#
+# 2026-06-08
+#	+ add npc to kmscon, fixing flash -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!
