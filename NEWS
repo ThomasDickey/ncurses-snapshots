@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4474 2026/06/08 23:46:21 tom Exp $
+-- $Id: NEWS,v 1.4476 2026/06/13 22:38:37 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,17 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260613
+	+ add ich/ich1 to putty -TD
+	+ reorder %i's in some capabilities for better matching of blocks -TD
+	+ add sc/rc to ti928 -TD
+	+ add rin to ncr260vt300an and ncr260vt100an, matching the AT&T
+	  ind/indn -TD
+	+ add rwidm, kdch1 to att730 -TD
+	+ change %2d and %3d to %02d and %03d to match original termcaps -TD
+	+ reduce unnecessary %2d and %3d to just %d -TD
+	+ correct conversion of termcap %2 and %3 to terminfo in _nc_captoinfo.
 
 20260608
 	+ amend *.map to put recent cookie-related functions in a new tinfo

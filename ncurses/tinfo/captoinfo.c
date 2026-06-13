@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.111 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.112 2026/06/13 20:30:21 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -468,13 +468,13 @@ _nc_captoinfo(const char *cap, const char *s, int const parameterized)
 	    case '2':
 	      see02:
 		getparam(param, 1);
-		dp = save_string(dp, "%2d");
+		dp = save_string(dp, "%02d");
 		pop();
 		break;
 	    case '3':
 	      see03:
 		getparam(param, 1);
-		dp = save_string(dp, "%3d");
+		dp = save_string(dp, "%03d");
 		pop();
 		break;
 	    case 'd':
