@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.343 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.346 2026/06/20 16:26:52 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -3374,9 +3374,13 @@ check_termtype(TERMTYPE2 *tp, bool literal)
      * applications (e.g., jove) get confused if we have both ich1 and
      * smir/rmir.  Let's be nice and warn about that, too, even though
      * ncurses handles it.
+     *
+     * Since only termcap applications are affected, limit the warning, e.g.,
+     * using -v1 or -vv options for terminfo, and -v for termcap sources.
      */
-    if ((PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode))
-	&& PRESENT(insert_character)) {
+    if (((debug_level > 1) || (_nc_syntax == SYN_TERMCAP)) &&
+	((PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode)) &&
+	 PRESENT(insert_character))) {
 	_nc_warning("non-curses applications may be confused by ich1 with smir/rmir");
     }
 

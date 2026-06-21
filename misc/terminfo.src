@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1253 $
-#	$Date: 2026/06/13 20:54:20 $
+#	$Revision: 1.1254 $
+#	$Date: 2026/06/20 23:02:58 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -514,9 +514,9 @@ ibcs2|Intel Binary Compatibility Standard prescriptions,
 	cbt=\E[Z, clear=\Ec, cub1=\E[1D, cud1=\E[1B, cuf1=\E[1C,
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[1A, dch=\E[%p1%dP,
 	dispc=\E=%p1%dg, ech=\E[%p1%dX, hts=\EH, ich=\E[%p1%d@,
-	ich1=\E[@, il=\E[%p1%dL, rc=\E7, rmam=\E[?7l, sc=\E7,
-	smam=\E[?7h, tbc=\E[g, use=ansi+local, use=ansi+rca2,
-	use=ecma+index,
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, rc=\E7, rmam=\E[?7l,
+	sc=\E7, smam=\E[?7h, tbc=\E[g, use=ansi+local,
+	use=ansi+rca2, use=ecma+index,
 
 #### ANSI/ECMA-48 terminals and terminal emulators
 #
@@ -854,10 +854,10 @@ tw100|Toswin VT100 window manager,
 	clear=\E[2J\E[H, cnorm=\Ee, cr=\r, cub1=^H, cud1=\EB,
 	cuf1=\EC, cuu1=\EA, dch1=\Ea, dim=\E[2m, dl=\E[%p1%dM,
 	dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, ht=^I, hts=\EH,
-	ich=\E[%p1%d@, il1=\EL, ind=\n, is2=\E<\E)0, kdch1=^?,
-	kf10=\EOY, kf11=\Ep, kf12=\Eq, kf13=\Er, kf14=\Es, kf15=\Et,
-	kf16=\Eu, kf17=\Ev, kf18=\Ew, kf19=\Ex, kf20=\Ey, kf5=\EOT,
-	kf6=\EOU, kf7=\EOV, kf8=\EOW, kf9=\EOX, khlp=\EH,
+	ich=\E[%p1%d@, ich1=\E[@, il1=\EL, ind=\n, is2=\E<\E)0,
+	kdch1=^?, kf10=\EOY, kf11=\Ep, kf12=\Eq, kf13=\Er, kf14=\Es,
+	kf15=\Et, kf16=\Eu, kf17=\Ev, kf18=\Ew, kf19=\Ex, kf20=\Ey,
+	kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW, kf9=\EOX, khlp=\EH,
 	khome=\E\EE, kich1=\EI, knp=\Eb, kpp=\E\Ea, kund=\EK,
 	ll=\E[24H, nel=\EE, oc=\E[30;47m, op=\E[30;47m, rev=\E[7m,
 	ri=\EM, rmacs=^O, rmcup=\E[?7h, rmir=\Ei, rmkx=\E[?1l\E>,
@@ -4532,13 +4532,14 @@ teraterm2.3|Tera Term Pro 2.3,
 	blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cuf1=\E[C,
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP,
 	dch1=\E[P, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
-	flash=\E[?5h$<100/>\E[?5l, kf10=\E[21~, kf11=\E[23~,
-	kf12=\E[24~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~,
-	kf9=\E[20~, op=\E[100m, rev=\E[7m, ri=\EM, sgr0=\E[0m\017,
-	smul=\E[4m, use=ecma+underline, use=ecma+standout,
-	use=ansi+idl, use=ansi+rca2, use=vt100+enq,
-	use=klone+color, use=vt220+cvis, use=vt220+vtedit,
-	use=vt220+sfkeys, use=xterm+r5+lockeys, use=vt100,
+	flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@, ich1=\E[@,
+	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf6=\E[17~,
+	kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, op=\E[100m, rev=\E[7m,
+	ri=\EM, sgr0=\E[0m\017, smul=\E[4m, use=ecma+underline,
+	use=ecma+standout, use=ansi+idl, use=ansi+rca2,
+	use=vt100+enq, use=klone+color, use=vt220+cvis,
+	use=vt220+vtedit, use=vt220+sfkeys,
+	use=xterm+r5+lockeys, use=vt100,
 
 # Version 4.59 has regular VT100 line-drawing (so it is no longer necessary
 # to choose a Windows OEM font).
@@ -4988,13 +4989,13 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 	OTbs, am, km, mir, msgr, xenl, xon,
 	cols#80, it#8, lines#65,
 	bold=\E[1m, clear=\E[H\E[2J, csr=\E[%i%p1%d;%p2%dr,
-	cub1=^H, cud1=\n, cuf1=\E[C, cuu1=\E[A, dch=\E[%p1%dP,
-	dch1=\E[P, ed=\E[J, el=\E[K, ht=^I, ind=\n,
-	is2=\E\E[m\E[?7h\E[?1;4l, kbs=^H, kcub1=\EOD, kcud1=\EOB,
-	kcuf1=\EOC, kcuu1=\EOA, rev=\E[7m, ri=\EM, rmam=\E[?7l,
-	rmir=\E[4l, rmkx=\E[?1l\E>, sgr0=\E[m, smam=\E[?7h,
-	smir=\E[4h, smkx=\E[?1h\E=, use=ansi+cup, use=ansi+idl,
-	use=ansi+sgrso, use=ansi+sgrul, use=vt100+pf1-pf4,
+	cub1=^H, cud1=\n, cuf1=\E[C, cuu1=\E[A, ed=\E[J, el=\E[K,
+	ht=^I, ind=\n, is2=\E\E[m\E[?7h\E[?1;4l, kbs=^H,
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, rev=\E[7m,
+	ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>, sgr0=\E[m,
+	smam=\E[?7h, smkx=\E[?1h\E=, use=ansi+cup, use=ansi+idc,
+	use=ansi+idl, use=ansi+sgrso, use=ansi+sgrul,
+	use=vt100+pf1-pf4,
 
 # csl is extension which clears the status line
 x10term+sl|status-line for X10 xterm,
@@ -5040,18 +5041,18 @@ xterm-r6|xterm X11R6 version,
 	cols#80, it#8, lines#24,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=\r, cub1=^H, cud1=\n,
-	dch=\E[%p1%dP, dch1=\E[P, enacs=\E)0, ht=^I, hts=\EH, ind=\n,
+	enacs=\E)0, ht=^I, hts=\EH, ind=\n,
 	is2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8,
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kmous=\E[M,
-	meml=\El, memu=\Em, rev=\E[7m, ri=\EM, rmacs=^O, rmir=\E[4l,
+	meml=\El, memu=\Em, rev=\E[7m, ri=\EM, rmacs=^O,
 	rmkx=\E[?1l\E>,
 	rs2=\E[m\E[?7h\E[4l\E>\E7\E[r\E[?1;3;4;6l\E8,
-	sgr0=\E[m, smacs=^N, smir=\E[4h, smkx=\E[?1h\E=, tbc=\E[3g,
+	sgr0=\E[m, smacs=^N, smkx=\E[?1h\E=, tbc=\E[3g,
 	use=xterm+alt47, use=ansi+csr, use=ansi+cup,
-	use=ansi+erase, use=ansi+idl, use=ansi+local,
-	use=ansi+sgrso, use=ansi+sgrul, use=vt220+vtedit,
-	use=xterm+kbs, use=vt100+enq, use=vt220+sfkeys,
-	use=xterm+r5+fkeys,
+	use=ansi+erase, use=ansi+idc, use=ansi+idl,
+	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
+	use=vt220+vtedit, use=xterm+kbs, use=vt100+enq,
+	use=vt220+sfkeys, use=xterm+r5+fkeys,
 
 xterm-old|antique xterm version,
 	use=xterm-r6,
@@ -6960,7 +6961,7 @@ rxvt-basic|rxvt terminal base (X Window System),
 	OTbs, bce, eo, mir, xenl, xon, XT,
 	blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cub1=^H, cud1=\n,
 	cup=\E[%i%p1%d;%p2%dH, ed=\E[J, el=\E[K, el1=\E[1K,
-	flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@,
+	flash=\E[?5h$<100/>\E[?5l, ich=\E[%p1%d@, ich1=\E[@,
 	is1=\E[?47l\E=\E[?1l,
 	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l,
 	kcbt=\E[Z, kmous=\E[M, rev=\E[7m, ri=\EM, rmir=\E[4l,
@@ -7417,15 +7418,15 @@ mterm-ansi|ANSI emulation,
 	am, bw, mir, msgr,
 	it#8,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
-	bel=^G, cr=\r, dch=\E[%p1%dP, dim=\E[2m, ech=\E[%p1%dX,
-	hpa=\E[%i%p1%d`, ht=^I, ich1=, ind=\E[S, is2=\E)0\017,
-	kbs=^H, nel=\EE, ri=\E[T, rmacs=^O,
+	bel=^G, cr=\r, dim=\E[2m, ech=\E[%p1%dX, hpa=\E[%i%p1%d`,
+	ht=^I, ind=\E[S, is2=\E)0\017, kbs=^H, nel=\EE, ri=\E[T,
+	rmacs=^O,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
-	sgr0=\E[m\017, smacs=^N, vpa=\E[%i%p1%dd,
-	use=ecma+underline, use=ecma+standout, use=ansi+cup,
-	use=ansi+erase, use=ansi+idc1, use=ansi+idl,
-	use=ansi+local, use=ansi+sgrbold, use=ecma+index,
+	sgr0=\E[m\017, smacs=^N, use=ecma+underline,
+	use=ecma+standout, use=ansi+cup, use=ansi+erase,
+	use=ansi+idc, use=ansi+idl, use=ansi+local,
+	use=ansi+rca2, use=ansi+sgrbold, use=ecma+index,
 
 # mterm normally sets $TERM to "mterm"
 mterm|mouse-sun|Der Mouse term,
@@ -7442,18 +7443,17 @@ decansi|ANSI emulation with DEC compatibility hacks,
 	am, mir, msgr, xenl,
 	colors#8, it#8, pairs#64,
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
-	bel=^G, cr=\r, dch=\E[%p1%dP, dim=\E[2m, ech=\E[%p1%dX,
-	enacs=\E(B\E)0, hpa=\E[%i%p1%d`, ht=^I, ich1=, ind=\E[S,
-	is2=\E)0\E[r\017, kbs=^H, kcub1=\EOD, kcud1=\EOB,
-	kcuf1=\EOC, kcuu1=\EOA, nel=\EE, op=\E[0m, ri=\E[T, rmacs=^O,
-	rmam=\E[?7l, rmkx=\E[?1l\E>, setab=\E[4%p1%dm,
-	setaf=\E[3%p1%dm,
+	bel=^G, cr=\r, dim=\E[2m, ech=\E[%p1%dX, enacs=\E(B\E)0,
+	hpa=\E[%i%p1%d`, ht=^I, ind=\E[S, is2=\E)0\E[r\017, kbs=^H,
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, nel=\EE,
+	op=\E[0m, ri=\E[T, rmacs=^O, rmam=\E[?7l, rmkx=\E[?1l\E>,
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=,
-	vpa=\E[%i%p1%dd, use=ecma+underline, use=ecma+standout,
-	use=ansi+cpr, use=ansi+csr, use=ansi+cup, use=ansi+erase,
-	use=ansi+idc1, use=ansi+idl, use=ansi+local,
+	use=ecma+underline, use=ecma+standout, use=ansi+cpr,
+	use=ansi+csr, use=ansi+cup, use=ansi+erase, use=ansi+idc,
+	use=ansi+idl, use=ansi+local, use=ansi+rca2,
 	use=ansi+sgrbold, use=vt220+vtedit, use=ecma+index,
 	use=vt220+cvis, use=vt220+sfkeys, use=xterm+r5+fkeys,
 
@@ -20727,6 +20727,10 @@ tek4025-ex|tek4027-ex|Tektronix 4025/4027 w/!,
 # Delays not specified; use "stty ixon -ixany" to enable DC3/DC1 flow control!
 # (tek4025a: removed obsolete ":xx:". This may mean the tek4025a entry won't
 # work any more. -- esr)
+#
+# Reference
+# https://www.bitsavers.org/pdf/tektronix/402x
+#	070-4172-00_4025A_Computer_Display_Terminal_Programmers_Reference_Dec_1981.pdf
 tek4025a|Tektronix 4025A,
 	OTbs, OTpt, am, bw, da, db, xon,
 	cols#80, it#8, lines#34,
@@ -20736,7 +20740,8 @@ tek4025a|Tektronix 4025A,
 	cuu=\035up %p1%d;, cuu1=^K, dch=\035dch %p1%d;,
 	dch1=\035dch;, dl=\035dli %p1%d;, dl1=\035dli;,
 	el=\035dch 80;, hpa=\r\035rig %p1%d;, ht=^I,
-	il1=\013\035ili;, ind=\n, indn=\035dow %p1%d;,
+	ich=\035ich %p1%d;, ich1=\035ich;, il1=\013\035ili;,
+	ind=\n, indn=\035dow %p1%d;,
 	rs2=!com\s29\035del\s0\035rss\st\035buf\035buf\sn\035cle
 	    \035dis\035dup\035ech\sr\035eol\035era\sg\035for\sn
 	    \035pad\s203\035pad\s209\035sno\sn\035sto\s9\s17\s25
@@ -20808,27 +20813,29 @@ tek4105-30|Tektronix 4015 emulating 30 line VT100,
 # delays are specified; use "stty ixon -ixany" to enable DC3/DC1 flow control!
 # "IC" cannot be used in combination with "im" & "ei".
 # "tek4105a" is just a guess:
+#
+# Reference:
+# https://www.bitsavers.org/pdf/tektronix/410x
+#	070-4526-01_4105_PgmrRef_Sep83.pdf
 tek4105a|Tektronix 4105 (BRL),
 	OTbs, OTpt, msgr, xon,
 	OTkn#8, cols#80, lines#30, vt#3,
 	acsc=, bel=^G, blink=\E[5m, bold=\E[1m,
 	civis=\E%!0\ETD00\E%!1, cnorm=\E%!0\ETD10\E%!1, cr=\r,
 	cub1=^H, cud1=\n, cuu1=\EM, cvvis=\E%!0\ETD70\E%!1,
-	dch=\E[%p1%dP, dch1=\E[P, ech=\E[%p1%dX, ind=\n, is2=\E%!1,
-	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
-	kf0=\EOA, kf1=\EOB, kf2=\EOC, kf3=\EOD, kf4=\EOP, kf5=\EOQ,
-	kf6=\EOR, kf7=\EOS, lf0=F1, lf1=F2, lf2=F3, lf3=F4, lf4=F5,
-	lf5=F6, lf6=F8, ll=\E[30;H, nel=\EE, rev=\E[7m, ri=\EM,
-	rmacs=^O, rmcup=\E%!0\ELBH=\E%!1, rmir=\E[4l,
-	rmkx=\E[?1l\E>,
+	ech=\E[%p1%dX, ind=\n, is2=\E%!1, kbs=^H, kcub1=\EOD,
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf0=\EOA, kf1=\EOB,
+	kf2=\EOC, kf3=\EOD, kf4=\EOP, kf5=\EOQ, kf6=\EOR, kf7=\EOS,
+	lf0=F1, lf1=F2, lf2=F3, lf3=F4, lf4=F5, lf5=F6, lf6=F8,
+	ll=\E[30;H, nel=\EE, rev=\E[7m, ri=\EM, rmacs=^O,
+	rmcup=\E%!0\ELBH=\E%!1, rmkx=\E[?1l\E>,
 	rs2=\030\E%!0\EKC\E\014\EKR0\EKF0\ENM0\ELBH=\ETF8000010F40
 	    \ELI100\ELLA>\ELM0\EKE0\ENF1\EKS0\END0\E%!1\Ec\E[?3;5l
 	    \E[?7;8h\E[r\E[m\E>,
-	sgr0=\E[m, smacs=^N, smcup=\E[?6l, smir=\E[4h,
-	smkx=\E[?1h\E=, use=ansi+csr, use=ansi+cup,
-	use=ansi+erase, use=ansi+idl, use=ansi+inittabs,
-	use=ansi+local, use=ansi+sgrso, use=ansi+sgrul,
-	use=ecma+index,
+	sgr0=\E[m, smacs=^N, smcup=\E[?6l, smkx=\E[?1h\E=,
+	use=ansi+csr, use=ansi+cup, use=ansi+erase, use=ansi+idc,
+	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
+	use=ansi+sgrso, use=ansi+sgrul, use=ecma+index,
 
 # Tektronix 4106/4107/4109 from BRL
 # The following setup modes are assumed for normal operation:
@@ -20851,25 +20858,28 @@ tek4105a|Tektronix 4105 (BRL),
 # and factory color maps.  After setting these modes, save them with NVSAVE.  No
 # delays are specified; use "stty ixon -ixany" to enable DC3/DC1 flow control!
 # "IC" cannot be used in combination with "im" & "ei".
+#
+# Reference:
+# https://www.bitsavers.org/pdf/tektronix/410x
+#	070-4892-02_4106_4107_4109_CX_Reference_Guide_198506.pdf
 tek4106brl|tek4107brl|tek4109brl|Tektronix 4106 4107 or 4109,
 	msgr, xon,
 	cols#80, lines#32, vt#3,
 	acsc=, bel=^G, blink=\E[5m, bold=\E[1m,
 	civis=\E%!0\ETD00\E%!1, cnorm=\E%!0\ETD10\E%!1, cr=\r,
 	cub1=^H, cud1=\n, cuu1=\EM, cvvis=\E%!0\ETD70\E%!1,
-	dch=\E[%p1%dP, dch1=\E[P, ech=\E[%p1%dX, ind=\n, is2=\E%!1,
-	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA,
-	kf0=\EOA, kf1=\EOB, kf2=\EOC, kf3=\EOD, kf4=\EOP, kf5=\EOQ,
-	kf6=\EOR, kf7=\EOS, lf0=F1, lf1=F2, lf2=F3, lf3=F4, lf4=F5,
-	lf5=F6, lf6=F8, ll=\E[32;H, nel=\EE, rev=\E[7m, ri=\EM,
-	rmacs=^O, rmcup=\E%!0\ELBH=\E%!1, rmir=\E[4l,
-	rmkx=\E[?1l\E>, rmso=\E[m,
+	ech=\E[%p1%dX, ind=\n, is2=\E%!1, kbs=^H, kcub1=\EOD,
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf0=\EOA, kf1=\EOB,
+	kf2=\EOC, kf3=\EOD, kf4=\EOP, kf5=\EOQ, kf6=\EOR, kf7=\EOS,
+	lf0=F1, lf1=F2, lf2=F3, lf3=F4, lf4=F5, lf5=F6, lf6=F8,
+	ll=\E[32;H, nel=\EE, rev=\E[7m, ri=\EM, rmacs=^O,
+	rmcup=\E%!0\ELBH=\E%!1, rmkx=\E[?1l\E>, rmso=\E[m,
 	rs1=\030\E%!0\EKC\E\014\EKR0\EKF0\ENM0\ELBH=\ETF8000010F40
 	    \ELI100\ELLB0\ELM0\EKE0\ENF1\EKS0\END0\ERE0\E%!1\Ec\E[?3
 	    ;5l\E[?7;8h\E[r\E[m\E>,
-	sgr0=\E[m, smacs=^N, smcup=\E[?6l, smir=\E[4h,
-	smkx=\E[?1h\E=, smso=\E[7;42m, use=ansi+csr,
-	use=ansi+cup, use=ansi+erase, use=ansi+idl,
+	sgr0=\E[m, smacs=^N, smcup=\E[?6l, smkx=\E[?1h\E=,
+	smso=\E[7;42m, use=ansi+csr, use=ansi+cup,
+	use=ansi+erase, use=ansi+idc, use=ansi+idl,
 	use=ansi+inittabs, use=ansi+local, use=ansi+sgrul,
 	use=ecma+index,
 
@@ -28368,5 +28378,15 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add rwidm, kdch1 to att730 -TD
 #	+ change %2d and %3d to %02d and %03d to match original termcaps -TD
 #	+ reduce unnecessary %2d and %3d to just %d -TD
+#
+# 2026-02-20
+#	+ add il1 to ibcs2 -TD
+#	+ add ich1 to several entries, providing for support of non-curses
+#	  applications via termcap only -TD
+#	+ add ich/ich1 to teraterm2.3 based on ttsrcp23.zip source-code -TD
+#	+ add ich/ich1 to x10term based on X.V10R4/xterm source-code -TD
+#	+ add ich/ich1 to xterm-r6 based on source-code -TD
+#	+ add ich/ich1 to mterm-ansi and decansi based on source-code -TD
+#	+ add ich/ich1 to tek4025a, tek4105a, tek4106brl from manual -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

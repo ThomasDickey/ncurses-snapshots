@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.202 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.203 2026/06/20 16:50:30 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -1772,6 +1772,13 @@ static void
 set_obsolete_termcaps(TERMTYPE2 *tp)
 {
 #include "capdefaults.c"
+    /*
+     * Adjust the entry to match results via tgetent.
+     */
+    if (VALID_STRING(insert_character) &&
+	VALID_STRING(enter_insert_mode) &&
+	VALID_STRING(exit_insert_mode))
+	insert_character = NULL;
 }
 
 /*

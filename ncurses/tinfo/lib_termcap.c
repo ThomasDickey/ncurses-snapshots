@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.97 2026/05/30 22:10:47 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.98 2026/06/20 13:13:01 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = NULL;
 NCURSES_EXPORT_VAR(char *) BC = NULL;
@@ -166,6 +166,7 @@ NCURSES_SP_NAME(tgetent)(NCURSES_SP_DCLx char *bufp, const char *name)
     FIX_SGR0 = NULL;		/* don't free it - application may still use */
 
     if (rc == 1) {
+	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
 
 	if (cursor_left)
 	    if ((backspaces_with_bs = (char) !strcmp(cursor_left, "\b")) == 0)
@@ -179,8 +180,7 @@ NCURSES_SP_NAME(tgetent)(NCURSES_SP_DCLx char *bufp, const char *name)
 	if (backspace_if_not_bs != NULL)
 	    BC = backspace_if_not_bs;
 
-	if ((FIX_SGR0 = _nc_trim_sgr0(&TerminalType(TerminalOf(SP_PARM))))
-	    != NULL) {
+	if ((FIX_SGR0 = _nc_trim_sgr0(tp)) != NULL) {
 	    if (!strcmp(FIX_SGR0, exit_attribute_mode)) {
 		if (FIX_SGR0 != exit_attribute_mode) {
 		    free(FIX_SGR0);
@@ -188,6 +188,17 @@ NCURSES_SP_NAME(tgetent)(NCURSES_SP_DCLx char *bufp, const char *name)
 		FIX_SGR0 = NULL;
 	    }
 	}
+	/*
+	 * Some standard applications (e.g., vi) and some non-curses
+	 * applications (e.g., jove) get confused if we have both ich1 and
+	 * smir/rmir.  Let's be nice and prevent that confusion.
+	 */
+	if (VALID_STRING(insert_character) &&
+	    VALID_STRING(enter_insert_mode) &&
+	    VALID_STRING(exit_insert_mode)) {
+	    insert_character = NULL;
+	}
+
 	LAST_BUF = bufp;
 	LAST_USE = TRUE;
 

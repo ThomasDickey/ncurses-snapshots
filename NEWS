@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4476 2026/06/13 22:38:37 tom Exp $
+-- $Id: NEWS,v 1.4481 2026/06/21 00:05:36 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,20 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260620
+	+ add il1 to ibcs2 -TD
+	+ add ich1 to several entries, providing for support of non-curses
+	  applications via termcap only -TD
+	+ add ich/ich1 to teraterm2.3 based on ttsrcp23.zip source-code -TD
+	+ add ich/ich1 to x10term based on X.V10R4/xterm source-code -TD
+	+ add ich/ich1 to xterm-r6 based on source-code -TD
+	+ add ich/ich1 to mterm-ansi and decansi based on source-code -TD
+	+ add ich/ich1 to tek4025a, tek4105a, tek4106brl from manual -TD
+	+ modify infocmp, tic, and tgetent to omit ich1 (termcap "ic") while
+	  providing termcap data when smir/rmir (termcap "im/ei") are given.
+	+ reduce warning in tic regarding termcap applications which do not
+	  work with smir/rmir combined with ich1.
 
 20260613
 	+ add ich/ich1 to putty -TD
