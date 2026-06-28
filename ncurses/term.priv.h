@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2021-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2021-2025,2026 Thomas E. Dickey                                *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /*
- * $Id: term.priv.h,v 1.14 2025/12/27 12:41:23 tom Exp $
+ * $Id: term.priv.h,v 1.15 2026/06/27 20:43:58 tom Exp $
  *
  *	term.priv.h
  *
@@ -140,7 +140,7 @@ typedef struct {
  */
 typedef struct term {			/* describe an actual terminal */
 	TERMTYPE	type;		/* terminal type description */
-	short		Filedes;	/* file description being written to */
+	int		Filedes;	/* file description being written to */
 	TTY		Ottyb;		/* original state of the terminal */
 	TTY		Nttyb;		/* current state of the terminal */
 	int		_baudrate;	/* used to compute padding */

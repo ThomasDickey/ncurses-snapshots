@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1254 $
-#	$Date: 2026/06/20 23:02:58 $
+#	$Revision: 1.1256 $
+#	$Date: 2026/06/27 20:11:18 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2913,7 +2913,7 @@ vt320nam|v320n|DEC VT320 in VT100 emul. mode with NO AUTO WRAP mode,
 # From: Adam Thompson <athompso@pangea.ca> Sept 10 1995
 # (vt320: uncommented <fsl> --esr)
 vt320|vt300|DEC VT320 7 bit terminal,
-	am, mir, msgr, xenl,
+	am, mir, msgr, xenl, xon,
 	cols#80, lines#24, wsl#80,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cr=\r,
@@ -6166,7 +6166,7 @@ kterm-color|kterm-co|kterm with ANSI colors,
 # variant of xterm which is apparently no longer supported, but are interesting
 # because they illustrate SVr4 curses mouse controls - T.Dickey
 xtermm|xterm terminal emulator (monochrome),
-	OTbs, am, km, mir, msgr, xenl,
+	OTbs, am, km, mir, msgr, xenl, xon,
 	btns#3, cols#80, it#8, lines#24,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	bel=^G, blink@, bold=\E[1m, clear=\E[H\E[2J, cr=\r, cud1=\n,
@@ -11201,6 +11201,11 @@ dku7003|Honeywell Bull DKU 7003 all features described,
 # hanging in the air. (Thanks to Eric Fischer, <eric@fudge.uchicago.edu>,
 # for clearing up this point.)
 
+# Supports full/half duplex, manual does not mention xon/xoff
+#
+# Reference:
+# https://www.bitsavers.org/pdf/learSiegler/ADM_1
+#	ADM-1_Reference_Manual.pdf
 adm1a|adm1|LSI adm1a,
 	am,
 	cols#80, lines#24,
@@ -11231,6 +11236,9 @@ adm3|LSI adm3,
 # socket, you may be out of luck.
 #
 # (adm3a: some capabilities merged in from BRl entry -- esr)
+#
+# Reference:
+# https://vt100.net/lsi/adm3a-um.pdf
 adm3a|LSI adm3a,
 	OTbs, am,
 	cols#80, lines#24,
@@ -11327,14 +11335,19 @@ adm12|LSI adm12,
 	kf7=^A7\r, kf8=^A8\r, kf9=^A9\r, rmir=\Er, smir=\Eq, tbc=\E0,
 	use=adm+sgr,
 # (adm20: removed obsolete ":kn#7:" -- esr)
+#
+# Reference:
+#	https://terminals-wiki.org/wiki/index.php/Morrow_MDT20
+#	http://dunfield.classiccmp.org//morrow/mdadm20.pdf
+#	https://www.atarimagazines.com/creative/v10n5/28_The_Morrow_Micro_Decision.php
 adm20|Lear Siegler adm20,
 	OTbs, am,
 	cols#80, it#8, lines#24,
 	bel=^G, cbt=\EI, clear=^Z, cr=\r, cub1=^H, cuf1=^L,
-	cup=\E=%i%p2%{31}%+%c%p1%{31}%+%c, cuu1=^K, dch1=\EW,
-	dl1=\ER, ed=\EY, el=\ET, home=^^, ht=^I, ich1=\EQ, il1=\EE,
+	cup=\E=%p2%{32}%+%c%p1%{32}%+%c, cuu1=^K, dch1=\EW,
+	dl1=\ER, ed=\EY, el=\ET, home=^_, ht=^I, ich1=\EQ, il1=\EE,
 	kf1=^A, kf2=^B, kf3=^W, kf4=^D, kf5=^E, kf6=^X, kf7=^Z, rmso=\E(,
-	sgr0=\E(, smso=\E),
+	sgr0=\E(, smso=\E), u6=%p2%{32}%+%c%p1%{32}%+%c, u7=\E?,
 adm21|Lear Siegler adm21,
 	xmc#1,
 	dch1=\EW, dl1=\ER$<30*>, ed=\EY, el=\ET, ich1=\EQ,
@@ -11511,12 +11524,23 @@ adm31|LSI adm31 with sw6 set for underline mode,
 adm31-old|o31|old adm31,
 	rmul@, smso=\EG4, smul@, use=adm31,
 # LSI ADM-36 from Col. George L. Sicherman <gloria!colonel> via BRL
+#
+# Reference:
+# https://www.bitsavers.org/pdf/learSiegler/ADM_36
+#	DP2360382F_ADM_36_Users_Manual_Apr82.pdf
 adm36|LSI ADM36,
-	OTbs, OTpt,
+	OTbs, OTpt, xon,
 	OTkn#4,
+	csr=\E[%i%p1%d;%p2%dr, dch=\E[%p1%dP, dch1=\E[P,
 	if=/usr/share/tabset/vt100,
-	is2=\E<\E>\E[6;?2;?7;?8h\E[4;20;?1;?3;?4;?5;?6;?18;?19l, use=vt100+4bsd,
+	is2=\E<\E>\E[6;?2;?7;?8h\E[4;20;?1;?3;?4;?5;?6;?18;?19l,
+	nel=\EE, rc=\E8, rmir=\E[4l, sc=\E7, smir=\E[4h,
+	use=ansi+idl, use=decid+cpr, use=vt100+4bsd,
 # (adm42: removed obsolete ":ma=^K^P:" -- esr)
+#
+# Reference:
+# https://www.bitsavers.org/pdf/learSiegler/ADM_42
+#	ADM-42_UsersMan_Feb80.pdf
 adm42|LSI adm42,
 	OTbs, am,
 	cols#80, lines#24,
@@ -12868,7 +12892,7 @@ vi200-rv|Visual 200 reverse video,
 # in it.
 # (vi300: added <rmam>/<smam> based on init string -- esr)
 vi300|Visual 300 ANSI x3.64,
-	am, bw, mir, xenl,
+	am, bw, mir, xenl, xon,
 	cols#80, lines#24,
 	bel=^G, cbt=\E[Z, clear=\E[H\E[2J, cr=\r, cub1=^H,
 	dch1=\E[P$<40>, ed=\E[J, el=\E[K, ht=^I, ind=\n,
@@ -12917,7 +12941,7 @@ vi550|Visual 550 ANSI x3.64,
 	clear=\030\E[H\E[2J, use=vi300,
 
 vi603|visual603|Visual 603,
-	hs, mir,
+	hs, mir, xon,
 	blink=\E[5m, bold=\E[1m, clear=\E[H\E[J,
 	csr=\E[%i%p1%d;%p2%dr, cuf1=\E[C,
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch1=\E[P,
@@ -13239,7 +13263,7 @@ wy120-w-vb|wy120-wvb|wyse120-wvb|wy150-w-vb|wyse150-w-vb|Wyse 120/150 132-column
 # (wy60: we use \E{ rather than ^^ for home (both are documented) to avoid
 # a bug reported by Robert Dunn, <rcdii@inlink.com> -- esr)
 wy60|wyse60|Wyse 60,
-	am, bw, km, mc5i, mir, msgr,
+	am, bw, km, mc5i, mir, msgr, xon,
 	cols#80, lh#1, lines#24, lw#8, nlab#8,
 	acsc=+/\,.0[a2fxgqh1ihjYk?lZm@nEqDtCu4vAwBx3yszr{c~~,
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<100>,
@@ -13368,7 +13392,7 @@ wy99gt-w-vb|wy99gt-wvb|wyse99gt-wvb|Wyse 99gt 132-column visible bell,
 # not, so smir and rmir are commented out as well.
 # From: Francesco Potorti` <F.Potorti@cnuce.cnr.it>, 24 Aug 1998
 wy99-ansi|Wyse WY-99GT in ANSI mode (int'l PC keyboard),
-	am, km, mir, msgr, xenl,
+	am, km, mir, msgr, xenl, xon,
 	cols#80, it#8, lines#25, vt#3,
 	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx{{||}}~~,
 	bel=^G, cbt=\E[Z, clear=\E[H\E[J$<200>, cr=\r,
@@ -13474,7 +13498,7 @@ wy99fa|wy99fgta|wy-99fgta|Wyse WY-99GT (US PC keyboard),
 # (wy160: we use \E{ rather than ^^ for home (both are documented) to avoid
 # a bug reported by Robert Dunn, <rcdii@inlink.com> -- esr)
 wy160|wyse160|Wyse 160,
-	am, bw, km, mc5i, mir, msgr,
+	am, bw, km, mc5i, mir, msgr, xon,
 	cols#80, lh#1, lines#24, lw#8, nlab#8, wsl#38,
 	acsc=+/\,.0[a2fxgqh1ihjYk?lZm@nEqDtCu4vAwBx3yszr{c~~,
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<30>,
@@ -13761,7 +13785,7 @@ wy185-wvb|wyse185-wvb|Wyse 185+flash+132 cols,
 # lines 25  columns 80
 #
 wy325|wyse325|Wyse epc,
-	am, bw, mc5i, mir,
+	am, bw, mc5i, mir, xon,
 	cols#80, lh#1, lines#24, lw#8, nlab#8, pb#9601,
 	acsc=+/\,.0[a2fxgqh1ihjYk?lZm@nEqDtCu4vAwBx3yszr{c~~,
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<50>,
@@ -15718,7 +15742,7 @@ ampex175-b|Ampex d175 using left arrow for erase,
 # From: Richard Bascove <atd!dsd!rcb@ucbvax.berkeley.edu>
 # (ampex210: removed obsolete ":kn#10:" -- esr)
 ampex210|a210|Ampex a210,
-	OTbs, am, hs, xenl,
+	OTbs, am, hs, xenl, xon,
 	cols#80, it#8, lines#24, xmc#1,
 	cbt=\EI, clear=\E*, cub1=^H, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW,
@@ -15733,8 +15757,15 @@ ampex210|a210|Ampex a210,
 # (ampex219: I added <rmam>/<smam> based on the init string, added <cvvis>
 # from ampex219w, added <cnorm>=\E[?3l, irresistibly suggested by <cvvis>,
 # and moved the padding to be *after* the caps -- esr)
+#
+# The service manual's summary resembles VT220, but mentions only "Ampex 219",
+# as well as VT131, VT100/VT102, VT52 and WY-75 emulations.
+#
+# Reference:
+# http://bitsavers.informatik.uni-stuttgart.de/pdf/ampex/terminal/Ampex_230_plus
+#	3515021-01_Ampex_230_219_Service_Manual_198506.pdf
 ampex219|ampex-219|amp219|Ampex with automargins,
-	hs, xenl,
+	hs, xenl, xon,
 	cols#80, it#8, lines#24,
 	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>, cbt=\E[Z,
 	clear=\E[H\E[2J$<50>, cnorm=\E[?3l, cr=\r,
@@ -16259,6 +16290,10 @@ screwpoint|ADDS Viewpoint with ^O bug,
 # Underlined Half Intensity
 #    Blinking                     c	0143
 # Video suppress                  D	0104
+#
+# Reference:
+# https://blog.hjf.com.ar/wp-content/uploads/2024/10
+# ADDS-ViewPoint-3A-Plus-Users-Manual.pdf
 vp3a+|viewpoint3a+|ADDS Viewpoint 3a+,
 	am, bw,
 	cols#80, it#8, lines#24,
@@ -16266,12 +16301,16 @@ vp3a+|viewpoint3a+|ADDS Viewpoint 3a+,
 	cub1=^H, cud1=\n, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dim=\E0A\E),
 	ed=\EY$<80>, el=\ET, home=^^, ht=^I, ind=\n, invis=\E0D\E),
-	kbs=^H, kcub1=^H, kcud1=\n, kcuf1=^L, kcuu1=^K, khome=^^,
-	nel=\r\n, rev=\E0P\E), rmso=\E(,
+	kbs=^H, kcub1=^H, kcud1=\n, kcuf1=^L, kcuu1=^K, kdch1=^?,
+	khome=^^, nel=\r\n, rev=\E0P\E), rmso=\E(,
 	sgr=%?%p1%p2%|%p3%|%p4%|%p5%|%p7%|%t\E0%{64}%?%p1%t%{17}%|%;
 	    %?%p2%t%{32}%|%;%?%p3%t%{16}%|%;%?%p4%t%{2}%|%;%?%p5%t
 	    %{1}%|%;%c%?%p7%tD%;\E)%e\E(%;,
 	sgr0=\E(, smso=\E0Q\E), smul=\E0`\E),
+	u6=%p1%{32}%+%c%p2%{32}%+%c\r, u7=\E?,
+# Reference:
+# https://www.bitsavers.org/pdf/adds/ADDS_Viewpoint_60
+#	518-32300_ADDS_Viewpoint_60_User_Manual_Nov83.pdf
 vp60|viewpoint60|addsvp60|ADDS Viewpoint60,
 	use=regent40,
 #
@@ -22440,6 +22479,9 @@ oblit|ojerq|first version of blit rom,
 # paints lines in on the bottom line of the screen, so you get
 # this big white gap.
 
+# Reference:
+# https://www.bitsavers.org/pdf/bbn/bitgraph
+#	BitGraph_Users_Manual_Ver_3.2_May83.pdf
 bitgraph|bg2.0nv|bg3.10nv|BBN BitGraph 2.0 or later (normal video),
 	flash=\E[?5h$<200/>\E[?5l, is2=\E>\E[?5l\E[?7h,
 	use=bg2.0,
@@ -22447,7 +22489,7 @@ bg2.0rv|bg3.10rv|BBn BitGraph 2.0 (reverse video),
 	flash=\E[?5l$<200/>\E[?5h, is2=\E>\E[?5h\E[?7h,
 	use=bg2.0,
 bg2.0|bg3.10|BBN BitGraph 2.0 or later (no init),
-	OTbs, xenl,
+	OTbs, xenl, xon,
 	cols#85, lines#64,
 	bel=^G, clear=\E[H\E[J$<150>, cr=\r, cub1=^H,
 	cup=\E[%i%p1%d;%p2%dH, dl1=\E[M$<2*>, ed=\E[J$<150>,
@@ -22465,6 +22507,7 @@ bg1.25nv|BBN BitGraph 1.25 (normal video),
 	use=bg1.25,
 # (bg1.25: I added <rmam>/<smam> based on the init string -- esr)
 bg1.25|BBN BitGraph 1.25,
+	xon,
 	cols#85, lines#64,
 	bel=^G, clear=\E[H\E[J$<150>, cr=\r, cub1=^H,
 	cup=\E[%i%p1%d;%p2%dH, dl1=\E[M$<2*>, ed=\E[J$<150>,
@@ -23125,7 +23168,12 @@ vt50h|DEC VT50h,
 	u8=\E/[HJ], use=vt52+keypad, use=vt50, use=vt52+arrows,
 
 # (vt61: there's a BSD termcap that claims <dl1=\EPd>, <il1=\EPf.> <kbs=^H>)
+#
+# Reference:
+# https://bitsavers.org/pdf/dec/terminal/vt61
+#	EK-VT61-OP-001_VT61_Users_Manual_Aug77.pdf
 vt61|vt-61|vt61.5|DEC VT61,
+	xon,
 	cols#80, lines#24,
 	bel=^G, clear=\EH\EJ$<120>, cr=\r$<20>, cub1=^H, cud1=\n,
 	cuf1=\EC$<20>, cup=\EY%p1%{32}%+%c%p2%{32}%+%c$<20>,
@@ -23942,12 +23990,13 @@ synertek|ktm|synertek380|Synertek KTM 3/80 tubeless terminal,
 #
 # According to
 # https://ub.fnwi.uva.nl/computermuseum/tab13215g.html
+# https://www.1000bit.it/ad/bro/tab/TAB132-15G.pdf
 #	This monochrome graphics terminal of TAB Products, California, is a DEC
 #	VT52/VT100/VT132 compatible alphanumeric terminal (TAB 132/15),
 #	factory-fitted with additional hardware for Tektronix 4010 emulation.
 #	Also the terminal understands a selection of Tektronix 4027 commands.
 tab132|tab|tab132-15|tab 132/15,
-	da, db,
+	da, db, xon,
 	OTdN@, lm#96,
 	cup=\E[%i%p1%d;%p2%dH, dch1=\E[P,
 	is2=\E[?7h\E[?3l\E[?5l, rmir=\E[4l, rmkx@, smir=\E[4h,
@@ -24884,7 +24933,7 @@ dwk|dwk-vt|dwk terminal,
 	knp=\Eh, kpp=\Eg, rev=\ET, ri=\ES, rmacs=\EG, rmso=\EX,
 	sgr0=\EX, smacs=\EF, smso=\ET, use=vt52-basic,
 env230|envision230|envision 230 graphics terminal,
-	xenl@,
+	xenl@, xon,
 	enacs@, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, rmacs@,
 	sgr=\E[0%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;
 	    1%;m$<2>,
@@ -28379,7 +28428,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ change %2d and %3d to %02d and %03d to match original termcaps -TD
 #	+ reduce unnecessary %2d and %3d to just %d -TD
 #
-# 2026-02-20
+# 2026-06-20
 #	+ add il1 to ibcs2 -TD
 #	+ add ich1 to several entries, providing for support of non-curses
 #	  applications via termcap only -TD
@@ -28388,5 +28437,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add ich/ich1 to xterm-r6 based on source-code -TD
 #	+ add ich/ich1 to mterm-ansi and decansi based on source-code -TD
 #	+ add ich/ich1 to tek4025a, tek4105a, tek4106brl from manual -TD
+#
+# 2026-06-27
+#	+ add xon to several entries, based on manuals and product
+#	  descriptions -TD
+#	+ revise adm36, based on manual -TD
+#	+ add u6, u7, kdch1 to vp3a+ based on manual -TD
+#	+ add u6, u7, home, cbt to adm20 based on manual -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

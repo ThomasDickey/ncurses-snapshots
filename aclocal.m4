@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1161 2026/06/06 09:54:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.1163 2026/06/27 23:09:22 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4787,7 +4787,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 103 updated: 2025/11/11 20:09:36
+dnl CF_LIB_RULES version: 104 updated: 2026/06/27 19:08:14
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -4842,6 +4842,7 @@ do
 
 		SHARED_LIB=
 		Libs_To_Make=
+		Libs_To_Install=
 		cf_awk_program=
 		if test -n "${cf_cv_abi_default}" && test "x${cf_cv_abi_default}" != "x5"
 		then
@@ -4955,12 +4956,18 @@ CF_EOF
 			fi
 			cf_add_lib="../lib/${cf_prefix}${cf_libname}${cf_suffix}"
 			Libs_To_Make="$Libs_To_Make $cf_add_lib"
+			if test "$cf_item" = shared && test "$cf_dir" != c++
+			then
+				cf_add_inst='$(LIBDIR)'"/${cf_prefix}${cf_libname}${cf_suffix}"
+				Libs_To_Install="$Libs_To_Install $cf_add_inst"
+			fi
 		done
 
 		if test "$cf_dir" = ncurses ; then
 			cf_subsets="$LIB_SUBSETS"
 			cf_r_parts="$cf_subsets"
 			cf_liblist="$Libs_To_Make"
+			cf_instlist="$Libs_To_Install"
 
 			while test -n "$cf_r_parts"
 			do
@@ -4971,9 +4978,11 @@ CF_EOF
 					case "$cf_l_parts" in
 					(*termlib*)
 						cf_add_lib=`echo "$cf_liblist" |sed -e s%${LIB_NAME}${ABI_SUFFIX}%${TINFO_LIB_SUFFIX}%g`
+						cf_add_inst=`echo "$cf_instlist" |sed -e s%${LIB_NAME}${ABI_SUFFIX}%${TINFO_LIB_SUFFIX}%g`
 						;;
 					(*ticlib*)
 						cf_add_lib=`echo "$cf_liblist" |sed -e s%${LIB_NAME}${ABI_SUFFIX}%${TICS_LIB_SUFFIX}%g`
+						cf_add_inst=`echo "$cf_instlist" |sed -e s%${LIB_NAME}${ABI_SUFFIX}%${TICS_LIB_SUFFIX}%g`
 						;;
 					(*)
 						break
@@ -4981,6 +4990,9 @@ CF_EOF
 					esac
 					if test -n "$cf_add_lib"; then
 						Libs_To_Make="$cf_add_lib $Libs_To_Make"
+					fi
+					if test -n "$cf_add_inst"; then
+						Libs_To_Install="$cf_add_inst $Libs_To_Install"
 					fi
 				else
 					break
@@ -5018,6 +5030,7 @@ CF_EOF
 		fi
 
 		sed -e "s%@Libs_To_Make@%$Libs_To_Make%" \
+		    -e "s%@Libs_To_Install@%$Libs_To_Install%" \
 		    -e "s%@SHARED_LIB@%$SHARED_LIB%" \
 			"$cf_dir/Makefile" >$cf_dir/Makefile.out
 		mv "$cf_dir/Makefile.out" "$cf_dir/Makefile"

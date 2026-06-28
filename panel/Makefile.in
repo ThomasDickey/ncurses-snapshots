@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.81 2025/10/25 18:00:30 tom Exp $
+# $Id: Makefile.in,v 1.83 2026/06/27 23:04:29 tom Exp $
 ##############################################################################
-# Copyright 2020-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2020-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2015,2018 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -132,6 +132,7 @@ ABI_VERSION	= @cf_cv_abi_version@
 RANLIB		= @LIB_PREP@
 
 LIBRARIES	= @Libs_To_Make@
+INSTALL_LIBS	= @Libs_To_Install@
 
 LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
@@ -157,6 +158,9 @@ AUTO_SRC	= \
 all \
 libs \
 install ::	$(AUTO_SRC) $(LIBRARIES)
+
+install \
+install.libs :: $(INSTALL_LIBS)
 
 check ::
 	@echo "no unit-test implemented"

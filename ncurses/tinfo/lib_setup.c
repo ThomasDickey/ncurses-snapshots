@@ -49,7 +49,7 @@
 #include <locale.h>
 #endif
 
-MODULE_ID("$Id: lib_setup.c,v 1.255 2026/05/30 21:17:40 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.256 2026/06/27 20:42:09 tom Exp $")
 
 /****************************************************************************
  *
@@ -954,7 +954,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	 * _nc_get_driver() will call td_CanHandle() for each driver, and win_driver
 	 * needs file descriptor to do the test, so set it before calling.
 	 */
-	termp->Filedes = (short) Filedes;
+	termp->Filedes = Filedes;
 	TCB = (TERMINAL_CONTROL_BLOCK *) termp;
 	code = _nc_globals.term_driver(TCB, myname, errret);
 	if (code == OK) {
@@ -1004,7 +1004,7 @@ TINFO_SETUP_TERM(TERMINAL **tp,
 	save_ttytype(termp);
 #endif
 
-	termp->Filedes = (short) Filedes;
+	termp->Filedes = Filedes;
 	termp->_termname = strdup(myname);
 
 	set_curterm(termp);

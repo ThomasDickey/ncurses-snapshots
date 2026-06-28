@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.833 2026/05/30 19:20:26 tom Exp $
+dnl $Id: configure.in,v 1.836 2026/06/27 22:48:53 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.833 $)
+AC_REVISION($Revision: 1.836 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -2598,6 +2598,30 @@ AC_SUBST(NO_SHARED)
 
 # This is used for the *-config script and *.pc data files.
 CF_LD_SEARCHPATH
+
+PC_FILES=
+for cf_pc_root in \
+	"${LIB_NAME}${USE_ARG_SUFFIX}" \
+	"${TINFO_ARG_SUFFIX}" \
+	"${TICS_NAME}${USE_ARG_SUFFIX}" \
+	"${PANEL_NAME}${USE_ARG_SUFFIX}" \
+	"${MENU_NAME}${USE_ARG_SUFFIX}" \
+	"${FORM_NAME}${USE_ARG_SUFFIX}" \
+	"${CXX_NAME}${USE_ARG_SUFFIX}"
+do
+	cf_pc_file="${cf_pc_root}${PC_MODULE_SUFFIX}".pc
+	cf_found=
+	for cf_pc_used in $PC_FILES
+	do
+		if test "$cf_pc_used" = "$cf_pc_file"
+		then
+			cf_found=$cf_pc_used
+			break
+		fi
+	done
+	test -z "$cf_found" && PC_FILES="$PC_FILES $cf_pc_file"
+done
+AC_SUBST(PC_FILES)
 
 AC_CONFIG_FILES([\
 	include/MKterm.h.awk \

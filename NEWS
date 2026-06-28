@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4481 2026/06/21 00:05:36 tom Exp $
+-- $Id: NEWS,v 1.4485 2026/06/27 23:06:41 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,20 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260627
+	+ add a makefile symbol for the names of the installed libraries to
+	  simplify parallel build of more than one configuration (patch by
+	  Luca Fancellu).
+	+ change misc/Makefile to eliminate "pc-files" stamp target (report
+	  by Luca Fancellu).
+	+ change internal type for file-descriptor to int, eliminate cast
+	  (report by Antonio Nino Diaz).
+	+ add xon to several entries, based on manuals and product
+	  descriptions -TD
+	+ revise adm36, based on manual -TD
+	+ add u6, u7, kdch1 to vp3a+ based on manual -TD
+	+ add u6, u7, home, cbt to adm20 based on manual -TD
 
 20260620
 	+ add il1 to ibcs2 -TD

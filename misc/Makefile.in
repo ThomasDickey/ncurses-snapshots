@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.88 2025/12/25 22:26:15 tom Exp $
+# $Id: Makefile.in,v 1.91 2026/06/28 00:10:26 tom Exp $
 ##############################################################################
-# Copyright 2018-2024,2025 Thomas E. Dickey                                  #
+# Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2016,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -140,20 +140,13 @@ install.libs :: $(BINDIR) ncurses-config
 	$(INSTALL_SCRIPT) ncurses-config $(BINDIR)/$(NCURSES_CONFIG)
 
 # Make a list of the files that gen-pkgconfig might create:
-@MAKE_PC_FILES@PC_FILES = \
-@MAKE_PC_FILES@	@LIB_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@TINFO_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@TICS_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@PANEL_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@MENU_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@FORM_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc \
-@MAKE_PC_FILES@	@CXX_NAME@@USE_ARG_SUFFIX@@PC_MODULE_SUFFIX@.pc
+@MAKE_PC_FILES@PC_FILES = @PC_FILES@
 
 # some packagers prefer to be able to construct pc-files on servers where
 # pkg-config is not installed.  Work around that by creating the library
 # directory during this rule:
 @MAKE_PC_FILES@install \
-@MAKE_PC_FILES@install.libs :: pc-files
+@MAKE_PC_FILES@install.libs :: sources
 @MAKE_PC_FILES@	@$(SHELL) -c 'case "x$(PKG_CONFIG_LIBDIR)" in \
 @MAKE_PC_FILES@		x@GLOB_FULLPATH_POSIX@|x@GLOB_FULLPATH_OTHER@) \
 @MAKE_PC_FILES@			mkdir -p $(INSTALL_CONFIG); \
@@ -169,10 +162,8 @@ install.libs :: $(BINDIR) ncurses-config
 @MAKE_PC_FILES@		esac'
 
 @MAKE_PC_FILES@all \
-@MAKE_PC_FILES@sources :: pc-files
-@MAKE_PC_FILES@pc-files :
+@MAKE_PC_FILES@sources :: gen-pkgconfig
 @MAKE_PC_FILES@	$(SHELL) ./gen-pkgconfig
-@MAKE_PC_FILES@	-touch $@
 
 terminfo.tmp : run_tic.sed $(source)
 	echo '** adjusting tabset paths'
@@ -218,7 +209,7 @@ tags :
 mostlyclean :
 @MAKE_DATABASE@	-rm -f terminfo.tmp
 @MAKE_DATABASE@	-rm -f run_tic.sed
-@MAKE_PC_FILES@	-rm -f pc-files $(PC_FILES)
+@MAKE_PC_FILES@	-rm -f $(PC_FILES)
 	-rm -f core tags TAGS *~ *.bak *.ln *.atac trace
 
 clean :: mostlyclean

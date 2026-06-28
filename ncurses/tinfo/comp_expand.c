@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.38 2026/06/06 18:49:12 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.39 2026/06/27 20:43:58 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
