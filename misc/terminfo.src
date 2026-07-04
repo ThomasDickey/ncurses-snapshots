@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1256 $
-#	$Date: 2026/06/27 20:11:18 $
+#	$Revision: 1.1257 $
+#	$Date: 2026/07/04 21:31:01 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -8192,6 +8192,70 @@ warp|warp terminal,
 	use=xterm+sm+1006, use=xterm+pcfkeys,
 	use=ecma+strikeout, use=xterm+tmux, use=xterm+256color,
 	use=xterm-basic,
+
+#### Zutty
+# https://git.hq.sig7.se/zutty.git
+#
+# Tested 0.16.6.20260114 with vttest and tack:
+#
+# vttest:
+# + da1 is 64;1;9;15;21;22
+#   1 = 132 columns (doesn't work)
+#   9 = NRCS (apparently not for VT520 ISO stuff)
+#   15 = DEC technical set (works)
+#   21 = horizontal scrolling
+#   22 = color
+# + da2 is 64;0;0
+#   64 = VT520
+# + does part of vt52 (doesn't clear the box on the right)
+# + implements most of the ISO-6249 cursor and misc tests, not SPA
+# + passes bce tests for ISO 6429 colors
+# + no blink
+# + no XTVERSION
+# + no mouse highlight tracking
+# + no window ops, either modify or report
+# + no title stack
+# + no DECRPM or DECRQSS
+# + no rectangles
+# + partial implementation of DECLRMM
+#
+# tack:
+# + tbc doesn't work
+# + doesn't set 256colors
+# + doesn't use colon for subparameters
+# + no 8-bit controls, even UTF-8 encoded
+# + no italics
+# + no crossed-out
+# + no cvvis
+# + no flash: no DECSCNM
+#
+# Other comments
+# + sets TERM to xterm-256color, which is a poor match.
+# + uses EGL library
+zutty|Zero-cost Unicode Teletype,
+	bce, mir, npc, xenl, AX, XT,
+	colors#8, pairs#64,
+	blink@, clear=\E[H\E[2J, cub1=^H, cud1=\n, cvvis@,
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, ech=\E[%p1%dX,
+	ed=\E[J, el=\E[K, el1=\E[1K, flash@, ich=\E[%p1%d@,
+	is2=\E[!p\E[?3;4l\E[4l\E>, kcbt=\E[Z, nel=\EE,
+	op=\E[39;49m, ri=\EM, rmam=\E[?7l, rmir=\E[4l,
+	rmkx=\E[?1l\E>, rs1=\Ec, rs2=\E[!p\E[?3;4l\E[4l\E>,
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
+	    %?%p1%p3%|%t;7%;%?%p7%t;8%;m,
+	sgr0=\E(B\E[m, smam=\E[?7h, smir=\E[4h, smkx=\E[?1h\E=,
+	tbc@, E3=\E[3J, rv=\E\\[>64;[0-9]+;[0-9]+c,
+	use=vt220+cvis, use=ansi+rep, use=xterm+pcfkeys,
+	use=bracketed+paste, use=xterm+3keys, use=ecma+index,
+	use=vt420+lrmm, use=xterm+sm+1006, use=xterm+keypad,
+	use=ecma+underline, use=ecma+standout, use=ansi+csr,
+	use=ansi+cup, use=ansi+enq, use=ansi+idl,
+	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
+	use=ansi+sgrbold, use=xterm+kbs, use=xterm+alt1049,
+	use=report+da2, use=xterm+acs, use=vt100+4bsd,
+zutty-256color|Zutty with 256 colors,
+	use=xterm+256setaf, use=zutty,
 
 ######## WAYLAND CLIENTS
 
@@ -28444,5 +28508,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ revise adm36, based on manual -TD
 #	+ add u6, u7, kdch1 to vp3a+ based on manual -TD
 #	+ add u6, u7, home, cbt to adm20 based on manual -TD
+#
+# 2026-07-04
+#	+ add zutty -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.755 2026/05/30 21:02:18 tom Exp $
+ * $Id: curses.priv.h,v 1.756 2026/07/04 13:08:19 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1441,6 +1441,7 @@ extern NCURSES_EXPORT_VAR(SIG_ATOMIC_T) _nc_have_sigwinch;
 #if USE_WIDEC_SUPPORT /* { */
 /* true if the status/errno indicate an illegal multibyte sequence */
 #define isEILSEQ(status) (((size_t)status == (size_t)-1) && (errno == EILSEQ))
+#define OkWcsToMbs(rc)   (!isEILSEQ(rc) && (rc != 0) && (rc <= MB_LEN_MAX))
 
 #define init_mb(state)	memset(&(state), 0, sizeof(state))
 

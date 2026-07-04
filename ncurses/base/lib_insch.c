@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020,2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2013,2016 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.39 2024/12/07 17:40:33 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.40 2026/07/04 16:09:42 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -81,6 +81,7 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
     default:
 	if (
 #if USE_WIDEC_SUPPORT
+	       _nc_unicode_locale() &&
 	       WINDOW_EXT(win, addch_used) == 0 &&
 #endif
 	       (isprint(ch8) ||
@@ -103,7 +104,7 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
 	    }
 	} else if (iscntrl(ch8)) {
 	    NCURSES_CONST char *s;
-	    s = NCURSES_SP_NAME(unctrl) (NCURSES_SP_ARGx (chtype) ch8);
+	    s = NCURSES_SP_NAME(unctrl)(NCURSES_SP_ARGx (chtype) ch8);
 	    while (*s != '\0') {
 		code = _nc_insert_ch(sp, win, ChAttrOf(ch) | UChar(*s));
 		if (code != OK)
@@ -124,7 +125,7 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
 	    } else if (count == -1) {
 		NCURSES_CONST char *s;
 		/* handle EILSEQ */
-		s = NCURSES_SP_NAME(unctrl) (NCURSES_SP_ARGx (chtype) ch8);
+		s = NCURSES_SP_NAME(unctrl)(NCURSES_SP_ARGx (chtype) ch8);
 		if (strlen(s) > 1) {
 		    while (*s != '\0') {
 			code = _nc_insert_ch(sp, win,

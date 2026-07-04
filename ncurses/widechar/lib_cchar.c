@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2022,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2026 Thomas E. Dickey                                *
  * Copyright 2001-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <wchar.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.40 2024/12/07 18:07:52 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.41 2026/07/04 19:42:46 tom Exp $")
 
 /*
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -106,8 +106,8 @@ getcchar(const cchar_t *wcval,
 {
     int code = ERR;
 
-    TR(TRACE_CCALLS, (T_CALLED("getcchar(%p,%p,%p,%p,%p)"),
-		      (const void *) wcval,
+    TR(TRACE_CCALLS, (T_CALLED("getcchar(%s,%p,%p,%p,%p)"),
+		      _tracecchar_t(wcval),
 		      (void *) wch,
 		      (void *) attrs,
 		      (void *) pair_arg,

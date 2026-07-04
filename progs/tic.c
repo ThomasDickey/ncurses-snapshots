@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.346 2026/06/20 16:26:52 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.348 2026/07/03 23:10:48 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -2649,15 +2649,18 @@ check_sgr(const TERMTYPE2 *tp, const char *zero, int num, char *cap, const char 
 		    num == 8,
 		    num == 9);
     if (test != NULL) {
-	if (PRESENT(cap)) {
-	    if (!similar_sgr(num, test, cap)) {
-		_nc_warning("%s differs from sgr(%d)\n\t%s=%s\n\tsgr(%d)=%s",
-			    name, num,
-			    name, _nc_visbuf2(1, cap),
-			    num, _nc_visbuf2(2, test));
+	test = strdup(test);	/* make a copy since tparm may reallocate */
+	if (test != NULL) {
+	    if (PRESENT(cap)) {
+		if (!similar_sgr(num, test, cap)) {
+		    _nc_warning("%s differs from sgr(%d)\n\t%s=%s\n\tsgr(%d)=%s",
+				name, num,
+				name, _nc_visbuf2(1, cap),
+				num, _nc_visbuf2(2, test));
+		}
+	    } else if (_nc_capcmp(test, zero)) {
+		_nc_warning("sgr(%d) present, but not %s", num, name);
 	    }
-	} else if (_nc_capcmp(test, zero)) {
-	    _nc_warning("sgr(%d) present, but not %s", num, name);
 	}
     } else if (PRESENT(cap)) {
 	_nc_warning("sgr(%d) missing, but %s present", num, name);
@@ -3279,10 +3282,11 @@ check_termtype(TERMTYPE2 *tp, bool literal)
     ANDMISSING(clear_all_tabs, set_tab);
 
     if (PRESENT(set_attributes)) {
-	const char *zero = NULL;
+	char *zero = NULL;
+	bool freeze;
 
 	_nc_tparm_err = 0;
-	if (PRESENT(exit_attribute_mode)) {
+	if ((freeze = PRESENT(exit_attribute_mode))) {
 	    zero = CHECK_SGR(0, exit_attribute_mode);
 	} else {
 	    zero = TIPARM_9(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -3290,15 +3294,17 @@ check_termtype(TERMTYPE2 *tp, bool literal)
 	check_tparm_err(0);
 
 	if (zero != NULL) {
-	    CHECK_SGR(1, enter_standout_mode);
-	    CHECK_SGR(2, enter_underline_mode);
-	    CHECK_SGR(3, enter_reverse_mode);
-	    CHECK_SGR(4, enter_blink_mode);
-	    CHECK_SGR(5, enter_dim_mode);
-	    CHECK_SGR(6, enter_bold_mode);
-	    CHECK_SGR(7, enter_secure_mode);
-	    CHECK_SGR(8, enter_protected_mode);
-	    CHECK_SGR(9, enter_alt_charset_mode);
+	    free(CHECK_SGR(1, enter_standout_mode));
+	    free(CHECK_SGR(2, enter_underline_mode));
+	    free(CHECK_SGR(3, enter_reverse_mode));
+	    free(CHECK_SGR(4, enter_blink_mode));
+	    free(CHECK_SGR(5, enter_dim_mode));
+	    free(CHECK_SGR(6, enter_bold_mode));
+	    free(CHECK_SGR(7, enter_secure_mode));
+	    free(CHECK_SGR(8, enter_protected_mode));
+	    free(CHECK_SGR(9, enter_alt_charset_mode));
+	    if (freeze)
+		free(zero);
 	} else {
 	    _nc_warning("sgr(0) did not return a value");
 	}

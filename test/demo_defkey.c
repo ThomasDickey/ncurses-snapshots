@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_defkey.c,v 1.39 2026/06/06 09:59:40 tom Exp $
+ * $Id: demo_defkey.c,v 1.40 2026/07/03 15:28:36 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -172,7 +172,7 @@ really_define_key(WINDOW *win, const char *new_string, int code)
     }
     if (vis_string != NULL)
 	free(vis_string);
-    if (old_string != NULL)
+    if (old_string != NULL && old_string != CANCELLED_STRING)
 	free(old_string);
 }
 

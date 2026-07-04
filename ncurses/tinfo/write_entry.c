@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: write_entry.c,v 1.147 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.148 2026/07/03 23:35:04 tom Exp $")
 
 #if 1
 #define TRACE_OUT(p) DEBUG(2, p)
@@ -385,7 +385,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 
 	    memset(&key, 0, sizeof(key));
 	    key.data = term_names;
-	    key.size = name_size;
+	    key.size = (unsigned) name_size;
 
 	    memset(&data, 0, sizeof(data));
 	    data.data = buffer;
@@ -396,12 +396,12 @@ _nc_write_entry(TERMTYPE2 *const tp)
 	    buffer[0] = 2;
 
 	    key.data = name_list;
-	    key.size = strlen(name_list);
+	    key.size = (unsigned) strlen(name_list);
 
 	    _nc_STRCPY(buffer + 1,
 		       term_names,
 		       sizeof(buffer) - 1);
-	    data.size = name_size + 1;
+	    data.size = (unsigned) name_size + 1;
 
 	    total_size += (int) data.size;
 	    total_parts++;
@@ -417,7 +417,7 @@ _nc_write_entry(TERMTYPE2 *const tp)
 		    *(other_names++) = '\0';
 
 		key.data = ptr;
-		key.size = strlen(ptr);
+		key.size = (unsigned) strlen(ptr);
 
 		total_size += (int) data.size;
 		total_parts++;

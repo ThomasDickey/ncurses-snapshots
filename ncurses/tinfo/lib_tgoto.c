@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.24 2025/01/12 00:41:56 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.25 2026/07/03 00:10:11 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -182,7 +182,7 @@ tgoto_internal(const char *string, int x, int y)
 	string++;
     }
     if (result != NULL) {
-	if (need_BC) {
+	if (need_BC && BC != NULL) {
 	    _nc_STRCPY(result + used, BC, length - used);
 	    used += strlen(BC);
 	}

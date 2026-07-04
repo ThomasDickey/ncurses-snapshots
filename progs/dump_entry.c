@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.203 2026/06/20 16:50:30 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.205 2026/07/03 12:45:20 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -775,8 +775,8 @@ has_params(const char *src, bool formatting)
     return result;
 }
 
-static char *
-fmt_complex(TERMTYPE2 *tterm, const char *capability, char *src, int level)
+static const char *
+fmt_complex(TERMTYPE2 *tterm, const char *capability, const char *src, int level)
 {
     bool percent = FALSE;
     bool params = has_params(src, TRUE);
@@ -869,7 +869,8 @@ fmt_complex(TERMTYPE2 *tterm, const char *capability, char *src, int level)
 	    percent = FALSE;
 	    break;
 	}
-	strncpy_DYN(&tmpbuf, src++, (size_t) 1);
+	if (*src)
+	    strncpy_DYN(&tmpbuf, src++, (size_t) 1);
     }
     return src;
 }

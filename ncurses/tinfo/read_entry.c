@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.177 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.178 2026/07/03 23:31:35 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -802,7 +802,7 @@ _nc_read_tic_entry(char *filename,
 
 	memset(&key, 0, sizeof(key));
 	key.data = save;
-	key.size = strlen(save);
+	key.size = (unsigned) strlen(save);
 
 	/*
 	 * This lookup could return termcap data, which we do not want.  We are
@@ -845,7 +845,7 @@ _nc_read_tic_entry(char *filename,
 	     * Prepare for the second level.
 	     */
 	    key.data = have;
-	    key.size = used;
+	    key.size = (unsigned) used;
 	}
 
 	free(save);

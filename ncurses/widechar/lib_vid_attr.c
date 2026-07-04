@@ -37,7 +37,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_vid_attr.c,v 1.33 2026/05/16 22:53:53 tom Exp $")
+MODULE_ID("$Id: lib_vid_attr.c,v 1.34 2026/07/02 21:07:56 tom Exp $")
 
 #define doPut(mode) \
 	TPUTS_TRACE(#mode); \
@@ -111,7 +111,7 @@ NCURSES_SP_NAME(vid_puts)(NCURSES_SP_DCLx
 		     _traceattr(previous_attr), previous_pair));
 
 #if !USE_XMC_SUPPORT
-    if ((SP_PARM != 0) && SP_PARM->cookie_active)
+    if ((SP_PARM != NULL) && SP_PARM->cookie_active)
 	newmode &= ~(SP_PARM->_xmc_suppress);
 #endif
 

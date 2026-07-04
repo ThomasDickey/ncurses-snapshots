@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.143 2026/03/07 11:42:23 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.144 2026/07/03 13:21:38 tom Exp $")
 
 static void sanity_check2(TERMTYPE2 *, bool);
 NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE2 *, bool) = sanity_check2;
@@ -520,6 +520,7 @@ _nc_resolve_uses2(bool fullresolve, bool literal)
 
 		_nc_curr_line = (int) lookline;
 		_nc_warning("resolution of use=%s failed", lookfor);
+		FreeIfNeeded(qp->uses[i].name);
 		qp->uses[i].link = NULL;
 	    }
 	}

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_instr.c,v 1.28 2024/12/07 17:53:39 tom Exp $")
+MODULE_ID("$Id: lib_instr.c,v 1.29 2026/07/04 13:45:15 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnstr(WINDOW *win, char *str, int n)
@@ -83,7 +83,7 @@ winnstr(WINDOW *win, char *str, int n)
 
 			init_mb(state);
 			n3 = wcstombs(NULL, wch, (size_t) 0);
-			if (!isEILSEQ(n3) && (n3 != 0) && (n3 <= MB_LEN_MAX)) {
+			if (OkWcsToMbs(n3)) {
 			    size_t need = n3 + 10 + (size_t) i;
 			    int have = (int) n3 + i;
 

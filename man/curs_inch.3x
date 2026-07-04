@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2010,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inch.3x,v 1.70 2025/02/15 19:36:03 tom Exp $
-.TH curs_inch 3X 2025-02-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inch.3x,v 1.71 2026/07/04 19:34:12 tom Exp $
+.TH curs_inch 3X 2026-07-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -73,26 +73,23 @@ how to extract these data from a
 .IR chtype "."
 \fB\%ncurses\fP(3X) describes the variants of this function.
 .SH RETURN VALUE
-These functions return
-.B OK
-on success and
-.B ERR
-on failure.
-.PP
-In
-.IR \%ncurses ","
-they return
-.B ERR
-if
-.I win
-is
-.IR NULL "."
-.PP
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
-fail if the position
+fail, returning
+.B ERR
+if the position
 .RI ( y ,
 .IR x )
 is outside the window boundaries.
+.PP
+If
+.I win
+is
+.IR NULL ","
+.I \%ncurses
+returns
+.BR 0 ,
+which is not
+.BR OK .
 .SH NOTES
 .BR \%inch ,
 .BR \%mvinch ,
@@ -106,8 +103,16 @@ complex characters;
 that is,
 if they contain characters with codes wider than eight bits
 (or greater than 255 as an unsigned decimal integer).
-They instead extract only the low-order eight bits of the character code
-from the cell.
+The returned value depends upon the locale:
+.bP
+If the locale encoding is UTF-8,
+.I \%ncurses
+extracts only the low-order eight bits of the character code from the cell.
+.bP
+If the locale encoding is not UTF-8,
+.I \%ncurses
+converts the character from Unicode to the locale encoding,
+and extracts the low-order eight bits from the resulting character.
 .SH PORTABILITY
 X/Open Curses Issue\ 4 describes these functions.
 It specifies no error conditions for them.

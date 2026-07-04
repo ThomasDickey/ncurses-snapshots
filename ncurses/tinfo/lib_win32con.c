@@ -39,12 +39,13 @@
 #define TTY int			/* FIXME: TTY originalMode */
 #include <curses.priv.h>
 #include <nc_win32.h>
+#include <tic.h>
 
 #ifndef _O_BINARY
 #define _O_BINARY 0		/* FIXME: not defined in MSYS2 base */
 #endif
 
-MODULE_ID("$Id: lib_win32con.c,v 1.52 2026/05/30 20:48:17 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.53 2026/07/03 23:09:14 tom Exp $")
 
 #if defined(_NC_WINDOWS)
 
@@ -1134,9 +1135,9 @@ _nc_console_checkinit(bool assumeTermInfo)
 	START_TRACE();
 	WINCONSOLE.isTermInfoConsole = assumeTermInfo;
 
-	WINCONSOLE.map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
-	WINCONSOLE.rmap = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
-	WINCONSOLE.ansi_map = (LPDWORD) malloc(sizeof(DWORD) * MAPSIZE);
+	TYPE_MALLOC(DWORD, MAPSIZE, WINCONSOLE.map);
+	TYPE_MALLOC(DWORD, MAPSIZE, WINCONSOLE.rmap);
+	TYPE_MALLOC(DWORD, MAPSIZE, WINCONSOLE.ansi_map);
 
 	for (i = 0; i < (N_INI + FKEYS); i++) {
 	    if (i < N_INI) {

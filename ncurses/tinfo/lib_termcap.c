@@ -49,7 +49,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_termcap.c,v 1.98 2026/06/20 13:13:01 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.100 2026/07/03 22:59:11 tom Exp $")
 
 NCURSES_EXPORT_VAR(char *) UP = NULL;
 NCURSES_EXPORT_VAR(char *) BC = NULL;
@@ -354,6 +354,17 @@ tgetnum(const char *id)
 NCURSES_EXPORT(char *)
 NCURSES_SP_NAME(tgetstr)(NCURSES_SP_DCLx const char *id, char **area)
 {
+    /*
+     * The original termcap interface copies the resulting strings to the
+     * caller-supplied area.  But "modern" terminfo entries can have a total
+     * string size past the termcap 1023-byte limit.  This workaround will
+     * help with legacy termcap applications (which typically read all of
+     * the strings into the provided area), by keeping track of the usage.
+     * It will not help if the caller manipulates the area pointer.
+     */
+    static char *last_area;
+    static size_t area_limit = 0;
+
     char *result = NULL;
 
     T((T_CALLED("tgetstr(%s,%p)"), id, (void *) area));
@@ -383,16 +394,26 @@ NCURSES_SP_NAME(tgetstr)(NCURSES_SP_DCLx const char *id, char **area)
 	    TR(TRACE_DATABASE, ("found match %d: %s", j, _nc_visbuf(result)));
 	    /* setupterm forces canceled strings to null */
 	    if (VALID_STRING(result)) {
+		size_t result_size;
 		if (result == exit_attribute_mode
 		    && FIX_SGR0 != NULL) {
 		    result = FIX_SGR0;
 		    TR(TRACE_DATABASE, ("altered to : %s", _nc_visbuf(result)));
 		}
-		if (area != NULL
-		    && *area != NULL) {
-		    _nc_STRCPY(*area, result, 1024);
-		    result = *area;
-		    *area += strlen(*area) + 1;
+		result_size = strlen(result) + 1;
+		if (area != NULL && *area != NULL) {
+		    if (*area != last_area) {
+			area_limit = 0;
+		    }
+		    if ((result_size + area_limit) < MAX_TERMCAP_LENGTH) {
+			_nc_STRCPY(*area, result, MAX_TERMCAP_LENGTH + 1);
+			result = *area;
+			*area += result_size;
+			last_area = *area;
+			area_limit += result_size;
+			TR(TRACE_DATABASE, ("updated area size to : %ld",
+					    (long) area_limit));
+		    }
 		}
 	    }
 	}

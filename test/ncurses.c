@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.555 2026/06/06 09:59:40 tom Exp $
+$Id: ncurses.c,v 1.557 2026/07/03 16:23:46 tom Exp $
 
 ***************************************************************************/
 
@@ -467,14 +467,17 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	default:
 	    if (fkey) {
 		beep();
-	    } else if ((int) wcslen(buffer) < limit) {
-		int j;
-		for (j = (int) wcslen(buffer) + 1; j > x; --j) {
-		    buffer[j] = buffer[j - 1];
-		}
-		buffer[x++] = (wchar_t) ch;
 	    } else {
-		beep();
+		int have = (int) wcslen(buffer);
+		if (have < limit) {
+		    int j;
+		    for (j = have + 1; j > x; --j) {
+			buffer[j] = buffer[j - 1];
+		    }
+		    buffer[x++] = (wchar_t) ch;
+		} else {
+		    beep();
+		}
 	    }
 	}
     }
@@ -3525,7 +3528,7 @@ x_slk_test(bool recur GCC_UNUSED)
 	case '7':
 	case '8':
 	    MvAddStr(SLK_WORK, 0, "Please enter the label value: ");
-	    *buf = 0;
+	    buf[0] = L'\0';
 	    if ((s = slk_label(c - '0')) != NULL) {
 		char *temp = strdup(s);
 		size_t used = strlen(s);
@@ -3533,8 +3536,6 @@ x_slk_test(bool recur GCC_UNUSED)
 #ifndef state_unused
 		mbstate_t state;
 #endif
-
-		buf[0] = L'\0';
 		if (temp != NULL) {
 		    while (want > 0 && used != 0) {
 			size_t test;

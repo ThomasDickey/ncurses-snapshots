@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2009,2010 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -40,16 +40,51 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_winch.c,v 1.10 2024/12/07 20:03:37 tom Exp $")
+MODULE_ID("$Id: lib_winch.c,v 1.12 2026/07/04 18:59:09 tom Exp $")
 
 NCURSES_EXPORT(chtype)
 winch(WINDOW *win)
 {
+    chtype result = 0;
+
     T((T_CALLED("winch(%p)"), (void *) win));
     if (win != NULL) {
-	returnChtype((chtype) CharOf(win->_line[win->_cury].text[win->_curx])
-		     | AttrOf(win->_line[win->_cury].text[win->_curx]));
-    } else {
-	returnChtype(0);
+	NCURSES_CH_T *cell = &win->_line[win->_cury].text[win->_curx];
+#if USE_WIDEC_SUPPORT
+	if (!_nc_unicode_locale()) {
+
+	    if (!isWidecExt(*cell)) {
+		attr_t attrs;
+		NCURSES_PAIRS_T pair;
+		wchar_t wch[CCHARW_MAX + 2];
+		int n2;
+
+		n2 = getcchar(cell, NULL, NULL, NULL, NULL);
+		if (n2 > 0 && n2 <= CCHARW_MAX) {
+
+		    if (getcchar(cell, wch, &attrs, &pair, NULL) == OK) {
+			mbstate_t state;
+			size_t n3;
+
+			init_mb(state);
+			n3 = wcstombs(NULL, wch, (size_t) 0);
+			if (OkWcsToMbs(n3) && n3 == 1) {
+			    char tmp[2];
+
+			    init_mb(state);
+			    n3 = wcstombs(tmp, wch, 1);
+			    if (OkWcsToMbs(n3)) {
+				result = tmp[0];
+			    }
+			}
+		    }
+		}
+	    }
+	} else
+#endif
+	{
+	    result = ((chtype) CharOf(*cell) | AttrOf(*cell));
+	}
     }
+    returnChtype(result);
 }

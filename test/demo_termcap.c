@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: demo_termcap.c,v 1.76 2026/01/11 12:03:22 tom Exp $
+ * $Id: demo_termcap.c,v 1.77 2026/07/01 21:04:16 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -258,7 +258,7 @@ dumpit(NCURSES_CONST char *cap)
      * for each call; a normal termcap application would try to use the buffer
      * to hold all of the strings extracted from the terminal entry.
      */
-    char area[1024], *ap = area;
+    static char area[1024], *ap = area;
     NCURSES_CONST char *str;
     int num;
 

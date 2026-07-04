@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.157 2025/02/15 15:20:16 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.158 2026/07/02 23:38:56 tom Exp $")
 
 /*
  *	char *
@@ -593,6 +593,14 @@ _nc_tparm_analyze(TERMINAL *term, const char *string, char **p_is_s, int *popcou
 }
 
 /*
+ * Workaround for false positive with tsearch.
+ */
+#if HAVE_TSEARCH
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
+#endif
+
+/*
  * Analyze the capability string, finding the number of parameters and their
  * types.
  *
@@ -677,6 +685,10 @@ tparm_setup(TERMINAL *term, const char *string, TPARM_DATA *result)
 
     return rc;
 }
+
+#if HAVE_TSEARCH
+#pragma GCC diagnostic pop
+#endif
 
 /*
  * A few caps (such as plab_norm) have string-valued parms.  We'll have to

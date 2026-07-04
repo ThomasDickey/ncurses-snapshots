@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.205 2026/05/23 23:12:01 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.206 2026/07/03 16:57:04 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -210,6 +210,9 @@ delscreen(SCREEN *sp)
 
 	FreeIfNeeded(sp->_acs_map);
 	FreeIfNeeded(sp->_screen_acs_map);
+#if USE_WIDEC_SUPPORT
+	FreeIfNeeded(sp->_wacs_map);
+#endif
 
 	NCURSES_SP_NAME(_nc_flush)(NCURSES_SP_ARG);
 	NCURSES_SP_NAME(del_curterm)(NCURSES_SP_ARGx sp->_term);

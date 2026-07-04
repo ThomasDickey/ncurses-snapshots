@@ -43,7 +43,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.96 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.97 2026/07/02 20:53:27 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -564,8 +564,8 @@ typelist(int eargc, char *eargv[],
 	    if (verbosity)
 		(void) printf("#\n#%s:\n#\n", eargv[i]);
 
-	    if ((fp = safe_fopen(eargv[i], "r")) != 0) {
-		while (fgets(buffer, sizeof(buffer), fp) != 0) {
+	    if ((fp = safe_fopen(eargv[i], "r")) != NULL) {
+		while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		    if (!is_termcap(buffer))
 			break;
 		    if (*buffer == '#')
@@ -744,7 +744,7 @@ main(int argc, char *argv[])
 		++count;
 	    }
 	    if (!pass) {
-		eargv = allocArgv(count);
+		eargv = allocArgv(count + 1);
 		if (eargv == NULL)
 		    failed("eargv");
 	    } else {

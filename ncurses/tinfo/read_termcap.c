@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.108 2026/03/06 09:06:26 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.111 2026/07/03 23:40:36 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -150,14 +150,14 @@ static int gottoprec;		/* Flag indicating retrieval of toprecord */
 static int
 _nc_cgetset(const char *ent)
 {
-    if (ent == 0) {
+    if (ent == NULL) {
 	FreeIfNeeded(toprec);
-	toprec = 0;
+	toprec = NULL;
 	topreclen = 0;
 	return (0);
     }
     topreclen = strlen(ent);
-    if ((toprec = typeMalloc(char, topreclen + 1)) == 0) {
+    if ((toprec = typeMalloc(char, topreclen + 1)) == NULL) {
 	errno = ENOMEM;
 	return (-1);
     }
@@ -193,7 +193,7 @@ _nc_cgetcap(char *buf, const char *cap, int type)
 	 */
 	for (;;) {
 	    if (*bp == '\0')
-		return (0);
+		return (NULL);
 	    else if (*bp++ == ':')
 		break;
 	}
@@ -206,7 +206,7 @@ _nc_cgetcap(char *buf, const char *cap, int type)
 	if (*cp != '\0')
 	    continue;
 	if (*bp == '@')
-	    return (0);
+	    return (NULL);
 	if (type == ':') {
 	    if (*bp != '\0' && *bp != ':')
 		continue;
@@ -215,7 +215,7 @@ _nc_cgetcap(char *buf, const char *cap, int type)
 	if (*bp != type)
 	    continue;
 	bp++;
-	return (*bp == '@' ? 0 : bp);
+	return (*bp == '@' ? NULL : bp);
     }
     /* NOTREACHED */
 }
@@ -239,7 +239,7 @@ _nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
 {
     unsigned dummy;
 
-    return (_nc_getent(buf, &dummy, oline, 0, db_array, -1, name, 0, 0));
+    return (_nc_getent(buf, &dummy, oline, 0, db_array, -1, name, 0, NULL));
 }
 
 /*
@@ -290,7 +290,7 @@ _nc_getent(
     /*
      * Check if we have a top record from cgetset().
      */
-    if (depth == 0 && toprec != 0 && _nc_cgetmatch(toprec, name) == 0) {
+    if (depth == 0 && toprec != NULL && _nc_cgetmatch(toprec, name) == 0) {
 	if ((record = DOALLOC(topreclen + BFRAG)) == NULL) {
 	    errno = ENOMEM;
 	    return (TC_SYS_ERR);
@@ -437,7 +437,7 @@ _nc_getent(
 		     * See if this is the record we want ...
 		     */
 		    if (_nc_cgetmatch(record, name) == 0
-			&& (nfield == 0
+			&& (nfield == NULL
 			    || !_nc_nfcmp(nfield, record))) {
 			foundit = TRUE;
 			*beginning = first;
@@ -496,9 +496,9 @@ _nc_getent(
 	    tclen = (int) (s - tcstart);
 	    tcend = s;
 
-	    icap = 0;
+	    icap = NULL;
 	    iret = _nc_getent(&icap, &ilen, &oline, current, db_array, fd,
-			      tc, depth + 1, 0);
+			      tc, depth + 1, NULL);
 	    newicap = icap;	/* Put into a register. */
 	    newilen = (int) ilen;
 	    if (iret != TC_SUCCESS) {
@@ -609,6 +609,9 @@ _nc_cgetmatch(char *buf, const char *name)
     register const char *np;
     register char *bp;
 
+    if (*name == '\0' || *buf == '\0')
+	return -1;
+
     /*
      * Start search at beginning of record.
      */
@@ -622,9 +625,9 @@ _nc_cgetmatch(char *buf, const char *name)
 	    if (*np == '\0') {
 		if (*bp == '|' || *bp == ':' || *bp == '\0')
 		    return (0);
-		else
-		    break;
+		break;
 	    } else if (*bp++ != *np++) {
+		bp--;		/* a '|' or ':' may have stopped the match */
 		break;
 	    }
 	}
@@ -632,7 +635,6 @@ _nc_cgetmatch(char *buf, const char *name)
 	/*
 	 * Match failed, skip to next name in record.
 	 */
-	bp--;			/* a '|' or ':' may have stopped the match */
 	for (;;) {
 	    if (*bp == '\0' || *bp == ':')
 		return (-1);	/* match failed totally */
@@ -708,7 +710,8 @@ _nc_nfcmp(const char *nf, char *rec)
 
 #define	PBUFSIZ		512	/* max length of filename path */
 #define	PVECSIZ		32	/* max number of names in path */
-#define TBUFSIZ (2048*2)
+#define	MAX_TOKENS	MAX_TERMCAP_LENGTH
+#define	TBUFSIZ		(MAX_TOKENS*4)
 
 /*
  * On entry, srcp points to a non ':' character which is the beginning of the
@@ -852,7 +855,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     }
     *fname = NULL;		/* mark end of vector */
 #if !HAVE_BSD_CGETENT
-    (void) _nc_cgetset(0);
+    (void) _nc_cgetset(NULL);
 #endif
     if (_nc_is_abs_path(cp)) {
 	if (_nc_cgetset(cp) < 0) {
@@ -870,7 +873,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     if (i >= 0) {
 	char *pd, *ps, *tok;
 	int endflag = FALSE;
-	char *list[1023];
+	char *list[MAX_TOKENS];
 	size_t n, count = 0;
 
 	pd = bp;
@@ -878,6 +881,10 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	while (!endflag && (tok = get_tc_token(&ps, &endflag)) != NULL) {
 	    bool ignore = FALSE;
 
+	    /*
+	     * termcap capability names are two characters.  scan the list
+	     * of capabilities to ignore repeats/redefinitions.
+	     */
 	    for (n = 1; n < count; n++) {
 		char *s = list[n];
 		if (s[0] == tok[0]
@@ -887,6 +894,8 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 		}
 	    }
 	    if (ignore != TRUE) {
+		if (count >= MAX_TOKENS)
+		    break;
 		list[count++] = tok;
 		pd = copy_tc_token(pd, tok, (size_t) (TBUFSIZ - (2 + pd - bp)));
 		if (pd == NULL) {

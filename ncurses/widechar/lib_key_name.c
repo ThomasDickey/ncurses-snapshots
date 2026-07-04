@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2023,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 2007-2008,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_key_name.c,v 1.7 2024/07/27 19:23:59 tom Exp $")
+MODULE_ID("$Id: lib_key_name.c,v 1.8 2026/07/04 13:44:26 tom Exp $")
 
 #define MyData _nc_globals.key_name
 
@@ -59,7 +59,7 @@ key_name(wchar_t c)
      * character string.
      */
     len = wcstombs(MyData, my_wchars, sizeof(MyData) - 1);
-    if (!isEILSEQ(len) && (len != 0) && (len <= MB_LEN_MAX)) {
+    if (OkWcsToMbs(len)) {
 	MyData[len] = '\0';
 	result = MyData;
     }

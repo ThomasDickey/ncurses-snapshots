@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.56 2026/04/25 10:35:16 tom Exp $
+ * $Id: cardfile.c,v 1.57 2026/07/02 20:42:59 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -80,7 +80,7 @@ failed(const char *s)
 static const char *
 skip(const char *buffer)
 {
-    while (isspace(UChar(*buffer)))
+    while (*buffer != '\0' && isspace(UChar(*buffer)))
 	buffer++;
     return buffer;
 }

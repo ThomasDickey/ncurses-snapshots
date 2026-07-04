@@ -53,7 +53,7 @@
 #include <sys/ptem.h>
 #endif
 
-MODULE_ID("$Id: reset_cmd.c,v 1.42 2025/11/22 21:38:31 tom Exp $")
+MODULE_ID("$Id: reset_cmd.c,v 1.43 2026/07/03 16:00:36 tom Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -105,16 +105,20 @@ cat_file(char *file)
     bool sent = FALSE;
 
     if (file != NULL) {
-	if ((fp = safe_fopen(file, "r")) == NULL)
+	if ((fp = safe_fopen(file, "r")) == NULL) {
 	    failed(file);
-
-	while ((nr = fread(buf, sizeof(char), sizeof(buf), fp)) != 0) {
-	    if (fwrite(buf, sizeof(char), nr, my_file) != nr) {
-		failed(file);
+	} else {
+	    while (!feof(fp)
+		   && !ferror(fp)
+		   && (nr = fread(buf, sizeof(char), sizeof(buf), fp)) != 0) {
+		if (fwrite(buf, sizeof(char), nr, my_file) != nr
+		    || ferror(my_file)) {
+		    failed(file);
+		}
+		sent = TRUE;
 	    }
-	    sent = TRUE;
+	    fclose(fp);
 	}
-	fclose(fp);
     }
     return sent;
 }

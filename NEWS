@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4485 2026/06/27 23:06:41 tom Exp $
+-- $Id: NEWS,v 1.4492 2026/07/04 21:53:11 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,20 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260704
+	+ add zutty -TD
+	+ modify winch() and winsch() to use wcstombs() to convert 8-bit codes
+	  to Unicode when ncurses is configured to support Unicode but is not
+	  using UTF-8 encoding (report/analysis by Serhiy Storchaka).
+	+ fixes for compiler warnings/cppcheck.
+	+ fixes for scan-build, valgrind build/testing.
+	+ fix a memory leak in _nc_resolve_uses2 (report/testcase by
+	  Yufeng Wu, Zhijie Zhang, Qizhen Xu)
+	+ add a check for escaped nul in fmt_complex (report/testcase by
+	  Yufeng Wu, Zhijie Zhang, Qizhen Xu).
+	+ add a limit-check in _nc_tgetent (report by Utku Yildirim).
+	+ add a buffer-limit check in tgetstr.
 
 20260627
 	+ add a makefile symbol for the names of the installed libraries to
