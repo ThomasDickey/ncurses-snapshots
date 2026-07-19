@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_winch.c,v 1.12 2026/07/04 18:59:09 tom Exp $")
+MODULE_ID("$Id: lib_winch.c,v 1.13 2026/07/19 00:52:24 tom Exp $")
 
 NCURSES_EXPORT(chtype)
 winch(WINDOW *win)
@@ -74,7 +74,7 @@ winch(WINDOW *win)
 			    init_mb(state);
 			    n3 = wcstombs(tmp, wch, 1);
 			    if (OkWcsToMbs(n3)) {
-				result = tmp[0];
+				result = UChar(tmp[0]);
 			    }
 			}
 		    }

@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.39 2026/06/27 20:43:58 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.41 2026/07/18 21:40:37 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -93,8 +93,14 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		_nc_visbuf(srcp)));
     bufp = 0;
     while ((ch = UChar(*str)) != 0) {
-	if (ch == '%' && REALPRINT(str + 1)) {
+	int ch1 = UChar(str[1]);
+	int ch2 = ch1 ? UChar(str[2]) : 0;
+	int ch3 = ch2 ? UChar(str[3]) : 0;
+	int qcq = (ch1 == S_QUOTE && ch2 != 0 && ch3 == S_QUOTE);
+
+	if (ch == '%' && ((numbers == -1 && qcq) || REALPRINT(str + 1))) {
 	    buffer[bufp++] = *str++;
+
 	    /*
 	     * Though the character literals are more compact, most
 	     * terminal descriptions use numbers and are not easy
@@ -102,15 +108,15 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 	     */
 	    switch (numbers) {
 	    case -1:
-		if (str[0] == S_QUOTE
-		    && str[1] != 0
-		    && str[2] == S_QUOTE) {
+		if (qcq) {
 		    _nc_SPRINTF(buffer + bufp, _nc_SLIMIT(P_LIMIT(bufp))
-				"{%d}", UChar(str[1]));
+				"{%d}", ch2);
 		    bufp += (int) strlen(buffer + bufp);
 		    str += 2;
 		} else {
-		    buffer[bufp++] = *str;
+		    if (ch1 == ',' || ch1 == '\\')	/* minitel1 uses this */
+			buffer[bufp++] = '\\';
+		    buffer[bufp++] = ch1;
 		}
 		break;
 		/*
@@ -121,14 +127,14 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		 * descriptions.
 		 */
 	    case 1:
-		if (str[0] == L_BRACE
-		    && isdigit(UChar(str[1]))) {
+		if (ch1 == L_BRACE
+		    && isdigit(ch2)) {
 		    char *dst = NULL;
 		    long value = strtol(str + 1, &dst, 0);
 		    if (dst != NULL
 			&& *dst == R_BRACE
-			&& value < 127
-			&& isprint(UChar(value))) {
+			&& value > 0
+			&& value < 256) {
 			ch = (int) value;
 			buffer[bufp++] = S_QUOTE;
 			if (ch == '\\'
@@ -138,16 +144,18 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 			buffer[bufp++] = S_QUOTE;
 			str = dst;
 		    } else {
-			buffer[bufp++] = *str;
+			buffer[bufp++] = ch1;
 		    }
 		} else {
-		    buffer[bufp++] = *str;
+		    if (ch1 == ',' || ch1 == '\\')	/* minitel1 uses this */
+			buffer[bufp++] = '\\';
+		    buffer[bufp++] = ch1;
 		}
 		break;
 	    default:
-		if (*str == ',')	/* minitel1 uses this */
+		if (ch1 == ',' || ch1 == '\\')	/* minitel1 uses this */
 		    buffer[bufp++] = '\\';
-		buffer[bufp++] = *str;
+		buffer[bufp++] = ch1;
 		break;
 	    }
 	} else if (ch == 128) {
