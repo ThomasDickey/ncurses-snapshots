@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.348 2026/07/03 23:10:48 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.349 2026/07/25 23:46:52 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -2704,34 +2704,36 @@ static NAME_VALUE *
 get_fkey_list(TERMTYPE2 *tp)
 {
     NAME_VALUE *result = typeMalloc(NAME_VALUE, NUM_STRINGS(tp) + 1);
-    const struct tinfo_fkeys *all_fkeys = _nc_tinfo_fkeys;
-    int used = 0;
-    unsigned j;
 
-    if (result == NULL)
+    if (result == NULL) {
 	failed("get_fkey_list");
+    } else {
+	const struct tinfo_fkeys *all_fkeys = _nc_tinfo_fkeys;
+	int used = 0;
+	unsigned j;
 
-    for (j = 0; all_fkeys[j].code; j++) {
-	char *a = tp->Strings[all_fkeys[j].offset];
-	if (VALID_STRING(a)) {
-	    result[used].keycode = (int) all_fkeys[j].code;
-	    result[used].name = strnames[all_fkeys[j].offset];
-	    result[used].value = a;
-	    ++used;
+	for (j = 0; all_fkeys[j].code; j++) {
+	    char *a = tp->Strings[all_fkeys[j].offset];
+	    if (VALID_STRING(a)) {
+		result[used].keycode = (int) all_fkeys[j].code;
+		result[used].name = strnames[all_fkeys[j].offset];
+		result[used].value = a;
+		++used;
+	    }
 	}
-    }
 #if NCURSES_XNAMES
-    for (j = STRCOUNT; j < NUM_STRINGS(tp); ++j) {
-	const char *name = ExtStrname(tp, (int) j, strnames);
-	if (is_fkey(name)) {
-	    result[used].keycode = -1;
-	    result[used].name = name;
-	    result[used].value = tp->Strings[j];
-	    ++used;
+	for (j = STRCOUNT; j < NUM_STRINGS(tp); ++j) {
+	    const char *name = ExtStrname(tp, (int) j, strnames);
+	    if (is_fkey(name)) {
+		result[used].keycode = -1;
+		result[used].name = name;
+		result[used].value = tp->Strings[j];
+		++used;
+	    }
 	}
-    }
 #endif
-    result[used].keycode = 0;
+	result[used].keycode = 0;
+    }
     return result;
 }
 

@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.230 2026/05/30 20:48:17 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.231 2026/07/25 22:43:45 tom Exp $")
 
 #include <tic.h>
 
@@ -1505,7 +1505,7 @@ _nc_mouse_parse(SCREEN *sp, int runcount)
 /* parse a run of atomic mouse events into a gesture */
 {
     MEVENT *eventp = EventAt(sp, sp->_mouse_write);
-    MEVENT *readp = EventAt(sp, sp->_mouse_read);
+    const MEVENT *readp = EventAt(sp, sp->_mouse_read);
     MEVENT *next, *ep;
     MEVENT *first_valid = NULL;
     MEVENT *first_invalid = NULL;

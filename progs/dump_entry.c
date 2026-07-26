@@ -40,7 +40,7 @@
 #include <termsort.h>		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.205 2026/07/03 12:45:20 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.206 2026/07/25 23:39:11 tom Exp $")
 
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
@@ -1167,8 +1167,9 @@ fmt_entry(TERMTYPE2 *tterm,
 		}
 		len += (int) strlen(capability) + 1;
 	    } else {
-		char *src = _nc_tic_expand(capability,
-					   isTerminfo(outform), numbers);
+		const char *src = _nc_tic_expand(capability,
+						 isTerminfo(outform),
+						 numbers);
 
 		strcpy_DYN(&tmpbuf, NULL);
 		strcpy_DYN(&tmpbuf, name);

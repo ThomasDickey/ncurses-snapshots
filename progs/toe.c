@@ -43,7 +43,7 @@
 #include <hashed_db.h>
 #endif
 
-MODULE_ID("$Id: toe.c,v 1.97 2026/07/02 20:53:27 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.98 2026/07/25 23:50:19 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -387,10 +387,13 @@ copy_entryname(const DIRENT * src)
 {
     size_t len = NAMLEN(src);
     char *result = malloc(len + 1);
-    if (result == NULL)
+
+    if (result == NULL) {
 	failed("copy entryname");
-    memcpy(result, src->d_name, len);
-    result[len] = '\0';
+    } else {
+	memcpy(result, src->d_name, len);
+	result[len] = '\0';
+    }
 
     return result;
 }

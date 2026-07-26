@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_winch.c,v 1.13 2026/07/19 00:52:24 tom Exp $")
+MODULE_ID("$Id: lib_winch.c,v 1.14 2026/07/25 22:49:10 tom Exp $")
 
 NCURSES_EXPORT(chtype)
 winch(WINDOW *win)
@@ -54,13 +54,13 @@ winch(WINDOW *win)
 	if (!_nc_unicode_locale()) {
 
 	    if (!isWidecExt(*cell)) {
-		attr_t attrs;
-		NCURSES_PAIRS_T pair;
-		wchar_t wch[CCHARW_MAX + 2];
 		int n2;
 
 		n2 = getcchar(cell, NULL, NULL, NULL, NULL);
 		if (n2 > 0 && n2 <= CCHARW_MAX) {
+		    wchar_t wch[CCHARW_MAX + 2];
+		    attr_t attrs;
+		    NCURSES_PAIRS_T pair;
 
 		    if (getcchar(cell, wch, &attrs, &pair, NULL) == OK) {
 			mbstate_t state;

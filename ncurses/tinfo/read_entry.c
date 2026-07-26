@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.178 2026/07/03 23:31:35 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.179 2026/07/25 15:04:33 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -493,6 +493,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 
 	if ((ptr->ext_Strings = UShort(ext_str_count)) != 0) {
 	    int check = (ext_bool_count + ext_num_count + ext_str_count);
+	    int check2 = check + ptr->ext_Strings;
 
 	    TR(TRACE_DATABASE,
 	       ("Before computing extended-string capabilities "
@@ -516,8 +517,12 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 				    _nc_visbuf(ptr->Strings[i + STRCOUNT])));
 	    }
 	    TR(TRACE_DATABASE, ("Check table-size: %d/%d", check, ext_str_usage));
-	    if (check != ext_str_usage)
-		returnDB(TGETENT_NO);
+	    if (check != ext_str_usage) {
+		if (ext_str_usage != check2) {
+		    returnDB(TGETENT_NO);
+		}
+		TR(TRACE_DATABASE, ("antique data found in convert_strings"));
+	    }
 	}
 
 	if (need) {

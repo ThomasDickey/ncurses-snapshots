@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.182 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.183 2026/07/25 23:38:04 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -1421,11 +1421,14 @@ static char *
 safe_string(const char *source)
 {
     static char *result;
-    static size_t need;
+    static size_t have;
     char *d;
-    if (result == NULL) {
-	need = 2 * strlen(source) + 1;
-	result = (char *) malloc(need + 1);
+    size_t need = 2 * strlen(source) + 1;
+    if (result == NULL || need > have) {
+	have = need + 1;
+	result = (char *) realloc(result, have);
+	if (result == NULL)
+	    failed("safe_string");
     }
     for (d = result; *source != '\0'; ++source) {
 	char ch = *source;

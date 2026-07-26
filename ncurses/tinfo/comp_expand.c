@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.41 2026/07/18 21:40:37 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.42 2026/07/25 15:33:33 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -93,9 +93,9 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		_nc_visbuf(srcp)));
     bufp = 0;
     while ((ch = UChar(*str)) != 0) {
-	int ch1 = UChar(str[1]);
-	int ch2 = ch1 ? UChar(str[2]) : 0;
-	int ch3 = ch2 ? UChar(str[3]) : 0;
+	char ch1 = str[1];
+	char ch2 = ch1 ? str[2] : 0;
+	char ch3 = ch2 ? str[3] : 0;
 	int qcq = (ch1 == S_QUOTE && ch2 != 0 && ch3 == S_QUOTE);
 
 	if (ch == '%' && ((numbers == -1 && qcq) || REALPRINT(str + 1))) {
@@ -110,7 +110,7 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 	    case -1:
 		if (qcq) {
 		    _nc_SPRINTF(buffer + bufp, _nc_SLIMIT(P_LIMIT(bufp))
-				"{%d}", ch2);
+				"{%d}", UChar(ch2));
 		    bufp += (int) strlen(buffer + bufp);
 		    str += 2;
 		} else {
@@ -128,7 +128,7 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		 */
 	    case 1:
 		if (ch1 == L_BRACE
-		    && isdigit(ch2)) {
+		    && isdigit(UChar(ch2))) {
 		    char *dst = NULL;
 		    long value = strtol(str + 1, &dst, 0);
 		    if (dst != NULL
