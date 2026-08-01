@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.40 2026/07/04 16:09:42 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.41 2026/08/01 19:59:04 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -81,8 +81,8 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
     default:
 	if (
 #if USE_WIDEC_SUPPORT
-	       _nc_unicode_locale() &&
-	       WINDOW_EXT(win, addch_used) == 0 &&
+	       (!_nc_unicode_locale() ||
+		WINDOW_EXT(win, addch_used) == 0) &&
 #endif
 	       (isprint(ch8) ||
 		(ChAttrOf(ch) & A_ALTCHARSET) ||
@@ -122,11 +122,11 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
 	    count = _nc_build_wch(win, &wch);
 	    if (count > 0) {
 		code = _nc_insert_wch(win, &wch);
-	    } else if (count == -1) {
+	    } else if (count <= 0) {
 		NCURSES_CONST char *s;
 		/* handle EILSEQ */
 		s = NCURSES_SP_NAME(unctrl)(NCURSES_SP_ARGx (chtype) ch8);
-		if (strlen(s) > 1) {
+		if (is7bits(ch8) || strlen(s) > 1) {
 		    while (*s != '\0') {
 			code = _nc_insert_ch(sp, win,
 					     ChAttrOf(ch) | UChar(*s));

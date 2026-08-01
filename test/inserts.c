@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inserts.c,v 1.38 2026/06/06 09:59:40 tom Exp $
+ * $Id: inserts.c,v 1.39 2026/08/01 14:39:21 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -39,19 +39,15 @@
 
 #include <linedata.h>
 
+/* definitions to make it simpler to compare with ins_wide.c */
 #define InsNStr    insnstr
 #define InsStr     insstr
 #define MvInsNStr  (void) mvinsnstr
-#define MvInsStr   (void) mvinsstr
 #define MvWInsNStr (void) mvwinsnstr
-#define MvWInsStr  (void) mvwinsstr
 #define WInsNStr   winsnstr
 #define WInsStr    winsstr
 
-#define InsCh      insch
-#define MvInsCh    (void) mvinsch
-#define MvWInsCh   (void) mvwinsch
-#define WInsCh     winsch
+#define MyChar(c)  UChar(c)
 
 #define MY_TABSIZE 8
 
@@ -104,7 +100,7 @@ ColOf(const char *buffer, int length, int margin)
     int result;
 
     for (n = 0, result = margin + 1; n < length; ++n) {
-	int ch = UChar(buffer[n]);
+	int ch = MyChar(buffer[n]);
 	switch (ch) {
 	case '\n':
 	    /* actually newline should clear the remainder of the line
@@ -299,19 +295,19 @@ test_inserts(int level)
 		    switch (option) {
 		    case oDefault:
 			if (move(row2, col2) != ERR) {
-			    InsCh(UChar(buffer[col]));
+			    InsCh(MyChar(buffer[col]));
 			}
 			break;
 		    case oMove:
-			MvInsCh(row2, col2, UChar(buffer[col]));
+			MvInsCh(row2, col2, MyChar(buffer[col]));
 			break;
 		    case oWindow:
 			if (wmove(work, row2, col2) != ERR) {
-			    WInsCh(work, UChar(buffer[col]));
+			    WInsCh(work, MyChar(buffer[col]));
 			}
 			break;
 		    case oMoveWindow:
-			MvWInsCh(work, row2, col2, UChar(buffer[col]));
+			MvWInsCh(work, row2, col2, MyChar(buffer[col]));
 			break;
 		    }
 		}
@@ -354,19 +350,19 @@ test_inserts(int level)
 	    switch (option) {
 	    case oDefault:
 		if (move(limit + row, col) != ERR) {
-		    InsCh(UChar(ch));
+		    InsCh(MyChar(ch));
 		}
 		break;
 	    case oMove:
-		MvInsCh(limit + row, col, UChar(ch));
+		MvInsCh(limit + row, col, MyChar(ch));
 		break;
 	    case oWindow:
 		if (wmove(work, limit + row, col) != ERR) {
-		    WInsCh(work, UChar(ch));
+		    WInsCh(work, MyChar(ch));
 		}
 		break;
 	    case oMoveWindow:
-		MvWInsCh(work, limit + row, col, UChar(ch));
+		MvWInsCh(work, limit + row, col, MyChar(ch));
 		break;
 	    }
 

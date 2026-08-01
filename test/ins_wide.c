@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: ins_wide.c,v 1.35 2026/06/06 09:59:40 tom Exp $
+ * $Id: ins_wide.c,v 1.36 2026/08/01 14:41:17 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -49,6 +49,13 @@
 #define WIDE_LINEDATA
 #include <linedata.h>
 
+#undef InsCh
+#undef MvInsCh
+#undef MvWInsCh
+#undef WInsCh
+#undef MvInsStr
+#undef MvWInsStr
+
 /* definitions to make it simpler to compare with inserts.c */
 #define InsNStr    ins_nwstr
 #define InsStr     ins_wstr
@@ -58,6 +65,8 @@
 #define MvWInsStr  (void) mvwins_wstr
 #define WInsNStr   wins_nwstr
 #define WInsStr    wins_wstr
+
+#define MyChar(c)  (chtype)(c)
 
 #define MY_TABSIZE 8
 
@@ -374,19 +383,19 @@ test_inserts(int level)
 		    switch (option) {
 		    case oDefault:
 			if (move(row2, col2) != ERR) {
-			    InsCh((chtype) buffer[col]);
+			    InsCh(MyChar(buffer[col]));
 			}
 			break;
 		    case oMove:
-			MvInsCh(row2, col2, (chtype) buffer[col]);
+			MvInsCh(row2, col2, MyChar(buffer[col]));
 			break;
 		    case oWindow:
 			if (wmove(work, row2, col2) != ERR) {
-			    WInsCh(work, (chtype) buffer[col]);
+			    WInsCh(work, MyChar(buffer[col]));
 			}
 			break;
 		    case oMoveWindow:
-			MvWInsCh(work, row2, col2, (chtype) buffer[col]);
+			MvWInsCh(work, row2, col2, MyChar(buffer[col]));
 			break;
 		    }
 		}
@@ -425,19 +434,19 @@ test_inserts(int level)
 	    switch (option) {
 	    case oDefault:
 		if (move(limit + row, col) != ERR) {
-		    InsCh((chtype) ch);
+		    InsCh(MyChar(ch));
 		}
 		break;
 	    case oMove:
-		MvInsCh(limit + row, col, (chtype) ch);
+		MvInsCh(limit + row, col, MyChar(ch));
 		break;
 	    case oWindow:
 		if (wmove(work, limit + row, col) != ERR) {
-		    WInsCh(work, (chtype) ch);
+		    WInsCh(work, MyChar(ch));
 		}
 		break;
 	    case oMoveWindow:
-		MvWInsCh(work, limit + row, col, (chtype) ch);
+		MvWInsCh(work, limit + row, col, MyChar(ch));
 		break;
 	    }
 

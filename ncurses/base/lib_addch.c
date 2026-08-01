@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.145 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.146 2026/08/01 19:55:33 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -211,7 +211,7 @@ _nc_build_wch(WINDOW *win, ARG_CH_T ch)
      * If the background character is a wide-character, that may interfere with
      * processing multibyte characters in this function.
      */
-    if (!is8bits(CharOf(CHDEREF(ch)))) {
+    if (!is8bits(CharOf(CHDEREF(ch))) || is7bits(CharOf(CHDEREF(ch)))) {
 	if (WINDOW_EXT(win, addch_used) != 0) {
 	    /* discard the incomplete multibyte character */
 	    WINDOW_EXT(win, addch_used) = 0;
@@ -224,6 +224,11 @@ _nc_build_wch(WINDOW *win, ARG_CH_T ch)
     init_mb(state);
     buffer[WINDOW_EXT(win, addch_used)] = (char) CharOf(CHDEREF(ch));
     WINDOW_EXT(win, addch_used) += 1;
+    if (WINDOW_EXT(win, addch_used) >= MAX_ADDCH_WORK) {
+	WINDOW_EXT(win, addch_used) = 0;
+	TR(TRACE_VIRTPUT, ("Alert! too many bytes for mbrtowc"));
+	return -1;
+    }
     buffer[WINDOW_EXT(win, addch_used)] = '\0';
     if ((len = (int) mbrtowc(&result,
 			     buffer,
@@ -234,6 +239,10 @@ _nc_build_wch(WINDOW *win, ARG_CH_T ch)
 	SetChar(CHDEREF(ch), result, attrs);
 	if_EXT_COLORS(SetPair(CHDEREF(ch), pair));
 	WINDOW_EXT(win, addch_used) = 0;
+	if (len == 1 && (result == CharOf(CHDEREF(ch)))) {
+	    TR(TRACE_VIRTPUT, ("Alert! mbrtowc gave up"));
+	    len = 0;
+	}
     } else if (len == -1) {
 	/*
 	 * An error occurred.  We could either discard everything,
@@ -438,7 +447,7 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 #if USE_WIDEC_SUPPORT || NCURSES_SP_FUNCS || USE_REENTRANT
     SCREEN *sp = _nc_screen_of(win);
 #endif
-    const char *s = NCURSES_SP_NAME(unctrl) (NCURSES_SP_ARGx t);
+    const char *s = NCURSES_SP_NAME(unctrl)(NCURSES_SP_ARGx t);
     int tabsize = 8;
 
     /*

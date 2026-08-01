@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.557 2026/07/03 16:23:46 tom Exp $
+$Id: ncurses.c,v 1.559 2026/08/01 19:54:30 tom Exp $
 
 ***************************************************************************/
 
@@ -3615,7 +3615,7 @@ x_slk_test(bool recur GCC_UNUSED)
 #endif /* SLK_INIT */
 
 static void
-show_256_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
+show_256_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair, bool imode)
 {
     unsigned first = 0;
     unsigned last = 255;
@@ -3634,7 +3634,11 @@ show_256_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
 	int col = (int) (5 * (code % 16));
 	IGNORE_RC(mvaddch(row, col, colored_chtype(code, attr, pair)));
 	for (count = 1; count < repeat; ++count) {
-	    AddCh(colored_chtype(code, attr, pair));
+	    if (imode) {
+		InsCh(colored_chtype(code, attr, pair));
+	    } else {
+		AddCh(colored_chtype(code, attr, pair));
+	    }
 	}
     }
 
@@ -3648,7 +3652,12 @@ show_256_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
  * terminal to perform functions.  The remaining codes can be graphic.
  */
 static void
-show_upper_chars(int base, int pagesize, int repeat, attr_t attr, NCURSES_PAIRS_T pair)
+show_upper_chars(int base,
+		 int pagesize,
+		 int repeat,
+		 attr_t attr,
+		 NCURSES_PAIRS_T pair,
+		 bool imode)
 {
     unsigned code;
     unsigned first = (unsigned) base;
@@ -3673,7 +3682,11 @@ show_upper_chars(int base, int pagesize, int repeat, attr_t attr, NCURSES_PAIRS_
 	do {
 	    if (C1)
 		nodelay(stdscr, TRUE);
-	    echochar(colored_chtype(code, attr, pair));
+	    if (imode && !C1) {
+		InsCh(colored_chtype(code, attr, pair));
+	    } else {
+		echochar(colored_chtype(code, attr, pair));
+	    }
 	    if (C1) {
 		int reply;
 		/* (yes, this _is_ crude) */
@@ -3690,7 +3703,7 @@ show_upper_chars(int base, int pagesize, int repeat, attr_t attr, NCURSES_PAIRS_
 #define PC_COLS 4
 
 static void
-show_pc_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
+show_pc_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair, bool imode)
 {
     unsigned code;
 
@@ -3723,7 +3736,11 @@ show_pc_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
 		 */
 		break;
 	    default:
-		AddCh(colored_chtype(code, A_ALTCHARSET | attr, pair));
+		if (imode) {
+		    InsCh(colored_chtype(code, A_ALTCHARSET | attr, pair));
+		} else {
+		    AddCh(colored_chtype(code, A_ALTCHARSET | attr, pair));
+		}
 		break;
 	    }
 	} while (--count > 0);
@@ -3731,7 +3748,7 @@ show_pc_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
 }
 
 static void
-show_box_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
+show_box_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair, bool imode)
 {
     (void) repeat;
 
@@ -3754,16 +3771,24 @@ show_box_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
 	    colored_chtype(ACS_LRCORNER, attr, pair));
     MvHLine(LINES / 2, 0,        colored_chtype(ACS_HLINE, attr, pair), COLS);
     MvVLine(0,         COLS / 2, colored_chtype(ACS_VLINE, attr, pair), LINES);
-    MvAddCh(0,         COLS / 2, colored_chtype(ACS_TTEE,  attr, pair));
-    MvAddCh(LINES / 2, COLS / 2, colored_chtype(ACS_PLUS,  attr, pair));
-    MvAddCh(LINES - 1, COLS / 2, colored_chtype(ACS_BTEE,  attr, pair));
-    MvAddCh(LINES / 2, 0,        colored_chtype(ACS_LTEE,  attr, pair));
-    MvAddCh(LINES / 2, COLS - 1, colored_chtype(ACS_RTEE,  attr, pair));
+    if (imode) {
+	MvInsCh(0,         COLS / 2, colored_chtype(ACS_TTEE,  attr, pair));
+	MvInsCh(LINES / 2, COLS / 2, colored_chtype(ACS_PLUS,  attr, pair));
+	MvInsCh(LINES - 1, COLS / 2, colored_chtype(ACS_BTEE,  attr, pair));
+	MvInsCh(LINES / 2, 0,        colored_chtype(ACS_LTEE,  attr, pair));
+	MvInsCh(LINES / 2, COLS - 1, colored_chtype(ACS_RTEE,  attr, pair));
+    } else {
+	MvAddCh(0,         COLS / 2, colored_chtype(ACS_TTEE,  attr, pair));
+	MvAddCh(LINES / 2, COLS / 2, colored_chtype(ACS_PLUS,  attr, pair));
+	MvAddCh(LINES - 1, COLS / 2, colored_chtype(ACS_BTEE,  attr, pair));
+	MvAddCh(LINES / 2, 0,        colored_chtype(ACS_LTEE,  attr, pair));
+	MvAddCh(LINES / 2, COLS - 1, colored_chtype(ACS_RTEE,  attr, pair));
+    }
     /* *INDENT-ON* */
 }
 
 static int
-show_1_acs(int n, int repeat, const char *name, chtype code)
+show_1_acs(int n, int repeat, const char *name, chtype code, bool imode)
 {
     const int height = 16;
     int row = 2 + (n % height);
@@ -3771,18 +3796,23 @@ show_1_acs(int n, int repeat, const char *name, chtype code)
 
     MvPrintw(row, col, "%*s : ", COLS / 4, name);
     do {
-	AddCh(code);
+	if (imode) {
+	    InsCh(code);
+	} else {
+	    AddCh(code);
+	}
     } while (--repeat > 0);
     return n + 1;
 }
 
 static void
-show_acs_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
+show_acs_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair, bool imode)
 /* display the ACS character set */
 {
-    int n;
+    int n = 0;
 
 #define BOTH(name) #name, colored_chtype(name, attr, (chtype) pair)
+#define SHOW(name) show_1_acs(n, repeat, name, imode)
 
     erase();
     attron(A_BOLD);
@@ -3790,48 +3820,48 @@ show_acs_chars(int repeat, attr_t attr, NCURSES_PAIRS_T pair)
     attroff(A_BOLD);
     refresh();
 
-    n = show_1_acs(0, repeat, BOTH(ACS_ULCORNER));
-    n = show_1_acs(n, repeat, BOTH(ACS_URCORNER));
-    n = show_1_acs(n, repeat, BOTH(ACS_LLCORNER));
-    n = show_1_acs(n, repeat, BOTH(ACS_LRCORNER));
+    n = SHOW(BOTH(ACS_ULCORNER));
+    n = SHOW(BOTH(ACS_URCORNER));
+    n = SHOW(BOTH(ACS_LLCORNER));
+    n = SHOW(BOTH(ACS_LRCORNER));
 
-    n = show_1_acs(n, repeat, BOTH(ACS_LTEE));
-    n = show_1_acs(n, repeat, BOTH(ACS_RTEE));
-    n = show_1_acs(n, repeat, BOTH(ACS_TTEE));
-    n = show_1_acs(n, repeat, BOTH(ACS_BTEE));
+    n = SHOW(BOTH(ACS_LTEE));
+    n = SHOW(BOTH(ACS_RTEE));
+    n = SHOW(BOTH(ACS_TTEE));
+    n = SHOW(BOTH(ACS_BTEE));
 
-    n = show_1_acs(n, repeat, BOTH(ACS_HLINE));
-    n = show_1_acs(n, repeat, BOTH(ACS_VLINE));
+    n = SHOW(BOTH(ACS_HLINE));
+    n = SHOW(BOTH(ACS_VLINE));
 
     /*
      * HPUX's ACS definitions are broken here.  Just give up.
      */
 #if !(defined(__hpux) && !defined(NCURSES_VERSION))
-    n = show_1_acs(n, repeat, BOTH(ACS_LARROW));
-    n = show_1_acs(n, repeat, BOTH(ACS_RARROW));
-    n = show_1_acs(n, repeat, BOTH(ACS_UARROW));
-    n = show_1_acs(n, repeat, BOTH(ACS_DARROW));
+    n = SHOW(BOTH(ACS_LARROW));
+    n = SHOW(BOTH(ACS_RARROW));
+    n = SHOW(BOTH(ACS_UARROW));
+    n = SHOW(BOTH(ACS_DARROW));
 
-    n = show_1_acs(n, repeat, BOTH(ACS_BLOCK));
-    n = show_1_acs(n, repeat, BOTH(ACS_BOARD));
-    n = show_1_acs(n, repeat, BOTH(ACS_LANTERN));
-    n = show_1_acs(n, repeat, BOTH(ACS_BULLET));
-    n = show_1_acs(n, repeat, BOTH(ACS_CKBOARD));
-    n = show_1_acs(n, repeat, BOTH(ACS_DEGREE));
-    n = show_1_acs(n, repeat, BOTH(ACS_DIAMOND));
-    n = show_1_acs(n, repeat, BOTH(ACS_PLMINUS));
-    n = show_1_acs(n, repeat, BOTH(ACS_PLUS));
+    n = SHOW(BOTH(ACS_BLOCK));
+    n = SHOW(BOTH(ACS_BOARD));
+    n = SHOW(BOTH(ACS_LANTERN));
+    n = SHOW(BOTH(ACS_BULLET));
+    n = SHOW(BOTH(ACS_CKBOARD));
+    n = SHOW(BOTH(ACS_DEGREE));
+    n = SHOW(BOTH(ACS_DIAMOND));
+    n = SHOW(BOTH(ACS_PLMINUS));
+    n = SHOW(BOTH(ACS_PLUS));
 
-    n = show_1_acs(n, repeat, BOTH(ACS_GEQUAL));
-    n = show_1_acs(n, repeat, BOTH(ACS_NEQUAL));
-    n = show_1_acs(n, repeat, BOTH(ACS_LEQUAL));
+    n = SHOW(BOTH(ACS_GEQUAL));
+    n = SHOW(BOTH(ACS_NEQUAL));
+    n = SHOW(BOTH(ACS_LEQUAL));
 
-    n = show_1_acs(n, repeat, BOTH(ACS_STERLING));
-    n = show_1_acs(n, repeat, BOTH(ACS_PI));
-    n = show_1_acs(n, repeat, BOTH(ACS_S1));
-    n = show_1_acs(n, repeat, BOTH(ACS_S3));
-    n = show_1_acs(n, repeat, BOTH(ACS_S7));
-    (void) show_1_acs(n, repeat, BOTH(ACS_S9));
+    n = SHOW(BOTH(ACS_STERLING));
+    n = SHOW(BOTH(ACS_PI));
+    n = SHOW(BOTH(ACS_S1));
+    n = SHOW(BOTH(ACS_S3));
+    n = SHOW(BOTH(ACS_S7));
+    (void) SHOW(BOTH(ACS_S9));
 #endif
 #undef BOTH
 }
@@ -3841,6 +3871,7 @@ acs_test(bool recur GCC_UNUSED)
 {
     int c = 'a';
     int pagesize = 32;
+    bool imode = FALSE;
     char *term = getenv("TERM");
     const char *pch_kludge = ((term != NULL && strstr(term, "linux"))
 			      ? "p=PC, "
@@ -3852,7 +3883,7 @@ acs_test(bool recur GCC_UNUSED)
     int bg = COLOR_BLACK;
     unsigned at_code = 0;
     NCURSES_PAIRS_T pair = 0;
-    void (*last_show_acs) (int, attr_t, NCURSES_PAIRS_T) = NULL;
+    void (*last_show_acs) (int, attr_t, NCURSES_PAIRS_T, bool) = NULL;
     ATTR_TBL my_list[SIZEOF(attrs_to_test)];
     unsigned my_size = init_attr_list(my_list, termattrs());
 
@@ -3863,6 +3894,9 @@ acs_test(bool recur GCC_UNUSED)
 	    break;
 	case 'a':
 	    ToggleAcs(last_show_acs, show_acs_chars);
+	    break;
+	case 'i':
+	    imode = !imode;
 	    break;
 	case 'p':
 	    if (*pch_kludge)
@@ -3921,17 +3955,24 @@ acs_test(bool recur GCC_UNUSED)
 	    break;
 	}
 	if (pagesize != 32) {
-	    show_256_chars(repeat, attr, pair);
+	    show_256_chars(repeat, attr, pair, imode);
 	} else if (last_show_acs != NULL) {
-	    last_show_acs(repeat, attr, pair);
+	    last_show_acs(repeat, attr, pair, imode);
 	} else {
-	    show_upper_chars(digit * pagesize + 128, pagesize, repeat, attr, pair);
+	    show_upper_chars(digit * pagesize + 128,
+			     pagesize,
+			     repeat,
+			     attr, pair,
+			     imode);
 	}
 
-	MvPrintw(LINES - 3, 0,
+	MvPrintw(LINES - 4, 0,
 		 "Note: ANSI terminals may not display C1 characters.");
+	MvPrintw(LINES - 3, 0,
+		 "Select: a=ACS, i=%s, w=all x=box",
+		 imode ? "ins" : "add");
 	MvPrintw(LINES - 2, 0,
-		 "Select: a=ACS, w=all x=box, %s0=C1, 1-3,+/- non-ASCII, </> repeat, ESC=quit",
+		 "%s0=C1, 1-3,+/- non-ASCII, </> repeat, ^L repaint, ESC=quit",
 		 pch_kludge);
 	if (UseColors) {
 	    MvPrintw(LINES - 1, 0,
@@ -4385,9 +4426,10 @@ static int
 x_acs_test(bool recur GCC_UNUSED)
 {
     int c = 'a';
-    unsigned digit = 0;
     int repeat = 1;
     int space = ' ';
+    bool imode = FALSE;
+    unsigned digit = 0;
     unsigned pagesize = 32;
     attr_t attr = WA_NORMAL;
     int fg = COLOR_BLACK;
@@ -4414,6 +4456,9 @@ x_acs_test(bool recur GCC_UNUSED)
 	    ToggleAcs(last_show_wacs, show_wacs_chars_double);
 	    break;
 #endif
+	case 'i':
+	    imode = !imode;
+	    break;
 #ifdef WACS_T_PLUS
 	case 't':
 	    ToggleAcs(last_show_wacs, show_wacs_chars_thick);
@@ -4492,21 +4537,22 @@ x_acs_test(bool recur GCC_UNUSED)
 	    show_upper_widechars(digit * 32 + 128, repeat, space, attr, pair);
 	}
 
-	MvPrintw(LINES - 4, 0,
-		 "Select: a/d/t WACS, w=%d/page, @",
+	MvPrintw(LINES - 3, 0,
+		 "Select: a/d/t WACS, i=%s, w=%d/page, @",
+		 imode ? "ins" : "add",
 		 pagesize);
 	printw("%s",
 	       pending_code ? at_page : "page");
-	addstr(", x=box, u UTF-8, ^L repaint");
-	MvPrintw(LINES - 3, 2,
-		 "0-9,+/- non-ASCII, </> repeat, _ space, ESC=quit");
+	addstr(", x=box, u UTF-8");
+	MvPrintw(LINES - 2, 2,
+		 "0-9,+/- non-ASCII, </> repeat, _ space, ^L repaint, ESC=quit");
 	if (UseColors) {
-	    MvPrintw(LINES - 2, 2,
+	    MvPrintw(LINES - 1, 2,
 		     "v/V, f/F, b/B cycle through video attributes (%s) and color %d/%d.",
 		     my_list[at_code].name,
 		     fg, bg);
 	} else {
-	    MvPrintw(LINES - 2, 2,
+	    MvPrintw(LINES - 1, 2,
 		     "v/V cycles through video attributes (%s).",
 		     my_list[at_code].name);
 	}

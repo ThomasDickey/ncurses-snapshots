@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.231 2026/03/28 19:29:00 tom Exp $ */
+/* $Id: test.priv.h,v 1.232 2026/08/01 13:25:27 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -1391,6 +1391,14 @@ extern int _nc_getenv_num(const char *);
 #define MvWHLine		(void) mvwhline
 #define MvVLine			(void) mvvline
 #define MvWVLine		(void) mvwvline
+
+#define InsCh(c)		(void) insch((chtype)(c))
+#define WInsCh(w,c)		(void) winsch((w),(chtype)(c))
+#define MvInsCh(y,x,c)		(void) mvinsch((y),(x),(chtype)(c))
+#define MvWInsCh(w,y,x,c)	(void) mvwinsch((w),(y),(x),(chtype)(c))
+#define MvInsStr(y,x,s)		(void) mvinsstr((y),(x),(s))
+#define MvWInsStr(w,y,x,s)	(void) mvwinsstr((w),(y),(x),(s))
+#define MvWInsChStr(w,y,x,s)	(void) mvwinschstr((w),(y),(x),(s))
 
 /*
  * The macro likely uses unsigned values, while X/Open prototype uses int.
