@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
-# $Id: tracemunch,v 1.41 2021/09/04 10:31:03 tom Exp $
+# $Id: tracemunch,v 1.42 2026/08/08 17:09:30 tom Exp $
 ##############################################################################
-# Copyright 2018-2020,2021 Thomas E. Dickey                                  #
+# Copyright 2018-2021,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2005,2017 Free Software Foundation, Inc.                    #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
@@ -70,9 +70,9 @@ our $tWINDOW   = 2;    # WINDOW*
 our $tTERMINAL = 3;    # TERMINAL*
 our $tPANEL    = 4;    # PANEL*
 our $tFIELD    = 5;    # FIELD*
-our $tFORM     = 5;    # FORM*
-our $tMENU     = 6;    # MENU*
-our $tITEM     = 7;    # ITEM*
+our $tFORM     = 6;    # FORM*
+our $tMENU     = 7;    # MENU*
+our $tITEM     = 8;    # ITEM*
 
 our %known_p1_types = (
     $tSCREEN   => "SCREEN*",
@@ -670,6 +670,10 @@ sub transaddr($) {
 
                     # ignore
                 }
+                elsif ( $type == $tFORM and $addr =~ /^[^(]+\(form\d+[,)]/ ) {
+
+                    # ignore
+                }
                 else {
                     printf "OOPS - expected type \"%s\", skipping\n>>$addr\n",
                       $known_p1_types{$type};
@@ -744,7 +748,7 @@ sub muncher($) {
                 $_ =~ s/^[^:]*://;
             }
 
-            # Transform window pointer addresses to make it easier to compare logs
+          # Transform window pointer addresses to make it easier to compare logs
             $awaiting = "curscr" if ( $_ =~ /creating curscr/ );
             $awaiting = "newscr" if ( $_ =~ /creating newscr/ );
             $awaiting = "stdscr" if ( $_ =~ /creating stdscr/ );
@@ -803,9 +807,9 @@ sub muncher($) {
                 $try_addr{$2} = ++$try_nums unless defined $try_addr{$2};
             }
             elsif ( $_ =~ /^(\+ )*_nc_alloc_screen_sp 0x([[:xdigit:]]+)/ ) {
-                $addr = "0x$2";
+                $addr            = "0x$2";
                 $scr_addr{$addr} = ++$scr_nums unless ( $scr_addr{$addr} );
-                $awaiting = "";
+                $awaiting        = "";
             }
             elsif ( $_ =~ /^(\+ )*return }0x([[:xdigit:]]+)/ ) {
                 $addr = "0x$2";

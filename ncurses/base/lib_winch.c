@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_winch.c,v 1.14 2026/07/25 22:49:10 tom Exp $")
+MODULE_ID("$Id: lib_winch.c,v 1.15 2026/08/08 10:54:43 tom Exp $")
 
 NCURSES_EXPORT(chtype)
 winch(WINDOW *win)
@@ -83,7 +83,7 @@ winch(WINDOW *win)
 	} else
 #endif
 	{
-	    result = ((chtype) CharOf(*cell) | AttrOf(*cell));
+	    result = ((chtype) UChar(CharOf(*cell)) | AttrOf(*cell));
 	}
     }
     returnChtype(result);

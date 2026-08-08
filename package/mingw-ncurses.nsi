@@ -1,4 +1,4 @@
-; $Id: mingw-ncurses.nsi,v 1.775 2026/08/01 09:18:46 tom Exp $
+; $Id: mingw-ncurses.nsi,v 1.776 2026/08/08 09:15:55 tom Exp $
 
 ; TODO add examples
 ; TODO bump ABI to 6
@@ -10,7 +10,7 @@
 !define VERSION_MAJOR "6"
 !define VERSION_MINOR "6"
 !define VERSION_YYYY  "2026"
-!define VERSION_MMDD  "0801"
+!define VERSION_MMDD  "0808"
 !define VERSION_PATCH ${VERSION_YYYY}${VERSION_MMDD}
 
 !define MY_ABI   "5"

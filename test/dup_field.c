@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.15 2026/06/06 09:59:40 tom Exp $
+ * $Id: dup_field.c,v 1.22 2026/08/08 23:35:51 tom Exp $
  *
  * Demonstrate dup_field().
  */
@@ -41,8 +41,14 @@
 #define DO_DEMO	CTRL('F')	/* actual key for toggling demo-mode */
 #define MY_DEMO	EDIT_FIELD('f')	/* internal request-code */
 
+#define MAX_FIELDS 100
+
 static char empty[] = "";
-static FIELD *all_fields[100];
+static FIELD *all_fields[MAX_FIELDS];
+static bool is_editing[MAX_FIELDS];
+static bool was_copied[MAX_FIELDS];
+static unsigned num_fields;
+static FIELD **last_list;
 /* *INDENT-OFF* */
 static struct {
     int code;
@@ -113,7 +119,7 @@ my_help_edit_field(void)
     }
 }
 
-static FIELD *
+static void
 make_label(const char *label, int frow, int fcol)
 {
     FIELD *f = new_field(1, (int) strlen(label), frow, fcol, 0, 0);
@@ -121,20 +127,22 @@ make_label(const char *label, int frow, int fcol)
     if (f) {
 	set_field_buffer(f, 0, label);
 	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
+	all_fields[num_fields++] = f;
     }
-    return (f);
 }
 
-static FIELD *
+static void
 make_field(int frow, int fcol, int rows, int cols)
 {
     FIELD *f = new_field(rows, cols, frow, fcol, 0, 1);
 
     if (f) {
+	set_field_type(f, TYPE_ALPHA, 1);
 	set_field_back(f, A_UNDERLINE);
 	init_edit_field(f, empty);
+	is_editing[num_fields] = TRUE;
+	all_fields[num_fields++] = f;
     }
-    return (f);
 }
 
 static void
@@ -272,7 +280,7 @@ my_edit_field(FORM *form, int *result)
 static FIELD **
 copy_fields(FIELD **source, FIELD *extra, size_t length)
 {
-    FIELD **target = typeCalloc(FIELD *, length + 1);
+    FIELD **target = typeCalloc(FIELD *, length + 2);	/* add one plus NULL */
     memcpy(target, source, length * sizeof(FIELD *));
     target[length] = extra;
     return target;
@@ -284,16 +292,53 @@ do_demo(FORM *form)
     int count = field_count(form);
     FIELD *my_field = current_field(form);
     FIELD **old_fields = form_fields(form);
+    int n;
+    bool copied = FALSE;
+    int last_row = LINES;
+    const int SKIP = 8;
 
-    if (count > 0 && old_fields != NULL && my_field != NULL) {
-	FIELD **new_fields = copy_fields(old_fields,
-					 dup_field(my_field,
-						   form_field_row(my_field)
-						   + 1,
-						   form_field_col(my_field)),
-					 (size_t) count);
-	if (new_fields != NULL)
-	    set_form_fields(form, new_fields);
+    if (my_field == NULL) {
+	beep();
+    } else {
+	int rows, cols, frow, fcol, nrow, nbuf;
+	if (field_info(my_field,
+		       &rows, &cols,
+		       &frow, &fcol,
+		       &nrow, &nbuf) == E_OK) {
+	    last_row = rows + frow + SKIP;
+	}
+
+	for (n = 0; n < count; ++n) {
+	    if (my_field == all_fields[n]) {
+		copied = was_copied[n];
+		was_copied[n] = TRUE;
+		break;
+	    }
+	}
+    }
+
+    if (copied || last_row >= LINES) {
+	beep();
+    } else if (count > 0 && old_fields != NULL) {
+	FIELD *add_field = dup_field(my_field,
+				     form_field_row(my_field)
+				     + SKIP,
+				     form_field_col(my_field));
+	if (add_field != NULL) {
+	    FIELD **new_fields = copy_fields(old_fields,
+					     add_field,
+					     (size_t) count);
+	    all_fields[num_fields++] = add_field;
+	    all_fields[num_fields] = NULL;
+	    if (new_fields != NULL) {
+		unpost_form(form);
+		set_form_fields(form, new_fields);
+		post_form(form);
+		free(last_list);
+		last_list = new_fields;
+	    }
+	}
+	set_current_field(form, my_field);
     }
 }
 
@@ -309,7 +354,10 @@ my_form_driver(FORM *form, int c)
 	my_help_edit_field();
 	break;
     case MY_DEMO:
-	do_demo(form);
+	if (num_fields < MAX_FIELDS - 2)
+	    do_demo(form);
+	else
+	    beep();
 	break;
     default:
 	beep();
@@ -323,33 +371,28 @@ demo_forms(void)
 {
     FORM *form;
     int c;
-    unsigned n = 0;
     const char *fname;
 
     /* describe the form */
-    all_fields[n++] = make_label("Sample Form", 0, 15);
+    make_label("Sample Form", 0, 15);
 
     fname = "Last Name";
-    all_fields[n++] = make_label(fname, 2, 0);
-    all_fields[n++] = make_field(3, 0, 1, 18);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 0);
+    make_field(3, 0, 1, 18);
 
     fname = "First Name";
-    all_fields[n++] = make_label(fname, 2, 20);
-    all_fields[n++] = make_field(3, 20, 1, 12);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 20);
+    make_field(3, 20, 1, 12);
 
     fname = "Middle Name";
-    all_fields[n++] = make_label(fname, 2, 34);
-    all_fields[n++] = make_field(3, 34, 1, 12);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 34);
+    make_field(3, 34, 1, 12);
 
     fname = "Comments";
-    all_fields[n++] = make_label(fname, 5, 0);
-    all_fields[n++] = make_field(6, 0, 4, 46);
-    init_edit_field(all_fields[n - 1], empty);
+    make_label(fname, 5, 0);
+    make_field(6, 0, 4, 46);
 
-    all_fields[n] = (FIELD *) 0;
+    all_fields[num_fields] = (FIELD *) 0;
 
     if ((form = new_form(all_fields)) != NULL) {
 	int finished = 0;
@@ -374,9 +417,11 @@ demo_forms(void)
 	free_form(form);
     }
     for (c = 0; all_fields[c] != NULL; c++) {
-	free_edit_field(all_fields[c]);
+	if (is_editing[c])
+	    free_edit_field(all_fields[c]);
 	free_field(all_fields[c]);
     }
+    free(last_list);
     noraw();
     nl();
 }

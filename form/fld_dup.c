@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020,2024 Thomas E. Dickey                                     *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2010,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_dup.c,v 1.19 2024/11/30 21:40:55 tom Exp $")
+MODULE_ID("$Id: fld_dup.c,v 1.20 2026/08/08 17:49:00 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -77,6 +77,11 @@ dup_field(FIELD *field, int frow, int fcol)
       New_Field->pad = field->pad;
       New_Field->opts = field->opts;
       New_Field->usrptr = field->usrptr;
+
+#if USE_WIDEC_SUPPORT
+      New_Field->working = newpad(1, Buffer_Length(New_Field) + 1);
+      New_Field->expanded = typeCalloc(char *, 1 + field->nbuf);
+#endif
 
       if (_nc_Copy_Type(New_Field, field))
 	{

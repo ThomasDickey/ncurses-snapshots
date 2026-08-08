@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.206 2026/07/03 16:57:04 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.207 2026/08/08 23:42:56 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -245,7 +245,7 @@ delscreen(SCREEN *sp)
 	    SetWacsMap(NULL);
 #endif
 	    _nc_set_screen(NULL);
-#if USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT && !USE_REENTRANT
 	    if (SP == NULL) {
 		FreeIfNeeded(_nc_wacs);
 		_nc_wacs = NULL;
