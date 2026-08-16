@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.116 2025/10/04 20:15:02 tom Exp $
-.TH curs_inopts 3X 2025-10-04 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.118 2026/08/15 22:15:03 tom Exp $
+.TH curs_inopts 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -261,7 +261,10 @@ enabled
 .RI ( bf
 is
 .BR TRUE ")"
-then when an input character reading function reads ESC,
+then when an input character reading function reads
+a character that is a common prefix to multiple
+key-defining string capabilities
+(typically ESC),
 it waits for further input corresponding to an escape sequence
 defined by the terminal type description.
 If a valid sequence populates the input stream,
@@ -367,14 +370,18 @@ the reading function does not return until it has input.
 When
 .B \%keypad
 has been called on a window
-and the input character reading function reads an ESC character from it,
+and the input character reading function reads
+an ambiguous prefix character
+(typically ESC)
+from it,
 .I curses
 sets a timer while waiting for the next character.
 If the timer elapses,
 .I curses
-interprets the ESC as an explicit press of the terminal's Escape key
-(or equivalent).
-.\" like Control+[
+interprets the prefix as an explicit press
+of the key corresponding thereto,
+such as Escape for ESC.
+.\" or some equivalent, like Control+[
 .BI \%notimeout( win ,
 .B TRUE)
 disables this timer.
@@ -625,7 +632,8 @@ waits for keyboard input to begin,
 and for how long.
 .B \%keypad
 configures whether that function waits for further input
-if the first character it reads is ESC.
+if the first character it reads is an ambiguous prefix
+(like ESC).
 Calling
 .BR \%notimeout ","
 which has nothing to do with

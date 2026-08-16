@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.126 2025/08/23 22:39:20 tom Exp $
-.TH curs_color 3X 2025-08-23 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.128 2026/08/15 14:32:56 tom Exp $
+.TH curs_color 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -399,7 +399,7 @@ the number of the color to be changed followed by three RGB values
 .bP
 The first argument must be a valid color value;
 default colors are not allowed here.
-(See the section \fB\%Colors\fP for the default color index.)
+(See \fB\%start_color\fP above for the default color index.)
 .bP
 Each of the last three arguments
 must be a value in the range \fB0\fP through \fB1000\fP.
@@ -409,12 +409,22 @@ occurrences of that color on the screen immediately change to the new
 definition.
 .SS init_extended_color
 Because \fB\%init_color\fP uses signed \fBshort\fPs for its parameters,
-that limits color-values and their red, green, and blue components
-to 32767 on modern hardware.
+that limits color-values to 32767 on modern hardware.
 The extension \fB\%init_extended_color\fP uses \fBint\fPs
 for the color value and
-for setting the red, green, and blue components,
-allowing a larger number of colors to be supported.
+for the red, green, and blue components,
+allowing a larger number of color-values to be supported.
+.bP
+The first argument must be a valid color value;
+default colors are not allowed here.
+(See \fB\%start_color\fP above for the default color index.)
+.bP
+Each of the last three arguments
+must be a value in the range \fB0\fP through \fB1000\fP.
+.PP
+When \fB\%init_extended_color\fP is used, all
+occurrences of that color on the screen immediately change to the new
+definition.
 .SS color_content
 The \fB\%color_content\fP routine gives programmers a way to find the intensity
 of the red, green, and blue (RGB) components in a color.

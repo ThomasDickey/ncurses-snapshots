@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.179 2026/07/25 15:04:33 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.182 2026/08/15 14:27:32 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -529,17 +529,30 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	    if (ext_str_count >= (max_entry_size / 2)) {
 		returnDB(TGETENT_NO);
 	    }
-	    TYPE_CALLOC(char *, need, ptr->ext_Names);
+	    /*
+	     * "base" is the number of bytes of ext_str_table already used by
+	     * the extended string capabilities.  The names that follow them
+	     * live in the remainder of that table, so both the pointer and the
+	     * size handed to convert_strings() must be adjusted.
+	     */
 	    TR(TRACE_DATABASE,
-	       ("ext_NAMES starting @%d in extended_strings, first = %s",
-		base, _nc_visbuf(ptr->ext_str_table + base)));
+	       ("Check ext_NAMES base %d vs range 0 .. %d",
+		base, ext_str_limit));
+	    if (base < 0 || base >= ext_str_limit - 1) {
+		returnDB(TGETENT_NO);
+	    }
+	    TYPE_CALLOC(char *, need, ptr->ext_Names);
 	    if (!convert_strings(buf + (2 * ext_str_count),
 				 ptr->ext_Names,
 				 (int) need,
-				 ext_str_limit, ptr->ext_str_table + base,
+				 ext_str_limit - base, ptr->ext_str_table + base,
 				 TRUE)) {
+		TR(TRACE_DATABASE, ("...failed to convert ext_NAMES"));
 		returnDB(TGETENT_NO);
 	    }
+	    TR(TRACE_DATABASE,
+	       ("ext_NAMES start @%d in extended_strings, first = %s",
+		base, _nc_visbuf(ptr->ext_str_table + base)));
 	}
 
 	TR(TRACE_DATABASE,

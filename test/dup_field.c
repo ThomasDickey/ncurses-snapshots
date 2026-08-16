@@ -26,9 +26,9 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.22 2026/08/08 23:35:51 tom Exp $
+ * $Id: dup_field.c,v 1.28 2026/08/16 00:30:27 tom Exp $
  *
- * Demonstrate dup_field().
+ * Demonstrate dup_field() and link_field()
  */
 
 #include <test.priv.h>
@@ -38,8 +38,10 @@
 #include <edit_field.h>
 #include <popup_msg.h>
 
-#define DO_DEMO	CTRL('F')	/* actual key for toggling demo-mode */
-#define MY_DEMO	EDIT_FIELD('f')	/* internal request-code */
+#define DO_DEMO  CTRL('F')	/* actual key for toggling demo-mode */
+#define DO_DEMO2 CTRL('G')	/* actual key for toggling demo-mode */
+#define MY_DEMO  EDIT_FIELD('f')	/* internal request-code */
+#define MY_DEMO2 EDIT_FIELD('g')	/* internal request-code */
 
 #define MAX_FIELDS 100
 
@@ -48,6 +50,9 @@ static FIELD *all_fields[MAX_FIELDS];
 static bool is_editing[MAX_FIELDS];
 static bool was_copied[MAX_FIELDS];
 static unsigned num_fields;
+#if HAVE_RIPOFFLINE
+WINDOW *win_help = NULL;
+#endif
 static FIELD **last_list;
 /* *INDENT-OFF* */
 static struct {
@@ -79,7 +84,8 @@ static struct {
     { KEY_PREVIOUS,  REQ_PREV_FIELD,  "go to previous field" },
     { KEY_RIGHT,     REQ_RIGHT_CHAR,  "move right 1 character" },
     { KEY_UP,        REQ_UP_CHAR,     "move up 1 character" },
-    { DO_DEMO,       MY_DEMO,         "duplicate current field" }
+    { DO_DEMO,       MY_DEMO,         "duplicate current field" },
+    { DO_DEMO2,      MY_DEMO2,        "create linked field" }
 };
 /* *INDENT-ON* */
 
@@ -126,6 +132,7 @@ make_label(const char *label, int frow, int fcol)
 
     if (f) {
 	set_field_buffer(f, 0, label);
+	set_field_back(f, (chtype) COLOR_PAIR(1));
 	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
 	all_fields[num_fields++] = f;
     }
@@ -138,7 +145,7 @@ make_field(int frow, int fcol, int rows, int cols)
 
     if (f) {
 	set_field_type(f, TYPE_ALPHA, 1);
-	set_field_back(f, A_UNDERLINE);
+	set_field_back(f, (chtype) (COLOR_PAIR(1) | A_UNDERLINE));
 	init_edit_field(f, empty);
 	is_editing[num_fields] = TRUE;
 	all_fields[num_fields++] = f;
@@ -287,7 +294,7 @@ copy_fields(FIELD **source, FIELD *extra, size_t length)
 }
 
 static void
-do_demo(FORM *form)
+do_demo(FORM *form, bool linked)
 {
     int count = field_count(form);
     FIELD *my_field = current_field(form);
@@ -320,10 +327,13 @@ do_demo(FORM *form)
     if (copied || last_row >= LINES) {
 	beep();
     } else if (count > 0 && old_fields != NULL) {
-	FIELD *add_field = dup_field(my_field,
-				     form_field_row(my_field)
-				     + SKIP,
-				     form_field_col(my_field));
+	FIELD *add_field = linked
+	? link_field(my_field,
+		     form_field_row(my_field) + SKIP,
+		     form_field_col(my_field))
+	: dup_field(my_field,
+		    form_field_row(my_field) + SKIP,
+		    form_field_col(my_field));
 	if (add_field != NULL) {
 	    FIELD **new_fields = copy_fields(old_fields,
 					     add_field,
@@ -355,7 +365,13 @@ my_form_driver(FORM *form, int c)
 	break;
     case MY_DEMO:
 	if (num_fields < MAX_FIELDS - 2)
-	    do_demo(form);
+	    do_demo(form, FALSE);
+	else
+	    beep();
+	break;
+    case MY_DEMO2:
+	if (num_fields < MAX_FIELDS - 2)
+	    do_demo(form, TRUE);
 	else
 	    beep();
 	break;
@@ -446,6 +462,36 @@ usage(int ok)
 VERSION_COMMON()
 /* *INDENT-ON* */
 
+#if HAVE_RIPOFFLINE
+static int
+rip_help(WINDOW *win, int cols)
+{
+    (void) cols;
+    win_help = win;
+    return OK;
+}
+
+/*
+ * We can't do this stuff in rip_help() because colors aren't yet set up
+ * when initscr() calls it.
+ */
+static void
+configure_help(WINDOW *win)
+{
+    wbkgd(win, (chtype) COLOR_PAIR(1));
+    werase(win);
+    wmove(win, 0, 0);
+    wprintw(win, "Press F1 for help,"
+	    " %s to duplicate,"
+	    " %s to link,"
+	    " or ^Q to quit.",
+	    keyname(DO_DEMO),
+	    keyname(DO_DEMO2));
+    wnoutrefresh(win);
+    return;
+}
+#endif
+
 int
 main(int argc, char *argv[])
 {
@@ -463,6 +509,9 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
+#if HAVE_RIPOFFLINE
+    ripoffline(-1, rip_help);
+#endif
     initscr();
     cbreak();
     noecho();
@@ -479,7 +528,9 @@ main(int argc, char *argv[])
 	bkgd((chtype) COLOR_PAIR(1));
 	refresh();
     }
-
+#if HAVE_RIPOFFLINE
+    configure_help(win_help);
+#endif
     demo_forms();
 
     endwin();

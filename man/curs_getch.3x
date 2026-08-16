@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.136 2026/04/18 23:02:10 tom Exp $
-.TH curs_getch 3X 2026-04-18 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.138 2026/08/15 18:59:27 tom Exp $
+.TH curs_getch 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -199,24 +199,24 @@ translates these key strokes to a numeric code corresponding to the
 symbols listed in subsection \*(``Key Codes\*('' below.
 If the window is not in keypad mode,
 the input queue populates with
-the characters of the function key's escape sequence,
+the characters of the function key's string capability
+(see \fB\%terminfo\fP(5)),
 which the application must collect individually with multiple
 .B \%wgetch
 calls.
 .bP
 The
 .I \%curses.h
-header file declares many
-.I "function keys"
-whose names begin with
+header file declares many function keys whose names begin with
 .BR KEY_ ";"
 these object-like macros
 have integer values outside the range of eight-bit character codes.
 .bP
 In
 .IR \%ncurses ","
-.I "user-defined function keys"
-are configured with \fB\%define_key\fP(3X);
+\fB\%define_key\fP(3X)
+configures
+.IR "user-defined function keys" ;
 they have no names,
 but are also expected to
 have integer values outside the range of eight-bit character codes.
@@ -231,7 +231,7 @@ escape character ESC.
 This fact implies that
 .I curses
 cannot distinguish a user's press of the escape key
-(assuming it sends ESC)
+(or any prefix common to multiple function key definitions)
 from the beginning of a function key's character sequence without
 waiting to see if,
 and how soon,
@@ -680,7 +680,9 @@ the
 .B \%ESCDELAY
 variable configures the duration of the timer used to disambiguate a
 function key character sequence from a series of key strokes beginning
-with ESC typed by the user;
+with their common prefix
+(such as ESC)
+when typed by the user;
 see
 \fB\%curs_variables\fP(3X).
 .PP

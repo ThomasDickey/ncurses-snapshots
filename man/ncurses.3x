@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.289 2025/11/12 01:01:34 tom Exp $
-.TH ncurses 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: ncurses.3x,v 1.296 2026/08/15 22:15:03 tom Exp $
+.TH ncurses 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -1108,8 +1108,10 @@ on failure;
 see \fB\%curs_variables\fP(3X).
 Functions that return pointers return a null pointer on failure.
 Typically,
+an
 .I \%ncurses
-treats a null pointer passed as a function parameter as a failure.
+function expecting a pointer argument
+fails if passed a null pointer.
 Functions prefixed with \*(``mv\*('' first perform cursor movement and
 fail if the position
 .RI ( y ","
@@ -1125,9 +1127,9 @@ The library may be configured to disregard the variables
 .IR \%TERMINFO_DIRS ","
 .IR \%TERMPATH ","
 and
-.IR HOME ","
+.I HOME
 if the user is the superuser (root),
-or the application uses \fI\%setuid\fP(2) or \fI\%setgid\fP(2).
+or if the application uses \fI\%setuid\fP(2) or \fI\%setgid\fP(2).
 .SS "\fIBAUDRATE\fP"
 The debugging library checks this variable when the application has
 redirected output to a file.
@@ -1152,8 +1154,8 @@ Very few
 .I \%term\%info
 entries provide this feature.
 .PP
-Because this name is also used in development environments to store the
-C compiler's name,
+Because this variable
+is also used in development environments to store the C compiler's name,
 .I \%ncurses
 ignores its value if it is not one character in length.
 .SS "\fICOLUMNS\fP"
@@ -1241,9 +1243,11 @@ application does not receive the characters of an escape sequence in a
 timely manner,
 the library can interpret them as multiple key stroke events.
 Conversely,
-a fast typist on a low-latency connection who happens to input an ESC
-followed by characters that match an escape sequence may experience
-confusing application behavior.
+a fast typist on a low-latency connection
+who happens to input an ESC
+followed by characters that match an escape sequence
+(or the common prefix of multiple key-defining string capabilities)
+may experience confusing application behavior.
 .PP
 \fI\%xterm\fP(1) mouse events are a form of escape sequence;
 therefore,
@@ -1339,7 +1343,7 @@ When
 .I \%ncurses
 is configured to use the GPM interface,
 this variable may list one or more terminal type names,
-delimited by vertical bars
+separated by vertical bars
 .RB ( | )
 or colons
 .RB ( : ),
@@ -1454,8 +1458,8 @@ A drawback is that certain unconventional programs mixed
 \fI\%stdio\fP(3) calls with
 .I \%ncurses
 calls and (usually)
-got the behavior they expected.
-This is no longer the case;
+got the behavior they expected,
+but no longer do:
 .I \%ncurses
 does not write to the standard output file descriptor through a
 .IR stdio -buffered
@@ -1522,7 +1526,7 @@ xterm\-utf8|xterm relying on UTF\-8 line\-graphics,
 .EE
 .RE
 .PP
-The two-character name \*(``U8\*('' was chosen to permit its use via
+The two-character code \*(``U8\*('' was chosen to permit its use via
 .IR \%ncurses 's
 .I termcap
 interface.

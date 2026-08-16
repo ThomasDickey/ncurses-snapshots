@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.559 2026/08/01 19:54:30 tom Exp $
+$Id: ncurses.c,v 1.564 2026/08/15 23:50:42 tom Exp $
 
 ***************************************************************************/
 
@@ -151,6 +151,8 @@ static unsigned save_trace = TRACE_ORDINARY | TRACE_ICALLS | TRACE_CALLS;
 static int MaxColors;		/* the actual number of colors we'll use */
 static int MinColors;		/* the minimum color code */
 static bool UseColors;		/* true if we use colors */
+/* The form test must override wGetchar()'s handling of Control+D. */
+static bool IsEditingForm = FALSE;
 
 #undef max_pairs
 static int max_pairs;		/* ...and the number of color pairs */
@@ -220,7 +222,7 @@ wGetchar(WINDOW *win)
 #else
     c = wgetch(win);
 #endif
-    if (c == CTRL('D')) {
+    if (!IsEditingForm && (c == CTRL('D'))) {
 	Trace(("FORCE EOF"));
 	close(0);		/* force an EOF-style error */
 	c = wgetch(win);
@@ -3306,8 +3308,8 @@ slk_help(void)
 	,""
 	,"Note: if activating the soft keys causes your terminal to scroll up"
 	,"one line, your terminal auto-scrolls when anything is written to the"
-	,"last screen position.  The ncurses code does not yet handle this"
-	,"gracefully."
+	,"last screen position.  Your terminal type's terminfo description may"
+	,"need to be improved; see the addch(3) or add_wch(3) man pages."
     };
     unsigned j;
 
@@ -6602,9 +6604,16 @@ form_virtualize(NCURSES_CONST FORM *f, WINDOW *w)
     /* *INDENT-ON* */
 
     static int mode = REQ_INS_MODE;
-    int c = wGetchar(w);
-    FIELD *me = current_field(f);
-    bool current = TRUE;
+
+    int c;
+    FIELD *me;
+    bool current;
+
+    IsEditingForm = TRUE;
+
+    c = wGetchar(w);
+    me = current_field(f);
+    current = TRUE;
 
     if (c == CTRL(']')) {
 	if (mode == REQ_INS_MODE) {
@@ -6657,6 +6666,7 @@ form_virtualize(NCURSES_CONST FORM *f, WINDOW *w)
 	c = edit_secure(me, c);
 	set_field_back(me, A_UNDERLINE);
     }
+    IsEditingForm = FALSE;
     return c;
 }
 

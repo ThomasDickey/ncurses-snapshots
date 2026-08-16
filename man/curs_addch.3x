@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.144 2025/11/12 01:04:12 tom Exp $
-.TH curs_addch 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_addch.3x,v 1.146 2026/08/15 22:15:03 tom Exp $
+.TH curs_addch 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -167,14 +167,15 @@ it does nothing.
 Carriage return moves the cursor to the left margin on the same line of
 the window.
 .bP
-Line feed does a \fB\%clrtoeol\fP(3X),
-then advances as if from the right margin.
+Line feed performs \fB\%clrtoeol\fP(3X),
+then advances as if from the right margin
+(see below).
 .bP
 Tab advances the cursor to the next tab stop
 (possibly on the next line);
 these are placed at every eighth column by default.
 .IP
-Alter the tab interval with the
+You can alter the tab interval with the
 .B \%TABSIZE
 extension;
 see \fB\%curs_variables\fP(3X).
@@ -190,7 +191,7 @@ does not return the character itself,
 but its \fB\%unctrl\fP(3X) representation.
 .PP
 Adding printable characters with \fB\%waddch\fP
-causes it to wrap at the right margin of the window:
+causes it to wrap at the right margin of the window.
 .bP
 If the cursor is not at the bottom of the scrolling region
 and advancement occurs at the right margin,
@@ -212,29 +213,53 @@ returns
 A window's margins may coincide with the screen boundaries.
 This may be a problem when
 .I \%ncurses
-updates the screen to match the curses window.
+updates the screen to match the
+.I curses
+window.
 When their right and bottom margins coincide,
 .I \%ncurses
-uses different strategies to handle the variations of scrolling and wrapping
-at the lower-right corner
-by depending on the terminal capabilities:
+employs varying strategies
+to handle the ways in which scrolling and wrapping behaviors
+combine at the lower-right corner of the terminal display
+by detecting and configuring the terminal's capabilities.
 .bP
-If the terminal does not automatically wrap as characters
-are added at the right margin
-(i.e., auto right margins),
+If the terminal does not wrap its cursor to the next line
+when a character is written to the rightmost cell on a line \(em
+.RI \%( terminfo
+capability
+.B \%auto_right_margin
+.RB ( am )
+\(em
 .I \%ncurses
-writes the character directly.
+simply writes the character.
 .bP
-If the terminal has auto right margins,
-but also has capabilities for turning auto margins off and on,
+If the terminal possesses the \*(lqauto right margin\*(rq
+capability,
+but also enables it to be configured on and off,
 .I \%ncurses
-turns the auto margin feature off temporarily
-when writing to the lower-right corner.
+disables auto right margin temporarily
+when writing a character to lower-right cell of the terminal display.
 .bP
-If the terminal has an insertion mode which can be turned off and on,
+If the terminal does not permit auto right margin deconfiguration,
+but has an \*(lqinsert mode\*(rq \(em
+.I \%terminfo
+capabilities
+.B \%enter_insert_mode
+.RB ( smir )
+and
+.B \%exit_insert_mode
+.RB ( rmir )
+\(em
 .I \%ncurses
-writes the character just before the lower-right corner,
-and then inserts a character to push the update into the corner.
+saves the contents of the character cell
+preceding that at the bottom right,
+writes the character with which the application wishes to populate
+the bottom right character cell
+to the cell preceding it on the same line,
+then uses the terminal's insert mode to rewrite the contents
+of the saved character cell to that location,
+\*(lqpushing\*(rq the desired character
+into the bottom right cell.
 .SS wechochar
 .B \%echochar
 and

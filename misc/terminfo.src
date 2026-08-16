@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1263 $
-#	$Date: 2026/08/01 20:39:13 $
+#	$Revision: 1.1267 $
+#	$Date: 2026/08/14 08:03:59 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -5225,7 +5225,7 @@ xterm+nofkeys|building block for xterm fkey-variants,
 	npc,
 	kcbt=\E[Z, nel=\EE, use=ecma+index, use=ansi+rep,
 	use=ecma+strikeout, use=vt420+lrmm, use=xterm+focus,
-	use=xterm+sm+1006, use=xterm+tmux, use=ecma+italics,
+	use=xterm+sm+1006, use=xterm+tmux2, use=ecma+italics,
 	use=xterm+keypad, use=xterm-basic,
 
 xterm-p370|xterm patch #370,
@@ -5598,7 +5598,7 @@ xterm+256color2|xterm 256-color feature,
 # has the drawback that some of the xterm-alikes which use that building block
 # require a different approach to rs1 -TD
 xterm+osc104|reset color palette,
-	oc=\E]104\007, rs1=\Ec\E]104\007,
+	oc=\E]104\E\\, rs1=\Ec\E]104\E\\,
 
 # palette is hardcoded...
 xterm+256setaf|xterm 256-color (set-only),
@@ -5834,12 +5834,12 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	kf5=\23315~, kf6=\23317~, kf7=\23318~, kf8=\23319~,
 	kf9=\23320~, khome=\2331~, kich1=\2332~, kmous=\233M,
 	knp=\2336~, kpp=\2335~, mc0=\233i, mc4=\2334i, mc5=\2335i,
-	meml=\El, memu=\Em, op=\23339;49m, rc=\E8, rev=\2337m,
-	ri=\215, rmam=\233?7l, rmcup=\233?1049l, rmir=\2334l,
+	meml=\El, memu=\Em, op=\23339;49m, rev=\2337m, ri=\215,
+	rmam=\233?7l, rmcup=\233?1049l, rmir=\2334l,
 	rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, rs1=\Ec,
 	rs2=\E[62"p\E\sG\233m\233?7h\E>\E7\233?1;3;4;6l\2334l\233r
 	    \E8,
-	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm,
+	setab=\2334%p1%dm, setaf=\2333%p1%dm,
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1
 	     %{6}%=%t3%e%p1%d%;m,
 	setf=\2333%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1
@@ -5849,8 +5849,8 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	sgr0=\2330m\E(B, smam=\233?7h, smcup=\233?1049h,
 	smir=\2334h, smkx=\233?1h\E=, smso=\2337m, smul=\2334m,
 	tbc=\2333g, u6=\233[%i%d;%dR, u8=\233[?%[;0123456789]c,
-	vpa=\233%i%p1%dd, use=ansi+enq, use=xterm+acs,
-	use=xterm+kbs, use=vt100+4bsd,
+	vpa=\233%i%p1%dd, use=ansi+enq, use=ansi+sc,
+	use=xterm+acs, use=xterm+kbs, use=vt100+4bsd,
 
 # Note: normally xterm supports modified function-keys as described in
 #	XTerm - "Other" modified keys
@@ -5904,7 +5904,7 @@ xterm-vt220|xterm emulating VT220,
 	use=ecma+italics, use=ecma+index, use=ansi+rep,
 	use=ecma+strikeout, use=vt220+sfkeys,
 	use=xterm+r5+fkeys, use=xterm+focus, use=xterm+sm+1006,
-	use=xterm+tmux, use=xterm+keypad, use=xterm-basic,
+	use=xterm+tmux2, use=xterm+keypad, use=xterm-basic,
 
 xterm-vt52|xterm emulating DEC VT52,
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
@@ -8357,9 +8357,8 @@ foot+base|foot base fragment,
 	clear=\E[H\E[2J, cub1=^H, cud1=\n, dim=\E[2m,
 	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K,
 	flash=\E]555\E\\, is2=\E[!p\E[4l\E>, kbs=^?, kcbt=\E[Z,
-	nel=\EE, oc=\E]104\E\\, op=\E[39;49m, ri=\EM, rmam=\E[?7l,
-	rmkx=\E[?1l\E>, rmm=\E[?1036h\E[?1034l, rs1=\Ec,
-	rs2=\E[!p\E[4l\E>,
+	nel=\EE, op=\E[39;49m, ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>,
+	rmm=\E[?1036h\E[?1034l, rs1=\Ec, rs2=\E[!p\E[4l\E>,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;
 	    %?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h\E=,
@@ -8371,10 +8370,10 @@ foot+base|foot base fragment,
 	use=ansi+idc, use=ansi+idl, use=ansi+rca2, use=ansi+rep,
 	use=ansi+tabs, use=ansi+sgrbold, use=ecma+index,
 	use=ecma+italics, use=ecma+strikeout, use=kitty+setal,
-	use=xterm+acs, use=xterm+alt+title, use=xterm+pcfkeys,
-	use=xterm+sm+1006, use=xterm+tmux2, use=xterm+sl-alt,
-	use=bracketed+paste, use=report+version,
-	use=xterm+focus, use=vt100+4bsd,
+	use=xterm+acs, use=xterm+alt+title, use=xterm+osc104,
+	use=xterm+pcfkeys, use=xterm+sm+1006, use=xterm+tmux2,
+	use=xterm+sl-alt, use=bracketed+paste,
+	use=report+version, use=xterm+focus, use=vt100+4bsd,
 
 ######## WEB CLIENTS
 
@@ -13695,16 +13694,16 @@ wy75|wyse75|Wyse 75,
 	kf1=\E[?5i, kf2=\E[?3i, kf21=\E[35~, kf3=\E[2i, kf4=\E[@,
 	kf5=\E[M, kfnd=\E[1~, khlp=\E[28~, kich1=\E[@, kil1=\E[L,
 	knp=\E[6~, kpp=\E[5~, kprt=\E[?5i, kslt=\E[4~, mc0=\E[0i,
-	rc=\E8, rev=\E[1t\E[7m, ri=\EM$<2>, rmacs=^O, rmam=\E[?7l,
+	rev=\E[1t\E[7m, ri=\EM$<2>, rmacs=^O, rmam=\E[?7l,
 	rmir=\E[4l, rmkx=\E>, rs1=\E[13l\E[3l\E[!p,
-	rs2=\E[35h\E[?3l$<80>, rs3=\E[?5l, sc=\E7,
+	rs2=\E[35h\E[?3l$<80>, rs3=\E[?5l,
 	sgr=%?%p5%t\E[0t%;%?%p3%p1%|%t\E[1t%;%?%p2%t\E[2t%;%?%p4%t
 	    \E[3t%;%?%p1%p2%p3%p4%p5%|%|%|%|%t\E[7m%e\E[m%;%?%p9%t
 	    \016%e\017%;,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h,
 	smkx=\E[?1l\E[?7h\E=, smso=\E[1t\E[7m, smul=\E[2t\E[4m,
 	tsl=\E[>\,\001, use=ansi+arrows, use=ansi+cup,
-	use=ansi+idl1, use=ansi+local, use=ansi+pp,
+	use=ansi+idl1, use=ansi+local, use=ansi+pp, use=ansi+sc,
 	use=ansi+sgrso, use=ansi+sgrul, use=ansi+tabs,
 	use=decid+cpr, use=vt220+cvis, use=vt100+keypad,
 	use=vt220+sfkeys, use=vt220+ufkeys,
@@ -13848,18 +13847,19 @@ wy185|wyse185|Wyse 185,
 	is2=\E[2;4;20;30l\E[?1;4;10;16l\E[12h\E[?7;8;25h,
 	is3=\E>\E(B\E)0\017\E[m, kcbt=\E[Z, khlp=\E[28~,
 	khome=\E[26~, lf1=PF1, lf2=PF2, lf3=PF3, lf4=PF4, mc0=\E[0i,
-	rc=\E8, ri=\EM$<2>, rmam=\E[?7l, rmcup=\E[ R, rmir=\E[4l,
-	rmkx=\E>, rs1=\E[13l\E[3l\E\\\E[63;1"p\E[!p,
-	rs2=\E[35h\E[?3l, rs3=\E[?5l\E[47h\E[40l\E[r, sc=\E7,
+	ri=\EM$<2>, rmam=\E[?7l, rmcup=\E[ R, rmir=\E[4l, rmkx=\E>,
+	rs1=\E[13l\E[3l\E\\\E[63;1"p\E[!p, rs2=\E[35h\E[?3l,
+	rs3=\E[?5l\E[47h\E[40l\E[r,
 	sgr=\E[0%?%p2%t;4%;%?%p3%p1%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?
 	    %p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
 	sgr0=\E[m\017, smam=\E[?7h, smcup=\E[ Q, smir=\E[4h,
 	smkx=\E[?1l\E=, tsl=\E7\E[99;%i%p1%dH,
 	use=ecma+underline, use=ecma+standout, use=ansi+arrows,
 	use=ansi+inittabs, use=ansi+local, use=ansi+pp,
-	use=ansi+rca2, use=ansi+sgrbold, use=decid+cpr,
-	use=vt100+4bsd, use=vt220+vtedit, use=vt100+keypad,
-	use=vt220+sfkeys, use=vt220+ufkeys, use=wyse+cvis,
+	use=ansi+rca2, use=ansi+sc, use=ansi+sgrbold,
+	use=decid+cpr, use=vt100+4bsd, use=vt220+vtedit,
+	use=vt100+keypad, use=vt220+sfkeys, use=vt220+ufkeys,
+	use=wyse+cvis,
 #
 #	Wyse 185 with 24 data lines and top status (terminal status)
 wy185-24|wyse185-24|Wyse 185 with 24 data lines,
@@ -20068,17 +20068,16 @@ ncr260vt200an|NCR 2900/260 VT200 with ANSI keyboard,
 	kf24=\E[34~, kf25=\E[35~, kf26=\E[1~, kf27=\E[2~,
 	kf28=\E[3~, kf29=\E[4~, kf30=\E[5~, kf31=\E[6~, kf32=\E[7~,
 	kf33=\E[8~, kf34=\E[9~, kf35=\E[10~, kf5=\E[M, khlp=\E[28~,
-	krdo=\E[29~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8,
+	krdo=\E[29~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE,
 	ri=\EM$<5>, rin=\E[%p1%dF$<5>, rmacs=\017$<20>,
 	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l\E>,
 	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<
 	    200>,
-	sc=\E7,
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5
 	    %;%?%p7%t;8%;m%?%p9%t\016%e\017%;$<20>,
 	sgr0=\E[0m\017$<20>, smacs=\016$<20>, smam=\E[?7h,
 	smir=\E[4h, smkx=\E[?1h\E=, vpa=\E[%p1%dd$<40>,
-	use=ecma+underline, use=ecma+standout,
+	use=ecma+underline, use=ecma+standout, use=ansi+sc,
 	use=ansi+sgrbold, use=ansi+cup, use=decid+cpr,
 	use=vt100+apparrows, use=vt100+keypad, use=vt100+tabs,
 	use=vt220+vtedit, use=vt220+cvis, use=ncr260vt+sl,
@@ -20123,18 +20122,17 @@ ncr260vt300an|NCR 2900/260 VT300 with ANSI keyboard,
 	kf24=\E[34~, kf25=\E[35~, kf26=\E[1~, kf27=\E[2~,
 	kf28=\E[3~, kf29=\E[4~, kf30=\E[5~, kf31=\E[6~, kf32=\E[7~,
 	kf33=\E[8~, kf34=\E[9~, kf35=\E[10~, kf5=\E[M, khlp=\E[28~,
-	krdo=\E[29~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8,
+	krdo=\E[29~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE,
 	ri=\EM$<5>, rin=\E[%p1%dF$<5>, rmacs=\017$<20>,
 	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l\E>,
 	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E[1;0%w\E(B\E)0\017\E[2J\E[1
 	    ;1H\E>$<200>,
-	sc=\E7,
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5
 	    %;%?%p7%t;8%;m%?%p9%t\016%e\017%;$<20>,
 	sgr0=\E[0m\017$<20>, smacs=\016$<20>, smam=\E[?7h,
 	smir=\E[4h, smkx=\E[?1h\E=, vpa=\E[%p1%dd$<40>,
-	use=ecma+underline, use=ecma+standout,
-	use=ansi+sgrbold, use=ansi+cup, use=decid+cpr,
+	use=ecma+underline, use=ecma+standout, use=ansi+cup,
+	use=ansi+sgrbold, use=ansi+sc, use=decid+cpr,
 	use=vt100+apparrows, use=vt100+keypad, use=vt100+tabs,
 	use=vt220+vtedit, use=vt220+cvis, use=ncr260vt+sl,
 	use=vt220+sfkeys, use=vt220+ufkeys,
@@ -20402,18 +20400,16 @@ ncrvt100an|ncrvt100pp|NCR VT100 for the 2900 terminal,
 	il1=\E[B\E[L$<80>, ind=\ED,
 	is2=\E[12h\E[?10l\E%/0n\E[P\031\E[?3l\E(B\E)0$<200>,
 	kLFT=\E[D, kRIT=\E[C, ka1=\E[H, kent=\r, mc0=\E[i$<100>,
-	nel=\EE, rc=\E8, rev=\E[7m$<30>, ri=\EM$<50>,
-	rmacs=\017$<90>, rmir=\E[4l$<80>, rmso=\E[0m$<30>,
-	rmul=\E[0m$<30>,
+	nel=\EE, rev=\E[7m$<30>, ri=\EM$<50>, rmacs=\017$<90>,
+	rmir=\E[4l$<80>, rmso=\E[0m$<30>, rmul=\E[0m$<30>,
 	rs2=\Ec\E[12;31h\E[?3;4;5;10l\E[?6;7;19;25h\E[33;34l\E[0m\E(
 	    B\E)0\E%/0n\E[P\031$<200>,
-	sc=\E7,
 	sgr=%?%p9%t\016%e\017%;\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1
 	    %p3%|%t;7%;%?%p4%t;5%;m$<120>,
 	sgr0=\017\E[0m$<120>, smacs=\016$<90>, smir=\E[4h$<80>,
 	smso=\E[7m$<30>, smul=\E[4m$<30>, tbc=\E[3g$<40>,
-	tsl=\E[>+1$<70>, use=decid+cpr, use=vt100+4bsd,
-	use=vt100+pf1-pf4,
+	tsl=\E[>+1$<70>, use=ansi+sc, use=decid+cpr,
+	use=vt100+4bsd, use=vt100+pf1-pf4,
 ncrvt100wan|NCRVT100WPP|ncrvt100wpp|NCR VT100 emulation of the 2900 terminal,
 	cols#132,
 	is2=\E[12h\E[?10l\E%/0n\E[P\031\E[?3h\E(B\E)0$<200>,
@@ -22903,16 +22899,16 @@ bq300-8|Bull VT320 full 8 bits 80 columns,
 	kf7=\23318~, kf8=\23319~, kf9=\23320~, kfnd=\2331~,
 	khlp=\23328~, kich1=\2332~, knp=\2336~, kpp=\2335~,
 	krdo=\23329~, kslt=\2334~, lf1=pf1, lf2=pf2, lf3=pf3,
-	lf4=pf4, mc0=\233i, mc4=\2334i, mc5=\2335i, nel=\EE, rc=\E8,
+	lf4=pf4, mc0=\233i, mc4=\2334i, mc5=\2335i, nel=\EE,
 	rev=\2337m, ri=\EM, rmacs=\E(B, rmam=\233?7l,
 	rmcup=\233?7h, rmir=\2334l, rmkx=\233?1l\E>,
 	rmso=\23327m, rmul=\23324m, rs1=\E[!p, rs2=\E[?3l,
-	s0ds=\E(B, s1ds=\E(0, sc=\E7,
+	s0ds=\E(B, s1ds=\E(0,
 	sgr=\233%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;
 	    1%;m%?%p9%t\E(0%e\E(B%;,
 	sgr0=\2330m\E(B, smacs=\E(0, smam=\233?7h,
 	smcup=\233?7l\233?1l\E(B, smir=\2334h, smso=\2337m,
-	smul=\2334m, tbc=\2333g, tsl=\2331$}\2332$~,
+	smul=\2334m, tbc=\2333g, tsl=\2331$}\2332$~, use=ansi+sc,
 	use=vt100+4bsd, use=vt220+cvis8,
 bq300-8rv|Bull VT320 8-bit reverse mode 80 columns,
 	flash=\233?5l$<50>\233?5h,
@@ -28533,5 +28529,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ use ansi+idc in hurd, tw100, vt420 -TD
 #	+ use ansi+erase in tw100 -TD
 #	+ add vt100+tabs -TD
+#
+# 2026-08-15
+#	+ use xterm+tmux2 in xterm+nofkeys to match xterm patch #407 -TD
+#	+ use ST in xterm+osc104 -TD
+#	+ use ansi+sc -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

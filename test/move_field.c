@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: move_field.c,v 1.24 2026/06/06 09:59:40 tom Exp $
+ * $Id: move_field.c,v 1.30 2026/08/16 00:30:53 tom Exp $
  *
  * Demonstrate move_field().
  */
@@ -41,8 +41,14 @@
 #define DO_DEMO	CTRL('F')	/* actual key for toggling demo-mode */
 #define MY_DEMO	EDIT_FIELD('f')	/* internal request-code */
 
+#define MAX_FIELDS 100
+
 static char empty[] = "";
-static FIELD *all_fields[100];
+static FIELD *all_fields[MAX_FIELDS];
+static unsigned num_fields;
+#if HAVE_RIPOFFLINE
+WINDOW *win_help = NULL;
+#endif
 /* *INDENT-OFF* */
 static struct {
     int code;
@@ -120,28 +126,30 @@ my_help_edit_field(void)
     free(msgs);
 }
 
-static FIELD *
+static void
 make_label(const char *label, int frow, int fcol)
 {
     FIELD *f = new_field(1, (int) strlen(label), frow, fcol, 0, 0);
 
     if (f) {
 	set_field_buffer(f, 0, label);
+	set_field_back(f, (chtype) COLOR_PAIR(1));
 	set_field_opts(f, (int) ((unsigned) field_opts(f) & (unsigned) ~O_ACTIVE));
+	all_fields[num_fields++] = f;
     }
-    return (f);
 }
 
-static FIELD *
+static void
 make_field(int frow, int fcol, int rows, int cols)
 {
     FIELD *f = new_field(rows, cols, frow, fcol, 0, 1);
 
     if (f) {
-	set_field_back(f, A_UNDERLINE);
+	set_field_type(f, TYPE_ALPHA, 1);
+	set_field_back(f, (chtype) (COLOR_PAIR(1) | A_UNDERLINE));
 	init_edit_field(f, empty);
+	all_fields[num_fields++] = f;
     }
-    return (f);
 }
 
 static void
@@ -279,11 +287,43 @@ my_edit_field(FORM *form, int *result)
 static FIELD **
 copy_fields(FIELD **source, size_t length)
 {
-    FIELD **target = typeCalloc(FIELD *, length + 1);
+    FIELD **target = typeCalloc(FIELD *, length + 2);	/* add one plus NULL */
     if (target != NULL)
 	memcpy(target, source, length * sizeof(FIELD *));
     return target;
 }
+
+#if HAVE_RIPOFFLINE
+static int
+rip_help(WINDOW *win, int cols)
+{
+    (void) cols;
+    win_help = win;
+    return OK;
+}
+
+/*
+ * We can't do this stuff in rip_help() because colors aren't yet set up
+ * when initscr() calls it.
+ */
+static void
+configure_help(WINDOW *win)
+{
+    wbkgd(win, (chtype) COLOR_PAIR(1));
+    werase(win);
+    wmove(win, 0, 0);
+    wnoutrefresh(win);
+}
+
+static void
+default_help(WINDOW *win)
+{
+    werase(win);
+    wprintw(win, "Press F1 for help, %s to move field, or ^Q to quit.",
+	    keyname(DO_DEMO));
+    wnoutrefresh(win);
+}
+#endif
 
 /* display a status message to show what's happening */
 static void
@@ -291,15 +331,27 @@ show_status(NCURSES_CONST FORM *form, NCURSES_CONST FIELD *field)
 {
     NCURSES_CONST WINDOW *sub = form_sub(form);
     int currow, curcol;
+    WINDOW *status = stdscr;
 
     getyx(stdscr, currow, curcol);
-    mvprintw(LINES - 1, 0,
-	     "Field at [%d,%d].  Press %s to quit moving.",
-	     getbegy(sub) + form_field_row(field),
-	     getbegx(sub) + form_field_col(field),
-	     keyname(DO_DEMO));
-    clrtobot();
-    move(currow, curcol);
+
+#if HAVE_RIPOFFLINE
+    wmove(status = win_help, 0, 0);
+#else
+    move(LINES - 1, 0);
+#endif
+
+    wprintw(status, "Field at [%d,%d].  Press %s to quit moving.",
+	    getbegy(sub) + form_field_row(field),
+	    getbegx(sub) + form_field_col(field),
+	    keyname(DO_DEMO));
+    wclrtobot(status);
+
+    if (status == stdscr) {
+	move(currow, curcol);
+    } else {
+	wrefresh(status);
+    }
     refresh();
 }
 
@@ -313,6 +365,17 @@ do_demo(FORM *form)
     int count = field_count(form);
     FIELD *my_field = current_field(form);
     FIELD **old_fields = form_fields(form);
+
+    if (my_field == NULL) {
+	beep();
+    } else {
+	int rows, cols, frow, fcol, nrow, nbuf;
+	if (field_info(my_field,
+		       &rows, &cols,
+		       &frow, &fcol,
+		       &nrow, &nbuf) == E_OK) {
+	}
+    }
 
     if (count > 0 && old_fields != NULL && my_field != NULL) {
 	size_t needed = (size_t) count;
@@ -392,8 +455,12 @@ do_demo(FORM *form)
 		}
 
 		/* cleanup */
+#if HAVE_RIPOFFLINE
+		default_help(win_help);
+#else
 		move(LINES - 1, 0);
 		clrtobot();
+#endif
 		move(currow, curcol);
 		refresh();
 	    }
@@ -414,7 +481,10 @@ my_form_driver(FORM *form, int c)
 	my_help_edit_field();
 	break;
     case MY_DEMO:
-	do_demo(form);
+	if (num_fields < MAX_FIELDS - 2)
+	    do_demo(form);
+	else
+	    beep();
 	break;
     default:
 	beep();
@@ -428,33 +498,28 @@ demo_forms(void)
 {
     FORM *form;
     int c;
-    unsigned n = 0;
     const char *fname;
 
     /* describe the form */
-    all_fields[n++] = make_label("Sample Form", 0, 15);
+    make_label("Sample Form", 0, 15);
 
     fname = "Last Name";
-    all_fields[n++] = make_label(fname, 2, 0);
-    all_fields[n++] = make_field(3, 0, 1, 18);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 0);
+    make_field(3, 0, 1, 18);
 
     fname = "First Name";
-    all_fields[n++] = make_label(fname, 2, 20);
-    all_fields[n++] = make_field(3, 20, 1, 12);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 20);
+    make_field(3, 20, 1, 12);
 
     fname = "Middle Name";
-    all_fields[n++] = make_label(fname, 2, 34);
-    all_fields[n++] = make_field(3, 34, 1, 12);
-    set_field_type(all_fields[n - 1], TYPE_ALPHA, 1);
+    make_label(fname, 2, 34);
+    make_field(3, 34, 1, 12);
 
     fname = "Comments";
-    all_fields[n++] = make_label(fname, 5, 0);
-    all_fields[n++] = make_field(6, 0, 4, 46);
-    init_edit_field(all_fields[n - 1], empty);
+    make_label(fname, 5, 0);
+    make_field(6, 0, 4, 46);
 
-    all_fields[n] = (FIELD *) 0;
+    all_fields[num_fields] = (FIELD *) 0;
 
     if ((form = new_form(all_fields)) != NULL) {
 	int finished = 0;
@@ -523,6 +588,9 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
+#if HAVE_RIPOFFLINE
+    ripoffline(-1, rip_help);
+#endif
     initscr();
     cbreak();
     noecho();
@@ -539,7 +607,11 @@ main(int argc, char *argv[])
 	bkgd((chtype) COLOR_PAIR(1));
 	refresh();
     }
-
+#if HAVE_RIPOFFLINE
+    configure_help(win_help);
+    default_help(win_help);
+    wrefresh(win_help);
+#endif /* HAVE_RIPOFFLINE */
     demo_forms();
 
     endwin();

@@ -1,7 +1,7 @@
 <!--
   * t
   ****************************************************************************
-  * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+  * Copyright 2018-2025,2026 Thomas E. Dickey                                *
   * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_addch.3x,v 1.144 2025/11/12 01:04:12 tom Exp @
+  * @Id: curs_addch.3x,v 1.146 2026/08/15 22:15:03 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_addch 3x 2025-11-11 ncurses 6.6 Library calls</TITLE>
+<TITLE>curs_addch 3x 2026-08-15 ncurses 6.6 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_addch 3x 2025-11-11 ncurses 6.6 Library calls</H1>
+<H1 class="no-header">curs_addch 3x 2026-08-15 ncurses 6.6 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 
@@ -126,51 +126,59 @@
        <STRONG>o</STRONG>   Carriage return moves the cursor to the left  margin  on  the  same
            line of the window.
 
-       <STRONG>o</STRONG>   Line  feed  does a <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from the right
-           margin.
+       <STRONG>o</STRONG>   Line feed performs <STRONG><A HREF="curs_clear.3x.html">clrtoeol(3x)</A></STRONG>, then advances as if from the right
+           margin (see below).
 
-       <STRONG>o</STRONG>   Tab advances the cursor to the next tab stop (possibly on the  next
+       <STRONG>o</STRONG>   Tab  advances the cursor to the next tab stop (possibly on the next
            line); these are placed at every eighth column by default.
 
-           Alter   the   tab   interval   with   the  <STRONG>TABSIZE</STRONG>  extension;  see
+           You can alter the tab interval  with  the  <STRONG>TABSIZE</STRONG>  extension;  see
            <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
        If <EM>ch</EM> is any other nonprintable character, <EM>curses</EM> draws it in printable
        form using the same convention as <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG>.  Calling <STRONG><A HREF="curs_inch.3x.html">winch(3x)</A></STRONG> on the
-       location of a nonprintable character  does  not  return  the  character
+       location  of  a  nonprintable  character  does not return the character
        itself, but its <STRONG><A HREF="unctrl.3x.html">unctrl(3x)</A></STRONG> representation.
 
-       Adding  printable characters with <STRONG>waddch</STRONG> causes it to wrap at the right
-       margin of the window:
+       Adding printable characters with <STRONG>waddch</STRONG> causes it to wrap at the  right
+       margin of the window.
 
-       <STRONG>o</STRONG>   If the cursor is not at the bottom  of  the  scrolling  region  and
-           advancement  occurs  at  the right margin, the cursor automatically
+       <STRONG>o</STRONG>   If  the  cursor  is  not  at the bottom of the scrolling region and
+           advancement occurs at the right margin,  the  cursor  automatically
            wraps to the beginning of the next line.
 
-       <STRONG>o</STRONG>   If the cursor is  at  the  bottom  of  the  scrolling  region  when
+       <STRONG>o</STRONG>   If  the  cursor  is  at  the  bottom  of  the scrolling region when
            advancement occurs at the right margin, and <STRONG><A HREF="scrollok.3x.html">scrollok(3x)</A></STRONG> is enabled
-           for  <EM>win</EM>,  the  scrolling region scrolls up one line and the cursor
+           for <EM>win</EM>, the scrolling region scrolls up one line  and  the  cursor
            wraps as above.  Otherwise, advancement and scrolling do not occur,
            and <STRONG>waddch</STRONG> returns <STRONG>ERR</STRONG>.
 
-       A window's margins may coincide with the screen boundaries.   This  may
-       be  a  problem  when  <EM>ncurses</EM>  updates  the  screen to match the curses
-       window.  When their right and bottom  margins  coincide,  <EM>ncurses</EM>  uses
-       different strategies to handle the variations of scrolling and wrapping
-       at the lower-right corner by depending on the terminal capabilities:
+       A  window's  margins may coincide with the screen boundaries.  This may
+       be a problem when <EM>ncurses</EM>  updates  the  screen  to  match  the  <EM>curses</EM>
+       window.   When their right and bottom margins coincide, <EM>ncurses</EM> employs
+       varying strategies to handle the ways in which scrolling  and  wrapping
+       behaviors  combine at the lower-right corner of the terminal display by
+       detecting and configuring the terminal's capabilities.
 
-       <STRONG>o</STRONG>   If the terminal does not automatically wrap as characters are added
-           at  the right margin (i.e., auto right margins), <EM>ncurses</EM> writes the
-           character directly.
+       <STRONG>o</STRONG>   If the terminal does not wrap its cursor to the next  line  when  a
+           character  is  written to the rightmost cell on a line -- (<EM>terminfo</EM>
+           capability <STRONG>auto_right_margin</STRONG> (<STRONG>am</STRONG>)  --  <EM>ncurses</EM>  simply  writes  the
+           character.
 
-       <STRONG>o</STRONG>   If the terminal has auto right margins, but also  has  capabilities
-           for  turning auto margins off and on, <EM>ncurses</EM> turns the auto margin
-           feature off temporarily when writing to the lower-right corner.
+       <STRONG>o</STRONG>   If  the  terminal possesses the "auto right margin" capability, but
+           also enables it to be configured on and off, <EM>ncurses</EM> disables  auto
+           right  margin  temporarily  when writing a character to lower-right
+           cell of the terminal display.
 
-       <STRONG>o</STRONG>   If the terminal has an insertion mode which can be turned  off  and
-           on,  <EM>ncurses</EM>  writes  the  character  just  before  the lower-right
-           corner, and then inserts a character to push the  update  into  the
-           corner.
+       <STRONG>o</STRONG>   If the terminal does not permit auto right margin  deconfiguration,
+           but has an "insert mode" -- <EM>terminfo</EM> capabilities <STRONG>enter_insert_mode</STRONG>
+           (<STRONG>smir</STRONG>) and <STRONG>exit_insert_mode</STRONG> (<STRONG>rmir</STRONG>) -- <EM>ncurses</EM> saves the contents of
+           the  character  cell preceding that at the bottom right, writes the
+           character with which the application wishes to populate the  bottom
+           right  character  cell  to  the cell preceding it on the same line,
+           then uses the terminal's insert mode to rewrite the contents of the
+           saved character  cell  to  that  location,  "pushing"  the  desired
+           character into the bottom right cell.
 
 
 </PRE><H3><a name="h3-wechochar">wechochar</a></H3><PRE>
@@ -427,7 +435,7 @@
        <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>,    <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>,    <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>,   <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>,
        <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>, <STRONG>putchar(3)</STRONG>
 
-ncurses 6.6                       2025-11-11                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+ncurses 6.6                       2026-08-15                    <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

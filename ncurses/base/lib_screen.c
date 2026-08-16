@@ -42,7 +42,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_screen.c,v 1.114 2026/05/30 22:10:47 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.115 2026/08/15 17:07:58 tom Exp $")
 
 #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
 
@@ -451,6 +451,11 @@ read_row(char *source, NCURSES_CH_T *prior, NCURSES_CH_T *target, int length)
 	if (len > 1) {
 	    int n;
 
+	    if (len > length) {
+		memset(target->chars, 0, sizeof(target->chars));
+		target->chars[0] = ' ';
+		break;
+	    }
 	    SetWidecExt(CHDEREF(target), 0);
 	    for (n = 1; n < len; ++n) {
 		target[n] = target[0];

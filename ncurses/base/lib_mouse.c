@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.231 2026/07/25 22:43:45 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.232 2026/08/15 23:32:01 tom Exp $")
 
 #include <tic.h>
 
@@ -1784,7 +1784,7 @@ static void
 _nc_mouse_wrap(SCREEN *sp)
 /* release mouse -- called by endwin() before shellout/exit */
 {
-    TR(MY_TRACE, ("_nc_mouse_wrap() called"));
+    T((T_CALLED("_nc_mouse_wrap() called")));
 
     switch (sp->_mouse_type) {
     case M_XTERM:
@@ -1811,13 +1811,14 @@ _nc_mouse_wrap(SCREEN *sp)
     case M_NONE:
 	break;
     }
+    returnVoid;
 }
 
 static void
 _nc_mouse_resume(SCREEN *sp)
 /* re-connect to mouse -- called by doupdate() after shellout */
 {
-    TR(MY_TRACE, ("_nc_mouse_resume() called"));
+    T((T_CALLED("_nc_mouse_resume() called")));
 
     switch (sp->_mouse_type) {
     case M_XTERM:
@@ -1849,6 +1850,7 @@ _nc_mouse_resume(SCREEN *sp)
     case M_NONE:
 	break;
     }
+    returnVoid;
 }
 
 /**************************************************************************

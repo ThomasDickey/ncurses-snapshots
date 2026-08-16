@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.349 2026/07/25 23:46:52 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.352 2026/08/15 23:11:50 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -3376,6 +3376,17 @@ check_termtype(TERMTYPE2 *tp, bool literal)
     PAIRED_USER_STRS(PS, PE);
     PAIRED_USER_STRS(RV, rv);
     PAIRED_USER_STRS(XR, xr);
+    /* *INDENT-OFF* */
+    PAIRED(enter_alt_charset_mode, exit_alt_charset_mode);
+    PAIRED(enter_ca_mode,          exit_ca_mode);
+    PAIRED(enter_delete_mode,      exit_delete_mode);
+    PAIRED(enter_insert_mode,      exit_insert_mode);
+    PAIRED(enter_standout_mode,    exit_standout_mode);
+    PAIRED(enter_underline_mode,   exit_underline_mode);
+    PAIRED(enter_xon_mode,         exit_xon_mode);
+    PAIRED(enter_pc_charset_mode,  exit_pc_charset_mode);
+    PAIRED(enter_scancode_mode,    exit_scancode_mode);
+    /* *INDENT-ON* */
 
     /*
      * Some standard applications (e.g., vi) and some non-curses
@@ -3386,11 +3397,17 @@ check_termtype(TERMTYPE2 *tp, bool literal)
      * Since only termcap applications are affected, limit the warning, e.g.,
      * using -v1 or -vv options for terminfo, and -v for termcap sources.
      */
-    if (((debug_level > 1) || (_nc_syntax == SYN_TERMCAP)) &&
-	((PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode)) &&
-	 PRESENT(insert_character))) {
-	_nc_warning("non-curses applications may be confused by ich1 with smir/rmir");
+    if (PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode)) {
+	if (((debug_level > 1) || (_nc_syntax == SYN_TERMCAP)) &&
+	    PRESENT(insert_character)) {
+	    _nc_warning("non-curses applications may be confused by ich1 with smir/rmir");
+	} else if (_nc_syntax != SYN_TERMCAP) {
+	    ANDMISSING(parm_ich, insert_character);
+	}
+    } else {
+	ANDMISSING(parm_ich, insert_character);
     }
+    ANDMISSING(parm_dch, delete_character);
 
     /*
      * Finally, do the non-verbose checks

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2023,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 2000-2008,2012 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.25 2026/07/03 00:10:11 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.26 2026/07/03 00:10:11 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4505 2026/08/08 23:52:30 tom Exp $
+-- $Id: NEWS,v 1.4512 2026/08/15 22:51:49 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,26 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20260815
+	+ improve tic warnings for paired capabilities, including ich/ich1.
+	+ use xterm+tmux2 in xterm+nofkeys to match xterm patch #407 -TD
+	+ use ST in xterm+osc104 -TD
+	+ use ansi+sc -TD
+	+ modify test/dup_field.c to also demonstrate link_field().
+	+ work around use of ^D for exiting test/ncurses except in the form
+	  test which uses ^D for movement (patch by Branden Robinson).
+	+ improve appearance of test/dup_field and test/move_field, adding a
+	  help-hint (patches by Branden Robinson).
+	+ improve formatting/style of manpages (patches by Branden Robinson).
+	+ add limit-checks in lib_screen.c and lib_ins_wch.c in case a 2-cell
+	  character is added at the right-margin (report by Miroslav Lichvar).
+	+ improve limit-check for extended names in _nc_read_termtype
+	  (report/patch by Yeo Jooho).
+	+ improve description of init_extended_color in man page (patch by
+	  Andrew Burgess).
+	+ modify test/Makefile.in to fix "make check" when ncurses is built in
+	  a non-source tree (report by Bruno Haible).
 
 20260808
 	+ various improvements/fixes to test/dup_field.c
