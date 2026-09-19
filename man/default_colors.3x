@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2023,2024 Thomas E. Dickey                                *
+.\" Copyright 2018-2024,2026 Thomas E. Dickey                                *
 .\" Copyright 2000-2011,2016 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey 1997,1999,2000,2005
 .\"
-.\" $Id: default_colors.3x,v 1.52 2024/04/13 22:17:22 tom Exp $
-.TH default_colors 3X 2024-04-13 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: default_colors.3x,v 1.56 2026/09/19 21:38:50 tom Exp $
+.TH default_colors 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -44,7 +44,7 @@
 .SH NAME
 \fB\%use_default_colors\fP,
 \fB\%assume_default_colors\fP \-
-use terminal's default colors in \fIcurses\fP
+use terminal's default colors in \fIncurses\fP
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
@@ -140,11 +140,11 @@ a different problem: support for applications which would use
 environment variables and other configuration to bypass curses'
 notion of the terminal's default colors, setting specific values.
 .SH PORTABILITY
-These routines are specific to \fI\%ncurses\fP.
-They were not supported on
-Version 7, BSD or System V implementations.
-It is recommended that
-any code depending on them be conditioned using NCURSES_VERSION.
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
 .SH AUTHORS
 Thomas Dickey (from an analysis of the requirements for color xterm
 for XFree86 3.1.2C, February 1996).

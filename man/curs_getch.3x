@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.138 2026/08/15 18:59:27 tom Exp $
-.TH curs_getch 3X 2026-08-15 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_getch.3x,v 1.140 2026/09/19 21:33:53 tom Exp $
+.TH curs_getch 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -313,9 +313,9 @@ with some apparent misspellings
 (such as \*(``RSUME\*('' for \*(``resume\*('');
 the names correspond to the
 .I \%term\%info
-capability names for the keys,
-and were standardized before the IBM PC/AT keyboard layout achieved a
-dominant position in industry.
+capability names for the keys.
+See subsection \*(``Keypad and Function Keys\*('' of \fB\%terminfo\fP(5)
+for a historical account.
 .PP
 .RS
 .\" XXX: Move this list into ncurses(3X), rather than duplicating it in
@@ -637,8 +637,7 @@ AT&T 7300
 (also known variously as the \*(``3B1\*('', \*(``Safari 4\*('', and
 \*(``UNIX PC\*(''),
 a 1985 machine rich in function keys.
-Today's computer keyboards are based on that of the IBM PC/AT
-and tend to have fewer.
+Today's computer keyboards tend to have fewer.
 A
 .I curses
 application can expect such a keyboard to transmit key codes
@@ -667,8 +666,8 @@ for 1 \(<=
 .I n
 \(<= 12.
 .\" Other numeric keypad keys from the DEC VT220 (specifically, the
-.\" LK201 commonly used with it) and IBM PC/AT keyboards -- the comma
-.\" (DEC); plus, star, and slash (PC); and zero, dot, and minus (both)
+.\" LK-201 commonly used with it) and IBM Model M keyboards -- the comma
+.\" (DEC); plus, star, and slash (IBM); and zero, dot, and minus (both)
 .\" have no standard key capability codes.
 .SH EXTENSIONS
 In

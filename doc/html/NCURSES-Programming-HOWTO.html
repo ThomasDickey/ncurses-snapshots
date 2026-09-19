@@ -2314,8 +2314,8 @@ main(void)
     int ch;
 
     initscr();                  /* Start curses mode            */
-    cbreak();                   /* Line buffering disabled, Pass on
-                                 * every thing to me            */
+    cbreak();                   /* disable line buffering and
+                                 * editing control characters   */
     keypad(stdscr, TRUE);       /* I need that nifty F1         */
 
     height = 3;
@@ -2522,8 +2522,8 @@ main(void)
 
     initscr();                  /* Start curses mode            */
     start_color();              /* Start the color functionality */
-    cbreak();                   /* Line buffering disabled, Pass on
-                                 * everty thing to me                 */
+    cbreak();                   /* disable line buffering and
+                                 * editing control characters   */
     keypad(stdscr, TRUE);       /* I need that nifty F1         */
     noecho();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
@@ -2834,7 +2834,8 @@ main(void)
     initscr();
     clear();
     noecho();
-    cbreak();                   /* Line buffering disabled. pass on everything */
+    cbreak();                   /* disable line buffering and
+                                 * editing control characters   */
     startx = (80 - WIDTH) / 2;
     starty = (24 - HEIGHT) / 2;
 
@@ -3074,7 +3075,8 @@ main(void)
     initscr();
     clear();
     noecho();
-    cbreak();                   /* Line buffering disabled. pass everything */
+    cbreak();                   /* disable line buffering and
+                                 * editing control characters   */
 
     /* Try to put the window in the middle of screen */
     startx = (80 - WIDTH) / 2;

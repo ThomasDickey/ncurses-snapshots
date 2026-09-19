@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_sp_funcs.3x,v 1.58 2026/09/05 20:08:00 tom Exp $
-.TH curs_sp_funcs 3X 2026-09-05 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_sp_funcs.3x,v 1.60 2026/09/19 21:09:10 tom Exp $
+.TH curs_sp_funcs 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -275,10 +275,11 @@ NCURSES_OUTC
 This is a function-pointer type used for the cases where a function passes
 characters to the output stream, e.g., \fBvidputs\fP(3X).
 .SH PORTABILITY
-These routines are specific to \fI\%ncurses\fP.
-They were not supported on Version 7, BSD or System V implementations.
-It is recommended that any code depending on \fI\%ncurses\fP extensions
-be conditioned using \fINCURSES_SP_FUNCS\fP.
+Applications employing these
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_SP_FUNCS
+preprocessor macro.
 .SH SEE ALSO
 \fB\%curses\fP(3X),
 \fB\%curs_opaque\fP(3X),

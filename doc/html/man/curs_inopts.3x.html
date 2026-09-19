@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_inopts.3x,v 1.120 2026/08/22 20:23:04 tom Exp @
+  * @Id: curs_inopts.3x,v 1.125 2026/09/19 21:40:33 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_inopts 3x 2026-08-22 ncurses 6.6 Library calls</TITLE>
+<TITLE>curs_inopts 3x 2026-09-19 ncurses 6.6 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_inopts 3x 2026-08-22 ncurses 6.6 Library calls</H1>
+<H1 class="no-header">curs_inopts 3x 2026-09-19 ncurses 6.6 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>                  Library calls                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
@@ -161,12 +161,13 @@
        to indicate the  availability  of  a  function  key  code  in  its  <EM>wch</EM>
        parameter.)   If  the  sequence is invalid, the input character reading
        function returns only its last character.  If disabled (<EM>bf</EM>  is  <STRONG>FALSE</STRONG>),
-       <EM>curses</EM>  does  not  treat function keys specially and the program has to
-       interpret escape sequences itself.  If the  terminal  type  description
-       defines  the  <STRONG>keypad_local</STRONG>  (<STRONG>rmkx</STRONG>) and <STRONG>keypad_xmit</STRONG> (<STRONG>smkx</STRONG>) capabilities,
-       enabling a window's keypad mode sets the terminal's keypad to transmit,
-       and disabling keypad mode sets the terminal's keypad to  work  locally.
-       By default, a window's keypad mode is off.
+       <EM>curses</EM>  does  not  treat  function keys specially; the application must
+       itself  interpret  any  character  sequences  they  transmit.   If  the
+       terminal   type   description   defines  the  <STRONG>keypad_local</STRONG>  (<STRONG>rmkx</STRONG>)  and
+       <STRONG>keypad_xmit</STRONG> (<STRONG>smkx</STRONG>) capabilities, enabling a window's keypad  mode  sets
+       the  terminal's  keypad to transmit, and disabling keypad mode sets the
+       terminal's keypad to work locally.  By default, a window's keypad  mode
+       is off.
 
 
 </PRE><H3><a name="h3-meta">meta</a></H3><PRE>
@@ -185,10 +186,10 @@
 </PRE><H3><a name="h3-nl_nonl">nl, nonl</a></H3><PRE>
        Initially, whether the terminal reports a  carriage  return  using  the
        character  code  for  a line feed in cbreak or raw modes depends on the
-       configuration of the terminal driver; see  <STRONG>termios(3)</STRONG>.   <STRONG>nl</STRONG>  configures
-       the terminal to perform this translation.  <STRONG>nonl</STRONG> disables it.  Under its
-       canonical  ("cooked")  line  discipline,  the  terminal  driver  always
-       translates carriage returns to line feeds.
+       configuration of the terminal driver; on POSIX systems, see <STRONG>termios(3)</STRONG>.
+       <STRONG>nl</STRONG> configures the terminal to perform this translation.  <STRONG>nonl</STRONG>  disables
+       it.   Under  its  canonical  ("cooked")  line  discipline, the terminal
+       driver always translates carriage returns to line feeds.
 
 
 </PRE><H3><a name="h3-nodelay">nodelay</a></H3><PRE>
@@ -306,6 +307,39 @@
        global  symbol permitting the user and application, respectively, to do
        so; see <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG> and <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>.
 
+       When <STRONG>keypad</STRONG> is first enabled for a window, <EM>ncurses</EM> loads  the  standard
+       function  key  string capabilities for the terminal type description of
+       its screen; see the table entries containing "key_" in <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.  If
+       that description includes extended string capabilities (produced by the
+       <STRONG>-x</STRONG> option of <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>, for example), then for each extended function  key
+       whose  capability code begins with "k", <EM>ncurses</EM> generates a numeric key
+       code.  These code values are affected by  previous  loads  of  terminal
+       type descriptions, and may differ from one execution of the application
+       to  the  next.   In <EM>ncurses</EM>, <STRONG><A HREF="curs_util.3x.html">keyname(3x)</A></STRONG> recognizes these generated key
+       codes and returns a name beginning with "k" denoting the extended <EM>term-</EM>
+       <EM>info</EM> capability code  rather  than  one  starting  with  "KEY_",  which
+       standard  <EM>curses</EM>  key  names  use.   Further,  an  application  can use
+       <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG> to bind any key code to a  string  of  the  programmer's
+       choice.   This  feature  enables an application to check for a function
+       key's presence with <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>, and reassign the key  code  to  match
+       its own needs.
+
+       Applications   employing   the   lower-level   <EM>terminfo</EM>   API  can  use
+       <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG> to obtain the contents of any string capability, including
+       extended ones.  Applications employing the higher-level <EM>curses</EM> API  use
+       an input character reading function to obtain key codes from input; the
+       result  can  vary depending upon the order in which string capabilities
+       are loaded.  Multiple key capability strings can have the  same  value,
+       but  the input character reading function can report only one key code.
+       Most <EM>curses</EM> implementations (including <EM>ncurses</EM>) load key definitions in
+       the order they appear in  the  <STRONG>strfnames</STRONG>  array  of  string  capability
+       names;  see  <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.   The  <EM>last</EM>  capability  read  using a
+       particular definition determines the key code to be reported.   <EM>ncurses</EM>
+       loads  extended capabilities after standard ones.  Thus, if an extended
+       string capability's value is the same as  one  previously  loaded,  the
+       input  character  reading  function  returns the last matching extended
+       one.
+
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
        <EM>ncurses</EM> provides four "is_" functions corresponding  to  <STRONG>cbreak</STRONG>,  <STRONG>echo</STRONG>,
@@ -352,36 +386,6 @@
        raw  input  wants  a  clean  (ideally, 8-bit clean) connection that the
        operating system does not alter.
 
-       When <STRONG>keypad</STRONG> is first enabled for a window, <EM>ncurses</EM> loads  the  standard
-       function  key  string capabilities for the terminal type description of
-       its screen; see the entries beginning with "key_" in  <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.   If
-       that description includes extended string capabilities, produced by the
-       <STRONG>-x</STRONG>  option  of  <STRONG><A HREF="tic.1m.html">tic(1)</A></STRONG>, for example, then <EM>ncurses</EM> also defines keys for
-       the capabilities whose codes  begin  with  "k".   <EM>ncurses</EM>  generates  a
-       numeric  key  code  for  each  such  extended  capability; depending on
-       previous loads of terminal type descriptions, these may differ from one
-       execution of  a  program  to  the  next.   <STRONG><A HREF="curs_util.3x.html">keyname(3x)</A></STRONG>  recognizes  the
-       generated  key codes and returns a name beginning with "k" denoting the
-       <EM>terminfo</EM> capability name rather than "KEY_", used for <EM>curses</EM> key names.
-       On the other hand, an application can  use  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>  to  bind  a
-       selected  key  to  a  string  of the programmer's choice.  This feature
-       enables an application to check for its presence with <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>, and
-       reassign the numeric key code to match its own needs.
-
-       Low-level applications can use <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG> to obtain the definition of
-       any string capability.  <EM>curses</EM> applications  use  the  input  character
-       reading function to obtain key codes from input and rely upon the order
-       in  which  the string capabilities are loaded.  Multiple key capability
-       strings can have the  same  value,  but  the  input  character  reading
-       function  can  report  only  one key code.  Most <EM>curses</EM> implementations
-       (including <EM>ncurses</EM>) load key definitions in the order  they  appear  in
-       the <STRONG>strfnames</STRONG> array of string capability names; see <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.
-       The  last  capability read using a particular definition determines the
-       key code to be reported.  In  <EM>ncurses</EM>,  extended  capabilities  can  be
-       interpreted  as  key  definitions.   The  library loads these after its
-       built-in definitions, and if an extended capability's value is the same
-       as one previously loaded, the library uses the later definition.
-
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
        4BSD (1980) introduced <EM>echo</EM>, <EM>noecho</EM>, <EM>nl</EM>, <EM>nonl</EM>, <EM>raw</EM>, and <EM>noraw</EM>.
@@ -413,7 +417,7 @@
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>,     <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>,    <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>,
        <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>, <STRONG>termios(3)</STRONG>, <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>
 
-ncurses 6.6                       2026-08-22                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
+ncurses 6.6                       2026-09-19                   <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

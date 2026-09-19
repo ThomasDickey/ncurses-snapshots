@@ -28,19 +28,19 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: user_caps.5,v 1.64 2026/01/11 23:54:16 tom Exp @
+  * @Id: user_caps.5,v 1.67 2026/09/19 21:34:21 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>user_caps 5 2026-01-11 ncurses 6.6 File formats</TITLE>
+<TITLE>user_caps 5 2026-09-19 ncurses 6.6 File formats</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">user_caps 5 2026-01-11 ncurses 6.6 File formats</H1>
+<H1 class="no-header">user_caps 5 2026-09-19 ncurses 6.6 File formats</H1>
 <PRE>
 <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>                     File formats                     <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 
@@ -139,7 +139,7 @@
            larger numbers.
 
        Although  <EM>termcap</EM>'s  extensibility  was rarely used -- the claimant was
-       never an implementor who had actually exercised it -- the criticism had
+       never an implementer who had actually exercised it -- the criticism had
        a  point.   <EM>ncurses</EM>  5.0  provided  a   way   to   detect   nonstandard
        capabilities,  to  determine  their  type,  and to optionally store and
        retrieve them in a way that did not interfere with other  applications.
@@ -237,13 +237,13 @@
              Because there are several RGB encodings in use, applications that
              make  assumptions  about the number of bits per color channel are
              unlikely to work reliably.  As a trivial case, one  could  define
-             <STRONG>RGB#1</STRONG> to represent the standard eight ANSI X3.64/ECMA-48/ISO 6429
-             colors using one bit per color channel.
+             <STRONG>RGB#1</STRONG>  to  represent  the  standard eight ECMA-48/ISO 6429 colors
+             using one bit per color channel.
 
-          <STRONG>U8</STRONG> (numeric)  asserts  whether  <EM>ncurses</EM>  must use Unicode values for
-             line-drawing characters, and that it should ignore the  alternate
-             character  set  (ACS)  capabilities  when  the  locale uses UTF-8
-             encoding.  See the discussion of <STRONG>NCURSES_NO_UTF8_ACS</STRONG>  in  section
+          <STRONG>U8</STRONG> (numeric) asserts whether <EM>ncurses</EM> must  use  Unicode  values  for
+             line-drawing  characters, and that it should ignore the alternate
+             character set (ACS)  capabilities  when  the  locale  uses  UTF-8
+             encoding.   See  the discussion of <STRONG>NCURSES_NO_UTF8_ACS</STRONG> in section
              "ENVIRONMENT" of <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.
 
              Set this capability to a nonzero value to enable it.
@@ -251,34 +251,34 @@
           <STRONG>XM</STRONG> (string) override <EM>ncurses</EM>'s built-in string that directs <STRONG>xterm(1)</STRONG>
              to enable or disable mouse mode.
 
-             <EM>ncurses</EM>  sends a character sequence to the terminal to initialize
-             mouse mode, and when the user clicks the  mouse  buttons  or  (in
-             certain  modes) moves the mouse, handles the characters sent back
-             by the terminal to tell the application what was  done  with  the
+             <EM>ncurses</EM> sends a character sequence to the terminal to  initialize
+             mouse  mode,  and  when  the user clicks the mouse buttons or (in
+             certain modes) moves the mouse, handles the characters sent  back
+             by  the  terminal  to tell the application what was done with the
              mouse.
 
-             The  mouse  protocol  is  enabled  when  the <EM>mask</EM> argument to the
-             <STRONG><A HREF="curs_mouse.3x.html">mousemask(3x)</A></STRONG> function is nonzero.  By default,  <EM>ncurses</EM>  handles
-             the  responses  for  the X11 <EM>xterm</EM> mouse protocol.  It also knows
-             about the SGR 1006 <EM>xterm</EM> mouse protocol, but must to be  told  to
-             look  for it specifically.  <EM>ncurses</EM> is not be able to guess which
-             of the two modes is used, because the responses are enough  alike
+             The mouse protocol is enabled  when  the  <EM>mask</EM>  argument  to  the
+             <STRONG><A HREF="curs_mouse.3x.html">mousemask(3x)</A></STRONG>  function  is nonzero.  By default, <EM>ncurses</EM> handles
+             the responses for the X11 <EM>xterm</EM> mouse protocol.   It  also  knows
+             about  the  SGR 1006 <EM>xterm</EM> mouse protocol, but must to be told to
+             look for it specifically.  <EM>ncurses</EM> is not be able to guess  which
+             of  the two modes is used, because the responses are enough alike
              that only confusion would result.
 
-             The  <STRONG>XM</STRONG>  capability  has a single numeric parameter.  If nonzero,
-             the mouse  protocol  should  be  enabled.   If  zero,  the  mouse
+             The <STRONG>XM</STRONG> capability has a single numeric  parameter.   If  nonzero,
+             the  mouse  protocol  should  be  enabled.   If  zero,  the mouse
              protocol should be disabled.  <EM>ncurses</EM> inspects this capability if
-             it  is present, to see whether the 1006 protocol is used.  If so,
+             it is present, to see whether the 1006 protocol is used.  If  so,
              it  expects  the  responses  to  use  the  SGR 1006  <EM>xterm</EM>  mouse
              protocol.
 
-             The  <EM>xterm</EM>  mouse  protocol  is used by other terminal emulators.
-             The terminal database uses building blocks for the various  <EM>xterm</EM>
+             The <EM>xterm</EM> mouse protocol is used  by  other  terminal  emulators.
+             The  terminal database uses building blocks for the various <EM>xterm</EM>
              mouse protocols usable in customized terminal descriptions.
 
              The terminal database building blocks for this mouse feature also
-             have  an  experimental  capability,  <STRONG>xm</STRONG>, that describes the mouse
-             response.  No known  interpreter  uses  this  information,  which
+             have an experimental capability, <STRONG>xm</STRONG>,  that  describes  the  mouse
+             response.   No  known  interpreter  uses  this information, which
              could make mouse support completely data-driven.
 
              <STRONG>xm</STRONG> shows the format of the mouse responses.  In this experimental
@@ -300,7 +300,7 @@
 
                <EM>p8</EM>   x-ordinate ending region
 
-             Here  are  examples  from  the  terminal  database  for  the most
+             Here are  examples  from  the  terminal  database  for  the  most
              commonly used <EM>xterm</EM> mouse protocols.
 
                xterm+x11mouse|X11 xterm mouse protocol,
@@ -317,30 +317,30 @@
                           %p2%d;
                           %?%p4%tM%em%;,
 
-          Some of these extended capabilities have  parameters  which  <EM>ncurses</EM>
-          may  use  in  the <STRONG>tparm</STRONG>, <STRONG>tiparm</STRONG>, or <STRONG>tiparm_s</STRONG> functions.  The <EM>ncurses</EM>
-          library  checks  to  ensure  that   both   standard   and   extended
-          capabilities  have  the expected number and type of parameters.  The
-          terminfo compiler <EM>tic</EM> has similar checks  for  these  extensions  as
-          well  as  for  those which are used by other programs, which include
+          Some  of  these  extended capabilities have parameters which <EM>ncurses</EM>
+          may use in the <STRONG>tparm</STRONG>, <STRONG>tiparm</STRONG>, or <STRONG>tiparm_s</STRONG>  functions.   The  <EM>ncurses</EM>
+          library   checks   to   ensure   that  both  standard  and  extended
+          capabilities have the expected number and type of  parameters.   The
+          terminfo  compiler  <EM>tic</EM>  has  similar checks for these extensions as
+          well as for those which are used by other  programs,  which  include
           <EM>mintty</EM>, <EM>screen</EM>, <EM>tack</EM>, <EM>tmux</EM>, <EM>vim</EM>, and <EM>xterm</EM>.
 
 
 </PRE><H3><a name="h3-Extended-Key-Definitions">Extended Key Definitions</a></H3><PRE>
-       Several terminals provide the ability  to  send  distinct  strings  for
-       combinations  of  modified special keys.  There is no standard for what
+       Several  terminals  provide  the  ability  to send distinct strings for
+       combinations of modified special keys.  There is no standard  for  what
        those keys can send.
 
-       Since 1999, <STRONG>xterm(1)</STRONG>  has  supported  <EM>shift</EM>,  <EM>control</EM>,  <EM>alt</EM>,  and  <EM>meta</EM>
-       modifiers  which  produce  distinct special-key strings.  In a terminal
-       description, <EM>ncurses</EM> has no special knowledge of  the  modifiers  used.
-       Applications  can  use  the  <EM>naming</EM> <EM>convention</EM> established for <EM>xterm</EM> to
+       Since  1999,  <STRONG>xterm(1)</STRONG>  has  supported  <EM>shift</EM>,  <EM>control</EM>,  <EM>alt</EM>, and <EM>meta</EM>
+       modifiers which produce distinct special-key strings.   In  a  terminal
+       description,  <EM>ncurses</EM>  has  no special knowledge of the modifiers used.
+       Applications can use the <EM>naming</EM> <EM>convention</EM>  established  for  <EM>xterm</EM>  to
        find these special keys in the terminal description.
 
-       Starting with the <EM>curses</EM> convention that  capability  codes  describing
-       the  input  generated by a terminal's key caps begin with "k", and that
-       shifted special keys use uppercase letters in  their  names,  <EM>ncurses</EM>'s
-       terminal  database  defines  the  following  names and codes to which a
+       Starting  with  the  <EM>curses</EM> convention that capability codes describing
+       the input generated by a terminal's key caps begin with "k",  and  that
+       shifted  special  keys  use uppercase letters in their names, <EM>ncurses</EM>'s
+       terminal database defines the following names  and  codes  to  which  a
        suffix is added.
 
             <STRONG>Code</STRONG>   <STRONG>Description</STRONG>
@@ -355,8 +355,8 @@
             <STRONG>kRIT</STRONG>   shifted kcuf1 (cursor forward)
             <STRONG>kUP</STRONG>    shifted kcuu1 (cursor up)
 
-       Keycap nomenclature on the Unix systems for which <EM>curses</EM> was  developed
-       differs  from  today's ubiquitous descendants of the IBM PC/AT keyboard
+       Keycap  nomenclature on the Unix systems for which <EM>curses</EM> was developed
+       differs from today's ubiquitous descendants of the IBM  PC/AT  keyboard
        layout.  In the foregoing, interpret "backward" as "left", "forward" as
        "right", "next" as "page down", and "prev(ious)" as "page up".
 
@@ -380,21 +380,21 @@
             15      Meta + Ctrl + Alt
             16      Meta + Ctrl + Alt + Shift
 
-       <EM>ncurses</EM>  defines  no  capabilities  for   modified   F-keys;   terminal
-       descriptions  can  refer  to <EM>names</EM> that <EM>ncurses</EM> allocates at runtime to
-       <EM>key</EM> <EM>codes</EM>.  To use these keys in an  <EM>ncurses</EM>  program,  an  application
+       <EM>ncurses</EM>   defines   no   capabilities  for  modified  F-keys;  terminal
+       descriptions can refer to <EM>names</EM> that <EM>ncurses</EM> allocates  at  runtime  to
+       <EM>key</EM>  <EM>codes</EM>.   To  use  these keys in an <EM>ncurses</EM> program, an application
        could do this:
 
-       <STRONG>o</STRONG>   using  a  list  of  extended  key <EM>names</EM>, ask <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG> for their
+       <STRONG>o</STRONG>   using a list of extended key  <EM>names</EM>,  ask  <STRONG><A HREF="curs_terminfo.3x.html">tigetstr(3x)</A></STRONG>  for  their
            values, and
 
-       <STRONG>o</STRONG>   given the list of values,  ask  <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>  for  the  <EM>key-code</EM>
+       <STRONG>o</STRONG>   given  the  list  of  values,  ask <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG> for the <EM>key-code</EM>
            which would be returned for those keys by <STRONG><A HREF="curs_getch.3x.html">wgetch(3x)</A></STRONG>.
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       The  "-x"  extension  feature  of  <STRONG>tic</STRONG>  and <STRONG>infocmp</STRONG> has been adopted in
-       NetBSD <EM>curses</EM>.  That implementation stores  user-defined  capabilities,
+       The "-x" extension feature of <STRONG>tic</STRONG>  and  <STRONG>infocmp</STRONG>  has  been  adopted  in
+       NetBSD  <EM>curses</EM>.   That implementation stores user-defined capabilities,
        but makes no use of these capabilities itself.
 
 
@@ -406,15 +406,15 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>, <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>
 
-       In  the source form of the terminal database, <EM>terminfo.src</EM>, the section
-       "NCURSES USER-DEFINABLE CAPABILITIES".  summarizes commonly-used  user-
-       defined  capabilities  employed  in the terminal descriptions.  Some of
+       In the source form of the terminal database, <EM>terminfo.src</EM>, the  section
+       "NCURSES  USER-DEFINABLE CAPABILITIES".  summarizes commonly-used user-
+       defined capabilities employed in the terminal  descriptions.   Some  of
        those features are mentioned in <STRONG>screen(1)</STRONG> or <STRONG>tmux(1)</STRONG>.
 
-       <EM>XTerm</EM> <EM>Control</EM> <EM>Sequences</EM> provides further information  on  the  <STRONG>xterm(1)</STRONG>
+       <EM>XTerm</EM>  <EM>Control</EM>  <EM>Sequences</EM>  provides further information on the <STRONG>xterm(1)</STRONG>
        features that are used in these extended capabilities.
 
-ncurses 6.6                       2026-01-11                      <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
+ncurses 6.6                       2026-09-19                      <STRONG><A HREF="user_caps.5.html">user_caps(5)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

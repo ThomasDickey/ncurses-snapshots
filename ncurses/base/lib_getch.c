@@ -44,7 +44,7 @@
 #define NEED_KEY_EVENT
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.160 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.161 2026/09/19 10:41:15 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -488,7 +488,7 @@ _nc_wgetch(WINDOW *win,
     }
 
     if (win->_use_keypad != sp->_keypad_on)
-	_nc_keypad(sp, win->_use_keypad);
+	_nc_keypad(sp, win->_use_keypad);	/* sets sp->_keypad_on */
 
     recur_wrefresh(win);
 

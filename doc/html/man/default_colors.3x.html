@@ -1,6 +1,6 @@
 <!--
   ****************************************************************************
-  * Copyright 2018-2023,2024 Thomas E. Dickey                                *
+  * Copyright 2018-2024,2026 Thomas E. Dickey                                *
   * Copyright 2000-2011,2016 Free Software Foundation, Inc.                  *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,26 +28,26 @@
   * authorization.                                                           *
   ****************************************************************************
   * Author: Thomas E. Dickey 1997,1999,2000,2005
-  * @Id: default_colors.3x,v 1.52 2024/04/13 22:17:22 tom Exp @
+  * @Id: default_colors.3x,v 1.56 2026/09/19 21:38:50 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>default_colors 3x 2024-04-13 ncurses 6.6 Library calls</TITLE>
+<TITLE>default_colors 3x 2026-09-19 ncurses 6.6 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">default_colors 3x 2024-04-13 ncurses 6.6 Library calls</H1>
+<H1 class="no-header">default_colors 3x 2026-09-19 ncurses 6.6 Library calls</H1>
 <PRE>
 <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>               Library calls              <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
        <STRONG>use_default_colors</STRONG>,  <STRONG>assume_default_colors</STRONG>  -  use  terminal's  default
-       colors in <EM>curses</EM>
+       colors in <EM>ncurses</EM>
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -132,9 +132,8 @@
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
-       These  routines  are  specific  to <EM>ncurses</EM>.  They were not supported on
-       Version 7, BSD or System V implementations.  It is recommended that any
-       code depending on them be conditioned using NCURSES_VERSION.
+       Applications employing <EM>ncurses</EM> extensions should condition their use on
+       the visibility of the <STRONG>NCURSES_VERSION</STRONG> preprocessor macro.
 
 
 </PRE><H2><a name="h2-AUTHORS">AUTHORS</a></H2><PRE>
@@ -145,7 +144,7 @@
 </PRE><H2><a name="h2-SEE-ALSO">SEE ALSO</a></H2><PRE>
        <STRONG>ded(1)</STRONG>, <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
-ncurses 6.6                       2024-04-13                <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
+ncurses 6.6                       2026-09-19                <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>

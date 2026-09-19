@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.72 2026/09/12 21:04:30 tom Exp $
-.TH terminfo 5 2026-09-12 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.74 2026/09/19 21:37:14 tom Exp $
+.TH terminfo 5 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -80,7 +80,7 @@ itself,
 and
 \fItmux\fP(1).
 .PP
-The database describes devices by catalogging capabilities they possess.
+The database describes devices by cataloging capabilities they possess.
 For example,
 ANSI\ X3.64,
 ECMA-48,

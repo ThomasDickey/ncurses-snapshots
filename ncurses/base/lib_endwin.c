@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.32 2026/09/05 19:30:54 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.34 2026/09/19 23:04:39 tom Exp $")
 
 NCURSES_EXPORT(int)
 NCURSES_SP_NAME(endwin)(NCURSES_SP_DCL0)
@@ -53,7 +53,7 @@ NCURSES_SP_NAME(endwin)(NCURSES_SP_DCL0)
     T((T_CALLED("endwin(%p)"), (void *) SP_PARM));
 
     if (SP_PARM != NULL) {
-	bool save_keypad = stdscr->_use_keypad;
+	bool save_keypad = (stdscr != NULL) ? stdscr->_use_keypad : FALSE;
 	bool save_meta = SP_PARM->_use_meta;
 	bool suspended = FALSE;
 
@@ -83,7 +83,9 @@ NCURSES_SP_NAME(endwin)(NCURSES_SP_DCL0)
 	 * screen mode in doupdate(), e.g., as called from refresh().
 	 */
 	if (suspended) {
-	    stdscr->_use_keypad = save_keypad;
+	    if (stdscr != NULL)
+		stdscr->_use_keypad = save_keypad;
+
 	    SP_PARM->_use_meta = save_meta;
 	}
     }

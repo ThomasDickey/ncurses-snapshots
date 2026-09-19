@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4534 2026/09/12 21:03:46 tom Exp $
+-- $Id: NEWS,v 1.4539 2026/09/19 21:35:09 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,10 +46,23 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20260919
+	+ revise content/formatting/style of man pages (patches by Branden
+	  Robinson)
+	+ add overline to ghostty (report by Jared Finder)
+	+ review ghostty -TD
+	+ add overline to rlogin-color -TD
+	+ add null pointer check for stdscr in endwin() when saving keypad mode
+	  (patch by Branden Robinson).
+	+ remove an adjustment to stdscr in doupdate() when restoring keypad
+	  mode (OpenSUSE #1281268).
+
 20260912
 	+ build-fix for sizeof(mmask_t) configure check (cf:20260829).
 	+ review/fix teraterm* (report by Jakub Horky)
 	+ modify flash for vt525 to use DECRARA (patch by Branden Robinson)
+	+ revise content/formatting/style of man pages (patches by Branden
+	  Robinson)
 	+ update config.guess, config.sub
 
 20260905

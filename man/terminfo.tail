@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.167 2026/09/12 17:49:05 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.173 2026/09/19 21:33:53 Branden.Robinson Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1028,6 +1028,18 @@ appropriate (but not both).
 If you have to write an entry to be used under
 new curses for a terminal old enough to need both, include the
 \fBrmir\fP/\fBsmir\fP sequences in \fBich1\fP.
+Since 2026,
+.I \%ncurses
+defines
+.B ich1
+capabilities for several terminal types that don't require one
+\(em contrary to the foregoing guidance \(em
+to better support applications that access the
+.I \%term\%info
+database only via
+.IR \%ncurses 's
+.I termcap
+compatibility API.
 .PP
 If post insert padding is needed, give this as a number of milliseconds
 in \fBip\fP (a string option).
@@ -1252,85 +1264,142 @@ specify the capability \fBos\fP.
 If overstrikes are erasable with a blank,
 then this should be indicated by giving \fBeo\fP.
 .SS "Keypad and Function Keys"
-If the terminal has a keypad that transmits codes when the keys are pressed,
-this information can be given.
-Note that it is not possible to handle
-terminals where the keypad only works in local (this applies, for example,
-to the unshifted HP 2621 keys).
-If the keypad can be set to transmit or not transmit,
-give these codes as \fBsmkx\fP and \fBrmkx\fP.
-Otherwise the keypad is assumed to always transmit.
-.PP
-The codes sent by the left arrow, right arrow, up arrow, down arrow,
-and home keys can be given as
-\fBkcub1, kcuf1, kcuu1, kcud1, \fRand\fB khome\fP respectively.
-If there are function keys such as f0, f1, ..., f10, the codes they send
-can be given as \fBkf0, kf1, ..., kf10\fP.
-If these keys have labels other than the default f0 through f10, the labels
-can be given as \fBlf0, lf1, ..., lf10\fP.
-.PP
-The codes transmitted by certain other special keys can be given:
-.bP
-.B kll
-(home down),
-.bP
-.B kbs
-(backspace),
-.bP
-.B ktbc
-(clear all tabs),
-.bP
-.B kctab
-(clear the tab stop in this column),
-.bP
-.B kclr
-(clear screen or erase key),
-.bP
-.B kdch1
-(delete character),
-.bP
-.B kdl1
-(delete line),
-.bP
-.B krmir
-(exit insert mode),
-.bP
-.B kel
-(clear to end of line),
-.bP
-.B ked
-(clear to end of screen),
-.bP
-.B kich1
-(insert character or enter insert mode),
-.bP
-.B kil1
-(insert line),
-.bP
-.B knp
-(next page),
-.bP
-.B kpp
-(previous page),
-.bP
-.B kind
-(scroll forward/down),
-.bP
-.B kri
-(scroll backward/up),
-.bP
-.B khts
-(set a tab stop in this column).
-.PP
-In addition, if the keypad has a 3 by 3 array of keys including the four
-arrow keys, the other five keys can be given as
-.BR ka1 ,
-.BR ka3 ,
-.BR kb2 ,
-.BR kc1 ,
+If the terminal type has a keypad
+that transmits key codes to the host when its keys are pressed,
+its description should define string capabilities
+that characterize these
+.I "function keys."
+If a terminal's keypad works only in local mode,
+as with the HP 2621's unshifted keypad keys,
+these are not function keys as
+.I \%term\%info
+defines them;
+If the keypad can be configured by the host to transmit or not,
+specify the corresponding sequences
+as
+.B \%keypad_xmit
+.RB ( smkx )
 and
-.BR kc3 .
-These keys are useful when the effects of a 3 by 3 directional pad are needed.
+.B \%keypad_local
+.RB ( rmkx ),
+respectively.
+Otherwise,
+.I \%term\%info
+assumes that function keys always transmit.
+.PP
+If a key code corresponds to a graphical or control character,
+.I \%term\%info
+generally defines no function key for it.
+This rule applies to keycaps engraved with symbols
+(letters,
+numerals,
+and punctuation),
+and the
+Escape,
+Tab,
+and
+Enter
+keys.
+The backspace key is an exception,
+due to vendor conflict over
+.I which
+control code it should transmit.
+.PP
+Terminal type descriptions of keyboard layouts
+influenced by the DEC LK-201 (1983) and IBM Model M (1985)
+\(em including the vast majority in common use since the 1990s \(em
+should define the following function key capabilities.
+.PP
+.TS
+center;
+Rb Lb
+R  L .
+String Capability Name	Capability Code
+_
+key_backspace	kbs
+_
+key_left	kcub1
+key_right	kcuf1
+key_up	kcuu1
+key_down	kcud1
+_
+key_home	khome
+key_end	kend
+key_ppage	kpp
+key_npage	knp
+key_ic	kich1
+key_dc	kdch1
+_
+key_f1	kf1
+key_f2	kf2
+key_f3	kf3
+key_f4	kf4
+key_f5	kf5
+key_f6	kf6
+key_f7	kf7
+key_f8	kf8
+key_f10	kf10
+key_f11	kf11
+key_f12	kf12
+_
+key_a1	ka1
+key_a3	ka3
+key_b2	kb2
+key_c1	kc1
+key_c3	kc3
+.TE
+.PP
+The keys in the final group above correspond to those
+on a nine-key directional keypad that are not orthogonal arrow keys;
+see subsection \*(``Key Codes`*('' of \fB\%getch\fP(3X).
+.PP
+Other Model M keys,
+such as
+Caps Lock,
+Print Screen,
+Scroll Lock,
+Pause/Break,
+and
+Num Lock,
+and later innovations like
+\*(``Windows`*('' modifiers,
+Menu,
+and media control keys
+(Play,
+Eject)
+are not necessarily exposed to the operating system's terminal driver,
+or may be intercepted by the graphical windowing environment
+and not made visible to the terminal emulator.
+.\" TODO: Discuss modern Mac keyboards, and maybe Sun keyboards.
+.PP
+Historical or unusual terminal types may have function keys
+with engravings unlike those of the LK-201 and Model M.
+.PP
+.TS
+center;
+Lb Lb Lb
+L  L  L .
+Capability Name	Code	Description
+_
+key_f0	kf0	function key 0 (zero)
+key_ll	kll	move to lower-left corner
+key_clear	kclr	clear screen
+key_dl	kdl1	delete line
+key_eic	krmir	exit insert mode
+key_eol	kel	clear to end of line
+key_eos	ked	clear to end of screen
+key_il	kil1	insert line
+key_sf	kind	scroll forward one line
+key_sr	kri	scroll backward one line
+key_stab	khts	set tab stop in this column
+key_ctab	kctab	clear tab stop in this column
+key_catab	ktbc	clear all tab stops
+.TE
+.PP
+There is no capability for a key that enters a persistent insert mode,
+though a host-side capability exists
+for putting the terminal in that mode;
+recall subsection \*(``Insert/Delete Character\*('' above.
 .PP
 Strings to program function keys can be given as
 .BR pfkey ,
@@ -1710,12 +1779,7 @@ library functions
 .I \%init_pair
 and
 .I \%init_color
-manipulate the
-.I "color pairs"
-and
-.I colors
-(color values or indices,
-such as \*(``1=red\*('')
+manipulate the color pairs and color indices
 discussed in this subsection.
 See \fB\%curs_color\fP(3X) for details on these and related functions.
 .PP
@@ -1795,7 +1859,7 @@ string capability
 selects the terminal's power-up color pair selection,
 resetting the foreground and background colors to their defaults.
 Some terminal types
-(including many PC terminal emulators)
+(including \fI\%xterm\fP(1) and many PC terminal emulators)
 erase screen areas with the current background color rather
 than the power-up default background;
 these should declare the Boolean capability
@@ -1804,12 +1868,14 @@ these should declare the Boolean capability
 .PP
 While
 .I curses
-works with color pairs,
+manages colors by pairing foreground and background colors,
+only some terminal types do the same.
 .I \%terminfo
-exposes distinct capabilities
-configuring foreground and background colors.
-Early color terminals supported only a limited set of colors,
-and diverged in how they encoded the RGB color channels.
+therefore exposes distinct capabilities
+for configuring foreground and background colors,
+separately and as pairs.
+Early terminals supported only a limited set of colors (if at all),
+and diverged in how they encoded RGB color channels.
 .bP
 To change the current foreground or background color
 on a Tektronix-type terminal,
@@ -1909,7 +1975,13 @@ use
 .RB ( scp )
 with a color pair number parameter to set the current color pair.
 .PP
-Some terminals allow the color indices to be remapped.
+Define
+.B \%orig_pair
+.RB \%( op )
+as appropriate for the terminal type,
+even if it uses a Tektronix- rather than an HP-like color model.
+.PP
+Some terminals allow color indices to be remapped.
 .bP
 On a Tektronix-like terminal,
 the
@@ -1958,11 +2030,14 @@ The
 .B \%orig_colors
 .RB \%( oc )
 (\*(``original colors\*('')
-string capability
-resets all colors or color pairs
+resets the foreground and background colors,
+and any color mappings configured by
+.B \%initialize_color
+.RB ( initc )
+and/or
+.B \%initialize_pair
+.RB ( initp )
 to their default values for the terminal.
-.\" XXX: Some terminal type descriptions specify the `oc` capability
-.\" even if they lack `ccc` and `initc`.
 .PP
 On some color terminals,
 colors collide with highlights,

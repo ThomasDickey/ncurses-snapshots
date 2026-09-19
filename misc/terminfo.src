@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1275 $
-#	$Date: 2026/09/12 18:59:03 $
+#	$Revision: 1.1279 $
+#	$Date: 2026/09/19 18:26:43 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -4687,9 +4687,10 @@ rlogin-color,
 	use=ansi+idc1, use=ansi+idl, use=ansi+inittabs,
 	use=ansi+local, use=ansi+rca2, use=ansi+sgrdim,
 	use=bracketed+paste, use=ecma+index, use=ecma+italics,
-	use=ecma+strikeout, use=vt420+lrmm, use=decid+cpr,
-	use=report+da2, use=report+version, use=vt100+pf1-pf4,
-	use=vt220+pcedit, use=vt220+ufkeys, use=xterm+acs,
+	use=ecma+overline, use=ecma+strikeout, use=vt420+lrmm,
+	use=decid+cpr, use=report+da2, use=report+version,
+	use=vt100+pf1-pf4, use=vt220+pcedit, use=vt220+ufkeys,
+	use=xterm+acs,
 
 #### Command prompt
 
@@ -8868,20 +8869,16 @@ contour-direct|Contour terminal with direct colors,
 # supports direct-colors, but the feature did not work with this version -TD
 ghostty|Ghostty terminal emulator,
 	am, bce, km, mc5i, mir, msgr, npc, xenl, AX, XT,
-	cols#80, lines#24, pairs#0x7fff,
+	cols#80, lines#24,
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxy
 	     yzz{{||}}~~,
-	bel=^G, bold=\E[1m, clear=\E[H\E[2J,
+	bel=^G, blink@, bold=\E[1m, clear=\E[H\E[2J,
 	cnorm=\E[?12l\E[?25h, cr=\r, cub1=^H, cud1=\n,
 	cvvis=\E[?12;25h, dim=\E[2m, ech=\E[%p1%dX, el1=\E[1K,
 	flash=\E[?5h$<100/>\E[?5l, ind=\n, invis=\E[8m,
-	kcbt=\E[Z, kend=\EOF, kent=\EOM, op=\E[39;49m, rev=\E[7m,
+	kbeg=\EOE, kcbt=\E[Z, kent=\EOM, op=\E[39;49m, rev=\E[7m,
 	ri=\EM, rmam=\E[?7l, rmcup=\E[?1049l, rmkx=\E[?1l\E>,
 	rmso=\E[27m, rmul=\E[24m, rs1=\E]\E\\\Ec,
-	setab=\E[%?%p1%{8}%<%t4%p1%d%e%p1%{16}%<%t10%p1%{8}%-%d%e48;
-	      5;%p1%d%;m,
-	setaf=\E[%?%p1%{8}%<%t3%p1%d%e%p1%{16}%<%t9%p1%{8}%-%d%e38;5
-	      ;%p1%d%;m,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;%?%p5%t;2%;%?%p7%t;8%;m,
 	sgr0=\E(B\E[m, smam=\E[?7h, smcup=\E[?1049h,
@@ -8894,13 +8891,12 @@ ghostty|Ghostty terminal emulator,
 	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
 	use=ansi+rca2, use=ansi+rep, use=ansi+sgrso,
 	use=ansi+sgrul, use=ansi+tabs, use=ecma+index,
-	use=ecma+italics, use=ecma+strikeout,
-	use=report+version, use=vt220+cvis,
+	use=ecma+italics, use=ecma+overline,
+	use=ecma+strikeout, use=report+version, use=vt220+cvis,
 	use=xterm+256color2, use=xterm+acs,
 	use=xterm+alt+title, use=bracketed+paste,
 	use=kitty+setal, use=vt420+lrmm, use=xterm+focus,
-	use=xterm+pce2, use=xterm+pcc2, use=xterm+pcf2,
-	use=xterm+sm+1006, use=xterm+sl-twm,
+	use=xterm+pcfkeys, use=xterm+sm+1006, use=xterm+sl-twm,
 
 ######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
@@ -28589,5 +28585,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2026-09-12
 #	+ review/fix teraterm* (report by Jakub Horky)
 #	+ modify flash for vt525 to use DECRARA (patch by Branden Robinson)
+#
+# 2026-09-19
+#	+ add overline to ghostty (report by Jared Finder)
+#	+ review ghostty -TD
+#	+ add overline to rlogin-color -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

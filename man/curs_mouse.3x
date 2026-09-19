@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.131 2025/11/12 01:06:36 tom Exp $
-.TH curs_mouse 3X 2025-11-11 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.136 2026/09/19 21:38:50 tom Exp $
+.TH curs_mouse 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -116,7 +116,9 @@ not window-,
 relative.
 The
 .I \%bstate
-member has exactly one bit set indicating the event type.
+member
+has exactly one bit set indicating the event type,
+and up to 3 additional bits indicating the use of modifier keys.
 .PP
 .I \%ncurses
 ignores mouse events when input is in canonical (\*(``cooked\*('') mode,
@@ -215,6 +217,7 @@ T}
 BUTTON_ALT	T{
 an alt key was down during button state change
 T}
+_
 ALL_MOUSE_EVENTS	report all button state changes
 REPORT_MOUSE_POSITION	report mouse movement
 _
@@ -353,6 +356,12 @@ is not inside
 .B \%wmouse_trafo
 returns
 .BR FALSE "."
+.PP
+.B \%wmouse_trafo
+is useful for performing coordinate transforms between windows;
+it is otherwise independent of the
+.I \%ncurses
+mouse API.
 .SS mouse_trafo
 .B \%mouse_trafo
 applies the
@@ -367,7 +376,10 @@ this is the identity transformation.
 sets the maximum time
 (in thousandths of a second)
 that can elapse between press and release events for them to
-be resolved as a
+be
+.I resolved
+as
+(combined into) a
 .IR click .
 An application might interpret button press and release events separated
 by more than the mouse interval as a \*(``long press\*('',
@@ -379,7 +391,7 @@ When
 .I \%ncurses
 detects a mouse event,
 it awaits further input activity up to this interval,
-and then checks for a subsequent mouse event which can be combined
+and then checks for a subsequent mouse event that is combinable
 with the first event.
 If the timeout expires without input activity,
 then no click resolution occurs.

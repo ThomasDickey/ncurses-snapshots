@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.180 2026/09/12 18:19:59 tom Exp $
-.TH curs_color 3X 2026-09-12 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_color.3x,v 1.188 2026/09/19 20:59:23 tom Exp $
+.TH curs_color 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -146,9 +146,9 @@ Each index represents a color.
 X/Open Curses standardizes,
 and a
 .I curses
-library predefines,
+library defines,
 a small set of color indices;
-see section \*(``CONSTANTS\*('' below.
+see section \*(``MACROS\*('' below.
 The macro
 .B \%COLOR_PAIR(\fIn\fP)
 converts a pair
@@ -224,54 +224,11 @@ For each screen,
 .I \%ncurses
 maintains a
 .I "color palette"
-that maps color indices into a color space.
-.I curses
-supports RGB
+that maps color indices into the RGB
 (red,
 green,
 blue)
-and HLS
-(hue,
-lightness,
-saturation)
-color spaces.
-A terminal type uses one or the other.
-RGB is the default;
-the
-.B \%hue_lightness_saturation
-.RB \%( hls )
-capability indicates the alternative.
-.SH CONSTANTS
-ISO\ 6429 and ECMA-48
-define eight standard colors
-(also known as \*(``ANSI\*('' colors).
-.I curses\.h
-defines object-like macros
-.BR \%COLOR_BLACK ","
-.BR \%COLOR_RED ","
-.BR \%COLOR_GREEN ","
-.BR \%COLOR_YELLOW ","
-.BR \%COLOR_BLUE ","
-.BR \%COLOR_MAGENTA ","
-.BR \%COLOR_CYAN ","
-and
-.B \%COLOR_WHITE
-accordingly.
-.I curses
-assumes that
-.B \%COLOR_BLACK
-is the default background color for all terminals.
-.I \%ncurses
-offers an extension to override that assumption;
-see \fB\%assume_default_colors\fP(3X).
-Some terminals support additional colors that lack standard names.
-.PP
-.B \%A_COLOR
-is a bit mask that,
-when bitwise \*(``and\*(''-ed with a
-.IR \%chtype ","
-.\" XXX: and right-shifted by...?
-extracts its color pair identifier.
+color space.
 .SH VARIABLES
 .SS COLORS
 is initialized by \fB\%start_color\fP to the maximum number of colors
@@ -499,8 +456,8 @@ all occurrences of it change to use its new definition.
 No \fB\%refresh\fP(3X) is necessary.
 .\" The library essentially does `putp(tiparm("initc", idx, r, g, b));`.
 .\" But for the interposition of the higher-level color palette ncurses
-.\" stores in `SCREEN`, `init_color` would be a "lower-level" API, like
-.\" `mvcur()`.
+.\" stores in `SCREEN`, `init_extended_color` would be a "lower-level"
+.\" API, like `mvcur()`.
 .SS color_content
 An application can query a color index's location in RGB space
 by calling
@@ -529,6 +486,39 @@ extension uses
 instead,
 expanding the range of permissible color indices.
 .SH MACROS
+.\" We do _not_ mention ANSI X3.64 here.  It was initially issued in
+.\" (or at least dated) 1979, and reputedly, was never revised or
+.\" updated prior its withdrawal in 1994.  ANSI X3.64 did not address
+.\" color features.
+.\" See <https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub86.pdf>,
+.\" p. H-1 (PDF p. 81).
+ISO\ 6429 and ECMA-48
+define eight standard colors
+(known inaccurately as \*(``ANSI\*('' colors),
+to which X/Open Curses assigns symbolic names as object-like macros
+.BR \%COLOR_BLACK ","
+.BR \%COLOR_RED ","
+.BR \%COLOR_GREEN ","
+.BR \%COLOR_YELLOW ","
+.BR \%COLOR_BLUE ","
+.BR \%COLOR_MAGENTA ","
+.BR \%COLOR_CYAN ","
+and
+.BR \%COLOR_WHITE "."
+.I curses
+assumes that
+.B \%COLOR_BLACK
+is the default background color for all terminals.
+.I \%ncurses
+offers an extension to override that assumption;
+see \fB\%assume_default_colors\fP(3X).
+Some terminals support additional colors that lack standard names.
+.PP
+.B \%A_COLOR
+is a bit mask that,
+when bitwise \*(``and\*(''-ed with a
+.IR \%chtype ","
+extracts its color pair identifier.
 X/Open Curses mandates the provision of two function-like macros.
 They have no application in the wide-character API of
 .IR curses "."
@@ -692,7 +682,7 @@ affects only character cells
 that a character write operation explicitly touches.
 To change the background color used
 when parts of a window are blanked by erasing or scrolling operations,
-see \fB\%curs_bkgd\fP(3X)
+see \fB\%bkgd\fP(3X)
 (wide-character API users: \fB\%bkgrnd\fP(3X)).
 .PP
 Windows created by \fB\%ripoffline\fP(3X)
@@ -739,7 +729,7 @@ affects only the current screen.
 The SVr4
 .I curses
 interface,
-standardizes by X/Open Curses,
+standardized by X/Open Curses,
 was not designed with distinguishable screens clearly in mind;
 historical implementations may use a single shared color palette
 for all screens the library manages.
@@ -950,7 +940,7 @@ and a color pair identifier,
 and a new structure type,
 .IR \%cchar_t ","
 to store a sequence of wide character codes
-separately from the character cell's attributed and color pair,
+separately from the character cell's attributes and color pair,
 allowing an increased range of color pairs.
 The standard specifies
 .I attr_t

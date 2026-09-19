@@ -91,7 +91,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: tty_update.c,v 1.327 2026/09/05 19:42:15 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.329 2026/09/19 15:19:21 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -823,10 +823,9 @@ TINFO_DOUPDATE(NCURSES_SP_DCL0)
 	T(("coming back from shell mode"));
 	NCURSES_SP_NAME(reset_prog_mode)(NCURSES_SP_ARG);
 
-	if (StdScreen(SP_PARM)->_use_keypad) {
-	    StdScreen(SP_PARM)->_use_keypad = FALSE;
+	if (StdScreen(SP_PARM) != NULL && StdScreen(SP_PARM)->_use_keypad) {
 	    T(("restoring keypad mode"));
-	    _nc_keypad(SP_PARM, TRUE);
+	    _nc_keypad(SP_PARM, TRUE);	/* sets sp->_keypad_on */
 	}
 	if (SP_PARM->_use_meta) {
 	    SP_PARM->_use_meta = FALSE;

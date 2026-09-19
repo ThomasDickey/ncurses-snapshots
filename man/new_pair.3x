@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright 2018-2024,2025 Thomas E. Dickey                                *
+.\" Copyright 2018-2025,2026 Thomas E. Dickey                                *
 .\" Copyright 2017 Free Software Foundation, Inc.                            *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -29,8 +29,8 @@
 .\"
 .\" Author: Thomas E. Dickey
 .\"
-.\" $Id: new_pair.3x,v 1.51 2025/08/16 19:11:47 tom Exp $
-.TH new_pair 3X 2025-08-16 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: new_pair.3x,v 1.55 2026/09/19 21:38:50 tom Exp $
+.TH new_pair 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -50,7 +50,7 @@
 \fB\%alloc_pair\fP,
 \fB\%find_pair\fP,
 \fB\%free_pair\fP \-
-dynamically allocate \fIcurses\fR color pairs
+dynamically allocate color pairs in \fIncurses\fR
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>
@@ -157,11 +157,11 @@ or \-1 if not.
 Likewise, \fBfree_pair\fP returns \fBOK\fP unless it encounters an
 error updating the fast index or if no such color pair is in use.
 .SH PORTABILITY
-These routines are specific to \fI\%ncurses\fP.
-They were not supported on
-Version 7, BSD or System V implementations.
-It is recommended that
-any code depending on them be conditioned using \fB\%NCURSES_VERSION\fP.
+Applications employing
+.I \%ncurses
+extensions should condition their use on the visibility of the
+.B \%NCURSES_VERSION
+preprocessor macro.
 .SH AUTHORS
 Thomas Dickey
 .SH SEE ALSO

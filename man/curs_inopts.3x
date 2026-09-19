@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.120 2026/08/22 20:23:04 tom Exp $
-.TH curs_inopts 3X 2026-08-22 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_inopts.3x,v 1.125 2026/09/19 21:40:33 tom Exp $
+.TH curs_inopts 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -285,8 +285,9 @@ If disabled
 is
 .BR FALSE ),
 .I curses
-does not treat function keys specially and the program has to interpret
-escape sequences itself.
+does not treat function keys specially;
+the application must itself
+interpret any character sequences they transmit.
 If the terminal type description defines the
 .B \%keypad_local
 .RB ( rmkx )
@@ -345,6 +346,7 @@ whether the terminal reports a carriage return
 using the character code for a line feed
 in cbreak or raw modes
 depends on the configuration of the terminal driver;
+on POSIX systems,
 see \fI\%termios\fP(3).
 .B nl
 configures the terminal to perform this translation.
@@ -653,6 +655,77 @@ permitting the user and application,
 respectively,
 to do so;
 see \fB\%ncurses\fP(3X) and \fB\%curs_variables\fP(3X).
+.PP
+When
+.B \%keypad
+is first enabled for a window,
+.I \%ncurses
+loads the standard function key string capabilities
+for the terminal type description of its screen;
+see the table entries containing \*(``key_\*('' in \fB\%terminfo\fP(5).
+If that description includes extended string capabilities
+(produced by the
+.B \-x
+option of \fB\%@TIC@\fP(1),
+for example),
+then for each extended function key
+whose capability code begins with \*(``k\*('',
+.I \%ncurses
+generates a numeric key code.
+These code values are affected
+by previous loads of terminal type descriptions,
+and may differ from one execution of the application to the next.
+In
+.IR \%ncurses ","
+\fB\%keyname\fP(3X) recognizes these generated key codes
+and returns a name beginning with \*(``k\*('' denoting the extended
+.I \%term\%info
+capability code rather than one starting with \*(``KEY_\*('',
+which standard
+.I curses
+key names use.
+Further,
+an application can use \fB\%define_key\fP(3X) to bind any key code
+to a string of the programmer's choice.
+This feature enables an application
+to check for a function key's presence with \fB\%tigetstr\fP(3X),
+and reassign the key code to match its own needs.
+.PP
+Applications employing the lower-level
+.I \%term\%info
+API can use \fB\%tigetstr\fP(3X)
+to obtain the contents of any string capability,
+including extended ones.
+Applications employing the higher-level
+.I curses
+API use an input character reading function
+to obtain key codes from input;
+the result can vary
+depending upon the order in which string capabilities are loaded.
+Multiple key capability strings can have the same value,
+but the input character reading function can report only one key code.
+Most
+.I curses
+implementations
+(including
+.IR \%ncurses )
+load key definitions in the order
+they appear in the
+.B \%strfnames
+array of string capability names;
+see \fB\%term_variables\fP(3X).
+.\" ncurses/tinfo/parse_entry.c:lookup_fullname, I think --GBR
+The
+.I last
+capability read using a particular definition
+determines the key code to be reported.
+.I \%ncurses
+loads extended capabilities after standard ones.
+Thus,
+if an extended string capability's value
+is the same as one previously loaded,
+the input character reading function
+returns the last matching extended one.
 .SH EXTENSIONS
 .I \%ncurses
 provides four \*(``is_\*('' functions corresponding to
@@ -752,69 +825,6 @@ on the assumption that a programmer requesting raw input wants a clean
 (ideally,
 8-bit clean)
 connection that the operating system does not alter.
-.PP
-When
-.B \%keypad
-is first enabled for a window,
-.I \%ncurses
-loads the standard function key string capabilities
-for the terminal type description of its screen;
-see the entries beginning with \*(``key_\*('' in \fB\%terminfo\fP(5).
-If that description includes extended string capabilities,
-produced by the
-.B \-x
-option of \fB\%@TIC@\fP(1),
-for example,
-then
-.I \%ncurses
-also defines keys for the capabilities whose codes begin with
-\*(``k\*(''.
-.I \%ncurses
-generates a numeric key code for each such extended capability;
-depending on previous loads of terminal type descriptions,
-these may differ from one execution of a program to the next.
-\fB\%keyname\fP(3X) recognizes the generated key codes
-and returns a name beginning with \*(``k\*('' denoting the
-.I \%term\%info
-capability name rather than \*(``KEY_\*('',
-used for
-.I curses
-key names.
-On the other hand,
-an application can use \fB\%define_key\fP(3X) to bind
-a selected key to a string of the programmer's choice.
-This feature enables an application to check for its presence
-with \fB\%tigetstr\fP(3X),
-and reassign the numeric key code to match its own needs.
-.PP
-Low-level applications can use \fB\%tigetstr\fP(3X) to obtain the
-definition of any string capability.
-.I curses
-applications use the input character reading function
-to obtain key codes from input
-and rely upon the order in which the string capabilities are loaded.
-Multiple key capability strings can have the same value,
-but the input character reading function can report only one key code.
-Most
-.I curses
-implementations
-(including
-.IR \%ncurses )
-load key definitions in the order
-they appear in the
-.B \%strfnames
-array of string capability names;
-see \fB\%term_variables\fP(3X).
-.\" ncurses/tinfo/parse_entry.c:lookup_fullname, I think --GBR
-The last capability read using a particular definition determines the
-key code to be reported.
-In
-.IR \%ncurses ,
-extended capabilities can be interpreted as key definitions.
-The library loads these after its built-in definitions,
-and if an extended capability's value
-is the same as one previously loaded,
-the library uses the later definition.
 .SH HISTORY
 4BSD (1980)
 introduced
