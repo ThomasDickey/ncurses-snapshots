@@ -48,7 +48,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.85 2026/06/06 12:42:43 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.86 2026/09/26 23:02:57 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -263,9 +263,6 @@ _nc_merge_entry(ENTRY * const target, ENTRY * const source)
 
     to = &(target->tterm);
     from = &(source->tterm);
-
-    if (from == NULL || to == NULL)
-	return;
 
 #if NCURSES_XNAMES
     _nc_copy_termtype2(&copy, from);

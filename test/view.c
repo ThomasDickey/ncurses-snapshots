@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -52,7 +52,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.151 2025/07/05 15:22:23 tom Exp $
+ * $Id: view.c,v 1.152 2026/09/26 21:00:03 tom Exp $
  */
 
 #include <test.priv.h>
@@ -87,7 +87,7 @@ failed(const char *msg)
 }
 
 static int
-ch_len(NCURSES_CH_T *src)
+ch_len(const NCURSES_CH_T *src)
 {
     int result = 0;
 

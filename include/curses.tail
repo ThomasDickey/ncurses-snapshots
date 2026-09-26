@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.30 2026/08/29 14:42:08 tom Exp $ */
+/* $Id: curses.tail,v 1.32 2026/09/26 19:18:56 tom Exp $ */
 /*
  * vile:cmode:
  * This file is part of ncurses, designed to be appended after curses.h.in
@@ -99,17 +99,11 @@
 #define	BUTTON11_DOUBLE_CLICKED	NCURSES_MOUSE_MASK(11, NCURSES_DOUBLE_CLICKED)
 #define	BUTTON11_TRIPLE_CLICKED	NCURSES_MOUSE_MASK(11, NCURSES_TRIPLE_CLICKED)
 
-#define	BUTTON_CTRL		NCURSES_MOUSE_MASK(12, 0001L)
-#define	BUTTON_SHIFT		NCURSES_MOUSE_MASK(12, 0002L)
-#define	BUTTON_ALT		NCURSES_MOUSE_MASK(12, 0004L)
-#define	REPORT_MOUSE_POSITION	NCURSES_MOUSE_MASK(12, 0010L)
+#define NCURSES_MAX_BUTTON      11
 
 #else	/* NCURSES_MOUSE_VERSION == 2 */
 
-#define	BUTTON_CTRL		NCURSES_MOUSE_MASK(6, 0001L)
-#define	BUTTON_SHIFT		NCURSES_MOUSE_MASK(6, 0002L)
-#define	BUTTON_ALT		NCURSES_MOUSE_MASK(6, 0004L)
-#define	REPORT_MOUSE_POSITION	NCURSES_MOUSE_MASK(6, 0010L)
+#define NCURSES_MAX_BUTTON      5
 
 #endif
 
@@ -120,22 +114,24 @@
 #define	BUTTON3_RESERVED_EVENT	NCURSES_MOUSE_MASK(3, NCURSES_RESERVED_EVENT)
 #define	BUTTON4_RESERVED_EVENT	NCURSES_MOUSE_MASK(4, NCURSES_RESERVED_EVENT)
 
-#define	BUTTON_CTRL		NCURSES_MOUSE_MASK(5, 0001L)
-#define	BUTTON_SHIFT		NCURSES_MOUSE_MASK(5, 0002L)
-#define	BUTTON_ALT		NCURSES_MOUSE_MASK(5, 0004L)
-#define	REPORT_MOUSE_POSITION	NCURSES_MOUSE_MASK(5, 0010L)
+#define NCURSES_MAX_BUTTON      4
 
 #endif	/* NCURSES_MOUSE_VERSION >= 1 */
+
+#define	BUTTON_CTRL		NCURSES_MOUSE_MASK(NCURSES_MAX_BUTTON + 1, 0001L)
+#define	BUTTON_SHIFT		NCURSES_MOUSE_MASK(NCURSES_MAX_BUTTON + 1, 0002L)
+#define	BUTTON_ALT		NCURSES_MOUSE_MASK(NCURSES_MAX_BUTTON + 1, 0004L)
+#define	REPORT_MOUSE_POSITION	NCURSES_MOUSE_MASK(NCURSES_MAX_BUTTON + 1, 0010L)
 
 #define	ALL_MOUSE_EVENTS	(REPORT_MOUSE_POSITION - 1)
 
 /* macros to extract single event-bits from masks */
-#define	BUTTON_RELEASE(e, x)		((e) & NCURSES_MOUSE_MASK(x, 001))
-#define	BUTTON_PRESS(e, x)		((e) & NCURSES_MOUSE_MASK(x, 002))
-#define	BUTTON_CLICK(e, x)		((e) & NCURSES_MOUSE_MASK(x, 004))
-#define	BUTTON_DOUBLE_CLICK(e, x)	((e) & NCURSES_MOUSE_MASK(x, 010))
-#define	BUTTON_TRIPLE_CLICK(e, x)	((e) & NCURSES_MOUSE_MASK(x, 020))
-#define	BUTTON_RESERVED_EVENT(e, x)	((e) & NCURSES_MOUSE_MASK(x, 040))
+#define	BUTTON_RELEASE(e, x)		((e) & NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_RELEASED))
+#define	BUTTON_PRESS(e, x)		((e) & NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_PRESSED))
+#define	BUTTON_CLICK(e, x)		((e) & NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_CLICKED))
+#define	BUTTON_DOUBLE_CLICK(e, x)	((e) & NCURSES_MOUSE_MASK(x, NCURSES_DOUBLE_CLICKED))
+#define	BUTTON_TRIPLE_CLICK(e, x)	((e) & NCURSES_MOUSE_MASK(x, NCURSES_TRIPLE_CLICKED))
+#define	BUTTON_RESERVED_EVENT(e, x)	((e) & NCURSES_MOUSE_MASK(x, NCURSES_RESERVED_EVENT))
 
 typedef struct
 {
@@ -147,20 +143,33 @@ MEVENT;
 
 extern NCURSES_EXPORT(bool)    has_mouse(void);
 extern NCURSES_EXPORT(int)     getmouse (MEVENT *);
+extern NCURSES_EXPORT(int)     testmouse (MEVENT *);
 extern NCURSES_EXPORT(int)     ungetmouse (MEVENT *);
 extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
-extern NCURSES_EXPORT(bool)    wenclose (const WINDOW *, int, int);
 extern NCURSES_EXPORT(int)     mouseinterval (int);
-extern NCURSES_EXPORT(bool)    wmouse_trafo (const WINDOW*, int*, int*, bool);
-extern NCURSES_EXPORT(bool)    mouse_trafo (int*, int*, bool);              /* generated */
 
 #if NCURSES_SP_FUNCS
 extern NCURSES_EXPORT(bool)    NCURSES_SP_NAME(has_mouse) (SCREEN*);
 extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(getmouse) (SCREEN*, MEVENT *);
+extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(testmouse) (SCREEN*, MEVENT *);
 extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(ungetmouse) (SCREEN*,MEVENT *);
 extern NCURSES_EXPORT(mmask_t) NCURSES_SP_NAME(mousemask) (SCREEN*, mmask_t, mmask_t *);
 extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(mouseinterval) (SCREEN*, int);
 #endif
+
+extern NCURSES_EXPORT(int)     mouse_get (int, MEVENT *);
+extern NCURSES_EXPORT(int)     mouse_test (int, MEVENT *);
+extern NCURSES_EXPORT(mmask_t) mouse_mask (int, mmask_t, mmask_t *);
+
+#if NCURSES_SP_FUNCS
+extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(mouse_get) (SCREEN*, int, MEVENT *);
+extern NCURSES_EXPORT(int)     NCURSES_SP_NAME(mouse_test) (SCREEN*, int, MEVENT *);
+extern NCURSES_EXPORT(mmask_t) NCURSES_SP_NAME(mouse_mask) (SCREEN*, int, mmask_t, mmask_t *);
+#endif
+
+extern NCURSES_EXPORT(bool)    wenclose (const WINDOW *, int, int);
+extern NCURSES_EXPORT(bool)    wmouse_trafo (const WINDOW*, int*, int*, bool);
+extern NCURSES_EXPORT(bool)    mouse_trafo (int*, int*, bool);              /* generated */
 
 #ifndef NCURSES_NOMACROS
 #define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)

@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written               #
 # authorization.                                                             #
 ##############################################################################
-# $Id: man_db.renames.in,v 1.89 2026/09/12 19:12:56 tom Exp $
+# $Id: man_db.renames.in,v 1.90 2026/09/26 20:43:56 Sven.Joachim Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -176,7 +176,9 @@ addch.3x			addch.3ncurses
 assume_default_colors.3x	assume_default_colors.3ncurses
 attr_get.3x			attr_get.3ncurses
 attr_on.3x			attr_on.3ncurses
+attr_set.3x			attr_set.3ncurses
 attron.3x			attron.3ncurses
+attrset.3x			attrset.3ncurses
 baudrate.3x			baudrate.3ncurses
 beep.3x				beep.3ncurses
 bkgd.3x				bkgd.3ncurses

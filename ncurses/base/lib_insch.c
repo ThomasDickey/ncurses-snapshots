@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.41 2026/08/01 19:59:04 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.42 2026/09/26 20:51:01 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -122,7 +122,7 @@ _nc_insert_ch(SCREEN *sp, WINDOW *win, chtype ch)
 	    count = _nc_build_wch(win, &wch);
 	    if (count > 0) {
 		code = _nc_insert_wch(win, &wch);
-	    } else if (count <= 0) {
+	    } else {
 		NCURSES_CONST char *s;
 		/* handle EILSEQ */
 		s = NCURSES_SP_NAME(unctrl)(NCURSES_SP_ARGx (chtype) ch8);

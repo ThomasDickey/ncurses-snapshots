@@ -30,7 +30,7 @@
 /*
  * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.57 2026/07/02 20:42:59 tom Exp $
+ * $Id: cardfile.c,v 1.58 2026/09/26 21:02:11 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -350,6 +350,9 @@ static FIELD **
 make_fields(const CARD * p, int form_high, int form_wide)
 {
     FIELD **f = typeCalloc(FIELD *, (size_t) 3);
+
+    if (f == NULL)
+	failed("make_fields");
 
     f[0] = new_field(1, form_wide, 0, 0, 0, 0);
     set_field_back(f[0], A_REVERSE);

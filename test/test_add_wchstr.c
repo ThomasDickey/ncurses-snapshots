@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_add_wchstr.c,v 1.39 2026/06/06 09:59:40 tom Exp $
+ * $Id: test_add_wchstr.c,v 1.40 2026/09/26 20:58:39 tom Exp $
  *
  * Demonstrate the waddwchstr() and wadd_wch functions.
  * Thomas Dickey - 2009/9/12
@@ -378,7 +378,6 @@ recursive_test(int level)
     }
 
     while ((ch = read_linedata(work)) != ERR && !isQUIT(ch)) {
-	int row2, col2;
 
 	wmove(work, row, margin + 1);
 	switch (ch) {
@@ -399,6 +398,8 @@ recursive_test(int level)
 	    break;
 	case key_NEWLINE:
 	    if (row < limit) {
+		int row2, col2;
+
 		++row;
 		/* put the whole string in, all at once */
 		col2 = margin + 1;

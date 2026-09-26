@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.41 2025/07/05 15:11:35 tom Exp $
+ * $Id: xmas.c,v 1.42 2026/09/26 21:06:41 tom Exp $
  */
 #include <test.priv.h>
 
@@ -136,12 +136,23 @@ static bool *my_pairs;
 static GCC_NORETURN void done(int sig);
 
 static void
+failed(const char *s)
+{
+    perror(s);
+    endwin();
+    ExitProgram(EXIT_FAILURE);
+}
+
+static void
 set_color(WINDOW *win, chtype color)
 {
     if (has_colors()) {
 	int n = (int) (color + 1);
-	if (my_pairs == NULL)
+	if (my_pairs == NULL) {
 	    my_pairs = typeCalloc(bool, (size_t) (COLORS + 1));
+	    if (my_pairs == NULL)
+		failed("set_color");
+	}
 	if (!my_pairs[n]) {
 	    init_pair((short) n, (short) color, (short) my_bg);
 	    my_pairs[n] = TRUE;

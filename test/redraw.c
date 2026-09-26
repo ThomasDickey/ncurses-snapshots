@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2020-2025,2026 Thomas E. Dickey                                *
  * Copyright 2006-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: redraw.c,v 1.21 2025/07/05 15:11:35 tom Exp $
+ * $Id: redraw.c,v 1.22 2026/09/26 20:57:46 tom Exp $
  *
  * Demonstrate the redrawwin() and wredrawln() functions.
  * Thomas Dickey - 2006/11/4
@@ -49,7 +49,7 @@ trash(int beg_x, int max_x, int cur_x)
 	    putchar('<');
 	else if (x == cur_x)
 	    putchar('=');
-	else if (x > cur_x)
+	else
 	    putchar('>');
     }
     for (x = max_x; x > cur_x; --x) {

@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.29 2026/08/22 16:58:58 tom Exp $
+ * $Id: dup_field.c,v 1.30 2026/09/26 21:05:16 tom Exp $
  *
  * Demonstrate dup_field() and link_field()
  */
@@ -88,6 +88,14 @@ static struct {
     { DO_DEMO2,      MY_DEMO2,        "create linked field" }
 };
 /* *INDENT-ON* */
+
+static void
+failed(const char *s)
+{
+    perror(s);
+    endwin();
+    ExitProgram(EXIT_FAILURE);
+}
 
 static void
 my_help_edit_field(void)
@@ -288,6 +296,8 @@ static FIELD **
 copy_fields(FIELD **source, FIELD *extra, size_t length)
 {
     FIELD **target = typeCalloc(FIELD *, length + 2);	/* add one plus NULL */
+    if (target == NULL)
+	failed("copy_fields");
     memcpy(target, source, length * sizeof(FIELD *));
     target[length] = extra;
     return target;
