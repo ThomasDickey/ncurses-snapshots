@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.256 2026/09/26 22:57:37 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.261 2026/10/10 23:42:24 tom Exp $")
 
 #include <tic.h>
 
@@ -153,9 +153,9 @@ make an error
 #define	MASK_TRIPLE_CLICK(x)	(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_TRIPLE_CLICKED)
 
 #if NCURSES_MOUSE_VERSION > 1
-#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(m) >> (((b) - 1) * 5))
+#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(0x1f & (m) >> (((b) - 1) * 5)))
 #else
-#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(m) >> (((b) - 1) * 6))
+#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(0x3f & (m) >> (((b) - 1) * 6)))
 #endif
 
 #if NCURSES_MAX_BUTTON == 4
@@ -254,12 +254,16 @@ _trace_slot(SCREEN *sp, const char *tag)
 
     _tracef("%s", tag);
 
-    for (ep = FirstEV(sp); ep <= LastEV(sp); ep++)
-	_tracef("mouse event queue slot %ld = %s",
-		(long) IndexEV(sp, ep),
+    for (ep = FirstEV(sp); ep <= LastEV(sp); ep++) {
+	long slot = (long) IndexEV(sp, ep);
+	_tracef("mouse event queue slot %ld = %s%s%s",
+		slot,
 		ValidEvent(ep)
 		? _nc_tracemouse(sp, ep)
-		: _nc_tracemouse(sp, &invalid_event));
+		: _nc_tracemouse(sp, &invalid_event),
+		slot == sp->_mouse_read ? " <-- read" : "",
+		slot == sp->_mouse_write ? " <-- write" : "");
+    }
 }
 #endif
 
@@ -2013,8 +2017,9 @@ NCURSES_SP_NAME(mouse_get)(NCURSES_SP_DCLx int button, MEVENT * aevent)
 			  (long) IndexEV(SP_PARM, readp),
 			  _nc_tracemouse(SP_PARM, readp)));
 
-	/* copy the event we find there */
+	/* copy the event we find there, reducing the bits in its state */
 	*aevent = *readp;
+	aevent->bstate = EXTRACT_MOUSE_MASK(button, readp->bstate);
 
 	Invalidate(readp);	/* so the queue slot becomes free */
 	SP_PARM->_mouse_read++;
@@ -2072,24 +2077,26 @@ NCURSES_EXPORT(int)
 NCURSES_SP_NAME(mouse_test)(NCURSES_SP_DCLx int button, MEVENT * aevent)
 {
     int result = ERR;
-    const MEVENT *readp;
 
-    T((T_CALLED("mouse_test(%p,%p)"), (void *) SP_PARM, (void *) aevent));
+    T((T_CALLED("mouse_test(%p,%d,%p)"), (void *) SP_PARM, button, (void *) aevent));
 
     if (aevent == NULL) {
 	;
-    } else if ((readp = _nc_get_mouse(SP_PARM, button)) != NULL &&
-	       _nc_is_button(SP_PARM, button, readp)) {
-	TR(TRACE_IEVENT, ("mouse_test: slot %ld event %s",
-			  (long) IndexEV(SP_PARM, readp),
-			  _nc_tracemouse(SP_PARM, readp)));
+    } else if (_nc_has_mouse(SP_PARM)) {
+	MEVENT *readp;
 
-	/* copy the event we find there */
-	*aevent = *readp;
-	result = OK;
-    } else {
-	TR(TRACE_IEVENT, ("mouse_test: no valid event in queue"));
-	_nc_invalidate_event(aevent);
+	if (SP_PARM->_mouse_read != SP_PARM->_mouse_write) {
+	    readp = EventAt(SP_PARM, SP_PARM->_mouse_read);
+	    if (ValidEvent(readp) && _nc_is_button(SP_PARM, button, readp)) {
+		TR(TRACE_IEVENT, ("mouse_test: slot %ld event %s",
+				  (long) IndexEV(SP_PARM, readp),
+				  _nc_tracemouse(SP_PARM, readp)));
+
+		/* copy the event we find there */
+		*aevent = *readp;
+		result = OK;
+	    }
+	}
     }
     returnCode(result);
 }
@@ -2210,13 +2217,16 @@ NCURSES_SP_NAME(mouse_mask)(NCURSES_SP_DCLx int button, mmask_t newmask,
 {
     mmask_t result = 0;
 
-    T((T_CALLED("mouse_mask(%p,%#lx,%p)"),
+    T((T_CALLED("mouse_mask(%p,%d,%#lx,%p)"),
        (void *) SP_PARM,
+       button,
        (unsigned long) newmask,
        (void *) oldmask));
 
     if (SP_PARM != NULL) {
-	if (button > 0) {
+	if (button > NCURSES_MAX_BUTTON || button < 0) {
+	    T(("out of range"));
+	} else if (button > 0) {
 	    mmask_t maskall = ~NCURSES_MOUSE_MASK(button, BUTTON_BITS);
 
 	    if (oldmask != NULL)
@@ -2225,8 +2235,11 @@ NCURSES_SP_NAME(mouse_mask)(NCURSES_SP_DCLx int button, mmask_t newmask,
 	    newmask &= BUTTON_BITS;
 	    newmask = ((SP_PARM->_mouse_mask & maskall)
 		       | NCURSES_MOUSE_MASK(button, newmask));
+	    /* set/get button bits as if it were button-1 */
 	    result = NCURSES_SP_NAME(mousemask)(NCURSES_SP_ARGx newmask, NULL);
+	    result = EXTRACT_MOUSE_MASK(button, result);
 	} else {
+	    /* set/get non-button bits */
 	    result = NCURSES_SP_NAME(mousemask)(NCURSES_SP_ARGx newmask, oldmask);
 	}
     }
@@ -2238,6 +2251,11 @@ NCURSES_EXPORT(mmask_t)
 mousemask(mmask_t newmask, mmask_t * oldmask)
 {
     return NCURSES_SP_NAME(mousemask)(CURRENT_SCREEN, newmask, oldmask);
+}
+NCURSES_EXPORT(mmask_t)
+mouse_mask(int button, mmask_t newmask, mmask_t * oldmask)
+{
+    return NCURSES_SP_NAME(mouse_mask)(CURRENT_SCREEN, button, newmask, oldmask);
 }
 #endif
 

@@ -28,27 +28,27 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.136 2026/09/19 21:38:50 tom Exp @
+  * @Id: curs_mouse.3x,v 1.137 2026/10/10 22:19:32 tom Exp @
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML>
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="Manpage converted by man2html - see https://invisible-island.net/scripts/readme.html#others_scripts">
-<TITLE>curs_mouse 3x 2026-09-19 ncurses 6.6 Library calls</TITLE>
+<TITLE>curs_mouse 3x 2026-10-10 ncurses 6.6 Library calls</TITLE>
 <link rel="author" href="mailto:bug-ncurses@gnu.org">
 
 </HEAD>
 <BODY>
-<H1 class="no-header">curs_mouse 3x 2026-09-19 ncurses 6.6 Library calls</H1>
+<H1 class="no-header">curs_mouse 3x 2026-10-10 ncurses 6.6 Library calls</H1>
 <PRE>
 <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>                   Library calls                  <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 
 
 </PRE><H2><a name="h2-NAME">NAME</a></H2><PRE>
-       <STRONG>has_mouse</STRONG>,  <STRONG>getmouse</STRONG>,  <STRONG>ungetmouse</STRONG>,  <STRONG>mousemask</STRONG>,  <STRONG>wenclose</STRONG>,  <STRONG>mouse_trafo</STRONG>,
-       <STRONG>wmouse_trafo</STRONG>, <STRONG>mouseinterval</STRONG>, <STRONG>mmask_t</STRONG>, <STRONG>MEVENT</STRONG>  -  get  mouse  events  in
-       <EM>ncurses</EM>
+       <STRONG>has_mouse</STRONG>,  <STRONG>mousemask</STRONG>,  <STRONG>getmouse</STRONG>,  <STRONG>ungetmouse</STRONG>,  <STRONG>mouse_mask</STRONG>,  <STRONG>mouse_get</STRONG>,
+       <STRONG>mouse_test</STRONG>,   <STRONG>wenclose</STRONG>,   <STRONG>mouse_trafo</STRONG>,   <STRONG>wmouse_trafo</STRONG>,   <STRONG>mouseinterval</STRONG>,
+       <STRONG>mmask_t</STRONG>, <STRONG>MEVENT</STRONG> - get mouse events in <EM>ncurses</EM>
 
 
 </PRE><H2><a name="h2-SYNOPSIS">SYNOPSIS</a></H2><PRE>
@@ -70,6 +70,10 @@
 
        <STRONG>int</STRONG> <STRONG>getmouse(MEVENT</STRONG> <STRONG>*</STRONG> <EM>event</EM><STRONG>);</STRONG>
        <STRONG>int</STRONG> <STRONG>ungetmouse(MEVENT</STRONG> <STRONG>*</STRONG> <EM>event</EM><STRONG>);</STRONG>
+
+       <STRONG>mmask_t</STRONG> <STRONG>mouse_mask(int</STRONG> <EM>button</EM><STRONG>,</STRONG> <STRONG>mmask_t</STRONG> <EM>new-mask</EM><STRONG>,</STRONG> <STRONG>mmask_t</STRONG> <STRONG>*</STRONG> <EM>old-mask</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mouse_get(int</STRONG> <EM>button</EM><STRONG>,</STRONG> <STRONG>MEVENT</STRONG> <STRONG>*</STRONG> <EM>event</EM><STRONG>);</STRONG>
+       <STRONG>int</STRONG> <STRONG>mouse_test(int</STRONG> <EM>button</EM><STRONG>,</STRONG> <STRONG>MEVENT</STRONG> <STRONG>*</STRONG> <EM>event</EM><STRONG>);</STRONG>
 
        <STRONG>bool</STRONG> <STRONG>wenclose(const</STRONG> <STRONG>WINDOW</STRONG> <STRONG>*</STRONG> <EM>win</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>y</EM><STRONG>,</STRONG> <STRONG>int</STRONG> <EM>x</EM><STRONG>);</STRONG>
 
@@ -126,6 +130,12 @@
        As  a  side  effect,  setting  a zero mouse mask may turn off the mouse
        cursor; setting a nonzero mask may turn it on.  Whether this happens is
        device-dependent.
+
+
+</PRE><H3><a name="h3-mouse_mask">mouse_mask</a></H3><PRE>
+       Use <STRONG>mouse_mask</STRONG> to set or query only the part of the mouse  mask  for  a
+       single  button.   The mask returned in the <EM>old-mask</EM> will be encoded for
+       button 1.
 
 
 </PRE><H3><a name="h3-Mouse-Events">Mouse Events</a></H3><PRE>
@@ -186,69 +196,81 @@
        call retrieves the next older event from the queue.
 
 
+</PRE><H3><a name="h3-mouse_get">mouse_get</a></H3><PRE>
+       Use  <STRONG>mouse_get</STRONG>  to  consume the current mouse event, returning <STRONG>OK</STRONG> if it
+       was activated by the specified button.  The button  state  returned  in
+       the <EM>event</EM> will be encoded for button 1.
+
+
+</PRE><H3><a name="h3-mouse_test">mouse_test</a></H3><PRE>
+       Use <STRONG>mouse_test</STRONG> to check the current mouse event, returning <STRONG>OK</STRONG> if it was
+       activated  by  the  specified button.  The button state returned in the
+       <EM>event</EM> will be encoded for button 1.
+
+
 </PRE><H3><a name="h3-ungetmouse">ungetmouse</a></H3><PRE>
-       <STRONG>ungetmouse</STRONG>  behaves  analogously to <STRONG><A HREF="curs_util.3x.html">ungetch(3x)</A></STRONG>.  It pushes a <STRONG>KEY_MOUSE</STRONG>
-       event onto the screen's input queue, and <EM>event</EM>  onto  the  mouse  event
+       <STRONG>ungetmouse</STRONG> behaves analogously to <STRONG><A HREF="curs_util.3x.html">ungetch(3x)</A></STRONG>.  It pushes  a  <STRONG>KEY_MOUSE</STRONG>
+       event  onto  the  screen's  input queue, and <EM>event</EM> onto the mouse event
        queue.
 
 
 </PRE><H3><a name="h3-wenclose">wenclose</a></H3><PRE>
        <STRONG>wenclose</STRONG> returns <STRONG>TRUE</STRONG> if the pair of screen-relative coordinates (<EM>y</EM>, <EM>x</EM>)
-       is  enclosed by the given window <EM>win</EM>, and <STRONG>FALSE</STRONG> otherwise.  If <EM>win</EM> is a
+       is enclosed by the given window <EM>win</EM>, and <STRONG>FALSE</STRONG> otherwise.  If <EM>win</EM> is  a
        pad, <STRONG>wenclose</STRONG> uses its most recent screen coordinates as specified in a
        <STRONG><A HREF="curs_pad.3x.html">prefresh(3x)</A></STRONG> or <STRONG><A HREF="curs_pad.3x.html">pnoutrefresh(3x)</A></STRONG> call.
 
-       <STRONG>wenclose</STRONG> is useful for determining what subset of the screen's  windows
-       encloses  the location of a mouse event; it is otherwise independent of
+       <STRONG>wenclose</STRONG>  is useful for determining what subset of the screen's windows
+       encloses the location of a mouse event; it is otherwise independent  of
        the <EM>ncurses</EM> mouse API.
 
 
 </PRE><H3><a name="h3-wmouse_trafo">wmouse_trafo</a></H3><PRE>
-       <STRONG>wmouse_trafo</STRONG> transforms the given pair of coordinate pointers (<EM>pY</EM>,  <EM>pX</EM>)
-       from  a  <EM>win</EM>-relative  basis to a screen-relative one or <EM>vice</EM> <EM>versa</EM>, as
-       <EM>to-screen</EM> is <STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>, respectively.  <STRONG>stdscr</STRONG>-relative  coordinates
+       <STRONG>wmouse_trafo</STRONG>  transforms the given pair of coordinate pointers (<EM>pY</EM>, <EM>pX</EM>)
+       from a <EM>win</EM>-relative basis to a screen-relative one or  <EM>vice</EM>  <EM>versa</EM>,  as
+       <EM>to-screen</EM>  is <STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>, respectively.  <STRONG>stdscr</STRONG>-relative coordinates
        are  not  always  identical  to  screen  coordinates:  <EM>curses</EM>  supports
-       reservation of  screen  lines  at  the  top  and/or  bottom  for  other
+       reservation  of  screen  lines  at  the  top  and/or  bottom  for other
        purposes; see <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG> and <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>.
 
-       If  <EM>to-screen</EM>  <EM>is</EM>  <STRONG>TRUE</STRONG> and the pointers (<EM>pY</EM>, <EM>pX</EM>) reference coordinates
+       If <EM>to-screen</EM> <EM>is</EM> <STRONG>TRUE</STRONG> and the pointers (<EM>pY</EM>,  <EM>pX</EM>)  reference  coordinates
        inside <EM>win</EM>, <EM>ncurses</EM> updates their values to <STRONG>stdscr</STRONG>-relative coordinates
        and returns <STRONG>TRUE</STRONG>.  If either <EM>pY</EM> or <EM>pX</EM> is a null pointer, or (<EM>pY</EM>, <EM>pX</EM>) is
        not inside <EM>win</EM>, <STRONG>wmouse_trafo</STRONG> returns <STRONG>FALSE</STRONG>.
 
-       If <EM>to-screen</EM> <EM>is</EM> <STRONG>FALSE</STRONG> and the pointers (<EM>pY</EM>, <EM>pX</EM>)  reference  coordinates
+       If  <EM>to-screen</EM>  <EM>is</EM> <STRONG>FALSE</STRONG> and the pointers (<EM>pY</EM>, <EM>pX</EM>) reference coordinates
        inside <STRONG>stdscr</STRONG>, <EM>ncurses</EM> updates their values to <EM>win</EM>-relative coordinates
        and returns <STRONG>TRUE</STRONG>.  If either <EM>pY</EM> or <EM>pX</EM> is a null pointer, or (<EM>pY</EM>, <EM>pX</EM>) is
        not inside <STRONG>stdscr</STRONG>, <STRONG>wmouse_trafo</STRONG> returns <STRONG>FALSE</STRONG>.
 
-       <STRONG>wmouse_trafo</STRONG>  is  useful  for  performing coordinate transforms between
+       <STRONG>wmouse_trafo</STRONG> is useful for  performing  coordinate  transforms  between
        windows; it is otherwise independent of the <EM>ncurses</EM> mouse API.
 
 
 </PRE><H3><a name="h3-mouse_trafo">mouse_trafo</a></H3><PRE>
-       <STRONG>mouse_trafo</STRONG> applies the <STRONG>wmouse_trafo</STRONG>  translation  to  <STRONG>stdscr</STRONG>.   If  no
-       screen  lines  are  reserved by <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG> or <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>, this is
+       <STRONG>mouse_trafo</STRONG>  applies  the  <STRONG>wmouse_trafo</STRONG>  translation  to <STRONG>stdscr</STRONG>.  If no
+       screen lines are reserved by <STRONG><A HREF="curs_kernel.3x.html">ripoffline(3x)</A></STRONG> or  <STRONG><A HREF="curs_slk.3x.html">slk_init(3x)</A></STRONG>,  this  is
        the identity transformation.
 
 
 </PRE><H3><a name="h3-mouseinterval">mouseinterval</a></H3><PRE>
-       <STRONG>mouseinterval</STRONG> sets the maximum time (in thousandths of a  second)  that
-       can  elapse between press and release events for them to be <EM>resolved</EM> as
-       (combined into) a <EM>click</EM>.  An application might interpret  button  press
+       <STRONG>mouseinterval</STRONG>  sets  the maximum time (in thousandths of a second) that
+       can elapse between press and release events for them to be <EM>resolved</EM>  as
+       (combined  into)  a <EM>click</EM>.  An application might interpret button press
        and release events separated by more than the mouse interval as a "long
        press", or, with motion, as a "drag".
 
        When <EM>ncurses</EM> detects a mouse event, it awaits further input activity up
-       to  this interval, and then checks for a subsequent mouse event that is
-       combinable with the first event.  If the timeout expires without  input
-       activity,  then  no  click resolution occurs.  Calling <STRONG>mouseinterval(0)</STRONG>
+       to this interval, and then checks for a subsequent mouse event that  is
+       combinable  with the first event.  If the timeout expires without input
+       activity, then no click resolution  occurs.   Calling  <STRONG>mouseinterval(0)</STRONG>
        disables click resolution.
 
-       <STRONG>mouseinterval</STRONG>   returns   the    previous    interval    value.     Use
+       <STRONG>mouseinterval</STRONG>    returns    the    previous    interval   value.    Use
        <STRONG>mouseinterval(-1)</STRONG> to obtain the interval without altering it.
 
        The  mouse  interval  is  set  to  one  sixth  of  a  second  when  the
-       corresponding  screen  is  initialized,   e.g.,   in   <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>   or
+       corresponding   screen   is   initialized,   e.g.,  in  <STRONG><A HREF="curs_initscr.3x.html">initscr(3x)</A></STRONG>  or
        <STRONG><A HREF="curs_terminfo.3x.html">setupterm(3x)</A></STRONG>.
 
 
@@ -272,16 +294,16 @@
 
        <STRONG>mousemask</STRONG> returns the mask of reportable events.
 
-       <STRONG>mouseinterval</STRONG>  returns the previous interval value, unless the terminal
-       was not initialized.  In that case, it  returns  the  maximum  interval
+       <STRONG>mouseinterval</STRONG> returns the previous interval value, unless the  terminal
+       was  not  initialized.   In  that case, it returns the maximum interval
        value (166).
 
 
 </PRE><H2><a name="h2-NOTES">NOTES</a></H2><PRE>
-       The   order   of  the  <STRONG>MEVENT</STRONG>  structure  members  is  not  guaranteed.
+       The  order  of  the  <STRONG>MEVENT</STRONG>  structure  members  is   not   guaranteed.
        Additional fields may be added to the structure in the future.
 
-       Under <EM>ncurses</EM>, these calls are implemented using either <EM>xterm</EM>'s  built-
+       Under  <EM>ncurses</EM>, these calls are implemented using either <EM>xterm</EM>'s built-
        in mouse-tracking API or platform-specific drivers including
 
           <STRONG>o</STRONG>   Alessandro Rubini's gpm server
@@ -290,12 +312,12 @@
 
           <STRONG>o</STRONG>   OS/2 EMX
 
-       If  you  are  using  an unsupported configuration, mouse events are not
+       If you are using an unsupported configuration,  mouse  events  are  not
        visible to <EM>ncurses</EM> (and the <STRONG>mousemask</STRONG> function always returns <STRONG>0</STRONG>).
 
-       If the  terminal  type  possesses  the  (nonstandard)  <EM>terminfo</EM>  string
-       capability  <STRONG>XM</STRONG>,  <EM>ncurses</EM>'s <EM>xterm</EM> mouse driver uses it when initializing
-       the terminal for mouse operation.  The default, if  <STRONG>XM</STRONG>  is  not  found,
+       If  the  terminal  type  possesses  the  (nonstandard)  <EM>terminfo</EM> string
+       capability <STRONG>XM</STRONG>, <EM>ncurses</EM>'s <EM>xterm</EM> mouse driver uses it  when  initializing
+       the  terminal  for  mouse  operation.  The default, if <STRONG>XM</STRONG> is not found,
        corresponds to private mode 1000 of <EM>xterm</EM>.
 
           \E[?1000%?%p1%{1}%=%th%el%;
@@ -304,47 +326,47 @@
 
           \E[?1006;1000%?%p1%{1}%=%th%el%;
 
-       The  <EM>id</EM>  member  of the mouse event structure is not presently used; no
-       terminal type or operating system interface supports  reporting  events
-       from  distinguishable  pointing  devices.  If you synthesize an <EM>MEVENT</EM>,
+       The <EM>id</EM> member of the mouse event structure is not  presently  used;  no
+       terminal  type  or operating system interface supports reporting events
+       from distinguishable pointing devices.  If you  synthesize  an  <EM>MEVENT</EM>,
        use an <EM>id</EM> of 0.
 
        The <EM>z</EM> member of the mouse event structure is not presently used.  It is
-       intended for use with touch screens (which may  be  pressure-sensitive)
+       intended  for  use with touch screens (which may be pressure-sensitive)
        or with 3D-mice/trackballs/power gloves.
 
-       The  <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include <STRONG>REPORT_MOUSE_POSITION</STRONG>.
-       They are distinct.  For example, in <EM>xterm</EM>,  wheel/scrolling  mice  send
-       position  reports  as  a  sequence of presses of buttons 4 or 5 without
+       The <STRONG>ALL_MOUSE_EVENTS</STRONG>  class  does  not  include  <STRONG>REPORT_MOUSE_POSITION</STRONG>.
+       They  are  distinct.   For example, in <EM>xterm</EM>, wheel/scrolling mice send
+       position reports as a sequence of presses of buttons  4  or  5  without
        matching button-releases.
 
 
 </PRE><H2><a name="h2-EXTENSIONS">EXTENSIONS</a></H2><PRE>
-       These functions are <EM>ncurses</EM> extensions,  and  are  not  found  in  SVr4
-       <EM>curses</EM>,  4.4BSD  <EM>curses</EM>,  or  any other previous <EM>curses</EM> implementation.
-       (SVr4 <EM>curses</EM> did have a <EM>getmouse</EM> function, which took no  argument  and
+       These  functions  are  <EM>ncurses</EM>  extensions,  and  are not found in SVr4
+       <EM>curses</EM>, 4.4BSD <EM>curses</EM>, or any  other  previous  <EM>curses</EM>  implementation.
+       (SVr4  <EM>curses</EM>  did have a <EM>getmouse</EM> function, which took no argument and
        returned an <EM>unsigned</EM> <EM>long</EM>.)
 
 
 </PRE><H2><a name="h2-PORTABILITY">PORTABILITY</a></H2><PRE>
        Applications employing the <EM>ncurses</EM> mouse extension should condition its
-       use  on the visibility of the <STRONG>NCURSES_MOUSE_VERSION</STRONG> preprocessor macro.
-       When the interface changes, the  macro's  value  increments.   Multiple
-       versions   are  available  when  <EM>ncurses</EM>  is  configured;  see  section
+       use on the visibility of the <STRONG>NCURSES_MOUSE_VERSION</STRONG> preprocessor  macro.
+       When  the  interface  changes,  the macro's value increments.  Multiple
+       versions  are  available  when  <EM>ncurses</EM>  is  configured;  see   section
        "ALTERNATE CONFIGURATIONS" of <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>.  The following values may be
        specified.
 
           <STRONG>1</STRONG>  has definitions for reserved events.  The mask uses 28 bits.
 
-          <STRONG>2</STRONG>  adds definitions  for  button  5,  removes  the  definitions  for
+          <STRONG>2</STRONG>  adds  definitions  for  button  5,  removes  the  definitions for
              reserved events.  The mask uses 29 bits.
 
 
 </PRE><H2><a name="h2-HISTORY">HISTORY</a></H2><PRE>
-       SVr4  (1989)  added  mouse  support  to its variant of <STRONG>xterm(1)</STRONG>.  It is
+       SVr4 (1989) added mouse support to its  variant  of  <STRONG>xterm(1)</STRONG>.   It  is
        mentioned in a few places, with little supporting documentation.
 
-       <STRONG>o</STRONG>   Its "libcurses"  manual  page  lists  functions  for  this  feature
+       <STRONG>o</STRONG>   Its  "libcurses"  manual  page  lists  functions  for  this feature
            prototyped in <EM>curses.h</EM>.
 
                extern int mouse_set(long int);
@@ -363,46 +385,46 @@
                <STRONG>mouse_info</STRONG>      <STRONG>minfo</STRONG>   <STRONG>Mi</STRONG>   Mouse status information
                <STRONG>req_mouse_pos</STRONG>   <STRONG>reqmp</STRONG>   <STRONG>RQ</STRONG>   Request mouse position report
 
-       <STRONG>o</STRONG>   The  interface  made assumptions (as does <EM>ncurses</EM>) about the escape
+       <STRONG>o</STRONG>   The interface made assumptions (as does <EM>ncurses</EM>) about  the  escape
            sequences sent to and received from the terminal.
 
-           For instance, the SVr4 <EM>curses</EM> library  used  the  <STRONG>get_mouse</STRONG>  (<STRONG>getm</STRONG>)
+           For  instance,  the  SVr4  <EM>curses</EM> library used the <STRONG>get_mouse</STRONG> (<STRONG>getm</STRONG>)
            capability to tell the terminal which mouse button events it should
-           send,  passing the mouse-button bit mask to the terminal.  Also, it
-           could ask the terminal where the mouse was using the  <STRONG>req_mouse_pos</STRONG>
+           send, passing the mouse-button bit mask to the terminal.  Also,  it
+           could  ask the terminal where the mouse was using the <STRONG>req_mouse_pos</STRONG>
            (<STRONG>reqmp</STRONG>) capability.
 
-           Those  features  required a terminal program that had been modified
+           Those features required a terminal program that had  been  modified
            to work with SVr4 <EM>curses</EM>.  They were not part of the X Consortium's
            <EM>xterm</EM>.
 
-       When developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September  1995,
-       Eric  Raymond  was  uninterested in using the same interface due to its
+       When  developing the <EM>xterm</EM> mouse support for <EM>ncurses</EM> in September 1995,
+       Eric Raymond was uninterested in using the same interface  due  to  its
        lack of documentation.  Later, in 1998, Mark Hesseling provided support
-       in <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses</EM>, however, does  not
-       use  video  terminals,  making  it  unnecessary  to  be concerned about
+       in  <EM>PDCurses</EM> 2.3 using the SVr4 interface.  <EM>PDCurses</EM>, however, does not
+       use video terminals,  making  it  unnecessary  to  be  concerned  about
        compatibility with the escape sequences.
 
 
 </PRE><H2><a name="h2-BUGS">BUGS</a></H2><PRE>
        Mouse events from <EM>xterm</EM> are <EM>not</EM> ignored in canonical ("cooked") mode if
-       they have been enabled by <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM>  mouse  report
+       they  have  been enabled by <STRONG>mousemask</STRONG>.  Instead, the <EM>xterm</EM> mouse report
        sequence appears in the string read.
 
-       An  <EM>ncurses</EM>  window  must  enable <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG> to correctly receive mouse
-       event reports from <EM>xterm</EM> since they are  encoded  like  function  keys.
+       An <EM>ncurses</EM> window must enable <STRONG><A HREF="curs_inopts.3x.html">keypad(3x)</A></STRONG>  to  correctly  receive  mouse
+       event  reports  from  <EM>xterm</EM>  since they are encoded like function keys.
        Set the terminal's <EM>terminfo</EM> capability <STRONG>key_mouse</STRONG> (<STRONG>kmous</STRONG>) to "\E[M" (the
-       beginning  of  the response from <EM>xterm</EM> for mouse clicks).  Other values
-       of <STRONG>key_mouse</STRONG> are permitted under the same  assumption  --  that  is,  a
-       mouse  report  begins  with  the  value of the <STRONG>key_mouse</STRONG> (<STRONG>kmous</STRONG>) string
+       beginning of the response from <EM>xterm</EM> for mouse clicks).   Other  values
+       of  <STRONG>key_mouse</STRONG>  are  permitted  under  the same assumption -- that is, a
+       mouse report begins with the value  of  the  <STRONG>key_mouse</STRONG>  (<STRONG>kmous</STRONG>)  string
        capability.
 
        Because there are no standard response sequences that serve to identify
-       terminals supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that  if
-       <STRONG>key_mouse</STRONG>  (<STRONG>kmous</STRONG>)  is  defined  in the terminal description, or if the
-       terminal type's primary name or aliases  contain  the  string  "xterm",
+       terminals  supporting the <EM>xterm</EM> mouse protocol, <EM>ncurses</EM> assumes that if
+       <STRONG>key_mouse</STRONG> (<STRONG>kmous</STRONG>) is defined in the terminal  description,  or  if  the
+       terminal  type's  primary  name  or aliases contain the string "xterm",
        then the terminal may send mouse events.  <EM>ncurses</EM> checks the <STRONG>kmous</STRONG> cap-
-       code  first,  allowing  use of newer <EM>xterm</EM> mouse protocols, such as its
+       code first, allowing use of newer <EM>xterm</EM> mouse protocols,  such  as  its
        private mode 1006.
 
 
@@ -410,7 +432,7 @@
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>,     <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>,     <STRONG><A HREF="curs_pad.3x.html">curs_pad(3x)</A></STRONG>,
        <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>, <STRONG><A HREF="curs_variables.3x.html">curs_variables(3x)</A></STRONG>
 
-ncurses 6.6                       2026-09-19                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
+ncurses 6.6                       2026-10-10                    <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>
 </PRE>
 <div class="nav">
 <ul>
@@ -420,8 +442,11 @@ ncurses 6.6                       2026-09-19                    <STRONG><A HREF=
 <ul>
 <li><a href="#h3-has_mouse">has_mouse</a></li>
 <li><a href="#h3-mousemask">mousemask</a></li>
+<li><a href="#h3-mouse_mask">mouse_mask</a></li>
 <li><a href="#h3-Mouse-Events">Mouse Events</a></li>
 <li><a href="#h3-getmouse">getmouse</a></li>
+<li><a href="#h3-mouse_get">mouse_get</a></li>
+<li><a href="#h3-mouse_test">mouse_test</a></li>
 <li><a href="#h3-ungetmouse">ungetmouse</a></li>
 <li><a href="#h3-wenclose">wenclose</a></li>
 <li><a href="#h3-wmouse_trafo">wmouse_trafo</a></li>

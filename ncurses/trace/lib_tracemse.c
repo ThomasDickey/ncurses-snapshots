@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.26 2026/08/31 23:56:06 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.27 2026/10/10 18:07:15 tom Exp $")
 
 #ifdef TRACE
 
@@ -57,7 +57,7 @@ _nc_trace_mmask_t(SCREEN *sp, mmask_t code)
 	char my_button[10]; \
 	size_t n = strlen(my_buffer); \
 	sprintf(my_button, "-%d", button); \
-	if (n && (my_buffer[n-1] != '{')) \
+	if (n && (my_buffer[n-1] != L_BRACE)) \
 	_nc_STRCAT(my_buffer, ", ", sizeof(my_buffer)); \
 	_nc_STRCAT(my_buffer, show, sizeof(my_buffer)); \
 	_nc_STRCAT(my_buffer, my_button, sizeof(my_buffer)); \
@@ -66,11 +66,12 @@ _nc_trace_mmask_t(SCREEN *sp, mmask_t code)
 #define SHOW(name, show) \
     if ((code & name) == name) { \
 	size_t n = strlen(my_buffer); \
-	if (n && (my_buffer[n-1] != '{')) \
+	if (n && (my_buffer[n-1] != L_BRACE)) \
 	_nc_STRCAT(my_buffer, ", ", sizeof(my_buffer)); \
 	_nc_STRCAT(my_buffer, show, sizeof(my_buffer)); \
     }
 
+    *my_buffer = '\0';
     for (button = 1; button <= MAX_BUTTON; ++button) {
 	SHOW_BUTTON(NCURSES_BUTTON_PRESSED, "press");
 	SHOW_BUTTON(NCURSES_BUTTON_RELEASED, "release");

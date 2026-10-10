@@ -27,8 +27,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.74 2026/09/19 21:37:14 tom Exp $
-.TH terminfo 5 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
+.\" $Id: terminfo.head,v 1.75 2026/10/10 21:54:31 tom Exp $
+.TH terminfo 5 2026-10-10 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "File formats"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -97,7 +97,7 @@ and
 .I reset
 parameters
 as well as
-.I padding,
+.IR padding ","
 a means of adapting the transmission of operations
 to latencies that may be observed in the terminal
 when carrying them out.

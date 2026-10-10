@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.tail,v 1.173 2026/09/19 21:33:53 Branden.Robinson Exp $
+.\" $Id: terminfo.tail,v 1.177 2026/10/10 22:03:45 tom Exp $
 .ps +1
 .SS "User-Defined Capabilities"
 .
@@ -1351,7 +1351,7 @@ key_c3	kc3
 .PP
 The keys in the final group above correspond to those
 on a nine-key directional keypad that are not orthogonal arrow keys;
-see subsection \*(``Key Codes`*('' of \fB\%getch\fP(3X).
+see subsection \*(``Key Codes\*('' of \fB\%getch\fP(3X).
 .PP
 Other Model M keys,
 such as
@@ -1362,7 +1362,7 @@ Pause/Break,
 and
 Num Lock,
 and later innovations like
-\*(``Windows`*('' modifiers,
+\*(``Windows\*('' modifiers,
 Menu,
 and media control keys
 (Play,
@@ -1463,7 +1463,7 @@ If the terminal has hardware tab stops that are set at every
 character cells when the terminal is powered up,
 specify
 .I n
-as the value of the the numeric capability
+as the value of the numeric capability
 .B \%init_tabs
 .RB ( it )\c
 \&.
@@ -1912,7 +1912,7 @@ and
 .B \%setab
 capabilities if they are defined.
 .PP
-All of the foregoing capabilities capabilities
+All of the foregoing capabilities
 take a single numeric argument each.
 Argument values 0-7 of
 .B \%setaf

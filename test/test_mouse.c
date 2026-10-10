@@ -27,7 +27,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: test_mouse.c,v 1.48 2026/09/05 21:31:48 tom Exp $
+ * $Id: test_mouse.c,v 1.51 2026/10/10 21:47:43 tom Exp $
  *
  * Author: Leonid S Usov
  *
@@ -37,6 +37,12 @@
 #include <test.priv.h>
 
 #if defined(NCURSES_MOUSE_VERSION) && !defined(_NC_WINDOWS_NATIVE)
+
+#if NCURSES_VERSION_PATCH > 20260926
+#define USE_PER_BUTTON 1
+#else
+#define USE_PER_BUTTON 0
+#endif
 
 static int logoffset = 0;
 
@@ -226,6 +232,105 @@ cooked_loop(char *my_environ, int interval)
     endwin();
 }
 
+#if USE_PER_BUTTON
+static void
+button_loop(char *my_environ, int interval)
+{
+    MEVENT event;
+    int num_buttons = 0;
+    int btn;
+
+    signal(SIGINT, onsig);
+    initscr();
+    noecho();
+    cbreak();			/* Line buffering disabled; pass everything */
+    nonl();
+    keypad(stdscr, TRUE);
+
+    /* determine the number of buttons (internal may support more than mask) */
+    for (btn = 0; btn < 12; ++btn) {
+	mmask_t my_mask;
+	(void) mouse_mask(btn, ALL_MOUSE_EVENTS, &my_mask);
+	if (mouse_mask(btn, ALL_MOUSE_EVENTS, &my_mask) == 0) {
+	    break;
+	}
+	num_buttons = btn;
+    }
+
+    mouseinterval(interval);
+
+    logw("Ctrl-c to quit (%d buttons)", num_buttons);
+    logw("--------------");
+    if (my_environ)
+	logw("%s", my_environ);
+    logoffset = getcury(stdscr);
+
+    while (1) {
+	int c = getch();
+	int rc;
+
+	switch (c) {
+	case KEY_MOUSE:
+	    rc = ERR;
+	    for (btn = num_buttons; btn >= 0; --btn) {
+		if (mouse_test(btn, &event) == OK) {
+		    rc = mouse_get(btn, &event);
+		    break;
+		}
+	    }
+	    if (rc == OK) {
+		const mmask_t btn_mask = (NCURSES_BUTTON_RELEASED |
+					  NCURSES_BUTTON_PRESSED |
+					  NCURSES_BUTTON_CLICKED |
+					  NCURSES_DOUBLE_CLICKED |
+					  NCURSES_TRIPLE_CLICKED);
+		mmask_t this_event = event.bstate;
+		if (btn != 0) {
+		    mmask_t this_btn = (mmask_t) (this_event
+						  & NCURSES_MOUSE_MASK(1, btn_mask));
+		    if (this_btn == 0)
+			continue;
+		    logw(HexFormat " button %2d%s%s%s%s%s%s @%3d,%3d%s%s%s",
+			 (unsigned long) this_btn,
+			 btn,
+			 ShowQ(1, BUTTON_RELEASED),
+			 ShowQ(1, BUTTON_PRESSED),
+			 ShowQ(1, BUTTON_CLICKED),
+			 ShowQ(1, DOUBLE_CLICKED),
+			 ShowQ(1, TRIPLE_CLICKED),
+			 ShowP(),
+			 event.y, event.x,
+			 ShowM(SHIFT),
+			 ShowM(CTRL),
+			 ShowM(ALT));
+		} else {
+		    /*
+		     * A position report need not have a button associated with
+		     * it.  The modifiers probably are unused.
+		     */
+		    logw(HexFormat "%s @%3d,%3d%s%s%s",
+			 (unsigned long) this_event,
+			 ShowP(),
+			 event.y, event.x,
+			 ShowM(SHIFT),
+			 ShowM(CTRL),
+			 ShowM(ALT));
+		}
+	    }
+	    break;
+	case ERR:
+	case '\003':
+	    goto end;
+	default:
+	    logw("got another char: 0x%x", UChar(c));
+	}
+	refresh();
+    }
+  end:
+    endwin();
+}
+#endif /* USE_PER_BUTTON */
+
 static void
 usage(int ok)
 {
@@ -241,8 +346,11 @@ usage(int ok)
 	,""
 	,USAGE_COMMON
 	,"Options:"
-	," -r       show raw input stream, injecting a new line before every ESC"
+#if USE_PER_BUTTON
+	," -b       use button-level API, e.g., mouse_get rather than getmouse"
+#endif
 	," -i NUM   set mouse interval to NUM; default is 0 (no double-clicks)"
+	," -r       show raw input stream, injecting a new line before every ESC"
 	," -T TERM  override $TERM"
     };
     unsigned n;
@@ -264,9 +372,17 @@ main(int argc, char *argv[])
     size_t my_len;
     char *my_environ = NULL;
     const char *term_format = "TERM=%s";
+#if USE_PER_BUTTON
+    bool per_button = FALSE;
+#endif
 
-    while ((ch = getopt(argc, argv, OPTS_COMMON "i:rT:")) != -1) {
+    while ((ch = getopt(argc, argv, OPTS_COMMON "bi:rT:")) != -1) {
 	switch (ch) {
+#if USE_PER_BUTTON
+	case 'b':
+	    per_button = TRUE;
+	    break;
+#endif
 	case 'i':
 	    interval = atoi(optarg);
 	    break;
@@ -291,11 +407,14 @@ main(int argc, char *argv[])
 	ExitProgram(EXIT_FAILURE);
     }
 
-    if (rawmode) {
+    if (rawmode)
 	raw_loop();
-    } else {
+#if USE_PER_BUTTON
+    else if (per_button)
+	button_loop(my_environ, interval);
+#endif
+    else
 	cooked_loop(my_environ, interval);
-    }
 
     ExitProgram(EXIT_SUCCESS);
 }

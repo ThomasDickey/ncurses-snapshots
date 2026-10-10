@@ -28,8 +28,8 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.136 2026/09/19 21:38:50 tom Exp $
-.TH curs_mouse 3X 2026-09-19 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
+.\" $Id: curs_mouse.3x,v 1.137 2026/10/10 22:19:32 tom Exp $
+.TH curs_mouse 3X 2026-10-10 "ncurses @NCURSES_MAJOR@.@NCURSES_MINOR@" "Library calls"
 .ie \n(.g \{\
 .ds `` \(lq
 .ds '' \(rq
@@ -47,9 +47,12 @@
 ..
 .SH NAME
 \fB\%has_mouse\fP,
+\fB\%mousemask\fP,
 \fB\%getmouse\fP,
 \fB\%ungetmouse\fP,
-\fB\%mousemask\fP,
+\fB\%mouse_mask\fP,
+\fB\%mouse_get\fP,
+\fB\%mouse_test\fP,
 \fB\%wenclose\fP,
 \fB\%mouse_trafo\fP,
 \fB\%wmouse_trafo\fP,
@@ -77,6 +80,10 @@ get mouse events in \fIncurses\fR
 .PP
 \fBint getmouse(MEVENT * \fIevent\fP);
 \fBint ungetmouse(MEVENT * \fIevent\fP);
+.PP
+\fBmmask_t mouse_mask(int \fIbutton\fP, mmask_t \fInew-mask\fP, mmask_t * \fIold-mask\fP);
+\fBint mouse_get(int \fIbutton\fP, MEVENT * \fIevent\fP);
+\fBint mouse_test(int \fIbutton\fP, MEVENT * \fIevent\fP);
 .PP
 \fBbool wenclose(const WINDOW * \fIwin\fP, int \fIy\fP, int \fIx\fP);
 .PP
@@ -169,6 +176,11 @@ As a side effect,
 setting a zero mouse mask may turn off the mouse cursor;
 setting a nonzero mask may turn it on.
 Whether this happens is device-dependent.
+.SS mouse_mask
+Use
+.B \%mouse_mask
+to set or query only the part of the mouse mask for a single button.
+The mask returned in the \fIold-mask\fP will be encoded for button 1.
 .SS "Mouse Events"
 Several mouse event types may be selected;
 construct a mask by logically \*(``or\*(''-ing their values.
@@ -246,6 +258,22 @@ pointer you supply.
 A subsequent
 .B \%getmouse
 call retrieves the next older event from the queue.
+.SS mouse_get
+Use
+.B \%mouse_get
+to consume the current mouse event,
+returning
+.B OK
+if it was activated by the specified button.
+The button state returned in the \fIevent\fP will be encoded for button 1.
+.SS mouse_test
+Use
+.B \%mouse_test
+to check the current mouse event,
+returning
+.B OK
+if it was activated by the specified button.
+The button state returned in the \fIevent\fP will be encoded for button 1.
 .SS ungetmouse
 .B \%ungetmouse
 behaves analogously to \fB\%ungetch\fP(3X).
