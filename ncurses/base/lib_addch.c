@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.146 2026/08/01 19:55:33 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.147 2026/10/17 18:35:16 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -272,6 +272,29 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
     y = win->_cury;
 
     CHECK_POSITION(win, x, y);
+
+    /*
+     * Before updating the current cell, check if it was used for a
+     * multi-column character, to ensure that the previous contents are
+     * cleared.
+     */
+    if_WIDEC({
+	if (isWidecBase(win->_line[y].text[x])) {
+	    int z = x;
+	    win->_line[y].text[z++] = blankchar;
+	    while (isWidecExt(win->_line[y].text[z])) {
+		win->_line[y].text[z++] = blankchar;
+	    }
+	} else if (isWidecExt(win->_line[y].text[x])) {
+	    int z = x;
+	    while (isWidecExt(win->_line[y].text[z])) {
+		win->_line[y].text[z--] = blankchar;
+	    }
+	    if (isWidecBase(win->_line[y].text[z])) {
+		win->_line[y].text[z] = blankchar;
+	    }
+	}
+    });
 
     ch = render_char(win, ch);
 

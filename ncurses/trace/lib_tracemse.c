@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.27 2026/10/10 18:07:15 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.28 2026/10/17 23:19:53 tom Exp $")
 
 #ifdef TRACE
 
@@ -56,7 +56,7 @@ _nc_trace_mmask_t(SCREEN *sp, mmask_t code)
     if ((code & BUTTON_MASK(name)) == BUTTON_MASK(name)) { \
 	char my_button[10]; \
 	size_t n = strlen(my_buffer); \
-	sprintf(my_button, "-%d", button); \
+	_nc_SPRINTF(my_button, _nc_SLIMIT(sizeof(my_button)) "-%d", button); \
 	if (n && (my_buffer[n-1] != L_BRACE)) \
 	_nc_STRCAT(my_buffer, ", ", sizeof(my_buffer)); \
 	_nc_STRCAT(my_buffer, show, sizeof(my_buffer)); \

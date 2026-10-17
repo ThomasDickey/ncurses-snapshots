@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.838 2026/09/12 20:54:13 tom Exp $
+dnl $Id: configure.in,v 1.840 2026/10/17 16:11:21 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.838 $)
+AC_REVISION($Revision: 1.840 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -829,6 +829,10 @@ else
 	then
 		AC_MSG_WARN(ignoring options used only for multiuser systems)
 	fi
+
+	AC_DEFINE(USE_ROOT_ENVIRON,1,[Define to 1 if root/setuid application is allowed to use ncurses environment])
+	AC_DEFINE(USE_ROOT_ACCESS,1,[Define to 1 if setuid is allowed all file-access])
+	AC_DEFINE(USE_SETUID_ENVIRON,1,[Define to 1 if setuid/setgid application is allowed to use ncurses environment])
 
 fi # cf_cv_multiuser
 

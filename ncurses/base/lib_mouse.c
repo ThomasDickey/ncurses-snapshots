@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.261 2026/10/10 23:42:24 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.263 2026/10/17 23:17:42 tom Exp $")
 
 #include <tic.h>
 
@@ -146,16 +146,22 @@ make an error
 	| BUTTON_ALT \
 	| REPORT_MOUSE_POSITION )
 
-#define	MASK_RELEASE(x)		(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_RELEASED)
-#define	MASK_PRESS(x)		(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_PRESSED)
-#define	MASK_CLICK(x)		(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_CLICKED)
-#define	MASK_DOUBLE_CLICK(x)	(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_DOUBLE_CLICKED)
-#define	MASK_TRIPLE_CLICK(x)	(mmask_t) NCURSES_MOUSE_MASK(x, NCURSES_TRIPLE_CLICKED)
+#if NCURSES_MOUSE_VERSION > 1
+#define MyMask	mmask_t
+#else
+#define MyMask	mmask2_t
+#endif
+
+#define	MASK_RELEASE(x)		(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_RELEASED)
+#define	MASK_PRESS(x)		(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_PRESSED)
+#define	MASK_CLICK(x)		(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_BUTTON_CLICKED)
+#define	MASK_DOUBLE_CLICK(x)	(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_DOUBLE_CLICKED)
+#define	MASK_TRIPLE_CLICK(x)	(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_TRIPLE_CLICKED)
 
 #if NCURSES_MOUSE_VERSION > 1
-#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(0x1f & (m) >> (((b) - 1) * 5)))
+#define EXTRACT_MOUSE_MASK(b,m) ((MyMask)(0x1f & (m) >> (((b) - 1) * 5)))
 #else
-#define EXTRACT_MOUSE_MASK(b,m) ((mmask_t)(0x3f & (m) >> (((b) - 1) * 6)))
+#define EXTRACT_MOUSE_MASK(b,m) ((MyMask)(0x3f & (m) >> (((b) - 1) * 6)))
 #endif
 
 #if NCURSES_MAX_BUTTON == 4
@@ -993,7 +999,7 @@ _nc_mouse_event(SCREEN *sp)
 #else
 #define PRESS_POSITION(n) \
     do { \
-	    eventp->bstate = (mmask_t) ((sp->_mouse_bstate & MASK_PRESS(n)) \
+	    eventp->bstate = (MyMask) ((sp->_mouse_bstate & MASK_PRESS(n)) \
 				    ? REPORT_MOUSE_POSITION \
 				    : MASK_PRESS(n)); \
 	    sp->_mouse_bstate |= MASK_PRESS(n); \
@@ -1371,8 +1377,8 @@ decode_xterm_SGR1006(SCREEN *sp, MEVENT * eventp)
 	} else if (data.final != 'm' || b3 > MAX_BUTTON) {
 	    result = -TRUE;
 	} else {
-	    mmask_t pressed = (mmask_t) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_PRESSED);
-	    mmask_t release = (mmask_t) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_RELEASED);
+	    MyMask pressed = (MyMask) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_PRESSED);
+	    MyMask release = (MyMask) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_RELEASED);
 	    if (sp->_mouse_bstate & pressed) {
 		eventp->bstate = release;
 		sp->_mouse_bstate &= ~pressed;
@@ -1892,14 +1898,14 @@ _nc_mouse_resume(SCREEN *sp)
     returnVoid;
 }
 
-static mmask_t
+static MyMask
 _nc_want_bstate(const SCREEN *sp, int button)
 {
-    mmask_t anybit = sp->_mouse_mask2;
-    mmask_t wanted = ((button > 0)
-		      ? ((NCURSES_MOUSE_MASK(button, BUTTON_BITS) & anybit)
-			 | (anybit & OTHER_BITS))
-		      : anybit);
+    MyMask anybit = (MyMask) sp->_mouse_mask2;
+    MyMask wanted = ((button > 0)
+		     ? ((NCURSES_MOUSE_MASK(button, BUTTON_BITS) & anybit)
+			| (anybit & OTHER_BITS))
+		     : anybit);
     return wanted;
 }
 
@@ -1912,7 +1918,7 @@ _nc_get_mouse(SCREEN *sp, int button)
 
     if (_nc_has_mouse(sp)) {
 	MEVENT *readp;
-	mmask_t wanted = _nc_want_bstate(sp, button);
+	MyMask wanted = _nc_want_bstate(sp, button);
 	/*
 	 * Ignore events not matching mask (there could be still some if
 	 * _nc_mouse_parse was not called, e.g., when _nc_mouse_inline returns
@@ -1958,7 +1964,7 @@ _nc_is_button(const SCREEN *sp, int button, const MEVENT * aevent)
     if (button <= 0) {
 	result = TRUE;
     } else if (aevent != NULL) {
-	mmask_t wanted = _nc_want_bstate(sp, button);
+	MyMask wanted = _nc_want_bstate(sp, button);
 	if (wanted & aevent->bstate)
 	    result = TRUE;
     }
@@ -2166,7 +2172,7 @@ NCURSES_SP_NAME(mousemask)(NCURSES_SP_DCLx mmask_t newmask, mmask_t * oldmask)
 
     if (SP_PARM != NULL) {
 	if (oldmask)
-	    *oldmask = SP_PARM->_mouse_mask;
+	    *oldmask = (mmask_t) SP_PARM->_mouse_mask;
 
 	if (newmask || SP_PARM->_mouse_initialized) {
 	    _nc_mouse_init(SP_PARM);
@@ -2227,14 +2233,14 @@ NCURSES_SP_NAME(mouse_mask)(NCURSES_SP_DCLx int button, mmask_t newmask,
 	if (button > NCURSES_MAX_BUTTON || button < 0) {
 	    T(("out of range"));
 	} else if (button > 0) {
-	    mmask_t maskall = ~NCURSES_MOUSE_MASK(button, BUTTON_BITS);
+	    MyMask maskall = ~NCURSES_MOUSE_MASK(button, BUTTON_BITS);
 
 	    if (oldmask != NULL)
 		*oldmask = EXTRACT_MOUSE_MASK(button, SP_PARM->_mouse_mask);
 
 	    newmask &= BUTTON_BITS;
-	    newmask = ((SP_PARM->_mouse_mask & maskall)
-		       | NCURSES_MOUSE_MASK(button, newmask));
+	    newmask = (mmask_t) ((SP_PARM->_mouse_mask & maskall)
+				 | NCURSES_MOUSE_MASK(button, newmask));
 	    /* set/get button bits as if it were button-1 */
 	    result = NCURSES_SP_NAME(mousemask)(NCURSES_SP_ARGx newmask, NULL);
 	    result = EXTRACT_MOUSE_MASK(button, result);

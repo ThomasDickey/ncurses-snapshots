@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.760 2026/09/05 22:53:02 tom Exp $
+ * $Id: curses.priv.h,v 1.762 2026/10/17 14:32:36 tom Exp $
  *
  *	curses.priv.h
  *
@@ -506,15 +506,14 @@ typedef union {
 #if NCURSES_EXT_COLORS && HAVE_INIT_EXTENDED_COLOR
 #define NCURSES_EXT_NUMBERS  1
 #define NCURSES_INT2         int
-#define SIZEOF_INT2          4
 #define TerminalType(tp)     (tp)->type2
 #else
 #define NCURSES_EXT_NUMBERS  0
 #define NCURSES_INT2         short
-#define SIZEOF_INT2          2
 #define TerminalType(tp)     (tp)->type
 #endif
 
+#define SIZEOF_INT2          sizeof(NCURSES_INT2)
 #define SIZEOF_SHORT         2
 
 #ifdef CUR
@@ -966,12 +965,26 @@ typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
 #define LEAF_LEN 2
 #endif
 
+/*
+ * This is the internal max-button, which can be greater than the public
+ * NCURSES_MAX_BUTTON value.
+ */
 #if NCURSES_MOUSE_VERSION == 1
 #define MAX_BUTTON 4
 #elif NCURSES_MOUSE_VERSION == 2
 #define MAX_BUTTON 5
 #elif NCURSES_MOUSE_VERSION == 3
 #define MAX_BUTTON 11
+#endif
+
+/*
+ * The internal mouse-mask may be greater than the public mouse-mask to allow
+ * larger button values in mouse_get than getmouse, etc.
+ */
+#if NCURSES_MOUSE_VERSION == 1
+typedef mmask_t mmask2_t;
+#else
+typedef unsigned long mmask2_t;
 #endif
 
 /*
@@ -1170,9 +1183,10 @@ typedef struct screen {
 	void		(*_mouse_wrap)	(SCREEN *);
 	int		_mouse_fd;	/* file-descriptor, if any */
 	bool		_mouse_active;	/* true if initialized */
-	mmask_t		_mouse_mask;	/* set via mousemask() */
-	mmask_t		_mouse_mask2;	/* OR's in press/release bits */
-	mmask_t		_mouse_bstate;
+	mmask2_t	_mouse_mask;	/* set via mousemask() */
+	mmask2_t	_mouse_mask2;	/* OR's in press/release bits */
+	mmask2_t	_mouse_bstate;
+	int		_max_button;
 	MouseFormat	_mouse_format;	/* type of xterm mouse protocol */
 	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
 	MEVENT		_mouse_events[EV_MAX];	/* hold the last mouse event seen */

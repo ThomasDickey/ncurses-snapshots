@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1163 2026/06/27 23:09:22 tom Exp $
+dnl $Id: aclocal.m4,v 1.1165 2026/10/17 21:23:20 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -4624,7 +4624,7 @@ then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LD_SEARCHPATH version: 4 updated: 2022/08/27 15:43:08
+dnl CF_LD_SEARCHPATH version: 5 updated: 2026/10/17 17:21:39
 dnl ----------------
 dnl Try to obtain the linker's search-path, for use in scripts.
 dnl
@@ -4637,17 +4637,25 @@ if test "$cross_compiling" != yes ; then
 # GNU binutils' ld does not involve permissions which may stop ldconfig.
 cf_pathlist=`${LD:-ld} --verbose 2>/dev/null | grep SEARCH_DIR | sed -e 's,SEARCH_DIR[[("=]][[("=]]*,,g' -e 's/"[[)]];//gp' | sort -u`
 
-# The -NX options tell newer versions of Linux ldconfig to not attempt to
-# update the cache, which makes it run faster.
-test -z "$cf_pathlist" && \
-	cf_pathlist=`(ldconfig -NX -v) 2>/dev/null | sed -e '/^[[ 	]]/d' -e 's/:$//' | sort -u`
+if test -z "$cf_pathlist"
+then
+	# GLIBC, etc
+	if ldconfig --version >/dev/null 2>/dev/null; then
+		# The -NX options tell newer versions of Linux ldconfig to not attempt to
+		# update the cache, which makes it run faster.
+		test -z "$cf_pathlist" && \
+			cf_pathlist=`(ldconfig -NX -v) 2>/dev/null | sed -e '/^[[ 	]]/d' -e 's/:.*$//' | sort -u`
 
-test -z "$cf_pathlist" &&
-	cf_pathlist=`(ldconfig -v) 2>/dev/null | sed -n -e '/^[[ 	]]/d' -e 's/:$//p' | sort -u`
+		test -z "$cf_pathlist" &&
+			cf_pathlist=`(ldconfig -v) 2>/dev/null | sed -n -e '/^[[ 	]]/d' -e 's/:$//p' | sort -u`
+	fi
+fi
 
-# This works with OpenBSD 6.5, which lists only filenames
-test -z "$cf_pathlist" &&
-	cf_pathlist=`(ldconfig -v) 2>/dev/null | sed -n -e 's,^Adding \(.*\)/.*[$],\1,p' | sort -u`
+if test -z "$cf_pathlist"
+then
+	# BSDs
+	cf_pathlist=`(ldconfig -r) 2>/dev/null | grep 'search directories:' | sed -e 's/^[^:]*:[ ]*//' -e 's/:/ /g'`
+fi
 
 if test -z "$cf_pathlist"
 then
@@ -7251,7 +7259,7 @@ case x$INSTALL in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_LDCONFIG version: 5 updated: 2015/04/18 08:56:57
+dnl CF_PROG_LDCONFIG version: 6 updated: 2026/10/17 17:21:39
 dnl ----------------
 dnl Check for ldconfig, needed to fixup shared libraries that would be built
 dnl and then used in the install.
@@ -7260,7 +7268,7 @@ if test "$cross_compiling" = yes ; then
 	LDCONFIG=:
 else
 	case "$cf_cv_system_name" in
-	(dragonfly*|mirbsd*|freebsd*)
+	(dragonfly*|mirbsd*|freebsd*|netbsd*|openbsd*)
 		test -z "$LDCONFIG" && LDCONFIG="/sbin/ldconfig -R"
 		;;
 	(*) LDPATH=$PATH:/sbin:/usr/sbin
