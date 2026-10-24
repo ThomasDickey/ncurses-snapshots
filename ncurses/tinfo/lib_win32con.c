@@ -45,9 +45,14 @@
 #define _O_BINARY 0		/* FIXME: not defined in MSYS2 base */
 #endif
 
-MODULE_ID("$Id: lib_win32con.c,v 1.53 2026/07/03 23:09:14 tom Exp $")
+MODULE_ID("$Id: lib_win32con.c,v 1.54 2026/10/24 15:43:36 tom Exp $")
 
 #if defined(_NC_WINDOWS)
+
+#if defined(_NC_CHECK_MINTTY)
+#define PSAPI_VERSION 2
+#include <psapi.h>
+#endif
 
 #define CONTROL_PRESSED (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)
 
@@ -1082,6 +1087,75 @@ _nc_console_read(
 }
 
 #if USE_TERM_DRIVER && (USE_NAMED_PIPES || defined(USE_WIN32CON_DRIVER))
+
+#ifdef _NC_CHECK_MINTTY
+/*   This function tests, whether or not the ncurses application
+     is running as a descendant of MSYS2/cygwin mintty terminal
+     application. mintty doesn't use Windows Console for its screen
+     I/O, so the native Windows _isatty doesn't recognize it as
+     character device. But we can discover we are at the end of an
+     Pipe and can query the server side of the pipe, looking whether
+     or not this is mintty.
+     For now we terminate the program if we discover that situation.
+     Although in theory it would be possible, to remotely manipulate
+     the terminal state of mintty, this is out of scope for now and
+     not worth the significant effort.
+ */
+static int
+_nc_console_checkmintty(int fd, LPHANDLE pMinTTY)
+{
+    HANDLE handle = _nc_console_handle(fd);
+    DWORD dw;
+    int code = 0;
+
+    T((T_CALLED("lib_winhelper::_nc_console_checkmintty(%d, %p)"), fd, pMinTTY));
+
+    if (handle != INVALID_HANDLE_VALUE) {
+	dw = GetFileType(handle);
+	if (dw == FILE_TYPE_PIPE) {
+	    if (GetNamedPipeInfo(handle, 0, 0, 0, 0)) {
+		ULONG pPid;
+		/* Requires NT6 */
+		if (GetNamedPipeServerProcessId(handle, &pPid)) {
+		    TCHAR buf[MAX_PATH];
+		    DWORD len = 0;
+		    /* These security attributes may allow us to
+		       create a remote thread in mintty to manipulate
+		       the terminal state remotely */
+		    HANDLE pHandle = OpenProcess(PROCESS_CREATE_THREAD
+						 | PROCESS_QUERY_INFORMATION
+						 | PROCESS_VM_OPERATION
+						 | PROCESS_VM_WRITE
+						 | PROCESS_VM_READ,
+						 FALSE,
+						 pPid);
+		    if (pMinTTY)
+			*pMinTTY = INVALID_HANDLE_VALUE;
+		    if (pHandle != INVALID_HANDLE_VALUE) {
+			if ((len = GetProcessImageFileName(pHandle,
+							   buf,
+							   (DWORD)
+							   array_length(buf)))) {
+			    TCHAR *pos = _tcsrchr(buf, _T('\\'));
+			    if (pos) {
+				pos++;
+				if (_tcsnicmp(pos, _TEXT("mintty.exe"), 10)
+				    == 0) {
+				    if (pMinTTY)
+					*pMinTTY = pHandle;
+				    code = 1;
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+    }
+    returnCode(code);
+}
+#endif /* _NC_CHECK_MINTTY */
+
 /*   Our replacement for the systems _isatty to include also
      a test for mintty. This is called from the NC_ISATTY macro
      defined in curses.priv.h

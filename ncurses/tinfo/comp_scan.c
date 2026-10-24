@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.127 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.128 2026/10/24 13:04:59 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -232,8 +232,10 @@ next_char(void)
 		if (used + (LEXBUFSIZ / 4) >= allocated) {
 		    allocated += (allocated + LEXBUFSIZ);
 		    result = typeRealloc(char, allocated, result);
-		    if (result == NULL)
+		    if (result == NULL) {
+			allocated = 0;
 			return (EOF);
+		    }
 		    if (bufstart)
 			bufstart = result;
 		}
@@ -255,31 +257,37 @@ next_char(void)
 			_nc_STRCAT(result, "\n", allocated);
 		}
 		if ((bufptr = bufstart) != NULL) {
-		    used = strlen(bufptr);
-		    if (used == 0)
-			return (EOF);
-		    while (iswhite(*bufptr)) {
-			if (*bufptr == '\t') {
-			    _nc_curr_col = (_nc_curr_col | 7) + 1;
-			} else {
-			    _nc_curr_col++;
+		    if ((used = strlen(bufptr)) != 0) {
+			while (iswhite(*bufptr)) {
+			    if (*bufptr == '\t') {
+				_nc_curr_col = (_nc_curr_col | 7) + 1;
+			    } else {
+				_nc_curr_col++;
+			    }
+			    bufptr++;
 			}
-			bufptr++;
-		    }
 
-		    /*
-		     * Treat a trailing <cr><lf> the same as a <newline> so we
-		     * can read files on OS/2, etc.
-		     */
-		    if ((len = strlen(bufptr)) > 1) {
-			if (bufptr[len - 1] == '\n'
-			    && bufptr[len - 2] == '\r') {
-			    len--;
-			    bufptr[len - 1] = '\n';
-			    bufptr[len] = '\0';
+			/*
+			 * Treat a trailing <cr><lf> the same as a <newline> so
+			 * we can read files on OS/2, etc.
+			 */
+			if ((len = strlen(bufptr)) > 1) {
+			    if (bufptr[len - 1] == '\n'
+				&& bufptr[len - 2] == '\r') {
+				len--;
+				bufptr[len - 1] = '\n';
+				bufptr[len] = '\0';
+			    }
 			}
+		    } else {
+			len = 0;	/* force EOF return */
 		    }
 		} else {
+		    len = 0;	/* force EOF return */
+		}
+		if (len == 0) {
+		    FreeAndNull(result);
+		    allocated = 0;
 		    return (EOF);
 		}
 	    } while (bufptr[len - 1] != '\n');	/* complete a line */

@@ -57,7 +57,7 @@
 #undef CUR
 #define CUR SP_TERMTYPE
 
-MODULE_ID("$Id: lib_set_term.c,v 1.207 2026/08/08 23:42:56 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.210 2026/10/24 21:23:22 tom Exp $")
 
 #if USE_TERM_DRIVER
 #define MaxColors      InfoOf(sp).maxcolors
@@ -89,8 +89,8 @@ set_term(SCREEN *screenp)
 	stdscr = StdScreen(newSP);
 	COLORS = newSP->_color_count;
 	COLOR_PAIRS = newSP->_pair_count;
-	SetWacsMap(newSP->_wacs_map);
 #endif
+	SetWacsMap(newSP->_wacs_map);
     } else {
 	TINFO_SET_CURTERM(oldSP, NULL);
 #if !USE_REENTRANT
@@ -140,13 +140,31 @@ delink_screen(SCREEN *sp)
     return result;
 }
 
+static void
+delwin_ripoffs(SCREEN *sp, WINDOW *win)
+{
+    if (win != NULL && sp != NULL) {
+	if (safe_ripoff_sp && safe_ripoff_sp != safe_ripoff_stack) {
+	    ripoff_t *rop;
+	    for (rop = safe_ripoff_stack;
+		 rop != safe_ripoff_sp && (rop - safe_ripoff_stack) < N_RIPS;
+		 rop++) {
+		if (rop->win == win) {
+		    (void) delwin(rop->win);
+		    rop->win = NULL;
+		    break;
+		}
+	    }
+	}
+    }
+}
+
 /*
  * Free the storage associated with the given SCREEN sp.
  */
 NCURSES_EXPORT(void)
 delscreen(SCREEN *sp)
 {
-
     T((T_CALLED("delscreen(%p)"), (void *) sp));
 
     _nc_lock_global(curses);
@@ -154,24 +172,12 @@ delscreen(SCREEN *sp)
 	WINDOWLIST *wl;
 	bool is_current = (sp == CURRENT_SCREEN);
 
-#ifdef USE_SP_RIPOFF
-	if (safe_ripoff_sp && safe_ripoff_sp != safe_ripoff_stack) {
-	    ripoff_t *rop;
-	    for (rop = safe_ripoff_stack;
-		 rop != safe_ripoff_sp && (rop - safe_ripoff_stack) < N_RIPS;
-		 rop++) {
-		if (rop->win) {
-		    (void) delwin(rop->win);
-		    rop->win = NULL;
-		}
-	    }
-	}
-#endif
-
 	/* delete all of the windows in this screen */
       rescan:
 	for (each_window(sp, wl)) {
-	    if (_nc_freewin(&(wl->win)) == OK) {
+	    WINDOW *win = &(wl->win);
+	    delwin_ripoffs(sp, win);
+	    if (_nc_freewin(win) == OK) {
 		goto rescan;
 	    }
 	}
@@ -242,8 +248,8 @@ delscreen(SCREEN *sp)
 	    stdscr = NULL;
 	    COLORS = 0;
 	    COLOR_PAIRS = 0;
-	    SetWacsMap(NULL);
 #endif
+	    SetWacsMap(NULL);
 	    _nc_set_screen(NULL);
 #if USE_WIDEC_SUPPORT && !USE_REENTRANT
 	    if (SP == NULL) {
@@ -559,10 +565,10 @@ NCURSES_SP_NAME(_nc_setupscreen)(
     NCURSES_SP_NAME(_nc_init_acs)(NCURSES_SP_ARG);
 #if USE_WIDEC_SUPPORT
     sp->_screen_unicode = _nc_unicode_locale();
-    if (_nc_wacs == NULL) {
+    if (sp->_wacs_map == NULL) {
 	_nc_init_wacs(sp);
     }
-    if (_nc_wacs == NULL) {
+    if (sp->_wacs_map == NULL) {
 	ReturnScreenError();
     }
 

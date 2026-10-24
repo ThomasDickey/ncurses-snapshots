@@ -1,4 +1,4 @@
-# $Id: modules,v 1.138 2026/05/18 08:09:38 tom Exp $
+# $Id: modules,v 1.140 2026/10/24 15:44:01 tom Exp $
 ##############################################################################
 # Copyright 2019-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2013,2017 Free Software Foundation, Inc.                    #
@@ -240,7 +240,6 @@ lib_driver	lib		$(base)		$(HEADER_DEPS)
 # MSYS2, using termios
 @ port_msys2
 gettimeofday	lib		$(win32con)	$(HEADER_DEPS)
-lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 wcwidth		lib		$(win32con)	$(HEADER_DEPS)
 widechars	lib		$(wide)		$(HEADER_DEPS)
 
@@ -248,7 +247,6 @@ widechars	lib		$(wide)		$(HEADER_DEPS)
 @ port_win32con
 gettimeofday	lib		$(win32con)	$(HEADER_DEPS)
 lib_win32con	lib		$(tinfo)	$(HEADER_DEPS)
-lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 wcwidth		lib		$(win32con)	$(HEADER_DEPS)
 widechars	lib		$(wide)		$(HEADER_DEPS)
 win32_driver	lib		$(win32con)	$(HEADER_DEPS)
@@ -257,14 +255,13 @@ win32_driver	lib		$(win32con)	$(HEADER_DEPS)
 @ port_win32
 gettimeofday	lib		$(win32con)	$(HEADER_DEPS)
 lib_win32con	lib		$(tinfo)	$(HEADER_DEPS)
-lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 wcwidth		lib		$(win32con)	$(HEADER_DEPS)
 win32_driver	lib		$(win32con)	$(HEADER_DEPS)
 
 # MinGW-W64 or Windows native, using ConPTY
 @ port_win32_conpty
+gettimeofday	lib		$(win32con)	$(HEADER_DEPS)
 lib_win32conpty	lib		$(tinfo)	$(HEADER_DEPS)
-lib_win32util	lib		$(tinfo)	$(HEADER_DEPS)
 
 @ port_tinfo
 tinfo_driver	lib		$(tinfo)	$(HEADER_DEPS)	$(INCDIR)/tic.h

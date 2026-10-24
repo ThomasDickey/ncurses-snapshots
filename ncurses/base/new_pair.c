@@ -61,7 +61,7 @@
 
 #endif
 
-MODULE_ID("$Id: new_pair.c,v 1.28 2026/05/30 22:10:47 tom Exp $")
+MODULE_ID("$Id: new_pair.c,v 1.29 2026/10/24 19:22:49 tom Exp $")
 
 #if NCURSES_EXT_COLORS
 
@@ -374,7 +374,7 @@ free_pair(int pair)
 
 #if NO_LEAKS
 NCURSES_EXPORT(void)
-_nc_new_pair_leaks(SCREEN *sp)
+_nc_new_pair_leaks(const SCREEN *sp)
 {
     if (sp->_color_pairs) {
 	while (sp->_color_pairs[0].next) {

@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4547 2026/10/17 21:32:08 tom Exp $
+-- $Id: NEWS,v 1.4555 2026/10/24 20:44:36 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,22 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20261024
+	+ modify initialization for term-driver return terminfo data when given
+	  a name in $TERM unless _nc_console_vt_supported() returns true, as in
+	  the missing-name branch (patch by Daniel Aliev).
+	+ correct initialization of fallback entries which using term-driver
+	  configuration (patch by Daniel Aliev).
+	+ correct limit check in lib_ins_wch.c (patch by Serhiy Storchaka,
+	  cf: 20260815)
+	+ initialize sp->_wacs_map for each screen, rather than reusing data,
+	  to help with delscreen (patch by Serhiy Storchaka, cf: 20260523).
+	+ improve ripoff window cleanup in delwin (report by Serhiy Storchaka).
+	+ fix a duplicate declaration of _nc_gettimeofday() (report by Abril
+	  Rincon Blanco).
+	+ improve check for end of file in next_char() (report by Lingfeng
+	  Chen).
 
 20261017
 	+ improve configure script check for linker search path, avoiding cache

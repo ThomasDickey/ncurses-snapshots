@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.762 2026/10/17 14:32:36 tom Exp $
+ * $Id: curses.priv.h,v 1.763 2026/10/24 21:58:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -2628,10 +2628,6 @@ extern NCURSES_EXPORT(int)  _nc_console_test(int fd);
 extern NCURSES_EXPORT(int)  _nc_console_testmouse(const SCREEN *sp, HANDLE fd, int delay EVENTLIST_2nd(_nc_eventlist*));
 extern NCURSES_EXPORT(int)  _nc_console_twait(const SCREEN *sp, HANDLE hdl,int mode,int msec,int *left EVENTLIST_2nd(_nc_eventlist * evl));
 extern NCURSES_EXPORT(int)  _nc_console_vt_supported(void);
-
-#ifdef _NC_CHECK_MINTTY
-extern NCURSES_EXPORT(int)    _nc_console_checkmintty(int fd, LPHANDLE pMinTTY);
-#endif
 
 #elif defined(_NC_WINDOWS_NATIVE)
 

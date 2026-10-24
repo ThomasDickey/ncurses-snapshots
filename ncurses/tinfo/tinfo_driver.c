@@ -52,7 +52,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: tinfo_driver.c,v 1.92 2026/09/05 20:28:39 tom Exp $")
+MODULE_ID("$Id: tinfo_driver.c,v 1.93 2026/10/24 20:35:11 Daniel.Aliev Exp $")
 
 /*
  * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
@@ -183,7 +183,7 @@ drv_CanHandle(TERMINAL_CONTROL_BLOCK * TCB, const char *tname, int *errret)
 
 	if (fallback) {
 	    T(("found fallback entry"));
-	    TerminalType(termp) = *fallback;
+	    _nc_copy_termtype2(&TerminalType(termp), fallback);
 	    status = TGETENT_YES;
 	}
     }

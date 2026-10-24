@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.36 2026/08/15 15:56:54 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.37 2026/10/24 20:11:16 Serhiy.Storchaka Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -59,11 +59,11 @@ _nc_insert_wch(WINDOW *win, const cchar_t *wch)
 	if (cells == 0)
 	    cells = 1;
 
-	if (win->_curx + cells > win->_maxx) {
+	if (win->_curx + cells > win->_maxx + 1) {
 	    cchar_t blank = *wch;
 	    memset(blank.chars, 0, sizeof(blank.chars));
 	    CharOf(blank) = ' ';
-	    while (win->_curx < win->_maxx) {
+	    while (win->_curx <= win->_maxx) {
 		line->text[win->_curx++] = blank;
 	    }
 	} else {

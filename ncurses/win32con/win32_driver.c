@@ -41,7 +41,7 @@
 
 #define CUR TerminalType(my_term).
 
-MODULE_ID("$Id: win32_driver.c,v 1.25 2026/09/05 20:33:40 tom Exp $")
+MODULE_ID("$Id: win32_driver.c,v 1.26 2026/10/24 20:38:37 Daniel.Aliev Exp $")
 
 #define WINMAGIC NCDRV_MAGIC(NCDRV_WINCONSOLE)
 #define EXP_OPTIMIZE 0
@@ -549,7 +549,7 @@ wcon_CanHandle(TERMINAL_CONTROL_BLOCK * TCB,
 	code = TRUE;
     }
 #if !USE_NAMED_PIPES
-    else if (_isatty(TCB->term.Filedes)) {
+    else if (_isatty(TCB->term.Filedes) && !_nc_console_vt_supported()) {
 	code = TRUE;
     }
 #endif

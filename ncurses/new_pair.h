@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2018-2024,2026 Thomas E. Dickey                                *
  * Copyright 2017 Free Software Foundation, Inc.                            *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -34,7 +34,7 @@
 /*
  * Common type definitions and macros for new_pair.c, lib_color.c
  *
- * $Id: new_pair.h,v 1.16 2024/12/07 17:27:35 tom Exp $
+ * $Id: new_pair.h,v 1.17 2026/10/24 19:25:20 tom Exp $
  */
 
 #ifndef NEW_PAIR_H
@@ -131,7 +131,7 @@ typedef struct _color_pairs colorpair_t;
 #endif /* NEW_PAIR_INTERNAL */
 
 #if NO_LEAKS
-extern NCURSES_EXPORT(void)     _nc_new_pair_leaks(SCREEN*);
+extern NCURSES_EXPORT(void)     _nc_new_pair_leaks(const SCREEN*);
 #endif
 
 /* *INDENT-ON* */

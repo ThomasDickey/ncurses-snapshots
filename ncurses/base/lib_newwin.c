@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2020-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -44,7 +44,7 @@
 #include <curses.priv.h>
 #include <stddef.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.79 2024/12/14 23:50:18 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.81 2026/10/24 21:21:20 tom Exp $")
 
 #define window_is(name) ((sp)->_##name == win)
 
@@ -89,6 +89,27 @@ remove_window_from_screen(WINDOW *win)
 #endif
 }
 
+static void
+remove_window_from_ripoff(WINDOW *win)
+{
+#ifdef USE_SP_WINDOWLIST
+    SCREEN *sp;
+    if ((sp = _nc_screen_of(win)) != NULL) {
+	if (safe_ripoff_sp && safe_ripoff_sp != safe_ripoff_stack) {
+	    ripoff_t *rop;
+	    for (rop = safe_ripoff_stack;
+		 rop != safe_ripoff_sp && (rop - safe_ripoff_stack) < N_RIPS;
+		 rop++) {
+		if (win == rop->win)
+		    rop->win = NULL;
+	    }
+	} else {
+	    safe_ripoff_stack->win = NULL;
+	}
+    }
+#endif
+}
+
 NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
 {
@@ -109,6 +130,7 @@ _nc_freewin(WINDOW *win)
 
 		if (&(p->win) == win) {
 		    remove_window_from_screen(win);
+		    remove_window_from_ripoff(win);
 		    if (q == NULL)
 			WindowList(sp) = p->next;
 		    else
@@ -136,8 +158,8 @@ _nc_freewin(WINDOW *win)
 }
 
 NCURSES_EXPORT(WINDOW *)
-NCURSES_SP_NAME(newwin) (NCURSES_SP_DCLx
-			 int num_lines, int num_columns, int begy, int begx)
+NCURSES_SP_NAME(newwin)(NCURSES_SP_DCLx
+			int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     NCURSES_CH_T *ptr;
@@ -158,8 +180,8 @@ NCURSES_SP_NAME(newwin) (NCURSES_SP_DCLx
     if (num_columns == 0)
 	num_columns = screen_columns(SP_PARM) - begx;
 
-    win = NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_ARGx
-					num_lines, num_columns, begy, begx, 0);
+    win = NCURSES_SP_NAME(_nc_makenew)(NCURSES_SP_ARGx
+				       num_lines, num_columns, begy, begx, 0);
     if (win == NULL)
 	returnWin(NULL);
 
@@ -184,8 +206,8 @@ newwin(int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     _nc_sp_lock_global(curses);
-    win = NCURSES_SP_NAME(newwin) (CURRENT_SCREEN,
-				   num_lines, num_columns, begy, begx);
+    win = NCURSES_SP_NAME(newwin)(CURRENT_SCREEN,
+				  num_lines, num_columns, begy, begx);
     _nc_sp_unlock_global(curses);
     return (win);
 }
@@ -225,9 +247,9 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     if (IS_PAD(orig))
 	flags |= _ISPAD;
 
-    win = NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_ARGx num_lines, num_columns,
-					orig->_begy + begy,
-					orig->_begx + begx, flags);
+    win = NCURSES_SP_NAME(_nc_makenew)(NCURSES_SP_ARGx num_lines, num_columns,
+				       orig->_begy + begy,
+				       orig->_begx + begx, flags);
     if (win == NULL)
 	returnWin(NULL);
 
@@ -259,12 +281,12 @@ subwin(WINDOW *w, int l, int c, int y, int x)
 }
 
 NCURSES_EXPORT(WINDOW *)
-NCURSES_SP_NAME(_nc_makenew) (NCURSES_SP_DCLx
-			      int num_lines,
-			      int num_columns,
-			      int begy,
-			      int begx,
-			      int flags)
+NCURSES_SP_NAME(_nc_makenew)(NCURSES_SP_DCLx
+			     int num_lines,
+			     int num_columns,
+			     int begy,
+			     int begx,
+			     int flags)
 {
     int i;
     WINDOWLIST *wp;
