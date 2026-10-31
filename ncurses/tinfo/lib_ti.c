@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2018-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2016,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -37,28 +37,30 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.36 2025/11/23 18:58:04 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.37 2026/10/31 14:29:04 tom Exp $")
 
 #if 0
 static bool
 same_name(const char *a, const char *b)
 {
     fprintf(stderr, "compare(%s,%s)\n", a, b);
-    return !strcmp(a, b);
+    return ((b) != NULL && !strcmp(a, b));
 }
 #else
-#define same_name(a,b) !strcmp(a,b)
+#define same_name(a,b) ((b) != NULL && !strcmp(a,b))
 #endif
 
+#define ok_params(sp, str) (str != NULL && HasTInfoTerminal(sp))
+
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx const char *str)
+NCURSES_SP_NAME(tigetflag)(NCURSES_SP_DCLx const char *str)
 {
     int result = ABSENT_BOOLEAN;
 
     T((T_CALLED("tigetflag(%p, %s)"), (void *) SP_PARM, str));
     assert(result < 0);
 
-    if (HasTInfoTerminal(SP_PARM)) {
+    if (ok_params(SP_PARM, str)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
 	struct name_table_entry const *entry_ptr;
 	int j = -1;
@@ -92,19 +94,19 @@ NCURSES_SP_NAME(tigetflag) (NCURSES_SP_DCLx const char *str)
 NCURSES_EXPORT(int)
 tigetflag(const char *str)
 {
-    return NCURSES_SP_NAME(tigetflag) (CURRENT_SCREEN, str);
+    return NCURSES_SP_NAME(tigetflag)(CURRENT_SCREEN, str);
 }
 #endif
 
 NCURSES_EXPORT(int)
-NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx const char *str)
+NCURSES_SP_NAME(tigetnum)(NCURSES_SP_DCLx const char *str)
 {
     int result = CANCELLED_NUMERIC;	/* Solaris returns a -1 on error */
 
     T((T_CALLED("tigetnum(%p, %s)"), (void *) SP_PARM, str));
     assert(result < 0);
 
-    if (HasTInfoTerminal(SP_PARM)) {
+    if (ok_params(SP_PARM, str)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
 	struct name_table_entry const *entry_ptr;
 	int j = -1;
@@ -140,18 +142,18 @@ NCURSES_SP_NAME(tigetnum) (NCURSES_SP_DCLx const char *str)
 NCURSES_EXPORT(int)
 tigetnum(const char *str)
 {
-    return NCURSES_SP_NAME(tigetnum) (CURRENT_SCREEN, str);
+    return NCURSES_SP_NAME(tigetnum)(CURRENT_SCREEN, str);
 }
 #endif
 
 NCURSES_EXPORT(char *)
-NCURSES_SP_NAME(tigetstr) (NCURSES_SP_DCLx const char *str)
+NCURSES_SP_NAME(tigetstr)(NCURSES_SP_DCLx const char *str)
 {
     char *result = CANCELLED_STRING;
 
     T((T_CALLED("tigetstr(%p, %s)"), (void *) SP_PARM, str));
 
-    if (HasTInfoTerminal(SP_PARM)) {
+    if (ok_params(SP_PARM, str)) {
 	TERMTYPE2 *tp = &TerminalType(TerminalOf(SP_PARM));
 	struct name_table_entry const *entry_ptr;
 	int j = -1;
@@ -185,6 +187,6 @@ NCURSES_SP_NAME(tigetstr) (NCURSES_SP_DCLx const char *str)
 NCURSES_EXPORT(char *)
 tigetstr(const char *str)
 {
-    return NCURSES_SP_NAME(tigetstr) (CURRENT_SCREEN, str);
+    return NCURSES_SP_NAME(tigetstr)(CURRENT_SCREEN, str);
 }
 #endif

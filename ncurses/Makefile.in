@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.200 2026/06/27 23:04:29 tom Exp $
+# $Id: Makefile.in,v 1.201 2026/10/31 17:17:34 tom Exp $
 ##############################################################################
 # Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -199,7 +199,7 @@ HEADER_DEPS	= @INTERNALS_HDR@ \
 	$(srcdir)/term.priv.h
 
 TEST_DEPS	= ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
-TEST_ARGS	= @LDFLAGS_STATIC@ @TEST_ARGS@ @LDFLAGS_SHARED@
+TEST_ARGS	= @TEST_ARGS@
 TEST_LDFLAGS	= @LD_MODEL@ $(TEST_ARGS) @LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 
 # Unlike the other test-programs, lib_mvcur uses internal functions which

@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.185 2026/08/22 18:53:54 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.187 2026/10/31 17:00:05 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -142,6 +142,7 @@ convert_strings(char *buf, char **Strings, int count, int size,
 		char *table, bool always)
 {
     int i;
+    int next = 0;
     bool success = TRUE;
 
     for (i = 0; i < count; i++) {
@@ -153,16 +154,37 @@ convert_strings(char *buf, char **Strings, int count, int size,
 	    Strings[i] = ABSENT_STRING;
 	} else {
 	    int nn = MyNumber(buf + 2 * i);
-	    if (nn >= 0 && nn < size) {
-		Strings[i] = (nn + table);
-		TR(TRACE_DATABASE, ("Strings[%d] = %s", i,
-				    _nc_visbufn(Strings[i], size - nn)));
-	    } else {
+	    if (nn < 0 || nn >= size) {
 		TR(TRACE_DATABASE,
 		   ("found out-of-range index %d to Strings[%d]", nn, i));
 		success = FALSE;
 		break;
 	    }
+	    /* disallow overlapping strings */
+	    if (nn < next) {
+		int j;
+		bool overlapped = FALSE;
+		for (j = 0; j < i; ++j) {
+		    if (VALID_STRING(Strings[j])) {
+			int lo = (int) (Strings[j] - table);
+			int hi = (int) strlen(Strings[j]) + lo;
+			if (nn >= lo && nn <= hi) {
+			    TR(TRACE_DATABASE,
+			       ("Strings[%d] overlaps with Strings[%d]", i, j));
+			    overlapped = TRUE;
+			}
+		    }
+		}
+		if (overlapped) {
+		    success = FALSE;
+		    break;
+		}
+	    }
+	    Strings[i] = (nn + table);
+	    next += (int) strlen(Strings[i]);
+	    TR(TRACE_DATABASE, ("Strings[%d] %3d .. %3d = %s", i,
+				nn, next,
+				_nc_visbufn(Strings[i], size - nn)));
 	}
 
 	/* make sure all strings are NUL terminated */
@@ -174,6 +196,10 @@ convert_strings(char *buf, char **Strings, int count, int size,
 	    /* if there is no NUL, ignore the string */
 	    if (p >= table + size) {
 		Strings[i] = ABSENT_STRING;
+		TR(TRACE_DATABASE,
+		   ("missing NULL, ignoring string #%d", i));
+		success = FALSE;
+		break;
 	    } else if (p == Strings[i] && always) {
 		TR(TRACE_DATABASE,
 		   ("found empty but required Strings[%d]", i));
@@ -481,13 +507,15 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 			    ext_str_limit, offset));
 
 	if (ext_str_limit) {
-	    ptr->ext_str_table = typeMalloc(char, (size_t) ext_str_limit);
+	    ptr->ext_str_table = typeMalloc(char, (size_t) (ext_str_limit + 1));
 	    if (ptr->ext_str_table == NULL) {
 		returnDB(TGETENT_NO);
 	    }
 	    if (Read(ptr->ext_str_table, (unsigned) ext_str_limit) != ext_str_limit) {
+		FreeAndNull(ptr->ext_str_table);
 		returnDB(TGETENT_NO);
 	    }
+	    ptr->ext_str_table[ext_str_limit] = '\0';
 	    TR(TRACE_DATABASE, ("first extended-string is %s",
 				_nc_visbufn(ptr->ext_str_table, ext_str_limit)));
 	}
@@ -502,6 +530,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 		str_count, ext_str_count));
 	    if (!convert_strings(buf, ptr->Strings + str_count, ext_str_count,
 				 ext_str_limit, ptr->ext_str_table, FALSE)) {
+		FreeAndNull(ptr->ext_str_table);
 		returnDB(TGETENT_NO);
 	    }
 	    /* convert_strings ensures that the strings are nul-terminated */
@@ -523,6 +552,7 @@ _nc_read_termtype(TERMTYPE2 *ptr, char *buffer, int limit)
 	    TR(TRACE_DATABASE, ("Check table-size: %d/%d", check, ext_str_usage));
 	    if (check != ext_str_usage) {
 		if (ext_str_usage != check2) {
+		    FreeAndNull(ptr->ext_str_table);
 		    returnDB(TGETENT_NO);
 		}
 		TR(TRACE_DATABASE, ("antique data found in convert_strings"));

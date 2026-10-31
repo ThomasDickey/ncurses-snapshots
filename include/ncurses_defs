@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.124 2026/03/14 21:32:43 tom Exp $
+# $Id: ncurses_defs,v 1.125 2026/10/31 21:28:17 tom Exp $
 ##############################################################################
 # Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 2000-2016,2017 Free Software Foundation, Inc.                    #
@@ -225,6 +225,7 @@ HAVE_VID_PUTS	1
 HAVE_VSNPRINTF
 HAVE_VSSCANF
 HAVE_VW_PRINTW	1
+HAVE_WCHAR_H
 HAVE_WCHGAT	1
 HAVE_WCSRTOMBS
 HAVE_WCSTOMBS

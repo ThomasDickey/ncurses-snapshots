@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.564 2026/08/15 23:50:42 tom Exp $
+$Id: ncurses.c,v 1.565 2026/10/31 20:37:44 tom Exp $
 
 ***************************************************************************/
 
@@ -70,6 +70,10 @@ $Id: ncurses.c,v 1.564 2026/08/15 23:50:42 tom Exp $
 
 #if USE_LIBFORM
 #include <form.h>
+#endif
+
+#if HAVE_WCHAR_H
+#include <wchar.h>
 #endif
 
 #ifdef NCURSES_VERSION

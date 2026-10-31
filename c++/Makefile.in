@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.141 2026/06/27 23:04:29 tom Exp $
+# $Id: Makefile.in,v 1.142 2026/10/31 17:17:34 tom Exp $
 ##############################################################################
 # Copyright 2018-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2015,2016 Free Software Foundation, Inc.                    #
@@ -147,7 +147,7 @@ LINK_SHARED	= $(LINK_FLAGS)
 
 # flags for test-programs
 TEST_LIBS	= @TEST_LIBS@
-TEST_ARGS	= @LDFLAGS_STATIC@ @TEST_ARGS@ @LDFLAGS_SHARED@
+TEST_ARGS	= @TEST_ARGS@
 TEST_LDFLAGS	= $(TEST_ARGS) @LDFLAGS@ \
 	@LD_MODEL@ $(TEST_LIBS) @LIBS@ @LOCAL_LDFLAGS@ $(CXXLIBS)
 

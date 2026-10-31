@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-on
 dnl
-dnl $Id: configure.in,v 1.182 2026/03/21 16:50:28 tom Exp $
+dnl $Id: configure.in,v 1.183 2026/10/31 17:18:03 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -76,8 +76,6 @@ DFT_DEP_SUFFIX=""				AC_SUBST(DFT_DEP_SUFFIX)
 DFT_OBJ_SUBDIR=`pwd|sed -e's:.*/::'`	AC_SUBST(DFT_OBJ_SUBDIR)
 DFT_UPR_MODEL="NORMAL"			AC_SUBST(DFT_UPR_MODEL)
 LD="ld"							AC_SUBST(LD)
-LDFLAGS_SHARED=""				AC_SUBST(LDFLAGS_SHARED)
-LDFLAGS_STATIC=""				AC_SUBST(LDFLAGS_STATIC)
 LD_MODEL=""						AC_SUBST(LD_MODEL)
 LD_SHARED_OPTS=""				AC_SUBST(LD_SHARED_OPTS)
 LIBTOOL=""						AC_SUBST(LIBTOOL)

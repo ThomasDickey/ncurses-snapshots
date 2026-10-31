@@ -30,7 +30,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.232 2026/08/01 13:25:27 tom Exp $ */
+/* $Id: test.priv.h,v 1.233 2026/10/31 21:26:42 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -389,6 +389,10 @@
 
 #ifndef HAVE_VID_PUTS
 #define HAVE_VID_PUTS 0
+#endif
+
+#ifndef HAVE_WCHAR_H
+#define HAVE_WCHAR_H 0
 #endif
 
 #ifndef HAVE_WCSRTOMBS

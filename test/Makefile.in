@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.134 2026/08/12 00:04:18 tom Exp $
+# $Id: Makefile.in,v 1.135 2026/10/31 17:17:54 tom Exp $
 ##############################################################################
 # Copyright 2020-2025,2026 Thomas E. Dickey                                  #
 # Copyright 1998-2017,2018 Free Software Foundation, Inc.                    #
@@ -120,7 +120,7 @@ LDFLAGS_DEBUG	= $(LDFLAGS) $(CFLAGS_DEBUG)
 LDFLAGS_PROFILE	= $(LDFLAGS) $(CFLAGS_PROFILE)
 LDFLAGS_SHARED	= $(LDFLAGS) $(CFLAGS_SHARED) @LD_SHARED_OPTS@
 
-TEST_ARGS	= @LDFLAGS_STATIC@ @TEST_ARGS@ @LDFLAGS_SHARED@
+TEST_ARGS	= @TEST_ARGS@
 
 # use these for linking with all of the libraries
 LIBS_DEFAULT	= $(TEST_ARGS) @LIBS@ $(TEST_LIBS)
@@ -138,7 +138,7 @@ LDFLAGS_CURSES	= $(LDFLAGS_@DFT_UPR_MODEL@) $(LIBS_CURSES)
 LDFLAGS_CURSES_M= $(LDFLAGS_CURSES) $(MATH_LIB)
 
 # use these for linking with the tinfo library if we have it, or curses library if not
-LIBS_TINFO	= @LDFLAGS_STATIC@ @TINFO_LIBS@ @LDFLAGS_SHARED@ @LIBS@ $(TEST_LIBS)
+LIBS_TINFO	= @TINFO_LIBS@ @LIBS@ $(TEST_LIBS)
 LDFLAGS_TINFO	= @TINFO_LDFLAGS@ $(LDFLAGS_@DFT_UPR_MODEL@) $(LIBS_TINFO)
 
 LINT		= @LINT@

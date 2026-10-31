@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.840 2026/10/17 16:11:21 tom Exp $
+dnl $Id: configure.in,v 1.843 2026/10/31 19:56:20 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl For additional information, see
@@ -38,7 +38,7 @@ dnl     https://invisible-island.net/autoconf/my-autoconf.html
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.52.20210101)
-AC_REVISION($Revision: 1.840 $)
+AC_REVISION($Revision: 1.843 $)
 AC_INIT
 AC_CONFIG_SRCDIR([ncurses/base/lib_initscr.c])
 AC_CONFIG_HEADERS([include/ncurses_cfg.h:include/ncurses_cfg.hin])
@@ -926,13 +926,13 @@ if test "x$with_widec" = xyes ; then
 		;;
 	esac
 
-	CF_CHECK_WCHAR_H
+	CF_FUNC_WCWIDTH
 	CF_CHECK_WCWIDTH_GRAPHICS
 	test "$cf_cv_wcwidth_graphics" = no && NCURSES_WCWIDTH_GRAPHICS=0
 
 	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
-	AC_CHECK_FUNCS(putwc btowc wctob wmemchr mbtowc wctomb mblen mbrlen mbrtowc wcsrtombs mbsrtowcs wcstombs mbstowcs wcwidth)
+	AC_CHECK_FUNCS(putwc btowc wctob wmemchr mbtowc wctomb mblen mbrlen mbrtowc wcsrtombs mbsrtowcs wcstombs mbstowcs)
 	if test "x$ac_cv_func_putwc" != xyes ; then
 		CF_UTF8_LIB
 		if test "$cf_cv_utf8_lib" != no ; then
@@ -2009,6 +2009,7 @@ if test -n "$CXX" ; then
 	CF_CPP_PARAM_INIT
 	CF_CPP_STATIC_CAST
 	CF_CXX_AR_FLAGS
+	AC_LANG([C])
 else
 	cf_cxx_library=no
 	cf_cv_builtin_bool=yes
@@ -2352,12 +2353,6 @@ fi
 # needed for Ada95
 TINFO_LDFLAGS2=`echo "$TINFO_LDFLAGS" | sed -e 's,-L\.\./,-L../../,'`
 AC_SUBST(TINFO_LDFLAGS2)
-
-case "$DFT_LWR_MODEL" in
-(normal|debug|profile)
-	CF_LDFLAGS_STATIC
-	;;
-esac
 
 AC_MSG_CHECKING(where we will install curses.h)
 AC_SUBST(includesubdir)

@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1165 2026/10/17 21:23:20 tom Exp $
+dnl $Id: aclocal.m4,v 1.1171 2026/10/31 20:49:17 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -1448,22 +1448,33 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_MULTIUSER version: 1 updated: 2025/09/13 11:43:46
+dnl CF_CHECK_MULTIUSER version: 3 updated: 2026/10/31 16:48:50
 dnl ------------------
 dnl Runtime features which check for root permissions apply only to multiuser
 dnl systems.  Check for single-user systems by inspecting /etc/passwd.
 AC_DEFUN([CF_CHECK_MULTIUSER],[
+AC_PATH_PROG(cf_cv_getent_path,getent,"none")
 AC_CACHE_CHECK(for conventional multiuser system,cf_cv_multiuser,[
 	cf_cv_multiuser=no
-	if test -f /etc/passwd
+	cf_cat_passwd=
+	if test "$cf_cv_getent_path" = none
 	then
-		sed \
+		if test -f /etc/passwd
+		then
+			cf_cat_passwd="cat /etc/passwd"
+		fi
+	else
+		cf_cat_passwd="getent passwd"
+	fi
+	if test -n "cf_cat_passwd"
+	then
+		eval $cf_cat_passwd | sed \
 			-e '/true$/d' \
 			-e '/false$/d' \
 			-e '/nologin$/d' \
 			-e '/^[[^:]]*:[[^:]]*:[[0-9]]:/d' \
 			-e '/^[[^:]]*:[[^:]]*:[[0-9]][[0-9]]:/d' \
-			-e '/:$/d' < /etc/passwd >conftest.tmp
+			-e '/:$/d' >conftest.tmp
 		test -s conftest.tmp && cf_cv_multiuser=yes
 		rm -f conftest.tmp
 	fi
@@ -3066,6 +3077,28 @@ esac
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_FUNC_WCWIDTH version: 1 updated: 2026/10/31 16:21:19
+dnl ---------------
+dnl Check for wcwidth() function, which may be prototyped in wchar.h
+AC_DEFUN([CF_FUNC_WCWIDTH],
+[CF_CHECK_WCHAR_H
+AC_CACHE_CHECK(for wcwidth function,cf_cv_func_wcwidth,[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+$ac_includes_default
+
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
+
+],[
+	int len = wcwidth(0); (void) len;
+])],[cf_cv_func_wcwidth=yes],[cf_cv_func_wcwidth=no])])
+
+test "$cf_cv_func_wcwidth" = yes && \
+AC_DEFINE(HAVE_WCWIDTH,1,[Define to 1 if we have wcwidth])
+
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_GCC_ATTRIBUTES version: 28 updated: 2025/12/25 18:43:31
 dnl -----------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
@@ -4463,108 +4496,6 @@ extern struct dirent64 * readdir(DIR *);
 	test "$cf_cv_struct_dirent64" = yes && AC_DEFINE(HAVE_STRUCT_DIRENT64,1,[Define to 1 if we have struct dirent64])
 	fi
 ])
-])
-dnl ---------------------------------------------------------------------------
-dnl CF_LDFLAGS_STATIC version: 17 updated: 2025/12/24 12:27:29
-dnl -----------------
-dnl Check for compiler/linker flags used to temporarily force usage of static
-dnl libraries.  This depends on the compiler and platform.  Use this to help
-dnl ensure that the linker picks up a given library based on its position in
-dnl the list of linker options and libraries.
-AC_DEFUN([CF_LDFLAGS_STATIC],[
-
-if test "$GCC" = yes ; then
-	case "$cf_cv_system_name" in
-	(OS/2*|os2*|aix[[4]]*|solaris2.1[[0-9]]|darwin*)
-		LDFLAGS_STATIC=
-		LDFLAGS_SHARED=
-		;;
-	(*) 	# normally, except when broken
-		LDFLAGS_STATIC=-static
-		LDFLAGS_SHARED=-dynamic
-		;;
-	esac
-else
-	case "$cf_cv_system_name" in
-	(aix[[4-7]]*) 	# from ld man page
-		LDFLAGS_STATIC=-bstatic
-		LDFLAGS_SHARED=-bdynamic
-		;;
-	(hpux*)		# from ld man page for hpux10.20, hpux11.11
-		# We could also use just "archive" and "shared".
-		LDFLAGS_STATIC=-Wl,-a,archive_shared
-		LDFLAGS_SHARED=-Wl,-a,shared_archive
-		;;
-	(irix*)		# from ld man page IRIX64
-		LDFLAGS_STATIC=-Bstatic
-		LDFLAGS_SHARED=-Bdynamic
-		;;
-	(osf[[45]]*)	# from ld man page osf4.0d, osf5.1
-		# alternative "-oldstyle_liblookup" (not in cc man page)
-		LDFLAGS_STATIC=-noso
-		LDFLAGS_SHARED=-so_archive
-		;;
-	(solaris2*)
-		LDFLAGS_STATIC=-Bstatic
-		LDFLAGS_SHARED=-Bdynamic
-		;;
-	esac
-fi
-
-if test -n "$LDFLAGS_STATIC" && test -n "$LDFLAGS_SHARED"
-then
-	AC_MSG_CHECKING(if linker supports switching between static/dynamic)
-
-	rm -f libconftest.a
-	cat >conftest.$ac_ext <<EOF
-#line __oline__ "configure"
-#include <stdio.h>
-int cf_ldflags_static(FILE *fp) { return fflush(fp); }
-EOF
-	if AC_TRY_EVAL(ac_compile) ; then
-		( $AR $ARFLAGS libconftest.a conftest.$OBJEXT ) 2>&AS_MESSAGE_LOG_FD 1>/dev/null
-		( eval $RANLIB libconftest.a ) 2>&AS_MESSAGE_LOG_FD >/dev/null
-	fi
-	rm -f conftest.*
-
-	cf_save_LIBS="$LIBS"
-
-	LIBS="$LDFLAGS_STATIC -L`pwd` -lconftest $LDFLAGS_DYNAMIC $LIBS"
-	AC_LINK_IFELSE([AC_LANG_PROGRAM([
-#line __oline__ "configure"
-#include <stdio.h>
-int cf_ldflags_static(FILE *fp);
-],[
-	return cf_ldflags_static(stdin);
-])],[
-	# some linkers simply ignore the -dynamic
-	case x`file "conftest$ac_exeext" 2>/dev/null` in
-	(*static*)
-		cf_ldflags_static=no
-		;;
-	(*)
-		cf_ldflags_static=yes
-		;;
-	esac
-],[cf_ldflags_static=no])
-
-	rm -f libconftest.*
-	LIBS="$cf_save_LIBS"
-
-	AC_MSG_RESULT($cf_ldflags_static)
-
-	if test "$cf_ldflags_static" != yes
-	then
-		LDFLAGS_STATIC=
-		LDFLAGS_SHARED=
-	fi
-else
-	LDFLAGS_STATIC=
-	LDFLAGS_SHARED=
-fi
-
-AC_SUBST(LDFLAGS_STATIC)
-AC_SUBST(LDFLAGS_SHARED)
 ])
 dnl ---------------------------------------------------------------------------
 dnl CF_LD_RPATH_OPT version: 10 updated: 2025/12/15 04:04:20
