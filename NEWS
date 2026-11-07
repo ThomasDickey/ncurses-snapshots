@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4560 2026/10/31 20:06:32 tom Exp $
+-- $Id: NEWS,v 1.4572 2026/11/07 21:42:06 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -45,6 +45,28 @@ See the AUTHORS file for the corresponding full names.
 
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
+
+20261107
+	+ check for terminating NUL in canonical_name() for infocmp -F
+	  (report/testcase by Martin Mirchev).
+	+ fix an infinite loop in parse_ti_delay() on malformed terminfo
+	  (report/testcase by Martin Mirchev).
+	+ add valid_div() check to tparm '/' and '%' operators to guard against
+	  SIGFPE on dividing INT_MIN by -1 (report/testcase by Martin Mirchev).
+	+ add sanity-checks to _nc_infotocap() when moving mandatory padding
+	  (report/testcase by Martin Mirchev).
+	+ reorder check for missing '\0' in str_table and a strlen() call
+	  (report/testcase by Martin Mirchev).
+	+ add check in decode_xterm_X10() to ensure that enough bytes were
+	  read (report by Martin Mirchev).
+	+ use CLOCK_MONOTONIC instead of CLOCK_REALTIME when it is available
+	  (patch by Yeatol).
+	+ add limit check in lib_add_wch.c (report/testcase by Serhiy
+	  Storchaka),
+	+ improve cleanup on EOF in next_char (report by Oliver Zhang).
+	+ improve fix for filling cells for multicolumn characters in
+	  lib_addch.c (patch by Vassili Courzakis).
+	+ fixes for tvi910, tvi950, wy100 (patch by Adam Di Carlo)
 
 20261031
 	+ improve configure check for wcwidth, for msys2 port.

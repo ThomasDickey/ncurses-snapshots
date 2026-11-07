@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.23 2026/06/06 09:59:40 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.24 2026/11/07 15:05:56 tom Exp $")
 
 /* clone/adapt lib_addch.c */
 static const cchar_t blankchar = NewChar(BLANK_TEXT);
@@ -121,7 +121,7 @@ newline_forces_scroll(const WINDOW *win, NCURSES_SIZE_T *ypos)
 
     if (*ypos >= win->_regtop && *ypos == win->_regbottom) {
 	result = TRUE;
-    } else {
+    } else if (*ypos < win->_maxy) {
 	*ypos = (NCURSES_SIZE_T) (*ypos + 1);
     }
     return result;

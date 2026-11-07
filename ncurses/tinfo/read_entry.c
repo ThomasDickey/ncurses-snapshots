@@ -42,7 +42,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.187 2026/10/31 17:00:05 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.188 2026/11/07 18:26:41 tom Exp $")
 
 #define MyNumber(n) (short) LOW_MSB(n)
 
@@ -154,12 +154,33 @@ convert_strings(char *buf, char **Strings, int count, int size,
 	    Strings[i] = ABSENT_STRING;
 	} else {
 	    int nn = MyNumber(buf + 2 * i);
+	    const char *p;
+
 	    if (nn < 0 || nn >= size) {
 		TR(TRACE_DATABASE,
 		   ("found out-of-range index %d to Strings[%d]", nn, i));
 		success = FALSE;
 		break;
 	    }
+	    Strings[i] = (nn + table);
+
+	    for (p = Strings[i]; p < table + size; p++)
+		if (*p == '\0')
+		    break;
+	    /* if there is no NUL, ignore the string */
+	    if (p >= table + size) {
+		Strings[i] = ABSENT_STRING;
+		TR(TRACE_DATABASE,
+		   ("missing NULL, ignoring string #%d", i));
+		success = FALSE;
+		break;
+	    } else if (p == Strings[i] && always) {
+		TR(TRACE_DATABASE,
+		   ("found empty but required Strings[%d]", i));
+		success = FALSE;
+		break;
+	    }
+
 	    /* disallow overlapping strings */
 	    if (nn < next) {
 		int j;
@@ -180,7 +201,6 @@ convert_strings(char *buf, char **Strings, int count, int size,
 		    break;
 		}
 	    }
-	    Strings[i] = (nn + table);
 	    next += (int) strlen(Strings[i]);
 	    TR(TRACE_DATABASE, ("Strings[%d] %3d .. %3d = %s", i,
 				nn, next,
@@ -188,25 +208,7 @@ convert_strings(char *buf, char **Strings, int count, int size,
 	}
 
 	/* make sure all strings are NUL terminated */
-	if (VALID_STRING(Strings[i])) {
-	    const char *p;
-	    for (p = Strings[i]; p < table + size; p++)
-		if (*p == '\0')
-		    break;
-	    /* if there is no NUL, ignore the string */
-	    if (p >= table + size) {
-		Strings[i] = ABSENT_STRING;
-		TR(TRACE_DATABASE,
-		   ("missing NULL, ignoring string #%d", i));
-		success = FALSE;
-		break;
-	    } else if (p == Strings[i] && always) {
-		TR(TRACE_DATABASE,
-		   ("found empty but required Strings[%d]", i));
-		success = FALSE;
-		break;
-	    }
-	} else if (always) {	/* names are always needed */
+	if (!VALID_STRING(Strings[i]) && always) {
 	    TR(TRACE_DATABASE,
 	       ("found invalid but required Strings[%d]", i));
 	    success = FALSE;

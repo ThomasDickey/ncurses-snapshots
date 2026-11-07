@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.763 2026/10/24 21:58:03 tom Exp $
+ * $Id: curses.priv.h,v 1.764 2026/11/07 15:14:52 Yeatol Exp $
  *
  *	curses.priv.h
  *
@@ -792,7 +792,11 @@ extern NCURSES_EXPORT(void) _nc_set_read_thread(bool);
 
 #if HAVE_CLOCK_GETTIME
 # define PRECISE_GETTIME 1
-# define GetClockTime(t) clock_gettime(CLOCK_REALTIME, t)
+# ifdef CLOCK_MONOTONIC
+#  define GetClockTime(t) clock_gettime(CLOCK_MONOTONIC, t)
+# else
+#  define GetClockTime(t) clock_gettime(CLOCK_REALTIME, t)
+# endif
 # define TimeType struct timespec
 # define TimeScale 1000000000L		/* 1e9 */
 # define sub_secs tv_nsec

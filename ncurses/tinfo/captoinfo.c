@@ -98,7 +98,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.112 2026/06/13 20:30:21 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.113 2026/11/07 19:45:27 tom Exp $")
 
 #if 0
 #define DEBUG_THIS(p) DEBUG(9, p)
@@ -640,16 +640,34 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parameteriz
     /* we may have to move some trailing mandatory padding up front */
     padding = str + strlen(str) - 1;
     if (padding > str && *padding == '>') {
+	bool valued = FALSE;
+	bool onleft = FALSE;
+
 	if (padding > (str + 1) && *--padding == '/')
 	    --padding;
-	while (isdigit(UChar(*padding)) || *padding == '.' || *padding == '*')
-	    padding--;
-	if (padding > str && *padding == '<' && *--padding == '$')
-	    trimmed = padding;
-	padding += 2;
 
-	while (isdigit(UChar(*padding)) || *padding == '.' || *padding == '*')
-	    bufptr = save_char(bufptr, *padding++);
+	while ((padding > str)
+	       && (isdigit(UChar(*padding))
+		   || *padding == '.'
+		   || *padding == '*')) {
+	    if (isdigit(UChar(*padding)))
+		valued = TRUE;
+	    padding--;
+	}
+
+	if (*padding == '<') {
+	    onleft = TRUE;
+	    if (padding > str && *--padding == '$')
+		trimmed = padding;
+	}
+
+	if (valued && onleft) {
+	    padding += 2;
+	    while (isdigit(UChar(*padding))
+		   || *padding == '.'
+		   || *padding == '*')
+		bufptr = save_char(bufptr, *padding++);
+	}
     }
 
     for (; !syntax_error &&

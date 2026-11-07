@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.263 2026/10/17 23:17:42 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.264 2026/11/07 15:43:53 tom Exp $")
 
 #include <tic.h>
 
@@ -1183,7 +1183,9 @@ decode_xterm_X10(SCREEN *sp, MEVENT * eventp)
     /* there's only one mouse... */
     eventp->id = NORMAL_EVENT;
 
-    if ((result = decode_X10_bstate(sp, eventp, kbuf[0])) >= 0) {
+    if (grabbed < 3) {
+	result = FALSE;
+    } else if ((result = decode_X10_bstate(sp, eventp, kbuf[0])) >= 0) {
 	eventp->x = (kbuf[1] - ' ') - 1;
 	eventp->y = (kbuf[2] - ' ') - 1;
     }

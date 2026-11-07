@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.183 2026/07/25 23:38:04 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.184 2026/11/07 20:56:10 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -139,7 +139,7 @@ canonical_name(const char *source, char *target)
 
     while (--limit > 0) {
 	char ch = *source++;
-	if (ch == '|')
+	if (ch == '|' || ch == '\0')
 	    break;
 	*target++ = ch;
     }

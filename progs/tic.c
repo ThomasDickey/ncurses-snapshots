@@ -49,7 +49,7 @@
 #include <parametrized.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.355 2026/08/22 16:56:15 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.356 2026/11/07 20:48:30 tom Exp $")
 
 #define STDIN_NAME "<stdin>"
 
@@ -2373,9 +2373,13 @@ parse_ti_delay(const char *ti, double *delays)
 	    && ti[1] == '<'
 	    && IsDelay(UChar(ti[2]))) {
 	    int ignored;
+	    const char *save = ti;
 	    const char *last = parse_delay_value(ti + 2, delays, &ignored);
 	    if (*last == '>') {
 		ti = last;
+	    } else if (*last == '\0') {
+		_nc_warning("cannot parse delay %s", _nc_visbuf(save));
+		break;
 	    }
 	} else {
 	    ++ti;

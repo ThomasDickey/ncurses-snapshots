@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.128 2026/10/24 13:04:59 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.129 2026/11/07 14:54:24 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -197,19 +197,12 @@ next_char(void)
     int the_char;
 
     if (!yyin) {
-	if (result != NULL) {
-	    FreeAndNull(result);
-	    FreeAndNull(pushname);
-	    bufptr = NULL;
-	    bufstart = NULL;
-	    allocated = 0;
-	}
 	/*
 	 * An string with an embedded null will truncate the input.  This is
 	 * intentional (we don't read binary files here).
 	 */
-	if (bufptr == NULL || *bufptr == '\0')
-	    return (EOF);
+	if (result != NULL || bufptr == NULL || *bufptr == '\0')
+	    goto clean_eof;
 	if (*bufptr == '\n') {
 	    _nc_curr_line++;
 	    _nc_curr_col = 0;
@@ -233,8 +226,7 @@ next_char(void)
 		    allocated += (allocated + LEXBUFSIZ);
 		    result = typeRealloc(char, allocated, result);
 		    if (result == NULL) {
-			allocated = 0;
-			return (EOF);
+			goto clean_eof;
 		    }
 		    if (bufstart)
 			bufstart = result;
@@ -286,9 +278,7 @@ next_char(void)
 		    len = 0;	/* force EOF return */
 		}
 		if (len == 0) {
-		    FreeAndNull(result);
-		    allocated = 0;
-		    return (EOF);
+		    goto clean_eof;
 		}
 	    } while (bufptr[len - 1] != '\n');	/* complete a line */
 	} while (result[0] == '#');	/* ignore comments */
@@ -303,6 +293,14 @@ next_char(void)
     _nc_curr_col++;
     the_char = *bufptr++;
     return UChar(the_char);
+
+  clean_eof:
+    FreeAndNull(result);
+    FreeAndNull(pushname);
+    bufptr = NULL;
+    bufstart = NULL;
+    allocated = 0;
+    return (EOF);
 }
 
 static void

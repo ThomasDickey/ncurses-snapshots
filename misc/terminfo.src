@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1279 $
-#	$Date: 2026/09/19 18:26:43 $
+#	$Revision: 1.1283 $
+#	$Date: 2026/11/07 11:58:22 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -11480,7 +11480,7 @@ adm12|LSI adm12,
 #
 # Reference:
 #	https://terminals-wiki.org/wiki/index.php/Morrow_MDT20
-#	http://dunfield.classiccmp.org//morrow/mdadm20.pdf
+#	http://dunfield.classiccmp.org/morrow/mdadm20.pdf
 #	https://www.atarimagazines.com/creative/v10n5/28_The_Morrow_Micro_Decision.php
 adm20|Lear Siegler adm20,
 	OTbs, am,
@@ -11978,7 +11978,7 @@ tvi910|TeleVideo model 910,
 	cols#80, it#8, lines#24, xmc#1,
 	bel=^G, cbt=\EI, clear=^Z, cr=\r, cub1=^H, cud1=\n, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, ed=\EY, el=\ET,
-	home=\E=^A^A, hpa=\E]%p1%{32}%+%c, ht=^I,
+	home=^^, hpa=\E]%p1%{32}%+%c, ht=^I,
 	if=/usr/share/tabset/stdcrt, ind=\n, invis@, kbs=^H,
 	kcub1=^H, kcud1=\n, kcuf1=^L, kcuu1=^K, kf0=^AI\r, kf1=^A@\r,
 	kf2=^AA\r, kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r,
@@ -12750,8 +12750,8 @@ tvi950|TeleVideo 950,
 	cr=\r, cub1=^H, cud1=\n, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW,
 	dl1=\ER, dsl=\Eg\Ef\r, ed=\Ey, el=\Et, flash=\Eb$<200/>\Ed,
-	fsl=\r, home=^^, ht=^I, hts=\E1, ich1=\EQ, il1=\EE, ind=\n,
-	invis@,
+	fsl=\r, home=^^, ht=^I, hts=\E1, ich1=\EQ,
+	if=/usr/share/tabset/stdcrt, il1=\EE, ind=\n, invis@,
 	is2=\EDF\EC\Ed\EG0\Eg\Er\EO\E'\E(\E%\Ew\EX\Ee\s\017\011\El
 	    \E016\E004\Ex0\0\0\Ex1\0\0\Ex2\0\0\011\Ex3\0\0\Ex4\r\0
 	    \Ef\r,
@@ -13309,11 +13309,12 @@ wy100|Wyse 100,
 	cols#80, lines#24, xmc#1,
 	bel=^G, clear=\E;, cr=\r, cub1=^H, cud1=\n, cuf1=^L,
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW,
-	dl1=\ER, dsl=\EA31, ed=\EY, el=\ET, fsl=\r, il1=\EE, ind=\n,
-	invis@, is2=\Eu\E0, kbs=^H, kcub1=^H, kcud1=\n, kcuf1=^L,
-	kcuu1=^K, kf1=^A@\r, kf2=^AA\r, kf3=^AB\r, kf4=^AC\r,
-	kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, khome=\E{,
-	rmir=\Er, smir=\Eq, tsl=\EF, use=adm+sgr,
+	dl1=\ER, dsl=\EA31, ed=\EY, el=\ET, fsl=\r, home=^^, il1=\EE,
+	ind=\n, invis@, is2=\Eu\E0, kHOM=\E{, kbs=^H, kcub1=^H,
+	kcud1=\n, kcuf1=^L, kcuu1=^K, kf1=^A@\r, kf2=^AA\r,
+	kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r,
+	kf8=^AG\r, khome=^^, rmir=\Er, smir=\Eq, tsl=\EF,
+	use=adm+sgr,
 #
 #	The Wyse 120/150 has most of the features of the Wyse 60.
 #	This terminal does not need padding up to 9600 baud!
@@ -28590,5 +28591,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	+ add overline to ghostty (report by Jared Finder)
 #	+ review ghostty -TD
 #	+ add overline to rlogin-color -TD
+#
+# 2026-11-07
+#	+ fixes for tvi910, tvi950, wy100 (patch by Adam Di Carlo)
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

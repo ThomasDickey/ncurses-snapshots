@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.158 2026/07/02 23:38:56 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.159 2026/11/07 20:11:44 tom Exp $")
 
 /*
  *	char *
@@ -779,6 +779,12 @@ tparm_trace_call(TPARM_STATE *tps, const char *string, TPARM_DATA *data)
 	    memset(name##_vars, 0, sizeof(name##_vars)); \
 	}
 
+#ifdef INT_MIN
+#define valid_div(num,den) (((den) != 0) && ((num) != INT_MIN || (den) != -1))
+#else
+#define valid_div(num,den) ((den) != 0)
+#endif
+
 static NCURSES_INLINE char *
 tparam_internal(TPARM_STATE *tps, const char *string, TPARM_DATA *data)
 {
@@ -938,13 +944,13 @@ tparam_internal(TPARM_STATE *tps, const char *string, TPARM_DATA *data)
 	    case '/':
 		y = npop(tps);
 		x = npop(tps);
-		npush(tps, y ? (x / y) : 0);
+		npush(tps, valid_div(x, y) ? (x / y) : 0);
 		break;
 
 	    case 'm':
 		y = npop(tps);
 		x = npop(tps);
-		npush(tps, y ? (x % y) : 0);
+		npush(tps, valid_div(x, y) ? (x % y) : 0);
 		break;
 
 	    case 'A':

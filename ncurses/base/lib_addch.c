@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.147 2026/10/17 18:35:16 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.148 2026/11/07 14:13:31 tom Exp $")
 
 static const NCURSES_CH_T blankchar = NewChar(BLANK_TEXT);
 
@@ -279,19 +279,21 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
      * cleared.
      */
     if_WIDEC({
-	if (isWidecBase(win->_line[y].text[x])) {
+	NCURSES_CH_T blank = render_char(win, blankchar);
+	NCURSES_CH_T *text = win->_line[y].text;
+	if (isWidecBase(text[x])) {
 	    int z = x;
-	    win->_line[y].text[z++] = blankchar;
-	    while (isWidecExt(win->_line[y].text[z])) {
-		win->_line[y].text[z++] = blankchar;
+	    text[z++] = blank;
+	    while (z <= win->_maxx && isWidecExt(text[z])) {
+		text[z++] = blank;
 	    }
-	} else if (isWidecExt(win->_line[y].text[x])) {
+	} else if (isWidecExt(text[x])) {
 	    int z = x;
-	    while (isWidecExt(win->_line[y].text[z])) {
-		win->_line[y].text[z--] = blankchar;
+	    while (z >= 0 && isWidecExt(text[z])) {
+		text[z--] = blank;
 	    }
-	    if (isWidecBase(win->_line[y].text[z])) {
-		win->_line[y].text[z] = blankchar;
+	    if (z >= 0 && isWidecBase(text[z])) {
+		text[z] = blank;
 	    }
 	}
     });
@@ -359,13 +361,14 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		NCURSES_CH_T *dst;
 		wchar_t *chars;
 		if (x > 0 && y >= 0) {
+		    NCURSES_CH_T *text = win->_line[y].text;
 		    for (j = x - 1; j >= 0; --j) {
-			if (!isWidecExt(win->_line[y].text[j])) {
+			if (!isWidecExt(text[j])) {
 			    win->_curx = (NCURSES_SIZE_T) j;
 			    break;
 			}
 		    }
-		    dst = &(win->_line[y].text[j]);
+		    dst = &(text[j]);
 		} else {
 		    dst = &(win->_line[y - 1].text[win->_maxx]);
 		}
@@ -409,11 +412,12 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	     * setup though.
 	     */
 	    for (i = 0; i < len; ++i) {
-		if (isWidecBase(win->_line[y].text[x + i])) {
+		NCURSES_CH_T *text = win->_line[y].text;
+		if (isWidecBase(text[x + i])) {
 		    break;
-		} else if (isWidecExt(win->_line[y].text[x + i])) {
+		} else if (isWidecExt(text[x + i])) {
 		    for (j = i; x + j <= win->_maxx; ++j) {
-			if (!isWidecExt(win->_line[y].text[x + j])) {
+			if (!isWidecExt(text[x + j])) {
 			    TR(TRACE_VIRTPUT, ("fill %d orphan cells", j));
 			    fill_cells(win, j);
 			    break;
