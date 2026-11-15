@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: dup_field.c,v 1.30 2026/09/26 21:05:16 tom Exp $
+ * $Id: dup_field.c,v 1.31 2026/11/14 14:37:47 tom Exp $
  *
  * Demonstrate dup_field() and link_field()
  */
@@ -334,7 +334,7 @@ do_demo(FORM *form, bool linked)
 	}
     }
 
-    if (copied || last_row >= LINES) {
+    if (copied || last_row >= LINES || my_field == NULL) {
 	beep();
     } else if (count > 0 && old_fields != NULL) {
 	FIELD *add_field = linked

@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: move_field.c,v 1.31 2026/08/22 16:58:18 tom Exp $
+ * $Id: move_field.c,v 1.32 2026/11/14 14:38:42 tom Exp $
  *
  * Demonstrate move_field().
  */
@@ -331,13 +331,14 @@ show_status(NCURSES_CONST FORM *form, NCURSES_CONST FIELD *field)
 {
     NCURSES_CONST WINDOW *sub = form_sub(form);
     int currow, curcol;
-    WINDOW *status = stdscr;
+    WINDOW *status;
 
     getyx(stdscr, currow, curcol);
 
 #if HAVE_RIPOFFLINE
     wmove(status = win_help, 0, 0);
 #else
+    status = stdscr;
     move(LINES - 1, 0);
 #endif
 

@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1283 $
-#	$Date: 2026/11/07 11:58:22 $
+#	$Revision: 1.1293 $
+#	$Date: 2026/11/15 01:23:45 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1002,8 +1002,8 @@ linux-basic|Linux console (basic),
 	     \264v\301w\302x\263y\363z\362{\343|\330}\234~\376,
 	bel=^G, cr=\r, cub1=^H, cud1=\n, dim=\E[2m, ech=\E[%p1%dX,
 	el1=\E[1K, flash=\E[?5h$<200/>\E[?5l, ind=\n, kb2=\E[G,
-	kbs=^?, kcbt=\E[Z, khome=\E[1~, kmous=\E[M, kspd=^Z,
-	nel=\r\n, ri=\EM, rmam=\E[?7l, rs1=\Ec\E]R,
+	kbeg=\E[G, kbs=^?, kcbt=\E[Z, khome=\E[1~, kmous=\E[M,
+	kspd=^Z, nel=\r\n, ri=\EM, rmam=\E[?7l, rs1=\Ec\E]R,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5
 	    %t;2%;%?%p6%t;1%;%?%p9%t;11%;m,
 	smam=\E[?7h, use=ecma+underline, use=ecma+standout,
@@ -3665,9 +3665,14 @@ nsterm-build400|Terminal.app in OS X 10.13,
 nsterm-build440|Terminal.app in MacOS 11.6.8,
 	use=xterm+alt1049, use=nsterm-build400,
 
+nsterm-build472|Terminal.app in MacOS 26.6.2,
+	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, ka2=\EOx,
+	kb1=\EOt, kb3=\EOv, kc2=\EOr, kpADD=\EOl, kpDOT=\EOn,
+	kpSUB=\EOm, kpZRO=\EOp, use=nsterm-build440,
+
 # This is an alias which should always point to the "current" version
 nsterm|nsterm-256color|Apple_Terminal|AppKit Terminal.app,
-	use=nsterm-build440,
+	use=nsterm-build472,
 
 #### iTerm, iTerm2
 
@@ -3810,9 +3815,9 @@ iTerm.app|iterm|iTerm.app terminal emulator for Mac OS X,
 # 2018/01/21: found xterm+sm+1006 did not work with version 3.1.5
 # 2018/05/19: xterm+sm+1006 seems to work with 3.1.6beta -TD
 iTerm2.app|iterm2|terminal emulator for Mac OS X,
-	cbt=\E[Z, dim=\E[2m, kEND=\E[1;2F, kHOM=\E[1;2H, ka1@, ka3@,
-	kb2@, kc1@, kc3@, kent@, nel=\EE, op=\E[39;49m,
-	rs2=\E[!p\E[?3;4l\E[4l\E>\E[?1000l,
+	cbt=\E[Z, dim=\E[2m, kEND=\E[1;2F, kHOM=\E[1;2H, ka1=\EOw,
+	ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, kent@, nel=\EE,
+	op=\E[39;49m, rs2=\E[!p\E[?3;4l\E[4l\E>\E[?1000l,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;m%?%p9%t\016%e\017%;,
 	Smulx=\E[4:%p1%dm, kDN3=\E\E[B, kDN4=\E[1;10B,
@@ -3821,15 +3826,16 @@ iTerm2.app|iterm2|terminal emulator for Mac OS X,
 	kHOM4=\E[1;10H, kHOM6=\E[1;6H, kHOM7=\E[1;13H,
 	kHOM8=\E[1;14H, kLFT3=\E\E[D, kLFT4=\E[1;10D,
 	kNXT3=\E\E[6~, kPRV3=\E\E[5~, kRIT3=\E\E[C,
-	kRIT4=\E[1;10C, kUP3=\E\E[A, kUP4=\E[1;10A, kpDIV=\Eo,
-	kpMUL=\Ej, kpNUM=\E, kpSUB=\Em,
-	rv=\E\\[>64;[1-6][0-9];0c,
+	kRIT4=\E[1;10C, kUP3=\E\E[A, kUP4=\E[1;10A, kpADD=\EOk,
+	kpDIV=\EOo, kpDOT=\EOn, kpMUL=\EOj, kpNUM=\E, kpSUB=\EOm,
+	kpZRO=\EOp, rv=\E\\[>64;[1-6][0-9];0c,
 	xr=\EP>\\|iTerm2 ([1-9][.0-9])\E\\\\, use=xterm+pcc2,
 	use=ecma+underline, use=ecma+strikeout,
 	use=ecma+standout, use=ecma+index, use=report+version,
 	use=report+da2, use=xterm+alt+title, use=ecma+italics,
 	use=iterm, use=bracketed+paste, use=kitty+setal,
-	use=ecma+overline, use=xterm+24fkeys,
+	use=ecma+overline, use=vt100+keypad+emul,
+	use=xterm+24fkeys,
 
 # otty
 #
@@ -4644,18 +4650,20 @@ teraterm4.59|Tera Term 4.59,
 #	+ no UTF-8 apparent when UTF-8 is set, with font Lucida Control
 teraterm4.97|Tera Term 4.97,
 	XT,
-	kdch1=^?, kf0@, kf1=\E[11~, kf2=\E[12~, kf3=\E[13~,
-	kf4=\E[14~, kpADD=\EOl, kpNUM@, rv=\E\\[>32;331;0c,
-	use=dec+sl, use=ecma+color, use=vt100+keypad+emul,
-	use=report+da2, use=xterm+sm+1006, use=teraterm+keypad,
+	kcbt=\E[Z, kdch1=^?, kf0@, kf1=\E[11~, kf2=\E[12~,
+	kf3=\E[13~, kf4=\E[14~, kpADD=\EOl, kpNUM@,
+	rv=\E\\[>32;331;0c, use=dec+sl, use=ecma+color,
+	use=vt100+keypad+emul, use=report+da2,
+	use=xterm+sm+1006, use=teraterm+keypad,
 	use=teraterm4.59,
 teraterm-256color|TeraTerm with xterm 256-colors,
 	use=xterm+256setaf, use=teraterm,
 teraterm+keypad|teraterm emulating VT100/VT220 numeric keypad,
-	kbeg=\EOE, kent=\EOM, kpCMA=\EOl, kpDOT=\EOn, kpZRO=\EOp,
+	kent=\EOM, kpCMA=\EOl, kpDOT=\EOn, kpZRO=\EOp,
 	use=vt100+keypad,
 teraterm5.0|Tera Term 5.0,
-	xenl, use=bracketed+paste, use=xterm+keypad,
+	xenl,
+	kbeg@, kp5@, use=bracketed+paste, use=xterm+keypad,
 	use=teraterm4.97,
 
 teraterm|Tera Term,
@@ -5304,7 +5312,7 @@ vt100+noapp|fragment with cursor keys in normal mode,
 	use=vt100+arrows, use=vt100+noapp+pc,
 
 xterm+noapp|alias for vt100+noapp,
-	use=vt100+noapp,
+	kbeg=\E[E, kp5=\E[E, use=vt100+noapp,
 
 xterm+app|fragment with cursor keys in application mode,
 	use=vt100+apparrows, use=xterm+app+pc,
@@ -6757,10 +6765,10 @@ kvt|KDE terminal,
 konsole-base|KDE console window (common),
 	bce, km@, npc, XT,
 	ncv@,
-	ech=\E[%p1%dX, flash=\E[?5h$<100/>\E[?5l, kf1@, kf10@,
-	kf11@, kf12@, kf13@, kf14@, kf15@, kf16@, kf17@, kf18@, kf19@, kf2@,
-	kf20@, kf3@, kf4@, kf5@, kf6@, kf7@, kf8@, kf9@, kfnd@, kslt@,
-	rmam=\E[?7l, rs1=\Ec,
+	ech=\E[%p1%dX, flash=\E[?5h$<100/>\E[?5l, kbeg=\E[E,
+	kf1@, kf10@, kf11@, kf12@, kf13@, kf14@, kf15@, kf16@, kf17@, kf18@,
+	kf19@, kf2@, kf20@, kf3@, kf4@, kf5@, kf6@, kf7@, kf8@, kf9@, kfnd@,
+	kslt@, rmam=\E[?7l, rs1=\Ec,
 	rs2=\E7\E[r\E8\E[m\E[?7h\E[?1;3;4;6l\E[4l\E>\E[?1000l\E[?25h,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?
 	    %p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;,
@@ -6924,9 +6932,12 @@ mlterm|multi lingual terminal emulator,
 mlterm3|multi lingual terminal emulator 3.x,
 	bce, AX,
 	blink=\E[5m, flash=\E[?5h$<100/>\E[?5l, invis=\E[8m,
-	is2=\E[!p\E[?3;4l\E>, rs2=\E[!p\E[?3;4l\E>,
+	is2=\E[!p\E[?3;4l\E>, ka1=\EOw, ka3=\EOy, kb2=\EOu,
+	kc1=\EOq, kc3=\EOs, rs2=\E[!p\E[?3;4l\E>,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;%?
 	    %p7%t;8%;m%?%p9%t\E(0%e\E(B%;,
+	ka2=\EOx, kb1=\EOt, kb3=\EOv, kc2=\EOr, kpADD=\EOk,
+	kpDIV=\EOo, kpDOT=\EOn, kpMUL=\EOj, kpSUB=\EOm, kpZRO=\EOp,
 	rv=\E\\[>24;279;0c,
 	xr=\EP>\\|mlterm\\([0-9][.0-9]+\\)\E\\\\,
 	use=ansi+enq, use=ansi+rep, use=ecma+italics,
@@ -7575,10 +7586,12 @@ mgr-linux|Mgr window with Linux keyboard,
 # st.suckless.org
 
 st|stterm|aka simpleterm,
-	use=st-0.8.5,
+	use=st-0.9.2,
 
-# Reviewed 0.9.2 (Debian testing package "stterm"):
-# Inspected source, saw nothing to change in terminfo.
+# Reviewed 0.9.2 (Debian stable package "stterm"):
+st-0.9.2|simpleterm 0.9.2,
+	kb2=\E[E, kbeg=\E[E, ka2=\EOx, kb1=\EOt, kb3=\EOv, kc2=\EOr,
+	use=st-0.8.5,
 #
 # Reviewed 0.8.5 (Debian stable package "stterm"):
 # In tack,
@@ -7952,8 +7965,10 @@ terminology-1.8.1|EFL-based terminal emulator (1.8.1),
 	use=vt220+cvis, use=ecma+italics, use=xterm-basic,
 	use=report+version,
 
+# 2026/11/14:
+# Updated special keys for 1.14.0
 terminology|EFL-based terminal emulator,
-	use=terminology-1.8.1,
+	kbeg=\EOE, use=terminology-1.8.1,
 
 ######## OPENGL CLIENTS
 
@@ -28594,5 +28609,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2026-11-07
 #	+ fixes for tvi910, tvi950, wy100 (patch by Adam Di Carlo)
+#
+# 2026-11-14
+#	+ review/fix teraterm special keys -TD
+#	+ add kp5/kbeg to xterm+noapp (report by Jakub Horky)
+#	+ add kbeg to linux-basic, konsole, terminology (patches by Jakub Horky)
+#	+ add st-0.9.2 -TD
+#	+ revise numeric keypad for iterm2, nsterm, mlterm -TD
 #
 ######## SHANTIH!  SHANTIH!  SHANTIH!

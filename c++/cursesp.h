@@ -1,7 +1,7 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 // vile:cppmode
 /****************************************************************************
- * Copyright 2019-2022,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
 #ifndef NCURSES_CURSESP_H_incl
 #define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.37 2025/01/25 21:20:17 tom Exp $
+// $Id: cursesp.h,v 1.39 2026/11/14 16:22:16 tom Exp $
 
 #include <cursesw.h>
 
@@ -118,20 +118,11 @@ public:
   // This constructor creates the default Panel associated with the
   // ::stdscr window
 
-  NCursesPanel& operator=(const NCursesPanel& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      NCursesWindow::operator=(rhs);
-    }
-    return *this;
-  }
-
-  NCursesPanel(const NCursesPanel& rhs)
-    : NCursesWindow(rhs),
-      p(rhs.p)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesPanel& operator=(const NCursesPanel& rhs);
+  NCursesPanel(const NCursesPanel& rhs);
+public:
 
   virtual ~NCursesPanel() THROWS(NCursesException);
 

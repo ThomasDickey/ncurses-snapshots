@@ -41,7 +41,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.565 2026/10/31 20:37:44 tom Exp $
+$Id: ncurses.c,v 1.566 2026/11/14 14:38:53 tom Exp $
 
 ***************************************************************************/
 
@@ -6617,7 +6617,6 @@ form_virtualize(NCURSES_CONST FORM *f, WINDOW *w)
 
     c = wGetchar(w);
     me = current_field(f);
-    current = TRUE;
 
     if (c == CTRL(']')) {
 	if (mode == REQ_INS_MODE) {

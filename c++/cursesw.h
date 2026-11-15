@@ -32,7 +32,7 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.63 2026/03/21 19:40:07 tom Exp $
+// $Id: cursesw.h,v 1.64 2026/11/14 14:23:45 Martin.Mirchev Exp $
 
 #include <curses.h>
 
@@ -834,17 +834,11 @@ public:
   // is two lines and two columns smaller and begins at (1,1).
   // We may automatically request the box around it.
 
-  NCursesWindow& operator=(const NCursesWindow& rhs)
-  {
-    if (this != &rhs)
-      *this = rhs;
-    return *this;
-  }
-
-  NCursesWindow(const NCursesWindow& rhs)
-    : w(rhs.w), alloced(rhs.alloced), par(rhs.par), subwins(rhs.subwins), sib(rhs.sib)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesWindow& operator=(const NCursesWindow& rhs);
+  NCursesWindow(const NCursesWindow& rhs);
+public:
 
   virtual ~NCursesWindow() THROWS(NCursesException);
 
@@ -1474,25 +1468,11 @@ public:
   NCursesPad(int nlines, int ncols);
   // create a pad with the given size
 
-  NCursesPad& operator=(const NCursesPad& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      NCursesWindow::operator=(rhs);
-    }
-    return *this;
-  }
-
-  NCursesPad(const NCursesPad& rhs)
-    : NCursesWindow(rhs),
-      viewWin(rhs.viewWin),
-      viewSub(rhs.viewSub),
-      h_gridsize(rhs.h_gridsize),
-      v_gridsize(rhs.v_gridsize),
-      min_row(rhs.min_row),
-      min_col(rhs.min_col)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesPad& operator=(const NCursesPad& rhs);
+  NCursesPad(const NCursesPad& rhs);
+public:
 
   virtual ~NCursesPad() THROWS(NCursesException) {}
 

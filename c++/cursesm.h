@@ -1,6 +1,6 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -32,7 +32,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesm.h,v 1.37 2025/01/25 21:20:17 tom Exp $
+// $Id: cursesm.h,v 1.39 2026/11/14 16:22:16 tom Exp $
 
 #ifndef NCURSES_CURSESM_H_incl
 #define NCURSES_CURSESM_H_incl 1
@@ -72,19 +72,11 @@ public:
   // item is constructed which can be used to terminate a list of
   // NCursesMenu objects.
 
-  NCursesMenuItem& operator=(const NCursesMenuItem& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  NCursesMenuItem(const NCursesMenuItem& rhs)
-    : item(NULL)
-  {
-    (void) rhs;
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesMenuItem& operator=(const NCursesMenuItem& rhs);
+  NCursesMenuItem(const NCursesMenuItem& rhs);
+public:
 
   virtual ~NCursesMenuItem () THROWS(NCursesException);
   // Release the items memory
@@ -166,19 +158,11 @@ public:
       p_fct (fct) {
   }
 
-  NCursesMenuCallbackItem& operator=(const NCursesMenuCallbackItem& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  NCursesMenuCallbackItem(const NCursesMenuCallbackItem& rhs)
-    : NCursesMenuItem(rhs),
-      p_fct(NULL)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesMenuCallbackItem& operator=(const NCursesMenuCallbackItem& rhs);
+  NCursesMenuCallbackItem(const NCursesMenuCallbackItem& rhs);
+public:
 
   virtual ~NCursesMenuCallbackItem() THROWS(NCursesException);
 
@@ -313,25 +297,11 @@ public:
       InitMenu(Items, with_frame, autoDelete_Items);
   }
 
-  NCursesMenu& operator=(const NCursesMenu& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      NCursesPanel::operator=(rhs);
-    }
-    return *this;
-  }
-
-  NCursesMenu(const NCursesMenu& rhs)
-    : NCursesPanel(rhs),
-      menu(rhs.menu),
-      sub(rhs.sub),
-      b_sub_owner(rhs.b_sub_owner),
-      b_framed(rhs.b_framed),
-      b_autoDelete(rhs.b_autoDelete),
-      my_items(rhs.my_items)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesMenu& operator=(const NCursesMenu& rhs);
+  NCursesMenu(const NCursesMenu& rhs);
+public:
 
   virtual ~NCursesMenu () THROWS(NCursesException);
 

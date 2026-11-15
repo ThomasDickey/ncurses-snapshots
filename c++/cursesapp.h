@@ -1,6 +1,6 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2019-2020,2021 Thomas E. Dickey                                *
+ * Copyright 2019-2021,2026 Thomas E. Dickey                                *
  * Copyright 1998-2005,2011 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -32,7 +32,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesapp.h,v 1.18 2021/06/17 21:26:02 tom Exp $
+// $Id: cursesapp.h,v 1.20 2026/11/14 16:22:16 tom Exp $
 
 #ifndef NCURSES_CURSESAPP_H_incl
 #define NCURSES_CURSESAPP_H_incl
@@ -103,19 +103,11 @@ protected:
   // class constructor. The argument tells whether or not you want colors.
   NCursesApplication(bool wantColors = FALSE);
 
-  NCursesApplication& operator=(const NCursesApplication& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  NCursesApplication(const NCursesApplication& rhs)
-    : b_Colors(rhs.b_Colors),
-      Root_Window(rhs.Root_Window)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesApplication& operator=(const NCursesApplication& rhs);
+  NCursesApplication(const NCursesApplication& rhs);
+protected:
 
   static NCursesWindow *&getTitleWindow();
 

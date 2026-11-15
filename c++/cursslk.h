@@ -1,7 +1,7 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 // vile:cppmode
 /****************************************************************************
- * Copyright 2019-2021,2024 Thomas E. Dickey                                *
+ * Copyright 2019-2024,2026 Thomas E. Dickey                                *
  * Copyright 1998-2003,2005 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursslk.h,v 1.20 2024/10/05 22:47:12 tom Exp $
+// $Id: cursslk.h,v 1.22 2026/11/14 16:22:16 tom Exp $
 
 #ifndef NCURSES_CURSSLK_H_incl
 #define NCURSES_CURSSLK_H_incl
@@ -75,21 +75,10 @@ public:
       return label;
     }
 
-    Soft_Label_Key& operator=(const Soft_Label_Key& rhs)
-    {
-      if (this != &rhs) {
-        *this = rhs;
-      }
-      return *this;
-    }
-
-    Soft_Label_Key(const Soft_Label_Key& rhs)
-      : label(NULL),
-        format(rhs.format),
-        num(rhs.num)
-    {
-      *this = rhs.label;
-    }
+  private:
+    // Copying is not supported, so these are declared but not defined.
+    Soft_Label_Key& operator=(const Soft_Label_Key& rhs);
+    Soft_Label_Key(const Soft_Label_Key& rhs);
   };
 
 public:
@@ -147,21 +136,11 @@ public:
   // with a layout by the constructor above. This layout will be reused.
   Soft_Label_Key_Set();
 
-  Soft_Label_Key_Set& operator=(const Soft_Label_Key_Set& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      init();		// allocate a new slk_array[]
-    }
-    return *this;
-  }
-
-  Soft_Label_Key_Set(const Soft_Label_Key_Set& rhs)
-    : b_attrInit(rhs.b_attrInit),
-      slk_array(NULL)
-  {
-    init();		// allocate a new slk_array[]
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  Soft_Label_Key_Set& operator=(const Soft_Label_Key_Set& rhs);
+  Soft_Label_Key_Set(const Soft_Label_Key_Set& rhs);
+public:
 
   virtual ~Soft_Label_Key_Set() THROWS(NCursesException);
 

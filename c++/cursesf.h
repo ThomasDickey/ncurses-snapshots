@@ -1,7 +1,7 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 // vile:cppmode
 /****************************************************************************
- * Copyright 2019-2024,2025 Thomas E. Dickey                                *
+ * Copyright 2019-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2014 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -33,7 +33,7 @@
  *   Author: Juergen Pfeifer, 1997                                          *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.41 2025/01/25 21:20:17 tom Exp $
+// $Id: cursesf.h,v 1.43 2026/11/14 16:22:16 tom Exp $
 
 #ifndef NCURSES_CURSESF_H_incl
 #define NCURSES_CURSESF_H_incl 1
@@ -82,18 +82,10 @@ public:
   {
   }
 
-  NCursesFieldType& operator=(const NCursesFieldType& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  NCursesFieldType(const NCursesFieldType& rhs)
-    : fieldtype(rhs.fieldtype)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesFieldType& operator=(const NCursesFieldType& rhs);
+  NCursesFieldType(const NCursesFieldType& rhs);
 
 };
 
@@ -140,18 +132,11 @@ public:
 	OnError(errno);
   }
 
-  NCursesFormField& operator=(const NCursesFormField& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  NCursesFormField(const NCursesFormField& rhs)
-    : field(rhs.field), ftype(rhs.ftype)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesFormField& operator=(const NCursesFormField& rhs);
+  NCursesFormField(const NCursesFormField& rhs);
+public:
 
   virtual ~NCursesFormField () THROWS(NCursesException);
 
@@ -452,25 +437,11 @@ public:
       InitForm(Fields, with_frame, autoDelete_Fields);
   }
 
-  NCursesForm& operator=(const NCursesForm& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      NCursesPanel::operator=(rhs);
-    }
-    return *this;
-  }
-
-  NCursesForm(const NCursesForm& rhs)
-    : NCursesPanel(rhs),
-      form(rhs.form),
-      sub(rhs.sub),
-      b_sub_owner(rhs.b_sub_owner),
-      b_framed(rhs.b_framed),
-      b_autoDelete(rhs.b_autoDelete),
-      my_fields(rhs.my_fields)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  NCursesForm& operator=(const NCursesForm& rhs);
+  NCursesForm(const NCursesForm& rhs);
+public:
 
   virtual ~NCursesForm() THROWS(NCursesException);
 
@@ -813,22 +784,11 @@ public:
     copy_regex(expr);
   }
 
-  Regular_Expression_Field& operator=(const Regular_Expression_Field& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      copy_regex(rhs.regex);
-      NCursesFieldType::operator=(rhs);
-    }
-    return *this;
-  }
-
-  Regular_Expression_Field(const Regular_Expression_Field& rhs)
-    : NCursesFieldType(rhs),
-      regex(NULL)
-  {
-    copy_regex(rhs.regex);
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  Regular_Expression_Field& operator=(const Regular_Expression_Field& rhs);
+  Regular_Expression_Field(const Regular_Expression_Field& rhs);
+public:
 
   ~Regular_Expression_Field() {
     delete[] regex;
@@ -856,22 +816,10 @@ public:
       non_unique_matches(non_unique ? -1 : 0) {
   }
 
-  Enumeration_Field& operator=(const Enumeration_Field& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-      NCursesFieldType::operator=(rhs);
-    }
-    return *this;
-  }
-
-  Enumeration_Field(const Enumeration_Field& rhs)
-    : NCursesFieldType(rhs),
-      list(rhs.list),
-      case_sensitive(rhs.case_sensitive),
-      non_unique_matches(rhs.non_unique_matches)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  Enumeration_Field& operator=(const Enumeration_Field& rhs);
+  Enumeration_Field(const Enumeration_Field& rhs);
 };
 
 class NCURSES_CXX_IMPEXP IPV4_Address_Field : public NCursesFieldType

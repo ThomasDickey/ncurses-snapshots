@@ -1,6 +1,6 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright 2018-2023,2025 Thomas E. Dickey                                *
+ * Copyright 2018-2025,2026 Thomas E. Dickey                                *
  * Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
@@ -36,7 +36,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.53 2025/01/25 21:21:05 tom Exp $
+ * $Id: demo.cc,v 1.55 2026/11/14 16:22:16 tom Exp $
  */
 
 #include "internal.h"
@@ -280,18 +280,11 @@ public:
     F[8]->options_off(O_STATIC);  // make field dynamic
   }
 
-  TestForm& operator=(const TestForm& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  TestForm(const TestForm& rhs)
-    : NCursesForm(rhs), F(NULL), mft(NULL), ift(NULL), eft(NULL)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  TestForm& operator=(const TestForm& rhs);
+  TestForm(const TestForm& rhs);
+public:
 
   ~TestForm() THROWS(NCursesException) {
     delete mft;
@@ -458,18 +451,11 @@ public:
     P->show();
   }
 
-  MyMenu& operator=(const MyMenu& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  MyMenu(const MyMenu& rhs)
-    : NCursesMenu(rhs), P(NULL), I(NULL), u(NULL)
-  {
-  }
+private:
+  // Copying is not supported, so these are declared but not defined.
+  MyMenu& operator=(const MyMenu& rhs);
+  MyMenu(const MyMenu& rhs);
+public:
 
   ~MyMenu() THROWS(NCursesException)
   {
