@@ -26,7 +26,7 @@
 -- sale, use or other dealings in this Software without prior written        --
 -- authorization.                                                            --
 -------------------------------------------------------------------------------
--- $Id: NEWS,v 1.4575 2026/11/15 01:26:54 tom Exp $
+-- $Id: NEWS,v 1.4581 2026/11/21 22:00:42 tom Exp $
 -------------------------------------------------------------------------------
 
 This is a log of changes that ncurses has gone through since Zeyd started
@@ -46,6 +46,13 @@ See the AUTHORS file for the corresponding full names.
 Changes through 1.9.9e did not credit all contributions;
 it is not possible to add this information.
 
+20261121
+	+ in-progress work on new mouse functions
+	+ add uclinux to CF_SHARED_OPTS (report/patch by Yegor Yefremov).
+	+ add check for buffer-overflow in infocmp "-i" option (report/testcase
+	  by Martin Mirchev).
+	+ fix spop() underflow in lib_tparm.c (report/testcase by Chen Mengda).
+
 20261114
 	+ review/fix teraterm special keys -TD
 	+ add kp5/kbeg to xterm+noapp (report by Jakub Horky)
@@ -53,7 +60,7 @@ it is not possible to add this information.
 	+ add st-0.9.2 -TD
 	+ revise numeric keypad for iterm2, nsterm, mlterm -TD
 	+ make c++ binding's "operator=" private, since those do construct new
-	  copies (patch by Martin Mirchev). 
+	  copies (patch by Martin Mirchev).
 
 20261107
 	+ check for terminating NUL in canonical_name() for infocmp -F
@@ -161,7 +168,7 @@ it is not possible to add this information.
 	+ improve limit-checks for trace calls in read_entry.c (report by Yeo
 	  JooHo).
 	+ improve tic warnings regarding the empty smir/rmir strings which
-	  may be added in dump_entry.c for termcap if ich/ich1 are present but 
+	  may be added in dump_entry.c for termcap if ich/ich1 are present but
 	  smir/rmir are not.
 	+ add sun+fkeys -TD
 	+ add dtterm-sk, dtterm+sk -TD
@@ -434,7 +441,7 @@ it is not possible to add this information.
 	  vt100+keypad (prompted by patch by Jakub Horky) -TD
 	+ use vt100+keypad instead of vt220+keypad (patch by Jakub Horky)
 	+ use vt100+keypad in putty+keypad, replacing kpXX extension -TD
-	+ remove vt100+fnkeys-sco from putty -TD 
+	+ remove vt100+fnkeys-sco from putty -TD
 	+ fix link_test.c for configuration without extended colors by
 	  adjusting ifdefs and improving MKlib_gen.sh by checking for #if
 	  statements with only a 0 or 1 parameter.

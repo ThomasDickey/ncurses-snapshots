@@ -84,7 +84,7 @@
 #define CUR SP_TERMTYPE
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.264 2026/11/07 15:43:53 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.268 2026/11/21 22:57:15 tom Exp $")
 
 #include <tic.h>
 
@@ -146,7 +146,10 @@ make an error
 	| BUTTON_ALT \
 	| REPORT_MOUSE_POSITION )
 
-#if NCURSES_MOUSE_VERSION > 1
+#define set_other_bit(p,q) (p)->bstate |= (q)
+#define tst_other_bit(p,q) ((p)->bstate & (q))
+
+#if NCURSES_MOUSE_VERSION == 1
 #define MyMask	mmask_t
 #else
 #define MyMask	mmask2_t
@@ -159,10 +162,16 @@ make an error
 #define	MASK_TRIPLE_CLICK(x)	(MyMask) NCURSES_MOUSE_MASK(x, NCURSES_TRIPLE_CLICKED)
 
 #if NCURSES_MOUSE_VERSION > 1
-#define EXTRACT_MOUSE_MASK(b,m) ((MyMask)(0x1f & (m) >> (((b) - 1) * 5)))
+#define BITS_PER_BUTTON 5
 #else
-#define EXTRACT_MOUSE_MASK(b,m) ((MyMask)(0x3f & (m) >> (((b) - 1) * 6)))
+#define BITS_PER_BUTTON 6
 #endif
+
+#define BITS_PER_OTHER 4
+
+#define EXTRACT_MOUSE_MASK(b,m) \
+	((MyMask) (((1 << BITS_PER_BUTTON) - 1) & (m) >> \
+	           (((b) - 1) * BITS_PER_BUTTON)))
 
 #if NCURSES_MAX_BUTTON == 4
 
@@ -490,6 +499,29 @@ init_xterm_mouse(SCREEN *sp)
 	    break;
 	}
     }
+#if NCURSES_MOUSE_VERSION > 1
+    /*
+     * We use 5 bits per button, and have 4 "other" bits.  If mmask_t is 32
+     * bits, that allows for 5 buttons: ((32 - 4) / 5).  But with 64 bits,
+     * we could have 12 buttons: ((64 - 4) / 5).  Since the ABI uses 32 bits,
+     * there are extended functions which bypass this restriction and allow
+     * for working with as many buttons as we can manage internally.  To keep
+     * it simple, we will simply shift the "other" bits up to the end and
+     * use the existing logic for indexing the full set of buttons.
+     *
+     * The reason for 11 buttons (rather than 12) in ncurses is that 11 will
+     * work with either of the xterm mouse protocols.
+     */
+    sp->_max_button = MAX_BUTTON;
+    if (sizeof(mmask2_t) != sizeof(mmask_t)) {
+	sp->_max_button = (((8 * sizeof(mmask2_t)) - BITS_PER_OTHER) /
+			   BITS_PER_BUTTON);
+	TR(MY_TRACE, ("external max_button: %d", MAX_BUTTON));
+	TR(MY_TRACE, ("internal max_button: %d", sp->_max_button));
+	sp->_mouse_bshift = BITS_PER_BUTTON * (sp->_max_button - MAX_BUTTON);
+	TR(MY_TRACE, ("internal bit-shifts: %d", sp->_mouse_bshift));
+    }
+#endif
 }
 #endif
 
@@ -921,7 +953,7 @@ _nc_mouse_event(SCREEN *sp)
 			eventp->bstate |= BUTTON3_RELEASED;
 		    break;
 		default:
-		    eventp->bstate |= REPORT_MOUSE_POSITION;
+		    set_other_bit(eventp, REPORT_MOUSE_POSITION);
 		    break;
 		}
 
@@ -999,9 +1031,11 @@ _nc_mouse_event(SCREEN *sp)
 #else
 #define PRESS_POSITION(n) \
     do { \
-	    eventp->bstate = (MyMask) ((sp->_mouse_bstate & MASK_PRESS(n)) \
-				    ? REPORT_MOUSE_POSITION \
-				    : MASK_PRESS(n)); \
+	    eventp->bstate = 0; \
+	    if (sp->_mouse_bstate & MASK_PRESS(n)) \
+		set_other_bit(eventp, REPORT_MOUSE_POSITION); \
+	    else \
+		eventp->bstate = MASK_PRESS(n); \
 	    sp->_mouse_bstate |= MASK_PRESS(n); \
     } while (0)
 #endif
@@ -1009,11 +1043,11 @@ _nc_mouse_event(SCREEN *sp)
 #define MODIFY_PRESS(mods) \
     do { \
 	if ((mods) & 4) \
-	    eventp->bstate |= BUTTON_SHIFT; \
+	    set_other_bit(eventp, BUTTON_SHIFT); \
 	if ((mods) & 8) \
-	    eventp->bstate |= BUTTON_ALT; \
+	    set_other_bit(eventp, BUTTON_ALT); \
 	if ((mods) & 16) \
-	    eventp->bstate |= BUTTON_CTRL; \
+	    set_other_bit(eventp, BUTTON_CTRL); \
     } while (0)
 
 #if NCURSES_MOUSE_VERSION > 2
@@ -1091,7 +1125,7 @@ decode_X10_bstate(SCREEN *sp, MEVENT * eventp, unsigned intro)
 
     result = decode_xterm_opcode(sp, eventp, (int) (intro) - 32);
     if (result < 0) {
-	eventp->bstate = REPORT_MOUSE_POSITION;
+	set_other_bit(eventp, REPORT_MOUSE_POSITION);
     } else if (result == 0) {
 
 	/*
@@ -1116,12 +1150,12 @@ decode_X10_bstate(SCREEN *sp, MEVENT * eventp, unsigned intro)
 	     * application know where the mouse is going, if private mode
 	     * 1002 or 1003 is enabled.
 	     */
-	    eventp->bstate = REPORT_MOUSE_POSITION;
+	    set_other_bit(eventp, REPORT_MOUSE_POSITION);
 	}
     }
     if (result >= 0) {
 	MODIFY_PRESS(intro);
-	result = (eventp->bstate & REPORT_MOUSE_POSITION) ? TRUE : FALSE;
+	result = tst_other_bit(eventp, REPORT_MOUSE_POSITION) ? TRUE : FALSE;
     }
     return result;
 }
@@ -1379,8 +1413,8 @@ decode_xterm_SGR1006(SCREEN *sp, MEVENT * eventp)
 	} else if (data.final != 'm' || b3 > MAX_BUTTON) {
 	    result = -TRUE;
 	} else {
-	    MyMask pressed = (MyMask) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_PRESSED);
-	    MyMask release = (MyMask) NCURSES_MOUSE_MASK(b3, NCURSES_BUTTON_RELEASED);
+	    MyMask pressed = MASK_PRESS(b3);
+	    MyMask release = MASK_RELEASE(b3);
 	    if (sp->_mouse_bstate & pressed) {
 		eventp->bstate = release;
 		sp->_mouse_bstate &= ~pressed;
@@ -1390,7 +1424,7 @@ decode_xterm_SGR1006(SCREEN *sp, MEVENT * eventp)
 	}
 	if (result >= 0) {
 	    MODIFY_PRESS(b);
-	    result = (eventp->bstate & REPORT_MOUSE_POSITION) ? TRUE : FALSE;
+	    result = tst_other_bit(eventp, REPORT_MOUSE_POSITION) ? TRUE : FALSE;
 	    eventp->x = (data.params[1] ? (data.params[1] - 1) : 0);
 	    eventp->y = (data.params[2] ? (data.params[2] - 1) : 0);
 	}

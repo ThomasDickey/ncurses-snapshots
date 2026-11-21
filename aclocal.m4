@@ -29,7 +29,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.1171 2026/10/31 20:49:17 tom Exp $
+dnl $Id: aclocal.m4,v 1.1172 2026/11/21 17:36:44 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl These macros are maintained separately from NCURSES.  The copyright on
@@ -7586,7 +7586,7 @@ do
 done
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 114 updated: 2025/12/15 04:04:20
+dnl CF_SHARED_OPTS version: 115 updated: 2026/11/21 12:35:47
 dnl --------------
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
@@ -7805,7 +7805,7 @@ CF_EOF
 		fi
 		cf_cv_rm_so_locs=yes
 		;;
-	(linux*|gnu*|k*bsd*-gnu)
+	(linux*|uclinux*|gnu*|k*bsd*-gnu)
 		if test "$DFT_LWR_MODEL" = "shared" && test -n "$LD_RPATH_OPT" ; then
 			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"

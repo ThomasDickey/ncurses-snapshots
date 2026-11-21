@@ -9053,7 +9053,7 @@ echo "${ECHO_T}$cf_cv_ldflags_search_paths_first" >&6
 		fi
 		cf_cv_rm_so_locs=yes
 		;;
-	(linux*|gnu*|k*bsd*-gnu)
+	(linux*|uclinux*|gnu*|k*bsd*-gnu)
 		if test "$DFT_LWR_MODEL" = "shared" && test -n "$LD_RPATH_OPT" ; then
 			LOCAL_LDFLAGS="${LD_RPATH_OPT}\$(LOCAL_LIBDIR)"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"

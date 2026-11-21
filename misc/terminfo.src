@@ -6,8 +6,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.1293 $
-#	$Date: 2026/11/15 01:23:45 $
+#	$Revision: 1.1294 $
+#	$Date: 2026/11/15 23:55:28 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3666,9 +3666,8 @@ nsterm-build440|Terminal.app in MacOS 11.6.8,
 	use=xterm+alt1049, use=nsterm-build400,
 
 nsterm-build472|Terminal.app in MacOS 26.6.2,
-	ka1=\EOw, ka3=\EOy, kb2=\EOu, kc1=\EOq, kc3=\EOs, ka2=\EOx,
-	kb1=\EOt, kb3=\EOv, kc2=\EOr, kpADD=\EOl, kpDOT=\EOn,
-	kpSUB=\EOm, kpZRO=\EOp, use=nsterm-build440,
+	kpADD=\EOl, kpDOT=\EOn, kpSUB=\EOm, kpZRO=\EOp,
+	use=vt100+keypad, use=nsterm-build440,
 
 # This is an alias which should always point to the "current" version
 nsterm|nsterm-256color|Apple_Terminal|AppKit Terminal.app,
@@ -6936,16 +6935,15 @@ mlterm3|multi lingual terminal emulator 3.x,
 	kc1=\EOq, kc3=\EOs, rs2=\E[!p\E[?3;4l\E>,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;%?
 	    %p7%t;8%;m%?%p9%t\E(0%e\E(B%;,
-	ka2=\EOx, kb1=\EOt, kb3=\EOv, kc2=\EOr, kpADD=\EOk,
-	kpDIV=\EOo, kpDOT=\EOn, kpMUL=\EOj, kpSUB=\EOm, kpZRO=\EOp,
-	rv=\E\\[>24;279;0c,
+	kpADD=\EOk, kpDIV=\EOo, kpDOT=\EOn, kpMUL=\EOj, kpSUB=\EOm,
+	kpZRO=\EOp, rv=\E\\[>24;279;0c,
 	xr=\EP>\\|mlterm\\([0-9][.0-9]+\\)\E\\\\,
 	use=ansi+enq, use=ansi+rep, use=ecma+italics,
 	use=ecma+strikeout, use=xterm+app, use=xterm+pcf2,
 	use=xterm+pcc2, use=xterm+pce2, use=xterm+meta,
 	use=xterm+alt+title, use=xterm+sm+1006,
 	use=vt100+pfkeys-sco, use=bracketed+paste, use=mlterm2,
-	use=report+version, use=xterm+3keys,
+	use=report+version, use=vt100+keypad, use=xterm+3keys,
 
 # This is mlterm 2.9.3's mlterm.ti, with some additions/corrections -TD
 #
@@ -7031,23 +7029,21 @@ mlterm-256color|mlterm 3.0 with xterm 256-colors,
 rxvt-basic|rxvt terminal base (X Window System),
 	OTbs, bce, eo, mir, xenl, xon, XT,
 	blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cub1=^H, cud1=\n,
-	cup=\E[%i%p1%d;%p2%dH, dch=\E[%p1%dP, dch1=\E[P, ed=\E[J,
-	el=\E[K, el1=\E[1K, flash=\E[?5h$<100/>\E[?5l,
-	ich=\E[%p1%d@, ich1=\E[@, is1=\E[?47l\E=\E[?1l,
+	cup=\E[%i%p1%d;%p2%dH, ed=\E[J, el=\E[K, el1=\E[1K,
+	flash=\E[?5h$<100/>\E[?5l, is1=\E[?47l\E=\E[?1l,
 	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l,
-	kcbt=\E[Z, kmous=\E[M, rev=\E[7m, ri=\EM, rmir=\E[4l,
-	rmkx=\E>,
+	kcbt=\E[Z, kmous=\E[M, rev=\E[7m, ri=\EM, rmkx=\E>,
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H,
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>\E[?1000l\E[?
 	    25h,
 	s0ds=\E(B, s1ds=\E(0,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?
 	    %p9%t\016%e\017%;,
-	sgr0=\E[0m\017, smir=\E[4h, smkx=\E=, use=ecma+underline,
-	use=ecma+standout, use=ansi+csr, use=ansi+idl,
-	use=ansi+local, use=xterm+alt47, use=vt100+enq,
-	use=vt100+4bsd, use=rxvt+pcfkeys, use=vt220+cvis,
-	use=vt100+keypad,
+	sgr0=\E[0m\017, smkx=\E=, use=ansi+idc,
+	use=ecma+underline, use=ecma+standout, use=ansi+csr,
+	use=ansi+idl, use=ansi+local, use=xterm+alt47,
+	use=vt100+enq, use=vt100+4bsd, use=rxvt+pcfkeys,
+	use=vt220+cvis, use=vt100+keypad,
 
 # Key Codes from rxvt reference:
 #
@@ -8257,13 +8253,12 @@ kitty+setal|set underline colors (nonstandard),
 # + supports XTVERSION, unlike alacritty
 warp|warp terminal,
 	bce@,
-	civis@, cnorm@, cvvis@, kcbt=\E[Z, RV=\E[>c, XF@, XR=\E[>0q, XT@,
-	rv=\E\\[>0;95;0c,
+	civis@, cnorm@, cvvis@, kcbt=\E[Z, XF@, XT@, rv=\E\\[>0;95;0c,
 	xr=\EP>\\|Warp\\(([[:alnum:]._]+)\\)\E\\\\,
 	use=ansi+rep, use=bracketed+paste, use=ecma+italics,
-	use=xterm+sm+1006, use=xterm+pcfkeys,
-	use=ecma+strikeout, use=xterm+tmux, use=xterm+256color,
-	use=xterm-basic,
+	use=report+da2, use=report+version, use=xterm+sm+1006,
+	use=xterm+pcfkeys, use=ecma+strikeout, use=xterm+tmux,
+	use=xterm+256color, use=xterm-basic,
 
 #### Zutty
 # https://git.hq.sig7.se/zutty.git
@@ -8535,16 +8530,16 @@ pangoterm|terminal using libvterm,
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm,
 	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|
 	    %t;7%;m,
-	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h, RV=\E[>c,
+	sgr0=\E(B\E[m, smam=\E[?7h, smkx=\E[?1h,
 	rv=\E\\[>0;100;0c, use=ecma+underline,
 	use=ecma+standout, use=ecma+index, use=ansi+rep,
 	use=ecma+strikeout, use=xterm+pcfkeys,
-	use=bracketed+paste, use=vt420+lrmm, use=xterm+focus,
-	use=xterm+sm+1006, use=ecma+italics, use=ansi+csr,
-	use=ansi+cup, use=ansi+enq, use=ansi+idc1, use=ansi+idl,
-	use=ansi+inittabs, use=ansi+local, use=ansi+rca2,
-	use=ansi+sgrbold, use=xterm+alt+title, use=att610+cvis,
-	use=xterm+acs, use=vt100+4bsd,
+	use=bracketed+paste, use=report+da2, use=vt420+lrmm,
+	use=xterm+focus, use=xterm+sm+1006, use=ecma+italics,
+	use=ansi+csr, use=ansi+cup, use=ansi+enq, use=ansi+idc1,
+	use=ansi+idl, use=ansi+inittabs, use=ansi+local,
+	use=ansi+rca2, use=ansi+sgrbold, use=xterm+alt+title,
+	use=att610+cvis, use=xterm+acs, use=vt100+4bsd,
 
 pangoterm-256color|pangoterm with 256-colors,
 	use=xterm+256setaf, use=pangoterm,
@@ -12030,7 +12025,7 @@ tvi910|TeleVideo model 910,
 # S2 10  DTR status (pin 20) (U = disconnected, D = connected)
 #
 tvi910+|TeleVideo 910+,
-	dch1=\EW, dl1=\ER$<33*>, home=^^, ich1=\EQ, il1=\EE$<33*>,
+	dch1=\EW, dl1=\ER$<33*>, ich1=\EQ, il1=\EE$<33*>,
 	kf0=^A@\r, kf1=^AA\r, kf2=^AB\r, kf3=^AC\r, kf4=^AD\r,
 	kf5=^AE\r, kf6=^AF\r, kf7=^AG\r, kf8=^AH\r, kf9=^AI\r,
 	ll=\E=7\s, use=tvi910,

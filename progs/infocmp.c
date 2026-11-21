@@ -43,7 +43,7 @@
 
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.184 2026/11/07 20:56:10 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.185 2026/11/21 16:21:20 tom Exp $")
 
 #ifndef ACTUAL_TIC
 #define ACTUAL_TIC "tic"
@@ -813,6 +813,12 @@ static const assoc ecma_highlights[] =
 
 #undef DATA
 
+/*
+ * Formatting the data for these should not be larger than the tables, unless
+ * there are duplicates.
+ */
+#define PARAM_BUFSIZ (sizeof(std_modes) + sizeof(private_modes) + sizeof(ecma_highlights))
+
 static int
 skip_csi(const char *cap)
 {
@@ -842,27 +848,32 @@ lookup_params(const assoc * table, char *dst, char *src)
 
     if (ep != NULL) {
 	const assoc *ap;
+	size_t remainder = PARAM_BUFSIZ;
+	size_t length;
 
 	do {
-	    bool found = FALSE;
-
 	    for (ap = table; ap->from[0]; ap++) {
-		size_t tlen = strlen(ap->from);
+		length = strlen(ap->from);
 
-		if (same_param(ap->from, ep, tlen)) {
-		    _nc_STRCAT(dst, ap->to, MAX_TERMINFO_LENGTH);
-		    found = TRUE;
+		if (same_param(ap->from, ep, length)) {
+		    ep = ap->to;
 		    break;
 		}
 	    }
 
-	    if (!found)
-		_nc_STRCAT(dst, ep, MAX_TERMINFO_LENGTH);
-	    _nc_STRCAT(dst, ";", MAX_TERMINFO_LENGTH);
+	    length = strlen(ep) + 1;
+	    if (remainder <= length) {
+		fprintf(stderr, "%s: string is too long\n", _nc_progname);
+		break;
+	    }
+	    _nc_STRCAT(dst, ep, remainder);
+	    _nc_STRCAT(dst, ";", remainder);
+	    remainder -= length;
 	} while
 	    ((ep = strtok((char *) 0, ";")) != NULL);
 
-	dst[strlen(dst) - 1] = '\0';
+	if ((length = strlen(dst)) > 0 && dst[length - 1] == ';')
+	    dst[--length] = '\0';
 
 	result = dst;
     }
@@ -872,7 +883,7 @@ lookup_params(const assoc * table, char *dst, char *src)
 static void
 analyze_string(const char *name, const char *cap, TERMTYPE2 *tp, int many)
 {
-    char buf2[MAX_TERMINFO_LENGTH + 1];
+    char buf2[PARAM_BUFSIZ + 1];
     const char *sp;
     const assoc *ap;
     int tp_lines = tp->Numbers[2];
@@ -891,7 +902,7 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp, int many)
 	size_t len = 0;
 	size_t next = 0;
 	const char *expansion = NULL;
-	char buf3[MAX_TERMINFO_LENGTH];
+	char buf3[PARAM_BUFSIZ];
 
 	/* first, check other capabilities in this entry */
 	for (i = 0; i < STRCOUNT; i++) {
@@ -906,8 +917,8 @@ analyze_string(const char *name, const char *cap, TERMTYPE2 *tp, int many)
 	    if (VALID_STRING(cp) &&
 		cp[0] != '\0' &&
 		cp != cap) {
-		if ((len = strlen(cp)) > MAX_TERMINFO_LENGTH)
-		    len = MAX_TERMINFO_LENGTH;
+		if ((len = strlen(cp)) > PARAM_BUFSIZ)
+		    len = PARAM_BUFSIZ;
 		_nc_STRNCPY(buf2, sp, len);
 		buf2[len] = '\0';
 

@@ -35,7 +35,7 @@
  ****************************************************************************/
 
 /*
- * $Id: curses.priv.h,v 1.764 2026/11/07 15:14:52 Yeatol Exp $
+ * $Id: curses.priv.h,v 1.766 2026/11/21 22:31:43 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1190,7 +1190,10 @@ typedef struct screen {
 	mmask2_t	_mouse_mask;	/* set via mousemask() */
 	mmask2_t	_mouse_mask2;	/* OR's in press/release bits */
 	mmask2_t	_mouse_bstate;
-	int		_max_button;
+#if NCURSES_MOUSE_VERSION > 1
+	int		_mouse_bshift;	/* internal "other" bits are shifted */
+	int		_max_button;	/* internal mouse button limit */
+#endif
 	MouseFormat	_mouse_format;	/* type of xterm mouse protocol */
 	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
 	MEVENT		_mouse_events[EV_MAX];	/* hold the last mouse event seen */

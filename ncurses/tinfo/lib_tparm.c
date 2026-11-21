@@ -53,7 +53,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.159 2026/11/07 20:11:44 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.160 2026/11/21 14:33:50 tom Exp $")
 
 /*
  *	char *
@@ -347,6 +347,7 @@ static NCURSES_INLINE int
          ? TPS(stack)[TPS(stack_ptr)].data.str \
          : dummy) \
      : (tparm_error(tps, "spop: stack underflow"), \
+        TPS(stack_ptr) = 0, \
         dummy))
 
 #if NCURSES_EXPANDED
